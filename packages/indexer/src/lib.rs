@@ -5,7 +5,10 @@ use std::collections::HashSet;
 
 #[indexer(manifest = "indexer.manifest.yaml")]
 pub mod indexer_index_mod {
-    fn indexer_handler(block_data: BlockData) {
+    fn index_explorer_data(block_data: BlockData) {
+        let log_txt = format!("Block height {:?}", block_data.height.to_string());
+        Logger::info(&log_txt);
+
         let mut block_gas_limit = 0;
 
         // Convert the deserialized block `BlockData` struct that we get from our Fuel node, into
@@ -19,7 +22,6 @@ pub mod indexer_index_mod {
             height: block_data.height,
             producer,
             hash: block_data.id,
-            hash4: block_data.id,
             timestamp: block_data.time,
             gas_limit: block_gas_limit,
         };

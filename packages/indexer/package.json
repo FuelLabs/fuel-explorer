@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "sh ./scripts/dev.sh",
+    "deploy": "sh ./scripts/deploy.sh",
     "clean": "sh ./scripts/clean.sh"
   },
   "devDependencies": {
