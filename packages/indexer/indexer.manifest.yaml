@@ -8,5 +8,5 @@ module:
   wasm: target/wasm32-unknown-unknown/release/indexer.wasm
 metrics: ~
 contract_id: ~
-start_block: ~
+start_block: 30740
 resumable: ~

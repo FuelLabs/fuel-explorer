@@ -31,7 +31,7 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - fuel-explorer-core-db:/mnt/db
+      - fuel-explorer-core-db:/mnt/node-beta
     healthcheck:
       test: curl --fail http://localhost:4000/health || exit 1
       interval: 1s

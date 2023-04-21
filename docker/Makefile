@@ -1,5 +1,6 @@
 start:
-	docker compose --env-file .env up -d --build
+	sh ./scripts/start.sh
+
 down:
 	docker compose down
 restart:

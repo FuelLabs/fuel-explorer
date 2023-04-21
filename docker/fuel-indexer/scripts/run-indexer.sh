@@ -8,6 +8,7 @@ echo "Running fuel-indexer";
 --postgres-password postgres \
 --graphql-api-host 0.0.0.0 \
 --run-migrations
+
 # We should be using a config file here but the current
 # when executing it the graphql api host is not being set
 # correctly. So we are using the command line arguments.

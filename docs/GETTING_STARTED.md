@@ -29,15 +29,17 @@ cd fuel-explorer
 pnpm install
 ```
 
-### 📒 - Run Local Node
+### 📒 - Run Services
 
 In this step, we are going to;
 
-- launch a local `fuel-core` node;
+- launch a local `fuel-core` and a indexer;
 
 ```sh
 pnpm services:start
 ```
+
+> The indexer will start indexing the blocks from the `fuel-core` node. This process may take couple of minutes until all the blocks are indexed. If you need to have more Transactions you can change `start_block` on the [indexer.manifest.yaml](../packages/indexer/indexer.manifest.yaml).
 
 To stop the node, run:
 
@@ -47,15 +49,23 @@ pnpm services:stop
 
 ## 📗 Indexer
 
-To run the indexer, run:
+### 🚧 - Run deploymnent watcher
+
+When developing this process will automatically deploy your code changes to the indexer.
 
 ```sh
 pnpm dev:indexer
 ```
 
-This should deploy the indexer code and to the local indexer. And start indexing all txs on the local node. Please make sure to have forc and rust installed. If you are using a local node, make sure to have the indexer running before you start the app.
-
 > When changing the indexer code, it's possible that the data schema is not compatible with previous versions. In this cases run `pnpm clean:indexer` to restart the indexing with the new schema.
+
+### 🔍 See logs from the indexer
+
+On development you may need to see the logs of the indexer to debug some issues. To do that you can run:
+
+```sh
+docker logs -f fuel-explorer-indexer
+```
 
 <!-- ### 💻 - Run Web App
 
@@ -81,12 +91,14 @@ To make life easier we added as many useful scripts as possible to our [package.
 pnpm <command name>
 ```
 
-| Script           | Description                                                                  |
-| ---------------- | ---------------------------------------------------------------------------- |
-| `dev:indexer`    | Run development server for Indexer [packages/indexer](../packages/indexer/). |
-| `clean:indexer`  | Clean all data from indexer and restart the indexing service.                |
-| `services:stop`  | Stop and remove all development containers that are running locally.         |
-| `services:start` | Run the local network with `fuel-core` and the `faucet` API.                 |
+| Script             | Description                                                                  |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `dev:indexer`      | Run development server for Indexer [packages/indexer](../packages/indexer/). |
+| `clean:indexer`    | Clean all data from indexer and restart all services                         |
+| `services:stop`    | Stop and remove all development containers that are running locally.         |
+| `services:start`   | Run the local network with `fuel-core` and the `faucet` API.                 |
+| `services:down`    | Stop all containers without removing data                                    |
+| `services:restart` | Restart all containers without removing data                                 |
 
 > Other scripts can be found in [package.json](../package.json).
 
