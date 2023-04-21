@@ -55,6 +55,8 @@ pnpm dev:indexer
 
 This should deploy the indexer code and to the local indexer. And start indexing all txs on the local node. Please make sure to have forc and rust installed. If you are using a local node, make sure to have the indexer running before you start the app.
 
+> When changing the indexer code, it's possible that the data schema is not compatible with previous versions. In this cases run `pnpm clean:indexer` to restart the indexing with the new schema.
+
 <!-- ### 💻 - Run Web App
 
 Start a local development frontend. After running the below command you can open [http://localhost:3004](http://localhost:3004) in your browser to view the frontend.
@@ -82,6 +84,7 @@ pnpm <command name>
 | Script           | Description                                                                  |
 | ---------------- | ---------------------------------------------------------------------------- |
 | `dev:indexer`    | Run development server for Indexer [packages/indexer](../packages/indexer/). |
+| `clean:indexer`  | Clean all data from indexer and restart the indexing service.                |
 | `services:stop`  | Stop and remove all development containers that are running locally.         |
 | `services:start` | Run the local network with `fuel-core` and the `faucet` API.                 |
 

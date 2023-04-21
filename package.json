@@ -24,6 +24,7 @@
     "services:down": "make -C ./docker down",
     "services:stop": "make -C ./docker stop",
     "services:restart": "make -C ./docker restart",
-    "dev:indexer": "pnpm --filter=indexer dev"
+    "dev:indexer": "pnpm --filter=indexer dev",
+    "clean:indexer": "pnpm --filter=indexer clean"
   }
 }

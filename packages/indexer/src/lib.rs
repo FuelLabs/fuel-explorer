@@ -19,6 +19,7 @@ pub mod indexer_index_mod {
             height: block_data.height,
             producer,
             hash: block_data.id,
+            hash4: block_data.id,
             timestamp: block_data.time,
             gas_limit: block_gas_limit,
         };

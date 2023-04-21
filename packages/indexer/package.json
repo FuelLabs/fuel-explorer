@@ -4,7 +4,8 @@
   "author": "Fuel Labs <contact@fuel.sh> (https://fuel.network/)",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "sh ./scripts/dev.sh"
+    "dev": "sh ./scripts/dev.sh",
+    "clean": "sh ./scripts/clean.sh"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
