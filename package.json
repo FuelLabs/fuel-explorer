@@ -1,0 +1,29 @@
+{
+  "name": "fuel-explorer-project",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Fuel Labs <contact@fuel.sh> (https://fuel.network/)",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=7"
+  },
+  "homepage": "https://github.com/FuelLabs/fuel-explorer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FuelLabs/fuel-explorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FuelLabs/fuel-explorer/issues"
+  },
+  "workspaces": [
+    "./packages/*"
+  ],
+  "scripts": {
+    "services:start": "make -C ./docker start",
+    "services:down": "make -C ./docker down",
+    "services:stop": "make -C ./docker stop",
+    "services:restart": "make -C ./docker restart",
+    "dev:indexer": "pnpm --filter=indexer dev"
+  }
+}

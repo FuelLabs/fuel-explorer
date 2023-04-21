@@ -1,0 +1,12 @@
+---
+namespace: indexer
+abi: ~
+identifier: indexer
+fuel_client: ~
+graphql_schema: schema/indexer.schema.graphql
+module:
+  wasm: target/wasm32-unknown-unknown/release/indexer.wasm
+metrics: ~
+contract_id: ~
+start_block: ~
+resumable: ~

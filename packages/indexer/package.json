@@ -1,0 +1,12 @@
+{
+  "name": "@fuel-explorer/indexer",
+  "private": true,
+  "author": "Fuel Labs <contact@fuel.sh> (https://fuel.network/)",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "sh ./scripts/dev.sh"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
