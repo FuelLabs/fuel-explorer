@@ -67,6 +67,7 @@ pnpm dev
 
 This section has a brief description of each directory. More details can be found inside each package, by clicking on the links.
 
+- [packages/indexer](../packages/indexer/) Indexing logic for the Fuel Explorer
 - [packages/app](../packages/app/) Frontend application
 - [docker](../docker/) Network, postgres and indexer configurations
 
