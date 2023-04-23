@@ -6,7 +6,7 @@ services:
     container_name: fuel-explorer-pgsql
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - fuel-explorer-db:/usr/local/postgres
     environment:
