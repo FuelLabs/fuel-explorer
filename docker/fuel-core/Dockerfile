@@ -3,11 +3,8 @@ FROM ghcr.io/fuellabs/fuel-core:v0.17.10
 ENV MIN_GAS_PRICE="${MIN_GAS_PRICE}"
 ENV CONSENSUS_KEY_SECRET="${CONSENSUS_KEY}"
 
-# Install curl to use on
-# healthcheck config
-RUN apt update
-RUN apt install curl -y
-RUN apt install zip -y
+# Install curl to use on healthcheck config
+RUN apt update && apt install curl -y && apt install zip -y
 
 WORKDIR /root/
 
