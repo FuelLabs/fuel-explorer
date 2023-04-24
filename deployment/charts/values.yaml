@@ -1,0 +1,28 @@
+# Default values for fuel explorer for environment
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+password: "password"
+fuelExplorerImage: ghcr.io/fuellabs/fuel-explorer:latest
+
+app:
+  name: fuel-explorer
+  fuel_node_host: beta-3.fuel.network
+  fuel_node_port: 443
+  replicas: 1
+  http_port: 80
+  target_port: 29987
+  image:
+    pullPolicy: Always
+  volume: 
+    pvname: fuel-explorer-db-volume
+    mountPath: /mnt/db/
+    claimname: fuel-explorer-db-volume-pv-claim
+    storageclass: gp2
+    storagerequests: 3Gi
+    accessmodes: ReadWriteOnce
+  postgres:
+    host: postgres
+    port: 5432
+    username: postgres
+    password: password
