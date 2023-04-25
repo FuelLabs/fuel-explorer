@@ -3,27 +3,19 @@ schema {
 }
 
 type QueryRoot {
-  tx: Tx
+  tx: TransactionEntity
 }
 
-type ScriptTx {
+type TransactionEntity {
   id: ID!
   status: Json!
   age: Int8!
-  from: Bytes32!
-  to: Bytes32!
+  input_address: Bytes32!
+  output_address: Bytes32!
 }
 
-type CreateTx {
-  id: ID!
-  status: Json!
-  age: Int8!
-  from: Bytes32!
-  to: Bytes32!
-}
-
-type MintTx {
+type MintTransactionEntity {
   id: ID!
   age: Int8!
-  to: Bytes32!
+  output_address: Bytes32!
 }
