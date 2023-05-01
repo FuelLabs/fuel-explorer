@@ -36,6 +36,7 @@ pub mod indexer_index_mod {
         for tx in block_data.transactions.iter() {
             let mut tx_amount = 0;
             let mut tokens_transferred = Vec::new();
+            let mut inputs_on_tx = Vec::new();
 
             // `Transaction::Script`, `Transaction::Create`, and `Transaction::Mint`
             // are unused but demonstrate properties like gas, inputs,
@@ -56,6 +57,8 @@ pub mod indexer_index_mod {
                     let inputs = t.inputs();
                     let outputs = t.outputs();
                     let witnesses = t.witnesses();
+
+                    inputs_on_tx = inputs.clone();
 
                     let json = &tx.transaction.to_json();
                     block_gas_limit += gas_limit;
@@ -240,6 +243,7 @@ pub mod indexer_index_mod {
                 timestamp: block.timestamp,
                 id: first8_bytes_to_u64(tx.id),
                 value: tx_amount,
+                inputs: Json(serde_json::to_value(inputs_on_tx).unwrap().to_string()),
                 status: tx.status.clone().into(),
                 tokens_transferred: Json(
                     serde_json::to_value(tokens_transferred)

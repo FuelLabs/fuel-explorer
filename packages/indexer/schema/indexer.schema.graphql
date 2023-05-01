@@ -24,6 +24,7 @@ type Tx {
   id: ID!
   block: Block!
   hash: Bytes32! @unique
+  inputs: Json!
   timestamp: Int8!
   status: Json!
   value: UInt8!
