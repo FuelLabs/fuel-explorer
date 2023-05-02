@@ -1,10 +1,10 @@
 extern crate alloc;
 use fuel_indexer_macros::indexer;
 use fuel_indexer_plugin::prelude::*;
+use serde_json::Value;
 
 #[indexer(manifest = "indexer.manifest.yaml")]
 pub mod explorer_index {
-    use serde_json::Value;
 
     fn index_transaction(block_data: BlockData) {
         for tx in block_data.transactions.iter() {
@@ -24,14 +24,17 @@ pub mod explorer_index {
                     // );
 
                     // let output: Value = serde_json::from_str(t.outputs());
-                    let inputs: Value = serde_json::from_str(data.inputs());
+                    // let inputs: Value = serde_json::from_str(data.inputs());
                     // let status: Value = serde_json::from_str(tx.status.clone());
+
+                    let inputs = data.inputs();
+                    let inputs_json: Value = serde_json::to_string(&inputs).unwrap().into();
 
                     TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
                         // status: Some(status),
                         age: block_data.time,
-                        inputs: Some(inputs),
+                        inputs: Some(Json(inputs_json.to_string())),
                         outputs: Json(serde_json::to_value(data.outputs()).unwrap().to_string()),
                     }
                     .save();
@@ -45,14 +48,17 @@ pub mod explorer_index {
                     //     .as_str(),
                     // );
                     
-                    let inputs: Value = serde_json::from_str(data.inputs());
+                    // let inputs: Value = serde_json::from_str(data.inputs());
                     // let status: Value = serde_json::from_str(tx.status.clone());
+
+                    let inputs = data.inputs();
+                    let inputs_json: Value = serde_json::to_string(&inputs).unwrap().into();
 
                     TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
                         // status: Some(status),
                         age: block_data.time,
-                        inputs: Some(inputs),
+                        inputs: Some(Json(inputs_json.to_string())),
                         outputs: Json(serde_json::to_value(data.outputs()).unwrap().to_string()),
                     }
                     .save();
