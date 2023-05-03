@@ -8,10 +8,8 @@ type QueryRoot {
 
 type TransactionEntity {
   id: ID!
-  #status: Json
+  status: Json
   age: Int8!
   inputs: Json
   outputs: Json!
-  #tx_pointer: TxPointer
-  #meta_data: Json
 }

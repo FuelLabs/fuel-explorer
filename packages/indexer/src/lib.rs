@@ -8,9 +8,6 @@ pub mod explorer_index {
 
     fn index_transaction(block_data: BlockData) {
         for tx in block_data.transactions.iter() {
-            // let mut from: Option<&Address> = None;
-            // let mut to: Option<&Address> = None;
-
             // Logger::info(format!("{:?}", &tx.transaction).as_str());
 
             match &tx.transaction {
@@ -23,18 +20,13 @@ pub mod explorer_index {
                     //     .as_str(),
                     // );
 
-                    // let output: Value = serde_json::from_str(t.outputs());
-                    // let inputs: Value = serde_json::from_str(data.inputs());
-                    // let status: Value = serde_json::from_str(tx.status.clone());
-
-                    let inputs = data.inputs();
-                    let inputs_json: Value = serde_json::to_string(&inputs).unwrap().into();
+                    let inputs: Value = serde_json::to_string(&data.inputs()).unwrap().into();
 
                     TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
-                        // status: Some(status),
+                        status: Some(tx.status.clone().into()),
                         age: block_data.time,
-                        inputs: Some(Json(inputs_json.to_string())),
+                        inputs: Some(Json(inputs.to_string())),
                         outputs: Json(serde_json::to_value(data.outputs()).unwrap().to_string()),
                     }
                     .save();
@@ -47,18 +39,14 @@ pub mod explorer_index {
                     //     )
                     //     .as_str(),
                     // );
-                    
-                    // let inputs: Value = serde_json::from_str(data.inputs());
-                    // let status: Value = serde_json::from_str(tx.status.clone());
 
-                    let inputs = data.inputs();
-                    let inputs_json: Value = serde_json::to_string(&inputs).unwrap().into();
+                    let inputs: Value = serde_json::to_string(&data.inputs()).unwrap().into();
 
                     TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
-                        // status: Some(status),
+                        status: Some(tx.status.clone().into()),
                         age: block_data.time,
-                        inputs: Some(Json(inputs_json.to_string())),
+                        inputs: Some(Json(inputs.to_string())),
                         outputs: Json(serde_json::to_value(data.outputs()).unwrap().to_string()),
                     }
                     .save();
@@ -71,7 +59,7 @@ pub mod explorer_index {
 
                     TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
-                        // status: None,
+                        status: None,
                         age: block_data.time,
                         inputs: None,
                         outputs: Json(serde_json::to_value(data.outputs()).unwrap().to_string()),
