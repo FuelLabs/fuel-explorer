@@ -8,18 +8,8 @@ type QueryRoot {
 
 type Block {
   id: ID!
-  header: Header!
-  # consensus: Consensus!
-  # transactions: Transactions!
-}
-
-type Header {
-  id: ID!
-  transaction_count: UInt8!
-  output_message_count: UInt8!
-  transactions_root: Bytes32!
-  height: UInt8!
   previous_root: Bytes32!
+  height: UInt8!
   timestamp: Int8!
-  application_hash: Bytes32!
+  # transactions: [Transaction]!
 }
