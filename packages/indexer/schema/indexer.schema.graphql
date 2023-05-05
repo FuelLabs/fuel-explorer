@@ -4,6 +4,7 @@ schema {
 
 type QueryRoot {
   block: Block
+  tx: TransactionEntity
 }
 
 type Block {
@@ -12,4 +13,12 @@ type Block {
   height: UInt8!
   timestamp: Int8!
   # transactions: [Transaction]!
+}
+
+type TransactionEntity {
+  id: ID!
+  status: Json
+  age: Int8!
+  inputs: Json
+  outputs: Json!
 }
