@@ -19,6 +19,7 @@ type Block {
 
 type TransactionEntity {
   id: ID!
+  block_id: Block!
   hash: Bytes32!
   status: Json
   age: Int8!

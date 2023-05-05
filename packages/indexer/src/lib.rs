@@ -6,6 +6,7 @@ use fuel_indexer_plugin::prelude::*;
 pub mod explorer_index {
     fn index_block(block_data: BlockData) {
         let mut transactions: Vec<TransactionEntity> = vec![];
+        let block_id = first8_bytes_to_u64(block_data.id);
 
         for tx in block_data.transactions {
             // Logger::info(format!("{:?}", &tx.transaction).as_str());
@@ -19,6 +20,7 @@ pub mod explorer_index {
 
                     let transaction = TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
+                        block_id,
                         hash: tx.id,
                         status: Some(tx.status.clone().into()),
                         age: block_data.time,
@@ -37,6 +39,7 @@ pub mod explorer_index {
 
                     let transaction = TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
+                        block_id,
                         hash: tx.id,
                         status: Some(tx.status.clone().into()),
                         age: block_data.time,
@@ -53,6 +56,7 @@ pub mod explorer_index {
 
                     let transaction = TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
+                        block_id,
                         hash: tx.id,
                         status: None,
                         age: block_data.time,
@@ -67,7 +71,7 @@ pub mod explorer_index {
         }
 
         Block {
-            id: first8_bytes_to_u64(block_data.id),
+            id: block_id,
             hash: block_data.id,
             producer: block_data.producer,
             // TODO: when querying is possible get the genesis block or the previous block
