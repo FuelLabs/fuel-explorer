@@ -9,6 +9,8 @@ type QueryRoot {
 
 type Block {
   id: ID!
+  hash: Bytes32!
+  producer: Bytes32
   previous_root: Bytes32!
   height: UInt8!
   timestamp: Int8!
@@ -17,6 +19,7 @@ type Block {
 
 type TransactionEntity {
   id: ID!
+  hash: Bytes32!
   status: Json
   age: Int8!
   inputs: Json
