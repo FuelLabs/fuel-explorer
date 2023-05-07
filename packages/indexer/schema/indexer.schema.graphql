@@ -21,8 +21,29 @@ type TransactionEntity {
   id: ID!
   block_id: Block!
   hash: Bytes32!
+  value: UInt8!
   status: Json
   age: Int8!
   inputs: Json
   outputs: Json!
+}
+
+type TransferOut {
+  id: ID!
+  contract_id: Bytes32!
+  receiver: Bytes32!
+  amount: UInt8!
+  asset_id: Bytes32!
+}
+
+type MessageOut {
+  id: ID!
+  message_id: MessageId!
+  sender: Address!
+  recipient: Address!
+  amount: UInt8!
+  nonce: Bytes32!
+  len: UInt8!
+  digest: Bytes32!
+  data: Blob!
 }

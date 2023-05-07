@@ -11,6 +11,68 @@ pub mod explorer_index {
         for tx in block_data.transactions {
             // Logger::info(format!("{:?}", &tx.transaction).as_str());
 
+            let mut transaction_amount = 0;
+
+            for receipt in tx.receipts {
+                match receipt {
+                    Receipt::TransferOut {
+                        id,
+                        to,
+                        amount,
+                        asset_id,
+                        ..
+                    } => {
+                        transaction_amount += amount;
+                        TransferOut {
+                            id: first8_bytes_to_u64(bytes32_from_inputs(
+                                &id,
+                                [id.to_vec(), to.to_vec(), asset_id.to_vec()].concat(),
+                            )),
+                            contract_id: Bytes32::from(*id),
+                            receiver: Bytes32::from(*to),
+                            amount,
+                            asset_id: Bytes32::from(*asset_id),
+                        }
+                        .save();
+                    }
+                    Receipt::MessageOut {
+                        message_id,
+                        sender,
+                        recipient,
+                        amount,
+                        nonce,
+                        len,
+                        digest,
+                        data,
+                    } => {
+                        transaction_amount += amount;
+                        MessageOut {
+                            id: first8_bytes_to_u64(bytes32_from_inputs(
+                                &message_id,
+                                [
+                                    message_id.to_vec(),
+                                    sender.to_vec(),
+                                    recipient.to_vec(),
+                                    nonce.to_vec(),
+                                    digest.to_vec(),
+                                ]
+                                .concat(),
+                            )),
+                            message_id,
+                            sender,
+                            recipient,
+                            amount,
+                            nonce,
+                            len,
+                            digest,
+                            data: Blob::from(data),
+                        }
+                        .save();
+                    }
+                    _ => (),
+                }
+            }
+
             match tx.transaction {
                 Transaction::Script(data) => {
                     let inputs = serde_json::to_string(data.inputs())
@@ -22,6 +84,7 @@ pub mod explorer_index {
                         id: first8_bytes_to_u64(tx.id),
                         block_id,
                         hash: tx.id,
+                        value: transaction_amount,
                         status: Some(tx.status.clone().into()),
                         age: block_data.time,
                         inputs: Some(Json(inputs)),
@@ -41,6 +104,7 @@ pub mod explorer_index {
                         id: first8_bytes_to_u64(tx.id),
                         block_id,
                         hash: tx.id,
+                        value: transaction_amount,
                         status: Some(tx.status.clone().into()),
                         age: block_data.time,
                         inputs: Some(Json(inputs)),
@@ -58,6 +122,7 @@ pub mod explorer_index {
                         id: first8_bytes_to_u64(tx.id),
                         block_id,
                         hash: tx.id,
+                        value: transaction_amount,
                         status: None,
                         age: block_data.time,
                         inputs: None,
