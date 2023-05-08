@@ -42,7 +42,7 @@ pub mod explorer_index {
                         reason,
                     };
                     status.save();
-                    transaction_status.failure = Some(status.id);
+                    transaction_status.squeezed_out = Some(status.id);
                 }
                 TransactionStatus::Submitted { submitted_at } => {
                     let status = SubmittedStatus {
@@ -50,7 +50,7 @@ pub mod explorer_index {
                         timestamp: submitted_at.timestamp(),
                     };
                     status.save();
-                    transaction_status.failure = Some(status.id);
+                    transaction_status.submitted = Some(status.id);
                 }
                 TransactionStatus::Success { block_id, time } => {
                     let status = SuccessStatus {
@@ -59,7 +59,7 @@ pub mod explorer_index {
                         timestamp: time.timestamp(),
                     };
                     status.save();
-                    transaction_status.failure = Some(status.id);
+                    transaction_status.success = Some(status.id);
                 }
             };
 
