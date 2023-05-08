@@ -6,12 +6,62 @@ use fuel_indexer_plugin::prelude::*;
 pub mod explorer_index {
     fn index_block(block_data: BlockData) {
         let mut transactions: Vec<TransactionEntity> = vec![];
-        let block_id = first8_bytes_to_u64(block_data.id);
+        let block_data_id = first8_bytes_to_u64(block_data.id);
 
         for tx in block_data.transactions {
             // Logger::info(format!("{:?}", &tx.transaction).as_str());
 
             let mut transaction_amount = 0;
+            let transaction_id = first8_bytes_to_u64(tx.id);
+            let mut transaction_status = TxStatus {
+                id: transaction_id,
+                failure: None,
+                squeezed_out: None,
+                submitted: None,
+                success: None,
+            };
+
+            match tx.status {
+                TransactionStatus::Failure {
+                    block_id,
+                    time,
+                    reason,
+                } => {
+                    let status = FailureStatus {
+                        id: transaction_id,
+                        block: block_data_id,
+                        reason,
+                        timestamp: time.timestamp(),
+                    };
+                    status.save();
+                    transaction_status.failure = Some(status.id);
+                }
+                TransactionStatus::SqueezedOut { reason } => {
+                    let status = SqueezedOutStatus {
+                        id: transaction_id,
+                        reason,
+                    };
+                    status.save();
+                    transaction_status.failure = Some(status.id);
+                }
+                TransactionStatus::Submitted { submitted_at } => {
+                    let status = SubmittedStatus {
+                        id: transaction_id,
+                        timestamp: submitted_at.timestamp(),
+                    };
+                    status.save();
+                    transaction_status.failure = Some(status.id);
+                }
+                TransactionStatus::Success { block_id, time } => {
+                    let status = SuccessStatus {
+                        id: transaction_id,
+                        block: block_data_id,
+                        timestamp: time.timestamp(),
+                    };
+                    status.save();
+                    transaction_status.failure = Some(status.id);
+                }
+            };
 
             for receipt in tx.receipts {
                 match receipt {
@@ -82,10 +132,10 @@ pub mod explorer_index {
 
                     let transaction = TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
-                        block_id,
+                        block_id: block_data_id,
                         hash: tx.id,
                         value: transaction_amount,
-                        status: Some(tx.status.clone().into()),
+                        status: Some(transaction_status.id),
                         age: block_data.time,
                         inputs: Some(Json(inputs)),
                         outputs: Json(outputs),
@@ -102,10 +152,10 @@ pub mod explorer_index {
 
                     let transaction = TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
-                        block_id,
+                        block_id: block_data_id,
                         hash: tx.id,
                         value: transaction_amount,
-                        status: Some(tx.status.clone().into()),
+                        status: Some(transaction_status.id),
                         age: block_data.time,
                         inputs: Some(Json(inputs)),
                         outputs: Json(outputs),
@@ -120,7 +170,7 @@ pub mod explorer_index {
 
                     let transaction = TransactionEntity {
                         id: first8_bytes_to_u64(tx.id),
-                        block_id,
+                        block_id: block_data_id,
                         hash: tx.id,
                         value: transaction_amount,
                         status: None,
@@ -136,7 +186,7 @@ pub mod explorer_index {
         }
 
         Block {
-            id: block_id,
+            id: block_data_id,
             hash: block_data.id,
             producer: block_data.producer,
             // TODO: when querying is possible get the genesis block or the previous block

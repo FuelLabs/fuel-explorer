@@ -17,12 +17,43 @@ type Block {
   # transactions: [Transaction]!
 }
 
+type FailureStatus {
+  id: ID!
+  block: Block!
+  reason: Charfield!
+  timestamp: Int8!
+}
+
+type SqueezedOutStatus {
+  id: ID!
+  reason: Charfield!
+}
+
+type SubmittedStatus {
+  id: ID!
+  timestamp: Int8!
+}
+
+type SuccessStatus {
+  id: ID!
+  block: Block!
+  timestamp: Int8!
+}
+
+type TxStatus {
+  id: ID!
+  failure: FailureStatus
+  squeezed_out: SqueezedOutStatus
+  submitted: SubmittedStatus
+  success: SuccessStatus
+}
+
 type TransactionEntity {
   id: ID!
   block_id: Block!
   hash: Bytes32!
   value: UInt8!
-  status: Json
+  status: TxStatus
   age: Int8!
   inputs: Json
   outputs: Json!
