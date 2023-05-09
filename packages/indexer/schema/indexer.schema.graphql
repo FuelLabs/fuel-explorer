@@ -56,7 +56,9 @@ type TransactionEntity {
   status: TxStatus
   age: Int8!
   inputs: Json
+  # inputs: [InputEntity]
   outputs: Json!
+  # outputs: [OutputEntity]!
 }
 
 type TransferOut {

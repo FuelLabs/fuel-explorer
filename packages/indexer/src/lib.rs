@@ -131,7 +131,7 @@ pub mod explorer_index {
                         .expect("Tx Script: Unable to parse outputs");
 
                     let transaction = TransactionEntity {
-                        id: first8_bytes_to_u64(tx.id),
+                        id: transaction_id,
                         block_id: block_data_id,
                         hash: tx.id,
                         value: transaction_amount,
@@ -151,7 +151,7 @@ pub mod explorer_index {
                         .expect("Tx Create: Unable to parse outputs");
 
                     let transaction = TransactionEntity {
-                        id: first8_bytes_to_u64(tx.id),
+                        id: transaction_id,
                         block_id: block_data_id,
                         hash: tx.id,
                         value: transaction_amount,
@@ -169,7 +169,7 @@ pub mod explorer_index {
                         .expect("Tx Mint: Unable to parse outputs");
 
                     let transaction = TransactionEntity {
-                        id: first8_bytes_to_u64(tx.id),
+                        id: transaction_id,
                         block_id: block_data_id,
                         hash: tx.id,
                         value: transaction_amount,
