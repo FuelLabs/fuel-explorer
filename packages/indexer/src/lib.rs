@@ -22,11 +22,7 @@ pub mod explorer_index {
             };
 
             match tx.status {
-                TransactionStatus::Failure {
-                    block_id,
-                    time,
-                    reason,
-                } => {
+                TransactionStatus::Failure { time, reason, .. } => {
                     let status = FailureStatus {
                         id: transaction_id,
                         block: block_data_id,
@@ -52,7 +48,7 @@ pub mod explorer_index {
                     status.save();
                     transaction_status.submitted = Some(status.id);
                 }
-                TransactionStatus::Success { block_id, time } => {
+                TransactionStatus::Success { time, .. } => {
                     let status = SuccessStatus {
                         id: transaction_id,
                         block: block_data_id,

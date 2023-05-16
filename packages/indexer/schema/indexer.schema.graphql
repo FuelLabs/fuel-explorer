@@ -1,20 +1,66 @@
-schema {
-  query: QueryRoot
-}
-
-type QueryRoot {
-  block: Block
-  tx: TransactionEntity
-}
-
-type Block {
+type ConsensusParameters {
   id: ID!
-  hash: Bytes32!
-  producer: Bytes32
-  previous_root: Bytes32!
-  height: UInt8!
-  timestamp: Int8!
-  # transactions: [Transaction]!
+  contract_max_size: UInt8!
+  max_inputs: UInt8!
+  max_outputs: UInt8!
+  max_witnesses: UInt8!
+  max_gas_per_tx: UInt8!
+  max_script_length: UInt8!
+  max_script_data_length: UInt8!
+  max_storage_slots: UInt8!
+  max_predicate_length: UInt8!
+  gas_price_factor: UInt8!
+  gas_per_byte: UInt8!
+  max_message_data_length: UInt8!
+  chain_id: UInt8!
+}
+
+type Balance {
+  id: ID!
+  owner: Address!
+  amount: UInt8!
+  asset_id: Bytes32!
+}
+
+type Return {
+  id: ID!
+}
+
+type ReturnData {
+  id: ID!
+}
+
+type Revert {
+  id: ID!
+}
+
+type ReturnType {
+  id: ID!
+  return: Return
+  return_data: ReturnData
+  revert: Revert
+}
+
+type HexString {
+  id: ID!
+  blob: Blob!
+}
+
+type TxArg {
+  id: ID!
+  tx: HexString
+}
+
+type DryRunArg {
+  id: ID!
+  tx: HexString
+  utxo_validation: Boolean
+}
+
+type ProgramState {
+  id: ID!
+  return_type: ReturnType!
+  data: HexString!
 }
 
 type FailureStatus {
@@ -22,6 +68,7 @@ type FailureStatus {
   block: Block!
   reason: Charfield!
   timestamp: Int8!
+  # program_state: ProgramState
 }
 
 type SqueezedOutStatus {
@@ -38,6 +85,7 @@ type SuccessStatus {
   id: ID!
   block: Block!
   timestamp: Int8!
+  # program_state: ProgramState
 }
 
 type TxStatus {
@@ -46,6 +94,97 @@ type TxStatus {
   squeezed_out: SqueezedOutStatus
   submitted: SubmittedStatus
   success: SuccessStatus
+}
+
+type Header {
+  id: ID!
+  height: UInt8!
+  merkle_root: Bytes32!
+  previous_block_hash: Bytes32!
+  timestamp: Int8!
+}
+
+type Auxillary {
+  id: ID!
+  data_availability_height: UInt8!
+  transactions_count: UInt8!
+  message_receipt_count: UInt8!
+  message_receipt_root: Bytes32!
+  application_hash: Bytes32!
+}
+
+type Genesis {
+  id: ID!
+  chain_config_hash: Bytes32!
+  coins_root: Bytes32!
+  contracts_root: Bytes32!
+  messages_root: Bytes32!
+}
+
+type Signature {
+  id: ID!
+  # data: Bytes64!
+}
+
+type PoAConsensus {
+  id: ID!
+  signature: Signature!
+}
+
+type Consensus {
+  id: ID!
+  genesis: Genesis
+  poa: PoAConsensus
+  # unknown: Unknown
+}
+
+type Block {
+  id: ID!
+  header: Header!
+  auxillary: Auxillary!
+  producer: Bytes32
+  consensus: Consensus!
+  # transactions: [Transaction]
+}
+
+type ConsensusParameters {
+  id: ID!
+  base_chain_height: UInt4!
+  name: Charfield!
+  peer_count: Int4!
+  latest_block: Block!
+  consensus_parameters: ConsensusParameters!
+}
+
+type Coin {
+  id: ID!
+  amount: UInt8!
+  block_created: UInt4!
+  asset_id: Bytes32!
+  utxo_id: Bytes32!
+  maturity: UInt4!
+  owner: Address!
+}
+
+type MessageCoin {
+  id: ID!
+  amount: UInt8!
+  sender: Address!
+  recipient: Address!
+  nonce: UInt8!
+  da_height: UInt8!
+}
+
+type BlockIdFragment {
+  id: ID!
+  block_id: Block!
+}
+
+type ContractBalance {
+  id: ID!
+  contract_id: ContractId!
+  amount: UInt8!
+  asset_id: Bytes32
 }
 
 type TransactionEntity {
