@@ -11,8 +11,8 @@ pub mod explorer_index {
         for tx in block_data.transactions {
             // Logger::info(format!("{:?}", &tx.transaction).as_str());
 
-            let mut transaction_amount = 0;
             let transaction_id = first8_bytes_to_u64(tx.id);
+            let mut transaction_amount = 0;
             let mut transaction_status = TxStatus {
                 id: transaction_id,
                 failure: None,
@@ -20,6 +20,10 @@ pub mod explorer_index {
                 submitted: None,
                 success: None,
             };
+            let mut inputs: Option<Json> = None;
+            #[allow(unused_assignments)]
+            let mut outputs = Json("".to_string());
+            let mut status: Option<u64> = None;
 
             match tx.status {
                 TransactionStatus::Failure { time, reason, .. } => {
@@ -121,64 +125,48 @@ pub mod explorer_index {
 
             match tx.transaction {
                 Transaction::Script(data) => {
-                    let inputs = serde_json::to_string(data.inputs())
-                        .expect("Tx Script: Unable to parse inputs");
-                    let outputs = serde_json::to_string(data.outputs())
-                        .expect("Tx Script: Unable to parse outputs");
-
-                    let transaction = TransactionEntity {
-                        id: transaction_id,
-                        block_id: block_data_id,
-                        hash: tx.id,
-                        value: transaction_amount,
-                        status: Some(transaction_status.id),
-                        age: block_data.time,
-                        inputs: Some(Json(inputs)),
-                        outputs: Json(outputs),
-                    };
-
-                    transaction.save();
-                    transactions.push(transaction);
+                    inputs = Some(Json(
+                        serde_json::to_string(data.inputs())
+                            .expect("Tx Script: Unable to parse inputs"),
+                    ));
+                    outputs = Json(
+                        serde_json::to_string(data.outputs())
+                            .expect("Tx Script: Unable to parse outputs"),
+                    );
+                    status = Some(transaction_status.id);
                 }
                 Transaction::Create(data) => {
-                    let inputs = serde_json::to_string(data.inputs())
-                        .expect("Tx Create: Unable to parse inputs");
-                    let outputs = serde_json::to_string(data.outputs())
-                        .expect("Tx Create: Unable to parse outputs");
-
-                    let transaction = TransactionEntity {
-                        id: transaction_id,
-                        block_id: block_data_id,
-                        hash: tx.id,
-                        value: transaction_amount,
-                        status: Some(transaction_status.id),
-                        age: block_data.time,
-                        inputs: Some(Json(inputs)),
-                        outputs: Json(outputs),
-                    };
-
-                    transaction.save();
-                    transactions.push(transaction);
+                    inputs = Some(Json(
+                        serde_json::to_string(data.inputs())
+                            .expect("Tx Create: Unable to parse inputs"),
+                    ));
+                    outputs = Json(
+                        serde_json::to_string(data.outputs())
+                            .expect("Tx Create: Unable to parse outputs"),
+                    );
+                    status = Some(transaction_status.id);
                 }
                 Transaction::Mint(data) => {
-                    let outputs = serde_json::to_string(data.outputs())
-                        .expect("Tx Mint: Unable to parse outputs");
-
-                    let transaction = TransactionEntity {
-                        id: transaction_id,
-                        block_id: block_data_id,
-                        hash: tx.id,
-                        value: transaction_amount,
-                        status: None,
-                        age: block_data.time,
-                        inputs: None,
-                        outputs: Json(outputs),
-                    };
-
-                    transaction.save();
-                    transactions.push(transaction);
+                    outputs = Json(
+                        serde_json::to_string(data.outputs())
+                            .expect("Tx Mint: Unable to parse outputs"),
+                    );
                 }
             }
+
+            let transaction = TransactionEntity {
+                id: transaction_id,
+                block_id: block_data_id,
+                hash: tx.id,
+                value: transaction_amount,
+                status,
+                age: block_data.time,
+                inputs,
+                outputs,
+            };
+
+            transaction.save();
+            transactions.push(transaction);
         }
 
         let header = Header {
@@ -224,6 +212,11 @@ pub mod explorer_index {
             // transactions: [Transaction]
         };
 
+        header.save();
+        auxillary.save();
+        signature.save();
+        poa.save();
+        consensus.save();
         block.save();
     }
 }
