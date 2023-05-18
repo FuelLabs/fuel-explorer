@@ -1,81 +1,222 @@
-schema {
-  query: QueryRoot
+type ConsensusParameters {
+  id: ID!
+  contract_max_size: UInt8!
+  max_inputs: UInt8!
+  max_outputs: UInt8!
+  max_witnesses: UInt8!
+  max_gas_per_tx: UInt8!
+  max_script_length: UInt8!
+  max_script_data_length: UInt8!
+  max_storage_slots: UInt8!
+  max_predicate_length: UInt8!
+  gas_price_factor: UInt8!
+  gas_per_byte: UInt8!
+  max_message_data_length: UInt8!
+  chain_id: UInt8!
 }
 
-type QueryRoot {
-  block: Block
-  tx: Tx
-  account: Account
-  contract: Contract
+type Balance {
+  id: ID!
+  owner: Address!
+  amount: UInt8!
+  asset_id: Bytes32!
 }
 
-# https://ethereum.org/en/developers/docs/data-and-analytics/block-explorers/
+type Return {
+  id: ID!
+}
+
+type ReturnData {
+  id: ID!
+}
+
+type Revert {
+  id: ID!
+}
+
+type ReturnType {
+  id: ID!
+  return_type: Return
+  return_data: ReturnData
+  revert: Revert
+}
+
+type HexString {
+  id: ID!
+  blob: Blob!
+}
+
+type TxArg {
+  id: ID!
+  tx: HexString
+}
+
+type DryRunArg {
+  id: ID!
+  tx: HexString
+  utxo_validation: Boolean
+}
+
+type ProgramState {
+  id: ID!
+  return_type: ReturnType!
+  data: HexString!
+}
+
+type SqueezedOutStatus {
+  id: ID!
+  reason: Charfield!
+}
+
+type SubmittedStatus {
+  id: ID!
+  timestamp: Int8!
+}
+
+type Header {
+  id: ID!
+  hash: Bytes32!
+  height: UInt8!
+  merkle_root: Bytes32!
+  previous_block_hash: Bytes32!
+  timestamp: Int8!
+}
+
+type Auxillary {
+  id: ID!
+  data_availability_height: UInt8!
+  transactions_count: UInt8!
+  message_receipt_count: UInt8!
+  message_receipt_root: Bytes32!
+  application_hash: Bytes32!
+}
+
+type Genesis {
+  id: ID!
+  chain_config_hash: Bytes32!
+  coins_root: Bytes32!
+  contracts_root: Bytes32!
+  messages_root: Bytes32!
+}
+
+type Signature {
+  id: ID!
+  # data: Bytes64!
+}
+
+type PoAConsensus {
+  id: ID!
+  signature: Signature!
+}
+
+type Consensus {
+  id: ID!
+  genesis: Genesis
+  poa: PoAConsensus
+  # unknown: Unknown
+}
 
 type Block {
   id: ID!
-  height: UInt8!
-  producer: Bytes32!
-  timestamp: Int8!
-  gas_limit: UInt8!
-  hash: Bytes32! @unique
+  header: Header!
+  auxillary: Auxillary!
+  producer: Bytes32
+  consensus: Consensus!
+  # transactions: [Transaction]
 }
 
-type Tx {
+type FailureStatus {
   id: ID!
   block: Block!
-  hash: Bytes32! @unique
+  reason: Charfield!
   timestamp: Int8!
-  status: Json!
-  value: UInt8!
-  tokens_transferred: Json!
+  # program_state: ProgramState
 }
 
-type Account {
-  id: Address! @unique
-  last_seen: UInt8!
-}
-
-type Contract {
-  id: ContractId! @unique
-  last_seen: UInt8!
-}
-
-type Transfer {
+type SuccessStatus {
   id: ID!
-  contract_id: Contract!
-  # `to` is a reserved SQL keyword
-  receiver: ContractId! @indexed
+  block: Block!
+  timestamp: Int8!
+  # program_state: ProgramState
+}
+
+type TxStatus {
+  id: ID!
+  failure: FailureStatus
+  squeezed_out: SqueezedOutStatus
+  submitted: SubmittedStatus
+  success: SuccessStatus
+}
+
+type ChainInfo {
+  id: ID!
+  base_chain_height: UInt4!
+  name: Charfield!
+  peer_count: Int4!
+  latest_block: Block!
+  consensus_parameters: ConsensusParameters!
+}
+
+type Coin {
+  id: ID!
   amount: UInt8!
-  asset_id: AssetId! @indexed
+  block_created: UInt4!
+  asset_id: Bytes32!
+  utxo_id: Bytes32!
+  maturity: UInt4!
+  owner: Address!
+}
+
+type MessageCoin {
+  id: ID!
+  amount: UInt8!
+  sender: Address!
+  recipient: Address!
+  nonce: UInt8!
+  da_height: UInt8!
+}
+
+type BlockIdFragment {
+  id: ID!
+  block_id: Block!
+}
+
+type ContractBalance {
+  id: ID!
+  contract_id: ContractId!
+  amount: UInt8!
+  asset_id: Bytes32
+}
+
+type TransactionEntity {
+  id: ID!
+  block_id: Block!
+  hash: Bytes32!
+  value: UInt8!
+  status: TxStatus
+  age: Int8!
+  inputs: Json
+  # inputs: [InputEntity]
+  outputs: Json!
+  # outputs: [OutputEntity]!
 }
 
 type TransferOut {
   id: ID!
-  contract_id: Contract!
-  # `to` is a reserved SQL keyword
-  receiver: Account!
+  contract_id: Bytes32!
+  receiver: Bytes32!
   amount: UInt8!
-  asset_id: AssetId! @indexed
-}
-
-type ScriptResult {
-  id: ID!
-  result: UInt8!
-  gas_used: UInt8!
-}
-
-type Log {
-  id: ID!
-  contract_id: ContractId!
-  rb: UInt8!
+  asset_id: Bytes32!
 }
 
 type MessageOut {
-  id: MessageId! @unique
+  id: ID!
+  message_id: MessageId!
   sender: Address!
   recipient: Address!
   amount: UInt8!
   nonce: Bytes32!
   len: UInt8!
   digest: Bytes32!
+  data: Blob!
 }

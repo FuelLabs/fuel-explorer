@@ -1,138 +1,70 @@
 extern crate alloc;
 use fuel_indexer_macros::indexer;
 use fuel_indexer_plugin::prelude::*;
-use std::collections::HashSet;
 
 #[indexer(manifest = "indexer.manifest.yaml")]
-pub mod indexer_index_mod {
-    fn index_explorer_data(block_data: BlockData) {
-        let log_txt = format!("Block height {:?}", block_data.height.to_string());
-        Logger::info(&log_txt);
+pub mod explorer_index {
+    fn index_block(block_data: BlockData) {
+        let mut transactions: Vec<TransactionEntity> = vec![];
+        let block_data_id = first8_bytes_to_u64(block_data.id);
 
-        let mut block_gas_limit = 0;
+        for tx in block_data.transactions {
+            // Logger::info(format!("{:?}", &tx.transaction).as_str());
 
-        // Convert the deserialized block `BlockData` struct that we get from our Fuel node, into
-        // a block entity `Block` that we can persist to the database. The `Block` type below is
-        // defined in our schema/explorer.graphql and represents the type that we will
-        // save to our database.
-        let producer = block_data.producer.unwrap_or(Bytes32::zeroed());
+            let transaction_id = first8_bytes_to_u64(tx.id);
+            let mut transaction_amount = 0;
+            let mut transaction_status = TxStatus {
+                id: transaction_id,
+                failure: None,
+                squeezed_out: None,
+                submitted: None,
+                success: None,
+            };
+            let mut inputs: Option<Json> = None;
+            #[allow(unused_assignments)]
+            let mut outputs = Json("".to_string());
+            let mut status: Option<u64> = None;
 
-        let block = Block {
-            id: first8_bytes_to_u64(block_data.id),
-            height: block_data.height,
-            producer,
-            hash: block_data.id,
-            timestamp: block_data.time,
-            gas_limit: block_gas_limit,
-        };
-
-        // Now that we've created the object for the database, let's save it.
-        block.save();
-
-        // Keep track of some Receipt data involved in this transaction.
-        let mut accounts = HashSet::new();
-        let mut contracts = HashSet::new();
-
-        for tx in block_data.transactions.iter() {
-            let mut tx_amount = 0;
-            let mut tokens_transferred = Vec::new();
-
-            // `Transaction::Script`, `Transaction::Create`, and `Transaction::Mint`
-            // are unused but demonstrate properties like gas, inputs,
-            // outputs, script_data, and other pieces of metadata. You can access
-            // properties that have the corresponding transaction `Field` traits
-            // implemented; examples below.
-            match &tx.transaction {
-                #[allow(unused)]
-                Transaction::Script(t) => {
-                    Logger::info("Inside a script transaction. (>^‿^)>");
-
-                    let gas_limit = t.gas_limit();
-                    let gas_price = t.gas_price();
-                    let maturity = t.maturity();
-                    let script = t.script();
-                    let script_data = t.script_data();
-                    let receipts_root = t.receipts_root();
-                    let inputs = t.inputs();
-                    let outputs = t.outputs();
-                    let witnesses = t.witnesses();
-
-                    let json = &tx.transaction.to_json();
-                    block_gas_limit += gas_limit;
+            match tx.status {
+                TransactionStatus::Failure { time, reason, .. } => {
+                    let status = FailureStatus {
+                        id: transaction_id,
+                        block: block_data_id,
+                        reason,
+                        timestamp: time.timestamp(),
+                    };
+                    status.save();
+                    transaction_status.failure = Some(status.id);
                 }
-                #[allow(unused)]
-                Transaction::Create(t) => {
-                    Logger::info("Inside a create transaction. <(^.^)>");
-
-                    let gas_limit = t.gas_limit();
-                    let gas_price = t.gas_price();
-                    let maturity = t.maturity();
-                    let salt = t.salt();
-                    let bytecode_length = t.bytecode_length();
-                    let bytecode_witness_index = t.bytecode_witness_index();
-                    let inputs = t.inputs();
-                    let outputs = t.outputs();
-                    let witnesses = t.witnesses();
-                    let storage_slots = t.storage_slots();
-                    block_gas_limit += gas_limit;
+                TransactionStatus::SqueezedOut { reason } => {
+                    let status = SqueezedOutStatus {
+                        id: transaction_id,
+                        reason,
+                    };
+                    status.save();
+                    transaction_status.squeezed_out = Some(status.id);
                 }
-                #[allow(unused)]
-                Transaction::Mint(t) => {
-                    Logger::info("Inside a mint transaction. <(^‿^<)");
-
-                    let tx_pointer = t.tx_pointer();
-                    let outputs = t.outputs();
+                TransactionStatus::Submitted { submitted_at } => {
+                    let status = SubmittedStatus {
+                        id: transaction_id,
+                        timestamp: submitted_at.timestamp(),
+                    };
+                    status.save();
+                    transaction_status.submitted = Some(status.id);
                 }
-            }
+                TransactionStatus::Success { time, .. } => {
+                    let status = SuccessStatus {
+                        id: transaction_id,
+                        block: block_data_id,
+                        timestamp: time.timestamp(),
+                    };
+                    status.save();
+                    transaction_status.success = Some(status.id);
+                }
+            };
 
-            for receipt in &tx.receipts {
-                // You can handle each receipt in a transaction `TransactionData` as you like.
-                //
-                // Below demonstrates how you can use parts of a receipt `Receipt` in order
-                // to persist entities defined in your GraphQL schema, to the database.
+            for receipt in tx.receipts {
                 match receipt {
-                    #[allow(unused)]
-                    Receipt::Call { id, .. } => {
-                        contracts.insert(Contract {
-                            id: *id,
-                            last_seen: 0,
-                        });
-                    }
-                    #[allow(unused)]
-                    Receipt::ReturnData { id, .. } => {
-                        contracts.insert(Contract {
-                            id: *id,
-                            last_seen: 0,
-                        });
-                    }
-                    #[allow(unused)]
-                    Receipt::Transfer {
-                        id,
-                        to,
-                        asset_id,
-                        amount,
-                        ..
-                    } => {
-                        contracts.insert(Contract {
-                            id: *id,
-                            last_seen: 0,
-                        });
-
-                        let transfer = Transfer {
-                            id: first8_bytes_to_u64(bytes32_from_inputs(
-                                id,
-                                [id.to_vec(), to.to_vec(), asset_id.to_vec()].concat(),
-                            )),
-                            contract_id: *id,
-                            receiver: *to,
-                            amount: *amount,
-                            asset_id: *asset_id,
-                        };
-
-                        transfer.save();
-                        tokens_transferred.push(asset_id.to_string());
-                    }
-                    #[allow(unused)]
                     Receipt::TransferOut {
                         id,
                         to,
@@ -140,125 +72,151 @@ pub mod indexer_index_mod {
                         asset_id,
                         ..
                     } => {
-                        contracts.insert(Contract {
-                            id: *id,
-                            last_seen: 0,
-                        });
-
-                        accounts.insert(Account {
-                            id: *to,
-                            last_seen: 0,
-                        });
-
-                        tx_amount += amount;
-                        let transfer_out = TransferOut {
+                        transaction_amount += amount;
+                        TransferOut {
                             id: first8_bytes_to_u64(bytes32_from_inputs(
-                                id,
+                                &id,
                                 [id.to_vec(), to.to_vec(), asset_id.to_vec()].concat(),
                             )),
-                            contract_id: *id,
-                            receiver: *to,
-                            amount: *amount,
-                            asset_id: *asset_id,
-                        };
-
-                        transfer_out.save();
+                            contract_id: Bytes32::from(*id),
+                            receiver: Bytes32::from(*to),
+                            amount,
+                            asset_id: Bytes32::from(*asset_id),
+                        }
+                        .save();
                     }
-                    #[allow(unused)]
-                    Receipt::Log { id, rb, .. } => {
-                        contracts.insert(Contract {
-                            id: *id,
-                            last_seen: 0,
-                        });
-                        let log = Log {
-                            id: first8_bytes_to_u64(bytes32_from_inputs(
-                                id,
-                                u64::to_le_bytes(*rb).to_vec(),
-                            )),
-                            contract_id: *id,
-                            rb: *rb,
-                        };
-
-                        log.save();
-                    }
-                    #[allow(unused)]
-                    Receipt::LogData { id, .. } => {
-                        contracts.insert(Contract {
-                            id: *id,
-                            last_seen: 0,
-                        });
-
-                        Logger::info("LogData types are unused in this example. (>'')>");
-                    }
-                    #[allow(unused)]
-                    Receipt::ScriptResult { result, gas_used } => {
-                        let result: u64 = match result {
-                            ScriptExecutionResult::Success => 1,
-                            ScriptExecutionResult::Revert => 2,
-                            ScriptExecutionResult::Panic => 3,
-                            ScriptExecutionResult::GenericFailure(_) => 4,
-                        };
-                        let r = ScriptResult {
-                            id: first8_bytes_to_u64(bytes32_from_inputs(
-                                &[0u8; 32],
-                                u64::to_be_bytes(result).to_vec(),
-                            )),
-                            result,
-                            gas_used: *gas_used,
-                        };
-                        r.save();
-                    }
-                    #[allow(unused)]
                     Receipt::MessageOut {
+                        message_id,
                         sender,
                         recipient,
                         amount,
-                        ..
+                        nonce,
+                        len,
+                        digest,
+                        data,
                     } => {
-                        tx_amount += amount;
-                        accounts.insert(Account {
-                            id: *sender,
-                            last_seen: 0,
-                        });
-                        accounts.insert(Account {
-                            id: *recipient,
-                            last_seen: 0,
-                        });
-
-                        Logger::info("LogData types are unused in this example. (>'')>");
+                        transaction_amount += amount;
+                        MessageOut {
+                            id: first8_bytes_to_u64(bytes32_from_inputs(
+                                &message_id,
+                                [
+                                    message_id.to_vec(),
+                                    sender.to_vec(),
+                                    recipient.to_vec(),
+                                    nonce.to_vec(),
+                                    digest.to_vec(),
+                                ]
+                                .concat(),
+                            )),
+                            message_id,
+                            sender,
+                            recipient,
+                            amount,
+                            nonce,
+                            len,
+                            digest,
+                            data: Blob::from(data),
+                        }
+                        .save();
                     }
-                    _ => {
-                        Logger::info("This type is not handled yet.");
-                    }
+                    _ => (),
                 }
             }
 
-            // Persist the transaction to the database via the `Tx` object defined in the GraphQL schema.
-            let tx_entity = Tx {
-                block: block.id,
+            match tx.transaction {
+                Transaction::Script(data) => {
+                    inputs = Some(Json(
+                        serde_json::to_string(data.inputs())
+                            .expect("Tx Script: Unable to parse inputs"),
+                    ));
+                    outputs = Json(
+                        serde_json::to_string(data.outputs())
+                            .expect("Tx Script: Unable to parse outputs"),
+                    );
+                    status = Some(transaction_status.id);
+                }
+                Transaction::Create(data) => {
+                    inputs = Some(Json(
+                        serde_json::to_string(data.inputs())
+                            .expect("Tx Create: Unable to parse inputs"),
+                    ));
+                    outputs = Json(
+                        serde_json::to_string(data.outputs())
+                            .expect("Tx Create: Unable to parse outputs"),
+                    );
+                    status = Some(transaction_status.id);
+                }
+                Transaction::Mint(data) => {
+                    outputs = Json(
+                        serde_json::to_string(data.outputs())
+                            .expect("Tx Mint: Unable to parse outputs"),
+                    );
+                }
+            }
+
+            let transaction = TransactionEntity {
+                id: transaction_id,
+                block_id: block_data_id,
                 hash: tx.id,
-                timestamp: block.timestamp,
-                id: first8_bytes_to_u64(tx.id),
-                value: tx_amount,
-                status: tx.status.clone().into(),
-                tokens_transferred: Json(
-                    serde_json::to_value(tokens_transferred)
-                        .unwrap()
-                        .to_string(),
-                ),
+                value: transaction_amount,
+                status,
+                age: block_data.time,
+                inputs,
+                outputs,
             };
 
-            tx_entity.save();
+            transaction.save();
+            transactions.push(transaction);
         }
 
-        // Save all of our accounts
-        for account in accounts.iter() {
-            account.save();
-        }
+        let header = Header {
+            id: block_data_id,
+            hash: block_data.id,
+            height: block_data.height,
+            // TODO: Calculate merkle root of transactions, should be implementable right now
+            merkle_root: Bytes32::zeroed(),
+            // TODO: when querying is possible get the genesis block or the previous block
+            previous_block_hash: Bytes32::zeroed(),
+            timestamp: block_data.time,
+        };
 
-        // Save all of our contracts
-        for contract in contracts.iter() {
-            contract.save();
-        }
+        let auxillary = Auxillary {
+            id: block_data_id,
+            data_availability_height: 0,
+            transactions_count: 0,
+            message_receipt_count: 0,
+            message_receipt_root: Bytes32::zeroed(),
+            application_hash: Bytes32::zeroed(),
+        };
+
+        let signature = Signature { id: block_data_id };
+
+        let poa = PoAConsensus {
+            id: block_data_id,
+            signature: signature.id,
+        };
+
+        let consensus = Consensus {
+            id: block_data_id,
+            genesis: None,
+            poa: Some(poa.id),
+        };
+
+        let block = Block {
+            id: block_data_id,
+            header: header.id,
+            auxillary: auxillary.id,
+            producer: block_data.producer,
+            consensus: consensus.id,
+            // TODO: storing arrays is unimplemented
+            // transactions: [Transaction]
+        };
+
+        header.save();
+        auxillary.save();
+        signature.save();
+        poa.save();
+        consensus.save();
+        block.save();
     }
 }
