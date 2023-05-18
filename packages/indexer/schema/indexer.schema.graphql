@@ -36,7 +36,7 @@ type Revert {
 
 type ReturnType {
   id: ID!
-  return: Return
+  return_type: Return
   return_data: ReturnData
   revert: Revert
 }
@@ -63,14 +63,6 @@ type ProgramState {
   data: HexString!
 }
 
-type FailureStatus {
-  id: ID!
-  block: Block!
-  reason: Charfield!
-  timestamp: Int8!
-  # program_state: ProgramState
-}
-
 type SqueezedOutStatus {
   id: ID!
   reason: Charfield!
@@ -81,23 +73,9 @@ type SubmittedStatus {
   timestamp: Int8!
 }
 
-type SuccessStatus {
-  id: ID!
-  block: Block!
-  timestamp: Int8!
-  # program_state: ProgramState
-}
-
-type TxStatus {
-  id: ID!
-  failure: FailureStatus
-  squeezed_out: SqueezedOutStatus
-  submitted: SubmittedStatus
-  success: SuccessStatus
-}
-
 type Header {
   id: ID!
+  hash: Bytes32!
   height: UInt8!
   merkle_root: Bytes32!
   previous_block_hash: Bytes32!
@@ -147,7 +125,30 @@ type Block {
   # transactions: [Transaction]
 }
 
-type ConsensusParameters {
+type FailureStatus {
+  id: ID!
+  block: Block!
+  reason: Charfield!
+  timestamp: Int8!
+  # program_state: ProgramState
+}
+
+type SuccessStatus {
+  id: ID!
+  block: Block!
+  timestamp: Int8!
+  # program_state: ProgramState
+}
+
+type TxStatus {
+  id: ID!
+  failure: FailureStatus
+  squeezed_out: SqueezedOutStatus
+  submitted: SubmittedStatus
+  success: SuccessStatus
+}
+
+type ChainInfo {
   id: ID!
   base_chain_height: UInt4!
   name: Charfield!

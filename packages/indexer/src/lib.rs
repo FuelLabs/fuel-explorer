@@ -181,17 +181,49 @@ pub mod explorer_index {
             }
         }
 
-        Block {
+        let header = Header {
             id: block_data_id,
             hash: block_data.id,
-            producer: block_data.producer,
-            // TODO: when querying is possible get the genesis block or the previous block
-            previous_root: Bytes32::zeroed(),
             height: block_data.height,
+            // TODO: Calculate merkle root of transactions, should be implementable right now
+            merkle_root: Bytes32::zeroed(),
+            // TODO: when querying is possible get the genesis block or the previous block
+            previous_block_hash: Bytes32::zeroed(),
             timestamp: block_data.time,
+        };
+
+        let auxillary = Auxillary {
+            id: block_data_id,
+            data_availability_height: 0,
+            transactions_count: 0,
+            message_receipt_count: 0,
+            message_receipt_root: Bytes32::zeroed(),
+            application_hash: Bytes32::zeroed(),
+        };
+
+        let signature = Signature { id: block_data_id };
+
+        let poa = PoAConsensus {
+            id: block_data_id,
+            signature: signature.id,
+        };
+
+        let consensus = Consensus {
+            id: block_data_id,
+            genesis: None,
+            poa: Some(poa.id),
+        };
+
+        let block = Block {
+            id: block_data_id,
+            header: header.id,
+            auxillary: auxillary.id,
+            producer: block_data.producer,
+            consensus: consensus.id,
             // TODO: storing arrays is unimplemented
-            // transactions: transactions,
-        }
-        .save();
+            // transactions: [Transaction]
+        };
+
+        block.save();
     }
 }
