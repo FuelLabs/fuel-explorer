@@ -1,11 +1,3 @@
-schema {
-  query: QueryRoot
-}
-
-type QueryRoot {
-  block: Block
-}
-
 type Block {
   id: ID!
   height: UInt8!

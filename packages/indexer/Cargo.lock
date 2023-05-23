@@ -230,9 +230,9 @@ checksum = "771fe0050b883fcc3ea2359b1a96bcfbc090b7116eae7c3c512c7a083fdf23d3"
 
 [[package]]
 name = "bumpalo"
-version = "3.12.2"
+version = "3.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c6ed94e98ecff0c12dd1b04c15ec0d7d9458ca8fe806cea6f12954efe74c63b"
+checksum = "a3e2c3daef883ecc1b5d58c15adae93470a91d425f3532ba1695849656af3fc1"
 
 [[package]]
 name = "byte-tools"
@@ -698,9 +698,9 @@ dependencies = [
 
 [[package]]
 name = "fuel-indexer-database-types"
-version = "0.13.2"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "899140ea30c66b5ae25fca25ebe42369206f410deaef16761c857ab1171a6323"
+checksum = "6d953ca08ceb593dd104ce6e94af2f6982077e420840974b9a3b0d9bcb2bdc9d"
 dependencies = [
  "chrono",
  "serde",
@@ -709,9 +709,9 @@ dependencies = [
 
 [[package]]
 name = "fuel-indexer-lib"
-version = "0.13.2"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3685035c01963fdd0dedfd17593347fa272775848592bc705c3fcf12db9613dc"
+checksum = "402b24a67cfdd22fa8c817abde88b89ff4ab1a303bc9481e810bd45e257d45da"
 dependencies = [
  "anyhow",
  "clap",
@@ -731,9 +731,9 @@ dependencies = [
 
 [[package]]
 name = "fuel-indexer-macros"
-version = "0.13.2"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fd51522c7f89f08b9e7eb0a3b5b6efb1dada4579f211da56445a4fe2f05c690"
+checksum = "8e3bdbf5ff3f68c98b845f21e465704a73622e08f998a7a96f5f58da0f084145"
 dependencies = [
  "async-graphql-parser",
  "fuel-abi-types",
@@ -741,38 +741,37 @@ dependencies = [
  "fuel-indexer-lib",
  "fuel-indexer-schema",
  "fuel-indexer-types",
- "fuel-tx",
  "fuels 0.40.0",
  "fuels-code-gen 0.40.0",
  "lazy_static",
  "proc-macro-error",
  "proc-macro2",
  "quote",
- "serde",
  "serde_json",
  "sha2 0.9.9",
- "syn 1.0.109",
+ "syn 2.0.16",
 ]
 
 [[package]]
 name = "fuel-indexer-plugin"
-version = "0.13.2"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e9d688a1ed6ce6376800d00c634e3cbfea11a060c2514b0a2647fb6f5d97807"
+checksum = "5517084e8abf74c5adfa39d3fd1ee78743e08dc13cfc9e7f9162f26452988baa"
 dependencies = [
  "bincode",
  "fuel-indexer-lib",
  "fuel-indexer-schema",
  "fuel-indexer-types",
  "hex",
+ "serde",
  "sha2 0.10.6",
 ]
 
 [[package]]
 name = "fuel-indexer-schema"
-version = "0.13.2"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e801d1675490105977491e398c972f9f1feb70e5536a9d36eb6200971f4f91e"
+checksum = "dd97bcb0afddf75a022222f9d2eaa7fee7f54533479a0cc47a0c67d27d0c23c4"
 dependencies = [
  "async-graphql-parser",
  "bincode",
@@ -786,17 +785,19 @@ dependencies = [
 
 [[package]]
 name = "fuel-indexer-types"
-version = "0.13.2"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74c76f8afb278e7b8a578a3120274bc9d27e829c53c82ede2d87a519e2448e95"
+checksum = "b9da0aa4767da5d9e9a12793431c05c5b66a340c4c065cad711b6b0365219e80"
 dependencies = [
  "bincode",
+ "bytes",
  "chrono",
  "fuel-tx",
  "fuel-types",
  "fuels 0.40.0",
  "serde",
  "sha2 0.9.9",
+ "tai64",
 ]
 
 [[package]]
@@ -1552,13 +1553,13 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.8.1"
+version = "1.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af83e617f331cc6ae2da5443c602dfa5af81e517212d9d611a5b3ba1777b5370"
+checksum = "d1a59b5d8e97dee33696bf13c5ba8ab85341c002922fba050069326b9c498974"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-syntax 0.7.1",
+ "regex-syntax 0.7.2",
 ]
 
 [[package]]
@@ -1578,9 +1579,9 @@ checksum = "f162c6dd7b008981e4d40210aca20b4bd0f9b60ca9271061b07f78537722f2e1"
 
 [[package]]
 name = "regex-syntax"
-version = "0.7.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a5996294f19bd3aae0453a862ad728f60e6600695733dd5df01da90c54363a3c"
+checksum = "436b050e76ed2903236f032a59761c1eb99e1b0aead2c257922771dab1fc8c78"
 
 [[package]]
 name = "rfc6979"
