@@ -4,7 +4,7 @@ The Fuel block explorer.
 
 ## Usage
 
-> NOTE: Commands are run from `fuel-indexer/examples/fuel-explorer`
+> NOTE: Commands are run from `fuel-explorer/packages/fuel-explorer`
 
 ### Spin up containers
 
@@ -13,16 +13,13 @@ Spin up containers for the Postgres database server and the indexer service.
 > IMPORTANT: Ensure that any local Postgres instance on port 5432 is stopped.
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
 ### Deploy the indexer
 
 ```bash
-forc index deploy \
-   --path fuel-explorer \
-   --target-dir $PWD/../../ \
-   --url http://0.0.0.0:29987
+forc index deploy --url http://0.0.0.0:29987
 ```
 
 ### Interact

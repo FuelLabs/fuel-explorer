@@ -1,7 +1,7 @@
 ---
 namespace: fuel
-abi: ~
 identifier: explorer
+abi: ~
 fuel_client: ~
 graphql_schema: schema/fuel_explorer.schema.graphql
 module:
