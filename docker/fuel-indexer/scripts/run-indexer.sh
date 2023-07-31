@@ -6,7 +6,7 @@ echo "Running fuel-indexer";
 --fuel-node-port 4000 \
 --postgres-host fuel-explorer-pgsql \
 --postgres-password postgres \
---graphql-api-host 0.0.0.0 \
+--web-api-host 0.0.0.0 \
 --run-migrations
 
 # We should be using a config file here but the current
