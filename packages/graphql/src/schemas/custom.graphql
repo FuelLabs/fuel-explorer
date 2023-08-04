@@ -1,0 +1,25 @@
+# Definition
+directive @extend on FIELD_DEFINITION
+
+type Token {
+  assetId: String!
+  totalSupply: U64
+  totalAssets: U64
+  decimals: U64!
+  name: String!
+  symbol: String!
+  url: String
+}
+
+type Account {
+  name: String!
+  address: String!
+  url: String
+}
+
+extend type TransactionConnection {
+  # custom
+  tokens: [Token] @extend
+  # custom
+  accounts: [Account] @extend
+}

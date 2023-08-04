@@ -1,0 +1,33 @@
+{
+  "name": "graphql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/gateway": "^2.5.1",
+    "@apollo/server": "^4.9.0",
+    "@graphql-tools/schema": "^10.0.0",
+    "@graphql-tools/stitch": "^9.0.1",
+    "@graphql-tools/wrap": "^10.0.0",
+    "@types/node": "^20.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^16.7.1",
+    "graphql-http": "^1.21.0",
+    "graphql-playground-middleware-express": "^1.7.23"
+  },
+  "devDependencies": {
+    "@fuels/ts-config": "^0.0.3",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0"
+  }
+}
