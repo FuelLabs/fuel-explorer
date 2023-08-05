@@ -1,7 +1,11 @@
 {
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
-    "module": "commonjs"
+    "module": "commonjs",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
   "include": ["./src/**/*.ts"]
 }

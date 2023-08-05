@@ -1,5 +1,4 @@
-# Definition
-directive @extend on FIELD_DEFINITION
+scalar U64
 
 type Token {
   assetId: String!
@@ -17,9 +16,7 @@ type Account {
   url: String
 }
 
-extend type TransactionConnection {
-  # custom
-  tokens: [Token] @extend
-  # custom
-  accounts: [Account] @extend
+type Query {
+  tokens(assetsId: [String]!): [Token!]!
+  accounts(addresses: [String]!): [Account!]!
 }

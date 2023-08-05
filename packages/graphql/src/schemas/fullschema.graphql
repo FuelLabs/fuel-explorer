@@ -1,3 +1,8 @@
+##########################################################
+## This is a backup file of the Fuel Core GraphQL schema.
+## it will be used once we create local database
+##########################################################
+
 scalar Address
 scalar AssetId
 scalar BlockId

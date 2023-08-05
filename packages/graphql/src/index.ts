@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 import expressPlayground from "graphql-playground-middleware-express";
-import { startGraphql } from "./startGraphql";
+import { startGraphql } from "~/startGraphql";
 
 // Create a server:
 const app = express();
@@ -10,7 +10,7 @@ app.use(cors<cors.CorsRequest>());
 app.use(express.json());
 
 app.get(
-  "/playground",
+  "/graphql",
   expressPlayground({
     endpoint: "/graphql",
     settings: {
@@ -23,4 +23,6 @@ app.get(
 startGraphql("http://localhost:4000/graphql", app);
 
 // Start the server:
-app.listen(8080, () => console.log("Server started on port 8080"));
+app.listen(4444, () =>
+  console.log("🚀 Explorer api running at http://localhost:4444/graphql")
+);

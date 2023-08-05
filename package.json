@@ -20,12 +20,17 @@
     "./packages/*"
   ],
   "scripts": {
-    "services:start": "make -C ./docker start",
-    "services:down": "make -C ./docker down",
-    "services:stop": "make -C ./docker stop",
-    "services:restart": "make -C ./docker restart",
+    "node:start": "make -C ./docker start",
+    "node:clean": "make -C ./docker clean",
+    "node:stop": "make -C ./docker stop",
+    "node:restart": "make -C ./docker restart",
+    "node:logs": "make -C ./docker logs",
+    "dev": "run-s node:start && pnpm --filter=graphql dev",
     "dev:indexer": "pnpm --filter=indexer dev",
     "clean:indexer": "pnpm --filter=indexer clean",
     "deploy:indexer": "pnpm --filter=indexer run deploy"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }
