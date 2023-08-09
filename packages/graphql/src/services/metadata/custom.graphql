@@ -1,0 +1,22 @@
+scalar U64
+
+type Token {
+  assetId: String!
+  totalSupply: U64
+  totalAssets: U64
+  decimals: U64!
+  name: String!
+  symbol: String!
+  url: String
+}
+
+type Account {
+  name: String!
+  address: String!
+  url: String
+}
+
+type Query {
+  tokens(assetsId: [String]!): [Token!]!
+  accounts(addresses: [String]!): [Account!]!
+}

@@ -1,24 +1,6 @@
 version: "3.9"
 
 services:
-  fuel-explorer-pgsql:
-    platform: linux/amd64
-    container_name: fuel-explorer-pgsql
-    image: postgres:latest
-    ports:
-      - "5435:5432"
-    volumes:
-      - fuel-explorer-db:/usr/local/postgres
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - PGUSER=postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "postgres"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
-
   fuel-explorer-core:
     platform: linux/amd64
     container_name: fuel-explorer-core
@@ -38,24 +20,42 @@ services:
       timeout: 5s
       retries: 20
 
-  fuel-explorer-indexer:
-    platform: linux/amd64
-    container_name: fuel-explorer-indexer
-    image: ghcr.io/fuellabs/fuel-indexer:latest
-    command: sh /usr/local/scripts/run-indexer.sh
-    ports:
-      - "29987:29987"
-    volumes:
-      - ./fuel-indexer/scripts:/usr/local/scripts
-      - fuel-explorer-indexer-db:/usr/local/fuel-indexer
-    depends_on:
-      - fuel-explorer-pgsql
-      - fuel-explorer-core
-    links:
-      - fuel-explorer-pgsql
-      - fuel-explorer-core
+  # fuel-explorer-pgsql:
+  #   platform: linux/amd64
+  #   container_name: fuel-explorer-pgsql
+  #   image: postgres:latest
+  #   ports:
+  #     - "5435:5432"
+  #   volumes:
+  #     - fuel-explorer-db:/usr/local/postgres
+  #   environment:
+  #     - POSTGRES_PASSWORD=postgres
+  #     - PGUSER=postgres
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "postgres"]
+  #     interval: 30s
+  #     timeout: 60s
+  #     retries: 5
+  #     start_period: 80s
+
+  # fuel-explorer-indexer:
+  #   platform: linux/amd64
+  #   container_name: fuel-explorer-indexer
+  #   image: ghcr.io/fuellabs/fuel-indexer:latest
+  #   command: sh /usr/local/scripts/run-indexer.sh
+  #   ports:
+  #     - "29987:29987"
+  #   volumes:
+  #     - ./fuel-indexer/scripts:/usr/local/scripts
+  #     - fuel-explorer-indexer-db:/usr/local/fuel-indexer
+  #   depends_on:
+  #     - fuel-explorer-pgsql
+  #     - fuel-explorer-core
+  #   links:
+  #     - fuel-explorer-pgsql
+  #     - fuel-explorer-core
 
 volumes:
-  fuel-explorer-db:
-  fuel-explorer-indexer-db:
+  # fuel-explorer-db:
+  # fuel-explorer-indexer-db:
   fuel-explorer-core-db:

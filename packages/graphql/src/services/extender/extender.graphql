@@ -1,0 +1,6 @@
+extend type TransactionConnection {
+  # custom
+  tokens: [Token]
+  # custom
+  accounts: [Account]
+}
