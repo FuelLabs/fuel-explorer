@@ -1,5 +1,6 @@
-import { GraphQLFieldResolver } from "graphql";
-import tokensData from "../../data/tokens.json";
+import type { GraphQLFieldResolver } from 'graphql';
+
+import tokensData from '../../data/tokens.json';
 
 export const QueryTokens: GraphQLFieldResolver<
   any,
@@ -11,8 +12,8 @@ export const QueryTokens: GraphQLFieldResolver<
   return assetsId
     .map((id) =>
       tokensData.find(
-        (token) => token.assetId.toLowerCase() === id.toLowerCase()
-      )
+        (token) => token.assetId.toLowerCase() === id.toLowerCase(),
+      ),
     )
     .filter((i) => !!i);
 };

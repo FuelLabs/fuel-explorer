@@ -1,12 +1,11 @@
-import { createHandler } from "graphql-http/lib/use/express";
-import { Application } from "express";
-import { stitchSchemas } from "@graphql-tools/stitch";
-import { loadSchema } from "@graphql-tools/load";
-import { UrlLoader } from "@graphql-tools/url-loader";
-
-import { createGraphqlFetch } from "~/utils";
-import { metadataSchema } from "~/services/metadata/schema";
-import { ExtenderResolvers, ExtenderTypeDefs } from "~/services/extender";
+import { loadSchema } from '@graphql-tools/load';
+import { stitchSchemas } from '@graphql-tools/stitch';
+import { UrlLoader } from '@graphql-tools/url-loader';
+import type { Application } from 'express';
+import { createHandler } from 'graphql-http/lib/use/express';
+import { ExtenderResolvers, ExtenderTypeDefs } from '~/services/extender';
+import { metadataSchema } from '~/services/metadata/schema';
+import { createGraphqlFetch } from '~/utils';
 
 async function createSchema(fuelCoreGraphql: string) {
   return stitchSchemas({
@@ -31,9 +30,9 @@ async function createSchema(fuelCoreGraphql: string) {
 export async function startGraphql(fuelCoreGraphql: string, app: Application) {
   const schema = await createSchema(fuelCoreGraphql);
   app.post(
-    "/graphql",
+    '/graphql',
     createHandler({
       schema,
-    })
+    }),
   );
 }

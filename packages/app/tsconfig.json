@@ -1,0 +1,18 @@
+{
+  "extends": "@fuels/ts-config/base.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "rootDir": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "src", ".storybook", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

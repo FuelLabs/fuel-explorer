@@ -1,5 +1,6 @@
-import { GraphQLFieldResolver } from "graphql";
-import accountsData from "../../data/accounts.json";
+import type { GraphQLFieldResolver } from 'graphql';
+
+import accountsData from '../../data/accounts.json';
 
 export const QueryAccounts: GraphQLFieldResolver<
   any,
@@ -11,8 +12,8 @@ export const QueryAccounts: GraphQLFieldResolver<
   return addresses
     .map((addres) =>
       accountsData.find(
-        (account) => account.address.toLowerCase() === addres.toLowerCase()
-      )
+        (account) => account.address.toLowerCase() === addres.toLowerCase(),
+      ),
     )
     .filter((i) => !!i);
 };
