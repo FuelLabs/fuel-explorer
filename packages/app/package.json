@@ -10,7 +10,7 @@
     "start": "next start",
     "storybook": "storybook dev -p 6006",
     "test": "jest --verbose",
-    "ts:check": "pnpm xstate:typegen && tsc --noEmit"
+    "ts:check": "tsc --noEmit"
   },
   "dependencies": {
     "@fuel-ui/css": "0.18.2",
