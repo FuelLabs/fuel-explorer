@@ -42,7 +42,7 @@ jobs:
 
       - name: Run lint & ts:check
         run: |
-          pnpm lint:ci
+          pnpm lint:check
           pnpm ts:check
 
   test:
@@ -59,7 +59,7 @@ jobs:
       - name: Run build & jest
         run: |
           pnpm build
-          pnpm test:ci --outputFile="../../${{ env.COVERAGE_FILE }}"
+          pnpm test:ci --outputFile="../../${{ env.COVERAGE_FILE }}" --passWithNoTests
 
       - name: Publish coverage
         uses: artiomtr/jest-coverage-report-action@v2.0.5
