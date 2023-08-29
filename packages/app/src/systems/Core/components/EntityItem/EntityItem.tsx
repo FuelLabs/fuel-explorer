@@ -1,8 +1,8 @@
 import { css, cssObj } from '@fuel-ui/css';
-import { Box, Copyable, Heading } from '@fuel-ui/react';
+import { Box, Heading } from '@fuel-ui/react';
 import type { ReactNode } from 'react';
 
-import { shortAddress } from '../../utils/address';
+import { AssetId } from '../AssetId';
 
 type EntityItemProps = {
   icon: ReactNode;
@@ -17,9 +17,7 @@ export function EntityItem({ icon, title, id, size = 'md' }: EntityItemProps) {
       <Box className="icon">{icon}</Box>
       <Box>
         <Heading as="h6">{title}</Heading>
-        <Copyable value={id} css={styles.assetId}>
-          {shortAddress(id)}
-        </Copyable>
+        <AssetId id={id} css={styles.assetId} />
       </Box>
     </Box>
   );
