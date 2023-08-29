@@ -1,6 +1,7 @@
 import { Box, Icon, Tag } from '@fuel-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
-import Image from 'next/image';
+
+import { AssetIcon } from '../AssetIcon';
 
 import { EntityItem } from './EntityItem';
 
@@ -15,9 +16,7 @@ type Story = StoryObj<typeof EntityItem>;
 const DEFAULT_ARGS = {
   id: '0x0000000000000000000000000000000000000000000000000000000000000000',
   title: 'Ethereum',
-  icon: (
-    <Image width={30} height={30} alt="Ethereum Logo" src="/assets/eth.svg" />
-  ),
+  icon: <AssetIcon asset="eth" />,
 };
 
 export const Default: Story = {

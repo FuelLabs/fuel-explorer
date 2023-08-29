@@ -5,7 +5,7 @@ import Meta, { Default as DefaultStory } from './AssetId.stories';
 
 const Default = composeStory(DefaultStory, Meta);
 
-describe('Entityitem', () => {
+describe('AssetId', () => {
   it('a11y', async () => {
     await testA11y(<Default />);
   });

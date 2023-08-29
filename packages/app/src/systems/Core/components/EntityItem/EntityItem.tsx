@@ -67,8 +67,8 @@ const styles = {
         },
         lg: {
           '.icon': {
-            height: '$9',
-            width: '$9',
+            height: '$10',
+            width: '$10',
           },
         },
       },

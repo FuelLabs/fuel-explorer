@@ -1,0 +1,1 @@
+export { AssetIcon } from './AssetIcon';
