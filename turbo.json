@@ -5,6 +5,11 @@
       "dependsOn": ["^build"],
       "cache": true
     },
+    "build:preview": {
+      "outputs": ["dist/**", "build/**", ".next/**"],
+      "dependsOn": ["^build"],
+      "cache": true
+    },
     "build:storybook": {
       "outputs": ["storybook-static/**"],
       "dependsOn": ["^build"],
