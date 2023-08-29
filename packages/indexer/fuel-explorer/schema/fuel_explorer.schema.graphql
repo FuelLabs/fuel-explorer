@@ -412,10 +412,7 @@ type MintTransaction {
   status: TransactionStatus!
 }
 
-union Transaction =
-    CreateTransaction
-  | ScriptTransaction
-  | MintTransaction
+union Transaction = CreateTransaction | ScriptTransaction | MintTransaction
 
 type SubmittedStatus {
   id: ID!

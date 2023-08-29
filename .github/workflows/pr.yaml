@@ -1,0 +1,75 @@
+name: "PR Checks"
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, closed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COVERAGE_FILE: report.json
+
+jobs:
+  validate-title:
+    name: Validate PR Title
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  audit:
+    name: Audit
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FuelLabs/github-actions/setups/node@master
+
+      - name: Run Audit
+        run: pnpm audit --prod
+
+  lint-and-test:
+    name: Lint
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FuelLabs/github-actions/setups/node@master
+
+      - name: Run lint & ts:check
+        run: |
+          pnpm lint:check
+          pnpm ts:check
+
+  test:
+    name: Tests with coverage
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: FuelLabs/github-actions/setups/node@master
+
+      - name: Run build & jest
+        run: |
+          pnpm build
+          pnpm test:ci --outputFile="../../${{ env.COVERAGE_FILE }}" --passWithNoTests
+
+      - name: Publish coverage
+        uses: artiomtr/jest-coverage-report-action@v2.0.5
+        if: ${{ github.event.pull_request.number }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          package-manager: pnpm
+          annotations: failed-tests
+          test-script: pnpm test:ci
+          prnumber: ${{ github.event.pull_request.number }}
+          skip-test: all
+          coverage-file: ${{ env.COVERAGE_FILE }}
+          base-coverage-file: ${{ env.COVERAGE_FILE }}

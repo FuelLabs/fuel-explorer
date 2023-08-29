@@ -1,4 +1,5 @@
-import { DocumentNode, print } from "graphql";
+import type { DocumentNode } from 'graphql';
+import { print } from 'graphql';
 
 type FetchOptions = {
   document: string | DocumentNode;
@@ -8,16 +9,16 @@ type FetchOptions = {
 
 export function createGraphqlFetch(url: string, log: boolean = false) {
   return async ({ document, variables, operationName }: FetchOptions) => {
-    const query = typeof document === "string" ? document : print(document);
+    const query = typeof document === 'string' ? document : print(document);
 
     if (log) {
       console.log(`# -- OPERATION ${new Date().toISOString()}:\n${query}`);
     }
 
     const fetchResult = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ operationName, query, variables }),
     });
