@@ -1,4 +1,5 @@
 {
+  "buildCommand": "pnpm build:preview",
   "github": {
     "silent": true
   }

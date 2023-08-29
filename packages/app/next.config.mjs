@@ -12,6 +12,15 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
+  redirects: async () => {
+    return [
+      {
+        source: '/storybook',
+        destination: '/storybook/index.html',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default config;
