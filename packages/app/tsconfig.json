@@ -18,7 +18,9 @@
     "src",
     ".storybook",
     ".next/types/**/*.ts",
-    "stories/**/*.tsx"
+    "stories/**/*.tsx",
+    "./jest.setup.ts",
+    "./jest.config.ts"
   ],
   "exclude": ["node_modules"]
 }

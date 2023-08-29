@@ -1,4 +1,4 @@
 {
   "root": true,
-  "extends": ["plugin:@fuels/next"]
+  "extends": ["plugin:@fuels/typescript", "plugin:@fuels/next"]
 }

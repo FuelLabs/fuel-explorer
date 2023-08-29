@@ -1,7 +1,12 @@
 {
   "pipeline": {
     "build": {
-      "outputs": ["dist/**", "build/**"],
+      "outputs": ["dist/**", "build/**", ".next/**"],
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "build:preview": {
+      "outputs": ["dist/**", "build/**", ".next/**"],
       "dependsOn": ["^build"],
       "cache": true
     },

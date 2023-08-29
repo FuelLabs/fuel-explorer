@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "pnpm turbo:run build --filter=!custom-theme",
-    "build:preview": "pnpm --filter=app build:preview",
+    "build:preview": "pnpm turbo:run build:preview --filter=app",
     "build:storybook": "pnpm turbo:run build:storybook --filter=!custom-theme",
     "clean:indexer": "pnpm --filter=indexer clean",
     "deploy:indexer": "pnpm --filter=indexer run deploy",
@@ -58,6 +58,9 @@
     "lint-staged": "14.0.1"
   },
   "devDependencies": {
+    "@swc/core": "1.3.80",
+    "@swc/jest": "0.2.29",
+    "@types/jest": "29.5.4",
     "eslint": "^8.48.0",
     "husky": "^8.0.3",
     "npm-run-all": "^4.1.5",
