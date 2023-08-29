@@ -10,7 +10,7 @@ describe('Entityitem', () => {
     await testA11y(<Default />);
   });
 
-  fit('should render correclty', async () => {
+  it('should render correclty', async () => {
     const { container } = render(<Default />);
     const id = Default.args.id as string;
     expect(
