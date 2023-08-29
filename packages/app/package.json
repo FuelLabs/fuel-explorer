@@ -5,6 +5,7 @@
   "scripts": {
     "build": "next build",
     "build:storybook": "pnpm ts:check && storybook build",
+    "build:preview": "run-s build:storybook build",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
@@ -20,6 +21,7 @@
     "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "vite-plugin-static-copy": "0.17.0",
     "zod": "3.22.2",
     "zod-validation-error": "1.5.0"
   },

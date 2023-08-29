@@ -13,6 +13,12 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "src", ".storybook", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "src",
+    ".storybook",
+    ".next/types/**/*.ts",
+    "stories/**/*.tsx"
+  ],
   "exclude": ["node_modules"]
 }
