@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "build:storybook": "pnpm ts:check && storybook build",
-    "build:preview": "run-s build:storybook build",
+    "build:storybook": "pnpm ts:check && storybook build --output-dir ./.next/storybook",
+    "build:preview": "run-s build build:storybook",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
