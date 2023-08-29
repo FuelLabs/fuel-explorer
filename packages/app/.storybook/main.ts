@@ -16,18 +16,6 @@ const config: StorybookConfig = {
     name: '@storybook/nextjs',
     options: {},
   },
-  webpackFinal: async (config, { configType }) => {
-    if (configType === 'PRODUCTION') {
-      return {
-        ...config,
-        output: {
-          ...config.output,
-          publicPath: '/storybook/',
-        },
-      };
-    }
-    return config;
-  },
 };
 
 export default config;

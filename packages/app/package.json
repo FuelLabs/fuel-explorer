@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "build:storybook": "pnpm ts:check && storybook build -o storybook && mv ./storybook ./public",
+    "build:storybook": "./scripts/build-storybook.sh",
     "build:preview": "run-s build:storybook build",
     "dev": "next dev",
+    "dev:storybook": "storybook dev -p 6006",
     "lint": "next lint",
     "start": "next start",
-    "storybook": "storybook dev -p 6006",
     "test": "jest --verbose",
     "ts:check": "tsc --noEmit"
   },
