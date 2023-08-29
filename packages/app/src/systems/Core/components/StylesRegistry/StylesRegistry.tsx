@@ -19,11 +19,7 @@ setFuelThemes({
   },
 });
 
-export default function StylesRegistry({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function StylesRegistry({ children }: { children: React.ReactNode }) {
   const [isRendered, setIsRendered] = useState(false);
 
   useServerInsertedHTML(() => {
