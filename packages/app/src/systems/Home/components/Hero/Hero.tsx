@@ -19,6 +19,9 @@ export function Hero() {
             alt="Fuel Brand Image"
             width={680}
             height={680}
+            placeholder="blur"
+            priority
+            quality={80}
           />
         </Box>
       </Box>
