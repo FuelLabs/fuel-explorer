@@ -76,14 +76,14 @@ importers:
   packages/app:
     dependencies:
       '@fuel-ui/css':
-        specifier: 0.20.0
-        version: 0.20.0
+        specifier: 0.21.0-pr-305-04b8434
+        version: 0.21.0-pr-305-04b8434
       '@fuel-ui/icons':
-        specifier: 0.20.0
-        version: 0.20.0
+        specifier: 0.21.0-pr-305-04b8434
+        version: 0.21.0-pr-305-04b8434
       '@fuel-ui/react':
-        specifier: 0.20.0
-        version: 0.20.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(csstype@3.1.2)
+        specifier: 0.21.0-pr-305-04b8434
+        version: 0.21.0-pr-305-04b8434(@types/react-dom@18.2.7)(@types/react@18.2.21)(csstype@3.1.2)
       csstype:
         specifier: 3.1.2
         version: 3.1.2
@@ -123,6 +123,9 @@ importers:
         version: 7.4.0(react-dom@18.2.0)(react@18.2.0)
       '@storybook/addon-storysource':
         specifier: ^7.4.0
+        version: 7.4.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
+      '@storybook/addon-viewport':
+        specifier: 7.4.0
         version: 7.4.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
       '@storybook/addons':
         specifier: ^7.4.0
@@ -2123,18 +2126,18 @@ packages:
       bn.js: 5.2.1
     dev: false
 
-  /@fuel-ui/css@0.20.0:
-    resolution: {integrity: sha512-sT+fuuJVMnaqRWEOYeSB+cRguhgoDj59ZE8kRblTcbSdzvfj1pnnkUAYZN2DyGl0hSyr0fHGzyD9QtdTr+gu6Q==}
+  /@fuel-ui/css@0.21.0-pr-305-04b8434:
+    resolution: {integrity: sha512-hF4fvnsMo0OzuDP7hInAcbasdS729PcPNAn+5Kd+xYTiQDVFvxG3NgpzWnqycrDCmt6gwa3e4Q6PaEFUmz0CLQ==}
     dependencies:
-      '@fuel-ui/design-tokens': 0.20.0
+      '@fuel-ui/design-tokens': 0.21.0-pr-305-04b8434
       '@radix-ui/colors': 2.1.0
       classnames: 2.3.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@fuel-ui/design-tokens@0.20.0:
-    resolution: {integrity: sha512-fVAKTyKYIYmU3rqLdS+V/yF88qDdQzApIdUZBUkRuIG2tJTf+nzrFKCuRsz51Na+vHwKS62lU8QKPTGYvMZZPA==}
+  /@fuel-ui/design-tokens@0.21.0-pr-305-04b8434:
+    resolution: {integrity: sha512-twTQuu9mbO+8IWR1Dzn7T8RFG0ekjVCVKfEDeIDLyxs8Kyq8O5EkaSZoDsUN77aMA7zRmMSM4gJOkmZ4zvYBtQ==}
     dependencies:
       '@radix-ui/colors': 2.1.0
       chroma-js: 2.4.2
@@ -2142,20 +2145,20 @@ packages:
       lodash: 4.17.21
     dev: false
 
-  /@fuel-ui/icons@0.20.0:
-    resolution: {integrity: sha512-5oryTamiSgHuqhQZGhdLXCDCbz7pzdGG0kZ2MbBf8+9ThgWbOILWNFt1SAY2z0uN6WJXCukZo6J1iO4UOIj/DA==}
+  /@fuel-ui/icons@0.21.0-pr-305-04b8434:
+    resolution: {integrity: sha512-99J+xEKspizlz9DWA9VeogAfXkDbXqFBZXOcKC70qtCEJo+pxFG8AX1B8Ld/OXUkrhRlFqEr2mOPKmkl8qDXsg==}
     dependencies:
       '@tabler/icons': 2.32.0
       prettier: 3.0.3
       svgo: 3.0.2
     dev: false
 
-  /@fuel-ui/react@0.20.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(csstype@3.1.2):
-    resolution: {integrity: sha512-pSmTugVwa8Sj4P8FLUTZKu7LpO18l2qPtlJXh9G7XFfOw2T0w0ujInK1vUSxipTAp1OYuybKUfXfKTlDRaBeZw==}
+  /@fuel-ui/react@0.21.0-pr-305-04b8434(@types/react-dom@18.2.7)(@types/react@18.2.21)(csstype@3.1.2):
+    resolution: {integrity: sha512-ZWZPYN+RakuZpxOlMQ+3GAJKhRvxIErkmg5iDgb6wCHE+rsTzoWlt5DLn/u4P+bev9oMG8R7hyT0R7nwiGqC9Q==}
     dependencies:
       '@fuel-ts/math': 0.54.1
-      '@fuel-ui/css': 0.20.0
-      '@fuel-ui/icons': 0.20.0
+      '@fuel-ui/css': 0.21.0-pr-305-04b8434
+      '@fuel-ui/icons': 0.21.0-pr-305-04b8434
       '@radix-ui/react-accordion': 1.1.2(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-alert-dialog': 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-aspect-ratio': 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
@@ -2170,6 +2173,7 @@ packages:
       '@radix-ui/react-tooltip': 1.0.6(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-visually-hidden': 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
       '@react-aria/focus': 3.14.0(react@18.2.0)
+      '@react-aria/interactions': 3.17.0(react@18.2.0)
       '@react-aria/overlays': 3.16.0(react-dom@18.2.0)(react@18.2.0)
       '@react-aria/utils': 3.19.0(react@18.2.0)
       '@testing-library/react': 14.0.0(react-dom@18.2.0)(react@18.2.0)

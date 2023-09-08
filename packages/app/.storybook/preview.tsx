@@ -1,5 +1,8 @@
+import '../src/app/globals.css';
 import React, { useEffect } from 'react';
 import { useDarkMode } from 'storybook-dark-mode';
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+
 import { themes } from '@storybook/theming';
 import {
   darkTheme,
@@ -40,6 +43,9 @@ export const parameters = {
     },
     darkClass: darkTheme.theme.className,
     lightClass: lightTheme.theme.className,
+  },
+  viewport: {
+    viewports: INITIAL_VIEWPORTS,
   },
 };
 
