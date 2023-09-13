@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@graphql-tools/utils": "^10.0.6",
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.6.0",
     "@types/cors": "^2.8.14",
     "@types/express": "^4.17.17",
     "@fuels/ts-config": "^0.0.9",
