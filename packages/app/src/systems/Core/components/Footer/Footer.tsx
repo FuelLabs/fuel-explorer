@@ -245,6 +245,10 @@ const styles = {
       alignItems: 'flex-start',
     },
 
+    '.fuel_Heading': {
+      mb: '$0',
+    },
+
     '.fuel_List': {
       display: 'flex',
       flexDirection: 'column',
