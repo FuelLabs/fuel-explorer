@@ -52,7 +52,9 @@ export function Footer() {
             size="md"
             variant="link"
             as="a"
-            href=""
+            href="https://twitter.com/fuel_network"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Twitter"
             icon="BrandTwitter"
             iconSize={30}
@@ -60,7 +62,9 @@ export function Footer() {
           <IconButton
             variant="link"
             as="a"
-            href=""
+            href="https://github.com/FuelLabs"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Github"
             icon="BrandGithub"
             iconSize={30}
@@ -68,7 +72,9 @@ export function Footer() {
           <IconButton
             variant="link"
             as="a"
-            href=""
+            href="https://discord.com/invite/xfpK4Pe"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Discord"
             icon="BrandDiscord"
             iconSize={30}
