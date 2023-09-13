@@ -213,6 +213,14 @@ const styles = {
     '.fuel_Heading': {
       margin: 0,
     },
+
+    '.fuel_IconButton .fuel_Icon': {
+      transition: 'color 0.2s ease-in-out',
+    },
+
+    '.fuel_IconButton:hover .fuel_Icon': {
+      color: '$brand !important',
+    },
   }),
   navs: cssObj({
     display: 'flex',
