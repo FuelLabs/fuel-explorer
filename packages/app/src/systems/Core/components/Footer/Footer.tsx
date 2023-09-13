@@ -184,7 +184,7 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: '1fr',
     gridTemplateRows: 'auto 1fr',
-    gridGap: '$14',
+    gridGap: '$10',
 
     '@lg': {
       gridTemplateColumns: '1fr 2fr',
@@ -195,7 +195,7 @@ const styles = {
   }),
   brand: cssObj({
     alignItems: 'center',
-    pb: '$14',
+    pb: '$10',
     borderBottom: '1px solid $border',
 
     '@lg': {
