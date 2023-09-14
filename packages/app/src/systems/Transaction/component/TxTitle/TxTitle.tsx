@@ -1,16 +1,11 @@
 import { cssObj } from '@fuel-ui/css';
+import type { BaseProps } from '@fuel-ui/react';
 import { Box, Copyable, Heading } from '@fuel-ui/react';
 import { useMemo } from 'react';
 import { shortAddress } from '~/systems/Core/utils/address';
 
 import type { TxStatus, TxType } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
-
-type TxTitleProps = {
-  status: TxStatus;
-  type: TxType;
-  txHash: string;
-};
 
 const TITLE_MAP: Record<TxType, string> = {
   'contract-call': 'Contract Call',
@@ -19,10 +14,16 @@ const TITLE_MAP: Record<TxType, string> = {
   burn: 'Burn',
 };
 
-export function TxTitle({ status, type, txHash }: TxTitleProps) {
+type TxTitleProps = BaseProps<{
+  status: TxStatus;
+  type: TxType;
+  txHash: string;
+}>;
+
+export function TxTitle({ status, type, txHash, css, ...props }: TxTitleProps) {
   const title = useMemo(() => TITLE_MAP[type], [type]);
   return (
-    <Box.HStack css={styles.root} gap="$3">
+    <Box.HStack {...props} css={{ ...styles.root, ...css }} gap="$3">
       <TxIcon type={type} status={status} />
       <Box>
         <Heading as="h4">{title}</Heading>
