@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Icon } from '@fuel-ui/react';
+import { Box, Link } from '@fuel-ui/react';
 
 export function HomePage() {
   return (
@@ -12,8 +12,7 @@ export function HomePage() {
         is: ['centered'],
       }}
     >
-      <Icon icon="Calendar" />
-      Hello World
+      <Link href="/storybook">Go to Storybook</Link>
     </Box.Flex>
   );
 }
