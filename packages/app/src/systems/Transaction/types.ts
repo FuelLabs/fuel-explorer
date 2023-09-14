@@ -1,25 +1,18 @@
-import type { LayerIntent } from '@fuel-ui/css';
+export enum TxTypeEnum {
+  'contract-call' = 'contract-call',
+  mint = 'mint',
+  transfer = 'transfer',
+  burn = 'burn',
+}
+export enum TxStatusEnum {
+  idle = 'idle',
+  pending = 'pending',
+  success = 'success',
+  error = 'error',
+}
 
-export type TxStatus = 'idle' | 'pending' | 'success' | 'error';
-export type TxType = 'contract-call' | 'mint' | 'transfer' | 'burn';
+export type TxStatus = keyof typeof TxStatusEnum;
+export type TxType = keyof typeof TxTypeEnum;
 
-export const TX_ICON_MAP: Record<TxType, string> = {
-  'contract-call': 'Code',
-  mint: 'Coins',
-  transfer: 'Transfer',
-  burn: 'Flame',
-};
-
-export const TX_INTENT_MAP: Record<TxStatus, LayerIntent> = {
-  success: 'success',
-  error: 'error',
-  pending: 'warning',
-  idle: 'base',
-};
-
-export const TX_STATUS_MAP: Record<TxStatus, string> = {
-  success: 'Success',
-  error: 'Error',
-  pending: 'Pending',
-  idle: 'Idle',
-};
+export const TX_TYPES = Object.values(TxTypeEnum);
+export const TX_STATUS = Object.values(TxStatusEnum);

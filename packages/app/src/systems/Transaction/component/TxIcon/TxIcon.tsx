@@ -1,12 +1,7 @@
+import type { LayerIntent } from '@fuel-ui/css';
 import { Badge, Icon } from '@fuel-ui/react';
 
-import {
-  TX_ICON_MAP,
-  TX_INTENT_MAP,
-  TX_STATUS_MAP,
-  type TxStatus,
-  type TxType,
-} from '../../types';
+import { type TxStatus, type TxType } from '../../types';
 
 type TxIconProps = {
   type: TxType;
@@ -14,7 +9,28 @@ type TxIconProps = {
   size?: 'sm' | 'md' | 'lg';
 };
 
-export function TxIcon({ type, status, size = 'sm' }: TxIconProps) {
+const TX_ICON_MAP: Record<TxType, string> = {
+  'contract-call': 'Code',
+  mint: 'Coins',
+  transfer: 'Transfer',
+  burn: 'Flame',
+};
+
+const TX_INTENT_MAP: Record<TxStatus, LayerIntent> = {
+  success: 'success',
+  error: 'error',
+  pending: 'warning',
+  idle: 'base',
+};
+
+const TX_STATUS_MAP: Record<TxStatus, string> = {
+  success: 'Success',
+  error: 'Error',
+  pending: 'Pending',
+  idle: 'Idle',
+};
+
+export function TxIcon({ type, status, size = 'md' }: TxIconProps) {
   const icon = <Icon icon={TX_ICON_MAP[type]} />;
   const label = TX_STATUS_MAP[status];
   return (

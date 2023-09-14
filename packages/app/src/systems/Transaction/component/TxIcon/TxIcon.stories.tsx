@@ -2,7 +2,7 @@ import { Box } from '@fuel-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import type { TxStatus, TxType } from '../../types';
-import { TX_ICON_MAP, TX_STATUS_MAP } from '../../types';
+import { TX_STATUS, TX_TYPES } from '../../types';
 
 import { TxIcon } from './TxIcon';
 
@@ -17,9 +17,9 @@ type Story = StoryObj<typeof TxIcon>;
 export const Usage: Story = {
   render: () => (
     <Box.VStack>
-      {Object.keys(TX_ICON_MAP).map((type) => (
+      {TX_TYPES.map((type) => (
         <Box.HStack key={type}>
-          {Object.keys(TX_STATUS_MAP).map((status) => (
+          {TX_STATUS.map((status) => (
             <TxIcon
               key={status}
               type={type as TxType}
