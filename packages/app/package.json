@@ -16,10 +16,13 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
+    "@fuel-explorer/graphql": "workspace:*",
     "@fuel-ui/css": "0.21.0-pr-305-04b8434",
     "@fuel-ui/icons": "0.21.0-pr-305-04b8434",
     "@fuel-ui/react": "0.21.0-pr-305-04b8434",
     "csstype": "3.1.2",
+    "dayjs": "1.11.9",
+    "fuels": "0.57.0",
     "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",

@@ -1,6 +1,7 @@
 {
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
+    "outDir": "./dist",
     "module": "commonjs",
     "baseUrl": ".",
     "paths": {
