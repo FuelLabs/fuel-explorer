@@ -42,6 +42,7 @@ jobs:
 
       - name: Run lint & ts:check
         run: |
+          pnpm build:libs
           pnpm lint:check
           pnpm ts:check
 
@@ -58,7 +59,7 @@ jobs:
 
       - name: Run build & jest
         run: |
-          pnpm build
+          pnpm build:libs
           pnpm test:ci --outputFile="../../${{ env.COVERAGE_FILE }}" --passWithNoTests
 
       - name: Publish coverage
