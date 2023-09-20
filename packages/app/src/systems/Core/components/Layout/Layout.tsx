@@ -18,10 +18,12 @@ export function Layout({ children, hero }: LayoutProps) {
         <Nav.Desktop className="px-10">
           <Nav.Logo />
           <Nav.Menu>
-            <Nav.MenuItem href="#" isActive>
+            <Nav.MenuItem href="https://docs.wallet.network">
               Developers
             </Nav.MenuItem>
-            <Nav.MenuItem href="#">Community</Nav.MenuItem>
+            <Nav.MenuItem href="https://forum.fuel.network">
+              Community
+            </Nav.MenuItem>
             <Nav.MenuItem href="#" isExternal>
               Labs
             </Nav.MenuItem>
@@ -29,7 +31,9 @@ export function Layout({ children, hero }: LayoutProps) {
           <Nav.Spacer />
           <Nav.Menu>
             <Nav.MenuItem href="#">Bridge</Nav.MenuItem>
-            <Nav.MenuItem href="#">Explorer</Nav.MenuItem>
+            <Nav.MenuItem href="#" isActive>
+              Explorer
+            </Nav.MenuItem>
             <Nav.MenuItem href="#">Ecosystem</Nav.MenuItem>
           </Nav.Menu>
           <Nav.ThemeToggle />

@@ -46,7 +46,7 @@ export function SearchInput({
   return (
     <Focus.ArrowNavigator autoFocus={autoFocus}>
       <Input className={cx(className)} radius="large" size="3">
-        <Input.Slot className="ml-4 mr-4">
+        <Input.Slot className="mx-1">
           <Icon icon={IconSearch} size={16} />
         </Input.Slot>
         <Input.Field
@@ -56,7 +56,7 @@ export function SearchInput({
           value={value}
         />
         {Boolean(value.length) && (
-          <Input.Slot className="mr-4">
+          <Input.Slot className="mx-1">
             <IconButton
               variant="link"
               aria-label="Clear"

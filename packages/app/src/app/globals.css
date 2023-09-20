@@ -5,5 +5,5 @@
 @tailwind utilities;
 
 :root {
-  --hero-bg: #0e0e0e;
+  --hero-bg: #000;
 }

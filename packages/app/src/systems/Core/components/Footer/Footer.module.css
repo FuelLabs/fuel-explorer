@@ -1,6 +1,8 @@
 .root {
   @apply py-8 pb-0 px-8 bg-no-repeat grid gap-8;
-  background: url(/public/logo-faded.svg) no-repeat -40px center;
+  background:
+    url(/public/logo-faded.svg) no-repeat -40px center,
+    var(--hero-bg);
   background-size: auto 100%;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
