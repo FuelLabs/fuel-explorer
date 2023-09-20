@@ -1,0 +1,21 @@
+@layer fuel-components {
+  .fuel-Card {
+    @apply flex flex-col py-4 gap-4 rounded-md bg-card-bg text-color overflow-clip;
+    @apply border border-solid border-card-border;
+  }
+  .fuel-CardHeader {
+    @apply flex flex-col gap-1.5 px-4 text-heading;
+  }
+  .fuel-CardTitle {
+    @apply m-0 font-semibold leading-none tracking-tight text-2xl flex items-center gap-2;
+  }
+  .fuel-CardDescription {
+    @apply m-0 text-sm text-secondary;
+  }
+  .fuel-CardBody {
+    @apply px-4 text-base;
+  }
+  .fuel-CardFooter {
+    @apply px-4 pt-0 self-end flex gap-2;
+  }
+}

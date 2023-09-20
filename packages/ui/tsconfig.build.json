@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+    "baseUrl": ".",
+    "rootDir": "src",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": [
+    "./src/**/*.stories.tsx",
+    "./src/**/*.test.tsx",
+    "../../node_modules",
+    "node_modules",
+    "dist",
+    "coverage",
+    "storybook-static"
+  ]
+}

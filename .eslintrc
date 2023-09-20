@@ -1,7 +1,0 @@
-{
-  "root": true,
-  "extends": ["plugin:@fuels/base"],
-  "rules": {
-    "@typescript-eslint/no-explicit-any": "off"
-  }
-}

@@ -1,0 +1,44 @@
+@layer fuel-components {
+  .fuel-Accordion {
+    @apply max-w-full;
+  }
+
+  .fuel-AccordionContent {
+    @apply overflow-hidden p-4 text-color;
+    @apply state-open:animate-accordion-open;
+    @apply state-closed:animate-accordion-closed;
+  }
+
+  .fuel-AccordionItem {
+    @apply overflow-hidden rounded-none;
+
+    & + & {
+      @apply mt-1;
+    }
+  }
+
+  .fuel-AccordionTrigger {
+    @apply bg-card-bg rounded-md transition-colors px-4 flex text-lg font-medium;
+    @apply w-full items-center justify-between border border-border;
+    @apply focus:outline-none text-heading;
+    @apply focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent;
+    height: 45px;
+
+    &:hover {
+      @apply text-accent;
+    }
+
+    &:hover .fuel-AccordionIcon,
+    &[data-state='open'] .fuel-AccordionIcon {
+      @apply rotate-180;
+    }
+  }
+
+  .fuel-AccordionHeader {
+    @apply flex;
+  }
+
+  .fuel-AccordionIcon {
+    @apply transition-transform text-red-9;
+  }
+}

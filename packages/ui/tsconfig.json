@@ -1,0 +1,30 @@
+{
+  "extends": "@fuels/ts-config/base.json",
+  "compilerOptions": {
+    "keyofStringsOnly": false,
+    "lib": ["ES2022", "dom"],
+    "target": "ES2021",
+    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "rootDir": ".",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./.storybook/**/*.tsx",
+    "./.storybook/**/*.ts",
+    "./tsup.config.ts",
+    "./tailwind.config.ts"
+  ],
+  "exclude": [
+    "../../node_modules",
+    "node_modules",
+    "dist",
+    "coverage",
+    "storybook-static"
+  ]
+}
