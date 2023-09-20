@@ -7,6 +7,7 @@ import {
   type InputFieldProps,
   type InputProps,
 } from '@fuel-explorer/ui/Input';
+import { Tooltip } from '@fuel-explorer/ui/Tooltip';
 import type { BaseProps } from '@fuel-explorer/ui/types';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
@@ -64,14 +65,15 @@ export function SearchInput({
               iconColor="text-icon"
               icon={IconX}
             />
-            <IconButton
-              variant="link"
-              aria-label="Submit"
-              onClick={handleSubmit}
-              tooltip="Submit"
-              iconColor="text-brand"
-              icon={IconCheck}
-            />
+            <Tooltip content="Submit">
+              <IconButton
+                variant="link"
+                aria-label="Submit"
+                onClick={handleSubmit}
+                iconColor="text-brand"
+                icon={IconCheck}
+              />
+            </Tooltip>
           </Input.Slot>
         )}
       </Input>
