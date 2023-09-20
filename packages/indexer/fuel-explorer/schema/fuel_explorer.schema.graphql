@@ -78,7 +78,7 @@ enum TransactionStatusLabel {
   Unknown
 }
 
-enum ReturnType {
+enum TypeReturn {
   Return
   ReturnData
   Revert
@@ -104,7 +104,7 @@ type InstructionResult {
 }
 
 type ProgramState {
-  return_type: ReturnType! @virtual
+  return_type: TypeReturn! @virtual
   data: HexString!
 }
 
@@ -453,161 +453,4 @@ type UnknownStatus {
   is_unknown: Boolean!
 }
 
-union TransactionStatus =
-    SubmittedStatus
-  | SqueezedOutStatus
-  | FailureStatus
-  | SuccessStatus
-  | UnknownStatus
-
-type Header {
-  id: ID!
-  block_id: BlockId!
-  da_height: UInt8!
-  transactions_count: UInt8!
-  message_receipt_count: UInt8!
-  transactions_root: Bytes32!
-  message_receipt_root: Bytes32!
-  height: UInt8!
-  prev_root: Bytes32!
-  time: Int8!
-  application_hash: Bytes32!
-}
-
-type Block {
-  id: ID!
-  block_id: BlockId!
-  header: Header!
-  consensus: Consensus!
-  transactions: [TransactionIdFragment!]
-}
-
-type NodeInfo {
-  id: ID!
-  utxo_validation: Boolean!
-  vm_backtrace: Boolean!
-  min_gas_price: UInt8!
-  max_tx: UInt8!
-  max_depth: UInt8!
-  node_version: Charfield!
-}
-
-type UnknownOutput {
-  id: ID!
-  label: OutputLabel!
-  is_unknown: Boolean!
-}
-
-type ContractCreated {
-  id: ID!
-  contract: ContractIdFragment!
-  state_root: Bytes32!
-  label: OutputLabel!
-  is_contract_created: Boolean!
-}
-
-type VariableOutput {
-  id: ID!
-  # `to` is a reserved keyword in PostgreSQL.
-  recipient: Address!
-  amount: UInt8!
-  asset_id: AssetId!
-  is_variable: Boolean!
-  label: OutputLabel!
-}
-
-type ChangeOutput {
-  id: ID!
-  # `to` is a reserved keyword in PostgreSQL.
-  recipient: Address!
-  amount: UInt8!
-  asset_id: AssetId!
-  is_change: Boolean!
-  label: OutputLabel!
-}
-
-type ContractOutput {
-  id: ID!
-  input_index: Int8!
-  balance_root: Bytes32!
-  state_root: Bytes32!
-  is_contract: Boolean!
-  label: OutputLabel!
-}
-
-type CoinOutput {
-  id: ID!
-  # `to` is a reserved keyword in PostgreSQL.
-  recipient: Address!
-  amount: UInt8!
-  asset_id: AssetId!
-  is_coin: Boolean!
-  label: OutputLabel!
-}
-
-type MessageOutput {
-  id: ID!
-  amount: UInt8!
-  recipient: Address!
-}
-
-union Output =
-    CoinOutput
-  | ContractOutput
-  | ChangeOutput
-  | VariableOutput
-  | ContractCreated
-  | MessageOutput
-  | UnknownOutput
-
-type ConsensusParameters {
-  id: ID!
-  contract_max_size: UInt8!
-  max_inputs: UInt8!
-  max_outputs: UInt8!
-  max_witnesses: UInt8!
-  max_gas_per_tx: UInt8!
-  max_script_length: UInt8!
-  max_script_data_length: UInt8!
-  max_storage_slots: UInt8!
-  max_predicate_length: UInt8!
-  gas_price_factor: UInt8!
-  gas_per_byte: UInt8!
-  max_message_data_length: UInt8!
-  chain_id: UInt8!
-}
-
-type ChainInfo {
-  id: ID!
-  base_chain_height: UInt4!
-  name: Charfield!
-  peer_count: Int4!
-  latest_block: Block!
-  consensus_parameters: ConsensusParameters!
-}
-
-type Coin {
-  id: ID!
-  amount: UInt8!
-  block_created: UInt4!
-  asset_id: AssetId!
-  utxo_id: UtxoId!
-  maturity: UInt4!
-  owner: Address!
-}
-
-type MessageCoin {
-  id: ID!
-  amount: UInt8!
-  sender: Address!
-  recipient: Address!
-  nonce: Nonce!
-  da_height: UInt8!
-}
-
-type Contract {
-  id: ID!
-  contract_id: ContractId!
-  bytecode: HexString!
-  salt: Salt!
-}
+union TransactionStatus = SubmittedSta

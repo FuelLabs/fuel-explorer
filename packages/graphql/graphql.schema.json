@@ -3325,7 +3325,7 @@
               "name": null,
               "ofType": {
                 "kind": "ENUM",
-                "name": "ReturnType",
+                "name": "TypeReturn",
                 "ofType": null
               }
             },
@@ -4747,7 +4747,7 @@
       },
       {
         "kind": "ENUM",
-        "name": "ReturnType",
+        "name": "TypeReturn",
         "description": null,
         "fields": null,
         "inputFields": null,

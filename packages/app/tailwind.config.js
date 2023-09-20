@@ -27,4 +27,7 @@ module.exports = {
       mapMissingTailwindColors: true, // optional
     }),
   ],
+  corePlugins: {
+    preflight: false,
+  },
 };

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   IconClockHour1,
   IconCoins,
@@ -13,26 +15,28 @@ import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
 import { tv } from 'tailwind-variants';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 
-import type { TxItem } from '../../types';
+import { useTx } from '../../hooks/useTx';
+import type { TransactionNode } from '../../types';
 import { TxTitle } from '../TxTitle/TxTitle';
 
 type TxCardProps = BaseProps<{
-  tx: TxItem;
+  transaction: TransactionNode;
 }>;
 
-export function TxCard({ tx, className, ...props }: TxCardProps) {
+export function TxCard({ transaction, className, ...props }: TxCardProps) {
   const classes = styles();
+  const tx = useTx(transaction);
   return (
     <Card {...props} className={classes.root({ className })}>
       <TxTitle
         type={tx.type}
         status={tx.status}
-        txHash={tx.transaction.id}
+        txHash={tx.transaction?.id}
         className={classes.title()}
       />
       <Card.Body className={classes.body()}>
         <Flex justify="between" className={classes.row()}>
-          <Text leftIcon={IconUsers}>4 accounts</Text>
+          <Text leftIcon={IconUsers}>{tx.totalAccounts} accounts</Text>
         </Flex>
         <Flex justify="between" className={classes.row()}>
           <Text leftIcon={IconTransfer}>{tx.totalOperations} operations</Text>
@@ -53,7 +57,7 @@ export function TxCard({ tx, className, ...props }: TxCardProps) {
 
 const styles = tv({
   slots: {
-    root: 'gap-0 border border-card-border transition-all duration-200 ease-out hover:border-border-hover',
+    root: 'py-0 gap-0 border border-card-border transition-all duration-200 ease-out hover:border-border-hover',
     title: 'py-4 px-4',
     body: 'border-t border-card-border py-4 px-4',
     row: 'items-center py-px [.fuel-Text:first-of-type]:flex-1',

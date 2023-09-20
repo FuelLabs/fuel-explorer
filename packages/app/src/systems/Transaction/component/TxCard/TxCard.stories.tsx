@@ -13,5 +13,11 @@ export default meta;
 type Story = StoryObj<typeof TxCard>;
 
 export const Usage: Story = {
-  render: () => <TxCard tx={TX_CONTRACT_CALL_MOCK} className="w-[350px]" />,
+  render: () => (
+    <TxCard
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      transaction={TX_CONTRACT_CALL_MOCK['transaction'] as any}
+      className="w-[350px]"
+    />
+  ),
 };

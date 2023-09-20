@@ -35,9 +35,9 @@ export const Usage: Story = {
 export const Sizes: Story = {
   render: () => (
     <HStack>
-      <TxIcon type="contract-call" status="success" size="sm" />
-      <TxIcon type="contract-call" status="success" size="md" />
-      <TxIcon type="contract-call" status="success" size="lg" />
+      <TxIcon type="ContractCall" status="Success" size="sm" />
+      <TxIcon type="ContractCall" status="Success" size="md" />
+      <TxIcon type="ContractCall" status="Success" size="lg" />
     </HStack>
   ),
 };

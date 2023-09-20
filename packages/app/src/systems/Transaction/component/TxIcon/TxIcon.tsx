@@ -21,24 +21,22 @@ type TxIconProps = VariantProps<typeof styles> &
   }>;
 
 const TX_ICON_MAP: Record<TxType, IconComponent> = {
-  'contract-call': IconCode,
-  mint: IconCoins,
-  transfer: IconTransfer,
-  burn: IconFlame,
+  ContractCall: IconCode,
+  Mint: IconCoins,
+  Transfer: IconTransfer,
+  Burn: IconFlame,
 };
 
 const TX_INTENT_MAP: Record<TxStatus, any> = {
-  success: 'green',
-  error: 'red',
-  pending: 'yellow',
-  idle: 'gray',
+  Success: 'green',
+  Failure: 'red',
+  Submitted: 'grya',
 };
 
 const TX_STATUS_MAP: Record<TxStatus, string> = {
-  success: 'Success',
-  error: 'Error',
-  pending: 'Pending',
-  idle: 'Idle',
+  Success: 'Success',
+  Submitted: 'Submitted',
+  Failure: 'Failure',
 };
 
 export function TxIcon({

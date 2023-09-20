@@ -4,20 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-.dark body,
-.dark-theme body {
-  --color-page-background: #0e0e0e;
-  background: var(--color-page-background) !important;
+:root {
+  --hero-bg: #0e0e0e;
 }

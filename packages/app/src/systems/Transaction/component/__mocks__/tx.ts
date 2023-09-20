@@ -1,23 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Transaction } from '@fuel-explorer/graphql';
 import { bn } from 'fuels';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
-import type { TxItem } from '../../types';
+import { TxTypeEnum, type TxItem, TxStatusEnum } from '../../types';
 
 export const TX_CONTRACT_CALL_MOCK = {
-  type: 'contract-call',
-  status: 'success',
+  type: TxTypeEnum.ContractCall,
+  status: TxStatusEnum.Success,
   gasUsed: bn(1),
   timestamp: String(dayjs().subtract(10, 'minute').unix()),
   totalAssets: 3,
   totalOperations: 2,
   transaction: {
+    __typename: 'Transaction',
     id: '0x78d13f111bf301324f34f2a7eaffc546d39598d156af38e7c4ef9fe61ea2c46a',
     isCreate: false,
     isMint: false,
     isScript: true,
-    rawPayload: {} as any,
     status: {
       __typename: 'SuccessStatus',
       time: '4611686020099207033',
@@ -35,5 +34,5 @@ export const TX_CONTRACT_CALL_MOCK = {
         },
       } as any,
     ],
-  } satisfies Transaction,
+  } as any,
 } satisfies TxItem;

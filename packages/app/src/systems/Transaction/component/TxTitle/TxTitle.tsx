@@ -6,15 +6,8 @@ import { useMemo } from 'react';
 import { tv } from 'tailwind-variants';
 import { shortAddress } from '~/systems/Core/utils/address';
 
-import type { TxStatus, TxType } from '../../types';
+import { TxTypeEnum, type TxStatus, type TxType } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
-
-const TITLE_MAP: Record<TxType, string> = {
-  'contract-call': 'Contract Call',
-  transfer: 'Transfer',
-  mint: 'Mint',
-  burn: 'Burn',
-};
 
 type TxTitleProps = BaseProps<{
   status: TxStatus;
@@ -23,7 +16,7 @@ type TxTitleProps = BaseProps<{
 }>;
 
 export function TxTitle({ status, type, txHash, ...props }: TxTitleProps) {
-  const title = useMemo(() => TITLE_MAP[type], [type]);
+  const title = useMemo(() => TxTypeEnum[type], [type]);
   const classes = styles();
   return (
     <HStack {...props}>
