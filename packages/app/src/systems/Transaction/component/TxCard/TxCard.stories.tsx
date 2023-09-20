@@ -13,5 +13,5 @@ export default meta;
 type Story = StoryObj<typeof TxCard>;
 
 export const Usage: Story = {
-  render: () => <TxCard tx={TX_CONTRACT_CALL_MOCK} css={{ maxW: 300 }} />,
+  render: () => <TxCard tx={TX_CONTRACT_CALL_MOCK} className="w-[350px]" />,
 };

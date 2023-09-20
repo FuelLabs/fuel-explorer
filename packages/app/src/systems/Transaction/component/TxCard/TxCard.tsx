@@ -1,7 +1,16 @@
-import { cssObj } from '@fuel-ui/css';
-import type { BaseProps } from '@fuel-ui/react';
-import { Box, Card, Text } from '@fuel-ui/react';
+import {
+  IconClockHour1,
+  IconCoins,
+  IconGasStation,
+  IconTransfer,
+  IconUsers,
+} from '@tabler/icons-react';
 import { bn } from 'fuels';
+import { Flex } from 'pn-ui-primitives/Box';
+import { Card } from 'pn-ui-primitives/Card';
+import { Text } from 'pn-ui-primitives/Text';
+import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
+import { tv } from 'tailwind-variants';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 
 import type { TxItem } from '../../types';
@@ -11,60 +20,43 @@ type TxCardProps = BaseProps<{
   tx: TxItem;
 }>;
 
-export function TxCard({ tx, css, ...props }: TxCardProps) {
+export function TxCard({ tx, className, ...props }: TxCardProps) {
+  const classes = styles();
   return (
-    <Card {...props} css={{ ...styles.root, ...css }}>
+    <Card {...props} className={classes.root({ className })}>
       <TxTitle
         type={tx.type}
         status={tx.status}
         txHash={tx.transaction.id}
-        css={styles.title}
+        className={classes.title()}
       />
-      <Box.VStack css={styles.body}>
-        <Box.Flex justify="between">
-          <Text leftIcon="Users">4 accounts</Text>
-        </Box.Flex>
-        <Box.Flex justify="between" css={styles.row}>
-          <Text leftIcon="Transfer">{tx.totalOperations} operations</Text>
-          <Text leftIcon="ClockHour1" className="small">
+      <Card.Body className={classes.body()}>
+        <Flex justify="between" className={classes.row()}>
+          <Text leftIcon={IconUsers}>4 accounts</Text>
+        </Flex>
+        <Flex justify="between" className={classes.row()}>
+          <Text leftIcon={IconTransfer}>{tx.totalOperations} operations</Text>
+          <Text leftIcon={IconClockHour1} className={classes.small()}>
             {fromNow(tx.timestamp)}
           </Text>
-        </Box.Flex>
-        <Box.Flex justify="between" css={styles.row}>
-          <Text leftIcon="Coins">{tx.totalAssets} assets</Text>
-          <Text leftIcon="GasStation" className="small">
+        </Flex>
+        <Flex justify="between" className={classes.row()}>
+          <Text leftIcon={IconCoins}>{tx.totalAssets} assets</Text>
+          <Text leftIcon={IconGasStation} className={classes.small()}>
             {bn(tx.gasUsed).format({ units: 3 })} ETH
           </Text>
-        </Box.Flex>
-      </Box.VStack>
+        </Flex>
+      </Card.Body>
     </Card>
   );
 }
 
-const styles = {
-  root: cssObj({
-    transition: 'all 0.2s ease-out',
-
-    '&:hover': {
-      borderColor: '$borderHover',
-    },
-  }),
-  title: cssObj({
-    py: '$4',
-    px: '$4',
-  }),
-  body: cssObj({
-    borderTop: '1px solid $cardBorder',
-    py: '$4',
-    px: '$4',
-  }),
-  row: cssObj({
-    '.fuel_Text:first-of-type': {
-      flex: 1,
-    },
-    '.small, .fuel_Icon': {
-      fontSize: '$sm',
-      color: '$textMuted',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    root: 'gap-0 border border-card-border transition-all duration-200 ease-out hover:border-border-hover',
+    title: 'py-4 px-4',
+    body: 'border-t border-card-border py-4 px-4',
+    row: 'items-center py-px [.fuel-Text:first-of-type]:flex-1',
+    small: 'text-sm',
+  },
+});

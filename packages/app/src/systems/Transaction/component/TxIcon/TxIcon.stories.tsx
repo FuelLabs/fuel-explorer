@@ -1,5 +1,5 @@
-import { Box } from '@fuel-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { HStack, VStack } from 'pn-ui-primitives/Box';
 
 import type { TxStatus, TxType } from '../../types';
 import { TX_STATUS, TX_TYPES } from '../../types';
@@ -16,9 +16,9 @@ type Story = StoryObj<typeof TxIcon>;
 
 export const Usage: Story = {
   render: () => (
-    <Box.VStack>
+    <VStack>
       {TX_TYPES.map((type) => (
-        <Box.HStack key={type}>
+        <HStack key={type}>
           {TX_STATUS.map((status) => (
             <TxIcon
               key={status}
@@ -26,18 +26,18 @@ export const Usage: Story = {
               status={status as TxStatus}
             />
           ))}
-        </Box.HStack>
+        </HStack>
       ))}
-    </Box.VStack>
+    </VStack>
   ),
 };
 
 export const Sizes: Story = {
   render: () => (
-    <Box.HStack>
+    <HStack>
       <TxIcon type="contract-call" status="success" size="sm" />
       <TxIcon type="contract-call" status="success" size="md" />
       <TxIcon type="contract-call" status="success" size="lg" />
-    </Box.HStack>
+    </HStack>
   ),
 };

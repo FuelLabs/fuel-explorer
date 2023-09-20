@@ -1,7 +1,9 @@
-import { cssObj } from '@fuel-ui/css';
-import type { BaseProps } from '@fuel-ui/react';
-import { Box, Copyable, Heading } from '@fuel-ui/react';
+import { Box, HStack } from 'pn-ui-primitives/Box';
+import { Copyable } from 'pn-ui-primitives/Copyable';
+import { Text } from 'pn-ui-primitives/Text';
+import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
 import { useMemo } from 'react';
+import { tv } from 'tailwind-variants';
 import { shortAddress } from '~/systems/Core/utils/address';
 
 import type { TxStatus, TxType } from '../../types';
@@ -20,34 +22,27 @@ type TxTitleProps = BaseProps<{
   txHash: string;
 }>;
 
-export function TxTitle({ status, type, txHash, css, ...props }: TxTitleProps) {
+export function TxTitle({ status, type, txHash, ...props }: TxTitleProps) {
   const title = useMemo(() => TITLE_MAP[type], [type]);
+  const classes = styles();
   return (
-    <Box.HStack {...props} css={{ ...styles.root, ...css }} gap="$3">
+    <HStack {...props}>
       <TxIcon type={type} status={status} />
       <Box>
-        <Heading as="h4">{title}</Heading>
-        <Copyable value={txHash}>{shortAddress(txHash)}</Copyable>
+        <Text as="p" size="3" className={classes.heading()}>
+          {title}
+        </Text>
+        <Copyable value={txHash} className={classes.copyable()}>
+          {shortAddress(txHash)}
+        </Copyable>
       </Box>
-    </Box.HStack>
+    </HStack>
   );
 }
 
-const styles = {
-  root: cssObj({
-    alignItems: 'center',
-
-    '.fuel_Heading': {
-      margin: '$0',
-      lineHeight: '$tighter',
-      fontSize: '$md',
-    },
-    '.fuel_Copyable': {
-      fontSize: '$sm',
-    },
-    '.fuel_Copyable .fuel_Icon svg': {
-      width: '14px !important',
-      height: '14px !important',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    heading: 'm-0 leading-tight font-medium',
+    copyable: 'text-sm text-secondary',
+  },
+});

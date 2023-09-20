@@ -1,6 +1,8 @@
-import { Box, Icon, Tag } from '@fuel-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { IconCode } from '@tabler/icons-react';
 import Image from 'next/image';
+import { Box, HStack } from 'pn-ui-primitives/Box';
+import { Icon } from 'pn-ui-primitives/Icon';
 
 import { EntityItem } from './EntityItem';
 
@@ -26,34 +28,27 @@ export const Default: Story = {
 
 export const Variations: Story = {
   render: () => (
-    <Box.Stack gap="$4">
+    <HStack gap="6">
       <EntityItem
         icon={
-          <Tag intent="base" variant="ghost">
-            <Icon
-              icon="Code"
-              css={{
-                is: ['centered'],
-                bg: '$intentsBase4',
-                borderRadius: '$full',
-              }}
-            />
-          </Tag>
+          <Box className="rounded-full bg-gray-6 p-2">
+            <Icon icon={IconCode} className="text-white" />
+          </Box>
         }
         title="Contract"
         id={DEFAULT_ARGS.id}
       />
       <EntityItem {...DEFAULT_ARGS} />
-    </Box.Stack>
+    </HStack>
   ),
 };
 
 export const Sizes: Story = {
   render: () => (
-    <Box.Stack gap="$4">
+    <HStack gap="6">
       <EntityItem {...DEFAULT_ARGS} size="sm" />
       <EntityItem {...DEFAULT_ARGS} size="md" />
       <EntityItem {...DEFAULT_ARGS} size="lg" />
-    </Box.Stack>
+    </HStack>
   ),
 };

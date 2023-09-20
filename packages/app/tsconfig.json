@@ -20,7 +20,8 @@
     ".next/types/**/*.ts",
     "stories/**/*.tsx",
     "./jest.setup.ts",
-    "./jest.config.ts"
+    "./jest.config.ts",
+    "./tailwind.config.js"
   ],
   "exclude": ["node_modules"]
 }

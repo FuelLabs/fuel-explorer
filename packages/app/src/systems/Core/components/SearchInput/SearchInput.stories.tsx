@@ -12,11 +12,14 @@ export default meta;
 type Story = StoryObj<typeof SearchInput>;
 
 export const Default: Story = {
-  args: {},
+  args: {
+    className: 'w-sm',
+  },
 };
 
 export const Clearable: Story = {
   args: {
+    className: 'w-sm',
     value: 'Some value',
     onSubmit: action('onSubmit'),
     onClear: action('onClear'),

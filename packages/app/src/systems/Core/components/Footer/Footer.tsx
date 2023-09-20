@@ -1,16 +1,23 @@
-import { cssObj } from '@fuel-ui/css';
 import {
-  Box,
-  FuelLogo,
-  Heading,
-  IconButton,
-  Link,
-  List,
-  Text,
-} from '@fuel-ui/react';
+  IconBrandTwitter,
+  IconBrandGithub,
+  IconBrandDiscord,
+} from '@tabler/icons-react';
 import Image from 'next/image';
+import { Box, HStack, VStack } from 'pn-ui-primitives/Box';
+import { FuelLogo } from 'pn-ui-primitives/FuelLogo';
+import { Heading } from 'pn-ui-primitives/Heading';
+import { Icon } from 'pn-ui-primitives/Icon';
+import { Link } from 'pn-ui-primitives/Link';
+import { List } from 'pn-ui-primitives/List';
+import { Text } from 'pn-ui-primitives/Text';
+import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
 
-type FooterNavProps = {
+import { cx } from '../../utils/cx';
+
+import styles from './Footer.module.css';
+
+type FooterNavProps = BaseProps<{
   title: string;
   img: string;
   alt: string;
@@ -18,71 +25,67 @@ type FooterNavProps = {
     href: string;
     label: string;
   }[];
-};
+}>;
 
-function FooterNav({ title, links, img, alt }: FooterNavProps) {
+function FooterNav({
+  title,
+  links,
+  img,
+  alt,
+  className,
+  ...props
+}: FooterNavProps) {
   return (
-    <Box.VStack as="nav" css={styles.nav}>
+    <VStack as="nav" className={cx(styles.nav, className)} {...props}>
       <Image src={img} alt={alt} width={40} height={40} />
-      <Heading as="h4">{title}</Heading>
-      <List>
+      <Heading as="h4" className={styles.navHeading}>
+        {title}
+      </Heading>
+      <List className={styles.navList}>
         {links.map((link) => (
           <List.Item key={link.href}>
-            <Link href={link.href} isExternal>
+            <Link href={link.href} isExternal className={styles.navLink}>
               {link.label}
             </Link>
           </List.Item>
         ))}
       </List>
-    </Box.VStack>
+    </VStack>
   );
 }
 
 export function Footer() {
   return (
-    <Box as="footer" css={styles.root}>
-      <Box.VStack css={styles.brand} gap="$6" justify="center">
-        <Box.HStack align="center">
-          <FuelLogo size={24} />
-          <Heading as="h2">FUEL</Heading>
-        </Box.HStack>
-        <Text>© All rights reserved Fuel Labs</Text>
-        <Box.HStack gap="$6">
-          <IconButton
-            size="md"
-            variant="link"
-            as="a"
+    <Box as="footer" className={styles.root}>
+      <VStack className={styles.brand} gap="3" justify="flex">
+        <FuelLogo size={24} showLettering />
+        <Text className="text-secondary">© All rights reserved Fuel Labs</Text>
+        <HStack gap="4" className={styles.socialIcons}>
+          <a
             href="https://twitter.com/fuel_network"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Twitter"
-            icon="BrandTwitter"
-            iconSize={30}
-          />
-          <IconButton
-            variant="link"
-            as="a"
+          >
+            <Icon icon={IconBrandTwitter} size={30} />
+          </a>
+          <a
             href="https://github.com/FuelLabs"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Github"
-            icon="BrandGithub"
-            iconSize={30}
-          />
-          <IconButton
-            variant="link"
-            as="a"
+          >
+            <Icon icon={IconBrandGithub} size={30} />
+          </a>
+          <a
             href="https://discord.com/invite/xfpK4Pe"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Discord"
-            icon="BrandDiscord"
-            iconSize={30}
-          />
-        </Box.HStack>
-      </Box.VStack>
+          >
+            <Icon icon={IconBrandDiscord} size={30} />
+          </a>
+        </HStack>
+      </VStack>
 
-      <Box css={styles.navs}>
+      <Box className={styles.navs}>
         <FooterNav
           title="Resources"
           img="/icons/fuel_icon_brandbook.svg"
@@ -180,85 +183,3 @@ export function Footer() {
     </Box>
   );
 }
-
-const styles = {
-  root: cssObj({
-    py: '$8',
-    px: '$8',
-    background: 'url(/logo-faded.svg) no-repeat -40px center',
-    backgroundSize: 'auto 100%',
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gridTemplateRows: 'auto 1fr',
-    gridGap: '$10',
-
-    '@lg': {
-      gridTemplateColumns: '1fr 2fr',
-      gridTemplateRows: 'auto',
-      py: '$14',
-      px: '$16',
-    },
-  }),
-  brand: cssObj({
-    alignItems: 'center',
-    pb: '$10',
-    borderBottom: '1px solid $border',
-
-    '@lg': {
-      pb: '$0',
-      alignItems: 'flex-start',
-      borderBottom: 'none',
-    },
-
-    '.fuel_Heading': {
-      margin: 0,
-    },
-
-    '.fuel_IconButton .fuel_Icon': {
-      transition: 'color 0.2s ease-in-out',
-    },
-
-    '.fuel_IconButton:hover .fuel_Icon': {
-      color: '$brand !important',
-    },
-  }),
-  navs: cssObj({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '$10',
-    justifyContent: 'space-between',
-
-    '@md': {
-      flexDirection: 'row',
-      textAlign: 'center',
-    },
-  }),
-  nav: cssObj({
-    flex: 1,
-
-    '@md': {
-      alignItems: 'center',
-    },
-
-    '@lg': {
-      textAlign: 'left',
-      alignItems: 'flex-start',
-    },
-
-    '.fuel_Heading': {
-      mb: '$0',
-    },
-
-    '.fuel_List': {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '$1',
-    },
-    '.fuel_Link': {
-      color: '$textColor',
-    },
-    '.fuel_Link .fuel_Icon': {
-      display: 'none',
-    },
-  }),
-};

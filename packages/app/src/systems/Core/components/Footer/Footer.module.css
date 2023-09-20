@@ -1,0 +1,83 @@
+.root {
+  @apply py-8 pb-0 px-8 bg-no-repeat grid gap-8;
+  background: url(/public/logo-faded.svg) no-repeat -40px center;
+  background-size: auto 100%;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  @media screen(lg) {
+    @apply py-10 px-10;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto;
+  }
+}
+
+.socialIcons {
+  a {
+    @apply text-white hover:text-brand transition-colors duration-200;
+  }
+}
+
+.brand {
+  @apply items-center pb-8 border-b border-border;
+
+  & .fuel-Heading {
+    @apply m-0;
+  }
+
+  & .fuel-IconButton .fuel-Icon {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  & .fuel-IconButton:hover .fuel-Icon {
+    color: var(--brand-color) !important;
+  }
+
+  @media screen(lg) {
+    @apply pb-0 items-start border-b-0;
+  }
+}
+
+.navs {
+  @apply flex flex-col gap-8 justify-between;
+
+  @media screen(md) {
+    @apply flex-row text-center;
+  }
+}
+
+.nav {
+  @apply flex flex-col flex-1;
+
+  @media screen(md) {
+    @apply items-center;
+  }
+
+  @media screen(lg) {
+    @apply text-left items-start;
+  }
+}
+
+.navHeading {
+  @apply my-4 justify-start;
+
+  @media screen(md) {
+    @apply justify-center;
+  }
+
+  @media screen(lg) {
+    @apply justify-start;
+  }
+}
+
+.navList {
+  @apply flex flex-col gap-0;
+}
+
+.navLink {
+  @apply text-secondary hover:text-brand;
+
+  & .fuel-Icon {
+    @apply hidden;
+  }
+}

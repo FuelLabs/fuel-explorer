@@ -1,18 +1,10 @@
-'use client';
-
-import { Box, Link } from '@fuel-ui/react';
+import { Flex } from 'pn-ui-primitives/Box';
+import { Link } from 'pn-ui-primitives/Link';
 
 export function HomePage() {
   return (
-    <Box.Flex
-      css={{
-        width: '100vw',
-        height: '100vh',
-        gap: '$4',
-        is: ['centered'],
-      }}
-    >
+    <Flex className="w-screen h-screen gap-4 items-center justify-center">
       <Link href="/storybook">Go to Storybook</Link>
-    </Box.Flex>
+    </Flex>
   );
 }

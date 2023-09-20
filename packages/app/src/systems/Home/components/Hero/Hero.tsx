@@ -1,19 +1,22 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Container, Heading } from '@fuel-ui/react';
 import Image from 'next/image';
+import { Box, Container } from 'pn-ui-primitives/Box';
+import { Heading } from 'pn-ui-primitives/Heading';
 import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
+
+import styles from './Hero.module.css';
 
 export function Hero() {
   return (
-    <Box css={styles.root}>
-      <Container css={styles.container} size="sm">
-        <Heading as="h1" css={styles.title}>
+    <Box className={styles.root}>
+      <Container className={styles.container} size="sm">
+        <Heading as="h1" className={styles.title}>
           Explore Fuel Network
         </Heading>
-        <SearchInput css={styles.input} />
+        <SearchInput className={styles.input} />
       </Container>
-      <Box as="figure" css={styles.img}>
-        <Box css={styles.imgWrapper}>
+      <Box as="figure" className={styles.img}>
+        <span className={styles.overlay} />
+        <Box className={styles.imgWrapper}>
           <Image
             src="/brand-img.jpeg"
             alt="Fuel Brand Image"
@@ -27,75 +30,3 @@ export function Hero() {
     </Box>
   );
 }
-
-const styles = {
-  root: cssObj({
-    overflow: 'clip',
-    position: 'relative',
-    width: '100%',
-    background: 'url(/logo-faded.svg) no-repeat -40px center',
-    backgroundSize: 'auto 100%',
-    borderBottom: '1px solid $border',
-  }),
-  container: cssObj({
-    position: 'relative',
-    zIndex: 1,
-    py: '$14',
-    px: '$8',
-
-    '@md': {
-      py: '$24',
-      px: '$16',
-    },
-  }),
-  img: cssObj({
-    display: 'none',
-    position: 'absolute',
-    right: '0',
-    top: '0',
-    transform: 'translate(10%, -25%)',
-
-    '@md': {
-      display: 'block',
-    },
-  }),
-  imgWrapper: cssObj({
-    position: 'relative',
-
-    '&::before': {
-      display: 'block',
-      content: '""',
-      width: '70%',
-      height: '100%',
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      background:
-        'linear-gradient(to right, $bodyBg 0%, $bodyBg 40%, $blackA1 100%)',
-    },
-
-    '@lg': {
-      '&::before': {
-        width: '40%',
-        background: 'linear-gradient(to right, $bodyBg, $blackA1)',
-      },
-    },
-  }),
-  title: cssObj({
-    textAlign: 'center',
-    fontSize: '$3xl',
-    lineHeight: '1',
-
-    '@md': {
-      textAlign: 'left',
-      fontSize: '$4xl',
-    },
-  }),
-  input: cssObj({
-    width: '100%',
-
-    '@md': {
-      width: '400px',
-    },
-  }),
-};

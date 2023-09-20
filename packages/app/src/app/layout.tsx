@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { StylesRegistry } from '~/systems/Core/components/StylesRegistry';
+import { Provider } from '~/systems/Core/components/Provider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -19,10 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
-      <StylesRegistry>
+    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+      <Provider>
         <body>{children}</body>
-      </StylesRegistry>
+      </Provider>
     </html>
   );
 }

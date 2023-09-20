@@ -1,6 +1,7 @@
 'use client';
 
-/** TODO: add ToastProvider from fuel-ui here */
+import { Theme } from 'pn-ui-primitives';
+
 export function Provider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <Theme hasBackground={false}>{children}</Theme>;
 }

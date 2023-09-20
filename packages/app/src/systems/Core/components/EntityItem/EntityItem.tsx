@@ -1,83 +1,56 @@
-import { css, cssObj } from '@fuel-ui/css';
-import { Box, Copyable, Heading } from '@fuel-ui/react';
+import { Box, Flex, HStack } from 'pn-ui-primitives/Box';
+import { Copyable } from 'pn-ui-primitives/Copyable';
+import { Text } from 'pn-ui-primitives/Text';
 import type { ReactNode } from 'react';
+import type { VariantProps } from 'tailwind-variants';
+import { tv } from 'tailwind-variants';
 
 import { shortAddress } from '../../utils/address';
 
-type EntityItemProps = {
+type EntityItemProps = VariantProps<typeof styles> & {
   icon: ReactNode;
   title: ReactNode;
   id: string;
-  size?: 'sm' | 'md' | 'lg';
 };
 
 export function EntityItem({ icon, title, id, size = 'md' }: EntityItemProps) {
+  const classes = styles({ size });
   return (
-    <Box className={styles.root({ size })}>
-      <Box className="icon">{icon}</Box>
+    <HStack gap="2" className={classes.root()}>
+      <Flex className={classes.icon()}>{icon}</Flex>
       <Box>
-        <Heading as="h6">{title}</Heading>
-        <Copyable value={id} css={styles.assetId}>
+        <Text as="p" className={classes.name()}>
+          {title}
+        </Text>
+        <Copyable value={id} className={classes.copyable()}>
           {shortAddress(id)}
         </Copyable>
       </Box>
-    </Box>
+    </HStack>
   );
 }
 
-const styles = {
-  root: css({
-    display: 'flex',
-    gap: '$3',
-
-    h6: {
-      margin: 0,
-      lineHeight: '1',
-    },
-
-    '.icon > *': {
-      width: '$full',
-      height: '$full',
-    },
-
-    '.fuel_Tag': {
-      px: '$0',
-    },
-
-    variants: {
-      size: {
-        sm: {
-          '.icon': {
-            height: '$6',
-            width: '$6',
-          },
-          '.fuel_Copyable': {
-            fontSize: '$xs',
-            width: '$5',
-            height: '$5',
-          },
-          h6: {
-            fontSize: '$sm',
-            lineHeight: '0.8',
-          },
-        },
-        md: {
-          '.icon': {
-            height: '$8',
-            width: '$8',
-          },
-        },
-        lg: {
-          '.icon': {
-            height: '$9',
-            width: '$9',
-          },
-        },
+export const styles = tv({
+  slots: {
+    root: 'items-center gap-4',
+    icon: '[&_*]:h-full [&_*]:w-full',
+    name: 'mt-0 font-medium',
+    tag: 'mt-0',
+    copyable: 'text-muted',
+    assetId: 'text-sm leading-tight',
+  },
+  variants: {
+    size: {
+      sm: {
+        icon: 'h-6 w-6',
+        copyable: 'text-xs',
+      },
+      md: {
+        icon: 'h-7 w-7 items-center',
+      },
+      lg: {
+        icon: 'h-8 w-8',
       },
     },
-  }),
-  assetId: cssObj({
-    fontSize: '$sm',
-    lineHeight: '$tighter',
-  }),
-};
+  },
+});

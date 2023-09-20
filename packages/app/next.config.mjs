@@ -2,9 +2,9 @@
 const config = {
   reactStrictMode: true,
   swcMinify: true,
+  transpilePackages: ['pn-ui-primitives'],
   experimental: {
     externalDir: true,
-    esmExternals: true,
     serverComponentsExternalPackages: ['bcryptjs'],
     serverActions: true,
   },

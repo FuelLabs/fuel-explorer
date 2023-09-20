@@ -1,6 +1,8 @@
-:root {
-  --font-sans: var(--font-inter);
-}
+@import 'pn-ui-primitives/dist/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
   padding: 0;
@@ -14,14 +16,8 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  background: var(--colors-bodyBg);
-  font-family: var(--font-inter);
-  color: var(--colors-textColor);
-  font-size: 16px;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
+.dark body,
+.dark-theme body {
+  --color-page-background: #0e0e0e;
+  background: var(--color-page-background) !important;
 }

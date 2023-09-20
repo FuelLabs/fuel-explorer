@@ -1,0 +1,62 @@
+.root {
+  @apply overflow-clip relative w-full border-b border-border;
+  background:
+    url(/public/logo-faded.svg) no-repeat -40px center,
+    var(--black-a8);
+  background-size: auto 100%;
+}
+.container {
+  @apply z-20 relative py-8 px-8;
+
+  @media screen(md) {
+    @apply py-12 px-10;
+  }
+}
+.img {
+  @apply hidden absolute inset-0;
+
+  @media screen(md) {
+    @apply block;
+  }
+
+  img {
+    @apply absolute -top-1/2 right-0;
+  }
+}
+.imgWrapper {
+  @apply absolute inset-0;
+}
+.overlay {
+  @apply block z-10 absolute inset-0;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    var(--color-page-background) 0%,
+    var(--color-page-background) 40%,
+    var(--black-a1) 100%
+  );
+
+  @media screen(lg) {
+    width: 80%;
+    background: linear-gradient(
+      to right,
+      var(--color-page-background) 50%,
+      var(--black-a1) 100%
+    );
+  }
+}
+.title {
+  @apply text-center text-2xl text-heading mb-4 justify-center;
+
+  @media screen(md) {
+    @apply text-left text-4xl justify-start;
+  }
+}
+.input {
+  @apply w-full;
+
+  @media screen(md) {
+    width: 400px;
+  }
+}
