@@ -16,6 +16,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "5.0.8",
     "@fuel-explorer/graphql": "workspace:*",
+    "@fuel-explorer/ui": "workspace:*",
     "@fuel-wallet/sdk": "0.12.3",
     "@tabler/icons-react": "2.34.0",
     "@tanstack/react-query": "4.35.3",

@@ -11,7 +11,7 @@
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*", "../ui/src/*"]
     }
   },
   "include": [
@@ -24,5 +24,10 @@
     "./jest.config.ts",
     "./tailwind.config.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "references": [
+    {
+      "path": "../ui"
+    }
+  ]
 }

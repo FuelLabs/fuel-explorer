@@ -1,8 +1,8 @@
 'use client';
-import { Container, VStack } from 'pn-ui-primitives/Box';
-import { Heading } from 'pn-ui-primitives/Heading';
-import { Nav } from 'pn-ui-primitives/Nav';
-import type { BaseProps } from 'pn-ui-primitives/types';
+import { Container, VStack } from '@fuel-explorer/ui/Box';
+import { Heading } from '@fuel-explorer/ui/Heading';
+import { Nav } from '@fuel-explorer/ui/Nav';
+import type { BaseProps } from '@fuel-explorer/ui/types';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
 
 import { Footer } from '../Footer/Footer';
@@ -47,7 +47,7 @@ export function Layout({ children, hero }: LayoutProps) {
         </Heading>
         {children}
       </Container>
-      <Footer className="border-t border-border" />
+      <Footer />
     </VStack>
   );
 }

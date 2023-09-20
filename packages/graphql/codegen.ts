@@ -12,8 +12,8 @@ const config: CodegenConfig = {
         'typescript-graphql-request',
       ],
       config: {
-        rawRequest: true,
         nonOptionalTypename: true,
+        rawRequest: true,
         useTypeImports: true,
       },
     },

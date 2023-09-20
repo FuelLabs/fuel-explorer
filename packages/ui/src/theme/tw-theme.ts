@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
 
 import { refColorVariablesAsObj } from '../utils/css';
 
@@ -28,24 +29,24 @@ const COLORS_VARIABLES = [
 ];
 
 const DEFAULT_SPACING = {
-  1: 'var(--space-1)',
-  2: 'var(--space-2)',
-  3: 'var(--space-3)',
-  4: 'var(--space-4)',
-  5: 'var(--space-5)',
-  6: 'var(--space-6)',
-  7: 'var(--space-7)',
-  8: 'var(--space-8)',
-  9: 'var(--space-9)',
-  10: 'var(--space-10)',
-  11: 'var(--space-11)',
-  12: 'var(--space-12)',
-  13: 'var(--space-13)',
-  14: 'var(--space-14)',
-  15: 'var(--space-15)',
-  16: 'var(--space-16)',
-  17: 'var(--space-17)',
-  18: 'var(--space-18)',
+  ...tailwindDefaultTheme.spacing,
+  1: 'calc(4px * var(--scaling))',
+  2: 'calc(8px * var(--scaling))',
+  3: 'calc(12px * var(--scaling))',
+  4: 'calc(16px * var(--scaling))',
+  5: 'calc(24px * var(--scaling))',
+  6: 'calc(32px * var(--scaling))',
+  7: 'calc(40px * var(--scaling))',
+  8: 'calc(48px * var(--scaling))',
+  9: 'calc(64px * var(--scaling))',
+  11: 'calc(96px * var(--scaling))',
+  12: 'calc(128px * var(--scaling))',
+  13: 'calc(160px * var(--scaling))',
+  14: 'calc(192px * var(--scaling))',
+  15: 'calc(224px * var(--scaling))',
+  16: 'calc(256px * var(--scaling))',
+  17: 'calc(320px * var(--scaling))',
+  18: 'calc(384px * var(--scaling))',
 };
 
 export const fuelThemePreset: Config['theme'] = {
@@ -74,6 +75,7 @@ export const fuelThemePreset: Config['theme'] = {
   extend: {
     space: DEFAULT_SPACING,
     spacing: DEFAULT_SPACING,
+    width: tailwindDefaultTheme.maxWidth,
     colors: {
       black: '#000',
       white: '#fff',

@@ -1,5 +1,5 @@
 .root {
-  @apply overflow-clip relative w-full border-b border-border;
+  @apply overflow-clip relative w-full border-b border-t border-border;
   background:
     url(/logo-faded.svg) no-repeat -40px center,
     var(--hero-bg);

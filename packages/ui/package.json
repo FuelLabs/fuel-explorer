@@ -2,44 +2,86 @@
   "name": "@fuel-explorer/ui",
   "version": "0.0.1",
   "access": "public",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "typings": "./dist/index.d.ts",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "typings": "./src/index.tsx",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "typings": "./dist/index.d.ts"
-    },
-    "./*": {
-      "import": "./dist/components/*/index.js",
-      "require": "./dist/components/*/index.js",
-      "default": "./dist/components/*/index.js",
-      "types": "./dist/components/*/index.d.ts",
-      "typings": "./dist/components/*/index.d.ts"
-    },
-    "./index.css": "./dist/index.css",
-    "./tw-theme": {
-      "import": "./dist/theme/index.js",
-      "require": "./dist/theme/index.js",
-      "default": "./dist/theme/index.js",
-      "types": "./dist/theme/tw-theme.d.ts",
-      "typings": "./dist/theme/tw-theme.d.ts"
-    },
-    "./types": {
-      "types": "./dist/utils/types.d.ts",
-      "typings": "./dist/utils/types.d.ts"
+    ".": "./src/index.tsx",
+    "./tw-theme": "./src/theme/tw-theme.ts",
+    "./styles.css": "./src/index.css",
+    "./tokens.css": "./src/tokens.css",
+    "./*": "./src/components/*/index.tsx"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./src/components/*/index.tsx"
+      ],
+      ".": [
+        "./src/index.tsx"
+      ],
+      "tw-theme": [
+        "./src/theme/tw-theme.ts"
+      ],
+      "types": [
+        "./src/utils/types.ts"
+      ]
     }
   },
-  "files": [
-    "dist"
-  ],
-  "sideEffects": [
-    "*.css"
-  ],
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "typings": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.js",
+        "default": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "typings": "./dist/index.d.ts"
+      },
+      "./*": {
+        "import": "./dist/components/*/index.js",
+        "require": "./dist/components/*/index.js",
+        "default": "./dist/components/*/index.js",
+        "types": "./dist/components/*/index.d.ts",
+        "typings": "./dist/components/*/index.d.ts"
+      },
+      "./tw-theme": {
+        "import": "./dist/theme/index.js",
+        "require": "./dist/theme/index.js",
+        "default": "./dist/theme/index.js",
+        "types": "./dist/theme/tw-theme.d.ts",
+        "typings": "./dist/theme/tw-theme.d.ts"
+      },
+      "./types": {
+        "types": "./dist/utils/types.d.ts",
+        "typings": "./dist/utils/types.d.ts"
+      },
+      "./styles.css": "./dist/index.css",
+      "./tokens.css": "./dist/tokens.css"
+    },
+    "typesVersions": {
+      "*": {
+        "*": [
+          "./dist/components/*/index.d.ts"
+        ],
+        ".": [
+          "./dist/index.d.ts"
+        ],
+        "tw-theme": [
+          "./dist/theme/tw-theme.d.ts"
+        ],
+        "types": [
+          "./dist/utils/types.d.ts"
+        ]
+      }
+    },
+    "files": [
+      "dist"
+    ]
+  },
   "scripts": {
     "build:storybook": "pnpm ts:check && storybook build",
     "build": "tsup && tsc -p ./tsconfig.build.json --emitDeclarationOnly && pnpm add:clients",
@@ -114,162 +156,5 @@
     "typescript-plugin-css-modules": "5.0.1",
     "vite": "^4.4.9",
     "vite-tsconfig-paths": "^4.2.1"
-  },
-  "typesVersions": {
-    "*": {
-      "Accordion": [
-        "./dist/components/Accordion/index.d.ts"
-      ],
-      "Alert": [
-        "./dist/components/Alert/index.d.ts"
-      ],
-      "AlertDialog": [
-        "./dist/components/AlertDialog/index.d.ts"
-      ],
-      "AspectRatio": [
-        "./dist/components/AspectRatio/index.d.ts"
-      ],
-      "Avatar": [
-        "./dist/components/Avatar/index.d.ts"
-      ],
-      "Badge": [
-        "./dist/components/Badge/index.d.ts"
-      ],
-      "Box": [
-        "./dist/components/Box/index.d.ts"
-      ],
-      "Asset": [
-        "./dist/components/Asset/index.d.ts"
-      ],
-      "Breadcrumb": [
-        "./dist/components/Breadcrumb/index.d.ts"
-      ],
-      "Button": [
-        "./dist/components/Button/index.d.ts"
-      ],
-      "ButtonClose": [
-        "./dist/components/ButtonClose/index.d.ts"
-      ],
-      "ButtonGroup": [
-        "./dist/components/ButtonGroup/index.d.ts"
-      ],
-      "Card": [
-        "./dist/components/Card/index.d.ts"
-      ],
-      "CardList": [
-        "./dist/components/CardList/index.d.ts"
-      ],
-      "Checkbox": [
-        "./dist/components/Checkbox/index.d.ts"
-      ],
-      "ContextMenu": [
-        "./dist/components/ContextMenu/index.d.ts"
-      ],
-      "Copyable": [
-        "./dist/components/Copyable/index.d.ts"
-      ],
-      "Dialog": [
-        "./dist/components/Dialog/index.d.ts"
-      ],
-      "Drawer": [
-        "./dist/components/Drawer/index.d.ts"
-      ],
-      "Dropdown": [
-        "./dist/components/Dropdown/index.d.ts"
-      ],
-      "Focus": [
-        "./dist/components/Focus/index.d.ts"
-      ],
-      "FuelLogo": [
-        "./dist/components/FuelLogo/index.d.ts"
-      ],
-      "Heading": [
-        "./dist/components/Heading/index.d.ts"
-      ],
-      "HelperIcon": [
-        "./dist/components/HelperIcon/index.d.ts"
-      ],
-      "HoverCard": [
-        "./dist/components/HoverCard/index.d.ts"
-      ],
-      "Icon": [
-        "./dist/components/Icon/index.d.ts"
-      ],
-      "Input": [
-        "./dist/components/Input/index.d.ts"
-      ],
-      "IconButton": [
-        "./dist/components/IconButton/index.d.ts"
-      ],
-      "InputPassword": [
-        "./dist/components/InputPassword/index.d.ts"
-      ],
-      "Inset": [
-        "./dist/components/Inset/index.d.ts"
-      ],
-      "Link": [
-        "./dist/components/Link/index.d.ts"
-      ],
-      "List": [
-        "./dist/components/List/index.d.ts"
-      ],
-      "Nav": [
-        "./dist/components/Nav/index.d.ts"
-      ],
-      "Popover": [
-        "./dist/components/Popover/index.d.ts"
-      ],
-      "RadioGroup": [
-        "./dist/components/RadioGroup/index.d.ts"
-      ],
-      "ScrollArea": [
-        "./dist/components/ScrollArea/index.d.ts"
-      ],
-      "Select": [
-        "./dist/components/Select/index.d.ts"
-      ],
-      "Separator": [
-        "./dist/components/Separator/index.d.ts"
-      ],
-      "Slider": [
-        "./dist/components/Slider/index.d.ts"
-      ],
-      "Spinner": [
-        "./dist/components/Spinner/index.d.ts"
-      ],
-      "Switch": [
-        "./dist/components/Switch/index.d.ts"
-      ],
-      "Table": [
-        "./dist/components/Table/index.d.ts"
-      ],
-      "Tabs": [
-        "./dist/components/Tabs/index.d.ts"
-      ],
-      "Text": [
-        "./dist/components/Text/index.d.ts"
-      ],
-      "TextArea": [
-        "./dist/components/TextArea/index.d.ts"
-      ],
-      "Theme": [
-        "./dist/components/Theme/index.d.ts"
-      ],
-      "Toast": [
-        "./dist/components/Toast/index.d.ts"
-      ],
-      "Tooltip": [
-        "./dist/components/Tooltip/index.d.ts"
-      ],
-      ".": [
-        "./dist/index.d.ts"
-      ],
-      "tw-theme": [
-        "./dist/theme/tw-theme.d.ts"
-      ],
-      "types": [
-        "./dist/utils/types.d.ts"
-      ]
-    }
   }
 }

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Badge } from '@fuel-explorer/ui/Badge';
+import type { IconComponent } from '@fuel-explorer/ui/Icon';
+import { Icon } from '@fuel-explorer/ui/Icon';
+import type { BaseProps } from '@fuel-explorer/ui/types';
 import {
   IconCode,
   IconCoins,
   IconFlame,
   IconTransfer,
 } from '@tabler/icons-react';
-import { Badge } from 'pn-ui-primitives/Badge';
-import type { IconComponent } from 'pn-ui-primitives/Icon';
-import { Icon } from 'pn-ui-primitives/Icon';
-import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
@@ -30,7 +30,7 @@ const TX_ICON_MAP: Record<TxType, IconComponent> = {
 const TX_INTENT_MAP: Record<TxStatus, any> = {
   Success: 'green',
   Failure: 'red',
-  Submitted: 'grya',
+  Submitted: 'gray',
 };
 
 const TX_STATUS_MAP: Record<TxStatus, string> = {
@@ -74,11 +74,11 @@ const styles = tv({
         icon: 'w-4 h-4',
       },
       md: {
-        root: 'w-8 h-8',
+        root: 'w-7 h-7',
         icon: 'w-5 h-5',
       },
       lg: {
-        root: 'w-10 h-10',
+        root: 'w-8 h-8',
         icon: 'w-6 h-6',
       },
     },

@@ -1,6 +1,6 @@
-import { Box, Flex, HStack } from 'pn-ui-primitives/Box';
-import { Copyable } from 'pn-ui-primitives/Copyable';
-import { Text } from 'pn-ui-primitives/Text';
+import { Box, Flex, HStack } from '@fuel-explorer/ui/Box';
+import { Copyable } from '@fuel-explorer/ui/Copyable';
+import { Text } from '@fuel-explorer/ui/Text';
 import type { ReactNode } from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';

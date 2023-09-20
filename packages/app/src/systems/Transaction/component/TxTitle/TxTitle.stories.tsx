@@ -1,5 +1,5 @@
+import { VStack } from '@fuel-explorer/ui/Box';
 import type { Meta, StoryObj } from '@storybook/react';
-import { VStack } from 'pn-ui-primitives/Box';
 
 import { TX_TYPES, TxStatusEnum, type TxType } from '../../types';
 

@@ -1,5 +1,6 @@
-import tsconfig from './tsconfig.json';
 import path from 'path';
+
+import tsconfig from './tsconfig.json';
 
 const defConfig = {
   outDir: 'dist',
@@ -44,6 +45,7 @@ export default [
   {
     entry: {
       index: 'src/theme/index.css',
+      tokens: 'src/theme/tokens.css',
     },
     loader: {
       '.css': 'css',

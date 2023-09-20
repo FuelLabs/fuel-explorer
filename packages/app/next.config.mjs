@@ -2,7 +2,7 @@
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['pn-ui-primitives'],
+  transpilePackages: ['@fuel-explorer/ui'],
   experimental: {
     externalDir: true,
     serverComponentsExternalPackages: ['bcryptjs'],

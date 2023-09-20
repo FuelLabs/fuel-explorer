@@ -1,5 +1,9 @@
 'use client';
 
+import { Flex } from '@fuel-explorer/ui/Box';
+import { Card } from '@fuel-explorer/ui/Card';
+import { Text } from '@fuel-explorer/ui/Text';
+import type { BaseProps } from '@fuel-explorer/ui/types';
 import {
   IconClockHour1,
   IconCoins,
@@ -8,10 +12,6 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import { bn } from 'fuels';
-import { Flex } from 'pn-ui-primitives/Box';
-import { Card } from 'pn-ui-primitives/Card';
-import { Text } from 'pn-ui-primitives/Text';
-import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
 import { tv } from 'tailwind-variants';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 

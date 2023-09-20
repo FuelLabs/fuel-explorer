@@ -1,6 +1,6 @@
 'use client';
 
-import { Theme } from 'pn-ui-primitives';
+import { Theme } from '@fuel-explorer/ui';
 
 export function Provider({ children }: { children: React.ReactNode }) {
   return (

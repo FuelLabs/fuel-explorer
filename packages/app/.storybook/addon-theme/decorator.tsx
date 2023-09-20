@@ -1,9 +1,9 @@
 import React from 'react';
 import { addons } from '@storybook/manager-api';
-import { Theme } from 'pn-ui-primitives/Theme';
+import { Theme } from '@fuel-explorer/ui/Theme';
 import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { useEffect } from 'react';
-import { Toaster } from 'pn-ui-primitives/Toast';
+import { Toaster } from '@fuel-explorer/ui/Toast';
 
 export const withThemeDecorator = (Story: any, ctx: any) => {
   const theme = window.localStorage.getItem('fuel-ui-theme');

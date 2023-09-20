@@ -1,16 +1,14 @@
-const { fuelThemePreset } = require('pn-ui-primitives/tw-theme');
-const radixThemePlugin = require('radix-ui-themes-with-tailwind');
-const plugin = require('tailwindcss/plugin');
+import { fuelThemePreset } from '@fuel-explorer/ui/tw-theme';
+import radixThemePlugin from 'radix-ui-themes-with-tailwind';
+import type { Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
 
-/** @type {const('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
   ],
-  theme: {
-    ...fuelThemePreset,
-  },
+  theme: fuelThemePreset,
   plugins: [
     require('tailwindcss-animate'),
     require('tailwindcss-radix')({
@@ -27,7 +25,4 @@ module.exports = {
       mapMissingTailwindColors: true, // optional
     }),
   ],
-  corePlugins: {
-    preflight: false,
-  },
-};
+} satisfies Config;

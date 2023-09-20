@@ -1,14 +1,14 @@
 'use client';
-import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
-import { Focus } from 'pn-ui-primitives/Focus';
-import { Icon } from 'pn-ui-primitives/Icon';
-import { IconButton } from 'pn-ui-primitives/IconButton';
+import { Focus } from '@fuel-explorer/ui/Focus';
+import { Icon } from '@fuel-explorer/ui/Icon';
+import { IconButton } from '@fuel-explorer/ui/IconButton';
 import {
   Input,
   type InputFieldProps,
   type InputProps,
-} from 'pn-ui-primitives/Input';
-import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
+} from '@fuel-explorer/ui/Input';
+import type { BaseProps } from '@fuel-explorer/ui/types';
+import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 
 import { cx } from '../../utils/cx';

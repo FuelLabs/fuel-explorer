@@ -1,8 +1,8 @@
+import { Box, HStack } from '@fuel-explorer/ui/Box';
+import { Icon } from '@fuel-explorer/ui/Icon';
 import type { Meta, StoryObj } from '@storybook/react';
 import { IconCode } from '@tabler/icons-react';
 import Image from 'next/image';
-import { Box, HStack } from 'pn-ui-primitives/Box';
-import { Icon } from 'pn-ui-primitives/Icon';
 
 import { EntityItem } from './EntityItem';
 

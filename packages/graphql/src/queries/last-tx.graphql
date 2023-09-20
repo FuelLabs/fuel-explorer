@@ -1,8 +1,10 @@
 fragment ContractItem on Contract {
+  __typename
   id
 }
 
 fragment TransactionStatus on TransactionStatus {
+  __typename
   ... on SuccessStatus {
     time
     block {
@@ -18,6 +20,7 @@ fragment TransactionStatus on TransactionStatus {
 }
 
 fragment TransactionInput on Input {
+  __typename
   ... on InputContract {
     contract {
       ...ContractItem
@@ -43,6 +46,7 @@ fragment TransactionInput on Input {
 }
 
 fragment TransactionOutput on Output {
+  __typename
   ... on CoinOutput {
     to
     amount
@@ -70,6 +74,7 @@ fragment TransactionOutput on Output {
 }
 
 fragment TransactionReceipt on Receipt {
+  __typename
   contract {
     ...ContractItem
   }
@@ -92,6 +97,7 @@ fragment TransactionReceipt on Receipt {
 }
 
 fragment TransactionItem on Transaction {
+  __typename
   id
   isScript
   isMint

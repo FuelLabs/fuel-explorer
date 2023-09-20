@@ -87,6 +87,9 @@ importers:
       '@fuel-explorer/graphql':
         specifier: workspace:*
         version: link:../graphql
+      '@fuel-explorer/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@fuel-wallet/sdk':
         specifier: 0.12.3
         version: 0.12.3(fuels@0.57.0)

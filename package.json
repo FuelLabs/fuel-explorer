@@ -23,6 +23,7 @@
     "build": "pnpm turbo:run build --filter=!custom-theme",
     "build:preview": "pnpm turbo:run build:preview --filter=app",
     "build:storybook": "pnpm turbo:run build:storybook --filter=!custom-theme",
+    "build:libs": "pnpm turbo:run build --filter=ui",
     "clean:indexer": "pnpm --filter=indexer clean",
     "deploy:indexer": "pnpm --filter=indexer run deploy",
     "deps:update": "updates -gu && pnpm -r exec updates -gu",

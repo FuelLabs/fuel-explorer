@@ -1,7 +1,7 @@
-import { Box, HStack } from 'pn-ui-primitives/Box';
-import { Copyable } from 'pn-ui-primitives/Copyable';
-import { Text } from 'pn-ui-primitives/Text';
-import type { BaseProps } from 'pn-ui-primitives/dist/utils/types';
+import { Box, HStack } from '@fuel-explorer/ui/Box';
+import { Copyable } from '@fuel-explorer/ui/Copyable';
+import { Text } from '@fuel-explorer/ui/Text';
+import type { BaseProps } from '@fuel-explorer/ui/types';
 import { useMemo } from 'react';
 import { tv } from 'tailwind-variants';
 import { shortAddress } from '~/systems/Core/utils/address';

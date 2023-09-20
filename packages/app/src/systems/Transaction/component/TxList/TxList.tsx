@@ -1,4 +1,4 @@
-import { Grid } from 'pn-ui-primitives/Box';
+import { Grid } from '@fuel-explorer/ui/Box';
 
 import type { TransactionNode } from '../../types';
 import { TxCard } from '../TxCard/TxCard';
