@@ -10,7 +10,7 @@
     "dev:storybook": "storybook dev -p 6006",
     "lint": "next lint",
     "start": "next start",
-    "test": "jest --verbose",
+    "test": "jest --verbose --passWithNoTests",
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
