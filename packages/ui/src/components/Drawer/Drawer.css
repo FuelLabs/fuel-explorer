@@ -1,0 +1,54 @@
+@layer fuel-components {
+  .fuel-DrawerOverlay {
+    @apply fixed inset-0 z-50 backdrop-blur-sm;
+    @apply state-open:animate-in state-closed:animate-out;
+    @apply state-closed:fade-out-0 state-open:fade-in-0;
+  }
+  .fuel-DrawerCloseIcon {
+    @apply absolute right-4 top-4 rounded-sm opacity-70;
+    @apply transition-opacity hover:opacity-100 focus:outline-none;
+    @apply focus:ring-2 focus:ring-gray-4 focus:ring-offset-2;
+    @apply disabled:pointer-events-none state-open:bg-secondary;
+  }
+  .fuel-DrawerContent {
+    @apply flex flex-col fixed z-50 gap-4 bg-card-bg p-6;
+    @apply text-color border-border shadow-lg transition ease-in-out;
+    @apply state-open:animate-in state-closed:animate-out;
+    @apply state-closed:duration-300 state-open:duration-500;
+
+    &[data-side='top'] {
+      @apply inset-x-0 top-0 border-b;
+      @apply state-closed:slide-out-to-top state-open:slide-in-from-top;
+    }
+    &[data-side='bottom'] {
+      @apply inset-x-0 bottom-0 border-t;
+      @apply state-closed:slide-out-to-bottom state-open:slide-in-from-bottom;
+    }
+    &[data-side='left'] {
+      @apply inset-y-0 left-0 h-full w-3/4 border-r;
+      @apply state-closed:slide-out-to-left state-open:slide-in-from-left;
+      @apply sm:max-w-sm;
+    }
+    &[data-side='right'] {
+      @apply inset-y-0 right-0 h-full w-3/4 border-l;
+      @apply state-closed:slide-out-to-right state-open:slide-in-from-right;
+      @apply sm:max-w-sm;
+    }
+  }
+  .fuel-DrawerHeader {
+    @apply flex flex-col space-y-2;
+  }
+  .fuel-DrawerDescription {
+    @apply text-sm text-muted;
+  }
+  .fuel-DrawerFooter {
+    @apply flex flex-col-reverse;
+    @apply sm:flex-row sm:justify-end sm:space-x-2;
+  }
+  .fuel-DrawerTitle {
+    @apply text-lg font-semibold text-heading;
+  }
+  .fuel-DrawerBody {
+    @apply py-4 flex-1;
+  }
+}

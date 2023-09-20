@@ -1,0 +1,138 @@
+@layer fuel-components {
+  .fuel-ToastViewport {
+    @apply fixed top-0 z-50 flex flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col;
+  }
+  .fuel-Toast {
+    @apply pointer-events-auto relative flex w-full items-center justify-between gap-2 overflow-hidden rounded-md;
+    @apply py-3 p-4 pr-7 shadow-lg transition-all outline-none focus-visible:ring-2;
+    background-color: var(--radix-toast-bg);
+    border: 1px solid var(--radix-toast-border-color);
+    color: var(--radix-toast-color);
+
+    @media screen(md) {
+      max-width: var(--radix-toast-width);
+    }
+
+    & ~ & {
+      @apply mt-4;
+    }
+
+    [data-swipe='cancel'] {
+      @apply translate-x-0;
+    }
+
+    &[data-swipe='end'] {
+      @apply animate-out;
+      transform: translateX(var(--radix-toast-swipe-end-x));
+    }
+
+    &[data-swipe='move'] {
+      @apply transition-none;
+      transform: translateX(var(--radix-toast-swipe-move-x));
+    }
+
+    &[data-state='open'] {
+      @apply animate-in;
+      @apply slide-in-from-top-full;
+      @apply sm:slide-in-from-bottom-full;
+    }
+
+    &[data-state='closed'] {
+      @apply animate-out;
+      @apply fade-out-80;
+      @apply slide-out-to-right-full;
+    }
+
+    &.fuel-Toast__base,
+    &.fuel-Toast__base .fuel-ToastAction,
+    &.fuel-Toast__base .fuel-ToastClose {
+      --tw-ring-color: var(--gray-4);
+      --radix-toast-color: white;
+      --radix-toast-bg: var(--gray-2);
+      --radix-toast-border-color: var(--gray-6);
+      --radix-toast-action-color: var(--gray-11);
+    }
+
+    &.fuel-Toast__info,
+    &.fuel-Toast__info .fuel-ToastAction,
+    &.fuel-Toast__info .fuel-ToastClose {
+      --tw-ring-color: var(--blue-4);
+      --radix-toast-color: white;
+      --radix-toast-bg: var(--blue-2);
+      --radix-toast-border-color: var(--blue-6);
+      --radix-toast-action-color: var(--blue-11);
+    }
+
+    &.fuel-Toast__warning,
+    &.fuel-Toast__warning .fuel-ToastAction,
+    &.fuel-Toast__warning .fuel-ToastClose {
+      --tw-ring-color: var(--yellow-4);
+      --radix-toast-color: white;
+      --radix-toast-bg: var(--yellow-2);
+      --radix-toast-border-color: var(--yellow-6);
+      --radix-toast-action-color: var(--yellow-11);
+    }
+
+    &.fuel-Toast__success,
+    &.fuel-Toast__success .fuel-ToastAction,
+    &.fuel-Toast__success .fuel-ToastClose {
+      --tw-ring-color: var(--green-4);
+      --radix-toast-color: white;
+      --radix-toast-bg: var(--green-2);
+      --radix-toast-border-color: var(--green-6);
+      --radix-toast-action-color: var(--green-11);
+    }
+
+    &.fuel-Toast__error,
+    &.fuel-Toast__error .fuel-ToastAction,
+    &.fuel-Toast__error .fuel-ToastClose {
+      --tw-ring-color: var(--crimson-4);
+      --radix-toast-color: white;
+      --radix-toast-bg: var(--crimson-2);
+      --radix-toast-border-color: var(--crimson-6);
+      --radix-toast-action-color: var(--crimson-11);
+    }
+
+    & .fuel-Icon {
+      color: var(--radix-toast-action-color);
+    }
+
+    & .fuel-Toast__hasDescription .fuel-ToastClose {
+      @apply top-3;
+    }
+  }
+  .fuel-ToastAction {
+    @apply inline-flex h-7 shrink-0 items-center justify-center rounded-md border border-border;
+    @apply bg-transparent mx-2 px-3 text-sm font-medium transition-colors focus:outline-none;
+    @apply disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-2;
+    color: var(--radix-toast-action-color);
+    border-color: var(--radix-toast-border-color);
+
+    &:hover {
+      color: var(--radix-toast-color);
+    }
+  }
+  .fuel-ToastClose {
+    @apply absolute focus-visible:ring-2 right-3;
+    top: 50%;
+    transform: translateY(-25%);
+
+    & .fuel-Icon {
+      color: var(--radix-toast-action-color);
+      @apply opacity-50;
+    }
+    &:hover .fuel-Icon {
+      @apply opacity-100;
+    }
+  }
+  .fuel-ToastTitle {
+    @apply text-sm font-semibold;
+
+    & + div {
+      @apply text-xs;
+    }
+  }
+  .fuel-ToastDescription {
+    @apply text-sm opacity-90;
+  }
+}

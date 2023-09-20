@@ -40,7 +40,7 @@
     "@graphql-tools/utils": "^10.0.6",
     "@types/cors": "^2.8.14",
     "@types/express": "^4.17.17",
-    "@types/node": "^20.6.2",
+    "@types/node": "^20.6.3",
     "graphql-codegen-typescript-common": "0.18.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",

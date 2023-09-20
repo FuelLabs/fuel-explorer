@@ -1,0 +1,22 @@
+@layer tw-base, radix, tw-components, fuel-components, tw-utilities;
+
+@import 'tailwindcss/base' layer(tw-base);
+@import '@radix-ui/themes/styles.css' layer(radix);
+@import 'tailwindcss/components' layer(tw-components);
+@import '../components/Accordion/Accordion.css';
+@import '../components/ButtonGroup/ButtonGroup.css';
+@import '../components/Card/Card.css';
+@import '../components/CardList/CardList.css';
+@import '../components/Drawer/Drawer.css';
+@import '../components/List/List.css';
+@import '../components/Nav/Nav.css';
+@import '../components/Spinner/Spinner.css';
+@import '../components/Toast/Toast.css';
+@import 'tailwindcss/utilities' layer(tw-utilities);
+@import './tokens.css';
+
+body,
+html {
+  color: var(--color-text-color) !important;
+  font-size: 16px;
+}
