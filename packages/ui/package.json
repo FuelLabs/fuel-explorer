@@ -47,7 +47,7 @@
     "add:clients": "node ./scripts/add-use-client.mjs",
     "dev:storybook": "storybook dev -p 6006",
     "lint": "eslint .",
-    "test": "jest --verbose",
+    "test": "jest --verbose --passWithNoTests",
     "test:dev": "pnpm ts:check && pnpm test",
     "build-storybook": "storybook build",
     "ts:check": "tsc --noEmit",

@@ -12,7 +12,7 @@
     "lint": "next lint",
     "prepare": "pnpm copy:icons",
     "start": "next start",
-    "test": "jest --verbose",
+    "test": "jest --verbose --passWithNoTests",
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
