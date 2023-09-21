@@ -1,7 +1,20 @@
+import { globbySync } from 'globby';
+import _ from 'lodash';
+import path from 'path';
 import radixThemePlugin from 'radix-ui-themes-with-tailwind';
 import type { Config } from 'tailwindcss';
 import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
+
+import { animation, keyframes } from './animations';
+
+function getComponents() {
+  return globbySync(['**'], {
+    cwd: path.resolve(__dirname, '../components'),
+    onlyDirectories: true,
+    deep: 1,
+  });
+}
 
 function refColorVariablesAsObj(list: string[]) {
   return list.reduce(
@@ -38,27 +51,18 @@ const preset: Config = {
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
   ],
   theme: {
-    keyframes: {
-      'accordion-down': {
-        from: {
-          height: '0px',
-        },
-        to: {
-          height: 'var(--radix-accordion-content-height)',
-        },
-      },
-      'accordion-up': {
-        from: {
-          height: 'var(--radix-accordion-content-height)',
-        },
-        to: {
-          height: '0px',
-        },
-      },
-    },
-    animation: {
-      'accordion-open': 'accordion-down 0.2s ease-out',
-      'accordion-closed': 'accordion-up 0.2s ease-in',
+    keyframes,
+    animation,
+    screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+      mobile: '300px',
+      tablet: '640px',
+      laptop: '1024px',
+      desktop: '1280px',
     },
     extend: {
       width: tailwindDefaultTheme.maxWidth,
@@ -72,10 +76,25 @@ const preset: Config = {
     require('tailwindcss-radix')({
       variantPrefix: false,
     }),
-    plugin(function ({ addVariant }) {
+    plugin(function ({ addVariant, matchVariant }) {
       // Add a `third` variant, ie. `third:pb-0`
-      addVariant('except-first', '& ~ &');
+      addVariant('not-first', '& ~ &');
       addVariant('not-disabled', '&:not([aria-disabled=true])');
+      addVariant('not-first-last', '&:not(:first-of-type,:last-of-type)');
+      addVariant('first-type', '&:first-of-type');
+      addVariant('last-type', '&:last-of-type');
+      addVariant('dark-theme', ['.dark &', '.dark-theme &']);
+      addVariant('light-theme', ['.light &', '.light-theme &']);
+
+      const components = getComponents();
+      const componentsMap = _.fromPairs(components.map((c) => [c, c]));
+      const values = { values: componentsMap };
+      matchVariant('>fuel', (v) => `& > .fuel-${v}`, values);
+      matchVariant('>group-fuel', (v) => `:merge(.group) > .fuel-${v}`, values);
+      matchVariant('>peer-fuel', (v) => `:merge(.peer) > .fuel-${v}`, values);
+      matchVariant('fuel', (v) => `& .fuel-${v}`, values);
+      matchVariant('group-fuel', (v) => `:merge(.group) > .fuel-${v}`, values);
+      matchVariant('peer-fuel', (v) => `:merge(.peer) > .fuel-${v}`, values);
     }),
     radixThemePlugin({
       useTailwindColorNames: false, // optional

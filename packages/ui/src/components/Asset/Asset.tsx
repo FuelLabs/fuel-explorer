@@ -126,7 +126,7 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
           radius="full"
           size="2"
           {...props}
-          className={cx(props.className, 'h-6 w-6 px-2')}
+          className={cx(props.className, 'h-8 w-8 px-2')}
         >
           {asset.symbol.slice(0, 2).toUpperCase()}
         </Badge>

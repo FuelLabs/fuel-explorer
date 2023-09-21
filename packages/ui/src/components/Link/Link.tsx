@@ -1,13 +1,12 @@
 import { Link as RadixLink } from '@radix-ui/themes';
 import { IconLink } from '@tabler/icons-react';
-import type { VariantProps } from 'class-variance-authority';
-import { cva } from 'class-variance-authority';
+import { tv, type VariantProps } from 'tailwind-variants';
 import { createComponent } from '~/utils/component';
 import type { PropsOf } from '~/utils/types';
 
 import { Icon } from '../Icon/Icon';
 
-const link = cva([], {
+const link = tv({
   variants: {
     isExternal: {
       true: 'inline-flex items-center gap-2',

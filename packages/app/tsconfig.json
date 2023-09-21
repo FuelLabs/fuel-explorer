@@ -24,10 +24,5 @@
     "./jest.config.ts",
     "./tailwind.config.js"
   ],
-  "exclude": ["node_modules"],
-  "references": [
-    {
-      "path": "../ui"
-    }
-  ]
+  "exclude": ["node_modules"]
 }

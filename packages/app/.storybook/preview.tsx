@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter/slnt.css';
 import '../src/app/globals.css';
 
 import { withThemeDecorator } from 'storybook-addon-theme';
@@ -17,6 +18,11 @@ const preview: Preview = {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/,
+      },
+    },
+    options: {
+      storySort: {
+        order: ['Base', 'Layout', 'Form', 'Overlay', 'UI', 'Helpers', 'Web3'],
       },
     },
     viewport: {

@@ -13,10 +13,9 @@ import {
   IconBrandDiscord,
 } from '@tabler/icons-react';
 import Image from 'next/image';
+import { tv } from 'tailwind-variants';
 
-import { cx } from '../../utils/cx';
-
-import styles from './Footer.module.css';
+import { links } from './data.json';
 
 type FooterNavProps = BaseProps<{
   title: string;
@@ -36,16 +35,17 @@ function FooterNav({
   className,
   ...props
 }: FooterNavProps) {
+  const classes = styles();
   return (
-    <VStack as="nav" className={cx(styles.nav, className)} {...props}>
+    <VStack as="nav" className={classes.nav({ className })} {...props}>
       <Image src={img} alt={alt} width={40} height={40} />
-      <Heading as="h4" className={styles.navHeading}>
+      <Heading as="h4" className={classes.navHeading()}>
         {title}
       </Heading>
-      <List className={styles.navList}>
+      <List className={classes.navList()}>
         {links.map((link) => (
           <List.Item key={link.href}>
-            <Link href={link.href} isExternal className={styles.navLink}>
+            <Link href={link.href} isExternal className={classes.navLink()}>
               {link.label}
             </Link>
           </List.Item>
@@ -56,21 +56,23 @@ function FooterNav({
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function Footer(props: BaseProps<{}>) {
+export function Footer({ className }: BaseProps<{}>) {
+  const classes = styles();
   return (
     <Theme appearance="dark">
-      <Container size="4" className={styles.container}>
-        <Box as="footer" className={cx(styles.root, props.className)}>
-          <VStack className={styles.brand} gap="3">
+      <Container size="4" className={classes.container()}>
+        <Box as="footer" className={classes.root({ className })}>
+          <VStack className={classes.brand()} gap="3">
             <FuelLogo size={24} showLettering />
             <Text className="text-secondary">
               © All rights reserved Fuel Labs
             </Text>
-            <HStack gap="4" className={styles.socialIcons}>
+            <HStack gap="4">
               <a
                 href="https://twitter.com/fuel_network"
                 target="_blank"
                 rel="noopener noreferrer"
+                className={classes.socialIcon()}
               >
                 <Icon icon={IconBrandTwitter} size={30} />
               </a>
@@ -78,6 +80,7 @@ export function Footer(props: BaseProps<{}>) {
                 href="https://github.com/FuelLabs"
                 target="_blank"
                 rel="noopener noreferrer"
+                className={classes.socialIcon()}
               >
                 <Icon icon={IconBrandGithub} size={30} />
               </a>
@@ -85,105 +88,31 @@ export function Footer(props: BaseProps<{}>) {
                 href="https://discord.com/invite/xfpK4Pe"
                 target="_blank"
                 rel="noopener noreferrer"
+                className={classes.socialIcon()}
               >
                 <Icon icon={IconBrandDiscord} size={30} />
               </a>
             </HStack>
           </VStack>
 
-          <Box className={styles.navs}>
+          <Box className={classes.navs()}>
             <FooterNav
               title="Resources"
               img="/icons/fuel_icon_brandbook.svg"
               alt="Brandbook Icon"
-              links={[
-                {
-                  href: 'https://fuellabs.notion.site/27f2a32606044179bab5e2ac8e85ab0e?v=c4dfd88031f14e5da0f1845e6de8b623&pvs=4',
-                  label: 'AMAs',
-                },
-                {
-                  href: 'https://fuel-brand-guide.webflow.io/',
-                  label: 'Brand Guide',
-                },
-                {
-                  href: 'https://fuellabs.notion.site/Podcasts-9f829504cafd4ae5bc7e81d682070965?pvs=4',
-                  label: 'Podcasts',
-                },
-                {
-                  href: 'https://fuellabs.notion.site/Articles-25490e91c34743e7bb0c53f0d45917b8?pvs=4',
-                  label: 'Articles',
-                },
-                {
-                  href: 'https://fuellabs.notion.site/Workshops-Presentations-b0fb9a20de4c448cac2823be3448f149?pvs=4',
-                  label: 'Presentations',
-                },
-                {
-                  href: 'https://fuellabs.notion.site/People-to-follow-bff175ae0a1b4eecb837b40a6e96a547?pvs=4',
-                  label: 'Accounts to follow',
-                },
-                {
-                  href: 'https://fuellabs.notion.site/Tweets-82449686e63e424fb8ec9a9d4a91f147?pvs=4',
-                  label: 'Best Tweets',
-                },
-              ]}
+              links={links.resources}
             />
             <FooterNav
               title="About us"
               img="/icons/fuel_icon_about.svg"
               alt="About Icon"
-              links={[
-                {
-                  href: 'https://github.com/FuelLabs/awesome-fuel#upcoming-events-and-hackathons',
-                  label: 'Events',
-                },
-                {
-                  href: 'https://forum.fuel.network/',
-                  label: 'Forum',
-                },
-                {
-                  href: 'https://jobs.lever.co/fuellabs',
-                  label: 'Jobs',
-                },
-                {
-                  href: 'https://fuel-labs.ghost.io/fuel-q4-grant-program/',
-                  label: 'Apply for a Grant',
-                },
-              ]}
+              links={links.aboutUs}
             />
             <FooterNav
               title="Developers"
               img="/icons/fuel_icon_code.svg"
               alt="Code Icon"
-              links={[
-                {
-                  href: 'https://docs.fuel.network/',
-                  label: 'Documentation',
-                },
-                {
-                  href: 'https://fuellabs.github.io/sway/master/reference/contributing_to_sway.html',
-                  label: 'Contributors Guide',
-                },
-                {
-                  href: 'https://fuellabs.github.io/sway',
-                  label: 'Learn Sway',
-                },
-                {
-                  href: 'https://github.com/FuelLabs/sway-applications',
-                  label: 'Example Apps',
-                },
-                {
-                  href: 'https://github.com/FuelLabs/fuel-specs',
-                  label: 'Fuel Specs',
-                },
-                {
-                  href: 'https://fuellabs.github.io/fuel-indexer/master/',
-                  label: 'Fuel Indexer',
-                },
-                {
-                  href: 'https://www.fuel.network/about-us/fuel-v1',
-                  label: 'Fuel V1',
-                },
-              ]}
+              links={links.developers}
             />
           </Box>
         </Box>
@@ -191,3 +120,27 @@ export function Footer(props: BaseProps<{}>) {
     </Theme>
   );
 }
+
+const styles = tv({
+  slots: {
+    container: ['hero-bg border-t border-border'],
+    root: [
+      'py-8 px-8 grid gap-8 grid-cols-1 grid-rows-[auto,1fr]',
+      'lg:py-10 lg:px-10 lg:grid-cols-[1fr,2fr] lg:grid-rows-auto',
+    ],
+    brand: [
+      'items-center pb-8 border-b border-border',
+      'lg:pb-0 lg:items-start lg:border-b-0',
+    ],
+    socialIcon: ['text-white hover:text-brand transition-colors duration-200'],
+    navs: ['flex flex-col gap-8 justify-betwee md:flex-row md:text-center'],
+    nav: [
+      'flex flex-col flex-1',
+      'md:items-center',
+      'lg:text-left lg:items-start',
+    ],
+    navHeading: ['my-4 justify-start', 'md:justify-center', 'lg:justify-start'],
+    navList: ['flex flex-col gap-0 fuel-[Icon]:hidden'],
+    navLink: ['text-secondary hover:text-brand'],
+  },
+});

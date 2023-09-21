@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter/slnt.css';
 import '../src/theme/index.css';
 
 import { withThemeDecorator } from 'storybook-addon-theme';

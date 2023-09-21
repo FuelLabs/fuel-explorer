@@ -399,9 +399,6 @@ importers:
       '@tailwindcss/typography':
         specifier: 0.5.10
         version: 0.5.10(tailwindcss@3.3.3)
-      class-variance-authority:
-        specifier: 0.7.0
-        version: 0.7.0
       clsx:
         specifier: 2.0.0
         version: 2.0.0
@@ -435,6 +432,9 @@ importers:
       tailwind-merge:
         specifier: 1.14.0
         version: 1.14.0
+      tailwind-variants:
+        specifier: 0.1.14
+        version: 0.1.14(tailwindcss@3.3.3)
       tailwindcss-animate:
         specifier: 1.0.7
         version: 1.0.7(tailwindcss@3.3.3)
@@ -484,6 +484,9 @@ importers:
       '@storybook/types':
         specifier: ^7.4.3
         version: 7.4.3
+      '@types/lodash':
+        specifier: 4.14.198
+        version: 4.14.198
       '@types/react':
         specifier: ^18.2.22
         version: 18.2.22
@@ -10785,12 +10788,6 @@ packages:
 
   /cjs-module-lexer@1.2.3:
     resolution: {integrity: sha512-0TNiGstbQmCFwt4akjjBg5pLRTSyj/PkWQ1ZoO2zntmg9yLqSRxwEa4iCfQLGjqhiqBfOJa7W/E8wfGrTDmlZQ==}
-
-  /class-variance-authority@0.7.0:
-    resolution: {integrity: sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==}
-    dependencies:
-      clsx: 2.0.0
-    dev: false
 
   /classnames@2.3.2:
     resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}

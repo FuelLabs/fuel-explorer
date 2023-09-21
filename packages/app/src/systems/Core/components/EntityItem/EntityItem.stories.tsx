@@ -1,4 +1,4 @@
-import { Box, HStack } from '@fuel-explorer/ui/Box';
+import { Box, VStack } from '@fuel-explorer/ui/Box';
 import { Icon } from '@fuel-explorer/ui/Icon';
 import type { Meta, StoryObj } from '@storybook/react';
 import { IconCode } from '@tabler/icons-react';
@@ -28,7 +28,7 @@ export const Default: Story = {
 
 export const Variations: Story = {
   render: () => (
-    <HStack gap="6">
+    <VStack gap="6">
       <EntityItem
         icon={
           <Box className="rounded-full bg-gray-6 p-2">
@@ -39,16 +39,16 @@ export const Variations: Story = {
         id={DEFAULT_ARGS.id}
       />
       <EntityItem {...DEFAULT_ARGS} />
-    </HStack>
+    </VStack>
   ),
 };
 
 export const Sizes: Story = {
   render: () => (
-    <HStack gap="6">
+    <VStack gap="6">
       <EntityItem {...DEFAULT_ARGS} size="sm" />
       <EntityItem {...DEFAULT_ARGS} size="md" />
       <EntityItem {...DEFAULT_ARGS} size="lg" />
-    </HStack>
+    </VStack>
   ),
 };

@@ -7,7 +7,32 @@ import type {
   ReactNode,
 } from 'react';
 
-import type { RadixColors } from './radix-theme';
+export type RadixColors =
+  | 'gray'
+  | 'tomato'
+  | 'red'
+  | 'ruby'
+  | 'crimson'
+  | 'pink'
+  | 'plum'
+  | 'purple'
+  | 'violet'
+  | 'iris'
+  | 'indigo'
+  | 'blue'
+  | 'cyan'
+  | 'teal'
+  | 'jade'
+  | 'green'
+  | 'grass'
+  | 'bronze'
+  | 'gold'
+  | 'brown'
+  | 'orange'
+  | 'amber'
+  | 'yellow'
+  | 'lime'
+  | 'mint';
 
 /**
  * CSS Types

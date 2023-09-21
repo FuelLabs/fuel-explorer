@@ -17,23 +17,17 @@ export type ListItemProps = PropsOf<'li'>;
 
 export const ListRoot = createComponent<ListProps, 'ul'>({
   id: 'List',
+  className: ({ className, icon, type = 'none' }) => {
+    return styles({ type, withIcon: Boolean(icon) }).root({ className });
+  },
   render: (
     _,
-    {
-      type = 'none',
-      className,
-      icon,
-      iconColor,
-      iconSize,
-      iconAriaLabel,
-      ...props
-    },
+    { type = 'none', icon, iconColor, iconSize, iconAriaLabel, ...props },
   ) => {
     const El = type === 'ol' ? 'ol' : 'ul';
-    const classes = styles.list({ type, withIcon: Boolean(icon), className });
     return (
       <ListProvider value={{ icon, iconColor, iconSize, iconAriaLabel }}>
-        <El {...props} className={classes} />
+        <El {...props} />
       </ListProvider>
     );
   },
@@ -43,7 +37,7 @@ export const ListItem = createComponent<ListItemProps, 'li'>({
   id: 'ListItem',
   render: (_, { children, className, ...props }) => {
     const { icon, iconColor, iconSize, iconAriaLabel } = useListContext();
-    const classes = styles.listItem({ withIcon: Boolean(icon), className });
+    const classes = styles({ withIcon: Boolean(icon) }).item({ className });
     const iconEl = icon && (
       <Icon
         icon={icon}

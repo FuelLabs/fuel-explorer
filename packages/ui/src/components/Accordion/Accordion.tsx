@@ -5,6 +5,8 @@ import type { PropsOf } from '~/utils/types';
 
 import { Icon } from '../Icon/Icon';
 
+import { styles } from './styles';
+
 export type AccordionProps = PropsOf<typeof AC.Root>;
 export type AccordionContentProps = PropsOf<typeof AC.Content>;
 export type AccordionItemProps = PropsOf<typeof AC.Item>;
@@ -13,6 +15,7 @@ export type AccordionTriggerProps = PropsOf<typeof AC.Trigger>;
 
 export const AccordionRoot = createComponent<AccordionProps, typeof AC.Root>({
   id: 'Accordion',
+  className: () => styles().root(),
   baseElement: AC.Root,
 });
 
@@ -21,6 +24,7 @@ export const AccordionContent = createComponent<
   typeof AC.Content
 >({
   id: 'AccordionContent',
+  className: () => styles().content(),
   baseElement: AC.Content,
 });
 
@@ -29,6 +33,7 @@ export const AccordionItem = createComponent<
   typeof AC.Item
 >({
   id: 'AccordionItem',
+  className: () => styles().item(),
   baseElement: AC.Item,
 });
 
@@ -37,6 +42,7 @@ export const AccordionHeader = createComponent<
   typeof AC.Header
 >({
   id: 'AccordionHeader',
+  className: () => styles().header(),
   baseElement: AC.Header,
 });
 
@@ -46,15 +52,13 @@ export const AccordionTrigger = createComponent<
 >({
   id: 'AccordionTrigger',
   baseElement: AC.Trigger,
-  render: (Comp, { children, ...props }) => {
+  render: (Comp, { children, className, ...props }) => {
+    const classes = styles();
     return (
       <AccordionHeader>
-        <Comp {...props}>
+        <Comp {...props} className={classes.trigger({ className })}>
           {children}
-          <Icon
-            icon={IconChevronDown}
-            className="fuel-AccordionIcon text-icon"
-          />
+          <Icon icon={IconChevronDown} className={classes.icon()} />
         </Comp>
       </AccordionHeader>
     );

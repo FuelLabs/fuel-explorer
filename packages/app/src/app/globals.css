@@ -1,8 +1,7 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 @import '@fuel-explorer/ui/dist/index.css';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   --hero-bg: #000;

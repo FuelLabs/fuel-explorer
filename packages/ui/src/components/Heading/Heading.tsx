@@ -1,8 +1,8 @@
 import { Heading as RadixHeading } from '@radix-ui/themes';
-import { cx } from 'class-variance-authority';
 import type { WithIconProps } from '~/hooks/useIconProps';
 import { useIconProps } from '~/hooks/useIconProps';
 import { createComponent } from '~/utils/component';
+import { cx } from '~/utils/css';
 import type { PropsOf } from '~/utils/types';
 
 export type HeadingProps = Omit<WithIconProps, 'size'> &

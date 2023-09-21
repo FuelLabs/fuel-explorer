@@ -9,3 +9,4 @@ node_modules
 pnpm-lock.yaml
 storybook-static
 .next
+generated

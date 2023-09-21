@@ -11,6 +11,7 @@ export const TX_CONTRACT_CALL_MOCK = {
   timestamp: String(dayjs().subtract(10, 'minute').unix()),
   totalAssets: 3,
   totalOperations: 2,
+  totalAccounts: 1,
   transaction: {
     __typename: 'Transaction',
     id: '0x78d13f111bf301324f34f2a7eaffc546d39598d156af38e7c4ef9fe61ea2c46a',

@@ -1,4 +1,4 @@
-import { Box, Flex, HStack } from '@fuel-explorer/ui/Box';
+import { Box, HStack } from '@fuel-explorer/ui/Box';
 import { Copyable } from '@fuel-explorer/ui/Copyable';
 import { Text } from '@fuel-explorer/ui/Text';
 import type { ReactNode } from 'react';
@@ -17,8 +17,8 @@ export function EntityItem({ icon, title, id, size = 'md' }: EntityItemProps) {
   const classes = styles({ size });
   return (
     <HStack gap="2" className={classes.root()}>
-      <Flex className={classes.icon()}>{icon}</Flex>
-      <Box>
+      <Box className={classes.icon()}>{icon}</Box>
+      <Box className={classes.info()}>
         <Text as="p" className={classes.name()}>
           {title}
         </Text>
@@ -35,6 +35,7 @@ export const styles = tv({
     root: 'items-center gap-4',
     icon: '[&_*]:h-full [&_*]:w-full',
     name: 'mt-0 font-medium',
+    info: 'flex flex-col justify-center',
     tag: 'mt-0',
     copyable: 'text-muted',
     assetId: 'text-sm leading-tight',
@@ -42,14 +43,15 @@ export const styles = tv({
   variants: {
     size: {
       sm: {
-        icon: 'h-6 w-6',
-        copyable: 'text-xs',
+        icon: 'h-8 w-8',
+        root: 'fuel-[Text]:leading-[1]',
+        copyable: 'text-xs fuel-[Icon]:w-4',
       },
       md: {
-        icon: 'h-7 w-7 items-center',
+        icon: 'h-10 w-10',
       },
       lg: {
-        icon: 'h-8 w-8',
+        icon: 'h-12 w-12',
       },
     },
   },

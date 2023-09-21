@@ -18,11 +18,12 @@ import type { BoxProps, HStackProps } from '../Box';
 import { Button } from '../Button/Button';
 import { FuelLogo, type FuelLogoProps } from '../FuelLogo/FuelLogo';
 import { Icon } from '../Icon/Icon';
-import { IconButton } from '../IconButton/IconButton';
+import { IconButton } from '../IconButton';
 import type { LinkProps } from '../Link/Link';
 import { Link } from '../Link/Link';
 import { useTheme } from '../Theme/useTheme';
 
+import { styles } from './styles';
 import { NavProvider, useNavContext } from './useNavContext';
 import { NavMobileProvider, useNavMobileContext } from './useNavMobileContext';
 
@@ -96,7 +97,8 @@ const DESKTOP_CHILD_ITEMS = [
 export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
   id: 'NavDesktop',
   baseElement: 'nav',
-  render: (Root, props) => {
+  render: (Root, { className, ...props }) => {
+    const classes = styles();
     const { width } = useWindowSize();
     const children = useStrictedChildren(
       'NavDesktop',
@@ -106,8 +108,14 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
 
     if (width < 1024) return null;
     return (
-      <section className="fuel-NavWrapper">
-        <Root {...props}>{children}</Root>
+      <section className={classes.navWrapper()}>
+        <Root
+          {...props}
+          className={classes.desktop({ className })}
+          style={{ '--nav-height': '70px' } as any}
+        >
+          {children}
+        </Root>
       </section>
     );
   },
@@ -129,6 +137,7 @@ const MOBILE_CHILD_ITEMS = [
 export const NavMobile = createComponent<NavMobileProps, 'nav'>({
   id: 'NavMobile',
   baseElement: 'nav',
+  className: () => styles().mobile(),
   render: (Root, { isOpen, onOpenChange, ...props }) => {
     const { width } = useWindowSize();
     const [open, setOpen] = useState(() => Boolean(isOpen));
@@ -145,7 +154,9 @@ export const NavMobile = createComponent<NavMobileProps, 'nav'>({
     if (width >= 1024) return null;
     return (
       <NavMobileProvider value={{ isOpen: open, onOpenChange: setOpen }}>
-        <Root {...props}>{children}</Root>
+        <Root {...props} style={{ '--nav-height': '60px' } as any}>
+          {children}
+        </Root>
       </NavMobileProvider>
     );
   },
@@ -157,6 +168,7 @@ export const NavMobileContent = createComponent<
 >({
   id: 'NavMobileContent',
   baseElement: 'header',
+  className: () => styles().mobileContent(),
   render: (Root, { children, ...props }) => {
     const { isOpen, onOpenChange } = useNavMobileContext();
 
@@ -188,6 +200,7 @@ export const NavMobileContent = createComponent<
 export const NavSpacer = createComponent<{}, 'hr'>({
   id: 'NavSpacer',
   baseElement: 'hr',
+  className: 'flex-1 opacity-0',
 });
 
 /**
@@ -196,6 +209,7 @@ export const NavSpacer = createComponent<{}, 'hr'>({
 
 export const NavLogo = createComponent<NavLogoProps>({
   id: 'NavLogo',
+  className: () => styles().logo(),
   render: (_, { size, ...props }) => {
     const { width } = useWindowSize();
     const defaultSize = width < 1024 ? 28 : 32;
@@ -209,6 +223,7 @@ export const NavLogo = createComponent<NavLogoProps>({
 
 export const NavMenu = createComponent<NavMenuProps, 'div'>({
   id: 'NavMenu',
+  className: () => styles().menu(),
   render: (Root, props) => {
     const mobileProps = useNavMobileContext();
     const content = <Root {...props} />;
@@ -259,6 +274,7 @@ export const NavMenu = createComponent<NavMenuProps, 'div'>({
 export const NavMenuItem = createComponent<NavMenuItemProps, typeof Link>({
   id: 'NavMenuItem',
   baseElement: Link,
+  className: () => styles().menuItem(),
   render: (Comp, { isActive, ...props }) => {
     return <Comp {...props} data-active={isActive} />;
   },
@@ -271,6 +287,7 @@ const MotionHStack = motion<HStackProps>(HStack);
 
 export const NavConnection = createComponent<NavConnectionProps>({
   id: 'NavConnection',
+  className: () => styles().navConnection(),
   render: (_, { whenOpened = 'show', ...props }) => {
     const navProps = useNavContext();
     const mobileProps = useNavMobileContext();
@@ -344,9 +361,10 @@ export const NavConnection = createComponent<NavConnectionProps>({
 export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
   id: 'NavThemeToggle',
   baseElement: 'span',
-  render: (Root, { whenOpened = 'hide', ...props }) => {
+  render: (Root, { className, whenOpened = 'hide', ...props }) => {
     const { theme: current, toggleTheme } = useTheme();
     const mobileProps = useNavMobileContext();
+    const classes = styles();
     const content = (
       <Root
         {...props}
@@ -355,6 +373,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         data-theme={current}
         onClick={toggleTheme}
         aria-label="Toggle Theme"
+        className={classes.themeToggle({ className })}
       >
         <Icon
           icon={IconSunFilled}
@@ -362,6 +381,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
           aria-label="Sun"
           size={18}
           color="text-icon"
+          className={classes.themeToggleIcon()}
         />
         <Icon
           icon={IconMoonFilled}
@@ -369,6 +389,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
           aria-label="Moon"
           size={18}
           color="text-icon"
+          className={classes.themeToggleIcon()}
         />
       </Root>
     );
