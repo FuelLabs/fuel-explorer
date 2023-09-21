@@ -6,7 +6,6 @@ const defConfig = {
   outDir: 'dist',
   splitting: true,
   format: ['esm'],
-  external: ['react'],
   outExtension() {
     return {
       js: `.js`,
@@ -37,7 +36,7 @@ export default [
   {
     ...defConfig,
     entry: {
-      index: 'src/theme/tw-theme.ts',
+      index: 'src/theme/tailwind-preset.ts',
     },
     format: ['cjs'],
     outDir: 'dist/theme',

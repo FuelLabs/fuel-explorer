@@ -1,14 +1,13 @@
-import React from 'react';
 import { addons, types } from '@storybook/addons';
 import { IconButton, Icons } from '@storybook/components';
+import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { useAddonState } from '@storybook/manager-api';
+import { themes } from '@storybook/theming';
+import { create } from '@storybook/theming/create';
+import React from 'react';
 
 const ADDON_ID = 'theme-addon';
 const TOOL_ID = `${ADDON_ID}/tool`;
-
-import { create } from '@storybook/theming/create';
-import { themes } from '@storybook/theming';
-import { FORCE_RE_RENDER } from '@storybook/core-events';
 
 const THEME_KEY = 'fuel-ui-theme';
 const PRIMARY_COLOR = '#00E182';

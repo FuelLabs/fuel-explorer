@@ -7,7 +7,7 @@
   "typings": "./src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
-    "./tw-theme": "./src/theme/tw-theme.ts",
+    "./tailwind-preset": "./src/theme/tailwind-preset.ts",
     "./styles.css": "./src/index.css",
     "./tokens.css": "./src/tokens.css",
     "./*": "./src/components/*/index.tsx"
@@ -20,8 +20,8 @@
       ".": [
         "./src/index.tsx"
       ],
-      "tw-theme": [
-        "./src/theme/tw-theme.ts"
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
       ],
       "types": [
         "./src/utils/types.ts"
@@ -48,12 +48,12 @@
         "types": "./dist/components/*/index.d.ts",
         "typings": "./dist/components/*/index.d.ts"
       },
-      "./tw-theme": {
+      "./tailwind-preset": {
         "import": "./dist/theme/index.js",
         "require": "./dist/theme/index.js",
         "default": "./dist/theme/index.js",
-        "types": "./dist/theme/tw-theme.d.ts",
-        "typings": "./dist/theme/tw-theme.d.ts"
+        "types": "./dist/theme/tailwind-preset.d.ts",
+        "typings": "./dist/theme/tailwind-preset.d.ts"
       },
       "./types": {
         "types": "./dist/utils/types.d.ts",
@@ -70,8 +70,8 @@
         ".": [
           "./dist/index.d.ts"
         ],
-        "tw-theme": [
-          "./dist/theme/tw-theme.d.ts"
+        "tailwind-preset": [
+          "./dist/theme/tailwind-preset.d.ts"
         ],
         "types": [
           "./dist/utils/types.d.ts"
@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.0.8",
-    "@fuel-ts/math": "0.57.0",
+    "@fuel-ts/math": "0.58.0",
     "@radix-ui/colors": "3.0.0-rc.4",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",
@@ -107,11 +107,13 @@
     "@radix-ui/themes": "^1.1.2",
     "@react-aria/focus": "3.14.1",
     "@tabler/icons-react": "2.34.0",
+    "@tailwindcss/typography": "0.5.10",
     "class-variance-authority": "0.7.0",
     "clsx": "2.0.0",
     "csstype": "3.1.2",
     "deepmerge-json": "1.5.0",
     "framer-motion": "10.16.4",
+    "radix-ui-themes-with-tailwind": "1.2.6",
     "react": "^18.2.0",
     "react-aria": "3.28.0",
     "react-dom": "^18.2.0",
@@ -119,6 +121,7 @@
     "react-use": "17.4.0",
     "tailwind-merge": "1.14.0",
     "tailwindcss-animate": "1.0.7",
+    "tailwindcss-radix": "2.8.0",
     "tailwindcss-themer": "3.1.0"
   },
   "devDependencies": {
@@ -131,14 +134,9 @@
     "@storybook/addon-storysource": "^7.4.3",
     "@storybook/addon-viewport": "7.4.3",
     "@storybook/addons": "^7.4.3",
-    "@storybook/api": "^7.4.3",
-    "@storybook/components": "^7.4.3",
-    "@storybook/core-events": "^7.4.3",
-    "@storybook/manager-api": "7.4.3",
     "@storybook/react": "^7.4.3",
     "@storybook/react-vite": "^7.4.3",
     "@storybook/testing-library": "^0.2.1",
-    "@storybook/theming": "^7.4.3",
     "@storybook/types": "^7.4.3",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
@@ -147,13 +145,11 @@
     "lodash": "^4.17.21",
     "postcss": "8.4.30",
     "postcss-import": "15.1.0",
-    "radix-ui-themes-with-tailwind": "1.2.6",
     "storybook": "^7.4.3",
+    "storybook-addon-theme": "workspace:*",
     "tailwindcss": "3.3.3",
-    "tailwindcss-radix": "2.8.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "5.2.2",
-    "typescript-plugin-css-modules": "5.0.1",
     "vite": "^4.4.9",
     "vite-tsconfig-paths": "^4.2.1"
   }

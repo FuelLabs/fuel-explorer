@@ -1,5 +1,6 @@
 @layer tw-base, radix, tw-components, fuel-components, tw-utilities;
 
+@import '@fontsource-variable/inter/slnt.css';
 @import 'tailwindcss/base' layer(tw-base);
 @import '@radix-ui/themes/styles.css' layer(radix);
 @import 'tailwindcss/components' layer(tw-components);

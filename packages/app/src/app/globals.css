@@ -1,5 +1,4 @@
 @import '@fuel-explorer/ui/dist/index.css';
-@import '@fuel-explorer/ui/dist/tokens.css';
 
 @tailwind base;
 @tailwind components;

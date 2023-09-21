@@ -1,0 +1,56 @@
+{
+  "name": "storybook-addon-theme",
+  "version": "0.0.1",
+  "access": "public",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "typings": "./src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./register": "./src/register.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "./dist/index.cjs.js",
+    "module": "./dist/index.esm.js",
+    "types": "./dist/index.d.ts",
+    "typings": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": "./dist/index.cjs.js",
+        "require": "./dist/index.cjs.js",
+        "default": "./dist/index.esm.js",
+        "types": "./dist/index.d.ts",
+        "typings": "./dist/index.d.ts"
+      },
+      "./register": {
+        "import": "./dist/register.js",
+        "require": "./dist/register.js",
+        "default": "./dist/register.mjs",
+        "types": "./dist/register.d.ts",
+        "typings": "./dist/register.d.ts"
+      }
+    },
+    "files": [
+      "dist"
+    ]
+  },
+  "scripts": {
+    "build": "tsup --dts",
+    "build:watch": "tsup --watch",
+    "ts:check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@storybook/addons": "^7.4.3",
+    "@storybook/components": "^7.4.3",
+    "@storybook/core-events": "^7.4.3",
+    "@storybook/manager-api": "7.4.3",
+    "@storybook/theming": "^7.4.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7"
+  }
+}

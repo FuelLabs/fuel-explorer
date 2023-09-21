@@ -1,28 +1,10 @@
-import { fuelThemePreset } from '@fuel-explorer/ui/tw-theme';
-import radixThemePlugin from 'radix-ui-themes-with-tailwind';
+import preset from '@fuel-explorer/ui/tailwind-preset';
 import type { Config } from 'tailwindcss';
-import plugin from 'tailwindcss/plugin';
 
 export default {
+  presets: [preset],
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
-  ],
-  theme: fuelThemePreset,
-  plugins: [
-    require('tailwindcss-animate'),
-    require('tailwindcss-radix')({
-      variantPrefix: false,
-    }),
-    plugin(function ({ addVariant }) {
-      // Add a `third` variant, ie. `third:pb-0`
-      addVariant('except-first', '& ~ &');
-      addVariant('not-disabled', '&:not([aria-disabled=true])');
-    }),
-    radixThemePlugin({
-      useTailwindColorNames: false, // optional
-      useTailwindRadiusNames: true, // optional
-      mapMissingTailwindColors: true, // optional
-    }),
   ],
 } satisfies Config;
