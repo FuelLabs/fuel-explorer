@@ -1,6 +1,6 @@
 'use client';
 
-import { Flex } from '@fuel-explorer/ui/Box';
+import { Flex, HStack } from '@fuel-explorer/ui/Box';
 import { Card } from '@fuel-explorer/ui/Card';
 import { Text } from '@fuel-explorer/ui/Text';
 import type { BaseProps } from '@fuel-explorer/ui/types';
@@ -17,6 +17,7 @@ import { fromNow } from '~/systems/Core/utils/dayjs';
 
 import { useTx } from '../../hooks/useTx';
 import type { TransactionNode } from '../../types';
+import { TxIcon } from '../TxIcon/TxIcon';
 import { TxTitle } from '../TxTitle/TxTitle';
 
 type TxCardProps = BaseProps<{
@@ -28,12 +29,12 @@ export function TxCard({ transaction, className, ...props }: TxCardProps) {
   const tx = useTx(transaction);
   return (
     <Card {...props} className={classes.root({ className })}>
-      <TxTitle
-        type={tx.type}
-        status={tx.status}
-        txHash={tx.transaction?.id}
-        className={classes.title()}
-      />
+      <Card.Header>
+        <HStack>
+          <TxIcon type={tx.type} status={tx.status} />
+          <TxTitle type={tx.type} txHash={tx.transaction?.id} />
+        </HStack>
+      </Card.Header>
       <Card.Body className={classes.body()}>
         <Flex justify="between" className={classes.row()}>
           <Text leftIcon={IconUsers}>{tx.totalAccounts} accounts</Text>
@@ -57,8 +58,11 @@ export function TxCard({ transaction, className, ...props }: TxCardProps) {
 
 const styles = tv({
   slots: {
-    root: 'py-0 gap-0 transition-all duration-200 ease-out hover:border-border-hover',
-    title: 'py-4 px-4',
+    root: [
+      'py-0 gap-0 border border-card-border transition-all',
+      'duration-200 ease-out hover:border-border-hover',
+      'fuel-[CardHeader]:py-4',
+    ],
     body: 'border-t border-card-border py-4 px-4',
     row: 'items-center py-px [.fuel-Text:first-of-type]:flex-1 gap-3',
     small: 'text-sm',

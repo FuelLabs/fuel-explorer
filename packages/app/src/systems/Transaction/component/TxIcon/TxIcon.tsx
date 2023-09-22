@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { BadgeProps } from '@fuel-explorer/ui/Badge';
 import { Badge } from '@fuel-explorer/ui/Badge';
 import type { IconComponent } from '@fuel-explorer/ui/Icon';
 import { Icon } from '@fuel-explorer/ui/Icon';
@@ -7,46 +8,60 @@ import {
   IconCode,
   IconCoins,
   IconFlame,
+  IconScript,
+  IconSwitch3,
   IconTransfer,
+  IconWallet,
 } from '@tabler/icons-react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
-import { type TxStatus, type TxType } from '../../types';
+import type { TxAccountType, TxStatus, TxType } from '../../types';
 
-type TxIconProps = VariantProps<typeof styles> &
-  BaseProps<{
-    type: TxType;
-    status: TxStatus;
-  }>;
-
-const TX_ICON_MAP: Record<TxType, IconComponent> = {
+const TX_ICON_MAP: Record<TxType | TxAccountType, IconComponent> = {
   ContractCall: IconCode,
   Mint: IconCoins,
   Transfer: IconTransfer,
   Burn: IconFlame,
+  Contract: IconScript,
+  Wallet: IconWallet,
+  Predicate: IconSwitch3,
 };
 
 const TX_INTENT_MAP: Record<TxStatus, any> = {
   Success: 'green',
   Failure: 'red',
   Submitted: 'gray',
+  Info: 'blue',
+  Warning: 'yellow',
 };
 
 const TX_STATUS_MAP: Record<TxStatus, string> = {
   Success: 'Success',
   Submitted: 'Submitted',
   Failure: 'Failure',
+  Info: 'Info',
+  Warning: 'Waiting',
 };
+
+type TxIconProps = VariantProps<typeof styles> &
+  BaseProps<{
+    type: TxType | TxAccountType;
+    status?: TxStatus;
+    color?: BadgeProps['color'];
+    label?: string;
+  }>;
 
 export function TxIcon({
   type,
   status,
   size = 'md',
   className,
+  color,
+  label: initLabel,
   ...props
 }: TxIconProps) {
-  const label = TX_STATUS_MAP[status];
+  const label = initLabel ?? TX_STATUS_MAP[status || 'Submitted'];
   const classes = styles({ size });
   return (
     <Badge
@@ -54,7 +69,7 @@ export function TxIcon({
       variant="soft"
       radius="full"
       aria-label={label}
-      color={TX_INTENT_MAP[status]}
+      color={color || TX_INTENT_MAP[status || 'Submitted']}
       className={classes.root({ className })}
     >
       <Icon icon={TX_ICON_MAP[type]} className={classes.icon()} />
