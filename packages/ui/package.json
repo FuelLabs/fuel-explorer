@@ -6,7 +6,17 @@
   "exports": {
     ".": "./src/index.tsx",
     "./tailwind-preset": "./src/theme/tailwind-preset.ts",
-    "./styles.css": "./dist/index.css"
+    "./styles.css": "./src/theme/index.css"
+  },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./src/index.tsx"
+      ],
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
+    }
   },
   "publishConfig": {
     "main": "./dist/index.cjs.js",

@@ -1,4 +1,4 @@
-//! 'use client';
+'use client';
 
 import type { ReactNode } from 'react';
 import { Children, useEffect, useMemo } from 'react';

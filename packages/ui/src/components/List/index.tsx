@@ -1,4 +1,4 @@
-//! 'use client';
+'use client';
 
 export { List, ListItem, ListOL, ListRoot, ListUL } from './List';
 

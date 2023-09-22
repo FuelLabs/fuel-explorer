@@ -1,3 +1,5 @@
+'use client';
+
 export { cx } from './utils/css';
 export type * from './utils/types';
 

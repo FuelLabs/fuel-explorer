@@ -1,4 +1,4 @@
-//! 'use client';
+'use client';
 
 import { updateThemeAppearanceClass, useThemeContext } from '@radix-ui/themes';
 

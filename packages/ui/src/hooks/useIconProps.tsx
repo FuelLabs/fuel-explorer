@@ -1,4 +1,4 @@
-//! 'use client';
+'use client';
 
 import type { ButtonProps } from '@radix-ui/themes/dist/cjs/components/button';
 
