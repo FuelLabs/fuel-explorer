@@ -16,16 +16,7 @@ function getComponents() {
   });
 }
 
-function refColorVariablesAsObj(list: string[]) {
-  return list.reduce(
-    (acc, curr) => {
-      acc[curr] = `var(--color-${curr})`;
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
-}
-
+export type ColorVariables = (typeof COLORS_VARIABLES)[number];
 const COLORS_VARIABLES = [
   // general colors
   'accent',
@@ -39,11 +30,38 @@ const COLORS_VARIABLES = [
   'heading',
   'icon',
   'link',
+  // semantic colors
+  'success',
+  'success-muted',
+  'success-contract',
+  'success-border',
+  'warning',
+  'warning-muted',
+  'warning-contract',
+  'warning-border',
+  'error',
+  'error-muted',
+  'error-contract',
+  'error-border',
+  'info',
+  'info-muted',
+  'info-contract',
+  'info-border',
   // card colors
   'card-bg',
   'card-title',
   'card-border',
-];
+] as const;
+
+function refColorVariablesAsObj() {
+  return COLORS_VARIABLES.reduce(
+    (acc, curr) => {
+      acc[curr] = `var(--color-${curr})`;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+}
 
 const preset: Config = {
   content: [
@@ -77,7 +95,7 @@ const preset: Config = {
         h6: 'var(--font-size-4)',
       },
       colors: {
-        ...refColorVariablesAsObj(COLORS_VARIABLES),
+        ...refColorVariablesAsObj(),
       },
     },
   },

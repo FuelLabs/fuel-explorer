@@ -44,12 +44,16 @@ export function TxAssetItem({
         <EntityItem.Info id={asset.assetId} title={asset.name} />
       </EntityItem>
       <HStack className="px-4 justify-between">
-        <Text className="text-sm" iconColor="text-brand" leftIcon={IconArrowUp}>
+        <Text
+          className="text-sm"
+          iconColor="text-success"
+          leftIcon={IconArrowUp}
+        >
           {bn(amountIn).format({ units: 4 })} {asset.symbol}
         </Text>
         <Text
           className="text-sm"
-          iconColor="text-red-9"
+          iconColor="text-error"
           leftIcon={IconArrowDown}
         >
           {bn(amountOut).format({ units: 4 })} {asset.symbol}

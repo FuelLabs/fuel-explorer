@@ -29,7 +29,7 @@ const TX_INTENT_MAP: Record<TxStatus, any> = {
   Success: 'green',
   Failure: 'red',
   Submitted: 'gray',
-  Info: 'blue',
+  Info: 'sky',
   Warning: 'yellow',
 };
 

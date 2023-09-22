@@ -64,6 +64,24 @@
   --color-icon: var(--gray-9);
   --color-link: var(--color-brand);
 
+  /* semantic colors */
+  --color-success: var(--grass-9);
+  --color-success-muted: var(--grass-8);
+  --color-success-contrast: var(--grass-9-contrast);
+  --color-success-border: var(--grass-6);
+  --color-info: var(--sky-9);
+  --color-info-muted: var(--sky-8);
+  --color-info-contrast: var(--sky-9-contrast);
+  --color-info-border: var(--sky-6);
+  --color-warning: var(--yellow-9);
+  --color-warning-muted: var(--yellow-8);
+  --color-warning-contrast: var(--yellow-9-contrast);
+  --color-warning-border: var(--yellow-6);
+  --color-error: var(--crimson-9);
+  --color-error-muted: var(--crimson-8);
+  --color-error-contrast: var(--crimson-9-contrast);
+  --color-error-border: var(--crimson-8);
+
   /* card colors */
   --color-card-bg: var(--gray-a2);
   --color-card-title: var(--gray-1);

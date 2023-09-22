@@ -28,7 +28,7 @@ export function TxAccountItem({
   return (
     <Card {...props}>
       <Card.Body as={VStack}>
-        <EntityItem>
+        <EntityItem className="items-start">
           <EntityItem.Slot>
             <TxIcon color={COLOR_MAP[type]} type={type} />
           </EntityItem.Slot>
