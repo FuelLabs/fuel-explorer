@@ -1,30 +1,31 @@
-import { cva } from 'class-variance-authority';
+import { tv } from 'tailwind-variants';
 
-export const styles = {
-  list: cva([], {
-    variants: {
-      type: {
-        none: 'fuel-List__type-none',
-        ol: 'fuel-List__type-ol',
-        ul: 'fuel-List__type-ul',
+export const styles = tv({
+  slots: {
+    root: 'm-0 p-0 fuel-[Text]:leading-relaxed',
+    item: 'marker:text-icon',
+  },
+  variants: {
+    type: {
+      ol: {
+        root: 'list-decimal pl-4',
       },
-      withIcon: {
-        true: 'fuel-List__withIcon-true',
+      ul: {
+        root: 'list-disc pl-4',
       },
-    },
-    defaultVariants: {
-      type: 'none',
-      withIcon: false,
-    },
-  }),
-  listItem: cva([], {
-    variants: {
-      withIcon: {
-        true: 'fuel-ListItem__withIcon-true',
+      none: {
+        root: 'list-none',
       },
     },
-    defaultVariants: {
-      withIcon: false,
+    withIcon: {
+      true: {
+        root: 'list-none',
+        item: 'flex items-center gap-2',
+      },
     },
-  }),
-};
+  },
+  defaultVariants: {
+    type: 'ul',
+    withIcon: false,
+  },
+});

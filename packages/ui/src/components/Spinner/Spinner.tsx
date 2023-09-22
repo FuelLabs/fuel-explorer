@@ -1,7 +1,8 @@
+import './Spinner.css';
 import { useMemo } from 'react';
-import { createComponent } from '~/utils/component';
-import type { RadixColors } from '~/utils/radix-theme';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent } from '../../utils/component';
+import type { PropsOf, RadixColors } from '../../utils/types';
 
 function getColor(color: string) {
   if (color === 'current') {
@@ -37,23 +38,23 @@ export const Spinner = createComponent<SpinnerProps, 'svg'>({
           '--spinner-size': `${size}px`,
           '--spinner-circumference': `${circumference}px`,
           '--spinner-color': getColor(color),
-        }) as any,
+        }) as React.CSSProperties,
       [size, color],
     );
 
     return (
-      <svg {...props} viewBox={`0 0 ${size} ${size}`} style={style}>
+      <svg {...props} style={style} viewBox={`0 0 ${size} ${size}`}>
         <circle
+          className="fuel-Spinner__circle-bg"
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          className="fuel-Spinner__circle-bg"
         />
         <circle
+          className="fuel-Spinner__circle-animated"
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          className="fuel-Spinner__circle-animated"
         />
       </svg>
     );

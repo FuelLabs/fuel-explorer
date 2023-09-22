@@ -1,13 +1,13 @@
 import { Link as RadixLink } from '@radix-ui/themes';
 import { IconLink } from '@tabler/icons-react';
-import type { VariantProps } from 'class-variance-authority';
-import { cva } from 'class-variance-authority';
-import { createComponent } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+import { tv } from 'tailwind-variants';
+import type { VariantProps } from 'tailwind-variants';
 
+import { createComponent } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
 
-const link = cva([], {
+const link = tv({
   variants: {
     isExternal: {
       true: 'inline-flex items-center gap-2',
@@ -47,14 +47,14 @@ export const Link = createComponent<LinkProps, typeof RadixLink>({
     const classes = link({ isExternal, className });
     if (isExternal) {
       return (
-        <span className="inline-flex items-center gap-2">
-          <Comp {...props} className={classes}>
+        <Comp {...props} className={classes}>
+          <span className="inline-flex items-center gap-1">
             {children}
-          </Comp>
-          {ExternalIcon && (
-            <Icon icon={ExternalIcon} size={iconSize} className="text-icon" />
-          )}
-        </span>
+            {ExternalIcon && (
+              <Icon className="text-icon" icon={ExternalIcon} size={iconSize} />
+            )}
+          </span>
+        </Comp>
       );
     }
     return (

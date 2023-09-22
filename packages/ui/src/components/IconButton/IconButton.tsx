@@ -1,10 +1,10 @@
 import { IconButton as RadixIconButton } from '@radix-ui/themes';
-import { getIconSize } from '~/hooks/useIconProps';
-import type { WithVariants } from '~/hooks/useVariants';
-import { useVariants } from '~/hooks/useVariants';
-import { createComponent } from '~/utils/component';
-import type { Colors, PropsOf } from '~/utils/types';
 
+import { getIconSize } from '../../hooks/useIconProps';
+import { useVariants } from '../../hooks/useVariants';
+import type { WithVariants } from '../../hooks/useVariants';
+import { createComponent } from '../../utils/component';
+import type { Colors, PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
 import type { IconContext } from '../Icon/useIconContext';
 import { Spinner } from '../Spinner/Spinner';
@@ -44,7 +44,7 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
     const isDisabled = Boolean(disabled || isLoading);
     return (
       <RadixIconButton
-        {...(props as any)}
+        {...props}
         {...variantProps}
         disabled={isDisabled}
         size={size}
@@ -53,11 +53,11 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
           <Spinner color="current" size={getIconSize(size, iconSize)} />
         ) : (
           <Icon
+            className={iconClassName}
+            color={iconColor}
             icon={icon}
             size={iconSize}
             stroke={iconStroke}
-            className={iconClassName}
-            color={iconColor}
           />
         )}
       </RadixIconButton>

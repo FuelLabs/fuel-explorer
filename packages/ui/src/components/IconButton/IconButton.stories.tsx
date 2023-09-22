@@ -12,11 +12,11 @@ export default meta;
 type Story = StoryObj<typeof IconButton>;
 
 export const Usage: Story = {
-  render: () => <IconButton icon={IconSettings} aria-label="Settings" />,
+  render: () => <IconButton aria-label="Settings" icon={IconSettings} />,
 };
 
 export const Loading: Story = {
   render: () => (
-    <IconButton icon={IconSettings} aria-label="Settings" isLoading />
+    <IconButton isLoading aria-label="Settings" icon={IconSettings} />
   ),
 };

@@ -1,4 +1,5 @@
 const { resolve } = require('path');
+const { dependencies } = require('./packages/ui/package.json');
 
 const project = [
   resolve(__dirname, 'tsconfig.json'),
@@ -7,23 +8,46 @@ const project = [
 
 module.exports = {
   root: true,
-  extends: ['plugin:@fuels/base'],
+  extends: [
+    'plugin:@fuels/typescript',
+    'plugin:@fuels/jest',
+    'plugin:@fuels/react',
+  ],
   parserOptions: {
     project,
   },
   settings: {
+    react: {
+      version: dependencies.react,
+    },
     'import/resolver': {
+      // TODO: add this extensions in the npm-packs
       [require.resolve('eslint-import-resolver-node')]: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs'],
       },
       [require.resolve('eslint-import-resolver-typescript')]: {
-        project,
         alwaysTryTypes: true,
+        project,
       },
     },
   },
   rules: {
-    '@typescript-eslint/no-explicit-any': 'off',
+    // TODO: add this rules in the npm-packs
+    '@typescript-eslint/consistent-type-imports': [
+      'error',
+      { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
+    ],
+    'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+    'no-html-link-for-pages': 'off',
     'react-hooks/rules-of-hooks': 'off',
+    'react/jsx-sort-props': [
+      'warn',
+      {
+        callbacksLast: true,
+        shorthandFirst: true,
+        noSortAlphabetically: false,
+        reservedFirst: true,
+      },
+    ],
   },
 };

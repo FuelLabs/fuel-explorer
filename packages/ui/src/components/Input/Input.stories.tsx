@@ -19,7 +19,7 @@ export const Usage: Story = {
     <Box className="w-[300px]">
       <Input>
         <Input.Slot>
-          <Icon icon={IconSearch} size={16} className="text-icon" />
+          <Icon className="text-icon" icon={IconSearch} size={16} />
         </Input.Slot>
         <Input.Field placeholder="Search the docs…" />
       </Input>
@@ -30,9 +30,9 @@ export const Usage: Story = {
 export const Sizes: Story = {
   render: () => (
     <VStack className="w-[350px]">
-      <Input.Field size="1" placeholder="Search the docs…" />
-      <Input.Field size="2" placeholder="Search the docs…" />
-      <Input.Field size="3" placeholder="Search the docs…" />
+      <Input.Field placeholder="Search the docs…" size="1" />
+      <Input.Field placeholder="Search the docs…" size="2" />
+      <Input.Field placeholder="Search the docs…" size="3" />
     </VStack>
   ),
 };

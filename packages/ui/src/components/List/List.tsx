@@ -1,6 +1,5 @@
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
-
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
 import type { TextProps } from '../Text/Text';
 import { Text } from '../Text/Text';
@@ -17,23 +16,17 @@ export type ListItemProps = PropsOf<'li'>;
 
 export const ListRoot = createComponent<ListProps, 'ul'>({
   id: 'List',
+  className: ({ className, icon, type = 'none' }) => {
+    return styles({ type, withIcon: Boolean(icon) }).root({ className });
+  },
   render: (
     _,
-    {
-      type = 'none',
-      className,
-      icon,
-      iconColor,
-      iconSize,
-      iconAriaLabel,
-      ...props
-    },
+    { type = 'none', icon, iconColor, iconSize, iconAriaLabel, ...props },
   ) => {
     const El = type === 'ol' ? 'ol' : 'ul';
-    const classes = styles.list({ type, withIcon: Boolean(icon), className });
     return (
       <ListProvider value={{ icon, iconColor, iconSize, iconAriaLabel }}>
-        <El {...props} className={classes} />
+        <El {...props} />
       </ListProvider>
     );
   },
@@ -43,13 +36,13 @@ export const ListItem = createComponent<ListItemProps, 'li'>({
   id: 'ListItem',
   render: (_, { children, className, ...props }) => {
     const { icon, iconColor, iconSize, iconAriaLabel } = useListContext();
-    const classes = styles.listItem({ withIcon: Boolean(icon), className });
+    const classes = styles({ withIcon: Boolean(icon) }).item({ className });
     const iconEl = icon && (
       <Icon
-        icon={icon}
-        color={iconColor}
-        size={iconSize}
         aria-label={iconAriaLabel}
+        color={iconColor}
+        icon={icon}
+        size={iconSize}
       />
     );
     return (
@@ -60,17 +53,17 @@ export const ListItem = createComponent<ListItemProps, 'li'>({
   },
 });
 
-export const ListUL = createComponent<ListULProps, 'ul'>({
+export const ListUL = createComponent<ListULProps, typeof ListRoot>({
   id: 'ListUL',
-  baseElement: ListRoot as any,
+  baseElement: ListRoot,
   defaultProps: {
     type: 'ul',
   } as ListProps,
 });
 
-export const ListOL = createComponent<ListOLProps, 'ol'>({
+export const ListOL = createComponent<ListOLProps, typeof ListRoot>({
   id: 'ListOL',
-  baseElement: ListRoot as any,
+  baseElement: ListRoot,
   defaultProps: {
     type: 'ol',
   } as ListProps,

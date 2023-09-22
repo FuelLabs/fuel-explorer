@@ -19,7 +19,7 @@ export const Usage: Story = {
       <Text size="2">
         Tools for building high-quality, accessible UI.
         <Separator my="3" size="4" />
-        <Flex gap="3" align="center">
+        <Flex align="center" gap="3">
           Themes
           <Separator orientation="vertical" />
           Primitives

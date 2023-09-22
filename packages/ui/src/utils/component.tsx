@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, ElementType, ElementRef } from 'react';
 import { forwardRef } from 'react';
 
@@ -8,23 +9,22 @@ import type {
   PropsOf,
   WithAsProps,
 } from './types';
-
 type CreateOpts<
+  P extends PropsOf<any>,
   C extends ComponentType<any> | ElementType<any>,
-  P extends PropsOf<C>,
 > = {
   id: string;
   baseElement?: C;
-  className?: string;
+  className?: string | ((props: P) => string);
   defaultProps?: ComponentType<P>['defaultProps'];
   render?: (Comp: C, props: P) => JSX.Element | null;
 };
 
 export function createComponent<
-  P extends PropsOf<C>,
-  C extends ComponentType<any> | ElementType<any> = ComponentType<P>,
->(opts: CreateOpts<C, P>) {
-  const { id, baseElement: El = 'div', className: baseClass, render } = opts;
+  P extends PropsOf<any>,
+  C extends ComponentType<any> | ElementType<any>,
+>(opts: CreateOpts<P, C>) {
+  const { id, baseElement: El = 'div', className: getClass, render } = opts;
 
   if (!El && !render) {
     throw new Error('Must provide either baseElement or render');
@@ -33,7 +33,9 @@ export function createComponent<
   type T = ElementRef<typeof El>;
   const Comp = forwardRef<T, P & PropsOf<typeof El>>(
     ({ className, ...props }, ref) => {
-      const classes = cx(fClass(id), baseClass, className);
+      const baseClass =
+        typeof getClass === 'function' ? getClass(props as P) : getClass;
+      const classes = cx(baseClass, className, fClass(id));
       const itemProps = { ref, className: classes, ...props } as any;
       return render ? render(El as C, itemProps) : <El {...itemProps} />;
     },
@@ -79,7 +81,7 @@ function polymorphicRender<
 export function createPolymorphicComponent<
   P extends PropsOf<C>,
   C extends ComponentType<any> | ElementType<any> = ComponentType<P>,
->(opts: CreateOpts<C, P>) {
+>(opts: CreateOpts<P, C>) {
   type Props = Omit<P, 'as' | 'asChild'>;
   type PolymorphicComponent = <T = C>(
     props: PolymorphicProps<T, Props>,

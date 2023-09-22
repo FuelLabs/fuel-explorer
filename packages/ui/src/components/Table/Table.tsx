@@ -1,6 +1,7 @@
 import { Table as RT } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type TableProps = PropsOf<typeof RT.Root>;
 export type TableHeaderProps = PropsOf<typeof RT.Header>;

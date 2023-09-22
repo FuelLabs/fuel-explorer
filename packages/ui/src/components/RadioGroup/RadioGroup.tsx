@@ -1,6 +1,7 @@
 import { RadioGroup as RG } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type RadioGroupProps = PropsOf<typeof RG.Root>;
 export type RadioGroupItemProps = PropsOf<typeof RG.Item>;

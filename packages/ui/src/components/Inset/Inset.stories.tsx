@@ -19,18 +19,18 @@ type Story = StoryObj<typeof Inset>;
 export const Usage: Story = {
   render: () => (
     <Card className="max-w-xl py-0">
-      <HStack gap="4" align="center">
+      <HStack align="center" gap="4">
         <Inset side="left">
           <Flex
             align="center"
-            justify="center"
             className="bg-black/30 border-r border-border h-full p-7"
+            justify="center"
           >
             <Icon icon={IconBrandGithub} size={50} />
           </Flex>
         </Inset>
 
-        <VStack gap="1" justify="center" className="px-4 py-2 bg-panel">
+        <VStack className="px-4 py-2 bg-panel" gap="1" justify="center">
           <Text as="div" color="gray" size="2">
             github.com
           </Text>

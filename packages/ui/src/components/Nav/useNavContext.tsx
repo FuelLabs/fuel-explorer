@@ -6,7 +6,8 @@ import type { NavProps } from './Nav';
 
 type ContextProps = NavProps;
 
-const ctx = createContext<ContextProps>({} as any);
+// TODO: put this inside the component
+const ctx = createContext<ContextProps>({} as ContextProps);
 export function useNavContext() {
   return useContext(ctx);
 }

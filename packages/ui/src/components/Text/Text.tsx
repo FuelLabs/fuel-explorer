@@ -7,21 +7,24 @@ import {
   Strong as RadixStrong,
   Text as RadixText,
 } from '@radix-ui/themes';
-import { cva } from 'class-variance-authority';
-import { useIconProps, type WithIconProps } from '~/hooks/useIconProps';
+import { tv } from 'tailwind-variants';
+
+import { useIconProps } from '../../hooks/useIconProps';
+import type { WithIconProps } from '../../hooks/useIconProps';
 import {
   createComponent,
   createPolymorphicComponent,
   withNamespace,
-} from '~/utils/component';
-import type { PropsOf, WithAsProps } from '~/utils/types';
+} from '../../utils/component';
+import type { PropsOf, WithAsProps } from '../../utils/types';
 
 const styles = {
-  root: cva(['text-md'], {
+  root: tv({
+    base: 'text-md',
     variants: {
       withIcon: {
-        left: '[&_.fuel-Icon]:mr-2',
-        right: '[&_.fuel-Icon]:ml-2',
+        left: 'fuel-[Icon]:mr-2',
+        right: 'fuel-[Icon]:ml-2',
         false: '',
       },
     },

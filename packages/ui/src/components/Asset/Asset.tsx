@@ -1,13 +1,15 @@
-import { bn, type BNInput } from '@fuel-ts/math';
+import { bn } from '@fuel-ts/math';
+import type { BNInput } from '@fuel-ts/math';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { useStrictedChildren } from '~/hooks/useStrictedChildren';
-import { createComponent, withNamespace } from '~/utils/component';
-import { cx } from '~/utils/css';
-import type { PropsOf } from '~/utils/types';
 
+import { useStrictedChildren } from '../../hooks/useStrictedChildren';
+import { createComponent, withNamespace } from '../../utils/component';
+import { cx } from '../../utils/css';
+import type { PropsOf } from '../../utils/types';
 import { Badge } from '../Badge/Badge';
-import { Box, HStack, type HStackProps } from '../Box';
+import { Box, HStack } from '../Box';
+import type { HStackProps } from '../Box';
 import type { TextProps } from '../Text/Text';
 import { Text } from '../Text/Text';
 
@@ -86,7 +88,7 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
             isNegative,
           }}
         >
-          <HStack {...props} gap={gap} align="center">
+          <HStack {...props} align="center" gap={gap}>
             {newChildren}
           </HStack>
         </AssetProvider>
@@ -110,7 +112,7 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
 
     if (icon) {
       return (
-        <Box role="img" aria-label={`${asset.name} icon`} asChild {...props}>
+        <Box asChild aria-label={`${asset.name} icon`} role="img" {...props}>
           <span>{icon}</span>
         </Box>
       );
@@ -119,14 +121,14 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
     if (!asset.imageUrl) {
       return (
         <Badge
-          role="img"
           aria-label={`${asset.name} initials`}
-          variant="solid"
           color="gray"
           radius="full"
+          role="img"
           size="2"
+          variant="solid"
           {...props}
-          className={cx(props.className, 'h-6 w-6 px-2')}
+          className={cx(props.className, 'h-8 w-8 px-2')}
         >
           {asset.symbol.slice(0, 2).toUpperCase()}
         </Badge>
@@ -135,11 +137,11 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
 
     return (
       <img
-        src={asset.imageUrl}
         alt={`${asset.name} logo`}
+        src={asset.imageUrl}
         {...props}
-        width={size}
         height={size}
+        width={size}
       />
     );
   },

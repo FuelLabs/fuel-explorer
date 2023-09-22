@@ -20,31 +20,31 @@ export const Usage: Story = {
   render: () => (
     <CardList className="max-w-sm">
       <CardList.Item
-        as="section"
         isActive
-        onClick={action('onClick')}
+        as="section"
         rightEl={
           <IconButton
-            variant="link"
-            iconColor="text-brand"
             icon={IconArrowRight}
+            iconColor="text-brand"
+            variant="link"
           />
         }
+        onClick={action('onClick')}
       >
         <Avatar
-          size="3"
           fallback="Colm Tuite"
+          size="3"
           src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
         />
-        <Heading as="h6">Colm Tuite</Heading>
+        <Heading size="5">Colm Tuite</Heading>
       </CardList.Item>
       <CardList.Item>
         <Avatar
-          size="3"
           fallback="Colm Tuite"
+          size="3"
           src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
         />
-        <Heading as="h6">Colm Tuite</Heading>
+        <Heading size="5">Colm Tuite</Heading>
       </CardList.Item>
     </CardList>
   ),

@@ -1,7 +1,8 @@
 //! 'use client';
 
 import type { ButtonProps } from '@radix-ui/themes/dist/cjs/components/button';
-import { cx } from '~/utils/css';
+
+import { cx } from '../utils/css';
 
 export type Variant = 'solid' | 'ghost' | 'outline' | 'link';
 export type VariantProps = {

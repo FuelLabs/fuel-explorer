@@ -1,8 +1,8 @@
 import { Tooltip } from '@radix-ui/themes';
 import { IconCopy } from '@tabler/icons-react';
-import { createPolymorphicComponent } from '~/utils/component';
-import type { Colors } from '~/utils/types';
 
+import { createPolymorphicComponent } from '../../utils/component';
+import type { Colors } from '../../utils/types';
 import { Box } from '../Box';
 import type { BoxProps } from '../Box';
 import type { IconContext } from '../Icon/useIconContext';
@@ -51,15 +51,15 @@ export const Copyable = createPolymorphicComponent<CopyableProps, typeof Box>({
         {children}
         <Tooltip content={tooltipMessage}>
           <IconButton
-            color="gray"
-            onClick={handleCopy}
-            variant="link"
-            icon={CopyIcon}
             aria-label={ariaLabel}
+            color="gray"
+            icon={CopyIcon}
+            iconClassName={iconClassName}
+            iconColor={iconColor}
             iconSize={iconSize}
             iconStroke={iconStroke}
-            iconColor={iconColor}
-            iconClassName={iconClassName}
+            variant="link"
+            onClick={handleCopy}
           />
         </Tooltip>
       </Comp>

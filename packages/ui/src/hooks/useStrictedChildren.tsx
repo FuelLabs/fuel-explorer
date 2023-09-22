@@ -23,6 +23,7 @@ export function useStrictedChildren(
 
   useEffect(() => {
     items.forEach((child) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const id = (child as any)?.type?.id;
       if (!list.includes(id)) {
         throw new Error(

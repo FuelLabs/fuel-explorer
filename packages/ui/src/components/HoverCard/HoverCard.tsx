@@ -1,6 +1,7 @@
 import { HoverCard as RH } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type HoverCardProps = PropsOf<typeof RH.Root>;
 export type HoverCardTriggerProps = PropsOf<typeof RH.Trigger>;

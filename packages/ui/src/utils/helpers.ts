@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { UnknownProps } from './types';
 
 export function omit<T extends UnknownProps>(list: string[], props: T) {
@@ -48,4 +49,10 @@ export function toCamelCase(str: string): string {
     if (+match === 0 || match === '-') return ''; // remove spaces and hyphens
     return index === 0 ? match.toLowerCase() : match.toUpperCase();
   });
+}
+
+export function shortAddress(address: string = '') {
+  return address.length > 10
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : address;
 }

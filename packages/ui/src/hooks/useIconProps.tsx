@@ -1,10 +1,11 @@
 //! 'use client';
 
 import type { ButtonProps } from '@radix-ui/themes/dist/cjs/components/button';
-import { Icon } from '~/components/Icon/Icon';
-import type { IconComponent } from '~/components/Icon/useIconContext';
-import { Spinner } from '~/components/Spinner/Spinner';
-import type { Colors } from '~/utils/types';
+
+import { Icon } from '../components/Icon/Icon';
+import type { IconComponent } from '../components/Icon/useIconContext';
+import { Spinner } from '../components/Spinner/Spinner';
+import type { Colors } from '../utils/types';
 
 export type IconSizes = ButtonProps['size'];
 
@@ -54,21 +55,21 @@ export function useIconProps<P extends WithIconProps>({
     <>
       {leftIcon && (
         <Icon
-          size={iconSize}
-          color={iconColor}
-          icon={leftIcon}
           aria-label={leftIconAriaLabel}
           className={leftIconClassName}
+          color={iconColor}
+          icon={leftIcon}
+          size={iconSize}
         />
       )}
       {initialChildren}
       {rightIcon && (
         <Icon
-          size={iconSize}
-          color={iconColor}
-          icon={rightIcon}
           aria-label={rightIconAriaLabel}
           className={rightIconClassName}
+          color={iconColor}
+          icon={rightIcon}
+          size={iconSize}
         />
       )}
     </>

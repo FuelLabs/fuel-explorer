@@ -11,10 +11,8 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --watch ./src/**/*, src/index.ts",
-    "lint": "eslint .",
-    "codegen": "gql-gen --config codegen.yml",
-    "build": "pnpm codegen && tsup --dts",
-    "prepare": "pnpm build"
+    "codegen": "gql-gen --config codegen.ts",
+    "build": "pnpm codegen && tsup --dts"
   },
   "dependencies": {
     "@graphql-tools/delegate": "^10.0.3",
@@ -27,13 +25,16 @@
     "graphql": "^16.8.1",
     "graphql-http": "^1.22.0",
     "graphql-playground-middleware-express": "^1.7.23",
+    "graphql-request": "6.1.0",
+    "graphql-tag": "2.12.6",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
-    "@fuels/ts-config": "^0.0.10",
+    "@fuels/ts-config": "^0.0.11",
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/introspection": "4.0.0",
     "@graphql-codegen/typescript": "4.0.1",
+    "@graphql-codegen/typescript-graphql-request": "5.0.0",
     "@graphql-codegen/typescript-operations": "4.0.1",
     "@graphql-tools/utils": "^10.0.6",
     "@types/cors": "^2.8.14",

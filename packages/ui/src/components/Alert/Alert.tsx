@@ -1,6 +1,7 @@
 import { Callout as RC } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type AlertProps = PropsOf<typeof RC.Root>;
 export type AlertIconProps = PropsOf<typeof RC.Icon>;

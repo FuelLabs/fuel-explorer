@@ -17,9 +17,9 @@ export const Usage: Story = {
     <Box className="max-w-lg">
       <AspectRatio ratio={16 / 8}>
         <img
-          src="https://images.unsplash.com/photo-1479030160180-b1860951d696?&auto=format&fit=crop&w=1200&q=80"
           alt="A house in a forest"
           className="w-full h-full object-cover rounded-lg"
+          src="https://images.unsplash.com/photo-1479030160180-b1860951d696?&auto=format&fit=crop&w=1200&q=80"
         />
       </AspectRatio>
     </Box>

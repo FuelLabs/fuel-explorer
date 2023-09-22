@@ -1,31 +1,25 @@
 import tsconfig from './tsconfig.json';
-import path from 'path';
 
 const defConfig = {
   outDir: 'dist',
   splitting: true,
-  format: ['esm'],
-  external: ['react'],
-  outExtension() {
+  format: ['esm', 'cjs'],
+  outExtension({ format }) {
     return {
-      js: `.js`,
+      js: `.${format}.js`,
     };
   },
   sourcemap: true,
   clean: true,
   target: tsconfig.compilerOptions.target,
-  tsconfig: path.resolve(__dirname, './tsconfig.build.json'),
+  esbuildOptions(options) {
+    options.banner = {
+      js: "'use client'",
+    };
+  },
 };
 
 export default [
-  {
-    ...defConfig,
-    entry: [
-      './src/components/**/index.tsx',
-      '!./src/components/**/*.stories.tsx',
-    ],
-    outDir: 'dist/components',
-  },
   {
     ...defConfig,
     entry: {
@@ -36,7 +30,7 @@ export default [
   {
     ...defConfig,
     entry: {
-      index: 'src/theme/tw-theme.ts',
+      index: 'src/theme/tailwind-preset.ts',
     },
     format: ['cjs'],
     outDir: 'dist/theme',

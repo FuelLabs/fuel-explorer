@@ -1,6 +1,6 @@
-import { createComponent } from '~/utils/component';
-import { cx } from '~/utils/css';
-import type { PropsOf } from '~/utils/types';
+import { createComponent } from '../../utils/component';
+import { cx } from '../../utils/css';
+import type { PropsOf } from '../../utils/types';
 
 import type { IconComponent, IconContext } from './useIconContext';
 import { useIconContext } from './useIconContext';
@@ -9,8 +9,9 @@ type SvgIconProps = Omit<PropsOf<'svg'>, 'size' | 'stroke'>;
 export type IconBaseProps = Partial<IconContext> & { icon: IconComponent };
 export type IconProps = IconBaseProps & SvgIconProps;
 
-export const Icon = createComponent<IconProps>({
+export const Icon = createComponent<IconProps, 'svg'>({
   id: 'Icon',
+  baseElement: 'svg',
   render: (
     _,
     {

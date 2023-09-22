@@ -25,15 +25,15 @@ const NETWORK = {
 
 export const Usage: Story = {
   render: () => (
-    <Nav network={NETWORK} account={ACCOUNT}>
+    <Nav account={ACCOUNT} network={NETWORK}>
       <Nav.Desktop>
         <Nav.Logo />
         <Nav.Menu>
-          <Nav.MenuItem href="#" isActive>
+          <Nav.MenuItem isActive href="#">
             Developers
           </Nav.MenuItem>
           <Nav.MenuItem href="#">Community</Nav.MenuItem>
-          <Nav.MenuItem href="#" isExternal>
+          <Nav.MenuItem isExternal href="#">
             Labs
           </Nav.MenuItem>
         </Nav.Menu>
@@ -56,11 +56,11 @@ export const NoConnection: Story = {
       <Nav.Desktop>
         <Nav.Logo />
         <Nav.Menu>
-          <Nav.MenuItem href="#" isActive>
+          <Nav.MenuItem isActive href="#">
             Developers
           </Nav.MenuItem>
           <Nav.MenuItem href="#">Community</Nav.MenuItem>
-          <Nav.MenuItem href="#" isExternal>
+          <Nav.MenuItem isExternal href="#">
             Labs
           </Nav.MenuItem>
         </Nav.Menu>
@@ -79,7 +79,7 @@ export const NoConnection: Story = {
 
 export const Mobile: Story = {
   render: () => (
-    <Nav network={NETWORK} account={ACCOUNT}>
+    <Nav account={ACCOUNT} network={NETWORK}>
       <Nav.Mobile>
         <Nav.MobileContent>
           <Nav.Logo />
@@ -87,11 +87,11 @@ export const Mobile: Story = {
           <Nav.Connection />
         </Nav.MobileContent>
         <Nav.Menu>
-          <Nav.MenuItem href="#" isActive>
+          <Nav.MenuItem isActive href="#">
             Developers
           </Nav.MenuItem>
           <Nav.MenuItem href="#">Community</Nav.MenuItem>
-          <Nav.MenuItem href="#" isExternal>
+          <Nav.MenuItem isExternal href="#">
             Labs
           </Nav.MenuItem>
           <Nav.MenuItem href="#">Bridge</Nav.MenuItem>

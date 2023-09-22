@@ -1,11 +1,13 @@
 import { IconChevronRight } from '@tabler/icons-react';
 import { Children } from 'react';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
 
-import { HStack, type HStackProps } from '../Box';
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
+import { HStack } from '../Box';
+import type { HStackProps } from '../Box';
 import { Icon } from '../Icon/Icon';
-import { Link, type LinkProps } from '../Link/Link';
+import { Link } from '../Link/Link';
+import type { LinkProps } from '../Link/Link';
 
 export type BreadcrumbProps = PropsOf<'ul'> & Omit<HStackProps, 'asChild'>;
 export type BreadcrumbItemProps = PropsOf<'li'>;
@@ -16,6 +18,7 @@ export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
   baseElement: 'ul',
   render: (Comp, { children, ...props }) => {
     const newChildren = Children.toArray(children).flatMap((child, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const id = (child as any)?.type?.id;
       if (id !== 'BreadcrumbItem' && id !== 'BreadcrumbLink') {
         throw new Error(
@@ -28,7 +31,7 @@ export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
         return [
           child,
           <li key={`icon:${index}`} className="fuel_Breadcrumb-divider">
-            <Icon icon={IconChevronRight} className="text-icon" />
+            <Icon className="text-icon" icon={IconChevronRight} />
           </li>,
         ];
       }

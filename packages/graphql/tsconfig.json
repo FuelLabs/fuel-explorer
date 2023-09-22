@@ -1,12 +1,13 @@
 {
-  "extends": "@fuels/ts-config/base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "module": "commonjs",
+    "lib": ["dom", "es6"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
     }
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["src", ".storybook", "*.config.*"]
 }

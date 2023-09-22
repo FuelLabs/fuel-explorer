@@ -27,12 +27,12 @@ export const Usage: Story = {
       </Dialog.Trigger>
       <Dialog.Content className="max-w-sm">
         <Dialog.Title>Edit profile</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
+        <Dialog.Description mb="4" size="2">
           Make changes to your profile.
         </Dialog.Description>
         <VStack>
           <label className="w-full">
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as="div" mb="1" size="2" weight="bold">
               Name
             </Text>
             <Input.Field
@@ -41,7 +41,7 @@ export const Usage: Story = {
             />
           </label>
           <label className="w-full">
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as="div" mb="1" size="2" weight="bold">
               Email
             </Text>
             <Input.Field
@@ -50,9 +50,9 @@ export const Usage: Story = {
             />
           </label>
         </VStack>
-        <HStack justify="end" className="mt-4">
+        <HStack className="mt-4" justify="end">
           <Dialog.Close>
-            <Button variant="ghost" color="gray">
+            <Button color="gray" variant="ghost">
               Cancel
             </Button>
           </Dialog.Close>

@@ -1,6 +1,7 @@
 import { Select as RS } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type SelectProps = PropsOf<typeof RS.Root>;
 export type SelectTriggerProps = PropsOf<typeof RS.Trigger>;

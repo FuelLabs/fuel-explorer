@@ -1,14 +1,14 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { addons, types } from '@storybook/addons';
 import { IconButton, Icons } from '@storybook/components';
+import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { useAddonState } from '@storybook/manager-api';
+import { themes } from '@storybook/theming';
+import { create } from '@storybook/theming/create';
+import React from 'react';
 
 const ADDON_ID = 'theme-addon';
 const TOOL_ID = `${ADDON_ID}/tool`;
-
-import { create } from '@storybook/theming/create';
-import { themes } from '@storybook/theming';
-import { FORCE_RE_RENDER } from '@storybook/core-events';
 
 const THEME_KEY = 'fuel-ui-theme';
 const PRIMARY_COLOR = '#00E182';
@@ -40,7 +40,7 @@ addons.register(ADDON_ID, (api) => {
   addons.add(TOOL_ID, {
     title: 'Toggle theme',
     type: types.TOOL,
-    match: ({ viewMode }) => viewMode === 'story' || viewMode === 'docs',
+    match: ({ viewMode }: any) => viewMode === 'story' || viewMode === 'docs',
     render: () => {
       const current = localStorage.getItem(THEME_KEY);
       const [state, setState] = useAddonState(ADDON_ID, current);

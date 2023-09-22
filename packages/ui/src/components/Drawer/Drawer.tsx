@@ -1,16 +1,19 @@
 import * as RD from '@radix-ui/react-dialog';
+
 import {
   createComponent,
   createPolymorphicComponent,
   withNamespace,
-} from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
-
+} from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 import { Box } from '../Box';
 import type { BoxProps } from '../Box';
+import type { ButtonCloseProps } from '../ButtonClose/ButtonClose';
 import { ButtonClose } from '../ButtonClose/ButtonClose';
-import type { IconButtonProps } from '../IconButton/IconButton';
+import type { IconButtonProps } from '../IconButton';
 import { Theme } from '../Theme';
+
+import { styles } from './styles';
 
 export type DrawerProps = PropsOf<typeof RD.Root>;
 export type DrawerPortalProps = PropsOf<typeof RD.Portal>;
@@ -20,8 +23,7 @@ export type DrawerContentProps = PropsOf<typeof RD.Content> & {
   side?: 'left' | 'right' | 'top' | 'bottom';
 };
 export type DrawerCloseProps = PropsOf<typeof RD.Close>;
-export type DrawerCloseIconProps = PropsOf<typeof RD.Close> &
-  Partial<IconButtonProps>;
+export type DrawerCloseIconProps = ButtonCloseProps;
 export type DrawerTitleProps = PropsOf<typeof RD.Title>;
 export type DrawerDescriptionProps = PropsOf<typeof RD.Description>;
 
@@ -59,6 +61,7 @@ export const DrawerOverlay = createComponent<
 >({
   id: 'DrawerOverlay',
   baseElement: RD.Overlay,
+  className: () => styles().overlay(),
 });
 
 export const DrawerClose = createComponent<DrawerCloseProps, typeof RD.Close>({
@@ -69,12 +72,17 @@ export const DrawerClose = createComponent<DrawerCloseProps, typeof RD.Close>({
   },
 });
 
-export const DrawerCloseIcon = createComponent<DrawerCloseIconProps, 'button'>({
+export const DrawerCloseIcon = createComponent<
+  DrawerCloseIconProps,
+  typeof ButtonClose
+>({
   id: 'DrawerCloseIcon',
-  render: (_, props) => {
+  className: () => styles().closeIcon(),
+  baseElement: ButtonClose,
+  render: (Comp, props) => {
     return (
       <DrawerClose asChild>
-        <ButtonClose {...props} />
+        <Comp {...(props as IconButtonProps)} />
       </DrawerClose>
     );
   },
@@ -90,12 +98,13 @@ export const DrawerContent = createComponent<
 >({
   id: 'DrawerContent',
   baseElement: RD.Content,
-  render: (Comp, { children, side = 'right', ...props }) => {
+  render: (Comp, { className, children, side = 'right', ...props }) => {
+    const classes = styles({ side });
     return (
       <DrawerPortal>
         <Theme>
           <DrawerOverlay />
-          <Comp {...props} data-side={side}>
+          <Comp {...props} className={classes.content({ className })}>
             {children}
             <DrawerCloseIcon />
           </Comp>
@@ -111,11 +120,13 @@ export const DrawerDescription = createComponent<
 >({
   id: 'DrawerDescription',
   baseElement: RD.Description,
+  className: () => styles().description(),
 });
 
 export const DrawerTitle = createComponent<DrawerTitleProps, typeof RD.Title>({
   id: 'DrawerTitle',
   baseElement: RD.Title,
+  className: () => styles().title(),
 });
 
 export const DrawerHeader = createPolymorphicComponent<
@@ -124,6 +135,7 @@ export const DrawerHeader = createPolymorphicComponent<
 >({
   id: 'DrawerHeader',
   baseElement: Box,
+  className: () => styles().header(),
   defaultProps: {
     as: 'header',
   },
@@ -135,6 +147,7 @@ export const DrawerBody = createPolymorphicComponent<
 >({
   id: 'DrawerBody',
   baseElement: Box,
+  className: () => styles().body(),
 });
 
 export const DrawerFooter = createPolymorphicComponent<
@@ -143,6 +156,7 @@ export const DrawerFooter = createPolymorphicComponent<
 >({
   id: 'DrawerFooter',
   baseElement: Box,
+  className: () => styles().footer(),
   defaultProps: {
     as: 'header',
   },

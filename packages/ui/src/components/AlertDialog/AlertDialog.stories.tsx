@@ -28,14 +28,14 @@ export const Usage: Story = {
           Are you sure? This application will no longer be accessible and any
           existing sessions will be expired.
         </AlertDialog.Description>
-        <HStack justify="end" className="mt-4">
+        <HStack className="mt-4" justify="end">
           <AlertDialog.Cancel>
-            <Button variant="ghost" color="gray">
+            <Button color="gray" variant="ghost">
               Cancel
             </Button>
           </AlertDialog.Cancel>
           <AlertDialog.Action>
-            <Button variant="solid" color="red">
+            <Button color="red" variant="solid">
               Revoke access
             </Button>
           </AlertDialog.Action>

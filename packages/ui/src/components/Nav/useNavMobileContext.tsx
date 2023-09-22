@@ -7,7 +7,7 @@ type ContextProps = {
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ctx = createContext<ContextProps>({} as any);
+const ctx = createContext<ContextProps>({} as ContextProps);
 export function useNavMobileContext() {
   return useContext(ctx);
 }

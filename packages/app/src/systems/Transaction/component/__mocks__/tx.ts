@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Transaction } from '@fuel-explorer/graphql';
 import { bn } from 'fuels';
 import { dayjs } from '~/systems/Core/utils/dayjs';
-
-import type { TxItem } from '../../types';
 
 export const TX_CONTRACT_CALL_MOCK = {
   type: 'contract-call',
@@ -24,7 +21,7 @@ export const TX_CONTRACT_CALL_MOCK = {
       block: {
         id: '0xa89cdecc118758816dfdc65c831a748d95b7d4048cbb729e6315f374c91b43fc',
       },
-    } as any,
+    },
     outputs: [],
     inputs: [
       {
@@ -33,7 +30,7 @@ export const TX_CONTRACT_CALL_MOCK = {
           bytecode: '0x74000003',
           salt: '0x0000000000',
         },
-      } as any,
+      },
     ],
-  } satisfies Transaction,
-} satisfies TxItem;
+  },
+} as any;

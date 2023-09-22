@@ -1,12 +1,24 @@
 import '@fontsource-variable/inter/slnt.css';
 import '../src/theme/index.css';
 
-import { withThemeDecorator } from './addon-theme/decorator';
+import { withThemeDecorator } from 'storybook-addon-theme';
 import { Preview } from '@storybook/react';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { Theme } from '../src/components/Theme';
+import { Toaster } from '../src/components/Toast';
+import { ReactNode } from 'react';
+
+function ThemeWrapper({ children }: { children: ReactNode }) {
+  return (
+    <Theme>
+      <Toaster />
+      {children}
+    </Theme>
+  );
+}
 
 const preview: Preview = {
-  decorators: [withThemeDecorator],
+  decorators: [withThemeDecorator(ThemeWrapper)],
 
   parameters: {
     actions: {

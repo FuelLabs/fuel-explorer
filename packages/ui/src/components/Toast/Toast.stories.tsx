@@ -72,8 +72,8 @@ export const WithAction: Story = {
   render: () => {
     return (
       <Button
-        variant="ghost"
         color="red"
+        variant="ghost"
         onClick={() =>
           toast({
             ...toastProps,

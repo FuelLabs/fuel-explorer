@@ -1,6 +1,7 @@
 import { Badge as RadixBadge } from '@radix-ui/themes';
-import { createComponent } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type BadgeProps = PropsOf<typeof RadixBadge>;
 

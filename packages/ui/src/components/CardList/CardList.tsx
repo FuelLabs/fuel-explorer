@@ -1,15 +1,16 @@
-import { createComponent, withNamespace } from '~/utils/component';
-
+import { createComponent, withNamespace } from '../../utils/component';
 import { HStack, VStack } from '../Box';
 import type { VStackProps } from '../Box';
 import { Card } from '../Card/Card';
 import type { CardProps } from '../Card/Card';
 import { Focus } from '../Focus/Focus';
 
+import { styles } from './styles';
 import { CardListContext, useCardListContext } from './useCardListContext';
 
 export type CardListProps = VStackProps &
   Omit<CardListContext, 'isFocused' | 'children'>;
+
 export type CardListItemProps = CardProps & {
   isActive?: boolean;
   rightEl?: React.ReactNode;
@@ -40,19 +41,27 @@ export const CardListItem = createComponent<CardListItemProps, typeof Card>({
   baseElement: Card,
   render: (
     Comp,
-    { children, isActive, rightEl, autoFocus: initAutoFocus, ...props },
+    {
+      className,
+      children,
+      isActive,
+      rightEl,
+      autoFocus: initAutoFocus,
+      ...props
+    },
   ) => {
     const ctx = useCardListContext();
     const isClickable = Boolean(props.onClick || ctx.isClickable);
+    const classes = styles({ clickable: isClickable });
     return (
       <Comp
         {...props}
-        data-is-active={isActive}
         autoFocus={initAutoFocus || ctx.autoFocus}
-        data-is-clickable={isClickable}
+        className={classes.root({ className })}
         tabIndex={isClickable ? 0 : undefined}
       >
-        <HStack align="center" gap="4" className="flex-1">
+        {isActive && <span className={classes.activeMark()} />}
+        <HStack align="center" className="flex-1" gap="4">
           {children}
         </HStack>
         {rightEl}
