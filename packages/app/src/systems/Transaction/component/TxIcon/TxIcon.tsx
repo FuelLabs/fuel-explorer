@@ -22,24 +22,24 @@ const TX_ICON_MAP: Record<TxType | TxAccountType, IconComponent> = {
   Contract: IconScript,
   Wallet: IconWallet,
   Predicate: IconSwitch3,
-};
+} as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TX_INTENT_MAP: Record<TxStatus, any> = {
+export const TX_INTENT_MAP: Record<TxStatus, any> = {
   Success: 'green',
   Failure: 'red',
   Submitted: 'gray',
   Info: 'sky',
   Warning: 'yellow',
-};
+} as const;
 
-const TX_STATUS_MAP: Record<TxStatus, string> = {
+export const TX_STATUS_MAP: Record<TxStatus, string> = {
   Success: 'Success',
   Submitted: 'Submitted',
   Failure: 'Failure',
   Info: 'Info',
   Warning: 'Waiting',
-};
+} as const;
 
 type TxIconProps = VariantProps<typeof styles> &
   BaseProps<{
