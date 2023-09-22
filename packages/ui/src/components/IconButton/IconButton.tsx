@@ -44,7 +44,7 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
     const isDisabled = Boolean(disabled || isLoading);
     return (
       <RadixIconButton
-        {...(props as any)}
+        {...props}
         {...variantProps}
         disabled={isDisabled}
         size={size}

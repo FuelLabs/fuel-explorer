@@ -1,3 +1,4 @@
+import { action } from '@storybook/addon-actions';
 import type { Meta, StoryObj } from '@storybook/react';
 import { IconBookmark } from '@tabler/icons-react';
 
@@ -68,4 +69,8 @@ export const Sizes: Story = {
 
 export const Loading: Story = {
   render: () => <Button isLoading>Click here</Button>,
+};
+
+export const onClick: Story = {
+  render: () => <Button onClick={action('onClick')}>Click here</Button>,
 };

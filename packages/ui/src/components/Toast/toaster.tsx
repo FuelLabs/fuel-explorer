@@ -29,7 +29,9 @@ export function Toaster() {
             key={id}
             {...props}
             hasDescription={!!description}
-            style={{ '--radix-toast-width': `${width}px` } as any}
+            style={
+              { '--radix-toast-width': `${width}px` } as React.CSSProperties
+            }
           >
             <HStack align="center" className="flex-1">
               {icon}

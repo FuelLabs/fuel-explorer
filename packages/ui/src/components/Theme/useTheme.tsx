@@ -4,7 +4,7 @@ import { updateThemeAppearanceClass, useThemeContext } from '@radix-ui/themes';
 
 const THEME_KEY = 'fuel-ui-theme';
 
-export function useTheme(): any {
+export function useTheme() {
   const { appearance: theme } = useThemeContext();
 
   function toggleTheme() {

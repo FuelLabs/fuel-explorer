@@ -9,7 +9,7 @@ type ContextProps = AssetProps & {
   isNegative: boolean;
 };
 
-const ctx = createContext<ContextProps>({} as any);
+const ctx = createContext<ContextProps>({} as ContextProps);
 export function useAssetContext() {
   return useContext(ctx);
 }

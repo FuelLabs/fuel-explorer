@@ -23,6 +23,7 @@ function parseStatus(transaction: TransactionNode): TxStatus {
 }
 
 function parseTime(transaction: TransactionNode): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const status = transaction.status as any;
   return status?.time ?? 0;
 }

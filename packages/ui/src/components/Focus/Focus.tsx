@@ -12,7 +12,10 @@ import { useFocusNavigator, isRightChildrenType } from './useFocusNavigator';
 
 export type FocusArrowNavigatorProps = FocusScopeProps;
 
-export const FocusArrowNavigator = createComponent<FocusArrowNavigatorProps>({
+export const FocusArrowNavigator = createComponent<
+  FocusArrowNavigatorProps,
+  typeof FocusScope
+>({
   id: 'FocusArrowNavigator',
   render: (_, { children, ...props }) => {
     const { onKeyDown } = useFocusNavigator();
@@ -23,12 +26,9 @@ export const FocusArrowNavigator = createComponent<FocusArrowNavigatorProps>({
         (child: ReactElement) => {
           return cloneElement(child, mergeProps(child.props, { onKeyDown }));
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ) as any;
-      return (
-        <>
-          <FocusScope {...props}>{child}</FocusScope>
-        </>
-      );
+      return <FocusScope {...props}>{child}</FocusScope>;
     }
 
     throw new Error('Children type not accepted');

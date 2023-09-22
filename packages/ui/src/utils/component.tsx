@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, ElementType, ElementRef } from 'react';
 import { forwardRef } from 'react';
 
@@ -9,8 +10,8 @@ import type {
   WithAsProps,
 } from './types';
 type CreateOpts<
-  P extends PropsOf<C>,
-  C extends ComponentType<any> | ElementType<any> = ComponentType<P>,
+  P extends PropsOf<any>,
+  C extends ComponentType<any> | ElementType<any>,
 > = {
   id: string;
   baseElement?: C;
@@ -20,8 +21,8 @@ type CreateOpts<
 };
 
 export function createComponent<
-  P extends PropsOf<C>,
-  C extends ComponentType<any> | ElementType<any> = ComponentType<P>,
+  P extends PropsOf<any>,
+  C extends ComponentType<any> | ElementType<any>,
 >(opts: CreateOpts<P, C>) {
   const { id, baseElement: El = 'div', className: getClass, render } = opts;
 

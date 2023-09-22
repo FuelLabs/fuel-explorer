@@ -1,6 +1,4 @@
-const merge = require('deepmerge-json');
 const { resolve } = require('path');
-const { configs } = require('@fuels/eslint-plugin');
 const { dependencies } = require('./packages/ui/package.json');
 
 const project = [
@@ -8,8 +6,13 @@ const project = [
   resolve(__dirname, 'packages/**/tsconfig.json'),
 ];
 
-const config = {
+module.exports = {
   root: true,
+  extends: [
+    'plugin:@fuels/typescript',
+    'plugin:@fuels/jest',
+    'plugin:@fuels/react',
+  ],
   parserOptions: {
     project,
   },
@@ -29,15 +32,14 @@ const config = {
     },
   },
   rules: {
-    '@typescript-eslint/no-explicit-any': 'off',
     // TODO: add this rules in the npm-packs
     '@typescript-eslint/consistent-type-imports': [
       'error',
       { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
     ],
     'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
-    'react-hooks/rules-of-hooks': 'off',
     'no-html-link-for-pages': 'off',
+    'react-hooks/rules-of-hooks': 'off',
     'react/jsx-sort-props': [
       'warn',
       {
@@ -49,10 +51,3 @@ const config = {
     ],
   },
 };
-
-module.exports = merge.multi(
-  configs.typescript,
-  configs.react,
-  configs.jest,
-  config,
-);

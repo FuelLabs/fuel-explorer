@@ -8,8 +8,9 @@ import {
 import type { PropsOf } from '../../utils/types';
 import { Box } from '../Box';
 import type { BoxProps } from '../Box';
+import type { ButtonCloseProps } from '../ButtonClose/ButtonClose';
 import { ButtonClose } from '../ButtonClose/ButtonClose';
-import type { IconButtonProps } from '../IconButton/IconButton';
+import type { IconButtonProps } from '../IconButton';
 import { Theme } from '../Theme';
 
 import { styles } from './styles';
@@ -22,8 +23,7 @@ export type DrawerContentProps = PropsOf<typeof RD.Content> & {
   side?: 'left' | 'right' | 'top' | 'bottom';
 };
 export type DrawerCloseProps = PropsOf<typeof RD.Close>;
-export type DrawerCloseIconProps = PropsOf<typeof RD.Close> &
-  Partial<IconButtonProps>;
+export type DrawerCloseIconProps = ButtonCloseProps;
 export type DrawerTitleProps = PropsOf<typeof RD.Title>;
 export type DrawerDescriptionProps = PropsOf<typeof RD.Description>;
 
@@ -72,13 +72,17 @@ export const DrawerClose = createComponent<DrawerCloseProps, typeof RD.Close>({
   },
 });
 
-export const DrawerCloseIcon = createComponent<DrawerCloseIconProps, 'button'>({
+export const DrawerCloseIcon = createComponent<
+  DrawerCloseIconProps,
+  typeof ButtonClose
+>({
   id: 'DrawerCloseIcon',
   className: () => styles().closeIcon(),
-  render: (_, props) => {
+  baseElement: ButtonClose,
+  render: (Comp, props) => {
     return (
       <DrawerClose asChild>
-        <ButtonClose {...props} />
+        <Comp {...(props as IconButtonProps)} />
       </DrawerClose>
     );
   },

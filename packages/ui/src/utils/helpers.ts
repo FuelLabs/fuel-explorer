@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { UnknownProps } from './types';
 
 export function omit<T extends UnknownProps>(list: string[], props: T) {

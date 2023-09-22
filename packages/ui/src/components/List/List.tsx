@@ -53,17 +53,17 @@ export const ListItem = createComponent<ListItemProps, 'li'>({
   },
 });
 
-export const ListUL = createComponent<ListULProps, 'ul'>({
+export const ListUL = createComponent<ListULProps, typeof ListRoot>({
   id: 'ListUL',
-  baseElement: ListRoot as any,
+  baseElement: ListRoot,
   defaultProps: {
     type: 'ul',
   } as ListProps,
 });
 
-export const ListOL = createComponent<ListOLProps, 'ol'>({
+export const ListOL = createComponent<ListOLProps, typeof ListRoot>({
   id: 'ListOL',
-  baseElement: ListRoot as any,
+  baseElement: ListRoot,
   defaultProps: {
     type: 'ol',
   } as ListProps,

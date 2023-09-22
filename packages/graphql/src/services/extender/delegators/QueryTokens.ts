@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { delegateToSchema } from '@graphql-tools/delegate';
 import type { GraphQLResolveInfo } from 'graphql';
 import { OperationTypeNode } from 'graphql';

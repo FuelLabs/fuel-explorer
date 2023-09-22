@@ -16,6 +16,7 @@ export const Usage: Story = {
   render: () => (
     <TxCard
       className="w-[350px]"
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transaction={TX_CONTRACT_CALL_MOCK['transaction'] as any}
     />
   ),

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
 import type {
@@ -111,7 +112,7 @@ export type BaseProps<P> = P & {
   className?: string;
   children?: Children;
   autoFocus?: boolean;
-  style?: React.CSSProperties;
+  style?: HTMLPropsOf<'div'>['style'];
 };
 
 export type WithGap = {
@@ -135,8 +136,8 @@ export type WithAsProps = {
  * Type helpers
  */
 
-export type UnknownObj = Record<string, unknown>;
-export type UnknownProps = Partial<BaseProps<unknown>>;
+export type UnknownObj = Record<string, any>;
+export type UnknownProps = Partial<BaseProps<any>>;
 export type ComponentNamespace = Record<string, ComponentType<any>>;
 
 export type HTMLPropsOf<T extends ElementType<any>> =

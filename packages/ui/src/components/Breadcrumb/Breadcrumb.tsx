@@ -18,6 +18,7 @@ export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
   baseElement: 'ul',
   render: (Comp, { children, ...props }) => {
     const newChildren = Children.toArray(children).flatMap((child, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const id = (child as any)?.type?.id;
       if (id !== 'BreadcrumbItem' && id !== 'BreadcrumbLink') {
         throw new Error(

@@ -1,10 +1,11 @@
-const merge = require('deepmerge-json');
-const { configs } = require('@fuels/eslint-plugin');
-const baseConfig = require('../../.eslintrc.js');
-const config = configs.next;
+const config = require('../../.eslintrc.js');
 
-module.exports = merge.multi(baseConfig, config.next, {
-  rules: {
-    'no-html-link-for-pages': 'off',
-  },
-});
+module.exports = {
+  extends: [
+    'plugin:@fuels/typescript',
+    'plugin:@fuels/jest',
+    'plugin:@fuels/react',
+    'plugin:@fuels/next',
+  ],
+  rules: config.rules,
+};

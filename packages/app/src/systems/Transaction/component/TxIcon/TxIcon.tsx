@@ -24,6 +24,7 @@ const TX_ICON_MAP: Record<TxType | TxAccountType, IconComponent> = {
   Predicate: IconSwitch3,
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TX_INTENT_MAP: Record<TxStatus, any> = {
   Success: 'green',
   Failure: 'red',

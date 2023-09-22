@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { GraphQLFieldResolver } from 'graphql';
 
 import accountsData from '../../data/accounts.json';

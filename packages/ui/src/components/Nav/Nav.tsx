@@ -71,7 +71,7 @@ export type NavMobileContentProps = WithAsProps & BoxProps;
 
 const ROOT_CHILD_ITEMS = ['NavDesktop', 'NavMobile'];
 
-export const NavRoot = createComponent<NavProps>({
+export const NavRoot = createComponent<NavProps, typeof NavProvider>({
   id: 'Nav',
   render: (_, { network, account, onConnect, children }) => {
     const newChildren = useStrictedChildren('Nav', ROOT_CHILD_ITEMS, children);
@@ -113,7 +113,7 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
         <Root
           {...props}
           className={classes.desktop({ className })}
-          style={{ '--nav-height': '70px' } as any}
+          style={{ '--nav-height': '70px' } as React.CSSProperties}
         >
           {children}
         </Root>
@@ -155,7 +155,10 @@ export const NavMobile = createComponent<NavMobileProps, 'nav'>({
     if (width >= 1024) return null;
     return (
       <NavMobileProvider value={{ isOpen: open, onOpenChange: setOpen }}>
-        <Root {...props} style={{ '--nav-height': '60px' } as any}>
+        <Root
+          {...props}
+          style={{ '--nav-height': '60px' } as React.CSSProperties}
+        >
           {children}
         </Root>
       </NavMobileProvider>
@@ -176,6 +179,7 @@ export const NavMobileContent = createComponent<
     return (
       <Root {...props} data-open={isOpen}>
         <AnimatePresence initial={false}>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {Children.toArray(children).map((child: any) => {
             return cloneElement(child, { key: child.type.id });
           })}
@@ -208,7 +212,7 @@ export const NavSpacer = createComponent<{}, 'hr'>({
  * NavLogo
  */
 
-export const NavLogo = createComponent<NavLogoProps>({
+export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
   id: 'NavLogo',
   className: () => styles().logo(),
   render: (_, { size, ...props }) => {
@@ -286,74 +290,77 @@ export const NavMenuItem = createComponent<NavMenuItemProps, typeof Link>({
  */
 const MotionHStack = motion<HStackProps>(HStack);
 
-export const NavConnection = createComponent<NavConnectionProps>({
-  id: 'NavConnection',
-  className: () => styles().navConnection(),
-  render: (_, { whenOpened = 'show', ...props }) => {
-    const navProps = useNavContext();
-    const mobileProps = useNavMobileContext();
-    const hasProps = navProps.network || navProps.account;
-    const connectButton = (
-      <Button
-        leftIcon={IconWallet}
-        radius="full"
-        variant="solid"
-        onClick={navProps.onConnect}
-      >
-        Connect
-      </Button>
-    );
+export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
+  {
+    id: 'NavConnection',
+    className: () => styles().navConnection(),
+    render: (_, { whenOpened = 'show', ...props }) => {
+      const navProps = useNavContext();
+      const mobileProps = useNavMobileContext();
+      const hasProps = navProps.network || navProps.account;
+      const connectButton = (
+        <Button
+          leftIcon={IconWallet}
+          radius="full"
+          variant="solid"
+          onClick={navProps.onConnect}
+        >
+          Connect
+        </Button>
+      );
 
-    const content = (
-      <>
-        {navProps.network && (
-          <Badge color="gray" radius="full" size="2">
-            <Box className="h-2 w-2 rounded-full bg-brand" />
-            {navProps.network.name}
-          </Badge>
-        )}
-        {/* {navProps.account && ( */}
-        {/*   <AvatarGenerated */}
-        {/*     {...props} */}
-        {/*     {...classes.avatar} */}
-        {/*     hash={navProps.account} */}
-        {/*     size="sm" */}
-        {/*   /> */}
-        {/* )} */}
-      </>
-    );
+      const content = (
+        <>
+          {navProps.network && (
+            <Badge color="gray" radius="full" size="2">
+              <Box className="h-2 w-2 rounded-full bg-brand" />
+              {navProps.network.name}
+            </Badge>
+          )}
+          {/* {navProps.account && ( */}
+          {/*   <AvatarGenerated */}
+          {/*     {...props} */}
+          {/*     {...classes.avatar} */}
+          {/*     hash={navProps.account} */}
+          {/*     size="sm" */}
+          {/*   /> */}
+          {/* )} */}
+        </>
+      );
 
-    if (!mobileProps?.onOpenChange && !hasProps) {
-      return connectButton;
-    }
-    if (!mobileProps?.onOpenChange || whenOpened === 'no-effect') {
-      return <HStack gap="2">{content}</HStack>;
-    }
+      if (!mobileProps?.onOpenChange && !hasProps) {
+        return connectButton;
+      }
+      if (!mobileProps?.onOpenChange || whenOpened === 'no-effect') {
+        return <HStack gap="2">{content}</HStack>;
+      }
 
-    const animContent = (
-      <MotionHStack
-        {...(props as any)}
-        animate="open"
-        exit="collapsed"
-        initial="collapsed"
-        transition={{ duration: 0.2, ease: [0.04, 0.62, 0.23, 0.98] }}
-        variants={{
-          open: { opacity: 1, x: '0' },
-          collapsed: { opacity: 0, x: 100 },
-        }}
-      >
-        {content}
-      </MotionHStack>
-    );
+      const animContent = (
+        <MotionHStack
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {...(props as any)}
+          animate="open"
+          exit="collapsed"
+          initial="collapsed"
+          transition={{ duration: 0.2, ease: [0.04, 0.62, 0.23, 0.98] }}
+          variants={{
+            open: { opacity: 1, x: '0' },
+            collapsed: { opacity: 0, x: 100 },
+          }}
+        >
+          {content}
+        </MotionHStack>
+      );
 
-    return (
-      <>
-        {!mobileProps.isOpen && whenOpened === 'hide' && animContent}
-        {mobileProps.isOpen && whenOpened === 'show' && animContent}
-      </>
-    );
+      return (
+        <>
+          {!mobileProps.isOpen && whenOpened === 'hide' && animContent}
+          {mobileProps.isOpen && whenOpened === 'show' && animContent}
+        </>
+      );
+    },
   },
-});
+);
 
 /**
  * NavThemeToggle
