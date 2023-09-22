@@ -19,6 +19,7 @@
     "@fuel-explorer/ui": "workspace:*",
     "@fuel-ts/math": "0.59.0",
     "@fuel-wallet/sdk": "0.13.0",
+    "@fuels/assets": "0.0.11",
     "@tabler/icons-react": "2.34.0",
     "@tanstack/react-query": "4.35.3",
     "clsx": "2.0.0",

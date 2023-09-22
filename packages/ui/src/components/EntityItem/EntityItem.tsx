@@ -19,28 +19,26 @@ export type EntityItemInfo = BoxProps & { title: ReactNode; id: string };
 export const EntityItemRoot = createComponent<EntityItemProps, typeof HStack>({
   id: 'EntityItem',
   baseElement: HStack,
-  render: (Comp, { gap = '2', ...props }) => {
+  render: (Comp, { gap = '2', className, ...props }) => {
     const classes = styles();
-    return <Comp {...props} className={classes.root()} gap={gap} />;
+    return (
+      <Comp {...props} className={classes.root({ className })} gap={gap} />
+    );
   },
 });
 
 export const EntityItemSlot = createComponent<EntityItemSlotProps, typeof Box>({
   id: 'EntityItemSlot',
   baseElement: Box,
-  render: (Comp, props) => {
-    const classes = styles();
-    return <Comp {...props} className={classes.icon()} />;
-  },
 });
 
 export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
   id: 'EntityItemInfo',
   baseElement: Box,
-  render: (Comp, { title, id, children, ...props }) => {
+  render: (Comp, { title, id, children, className, ...props }) => {
     const classes = styles();
     return (
-      <Comp {...props} className={classes.info()}>
+      <Comp {...props} className={classes.info({ className })}>
         <Text as="p" className={classes.name()}>
           {title}
         </Text>
@@ -60,8 +58,7 @@ export const EntityItem = withNamespace(EntityItemRoot, {
 
 const styles = tv({
   slots: {
-    root: 'gap-4',
-    icon: 'mt-2 [&_img]:h-full [&_img]:w-full',
+    root: 'gap-4 items-center',
     name: 'mt-0 font-medium',
     info: 'flex flex-col justify-center gap-1',
     tag: 'mt-0',

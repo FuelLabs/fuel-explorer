@@ -10,9 +10,6 @@
   },
   "typesVersions": {
     "*": {
-      ".": [
-        "./src/index.tsx"
-      ],
       "tailwind-preset": [
         "./src/theme/tailwind-preset.ts"
       ]

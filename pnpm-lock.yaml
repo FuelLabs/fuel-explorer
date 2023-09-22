@@ -141,6 +141,9 @@ importers:
       '@fuel-wallet/sdk':
         specifier: 0.13.0
         version: 0.13.0(fuels@0.59.0)
+      '@fuels/assets':
+        specifier: 0.0.11
+        version: 0.0.11
       '@tabler/icons-react':
         specifier: 2.34.0
         version: 2.34.0(react@18.2.0)
@@ -2963,6 +2966,10 @@ packages:
       xstate: 4.38.2
     transitivePeerDependencies:
       - dexie
+    dev: false
+
+  /@fuels/assets@0.0.11:
+    resolution: {integrity: sha512-Ww8mO8apM/27OH2PR6LC3jg7IlnWN3yKVXuWIEpkEPy6QCDEiivsmA7H8moM2BH6VSKm8k4OiVKaOhaIDzOqHQ==}
     dev: false
 
   /@fuels/eslint-plugin@0.0.11(eslint@8.50.0)(typescript@5.2.2):
