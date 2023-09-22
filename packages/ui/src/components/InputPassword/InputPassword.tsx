@@ -9,7 +9,7 @@ import { Input } from '../Input/Input';
 
 export type InputPasswordProps = InputProps & Omit<InputFieldProps, 'type'>;
 
-export const InputPassword = createComponent<InputPasswordProps>({
+export const InputPassword = createComponent<InputPasswordProps, typeof Input>({
   id: 'InputPassword',
   render: (_, { size, className, variant, color, ...props }) => {
     const [opened, setOpened] = useState(false);

@@ -6,6 +6,7 @@ import type { BaseProps, PropsOf } from '../../utils/types';
 import type { ButtonCloseProps } from '../ButtonClose/ButtonClose';
 import { ButtonClose } from '../ButtonClose/ButtonClose';
 import type { Icon } from '../Icon/Icon';
+import type { IconButtonProps } from '../IconButton';
 
 import { styles } from './styles';
 
@@ -59,7 +60,7 @@ export const ToastClose = createComponent<ToastCloseProps, typeof TP.Close>({
   render: (Comp, props) => {
     return (
       <Comp>
-        <ButtonClose {...props} />
+        <ButtonClose {...(props as IconButtonProps)} />
       </Comp>
     );
   },

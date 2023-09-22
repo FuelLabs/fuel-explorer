@@ -9,8 +9,9 @@ type SvgIconProps = Omit<PropsOf<'svg'>, 'size' | 'stroke'>;
 export type IconBaseProps = Partial<IconContext> & { icon: IconComponent };
 export type IconProps = IconBaseProps & SvgIconProps;
 
-export const Icon = createComponent<IconProps>({
+export const Icon = createComponent<IconProps, 'svg'>({
   id: 'Icon',
+  baseElement: 'svg',
   render: (
     _,
     {
