@@ -19,7 +19,7 @@ type Story = StoryObj<typeof Tooltip>;
 export const Usage: Story = {
   render: () => (
     <Tooltip content="Add to library">
-      <IconButton radius="full" icon={IconPlus} aria-label="Add" />
+      <IconButton aria-label="Add" icon={IconPlus} radius="full" />
     </Tooltip>
   ),
 };

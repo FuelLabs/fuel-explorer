@@ -16,8 +16,8 @@ export const Usage: Story = {
   render: (args) => (
     <VStack>
       <Spinner {...args} />
-      <Spinner {...args} size={30} color="indigo" />
-      <Spinner {...args} size={50} color="gray" />
+      <Spinner {...args} color="indigo" size={30} />
+      <Spinner {...args} color="gray" size={50} />
     </VStack>
   ),
 };

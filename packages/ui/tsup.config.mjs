@@ -1,20 +1,17 @@
-import path from 'path';
-
 import tsconfig from './tsconfig.json';
 
 const defConfig = {
   outDir: 'dist',
   splitting: true,
-  format: ['esm'],
-  outExtension() {
+  format: ['esm', 'cjs'],
+  outExtension({ format }) {
     return {
-      js: `.js`,
+      js: `.${format}.js`,
     };
   },
   sourcemap: true,
   clean: true,
   target: tsconfig.compilerOptions.target,
-  tsconfig: path.resolve(__dirname, './tsconfig.build.json'),
   esbuildOptions(options) {
     options.banner = {
       js: "'use client'",
@@ -23,14 +20,6 @@ const defConfig = {
 };
 
 export default [
-  {
-    ...defConfig,
-    entry: [
-      './src/components/**/index.tsx',
-      '!./src/components/**/*.stories.tsx',
-    ],
-    outDir: 'dist/components',
-  },
   {
     ...defConfig,
     entry: {
@@ -45,14 +34,6 @@ export default [
     },
     format: ['cjs'],
     outDir: 'dist/theme',
-  },
-  {
-    ...defConfig,
-    entry: {
-      component: 'src/utils/component.tsx',
-    },
-    format: ['cjs'],
-    outDir: 'dist/utils',
   },
   {
     entry: {

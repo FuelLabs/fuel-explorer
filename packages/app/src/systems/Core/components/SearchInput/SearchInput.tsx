@@ -1,14 +1,6 @@
 'use client';
-import { Focus } from '@fuel-explorer/ui/Focus';
-import { Icon } from '@fuel-explorer/ui/Icon';
-import { IconButton } from '@fuel-explorer/ui/IconButton';
-import {
-  Input,
-  type InputFieldProps,
-  type InputProps,
-} from '@fuel-explorer/ui/Input';
-import { Tooltip } from '@fuel-explorer/ui/Tooltip';
-import type { BaseProps } from '@fuel-explorer/ui/types';
+import type { BaseProps, InputFieldProps, InputProps } from '@fuel-explorer/ui';
+import { Focus, Icon, IconButton, Tooltip, Input } from '@fuel-explorer/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 
@@ -53,25 +45,25 @@ export function SearchInput({
         <Input.Field
           {...props}
           ref={inputRef}
-          onChange={handleChange}
           value={value}
+          onChange={handleChange}
         />
         {Boolean(value.length) && (
           <Input.Slot className="mx-1">
             <IconButton
-              variant="link"
               aria-label="Clear"
-              onClick={handleClear}
-              iconColor="text-icon"
               icon={IconX}
+              iconColor="text-icon"
+              variant="link"
+              onClick={handleClear}
             />
             <Tooltip content="Submit">
               <IconButton
-                variant="link"
                 aria-label="Submit"
-                onClick={handleSubmit}
-                iconColor="text-brand"
                 icon={IconCheck}
+                iconColor="text-brand"
+                variant="link"
+                onClick={handleSubmit}
               />
             </Tooltip>
           </Input.Slot>

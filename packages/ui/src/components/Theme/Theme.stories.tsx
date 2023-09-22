@@ -20,11 +20,11 @@ type Story = StoryObj<typeof Theme>;
 
 export const Usage: Story = {
   render: () => (
-    <Theme accentColor="orange" radius="full" className="rounded-xl">
+    <Theme accentColor="orange" className="rounded-xl" radius="full">
       <Card className="w-[400px] p-4">
         <VStack>
           <Grid gap="1">
-            <Text as="div" weight="bold" size="2" mb="1">
+            <Text as="div" mb="1" size="2" weight="bold">
               Feedback
             </Text>
             <TextArea placeholder="Write your feedback…" />
@@ -34,7 +34,7 @@ export const Usage: Story = {
               <Text color="gray" size="2">
                 Attach screenshot?
               </Text>
-              <Switch size="1" defaultChecked />
+              <Switch defaultChecked size="1" />
             </label>
           </Flex>
           <Grid columns="2" gap="2">

@@ -55,21 +55,21 @@ export function useIconProps<P extends WithIconProps>({
     <>
       {leftIcon && (
         <Icon
-          size={iconSize}
-          color={iconColor}
-          icon={leftIcon}
           aria-label={leftIconAriaLabel}
           className={leftIconClassName}
+          color={iconColor}
+          icon={leftIcon}
+          size={iconSize}
         />
       )}
       {initialChildren}
       {rightIcon && (
         <Icon
-          size={iconSize}
-          color={iconColor}
-          icon={rightIcon}
           aria-label={rightIconAriaLabel}
           className={rightIconClassName}
+          color={iconColor}
+          icon={rightIcon}
+          size={iconSize}
         />
       )}
     </>

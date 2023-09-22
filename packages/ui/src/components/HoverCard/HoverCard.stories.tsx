@@ -26,9 +26,9 @@ export const Usage: Story = {
       <HoverCard>
         <HoverCard.Trigger>
           <Link
+            className="mx-2"
             href="https://twitter.com/fuel_network"
             target="_blank"
-            className="mx-2"
           >
             @fuel_network
           </Link>
@@ -36,19 +36,19 @@ export const Usage: Story = {
         <HoverCard.Content>
           <HStack>
             <Avatar
-              size="3"
               fallback="R"
+              size="3"
               src="https://pbs.twimg.com/profile_images/1651228955301629963/IfYACWA__400x400.jpg"
             />
             <Box>
-              <Heading size="5" as="h3">
+              <Heading as="h3" size="5">
                 Fuel
               </Heading>
-              <Text as="div" size="2" color="gray">
+              <Text as="div" color="gray" size="2">
                 @fuel_network
               </Text>
 
-              <Text as="div" size="2" mt="3" className="max-w-lg">
+              <Text as="div" className="max-w-lg" mt="3" size="2">
                 The fastest execution layer.
               </Text>
             </Box>

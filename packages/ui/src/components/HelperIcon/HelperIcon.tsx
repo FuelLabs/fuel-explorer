@@ -40,12 +40,12 @@ export const HelperIcon = createComponent<HelperIconProps, 'span'>({
         {children}
         <Tooltip content={message}>
           <Icon
-            icon={HelperIcon}
             aria-label={ariaLabel}
+            className={iconClassName}
+            color={iconColor}
+            icon={HelperIcon}
             size={iconSize}
             stroke={iconStroke}
-            color={iconColor}
-            className={iconClassName}
           />
         </Tooltip>
       </Comp>

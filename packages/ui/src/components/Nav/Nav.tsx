@@ -16,7 +16,8 @@ import { Badge } from '../Badge/Badge';
 import { Box, HStack } from '../Box';
 import type { BoxProps, HStackProps } from '../Box';
 import { Button } from '../Button/Button';
-import { FuelLogo, type FuelLogoProps } from '../FuelLogo/FuelLogo';
+import { FuelLogo } from '../FuelLogo/FuelLogo';
+import type { FuelLogoProps } from '../FuelLogo/FuelLogo';
 import { Icon } from '../Icon/Icon';
 import { IconButton } from '../IconButton';
 import type { LinkProps } from '../Link/Link';
@@ -180,12 +181,12 @@ export const NavMobileContent = createComponent<
           })}
         </AnimatePresence>
         <IconButton
-          variant="link"
           aria-label="Toggle Menu"
+          className="ml-2"
           icon={isOpen ? IconX : IconMenu2}
           iconSize={24}
+          variant="link"
           onClick={() => onOpenChange((s) => !s)}
-          className="ml-2"
         />
       </Root>
     );
@@ -237,9 +238,9 @@ export const NavMenu = createComponent<NavMenuProps, 'div'>({
         {mobileProps.isOpen && (
           <motion.div
             key="content"
-            initial="collapsed"
             animate="open"
             exit="collapsed"
+            initial="collapsed"
             variants={{
               open: {
                 height: 'auto',
@@ -294,9 +295,9 @@ export const NavConnection = createComponent<NavConnectionProps>({
     const hasProps = navProps.network || navProps.account;
     const connectButton = (
       <Button
+        leftIcon={IconWallet}
         radius="full"
         variant="solid"
-        leftIcon={IconWallet}
         onClick={navProps.onConnect}
       >
         Connect
@@ -306,7 +307,7 @@ export const NavConnection = createComponent<NavConnectionProps>({
     const content = (
       <>
         {navProps.network && (
-          <Badge radius="full" size="2" color="gray">
+          <Badge color="gray" radius="full" size="2">
             <Box className="h-2 w-2 rounded-full bg-brand" />
             {navProps.network.name}
           </Badge>
@@ -332,9 +333,9 @@ export const NavConnection = createComponent<NavConnectionProps>({
     const animContent = (
       <MotionHStack
         {...(props as any)}
-        initial="collapsed"
         animate="open"
         exit="collapsed"
+        initial="collapsed"
         transition={{ duration: 0.2, ease: [0.04, 0.62, 0.23, 0.98] }}
         variants={{
           open: { opacity: 1, x: '0' },
@@ -368,28 +369,28 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
     const content = (
       <Root
         {...props}
-        tabIndex={0}
-        role="button"
-        data-theme={current}
-        onClick={toggleTheme}
         aria-label="Toggle Theme"
         className={classes.themeToggle({ className })}
+        data-theme={current}
+        role="button"
+        tabIndex={0}
+        onClick={toggleTheme}
       >
         <Icon
-          icon={IconSunFilled}
-          stroke={1}
           aria-label="Sun"
-          size={18}
-          color="text-icon"
           className={classes.themeToggleIcon()}
+          color="text-icon"
+          icon={IconSunFilled}
+          size={18}
+          stroke={1}
         />
         <Icon
-          icon={IconMoonFilled}
-          stroke={1}
           aria-label="Moon"
-          size={18}
-          color="text-icon"
           className={classes.themeToggleIcon()}
+          color="text-icon"
+          icon={IconMoonFilled}
+          size={18}
+          stroke={1}
         />
       </Root>
     );
@@ -400,9 +401,9 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
 
     const animContent = (
       <motion.div
-        initial="collapsed"
         animate="open"
         exit="collapsed"
+        initial="collapsed"
         transition={{ duration: 0.2, ease: [0.04, 0.62, 0.23, 0.98] }}
         variants={{
           open: { opacity: 1, width: 'auto' },

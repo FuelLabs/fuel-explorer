@@ -16,7 +16,7 @@ export const Usage: Story = {
   render: () => (
     <Text size="2">
       <label>
-        <Switch mr="2" defaultChecked /> Sync settings{' '}
+        <Switch defaultChecked mr="2" /> Sync settings{' '}
         <Text color="gray">(Default)</Text>
       </label>
     </Text>

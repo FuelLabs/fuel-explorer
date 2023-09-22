@@ -1,10 +1,8 @@
 'use client';
 
-import { Flex } from '@fuel-explorer/ui/Box';
-import { Card } from '@fuel-explorer/ui/Card';
-import { EntityItem } from '@fuel-explorer/ui/EntityItem';
-import { Text } from '@fuel-explorer/ui/Text';
-import type { BaseProps } from '@fuel-explorer/ui/types';
+import { Flex, Card, EntityItem, Text } from '@fuel-explorer/ui';
+import type { BaseProps } from '@fuel-explorer/ui';
+import { bn } from '@fuel-ts/math';
 import {
   IconClockHour1,
   IconCoins,
@@ -12,12 +10,11 @@ import {
   IconTransfer,
   IconUsers,
 } from '@tabler/icons-react';
-import { bn } from 'fuels';
 import { tv } from 'tailwind-variants';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 
 import { useTx } from '../../hooks/useTx';
-import { type TransactionNode } from '../../types';
+import type { TransactionNode } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
 
 type TxCardProps = BaseProps<{
@@ -33,24 +30,24 @@ export function TxCard({ transaction, className, ...props }: TxCardProps) {
       <Card.Header>
         <EntityItem>
           <EntityItem.Slot>
-            <TxIcon type={tx.type} status={tx.status} />
+            <TxIcon status={tx.status} type={tx.type} />
           </EntityItem.Slot>
-          <EntityItem.Info title={tx.title} id={tx.transaction?.id} />
+          <EntityItem.Info id={tx.transaction?.id} title={tx.title} />
         </EntityItem>
       </Card.Header>
       <Card.Body className={classes.body()}>
-        <Flex justify="between" className={classes.row()}>
+        <Flex className={classes.row()} justify="between">
           <Text leftIcon={IconUsers}>{tx.totalAccounts} accounts</Text>
         </Flex>
-        <Flex justify="between" className={classes.row()}>
+        <Flex className={classes.row()} justify="between">
           <Text leftIcon={IconTransfer}>{tx.totalOperations} operations</Text>
-          <Text leftIcon={IconClockHour1} className={classes.small()}>
+          <Text className={classes.small()} leftIcon={IconClockHour1}>
             {fromNow(tx.timestamp)}
           </Text>
         </Flex>
-        <Flex justify="between" className={classes.row()}>
+        <Flex className={classes.row()} justify="between">
           <Text leftIcon={IconCoins}>{tx.totalAssets} assets</Text>
-          <Text leftIcon={IconGasStation} className={classes.small()}>
+          <Text className={classes.small()} leftIcon={IconGasStation}>
             {bn(tx.gasUsed).format({ units: 3 })} ETH
           </Text>
         </Flex>

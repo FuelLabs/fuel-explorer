@@ -17,7 +17,7 @@ export const Usage: Story = {
   render: (args) => (
     <Breadcrumb {...args}>
       <Breadcrumb.Item>
-        <Icon icon={IconHome} className="text-icon" />
+        <Icon className="text-icon" icon={IconHome} />
       </Breadcrumb.Item>
       <Breadcrumb.Item>Components</Breadcrumb.Item>
       <Breadcrumb.Link href="#">Dropdown</Breadcrumb.Link>

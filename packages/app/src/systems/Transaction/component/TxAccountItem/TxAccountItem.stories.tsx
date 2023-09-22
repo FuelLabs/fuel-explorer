@@ -1,6 +1,6 @@
-import { VStack } from '@fuel-explorer/ui/Box';
+import { VStack } from '@fuel-explorer/ui';
+import { bn } from '@fuel-ts/math';
 import type { Meta, StoryObj } from '@storybook/react';
-import { bn } from 'fuels';
 
 import { TxAccountTypeEnum } from '../../types';
 import { TX_CONTRACT_CALL_MOCK } from '../__mocks__/tx';
@@ -18,10 +18,10 @@ type Story = StoryObj<typeof TxAccountItem>;
 export const Usage: Story = {
   render: () => (
     <TxAccountItem
-      type="Contract"
+      className="max-w-[300px]"
       id={TX_CONTRACT_CALL_MOCK.transaction.id}
       spent={bn(1)}
-      className="max-w-[300px]"
+      type="Contract"
     />
   ),
 };
@@ -34,10 +34,10 @@ export const AllTypes: Story = {
       {TYPES.map((type: any) => (
         <TxAccountItem
           key={type}
-          id={TX_CONTRACT_CALL_MOCK.transaction.id}
-          type={type}
-          spent={bn(1)}
           className="max-w-[300px]"
+          id={TX_CONTRACT_CALL_MOCK.transaction.id}
+          spent={bn(1)}
+          type={type}
         />
       ))}
     </VStack>

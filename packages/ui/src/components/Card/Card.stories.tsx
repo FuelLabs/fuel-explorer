@@ -38,7 +38,7 @@ export const FullVersion: Story = {
         efficitur a sem.
       </Card.Body>
       <Card.Footer>
-        <Button variant="ghost" color="gray">
+        <Button color="gray" variant="ghost">
           Cancel
         </Button>
         <Button variant="solid">Submit</Button>
@@ -50,7 +50,7 @@ export const FullVersion: Story = {
 export const AsChild: Story = {
   name: 'AsChild',
   render: () => (
-    <Card className="max-w-sm" asChild>
+    <Card asChild className="max-w-sm">
       <section>
         <Card.Body>Hello world from Fuel</Card.Body>
       </section>
@@ -60,7 +60,7 @@ export const AsChild: Story = {
 
 export const Polymorphic: Story = {
   render: () => (
-    <Card className="max-w-sm" as="section">
+    <Card as="section" className="max-w-sm">
       <Card.Body>Hello world from Fuel</Card.Body>
     </Card>
   ),

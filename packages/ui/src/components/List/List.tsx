@@ -39,10 +39,10 @@ export const ListItem = createComponent<ListItemProps, 'li'>({
     const classes = styles({ withIcon: Boolean(icon) }).item({ className });
     const iconEl = icon && (
       <Icon
-        icon={icon}
-        color={iconColor}
-        size={iconSize}
         aria-label={iconAriaLabel}
+        color={iconColor}
+        icon={icon}
+        size={iconSize}
       />
     );
     return (

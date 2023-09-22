@@ -6,7 +6,6 @@ import type { PropsOf } from '../../utils/types';
 export type InputProps = PropsOf<typeof RT.Root>;
 export type InputSlotProps = PropsOf<typeof RT.Slot>;
 export type InputFieldProps = PropsOf<typeof RT.Input>;
-export type InputPasswordProps = Omit<PropsOf<typeof RT.Input>, 'type'>;
 
 export const InputRoot = createComponent<InputProps, typeof RT.Root>({
   id: 'Input',

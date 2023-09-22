@@ -11,18 +11,19 @@
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "fuels": ["../../node_modules/fuels"],
+      "tailwind-variants": ["../../node_modules/tailwind-variants"],
+      "@react-aria/interactions": [
+        "../../node_modules/@react-aria/interactions"
+      ]
     }
   },
   "include": [
     "next-env.d.ts",
+    ".next/types/**/*.ts",
     "src",
     ".storybook",
-    ".next/types/**/*.ts",
-    "stories/**/*.tsx",
-    "./jest.setup.ts",
-    "./jest.config.ts",
-    "./tailwind.config.js"
-  ],
-  "exclude": ["node_modules"]
+    "*.config.*"
+  ]
 }

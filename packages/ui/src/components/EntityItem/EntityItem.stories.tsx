@@ -18,11 +18,11 @@ const DEFAULT_ARGS = {
   children: (
     <>
       <EntityItem.Slot>
-        <img width={30} height={30} alt="Ethereum Logo" src="/assets/eth.svg" />
+        <img alt="Ethereum Logo" height={30} src="/assets/eth.svg" width={30} />
       </EntityItem.Slot>
       <EntityItem.Info
-        title="Ethereum"
         id="0x0000000000000000000000000000000000000000000000000000000000000000"
+        title="Ethereum"
       />
     </>
   ),
@@ -38,24 +38,14 @@ export const Variations: Story = {
       <EntityItem>
         <EntityItem.Slot>
           <Icon
-            size={24}
-            icon={IconCode}
             className="rounded-full bg-gray-6 flex justify-centered items-center w-full h-full p-[7px]"
+            icon={IconCode}
+            size={24}
           />
         </EntityItem.Slot>
-        <EntityItem.Info title="Contract" id="0x000000000" />
+        <EntityItem.Info id="0x000000000" title="Contract" />
       </EntityItem>
       <EntityItem>{DEFAULT_ARGS.children}</EntityItem>
-    </VStack>
-  ),
-};
-
-export const Sizes: Story = {
-  render: () => (
-    <VStack gap="4">
-      <EntityItem size="sm">{DEFAULT_ARGS.children}</EntityItem>
-      <EntityItem size="md">{DEFAULT_ARGS.children}</EntityItem>
-      <EntityItem size="lg">{DEFAULT_ARGS.children}</EntityItem>
     </VStack>
   ),
 };

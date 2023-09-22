@@ -4,4 +4,9 @@ export type {
   EntityItemVariantProps,
 } from './EntityItem';
 
-export { EntityItem } from './EntityItem';
+export {
+  EntityItem,
+  EntityItemRoot,
+  EntityItemSlot,
+  EntityItemInfo,
+} from './EntityItem';

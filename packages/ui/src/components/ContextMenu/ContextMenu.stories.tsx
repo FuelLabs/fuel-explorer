@@ -51,7 +51,7 @@ export const Usage: Story = {
         <ContextMenu.Item>Share</ContextMenu.Item>
         <ContextMenu.Item>Add to favorites</ContextMenu.Item>
         <ContextMenu.Separator />
-        <ContextMenu.Item shortcut="⌘ ⌫" color="red">
+        <ContextMenu.Item color="red" shortcut="⌘ ⌫">
           Delete
         </ContextMenu.Item>
       </ContextMenu.Content>

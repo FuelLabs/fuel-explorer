@@ -15,19 +15,19 @@ export const InputPassword = createComponent<InputPasswordProps>({
     const [opened, setOpened] = useState(false);
     const type = opened ? 'text' : 'password';
     return (
-      <Input size={size} className={className} variant={variant} color={color}>
+      <Input className={className} color={color} size={size} variant={variant}>
         <Input.Slot>
-          <Icon icon={IconLock} size={16} color="text-icon" />
+          <Icon color="text-icon" icon={IconLock} size={16} />
         </Input.Slot>
         <Input.Field {...props} type={type} />
         <Input.Slot className="mr-1">
           <IconButton
-            variant="link"
-            color="gray"
             aria-label="Toggle passowrd"
+            color="gray"
             icon={opened ? IconEye : IconEyeOff}
             iconColor={opened ? 'text-brand' : 'text-icon'}
             iconSize={16}
+            variant="link"
             onClick={() => setOpened(!opened)}
           />
         </Input.Slot>

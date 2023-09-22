@@ -1,4 +1,4 @@
-import { HStack, VStack } from '@fuel-explorer/ui/Box';
+import { HStack, VStack } from '@fuel-explorer/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import type { TxStatus, TxType } from '../../types';
@@ -22,8 +22,8 @@ export const Usage: Story = {
           {TX_STATUS.map((status) => (
             <TxIcon
               key={status}
-              type={type as TxType}
               status={status as TxStatus}
+              type={type as TxType}
             />
           ))}
         </HStack>
@@ -35,9 +35,9 @@ export const Usage: Story = {
 export const Sizes: Story = {
   render: () => (
     <HStack>
-      <TxIcon type="ContractCall" status="Success" size="sm" />
-      <TxIcon type="ContractCall" status="Success" size="md" />
-      <TxIcon type="ContractCall" status="Success" size="lg" />
+      <TxIcon size="sm" status="Success" type="ContractCall" />
+      <TxIcon size="md" status="Success" type="ContractCall" />
+      <TxIcon size="lg" status="Success" type="ContractCall" />
     </HStack>
   ),
 };

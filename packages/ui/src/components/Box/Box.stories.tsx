@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Box } from './Box';
-import { Flex, type FlexProps } from './Flex';
+import { Flex } from './Flex';
+import type { FlexProps } from './Flex';
 
 const meta: Meta<typeof Box> = {
   title: 'Layout/Box',

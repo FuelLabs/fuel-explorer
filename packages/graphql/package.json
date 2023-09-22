@@ -11,7 +11,6 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --watch ./src/**/*, src/index.ts",
-    "lint": "eslint .",
     "codegen": "gql-gen --config codegen.ts",
     "build": "pnpm codegen && tsup --dts"
   },
@@ -31,7 +30,7 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
-    "@fuels/ts-config": "^0.0.10",
+    "@fuels/ts-config": "^0.0.11",
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/introspection": "4.0.0",
     "@graphql-codegen/typescript": "4.0.1",

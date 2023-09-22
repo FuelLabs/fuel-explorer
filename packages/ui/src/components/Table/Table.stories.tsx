@@ -12,7 +12,7 @@ type Story = StoryObj<typeof Table>;
 
 export const Usage: Story = {
   render: () => (
-    <Table variant="surface" className="w-[400px]">
+    <Table className="w-[400px]" variant="surface">
       <Table.Header>
         <Table.Row>
           <Table.ColumnHeaderCell>Full name</Table.ColumnHeaderCell>

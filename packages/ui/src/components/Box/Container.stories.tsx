@@ -28,7 +28,7 @@ export const UsageContainer: Story = {
   name: 'Container',
   render: () => (
     <Box className="bg-gray-2 rounded-3">
-      <Container size="1" className="h-[80px]">
+      <Container className="h-[80px]" size="1">
         <DecorativeBox className="h-[80px]" />
       </Container>
     </Box>

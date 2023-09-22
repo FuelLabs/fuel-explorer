@@ -20,7 +20,7 @@ export const Usage: Story = {
 
 export const CustomIcon: Story = {
   render: () => (
-    <Copyable value="Another text which you copied" icon={IconClipboardCopy}>
+    <Copyable icon={IconClipboardCopy} value="Another text which you copied">
       Different Icon
     </Copyable>
   ),
@@ -28,7 +28,7 @@ export const CustomIcon: Story = {
 
 export const Polymorphic: Story = {
   render: () => (
-    <Copyable value="You copied this text" as="div">
+    <Copyable as="div" value="You copied this text">
       Standard Icon
     </Copyable>
   ),

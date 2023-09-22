@@ -3,9 +3,11 @@ import { Children } from 'react';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
-import { HStack, type HStackProps } from '../Box';
+import { HStack } from '../Box';
+import type { HStackProps } from '../Box';
 import { Icon } from '../Icon/Icon';
-import { Link, type LinkProps } from '../Link/Link';
+import { Link } from '../Link/Link';
+import type { LinkProps } from '../Link/Link';
 
 export type BreadcrumbProps = PropsOf<'ul'> & Omit<HStackProps, 'asChild'>;
 export type BreadcrumbItemProps = PropsOf<'li'>;
@@ -28,7 +30,7 @@ export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
         return [
           child,
           <li key={`icon:${index}`} className="fuel_Breadcrumb-divider">
-            <Icon icon={IconChevronRight} className="text-icon" />
+            <Icon className="text-icon" icon={IconChevronRight} />
           </li>,
         ];
       }

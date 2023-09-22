@@ -1,8 +1,6 @@
 'use client';
-import { Container, VStack } from '@fuel-explorer/ui/Box';
-import { Heading } from '@fuel-explorer/ui/Heading';
-import { Nav } from '@fuel-explorer/ui/Nav';
-import type { BaseProps } from '@fuel-explorer/ui/types';
+import { Container, VStack, Heading, Nav } from '@fuel-explorer/ui';
+import type { BaseProps } from '@fuel-explorer/ui';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
 
 import { Footer } from '../Footer/Footer';
@@ -24,14 +22,14 @@ export function Layout({ children, hero }: LayoutProps) {
             <Nav.MenuItem href="https://forum.fuel.network">
               Community
             </Nav.MenuItem>
-            <Nav.MenuItem href="#" isExternal>
+            <Nav.MenuItem isExternal href="#">
               Labs
             </Nav.MenuItem>
           </Nav.Menu>
           <Nav.Spacer />
           <Nav.Menu>
             <Nav.MenuItem href="#">Bridge</Nav.MenuItem>
-            <Nav.MenuItem href="#" isActive>
+            <Nav.MenuItem isActive href="#">
               Explorer
             </Nav.MenuItem>
             <Nav.MenuItem href="#">Ecosystem</Nav.MenuItem>
@@ -41,7 +39,7 @@ export function Layout({ children, hero }: LayoutProps) {
         </Nav.Desktop>
       </Nav>
       {hero && <Hero />}
-      <Container size="4" className="py-24">
+      <Container className="py-24" size="4">
         <Heading as="h2" className="mb-10">
           Recent Transactions
         </Heading>

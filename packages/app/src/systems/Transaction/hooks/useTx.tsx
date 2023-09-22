@@ -1,14 +1,8 @@
-import { bn } from 'fuels';
+import { bn } from '@fuel-ts/math';
 import { useMemo } from 'react';
 
-import {
-  type TxItem,
-  type TransactionNode,
-  type TxType,
-  type TxStatus,
-  TxAccountTypeEnum,
-  TxTypeEnum,
-} from '../types';
+import { TxAccountTypeEnum, TxTypeEnum } from '../types';
+import type { TxItem, TransactionNode, TxType, TxStatus } from '../types';
 
 function parseType(transaction: TransactionNode): TxType {
   if (transaction.isMint) {

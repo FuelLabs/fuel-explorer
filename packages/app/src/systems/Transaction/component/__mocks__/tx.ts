@@ -1,8 +1,8 @@
- 
-import { bn } from 'fuels';
+import { bn } from '@fuel-ts/math';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
-import { TxTypeEnum, type TxItem, TxStatusEnum } from '../../types';
+import { TxTypeEnum, TxStatusEnum } from '../../types';
+import type { TxItem } from '../../types';
 
 export const TX_CONTRACT_CALL_MOCK = {
   type: TxTypeEnum.ContractCall,

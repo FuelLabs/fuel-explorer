@@ -16,22 +16,22 @@ type Story = StoryObj<typeof Heading>;
 export const Usage: Story = {
   render: () => (
     <VStack>
-      <Heading size="1" as="h1">
+      <Heading as="h1" size="1">
         The quick brown fox jumps over the lazy dog
       </Heading>
-      <Heading size="2" as="h2">
+      <Heading as="h2" size="2">
         The quick brown fox jumps over the lazy dog
       </Heading>
-      <Heading size="3" as="h3">
+      <Heading as="h3" size="3">
         The quick brown fox jumps over the lazy dog
       </Heading>
-      <Heading size="4" as="h3">
+      <Heading as="h3" size="4">
         The quick brown fox jumps over the lazy dog
       </Heading>
-      <Heading size="5" as="h4">
+      <Heading as="h4" size="5">
         The quick brown fox jumps over the lazy dog
       </Heading>
-      <Heading size="6" as="h5">
+      <Heading as="h5" size="6">
         The quick brown fox jumps over the lazy dog
       </Heading>
     </VStack>
@@ -40,7 +40,7 @@ export const Usage: Story = {
 
 export const WithIcon: Story = {
   render: () => (
-    <Heading size="3" leftIcon={IconCalendar}>
+    <Heading leftIcon={IconCalendar} size="3">
       Calendar
     </Heading>
   ),

@@ -51,15 +51,15 @@ export const Copyable = createPolymorphicComponent<CopyableProps, typeof Box>({
         {children}
         <Tooltip content={tooltipMessage}>
           <IconButton
-            color="gray"
-            onClick={handleCopy}
-            variant="link"
-            icon={CopyIcon}
             aria-label={ariaLabel}
+            color="gray"
+            icon={CopyIcon}
+            iconClassName={iconClassName}
+            iconColor={iconColor}
             iconSize={iconSize}
             iconStroke={iconStroke}
-            iconColor={iconColor}
-            iconClassName={iconClassName}
+            variant="link"
+            onClick={handleCopy}
           />
         </Tooltip>
       </Comp>

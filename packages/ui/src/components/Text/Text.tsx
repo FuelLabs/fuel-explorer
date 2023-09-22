@@ -9,7 +9,8 @@ import {
 } from '@radix-ui/themes';
 import { tv } from 'tailwind-variants';
 
-import { useIconProps, type WithIconProps } from '../../hooks/useIconProps';
+import { useIconProps } from '../../hooks/useIconProps';
+import type { WithIconProps } from '../../hooks/useIconProps';
 import {
   createComponent,
   createPolymorphicComponent,

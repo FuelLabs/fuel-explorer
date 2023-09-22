@@ -50,16 +50,16 @@ export const Colors: Story = {
 export const Sizes: Story = {
   render: () => (
     <HStack align="center">
-      <Button size="1" leftIcon={IconBookmark}>
+      <Button leftIcon={IconBookmark} size="1">
         Edit profile
       </Button>
-      <Button size="2" leftIcon={IconBookmark}>
+      <Button leftIcon={IconBookmark} size="2">
         Edit profile
       </Button>
-      <Button size="3" leftIcon={IconBookmark}>
+      <Button leftIcon={IconBookmark} size="3">
         Edit profile
       </Button>
-      <Button size="4" leftIcon={IconBookmark}>
+      <Button leftIcon={IconBookmark} size="4">
         Edit profile
       </Button>
     </HStack>

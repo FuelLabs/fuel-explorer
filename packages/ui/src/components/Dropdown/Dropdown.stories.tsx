@@ -20,7 +20,7 @@ export const Usage: Story = {
   render: () => (
     <Dropdown>
       <Dropdown.Trigger>
-        <Button variant="ghost" rightIcon={IconChevronDown}>
+        <Button rightIcon={IconChevronDown} variant="ghost">
           Options
         </Button>
       </Dropdown.Trigger>
@@ -42,7 +42,7 @@ export const Usage: Story = {
         <Dropdown.Item>Share</Dropdown.Item>
         <Dropdown.Item>Add to favorites</Dropdown.Item>
         <Dropdown.Separator />
-        <Dropdown.Item shortcut="⌘ ⌫" color="red">
+        <Dropdown.Item color="red" shortcut="⌘ ⌫">
           Delete
         </Dropdown.Item>
       </Dropdown.Content>

@@ -28,10 +28,10 @@ export function Toaster() {
           <Toast
             key={id}
             {...props}
-            style={{ '--radix-toast-width': `${width}px` } as any}
             hasDescription={!!description}
+            style={{ '--radix-toast-width': `${width}px` } as any}
           >
-            <HStack className="flex-1" align="center">
+            <HStack align="center" className="flex-1">
               {icon}
               <VStack gap="1">
                 {title && <ToastTitle>{title}</ToastTitle>}

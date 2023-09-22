@@ -39,7 +39,7 @@ addons.register(ADDON_ID, (api) => {
   addons.add(TOOL_ID, {
     title: 'Toggle theme',
     type: types.TOOL,
-    match: ({ viewMode }) => viewMode === 'story' || viewMode === 'docs',
+    match: ({ viewMode }: any) => viewMode === 'story' || viewMode === 'docs',
     render: () => {
       const current = localStorage.getItem(THEME_KEY);
       const [state, setState] = useAddonState(ADDON_ID, current);

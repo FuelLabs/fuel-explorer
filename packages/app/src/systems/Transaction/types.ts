@@ -1,5 +1,5 @@
 import type { TransactionItemFragment } from '@fuel-explorer/graphql';
-import type { BNInput } from 'fuels';
+import type { BNInput } from '@fuel-ts/math';
 
 export enum TxTypeEnum {
   ContractCall = 'ContractCall',

@@ -35,15 +35,15 @@ export const Usage: Story = {
       <Popover.Content className="w-[300px]">
         <HStack>
           <Avatar
-            size="2"
-            src="https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?&w=64&h=64&dpr=2&q=70&crop=focalpoint&fp-x=0.67&fp-y=0.5&fp-z=1.4&fit=crop"
             fallback="A"
             radius="full"
+            size="2"
+            src="https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?&w=64&h=64&dpr=2&q=70&crop=focalpoint&fp-x=0.67&fp-y=0.5&fp-z=1.4&fit=crop"
           />
           <Box>
-            <TextArea placeholder="Write a comment…" className="w-full" />
-            <HStack justify="between" className="mt-3">
-              <Flex align="center" gap="2" asChild>
+            <TextArea className="w-full" placeholder="Write a comment…" />
+            <HStack className="mt-3" justify="between">
+              <Flex asChild align="center" gap="2">
                 <label>
                   <Checkbox />
                   <Text size="2">Send to group</Text>

@@ -1,8 +1,5 @@
-import type { BadgeProps } from '@fuel-explorer/ui/Badge';
-import { Badge } from '@fuel-explorer/ui/Badge';
-import type { IconComponent } from '@fuel-explorer/ui/Icon';
-import { Icon } from '@fuel-explorer/ui/Icon';
-import type { BaseProps } from '@fuel-explorer/ui/types';
+import { Badge, Icon } from '@fuel-explorer/ui';
+import type { BadgeProps, IconComponent, BaseProps } from '@fuel-explorer/ui';
 import {
   IconCode,
   IconCoins,
@@ -65,13 +62,13 @@ export function TxIcon({
   return (
     <Badge
       {...props}
-      variant="soft"
-      radius="full"
       aria-label={label}
-      color={color || TX_INTENT_MAP[status || 'Submitted']}
       className={classes.root({ className })}
+      color={color || TX_INTENT_MAP[status || 'Submitted']}
+      radius="full"
+      variant="soft"
     >
-      <Icon icon={TX_ICON_MAP[type]} className={classes.icon()} />
+      <Icon className={classes.icon()} icon={TX_ICON_MAP[type]} />
     </Badge>
   );
 }

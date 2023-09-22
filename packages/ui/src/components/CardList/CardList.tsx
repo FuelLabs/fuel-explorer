@@ -57,11 +57,11 @@ export const CardListItem = createComponent<CardListItemProps, typeof Card>({
       <Comp
         {...props}
         autoFocus={initAutoFocus || ctx.autoFocus}
-        tabIndex={isClickable ? 0 : undefined}
         className={classes.root({ className })}
+        tabIndex={isClickable ? 0 : undefined}
       >
         {isActive && <span className={classes.activeMark()} />}
-        <HStack align="center" gap="4" className="flex-1">
+        <HStack align="center" className="flex-1" gap="4">
           {children}
         </HStack>
         {rightEl}

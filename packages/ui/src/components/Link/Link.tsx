@@ -1,6 +1,7 @@
 import { Link as RadixLink } from '@radix-ui/themes';
 import { IconLink } from '@tabler/icons-react';
-import { tv, type VariantProps } from 'tailwind-variants';
+import { tv } from 'tailwind-variants';
+import type { VariantProps } from 'tailwind-variants';
 
 import { createComponent } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
@@ -50,7 +51,7 @@ export const Link = createComponent<LinkProps, typeof RadixLink>({
           <span className="inline-flex items-center gap-1">
             {children}
             {ExternalIcon && (
-              <Icon icon={ExternalIcon} size={iconSize} className="text-icon" />
+              <Icon className="text-icon" icon={ExternalIcon} size={iconSize} />
             )}
           </span>
         </Comp>

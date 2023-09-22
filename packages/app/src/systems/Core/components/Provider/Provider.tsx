@@ -1,7 +1,6 @@
 'use client';
 
-import { Theme } from '@fuel-explorer/ui/Theme';
-import { Toaster } from '@fuel-explorer/ui/Toast';
+import { Theme, Toaster } from '@fuel-explorer/ui';
 
 export function Provider({ children }: { children: React.ReactNode }) {
   return (

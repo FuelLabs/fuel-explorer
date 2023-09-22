@@ -58,7 +58,7 @@ export const AccordionTrigger = createComponent<
       <AccordionHeader>
         <Comp {...props} className={classes.trigger({ className })}>
           {children}
-          <Icon icon={IconChevronDown} className={classes.icon()} />
+          <Icon className={classes.icon()} icon={IconChevronDown} />
         </Comp>
       </AccordionHeader>
     );

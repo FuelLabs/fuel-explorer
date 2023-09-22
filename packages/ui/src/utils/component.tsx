@@ -9,8 +9,8 @@ import type {
   WithAsProps,
 } from './types';
 type CreateOpts<
-  C extends ComponentType<any> | ElementType<any>,
   P extends PropsOf<C>,
+  C extends ComponentType<any> | ElementType<any> = ComponentType<P>,
 > = {
   id: string;
   baseElement?: C;
@@ -22,7 +22,7 @@ type CreateOpts<
 export function createComponent<
   P extends PropsOf<C>,
   C extends ComponentType<any> | ElementType<any> = ComponentType<P>,
->(opts: CreateOpts<C, P>) {
+>(opts: CreateOpts<P, C>) {
   const { id, baseElement: El = 'div', className: getClass, render } = opts;
 
   if (!El && !render) {
@@ -80,7 +80,7 @@ function polymorphicRender<
 export function createPolymorphicComponent<
   P extends PropsOf<C>,
   C extends ComponentType<any> | ElementType<any> = ComponentType<P>,
->(opts: CreateOpts<C, P>) {
+>(opts: CreateOpts<P, C>) {
   type Props = Omit<P, 'as' | 'asChild'>;
   type PolymorphicComponent = <T = C>(
     props: PolymorphicProps<T, Props>,

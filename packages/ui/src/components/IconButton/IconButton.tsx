@@ -53,11 +53,11 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
           <Spinner color="current" size={getIconSize(size, iconSize)} />
         ) : (
           <Icon
+            className={iconClassName}
+            color={iconColor}
             icon={icon}
             size={iconSize}
             stroke={iconStroke}
-            className={iconClassName}
-            color={iconColor}
           />
         )}
       </RadixIconButton>

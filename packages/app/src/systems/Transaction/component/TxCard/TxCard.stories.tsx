@@ -15,9 +15,8 @@ type Story = StoryObj<typeof TxCard>;
 export const Usage: Story = {
   render: () => (
     <TxCard
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      transaction={TX_CONTRACT_CALL_MOCK['transaction'] as any}
       className="w-[350px]"
+      transaction={TX_CONTRACT_CALL_MOCK['transaction'] as any}
     />
   ),
 };

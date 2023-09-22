@@ -15,7 +15,7 @@ type Story = StoryObj<typeof Accordion>;
 export const Usage: Story = {
   render: () => (
     <Box className="max-w-lg">
-      <Accordion type="single" defaultValue="item-1">
+      <Accordion defaultValue="item-1" type="single">
         <Accordion.Item value="item-1">
           <Accordion.Trigger>What&apos;s Fuel?</Accordion.Trigger>
           <Accordion.Content>

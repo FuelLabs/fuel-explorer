@@ -106,7 +106,7 @@ export type Colors =
  * React Types
  * */
 
-export type Children = ReactNode;
+export type Children = ReactNode | undefined;
 export type BaseProps<P> = P & {
   className?: string;
   children?: Children;
@@ -142,7 +142,7 @@ export type ComponentNamespace = Record<string, ComponentType<any>>;
 export type HTMLPropsOf<T extends ElementType<any>> =
   JSX.LibraryManagedAttributes<T, ComponentPropsWithoutRef<T>>;
 
-export type PropsOf<T extends ElementType<any>> = BaseProps<
+export type PropsOf<T extends ElementType<BaseProps<any>>> = BaseProps<
   React.ComponentPropsWithoutRef<T>
 >;
 

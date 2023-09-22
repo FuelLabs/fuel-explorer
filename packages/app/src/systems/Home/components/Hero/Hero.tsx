@@ -1,8 +1,6 @@
 'use client';
 
-import { Box, Container } from '@fuel-explorer/ui/Box';
-import { Heading } from '@fuel-explorer/ui/Heading';
-import { Theme } from '@fuel-explorer/ui/Theme';
+import { Box, Container, Heading, Theme } from '@fuel-explorer/ui';
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';
 import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
@@ -21,13 +19,13 @@ export function Hero() {
         <Box as="figure" className={classes.img()}>
           <Box className={classes.imgWrapper()}>
             <Image
-              className={classes.imgChild()}
-              src="/brand-img.png"
-              alt="Fuel Brand Image"
-              width={680}
-              height={680}
               priority
+              alt="Fuel Brand Image"
+              className={classes.imgChild()}
+              height={680}
               quality={80}
+              src="/brand-img.png"
+              width={680}
             />
           </Box>
         </Box>

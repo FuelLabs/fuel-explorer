@@ -17,7 +17,7 @@ export const Usage: Story = {
   render: () => (
     <Text size="2">
       <label>
-        <Checkbox mr="1" defaultChecked /> Agree to Terms and Conditions
+        <Checkbox defaultChecked mr="1" /> Agree to Terms and Conditions
       </label>
     </Text>
   ),

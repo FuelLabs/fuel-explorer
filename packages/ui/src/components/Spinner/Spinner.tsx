@@ -43,18 +43,18 @@ export const Spinner = createComponent<SpinnerProps, 'svg'>({
     );
 
     return (
-      <svg {...props} viewBox={`0 0 ${size} ${size}`} style={style}>
+      <svg {...props} style={style} viewBox={`0 0 ${size} ${size}`}>
         <circle
+          className="fuel-Spinner__circle-bg"
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          className="fuel-Spinner__circle-bg"
         />
         <circle
+          className="fuel-Spinner__circle-animated"
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          className="fuel-Spinner__circle-animated"
         />
       </svg>
     );

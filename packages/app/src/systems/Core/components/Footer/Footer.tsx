@@ -1,12 +1,17 @@
-import { Box, Container, HStack, VStack } from '@fuel-explorer/ui/Box';
-import { FuelLogo } from '@fuel-explorer/ui/FuelLogo';
-import { Heading } from '@fuel-explorer/ui/Heading';
-import { Icon } from '@fuel-explorer/ui/Icon';
-import { Link } from '@fuel-explorer/ui/Link';
-import { List } from '@fuel-explorer/ui/List';
-import { Text } from '@fuel-explorer/ui/Text';
-import { Theme } from '@fuel-explorer/ui/Theme';
-import type { BaseProps } from '@fuel-explorer/ui/types';
+import {
+  Box,
+  Container,
+  HStack,
+  VStack,
+  FuelLogo,
+  Heading,
+  Icon,
+  Link,
+  List,
+  Text,
+  Theme,
+} from '@fuel-explorer/ui';
+import type { BaseProps } from '@fuel-explorer/ui';
 import {
   IconBrandTwitter,
   IconBrandGithub,
@@ -38,14 +43,14 @@ function FooterNav({
   const classes = styles();
   return (
     <VStack as="nav" className={classes.nav({ className })} {...props}>
-      <Image src={img} alt={alt} width={40} height={40} />
-      <Heading size="4" className={classes.navHeading()}>
+      <Image alt={alt} height={40} src={img} width={40} />
+      <Heading className={classes.navHeading()} size="4">
         {title}
       </Heading>
       <List className={classes.navList()}>
         {links.map((link) => (
           <List.Item key={link.href}>
-            <Link href={link.href} isExternal className={classes.navLink()}>
+            <Link isExternal className={classes.navLink()} href={link.href}>
               {link.label}
             </Link>
           </List.Item>
@@ -60,35 +65,35 @@ export function Footer({ className }: BaseProps<{}>) {
   const classes = styles();
   return (
     <Theme appearance="dark">
-      <Container size="4" className={classes.container()}>
+      <Container className={classes.container()} size="4">
         <Box as="footer" className={classes.root({ className })}>
           <VStack className={classes.brand()} gap="3">
-            <FuelLogo size={24} showLettering />
+            <FuelLogo showLettering size={24} />
             <Text className="text-secondary">
               © All rights reserved Fuel Labs
             </Text>
             <HStack gap="4">
               <a
-                href="https://twitter.com/fuel_network"
-                target="_blank"
-                rel="noopener noreferrer"
                 className={classes.socialIcon()}
+                href="https://twitter.com/fuel_network"
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <Icon icon={IconBrandTwitter} size={30} />
               </a>
               <a
-                href="https://github.com/FuelLabs"
-                target="_blank"
-                rel="noopener noreferrer"
                 className={classes.socialIcon()}
+                href="https://github.com/FuelLabs"
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <Icon icon={IconBrandGithub} size={30} />
               </a>
               <a
-                href="https://discord.com/invite/xfpK4Pe"
-                target="_blank"
-                rel="noopener noreferrer"
                 className={classes.socialIcon()}
+                href="https://discord.com/invite/xfpK4Pe"
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <Icon icon={IconBrandDiscord} size={30} />
               </a>
@@ -97,22 +102,22 @@ export function Footer({ className }: BaseProps<{}>) {
 
           <Box className={classes.navs()}>
             <FooterNav
-              title="Resources"
-              img="/icons/fuel_icon_brandbook.svg"
               alt="Brandbook Icon"
+              img="/icons/fuel_icon_brandbook.svg"
               links={links.resources}
+              title="Resources"
             />
             <FooterNav
-              title="About us"
-              img="/icons/fuel_icon_about.svg"
               alt="About Icon"
+              img="/icons/fuel_icon_about.svg"
               links={links.aboutUs}
+              title="About us"
             />
             <FooterNav
-              title="Developers"
-              img="/icons/fuel_icon_code.svg"
               alt="Code Icon"
+              img="/icons/fuel_icon_code.svg"
               links={links.developers}
+              title="Developers"
             />
           </Box>
         </Box>

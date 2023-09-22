@@ -1,10 +1,8 @@
-import { VStack } from '@fuel-explorer/ui/Box';
-import type { CardProps } from '@fuel-explorer/ui/Card';
-import { Card } from '@fuel-explorer/ui/Card';
-import { EntityItem } from '@fuel-explorer/ui/EntityItem';
-import { Text } from '@fuel-explorer/ui/Text';
+import type { CardProps } from '@fuel-explorer/ui';
+import { VStack, Card, EntityItem, Text } from '@fuel-explorer/ui';
+import { bn } from '@fuel-ts/math';
+import type { BN } from '@fuel-ts/math';
 import { IconCoins } from '@tabler/icons-react';
-import { type BN, bn } from 'fuels';
 
 import type { TxAccountType } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
@@ -32,9 +30,9 @@ export function TxAccountItem({
       <Card.Body as={VStack}>
         <EntityItem>
           <EntityItem.Slot>
-            <TxIcon type={type} color={COLOR_MAP[type]} />
+            <TxIcon color={COLOR_MAP[type]} type={type} />
           </EntityItem.Slot>
-          <EntityItem.Info title={type} id={id}>
+          <EntityItem.Info id={id} title={type}>
             <Text as="div" className="text-sm" leftIcon={IconCoins}>
               Spent: {bn(spent).format({ units: 3 })}
             </Text>

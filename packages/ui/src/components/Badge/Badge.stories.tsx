@@ -25,7 +25,7 @@ export const Usage: Story = {
 
 export const WithClose: Story = {
   render: () => (
-    <Badge color="blue" size="2" radius="full">
+    <Badge color="blue" radius="full" size="2">
       Selected <ButtonClose />
     </Badge>
   ),

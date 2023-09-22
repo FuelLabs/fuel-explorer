@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
@@ -44,7 +44,7 @@ export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
         <Text as="p" className={classes.name()}>
           {title}
         </Text>
-        <Copyable value={id} className={classes.copyable()}>
+        <Copyable className={classes.copyable()} value={id}>
           {shortAddress(id)}
         </Copyable>
         {children}

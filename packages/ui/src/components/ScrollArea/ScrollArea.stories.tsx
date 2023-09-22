@@ -17,12 +17,12 @@ type Story = StoryObj<typeof ScrollArea>;
 export const Usage: Story = {
   render: () => (
     <ScrollArea
-      type="always"
       scrollbars="vertical"
       style={{ width: 400, height: 300 }}
+      type="always"
     >
       <Box className="p-2 pr-8">
-        <Heading size="3" className="mb-4">
+        <Heading className="mb-4" size="3">
           Principles of the typographic craft
         </Heading>
         <VStack>

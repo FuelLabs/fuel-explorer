@@ -41,11 +41,11 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@storybook/addons": "^7.4.3",
-    "@storybook/components": "^7.4.3",
-    "@storybook/core-events": "^7.4.3",
-    "@storybook/manager-api": "7.4.3",
-    "@storybook/theming": "^7.4.3",
+    "@storybook/addons": "^7.4.4",
+    "@storybook/components": "^7.4.4",
+    "@storybook/core-events": "^7.4.4",
+    "@storybook/manager-api": "7.4.4",
+    "@storybook/theming": "^7.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

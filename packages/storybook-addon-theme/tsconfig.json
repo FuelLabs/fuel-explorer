@@ -12,19 +12,5 @@
       "~/*": ["src/*"]
     }
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./.storybook/**/*.tsx",
-    "./.storybook/**/*.ts",
-    "./tsup.config.ts",
-    "./tailwind.config.ts"
-  ],
-  "exclude": [
-    "../../node_modules",
-    "node_modules",
-    "dist",
-    "coverage",
-    "storybook-static"
-  ]
+  "include": ["src", ".storybook", "*.config.*"]
 }
