@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --watch ./src/**/*, src/index.ts",
     "codegen": "gql-gen --config codegen.ts",
-    "build": "pnpm codegen && tsup --dts"
+    "build:lib": "pnpm codegen && tsup --dts"
   },
   "dependencies": {
     "@graphql-tools/delegate": "^10.0.3",
