@@ -1,7 +1,8 @@
 'use client';
 
-import { Flex, HStack } from '@fuel-explorer/ui/Box';
+import { Flex } from '@fuel-explorer/ui/Box';
 import { Card } from '@fuel-explorer/ui/Card';
+import { EntityItem } from '@fuel-explorer/ui/EntityItem';
 import { Text } from '@fuel-explorer/ui/Text';
 import type { BaseProps } from '@fuel-explorer/ui/types';
 import {
@@ -16,9 +17,8 @@ import { tv } from 'tailwind-variants';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 
 import { useTx } from '../../hooks/useTx';
-import type { TransactionNode } from '../../types';
+import { type TransactionNode } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
-import { TxTitle } from '../TxTitle/TxTitle';
 
 type TxCardProps = BaseProps<{
   transaction: TransactionNode;
@@ -27,13 +27,16 @@ type TxCardProps = BaseProps<{
 export function TxCard({ transaction, className, ...props }: TxCardProps) {
   const classes = styles();
   const tx = useTx(transaction);
+
   return (
     <Card {...props} className={classes.root({ className })}>
       <Card.Header>
-        <HStack>
-          <TxIcon type={tx.type} status={tx.status} />
-          <TxTitle type={tx.type} txHash={tx.transaction?.id} />
-        </HStack>
+        <EntityItem>
+          <EntityItem.Slot>
+            <TxIcon type={tx.type} status={tx.status} />
+          </EntityItem.Slot>
+          <EntityItem.Info title={tx.title} id={tx.transaction?.id} />
+        </EntityItem>
       </Card.Header>
       <Card.Body className={classes.body()}>
         <Flex justify="between" className={classes.row()}>

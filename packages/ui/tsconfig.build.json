@@ -1,10 +1,6 @@
 {
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
-    "keyofStringsOnly": false,
-    "lib": ["ES2022", "dom"],
-    "target": "ES2021",
-    "jsx": "react-jsx",
     "outDir": "dist",
     "declaration": true,
     "declarationDir": "dist",

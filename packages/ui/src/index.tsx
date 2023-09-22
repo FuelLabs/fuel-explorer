@@ -549,3 +549,5 @@ export type {
 export { Tooltip } from './components/Tooltip';
 
 export type { TooltipProps } from './components/Tooltip';
+
+export { createComponent } from './utils/component';

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VStack } from '@fuel-explorer/ui/Box';
 import type { Meta, StoryObj } from '@storybook/react';
 import { bn } from 'fuels';

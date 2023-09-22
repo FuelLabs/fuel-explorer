@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { bn } from 'fuels';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
@@ -22,7 +22,7 @@ export const TX_CONTRACT_CALL_MOCK = {
       __typename: 'SuccessStatus',
       time: '4611686020099207033',
       block: {
-        id: '0xa89cdecc118758816dfdc65c831a748d95b7d4048cbb729e6315f374c91b43fc',
+        id: '0xa89cdecc118758816dfdc65c831a748d95b7.4.38cbb729e6315f374c91b43fc',
       },
     } as any,
     outputs: [],

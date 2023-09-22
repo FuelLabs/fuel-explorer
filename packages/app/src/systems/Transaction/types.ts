@@ -34,6 +34,7 @@ export type TxItem = {
   // From indexer
   transaction: TransactionNode;
   // Parsed Props
+  title: TxAccountType | TxType;
   type: TxType;
   status: TxStatus;
   gasUsed: BNInput;

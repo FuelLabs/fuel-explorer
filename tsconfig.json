@@ -1,11 +1,4 @@
 {
-  "extends": "@fuels/ts-config/base.json",
-  "include": ["**/**.ts", "**/**.tsx", "**/**.js", "**/**.jsx"],
-  "exclude": [
-    "../../node_modules",
-    "node_modules",
-    "dist",
-    "coverage",
-    "storybook-static"
-  ]
+  "extends": "./tsconfig.base.json",
+  "files": []
 }

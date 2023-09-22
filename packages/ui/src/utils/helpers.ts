@@ -49,3 +49,9 @@ export function toCamelCase(str: string): string {
     return index === 0 ? match.toLowerCase() : match.toUpperCase();
   });
 }
+
+export function shortAddress(address: string = '') {
+  return address.length > 10
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : address;
+}

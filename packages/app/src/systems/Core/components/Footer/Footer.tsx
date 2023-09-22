@@ -123,10 +123,10 @@ export function Footer({ className }: BaseProps<{}>) {
 
 const styles = tv({
   slots: {
-    container: ['hero-bg border-t border-border'],
+    container: ['hero-bg border-t border-border px-8 md:px-10'],
     root: [
-      'py-8 px-8 grid gap-8 grid-cols-1 grid-rows-[auto,1fr]',
-      'lg:py-10 lg:px-0 lg:grid-cols-[1fr,2fr] lg:grid-rows-auto',
+      'py-14 grid gap-8 grid-cols-1 grid-rows-[auto,1fr]',
+      'lg:py-16 lg:grid-cols-[1fr,2fr] lg:grid-rows-auto',
     ],
     brand: [
       'items-center pb-8 border-b border-border',

@@ -8,7 +8,6 @@ import type {
   PropsOf,
   WithAsProps,
 } from './types';
-
 type CreateOpts<
   C extends ComponentType<any> | ElementType<any>,
   P extends PropsOf<C>,

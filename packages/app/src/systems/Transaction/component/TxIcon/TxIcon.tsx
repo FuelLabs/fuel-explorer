@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { BadgeProps } from '@fuel-explorer/ui/Badge';
 import { Badge } from '@fuel-explorer/ui/Badge';
 import type { IconComponent } from '@fuel-explorer/ui/Icon';
@@ -89,7 +88,7 @@ const styles = tv({
         icon: 'w-4 h-4',
       },
       md: {
-        root: 'w-10 h-10',
+        root: 'w-11 h-11',
         icon: 'w-5 h-5',
       },
       lg: {

@@ -47,6 +47,14 @@ export default [
     outDir: 'dist/theme',
   },
   {
+    ...defConfig,
+    entry: {
+      component: 'src/utils/component.tsx',
+    },
+    format: ['cjs'],
+    outDir: 'dist/utils',
+  },
+  {
     entry: {
       index: 'src/theme/index.css',
     },

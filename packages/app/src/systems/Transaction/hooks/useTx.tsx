@@ -1,6 +1,14 @@
 import { bn } from 'fuels';
+import { useMemo } from 'react';
 
-import type { TxItem, TransactionNode, TxType, TxStatus } from '../types';
+import {
+  type TxItem,
+  type TransactionNode,
+  type TxType,
+  type TxStatus,
+  TxAccountTypeEnum,
+  TxTypeEnum,
+} from '../types';
 
 function parseType(transaction: TransactionNode): TxType {
   if (transaction.isMint) {
@@ -21,7 +29,6 @@ function parseStatus(transaction: TransactionNode): TxStatus {
 }
 
 function parseTime(transaction: TransactionNode): string {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const status = transaction.status as any;
   return status?.time ?? 0;
 }
@@ -68,7 +75,13 @@ export function useTx(transaction: TransactionNode): TxItem {
   const totalAccounts = parseTotalAccounts(transaction);
   const totalAssets = parseTotalAssets(transaction);
   const gasUsed = parseGasUsed(transaction);
+  const title = useMemo(
+    () => TxTypeEnum[type] || TxAccountTypeEnum[type],
+    [type],
+  );
+
   return {
+    title,
     type,
     status,
     transaction,

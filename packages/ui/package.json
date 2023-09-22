@@ -5,8 +5,10 @@
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
   "typings": "./src/index.tsx",
+  "module": "./src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
+    "./component": "./src/utils/component.tsx",
     "./tailwind-preset": "./src/theme/tailwind-preset.ts",
     "./styles.css": "./dist/index.css",
     "./*": "./src/components/*/index.tsx"
@@ -24,6 +26,9 @@
       ],
       "types": [
         "./src/utils/types.ts"
+      ],
+      "component": [
+        "./src/utils/component.tsx"
       ]
     }
   },
@@ -54,6 +59,13 @@
         "types": "./dist/theme/tailwind-preset.d.ts",
         "typings": "./dist/theme/tailwind-preset.d.ts"
       },
+      "./component": {
+        "import": "./dist/utils/components.js",
+        "require": "./dist/utils/component.js",
+        "default": "./dist/utils/component.js",
+        "types": "./dist/utils/component.d.ts",
+        "typings": "./dist/utils/component.d.ts"
+      },
       "./types": {
         "types": "./dist/utils/types.d.ts",
         "typings": "./dist/utils/types.d.ts"
@@ -73,6 +85,9 @@
         ],
         "types": [
           "./dist/utils/types.d.ts"
+        ],
+        "component": [
+          "./dist/utils/component.d.ts"
         ]
       }
     },
