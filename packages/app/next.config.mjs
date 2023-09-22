@@ -2,7 +2,6 @@
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['@fuel-explorer/ui'],
   experimental: {
     externalDir: true,
     serverComponentsExternalPackages: ['bcryptjs'],

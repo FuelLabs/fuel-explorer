@@ -1,10 +1,10 @@
 import type { ReactElement } from 'react';
 import { Children, cloneElement } from 'react';
 import { mergeProps } from 'react-aria';
-import { createComponent } from '~/utils/component';
-import { pick } from '~/utils/helpers';
-import type { PropsOf } from '~/utils/types';
 
+import { createComponent } from '../../utils/component';
+import { pick } from '../../utils/helpers';
+import type { PropsOf } from '../../utils/types';
 import type { ButtonProps } from '../Button/Button';
 import { Focus } from '../Focus/Focus';
 

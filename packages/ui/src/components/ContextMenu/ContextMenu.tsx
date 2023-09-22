@@ -1,6 +1,7 @@
 import { ContextMenu as RC } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type ContextMenuProps = PropsOf<typeof RC.Root>;
 export type ContextMenuTriggerProps = PropsOf<typeof RC.Trigger>;

@@ -8,13 +8,14 @@ import {
   Text as RadixText,
 } from '@radix-ui/themes';
 import { tv } from 'tailwind-variants';
-import { useIconProps, type WithIconProps } from '~/hooks/useIconProps';
+
+import { useIconProps, type WithIconProps } from '../../hooks/useIconProps';
 import {
   createComponent,
   createPolymorphicComponent,
   withNamespace,
-} from '~/utils/component';
-import type { PropsOf, WithAsProps } from '~/utils/types';
+} from '../../utils/component';
+import type { PropsOf, WithAsProps } from '../../utils/types';
 
 const styles = {
   root: tv({

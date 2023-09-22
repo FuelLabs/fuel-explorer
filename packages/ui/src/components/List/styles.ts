@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const styles = tv({
   slots: {
-    root: 'fuel-[Text]:leading-relaxed',
+    root: 'm-0 p-0 fuel-[Text]:leading-relaxed',
     item: 'marker:text-icon',
   },
   variants: {

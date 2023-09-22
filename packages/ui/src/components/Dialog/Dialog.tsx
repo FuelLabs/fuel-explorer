@@ -1,6 +1,7 @@
 import { DialogTitle, Dialog as RD } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type DialogProps = PropsOf<typeof RD.Root>;
 export type DialogTriggerProps = PropsOf<typeof RD.Trigger>;

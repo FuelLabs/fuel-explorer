@@ -1,8 +1,8 @@
 import { Tooltip } from '@radix-ui/themes';
 import { IconHelpCircle } from '@tabler/icons-react';
-import { createComponent } from '~/utils/component';
-import type { Colors, PropsOf } from '~/utils/types';
 
+import { createComponent } from '../../utils/component';
+import type { Colors, PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
 import type { IconContext } from '../Icon/useIconContext';
 

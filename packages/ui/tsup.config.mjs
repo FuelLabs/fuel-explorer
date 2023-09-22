@@ -15,6 +15,11 @@ const defConfig = {
   clean: true,
   target: tsconfig.compilerOptions.target,
   tsconfig: path.resolve(__dirname, './tsconfig.build.json'),
+  esbuildOptions(options) {
+    options.banner = {
+      js: "'use client'",
+    };
+  },
 };
 
 export default [
@@ -44,7 +49,6 @@ export default [
   {
     entry: {
       index: 'src/theme/index.css',
-      tokens: 'src/theme/tokens.css',
     },
     loader: {
       '.css': 'css',

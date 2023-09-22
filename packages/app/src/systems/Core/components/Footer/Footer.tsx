@@ -39,7 +39,7 @@ function FooterNav({
   return (
     <VStack as="nav" className={classes.nav({ className })} {...props}>
       <Image src={img} alt={alt} width={40} height={40} />
-      <Heading as="h4" className={classes.navHeading()}>
+      <Heading size="4" className={classes.navHeading()}>
         {title}
       </Heading>
       <List className={classes.navList()}>
@@ -126,7 +126,7 @@ const styles = tv({
     container: ['hero-bg border-t border-border'],
     root: [
       'py-8 px-8 grid gap-8 grid-cols-1 grid-rows-[auto,1fr]',
-      'lg:py-10 lg:px-10 lg:grid-cols-[1fr,2fr] lg:grid-rows-auto',
+      'lg:py-10 lg:px-0 lg:grid-cols-[1fr,2fr] lg:grid-rows-auto',
     ],
     brand: [
       'items-center pb-8 border-b border-border',
@@ -139,7 +139,9 @@ const styles = tv({
       'md:items-center',
       'lg:text-left lg:items-start',
     ],
-    navHeading: ['my-4 justify-start', 'md:justify-center', 'lg:justify-start'],
+    navHeading: [
+      'justify-start md:justify-center lg:justify-start text-heading',
+    ],
     navList: ['flex flex-col gap-0 fuel-[Icon]:hidden'],
     navLink: ['text-secondary hover:text-brand'],
   },

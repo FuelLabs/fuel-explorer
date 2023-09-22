@@ -1,7 +1,8 @@
 import './Spinner.css';
 import { useMemo } from 'react';
-import { createComponent } from '~/utils/component';
-import type { PropsOf, RadixColors } from '~/utils/types';
+
+import { createComponent } from '../../utils/component';
+import type { PropsOf, RadixColors } from '../../utils/types';
 
 function getColor(color: string) {
   if (color === 'current') {

@@ -4,7 +4,7 @@ export const styles = tv({
   slots: {
     logo: 'items-center justify-start',
     menu: [
-      'flex gap-1 flex-col py-3 px-4 laptop:px-0 laptop:gap-4 laptop:flex-row',
+      'flex gap-1 md:flex-col py-3 px-4 laptop:px-0 laptop:gap-4 laptop:flex-row',
       'not-first:border-t not-first:border-border laptop:not-first:border-t-0',
     ],
     menuItem: [

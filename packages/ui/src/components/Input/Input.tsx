@@ -1,6 +1,7 @@
 import { TextField as RT } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type InputProps = PropsOf<typeof RT.Root>;
 export type InputSlotProps = PropsOf<typeof RT.Slot>;

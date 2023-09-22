@@ -2,8 +2,7 @@ import {
   createComponent,
   createPolymorphicComponent,
   withNamespace,
-} from '~/utils/component';
-
+} from '../../utils/component';
 import type { BoxProps } from '../Box';
 import { Box } from '../Box';
 import type { HeadingProps } from '../Heading';
@@ -45,6 +44,9 @@ export const CardTitle = createComponent<CardTitleProps, typeof Heading>({
   id: 'CardTitle',
   baseElement: Heading,
   className: () => styles().title(),
+  defaultProps: {
+    size: '6',
+  },
 });
 
 export const CardBody = createPolymorphicComponent<CardBodyProps, typeof Box>({

@@ -1,11 +1,11 @@
 import { bn, type BNInput } from '@fuel-ts/math';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { useStrictedChildren } from '~/hooks/useStrictedChildren';
-import { createComponent, withNamespace } from '~/utils/component';
-import { cx } from '~/utils/css';
-import type { PropsOf } from '~/utils/types';
 
+import { useStrictedChildren } from '../../hooks/useStrictedChildren';
+import { createComponent, withNamespace } from '../../utils/component';
+import { cx } from '../../utils/css';
+import type { PropsOf } from '../../utils/types';
 import { Badge } from '../Badge/Badge';
 import { Box, HStack, type HStackProps } from '../Box';
 import type { TextProps } from '../Text/Text';

@@ -1,5 +1,5 @@
-import { createComponent } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+import { createComponent } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type FuelLogoProps = PropsOf<'span'> & {
   size?: number;
@@ -9,7 +9,7 @@ export type FuelLogoProps = PropsOf<'span'> & {
 
 export const FuelLogo = createComponent<FuelLogoProps, 'span'>({
   id: 'FuelLogo',
-  className: 'inline-flex items-center gap-2',
+  className: 'inline-flex items-center gap-3',
   render: (_, { size = 40, showLettering, showSymbol = true, ...props }) => {
     return (
       <span {...props}>

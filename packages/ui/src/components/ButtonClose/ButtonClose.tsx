@@ -1,6 +1,6 @@
 import { IconX } from '@tabler/icons-react';
-import { createComponent } from '~/utils/component';
 
+import { createComponent } from '../../utils/component';
 import type { IconButtonProps } from '../IconButton/IconButton';
 import { IconButton } from '../IconButton/IconButton';
 

@@ -8,7 +8,7 @@ export const styles = tv({
     ],
     header: ['flex flex-col gap-1.5 px-4 text-heading'],
     title: [
-      'm-0 font-semibold leading-none tracking-tight text-2xl flex items-center gap-2',
+      'm-0 font-semibold leading-none tracking-tight text-xl flex items-center gap-2',
     ],
     description: ['m-0 text-sm text-secondary'],
     body: ['px-4 text-base'],

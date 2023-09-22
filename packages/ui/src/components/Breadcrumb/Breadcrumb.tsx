@@ -1,8 +1,8 @@
 import { IconChevronRight } from '@tabler/icons-react';
 import { Children } from 'react';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
 
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 import { HStack, type HStackProps } from '../Box';
 import { Icon } from '../Icon/Icon';
 import { Link, type LinkProps } from '../Link/Link';

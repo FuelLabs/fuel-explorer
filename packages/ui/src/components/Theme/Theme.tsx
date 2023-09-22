@@ -1,7 +1,7 @@
 import { Theme as RadixTheme } from '@radix-ui/themes';
-import { createComponent } from '~/utils/component';
-import type { Colors, PropsOf } from '~/utils/types';
 
+import { createComponent } from '../../utils/component';
+import type { Colors, PropsOf } from '../../utils/types';
 import { IconProvider } from '../Icon/useIconContext';
 
 export type ThemeProps = PropsOf<typeof RadixTheme> & {
@@ -31,5 +31,6 @@ export const Theme = createComponent<ThemeProps, typeof RadixTheme>({
     appearance: 'dark',
     radius: 'medium',
     panelBackground: 'translucent',
+    scaling: '105%',
   },
 });

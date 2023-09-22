@@ -1,6 +1,6 @@
-import { createComponent } from '~/utils/component';
-import { cx } from '~/utils/css';
-import type { PropsOf } from '~/utils/types';
+import { createComponent } from '../../utils/component';
+import { cx } from '../../utils/css';
+import type { PropsOf } from '../../utils/types';
 
 import type { IconComponent, IconContext } from './useIconContext';
 import { useIconContext } from './useIconContext';

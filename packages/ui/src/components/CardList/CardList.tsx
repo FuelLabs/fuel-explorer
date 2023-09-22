@@ -1,5 +1,4 @@
-import { createComponent, withNamespace } from '~/utils/component';
-
+import { createComponent, withNamespace } from '../../utils/component';
 import { HStack, VStack } from '../Box';
 import type { VStackProps } from '../Box';
 import { Card } from '../Card/Card';

@@ -64,8 +64,18 @@ const preset: Config = {
       laptop: '1024px',
       desktop: '1280px',
     },
+    space: tailwindDefaultTheme.space,
+    spacing: tailwindDefaultTheme.spacing,
     extend: {
       width: tailwindDefaultTheme.maxWidth,
+      fontSize: {
+        h1: 'var(--font-size-9)',
+        h2: 'var(--font-size-8)',
+        h3: 'var(--font-size-7)',
+        h4: 'var(--font-size-6)',
+        h5: 'var(--font-size-5)',
+        h6: 'var(--font-size-4)',
+      },
       colors: {
         ...refColorVariablesAsObj(COLORS_VARIABLES),
       },

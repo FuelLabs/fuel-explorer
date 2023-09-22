@@ -57,10 +57,10 @@ export function TxCard({ transaction, className, ...props }: TxCardProps) {
 
 const styles = tv({
   slots: {
-    root: 'py-0 gap-0 border border-card-border transition-all duration-200 ease-out hover:border-border-hover',
+    root: 'py-0 gap-0 transition-all duration-200 ease-out hover:border-border-hover',
     title: 'py-4 px-4',
     body: 'border-t border-card-border py-4 px-4',
-    row: 'items-center py-px [.fuel-Text:first-of-type]:flex-1',
+    row: 'items-center py-px [.fuel-Text:first-of-type]:flex-1 gap-3',
     small: 'text-sm',
   },
 });

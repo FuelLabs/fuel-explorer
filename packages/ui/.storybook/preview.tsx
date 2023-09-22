@@ -4,8 +4,8 @@ import '../src/theme/index.css';
 import { withThemeDecorator } from 'storybook-addon-theme';
 import { Preview } from '@storybook/react';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import { Theme } from '~/components/Theme';
-import { Toaster } from '~/components/Toast';
+import { Theme } from '../src/components/Theme';
+import { Toaster } from '../src/components/Toast';
 import { ReactNode } from 'react';
 
 function ThemeWrapper({ children }: { children: ReactNode }) {

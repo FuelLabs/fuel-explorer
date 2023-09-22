@@ -1,6 +1,7 @@
 import { AlertDialog as RAD } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type AlertDialogProps = PropsOf<typeof RAD.Root>;
 export type AlertDialogTriggerProps = PropsOf<typeof RAD.Trigger>;

@@ -8,10 +8,10 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { Children, cloneElement, useEffect, useState } from 'react';
 import { useWindowSize } from 'react-use';
-import { useStrictedChildren } from '~/hooks/useStrictedChildren';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { AsChildProp, PropsOf, WithAsProps } from '~/utils/types';
 
+import { useStrictedChildren } from '../../hooks/useStrictedChildren';
+import { createComponent, withNamespace } from '../../utils/component';
+import type { AsChildProp, PropsOf, WithAsProps } from '../../utils/types';
 import { Badge } from '../Badge/Badge';
 import { Box, HStack } from '../Box';
 import type { BoxProps, HStackProps } from '../Box';

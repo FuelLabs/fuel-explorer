@@ -28,7 +28,7 @@ export const Default: Story = {
 
 export const Variations: Story = {
   render: () => (
-    <VStack gap="6">
+    <VStack gap="4">
       <EntityItem
         icon={
           <Box className="rounded-full bg-gray-6 p-2">
@@ -45,7 +45,7 @@ export const Variations: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <VStack gap="6">
+    <VStack gap="4">
       <EntityItem {...DEFAULT_ARGS} size="sm" />
       <EntityItem {...DEFAULT_ARGS} size="md" />
       <EntityItem {...DEFAULT_ARGS} size="lg" />

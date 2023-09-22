@@ -1,8 +1,8 @@
 import * as TP from '@radix-ui/react-toast';
 import type { VariantProps } from 'tailwind-variants';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { BaseProps, PropsOf } from '~/utils/types';
 
+import { createComponent, withNamespace } from '../../utils/component';
+import type { BaseProps, PropsOf } from '../../utils/types';
 import type { ButtonCloseProps } from '../ButtonClose/ButtonClose';
 import { ButtonClose } from '../ButtonClose/ButtonClose';
 import type { Icon } from '../Icon/Icon';

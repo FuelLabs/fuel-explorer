@@ -1,7 +1,7 @@
 import { IconEye, IconEyeOff, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
-import { createComponent } from '~/utils/component';
 
+import { createComponent } from '../../utils/component';
 import { Icon } from '../Icon/Icon';
 import { IconButton } from '../IconButton/IconButton';
 import type { InputFieldProps, InputProps } from '../Input/Input';

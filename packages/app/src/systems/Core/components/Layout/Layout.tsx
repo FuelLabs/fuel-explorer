@@ -41,8 +41,8 @@ export function Layout({ children, hero }: LayoutProps) {
         </Nav.Desktop>
       </Nav>
       {hero && <Hero />}
-      <Container className="py-10">
-        <Heading as="h2" className="text-4xl mb-6">
+      <Container size="4" className="py-24">
+        <Heading as="h2" className="mb-10">
           Recent Transactions
         </Heading>
         {children}

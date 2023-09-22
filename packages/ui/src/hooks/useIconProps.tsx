@@ -1,10 +1,11 @@
 //! 'use client';
 
 import type { ButtonProps } from '@radix-ui/themes/dist/cjs/components/button';
-import { Icon } from '~/components/Icon/Icon';
-import type { IconComponent } from '~/components/Icon/useIconContext';
-import { Spinner } from '~/components/Spinner/Spinner';
-import type { Colors } from '~/utils/types';
+
+import { Icon } from '../components/Icon/Icon';
+import type { IconComponent } from '../components/Icon/useIconContext';
+import { Spinner } from '../components/Spinner/Spinner';
+import type { Colors } from '../utils/types';
 
 export type IconSizes = ButtonProps['size'];
 

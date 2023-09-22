@@ -1,5 +1,6 @@
 import { Flex as RadixFlex } from '@radix-ui/themes';
-import { createPolymorphicComponent } from '~/utils/component';
+
+import { createPolymorphicComponent } from '../../utils/component';
 
 import type { FlexProps } from './Flex';
 

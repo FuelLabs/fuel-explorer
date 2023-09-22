@@ -1,6 +1,5 @@
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
-
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
 import type { TextProps } from '../Text/Text';
 import { Text } from '../Text/Text';

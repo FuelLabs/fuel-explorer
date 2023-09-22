@@ -2,7 +2,8 @@
 
 import type { ComponentType } from 'react';
 import { createContext, useContext } from 'react';
-import type { Colors } from '~/utils/types';
+
+import type { Colors } from '../../utils/types';
 
 export type IconContext = {
   stroke?: number;

@@ -1,6 +1,7 @@
 import { DropdownMenu as RD } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type DropdownProps = PropsOf<typeof RD.Root>;
 export type DropdownTriggerProps = PropsOf<typeof RD.Trigger>;

@@ -1,11 +1,11 @@
 import * as RD from '@radix-ui/react-dialog';
+
 import {
   createComponent,
   createPolymorphicComponent,
   withNamespace,
-} from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
-
+} from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 import { Box } from '../Box';
 import type { BoxProps } from '../Box';
 import { ButtonClose } from '../ButtonClose/ButtonClose';

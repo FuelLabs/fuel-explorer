@@ -25,7 +25,11 @@ export const Usage: Story = {
       Follow{' '}
       <HoverCard>
         <HoverCard.Trigger>
-          <Link href="https://twitter.com/fuel_network" target="_blank">
+          <Link
+            href="https://twitter.com/fuel_network"
+            target="_blank"
+            className="mx-2"
+          >
             @fuel_network
           </Link>
         </HoverCard.Trigger>
@@ -37,7 +41,7 @@ export const Usage: Story = {
               src="https://pbs.twimg.com/profile_images/1651228955301629963/IfYACWA__400x400.jpg"
             />
             <Box>
-              <Heading size="3" as="h3">
+              <Heading size="5" as="h3">
                 Fuel
               </Heading>
               <Text as="div" size="2" color="gray">

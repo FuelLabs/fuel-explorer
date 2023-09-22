@@ -7,10 +7,7 @@
     "jsx": "react-jsx",
     "outDir": "./dist",
     "baseUrl": ".",
-    "rootDir": ".",
-    "paths": {
-      "~/*": ["src/*"]
-    }
+    "rootDir": "."
   },
   "include": [
     "./src/**/*.ts",

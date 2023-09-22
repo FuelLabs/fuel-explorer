@@ -5,7 +5,8 @@ import { FocusScope } from '@react-aria/focus';
 import { Children, cloneElement } from 'react';
 import type { ReactElement } from 'react';
 import { mergeProps } from 'react-aria';
-import { createComponent } from '~/utils/component';
+
+import { createComponent } from '../../utils/component';
 
 import { useFocusNavigator, isRightChildrenType } from './useFocusNavigator';
 

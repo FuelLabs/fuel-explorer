@@ -1,7 +1,9 @@
+@layer tw-base, radix, tw-components, tw-utilities;
+
+@import '@fuel-explorer/ui/dist/index.css';
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import '@fuel-explorer/ui/dist/index.css';
 
 :root {
   --hero-bg: #000;

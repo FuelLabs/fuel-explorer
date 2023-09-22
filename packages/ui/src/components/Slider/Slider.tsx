@@ -1,6 +1,7 @@
 import { Slider as RadixSlider } from '@radix-ui/themes';
-import { createComponent } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type SliderProps = PropsOf<typeof RadixSlider>;
 

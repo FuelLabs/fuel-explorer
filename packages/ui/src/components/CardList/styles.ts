@@ -6,7 +6,7 @@ export const styles = tv({
       'relative transition-colors duration-150 flex flex-row',
       'items-center px-5 focus:outline-none',
     ],
-    activeMark: ['block absolute inset-0 bg-brand rounded-ld w-1 h-full'],
+    activeMark: ['block absolute inset-0 bg-brand w-1 h-full'],
   },
   variants: {
     clickable: {

@@ -11,7 +11,7 @@
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "~/*": ["./src/*", "../ui/src/*"]
+      "~/*": ["./src/*"]
     }
   },
   "include": [

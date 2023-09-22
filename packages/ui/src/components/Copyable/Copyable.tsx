@@ -1,8 +1,8 @@
 import { Tooltip } from '@radix-ui/themes';
 import { IconCopy } from '@tabler/icons-react';
-import { createPolymorphicComponent } from '~/utils/component';
-import type { Colors } from '~/utils/types';
 
+import { createPolymorphicComponent } from '../../utils/component';
+import type { Colors } from '../../utils/types';
 import { Box } from '../Box';
 import type { BoxProps } from '../Box';
 import type { IconContext } from '../Icon/useIconContext';

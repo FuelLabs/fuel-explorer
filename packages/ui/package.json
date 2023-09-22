@@ -8,8 +8,7 @@
   "exports": {
     ".": "./src/index.tsx",
     "./tailwind-preset": "./src/theme/tailwind-preset.ts",
-    "./styles.css": "./src/index.css",
-    "./tokens.css": "./src/tokens.css",
+    "./styles.css": "./src/dist/index.css",
     "./*": "./src/components/*/index.tsx"
   },
   "typesVersions": {
@@ -59,8 +58,7 @@
         "types": "./dist/utils/types.d.ts",
         "typings": "./dist/utils/types.d.ts"
       },
-      "./styles.css": "./dist/index.css",
-      "./tokens.css": "./dist/tokens.css"
+      "./styles.css": "./dist/index.css"
     },
     "typesVersions": {
       "*": {
@@ -84,7 +82,7 @@
   },
   "scripts": {
     "build:storybook": "pnpm ts:check && storybook build",
-    "build": "tsup && tsc -p ./tsconfig.build.json --emitDeclarationOnly && pnpm add:clients",
+    "build": "tsup && tsc -p ./tsconfig.build.json --emitDeclarationOnly",
     "build:watch": "tsup --watch",
     "add:clients": "node ./scripts/add-use-client.mjs",
     "dev:storybook": "storybook dev -p 6006",
@@ -112,6 +110,7 @@
     "csstype": "3.1.2",
     "deepmerge-json": "1.5.0",
     "framer-motion": "10.16.4",
+    "modern-normalize": "2.0.0",
     "radix-ui-themes-with-tailwind": "1.2.6",
     "react": "^18.2.0",
     "react-aria": "3.28.0",

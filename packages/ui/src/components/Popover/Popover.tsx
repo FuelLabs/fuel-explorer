@@ -1,6 +1,7 @@
 import { Popover as RP } from '@radix-ui/themes';
-import { createComponent, withNamespace } from '~/utils/component';
-import type { PropsOf } from '~/utils/types';
+
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type PopoverProps = PropsOf<typeof RP.Root>;
 export type PopoverTriggerProps = PropsOf<typeof RP.Trigger>;

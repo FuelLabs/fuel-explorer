@@ -22,7 +22,7 @@ export const Usage: Story = {
       style={{ width: 400, height: 300 }}
     >
       <Box className="p-2 pr-8">
-        <Heading size="7" mb="4">
+        <Heading size="3" className="mb-4">
           Principles of the typographic craft
         </Heading>
         <VStack>
