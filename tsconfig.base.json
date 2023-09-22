@@ -8,8 +8,6 @@
     "dist",
     "**/**/dist",
     "coverage",
-    "storybook-static",
-    "generated",
-    "**/**/generated"
+    "storybook-static"
   ]
 }

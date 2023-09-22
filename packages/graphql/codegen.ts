@@ -19,7 +19,7 @@ const config: CodegenConfig = {
     },
   },
   hooks: {
-    afterAllFileWrite: ['sed -i "" s/Dom.Headers/any/g', 'prettier --write'],
+    afterAllFileWrite: ['sed -i "" s/Dom.Headers/any/g'],
   },
 };
 export default config;
