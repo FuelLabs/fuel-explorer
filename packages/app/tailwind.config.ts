@@ -19,4 +19,7 @@ export default {
       });
     }),
   ],
+  corePlugins: {
+    preflight: false,
+  },
 } satisfies Config;

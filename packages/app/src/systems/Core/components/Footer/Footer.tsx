@@ -20,7 +20,7 @@ import {
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';
 
-import { links } from './data.json';
+import data from './data.json';
 
 type FooterNavProps = BaseProps<{
   title: string;
@@ -104,19 +104,19 @@ export function Footer({ className }: BaseProps<{}>) {
             <FooterNav
               alt="Brandbook Icon"
               img="/icons/fuel_icon_brandbook.svg"
-              links={links.resources}
+              links={data.links.resources}
               title="Resources"
             />
             <FooterNav
               alt="About Icon"
               img="/icons/fuel_icon_about.svg"
-              links={links.aboutUs}
+              links={data.links.aboutUs}
               title="About us"
             />
             <FooterNav
               alt="Code Icon"
               img="/icons/fuel_icon_code.svg"
-              links={links.developers}
+              links={data.links.developers}
               title="Developers"
             />
           </Box>
