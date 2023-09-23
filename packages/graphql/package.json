@@ -14,8 +14,9 @@
     "start": "ts-node -r tsconfig-paths/register --transpile-only src/bin.ts",
     "lint": "eslint .",
     "codegen": "gql-gen --config codegen.ts",
-    "build": "pnpm codegen && tsup",
-    "prepare": "pnpm build",
+    "build": "tsup",
+    "build:dev": "pnpm codegen && tsup",
+    "prepare": "pnpm build:ci",
     "fix:generated": "node ./scripts/fix-generated.mjs"
   },
   "dependencies": {
