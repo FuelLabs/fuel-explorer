@@ -12,6 +12,16 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
+  // This is as proxy route to enable next.js
+  // to proxy requests to the graphql server
+  rewrites: async () => {
+    return [
+      {
+        source: '/graphql',
+        destination: process.env.GRAPHQL_API || 'http://localhost:4444/graphql',
+      },
+    ];
+  },
   redirects: async () => {
     return [
       {

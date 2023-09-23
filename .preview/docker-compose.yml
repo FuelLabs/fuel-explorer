@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  fuel-explorer:
+    platform: linux/amd64
+    container_name: fuel-explorer
+    build:
+      context: ../
+      dockerfile: ./.preview/Dockerfile
+    ports:
+      - '80:3000'
+      - '4000:4444'

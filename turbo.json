@@ -25,6 +25,9 @@
     },
     "lint": {
       "cache": true
+    },
+    "start": {
+      "cache": false
     }
   }
 }
