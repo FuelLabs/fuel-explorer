@@ -17,3 +17,5 @@ storybook-static
 **/storybook-static/**
 .turbo
 pnpm-lock.yaml
+.next
+graphql.schema.json

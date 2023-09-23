@@ -2,6 +2,9 @@ import cors from 'cors';
 import express from 'express';
 import expressPlayground from 'graphql-playground-middleware-express';
 import { startGraphql } from '~/startGraphql';
+import { requireEnv } from '~/utils';
+
+const { FUEL_PROVIDER_URL } = requireEnv(['FUEL_PROVIDER_URL']);
 
 // Create a server:
 const app = express();
@@ -20,9 +23,6 @@ app.get(
 );
 
 // Start graphql server
-startGraphql('http://localhost:4000/graphql', app);
+startGraphql(FUEL_PROVIDER_URL, app);
 
-// Start the server:
-app.listen(4444, () =>
-  console.log('🚀 Explorer api running at http://localhost:4444/graphql'),
-);
+export default app;
