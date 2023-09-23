@@ -16,7 +16,7 @@
     "codegen": "gql-gen --config codegen.ts",
     "build": "tsup",
     "build:dev": "pnpm codegen && tsup",
-    "prepare": "pnpm build:ci",
+    "prepare": "pnpm build",
     "fix:generated": "node ./scripts/fix-generated.mjs"
   },
   "dependencies": {
