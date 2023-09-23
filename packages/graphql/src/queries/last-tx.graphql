@@ -99,6 +99,14 @@ fragment TransactionReceipt on Receipt {
 fragment TransactionItem on Transaction {
   __typename
   id
+  title
+  time
+  blockHeight
+  statusType
+  totalAccounts
+  totalAssets
+  totalOperations
+  gasUsed
   isScript
   isMint
   isCreate

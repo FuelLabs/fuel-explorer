@@ -1,5 +1,4 @@
 import type { TransactionItemFragment } from '@fuel-explorer/graphql';
-import type { BNInput } from '@fuel-ts/math';
 
 export enum TxTypeEnum {
   ContractCall = 'ContractCall',
@@ -14,7 +13,6 @@ export enum TxStatusEnum {
   Info = 'Info',
   Warning = 'Warning',
 }
-
 export enum TxAccountTypeEnum {
   Wallet = 'Wallet',
   Contract = 'Contract',
@@ -29,17 +27,3 @@ export const TX_TYPES = Object.keys({ ...TxTypeEnum, ...TxAccountTypeEnum });
 export const TX_STATUS = Object.keys(TxStatusEnum);
 
 export type TransactionNode = TransactionItemFragment;
-
-export type TxItem = {
-  // From indexer
-  transaction: TransactionNode;
-  // Parsed Props
-  title: TxAccountType | TxType;
-  type: TxType;
-  status: TxStatus;
-  gasUsed: BNInput;
-  timestamp: string;
-  totalAssets: number;
-  totalOperations: number;
-  totalAccounts: number;
-};

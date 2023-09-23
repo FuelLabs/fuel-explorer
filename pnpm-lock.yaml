@@ -314,6 +314,9 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.18.2
+      fuels:
+        specifier: 0.59.0
+        version: 0.59.0
       graphql:
         specifier: '>=16.8.1'
         version: 16.8.1
@@ -366,6 +369,9 @@ importers:
       graphql-codegen-typescript-common:
         specifier: 0.18.2
         version: 0.18.2(graphql@16.8.1)
+      graphql-codegen-typescript-mock-data:
+        specifier: 3.5.0
+        version: 3.5.0(graphql@16.8.1)
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@swc/core@1.3.87)(@types/node@20.6.3)(typescript@5.2.2)
@@ -2560,6 +2566,11 @@ packages:
       '@ethersproject/properties': 5.7.0
       '@ethersproject/strings': 5.7.0
     dev: false
+
+  /@faker-js/faker@7.6.0:
+    resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
+    engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+    dev: true
 
   /@fal-works/esbuild-plugin-global-externals@2.1.2:
     resolution: {integrity: sha512-cEee/Z+I12mZcFJshKcCqC8tuX5hG3s+d+9nZ3LabqKF1vKdF41B92pJVCBggjAGORAeOzyyDDKrZwIkLffeOQ==}
@@ -10830,6 +10841,13 @@ packages:
     resolution: {integrity: sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==}
     dev: true
 
+  /casual@1.6.2:
+    resolution: {integrity: sha512-NQObL800rg32KZ9bBajHbyDjxLXxxuShChQg7A4tbSeG3n1t7VYGOSkzFSI9gkSgOHp+xilEJ7G0L5l6M30KYA==}
+    dependencies:
+      mersenne-twister: 1.1.0
+      moment: 2.29.4
+    dev: true
+
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
     engines: {node: '>=4'}
@@ -13387,6 +13405,23 @@ packages:
       - supports-color
     dev: true
 
+  /graphql-codegen-typescript-mock-data@3.5.0(graphql@16.8.1):
+    resolution: {integrity: sha512-mBXRTuK15ay1Lmmt1PdkwtIQMQPL4xMinf80lZvkvCMMldhySKwQMWMs6tUqMk0XTwb7qRcZnVrnr6j7o9jjQw==}
+    peerDependencies:
+      graphql: '>=16.8.1'
+    dependencies:
+      '@faker-js/faker': 7.6.0
+      '@graphql-codegen/plugin-helpers': 2.7.2(graphql@16.8.1)
+      casual: 1.6.2
+      change-case-all: 1.0.15
+      graphql: 16.8.1
+      indefinite: 2.4.3
+      pascal-case: 3.1.2
+      sentence-case: 3.0.4
+      tslib: 2.6.2
+      upper-case: 2.0.2
+    dev: true
+
   /graphql-config@5.0.2(@types/node@20.6.3)(graphql@16.8.1)(typescript@5.2.2):
     resolution: {integrity: sha512-7TPxOrlbiG0JplSZYCyxn2XQtqVhXomEjXUmWJVSS5ET1nPhOJSsIb/WTwqWhcYX6G0RlHXSj9PLtGTKmxLNGg==}
     engines: {node: '>= 16.0.0'}
@@ -13931,6 +13966,11 @@ packages:
   /imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
+
+  /indefinite@2.4.3:
+    resolution: {integrity: sha512-tLgivPQiMY76i93YKhjV5cMiORWfrk3FHdD1mREBNKlWbHmBrObLfOz6xlTk+beboj/JJSlhuCpCMmChR5Sgng==}
+    engines: {node: '>=6.0.0'}
+    dev: true
 
   /indent-string@3.2.0:
     resolution: {integrity: sha512-BYqTHXTGUIvg7t1r4sJNKcbDZkL92nkXA8YtRpbjFHRHGDL/NtUeiBJMeE60kIFN/Mg8ESaWQvftaYMGJzQZCQ==}
@@ -15586,6 +15626,10 @@ packages:
     dependencies:
       '@types/node': 20.6.3
 
+  /mersenne-twister@1.1.0:
+    resolution: {integrity: sha512-mUYWsMKNrm4lfygPkL3OfGzOPTR2DBlTkBNHM//F6hGp8cLThY897crAlk3/Jo17LEOOjQUrNAx6DvgO77QJkA==}
+    dev: true
+
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
@@ -15715,6 +15759,10 @@ packages:
     resolution: {integrity: sha512-CxBoEVKh5U4DH3XuNbc5ONLF6dQBc8dSc7pdZ1957FGbIO5JBqGqqchhET9dTexri8/pk9xBL6+5ceOtCIp1QA==}
     engines: {node: '>=6'}
     dev: false
+
+  /moment@2.29.4:
+    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
+    dev: true
 
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}

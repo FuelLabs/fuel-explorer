@@ -2,7 +2,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: './src/schemas/fullschema.graphql',
+  schema: 'http://localhost:4444/graphql',
   documents: ['./src/queries/**.graphql'],
   generates: {
     'src/generated/graphql.ts': {
@@ -17,9 +17,20 @@ const config: CodegenConfig = {
         useTypeImports: true,
       },
     },
+    'src/generated/mocks.ts': {
+      plugins: ['typescript-mock-data'],
+      config: {
+        addTypename: true,
+        typesFile: './graphql.ts',
+        typesNames: 'keep',
+        scalars: {
+          Tai64Timestamp: 'unix_time',
+        },
+      },
+    },
   },
   hooks: {
-    afterAllFileWrite: ['sed -i "" s/Dom.Headers/any/g'],
+    afterAllFileWrite: ['pnpm fix:generated'],
   },
 };
 export default config;

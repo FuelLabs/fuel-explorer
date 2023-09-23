@@ -32,6 +32,13 @@ export type Scalars = {
   UtxoId: { input: any; output: any; }
 };
 
+export type Account = {
+  __typename: 'Account';
+  address: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 export type Balance = {
   __typename: 'Balance';
   amount: Scalars['U64']['output'];
@@ -41,18 +48,25 @@ export type Balance = {
 
 export type BalanceConnection = {
   __typename: 'BalanceConnection';
+  /** A list of edges. */
   edges: Array<BalanceEdge>;
+  /** A list of nodes. */
   nodes: Array<Balance>;
+  /** Information to aid in pagination. */
   pageInfo: PageInfo;
 };
 
+/** An edge in a connection. */
 export type BalanceEdge = {
   __typename: 'BalanceEdge';
+  /** A cursor for use in pagination */
   cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
   node: Balance;
 };
 
 export type BalanceFilterInput = {
+  /** Filter coins based on the `owner` field */
   owner: Scalars['Address']['input'];
 };
 
@@ -66,14 +80,20 @@ export type Block = {
 
 export type BlockConnection = {
   __typename: 'BlockConnection';
+  /** A list of edges. */
   edges: Array<BlockEdge>;
+  /** A list of nodes. */
   nodes: Array<Block>;
+  /** Information to aid in pagination. */
   pageInfo: PageInfo;
 };
 
+/** An edge in a connection. */
 export type BlockEdge = {
   __typename: 'BlockEdge';
+  /** A cursor for use in pagination */
   cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
   node: Block;
 };
 
@@ -106,19 +126,27 @@ export type Coin = {
 
 export type CoinConnection = {
   __typename: 'CoinConnection';
+  /** A list of edges. */
   edges: Array<CoinEdge>;
+  /** A list of nodes. */
   nodes: Array<Coin>;
+  /** Information to aid in pagination. */
   pageInfo: PageInfo;
 };
 
+/** An edge in a connection. */
 export type CoinEdge = {
   __typename: 'CoinEdge';
+  /** A cursor for use in pagination */
   cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
   node: Coin;
 };
 
 export type CoinFilterInput = {
+  /** Returns coins only with `asset_id`. */
   assetId?: InputMaybe<Scalars['AssetId']['input']>;
+  /** Returns coins owned by the `owner`. */
   owner: Scalars['Address']['input'];
 };
 
@@ -169,18 +197,25 @@ export type ContractBalance = {
 
 export type ContractBalanceConnection = {
   __typename: 'ContractBalanceConnection';
+  /** A list of edges. */
   edges: Array<ContractBalanceEdge>;
+  /** A list of nodes. */
   nodes: Array<ContractBalance>;
+  /** Information to aid in pagination. */
   pageInfo: PageInfo;
 };
 
+/** An edge in a connection. */
 export type ContractBalanceEdge = {
   __typename: 'ContractBalanceEdge';
+  /** A cursor for use in pagination */
   cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
   node: ContractBalance;
 };
 
 export type ContractBalanceFilterInput = {
+  /** Filter assets based on the `contractId` field */
   contract: Scalars['ContractId']['input'];
 };
 
@@ -198,7 +233,9 @@ export type ContractOutput = {
 };
 
 export type ExcludeInput = {
+  /** Messages to exclude from the selection. */
   messages: Array<Scalars['MessageId']['input']>;
+  /** Utxos to exclude from the selection. */
   utxos: Array<Scalars['UtxoId']['input']>;
 };
 
@@ -212,23 +249,40 @@ export type FailureStatus = {
 
 export type Genesis = {
   __typename: 'Genesis';
+  /**
+   * The chain configs define what consensus type to use, what settlement layer to use,
+   * rules of block validity, etc.
+   */
   chainConfigHash: Scalars['Bytes32']['output'];
+  /** The Binary Merkle Tree root of all genesis coins. */
   coinsRoot: Scalars['Bytes32']['output'];
+  /** The Binary Merkle Tree root of state, balances, contracts code hash of each contract. */
   contractsRoot: Scalars['Bytes32']['output'];
+  /** The Binary Merkle Tree root of all genesis messages. */
   messagesRoot: Scalars['Bytes32']['output'];
 };
 
 export type Header = {
   __typename: 'Header';
+  /** Hash of the application header. */
   applicationHash: Scalars['Bytes32']['output'];
+  /** The layer 1 height of messages and events to include since the last layer 1 block number. */
   daHeight: Scalars['U64']['output'];
+  /** Fuel block height. */
   height: Scalars['U64']['output'];
+  /** Hash of the header */
   id: Scalars['BlockId']['output'];
+  /** Number of output messages in this block. */
   outputMessagesCount: Scalars['U64']['output'];
+  /** Merkle root of messages in this block. */
   outputMessagesRoot: Scalars['Bytes32']['output'];
+  /** Merkle root of all previous block header hashes. */
   prevRoot: Scalars['Bytes32']['output'];
+  /** The block producer time. */
   time: Scalars['Tai64Timestamp']['output'];
+  /** Number of transactions in this block. */
   transactionsCount: Scalars['U64']['output'];
+  /** Merkle root of transactions. */
   transactionsRoot: Scalars['Bytes32']['output'];
 };
 
@@ -283,14 +337,20 @@ export type Message = {
 
 export type MessageConnection = {
   __typename: 'MessageConnection';
+  /** A list of edges. */
   edges: Array<MessageEdge>;
+  /** A list of nodes. */
   nodes: Array<Message>;
+  /** Information to aid in pagination. */
   pageInfo: PageInfo;
 };
 
+/** An edge in a connection. */
 export type MessageEdge = {
   __typename: 'MessageEdge';
+  /** A cursor for use in pagination */
   cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
   node: Message;
 };
 
@@ -320,8 +380,10 @@ export enum MessageStatus {
 
 export type Mutation = {
   __typename: 'Mutation';
+  /** Execute a dry-run of the transaction using a fork of current state, no changes are committed. */
   dryRun: Array<Receipt>;
   produceBlocks: Scalars['U64']['output'];
+  /** Submits transaction to the txpool */
   submit: Transaction;
 };
 
@@ -354,45 +416,75 @@ export type NodeInfo = {
 
 export type Output = ChangeOutput | CoinOutput | ContractCreated | ContractOutput | MessageOutput | VariableOutput;
 
+/** Information about pagination in a connection */
 export type PageInfo = {
   __typename: 'PageInfo';
+  /** When paginating forwards, the cursor to continue. */
   endCursor?: Maybe<Scalars['String']['output']>;
+  /** When paginating forwards, are there more items? */
   hasNextPage: Scalars['Boolean']['output'];
+  /** When paginating backwards, are there more items? */
   hasPreviousPage: Scalars['Boolean']['output'];
+  /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
 export type PoAConsensus = {
   __typename: 'PoAConsensus';
+  /** Gets the signature of the block produced by `PoA` consensus. */
   signature: Scalars['Signature']['output'];
 };
 
 export type ProgramState = {
   __typename: 'ProgramState';
   data: Scalars['HexString']['output'];
-  returnType: TypeReturn;
+  returnType: _ReturnType;
 };
 
 export type Query = {
   __typename: 'Query';
+  accounts: Array<Account>;
   balance: Balance;
   balances: BalanceConnection;
   block?: Maybe<Block>;
   blocks: BlockConnection;
   chain: ChainInfo;
+  /** Gets the coin by `utxo_id`. */
   coin?: Maybe<Coin>;
+  /**
+   * Gets all coins of some `owner` maybe filtered with by `asset_id` per page.
+   * It includes `CoinStatus::Spent` and `CoinStatus::Unspent` coins.
+   */
   coins: CoinConnection;
   contract?: Maybe<Contract>;
   contractBalance: ContractBalance;
   contractBalances: ContractBalanceConnection;
+  /** Returns true when the GraphQL API is serving requests. */
   health: Scalars['Boolean']['output'];
   messageProof?: Maybe<MessageProof>;
   messages: MessageConnection;
   nodeInfo: NodeInfo;
+  /**
+   * For each `query_per_asset`, get some spendable resources(of asset specified by the query) owned by
+   * `owner` that add up at least the query amount. The returned resources are actual resources
+   * that can be spent. The number of resources is optimized to prevent dust accumulation.
+   * Max number of resources and excluded resources can also be specified.
+   *
+   * Returns:
+   * The list of spendable resources per asset from the query. The length of the result is
+   * the same as the length of `query_per_asset`. The ordering of assets and `query_per_asset`
+   * is the same.
+   */
   resourcesToSpend: Array<Array<Resource>>;
+  tokens: Array<Token>;
   transaction?: Maybe<Transaction>;
   transactions: TransactionConnection;
   transactionsByOwner: TransactionConnection;
+};
+
+
+export type QueryAccountsArgs = {
+  addresses: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 
@@ -481,6 +573,11 @@ export type QueryResourcesToSpendArgs = {
 };
 
 
+export type QueryTokensArgs = {
+  assetsId: Array<InputMaybe<Scalars['String']['input']>>;
+};
+
+
 export type QueryTransactionArgs = {
   id: Scalars['TransactionId']['input'];
 };
@@ -549,11 +646,21 @@ export enum ReceiptType {
   TransferOut = 'TRANSFER_OUT'
 }
 
+/** The schema analog of the [`resource::Resource`]. */
 export type Resource = Coin | Message;
 
+export enum _ReturnType {
+  Return = 'RETURN',
+  ReturnData = 'RETURN_DATA',
+  Revert = 'REVERT'
+}
+
 export type SpendQueryElementInput = {
+  /** Target amount for the query. */
   amount: Scalars['U64']['input'];
+  /** Identifier of the asset to spend. */
   assetId: Scalars['AssetId']['input'];
+  /** The maximum number of currencies for selection. */
   max?: InputMaybe<Scalars['U64']['input']>;
 };
 
@@ -569,6 +676,20 @@ export type SubmittedStatus = {
 
 export type Subscription = {
   __typename: 'Subscription';
+  /**
+   * Returns a stream of status updates for the given transaction id.
+   * If the current status is [`TransactionStatus::Success`], [`TransactionStatus::SqueezedOut`]
+   * or [`TransactionStatus::Failed`] the stream will return that and end immediately.
+   * If the current status is [`TransactionStatus::Submitted`] this will be returned
+   * and the stream will wait for a future update.
+   *
+   * This stream will wait forever so it's advised to use within a timeout.
+   *
+   * It is possible for the stream to miss an update if it is polled slower
+   * then the updates arrive. In such a case the stream will close without
+   * a status. If this occurs the stream can simply be restarted to return
+   * the latest status.
+   */
   statusChange: TransactionStatus;
 };
 
@@ -585,16 +706,31 @@ export type SuccessStatus = {
 };
 
 export type TimeParameters = {
+  /** The time interval between subsequent blocks */
   blockTimeInterval: Scalars['U64']['input'];
+  /** The time to set on the first block */
   startTime: Scalars['U64']['input'];
+};
+
+export type Token = {
+  __typename: 'Token';
+  assetId: Scalars['String']['output'];
+  decimals: Scalars['U64']['output'];
+  name: Scalars['String']['output'];
+  symbol: Scalars['String']['output'];
+  totalAssets?: Maybe<Scalars['U64']['output']>;
+  totalSupply?: Maybe<Scalars['U64']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 export type Transaction = {
   __typename: 'Transaction';
+  blockHeight?: Maybe<Scalars['String']['output']>;
   bytecodeLength?: Maybe<Scalars['U64']['output']>;
   bytecodeWitnessIndex?: Maybe<Scalars['Int']['output']>;
   gasLimit?: Maybe<Scalars['U64']['output']>;
   gasPrice?: Maybe<Scalars['U64']['output']>;
+  gasUsed?: Maybe<Scalars['U64']['output']>;
   id: Scalars['TransactionId']['output'];
   inputAssetIds?: Maybe<Array<Scalars['AssetId']['output']>>;
   inputContracts?: Maybe<Array<Contract>>;
@@ -604,6 +740,7 @@ export type Transaction = {
   isScript: Scalars['Boolean']['output'];
   maturity?: Maybe<Scalars['U64']['output']>;
   outputs: Array<Output>;
+  /** Return the transaction bytes using canonical encoding */
   rawPayload: Scalars['HexString']['output'];
   receipts?: Maybe<Array<Receipt>>;
   receiptsRoot?: Maybe<Scalars['Bytes32']['output']>;
@@ -611,30 +748,50 @@ export type Transaction = {
   script?: Maybe<Scalars['HexString']['output']>;
   scriptData?: Maybe<Scalars['HexString']['output']>;
   status?: Maybe<TransactionStatus>;
+  statusType?: Maybe<TransactionStatusType>;
   storageSlots?: Maybe<Array<Scalars['HexString']['output']>>;
+  time?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<TransactionTitle>;
+  totalAccounts?: Maybe<Scalars['Int']['output']>;
+  totalAssets?: Maybe<Scalars['Int']['output']>;
+  totalOperations?: Maybe<Scalars['Int']['output']>;
   txPointer?: Maybe<Scalars['TxPointer']['output']>;
   witnesses?: Maybe<Array<Scalars['HexString']['output']>>;
 };
 
 export type TransactionConnection = {
   __typename: 'TransactionConnection';
+  accounts?: Maybe<Array<Maybe<Account>>>;
+  /** A list of edges. */
   edges: Array<TransactionEdge>;
+  /** A list of nodes. */
   nodes: Array<Transaction>;
+  /** Information to aid in pagination. */
   pageInfo: PageInfo;
+  tokens?: Maybe<Array<Maybe<Token>>>;
 };
 
+/** An edge in a connection. */
 export type TransactionEdge = {
   __typename: 'TransactionEdge';
+  /** A cursor for use in pagination */
   cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
   node: Transaction;
 };
 
 export type TransactionStatus = FailureStatus | SqueezedOutStatus | SubmittedStatus | SuccessStatus;
 
-export enum TypeReturn {
-  Return = 'RETURN',
-  ReturnData = 'RETURN_DATA',
-  Revert = 'REVERT'
+export enum TransactionStatusType {
+  Failure = 'Failure',
+  Submitted = 'Submitted',
+  Success = 'Success'
+}
+
+export enum TransactionTitle {
+  Burn = 'Burn',
+  ContractCall = 'ContractCall',
+  Mint = 'Mint'
 }
 
 export type VariableOutput = {
@@ -680,14 +837,14 @@ export type TransactionOutputFragment = TransactionOutput_ChangeOutput_Fragment 
 
 export type TransactionReceiptFragment = { __typename: 'Receipt', data?: any | null, toAddress?: any | null, amount?: any | null, assetId?: any | null, param1?: any | null, param2?: any | null, receiptType: ReceiptType, gas?: any | null, gasUsed?: any | null, messageId?: any | null, sender?: any | null, recipient?: any | null, contractId?: any | null, contract?: { __typename: 'Contract', id: any } | null, to?: { __typename: 'Contract', id: any } | null };
 
-export type TransactionItemFragment = { __typename: 'Transaction', id: any, isScript: boolean, isMint: boolean, isCreate: boolean, gasPrice?: any | null, gasLimit?: any | null, inputAssetIds?: Array<any> | null, status?: { __typename: 'FailureStatus', time: any } | { __typename: 'SqueezedOutStatus' } | { __typename: 'SubmittedStatus', time: any } | { __typename: 'SuccessStatus', time: any, block: { __typename: 'Block', id: any } } | null, inputContracts?: Array<{ __typename: 'Contract', id: any }> | null, inputs?: Array<{ __typename: 'InputCoin', owner: any, amount: any, assetId: any, predicate: any, predicateData: any } | { __typename: 'InputContract', contract: { __typename: 'Contract', id: any } } | { __typename: 'InputMessage', messageId: any, sender: any, recipient: any, amount: any, nonce: any, data: any, predicate: any, predicateData: any }> | null, outputs: Array<{ __typename: 'ChangeOutput', to: any, amount: any, assetId: any } | { __typename: 'CoinOutput', to: any, amount: any, assetId: any } | { __typename: 'ContractCreated', contract: { __typename: 'Contract', id: any } } | { __typename: 'ContractOutput' } | { __typename: 'MessageOutput', recipient: any, amount: any } | { __typename: 'VariableOutput', to: any, amount: any, assetId: any }>, receipts?: Array<{ __typename: 'Receipt', data?: any | null, toAddress?: any | null, amount?: any | null, assetId?: any | null, param1?: any | null, param2?: any | null, receiptType: ReceiptType, gas?: any | null, gasUsed?: any | null, messageId?: any | null, sender?: any | null, recipient?: any | null, contractId?: any | null, contract?: { __typename: 'Contract', id: any } | null, to?: { __typename: 'Contract', id: any } | null }> | null };
+export type TransactionItemFragment = { __typename: 'Transaction', id: any, title?: TransactionTitle | null, time?: string | null, blockHeight?: string | null, statusType?: TransactionStatusType | null, totalAccounts?: number | null, totalAssets?: number | null, totalOperations?: number | null, gasUsed?: any | null, isScript: boolean, isMint: boolean, isCreate: boolean, gasPrice?: any | null, gasLimit?: any | null, inputAssetIds?: Array<any> | null, status?: { __typename: 'FailureStatus', time: any } | { __typename: 'SqueezedOutStatus' } | { __typename: 'SubmittedStatus', time: any } | { __typename: 'SuccessStatus', time: any, block: { __typename: 'Block', id: any } } | null, inputContracts?: Array<{ __typename: 'Contract', id: any }> | null, inputs?: Array<{ __typename: 'InputCoin', owner: any, amount: any, assetId: any, predicate: any, predicateData: any } | { __typename: 'InputContract', contract: { __typename: 'Contract', id: any } } | { __typename: 'InputMessage', messageId: any, sender: any, recipient: any, amount: any, nonce: any, data: any, predicate: any, predicateData: any }> | null, outputs: Array<{ __typename: 'ChangeOutput', to: any, amount: any, assetId: any } | { __typename: 'CoinOutput', to: any, amount: any, assetId: any } | { __typename: 'ContractCreated', contract: { __typename: 'Contract', id: any } } | { __typename: 'ContractOutput' } | { __typename: 'MessageOutput', recipient: any, amount: any } | { __typename: 'VariableOutput', to: any, amount: any, assetId: any }>, receipts?: Array<{ __typename: 'Receipt', data?: any | null, toAddress?: any | null, amount?: any | null, assetId?: any | null, param1?: any | null, param2?: any | null, receiptType: ReceiptType, gas?: any | null, gasUsed?: any | null, messageId?: any | null, sender?: any | null, recipient?: any | null, contractId?: any | null, contract?: { __typename: 'Contract', id: any } | null, to?: { __typename: 'Contract', id: any } | null }> | null };
 
 export type GetLastTransactionsQueryVariables = Exact<{
   last: Scalars['Int']['input'];
 }>;
 
 
-export type GetLastTransactionsQuery = { __typename: 'Query', transactions: { __typename: 'TransactionConnection', nodes: Array<{ __typename: 'Transaction', id: any, isScript: boolean, isMint: boolean, isCreate: boolean, gasPrice?: any | null, gasLimit?: any | null, inputAssetIds?: Array<any> | null, status?: { __typename: 'FailureStatus', time: any } | { __typename: 'SqueezedOutStatus' } | { __typename: 'SubmittedStatus', time: any } | { __typename: 'SuccessStatus', time: any, block: { __typename: 'Block', id: any } } | null, inputContracts?: Array<{ __typename: 'Contract', id: any }> | null, inputs?: Array<{ __typename: 'InputCoin', owner: any, amount: any, assetId: any, predicate: any, predicateData: any } | { __typename: 'InputContract', contract: { __typename: 'Contract', id: any } } | { __typename: 'InputMessage', messageId: any, sender: any, recipient: any, amount: any, nonce: any, data: any, predicate: any, predicateData: any }> | null, outputs: Array<{ __typename: 'ChangeOutput', to: any, amount: any, assetId: any } | { __typename: 'CoinOutput', to: any, amount: any, assetId: any } | { __typename: 'ContractCreated', contract: { __typename: 'Contract', id: any } } | { __typename: 'ContractOutput' } | { __typename: 'MessageOutput', recipient: any, amount: any } | { __typename: 'VariableOutput', to: any, amount: any, assetId: any }>, receipts?: Array<{ __typename: 'Receipt', data?: any | null, toAddress?: any | null, amount?: any | null, assetId?: any | null, param1?: any | null, param2?: any | null, receiptType: ReceiptType, gas?: any | null, gasUsed?: any | null, messageId?: any | null, sender?: any | null, recipient?: any | null, contractId?: any | null, contract?: { __typename: 'Contract', id: any } | null, to?: { __typename: 'Contract', id: any } | null }> | null }> } };
+export type GetLastTransactionsQuery = { __typename: 'Query', transactions: { __typename: 'TransactionConnection', nodes: Array<{ __typename: 'Transaction', id: any, title?: TransactionTitle | null, time?: string | null, blockHeight?: string | null, statusType?: TransactionStatusType | null, totalAccounts?: number | null, totalAssets?: number | null, totalOperations?: number | null, gasUsed?: any | null, isScript: boolean, isMint: boolean, isCreate: boolean, gasPrice?: any | null, gasLimit?: any | null, inputAssetIds?: Array<any> | null, status?: { __typename: 'FailureStatus', time: any } | { __typename: 'SqueezedOutStatus' } | { __typename: 'SubmittedStatus', time: any } | { __typename: 'SuccessStatus', time: any, block: { __typename: 'Block', id: any } } | null, inputContracts?: Array<{ __typename: 'Contract', id: any }> | null, inputs?: Array<{ __typename: 'InputCoin', owner: any, amount: any, assetId: any, predicate: any, predicateData: any } | { __typename: 'InputContract', contract: { __typename: 'Contract', id: any } } | { __typename: 'InputMessage', messageId: any, sender: any, recipient: any, amount: any, nonce: any, data: any, predicate: any, predicateData: any }> | null, outputs: Array<{ __typename: 'ChangeOutput', to: any, amount: any, assetId: any } | { __typename: 'CoinOutput', to: any, amount: any, assetId: any } | { __typename: 'ContractCreated', contract: { __typename: 'Contract', id: any } } | { __typename: 'ContractOutput' } | { __typename: 'MessageOutput', recipient: any, amount: any } | { __typename: 'VariableOutput', to: any, amount: any, assetId: any }>, receipts?: Array<{ __typename: 'Receipt', data?: any | null, toAddress?: any | null, amount?: any | null, assetId?: any | null, param1?: any | null, param2?: any | null, receiptType: ReceiptType, gas?: any | null, gasUsed?: any | null, messageId?: any | null, sender?: any | null, recipient?: any | null, contractId?: any | null, contract?: { __typename: 'Contract', id: any } | null, to?: { __typename: 'Contract', id: any } | null }> | null }> } };
 
 export const TransactionStatusFragmentDoc = gql`
     fragment TransactionStatus on TransactionStatus {
@@ -796,6 +953,14 @@ export const TransactionItemFragmentDoc = gql`
     fragment TransactionItem on Transaction {
   __typename
   id
+  title
+  time
+  blockHeight
+  statusType
+  totalAccounts
+  totalAssets
+  totalOperations
+  gasUsed
   isScript
   isMint
   isCreate

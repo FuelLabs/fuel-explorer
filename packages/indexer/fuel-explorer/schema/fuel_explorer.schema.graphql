@@ -78,7 +78,7 @@ enum TransactionStatusLabel {
   Unknown
 }
 
-enum TypeReturn {
+enum ReturnType {
   Return
   ReturnData
   Revert
@@ -104,7 +104,7 @@ type InstructionResult {
 }
 
 type ProgramState {
-  return_type: TypeReturn! @virtual
+  return_type: ReturnType! @virtual
   data: HexString!
 }
 

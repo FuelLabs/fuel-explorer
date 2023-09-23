@@ -30,7 +30,7 @@
     "dev": "pnpm turbo:run dev --filter=!indexer",
     "dev:app": "pnpm --filter=app dev",
     "dev:graphql": "pnpm --filter=graphql dev",
-    "dev:indexer": "pnpm --filter=indexer dev:indexer",
+    "dev:indexer": "pnpm --filter=indexer dev",
     "lint": "run-s lint:check prettier:check",
     "lint:check": "eslint .",
     "lint:fix": "pnpm lint:check --fix",

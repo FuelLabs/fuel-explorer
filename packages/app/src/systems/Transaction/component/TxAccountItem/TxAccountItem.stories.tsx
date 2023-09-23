@@ -3,7 +3,7 @@ import { bn } from '@fuel-ts/math';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { TxAccountTypeEnum } from '../../types';
-import { TX_CONTRACT_CALL_MOCK } from '../__mocks__/tx';
+import { TX_MOCK } from '../__mocks__/tx';
 
 import { TxAccountItem } from './TxAccountItem';
 
@@ -19,7 +19,7 @@ export const Usage: Story = {
   render: () => (
     <TxAccountItem
       className="max-w-[300px]"
-      id={TX_CONTRACT_CALL_MOCK.transaction.id}
+      id={TX_MOCK.id}
       spent={bn(1)}
       type="Contract"
     />
@@ -36,7 +36,7 @@ export const AllTypes: Story = {
         <TxAccountItem
           key={type}
           className="max-w-[300px]"
-          id={TX_CONTRACT_CALL_MOCK.transaction.id}
+          id={TX_MOCK.id}
           spent={bn(1)}
           type={type}
         />

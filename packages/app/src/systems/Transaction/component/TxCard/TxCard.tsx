@@ -13,26 +13,25 @@ import {
 import { tv } from 'tailwind-variants';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 
-import { useTx } from '../../hooks/useTx';
-import type { TransactionNode } from '../../types';
+import type { TransactionNode, TxStatus } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
 
 type TxCardProps = BaseProps<{
   transaction: TransactionNode;
 }>;
 
-export function TxCard({ transaction, className, ...props }: TxCardProps) {
+export function TxCard({ transaction: tx, className, ...props }: TxCardProps) {
   const classes = styles();
-  const tx = useTx(transaction);
-
+  const title = tx.title as string;
+  const time = fromNow(tx.time as string);
   return (
     <Card {...props} className={classes.root({ className })}>
       <Card.Header>
         <EntityItem>
           <EntityItem.Slot>
-            <TxIcon status={tx.status} type={tx.type} />
+            <TxIcon status={tx.statusType as TxStatus} type={title} />
           </EntityItem.Slot>
-          <EntityItem.Info id={tx.transaction?.id} title={tx.title} />
+          <EntityItem.Info id={tx.id} title={title} />
         </EntityItem>
       </Card.Header>
       <Card.Body className={classes.body()}>
@@ -42,7 +41,7 @@ export function TxCard({ transaction, className, ...props }: TxCardProps) {
         <Flex className={classes.row()} justify="between">
           <Text leftIcon={IconTransfer}>{tx.totalOperations} operations</Text>
           <Text className={classes.small()} leftIcon={IconClockHour1}>
-            {fromNow(tx.timestamp)}
+            {time}
           </Text>
         </Flex>
         <Flex className={classes.row()} justify="between">

@@ -22,15 +22,14 @@ import { createContext, useContext } from 'react';
 import { tv } from 'tailwind-variants';
 import { fromNow, fullTime } from '~/systems/Core/utils/dayjs';
 
-import { useTx } from '../../hooks/useTx';
-import type { TransactionNode, TxItem } from '../../types';
+import type { TransactionNode, TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 
 export type TxSummaryProps = BaseProps<{ transaction: TransactionNode }>;
 export type TxSummaryDetailsProps = CardProps;
 export type TxSummaryParamsProps = CardProps;
 
-type Context = { tx: TxItem };
+type Context = TxSummaryProps;
 const ctx = createContext<Context>({} as Context);
 
 export const TxSummaryRoot = createComponent<TxSummaryProps, typeof HStack>({
@@ -38,9 +37,8 @@ export const TxSummaryRoot = createComponent<TxSummaryProps, typeof HStack>({
   baseElement: HStack,
   render: (Comp, { transaction, className, ...props }) => {
     const classes = styles();
-    const tx = useTx(transaction);
     return (
-      <ctx.Provider value={{ tx }}>
+      <ctx.Provider value={{ transaction }}>
         <Comp {...props} className={classes.root({ className })} />
       </ctx.Provider>
     );
@@ -69,28 +67,30 @@ export const TxSummaryDetails = createComponent<
   id: 'TxSummaryDetails',
   baseElement: Card,
   render: (Comp, { className, ...props }) => {
-    const { tx } = useContext(ctx);
+    const { transaction: tx } = useContext(ctx);
     const classes = styles();
+    const title = tx.title as string;
+    const status = tx.statusType as TxStatus;
     return (
       <Comp {...props} className={classes.details({ className })}>
         <Card.Body as={VStack} className="p-0">
           <TxSummaryRow label="Type">
             <EntityItem>
               <EntityItem.Slot>
-                <TxIcon status={tx.status} type={tx.type} />
+                <TxIcon status={tx.statusType as TxStatus} type={title} />
               </EntityItem.Slot>
-              <EntityItem.Info id={tx.transaction?.id} title={tx.title} />
+              <EntityItem.Info id={tx.id} title={title} />
             </EntityItem>
           </TxSummaryRow>
           <TxSummaryRow label="Timestamp">
-            <Text as="span">{fromNow(tx.timestamp)}</Text>
+            <Text as="span">{fromNow(tx.time as string)}</Text>
             <Text as="span" iconColor="text-muted" leftIcon={IconCalendar}>
-              {fullTime(tx.timestamp)}
+              {fullTime(tx.time as string)}
             </Text>
           </TxSummaryRow>
           <TxSummaryRow label="Status">
-            <Badge color={TX_INTENT_MAP[tx.status]} size="2">
-              {tx.status}
+            <Badge color={TX_INTENT_MAP[status]} size="2">
+              {status}
             </Badge>
           </TxSummaryRow>
           <TxSummaryRow label="Block">
@@ -118,7 +118,7 @@ export const TxSummaryParams = createComponent<
   id: 'TxSummaryParams',
   baseElement: Card,
   render: (Comp, { className, ...props }) => {
-    const { tx } = useContext(ctx);
+    const { transaction: tx } = useContext(ctx);
     const classes = styles();
     return (
       <Comp {...props} className={classes.params({ className })}>

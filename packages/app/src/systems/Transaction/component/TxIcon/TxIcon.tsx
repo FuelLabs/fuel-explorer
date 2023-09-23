@@ -43,7 +43,7 @@ export const TX_STATUS_MAP: Record<TxStatus, string> = {
 
 type TxIconProps = VariantProps<typeof styles> &
   BaseProps<{
-    type: TxType | TxAccountType;
+    type: string;
     status?: TxStatus;
     color?: BadgeProps['color'];
     label?: string;

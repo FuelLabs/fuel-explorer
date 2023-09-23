@@ -403,7 +403,7 @@ type TransactionEdge {
 ##########################################################
 
 type ProgramState {
-  returnType: TypeReturn!
+  returnType: ReturnType!
   data: HexString!
 }
 
@@ -571,7 +571,7 @@ enum ReceiptType {
   MESSAGE_OUT
 }
 
-enum TypeReturn {
+enum ReturnType {
   RETURN
   RETURN_DATA
   REVERT
