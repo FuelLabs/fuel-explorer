@@ -7,7 +7,8 @@ import type {
   ElementType,
   ReactNode,
 } from 'react';
-import type { ColorVariables } from 'src/theme/tailwind-preset';
+
+import type { ColorVariables } from '../theme/tailwind-preset';
 
 export type RadixColors =
   | 'gray'
