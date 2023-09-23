@@ -20,6 +20,7 @@ jobs:
     - uses: pullpreview/action@v5.3.0
       with:
         app_path: .preview
+        admins: luizstacio
         github_token: ${{ secrets.GITHUB_TOKEN }}
         always_on: main
       env:
