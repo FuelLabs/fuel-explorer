@@ -8,7 +8,7 @@ COPY . /preview
 
 WORKDIR /preview
 
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 RUN pnpm build
 
 EXPOSE 3000
