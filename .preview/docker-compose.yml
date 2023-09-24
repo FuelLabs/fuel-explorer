@@ -7,8 +7,10 @@ services:
     build:
       context: ../
       dockerfile: ./.preview/Dockerfile
-    environment:
-      FUEL_PROVIDER_URL: http://beta-4.fuel.network/graphql
+      args:
+        IS_PREVIEW: true
+        GRAPHQL_API: http://localhost:4444/graphql
+        FUEL_PROVIDER_URL: http://beta-4.fuel.network/graphql
     ports:
       - '80:3000'
       - '4000:4444'

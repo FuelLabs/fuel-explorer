@@ -15,12 +15,14 @@ const config = {
   // This is as proxy route to enable next.js
   // to proxy requests to the graphql server
   rewrites: async () => {
-    return [
-      {
-        source: '/graphql',
-        destination: process.env.GRAPHQL_API || 'http://localhost:4444/graphql',
-      },
-    ];
+    return process.env.IS_PREVIEW === 'true'
+      ? [
+          {
+            source: '/graphql',
+            destination: process.env.GRAPHQL_API,
+          },
+        ]
+      : [];
   },
   redirects: async () => {
     return [
