@@ -12,10 +12,11 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
-  // This is as proxy route to enable next.js
-  // to proxy requests to the graphql server
   rewrites: async () => {
-    return process.env.IS_PREVIEW === 'true'
+    // This is as proxy route to enable next.js
+    // to proxy requests to the graphql server on
+    // preview environment.
+    return process.env.IS_PREVIEW
       ? [
           {
             source: '/graphql',
