@@ -1,4 +1,4 @@
-import { HStack, VStack } from '@fuel-explorer/ui';
+import { HStack, VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import type { TxStatus, TxType } from '../../types';

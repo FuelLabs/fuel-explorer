@@ -15,7 +15,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "5.0.8",
     "@fuel-explorer/graphql": "workspace:*",
-    "@fuel-explorer/ui": "workspace:*",
+    "@fuels/ui": "workspace:*",
     "@fuel-ts/math": "0.59.0",
     "@fuel-wallet/sdk": "0.13.0",
     "@fuels/assets": "0.0.11",

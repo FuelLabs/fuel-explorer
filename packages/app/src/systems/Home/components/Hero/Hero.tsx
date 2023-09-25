@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, Heading, Theme } from '@fuel-explorer/ui';
+import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';
 import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';

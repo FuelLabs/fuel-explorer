@@ -1,6 +1,6 @@
 'use client';
-import type { BaseProps, InputFieldProps, InputProps } from '@fuel-explorer/ui';
-import { Focus, Icon, IconButton, Tooltip, Input } from '@fuel-explorer/ui';
+import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
+import { Focus, Icon, IconButton, Tooltip, Input } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 

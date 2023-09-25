@@ -1,6 +1,6 @@
 'use client';
-import { Container, VStack, Nav } from '@fuel-explorer/ui';
-import type { BaseProps } from '@fuel-explorer/ui';
+import { Container, VStack, Nav } from '@fuels/ui';
+import type { BaseProps } from '@fuels/ui';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
 
 import { Footer } from '../Footer/Footer';

@@ -1,4 +1,4 @@
-@import '@fuel-explorer/ui/dist/index.css';
+@import '@fuels/ui/dist/index.css';
 
 @tailwind base;
 @tailwind components;

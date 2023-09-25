@@ -1,7 +1,7 @@
-import type { CardProps } from '@fuel-explorer/ui';
-import { VStack, Card, EntityItem, Text } from '@fuel-explorer/ui';
 import { bn } from '@fuel-ts/math';
 import type { BN } from '@fuel-ts/math';
+import type { CardProps } from '@fuels/ui';
+import { VStack, Card, EntityItem, Text } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
 
 import type { TxAccountType } from '../../types';

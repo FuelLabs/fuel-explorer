@@ -1,5 +1,3 @@
-@layer tw-base, radix, tw-components, tw-utilities;
-
 @import '@radix-ui/themes/styles.css';
 
 @tailwind base;

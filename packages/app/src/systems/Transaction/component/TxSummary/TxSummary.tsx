@@ -1,4 +1,5 @@
-import type { BaseProps, CardProps, BoxProps } from '@fuel-explorer/ui';
+import { bn } from '@fuel-ts/math';
+import type { BaseProps, CardProps, BoxProps } from '@fuels/ui';
 import {
   Text,
   HStack,
@@ -9,8 +10,7 @@ import {
   EntityItem,
   VStack,
   Badge,
-} from '@fuel-explorer/ui';
-import { bn } from '@fuel-ts/math';
+} from '@fuels/ui';
 import {
   IconCalendar,
   IconCoins,

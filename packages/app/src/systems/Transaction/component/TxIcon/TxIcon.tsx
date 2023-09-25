@@ -1,5 +1,5 @@
-import { Badge, Icon } from '@fuel-explorer/ui';
-import type { BadgeProps, IconComponent, BaseProps } from '@fuel-explorer/ui';
+import { Badge, Icon } from '@fuels/ui';
+import type { BadgeProps, IconComponent, BaseProps } from '@fuels/ui';
 import {
   IconCode,
   IconCoins,

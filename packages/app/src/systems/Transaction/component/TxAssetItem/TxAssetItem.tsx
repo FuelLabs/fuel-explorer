@@ -1,6 +1,6 @@
-import type { CardProps } from '@fuel-explorer/ui';
-import { Text, Card, EntityItem, HStack, cx } from '@fuel-explorer/ui';
 import { resolveIconPath, assets } from '@fuels/assets';
+import type { CardProps } from '@fuels/ui';
+import { Text, Card, EntityItem, HStack, cx } from '@fuels/ui';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import type { BN } from 'fuels';

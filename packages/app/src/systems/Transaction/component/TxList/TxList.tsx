@@ -1,4 +1,4 @@
-import { Grid } from '@fuel-explorer/ui';
+import { Grid } from '@fuels/ui';
 
 import type { TransactionNode } from '../../types';
 import { TxCard } from '../TxCard/TxCard';

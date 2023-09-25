@@ -1,5 +1,5 @@
-import { VStack } from '@fuel-explorer/ui';
 import { bn } from '@fuel-ts/math';
+import { VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { TxAccountTypeEnum } from '../../types';

@@ -133,9 +133,6 @@ importers:
       '@fuel-explorer/graphql':
         specifier: workspace:*
         version: link:../graphql
-      '@fuel-explorer/ui':
-        specifier: workspace:*
-        version: link:../ui
       '@fuel-ts/math':
         specifier: 0.59.0
         version: 0.59.0
@@ -145,6 +142,9 @@ importers:
       '@fuels/assets':
         specifier: 0.0.11
         version: 0.0.11
+      '@fuels/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@tabler/icons-react':
         specifier: 2.35.0
         version: 2.35.0(react@18.2.0)

@@ -10,8 +10,8 @@ import {
   List,
   Text,
   Theme,
-} from '@fuel-explorer/ui';
-import type { BaseProps } from '@fuel-explorer/ui';
+} from '@fuels/ui';
+import type { BaseProps } from '@fuels/ui';
 import {
   IconBrandTwitter,
   IconBrandGithub,

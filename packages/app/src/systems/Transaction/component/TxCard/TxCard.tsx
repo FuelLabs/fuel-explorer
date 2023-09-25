@@ -1,8 +1,8 @@
 'use client';
 
-import { Flex, Card, EntityItem, Text } from '@fuel-explorer/ui';
-import type { BaseProps } from '@fuel-explorer/ui';
 import { bn } from '@fuel-ts/math';
+import { Flex, Card, EntityItem, Text } from '@fuels/ui';
+import type { BaseProps } from '@fuels/ui';
 import {
   IconClockHour1,
   IconCoins,

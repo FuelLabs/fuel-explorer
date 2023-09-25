@@ -1,4 +1,4 @@
-import preset from '@fuel-explorer/ui/tailwind-preset';
+import preset from '@fuels/ui/tailwind-preset';
 import type { Config } from 'tailwindcss';
 import plugin from 'tailwindcss/plugin';
 
