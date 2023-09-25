@@ -5,17 +5,17 @@
     "build": {
       "outputs": ["dist/**", "build/**", ".next/**"],
       "dependsOn": ["^build"],
-      "cache": true
+      "cache": false
     },
     "build:preview": {
       "outputs": ["dist/**", "build/**", ".next/**"],
       "dependsOn": ["build", "^build"],
-      "cache": true
+      "cache": false
     },
     "build:storybook": {
       "outputs": ["storybook-static/**"],
       "dependsOn": ["build", "^build"],
-      "cache": true
+      "cache": false
     },
     "test": {
       "outputs": ["**/**/report.json", "coverage/**"],
