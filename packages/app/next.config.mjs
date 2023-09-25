@@ -4,7 +4,6 @@ const config = {
   swcMinify: true,
   experimental: {
     externalDir: true,
-    esmExternals: true,
     serverComponentsExternalPackages: ['bcryptjs'],
     serverActions: true,
   },

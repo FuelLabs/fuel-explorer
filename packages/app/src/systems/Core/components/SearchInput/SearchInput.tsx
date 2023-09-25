@@ -43,8 +43,8 @@ export function SearchInput({
         <Input.Field
           {...props}
           ref={inputRef}
-          onChange={handleChange}
           value={value}
+          onChange={handleChange}
         />
         {Boolean(value.length) && (
           <Input.ElementRight
@@ -53,15 +53,15 @@ export function SearchInput({
                 <IconButton
                   variant="link"
                   aria-label="Clear"
-                  onClick={handleClear}
                   icon="X"
+                  onClick={handleClear}
                 />
                 <IconButton
                   variant="link"
                   aria-label="Submit"
-                  onClick={handleSubmit}
                   tooltip="Submit"
                   icon="Check"
+                  onClick={handleSubmit}
                 />
               </Box.HStack>
             }
