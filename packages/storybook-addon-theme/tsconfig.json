@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "keyofStringsOnly": false,
+    "lib": ["ES2022", "dom"],
+    "target": "ES2021",
+    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "rootDir": ".",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": ["src", ".storybook", "*.config.*"]
+}

@@ -1,26 +1,29 @@
 {
-  "extends": "@fuels/ts-config/base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
     "allowJs": true,
     "noEmit": true,
+    "lib": ["dom"],
     "incremental": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "fuels": ["../../node_modules/fuels"],
+      "tailwind-variants": ["../../node_modules/tailwind-variants"],
+      "@react-aria/interactions": [
+        "../../node_modules/@react-aria/interactions"
+      ]
     }
   },
   "include": [
     "next-env.d.ts",
+    ".next/types/**/*.ts",
     "src",
     ".storybook",
-    ".next/types/**/*.ts",
-    "stories/**/*.tsx",
-    "./jest.setup.ts",
-    "./jest.config.ts"
-  ],
-  "exclude": ["node_modules"]
+    "*.config.*"
+  ]
 }
