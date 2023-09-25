@@ -1,0 +1,46 @@
+import tsconfig from './tsconfig.json';
+
+const defConfig = {
+  outDir: 'dist',
+  splitting: true,
+  format: ['esm', 'cjs'],
+  outExtension({ format }) {
+    return {
+      js: `.${format}.js`,
+    };
+  },
+  sourcemap: true,
+  clean: true,
+  target: tsconfig.compilerOptions.target,
+  esbuildOptions(options) {
+    options.banner = {
+      js: "'use client'",
+    };
+  },
+};
+
+export default [
+  {
+    ...defConfig,
+    entry: {
+      index: 'src/index.tsx',
+    },
+    publicDir: 'public',
+  },
+  {
+    ...defConfig,
+    entry: {
+      index: 'src/theme/tailwind-preset.ts',
+    },
+    format: ['cjs'],
+    outDir: 'dist/theme',
+  },
+  {
+    entry: {
+      index: 'src/theme/index.css',
+    },
+    loader: {
+      '.css': 'css',
+    },
+  },
+];

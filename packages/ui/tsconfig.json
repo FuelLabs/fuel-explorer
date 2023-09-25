@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "fuels": ["../../node_modules/fuels"],
+      "tailwind-variants": ["../../node_modules/tailwind-variants"],
+      "@react-aria/interactions": [
+        "../../node_modules/@react-aria/interactions"
+      ]
+    }
+  },
+  "include": ["src", ".storybook", "*.config.*"]
+}

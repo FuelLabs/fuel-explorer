@@ -1,0 +1,115 @@
+{
+  "name": "@fuel-explorer/ui",
+  "version": "0.0.1",
+  "access": "public",
+  "main": "./src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./tailwind-preset": "./src/theme/tailwind-preset.ts",
+    "./styles.css": "./src/theme/index.css"
+  },
+  "typesVersions": {
+    "*": {
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
+    }
+  },
+  "publishConfig": {
+    "main": "./dist/index.cjs.js",
+    "module": "./dist/index.cjs.js",
+    "types": "./dist/index.d.ts",
+    "typings": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": "./dist/index.esm.js",
+        "require": "./dist/index.cjs.jg",
+        "default": "./dist/index.cjs.js",
+        "types": "./dist/index.d.ts",
+        "typings": "./dist/index.d.ts"
+      },
+      "./tailwind-preset": {
+        "import": "./dist/theme/index.cjs.js",
+        "require": "./dist/theme/index.cjs.js",
+        "default": "./dist/theme/index.cjs.js",
+        "types": "./dist/theme/tailwind-preset.d.ts",
+        "typings": "./dist/theme/tailwind-preset.d.ts"
+      },
+      "./styles.css": "./dist/index.css"
+    },
+    "files": [
+      "dist"
+    ]
+  },
+  "scripts": {
+    "build:storybook": "pnpm ts:check && storybook build",
+    "build": "tsup --dts",
+    "build:watch": "tsup --watch",
+    "dev:storybook": "storybook dev -p 6006",
+    "test": "jest --verbose --passWithNoTests",
+    "test:dev": "pnpm ts:check && pnpm test",
+    "build-storybook": "storybook build",
+    "ts:check": "tsc --noEmit",
+    "generate:defs": "node scripts/create-defs.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "5.0.8",
+    "@fuel-ts/math": "0.59.0",
+    "@radix-ui/colors": "3.0.0-rc.4",
+    "@radix-ui/react-accordion": "1.1.2",
+    "@radix-ui/react-aspect-ratio": "1.0.3",
+    "@radix-ui/react-dialog": "1.0.5",
+    "@radix-ui/react-slot": "1.0.2",
+    "@radix-ui/react-toast": "1.1.5",
+    "@radix-ui/themes": "^1.1.2",
+    "@react-aria/focus": "3.14.1",
+    "@tabler/icons-react": "2.35.0",
+    "@tailwindcss/typography": "0.5.10",
+    "clsx": "2.0.0",
+    "csstype": "3.1.2",
+    "deepmerge-json": "1.5.0",
+    "framer-motion": "10.16.4",
+    "modern-normalize": "2.0.0",
+    "radix-ui-themes-with-tailwind": "1.2.6",
+    "react": "^18.2.0",
+    "react-aria": "3.28.0",
+    "react-dom": "^18.2.0",
+    "react-stately": "3.26.0",
+    "react-use": "17.4.0",
+    "tailwind-merge": "1.14.0",
+    "tailwind-variants": "0.1.14",
+    "tailwindcss-animate": "1.0.7",
+    "tailwindcss-radix": "2.8.0",
+    "tailwindcss-themer": "3.1.0"
+  },
+  "devDependencies": {
+    "@chialab/esbuild-plugin-meta-url": "0.17.7",
+    "@storybook/addon-a11y": "^7.4.5",
+    "@storybook/addon-actions": "^7.4.5",
+    "@storybook/addon-essentials": "^7.4.5",
+    "@storybook/addon-interactions": "^7.4.5",
+    "@storybook/addon-links": "^7.4.5",
+    "@storybook/addon-storysource": "^7.4.5",
+    "@storybook/addon-viewport": "7.4.5",
+    "@storybook/addons": "^7.4.5",
+    "@storybook/react": "^7.4.5",
+    "@storybook/react-vite": "^7.4.5",
+    "@storybook/testing-library": "^0.2.1",
+    "@storybook/types": "^7.4.5",
+    "@types/lodash": "4.14.199",
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "10.4.16",
+    "globby": "13.2.2",
+    "lodash": "^4.17.21",
+    "postcss": "8.4.30",
+    "postcss-import": "15.1.0",
+    "storybook": "^7.4.5",
+    "storybook-addon-theme": "workspace:*",
+    "tailwindcss": "3.3.3",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "5.2.2",
+    "vite": "^4.4.9",
+    "vite-tsconfig-paths": "^4.2.1"
+  }
+}
