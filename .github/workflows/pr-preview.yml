@@ -18,6 +18,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Build and push Fuel Explorer Preview image
+        if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
+        uses: ./.github/actions/docker-publish
+        id: publish
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          image: ghcr.io/fuellabs/fuel-explorer-preview
+          dockerfile: deployment/preview.Dockerfile
+
       - name: Add pullpreview label
         if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
         uses: KeisukeYamashita/attach-labels@v1
@@ -30,6 +40,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           compose_files: .preview/docker-compose.yml
         env:
+          FUEL_EXPLORER_PREVIEW_IMAGE: ${{ steps.publish.outputs.image }}
           AWS_ACCESS_KEY_ID: '${{ secrets.AWS_ACCESS_KEY_ID }}'
           AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
           AWS_REGION: 'us-east-1'

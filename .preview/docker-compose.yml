@@ -4,13 +4,9 @@ services:
   fuel-explorer:
     platform: linux/amd64
     container_name: fuel-explorer
-    build:
-      context: ../
-      dockerfile: ./.preview/Dockerfile
-      args:
-        IS_PREVIEW: true
-        GRAPHQL_API: http://localhost:4444/graphql
-        FUEL_PROVIDER_URL: http://beta-4.fuel.network/graphql
+    image: ${FUEL_EXPLORER_PREVIEW_IMAGE}
+    environment:
+      FUEL_PROVIDER_URL: 'http://beta-4.fuel.network/graphql'
     ports:
       - '80:3000'
       - '4000:4444'
