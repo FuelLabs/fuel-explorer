@@ -100,6 +100,7 @@ const preset: Config = {
     },
   },
   plugins: [
+    require('@tailwindcss/typography'),
     require('tailwindcss-animate'),
     require('tailwindcss-radix')({
       variantPrefix: false,

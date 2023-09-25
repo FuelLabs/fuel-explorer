@@ -42,9 +42,9 @@ function FooterNav({
 }: FooterNavProps) {
   const classes = styles();
   return (
-    <VStack as="nav" className={classes.nav({ className })} {...props}>
+    <VStack as="nav" gap="2" className={classes.nav({ className })} {...props}>
       <Image alt={alt} height={40} src={img} width={40} />
-      <Heading className={classes.navHeading()} size="4">
+      <Heading className={classes.navHeading()} size="5">
         {title}
       </Heading>
       <List className={classes.navList()}>
@@ -139,11 +139,7 @@ const styles = tv({
     ],
     socialIcon: ['text-white hover:text-brand transition-colors duration-200'],
     navs: ['flex flex-col gap-8 justify-betwee md:flex-row md:text-center'],
-    nav: [
-      'flex flex-col flex-1',
-      'md:items-center',
-      'lg:text-left lg:items-start',
-    ],
+    nav: ['flex-1 md:items-center lg:text-left lg:items-start'],
     navHeading: [
       'justify-start md:justify-center lg:justify-start text-heading',
     ],

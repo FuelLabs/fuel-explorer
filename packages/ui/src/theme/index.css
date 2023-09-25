@@ -1,9 +1,25 @@
 @layer tw-base, radix, tw-components, tw-utilities;
 
-@import 'tailwindcss/base' layer(tw-base);
-@import '@radix-ui/themes/styles.css' layer(radix);
-@import 'tailwindcss/components' layer(tw-components);
-@import 'tailwindcss/utilities' layer(tw-utilities);
+@import '@radix-ui/themes/styles.css';
+
+@tailwind base;
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+  }
+  kbd {
+    font-size: 0.875rem;
+    font-family: var(--default-font-family);
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
 
 :root,
 .radix-themes {

@@ -1,5 +1,5 @@
 'use client';
-import { Container, VStack, Heading, Nav } from '@fuel-explorer/ui';
+import { Container, VStack, Nav } from '@fuel-explorer/ui';
 import type { BaseProps } from '@fuel-explorer/ui';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
 
@@ -39,9 +39,6 @@ export function Layout({ children, hero }: LayoutProps) {
       </Nav>
       {hero && <Hero />}
       <Container className="py-24" size="4">
-        <Heading as="h2" className="mb-10">
-          Recent Transactions
-        </Heading>
         {children}
       </Container>
       <Footer />
