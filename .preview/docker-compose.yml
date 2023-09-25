@@ -5,6 +5,8 @@ services:
     platform: linux/amd64
     container_name: fuel-explorer
     image: ${FUEL_EXPLORER_PREVIEW_IMAGE}
+    env_file:
+      - .env
     environment:
       FUEL_PROVIDER_URL: 'http://beta-4.fuel.network/graphql'
     ports:

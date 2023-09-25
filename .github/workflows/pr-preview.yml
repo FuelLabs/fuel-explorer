@@ -39,7 +39,7 @@ jobs:
       - name: Create .env config
         shell: bash
         run: |
-          echo "FUEL_EXPLORER_PREVIEW_IMAGE=${{ steps.publish.outputs.image }}" >> .env
+          echo "FUEL_EXPLORER_PREVIEW_IMAGE=${{ steps.publish.outputs.image }}" >> .preview/.env
 
       - uses: pullpreview/action@v5.3.0
         with:
