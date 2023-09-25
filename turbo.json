@@ -9,24 +9,24 @@
     },
     "build:preview": {
       "outputs": ["dist/**", "build/**", ".next/**"],
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "cache": true
     },
     "build:storybook": {
       "outputs": ["storybook-static/**"],
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "cache": true
     },
     "test": {
       "outputs": ["**/**/report.json", "coverage/**"],
-      "dependsOn": ["build"],
+      "dependsOn": [],
       "outputMode": "full"
     },
     "dev": {
       "cache": false
     },
     "lint": {
-      "dependsOn": ["build"],
+      "dependsOn": [],
       "cache": true
     },
     "start": {

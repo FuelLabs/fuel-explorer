@@ -9,7 +9,7 @@ const schema = z.object({
 });
 
 export const getLastTxs = act(schema, async ({ last = 12 }) => {
-  const client = new GraphQLClient('http://localhost:4444/graphql');
+  const client = new GraphQLClient(process.env.FUEL_PROVIDER_URL as string);
   const sdk = getSdk(client);
   const { data } = await sdk.getLastTransactions({ last });
   return data.transactions.nodes;

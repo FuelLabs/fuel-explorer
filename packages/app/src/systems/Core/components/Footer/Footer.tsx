@@ -128,20 +128,22 @@ export function Footer({ className }: BaseProps<{}>) {
 
 const styles = tv({
   slots: {
-    container: ['hero-bg border-t border-border px-8 md:px-10'],
+    container: ['hero-bg border-t border-border px-8 tablet:px-10'],
     root: [
       'py-14 grid gap-8 grid-cols-1 grid-rows-[auto,1fr]',
-      'lg:py-16 lg:grid-cols-[1fr,2fr] lg:grid-rows-auto',
+      'laptop:py-16 laptop:grid-cols-[1fr,2fr] laptop:grid-rows-auto',
     ],
     brand: [
       'items-center pb-8 border-b border-border',
-      'lg:pb-0 lg:items-start lg:border-b-0',
+      'laptop:pb-0 laptop:items-start laptop:border-b-0',
     ],
     socialIcon: ['text-white hover:text-brand transition-colors duration-200'],
-    navs: ['flex flex-col gap-8 justify-betwee md:flex-row md:text-center'],
-    nav: ['flex-1 md:items-center lg:text-left lg:items-start'],
+    navs: [
+      'flex flex-col gap-8 justify-between tablet:flex-row tablet:text-center',
+    ],
+    nav: ['flex-1 tablet:items-center laptop:text-left laptop:items-start'],
     navHeading: [
-      'justify-start md:justify-center lg:justify-start text-heading',
+      'justify-start tablet:justify-center laptop:justify-start text-heading',
     ],
     navList: ['flex flex-col gap-0 fuel-[Icon]:hidden'],
     navLink: ['text-secondary hover:text-brand'],
