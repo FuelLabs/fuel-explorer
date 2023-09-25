@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Transaction } from '@fuel-explorer/graphql';
 import { bn } from 'fuels';
 import { dayjs } from '~/systems/Core/utils/dayjs';

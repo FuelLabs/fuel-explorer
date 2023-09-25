@@ -1,5 +1,5 @@
+import { bn } from '@fuel-ts/math';
 import type { IResolvers } from '@graphql-tools/utils';
-import { bn } from 'fuels';
 
 export const Transaction: IResolvers = {
   title: {

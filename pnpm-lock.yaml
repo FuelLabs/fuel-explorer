@@ -248,6 +248,9 @@ importers:
 
   packages/graphql:
     dependencies:
+      '@fuel-ts/math':
+        specifier: 0.59.0
+        version: 0.59.0
       '@graphql-tools/delegate':
         specifier: ^10.0.3
         version: 10.0.3(graphql@16.8.1)

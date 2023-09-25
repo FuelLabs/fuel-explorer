@@ -20,6 +20,7 @@
     "fix:generated": "node ./scripts/fix-generated.mjs"
   },
   "dependencies": {
+    "@fuel-ts/math": "0.59.0",
     "@graphql-tools/delegate": "^10.0.3",
     "@graphql-tools/load": "^8.0.0",
     "@graphql-tools/schema": "^10.0.0",
@@ -28,7 +29,6 @@
     "cors": "^2.8.5",
     "dotenv": "16.3.1",
     "express": "^4.18.2",
-    "fuels": "0.59.0",
     "graphql": "^16.8.1",
     "graphql-http": "^1.22.0",
     "graphql-playground-middleware-express": "^1.7.23",
