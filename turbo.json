@@ -9,12 +9,12 @@
     },
     "build:preview": {
       "outputs": ["dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["build", "^build"],
       "cache": true
     },
     "build:storybook": {
       "outputs": ["storybook-static/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["build", "^build"],
       "cache": true
     },
     "test": {
