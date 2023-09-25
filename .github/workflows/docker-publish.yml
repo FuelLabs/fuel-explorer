@@ -13,9 +13,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  REGISTRY: ghcr.io
-
 jobs:
   build-and-publish-image:
     runs-on: buildjet-4vcpu-ubuntu-2204
