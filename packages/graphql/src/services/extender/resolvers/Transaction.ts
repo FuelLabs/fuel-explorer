@@ -1,5 +1,6 @@
 import { bn } from '@fuel-ts/math';
 import type { IResolvers } from '@graphql-tools/utils';
+import { tai64toDate } from '~/utils/dayjs';
 
 export const Transaction: IResolvers = {
   title: {
@@ -13,7 +14,14 @@ export const Transaction: IResolvers = {
   time: {
     resolve(transaction, _args, _context, _info) {
       const status = transaction.status;
-      return status?.time ?? 0;
+      const time = status?.time ?? null;
+      const date = tai64toDate(time);
+      return {
+        fromNow: date.fromNow(),
+        full: date.format('DD MMM YYYY - HH:mm:ss A'),
+        rawTai64: time.toString(),
+        rawUnix: date.unix().toString(),
+      };
     },
   },
   blockHeight: {

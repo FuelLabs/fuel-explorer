@@ -15,10 +15,10 @@
   "dependencies": {
     "@fontsource-variable/inter": "5.0.8",
     "@fuel-explorer/graphql": "workspace:*",
-    "@fuels/ui": "workspace:*",
     "@fuel-ts/math": "0.59.0",
     "@fuel-wallet/sdk": "0.13.0",
     "@fuels/assets": "0.0.11",
+    "@fuels/ui": "workspace:*",
     "@tabler/icons-react": "2.35.0",
     "@tanstack/react-query": "4.35.3",
     "clsx": "2.0.0",

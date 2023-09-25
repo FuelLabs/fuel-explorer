@@ -1,20 +1,18 @@
 'use client';
 
 import { bn } from '@fuel-ts/math';
-import { Flex, Card, EntityItem, Text } from '@fuels/ui';
+import { Flex, Card, EntityItem, Text, Badge } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
 import {
-  IconClockHour1,
   IconCoins,
   IconGasStation,
   IconTransfer,
   IconUsers,
 } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
-import { fromNow } from '~/systems/Core/utils/dayjs';
 
 import type { TransactionNode, TxStatus } from '../../types';
-import { TxIcon } from '../TxIcon/TxIcon';
+import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 
 type TxCardProps = BaseProps<{
   transaction: TransactionNode;
@@ -23,7 +21,6 @@ type TxCardProps = BaseProps<{
 export function TxCard({ transaction: tx, className, ...props }: TxCardProps) {
   const classes = styles();
   const title = tx.title as string;
-  const time = fromNow(tx.time as string);
   return (
     <Card {...props} className={classes.root({ className })}>
       <Card.Header>
@@ -40,8 +37,10 @@ export function TxCard({ transaction: tx, className, ...props }: TxCardProps) {
         </Flex>
         <Flex className={classes.row()} justify="between">
           <Text leftIcon={IconTransfer}>{tx.totalOperations} operations</Text>
-          <Text className={classes.small()} leftIcon={IconClockHour1}>
-            {time}
+          <Text className={classes.small()}>
+            <Badge color={TX_INTENT_MAP[tx.statusType as string]}>
+              {tx.statusType}
+            </Badge>
           </Text>
         </Flex>
         <Flex className={classes.row()} justify="between">
