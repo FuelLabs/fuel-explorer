@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function deepIterateObject(
   obj: any,
   callback: (path: string, value: any) => void,

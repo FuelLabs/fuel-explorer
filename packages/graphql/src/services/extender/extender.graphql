@@ -4,3 +4,26 @@ extend type TransactionConnection {
   # custom
   accounts: [Account]
 }
+
+enum TransactionTitle {
+  ContractCall
+  Mint
+  Burn
+}
+
+enum TransactionStatusType {
+  Success
+  Failure
+  Submitted
+}
+
+extend type Transaction {
+  title: TransactionTitle
+  time: String
+  blockHeight: String
+  statusType: TransactionStatusType
+  totalAccounts: Int
+  totalAssets: Int
+  totalOperations: Int
+  gasUsed: U64
+}
