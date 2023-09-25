@@ -32,6 +32,9 @@ module.exports = {
     },
   },
   rules: {
+    // TODO: this was added just for this pr, its already removed
+    // inside the updated branchs
+    '@typescript-eslint/no-explicit-any': 'off',
     // TODO: add this rules in the npm-packs
     '@typescript-eslint/consistent-type-imports': [
       'error',
@@ -45,7 +48,9 @@ module.exports = {
       {
         callbacksLast: true,
         shorthandFirst: true,
-        noSortAlphabetically: false,
+        noSortAlphabetically: true,
+        reservedFirst: true,
+        multiline: 'last',
         reservedFirst: true,
       },
     ],
