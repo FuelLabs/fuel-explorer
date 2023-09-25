@@ -133,6 +133,9 @@ importers:
       '@fuel-explorer/graphql':
         specifier: workspace:*
         version: link:../graphql
+      '@fuel-ts/math':
+        specifier: 0.59.0
+        version: 0.59.0
       '@fuel-ui/css':
         specifier: 0.21.0-pr-305-04b8434
         version: 0.21.0-pr-305-04b8434

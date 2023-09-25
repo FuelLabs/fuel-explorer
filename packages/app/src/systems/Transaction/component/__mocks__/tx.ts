@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Transaction } from '@fuel-explorer/graphql';
 import { bn } from 'fuels';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
@@ -13,6 +12,7 @@ export const TX_CONTRACT_CALL_MOCK = {
   totalAssets: 3,
   totalOperations: 2,
   transaction: {
+    __typename: 'Transaction',
     id: '0x78d13f111bf301324f34f2a7eaffc546d39598d156af38e7c4ef9fe61ea2c46a',
     isCreate: false,
     isMint: false,
@@ -35,5 +35,5 @@ export const TX_CONTRACT_CALL_MOCK = {
         },
       } as any,
     ],
-  } satisfies Transaction,
+  },
 } satisfies TxItem;
