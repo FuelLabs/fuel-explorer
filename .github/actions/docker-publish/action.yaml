@@ -63,6 +63,7 @@ runs:
         cache-to: type=gha,mode=max
 
     - name: Create outputs
+      shell: bash
       run: |
         echo "image=${{ inputs.image }}:${{ steps.publish.imageid }}"
         echo "image=${{ inputs.image }}:${{ steps.publish.imageid }}" >> "$GITHUB_OUTPUT"
