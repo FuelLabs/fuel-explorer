@@ -5,27 +5,28 @@
     "build": {
       "outputs": ["dist/**", "build/**", ".next/**"],
       "dependsOn": ["^build"],
-      "cache": false
+      "cache": true
     },
     "build:preview": {
       "outputs": ["dist/**", "build/**", ".next/**"],
-      "dependsOn": ["build", "^build"],
-      "cache": false
+      "dependsOn": ["build"],
+      "cache": true
     },
     "build:storybook": {
       "outputs": ["storybook-static/**"],
-      "dependsOn": ["build", "^build"],
-      "cache": false
+      "dependsOn": ["build"],
+      "cache": true
     },
     "test": {
       "outputs": ["**/**/report.json", "coverage/**"],
-      "dependsOn": [],
+      "dependsOn": ["build"],
       "outputMode": "full"
     },
     "dev": {
       "cache": false
     },
     "lint": {
+      "dependsOn": ["build"],
       "cache": true
     },
     "start": {
