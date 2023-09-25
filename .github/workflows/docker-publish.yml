@@ -41,3 +41,4 @@ jobs:
           echo "${{ steps.publish.outputs.imageId }}"
           echo "${{ steps.publish.outputs.digest }}"
           echo "${{ steps.publish.outputs.metadata }}"
+          echo "${{ steps.publish.outputs.metadata.image.name }}"
