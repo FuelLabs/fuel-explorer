@@ -20,7 +20,6 @@ import {
 } from '@tabler/icons-react';
 import { createContext, useContext } from 'react';
 import { tv } from 'tailwind-variants';
-import { fromNow, fullTime } from '~/systems/Core/utils/dayjs';
 
 import type { TransactionNode, TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
@@ -83,9 +82,9 @@ export const TxSummaryDetails = createComponent<
             </EntityItem>
           </TxSummaryRow>
           <TxSummaryRow label="Timestamp">
-            <Text as="span">{fromNow(tx.time as string)}</Text>
+            <Text as="span">{tx.time?.fromNow}</Text>
             <Text as="span" iconColor="text-muted" leftIcon={IconCalendar}>
-              {fullTime(tx.time as string)}
+              {tx.time?.full}
             </Text>
           </TxSummaryRow>
           <TxSummaryRow label="Status">
