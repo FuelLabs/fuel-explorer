@@ -37,4 +37,7 @@ jobs:
       - name: Image deploy
         shell: bash
         run: |
-          echo ${{ steps.publish.outputs.image }}
+          echo "${{ steps.publish.outputs.image }}"
+          echo "${{ steps.publish.outputs.imageId }}"
+          echo "${{ steps.publish.outputs.digest }}"
+          echo "${{ steps.publish.outputs.metadata }}"

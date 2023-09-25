@@ -25,10 +25,23 @@ inputs:
 
 outputs:
   image:
-    description: 'Image name with provider url'
+    description: 'Image url'
+  imageid:
+    description: 'Image ID'
+  digest:
+    description: 'Image digest'
+  metadata:
+    description: 'Build result metadata'
 
 runs:
   using: 'composite'
+
+  outputs:
+    digest: ${{ steps.publish.outputs.digest }}
+    imageId: ${{ steps.publish.outputs.imageId }}
+    metadata: ${{ steps.publish.outputs.metadata }}
+    image: ${{ inputs.image }}:${{ steps.publish.outputs.digest }}
+
   steps:
     - name: Log in to the ghcr.io registry
       uses: docker/login-action@v2
@@ -63,9 +76,3 @@ runs:
         build-args: ${{ inputs.build-args }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-
-    - name: Create outputs
-      shell: bash
-      run: |
-        echo "image=${{ inputs.image }}:${{ steps.publish.imageid }}"
-        echo "image=${{ inputs.image }}:${{ steps.publish.imageid }}" >> "$GITHUB_OUTPUT"
