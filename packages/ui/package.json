@@ -7,7 +7,7 @@
   "exports": {
     ".": "./src/index.tsx",
     "./tailwind-preset": "./src/theme/tailwind-preset.ts",
-    "./styles.css": "./dist/index.css"
+    "./styles.css": "./dist/styles.css"
   },
   "typesVersions": {
     "*": {

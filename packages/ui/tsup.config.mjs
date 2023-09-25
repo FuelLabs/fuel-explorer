@@ -37,7 +37,7 @@ export default [
   },
   {
     entry: {
-      index: 'src/theme/index.css',
+      styles: 'src/theme/index.css',
     },
     loader: {
       '.css': 'css',

@@ -1,5 +1,5 @@
 import '@fontsource-variable/inter/slnt.css';
-import '@fuels/ui/styles.css';
+import '@fuels/ui/dist/styles.css';
 import '../src/app/globals.css';
 
 import { withThemeDecorator } from 'storybook-addon-theme';
