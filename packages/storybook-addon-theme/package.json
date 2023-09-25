@@ -1,5 +1,6 @@
 {
   "name": "storybook-addon-theme",
+  "private": true,
   "version": "0.0.1",
   "access": "public",
   "main": "./src/index.tsx",

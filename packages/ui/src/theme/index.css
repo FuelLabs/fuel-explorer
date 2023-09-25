@@ -1,0 +1,121 @@
+@layer tw-base, radix, tw-components, tw-utilities;
+
+@import 'tailwindcss/base' layer(tw-base);
+@import '@radix-ui/themes/styles.css' layer(radix);
+@import 'tailwindcss/components' layer(tw-components);
+@import 'tailwindcss/utilities' layer(tw-utilities);
+
+:root,
+.radix-themes {
+  --font-sans: 'Inter Variable', system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+    sans-serif;
+
+  --default-font-size: var(--font-size-3);
+  --default-font-family: var(--font-sans);
+}
+
+:root {
+  --space-0: 0px;
+  --space-1: calc(4px * var(--scaling));
+  --space-2: calc(8px * var(--scaling));
+  --space-3: calc(12px * var(--scaling));
+  --space-4: calc(16px * var(--scaling));
+  --space-5: calc(20px * var(--scaling));
+  --space-6: calc(24px * var(--scaling));
+  --space-7: calc(28px * var(--scaling));
+  --space-8: calc(32px * var(--scaling));
+  --space-9: calc(36px * var(--scaling));
+  --space-10: calc(40px * var(--scaling));
+  --space-11: calc(44px * var(--scaling));
+  --space-12: calc(48px * var(--scaling));
+  --space-14: calc(56px * var(--scaling));
+  --space-16: calc(64px * var(--scaling));
+  --space-20: calc(80px * var(--scaling));
+  --space-24: calc(96px * var(--scaling));
+  --space-28: calc(112px * var(--scaling));
+  --space-32: calc(128px * var(--scaling));
+  --space-36: calc(144px * var(--scaling));
+  --space-40: calc(160px * var(--scaling));
+  --space-44: calc(176px * var(--scaling));
+  --space-48: calc(192px * var(--scaling));
+  --space-52: calc(208px * var(--scaling));
+  --space-56: calc(224px * var(--scaling));
+  --space-60: calc(240px * var(--scaling));
+  --space-64: calc(256px * var(--scaling));
+  --space-72: calc(288px * var(--scaling));
+  --space-80: calc(320px * var(--scaling));
+  --space-96: calc(384px * var(--scaling));
+}
+
+:root,
+[data-accent-color] {
+  /* general colors */
+  --color-transparent: transparent;
+  --color-accent: var(--accent-9);
+  --color-border: var(--gray-6);
+  --color-border-hover: var(--gray-8);
+
+  /* text colors */
+  --color-color: var(--gray-11);
+  --color-secondary: var(--gray-10);
+  --color-muted: var(--gray-9);
+  --color-heading: var(--inverse);
+  --color-icon: var(--gray-9);
+  --color-link: var(--color-brand);
+
+  /* semantic colors */
+  --color-success: var(--grass-9);
+  --color-success-muted: var(--grass-8);
+  --color-success-contrast: var(--grass-9-contrast);
+  --color-success-border: var(--grass-6);
+  --color-info: var(--sky-9);
+  --color-info-muted: var(--sky-8);
+  --color-info-contrast: var(--sky-9-contrast);
+  --color-info-border: var(--sky-6);
+  --color-warning: var(--yellow-9);
+  --color-warning-muted: var(--yellow-8);
+  --color-warning-contrast: var(--yellow-9-contrast);
+  --color-warning-border: var(--yellow-6);
+  --color-error: var(--crimson-9);
+  --color-error-muted: var(--crimson-8);
+  --color-error-contrast: var(--crimson-9-contrast);
+  --color-error-border: var(--crimson-8);
+
+  /* card colors */
+  --color-card-bg: var(--gray-a2);
+  --color-card-title: var(--gray-1);
+  --color-card-border: var(--gray-a6);
+}
+
+.dark [data-accent-color],
+.dark-theme [data-accent-color] {
+  --inverse: white;
+  --color-brand: #00e182;
+}
+
+.light [data-accent-color],
+.light-theme [data-accent-color] {
+  --inverse: black;
+  --color-brand: var(--grass-9);
+}
+
+.dark [data-accent-color='grass'],
+.dark-theme [data-accent-color='grass'] {
+  --accent-9-contrast: black;
+  --accent-9: var(--color-brand);
+  --accent-10: #00cd75;
+}
+
+.dark body,
+.dark-theme body {
+  --color-page-background: #0e0e0e;
+  background: var(--color-page-background) !important;
+}
+
+body,
+html,
+.radix-themes {
+  font-size: var(--default-font-size);
+  color: var(--color-color);
+}

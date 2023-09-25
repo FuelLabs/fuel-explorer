@@ -31,6 +31,11 @@ const config = {
         destination: '/storybook/index.html',
         permanent: false,
       },
+      {
+        source: '/ui',
+        destination: '/ui/index.html',
+        permanent: false,
+      },
     ];
   },
 };
