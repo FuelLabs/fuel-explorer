@@ -1,4 +1,6 @@
 {
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["NODE_ENV", "IS_PREVIEW", "FUEL_PROVIDER_URL", "GRAPHQL_API"],
   "pipeline": {
     "build": {
       "outputs": ["dist/**", "build/**", ".next/**"],
@@ -25,6 +27,9 @@
     },
     "lint": {
       "cache": true
+    },
+    "start": {
+      "cache": false
     }
   }
 }
