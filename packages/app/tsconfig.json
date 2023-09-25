@@ -11,7 +11,12 @@
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "fuels": ["../../node_modules/fuels"],
+      "tailwind-variants": ["../../node_modules/tailwind-variants"],
+      "@react-aria/interactions": [
+        "../../node_modules/@react-aria/interactions"
+      ]
     }
   },
   "include": [
@@ -19,7 +24,6 @@
     ".next/types/**/*.ts",
     "src",
     ".storybook",
-    "*.config.*",
-    "jest.setup.ts"
+    "*.config.*"
   ]
 }

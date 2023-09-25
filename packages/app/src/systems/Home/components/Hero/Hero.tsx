@@ -1,101 +1,50 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Container, Heading } from '@fuel-ui/react';
+'use client';
+
+import { Box, Container, Heading, Theme } from '@fuel-explorer/ui';
 import Image from 'next/image';
+import { tv } from 'tailwind-variants';
 import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
 
 export function Hero() {
+  const classes = styles();
   return (
-    <Box css={styles.root}>
-      <Container css={styles.container} size="sm">
-        <Heading as="h1" css={styles.title}>
-          Explore Fuel Network
-        </Heading>
-        <SearchInput css={styles.input} />
-      </Container>
-      <Box as="figure" css={styles.img}>
-        <Box css={styles.imgWrapper}>
-          <Image
-            priority
-            src="/brand-img.jpeg"
-            alt="Fuel Brand Image"
-            width={680}
-            height={680}
-            quality={80}
-          />
+    <Theme appearance="dark">
+      <Box className={classes.root()}>
+        <Container className={classes.container()} size="4">
+          <Heading as="h1" className={classes.title()}>
+            Explore Fuel Network
+          </Heading>
+          <SearchInput className={classes.input()} />
+        </Container>
+        <Box as="figure" className={classes.img()}>
+          <Box className={classes.imgWrapper()}>
+            <Image
+              priority
+              alt="Fuel Brand Image"
+              className={classes.imgChild()}
+              height={680}
+              quality={80}
+              src="/brand-img.png"
+              width={680}
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </Theme>
   );
 }
 
-const styles = {
-  root: cssObj({
-    overflow: 'clip',
-    position: 'relative',
-    width: '100%',
-    background: 'url(/logo-faded.svg) no-repeat -40px center',
-    backgroundSize: 'auto 100%',
-    borderBottom: '1px solid $border',
-  }),
-  container: cssObj({
-    position: 'relative',
-    zIndex: 1,
-    py: '$14',
-    px: '$8',
-
-    '@md': {
-      py: '$24',
-      px: '$16',
-    },
-  }),
-  img: cssObj({
-    display: 'none',
-    position: 'absolute',
-    right: '0',
-    top: '0',
-    transform: 'translate(10%, -25%)',
-
-    '@md': {
-      display: 'block',
-    },
-  }),
-  imgWrapper: cssObj({
-    position: 'relative',
-
-    '&::before': {
-      display: 'block',
-      content: '""',
-      width: '70%',
-      height: '100%',
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      background:
-        'linear-gradient(to right, $bodyBg 0%, $bodyBg 40%, $blackA1 100%)',
-    },
-
-    '@lg': {
-      '&::before': {
-        width: '40%',
-        background: 'linear-gradient(to right, $bodyBg, $blackA1)',
-      },
-    },
-  }),
-  title: cssObj({
-    textAlign: 'center',
-    fontSize: '$3xl',
-    lineHeight: '1',
-
-    '@md': {
-      textAlign: 'left',
-      fontSize: '$4xl',
-    },
-  }),
-  input: cssObj({
-    width: '100%',
-
-    '@md': {
-      width: '400px',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    root: 'hero-bg overflow-clip relative w-full border-b border-border',
+    container: 'z-20 relative py-8 px-8 md:py-28 md:px-10',
+    img: 'hidden absolute inset-0 md:block',
+    imgChild: 'absolute -top-1/2 right-0',
+    imgWrapper: 'absolute inset-0',
+    input: 'w-full md:w-[400px]',
+    title: [
+      'text-center text-2xl text-white mb-4 justify-center',
+      'md:text-left md:text-4xl md:justify-start',
+    ],
+  },
+});

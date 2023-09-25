@@ -1,27 +1,8 @@
+@import '@fuel-explorer/ui/dist/index.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --font-sans: var(--font-inter);
-}
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  background: var(--colors-bodyBg);
-  font-family: var(--font-inter);
-  color: var(--colors-textColor);
-  font-size: 16px;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
+  --hero-bg: #000;
 }
