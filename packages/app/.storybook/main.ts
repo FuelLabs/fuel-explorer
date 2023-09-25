@@ -6,15 +6,19 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
-    '@storybook/addon-a11y',
     '@storybook/addon-storysource',
-    'storybook-dark-mode',
+    '@storybook/addon-a11y',
+    'storybook-addon-theme/register',
   ],
   staticDirs: ['../public'],
   core: {},
   framework: {
     name: '@storybook/nextjs',
     options: {},
+  },
+  typescript: {
+    check: false,
+    reactDocgen: 'react-docgen',
   },
 };
 
