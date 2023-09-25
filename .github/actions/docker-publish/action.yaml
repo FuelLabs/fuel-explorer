@@ -43,7 +43,7 @@ runs:
     - name: Log in to the ghcr.io registry
       uses: docker/login-action@v2
       with:
-        registry: ${{ env.REGISTRY }}
+        registry: ${{ inputs.registry }}
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
 
