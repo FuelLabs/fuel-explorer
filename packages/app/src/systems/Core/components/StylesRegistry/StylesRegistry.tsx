@@ -28,8 +28,8 @@ export function StylesRegistry({ children }: { children: React.ReactNode }) {
 
       return (
         <style
-          id="stitches"
           dangerouslySetInnerHTML={{ __html: getCssText() }}
+          id="stitches"
         />
       );
     }

@@ -28,7 +28,7 @@ function FooterNav({ title, links, img, alt }: FooterNavProps) {
       <List>
         {links.map((link) => (
           <List.Item key={link.href}>
-            <Link href={link.href} isExternal>
+            <Link isExternal href={link.href}>
               {link.label}
             </Link>
           </List.Item>

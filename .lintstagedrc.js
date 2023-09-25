@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   '**/*.(md|mdx|json|yml|yaml|html|css)': ['prettier --write'],
   '*.{js,jsx,ts,tsx}': ['prettier --write', 'eslint --fix'],
   '.{ts,tsx}': ['tsc --noEmit'],
