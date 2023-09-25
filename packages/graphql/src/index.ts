@@ -22,6 +22,13 @@ app.get(
   }),
 );
 
+// Health check endpoint
+app.get('/health', (_, res) =>
+  res.status(200).send({
+    status: 'ok',
+  }),
+);
+
 // Start graphql server
 startGraphql(FUEL_PROVIDER_URL, app);
 

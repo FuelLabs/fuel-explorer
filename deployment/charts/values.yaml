@@ -1,0 +1,13 @@
+# Default values for fuel exploer
+
+app:
+  name: fuel-explorer
+  replicas: 1
+  http_port: 80
+  https_port: 443
+  target_port: 3000
+  fuel_provider_url: '${fuel_provider_url}'
+  image:
+    repository: '${fuel_explorer_image_repository}'
+    tag: '${fuel_explorer_image_tag}'
+    pullPolicy: Always
