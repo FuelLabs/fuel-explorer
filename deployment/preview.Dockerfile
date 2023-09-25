@@ -4,8 +4,8 @@
 FROM node:20-slim AS base
 
 # Receive envs on build time
-ARG IS_PREVIEW true
-ARG GRAPHQL_API http://localhost:4444/graphql
+ARG IS_PREVIEW=true
+ARG GRAPHQL_API=http://localhost:4444/graphql
 
 # Expose the args to the env of the container
 ENV IS_PREVIEW="${IS_PREVIEW}"
