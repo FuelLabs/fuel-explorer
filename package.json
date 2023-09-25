@@ -21,8 +21,8 @@
   ],
   "scripts": {
     "build": "pnpm turbo:run build --filter=!app",
-    "build:preview": "pnpm turbo:run build:preview --filter=app",
-    "build:storybook": "pnpm turbo:run build:storybook",
+    "build:preview": "pnpm build && pnpm turbo:run build:preview --filter=app",
+    "build:storybook": "pnpm build && pnpm turbo:run build:storybook",
     "clean:indexer": "pnpm --filter=indexer clean",
     "deploy:indexer": "pnpm --filter=indexer run deploy",
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
