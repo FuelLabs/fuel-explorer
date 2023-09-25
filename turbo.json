@@ -3,6 +3,7 @@
   "globalEnv": ["NODE_ENV", "IS_PREVIEW", "FUEL_PROVIDER_URL", "GRAPHQL_API"],
   "pipeline": {
     "//#build:libs": {
+      "dependsOn": [],
       "cache": true
     },
     "build": {
