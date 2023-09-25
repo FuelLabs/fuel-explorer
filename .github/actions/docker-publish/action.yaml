@@ -26,7 +26,7 @@ inputs:
 outputs:
   image:
     description: 'Image url'
-    value: ${{ inputs.image }}:${{ steps.publish.outputs.digest }}
+    value: ${{ steps.imageOuput.outputs.imageUrl }}
   imageid:
     description: 'Image ID'
     value: ${{ steps.publish.outputs.imageId }}
@@ -73,3 +73,7 @@ runs:
         build-args: ${{ inputs.build-args }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+    - id: imageOuput
+      shell: bash
+      run: |
+        echo "imageUrl=${{ fromJSON(steps.publish.outputs.metadata)['image.name'] }}" >> $GITHUB_OUTPUT

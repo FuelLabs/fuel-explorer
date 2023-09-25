@@ -38,7 +38,5 @@ jobs:
         shell: bash
         run: |
           echo "${{ steps.publish.outputs.image }}"
-          echo "${{ steps.publish.outputs.imageId }}"
-          echo "${{ steps.publish.outputs.digest }}"
+          echo "${{ fromJSON(steps.publish.outputs.metadata)['image.name'] }}"
           echo "${{ steps.publish.outputs.metadata }}"
-          echo "${{ steps.publish.outputs.metadata.image.name }}"
