@@ -35,5 +35,6 @@ jobs:
           dockerfile: deployment/Dockerfile
 
       - name: Image deploy
+        shell: bash
         run: |
           echo ${{ steps.publish.outputs.image }}
