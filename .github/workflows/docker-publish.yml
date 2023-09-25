@@ -33,10 +33,3 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           image: ghcr.io/fuellabs/fuel-explorer
           dockerfile: deployment/Dockerfile
-
-      - name: Image deploy
-        shell: bash
-        run: |
-          echo "${{ steps.publish.outputs.image }}"
-          echo "${{ fromJSON(steps.publish.outputs.metadata)['image.name'] }}"
-          echo "${{ steps.publish.outputs.metadata }}"
