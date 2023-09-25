@@ -26,22 +26,19 @@ inputs:
 outputs:
   image:
     description: 'Image url'
+    value: ${{ inputs.image }}:${{ steps.publish.outputs.digest }}
   imageid:
     description: 'Image ID'
+    value: ${{ steps.publish.outputs.imageId }}
   digest:
     description: 'Image digest'
+    value: ${{ steps.publish.outputs.digest }}
   metadata:
     description: 'Build result metadata'
+    value: ${{ steps.publish.outputs.metadata }}
 
 runs:
   using: 'composite'
-
-  outputs:
-    digest: ${{ steps.publish.outputs.digest }}
-    imageId: ${{ steps.publish.outputs.imageId }}
-    metadata: ${{ steps.publish.outputs.metadata }}
-    image: ${{ inputs.image }}:${{ steps.publish.outputs.digest }}
-
   steps:
     - name: Log in to the ghcr.io registry
       uses: docker/login-action@v2
