@@ -32,9 +32,6 @@ module.exports = {
     },
   },
   rules: {
-    // TODO: this was added just for this pr, its already removed
-    // inside the updated branchs
-    '@typescript-eslint/no-explicit-any': 'off',
     // TODO: add this rules in the npm-packs
     '@typescript-eslint/consistent-type-imports': [
       'error',

@@ -1,0 +1,139 @@
+fragment ContractItem on Contract {
+  __typename
+  id
+}
+
+fragment TransactionStatus on TransactionStatus {
+  __typename
+  ... on SuccessStatus {
+    time
+    block {
+      id
+    }
+  }
+  ... on FailureStatus {
+    time
+  }
+  ... on SubmittedStatus {
+    time
+  }
+}
+
+fragment TransactionInput on Input {
+  __typename
+  ... on InputContract {
+    contract {
+      ...ContractItem
+    }
+  }
+  ... on InputCoin {
+    owner
+    amount
+    assetId
+    predicate
+    predicateData
+  }
+  ... on InputMessage {
+    messageId
+    sender
+    recipient
+    amount
+    nonce
+    data
+    predicate
+    predicateData
+  }
+}
+
+fragment TransactionOutput on Output {
+  __typename
+  ... on CoinOutput {
+    to
+    amount
+    assetId
+  }
+  ... on MessageOutput {
+    recipient
+    amount
+  }
+  ... on ChangeOutput {
+    to
+    amount
+    assetId
+  }
+  ... on VariableOutput {
+    to
+    amount
+    assetId
+  }
+  ... on ContractCreated {
+    contract {
+      ...ContractItem
+    }
+  }
+}
+
+fragment TransactionReceipt on Receipt {
+  __typename
+  contract {
+    ...ContractItem
+  }
+  to {
+    ...ContractItem
+  }
+  data
+  toAddress
+  amount
+  assetId
+  param1
+  param2
+  receiptType
+  gas
+  gasUsed
+  messageId
+  sender
+  recipient
+  contractId
+}
+
+fragment TransactionItem on Transaction {
+  __typename
+  id
+  title
+  time
+  blockHeight
+  statusType
+  totalAccounts
+  totalAssets
+  totalOperations
+  gasUsed
+  isScript
+  isMint
+  isCreate
+  gasPrice
+  gasLimit
+  status {
+    ...TransactionStatus
+  }
+  inputAssetIds
+  inputContracts {
+    ...ContractItem
+  }
+  inputs {
+    ...TransactionInput
+  }
+  outputs {
+    ...TransactionOutput
+  }
+  receipts {
+    ...TransactionReceipt
+  }
+}
+
+query getLastTransactions($last: Int!) {
+  transactions(last: $last) {
+    nodes {
+      ...TransactionItem
+    }
+  }
+}

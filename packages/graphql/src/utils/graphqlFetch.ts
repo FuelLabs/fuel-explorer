@@ -3,6 +3,7 @@ import { print } from 'graphql';
 
 type FetchOptions = {
   document: string | DocumentNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   variables?: Record<string, any>;
   operationName?: string;
 };
