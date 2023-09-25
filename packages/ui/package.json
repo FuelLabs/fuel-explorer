@@ -1,7 +1,8 @@
 {
-  "name": "@fuel-explorer/ui",
+  "name": "@fuels/ui",
   "version": "0.0.1",
   "access": "public",
+  "private": true,
   "main": "./src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
@@ -42,13 +43,13 @@
     ]
   },
   "scripts": {
-    "build:storybook": "pnpm ts:check && storybook build",
+    "build:storybook": "pnpm ts:check && storybook build -o ../app/public/ui",
+    "build:preview": "pnpm build:storybook",
     "build": "tsup --dts",
     "build:watch": "tsup --watch",
     "dev:storybook": "storybook dev -p 6006",
     "test": "jest --verbose --passWithNoTests",
     "test:dev": "pnpm ts:check && pnpm test",
-    "build-storybook": "storybook build",
     "ts:check": "tsc --noEmit",
     "generate:defs": "node scripts/create-defs.mjs"
   },

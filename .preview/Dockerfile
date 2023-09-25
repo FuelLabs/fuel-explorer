@@ -20,6 +20,7 @@ COPY . /preview
 WORKDIR /preview
 
 RUN pnpm install --frozen-lockfile
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 RUN pnpm build:preview
 
 EXPOSE 3000
