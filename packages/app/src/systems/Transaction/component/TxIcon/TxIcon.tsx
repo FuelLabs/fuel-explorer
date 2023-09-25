@@ -1,7 +1,7 @@
 import type { LayerIntent } from '@fuel-ui/css';
 import { Badge, Icon } from '@fuel-ui/react';
 
-import { type TxStatus, type TxType } from '../../types';
+import type { TxStatus, TxType } from '../../types';
 
 type TxIconProps = {
   type: TxType;

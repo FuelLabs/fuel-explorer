@@ -28,6 +28,8 @@ export const Variations: Story = {
   render: () => (
     <Box.Stack gap="$4">
       <EntityItem
+        title="Contract"
+        id={DEFAULT_ARGS.id}
         icon={
           <Tag intent="base" variant="ghost">
             <Icon
@@ -40,8 +42,6 @@ export const Variations: Story = {
             />
           </Tag>
         }
-        title="Contract"
-        id={DEFAULT_ARGS.id}
       />
       <EntityItem {...DEFAULT_ARGS} />
     </Box.Stack>

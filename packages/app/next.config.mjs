@@ -4,13 +4,25 @@ const config = {
   swcMinify: true,
   experimental: {
     externalDir: true,
-    esmExternals: true,
     serverComponentsExternalPackages: ['bcryptjs'],
     serverActions: true,
   },
   /** We run eslint as a separate task in CI */
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
+  },
+  rewrites: async () => {
+    // This is as proxy route to enable next.js
+    // to proxy requests to the graphql server on
+    // preview environment.
+    return process.env.IS_PREVIEW
+      ? [
+          {
+            source: '/graphql',
+            destination: process.env.GRAPHQL_API,
+          },
+        ]
+      : [];
   },
   redirects: async () => {
     return [

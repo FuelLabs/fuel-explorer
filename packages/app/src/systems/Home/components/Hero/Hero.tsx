@@ -15,11 +15,11 @@ export function Hero() {
       <Box as="figure" css={styles.img}>
         <Box css={styles.imgWrapper}>
           <Image
+            priority
             src="/brand-img.jpeg"
             alt="Fuel Brand Image"
             width={680}
             height={680}
-            priority
             quality={80}
           />
         </Box>

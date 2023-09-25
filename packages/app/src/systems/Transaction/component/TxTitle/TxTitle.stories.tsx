@@ -1,7 +1,8 @@
 import { Box } from '@fuel-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { TX_TYPES, type TxType } from '../../types';
+import { TX_TYPES } from '../../types';
+import type { TxType } from '../../types';
 
 import { TxTitle } from './TxTitle';
 
