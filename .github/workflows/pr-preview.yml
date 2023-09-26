@@ -9,14 +9,25 @@ jobs:
   deploy:
     permissions:
       contents: read
+      packages: write
       deployments: write
       pull-requests: write
       statuses: write
     name: deploy
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
+
+      - name: Build and push Fuel Explorer Preview image
+        if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
+        uses: ./.github/actions/docker-publish
+        id: publish
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          image: ghcr.io/fuellabs/fuel-explorer-preview
+          dockerfile: .preview/Dockerfile
 
       - name: Add pullpreview label
         if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
@@ -24,6 +35,11 @@ jobs:
         with:
           labels: pullpreview
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create .env config
+        shell: bash
+        run: |
+          echo "FUEL_EXPLORER_PREVIEW_IMAGE=${{ steps.publish.outputs.image }}" >> .preview/.env
 
       - uses: pullpreview/action@v5.3.0
         with:
