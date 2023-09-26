@@ -1,6 +1,12 @@
 'use client';
 
-/** TODO: add ToastProvider from fuel-ui here */
+import { Theme, Toaster } from '@fuels/ui';
+
 export function Provider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <Theme appearance="dark" hasBackground={false}>
+      {children}
+      <Toaster />
+    </Theme>
+  );
 }

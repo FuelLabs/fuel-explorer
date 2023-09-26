@@ -17,9 +17,16 @@ enum TransactionStatusType {
   Submitted
 }
 
+type ParsedTime {
+  fromNow: String
+  full: String
+  rawTai64: String
+  rawUnix: String
+}
+
 extend type Transaction {
   title: TransactionTitle
-  time: String
+  time: ParsedTime
   blockHeight: String
   statusType: TransactionStatusType
   totalAccounts: Int
