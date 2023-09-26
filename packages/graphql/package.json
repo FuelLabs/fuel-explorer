@@ -10,7 +10,7 @@
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "pnpm:codegen && tsup",
+    "build": "pnpm codegen && tsup",
     "codegen": "gql-gen --config codegen.ts",
     "codegen:schema": "gql-gen --config codegen.schema.ts",
     "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --watch ./src/**/*, src/bin.ts",
