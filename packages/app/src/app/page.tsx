@@ -14,3 +14,6 @@ export default async function Home() {
     </Layout>
   );
 }
+
+// Revalidate cache every 10 seconds
+export const revalidate = 10;
