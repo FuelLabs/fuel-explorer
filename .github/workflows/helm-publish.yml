@@ -4,10 +4,8 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize]
-  release:
-    types: [published]
+    paths:
+      - "helm/fuel-explorer/Chart.yaml"
 
 permissions:
   contents: read
