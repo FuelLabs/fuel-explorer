@@ -10,7 +10,7 @@ const defConfig = {
     };
   },
   sourcemap: true,
-  clean: true,
+  clean: false,
   target: tsconfig.compilerOptions.target,
   esbuildOptions(options) {
     options.banner = {
@@ -37,7 +37,7 @@ export default [
   },
   {
     entry: {
-      index: 'src/theme/index.css',
+      styles: 'src/theme/index.css',
     },
     loader: {
       '.css': 'css',

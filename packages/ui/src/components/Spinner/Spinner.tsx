@@ -1,4 +1,3 @@
-import './Spinner.css';
 import { useMemo } from 'react';
 
 import { createComponent } from '../../utils/component';

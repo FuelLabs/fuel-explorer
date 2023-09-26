@@ -1,73 +1,98 @@
-import type { LayerIntent } from '@fuel-ui/css';
-import { Badge, Icon } from '@fuel-ui/react';
+import { Badge, Icon } from '@fuels/ui';
+import type { BadgeProps, IconComponent, BaseProps } from '@fuels/ui';
+import {
+  IconCode,
+  IconCoins,
+  IconFlame,
+  IconScript,
+  IconSwitch3,
+  IconTransfer,
+  IconWallet,
+} from '@tabler/icons-react';
+import type { VariantProps } from 'tailwind-variants';
+import { tv } from 'tailwind-variants';
 
-import type { TxStatus, TxType } from '../../types';
+import type { TxAccountType, TxStatus, TxType } from '../../types';
 
-type TxIconProps = {
-  type: TxType;
-  status: TxStatus;
-  size?: 'sm' | 'md' | 'lg';
-};
+const TX_ICON_MAP: Record<TxType | TxAccountType, IconComponent> = {
+  ContractCall: IconCode,
+  Mint: IconCoins,
+  Transfer: IconTransfer,
+  Burn: IconFlame,
+  Contract: IconScript,
+  Wallet: IconWallet,
+  Predicate: IconSwitch3,
+} as const;
 
-const TX_ICON_MAP: Record<TxType, string> = {
-  'contract-call': 'Code',
-  mint: 'Coins',
-  transfer: 'Transfer',
-  burn: 'Flame',
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const TX_INTENT_MAP: Record<TxStatus, any> = {
+  Success: 'green',
+  Failure: 'red',
+  Submitted: 'gray',
+  Info: 'sky',
+  Warning: 'yellow',
+} as const;
 
-const TX_INTENT_MAP: Record<TxStatus, LayerIntent> = {
-  success: 'success',
-  error: 'error',
-  pending: 'warning',
-  idle: 'base',
-};
+export const TX_STATUS_MAP: Record<TxStatus, string> = {
+  Success: 'Success',
+  Submitted: 'Submitted',
+  Failure: 'Failure',
+  Info: 'Info',
+  Warning: 'Waiting',
+} as const;
 
-const TX_STATUS_MAP: Record<TxStatus, string> = {
-  success: 'Success',
-  error: 'Error',
-  pending: 'Pending',
-  idle: 'Idle',
-};
+type TxIconProps = VariantProps<typeof styles> &
+  BaseProps<{
+    type: string;
+    status?: TxStatus;
+    color?: BadgeProps['color'];
+    label?: string;
+  }>;
 
-export function TxIcon({ type, status, size = 'md' }: TxIconProps) {
-  const icon = <Icon icon={TX_ICON_MAP[type]} />;
-  const label = TX_STATUS_MAP[status];
+export function TxIcon({
+  type,
+  status,
+  size = 'md',
+  className,
+  color,
+  label: initLabel,
+  ...props
+}: TxIconProps) {
+  const label = initLabel ?? TX_STATUS_MAP[status || 'Submitted'];
+  const classes = styles({ size });
   return (
     <Badge
-      variant="ghost"
-      intent={TX_INTENT_MAP[status]}
+      {...props}
       aria-label={label}
-      css={styles.root}
-      data-size={size}
+      className={classes.root({ className })}
+      color={color || TX_INTENT_MAP[status || 'Submitted']}
+      radius="full"
+      variant="soft"
     >
-      {icon}
+      <Icon className={classes.icon()} icon={TX_ICON_MAP[type]} />
     </Badge>
   );
 }
 
-const styles = {
-  root: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    '&[data-size="sm"]': {
-      width: '$8',
-      height: '$8',
-    },
-    '&[data-size="md"]': {
-      width: '$10',
-      height: '$10',
-    },
-    '&[data-size="lg"]': {
-      width: '$12',
-      height: '$12',
-
-      '.fuel_Icon svg': {
-        width: '24px !important',
-        height: '24px !important',
+const styles = tv({
+  slots: {
+    root: 'inline-flex items-center justify-center',
+    icon: 'text-current',
+  },
+  variants: {
+    size: {
+      sm: {
+        root: 'w-8 h-8',
+        icon: 'w-4 h-4',
+      },
+      md: {
+        root: 'w-11 h-11',
+        icon: 'w-5 h-5',
+      },
+      lg: {
+        root: 'w-12 h-12',
+        icon: 'w-6 h-6',
       },
     },
   },
-};
+});

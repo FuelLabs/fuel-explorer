@@ -21,20 +21,25 @@ fragment TransactionStatus on TransactionStatus {
 
 fragment TransactionInput on Input {
   __typename
+  ... on InputCoin {
+    amount
+    assetId
+    owner
+    predicate
+    predicateData
+    txPointer
+    utxoId
+  }
   ... on InputContract {
+    utxoId
+    balanceRoot
+    stateRoot
+    txPointer
     contract {
       ...ContractItem
     }
   }
-  ... on InputCoin {
-    owner
-    amount
-    assetId
-    predicate
-    predicateData
-  }
   ... on InputMessage {
-    messageId
     sender
     recipient
     amount
@@ -51,10 +56,6 @@ fragment TransactionOutput on Output {
     to
     amount
     assetId
-  }
-  ... on MessageOutput {
-    recipient
-    amount
   }
   ... on ChangeOutput {
     to
@@ -90,7 +91,6 @@ fragment TransactionReceipt on Receipt {
   receiptType
   gas
   gasUsed
-  messageId
   sender
   recipient
   contractId
@@ -100,7 +100,12 @@ fragment TransactionItem on Transaction {
   __typename
   id
   title
-  time
+  time {
+    fromNow
+    full
+    rawTai64
+    rawUnix
+  }
   blockHeight
   statusType
   totalAccounts

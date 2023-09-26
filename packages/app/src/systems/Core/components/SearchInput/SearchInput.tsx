@@ -1,8 +1,10 @@
 'use client';
-import { cssObj } from '@fuel-ui/css';
-import type { BaseProps, InputFieldProps, InputProps } from '@fuel-ui/react';
-import { Box, Focus, Icon, IconButton, Input } from '@fuel-ui/react';
+import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
+import { Focus, Icon, IconButton, Tooltip, Input } from '@fuels/ui';
+import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
+
+import { cx } from '../../utils/cx';
 
 type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
   onSubmit?: (value: string) => void;
@@ -10,10 +12,8 @@ type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
 };
 
 export function SearchInput({
-  css,
-  className,
-  size = 'lg',
   value: initialValue = '',
+  className,
   onSubmit,
   onClear,
   autoFocus,
@@ -38,8 +38,10 @@ export function SearchInput({
 
   return (
     <Focus.ArrowNavigator autoFocus={autoFocus}>
-      <Input size={size} css={{ ...styles.root, ...css }} className={className}>
-        <Input.ElementLeft element={<Icon icon="Search" />} />
+      <Input className={cx(className)} radius="large" size="3">
+        <Input.Slot className="mx-1">
+          <Icon icon={IconSearch} size={16} />
+        </Input.Slot>
         <Input.Field
           {...props}
           ref={inputRef}
@@ -47,25 +49,24 @@ export function SearchInput({
           onChange={handleChange}
         />
         {Boolean(value.length) && (
-          <Input.ElementRight
-            element={
-              <Box.HStack css={styles.actions}>
-                <IconButton
-                  variant="link"
-                  aria-label="Clear"
-                  icon="X"
-                  onClick={handleClear}
-                />
-                <IconButton
-                  variant="link"
-                  aria-label="Submit"
-                  tooltip="Submit"
-                  icon="Check"
-                  onClick={handleSubmit}
-                />
-              </Box.HStack>
-            }
-          />
+          <Input.Slot className="mx-1">
+            <IconButton
+              aria-label="Clear"
+              icon={IconX}
+              iconColor="text-icon"
+              variant="link"
+              onClick={handleClear}
+            />
+            <Tooltip content="Submit">
+              <IconButton
+                aria-label="Submit"
+                icon={IconCheck}
+                iconColor="text-brand"
+                variant="link"
+                onClick={handleSubmit}
+              />
+            </Tooltip>
+          </Input.Slot>
         )}
       </Input>
     </Focus.ArrowNavigator>
@@ -74,17 +75,4 @@ export function SearchInput({
 
 SearchInput.defaultProps = {
   placeholder: 'Search transactions...',
-};
-
-const styles = {
-  root: cssObj({
-    '@lg': {
-      minWidth: '350px',
-    },
-  }),
-  actions: cssObj({
-    '& .fuel_Icon-Check': {
-      color: '$brand',
-    },
-  }),
 };

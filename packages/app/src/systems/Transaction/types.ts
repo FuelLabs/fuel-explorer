@@ -1,33 +1,29 @@
-import type { Transaction } from '@fuel-explorer/graphql';
-import type { BNInput } from 'fuels';
+import type { TransactionItemFragment } from '@fuel-explorer/graphql';
 
 export enum TxTypeEnum {
-  'contract-call' = 'contract-call',
-  mint = 'mint',
-  transfer = 'transfer',
-  burn = 'burn',
+  ContractCall = 'ContractCall',
+  Mint = 'Mint',
+  Transfer = 'Transfer',
+  Burn = 'Burn',
 }
 export enum TxStatusEnum {
-  idle = 'idle',
-  pending = 'pending',
-  success = 'success',
-  error = 'error',
+  Submitted = 'Submitted',
+  Success = 'Success',
+  Failure = 'Failure',
+  Info = 'Info',
+  Warning = 'Warning',
+}
+export enum TxAccountTypeEnum {
+  Wallet = 'Wallet',
+  Contract = 'Contract',
+  Predicate = 'Predicate',
 }
 
 export type TxStatus = keyof typeof TxStatusEnum;
 export type TxType = keyof typeof TxTypeEnum;
+export type TxAccountType = keyof typeof TxAccountTypeEnum;
 
-export const TX_TYPES = Object.values(TxTypeEnum);
-export const TX_STATUS = Object.values(TxStatusEnum);
+export const TX_TYPES = Object.keys({ ...TxTypeEnum, ...TxAccountTypeEnum });
+export const TX_STATUS = Object.keys(TxStatusEnum);
 
-export type TxItem = {
-  // From indexer
-  transaction: Transaction;
-  // Parsed Props
-  type: TxType;
-  status: TxStatus;
-  gasUsed: BNInput;
-  timestamp: string;
-  totalAssets: number;
-  totalOperations: number;
-};
+export type TransactionNode = TransactionItemFragment;

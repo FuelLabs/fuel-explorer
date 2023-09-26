@@ -27,6 +27,7 @@
     "@graphql-tools/stitch": "^9.0.3",
     "@graphql-tools/url-loader": "^8.0.0",
     "cors": "^2.8.5",
+    "dayjs": "1.11.10",
     "dotenv": "16.3.1",
     "express": "^4.18.2",
     "graphql": "^16.8.1",
@@ -34,6 +35,7 @@
     "graphql-playground-middleware-express": "^1.7.23",
     "graphql-request": "6.1.0",
     "graphql-tag": "2.12.6",
+    "tai64": "1.0.0",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
