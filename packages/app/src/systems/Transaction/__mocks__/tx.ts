@@ -1,7 +1,9 @@
 import { mocks } from '@fuel-explorer/graphql';
 import { bn } from '@fuel-ts/math';
+import { assets } from '@fuels/assets';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
+const date = dayjs().subtract(1, 'day');
 const status = mocks.aSuccessStatus({
   __typename: 'SuccessStatus',
   block: mocks.aBlock({
@@ -9,7 +11,11 @@ const status = mocks.aSuccessStatus({
   }),
 });
 
-const date = dayjs().subtract(1, 'day');
+const input = mocks.anInputCoin({
+  amount: bn(1),
+  assetId: assets[0].assetId,
+  utxoId: '0x000000',
+});
 
 export const TX_MOCK = mocks.aTransaction({
   id: '0x78d13f111bf301324f34f2a7eaffc546d39598d156af38e7c4ef9fe61ea2c46a',
@@ -23,4 +29,5 @@ export const TX_MOCK = mocks.aTransaction({
   totalOperations: 4,
   gasUsed: bn(1),
   status,
+  inputs: [input],
 });

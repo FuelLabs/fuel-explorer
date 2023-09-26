@@ -3,7 +3,7 @@ import { VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { TxAccountTypeEnum } from '../../types';
-import { TX_MOCK } from '../__mocks__/tx';
+import { TX_MOCK } from '../../__mocks__/tx';
 
 import { TxAccountItem } from './TxAccountItem';
 
