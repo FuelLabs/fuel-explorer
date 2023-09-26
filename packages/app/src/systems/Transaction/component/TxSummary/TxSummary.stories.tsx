@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { TX_MOCK } from '../__mocks__/tx';
+import { TX_MOCK } from '../../__mocks__/tx';
 
 import { TxSummary } from './TxSummary';
 
