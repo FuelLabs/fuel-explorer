@@ -1,5 +1,19 @@
-import { HomePage } from '~/systems/Home/pages/HomePage';
+import { Heading } from '@fuels/ui';
+import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { getLastTxs } from '~/systems/Transaction/actions/get-last-txs';
+import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 
-export default function Home() {
-  return <HomePage />;
+export default async function Home() {
+  const transactions = await getLastTxs({});
+  return (
+    <Layout hero>
+      <Heading as="h2" size="2" className="mb-10">
+        Recent Transactions
+      </Heading>
+      <TxList transactions={transactions} />
+    </Layout>
+  );
 }
+
+// Revalidate cache every 10 seconds
+export const revalidate = 10;

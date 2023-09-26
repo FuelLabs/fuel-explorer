@@ -71,17 +71,6 @@ const preset: Config = {
   theme: {
     keyframes,
     animation,
-    screens: {
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
-      '2xl': '1536px',
-      mobile: '300px',
-      tablet: '640px',
-      laptop: '1024px',
-      desktop: '1280px',
-    },
     space: tailwindDefaultTheme.space,
     spacing: tailwindDefaultTheme.spacing,
     extend: {
@@ -97,9 +86,21 @@ const preset: Config = {
       colors: {
         ...refColorVariablesAsObj(),
       },
+      screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px',
+        mobile: '300px',
+        tablet: '640px',
+        laptop: '1024px',
+        desktop: '1280px',
+      },
     },
   },
   plugins: [
+    require('@tailwindcss/typography'),
     require('tailwindcss-animate'),
     require('tailwindcss-radix')({
       variantPrefix: false,
