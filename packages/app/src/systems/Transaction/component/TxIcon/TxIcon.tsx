@@ -4,6 +4,7 @@ import {
   IconCode,
   IconCoins,
   IconFlame,
+  IconMessageCode,
   IconScript,
   IconSwitch3,
   IconTransfer,
@@ -12,9 +13,9 @@ import {
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
-import type { TxAccountType, TxStatus, TxType } from '../../types';
+import type { TxIconType, TxStatus } from '../../types';
 
-const TX_ICON_MAP: Record<TxType | TxAccountType, IconComponent> = {
+const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   ContractCall: IconCode,
   Mint: IconCoins,
   Transfer: IconTransfer,
@@ -22,6 +23,7 @@ const TX_ICON_MAP: Record<TxType | TxAccountType, IconComponent> = {
   Contract: IconScript,
   Wallet: IconWallet,
   Predicate: IconSwitch3,
+  Message: IconMessageCode,
 } as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,7 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { TX_MOCK } from '../../__mocks__/tx';
+import {
+  GROUPED_INPUT_ASSET,
+  GROUPED_INPUT_CONTRACT,
+  GROUPED_INPUT_MESSAGE,
+} from '../../__mocks__/tx';
 
 import { TxInput } from './TxInput';
 
@@ -13,8 +16,16 @@ const meta: Meta<typeof TxInput> = {
 export default meta;
 type Story = StoryObj<typeof TxInput>;
 
-export const Usage: Story = {
+export const Asset: Story = {
+  render: () => <TxInput className="w-[500px]" input={GROUPED_INPUT_ASSET} />,
+};
+
+export const Contract: Story = {
   render: () => (
-    <TxInput className="w-[500px]" input={TX_MOCK.inputs?.[0] as any} />
+    <TxInput className="w-[500px]" input={GROUPED_INPUT_CONTRACT} />
   ),
+};
+
+export const Message: Story = {
+  render: () => <TxInput className="w-[500px]" input={GROUPED_INPUT_MESSAGE} />,
 };
