@@ -27,7 +27,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           image: ghcr.io/fuellabs/fuel-explorer-preview
-          dockerfile: deployment/preview.Dockerfile
+          dockerfile: .preview/Dockerfile
 
       - name: Add pullpreview label
         if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' }}
