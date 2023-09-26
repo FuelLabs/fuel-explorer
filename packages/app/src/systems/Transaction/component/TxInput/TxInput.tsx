@@ -37,7 +37,13 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
     const asset = useMemo(() => {
-      return ASSET_LIST.find((asset) => asset.assetId === assetId);
+      const found = ASSET_LIST.find((asset) => asset.assetId === assetId);
+      return {
+        assetId,
+        name: found?.name ?? 'Unknown Asset',
+        symbol: found?.symbol ?? null,
+        icon: found?.icon ?? null,
+      };
     }, [assetId]);
 
     if (!asset) return null;
@@ -48,15 +54,32 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
           data-state={opened ? 'opened' : 'closed'}
         >
           <HStack align="center">
-            <Image
-              src={asset.icon as string}
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              alt={asset.name}
-            />
+            {asset.icon ? (
+              <Image
+                src={asset.icon as string}
+                width={ICON_SIZE}
+                height={ICON_SIZE}
+                alt={asset.name}
+              />
+            ) : (
+              <TxIcon type="Mint" status="Submitted" />
+            )}
             <VStack gap="0">
-              <Text className="text-md font-medium">{asset.name}</Text>
-              <Text className="text-muted">{asset.symbol}</Text>
+              <Text className="text-md font-medium">
+                {asset.name}
+                {asset.symbol && (
+                  <Text className="ml-2 text-muted text-sm">
+                    ({asset.symbol})
+                  </Text>
+                )}
+              </Text>
+              <Copyable
+                value={input.owner}
+                iconSize={16}
+                className="text-sm text-muted"
+              >
+                From: {shortAddress(input.owner)}
+              </Copyable>
             </VStack>
           </HStack>
           <HStack align="center">
@@ -139,21 +162,21 @@ const TxInputMessage = createComponent<TxInputProps, typeof Card>({
             <Text>Message</Text>
             <HStack>
               <HStack gap="1" align="center">
-                <Text className="text-sm text-white">From:</Text>
+                <Text className="text-sm text-secondary">From:</Text>
                 <Copyable
                   value={sender}
                   className="text-sm text-muted"
-                  iconSize={14}
+                  iconSize={16}
                 >
                   {shortAddress(sender)}
                 </Copyable>
               </HStack>
               <HStack gap="1" align="center">
-                <Text className="text-sm text-white">To:</Text>
+                <Text className="text-sm text-secondary">To:</Text>
                 <Copyable
                   value={sender}
                   className="text-sm text-muted"
-                  iconSize={14}
+                  iconSize={16}
                 >
                   {shortAddress(recipient)}
                 </Copyable>

@@ -112,11 +112,12 @@ function getAssetsInput(inputs: TransactionItemFragment['inputs']) {
   const entries = Object.entries(groupBy(assetsInputs, (i) => i.assetId));
   return entries.map(([assetId, inputs]) => {
     const type = inputs[0].__typename;
+    const owner = inputs[0].owner;
     const totalAmount = inputs.reduce(
       (acc, input: any) => acc.add(bn(input.amount)),
       bn(0),
     );
-    return { assetId, type, totalAmount, inputs };
+    return { owner, assetId, type, totalAmount, inputs };
   });
 }
 

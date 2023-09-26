@@ -26,6 +26,16 @@ export const GROUPED_INPUT_ASSET = mocks.aGroupedInput({
   inputs: [genInput('InputCoin'), genInput('InputCoin'), genInput('InputCoin')],
   assetId: assets[0].assetId,
   totalAmount: bn(3),
+  owner: `0x${faker.string.alpha(32)}`,
+});
+
+export const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInput({
+  __typename: 'GroupedInput',
+  type: GroupInputType.InputCoin,
+  inputs: [genInput('InputCoin'), genInput('InputCoin'), genInput('InputCoin')],
+  owner: `0x${faker.string.alpha(32)}`,
+  assetId: `0x${faker.string.alpha(32)}`,
+  totalAmount: bn(3),
 });
 
 export const GROUPED_INPUT_CONTRACT = mocks.aGroupedInput({
@@ -43,9 +53,9 @@ export const GROUPED_INPUT_CONTRACT = mocks.aGroupedInput({
 export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInput({
   __typename: 'GroupedInput',
   type: GroupInputType.InputMessage,
-  sender: `0x${faker.random.alphaNumeric(40)}`,
-  recipient: `0x${faker.random.alphaNumeric(40)}`,
-  data: `0x${faker.random.alphaNumeric(160)}`,
+  sender: `0x${faker.string.alpha(40)}`,
+  recipient: `0x${faker.string.alpha(40)}`,
+  data: `0x${faker.string.alpha(160)}`,
 });
 
 export const TX_MOCK = mocks.aTransaction({
@@ -62,6 +72,7 @@ export const TX_MOCK = mocks.aTransaction({
   status,
   groupedInputs: [
     GROUPED_INPUT_ASSET,
+    GROUPED_INPUT_ASSET_UNKNOWN,
     GROUPED_INPUT_ASSET,
     GROUPED_INPUT_MESSAGE,
   ],

@@ -348,6 +348,7 @@ type GroupedInput {
   contractId: ContractId
   data: HexString
   inputs: [Input]
+  owner: Address
   recipient: Address
   sender: Address
   totalAmount: U64

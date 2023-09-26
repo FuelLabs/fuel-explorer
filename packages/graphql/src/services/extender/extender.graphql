@@ -39,6 +39,7 @@ type GroupedInput {
   sender: Address
   recipient: Address
   data: HexString
+  owner: Address
 }
 
 extend type Transaction {
