@@ -19,11 +19,10 @@
   "workspaces": [
     "./packages/*"
   ],
-  "scripts": 
+  "scripts": {
     "build": "pnpm turbo:run build --filter=!app",
     "build:preview": "pnpm turbo:run build:preview",
     "build:storybook": "pnpm turbo:run build:storybook",
-    "build:libs": "pnpm turbo:run build --filter=!app",
     "clean:indexer": "pnpm --filter=indexer clean",
     "deploy:indexer": "pnpm --filter=indexer run deploy",
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
