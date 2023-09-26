@@ -1,4 +1,6 @@
-import { mocks } from '@fuel-explorer/graphql';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { faker } from '@faker-js/faker';
+import { GroupInputType, mocks } from '@fuel-explorer/graphql';
 import { bn } from '@fuel-ts/math';
 import { assets } from '@fuels/assets';
 import { dayjs } from '~/systems/Core/utils/dayjs';
@@ -11,10 +13,39 @@ const status = mocks.aSuccessStatus({
   }),
 });
 
-const input = mocks.anInputCoin({
-  amount: bn(1),
+const genInput = (typename: any) =>
+  mocks.anInputCoin({
+    __typename: typename,
+    amount: bn(1),
+    utxoId: faker.string.uuid(),
+  });
+
+export const GROUPED_INPUT_ASSET = mocks.aGroupedInput({
+  __typename: 'GroupedInput',
+  type: GroupInputType.InputCoin,
+  inputs: [genInput('InputCoin'), genInput('InputCoin'), genInput('InputCoin')],
   assetId: assets[0].assetId,
-  utxoId: '0x000000',
+  totalAmount: bn(3),
+});
+
+export const GROUPED_INPUT_CONTRACT = mocks.aGroupedInput({
+  __typename: 'GroupedInput',
+  type: GroupInputType.InputContract,
+  inputs: [
+    genInput('InputContract'),
+    genInput('InputContract'),
+    genInput('InputContract'),
+  ],
+  contractId: assets[0].assetId,
+  totalAmount: bn(3),
+});
+
+export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInput({
+  __typename: 'GroupedInput',
+  type: GroupInputType.InputMessage,
+  sender: `0x${faker.random.alphaNumeric(40)}`,
+  recipient: `0x${faker.random.alphaNumeric(40)}`,
+  data: `0x${faker.random.alphaNumeric(160)}`,
 });
 
 export const TX_MOCK = mocks.aTransaction({
@@ -29,5 +60,9 @@ export const TX_MOCK = mocks.aTransaction({
   totalOperations: 4,
   gasUsed: bn(1),
   status,
-  inputs: [input],
+  groupedInputs: [
+    GROUPED_INPUT_ASSET,
+    GROUPED_INPUT_ASSET,
+    GROUPED_INPUT_MESSAGE,
+  ],
 });

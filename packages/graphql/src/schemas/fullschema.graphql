@@ -337,9 +337,21 @@ type Genesis {
   messagesRoot: Bytes32!
 }
 
-type GroupedInputs {
-  assets: [InputCoin]
-  contracts: [InputContract]
+enum GroupInputType {
+  InputCoin
+  InputContract
+  InputMessage
+}
+
+type GroupedInput {
+  assetId: AssetId
+  contractId: ContractId
+  data: HexString
+  inputs: [Input]
+  recipient: Address
+  sender: Address
+  totalAmount: U64
+  type: GroupInputType
 }
 
 type Header {
@@ -456,6 +468,16 @@ type MessageProof {
   nonce: Nonce!
   recipient: Address!
   sender: Address!
+}
+
+enum MessageState {
+  NOT_FOUND
+  SPENT
+  UNSPENT
+}
+
+type MessageStatus {
+  state: MessageState!
 }
 
 type Mutation {
@@ -579,6 +601,7 @@ type Query {
   """Returns true when the GraphQL API is serving requests."""
   health: Boolean!
   messageProof(commitBlockHeight: U32, commitBlockId: BlockId, messageId: MessageId!, transactionId: TransactionId!): MessageProof
+  messageStatus(nonce: Nonce!): MessageStatus!
   messages(
     after: String
     before: String
@@ -721,7 +744,7 @@ type Transaction {
   gasLimit: U64
   gasPrice: U64
   gasUsed: U64
-  groupedInputs: GroupedInputs
+  groupedInputs: [GroupedInput]
   id: TransactionId!
   inputAssetIds: [AssetId!]
   inputContracts: [Contract!]

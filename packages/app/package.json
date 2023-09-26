@@ -13,6 +13,7 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
+    "@faker-js/faker": "8.1.0",
     "@fontsource-variable/inter": "5.0.8",
     "@fuel-explorer/graphql": "workspace:*",
     "@fuel-ts/math": "0.59.0",

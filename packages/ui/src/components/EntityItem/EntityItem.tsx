@@ -18,6 +18,7 @@ export type EntityItemInfo = BoxProps & {
   title: ReactNode;
   id: string;
   shortId?: boolean;
+  idPrefix?: ReactNode;
 };
 
 export const EntityItemRoot = createComponent<EntityItemProps, typeof HStack>({
@@ -41,7 +42,7 @@ export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
   baseElement: Box,
   render: (
     Comp,
-    { title, id, children, className, shortId = true, ...props },
+    { title, id, children, className, idPrefix, shortId = true, ...props },
   ) => {
     const classes = styles();
     return (
@@ -50,6 +51,7 @@ export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
           {title}
         </Text>
         <Copyable className={classes.copyable()} value={id}>
+          {idPrefix}
           {shortId ? shortAddress(id) : id}
         </Copyable>
         {children}
