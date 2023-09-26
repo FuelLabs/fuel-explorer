@@ -1,6 +1,6 @@
 import { bn } from '@fuel-ts/math';
 import type { IResolvers } from '@graphql-tools/utils';
-import { tai64toDate } from '~/utils/dayjs';
+import { tai64toDate } from '~/graphql/utils/dayjs';
 
 export const Transaction: IResolvers = {
   title: {

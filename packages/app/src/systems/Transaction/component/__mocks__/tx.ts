@@ -1,5 +1,5 @@
-import { mocks } from '@fuel-explorer/graphql';
 import { bn } from '@fuel-ts/math';
+import * as mocks from '~/graphql/generated/mocks';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
 const status = mocks.aSuccessStatus({

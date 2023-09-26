@@ -2,10 +2,10 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'http://localhost:4444/graphql',
-  documents: ['./src/queries/**.graphql'],
+  schema: './src/graphql/schemas/fullschema.graphql',
+  documents: ['./src/graphql/queries/**.graphql'],
   generates: {
-    'src/generated/graphql.ts': {
+    'src/graphql/generated/types.ts': {
       plugins: [
         'typescript',
         'typescript-operations',
@@ -17,11 +17,11 @@ const config: CodegenConfig = {
         useTypeImports: true,
       },
     },
-    'src/generated/mocks.ts': {
+    'src/graphql/generated/mocks.ts': {
       plugins: ['typescript-mock-data'],
       config: {
         addTypename: true,
-        typesFile: './graphql.ts',
+        typesFile: './types.ts',
         typesNames: 'keep',
         scalars: {
           Tai64Timestamp: 'unix_time',

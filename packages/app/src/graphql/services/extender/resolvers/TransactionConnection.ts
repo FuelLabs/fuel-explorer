@@ -1,5 +1,5 @@
 import type { IResolvers } from '@graphql-tools/utils';
-import { getFieldsValues, removeDuplicates } from '~/utils';
+import { getFieldsValues, removeDuplicates } from '~/graphql/utils';
 
 import { delegateQueryAccounts } from '../delegators/QueryAccounts';
 import { delegateQueryTokens } from '../delegators/QueryTokens';

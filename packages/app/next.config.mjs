@@ -19,7 +19,7 @@ const config = {
       ? [
           {
             source: '/graphql',
-            destination: process.env.GRAPHQL_API,
+            destination: '/api/graphql',
           },
         ]
       : [];
@@ -37,6 +37,15 @@ const config = {
         permanent: false,
       },
     ];
+  },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.(graphql|gql)/,
+      exclude: /node_modules/,
+      loader: 'graphql-tag/loader',
+    });
+
+    return config;
   },
 };
 
