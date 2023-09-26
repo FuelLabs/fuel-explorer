@@ -24,6 +24,11 @@ type ParsedTime {
   rawUnix: String
 }
 
+type GroupedInputs {
+  assets: [InputCoin]
+  contracts: [InputContract]
+}
+
 extend type Transaction {
   title: TransactionTitle
   time: ParsedTime
@@ -33,4 +38,5 @@ extend type Transaction {
   totalAssets: Int
   totalOperations: Int
   gasUsed: U64
+  groupedInputs: GroupedInputs
 }
