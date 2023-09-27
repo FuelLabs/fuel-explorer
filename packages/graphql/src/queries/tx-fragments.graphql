@@ -120,6 +120,10 @@ fragment TransactionItem on Transaction {
   isCreate
   gasPrice
   gasLimit
+  accountsInvolved {
+    id
+    type
+  }
   status {
     ...TransactionStatus
   }
@@ -136,12 +140,17 @@ fragment TransactionItem on Transaction {
   receipts {
     ...TransactionReceipt
   }
-}
-
-query getLastTransactions($last: Int!) {
-  transactions(last: $last) {
-    nodes {
-      ...TransactionItem
+  groupedInputs {
+    type
+    totalAmount
+    inputs {
+      ...TransactionInput
     }
+    contractId
+    assetId
+    sender
+    recipient
+    data
+    owner
   }
 }
