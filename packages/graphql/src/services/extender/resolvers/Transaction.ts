@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { bn } from '@fuel-ts/math';
 import type { IResolvers } from '@graphql-tools/utils';
-import { groupBy } from 'lodash';
+import { groupBy, uniqBy } from 'lodash';
 
 import type {
   InputCoin,
@@ -14,9 +14,8 @@ import { tai64toDate } from '../../../utils/dayjs';
 export const Transaction: IResolvers<TransactionItemFragment> = {
   title: {
     resolve(transaction, _args, _context, _info) {
-      if (transaction.isMint) {
-        return 'Mint';
-      }
+      if (transaction.isMint) return 'Mint';
+      if (transaction.isCreate) return 'Contract Created';
       return 'ContractCall';
     },
   },
@@ -70,20 +69,7 @@ export const Transaction: IResolvers<TransactionItemFragment> = {
   totalAccounts: {
     resolve(transaction, _args, _context, _info) {
       if (transaction.isMint) return 1;
-
-      const ids = transaction.inputs?.flatMap((input: any) => {
-        const typename = input?.__typename;
-        if (typename === 'InputCoin') {
-          return input.owner;
-        }
-        if (typename === 'InputMessage') {
-          return [input.sender, input.recipient];
-        }
-        if (typename === 'InputContract') {
-          return input.contract.id;
-        }
-      });
-      return ids?.length ?? 0;
+      return getAccounts(transaction).length;
     },
   },
   gasUsed: {
@@ -102,6 +88,12 @@ export const Transaction: IResolvers<TransactionItemFragment> = {
       const contractInputs = getContractInputs(inputs);
       const messageInputs = getMessageInputs(inputs);
       return [...assetsInputs, ...contractInputs, ...messageInputs];
+    },
+  },
+  accountsInvolved: {
+    resolve(transaction, _args, _context, _info) {
+      if (transaction.isMint) return [];
+      return getAccounts(transaction) ?? [];
     },
   },
 };
@@ -137,4 +129,30 @@ function getMessageInputs(inputs: TransactionItemFragment['inputs']) {
   return inputs?.filter(
     (i) => i.__typename === 'InputMessage',
   ) as InputMessage[];
+}
+
+function getAccounts(transaction: TransactionItemFragment) {
+  const ids = transaction.inputs?.flatMap((input: any) => {
+    const typename = input?.__typename;
+    if (typename === 'InputCoin') {
+      return {
+        type: 'Contract',
+        id: input.owner,
+      };
+    }
+    if (typename === 'InputMessage') {
+      return [
+        { type: 'Wallet', id: input.sender },
+        { type: 'Wallet', id: input.sender },
+      ];
+    }
+    if (typename === 'InputContract') {
+      return {
+        type: 'Contract',
+        id: input.contract.id,
+      };
+    }
+  });
+
+  return uniqBy(ids, 'id');
 }

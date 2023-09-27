@@ -2,6 +2,10 @@
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": ["NODE_ENV", "IS_PREVIEW", "FUEL_PROVIDER_URL"],
   "pipeline": {
+    "ts:check": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
     "build": {
       "outputs": ["dist/**", "build/**", ".next/**"],
       "dependsOn": ["^build"],

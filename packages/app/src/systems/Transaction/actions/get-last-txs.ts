@@ -5,12 +5,13 @@ import { act } from '~/systems/Core/utils/act-server';
 import { sdk } from '~/systems/Core/utils/sdk';
 
 const schema = z.object({
-  last: z.number().default(12).optional(),
+  first: z.number().optional().nullable(),
+  last: z.number().optional().nullable(),
 });
 
-export const getLastTxs = act(schema, async ({ last = 12 }) => {
-  const { data } = await sdk.getLastTransactions({ last }).catch(() => ({
-    data: { transactions: { nodes: [] } },
-  }));
-  return data.transactions.nodes;
+export const getLastTxs = act(schema, async (input) => {
+  const { data } = await sdk.getLastTransactions(input).catch((_) => {
+    return { data: { transactions: { edges: [] } } };
+  });
+  return data.transactions;
 });

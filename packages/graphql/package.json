@@ -17,7 +17,7 @@
     "prepare": "pnpm codegen"
   },
   "dependencies": {
-    "@fuel-ts/math": "0.59.0",
+    "@fuel-ts/math": "0.60.0",
     "@graphql-tools/delegate": "^10.0.3",
     "@graphql-tools/load": "^8.0.0",
     "@graphql-tools/schema": "^10.0.0",

@@ -42,6 +42,17 @@ type GroupedInput {
   owner: Address
 }
 
+enum TransactionAccountType {
+  Contract
+  Predicate
+  Wallet
+}
+
+type TransactionAccount {
+  type: TransactionAccountType
+  id: String
+}
+
 extend type Transaction {
   title: TransactionTitle
   time: ParsedTime
@@ -52,4 +63,5 @@ extend type Transaction {
   totalOperations: Int
   gasUsed: U64
   groupedInputs: [GroupedInput]
+  accountsInvolved: [TransactionAccount]
 }

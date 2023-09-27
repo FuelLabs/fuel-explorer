@@ -85,7 +85,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
           <HStack align="center">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format({ units: 3 })} {asset.symbol}
+                {bn(amount).format({ precision: 3 })} {asset.symbol}
               </Text>
             )}
             <IconButton
@@ -104,9 +104,14 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
             </Text>
             {inputs?.map((input: InputCoin) => (
               <HStack key={input.utxoId} align="center" justify="between">
-                <Text className="text-xs leading-relaxed">{input.utxoId}</Text>
+                <Copyable
+                  className="text-xs leading-relaxed"
+                  value={input.utxoId}
+                >
+                  {shortAddress(input.utxoId, 14, 14)}
+                </Copyable>
                 <Text className="text-xs leading-relaxed text-muted">
-                  {bn(input.amount).format({ units: 3 })}
+                  {bn(input.amount).format({ precision: 3 })} {asset.symbol}
                 </Text>
               </HStack>
             ))}
@@ -221,7 +226,7 @@ export function TxInput({ input, ...props }: TxInputProps) {
 const styles = tv({
   slots: {
     header: 'group flex flex-row gap-4 justify-between items-center',
-    icon: 'transition-transform group-hover:rotate-180 group-data-[state=open]:rotate-180',
+    icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
     utxos: 'bg-gray-2 mx-4 py-3 px-4 rounded',
   },
 });

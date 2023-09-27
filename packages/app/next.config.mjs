@@ -1,3 +1,17 @@
+const externals = [
+  'bcryptjs',
+  'ws',
+  'isomorphic-ws',
+  'node-fetch',
+  '@whatwg/node-fetch',
+  '@graphql-tools/delegate',
+  '@graphql-tools/load',
+  '@graphql-tools/schema',
+  '@graphql-tools/stitch',
+  '@graphql-tools/url-loader',
+  '@graphql-tools/utils',
+];
+
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -5,15 +19,7 @@ const config = {
   transpilePackages: ['@fuel-explorer/graphql'],
   experimental: {
     externalDir: true,
-    serverComponentsExternalPackages: [
-      'bcryptjs',
-      '@graphql-tools/delegate',
-      '@graphql-tools/load',
-      '@graphql-tools/schema',
-      '@graphql-tools/stitch',
-      '@graphql-tools/url-loader',
-      '@graphql-tools/utils',
-    ],
+    serverComponentsExternalPackages: externals,
     serverActions: true,
     esmExternals: true,
   },
@@ -49,6 +55,13 @@ const config = {
     ];
   },
   webpack: (config) => {
+    config.externals.push({
+      'utf-8-validate': 'commonjs utf-8-validate',
+      bufferutil: 'commonjs bufferutil',
+      encoding: 'commonjs encoding',
+      module: 'commonjs module',
+    });
+
     config.module.rules.push({
       test: /\.(graphql|gql)/,
       exclude: /node_modules/,

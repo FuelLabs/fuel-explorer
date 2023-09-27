@@ -108,8 +108,12 @@ const preset: Config = {
     plugin(function ({ addVariant, matchVariant }) {
       // Add a `third` variant, ie. `third:pb-0`
       addVariant('not-first', '& ~ &');
-      addVariant('not-disabled', '&:not([aria-disabled=true])');
       addVariant('not-first-last', '&:not(:first-of-type,:last-of-type)');
+      addVariant('not-disabled', '&:not([aria-disabled=true],:disabled)');
+      addVariant(
+        'not-disabled-hover',
+        '&:not([aria-disabled=true],:disabled):hover',
+      );
       addVariant('first-type', '&:first-of-type');
       addVariant('last-type', '&:last-of-type');
       addVariant('dark-theme', ['.dark &', '.dark-theme &']);

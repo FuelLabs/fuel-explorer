@@ -10,7 +10,7 @@ import { TxIcon } from '../TxIcon/TxIcon';
 export type TxAccountItemProps = CardProps & {
   type: TxAccountType;
   id: string;
-  spent: BN;
+  spent?: BN;
 };
 
 const COLOR_MAP = {
@@ -33,9 +33,11 @@ export function TxAccountItem({
             <TxIcon color={COLOR_MAP[type]} type={type} />
           </EntityItem.Slot>
           <EntityItem.Info id={id} title={type}>
-            <Text as="div" className="text-sm" leftIcon={IconCoins}>
-              Spent: {bn(spent).format({ units: 3 })}
-            </Text>
+            {spent && (
+              <Text as="div" className="text-sm" leftIcon={IconCoins}>
+                Spent: {bn(spent).format()}
+              </Text>
+            )}
           </EntityItem.Info>
         </EntityItem>
       </Card.Body>
