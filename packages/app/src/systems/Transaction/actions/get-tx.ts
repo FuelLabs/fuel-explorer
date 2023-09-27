@@ -9,6 +9,7 @@ const schema = z.object({
 });
 
 export const getTx = act(schema, async (input) => {
+  if (!input.id) return null;
   const { data } = await sdk.getTransaction(input);
   return data.transaction;
 });
