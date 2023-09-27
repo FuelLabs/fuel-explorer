@@ -2,10 +2,20 @@
 const config = {
   reactStrictMode: true,
   swcMinify: true,
+  transpilePackages: ['@fuel-explorer/graphql'],
   experimental: {
     externalDir: true,
-    serverComponentsExternalPackages: ['bcryptjs'],
+    serverComponentsExternalPackages: [
+      'bcryptjs',
+      '@graphql-tools/delegate',
+      '@graphql-tools/load',
+      '@graphql-tools/schema',
+      '@graphql-tools/stitch',
+      '@graphql-tools/url-loader',
+      '@graphql-tools/utils',
+    ],
     serverActions: true,
+    esmExternals: true,
   },
   /** We run eslint as a separate task in CI */
   eslint: {

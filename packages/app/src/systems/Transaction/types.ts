@@ -1,4 +1,4 @@
-import type { TransactionItemFragment } from '~/graphql/generated/types';
+import type { TransactionItemFragment } from '@fuel-explorer/graphql';
 
 export enum TxTypeEnum {
   ContractCall = 'ContractCall',

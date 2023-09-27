@@ -453,6 +453,16 @@ type MessageProof {
   sender: Address!
 }
 
+enum MessageState {
+  NOT_FOUND
+  SPENT
+  UNSPENT
+}
+
+type MessageStatus {
+  state: MessageState!
+}
+
 type Mutation {
   """
   Execute a dry-run of the transaction using a fork of current state, no changes are committed.
@@ -574,6 +584,7 @@ type Query {
   """Returns true when the GraphQL API is serving requests."""
   health: Boolean!
   messageProof(commitBlockHeight: U32, commitBlockId: BlockId, messageId: MessageId!, transactionId: TransactionId!): MessageProof
+  messageStatus(nonce: Nonce!): MessageStatus!
   messages(
     after: String
     before: String

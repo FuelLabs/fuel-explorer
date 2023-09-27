@@ -27,7 +27,7 @@
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
-    "./src/graphql/generated",
+    "./src/generated",
     "src",
     ".storybook",
     "*.config.*"

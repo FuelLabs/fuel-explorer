@@ -1,9 +1,9 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-  schema: 'http://localhost:3000/api/graphql',
+  schema: 'http://localhost:4444/graphql',
   generates: {
-    './src/graphql/schemas/fullschema.graphql': {
+    './src/schemas/fullschema.graphql': {
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,

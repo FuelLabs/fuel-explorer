@@ -1,5 +1,5 @@
+import { createSchema } from '@fuel-explorer/graphql';
 import { createYoga } from 'graphql-yoga';
-import { createSchema } from '~/graphql/schema';
 
 export const config = {
   api: {

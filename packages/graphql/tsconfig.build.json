@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist",
+    "outDir": "./dist",
+    "module": "commonjs",
+    "lib": ["dom", "es6"]
+  },
+  "include": ["src", "*.config.*"]
+}
