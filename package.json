@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "pnpm turbo:run build --filter=!app",
-    "build:preview": "pnpm turbo:run build:preview --filter=app",
+    "build:preview": "pnpm turbo:run build:preview",
     "build:storybook": "pnpm turbo:run build:storybook",
     "clean:indexer": "pnpm --filter=indexer clean",
     "deploy:indexer": "pnpm --filter=indexer run deploy",
@@ -67,7 +67,6 @@
     "@types/node": "20.7.0",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
-    "deepmerge-json": "1.5.0",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-node": "^0.3.9",

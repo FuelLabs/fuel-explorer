@@ -64,9 +64,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.7.3
         version: 6.7.3(eslint@8.50.0)(typescript@5.2.2)
-      deepmerge-json:
-        specifier: 1.5.0
-        version: 1.5.0
       eslint:
         specifier: ^8.50.0
         version: 8.50.0
@@ -130,6 +127,9 @@ importers:
 
   packages/app:
     dependencies:
+      '@faker-js/faker':
+        specifier: 8.1.0
+        version: 8.1.0
       '@fontsource-variable/inter':
         specifier: 5.0.8
         version: 5.0.8
@@ -511,9 +511,6 @@ importers:
       csstype:
         specifier: 3.1.2
         version: 3.1.2
-      deepmerge-json:
-        specifier: 1.5.0
-        version: 1.5.0
       framer-motion:
         specifier: 10.16.4
         version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
@@ -2679,6 +2676,11 @@ packages:
     resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     dev: true
+
+  /@faker-js/faker@8.1.0:
+    resolution: {integrity: sha512-38DT60rumHfBYynif3lmtxMqMqmsOQIxQgEuPZxCk2yUYN0eqWpTACgxi0VpidvsJB8CRxCpvP7B3anK85FjtQ==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0, npm: '>=6.14.13'}
+    dev: false
 
   /@fal-works/esbuild-plugin-global-externals@2.1.2:
     resolution: {integrity: sha512-cEee/Z+I12mZcFJshKcCqC8tuX5hG3s+d+9nZ3LabqKF1vKdF41B92pJVCBggjAGORAeOzyyDDKrZwIkLffeOQ==}
@@ -11810,10 +11812,6 @@ packages:
 
   /deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
-
-  /deepmerge-json@1.5.0:
-    resolution: {integrity: sha512-jZRrDmBKjmGcqMFEUJ14FjMJwm05Qaked+1vxaALRtF0UAl7lPU8OLWXFxvoeg3jbQM249VPFVn8g2znaQkEtA==}
-    engines: {node: '>=4.0.0'}
 
   /deepmerge@3.2.0:
     resolution: {integrity: sha512-6+LuZGU7QCNUnAJyX8cIrlzoEgggTM6B7mm+znKOX4t5ltluT9KLjN6g61ECMS0LTsLW7yDpNoxhix5FZcrIow==}

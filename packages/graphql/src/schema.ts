@@ -30,10 +30,5 @@ export async function createSchema(fuelCoreGraphql: string) {
 
 export async function startGraphql(fuelCoreGraphql: string, app: Application) {
   const schema = await createSchema(fuelCoreGraphql);
-  app.post(
-    '/graphql',
-    createHandler({
-      schema,
-    }),
-  );
+  app.post('/graphql', createHandler({ schema }));
 }

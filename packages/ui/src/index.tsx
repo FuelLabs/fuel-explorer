@@ -1,6 +1,7 @@
 'use client';
 
 export { cx } from './utils/css';
+export { shortAddress } from './utils/helpers';
 export type * from './utils/types';
 
 export * from './components/Accordion';

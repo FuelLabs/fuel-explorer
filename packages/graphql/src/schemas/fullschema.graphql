@@ -337,6 +337,24 @@ type Genesis {
   messagesRoot: Bytes32!
 }
 
+enum GroupInputType {
+  InputCoin
+  InputContract
+  InputMessage
+}
+
+type GroupedInput {
+  assetId: AssetId
+  contractId: ContractId
+  data: HexString
+  inputs: [Input]
+  owner: Address
+  recipient: Address
+  sender: Address
+  totalAmount: U64
+  type: GroupInputType
+}
+
 type Header {
   """Hash of the application header."""
   applicationHash: Bytes32!
@@ -727,6 +745,7 @@ type Transaction {
   gasLimit: U64
   gasPrice: U64
   gasUsed: U64
+  groupedInputs: [GroupedInput]
   id: TransactionId!
   inputAssetIds: [AssetId!]
   inputContracts: [Contract!]

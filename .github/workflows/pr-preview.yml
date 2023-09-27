@@ -3,7 +3,7 @@ name: Deploy preview
 on:
   pull_request:
     branches: [main]
-    types: [labeled, unlabeled, synchronize, closed, reopened]
+    types: [labeled, unlabeled, synchronize, closed, opened, reopened]
 
 jobs:
   deploy:
