@@ -40,8 +40,14 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          volumeMounts:
+            - mountPath: /home/node/.cache
+              name: node-cache
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: node-cache
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
