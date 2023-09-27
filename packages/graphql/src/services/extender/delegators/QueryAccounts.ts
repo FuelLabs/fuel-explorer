@@ -2,7 +2,8 @@
 import { delegateToSchema } from '@graphql-tools/delegate';
 import type { GraphQLResolveInfo } from 'graphql';
 import { OperationTypeNode } from 'graphql';
-import { metadataSchema } from '~/services/metadata';
+
+import { metadataSchema } from '../../metadata';
 
 export function delegateQueryAccounts(
   addresses: Array<string>,

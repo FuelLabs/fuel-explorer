@@ -1,5 +1,5 @@
 module.exports = {
-  '**/*.(md|mdx|json|yml|yaml|html|css)': ['prettier --write'],
+  '**/*.(md|mdx|json|html|css)': ['prettier --write'],
   '*.{js,jsx,ts,tsx}': ['prettier --write', 'eslint --fix'],
   '.{ts,tsx}': ['tsc --noEmit'],
 };

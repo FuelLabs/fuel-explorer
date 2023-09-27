@@ -3,7 +3,7 @@ import path from 'node:path';
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const TYPES_FILE = path.resolve(__dirname, '../src/generated/graphql.ts');
+const TYPES_FILE = path.resolve(__dirname, '../src/generated/types.ts');
 const MOCKS_FILE = path.resolve(__dirname, '../src/generated/mocks.ts');
 
 async function types() {

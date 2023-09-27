@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 export function requireEnv<
   A extends string[],
   B extends { [key in A[number]]: string },

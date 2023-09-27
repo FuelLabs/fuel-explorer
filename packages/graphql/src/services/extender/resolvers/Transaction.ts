@@ -2,13 +2,14 @@
 import { bn } from '@fuel-ts/math';
 import type { IResolvers } from '@graphql-tools/utils';
 import { groupBy } from 'lodash';
+
 import type {
   InputCoin,
   InputContract,
   InputMessage,
   TransactionItemFragment,
-} from '~/lib';
-import { tai64toDate } from '~/utils/dayjs';
+} from '../../../';
+import { tai64toDate } from '../../../utils/dayjs';
 
 export const Transaction: IResolvers<TransactionItemFragment> = {
   title: {

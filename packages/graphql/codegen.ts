@@ -5,7 +5,7 @@ const config: CodegenConfig = {
   schema: './src/schemas/fullschema.graphql',
   documents: ['./src/queries/**.graphql'],
   generates: {
-    'src/generated/graphql.ts': {
+    'src/generated/types.ts': {
       plugins: [
         'typescript',
         'typescript-operations',
@@ -21,7 +21,7 @@ const config: CodegenConfig = {
       plugins: ['typescript-mock-data'],
       config: {
         addTypename: true,
-        typesFile: './graphql.ts',
+        typesFile: './types.ts',
         typesNames: 'keep',
         scalars: {
           Tai64Timestamp: 'unix_time',

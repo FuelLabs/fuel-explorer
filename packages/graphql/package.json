@@ -5,19 +5,16 @@
   "private": true,
   "author": "Fuel Labs <contact@fuel.sh> (https://fuel.network/)",
   "license": "Apache-2.0",
-  "main": "./dist/index.cjs.js",
-  "module": "./dist/index.cjs.js",
-  "types": "./dist/index.d.ts",
-  "typings": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "typings": "./src/index.ts",
   "scripts": {
-    "build": "pnpm codegen && tsup",
+    "dev": "node -r babel-register-ts src/bin.ts",
+    "start": "pnpm dev",
     "codegen": "gql-gen --config codegen.ts",
     "codegen:schema": "gql-gen --config codegen.schema.ts",
-    "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --watch ./src/**/*, src/bin.ts",
     "fix:generated": "node ./scripts/fix-generated.mjs",
-    "lint": "eslint .",
-    "prepare": "pnpm build",
-    "start": "ts-node -r tsconfig-paths/register --transpile-only src/bin.ts"
+    "prepare": "pnpm codegen"
   },
   "dependencies": {
     "@fuel-ts/math": "0.59.0",
@@ -41,6 +38,10 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
+    "@babel/cli": "7.23.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "7.22.20",
+    "@babel/preset-typescript": "7.23.0",
     "@fuels/ts-config": "^0.0.11",
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/introspection": "4.0.0",
@@ -52,6 +53,8 @@
     "@types/express": "^4.17.18",
     "@types/lodash": "4.14.199",
     "@types/node": "^20.7.0",
+    "babel-plugin-import-graphql": "2.8.1",
+    "babel-register-ts": "7.0.0",
     "graphql-codegen-typescript-common": "0.18.2",
     "graphql-codegen-typescript-mock-data": "3.5.0",
     "ts-node": "^10.9.1",
