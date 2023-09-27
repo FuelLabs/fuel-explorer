@@ -47,7 +47,7 @@
     "test:clear": "pnpm turbo:run test -- --clearCache",
     "test:coverage": " pnpm turbo:run test -- --coverage",
     "test:watch": "pnpm turbo:run test -- --watch",
-    "ts:check": "pnpm -r ts:check",
+    "ts:check": "pnpm turbo:run ts:check",
     "turbo:run": "./scripts/turbo.sh"
   },
   "dependencies": {

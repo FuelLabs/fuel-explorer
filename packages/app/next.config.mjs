@@ -1,3 +1,17 @@
+const externals = [
+  'bcryptjs',
+  'ws',
+  'isomorphic-ws',
+  'node-fetch',
+  '@whatwg/node-fetch',
+  '@graphql-tools/delegate',
+  '@graphql-tools/load',
+  '@graphql-tools/schema',
+  '@graphql-tools/stitch',
+  '@graphql-tools/url-loader',
+  '@graphql-tools/utils',
+];
+
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -5,20 +19,9 @@ const config = {
   transpilePackages: ['@fuel-explorer/graphql'],
   experimental: {
     externalDir: true,
-    serverComponentsExternalPackages: [
-      'bcryptjs',
-      'ws',
-      'isomorphic-ws',
-      'node-fetch',
-      '@whatwg/node-fetch',
-      '@graphql-tools/delegate',
-      '@graphql-tools/load',
-      '@graphql-tools/schema',
-      '@graphql-tools/stitch',
-      '@graphql-tools/url-loader',
-      '@graphql-tools/utils',
-    ],
+    serverComponentsExternalPackages: externals,
     serverActions: true,
+    esmExternals: true,
   },
   /** We run eslint as a separate task in CI */
   eslint: {
@@ -51,14 +54,7 @@ const config = {
       },
     ];
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        fs: false,
-        module: false,
-      };
-    }
-
+  webpack: (config) => {
     config.externals.push({
       'utf-8-validate': 'commonjs utf-8-validate',
       bufferutil: 'commonjs bufferutil',

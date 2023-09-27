@@ -5,7 +5,7 @@ import { act } from '~/systems/Core/utils/act-server';
 import { sdk } from '~/systems/Core/utils/sdk';
 
 const schema = z.object({
-  id: z.string(),
+  id: z.string().nullable(),
 });
 
 export const getTx = act(schema, async (input) => {

@@ -4,16 +4,14 @@ import { TxScreen } from '~/systems/Transaction/screens/TxScreen/TxScreen';
 
 type TransactionProps = {
   params: {
-    id: string;
+    id?: string | null;
   };
 };
 
-export default async function Transaction({ params }: TransactionProps) {
-  const id = params.id;
+export default async function Transaction({
+  params: { id = null },
+}: TransactionProps) {
   const tx = await getTx({ id });
-  if (!tx) {
-    throw new Error('Transaction not found');
-  }
   return (
     <Layout>
       <TxScreen transaction={tx} />

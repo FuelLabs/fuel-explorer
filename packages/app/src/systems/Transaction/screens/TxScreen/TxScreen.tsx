@@ -12,11 +12,11 @@ import { TxSummary } from '../../component/TxSummary/TxSummary';
 import type { TransactionNode, TxAccountType } from '../../types';
 
 type TxScreenProps = {
-  transaction: TransactionNode;
+  transaction?: Maybe<TransactionNode>;
 };
 
 export function TxScreen({ transaction: tx }: TxScreenProps) {
-  console.log(tx.inputContracts);
+  if (!tx) return null;
   return (
     <VStack gap="6">
       <TxBreadcrumb transaction={tx} />
