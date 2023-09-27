@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm -w build:preview",
+  "buildCommand": "cd ../../ && pnpm build:preview",
   "github": {
     "silent": true
   }
