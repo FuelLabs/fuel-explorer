@@ -160,4 +160,18 @@ fragment TransactionItem on Transaction {
     data
     owner
   }
+  groupedOutputs {
+    type
+    totalAmount
+    outputs {
+      ...TransactionOutput
+    }
+    contract {
+      id
+    }
+    to
+    assetId
+    inputIndex
+    recipient
+  }
 }

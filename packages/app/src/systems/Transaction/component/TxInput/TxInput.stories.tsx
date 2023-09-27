@@ -1,3 +1,4 @@
+import { VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import {
@@ -18,12 +19,11 @@ export default meta;
 type Story = StoryObj<typeof TxInput>;
 
 export const Asset: Story = {
-  render: () => <TxInput className="w-[500px]" input={GROUPED_INPUT_ASSET} />,
-};
-
-export const AssetUnknown: Story = {
   render: () => (
-    <TxInput className="w-[500px]" input={GROUPED_INPUT_ASSET_UNKNOWN} />
+    <VStack>
+      <TxInput className="w-[500px]" input={GROUPED_INPUT_ASSET} />
+      <TxInput className="w-[500px]" input={GROUPED_INPUT_ASSET_UNKNOWN} />
+    </VStack>
   ),
 };
 

@@ -224,12 +224,6 @@ type Genesis {
   messagesRoot: Bytes32!
 }
 
-enum GroupedInputType {
-  InputCoin
-  InputContract
-  InputMessage
-}
-
 type GroupedInput {
   assetId: AssetId
   contractId: ContractId
@@ -240,6 +234,12 @@ type GroupedInput {
   sender: Address
   totalAmount: U64
   type: GroupedInputType
+}
+
+enum GroupedInputType {
+  InputCoin
+  InputContract
+  InputMessage
 }
 
 type GroupedOutput {
