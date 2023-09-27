@@ -9,9 +9,10 @@ const config = {
       'bcryptjs',
       'ws',
       'isomorphic-ws',
+      'node-fetch',
+      '@whatwg/node-fetch',
       '@graphql-tools/delegate',
       '@graphql-tools/load',
-      '@graphql-tools/load-files',
       '@graphql-tools/schema',
       '@graphql-tools/stitch',
       '@graphql-tools/url-loader',
@@ -50,7 +51,21 @@ const config = {
       },
     ];
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        module: false,
+      };
+    }
+
+    config.externals.push({
+      'utf-8-validate': 'commonjs utf-8-validate',
+      bufferutil: 'commonjs bufferutil',
+      encoding: 'commonjs encoding',
+      module: 'commonjs module',
+    });
+
     config.module.rules.push({
       test: /\.(graphql|gql)/,
       exclude: /node_modules/,
