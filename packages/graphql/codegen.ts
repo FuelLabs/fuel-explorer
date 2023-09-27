@@ -56,6 +56,10 @@ const config: CodegenConfig = {
               U64: {
                 generator: 'datatype.hexadecimal',
               },
+              HexString: {
+                generator: 'datatype.hexadecimal',
+                arguments: [160],
+              },
             },
           },
         },
