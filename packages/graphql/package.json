@@ -13,7 +13,8 @@
     "start": "pnpm dev",
     "codegen": "gql-gen --config codegen.ts",
     "codegen:schema": "gql-gen --config codegen.schema.ts",
-    "fix:generated": "node ./scripts/fix-generated.mjs"
+    "fix:generated": "node ./scripts/fix-generated.mjs",
+    "prepare": "pnpm codegen"
   },
   "dependencies": {
     "@fuel-ts/math": "0.59.0",
