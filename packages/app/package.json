@@ -73,5 +73,10 @@
     "typescript": "5.2.2",
     "vite": "^4.4.9",
     "vite-tsconfig-paths": "^4.2.1"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "module": false
   }
 }

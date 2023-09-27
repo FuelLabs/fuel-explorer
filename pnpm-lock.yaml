@@ -311,18 +311,12 @@ importers:
       '@graphql-tools/delegate':
         specifier: ^10.0.3
         version: 10.0.3(graphql@16.8.1)
-      '@graphql-tools/load':
-        specifier: ^8.0.0
-        version: 8.0.0(graphql@16.8.1)
       '@graphql-tools/schema':
         specifier: ^10.0.0
         version: 10.0.0(graphql@16.8.1)
       '@graphql-tools/stitch':
         specifier: ^9.0.3
         version: 9.0.3(graphql@16.8.1)
-      '@graphql-tools/url-loader':
-        specifier: ^8.0.0
-        version: 8.0.0(@types/node@20.7.0)(graphql@16.8.1)
       '@graphql-tools/utils':
         specifier: ^10.0.6
         version: 10.0.6(graphql@16.8.1)
@@ -345,7 +339,7 @@ importers:
         specifier: ^4.18.2
         version: 4.18.2
       graphql:
-        specifier: 16.8.1
+        specifier: '>=16.8.1'
         version: 16.8.1
       graphql-http:
         specifier: ^1.22.0
@@ -698,6 +692,7 @@ packages:
       node-fetch: 2.7.0
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@ariakit/core@0.3.2:
     resolution: {integrity: sha512-hTiYCMsezqOH1y1KNNbRv58oQvbxAZlbYPhFG0XbTHd+tJQkHgtpezLBbJc4U/YjnhA95EAS6Zfa2xwj+EEbKg==}
@@ -3716,6 +3711,7 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: true
 
   /@graphql-tools/executor-http@1.0.2(@types/node@20.7.0)(graphql@16.8.1):
     resolution: {integrity: sha512-JKTB4E3kdQM2/1NEcyrVPyQ8057ZVthCV5dFJiKktqY9IdmF00M8gupFcW3jlbM/Udn78ickeUBsUzA3EouqpA==}
@@ -3733,6 +3729,7 @@ packages:
       value-or-promise: 1.0.12
     transitivePeerDependencies:
       - '@types/node'
+    dev: true
 
   /@graphql-tools/executor-legacy-ws@1.0.3(graphql@16.8.1):
     resolution: {integrity: sha512-rr3IDeO9Dh+8u8KIro++5kzJJYPHkcrIAWzqXtN663nhInC85iW7Ko91yOYwf7ovBci/7s+4Rqe4ZRyca1LGjQ==}
@@ -3749,6 +3746,7 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: true
 
   /@graphql-tools/executor@1.2.0(graphql@16.8.1):
     resolution: {integrity: sha512-SKlIcMA71Dha5JnEWlw4XxcaJ+YupuXg0QCZgl2TOLFz4SkGCwU/geAsJvUJFwK2RbVLpQv/UMq67lOaBuwDtg==}
@@ -3868,6 +3866,7 @@ packages:
       graphql: 16.8.1
       p-limit: 3.1.0
       tslib: 2.6.2
+    dev: true
 
   /@graphql-tools/merge@9.0.0(graphql@16.8.1):
     resolution: {integrity: sha512-J7/xqjkGTTwOJmaJQJ2C+VDBDOWJL3lKrHJN4yMaRLAJH3PosB7GiPRaSDZdErs0+F77sH2MKs2haMMkywzx7Q==}
@@ -4015,6 +4014,7 @@ packages:
       - bufferutil
       - encoding
       - utf-8-validate
+    dev: true
 
   /@graphql-tools/utils@10.0.6(graphql@16.8.1):
     resolution: {integrity: sha512-hZMjl/BbX10iagovakgf3IiqArx8TPsotq5pwBld37uIX1JiZoSbgbCIFol7u55bh32o6cfDEiiJgfAD5fbeyQ==}
@@ -9728,6 +9728,7 @@ packages:
     resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==}
     dependencies:
       '@types/node': 20.7.0
+    dev: true
 
   /@types/yargs-parser@21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
@@ -13092,6 +13093,7 @@ packages:
   /extract-files@11.0.0:
     resolution: {integrity: sha512-FuoE1qtbJ4bBVvv94CC7s0oTnKUGvQs+Rjf1L2SJFfS+HTVVjhPFtehPdQ0JiGPqVNfSSZvL5yzHHQq2Z4WNhQ==}
     engines: {node: ^12.20 || >= 14.13}
+    dev: true
 
   /extract-files@9.0.0:
     resolution: {integrity: sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==}
@@ -13982,6 +13984,7 @@ packages:
       graphql: '>=16.8.1'
     dependencies:
       graphql: 16.8.1
+    dev: true
 
   /graphql-yoga@4.0.4(graphql@16.8.1):
     resolution: {integrity: sha512-MvCLhFecYNIKuxAZisPjpIL9lxRYbpgPSNKENDO/8CV3oiFlsLJHZb5dp2sVAeLafXHeZ9TgkijLthUBc1+Jag==}
@@ -14846,6 +14849,7 @@ packages:
       ws: '*'
     dependencies:
       ws: 8.14.1
+    dev: true
 
   /isomorphic-ws@5.0.0(ws@8.14.2):
     resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
@@ -14853,6 +14857,7 @@ packages:
       ws: '*'
     dependencies:
       ws: 8.14.2
+    dev: true
 
   /isstream@0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
@@ -16040,6 +16045,7 @@ packages:
         optional: true
     dependencies:
       '@types/node': 20.7.0
+    dev: true
 
   /mersenne-twister@1.1.0:
     resolution: {integrity: sha512-mUYWsMKNrm4lfygPkL3OfGzOPTR2DBlTkBNHM//F6hGp8cLThY897crAlk3/Jo17LEOOjQUrNAx6DvgO77QJkA==}
@@ -20277,6 +20283,7 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: true
 
   /ws@8.14.2:
     resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}

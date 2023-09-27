@@ -20,6 +20,19 @@ const config: StorybookConfig = {
     check: false,
     reactDocgen: 'react-docgen',
   },
+  webpack: (config) => {
+    let rules = config.module?.rules || [];
+    rules.push({
+      test: /\.(graphql|gql)/,
+      exclude: /node_modules/,
+      loader: 'graphql-tag/loader',
+    });
+
+    return {
+      ...config,
+      module: { ...config.module, rules },
+    };
+  },
 };
 
 export default config;

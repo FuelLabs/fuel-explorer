@@ -21,10 +21,8 @@
   "dependencies": {
     "@fuel-ts/math": "0.60.0",
     "@graphql-tools/delegate": "^10.0.3",
-    "@graphql-tools/load": "^8.0.0",
     "@graphql-tools/schema": "^10.0.0",
     "@graphql-tools/stitch": "^9.0.3",
-    "@graphql-tools/url-loader": "^8.0.0",
     "@graphql-tools/utils": "^10.0.6",
     "@luckycatfactory/esbuild-graphql-loader": "3.8.1",
     "cors": "^2.8.5",

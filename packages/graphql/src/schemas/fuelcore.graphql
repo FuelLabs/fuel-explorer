@@ -4,12 +4,6 @@ schema {
   subscription: Subscription
 }
 
-type Account {
-  address: String!
-  name: String!
-  url: String
-}
-
 scalar Address
 
 scalar AssetId
@@ -224,44 +218,6 @@ type Genesis {
   messagesRoot: Bytes32!
 }
 
-enum GroupInputType {
-  InputCoin
-  InputContract
-  InputMessage
-}
-
-type GroupedInput {
-  assetId: AssetId
-  contractId: ContractId
-  data: HexString
-  inputs: [Input]
-  owner: Address
-  recipient: Address
-  sender: Address
-  totalAmount: U64
-  type: GroupInputType
-}
-
-type GroupedOutput {
-  assetId: AssetId
-  contract: Contract
-  inputIndex: Int
-  outputs: [Output]
-  recipient: Address
-  to: Address
-  totalAmount: U64
-  type: GroupedOutputType
-}
-
-enum GroupedOutputType {
-  ChangeOutput
-  CoinOutput
-  ContractCreated
-  ContractOutput
-  MessageOutput
-  VariableOutput
-}
-
 type Header {
   """Hash of the application header."""
   applicationHash: Bytes32!
@@ -408,13 +364,6 @@ type PageInfo {
   startCursor: String
 }
 
-type ParsedTime {
-  fromNow: String
-  full: String
-  rawTai64: String
-  rawUnix: String
-}
-
 type PoAConsensus {
   """Gets the signature of the block produced by `PoA` consensus."""
   signature: Signature!
@@ -426,7 +375,6 @@ type ProgramState {
 }
 
 type Query {
-  accounts(addresses: [String]!): [Account!]!
   balance(
     """asset_id of the coin"""
     assetId: AssetId!
@@ -491,7 +439,6 @@ type Query {
     """
     queryPerAsset: [SpendQueryElementInput!]!
   ): [[Resource!]!]!
-  tokens(assetsId: [String]!): [Token!]!
   transaction(
     """The ID of the transaction"""
     id: TransactionId!
@@ -612,26 +559,11 @@ input TimeParameters {
   startTime: U64!
 }
 
-type Token {
-  assetId: String!
-  decimals: U64!
-  name: String!
-  symbol: String!
-  totalAssets: U64
-  totalSupply: U64
-  url: String
-}
-
 type Transaction {
-  accountsInvolved: [TransactionAccount]
-  blockHeight: String
   bytecodeLength: U64
   bytecodeWitnessIndex: Int
   gasLimit: U64
   gasPrice: U64
-  gasUsed: U64
-  groupedInputs: [GroupedInput]
-  groupedOutputs: [GroupedOutput]
   id: TransactionId!
   inputAssetIds: [AssetId!]
   inputContracts: [Contract!]
@@ -649,37 +581,18 @@ type Transaction {
   script: HexString
   scriptData: HexString
   status: TransactionStatus
-  statusType: TransactionStatusType
   storageSlots: [HexString!]
-  time: ParsedTime
-  title: TransactionTitle
-  totalAccounts: Int
-  totalAssets: Int
-  totalOperations: Int
   txPointer: TxPointer
   witnesses: [HexString!]
 }
 
-type TransactionAccount {
-  id: String
-  type: TransactionAccountType
-}
-
-enum TransactionAccountType {
-  Contract
-  Predicate
-  Wallet
-}
-
 type TransactionConnection {
-  accounts: [Account]
   """A list of edges."""
   edges: [TransactionEdge!]!
   """A list of nodes."""
   nodes: [Transaction!]!
   """Information to aid in pagination."""
   pageInfo: PageInfo!
-  tokens: [Token]
 }
 
 """An edge in a connection."""
@@ -693,18 +606,6 @@ type TransactionEdge {
 scalar TransactionId
 
 union TransactionStatus = FailureStatus | SqueezedOutStatus | SubmittedStatus | SuccessStatus
-
-enum TransactionStatusType {
-  Failure
-  Submitted
-  Success
-}
-
-enum TransactionTitle {
-  Burn
-  ContractCall
-  Mint
-}
 
 scalar TxPointer
 

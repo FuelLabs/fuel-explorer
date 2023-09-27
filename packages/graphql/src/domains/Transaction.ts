@@ -5,6 +5,7 @@ import type { TransactionItemFragment } from '../generated/types';
 import { tai64toDate } from '../utils/dayjs';
 
 import { InputDomain } from './Input';
+import { OutputDomain } from './Output';
 
 export class TransactionDomain {
   constructor(private transaction: TransactionItemFragment) {}
@@ -30,8 +31,9 @@ export class TransactionDomain {
       ...TransactionDomain.createResolver('totalOperations'),
       ...TransactionDomain.createResolver('totalAccounts'),
       ...TransactionDomain.createResolver('gasUsed'),
-      ...TransactionDomain.createResolver('groupedInputs'),
       ...TransactionDomain.createResolver('accountsInvolved'),
+      ...TransactionDomain.createResolver('groupedInputs'),
+      ...TransactionDomain.createResolver('groupedOutputs'),
     };
   }
 
@@ -115,6 +117,12 @@ export class TransactionDomain {
     const { transaction } = this;
     const domain = new InputDomain(transaction.inputs ?? []);
     return domain.groupedInputs;
+  }
+
+  get groupedOutputs() {
+    const { transaction } = this;
+    const domain = new OutputDomain(transaction.outputs ?? []);
+    return domain.groupedOutputs;
   }
 
   private _getAccounts() {

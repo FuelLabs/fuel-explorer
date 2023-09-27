@@ -60,6 +60,13 @@ fragment TransactionOutput on Output {
     amount
     assetId
   }
+  ... on ContractOutput {
+    inputIndex
+  }
+  ... on MessageOutput {
+    recipient
+    amount
+  }
   ... on ChangeOutput {
     to
     amount
