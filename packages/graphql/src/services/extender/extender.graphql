@@ -24,14 +24,14 @@ type ParsedTime {
   rawUnix: String
 }
 
-enum GroupInputType {
+enum GroupedInputType {
   InputCoin
   InputContract
   InputMessage
 }
 
 type GroupedInput {
-  type: GroupInputType
+  type: GroupedInputType
   totalAmount: U64
   inputs: [Input]
   contractId: ContractId

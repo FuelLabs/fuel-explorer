@@ -224,7 +224,7 @@ type Genesis {
   messagesRoot: Bytes32!
 }
 
-enum GroupInputType {
+enum GroupedInputType {
   InputCoin
   InputContract
   InputMessage
@@ -239,7 +239,7 @@ type GroupedInput {
   recipient: Address
   sender: Address
   totalAmount: U64
-  type: GroupInputType
+  type: GroupedInputType
 }
 
 type GroupedOutput {
