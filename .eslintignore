@@ -18,4 +18,6 @@ storybook
 **/storybook/**
 .turbo
 pnpm-lock.yaml
-
+**/**/.*
+.*/
+packages/app/public/**

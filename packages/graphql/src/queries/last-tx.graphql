@@ -9,6 +9,9 @@ fragment TransactionStatus on TransactionStatus {
     time
     block {
       id
+      header {
+        daHeight
+      }
     }
   }
   ... on FailureStatus {

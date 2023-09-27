@@ -2,8 +2,8 @@ import { bn } from '@fuel-ts/math';
 import { VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { TX_MOCK } from '../../__mocks__/tx';
 import { TxAccountTypeEnum } from '../../types';
-import { TX_MOCK } from '../__mocks__/tx';
 
 import { TxAccountItem } from './TxAccountItem';
 

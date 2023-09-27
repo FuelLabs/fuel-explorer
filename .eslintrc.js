@@ -2,8 +2,8 @@ const { resolve } = require('path');
 const { dependencies } = require('./packages/app/package.json');
 
 const project = [
-  resolve(__dirname, 'tsconfig.json'),
-  resolve(__dirname, 'packages/**/tsconfig.json'),
+  resolve(__dirname, './tsconfig.json'),
+  resolve(__dirname, './packages/**/tsconfig.json'),
 ];
 
 module.exports = {
@@ -14,6 +14,7 @@ module.exports = {
     'plugin:@fuels/react',
   ],
   parserOptions: {
+    tsconfigRootDir: __dirname,
     project,
   },
   settings: {
