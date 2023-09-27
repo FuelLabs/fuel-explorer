@@ -10,6 +10,8 @@ const schema = z.object({
 
 export const getTx = act(schema, async (input) => {
   if (!input.id) return null;
-  const { data } = await sdk.getTransaction(input);
+  const { data } = await sdk.getTransaction(input).catch((_) => {
+    return { data: { transaction: null } };
+  });
   return data.transaction;
 });
