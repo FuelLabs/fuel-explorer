@@ -9,15 +9,11 @@
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
   "scripts": {
-    "build": "run-s codegen build:*",
-    "build:lib": "babel ./src --out-dir dist --extensions .ts --source-maps",
-    "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
     "dev": "node -r babel-register-ts src/bin.ts",
     "start": "pnpm dev",
     "codegen": "gql-gen --config codegen.ts",
     "codegen:schema": "gql-gen --config codegen.schema.ts",
-    "fix:generated": "node ./scripts/fix-generated.mjs",
-    "prepare": "pnpm build"
+    "fix:generated": "node ./scripts/fix-generated.mjs"
   },
   "dependencies": {
     "@fuel-ts/math": "0.59.0",
