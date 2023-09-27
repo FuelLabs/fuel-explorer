@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.0.8",
-    "@fuel-ts/math": "0.59.0",
+    "@fuel-ts/math": "0.60.0",
     "@radix-ui/colors": "3.0.0-rc.5",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",
@@ -98,7 +98,7 @@
     "@storybook/types": "^7.4.5",
     "@types/lodash": "4.14.199",
     "@types/react": "^18.2.23",
-    "@types/react-dom": "^18.2.7",
+    "@types/react-dom": "^18.2.8",
     "autoprefixer": "10.4.16",
     "globby": "13.2.2",
     "lodash": "^4.17.21",
