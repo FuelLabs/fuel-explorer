@@ -42,6 +42,26 @@ type GroupedInput {
   owner: Address
 }
 
+enum GroupedOutputType {
+  OutputCoin
+  ContractOutput
+  MessageOutput
+  ChangeOutput
+  VariableOutput
+  ContractCreated
+}
+
+type GroupedOutput {
+  type: GroupedOutputType
+  totalAmount: U64
+  outputs: [Output]
+  to: Address
+  assetId: AssetId
+  inputIndex: Int
+  recipient: Address
+  contract: Contract
+}
+
 enum TransactionAccountType {
   Contract
   Predicate
@@ -62,6 +82,7 @@ extend type Transaction {
   totalAssets: Int
   totalOperations: Int
   gasUsed: U64
-  groupedInputs: [GroupedInput]
   accountsInvolved: [TransactionAccount]
+  groupedInputs: [GroupedInput]
+  groupedOutputs: [GroupedOutput]
 }

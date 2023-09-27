@@ -1,4 +1,10 @@
+import { TransactionDomain } from '../../domains/Transaction';
+import { TransactionConnectionDomain } from '../../domains/TransactionConnection';
+
 import typeDefs from './extender.graphql';
 
-export * as ExtenderResolvers from './resolvers';
 export const ExtenderTypeDefs = typeDefs;
+export const ExtenderResolvers = {
+  Transaction: TransactionDomain.createResolvers(),
+  TransactionConnection: TransactionConnectionDomain.createResolvers(),
+};

@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "isolatedModules": true,
     "outDir": "./dist",
-    "module": "commonjs",
-    "lib": ["dom", "es6"]
+    "module": "commonjs"
   },
   "include": ["src", "*.config.*"]
 }

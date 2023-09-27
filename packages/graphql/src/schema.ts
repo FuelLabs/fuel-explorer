@@ -5,7 +5,7 @@ import type { Application } from 'express';
 import { createHandler } from 'graphql-http/lib/use/express';
 
 import { ExtenderResolvers, ExtenderTypeDefs } from './services/extender';
-import { metadataSchema } from './services/metadata/schema';
+import { metadataSchema } from './services/metadata';
 import { createGraphqlFetch } from './utils';
 
 export async function createSchema(fuelCoreGraphql: string) {
