@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "build:storybook": "./scripts/build-storybook.sh",
-    "build:preview": "run-s codegen build:storybook build",
+    "build:preview": "run-s build:storybook build",
     "dev": "next dev",
     "dev:storybook": "storybook dev -p 6007",
     "start": "next start",
