@@ -12,5 +12,5 @@ const getBaseUrl = () => {
 };
 
 const API_URL = resolve(getBaseUrl(), '/api/graphql');
-const client = new GraphQLClient(API_URL);
+const client = new GraphQLClient(API_URL, { fetch });
 export const sdk = getSdk(client);

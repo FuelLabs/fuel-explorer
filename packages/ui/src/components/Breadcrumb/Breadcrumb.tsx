@@ -3,20 +3,18 @@ import { Children } from 'react';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
-import { HStack } from '../Box';
-import type { HStackProps } from '../Box';
 import { Icon } from '../Icon/Icon';
 import { Link } from '../Link/Link';
 import type { LinkProps } from '../Link/Link';
 
-export type BreadcrumbProps = PropsOf<'ul'> & Omit<HStackProps, 'asChild'>;
+export type BreadcrumbProps = PropsOf<'ul'>;
 export type BreadcrumbItemProps = PropsOf<'li'>;
 export type BreadcrumbLinkProps = LinkProps;
 
 export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
   id: 'Breadcrumb',
-  baseElement: 'ul',
-  render: (Comp, { children, ...props }) => {
+  className: 'flex gap-4 items-stretch',
+  render: (_, { children, ...props }) => {
     const newChildren = Children.toArray(children).flatMap((child, index) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const id = (child as any)?.type?.id;
@@ -37,11 +35,7 @@ export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
       }
       return child;
     });
-    return (
-      <HStack {...props} asChild>
-        <Comp>{newChildren}</Comp>
-      </HStack>
-    );
+    return <ul {...props}>{newChildren}</ul>;
   },
 });
 
@@ -53,6 +47,7 @@ export const BreadcrumbItem = createComponent<BreadcrumbItemProps, 'li'>({
 export const BreadcrumbLink = createComponent<BreadcrumbLinkProps, typeof Link>(
   {
     id: 'BreadcrumbLink',
+    className: 'inline-flex',
     baseElement: Link,
   },
 );

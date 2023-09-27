@@ -9,6 +9,7 @@ import {
   IconTransfer,
   IconUsers,
 } from '@tabler/icons-react';
+import Link from 'next/link';
 import { tv } from 'tailwind-variants';
 
 import type { TransactionNode, TxStatus } from '../../types';
@@ -22,35 +23,37 @@ export function TxCard({ transaction: tx, className, ...props }: TxCardProps) {
   const classes = styles();
   const title = tx.title as string;
   return (
-    <Card {...props} className={classes.root({ className })}>
-      <Card.Header>
-        <EntityItem>
-          <EntityItem.Slot>
-            <TxIcon status={tx.statusType as TxStatus} type={title} />
-          </EntityItem.Slot>
-          <EntityItem.Info id={tx.id} title={title} />
-        </EntityItem>
-      </Card.Header>
-      <Card.Body className={classes.body()}>
-        <Flex className={classes.row()} justify="between">
-          <Text leftIcon={IconUsers}>{tx.totalAccounts} accounts</Text>
-        </Flex>
-        <Flex className={classes.row()} justify="between">
-          <Text leftIcon={IconTransfer}>{tx.totalOperations} operations</Text>
-          <Text className={classes.small()}>
-            <Badge color={TX_INTENT_MAP[tx.statusType as string]}>
-              {tx.statusType}
-            </Badge>
-          </Text>
-        </Flex>
-        <Flex className={classes.row()} justify="between">
-          <Text leftIcon={IconCoins}>{tx.totalAssets} assets</Text>
-          <Text className={classes.small()} leftIcon={IconGasStation}>
-            {bn(tx.gasUsed).format({ units: 3 })} ETH
-          </Text>
-        </Flex>
-      </Card.Body>
-    </Card>
+    <Link href={`/tx/${tx.id}`}>
+      <Card {...props} className={classes.root({ className })}>
+        <Card.Header>
+          <EntityItem>
+            <EntityItem.Slot>
+              <TxIcon status={tx.statusType as TxStatus} type={title} />
+            </EntityItem.Slot>
+            <EntityItem.Info id={tx.id} title={title} />
+          </EntityItem>
+        </Card.Header>
+        <Card.Body className={classes.body()}>
+          <Flex className={classes.row()} justify="between">
+            <Text leftIcon={IconUsers}>{tx.totalAccounts} accounts</Text>
+          </Flex>
+          <Flex className={classes.row()} justify="between">
+            <Text leftIcon={IconTransfer}>{tx.totalOperations} operations</Text>
+            <Text className={classes.small()}>
+              <Badge color={TX_INTENT_MAP[tx.statusType as string]}>
+                {tx.statusType}
+              </Badge>
+            </Text>
+          </Flex>
+          <Flex className={classes.row()} justify="between">
+            <Text leftIcon={IconCoins}>{tx.totalAssets} assets</Text>
+            <Text className={classes.small()} leftIcon={IconGasStation}>
+              {bn(tx.gasUsed).format({ precision: 5 })} ETH
+            </Text>
+          </Flex>
+        </Card.Body>
+      </Card>
+    </Link>
   );
 }
 

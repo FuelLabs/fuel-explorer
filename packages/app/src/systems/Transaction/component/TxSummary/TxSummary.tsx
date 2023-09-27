@@ -1,3 +1,5 @@
+'use client';
+
 import { bn } from '@fuel-ts/math';
 import type { BaseProps, CardProps, BoxProps } from '@fuels/ui';
 import {
@@ -101,7 +103,7 @@ export const TxSummaryDetails = createComponent<
               iconSize={24}
               leftIcon={IconGasStation}
             >
-              {bn(tx.gasUsed).format({ units: 3 })} ETH
+              {bn(tx.gasUsed).format()} ETH
             </Text>
           </TxSummaryRow>
         </Card.Body>
@@ -144,7 +146,7 @@ export const TxSummary = withNamespace(TxSummaryRoot, {
 
 const styles = tv({
   slots: {
-    root: 'grid grid-cols-[2fr,1fr]',
+    root: 'grid grid-cols-[2fr,1fr] gap-6',
     details: 'p-6',
     params: 'p-6 fuel-[Text]:text-lg',
     row: 'grid grid-cols-[100px,1fr] gap-8 items-center',

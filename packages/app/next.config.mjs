@@ -7,15 +7,17 @@ const config = {
     externalDir: true,
     serverComponentsExternalPackages: [
       'bcryptjs',
+      'ws',
+      'isomorphic-ws',
       '@graphql-tools/delegate',
       '@graphql-tools/load',
+      '@graphql-tools/load-files',
       '@graphql-tools/schema',
       '@graphql-tools/stitch',
       '@graphql-tools/url-loader',
       '@graphql-tools/utils',
     ],
     serverActions: true,
-    esmExternals: true,
   },
   /** We run eslint as a separate task in CI */
   eslint: {
