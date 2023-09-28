@@ -14,9 +14,10 @@
     "start": "pnpm dev",
     "codegen": "gql-gen --config codegen.ts",
     "codegen:schema": "gql-gen --config codegen.schema.ts",
+    "codegen:fuel": "gql-gen --config codegen.fuel.ts",
     "fix:generated": "node ./scripts/fix-generated.mjs",
     "ts:check": "tsc --noEmit",
-    "prepare": "pnpm codegen"
+    "prepare": "run-s codegen:fuel codegen build"
   },
   "dependencies": {
     "@fuel-ts/math": "0.60.0",
