@@ -224,12 +224,6 @@ type Genesis {
   messagesRoot: Bytes32!
 }
 
-enum GroupInputType {
-  InputCoin
-  InputContract
-  InputMessage
-}
-
 type GroupedInput {
   assetId: AssetId
   contractId: ContractId
@@ -239,7 +233,33 @@ type GroupedInput {
   recipient: Address
   sender: Address
   totalAmount: U64
-  type: GroupInputType
+  type: GroupedInputType
+}
+
+enum GroupedInputType {
+  InputCoin
+  InputContract
+  InputMessage
+}
+
+type GroupedOutput {
+  assetId: AssetId
+  contract: Contract
+  inputIndex: Int
+  outputs: [Output]
+  recipient: Address
+  to: Address
+  totalAmount: U64
+  type: GroupedOutputType
+}
+
+enum GroupedOutputType {
+  ChangeOutput
+  CoinOutput
+  ContractCreated
+  ContractOutput
+  MessageOutput
+  VariableOutput
 }
 
 type Header {
@@ -611,6 +631,7 @@ type Transaction {
   gasPrice: U64
   gasUsed: U64
   groupedInputs: [GroupedInput]
+  groupedOutputs: [GroupedOutput]
   id: TransactionId!
   inputAssetIds: [AssetId!]
   inputContracts: [Contract!]

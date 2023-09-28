@@ -1,8 +1,9 @@
 import cors from 'cors';
 import express from 'express';
+import { createHandler } from 'graphql-http/lib/use/express';
 import expressPlayground from 'graphql-playground-middleware-express';
 
-import { startGraphql } from './schema';
+import { createSchema } from './schema';
 import { requireEnv } from './utils/requireEnv';
 
 const { FUEL_PROVIDER_URL } = requireEnv(['FUEL_PROVIDER_URL']);
@@ -23,7 +24,7 @@ app.get(
   }),
 );
 
-// Start graphql server
-startGraphql(FUEL_PROVIDER_URL, app);
+const schema = createSchema(FUEL_PROVIDER_URL);
+app.post('/graphql', createHandler({ schema }));
 
 export default app;

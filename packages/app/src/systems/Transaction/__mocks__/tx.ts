@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { faker } from '@faker-js/faker';
-import { GroupInputType, mocks } from '@fuel-explorer/graphql';
-import { bn } from '@fuel-ts/math';
+import {
+  GroupedInputType,
+  GroupedOutputType,
+  mocks,
+} from '@fuel-explorer/graphql';
 import { assets } from '@fuels/assets';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
@@ -13,53 +15,79 @@ const status = mocks.aSuccessStatus({
   }),
 });
 
-const genInput = (typename: any) =>
-  mocks.anInputCoin({
-    __typename: typename,
-    amount: bn(1),
-    utxoId: faker.string.uuid(),
-  });
+function input(typename: any) {
+  return mocks.anInputCoin({ __typename: typename });
+}
 
 export const GROUPED_INPUT_ASSET = mocks.aGroupedInput({
-  __typename: 'GroupedInput',
-  type: GroupInputType.InputCoin,
-  inputs: [genInput('InputCoin'), genInput('InputCoin'), genInput('InputCoin')],
+  type: GroupedInputType.InputCoin,
   assetId: assets[0].assetId,
-  totalAmount: bn(3),
-  owner: `0x${faker.string.alpha(32)}`,
+  inputs: [input('InputCoin'), input('InputCoin'), input('InputCoin')],
 });
 
 export const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInput({
-  __typename: 'GroupedInput',
-  type: GroupInputType.InputCoin,
-  inputs: [genInput('InputCoin'), genInput('InputCoin'), genInput('InputCoin')],
-  owner: `0x${faker.string.alpha(32)}`,
-  assetId: `0x${faker.string.alpha(32)}`,
-  totalAmount: bn(3),
+  type: GroupedInputType.InputCoin,
+  inputs: [input('InputCoin'), input('InputCoin'), input('InputCoin')],
 });
 
 export const GROUPED_INPUT_CONTRACT = mocks.aGroupedInput({
-  __typename: 'GroupedInput',
-  type: GroupInputType.InputContract,
-  inputs: [
-    genInput('InputContract'),
-    genInput('InputContract'),
-    genInput('InputContract'),
-  ],
-  contractId: assets[0].assetId,
-  totalAmount: bn(3),
+  type: GroupedInputType.InputContract,
 });
 
 export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInput({
-  __typename: 'GroupedInput',
-  type: GroupInputType.InputMessage,
-  sender: `0x${faker.string.alpha(40)}`,
-  recipient: `0x${faker.string.alpha(40)}`,
-  data: `0x${faker.string.alpha(160)}`,
+  type: GroupedInputType.InputMessage,
+});
+
+function output(typename: any) {
+  return mocks.aCoinOutput({ __typename: typename });
+}
+
+export const GROUPED_OUTPUT_ASSET = mocks.aGroupedOutput({
+  type: GroupedOutputType.CoinOutput,
+  outputs: [output('OutputCoin'), output('OutputCoin'), output('OutputCoin')],
+  assetId: assets[0].assetId,
+});
+
+export const GROUPED_OUTPUT_ASSET_UNKNOWN = mocks.aGroupedOutput({
+  type: GroupedOutputType.CoinOutput,
+  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
+});
+
+export const GROUPED_OUTPUT_VARIABLE_OUTPUT = mocks.aGroupedOutput({
+  type: GroupedOutputType.VariableOutput,
+  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
+  assetId: assets[0].assetId,
+});
+
+export const GROUPED_OUTPUT_VARIABLE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({
+  type: GroupedOutputType.VariableOutput,
+  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
+});
+
+export const GROUPED_OUTPUT_CHANGE_OUTPUT = mocks.aGroupedOutput({
+  type: GroupedOutputType.ChangeOutput,
+  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
+  assetId: assets[0].assetId,
+});
+
+export const GROUPED_OUTPUT_CHANGE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({
+  type: GroupedOutputType.ChangeOutput,
+  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
+});
+
+export const GROUPED_OUTPUT_CONTRACT_OUTPUT = mocks.aGroupedOutput({
+  type: GroupedOutputType.ContractOutput,
+});
+
+export const GROUPED_OUTPUT_CONTRACT_CREATED = mocks.aGroupedOutput({
+  type: GroupedOutputType.ContractCreated,
+});
+
+export const GROUPED_OUTPUT_MESSAGE = mocks.aGroupedOutput({
+  type: GroupedOutputType.MessageOutput,
 });
 
 export const TX_MOCK = mocks.aTransaction({
-  id: '0x78d13f111bf301324f34f2a7eaffc546d39598d156af38e7c4ef9fe61ea2c46a',
   time: {
     __typename: 'ParsedTime',
     fromNow: date.fromNow(),
@@ -68,12 +96,18 @@ export const TX_MOCK = mocks.aTransaction({
   totalAccounts: 2,
   totalAssets: 3,
   totalOperations: 4,
-  gasUsed: bn(1),
   status,
   groupedInputs: [
     GROUPED_INPUT_ASSET,
     GROUPED_INPUT_ASSET_UNKNOWN,
     GROUPED_INPUT_ASSET,
     GROUPED_INPUT_MESSAGE,
+  ],
+  groupedOutputs: [
+    GROUPED_OUTPUT_ASSET,
+    GROUPED_OUTPUT_ASSET_UNKNOWN,
+    GROUPED_OUTPUT_CONTRACT_OUTPUT,
+    GROUPED_OUTPUT_CONTRACT_CREATED,
+    GROUPED_OUTPUT_MESSAGE,
   ],
 });

@@ -1,0 +1,207 @@
+import { GroupedOutputType } from '@fuel-explorer/graphql';
+import type { GroupedOutput } from '@fuel-explorer/graphql';
+import { assets, resolveIconPath } from '@fuels/assets';
+import {
+  Card,
+  Copyable,
+  HStack,
+  Text,
+  VStack,
+  createComponent,
+  cx,
+  shortAddress,
+} from '@fuels/ui';
+import type { CardProps } from '@fuels/ui';
+import { bn } from 'fuels';
+import Image from 'next/image';
+import { useMemo } from 'react';
+import { tv } from 'tailwind-variants';
+
+import { TxIcon } from '../TxIcon/TxIcon';
+
+const ASSET_LIST = resolveIconPath('/assets', assets);
+const ICON_SIZE = 36;
+
+export type TxOutputProps = CardProps & {
+  output: GroupedOutput;
+  title?: string;
+};
+
+const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
+  id: 'TxOutputCoin',
+  render: (_, { output, title, ...props }) => {
+    const classes = styles();
+    const assetId = output.assetId;
+    const amount = output.totalAmount;
+    const asset = useMemo(() => {
+      const found = ASSET_LIST.find((asset) => asset.assetId === assetId);
+      return {
+        assetId,
+        name: found?.name ?? 'Unknown Asset',
+        symbol: found?.symbol ?? null,
+        icon: found?.icon ?? null,
+      };
+    }, [assetId]);
+
+    if (!asset) return null;
+    return (
+      <Card {...props} className={cx('py-3', props.className)}>
+        <Card.Header className={classes.header()}>
+          <HStack align="center">
+            {asset.icon ? (
+              <Image
+                src={asset.icon as string}
+                width={ICON_SIZE}
+                height={ICON_SIZE}
+                alt={asset.name}
+              />
+            ) : (
+              <TxIcon type="Mint" status="Submitted" />
+            )}
+            <VStack gap="0">
+              <Text className="text-md font-medium">
+                {title || asset.name}
+                {asset.symbol && (
+                  <Text className="ml-2 text-muted text-sm">
+                    ({asset.symbol})
+                  </Text>
+                )}
+              </Text>
+              <Copyable
+                value={output.to}
+                iconSize={16}
+                className="text-sm text-muted"
+              >
+                To: {shortAddress(output.to)}
+              </Copyable>
+            </VStack>
+          </HStack>
+          <HStack align="center">
+            {amount && (
+              <Text className="text-secondary">
+                {bn(amount).format({ precision: 3 })} {asset.symbol}
+              </Text>
+            )}
+          </HStack>
+        </Card.Header>
+      </Card>
+    );
+  },
+});
+
+const TxOutputContract = createComponent<TxOutputProps, typeof Card>({
+  id: 'TxOutputContract',
+  render: (_, { output, ...props }) => {
+    const classes = styles();
+
+    return (
+      <Card {...props} className={cx('py-3', props.className)}>
+        <Card.Header className={classes.header()}>
+          <HStack align="center">
+            <TxIcon status="Submitted" type="Contract" />
+            <VStack gap="1">
+              <Text className="font-medium">Contract Output</Text>
+              <Text className="text-sm text-secondary">
+                Input Index: {output.inputIndex}
+              </Text>
+            </VStack>
+          </HStack>
+        </Card.Header>
+      </Card>
+    );
+  },
+});
+
+const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
+  id: 'TxOutputContractCreated',
+  render: (_, { output, ...props }) => {
+    const classes = styles();
+    const contractId = output.contract?.id as string;
+
+    return (
+      <Card {...props} className={cx('py-3', props.className)}>
+        <Card.Header className={classes.header()}>
+          <HStack align="center">
+            <TxIcon status="Success" type="Contract" />
+            <VStack gap="1">
+              <Text className="font-medium">Contract Created</Text>
+              <Copyable value={contractId} className="text-sm text-secondary">
+                Id: {shortAddress(contractId)}
+              </Copyable>
+            </VStack>
+          </HStack>
+        </Card.Header>
+      </Card>
+    );
+  },
+});
+
+const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
+  id: 'TxOutputMessage',
+  render: (_, { output, ...props }) => {
+    const classes = styles();
+    const { recipient } = output;
+
+    return (
+      <Card {...props} className={cx('py-3', props.className)}>
+        <Card.Header className={classes.header()}>
+          <TxIcon type="Message" status="Submitted" />
+          <VStack gap="1" className="flex-1">
+            <Text>Message</Text>
+            <HStack>
+              <HStack gap="1" align="center">
+                <Text className="text-sm text-secondary">From:</Text>
+                <Copyable
+                  value={recipient}
+                  className="text-sm text-muted"
+                  iconSize={16}
+                >
+                  {shortAddress(recipient)}
+                </Copyable>
+              </HStack>
+              <HStack gap="1" align="center">
+                <Text className="text-sm text-secondary">To:</Text>
+                <Copyable
+                  value={recipient}
+                  className="text-sm text-muted"
+                  iconSize={16}
+                >
+                  {shortAddress(recipient)}
+                </Copyable>
+              </HStack>
+            </HStack>
+          </VStack>
+        </Card.Header>
+      </Card>
+    );
+  },
+});
+
+export function TxOutput({ output, ...props }: TxOutputProps) {
+  if (output.type === GroupedOutputType.CoinOutput) {
+    return <TxOutputCoin output={output} {...props} />;
+  }
+  if (output.type === GroupedOutputType.VariableOutput) {
+    return <TxOutputCoin output={output} {...props} title="Variable Output" />;
+  }
+  if (output.type === GroupedOutputType.ChangeOutput) {
+    return <TxOutputCoin output={output} {...props} title="Change Output" />;
+  }
+  if (output.type === GroupedOutputType.ContractOutput) {
+    return <TxOutputContract output={output} {...props} />;
+  }
+  if (output.type === GroupedOutputType.ContractCreated) {
+    return <TxOutputContractCreated output={output} {...props} />;
+  }
+  if (output.type === GroupedOutputType.MessageOutput) {
+    return <TxOutputMessage output={output} {...props} />;
+  }
+}
+
+const styles = tv({
+  slots: {
+    header: 'group flex flex-row gap-4 justify-between items-center',
+    icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
+    utxos: 'bg-gray-2 mx-4 py-3 px-4 rounded',
+  },
+});

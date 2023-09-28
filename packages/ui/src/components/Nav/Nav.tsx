@@ -55,7 +55,10 @@ export type NavConnectionProps = HStackProps & {
 };
 
 export type NavThemeToggleProps = AsChildProp &
-  PropsOf<'span'> & { whenOpened?: 'hide' | 'show' | 'no-effect' };
+  PropsOf<'span'> & {
+    whenOpened?: 'hide' | 'show' | 'no-effect';
+    onToggle?: (theme: string) => void;
+  };
 
 export type NavMobileProps = WithAsProps &
   PropsOf<'nav'> & {
@@ -87,26 +90,12 @@ export const NavRoot = createComponent<NavProps, typeof NavProvider>({
  * NavDesktop
  */
 
-const DESKTOP_CHILD_ITEMS = [
-  'NavLogo',
-  'NavMenu',
-  'NavSpacer',
-  'NavConnection',
-  'NavThemeToggle',
-];
-
 export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
   id: 'NavDesktop',
   baseElement: 'nav',
-  render: (Root, { className, ...props }) => {
+  render: (Root, { className, children, ...props }) => {
     const classes = styles();
     const { width } = useWindowSize();
-    const children = useStrictedChildren(
-      'NavDesktop',
-      DESKTOP_CHILD_ITEMS,
-      props.children,
-    );
-
     if (width < 1024) return null;
     return (
       <section className={classes.navWrapper()}>
@@ -126,27 +115,13 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
  * NavMobile
  */
 
-const MOBILE_CHILD_ITEMS = [
-  'NavLogo',
-  'NavMenu',
-  'NavSpacer',
-  'NavConnection',
-  'NavThemeToggle',
-  'NavMobileContent',
-];
-
 export const NavMobile = createComponent<NavMobileProps, 'nav'>({
   id: 'NavMobile',
   baseElement: 'nav',
   className: () => styles().mobile(),
-  render: (Root, { isOpen, onOpenChange, ...props }) => {
+  render: (Root, { isOpen, onOpenChange, children, ...props }) => {
     const { width } = useWindowSize();
     const [open, setOpen] = useState(() => Boolean(isOpen));
-    const children = useStrictedChildren(
-      'NavMobile',
-      MOBILE_CHILD_ITEMS,
-      props.children,
-    );
 
     useEffect(() => {
       onOpenChange?.(Boolean(open));
@@ -369,10 +344,17 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
 export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
   id: 'NavThemeToggle',
   baseElement: 'span',
-  render: (Root, { className, whenOpened = 'hide', ...props }) => {
+  render: (Root, { className, whenOpened = 'hide', onToggle, ...props }) => {
     const { theme: current, toggleTheme } = useTheme();
     const mobileProps = useNavMobileContext();
     const classes = styles();
+
+    function handleToggle() {
+      toggleTheme();
+      const next = current === 'light' ? 'dark' : 'light';
+      onToggle?.(next);
+    }
+
     const content = (
       <Root
         {...props}
@@ -381,7 +363,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         data-theme={current}
         role="button"
         tabIndex={0}
-        onClick={toggleTheme}
+        onClick={handleToggle}
       >
         <Icon
           aria-label="Sun"

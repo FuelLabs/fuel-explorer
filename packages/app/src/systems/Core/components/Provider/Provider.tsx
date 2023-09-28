@@ -2,9 +2,16 @@
 
 import { Theme, Toaster } from '@fuels/ui';
 
-export function Provider({ children }: { children: React.ReactNode }) {
+export function Provider({
+  children,
+  theme,
+}: {
+  children: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  theme: any;
+}) {
   return (
-    <Theme appearance="dark" hasBackground={false}>
+    <Theme appearance={theme} hasBackground={false}>
       {children}
       <Toaster />
     </Theme>

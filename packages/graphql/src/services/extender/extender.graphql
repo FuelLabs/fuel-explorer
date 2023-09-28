@@ -24,14 +24,14 @@ type ParsedTime {
   rawUnix: String
 }
 
-enum GroupInputType {
+enum GroupedInputType {
   InputCoin
   InputContract
   InputMessage
 }
 
 type GroupedInput {
-  type: GroupInputType
+  type: GroupedInputType
   totalAmount: U64
   inputs: [Input]
   contractId: ContractId
@@ -40,6 +40,26 @@ type GroupedInput {
   recipient: Address
   data: HexString
   owner: Address
+}
+
+enum GroupedOutputType {
+  CoinOutput
+  ContractOutput
+  MessageOutput
+  ChangeOutput
+  VariableOutput
+  ContractCreated
+}
+
+type GroupedOutput {
+  type: GroupedOutputType
+  totalAmount: U64
+  outputs: [Output]
+  to: Address
+  assetId: AssetId
+  inputIndex: Int
+  recipient: Address
+  contract: Contract
 }
 
 enum TransactionAccountType {
@@ -62,6 +82,7 @@ extend type Transaction {
   totalAssets: Int
   totalOperations: Int
   gasUsed: U64
-  groupedInputs: [GroupedInput]
   accountsInvolved: [TransactionAccount]
+  groupedInputs: [GroupedInput]
+  groupedOutputs: [GroupedOutput]
 }

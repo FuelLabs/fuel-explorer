@@ -60,6 +60,13 @@ fragment TransactionOutput on Output {
     amount
     assetId
   }
+  ... on ContractOutput {
+    inputIndex
+  }
+  ... on MessageOutput {
+    recipient
+    amount
+  }
   ... on ChangeOutput {
     to
     amount
@@ -152,5 +159,19 @@ fragment TransactionItem on Transaction {
     recipient
     data
     owner
+  }
+  groupedOutputs {
+    to
+    type
+    totalAmount
+    outputs {
+      ...TransactionOutput
+    }
+    contract {
+      id
+    }
+    assetId
+    inputIndex
+    recipient
   }
 }

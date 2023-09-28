@@ -20,6 +20,22 @@ const config: StorybookConfig = {
     check: false,
     reactDocgen: 'react-docgen',
   },
+  webpack: (config: any) => {
+    config.module.rules.push({
+      test: /\.(graphql|gql)/,
+      exclude: /node_modules/,
+      loader: 'graphql-tag/loader',
+    });
+
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      resourceQuery: { not: /url/ }, // exclude if *.svg?url
+      use: ['@svgr/webpack'],
+    });
+
+    return config;
+  },
 };
 
 export default config;
