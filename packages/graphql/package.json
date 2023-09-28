@@ -17,7 +17,7 @@
     "codegen:fuel": "gql-gen --config codegen.fuel.ts",
     "fix:generated": "node ./scripts/fix-generated.mjs",
     "ts:check": "tsc --noEmit",
-    "prepare": "run-s codegen:fuel codegen build"
+    "prepare": "pnpm codegen:fuel && pnpm codegen && pnpm build"
   },
   "dependencies": {
     "@fuel-ts/math": "0.60.0",
