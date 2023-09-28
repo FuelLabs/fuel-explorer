@@ -161,6 +161,7 @@ fragment TransactionItem on Transaction {
     owner
   }
   groupedOutputs {
+    to
     type
     totalAmount
     outputs {
@@ -169,7 +170,6 @@ fragment TransactionItem on Transaction {
     contract {
       id
     }
-    to
     assetId
     inputIndex
     recipient

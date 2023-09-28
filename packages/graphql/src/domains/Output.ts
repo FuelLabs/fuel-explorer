@@ -28,7 +28,7 @@ export class OutputDomain {
   }
 
   get coinOutputs() {
-    const outputs = this._filterByTypename<CoinOutput>('OutputCoin');
+    const outputs = this._filterByTypename<CoinOutput>('CoinOutput');
     const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
     return entries.map(([assetId, outputs]) => {
       const type = outputs[0].__typename;
