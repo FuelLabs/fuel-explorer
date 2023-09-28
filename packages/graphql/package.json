@@ -9,15 +9,16 @@
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
   "scripts": {
-    "build": "tsup --dts",
-    "dev": "pnpm build && node dist/index.js",
+    "build:lib": "tsup --dts",
+    "build": "run-s codegen:fuel codegen build:lib",
+    "dev": "pnpm build && node ./dist/index.js",
     "start": "pnpm dev",
-    "codegen": "gql-gen --config codegen.ts",
-    "codegen:schema": "gql-gen --config codegen.schema.ts",
-    "codegen:fuel": "gql-gen --config codegen.fuel.ts",
+    "codegen": "gql-gen --config ./codegen.ts",
+    "codegen:schema": "gql-gen --config ./codegen.schema.ts",
+    "codegen:fuel": "gql-gen --config ./codegen.fuel.ts",
     "fix:generated": "node ./scripts/fix-generated.mjs",
     "ts:check": "tsc --noEmit",
-    "prepare": "pnpm codegen:fuel && pnpm codegen && pnpm build"
+    "prepare": "pnpm build"
   },
   "dependencies": {
     "@fuel-ts/math": "0.60.0",
