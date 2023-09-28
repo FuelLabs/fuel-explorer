@@ -5,17 +5,15 @@ import type {
   GroupedOutput,
   Maybe,
 } from '@fuel-explorer/graphql';
-import { bn } from '@fuel-ts/math';
-import { Grid, Heading, VStack } from '@fuels/ui';
+import { Flex, Heading, Icon, VStack } from '@fuels/ui';
+import { IconArrowDown } from '@tabler/icons-react';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
-import { TxAccountItem } from '../../component/TxAccountItem/TxAccountItem';
-import { TxAssetItem } from '../../component/TxAssetItem/TxAssetItem';
 import { TxBreadcrumb } from '../../component/TxBreadcrumb/TxBreadcrumb';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
 import { TxSummary } from '../../component/TxSummary/TxSummary';
-import type { TransactionNode, TxAccountType } from '../../types';
+import type { TransactionNode } from '../../types';
 
 type TxScreenProps = {
   transaction?: Maybe<TransactionNode>;
@@ -25,8 +23,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   if (!tx) return null;
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
-  const hasAssets = tx.inputAssetIds?.length ?? 0 > 0;
-  const hasAccounts = tx.accountsInvolved?.length ?? 0 > 0;
+
   return (
     <VStack gap="6">
       <TxBreadcrumb transaction={tx} />
@@ -35,57 +32,9 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
         <TxSummary.Details />
         <TxSummary.Params />
       </TxSummary>
-      <VStack className="mt-10">
-        <Heading as="h2" size="3">
-          Assets
-        </Heading>
-        {hasAssets ? (
-          <Grid columns="4" className="gap-6">
-            {tx.inputAssetIds?.map((assetId) => (
-              <TxAssetItem
-                key={assetId}
-                assetId={assetId}
-                // TODO: add right amounts
-                amountIn={bn(0)}
-                amountOut={bn(0)}
-              />
-            ))}
-          </Grid>
-        ) : (
-          <EmptyCard>
-            <EmptyCard.Title>No Assets</EmptyCard.Title>
-            <EmptyCard.Description>
-              This transaction does not have any assets.
-            </EmptyCard.Description>
-          </EmptyCard>
-        )}
-      </VStack>
-      <VStack className="mt-10">
-        <Heading as="h2" size="3">
-          Accounts
-        </Heading>
-        {hasAccounts ? (
-          <Grid columns="4" className="gap-6">
-            {tx.accountsInvolved?.map((acc) => (
-              <TxAccountItem
-                key={acc?.id}
-                type={acc?.type as TxAccountType}
-                id={acc?.id as string}
-              />
-            ))}
-          </Grid>
-        ) : (
-          <EmptyCard>
-            <EmptyCard.Title>No Accounts</EmptyCard.Title>
-            <EmptyCard.Description>
-              This transaction does not have any accounts.
-            </EmptyCard.Description>
-          </EmptyCard>
-        )}
-      </VStack>
-      <Grid columns="2" className="mt-10 gap-20">
+      <VStack>
         <VStack>
-          <Heading as="h2" size="3">
+          <Heading as="h2" size="4">
             Inputs
           </Heading>
           {hasInputs ? (
@@ -104,8 +53,11 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
             </EmptyCard>
           )}
         </VStack>
+        <Flex justify="center">
+          <Icon icon={IconArrowDown} size={40} />
+        </Flex>
         <VStack>
-          <Heading as="h2" size="3">
+          <Heading as="h2" size="4">
             Outputs
           </Heading>
           {hasOutputs ? (
@@ -124,7 +76,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
             </EmptyCard>
           )}
         </VStack>
-      </Grid>
+      </VStack>
     </VStack>
   );
 }
