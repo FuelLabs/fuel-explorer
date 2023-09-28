@@ -7,7 +7,6 @@ import {
   BreadcrumbLink,
   Copyable,
   Icon,
-  shortAddress,
 } from '@fuels/ui';
 import { IconHome } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -27,7 +26,7 @@ export function TxBreadcrumb({ transaction: tx, ...props }: TxBreadcrumbProps) {
         </Link>
       </BreadcrumbLink>
       <BreadcrumbItem>
-        <Copyable value={tx.id}>{shortAddress(tx.id)}</Copyable>
+        <Copyable value={tx.id}>{tx.id}</Copyable>
       </BreadcrumbItem>
     </Breadcrumb>
   );

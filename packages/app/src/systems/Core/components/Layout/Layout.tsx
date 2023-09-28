@@ -1,8 +1,10 @@
 'use client';
 import { Container, VStack, Nav } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
+import Link from 'next/link';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
 
+import { setTheme } from '../../actions/setTheme';
 import { Footer } from '../Footer/Footer';
 
 export type LayoutProps = BaseProps<{
@@ -14,7 +16,9 @@ export function Layout({ children, hero }: LayoutProps) {
     <VStack className="min-w-screen min-h-screen" gap="0">
       <Nav>
         <Nav.Desktop className="px-10">
-          <Nav.Logo />
+          <Link href="/" className="flex items-center">
+            <Nav.Logo />
+          </Link>
           <Nav.Menu>
             <Nav.MenuItem href="https://docs.wallet.network">
               Developers
@@ -29,12 +33,12 @@ export function Layout({ children, hero }: LayoutProps) {
           <Nav.Spacer />
           <Nav.Menu>
             <Nav.MenuItem href="#">Bridge</Nav.MenuItem>
-            <Nav.MenuItem isActive href="#">
-              Explorer
+            <Nav.MenuItem isActive asChild>
+              <Link href="/">Explorer</Link>
             </Nav.MenuItem>
             <Nav.MenuItem href="#">Ecosystem</Nav.MenuItem>
           </Nav.Menu>
-          <Nav.ThemeToggle />
+          <Nav.ThemeToggle onToggle={(theme) => setTheme({ theme })} />
         </Nav.Desktop>
       </Nav>
       {hero && <Hero />}
