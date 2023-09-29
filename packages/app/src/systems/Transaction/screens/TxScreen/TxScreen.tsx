@@ -26,7 +26,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
 
   return (
-    <VStack gap="6">
+    <VStack gap="6" className="min-h-[75vh]">
       <TxBreadcrumb transactionId={tx.id} />
       <Grid columns="6" gap={'6'}>
         <Box className="col-span-2">
