@@ -1,4 +1,4 @@
-import { Badge } from '@fuels/ui';
+import { Badge, VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { TxInfo } from './TxInfo';
@@ -13,15 +13,23 @@ type Story = StoryObj<typeof TxInfo>;
 
 export const Usage: Story = {
   render: () => (
-    <>
-      <TxInfo className="w-[350px]" name="Status" description="test">
+    <VStack>
+      <TxInfo
+        className="w-[350px]"
+        name="Status"
+        description="Here a description"
+      >
         <Badge color={'green'} size="1" variant="solid">
           Success
         </Badge>
       </TxInfo>
-      <TxInfo className="w-[350px]" name="Timestamp" description="test">
+      <TxInfo
+        className="w-[350px]"
+        name="Timestamp"
+        description="Here a description"
+      >
         ~5 days ago
       </TxInfo>
-    </>
+    </VStack>
   ),
 };
