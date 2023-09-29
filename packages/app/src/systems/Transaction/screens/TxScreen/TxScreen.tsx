@@ -5,14 +5,15 @@ import type {
   GroupedOutput,
   Maybe,
 } from '@fuel-explorer/graphql';
-import { Flex, Heading, Icon, VStack } from '@fuels/ui';
+import { Badge, Box, Flex, Grid, Heading, Icon, VStack } from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
+import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 import { TxBreadcrumb } from '../../component/TxBreadcrumb/TxBreadcrumb';
+import { TxInfo } from '../../component/TxInfo/TxInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
-import { TxSummary } from '../../component/TxSummary/TxSummary';
 import type { TransactionNode } from '../../types';
 
 type TxScreenProps = {
@@ -26,57 +27,75 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
 
   return (
     <VStack gap="6">
-      <TxBreadcrumb transaction={tx} />
-      <Heading>Transaction Details</Heading>
-      <TxSummary transaction={tx}>
-        <TxSummary.Details />
-        <TxSummary.Params />
-      </TxSummary>
-      <VStack>
-        <VStack>
-          <Heading as="h2" size="4">
-            Inputs
-          </Heading>
-          {hasInputs ? (
-            tx.groupedInputs?.map((input) => (
-              <TxInput
-                key={getInputId(input as GroupedInput)}
-                input={input as GroupedInput}
-              />
-            ))
-          ) : (
-            <EmptyCard>
-              <EmptyCard.Title>No Inputs</EmptyCard.Title>
-              <EmptyCard.Description>
-                This transaction does not have any inputs.
-              </EmptyCard.Description>
-            </EmptyCard>
-          )}
-        </VStack>
-        <Flex justify="center">
-          <Icon icon={IconArrowDown} size={40} />
-        </Flex>
-        <VStack>
-          <Heading as="h2" size="4">
-            Outputs
-          </Heading>
-          {hasOutputs ? (
-            tx.groupedOutputs?.map((output) => (
-              <TxOutput
-                key={getOutputId(output as GroupedOutput)}
-                output={output as GroupedOutput}
-              />
-            ))
-          ) : (
-            <EmptyCard>
-              <EmptyCard.Title>No Outputs</EmptyCard.Title>
-              <EmptyCard.Description>
-                This transaction does not have any outputs.
-              </EmptyCard.Description>
-            </EmptyCard>
-          )}
-        </VStack>
-      </VStack>
+      <TxBreadcrumb transactionId={tx.id} />
+      <Grid columns="6" gap={'6'}>
+        <Box className="col-span-2">
+          <VStack>
+            <TxInfo name={'Status'}>
+              <Badge color={'green'} size="1" variant="solid">
+                Success
+              </Badge>
+            </TxInfo>
+            <TxInfo name={'Timestamp'} description={tx.time?.full}>
+              {tx.time?.fromNow}
+            </TxInfo>
+            <TxInfo name={'Block'}>#{tx.blockHeight}</TxInfo>
+            <TxInfo
+              name={'Gas spent'}
+              description={`Gas limit: ${bn(tx.gasLimit).format()}`}
+            >
+              {bn(tx.gasUsed).format()}
+            </TxInfo>
+          </VStack>
+        </Box>
+        <Box className="col-span-4">
+          <VStack>
+            <VStack>
+              <Heading as="h2" size="5">
+                Inputs
+              </Heading>
+              {hasInputs ? (
+                tx.groupedInputs?.map((input) => (
+                  <TxInput
+                    key={getInputId(input as GroupedInput)}
+                    input={input as GroupedInput}
+                  />
+                ))
+              ) : (
+                <EmptyCard>
+                  <EmptyCard.Title>No Inputs</EmptyCard.Title>
+                  <EmptyCard.Description>
+                    This transaction does not have any inputs.
+                  </EmptyCard.Description>
+                </EmptyCard>
+              )}
+            </VStack>
+            <Flex justify="center">
+              <Icon icon={IconArrowDown} size={40} />
+            </Flex>
+            <VStack>
+              <Heading as="h2" size="5">
+                Outputs
+              </Heading>
+              {hasOutputs ? (
+                tx.groupedOutputs?.map((output) => (
+                  <TxOutput
+                    key={getOutputId(output as GroupedOutput)}
+                    output={output as GroupedOutput}
+                  />
+                ))
+              ) : (
+                <EmptyCard>
+                  <EmptyCard.Title>No Outputs</EmptyCard.Title>
+                  <EmptyCard.Description>
+                    This transaction does not have any outputs.
+                  </EmptyCard.Description>
+                </EmptyCard>
+              )}
+            </VStack>
+          </VStack>
+        </Box>
+      </Grid>
     </VStack>
   );
 }
