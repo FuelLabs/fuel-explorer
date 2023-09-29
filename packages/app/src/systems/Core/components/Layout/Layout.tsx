@@ -20,23 +20,35 @@ export function Layout({ children, hero }: LayoutProps) {
             <Nav.Logo />
           </Link>
           <Nav.Menu>
-            <Nav.MenuItem href="https://docs.wallet.network">
+            <Nav.MenuItem href="https://docs.fuel.network/">
               Developers
             </Nav.MenuItem>
             <Nav.MenuItem href="https://forum.fuel.network">
               Community
             </Nav.MenuItem>
-            <Nav.MenuItem isExternal href="#">
+            <Nav.MenuItem isExternal href="https://fuel.network">
               Labs
             </Nav.MenuItem>
           </Nav.Menu>
           <Nav.Spacer />
           <Nav.Menu>
-            <Nav.MenuItem href="#">Bridge</Nav.MenuItem>
+            <Nav.MenuItem
+              isExternal
+              href="https://alpha.fuel.network/bridge"
+              target="_blank"
+            >
+              Bridge
+            </Nav.MenuItem>
             <Nav.MenuItem isActive asChild>
               <Link href="/">Explorer</Link>
             </Nav.MenuItem>
-            <Nav.MenuItem href="#">Ecosystem</Nav.MenuItem>
+            <Nav.MenuItem
+              isExternal
+              href="https://alpha.fuel.network/ecosystem"
+              target="_blank"
+            >
+              Ecosystem
+            </Nav.MenuItem>
           </Nav.Menu>
           <Nav.ThemeToggle onToggle={(theme) => setTheme({ theme })} />
         </Nav.Desktop>
