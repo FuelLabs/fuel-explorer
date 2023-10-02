@@ -29,7 +29,7 @@ export default function RootLayout({
       suppressHydrationWarning
       lang="en"
       className={cx(`${inter.variable}`, theme)}
-      style={{ 'color-scheme': theme } as React.CSSProperties}
+      style={{ colorScheme: theme } as React.CSSProperties}
     >
       <head>
         <link rel="icon" href="/favicon.svg" />
