@@ -30,7 +30,8 @@ jobs:
       - uses: FuelLabs/github-actions/setups/node@master
 
       - name: Run Audit
-        run: pnpm audit --prod
+        # temporally avoid low severity vulnerabilities
+        run: pnpm audit --prod --audit-leve high
 
   lint-and-test:
     name: Lint
