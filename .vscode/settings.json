@@ -4,5 +4,11 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "rust-analyzer.linkedProjects": ["./packages/indexer/Cargo.toml"]
+  "rust-analyzer.linkedProjects": ["./packages/indexer/Cargo.toml"],
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["tv\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ]
 }
