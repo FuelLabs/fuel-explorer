@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "helm/fuel-explorer/Chart.yaml"
+      - 'helm/fuel-explorer/Chart.yaml'
 
 permissions:
   contents: read
