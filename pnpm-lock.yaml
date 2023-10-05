@@ -103,6 +103,9 @@ importers:
       husky:
         specifier: ^8.0.3
         version: 8.0.3
+      next:
+        specifier: 13.5.3
+        version: 13.5.3(@babel/core@7.23.0)(react-dom@18.2.0)(react@18.2.0)
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
