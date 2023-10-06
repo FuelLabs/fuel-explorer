@@ -87,7 +87,8 @@
     "tsup": "7.2.0",
     "turbo": "^1.10.14",
     "typescript": "5.2.2",
-    "updates": "^15.0.2"
+    "updates": "^15.0.2",
+    "next": "13.5.3"
   },
   "pnpm": {
     "peerDependencyRules": {
