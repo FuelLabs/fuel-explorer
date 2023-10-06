@@ -21,10 +21,11 @@ export const Usage: Story = {
 export const Variant: Story = {
   render: () => (
     <HStack align="center" gap="5">
-      <Button variant="solid">Edit profile</Button>
-      <Button variant="ghost">Edit profile</Button>
-      <Button variant="outline">Edit profile</Button>
-      <Button variant="link">Edit profile</Button>
+      <Button variant="solid">Solid</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="surface">Surface</Button>
+      <Button variant="link">Link</Button>
     </HStack>
   ),
 };
