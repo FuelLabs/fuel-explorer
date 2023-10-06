@@ -69,7 +69,7 @@ export function TxIcon({
       className={classes.root({ className })}
       color={color || TX_INTENT_MAP[status || 'Submitted']}
       radius="full"
-      variant="soft"
+      variant="ghost"
     >
       <Icon className={classes.icon()} icon={TX_ICON_MAP[type]} />
     </Badge>

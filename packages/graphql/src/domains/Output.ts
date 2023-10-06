@@ -6,7 +6,6 @@ import type {
   CoinOutput,
   ContractCreated,
   ContractOutput,
-  MessageOutput,
   TransactionItemFragment,
   VariableOutput,
 } from '../generated/types';
@@ -20,7 +19,6 @@ export class OutputDomain {
     return [
       ...this.coinOutputs,
       ...this.contractOutputs,
-      ...this.messageOutputs,
       ...this.changeOutputs,
       ...this.variableOutputs,
       ...this.contractCreatedOutputs,
@@ -44,16 +42,6 @@ export class OutputDomain {
     return entries.map(([inputIndex, outputs]) => {
       const type = outputs[0].__typename;
       return { inputIndex, type, outputs };
-    });
-  }
-
-  get messageOutputs() {
-    const outputs = this._filterByTypename<MessageOutput>('MessageOutput');
-    const entries = Object.entries(groupBy(outputs, (i) => i.recipient));
-    return entries.map(([recipient, outputs]) => {
-      const type = outputs[0].__typename;
-      const totalAmount = this._getTotalAmount(outputs);
-      return { recipient, type, outputs, totalAmount };
     });
   }
 

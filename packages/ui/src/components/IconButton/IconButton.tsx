@@ -2,7 +2,7 @@ import { IconButton as RadixIconButton } from '@radix-ui/themes';
 
 import { getIconSize } from '../../hooks/useIconProps';
 import { useVariants } from '../../hooks/useVariants';
-import type { WithVariants } from '../../hooks/useVariants';
+import type { Variant, WithVariants } from '../../hooks/useVariants';
 import { createComponent } from '../../utils/component';
 import type { Colors, PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
@@ -10,19 +10,18 @@ import type { IconContext } from '../Icon/useIconContext';
 import { Spinner } from '../Spinner/Spinner';
 
 type RadixIconButtonProps = Omit<PropsOf<typeof RadixIconButton>, 'children'>;
+type IconButtonBaseProps = RadixIconButtonProps & {
+  disabled?: boolean;
+  isLoading?: boolean;
+  icon: React.ComponentType<Partial<IconContext>>;
+  iconSize?: number;
+  iconStroke?: number;
+  iconClassName?: string;
+  iconColor?: Colors;
+  'aria-label'?: string;
+};
 
-export type IconButtonProps = WithVariants<
-  RadixIconButtonProps & {
-    disabled?: boolean;
-    isLoading?: boolean;
-    icon: React.ComponentType<Partial<IconContext>>;
-    iconSize?: number;
-    iconStroke?: number;
-    iconClassName?: string;
-    iconColor?: Colors;
-    'aria-label'?: string;
-  }
->;
+export type IconButtonProps = WithVariants<IconButtonBaseProps, Variant>;
 
 export const IconButton = createComponent<IconButtonProps, 'button'>({
   id: 'IconButton',
@@ -44,8 +43,8 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
     const isDisabled = Boolean(disabled || isLoading);
     return (
       <RadixIconButton
-        {...props}
-        {...variantProps}
+        {...(props as RadixIconButtonProps)}
+        {...(variantProps as RadixIconButtonProps)}
         disabled={isDisabled}
         size={size}
       >

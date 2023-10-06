@@ -1,20 +1,21 @@
 'use client';
 
-import type { ButtonProps } from '@radix-ui/themes/dist/cjs/components/button';
-
 import { cx } from '../utils/css';
 
-export type Variant = 'solid' | 'ghost' | 'outline' | 'link';
-export type VariantProps = {
+export type Variant = 'solid' | 'ghost' | 'outline' | 'surface' | 'link';
+export type VariantProps<V = Variant> = {
   className?: string;
-  variant?: Variant;
+  variant?: V;
 };
 
-export type WithVariants<P> = Omit<P, 'variant'> & {
-  variant?: Variant;
+export type WithVariants<
+  P,
+  V = P extends VariantProps ? P['variant'] : Variant,
+> = Omit<P, 'variant'> & {
+  variant?: V;
 };
 
-function getVariant({ variant, className }: VariantProps) {
+function getVariant<V = Variant>({ variant, className }: VariantProps<V>) {
   if (variant === 'ghost') {
     return {
       variant: 'soft',
@@ -36,7 +37,8 @@ function getVariant({ variant, className }: VariantProps) {
   };
 }
 
-export function useVariants<P extends VariantProps>(props: P) {
-  const { variant, className } = getVariant(props);
-  return { variant: variant as ButtonProps['variant'], className };
+export function useVariants<P, V = Variant>(props: P) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { variant, className } = getVariant<V>(props as any);
+  return { variant: variant as V, className };
 }
