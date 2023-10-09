@@ -4,7 +4,7 @@ const config: CodegenConfig = {
   generates: {
     './src/schemas/fuelcore.graphql': {
       schema:
-        process.env.FUEL_PROVIDER_URL || 'http://beta-3.fuel.network/graphql',
+        process.env.FUEL_PROVIDER_URL || 'https://beta-4.fuel.network/graphql',
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,
