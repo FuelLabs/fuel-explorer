@@ -3,6 +3,7 @@
 @import 'tailwindcss/base' layer(tw-base);
 @import '@radix-ui/themes/styles.css' layer(radix);
 @import 'tailwindcss/components' layer(tw-components);
+@import '../components/Spinner/Spinner.css' layer(tw-components);
 @import 'tailwindcss/utilities' layer(tw-utilities);
 
 :root,
@@ -91,12 +92,36 @@
 .dark [data-accent-color],
 .dark-theme [data-accent-color] {
   --inverse: white;
+  --inverse-a1: var(--white-a1);
+  --inverse-a2: var(--white-a2);
+  --inverse-a3: var(--white-a3);
+  --inverse-a4: var(--white-a4);
+  --inverse-a5: var(--white-a5);
+  --inverse-a6: var(--white-a6);
+  --inverse-a7: var(--white-a7);
+  --inverse-a8: var(--white-a8);
+  --inverse-a9: var(--white-a9);
+  --inverse-a10: var(--white-a10);
+  --inverse-a11: var(--white-a11);
+  --inverse-a12: var(--white-a12);
   --color-brand: #00e182;
 }
 
 .light [data-accent-color],
 .light-theme [data-accent-color] {
   --inverse: black;
+  --inverse-a1: var(--black-a1);
+  --inverse-a2: var(--black-a2);
+  --inverse-a3: var(--black-a3);
+  --inverse-a4: var(--black-a4);
+  --inverse-a5: var(--black-a5);
+  --inverse-a6: var(--black-a6);
+  --inverse-a7: var(--black-a7);
+  --inverse-a8: var(--black-a8);
+  --inverse-a9: var(--black-a9);
+  --inverse-a10: var(--black-a10);
+  --inverse-a11: var(--black-a11);
+  --inverse-a12: var(--black-a12);
   --color-brand: var(--grass-9);
 }
 

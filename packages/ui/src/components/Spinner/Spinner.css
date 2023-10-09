@@ -33,7 +33,7 @@
 }
 .fuel-Spinner__circle-bg {
   fill: transparent;
-  stroke: var(--black-a3);
+  stroke: var(--inverse-a3);
   stroke-width: calc(0.1 * var(--size));
   stroke-linecap: round;
   stroke-dasharray: var(--circumference);

@@ -63,10 +63,6 @@ fragment TransactionOutput on Output {
   ... on ContractOutput {
     inputIndex
   }
-  ... on MessageOutput {
-    recipient
-    amount
-  }
   ... on ChangeOutput {
     to
     amount

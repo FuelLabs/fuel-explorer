@@ -15,8 +15,11 @@ storybook
 **/storybook/**
 storybook-static
 **/storybook-static/**
+**/public/ui/**
+**/public/storybook/**
 .turbo
 pnpm-lock.yaml
 .next
 graphql.schema.json
-heml
+helm
+packages/graphql/src/schemas/*.graphql

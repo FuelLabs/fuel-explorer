@@ -15,7 +15,12 @@ export const Button = createComponent<ButtonProps, 'button'>({
   render: (_, props) => {
     const itemProps = useIconProps(props);
     const variantProps = useVariants(props);
-    return <RadixButton {...itemProps} {...variantProps} />;
+    return (
+      <RadixButton
+        {...(itemProps as RadixButtonProps)}
+        {...(variantProps as RadixButtonProps)}
+      />
+    );
   },
   defaultProps: {
     size: '2',
