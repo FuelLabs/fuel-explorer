@@ -7,26 +7,28 @@ import {
   BreadcrumbLink,
   Copyable,
   Icon,
+  Text,
 } from '@fuels/ui';
 import { IconHome } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import type { TransactionNode } from '../../types';
-
 type TxBreadcrumbProps = BreadcrumbProps & {
-  transaction: TransactionNode;
+  transactionId: string;
 };
 
-export function TxBreadcrumb({ transaction: tx, ...props }: TxBreadcrumbProps) {
+export function TxBreadcrumb({ transactionId, ...props }: TxBreadcrumbProps) {
   return (
-    <Breadcrumb {...props}>
+    <Breadcrumb {...props} className="flex items-center">
       <BreadcrumbLink asChild>
         <Link href="/">
           <Icon icon={IconHome} size={24} color="text-muted" />
         </Link>
       </BreadcrumbLink>
       <BreadcrumbItem>
-        <Copyable value={tx.id}>{tx.id}</Copyable>
+        <Text size={'6'} weight={'medium'} className="mr-2 color-current">
+          Transaction
+        </Text>
+        <Copyable value={transactionId}>{transactionId}</Copyable>
       </BreadcrumbItem>
     </Breadcrumb>
   );
