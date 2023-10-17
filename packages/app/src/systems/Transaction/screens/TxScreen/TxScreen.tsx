@@ -11,6 +11,7 @@ import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 import { TxBreadcrumb } from '../../component/TxBreadcrumb/TxBreadcrumb';
+import { TX_INTENT_MAP } from '../../component/TxIcon/TxIcon';
 import { TxInfo } from '../../component/TxInfo/TxInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
@@ -28,12 +29,15 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   return (
     <VStack gap="6" className="min-h-[75vh]">
       <TxBreadcrumb transactionId={tx.id} />
-      <Grid columns="6" gap={'6'}>
+      <Grid columns="6" gap="9">
         <Box className="col-span-2">
           <VStack>
             <TxInfo name={'Status'}>
-              <Badge color={'green'} size="1" variant="solid">
-                Success
+              <Badge
+                color={TX_INTENT_MAP[tx.statusType as string]}
+                variant="solid"
+              >
+                {tx.statusType}
               </Badge>
             </TxInfo>
             <TxInfo name={'Timestamp'} description={tx.time?.full}>
@@ -51,7 +55,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
         <Box className="col-span-4">
           <VStack>
             <VStack>
-              <Heading as="h2" size="5">
+              <Heading as="h2" size="5" className="leading-none">
                 Inputs
               </Heading>
               {hasInputs ? (
@@ -71,10 +75,10 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
               )}
             </VStack>
             <Flex justify="center">
-              <Icon icon={IconArrowDown} size={40} />
+              <Icon icon={IconArrowDown} size={30} color="text-muted" />
             </Flex>
             <VStack>
-              <Heading as="h2" size="5">
+              <Heading as="h2" size="5" className="leading-none">
                 Outputs
               </Heading>
               {hasOutputs ? (

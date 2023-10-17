@@ -1,6 +1,5 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type { GroupedOutput } from '@fuel-explorer/graphql';
-import { assets, resolveIconPath } from '@fuels/assets';
 import {
   Card,
   Copyable,
@@ -16,10 +15,10 @@ import { bn } from 'fuels';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { tv } from 'tailwind-variants';
+import { findAssetById } from '~/systems/Core/utils/asset';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
-const ASSET_LIST = resolveIconPath('/assets', assets);
 const ICON_SIZE = 36;
 
 export type TxOutputProps = CardProps & {
@@ -34,7 +33,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     const assetId = output.assetId;
     const amount = output.totalAmount;
     const asset = useMemo(() => {
-      const found = ASSET_LIST.find((asset) => asset.assetId === assetId);
+      const found = findAssetById(assetId);
       return {
         assetId,
         name: found?.name ?? 'Unknown Asset',

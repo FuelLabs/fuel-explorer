@@ -1,4 +1,3 @@
-import { assets } from '@fuels/assets';
 import type { Meta, StoryObj } from '@storybook/react';
 import { bn } from 'fuels';
 
@@ -17,7 +16,7 @@ export const Usage: Story = {
     <TxAssetItem
       amountIn={bn(1)}
       amountOut={bn(1)}
-      assetId={assets[0].assetId}
+      assetId="0x0000000000000000000000000000000000000000"
       className="w-[300px]"
     />
   ),
