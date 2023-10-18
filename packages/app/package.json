@@ -34,6 +34,7 @@
     "next": "13.5.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-json-view-lite": "1.1.0",
     "tai64": "1.0.0",
     "tailwind-merge": "1.14.0",
     "tailwind-variants": "0.1.14",

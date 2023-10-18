@@ -196,6 +196,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-json-view-lite:
+        specifier: 1.1.0
+        version: 1.1.0(react@18.2.0)
       tai64:
         specifier: 1.0.0
         version: 1.0.0
@@ -17937,6 +17940,18 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+
+  /react-json-view-lite@1.1.0(react@18.2.0):
+    resolution: {integrity: sha512-90cq69xHA4N3ZxZpIVcsZzWPBWuaEbI9BetfNWp/kDcqSX2gZmpFtTrmrcmmIzcN2WUudxpUb4k/DcjsxjjcVA==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '*'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-refresh@0.11.0:
     resolution: {integrity: sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==}

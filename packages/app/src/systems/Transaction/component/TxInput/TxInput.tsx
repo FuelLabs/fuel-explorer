@@ -15,9 +15,9 @@ import type { CardProps } from '@fuels/ui';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { tv } from 'tailwind-variants';
-import { findAssetById } from '~/systems/Core/utils/asset';
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -35,15 +35,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
     const assetId = input.assetId;
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
-    const asset = useMemo(() => {
-      const found = findAssetById(assetId);
-      return {
-        assetId,
-        name: found?.name ?? 'Unknown Asset',
-        symbol: found?.symbol ?? null,
-        icon: found?.icon ?? null,
-      };
-    }, [assetId]);
+    const asset = useAsset(assetId);
 
     if (!asset) return null;
     return (
