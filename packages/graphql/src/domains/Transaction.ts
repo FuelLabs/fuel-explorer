@@ -1,4 +1,4 @@
-import { bn } from '@fuel-ts/math';
+import { Provider, getTransactionSummary } from 'fuels';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
@@ -10,12 +10,12 @@ import { OutputDomain } from './Output';
 export class TransactionDomain {
   constructor(private transaction: TransactionItemFragment) {}
 
-  static createResolver(key: string) {
+  static createResolver(key: string, func?: string) {
     return {
       [key]: {
-        resolve(transaction: TransactionItemFragment) {
+        async resolve(transaction: TransactionItemFragment) {
           const domain = new TransactionDomain(transaction);
-          return domain[key] ?? null;
+          return func ? domain[func]() : domain[key] ?? null;
         },
       },
     };
@@ -23,25 +23,33 @@ export class TransactionDomain {
 
   static createResolvers() {
     return {
-      ...TransactionDomain.createResolver('title'),
+      ...TransactionDomain.createResolver('title', 'getTitle'),
+      ...TransactionDomain.createResolver(
+        'sdkTransaction',
+        'getSdkTransaction',
+      ),
       ...TransactionDomain.createResolver('time'),
       ...TransactionDomain.createResolver('blockHeight'),
       ...TransactionDomain.createResolver('statusType'),
       ...TransactionDomain.createResolver('totalAssets'),
       ...TransactionDomain.createResolver('totalOperations'),
       ...TransactionDomain.createResolver('totalAccounts'),
-      ...TransactionDomain.createResolver('gasUsed'),
+      ...TransactionDomain.createResolver('gasUsed', 'getGasUsed'),
       ...TransactionDomain.createResolver('accountsInvolved'),
       ...TransactionDomain.createResolver('groupedInputs'),
       ...TransactionDomain.createResolver('groupedOutputs'),
     };
   }
 
-  get title() {
+  async getTitle() {
     const { transaction } = this;
     if (transaction.isMint) return 'Mint';
     if (transaction.isCreate) return 'Contract Created';
     return 'ContractCall';
+  }
+
+  async getSdkTransaction() {
+    return this._getTx();
   }
 
   get time() {
@@ -97,14 +105,9 @@ export class TransactionDomain {
     return this._getAccounts().length;
   }
 
-  get gasUsed() {
-    const { transaction } = this;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const receipts = (transaction.receipts ?? []) as any[];
-    const gasUsed = receipts.reduce((acc, receipt) => {
-      return acc.add(bn(receipt.gasUsed));
-    }, bn(0));
-    return gasUsed.toString();
+  async getGasUsed() {
+    const tx = await this._getTx();
+    return tx.gasUsed.toString();
   }
 
   get accountsInvolved() {
@@ -123,6 +126,13 @@ export class TransactionDomain {
     const { transaction } = this;
     const domain = new OutputDomain(transaction.outputs ?? []);
     return domain.groupedOutputs;
+  }
+
+  private async _getTx() {
+    const provider = await Provider.create(process.env.FUEL_PROVIDER_URL!);
+    const txId = this.transaction.id;
+    const txResult = await getTransactionSummary({ id: txId, provider });
+    return txResult;
   }
 
   private _getAccounts() {

@@ -5,7 +5,16 @@ import type {
   GroupedOutput,
   Maybe,
 } from '@fuel-explorer/graphql';
-import { Badge, Box, Flex, Grid, Heading, Icon, VStack } from '@fuels/ui';
+import {
+  Badge,
+  Box,
+  Flex,
+  Grid,
+  HStack,
+  Heading,
+  Icon,
+  VStack,
+} from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
@@ -26,20 +35,29 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
 
+  console.log(tx.sdkTransaction.operations);
+
   return (
-    <VStack gap="6" className="min-h-[75vh]">
+    <VStack gap="9" className="min-h-[75vh]">
       <TxBreadcrumb transactionId={tx.id} />
       <Grid columns="6" gap="9">
         <Box className="col-span-2">
           <VStack>
-            <TxInfo name={'Status'}>
-              <Badge
-                color={TX_INTENT_MAP[tx.statusType as string]}
-                variant="solid"
-              >
-                {tx.statusType}
-              </Badge>
-            </TxInfo>
+            <HStack>
+              <TxInfo name={'Status'} className="flex-1">
+                <Badge
+                  color={TX_INTENT_MAP[tx.statusType as string]}
+                  variant="solid"
+                >
+                  {tx.statusType}
+                </Badge>
+              </TxInfo>
+              <TxInfo name={'Type'} className="flex-1">
+                <Badge color="gray" variant="solid">
+                  {tx.sdkTransaction?.type}
+                </Badge>
+              </TxInfo>
+            </HStack>
             <TxInfo name={'Timestamp'} description={tx.time?.full}>
               {tx.time?.fromNow}
             </TxInfo>

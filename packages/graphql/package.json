@@ -9,7 +9,7 @@
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
   "scripts": {
-    "build": "run-s codegen:fuel codegen build:lib",
+    "build": "run-s build:lib codegen:fuel codegen",
     "build:lib": "tsup --dts",
     "dev": "pnpm build && node dist/index.js",
     "start": "pnpm dev",
@@ -32,11 +32,13 @@
     "dotenv": "16.3.1",
     "esbuild": "0.19.5",
     "express": "^4.18.2",
+    "fuels": "0.63.0",
     "graphql": "16.8.1",
     "graphql-http": "^1.22.0",
     "graphql-playground-middleware-express": "^1.7.23",
     "graphql-request": "6.1.0",
     "graphql-tag": "2.12.6",
+    "graphql-type-json": "0.3.2",
     "lodash": "^4.17.21",
     "tai64": "1.0.0",
     "typescript": "^5.2.2"

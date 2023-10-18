@@ -106,6 +106,7 @@ fragment TransactionItem on Transaction {
   __typename
   id
   title
+  sdkTransaction
   time {
     fromNow
     full

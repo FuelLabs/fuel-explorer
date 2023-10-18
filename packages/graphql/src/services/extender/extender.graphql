@@ -1,3 +1,6 @@
+scalar JSON
+scalar JSONObject
+
 extend type TransactionConnection {
   # custom
   tokens: [Token]
@@ -85,4 +88,5 @@ extend type Transaction {
   accountsInvolved: [TransactionAccount]
   groupedInputs: [GroupedInput]
   groupedOutputs: [GroupedOutput]
+  sdkTransaction: JSONObject
 }
