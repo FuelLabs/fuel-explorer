@@ -9,7 +9,7 @@
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
   "scripts": {
-    "build": "run-s build:lib codegen:fuel codegen",
+    "build": "run-s codegen:fuel codegen build:lib",
     "build:lib": "tsup --dts",
     "dev": "pnpm build && node dist/index.js",
     "start": "pnpm dev",
