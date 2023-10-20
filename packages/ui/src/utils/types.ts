@@ -15,7 +15,7 @@ export type RadixColors =
   | 'tomato'
   | 'red'
   | 'ruby'
-  | 'crimson'
+  | 'red'
   | 'pink'
   | 'plum'
   | 'purple'

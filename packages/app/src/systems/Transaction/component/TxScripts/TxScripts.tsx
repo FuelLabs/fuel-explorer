@@ -71,7 +71,7 @@ function TxScriptRow({ item }: TxScriptRowProps) {
         <HStack align="center">
           <Badge
             size="2"
-            color={isDanger ? 'crimson' : 'gray'}
+            color={isDanger ? 'red' : 'gray'}
             variant={isDanger ? 'outline' : 'surface'}
           >
             {item.receiptType}

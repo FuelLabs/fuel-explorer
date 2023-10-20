@@ -42,7 +42,7 @@ export const Colors: Story = {
       <Button color="orange" variant="ghost">
         Edit profile
       </Button>
-      <Button color="crimson" variant="ghost">
+      <Button color="red" variant="ghost">
         Edit profile
       </Button>
     </HStack>
