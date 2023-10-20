@@ -8,24 +8,25 @@ import type {
 import {
   Badge,
   Box,
+  EntityItem,
   Flex,
   Grid,
-  HStack,
   Heading,
   Icon,
   VStack,
+  Text,
 } from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 import { TxBreadcrumb } from '../../component/TxBreadcrumb/TxBreadcrumb';
-import { TX_INTENT_MAP } from '../../component/TxIcon/TxIcon';
+import { TX_INTENT_MAP, TxIcon } from '../../component/TxIcon/TxIcon';
 import { TxInfo } from '../../component/TxInfo/TxInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
 import { TxScripts } from '../../component/TxScripts/TxScripts';
-import type { TransactionNode } from '../../types';
+import type { TransactionNode, TxStatus } from '../../types';
 
 type TxScreenProps = {
   transaction?: Maybe<TransactionNode>;
@@ -35,6 +36,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   if (!tx) return null;
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
+  const title = tx.title as string;
 
   return (
     <VStack gap="9" className="min-h-[75vh]">
@@ -42,25 +44,33 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
       <Grid columns="6" gap="9">
         <Box className="col-span-2">
           <VStack>
-            <HStack>
-              <TxInfo name={'Status'} className="flex-1">
-                <Badge
-                  color={TX_INTENT_MAP[tx.statusType as string]}
-                  variant="solid"
-                >
-                  {tx.statusType}
-                </Badge>
-              </TxInfo>
-              <TxInfo name={'Type'} className="flex-1">
-                <Badge color="gray" variant="solid">
-                  {tx.title}
-                </Badge>
-              </TxInfo>
-            </HStack>
+            <TxInfo>
+              <EntityItem>
+                <EntityItem.Slot>
+                  <TxIcon
+                    status={tx.statusType as TxStatus}
+                    type={title}
+                    size="lg"
+                  />
+                </EntityItem.Slot>
+                <EntityItem.Info title={title}>
+                  <Text as="span" className="text-muted">
+                    <Badge
+                      color={TX_INTENT_MAP[tx.statusType as string]}
+                      variant="ghost"
+                    >
+                      {tx.statusType}
+                    </Badge>
+                  </Text>
+                </EntityItem.Info>
+              </EntityItem>
+            </TxInfo>
             <TxInfo name={'Timestamp'} description={tx.time?.full}>
               {tx.time?.fromNow}
             </TxInfo>
-            <TxInfo name={'Block'}>#{tx.blockHeight}</TxInfo>
+            {tx.blockHeight && (
+              <TxInfo name={'Block'}>#{tx.blockHeight}</TxInfo>
+            )}
             <TxInfo
               name={'Gas spent'}
               description={`Gas limit: ${bn(tx.gasLimit).format()}`}

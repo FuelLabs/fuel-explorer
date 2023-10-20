@@ -8,12 +8,6 @@ extend type TransactionConnection {
   accounts: [Account]
 }
 
-enum TransactionTitle {
-  ContractCall
-  Mint
-  Burn
-}
-
 enum TransactionStatusType {
   Success
   Failure
@@ -77,7 +71,7 @@ type TransactionAccount {
 }
 
 extend type Transaction {
-  title: TransactionTitle
+  title: String
   time: ParsedTime
   blockHeight: String
   statusType: TransactionStatusType

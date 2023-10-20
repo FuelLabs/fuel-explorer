@@ -58,6 +58,9 @@ function TxScriptRow({ item }: TxScriptRowProps) {
   const classes = styles();
   const ctx = useRadixTheme();
   const amount = bn(item.amount);
+  const isDanger =
+    item.receiptType === 'PANIC' ||
+    (item.receiptType === 'SCRIPT_RESULT' && item.result === '2');
 
   return (
     <Card className="py-0 gap-0">
@@ -66,7 +69,11 @@ function TxScriptRow({ item }: TxScriptRowProps) {
         data-state={opened ? 'opened' : 'closed'}
       >
         <HStack align="center">
-          <Badge color="gray" size="2">
+          <Badge
+            size="2"
+            color={isDanger ? 'crimson' : 'gray'}
+            variant={isDanger ? 'outline' : 'surface'}
+          >
             {item.receiptType}
           </Badge>
           <div className="flex-1">
@@ -141,7 +148,7 @@ function TxScriptsContent({ tx, opened, setOpened }: TxScriptsContentProps) {
     );
   }
 
-  if (!opened && receipts.length > 1) {
+  if (!opened && receipts.length > 3) {
     return (
       <>
         <TxScriptRow item={receipts[0]} />
@@ -158,7 +165,7 @@ function TxScriptsContent({ tx, opened, setOpened }: TxScriptsContentProps) {
           </Button>
           <Box className={classes.lines()} />
         </HStack>
-        <TxScriptRow item={receipts[1]} />
+        <TxScriptRow item={receipts[receipts.length - 1]} />
       </>
     );
   }

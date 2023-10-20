@@ -16,7 +16,7 @@ export type EntityItemProps = Omit<HStackProps, 'size'> &
 export type EntityItemSlotProps = BoxProps;
 export type EntityItemInfo = BoxProps & {
   title: ReactNode;
-  id: string;
+  id?: string;
   shortId?: boolean;
   idPrefix?: ReactNode;
 };
@@ -50,10 +50,12 @@ export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
         <Text as="p" className={classes.name()}>
           {title}
         </Text>
-        <Copyable className={classes.copyable()} value={id}>
-          {idPrefix}
-          {shortId ? shortAddress(id) : id}
-        </Copyable>
+        {id && (
+          <Copyable className={classes.copyable()} value={id}>
+            {idPrefix}
+            {shortId ? shortAddress(id) : id}
+          </Copyable>
+        )}
         {children}
       </Comp>
     );
