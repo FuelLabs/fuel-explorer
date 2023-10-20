@@ -39,6 +39,18 @@ module.exports = {
       { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
     ],
     'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+    'import/order': [
+      'error',
+      {
+        groups: [
+          ['builtin', 'external', 'internal'],
+          ['parent'],
+          ['sibling', 'index'],
+        ],
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc' },
+      },
+    ],
     'no-html-link-for-pages': 'off',
     'react-hooks/rules-of-hooks': 'off',
     'react/jsx-sort-props': [

@@ -24,6 +24,7 @@ import { TX_INTENT_MAP } from '../../component/TxIcon/TxIcon';
 import { TxInfo } from '../../component/TxInfo/TxInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
+import { TxScripts } from '../../component/TxScripts/TxScripts';
 import type { TransactionNode } from '../../types';
 
 type TxScreenProps = {
@@ -34,8 +35,6 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   if (!tx) return null;
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
-
-  console.log(tx.sdkTransaction.operations);
 
   return (
     <VStack gap="9" className="min-h-[75vh]">
@@ -54,7 +53,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
               </TxInfo>
               <TxInfo name={'Type'} className="flex-1">
                 <Badge color="gray" variant="solid">
-                  {tx.sdkTransaction?.type}
+                  {tx.title}
                 </Badge>
               </TxInfo>
             </HStack>
@@ -84,7 +83,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
                   />
                 ))
               ) : (
-                <EmptyCard>
+                <EmptyCard hideImage>
                   <EmptyCard.Title>No Inputs</EmptyCard.Title>
                   <EmptyCard.Description>
                     This transaction does not have any inputs.
@@ -92,6 +91,10 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
                 </EmptyCard>
               )}
             </VStack>
+            <Flex justify="center">
+              <Icon icon={IconArrowDown} size={30} color="text-muted" />
+            </Flex>
+            <TxScripts tx={tx} />
             <Flex justify="center">
               <Icon icon={IconArrowDown} size={30} color="text-muted" />
             </Flex>
@@ -107,7 +110,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
                   />
                 ))
               ) : (
-                <EmptyCard>
+                <EmptyCard hideImage>
                   <EmptyCard.Title>No Outputs</EmptyCard.Title>
                   <EmptyCard.Description>
                     This transaction does not have any outputs.

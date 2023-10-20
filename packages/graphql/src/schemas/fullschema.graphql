@@ -437,14 +437,8 @@ type InputMessage {
   witnessIndex: Int!
 }
 
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
 scalar JSON
 
-"""
-The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
 scalar JSONObject
 
 type MerkleProof {
@@ -794,7 +788,6 @@ type Transaction {
   salt: Salt
   script: HexString
   scriptData: HexString
-  sdkTransaction: JSONObject
   status: TransactionStatus
   statusType: TransactionStatusType
   storageSlots: [HexString!]
