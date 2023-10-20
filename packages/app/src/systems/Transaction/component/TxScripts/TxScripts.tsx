@@ -79,7 +79,7 @@ function TxScriptRow({ item }: TxScriptRowProps) {
           <div className="flex-1">
             {item.param1 && (
               <Code className="flex-1 bg-transparent text-muted" color="gray">
-                {item.param1}()
+                Method: {bn(item.param1).toHex()}
               </Code>
             )}
           </div>
