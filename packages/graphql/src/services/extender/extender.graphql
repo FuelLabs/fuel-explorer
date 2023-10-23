@@ -1,6 +1,3 @@
-scalar JSON
-scalar JSONObject
-
 extend type TransactionConnection {
   # custom
   tokens: [Token]

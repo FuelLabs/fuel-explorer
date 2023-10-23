@@ -21,38 +21,24 @@ type Balance {
 }
 
 type BalanceConnection {
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [BalanceEdge!]!
-  """
-  A list of nodes.
-  """
+  """A list of nodes."""
   nodes: [Balance!]!
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type BalanceEdge {
-  """
-  A cursor for use in pagination
-  """
+  """A cursor for use in pagination"""
   cursor: String!
-  """
-  The item at the end of the edge
-  """
+  """The item at the end of the edge"""
   node: Balance!
 }
 
 input BalanceFilterInput {
-  """
-  Filter coins based on the `owner` field
-  """
+  """Filter coins based on the `owner` field"""
   owner: Address!
 }
 
@@ -64,31 +50,19 @@ type Block {
 }
 
 type BlockConnection {
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [BlockEdge!]!
-  """
-  A list of nodes.
-  """
+  """A list of nodes."""
   nodes: [Block!]!
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type BlockEdge {
-  """
-  A cursor for use in pagination
-  """
+  """A cursor for use in pagination"""
   cursor: String!
-  """
-  The item at the end of the edge
-  """
+  """The item at the end of the edge"""
   node: Block!
 }
 
@@ -114,56 +88,36 @@ type ChangeOutput {
 type Coin {
   amount: U64!
   assetId: AssetId!
-  """
-  TxPointer - the height of the block this coin was created in
-  """
+  """TxPointer - the height of the block this coin was created in"""
   blockCreated: U32!
   maturity: U32!
   owner: Address!
-  """
-  TxPointer - the index of the transaction that created this coin
-  """
+  """TxPointer - the index of the transaction that created this coin"""
   txCreatedIdx: U64!
   utxoId: UtxoId!
 }
 
 type CoinConnection {
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [CoinEdge!]!
-  """
-  A list of nodes.
-  """
+  """A list of nodes."""
   nodes: [Coin!]!
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type CoinEdge {
-  """
-  A cursor for use in pagination
-  """
+  """A cursor for use in pagination"""
   cursor: String!
-  """
-  The item at the end of the edge
-  """
+  """The item at the end of the edge"""
   node: Coin!
 }
 
 input CoinFilterInput {
-  """
-  Returns coins only with `asset_id`.
-  """
+  """Returns coins only with `asset_id`."""
   assetId: AssetId
-  """
-  Returns coins owned by the `owner`.
-  """
+  """Returns coins owned by the `owner`."""
   owner: Address!
 }
 
@@ -173,9 +127,7 @@ type CoinOutput {
   to: Address!
 }
 
-"""
-The schema analog of the [`coins::CoinType`].
-"""
+"""The schema analog of the [`coins::CoinType`]."""
 union CoinType = Coin | MessageCoin
 
 union Consensus = Genesis | PoAConsensus
@@ -211,38 +163,24 @@ type ContractBalance {
 }
 
 type ContractBalanceConnection {
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [ContractBalanceEdge!]!
-  """
-  A list of nodes.
-  """
+  """A list of nodes."""
   nodes: [ContractBalance!]!
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type ContractBalanceEdge {
-  """
-  A cursor for use in pagination
-  """
+  """A cursor for use in pagination"""
   cursor: String!
-  """
-  The item at the end of the edge
-  """
+  """The item at the end of the edge"""
   node: ContractBalance!
 }
 
 input ContractBalanceFilterInput {
-  """
-  Filter assets based on the `contractId` field
-  """
+  """Filter assets based on the `contractId` field"""
   contract: ContractId!
 }
 
@@ -265,13 +203,9 @@ type DependentCost {
 }
 
 input ExcludeInput {
-  """
-  Messages to exclude from the selection.
-  """
+  """Messages to exclude from the selection."""
   messages: [Nonce!]!
-  """
-  Utxos to exclude from the selection.
-  """
+  """Utxos to exclude from the selection."""
   utxos: [UtxoId!]!
 }
 
@@ -393,17 +327,13 @@ type Genesis {
   rules of block validity, etc.
   """
   chainConfigHash: Bytes32!
-  """
-  The Binary Merkle Tree root of all genesis coins.
-  """
+  """The Binary Merkle Tree root of all genesis coins."""
   coinsRoot: Bytes32!
   """
   The Binary Merkle Tree root of state, balances, contracts code hash of each contract.
   """
   contractsRoot: Bytes32!
-  """
-  The Binary Merkle Tree root of all genesis messages.
-  """
+  """The Binary Merkle Tree root of all genesis messages."""
   messagesRoot: Bytes32!
 }
 
@@ -446,45 +376,27 @@ enum GroupedOutputType {
 }
 
 type Header {
-  """
-  Hash of the application header.
-  """
+  """Hash of the application header."""
   applicationHash: Bytes32!
   """
   The layer 1 height of messages and events to include since the last layer 1 block number.
   """
   daHeight: U64!
-  """
-  Fuel block height.
-  """
+  """Fuel block height."""
   height: U32!
-  """
-  Hash of the header
-  """
+  """Hash of the header"""
   id: BlockId!
-  """
-  Number of message receipts in this block.
-  """
+  """Number of message receipts in this block."""
   messageReceiptCount: U64!
-  """
-  Merkle root of message receipts in this block.
-  """
+  """Merkle root of message receipts in this block."""
   messageReceiptRoot: Bytes32!
-  """
-  Merkle root of all previous block header hashes.
-  """
+  """Merkle root of all previous block header hashes."""
   prevRoot: Bytes32!
-  """
-  The block producer time.
-  """
+  """The block producer time."""
   time: Tai64Timestamp!
-  """
-  Number of transactions in this block.
-  """
+  """Number of transactions in this block."""
   transactionsCount: U64!
-  """
-  Merkle root of transactions.
-  """
+  """Merkle root of transactions."""
   transactionsRoot: Bytes32!
 }
 
@@ -553,31 +465,19 @@ type MessageCoin {
 }
 
 type MessageConnection {
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [MessageEdge!]!
-  """
-  A list of nodes.
-  """
+  """A list of nodes."""
   nodes: [Message!]!
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type MessageEdge {
-  """
-  A cursor for use in pagination
-  """
+  """A cursor for use in pagination"""
   cursor: String!
-  """
-  The item at the end of the edge
-  """
+  """The item at the end of the edge"""
   node: Message!
 }
 
@@ -619,7 +519,7 @@ type Mutation {
   produceBlocks(blocksToProduce: U64!, startTimestamp: Tai64Timestamp): U32!
   """
   Submits transaction to the `TxPool`.
-
+  
   Returns submitted transaction if the transaction is included in the `TxPool` without problems.
   """
   submit(tx: HexString!): Transaction!
@@ -636,32 +536,17 @@ type NodeInfo {
 
 scalar Nonce
 
-union Output =
-    ChangeOutput
-  | CoinOutput
-  | ContractCreated
-  | ContractOutput
-  | VariableOutput
+union Output = ChangeOutput | CoinOutput | ContractCreated | ContractOutput | VariableOutput
 
-"""
-Information about pagination in a connection
-"""
+"""Information about pagination in a connection"""
 type PageInfo {
-  """
-  When paginating forwards, the cursor to continue.
-  """
+  """When paginating forwards, the cursor to continue."""
   endCursor: String
-  """
-  When paginating forwards, are there more items?
-  """
+  """When paginating forwards, are there more items?"""
   hasNextPage: Boolean!
-  """
-  When paginating backwards, are there more items?
-  """
+  """When paginating backwards, are there more items?"""
   hasPreviousPage: Boolean!
-  """
-  When paginating backwards, the cursor to continue.
-  """
+  """When paginating backwards, the cursor to continue."""
   startCursor: String
 }
 
@@ -673,9 +558,7 @@ type ParsedTime {
 }
 
 type PoAConsensus {
-  """
-  Gets the signature of the block produced by `PoA` consensus.
-  """
+  """Gets the signature of the block produced by `PoA` consensus."""
   signature: Signature!
 }
 
@@ -687,73 +570,45 @@ type ProgramState {
 type Query {
   accounts(addresses: [String]!): [Account!]!
   balance(
-    """
-    asset_id of the coin
-    """
+    """asset_id of the coin"""
     assetId: AssetId!
-    """
-    address of the owner
-    """
+    """address of the owner"""
     owner: Address!
   ): Balance!
-  balances(
-    after: String
-    before: String
-    filter: BalanceFilterInput!
-    first: Int
-    last: Int
-  ): BalanceConnection!
+  balances(after: String, before: String, filter: BalanceFilterInput!, first: Int, last: Int): BalanceConnection!
   block(
-    """
-    Height of the block
-    """
+    """Height of the block"""
     height: U64
-    """
-    ID of the block
-    """
+    """ID of the block"""
     id: BlockId
   ): Block
   blocks(after: String, before: String, first: Int, last: Int): BlockConnection!
   chain: ChainInfo!
-  """
-  Gets the coin by `utxo_id`.
-  """
+  """Gets the coin by `utxo_id`."""
   coin(
-    """
-    The ID of the coin
-    """
+    """The ID of the coin"""
     utxoId: UtxoId!
   ): Coin
   """
   Gets all unspent coins of some `owner` maybe filtered with by `asset_id` per page.
   """
-  coins(
-    after: String
-    before: String
-    filter: CoinFilterInput!
-    first: Int
-    last: Int
-  ): CoinConnection!
+  coins(after: String, before: String, filter: CoinFilterInput!, first: Int, last: Int): CoinConnection!
   """
   For each `query_per_asset`, get some spendable coins(of asset specified by the query) owned by
   `owner` that add up at least the query amount. The returned coins can be spent.
   The number of coins is optimized to prevent dust accumulation.
-
+  
   The query supports excluding and maximum the number of coins.
-
+  
   Returns:
   The list of spendable coins per asset from the query. The length of the result is
   the same as the length of `query_per_asset`. The ordering of assets and `query_per_asset`
   is the same.
   """
   coinsToSpend(
-    """
-    The excluded coins from the selection.
-    """
+    """The excluded coins from the selection."""
     excludedIds: ExcludeInput
-    """
-    The `Address` of the coins owner.
-    """
+    """The `Address` of the coins owner."""
     owner: Address!
     """
     The list of requested assets` coins with asset ids, `target` amount the user wants to reach, and the `max` number of coins in the selection. Several entries with the same asset id are not allowed.
@@ -761,65 +616,33 @@ type Query {
     queryPerAsset: [SpendQueryElementInput!]!
   ): [[CoinType!]!]!
   contract(
-    """
-    ID of the Contract
-    """
+    """ID of the Contract"""
     id: ContractId!
   ): Contract
   contractBalance(asset: AssetId!, contract: ContractId!): ContractBalance!
-  contractBalances(
-    after: String
-    before: String
-    filter: ContractBalanceFilterInput!
-    first: Int
-    last: Int
-  ): ContractBalanceConnection!
-  """
-  Estimate the predicate gas for the provided transaction
-  """
+  contractBalances(after: String, before: String, filter: ContractBalanceFilterInput!, first: Int, last: Int): ContractBalanceConnection!
+  """Estimate the predicate gas for the provided transaction"""
   estimatePredicates(tx: HexString!): Transaction!
-  """
-  Returns true when the GraphQL API is serving requests.
-  """
+  """Returns true when the GraphQL API is serving requests."""
   health: Boolean!
-  messageProof(
-    commitBlockHeight: U32
-    commitBlockId: BlockId
-    messageId: MessageId!
-    transactionId: TransactionId!
-  ): MessageProof
+  messageProof(commitBlockHeight: U32, commitBlockId: BlockId, messageId: MessageId!, transactionId: TransactionId!): MessageProof
   messageStatus(nonce: Nonce!): MessageStatus!
   messages(
     after: String
     before: String
     first: Int
     last: Int
-    """
-    address of the owner
-    """
+    """address of the owner"""
     owner: Address
   ): MessageConnection!
   nodeInfo: NodeInfo!
   tokens(assetsId: [String]!): [Token!]!
   transaction(
-    """
-    The ID of the transaction
-    """
+    """The ID of the transaction"""
     id: TransactionId!
   ): Transaction
-  transactions(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): TransactionConnection!
-  transactionsByOwner(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    owner: Address!
-  ): TransactionConnection!
+  transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
+  transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
 }
 
 type Receipt {
@@ -880,17 +703,11 @@ scalar Salt
 scalar Signature
 
 input SpendQueryElementInput {
-  """
-  Target amount for the query.
-  """
+  """Target amount for the query."""
   amount: U64!
-  """
-  Identifier of the asset to spend.
-  """
+  """Identifier of the asset to spend."""
   assetId: AssetId!
-  """
-  The maximum number of currencies for selection.
-  """
+  """The maximum number of currencies for selection."""
   max: U64
 }
 
@@ -909,18 +726,16 @@ type Subscription {
   or [`TransactionStatus::Failed`] the stream will return that and end immediately.
   If the current status is [`TransactionStatus::Submitted`] this will be returned
   and the stream will wait for a future update.
-
+  
   This stream will wait forever so it's advised to use within a timeout.
-
+  
   It is possible for the stream to miss an update if it is polled slower
   then the updates arrive. In such a case the stream will close without
   a status. If this occurs the stream can simply be restarted to return
   the latest status.
   """
   statusChange(
-    """
-    The ID of the transaction
-    """
+    """The ID of the transaction"""
     id: TransactionId!
   ): TransactionStatus!
   """
@@ -966,9 +781,7 @@ type Transaction {
   isScript: Boolean!
   maturity: U32
   outputs: [Output!]!
-  """
-  Return the transaction bytes using canonical encoding
-  """
+  """Return the transaction bytes using canonical encoding"""
   rawPayload: HexString!
   receipts: [Receipt!]
   receiptsRoot: Bytes32
@@ -1000,42 +813,26 @@ enum TransactionAccountType {
 
 type TransactionConnection {
   accounts: [Account]
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [TransactionEdge!]!
-  """
-  A list of nodes.
-  """
+  """A list of nodes."""
   nodes: [Transaction!]!
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
   tokens: [Token]
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type TransactionEdge {
-  """
-  A cursor for use in pagination
-  """
+  """A cursor for use in pagination"""
   cursor: String!
-  """
-  The item at the end of the edge
-  """
+  """The item at the end of the edge"""
   node: Transaction!
 }
 
 scalar TransactionId
 
-union TransactionStatus =
-    FailureStatus
-  | SqueezedOutStatus
-  | SubmittedStatus
-  | SuccessStatus
+union TransactionStatus = FailureStatus | SqueezedOutStatus | SubmittedStatus | SuccessStatus
 
 enum TransactionStatusType {
   Failure
