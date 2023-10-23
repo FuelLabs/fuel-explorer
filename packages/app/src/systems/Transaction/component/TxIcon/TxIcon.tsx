@@ -16,6 +16,7 @@ import { tv } from 'tailwind-variants';
 import type { TxIconType, TxStatus } from '../../types';
 
 const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
+  'Contract Created': IconCode,
   ContractCall: IconCode,
   Mint: IconCoins,
   Transfer: IconTransfer,

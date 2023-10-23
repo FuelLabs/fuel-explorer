@@ -22,7 +22,11 @@ export enum TxAccountTypeEnum {
 export type TxStatus = keyof typeof TxStatusEnum;
 export type TxType = keyof typeof TxTypeEnum;
 export type TxAccountType = keyof typeof TxAccountTypeEnum;
-export type TxIconType = TxType | TxAccountType | 'Message';
+export type TxIconType =
+  | TxType
+  | TxAccountType
+  | 'Message'
+  | 'Contract Created';
 
 export const TX_TYPES = Object.keys({ ...TxTypeEnum, ...TxAccountTypeEnum });
 export const TX_STATUS = Object.keys(TxStatusEnum);

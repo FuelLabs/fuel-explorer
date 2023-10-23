@@ -1,4 +1,3 @@
-import { resolveIconPath, assets } from '@fuels/assets';
 import type { CardProps } from '@fuels/ui';
 import { Text, Card, EntityItem, HStack, cx } from '@fuels/ui';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
@@ -6,6 +5,7 @@ import { bn } from 'fuels';
 import type { BN } from 'fuels';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { findAssetById } from '~/systems/Core/utils/asset';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -15,7 +15,6 @@ export type TxAssetItemProps = CardProps & {
   amountOut: BN;
 };
 
-const ASSET_LIST = resolveIconPath('/assets', assets);
 const ICON_SIZE = 40;
 
 export function TxAssetItem({
@@ -25,10 +24,7 @@ export function TxAssetItem({
   amountOut,
   ...props
 }: TxAssetItemProps) {
-  const asset = useMemo(
-    () => ASSET_LIST.find((i) => i.assetId === assetId),
-    [assetId],
-  );
+  const asset = useMemo(() => findAssetById(assetId), [assetId]);
   const assetName = asset?.name ?? 'Unknown';
   const assetSymbol = asset?.symbol ?? null;
   return (

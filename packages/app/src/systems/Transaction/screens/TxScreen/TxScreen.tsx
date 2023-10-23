@@ -5,16 +5,28 @@ import type {
   GroupedOutput,
   Maybe,
 } from '@fuel-explorer/graphql';
-import { Badge, Box, Flex, Grid, Heading, Icon, VStack } from '@fuels/ui';
+import {
+  Badge,
+  Box,
+  EntityItem,
+  Flex,
+  Grid,
+  Heading,
+  Icon,
+  VStack,
+  Text,
+} from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 import { TxBreadcrumb } from '../../component/TxBreadcrumb/TxBreadcrumb';
+import { TX_INTENT_MAP, TxIcon } from '../../component/TxIcon/TxIcon';
 import { TxInfo } from '../../component/TxInfo/TxInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
-import type { TransactionNode } from '../../types';
+import { TxScripts } from '../../component/TxScripts/TxScripts';
+import type { TransactionNode, TxStatus } from '../../types';
 
 type TxScreenProps = {
   transaction?: Maybe<TransactionNode>;
@@ -24,22 +36,41 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   if (!tx) return null;
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
+  const title = tx.title as string;
 
   return (
-    <VStack gap="6" className="min-h-[75vh]">
+    <VStack gap="9" className="min-h-[75vh]">
       <TxBreadcrumb transactionId={tx.id} />
-      <Grid columns="6" gap={'6'}>
+      <Grid columns="6" gap="9">
         <Box className="col-span-2">
           <VStack>
-            <TxInfo name={'Status'}>
-              <Badge color={'green'} size="1" variant="solid">
-                Success
-              </Badge>
+            <TxInfo>
+              <EntityItem>
+                <EntityItem.Slot>
+                  <TxIcon
+                    status={tx.statusType as TxStatus}
+                    type={title}
+                    size="lg"
+                  />
+                </EntityItem.Slot>
+                <EntityItem.Info title={title}>
+                  <Text as="span" className="text-muted">
+                    <Badge
+                      color={TX_INTENT_MAP[tx.statusType as string]}
+                      variant="ghost"
+                    >
+                      {tx.statusType}
+                    </Badge>
+                  </Text>
+                </EntityItem.Info>
+              </EntityItem>
             </TxInfo>
             <TxInfo name={'Timestamp'} description={tx.time?.full}>
               {tx.time?.fromNow}
             </TxInfo>
-            <TxInfo name={'Block'}>#{tx.blockHeight}</TxInfo>
+            {tx.blockHeight && (
+              <TxInfo name={'Block'}>#{tx.blockHeight}</TxInfo>
+            )}
             <TxInfo
               name={'Gas spent'}
               description={`Gas limit: ${bn(tx.gasLimit).format()}`}
@@ -51,7 +82,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
         <Box className="col-span-4">
           <VStack>
             <VStack>
-              <Heading as="h2" size="5">
+              <Heading as="h2" size="5" className="leading-none">
                 Inputs
               </Heading>
               {hasInputs ? (
@@ -62,7 +93,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
                   />
                 ))
               ) : (
-                <EmptyCard>
+                <EmptyCard hideImage>
                   <EmptyCard.Title>No Inputs</EmptyCard.Title>
                   <EmptyCard.Description>
                     This transaction does not have any inputs.
@@ -71,10 +102,14 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
               )}
             </VStack>
             <Flex justify="center">
-              <Icon icon={IconArrowDown} size={40} />
+              <Icon icon={IconArrowDown} size={30} color="text-muted" />
+            </Flex>
+            <TxScripts tx={tx} />
+            <Flex justify="center">
+              <Icon icon={IconArrowDown} size={30} color="text-muted" />
             </Flex>
             <VStack>
-              <Heading as="h2" size="5">
+              <Heading as="h2" size="5" className="leading-none">
                 Outputs
               </Heading>
               {hasOutputs ? (
@@ -85,7 +120,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
                   />
                 ))
               ) : (
-                <EmptyCard>
+                <EmptyCard hideImage>
                   <EmptyCard.Title>No Outputs</EmptyCard.Title>
                   <EmptyCard.Description>
                     This transaction does not have any outputs.

@@ -2,14 +2,21 @@ import '@fontsource-variable/inter/slnt.css';
 import '@fuels/ui/styles.css';
 import '../src/app/globals.css';
 
+import React from 'react';
 import { withThemeDecorator } from 'storybook-addon-theme';
 import { Preview } from '@storybook/react';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 import { Provider } from '../src/systems/Core/components/Provider';
+import { ReactNode } from 'react';
+
+function ThemeWrapper({ children }: { children: ReactNode }) {
+  const initTheme = localStorage.getItem('fuel-ui-theme') ?? 'dark';
+  return <Provider theme={initTheme}>{children}</Provider>;
+}
 
 const preview: Preview = {
-  decorators: [withThemeDecorator(Provider)],
+  decorators: [withThemeDecorator(ThemeWrapper)],
 
   parameters: {
     actions: {

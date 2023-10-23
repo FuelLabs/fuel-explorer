@@ -78,10 +78,10 @@
   --color-warning-muted: var(--yellow-8);
   --color-warning-contrast: var(--yellow-9-contrast);
   --color-warning-border: var(--yellow-6);
-  --color-error: var(--crimson-9);
-  --color-error-muted: var(--crimson-8);
-  --color-error-contrast: var(--crimson-9-contrast);
-  --color-error-border: var(--crimson-8);
+  --color-error: var(--red-9);
+  --color-error-muted: var(--red-8);
+  --color-error-contrast: var(--red-9-contrast);
+  --color-error-border: var(--red-8);
 
   /* card colors */
   --color-card-bg: var(--gray-a2);

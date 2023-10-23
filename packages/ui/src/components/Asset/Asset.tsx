@@ -170,7 +170,7 @@ export const AssetAmount = createComponent<AssetAmountProps, 'span'>({
     return (
       <Text
         {...props}
-        iconColor={isNegative ? 'text-crimson-8' : 'text-brand'}
+        iconColor={isNegative ? 'text-red-8' : 'text-brand'}
         {...(!hideIcon && {
           leftIcon: isNegative ? IconArrowDown : IconArrowUp,
         })}

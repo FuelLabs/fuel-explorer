@@ -39,7 +39,7 @@ export function Layout({ children, hero }: LayoutProps) {
             >
               Bridge
             </Nav.MenuItem>
-            <Nav.MenuItem isActive asChild>
+            <Nav.MenuItem isActive>
               <Link href="/">Explorer</Link>
             </Nav.MenuItem>
             <Nav.MenuItem

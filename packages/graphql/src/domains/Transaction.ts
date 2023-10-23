@@ -1,4 +1,4 @@
-import { bn } from '@fuel-ts/math';
+import { bn } from 'fuels';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
@@ -10,12 +10,12 @@ import { OutputDomain } from './Output';
 export class TransactionDomain {
   constructor(private transaction: TransactionItemFragment) {}
 
-  static createResolver(key: string) {
+  static createResolver(key: string, func?: string) {
     return {
       [key]: {
-        resolve(transaction: TransactionItemFragment) {
+        async resolve(transaction: TransactionItemFragment) {
           const domain = new TransactionDomain(transaction);
-          return domain[key] ?? null;
+          return func ? domain[func]() : domain[key] ?? null;
         },
       },
     };
@@ -23,7 +23,7 @@ export class TransactionDomain {
 
   static createResolvers() {
     return {
-      ...TransactionDomain.createResolver('title'),
+      ...TransactionDomain.createResolver('title', 'getTitle'),
       ...TransactionDomain.createResolver('time'),
       ...TransactionDomain.createResolver('blockHeight'),
       ...TransactionDomain.createResolver('statusType'),
@@ -37,7 +37,7 @@ export class TransactionDomain {
     };
   }
 
-  get title() {
+  async getTitle() {
     const { transaction } = this;
     if (transaction.isMint) return 'Mint';
     if (transaction.isCreate) return 'Contract Created';

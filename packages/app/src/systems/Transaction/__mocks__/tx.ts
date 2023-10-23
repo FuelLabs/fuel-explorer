@@ -4,7 +4,6 @@ import {
   GroupedOutputType,
   mocks,
 } from '@fuel-explorer/graphql';
-import { assets } from '@fuels/assets';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
 const date = dayjs().subtract(1, 'day');
@@ -21,7 +20,7 @@ function input(typename: any) {
 
 export const GROUPED_INPUT_ASSET = mocks.aGroupedInput({
   type: GroupedInputType.InputCoin,
-  assetId: assets[0].assetId,
+  assetId: '0x0000000000000000000000000000000000000000',
   inputs: [input('InputCoin'), input('InputCoin'), input('InputCoin')],
 });
 
@@ -45,7 +44,7 @@ function output(typename: any) {
 export const GROUPED_OUTPUT_ASSET = mocks.aGroupedOutput({
   type: GroupedOutputType.CoinOutput,
   outputs: [output('OutputCoin'), output('OutputCoin'), output('OutputCoin')],
-  assetId: assets[0].assetId,
+  assetId: '0x0000000000000000000000000000000000000000',
 });
 
 export const GROUPED_OUTPUT_ASSET_UNKNOWN = mocks.aGroupedOutput({
@@ -56,7 +55,7 @@ export const GROUPED_OUTPUT_ASSET_UNKNOWN = mocks.aGroupedOutput({
 export const GROUPED_OUTPUT_VARIABLE_OUTPUT = mocks.aGroupedOutput({
   type: GroupedOutputType.VariableOutput,
   outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-  assetId: assets[0].assetId,
+  assetId: '0x0000000000000000000000000000000000000000',
 });
 
 export const GROUPED_OUTPUT_VARIABLE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({
@@ -67,7 +66,7 @@ export const GROUPED_OUTPUT_VARIABLE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({
 export const GROUPED_OUTPUT_CHANGE_OUTPUT = mocks.aGroupedOutput({
   type: GroupedOutputType.ChangeOutput,
   outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-  assetId: assets[0].assetId,
+  assetId: '0x0000000000000000000000000000000000000000',
 });
 
 export const GROUPED_OUTPUT_CHANGE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({

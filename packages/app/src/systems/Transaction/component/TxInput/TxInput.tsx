@@ -1,5 +1,4 @@
 import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
-import { assets, resolveIconPath } from '@fuels/assets';
 import {
   Card,
   Copyable,
@@ -16,12 +15,12 @@ import type { CardProps } from '@fuels/ui';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { tv } from 'tailwind-variants';
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
-const ASSET_LIST = resolveIconPath('/assets', assets);
 const ICON_SIZE = 36;
 
 export type TxInputProps = CardProps & {
@@ -36,15 +35,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
     const assetId = input.assetId;
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
-    const asset = useMemo(() => {
-      const found = ASSET_LIST.find((asset) => asset.assetId === assetId);
-      return {
-        assetId,
-        name: found?.name ?? 'Unknown Asset',
-        symbol: found?.symbol ?? null,
-        icon: found?.icon ?? null,
-      };
-    }, [assetId]);
+    const asset = useAsset(assetId);
 
     if (!asset) return null;
     return (
@@ -227,6 +218,6 @@ const styles = tv({
   slots: {
     header: 'group flex flex-row gap-4 justify-between items-center',
     icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
-    utxos: 'bg-gray-2 mx-4 py-3 px-4 rounded',
+    utxos: 'bg-gray-3 mx-4 py-3 px-4 rounded',
   },
 });

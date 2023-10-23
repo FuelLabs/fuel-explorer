@@ -437,6 +437,10 @@ type InputMessage {
   witnessIndex: Int!
 }
 
+scalar JSON
+
+scalar JSONObject
+
 type MerkleProof {
   proofIndex: U64!
   proofSet: [Bytes32!]!
@@ -788,7 +792,7 @@ type Transaction {
   statusType: TransactionStatusType
   storageSlots: [HexString!]
   time: ParsedTime
-  title: TransactionTitle
+  title: String
   totalAccounts: Int
   totalAssets: Int
   totalOperations: Int
@@ -834,12 +838,6 @@ enum TransactionStatusType {
   Failure
   Submitted
   Success
-}
-
-enum TransactionTitle {
-  Burn
-  ContractCall
-  Mint
 }
 
 scalar TxPointer

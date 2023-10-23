@@ -60,7 +60,7 @@ export const Variants: Story = {
         <Button color="green" onClick={() => toast.success(toastProps.title)}>
           Success
         </Button>
-        <Button color="crimson" onClick={() => toast.error(toastProps.title)}>
+        <Button color="red" onClick={() => toast.error(toastProps.title)}>
           Error
         </Button>
       </HStack>

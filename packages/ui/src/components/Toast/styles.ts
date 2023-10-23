@@ -30,11 +30,11 @@ const vars = {
     '[--radix-toast-action-color:var(--green-11)]',
   ],
   error: [
-    '[--tw-ring-color:var(--crimson-4)]',
+    '[--tw-ring-color:var(--red-4)]',
     '[--radix-toast-color:white]',
-    '[--radix-toast-bg:var(--crimson-2)]',
-    '[--radix-toast-border-color:var(--crimson-6)]',
-    '[--radix-toast-action-color:var(--crimson-11)]',
+    '[--radix-toast-bg:var(--red-2)]',
+    '[--radix-toast-border-color:var(--red-6)]',
+    '[--radix-toast-action-color:var(--red-11)]',
   ],
 };
 

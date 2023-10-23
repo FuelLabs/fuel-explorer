@@ -88,22 +88,36 @@ fragment TransactionReceipt on Receipt {
   to {
     ...ContractItem
   }
-  data
+  pc
+  is
   toAddress
   amount
   assetId
+  gas
   param1
   param2
+  val
+  ptr
+  digest
+  reason
+  ra
+  rb
+  rc
+  rd
+  len
   receiptType
-  gas
+  result
   gasUsed
+  data
   sender
   recipient
+  nonce
   contractId
+  subId
 }
 
 fragment TransactionItem on Transaction {
-  __typename
+  # Custom resolvers
   id
   title
   time {
@@ -111,37 +125,6 @@ fragment TransactionItem on Transaction {
     full
     rawTai64
     rawUnix
-  }
-  blockHeight
-  statusType
-  totalAccounts
-  totalAssets
-  totalOperations
-  gasUsed
-  isScript
-  isMint
-  isCreate
-  gasPrice
-  gasLimit
-  accountsInvolved {
-    id
-    type
-  }
-  status {
-    ...TransactionStatus
-  }
-  inputAssetIds
-  inputContracts {
-    ...ContractItem
-  }
-  inputs {
-    ...TransactionInput
-  }
-  outputs {
-    ...TransactionOutput
-  }
-  receipts {
-    ...TransactionReceipt
   }
   groupedInputs {
     type
@@ -169,5 +152,51 @@ fragment TransactionItem on Transaction {
     assetId
     inputIndex
     recipient
+  }
+  accountsInvolved {
+    id
+    type
+  }
+  blockHeight
+  statusType
+  totalAccounts
+  totalAssets
+  totalOperations
+  gasUsed
+
+  # Transaction Data
+  __typename
+  gasPrice
+  gasLimit
+  maturity
+  txPointer
+  isScript
+  isCreate
+  isMint
+  witnesses
+  receiptsRoot
+  script
+  scriptData
+  bytecodeWitnessIndex
+  bytecodeLength
+  salt
+  storageSlots
+  rawPayload
+
+  status {
+    ...TransactionStatus
+  }
+  inputAssetIds
+  inputContracts {
+    ...ContractItem
+  }
+  inputs {
+    ...TransactionInput
+  }
+  outputs {
+    ...TransactionOutput
+  }
+  receipts {
+    ...TransactionReceipt
   }
 }

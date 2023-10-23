@@ -4,24 +4,26 @@ import { tv } from 'tailwind-variants';
 
 import { ReactComponent as EmptySvg } from './empty.svg';
 
-export type EmptyCardProps = CardProps;
+export type EmptyCardProps = CardProps & { hideImage?: boolean };
 export type EmptyCardTitleProps = HeadingProps;
 export type EmptyCardDescriptionProps = TextProps;
 
 export const EmptyCardRoot = createComponent<EmptyCardProps, typeof Card>({
   id: 'EmptyCard',
-  render: (_, { children, className, ...props }) => {
+  render: (_, { children, className, hideImage, ...props }) => {
     const classes = styles({ className });
     return (
       <Card {...props} className={classes.root({ className })}>
-        <EmptySvg
-          width={80}
-          height={80}
-          viewBox="0 0 682.66 682.66"
-          className={classes.image({
-            className: '[&_path]:stroke-[8] text-muted',
-          })}
-        />
+        {!hideImage && (
+          <EmptySvg
+            width={80}
+            height={80}
+            viewBox="0 0 682.66 682.66"
+            className={classes.image({
+              className: '[&_path]:stroke-[8] text-muted',
+            })}
+          />
+        )}
         {children}
       </Card>
     );
