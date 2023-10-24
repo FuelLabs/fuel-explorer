@@ -40,7 +40,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   const title = tx.title as string;
 
   return (
-    <VStack gap="9" className="min-h-[75vh]">
+    <VStack gap="9" className="min-h-[65vh]">
       <PageTitle icon={<IconChecklist size={24} stroke={1.2} />}>
         Transaction
         <Address full value={tx.id} />

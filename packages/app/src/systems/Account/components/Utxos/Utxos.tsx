@@ -1,21 +1,84 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Copyable, Text, HStack, ScrollArea, cx, Box } from '@fuels/ui';
+import { Copyable, Text, HStack, cx, Box } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconSquareKey } from '@tabler/icons-react';
 import { bn } from 'fuels';
+import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
-export type UtxoItem = Omit<TUtxoItem, '__typename'>;
+export type UtxoItem = Partial<Omit<TUtxoItem, '__typename'>>;
+
+type UtxoItemProps = {
+  item: UtxoItem;
+  assetId: string;
+  style?: React.CSSProperties;
+};
+
+function UtxoItem({ item, assetId, style }: UtxoItemProps) {
+  const asset = useAsset(assetId);
+  return (
+    <HStack
+      style={style}
+      align="center"
+      gap="4"
+      className={cx('odd:bg-gray-4 p-2 px-2', '[&_*]:text-xs')}
+    >
+      <Copyable className="flex-1" value={item.utxoId!} iconSize={14}>
+        ID:{' '}
+        <Text as="span" className="text-muted">
+          {item.utxoId}
+        </Text>
+      </Copyable>
+      <Text className="text-muted">
+        {bn(item.amount).format()} {asset?.symbol ?? ''}
+      </Text>
+    </HStack>
+  );
+}
 
 type UtxosProps = BoxProps & {
   assetId: string;
-  items?: Partial<Omit<UtxoItem, '__typename'>>[] | null;
+  items?: UtxoItem[] | null;
 };
 
+function VirtualList({ items, assetId }: UtxosProps) {
+  return (
+    <List
+      className="List"
+      height={300}
+      itemCount={items?.length ?? 0}
+      itemSize={30}
+      width="100%"
+    >
+      {({ index: idx, style }) => {
+        const item = items?.[idx];
+        return (
+          item && (
+            <UtxoItem
+              key={item.utxoId}
+              style={style}
+              item={item}
+              assetId={assetId}
+            />
+          )
+        );
+      }}
+    </List>
+  );
+}
+
+function CommonList({ items, assetId }: UtxosProps) {
+  return (
+    items?.map((item) => (
+      <UtxoItem key={item.utxoId} item={item} assetId={assetId} />
+    )) ?? null
+  );
+}
+
 export function Utxos({ items, assetId, className, ...props }: UtxosProps) {
-  const asset = useAsset(assetId);
   const classes = styles();
+  const len = items?.length ?? 0;
   return (
     <Box {...props} className={classes.root({ className })}>
       <Text
@@ -26,35 +89,11 @@ export function Utxos({ items, assetId, className, ...props }: UtxosProps) {
       >
         UTXOs ({items?.length ?? 0})
       </Text>
-      <ScrollArea
-        className={cx({ 'pr-4': items?.length ?? 0 > 9 })}
-        scrollbars="vertical"
-        style={{ maxHeight: 300 }}
-        type="auto"
-      >
-        {items?.map((item) => {
-          return (
-            item && (
-              <HStack
-                key={item.utxoId}
-                align="center"
-                className="odd:bg-gray-4 p-2 px-2 [&_*]:text-xs"
-                gap="4"
-              >
-                <Copyable className="flex-1" value={item.utxoId!} iconSize={14}>
-                  ID:{' '}
-                  <Text as="span" className="text-muted">
-                    {item.utxoId}
-                  </Text>
-                </Copyable>
-                <Text className="text-muted">
-                  {bn(item.amount).format()} {asset?.symbol ?? ''}
-                </Text>
-              </HStack>
-            )
-          );
-        })}
-      </ScrollArea>
+      {len > 10 ? (
+        <VirtualList items={items} assetId={assetId} />
+      ) : (
+        <CommonList items={items} assetId={assetId} />
+      )}
     </Box>
   );
 }

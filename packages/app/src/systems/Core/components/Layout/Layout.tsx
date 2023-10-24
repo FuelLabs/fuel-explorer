@@ -54,7 +54,7 @@ export function Layout({ children, hero }: LayoutProps) {
         </Nav.Desktop>
       </Nav>
       {hero && <Hero />}
-      <Container className="py-24" size="4">
+      <Container className="py-16 pb-20" size="4">
         {children}
       </Container>
       <Footer />

@@ -11,7 +11,7 @@ type AccountScreenProps = {
 
 export function AccountScreen({ balances }: AccountScreenProps) {
   return (
-    <VStack>
+    <VStack className="min-h-[45vh]">
       {balances?.map((balance) => {
         return (
           <BalanceItem key={balance.assetId + balance.owner} item={balance} />
