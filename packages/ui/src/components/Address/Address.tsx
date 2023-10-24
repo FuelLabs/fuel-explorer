@@ -100,7 +100,7 @@ export const Address = withNamespace(AddressRoot, {
 const styles = tv({
   slots: {
     root: 'fuel-[Link]:text-sm',
-    prefix: 'text-sm text-color',
+    prefix: 'text-sm text-secondary',
     address: 'text-sm text-muted mt-px',
     toggleBtn: [
       'transition-all duration-500 text-muted rotate-0',

@@ -22,7 +22,7 @@ function UtxoItem({ item, assetId, style }: UtxoItemProps) {
       style={style}
       align="center"
       gap="4"
-      className={cx('odd:bg-gray-4 p-2 px-2', '[&_*]:text-xs')}
+      className={cx('odd:bg-gray-4 p-2 px-2', '[&_*]:text-xs', 'max-h-[35px]')}
     >
       <Address full prefix="ID:" value={item.utxoId} className="flex-1" />
       <Text className="text-muted">
@@ -40,10 +40,9 @@ type UtxosProps = BoxProps & {
 function VirtualList({ items, assetId }: UtxosProps) {
   return (
     <List
-      className="List"
-      height={300}
+      height={350}
       itemCount={items?.length ?? 0}
-      itemSize={30}
+      itemSize={35}
       width="100%"
     >
       {({ index: idx, style }) => {
