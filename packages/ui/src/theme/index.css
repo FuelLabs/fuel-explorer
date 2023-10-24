@@ -53,7 +53,7 @@
 [data-accent-color] {
   /* general colors */
   --color-transparent: transparent;
-  --color-accent: var(--accent-9);
+  --color-accent: var(--color-brand);
   --color-border: var(--gray-6);
   --color-border-hover: var(--gray-8);
 

@@ -87,6 +87,7 @@ export const GROUPED_OUTPUT_MESSAGE = mocks.aGroupedOutput({
 });
 
 export const TX_MOCK = mocks.aTransaction({
+  title: 'ContractCall',
   time: {
     __typename: 'ParsedTime',
     fromNow: date.fromNow(),

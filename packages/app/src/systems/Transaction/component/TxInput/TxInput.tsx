@@ -18,6 +18,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { Address } from '~/systems/Core/components/Address/Address';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -64,13 +65,12 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Copyable
-                value={input.owner}
-                iconSize={16}
-                className="text-sm text-muted"
-              >
-                From: {shortAddress(input.owner)}
-              </Copyable>
+              <Address
+                label="From"
+                id={input.owner}
+                link={(id) => `/account/${id}`}
+                linkLabel="View Account"
+              />
             </VStack>
           </HStack>
           <HStack align="center">
@@ -126,13 +126,9 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
             <EntityItem.Slot>
               <TxIcon status="Submitted" type="Contract" />
             </EntityItem.Slot>
-            <EntityItem.Info
-              id={contractId!}
-              title="Contract Input"
-              idPrefix={
-                <Text className="text-sm text-bold text-secondary">To:</Text>
-              }
-            />
+            <EntityItem.Info title="Contract Input">
+              <Address id={contractId} label="Id" />
+            </EntityItem.Info>
           </EntityItem>
         </Card.Header>
       </Card>
@@ -157,26 +153,16 @@ const TxInputMessage = createComponent<TxInputProps, typeof Card>({
           <VStack gap="1" className="flex-1">
             <Text>Message</Text>
             <HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">From:</Text>
-                <Copyable
-                  value={sender}
-                  className="text-sm text-muted"
-                  iconSize={16}
-                >
-                  {shortAddress(sender)}
-                </Copyable>
-              </HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">To:</Text>
-                <Copyable
-                  value={sender}
-                  className="text-sm text-muted"
-                  iconSize={16}
-                >
-                  {shortAddress(recipient)}
-                </Copyable>
-              </HStack>
+              <Address
+                label="From"
+                id={sender}
+                link={(id) => `/account/${id}`}
+              />
+              <Address
+                label="To"
+                id={recipient}
+                link={(id) => `/account/${id}`}
+              />
             </HStack>
           </VStack>
           <IconButton

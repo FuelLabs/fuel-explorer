@@ -1,20 +1,12 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type { GroupedOutput } from '@fuel-explorer/graphql';
-import {
-  Card,
-  Copyable,
-  HStack,
-  Text,
-  VStack,
-  createComponent,
-  cx,
-  shortAddress,
-} from '@fuels/ui';
+import { Card, HStack, Text, VStack, createComponent, cx } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { Address } from '~/systems/Core/components/Address/Address';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -57,13 +49,12 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Copyable
-                value={output.to}
-                iconSize={16}
-                className="text-sm text-muted"
-              >
-                To: {shortAddress(output.to)}
-              </Copyable>
+              <Address
+                label="To"
+                id={output.to}
+                link={(id) => `/account/${id}`}
+                linkLabel="View Account"
+              />
             </VStack>
           </HStack>
           <HStack align="center">
@@ -115,9 +106,7 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <TxIcon status="Success" type="Contract" />
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
-              <Copyable value={contractId} className="text-sm text-secondary">
-                Id: {shortAddress(contractId)}
-              </Copyable>
+              <Address label="Id" id={contractId} />
             </VStack>
           </HStack>
         </Card.Header>
@@ -137,28 +126,20 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
         <Card.Header className={classes.header()}>
           <TxIcon type="Message" status="Submitted" />
           <VStack gap="1" className="flex-1">
-            <Text>Message</Text>
+            <HStack gap="2" align="center">
+              <Text>Message</Text>
+            </HStack>
             <HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">From:</Text>
-                <Copyable
-                  value={recipient}
-                  className="text-sm text-muted"
-                  iconSize={16}
-                >
-                  {shortAddress(recipient)}
-                </Copyable>
-              </HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">To:</Text>
-                <Copyable
-                  value={recipient}
-                  className="text-sm text-muted"
-                  iconSize={16}
-                >
-                  {shortAddress(recipient)}
-                </Copyable>
-              </HStack>
+              <Address
+                label="From"
+                id={recipient}
+                link={(id) => `/account/${id}`}
+              />
+              <Address
+                label="From"
+                id={output.to}
+                link={(id) => `/account/${id}`}
+              />
             </HStack>
           </VStack>
         </Card.Header>

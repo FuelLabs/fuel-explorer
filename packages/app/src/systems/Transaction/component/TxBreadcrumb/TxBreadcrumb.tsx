@@ -5,12 +5,12 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Copyable,
   Icon,
   Text,
 } from '@fuels/ui';
 import { IconHome } from '@tabler/icons-react';
 import Link from 'next/link';
+import { Address } from '~/systems/Core/components/Address/Address';
 
 type TxBreadcrumbProps = BreadcrumbProps & {
   transactionId: string;
@@ -28,9 +28,7 @@ export function TxBreadcrumb({ transactionId, ...props }: TxBreadcrumbProps) {
         <Text size={'6'} weight={'medium'} className="mr-4 color-current">
           Transaction
         </Text>
-        <Copyable value={transactionId} className="text-muted">
-          {transactionId}
-        </Copyable>
+        <Address full id={transactionId} />
       </BreadcrumbItem>
     </Breadcrumb>
   );

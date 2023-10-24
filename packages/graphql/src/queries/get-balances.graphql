@@ -1,0 +1,19 @@
+fragment AccountBalance on Balance {
+  __typename
+  assetId
+  amount
+  owner
+  utxos {
+    utxoId
+    amount
+    txCreatedIdx
+  }
+}
+
+query getBalances($owner: Address!) {
+  balances(first: 100, filter: { owner: $owner }) {
+    nodes {
+      ...AccountBalance
+    }
+  }
+}
