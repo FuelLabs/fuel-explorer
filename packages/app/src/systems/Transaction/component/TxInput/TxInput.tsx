@@ -76,7 +76,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
           <HStack align="center">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format({ precision: 9 })} {asset.symbol}
+                {bn(amount).format()} {asset.symbol}
               </Text>
             )}
             <IconButton
@@ -102,7 +102,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
                   {shortAddress(input.utxoId, 14, 14)}
                 </Copyable>
                 <Text className="text-xs leading-relaxed text-muted">
-                  {bn(input.amount).format({ precision: 9 })} {asset.symbol}
+                  {bn(input.amount).format()} {asset.symbol}
                 </Text>
               </HStack>
             ))}

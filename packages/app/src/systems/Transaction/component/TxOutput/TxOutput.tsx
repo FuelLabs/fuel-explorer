@@ -60,7 +60,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format({ precision: 9 })} {asset.symbol}
+                {bn(amount).format()} {asset.symbol}
               </Text>
             )}
           </HStack>

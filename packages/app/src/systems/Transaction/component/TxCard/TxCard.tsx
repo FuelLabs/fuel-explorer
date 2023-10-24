@@ -48,7 +48,7 @@ export function TxCard({ transaction: tx, className, ...props }: TxCardProps) {
           <Flex className={classes.row()} justify="between">
             <Text leftIcon={IconCoins}>{tx.totalAssets} assets</Text>
             <Text className={classes.small()} leftIcon={IconGasStation}>
-              {bn(tx.gasUsed).format({ precision: 5 })} ETH
+              {bn(tx.gasUsed).format()} ETH
             </Text>
           </Flex>
         </Card.Body>
