@@ -5,6 +5,7 @@ export { shortAddress } from './utils/helpers';
 export type * from './utils/types';
 
 export * from './components/Accordion';
+export * from './components/Address';
 export * from './components/Alert';
 export * from './components/AlertDialog';
 export * from './components/AspectRatio';

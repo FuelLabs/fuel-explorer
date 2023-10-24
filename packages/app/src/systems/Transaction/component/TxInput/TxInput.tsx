@@ -1,7 +1,7 @@
 import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
 import {
+  Address,
   Card,
-  Copyable,
   EntityItem,
   HStack,
   IconButton,
@@ -9,16 +9,17 @@ import {
   VStack,
   createComponent,
   cx,
-  shortAddress,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
+import type { UtxoItem } from '~/systems/Account/components/Utxos/Utxos';
+import { Utxos } from '~/systems/Account/components/Utxos/Utxos';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { Address } from '~/systems/Core/components/Address/Address';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -65,12 +66,11 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Address
-                label="From"
-                id={input.owner}
-                link={(id) => `/account/${id}`}
-                linkLabel="View Account"
-              />
+              <Address prefix="From:" value={input.owner}>
+                <Address.Link as={NextLink} href={`/account/${input.owner}`}>
+                  View Account
+                </Address.Link>
+              </Address>
             </VStack>
           </HStack>
           <HStack align="center">
@@ -89,24 +89,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
           </HStack>
         </Card.Header>
         {opened && (
-          <Card.Body className={classes.utxos()}>
-            <Text as="div" className="text-xs border-b pb-1 border-border mb-2">
-              UTXOs
-            </Text>
-            {inputs?.map((input: InputCoin) => (
-              <HStack key={input.utxoId} align="center" justify="between">
-                <Copyable
-                  className="text-xs leading-relaxed"
-                  value={input.utxoId}
-                >
-                  {shortAddress(input.utxoId, 14, 14)}
-                </Copyable>
-                <Text className="text-xs leading-relaxed text-muted">
-                  {bn(input.amount).format()} {asset.symbol}
-                </Text>
-              </HStack>
-            ))}
-          </Card.Body>
+          <Utxos items={inputs satisfies UtxoItem[]} assetId={assetId} />
         )}
       </Card>
     );
@@ -127,7 +110,7 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
               <TxIcon status="Submitted" type="Contract" />
             </EntityItem.Slot>
             <EntityItem.Info title="Contract Input">
-              <Address id={contractId} label="Id" />
+              <Address value={contractId} prefix="Id:" />
             </EntityItem.Info>
           </EntityItem>
         </Card.Header>
@@ -153,16 +136,12 @@ const TxInputMessage = createComponent<TxInputProps, typeof Card>({
           <VStack gap="1" className="flex-1">
             <Text>Message</Text>
             <HStack>
-              <Address
-                label="From"
-                id={sender}
-                link={(id) => `/account/${id}`}
-              />
-              <Address
-                label="To"
-                id={recipient}
-                link={(id) => `/account/${id}`}
-              />
+              <Address prefix="From:" value={sender}>
+                <Address.Link as={NextLink} href={`/account/${sender}`} />
+              </Address>
+              <Address prefix="To:" value={recipient}>
+                <Address.Link as={NextLink} href={`/account/${recipient}`} />
+              </Address>
             </HStack>
           </VStack>
           <IconButton

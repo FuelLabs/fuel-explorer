@@ -4,6 +4,7 @@ fragment AccountBalance on Balance {
   amount
   owner
   utxos {
+    __typename
     utxoId
     amount
     txCreatedIdx

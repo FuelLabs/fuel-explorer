@@ -22,12 +22,18 @@ export const External: Story = {
   ),
 };
 
+export const AsChild: Story = {
+  render: () => (
+    <Link asChild target="_blank">
+      <a href="https://fuel.network">Visit our website</a>
+    </Link>
+  ),
+};
+
 export const Polymorphic: Story = {
   render: () => (
-    <Link asChild isExternal>
-      <a href="https://fuel.network" target="_blank">
-        Visit our website
-      </a>
+    <Link as="button" type="button" href="https://fuel.network" target="_blank">
+      Visit our website
     </Link>
   ),
 };

@@ -1,7 +1,6 @@
-import { Box, VStack } from '@fuels/ui';
+import { Address, Box, VStack } from '@fuels/ui';
 import { IconHash } from '@tabler/icons-react';
 import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
-import { Address } from '~/systems/Core/components/Address/Address';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
@@ -17,7 +16,7 @@ export default function AccountLayout({
       <VStack>
         <PageTitle icon={<IconHash size={20} stroke={1.2} />}>
           Account
-          <Address full id={id} />
+          <Address full value={id} />
         </PageTitle>
         <AccountTabs accountId={id} />
         <Box as="section" className="mt-10">

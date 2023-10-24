@@ -15,10 +15,10 @@ import {
   Icon,
   VStack,
   Text,
+  Address,
 } from '@fuels/ui';
 import { IconArrowDown, IconChecklist } from '@tabler/icons-react';
 import { bn } from 'fuels';
-import { Address } from '~/systems/Core/components/Address/Address';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
@@ -43,7 +43,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
     <VStack gap="9" className="min-h-[75vh]">
       <PageTitle icon={<IconChecklist size={24} stroke={1.2} />}>
         Transaction
-        <Address full id={tx.id} />
+        <Address full value={tx.id} />
       </PageTitle>
       <Grid columns="6" gap="9">
         <Box className="col-span-2">

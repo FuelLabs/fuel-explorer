@@ -6,10 +6,9 @@ import {
   Card,
   cx,
   HStack,
-  Copyable,
   IconButton,
   VStack,
-  ScrollArea,
+  Address,
 } from '@fuels/ui';
 import { IconChevronUp, IconChevronDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
@@ -17,8 +16,10 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { Address } from '~/systems/Core/components/Address/Address';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
+
+import type { UtxoItem } from '../Utxos/Utxos';
+import { Utxos } from '../Utxos/Utxos';
 
 const ICON_SIZE = 36;
 
@@ -62,7 +63,7 @@ export const BalanceItem = createComponent<BalanceItemProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Address id={item.assetId} label="Id" />
+              <Address value={item.assetId} prefix="Id:" />
             </VStack>
           </HStack>
           <HStack align="center">
@@ -80,45 +81,8 @@ export const BalanceItem = createComponent<BalanceItemProps, typeof Card>({
             />
           </HStack>
         </Card.Header>
-        {opened && (
-          <Card.Body className={classes.utxos()}>
-            <Text as="div" className="text-sm border-b pb-1 border-border mb-2">
-              UTXOs ({item.utxos?.length ?? 0})
-            </Text>
-            <ScrollArea
-              className={cx({ 'pr-4': item.utxos?.length ?? 0 > 9 })}
-              scrollbars="vertical"
-              style={{ maxHeight: 300 }}
-              type="auto"
-            >
-              {item.utxos?.map((item) => {
-                return (
-                  item && (
-                    <HStack
-                      key={item.utxoId}
-                      align="center"
-                      className="odd:bg-gray-4 p-2 px-2 [&_*]:text-xs"
-                      gap="4"
-                    >
-                      <Copyable
-                        className="flex-1"
-                        value={item.utxoId}
-                        iconSize={14}
-                      >
-                        ID:{' '}
-                        <Text as="span" className="text-muted">
-                          {item.utxoId}
-                        </Text>
-                      </Copyable>
-                      <Text className="text-muted">
-                        {bn(item.amount).format()} {asset.symbol ?? ''}
-                      </Text>
-                    </HStack>
-                  )
-                );
-              })}
-            </ScrollArea>
-          </Card.Body>
+        {opened && (item.utxos?.length ?? 0 > 0) && (
+          <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />
         )}
       </Card>
     );

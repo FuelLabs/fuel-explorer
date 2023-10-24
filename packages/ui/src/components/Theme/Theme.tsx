@@ -2,6 +2,11 @@ import { Theme as RadixTheme } from '@radix-ui/themes';
 
 import { createComponent } from '../../utils/component';
 import type { Colors, PropsOf } from '../../utils/types';
+import {
+  INIT_ICON_COLOR,
+  INIT_ICON_SIZE,
+  INIT_ICON_STROKE,
+} from '../Icon/constants';
 import { IconProvider } from '../Icon/useIconContext';
 
 export type ThemeProps = PropsOf<typeof RadixTheme> & {
@@ -15,7 +20,12 @@ export const Theme = createComponent<ThemeProps, typeof RadixTheme>({
   baseElement: RadixTheme,
   render: (
     Comp,
-    { iconSize = 20, iconColor = 'text-current', iconStroke = 1.2, ...props },
+    {
+      iconSize = INIT_ICON_SIZE,
+      iconColor = INIT_ICON_COLOR,
+      iconStroke = INIT_ICON_STROKE,
+      ...props
+    },
   ) => {
     return (
       <IconProvider

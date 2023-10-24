@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';
+import { parseAddressParam } from '~/systems/Core/utils/address';
 import { sdk } from '~/systems/Core/utils/sdk';
 
 const schema = z.object({
@@ -9,8 +10,8 @@ const schema = z.object({
 });
 
 export const getTx = act(schema, async (input) => {
-  if (!input.id) return null;
-  const { data } = await sdk.getTransaction(input).catch((_) => {
+  const id = parseAddressParam(input.id);
+  const { data } = await sdk.getTransaction({ id }).catch((_) => {
     return { data: { transaction: null } };
   });
   return data.transaction;

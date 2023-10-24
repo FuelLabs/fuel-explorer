@@ -2,7 +2,7 @@
 import type { BaseProps } from '@fuels/ui';
 import { Button, Flex, HStack } from '@fuels/ui';
 import { IconChecklist, IconCodeAsterix, IconCoins } from '@tabler/icons-react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { tv } from 'tailwind-variants';
 
@@ -10,40 +10,44 @@ type AccountTabsProps = BaseProps<{
   accountId: string;
 }>;
 
-export function AccountTabs({ className, ...props }: AccountTabsProps) {
+export function AccountTabs({
+  className,
+  accountId,
+  ...props
+}: AccountTabsProps) {
   const classes = styles({ className });
   const pathname = usePathname();
   return (
     <Flex className={classes.root()} {...props}>
       <HStack gap="2">
         <Button
-          as={Link}
-          href={`/account/${props.accountId}`}
+          as={NextLink}
+          href={`/account/${accountId}`}
           color="gray"
           className={classes.button()}
-          data-active={pathname === `/account/${props.accountId}`}
+          data-active={pathname === `/account/${accountId}`}
           variant="surface"
           leftIcon={IconCoins}
         >
           Assets
         </Button>
         <Button
-          as={Link}
-          href={`/account/${props.accountId}/transactions`}
+          as={NextLink}
+          href={`/account/${accountId}/transactions`}
           color="gray"
           className={classes.button()}
-          data-active={pathname === `/account/${props.accountId}/transactions`}
+          data-active={pathname === `/account/${accountId}/transactions`}
           variant="surface"
           leftIcon={IconChecklist}
         >
           Transactions
         </Button>
         <Button
-          as={Link}
-          href={`/account/${props.accountId}/predicate`}
+          as={NextLink}
+          href={`/account/${accountId}/predicate`}
           color="gray"
           className={classes.button()}
-          data-active={pathname === `/account/${props.accountId}/predicate`}
+          data-active={pathname === `/account/${accountId}/predicate`}
           variant="surface"
           leftIcon={IconCodeAsterix}
         >

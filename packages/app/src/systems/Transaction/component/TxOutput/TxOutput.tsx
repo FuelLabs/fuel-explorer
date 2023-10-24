@@ -1,12 +1,20 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type { GroupedOutput } from '@fuel-explorer/graphql';
-import { Card, HStack, Text, VStack, createComponent, cx } from '@fuels/ui';
+import {
+  Address,
+  Card,
+  HStack,
+  Text,
+  VStack,
+  createComponent,
+  cx,
+} from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { Address } from '~/systems/Core/components/Address/Address';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -49,12 +57,11 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Address
-                label="To"
-                id={output.to}
-                link={(id) => `/account/${id}`}
-                linkLabel="View Account"
-              />
+              <Address prefix="To:" value={output.to}>
+                <Address.Link as={NextLink} href={`/account/${output.to}`}>
+                  View Account
+                </Address.Link>
+              </Address>
             </VStack>
           </HStack>
           <HStack align="center">
@@ -106,7 +113,7 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <TxIcon status="Success" type="Contract" />
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
-              <Address label="Id" id={contractId} />
+              <Address prefix="Id:" value={contractId} />
             </VStack>
           </HStack>
         </Card.Header>
@@ -130,16 +137,12 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               <Text>Message</Text>
             </HStack>
             <HStack>
-              <Address
-                label="From"
-                id={recipient}
-                link={(id) => `/account/${id}`}
-              />
-              <Address
-                label="From"
-                id={output.to}
-                link={(id) => `/account/${id}`}
-              />
+              <Address prefix="From:" value={recipient}>
+                <Address.Link as={NextLink} href={`/account/${recipient}`} />
+              </Address>
+              <Address prefix="To:" value={output.to}>
+                <Address.Link as={NextLink} href={`/account/${output.to}`} />
+              </Address>
             </HStack>
           </VStack>
         </Card.Header>

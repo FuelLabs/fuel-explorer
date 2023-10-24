@@ -490,6 +490,9 @@ importers:
       '@fontsource-variable/inter':
         specifier: 5.0.15
         version: 5.0.15
+      '@fuel-ts/address':
+        specifier: 0.64.1
+        version: 0.64.1
       '@fuel-ts/math':
         specifier: 0.64.1
         version: 0.64.1
@@ -2403,6 +2406,7 @@ packages:
   /@colors/colors@1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
+    requiresBuild: true
     dev: true
 
   /@cspotcode/source-map-support@0.8.1:
