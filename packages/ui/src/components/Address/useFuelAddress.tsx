@@ -16,6 +16,7 @@ export function useFuelAddress(address: string) {
   const fuelAddress = isValid ? getAddress() : address;
 
   function toggle() {
+    if (!isValid) return;
     setShowB256(!isShowingB256);
   }
 

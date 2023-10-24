@@ -50,26 +50,32 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
           <Copyable value={address} className={classes.address()} iconSize={16}>
             {isValid ? (
               <Tooltip content={tooltipMsg}>
-                <Text as="button" className="text-sm" onClick={toggle}>
+                <Text
+                  as="button"
+                  className="text-sm text-muted"
+                  onClick={toggle}
+                >
                   {full ? address : short}
                 </Text>
               </Tooltip>
             ) : (
-              <span>{full ? address : short}</span>
+              <span className="text-muted">{full ? address : short}</span>
             )}
           </Copyable>
         </HStack>
-        <Tooltip content={tooltipMsg}>
-          <IconButton
-            data-active={!isShowingB256}
-            icon={IconProgressBolt}
-            variant="link"
-            color="gray"
-            iconSize={16}
-            className={classes.toggleBtn()}
-            onClick={toggle}
-          />
-        </Tooltip>
+        {isValid && (
+          <Tooltip content={tooltipMsg}>
+            <IconButton
+              data-active={!isShowingB256}
+              icon={IconProgressBolt}
+              variant="link"
+              color="gray"
+              iconSize={16}
+              className={classes.toggleBtn()}
+              onClick={toggle}
+            />
+          </Tooltip>
+        )}
         {children}
       </Root>
     );
@@ -94,7 +100,7 @@ export const Address = withNamespace(AddressRoot, {
 const styles = tv({
   slots: {
     root: 'fuel-[Link]:text-sm',
-    prefix: 'text-sm text-secondary',
+    prefix: 'text-sm text-color',
     address: 'text-sm text-muted mt-px',
     toggleBtn: [
       'transition-all duration-500 text-muted rotate-0',

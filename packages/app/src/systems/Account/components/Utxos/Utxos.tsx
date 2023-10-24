@@ -1,5 +1,5 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Copyable, Text, HStack, cx, Box } from '@fuels/ui';
+import { Text, HStack, cx, Box, Address } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconSquareKey } from '@tabler/icons-react';
 import { bn } from 'fuels';
@@ -24,12 +24,7 @@ function UtxoItem({ item, assetId, style }: UtxoItemProps) {
       gap="4"
       className={cx('odd:bg-gray-4 p-2 px-2', '[&_*]:text-xs')}
     >
-      <Copyable className="flex-1" value={item.utxoId!} iconSize={14}>
-        ID:{' '}
-        <Text as="span" className="text-muted">
-          {item.utxoId}
-        </Text>
-      </Copyable>
+      <Address full prefix="ID:" value={item.utxoId} className="flex-1" />
       <Text className="text-muted">
         {bn(item.amount).format()} {asset?.symbol ?? ''}
       </Text>
