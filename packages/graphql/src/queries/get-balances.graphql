@@ -7,6 +7,7 @@ fragment AccountBalance on Balance {
     utxoId
     amount
     txCreatedIdx
+    blockCreated
   }
 }
 

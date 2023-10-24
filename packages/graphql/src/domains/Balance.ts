@@ -38,10 +38,12 @@ export class BalanceDomain {
     const { connection } = this;
     const query = gql`
       query getUtxos($assetId: AssetId!, $owner: Address!) {
-        coins(first: 100, filter: { assetId: $assetId, owner: $owner }) {
+        coins(first: 1000, filter: { assetId: $assetId, owner: $owner }) {
           nodes {
             amount
             utxoId
+            txCreatedIdx
+            blockCreated
           }
         }
       }
@@ -51,6 +53,8 @@ export class BalanceDomain {
         nodes: {
           amount: string;
           utxoId: string;
+          txCreatedIdx: number;
+          blockCreated: number;
         }[];
       };
     };

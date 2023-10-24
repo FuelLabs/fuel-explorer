@@ -9,18 +9,11 @@ import {
   Copyable,
   IconButton,
   VStack,
-  Link,
   ScrollArea,
-  Icon,
 } from '@fuels/ui';
-import {
-  IconChevronUp,
-  IconChevronDown,
-  IconExternalLink,
-} from '@tabler/icons-react';
+import { IconChevronUp, IconChevronDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import Image from 'next/image';
-import NextLink from 'next/link';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
@@ -89,7 +82,7 @@ export const BalanceItem = createComponent<BalanceItemProps, typeof Card>({
         </Card.Header>
         {opened && (
           <Card.Body className={classes.utxos()}>
-            <Text as="div" className="text-xs border-b pb-1 border-border mb-2">
+            <Text as="div" className="text-sm border-b pb-1 border-border mb-2">
               UTXOs ({item.utxos?.length ?? 0})
             </Text>
             <ScrollArea
@@ -98,40 +91,32 @@ export const BalanceItem = createComponent<BalanceItemProps, typeof Card>({
               style={{ maxHeight: 300 }}
               type="auto"
             >
-              {item.utxos?.map(
-                (item) =>
+              {item.utxos?.map((item) => {
+                return (
                   item && (
                     <HStack
                       key={item.utxoId}
                       align="center"
-                      className="odd:bg-gray-4 p-2 px-3"
+                      className="odd:bg-gray-4 p-2 px-2 [&_*]:text-xs"
+                      gap="4"
                     >
                       <Copyable
-                        className="text-xs flex-1"
+                        className="flex-1"
                         value={item.utxoId}
                         iconSize={14}
                       >
                         ID:{' '}
-                        <Text as="span" className="text-muted text-xs">
+                        <Text as="span" className="text-muted">
                           {item.utxoId}
                         </Text>
                       </Copyable>
-                      <Text className="text-xs text-muted">
+                      <Text className="text-muted">
                         {bn(item.amount).format()} {asset.symbol ?? ''}
                       </Text>
-                      <Link asChild className="text-xs">
-                        <NextLink href={`/tx/${item.txCreatedIdx}`}>
-                          View Transaction{' '}
-                          <Icon
-                            icon={IconExternalLink}
-                            size={14}
-                            className="ml-1"
-                          />
-                        </NextLink>
-                      </Link>
                     </HStack>
-                  ),
-              )}
+                  )
+                );
+              })}
             </ScrollArea>
           </Card.Body>
         )}
@@ -144,6 +129,6 @@ const styles = tv({
   slots: {
     header: 'group flex flex-row gap-4 justify-between items-center',
     icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
-    utxos: 'bg-gray-3 mx-4 p-3 rounded',
+    utxos: 'mx-4 bg-gray-3 p-3 rounded',
   },
 });
