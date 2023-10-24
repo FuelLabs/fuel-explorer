@@ -1,5 +1,4 @@
 import '@fontsource-variable/inter/slnt.css';
-import '@fuels/ui/styles.css';
 import './globals.css';
 
 import type { Metadata } from 'next';

@@ -1,4 +1,4 @@
-import { IconExternalLink } from '@tabler/icons-react';
+import { IconExternalLink, IconProgressBolt } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
@@ -8,6 +8,7 @@ import type { BaseProps, WithAsProps } from '../../utils/types';
 import { HStack } from '../Box';
 import { Copyable } from '../Copyable';
 import { Icon } from '../Icon/Icon';
+import { IconButton } from '../IconButton';
 import type { LinkProps } from '../Link';
 import { Link } from '../Link';
 import { Text } from '../Text';
@@ -39,23 +40,36 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
 
     return (
       <Root
-        gap="2"
+        gap="3"
         align="center"
         {...props}
         className={classes.root({ className })}
       >
-        {prefix && <Text className={classes.prefix()}>{prefix}</Text>}
-        <Copyable value={address} className={classes.address()} iconSize={16}>
-          {isValid ? (
-            <Tooltip content={tooltipMsg}>
-              <Text as="button" className="text-sm" onClick={toggle}>
-                {full ? address : short}
-              </Text>
-            </Tooltip>
-          ) : (
-            <span>{full ? address : short}</span>
-          )}
-        </Copyable>
+        <HStack align="center" gap="1">
+          {prefix && <Text className={classes.prefix()}>{prefix}</Text>}
+          <Copyable value={address} className={classes.address()} iconSize={16}>
+            {isValid ? (
+              <Tooltip content={tooltipMsg}>
+                <Text as="button" className="text-sm" onClick={toggle}>
+                  {full ? address : short}
+                </Text>
+              </Tooltip>
+            ) : (
+              <span>{full ? address : short}</span>
+            )}
+          </Copyable>
+        </HStack>
+        <Tooltip content={tooltipMsg}>
+          <IconButton
+            data-active={!isShowingB256}
+            icon={IconProgressBolt}
+            variant="link"
+            color="gray"
+            iconSize={16}
+            className={classes.toggleBtn()}
+            onClick={toggle}
+          />
+        </Tooltip>
         {children}
       </Root>
     );
@@ -81,6 +95,10 @@ const styles = tv({
   slots: {
     root: 'fuel-[Link]:text-sm',
     prefix: 'text-sm text-secondary',
-    address: 'text-sm text-muted mr-1 mt-px',
+    address: 'text-sm text-muted mt-px',
+    toggleBtn: [
+      'transition-all duration-500 text-muted rotate-0',
+      'data-[active=true]:rotate-180 data-[active=true]:text-brand',
+    ],
   },
 });
