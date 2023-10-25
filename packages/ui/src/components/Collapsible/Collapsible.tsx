@@ -66,6 +66,7 @@ export const CollapsibleHeader = createComponent<
       >
         <HStack align="center">{children}</HStack>
         <IconButton
+          iconSize={20}
           iconColor="text-muted"
           variant="link"
           className={classes.icon()}
@@ -127,31 +128,23 @@ export const Collapsible = withNamespace(CollapsibleRoot, {
 
 const styles = tv({
   slots: {
-    root: 'py-3',
+    root: 'py-[10px]',
     header: 'group grid grid-cols-[1fr_auto] grid-rows-1 gap-4 items-center',
     icon: 'transition-transform group-data-[state=closed]:hover:-rotate-180 group-data-[state=opened]:-rotate-180',
-    content: 'mx-3 mb-1',
+    content: 'mx-4 mb-2 border border-border',
     body: '',
-    title: '',
+    title: 'flex items-center gap-2 text-sm font-medium text-secondary',
   },
   variants: {
     variant: {
       surface: {
-        content: 'p-0 bg-gray-3 rounded-sm border border-border',
+        content: 'p-0 bg-gray-3 rounded-sm',
         body: 'px-3 py-3',
-        title: [
-          'py-3 px-3 flex items-center gap-2',
-          'text-sm font-medium text-secondary',
-          'border-b border-border',
-        ],
+        title: 'py-3 px-3 border-b border-border',
       },
       ghost: {
-        content: 'p-3 rounded-sm border border-border',
+        content: 'p-3 rounded-sm',
         body: 'pt-2',
-        title: [
-          'flex items-center gap-2',
-          'text-sm font-medium text-secondary',
-        ],
       },
     },
   },

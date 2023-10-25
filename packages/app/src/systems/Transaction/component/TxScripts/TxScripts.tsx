@@ -60,11 +60,12 @@ function TxScriptRow({ item }: TxScriptRowProps) {
 
   return (
     <Collapsible className="py-0 gap-0">
-      <Collapsible.Header className="group px-3 py-3">
+      <Collapsible.Header className="group pr-3 pl-[10px] py-3">
         <Badge
-          size="2"
+          size="1"
           color={isDanger ? 'red' : 'gray'}
           variant={isDanger ? 'outline' : 'surface'}
+          className="font-mono py-1"
         >
           {item.receiptType}
         </Badge>
