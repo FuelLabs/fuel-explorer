@@ -5,17 +5,32 @@ fragment ContractItem on Contract {
 
 fragment TransactionStatus on TransactionStatus {
   __typename
+  ... on SqueezedOutStatus {
+    reason
+  }
   ... on SuccessStatus {
     time
     block {
       id
       header {
+        id
+        height
         daHeight
+        applicationHash
+        messageReceiptRoot
+        messageReceiptCount
+        time
       }
+    }
+    programState {
+      data
     }
   }
   ... on FailureStatus {
     time
+    programState {
+      data
+    }
   }
   ... on SubmittedStatus {
     time
@@ -32,11 +47,11 @@ fragment TransactionInput on Input {
     predicateData
     txPointer
     utxoId
+    witnessIndex
   }
   ... on InputContract {
     utxoId
     balanceRoot
-    stateRoot
     txPointer
     contract {
       ...ContractItem
@@ -62,6 +77,7 @@ fragment TransactionOutput on Output {
   }
   ... on ContractOutput {
     inputIndex
+    balanceRoot
   }
   ... on ChangeOutput {
     to
