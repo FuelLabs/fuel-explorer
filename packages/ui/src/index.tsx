@@ -21,6 +21,7 @@ export * from './components/Card';
 export * from './components/CardList';
 export * from './components/Checkbox';
 export * from './components/ContextMenu';
+export * from './components/Collapsible';
 export * from './components/Copyable';
 export * from './components/Dialog';
 export * from './components/Drawer';

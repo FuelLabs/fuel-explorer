@@ -1,7 +1,11 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Text, HStack, Box, Address } from '@fuels/ui';
+import { Text, HStack, Address, Icon, Collapsible } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
-import { IconSquareKey } from '@tabler/icons-react';
+import {
+  IconCoins,
+  IconExternalLink,
+  IconSquareKey,
+} from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { FixedSizeList as List } from 'react-window';
@@ -21,13 +25,19 @@ function UtxoItem({ item, assetId, style }: UtxoItemProps) {
   const classes = styles();
   return (
     <HStack style={style} align="center" gap="4" className={classes.item()}>
-      <Address full prefix="ID:" value={item.utxoId} className="flex-1">
+      <Address
+        prefix="ID:"
+        value={item.utxoId}
+        className="flex-1"
+        addressOpts={{ trimLeft: 14, trimRight: 14 }}
+      >
         <Address.Link as={NextLink} href={`/tx/${item.utxoId.slice(0, -2)}`}>
-          View Transaction
+          Transaction <Icon icon={IconExternalLink} size={14} />
         </Address.Link>
       </Address>
-      <Text className="text-muted">
-        {bn(item.amount).format()} {asset?.symbol ?? ''}
+      <Text className="text-muted flex items-center gap-2">
+        <Icon icon={IconCoins} size={14} /> {bn(item.amount).format()}{' '}
+        {asset?.symbol ?? ''}
       </Text>
     </HStack>
   );
@@ -71,36 +81,26 @@ function CommonList({ items, assetId }: UtxosProps) {
   );
 }
 
-export function Utxos({ items, assetId, className, ...props }: UtxosProps) {
-  const classes = styles();
+export function Utxos({ items, assetId, ...props }: UtxosProps) {
   const len = items?.length ?? 0;
   return (
-    <Box {...props} className={classes.root({ className })}>
-      <Text
-        as="div"
-        className={classes.title()}
-        leftIcon={IconSquareKey}
-        iconColor="text-icon"
-      >
+    <Collapsible.Content {...props}>
+      <Collapsible.Title leftIcon={IconSquareKey} iconColor="text-icon">
         UTXOs ({items?.length ?? 0})
-      </Text>
-      {len > 10 ? (
-        <VirtualList items={items} assetId={assetId} />
-      ) : (
-        <CommonList items={items} assetId={assetId} />
-      )}
-    </Box>
+      </Collapsible.Title>
+      <Collapsible.Body className="p-0">
+        {len > 10 ? (
+          <VirtualList items={items} assetId={assetId} />
+        ) : (
+          <CommonList items={items} assetId={assetId} />
+        )}
+      </Collapsible.Body>
+    </Collapsible.Content>
   );
 }
 
 const styles = tv({
   slots: {
-    root: 'bg-gray-3 mx-4 mb-1 rounded-sm border border-border',
-    title: [
-      'py-3 px-4 flex items-center gap-2',
-      'text-sm font-medium text-secondary',
-      'border-b border-border',
-    ],
     item: [
       'odd:bg-gray-4 p-2 px-4 [&_*]:text-xs h-[40px]',
       'last:rounded-b-sm',

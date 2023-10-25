@@ -18,12 +18,16 @@ import { Link } from '../Link';
 import { Text } from '../Text';
 import { Tooltip } from '../Tooltip/Tooltip';
 
+import type { UseFuelAddressOpts } from './useFuelAddress';
 import { useFuelAddress } from './useFuelAddress';
 
 export type AddressBaseProps = {
   value: string;
   prefix?: ReactNode;
   full?: boolean;
+  addressOpts?: UseFuelAddressOpts;
+  fixed?: UseFuelAddressOpts['fixed'];
+  linkPos?: 'left' | 'right';
 };
 
 export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
@@ -34,13 +38,29 @@ export type AddressLinkProps = Omit<LinkProps, 'children'> & {
 export const AddressRoot = createComponent<AddressProps, typeof HStack>({
   id: 'Address',
   baseElement: HStack,
-  render: (Root, { value, full, prefix, className, children, ...props }) => {
+  render: (
+    Root,
+    {
+      value,
+      linkPos = 'right',
+      full,
+      fixed,
+      prefix,
+      className,
+      addressOpts,
+      children,
+      ...props
+    },
+  ) => {
     const classes = styles();
-    const { isValid, isShowingB256, address, short, toggle } =
-      useFuelAddress(value);
+    const { isValid, isShowingB256, address, short, toggle } = useFuelAddress(
+      value,
+      { ...addressOpts, fixed },
+    );
 
     const type = isShowingB256 ? 'Bech32' : 'HEX';
     const tooltipMsg = `Click to show ${type} address or press CMD+k to toggle all`;
+    const isToggleable = isValid && !fixed;
 
     return (
       <Root
@@ -49,10 +69,11 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
         {...props}
         className={classes.root({ className })}
       >
+        {linkPos === 'left' && children}
         <HStack align="center" gap="1">
           {prefix && <Text className={classes.prefix()}>{prefix}</Text>}
           <Copyable value={address} className={classes.address()} iconSize={16}>
-            {isValid ? (
+            {isToggleable ? (
               <Tooltip content={tooltipMsg}>
                 <Text
                   as="button"
@@ -67,7 +88,7 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
             )}
           </Copyable>
         </HStack>
-        {isValid && (
+        {isToggleable && (
           <Tooltip content={tooltipMsg}>
             <IconButton
               data-active={!isShowingB256}
@@ -80,7 +101,7 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
             />
           </Tooltip>
         )}
-        {children}
+        {linkPos === 'right' && children}
       </Root>
     );
   },

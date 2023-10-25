@@ -57,11 +57,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Address prefix="To:" value={output.to}>
-                <Address.Link as={NextLink} href={`/account/${output.to}`}>
-                  View Account
-                </Address.Link>
-              </Address>
+              <Address prefix="To:" value={output.assetId} fixed="b256" />
             </VStack>
           </HStack>
           <HStack align="center">
@@ -132,19 +128,29 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <TxIcon type="Message" status="Submitted" />
-          <VStack gap="1" className="flex-1">
-            <HStack gap="2" align="center">
-              <Text>Message</Text>
-            </HStack>
-            <HStack>
-              <Address prefix="From:" value={recipient}>
-                <Address.Link as={NextLink} href={`/account/${recipient}`} />
+          <HStack align="center" gap="1" className="flex-1 justify-between">
+            <Text>Message</Text>
+            <VStack gap="1" className="mr-2">
+              <Address value={recipient} linkPos="left">
+                <Address.Link
+                  as={NextLink}
+                  href={`/account/${recipient}`}
+                  className="w-[60px] text-right"
+                >
+                  Recipient
+                </Address.Link>
               </Address>
-              <Address prefix="To:" value={output.to}>
-                <Address.Link as={NextLink} href={`/account/${output.to}`} />
+              <Address value={output.to} linkPos="left">
+                <Address.Link
+                  as={NextLink}
+                  href={`/account/${output.to}`}
+                  className="w-[60px] text-right"
+                >
+                  To
+                </Address.Link>
               </Address>
-            </HStack>
-          </VStack>
+            </VStack>
+          </HStack>
         </Card.Header>
       </Card>
     );

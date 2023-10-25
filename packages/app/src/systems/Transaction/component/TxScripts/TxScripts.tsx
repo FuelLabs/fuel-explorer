@@ -6,19 +6,16 @@ import {
   Badge,
   Box,
   Button,
-  Card,
   Code,
+  Collapsible,
   HStack,
   Heading,
   Icon,
-  IconButton,
   Text,
   VStack,
   useRadixTheme,
 } from '@fuels/ui';
 import {
-  IconChevronUp,
-  IconChevronDown,
   IconFold,
   IconArrowsMoveVertical,
   IconCoins,
@@ -48,12 +45,11 @@ function parseJson(item: TransactionReceiptFragment): Record<string, any> {
   }, {});
 }
 
-export type TxScriptRowProps = {
+export type TxScriptRowProps = BaseProps<{
   item: TransactionReceiptFragment;
-};
+}>;
 
 function TxScriptRow({ item }: TxScriptRowProps) {
-  const [opened, setOpened] = useState(false);
   const asset = useAsset(item.assetId);
   const classes = styles();
   const ctx = useRadixTheme();
@@ -63,67 +59,53 @@ function TxScriptRow({ item }: TxScriptRowProps) {
     (item.receiptType === 'SCRIPT_RESULT' && item.result === '2');
 
   return (
-    <Card className="py-0 gap-0">
-      <Card.Header
-        className="group px-3 py-3"
-        data-state={opened ? 'opened' : 'closed'}
-      >
-        <HStack align="center">
-          <Badge
-            size="2"
-            color={isDanger ? 'red' : 'gray'}
-            variant={isDanger ? 'outline' : 'surface'}
-          >
-            {item.receiptType}
-          </Badge>
-          <div className="flex-1">
-            {item.param1 && (
-              <Code className="flex-1 bg-transparent text-muted" color="gray">
-                Method: {bn(item.param1).toHex()}
-              </Code>
-            )}
-          </div>
-          <Text as="p" className="flex items-center gap-2">
-            {asset?.icon ? (
-              <Image
-                src={asset.icon as string}
-                width={ICON_SIZE}
-                height={ICON_SIZE}
-                alt={asset.name}
-              />
-            ) : (
-              item.amount && (
-                <Icon icon={IconCoins} size={20} color="text-muted" />
-              )
-            )}
-            {item.amount && (
-              <Text>
-                {amount.format()} {asset?.symbol ?? ''}
-              </Text>
-            )}
-          </Text>
-          <IconButton
-            iconColor="text-muted"
-            variant="link"
-            className={classes.icon()}
-            icon={opened ? IconChevronUp : IconChevronDown}
-            onClick={() => setOpened(!opened)}
-          />
-        </HStack>
-      </Card.Header>
-      {opened && (
-        <Card.Body className={classes.utxos()}>
-          <JsonView
-            data={parseJson(item)}
-            shouldExpandNode={collapseAllNested}
-            style={{
-              ...(ctx.appearance === 'dark' ? darkStyles : defaultStyles),
-              container: classes.json(),
-            }}
-          />
-        </Card.Body>
-      )}
-    </Card>
+    <Collapsible className="py-0 gap-0">
+      <Collapsible.Header className="group px-3 py-3">
+        <Badge
+          size="2"
+          color={isDanger ? 'red' : 'gray'}
+          variant={isDanger ? 'outline' : 'surface'}
+        >
+          {item.receiptType}
+        </Badge>
+        <div className="flex-1">
+          {item.param1 && (
+            <Code className="flex-1 bg-transparent text-muted" color="gray">
+              Method: {bn(item.param1).toHex()}
+            </Code>
+          )}
+        </div>
+        <Text as="p" className="flex items-center gap-2">
+          {asset?.icon ? (
+            <Image
+              src={asset.icon as string}
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              alt={asset.name}
+            />
+          ) : (
+            item.amount && (
+              <Icon icon={IconCoins} size={20} color="text-muted" />
+            )
+          )}
+          {item.amount && (
+            <Text>
+              {amount.format()} {asset?.symbol ?? ''}
+            </Text>
+          )}
+        </Text>
+      </Collapsible.Header>
+      <Collapsible.Content className={classes.utxos()}>
+        <JsonView
+          data={parseJson(item)}
+          shouldExpandNode={collapseAllNested}
+          style={{
+            ...(ctx.appearance === 'dark' ? darkStyles : defaultStyles),
+            container: classes.json(),
+          }}
+        />
+      </Collapsible.Content>
+    </Collapsible>
   );
 }
 
