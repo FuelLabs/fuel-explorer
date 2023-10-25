@@ -28,7 +28,7 @@ export function TxBreadcrumb({ transactionId, ...props }: TxBreadcrumbProps) {
         <Text size={'6'} weight={'medium'} className="mr-4 color-current">
           Transaction
         </Text>
-        <Address full value={transactionId} />
+        <Address full value={transactionId} fixed="b256" />
       </BreadcrumbItem>
     </Breadcrumb>
   );

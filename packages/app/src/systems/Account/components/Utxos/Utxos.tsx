@@ -53,7 +53,7 @@ function VirtualList({ items, assetId }: UtxosProps) {
     <List
       height={350}
       itemCount={items?.length ?? 0}
-      itemSize={40}
+      itemSize={35}
       width="100%"
     >
       {({ index: idx, style }) => {
@@ -102,7 +102,7 @@ export function Utxos({ items, assetId, ...props }: UtxosProps) {
 const styles = tv({
   slots: {
     item: [
-      'odd:bg-gray-4 p-2 px-4 [&_*]:text-xs h-[40px]',
+      'odd:bg-gray-4 p-2 px-4 [&_*]:text-xs h-[35px]',
       'last:rounded-b-sm',
     ],
   },

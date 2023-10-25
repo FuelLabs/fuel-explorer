@@ -43,7 +43,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
     <VStack gap="9" className="min-h-[65vh]">
       <PageTitle icon={<IconChecklist size={24} stroke={1.2} />}>
         Transaction
-        <Address full value={tx.id} />
+        <Address full value={tx.id} fixed="b256" />
       </PageTitle>
       <Grid columns="6" gap="9">
         <Box className="col-span-2">
