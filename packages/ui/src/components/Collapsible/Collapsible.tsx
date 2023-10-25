@@ -133,7 +133,7 @@ const styles = tv({
     icon: 'transition-transform group-data-[state=closed]:hover:-rotate-180 group-data-[state=opened]:-rotate-180',
     content: 'mx-4 mb-2 border border-border',
     body: '',
-    title: 'flex items-center gap-2 text-sm font-medium text-secondary',
+    title: 'flex items-center gap-2 text-sm font-medium',
   },
   variants: {
     variant: {

@@ -39,7 +39,7 @@ export const BalanceItem = createComponent<
           ) : (
             <TxIcon type="Mint" status="Submitted" />
           )}
-          <VStack gap="1">
+          <VStack gap="1" className="flex-1">
             <Text className="text-md font-medium">
               {asset.name}
               {asset.symbol && (

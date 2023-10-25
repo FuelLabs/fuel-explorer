@@ -57,7 +57,15 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Address prefix="To:" value={output.assetId} fixed="b256" />
+              {output.type === GroupedOutputType.CoinOutput ? (
+                <Address value={output.assetId} fixed="b256" />
+              ) : (
+                <Address prefix="To:" value={output.to}>
+                  <Address.Link as={NextLink} href={`/account/${output.to}`}>
+                    View Account
+                  </Address.Link>
+                </Address>
+              )}
             </VStack>
           </HStack>
           <HStack align="center">

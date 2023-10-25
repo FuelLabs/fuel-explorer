@@ -35,7 +35,7 @@ function UtxoItem({ item, assetId, style }: UtxoItemProps) {
           Transaction <Icon icon={IconExternalLink} size={14} />
         </Address.Link>
       </Address>
-      <Text className="text-muted flex items-center gap-2">
+      <Text className="text-secondary flex items-center gap-2">
         <Icon icon={IconCoins} size={14} /> {bn(item.amount).format()}{' '}
         {asset?.symbol ?? ''}
       </Text>
