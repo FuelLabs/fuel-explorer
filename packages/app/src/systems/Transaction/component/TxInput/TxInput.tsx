@@ -58,7 +58,11 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
                 </Text>
               )}
             </Text>
-            <Address prefix="From:" value={input.assetId} fixed="b256" />
+            <Address prefix="From:" value={input.owner}>
+              <Address.Link as={NextLink} href={`/account/${input.owner}`}>
+                View Account
+              </Address.Link>
+            </Address>
           </VStack>
           {amount && (
             <Text className="text-secondary">
