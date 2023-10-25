@@ -1,7 +1,6 @@
 @layer tw-base, fuel, tw-components, tw-utilities;
 
 @import 'tailwindcss/base';
-@import '@fuels/ui/dist/styles.css';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 

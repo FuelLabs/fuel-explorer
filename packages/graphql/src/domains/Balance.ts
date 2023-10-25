@@ -48,6 +48,7 @@ export class BalanceDomain {
         }
       }
     `;
+
     type UtxosResponse = {
       coins: {
         nodes: {

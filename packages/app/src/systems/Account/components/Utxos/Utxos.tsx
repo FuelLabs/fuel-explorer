@@ -1,8 +1,9 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Text, HStack, cx, Box, Address } from '@fuels/ui';
+import { Text, HStack, Box, Address } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconSquareKey } from '@tabler/icons-react';
 import { bn } from 'fuels';
+import NextLink from 'next/link';
 import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
@@ -17,14 +18,14 @@ type UtxoItemProps = {
 
 function UtxoItem({ item, assetId, style }: UtxoItemProps) {
   const asset = useAsset(assetId);
+  const classes = styles();
   return (
-    <HStack
-      style={style}
-      align="center"
-      gap="4"
-      className={cx('odd:bg-gray-4 p-2 px-2', '[&_*]:text-xs', 'max-h-[35px]')}
-    >
-      <Address full prefix="ID:" value={item.utxoId} className="flex-1" />
+    <HStack style={style} align="center" gap="4" className={classes.item()}>
+      <Address full prefix="ID:" value={item.utxoId} className="flex-1">
+        <Address.Link as={NextLink} href={`/tx/${item.utxoId.slice(0, -2)}`}>
+          View Transaction
+        </Address.Link>
+      </Address>
       <Text className="text-muted">
         {bn(item.amount).format()} {asset?.symbol ?? ''}
       </Text>
@@ -42,7 +43,7 @@ function VirtualList({ items, assetId }: UtxosProps) {
     <List
       height={350}
       itemCount={items?.length ?? 0}
-      itemSize={35}
+      itemSize={40}
       width="100%"
     >
       {({ index: idx, style }) => {
@@ -94,11 +95,15 @@ export function Utxos({ items, assetId, className, ...props }: UtxosProps) {
 
 const styles = tv({
   slots: {
-    root: 'bg-gray-3 mx-4 py-3 px-4 rounded',
+    root: 'bg-gray-3 mx-4 mb-1 rounded-sm border border-border',
     title: [
-      'flex items-center',
+      'py-3 px-4 flex items-center gap-2',
       'text-sm font-medium text-secondary',
-      'border-b py-1 border-border mb-3',
+      'border-b border-border',
+    ],
+    item: [
+      'odd:bg-gray-4 p-2 px-4 [&_*]:text-xs h-[40px]',
+      'last:rounded-b-sm',
     ],
   },
 });

@@ -1,4 +1,8 @@
-import { IconExternalLink, IconProgressBolt } from '@tabler/icons-react';
+import {
+  IconExternalLink,
+  IconGridScan,
+  IconLineScan,
+} from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
@@ -67,7 +71,7 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
           <Tooltip content={tooltipMsg}>
             <IconButton
               data-active={!isShowingB256}
-              icon={IconProgressBolt}
+              icon={isShowingB256 ? IconLineScan : IconGridScan}
               variant="link"
               color="gray"
               iconSize={16}
@@ -99,12 +103,12 @@ export const Address = withNamespace(AddressRoot, {
 
 const styles = tv({
   slots: {
-    root: 'fuel-[Link]:text-sm',
+    root: '',
     prefix: 'text-sm text-secondary',
     address: 'text-sm text-muted mt-px',
     toggleBtn: [
       'transition-all duration-500 text-muted rotate-0',
-      'data-[active=true]:rotate-180 data-[active=true]:text-brand',
+      'data-[active=true]:rotate-180',
     ],
   },
 });

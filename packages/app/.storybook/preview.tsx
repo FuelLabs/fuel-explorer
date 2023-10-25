@@ -1,4 +1,5 @@
 import '@fontsource-variable/inter/slnt.css';
+import '@fuels/ui/styles.css';
 import '../src/app/globals.css';
 
 import React from 'react';

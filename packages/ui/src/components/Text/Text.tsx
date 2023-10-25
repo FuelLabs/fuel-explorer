@@ -20,7 +20,6 @@ import type { PropsOf, WithAsProps } from '../../utils/types';
 
 const styles = {
   root: tv({
-    base: 'text-md',
     variants: {
       withIcon: {
         true: 'flex items-center gap-1',
