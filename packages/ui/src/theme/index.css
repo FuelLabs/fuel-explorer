@@ -1,7 +1,7 @@
 @layer tw-base, radix, tw-components, tw-utilities;
 
 @import 'tailwindcss/base' layer(tw-base);
-@import '@radix-ui/themes/styles.css' layer(radix);
+@import '@radix-ui/themes/styles.css' layer(tw-base);
 @import 'tailwindcss/components' layer(tw-components);
 @import '../components/Spinner/Spinner.css' layer(tw-components);
 @import 'tailwindcss/utilities' layer(tw-utilities);
@@ -53,7 +53,7 @@
 [data-accent-color] {
   /* general colors */
   --color-transparent: transparent;
-  --color-accent: var(--accent-9);
+  --color-accent: var(--color-brand);
   --color-border: var(--gray-6);
   --color-border-hover: var(--gray-8);
 

@@ -8,10 +8,12 @@ export const config = {
   },
 };
 
-const schema = createSchema(process.env.FUEL_PROVIDER_URL!);
+const url = process.env.FUEL_PROVIDER_URL!;
+const schema = createSchema(url);
 
 export default createYoga({
   schema,
   // Needed to be defined explicitly because our endpoint lives at a different path other than `/graphql`
   graphqlEndpoint: '/api/graphql',
+  context: () => ({ url }),
 });

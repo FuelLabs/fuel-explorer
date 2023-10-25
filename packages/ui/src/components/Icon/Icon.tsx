@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/component';
 import { cx } from '../../utils/css';
 import type { PropsOf } from '../../utils/types';
 
+import { INIT_ICON_SIZE, INIT_ICON_STROKE } from './constants';
 import type { IconComponent, IconContext } from './useIconContext';
 import { useIconContext } from './useIconContext';
 
@@ -17,8 +18,8 @@ export const Icon = createComponent<IconProps, 'svg'>({
     {
       className,
       color: initColor,
-      size: initSize,
-      stroke: initStroke,
+      size: initSize = INIT_ICON_SIZE,
+      stroke: initStroke = INIT_ICON_STROKE,
       icon: IconComponent,
       ...props
     },

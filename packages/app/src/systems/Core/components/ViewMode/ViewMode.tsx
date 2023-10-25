@@ -1,4 +1,5 @@
 import { Flex, Text } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 
 export enum ViewModes {
   Simple = 'Simple',
@@ -11,18 +12,16 @@ export type ViewModeProps = {
 };
 
 export function ViewMode({ mode, onChange }: ViewModeProps) {
+  const classes = styles();
+
   return (
-    <Flex
-      align="stretch"
-      justify="center"
-      className="bg-gray-3 p-1 rounded h-9"
-    >
+    <Flex align="stretch" justify="center" className={classes.root()}>
       <Flex
         align="center"
         justify="center"
-        className={`flex-1 rounded px-6 cursor-default ${
-          mode === ViewModes.Simple ? 'bg-gray-1' : 'cursor-pointer'
-        }`}
+        className={classes.viewItem()}
+        data-mode={ViewModes.Simple}
+        data-active={mode === ViewModes.Simple}
         onClick={() => onChange(ViewModes.Simple)}
       >
         <Text size="1">Simple</Text>
@@ -30,9 +29,9 @@ export function ViewMode({ mode, onChange }: ViewModeProps) {
       <Flex
         align="center"
         justify="center"
-        className={`flex-1 rounded px-3 cursor-default ${
-          mode === ViewModes.Advanced ? 'bg-gray-1' : 'cursor-pointer'
-        }`}
+        className={classes.viewItem()}
+        data-mode={ViewModes.Advanced}
+        data-active={mode === ViewModes.Advanced}
         onClick={() => onChange(ViewModes.Advanced)}
       >
         <Text size="1">Advanced</Text>
@@ -40,3 +39,15 @@ export function ViewMode({ mode, onChange }: ViewModeProps) {
     </Flex>
   );
 }
+
+const styles = tv({
+  slots: {
+    root: 'bg-gray-3 p-1 rounded h-9',
+    viewItem: [
+      'flex-1 rounded cursor-pointer',
+      'data-[mode=Simple]:px-6',
+      'data-[mode=Advanced]:px-3',
+      'data-[active=true]:bg-gray-1 data-[active=true]:cursor-default',
+    ],
+  },
+});

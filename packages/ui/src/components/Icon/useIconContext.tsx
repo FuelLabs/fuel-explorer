@@ -5,6 +5,8 @@ import { createContext, useContext } from 'react';
 
 import type { Colors } from '../../utils/types';
 
+import { INIT_ICON_SIZE, INIT_ICON_STROKE } from './constants';
+
 export type IconContext = {
   stroke?: number;
   size?: number;
@@ -16,8 +18,8 @@ export type IconComponent = ComponentType<
 >;
 
 const context = createContext<IconContext>({
-  size: 18,
-  stroke: 1.2,
+  size: INIT_ICON_SIZE,
+  stroke: INIT_ICON_STROKE,
 } as IconContext);
 
 export function useIconContext() {

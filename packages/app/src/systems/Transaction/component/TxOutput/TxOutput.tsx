@@ -1,18 +1,18 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type { GroupedOutput } from '@fuel-explorer/graphql';
 import {
+  Address,
   Card,
-  Copyable,
   HStack,
   Text,
   VStack,
   createComponent,
   cx,
-  shortAddress,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
@@ -57,19 +57,21 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                   </Text>
                 )}
               </Text>
-              <Copyable
-                value={output.to}
-                iconSize={16}
-                className="text-sm text-muted"
-              >
-                To: {shortAddress(output.to)}
-              </Copyable>
+              {output.type === GroupedOutputType.CoinOutput ? (
+                <Address value={output.assetId} fixed="b256" />
+              ) : (
+                <Address prefix="To:" value={output.to}>
+                  <Address.Link as={NextLink} href={`/account/${output.to}`}>
+                    View Account
+                  </Address.Link>
+                </Address>
+              )}
             </VStack>
           </HStack>
           <HStack align="center">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format({ precision: 3 })} {asset.symbol}
+                {bn(amount).format()} {asset.symbol}
               </Text>
             )}
           </HStack>
@@ -115,9 +117,7 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <TxIcon status="Success" type="Contract" />
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
-              <Copyable value={contractId} className="text-sm text-secondary">
-                Id: {shortAddress(contractId)}
-              </Copyable>
+              <Address prefix="Id:" value={contractId} />
             </VStack>
           </HStack>
         </Card.Header>
@@ -136,31 +136,29 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <TxIcon type="Message" status="Submitted" />
-          <VStack gap="1" className="flex-1">
+          <HStack align="center" gap="1" className="flex-1 justify-between">
             <Text>Message</Text>
-            <HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">From:</Text>
-                <Copyable
-                  value={recipient}
-                  className="text-sm text-muted"
-                  iconSize={16}
+            <VStack gap="1" className="mr-2">
+              <Address value={recipient} linkPos="left">
+                <Address.Link
+                  as={NextLink}
+                  href={`/account/${recipient}`}
+                  className="w-[60px] text-right"
                 >
-                  {shortAddress(recipient)}
-                </Copyable>
-              </HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">To:</Text>
-                <Copyable
-                  value={recipient}
-                  className="text-sm text-muted"
-                  iconSize={16}
+                  Recipient
+                </Address.Link>
+              </Address>
+              <Address value={output.to} linkPos="left">
+                <Address.Link
+                  as={NextLink}
+                  href={`/account/${output.to}`}
+                  className="w-[60px] text-right"
                 >
-                  {shortAddress(recipient)}
-                </Copyable>
-              </HStack>
-            </HStack>
-          </VStack>
+                  To
+                </Address.Link>
+              </Address>
+            </VStack>
+          </HStack>
         </Card.Header>
       </Card>
     );

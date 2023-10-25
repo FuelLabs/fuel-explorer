@@ -64,6 +64,14 @@ export const Strong: Story = {
   ),
 };
 
+export const AsChild: Story = {
+  render: () => (
+    <Text asChild>
+      <div>I&apos;m a div</div>
+    </Text>
+  ),
+};
+
 export const Polymorphic: Story = {
   render: () => (
     <Text as={Link} href="http://google.com">

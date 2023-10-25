@@ -1,7 +1,7 @@
 'use client';
 import { Container, VStack, Nav } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
 
 import { setTheme } from '../../actions/setTheme';
@@ -16,9 +16,9 @@ export function Layout({ children, hero }: LayoutProps) {
     <VStack className="min-w-screen min-h-screen" gap="0">
       <Nav>
         <Nav.Desktop className="px-10">
-          <Link href="/" className="flex items-center">
+          <NextLink href="/" className="flex items-center">
             <Nav.Logo />
-          </Link>
+          </NextLink>
           <Nav.Menu>
             <Nav.MenuItem href="https://docs.fuel.network/">
               Developers
@@ -39,8 +39,8 @@ export function Layout({ children, hero }: LayoutProps) {
             >
               Bridge
             </Nav.MenuItem>
-            <Nav.MenuItem isActive>
-              <Link href="/">Explorer</Link>
+            <Nav.MenuItem isActive as={NextLink} href="/">
+              Explorer
             </Nav.MenuItem>
             <Nav.MenuItem
               isExternal
@@ -54,7 +54,7 @@ export function Layout({ children, hero }: LayoutProps) {
         </Nav.Desktop>
       </Nav>
       {hero && <Hero />}
-      <Container className="py-24" size="4">
+      <Container className="py-16 pb-20" size="4">
         {children}
       </Container>
       <Footer />
