@@ -20,12 +20,9 @@ import type { PropsOf, WithAsProps } from '../../utils/types';
 
 const styles = {
   root: tv({
-    base: 'text-md',
     variants: {
       withIcon: {
-        left: 'fuel-[Icon]:mr-2',
-        right: 'fuel-[Icon]:ml-2',
-        false: '',
+        true: 'flex items-center gap-1',
       },
     },
     defaultVariants: {
@@ -83,28 +80,36 @@ export const TextBase = createPolymorphicComponent<TextProps, typeof RadixText>(
     baseElement: RadixText,
     render: (
       Comp,
-      { className, leftIcon, rightIcon, iconColor = 'text-icon', ...props },
+      {
+        as: Root = 'span',
+        asChild,
+        size = '3',
+        className,
+        leftIcon,
+        rightIcon,
+        iconColor = 'text-icon',
+        ...props
+      },
     ) => {
       const { children, ...itemProps } = useIconProps({
+        size,
         leftIcon,
         rightIcon,
         iconColor,
         ...props,
       });
+
       const classes = styles.root({
         className,
-        withIcon: leftIcon ? 'left' : rightIcon ? 'right' : false,
+        withIcon: Boolean(leftIcon || rightIcon),
       });
 
+      const innerChildren = asChild ? children : <Root>{children}</Root>;
       return (
-        <Comp {...itemProps} className={classes}>
-          {children}
+        <Comp {...itemProps} asChild className={classes}>
+          {innerChildren}
         </Comp>
       );
-    },
-    defaultProps: {
-      size: '3',
-      as: 'span',
     },
   },
 );

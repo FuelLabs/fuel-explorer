@@ -51,8 +51,12 @@ export function toCamelCase(str: string): string {
   });
 }
 
-export function shortAddress(address: string = '', first = 6, last = 4) {
+export function shortAddress(
+  address: string = '',
+  trimLeft = 6,
+  trimRight = 4,
+) {
   return address.length > 10
-    ? `${address.slice(0, first)}...${address.slice(-last)}`
+    ? `${address.slice(0, trimLeft)}...${address.slice(-trimRight)}`
     : address;
 }

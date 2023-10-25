@@ -1,22 +1,22 @@
 import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
 import {
+  Address,
   Card,
-  Copyable,
   EntityItem,
   HStack,
-  IconButton,
+  Collapsible,
   Text,
   VStack,
   createComponent,
   cx,
-  shortAddress,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
-import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import Image from 'next/image';
-import { useState } from 'react';
+import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
+import type { UtxoItem } from '~/systems/Account/components/Utxos/Utxos';
+import { Utxos } from '~/systems/Account/components/Utxos/Utxos';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
 import { TxIcon } from '../TxIcon/TxIcon';
@@ -27,11 +27,9 @@ export type TxInputProps = CardProps & {
   input: GroupedInput;
 };
 
-const TxInputCoin = createComponent<TxInputProps, typeof Card>({
+const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
   id: 'TxInputCoin',
   render: (_, { input, ...props }) => {
-    const [opened, setOpened] = useState(false);
-    const classes = styles();
     const assetId = input.assetId;
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
@@ -39,76 +37,41 @@ const TxInputCoin = createComponent<TxInputProps, typeof Card>({
 
     if (!asset) return null;
     return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header
-          className={classes.header()}
-          data-state={opened ? 'opened' : 'closed'}
-        >
-          <HStack align="center">
-            {asset.icon ? (
-              <Image
-                src={asset.icon as string}
-                width={ICON_SIZE}
-                height={ICON_SIZE}
-                alt={asset.name}
-              />
-            ) : (
-              <TxIcon type="Mint" status="Submitted" />
-            )}
-            <VStack gap="0">
-              <Text className="text-md font-medium">
-                {asset.name}
-                {asset.symbol && (
-                  <Text className="ml-2 text-muted text-sm">
-                    ({asset.symbol})
-                  </Text>
-                )}
-              </Text>
-              <Copyable
-                value={input.owner}
-                iconSize={16}
-                className="text-sm text-muted"
-              >
-                From: {shortAddress(input.owner)}
-              </Copyable>
-            </VStack>
-          </HStack>
-          <HStack align="center">
-            {amount && (
-              <Text className="text-secondary">
-                {bn(amount).format({ precision: 3 })} {asset.symbol}
-              </Text>
-            )}
-            <IconButton
-              iconColor="text-muted"
-              variant="link"
-              className={classes.icon()}
-              icon={opened ? IconChevronUp : IconChevronDown}
-              onClick={() => setOpened(!opened)}
+      <Collapsible {...props}>
+        <Collapsible.Header>
+          {asset.icon ? (
+            <Image
+              src={asset.icon as string}
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              alt={asset.name}
             />
-          </HStack>
-        </Card.Header>
-        {opened && (
-          <Card.Body className={classes.utxos()}>
-            <Text as="div" className="text-xs border-b pb-1 border-border mb-2">
-              UTXOs
-            </Text>
-            {inputs?.map((input: InputCoin) => (
-              <HStack key={input.utxoId} align="center" justify="between">
-                <Copyable
-                  className="text-xs leading-relaxed"
-                  value={input.utxoId}
-                >
-                  {shortAddress(input.utxoId, 14, 14)}
-                </Copyable>
-                <Text className="text-xs leading-relaxed text-muted">
-                  {bn(input.amount).format({ precision: 3 })} {asset.symbol}
+          ) : (
+            <TxIcon type="Mint" status="Submitted" />
+          )}
+          <VStack gap="0" className="flex-1">
+            <Text className="text-md font-medium">
+              {asset.name}
+              {asset.symbol && (
+                <Text className="ml-2 text-muted text-sm">
+                  ({asset.symbol})
                 </Text>
-              </HStack>
-            ))}
-          </Card.Body>
-        )}
-      </Card>
+              )}
+            </Text>
+            <Address prefix="From:" value={input.owner}>
+              <Address.Link as={NextLink} href={`/account/${input.owner}`}>
+                View Account
+              </Address.Link>
+            </Address>
+          </VStack>
+          {amount && (
+            <Text className="text-secondary">
+              {bn(amount).format()} {asset.symbol}
+            </Text>
+          )}
+        </Collapsible.Header>
+        <Utxos items={inputs satisfies UtxoItem[]} assetId={assetId} />
+      </Collapsible>
     );
   },
 });
@@ -126,13 +89,9 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
             <EntityItem.Slot>
               <TxIcon status="Submitted" type="Contract" />
             </EntityItem.Slot>
-            <EntityItem.Info
-              id={contractId!}
-              title="Contract Input"
-              idPrefix={
-                <Text className="text-sm text-bold text-secondary">To:</Text>
-              }
-            />
+            <EntityItem.Info title="Contract Input">
+              <Address value={contractId} prefix="Id:" />
+            </EntityItem.Info>
           </EntityItem>
         </Card.Header>
       </Card>
@@ -140,64 +99,46 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
   },
 });
 
-const TxInputMessage = createComponent<TxInputProps, typeof Card>({
+const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
   id: 'TxInputMessage',
   render: (_, { input, ...props }) => {
-    const classes = styles();
-    const [opened, setOpened] = useState(false);
     const { sender, recipient, data } = input;
 
     return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header
-          className={classes.header()}
-          data-state={opened ? 'opened' : 'closed'}
-        >
+      <Collapsible {...props}>
+        <Collapsible.Header>
           <TxIcon type="Message" status="Submitted" />
-          <VStack gap="1" className="flex-1">
+          <HStack align="center" gap="1" className="flex-1 justify-between">
             <Text>Message</Text>
-            <HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">From:</Text>
-                <Copyable
-                  value={sender}
-                  className="text-sm text-muted"
-                  iconSize={16}
+            <VStack gap="1" className="mr-2">
+              <Address value={sender} linkPos="left">
+                <Address.Link
+                  as={NextLink}
+                  href={`/account/${sender}`}
+                  className="w-[60px] text-right"
                 >
-                  {shortAddress(sender)}
-                </Copyable>
-              </HStack>
-              <HStack gap="1" align="center">
-                <Text className="text-sm text-secondary">To:</Text>
-                <Copyable
-                  value={sender}
-                  className="text-sm text-muted"
-                  iconSize={16}
+                  Sender
+                </Address.Link>
+              </Address>
+              <Address value={recipient} linkPos="left">
+                <Address.Link
+                  as={NextLink}
+                  href={`/account/${recipient}`}
+                  className="w-[60px] text-right"
                 >
-                  {shortAddress(recipient)}
-                </Copyable>
-              </HStack>
-            </HStack>
-          </VStack>
-          <IconButton
-            iconColor="text-muted"
-            variant="link"
-            className={classes.icon()}
-            icon={opened ? IconChevronUp : IconChevronDown}
-            onClick={() => setOpened(!opened)}
-          />
-        </Card.Header>
-        {opened && (
-          <Card.Body className={classes.utxos()}>
-            <Text as="div" className="text-xs border-b pb-1 border-border mb-2">
-              Data
-            </Text>
-            <Text as="p" className="text-xs leading-normal">
-              {data}
-            </Text>
-          </Card.Body>
-        )}
-      </Card>
+                  Recipient
+                </Address.Link>
+              </Address>
+            </VStack>
+          </HStack>
+        </Collapsible.Header>
+        <Collapsible.Content>
+          <Collapsible.Title>Data</Collapsible.Title>
+          <Collapsible.Body className="text-xs leading-normal">
+            {data}
+          </Collapsible.Body>
+        </Collapsible.Content>
+      </Collapsible>
     );
   },
 });
@@ -218,6 +159,5 @@ const styles = tv({
   slots: {
     header: 'group flex flex-row gap-4 justify-between items-center',
     icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
-    utxos: 'bg-gray-3 mx-4 py-3 px-4 rounded',
   },
 });

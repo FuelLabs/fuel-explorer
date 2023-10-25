@@ -15,12 +15,13 @@ import {
   Icon,
   VStack,
   Text,
+  Address,
 } from '@fuels/ui';
-import { IconArrowDown } from '@tabler/icons-react';
+import { IconArrowDown, IconChecklist } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
-import { TxBreadcrumb } from '../../component/TxBreadcrumb/TxBreadcrumb';
 import { TX_INTENT_MAP, TxIcon } from '../../component/TxIcon/TxIcon';
 import { TxInfo } from '../../component/TxInfo/TxInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
@@ -39,8 +40,11 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   const title = tx.title as string;
 
   return (
-    <VStack gap="9" className="min-h-[75vh]">
-      <TxBreadcrumb transactionId={tx.id} />
+    <VStack gap="9" className="min-h-[65vh]">
+      <PageTitle icon={<IconChecklist size={24} stroke={1.2} />}>
+        Transaction
+        <Address full value={tx.id} fixed="b256" />
+      </PageTitle>
       <Grid columns="6" gap="9">
         <Box className="col-span-2">
           <VStack>

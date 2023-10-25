@@ -54,8 +54,9 @@
     "generate:defs": "node scripts/create-defs.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/inter": "5.0.14",
-    "@fuel-ts/math": "0.63.0",
+    "@fontsource-variable/inter": "5.0.15",
+    "@fuel-ts/address": "0.64.1",
+    "@fuel-ts/math": "0.64.1",
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",
@@ -97,7 +98,7 @@
     "@storybook/testing-library": "^0.2.2",
     "@storybook/types": "^7.5.1",
     "@types/lodash": "4.14.200",
-    "@types/react": "^18.2.30",
+    "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
     "autoprefixer": "10.4.16",
     "globby": "13.2.2",

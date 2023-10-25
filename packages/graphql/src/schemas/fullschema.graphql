@@ -18,6 +18,7 @@ type Balance {
   amount: U64!
   assetId: AssetId!
   owner: Address!
+  utxos: [UtxoItem]
 }
 
 type BalanceConnection {
@@ -437,10 +438,6 @@ type InputMessage {
   witnessIndex: Int!
 }
 
-scalar JSON
-
-scalar JSONObject
-
 type MerkleProof {
   proofIndex: U64!
   proofSet: [Bytes32!]!
@@ -847,6 +844,13 @@ scalar U32
 scalar U64
 
 scalar UtxoId
+
+type UtxoItem {
+  amount: U64!
+  blockCreated: U32
+  txCreatedIdx: U64
+  utxoId: UtxoId!
+}
 
 type VariableOutput {
   amount: U64!

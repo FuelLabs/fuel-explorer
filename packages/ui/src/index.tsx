@@ -5,6 +5,7 @@ export { shortAddress } from './utils/helpers';
 export type * from './utils/types';
 
 export * from './components/Accordion';
+export * from './components/Address';
 export * from './components/Alert';
 export * from './components/AlertDialog';
 export * from './components/AspectRatio';
@@ -20,6 +21,7 @@ export * from './components/Card';
 export * from './components/CardList';
 export * from './components/Checkbox';
 export * from './components/ContextMenu';
+export * from './components/Collapsible';
 export * from './components/Copyable';
 export * from './components/Dialog';
 export * from './components/Drawer';
