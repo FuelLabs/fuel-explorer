@@ -30,7 +30,7 @@ export function TxScreenAdvanced({ transaction: tx }: TxScreenProps) {
             <CopyButton size="1" value={JSON.stringify(tx, null, 2)} />
           </Flex>
         </Card.Header>
-        <ScrollArea className="flex-1">
+        <ScrollArea className={classes.cardMiddle()}>
           <JsonViewer data={tx} />
         </ScrollArea>
         <Card.Footer className={classes.cardFooter()}>
@@ -56,6 +56,7 @@ const styles = tv({
       'data-[compact=true]:max-h-[400px]',
     ],
     cardHeader: 'border-b border-card-border py-3 flex-none',
+    cardMiddle: 'flex-1 [&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]',
     cardFooter: [
       'border-t border-card-border',
       'py-3 self-stretch flex-none justify-center',
