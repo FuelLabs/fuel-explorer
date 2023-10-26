@@ -2,7 +2,13 @@
 
 import { cx } from '../utils/css';
 
-export type Variant = 'solid' | 'ghost' | 'outline' | 'surface' | 'link';
+export type Variant =
+  | 'solid'
+  | 'ghost'
+  | 'outline'
+  | 'surface'
+  | 'link'
+  | 'soft';
 export type VariantProps<V = Variant> = {
   className?: string;
   variant?: V;
