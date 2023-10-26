@@ -23,6 +23,8 @@ export function ContractScreen({ contract }: ContractScreenProps) {
 
   if (!contract) return null;
 
+  console.log(`contract`, contract);
+
   return (
     <VStack gap="6" className="min-h-[65vh]">
       <PageTitle icon={<IconChecklist size={24} stroke={1.2} />}>
@@ -34,7 +36,9 @@ export function ContractScreen({ contract }: ContractScreenProps) {
           <ViewMode mode={viewMode} onChange={setViewMode} />
         </Flex>
       </PageTitle>
-      {viewMode === ViewModes.Simple && <ContractScreenSimple />}
+      {viewMode === ViewModes.Simple && (
+        <ContractScreenSimple contract={contract} />
+      )}
       {viewMode === ViewModes.Advanced && <ContractScreenAdvanced />}
     </VStack>
   );

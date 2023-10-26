@@ -5,19 +5,19 @@ import type { BaseProps } from '@fuels/ui';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
-type TxInfoProps = BaseProps<{
+type CardInfoProps = BaseProps<{
   name?: string;
   description?: string | null;
   children?: ReactNode;
 }>;
 
-export function TxInfo({
+export function CardInfo({
   className,
   name,
   description,
   children,
   ...props
-}: TxInfoProps) {
+}: CardInfoProps) {
   const classes = styles();
   return (
     <Card {...props} className={classes.root({ className })}>
