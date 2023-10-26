@@ -15,9 +15,10 @@ const COPY_ICON_SIZES = {
 
 const CopyButton = ({ value, text = 'Copy', ...props }: CopyButtonProps) => {
   const size = props.size || '1';
+  const variant = props.variant || 'soft';
 
   return (
-    <Button variant="soft" size={size} color="gray">
+    <Button {...props} variant={variant} size={size} color="gray">
       <Copyable
         value={value}
         iconSize={COPY_ICON_SIZES[size as string]}
