@@ -16,6 +16,8 @@ import {
 } from '@tabler/icons-react';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 
+import { TabSource } from './TabSource';
+
 type ContractScreenProps = {
   contract: ContractItemFragment;
 };
@@ -29,7 +31,7 @@ export function ContractScreenSimple({ contract }: ContractScreenProps) {
           <Copyable value={address}>{short}</Copyable>
         </CardInfo>
         <CardInfo name="Deployment tx" className="flex-1">
-          XX 0xaokadsoksda XX
+          XX {short} XX
         </CardInfo>
         <CardInfo
           name="Deployed time"
@@ -58,7 +60,7 @@ export function ContractScreenSimple({ contract }: ContractScreenProps) {
             Source code
           </Tabs.Trigger>
         </Tabs.List>
-        <Box className="px-3 pt-3 pb-2">
+        <Box className="pt-3 pb-2">
           <Tabs.Content value="transactions">
             <Text size="2">Transactions.</Text>
           </Tabs.Content>
@@ -69,7 +71,7 @@ export function ContractScreenSimple({ contract }: ContractScreenProps) {
             <Text size="2">Minted.</Text>
           </Tabs.Content>
           <Tabs.Content value="source">
-            <Text size="2">Source.</Text>
+            <TabSource bytecode={contract.bytecode} />
           </Tabs.Content>
         </Box>
       </Tabs>

@@ -11,8 +11,8 @@ import {
   ViewModes,
 } from '~/systems/Core/components/ViewMode/ViewMode';
 
-import { ContractScreenAdvanced } from '../../components/ContractScreenAdvanced/ContractScreenAdvanced';
-import { ContractScreenSimple } from '../../components/ContractScreenSimple/ContractScreenSimple';
+import { ContractScreenAdvanced } from '../../components/ContractScreenAdvanced';
+import { ContractScreenSimple } from '../../components/ContractScreenSimple';
 
 type ContractScreenProps = {
   contract?: Maybe<ContractItemFragment>;
@@ -22,8 +22,6 @@ export function ContractScreen({ contract }: ContractScreenProps) {
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
 
   if (!contract) return null;
-
-  console.log(`contract`, contract);
 
   return (
     <VStack gap="6" className="min-h-[65vh]">
