@@ -30,16 +30,6 @@ export function ContractScreenSimple({ contract }: ContractScreenProps) {
         <CardInfo name="Id" className="flex-1">
           <Copyable value={address}>{short}</Copyable>
         </CardInfo>
-        <CardInfo name="Deployment tx" className="flex-1">
-          XX {short} XX
-        </CardInfo>
-        <CardInfo
-          name="Deployed time"
-          description="25 May 2023 ~ 08:51:59 PM +UTC"
-          className="flex-1"
-        >
-          XX ~5 days ago XX
-        </CardInfo>
       </Flex>
       <Tabs defaultValue="source">
         <Tabs.List>
