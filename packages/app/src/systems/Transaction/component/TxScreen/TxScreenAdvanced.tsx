@@ -38,10 +38,10 @@ export function TxScreenAdvanced({ transaction: tx }: TxScreenProps) {
             variant="link"
             size="1"
             color="gray"
+            rightIcon={IconChevronDown}
             onClick={() => setCompact(!compact)}
           >
             Show {compact ? 'more' : 'less'}
-            <IconChevronDown size={13} className={classes.chevronIcon()} />
           </Button>
         </Card.Footer>
       </Card>
@@ -52,12 +52,14 @@ export function TxScreenAdvanced({ transaction: tx }: TxScreenProps) {
 const styles = tv({
   slots: {
     root: [
-      'group',
-      'data-[compact=true]:max-h-[440px] data-[compact=true]:svg:-rotate-180',
+      'group transition-[max-height] max-h-[75vh]',
+      'data-[compact=true]:max-h-[400px] data-[compact=true]:svg:-rotate-180',
     ],
     cardHeader: 'border-b border-card-border py-3 flex-none',
-    cardFooter:
-      'border-t border-card-border py-3 self-stretch flex-none justify-center',
-    chevronIcon: 'transition-transform group-data-[compact=true]:-rotate-180',
+    cardFooter: [
+      'border-t border-card-border',
+      'py-3 self-stretch flex-none justify-center',
+      'group-data-[compact=true]:[&_svg]:-rotate-180 [&_svg]:transition-transform',
+    ],
   },
 });
