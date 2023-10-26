@@ -1,4 +1,4 @@
-fragment ContractItem on Contract {
+fragment TransactionContractItem on Contract {
   __typename
   id
 }
@@ -54,7 +54,7 @@ fragment TransactionInput on Input {
     balanceRoot
     txPointer
     contract {
-      ...ContractItem
+      ...TransactionContractItem
     }
   }
   ... on InputMessage {
@@ -91,7 +91,7 @@ fragment TransactionOutput on Output {
   }
   ... on ContractCreated {
     contract {
-      ...ContractItem
+      ...TransactionContractItem
     }
   }
 }
@@ -99,10 +99,10 @@ fragment TransactionOutput on Output {
 fragment TransactionReceipt on Receipt {
   __typename
   contract {
-    ...ContractItem
+    ...TransactionContractItem
   }
   to {
-    ...ContractItem
+    ...TransactionContractItem
   }
   pc
   is
@@ -204,7 +204,7 @@ fragment TransactionItem on Transaction {
   }
   inputAssetIds
   inputContracts {
-    ...ContractItem
+    ...TransactionContractItem
   }
   inputs {
     ...TransactionInput
