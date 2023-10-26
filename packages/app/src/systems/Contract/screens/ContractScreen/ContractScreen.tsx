@@ -11,8 +11,8 @@ import {
   ViewModes,
 } from '~/systems/Core/components/ViewMode/ViewMode';
 
-import { ContractScreenAdvanced } from '../../components/ContractScreenAdvanced/ContractScreenAdvanced';
-import { ContractScreenSimple } from '../../components/ContractScreenSimple/ContractScreenSimple';
+import { ContractScreenAdvanced } from '../../components/ContractScreenAdvanced';
+import { ContractScreenSimple } from '../../components/ContractScreenSimple';
 
 type ContractScreenProps = {
   contract?: Maybe<ContractItemFragment>;
