@@ -53,7 +53,7 @@ const styles = tv({
   slots: {
     root: [
       'group transition-[max-height] max-h-[75vh]',
-      'data-[compact=true]:max-h-[400px] data-[compact=true]:svg:-rotate-180',
+      'data-[compact=true]:max-h-[400px]',
     ],
     cardHeader: 'border-b border-card-border py-3 flex-none',
     cardFooter: [
