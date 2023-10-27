@@ -20,7 +20,6 @@ const config = {
   experimental: {
     externalDir: true,
     serverComponentsExternalPackages: externals,
-    serverActions: true,
     esmExternals: true,
   },
   /** We run eslint as a separate task in CI */
