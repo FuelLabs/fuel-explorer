@@ -10,8 +10,6 @@ async function types() {
   let file = await fs.readFile(TYPES_FILE, 'utf-8');
   file = file.replace('returnType: ReturnType', 'returnType: _ReturnType');
   file = file.replace('export enum ReturnType {', 'export enum _ReturnType {');
-  file = file.replace('Dom.Headers', 'any');
-  file = file.replaceAll('GraphQLError', 'any');
   await fs.writeFile(TYPES_FILE, file, 'utf-8');
 }
 
