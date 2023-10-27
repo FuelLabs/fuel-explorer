@@ -1,20 +1,20 @@
 import { Badge, VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { TxInfo } from './TxInfo';
+import { CardInfo } from './CardInfo';
 
-const meta: Meta<typeof TxInfo> = {
-  title: 'Transaction/TxInfo',
-  component: TxInfo,
+const meta: Meta<typeof CardInfo> = {
+  title: 'Transaction/CardInfo',
+  component: CardInfo,
 };
 
 export default meta;
-type Story = StoryObj<typeof TxInfo>;
+type Story = StoryObj<typeof CardInfo>;
 
 export const Usage: Story = {
   render: () => (
     <VStack>
-      <TxInfo
+      <CardInfo
         className="w-[350px]"
         name="Status"
         description="Here a description"
@@ -22,14 +22,14 @@ export const Usage: Story = {
         <Badge color={'green'} size="1" variant="solid">
           Success
         </Badge>
-      </TxInfo>
-      <TxInfo
+      </CardInfo>
+      <CardInfo
         className="w-[350px]"
         name="Timestamp"
         description="Here a description"
       >
         ~5 days ago
-      </TxInfo>
+      </CardInfo>
     </VStack>
   ),
 };

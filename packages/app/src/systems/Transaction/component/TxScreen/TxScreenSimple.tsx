@@ -20,7 +20,7 @@ import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
-import { TxInfo } from '../../component/TxInfo/TxInfo';
+import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
 import type { TransactionNode, TxStatus } from '../../types';
@@ -40,7 +40,7 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
     <Grid columns="6" gap="9">
       <Box className="col-span-2">
         <VStack>
-          <TxInfo>
+          <CardInfo>
             <EntityItem>
               <EntityItem.Slot>
                 <TxIcon
@@ -60,17 +60,19 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
                 </Text>
               </EntityItem.Info>
             </EntityItem>
-          </TxInfo>
-          <TxInfo name={'Timestamp'} description={tx.time?.full}>
+          </CardInfo>
+          <CardInfo name={'Timestamp'} description={tx.time?.full}>
             {tx.time?.fromNow}
-          </TxInfo>
-          {tx.blockHeight && <TxInfo name={'Block'}>#{tx.blockHeight}</TxInfo>}
-          <TxInfo
+          </CardInfo>
+          {tx.blockHeight && (
+            <CardInfo name={'Block'}>#{tx.blockHeight}</CardInfo>
+          )}
+          <CardInfo
             name={'Gas spent'}
             description={`Gas limit: ${bn(tx.gasLimit).format()}`}
           >
             {bn(tx.gasUsed).format()}
-          </TxInfo>
+          </CardInfo>
         </VStack>
       </Box>
       <Box className="col-span-4">

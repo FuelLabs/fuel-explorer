@@ -1,0 +1,7 @@
+# import ContractItem from "./contract-fragments.graphql"
+
+query getContract($id: ContractId!) {
+  contract(id: $id) {
+    ...ContractItem
+  }
+}
