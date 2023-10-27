@@ -7,6 +7,7 @@ import {
   IconSquareRoundedPlus,
 } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 import { TabAssets } from './TabAssets';
 import { TabMinted } from './TabMinted';
@@ -20,7 +21,10 @@ type ContractScreenProps = {
 export function ContractScreenSimple({ contract }: ContractScreenProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const tabPathname = pathname?.split('/').slice(-1)[0];
+  const tabPathname = useMemo(
+    () => pathname?.split('/').slice(-1)[0],
+    [pathname],
+  );
 
   return (
     <VStack>
