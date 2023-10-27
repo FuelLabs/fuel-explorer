@@ -25,7 +25,7 @@ export function ContractScreenSimple({ contract }: ContractScreenProps) {
   return (
     <VStack>
       <Flex gap="4">
-        <CardInfo name="Id" className="flex-1">
+        <CardInfo name="Id" className="flex-[0_0_33%]">
           <Copyable value={address}>{short}</Copyable>
         </CardInfo>
       </Flex>
