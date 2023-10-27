@@ -13,7 +13,6 @@ import {
   Icon,
   Text,
   VStack,
-  useRadixTheme,
 } from '@fuels/ui';
 import {
   IconFold,
@@ -23,15 +22,10 @@ import {
 import { bn } from 'fuels';
 import Image from 'next/image';
 import { useState } from 'react';
-import {
-  JsonView,
-  defaultStyles,
-  darkStyles,
-  collapseAllNested,
-} from 'react-json-view-lite';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { JsonViewer } from '~/systems/Core/components/JsonViewer/JsonViewer';
 
 import type { TransactionNode } from '../../types';
 
@@ -52,7 +46,6 @@ export type TxScriptRowProps = BaseProps<{
 function TxScriptRow({ item }: TxScriptRowProps) {
   const asset = useAsset(item.assetId);
   const classes = styles();
-  const ctx = useRadixTheme();
   const amount = bn(item.amount);
   const isDanger =
     item.receiptType === 'PANIC' ||
@@ -97,14 +90,7 @@ function TxScriptRow({ item }: TxScriptRowProps) {
         </Text>
       </Collapsible.Header>
       <Collapsible.Content className={classes.utxos()}>
-        <JsonView
-          data={parseJson(item)}
-          shouldExpandNode={collapseAllNested}
-          style={{
-            ...(ctx.appearance === 'dark' ? darkStyles : defaultStyles),
-            container: classes.json(),
-          }}
-        />
+        <JsonViewer data={parseJson(item)} />
       </Collapsible.Content>
     </Collapsible>
   );
@@ -198,7 +184,6 @@ const styles = tv({
   slots: {
     icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
     utxos: 'bg-gray-3 mx-3 mb-3 p-0 rounded',
-    json: 'bg-transparent text-sm py-2 px-1',
     lines: [
       'relative flex-1 border-t border-b border-border',
       'before:h-[1px] before:absolute before:top-1/2 before:left-0 before:w-full before:bg-border',

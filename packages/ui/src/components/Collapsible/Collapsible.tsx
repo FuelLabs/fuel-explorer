@@ -130,7 +130,7 @@ const styles = tv({
   slots: {
     root: 'py-[10px]',
     header: 'group grid grid-cols-[1fr_auto] grid-rows-1 gap-4 items-center',
-    icon: 'transition-transform group-data-[state=closed]:hover:-rotate-180 group-data-[state=opened]:-rotate-180',
+    icon: 'transition-transform group-data-[state=opened]:-rotate-180',
     content: 'mx-4 mb-2 border border-border',
     body: '',
     title: 'flex items-center gap-2 text-sm font-medium',
