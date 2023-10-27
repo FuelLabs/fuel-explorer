@@ -1,34 +1,19 @@
 import type { ContractItemFragment } from '@fuel-explorer/graphql';
-import {
-  Box,
-  Copyable,
-  Flex,
-  Tabs,
-  Text,
-  VStack,
-  useFuelAddress,
-} from '@fuels/ui';
+import { Box, Tabs, Text, VStack } from '@fuels/ui';
 import {
   IconChecklist,
   IconCodeAsterix,
   IconCoins,
   IconSquareRoundedPlus,
 } from '@tabler/icons-react';
-import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 
 type ContractScreenProps = {
   contract: ContractItemFragment;
 };
 
-export function ContractScreenSimple({ contract }: ContractScreenProps) {
-  const { short, address } = useFuelAddress(contract.id);
+export function ContractScreenSimple({ contract: _ }: ContractScreenProps) {
   return (
     <VStack>
-      <Flex gap="4">
-        <CardInfo name="Id" className="flex-[0_0_33%]">
-          <Copyable value={address}>{short}</Copyable>
-        </CardInfo>
-      </Flex>
       <Tabs defaultValue="source">
         <Tabs.List>
           <Tabs.Trigger value="transactions">
