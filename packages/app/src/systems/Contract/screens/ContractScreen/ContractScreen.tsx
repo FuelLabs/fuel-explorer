@@ -1,10 +1,9 @@
 'use client';
 
 import type { ContractItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Flex, VStack } from '@fuels/ui';
+import { Address, Flex, VStack } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
 import { useState } from 'react';
-import { PageSubtitle } from '~/systems/Core/components/PageSubtitle/PageSubtitle';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import {
   ViewMode,
@@ -29,7 +28,7 @@ export function ContractScreen({ contract }: ContractScreenProps) {
         <Flex justify="between" className="flex-1">
           <Flex align="center" gap={'5'}>
             Contract
-            <PageSubtitle>Microchain: pool_funds</PageSubtitle>
+            <Address full value={contract.id} fixed="b256" />
           </Flex>
           <ViewMode mode={viewMode} onChange={setViewMode} />
         </Flex>

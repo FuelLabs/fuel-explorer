@@ -1,5 +1,5 @@
 import type { ContractItemFragment } from '@fuel-explorer/graphql';
-import { Box, Copyable, Flex, Tabs, VStack, useFuelAddress } from '@fuels/ui';
+import { Box, Tabs, VStack } from '@fuels/ui';
 import {
   IconChecklist,
   IconCodeAsterix,
@@ -7,7 +7,7 @@ import {
   IconSquareRoundedPlus,
 } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
+import { useMemo } from 'react';
 
 import { TabAssets } from './TabAssets';
 import { TabMinted } from './TabMinted';
@@ -19,18 +19,15 @@ type ContractScreenProps = {
 };
 
 export function ContractScreenSimple({ contract }: ContractScreenProps) {
-  const { short, address } = useFuelAddress(contract.id);
   const router = useRouter();
   const pathname = usePathname();
-  const tabPathname = pathname?.split('/').slice(-1)[0];
+  const tabPathname = useMemo(
+    () => pathname?.split('/').slice(-1)[0],
+    [pathname],
+  );
 
   return (
     <VStack>
-      <Flex gap="4">
-        <CardInfo name="Id" className="flex-[0_0_33%]">
-          <Copyable value={address}>{short}</Copyable>
-        </CardInfo>
-      </Flex>
       <Tabs
         defaultValue={tabPathname || ''}
         onValueChange={(tabChoosed) =>

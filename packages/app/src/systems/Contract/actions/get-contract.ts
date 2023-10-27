@@ -11,7 +11,6 @@ const schema = z.object({
 
 export const getContract = act(schema, async (input) => {
   const id = parseAddressParam(input.id);
-  console.log(`id`, id);
   const { data } = await sdk.getContract({ id }).catch((_) => {
     return { data: { contract: null } };
   });

@@ -31,7 +31,8 @@ export function CodeBlock({ value, type = 'raw', title }: CodeBlockProps) {
     if (title != undefined) return title;
 
     if (type === 'json') return 'JSON';
-    if (type === 'raw') return 'Code';
+
+    return 'Code';
   }
 
   return (
