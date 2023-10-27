@@ -17,3 +17,11 @@ export const getContract = act(schema, async (input) => {
   });
   return data.contract;
 });
+
+export const getContractBalances = act(schema, async (input) => {
+  const id = parseAddressParam(input.id);
+  const { data } = await sdk.getContractBalances({ id }).catch((_) => {
+    return { data: { contractBalances: null } };
+  });
+  return data.contractBalances;
+});
