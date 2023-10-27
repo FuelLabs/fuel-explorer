@@ -32,7 +32,8 @@ export default function RootLayout({
       style={{ colorScheme: theme } as React.CSSProperties}
     >
       <head>
-        <link rel="icon" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>Fuel Explorer</title>
       </head>
       <body>
         <Provider theme={theme}>{children}</Provider>
