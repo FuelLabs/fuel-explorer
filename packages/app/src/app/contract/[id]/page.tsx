@@ -1,6 +1,4 @@
-import { getContract } from '~/systems/Contract/actions/get-contract';
-import { ContractScreen } from '~/systems/Contract/screens/ContractScreen/ContractScreen';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { redirect } from 'next/navigation';
 
 type ContractProps = {
   params: {
@@ -11,12 +9,7 @@ type ContractProps = {
 export default async function Contract({
   params: { id = null },
 }: ContractProps) {
-  const contract = await getContract({ id });
-  return (
-    <Layout>
-      <ContractScreen contract={contract} />
-    </Layout>
-  );
+  redirect(`./${id}/assets`);
 }
 
 // Revalidate cache every 10 seconds

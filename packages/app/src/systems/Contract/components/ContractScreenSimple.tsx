@@ -1,20 +1,39 @@
 import type { ContractItemFragment } from '@fuel-explorer/graphql';
-import { Box, Tabs, Text, VStack } from '@fuels/ui';
+import { Box, Tabs, VStack } from '@fuels/ui';
 import {
   IconChecklist,
   IconCodeAsterix,
   IconCoins,
   IconSquareRoundedPlus,
 } from '@tabler/icons-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
+
+import { TabAssets } from './TabAssets';
+import { TabMinted } from './TabMinted';
+import { TabSource } from './TabSource';
+import { TabTransactions } from './TabTransactions';
 
 type ContractScreenProps = {
   contract: ContractItemFragment;
 };
 
-export function ContractScreenSimple({ contract: _ }: ContractScreenProps) {
+export function ContractScreenSimple({ contract }: ContractScreenProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const tabPathname = useMemo(
+    () => pathname?.split('/').slice(-1)[0],
+    [pathname],
+  );
+
   return (
     <VStack>
-      <Tabs defaultValue="source">
+      <Tabs
+        defaultValue={tabPathname || ''}
+        onValueChange={(tabChoosed) =>
+          router.push(`/contract/${contract.id}/${tabChoosed}`)
+        }
+      >
         <Tabs.List>
           <Tabs.Trigger value="transactions">
             <IconChecklist size={15} className="mr-1" />
@@ -33,18 +52,14 @@ export function ContractScreenSimple({ contract: _ }: ContractScreenProps) {
             Source code
           </Tabs.Trigger>
         </Tabs.List>
-        <Box className="px-3 pt-3 pb-2">
-          <Tabs.Content value="transactions">
-            <Text size="2">Transactions.</Text>
-          </Tabs.Content>
-          <Tabs.Content value="assets">
-            <Text size="2">Assets.</Text>
-          </Tabs.Content>
-          <Tabs.Content value="minted">
-            <Text size="2">Minted.</Text>
-          </Tabs.Content>
-          <Tabs.Content value="source">
-            <Text size="2">Source.</Text>
+        <Box className="pt-3 pb-2">
+          <Tabs.Content value={tabPathname || ''}>
+            {tabPathname === 'transactions' && <TabTransactions />}
+            {tabPathname === 'assets' && <TabAssets />}
+            {tabPathname === 'minted' && <TabMinted />}
+            {tabPathname === 'source' && (
+              <TabSource bytecode={contract.bytecode} />
+            )}
           </Tabs.Content>
         </Box>
       </Tabs>
