@@ -1,6 +1,7 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
+  overwrite: true,
   generates: {
     './src/schemas/fullschema.graphql': {
       schema: 'http://localhost:4444/graphql',
@@ -11,4 +12,5 @@ const config: CodegenConfig = {
     },
   },
 };
+
 export default config;
