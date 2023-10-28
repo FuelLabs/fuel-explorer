@@ -4,7 +4,7 @@ import { getLastTxs } from '~/systems/Transaction/actions/get-last-txs';
 import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 
 export default async function Home() {
-  const transactions = await getLastTxs({ last: 30 });
+  const txs = await getLastTxs({ last: 30 });
   return (
     <Layout hero>
       <Heading
@@ -14,7 +14,7 @@ export default async function Home() {
       >
         Recent Transactions
       </Heading>
-      <TxList transactions={transactions.edges} />
+      <TxList transactions={txs.edges} />
     </Layout>
   );
 }
