@@ -39,6 +39,7 @@ export class InputDomain {
 
   get messageInputs() {
     const inputs = this._filterByTypename<InputMessage>('InputMessage');
+    // get vercel to work
     return inputs.map((input) => {
       const type = input.__typename;
       const sender = input.sender;
