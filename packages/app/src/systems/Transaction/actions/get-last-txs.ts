@@ -10,8 +10,6 @@ const schema = z.object({
 });
 
 export const getLastTxs = act(schema, async (input) => {
-  const { data } = await sdk.getLastTransactions(input).catch((_) => {
-    return { data: { transactions: { edges: [] } } };
-  });
+  const { data } = await sdk.getLastTransactions(input);
   return data.transactions;
 });

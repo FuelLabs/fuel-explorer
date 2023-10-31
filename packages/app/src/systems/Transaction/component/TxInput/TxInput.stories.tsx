@@ -20,19 +20,19 @@ type Story = StoryObj<typeof TxInput>;
 
 export const Asset: Story = {
   render: () => (
-    <VStack>
-      <TxInput className="w-[500px]" input={GROUPED_INPUT_ASSET} />
-      <TxInput className="w-[500px]" input={GROUPED_INPUT_ASSET_UNKNOWN} />
+    <VStack className="w-[600px]">
+      <TxInput input={GROUPED_INPUT_ASSET} />
+      <TxInput input={GROUPED_INPUT_ASSET_UNKNOWN} />
     </VStack>
   ),
 };
 
 export const Contract: Story = {
   render: () => (
-    <TxInput className="w-[500px]" input={GROUPED_INPUT_CONTRACT} />
+    <TxInput className="w-[600px]" input={GROUPED_INPUT_CONTRACT} />
   ),
 };
 
 export const Message: Story = {
-  render: () => <TxInput className="w-[500px]" input={GROUPED_INPUT_MESSAGE} />,
+  render: () => <TxInput className="w-[600px]" input={GROUPED_INPUT_MESSAGE} />,
 };

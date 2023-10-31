@@ -3,7 +3,7 @@ import { AccountScreen } from '~/systems/Account/screens/AccountScreen/AccountSc
 
 type AccountProps = {
   params: {
-    id?: string | null;
+    id: string | null;
   };
 };
 
