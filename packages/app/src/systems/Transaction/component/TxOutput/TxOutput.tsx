@@ -49,23 +49,20 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
               <TxIcon type="Mint" status="Submitted" />
             )}
             <VStack gap="0">
-              <Text className="text-md font-medium">
+              <Text className="flex items-center gap-2 text-md font-medium">
                 {title || asset.name}
                 {asset.symbol && (
-                  <Text className="ml-2 text-muted text-sm">
-                    ({asset.symbol})
-                  </Text>
+                  <Text className="text-muted text-sm">({asset.symbol})</Text>
                 )}
-              </Text>
-              {output.type === GroupedOutputType.CoinOutput ? (
                 <Address value={output.assetId} fixed="b256" />
-              ) : (
+              </Text>
+              <HStack>
                 <Address prefix="To:" value={output.to}>
                   <Address.Link as={NextLink} href={`/account/${output.to}`}>
                     View Account
                   </Address.Link>
                 </Address>
-              )}
+              </HStack>
             </VStack>
           </HStack>
           <HStack align="center">
