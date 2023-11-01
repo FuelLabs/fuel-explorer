@@ -91,7 +91,11 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
               <TxIcon status="Submitted" type="Contract" />
             </EntityItem.Slot>
             <EntityItem.Info title="Contract Input">
-              <Address value={contractId} prefix="Id:" />
+              <Address value={contractId} prefix="Id:">
+                <Address.Link href={`/contract/${contractId}`}>
+                  View Contract
+                </Address.Link>
+              </Address>
             </EntityItem.Info>
           </EntityItem>
         </Card.Header>
@@ -109,14 +113,14 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
       <Collapsible {...props}>
         <Collapsible.Header>
           <TxIcon type="Message" status="Submitted" />
-          <HStack align="center" gap="1" className="flex-1 justify-between">
+          <HStack align="center" gap="1" className="flex-1">
             <Text>Message</Text>
-            <VStack gap="1" className="mr-2">
+            <VStack gap="1" className="ml-4">
               <Address value={sender} linkPos="left">
                 <Address.Link
                   as={NextLink}
                   href={`/account/${sender}`}
-                  className="w-[60px] text-right"
+                  className="w-[60px]"
                 >
                   Sender
                 </Address.Link>
@@ -125,7 +129,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
                 <Address.Link
                   as={NextLink}
                   href={`/account/${recipient}`}
-                  className="w-[60px] text-right"
+                  className="w-[60px]"
                 >
                   Recipient
                 </Address.Link>

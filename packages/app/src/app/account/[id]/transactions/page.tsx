@@ -15,4 +15,4 @@ export default async function AccountTransactions({
 }
 
 // Revalidate cache every 10 seconds
-export const revalidate = 10;
+export const revalidate = 1;
