@@ -1,0 +1,16 @@
+fragment BlockItem on Block {
+  id
+  header {
+    transactionsCount
+    time
+  }
+  transactions {
+    id
+  }
+}
+
+query getBlock($height: U64!) {
+  block(height: $height) {
+    ...BlockItem
+  }
+}
