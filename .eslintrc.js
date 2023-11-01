@@ -4,6 +4,7 @@ const { dependencies } = require('./packages/app/package.json');
 const project = [
   resolve(__dirname, './tsconfig.json'),
   resolve(__dirname, './packages/**/tsconfig.json'),
+  resolve(__dirname, './contracts/**/tsconfig.json'),
 ];
 
 module.exports = {
