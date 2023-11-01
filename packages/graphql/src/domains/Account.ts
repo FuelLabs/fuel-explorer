@@ -4,18 +4,20 @@ import type { GraphQLResolveInfo } from 'graphql';
 import { OperationTypeNode } from 'graphql';
 
 import accountsData from '../data/accounts.json';
-import { metadataSchema } from '../services/metadata';
+import { Domain } from '../utils/domain';
 
-export class AccountDomain {
-  constructor() {}
+type Args = {
+  addresses: string[];
+};
 
-  delegateQuery(
+export class AccountDomain extends Domain<any, Args> {
+  static delegateQuery(
     addresses: Array<string>,
     context: any,
     info: GraphQLResolveInfo,
   ) {
     return delegateToSchema({
-      schema: metadataSchema,
+      schema: info.schema,
       operation: OperationTypeNode.QUERY,
       fieldName: 'accounts',
       args: { addresses },
@@ -24,7 +26,15 @@ export class AccountDomain {
     });
   }
 
-  static queryAccounts(addresses: Array<string>) {
+  static createResolvers() {
+    const domain = new AccountDomain();
+    return {
+      ...domain.createResolver('accounts'),
+    };
+  }
+
+  get accounts() {
+    const { addresses } = this.args;
     return addresses
       .map((addres) =>
         accountsData.find(
@@ -33,12 +43,4 @@ export class AccountDomain {
       )
       .filter((i) => !!i);
   }
-}
-
-export function createAccountsResolver(
-  _source: any,
-  _args: any,
-  { addresses }: { addresses: string[] },
-) {
-  return AccountDomain.queryAccounts(addresses);
 }

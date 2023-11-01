@@ -14,7 +14,8 @@ export default defineConfig((options) => ({
   esbuildPlugins: [graphqlLoaderPlugin()],
   entry: { index: 'src/bin.ts' },
   async onSuccess() {
-    if (!options.watch) return;
-    await devServer();
+    if (options.watch) {
+      await devServer();
+    }
   },
 }));

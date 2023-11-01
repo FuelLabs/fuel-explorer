@@ -83,6 +83,7 @@ extend type Transaction {
   accountsInvolved: [TransactionAccount]
   groupedInputs: [GroupedInput]
   groupedOutputs: [GroupedOutput]
+  isPredicate: Boolean
 }
 
 # --------------------------------

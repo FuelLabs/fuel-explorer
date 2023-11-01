@@ -775,6 +775,7 @@ type Transaction {
   inputs: [Input!]
   isCreate: Boolean!
   isMint: Boolean!
+  isPredicate: Boolean
   isScript: Boolean!
   maturity: U32
   outputs: [Output!]!

@@ -3,49 +3,39 @@ import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
 import { tai64toDate } from '../utils/dayjs';
+import { Domain } from '../utils/domain';
 
 import { InputDomain } from './Input';
 import { OutputDomain } from './Output';
 
-export class TransactionDomain {
-  constructor(private transaction: TransactionItemFragment) {}
-
-  static createResolver(key: string, func?: string) {
-    return {
-      [key]: {
-        async resolve(transaction: TransactionItemFragment) {
-          const domain = new TransactionDomain(transaction);
-          return func ? domain[func]() : domain[key] ?? null;
-        },
-      },
-    };
-  }
-
+export class TransactionDomain extends Domain<TransactionItemFragment> {
   static createResolvers() {
+    const domain = new TransactionDomain();
     return {
-      ...TransactionDomain.createResolver('title', 'getTitle'),
-      ...TransactionDomain.createResolver('time'),
-      ...TransactionDomain.createResolver('blockHeight'),
-      ...TransactionDomain.createResolver('statusType'),
-      ...TransactionDomain.createResolver('totalAssets'),
-      ...TransactionDomain.createResolver('totalOperations'),
-      ...TransactionDomain.createResolver('totalAccounts'),
-      ...TransactionDomain.createResolver('gasUsed'),
-      ...TransactionDomain.createResolver('accountsInvolved'),
-      ...TransactionDomain.createResolver('groupedInputs'),
-      ...TransactionDomain.createResolver('groupedOutputs'),
+      ...domain.createResolver('title', 'getTitle'),
+      ...domain.createResolver('time'),
+      ...domain.createResolver('blockHeight'),
+      ...domain.createResolver('statusType'),
+      ...domain.createResolver('totalAssets'),
+      ...domain.createResolver('totalOperations'),
+      ...domain.createResolver('totalAccounts'),
+      ...domain.createResolver('gasUsed'),
+      ...domain.createResolver('accountsInvolved'),
+      ...domain.createResolver('groupedInputs'),
+      ...domain.createResolver('groupedOutputs'),
+      ...domain.createResolver('isPredicate'),
     };
   }
 
   async getTitle() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     if (transaction.isMint) return 'Mint';
     if (transaction.isCreate) return 'Contract Created';
     return 'ContractCall';
   }
 
   get time() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     const status = transaction.status;
     if (status?.__typename === 'SqueezedOutStatus') return null;
     const time = status?.time ?? null;
@@ -59,7 +49,7 @@ export class TransactionDomain {
   }
 
   get blockHeight() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     const status = transaction.status;
     if (status?.__typename === 'SuccessStatus') {
       return status?.block?.header?.daHeight ?? null;
@@ -68,7 +58,7 @@ export class TransactionDomain {
   }
 
   get statusType() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     const typename = transaction.status?.__typename;
     if (typename === 'SuccessStatus') {
       return 'Success';
@@ -80,25 +70,25 @@ export class TransactionDomain {
   }
 
   get totalAssets() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     if (transaction.isMint) return 1;
     return transaction.inputAssetIds?.length ?? 0;
   }
 
   get totalOperations() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     if (transaction.isMint) return 1;
     return transaction.inputs?.length ?? 0;
   }
 
   get totalAccounts() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     if (transaction.isMint) return 1;
     return this._getAccounts().length;
   }
 
   get gasUsed() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const receipts = (transaction.receipts ?? []) as any[];
     const gasUsed = receipts.reduce((acc, receipt) => {
@@ -108,41 +98,62 @@ export class TransactionDomain {
   }
 
   get accountsInvolved() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     if (transaction.isMint) return [];
     return this._getAccounts() ?? [];
   }
 
   get groupedInputs() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     const domain = new InputDomain(transaction.inputs ?? []);
     return domain.groupedInputs;
   }
 
   get groupedOutputs() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     const domain = new OutputDomain(transaction.outputs ?? []);
     return domain.groupedOutputs;
   }
 
+  get isPredicate() {
+    const inputs = this.source.inputs ?? [];
+    return inputs.some((input) => {
+      if (
+        input.__typename === 'InputMessage' ||
+        input.__typename === 'InputCoin'
+      ) {
+        return !!input.predicate;
+      }
+    });
+  }
+
   private _getAccounts() {
-    const { transaction } = this;
+    const { source: transaction } = this;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const ids = transaction.inputs?.flatMap((input: any) => {
       const typename = input?.__typename;
-      if (typename === 'InputCoin') {
+      const isCoin = typename === 'InputCoin';
+      const isMessage = typename === 'InputMessage';
+      const isContract = typename === 'InputContract';
+      if ((isCoin || isMessage) && input.predicate) {
+        return {
+          type: 'Predicate',
+          id: input.owner,
+        };
+      }
+      if (isCoin) {
         return {
           type: 'Contract',
           id: input.owner,
         };
       }
-      if (typename === 'InputMessage') {
+      if (isMessage) {
         return [
           { type: 'Wallet', id: input.sender },
           { type: 'Wallet', id: input.sender },
         ];
       }
-      if (typename === 'InputContract') {
+      if (isContract) {
         return {
           type: 'Contract',
           id: input.contract.id,

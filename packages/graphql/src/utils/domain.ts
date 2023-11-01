@@ -1,0 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { GraphQLField, GraphQLResolveInfo } from 'graphql/type';
+
+export type Context = {
+  url: string;
+};
+
+export class Domain<S = any, A = any> {
+  source!: S;
+  args!: A;
+  context!: Context;
+  info!: GraphQLResolveInfo;
+  constructor() {}
+
+  createResolver(key: string, func?: string) {
+    return {
+      [key]: {
+        resolve: async (
+          source: S,
+          args: A,
+          context: Context,
+          info: GraphQLResolveInfo,
+        ) => {
+          this.source = source;
+          this.args = args;
+          this.context = context;
+          this.info = info;
+          return func ? this[func]() : this[key as string] ?? null;
+        },
+      },
+    } as Record<string, Partial<GraphQLField<S, Context, A>>>;
+  }
+}
