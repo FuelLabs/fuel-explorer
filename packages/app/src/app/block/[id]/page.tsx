@@ -1,3 +1,4 @@
+import { getBlock } from '~/systems/Block/actions/get-block';
 import { BlockScreen } from '~/systems/Block/screens/BlockScreen';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
 
@@ -8,9 +9,10 @@ type BlockProps = {
 };
 
 export default async function Block({ params: { id = null } }: BlockProps) {
+  const block = await getBlock({ id });
   return (
     <Layout>
-      <BlockScreen blockNumber={id} />
+      <BlockScreen blockNumber={id} block={block} />
     </Layout>
   );
 }

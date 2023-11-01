@@ -1,6 +1,6 @@
 'use client';
 
-import type { Maybe } from '@fuel-explorer/graphql';
+import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import { Flex, Text, VStack } from '@fuels/ui';
 import { IconCube } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -10,11 +10,14 @@ import {
   ViewModes,
 } from '~/systems/Core/components/ViewMode/ViewMode';
 
+import { BlockScreenSimple } from '../components/BlockScreenSimple';
+
 type BlockScreenProps = {
   blockNumber?: Maybe<string>;
+  block?: Maybe<BlockItemFragment>;
 };
 
-export function BlockScreen({ blockNumber }: BlockScreenProps) {
+export function BlockScreen({ blockNumber, block }: BlockScreenProps) {
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
 
   return (
@@ -28,7 +31,7 @@ export function BlockScreen({ blockNumber }: BlockScreenProps) {
           <ViewMode mode={viewMode} onChange={setViewMode} />
         </Flex>
       </PageTitle>
-      {viewMode === ViewModes.Simple && <div>Simple</div>}
+      {viewMode === ViewModes.Simple && <BlockScreenSimple block={block} />}
       {viewMode === ViewModes.Advanced && <div>Advanced</div>}
     </VStack>
   );
