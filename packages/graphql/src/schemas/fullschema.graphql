@@ -48,6 +48,7 @@ type Block {
   header: Header!
   id: BlockId!
   time: ParsedTime
+  totalGasUsed: U64
   transactions: [Transaction!]!
 }
 

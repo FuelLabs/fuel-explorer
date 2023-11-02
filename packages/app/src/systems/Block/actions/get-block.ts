@@ -16,5 +16,6 @@ export const getBlock = act(schema, async (input) => {
   const { data } = await sdk.getBlock({ height: id }).catch((_) => {
     return { data: { block: null } };
   });
+
   return data.block;
 });

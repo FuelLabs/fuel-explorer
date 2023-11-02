@@ -1,3 +1,6 @@
+# import TransactionItem from ./tx-fragments.graphql
+# import TransactionOutpu from ./tx-fragments.graphql
+
 fragment BlockItem on Block {
   # Custom Resolvers
   time {
@@ -6,6 +9,7 @@ fragment BlockItem on Block {
     rawTai64
     rawUnix
   }
+  totalGasUsed
 
   # Block Data
   id
@@ -15,6 +19,11 @@ fragment BlockItem on Block {
   }
   transactions {
     id
+    gasUsed
+    title
+    # We need to query for isMint and isCreate for the title resolver to work
+    isMint
+    isCreate
   }
 }
 
