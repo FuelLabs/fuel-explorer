@@ -2,8 +2,6 @@ import { BaseAssetId, Predicate, Provider, Wallet, bn, hexlify } from 'fuels';
 import { promises as fs } from 'node:fs';
 import { resolve } from 'node:path';
 
-import abi from '../out/debug/predicate-app-abi.json';
-
 const { FUEL_PROVIDER_URL, PRIVATE_KEY } = process.env;
 const BIN_PATH = resolve(__dirname, '../out/debug/predicate-app.bin');
 const AMOUNT = 300_000;
@@ -18,7 +16,10 @@ async function main() {
   const wallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
   const { minGasPrice: gasPrice } = wallet.provider.getGasConfig();
   const walletAddress = wallet.address.toB256();
-  const predicate = new Predicate(binHex, provider, abi);
+  const abiPath = resolve(__dirname, '../out/debug/predicate-app-abi.json');
+  const abi = await fs.readFile(abiPath, 'utf-8');
+  const abiJson = JSON.parse(abi);
+  const predicate = new Predicate(binHex, provider, abiJson);
 
   console.log('💰 Funding predicate...');
   const tx1 = await wallet.transfer(predicate.address, AMOUNT, BaseAssetId, {
