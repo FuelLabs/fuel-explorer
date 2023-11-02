@@ -35,7 +35,6 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
   const title = tx.title as string;
-  console.log(tx);
   return (
     <Grid columns="6" gap="9">
       <Box className="col-span-2">
