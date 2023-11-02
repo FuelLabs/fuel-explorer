@@ -1,4 +1,13 @@
 fragment BlockItem on Block {
+  # Custom Resolvers
+  time {
+    fromNow
+    full
+    rawTai64
+    rawUnix
+  }
+
+  # Block Data
   id
   header {
     transactionsCount

@@ -7,14 +7,21 @@ type BlockScreenSimpleProps = {
 };
 
 export function BlockScreenSimple({ block }: BlockScreenSimpleProps) {
+  console.log('temp: ', block?.header.time);
+  console.log('here: ', block?.time);
+
   return (
     <VStack>
       <HStack>
         <CardInfo name="Producer" className="flex-1">
           TODO
         </CardInfo>
-        <CardInfo name="Created" className="flex-1">
-          TODO
+        <CardInfo
+          name="Created"
+          description={block?.time?.full}
+          className="flex-1"
+        >
+          {block?.time?.fromNow}
         </CardInfo>
         <CardInfo name="Gas spent (gwei)" className="flex-1">
           TODO
