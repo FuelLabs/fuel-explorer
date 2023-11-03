@@ -23,7 +23,7 @@ export function BlockScreen({ blockNumber }: BlockScreenProps) {
         <Flex justify="between" className="flex-1">
           <Flex align="center" gap={'5'}>
             Block
-            <Text size="4">#{blockNumber}</Text>
+            <Text className="text-sm text-muted">#{blockNumber}</Text>
           </Flex>
           <ViewMode mode={viewMode} onChange={setViewMode} />
         </Flex>
