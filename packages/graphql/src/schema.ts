@@ -13,7 +13,7 @@ export function createSchema(fuelCoreGraphql: string) {
         // TODO: delete this once we start using local database or indexer
         // Load remote schame from Fuel Core
         schema: makeExecutableSchema({ typeDefs: fuelSchema }),
-        executor: createGraphqlFetch(fuelCoreGraphql, true),
+        executor: createGraphqlFetch(fuelCoreGraphql),
       },
       { schema: metadataSchema },
     ],
