@@ -25,7 +25,6 @@ type Account {
 type Predicate {
   id: Address!
   bytecode: HexString!
-  predicateData: HexString!
 }
 
 type Query {

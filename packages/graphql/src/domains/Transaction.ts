@@ -122,7 +122,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
         input.__typename === 'InputMessage' ||
         input.__typename === 'InputCoin'
       ) {
-        return !!input.predicate;
+        return !!input.predicate && input.predicate !== '0x';
       }
     });
   }

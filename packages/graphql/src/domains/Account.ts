@@ -66,12 +66,10 @@ export class AccountDomain extends Domain<any, Args> {
               ... on InputCoin {
                 owner
                 predicate
-                predicateData
               }
               ... on InputMessage {
                 sender
                 predicate
-                predicateData
               }
             }
           }
@@ -88,7 +86,6 @@ export class AccountDomain extends Domain<any, Args> {
             owner: string;
             sender: string;
             predicate: string;
-            predicateData: string;
           }[];
         }[];
       };
@@ -105,7 +102,6 @@ export class AccountDomain extends Domain<any, Args> {
     return {
       id: first.owner || first.sender,
       bytecode: first.predicate,
-      predicateData: first.predicateData,
     };
   }
 }
