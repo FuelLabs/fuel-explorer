@@ -1,5 +1,4 @@
-# import TransactionItem from ./tx-fragments.graphql
-# import TransactionOutpu from ./tx-fragments.graphql
+# import TransactionOutput from ./tx-fragments.graphql
 
 fragment BlockItem on Block {
   # Custom Resolvers
@@ -10,9 +9,16 @@ fragment BlockItem on Block {
     rawUnix
   }
   totalGasUsed
+  producer
 
   # Block Data
   id
+  consensus {
+    __typename
+    ... on PoAConsensus {
+      signature
+    }
+  }
   header {
     transactionsCount
     time
@@ -21,9 +27,13 @@ fragment BlockItem on Block {
     id
     gasUsed
     title
-    # We need to query for isMint and isCreate for the title resolver to work
     isMint
     isCreate
+    isScript
+    rawPayload
+    outputs {
+      ...TransactionOutput
+    }
   }
 }
 

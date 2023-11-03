@@ -13,7 +13,9 @@ export const getBlock = act(schema, async (input) => {
     throw new Error('Invalid block number');
   }
   const id = input.id;
-  const { data } = await sdk.getBlock({ height: id }).catch((_) => {
+  const { data } = await sdk.getBlock({ height: id }).catch((err) => {
+    console.log(`err`, err);
+    console.log('boo');
     return { data: { block: null } };
   });
 

@@ -107,4 +107,5 @@ extend type Balance {
 extend type Block {
   time: ParsedTime
   totalGasUsed: U64
+  producer: Address
 }

@@ -1,4 +1,4 @@
-import { bn } from 'fuels';
+import { bn, Signer } from 'fuels';
 
 import type { BlockItemFragment } from '../generated/types';
 import { tai64toDate } from '../utils/dayjs';
@@ -21,6 +21,7 @@ export class BlockDomain {
     return {
       ...BlockDomain.createResolver('time'),
       ...BlockDomain.createResolver('totalGasUsed'),
+      ...BlockDomain.createResolver('producer'),
     };
   }
 
@@ -42,5 +43,16 @@ export class BlockDomain {
       return acc.add(bn(transaction.gasUsed));
     }, bn(0));
     return totalGasUsed;
+  }
+
+  get producer() {
+    const { block } = this;
+    console.log(`yup`, block);
+    if (block.consensus.__typename === 'Genesis') {
+      return null;
+    }
+    const signature = block.consensus.signature;
+    const producer = Signer.recoverAddress(block.id, signature);
+    return producer;
   }
 }
