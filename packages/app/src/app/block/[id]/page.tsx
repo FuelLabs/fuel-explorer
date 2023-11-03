@@ -12,7 +12,7 @@ export default async function Block({ params: { id = null } }: BlockProps) {
   const { block, producer } = await getBlock({ id });
   return (
     <Layout>
-      <BlockScreen blockNumber={id} block={block} producer={producer} />
+      <BlockScreen blockNumberOrId={id} block={block} producer={producer} />
     </Layout>
   );
 }
