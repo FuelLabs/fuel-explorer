@@ -1,8 +1,0 @@
-# import TransactionItem from './tx-fragments.graphql'
-query getPredicateBytecode($owner: Address!) {
-  transactionsByOwner(first: 100, owner: $owner) {
-    nodes {
-      ...TransactionItem
-    }
-  }
-}

@@ -559,6 +559,12 @@ type PoAConsensus {
   signature: Signature!
 }
 
+type Predicate {
+  bytecode: HexString!
+  id: Address!
+  predicateData: HexString!
+}
+
 type ProgramState {
   data: HexString!
   returnType: ReturnType!
@@ -633,6 +639,7 @@ type Query {
     owner: Address
   ): MessageConnection!
   nodeInfo: NodeInfo!
+  predicate(address: Address!): Predicate
   tokens(assetsId: [String]!): [Token!]!
   transaction(
     """The ID of the transaction"""

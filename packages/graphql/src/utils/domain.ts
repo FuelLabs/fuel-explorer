@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { GraphQLField, GraphQLResolveInfo } from 'graphql/type';
 
+import { getClient } from './client';
+
 export type Context = {
   url: string;
 };
@@ -29,5 +31,13 @@ export class Domain<S = any, A = any> {
         },
       },
     } as Record<string, Partial<GraphQLField<S, Context, A>>>;
+  }
+
+  async query<R, V extends Record<string, any> = Record<string, any>>(
+    val: string,
+    variables: V = {} as V,
+  ) {
+    const client = getClient(this.context.url);
+    return client.request<R>(val, variables);
   }
 }

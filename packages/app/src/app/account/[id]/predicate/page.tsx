@@ -1,4 +1,4 @@
-import { getPredicateBytecode } from '~/systems/Account/actions/get-predicate-bytecode';
+import { getPredicate } from '~/systems/Account/actions/get-predicate';
 import { AccountPredicate } from '~/systems/Account/screens/AccountPredicate/AccountPredicate';
 
 type PageProps = {
@@ -10,8 +10,8 @@ type PageProps = {
 export default async function AccountPredicatePage({
   params: { id },
 }: PageProps) {
-  const bytecode = await getPredicateBytecode({ owner: id });
-  return <AccountPredicate bytecode={bytecode} />;
+  const predicate = await getPredicate({ owner: id });
+  return <AccountPredicate bytecode={predicate?.bytecode} />;
 }
 
 export const revalidate = 100;

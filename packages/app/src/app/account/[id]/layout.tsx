@@ -1,4 +1,4 @@
-import { getPredicateBytecode } from '~/systems/Account/actions/get-predicate-bytecode';
+import { getPredicate } from '~/systems/Account/actions/get-predicate';
 import { AccountLayout } from '~/systems/Account/components/AccountLayout/AccountLayout';
 
 export default async function Layout({
@@ -8,9 +8,9 @@ export default async function Layout({
   children: React.ReactNode;
   params: { id: string };
 }) {
-  const bytecode = await getPredicateBytecode({ owner: id });
+  const predicate = await getPredicate({ owner: id });
   return (
-    <AccountLayout id={id} bytecode={bytecode}>
+    <AccountLayout id={id} bytecode={predicate?.bytecode}>
       {children}
     </AccountLayout>
   );

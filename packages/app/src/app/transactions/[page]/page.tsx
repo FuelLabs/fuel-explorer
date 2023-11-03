@@ -14,4 +14,4 @@ export default async function Transactions({ params: { page } }: PageProps) {
   return <TxList transactions={txs} />;
 }
 
-export const revalidate = 1;
+export const revalidate = 10;

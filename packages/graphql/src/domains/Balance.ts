@@ -1,7 +1,6 @@
 import { gql } from 'graphql-request';
 
 import type { Balance } from '../generated/types';
-import { getClient } from '../utils/client';
 import { Domain } from '../utils/domain';
 
 export class BalanceDomain extends Domain<Balance> {
@@ -38,8 +37,7 @@ export class BalanceDomain extends Domain<Balance> {
       };
     };
 
-    const client = getClient(this.context.url);
-    const res = await client.request<UtxosResponse>(query, connection);
+    const res = await this.query<UtxosResponse>(query, connection);
     const data = res.coins.nodes;
     return data;
   }
