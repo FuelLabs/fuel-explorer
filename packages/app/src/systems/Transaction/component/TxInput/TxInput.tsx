@@ -92,7 +92,7 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
             </EntityItem.Slot>
             <EntityItem.Info title="Contract Input">
               <Address value={contractId} prefix="Id:">
-                <Address.Link href={`/contract/${contractId}`}>
+                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
                   View Contract
                 </Address.Link>
               </Address>
