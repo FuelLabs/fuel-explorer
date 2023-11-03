@@ -9,10 +9,10 @@ type BlockProps = {
 };
 
 export default async function Block({ params: { id = null } }: BlockProps) {
-  const block = await getBlock({ id });
+  const { block, producer } = await getBlock({ id });
   return (
     <Layout>
-      <BlockScreen blockNumber={id} block={block} />
+      <BlockScreen blockNumber={id} block={block} producer={producer} />
     </Layout>
   );
 }

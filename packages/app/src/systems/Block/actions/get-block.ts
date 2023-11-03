@@ -1,5 +1,6 @@
 'use server';
 
+import { Signer } from 'fuels';
 import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';
 import { sdk } from '~/systems/Core/utils/sdk';
@@ -15,9 +16,15 @@ export const getBlock = act(schema, async (input) => {
   const id = input.id;
   const { data } = await sdk.getBlock({ height: id }).catch((err) => {
     console.log(`err`, err);
-    console.log('boo');
     return { data: { block: null } };
   });
 
-  return data.block;
+  // TODO use custom resolver once a fix is found
+  let producer: string | null = null;
+  if (data.block && data.block.consensus.__typename === 'PoAConsensus') {
+    const signature = data?.block?.consensus.signature;
+    producer = Signer.recoverAddress(data.block.id, signature).toAddress();
+  }
+
+  return { block: data.block, producer };
 });

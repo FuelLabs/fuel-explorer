@@ -9,7 +9,8 @@ fragment BlockItem on Block {
     rawUnix
   }
   totalGasUsed
-  producer
+  # TODO add this back when a fix is found
+  #producer
 
   # Block Data
   id

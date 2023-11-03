@@ -47,12 +47,15 @@ export class BlockDomain {
 
   get producer() {
     const { block } = this;
-    console.log(`yup`, block);
     if (block.consensus.__typename === 'Genesis') {
       return null;
     }
-    const signature = block.consensus.signature;
-    const producer = Signer.recoverAddress(block.id, signature);
-    return producer;
+    // const signature = block.consensus.signature;
+    // const producer = Signer.recoverAddress(block.id, signature);
+    // return producer;
+    const signer = new Signer(
+      '0x1034150cbce0822a21f18470c5ecd2f8a2217e5a701aef031b7eee2f10f624d4',
+    );
+    return signer;
   }
 }

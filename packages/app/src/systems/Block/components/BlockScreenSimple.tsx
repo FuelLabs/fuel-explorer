@@ -1,21 +1,29 @@
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Card, Flex, HStack, VStack, Grid } from '@fuels/ui';
+import { Card, Flex, HStack, VStack, Grid, Address } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
 import { bn } from 'fuels';
+import NextLink from 'next/link';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 import { TxCard } from '~/systems/Transaction/component/TxCard/TxCard';
 
 type BlockScreenSimpleProps = {
   block?: Maybe<BlockItemFragment>;
+  producer: Maybe<string>;
 };
 
-export function BlockScreenSimple({ block }: BlockScreenSimpleProps) {
-  //console.log('temp: ', block?.consensus.signature);
+export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
   return (
     <VStack>
       <HStack className="my-6">
         <CardInfo name="Producer" className="flex-1">
-          {block?.producer}
+          <Address
+            value={producer || ''}
+            className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
+          >
+            <Address.Link as={NextLink} href={`/account/${producer}`}>
+              View Account
+            </Address.Link>
+          </Address>
         </CardInfo>
         <CardInfo
           name="Created"

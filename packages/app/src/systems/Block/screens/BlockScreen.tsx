@@ -15,9 +15,14 @@ import { BlockScreenSimple } from '../components/BlockScreenSimple';
 type BlockScreenProps = {
   blockNumber?: Maybe<string>;
   block?: Maybe<BlockItemFragment>;
+  producer: Maybe<string>;
 };
 
-export function BlockScreen({ blockNumber, block }: BlockScreenProps) {
+export function BlockScreen({
+  blockNumber,
+  block,
+  producer,
+}: BlockScreenProps) {
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
 
   return (
@@ -31,7 +36,9 @@ export function BlockScreen({ blockNumber, block }: BlockScreenProps) {
           <ViewMode mode={viewMode} onChange={setViewMode} />
         </Flex>
       </PageTitle>
-      {viewMode === ViewModes.Simple && <BlockScreenSimple block={block} />}
+      {viewMode === ViewModes.Simple && (
+        <BlockScreenSimple block={block} producer={producer} />
+      )}
       {viewMode === ViewModes.Advanced && <div>Advanced</div>}
     </VStack>
   );
