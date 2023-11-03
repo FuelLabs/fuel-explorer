@@ -35,7 +35,7 @@ export function BlockScreen({
             {isValidAddress(blockNumberOrId) ? (
               <Address full value={blockNumberOrId || ''} fixed="b256" />
             ) : (
-              <Text size="4">#{blockNumberOrId}</Text>
+              <Text className="text-sm text-muted">#{blockNumberOrId}</Text>
             )}
           </Flex>
           <ViewMode mode={viewMode} onChange={setViewMode} />

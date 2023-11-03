@@ -114,7 +114,11 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <TxIcon status="Success" type="Contract" />
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
-              <Address prefix="Id:" value={contractId} />
+              <Address prefix="Id:" value={contractId}>
+                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
+                  Contract
+                </Address.Link>
+              </Address>
             </VStack>
           </HStack>
         </Card.Header>
