@@ -38,7 +38,14 @@ export class InputDomain {
   }
 
   get messageInputs() {
-    return this._filterByTypename<InputMessage>('InputMessage');
+    const inputs = this._filterByTypename<InputMessage>('InputMessage');
+    return inputs.map((input) => {
+      const type = input.__typename;
+      const sender = input.sender;
+      const recipient = input.recipient;
+      const data = input.data;
+      return { type, sender, recipient, data, inputs: [input] };
+    });
   }
 
   private _filterByTypename<T>(typename: string) {

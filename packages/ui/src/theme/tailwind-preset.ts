@@ -69,11 +69,11 @@ const preset: Config = {
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
   ],
   theme: {
-    keyframes,
-    animation,
     space: tailwindDefaultTheme.space,
     spacing: tailwindDefaultTheme.spacing,
     extend: {
+      keyframes,
+      animation,
       width: tailwindDefaultTheme.maxWidth,
       fontSize: {
         h1: 'var(--font-size-9)',

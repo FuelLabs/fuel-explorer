@@ -50,13 +50,14 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
             <TxIcon type="Mint" status="Submitted" />
           )}
           <VStack gap="0" className="flex-1">
-            <Text className="text-md font-medium">
+            <Text className="flex items-center gap-2 text-md font-medium">
               {asset.name}
               {asset.symbol && (
                 <Text className="ml-2 text-muted text-sm">
                   ({asset.symbol})
                 </Text>
               )}
+              <Address value={input.assetId} fixed="b256" />
             </Text>
             <Address prefix="From:" value={input.owner}>
               <Address.Link as={NextLink} href={`/account/${input.owner}`}>
@@ -90,7 +91,11 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
               <TxIcon status="Submitted" type="Contract" />
             </EntityItem.Slot>
             <EntityItem.Info title="Contract Input">
-              <Address value={contractId} prefix="Id:" />
+              <Address value={contractId} prefix="Id:">
+                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
+                  Contract
+                </Address.Link>
+              </Address>
             </EntityItem.Info>
           </EntityItem>
         </Card.Header>

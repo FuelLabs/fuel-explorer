@@ -29,6 +29,11 @@ export const keyframes = {
       transform: 'rotate(1080deg)',
     },
   },
+  shimmer: {
+    '100%': {
+      transform: 'translateX(100%)',
+    },
+  },
 };
 
 export const animation = {
