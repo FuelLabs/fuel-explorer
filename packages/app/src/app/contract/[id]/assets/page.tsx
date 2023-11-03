@@ -1,4 +1,7 @@
-import { getContract } from '~/systems/Contract/actions/get-contract';
+import {
+  getContract,
+  getContractBalances,
+} from '~/systems/Contract/actions/get-contract';
 import { ContractScreen } from '~/systems/Contract/screens/ContractScreen/ContractScreen';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
 
@@ -8,14 +11,15 @@ type ContractProps = {
   };
 };
 
-export default async function Contract({
+export default async function ContractAssets({
   params: { id = null },
 }: ContractProps) {
   const contract = await getContract({ id });
+  const contractBalances = await getContractBalances({ id });
 
   return (
     <Layout>
-      <ContractScreen contract={contract} />
+      <ContractScreen contract={contract} contractBalances={contractBalances} />
     </Layout>
   );
 }

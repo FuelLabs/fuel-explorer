@@ -1,6 +1,10 @@
 'use client';
 
-import type { ContractItemFragment, Maybe } from '@fuel-explorer/graphql';
+import type {
+  ContractBalanceConnectionItemFragment,
+  ContractItemFragment,
+  Maybe,
+} from '@fuel-explorer/graphql';
 import { Address, Flex, VStack } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -15,9 +19,13 @@ import { ContractScreenSimple } from '../../components/ContractScreenSimple';
 
 type ContractScreenProps = {
   contract?: Maybe<ContractItemFragment>;
+  contractBalances?: Maybe<ContractBalanceConnectionItemFragment>;
 };
 
-export function ContractScreen({ contract }: ContractScreenProps) {
+export function ContractScreen({
+  contract,
+  contractBalances,
+}: ContractScreenProps) {
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
 
   if (!contract) return null;
@@ -34,7 +42,10 @@ export function ContractScreen({ contract }: ContractScreenProps) {
         </Flex>
       </PageTitle>
       {viewMode === ViewModes.Simple && (
-        <ContractScreenSimple contract={contract} />
+        <ContractScreenSimple
+          contract={contract}
+          contractBalances={contractBalances}
+        />
       )}
       {viewMode === ViewModes.Advanced && <ContractScreenAdvanced />}
     </VStack>
