@@ -2,9 +2,9 @@ import type {
   ContractBalanceConnectionItemFragment,
   Maybe,
 } from '@fuel-explorer/graphql';
-import { Asset, Card, HStack, VStack } from '@fuels/ui';
+import { VStack } from '@fuels/ui';
 import { bn } from 'fuels';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 type TabAssetsProps = {
@@ -49,30 +49,15 @@ export function ContractBalanceItem({
   amount,
   assetId,
 }: ContractBalanceItemProps) {
-  const listedAsset = useAsset(assetId);
-  const asset = {
-    ...listedAsset,
-    symbol: listedAsset?.symbol ?? '',
-    name: listedAsset?.name ?? '',
+  const balanceItem = {
+    assetId,
+    amount,
   };
 
   return (
-    <Card>
-      <Card.Body>
-        <Asset
-          hideIcon
-          className="w-full justify-between"
-          asset={asset}
-          amount={amount}
-        >
-          <HStack gap="4" className="items-center">
-            <Asset.Icon />
-            <Asset.Name className="text-gray-12" />
-            <Asset.Symbol className="text-gray-9" />
-          </HStack>
-          <Asset.Amount />
-        </Asset>
-      </Card.Body>
-    </Card>
+    <BalanceItem
+      key={balanceItem.assetId + balanceItem.amount}
+      item={balanceItem}
+    />
   );
 }

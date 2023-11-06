@@ -25,7 +25,9 @@ type Context = CollapsibleBaseProps & {
 const ctx = createContext<Context>({} as Context);
 
 export type CollapsibleProps = CollapsibleBaseProps & CardProps;
-export type CollapsibleHeaderProps = CardHeaderProps;
+export type CollapsibleHeaderProps = CardHeaderProps & {
+  hideIcon?: boolean;
+};
 export type CollapsibleContentProps = CardBodyProps;
 export type CollapsibleTitleProps = TextProps;
 export type CollapsibleBodyProps = BoxProps;
@@ -50,12 +52,12 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
 });
 
 export const CollapsibleHeader = createComponent<
-  CardHeaderProps,
+  CollapsibleHeaderProps,
   typeof Card.Header
 >({
   id: 'CollapsibleHeader',
   baseElement: Card.Header,
-  render: (Root, { children, className, ...props }) => {
+  render: (Root, { children, className, hideIcon, ...props }) => {
     const classes = styles();
     const { opened, setOpened } = useContext(ctx);
     return (
@@ -65,21 +67,23 @@ export const CollapsibleHeader = createComponent<
         data-state={opened ? 'opened' : 'closed'}
       >
         <HStack align="center">{children}</HStack>
-        <IconButton
-          iconSize={20}
-          iconColor="text-muted"
-          variant="link"
-          className={classes.icon()}
-          icon={IconChevronDown}
-          onClick={() => setOpened(!opened)}
-        />
+        {!hideIcon && (
+          <IconButton
+            iconSize={20}
+            iconColor="text-muted"
+            variant="link"
+            className={classes.icon()}
+            icon={IconChevronDown}
+            onClick={() => setOpened(!opened)}
+          />
+        )}
       </Root>
     );
   },
 });
 
 export const CollapsibleContent = createComponent<
-  CardBodyProps,
+  CollapsibleContentProps,
   typeof Card.Body
 >({
   id: 'CollapsibleContent',
