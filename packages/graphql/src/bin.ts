@@ -15,8 +15,8 @@ async function codegen() {
   console.log('⌛️ Generating GraphQL code...');
   await execa('pnpm', ['codegen:app'], { stdio: 'inherit' });
   console.log('✅ GraphQL code generated!');
-  console.log('👀 Watching for GraphQL changes...');
   console.log(`🚀 Server running at http://localhost:${SERVER_PORT}/graphql`);
+  isWatching && console.log('👀 Watching for GraphQL changes...');
 }
 
 const server = createServer(app);
