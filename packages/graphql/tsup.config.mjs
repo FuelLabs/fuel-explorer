@@ -1,7 +1,6 @@
 import graphqlLoaderPluginPkg from '@luckycatfactory/esbuild-graphql-loader';
+import { execa } from 'execa';
 import { defineConfig } from 'tsup';
-
-import { devServer } from './scripts/dev-server.mjs';
 
 const graphqlLoaderPlugin = graphqlLoaderPluginPkg.default;
 
@@ -14,8 +13,17 @@ export default defineConfig((options) => ({
   esbuildPlugins: [graphqlLoaderPlugin()],
   entry: { index: 'src/bin.ts' },
   async onSuccess() {
-    if (options.watch) {
-      await devServer();
-    }
+    const cmd = execa('node', ['./dist/index.js'], {
+      stdio: 'inherit',
+      cleanup: true,
+      env: {
+        SERVER_PORT: 4444,
+        WATCH: Boolean(options.watch),
+      },
+    });
+
+    return () => {
+      cmd.kill('SIGTERM');
+    };
   },
 }));

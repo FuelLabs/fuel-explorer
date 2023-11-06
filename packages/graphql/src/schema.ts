@@ -2,8 +2,8 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { stitchSchemas } from '@graphql-tools/stitch';
 
 import fuelSchema from './schemas/fuelcore.graphql';
-import { customSchema } from './services/custom';
 import { extendsResolvers, extendsTypeDefs } from './services/extends';
+import { customSchema } from './services/metadata';
 import { createGraphqlFetch } from './utils';
 
 export function createSchema(fuelCoreGraphql: string) {
@@ -19,6 +19,5 @@ export function createSchema(fuelCoreGraphql: string) {
     ],
     typeDefs: extendsTypeDefs,
     resolvers: extendsResolvers,
-    experimentalFragmentVariables: true,
   });
 }
