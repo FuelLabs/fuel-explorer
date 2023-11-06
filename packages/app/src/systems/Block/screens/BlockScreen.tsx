@@ -1,7 +1,7 @@
 'use client';
 
-import type { Maybe } from '@fuel-explorer/graphql';
-import { Flex, Text, VStack } from '@fuels/ui';
+import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
+import { Address, Flex, Text, VStack } from '@fuels/ui';
 import { IconCube } from '@tabler/icons-react';
 import { useState } from 'react';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
@@ -9,14 +9,22 @@ import {
   ViewMode,
   ViewModes,
 } from '~/systems/Core/components/ViewMode/ViewMode';
+import { isValidAddress } from '~/systems/Core/utils/address';
 
 import { BlockScreenAdvanced } from '../components/BlockScreenAdvanced';
+import { BlockScreenSimple } from '../components/BlockScreenSimple';
 
 type BlockScreenProps = {
-  blockNumber?: Maybe<string>;
+  blockNumberOrId?: Maybe<string>;
+  block?: Maybe<BlockItemFragment>;
+  producer: Maybe<string>;
 };
 
-export function BlockScreen({ blockNumber }: BlockScreenProps) {
+export function BlockScreen({
+  blockNumberOrId,
+  block,
+  producer,
+}: BlockScreenProps) {
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
 
   return (
@@ -25,12 +33,18 @@ export function BlockScreen({ blockNumber }: BlockScreenProps) {
         <Flex justify="between" className="flex-1">
           <Flex align="center" gap={'5'}>
             Block
-            <Text className="text-sm text-muted">#{blockNumber}</Text>
+            {isValidAddress(blockNumberOrId) ? (
+              <Address full value={blockNumberOrId || ''} fixed="b256" />
+            ) : (
+              <Text className="text-sm text-muted">#{blockNumberOrId}</Text>
+            )}
           </Flex>
           <ViewMode mode={viewMode} onChange={setViewMode} />
         </Flex>
       </PageTitle>
-      {viewMode === ViewModes.Simple && <div>Simple</div>}
+      {viewMode === ViewModes.Simple && (
+        <BlockScreenSimple block={block} producer={producer} />
+      )}
       {viewMode === ViewModes.Advanced && <BlockScreenAdvanced />}
     </VStack>
   );

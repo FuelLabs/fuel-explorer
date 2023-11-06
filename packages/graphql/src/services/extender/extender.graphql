@@ -99,3 +99,13 @@ type UtxoItem {
 extend type Balance {
   utxos: [UtxoItem]
 }
+
+# --------------------------------
+# Block
+# --------------------------------
+
+extend type Block {
+  time: ParsedTime
+  totalGasUsed: U64
+  producer: Address
+}

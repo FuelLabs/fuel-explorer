@@ -1,0 +1,51 @@
+# import TransactionOutput from ./tx-fragments.graphql
+
+fragment BlockItem on Block {
+  # Custom Resolvers
+  time {
+    fromNow
+    full
+    rawTai64
+    rawUnix
+  }
+  totalGasUsed
+  # TODO add this back when a fix is found
+  #producer
+
+  # Block Data
+  id
+  consensus {
+    __typename
+    ... on PoAConsensus {
+      signature
+    }
+  }
+  header {
+    transactionsCount
+    time
+  }
+  transactions {
+    id
+    gasUsed
+    title
+    isMint
+    isCreate
+    isScript
+    rawPayload
+    outputs {
+      ...TransactionOutput
+    }
+  }
+}
+
+query getBlockByHeight($height: U64) {
+  block(height: $height) {
+    ...BlockItem
+  }
+}
+
+query getBlockById($id: BlockId) {
+  block(id: $id) {
+    ...BlockItem
+  }
+}

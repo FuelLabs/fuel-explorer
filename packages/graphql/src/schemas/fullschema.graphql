@@ -47,6 +47,9 @@ type Block {
   consensus: Consensus!
   header: Header!
   id: BlockId!
+  producer: Address
+  time: ParsedTime
+  totalGasUsed: U64
   transactions: [Transaction!]!
 }
 
