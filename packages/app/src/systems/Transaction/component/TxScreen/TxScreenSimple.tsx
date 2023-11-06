@@ -13,11 +13,13 @@ import {
   Grid,
   Heading,
   Icon,
+  Link,
   Text,
   VStack,
 } from '@fuels/ui';
-import { IconArrowDown } from '@tabler/icons-react';
+import { IconArrowDown, IconLink } from '@tabler/icons-react';
 import { bn } from 'fuels';
+import NextLink from 'next/link';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
@@ -65,7 +67,17 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
             {tx.time?.fromNow}
           </CardInfo>
           {tx.blockHeight && (
-            <CardInfo name={'Block'}>#{tx.blockHeight}</CardInfo>
+            <CardInfo name={'Block'}>
+              <Link
+                isExternal
+                as={NextLink}
+                href={`/block/${tx.blockHeight}`}
+                externalIcon={IconLink}
+                className="text-color"
+              >
+                #{tx.blockHeight}
+              </Link>
+            </CardInfo>
           )}
           <CardInfo
             name={'Gas spent'}
