@@ -10,6 +10,8 @@ import {
   ViewModes,
 } from '~/systems/Core/components/ViewMode/ViewMode';
 
+import { BlockScreenAdvanced } from '../components/BlockScreenAdvanced';
+
 type BlockScreenProps = {
   blockNumber?: Maybe<string>;
 };
@@ -29,7 +31,7 @@ export function BlockScreen({ blockNumber }: BlockScreenProps) {
         </Flex>
       </PageTitle>
       {viewMode === ViewModes.Simple && <div>Simple</div>}
-      {viewMode === ViewModes.Advanced && <div>Advanced</div>}
+      {viewMode === ViewModes.Advanced && <BlockScreenAdvanced />}
     </VStack>
   );
 }
