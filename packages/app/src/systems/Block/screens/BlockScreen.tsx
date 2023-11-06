@@ -24,6 +24,7 @@ export function BlockScreen({
   block,
   producer,
 }: BlockScreenProps) {
+    
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
 
   return (
