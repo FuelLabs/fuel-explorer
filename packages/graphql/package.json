@@ -9,11 +9,10 @@
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
   "scripts": {
-    "build": "run-s build:lib",
+    "build": "run-s codegen:fuel build:lib",
     "build:lib": "tsup --dts",
     "build:watch": "pnpm build:lib --watch",
     "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts",
-    "codegen:schema": "gql-gen -r dotenv/config --config codegen.schema.ts",
     "codegen:app": "gql-gen -r dotenv/config --config codegen.ts",
     "dev": "pnpm build:watch",
     "start": "pnpm dev",

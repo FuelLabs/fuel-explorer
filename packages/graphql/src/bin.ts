@@ -13,8 +13,6 @@ const isWatching = WATCH === 'true';
 
 async function codegen() {
   console.log('⌛️ Generating GraphQL code...');
-  await execa('pnpm', ['codegen:fuel'], { stdio: 'inherit' });
-  await execa('pnpm', ['codegen:schema'], { stdio: 'inherit' });
   await execa('pnpm', ['codegen:app'], { stdio: 'inherit' });
   console.log('✅ GraphQL code generated!');
   console.log('👀 Watching for GraphQL changes...');
