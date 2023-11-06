@@ -45,7 +45,9 @@ export function BlockScreen({
       {viewMode === ViewModes.Simple && (
         <BlockScreenSimple block={block} producer={producer} />
       )}
-      {viewMode === ViewModes.Advanced && <BlockScreenAdvanced />}
+      {viewMode === ViewModes.Advanced && (
+        <BlockScreenAdvanced block={block ? { ...block, producer } : null} />
+      )}
     </VStack>
   );
 }
