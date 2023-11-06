@@ -1,0 +1,3 @@
+build:
+	forc build
+

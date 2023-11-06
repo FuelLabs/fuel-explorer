@@ -3,7 +3,12 @@
   "compilerOptions": {
     "isolatedModules": true,
     "outDir": "./dist",
-    "module": "commonjs"
+    "module": "commonjs",
+    "plugins": [
+      {
+        "name": "ts-gql-plugin"
+      }
+    ]
   },
-  "include": ["src", "*.config.*"]
+  "include": ["src", "scripts", "*.config.*"]
 }

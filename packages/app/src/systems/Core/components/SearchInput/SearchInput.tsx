@@ -17,6 +17,7 @@ export function SearchInput({
   onSubmit,
   onClear,
   autoFocus,
+  placeholder = 'Search transactions...',
   ...props
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
@@ -45,6 +46,7 @@ export function SearchInput({
         <Input.Field
           {...props}
           ref={inputRef}
+          placeholder={placeholder}
           value={value}
           onChange={handleChange}
         />
@@ -72,7 +74,3 @@ export function SearchInput({
     </Focus.ArrowNavigator>
   );
 }
-
-SearchInput.defaultProps = {
-  placeholder: 'Search transactions...',
-};

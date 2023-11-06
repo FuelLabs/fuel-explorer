@@ -1,5 +1,6 @@
 import type { ButtonProps } from '@fuels/ui';
-import { Button, Copyable } from '@fuels/ui';
+import { Button } from '@fuels/ui';
+import { IconCopy } from '@tabler/icons-react';
 
 type CopyButtonProps = ButtonProps & {
   value: string;
@@ -18,14 +19,20 @@ const CopyButton = ({ value, text = 'Copy', ...props }: CopyButtonProps) => {
   const variant = props.variant || 'soft';
 
   return (
-    <Button {...props} variant={variant} size={size} color="gray">
-      <Copyable
-        value={value}
-        iconSize={COPY_ICON_SIZES[size as string]}
-        className="text-inherit"
-      >
-        {text}
-      </Copyable>
+    <Button
+      {...props}
+      className="max-w-[100px]"
+      variant={variant}
+      size={size}
+      color="gray"
+      iconSize={COPY_ICON_SIZES[size as string]}
+      rightIcon={IconCopy}
+      iconColor="text-muted"
+      onClick={async () => {
+        await navigator.clipboard.writeText(value);
+      }}
+    >
+      {text}
     </Button>
   );
 };

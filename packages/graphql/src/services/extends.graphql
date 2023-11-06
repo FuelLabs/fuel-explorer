@@ -1,3 +1,10 @@
+scalar U64
+scalar HexString
+scalar Address
+scalar AssetId
+scalar ContractId
+scalar UtxoId
+
 # --------------------------------
 # Transaction
 # --------------------------------
@@ -83,6 +90,7 @@ extend type Transaction {
   accountsInvolved: [TransactionAccount]
   groupedInputs: [GroupedInput]
   groupedOutputs: [GroupedOutput]
+  isPredicate: Boolean
 }
 
 # --------------------------------

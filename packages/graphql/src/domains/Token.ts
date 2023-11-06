@@ -4,18 +4,20 @@ import type { GraphQLResolveInfo } from 'graphql';
 import { OperationTypeNode } from 'graphql';
 
 import tokensData from '../data/tokens.json';
-import { metadataSchema } from '../services/metadata';
+import { Domain } from '../utils/domain';
 
-export class TokenDomain {
-  constructor() {}
+type Args = {
+  assetsId: Array<string>;
+};
 
-  delegateQuery(
+export class TokenDomain extends Domain<any, Args> {
+  static delegateQuery(
     assetsId: Array<string>,
     context: any,
     info: GraphQLResolveInfo,
   ) {
     return delegateToSchema({
-      schema: metadataSchema,
+      schema: info.schema,
       operation: OperationTypeNode.QUERY,
       fieldName: 'tokens',
       args: { assetsId },
@@ -24,7 +26,15 @@ export class TokenDomain {
     });
   }
 
-  static queryTokens(assetsId: string[]) {
+  static createResolvers() {
+    const domain = new TokenDomain();
+    return {
+      ...domain.createResolver('tokens'),
+    };
+  }
+
+  get tokens() {
+    const { assetsId } = this.args;
     return assetsId
       .map((id) =>
         tokensData.find(
@@ -33,14 +43,4 @@ export class TokenDomain {
       )
       .filter((i) => !!i);
   }
-}
-
-export function createTokensResolver() {
-  return function (
-    _source: any,
-    _args: any,
-    { assetsId }: { assetsId: Array<string> },
-  ) {
-    return TokenDomain.queryTokens(assetsId);
-  };
 }

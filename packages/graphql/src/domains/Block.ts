@@ -2,31 +2,20 @@ import { bn, Signer } from 'fuels';
 
 import type { BlockItemFragment } from '../generated/types';
 import { tai64toDate } from '../utils/dayjs';
+import { Domain } from '../utils/domain';
 
-export class BlockDomain {
-  constructor(private block: BlockItemFragment) {}
-
-  static createResolver(key: string, func?: string) {
-    return {
-      [key]: {
-        async resolve(block: BlockItemFragment) {
-          const domain = new BlockDomain(block);
-          return func ? domain[func]() : domain[key] ?? null;
-        },
-      },
-    };
-  }
-
+export class BlockDomain extends Domain<BlockItemFragment> {
   static createResolvers() {
+    const domain = new BlockDomain();
     return {
-      ...BlockDomain.createResolver('time'),
-      ...BlockDomain.createResolver('totalGasUsed'),
-      ...BlockDomain.createResolver('producer'),
+      ...domain.createResolver('time'),
+      ...domain.createResolver('totalGasUsed'),
+      ...domain.createResolver('producer'),
     };
   }
 
   get time() {
-    const { block } = this;
+    const { source: block } = this;
     const time = block.header.time ?? null;
     const date = tai64toDate(time);
     return {
@@ -38,7 +27,7 @@ export class BlockDomain {
   }
 
   get totalGasUsed() {
-    const { block } = this;
+    const { source: block } = this;
     const totalGasUsed = block.transactions.reduce((acc, transaction) => {
       return acc.add(bn(transaction.gasUsed));
     }, bn(0));
@@ -46,7 +35,7 @@ export class BlockDomain {
   }
 
   get producer() {
-    const { block } = this;
+    const { source: block } = this;
     if (block.consensus.__typename === 'Genesis') {
       return null;
     }

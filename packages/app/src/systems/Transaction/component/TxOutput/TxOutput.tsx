@@ -116,7 +116,7 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
               <Text className="font-medium">Contract Created</Text>
               <Address prefix="Id:" value={contractId}>
                 <Address.Link as={NextLink} href={`/contract/${contractId}`}>
-                  Contract
+                  View Contract
                 </Address.Link>
               </Address>
             </VStack>

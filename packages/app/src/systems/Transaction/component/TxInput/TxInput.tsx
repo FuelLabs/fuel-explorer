@@ -59,7 +59,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               )}
               <Address value={input.assetId} fixed="b256" />
             </Text>
-            <Address prefix="From:" value={input.owner}>
+            <Address prefix="From:" value={input.owner} className="text-white">
               <Address.Link as={NextLink} href={`/account/${input.owner}`}>
                 View Account
               </Address.Link>
@@ -93,7 +93,7 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
             <EntityItem.Info title="Contract Input">
               <Address value={contractId} prefix="Id:">
                 <Address.Link as={NextLink} href={`/contract/${contractId}`}>
-                  Contract
+                  View Contract
                 </Address.Link>
               </Address>
             </EntityItem.Info>
@@ -113,14 +113,14 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
       <Collapsible {...props}>
         <Collapsible.Header>
           <TxIcon type="Message" status="Submitted" />
-          <HStack align="center" gap="1" className="flex-1 justify-between">
+          <HStack align="center" gap="1" className="flex-1">
             <Text>Message</Text>
-            <VStack gap="1" className="mr-2">
+            <VStack gap="1" className="ml-4">
               <Address value={sender} linkPos="left">
                 <Address.Link
                   as={NextLink}
                   href={`/account/${sender}`}
-                  className="w-[60px] text-right"
+                  className="w-[60px]"
                 >
                   Sender
                 </Address.Link>
@@ -129,7 +129,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
                 <Address.Link
                   as={NextLink}
                   href={`/account/${recipient}`}
-                  className="w-[60px] text-right"
+                  className="w-[60px]"
                 >
                   Recipient
                 </Address.Link>
