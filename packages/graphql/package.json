@@ -26,7 +26,6 @@
   "dependencies": {
     "@fuel-ts/math": "0.65.0",
     "@graphql-tools/delegate": "^10.0.3",
-    "@graphql-tools/graphql-file-loader": "8.0.0",
     "@graphql-tools/schema": "^10.0.0",
     "@graphql-tools/stitch": "^9.0.3",
     "@graphql-tools/utils": "^10.0.8",
@@ -47,14 +46,11 @@
     "graphql-tag": "2.12.6",
     "lodash": "^4.17.21",
     "tai64": "1.0.0",
-    "typescript": "^5.2.2",
-    "wait-port": "1.1.0"
+    "typescript": "^5.2.2"
   },
   "devDependencies": {
     "@babel/cli": "7.23.0",
     "@babel/core": "^7.23.2",
-    "@babel/preset-env": "7.23.2",
-    "@babel/preset-typescript": "7.23.2",
     "@fuels/ts-config": "^0.1.1",
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/introspection": "4.0.0",
@@ -67,15 +63,9 @@
     "@types/express": "^4.17.20",
     "@types/lodash": "4.14.200",
     "@types/node": "^20.8.10",
-    "babel-plugin-import-graphql": "2.8.1",
-    "babel-register-ts": "7.0.0",
     "execa": "8.0.1",
     "graphql-codegen-typescript-common": "0.18.2",
     "graphql-codegen-typescript-mock-data": "3.5.1",
-    "nodemon": "^3.0.1",
-    "ts-gql-plugin": "1.5.1",
-    "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0"
   }
 }
