@@ -82,14 +82,14 @@
     "eslint-plugin-testing-library": "^6.1.0",
     "get-tsconfig": "4.7.2",
     "husky": "^8.0.3",
+    "next": "14.0.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.0.3",
     "ts-node": "10.9.1",
     "tsup": "7.2.0",
     "turbo": "^1.10.16",
     "typescript": "5.2.2",
-    "updates": "^15.0.4",
-    "next": "14.0.1"
+    "updates": "^15.0.4"
   },
   "pnpm": {
     "peerDependencyRules": {
@@ -113,7 +113,8 @@
       "loader-utils@>=2.0.0 <2.0.3": ">=2.0.3",
       "json5": ">=2.2.2",
       "semver@<7.5.2": ">=7.5.2",
-      "word-wrap": "npm:@aashutoshrathi/word-wrap"
+      "word-wrap": "npm:@aashutoshrathi/word-wrap",
+      "qs@>=6.9.0 <6.9.7": ">=6.9.7"
     }
   }
 }

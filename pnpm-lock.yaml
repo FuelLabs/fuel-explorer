@@ -16,6 +16,7 @@ overrides:
   json5: '>=2.2.2'
   semver@<7.5.2: '>=7.5.2'
   word-wrap: npm:@aashutoshrathi/word-wrap
+  qs@>=6.9.0 <6.9.7: '>=6.9.7'
 
 importers:
 
@@ -11416,7 +11417,7 @@ packages:
       http-errors: 1.8.1
       iconv-lite: 0.4.24
       on-finished: 2.3.0
-      qs: 6.9.6
+      qs: 6.11.2
       raw-body: 2.4.2
       type-is: 1.6.18
     transitivePeerDependencies:
@@ -13747,7 +13748,7 @@ packages:
       parseurl: 1.3.3
       path-is-absolute: 1.0.1
       proxy-addr: 2.0.7
-      qs: 6.9.6
+      qs: 6.11.2
       range-parser: 1.2.1
       router: 2.0.0-beta.1
       safe-buffer: 5.2.1
@@ -18126,11 +18127,6 @@ packages:
     resolution: {integrity: sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==}
     engines: {node: '>=0.6'}
     dev: true
-
-  /qs@6.9.6:
-    resolution: {integrity: sha512-TIRk4aqYLNoJUbd+g2lEdz5kLWIuTMRagAXxl78Q0RiVjAOugHmeKNGdd3cwo/ktpf9aL9epCfFqWDEKysUlLQ==}
-    engines: {node: '>=0.6'}
-    dev: false
 
   /querystring-es3@0.2.1:
     resolution: {integrity: sha512-773xhDQnZBMFobEiztv8LIl70ch5MSF/jUQVlhwFyBILqq96anmoctVIYz+ZRp0qbCKATTn6ev02M3r7Ga5vqA==}
