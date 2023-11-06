@@ -15,9 +15,9 @@ import { bn } from 'fuels';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
-import type { UtxoItem } from '~/systems/Account/components/Utxos/Utxos';
-import { Utxos } from '~/systems/Account/components/Utxos/Utxos';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
+import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 

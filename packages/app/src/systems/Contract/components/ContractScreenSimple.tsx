@@ -1,4 +1,8 @@
-import type { ContractItemFragment } from '@fuel-explorer/graphql';
+import type {
+  ContractBalanceConnectionItemFragment,
+  ContractItemFragment,
+  Maybe,
+} from '@fuel-explorer/graphql';
 import { Box, Tabs, VStack } from '@fuels/ui';
 import {
   IconChecklist,
@@ -16,9 +20,13 @@ import { TabTransactions } from './TabTransactions';
 
 type ContractScreenProps = {
   contract: ContractItemFragment;
+  contractBalances?: Maybe<ContractBalanceConnectionItemFragment>;
 };
 
-export function ContractScreenSimple({ contract }: ContractScreenProps) {
+export function ContractScreenSimple({
+  contract,
+  contractBalances,
+}: ContractScreenProps) {
   const router = useRouter();
   const pathname = usePathname();
   const tabPathname = useMemo(
@@ -55,7 +63,9 @@ export function ContractScreenSimple({ contract }: ContractScreenProps) {
         <Box className="pt-3 pb-2">
           <Tabs.Content value={tabPathname || ''}>
             {tabPathname === 'transactions' && <TabTransactions />}
-            {tabPathname === 'assets' && <TabAssets />}
+            {tabPathname === 'assets' && (
+              <TabAssets contractBalances={contractBalances} />
+            )}
             {tabPathname === 'minted' && <TabMinted />}
             {tabPathname === 'source' && (
               <TabSource bytecode={contract.bytecode} />
