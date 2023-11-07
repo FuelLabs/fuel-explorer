@@ -15,7 +15,6 @@ import {
   Heading,
   Icon,
   Link,
-  Text,
   VStack,
 } from '@fuels/ui';
 import { IconArrowDown, IconLink } from '@tabler/icons-react';
