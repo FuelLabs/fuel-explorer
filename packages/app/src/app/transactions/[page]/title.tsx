@@ -1,4 +1,6 @@
 'use client';
+import { Icon } from '@fuels/ui';
+import { IconListDetails } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useWindowSize } from 'react-use';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
@@ -15,6 +17,7 @@ export function TransactionsTitle({ page: current = '1' }: ComponentProps) {
 
   return (
     <PageTitle
+      icon={<Icon icon={IconListDetails} />}
       rightElement={
         width >= 768 && (
           <Pagination

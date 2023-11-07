@@ -5,7 +5,7 @@ import { setTheme } from '../../actions/setTheme';
 
 export function TopNav() {
   const logo = (
-    <NextLink href="/" className="flex items-center flex-1">
+    <NextLink href="/" className="flex items-center lg:flex-0">
       <Nav.Logo />
     </NextLink>
   );

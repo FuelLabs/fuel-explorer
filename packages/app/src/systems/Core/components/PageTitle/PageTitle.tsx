@@ -39,7 +39,7 @@ const styles = tv({
       'mx-4 md:mx-8 xl:mx-0',
     ],
     title: ['items-center md:items-start flex-1'],
-    text: ['text-[2rem] md:text-[2.2rem]'],
+    text: ['text-[1.7rem] sm:text-[2rem] md:text-[2.2rem]'],
     icon: ['h-full self-stretch text-lg px-2 mt-2'],
   },
 });
