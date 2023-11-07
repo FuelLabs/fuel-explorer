@@ -1,11 +1,14 @@
+'use client';
+
 import { Nav } from '@fuels/ui';
 import NextLink from 'next/link';
 
 import { setTheme } from '../../actions/setTheme';
 
 export function TopNav() {
+  if (typeof window === 'undefined') return null;
   const logo = (
-    <NextLink href="/" className="flex items-center lg:flex-0">
+    <NextLink href="/" className="flex items-center flex-1 lg:flex-0">
       <Nav.Logo />
     </NextLink>
   );
