@@ -38,7 +38,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const { source: transaction } = this;
     const status = transaction.status;
     if (status?.__typename === 'SqueezedOutStatus') return null;
-    const time = status?.time ?? null;
+    const time = status?.time || '';
     const date = tai64toDate(time);
     return {
       fromNow: date.fromNow(),
