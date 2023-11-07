@@ -35,6 +35,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-json-view-lite": "1.2.0",
+    "react-use": "17.4.0",
     "react-window": "1.8.9",
     "tai64": "1.0.0",
     "tailwind-merge": "2.0.0",

@@ -8,10 +8,12 @@ type PageProps = {
   };
 };
 
-export default async function Transactions({ params: { page } }: PageProps) {
+export default async function Transactions({
+  params: { page = '1' },
+}: PageProps) {
   if (!page || page === '0') return redirect('/transactions/1');
   const txs = await getLastTxs({ page: Number(page) });
-  return <TxList transactions={txs} />;
+  return <TxList transactions={txs} page={page} />;
 }
 
 export const revalidate = 10;
