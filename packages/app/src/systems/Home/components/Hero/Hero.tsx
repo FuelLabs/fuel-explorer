@@ -37,13 +37,13 @@ export function Hero() {
 const styles = tv({
   slots: {
     root: 'hero-bg overflow-clip relative w-full border-b border-border',
-    container: 'z-20 relative py-8 px-8 md:py-28 md:px-10',
+    container: 'z-20 relative py-8 pt-6 px-8 md:py-28 md:pt-24 md:px-10',
     img: 'hidden absolute inset-0 md:block',
     imgChild: 'absolute -top-1/2 right-0',
     imgWrapper: 'absolute inset-0',
     input: 'w-full md:w-[400px]',
     title: [
-      'text-center text-2xl text-white mb-4 justify-center',
+      'text-2xl leading-snug text-white mb-4 justify-center',
       'md:text-left md:text-4xl md:justify-start',
     ],
   },
