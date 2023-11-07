@@ -34,7 +34,8 @@ const ICON_SIZE = 24;
 function parseJson(item: TransactionReceiptFragment): Record<string, any> {
   return Object.entries(item).reduce((acc, [key, value]) => {
     if (!value || key === '__typename') return acc;
-    if (typeof value === 'object') return { ...acc, [key]: parseJson(value) };
+    if (typeof value === 'object')
+      return { ...acc, [key]: parseJson(value as any) };
     return { ...acc, [key]: value };
   }, {});
 }
@@ -44,7 +45,7 @@ export type TxScriptRowProps = BaseProps<{
 }>;
 
 function TxScriptRow({ item }: TxScriptRowProps) {
-  const asset = useAsset(item.assetId);
+  const asset = useAsset(item.assetId || '');
   const classes = styles();
   const amount = bn(item.amount);
   const isDanger =

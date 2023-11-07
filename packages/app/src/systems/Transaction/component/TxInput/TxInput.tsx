@@ -30,6 +30,8 @@ export type TxInputProps = CardProps & {
 const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
   id: 'TxInputCoin',
   render: (_, { input, ...props }) => {
+    if (!input.assetId) return null;
+
     const assetId = input.assetId;
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
@@ -57,9 +59,13 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
                   ({asset.symbol})
                 </Text>
               )}
-              <Address value={input.assetId} fixed="b256" />
+              <Address value={assetId} fixed="b256" />
             </Text>
-            <Address prefix="From:" value={input.owner} className="text-white">
+            <Address
+              prefix="From:"
+              value={input.owner || ''}
+              className="text-white"
+            >
               <Address.Link as={NextLink} href={`/account/${input.owner}`}>
                 View Account
               </Address.Link>
@@ -81,6 +87,8 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
   id: 'TxInputContract',
   render: (_, { input, ...props }) => {
     const classes = styles();
+
+    if (!input.contractId) return null;
     const contractId = input.contractId;
 
     return (
@@ -108,6 +116,8 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
   id: 'TxInputMessage',
   render: (_, { input, ...props }) => {
     const { sender, recipient, data } = input;
+
+    if (!sender || !recipient) return null;
 
     return (
       <Collapsible {...props}>

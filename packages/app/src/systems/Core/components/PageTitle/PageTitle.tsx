@@ -1,39 +1,45 @@
 'use client';
-
-import { Heading, Badge, Grid, Flex } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
+import { Heading, Badge, HStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 export type PageTitleProps = BaseProps<{
-  icon: React.ReactNode;
   children: React.ReactNode;
+  icon?: React.ReactNode;
+  rightElement?: React.ReactNode;
 }>;
 
-export function PageTitle({ children, icon, className }: PageTitleProps) {
+export function PageTitle({
+  children,
+  icon,
+  rightElement,
+  className,
+}: PageTitleProps) {
   const classes = styles();
   return (
-    <Heading as="h2" size="3" className={classes.root({ className })}>
-      <Grid
-        gap="2"
-        className="grid-cols-2 grid-cols-[214px_1fr] grid-rows-[40px_1fr] sm:flex sm:w-full sm:items-center"
-      >
-        <Flex className="col-span-1">
-          <Badge
-            color="gray"
-            size="2"
-            className="text-lg px-2 col-start-1 row-start-1"
-          >
+    <Heading as="h2" className={classes.root({ className })}>
+      <HStack className={classes.title()}>
+        {icon && (
+          <Badge color="gray" size="2" className={classes.icon()}>
             {icon}
           </Badge>
-        </Flex>
-        {children}
-      </Grid>
+        )}
+        <div className={classes.text()}>{children}</div>
+      </HStack>
+      <div className="flex items-center h-full">{rightElement}</div>
     </Heading>
   );
 }
 
 const styles = tv({
   slots: {
-    root: 'flex items-center gap-5 text-gray-11 pb-4 border-b border-border font-normal',
+    root: [
+      'md:grid md:grid-cols-[1fr_auto] md:items-start',
+      'md:border-b border-border md:pb-4',
+      'mx-4 md:mx-8 xl:mx-0',
+    ],
+    title: ['items-center md:items-start flex-1'],
+    text: ['text-[1.7rem] sm:text-[2rem] md:text-[2.2rem]'],
+    icon: ['h-full self-stretch text-lg px-2 mt-2'],
   },
 });

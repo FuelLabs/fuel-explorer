@@ -12,6 +12,7 @@ import {
 } from '~/systems/Core/components/ViewMode/ViewMode';
 import { isValidAddress } from '~/systems/Core/utils/address';
 
+import { BlockScreenAdvanced } from '../components/BlockScreenAdvanced';
 import { BlockScreenSimple } from '../components/BlockScreenSimple';
 
 type BlockScreenProps = {
@@ -31,26 +32,23 @@ export function BlockScreen({
     <VStack>
       <PageTitle
         icon={<IconCube size={24} stroke={2.4} />}
-        className="px-4 grid sm:flex"
+        rightElement={<ViewMode mode={viewMode} onChange={setViewMode} />}
       >
-        <Flex className="col-start-1 row-start-2">Block</Flex>
-        <Flex align="center" className="justify-end col-start-2 row-start-2">
+        <Flex>Block</Flex>
+        <Flex align="center">
           {isValidAddress(blockNumberOrId) ? (
             <Address full value={blockNumberOrId || ''} fixed="b256" />
           ) : (
             <PageSubtitle>#{blockNumberOrId}</PageSubtitle>
           )}
         </Flex>
-        <ViewMode
-          mode={viewMode}
-          className="justify-end col-start-2 row-start-1 sm:ml-auto"
-          onChange={setViewMode}
-        />
       </PageTitle>
       {viewMode === ViewModes.Simple && (
         <BlockScreenSimple block={block} producer={producer} />
       )}
-      {viewMode === ViewModes.Advanced && <div>Advanced</div>}
+      {viewMode === ViewModes.Advanced && (
+        <BlockScreenAdvanced block={block ? { ...block, producer } : null} />
+      )}
     </VStack>
   );
 }
