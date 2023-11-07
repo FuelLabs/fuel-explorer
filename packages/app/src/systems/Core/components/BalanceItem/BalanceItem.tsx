@@ -12,7 +12,7 @@ import { Utxos } from '../Utxos/Utxos';
 const ICON_SIZE = 36;
 
 type BalanceItemProps = BaseProps<{
-  item: AccountBalanceFragment;
+  item: Omit<AccountBalanceFragment, 'owner' | '__typename'>;
 }>;
 
 export const BalanceItem = createComponent<
@@ -24,11 +24,13 @@ export const BalanceItem = createComponent<
     const assetId = item.assetId;
     const amount = item.amount;
     const asset = useAsset(assetId);
-
     if (!asset) return null;
+
+    const hasUTXOs = !!item.utxos?.length;
+
     return (
       <Collapsible {...props}>
-        <Collapsible.Header>
+        <Collapsible.Header hideIcon={!hasUTXOs}>
           {asset.icon ? (
             <Image
               src={asset.icon as string}
@@ -56,7 +58,9 @@ export const BalanceItem = createComponent<
             </Text>
           )}
         </Collapsible.Header>
-        <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />
+        {hasUTXOs && (
+          <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />
+        )}
       </Collapsible>
     );
   },

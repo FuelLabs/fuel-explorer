@@ -3,7 +3,7 @@
 import type { AccountBalanceFragment, Maybe } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 
-import { BalanceItem } from '../../components/BalanceItem/BalanceItem';
+import { BalanceItem } from '../../../Core/components/BalanceItem/BalanceItem';
 
 type AccountScreenProps = {
   balances?: Maybe<AccountBalanceFragment[]>;

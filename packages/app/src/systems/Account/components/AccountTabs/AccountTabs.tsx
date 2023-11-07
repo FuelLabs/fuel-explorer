@@ -8,11 +8,13 @@ import { tv } from 'tailwind-variants';
 
 type AccountTabsProps = BaseProps<{
   accountId: string;
+  isPredicate?: boolean;
 }>;
 
 export function AccountTabs({
   className,
   accountId,
+  isPredicate,
   ...props
 }: AccountTabsProps) {
   const classes = styles({ className });
@@ -44,12 +46,13 @@ export function AccountTabs({
         </Button>
         <Button
           as={NextLink}
-          href={`/account/${accountId}/predicate`}
+          href={isPredicate ? `/account/${accountId}/predicate` : ''}
           color="gray"
           className={classes.button()}
           data-active={pathname === `/account/${accountId}/predicate`}
           variant="surface"
           leftIcon={IconCodeAsterix}
+          disabled={!isPredicate}
         >
           Predicate
         </Button>
@@ -63,10 +66,11 @@ const styles = tv({
     root: 'justify-between items-center',
     button: [
       'bg-transparent text-muted',
-      'hover:bg-gray-2 hover:text-heading transition-colors',
+      'enabled:hover:bg-gray-2 enabled:hover:text-heading transition-colors',
       'data-[active=true]:bg-gray-2 data-[active=true]:text-heading',
       'fuel-[Icon]:hover:text-icon',
       'fuel-[Icon]:data-[active=true]:text-icon',
+      'disabled:opacity-50',
     ],
   },
 });

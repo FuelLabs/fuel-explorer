@@ -3,7 +3,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
   overwrite: true,
   documents: ['./src/queries/**.graphql'],
-  schema: './src/schemas/fullschema.graphql',
+  schema: `http://localhost:${process.env.SERVER_PORT}/graphql`,
   generates: {
     'src/generated/types.ts': {
       plugins: [
@@ -15,6 +15,11 @@ const config: CodegenConfig = {
         nonOptionalTypename: true,
         rawRequest: true,
         useTypeImports: true,
+        defaultScalarType: 'string',
+        scalars: {
+          Boolean: 'boolean',
+          Int: 'number',
+        },
       },
     },
     'src/generated/mocks.ts': {

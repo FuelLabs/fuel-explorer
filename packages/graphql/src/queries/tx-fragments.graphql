@@ -173,6 +173,7 @@ fragment TransactionItem on Transaction {
     id
     type
   }
+  isPredicate
   blockHeight
   statusType
   totalAccounts

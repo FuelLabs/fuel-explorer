@@ -1,4 +1,4 @@
-import { Button, Card, Flex, ScrollArea, Text } from '@fuels/ui';
+import { Button, Card, ScrollArea, Text } from '@fuels/ui';
 import { IconChevronDown } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -23,27 +23,22 @@ export function CodeBlock({ value, type = 'raw', title }: CodeBlockProps) {
     if (typeof value === 'object') {
       return JSON.stringify(value, null, 2);
     }
-
     return value;
   }
 
   function getTitle() {
     if (title != undefined) return title;
-
     if (type === 'json') return 'JSON';
-
     return 'Code';
   }
 
   return (
     <Card className={classes.root()} data-compact={compact}>
       <Card.Header className={classes.cardHeader()}>
-        <Flex align="center" justify="between">
-          <Text size="1" weight="bold">
-            {getTitle()}
-          </Text>
-          <CopyButton size="1" value={getCopyValue()} />
-        </Flex>
+        <Text size="1" weight="bold">
+          {getTitle()}
+        </Text>
+        <CopyButton size="1" value={getCopyValue()} />
       </Card.Header>
       <ScrollArea className={classes.cardMiddle()} scrollbars="vertical">
         {type === 'json' && (
@@ -77,11 +72,12 @@ export function CodeBlock({ value, type = 'raw', title }: CodeBlockProps) {
 const styles = tv({
   slots: {
     root: [
-      'group p-0 gap-0 ',
+      'group p-0 gap-0',
       'transition-[max-height] max-h-[75vh]',
-      'data-[compact=true]:max-h-[400px]',
+      'data-[compact=true]:max-h-[200px]',
     ],
-    cardHeader: 'border-b border-card-border py-3 flex-none',
+    cardHeader:
+      'border-b border-card-border py-3 flex-row items-center justify-between',
     cardMiddle: [
       'flex-1',
       '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON

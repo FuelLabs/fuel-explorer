@@ -15,9 +15,9 @@ import { bn } from 'fuels';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
-import type { UtxoItem } from '~/systems/Account/components/Utxos/Utxos';
-import { Utxos } from '~/systems/Account/components/Utxos/Utxos';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
+import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -30,6 +30,8 @@ export type TxInputProps = CardProps & {
 const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
   id: 'TxInputCoin',
   render: (_, { input, ...props }) => {
+    if (!input.assetId) return null;
+
     const assetId = input.assetId;
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
@@ -57,9 +59,13 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
                   ({asset.symbol})
                 </Text>
               )}
-              <Address value={input.assetId} fixed="b256" />
+              <Address value={assetId} fixed="b256" />
             </Text>
-            <Address prefix="From:" value={input.owner}>
+            <Address
+              prefix="From:"
+              value={input.owner || ''}
+              className="text-white"
+            >
               <Address.Link as={NextLink} href={`/account/${input.owner}`}>
                 View Account
               </Address.Link>
@@ -81,6 +87,8 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
   id: 'TxInputContract',
   render: (_, { input, ...props }) => {
     const classes = styles();
+
+    if (!input.contractId) return null;
     const contractId = input.contractId;
 
     return (
@@ -93,7 +101,7 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
             <EntityItem.Info title="Contract Input">
               <Address value={contractId} prefix="Id:">
                 <Address.Link as={NextLink} href={`/contract/${contractId}`}>
-                  Contract
+                  View Contract
                 </Address.Link>
               </Address>
             </EntityItem.Info>
@@ -109,18 +117,20 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
   render: (_, { input, ...props }) => {
     const { sender, recipient, data } = input;
 
+    if (!sender || !recipient) return null;
+
     return (
       <Collapsible {...props}>
         <Collapsible.Header>
           <TxIcon type="Message" status="Submitted" />
-          <HStack align="center" gap="1" className="flex-1 justify-between">
+          <HStack align="center" gap="1" className="flex-1">
             <Text>Message</Text>
-            <VStack gap="1" className="mr-2">
+            <VStack gap="1" className="ml-4">
               <Address value={sender} linkPos="left">
                 <Address.Link
                   as={NextLink}
                   href={`/account/${sender}`}
-                  className="w-[60px] text-right"
+                  className="w-[60px]"
                 >
                   Sender
                 </Address.Link>
@@ -129,7 +139,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
                 <Address.Link
                   as={NextLink}
                   href={`/account/${recipient}`}
-                  className="w-[60px] text-right"
+                  className="w-[60px]"
                 >
                   Recipient
                 </Address.Link>

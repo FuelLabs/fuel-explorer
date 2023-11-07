@@ -1,4 +1,10 @@
+# --------------------------------
+# Base
+# --------------------------------
+
 scalar U64
+scalar HexString
+scalar Address
 
 type Token {
   assetId: String!
@@ -16,7 +22,13 @@ type Account {
   url: String
 }
 
+type Predicate {
+  id: Address!
+  bytecode: HexString!
+}
+
 type Query {
   tokens(assetsId: [String]!): [Token!]!
   accounts(addresses: [String]!): [Account!]!
+  predicate(address: Address!): Predicate
 }

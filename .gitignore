@@ -86,4 +86,4 @@ act-actions
 
 # XState typegen
 *.typegen.ts
-
+**/**/generated

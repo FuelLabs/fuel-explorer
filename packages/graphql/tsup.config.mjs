@@ -1,7 +1,7 @@
 import graphqlLoaderPluginPkg from '@luckycatfactory/esbuild-graphql-loader';
+import { execa } from 'execa';
+import getPort from 'get-port';
 import { defineConfig } from 'tsup';
-
-import { devServer } from './scripts/dev-server.mjs';
 
 const graphqlLoaderPlugin = graphqlLoaderPluginPkg.default;
 
@@ -14,7 +14,21 @@ export default defineConfig((options) => ({
   esbuildPlugins: [graphqlLoaderPlugin()],
   entry: { index: 'src/bin.ts' },
   async onSuccess() {
-    if (!options.watch) return;
-    await devServer();
+    const port = await getPort({ port: 4444 });
+    const cmd = execa('node', ['./dist/index.js'], {
+      stdio: 'inherit',
+      cleanup: true,
+      env: {
+        SERVER_PORT: port,
+        WATCH: Boolean(options.watch),
+        FUEL_PROVIDER_URL:
+          process.env.FUEL_PROVIDER_URL ||
+          'https://beta-4.fuel.network/graphql',
+      },
+    });
+
+    return () => {
+      cmd.kill('SIGTERM');
+    };
   },
 }));
