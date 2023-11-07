@@ -1,9 +1,10 @@
 'use client';
 
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Address, Flex, Text, VStack } from '@fuels/ui';
+import { Address, Flex, VStack } from '@fuels/ui';
 import { IconCube } from '@tabler/icons-react';
 import { useState } from 'react';
+import { PageSubtitle } from '~/systems/Core/components/PageSubtitle/PageSubtitle';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import {
   ViewMode,
@@ -28,18 +29,28 @@ export function BlockScreen({
 
   return (
     <VStack>
-      <PageTitle icon={<IconCube size={24} stroke={2.4} />}>
-        <Flex justify="between" className="flex-1">
-          <Flex align="center" gap={'5'}>
-            Block
-            {isValidAddress(blockNumberOrId) ? (
-              <Address full value={blockNumberOrId || ''} fixed="b256" />
-            ) : (
-              <Text className="text-sm text-muted">#{blockNumberOrId}</Text>
-            )}
-          </Flex>
-          <ViewMode mode={viewMode} onChange={setViewMode} />
+      <PageTitle
+        icon={<IconCube size={24} stroke={2.4} />}
+        className="px-4 grid"
+      >
+        <Flex className="col-start-1 row-start-2 sm:col-start-2 sm:row-start-1">
+          Block
         </Flex>
+        <Flex
+          align="center"
+          className="justify-end col-start-2 row-start-2 sm:col-start-3 sm:row-start-1"
+        >
+          {isValidAddress(blockNumberOrId) ? (
+            <Address full value={blockNumberOrId || ''} fixed="b256" />
+          ) : (
+            <PageSubtitle>#{blockNumberOrId}</PageSubtitle>
+          )}
+        </Flex>
+        <ViewMode
+          mode={viewMode}
+          className="justify-end col-start-2 row-start-1 sm:col-start-4 sm:row-start-1"
+          onChange={setViewMode}
+        />
       </PageTitle>
       {viewMode === ViewModes.Simple && (
         <BlockScreenSimple block={block} producer={producer} />

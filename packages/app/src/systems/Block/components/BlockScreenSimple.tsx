@@ -1,5 +1,5 @@
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Card, Flex, HStack, VStack, Grid, Address } from '@fuels/ui';
+import { Card, Flex, VStack, Grid, Address } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
@@ -13,8 +13,8 @@ type BlockScreenSimpleProps = {
 
 export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
   return (
-    <VStack>
-      <HStack className="my-6">
+    <VStack className="px-4 sm:px-0">
+      <Grid className="my-6 grid-rows-4 sm:grid-rows-1 sm:grid-cols-4" gap="3">
         <CardInfo name="Producer" className="flex-1">
           <Address
             value={producer || ''}
@@ -38,7 +38,7 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
         <CardInfo name="# of transactions" className="flex-1">
           {block?.header.transactionsCount}
         </CardInfo>
-      </HStack>
+      </Grid>
       <Flex className="border-b border-border pb-4">
         <Card>
           <Card.Body>
@@ -48,7 +48,10 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
           </Card.Body>
         </Card>
       </Flex>
-      <Grid columns="3" gap="6">
+      <Grid
+        className="grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+        gap="6"
+      >
         {block?.transactions.map((transaction) => (
           <TxCard key={transaction.id} transaction={transaction} />
         ))}

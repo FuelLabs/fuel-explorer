@@ -1,3 +1,4 @@
+import type { BaseProps } from '@fuels/ui';
 import { Flex, Text } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
@@ -6,16 +7,20 @@ export enum ViewModes {
   Advanced = 'Advanced',
 }
 
-export type ViewModeProps = {
+export type ViewModeProps = BaseProps<{
   mode: ViewModes;
   onChange: (mode: ViewModes) => void;
-};
+}>;
 
-export function ViewMode({ mode, onChange }: ViewModeProps) {
+export function ViewMode({ mode, onChange, className }: ViewModeProps) {
   const classes = styles();
 
   return (
-    <Flex align="stretch" justify="center" className={classes.root()}>
+    <Flex
+      align="stretch"
+      justify="center"
+      className={classes.root({ className })}
+    >
       <Flex
         align="center"
         justify="center"
