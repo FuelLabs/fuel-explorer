@@ -3,3 +3,24 @@ fragment ContractItem on Contract {
   bytecode
   salt
 }
+
+fragment ContractBalanceItem on ContractBalance {
+  contract
+  amount
+  assetId
+}
+
+fragment ContractBalanceConnectionItem on ContractBalanceConnection {
+  pageInfo {
+    hasNextPage
+    hasPreviousPage
+    endCursor
+    startCursor
+  }
+  edges {
+    cursor
+    node {
+      ...ContractBalanceItem
+    }
+  }
+}

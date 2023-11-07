@@ -25,6 +25,14 @@ app.get(
 );
 
 const schema = createSchema(FUEL_PROVIDER_URL);
-app.post('/graphql', createHandler({ schema }));
+app.post(
+  '/graphql',
+  createHandler({
+    schema,
+    context() {
+      return { url: FUEL_PROVIDER_URL };
+    },
+  }),
+);
 
 export default app;

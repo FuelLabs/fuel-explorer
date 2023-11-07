@@ -39,7 +39,10 @@ export const TxCard = createComponent<TxCardProps, typeof Card>({
           <Card.Header>
             <EntityItem>
               <EntityItem.Slot>
-                <TxIcon status={tx.statusType as TxStatus} type={title} />
+                <TxIcon
+                  status={tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)}
+                  type={title}
+                />
               </EntityItem.Slot>
               <EntityItem.Info id={tx.id} title={title} />
             </EntityItem>
@@ -47,6 +50,11 @@ export const TxCard = createComponent<TxCardProps, typeof Card>({
           <Card.Body className={classes.body()}>
             <Flex className={classes.row()} justify="between">
               <Text leftIcon={IconUsers}>{tx.totalAccounts} accounts</Text>
+              {tx.isPredicate && (
+                <Text className={classes.small()}>
+                  <Badge color="blue">Predicate</Badge>
+                </Text>
+              )}
             </Flex>
             <Flex className={classes.row()} justify="between">
               <Text leftIcon={IconTransfer}>

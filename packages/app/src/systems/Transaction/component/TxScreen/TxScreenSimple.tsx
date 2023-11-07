@@ -11,6 +11,7 @@ import {
   EntityItem,
   Flex,
   Grid,
+  HStack,
   Heading,
   Icon,
   Link,
@@ -37,7 +38,6 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
   const title = tx.title as string;
-
   return (
     <Grid columns="6" gap="9">
       <Box className="col-span-2">
@@ -46,20 +46,25 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
             <EntityItem>
               <EntityItem.Slot>
                 <TxIcon
-                  status={tx.statusType as TxStatus}
+                  status={tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)}
                   type={title}
                   size="lg"
                 />
               </EntityItem.Slot>
               <EntityItem.Info title={title}>
-                <Text as="span" className="text-muted">
+                <HStack gap="1">
+                  {tx.isPredicate && (
+                    <Badge color="blue" variant="ghost">
+                      Predicate
+                    </Badge>
+                  )}
                   <Badge
                     color={TX_INTENT_MAP[tx.statusType as string]}
                     variant="ghost"
                   >
                     {tx.statusType}
                   </Badge>
-                </Text>
+                </HStack>
               </EntityItem.Info>
             </EntityItem>
           </CardInfo>

@@ -1,2 +1,2 @@
 src/generated
-src/schemas/fuelcore.graphql
+src/schemas/*.graphql

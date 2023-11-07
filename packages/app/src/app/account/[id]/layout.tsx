@@ -1,25 +1,17 @@
-import { Box, VStack } from '@fuels/ui';
-import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { getPredicate } from '~/systems/Account/actions/get-predicate';
+import { AccountLayout } from '~/systems/Account/components/AccountLayout/AccountLayout';
 
-export default function AccountLayout({
+export default async function Layout({
   children,
-  title,
   params: { id },
 }: {
-  title: React.ReactNode;
   children: React.ReactNode;
   params: { id: string };
 }) {
+  const predicate = await getPredicate({ owner: id });
   return (
-    <Layout>
-      <VStack>
-        {title}
-        <AccountTabs accountId={id} />
-        <Box as="section" className="mt-10">
-          {children}
-        </Box>
-      </VStack>
-    </Layout>
+    <AccountLayout id={id} bytecode={predicate?.bytecode}>
+      {children}
+    </AccountLayout>
   );
 }

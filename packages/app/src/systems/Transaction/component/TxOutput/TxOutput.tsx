@@ -29,6 +29,8 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
   render: (_, { output, title, ...props }) => {
     const classes = styles();
+
+    if (!output.assetId) return null;
     const assetId = output.assetId;
     const amount = output.totalAmount;
     const asset = useAsset(assetId);
@@ -57,7 +59,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                 <Address value={output.assetId} fixed="b256" />
               </Text>
               <HStack>
-                <Address prefix="To:" value={output.to}>
+                <Address prefix="To:" value={output.to || ''}>
                   <Address.Link as={NextLink} href={`/account/${output.to}`}>
                     View Account
                   </Address.Link>
@@ -116,7 +118,7 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
               <Text className="font-medium">Contract Created</Text>
               <Address prefix="Id:" value={contractId}>
                 <Address.Link as={NextLink} href={`/contract/${contractId}`}>
-                  Contract
+                  View Contract
                 </Address.Link>
               </Address>
             </VStack>
@@ -140,7 +142,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center" gap="1" className="flex-1 justify-between">
             <Text>Message</Text>
             <VStack gap="1" className="mr-2">
-              <Address value={recipient} linkPos="left">
+              <Address value={recipient || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
                   href={`/account/${recipient}`}
@@ -149,7 +151,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
                   Recipient
                 </Address.Link>
               </Address>
-              <Address value={output.to} linkPos="left">
+              <Address value={output.to || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
                   href={`/account/${output.to}`}

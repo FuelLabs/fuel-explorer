@@ -8,7 +8,7 @@ type ContractProps = {
   };
 };
 
-export default async function Contract({
+export default async function ContractTransactions({
   params: { id = null },
 }: ContractProps) {
   const contract = await getContract({ id });

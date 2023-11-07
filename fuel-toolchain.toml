@@ -1,0 +1,6 @@
+[toolchain]
+channel = "beta-4"
+
+[components]
+forc = "0.46.1"
+

@@ -21,6 +21,8 @@ type UtxoItemProps = {
 };
 
 function UtxoItem({ item, assetId, style }: UtxoItemProps) {
+  if (!item.utxoId) return null;
+
   const asset = useAsset(assetId);
   const classes = styles();
   return (
