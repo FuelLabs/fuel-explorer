@@ -11,7 +11,10 @@ export default async function LayoutTransactions({
   params: { page: string };
 }) {
   return (
-    <Layout hero>
+    <Layout
+      hero
+      contentClassName="[&_.rt-ContainerInner]:space-y-2 md:[&_.rt-ContainerInner]:space-y-2 lg:[&_.rt-ContainerInner]:space-y-10"
+    >
       <TransactionsTitle page={params.page} />
       {children}
     </Layout>
