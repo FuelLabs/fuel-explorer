@@ -22,7 +22,7 @@ import type { UseFuelAddressOpts } from './useFuelAddress';
 import { useFuelAddress } from './useFuelAddress';
 
 export type AddressBaseProps = {
-  value: string;
+  value?: string;
   prefix?: ReactNode;
   full?: boolean;
   addressOpts?: UseFuelAddressOpts;
@@ -54,7 +54,7 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
   ) => {
     const classes = styles();
     const { isValid, isShowingB256, address, short, toggle } = useFuelAddress(
-      value,
+      value || '',
       { ...addressOpts, fixed },
     );
 
