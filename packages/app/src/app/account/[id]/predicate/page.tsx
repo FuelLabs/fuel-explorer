@@ -11,7 +11,10 @@ export default async function AccountPredicatePage({
   params: { id },
 }: PageProps) {
   const predicate = await getPredicate({ owner: id });
-  return <AccountPredicate bytecode={predicate?.bytecode} />;
+
+  if (!predicate?.bytecode) return null;
+
+  return <AccountPredicate bytecode={predicate.bytecode} />;
 }
 
 export const revalidate = 100;

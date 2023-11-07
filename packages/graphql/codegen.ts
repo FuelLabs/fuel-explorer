@@ -15,6 +15,11 @@ const config: CodegenConfig = {
         nonOptionalTypename: true,
         rawRequest: true,
         useTypeImports: true,
+        defaultScalarType: 'string',
+        scalars: {
+          Boolean: 'boolean',
+          Int: 'number',
+        },
       },
     },
     'src/generated/mocks.ts': {
