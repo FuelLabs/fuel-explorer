@@ -31,15 +31,10 @@ export function BlockScreen({
     <VStack>
       <PageTitle
         icon={<IconCube size={24} stroke={2.4} />}
-        className="px-4 grid"
+        className="px-4 grid sm:flex"
       >
-        <Flex className="col-start-1 row-start-2 sm:col-start-2 sm:row-start-1">
-          Block
-        </Flex>
-        <Flex
-          align="center"
-          className="justify-end col-start-2 row-start-2 sm:col-start-3 sm:row-start-1"
-        >
+        <Flex className="col-start-1 row-start-2">Block</Flex>
+        <Flex align="center" className="justify-end col-start-2 row-start-2">
           {isValidAddress(blockNumberOrId) ? (
             <Address full value={blockNumberOrId || ''} fixed="b256" />
           ) : (
@@ -48,7 +43,7 @@ export function BlockScreen({
         </Flex>
         <ViewMode
           mode={viewMode}
-          className="justify-end col-start-2 row-start-1 sm:col-start-4 sm:row-start-1"
+          className="justify-end col-start-2 row-start-1 sm:ml-auto"
           onChange={setViewMode}
         />
       </PageTitle>

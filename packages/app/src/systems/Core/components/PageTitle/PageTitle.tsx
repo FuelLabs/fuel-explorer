@@ -15,9 +15,9 @@ export function PageTitle({ children, icon, className }: PageTitleProps) {
     <Heading as="h2" size="3" className={classes.root({ className })}>
       <Grid
         gap="2"
-        className="grid-cols-2 grid-cols-[214px_1fr] grid-rows-[40px_1fr]"
+        className="grid-cols-2 grid-cols-[214px_1fr] grid-rows-[40px_1fr] sm:flex sm:w-full sm:items-center"
       >
-        <Flex className="col-span-1 sm:w-10">
+        <Flex className="col-span-1">
           <Badge
             color="gray"
             size="2"
