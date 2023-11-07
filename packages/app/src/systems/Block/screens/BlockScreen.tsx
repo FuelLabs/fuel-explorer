@@ -11,6 +11,7 @@ import {
 } from '~/systems/Core/components/ViewMode/ViewMode';
 import { isValidAddress } from '~/systems/Core/utils/address';
 
+import { BlockScreenAdvanced } from '../components/BlockScreenAdvanced';
 import { BlockScreenSimple } from '../components/BlockScreenSimple';
 
 type BlockScreenProps = {
@@ -44,7 +45,9 @@ export function BlockScreen({
       {viewMode === ViewModes.Simple && (
         <BlockScreenSimple block={block} producer={producer} />
       )}
-      {viewMode === ViewModes.Advanced && <div>Advanced</div>}
+      {viewMode === ViewModes.Advanced && (
+        <BlockScreenAdvanced block={block ? { ...block, producer } : null} />
+      )}
     </VStack>
   );
 }
