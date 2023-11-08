@@ -38,8 +38,11 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
   const title = tx.title as string;
   return (
-    <Grid gap="9" className="flex-col px-4 sm:grid-cols-6">
-      <Box className="col-span-1 sm:col-span-2">
+    <Grid
+      gap="9"
+      className="flex flex-col px-4 sm:flex md:grid md:grid-cols-6 xl:px-0"
+    >
+      <Box className="md:col-span-2">
         <VStack>
           <CardInfo>
             <EntityItem>

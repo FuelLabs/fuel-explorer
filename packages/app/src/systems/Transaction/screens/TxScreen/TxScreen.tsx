@@ -4,6 +4,7 @@ import type { Maybe } from '@fuel-explorer/graphql';
 import { Address, VStack } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useWindowSize } from 'react-use';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import {
   ViewMode,
@@ -20,6 +21,7 @@ type TxScreenProps = {
 
 export function TxScreen({ transaction: tx }: TxScreenProps) {
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
+  const { width } = useWindowSize();
 
   if (!tx) return null;
 
@@ -30,7 +32,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
         rightElement={<ViewMode mode={viewMode} onChange={setViewMode} />}
       >
         Transaction
-        <Address full value={tx.id} fixed="b256" />
+        <Address full={width > 868} value={tx.id} fixed="b256" />
       </PageTitle>
       {viewMode === ViewModes.Simple && <TxScreenSimple transaction={tx} />}
       {viewMode === ViewModes.Advanced && <TxScreenAdvanced transaction={tx} />}
