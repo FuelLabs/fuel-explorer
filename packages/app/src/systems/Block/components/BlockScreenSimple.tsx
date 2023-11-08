@@ -13,7 +13,7 @@ type BlockScreenSimpleProps = {
 
 export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
   return (
-    <VStack className="px-4 sm:px-0">
+    <VStack className="px-4 xl:px-0">
       <Grid className="my-6 grid-rows-4 sm:grid-rows-1 sm:grid-cols-4" gap="3">
         <CardInfo name="Producer" className="flex-1">
           <Address
