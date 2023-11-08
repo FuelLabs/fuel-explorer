@@ -4,7 +4,7 @@ export const styles = tv({
   slots: {
     logo: 'items-center justify-start',
     menu: [
-      'flex flex-col gap-1 py-3 px-4 tablet:flex-row laptop:px-0 laptop:gap-4',
+      'flex flex-col gap-1 py-4 px-4 tablet:flex-row laptop:px-0 laptop:py-0 laptop:gap-4',
       'not-first:border-t not-first:border-border laptop:not-first:border-t-0',
     ],
     menuItem: [
@@ -36,17 +36,21 @@ export const styles = tv({
     ],
     desktop: [
       'gap-8 container mx-auto flex-row items-center',
-      'laptop:px-4 laptop:flex min-h-[var(--nav-height)]',
+      'px-4 flex min-h-[var(--nav-height)]',
     ],
-    mobile: [
-      'flex-col border-b border-border',
-      'laptop:hidden fuel-[NavLogo]:flex-1',
+    desktopWrapper: [
+      'border-b border-border min-h-[var(--nav-height)]',
+      '[@media(max-width:1024px){&}]:hidden',
     ],
-    navWrapper: 'border-b border-border min-h-[var(--nav-height)]',
+    mobileWrapper: [
+      'border-b border-border min-h-[var(--nav-height)]',
+      '[@media(min-width:1024px){&}]:hidden',
+    ],
+    mobile: ['flex-col fuel-[NavLogo]:flex-1'],
     mobileContent: [
-      'flex items-center py-2 px-4 border-b border-transparent',
+      'max-w-screen flex items-center py-2 px-4',
       'transition-colors duration-200 ease-in-out',
-      'min-h-[var(--nav-height)] data-[open=true]:border-border',
+      'min-h-[var(--nav-height)] data-[open=true]:border-b data-[open=true]:border-border',
       'fuel-[NavLogo]:flex-1',
       'fuel-[IconButton]:ml-2 fuel-[IconButton]:text-icon',
     ],

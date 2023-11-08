@@ -95,10 +95,8 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
   baseElement: 'nav',
   render: (Root, { className, children, ...props }) => {
     const classes = styles();
-    const { width } = useWindowSize();
-    if (width < 1024) return null;
     return (
-      <section className={classes.navWrapper()}>
+      <section className={classes.desktopWrapper()}>
         <Root
           {...props}
           className={classes.desktop({ className })}
@@ -119,20 +117,20 @@ export const NavMobile = createComponent<NavMobileProps, 'nav'>({
   id: 'NavMobile',
   baseElement: 'nav',
   className: () => styles().mobile(),
-  render: (Root, { isOpen, onOpenChange, children, ...props }) => {
-    const { width } = useWindowSize();
+  render: (Root, { isOpen, onOpenChange, children, className, ...props }) => {
     const [open, setOpen] = useState(() => Boolean(isOpen));
+    const classes = styles();
 
     useEffect(() => {
       onOpenChange?.(Boolean(open));
     }, [open]);
 
-    if (width >= 1024) return null;
     return (
       <NavMobileProvider value={{ isOpen: open, onOpenChange: setOpen }}>
         <Root
           {...props}
           style={{ '--nav-height': '60px' } as React.CSSProperties}
+          className={classes.mobileWrapper({ className })}
         >
           {children}
         </Root>
