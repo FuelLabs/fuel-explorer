@@ -53,8 +53,8 @@ export const BalanceItem = createComponent<
             <Address value={item.assetId} prefix="Id:" fixed="b256" />
           </VStack>
           {amount && (
-            <Text className="text-secondary">
-              {bn(amount).format()} {asset.symbol}
+            <Text className="text-secondary overflow-hidden break-normal w-[45px] tablet:w-auto">
+              {bn(amount).format()}
             </Text>
           )}
         </Collapsible.Header>

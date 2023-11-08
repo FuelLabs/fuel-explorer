@@ -1,6 +1,6 @@
 'use client';
 import type { BaseProps } from '@fuels/ui';
-import { Button, Flex, HStack } from '@fuels/ui';
+import { Button, Box } from '@fuels/ui';
 import { IconChecklist, IconCodeAsterix, IconCoins } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -20,50 +20,52 @@ export function AccountTabs({
   const classes = styles({ className });
   const pathname = usePathname();
   return (
-    <Flex className={classes.root()} {...props}>
-      <HStack gap="2">
-        <Button
-          as={NextLink}
-          href={`/account/${accountId}`}
-          color="gray"
-          className={classes.button()}
-          data-active={pathname === `/account/${accountId}`}
-          variant="surface"
-          leftIcon={IconCoins}
-        >
-          Assets
-        </Button>
-        <Button
-          as={NextLink}
-          href={`/account/${accountId}/transactions`}
-          color="gray"
-          className={classes.button()}
-          data-active={pathname === `/account/${accountId}/transactions`}
-          variant="surface"
-          leftIcon={IconChecklist}
-        >
-          Transactions
-        </Button>
-        <Button
-          as={NextLink}
-          href={isPredicate ? `/account/${accountId}/predicate` : ''}
-          color="gray"
-          className={classes.button()}
-          data-active={pathname === `/account/${accountId}/predicate`}
-          variant="surface"
-          leftIcon={IconCodeAsterix}
-          disabled={!isPredicate}
-        >
-          Predicate
-        </Button>
-      </HStack>
-    </Flex>
+    <Box className={classes.root()} {...props}>
+      <Button
+        as={NextLink}
+        href={`/account/${accountId}`}
+        color="gray"
+        className={classes.button()}
+        data-active={pathname === `/account/${accountId}`}
+        variant="surface"
+        leftIcon={IconCoins}
+      >
+        Assets
+      </Button>
+      <Button
+        as={NextLink}
+        href={`/account/${accountId}/transactions`}
+        color="gray"
+        className={classes.button()}
+        data-active={pathname === `/account/${accountId}/transactions`}
+        variant="surface"
+        leftIcon={IconChecklist}
+      >
+        Transactions
+      </Button>
+      <Button
+        as={NextLink}
+        href={isPredicate ? `/account/${accountId}/predicate` : ''}
+        color="gray"
+        className={classes.button()}
+        data-active={pathname === `/account/${accountId}/predicate`}
+        variant="surface"
+        leftIcon={IconCodeAsterix}
+        disabled={!isPredicate}
+      >
+        Predicate
+      </Button>
+    </Box>
   );
 }
 
 const styles = tv({
   slots: {
-    root: 'justify-between items-center',
+    root: [
+      'px-4 tablet:px-8 laptop:px-0',
+      'grid items-center gap-2',
+      'tablet:flex laptop:justify-start',
+    ],
     button: [
       'bg-transparent text-muted',
       'enabled:hover:bg-gray-2 enabled:hover:text-heading transition-colors',

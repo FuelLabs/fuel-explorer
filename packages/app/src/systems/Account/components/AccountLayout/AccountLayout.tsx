@@ -23,7 +23,10 @@ export function AccountLayout({
           <Address full value={id} />
         </PageTitle>
         <AccountTabs accountId={id} isPredicate={!!bytecode} />
-        <Box as="section" className="mt-10">
+        <Box
+          as="section"
+          className="mt-4 laptop:mt-8 px-4 tablet:px-8 laptop:px-0"
+        >
           {children}
         </Box>
       </VStack>

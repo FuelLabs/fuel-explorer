@@ -1,5 +1,12 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Text, HStack, Address, Icon, Collapsible } from '@fuels/ui';
+import {
+  Text,
+  Address,
+  Icon,
+  Collapsible,
+  Box,
+  useBreakpoints,
+} from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import {
   IconCoins,
@@ -8,82 +15,73 @@ import {
 } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
-import { FixedSizeList as List } from 'react-window';
+import { VariableSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
 export type UtxoItem = Partial<Omit<TUtxoItem, '__typename'>>;
 
 type UtxoItemProps = {
   item: UtxoItem;
-  assetId: string;
   style?: React.CSSProperties;
 };
 
-function UtxoItem({ item, assetId, style }: UtxoItemProps) {
+function UtxoItem({ item, style }: UtxoItemProps) {
   if (!item.utxoId) return null;
-
-  const asset = useAsset(assetId);
   const classes = styles();
+  const { isMobile } = useBreakpoints();
+  const trim = isMobile ? 8 : 16;
   return (
-    <HStack style={style} align="center" gap="4" className={classes.item()}>
+    <Box style={style} className={classes.item()}>
       <Address
         prefix="ID:"
         value={item.utxoId}
         className="flex-1"
-        addressOpts={{ trimLeft: 14, trimRight: 14 }}
+        addressOpts={{ trimLeft: trim, trimRight: trim }}
       >
-        <Address.Link as={NextLink} href={`/tx/${item.utxoId.slice(0, -2)}`}>
+        <Address.Link
+          as={NextLink}
+          href={`/tx/${item.utxoId.slice(0, -2)}`}
+          className="text-[0.8rem]"
+        >
           Transaction <Icon icon={IconExternalLink} size={14} />
         </Address.Link>
       </Address>
-      <Text className="text-secondary flex items-center gap-2">
-        <Icon icon={IconCoins} size={14} /> {bn(item.amount).format()}{' '}
-        {asset?.symbol ?? ''}
+      <Text className="text-secondary flex items-center gap-2 text-xs">
+        <Icon icon={IconCoins} size={14} /> {bn(item.amount).format()}
       </Text>
-    </HStack>
+    </Box>
   );
 }
 
 type UtxosProps = BoxProps & {
-  assetId: string;
+  assetId?: string;
   items?: UtxoItem[] | null;
 };
 
-function VirtualList({ items, assetId }: UtxosProps) {
+function VirtualList({ items }: UtxosProps) {
+  const { isMobile } = useBreakpoints();
   return (
     <List
       height={350}
       itemCount={items?.length ?? 0}
-      itemSize={35}
       width="100%"
+      itemSize={() => (isMobile ? 60 : 35)}
     >
       {({ index: idx, style }) => {
         const item = items?.[idx];
-        return (
-          item && (
-            <UtxoItem
-              key={item.utxoId}
-              style={style}
-              item={item}
-              assetId={assetId}
-            />
-          )
-        );
+        return item && <UtxoItem key={item.utxoId} style={style} item={item} />;
       }}
     </List>
   );
 }
 
-function CommonList({ items, assetId }: UtxosProps) {
+function CommonList({ items }: UtxosProps) {
   return (
-    items?.map((item) => (
-      <UtxoItem key={item.utxoId} item={item} assetId={assetId} />
-    )) ?? null
+    items?.map((item) => <UtxoItem key={item.utxoId} item={item} />) ?? null
   );
 }
 
-export function Utxos({ items, assetId, ...props }: UtxosProps) {
+export function Utxos({ items, ...props }: UtxosProps) {
   const len = items?.length ?? 0;
   return (
     <Collapsible.Content {...props}>
@@ -92,9 +90,9 @@ export function Utxos({ items, assetId, ...props }: UtxosProps) {
       </Collapsible.Title>
       <Collapsible.Body className="p-0">
         {len > 10 ? (
-          <VirtualList items={items} assetId={assetId} />
+          <VirtualList items={items} />
         ) : (
-          <CommonList items={items} assetId={assetId} />
+          <CommonList items={items} />
         )}
       </Collapsible.Body>
     </Collapsible.Content>
@@ -104,8 +102,10 @@ export function Utxos({ items, assetId, ...props }: UtxosProps) {
 const styles = tv({
   slots: {
     item: [
-      'odd:bg-gray-4 p-2 px-4 [&_*]:text-xs h-[35px]',
+      'flex flex-col odd:bg-gray-4 p-2 px-4',
+      'tablet:flex-row',
       'last:rounded-b-sm',
+      'fuel-[Address]:text-[0.8rem] fuel-[Address]:leading-none',
     ],
   },
 });
