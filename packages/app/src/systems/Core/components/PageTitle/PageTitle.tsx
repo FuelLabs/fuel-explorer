@@ -34,12 +34,12 @@ export function PageTitle({
 const styles = tv({
   slots: {
     root: [
-      'md:grid md:grid-cols-[1fr_auto] md:items-start',
-      'md:border-b border-border md:pb-4',
-      'mx-4 md:mx-8 xl:mx-0',
+      'tablet:grid tablet:grid-cols-[1fr_auto] tablet:items-start',
+      'tablet:border-b border-border tablet:pb-4',
+      'mx-4 tablet:mx-8 desktop:mx-0',
     ],
-    title: ['items-center md:items-start flex-1'],
-    text: ['text-[1.7rem] sm:text-[2rem] md:text-[2.2rem]'],
+    title: ['items-center tablet:items-start flex-1'],
+    text: ['text-[1.7rem] tablet:text-[2rem]'],
     icon: ['h-full self-stretch text-lg px-2 mt-2'],
   },
 });

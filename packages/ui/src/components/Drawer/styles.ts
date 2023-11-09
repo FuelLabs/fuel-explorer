@@ -23,7 +23,7 @@ export const styles = tv({
     description: ['text-sm text-muted'],
     footer: [
       'flex flex-col-reverse',
-      'sm:flex-row sm:justify-end sm:space-x-2',
+      'tablet:flex-row tablet:justify-end tablet:space-x-2',
     ],
     title: ['text-lg font-semibold text-heading'],
     body: ['py-4 flex-1'],
@@ -46,14 +46,14 @@ export const styles = tv({
         content: [
           'inset-y-0 left-0 h-full w-3/4 border-r',
           'state-closed:slide-out-to-left state-open:slide-in-from-left',
-          'sm:max-w-sm',
+          'tablet:max-w-sm',
         ],
       },
       right: {
         content: [
           'inset-y-0 right-0 h-full w-3/4 border-l',
           'state-closed:slide-out-to-right state-open:slide-in-from-right',
-          'sm:max-w-sm',
+          'tablet:max-w-sm',
         ],
       },
     },
