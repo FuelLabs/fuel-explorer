@@ -30,7 +30,7 @@ export function TxList({
           <TxCard key={transaction.node.id} transaction={transaction.node} />
         ))}
       </Grid>
-      {!hidePagination && width < 768 && (
+      {!hidePagination && width < 640 && (
         <Pagination
           page={page}
           className="mt-6"

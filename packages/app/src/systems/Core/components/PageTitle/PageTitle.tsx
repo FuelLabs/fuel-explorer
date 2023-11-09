@@ -18,14 +18,12 @@ export function PageTitle({
   const classes = styles();
   return (
     <Heading as="h2" className={classes.root({ className })}>
-      <HStack className={classes.title()}>
-        {icon && (
-          <Badge color="gray" size="2" className={classes.icon()}>
-            {icon}
-          </Badge>
-        )}
-        <div className={classes.text()}>{children}</div>
-      </HStack>
+      {icon && (
+        <Badge color="gray" size="2" className={classes.icon()}>
+          {icon}
+        </Badge>
+      )}
+      <HStack className={classes.title()}>{children}</HStack>
       <div className="flex items-center h-full">{rightElement}</div>
     </Heading>
   );
@@ -34,12 +32,15 @@ export function PageTitle({
 const styles = tv({
   slots: {
     root: [
-      'md:grid md:grid-cols-[1fr_auto] md:items-start',
-      'md:border-b border-border md:pb-4',
-      'mx-4 md:mx-8 xl:mx-0',
+      'flex flex-wrap items-center justify-between gap-4',
+      'tablet:flex-nowrap',
     ],
-    title: ['items-center md:items-start flex-1'],
-    text: ['text-[1.7rem] sm:text-[2rem] md:text-[2.2rem]'],
-    icon: ['h-full self-stretch text-lg px-2 mt-2'],
+    icon: ['h-full flex-shrink-0 px-2'],
+    title: [
+      'items-center basis-full gap-3 order-3 flex-shrink-0 justify-between',
+      'text-[1.7rem]',
+      'mobile:text-[2rem] tablet:text-[2.2rem]',
+      'tablet:order-none tablet:flex-1 tablet:justify-start',
+    ],
   },
 });

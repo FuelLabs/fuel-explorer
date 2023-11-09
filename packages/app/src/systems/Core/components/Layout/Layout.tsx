@@ -20,7 +20,7 @@ export function Layout({ children, hero, contentClassName }: LayoutProps) {
       <Container
         size="4"
         className={cx(
-          'py-8 pb-10 md:py-12 md:pb-8 lg:py-16 lg:pb-18',
+          'py-8 pb-10 px-6 md:px-10 md:py-12 md:pb-8 lg:py-16 lg:pb-18',
           contentClassName,
         )}
       >

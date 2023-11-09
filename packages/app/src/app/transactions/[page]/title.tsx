@@ -19,7 +19,7 @@ export function TransactionsTitle({ page: current = '1' }: ComponentProps) {
     <PageTitle
       icon={<Icon icon={IconListDetails} />}
       rightElement={
-        width >= 768 && (
+        width >= 640 && (
           <Pagination
             page={page}
             onChange={(page) => router.push(`/transactions/${page}`)}
