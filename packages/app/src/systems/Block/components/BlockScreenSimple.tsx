@@ -13,8 +13,11 @@ type BlockScreenSimpleProps = {
 
 export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
   return (
-    <VStack className="px-4 xl:px-0">
-      <Grid className="my-6 grid-rows-4 sm:grid-rows-1 sm:grid-cols-4" gap="3">
+    <VStack className="px-4 desktop:px-0">
+      <Grid
+        className="my-6 grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-4"
+        gap="3"
+      >
         <CardInfo name="Producer" className="flex-1">
           <Address
             value={producer || ''}
@@ -49,7 +52,7 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
         </Card>
       </Flex>
       <Grid
-        className="grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+        className="grid-cols-1 tablet:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3"
         gap="6"
       >
         {block?.transactions.map((transaction) => (
