@@ -1,5 +1,12 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Text, HStack, Address, Icon, Collapsible } from '@fuels/ui';
+import {
+  Text,
+  HStack,
+  Address,
+  Icon,
+  Collapsible,
+  useBreakpoints,
+} from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import {
   IconCoins,
@@ -8,7 +15,6 @@ import {
 } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
-import { useMedia } from 'react-use';
 import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
@@ -22,7 +28,7 @@ type UtxoItemProps = {
 };
 
 function UtxoItem({ item, assetId, style }: UtxoItemProps) {
-  const isMobile = useMedia('(max-width: 428px)');
+  const { isMobile } = useBreakpoints();
 
   if (!item.utxoId) return null;
 

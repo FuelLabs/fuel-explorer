@@ -8,12 +8,12 @@ import {
   VStack,
   createComponent,
   cx,
+  useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { useMedia } from 'react-use';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
@@ -30,7 +30,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
   render: (_, { output, title, ...props }) => {
     const classes = styles();
-    const isMobile = useMedia('(max-width: 428px)');
+    const { isMobile } = useBreakpoints();
 
     if (!output.assetId) return null;
     const assetId = output.assetId;

@@ -9,12 +9,12 @@ import {
   VStack,
   createComponent,
   cx,
+  useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { useMedia } from 'react-use';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
@@ -37,7 +37,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
     const asset = useAsset(assetId);
-    const isMobile = useMedia('(max-width: 428px)');
+    const { isMobile } = useBreakpoints();
 
     if (!asset) return null;
     return (
