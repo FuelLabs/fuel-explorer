@@ -11,7 +11,7 @@ export function BlockScreenAdvanced({ block }: BlockScreenAdvancedProps) {
     return null;
   }
   return (
-    <VStack gap="6" className="px-4 xl:px-0">
+    <VStack gap="6" className="px-4 desktop:px-0">
       <CodeBlock value={block} type="json" />
     </VStack>
   );
