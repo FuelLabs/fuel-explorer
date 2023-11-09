@@ -13,6 +13,7 @@ import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
 import NextLink from 'next/link';
+import { useMedia } from 'react-use';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 
@@ -29,6 +30,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
   render: (_, { output, title, ...props }) => {
     const classes = styles();
+    const isMobile = useMedia('(max-width: 428px)');
 
     if (!output.assetId) return null;
     const assetId = output.assetId;
@@ -70,7 +72,8 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format()} {asset.symbol}
+                {bn(amount).format(isMobile ? { precision: 3 } : undefined)}{' '}
+                {asset.symbol}
               </Text>
             )}
           </HStack>
