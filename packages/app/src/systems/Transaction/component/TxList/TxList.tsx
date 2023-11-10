@@ -26,12 +26,11 @@ export function TxList({
   const router = useRouter();
 
   return (
-    <div className="p-4 tablet:p-8 desktop:p-0">
+    <div className={cx('py-4 tablet:py-8 desktop:py-0', className)}>
       <Grid
-        className={cx(
-          className,
-          'grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 desktop:gap-x-8 gap-y-6 gap-x-6',
-        )}
+        className={
+          'grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 desktop:gap-x-8 gap-y-6 gap-x-6'
+        }
       >
         {transactions.map((transaction) => (
           <TxCard key={transaction.node.id} transaction={transaction.node} />

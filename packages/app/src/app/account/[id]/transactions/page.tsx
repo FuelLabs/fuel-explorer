@@ -15,7 +15,7 @@ export default async function AccountTransactions({
     <TxList
       hidePagination
       transactions={txs.edges}
-      className="p-0 tablet:p-0 desktop:p-0"
+      className="mobile:p-0 tablet:p-0 desktop:p-0"
     />
   );
 }
