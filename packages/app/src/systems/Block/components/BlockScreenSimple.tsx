@@ -22,11 +22,8 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
           <Address
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
-          >
-            <Address.Link as={NextLink} href={`/account/${producer}`}>
-              View Account
-            </Address.Link>
-          </Address>
+            linkProps={{ as: NextLink, href: `/account/${producer}` }}
+          />
         </CardInfo>
         <CardInfo
           name="Created"

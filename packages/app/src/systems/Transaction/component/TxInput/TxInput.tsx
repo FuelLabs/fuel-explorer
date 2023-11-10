@@ -74,11 +74,8 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               value={input.owner || ''}
               className="text-white"
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
-            >
-              <Address.Link as={NextLink} href={`/account/${input.owner}`}>
-                View Account
-              </Address.Link>
-            </Address>
+              linkProps={{ as: NextLink, href: `/account/${input.owner}` }}
+            />
           </VStack>
           {amount && (
             <Text className="text-secondary">
@@ -109,11 +106,11 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
               <TxIcon status="Submitted" type="Contract" />
             </EntityItem.Slot>
             <EntityItem.Info title="Contract Input">
-              <Address value={contractId} prefix="Id:">
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
-                  View Contract
-                </Address.Link>
-              </Address>
+              <Address
+                value={contractId}
+                prefix="Id:"
+                linkProps={{ as: NextLink, href: `/contract/${contractId}` }}
+              />
             </EntityItem.Info>
           </EntityItem>
         </Card.Header>
@@ -136,24 +133,14 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
           <HStack align="center" gap="1" className="flex-1">
             <Text>Message</Text>
             <VStack gap="1" className="ml-4">
-              <Address value={sender} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${sender}`}
-                  className="w-[60px]"
-                >
-                  Sender
-                </Address.Link>
-              </Address>
-              <Address value={recipient} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${recipient}`}
-                  className="w-[60px]"
-                >
-                  Recipient
-                </Address.Link>
-              </Address>
+              <Address
+                value={sender}
+                linkProps={{ as: NextLink, href: `/account/${sender}` }}
+              />
+              <Address
+                value={recipient}
+                linkProps={{ as: NextLink, href: `/account/${recipient}` }}
+              />
             </VStack>
           </HStack>
         </Collapsible.Header>
