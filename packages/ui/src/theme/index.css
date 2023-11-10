@@ -1,10 +1,12 @@
-@layer tw-base, radix, tw-components, tw-utilities;
+@layer fuel-base, fuel-components, fuel-utilities;
 
-@import 'tailwindcss/base' layer(tw-base);
-@import '@radix-ui/themes/styles.css' layer(tw-base);
-@import 'tailwindcss/components' layer(tw-components);
-@import '../components/Spinner/Spinner.css' layer(tw-components);
-@import 'tailwindcss/utilities' layer(tw-utilities);
+@import 'tailwindcss/base' layer(fuel-base);
+@import '@radix-ui/themes/styles.css' layer(fuel-base);
+@import 'tailwindcss/components' layer(fuel-components);
+@import '../components/Spinner/Spinner.css' layer(fuel-components);
+@import 'tailwindcss/utilities' layer(fuel-utilities);
+
+@config "../../tailwind.config.ts";
 
 :root,
 .radix-themes {
@@ -17,6 +19,11 @@
 }
 
 :root {
+  --screen-mobile: 300px;
+  --screen-tablet: 640px;
+  --screen-laptop: 960px;
+  --screen-desktop: 1280px;
+
   --space-0: 0px;
   --space-1: calc(4px * var(--scaling));
   --space-2: calc(8px * var(--scaling));

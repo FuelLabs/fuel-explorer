@@ -6,6 +6,7 @@ import {
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
+import { useBreakpoints } from '../../hooks/useBreakpoints';
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
 import type { BaseProps, WithAsProps } from '../../utils/types';
@@ -61,6 +62,8 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
     const type = isShowingB256 ? 'Bech32' : 'HEX';
     const tooltipMsg = `Click to show ${type} address or press CMD+k to toggle all`;
     const isToggleable = isValid && !fixed;
+    const { isMobile } = useBreakpoints();
+    const isFull = isMobile ? false : full;
 
     return (
       <Root
@@ -71,20 +74,22 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
       >
         {linkPos === 'left' && children}
         <HStack align="center" gap="1">
-          {prefix && <Text className={classes.prefix()}>{prefix}</Text>}
+          {prefix && <span className={classes.prefix()}>{prefix}</span>}
           <Copyable value={address} className={classes.address()} iconSize={16}>
             {isToggleable ? (
               <Tooltip content={tooltipMsg}>
                 <Text
                   as="button"
-                  className="text-sm text-muted"
+                  className="text-[1em] text-muted"
                   onClick={toggle}
                 >
-                  {full ? address : short}
+                  {isFull ? address : short}
                 </Text>
               </Tooltip>
             ) : (
-              <span className="text-muted">{full ? address : short}</span>
+              <span className="text-muted text-[1em]">
+                {isFull ? address : short}
+              </span>
             )}
           </Copyable>
         </HStack>
@@ -124,9 +129,9 @@ export const Address = withNamespace(AddressRoot, {
 
 const styles = tv({
   slots: {
-    root: '',
-    prefix: 'text-sm text-secondary',
-    address: 'text-sm text-muted mt-px',
+    root: 'text-sm',
+    prefix: 'mt-[1px] text-[1em] text-secondary',
+    address: 'text-[1em] text-muted mt-px',
     toggleBtn: [
       'transition-all duration-500 text-muted rotate-0',
       'data-[active=true]:rotate-180',
