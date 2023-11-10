@@ -30,7 +30,7 @@ export function TxList({
       <Grid
         className={cx(
           className,
-          'grid-cols-1 tablet:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3 desktop:gap-x-8 gap-y-6 gap-x-6',
+          'grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 desktop:gap-x-8 gap-y-6 gap-x-6',
         )}
       >
         {transactions.map((transaction) => (
