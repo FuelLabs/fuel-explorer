@@ -8,6 +8,7 @@ import {
   VStack,
   createComponent,
   cx,
+  useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
@@ -29,6 +30,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
   render: (_, { output, title, ...props }) => {
     const classes = styles();
+    const { isMobile } = useBreakpoints();
 
     if (!output.assetId) return null;
     const assetId = output.assetId;
@@ -70,7 +72,8 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format()} {asset.symbol}
+                {bn(amount).format(isMobile ? { precision: 3 } : undefined)}{' '}
+                {asset.symbol}
               </Text>
             )}
           </HStack>

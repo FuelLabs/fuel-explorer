@@ -4,8 +4,8 @@ import {
   Address,
   Icon,
   Collapsible,
-  Box,
   useBreakpoints,
+  Box,
 } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import {
@@ -26,9 +26,10 @@ type UtxoItemProps = {
 };
 
 function UtxoItem({ item, style }: UtxoItemProps) {
+  const { isMobile } = useBreakpoints();
+
   if (!item.utxoId) return null;
   const classes = styles();
-  const { isMobile } = useBreakpoints();
   const trim = isMobile ? 8 : 16;
   return (
     <Box style={style} className={classes.item()}>
@@ -46,8 +47,9 @@ function UtxoItem({ item, style }: UtxoItemProps) {
           Transaction <Icon icon={IconExternalLink} size={14} />
         </Address.Link>
       </Address>
-      <Text className="text-secondary flex items-center gap-2 text-xs">
-        <Icon icon={IconCoins} size={14} /> {bn(item.amount).format()}
+      <Text className="text-secondary flex items-center gap-2">
+        <Icon icon={IconCoins} size={14} />{' '}
+        {bn(item.amount).format({ precision: isMobile ? 3 : undefined })}{' '}
       </Text>
     </Box>
   );

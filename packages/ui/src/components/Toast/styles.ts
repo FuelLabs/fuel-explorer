@@ -41,21 +41,21 @@ const vars = {
 export const styles = tv({
   slots: {
     viewport: [
-      'fixed top-0 z-50 flex flex-col-reverse p-4 sm:bottom-0 sm:right-0',
-      'sm:top-auto sm:flex-col',
+      'fixed top-0 z-50 flex flex-col-reverse p-4 tablet:bottom-0 tablet:right-0',
+      'tablet:top-auto tablet:flex-col',
     ],
     toast: [
       'group pointer-events-auto relative flex w-full items-center justify-between overflow-hidden rounded-md',
       'p-4 shadow-lg transition-all outline-none focus-visible:ring-2 not-first:mt-4',
-      'md:min-w-[var(--radix-toast-width)]',
+      'tablet:min-w-[var(--radix-toast-width)]',
       'data-[swipe=end]:transition-none',
       'data-[swipe=end]:translate-x-[var(--radix-toast-swipe-move-x)]',
       'data-[state=open]:animate-in',
       'data-[state=open]:slide-in-from-top-full',
-      'sm:data-[state=open]:slide-in-from-bottom-full',
+      'tablet:data-[state=open]:slide-in-from-bottom-full',
       'data-[state=closed]:animate-out',
       'data-[state=closed]:fade-out-80',
-      'sm:data-[state=closed]:slide-out-from-bottom-full',
+      'tablet:data-[state=closed]:slide-out-from-bottom-full',
       'bg-[var(--radix-toast-bg)]',
       'border-[var(--radix-toast-border-color)]',
       'text-[var(--radix-toast-color)]',
