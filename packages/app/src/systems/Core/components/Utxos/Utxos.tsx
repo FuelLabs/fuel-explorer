@@ -1,5 +1,12 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Text, HStack, Address, Icon, Collapsible } from '@fuels/ui';
+import {
+  Text,
+  HStack,
+  Address,
+  Icon,
+  Collapsible,
+  useBreakpoints,
+} from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import {
   IconCoins,
@@ -21,6 +28,8 @@ type UtxoItemProps = {
 };
 
 function UtxoItem({ item, assetId, style }: UtxoItemProps) {
+  const { isMobile } = useBreakpoints();
+
   if (!item.utxoId) return null;
 
   const asset = useAsset(assetId);
@@ -31,14 +40,19 @@ function UtxoItem({ item, assetId, style }: UtxoItemProps) {
         prefix="ID:"
         value={item.utxoId}
         className="flex-1"
-        addressOpts={{ trimLeft: 14, trimRight: 14 }}
+        addressOpts={
+          isMobile
+            ? { trimLeft: 7, trimRight: 7 }
+            : { trimLeft: 14, trimRight: 14 }
+        }
       >
         <Address.Link as={NextLink} href={`/tx/${item.utxoId.slice(0, -2)}`}>
           Transaction <Icon icon={IconExternalLink} size={14} />
         </Address.Link>
       </Address>
       <Text className="text-secondary flex items-center gap-2">
-        <Icon icon={IconCoins} size={14} /> {bn(item.amount).format()}{' '}
+        <Icon icon={IconCoins} size={14} />{' '}
+        {bn(item.amount).format({ precision: isMobile ? 3 : undefined })}{' '}
         {asset?.symbol ?? ''}
       </Text>
     </HStack>

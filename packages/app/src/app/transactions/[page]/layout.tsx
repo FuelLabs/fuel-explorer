@@ -13,7 +13,7 @@ export default async function LayoutTransactions({
   return (
     <Layout
       hero
-      contentClassName="[&_.rt-ContainerInner]:space-y-2 md:[&_.rt-ContainerInner]:space-y-2 lg:[&_.rt-ContainerInner]:space-y-10"
+      contentClassName="[&_.rt-ContainerInner]:space-y-2 tablet:[&_.rt-ContainerInner]:space-y-2 laptop:[&_.rt-ContainerInner]:space-y-10"
     >
       <TransactionsTitle page={params.page} />
       {children}

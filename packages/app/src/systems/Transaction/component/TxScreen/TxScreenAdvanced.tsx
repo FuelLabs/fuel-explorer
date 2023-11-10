@@ -14,7 +14,7 @@ export function TxScreenAdvanced({ transaction: tx }: TxScreenProps) {
   if (!tx) return null;
 
   return (
-    <VStack gap="6">
+    <VStack gap="6" className="px-4 xl:px-0">
       <CodeBlock value={tx} type="json" />
     </VStack>
   );

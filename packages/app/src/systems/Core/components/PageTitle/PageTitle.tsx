@@ -38,8 +38,7 @@ const styles = tv({
     icon: ['h-full flex-shrink-0 px-2'],
     title: [
       'items-center basis-full gap-3 order-3 flex-shrink-0 justify-between',
-      'text-[1.7rem]',
-      'mobile:text-[2rem] tablet:text-[2.2rem]',
+      'text-[1.7rem] tablet:text-[2.2rem]',
       'tablet:order-none tablet:flex-1 tablet:justify-start',
     ],
   },

@@ -16,7 +16,7 @@ export function Pagination({ page, onChange, ...props }: PaginationProps) {
       gap="1"
       {...props}
       className={cx(
-        'w-full md:w-auto grid grid-cols-[auto_1fr_auto]',
+        'w-full tablet:w-auto grid grid-cols-[auto_1fr_auto]',
         props.className,
       )}
     >

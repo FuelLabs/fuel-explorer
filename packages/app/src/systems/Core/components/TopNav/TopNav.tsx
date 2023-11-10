@@ -8,7 +8,7 @@ import { setTheme } from '../../actions/setTheme';
 export function TopNav() {
   if (typeof window === 'undefined') return null;
   const logo = (
-    <NextLink href="/" className="flex items-center flex-1 lg:flex-initial">
+    <NextLink href="/" className="flex items-center flex-1 laptop:flex-initial">
       <Nav.Logo />
     </NextLink>
   );
