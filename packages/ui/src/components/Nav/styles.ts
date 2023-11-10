@@ -36,7 +36,7 @@ export const styles = tv({
     ],
     desktop: [
       'gap-8 container mx-auto flex-row items-center',
-      'px-4 flex min-h-[var(--nav-height)]',
+      'laptop:px-4 laptop:flex min-h-[var(--nav-height)]',
     ],
     desktopWrapper: [
       'border-b border-border min-h-[var(--nav-height)]',

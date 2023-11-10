@@ -190,7 +190,7 @@ export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
   className: () => styles().logo(),
   render: (_, { size, ...props }) => {
     const { width } = useWindowSize();
-    const defaultSize = width < 1024 ? 28 : 32;
+    const defaultSize = width < 960 ? 28 : 32;
     return <FuelLogo {...props} size={size || defaultSize} />;
   },
 });

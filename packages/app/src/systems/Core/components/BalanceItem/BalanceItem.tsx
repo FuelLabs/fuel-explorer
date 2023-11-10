@@ -1,6 +1,14 @@
 import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
-import { createComponent, Text, VStack, Address, Collapsible } from '@fuels/ui';
+import {
+  createComponent,
+  Text,
+  VStack,
+  Address,
+  Collapsible,
+  useBreakpoints,
+  Flex,
+} from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
@@ -24,6 +32,7 @@ export const BalanceItem = createComponent<
     const assetId = item.assetId;
     const amount = item.amount;
     const asset = useAsset(assetId);
+    const { isMobile } = useBreakpoints();
     if (!asset) return null;
 
     const hasUTXOs = !!item.utxos?.length;
@@ -41,22 +50,26 @@ export const BalanceItem = createComponent<
           ) : (
             <TxIcon type="Mint" status="Submitted" />
           )}
-          <VStack gap="1" className="flex-1">
-            <Text className="text-md font-medium">
-              {asset.name}
-              {asset.symbol && (
-                <Text className="ml-2 text-muted text-sm">
-                  ({asset.symbol})
-                </Text>
+          <Flex className="flex-1 flex-col tablet:flex-row tablet:justify-between tablet:items-center">
+            <VStack gap="1">
+              <Text className="text-md font-medium">
+                {asset.name}
+                {!isMobile && asset.symbol && (
+                  <Text className="ml-2 text-muted text-sm">
+                    ({asset.symbol})
+                  </Text>
+                )}
+              </Text>
+              {!isMobile && (
+                <Address value={item.assetId} prefix="Id:" fixed="b256" />
               )}
-            </Text>
-            <Address value={item.assetId} prefix="Id:" fixed="b256" />
-          </VStack>
-          {amount && (
-            <Text className="text-secondary overflow-hidden break-normal w-[45px] tablet:w-auto">
-              {bn(amount).format()}
-            </Text>
-          )}
+            </VStack>
+            {amount && (
+              <Text className="text-secondary">
+                {bn(amount).format()} {asset.symbol}
+              </Text>
+            )}
+          </Flex>
         </Collapsible.Header>
         {hasUTXOs && (
           <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />
