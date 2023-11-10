@@ -9,6 +9,7 @@ import {
   VStack,
   createComponent,
   cx,
+  useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
@@ -36,6 +37,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
     const asset = useAsset(assetId);
+    const { isMobile } = useBreakpoints();
 
     if (!asset) return null;
     return (
@@ -59,12 +61,19 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
                   ({asset.symbol})
                 </Text>
               )}
-              <Address value={assetId} fixed="b256" />
+              <Address
+                value={assetId}
+                fixed="b256"
+                addressOpts={
+                  isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
+                }
+              />
             </Text>
             <Address
               prefix="From:"
               value={input.owner || ''}
               className="text-white"
+              addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
             >
               <Address.Link as={NextLink} href={`/account/${input.owner}`}>
                 View Account
@@ -73,7 +82,8 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
           </VStack>
           {amount && (
             <Text className="text-secondary">
-              {bn(amount).format()} {asset.symbol}
+              {bn(amount).format({ precision: isMobile ? 3 : undefined })}{' '}
+              {asset.symbol}
             </Text>
           )}
         </Collapsible.Header>
