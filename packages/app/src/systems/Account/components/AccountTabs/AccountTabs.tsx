@@ -62,9 +62,9 @@ export function AccountTabs({
 const styles = tv({
   slots: {
     root: [
-      'px-4 tablet:px-8 laptop:px-0',
+      'mobile:pb-4 mx-4 tablet:mx-8 laptop:mx-0',
       'grid items-center gap-2',
-      'tablet:flex laptop:justify-start',
+      'flex justify-start max-w-full overflow-x-auto',
     ],
     button: [
       'bg-transparent text-muted',
