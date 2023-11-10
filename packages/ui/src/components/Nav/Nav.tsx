@@ -96,7 +96,7 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
   render: (Root, { className, children, ...props }) => {
     const classes = styles();
     const { width } = useWindowSize();
-    if (width < 1024) return null;
+    if (width < 960) return null;
     return (
       <section className={classes.navWrapper()}>
         <Root
@@ -127,7 +127,7 @@ export const NavMobile = createComponent<NavMobileProps, 'nav'>({
       onOpenChange?.(Boolean(open));
     }, [open]);
 
-    if (width >= 1024) return null;
+    if (width >= 960) return null;
     return (
       <NavMobileProvider value={{ isOpen: open, onOpenChange: setOpen }}>
         <Root
@@ -192,7 +192,7 @@ export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
   className: () => styles().logo(),
   render: (_, { size, ...props }) => {
     const { width } = useWindowSize();
-    const defaultSize = width < 1024 ? 28 : 32;
+    const defaultSize = width < 960 ? 28 : 32;
     return <FuelLogo {...props} size={size || defaultSize} />;
   },
 });

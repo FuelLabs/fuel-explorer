@@ -40,9 +40,9 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
   return (
     <Grid
       gap="9"
-      className="flex flex-col px-4 sm:flex md:grid md:grid-cols-6 xl:px-0"
+      className="flex flex-col px-4 tablet:grid tablet:grid-cols-6 desktop:px-0"
     >
-      <Box className="md:col-span-2">
+      <Box className="tablet:col-span-2">
         <VStack>
           <CardInfo>
             <EntityItem>

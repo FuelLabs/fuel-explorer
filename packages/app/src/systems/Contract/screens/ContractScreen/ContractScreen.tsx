@@ -5,7 +5,7 @@ import type {
   ContractItemFragment,
   Maybe,
 } from '@fuel-explorer/graphql';
-import { Address, Flex, VStack } from '@fuels/ui';
+import { Address, VStack, useBreakpoints } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
 import { useState } from 'react';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
@@ -27,19 +27,18 @@ export function ContractScreen({
   contractBalances,
 }: ContractScreenProps) {
   const [viewMode, setViewMode] = useState<ViewModes>(ViewModes.Simple);
+  const { isLaptop } = useBreakpoints();
 
   if (!contract) return null;
 
   return (
     <VStack gap="6" className="min-h-[65vh]">
-      <PageTitle icon={<IconChecklist size={24} stroke={1.2} />}>
-        <Flex justify="between" className="flex-1">
-          <Flex align="center" gap={'5'}>
-            Contract
-            <Address full value={contract.id} fixed="b256" />
-          </Flex>
-          <ViewMode mode={viewMode} onChange={setViewMode} />
-        </Flex>
+      <PageTitle
+        icon={<IconChecklist size={24} stroke={1.2} />}
+        rightElement={<ViewMode mode={viewMode} onChange={setViewMode} />}
+      >
+        Contract
+        <Address value={contract.id} full={isLaptop} fixed="b256" />
       </PageTitle>
       {viewMode === ViewModes.Simple && (
         <ContractScreenSimple

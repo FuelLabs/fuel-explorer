@@ -35,7 +35,7 @@ export const styles = tv({
       'light-theme:aria-[label=Moon]:translate-x-full',
     ],
     desktop: [
-      'gap-8 container mx-auto flex-row items-center',
+      'gap-8 mx-auto flex-row items-center',
       'laptop:px-4 laptop:flex min-h-[var(--nav-height)]',
     ],
     mobile: [
