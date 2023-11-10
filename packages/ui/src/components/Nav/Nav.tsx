@@ -9,8 +9,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Children, cloneElement, useEffect, useState } from 'react';
 import { useWindowSize } from 'react-use';
 
+import { useBreakpoints } from '../../hooks/useBreakpoints';
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
+import { cx } from '../../utils/css';
 import type { AsChildProp, PropsOf, WithAsProps } from '../../utils/types';
 import { Badge } from '../Badge/Badge';
 import { Box, HStack } from '../Box';
@@ -95,12 +97,16 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
   baseElement: 'nav',
   render: (Root, { className, children, ...props }) => {
     const classes = styles();
+    const { isMobile } = useBreakpoints();
+
     return (
       <section className={classes.desktopWrapper()}>
         <Root
           {...props}
-          className={classes.desktop({ className })}
           style={{ '--nav-height': '70px' } as React.CSSProperties}
+          className={cx(classes.desktop({ className }), {
+            hidden: isMobile,
+          })}
         >
           {children}
         </Root>
@@ -119,6 +125,7 @@ export const NavMobile = createComponent<NavMobileProps, 'nav'>({
   className: () => styles().mobile(),
   render: (Root, { isOpen, onOpenChange, children, className, ...props }) => {
     const [open, setOpen] = useState(() => Boolean(isOpen));
+    const { isLaptop } = useBreakpoints();
     const classes = styles();
 
     useEffect(() => {
@@ -130,7 +137,9 @@ export const NavMobile = createComponent<NavMobileProps, 'nav'>({
         <Root
           {...props}
           style={{ '--nav-height': '60px' } as React.CSSProperties}
-          className={classes.mobileWrapper({ className })}
+          className={cx(classes.mobileWrapper({ className }), {
+            hidden: isLaptop,
+          })}
         >
           {children}
         </Root>
