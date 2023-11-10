@@ -94,7 +94,7 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
           </CardInfo>
         </VStack>
       </Box>
-      <Box className="mobile:max-tablet:col-span-4">
+      <Box className="col-span-4">
         <VStack>
           <VStack>
             <Heading as="h2" size="5" className="leading-none">

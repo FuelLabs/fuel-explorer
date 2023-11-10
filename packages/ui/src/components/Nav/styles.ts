@@ -35,16 +35,16 @@ export const styles = tv({
       'light-theme:aria-[label=Moon]:translate-x-full',
     ],
     desktop: [
-      'gap-8 container mx-auto flex-row items-center',
+      'gap-8 flex-row items-center',
       'laptop:px-4 laptop:flex min-h-[var(--nav-height)]',
     ],
     desktopWrapper: [
       'border-b border-border min-h-[var(--nav-height)]',
-      '[@media(max-width:1024px){&}]:hidden',
+      'mobile:max-[959px]:hidden',
     ],
     mobileWrapper: [
-      'border-b border-border min-h-[var(--nav-height)]',
-      '[@media(min-width:1024px){&}]:hidden',
+      'pl-3 pr-2 border-b border-border min-h-[var(--nav-height)]',
+      'mobile:max-[959px]:block laptop:hidden',
     ],
     mobile: ['flex-col fuel-[NavLogo]:flex-1'],
     mobileContent: [

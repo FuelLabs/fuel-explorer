@@ -15,13 +15,13 @@ export function AccountLayout({
   bytecode?: string | null;
   id: string;
 }) {
-  const { isMobile } = useBreakpoints();
+  const { isLaptop } = useBreakpoints();
   return (
     <Layout>
       <VStack>
         <PageTitle icon={<IconHash size={20} stroke={1.2} />}>
           Account
-          <Address full={!isMobile} value={id} />
+          <Address full={isLaptop} value={id} />
         </PageTitle>
         <AccountTabs accountId={id} isPredicate={!!bytecode} />
         <Box as="section" className="mt-2 laptop:mt-8">
