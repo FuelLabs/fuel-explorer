@@ -11,13 +11,7 @@ export default async function AccountTransactions({
   params: { id },
 }: PageProps) {
   const txs = await getAccountTransactions({ owner: id });
-  return (
-    <TxList
-      hidePagination
-      transactions={txs.edges}
-      className="mobile:p-0 tablet:p-0 desktop:p-0"
-    />
-  );
+  return <TxList hidePagination transactions={txs.edges} className="p-0" />;
 }
 
 // Revalidate cache every 10 seconds
