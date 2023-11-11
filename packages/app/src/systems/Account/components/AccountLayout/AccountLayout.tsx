@@ -19,7 +19,10 @@ export function AccountLayout({
   return (
     <Layout>
       <VStack>
-        <PageTitle icon={<IconHash size={20} stroke={1.2} />}>
+        <PageTitle
+          icon={<IconHash size={20} stroke={1.2} />}
+          rightElement={<div>&nbsp;</div>}
+        >
           Account
           <Address full={isLaptop} value={id} />
         </PageTitle>

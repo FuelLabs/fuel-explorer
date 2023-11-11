@@ -1,7 +1,7 @@
 'use client';
 
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Address, Flex, VStack } from '@fuels/ui';
+import { Address, VStack } from '@fuels/ui';
 import { IconCube } from '@tabler/icons-react';
 import { useState } from 'react';
 import { PageSubtitle } from '~/systems/Core/components/PageSubtitle/PageSubtitle';
@@ -34,14 +34,12 @@ export function BlockScreen({
         icon={<IconCube size={24} stroke={2.4} />}
         rightElement={<ViewMode mode={viewMode} onChange={setViewMode} />}
       >
-        <Flex>Block</Flex>
-        <Flex align="center">
-          {isValidAddress(blockNumberOrId) ? (
-            <Address full value={blockNumberOrId || ''} fixed="b256" />
-          ) : (
-            <PageSubtitle>#{blockNumberOrId}</PageSubtitle>
-          )}
-        </Flex>
+        Block
+        {isValidAddress(blockNumberOrId) ? (
+          <Address full value={blockNumberOrId || ''} fixed="b256" />
+        ) : (
+          <PageSubtitle>#{blockNumberOrId}</PageSubtitle>
+        )}
       </PageTitle>
       {viewMode === ViewModes.Simple && (
         <BlockScreenSimple block={block} producer={producer} />
