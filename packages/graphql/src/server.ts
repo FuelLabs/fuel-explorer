@@ -4,6 +4,7 @@ import { createHandler } from 'graphql-http/lib/use/express';
 import expressPlayground from 'graphql-playground-middleware-express';
 
 import { createSchema } from './schema';
+import { createGraphqlFetch } from './utils/executor';
 import { requireEnv } from './utils/requireEnv';
 
 const { FUEL_PROVIDER_URL } = requireEnv(['FUEL_PROVIDER_URL']);
@@ -24,7 +25,9 @@ app.get(
   }),
 );
 
-const schema = createSchema(FUEL_PROVIDER_URL);
+const executor = createGraphqlFetch(FUEL_PROVIDER_URL);
+const schema = createSchema(executor);
+
 app.post(
   '/graphql',
   createHandler({

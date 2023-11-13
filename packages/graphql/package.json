@@ -36,7 +36,7 @@
     "express": "5.0.0-beta.1",
     "fuels": "0.67.0",
     "get-port": "7.0.0",
-    "graphql": "16.8.1",
+    "graphql": ">=16.8.1",
     "graphql-http": "^1.22.0",
     "graphql-playground-middleware-express": "^1.7.23",
     "graphql-request": "6.1.0",
@@ -63,6 +63,7 @@
     "execa": "8.0.1",
     "graphql-codegen-typescript-common": "0.18.2",
     "graphql-codegen-typescript-mock-data": "3.5.1",
+    "ts-node": "10.9.1",
     "tsconfig-paths": "^4.2.0"
   }
 }

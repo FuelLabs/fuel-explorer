@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "esModuleInterop": true,
     "isolatedModules": true,
     "outDir": "./dist",
     "module": "commonjs",
