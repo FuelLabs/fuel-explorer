@@ -82,7 +82,7 @@ const styles = tv({
       'flex-1',
       '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON
     ],
-    codeText: 'text-sm text-gray-500 p-4 max-w-[1120px] block',
+    codeText: 'text-sm text-gray-500 p-4 max-w-full break-all block',
     cardFooter: [
       'border-t border-card-border',
       'py-3 self-stretch flex-none justify-center',

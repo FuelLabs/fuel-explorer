@@ -1,8 +1,11 @@
-@layer tw-base, fuel, tw-components, tw-utilities;
+@layer fuel-base, fuel-components, fuel-utilities;
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import '@fuels/ui/dist/styles.css' layer(fuel-base);
+@import 'tailwindcss/base' layer(fuel-base);
+@import 'tailwindcss/components' layer(fuel-components);
+@import 'tailwindcss/utilities' layer(fuel-utilities);
+
+@config "../../tailwind.config.ts";
 
 :root {
   --hero-bg: #000;

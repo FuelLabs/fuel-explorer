@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
+import { useBreakpoints } from '../../hooks/useBreakpoints';
 import { createComponent } from '../../utils/component';
 import { cx } from '../../utils/css';
 import type { BaseProps, WithAsProps } from '../../utils/types';
@@ -8,7 +9,6 @@ import { HStack } from '../Box';
 import { Copyable } from '../Copyable';
 import type { LinkProps } from '../Link';
 import { Link } from '../Link';
-import { Text } from '../Text';
 
 import type { UseFuelAddressOpts } from './useFuelAddress';
 import { useFuelAddress } from './useFuelAddress';
@@ -38,6 +38,9 @@ export const Address = createComponent<AddressProps, typeof HStack>({
       fixed,
     });
 
+    const { isMobile } = useBreakpoints();
+    const isFull = isMobile ? false : full;
+
     return (
       <Root
         gap="3"
@@ -46,11 +49,11 @@ export const Address = createComponent<AddressProps, typeof HStack>({
         className={classes.root({ className })}
       >
         <HStack align="center" gap="1">
-          {prefix && <Text className={classes.prefix()}>{prefix}</Text>}
+          {prefix && <span className={classes.prefix()}>{prefix}</span>}
           <Copyable value={address} className={classes.address()} iconSize={16}>
             <Link {...linkProps} className={cx('text-xs')}>
               <span className="text-muted hover:text-brand">
-                {full ? address : short}
+                {isFull ? address : short}
               </span>
             </Link>
           </Copyable>
@@ -62,8 +65,8 @@ export const Address = createComponent<AddressProps, typeof HStack>({
 
 const styles = tv({
   slots: {
-    root: '',
-    prefix: 'text-sm text-secondary',
-    address: 'text-sm text-muted mt-px',
+    root: 'text-sm',
+    prefix: 'mt-[1px] text-[1em] text-secondary',
+    address: 'text-[1em] text-muted mt-px',
   },
 });
