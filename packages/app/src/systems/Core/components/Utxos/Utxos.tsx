@@ -32,7 +32,7 @@ function UtxoItem({ item, style }: UtxoItemProps) {
       <Address
         prefix="ID:"
         value={item.utxoId}
-        className="flex-1"
+        className="flex-col items-start gap-1 flex-1 tablet:flex-row tablet:items-center tablet:gap-4"
         addressOpts={{ trimLeft: trim, trimRight: trim }}
         linkProps={{ as: NextLink, href: `/tx/${item.utxoId.slice(0, -2)}` }}
       />
@@ -56,7 +56,7 @@ function VirtualList({ items }: UtxosProps) {
       height={350}
       itemCount={items?.length ?? 0}
       width="100%"
-      itemSize={() => (isMobile ? 60 : 35)}
+      itemSize={() => (isMobile ? 85 : 35)}
     >
       {({ index: idx, style }) => {
         const item = items?.[idx];
@@ -93,7 +93,7 @@ export function Utxos({ items, ...props }: UtxosProps) {
 const styles = tv({
   slots: {
     item: [
-      'flex flex-col odd:bg-gray-4 p-2 px-4',
+      'flex flex-col odd:bg-gray-4 p-2 px-4 gap-2',
       'tablet:flex-row',
       'last:rounded-b-sm',
       'fuel-[Address]:text-[0.8rem] fuel-[Address]:leading-none',
