@@ -43,9 +43,7 @@ export function CodeBlock({ value, type = 'raw', title }: CodeBlockProps) {
       <ScrollArea className={classes.cardMiddle()} scrollbars="vertical">
         {type === 'json' && (
           <JsonViewer
-            data={
-              typeof value === 'object' ? getCopyValue() : JSON.parse(value)
-            }
+            data={typeof value === 'object' ? value : JSON.parse(value)}
           />
         )}
         {type === 'raw' && (
