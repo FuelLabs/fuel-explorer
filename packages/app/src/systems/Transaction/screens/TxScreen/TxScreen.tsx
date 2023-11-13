@@ -25,7 +25,7 @@ export function TxScreen({ transaction: tx }: TxScreenProps) {
   if (!tx) return null;
 
   return (
-    <VStack gap="6" className="min-h-[65vh]">
+    <VStack className="min-h-[65vh] gap-8 laptop:gap-14 tablet:mb-10">
       <PageTitle
         icon={<IconChecklist size={24} stroke={1.2} />}
         rightElement={<ViewMode mode={viewMode} onChange={setViewMode} />}
