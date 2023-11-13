@@ -80,7 +80,7 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
                 as={NextLink}
                 href={`/block/${tx.blockHeight}`}
                 externalIcon={IconLink}
-                className="text-color"
+                className="text-color hover:text-brand"
               >
                 #{tx.blockHeight}
               </Link>

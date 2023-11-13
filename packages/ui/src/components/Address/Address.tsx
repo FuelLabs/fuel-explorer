@@ -51,11 +51,15 @@ export const Address = createComponent<AddressProps, typeof HStack>({
         <HStack align="center" gap="1">
           {prefix && <span className={classes.prefix()}>{prefix}</span>}
           <Copyable value={address} className={classes.address()} iconSize={16}>
-            <Link {...linkProps} className={cx('text-xs')}>
-              <span className="text-muted hover:text-brand">
-                {isFull ? address : short}
-              </span>
-            </Link>
+            {linkProps ? (
+              <Link {...linkProps} className={cx('text-xs')}>
+                <span className="text-muted hover:text-brand">
+                  {isFull ? address : short}
+                </span>
+              </Link>
+            ) : (
+              <span className="text-muted">{isFull ? address : short}</span>
+            )}
           </Copyable>
         </HStack>
       </Root>
