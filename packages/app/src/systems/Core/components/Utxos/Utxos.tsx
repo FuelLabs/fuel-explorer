@@ -8,11 +8,7 @@ import {
   Box,
 } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
-import {
-  IconCoins,
-  IconExternalLink,
-  IconSquareKey,
-} from '@tabler/icons-react';
+import { IconCoins, IconExternalLink } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { VariableSizeList as List } from 'react-window';
@@ -87,7 +83,7 @@ export function Utxos({ items, ...props }: UtxosProps) {
   const len = items?.length ?? 0;
   return (
     <Collapsible.Content {...props}>
-      <Collapsible.Title leftIcon={IconSquareKey} iconColor="text-icon">
+      <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">
         UTXOs ({items?.length ?? 0})
       </Collapsible.Title>
       <Collapsible.Body className="p-0">

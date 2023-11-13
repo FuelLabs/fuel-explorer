@@ -45,7 +45,6 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
       <ctx.Provider value={{ opened, setOpened, defaultOpened, variant }}>
         <Root
           {...props}
-          // as="button"
           data-state={opened ? 'opened' : 'closed'}
           className={classes.root({ className })}
           onClick={() => setOpened(!opened)}
