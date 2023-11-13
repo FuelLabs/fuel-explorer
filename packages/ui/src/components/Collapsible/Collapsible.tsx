@@ -43,7 +43,13 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
     const [opened, setOpened] = useState(Boolean(defaultOpened));
     return (
       <ctx.Provider value={{ opened, setOpened, defaultOpened, variant }}>
-        <Root {...props} className={classes.root({ className })}>
+        <Root
+          {...props}
+          // as="button"
+          data-state={opened ? 'opened' : 'closed'}
+          className={classes.root({ className })}
+          onClick={() => setOpened(!opened)}
+        >
           {children}
         </Root>
       </ctx.Provider>
@@ -59,7 +65,7 @@ export const CollapsibleHeader = createComponent<
   baseElement: Card.Header,
   render: (Root, { children, className, hideIcon, ...props }) => {
     const classes = styles();
-    const { opened, setOpened } = useContext(ctx);
+    const { opened } = useContext(ctx);
     return (
       <Root
         {...props}
@@ -74,7 +80,6 @@ export const CollapsibleHeader = createComponent<
             variant="link"
             className={classes.icon()}
             icon={IconChevronDown}
-            onClick={() => setOpened(!opened)}
           />
         )}
       </Root>
@@ -133,8 +138,9 @@ export const Collapsible = withNamespace(CollapsibleRoot, {
 const styles = tv({
   slots: {
     root: 'py-[10px]',
-    header: 'group grid grid-cols-[1fr_auto] grid-rows-1 gap-4 items-center',
-    icon: 'transition-transform group-data-[state=opened]:-rotate-180',
+    header:
+      'group grid grid-cols-[1fr_auto] grid-rows-1 gap-4 items-center cursor-pointer',
+    icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer',
     content: 'mx-4 mb-2 border border-border',
     body: '',
     title: 'flex items-center gap-2 text-sm font-medium',
