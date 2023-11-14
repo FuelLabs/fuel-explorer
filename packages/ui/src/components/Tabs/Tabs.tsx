@@ -1,10 +1,10 @@
 import * as RT from '@radix-ui/react-tabs';
 import { createContext, useContext } from 'react';
-import { useIconProps } from 'src/hooks/useIconProps';
-import type { WithIconProps } from 'src/hooks/useIconProps';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
+import { useIconProps } from '../../hooks/useIconProps';
+import type { WithIconProps } from '../../hooks/useIconProps';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 
@@ -58,7 +58,10 @@ export const TabsTrigger = createComponent<TabsTriggerProps, 'button'>({
     const classes = styles({ size, variant });
     const itemProps = useIconProps({ size, ...props });
     return (
-      <RT.Trigger className={classes.trigger({ className })} {...itemProps} />
+      <RT.Trigger
+        className={classes.trigger({ size, variant, className })}
+        {...itemProps}
+      />
     );
   },
 });
@@ -94,32 +97,35 @@ const styles = tv({
         trigger: [
           'bg-transparent text-muted rounded border border-border',
           'enabled:hover:bg-gray-2 enabled:hover:text-heading transition-colors',
-          'aria-[selected=true]:bg-gray-2 aria-[selected=true]:text-heading',
+          'state-active:text-heading',
           'fuel-[Icon]:hover:text-icon',
-          'fuel-[Icon]:aria-[selected=true]:text-icon',
+          'fuel-[Icon]:state-active:text-icon',
           'disabled:opacity-50',
         ],
       },
       line: {
-        list: ['gap-4 border-b border-border'],
+        list: ['border-b border-border'],
         trigger: [
           'bg-transparent text-muted',
           'enabled:hover:text-heading transition-colors',
-          'aria-[selected=true]:text-heading aria-[selected=true]:border-b aria-[selected=true]:border-accent',
+          'state-active:text-heading state-active:border-b state-active:border-accent',
           'fuel-[Icon]:hover:text-icon',
-          'fuel-[Icon]:aria-[selected=true]:text-icon',
+          'fuel-[Icon]::text-icon',
           'disabled:opacity-50',
         ],
       },
     },
     size: {
       '1': {
+        list: 'gap-3',
         trigger: 'gap-2',
       },
       '2': {
+        list: 'gap-4',
         trigger: 'gap-3',
       },
       '3': {
+        list: 'gap-4',
         trigger: 'gap-4',
       },
     },

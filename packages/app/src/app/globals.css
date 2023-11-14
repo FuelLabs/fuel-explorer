@@ -1,28 +1,17 @@
-@layer fuel-base, fuel-components, fuel-utilities;
-
-@import '@fuels/ui/dist/styles.css' layer(fuel-base);
-@import 'tailwindcss/base' layer(fuel-base);
-@import 'tailwindcss/components' layer(fuel-components);
-@import 'tailwindcss/utilities' layer(fuel-utilities);
-
-@config "../../tailwind.config.ts";
-
 :root {
   --hero-bg: #000;
 }
 
-@layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 600;
-    letter-spacing: -0.025em;
-  }
-  kbd {
-    font-size: 0.875rem;
-    font-family: var(--default-font-family);
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+kbd {
+  font-size: 0.875rem;
+  font-family: var(--default-font-family);
 }

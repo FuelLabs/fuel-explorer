@@ -1,3 +1,4 @@
+'use client';
 import { Button, Card, ScrollArea, Text } from '@fuels/ui';
 import { IconChevronDown } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
