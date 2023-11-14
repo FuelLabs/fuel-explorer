@@ -1,2 +1,2 @@
-export * from './graphqlFetch';
+export * from './executor';
 export * from './getFieldsValues';
