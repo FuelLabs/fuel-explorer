@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Address } from 'fuels';
 import { gql } from 'graphql-request';
 
+import { parseAddressParam } from '../utils/address';
 import { Domain } from '../utils/domain';
 
 type Args = {
@@ -22,122 +22,115 @@ export class SearchDomain extends Domain<any, Args> {
 
   async getAccount() {
     const { address } = this.args;
-    try {
-      const parsedAddress = Address.fromString(address).toHexString();
-      // TODO use last 5 once reverse pagination is supported
-      const query = gql`
-        query getTransactions($owner: Address!) {
-          transactionsByOwner(owner: $owner, first: 5) {
-            nodes {
-              id
-            }
+    const parsedAddress = parseAddressParam(address);
+    // TODO use last 5 once reverse pagination is supported
+    const query = gql`
+      query getTransactions($owner: Address!) {
+        transactionsByOwner(owner: $owner, first: 5) {
+          nodes {
+            id
           }
         }
-      `;
-
-      type Result = {
-        transactionsByOwner: {
-          nodes: {
-            id: string;
-          }[];
-        };
-      };
-      const data = await this.query<Result>(query, { owner: parsedAddress });
-      if (data.transactionsByOwner.nodes.length) {
-        return {
-          address: parsedAddress,
-          transactions: data.transactionsByOwner.nodes.map((node) => {
-            return { id: node.id };
-          }),
-        };
       }
-      return null;
-    } catch (err) {
-      return null;
+    `;
+
+    type Result = {
+      transactionsByOwner: {
+        nodes: {
+          id: string;
+        }[];
+      };
+    };
+    const data = await this.query<Result>(query, { owner: parsedAddress });
+    if (data.transactionsByOwner.nodes.length) {
+      return {
+        address: parsedAddress,
+        transactions: data.transactionsByOwner.nodes.map((node) => {
+          return { id: node.id };
+        }),
+      };
     }
+    return null;
   }
 
   async getContractId() {
     const { id } = this.args;
-    try {
-      const contractId = Address.fromString(id).toHexString();
-      const query = gql`
-        query getContract($id: ContractId!) {
-          contract(id: $id) {
-            id
-          }
+    const contractId = parseAddressParam(id);
+    const query = gql`
+      query getContract($id: ContractId!) {
+        contract(id: $id) {
+          id
         }
-      `;
+      }
+    `;
 
-      type Result = {
-        contract: {
-          id: string;
-        };
+    type Result = {
+      contract: {
+        id: string;
       };
-      const data = await this.query<Result>(query, { id: contractId });
+    };
+    const data = await this.query<Result>(query, { id: contractId });
+    if (data.contract) {
       return {
         id: data.contract.id,
       };
-    } catch (err) {
-      return null;
     }
+    return null;
   }
 
   async getBlockInfo() {
     const { id } = this.args;
-    try {
-      const blockId = Address.fromString(id).toHexString();
-      const query = gql`
-        query getBlockInfo($id: BlockId!) {
-          block(id: $id) {
-            id
-            header {
-              height
-            }
+    const blockId = parseAddressParam(id);
+    const query = gql`
+      query getBlockInfo($id: BlockId!) {
+        block(id: $id) {
+          id
+          header {
+            height
           }
         }
-      `;
-      type Result = {
-        block: {
-          id: string;
-          header: {
-            height: string;
-          };
+      }
+    `;
+    type Result = {
+      block: {
+        id: string;
+        header: {
+          height: string;
         };
       };
-      const data = await this.query<Result>(query, { id: blockId });
+    };
+    const data = await this.query<Result>(query, { id: blockId });
+    if (data.block) {
       return {
         id: data.block.id,
         height: data.block.header.height,
       };
-    } catch (err) {
-      return null;
     }
+    return null;
   }
 
   async getTransactionId() {
     const { id } = this.args;
-    try {
-      const parsedId = Address.fromString(id).toHexString();
-      const query = gql`
-        query getTransaction($id: TransactionId!) {
-          transaction(id: $id) {
-            id
-          }
+    const parsedId = parseAddressParam(id);
+    const query = gql`
+      query getTransaction($id: TransactionId!) {
+        transaction(id: $id) {
+          id
         }
-      `;
+      }
+    `;
 
-      type Result = {
-        transaction: {
-          id: string;
-        };
+    type Result = {
+      transaction: {
+        id: string;
       };
-      const data = await this.query<Result>(query, { id: parsedId });
+    };
+    const data = await this.query<Result>(query, { id: parsedId });
+    if (data.transaction) {
       return {
         id: data.transaction.id,
       };
-    } catch (err) {
-      return null;
     }
+    return null;
   }
 }
