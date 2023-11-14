@@ -64,6 +64,11 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               <Address
                 value={assetId}
                 fixed="b256"
+                /*
+                 * I'm just hidding this until we get the output/input design merged
+                 * https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
+                 */
+                className="hidden tablet:block"
                 addressOpts={
                   isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
                 }
@@ -77,8 +82,12 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               linkProps={{ as: NextLink, href: `/account/${input.owner}` }}
             />
           </VStack>
+          {/*
+            I'm just hidding this until we get the output/input design merged 
+            https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
+          */}
           {amount && (
-            <Text className="text-secondary">
+            <Text className="text-secondary hidden tablet:block">
               {bn(amount).format({ precision: isMobile ? 3 : undefined })}{' '}
               {asset.symbol}
             </Text>

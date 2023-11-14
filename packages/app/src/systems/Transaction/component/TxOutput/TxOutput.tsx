@@ -58,7 +58,15 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                 {asset.symbol && (
                   <Text className="text-muted text-sm">({asset.symbol})</Text>
                 )}
-                <Address value={output.assetId} fixed="b256" />
+                <Address
+                  value={output.assetId}
+                  fixed="b256"
+                  /*
+                   * I'm just hidding this until we get the output/input design merged
+                   * https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
+                   */
+                  className="hidden tablet:block"
+                />
               </Text>
               <HStack>
                 <Address
@@ -69,7 +77,11 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
               </HStack>
             </VStack>
           </HStack>
-          <HStack align="center">
+          {/*
+            I'm just hidding this until we get the output/input design merged 
+            https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
+          */}
+          <HStack align="center" className="hidden tablet:block">
             {amount && (
               <Text className="text-secondary">
                 {bn(amount).format(isMobile ? { precision: 3 } : undefined)}{' '}
