@@ -117,3 +117,31 @@ extend type Block {
   totalGasUsed: U64
   producer: Address
 }
+
+# --------------------------------
+# Query
+# --------------------------------
+type SearchAccount {
+  address: Address
+  transactions: [SearchTransaction]
+}
+
+type SearchContract {
+  id: ContractId
+}
+
+type SearchBlock {
+  id: BlockId
+  height: String
+}
+
+type SearchTransaction {
+  id: TransactionId
+}
+
+extend type Query {
+  account(address: String!): SearchAccount
+  contractId(id: String!): SearchContract
+  blockInfo(id: String!): SearchBlock
+  transactionId(id: String!): SearchTransaction
+}

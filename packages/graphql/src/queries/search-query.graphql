@@ -1,0 +1,36 @@
+query searchQuery($search: String!) {
+  account(address: $search) {
+    address
+    transactions {
+      id
+    }
+  }
+  contractId(id: $search) {
+    id
+  }
+  blockInfo(id: $search) {
+    id
+    height
+  }
+  transactionId(id: $search) {
+    id
+  }
+}
+
+# query getSearchQuery($search: String!) {
+#   searchQuery(search: $search) {
+#     account {
+#       address
+#     }
+#     contract {
+#       id
+#     }
+#     block {
+#       id
+#       height
+#     }
+#     transactions {
+#       id
+#     }
+#   }
+# }
