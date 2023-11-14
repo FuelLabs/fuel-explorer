@@ -1,4 +1,5 @@
 import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
+import { CHAIN_IDS, getAssetFuel } from '@fuels/assets';
 import type { BaseProps } from '@fuels/ui';
 import {
   createComponent,
@@ -11,6 +12,7 @@ import {
 } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
+import { useMemo } from 'react';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
@@ -31,10 +33,14 @@ export const BalanceItem = createComponent<
   render: (_, { item, ...props }) => {
     const assetId = item.assetId;
     const amount = item.amount;
-    const asset = useAsset(assetId);
     const { isMobile } = useBreakpoints();
+    const asset = useAsset(assetId);
     if (!asset) return null;
 
+    const fuelAsset = useMemo(
+      () => getAssetFuel(asset, CHAIN_IDS.fuel.beta4),
+      [asset.assetId, asset.networks.length],
+    );
     const hasUTXOs = !!item.utxos?.length;
 
     return (
@@ -66,7 +72,17 @@ export const BalanceItem = createComponent<
             </VStack>
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format()} {asset.symbol}
+                {fuelAsset?.decimals ? (
+                  <>
+                    {bn(amount).format({
+                      precision: fuelAsset.decimals,
+                      units: fuelAsset.decimals,
+                    })}{' '}
+                    {asset.symbol}
+                  </>
+                ) : (
+                  amount
+                )}
               </Text>
             )}
           </Flex>
