@@ -21,7 +21,7 @@
     "prepare": "pnpm build"
   },
   "dependencies": {
-    "@fuel-ts/math": "0.65.0",
+    "@fuel-ts/math": "0.67.0",
     "@graphql-tools/delegate": "^10.0.3",
     "@graphql-tools/schema": "^10.0.0",
     "@graphql-tools/stitch": "^9.0.3",
@@ -34,9 +34,9 @@
     "esbuild": "0.19.5",
     "ethers": "6.8.1",
     "express": "5.0.0-beta.1",
-    "fuels": "0.65.0",
+    "fuels": "0.67.0",
     "get-port": "7.0.0",
-    "graphql": "16.8.1",
+    "graphql": ">=16.8.1",
     "graphql-http": "^1.22.0",
     "graphql-playground-middleware-express": "^1.7.23",
     "graphql-request": "6.1.0",
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@babel/cli": "7.23.0",
-    "@babel/core": "^7.23.2",
+    "@babel/core": "^7.23.3",
     "@fuels/ts-config": "^0.1.1",
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/introspection": "4.0.0",
@@ -56,13 +56,14 @@
     "@graphql-codegen/typescript-graphql-request": "6.0.1",
     "@graphql-codegen/typescript-operations": "4.0.1",
     "@parcel/watcher": "2.3.0",
-    "@types/cors": "^2.8.15",
-    "@types/express": "^4.17.20",
-    "@types/lodash": "4.14.200",
-    "@types/node": "^20.8.10",
+    "@types/cors": "^2.8.16",
+    "@types/express": "^4.17.21",
+    "@types/lodash": "4.14.201",
+    "@types/node": "^20.9.0",
     "execa": "8.0.1",
     "graphql-codegen-typescript-common": "0.18.2",
     "graphql-codegen-typescript-mock-data": "3.5.1",
+    "ts-node": "10.9.1",
     "tsconfig-paths": "^4.2.0"
   }
 }
