@@ -38,123 +38,115 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
   const title = tx.title as string;
   return (
-    <Grid
-      gap="9"
-      className="flex flex-col px-4 tablet:grid tablet:grid-cols-6 desktop:px-0"
-    >
-      <Box className="tablet:col-span-2">
-        <VStack>
-          <CardInfo>
-            <EntityItem>
-              <EntityItem.Slot>
-                <TxIcon
-                  status={tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)}
-                  type={title}
-                  size="lg"
-                />
-              </EntityItem.Slot>
-              <EntityItem.Info title={title}>
-                <HStack gap="1">
-                  {tx.isPredicate && (
-                    <Badge color="blue" variant="ghost">
-                      Predicate
-                    </Badge>
-                  )}
-                  <Badge
-                    color={TX_INTENT_MAP[tx.statusType as string]}
-                    variant="ghost"
-                  >
-                    {tx.statusType}
+    <Grid className="grid-cols-1 gap-10 laptop:grid-cols-[300px_1fr] laptop:items-start">
+      <Box className="grid grid-cols-1 gap-4 tablet:grid-cols-2 tablet:gap-6 laptop:grid-cols-1">
+        <CardInfo>
+          <EntityItem>
+            <EntityItem.Slot>
+              <TxIcon
+                status={tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)}
+                type={title}
+                size="lg"
+              />
+            </EntityItem.Slot>
+            <EntityItem.Info title={title}>
+              <HStack gap="1">
+                {tx.isPredicate && (
+                  <Badge color="blue" variant="ghost">
+                    Predicate
                   </Badge>
-                </HStack>
-              </EntityItem.Info>
-            </EntityItem>
+                )}
+                <Badge
+                  color={TX_INTENT_MAP[tx.statusType as string]}
+                  variant="ghost"
+                >
+                  {tx.statusType}
+                </Badge>
+              </HStack>
+            </EntityItem.Info>
+          </EntityItem>
+        </CardInfo>
+        <CardInfo name={'Timestamp'} description={tx.time?.full}>
+          {tx.time?.fromNow}
+        </CardInfo>
+        {tx.blockHeight && (
+          <CardInfo name={'Block'}>
+            <Link
+              isExternal
+              as={NextLink}
+              href={`/block/${tx.blockHeight}`}
+              externalIcon={IconLink}
+              className="text-color"
+            >
+              #{tx.blockHeight}
+            </Link>
           </CardInfo>
-          <CardInfo name={'Timestamp'} description={tx.time?.full}>
-            {tx.time?.fromNow}
-          </CardInfo>
-          {tx.blockHeight && (
-            <CardInfo name={'Block'}>
-              <Link
-                isExternal
-                as={NextLink}
-                href={`/block/${tx.blockHeight}`}
-                externalIcon={IconLink}
-                className="text-color"
-              >
-                #{tx.blockHeight}
-              </Link>
-            </CardInfo>
-          )}
-          <CardInfo
-            name={'Gas spent'}
-            description={`Gas limit: ${bn(tx.gasLimit).format()}`}
-          >
-            {bn(tx.gasUsed).format()}
-          </CardInfo>
-        </VStack>
+        )}
+        <CardInfo
+          name={'Gas spent'}
+          description={`Gas limit: ${bn(tx.gasLimit).format()}`}
+        >
+          {bn(tx.gasUsed).format()}
+        </CardInfo>
       </Box>
-      <Box className="col-span-4">
+      <VStack>
         <VStack>
-          <VStack>
-            <Heading as="h2" size="5" className="leading-none">
-              Inputs
-            </Heading>
-            {hasInputs ? (
-              tx.groupedInputs?.map((input, i) => (
-                <TxInput
-                  key={getInputId(i, input as GroupedInput)}
-                  id={getInputId(i, input as GroupedInput)}
-                  input={input as GroupedInput}
-                />
-              ))
-            ) : (
-              <EmptyCard hideImage>
-                <EmptyCard.Title>No Inputs</EmptyCard.Title>
-                <EmptyCard.Description>
-                  This transaction does not have any inputs.
-                </EmptyCard.Description>
-              </EmptyCard>
-            )}
-          </VStack>
-          <Flex justify="center">
-            <Icon icon={IconArrowDown} size={30} color="text-muted" />
-          </Flex>
-          <TxScripts tx={tx} />
-          <Flex justify="center">
-            <Icon icon={IconArrowDown} size={30} color="text-muted" />
-          </Flex>
-          <VStack>
-            <Heading as="h2" size="5" className="leading-none">
-              Outputs
-            </Heading>
-            {hasOutputs ? (
-              tx.groupedOutputs?.map((output) => (
-                <TxOutput
-                  key={getOutputId(output as GroupedOutput)}
-                  output={output as GroupedOutput}
-                />
-              ))
-            ) : (
-              <EmptyCard hideImage>
-                <EmptyCard.Title>No Outputs</EmptyCard.Title>
-                <EmptyCard.Description>
-                  This transaction does not have any outputs.
-                </EmptyCard.Description>
-              </EmptyCard>
-            )}
-          </VStack>
+          <Heading as="h2" size="5" className="leading-none">
+            Inputs
+          </Heading>
+          {hasInputs ? (
+            tx.groupedInputs?.map((input) => (
+              <TxInput
+                key={getInputId(input as GroupedInput)}
+                input={input as GroupedInput}
+              />
+            ))
+          ) : (
+            <EmptyCard hideImage>
+              <EmptyCard.Title>No Inputs</EmptyCard.Title>
+              <EmptyCard.Description>
+                This transaction does not have any inputs.
+              </EmptyCard.Description>
+            </EmptyCard>
+          )}
         </VStack>
-      </Box>
+        <Flex justify="center">
+          <Icon icon={IconArrowDown} size={30} color="text-muted" />
+        </Flex>
+        <TxScripts tx={tx} />
+        <Flex justify="center">
+          <Icon icon={IconArrowDown} size={30} color="text-muted" />
+        </Flex>
+        <VStack>
+          <Heading as="h2" size="5" className="leading-none">
+            Outputs
+          </Heading>
+          {hasOutputs ? (
+            tx.groupedOutputs?.map((output) => (
+              <TxOutput
+                key={getOutputId(output as GroupedOutput)}
+                output={output as GroupedOutput}
+              />
+            ))
+          ) : (
+            <EmptyCard hideImage>
+              <EmptyCard.Title>No Outputs</EmptyCard.Title>
+              <EmptyCard.Description>
+                This transaction does not have any outputs.
+              </EmptyCard.Description>
+            </EmptyCard>
+          )}
+        </VStack>
+      </VStack>
     </Grid>
   );
 }
 
-function getInputId(i: number, input?: Maybe<GroupedInput>) {
-  if (!input) return `${i}`;
-  if (input.type === 'InputCoin') return `${input.assetId}${i}`;
-  if (input.type === 'InputContract') return `${input.contractId}${i}`;
-  return `${input.sender}${i}`;
+function getInputId(input?: Maybe<GroupedInput>) {
+  if (!input) return 0;
+  if (input.type === 'InputCoin') return input.assetId;
+  if (input.type === 'InputContract') return input.contractId;
+  return input.sender;
 }
 
 function getOutputId(output?: Maybe<GroupedOutput>) {
