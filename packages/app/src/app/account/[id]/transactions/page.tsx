@@ -1,5 +1,5 @@
 import { getAccountTransactions } from '~/systems/Account/actions/get-account-transactions';
-import { TxList } from '~/systems/Transaction/component/TxList/TxList';
+import { AccountTransactions } from '~/systems/Account/screens/AccountTransactions';
 
 type PageProps = {
   params: {
@@ -7,11 +7,11 @@ type PageProps = {
   };
 };
 
-export default async function AccountTransactions({
+export default async function AccountTransactionsPage({
   params: { id },
 }: PageProps) {
   const txs = await getAccountTransactions({ owner: id });
-  return <TxList hidePagination transactions={txs.edges} className="p-0" />;
+  return <AccountTransactions transactions={txs.edges} />;
 }
 
 // Revalidate cache every 10 seconds
