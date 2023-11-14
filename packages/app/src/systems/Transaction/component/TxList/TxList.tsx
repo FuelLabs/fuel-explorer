@@ -39,7 +39,7 @@ export function TxList({
           <Pagination
             page={page}
             className="mt-6 flex mobile:justify-end"
-            onChange={(page) => router.push(`/transactions/${page}`)}
+            onChange={(page) => router.push(`/transactions?page=${page}`)}
           />
         </Flex>
       )}

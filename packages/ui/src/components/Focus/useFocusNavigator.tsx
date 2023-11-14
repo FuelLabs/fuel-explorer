@@ -8,16 +8,16 @@ export function useFocusNavigator() {
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'ArrowRight') {
-      focusManager.focusNext();
+      focusManager?.focusNext();
     }
     if (e.key === 'ArrowLeft') {
-      focusManager.focusPrevious();
+      focusManager?.focusPrevious();
     }
     if (e.key === 'ArrowUp') {
-      focusManager.focusNext();
+      focusManager?.focusNext();
     }
     if (e.key === 'ArrowDown') {
-      focusManager.focusPrevious();
+      focusManager?.focusPrevious();
     }
   };
 

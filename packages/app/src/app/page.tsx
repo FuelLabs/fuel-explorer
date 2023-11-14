@@ -1,5 +1,4 @@
-import { redirect } from 'next/navigation';
-
 export default async function Home() {
-  return redirect('/transactions/1');
+  // we just return some null div here because the redirect now is made by middleware
+  return <div />;
 }
