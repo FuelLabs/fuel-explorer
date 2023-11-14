@@ -16,21 +16,3 @@ query searchQuery($search: String!) {
     id
   }
 }
-
-# query getSearchQuery($search: String!) {
-#   searchQuery(search: $search) {
-#     account {
-#       address
-#     }
-#     contract {
-#       id
-#     }
-#     block {
-#       id
-#       height
-#     }
-#     transactions {
-#       id
-#     }
-#   }
-# }
