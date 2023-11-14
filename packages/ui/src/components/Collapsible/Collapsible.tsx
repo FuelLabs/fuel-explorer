@@ -37,7 +37,7 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
   baseElement: Card,
   render: (
     Root,
-    { children, className, defaultOpened, variant = 'surface', ...props },
+    { children, className, defaultOpened, variant = 'surface', id, ...props },
   ) => {
     const classes = styles();
     const [opened, setOpened] = useState(Boolean(defaultOpened));
@@ -45,9 +45,19 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
       <ctx.Provider value={{ opened, setOpened, defaultOpened, variant }}>
         <Root
           {...props}
+          id={id}
           data-state={opened ? 'opened' : 'closed'}
           className={classes.root({ className })}
-          onClick={() => setOpened(!opened)}
+          onClick={(e) => {
+            console.log(`id`, id);
+            console.log(`e.target`, e.target);
+            console.log(`e.target.id`, (e.target as HTMLElement).id);
+            console.log(`e.currentTarget`, e.currentTarget);
+            console.log(`e.currentTarget.id`, e.currentTarget.id);
+            if (id === (e.target as HTMLElement).id) {
+              setOpened(!opened);
+            }
+          }}
         >
           {children}
         </Root>

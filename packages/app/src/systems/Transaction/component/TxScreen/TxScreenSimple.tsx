@@ -101,9 +101,10 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
               Inputs
             </Heading>
             {hasInputs ? (
-              tx.groupedInputs?.map((input) => (
+              tx.groupedInputs?.map((input, i) => (
                 <TxInput
-                  key={getInputId(input as GroupedInput)}
+                  key={getInputId(i, input as GroupedInput)}
+                  id={getInputId(i, input as GroupedInput)}
                   input={input as GroupedInput}
                 />
               ))
@@ -149,11 +150,11 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
   );
 }
 
-function getInputId(input?: Maybe<GroupedInput>) {
-  if (!input) return 0;
-  if (input.type === 'InputCoin') return input.assetId;
-  if (input.type === 'InputContract') return input.contractId;
-  return input.sender;
+function getInputId(i: number, input?: Maybe<GroupedInput>) {
+  if (!input) return `${i}`;
+  if (input.type === 'InputCoin') return `${input.assetId}${i}`;
+  if (input.type === 'InputContract') return `${input.contractId}${i}`;
+  return `${input.sender}${i}`;
 }
 
 function getOutputId(output?: Maybe<GroupedOutput>) {
