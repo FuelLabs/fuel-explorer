@@ -54,7 +54,7 @@ export const Address = createComponent<AddressProps, typeof HStack>({
           <Copyable value={address} className={classes.address()} iconSize={16}>
             {linkProps ? (
               <Link {...linkProps} className={cx('text-xs')}>
-                <Text className="text-muted text-[1em] text-link">
+                <Text className="text-[1em] text-link">
                   {isFull ? address : short}
                 </Text>
               </Link>

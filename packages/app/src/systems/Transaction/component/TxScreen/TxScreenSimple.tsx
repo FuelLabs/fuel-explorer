@@ -74,7 +74,7 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
             <Link
               as={NextLink}
               href={`/block/${tx.blockHeight}`}
-              className="text-color text-link"
+              className="text-link"
             >
               #{tx.blockHeight}
             </Link>
