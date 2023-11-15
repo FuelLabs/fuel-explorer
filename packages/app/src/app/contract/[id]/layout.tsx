@@ -1,8 +1,7 @@
 import { getContract } from '~/systems/Contract/actions/get-contract';
-import { ContractTitle } from '~/systems/Contract/components/ContractTitle';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { ContractLayout } from '~/systems/Contract/components/ContractLayout';
 
-export default async function ContractLayout({
+export default async function Layout({
   children,
   params: { id },
 }: {
@@ -11,12 +10,7 @@ export default async function ContractLayout({
 }) {
   const contract = await getContract({ id });
   if (!contract) return null;
-  return (
-    <Layout>
-      <ContractTitle contract={contract} className="mb-0 tablet:mb-8" />
-      {children}
-    </Layout>
-  );
+  return <ContractLayout contract={contract}>{children}</ContractLayout>;
 }
 
 // Revalidate cache every 10 seconds

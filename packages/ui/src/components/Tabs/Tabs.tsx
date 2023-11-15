@@ -29,7 +29,7 @@ export const TabsRoot = createComponent<TabsProps, typeof RT.Root>({
   baseElement: RT.Root,
   render: (
     Root,
-    { children, className, size = '1', variant = 'surface', ...props },
+    { children, className, size = '1', variant = 'line', ...props },
   ) => {
     const classes = styles({ size, variant });
     return (
@@ -175,7 +175,7 @@ const styles = tv({
     },
   ],
   defaultVariants: {
-    variant: 'surface',
+    variant: 'line',
     size: '1',
   },
 });
