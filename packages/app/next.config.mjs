@@ -4,6 +4,7 @@ const externals = [
   'isomorphic-ws',
   'node-fetch',
   '@whatwg/node-fetch',
+  'graphql',
   '@graphql-tools/delegate',
   '@graphql-tools/load',
   '@graphql-tools/schema',

@@ -2,9 +2,8 @@
 
 import type { GetLastTransactionsQuery } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
-import { Grid, cx } from '@fuels/ui';
+import { Flex, Grid, cx } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
-import { useWindowSize } from 'react-use';
 import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 
 import { TxCard } from '../TxCard/TxCard';
@@ -22,7 +21,6 @@ export function TxList({
   className,
 }: TxListProps) {
   const page = Number(currentPage);
-  const { width } = useWindowSize();
   const router = useRouter();
 
   return (
@@ -36,12 +34,14 @@ export function TxList({
           <TxCard key={transaction.node.id} transaction={transaction.node} />
         ))}
       </Grid>
-      {!hidePagination && width < 640 && (
-        <Pagination
-          page={page}
-          className="mt-6"
-          onChange={(page) => router.push(`/transactions/${page}`)}
-        />
+      {!hidePagination && (
+        <Flex className="mobile:justify-end">
+          <Pagination
+            page={page}
+            className="mt-6 flex mobile:justify-end"
+            onChange={(page) => router.push(`/transactions?page=${page}`)}
+          />
+        </Flex>
       )}
     </div>
   );
