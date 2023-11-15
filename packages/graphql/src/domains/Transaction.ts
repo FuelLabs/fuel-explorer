@@ -31,7 +31,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const { source: transaction } = this;
     if (transaction.isMint) return 'Mint';
     if (transaction.isCreate) return 'Contract Created';
-    return 'ContractCall';
+    return 'Script';
   }
 
   get time() {
