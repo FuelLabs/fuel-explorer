@@ -12,8 +12,10 @@ import {
 import { bn } from 'fuels';
 import Image from 'next/image';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
+import { formatZeroUnits } from '../../utils/format';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
@@ -31,8 +33,9 @@ export const BalanceItem = createComponent<
   render: (_, { item, ...props }) => {
     const assetId = item.assetId;
     const amount = item.amount;
-    const asset = useAsset(assetId);
     const { isMobile } = useBreakpoints();
+    const asset = useAsset(assetId);
+    const fuelAsset = useFuelAsset(asset);
     if (!asset) return null;
 
     const hasUTXOs = !!item.utxos?.length;
@@ -66,7 +69,17 @@ export const BalanceItem = createComponent<
             </VStack>
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format()} {asset.symbol}
+                {fuelAsset?.decimals ? (
+                  <>
+                    {bn(amount).format({
+                      precision: fuelAsset.decimals,
+                      units: fuelAsset.decimals,
+                    })}{' '}
+                    {asset.symbol}
+                  </>
+                ) : (
+                  formatZeroUnits(amount)
+                )}
               </Text>
             )}
           </Flex>

@@ -16,6 +16,8 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -36,8 +38,9 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     const assetId = output.assetId;
     const amount = output.totalAmount;
     const asset = useAsset(assetId);
-
+    const fuelAsset = useFuelAsset(asset);
     if (!asset) return null;
+
     return (
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
@@ -84,7 +87,16 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center" className="hidden tablet:block">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format(isMobile ? { precision: 3 } : undefined)}{' '}
+                {fuelAsset?.decimals ? (
+                  <>
+                    {bn(amount).format({
+                      precision: isMobile ? 3 : undefined,
+                      units: fuelAsset.decimals,
+                    })}{' '}
+                  </>
+                ) : (
+                  formatZeroUnits(amount)
+                )}
                 {asset.symbol}
               </Text>
             )}

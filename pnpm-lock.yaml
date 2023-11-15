@@ -165,8 +165,8 @@ importers:
         specifier: 0.13.7
         version: 0.13.7(fuels@0.67.0)
       '@fuels/assets':
-        specifier: 0.1.1
-        version: 0.1.1
+        specifier: 0.1.3
+        version: 0.1.3
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -3421,8 +3421,8 @@ packages:
       - dexie
     dev: false
 
-  /@fuels/assets@0.1.1:
-    resolution: {integrity: sha512-1nvpA6xUN1jqk4MH1Pas8XL3wofvRPgFis68XSQfmHOchkRNA82lwoiUaCJ+NlLnQC+3YVVuonwYuWO9dTjkuQ==}
+  /@fuels/assets@0.1.3:
+    resolution: {integrity: sha512-8vFsASyp6RCFK2XxoEzUzgHxOUNklpHaqx+FoxlgQILSNCDzla2mwWHJLgJ3Exd2FU2+5UOqXJh3wIkmNMWoyA==}
     dev: false
 
   /@fuels/eslint-plugin@0.1.1(eslint@8.53.0)(typescript@5.2.2):
