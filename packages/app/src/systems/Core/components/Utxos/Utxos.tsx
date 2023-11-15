@@ -40,7 +40,6 @@ function UtxoItem({ item, style, assetId }: UtxoItemProps) {
 
   const classes = styles();
   const trim = isMobile ? 8 : 16;
-  console.log(`fuelAsset?.decimals`, fuelAsset?.decimals);
   return (
     <Box style={style} className={classes.item()}>
       <Address
