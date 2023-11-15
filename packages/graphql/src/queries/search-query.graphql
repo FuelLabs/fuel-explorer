@@ -1,0 +1,20 @@
+query searchQuery($search: String!) {
+  search(query: $search) {
+    account {
+      address
+      transactions {
+        id
+      }
+    }
+    contract {
+      id
+    }
+    block {
+      id
+      height
+    }
+    transaction {
+      id
+    }
+  }
+}
