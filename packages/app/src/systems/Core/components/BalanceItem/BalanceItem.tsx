@@ -1,5 +1,4 @@
 import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
-import { CHAIN_IDS, getAssetFuel } from '@fuels/assets';
 import type { BaseProps } from '@fuels/ui';
 import {
   createComponent,
@@ -12,10 +11,11 @@ import {
 } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
-import { useMemo } from 'react';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
+import { formatZeroUnits } from '../../utils/format';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
@@ -35,12 +35,9 @@ export const BalanceItem = createComponent<
     const amount = item.amount;
     const { isMobile } = useBreakpoints();
     const asset = useAsset(assetId);
+    const fuelAsset = useFuelAsset(asset);
     if (!asset) return null;
 
-    const fuelAsset = useMemo(
-      () => getAssetFuel(asset, CHAIN_IDS.fuel.beta4),
-      [asset.assetId, asset.networks.length],
-    );
     const hasUTXOs = !!item.utxos?.length;
 
     return (
@@ -81,7 +78,7 @@ export const BalanceItem = createComponent<
                     {asset.symbol}
                   </>
                 ) : (
-                  amount
+                  formatZeroUnits(amount)
                 )}
               </Text>
             )}
