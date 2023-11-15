@@ -9,16 +9,6 @@ type Args = {
 };
 
 export class SearchDomain extends Domain<any, Args> {
-  // static createResolvers() {
-  //   const domain = new SearchDomain();
-  //   return {
-  //     ...domain.createResolver('account', 'getAccount'),
-  //     ...domain.createResolver('contractId', 'getContractId'),
-  //     ...domain.createResolver('blockInfo', 'getBlockInfo'),
-  //     ...domain.createResolver('transactionId', 'getTransactionId'),
-  //   };
-  // }
-
   static createResolvers() {
     const domain = new SearchDomain();
     return {
