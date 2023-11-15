@@ -17,6 +17,7 @@ import type { TxIconType, TxStatus } from '../../types';
 
 const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   'Contract Created': IconCode,
+  Script: IconCode,
   ContractCall: IconCode,
   Mint: IconCoins,
   Transfer: IconTransfer,
