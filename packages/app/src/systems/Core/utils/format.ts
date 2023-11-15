@@ -8,6 +8,6 @@ import { bn } from 'fuels';
  * @returns The formatted amount.
  */
 export function formatZeroUnits(amount: BNInput) {
-  const formatted = bn(amount).mul(10).format({ units: 1 });
+  const formatted = bn(amount).mul(10).format({ units: 1, precision: 0 });
   return formatted;
 }
