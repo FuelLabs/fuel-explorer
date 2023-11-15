@@ -5,7 +5,7 @@ import plugin from 'tailwindcss/plugin';
 export default {
   presets: [preset],
   content: [
-    '../ui/**/*.{js,jsx,ts,tsx}',
+    '../ui/src/**/*.{js,jsx,ts,tsx}',
     '../ui/tailwind.config.ts',
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
