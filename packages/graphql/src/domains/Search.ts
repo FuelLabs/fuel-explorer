@@ -5,31 +5,54 @@ import { parseAddressParam } from '../utils/address';
 import { Domain } from '../utils/domain';
 
 type Args = {
-  address: string;
-  id: string;
+  query: string;
 };
 
 export class SearchDomain extends Domain<any, Args> {
+  // static createResolvers() {
+  //   const domain = new SearchDomain();
+  //   return {
+  //     ...domain.createResolver('account', 'getAccount'),
+  //     ...domain.createResolver('contractId', 'getContractId'),
+  //     ...domain.createResolver('blockInfo', 'getBlockInfo'),
+  //     ...domain.createResolver('transactionId', 'getTransactionId'),
+  //   };
+  // }
+
   static createResolvers() {
     const domain = new SearchDomain();
     return {
-      ...domain.createResolver('account', 'getAccount'),
-      ...domain.createResolver('contractId', 'getContractId'),
-      ...domain.createResolver('blockInfo', 'getBlockInfo'),
-      ...domain.createResolver('transactionId', 'getTransactionId'),
+      ...domain.createResolver('search', 'getSearch'),
     };
   }
 
-  async getAccount() {
-    const { address } = this.args;
-    const parsedAddress = parseAddressParam(address);
+  async getSearch() {
+    const { query } = this.args;
+    const parsedQuery = parseAddressParam(query);
     // TODO use last 5 once reverse pagination is supported
-    const query = gql`
-      query getTransactions($owner: Address!) {
+    const gqlQuery = gql`
+      query fuelCoreQuery(
+        $owner: Address!
+        $contractId: ContractId!
+        $blockId: BlockId!
+        $transactionId: TransactionId!
+      ) {
         transactionsByOwner(owner: $owner, first: 5) {
           nodes {
             id
           }
+        }
+        contract(id: $contractId) {
+          id
+        }
+        block(id: $blockId) {
+          id
+          header {
+            height
+          }
+        }
+        transaction(id: $transactionId) {
+          id
         }
       }
     `;
@@ -40,97 +63,69 @@ export class SearchDomain extends Domain<any, Args> {
           id: string;
         }[];
       };
-    };
-    const data = await this.query<Result>(query, { owner: parsedAddress });
-    if (data.transactionsByOwner.nodes.length) {
-      return {
-        address: parsedAddress,
-        transactions: data.transactionsByOwner.nodes.map((node) => {
-          return { id: node.id };
-        }),
-      };
-    }
-    return null;
-  }
-
-  async getContractId() {
-    const { id } = this.args;
-    const contractId = parseAddressParam(id);
-    const query = gql`
-      query getContract($id: ContractId!) {
-        contract(id: $id) {
-          id
-        }
-      }
-    `;
-
-    type Result = {
       contract: {
         id: string;
       };
-    };
-    const data = await this.query<Result>(query, { id: contractId });
-    if (data.contract) {
-      return {
-        id: data.contract.id,
-      };
-    }
-    return null;
-  }
-
-  async getBlockInfo() {
-    const { id } = this.args;
-    const blockId = parseAddressParam(id);
-    const query = gql`
-      query getBlockInfo($id: BlockId!) {
-        block(id: $id) {
-          id
-          header {
-            height
-          }
-        }
-      }
-    `;
-    type Result = {
       block: {
         id: string;
         header: {
           height: string;
         };
       };
-    };
-    const data = await this.query<Result>(query, { id: blockId });
-    if (data.block) {
-      return {
-        id: data.block.id,
-        height: data.block.header.height,
-      };
-    }
-    return null;
-  }
-
-  async getTransactionId() {
-    const { id } = this.args;
-    const parsedId = parseAddressParam(id);
-    const query = gql`
-      query getTransaction($id: TransactionId!) {
-        transaction(id: $id) {
-          id
-        }
-      }
-    `;
-
-    type Result = {
       transaction: {
         id: string;
       };
     };
-    const data = await this.query<Result>(query, { id: parsedId });
-    if (data.transaction) {
-      return {
-        id: data.transaction.id,
+
+    const data = await this.query<Result>(gqlQuery, {
+      owner: parsedQuery,
+      contractId: parsedQuery,
+      blockId: parsedQuery,
+      transactionId: parsedQuery,
+    });
+    const result: {
+      account: null | {
+        address: string;
+        transactions: { id: string }[];
+      };
+      contract: null | {
+        id: string;
+      };
+      block: null | {
+        id: string;
+        height: string;
+      };
+      transaction: null | {
+        id: string;
+      };
+    } = {
+      account: null,
+      contract: null,
+      block: null,
+      transaction: null,
+    };
+
+    if (data.transactionsByOwner.nodes.length) {
+      result.account = {
+        address: parsedQuery,
+        transactions: data.transactionsByOwner.nodes.map((node) => {
+          return { id: node.id };
+        }),
       };
     }
-    return null;
+
+    if (data.contract) {
+      result.contract = { id: data.contract.id };
+    }
+
+    if (data.block) {
+      result.block = { id: data.block.id, height: data.block.header.height };
+    }
+
+    if (data.transaction) {
+      result.transaction = { id: data.transaction.id };
+    }
+
+    return result;
   }
 }

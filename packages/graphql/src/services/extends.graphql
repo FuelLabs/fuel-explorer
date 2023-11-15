@@ -139,9 +139,13 @@ type SearchTransaction {
   id: TransactionId
 }
 
+type SearchResult {
+  account: SearchAccount
+  contract: SearchContract
+  block: SearchBlock
+  transaction: SearchTransaction
+}
+
 extend type Query {
-  account(address: String!): SearchAccount
-  contractId(id: String!): SearchContract
-  blockInfo(id: String!): SearchBlock
-  transactionId(id: String!): SearchTransaction
+  search(query: String!): SearchResult
 }
