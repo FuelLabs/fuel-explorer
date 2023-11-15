@@ -18,15 +18,16 @@ export function AccountLayout({
   const { isLaptop } = useBreakpoints();
   return (
     <Layout>
-      <VStack>
-        <PageTitle icon={<IconHash size={20} stroke={1.2} />}>
+      <VStack className="gap-4 laptop:gap-8">
+        <PageTitle
+          icon={<IconHash size={20} stroke={1.2} />}
+          className="border-b-gray-3"
+        >
           Account
           <Address full={isLaptop} value={id} />
         </PageTitle>
         <AccountTabs accountId={id} isPredicate={!!bytecode} />
-        <Box as="section" className="mt-2 laptop:mt-8">
-          {children}
-        </Box>
+        <Box as="section">{children}</Box>
       </VStack>
     </Layout>
   );

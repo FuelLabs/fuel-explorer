@@ -1,5 +1,6 @@
 import { BalanceDomain } from '../domains/Balance';
 import { BlockDomain } from '../domains/Block';
+import { SearchDomain } from '../domains/Search';
 import { TransactionDomain } from '../domains/Transaction';
 import { TransactionConnectionDomain } from '../domains/TransactionConnection';
 
@@ -11,4 +12,5 @@ export const extendsResolvers = {
   Transaction: TransactionDomain.createResolvers(),
   TransactionConnection: TransactionConnectionDomain.createResolvers(),
   Block: BlockDomain.createResolvers(),
+  Query: SearchDomain.createResolvers(),
 };

@@ -1,3 +1,4 @@
+'use client';
 import type {
   ContractBalanceConnectionItemFragment,
   Maybe,
@@ -8,18 +9,18 @@ import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 type TabAssetsProps = {
-  contractBalances?: Maybe<ContractBalanceConnectionItemFragment>;
+  balances?: Maybe<ContractBalanceConnectionItemFragment>;
 };
 
-export function TabAssets({ contractBalances }: TabAssetsProps) {
-  const nonZeroBalances = contractBalances?.edges.filter(
+export function ContractAssets({ balances }: TabAssetsProps) {
+  const nonZeroBalances = balances?.edges.filter(
     (contractBalance) => !bn(contractBalance.node.amount).isZero(),
   );
 
   return (
     <VStack gap="4" className="mt-1">
       {!nonZeroBalances?.length && (
-        <EmptyCard hideImage>
+        <EmptyCard>
           <EmptyCard.Title>No Assets</EmptyCard.Title>
           <EmptyCard.Description>
             This contract does not have any assets.
@@ -49,11 +50,7 @@ export function ContractBalanceItem({
   amount,
   assetId,
 }: ContractBalanceItemProps) {
-  const balanceItem = {
-    assetId,
-    amount,
-  };
-
+  const balanceItem = { assetId, amount };
   return (
     <BalanceItem
       key={balanceItem.assetId + balanceItem.amount}

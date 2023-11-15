@@ -4,6 +4,8 @@ import { Heading, Badge, HStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 export type PageTitleProps = BaseProps<{
+  as?: string;
+  size?: '1' | '2' | '3';
   children: React.ReactNode;
   icon?: React.ReactNode;
   rightElement?: React.ReactNode;
@@ -11,13 +13,15 @@ export type PageTitleProps = BaseProps<{
 
 export function PageTitle({
   children,
+  as = 'h2',
+  size = '1',
   icon,
   rightElement,
   className,
 }: PageTitleProps) {
-  const classes = styles();
+  const classes = styles({ size });
   return (
-    <Heading as="h2" className={classes.root({ className })}>
+    <Heading as={as} className={classes.root({ className })}>
       {icon && (
         <Badge color="gray" size="2" className={classes.icon()}>
           {icon}
@@ -34,9 +38,9 @@ export function PageTitle({
 const styles = tv({
   slots: {
     root: [
-      'flex flex-wrap items-center justify-between gap-2',
-      'border-border border-b pb-2',
-      'tablet:flex-nowrap tablet:pb-4 tablet:gap-4',
+      'flex items-center justify-between gap-2',
+      'border-border border-b',
+      'tablet:flex-nowrap tablet:gap-4',
     ],
     icon: ['h-full flex-shrink-0 px-2', 'tablet:self-start tablet:mt-2'],
     title: [
@@ -45,5 +49,24 @@ const styles = tv({
       'text-[1.7rem] tablet:text-[2rem] laptop:text-[2.2rem]',
       'tablet:order-none tablet:flex-1 tablet:justify-start',
     ],
+  },
+  variants: {
+    size: {
+      '1': {
+        root: 'flex-wrap pb-2 tablet:pb-4',
+        title: 'text-[1.7rem] tablet:text-[2rem] laptop:text-[2.2rem]',
+      },
+      '2': {
+        title: 'text-[1.4rem] tablet:text-[1.7rem] laptop:text-[1.9rem]',
+        root: 'pb-2 tablet:pb-4',
+      },
+      '3': {
+        title: 'text-[1.2rem] tablet:text-[1.4rem] laptop:text-[1.6rem]',
+        root: 'pb-2',
+      },
+    },
+  },
+  defaultVariants: {
+    size: '1',
   },
 });

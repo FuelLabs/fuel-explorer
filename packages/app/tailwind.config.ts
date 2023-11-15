@@ -5,6 +5,8 @@ import plugin from 'tailwindcss/plugin';
 export default {
   presets: [preset],
   content: [
+    '../ui/src/**/*.{js,jsx,ts,tsx}',
+    '../ui/tailwind.config.ts',
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
   ],
@@ -19,7 +21,4 @@ export default {
       });
     }),
   ],
-  corePlugins: {
-    preflight: false,
-  },
 } satisfies Config;
