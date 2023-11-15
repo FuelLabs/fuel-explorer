@@ -47,6 +47,7 @@ export class SearchDomain extends Domain<any, Args> {
       }
     `;
 
+    /** @todo: Get types from the query directly instead of creating custom types */
     type Result = {
       transactionsByOwner: {
         nodes: {
