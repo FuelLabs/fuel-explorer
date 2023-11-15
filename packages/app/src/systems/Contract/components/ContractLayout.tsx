@@ -1,6 +1,6 @@
 'use client';
 import type { ContractItemFragment } from '@fuel-explorer/graphql';
-import { Address, Box, useBreakpoints } from '@fuels/ui';
+import { Address, Box, VStack, useBreakpoints } from '@fuels/ui';
 import { IconChecklist, IconCoins, IconCodeAsterix } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -25,33 +25,33 @@ export function ContractLayout({
 
   return (
     <Layout>
-      <PageTitle
-        icon={<IconChecklist size={24} stroke={1.2} />}
-        className="border-b-gray-3"
-      >
-        Contract
-        <Address value={contract?.id} full={isLaptop} fixed="b256" />
-      </PageTitle>
-      <NavigationTab
-        defaultValue={defaultValue}
-        items={[
-          {
-            value: 'assets',
-            label: 'Assets',
-            icon: IconCoins,
-            onClick: () => router.push(`/contract/${contract?.id}`),
-          },
-          {
-            value: 'code',
-            label: 'Source Code',
-            icon: IconCodeAsterix,
-            onClick: () => router.push(`/contract/${contract?.id}/code`),
-          },
-        ]}
-      />
-      <Box as="section" className="mt-2 laptop:mt-8">
-        {children}
-      </Box>
+      <VStack className="gap-4 laptop:gap-8">
+        <PageTitle
+          icon={<IconChecklist size={24} stroke={1.2} />}
+          className="border-b-gray-3"
+        >
+          Contract
+          <Address value={contract?.id} full={isLaptop} fixed="b256" />
+        </PageTitle>
+        <NavigationTab
+          defaultValue={defaultValue}
+          items={[
+            {
+              value: 'assets',
+              label: 'Assets',
+              icon: IconCoins,
+              onClick: () => router.push(`/contract/${contract?.id}`),
+            },
+            {
+              value: 'code',
+              label: 'Source Code',
+              icon: IconCodeAsterix,
+              onClick: () => router.push(`/contract/${contract?.id}/code`),
+            },
+          ]}
+        />
+        <Box as="section">{children}</Box>
+      </VStack>
     </Layout>
   );
 }
