@@ -3,7 +3,7 @@ import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
 import { Focus, Icon, IconButton, Tooltip, Input, Text } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
-import { search } from '~/systems/Home/actions/search';
+import { useSearch } from '~/systems/Home/components/SearchProvider/SearchProvider';
 
 import { cx } from '../../utils/cx';
 
@@ -23,8 +23,8 @@ export async function SearchInput({
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
   const inputRef = useRef<HTMLInputElement>(null);
-  const searchResult = await search({ query: value });
-  console.log(`searchResult`, searchResult);
+  const search = useSearch();
+  console.log(`search`, search);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
