@@ -1,4 +1,5 @@
 'use client';
+
 import type { ContractItemFragment } from '@fuel-explorer/graphql';
 import { Address, Box, VStack, useBreakpoints } from '@fuels/ui';
 import { IconChecklist, IconCoins, IconCodeAsterix } from '@tabler/icons-react';
@@ -35,6 +36,7 @@ export function ContractLayout({
         </PageTitle>
         <NavigationTab
           defaultValue={defaultValue}
+          value={defaultValue}
           items={[
             {
               value: 'assets',

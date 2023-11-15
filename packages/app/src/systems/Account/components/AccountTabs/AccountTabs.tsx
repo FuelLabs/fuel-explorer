@@ -27,6 +27,7 @@ export function AccountTabs({
     <NavigationTab
       {...props}
       defaultValue={defaultValue}
+      value={defaultValue}
       items={[
         {
           icon: IconCoins,
