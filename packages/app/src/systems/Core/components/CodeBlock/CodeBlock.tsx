@@ -1,5 +1,5 @@
 import { Button, Card, ScrollArea, Text } from '@fuels/ui';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconChevronUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
@@ -43,9 +43,7 @@ export function CodeBlock({ value, type = 'raw', title }: CodeBlockProps) {
       <ScrollArea className={classes.cardMiddle()} scrollbars="vertical">
         {type === 'json' && (
           <JsonViewer
-            data={
-              typeof value === 'object' ? getCopyValue() : JSON.parse(value)
-            }
+            data={typeof value === 'object' ? value : JSON.parse(value)}
           />
         )}
         {type === 'raw' && (
@@ -59,7 +57,7 @@ export function CodeBlock({ value, type = 'raw', title }: CodeBlockProps) {
           variant="link"
           size="1"
           color="gray"
-          rightIcon={IconChevronDown}
+          rightIcon={IconChevronUp}
           onClick={() => setCompact(!compact)}
         >
           Show {compact ? 'more' : 'less'}
