@@ -1,6 +1,6 @@
+import { redirect } from 'next/navigation';
 import { getContract } from '~/systems/Contract/actions/get-contract';
-import { ContractScreen } from '~/systems/Contract/screens/ContractScreen/ContractScreen';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
 type ContractProps = {
   params: {
@@ -8,16 +8,12 @@ type ContractProps = {
   };
 };
 
-export default async function ContractMinted({
+export default async function ContractCodePage({
   params: { id = null },
 }: ContractProps) {
   const contract = await getContract({ id });
-
-  return (
-    <Layout>
-      <ContractScreen contract={contract} />
-    </Layout>
-  );
+  if (!contract) return redirect('/');
+  return <CodeBlock value={contract.bytecode} title="Bytecode" />;
 }
 
 // Revalidate cache every 10 seconds

@@ -9,9 +9,9 @@ const desktop = `(min-width: ${breakpoints.desktop}px)`;
 
 export function useBreakpoints() {
   const isMobile = useMedia(mobile, true);
-  const isTablet = useMedia(tablet, false);
-  const isLaptop = useMedia(laptop, false);
-  const isDesktop = useMedia(desktop, false);
+  const isTablet = useMedia(tablet, true);
+  const isLaptop = useMedia(laptop, true);
+  const isDesktop = useMedia(desktop, true);
   return {
     isMobile,
     isTablet,

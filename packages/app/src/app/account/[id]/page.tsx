@@ -1,5 +1,5 @@
 import { getBalances } from '~/systems/Account/actions/get-balances';
-import { AccountScreen } from '~/systems/Account/screens/AccountScreen/AccountScreen';
+import { AccountBalances } from '~/systems/Account/screens/AccountBalances';
 
 type AccountProps = {
   params: {
@@ -9,7 +9,7 @@ type AccountProps = {
 
 export default async function Account({ params: { id = null } }: AccountProps) {
   const balances = await getBalances({ owner: id });
-  return <AccountScreen balances={balances} />;
+  return <AccountBalances balances={balances} />;
 }
 
 // Revalidate cache every 10 seconds
