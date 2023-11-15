@@ -26,7 +26,8 @@ export type TxIconType =
   | TxType
   | TxAccountType
   | 'Message'
-  | 'Contract Created';
+  | 'Contract Created'
+  | 'Script';
 
 export const TX_TYPES = Object.keys({ ...TxTypeEnum, ...TxAccountTypeEnum });
 export const TX_STATUS = Object.keys(TxStatusEnum);
