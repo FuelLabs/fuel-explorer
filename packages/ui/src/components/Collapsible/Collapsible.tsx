@@ -1,6 +1,14 @@
 import type { TextProps } from '@radix-ui/themes/dist/cjs/components/text';
 import { IconChevronDown } from '@tabler/icons-react';
-import { createContext, useContext, useState } from 'react';
+import type { ReactElement, ReactNode, SyntheticEvent } from 'react';
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  useContext,
+  useState,
+} from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
@@ -32,6 +40,32 @@ export type CollapsibleContentProps = CardBodyProps;
 export type CollapsibleTitleProps = TextProps;
 export type CollapsibleBodyProps = BoxProps;
 
+function stopPropagationInChildren(children: ReactNode): ReactNode {
+  return Children.map(children, (child) => {
+    if (!isValidElement(child)) {
+      return child;
+    }
+    if (child.props.children) {
+      child = cloneElement(child as ReactElement, {
+        children: stopPropagationInChildren(child.props.children),
+      });
+    }
+    console.log(`child`, child);
+    console.log(`child.type`, child.type);
+    console.log(`child.key`, child.key);
+    console.log('three', child.props);
+    if (child.props.onClick) {
+      console.log('on click', child.props.onClick);
+      const oldOnClick = child.props.onClick;
+      child.props.onClick = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        oldOnClick();
+      };
+    }
+    return child;
+  });
+}
+
 export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
   id: 'Collapsible',
   baseElement: Card,
@@ -41,6 +75,9 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
   ) => {
     const classes = styles();
     const [opened, setOpened] = useState(Boolean(defaultOpened));
+
+    const customChildren = stopPropagationInChildren(children);
+
     return (
       <ctx.Provider value={{ opened, setOpened, defaultOpened, variant }}>
         <Root
@@ -51,7 +88,7 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
             setOpened(!opened);
           }}
         >
-          {children}
+          {customChildren}
         </Root>
       </ctx.Provider>
     );

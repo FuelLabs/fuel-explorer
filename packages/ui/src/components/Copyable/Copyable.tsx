@@ -1,6 +1,5 @@
 import { Tooltip } from '@radix-ui/themes';
 import { IconCopy } from '@tabler/icons-react';
-import type { SyntheticEvent } from 'react';
 
 import { createComponent } from '../../utils/component';
 import type { Colors } from '../../utils/types';
@@ -60,10 +59,7 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
             iconSize={iconSize}
             iconStroke={iconStroke}
             variant="link"
-            onClick={(e: SyntheticEvent) => {
-              e.stopPropagation();
-              handleCopy();
-            }}
+            onClick={handleCopy}
           />
         </Tooltip>
       </Box>
