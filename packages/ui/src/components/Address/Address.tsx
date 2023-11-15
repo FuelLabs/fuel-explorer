@@ -9,6 +9,7 @@ import { HStack } from '../Box';
 import { Copyable } from '../Copyable';
 import type { LinkProps } from '../Link';
 import { Link } from '../Link';
+import { Text } from '../Text';
 
 import type { UseFuelAddressOpts } from './useFuelAddress';
 import { useFuelAddress } from './useFuelAddress';
@@ -53,12 +54,14 @@ export const Address = createComponent<AddressProps, typeof HStack>({
           <Copyable value={address} className={classes.address()} iconSize={16}>
             {linkProps ? (
               <Link {...linkProps} className={cx('text-xs')}>
-                <span className="text-muted hover:text-brand">
+                <Text className="text-muted text-[1em] text-link">
                   {isFull ? address : short}
-                </span>
+                </Text>
               </Link>
             ) : (
-              <span className="text-muted">{isFull ? address : short}</span>
+              <Text className="text-muted text-[1em]">
+                {isFull ? address : short}
+              </Text>
             )}
           </Copyable>
         </HStack>

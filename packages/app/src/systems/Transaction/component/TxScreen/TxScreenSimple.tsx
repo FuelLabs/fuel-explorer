@@ -17,7 +17,7 @@ import {
   Link,
   VStack,
 } from '@fuels/ui';
-import { IconArrowDown, IconLink } from '@tabler/icons-react';
+import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
@@ -72,11 +72,9 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
         {tx.blockHeight && (
           <CardInfo name={'Block'}>
             <Link
-              isExternal
               as={NextLink}
               href={`/block/${tx.blockHeight}`}
-              externalIcon={IconLink}
-              className="text-color hover:text-brand"
+              className="text-color text-link"
             >
               #{tx.blockHeight}
             </Link>

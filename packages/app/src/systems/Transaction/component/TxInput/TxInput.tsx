@@ -144,10 +144,12 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
             <VStack gap="1" className="ml-4">
               <Address
                 value={sender}
+                prefix="Sender:"
                 linkProps={{ as: NextLink, href: `/account/${sender}` }}
               />
               <Address
                 value={recipient}
+                prefix="Recipient:"
                 linkProps={{ as: NextLink, href: `/account/${recipient}` }}
               />
             </VStack>
