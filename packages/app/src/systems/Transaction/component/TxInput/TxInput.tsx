@@ -83,7 +83,10 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               className="text-white"
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
             >
-              <Address.Link as={NextLink} href={`/account/${input.owner}`}>
+              <Address.Link
+                as={NextLink}
+                href={`/account/${input.owner}/assets`}
+              >
                 View Account
               </Address.Link>
             </Address>
