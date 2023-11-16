@@ -1,5 +1,5 @@
 import { TxListSkeleton } from '~/systems/Transaction/component/TxList/TxListSkeleton';
 
-export default async function Loading() {
+export default function Loading() {
   return <TxListSkeleton />;
 }

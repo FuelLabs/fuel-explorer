@@ -1,3 +1,4 @@
+'use client';
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import { VStack, Grid, Address, Icon } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';

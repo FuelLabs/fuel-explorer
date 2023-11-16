@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { TX_MOCK } from '../../__mocks__/tx';
 
-import { TxCard, TxCardLoader } from './TxCard';
+import { TxCard } from './TxCard';
 
 const meta: Meta<typeof TxCard> = {
   title: 'Transaction/TxCard',
@@ -17,5 +17,5 @@ export const Usage: Story = {
 };
 
 export const Loader: Story = {
-  render: () => <TxCardLoader className="w-[350px]" />,
+  render: () => <TxCard.Skeleton className="w-[350px]" />,
 };

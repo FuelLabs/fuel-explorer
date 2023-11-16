@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getContract } from '~/systems/Contract/actions/get-contract';
-import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
+import { ContractCode } from '~/systems/Contract/screens/ContractCode';
 
 type ContractProps = {
   params: {
@@ -13,7 +13,7 @@ export default async function ContractCodePage({
 }: ContractProps) {
   const contract = await getContract({ id });
   if (!contract) return redirect('/');
-  return <CodeBlock value={contract.bytecode} title="Bytecode" />;
+  return <ContractCode bytecode={contract.bytecode} />;
 }
 
 // Revalidate cache every 10 seconds

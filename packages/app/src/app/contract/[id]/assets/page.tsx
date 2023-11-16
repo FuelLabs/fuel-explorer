@@ -3,7 +3,7 @@ import {
   getContract,
   getContractBalances,
 } from '~/systems/Contract/actions/get-contract';
-import { ContractAssets } from '~/systems/Contract/components/ContractAssets';
+import { ContractAssets } from '~/systems/Contract/screens/ContractAsset';
 
 type ContractProps = {
   params: {

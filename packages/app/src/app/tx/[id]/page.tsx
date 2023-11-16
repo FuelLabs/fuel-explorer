@@ -1,4 +1,4 @@
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { redirect } from 'next/navigation';
 import { getTx } from '~/systems/Transaction/actions/get-tx';
 import { TxScreen } from '~/systems/Transaction/screens/TxScreen/TxScreen';
 
@@ -12,11 +12,8 @@ export default async function Transaction({
   params: { id = null },
 }: TransactionProps) {
   const tx = await getTx({ id });
-  return (
-    <Layout>
-      <TxScreen transaction={tx} />
-    </Layout>
-  );
+  if (!tx) return redirect('/');
+  return <TxScreen transaction={tx} />;
 }
 
 // Revalidate cache every 10 seconds
