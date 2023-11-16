@@ -12,25 +12,22 @@ import {
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
-import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
-const ICON_SIZE = 36;
-
 export type TxOutputProps = CardProps & {
   output: GroupedOutput;
-  title?: string;
 };
 
 const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
-  render: (_, { output, title, ...props }) => {
+  render: (_, { output, ...props }) => {
     const classes = styles();
     const { isMobile } = useBreakpoints();
 
@@ -44,45 +41,16 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     return (
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
-          <HStack align="center">
-            {asset.icon ? (
-              <Image
-                src={asset.icon as string}
-                width={ICON_SIZE}
-                height={ICON_SIZE}
-                alt={asset.name}
-              />
-            ) : (
-              <TxIcon type="Mint" status="Submitted" />
-            )}
-            <VStack gap="0">
-              <Text className="flex items-center gap-2 text-md font-medium">
-                {title || asset.name}
-                {asset.symbol && (
-                  <Text className="text-muted text-sm">({asset.symbol})</Text>
-                )}
-                <Address
-                  value={output.assetId}
-                  fixed="b256"
-                  /*
-                   * I'm just hidding this until we get the output/input design merged
-                   * https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
-                   */
-                  className="hidden tablet:block"
-                />
-              </Text>
-              <HStack>
-                <Address
-                  prefix="To:"
-                  value={output.to || ''}
-                  linkProps={{
-                    as: NextLink,
-                    href: `/account/${output.to}/assets`,
-                  }}
-                />
-              </HStack>
-            </VStack>
-          </HStack>
+          <AssetItem assetId={assetId}>
+            <Address
+              prefix="To:"
+              value={output.to || ''}
+              linkProps={{
+                as: NextLink,
+                href: `/account/${output.to}/assets`,
+              }}
+            />
+          </AssetItem>
           {/*
             I'm just hidding this until we get the output/input design merged 
             https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
@@ -200,14 +168,12 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
 });
 
 export function TxOutput({ output, ...props }: TxOutputProps) {
-  if (output.type === GroupedOutputType.CoinOutput) {
+  if (
+    output.type === GroupedOutputType.CoinOutput ||
+    output.type === GroupedOutputType.VariableOutput ||
+    output.type === GroupedOutputType.ChangeOutput
+  ) {
     return <TxOutputCoin output={output} {...props} />;
-  }
-  if (output.type === GroupedOutputType.VariableOutput) {
-    return <TxOutputCoin output={output} {...props} title="Variable Output" />;
-  }
-  if (output.type === GroupedOutputType.ChangeOutput) {
-    return <TxOutputCoin output={output} {...props} title="Change Output" />;
   }
   if (output.type === GroupedOutputType.ContractOutput) {
     return <TxOutputContract output={output} {...props} />;
