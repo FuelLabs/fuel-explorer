@@ -44,14 +44,7 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
 
     return (
       <ctx.Provider value={{ opened, setOpened, defaultOpened, variant }}>
-        <Root
-          {...props}
-          data-state={opened ? 'opened' : 'closed'}
-          className={classes.root({ className })}
-          onClick={() => {
-            setOpened(!opened);
-          }}
-        >
+        <Root {...props} className={classes.root({ className })}>
           {children}
         </Root>
       </ctx.Provider>
@@ -67,12 +60,13 @@ export const CollapsibleHeader = createComponent<
   baseElement: Card.Header,
   render: (Root, { children, className, hideIcon, ...props }) => {
     const classes = styles();
-    const { opened } = useContext(ctx);
+    const { opened, setOpened } = useContext(ctx);
     return (
       <Root
         {...props}
         className={classes.header({ className })}
         data-state={opened ? 'opened' : 'closed'}
+        onClick={() => setOpened(!opened)}
       >
         <HStack align="center">{children}</HStack>
         {!hideIcon && (
