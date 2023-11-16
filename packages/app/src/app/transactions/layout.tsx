@@ -3,7 +3,7 @@ import { Layout } from '~/systems/Core/components/Layout/Layout';
 
 import { TransactionsTitle } from './title';
 
-export default async function TxLayout({ children }: { children: ReactNode }) {
+export default function TxLayout({ children }: { children: ReactNode }) {
   return (
     <Layout
       hero

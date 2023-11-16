@@ -16,6 +16,8 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -36,8 +38,9 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     const assetId = output.assetId;
     const amount = output.totalAmount;
     const asset = useAsset(assetId);
-
+    const fuelAsset = useFuelAsset(asset);
     if (!asset) return null;
+
     return (
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
@@ -70,7 +73,10 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
               </Text>
               <HStack>
                 <Address prefix="To:" value={output.to || ''}>
-                  <Address.Link as={NextLink} href={`/account/${output.to}`}>
+                  <Address.Link
+                    as={NextLink}
+                    href={`/account/${output.to}/assets`}
+                  >
                     View Account
                   </Address.Link>
                 </Address>
@@ -84,7 +90,16 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center" className="hidden tablet:block">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format(isMobile ? { precision: 3 } : undefined)}{' '}
+                {fuelAsset?.decimals ? (
+                  <>
+                    {bn(amount).format({
+                      precision: isMobile ? 3 : undefined,
+                      units: fuelAsset.decimals,
+                    })}{' '}
+                  </>
+                ) : (
+                  formatZeroUnits(amount)
+                )}
                 {asset.symbol}
               </Text>
             )}
@@ -132,7 +147,10 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
               <Address prefix="Id:" value={contractId}>
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
+                <Address.Link
+                  as={NextLink}
+                  href={`/contract/${contractId}/assets`}
+                >
                   View Contract
                 </Address.Link>
               </Address>
@@ -160,7 +178,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               <Address value={recipient || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${recipient}`}
+                  href={`/account/${recipient}/assets`}
                   className="w-[60px] text-right"
                 >
                   Recipient
@@ -169,7 +187,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               <Address value={output.to || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${output.to}`}
+                  href={`/account/${output.to}/assets`}
                   className="w-[60px] text-right"
                 >
                   To

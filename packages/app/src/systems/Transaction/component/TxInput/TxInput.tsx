@@ -17,8 +17,10 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
 import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -36,10 +38,11 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
     const assetId = input.assetId;
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
-    const asset = useAsset(assetId);
     const { isMobile } = useBreakpoints();
-
+    const asset = useAsset(assetId);
+    const fuelAsset = useFuelAsset(asset);
     if (!asset) return null;
+
     return (
       <Collapsible {...props}>
         <Collapsible.Header>
@@ -80,7 +83,10 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               className="text-white"
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
             >
-              <Address.Link as={NextLink} href={`/account/${input.owner}`}>
+              <Address.Link
+                as={NextLink}
+                href={`/account/${input.owner}/assets`}
+              >
                 View Account
               </Address.Link>
             </Address>
@@ -91,7 +97,16 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
           */}
           {amount && (
             <Text className="text-secondary hidden tablet:block">
-              {bn(amount).format({ precision: isMobile ? 3 : undefined })}{' '}
+              {fuelAsset?.decimals ? (
+                <>
+                  {bn(amount).format({
+                    precision: isMobile ? 3 : undefined,
+                    units: fuelAsset.decimals,
+                  })}{' '}
+                </>
+              ) : (
+                formatZeroUnits(amount)
+              )}
               {asset.symbol}
             </Text>
           )}
@@ -119,7 +134,10 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
             </EntityItem.Slot>
             <EntityItem.Info title="Contract Input">
               <Address value={contractId} prefix="Id:">
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
+                <Address.Link
+                  as={NextLink}
+                  href={`/contract/${contractId}/assets`}
+                >
                   View Contract
                 </Address.Link>
               </Address>
@@ -148,7 +166,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
               <Address value={sender} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${sender}`}
+                  href={`/account/${sender}/assets`}
                   className="w-[60px]"
                 >
                   Sender
@@ -157,7 +175,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
               <Address value={recipient} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${recipient}`}
+                  href={`/account/${recipient}/assets`}
                   className="w-[60px]"
                 >
                   Recipient

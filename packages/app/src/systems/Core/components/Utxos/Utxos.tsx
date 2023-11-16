@@ -13,18 +13,27 @@ import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { VariableSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+
+import { formatZeroUnits } from '../../utils/format';
 
 export type UtxoItem = Partial<Omit<TUtxoItem, '__typename'>>;
 
 type UtxoItemProps = {
   item: UtxoItem;
+  assetId?: string;
   style?: React.CSSProperties;
 };
 
-function UtxoItem({ item, style }: UtxoItemProps) {
+function UtxoItem({ item, style, assetId }: UtxoItemProps) {
   const { isMobile } = useBreakpoints();
+  const asset = useAsset(assetId);
+  const fuelAsset = useFuelAsset(asset);
 
   if (!item.utxoId) return null;
+  if (!asset) return null;
+
   const classes = styles();
   const trim = isMobile ? 8 : 16;
   return (
@@ -45,7 +54,16 @@ function UtxoItem({ item, style }: UtxoItemProps) {
       </Address>
       <Text className="text-secondary flex items-center gap-2">
         <Icon icon={IconCoins} size={14} />{' '}
-        {bn(item.amount).format({ precision: isMobile ? 3 : undefined })}{' '}
+        {fuelAsset?.decimals ? (
+          <>
+            {bn(item.amount).format({
+              precision: isMobile ? 3 : undefined,
+              units: fuelAsset.decimals,
+            })}{' '}
+          </>
+        ) : (
+          formatZeroUnits(item.amount || '')
+        )}
       </Text>
     </Box>
   );
@@ -56,7 +74,7 @@ type UtxosProps = BoxProps & {
   items?: UtxoItem[] | null;
 };
 
-function VirtualList({ items }: UtxosProps) {
+function VirtualList({ items, assetId }: UtxosProps) {
   const { isMobile } = useBreakpoints();
   return (
     <List
@@ -67,19 +85,30 @@ function VirtualList({ items }: UtxosProps) {
     >
       {({ index: idx, style }) => {
         const item = items?.[idx];
-        return item && <UtxoItem key={item.utxoId} style={style} item={item} />;
+        return (
+          item && (
+            <UtxoItem
+              key={item.utxoId}
+              style={style}
+              item={item}
+              assetId={assetId}
+            />
+          )
+        );
       }}
     </List>
   );
 }
 
-function CommonList({ items }: UtxosProps) {
+function CommonList({ items, assetId }: UtxosProps) {
   return (
-    items?.map((item) => <UtxoItem key={item.utxoId} item={item} />) ?? null
+    items?.map((item) => (
+      <UtxoItem key={item.utxoId} item={item} assetId={assetId} />
+    )) ?? null
   );
 }
 
-export function Utxos({ items, ...props }: UtxosProps) {
+export function Utxos({ items, assetId, ...props }: UtxosProps) {
   const len = items?.length ?? 0;
   return (
     <Collapsible.Content {...props}>
@@ -88,9 +117,9 @@ export function Utxos({ items, ...props }: UtxosProps) {
       </Collapsible.Title>
       <Collapsible.Body className="p-0">
         {len > 10 ? (
-          <VirtualList items={items} />
+          <VirtualList items={items} assetId={assetId} />
         ) : (
-          <CommonList items={items} />
+          <CommonList items={items} assetId={assetId} />
         )}
       </Collapsible.Body>
     </Collapsible.Content>
