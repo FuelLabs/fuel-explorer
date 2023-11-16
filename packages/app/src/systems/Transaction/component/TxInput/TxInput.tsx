@@ -13,9 +13,9 @@ import {
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
-import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
@@ -23,8 +23,6 @@ import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
 import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
-
-const ICON_SIZE = 36;
 
 export type TxInputProps = CardProps & {
   input: GroupedInput;
@@ -46,37 +44,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
     return (
       <Collapsible {...props}>
         <Collapsible.Header>
-          {asset.icon ? (
-            <Image
-              src={asset.icon as string}
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              alt={asset.name}
-            />
-          ) : (
-            <TxIcon type="Mint" status="Submitted" />
-          )}
-          <VStack gap="0" className="flex-1">
-            <Text className="flex items-center gap-2 text-md font-medium">
-              {asset.name}
-              {asset.symbol && (
-                <Text className="ml-2 text-muted text-sm">
-                  ({asset.symbol})
-                </Text>
-              )}
-              <Address
-                value={assetId}
-                fixed="b256"
-                /*
-                 * I'm just hidding this until we get the output/input design merged
-                 * https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
-                 */
-                className="hidden tablet:block"
-                addressOpts={
-                  isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
-                }
-              />
-            </Text>
+          <AssetItem assetId={assetId} className="flex-1">
             <Address
               prefix="From:"
               value={input.owner || ''}
@@ -90,7 +58,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
                 View Account
               </Address.Link>
             </Address>
-          </VStack>
+          </AssetItem>
           {/*
             I'm just hidding this until we get the output/input design merged 
             https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance

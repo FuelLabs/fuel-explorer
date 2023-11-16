@@ -4,13 +4,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   GROUPED_OUTPUT_ASSET,
   GROUPED_OUTPUT_ASSET_UNKNOWN,
-  GROUPED_OUTPUT_CHANGE_OUTPUT,
-  GROUPED_OUTPUT_CHANGE_OUTPUT_UNKNOWN,
   GROUPED_OUTPUT_CONTRACT_CREATED,
   GROUPED_OUTPUT_CONTRACT_OUTPUT,
   GROUPED_OUTPUT_MESSAGE,
-  GROUPED_OUTPUT_VARIABLE_OUTPUT,
-  GROUPED_OUTPUT_VARIABLE_OUTPUT_UNKNOWN,
 } from '../../__mocks__/tx';
 
 import { TxOutput } from './TxOutput';
@@ -28,30 +24,6 @@ export const Asset: Story = {
     <VStack>
       <TxOutput className="w-[500px]" output={GROUPED_OUTPUT_ASSET} />
       <TxOutput className="w-[500px]" output={GROUPED_OUTPUT_ASSET_UNKNOWN} />
-    </VStack>
-  ),
-};
-
-export const VariableOutput: Story = {
-  render: () => (
-    <VStack>
-      <TxOutput className="w-[500px]" output={GROUPED_OUTPUT_VARIABLE_OUTPUT} />
-      <TxOutput
-        className="w-[500px]"
-        output={GROUPED_OUTPUT_VARIABLE_OUTPUT_UNKNOWN}
-      />
-    </VStack>
-  ),
-};
-
-export const ChangeOutput: Story = {
-  render: () => (
-    <VStack>
-      <TxOutput className="w-[500px]" output={GROUPED_OUTPUT_CHANGE_OUTPUT} />
-      <TxOutput
-        className="w-[500px]"
-        output={GROUPED_OUTPUT_CHANGE_OUTPUT_UNKNOWN}
-      />
     </VStack>
   ),
 };
