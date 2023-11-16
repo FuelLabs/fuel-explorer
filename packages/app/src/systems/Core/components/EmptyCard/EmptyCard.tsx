@@ -1,3 +1,4 @@
+'use client';
 import type { CardProps, HeadingProps, TextProps } from '@fuels/ui';
 import { Card, Heading, createComponent, Text, withNamespace } from '@fuels/ui';
 import { tv } from 'tailwind-variants';

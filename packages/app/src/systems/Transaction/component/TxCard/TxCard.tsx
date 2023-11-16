@@ -10,6 +10,7 @@ import {
   createComponent,
   VStack,
   HStack,
+  withNamespace,
 } from '@fuels/ui';
 import type { BaseProps, CardProps } from '@fuels/ui';
 import {
@@ -20,6 +21,7 @@ import {
 } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
+import { LoadingBox } from '~/systems/Core/components/LoadingBox/LoadingBox';
 
 import type { TransactionNode, TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
@@ -28,7 +30,7 @@ type TxCardProps = BaseProps<{
   transaction: TransactionNode;
 }>;
 
-export const TxCard = createComponent<TxCardProps, typeof Card>({
+const TxCardRoot = createComponent<TxCardProps, typeof Card>({
   id: 'TxCard',
   render: (_, { transaction: tx, className, ...props }: TxCardProps) => {
     const classes = styles();
@@ -79,37 +81,31 @@ export const TxCard = createComponent<TxCardProps, typeof Card>({
   },
 });
 
-export const TxCardLoader = createComponent<CardProps, typeof Card>({
+const TxCardSkeleton = createComponent<CardProps, typeof Card>({
   id: 'TxCardLoader',
   render: (_, props) => {
     return (
       <Card {...props}>
         <Card.Header>
           <HStack>
-            <div
-              className={loader({ className: 'h-14 w-14 bg-gray-3 rounded' })}
-            />
-            <div
-              className={loader({ className: 'h-14 flex-1 bg-gray-3 rounded' })}
-            />
+            <LoadingBox className="h-14 w-14" />
+            <LoadingBox className="h-14 flex-1" />
           </HStack>
         </Card.Header>
         <Card.Body>
           <VStack gap="2">
-            <div
-              className={loader({ className: 'h-6 w-full bg-gray-3 rounded' })}
-            />
-            <div
-              className={loader({ className: 'h-6 w-full bg-gray-3 rounded' })}
-            />
-            <div
-              className={loader({ className: 'h-6 w-full bg-gray-3 rounded' })}
-            />
+            <LoadingBox className="h-6 w-full" />
+            <LoadingBox className="h-6 w-full" />
+            <LoadingBox className="h-6 w-full" />
           </VStack>
         </Card.Body>
       </Card>
     );
   },
+});
+
+export const TxCard = withNamespace(TxCardRoot, {
+  Skeleton: TxCardSkeleton,
 });
 
 const styles = tv({
@@ -123,15 +119,4 @@ const styles = tv({
     row: 'items-center py-px [.fuel-Text:first-of-type]:flex-1 gap-3',
     small: 'text-sm',
   },
-});
-
-const loader = tv({
-  base: [
-    'isolate overflow-hidden shadow-xl shadow-black/5 before:border-t before:border-gray-5',
-    'relative before:absolute before:inset-0 before:-translate-x-full',
-    'before:animate-[shimmer_2s_infinite]',
-    'before:block before:content-[""] before:w-full before:h-full',
-    'before:bg-gradient-to-r',
-    'before:from-transparent before:via-gray-4 before:to-transparent',
-  ],
 });

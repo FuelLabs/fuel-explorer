@@ -1,26 +1,18 @@
-import {
-  getContract,
-  getContractBalances,
-} from '~/systems/Contract/actions/get-contract';
-import { ContractScreen } from '~/systems/Contract/screens/ContractScreen/ContractScreen';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { Suspense } from 'react';
+import { AssetsSkeleton } from '~/systems/Asset/components/AssetsSkeleton';
+import { ContractAssets } from '~/systems/Contract/screens/ContractAsset';
 
 type ContractProps = {
   params: {
-    id?: string | null;
+    id: string;
   };
 };
 
-export default async function ContractAssets({
-  params: { id = null },
-}: ContractProps) {
-  const contract = await getContract({ id });
-  const contractBalances = await getContractBalances({ id });
-
+export default async function ContractPage({ params: { id } }: ContractProps) {
   return (
-    <Layout>
-      <ContractScreen contract={contract} contractBalances={contractBalances} />
-    </Layout>
+    <Suspense fallback={<AssetsSkeleton />}>
+      <ContractAssets id={id} />
+    </Suspense>
   );
 }
 

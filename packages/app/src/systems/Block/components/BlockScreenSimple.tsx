@@ -1,9 +1,11 @@
+'use client';
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Card, Flex, VStack, Grid, Address } from '@fuels/ui';
-import { IconChecklist } from '@tabler/icons-react';
+import { VStack, Grid, Address, Icon } from '@fuels/ui';
+import { IconListDetails } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
+import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import { TxCard } from '~/systems/Transaction/component/TxCard/TxCard';
 
 type BlockScreenSimpleProps = {
@@ -13,16 +15,13 @@ type BlockScreenSimpleProps = {
 
 export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
   return (
-    <VStack className="px-4 desktop:px-0">
-      <Grid
-        className="my-6 grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-4"
-        gap="3"
-      >
+    <VStack>
+      <Grid className="grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-2 laptop:grid-cols-4 gap-6 mb-8">
         <CardInfo name="Producer" className="flex-1">
           <Address
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
-            linkProps={{ as: NextLink, href: `/account/${producer}` }}
+            linkProps={{ as: NextLink, href: `/account/${producer}/assets` }}
           />
         </CardInfo>
         <CardInfo
@@ -39,19 +38,10 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
           {block?.header.transactionsCount}
         </CardInfo>
       </Grid>
-      <Flex className="border-b border-border pb-4">
-        <Card>
-          <Card.Body>
-            <Flex>
-              <IconChecklist /> Transactions
-            </Flex>
-          </Card.Body>
-        </Card>
-      </Flex>
-      <Grid
-        className="grid-cols-1 tablet:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3"
-        gap="6"
-      >
+      <PageTitle size="3" icon={<Icon icon={IconListDetails} />}>
+        Transactions
+      </PageTitle>
+      <Grid className="gap-6 grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3">
         {block?.transactions.map((transaction) => (
           <TxCard key={transaction.id} transaction={transaction} />
         ))}

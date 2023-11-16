@@ -19,6 +19,7 @@ const config = {
   swcMinify: true,
   transpilePackages: ['@fuel-explorer/graphql'],
   experimental: {
+    ppr: true,
     externalDir: true,
     serverComponentsExternalPackages: externals,
     esmExternals: true,

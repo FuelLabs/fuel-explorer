@@ -4,7 +4,7 @@ export const styles = tv({
   slots: {
     logo: 'items-center justify-start',
     menu: [
-      'flex flex-col gap-1 py-4 px-4 tablet:flex-row laptop:px-0 laptop:py-0 laptop:gap-4',
+      'flex flex-col gap-1 py-4 px-4 tablet:flex-row laptop:px-2 laptop:py-0 laptop:gap-4',
       'not-first:border-t not-first:border-border laptop:not-first:border-t-0 border-t-0',
     ],
     menuItem: [
@@ -36,7 +36,7 @@ export const styles = tv({
     ],
     desktop: [
       'mobile:max-laptop:hidden gap-8 flex-row items-center',
-      'laptop:px-4 laptop:flex min-h-[var(--nav-height)]',
+      'laptop:px-8 laptop:flex min-h-[var(--nav-height)]',
     ],
     desktopWrapper: ['border-b border-border min-h-[var(--nav-height)]'],
     mobileWrapper: [
