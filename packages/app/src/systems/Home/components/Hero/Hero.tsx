@@ -1,20 +1,20 @@
 'use client';
 
-//import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
+import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
-//import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { tv } from 'tailwind-variants';
 import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
 
-// type HeroProps = {
-//   searchResult?: Maybe<SearchResult>;
-// };
+type HeroProps = {
+  searchResult?: Maybe<SearchResult>;
+};
 
-export async function Hero() {
+export async function Hero({ searchResult }: HeroProps) {
   const classes = styles();
-  // const router = useRouter();
-  // const searchParams = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   return (
     <Theme appearance="dark">
@@ -24,19 +24,15 @@ export async function Hero() {
             Explore Fuel Network
           </Heading>
           <SearchInput
-            // searchResult={searchResult}
+            searchResult={searchResult}
             className={classes.input()}
-            // onSubmit={(query) => {
-            //   console.log('in sumbit');
-            //   let currentSearchParams = '';
-            //   searchParams.forEach((value, key) => {
-            //     currentSearchParams += `${key}=${value}&`;
-            //   });
-            //   router.push(
-            //     `/transactions?$page=${currentSearchParams}search=${query}`,
-            //   );
-            //   console.log(`query`, query);
-            // }}
+            onSubmit={(query) => {
+              const pageParam = searchParams.get('page');
+              router.push(
+                `/transactions?page=${pageParam}&searchQuery=${query}`,
+              );
+              console.log(`query`, query);
+            }}
           />
         </Container>
         <Box as="figure" className={classes.img()}>
