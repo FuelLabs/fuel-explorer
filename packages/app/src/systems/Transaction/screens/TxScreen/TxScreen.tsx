@@ -1,18 +1,19 @@
-'use client';
-
+import { redirect } from 'next/navigation';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
-import { useViewMode } from '~/systems/Core/hooks/useViewMode';
 
+import { getTx } from '../../actions/get-tx';
 import { TxScreenAdvanced } from '../../component/TxScreen/TxScreenAdvanced';
 import { TxScreenSimple } from '../../component/TxScreen/TxScreenSimple';
-import type { TransactionNode } from '../../types';
 
 type TxScreenProps = {
-  transaction: TransactionNode;
+  id: string;
+  viewMode?: ViewModes;
 };
 
-export function TxScreen({ transaction: tx }: TxScreenProps) {
-  const { viewMode } = useViewMode();
+export async function TxScreen({ id, viewMode }: TxScreenProps) {
+  const tx = await getTx({ id });
+  if (!tx) return redirect('/');
+
   return (
     <>
       {viewMode === ViewModes.Simple && <TxScreenSimple transaction={tx} />}

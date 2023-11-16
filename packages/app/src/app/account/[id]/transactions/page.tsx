@@ -1,22 +1,27 @@
 import { Suspense } from 'react';
-import { getAccountTransactions } from '~/systems/Account/actions/get-account-transactions';
+import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
+import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
 import { AccountTransactions } from '~/systems/Account/screens/AccountTransactions';
 import { TxListSkeleton } from '~/systems/Transaction/component/TxList/TxListSkeleton';
 
 type PageProps = {
   params: {
-    id: string | null;
+    id: string;
   };
 };
 
 export default async function AccountTransactionsPage({
   params: { id },
 }: PageProps) {
-  const txs = await getAccountTransactions({ owner: id });
   return (
-    <Suspense fallback={<TxListSkeleton />}>
-      <AccountTransactions transactions={txs.edges} />
-    </Suspense>
+    <>
+      <Suspense fallback={<AccountTabs isLoading />}>
+        <AccountsTabsSync id={id} />
+      </Suspense>
+      <Suspense fallback={<TxListSkeleton />}>
+        <AccountTransactions id={id} />
+      </Suspense>
+    </>
   );
 }
 

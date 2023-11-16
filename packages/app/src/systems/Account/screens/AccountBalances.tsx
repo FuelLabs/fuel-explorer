@@ -1,24 +1,17 @@
-'use client';
-
-import type { AccountBalanceFragment, Maybe } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
-import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { EmptyAssets } from '~/systems/Core/components/EmptyBlocks/EmptyAsset';
+
+import { getBalances } from '../actions/get-balances';
 
 type AccountScreenProps = {
-  balances?: Maybe<AccountBalanceFragment[]>;
+  id: string;
 };
 
-export function AccountBalances({ balances }: AccountScreenProps) {
+export async function AccountBalances({ id }: AccountScreenProps) {
+  const balances = await getBalances({ owner: id });
   if (!balances?.length) {
-    return (
-      <EmptyCard>
-        <EmptyCard.Title>No Assets</EmptyCard.Title>
-        <EmptyCard.Description>
-          This account does not have any asset.
-        </EmptyCard.Description>
-      </EmptyCard>
-    );
+    return <EmptyAssets entity="assets" />;
   }
 
   return (

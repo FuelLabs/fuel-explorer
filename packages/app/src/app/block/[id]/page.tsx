@@ -1,19 +1,24 @@
 import { Suspense } from 'react';
-import { getBlock } from '~/systems/Block/actions/get-block';
 import { BlockScreenSkeleton } from '~/systems/Block/components/BlockScreenSkeleton';
 import { BlockScreen } from '~/systems/Block/screens/BlockScreen';
+import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
 type BlockProps = {
   params: {
-    id: string | null;
+    id: string;
+  };
+  searchParams: {
+    view: ViewModes;
   };
 };
 
-export default async function Block({ params: { id = null } }: BlockProps) {
-  const { block, producer } = await getBlock({ id });
+export default async function Block({
+  params: { id },
+  searchParams: { view: viewMode = ViewModes.Simple },
+}: BlockProps) {
   return (
     <Suspense fallback={<BlockScreenSkeleton />}>
-      <BlockScreen blockNumberOrId={id} block={block} producer={producer} />
+      <BlockScreen id={id} viewMode={viewMode} />
     </Suspense>
   );
 }

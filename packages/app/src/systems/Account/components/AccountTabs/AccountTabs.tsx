@@ -6,13 +6,15 @@ import { useMemo } from 'react';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type AccountTabsProps = BaseProps<{
-  accountId: string;
+  isLoading?: boolean;
+  accountId?: string;
   isPredicate?: boolean;
 }>;
 
 export function AccountTabs({
   accountId,
   isPredicate,
+  isLoading,
   ...props
 }: AccountTabsProps) {
   const pathname = usePathname();
@@ -33,12 +35,14 @@ export function AccountTabs({
           icon: IconCoins,
           value: 'assets',
           label: 'Assets',
+          disabled: isLoading,
           onClick: () => router.push(`/account/${accountId}/assets`),
         },
         {
           icon: IconChecklist,
           value: 'transactions',
           label: 'Transactions',
+          disabled: isLoading,
           onClick: () => router.push(`/account/${accountId}/transactions`),
         },
         {
@@ -46,7 +50,7 @@ export function AccountTabs({
           value: 'predicate',
           label: 'Predicate',
           onClick: () => router.push(`/account/${accountId}/predicate`),
-          disabled: !isPredicate,
+          disabled: !isPredicate || isLoading,
         },
       ]}
     />

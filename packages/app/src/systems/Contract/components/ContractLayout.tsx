@@ -1,6 +1,5 @@
 'use client';
 
-import type { ContractItemFragment } from '@fuel-explorer/graphql';
 import { Address, Box, VStack, useBreakpoints } from '@fuels/ui';
 import { IconChecklist, IconCoins, IconCodeAsterix } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -11,9 +10,9 @@ import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
 export function ContractLayout({
   children,
-  contract,
+  id,
 }: {
-  contract: ContractItemFragment;
+  id: string;
   children: React.ReactNode;
 }) {
   const { isLaptop } = useBreakpoints();
@@ -32,7 +31,7 @@ export function ContractLayout({
           className="border-b-gray-3"
         >
           Contract
-          <Address value={contract?.id} full={isLaptop} fixed="b256" />
+          <Address value={id} full={isLaptop} fixed="b256" />
         </PageTitle>
         <NavigationTab
           defaultValue={defaultValue}
@@ -42,13 +41,13 @@ export function ContractLayout({
               value: 'assets',
               label: 'Assets',
               icon: IconCoins,
-              onClick: () => router.push(`/contract/${contract?.id}/assets`),
+              onClick: () => router.push(`/contract/${id}/assets`),
             },
             {
               value: 'code',
               label: 'Source Code',
               icon: IconCodeAsterix,
-              onClick: () => router.push(`/contract/${contract?.id}/code`),
+              onClick: () => router.push(`/contract/${id}/code`),
             },
           ]}
         />

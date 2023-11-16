@@ -1,20 +1,16 @@
-'use client';
-
-import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
-import { useViewMode } from '~/systems/Core/hooks/useViewMode';
 
+import { getBlock } from '../actions/get-block';
 import { BlockScreenAdvanced } from '../components/BlockScreenAdvanced';
 import { BlockScreenSimple } from '../components/BlockScreenSimple';
 
 type BlockScreenProps = {
-  blockNumberOrId?: Maybe<string>;
-  block?: Maybe<BlockItemFragment>;
-  producer: Maybe<string>;
+  id: string;
+  viewMode: ViewModes;
 };
 
-export function BlockScreen({ block, producer }: BlockScreenProps) {
-  const { viewMode } = useViewMode();
+export async function BlockScreen({ id, viewMode }: BlockScreenProps) {
+  const { block, producer } = await getBlock({ id });
   return (
     <>
       {viewMode === ViewModes.Simple && (

@@ -1,3 +1,4 @@
+'use client';
 import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
 import type { BaseProps, CardProps } from '@fuels/ui';
 import {

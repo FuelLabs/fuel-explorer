@@ -1,19 +1,16 @@
 'use client';
 
-import { Address, Box, VStack, useBreakpoints } from '@fuels/ui';
+import { Address, VStack, useBreakpoints } from '@fuels/ui';
 import { IconHash } from '@tabler/icons-react';
-import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
 export function AccountLayout({
-  children,
-  bytecode,
   id,
+  children,
 }: {
-  children: React.ReactNode;
-  bytecode?: string | null;
   id: string;
+  children: React.ReactNode;
 }) {
   const { isLaptop } = useBreakpoints();
   return (
@@ -26,8 +23,7 @@ export function AccountLayout({
           Account
           <Address full={isLaptop} value={id} />
         </PageTitle>
-        <AccountTabs accountId={id} isPredicate={!!bytecode} />
-        <Box as="section">{children}</Box>
+        {children}
       </VStack>
     </Layout>
   );

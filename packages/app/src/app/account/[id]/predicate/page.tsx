@@ -1,22 +1,27 @@
 import { Suspense } from 'react';
-import { getPredicate } from '~/systems/Account/actions/get-predicate';
+import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
+import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
 import { AccountPredicate } from '~/systems/Account/screens/AccountPredicate';
 import { CodeBlockSkeleton } from '~/systems/Core/components/CodeBlock/CodeBlockSkeleton';
 
 type PageProps = {
   params: {
-    id: string | null;
+    id: string;
   };
 };
 
 export default async function AccountPredicatePage({
   params: { id },
 }: PageProps) {
-  const predicate = await getPredicate({ owner: id });
   return (
-    <Suspense fallback={<CodeBlockSkeleton />}>
-      <AccountPredicate bytecode={predicate?.bytecode ?? ''} />
-    </Suspense>
+    <>
+      <Suspense fallback={<AccountTabs isLoading />}>
+        <AccountsTabsSync id={id} />
+      </Suspense>
+      <Suspense fallback={<CodeBlockSkeleton />}>
+        <AccountPredicate id={id} />
+      </Suspense>
+    </>
   );
 }
 

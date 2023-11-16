@@ -1,23 +1,24 @@
-import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { getTx } from '~/systems/Transaction/actions/get-tx';
+import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 import { TxScreen } from '~/systems/Transaction/screens/TxScreen/TxScreen';
 import { TxScreenSkeleton } from '~/systems/Transaction/screens/TxScreen/TxScreenSkeleton';
 
 type TransactionProps = {
   params: {
-    id?: string | null;
+    id: string;
+  };
+  searchParams: {
+    view?: ViewModes;
   };
 };
 
 export default async function Transaction({
-  params: { id = null },
+  params: { id },
+  searchParams: { view: viewMode = ViewModes.Simple },
 }: TransactionProps) {
-  const tx = await getTx({ id });
-  if (!tx) return redirect('/');
   return (
     <Suspense fallback={<TxScreenSkeleton />}>
-      <TxScreen transaction={tx} />
+      <TxScreen id={id} viewMode={viewMode} />
     </Suspense>
   );
 }

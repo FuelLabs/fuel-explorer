@@ -1,20 +1,25 @@
 import { Suspense } from 'react';
-import { getBalances } from '~/systems/Account/actions/get-balances';
+import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
+import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
 import { AccountBalances } from '~/systems/Account/screens/AccountBalances';
 import { AssetsSkeleton } from '~/systems/Asset/components/AssetsSkeleton';
 
 type AccountProps = {
   params: {
-    id: string | null;
+    id: string;
   };
 };
 
-export default async function Account({ params: { id = null } }: AccountProps) {
-  const balances = await getBalances({ owner: id });
+export default async function Account({ params: { id } }: AccountProps) {
   return (
-    <Suspense fallback={<AssetsSkeleton />}>
-      <AccountBalances balances={balances} />
-    </Suspense>
+    <>
+      <Suspense fallback={<AccountTabs isLoading />}>
+        <AccountsTabsSync id={id} />
+      </Suspense>
+      <Suspense fallback={<AssetsSkeleton />}>
+        <AccountBalances id={id} />
+      </Suspense>
+    </>
   );
 }
 
