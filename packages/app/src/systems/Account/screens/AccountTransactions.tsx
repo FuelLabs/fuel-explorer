@@ -1,22 +1,13 @@
-'use client';
-import type { GetLastTransactionsQuery } from '@fuel-explorer/graphql';
-import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { EmptyTransactions } from '~/systems/Core/components/EmptyBlocks/EmptyTransactions';
 import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 
-export function AccountTransactions({
-  transactions,
-}: {
-  transactions: GetLastTransactionsQuery['transactions']['edges'];
-}) {
+import { getAccountTransactions } from '../actions/get-account-transactions';
+
+export async function AccountTransactions({ id }: { id: string }) {
+  const txs = await getAccountTransactions({ owner: id });
+  const transactions = txs.edges;
   if (!transactions.length) {
-    return (
-      <EmptyCard>
-        <EmptyCard.Title>No Transactions</EmptyCard.Title>
-        <EmptyCard.Description>
-          This account does not have any transaction.
-        </EmptyCard.Description>
-      </EmptyCard>
-    );
+    return <EmptyTransactions entity="account" />;
   }
 
   return <TxList hidePagination transactions={transactions} className="p-0" />;

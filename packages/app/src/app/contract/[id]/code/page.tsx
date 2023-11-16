@@ -1,19 +1,21 @@
-import { redirect } from 'next/navigation';
-import { getContract } from '~/systems/Contract/actions/get-contract';
-import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
+import { Suspense } from 'react';
+import { ContractCode } from '~/systems/Contract/screens/ContractCode';
+import { CodeBlockSkeleton } from '~/systems/Core/components/CodeBlock/CodeBlockSkeleton';
 
 type ContractProps = {
   params: {
-    id?: string | null;
+    id: string;
   };
 };
 
 export default async function ContractCodePage({
-  params: { id = null },
+  params: { id },
 }: ContractProps) {
-  const contract = await getContract({ id });
-  if (!contract) return redirect('/');
-  return <CodeBlock value={contract.bytecode} title="Bytecode" />;
+  return (
+    <Suspense fallback={<CodeBlockSkeleton />}>
+      <ContractCode id={id} />
+    </Suspense>
+  );
 }
 
 // Revalidate cache every 10 seconds

@@ -5,14 +5,15 @@ import type {
 } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 import { bn } from 'fuels';
-import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+
+import { ContractBalanceItem } from './ContractBalanceItem';
 
 type TabAssetsProps = {
   balances?: Maybe<ContractBalanceConnectionItemFragment>;
 };
 
-export function ContractAssets({ balances }: TabAssetsProps) {
+export function ContractAssetList({ balances }: TabAssetsProps) {
   const nonZeroBalances = balances?.edges.filter(
     (contractBalance) => !bn(contractBalance.node.amount).isZero(),
   );
@@ -38,23 +39,5 @@ export function ContractAssets({ balances }: TabAssetsProps) {
         );
       })}
     </VStack>
-  );
-}
-
-type ContractBalanceItemProps = {
-  amount: string;
-  assetId: string;
-};
-
-export function ContractBalanceItem({
-  amount,
-  assetId,
-}: ContractBalanceItemProps) {
-  const balanceItem = { assetId, amount };
-  return (
-    <BalanceItem
-      key={balanceItem.assetId + balanceItem.amount}
-      item={balanceItem}
-    />
   );
 }

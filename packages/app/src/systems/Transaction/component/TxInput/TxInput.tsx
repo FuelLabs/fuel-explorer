@@ -83,7 +83,10 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               className="text-white"
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
             >
-              <Address.Link as={NextLink} href={`/account/${input.owner}`}>
+              <Address.Link
+                as={NextLink}
+                href={`/account/${input.owner}/assets`}
+              >
                 View Account
               </Address.Link>
             </Address>
@@ -131,7 +134,10 @@ const TxInputContract = createComponent<TxInputProps, typeof Card>({
             </EntityItem.Slot>
             <EntityItem.Info title="Contract Input">
               <Address value={contractId} prefix="Id:">
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
+                <Address.Link
+                  as={NextLink}
+                  href={`/contract/${contractId}/assets`}
+                >
                   View Contract
                 </Address.Link>
               </Address>
@@ -160,7 +166,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
               <Address value={sender} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${sender}`}
+                  href={`/account/${sender}/assets`}
                   className="w-[60px]"
                 >
                   Sender
@@ -169,7 +175,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
               <Address value={recipient} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${recipient}`}
+                  href={`/account/${recipient}/assets`}
                   className="w-[60px]"
                 >
                   Recipient

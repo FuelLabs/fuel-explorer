@@ -1,3 +1,4 @@
+'use client';
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import { VStack, Grid, Address, Icon } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
@@ -21,7 +22,7 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
           >
-            <Address.Link as={NextLink} href={`/account/${producer}`}>
+            <Address.Link as={NextLink} href={`/account/${producer}/assets`}>
               View Account
             </Address.Link>
           </Address>

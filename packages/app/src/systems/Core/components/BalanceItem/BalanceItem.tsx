@@ -1,5 +1,6 @@
+'use client';
 import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
-import type { BaseProps } from '@fuels/ui';
+import type { BaseProps, CardProps } from '@fuels/ui';
 import {
   createComponent,
   Text,
@@ -8,6 +9,8 @@ import {
   Collapsible,
   useBreakpoints,
   Flex,
+  withNamespace,
+  Card,
 } from '@fuels/ui';
 import { bn } from 'fuels';
 import Image from 'next/image';
@@ -16,6 +19,7 @@ import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
 import { formatZeroUnits } from '../../utils/format';
+import { LoadingBox } from '../LoadingBox/LoadingBox';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
@@ -25,10 +29,7 @@ type BalanceItemProps = BaseProps<{
   item: Omit<AccountBalanceFragment, 'owner' | '__typename'>;
 }>;
 
-export const BalanceItem = createComponent<
-  BalanceItemProps,
-  typeof Collapsible
->({
+const BalanceItemRoot = createComponent<BalanceItemProps, typeof Collapsible>({
   id: 'BalanceItem',
   render: (_, { item, ...props }) => {
     const assetId = item.assetId;
@@ -90,4 +91,32 @@ export const BalanceItem = createComponent<
       </Collapsible>
     );
   },
+});
+
+const BalanceItemSkeleton = createComponent<
+  Omit<CardProps, 'children'>,
+  typeof Card
+>({
+  id: 'BalanceItemLoader',
+  render: (_, props) => {
+    return (
+      <Card {...props} className="gap-0 py-0">
+        <Card.Header className="grid grid-cols-[auto_1fr_2fr_1fr] gap-6 h-[73px] py-3">
+          <LoadingBox className="w-12 -full" />
+          <VStack gap="2" justify="center">
+            <LoadingBox className="h-4 w-full" />
+            <LoadingBox className="h-4 w-full" />
+          </VStack>
+          <div />
+          <VStack gap="2" justify="center">
+            <LoadingBox className="h-4 w-full" />
+          </VStack>
+        </Card.Header>
+      </Card>
+    );
+  },
+});
+
+export const BalanceItem = withNamespace(BalanceItemRoot, {
+  Skeleton: BalanceItemSkeleton,
 });
