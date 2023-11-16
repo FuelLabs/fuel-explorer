@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { getTx } from '~/systems/Transaction/actions/get-tx';
 import { TxScreen } from '~/systems/Transaction/screens/TxScreen/TxScreen';
+import { TxScreenSkeleton } from '~/systems/Transaction/screens/TxScreen/TxScreenSkeleton';
 
 type TransactionProps = {
   params: {
@@ -13,7 +15,11 @@ export default async function Transaction({
 }: TransactionProps) {
   const tx = await getTx({ id });
   if (!tx) return redirect('/');
-  return <TxScreen transaction={tx} />;
+  return (
+    <Suspense fallback={<TxScreenSkeleton />}>
+      <TxScreen transaction={tx} />
+    </Suspense>
+  );
 }
 
 // Revalidate cache every 10 seconds

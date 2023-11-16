@@ -33,7 +33,7 @@ export function AccountTabs({
           icon: IconCoins,
           value: 'assets',
           label: 'Assets',
-          onClick: () => router.push(`/account/${accountId}`),
+          onClick: () => router.push(`/account/${accountId}/assets`),
         },
         {
           icon: IconChecklist,

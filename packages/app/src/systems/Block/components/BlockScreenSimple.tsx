@@ -22,7 +22,7 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
           >
-            <Address.Link as={NextLink} href={`/account/${producer}`}>
+            <Address.Link as={NextLink} href={`/account/${producer}/assets`}>
               View Account
             </Address.Link>
           </Address>

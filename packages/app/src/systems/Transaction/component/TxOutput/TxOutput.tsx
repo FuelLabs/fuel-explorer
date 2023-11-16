@@ -73,7 +73,10 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
               </Text>
               <HStack>
                 <Address prefix="To:" value={output.to || ''}>
-                  <Address.Link as={NextLink} href={`/account/${output.to}`}>
+                  <Address.Link
+                    as={NextLink}
+                    href={`/account/${output.to}/assets`}
+                  >
                     View Account
                   </Address.Link>
                 </Address>
@@ -144,7 +147,10 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
               <Address prefix="Id:" value={contractId}>
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
+                <Address.Link
+                  as={NextLink}
+                  href={`/contract/${contractId}/assets`}
+                >
                   View Contract
                 </Address.Link>
               </Address>
@@ -172,7 +178,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               <Address value={recipient || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${recipient}`}
+                  href={`/account/${recipient}/assets`}
                   className="w-[60px] text-right"
                 >
                   Recipient
@@ -181,7 +187,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               <Address value={output.to || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${output.to}`}
+                  href={`/account/${output.to}/assets`}
                   className="w-[60px] text-right"
                 >
                   To

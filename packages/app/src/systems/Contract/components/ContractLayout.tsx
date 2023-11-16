@@ -42,7 +42,7 @@ export function ContractLayout({
               value: 'assets',
               label: 'Assets',
               icon: IconCoins,
-              onClick: () => router.push(`/contract/${contract?.id}`),
+              onClick: () => router.push(`/contract/${contract?.id}/assets`),
             },
             {
               value: 'code',
