@@ -1,12 +1,21 @@
 'use client';
 
+//import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
+//import { useSearchParams, useRouter } from 'next/navigation';
 import { tv } from 'tailwind-variants';
 import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
 
-export function Hero() {
+// type HeroProps = {
+//   searchResult?: Maybe<SearchResult>;
+// };
+
+export async function Hero() {
   const classes = styles();
+  // const router = useRouter();
+  // const searchParams = useSearchParams();
+
   return (
     <Theme appearance="dark">
       <Box className={classes.root()}>
@@ -14,7 +23,21 @@ export function Hero() {
           <Heading as="h1" className={classes.title()}>
             Explore Fuel Network
           </Heading>
-          <SearchInput className={classes.input()} />
+          <SearchInput
+            // searchResult={searchResult}
+            className={classes.input()}
+            // onSubmit={(query) => {
+            //   console.log('in sumbit');
+            //   let currentSearchParams = '';
+            //   searchParams.forEach((value, key) => {
+            //     currentSearchParams += `${key}=${value}&`;
+            //   });
+            //   router.push(
+            //     `/transactions?$page=${currentSearchParams}search=${query}`,
+            //   );
+            //   console.log(`query`, query);
+            // }}
+          />
         </Container>
         <Box as="figure" className={classes.img()}>
           <Box className={classes.imgWrapper()}>

@@ -1,7 +1,6 @@
 'use client';
 
 import { Theme, Toaster } from '@fuels/ui';
-import { SearchProvider } from '~/systems/Home/components/SearchProvider/SearchProvider';
 
 export function Provider({
   children,
@@ -12,11 +11,9 @@ export function Provider({
   theme: any;
 }) {
   return (
-    <SearchProvider>
-      <Theme appearance={theme} hasBackground={false}>
-        {children}
-        <Toaster />
-      </Theme>
-    </SearchProvider>
+    <Theme appearance={theme} hasBackground={false}>
+      {children}
+      <Toaster />
+    </Theme>
   );
 }

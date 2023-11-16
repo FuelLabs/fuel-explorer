@@ -1,15 +1,17 @@
 'use client';
+
+//import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
 import { Focus, Icon, IconButton, Tooltip, Input, Text } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
-import { useSearch } from '~/systems/Home/components/SearchProvider/SearchProvider';
 
 import { cx } from '../../utils/cx';
 
 type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
   onSubmit?: (value: string) => void;
   onClear?: () => void;
+  // searchResult?: Maybe<SearchResult>;
 };
 
 export async function SearchInput({
@@ -23,15 +25,16 @@ export async function SearchInput({
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
   const inputRef = useRef<HTMLInputElement>(null);
-  const search = useSearch();
-  console.log(`search`, search);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log(`event.target.value`, event.target.value);
     setValue(event.target.value);
+    console.log('after set');
   }
 
   function handleSubmit() {
-    onSubmit?.(value);
+    console.log('handle submit');
+    onSubmit?.(value || '');
   }
 
   function handleClear() {
