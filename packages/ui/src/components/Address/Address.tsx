@@ -3,7 +3,7 @@ import {
   IconGridScan,
   IconLineScan,
 } from '@tabler/icons-react';
-import type { ReactNode } from 'react';
+import type { ReactNode, SyntheticEvent } from 'react';
 import { tv } from 'tailwind-variants';
 
 import { useBreakpoints } from '../../hooks/useBreakpoints';
@@ -65,6 +65,11 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
     const { isMobile } = useBreakpoints();
     const isFull = isMobile ? false : full;
 
+    function handleClick(e: SyntheticEvent) {
+      e.stopPropagation();
+      toggle();
+    }
+
     return (
       <Root
         gap="3"
@@ -81,7 +86,9 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
                 <Text
                   as="button"
                   className="text-[1em] text-muted"
-                  onClick={toggle}
+                  onClick={(e: SyntheticEvent) => {
+                    handleClick(e);
+                  }}
                 >
                   {isFull ? address : short}
                 </Text>
@@ -102,7 +109,9 @@ export const AddressRoot = createComponent<AddressProps, typeof HStack>({
               color="gray"
               iconSize={16}
               className={classes.toggleBtn()}
-              onClick={toggle}
+              onClick={(e: SyntheticEvent) => {
+                handleClick(e);
+              }}
             />
           </Tooltip>
         )}
@@ -116,7 +125,13 @@ export const AddressLink = createComponent<AddressLinkProps, typeof Link>({
   id: 'AddressLink',
   render: (_, { className, children, ...props }) => {
     return (
-      <Link {...props} className={cx('text-xs', className)}>
+      <Link
+        {...props}
+        className={cx('text-xs', className)}
+        onClick={(e: SyntheticEvent) => {
+          e.stopPropagation();
+        }}
+      >
         {children ?? <Icon icon={IconExternalLink} size={16} />}
       </Link>
     );
