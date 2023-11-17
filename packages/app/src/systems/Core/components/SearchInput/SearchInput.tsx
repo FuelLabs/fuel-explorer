@@ -2,7 +2,15 @@
 
 import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
-import { Focus, Icon, IconButton, Tooltip, Input, Text } from '@fuels/ui';
+import {
+  Focus,
+  Icon,
+  IconButton,
+  Tooltip,
+  Input,
+  Dropdown,
+  shortAddress,
+} from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 
@@ -13,6 +21,42 @@ type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
   onClear?: () => void;
   searchResult?: Maybe<SearchResult>;
 };
+
+function SearchResultDropdown({
+  searchResult,
+}: {
+  searchResult?: Maybe<SearchResult>;
+}) {
+  return (
+    <Dropdown
+      open={!!searchResult}
+      onOpenChange={() => console.log('open change')}
+    >
+      <Dropdown.Trigger>
+        <div></div>
+      </Dropdown.Trigger>
+      <Dropdown.Content>
+        {searchResult?.account && (
+          <>
+            <Dropdown.Item>Account</Dropdown.Item>
+            <Dropdown.Item>
+              {shortAddress(searchResult.account.address || '')}
+            </Dropdown.Item>
+            <Dropdown.Separator />
+            <Dropdown.Item>Recent Transactions</Dropdown.Item>
+            {searchResult.account.transactions?.map((transaction) => {
+              return (
+                <Dropdown.Item key={transaction?.id}>
+                  {transaction?.id}
+                </Dropdown.Item>
+              );
+            })}
+          </>
+        )}
+      </Dropdown.Content>
+    </Dropdown>
+  );
+}
 
 export function SearchInput({
   value: initialValue = '',
@@ -27,7 +71,8 @@ export function SearchInput({
   const [value, setValue] = useState<string>(initialValue as string);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  console.log(`searchResult`, searchResult);
+  console.log(`searchResult in input`, searchResult);
+  console.log('bool', !!searchResult);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
@@ -80,9 +125,10 @@ export function SearchInput({
           )}
         </Input>
       </Focus.ArrowNavigator>
-      <Text size="2">
+      <SearchResultDropdown searchResult={searchResult} />
+      {/* <Text size="2">
         Search by address, contract id, transaction id, or block id
-      </Text>
+      </Text> */}
     </>
   );
 }

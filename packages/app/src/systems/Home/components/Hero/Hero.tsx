@@ -31,7 +31,6 @@ export async function Hero({ searchResult }: HeroProps) {
               router.push(
                 `/transactions?page=${pageParam}&searchQuery=${query}`,
               );
-              console.log(`query`, query);
             }}
           />
         </Container>
