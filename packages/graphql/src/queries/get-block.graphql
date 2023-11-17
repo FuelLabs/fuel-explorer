@@ -25,16 +25,7 @@ fragment BlockItem on Block {
     time
   }
   transactions {
-    id
-    gasUsed
-    title
-    isMint
-    isCreate
-    isScript
-    rawPayload
-    outputs {
-      ...TransactionOutput
-    }
+    ...TransactionItem
   }
 }
 
