@@ -52,7 +52,13 @@ export const Address = createComponent<AddressProps, typeof HStack>({
           {prefix && <span className={classes.prefix()}>{prefix}</span>}
           <Copyable value={address} className={classes.address()} iconSize={16}>
             {linkProps ? (
-              <Link {...linkProps} className={cx('text-xs text-[1em]')}>
+              <Link
+                {...linkProps}
+                className={cx('text-xs text-[1em]')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <span className="text-[1em] text-link">
                   {isFull ? address : short}
                 </span>
