@@ -1,6 +1,6 @@
 import { Grid, VStack } from '@fuels/ui';
 import { LoadingBox } from '~/systems/Core/components/LoadingBox/LoadingBox';
-import { TxListSkeleton } from '~/systems/Transaction/component/TxList/TxListSkeleton';
+import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
 
 export function BlockScreenSkeleton() {
   return (
@@ -14,7 +14,7 @@ export function BlockScreenSkeleton() {
       <Grid className="grid grid-cols-[1fr_2fr] gap-6">
         <LoadingBox className="h-6" />
         <div className="col-start-1 col-end-3">
-          <TxListSkeleton />
+          <TxListLoader />
         </div>
       </Grid>
     </VStack>

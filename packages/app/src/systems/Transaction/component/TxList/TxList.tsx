@@ -12,6 +12,7 @@ type TxListProps = BaseProps<{
   page?: string;
   transactions: GetLastTransactionsQuery['transactions']['edges'];
   hidePagination?: boolean;
+  isLoading?: boolean;
 }>;
 
 export function TxList({
@@ -19,6 +20,7 @@ export function TxList({
   transactions = [],
   hidePagination,
   className,
+  isLoading,
 }: TxListProps) {
   const page = Number(currentPage);
   const router = useRouter();
@@ -27,7 +29,11 @@ export function TxList({
     <div className={cx('py-4 tablet:py-8 desktop:py-0', className)}>
       <Grid className={'flex flex-col gap-6'}>
         {transactions.map((transaction) => (
-          <TxCard key={transaction.node.id} transaction={transaction.node} />
+          <TxCard
+            key={transaction.node.id}
+            isLoading={isLoading}
+            transaction={transaction.node}
+          />
         ))}
       </Grid>
       {!hidePagination && (

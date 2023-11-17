@@ -17,17 +17,22 @@ import type { BaseProps, CardProps } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import { LoadingBox } from '~/systems/Core/components/LoadingBox/LoadingBox';
+import { LoadingWrapper } from '~/systems/Core/components/LoadingWrapper/LoadingWrapper';
 
 import type { TransactionNode } from '../../types';
 import { TX_INTENT_MAP } from '../TxIcon/TxIcon';
 
 type TxCardProps = BaseProps<{
   transaction: TransactionNode;
+  isLoading?: boolean;
 }>;
 
 const TxCardRoot = createComponent<TxCardProps, typeof Card>({
   id: 'TxCard',
-  render: (_, { transaction: tx, className, ...props }: TxCardProps) => {
+  render: (
+    _,
+    { transaction: tx, className, isLoading, ...props }: TxCardProps,
+  ) => {
     const fee = bn(tx.fee);
 
     return (
@@ -35,15 +40,25 @@ const TxCardRoot = createComponent<TxCardProps, typeof Card>({
         <Card {...props} className={cx(className)}>
           <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
             <Box className="flex gap-3">
-              <Badge color="gray" variant="ghost">
-                {tx.title}
-              </Badge>
+              <LoadingWrapper
+                isLoading={isLoading}
+                loadingEl={<LoadingBox className="w-16 h-6" />}
+                regularEl={
+                  <Badge color="gray" variant="ghost">
+                    {tx.title}
+                  </Badge>
+                }
+              />
               <Text className="text-gray-11 text-md font-medium">
-                {shortAddress(tx.id)}
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-32 h-6" />}
+                  regularEl={shortAddress(tx.id)}
+                />
               </Text>
             </Box>
             <Box className="flex flex-wrap gap-3 items-center laptop:flex-nowrap">
-              {!fee.isZero() && (
+              {fee.gt(0) && (
                 <Text
                   className="text-sm order-3 laptop:order-none"
                   leftIcon={IconGasStation}
@@ -51,13 +66,25 @@ const TxCardRoot = createComponent<TxCardProps, typeof Card>({
                   {bn(tx.fee).format()} ETH
                 </Text>
               )}
-              <Badge
-                color={TX_INTENT_MAP[tx.statusType as string]}
-                variant="ghost"
-              >
-                {tx.statusType}
-              </Badge>
-              <Text className="text-sm">{tx.time?.fromNow}</Text>
+              <LoadingWrapper
+                isLoading={isLoading}
+                loadingEl={<LoadingBox className="w-16 h-6" />}
+                regularEl={
+                  <Badge
+                    color={TX_INTENT_MAP[tx.statusType as string]}
+                    variant="ghost"
+                  >
+                    {tx.statusType}
+                  </Badge>
+                }
+              />
+              <Text className="text-sm">
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-32 h-6" />}
+                  regularEl={tx.time?.fromNow}
+                />
+              </Text>
             </Box>
           </Card.Body>
         </Card>

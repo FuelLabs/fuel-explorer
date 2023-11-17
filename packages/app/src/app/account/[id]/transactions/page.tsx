@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
 import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
 import { AccountTransactions } from '~/systems/Account/screens/AccountTransactions';
-import { TxListSkeleton } from '~/systems/Transaction/component/TxList/TxListSkeleton';
+import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
 
 type PageProps = {
   params: {
@@ -18,7 +18,7 @@ export default async function AccountTransactionsPage({
       <Suspense fallback={<AccountTabs isLoading />}>
         <AccountsTabsSync id={id} />
       </Suspense>
-      <Suspense fallback={<TxListSkeleton />}>
+      <Suspense fallback={<TxListLoader />}>
         <AccountTransactions id={id} />
       </Suspense>
     </>
