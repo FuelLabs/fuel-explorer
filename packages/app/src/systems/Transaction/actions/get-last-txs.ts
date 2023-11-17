@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';
 import { sdk } from '~/systems/Core/utils/sdk';
 
-const PER_PAGE = 30;
+const PER_PAGE = 10;
 
 const schema = z.object({
   page: z.number().int().positive().optional(),

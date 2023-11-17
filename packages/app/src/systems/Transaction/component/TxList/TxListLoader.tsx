@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TxList } from './TxList';
 
-export const TxListLoader = () => {
-  const txs = [1, 2, 3, 4].map((v) => ({ node: { id: v } }));
+type TxListLoaderProps = {
+  numberOfTxs?: number;
+};
+
+export const TxListLoader = ({ numberOfTxs = 4 }: TxListLoaderProps) => {
+  const baseArray = Array.from(
+    { length: numberOfTxs },
+    (_, index) => index + 1,
+  );
+  const txs = baseArray.map((v) => ({ node: { id: v } }));
 
   return <TxList isLoading transactions={txs as any} />;
 };
