@@ -51,7 +51,6 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
         {children}
         <Tooltip content={tooltipMessage}>
           <IconButton
-            className="cursor-pointer"
             aria-label={ariaLabel}
             color="gray"
             icon={CopyIcon}
