@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
+
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import { VStack, Grid, Address, Icon } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
@@ -6,7 +8,7 @@ import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
-import { TxCard } from '~/systems/Transaction/component/TxCard/TxCard';
+import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 
 type BlockScreenSimpleProps = {
   block?: Maybe<BlockItemFragment>;
@@ -14,6 +16,7 @@ type BlockScreenSimpleProps = {
 };
 
 export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
+  const txList = (block?.transactions.map((v) => ({ node: v })) as any) || [];
   return (
     <VStack>
       <Grid className="grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-2 laptop:grid-cols-4 gap-6 mb-8">
@@ -44,11 +47,7 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
       <PageTitle size="3" icon={<Icon icon={IconListDetails} />}>
         Transactions
       </PageTitle>
-      <Grid className="gap-6 grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3">
-        {block?.transactions.map((transaction) => (
-          <TxCard key={transaction.id} transaction={transaction} />
-        ))}
-      </Grid>
+      <TxList hidePagination transactions={txList} />
     </VStack>
   );
 }

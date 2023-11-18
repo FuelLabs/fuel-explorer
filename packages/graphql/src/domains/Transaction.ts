@@ -1,4 +1,13 @@
-import { bn } from 'fuels';
+import { getBytesCopy } from 'ethers';
+import {
+  TransactionCoder,
+  bn,
+  calculateTransactionFee,
+  calculateTxChargeableBytes,
+  getGasUsedFromReceipts,
+  processGqlReceipt,
+} from 'fuels';
+import { gql } from 'graphql-request';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
@@ -20,6 +29,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
       ...domain.createResolver('totalOperations'),
       ...domain.createResolver('totalAccounts'),
       ...domain.createResolver('gasUsed'),
+      ...domain.createResolver('fee', 'getFee'),
       ...domain.createResolver('accountsInvolved'),
       ...domain.createResolver('groupedInputs'),
       ...domain.createResolver('groupedOutputs'),
@@ -88,13 +98,37 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   }
 
   get gasUsed() {
+    return this._getGasUsed();
+  }
+
+  async getFee() {
     const { source: transaction } = this;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const receipts = (transaction.receipts ?? []) as any[];
-    const gasUsed = receipts.reduce((acc, receipt) => {
-      return acc.add(bn(receipt.gasUsed));
-    }, bn(0));
-    return gasUsed.toString();
+
+    const gasUsed = this._getGasUsed();
+    const chainInfo = await this._getChainInfo();
+    const { gasPerByte, gasPriceFactor } = chainInfo.chain.consensusParameters;
+
+    const transactionBytes = getBytesCopy(transaction.rawPayload);
+    const [decodedTransaction] = new TransactionCoder().decode(
+      getBytesCopy(transaction.rawPayload),
+      0,
+    );
+
+    const chargeableBytes = calculateTxChargeableBytes({
+      transactionBytes,
+      transactionWitnesses: decodedTransaction.witnesses || [],
+    });
+
+    const { minFee: fee } = calculateTransactionFee({
+      gasUsed: bn(gasUsed),
+      gasPrice: bn(transaction.gasPrice),
+      gasLimit: bn(transaction.gasLimit),
+      gasPerByte: bn(gasPerByte),
+      gasPriceFactor: bn(gasPriceFactor),
+      chargeableBytes,
+    });
+
+    return fee;
   }
 
   get accountsInvolved() {
@@ -162,5 +196,41 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     });
 
     return uniqBy(ids, 'id');
+  }
+
+  private _getGasUsed() {
+    const { source: transaction } = this;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const receipts = (transaction.receipts ?? []) as any[];
+    const decodedReceipts = receipts.map(processGqlReceipt);
+
+    return getGasUsedFromReceipts(decodedReceipts).toString();
+  }
+
+  private async _getChainInfo() {
+    const gqlQuery = gql`
+      query chainInfo {
+        chain {
+          consensusParameters {
+            gasPriceFactor
+            gasPerByte
+          }
+        }
+      }
+    `;
+
+    /** @todo: Get types from the query directly instead of creating custom types */
+    type Result = {
+      chain: {
+        consensusParameters: {
+          gasPriceFactor: string;
+          gasPerByte: string;
+        };
+      };
+    };
+
+    const data = await this.query<Result>(gqlQuery);
+    return data;
   }
 }
