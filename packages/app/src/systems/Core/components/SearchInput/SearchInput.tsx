@@ -147,7 +147,7 @@ export function SearchInput({
   ...props
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
-  const [openDropdown, setOpenDropdown] = useState(!!searchResult);
+  const [openDropdown, setOpenDropdown] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
