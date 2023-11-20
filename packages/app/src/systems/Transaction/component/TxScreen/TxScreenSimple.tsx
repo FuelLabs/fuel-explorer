@@ -1,10 +1,6 @@
 'use client';
 
-import type {
-  GroupedInput,
-  GroupedOutput,
-  Maybe,
-} from '@fuel-explorer/graphql';
+import type { GroupedInput, GroupedOutput } from '@fuel-explorer/graphql';
 import {
   Badge,
   Box,
@@ -21,6 +17,7 @@ import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
@@ -81,10 +78,16 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
           </CardInfo>
         )}
         <CardInfo
-          name={'Gas spent'}
-          description={`Gas limit: ${bn(tx.gasLimit).format()}`}
+          name={'Network Fee'}
+          description={
+            <>
+              Gas used: {formatZeroUnits(tx.gasUsed || '')}
+              <br />
+              Gas limit: {formatZeroUnits(tx.gasLimit || '')}
+            </>
+          }
         >
-          {bn(tx.gasUsed).format()}
+          {bn(tx.fee).format()} ETH
         </CardInfo>
       </Box>
       <VStack>
@@ -93,11 +96,9 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
             Inputs
           </Heading>
           {hasInputs ? (
-            tx.groupedInputs?.map((input) => (
-              <TxInput
-                key={getInputId(input as GroupedInput)}
-                input={input as GroupedInput}
-              />
+            tx.groupedInputs?.map((input, i) => (
+              // here we use only index as key because this component will not change
+              <TxInput key={i} input={input as GroupedInput} />
             ))
           ) : (
             <EmptyCard hideImage>
@@ -120,9 +121,10 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
             Outputs
           </Heading>
           {hasOutputs ? (
-            tx.groupedOutputs?.map((output) => (
+            tx.groupedOutputs?.map((output, i) => (
               <TxOutput
-                key={getOutputId(output as GroupedOutput)}
+                // here we use only index as key because this component will not change
+                key={i}
                 output={output as GroupedOutput}
               />
             ))
@@ -138,19 +140,4 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
       </VStack>
     </Grid>
   );
-}
-
-function getInputId(input?: Maybe<GroupedInput>) {
-  if (!input) return 0;
-  if (input.type === 'InputCoin') return input.assetId;
-  if (input.type === 'InputContract') return input.contractId;
-  return input.sender;
-}
-
-function getOutputId(output?: Maybe<GroupedOutput>) {
-  if (!output) return 0;
-  if (output.type === 'ContractOutput') return output.inputIndex;
-  if (output.type === 'ContractCreated') return output.contract?.id ?? 0;
-  if (output.type === 'MessageOutput') return output.recipient;
-  return output.assetId;
 }

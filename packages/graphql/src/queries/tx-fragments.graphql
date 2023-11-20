@@ -180,6 +180,7 @@ fragment TransactionItem on Transaction {
   totalAssets
   totalOperations
   gasUsed
+  fee
 
   # Transaction Data
   __typename
