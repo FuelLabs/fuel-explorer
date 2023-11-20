@@ -50,21 +50,26 @@ function SearchResultDropdown({
         )}
         {searchResult?.account && (
           <>
-            <Dropdown.Item>Account</Dropdown.Item>
+            <Dropdown.Label>Account</Dropdown.Label>
             <Dropdown.Item>
               <Link
                 as={NextLink}
                 href={`/account/${searchResult.account.address}/assets`}
+                className="text-color"
               >
                 {shortAddress(searchResult.account.address || '', 21, 19)}
               </Link>
             </Dropdown.Item>
             <Dropdown.Separator />
-            <Dropdown.Item>Recent Transactions</Dropdown.Item>
+            <Dropdown.Label>Recent Transactions</Dropdown.Label>
             {searchResult.account.transactions?.map((transaction) => {
               return (
                 <Dropdown.Item key={transaction?.id}>
-                  <Link as={NextLink} href={`/tx/${transaction?.id}/`}>
+                  <Link
+                    as={NextLink}
+                    href={`/tx/${transaction?.id}/`}
+                    className="text-color"
+                  >
                     {shortAddress(transaction?.id || '', 21, 19)}
                   </Link>
                 </Dropdown.Item>
@@ -74,14 +79,22 @@ function SearchResultDropdown({
         )}
         {searchResult?.block && (
           <>
-            <Dropdown.Item>Block</Dropdown.Item>
+            <Dropdown.Label>Block</Dropdown.Label>
             <Dropdown.Item>
-              <Link as={NextLink} href={`/block/${searchResult.block.id}`}>
+              <Link
+                as={NextLink}
+                href={`/block/${searchResult.block.id}`}
+                className="text-color"
+              >
                 {shortAddress(searchResult.block.id || '', 21, 19)}
               </Link>
             </Dropdown.Item>
             <Dropdown.Item>
-              <Link as={NextLink} href={`/block/${searchResult.block.height}`}>
+              <Link
+                as={NextLink}
+                href={`/block/${searchResult.block.height}`}
+                className="text-color"
+              >
                 {searchResult.block.height}
               </Link>
             </Dropdown.Item>
@@ -89,11 +102,12 @@ function SearchResultDropdown({
         )}
         {searchResult?.contract && (
           <>
-            <Dropdown.Item>Contract</Dropdown.Item>
+            <Dropdown.Label>Contract</Dropdown.Label>
             <Dropdown.Item>
               <Link
                 as={NextLink}
                 href={`/contract/${searchResult.contract.id}/assets`}
+                className="text-color"
               >
                 {shortAddress(searchResult.contract.id || '', 21, 19)}
               </Link>
@@ -102,9 +116,13 @@ function SearchResultDropdown({
         )}
         {searchResult?.transaction && (
           <>
-            <Dropdown.Item>Transaction</Dropdown.Item>
+            <Dropdown.Label>Transaction</Dropdown.Label>
             <Dropdown.Item>
-              <Link as={NextLink} href={`/tx/${searchResult.transaction.id}`}>
+              <Link
+                as={NextLink}
+                href={`/tx/${searchResult.transaction.id}`}
+                className="text-color"
+              >
                 {shortAddress(searchResult.transaction.id || '', 20, 18)}
               </Link>
             </Dropdown.Item>
