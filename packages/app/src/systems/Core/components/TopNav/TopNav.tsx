@@ -1,11 +1,18 @@
 'use client';
 
+import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { Nav } from '@fuels/ui';
 import NextLink from 'next/link';
+import { useState } from 'react';
 
 import { setTheme } from '../../actions/setTheme';
+import { SearchWidget } from '../SearchWidget/SearchWidget';
 
-export function TopNav() {
+type TopNavProps = {
+  searchResult?: Maybe<SearchResult>;
+};
+
+export function TopNav({ searchResult }: TopNavProps) {
   const logo = (
     <NextLink href="/" className="flex items-center flex-1 laptop:flex-initial">
       <Nav.Logo />
@@ -31,7 +38,12 @@ export function TopNav() {
       >
         Bridge
       </Nav.MenuItem>
-      <Nav.MenuItem isActive as={NextLink} href="/">
+      <Nav.MenuItem
+        isActive
+        as={NextLink}
+        href="/"
+        className="flex items-center"
+      >
         Explorer
       </Nav.MenuItem>
       <Nav.MenuItem
@@ -48,13 +60,22 @@ export function TopNav() {
     <Nav.ThemeToggle onToggle={(theme) => setTheme({ theme })} />
   );
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   return (
     <Nav>
       <Nav.Desktop className="px-10">
         {logo}
-        <Nav.Menu>{externalLinks}</Nav.Menu>
+        {!isSearchOpen && <Nav.Menu>{externalLinks}</Nav.Menu>}
         <Nav.Spacer />
-        <Nav.Menu>{tooling}</Nav.Menu>
+        <Nav.Menu>
+          <SearchWidget
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+            searchResult={searchResult}
+          />
+          {tooling}
+        </Nav.Menu>
         {themeToggle}
       </Nav.Desktop>
       <Nav.Mobile>

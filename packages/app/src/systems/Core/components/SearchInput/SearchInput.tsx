@@ -10,8 +10,8 @@ import {
   Input,
   Dropdown,
   shortAddress,
-  Text,
   Link,
+  VStack,
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
@@ -166,7 +166,7 @@ export function SearchInput({
   }
 
   return (
-    <>
+    <VStack gap="0" className="justify-center">
       <Focus.ArrowNavigator autoFocus={autoFocus}>
         <Input className={cx(className)} radius="large" size="3">
           <Input.Slot className="mx-1">
@@ -208,9 +208,6 @@ export function SearchInput({
           setOpenDropdown(!openDropdown);
         }}
       />
-      <Text size="2">
-        Search by address, contract id, transaction id, or block id
-      </Text>
-    </>
+    </VStack>
   );
 }
