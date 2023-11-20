@@ -12,6 +12,7 @@ import {
   shortAddress,
   Link,
   VStack,
+  useBreakpoints,
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
@@ -34,6 +35,10 @@ function SearchResultDropdown({
   openDropdown: boolean;
   onOpenChange: () => void;
 }) {
+  const { isMobile } = useBreakpoints();
+  const trimL = isMobile ? 16 : 21;
+  const trimR = isMobile ? 14 : 19;
+
   return (
     <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
       <Dropdown.Trigger>
@@ -57,7 +62,7 @@ function SearchResultDropdown({
                 href={`/account/${searchResult.account.address}/assets`}
                 className="text-color"
               >
-                {shortAddress(searchResult.account.address || '', 21, 19)}
+                {shortAddress(searchResult.account.address || '', trimL, trimR)}
               </Link>
             </Dropdown.Item>
             <Dropdown.Separator />
@@ -73,7 +78,7 @@ function SearchResultDropdown({
                     href={`/tx/${transaction?.id}/`}
                     className="text-color"
                   >
-                    {shortAddress(transaction?.id || '', 21, 19)}
+                    {shortAddress(transaction?.id || '', trimL, trimR)}
                   </Link>
                 </Dropdown.Item>
               );
@@ -89,7 +94,7 @@ function SearchResultDropdown({
                 href={`/block/${searchResult.block.id}`}
                 className="text-color"
               >
-                {shortAddress(searchResult.block.id || '', 21, 19)}
+                {shortAddress(searchResult.block.id || '', trimL, trimR)}
               </Link>
             </Dropdown.Item>
             <Dropdown.Item className="hover:bg-border">
@@ -112,7 +117,7 @@ function SearchResultDropdown({
                 href={`/contract/${searchResult.contract.id}/assets`}
                 className="text-color"
               >
-                {shortAddress(searchResult.contract.id || '', 21, 19)}
+                {shortAddress(searchResult.contract.id || '', trimL, trimR)}
               </Link>
             </Dropdown.Item>
           </>
@@ -126,7 +131,7 @@ function SearchResultDropdown({
                 href={`/tx/${searchResult.transaction.id}`}
                 className="text-color"
               >
-                {shortAddress(searchResult.transaction.id || '', 21, 19)}
+                {shortAddress(searchResult.transaction.id || '', trimL, trimR)}
               </Link>
             </Dropdown.Item>
           </>
@@ -186,6 +191,7 @@ export function SearchInput({
                 icon={IconX}
                 iconColor="text-icon"
                 variant="link"
+                className="!ml-0 tablet:ml-2"
                 onClick={handleClear}
               />
               <Tooltip content="Submit">
@@ -194,6 +200,7 @@ export function SearchInput({
                   icon={IconCheck}
                   iconColor="text-brand"
                   variant="link"
+                  className="!ml-0 tablet:ml-2"
                   onClick={handleSubmit}
                 />
               </Tooltip>

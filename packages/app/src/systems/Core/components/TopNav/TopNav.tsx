@@ -85,6 +85,11 @@ export function TopNav({ searchResult }: TopNavProps) {
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
+          <SearchWidget
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+            searchResult={searchResult}
+          />
           {themeToggle}
         </Nav.MobileContent>
         <Nav.Menu>
