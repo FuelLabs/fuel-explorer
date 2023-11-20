@@ -12,23 +12,22 @@ import {
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
-import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
-const ICON_SIZE = 36;
-
 export type TxOutputProps = CardProps & {
   output: GroupedOutput;
-  title?: string;
 };
 
 const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
-  render: (_, { output, title, ...props }) => {
+  render: (_, { output, ...props }) => {
     const classes = styles();
     const { isMobile } = useBreakpoints();
 
@@ -36,47 +35,19 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     const assetId = output.assetId;
     const amount = output.totalAmount;
     const asset = useAsset(assetId);
-
+    const fuelAsset = useFuelAsset(asset);
     if (!asset) return null;
+
     return (
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
-          <HStack align="center">
-            {asset.icon ? (
-              <Image
-                src={asset.icon as string}
-                width={ICON_SIZE}
-                height={ICON_SIZE}
-                alt={asset.name}
-              />
-            ) : (
-              <TxIcon type="Mint" status="Submitted" />
-            )}
-            <VStack gap="0">
-              <Text className="flex items-center gap-2 text-md font-medium">
-                {title || asset.name}
-                {asset.symbol && (
-                  <Text className="text-muted text-sm">({asset.symbol})</Text>
-                )}
-                <Address
-                  value={output.assetId}
-                  fixed="b256"
-                  /*
-                   * I'm just hidding this until we get the output/input design merged
-                   * https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
-                   */
-                  className="hidden tablet:block"
-                />
-              </Text>
-              <HStack>
-                <Address prefix="To:" value={output.to || ''}>
-                  <Address.Link as={NextLink} href={`/account/${output.to}`}>
-                    View Account
-                  </Address.Link>
-                </Address>
-              </HStack>
-            </VStack>
-          </HStack>
+          <AssetItem assetId={assetId}>
+            <Address prefix="To:" value={output.to || ''}>
+              <Address.Link as={NextLink} href={`/account/${output.to}/assets`}>
+                View Account
+              </Address.Link>
+            </Address>
+          </AssetItem>
           {/*
             I'm just hidding this until we get the output/input design merged 
             https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
@@ -84,7 +55,16 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center" className="hidden tablet:block">
             {amount && (
               <Text className="text-secondary">
-                {bn(amount).format(isMobile ? { precision: 3 } : undefined)}{' '}
+                {fuelAsset?.decimals ? (
+                  <>
+                    {bn(amount).format({
+                      precision: isMobile ? 3 : undefined,
+                      units: fuelAsset.decimals,
+                    })}{' '}
+                  </>
+                ) : (
+                  formatZeroUnits(amount)
+                )}
                 {asset.symbol}
               </Text>
             )}
@@ -132,7 +112,10 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
               <Address prefix="Id:" value={contractId}>
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
+                <Address.Link
+                  as={NextLink}
+                  href={`/contract/${contractId}/assets`}
+                >
                   View Contract
                 </Address.Link>
               </Address>
@@ -160,7 +143,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               <Address value={recipient || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${recipient}`}
+                  href={`/account/${recipient}/assets`}
                   className="w-[60px] text-right"
                 >
                   Recipient
@@ -169,7 +152,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               <Address value={output.to || ''} linkPos="left">
                 <Address.Link
                   as={NextLink}
-                  href={`/account/${output.to}`}
+                  href={`/account/${output.to}/assets`}
                   className="w-[60px] text-right"
                 >
                   To
@@ -184,14 +167,12 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
 });
 
 export function TxOutput({ output, ...props }: TxOutputProps) {
-  if (output.type === GroupedOutputType.CoinOutput) {
+  if (
+    output.type === GroupedOutputType.CoinOutput ||
+    output.type === GroupedOutputType.VariableOutput ||
+    output.type === GroupedOutputType.ChangeOutput
+  ) {
     return <TxOutputCoin output={output} {...props} />;
-  }
-  if (output.type === GroupedOutputType.VariableOutput) {
-    return <TxOutputCoin output={output} {...props} title="Variable Output" />;
-  }
-  if (output.type === GroupedOutputType.ChangeOutput) {
-    return <TxOutputCoin output={output} {...props} title="Change Output" />;
   }
   if (output.type === GroupedOutputType.ContractOutput) {
     return <TxOutputContract output={output} {...props} />;

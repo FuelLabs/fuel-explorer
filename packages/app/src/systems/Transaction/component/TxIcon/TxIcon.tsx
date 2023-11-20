@@ -86,15 +86,15 @@ const styles = tv({
   variants: {
     size: {
       sm: {
-        root: 'w-8 h-8',
+        root: 'w-9 h-9',
         icon: 'w-4 h-4',
       },
       md: {
-        root: 'w-11 h-11',
+        root: 'w-10 h-10',
         icon: 'w-5 h-5',
       },
       lg: {
-        root: 'w-12 h-12',
+        root: 'w-11 h-11',
         icon: 'w-6 h-6',
       },
     },

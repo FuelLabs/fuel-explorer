@@ -91,6 +91,7 @@ extend type Transaction {
   groupedInputs: [GroupedInput]
   groupedOutputs: [GroupedOutput]
   isPredicate: Boolean
+  fee: U64
 }
 
 # --------------------------------

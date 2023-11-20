@@ -7,7 +7,7 @@ import { tv } from 'tailwind-variants';
 
 type CardInfoProps = BaseProps<{
   name?: string;
-  description?: string | null;
+  description?: ReactNode | null;
   children?: ReactNode;
 }>;
 

@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Card, Flex, VStack, Grid, Address } from '@fuels/ui';
-import { IconChecklist } from '@tabler/icons-react';
+import { VStack, Grid, Address, Icon } from '@fuels/ui';
+import { IconListDetails } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
-import { TxCard } from '~/systems/Transaction/component/TxCard/TxCard';
+import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
+import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 
 type BlockScreenSimpleProps = {
   block?: Maybe<BlockItemFragment>;
@@ -12,18 +16,16 @@ type BlockScreenSimpleProps = {
 };
 
 export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
+  const txList = (block?.transactions.map((v) => ({ node: v })) as any) || [];
   return (
-    <VStack className="px-4 desktop:px-0">
-      <Grid
-        className="my-6 grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-4"
-        gap="3"
-      >
+    <VStack>
+      <Grid className="grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-2 laptop:grid-cols-4 gap-6 mb-8">
         <CardInfo name="Producer" className="flex-1">
           <Address
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
           >
-            <Address.Link as={NextLink} href={`/account/${producer}`}>
+            <Address.Link as={NextLink} href={`/account/${producer}/assets`}>
               View Account
             </Address.Link>
           </Address>
@@ -42,23 +44,10 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
           {block?.header.transactionsCount}
         </CardInfo>
       </Grid>
-      <Flex className="border-b border-border pb-4">
-        <Card>
-          <Card.Body>
-            <Flex>
-              <IconChecklist /> Transactions
-            </Flex>
-          </Card.Body>
-        </Card>
-      </Flex>
-      <Grid
-        className="grid-cols-1 tablet:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3"
-        gap="6"
-      >
-        {block?.transactions.map((transaction) => (
-          <TxCard key={transaction.id} transaction={transaction} />
-        ))}
-      </Grid>
+      <PageTitle size="3" icon={<Icon icon={IconListDetails} />}>
+        Transactions
+      </PageTitle>
+      <TxList hidePagination transactions={txList} />
     </VStack>
   );
 }
