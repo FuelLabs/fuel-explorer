@@ -51,7 +51,7 @@ function SearchResultDropdown({
         {searchResult?.account && (
           <>
             <Dropdown.Label>Account</Dropdown.Label>
-            <Dropdown.Item>
+            <Dropdown.Item className="hover:bg-border">
               <Link
                 as={NextLink}
                 href={`/account/${searchResult.account.address}/assets`}
@@ -64,7 +64,10 @@ function SearchResultDropdown({
             <Dropdown.Label>Recent Transactions</Dropdown.Label>
             {searchResult.account.transactions?.map((transaction) => {
               return (
-                <Dropdown.Item key={transaction?.id}>
+                <Dropdown.Item
+                  key={transaction?.id}
+                  className="hover:bg-border"
+                >
                   <Link
                     as={NextLink}
                     href={`/tx/${transaction?.id}/`}
@@ -80,7 +83,7 @@ function SearchResultDropdown({
         {searchResult?.block && (
           <>
             <Dropdown.Label>Block</Dropdown.Label>
-            <Dropdown.Item>
+            <Dropdown.Item className="hover:bg-border">
               <Link
                 as={NextLink}
                 href={`/block/${searchResult.block.id}`}
@@ -89,7 +92,7 @@ function SearchResultDropdown({
                 {shortAddress(searchResult.block.id || '', 21, 19)}
               </Link>
             </Dropdown.Item>
-            <Dropdown.Item>
+            <Dropdown.Item className="hover:bg-border">
               <Link
                 as={NextLink}
                 href={`/block/${searchResult.block.height}`}
@@ -103,7 +106,7 @@ function SearchResultDropdown({
         {searchResult?.contract && (
           <>
             <Dropdown.Label>Contract</Dropdown.Label>
-            <Dropdown.Item>
+            <Dropdown.Item className="hover:bg-border">
               <Link
                 as={NextLink}
                 href={`/contract/${searchResult.contract.id}/assets`}
@@ -117,7 +120,7 @@ function SearchResultDropdown({
         {searchResult?.transaction && (
           <>
             <Dropdown.Label>Transaction</Dropdown.Label>
-            <Dropdown.Item>
+            <Dropdown.Item className="hover:bg-border">
               <Link
                 as={NextLink}
                 href={`/tx/${searchResult.transaction.id}`}
