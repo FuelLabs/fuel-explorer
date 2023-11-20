@@ -52,6 +52,7 @@ export const SearchWidget = ({
             <IconButton
               icon={IconX}
               variant="link"
+              className="text-color"
               onClick={() => setIsSearchOpen(false)}
             />
           </>
@@ -61,7 +62,7 @@ export const SearchWidget = ({
         <IconButton
           icon={IconSearch}
           variant="link"
-          className="mr-1 laptop:mr-0"
+          className="mr-1 text-color laptop:mr-0"
           onClick={() => setIsSearchOpen(!isSearchOpen)}
         />
       </Tooltip>
