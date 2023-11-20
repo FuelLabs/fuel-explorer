@@ -42,7 +42,7 @@ function SearchResultDropdown({
       <Dropdown.Content>
         {!searchResult && (
           <>
-            <Dropdown.Item>
+            <Dropdown.Item className="hover:bg-border">
               Input is not a valid address, contract id, block id, or
               transaction id
             </Dropdown.Item>
