@@ -35,7 +35,6 @@ export class SearchDomain extends Domain<any, Args> {
 
   async getSearch() {
     const { query } = this.args;
-    console.log(`query`, query);
     const parsedQuery = parseAddressParam(query);
     // TODO use last 5 once reverse pagination is supported
     const gqlQuery = gql`
