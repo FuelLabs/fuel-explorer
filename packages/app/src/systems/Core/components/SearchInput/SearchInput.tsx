@@ -10,8 +10,11 @@ import {
   Input,
   Dropdown,
   shortAddress,
+  Text,
+  Link,
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import NextLink from 'next/link';
 import { useRef, useState } from 'react';
 
 import { cx } from '../../utils/cx';
@@ -24,33 +27,87 @@ type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
 
 function SearchResultDropdown({
   searchResult,
+  openDropdown,
+  onOpenChange,
 }: {
   searchResult?: Maybe<SearchResult>;
+  openDropdown: boolean;
+  onOpenChange: () => void;
 }) {
   return (
-    <Dropdown
-      open={!!searchResult}
-      onOpenChange={() => console.log('open change')}
-    >
+    <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
       <Dropdown.Trigger>
         <div></div>
       </Dropdown.Trigger>
       <Dropdown.Content>
+        {!searchResult && (
+          <>
+            <Dropdown.Item>
+              Input is not a valid address, contract id, block id, or
+              transaction id
+            </Dropdown.Item>
+          </>
+        )}
         {searchResult?.account && (
           <>
             <Dropdown.Item>Account</Dropdown.Item>
             <Dropdown.Item>
-              {shortAddress(searchResult.account.address || '')}
+              <Link
+                as={NextLink}
+                href={`/account/${searchResult.account.address}/assets`}
+              >
+                {shortAddress(searchResult.account.address || '', 21, 19)}
+              </Link>
             </Dropdown.Item>
             <Dropdown.Separator />
             <Dropdown.Item>Recent Transactions</Dropdown.Item>
             {searchResult.account.transactions?.map((transaction) => {
               return (
                 <Dropdown.Item key={transaction?.id}>
-                  {transaction?.id}
+                  <Link as={NextLink} href={`/tx/${transaction?.id}/`}>
+                    {shortAddress(transaction?.id || '', 21, 19)}
+                  </Link>
                 </Dropdown.Item>
               );
             })}
+          </>
+        )}
+        {searchResult?.block && (
+          <>
+            <Dropdown.Item>Block</Dropdown.Item>
+            <Dropdown.Item>
+              <Link as={NextLink} href={`/block/${searchResult.block.id}`}>
+                {shortAddress(searchResult.block.id || '', 21, 19)}
+              </Link>
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <Link as={NextLink} href={`/block/${searchResult.block.height}`}>
+                {searchResult.block.height}
+              </Link>
+            </Dropdown.Item>
+          </>
+        )}
+        {searchResult?.contract && (
+          <>
+            <Dropdown.Item>Contract</Dropdown.Item>
+            <Dropdown.Item>
+              <Link
+                as={NextLink}
+                href={`/contract/${searchResult.contract.id}/assets`}
+              >
+                {shortAddress(searchResult.contract.id || '', 21, 19)}
+              </Link>
+            </Dropdown.Item>
+          </>
+        )}
+        {searchResult?.transaction && (
+          <>
+            <Dropdown.Item>Transaction</Dropdown.Item>
+            <Dropdown.Item>
+              <Link as={NextLink} href={`/tx/${searchResult.transaction.id}`}>
+                {shortAddress(searchResult.transaction.id || '', 20, 18)}
+              </Link>
+            </Dropdown.Item>
           </>
         )}
       </Dropdown.Content>
@@ -69,17 +126,15 @@ export function SearchInput({
   ...props
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
+  const [openDropdown, setOpenDropdown] = useState(!!searchResult);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  console.log(`searchResult in input`, searchResult);
-  console.log('bool', !!searchResult);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
   }
 
   function handleSubmit() {
-    console.log('handle submit');
+    setOpenDropdown(true);
     onSubmit?.(value || '');
   }
 
@@ -125,10 +180,16 @@ export function SearchInput({
           )}
         </Input>
       </Focus.ArrowNavigator>
-      <SearchResultDropdown searchResult={searchResult} />
-      {/* <Text size="2">
+      <SearchResultDropdown
+        searchResult={searchResult}
+        openDropdown={openDropdown}
+        onOpenChange={() => {
+          setOpenDropdown(!openDropdown);
+        }}
+      />
+      <Text size="2">
         Search by address, contract id, transaction id, or block id
-      </Text> */}
+      </Text>
     </>
   );
 }
