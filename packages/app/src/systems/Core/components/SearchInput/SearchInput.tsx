@@ -123,7 +123,7 @@ function SearchResultDropdown({
                 href={`/tx/${searchResult.transaction.id}`}
                 className="text-color"
               >
-                {shortAddress(searchResult.transaction.id || '', 20, 18)}
+                {shortAddress(searchResult.transaction.id || '', 21, 19)}
               </Link>
             </Dropdown.Item>
           </>
