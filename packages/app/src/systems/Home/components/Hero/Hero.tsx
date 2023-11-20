@@ -1,20 +1,11 @@
 'use client';
 
-import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { tv } from 'tailwind-variants';
-import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
 
-type HeroProps = {
-  searchResult?: Maybe<SearchResult>;
-};
-
-export async function Hero({ searchResult }: HeroProps) {
+export async function Hero() {
   const classes = styles();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   return (
     <Theme appearance="dark">
@@ -23,16 +14,6 @@ export async function Hero({ searchResult }: HeroProps) {
           <Heading as="h1" className={classes.title()}>
             Explore Fuel Network
           </Heading>
-          <SearchInput
-            searchResult={searchResult}
-            className={classes.input()}
-            onSubmit={(query) => {
-              const pageParam = searchParams.get('page');
-              router.push(
-                `/transactions?page=${pageParam}&searchQuery=${query}`,
-              );
-            }}
-          />
         </Container>
         <Box as="figure" className={classes.img()}>
           <Box className={classes.imgWrapper()}>

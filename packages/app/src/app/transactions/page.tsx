@@ -1,5 +1,5 @@
+import { search } from '~/systems/Core/actions/search';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
-import { search } from '~/systems/Home/actions/search';
 import { getLastTxs } from '~/systems/Transaction/actions/get-last-txs';
 import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 

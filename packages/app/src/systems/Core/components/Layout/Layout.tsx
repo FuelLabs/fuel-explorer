@@ -24,7 +24,7 @@ export function Layout({
   return (
     <VStack className="min-w-screen min-h-screen" gap="0">
       <TopNav searchResult={searchResult} />
-      {hero && <Hero searchResult={searchResult} />}
+      {hero && <Hero />}
       <Container
         size="4"
         className={cx(
