@@ -42,11 +42,14 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <AssetItem assetId={assetId}>
-            <Address prefix="To:" value={output.to || ''}>
-              <Address.Link as={NextLink} href={`/account/${output.to}/assets`}>
-                View Account
-              </Address.Link>
-            </Address>
+            <Address
+              prefix="To:"
+              value={output.to || ''}
+              linkProps={{
+                as: NextLink,
+                href: `/account/${output.to}/assets`,
+              }}
+            />
           </AssetItem>
           {/*
             I'm just hidding this until we get the output/input design merged 
@@ -111,14 +114,14 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <TxIcon status="Success" type="Contract" />
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
-              <Address prefix="Id:" value={contractId}>
-                <Address.Link
-                  as={NextLink}
-                  href={`/contract/${contractId}/assets`}
-                >
-                  View Contract
-                </Address.Link>
-              </Address>
+              <Address
+                prefix="Id:"
+                value={contractId}
+                linkProps={{
+                  as: NextLink,
+                  href: `/contract/${contractId}/assets`,
+                }}
+              />
             </VStack>
           </HStack>
         </Card.Header>
@@ -140,24 +143,22 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center" gap="1" className="flex-1 justify-between">
             <Text>Message</Text>
             <VStack gap="1" className="mr-2">
-              <Address value={recipient || ''} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${recipient}/assets`}
-                  className="w-[60px] text-right"
-                >
-                  Recipient
-                </Address.Link>
-              </Address>
-              <Address value={output.to || ''} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${output.to}/assets`}
-                  className="w-[60px] text-right"
-                >
-                  To
-                </Address.Link>
-              </Address>
+              <Address
+                prefix="From: "
+                value={recipient || ''}
+                linkProps={{
+                  as: NextLink,
+                  href: `/account/${recipient}/assets`,
+                }}
+              />
+              <Address
+                prefix="To: "
+                value={output.to || ''}
+                linkProps={{
+                  as: NextLink,
+                  href: `/account/${output.to}/assets`,
+                }}
+              />
             </VStack>
           </HStack>
         </Card.Header>
