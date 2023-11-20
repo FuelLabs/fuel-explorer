@@ -7,7 +7,6 @@ import {
   getGasUsedFromReceipts,
   processGqlReceipt,
 } from 'fuels';
-import { gql } from 'graphql-request';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
@@ -102,12 +101,11 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   }
 
   async getFee() {
-    const { source: transaction } = this;
+    const { source: transaction, context } = this;
+    const { gasPerByte, gasPriceFactor } =
+      context.chainInfo.consensusParameters;
 
     const gasUsed = this._getGasUsed();
-    const chainInfo = await this._getChainInfo();
-    const { gasPerByte, gasPriceFactor } = chainInfo.chain.consensusParameters;
-
     const transactionBytes = getBytesCopy(transaction.rawPayload);
     const [decodedTransaction] = new TransactionCoder().decode(
       getBytesCopy(transaction.rawPayload),
@@ -206,31 +204,5 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const decodedReceipts = receipts.map(processGqlReceipt);
 
     return getGasUsedFromReceipts(decodedReceipts).toString();
-  }
-
-  private async _getChainInfo() {
-    const gqlQuery = gql`
-      query chainInfo {
-        chain {
-          consensusParameters {
-            gasPriceFactor
-            gasPerByte
-          }
-        }
-      }
-    `;
-
-    /** @todo: Get types from the query directly instead of creating custom types */
-    type Result = {
-      chain: {
-        consensusParameters: {
-          gasPriceFactor: string;
-          gasPerByte: string;
-        };
-      };
-    };
-
-    const data = await this.query<Result>(gqlQuery);
-    return data;
   }
 }
