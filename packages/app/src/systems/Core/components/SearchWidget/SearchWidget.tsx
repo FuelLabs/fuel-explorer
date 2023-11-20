@@ -1,6 +1,7 @@
 import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { HStack, IconButton, Tooltip } from '@fuels/ui';
 import { IconSearch, IconX } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
 import type { Dispatch, SetStateAction } from 'react';
 import { tv } from 'tailwind-variants';
@@ -24,25 +25,38 @@ export const SearchWidget = ({
 
   return (
     <HStack className="items-center gap-0 laptop:gap-4 justify-center">
-      {isSearchOpen && (
-        <>
-          <SearchInput
-            searchResult={searchResult}
-            className={classes.input()}
-            onSubmit={(query) => {
-              const pageParam = searchParams.get('page');
-              router.push(
-                `/transactions?page=${pageParam}&searchQuery=${query}`,
-              );
-            }}
-          />
-          <IconButton
-            icon={IconX}
-            variant="link"
-            onClick={() => setIsSearchOpen(false)}
-          />
-        </>
-      )}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <>
+            <motion.div
+              initial="closed"
+              animate="open"
+              exit="closed"
+              transition={{ duration: 0.2 }}
+              variants={{
+                open: { scaleX: '100%' },
+                closed: { scaleX: '0%' },
+              }}
+            >
+              <SearchInput
+                searchResult={searchResult}
+                className={classes.input()}
+                onSubmit={(query) => {
+                  const pageParam = searchParams.get('page');
+                  router.push(
+                    `/transactions?page=${pageParam}&searchQuery=${query}`,
+                  );
+                }}
+              />
+            </motion.div>
+            <IconButton
+              icon={IconX}
+              variant="link"
+              onClick={() => setIsSearchOpen(false)}
+            />
+          </>
+        )}
+      </AnimatePresence>
       <Tooltip content="Search by address, contract id, transaction id, or block id">
         <IconButton
           icon={IconSearch}
