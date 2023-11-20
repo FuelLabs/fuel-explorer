@@ -13,6 +13,8 @@ type TopNavProps = {
 };
 
 export function TopNav({ searchResult }: TopNavProps) {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   const logo = (
     <NextLink href="/" className="flex items-center flex-1 laptop:flex-initial">
       <Nav.Logo />
@@ -42,7 +44,11 @@ export function TopNav({ searchResult }: TopNavProps) {
         isActive
         as={NextLink}
         href="/"
-        className="flex items-center"
+        className={
+          isSearchOpen
+            ? 'flex items-center laptop:data-[active=true]:before:top-[-16px]'
+            : 'flex items-center'
+        }
       >
         Explorer
       </Nav.MenuItem>
@@ -59,8 +65,6 @@ export function TopNav({ searchResult }: TopNavProps) {
   const themeToggle = (
     <Nav.ThemeToggle onToggle={(theme) => setTheme({ theme })} />
   );
-
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <Nav>

@@ -23,7 +23,7 @@ export const SearchWidget = ({
   const searchParams = useSearchParams();
 
   return (
-    <HStack className="items-center gap-3 justify-center">
+    <HStack className="items-center gap-4 justify-center">
       {isSearchOpen && (
         <>
           <SearchInput
