@@ -49,6 +49,14 @@ fragment TransactionInput on Input {
     utxoId
     witnessIndex
   }
+  ... on InputContract {
+    utxoId
+    balanceRoot
+    txPointer
+    contract {
+      ...TransactionContractItem
+    }
+  }
   ... on InputMessage {
     sender
     recipient
@@ -67,7 +75,16 @@ fragment TransactionOutput on Output {
     amount
     assetId
   }
+  ... on ContractOutput {
+    inputIndex
+    balanceRoot
+  }
   ... on ChangeOutput {
+    to
+    amount
+    assetId
+  }
+  ... on VariableOutput {
     to
     amount
     assetId
