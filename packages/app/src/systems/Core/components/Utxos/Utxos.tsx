@@ -8,7 +8,7 @@ import {
   Box,
 } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
-import { IconCoins, IconExternalLink } from '@tabler/icons-react';
+import { IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { VariableSizeList as List } from 'react-window';
@@ -43,15 +43,8 @@ function UtxoItem({ item, style, assetId }: UtxoItemProps) {
         value={item.utxoId}
         className="flex-col items-start gap-1 flex-1 tablet:flex-row tablet:items-center tablet:gap-4"
         addressOpts={{ trimLeft: trim, trimRight: trim }}
-      >
-        <Address.Link
-          as={NextLink}
-          href={`/tx/${item.utxoId.slice(0, -2)}`}
-          className="text-[0.8rem]"
-        >
-          Transaction <Icon icon={IconExternalLink} size={14} />
-        </Address.Link>
-      </Address>
+        linkProps={{ as: NextLink, href: `/tx/${item.utxoId.slice(0, -2)}` }}
+      />
       <Text className="text-secondary flex items-center gap-2">
         <Icon icon={IconCoins} size={14} />{' '}
         {fuelAsset?.decimals ? (
