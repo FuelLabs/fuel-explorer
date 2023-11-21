@@ -17,7 +17,7 @@ export default async function Transactions({
 }: PageProps) {
   const txs = await getLastTxs({ page: Number(page) });
   const searchResult = await search({ query: searchQuery });
-  console.log('result in page', searchResult);
+
   return (
     <Layout
       hero
