@@ -1,5 +1,6 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
-import type { GroupedOutput } from '@fuel-explorer/graphql';
+import type { ChangeOutput, GroupedOutput } from '@fuel-explorer/graphql';
+import type { CollapsibleProps } from '@fuels/ui';
 import {
   Address,
   Card,
@@ -9,8 +10,10 @@ import {
   createComponent,
   cx,
   useBreakpoints,
+  Collapsible,
+  Icon,
 } from '@fuels/ui';
-import type { CardProps } from '@fuels/ui';
+import { IconCircleMinus, IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
@@ -21,27 +24,44 @@ import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
-export type TxOutputProps = CardProps & {
+export type TxOutputProps = CollapsibleProps & {
   output: GroupedOutput;
 };
 
-const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
+const COIN_OUTPUT_LABEL = {
+  CoinOutput: (
+    <>
+      <Icon icon={IconCircleMinus} size={12} className="mr-2 text-muted" />
+      Spent
+    </>
+  ),
+  ChangeOutput: (
+    <>
+      <Icon icon={IconCoins} size={12} className="mr-2 text-muted" />
+      Final Balance
+    </>
+  ),
+};
+
+const TxOutputCoin = createComponent<TxOutputProps, typeof Collapsible>({
   id: 'TxOutputCoin',
   render: (_, { output, ...props }) => {
-    const classes = styles();
     const { isMobile } = useBreakpoints();
 
     if (!output.assetId) return null;
     const assetId = output.assetId;
-    const amount = output.totalAmount;
+    const changeOutput = output.outputs?.find(
+      (i) => i?.__typename === 'ChangeOutput',
+    );
+    const amount = (changeOutput as ChangeOutput)?.amount ?? bn(0);
     const asset = useAsset(assetId);
     const fuelAsset = useFuelAsset(asset);
     if (!asset) return null;
 
     return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header className={classes.header()}>
-          <AssetItem assetId={assetId}>
+      <Collapsible {...props} className={cx('py-3', props.className)}>
+        <Collapsible.Header>
+          <AssetItem assetId={assetId} className="flex-1">
             <Address
               prefix="To:"
               value={output.to || ''}
@@ -72,31 +92,36 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
               </Text>
             )}
           </HStack>
-        </Card.Header>
-      </Card>
-    );
-  },
-});
-
-const TxOutputContract = createComponent<TxOutputProps, typeof Card>({
-  id: 'TxOutputContract',
-  render: (_, { output, ...props }) => {
-    const classes = styles();
-
-    return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header className={classes.header()}>
-          <HStack align="center">
-            <TxIcon status="Submitted" type="Contract" />
-            <VStack gap="1">
-              <Text className="font-medium">Contract Output</Text>
-              <Text className="text-sm text-secondary">
-                Input Index: {output.inputIndex}
-              </Text>
-            </VStack>
-          </HStack>
-        </Card.Header>
-      </Card>
+        </Collapsible.Header>
+        <Collapsible.Content>
+          <Collapsible.Title>Amounts</Collapsible.Title>
+          <Collapsible.Body className="text-xs leading-normal flex flex-col gap-2">
+            {output.outputs?.map((output) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const amount = (output as any)?.amount;
+              const typename = output?.__typename as string;
+              return (
+                <HStack key={typename} className="justify-between">
+                  <span>{COIN_OUTPUT_LABEL[typename]}</span>
+                  <span className="text-secondary">
+                    {fuelAsset?.decimals ? (
+                      <>
+                        {bn(amount).format({
+                          precision: isMobile ? 3 : undefined,
+                          units: fuelAsset.decimals,
+                        })}{' '}
+                      </>
+                    ) : (
+                      formatZeroUnits(amount)
+                    )}
+                    {asset.symbol}
+                  </span>
+                </HStack>
+              );
+            })}
+          </Collapsible.Body>
+        </Collapsible.Content>
+      </Collapsible>
     );
   },
 });
@@ -104,12 +129,11 @@ const TxOutputContract = createComponent<TxOutputProps, typeof Card>({
 const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputContractCreated',
   render: (_, { output, ...props }) => {
-    const classes = styles();
     const contractId = output.contract?.id as string;
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header className={classes.header()}>
+        <Card.Header>
           <HStack align="center">
             <TxIcon status="Success" type="Contract" />
             <VStack gap="1">
@@ -140,9 +164,9 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <TxIcon type="Message" status="Submitted" />
-          <HStack align="center" gap="1" className="flex-1 justify-between">
-            <Text>Message</Text>
-            <VStack gap="1" className="mr-2">
+          <HStack className="gap-1 flex-col tablet:flex-row tablet:items-center tablet:flex-1">
+            <Text className="hidden tablet:block">Message</Text>
+            <VStack className="gap-1 tablet:flex-1 tablet:items-end">
               <Address
                 prefix="From: "
                 value={recipient || ''}
@@ -170,13 +194,9 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
 export function TxOutput({ output, ...props }: TxOutputProps) {
   if (
     output.type === GroupedOutputType.CoinOutput ||
-    output.type === GroupedOutputType.VariableOutput ||
     output.type === GroupedOutputType.ChangeOutput
   ) {
     return <TxOutputCoin output={output} {...props} />;
-  }
-  if (output.type === GroupedOutputType.ContractOutput) {
-    return <TxOutputContract output={output} {...props} />;
   }
   if (output.type === GroupedOutputType.ContractCreated) {
     return <TxOutputContractCreated output={output} {...props} />;

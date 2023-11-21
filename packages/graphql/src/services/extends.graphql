@@ -31,7 +31,6 @@ type ParsedTime {
 
 enum GroupedInputType {
   InputCoin
-  InputContract
   InputMessage
 }
 
@@ -49,10 +48,8 @@ type GroupedInput {
 
 enum GroupedOutputType {
   CoinOutput
-  ContractOutput
   MessageOutput
   ChangeOutput
-  VariableOutput
   ContractCreated
 }
 

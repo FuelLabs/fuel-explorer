@@ -2,12 +2,9 @@ import { bn } from '@fuel-ts/math';
 import { groupBy } from 'lodash';
 
 import type {
-  ChangeOutput,
   CoinOutput,
   ContractCreated,
-  ContractOutput,
   TransactionItemFragment,
-  VariableOutput,
 } from '../generated/types';
 
 type Outputs = TransactionItemFragment['outputs'];
@@ -16,54 +13,19 @@ export class OutputDomain {
   constructor(private outputs: Outputs) {}
 
   get groupedOutputs() {
-    return [
-      ...this.coinOutputs,
-      ...this.contractOutputs,
-      ...this.changeOutputs,
-      ...this.variableOutputs,
-      ...this.contractCreatedOutputs,
-    ];
+    return [...this.coinOutputs, ...this.contractCreatedOutputs];
   }
 
   get coinOutputs() {
-    const outputs = this._filterByTypename<CoinOutput>('CoinOutput');
+    const outputs = this._filterByTypename<CoinOutput>([
+      'CoinOutput',
+      'ChangeOutput',
+    ]);
     const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
     return entries.map(([assetId, outputs]) => {
       const type = outputs[0].__typename;
       const to = outputs[0].to;
-      const totalAmount = this._getTotalAmount(outputs);
-      return { to, assetId, type, totalAmount, outputs };
-    });
-  }
-
-  get contractOutputs() {
-    const outputs = this._filterByTypename<ContractOutput>('ContractOutput');
-    const entries = Object.entries(groupBy(outputs, (i) => i.inputIndex));
-    return entries.map(([inputIndex, outputs]) => {
-      const type = outputs[0].__typename;
-      return { inputIndex, type, outputs };
-    });
-  }
-
-  get changeOutputs() {
-    const outputs = this._filterByTypename<ChangeOutput>('ChangeOutput');
-    const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
-    return entries.map(([assetId, outputs]) => {
-      const type = outputs[0].__typename;
-      const to = outputs[0].to;
-      const totalAmount = this._getTotalAmount(outputs);
-      return { to, assetId, type, outputs, totalAmount };
-    });
-  }
-
-  get variableOutputs() {
-    const outputs = this._filterByTypename<VariableOutput>('VariableOutput');
-    const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
-    return entries.map(([assetId, outputs]) => {
-      const type = outputs[0].__typename;
-      const to = outputs[0].to;
-      const totalAmount = this._getTotalAmount(outputs);
-      return { to, assetId, type, outputs, totalAmount };
+      return { to, assetId, type, outputs };
     });
   }
 
@@ -77,8 +39,9 @@ export class OutputDomain {
     });
   }
 
-  private _filterByTypename<T>(typename: string) {
-    return this.outputs?.filter((i) => i.__typename === typename) as T[];
+  private _filterByTypename<T>(typename: string | string[]) {
+    const type = Array.isArray(typename) ? typename : [typename];
+    return this.outputs?.filter((i) => type.includes(i.__typename)) as T[];
   }
 
   private _getTotalAmount<T extends { amount: string }>(inputs: T[]) {
