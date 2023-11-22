@@ -1,5 +1,10 @@
-import { TxScreenSkeleton } from '~/systems/Transaction/screens/TxScreen/TxScreenSkeleton';
+import { TxScreenLoader } from '~/systems/Transaction/component/TxScreen/TxScreenLoader';
 
 export default function Loading() {
-  return <TxScreenSkeleton />;
+  return (
+    <>
+      {/* <TxTitle hideViewMode id={id} /> */}
+      <TxScreenLoader />
+    </>
+  );
 }
