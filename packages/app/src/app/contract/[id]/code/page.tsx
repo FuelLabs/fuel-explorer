@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { ContractCode } from '~/systems/Contract/screens/ContractCode';
-import { CodeBlockSkeleton } from '~/systems/Core/components/CodeBlock/CodeBlockSkeleton';
+import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
 type ContractProps = {
   params: {
@@ -12,7 +12,7 @@ export default async function ContractCodePage({
   params: { id },
 }: ContractProps) {
   return (
-    <Suspense fallback={<CodeBlockSkeleton />}>
+    <Suspense fallback={<CodeBlock isLoading value="_" />}>
       <ContractCode id={id} />
     </Suspense>
   );

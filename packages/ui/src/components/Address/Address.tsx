@@ -20,6 +20,7 @@ export type AddressBaseProps = {
   addressOpts?: UseFuelAddressOpts;
   fixed?: UseFuelAddressOpts['fixed'];
   linkProps?: AddressLinkProps;
+  isLoading?: boolean;
 };
 
 export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
@@ -48,6 +49,11 @@ export const Address = createComponent<AddressProps, typeof HStack>({
         {...props}
         className={classes.root({ className })}
       >
+        {/* <LoadingWrapper
+          isLoading={isLoading}
+          loadingEl={<LoadingBox className="w-32 h-6" />}
+          regularEl={shortAddress(tx.id)}
+        /> */}
         <HStack align="center" gap="1">
           {prefix && <span className={classes.prefix()}>{prefix}</span>}
           <Copyable value={address} className={classes.address()} iconSize={16}>

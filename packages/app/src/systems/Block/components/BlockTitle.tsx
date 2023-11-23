@@ -7,12 +7,20 @@ import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
 import { useViewMode } from '~/systems/Core/hooks/useViewMode';
 import { isValidAddress } from '~/systems/Core/utils/address';
 
-export function BlockTitle({ id }: { id: string }) {
+export function BlockTitle({
+  id,
+  isLoading,
+}: {
+  id: string;
+  isLoading?: boolean;
+}) {
   const { viewMode, setViewMode } = useViewMode();
   return (
     <PageTitle
       icon={<IconCube size={24} stroke={2.4} />}
-      rightElement={<ViewMode mode={viewMode} onChange={setViewMode} />}
+      rightElement={
+        !isLoading && <ViewMode mode={viewMode} onChange={setViewMode} />
+      }
     >
       Block
       {isValidAddress(id) ? (

@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
+import { AccountPredicateLoader } from '~/systems/Account/components/AccountPredicate/AccountPredicateLoader';
 import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
 import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
-import { AccountPredicate } from '~/systems/Account/screens/AccountPredicate';
-import { CodeBlockSkeleton } from '~/systems/Core/components/CodeBlock/CodeBlockSkeleton';
+import { AccountTitle } from '~/systems/Account/components/AccountTitle/AccountTitle';
+import { AccountPredicateScreen } from '~/systems/Account/screens/AccountPredicate';
 
 type PageProps = {
   params: {
@@ -15,11 +16,14 @@ export default async function AccountPredicatePage({
 }: PageProps) {
   return (
     <>
+      <Suspense fallback={<AccountTitle isLoading id={id} />}>
+        <AccountTitle id={id} />
+      </Suspense>
       <Suspense fallback={<AccountTabs isLoading />}>
         <AccountsTabsSync id={id} />
       </Suspense>
-      <Suspense fallback={<CodeBlockSkeleton />}>
-        <AccountPredicate id={id} />
+      <Suspense fallback={<AccountPredicateLoader />}>
+        <AccountPredicateScreen id={id} />
       </Suspense>
     </>
   );

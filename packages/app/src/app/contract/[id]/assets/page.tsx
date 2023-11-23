@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { AssetsSkeleton } from '~/systems/Asset/components/AssetsSkeleton';
+import { AssetsLoader } from '~/systems/Asset/components/AssetsLoader';
 import { ContractAssets } from '~/systems/Contract/screens/ContractAsset';
 
 type ContractProps = {
@@ -10,7 +10,7 @@ type ContractProps = {
 
 export default async function ContractPage({ params: { id } }: ContractProps) {
   return (
-    <Suspense fallback={<AssetsSkeleton />}>
+    <Suspense fallback={<AssetsLoader />}>
       <ContractAssets id={id} />
     </Suspense>
   );

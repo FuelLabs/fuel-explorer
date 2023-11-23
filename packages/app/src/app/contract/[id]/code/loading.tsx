@@ -1,5 +1,5 @@
-import { CodeBlockSkeleton } from '~/systems/Core/components/CodeBlock/CodeBlockSkeleton';
+import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
 export default function Loader() {
-  return <CodeBlockSkeleton />;
+  return <CodeBlock isLoading value="" />;
 }

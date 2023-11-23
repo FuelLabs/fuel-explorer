@@ -1,8 +1,7 @@
-import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
+import type { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
 import { getBlock } from '../actions/get-block';
-import { BlockScreenAdvanced } from '../components/BlockScreenAdvanced';
-import { BlockScreenSimple } from '../components/BlockScreenSimple';
+import { Block } from '../components/Block';
 
 type BlockScreenProps = {
   id: string;
@@ -12,13 +11,6 @@ type BlockScreenProps = {
 export async function BlockScreen({ id, viewMode }: BlockScreenProps) {
   const { block, producer } = await getBlock({ id });
   return (
-    <>
-      {viewMode === ViewModes.Simple && (
-        <BlockScreenSimple block={block} producer={producer} />
-      )}
-      {viewMode === ViewModes.Advanced && (
-        <BlockScreenAdvanced block={block ? { ...block, producer } : null} />
-      )}
-    </>
+    <Block id={id} viewMode={viewMode} block={block} producer={producer} />
   );
 }

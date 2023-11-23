@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
+import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
 import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
 import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
+import { AccountTitle } from '~/systems/Account/components/AccountTitle/AccountTitle';
 import { AccountBalances } from '~/systems/Account/screens/AccountBalances';
-import { AssetsSkeleton } from '~/systems/Asset/components/AssetsSkeleton';
 
 type AccountProps = {
   params: {
@@ -13,10 +14,13 @@ type AccountProps = {
 export default async function Account({ params: { id } }: AccountProps) {
   return (
     <>
+      <Suspense fallback={<AccountTitle isLoading id={id} />}>
+        <AccountTitle id={id} />
+      </Suspense>
       <Suspense fallback={<AccountTabs isLoading />}>
         <AccountsTabsSync id={id} />
       </Suspense>
-      <Suspense fallback={<AssetsSkeleton />}>
+      <Suspense fallback={<AccountAssetsLoader />}>
         <AccountBalances id={id} />
       </Suspense>
     </>

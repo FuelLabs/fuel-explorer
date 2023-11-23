@@ -1,5 +1,5 @@
-import { BlockScreenSkeleton } from '~/systems/Block/components/BlockScreenSkeleton';
+import { BlockLoader } from '~/systems/Block/components/BlockLoader';
 
 export default function Loading() {
-  return <BlockScreenSkeleton />;
+  return <BlockLoader />;
 }

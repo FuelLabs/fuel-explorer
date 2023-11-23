@@ -1,26 +1,12 @@
-import { VStack } from '@fuels/ui';
-import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
-import { EmptyAssets } from '~/systems/Core/components/EmptyBlocks/EmptyAsset';
-
 import { getBalances } from '../actions/get-balances';
+import { AccountAssets } from '../components/AccountAssets/AccountAssets';
 
-type AccountScreenProps = {
+type AccountAssetsProps = {
   id: string;
 };
 
-export async function AccountBalances({ id }: AccountScreenProps) {
+export async function AccountBalances({ id }: AccountAssetsProps) {
   const balances = await getBalances({ owner: id });
-  if (!balances?.length) {
-    return <EmptyAssets entity="assets" />;
-  }
 
-  return (
-    <VStack className="min-h-[45vh]">
-      {balances?.map((balance) => {
-        return (
-          <BalanceItem key={balance.assetId + balance.owner} item={balance} />
-        );
-      })}
-    </VStack>
-  );
+  return <AccountAssets balances={balances} id={id} />;
 }

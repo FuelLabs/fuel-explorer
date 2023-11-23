@@ -12,5 +12,5 @@ export const TxListLoader = ({ numberOfTxs = 4 }: TxListLoaderProps) => {
   );
   const txs = baseArray.map((v) => ({ node: { id: v } }));
 
-  return <TxList isLoading transactions={txs as any} />;
+  return <TxList isLoading hidePagination transactions={txs as any} />;
 };

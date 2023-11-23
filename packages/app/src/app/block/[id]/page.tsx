@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { BlockScreenSkeleton } from '~/systems/Block/components/BlockScreenSkeleton';
+import { BlockLoader } from '~/systems/Block/components/BlockLoader';
 import { BlockScreen } from '~/systems/Block/screens/BlockScreen';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
@@ -17,7 +17,7 @@ export default async function Block({
   searchParams: { view: viewMode = ViewModes.Simple },
 }: BlockProps) {
   return (
-    <Suspense fallback={<BlockScreenSkeleton />}>
+    <Suspense fallback={<BlockLoader />}>
       <BlockScreen id={id} viewMode={viewMode} />
     </Suspense>
   );

@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
 import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
-import { AccountTransactions } from '~/systems/Account/screens/AccountTransactions';
+import { AccountTitle } from '~/systems/Account/components/AccountTitle/AccountTitle';
+import { AccountTransactionsScreen } from '~/systems/Account/screens/AccountTransactions';
 import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
 
 type PageProps = {
@@ -15,11 +16,14 @@ export default async function AccountTransactionsPage({
 }: PageProps) {
   return (
     <>
+      <Suspense fallback={<AccountTitle isLoading id={id} />}>
+        <AccountTitle id={id} />
+      </Suspense>
       <Suspense fallback={<AccountTabs isLoading />}>
         <AccountsTabsSync id={id} />
       </Suspense>
       <Suspense fallback={<TxListLoader />}>
-        <AccountTransactions id={id} />
+        <AccountTransactionsScreen id={id} />
       </Suspense>
     </>
   );

@@ -1,11 +1,13 @@
+import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
 import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
-import { AssetsSkeleton } from '~/systems/Asset/components/AssetsSkeleton';
+import { AccountTitle } from '~/systems/Account/components/AccountTitle/AccountTitle';
 
 export default function Loading() {
   return (
     <>
+      <AccountTitle isLoading id={''} />
       <AccountTabs isLoading />
-      <AssetsSkeleton />
+      <AccountAssetsLoader />
     </>
   );
 }

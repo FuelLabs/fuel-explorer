@@ -5,10 +5,7 @@ import { TransactionsTitle } from './title';
 
 export default function TxLayout({ children }: { children: ReactNode }) {
   return (
-    <Layout
-      hero
-      contentClassName="[&_.rt-ContainerInner]:space-y-2 tablet:[&_.rt-ContainerInner]:space-y-2 laptop:[&_.rt-ContainerInner]:space-y-10"
-    >
+    <Layout hero contentClassName="[&_.rt-ContainerInner]:space-y-10">
       <TransactionsTitle />
       {children}
     </Layout>

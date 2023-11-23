@@ -1,5 +1,5 @@
-import { AssetsSkeleton } from '~/systems/Asset/components/AssetsSkeleton';
+import { AssetsLoader } from '~/systems/Asset/components/AssetsLoader';
 
 export default function Loading() {
-  return <AssetsSkeleton />;
+  return <AssetsLoader />;
 }
