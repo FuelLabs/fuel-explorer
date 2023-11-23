@@ -39,7 +39,11 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     const amount = output.totalAmount;
     const asset = useAsset(assetId);
     const fuelAsset = useFuelAsset(asset);
-    const isChangeOutput = output.type === GroupedOutputType.ChangeOutput;
+    const isReceiving =
+      output.type === GroupedOutputType.ChangeOutput ||
+      (output.outputs?.length === 1 &&
+        output.outputs[0]?.__typename === 'CoinOutput');
+
     if (!asset) return null;
 
     return (
@@ -61,8 +65,8 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           */}
           <HStack className="hidden tablet:flex items-center gap-2">
             <Icon
-              icon={isChangeOutput ? IconArrowUp : IconArrowDown}
-              className={isChangeOutput ? 'text-success' : 'text-error'}
+              icon={isReceiving ? IconArrowUp : IconArrowDown}
+              className={isReceiving ? 'text-success' : 'text-error'}
             />
             {amount && (
               <Text className="text-secondary">
@@ -81,7 +85,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
             )}
             <HelperIcon
               message={
-                isChangeOutput
+                isReceiving
                   ? 'This is the UTXO related to the amount remaining after transaction'
                   : 'This is the UTXO spent in the transaction'
               }
