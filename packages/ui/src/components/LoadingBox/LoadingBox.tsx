@@ -1,6 +1,7 @@
-import type { BoxProps } from '@fuels/ui';
-import { Box } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
+
+import type { BoxProps } from '../Box';
+import { Box } from '../Box';
 
 type LoadingBoxProps = BoxProps;
 

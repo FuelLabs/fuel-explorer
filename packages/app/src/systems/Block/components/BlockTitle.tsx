@@ -1,5 +1,5 @@
 'use client';
-import { Address } from '@fuels/ui';
+import { Address, LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { IconCube } from '@tabler/icons-react';
 import { PageSubtitle } from '~/systems/Core/components/PageSubtitle/PageSubtitle';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
@@ -23,11 +23,17 @@ export function BlockTitle({
       }
     >
       Block
-      {isValidAddress(id) ? (
-        <Address full value={id || ''} fixed="b256" />
-      ) : (
-        <PageSubtitle>#{id}</PageSubtitle>
-      )}
+      <LoadingWrapper
+        isLoading={isLoading}
+        loadingEl={<LoadingBox className="w-20 h-5 mt-1" />}
+        regularEl={
+          isValidAddress(id) ? (
+            <Address full value={id || ''} fixed="b256" />
+          ) : (
+            <PageSubtitle>#{id}</PageSubtitle>
+          )
+        }
+      />
     </PageTitle>
   );
 }

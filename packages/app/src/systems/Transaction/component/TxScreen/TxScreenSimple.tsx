@@ -13,13 +13,13 @@ import {
   Icon,
   Link,
   VStack,
+  LoadingBox,
+  LoadingWrapper,
 } from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
-import { LoadingBox } from '~/systems/Core/components/LoadingBox/LoadingBox';
-import { LoadingWrapper } from '~/systems/Core/components/LoadingWrapper/LoadingWrapper';
 import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
@@ -108,12 +108,12 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
             regularEl={tx.time?.fromNow}
           />
         </CardInfo>
-        {tx.blockHeight && (
-          <CardInfo name={'Block'}>
-            <LoadingWrapper
-              isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-28 h-6" />}
-              regularEl={
+        <CardInfo name={'Block'}>
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={<LoadingBox className="w-28 h-6" />}
+            regularEl={
+              tx.blockHeight && (
                 <Link
                   as={NextLink}
                   href={`/block/${tx.blockHeight}`}
@@ -121,10 +121,10 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
                 >
                   #{tx.blockHeight}
                 </Link>
-              }
-            />
-          </CardInfo>
-        )}
+              )
+            }
+          />
+        </CardInfo>
         <CardInfo
           name={'Network Fee'}
           description={

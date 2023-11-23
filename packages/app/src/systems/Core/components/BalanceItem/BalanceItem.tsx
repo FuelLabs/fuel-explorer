@@ -1,15 +1,20 @@
 'use client';
 import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
-import { Text, Address, Collapsible, Flex } from '@fuels/ui';
+import {
+  Text,
+  Address,
+  Collapsible,
+  Flex,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import { bn } from 'fuels';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 
 import { formatZeroUnits } from '../../utils/format';
-import { LoadingBox } from '../LoadingBox/LoadingBox';
-import { LoadingWrapper } from '../LoadingWrapper/LoadingWrapper';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 

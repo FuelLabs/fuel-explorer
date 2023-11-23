@@ -10,14 +10,21 @@ export type AccountPredicateProps = {
   isLoading?: boolean;
 };
 
-export function AccountPredicate({ predicate }: AccountPredicateProps) {
+export function AccountPredicate({
+  predicate,
+  isLoading,
+}: AccountPredicateProps) {
   if (!predicate) {
     return null;
   }
 
   return (
     <VStack gap="6">
-      <CodeBlock value={predicate?.bytecode || ''} title="Byte code" />
+      <CodeBlock
+        value={predicate?.bytecode || ''}
+        title="Byte code"
+        isLoading={isLoading}
+      />
     </VStack>
   );
 }

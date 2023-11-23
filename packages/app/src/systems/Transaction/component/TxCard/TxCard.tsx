@@ -1,12 +1,19 @@
 'use client';
 
 import { bn } from '@fuel-ts/math';
-import { Card, Text, Badge, Box, shortAddress, cx } from '@fuels/ui';
+import {
+  Card,
+  Text,
+  Badge,
+  Box,
+  shortAddress,
+  cx,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';
 import NextLink from 'next/link';
-import { LoadingBox } from '~/systems/Core/components/LoadingBox/LoadingBox';
-import { LoadingWrapper } from '~/systems/Core/components/LoadingWrapper/LoadingWrapper';
 
 import type { TransactionNode } from '../../types';
 import { TX_INTENT_MAP } from '../TxIcon/TxIcon';

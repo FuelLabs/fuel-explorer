@@ -2,13 +2,18 @@
 'use client';
 
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { VStack, Grid, Address, Icon } from '@fuels/ui';
+import {
+  VStack,
+  Grid,
+  Address,
+  Icon,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
-import { LoadingBox } from '~/systems/Core/components/LoadingBox/LoadingBox';
-import { LoadingWrapper } from '~/systems/Core/components/LoadingWrapper/LoadingWrapper';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
@@ -33,6 +38,7 @@ export function BlockScreenSimple({
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
             linkProps={{ as: NextLink, href: `/account/${producer}/assets` }}
+            isLoading={isLoading}
           />
         </CardInfo>
         <CardInfo

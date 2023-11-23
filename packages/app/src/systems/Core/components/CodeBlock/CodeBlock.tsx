@@ -1,5 +1,13 @@
 'use client';
-import { Box, Button, Card, ScrollArea, Text } from '@fuels/ui';
+import {
+  Box,
+  Button,
+  Card,
+  ScrollArea,
+  Text,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import { IconChevronUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -7,8 +15,6 @@ import { tv } from 'tailwind-variants';
 
 import CopyButton from '../CopyButton/CopyButton';
 import { JsonViewer } from '../JsonViewer/JsonViewer';
-import { LoadingBox } from '../LoadingBox/LoadingBox';
-import { LoadingWrapper } from '../LoadingWrapper/LoadingWrapper';
 
 export type CodeBlockProps = {
   value: string | object;
@@ -26,7 +32,7 @@ export function CodeBlock({
   const [compact, setCompact] = useState<boolean>(true);
 
   const classes = styles();
-  if (!value) return null;
+  if (!value && !isLoading) return null;
 
   function getCopyValue() {
     if (typeof value === 'object') {

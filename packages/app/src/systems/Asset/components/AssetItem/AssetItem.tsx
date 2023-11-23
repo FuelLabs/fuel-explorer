@@ -1,8 +1,15 @@
 import type { HStackProps } from '@fuels/ui';
-import { HStack, Text, shortAddress, Copyable, Tooltip, Box } from '@fuels/ui';
+import {
+  HStack,
+  Text,
+  shortAddress,
+  Copyable,
+  Tooltip,
+  Box,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import Image from 'next/image';
-import { LoadingBox } from '~/systems/Core/components/LoadingBox/LoadingBox';
-import { LoadingWrapper } from '~/systems/Core/components/LoadingWrapper/LoadingWrapper';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
 import { useAsset } from '../../hooks/useAsset';

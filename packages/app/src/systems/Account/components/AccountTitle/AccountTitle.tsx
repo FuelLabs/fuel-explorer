@@ -4,7 +4,13 @@ import { Address, useBreakpoints } from '@fuels/ui';
 import { IconHash } from '@tabler/icons-react';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
-export function AccountTitle({ id }: { id: string; isLoading?: boolean }) {
+export function AccountTitle({
+  id,
+  isLoading,
+}: {
+  id: string;
+  isLoading?: boolean;
+}) {
   const { isLaptop } = useBreakpoints();
   return (
     <PageTitle
@@ -12,7 +18,7 @@ export function AccountTitle({ id }: { id: string; isLoading?: boolean }) {
       className="border-b-gray-3"
     >
       Account
-      <Address full={isLaptop} value={id} />
+      <Address isLoading={isLoading} full={isLaptop} value={id} />
     </PageTitle>
   );
 }
