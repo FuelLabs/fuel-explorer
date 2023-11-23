@@ -1,3 +1,5 @@
-import ErrorPage from './error';
+import ErrorPage from './global-error';
 
-export default ErrorPage;
+export default function NotFound() {
+  return <ErrorPage />;
+}

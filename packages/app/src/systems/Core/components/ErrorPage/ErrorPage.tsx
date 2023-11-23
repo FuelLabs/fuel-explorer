@@ -1,10 +1,9 @@
-'use client';
-
 import { Button } from '@fuels/ui';
 import Link from 'next/link';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
 
-export default function ErrorPage() {
+import { Layout } from '../Layout/Layout';
+
+export function ErrorPage() {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center py-16">
