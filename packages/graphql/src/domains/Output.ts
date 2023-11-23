@@ -2,6 +2,7 @@ import { bn } from '@fuel-ts/math';
 import { groupBy } from 'lodash';
 
 import type {
+  ChangeOutput,
   CoinOutput,
   ContractCreated,
   TransactionItemFragment,
@@ -13,19 +14,32 @@ export class OutputDomain {
   constructor(private outputs: Outputs) {}
 
   get groupedOutputs() {
-    return [...this.coinOutputs, ...this.contractCreatedOutputs];
+    return [
+      ...this.coinOutputs,
+      ...this.changeOutputs,
+      ...this.contractCreatedOutputs,
+    ];
   }
 
   get coinOutputs() {
-    const outputs = this._filterByTypename<CoinOutput>([
-      'CoinOutput',
-      'ChangeOutput',
-    ]);
+    const outputs = this._filterByTypename<CoinOutput>('CoinOutput');
     const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
     return entries.map(([assetId, outputs]) => {
       const type = outputs[0].__typename;
       const to = outputs[0].to;
-      return { to, assetId, type, outputs };
+      const totalAmount = this._getTotalAmount(outputs);
+      return { to, assetId, type, totalAmount, outputs };
+    });
+  }
+
+  get changeOutputs() {
+    const outputs = this._filterByTypename<ChangeOutput>('ChangeOutput');
+    const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
+    return entries.map(([assetId, outputs]) => {
+      const type = outputs[0].__typename;
+      const to = outputs[0].to;
+      const totalAmount = this._getTotalAmount(outputs);
+      return { to, assetId, type, outputs, totalAmount };
     });
   }
 
