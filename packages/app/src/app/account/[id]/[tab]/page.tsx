@@ -22,7 +22,7 @@ type AccountProps = {
 
 export default function Account({ params: { id, tab } }: AccountProps) {
   if (!isAllowedTab(tab)) {
-    redirect(`/account2/${id}/assets`);
+    redirect(`/account/${id}/assets`);
   }
 
   return (

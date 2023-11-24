@@ -36,20 +36,20 @@ export function AccountTabs({
           value: 'assets',
           label: 'Assets',
           disabled: isLoading,
-          onClick: () => router.push(`/account2/${accountId}/assets`),
+          onClick: () => router.push(`/account/${accountId}/assets`),
         },
         {
           icon: IconChecklist,
           value: 'transactions',
           label: 'Transactions',
           disabled: isLoading,
-          onClick: () => router.push(`/account2/${accountId}/transactions`),
+          onClick: () => router.push(`/account/${accountId}/transactions`),
         },
         {
           icon: IconCodeAsterix,
           value: 'predicate',
           label: 'Predicate',
-          onClick: () => router.push(`/account2/${accountId}/predicate`),
+          onClick: () => router.push(`/account/${accountId}/predicate`),
           disabled: !isPredicate || isLoading,
         },
       ]}
