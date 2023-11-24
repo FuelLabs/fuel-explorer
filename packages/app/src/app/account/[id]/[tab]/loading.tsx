@@ -11,15 +11,25 @@ import {
 import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
 
 export default function Loading() {
+  /* as the params (id, tab) are not passed to Loading component
+   * we get it froim headers passed to next */
   const headerProps = headers();
   const nextUrl = headerProps.get('next-url') || '';
-  const [_, __, id, tab] = nextUrl.split('/');
+  const referer = headerProps.get('referer') || '';
+
+  /* get tab from nextUrl, if it exists.
+   * it will exist when the route is accounts/[id]/[tab],
+   * it will not exist when the route is accounts/[id] */
+  const tab = nextUrl.split('/')[3];
+
+  /* get id from referer because will always be there
+   * for both routes */
+  const id = referer.split('/')[4];
 
   return (
     <>
       <AccountTitle id={id} />
       <AccountTabs isLoading />
-      <AccountAssetsLoader />
       {isAssetsTab(tab) && <AccountAssetsLoader />}
       {isTransactionsTab(tab) && <TxListLoader />}
       {isPredicateTab(tab) && <AccountPredicateLoader />}

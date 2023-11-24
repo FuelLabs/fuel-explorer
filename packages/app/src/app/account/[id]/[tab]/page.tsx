@@ -1,17 +1,7 @@
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
-import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
-import { AccountPredicateLoader } from '~/systems/Account/components/AccountPredicate/AccountPredicateLoader';
-import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
-import { AccountTitle } from '~/systems/Account/components/AccountTitle/AccountTitle';
-import { AccountScreen } from '~/systems/Account/screens/Account';
-import {
-  isAllowedTab,
-  isAssetsTab,
-  isPredicateTab,
-  isTransactionsTab,
-} from '~/systems/Account/utils/tabs';
-import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
+import { getPredicate } from '~/systems/Account/actions/get-predicate';
+import { Account as AccountScreen } from '~/systems/Account/components/_server/Account/Account';
+import { isAllowedTab } from '~/systems/Account/utils/tabs';
 
 type AccountProps = {
   params: {
@@ -20,26 +10,13 @@ type AccountProps = {
   };
 };
 
-export default function Account({ params: { id, tab } }: AccountProps) {
+export default async function Account({ params: { id, tab } }: AccountProps) {
   if (!isAllowedTab(tab)) {
     redirect(`/account/${id}/assets`);
   }
+  const predicate = await getPredicate({ owner: id });
 
-  return (
-    <Suspense
-      fallback={
-        <>
-          <AccountTitle id={id} />
-          <AccountTabs isLoading />
-          {isAssetsTab(tab) && <AccountAssetsLoader />}
-          {isTransactionsTab(tab) && <TxListLoader />}
-          {isPredicateTab(tab) && <AccountPredicateLoader />}
-        </>
-      }
-    >
-      <AccountScreen id={id} tab={tab} />
-    </Suspense>
-  );
-
-  return 2;
+  return <AccountScreen predicate={predicate || undefined} id={id} tab={tab} />;
 }
+
+export const revalidate = 10;
