@@ -5,7 +5,7 @@ import { AccountTitle } from '~/systems/Account/components/AccountTitle/AccountT
 export default function Loading() {
   return (
     <>
-      <AccountTitle isLoading id={''} />
+      <AccountTitle id={''} />
       <AccountTabs isLoading />
       <AccountPredicateLoader />
     </>

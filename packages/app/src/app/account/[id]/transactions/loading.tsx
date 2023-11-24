@@ -5,7 +5,7 @@ import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoade
 export default function Loading() {
   return (
     <>
-      <AccountTitle isLoading id={''} />
+      <AccountTitle id={''} />
       <AccountTabs isLoading />
       <TxListLoader />
     </>

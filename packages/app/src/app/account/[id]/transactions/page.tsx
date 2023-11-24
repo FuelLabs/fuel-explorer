@@ -16,7 +16,7 @@ export default async function AccountTransactionsPage({
 }: PageProps) {
   return (
     <>
-      <Suspense fallback={<AccountTitle isLoading id={id} />}>
+      <Suspense fallback={<AccountTitle id={id} />}>
         <AccountTitle id={id} />
       </Suspense>
       <Suspense fallback={<AccountTabs isLoading />}>

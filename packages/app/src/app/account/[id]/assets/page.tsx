@@ -14,7 +14,7 @@ type AccountProps = {
 export default async function Account({ params: { id } }: AccountProps) {
   return (
     <>
-      <Suspense fallback={<AccountTitle isLoading id={id} />}>
+      <Suspense fallback={<AccountTitle id={id} />}>
         <AccountTitle id={id} />
       </Suspense>
       <Suspense fallback={<AccountTabs isLoading />}>
