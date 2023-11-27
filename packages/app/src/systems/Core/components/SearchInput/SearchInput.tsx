@@ -16,7 +16,8 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { tv } from 'tailwind-variants';
 
 import { cx } from '../../utils/cx';
@@ -49,7 +50,7 @@ function SearchResultDropdown({
         {!searchResult && (
           <>
             <Dropdown.Item className={classes.dropdownItem()}>
-              Input is not a valid address, contract id, block id, or
+              Error: input is not a valid address, contract id, block id, or
               transaction id
             </Dropdown.Item>
           </>
@@ -142,6 +143,22 @@ function SearchResultDropdown({
   );
 }
 
+export function SearchForm({
+  className,
+  onSubmit,
+  searchResult,
+}: SearchInputProps) {
+  return (
+    <form action={() => {}}>
+      <SearchInput
+        searchResult={searchResult}
+        className={className}
+        onSubmit={onSubmit}
+      />
+    </form>
+  );
+}
+
 export function SearchInput({
   value: initialValue = '',
   className,
@@ -154,19 +171,29 @@ export function SearchInput({
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { pending } = useFormStatus();
+
+  useEffect(() => {
+    if (!pending && hasSubmitted) {
+      setOpenDropdown(true);
+      setHasSubmitted(false);
+    }
+  }, [pending]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
   }
 
   function handleSubmit() {
-    setOpenDropdown(true);
+    setHasSubmitted(true);
     onSubmit?.(value || '');
   }
 
   function handleClear() {
     setValue('');
+    setHasSubmitted(false);
     onClear?.();
     inputRef.current?.focus();
   }
@@ -197,6 +224,7 @@ export function SearchInput({
                 icon={IconX}
                 iconColor="text-icon"
                 variant="link"
+                isLoading={pending}
                 onClick={handleClear}
               />
               <Tooltip content="Submit">
@@ -205,6 +233,7 @@ export function SearchInput({
                   icon={IconCheck}
                   iconColor="text-brand"
                   variant="link"
+                  isLoading={pending}
                   onClick={handleSubmit}
                 />
               </Tooltip>
@@ -216,6 +245,9 @@ export function SearchInput({
         searchResult={searchResult}
         openDropdown={openDropdown}
         onOpenChange={() => {
+          if (openDropdown) {
+            setHasSubmitted(false);
+          }
           setOpenDropdown(!openDropdown);
         }}
       />

@@ -5,7 +5,7 @@ import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { tv } from 'tailwind-variants';
-import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
+import { SearchForm } from '~/systems/Core/components/SearchInput/SearchInput';
 
 type HeroProps = {
   searchResult?: Maybe<SearchResult>;
@@ -23,7 +23,7 @@ export async function Hero({ searchResult }: HeroProps) {
           <Heading as="h1" className={classes.title()}>
             Explore Fuel Network
           </Heading>
-          <SearchInput
+          <SearchForm
             searchResult={searchResult}
             className={classes.input()}
             onSubmit={(query) => {
