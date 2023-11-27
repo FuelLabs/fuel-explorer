@@ -1,5 +1,4 @@
 'use client';
-
 import { Container, VStack } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
 import { Hero } from '~/systems/Home/components/Hero/Hero';

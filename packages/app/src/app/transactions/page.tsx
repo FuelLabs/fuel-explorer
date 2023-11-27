@@ -11,7 +11,6 @@ export default async function Transactions({
   searchParams: { page = '1' },
 }: PageProps) {
   const txs = await getLastTxs({ page: Number(page) });
-
   return <TxList transactions={txs} page={page} />;
 }
 
