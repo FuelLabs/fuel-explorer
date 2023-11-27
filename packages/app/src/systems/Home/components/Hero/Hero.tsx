@@ -5,7 +5,7 @@ import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { tv } from 'tailwind-variants';
-import { SearchForm } from '~/systems/Core/components/SearchInput/SearchInput';
+import { SearchForm } from '~/systems/Core/components/SearchForm/SearchForm';
 
 type HeroProps = {
   searchResult?: Maybe<SearchResult>;

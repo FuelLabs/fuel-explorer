@@ -143,22 +143,6 @@ function SearchResultDropdown({
   );
 }
 
-export function SearchForm({
-  className,
-  onSubmit,
-  searchResult,
-}: SearchInputProps) {
-  return (
-    <form action={() => {}}>
-      <SearchInput
-        searchResult={searchResult}
-        className={className}
-        onSubmit={onSubmit}
-      />
-    </form>
-  );
-}
-
 export function SearchInput({
   value: initialValue = '',
   className,
