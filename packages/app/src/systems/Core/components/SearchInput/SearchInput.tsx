@@ -147,7 +147,6 @@ function SearchResultDropdown({
 export function SearchInput({
   value: initialValue = '',
   className,
-  onSubmit,
   onClear,
   autoFocus,
   placeholder = '',
@@ -173,7 +172,6 @@ export function SearchInput({
 
   function handleSubmit() {
     setHasSubmitted(true);
-    onSubmit?.(value || '');
   }
 
   function handleClear() {
@@ -193,6 +191,7 @@ export function SearchInput({
           <Input.Field
             {...props}
             ref={inputRef}
+            name="query"
             placeholder={placeholder}
             value={value}
             onChange={handleChange}
@@ -217,6 +216,7 @@ export function SearchInput({
               />
               <Tooltip content="Submit">
                 <IconButton
+                  type="submit"
                   aria-label="Submit"
                   icon={IconCheck}
                   iconColor="text-brand"
