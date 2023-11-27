@@ -1,5 +1,6 @@
 'use server';
 
+import { notFound } from 'next/navigation';
 import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';
 import { parseAddressParam } from '~/systems/Core/utils/address';
@@ -10,9 +11,12 @@ const schema = z.object({
 });
 
 export const getTx = act(schema, async (input) => {
-  const id = parseAddressParam(input.id);
-  const { data } = await sdk.getTransaction({ id }).catch((_) => {
-    return { data: { transaction: null } };
-  });
-  return data.transaction;
+  try {
+    const id = parseAddressParam(input.id);
+    const { data } = await sdk.getTransaction({ id });
+    return data.transaction;
+  } catch (e) {
+    console.error(e);
+    return notFound();
+  }
 });
