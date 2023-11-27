@@ -16,6 +16,7 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
+import type { SyntheticEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { tv } from 'tailwind-variants';
@@ -195,8 +196,11 @@ export function SearchInput({
             placeholder={placeholder}
             value={value}
             onChange={handleChange}
-            onClick={() => {
+            onClick={(e: SyntheticEvent) => {
               if (value) {
+                (e.target as HTMLFormElement).form?.dispatchEvent(
+                  new Event('submit', { cancelable: true, bubbles: true }),
+                );
                 handleSubmit();
               }
             }}
