@@ -1,9 +1,9 @@
 import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
-import type { BaseProps, InputProps, InputFieldProps } from '@fuels/ui';
+import type { BaseProps, InputProps } from '@fuels/ui';
 
 import { SearchInput } from '../SearchInput/SearchInput';
 
-type SearchFormProps = BaseProps<InputProps & InputFieldProps> & {
+type SearchFormProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
   onClear?: () => void;
   searchResult?: Maybe<SearchResult>;
