@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getPredicate } from '~/systems/Account/actions/get-predicate';
-import { Account as AccountScreen } from '~/systems/Account/components/_server/Account/Account';
+import { AccountScreen } from '~/systems/Account/screens/Account';
 import { isAllowedTab } from '~/systems/Account/utils/tabs';
 
 type AccountProps = {
