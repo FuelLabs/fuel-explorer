@@ -19,19 +19,3 @@ export const Usage: Story = {
 export const WithPrefix: Story = {
   render: () => <Address value={ID} prefix="To:" />,
 };
-
-export const WithLinkIcon: Story = {
-  render: () => (
-    <Address value={ID} prefix="To:">
-      <Address.Link href="#" />
-    </Address>
-  ),
-};
-
-export const WithLinkCustom: Story = {
-  render: () => (
-    <Address value={ID} prefix="To:">
-      <Address.Link href="#">View Account</Address.Link>
-    </Address>
-  ),
-};
