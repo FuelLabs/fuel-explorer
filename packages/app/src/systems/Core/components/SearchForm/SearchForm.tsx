@@ -1,7 +1,7 @@
 import type { SearchResult } from '@fuel-explorer/graphql';
 import type { BaseProps, InputProps } from '@fuels/ui';
 import { useFormState } from 'react-dom';
-import { search } from '~/systems/Home/actions/search';
+import { search } from '~/systems/Core/actions/search';
 
 import { SearchInput } from '../SearchInput/SearchInput';
 
