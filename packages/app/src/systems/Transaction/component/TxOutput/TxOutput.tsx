@@ -86,8 +86,8 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
             <HelperIcon
               message={
                 isReceiving
-                  ? 'This is the UTXO related to the amount remaining after transaction'
-                  : 'This is the UTXO spent in the transaction'
+                  ? 'This is the amount remaining after transaction'
+                  : 'This is the amount spent in the transaction'
               }
             />
           </HStack>
