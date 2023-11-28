@@ -45,7 +45,7 @@ function UtxoItem({ item, style, assetId }: UtxoItemProps) {
         addressOpts={{ trimLeft: trim, trimRight: trim }}
         linkProps={{ as: NextLink, href: `/tx/${item.utxoId.slice(0, -2)}` }}
       />
-      <Text className="text-secondary flex items-center gap-2">
+      <Text className="text-xs text-secondary flex items-center gap-2">
         <Icon icon={IconCoins} size={14} />{' '}
         {fuelAsset?.decimals ? (
           <>

@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
 import { getTx } from '../../actions/get-tx';
@@ -12,7 +12,7 @@ type TxScreenProps = {
 
 export async function TxScreen({ id, viewMode }: TxScreenProps) {
   const tx = await getTx({ id });
-  if (!tx) return redirect('/');
+  if (!tx) return notFound();
 
   return (
     <>

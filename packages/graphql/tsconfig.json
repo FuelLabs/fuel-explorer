@@ -11,5 +11,5 @@
       }
     ]
   },
-  "include": ["src", "scripts", "*.config.*"]
+  "include": ["src", "scripts", "*.config.*", "codegen.*"]
 }

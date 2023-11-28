@@ -73,6 +73,10 @@ const preset: Config = {
     space: tailwindDefaultTheme.space,
     spacing: tailwindDefaultTheme.spacing,
     extend: {
+      fontFamily: {
+        sans: ['var(--font-geist-sans)'],
+        mono: ['var(--font-geist-mono)'],
+      },
       keyframes,
       animation,
       width: tailwindDefaultTheme.maxWidth,
