@@ -13,6 +13,7 @@ import {
   Text,
   Link,
   VStack,
+  useBreakpoints,
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
@@ -39,15 +40,16 @@ function SearchResultDropdown({
   onOpenChange: () => void;
 }) {
   const classes = styles();
-  const trimL = 20;
-  const trimR = 18;
+  const { isMobile } = useBreakpoints();
+  const trimL = isMobile ? 15 : 20;
+  const trimR = isMobile ? 13 : 18;
 
   return (
     <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
       <Dropdown.Trigger>
         <div></div>
       </Dropdown.Trigger>
-      <Dropdown.Content className="w-full tablet:w-[400px]">
+      <Dropdown.Content className="w-[311px] tablet:w-[400px]">
         {!searchResult && (
           <>
             <Dropdown.Item className={classes.dropdownItem()}>
@@ -149,7 +151,7 @@ export function SearchInput({
   className,
   onClear,
   autoFocus,
-  placeholder = '',
+  placeholder = 'Search here...',
   searchResult,
   ...props
 }: SearchInputProps) {
@@ -211,7 +213,6 @@ export function SearchInput({
                 icon={IconX}
                 iconColor="text-icon"
                 variant="link"
-                isLoading={pending}
                 onClick={handleClear}
               />
               <Tooltip content="Submit">
