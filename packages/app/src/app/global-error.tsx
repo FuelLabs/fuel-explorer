@@ -5,7 +5,7 @@ import './globals.css';
 
 import Cookies from 'js-cookie';
 import type { Metadata } from 'next';
-import { ErrorPage } from '~/systems/Core/components/ErrorPage/ErrorPage';
+import { ErrorPageComponent } from '~/systems/Core/components/ErrorPage/ErrorPage';
 import { Provider } from '~/systems/Core/components/Provider';
 import { cx } from '~/systems/Core/utils/cx';
 
@@ -28,7 +28,7 @@ export default function Page() {
       </head>
       <body>
         <Provider theme={value}>
-          <ErrorPage />
+          <ErrorPageComponent />
         </Provider>
       </body>
     </html>

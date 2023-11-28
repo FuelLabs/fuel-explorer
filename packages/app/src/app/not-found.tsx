@@ -1,5 +1,5 @@
-import ErrorPage from './global-error';
+import { ErrorPageComponent } from '~/systems/Core/components/ErrorPage/ErrorPage';
 
 export default function NotFound() {
-  return <ErrorPage />;
+  return <ErrorPageComponent />;
 }

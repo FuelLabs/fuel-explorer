@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { Layout } from '../Layout/Layout';
 
-export function ErrorPage() {
+export function ErrorPageComponent() {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center py-8 tablet:py-16">
