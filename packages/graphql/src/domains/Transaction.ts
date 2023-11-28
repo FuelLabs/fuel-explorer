@@ -61,7 +61,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const { source: transaction } = this;
     const status = transaction.status;
     if (status?.__typename === 'SuccessStatus') {
-      return status?.block?.header?.daHeight ?? null;
+      return status?.block?.header?.height ?? null;
     }
     return null;
   }
