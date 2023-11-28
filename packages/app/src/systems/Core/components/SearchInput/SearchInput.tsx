@@ -33,10 +33,12 @@ function SearchResultDropdown({
   searchResult,
   openDropdown,
   onOpenChange,
+  searchValue,
 }: {
   searchResult?: Maybe<SearchResult>;
   openDropdown: boolean;
   onOpenChange: () => void;
+  searchValue: string;
 }) {
   const classes = styles();
   const { isMobile } = useBreakpoints();
@@ -52,8 +54,7 @@ function SearchResultDropdown({
         {!searchResult && (
           <>
             <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-              Error: input is not a valid address, contract id, block id, or
-              transaction id
+              {`${searchValue} is not a valid address.`}
             </Dropdown.Item>
           </>
         )}
@@ -238,6 +239,7 @@ export function SearchInput({
       </Focus.ArrowNavigator>
       <SearchResultDropdown
         searchResult={searchResult}
+        searchValue={value}
         openDropdown={openDropdown}
         onOpenChange={() => {
           if (openDropdown) {
