@@ -1,5 +1,8 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
-import type { GroupedOutput } from '@fuel-explorer/graphql';
+import type {
+  GroupedOutput,
+  TransactionItemFragment,
+} from '@fuel-explorer/graphql';
 import {
   Address,
   Card,
@@ -24,13 +27,24 @@ import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
+function getTooltipText(tx: TransactionItemFragment, output: GroupedOutput) {
+  if (tx.isMint) {
+    return 'This is the amount minted in the transaction';
+  }
+  if (output.type === GroupedOutputType.ChangeOutput) {
+    return 'This is the amount remaining after transaction';
+  }
+  return 'This is the amount spent in the transaction';
+}
+
 export type TxOutputProps = CardProps & {
+  tx: TransactionItemFragment;
   output: GroupedOutput;
 };
 
 const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
-  render: (_, { output, ...props }) => {
+  render: (_, { tx, output, ...props }) => {
     const classes = styles();
     const { isMobile } = useBreakpoints();
 
@@ -83,13 +97,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                 {asset.symbol}
               </Text>
             )}
-            <HelperIcon
-              message={
-                isReceiving
-                  ? 'This is the amount remaining after transaction'
-                  : 'This is the amount spent in the transaction'
-              }
-            />
+            <HelperIcon message={getTooltipText(tx, output)} />
           </HStack>
         </Card.Header>
       </Card>
