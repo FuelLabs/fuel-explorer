@@ -1,11 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "allowJs": true,
     "noEmit": true,
     "lib": ["dom"],
@@ -30,6 +26,7 @@
     "./src/generated",
     "src",
     ".storybook",
-    "*.config.*"
+    "*.config.*",
+    "jest.setup.ts"
   ]
 }

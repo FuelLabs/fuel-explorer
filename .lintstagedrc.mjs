@@ -2,12 +2,11 @@ import { getTsconfig } from 'get-tsconfig';
 import { relative } from 'node:path';
 
 export default {
-  '**/*.(md|mdx|json|html|css)': ['prettier --write'],
-  '**/*.(t|j)s?(x)': ['prettier --write', 'eslint'],
+  '**/*.(js|jsx|ts|jsx|md|mdx|json|html|css)': ['prettier --write'],
   '**/*.ts?(x)': (files) => {
-    const commands = files.map((file) => {
+    const commands = files.flatMap((file) => {
       const tsConfig = relative(process.cwd(), getTsconfig(file).path);
-      return `tsc -p ${tsConfig} --noEmit`;
+      return [`tsc -p ${tsConfig} --noEmit`, `eslint .`];
     });
     return Array.from(new Set(commands));
   },
