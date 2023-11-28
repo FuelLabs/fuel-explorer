@@ -45,7 +45,7 @@ export function AssetItem({
             </Tooltip>
           ) : (
             <Tooltip content={assetId}>
-              <Copyable value={assetId} className="text-gray-11">
+              <Copyable value={assetId} className="text-gray-11 font-mono">
                 {shortAddress(assetId)}
               </Copyable>
             </Tooltip>

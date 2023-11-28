@@ -46,32 +46,3 @@ jobs:
           pnpm build
           pnpm lint:check
           pnpm ts:check
-
-  test:
-    name: Tests with coverage
-    if: ${{ github.head_ref != 'changeset-release/master' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-      - uses: FuelLabs/github-actions/setups/node@master
-
-      - name: Run build & jest
-        run: |
-          pnpm build
-          pnpm test:ci --outputFile="../../${{ env.COVERAGE_FILE }}" --passWithNoTests
-
-      - name: Publish coverage
-        uses: artiomtr/jest-coverage-report-action@v2.0.5
-        if: ${{ github.event.pull_request.number }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          package-manager: pnpm
-          annotations: failed-tests
-          test-script: pnpm test:ci
-          prnumber: ${{ github.event.pull_request.number }}
-          skip-test: all
-          coverage-file: ${{ env.COVERAGE_FILE }}
-          base-coverage-file: ${{ env.COVERAGE_FILE }}

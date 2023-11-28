@@ -41,7 +41,7 @@ export function CodeBlock({ value, type = 'raw', title }: CodeBlockProps) {
         </Text>
         <CopyButton size="1" value={getCopyValue()} />
       </Card.Header>
-      <ScrollArea className={classes.cardMiddle()} scrollbars="vertical">
+      <ScrollArea className={classes.cardMiddle()}>
         {type === 'json' && (
           <JsonViewer
             data={typeof value === 'object' ? value : JSON.parse(value)}
@@ -78,7 +78,7 @@ const styles = tv({
     cardHeader:
       'border-b border-card-border py-3 flex-row items-center justify-between',
     cardMiddle: [
-      'flex-1',
+      'flex-1 font-mono',
       '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON
     ],
     codeText: 'text-sm text-gray-500 p-4 max-w-full break-all block',

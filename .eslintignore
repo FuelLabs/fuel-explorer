@@ -21,3 +21,5 @@ pnpm-lock.yaml
 **/**/.*
 .*/
 packages/app/public/**
+contracts/predicate/vitest.config.ts
+./tailwind.config.ts
