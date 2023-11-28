@@ -1,8 +1,6 @@
-import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { HStack, IconButton, Tooltip } from '@fuels/ui';
 import { IconSearch, IconX } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useSearchParams, useRouter } from 'next/navigation';
 import type { Dispatch, SetStateAction } from 'react';
 import { tv } from 'tailwind-variants';
 
