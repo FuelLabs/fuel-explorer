@@ -1,5 +1,5 @@
-import { removeDuplicates, getFieldsValues } from '../utils';
 import { Domain } from '../utils/domain';
+import { getFieldsValues, removeDuplicates } from '../utils/getFieldsValues';
 
 import { AccountDomain } from './Account';
 import { TokenDomain } from './Token';
