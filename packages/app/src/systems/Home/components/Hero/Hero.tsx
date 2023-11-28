@@ -3,10 +3,11 @@
 import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';
-import { SearchInput } from '~/systems/Core/components/SearchInput/SearchInput';
+import { SearchForm } from '~/systems/Core/components/SearchForm/SearchForm';
 
 export function Hero() {
   const classes = styles();
+
   return (
     <Theme appearance="dark">
       <Box className={classes.root()}>
@@ -14,7 +15,7 @@ export function Hero() {
           <Heading as="h1" className={classes.title()}>
             Explore Fuel Network
           </Heading>
-          <SearchInput className={classes.input()} />
+          <SearchForm className={classes.input()} />
         </Container>
         <Box as="figure" className={classes.img()}>
           <Box className={classes.imgWrapper()}>
