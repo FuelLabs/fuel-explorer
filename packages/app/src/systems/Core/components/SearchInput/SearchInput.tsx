@@ -17,7 +17,7 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
-import type { SyntheticEvent } from 'react';
+import type { KeyboardEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { tv } from 'tailwind-variants';
@@ -52,7 +52,7 @@ function SearchResultDropdown({
       <Dropdown.Content className="w-[311px] tablet:w-[400px]">
         {!searchResult && (
           <>
-            <Dropdown.Item className={classes.dropdownItem()}>
+            <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
               Error: input is not a valid address, contract id, block id, or
               transaction id
             </Dropdown.Item>
@@ -186,7 +186,20 @@ export function SearchInput({
   return (
     <VStack gap="2">
       <Focus.ArrowNavigator autoFocus={autoFocus}>
-        <Input className={cx(className)} radius="large" size="3">
+        <Input
+          className={cx(className)}
+          radius="large"
+          size="3"
+          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              (e.target as HTMLFormElement).form?.dispatchEvent(
+                new Event('submit', { cancelable: true, bubbles: true }),
+              );
+              handleSubmit();
+            }
+          }}
+        >
           <Input.Slot className="mx-1">
             <Icon icon={IconSearch} size={16} />
           </Input.Slot>
@@ -197,14 +210,6 @@ export function SearchInput({
             placeholder={placeholder}
             value={value}
             onChange={handleChange}
-            onClick={(e: SyntheticEvent) => {
-              if (value) {
-                (e.target as HTMLFormElement).form?.dispatchEvent(
-                  new Event('submit', { cancelable: true, bubbles: true }),
-                );
-                handleSubmit();
-              }
-            }}
           />
           {Boolean(value.length) && (
             <Input.Slot className="mx-1">
