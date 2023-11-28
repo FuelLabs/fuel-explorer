@@ -16,7 +16,10 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
-import { useRef, useState } from 'react';
+import type { SyntheticEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { tv } from 'tailwind-variants';
 
 import { cx } from '../../utils/cx';
 
@@ -36,19 +39,20 @@ function SearchResultDropdown({
   onOpenChange: () => void;
 }) {
   const { isMobile } = useBreakpoints();
-  const trimL = isMobile ? 16 : 21;
-  const trimR = isMobile ? 14 : 19;
+  const classes = styles();
+  const trimL = isMobile ? 16 : 20;
+  const trimR = isMobile ? 14 : 18;
 
   return (
     <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
       <Dropdown.Trigger>
         <div></div>
       </Dropdown.Trigger>
-      <Dropdown.Content>
+      <Dropdown.Content className="w-full tablet:w-[400px]">
         {!searchResult && (
           <>
-            <Dropdown.Item className="hover:bg-border">
-              Input is not a valid address, contract id, block id, or
+            <Dropdown.Item className={classes.dropdownItem()}>
+              Error: input is not a valid address, contract id, block id, or
               transaction id
             </Dropdown.Item>
           </>
@@ -56,7 +60,7 @@ function SearchResultDropdown({
         {searchResult?.account && (
           <>
             <Dropdown.Label>Account</Dropdown.Label>
-            <Dropdown.Item className="hover:bg-border">
+            <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
                 href={`/account/${searchResult.account.address}/assets`}
@@ -71,7 +75,7 @@ function SearchResultDropdown({
               return (
                 <Dropdown.Item
                   key={transaction?.id}
-                  className="hover:bg-border"
+                  className={classes.dropdownItem()}
                 >
                   <Link
                     as={NextLink}
@@ -88,7 +92,7 @@ function SearchResultDropdown({
         {searchResult?.block && (
           <>
             <Dropdown.Label>Block</Dropdown.Label>
-            <Dropdown.Item className="hover:bg-border">
+            <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
                 href={`/block/${searchResult.block.id}`}
@@ -97,7 +101,7 @@ function SearchResultDropdown({
                 {shortAddress(searchResult.block.id || '', trimL, trimR)}
               </Link>
             </Dropdown.Item>
-            <Dropdown.Item className="hover:bg-border">
+            <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
                 href={`/block/${searchResult.block.height}`}
@@ -111,7 +115,7 @@ function SearchResultDropdown({
         {searchResult?.contract && (
           <>
             <Dropdown.Label>Contract</Dropdown.Label>
-            <Dropdown.Item className="hover:bg-border">
+            <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
                 href={`/contract/${searchResult.contract.id}/assets`}
@@ -125,7 +129,7 @@ function SearchResultDropdown({
         {searchResult?.transaction && (
           <>
             <Dropdown.Label>Transaction</Dropdown.Label>
-            <Dropdown.Item className="hover:bg-border">
+            <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
                 href={`/tx/${searchResult.transaction.id}`}
@@ -144,28 +148,36 @@ function SearchResultDropdown({
 export function SearchInput({
   value: initialValue = '',
   className,
-  onSubmit,
   onClear,
   autoFocus,
-  placeholder = '0x00000000000000000000000000000000000000000000000000000000000000',
+  placeholder = '',
   searchResult,
   ...props
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { pending } = useFormStatus();
+
+  useEffect(() => {
+    if (!pending && hasSubmitted) {
+      setOpenDropdown(true);
+      setHasSubmitted(false);
+    }
+  }, [pending]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
   }
 
   function handleSubmit() {
-    setOpenDropdown(true);
-    onSubmit?.(value || '');
+    setHasSubmitted(true);
   }
 
   function handleClear() {
     setValue('');
+    setHasSubmitted(false);
     onClear?.();
     inputRef.current?.focus();
   }
@@ -180,9 +192,18 @@ export function SearchInput({
           <Input.Field
             {...props}
             ref={inputRef}
+            name="query"
             placeholder={placeholder}
             value={value}
             onChange={handleChange}
+            onClick={(e: SyntheticEvent) => {
+              if (value) {
+                (e.target as HTMLFormElement).form?.dispatchEvent(
+                  new Event('submit', { cancelable: true, bubbles: true }),
+                );
+                handleSubmit();
+              }
+            }}
           />
           {Boolean(value.length) && (
             <Input.Slot className="mx-1">
@@ -192,15 +213,18 @@ export function SearchInput({
                 iconColor="text-icon"
                 variant="link"
                 className="!ml-0 tablet:ml-2"
+                isLoading={pending}
                 onClick={handleClear}
               />
               <Tooltip content="Submit">
                 <IconButton
+                  type="submit"
                   aria-label="Submit"
                   icon={IconCheck}
                   iconColor="text-brand"
                   variant="link"
                   className="!ml-0 tablet:ml-2"
+                  isLoading={pending}
                   onClick={handleSubmit}
                 />
               </Tooltip>
@@ -212,9 +236,18 @@ export function SearchInput({
         searchResult={searchResult}
         openDropdown={openDropdown}
         onOpenChange={() => {
+          if (openDropdown) {
+            setHasSubmitted(false);
+          }
           setOpenDropdown(!openDropdown);
         }}
       />
     </VStack>
   );
 }
+
+const styles = tv({
+  slots: {
+    dropdownItem: 'hover:bg-border focus:bg-border',
+  },
+});

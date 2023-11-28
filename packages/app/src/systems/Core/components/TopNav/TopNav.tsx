@@ -1,6 +1,5 @@
 'use client';
 
-import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { Nav } from '@fuels/ui';
 import NextLink from 'next/link';
 import { useState } from 'react';
@@ -8,11 +7,7 @@ import { useState } from 'react';
 import { setTheme } from '../../actions/setTheme';
 import { SearchWidget } from '../SearchWidget/SearchWidget';
 
-type TopNavProps = {
-  searchResult?: Maybe<SearchResult>;
-};
-
-export function TopNav({ searchResult }: TopNavProps) {
+export function TopNav() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const logo = (
@@ -76,7 +71,6 @@ export function TopNav({ searchResult }: TopNavProps) {
           <SearchWidget
             isSearchOpen={isSearchOpen}
             setIsSearchOpen={setIsSearchOpen}
-            searchResult={searchResult}
           />
           {tooling}
         </Nav.Menu>
@@ -88,7 +82,6 @@ export function TopNav({ searchResult }: TopNavProps) {
           <SearchWidget
             isSearchOpen={isSearchOpen}
             setIsSearchOpen={setIsSearchOpen}
-            searchResult={searchResult}
           />
           {themeToggle}
         </Nav.MobileContent>

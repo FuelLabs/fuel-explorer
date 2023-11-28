@@ -1,6 +1,4 @@
 'use client';
-
-import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import { Container, VStack } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
@@ -11,19 +9,13 @@ import { TopNav } from '../TopNav/TopNav';
 
 export type LayoutProps = BaseProps<{
   hero?: boolean;
-  searchResult?: Maybe<SearchResult>;
   contentClassName?: string;
 }>;
 
-export function Layout({
-  children,
-  hero,
-  searchResult,
-  contentClassName,
-}: LayoutProps) {
+export function Layout({ children, hero, contentClassName }: LayoutProps) {
   return (
     <VStack className="min-w-screen min-h-screen" gap="0">
-      <TopNav searchResult={searchResult} />
+      <TopNav />
       {hero && <Hero />}
       <Container
         size="4"

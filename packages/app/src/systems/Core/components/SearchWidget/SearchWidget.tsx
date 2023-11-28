@@ -6,22 +6,18 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import type { Dispatch, SetStateAction } from 'react';
 import { tv } from 'tailwind-variants';
 
-import { SearchInput } from '../SearchInput/SearchInput';
+import { SearchForm } from '../SearchForm/SearchForm';
 
 type SearchWidgetProps = {
   isSearchOpen: boolean;
   setIsSearchOpen: Dispatch<SetStateAction<boolean>>;
-  searchResult?: Maybe<SearchResult>;
 };
 
 export const SearchWidget = ({
-  searchResult,
   isSearchOpen,
   setIsSearchOpen,
 }: SearchWidgetProps) => {
   const classes = styles();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   return (
     <HStack className="items-center gap-0 laptop:gap-4 justify-center">
@@ -38,7 +34,7 @@ export const SearchWidget = ({
                 closed: { scaleX: '0%' },
               }}
             >
-              <SearchInput
+              {/* <SearchInput
                 searchResult={searchResult}
                 className={classes.input()}
                 onSubmit={(query) => {
@@ -47,7 +43,8 @@ export const SearchWidget = ({
                     `/transactions?page=${pageParam}&searchQuery=${query}`,
                   );
                 }}
-              />
+              /> */}
+              <SearchForm className={classes.input()} />
             </motion.div>
             <IconButton
               icon={IconX}

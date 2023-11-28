@@ -3,8 +3,9 @@
 import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';
+import { SearchForm } from '~/systems/Core/components/SearchForm/SearchForm';
 
-export async function Hero() {
+export function Hero() {
   const classes = styles();
 
   return (
@@ -41,7 +42,6 @@ const styles = tv({
     img: 'hidden absolute inset-0 tablet:block',
     imgChild: 'absolute -top-1/2 right-0',
     imgWrapper: 'absolute inset-0',
-    input: 'w-full tablet:w-[400px]',
     title: [
       'text-2xl leading-snug text-white mb-4 justify-center',
       'tablet:text-left tablet:text-4xl tablet:justify-start',
