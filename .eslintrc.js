@@ -25,7 +25,7 @@ module.exports = {
     'import/resolver': {
       // TODO: add this extensions in the npm-packs
       [require.resolve('eslint-import-resolver-node')]: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
       [require.resolve('eslint-import-resolver-typescript')]: {
         alwaysTryTypes: true,

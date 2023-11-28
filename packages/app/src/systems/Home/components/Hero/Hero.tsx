@@ -3,7 +3,6 @@
 import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';
-import { SearchForm } from '~/systems/Core/components/SearchForm/SearchForm';
 
 export function Hero() {
   const classes = styles();
