@@ -65,7 +65,10 @@ function TxScriptRow({ item }: TxScriptRowProps) {
         </Badge>
         <div className="flex-1">
           {item.param1 && (
-            <Code className="flex-1 bg-transparent text-muted" color="gray">
+            <Code
+              className="font-mono flex-1 bg-transparent text-muted"
+              color="gray"
+            >
               Method: {bn(item.param1).toHex()}
             </Code>
           )}
