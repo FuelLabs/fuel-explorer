@@ -63,7 +63,7 @@ export function CodeBlock({
           }
         />
       </Card.Header>
-      <ScrollArea className={classes.cardMiddle()} scrollbars="vertical">
+      <ScrollArea className={classes.cardMiddle()}>
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={
@@ -118,7 +118,7 @@ const styles = tv({
     cardHeader:
       'border-b border-card-border py-3 flex-row items-center justify-between',
     cardMiddle: [
-      'flex-1',
+      'flex-1 font-mono',
       '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON
     ],
     codeText: 'text-sm text-gray-500 p-4 max-w-full break-all block',

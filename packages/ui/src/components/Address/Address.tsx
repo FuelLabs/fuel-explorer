@@ -100,7 +100,7 @@ export const Address = createComponent<AddressProps, typeof HStack>({
 
 const styles = tv({
   slots: {
-    root: 'text-sm',
+    root: 'text-sm font-mono',
     prefix: 'mt-[1px] text-[1em] text-secondary',
     address: 'text-[1em] text-muted mt-px',
   },

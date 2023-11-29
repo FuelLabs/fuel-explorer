@@ -20,18 +20,12 @@ export const getBlock = act(schema, async (input) => {
   }
 
   if (isAddressValid) {
-    const { data } = await sdk.getBlockById({ id }).catch((err) => {
-      console.log(`err`, err);
-      return { data: { block: null } };
-    });
+    const { data } = await sdk.getBlockById({ id });
     const producer = getProducer(data);
     return { block: data.block, producer };
   }
 
-  const { data } = await sdk.getBlockByHeight({ height: id }).catch((err) => {
-    console.log(`err`, err);
-    return { data: { block: null } };
-  });
+  const { data } = await sdk.getBlockByHeight({ height: id });
   const producer = getProducer(data);
   return { block: data.block, producer };
 });

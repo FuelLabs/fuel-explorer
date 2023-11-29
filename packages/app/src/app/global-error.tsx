@@ -1,10 +1,11 @@
+'use client';
+import './error.css';
 import '@fuels/ui/styles.css';
 import './globals.css';
 
-import { GeistMono } from 'geist/font/mono';
-import { GeistSans } from 'geist/font/sans';
+import Cookies from 'js-cookie';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
+import { ErrorPageComponent } from '~/systems/Core/components/ErrorPage/ErrorPage';
 import { Provider } from '~/systems/Core/components/Provider';
 import { cx } from '~/systems/Core/utils/cx';
 
@@ -13,24 +14,22 @@ export const metadata: Metadata = {
   description: 'Explorer of the Fastest execution layer',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { value: theme } = cookies().get('fuel-theme') ?? { value: 'dark' };
+export default function Page() {
+  const value = Cookies.get('fuel-theme') ?? 'dark';
   return (
     <html
       suppressHydrationWarning
       lang="en"
-      className={cx(`${GeistSans.variable} ${GeistMono.variable}`, theme)}
-      style={{ colorScheme: theme } as React.CSSProperties}
+      className={cx(value)}
+      style={{ colorScheme: value } as React.CSSProperties}
     >
       <head>
         <link rel="icon" href="/favicon.svg" />
       </head>
       <body>
-        <Provider theme={theme}>{children}</Provider>
+        <Provider theme={value}>
+          <ErrorPageComponent />
+        </Provider>
       </body>
     </html>
   );

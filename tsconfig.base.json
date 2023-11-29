@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@fuels/ts-config/base.json",
-  "include": ["packages", "**/*.config.*"],
   "exclude": [
     "node_modules",
     "**/**/node_modules",

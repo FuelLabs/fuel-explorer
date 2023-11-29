@@ -1,4 +1,4 @@
-import '@fontsource-variable/inter/slnt.css';
+import '../src/theme/fonts.css';
 import '../src/theme/index.css';
 
 import { withThemeDecorator } from 'storybook-addon-theme';
@@ -6,7 +6,7 @@ import { Preview } from '@storybook/react';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { Theme } from '../src/components/Theme';
 import { Toaster } from '../src/components/Toast';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
   return (

@@ -49,7 +49,9 @@ export function TxCard({
               <LoadingWrapper
                 isLoading={isLoading}
                 loadingEl={<LoadingBox className="w-32 h-6" />}
-                regularEl={shortAddress(tx.id)}
+                regularEl={
+                  <span className="font-mono">{shortAddress(tx.id)}</span>
+                }
               />
             </Text>
           </Box>
