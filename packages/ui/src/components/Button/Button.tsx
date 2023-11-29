@@ -5,6 +5,7 @@ import { useIconProps } from '../../hooks/useIconProps';
 import type { WithVariants } from '../../hooks/useVariants';
 import { useVariants } from '../../hooks/useVariants';
 import { createPolymorphicComponent } from '../../utils/component';
+import { cx } from '../../utils/css';
 import type { PropsOf, WithAsProps } from '../../utils/types';
 
 type RadixButtonProps = PropsOf<typeof RadixButton>;
@@ -23,11 +24,13 @@ export const Button = createPolymorphicComponent<ButtonProps, 'button'>({
         asChild
         {...(itemProps as RadixButtonProps)}
         {...(variantProps as RadixButtonProps)}
-        className={
+        className={cx(
+          itemProps.className,
+          variantProps.className,
           !itemProps.disabled && !itemProps['aria-readonly']
             ? 'cursor-pointer'
-            : ''
-        }
+            : '',
+        )}
       >
         {innerChildren}
       </RadixButton>
