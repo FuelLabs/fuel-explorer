@@ -8,6 +8,23 @@ type Args = {
   query: string;
 };
 
+export type SearchResult = {
+  account: null | {
+    address: string;
+    transactions: { id: string }[];
+  };
+  contract: null | {
+    id: string;
+  };
+  block: null | {
+    id: string;
+    height: string;
+  };
+  transaction: null | {
+    id: string;
+  };
+};
+
 export class SearchDomain extends Domain<any, Args> {
   static createResolvers() {
     const domain = new SearchDomain();
@@ -74,22 +91,7 @@ export class SearchDomain extends Domain<any, Args> {
       blockId: parsedQuery,
       transactionId: parsedQuery,
     });
-    const result: {
-      account: null | {
-        address: string;
-        transactions: { id: string }[];
-      };
-      contract: null | {
-        id: string;
-      };
-      block: null | {
-        id: string;
-        height: string;
-      };
-      transaction: null | {
-        id: string;
-      };
-    } = {
+    const result: SearchResult = {
       account: null,
       contract: null,
       block: null,
@@ -116,7 +118,6 @@ export class SearchDomain extends Domain<any, Args> {
     if (data.transaction) {
       result.transaction = { id: data.transaction.id };
     }
-
     return result;
   }
 }
