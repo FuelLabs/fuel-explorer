@@ -48,12 +48,17 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
         {...(variantProps as RadixIconButtonProps)}
         disabled={isDisabled}
         size={size}
+        className={cx(
+          props.className,
+          variantProps.className,
+          !isDisabled && !props['aria-readonly'] ? 'cursor-pointer' : '',
+        )}
       >
         {isLoading ? (
           <Spinner color="current" size={getIconSize(size, iconSize)} />
         ) : (
           <Icon
-            className={cx(iconClassName, 'cursor-pointer')}
+            className={iconClassName}
             color={iconColor}
             icon={icon}
             size={iconSize}
