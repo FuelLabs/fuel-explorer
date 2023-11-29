@@ -1,9 +1,14 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
-import type { GroupedOutput } from '@fuel-explorer/graphql';
+import type {
+  GroupedOutput,
+  TransactionItemFragment,
+} from '@fuel-explorer/graphql';
 import {
   Address,
   Card,
   HStack,
+  HelperIcon,
+  Icon,
   Text,
   VStack,
   createComponent,
@@ -11,6 +16,7 @@ import {
   useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
+import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
@@ -21,13 +27,24 @@ import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
+function getTooltipText(tx: TransactionItemFragment, output: GroupedOutput) {
+  if (tx.isMint) {
+    return 'This is the amount minted in the transaction';
+  }
+  if (output.type === GroupedOutputType.ChangeOutput) {
+    return 'This is the amount remaining after transaction';
+  }
+  return 'This is the amount spent in the transaction';
+}
+
 export type TxOutputProps = CardProps & {
+  tx: TransactionItemFragment;
   output: GroupedOutput;
 };
 
 const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
-  render: (_, { output, ...props }) => {
+  render: (_, { tx, output, ...props }) => {
     const classes = styles();
     const { isMobile } = useBreakpoints();
 
@@ -36,6 +53,11 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     const amount = output.totalAmount;
     const asset = useAsset(assetId);
     const fuelAsset = useFuelAsset(asset);
+    const isReceiving =
+      output.type === GroupedOutputType.ChangeOutput ||
+      (output.outputs?.length === 1 &&
+        output.outputs[0]?.__typename === 'CoinOutput');
+
     if (!asset) return null;
 
     return (
@@ -55,7 +77,11 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
             I'm just hidding this until we get the output/input design merged 
             https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
           */}
-          <HStack align="center" className="hidden tablet:block">
+          <HStack className="hidden tablet:flex items-center gap-2">
+            <Icon
+              icon={isReceiving ? IconArrowUp : IconArrowDown}
+              className={isReceiving ? 'text-success' : 'text-error'}
+            />
             {amount && (
               <Text className="text-secondary">
                 {fuelAsset?.decimals ? (
@@ -71,6 +97,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                 {asset.symbol}
               </Text>
             )}
+            <HelperIcon message={getTooltipText(tx, output)} />
           </HStack>
         </Card.Header>
       </Card>
@@ -170,7 +197,6 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
 export function TxOutput({ output, ...props }: TxOutputProps) {
   if (
     output.type === GroupedOutputType.CoinOutput ||
-    output.type === GroupedOutputType.VariableOutput ||
     output.type === GroupedOutputType.ChangeOutput
   ) {
     return <TxOutputCoin output={output} {...props} />;
