@@ -39,11 +39,6 @@ export const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInput({
   inputs: [input('InputCoin'), input('InputCoin'), input('InputCoin')],
 });
 
-export const GROUPED_INPUT_CONTRACT = mocks.aGroupedInput({
-  ...ADDRS,
-  type: GroupedInputType.InputContract,
-});
-
 export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInput({
   ...ADDRS,
   type: GroupedInputType.InputMessage,
@@ -65,19 +60,6 @@ export const GROUPED_OUTPUT_ASSET_UNKNOWN = mocks.aGroupedOutput({
   type: GroupedOutputType.CoinOutput,
   outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
 });
-
-export const GROUPED_OUTPUT_VARIABLE_OUTPUT = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.VariableOutput,
-  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-  assetId: '0x0000000000000000000000000000000000000000',
-});
-
-export const GROUPED_OUTPUT_VARIABLE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({
-  type: GroupedOutputType.VariableOutput,
-  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-});
-
 export const GROUPED_OUTPUT_CHANGE_OUTPUT = mocks.aGroupedOutput({
   ...ADDRS,
   type: GroupedOutputType.ChangeOutput,
@@ -89,11 +71,6 @@ export const GROUPED_OUTPUT_CHANGE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({
   ...ADDRS,
   type: GroupedOutputType.ChangeOutput,
   outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-});
-
-export const GROUPED_OUTPUT_CONTRACT_OUTPUT = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.ContractOutput,
 });
 
 export const GROUPED_OUTPUT_CONTRACT_CREATED = mocks.aGroupedOutput({
@@ -126,7 +103,6 @@ export const TX_MOCK = mocks.aTransaction({
   groupedOutputs: [
     GROUPED_OUTPUT_ASSET,
     GROUPED_OUTPUT_ASSET_UNKNOWN,
-    GROUPED_OUTPUT_CONTRACT_OUTPUT,
     GROUPED_OUTPUT_CONTRACT_CREATED,
     GROUPED_OUTPUT_MESSAGE,
   ],
