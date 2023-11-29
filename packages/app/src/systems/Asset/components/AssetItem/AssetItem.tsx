@@ -30,7 +30,7 @@ export function AssetItem({
   return (
     <HStack {...props} align="center">
       {asset?.icon ? (
-        <Flex className="w-[40px] h-[40px] items-center justify-center">
+        <Flex className="w-10 h-10 items-center justify-center">
           <Image
             src={asset.icon as string}
             width={ICON_SIZE}
