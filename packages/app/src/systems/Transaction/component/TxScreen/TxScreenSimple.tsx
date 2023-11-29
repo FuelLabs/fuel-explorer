@@ -188,6 +188,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               <TxOutput
                 // here we use only index as key because this component will not change
                 key={i}
+                tx={tx}
                 output={output as GroupedOutput}
               />
             ))
