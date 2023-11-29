@@ -5,8 +5,7 @@ import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoade
 export function BlockScreenSkeleton() {
   return (
     <VStack>
-      <Grid className="grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-2 laptop:grid-cols-4 gap-6 mb-8">
-        <LoadingBox className="h-[100px]" />
+      <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">
         <LoadingBox className="h-[100px]" />
         <LoadingBox className="h-[100px]" />
         <LoadingBox className="h-[100px]" />

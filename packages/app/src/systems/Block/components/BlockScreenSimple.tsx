@@ -4,7 +4,6 @@
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import { VStack, Grid, Address, Icon } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
-import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
@@ -19,7 +18,7 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
   const txList = (block?.transactions.map((v) => ({ node: v })) as any) || [];
   return (
     <VStack>
-      <Grid className="grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-2 laptop:grid-cols-4 gap-6 mb-8">
+      <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">
         <CardInfo name="Producer" className="flex-1">
           <Address
             value={producer || ''}
@@ -33,9 +32,6 @@ export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
           className="flex-1"
         >
           {block?.time?.fromNow}
-        </CardInfo>
-        <CardInfo name="Gas spent (gwei)" className="flex-1">
-          {bn(block?.totalGasUsed).format()}
         </CardInfo>
         <CardInfo name="# of transactions" className="flex-1">
           {block?.header.transactionsCount}
