@@ -4,7 +4,6 @@ import { getIconSize } from '../../hooks/useIconProps';
 import { useVariants } from '../../hooks/useVariants';
 import type { Variant, WithVariants } from '../../hooks/useVariants';
 import { createComponent } from '../../utils/component';
-import { cx } from '../../utils/css';
 import type { Colors, PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
 import type { IconContext } from '../Icon/useIconContext';
@@ -48,12 +47,15 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
         {...(variantProps as RadixIconButtonProps)}
         disabled={isDisabled}
         size={size}
+        className={
+          !isDisabled && !props['aria-readonly'] ? 'cursor-pointer' : ''
+        }
       >
         {isLoading ? (
           <Spinner color="current" size={getIconSize(size, iconSize)} />
         ) : (
           <Icon
-            className={cx(iconClassName, 'cursor-pointer')}
+            className={iconClassName}
             color={iconColor}
             icon={icon}
             size={iconSize}

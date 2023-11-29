@@ -29,7 +29,13 @@ export function Pagination({ page, onChange, ...props }: PaginationProps) {
       >
         <IconArrowLeft size={14} />
       </Button>
-      <Button size="2" variant="ghost" color="gray" className="bg-gray-3">
+      <Button
+        aria-readonly
+        size="2"
+        variant="ghost"
+        color="gray"
+        className="bg-gray-3"
+      >
         Page {page}
       </Button>
       <Button

@@ -23,6 +23,11 @@ export const Button = createPolymorphicComponent<ButtonProps, 'button'>({
         asChild
         {...(itemProps as RadixButtonProps)}
         {...(variantProps as RadixButtonProps)}
+        className={
+          !itemProps.disabled && !itemProps['aria-readonly']
+            ? 'cursor-pointer'
+            : ''
+        }
       >
         {innerChildren}
       </RadixButton>
