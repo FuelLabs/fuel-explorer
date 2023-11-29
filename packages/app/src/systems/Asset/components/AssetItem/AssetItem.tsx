@@ -1,5 +1,13 @@
 import type { HStackProps } from '@fuels/ui';
-import { HStack, Text, shortAddress, Copyable, Tooltip, Box } from '@fuels/ui';
+import {
+  HStack,
+  Text,
+  shortAddress,
+  Copyable,
+  Tooltip,
+  Box,
+  Flex,
+} from '@fuels/ui';
 import Image from 'next/image';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
@@ -22,12 +30,14 @@ export function AssetItem({
   return (
     <HStack {...props} align="center">
       {asset?.icon ? (
-        <Image
-          src={asset.icon as string}
-          width={ICON_SIZE}
-          height={ICON_SIZE}
-          alt={asset.name}
-        />
+        <Flex className="w-[40px] h-[40px] items-center justify-center">
+          <Image
+            src={asset.icon as string}
+            width={ICON_SIZE}
+            height={ICON_SIZE}
+            alt={asset.name}
+          />
+        </Flex>
       ) : (
         <TxIcon type="Mint" status="Submitted" />
       )}
