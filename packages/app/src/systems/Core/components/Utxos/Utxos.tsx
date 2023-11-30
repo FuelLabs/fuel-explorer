@@ -6,12 +6,14 @@ import {
   Collapsible,
   useBreakpoints,
   Box,
+  ScrollArea,
 } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
-import { VariableSizeList as List } from 'react-window';
+import type { SyntheticEvent } from 'react';
+import { useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
@@ -67,53 +69,42 @@ type UtxosProps = BoxProps & {
   items?: UtxoItem[] | null;
 };
 
-function VirtualList({ items, assetId }: UtxosProps) {
-  const { isMobile } = useBreakpoints();
-  return (
-    <List
-      height={350}
-      itemCount={items?.length ?? 0}
-      width="100%"
-      itemSize={() => (isMobile ? 85 : 35)}
-    >
-      {({ index: idx, style }) => {
-        const item = items?.[idx];
-        return (
-          item && (
-            <UtxoItem
-              key={item.utxoId}
-              style={style}
-              item={item}
-              assetId={assetId}
-            />
-          )
-        );
-      }}
-    </List>
-  );
-}
-
 function CommonList({ items, assetId }: UtxosProps) {
+  const [lastItemIdx, setLastItemIdx] = useState(9);
+
+  function handleScroll(e: SyntheticEvent) {
+    const target = e.target as HTMLElement;
+    const bottom =
+      target.scrollHeight - target.scrollTop === target.clientHeight;
+    if (bottom) {
+      setLastItemIdx(lastItemIdx + 10);
+    }
+  }
+
   return (
-    items?.map((item) => (
-      <UtxoItem key={item.utxoId} item={item} assetId={assetId} />
-    )) ?? null
+    <ScrollArea
+      scrollbars="vertical"
+      type="always"
+      onScroll={handleScroll}
+      className="h-80"
+    >
+      {items
+        ?.slice(0, lastItemIdx)
+        .map((item) => (
+          <UtxoItem key={item.utxoId} item={item} assetId={assetId} />
+        )) ?? null}
+    </ScrollArea>
   );
 }
 
 export function Utxos({ items, assetId, ...props }: UtxosProps) {
-  const len = items?.length ?? 0;
   return (
     <Collapsible.Content {...props}>
       <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">
         UTXOs ({items?.length ?? 0})
       </Collapsible.Title>
       <Collapsible.Body className="p-0">
-        {len > 10 ? (
-          <VirtualList items={items} assetId={assetId} />
-        ) : (
-          <CommonList items={items} assetId={assetId} />
-        )}
+        <CommonList items={items} assetId={assetId} />
       </Collapsible.Body>
     </Collapsible.Content>
   );
