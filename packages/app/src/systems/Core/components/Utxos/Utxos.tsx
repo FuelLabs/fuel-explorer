@@ -77,10 +77,10 @@ function VirtualList({ items, assetId }: UtxosProps) {
   const len = items?.length ?? 0;
   return (
     <List
-      height={(items?.length ?? 0) >= 10 ? 350 : itemSize * len}
+      height={len >= 10 ? 350 : itemSize * len}
       itemCount={items?.length ?? 0}
       width="100%"
-      itemSize={isMobile ? 85 : 35}
+      itemSize={itemSize}
     >
       {({ index: idx, style }) => {
         const item = items?.[idx];
