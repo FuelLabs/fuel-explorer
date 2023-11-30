@@ -79,9 +79,9 @@ export const CollapsibleHeader = createComponent<
     const { opened, setOpened, hideIcon } = useContext(ctx);
     return (
       <Root
+        {...props}
         data-state={opened ? 'opened' : 'closed'}
         onClick={() => setOpened(!opened)}
-        {...props}
         className={cx(
           classes.header({ className }),
           hideIcon ? 'cursor-default' : '',
