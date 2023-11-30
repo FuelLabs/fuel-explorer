@@ -38,7 +38,7 @@ const BalanceItemRoot = createComponent<BalanceItemProps, typeof Collapsible>({
     const hasUTXOs = !!item.utxos?.length;
 
     return (
-      <Collapsible hideIcon={!hasUTXOs} {...props}>
+      <Collapsible {...props} hideIcon={!hasUTXOs}>
         <Collapsible.Header>
           <Flex className="flex-1 flex-col tablet:flex-row tablet:justify-between tablet:items-center">
             <AssetItem assetId={assetId}>
