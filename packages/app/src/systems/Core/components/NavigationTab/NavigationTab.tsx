@@ -1,12 +1,13 @@
 import { Tabs } from '@fuels/ui';
 import type { TabsProps, IconProps } from '@fuels/ui';
+import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 type NavigationTabsProps = TabsProps & {
   items: {
     icon: IconProps['icon'];
     value: string;
-    label: string;
+    label: ReactNode;
     onClick: () => void;
     disabled?: boolean;
   }[];

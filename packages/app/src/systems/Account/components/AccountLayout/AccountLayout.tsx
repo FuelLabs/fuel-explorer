@@ -13,6 +13,7 @@ export function AccountLayout({
   children: React.ReactNode;
 }) {
   const { isLaptop } = useBreakpoints();
+  console.log(isLaptop);
   return (
     <Layout>
       <VStack className="gap-4 laptop:gap-8">
@@ -21,7 +22,7 @@ export function AccountLayout({
           className="border-b-gray-3"
         >
           Account
-          <Address full={isLaptop} value={id} />
+          <Address full={isLaptop || true} value={id} />
         </PageTitle>
         {children}
       </VStack>

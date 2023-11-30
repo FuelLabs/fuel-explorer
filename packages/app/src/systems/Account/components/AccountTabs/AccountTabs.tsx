@@ -1,24 +1,24 @@
 'use client';
 import type { BaseProps } from '@fuels/ui';
 import { IconChecklist, IconCodeAsterix, IconCoins } from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type AccountTabsProps = BaseProps<{
   isLoading?: boolean;
-  accountId?: string;
+  address?: string;
   isPredicate?: boolean;
 }>;
 
 export function AccountTabs({
-  accountId,
+  address,
   isPredicate,
-  isLoading,
   ...props
 }: AccountTabsProps) {
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
   const defaultValue = useMemo(() => {
     if (pathname.includes('transactions')) return 'transactions';
     if (pathname.includes('predicate')) return 'predicate';
@@ -34,23 +34,26 @@ export function AccountTabs({
         {
           icon: IconCoins,
           value: 'assets',
-          label: 'Assets',
-          disabled: isLoading,
-          onClick: () => router.push(`/account/${accountId}/assets`),
+          label: <Link href={`/account/${address}/assets`}>Assets</Link>,
+          // disabled: isLoading,
+          onClick: () => {}, // router.push(`/account/${address}/assets`),
         },
         {
           icon: IconChecklist,
           value: 'transactions',
-          label: 'Transactions',
-          disabled: isLoading,
-          onClick: () => router.push(`/account/${accountId}/transactions`),
+          label: (
+            <Link href={`/account/${address}/transactions`}>Transactions</Link>
+          ),
+          // disabled: isLoading,
+          onClick: () => {}, // router.push(`/account/${address}/transactions`),
         },
         {
           icon: IconCodeAsterix,
           value: 'predicate',
-          label: 'Predicate',
-          onClick: () => router.push(`/account/${accountId}/predicate`),
-          disabled: !isPredicate || isLoading,
+          // label: 'Predicate',
+          label: <Link href={`/account/${address}/predicate`}>Predicate</Link>,
+          onClick: () => {}, // router.push(`/account/${address}/predicate`),
+          disabled: !isPredicate,
         },
       ]}
     />

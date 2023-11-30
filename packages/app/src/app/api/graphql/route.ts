@@ -1,6 +1,7 @@
 import { createExecutor, createSchema } from '@fuel-explorer/graphql';
 import { getChainInfo } from '@fuel-explorer/graphql/src/utils/chainInfo';
 import { createYoga } from 'graphql-yoga';
+// import { setTimeout } from 'timers/promises';
 
 const url = process.env.FUEL_PROVIDER_URL!;
 const executor = createExecutor(async ({ body }) => {
@@ -14,7 +15,7 @@ const executor = createExecutor(async ({ body }) => {
 });
 
 const schema = createSchema(executor);
-const { handleRequest } = createYoga({
+const { handleRequest: _handleRequest } = createYoga({
   schema,
   batching: true,
   graphqlEndpoint: '/api/graphql',
@@ -24,6 +25,15 @@ const { handleRequest } = createYoga({
   },
   context: async () => ({ url, chainInfo: await getChainInfo(url) }),
 });
+
+const handleRequest = _handleRequest;
+// Use to delay more the application
+// const handleRequest = async (...args: any[]) => {
+//   console.log(args);
+//   const response = handleRequest(...args);
+//   await setTimeout(5000);
+//   return response;
+// };
 
 export {
   handleRequest as GET,
