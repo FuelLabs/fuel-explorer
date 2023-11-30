@@ -81,12 +81,13 @@ function CommonList({ items, assetId }: UtxosProps) {
     }
   }
 
+  console.log(`items?.length`, items?.length);
+
   return (
     <ScrollArea
       scrollbars="vertical"
-      type="always"
       onScroll={handleScroll}
-      className="h-80"
+      className={(items?.length ?? 0) >= 10 ? 'h-80' : ''}
     >
       {items
         ?.slice(0, lastItemIdx)
