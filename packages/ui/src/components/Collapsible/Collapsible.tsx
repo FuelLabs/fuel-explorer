@@ -5,6 +5,7 @@ import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
 import { createComponent, withNamespace } from '../../utils/component';
+import { cx } from '../../utils/css';
 import { Box, HStack } from '../Box';
 import type { BoxProps } from '../Box';
 import { Card } from '../Card';
@@ -20,14 +21,14 @@ type Context = CollapsibleBaseProps & {
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
   defaultOpened?: boolean;
+  hideIcon?: boolean;
 };
 
 const ctx = createContext<Context>({} as Context);
 
-export type CollapsibleProps = CollapsibleBaseProps & CardProps;
-export type CollapsibleHeaderProps = CardHeaderProps & {
-  hideIcon?: boolean;
-};
+export type CollapsibleProps = CollapsibleBaseProps &
+  CardProps & { hideIcon?: boolean };
+export type CollapsibleHeaderProps = CardHeaderProps;
 export type CollapsibleContentProps = CardBodyProps;
 export type CollapsibleTitleProps = TextProps;
 export type CollapsibleBodyProps = BoxProps;
@@ -37,14 +38,29 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
   baseElement: Card,
   render: (
     Root,
-    { children, className, defaultOpened, variant = 'surface', ...props },
+    {
+      children,
+      className,
+      defaultOpened,
+      variant = 'surface',
+      hideIcon,
+      ...props
+    },
   ) => {
     const classes = styles();
     const [opened, setOpened] = useState(Boolean(defaultOpened));
 
     return (
-      <ctx.Provider value={{ opened, setOpened, defaultOpened, variant }}>
-        <Root {...props} className={classes.root({ className })}>
+      <ctx.Provider
+        value={{ opened, setOpened, defaultOpened, variant, hideIcon }}
+      >
+        <Root
+          {...props}
+          className={cx(
+            classes.root({ className }),
+            hideIcon ? 'cursor-default' : '',
+          )}
+        >
           {children}
         </Root>
       </ctx.Provider>
@@ -58,15 +74,18 @@ export const CollapsibleHeader = createComponent<
 >({
   id: 'CollapsibleHeader',
   baseElement: Card.Header,
-  render: (Root, { children, className, hideIcon, ...props }) => {
+  render: (Root, { children, className, ...props }) => {
     const classes = styles();
-    const { opened, setOpened } = useContext(ctx);
+    const { opened, setOpened, hideIcon } = useContext(ctx);
     return (
       <Root
-        {...props}
-        className={classes.header({ className })}
         data-state={opened ? 'opened' : 'closed'}
         onClick={() => setOpened(!opened)}
+        {...props}
+        className={cx(
+          classes.header({ className }),
+          hideIcon ? 'cursor-default' : '',
+        )}
       >
         <HStack align="center">{children}</HStack>
         {!hideIcon && (
