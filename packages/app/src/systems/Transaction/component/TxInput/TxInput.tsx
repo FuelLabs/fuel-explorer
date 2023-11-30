@@ -1,20 +1,16 @@
 import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
 import {
   Address,
-  Card,
-  EntityItem,
   HStack,
   Collapsible,
   Text,
   VStack,
   createComponent,
-  cx,
   useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
-import { tv } from 'tailwind-variants';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
@@ -82,38 +78,6 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
   },
 });
 
-const TxInputContract = createComponent<TxInputProps, typeof Card>({
-  id: 'TxInputContract',
-  render: (_, { input, ...props }) => {
-    const classes = styles();
-
-    if (!input.contractId) return null;
-    const contractId = input.contractId;
-
-    return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header className={classes.header()}>
-          <EntityItem>
-            <EntityItem.Slot>
-              <TxIcon status="Submitted" type="Contract" />
-            </EntityItem.Slot>
-            <EntityItem.Info title="Contract Input">
-              <Address
-                value={contractId}
-                prefix="Id:"
-                linkProps={{
-                  as: NextLink,
-                  href: `/contract/${contractId}/assets`,
-                }}
-              />
-            </EntityItem.Info>
-          </EntityItem>
-        </Card.Header>
-      </Card>
-    );
-  },
-});
-
 const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
   id: 'TxInputMessage',
   render: (_, { input, ...props }) => {
@@ -125,9 +89,9 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
       <Collapsible {...props}>
         <Collapsible.Header>
           <TxIcon type="Message" status="Submitted" />
-          <HStack align="center" gap="1" className="flex-1">
-            <Text>Message</Text>
-            <VStack gap="1" className="ml-4">
+          <HStack className="gap-1 flex-col tablet:flex-row tablet:items-center tablet:flex-1">
+            <Text className="hidden tablet:block">Message</Text>
+            <VStack className="gap-1 tablet:flex-1 tablet:items-end">
               <Address
                 value={sender}
                 prefix="Sender:"
@@ -159,17 +123,7 @@ export function TxInput({ input, ...props }: TxInputProps) {
   if (input.type === 'InputCoin') {
     return <TxInputCoin input={input} {...props} />;
   }
-  if (input.type === 'InputContract') {
-    return <TxInputContract input={input} {...props} />;
-  }
   if (input.type === 'InputMessage') {
     return <TxInputMessage input={input} {...props} />;
   }
 }
-
-const styles = tv({
-  slots: {
-    header: 'group flex flex-row gap-4 justify-between items-center',
-    icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
-  },
-});

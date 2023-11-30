@@ -4,7 +4,7 @@ import {
   IconCode,
   IconCoins,
   IconFlame,
-  IconMessageCode,
+  IconMailForward,
   IconScript,
   IconSwitch3,
   IconTransfer,
@@ -25,7 +25,7 @@ const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   Contract: IconScript,
   Wallet: IconWallet,
   Predicate: IconSwitch3,
-  Message: IconMessageCode,
+  Message: IconMailForward,
 } as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

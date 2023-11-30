@@ -188,7 +188,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
       if (isContract) {
         return {
           type: 'Contract',
-          id: input.contract.id,
+          id: input.contract?.id,
         };
       }
     });
