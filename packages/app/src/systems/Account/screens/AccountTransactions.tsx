@@ -10,5 +10,11 @@ export async function AccountTransactions({ id }: { id: string }) {
     return <EmptyTransactions entity="account" />;
   }
 
-  return <TxList hidePagination transactions={transactions} className="p-0" />;
+  return (
+    <TxList
+      hidePagination
+      transactions={transactions}
+      className="p-0 tablet:py-0"
+    />
+  );
 }

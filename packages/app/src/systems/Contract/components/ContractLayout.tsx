@@ -1,6 +1,6 @@
 'use client';
 
-import { Address, Box, VStack, useBreakpoints } from '@fuels/ui';
+import { Address, Box, VStack } from '@fuels/ui';
 import { IconChecklist, IconCoins, IconCodeAsterix } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -15,7 +15,6 @@ export function ContractLayout({
   id: string;
   children: React.ReactNode;
 }) {
-  const { isLaptop } = useBreakpoints();
   const router = useRouter();
   const pathname = usePathname();
   const defaultValue = useMemo(() => {
@@ -31,7 +30,7 @@ export function ContractLayout({
           className="border-b-gray-3"
         >
           Contract
-          <Address value={id} full={isLaptop} fixed="b256" />
+          <Address value={id} full={true} fixed="b256" />
         </PageTitle>
         <NavigationTab
           defaultValue={defaultValue}

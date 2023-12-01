@@ -18,7 +18,6 @@ export function AccountTabs({
   ...props
 }: AccountTabsProps) {
   const pathname = usePathname();
-  // const router = useRouter();
   const defaultValue = useMemo(() => {
     if (pathname.includes('transactions')) return 'transactions';
     if (pathname.includes('predicate')) return 'predicate';
@@ -30,29 +29,24 @@ export function AccountTabs({
       {...props}
       defaultValue={defaultValue}
       value={defaultValue}
+      renderTab={(children, item) => (
+        <Link href={`/account/${address}/${item.value}`}>{children}</Link>
+      )}
       items={[
         {
           icon: IconCoins,
           value: 'assets',
-          label: <Link href={`/account/${address}/assets`}>Assets</Link>,
-          // disabled: isLoading,
-          onClick: () => {}, // router.push(`/account/${address}/assets`),
+          label: 'Assets',
         },
         {
           icon: IconChecklist,
           value: 'transactions',
-          label: (
-            <Link href={`/account/${address}/transactions`}>Transactions</Link>
-          ),
-          // disabled: isLoading,
-          onClick: () => {}, // router.push(`/account/${address}/transactions`),
+          label: 'Transactions',
         },
         {
           icon: IconCodeAsterix,
           value: 'predicate',
-          // label: 'Predicate',
-          label: <Link href={`/account/${address}/predicate`}>Predicate</Link>,
-          onClick: () => {}, // router.push(`/account/${address}/predicate`),
+          label: 'Predicate',
           disabled: !isPredicate,
         },
       ]}
