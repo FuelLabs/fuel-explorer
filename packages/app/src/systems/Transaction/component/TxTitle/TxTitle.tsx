@@ -6,7 +6,7 @@ import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
 import { useViewMode } from '~/systems/Core/hooks/useViewMode';
 
 export function TxTitle({ id }: { id: string }) {
-  const { viewMode, setViewMode } = useViewMode();
+  const { viewMode, setViewMode } = useViewMode(`/tx/${id}`);
   return (
     <PageTitle
       icon={<IconChecklist size={24} stroke={1.2} />}

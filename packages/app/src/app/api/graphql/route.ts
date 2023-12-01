@@ -27,10 +27,11 @@ const { handleRequest: _handleRequest } = createYoga({
 });
 
 const handleRequest = _handleRequest;
-// Use to delay more the application
+// // Use to delay more the application
+// // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // const handleRequest = async (...args: any[]) => {
-//   console.log(args);
-//   const response = handleRequest(...args);
+//   // console.log(args);
+//   const response = _handleRequest(...args);
 //   await setTimeout(5000);
 //   return response;
 // };
