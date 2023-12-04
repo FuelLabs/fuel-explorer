@@ -64,20 +64,32 @@ export function TopNav() {
     <Nav.ThemeToggle onToggle={(theme) => setTheme({ theme })} />
   );
 
+  // const temp = (isSearchOpen: boolean) => {
+  //   return (
+
+  //   )
+  // }
+
   return (
     <Nav>
-      <Nav.Desktop className="px-10">
+      <Nav.Desktop
+        className={`px-10 ${isDesktopSearchOpen ? 'justify-between' : ''}`}
+      >
         {logo}
-        {!isDesktopSearchOpen && <Nav.Menu>{externalLinks}</Nav.Menu>}
-        <Nav.Spacer />
+        {!isDesktopSearchOpen && (
+          <>
+            <Nav.Menu>{externalLinks}</Nav.Menu>
+            <Nav.Spacer />
+          </>
+        )}
         <Nav.Menu>
           <SearchWidget
             isSearchOpen={isDesktopSearchOpen}
             setIsSearchOpen={setIsDesktopSearchOpen}
           />
-          {tooling}
+          {!isDesktopSearchOpen && tooling}
         </Nav.Menu>
-        {themeToggle}
+        {isDesktopSearchOpen ? <div></div> : themeToggle}
       </Nav.Desktop>
       <Nav.Mobile>
         <Nav.MobileContent>
@@ -86,12 +98,14 @@ export function TopNav() {
             isSearchOpen={isMobileSearchOpen}
             setIsSearchOpen={setIsMobileSearchOpen}
           />
-          {themeToggle}
+          {isMobileSearchOpen ? <div></div> : themeToggle}
         </Nav.MobileContent>
-        <Nav.Menu>
-          {externalLinks}
-          {tooling}
-        </Nav.Menu>
+        {!isMobileSearchOpen && (
+          <Nav.Menu>
+            {externalLinks}
+            {tooling}
+          </Nav.Menu>
+        )}
       </Nav.Mobile>
     </Nav>
   );
