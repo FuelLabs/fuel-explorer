@@ -19,3 +19,5 @@ export default function BlockLayout({
     </Layout>
   );
 }
+
+export const invalidate = Infinity;

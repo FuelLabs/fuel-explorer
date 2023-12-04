@@ -2,7 +2,8 @@
 
 import { Address, Box, VStack } from '@fuels/ui';
 import { IconChecklist, IconCoins, IconCodeAsterix } from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
@@ -15,7 +16,6 @@ export function ContractLayout({
   id: string;
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   const pathname = usePathname();
   const defaultValue = useMemo(() => {
     if (pathname.includes('code')) return 'code';
@@ -35,18 +35,19 @@ export function ContractLayout({
         <NavigationTab
           defaultValue={defaultValue}
           value={defaultValue}
+          renderTab={(children, item) => (
+            <Link href={`/contract/${id}/${item.value}`}>{children}</Link>
+          )}
           items={[
             {
               value: 'assets',
               label: 'Assets',
               icon: IconCoins,
-              onClick: () => router.push(`/contract/${id}/assets`),
             },
             {
               value: 'code',
               label: 'Source Code',
               icon: IconCodeAsterix,
-              onClick: () => router.push(`/contract/${id}/code`),
             },
           ]}
         />

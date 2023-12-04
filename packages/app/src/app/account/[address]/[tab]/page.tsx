@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { AccountBalances } from '~/systems/Account/screens/AccountBalances';
 import { AccountPredicate } from '~/systems/Account/screens/AccountPredicate';
@@ -36,9 +37,9 @@ export default async function Account({
         </Suspense>
       );
     default:
-      return null;
+      redirect(`/account/${address}/assets`);
   }
 }
 
 // Revalidate cache every 10 seconds
-export const revalidate = 1;
+export const revalidate = Infinity;

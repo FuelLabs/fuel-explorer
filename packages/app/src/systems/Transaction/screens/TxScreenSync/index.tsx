@@ -1,22 +1,11 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
-import {
-  TxScreenAdvancedSync,
-  TxScreenSimpleSync,
-} from '~/systems/Transaction/screens/TxScreen/TxScreen';
-import { TxScreenSkeleton } from '~/systems/Transaction/screens/TxScreen/TxScreenSkeleton';
 
-type TransactionProps = {
-  params: {
-    id: string;
-    mode: ViewModes;
-  };
-};
+import { TxScreenAdvancedSync, TxScreenSimpleSync } from '../TxScreen/TxScreen';
+import { TxScreenSkeleton } from '../TxScreen/TxScreenSkeleton';
 
-export default async function Transaction({
-  params: { id, mode },
-}: TransactionProps) {
+export function TxScreenSync({ mode, id }: { mode: ViewModes; id: string }) {
   switch (mode) {
     case ViewModes.Advanced:
       return (
@@ -36,6 +25,4 @@ export default async function Transaction({
 }
 
 // Revalidate cache every 10 seconds
-// export const dynamic = 'force-static';
-export const fetchCache = 'force-cache';
 export const revalidate = Infinity;

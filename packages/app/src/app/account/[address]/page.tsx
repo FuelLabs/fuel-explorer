@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation';
 
 export default async function main({
-  params: { id },
+  params: { address },
 }: {
-  params: { id: string };
+  params: { address: string };
 }) {
-  redirect(`/tx/${id}/simple`);
+  redirect(`/account/${address}/assets`);
 }
 
 export const revalidate = Infinity;

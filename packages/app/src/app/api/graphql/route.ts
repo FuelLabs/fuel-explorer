@@ -5,13 +5,21 @@ import { createYoga } from 'graphql-yoga';
 
 const url = process.env.FUEL_PROVIDER_URL!;
 const executor = createExecutor(async ({ body }) => {
+  console.log(new Date().toString());
+  console.time('request');
   return fetch(url, {
     body,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then((res) => res.json());
+    next: {
+      revalidate: Infinity,
+    },
+  }).then((res) => {
+    console.timeEnd('request');
+    return res.json();
+  });
 });
 
 const schema = createSchema(executor);

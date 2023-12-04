@@ -19,3 +19,5 @@ export default function Layout({
     </AccountLayout>
   );
 }
+
+export const revalidate = Infinity;

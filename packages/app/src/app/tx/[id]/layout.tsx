@@ -18,3 +18,5 @@ export default function TxLayout({
     </Layout>
   );
 }
+
+export const revalidate = Infinity;

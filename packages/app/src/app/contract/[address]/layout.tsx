@@ -2,10 +2,10 @@ import { ContractLayout } from '~/systems/Contract/components/ContractLayout';
 
 export default function Layout({
   children,
-  params: { id },
+  params: { address },
 }: {
   children: React.ReactNode;
-  params: { id: string };
+  params: { address: string };
 }) {
-  return <ContractLayout id={id}>{children}</ContractLayout>;
+  return <ContractLayout id={address}>{children}</ContractLayout>;
 }

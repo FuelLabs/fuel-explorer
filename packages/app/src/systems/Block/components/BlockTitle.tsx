@@ -8,7 +8,7 @@ import { useViewMode } from '~/systems/Core/hooks/useViewMode';
 import { isValidAddress } from '~/systems/Core/utils/address';
 
 export function BlockTitle({ id }: { id: string }) {
-  const { viewMode, setViewMode } = useViewMode();
+  const { viewMode, setViewMode } = useViewMode(`/block/${id}`);
   return (
     <PageTitle
       icon={<IconCube size={24} stroke={2.4} />}
