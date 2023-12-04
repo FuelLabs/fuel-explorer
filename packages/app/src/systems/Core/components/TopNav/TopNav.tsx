@@ -8,7 +8,8 @@ import { setTheme } from '../../actions/setTheme';
 import { SearchWidget } from '../SearchWidget/SearchWidget';
 
 export function TopNav() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const logo = (
     <NextLink href="/" className="flex items-center flex-1 laptop:flex-initial">
@@ -40,7 +41,7 @@ export function TopNav() {
         as={NextLink}
         href="/"
         className={
-          isSearchOpen
+          isDesktopSearchOpen || isMobileSearchOpen
             ? 'flex items-center laptop:data-[active=true]:before:top-[-16px]'
             : 'flex items-center'
         }
@@ -65,12 +66,12 @@ export function TopNav() {
     <Nav>
       <Nav.Desktop className="px-10">
         {logo}
-        {!isSearchOpen && <Nav.Menu>{externalLinks}</Nav.Menu>}
+        {!isDesktopSearchOpen && <Nav.Menu>{externalLinks}</Nav.Menu>}
         <Nav.Spacer />
         <Nav.Menu>
           <SearchWidget
-            isSearchOpen={isSearchOpen}
-            setIsSearchOpen={setIsSearchOpen}
+            isSearchOpen={isDesktopSearchOpen}
+            setIsSearchOpen={setIsDesktopSearchOpen}
           />
           {tooling}
         </Nav.Menu>
@@ -80,8 +81,8 @@ export function TopNav() {
         <Nav.MobileContent>
           {logo}
           <SearchWidget
-            isSearchOpen={isSearchOpen}
-            setIsSearchOpen={setIsSearchOpen}
+            isSearchOpen={isMobileSearchOpen}
+            setIsSearchOpen={setIsMobileSearchOpen}
           />
           {themeToggle}
         </Nav.MobileContent>

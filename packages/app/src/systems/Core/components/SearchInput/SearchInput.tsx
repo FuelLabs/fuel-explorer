@@ -17,11 +17,12 @@ import {
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import type { KeyboardEvent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { tv } from 'tailwind-variants';
 
 import { cx } from '../../utils/cx';
+import { SearchContext } from '../SearchWidget/SearchWidget';
 
 type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
   onSubmit?: (value: string) => void;
@@ -29,122 +30,133 @@ type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
   searchResult?: Maybe<SearchResult>;
 };
 
-function SearchResultDropdown({
-  searchResult,
-  openDropdown,
-  onOpenChange,
-  searchValue,
-}: {
+type SearchDropdownProps = {
   searchResult?: Maybe<SearchResult>;
   openDropdown: boolean;
   onOpenChange: () => void;
   searchValue: string;
-}) {
-  const classes = styles();
-  const { isMobile } = useBreakpoints();
-  const trimL = isMobile ? 15 : 20;
-  const trimR = isMobile ? 13 : 18;
+};
 
-  return (
-    <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
-      <Dropdown.Trigger>
-        <div></div>
-      </Dropdown.Trigger>
-      <Dropdown.Content className="w-[311px] tablet:w-[400px]">
-        {!searchResult && (
-          <>
-            <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-              {`${searchValue} is not a valid address.`}
-            </Dropdown.Item>
-          </>
-        )}
-        {searchResult?.account && (
-          <>
-            <Dropdown.Label>Account</Dropdown.Label>
-            <Dropdown.Item className={classes.dropdownItem()}>
-              <Link
-                as={NextLink}
-                href={`/account/${searchResult.account.address}/assets`}
-                className="text-color"
-              >
-                {shortAddress(searchResult.account.address || '', trimL, trimR)}
-              </Link>
-            </Dropdown.Item>
-            <Dropdown.Separator />
-            <Dropdown.Label>Recent Transactions</Dropdown.Label>
-            {searchResult.account.transactions?.map((transaction) => {
-              return (
-                <Dropdown.Item
-                  key={transaction?.id}
-                  className={classes.dropdownItem()}
+const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
+  ({ searchResult, searchValue, openDropdown, onOpenChange }, ref) => {
+    const classes = styles();
+    const { isMobile } = useBreakpoints();
+    const trimL = isMobile ? 15 : 20;
+    const trimR = isMobile ? 13 : 18;
+
+    return (
+      <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
+        <Dropdown.Trigger>
+          <div></div>
+        </Dropdown.Trigger>
+        <Dropdown.Content
+          id="Search Content"
+          className="w-[311px] tablet:w-[400px]"
+          ref={ref}
+        >
+          {!searchResult && (
+            <>
+              <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
+                {`${searchValue} is not a valid address.`}
+              </Dropdown.Item>
+            </>
+          )}
+          {searchResult?.account && (
+            <>
+              <Dropdown.Label>Account</Dropdown.Label>
+              <Dropdown.Item className={classes.dropdownItem()}>
+                <Link
+                  as={NextLink}
+                  href={`/account/${searchResult.account.address}/assets`}
+                  className="text-color"
                 >
-                  <Link
-                    as={NextLink}
-                    href={`/tx/${transaction?.id}/`}
-                    className="text-color"
+                  {shortAddress(
+                    searchResult.account.address || '',
+                    trimL,
+                    trimR,
+                  )}
+                </Link>
+              </Dropdown.Item>
+              <Dropdown.Separator />
+              <Dropdown.Label>Recent Transactions</Dropdown.Label>
+              {searchResult.account.transactions?.map((transaction) => {
+                return (
+                  <Dropdown.Item
+                    key={transaction?.id}
+                    className={classes.dropdownItem()}
                   >
-                    {shortAddress(transaction?.id || '', trimL, trimR)}
-                  </Link>
-                </Dropdown.Item>
-              );
-            })}
-          </>
-        )}
-        {searchResult?.block && (
-          <>
-            <Dropdown.Label>Block</Dropdown.Label>
-            <Dropdown.Item className={classes.dropdownItem()}>
-              <Link
-                as={NextLink}
-                href={`/block/${searchResult.block.id}`}
-                className="text-color"
-              >
-                {shortAddress(searchResult.block.id || '', trimL, trimR)}
-              </Link>
-            </Dropdown.Item>
-            <Dropdown.Item className={classes.dropdownItem()}>
-              <Link
-                as={NextLink}
-                href={`/block/${searchResult.block.height}`}
-                className="text-color"
-              >
-                {searchResult.block.height}
-              </Link>
-            </Dropdown.Item>
-          </>
-        )}
-        {searchResult?.contract && (
-          <>
-            <Dropdown.Label>Contract</Dropdown.Label>
-            <Dropdown.Item className={classes.dropdownItem()}>
-              <Link
-                as={NextLink}
-                href={`/contract/${searchResult.contract.id}/assets`}
-                className="text-color"
-              >
-                {shortAddress(searchResult.contract.id || '', trimL, trimR)}
-              </Link>
-            </Dropdown.Item>
-          </>
-        )}
-        {searchResult?.transaction && (
-          <>
-            <Dropdown.Label>Transaction</Dropdown.Label>
-            <Dropdown.Item className={classes.dropdownItem()}>
-              <Link
-                as={NextLink}
-                href={`/tx/${searchResult.transaction.id}`}
-                className="text-color"
-              >
-                {shortAddress(searchResult.transaction.id || '', trimL, trimR)}
-              </Link>
-            </Dropdown.Item>
-          </>
-        )}
-      </Dropdown.Content>
-    </Dropdown>
-  );
-}
+                    <Link
+                      as={NextLink}
+                      href={`/tx/${transaction?.id}/`}
+                      className="text-color"
+                    >
+                      {shortAddress(transaction?.id || '', trimL, trimR)}
+                    </Link>
+                  </Dropdown.Item>
+                );
+              })}
+            </>
+          )}
+          {searchResult?.block && (
+            <>
+              <Dropdown.Label>Block</Dropdown.Label>
+              <Dropdown.Item className={classes.dropdownItem()}>
+                <Link
+                  as={NextLink}
+                  href={`/block/${searchResult.block.id}`}
+                  className="text-color"
+                >
+                  {shortAddress(searchResult.block.id || '', trimL, trimR)}
+                </Link>
+              </Dropdown.Item>
+              <Dropdown.Item className={classes.dropdownItem()}>
+                <Link
+                  as={NextLink}
+                  href={`/block/${searchResult.block.height}`}
+                  className="text-color"
+                >
+                  {searchResult.block.height}
+                </Link>
+              </Dropdown.Item>
+            </>
+          )}
+          {searchResult?.contract && (
+            <>
+              <Dropdown.Label>Contract</Dropdown.Label>
+              <Dropdown.Item className={classes.dropdownItem()}>
+                <Link
+                  as={NextLink}
+                  href={`/contract/${searchResult.contract.id}/assets`}
+                  className="text-color"
+                >
+                  {shortAddress(searchResult.contract.id || '', trimL, trimR)}
+                </Link>
+              </Dropdown.Item>
+            </>
+          )}
+          {searchResult?.transaction && (
+            <>
+              <Dropdown.Label>Transaction</Dropdown.Label>
+              <Dropdown.Item className={classes.dropdownItem()}>
+                <Link
+                  as={NextLink}
+                  href={`/tx/${searchResult.transaction.id}`}
+                  className="text-color"
+                >
+                  {shortAddress(
+                    searchResult.transaction.id || '',
+                    trimL,
+                    trimR,
+                  )}
+                </Link>
+              </Dropdown.Item>
+            </>
+          )}
+        </Dropdown.Content>
+      </Dropdown>
+    );
+  },
+);
 
 export function SearchInput({
   value: initialValue = '',
@@ -160,6 +172,7 @@ export function SearchInput({
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { pending } = useFormStatus();
+  const dropdownRef = useContext(SearchContext);
 
   useEffect(() => {
     if (!pending && hasSubmitted) {
@@ -247,6 +260,7 @@ export function SearchInput({
           }
           setOpenDropdown(!openDropdown);
         }}
+        ref={dropdownRef}
       />
     </VStack>
   );
