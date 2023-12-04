@@ -8,6 +8,8 @@ import { setTheme } from '../../actions/setTheme';
 import { SearchWidget } from '../SearchWidget/SearchWidget';
 
 export function TopNav() {
+  // We need two separate state variables bc the desktop/mobile elements
+  // that are not shown still exist in the DOM and respond to click events
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 

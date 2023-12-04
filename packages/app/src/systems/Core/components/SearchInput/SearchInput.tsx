@@ -49,11 +49,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         <Dropdown.Trigger>
           <div></div>
         </Dropdown.Trigger>
-        <Dropdown.Content
-          id="Search Content"
-          className="w-[311px] tablet:w-[400px]"
-          ref={ref}
-        >
+        <Dropdown.Content className="w-[311px] tablet:w-[400px]" ref={ref}>
           {!searchResult && (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">

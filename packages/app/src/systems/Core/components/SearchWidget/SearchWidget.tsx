@@ -31,7 +31,6 @@ export const SearchWidget = ({
         dropdownRef &&
         !dropdownRef.current?.contains(event?.target as Node)
       ) {
-        console.log('does not contains');
         setIsSearchOpen(false);
       }
     };
@@ -71,7 +70,6 @@ export const SearchWidget = ({
             variant="link"
             className="mr-1 text-color laptop:mr-0"
             onClick={() => {
-              console.log('on click');
               setIsSearchOpen(!isSearchOpen);
             }}
           />
