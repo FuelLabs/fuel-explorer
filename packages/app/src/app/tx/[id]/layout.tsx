@@ -19,4 +19,5 @@ export default function TxLayout({
   );
 }
 
+export const fetchCache = 'force-static';
 export const revalidate = Infinity;

@@ -32,3 +32,6 @@ export default async function Block({ params: { id, mode } }: BlockProps) {
       redirect(`/block/${id}/${ViewModes.Simple}`);
   }
 }
+
+export const fetchCache = 'force-cache';
+export const revalidate = Infinity;

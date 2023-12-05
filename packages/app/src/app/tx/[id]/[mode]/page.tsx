@@ -35,7 +35,5 @@ export default async function Transaction({
   }
 }
 
-// Revalidate cache every 10 seconds
-// export const dynamic = 'force-static';
 export const fetchCache = 'force-cache';
 export const revalidate = Infinity;
