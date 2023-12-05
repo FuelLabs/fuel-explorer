@@ -19,5 +19,4 @@ export default async function ContractPage({
   );
 }
 
-export const fetchCache = 'force-dynamic';
 export const revalidate = 10;

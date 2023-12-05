@@ -16,5 +16,5 @@ export default async function Account({ params: { address } }: AccountProps) {
   );
 }
 
-export const fetchCache = 'force-static';
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

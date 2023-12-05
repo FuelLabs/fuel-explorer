@@ -10,5 +10,5 @@ export default function Layout({
   return <ContractLayout id={address}>{children}</ContractLayout>;
 }
 
-export const fetchCache = 'force-static';
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

@@ -1,4 +1,7 @@
+'use client';
 import { Flex } from '@fuels/ui';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { tv } from 'tailwind-variants';
 
 export enum ViewModes {
@@ -6,33 +9,35 @@ export enum ViewModes {
   Advanced = 'advanced',
 }
 
-export type ViewModeProps = {
-  mode: ViewModes;
-  onChange: (mode: ViewModes) => void;
-};
-
-export function ViewMode({ mode, onChange }: ViewModeProps) {
+export function ViewMode() {
+  const { mode } = useParams<{
+    mode: ViewModes;
+  }>();
   const classes = styles();
 
   return (
     <Flex align="stretch" justify="center" className={classes.root()}>
       <Flex
+        as={Link}
+        prefetch={true}
         align="center"
         justify="center"
         className={classes.viewItem()}
         data-mode={ViewModes.Simple}
         data-active={mode === ViewModes.Simple}
-        onClick={() => onChange(ViewModes.Simple)}
+        href={`/${ViewModes.Simple}`}
       >
         Simple
       </Flex>
       <Flex
+        as={Link}
+        prefetch={true}
         align="center"
         justify="center"
         className={classes.viewItem()}
         data-mode={ViewModes.Advanced}
         data-active={mode === ViewModes.Advanced}
-        onClick={() => onChange(ViewModes.Advanced)}
+        href={`/${ViewModes.Advanced}`}
       >
         Advanced
       </Flex>

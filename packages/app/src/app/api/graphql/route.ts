@@ -5,8 +5,8 @@ import { createYoga } from 'graphql-yoga';
 
 const url = process.env.FUEL_PROVIDER_URL!;
 const executor = createExecutor(async ({ body }) => {
-  console.log(new Date().toString());
-  console.time('request');
+  const time = new Date().toString();
+  console.time(`request ${time}`);
   return fetch(url, {
     body,
     method: 'POST',
@@ -14,7 +14,7 @@ const executor = createExecutor(async ({ body }) => {
       'Content-Type': 'application/json',
     },
   }).then((res) => {
-    console.timeEnd('request');
+    console.timeEnd(`request ${time}`);
     return res.json();
   });
 });

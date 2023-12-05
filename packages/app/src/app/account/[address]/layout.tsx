@@ -20,5 +20,5 @@ export default function Layout({
   );
 }
 
-export const fetchCache = 'force-static';
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

@@ -11,7 +11,7 @@ export default function TxLayout({
 }) {
   return (
     <Layout>
-      <VStack className="min-h-[65vh] laptop:gap-14">
+      <VStack className="laptop:gap-14">
         <TxTitle id={id} />
         {children}
       </VStack>
@@ -19,5 +19,5 @@ export default function TxLayout({
   );
 }
 
-export const fetchCache = 'force-static';
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

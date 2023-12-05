@@ -20,5 +20,5 @@ export default function BlockLayout({
   );
 }
 
-export const fetchCache = 'force-static';
+export const dynamic = 'force-static';
 export const invalidate = Infinity;
