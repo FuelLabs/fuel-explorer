@@ -53,11 +53,7 @@ export function TopNav() {
         isActive
         as={NextLink}
         href="/"
-        className={
-          !isDesktopExitComplete || !isMobileExitComplete
-            ? 'flex items-center laptop:data-[active=true]:before:top-[-16px]'
-            : 'flex items-center'
-        }
+        className="flex items-center"
       >
         Explorer
       </Nav.MenuItem>
