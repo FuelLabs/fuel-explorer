@@ -16,7 +16,7 @@ export async function TxScreenSimpleSync({ id }: TxScreenProps) {
   if (!tx) return notFound();
   // Revalidate path if transaction will change in the future
   if (tx.status?.__typename === 'SubmittedStatus') {
-    revalidatePath(`/tx/${id}/simple`);
+    revalidatePath(`/tx/${id}/[mode]`);
   }
   return <TxScreenSimple transaction={tx} />;
 }
