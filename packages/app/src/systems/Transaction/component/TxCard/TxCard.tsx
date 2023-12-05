@@ -25,7 +25,7 @@ export function TxCard({
   const fee = bn(tx.fee);
 
   return (
-    <NextLink href={`/tx/${tx.id}`}>
+    <NextLink href={`/tx/${tx.id}/simple`}>
       <Card {...props} className={cx(className)}>
         <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
           <Box className="flex gap-3 h-[26px]">
