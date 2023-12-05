@@ -7,19 +7,23 @@ import { tv } from 'tailwind-variants';
 
 import { SearchForm } from '../SearchForm/SearchForm';
 
-type SearchWidgetProps = {
-  isSearchOpen: boolean;
-  setIsSearchOpen: Dispatch<SetStateAction<boolean>>;
-};
-
 export const SearchContext = createContext<{
   dropdownRef: null | MutableRefObject<HTMLDivElement | null>;
   onClear: (value: string) => void;
 }>({ dropdownRef: null, onClear: () => {} });
 
+type SearchWidgetProps = {
+  isSearchOpen: boolean;
+  setIsSearchOpen: Dispatch<SetStateAction<boolean>>;
+  setIsExitComplete: (value: boolean) => void;
+  isExitComplete: boolean;
+};
+
 export const SearchWidget = ({
   isSearchOpen,
   setIsSearchOpen,
+  setIsExitComplete,
+  isExitComplete,
 }: SearchWidgetProps) => {
   const classes = styles();
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -70,13 +74,23 @@ export const SearchWidget = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (isSearchOpen) {
+      setIsExitComplete(false);
+    }
+  }, [isSearchOpen]);
+
   return (
     <SearchContext.Provider value={{ dropdownRef, onClear }}>
       <HStack
         ref={widgetRef}
         className="items-center gap-0 laptop:gap-4 justify-center"
       >
-        <AnimatePresence>
+        <AnimatePresence
+          onExitComplete={() => {
+            setIsExitComplete(true);
+          }}
+        >
           {isSearchOpen && (
             <>
               <motion.div
@@ -94,7 +108,7 @@ export const SearchWidget = ({
             </>
           )}
         </AnimatePresence>
-        {!isSearchOpen && (
+        {isExitComplete && (
           <Tooltip content="Search by address, contract id, transaction id, or block id">
             <IconButton
               icon={IconSearch}

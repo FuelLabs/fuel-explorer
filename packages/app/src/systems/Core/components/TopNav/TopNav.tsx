@@ -12,6 +12,7 @@ export function TopNav() {
   // that are not shown still exist in the DOM and respond to click events
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isExitComplete, setIsExitComplete] = useState(true);
 
   const logo = (
     <NextLink href="/" className="flex items-center flex-1 laptop:flex-initial">
@@ -67,10 +68,10 @@ export function TopNav() {
   return (
     <Nav>
       <Nav.Desktop
-        className={`px-10 ${isDesktopSearchOpen ? 'justify-between' : ''}`}
+        className={`px-10 ${!isExitComplete ? 'justify-between' : ''}`}
       >
         {logo}
-        {!isDesktopSearchOpen && (
+        {isExitComplete && (
           <>
             <Nav.Menu>{externalLinks}</Nav.Menu>
             <Nav.Spacer />
@@ -80,10 +81,13 @@ export function TopNav() {
           <SearchWidget
             isSearchOpen={isDesktopSearchOpen}
             setIsSearchOpen={setIsDesktopSearchOpen}
+            setIsExitComplete={setIsExitComplete}
+            isExitComplete={isExitComplete}
           />
-          {!isDesktopSearchOpen && tooling}
+          {isExitComplete && tooling}
         </Nav.Menu>
-        {isDesktopSearchOpen ? <div></div> : themeToggle}
+        {!isExitComplete && <div></div>}
+        {isExitComplete && themeToggle}
       </Nav.Desktop>
       <Nav.Mobile>
         <Nav.MobileContent>
@@ -91,6 +95,8 @@ export function TopNav() {
           <SearchWidget
             isSearchOpen={isMobileSearchOpen}
             setIsSearchOpen={setIsMobileSearchOpen}
+            setIsExitComplete={setIsExitComplete}
+            isExitComplete={isExitComplete}
           />
           {isMobileSearchOpen ? <div></div> : themeToggle}
         </Nav.MobileContent>
