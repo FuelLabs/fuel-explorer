@@ -11,11 +11,12 @@ export class BalanceDomain extends Domain<Balance> {
     };
   }
 
+  // TODO: move utxos to be a separate domain and not extend the asset instead be another query
   async getUtxos() {
     const { source: connection } = this;
     const query = gql`
       query getUtxos($assetId: AssetId!, $owner: Address!) {
-        coins(first: 1000, filter: { assetId: $assetId, owner: $owner }) {
+        coins(first: 100, filter: { assetId: $assetId, owner: $owner }) {
           nodes {
             amount
             utxoId

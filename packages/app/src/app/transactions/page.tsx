@@ -1,7 +1,9 @@
 import { Suspense } from 'react';
+import { Layout } from '~/systems/Core/components/Layout/Layout';
 import { getLastTxs } from '~/systems/Transaction/actions/get-last-txs';
 import { TxList } from '~/systems/Transaction/component/TxList/TxList';
 import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
+import { TxsTitle } from '~/systems/Transaction/component/TxsTitle/TxsTitle';
 
 type PageProps = {
   searchParams: {
@@ -18,12 +20,18 @@ export default async function Transactions({
   searchParams: { page = '1' },
 }: PageProps) {
   return (
-    <Suspense
-      key={page}
-      fallback={<TxListLoader page={page} numberOfTxs={10} />}
+    <Layout
+      hero
+      contentClassName="[&_.rt-ContainerInner]:space-y-2 tablet:[&_.rt-ContainerInner]:space-y-2 laptop:[&_.rt-ContainerInner]:space-y-10"
     >
-      <TransactionsSync page={page} />
-    </Suspense>
+      <TxsTitle />
+      <Suspense
+        key={page}
+        fallback={<TxListLoader page={page} numberOfTxs={10} />}
+      >
+        <TransactionsSync page={page} />
+      </Suspense>
+    </Layout>
   );
 }
 

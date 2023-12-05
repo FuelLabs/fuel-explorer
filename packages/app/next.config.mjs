@@ -45,19 +45,22 @@ const config = {
         destination: '/tx/:id/simple',
         permanent: false,
       },
-      // Redirect to main page
       {
         source: '/block/:id',
         destination: '/block/:id/simple',
         permanent: false,
       },
-      // Redirect to main page
       {
         source: '/contract/:id',
         destination: '/contract/:id/assets',
         permanent: false,
       },
-      // Redirect to main page
+      {
+        source: '/account/:id',
+        destination: '/account/:id/assets',
+        permanent: false,
+      },
+      // Redirect home page
       {
         source: '/',
         destination: '/transactions?page=1',
