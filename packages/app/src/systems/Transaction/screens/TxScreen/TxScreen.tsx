@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
@@ -13,6 +14,10 @@ type TxScreenProps = {
 export async function TxScreenSimpleSync({ id }: TxScreenProps) {
   const tx = await getTx({ id });
   if (!tx) return notFound();
+  // Revalidate path if transaction will change in the future
+  if (tx.status?.__typename === 'SubmittedStatus') {
+    revalidatePath(`/tx/${id}/simple`);
+  }
   return <TxScreenSimple transaction={tx} />;
 }
 
