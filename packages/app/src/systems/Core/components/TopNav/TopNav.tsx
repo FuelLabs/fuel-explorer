@@ -1,18 +1,28 @@
 'use client';
 
-import { Nav } from '@fuels/ui';
+import { Nav, useBreakpoints } from '@fuels/ui';
 import NextLink from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { setTheme } from '../../actions/setTheme';
 import { SearchWidget } from '../SearchWidget/SearchWidget';
 
 export function TopNav() {
-  // We need two separate state variables bc the desktop/mobile elements
-  // that are not shown still exist in the DOM and respond to click events
+  // We need two of each variable bc both the mobile and desktop
+  // nav elements are in the DOM and respond to click events.
+  const [isDesktopExitComplete, setIsDesktopExitComplete] = useState(true);
+  const [isMobileExitComplete, setIsMobileExitComplete] = useState(true);
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const [isExitComplete, setIsExitComplete] = useState(true);
+  const { isLaptop } = useBreakpoints();
+
+  useEffect(() => {
+    if (isLaptop && isMobileSearchOpen) {
+      setIsDesktopSearchOpen(true);
+    } else if (!isLaptop && isDesktopSearchOpen) {
+      setIsMobileSearchOpen(true);
+    }
+  }, [isLaptop]);
 
   const logo = (
     <NextLink href="/" className="flex items-center flex-1 laptop:flex-initial">
@@ -44,7 +54,7 @@ export function TopNav() {
         as={NextLink}
         href="/"
         className={
-          isDesktopSearchOpen || isMobileSearchOpen
+          !isDesktopExitComplete || !isMobileExitComplete
             ? 'flex items-center laptop:data-[active=true]:before:top-[-16px]'
             : 'flex items-center'
         }
@@ -68,10 +78,10 @@ export function TopNav() {
   return (
     <Nav>
       <Nav.Desktop
-        className={`px-10 ${!isExitComplete ? 'justify-between' : ''}`}
+        className={`px-10 ${!isDesktopExitComplete ? 'justify-between' : ''}`}
       >
         {logo}
-        {isExitComplete && (
+        {isDesktopExitComplete && (
           <>
             <Nav.Menu>{externalLinks}</Nav.Menu>
             <Nav.Spacer />
@@ -79,28 +89,27 @@ export function TopNav() {
         )}
         <Nav.Menu>
           <SearchWidget
-            isSearchOpen={isDesktopSearchOpen}
+            setIsExitComplete={setIsDesktopExitComplete}
+            isExitComplete={isDesktopExitComplete}
             setIsSearchOpen={setIsDesktopSearchOpen}
-            setIsExitComplete={setIsExitComplete}
-            isExitComplete={isExitComplete}
+            isSearchOpen={isDesktopSearchOpen}
           />
-          {isExitComplete && tooling}
+          {isDesktopExitComplete && tooling}
         </Nav.Menu>
-        {!isExitComplete && <div></div>}
-        {isExitComplete && themeToggle}
+        {!isDesktopExitComplete ? <div></div> : themeToggle}
       </Nav.Desktop>
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
           <SearchWidget
-            isSearchOpen={isMobileSearchOpen}
+            setIsExitComplete={setIsMobileExitComplete}
+            isExitComplete={isMobileExitComplete}
             setIsSearchOpen={setIsMobileSearchOpen}
-            setIsExitComplete={setIsExitComplete}
-            isExitComplete={isExitComplete}
+            isSearchOpen={isMobileSearchOpen}
           />
-          {isMobileSearchOpen ? <div></div> : themeToggle}
+          {!isMobileExitComplete ? <div></div> : themeToggle}
         </Nav.MobileContent>
-        {!isMobileSearchOpen && (
+        {isMobileExitComplete && (
           <Nav.Menu>
             {externalLinks}
             {tooling}

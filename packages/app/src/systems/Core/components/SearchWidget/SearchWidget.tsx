@@ -1,7 +1,7 @@
 import { HStack, IconButton, Tooltip } from '@fuels/ui';
 import { IconSearch } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Dispatch, SetStateAction, MutableRefObject } from 'react';
+import type { MutableRefObject } from 'react';
 import { useEffect, useRef, createContext } from 'react';
 import { tv } from 'tailwind-variants';
 
@@ -13,17 +13,17 @@ export const SearchContext = createContext<{
 }>({ dropdownRef: null, onClear: () => {} });
 
 type SearchWidgetProps = {
-  isSearchOpen: boolean;
-  setIsSearchOpen: Dispatch<SetStateAction<boolean>>;
   setIsExitComplete: (value: boolean) => void;
   isExitComplete: boolean;
+  isSearchOpen: boolean;
+  setIsSearchOpen: (value: boolean) => void;
 };
 
 export const SearchWidget = ({
-  isSearchOpen,
-  setIsSearchOpen,
   setIsExitComplete,
   isExitComplete,
+  isSearchOpen,
+  setIsSearchOpen,
 }: SearchWidgetProps) => {
   const classes = styles();
   const widgetRef = useRef<HTMLDivElement>(null);
