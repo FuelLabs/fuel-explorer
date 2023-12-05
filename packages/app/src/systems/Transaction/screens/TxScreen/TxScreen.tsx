@@ -24,5 +24,9 @@ export async function TxScreenSimpleSync({ id }: TxScreenProps) {
 export async function TxScreenAdvancedSync({ id }: TxScreenProps) {
   const tx = await getTx({ id });
   if (!tx) return notFound();
+  // Revalidate path if transaction will change in the future
+  if (tx.status?.__typename === 'SubmittedStatus') {
+    revalidatePath(`/tx/${id}/[mode]`);
+  }
   return <TxScreenAdvanced transaction={tx} />;
 }
