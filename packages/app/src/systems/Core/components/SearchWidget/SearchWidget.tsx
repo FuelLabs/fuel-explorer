@@ -23,13 +23,35 @@ export const SearchWidget = ({
   const widgetRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  function isClickInBounds(
+    clickX: number,
+    clickY: number,
+    left: number,
+    right: number,
+    top: number,
+    bottom: number,
+  ) {
+    return (
+      clickX >= left && clickX <= right && clickY >= top && clickY <= bottom
+    );
+  }
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const widgetLeft = widgetRef.current?.offsetLeft ?? 0;
+      const widgetRight = widgetLeft + (widgetRef.current?.offsetWidth ?? 0);
+      const widgetTop = widgetRef.current?.offsetTop ?? 0;
+      const widgetBottom = widgetTop + (widgetRef.current?.offsetHeight ?? 0);
       if (
-        widgetRef.current &&
-        !widgetRef.current?.contains(event?.target as Node) &&
-        dropdownRef &&
-        !dropdownRef.current?.contains(event?.target as Node)
+        !isClickInBounds(
+          event.x,
+          event.y,
+          widgetLeft,
+          widgetRight,
+          widgetTop,
+          widgetBottom,
+        ) &&
+        !dropdownRef?.current?.contains(event.target as Node)
       ) {
         setIsSearchOpen(false);
       }
@@ -43,8 +65,8 @@ export const SearchWidget = ({
   return (
     <SearchContext.Provider value={dropdownRef}>
       <HStack
-        className="items-center gap-0 laptop:gap-4 justify-center"
         ref={widgetRef}
+        className="items-center gap-0 laptop:gap-4 justify-center"
       >
         <AnimatePresence>
           {isSearchOpen && (

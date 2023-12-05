@@ -53,7 +53,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
           {!searchResult && (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-                {`${searchValue} is not a valid address.`}
+                {`"${searchValue}" is not a valid address.`}
               </Dropdown.Item>
             </>
           )}
@@ -220,30 +220,28 @@ export function SearchInput({
             value={value}
             onChange={handleChange}
           />
-          {Boolean(value.length) && (
-            <Input.Slot className="mx-1">
+          <Input.Slot className="mx-1">
+            <IconButton
+              aria-label="Clear"
+              icon={IconX}
+              iconColor="text-icon"
+              variant="link"
+              className="!ml-0 tablet:ml-2"
+              onClick={handleClear}
+            />
+            <Tooltip content="Submit">
               <IconButton
-                aria-label="Clear"
-                icon={IconX}
-                iconColor="text-icon"
+                type="submit"
+                aria-label="Submit"
+                icon={IconCheck}
+                iconColor="text-brand"
                 variant="link"
                 className="!ml-0 tablet:ml-2"
-                onClick={handleClear}
+                isLoading={pending}
+                onClick={handleSubmit}
               />
-              <Tooltip content="Submit">
-                <IconButton
-                  type="submit"
-                  aria-label="Submit"
-                  icon={IconCheck}
-                  iconColor="text-brand"
-                  variant="link"
-                  className="!ml-0 tablet:ml-2"
-                  isLoading={pending}
-                  onClick={handleSubmit}
-                />
-              </Tooltip>
-            </Input.Slot>
-          )}
+            </Tooltip>
+          </Input.Slot>
         </Input>
       </Focus.ArrowNavigator>
       <SearchResultDropdown
