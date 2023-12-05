@@ -1,8 +1,10 @@
 import type { SearchResult } from '@fuel-explorer/graphql';
+import { useContext } from 'react';
 import { useFormState } from 'react-dom';
 import { search } from '~/systems/Core/actions/search';
 
 import { SearchInput } from '../SearchInput/SearchInput';
+import { SearchContext } from '../SearchWidget/SearchWidget';
 
 export function SearchForm({ className }: { className: string }) {
   const [results, action] = useFormState(
@@ -11,10 +13,15 @@ export function SearchForm({ className }: { className: string }) {
     },
     null,
   );
+  const { onClear } = useContext(SearchContext);
 
   return (
     <form action={action}>
-      <SearchInput className={className} searchResult={results} />
+      <SearchInput
+        className={className}
+        searchResult={results}
+        onClear={onClear}
+      />
     </form>
   );
 }

@@ -12,8 +12,10 @@ type SearchWidgetProps = {
   setIsSearchOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export const SearchContext =
-  createContext<null | MutableRefObject<HTMLDivElement | null>>(null);
+export const SearchContext = createContext<{
+  dropdownRef: null | MutableRefObject<HTMLDivElement | null>;
+  onClear: (value: string) => void;
+}>({ dropdownRef: null, onClear: () => {} });
 
 export const SearchWidget = ({
   isSearchOpen,
@@ -22,6 +24,12 @@ export const SearchWidget = ({
   const classes = styles();
   const widgetRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  function onClear(value: string) {
+    if (!value.length) {
+      setIsSearchOpen(false);
+    }
+  }
 
   function isClickInBounds(
     clickX: number,
@@ -63,7 +71,7 @@ export const SearchWidget = ({
   }, []);
 
   return (
-    <SearchContext.Provider value={dropdownRef}>
+    <SearchContext.Provider value={{ dropdownRef, onClear }}>
       <HStack
         ref={widgetRef}
         className="items-center gap-0 laptop:gap-4 justify-center"
@@ -86,16 +94,18 @@ export const SearchWidget = ({
             </>
           )}
         </AnimatePresence>
-        <Tooltip content="Search by address, contract id, transaction id, or block id">
-          <IconButton
-            icon={IconSearch}
-            variant="link"
-            className="mr-1 text-color laptop:mr-0"
-            onClick={() => {
-              setIsSearchOpen(!isSearchOpen);
-            }}
-          />
-        </Tooltip>
+        {!isSearchOpen && (
+          <Tooltip content="Search by address, contract id, transaction id, or block id">
+            <IconButton
+              icon={IconSearch}
+              variant="link"
+              className="mr-1 text-color laptop:mr-0"
+              onClick={() => {
+                setIsSearchOpen(!isSearchOpen);
+              }}
+            />
+          </Tooltip>
+        )}
       </HStack>
     </SearchContext.Provider>
   );

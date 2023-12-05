@@ -24,12 +24,6 @@ import { tv } from 'tailwind-variants';
 import { cx } from '../../utils/cx';
 import { SearchContext } from '../SearchWidget/SearchWidget';
 
-type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
-  onSubmit?: (value: string) => void;
-  onClear?: () => void;
-  searchResult?: Maybe<SearchResult>;
-};
-
 type SearchDropdownProps = {
   searchResult?: Maybe<SearchResult>;
   openDropdown: boolean;
@@ -49,7 +43,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         <Dropdown.Trigger>
           <div></div>
         </Dropdown.Trigger>
-        <Dropdown.Content className="w-[311px] tablet:w-[400px]" ref={ref}>
+        <Dropdown.Content ref={ref} className="w-[311px] tablet:w-[400px]">
           {!searchResult && (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
@@ -154,6 +148,12 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
   },
 );
 
+type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
+  onSubmit?: (value: string) => void;
+  onClear?: (value: string) => void;
+  searchResult?: Maybe<SearchResult>;
+};
+
 export function SearchInput({
   value: initialValue = '',
   className,
@@ -168,7 +168,7 @@ export function SearchInput({
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { pending } = useFormStatus();
-  const dropdownRef = useContext(SearchContext);
+  const { dropdownRef } = useContext(SearchContext);
 
   useEffect(() => {
     if (!pending && hasSubmitted) {
@@ -188,7 +188,7 @@ export function SearchInput({
   function handleClear() {
     setValue('');
     setHasSubmitted(false);
-    onClear?.();
+    onClear?.(value);
     inputRef.current?.focus();
   }
 
@@ -245,6 +245,7 @@ export function SearchInput({
         </Input>
       </Focus.ArrowNavigator>
       <SearchResultDropdown
+        ref={dropdownRef}
         searchResult={searchResult}
         searchValue={value}
         openDropdown={openDropdown}
@@ -254,7 +255,6 @@ export function SearchInput({
           }
           setOpenDropdown(!openDropdown);
         }}
-        ref={dropdownRef}
       />
     </VStack>
   );

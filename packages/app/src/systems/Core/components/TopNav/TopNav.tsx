@@ -64,12 +64,6 @@ export function TopNav() {
     <Nav.ThemeToggle onToggle={(theme) => setTheme({ theme })} />
   );
 
-  // const temp = (isSearchOpen: boolean) => {
-  //   return (
-
-  //   )
-  // }
-
   return (
     <Nav>
       <Nav.Desktop
