@@ -12,6 +12,7 @@ import {
   Card,
 } from '@fuels/ui';
 import { bn } from 'fuels';
+import NextLink from 'next/link';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
@@ -37,11 +38,19 @@ const BalanceItemRoot = createComponent<BalanceItemProps, typeof Collapsible>({
     const hasUTXOs = !!item.utxos?.length;
 
     return (
-      <Collapsible {...props}>
-        <Collapsible.Header hideIcon={!hasUTXOs}>
+      <Collapsible {...props} hideIcon={!hasUTXOs}>
+        <Collapsible.Header>
           <Flex className="flex-1 flex-col tablet:flex-row tablet:justify-between tablet:items-center">
             <AssetItem assetId={assetId}>
-              <Address value={item.assetId} prefix="Id:" fixed="b256" />
+              <Address
+                value={item.assetId}
+                prefix="Id:"
+                fixed="b256"
+                linkProps={{
+                  as: NextLink,
+                  href: `/contract/${assetId}/assets`,
+                }}
+              />
             </AssetItem>
             {amount && (
               <Text className="text-secondary">
