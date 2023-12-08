@@ -81,11 +81,11 @@ export const CollapsibleHeader = createComponent<
       <Root
         {...props}
         data-state={opened ? 'opened' : 'closed'}
-        onClick={() => setOpened(!opened)}
         className={cx(
           classes.header({ className }),
           hideIcon ? 'cursor-default' : '',
         )}
+        onClick={() => setOpened(!opened)}
       >
         <HStack align="center">{children}</HStack>
         {!hideIcon && (
