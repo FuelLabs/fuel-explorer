@@ -1,12 +1,4 @@
-import { getBytesCopy } from 'ethers';
-import {
-  TransactionCoder,
-  bn,
-  calculateTransactionFee,
-  calculateTxChargeableBytes,
-  getGasUsedFromReceipts,
-  processGqlReceipt,
-} from 'fuels';
+import { getGasUsedFromReceipts, processGqlReceipt } from 'fuels';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
@@ -101,32 +93,11 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   }
 
   async getFee() {
-    const { source: transaction, context } = this;
-    const { gasPerByte, gasPriceFactor } =
-      context.chainInfo.consensusParameters;
+    // const { source: transaction, context } = this;
+    // const { gasPerByte, gasPriceFactor } =
+    // context.chainInfo.consensusParameters.feeParams;
 
-    const gasUsed = this._getGasUsed();
-    const transactionBytes = getBytesCopy(transaction.rawPayload);
-    const [decodedTransaction] = new TransactionCoder().decode(
-      getBytesCopy(transaction.rawPayload),
-      0,
-    );
-
-    const chargeableBytes = calculateTxChargeableBytes({
-      transactionBytes,
-      transactionWitnesses: decodedTransaction.witnesses || [],
-    });
-
-    const { minFee: fee } = calculateTransactionFee({
-      gasUsed: bn(gasUsed),
-      gasPrice: bn(transaction.gasPrice),
-      gasLimit: bn(transaction.gasLimit),
-      gasPerByte: bn(gasPerByte),
-      gasPriceFactor: bn(gasPriceFactor),
-      chargeableBytes,
-    });
-
-    return fee;
+    return '0x';
   }
 
   get accountsInvolved() {
@@ -202,7 +173,6 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const receipts = (transaction.receipts ?? []) as any[];
     const decodedReceipts = receipts.map(processGqlReceipt);
-
     return getGasUsedFromReceipts(decodedReceipts).toString();
   }
 }

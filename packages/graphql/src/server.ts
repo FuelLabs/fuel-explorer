@@ -35,7 +35,6 @@ app.post(
     schema,
     async context() {
       const chainInfo = await getChainInfo(FUEL_PROVIDER_URL);
-
       return { url: FUEL_PROVIDER_URL, chainInfo };
     },
   }),

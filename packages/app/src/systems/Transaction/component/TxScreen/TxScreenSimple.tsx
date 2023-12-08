@@ -82,8 +82,9 @@ export function TxScreenSimple({ transaction: tx }: TxScreenProps) {
           description={
             <>
               Gas used: {formatZeroUnits(tx.gasUsed || '')}
-              <br />
-              Gas limit: {formatZeroUnits(tx.gasLimit || '')}
+              {/* TODO: return this after having this field on GraphQL */}
+              {/* <br /> */}
+              {/* Gas limit: {formatZeroUnits(tx.gasLimit || '')} */}
             </>
           }
         >
