@@ -11,7 +11,7 @@ import type { BoxProps } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
-import { VariableSizeList as List } from 'react-window';
+import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
@@ -24,9 +24,10 @@ type UtxoItemProps = {
   item: UtxoItem;
   assetId?: string;
   style?: React.CSSProperties;
+  index: number;
 };
 
-function UtxoItem({ item, style, assetId }: UtxoItemProps) {
+function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
   const { isMobile } = useBreakpoints();
   const asset = useAsset(assetId);
   const fuelAsset = useFuelAsset(asset);
@@ -34,10 +35,13 @@ function UtxoItem({ item, style, assetId }: UtxoItemProps) {
   if (!item.utxoId) return null;
   if (!asset) return null;
 
-  const classes = styles();
   const trim = isMobile ? 8 : 16;
+  const { item: itemStyle } = styles({
+    color: index % 2 !== 0 ? 'odd' : undefined,
+  });
+
   return (
-    <Box style={style} className={classes.item()}>
+    <Box style={style} className={itemStyle()}>
       <Address
         prefix="ID:"
         value={item.utxoId}
@@ -69,12 +73,14 @@ type UtxosProps = BoxProps & {
 
 function VirtualList({ items, assetId }: UtxosProps) {
   const { isMobile } = useBreakpoints();
+  const itemSize = isMobile ? 85 : 35;
+  const len = items?.length ?? 0;
   return (
     <List
-      height={350}
+      height={len >= 10 ? 350 : itemSize * len}
       itemCount={items?.length ?? 0}
       width="100%"
-      itemSize={() => (isMobile ? 85 : 35)}
+      itemSize={itemSize}
     >
       {({ index: idx, style }) => {
         const item = items?.[idx];
@@ -85,6 +91,7 @@ function VirtualList({ items, assetId }: UtxosProps) {
               style={style}
               item={item}
               assetId={assetId}
+              index={idx}
             />
           )
         );
@@ -93,27 +100,14 @@ function VirtualList({ items, assetId }: UtxosProps) {
   );
 }
 
-function CommonList({ items, assetId }: UtxosProps) {
-  return (
-    items?.map((item) => (
-      <UtxoItem key={item.utxoId} item={item} assetId={assetId} />
-    )) ?? null
-  );
-}
-
 export function Utxos({ items, assetId, ...props }: UtxosProps) {
-  const len = items?.length ?? 0;
   return (
     <Collapsible.Content {...props}>
       <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">
         UTXOs ({items?.length ?? 0})
       </Collapsible.Title>
       <Collapsible.Body className="p-0">
-        {len > 10 ? (
-          <VirtualList items={items} assetId={assetId} />
-        ) : (
-          <CommonList items={items} assetId={assetId} />
-        )}
+        <VirtualList items={items} assetId={assetId} />
       </Collapsible.Body>
     </Collapsible.Content>
   );
@@ -122,10 +116,17 @@ export function Utxos({ items, assetId, ...props }: UtxosProps) {
 const styles = tv({
   slots: {
     item: [
-      'flex flex-col odd:bg-gray-4 p-2 px-4 gap-2',
+      'flex flex-col p-2 px-4 gap-2',
       'tablet:flex-row',
       'last:rounded-b-sm',
       'fuel-[Address]:text-[0.8rem] fuel-[Address]:leading-none',
     ],
+  },
+  variants: {
+    color: {
+      odd: {
+        item: 'bg-gray-4',
+      },
+    },
   },
 });
