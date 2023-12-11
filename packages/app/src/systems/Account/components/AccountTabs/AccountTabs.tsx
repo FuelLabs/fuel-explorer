@@ -29,7 +29,9 @@ export function AccountTabs({
       defaultValue={defaultValue}
       value={defaultValue}
       renderTab={(children, item) => (
-        <Link href={`/account/${address}/${item.value}`}>{children}</Link>
+        <Link prefetch={true} href={`/account/${address}/${item.value}`}>
+          {children}
+        </Link>
       )}
       items={[
         {

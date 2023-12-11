@@ -22,7 +22,9 @@ export function ContractTabs({ contractId }: ContractTabsProps) {
       defaultValue={defaultValue}
       value={defaultValue}
       renderTab={(children, item) => (
-        <Link href={`/contract/${contractId}/${item.value}`}>{children}</Link>
+        <Link prefetch={true} href={`/contract/${contractId}/${item.value}`}>
+          {children}
+        </Link>
       )}
       items={[
         {

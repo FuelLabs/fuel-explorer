@@ -20,7 +20,6 @@ export type AddressBaseProps = {
   addressOpts?: UseFuelAddressOpts;
   fixed?: UseFuelAddressOpts['fixed'];
   linkProps?: AddressLinkProps;
-  isLoading?: boolean;
 };
 
 export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;

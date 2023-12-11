@@ -42,7 +42,6 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
               value={item.assetId}
               prefix="Id:"
               fixed="b256"
-              isLoading={isLoading}
               linkProps={{
                 as: NextLink,
                 href: `/contract/${assetId}/assets`,

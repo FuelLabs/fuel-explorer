@@ -37,7 +37,6 @@ export function BlockScreenSimple({
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
             linkProps={{ as: NextLink, href: `/account/${producer}/assets` }}
-            isLoading={isLoading}
           />
         </CardInfo>
         <CardInfo
