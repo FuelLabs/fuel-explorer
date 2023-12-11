@@ -1,13 +1,8 @@
-import { VStack } from '@fuels/ui';
-import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
-
 import { getPredicate } from '../actions/get-predicate';
+import { AccountPredicate } from '../components/AccountPredicate/AccountPredicate';
 
-export async function AccountPredicate({ id }: { id: string }) {
+export async function AccountPredicateScreen({ id }: { id: string }) {
   const predicate = await getPredicate({ owner: id });
-  return (
-    <VStack gap="6">
-      <CodeBlock value={predicate?.bytecode || ''} title="Byte code" />
-    </VStack>
-  );
+
+  return <AccountPredicate predicate={predicate || undefined} id={id} />;
 }

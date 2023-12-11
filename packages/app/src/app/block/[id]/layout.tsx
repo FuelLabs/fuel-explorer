@@ -1,21 +1,11 @@
 import { VStack } from '@fuels/ui';
 import type { ReactNode } from 'react';
-import { BlockTitle } from '~/systems/Block/components/BlockTitle';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
 
-export default function BlockLayout({
-  children,
-  params: { id },
-}: {
-  children: ReactNode;
-  params: { id: string };
-}) {
+export default function BlockLayout({ children }: { children: ReactNode }) {
   return (
     <Layout>
-      <VStack>
-        <BlockTitle id={id} />
-        {children}
-      </VStack>
+      <VStack>{children}</VStack>
     </Layout>
   );
 }

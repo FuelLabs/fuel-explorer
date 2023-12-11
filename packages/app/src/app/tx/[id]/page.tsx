@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
+import { TxScreenLoader } from '~/systems/Transaction/component/TxScreen/TxScreenLoader';
 import { TxScreen } from '~/systems/Transaction/screens/TxScreen/TxScreen';
-import { TxScreenSkeleton } from '~/systems/Transaction/screens/TxScreen/TxScreenSkeleton';
 
 type TransactionProps = {
   params: {
@@ -17,7 +17,7 @@ export default async function Transaction({
   searchParams: { view: viewMode = ViewModes.Simple },
 }: TransactionProps) {
   return (
-    <Suspense fallback={<TxScreenSkeleton />}>
+    <Suspense fallback={<TxScreenLoader />}>
       <TxScreen id={id} viewMode={viewMode} />
     </Suspense>
   );
