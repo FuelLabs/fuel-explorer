@@ -10,6 +10,7 @@ import {
   LoadingWrapper,
 } from '@fuels/ui';
 import { bn } from 'fuels';
+import NextLink from 'next/link';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
@@ -33,8 +34,8 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
   const hasUTXOs = !!item.utxos?.length;
 
   return (
-    <Collapsible {...props}>
-      <Collapsible.Header hideIcon={!hasUTXOs}>
+    <Collapsible {...props} hideIcon={!hasUTXOs}>
+      <Collapsible.Header>
         <Flex className="flex-1 flex-col tablet:flex-row tablet:justify-between tablet:items-center">
           <AssetItem assetId={assetId} isLoading={isLoading}>
             <Address
@@ -42,6 +43,10 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
               prefix="Id:"
               fixed="b256"
               isLoading={isLoading}
+              linkProps={{
+                as: NextLink,
+                href: `/contract/${assetId}/assets`,
+              }}
             />
           </AssetItem>
           <LoadingWrapper

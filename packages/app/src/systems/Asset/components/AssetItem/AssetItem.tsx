@@ -8,6 +8,7 @@ import {
   Box,
   LoadingBox,
   LoadingWrapper,
+  Flex,
 } from '@fuels/ui';
 import Image from 'next/image';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
@@ -37,12 +38,14 @@ export function AssetItem({
         loadingEl={<LoadingBox className="w-10 h-10 rounded-full" />}
         regularEl={
           asset?.icon ? (
-            <Image
-              src={asset.icon as string}
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              alt={asset.name}
-            />
+            <Flex className="w-10 h-10 items-center justify-center">
+              <Image
+                src={asset.icon as string}
+                width={ICON_SIZE}
+                height={ICON_SIZE}
+                alt={asset.name}
+              />
+            </Flex>
           ) : (
             <TxIcon type="Mint" status="Submitted" />
           )
