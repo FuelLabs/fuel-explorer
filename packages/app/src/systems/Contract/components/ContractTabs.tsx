@@ -1,42 +1,39 @@
 'use client';
 import type { BaseProps } from '@fuels/ui';
 import { IconCodeAsterix, IconCoins } from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type ContractTabsProps = BaseProps<{
-  isLoading?: boolean;
   contractId?: string;
 }>;
 
-export function ContractTabs({ contractId, isLoading }: ContractTabsProps) {
+export function ContractTabs({ contractId }: ContractTabsProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const defaultValue = useMemo(() => {
     if (pathname.includes('code')) return 'code';
-
-    return 'transactions';
+    return 'assets';
   }, [pathname]);
 
   return (
     <NavigationTab
       defaultValue={defaultValue}
       value={defaultValue}
+      renderTab={(children, item) => (
+        <Link href={`/contract/${contractId}/${item.value}`}>{children}</Link>
+      )}
       items={[
         {
           value: 'assets',
           label: 'Assets',
           icon: IconCoins,
-          disabled: isLoading,
-          onClick: () => router.push(`/contract/${contractId}/assets`),
         },
         {
           value: 'code',
           label: 'Source Code',
           icon: IconCodeAsterix,
-          disabled: isLoading,
-          onClick: () => router.push(`/contract/${contractId}/code`),
         },
       ]}
     />

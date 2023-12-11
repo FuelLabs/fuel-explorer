@@ -11,5 +11,5 @@ export default meta;
 type Story = StoryObj<typeof AccountTabs>;
 
 export const Usage: Story = {
-  render: () => <AccountTabs accountId="1" />,
+  render: () => <AccountTabs address="1" />,
 };

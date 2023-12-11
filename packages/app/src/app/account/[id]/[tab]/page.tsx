@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation';
-import { getPredicate } from '~/systems/Account/actions/get-predicate';
-import { AccountScreen } from '~/systems/Account/screens/Account';
-import { isAllowedTab } from '~/systems/Account/utils/tabs';
+import { Suspense } from 'react';
+import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
+import { AccountBalances } from '~/systems/Account/screens/AccountBalances';
+import { AccountTransactionsScreen } from '~/systems/Account/screens/AccountTransactions';
+import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
 
 type AccountProps = {
   params: {
@@ -11,12 +13,23 @@ type AccountProps = {
 };
 
 export default async function Account({ params: { id, tab } }: AccountProps) {
-  if (!isAllowedTab(tab)) {
-    redirect(`/account/${id}/assets`);
+  switch (tab) {
+    case 'assets':
+      return (
+        <Suspense fallback={<AccountAssetsLoader />}>
+          <AccountBalances id={id} />
+        </Suspense>
+      );
+    case 'transactions':
+      return (
+        <Suspense fallback={<TxListLoader />}>
+          <AccountTransactionsScreen id={id} />
+        </Suspense>
+      );
+    default:
+      redirect(`/account/${id}/assets`);
   }
-  const predicate = await getPredicate({ owner: id });
-
-  return <AccountScreen predicate={predicate || undefined} id={id} tab={tab} />;
 }
 
+// Revalidate every 10 seconds
 export const revalidate = 10;

@@ -25,7 +25,7 @@ export async function AccountScreen({ predicate, tab, id }: AccountProps) {
   return (
     <>
       <AccountTitle id={id} />
-      <AccountTabs accountId={id} isPredicate={!!predicate?.bytecode} />
+      <AccountTabs address={id} isPredicate={!!predicate?.bytecode} />
       {isAssetsTab(tab) && (
         <Suspense fallback={<AccountAssetsLoader />}>
           <AccountBalances id={id} />
