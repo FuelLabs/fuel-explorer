@@ -3,7 +3,7 @@ import { VStack } from '@fuels/ui';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
 type BlockScreenAdvancedProps = {
-  block?: Maybe<BlockItemFragment & { producer: Maybe<string> }>;
+  block?: Maybe<BlockItemFragment & { producer?: Maybe<string> }>;
 };
 
 export function BlockScreenAdvanced({ block }: BlockScreenAdvancedProps) {

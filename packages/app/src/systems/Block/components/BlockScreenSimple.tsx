@@ -19,7 +19,7 @@ import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoade
 
 type BlockScreenSimpleProps = {
   block?: Maybe<BlockItemFragment>;
-  producer: Maybe<string>;
+  producer?: Maybe<string>;
   isLoading?: boolean;
 };
 
