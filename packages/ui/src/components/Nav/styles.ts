@@ -42,7 +42,7 @@ export const styles = tv({
     mobileWrapper: [
       'pl-3 pr-2 border-b border-border min-h-[var(--nav-height)]',
     ],
-    mobile: ['flex-col fuel-[NavLogo]:flex-1'],
+    mobile: ['laptop:hidden flex-col fuel-[NavLogo]:flex-1'],
     mobileContent: [
       'max-w-screen flex items-center py-2 px-4',
       'transition-colors duration-200 ease-in-out',
