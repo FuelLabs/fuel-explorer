@@ -19,3 +19,6 @@ export default function BlockLayout({
     </Layout>
   );
 }
+
+export const dynamic = 'force-static';
+export const invalidate = Infinity;
