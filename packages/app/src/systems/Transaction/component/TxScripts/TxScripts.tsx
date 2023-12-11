@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react-json-view-lite/dist/index.css';
-import type { TransactionReceiptFragment } from '@fuel-explorer/graphql';
+import { ReceiptType } from '@fuel-explorer/graphql';
+import type { Maybe, TransactionReceiptFragment } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import {
+  Address,
+  Text,
   Badge,
   Box,
   Button,
@@ -10,154 +13,38 @@ import {
   Collapsible,
   HStack,
   Heading,
-  Icon,
-  Text,
+  HoverCard,
+  ScrollArea,
   VStack,
+  cx,
+  Card,
+  LoadingBox,
+  LoadingWrapper,
 } from '@fuels/ui';
 import {
   IconFold,
   IconArrowsMoveVertical,
-  IconCoins,
+  IconArrowRight,
 } from '@tabler/icons-react';
 import { bn } from 'fuels';
-import Image from 'next/image';
-import { useState } from 'react';
+import NextLink from 'next/link';
+import { createContext, useContext, useState } from 'react';
+import { useMeasure } from 'react-use';
 import { tv } from 'tailwind-variants';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { JsonViewer } from '~/systems/Core/components/JsonViewer/JsonViewer';
 
 import type { TransactionNode } from '../../types';
 
-const ICON_SIZE = 24;
-
-function parseJson(item: TransactionReceiptFragment): Record<string, any> {
-  return Object.entries(item).reduce((acc, [key, value]) => {
-    if (!value || key === '__typename') return acc;
-    if (typeof value === 'object')
-      return { ...acc, [key]: parseJson(value as any) };
-    return { ...acc, [key]: value };
-  }, {});
-}
-
-export type TxScriptRowProps = BaseProps<{
-  item: TransactionReceiptFragment;
-}>;
-
-function TxScriptRow({ item }: TxScriptRowProps) {
-  const asset = useAsset(item.assetId || '');
-  const classes = styles();
-  const amount = bn(item.amount);
-  const isDanger =
-    item.receiptType === 'PANIC' ||
-    (item.receiptType === 'SCRIPT_RESULT' && item.result === '2');
-
-  return (
-    <Collapsible className="py-0 gap-0">
-      <Collapsible.Header className="group pr-3 pl-[10px] py-3">
-        <Badge
-          size="1"
-          color={isDanger ? 'red' : 'gray'}
-          variant={isDanger ? 'outline' : 'surface'}
-          className="font-mono py-1"
-        >
-          {item.receiptType}
-        </Badge>
-        <div className="flex-1">
-          {item.param1 && (
-            <Code
-              className="font-mono flex-1 bg-transparent text-muted"
-              color="gray"
-            >
-              Method: {bn(item.param1).toHex()}
-            </Code>
-          )}
-        </div>
-        <Text as="p" className="flex items-center gap-2">
-          {asset?.icon ? (
-            <Image
-              src={asset.icon as string}
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              alt={asset.name}
-            />
-          ) : (
-            item.amount && (
-              <Icon icon={IconCoins} size={20} color="text-muted" />
-            )
-          )}
-          {item.amount && (
-            <Text>
-              {amount.format()} {asset?.symbol ?? ''}
-            </Text>
-          )}
-        </Text>
-      </Collapsible.Header>
-      <Collapsible.Content className={classes.utxos()}>
-        <JsonViewer data={parseJson(item)} />
-      </Collapsible.Content>
-    </Collapsible>
-  );
-}
-
-type TxScriptsContentProps = BaseProps<{
-  tx: TransactionNode;
-  opened: boolean;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
-}>;
-
-function TxScriptsContent({ tx, opened, setOpened }: TxScriptsContentProps) {
-  const receipts = tx.receipts ?? [];
-  const classes = styles();
-
-  if (!receipts.length) {
-    return (
-      <EmptyCard hideImage>
-        <EmptyCard.Title>No Scripts</EmptyCard.Title>
-        <EmptyCard.Description>
-          This transaction does not have any scripts.
-        </EmptyCard.Description>
-      </EmptyCard>
-    );
-  }
-
-  if (!opened && receipts.length > 3) {
-    return (
-      <>
-        <TxScriptRow item={receipts[0]} />
-        <HStack>
-          <Box className={classes.lines()} />
-          <Button
-            color="gray"
-            variant="outline"
-            leftIcon={IconArrowsMoveVertical}
-            onClick={() => setOpened(true)}
-          >
-            Expand{' '}
-            <span className="text-muted">(+{receipts.length - 2} scripts)</span>
-          </Button>
-          <Box className={classes.lines()} />
-        </HStack>
-        <TxScriptRow item={receipts[receipts.length - 1]} />
-      </>
-    );
-  }
-
-  return (
-    <>
-      {receipts.map((receipt, i) => (
-        <TxScriptRow key={i + receipt.receiptType} item={receipt} />
-      ))}
-    </>
-  );
-}
-
 export type TxScriptsProps = BaseProps<{
   tx: TransactionNode;
+  isLoading?: boolean;
 }>;
 
-export function TxScripts({ tx, ...props }: TxScriptsProps) {
+export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
   const [opened, setOpened] = useState(false);
+  const hasOperations = tx.operations?.length ?? 0 > 0;
 
   return (
     <VStack {...props}>
@@ -166,7 +53,7 @@ export function TxScripts({ tx, ...props }: TxScriptsProps) {
         size="5"
         className="leading-none flex items-center gap-8"
       >
-        Scripts
+        Operations
         {opened && (
           <Button
             className="text-muted"
@@ -179,8 +66,454 @@ export function TxScripts({ tx, ...props }: TxScriptsProps) {
           </Button>
         )}
       </Heading>
-      <TxScriptsContent tx={tx} opened={opened} setOpened={setOpened} />
+      <LoadingWrapper
+        repeatLoader={2}
+        isLoading={isLoading}
+        noItems={!hasOperations}
+        regularEl={
+          <ScriptsContent tx={tx} opened={opened} setOpened={setOpened} />
+        }
+        loadingEl={
+          <Card className="py-5 px-4 flex flex-row items-center justify-between">
+            <LoadingBox className="w-12 h-6" />
+            <LoadingBox className="w-24 h-6" />
+          </Card>
+        }
+        noItemsEl={
+          <EmptyCard hideImage>
+            <EmptyCard.Title>No Operations</EmptyCard.Title>
+            <EmptyCard.Description>
+              This transaction does not have any operations.
+            </EmptyCard.Description>
+          </EmptyCard>
+        }
+      />
     </VStack>
+  );
+}
+
+type ScriptsContent = BaseProps<{
+  tx: TransactionNode;
+  opened: boolean;
+  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+}>;
+
+function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
+  const operations = tx.operations ?? [];
+  const classes = styles();
+  const [ref, { width }] = useMeasure();
+
+  if (!operations.length) {
+    return (
+      <EmptyCard hideImage>
+        <EmptyCard.Title>No Scripts</EmptyCard.Title>
+        <EmptyCard.Description>
+          This transaction does not have any scripts.
+        </EmptyCard.Description>
+      </EmptyCard>
+    );
+  }
+
+  const receipts = operations.map((i) => i?.receipts).flat();
+  const first = receipts?.[0];
+  const last = receipts?.[receipts.length - 1];
+  const hasPanic = operations?.some(
+    (o) =>
+      o?.receipts?.some(
+        (r) =>
+          r?.receiptType === ReceiptType.Panic ||
+          r?.receiptType === ReceiptType.Revert,
+      ),
+  );
+
+  if (!opened && receipts.length > 3) {
+    return (
+      <>
+        <ReceiptItem receipt={first} hasPanic={hasPanic} />
+        <HStack>
+          <Box className={classes.lines()} />
+          <HoverCard openDelay={100}>
+            <HoverCard.Trigger>
+              <Button
+                ref={ref as any}
+                color="gray"
+                variant="outline"
+                leftIcon={IconArrowsMoveVertical}
+                onClick={() => setOpened(true)}
+              >
+                Expand{' '}
+                <span className="text-muted">
+                  (+{receipts.length - 2} operations)
+                </span>
+              </Button>
+            </HoverCard.Trigger>
+            <HoverCard.Content
+              className="rounded-xs p-2 px-3"
+              style={{ width }}
+            >
+              <TypesCounter
+                receipts={receipts as TransactionReceiptFragment[]}
+              />
+            </HoverCard.Content>
+          </HoverCard>
+          <Box className={classes.lines()} />
+        </HStack>
+        <ReceiptItem receipt={last} hasPanic={hasPanic} />
+      </>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      {operations.map((item, i) =>
+        item?.type ? (
+          <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
+            {item?.receipts?.map((receipt, idx) => (
+              <ReceiptItem
+                key={`${idx}-${receipt?.receiptType ?? ''}`}
+                receipt={receipt}
+                isIndented={idx > 0}
+                hasPanic={hasPanic}
+              />
+            ))}
+          </div>
+        ) : (
+          <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
+            <ReceiptItem receipt={item?.receipts?.[0]} hasPanic={hasPanic} />
+          </div>
+        ),
+      )}
+    </div>
+  );
+}
+
+function CountReceipt({ num, op }: { num: number; op: string }) {
+  const length = new Intl.NumberFormat('en-IN', {
+    minimumIntegerDigits: 2,
+  }).format(num);
+  const text = num > 1 ? `${op}s` : op;
+  return (
+    <Text
+      className="flex items-center gap-2 text-sm text-muted"
+      leftIcon={IconArrowRight}
+      iconSize={14}
+    >
+      {length} {text}
+    </Text>
+  );
+}
+
+function TypesCounter({
+  receipts,
+}: {
+  receipts: TransactionReceiptFragment[];
+}) {
+  const calls = receipts.filter((i) => i.receiptType === ReceiptType.Call);
+  const transfers = receipts.filter(
+    (i) =>
+      i.receiptType === ReceiptType.Transfer ||
+      i.receiptType === ReceiptType.TransferOut,
+  );
+  const mints = receipts.filter((i) => i.receiptType === ReceiptType.Mint);
+  const burns = receipts.filter((i) => i.receiptType === ReceiptType.Burn);
+  const messages = receipts.filter(
+    (i) => i.receiptType === ReceiptType.MessageOut,
+  );
+  const returns = receipts.filter(
+    (i) =>
+      i.receiptType === ReceiptType.Return ||
+      i.receiptType === ReceiptType.ReturnData ||
+      i.receiptType === ReceiptType.ScriptResult,
+  );
+  const errors = receipts.filter(
+    (i) =>
+      i.receiptType === ReceiptType.Panic ||
+      i.receiptType === ReceiptType.Revert,
+  );
+  const logs = receipts.filter(
+    (i) =>
+      i.receiptType === ReceiptType.Log ||
+      i.receiptType === ReceiptType.LogData,
+  );
+  return (
+    <div className="flex flex-col gap-0 text-sm font-mono w-full">
+      {Boolean(calls.length) && <CountReceipt num={calls.length} op="Call" />}
+      {Boolean(logs.length) && <CountReceipt num={logs.length} op="Log" />}
+      {Boolean(transfers.length) && (
+        <CountReceipt num={transfers.length} op="Transfer" />
+      )}
+      {Boolean(messages.length) && (
+        <CountReceipt num={messages.length} op="Message" />
+      )}
+      {Boolean(mints.length) && <CountReceipt num={mints.length} op="Mint" />}
+      {Boolean(burns.length) && <CountReceipt num={burns.length} op="Burn" />}
+      {Boolean(returns.length) && (
+        <CountReceipt num={returns.length} op="Return" />
+      )}
+      {Boolean(errors.length) && (
+        <CountReceipt num={errors.length} op="Error" />
+      )}
+    </div>
+  );
+}
+
+const ctx = createContext<ReceiptItemProps>({} as ReceiptItemProps);
+const RETURN_TYPES = [
+  ReceiptType.Return,
+  ReceiptType.ReturnData,
+  ReceiptType.ScriptResult,
+];
+
+function getBadgeColor(type: string, hasError: boolean) {
+  if (type === ReceiptType.Revert || type === ReceiptType.Panic) {
+    return 'red';
+  }
+  if (!hasError && RETURN_TYPES.some((t) => t === type)) {
+    return 'green';
+  }
+  return 'gray';
+}
+
+export type ReceiptItemProps = BaseProps<{
+  receipt?: Maybe<TransactionReceiptFragment>;
+  isIndented?: boolean;
+  hasPanic?: boolean;
+}>;
+
+function ReceiptItem({
+  receipt,
+  isIndented,
+  hasPanic,
+  className,
+  ...props
+}: ReceiptItemProps) {
+  const classes = styles({ indent: isIndented });
+  const [opened, setOpened] = useState(false);
+
+  return (
+    <ctx.Provider value={{ receipt: receipt, isIndented, hasPanic }}>
+      <div
+        className={cx(classes.receiptRow({ className }), 'group')}
+        data-opened={opened}
+      >
+        <Collapsible
+          {...props}
+          opened={opened}
+          className="py-0 gap-0"
+          onOpenChange={setOpened}
+        >
+          <ReceiptHeader />
+          <ReceiptBlock />
+        </Collapsible>
+      </div>
+    </ctx.Provider>
+  );
+}
+
+function parseJson(
+  item?: Maybe<TransactionReceiptFragment>,
+): Record<string, any> {
+  if (!item) return {};
+  return Object.entries(item).reduce((acc, [key, value]) => {
+    if (!value || key === '__typename') return acc;
+    if (typeof value === 'object')
+      return { ...acc, [key]: parseJson(value as any) };
+    return { ...acc, [key]: value };
+  }, {});
+}
+
+function ReceiptBlock() {
+  const { receipt } = useContext(ctx);
+  const classes = styles();
+  const [ref, { width }] = useMeasure();
+  return (
+    <Collapsible.Content ref={ref as any} className={classes.utxos()}>
+      <ScrollArea style={{ width }}>
+        <JsonViewer data={parseJson(receipt)} />
+      </ScrollArea>
+    </Collapsible.Content>
+  );
+}
+
+function ReceiptBadge() {
+  const { receipt, hasPanic } = useContext(ctx);
+  const type = receipt?.receiptType ?? 'UNKNOWN';
+  const color = getBadgeColor(type, Boolean(hasPanic));
+  return (
+    <Badge
+      size="1"
+      className="ml-1 font-mono py-1"
+      variant="ghost"
+      color={color}
+    >
+      {type}
+    </Badge>
+  );
+}
+
+function ReceiptAmount() {
+  const { receipt } = useContext(ctx);
+  const assetId = receipt?.assetId ?? '';
+  const amount = bn(receipt?.amount);
+  const contract = receipt?.to?.id ?? receipt?.contract?.id ?? null;
+
+  return (
+    amount.gt(0) && (
+      <VStack className="gap-1 items-end mobile:max-tablet:hidden">
+        <Amount
+          iconSize={16}
+          assetId={assetId}
+          value={amount}
+          className="text-xs mt-1"
+        />
+        <Address
+          iconSize={14}
+          value={assetId}
+          className="text-xs font-mono"
+          linkProps={{
+            as: NextLink,
+            href: `/contract/${contract}/assets`,
+          }}
+        />
+      </VStack>
+    )
+  );
+}
+
+function ReceiptHeader() {
+  const { receipt } = useContext(ctx);
+  const classes = styles();
+  const type = receipt?.receiptType ?? 'UNKNOWN';
+  const param1 = receipt?.param1;
+  const contract = receipt?.to?.id ?? receipt?.contract?.id ?? null;
+  const assetId = receipt?.assetId ?? '';
+  const amount = bn(receipt?.amount);
+
+  if (type === 'CALL' && Boolean(contract)) {
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        <VStack className="flex-1 gap-[2px]">
+          {param1 && (
+            <Code
+              className="text-xs font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              Method: {bn(param1).toHex()}
+            </Code>
+          )}
+          {contract && (
+            <Address
+              iconSize={14}
+              value={contract}
+              className="text-xs font-mono"
+              prefix="Contract:"
+              linkProps={{
+                as: NextLink,
+                href: `/contract/${contract}/assets`,
+              }}
+            />
+          )}
+        </VStack>
+        <ReceiptAmount />
+      </Collapsible.Header>
+    );
+  }
+
+  if (type === 'MINT' || type === 'BURN') {
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        {receipt?.subId && (
+          <VStack className="flex-1 gap-[2px]">
+            {receipt.val && (
+              <Amount
+                iconSize={16}
+                assetId={receipt.subId}
+                value={bn(receipt.val)}
+                className="text-xs mt-1"
+              />
+            )}
+            <Address
+              value={receipt.subId}
+              className="text-xs font-mono"
+              prefix="Asset:"
+              linkProps={{
+                as: NextLink,
+                href: `/contract/${receipt.subId}/assets`,
+              }}
+            />
+          </VStack>
+        )}
+        <ReceiptAmount />
+      </Collapsible.Header>
+    );
+  }
+
+  if (type === 'TRANSFER_OUT' || type === 'TRANSFER') {
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        {receipt?.toAddress && (
+          <VStack className="flex-1 gap-[2px]">
+            <Amount
+              iconSize={16}
+              assetId={assetId}
+              value={amount}
+              className="text-xs mt-1"
+            />
+            <Address
+              value={receipt.toAddress}
+              className="text-xs font-mono"
+              prefix="To:"
+              linkProps={{
+                as: NextLink,
+                href: `/account/${receipt.toAddress}/assets`,
+              }}
+            />
+          </VStack>
+        )}
+      </Collapsible.Header>
+    );
+  }
+
+  if (type === 'MESSAGE_OUT') {
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        {receipt?.sender && receipt?.recipient && (
+          <VStack className="flex-1 gap-[2px]">
+            <Address
+              value={receipt.sender}
+              className="text-xs font-mono"
+              prefix="To:"
+              linkProps={{
+                as: NextLink,
+                href: `/account/${receipt.sender}/assets`,
+              }}
+            />
+            <Address
+              value={receipt.recipient}
+              className="text-xs font-mono"
+              prefix="From:"
+              linkProps={{
+                as: NextLink,
+                href: `/account/${receipt.recipient}/assets`,
+              }}
+            />
+          </VStack>
+        )}
+      </Collapsible.Header>
+    );
+  }
+
+  return (
+    <Collapsible.Header className={classes.header()}>
+      <div className="flex-1">
+        <ReceiptBadge />
+      </div>
+      <ReceiptAmount />
+    </Collapsible.Header>
   );
 }
 
@@ -190,8 +523,24 @@ const styles = tv({
     utxos: 'bg-gray-3 mx-3 mb-3 p-0 rounded',
     lines: [
       'relative flex-1 border-t border-b border-border',
-      'before:h-[1px] before:absolute before:top-1/2 before:left-0 before:w-full before:bg-border',
-      'before:content-[""]',
+      'before:h-[1px] before:absolute before:top-1/2 before:left-0',
+      'before:w-full before:bg-border before:content-[""]',
     ],
+    receiptRow: 'peer relative',
+    operation: 'relative flex flex-col gap-3',
+    header: 'group px-3 pr-4 py-0 h-16',
+  },
+  variants: {
+    indent: {
+      true: {
+        receiptRow: [
+          'ml-10 before:absolute before:top-[-35px] before:left-[-40px]',
+          'before:bottom-[20px] before:right-[100%]',
+          'before:content-[""] before:block before:border-l before:border-b',
+          'before:border-border before:border-dashed before:rounded-bl',
+          '[&[data-opened=true]:before+&]:top-[-120px]',
+        ],
+      },
+    },
   },
 });

@@ -78,6 +78,16 @@ type TransactionAccount {
   id: String
 }
 
+enum OperationType {
+  FROM_CONTRACT
+  FROM_ACCOUNT
+}
+
+type Operation {
+  type: OperationType
+  receipts: [Receipt]
+}
+
 extend type Transaction {
   title: String
   time: ParsedTime
@@ -87,6 +97,7 @@ extend type Transaction {
   totalAssets: Int
   totalOperations: Int
   gasUsed: U64
+  operations: [Operation]
   accountsInvolved: [TransactionAccount]
   groupedInputs: [GroupedInput]
   groupedOutputs: [GroupedOutput]

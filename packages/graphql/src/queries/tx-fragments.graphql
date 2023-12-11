@@ -132,6 +132,14 @@ fragment TransactionReceipt on Receipt {
   subId
 }
 
+fragment OperationItem on Operation {
+  __typename
+  type
+  receipts {
+    ...TransactionReceipt
+  }
+}
+
 fragment TransactionItem on Transaction {
   # Custom resolvers
   id
@@ -172,6 +180,9 @@ fragment TransactionItem on Transaction {
   accountsInvolved {
     id
     type
+  }
+  operations {
+    ...OperationItem
   }
   isPredicate
   blockHeight

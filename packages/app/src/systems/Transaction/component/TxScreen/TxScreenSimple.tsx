@@ -15,6 +15,7 @@ import {
   VStack,
   LoadingBox,
   LoadingWrapper,
+  Card,
 } from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
@@ -158,24 +159,34 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           <Heading as="h2" size="5" className="leading-none">
             Inputs
           </Heading>
-          {hasInputs ? (
-            tx.groupedInputs?.map((input, i) => (
+          <LoadingWrapper
+            isLoading={isLoading}
+            repeatLoader={2}
+            noItems={!hasInputs}
+            loadingEl={
+              <Card className="py-4 px-4 flex flex-row items-center justify-between">
+                <LoadingBox className="rounded-full w-[38px] h-[38px]" />
+                <LoadingBox className="w-24 h-6" />
+              </Card>
+            }
+            regularEl={tx.groupedInputs?.map((input, i) => (
               // here we use only index as key because this component will not change
               <TxInput key={i} input={input as GroupedInput} />
-            ))
-          ) : (
-            <EmptyCard hideImage>
-              <EmptyCard.Title>No Inputs</EmptyCard.Title>
-              <EmptyCard.Description>
-                This transaction does not have any inputs.
-              </EmptyCard.Description>
-            </EmptyCard>
-          )}
+            ))}
+            noItemsEl={
+              <EmptyCard hideImage>
+                <EmptyCard.Title>No Inputs</EmptyCard.Title>
+                <EmptyCard.Description>
+                  This transaction does not have any inputs.
+                </EmptyCard.Description>
+              </EmptyCard>
+            }
+          />
         </VStack>
         <Flex justify="center">
           <Icon icon={IconArrowDown} size={30} color="text-muted" />
         </Flex>
-        <TxScripts tx={tx} />
+        <TxScripts tx={tx} isLoading={isLoading} />
         <Flex justify="center">
           <Icon icon={IconArrowDown} size={30} color="text-muted" />
         </Flex>
@@ -183,23 +194,33 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           <Heading as="h2" size="5" className="leading-none">
             Outputs
           </Heading>
-          {hasOutputs ? (
-            tx.groupedOutputs?.map((output, i) => (
+          <LoadingWrapper
+            isLoading={isLoading}
+            repeatLoader={2}
+            noItems={!hasOutputs}
+            loadingEl={
+              <Card className="py-4 px-4 flex flex-row items-center justify-between">
+                <LoadingBox className="rounded-full w-[38px] h-[38px]" />
+                <LoadingBox className="w-24 h-6" />
+              </Card>
+            }
+            regularEl={tx.groupedOutputs?.map((output, i) => (
               <TxOutput
                 // here we use only index as key because this component will not change
                 key={i}
                 tx={tx}
                 output={output as GroupedOutput}
               />
-            ))
-          ) : (
-            <EmptyCard hideImage>
-              <EmptyCard.Title>No Outputs</EmptyCard.Title>
-              <EmptyCard.Description>
-                This transaction does not have any outputs.
-              </EmptyCard.Description>
-            </EmptyCard>
-          )}
+            ))}
+            noItemsEl={
+              <EmptyCard hideImage>
+                <EmptyCard.Title>No Outputs</EmptyCard.Title>
+                <EmptyCard.Description>
+                  This transaction does not have any outputs.
+                </EmptyCard.Description>
+              </EmptyCard>
+            }
+          />
         </VStack>
       </VStack>
     </Grid>
