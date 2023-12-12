@@ -19,6 +19,7 @@ import {
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
+import { Routes } from '~/routes';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { formatZeroUnits } from '~/systems/Core/utils/format';
 
@@ -116,7 +117,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               tx.blockHeight && (
                 <Link
                   as={NextLink}
-                  href={`/block/${tx.blockHeight}`}
+                  href={Routes.blockSimple(tx.blockHeight)}
                   className="text-link"
                 >
                   #{tx.blockHeight}

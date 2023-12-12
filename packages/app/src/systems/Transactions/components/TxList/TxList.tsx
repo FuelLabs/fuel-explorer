@@ -4,6 +4,7 @@ import type { GetLastTransactionsQuery } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
+import { Routes } from '~/routes';
 import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 
 import { TxCard } from '../TxCard/TxCard';
@@ -42,7 +43,7 @@ export function TxList({
             page={page}
             className="mt-6 flex mobile:justify-end"
             onChange={(page) =>
-              router.push(`/transactions?page=${page}`, {
+              router.push(Routes.home(page.toString()), {
                 scroll: false,
               })
             }

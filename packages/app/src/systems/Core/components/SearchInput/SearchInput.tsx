@@ -21,6 +21,7 @@ import type { KeyboardEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { tv } from 'tailwind-variants';
+import { Routes } from '~/routes';
 
 import { cx } from '../../utils/cx';
 
@@ -65,7 +66,7 @@ function SearchResultDropdown({
             <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
-                href={`/account/${searchResult.account.address}/assets`}
+                href={Routes.accountAssets(searchResult.account.address!)}
                 className="text-color"
               >
                 {shortAddress(searchResult.account.address || '', trimL, trimR)}
@@ -81,7 +82,7 @@ function SearchResultDropdown({
                 >
                   <Link
                     as={NextLink}
-                    href={`/tx/${transaction?.id}/`}
+                    href={Routes.txSimple(transaction!.id!)}
                     className="text-color"
                   >
                     {shortAddress(transaction?.id || '', trimL, trimR)}
@@ -97,7 +98,7 @@ function SearchResultDropdown({
             <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
-                href={`/block/${searchResult.block.id}`}
+                href={Routes.blockSimple(searchResult.block.id!)}
                 className="text-color"
               >
                 {shortAddress(searchResult.block.id || '', trimL, trimR)}
@@ -106,7 +107,7 @@ function SearchResultDropdown({
             <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
-                href={`/block/${searchResult.block.height}`}
+                href={Routes.blockSimple(searchResult.block.height!)}
                 className="text-color"
               >
                 {searchResult.block.height}
@@ -120,7 +121,7 @@ function SearchResultDropdown({
             <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
-                href={`/contract/${searchResult.contract.id}/assets`}
+                href={Routes.contractAssets(searchResult.contract.id!)}
                 className="text-color"
               >
                 {shortAddress(searchResult.contract.id || '', trimL, trimR)}
@@ -134,7 +135,7 @@ function SearchResultDropdown({
             <Dropdown.Item className={classes.dropdownItem()}>
               <Link
                 as={NextLink}
-                href={`/tx/${searchResult.transaction.id}`}
+                href={Routes.txSimple(searchResult.transaction.id!)}
                 className="text-color"
               >
                 {shortAddress(searchResult.transaction.id || '', trimL, trimR)}

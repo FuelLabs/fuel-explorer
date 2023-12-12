@@ -14,6 +14,7 @@ import {
 import type { BaseProps } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';
 import NextLink from 'next/link';
+import { Routes } from '~/routes';
 
 import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
 import type { TransactionNode } from '../../../Transaction/types';
@@ -32,7 +33,7 @@ export function TxCard({
   const fee = bn(tx.fee);
 
   return (
-    <NextLink scroll href={`/tx/${tx.id}/simple`}>
+    <NextLink scroll href={Routes.txSimple(tx.id)}>
       <Card {...props} className={cx(className)}>
         <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
           <Box className="flex gap-3 h-[26px]">

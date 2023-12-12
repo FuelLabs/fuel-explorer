@@ -12,6 +12,7 @@ import {
 } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
 import NextLink from 'next/link';
+import { Routes } from '~/routes';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import { TxList } from '~/systems/Transactions/components/TxList/TxList';
@@ -36,7 +37,7 @@ export function BlockScreenSimple({
           <Address
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
-            linkProps={{ as: NextLink, href: `/account/${producer}/assets` }}
+            linkProps={{ as: NextLink, href: Routes.accountAssets(producer!) }}
           />
         </CardInfo>
         <CardInfo

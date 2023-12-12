@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { Routes } from '~/routes';
 import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
 import { AccountAssetsSync } from '~/systems/Account/screens/AccountAssetsSync';
 import { AccountTransactionsSync } from '~/systems/Account/screens/AccountTransactionsSync';
@@ -23,7 +24,7 @@ export default async function Account({
         </Suspense>
       );
     default:
-      redirect(`/account/${id}/assets`);
+      redirect(Routes.accountAssets(id));
   }
 }
 

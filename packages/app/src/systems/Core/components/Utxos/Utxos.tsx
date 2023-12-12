@@ -13,6 +13,7 @@ import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
+import { Routes } from '~/routes';
 import { useAsset } from '~/systems/Asset/hooks/useAsset';
 import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 
@@ -47,7 +48,10 @@ function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
         value={item.utxoId}
         className="flex-col items-start gap-1 flex-1 tablet:flex-row tablet:items-center tablet:gap-4"
         addressOpts={{ trimLeft: trim, trimRight: trim }}
-        linkProps={{ as: NextLink, href: `/tx/${item.utxoId.slice(0, -2)}` }}
+        linkProps={{
+          as: NextLink,
+          href: Routes.txSimple(item.utxoId.slice(0, -2)),
+        }}
       />
       <Text className="text-xs text-secondary flex items-center gap-2">
         <Icon icon={IconCoins} size={14} />{' '}

@@ -4,10 +4,11 @@ import { IconCodeAsterix, IconCoins } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
+import { Routes } from '~/routes';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type ContractTabsProps = BaseProps<{
-  contractId?: string;
+  contractId: string;
 }>;
 
 export function ContractTabs({ contractId }: ContractTabsProps) {
@@ -22,7 +23,7 @@ export function ContractTabs({ contractId }: ContractTabsProps) {
       defaultValue={defaultValue}
       value={defaultValue}
       renderTab={(children, item) => (
-        <Link prefetch={true} href={`/contract/${contractId}/${item.value}`}>
+        <Link prefetch={true} href={Routes.contract(contractId, item.value)}>
           {children}
         </Link>
       )}

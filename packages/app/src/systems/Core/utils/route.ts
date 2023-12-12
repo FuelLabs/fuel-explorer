@@ -21,17 +21,22 @@
  *              ^^ 'test' does not exist in type 'Record<"id", any>'.
  * ```
  */
-export function route<P extends string = any>(path: string) {
-  return function parse(
-    params?: Record<P, any>,
-    query?: Record<string, any>,
-  ): string {
+export function route<P extends Array<string> = [string]>(path: string) {
+  return function parse(...params: P): string {
+    const _params = Array.from(params);
     const split = path.match(/[^/]+/g);
     const parsed = split
-      ?.map((str) => params?.[str.replace(':', '')] || str)
+      ?.map((str) => {
+        if (str.startsWith(':')) {
+          return _params.shift();
+        }
+        if (str.includes(':')) {
+          return str.replace(/:([a-z]+)/gi, () => _params.shift() || '');
+        }
+        return str;
+      })
       .join('/');
-
-    return `/${parsed ?? ''}${searchStringify(query)}`;
+    return `/${parsed ?? ''}`;
   };
 }
 

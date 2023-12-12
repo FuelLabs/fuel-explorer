@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { Routes } from '~/routes';
 import { BlockScreenSimple } from '~/systems/Block/components/BlockScreenSimple';
 import { BlockScreenAdvancedSync } from '~/systems/Block/screens/BlockScreenAdvancedSync';
 import { BlockScreenSimpleSync } from '~/systems/Block/screens/BlockScreenSimpleSync';
@@ -21,7 +22,7 @@ export default async function Block({ params: { id, mode } }: BlockRouteProps) {
         </Suspense>
       );
     default:
-      redirect(`/block/${id}/${ViewModes.Simple}`);
+      redirect(Routes.blockSimple(id));
   }
 }
 
