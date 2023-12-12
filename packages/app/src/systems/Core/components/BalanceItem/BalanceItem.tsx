@@ -37,7 +37,12 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
       <Collapsible.Header>
         <Flex className="flex-1 flex-col tablet:flex-row tablet:justify-between tablet:items-center">
           <AssetItem assetId={assetId} isLoading={isLoading}>
-            <Address value={item.assetId} prefix="Id:" fixed="b256" />
+            <Address
+              value={item.assetId}
+              prefix="Id:"
+              fixed="b256"
+              isLoading={isLoading}
+            />
           </AssetItem>
           <LoadingWrapper
             isLoading={isLoading}
