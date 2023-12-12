@@ -15,7 +15,7 @@ export type LayoutProps = BaseProps<{
 
 export function Layout({ children, contentClassName }: LayoutProps) {
   const pathname = usePathname();
-  const isHomePage = pathname === '/transactions';
+  const isHomePage = pathname === '/';
 
   return (
     <VStack className="min-w-screen min-h-screen" gap="0">
