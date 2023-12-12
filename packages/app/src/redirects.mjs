@@ -19,9 +19,4 @@ export const redirects = [
     destination: '/account/:id/assets',
     permanent: false,
   },
-  // {
-  //   source: '/',
-  //   destination: '/transactions?page=1',
-  //   permanent: false,
-  // },
 ];
