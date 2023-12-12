@@ -1,14 +1,11 @@
 import { Suspense } from 'react';
 import { ContractCode } from '~/systems/Contract/screens/ContractCode';
+import type { ContractRouteProps } from '~/systems/Contract/types';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
-type ContractProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function ContractPage({ params: { id } }: ContractProps) {
+export default async function ContractPage({
+  params: { id },
+}: ContractRouteProps) {
   return (
     <Suspense fallback={<CodeBlock isLoading value="_" />}>
       <ContractCode id={id} />
@@ -16,5 +13,5 @@ export default async function ContractPage({ params: { id } }: ContractProps) {
   );
 }
 
-export const fetchCache = 'force-cache';
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

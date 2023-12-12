@@ -1,17 +1,12 @@
 import { Suspense } from 'react';
 import { AccountPredicateLoader } from '~/systems/Account/components/AccountPredicate/AccountPredicateLoader';
-import { AccountPredicateScreen } from '~/systems/Account/screens/AccountPredicate';
+import { AccountPredicateSync } from '~/systems/Account/screens/AccountPredicateSync';
+import type { AccountRouteProps } from '~/systems/Account/types';
 
-type AccountProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function Account({ params: { id } }: AccountProps) {
+export default async function Account({ params: { id } }: AccountRouteProps) {
   return (
     <Suspense fallback={<AccountPredicateLoader />}>
-      <AccountPredicateScreen id={id} />
+      <AccountPredicateSync id={id} />
     </Suspense>
   );
 }

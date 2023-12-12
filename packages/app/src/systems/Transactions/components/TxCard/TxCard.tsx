@@ -15,8 +15,8 @@ import type { BaseProps } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';
 import NextLink from 'next/link';
 
-import type { TransactionNode } from '../../types';
-import { TX_INTENT_MAP } from '../TxIcon/TxIcon';
+import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
+import type { TransactionNode } from '../../../Transaction/types';
 
 type TxCardProps = BaseProps<{
   transaction: TransactionNode;

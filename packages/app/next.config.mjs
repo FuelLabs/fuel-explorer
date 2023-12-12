@@ -1,4 +1,4 @@
-import { redirects } from './src/routes.mjs';
+import { redirects } from './src/redirects.mjs';
 const externals = [
   'bcryptjs',
   'ws',

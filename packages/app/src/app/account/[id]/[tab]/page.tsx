@@ -1,29 +1,25 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
-import { AccountBalances } from '~/systems/Account/screens/AccountBalances';
-import { AccountTransactionsScreen } from '~/systems/Account/screens/AccountTransactions';
-import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
+import { AccountAssetsSync } from '~/systems/Account/screens/AccountAssetsSync';
+import { AccountTransactionsSync } from '~/systems/Account/screens/AccountTransactionsSync';
+import type { AccountRouteProps } from '~/systems/Account/types';
+import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
-type AccountProps = {
-  params: {
-    id: string;
-    tab: string;
-  };
-};
-
-export default async function Account({ params: { id, tab } }: AccountProps) {
+export default async function Account({
+  params: { id, tab },
+}: AccountRouteProps) {
   switch (tab) {
     case 'assets':
       return (
         <Suspense fallback={<AccountAssetsLoader />}>
-          <AccountBalances id={id} />
+          <AccountAssetsSync id={id} />
         </Suspense>
       );
     case 'transactions':
       return (
         <Suspense fallback={<TxListLoader />}>
-          <AccountTransactionsScreen id={id} />
+          <AccountTransactionsSync id={id} />
         </Suspense>
       );
     default:

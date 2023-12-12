@@ -1,22 +1,19 @@
-import { VStack } from '@fuels/ui';
 import type { ReactNode } from 'react';
-import { BlockTitle } from '~/systems/Block/components/BlockTitle';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { BlockHeader } from '~/systems/Block/components/BlockHeader';
+import type { BlockRouteParams } from '~/systems/Block/types';
 
 export default function BlockLayout({
   children,
   params: { id },
 }: {
   children: ReactNode;
-  params: { id: string };
+  params: BlockRouteParams;
 }) {
   return (
-    <Layout>
-      <VStack>
-        <BlockTitle id={id} />
-        {children}
-      </VStack>
-    </Layout>
+    <>
+      <BlockHeader id={id} />
+      {children}
+    </>
   );
 }
 

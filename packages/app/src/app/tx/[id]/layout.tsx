@@ -1,21 +1,18 @@
-import { VStack } from '@fuels/ui';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
-import { TxTitle } from '~/systems/Transaction/component/TxTitle/TxTitle';
+import { TxHeader } from '~/systems/Transaction/component/TxHeader/TxHeader';
+import type { TxRouteParams } from '~/systems/Transaction/types';
 
 export default function TxLayout({
   children,
   params: { id },
 }: {
   children: React.ReactNode;
-  params: { id: string };
+  params: TxRouteParams;
 }) {
   return (
-    <Layout>
-      <VStack className="laptop:gap-14">
-        <TxTitle id={id} />
-        {children}
-      </VStack>
-    </Layout>
+    <>
+      <TxHeader id={id} />
+      {children}
+    </>
   );
 }
 

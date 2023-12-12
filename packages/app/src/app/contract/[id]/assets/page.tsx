@@ -1,14 +1,11 @@
 import { Suspense } from 'react';
 import { AssetsLoader } from '~/systems/Asset/components/AssetsLoader';
 import { ContractAssets } from '~/systems/Contract/screens/ContractAsset';
+import type { ContractRouteProps } from '~/systems/Contract/types';
 
-type ContractProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function ContractPage({ params: { id } }: ContractProps) {
+export default async function ContractPage({
+  params: { id },
+}: ContractRouteProps) {
   return (
     <Suspense fallback={<AssetsLoader />}>
       <ContractAssets id={id} />

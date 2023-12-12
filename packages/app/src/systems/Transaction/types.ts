@@ -1,5 +1,16 @@
 import type { TransactionItemFragment } from '@fuel-explorer/graphql';
 
+import type { ViewModes } from '../Core/components/ViewMode/ViewMode';
+
+export type TxRouteParams = {
+  id: string;
+  mode?: ViewModes;
+};
+
+export type TxRouteProps = {
+  params: TxRouteParams;
+};
+
 export enum TxTypeEnum {
   ContractCall = 'ContractCall',
   Mint = 'Mint',

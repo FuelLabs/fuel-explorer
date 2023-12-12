@@ -6,7 +6,7 @@ import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
 import { isValidAddress } from '~/systems/Core/utils/address';
 
-export function BlockTitle({
+export function BlockHeader({
   id,
   isLoading,
 }: {

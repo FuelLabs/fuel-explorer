@@ -1,22 +1,18 @@
-import { Suspense } from 'react';
-import { AccountLayout } from '~/systems/Account/components/AccountLayout/AccountLayout';
-import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
-import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
+import { AccountHeader } from '~/systems/Account/components/AccountHeader';
+import type { AccountRouteParams } from '~/systems/Account/types';
 
 export default function Layout({
   children,
   params: { id },
 }: {
   children: React.ReactNode;
-  params: { id: string };
+  params: AccountRouteParams;
 }) {
   return (
-    <AccountLayout id={id}>
-      <Suspense fallback={<AccountTabs address={id} />}>
-        <AccountsTabsSync id={id} />
-      </Suspense>
+    <>
+      <AccountHeader id={id} />
       {children}
-    </AccountLayout>
+    </>
   );
 }
 

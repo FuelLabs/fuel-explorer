@@ -5,7 +5,7 @@ type AccountAssetsProps = {
   id: string;
 };
 
-export async function AccountBalances({ id }: AccountAssetsProps) {
+export async function AccountAssetsSync({ id }: AccountAssetsProps) {
   const balances = await getBalances({ owner: id });
 
   return <AccountAssets balances={balances} id={id} />;

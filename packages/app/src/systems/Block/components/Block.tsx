@@ -3,9 +3,9 @@
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
+import { BlockHeader } from './BlockHeader';
 import { BlockScreenAdvanced } from './BlockScreenAdvanced';
 import { BlockScreenSimple } from './BlockScreenSimple';
-import { BlockTitle } from './BlockTitle';
 
 type BlockScreenProps = {
   id: string;
@@ -24,7 +24,7 @@ export async function Block({
 }: BlockScreenProps) {
   return (
     <>
-      <BlockTitle isLoading={isLoading} id={id} />
+      <BlockHeader isLoading={isLoading} id={id} />
       {viewMode === ViewModes.Simple && (
         <BlockScreenSimple
           block={block}

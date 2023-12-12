@@ -1,6 +1,7 @@
 'use client';
 import { Container, VStack } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
+import { usePathname } from 'next/navigation';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
 
 import { cx } from '../../utils/cx';
@@ -12,11 +13,14 @@ export type LayoutProps = BaseProps<{
   contentClassName?: string;
 }>;
 
-export function Layout({ children, hero, contentClassName }: LayoutProps) {
+export function Layout({ children, contentClassName }: LayoutProps) {
+  const pathname = usePathname();
+  const isHomePage = pathname === '/transactions';
+
   return (
     <VStack className="min-w-screen min-h-screen" gap="0">
       <TopNav />
-      {hero && <Hero />}
+      {isHomePage && <Hero />}
       <Container
         size="4"
         className={cx(

@@ -2,21 +2,13 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 import { TxScreenLoader } from '~/systems/Transaction/component/TxScreen/TxScreenLoader';
-import {
-  TxScreenAdvancedSync,
-  TxScreenSimpleSync,
-} from '~/systems/Transaction/screens/TxScreenSync/TxScreenSync';
-
-type TransactionProps = {
-  params: {
-    id: string;
-    mode: ViewModes;
-  };
-};
+import { TxScreenAdvancedSync } from '~/systems/Transaction/screens/TxScreenAdvancedSync';
+import { TxScreenSimpleSync } from '~/systems/Transaction/screens/TxScreenSimpleSync';
+import type { TxRouteProps } from '~/systems/Transaction/types';
 
 export default async function Transaction({
   params: { id, mode },
-}: TransactionProps) {
+}: TxRouteProps) {
   switch (mode) {
     case ViewModes.Advanced:
       return (
