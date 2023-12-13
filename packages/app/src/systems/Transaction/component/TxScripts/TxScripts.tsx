@@ -258,17 +258,21 @@ function TypesCounter({
 }
 
 const ctx = createContext<ReceiptItemProps>({} as ReceiptItemProps);
-const RETURN_TYPES = [
-  ReceiptType.Return,
-  ReceiptType.ReturnData,
-  ReceiptType.ScriptResult,
-];
+const RETURN_TYPES = [ReceiptType.Return, ReceiptType.ReturnData];
 
-function getBadgeColor(type: string, hasError: boolean) {
+function getBadgeColor(
+  hasError: boolean,
+  receipt?: Maybe<TransactionReceiptFragment>,
+) {
+  const type = receipt?.receiptType ?? 'UNKNOWN';
   if (type === ReceiptType.Revert || type === ReceiptType.Panic) {
     return 'red';
   }
-  if (!hasError && RETURN_TYPES.some((t) => t === type)) {
+  if (
+    RETURN_TYPES.some((t) => t === type) &&
+    !hasError &&
+    !receipt?.contract?.id
+  ) {
     return 'green';
   }
   return 'gray';
@@ -338,7 +342,7 @@ function ReceiptBlock() {
 function ReceiptBadge() {
   const { receipt, hasPanic } = useContext(ctx);
   const type = receipt?.receiptType ?? 'UNKNOWN';
-  const color = getBadgeColor(type, Boolean(hasPanic));
+  const color = getBadgeColor(Boolean(hasPanic), receipt);
   return (
     <Badge
       size="1"
@@ -429,18 +433,18 @@ function ReceiptHeader() {
             {receipt.val && (
               <Amount
                 iconSize={16}
-                assetId={receipt.subId}
+                assetId={receipt.contract?.id}
                 value={bn(receipt.val)}
                 className="text-xs mt-1"
               />
             )}
             <Address
-              value={receipt.subId}
+              value={receipt.contract?.id}
               className="text-xs font-mono"
               prefix="Asset:"
               linkProps={{
                 as: NextLink,
-                href: `/contract/${receipt.subId}/assets`,
+                href: `/contract/${receipt.contract?.id}/assets`,
               }}
             />
           </VStack>

@@ -81,6 +81,7 @@ type TransactionAccount {
 enum OperationType {
   FROM_CONTRACT
   FROM_ACCOUNT
+  FROM_RESULT
 }
 
 type Operation {
