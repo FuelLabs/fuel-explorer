@@ -55,7 +55,6 @@ export class OperationDomain {
       return { type, receipts: items };
     });
 
-    console.log(operations);
     return operations;
   }
 }
