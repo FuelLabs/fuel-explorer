@@ -1,4 +1,3 @@
-import { ReceiptType } from '../generated/types';
 import type {
   Operation,
   OperationReceipt,
@@ -9,18 +8,15 @@ import type {
 type Tx = TransactionItemFragment;
 type TxReceipt = TransactionReceiptFragment;
 
-function createReceiptTypeChecker(types: ReceiptType[]) {
+function createReceiptTypeChecker(types: string[]) {
   return (receipt: TxReceipt) =>
     types.some((type) => type === receipt?.receiptType);
 }
 
-const isCall = createReceiptTypeChecker([ReceiptType.Call]);
-const isReturn = createReceiptTypeChecker([ReceiptType.Return]);
-const isResult = createReceiptTypeChecker([ReceiptType.ScriptResult]);
-const isError = createReceiptTypeChecker([
-  ReceiptType.Panic,
-  ReceiptType.Revert,
-]);
+const isCall = createReceiptTypeChecker(['CALL']);
+const isReturn = createReceiptTypeChecker(['RETURN']);
+const isResult = createReceiptTypeChecker(['SCRIPT_RESULT']);
+const isError = createReceiptTypeChecker(['PANIC', 'REVERT']);
 
 function getType(receipt: TxReceipt) {
   if (receipt?.sender) {
