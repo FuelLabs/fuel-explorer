@@ -19,14 +19,10 @@ export function LoadingWrapper({
   noItemsEl,
 }: LoadingBoxProps) {
   if (!isLoading && noItems) return noItemsEl ?? null;
-  return isLoading ? (
-    <>
-      {Array.from({ length: repeatLoader }).map(
+  return isLoading && loadingEl
+    ? Array.from({ length: repeatLoader }).map((_, i) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (_, i) => cloneElement(loadingEl as any, { key: i }) ?? null,
-      )}
-    </>
-  ) : (
-    regularEl ?? null
-  );
+        loadingEl ? cloneElement(loadingEl as any, { key: i }) : null,
+      )
+    : regularEl ?? null;
 }
