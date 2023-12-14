@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react-json-view-lite/dist/index.css';
 import { ReceiptType } from '@fuel-explorer/graphql';
-import type { Maybe, TransactionReceiptFragment } from '@fuel-explorer/graphql';
+import type {
+  Maybe,
+  OperationReceipt,
+  TransactionReceiptFragment,
+} from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
@@ -45,7 +49,6 @@ export type TxScriptsProps = BaseProps<{
 export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
   const [opened, setOpened] = useState(false);
   const hasOperations = tx.operations?.length ?? 0 > 0;
-
   return (
     <VStack {...props}>
       <Heading
@@ -114,22 +117,22 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
     );
   }
 
-  const receipts = operations.map((i) => i?.receipts).flat();
+  const receipts = operations.map((i) => i?.receipts ?? []).flat();
   const first = receipts?.[0];
   const last = receipts?.[receipts.length - 1];
   const hasPanic = operations?.some(
     (o) =>
       o?.receipts?.some(
         (r) =>
-          r?.receiptType === ReceiptType.Panic ||
-          r?.receiptType === ReceiptType.Revert,
+          r?.item?.receiptType === ReceiptType.Panic ||
+          r?.item?.receiptType === ReceiptType.Revert,
       ),
   );
 
   if (!opened && receipts.length > 3) {
     return (
       <>
-        <ReceiptItem receipt={first} hasPanic={hasPanic} />
+        <ReceiptItem receipt={first as OperationReceipt} hasPanic={hasPanic} />
         <HStack>
           <Box className={classes.lines()} />
           <HoverCard openDelay={100}>
@@ -151,38 +154,60 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               className="rounded-xs p-2 px-3"
               style={{ width }}
             >
-              <TypesCounter
-                receipts={receipts as TransactionReceiptFragment[]}
-              />
+              <TypesCounter items={receipts as OperationReceipt[]} />
             </HoverCard.Content>
           </HoverCard>
           <Box className={classes.lines()} />
         </HStack>
-        <ReceiptItem receipt={last} hasPanic={hasPanic} />
+        <ReceiptItem receipt={last as OperationReceipt} hasPanic={hasPanic} />
       </>
     );
   }
 
   return (
     <div className="flex flex-col gap-3">
-      {operations.map((item, i) =>
-        item?.type ? (
-          <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
-            {item?.receipts?.map((receipt, idx) => (
-              <ReceiptItem
-                key={`${idx}-${receipt?.receiptType ?? ''}`}
-                receipt={receipt}
-                isIndented={idx > 0}
-                hasPanic={hasPanic}
-              />
-            ))}
-          </div>
-        ) : (
-          <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
-            <ReceiptItem receipt={item?.receipts?.[0]} hasPanic={hasPanic} />
-          </div>
-        ),
-      )}
+      {operations.map((item, i) => (
+        <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
+          {item?.receipts?.map((receipt, idx) => {
+            const hasNested = Boolean(receipt?.receipts?.length);
+            if (!hasNested) {
+              return (
+                <ReceiptItem
+                  key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
+                  receipt={receipt as OperationReceipt}
+                  isIndented={idx > 0}
+                  hasPanic={hasPanic}
+                />
+              );
+            }
+            return (
+              <div
+                key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
+                data-nested="true"
+                className={classes.operation()}
+              >
+                <ReceiptItem
+                  receipt={receipt as OperationReceipt}
+                  isIndented={idx > 0}
+                  hasPanic={hasPanic}
+                />
+                {receipt?.receipts?.map((sub, j) => (
+                  <div
+                    key={`${j}-${sub?.item?.receiptType ?? ''}`}
+                    className="ml-10"
+                  >
+                    <ReceiptItem
+                      isIndented
+                      receipt={sub as OperationReceipt}
+                      hasPanic={hasPanic}
+                    />
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }
@@ -203,37 +228,34 @@ function CountReceipt({ num, op }: { num: number; op: string }) {
   );
 }
 
-function TypesCounter({
-  receipts,
-}: {
-  receipts: TransactionReceiptFragment[];
-}) {
-  const calls = receipts.filter((i) => i.receiptType === ReceiptType.Call);
+function TypesCounter({ items = [] }: { items?: Maybe<OperationReceipt[]> }) {
+  const receipts = items?.map((i) => i.item) ?? [];
+  const calls = receipts.filter((i) => i?.receiptType === ReceiptType.Call);
   const transfers = receipts.filter(
     (i) =>
-      i.receiptType === ReceiptType.Transfer ||
-      i.receiptType === ReceiptType.TransferOut,
+      i?.receiptType === ReceiptType.Transfer ||
+      i?.receiptType === ReceiptType.TransferOut,
   );
-  const mints = receipts.filter((i) => i.receiptType === ReceiptType.Mint);
-  const burns = receipts.filter((i) => i.receiptType === ReceiptType.Burn);
+  const mints = receipts.filter((i) => i?.receiptType === ReceiptType.Mint);
+  const burns = receipts.filter((i) => i?.receiptType === ReceiptType.Burn);
   const messages = receipts.filter(
-    (i) => i.receiptType === ReceiptType.MessageOut,
+    (i) => i?.receiptType === ReceiptType.MessageOut,
   );
   const returns = receipts.filter(
     (i) =>
-      i.receiptType === ReceiptType.Return ||
-      i.receiptType === ReceiptType.ReturnData ||
-      i.receiptType === ReceiptType.ScriptResult,
+      i?.receiptType === ReceiptType.Return ||
+      i?.receiptType === ReceiptType.ReturnData ||
+      i?.receiptType === ReceiptType.ScriptResult,
   );
   const errors = receipts.filter(
     (i) =>
-      i.receiptType === ReceiptType.Panic ||
-      i.receiptType === ReceiptType.Revert,
+      i?.receiptType === ReceiptType.Panic ||
+      i?.receiptType === ReceiptType.Revert,
   );
   const logs = receipts.filter(
     (i) =>
-      i.receiptType === ReceiptType.Log ||
-      i.receiptType === ReceiptType.LogData,
+      i?.receiptType === ReceiptType.Log ||
+      i?.receiptType === ReceiptType.LogData,
   );
   return (
     <div className="flex flex-col gap-0 text-sm font-mono w-full">
@@ -279,7 +301,7 @@ function getBadgeColor(
 }
 
 export type ReceiptItemProps = BaseProps<{
-  receipt?: Maybe<TransactionReceiptFragment>;
+  receipt?: Maybe<OperationReceipt>;
   isIndented?: boolean;
   hasPanic?: boolean;
 }>;
@@ -333,7 +355,7 @@ function ReceiptBlock() {
   return (
     <Collapsible.Content ref={ref as any} className={classes.utxos()}>
       <ScrollArea style={{ width }}>
-        <JsonViewer data={parseJson(receipt)} />
+        <JsonViewer data={parseJson(receipt?.item)} />
       </ScrollArea>
     </Collapsible.Content>
   );
@@ -341,8 +363,8 @@ function ReceiptBlock() {
 
 function ReceiptBadge() {
   const { receipt, hasPanic } = useContext(ctx);
-  const type = receipt?.receiptType ?? 'UNKNOWN';
-  const color = getBadgeColor(Boolean(hasPanic), receipt);
+  const type = receipt?.item?.receiptType ?? 'UNKNOWN';
+  const color = getBadgeColor(Boolean(hasPanic), receipt?.item);
   return (
     <Badge
       size="1"
@@ -356,7 +378,8 @@ function ReceiptBadge() {
 }
 
 function ReceiptAmount() {
-  const { receipt } = useContext(ctx);
+  const { receipt: item } = useContext(ctx);
+  const receipt = item?.item;
   const assetId = receipt?.assetId ?? '';
   const amount = bn(receipt?.amount);
   const contract = receipt?.to?.id ?? receipt?.contract?.id ?? null;
@@ -385,7 +408,8 @@ function ReceiptAmount() {
 }
 
 function ReceiptHeader() {
-  const { receipt } = useContext(ctx);
+  const { receipt: item } = useContext(ctx);
+  const receipt = item?.item;
   const classes = styles();
   const type = receipt?.receiptType ?? 'UNKNOWN';
   const param1 = receipt?.param1;
@@ -531,8 +555,20 @@ const styles = tv({
       'before:w-full before:bg-border before:content-[""]',
     ],
     receiptRow: 'peer relative',
-    operation: 'relative flex flex-col gap-3',
     header: 'group px-3 pr-4 py-0 h-16',
+    operation: [
+      'relative flex flex-col gap-3',
+      '[&[data-nested=true]]:before:absolute',
+      '[&[data-nested=true]]:before:content-[""]',
+      '[&[data-nested=true]]:before:block',
+      '[&[data-nested=true]]:before:border-l',
+      '[&[data-nested=true]]:before:border-border',
+      '[&[data-nested=true]]:before:border-dashed',
+      '[&[data-nested=true]]:before:top-[40px]',
+      '[&[data-nested=true]]:before:bottom-[20px]',
+      '[&[data-nested=true]]:before:left-0',
+      '[&[data-nested=true]]:before:right-0',
+    ],
   },
   variants: {
     indent: {

@@ -132,11 +132,33 @@ fragment TransactionReceipt on Receipt {
   subId
 }
 
+fragment InnerReceiptItem on OperationReceipt {
+  item {
+    ...TransactionReceipt
+  }
+}
+
+fragment OperationReceiptItem on OperationReceipt {
+  ...InnerReceiptItem
+  receipts {
+    ...InnerReceiptItem
+    receipts {
+      ...InnerReceiptItem
+      receipts {
+        ...InnerReceiptItem
+      }
+    }
+  }
+}
+
 fragment OperationItem on Operation {
   __typename
   type
   receipts {
-    ...TransactionReceipt
+    ...OperationReceiptItem
+    receipts {
+      ...OperationReceiptItem
+    }
   }
 }
 

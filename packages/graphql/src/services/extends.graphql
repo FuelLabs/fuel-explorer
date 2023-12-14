@@ -81,12 +81,17 @@ type TransactionAccount {
 enum OperationType {
   FROM_CONTRACT
   FROM_ACCOUNT
-  FROM_RESULT
+  FINAL_RESULT
+}
+
+type OperationReceipt {
+  item: Receipt
+  receipts: [OperationReceipt]
 }
 
 type Operation {
   type: OperationType
-  receipts: [Receipt]
+  receipts: [OperationReceipt]
 }
 
 extend type Transaction {
