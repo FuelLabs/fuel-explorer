@@ -146,7 +146,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               >
                 Expand{' '}
                 <span className="text-muted">
-                  (+{receipts.length - 2} operations)
+                  (+{tx.receipts?.length ?? 0 - 2} operations)
                 </span>
               </Button>
             </HoverCard.Trigger>
@@ -154,7 +154,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               className="rounded-xs p-2 px-3"
               style={{ width }}
             >
-              <TypesCounter items={receipts as OperationReceipt[]} />
+              <TypesCounter receipts={tx.receipts} />
             </HoverCard.Content>
           </HoverCard>
           <Box className={classes.lines()} />
@@ -228,8 +228,12 @@ function CountReceipt({ num, op }: { num: number; op: string }) {
   );
 }
 
-function TypesCounter({ items = [] }: { items?: Maybe<OperationReceipt[]> }) {
-  const receipts = items?.map((i) => i.item) ?? [];
+function TypesCounter({
+  receipts: items = [],
+}: {
+  receipts?: Maybe<TransactionReceiptFragment[]>;
+}) {
+  const receipts = items ?? [];
   const calls = receipts.filter((i) => i?.receiptType === ReceiptType.Call);
   const transfers = receipts.filter(
     (i) =>
@@ -244,8 +248,10 @@ function TypesCounter({ items = [] }: { items?: Maybe<OperationReceipt[]> }) {
   const returns = receipts.filter(
     (i) =>
       i?.receiptType === ReceiptType.Return ||
-      i?.receiptType === ReceiptType.ReturnData ||
-      i?.receiptType === ReceiptType.ScriptResult,
+      i?.receiptType === ReceiptType.ReturnData,
+  );
+  const results = receipts.filter(
+    (i) => i?.receiptType === ReceiptType.ScriptResult,
   );
   const errors = receipts.filter(
     (i) =>
@@ -271,6 +277,9 @@ function TypesCounter({ items = [] }: { items?: Maybe<OperationReceipt[]> }) {
       {Boolean(burns.length) && <CountReceipt num={burns.length} op="Burn" />}
       {Boolean(returns.length) && (
         <CountReceipt num={returns.length} op="Return" />
+      )}
+      {Boolean(results.length) && (
+        <CountReceipt num={results.length} op="Result" />
       )}
       {Boolean(errors.length) && (
         <CountReceipt num={errors.length} op="Error" />
