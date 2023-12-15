@@ -11,16 +11,12 @@ const schema = z.object({
 
 export const getContract = act(schema, async (input) => {
   const id = parseAddressParam(input.id);
-  const { data } = await sdk.getContract({ id }).catch((_) => {
-    return { data: { contract: null } };
-  });
+  const { data } = await sdk.getContract({ id });
   return data.contract;
 });
 
 export const getContractBalances = act(schema, async (input) => {
   const id = parseAddressParam(input.id);
-  const { data } = await sdk.getContractBalances({ id }).catch((_) => {
-    return { data: { contractBalances: null } };
-  });
+  const { data } = await sdk.getContractBalances({ id });
   return data.contractBalances;
 });
