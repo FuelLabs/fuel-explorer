@@ -22,10 +22,11 @@ export type AddressBaseProps = {
   fixed?: UseFuelAddressOpts['fixed'];
   linkProps?: AddressLinkProps;
   isLoading?: boolean;
+  iconSize?: number;
 };
 
-export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
 export type AddressLinkProps = Omit<LinkProps, 'children'>;
+export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
 
 const AddressSpan = ({
   address,
@@ -57,14 +58,14 @@ const AddressSpan = ({
   );
 };
 
-export const Address = createComponent<AddressProps, typeof HStack>({
+export const Address = createComponent<AddressProps, 'div'>({
   id: 'Address',
-  baseElement: HStack,
   render: (
-    Root,
+    _,
     {
       value,
       full,
+      iconSize = 16,
       fixed,
       prefix,
       className,
@@ -81,7 +82,7 @@ export const Address = createComponent<AddressProps, typeof HStack>({
     });
 
     return (
-      <Root
+      <HStack
         gap="3"
         align="center"
         {...props}
@@ -96,7 +97,7 @@ export const Address = createComponent<AddressProps, typeof HStack>({
               <Copyable
                 value={address}
                 className={classes.address()}
-                iconSize={16}
+                iconSize={iconSize}
               >
                 {linkProps ? (
                   <Link
@@ -125,15 +126,15 @@ export const Address = createComponent<AddressProps, typeof HStack>({
             </HStack>
           }
         />
-      </Root>
+      </HStack>
     );
   },
 });
 
 const styles = tv({
   slots: {
-    root: 'text-sm font-mono',
-    prefix: 'mt-[1px] text-[1em] text-secondary',
-    address: 'text-[1em] text-muted mt-px',
+    root: 'flex gap-1 text-sm font-mono',
+    prefix: 'mr-px text-[1em] text-secondary',
+    address: 'text-[1em] text-muted mt-px gap-3',
   },
 });

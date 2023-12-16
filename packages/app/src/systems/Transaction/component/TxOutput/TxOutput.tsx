@@ -13,7 +13,6 @@ import {
   VStack,
   createComponent,
   cx,
-  useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
@@ -22,9 +21,7 @@ import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
 import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
-import { formatZeroUnits } from '~/systems/Core/utils/format';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -47,19 +44,13 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
   render: (_, { tx, output, ...props }) => {
     const classes = styles();
-    const { isMobile } = useBreakpoints();
-
     if (!output.assetId) return null;
     const assetId = output.assetId;
     const amount = output.totalAmount;
-    const asset = useAsset(assetId);
-    const fuelAsset = useFuelAsset(asset);
     const isReceiving =
       output.type === GroupedOutputType.ChangeOutput ||
       (output.outputs?.length === 1 &&
         output.outputs[0]?.__typename === 'CoinOutput');
-
-    if (!asset) return null;
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -84,19 +75,12 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
               className={isReceiving ? 'text-success' : 'text-error'}
             />
             {amount && (
-              <Text className="text-secondary">
-                {fuelAsset?.decimals ? (
-                  <>
-                    {bn(amount).format({
-                      precision: isMobile ? 3 : undefined,
-                      units: fuelAsset.decimals,
-                    })}{' '}
-                  </>
-                ) : (
-                  formatZeroUnits(amount)
-                )}
-                {asset.symbol}
-              </Text>
+              <Amount
+                hideSymbol
+                hideIcon
+                assetId={assetId}
+                value={bn(amount)}
+              />
             )}
             <HelperIcon message={getTooltipText(tx, output)} />
           </HStack>

@@ -1,6 +1,6 @@
 import type { TextProps } from '@radix-ui/themes/dist/cjs/components/text';
 import { IconChevronDown } from '@tabler/icons-react';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
@@ -15,6 +15,8 @@ import { Text } from '../Text';
 
 type CollapsibleBaseProps = VariantProps<typeof styles> & {
   defaultOpened?: boolean;
+  opened?: boolean;
+  onOpenChange?: (opened: boolean) => void;
 };
 
 type Context = CollapsibleBaseProps & {
@@ -42,13 +44,21 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
       children,
       className,
       defaultOpened,
-      variant = 'surface',
       hideIcon,
+      opened: initialOpened,
+      onOpenChange,
+      variant = 'surface',
       ...props
     },
   ) => {
     const classes = styles();
-    const [opened, setOpened] = useState(Boolean(defaultOpened));
+    const [opened, setOpened] = useState(
+      Boolean(defaultOpened || initialOpened),
+    );
+
+    useEffect(() => {
+      onOpenChange?.(opened);
+    }, [opened, onOpenChange]);
 
     return (
       <ctx.Provider
