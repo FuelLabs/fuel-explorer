@@ -1,22 +1,32 @@
 import { redirect } from 'next/navigation';
-import { getPredicate } from '~/systems/Account/actions/get-predicate';
-import { AccountScreen } from '~/systems/Account/screens/Account';
-import { isAllowedTab } from '~/systems/Account/utils/tabs';
+import { Suspense } from 'react';
+import { Routes } from '~/routes';
+import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
+import { AccountAssetsSync } from '~/systems/Account/screens/AccountAssetsSync';
+import { AccountTransactionsSync } from '~/systems/Account/screens/AccountTransactionsSync';
+import type { AccountRouteProps } from '~/systems/Account/types';
+import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
-type AccountProps = {
-  params: {
-    id: string;
-    tab: string;
-  };
-};
-
-export default async function Account({ params: { id, tab } }: AccountProps) {
-  if (!isAllowedTab(tab)) {
-    redirect(`/account/${id}/assets`);
+export default async function Account({
+  params: { id, tab },
+}: AccountRouteProps) {
+  switch (tab) {
+    case 'assets':
+      return (
+        <Suspense fallback={<AccountAssetsLoader />}>
+          <AccountAssetsSync id={id} />
+        </Suspense>
+      );
+    case 'transactions':
+      return (
+        <Suspense fallback={<TxListLoader />}>
+          <AccountTransactionsSync id={id} />
+        </Suspense>
+      );
+    default:
+      redirect(Routes.accountAssets(id));
   }
-  const predicate = await getPredicate({ owner: id });
-
-  return <AccountScreen predicate={predicate || undefined} id={id} tab={tab} />;
 }
 
+// Revalidate every 10 seconds
 export const revalidate = 10;

@@ -10,7 +10,6 @@ import {
   LoadingWrapper,
 } from '@fuels/ui';
 import { bn } from 'fuels';
-import NextLink from 'next/link';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 
 import { Amount } from '../Amount/Amount';
@@ -37,10 +36,6 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
               prefix="Id:"
               fixed="b256"
               isLoading={isLoading}
-              linkProps={{
-                as: NextLink,
-                href: `/contract/${assetId}/assets`,
-              }}
             />
           </AssetItem>
           <Box className="ml-14 mt-2 tablet:ml-0 tablet:mt-0">

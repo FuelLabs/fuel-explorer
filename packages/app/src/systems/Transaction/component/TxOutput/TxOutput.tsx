@@ -19,6 +19,7 @@ import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
+import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 
@@ -60,7 +61,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
               value={output.to || ''}
               linkProps={{
                 as: NextLink,
-                href: `/account/${output.to}/assets`,
+                href: Routes.accountAssets(output.to!),
               }}
             />
           </AssetItem>
@@ -130,7 +131,7 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
                 value={contractId}
                 linkProps={{
                   as: NextLink,
-                  href: `/contract/${contractId}/assets`,
+                  href: Routes.contractAssets(contractId),
                 }}
               />
             </VStack>
@@ -159,7 +160,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
                 value={recipient || ''}
                 linkProps={{
                   as: NextLink,
-                  href: `/account/${recipient}/assets`,
+                  href: Routes.accountAssets(recipient!),
                 }}
               />
               <Address
@@ -167,7 +168,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
                 value={output.to || ''}
                 linkProps={{
                   as: NextLink,
-                  href: `/account/${output.to}/assets`,
+                  href: Routes.accountAssets(output.to!),
                 }}
               />
             </VStack>

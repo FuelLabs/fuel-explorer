@@ -12,6 +12,7 @@ import {
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
+import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
@@ -44,7 +45,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
               linkProps={{
                 as: NextLink,
-                href: `/account/${input.owner}/assets`,
+                href: Routes.accountAssets(input.owner!),
               }}
             />
           </AssetItem>
@@ -82,14 +83,14 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
               <Address
                 value={sender}
                 prefix="Sender:"
-                linkProps={{ as: NextLink, href: `/account/${sender}/assets` }}
+                linkProps={{ as: NextLink, href: Routes.accountAssets(sender) }}
               />
               <Address
                 value={recipient}
                 prefix="Recipient:"
                 linkProps={{
                   as: NextLink,
-                  href: `/account/${recipient}/assets`,
+                  href: Routes.accountAssets(recipient),
                 }}
               />
             </VStack>

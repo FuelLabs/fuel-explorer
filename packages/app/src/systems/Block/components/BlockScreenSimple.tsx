@@ -12,14 +12,15 @@ import {
 } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
 import NextLink from 'next/link';
+import { Routes } from '~/routes';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
-import { TxList } from '~/systems/Transaction/component/TxList/TxList';
-import { TxListLoader } from '~/systems/Transaction/component/TxList/TxListLoader';
+import { TxList } from '~/systems/Transactions/components/TxList/TxList';
+import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
 type BlockScreenSimpleProps = {
   block?: Maybe<BlockItemFragment>;
-  producer: Maybe<string>;
+  producer?: Maybe<string>;
   isLoading?: boolean;
 };
 
@@ -36,8 +37,7 @@ export function BlockScreenSimple({
           <Address
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
-            linkProps={{ as: NextLink, href: `/account/${producer}/assets` }}
-            isLoading={isLoading}
+            linkProps={{ as: NextLink, href: Routes.accountAssets(producer!) }}
           />
         </CardInfo>
         <CardInfo
