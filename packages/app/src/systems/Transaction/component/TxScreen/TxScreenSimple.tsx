@@ -110,12 +110,12 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
             regularEl={tx.time?.fromNow}
           />
         </CardInfo>
-        <CardInfo name={'Block'}>
-          <LoadingWrapper
-            isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-28 h-6" />}
-            regularEl={
-              tx.blockHeight && (
+        {(tx.blockHeight || isLoading) && (
+          <CardInfo name={'Block'}>
+            <LoadingWrapper
+              isLoading={isLoading}
+              loadingEl={<LoadingBox className="w-28 h-6" />}
+              regularEl={
                 <Link
                   as={NextLink}
                   href={Routes.blockSimple(tx.blockHeight)}
@@ -123,10 +123,10 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
                 >
                   #{tx.blockHeight}
                 </Link>
-              )
-            }
-          />
-        </CardInfo>
+              }
+            />
+          </CardInfo>
+        )}
         <CardInfo
           name={'Network Fee'}
           description={

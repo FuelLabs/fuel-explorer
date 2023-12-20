@@ -6,7 +6,7 @@ import { tv } from 'tailwind-variants';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
-import { Box, HStack } from '../Box';
+import { Box } from '../Box';
 import type { BoxProps } from '../Box';
 import { Card } from '../Card';
 import type { CardProps, CardHeaderProps, CardBodyProps } from '../Card';
@@ -97,7 +97,7 @@ export const CollapsibleHeader = createComponent<
         )}
         onClick={() => setOpened(!opened)}
       >
-        <HStack align="center">{children}</HStack>
+        {children}
         {!hideIcon && (
           <IconButton
             iconSize={20}
@@ -164,8 +164,8 @@ const styles = tv({
   slots: {
     root: 'py-[10px]',
     header:
-      'group grid grid-cols-[1fr_auto] grid-rows-1 gap-4 items-center cursor-pointer',
-    icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer',
+      'group relative gap-4 cursor-pointer pr-9 flex flex-col justify-center tablet:items-center tablet:flex-row tablet:justify-start',
+    icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
     content: 'mx-4 mb-2 border border-border',
     body: '',
     title: 'flex items-center gap-2 text-sm font-medium',
