@@ -7,6 +7,7 @@ import {
   VStack,
   createComponent,
   useBreakpoints,
+  Box,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
@@ -34,7 +35,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
 
     return (
       <Collapsible {...props}>
-        <Collapsible.Header>
+        <Collapsible.Header className="gap-2 tablet:gap-4">
           <AssetItem assetId={assetId} className="flex-1">
             <Address
               prefix="From:"
@@ -47,12 +48,15 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               }}
             />
           </AssetItem>
-          {/*
-            I'm just hidding this until we get the output/input design merged 
-            https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
-          */}
           {amount && (
-            <Amount hideIcon hideSymbol assetId={assetId} value={bn(amount)} />
+            <Box className="ml-14 tablet:ml-0">
+              <Amount
+                hideIcon
+                hideSymbol
+                assetId={assetId}
+                value={bn(amount)}
+              />
+            </Box>
           )}
         </Collapsible.Header>
         <Utxos items={inputs satisfies UtxoItem[]} assetId={assetId} />

@@ -3,6 +3,7 @@ import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
+  Box,
   Collapsible,
   Flex,
   LoadingBox,
@@ -42,20 +43,22 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
               }}
             />
           </AssetItem>
-          <LoadingWrapper
-            isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-24 h-6" />}
-            regularEl={
-              amount && (
-                <Amount
-                  hideIcon
-                  hideSymbol
-                  assetId={assetId}
-                  value={bn(amount)}
-                />
-              )
-            }
-          />
+          <Box className="ml-14 mt-2 tablet:ml-0 tablet:mt-0">
+            <LoadingWrapper
+              isLoading={isLoading}
+              loadingEl={<LoadingBox className="w-30 h-5" />}
+              regularEl={
+                amount && (
+                  <Amount
+                    hideIcon
+                    hideSymbol
+                    assetId={assetId}
+                    value={bn(amount)}
+                  />
+                )
+              }
+            />
+          </Box>
         </Flex>
       </Collapsible.Header>
       {hasUTXOs && <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />}
