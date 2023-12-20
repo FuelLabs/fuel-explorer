@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
-import { useBreakpoints } from '../../hooks/useBreakpoints';
 import { createComponent } from '../../utils/component';
 import { cx } from '../../utils/css';
 import type { BaseProps, WithAsProps } from '../../utils/types';
@@ -29,6 +28,36 @@ export type AddressBaseProps = {
 export type AddressLinkProps = Omit<LinkProps, 'children'>;
 export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
 
+const AddressSpan = ({
+  address,
+  short,
+  full,
+  className,
+}: {
+  full?: boolean;
+  address: string;
+  short: string;
+  className?: string;
+}) => {
+  const baseClass = cx(['text-[1em]', className]);
+  return (
+    <>
+      {full && (
+        <span className={cx(baseClass, 'mobile:max-laptop:hidden')}>
+          {address}
+        </span>
+      )}
+      <span
+        className={cx(baseClass, {
+          'laptop:hidden': full,
+        })}
+      >
+        {short}
+      </span>
+    </>
+  );
+};
+
 export const Address = createComponent<AddressProps, 'div'>({
   id: 'Address',
   render: (
@@ -51,9 +80,6 @@ export const Address = createComponent<AddressProps, 'div'>({
       ...addressOpts,
       fixed,
     });
-
-    const { isMobile } = useBreakpoints();
-    const isFull = isMobile ? false : full;
 
     return (
       <HStack
@@ -81,14 +107,20 @@ export const Address = createComponent<AddressProps, 'div'>({
                       e.stopPropagation();
                     }}
                   >
-                    <span className="text-[1em] text-link">
-                      {isFull ? address : short}
-                    </span>
+                    <AddressSpan
+                      full={full}
+                      address={address}
+                      short={short}
+                      className="text-link"
+                    />
                   </Link>
                 ) : (
-                  <span className="text-muted text-[1em]">
-                    {isFull ? address : short}
-                  </span>
+                  <AddressSpan
+                    full={full}
+                    address={address}
+                    short={short}
+                    className="text-muted"
+                  />
                 )}
               </Copyable>
             </HStack>

@@ -1,37 +1,49 @@
 import { Tabs } from '@fuels/ui';
 import type { TabsProps, IconProps } from '@fuels/ui';
+import { Fragment } from 'react';
+import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
+type TabItem = {
+  icon: IconProps['icon'];
+  value: string;
+  label: ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+};
+
 type NavigationTabsProps = TabsProps & {
-  items: {
-    icon: IconProps['icon'];
-    value: string;
-    label: string;
-    onClick: () => void;
-    disabled?: boolean;
-  }[];
+  renderTab?: (children: ReactNode, item: TabItem) => ReactNode;
+  items: TabItem[];
 };
 
 export function NavigationTab({
   items,
   className,
+  renderTab,
   ...props
 }: NavigationTabsProps) {
   const classes = styles();
   return (
     <Tabs {...props} size="1" className={classes.root({ className })}>
       <Tabs.List>
-        {items.map((item) => (
-          <Tabs.Trigger
-            key={item.value}
-            value={item.value}
-            leftIcon={item.icon}
-            disabled={item.disabled}
-            onClick={item.onClick}
-          >
-            {item.label}
-          </Tabs.Trigger>
-        ))}
+        {items.map((item) => {
+          const tabItem = (
+            <Tabs.Trigger
+              value={item.value}
+              leftIcon={item.icon}
+              disabled={item.disabled}
+              onClick={item.onClick}
+            >
+              {item.label}
+            </Tabs.Trigger>
+          );
+          return (
+            <Fragment key={item.value}>
+              {renderTab ? renderTab(tabItem, item) : tabItem}
+            </Fragment>
+          );
+        })}
       </Tabs.List>
     </Tabs>
   );
