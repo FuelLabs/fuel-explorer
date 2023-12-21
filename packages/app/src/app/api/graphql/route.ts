@@ -1,5 +1,5 @@
 import { createExecutor, createSchema } from '@fuel-explorer/graphql';
-import { getChainInfo } from '@fuel-explorer/graphql/src/utils/chainInfo';
+import { ContextDomain } from '@fuel-explorer/graphql/src/domains/Context';
 import { createYoga } from 'graphql-yoga';
 
 const url = process.env.FUEL_PROVIDER_URL!;
@@ -22,7 +22,9 @@ const { handleRequest } = createYoga({
     Response,
     Request,
   },
-  context: async () => ({ url, chainInfo: await getChainInfo(url) }),
+  context: async () => {
+    return ContextDomain.createContext(url);
+  },
 });
 
 export {

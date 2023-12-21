@@ -3,8 +3,8 @@ import express from 'express';
 import { createHandler } from 'graphql-http/lib/use/express';
 import expressPlayground from 'graphql-playground-middleware-express';
 
+import { ContextDomain } from './domains/Context';
 import { createSchema } from './schema';
-import { getChainInfo } from './utils/chainInfo';
 import { createGraphqlFetch } from './utils/executor';
 import { requireEnv } from './utils/requireEnv';
 
@@ -34,9 +34,7 @@ app.post(
   createHandler({
     schema,
     async context() {
-      const chainInfo = await getChainInfo(FUEL_PROVIDER_URL);
-
-      return { url: FUEL_PROVIDER_URL, chainInfo };
+      return ContextDomain.createContext(FUEL_PROVIDER_URL);
     },
   }),
 );

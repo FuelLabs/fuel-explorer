@@ -1,28 +1,15 @@
 import { Suspense } from 'react';
-import { AccountTabs } from '~/systems/Account/components/AccountTabs/AccountTabs';
-import { AccountsTabsSync } from '~/systems/Account/components/AccountTabs/AccountTabsSync';
-import { AccountPredicate } from '~/systems/Account/screens/AccountPredicate';
-import { CodeBlockSkeleton } from '~/systems/Core/components/CodeBlock/CodeBlockSkeleton';
+import { AccountPredicateLoader } from '~/systems/Account/components/AccountPredicate/AccountPredicateLoader';
+import { AccountPredicateSync } from '~/systems/Account/screens/AccountPredicateSync';
+import type { AccountRouteProps } from '~/systems/Account/types';
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function AccountPredicatePage({
-  params: { id },
-}: PageProps) {
+export default async function Account({ params: { id } }: AccountRouteProps) {
   return (
-    <>
-      <Suspense fallback={<AccountTabs isLoading />}>
-        <AccountsTabsSync id={id} />
-      </Suspense>
-      <Suspense fallback={<CodeBlockSkeleton />}>
-        <AccountPredicate id={id} />
-      </Suspense>
-    </>
+    <Suspense fallback={<AccountPredicateLoader />}>
+      <AccountPredicateSync id={id} />
+    </Suspense>
   );
 }
 
-export const revalidate = 100;
+export const dynamic = 'force-static';
+export const revalidate = Infinity;

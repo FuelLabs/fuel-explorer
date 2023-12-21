@@ -1,3 +1,4 @@
+import { redirects } from './src/redirects.mjs';
 const externals = [
   'bcryptjs',
   'ws',
@@ -39,6 +40,7 @@ const config = {
         destination: '/ui/index.html',
         permanent: false,
       },
+      ...redirects,
     ];
   },
   webpack: (config) => {

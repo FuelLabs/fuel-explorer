@@ -20,6 +20,7 @@ import type { KeyboardEvent } from 'react';
 import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { tv } from 'tailwind-variants';
+import { Routes } from '~/routes';
 
 import { cx } from '../../utils/cx';
 import { SearchContext } from '../SearchWidget/SearchWidget';
@@ -57,7 +58,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               <Dropdown.Item className={classes.dropdownItem()}>
                 <Link
                   as={NextLink}
-                  href={`/account/${searchResult.account.address}/assets`}
+                  href={Routes.accountAssets(searchResult.account.address!)}
                   className="text-color"
                 >
                   {shortAddress(
@@ -77,7 +78,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   >
                     <Link
                       as={NextLink}
-                      href={`/tx/${transaction?.id}/`}
+                      href={Routes.txSimple(transaction!.id!)}
                       className="text-color"
                     >
                       {shortAddress(transaction?.id || '', trimL, trimR)}
@@ -93,7 +94,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               <Dropdown.Item className={classes.dropdownItem()}>
                 <Link
                   as={NextLink}
-                  href={`/block/${searchResult.block.id}`}
+                  href={Routes.blockSimple(searchResult.block.id!)}
                   className="text-color"
                 >
                   {shortAddress(searchResult.block.id || '', trimL, trimR)}
@@ -102,7 +103,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               <Dropdown.Item className={classes.dropdownItem()}>
                 <Link
                   as={NextLink}
-                  href={`/block/${searchResult.block.height}`}
+                  href={Routes.blockSimple(searchResult.block.height!)}
                   className="text-color"
                 >
                   {searchResult.block.height}
@@ -116,7 +117,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               <Dropdown.Item className={classes.dropdownItem()}>
                 <Link
                   as={NextLink}
-                  href={`/contract/${searchResult.contract.id}/assets`}
+                  href={Routes.contractAssets(searchResult.contract.id!)}
                   className="text-color"
                 >
                   {shortAddress(searchResult.contract.id || '', trimL, trimR)}
@@ -130,7 +131,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               <Dropdown.Item className={classes.dropdownItem()}>
                 <Link
                   as={NextLink}
-                  href={`/tx/${searchResult.transaction.id}`}
+                  href={Routes.txSimple(searchResult.transaction.id!)}
                   className="text-color"
                 >
                   {shortAddress(
