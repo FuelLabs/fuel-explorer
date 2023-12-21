@@ -1,11 +1,20 @@
-import { AccountLayout } from '~/systems/Account/components/AccountLayout/AccountLayout';
+import { AccountHeader } from '~/systems/Account/components/AccountHeader';
+import type { AccountRouteParams } from '~/systems/Account/types';
 
 export default function Layout({
   children,
   params: { id },
 }: {
   children: React.ReactNode;
-  params: { id: string };
+  params: AccountRouteParams;
 }) {
-  return <AccountLayout id={id}>{children}</AccountLayout>;
+  return (
+    <>
+      <AccountHeader id={id} />
+      {children}
+    </>
+  );
 }
+
+export const dynamic = 'force-static';
+export const revalidate = Infinity;

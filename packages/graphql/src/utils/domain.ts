@@ -4,6 +4,13 @@ import type { GraphQLField, GraphQLResolveInfo } from 'graphql/type';
 
 import { getClient } from './client';
 
+/** @todo: Get types from the query directly instead of creating custom types */
+export type ChainInfoResult = {
+  consensusParameters: {
+    gasPriceFactor: string;
+    gasPerByte: string;
+  };
+};
 export type Context = {
   url: string;
   chainInfo: ChainInfo;

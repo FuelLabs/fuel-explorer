@@ -1,22 +1,14 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import {
-  Text,
-  Address,
-  Icon,
-  Collapsible,
-  useBreakpoints,
-  Box,
-} from '@fuels/ui';
+import { Address, Collapsible, useBreakpoints, Box } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+import { Routes } from '~/routes';
 
-import { formatZeroUnits } from '../../utils/format';
+import { Amount } from '../Amount/Amount';
 
 export type UtxoItem = Partial<Omit<TUtxoItem, '__typename'>>;
 
@@ -29,12 +21,7 @@ type UtxoItemProps = {
 
 function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
   const { isMobile } = useBreakpoints();
-  const asset = useAsset(assetId);
-  const fuelAsset = useFuelAsset(asset);
-
   if (!item.utxoId) return null;
-  if (!asset) return null;
-
   const trim = isMobile ? 8 : 16;
   const { item: itemStyle } = styles({
     color: index % 2 !== 0 ? 'odd' : undefined,
@@ -47,21 +34,19 @@ function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
         value={item.utxoId}
         className="flex-col items-start gap-1 flex-1 tablet:flex-row tablet:items-center tablet:gap-4"
         addressOpts={{ trimLeft: trim, trimRight: trim }}
-        linkProps={{ as: NextLink, href: `/tx/${item.utxoId.slice(0, -2)}` }}
+        linkProps={{
+          as: NextLink,
+          href: Routes.txSimple(item.utxoId.slice(0, -2)),
+        }}
       />
-      <Text className="text-xs text-secondary flex items-center gap-2">
-        <Icon icon={IconCoins} size={14} />{' '}
-        {fuelAsset?.decimals ? (
-          <>
-            {bn(item.amount).format({
-              precision: isMobile ? 3 : undefined,
-              units: fuelAsset.decimals,
-            })}{' '}
-          </>
-        ) : (
-          formatZeroUnits(item.amount || '')
-        )}
-      </Text>
+      <Amount
+        hideSymbol
+        hideIcon
+        assetId={assetId}
+        value={bn(item.amount)}
+        className="text-xs"
+        iconSize={14}
+      />
     </Box>
   );
 }

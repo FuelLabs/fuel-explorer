@@ -11,25 +11,27 @@ import { tai64toDate } from '../utils/dayjs';
 import { Domain } from '../utils/domain';
 
 import { InputDomain } from './Input';
+import { OperationDomain } from './Operation';
 import { OutputDomain } from './Output';
 
 export class TransactionDomain extends Domain<TransactionItemFragment> {
   static createResolvers() {
     const domain = new TransactionDomain();
     return {
-      ...domain.createResolver('title', 'getTitle'),
-      ...domain.createResolver('time'),
-      ...domain.createResolver('blockHeight'),
-      ...domain.createResolver('statusType'),
-      ...domain.createResolver('totalAssets'),
-      ...domain.createResolver('totalOperations'),
-      ...domain.createResolver('totalAccounts'),
-      ...domain.createResolver('gasUsed'),
-      ...domain.createResolver('fee', 'getFee'),
       ...domain.createResolver('accountsInvolved'),
+      ...domain.createResolver('blockHeight'),
+      ...domain.createResolver('fee', 'getFee'),
+      ...domain.createResolver('gasUsed'),
       ...domain.createResolver('groupedInputs'),
       ...domain.createResolver('groupedOutputs'),
       ...domain.createResolver('isPredicate'),
+      ...domain.createResolver('operations', 'getOperations'),
+      ...domain.createResolver('statusType'),
+      ...domain.createResolver('time'),
+      ...domain.createResolver('title', 'getTitle'),
+      ...domain.createResolver('totalAccounts'),
+      ...domain.createResolver('totalAssets'),
+      ...domain.createResolver('totalOperations'),
     };
   }
 
@@ -145,6 +147,11 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
         return !!input.predicate && input.predicate !== '0x';
       }
     });
+  }
+
+  async getOperations() {
+    const domain = new OperationDomain();
+    return domain.operationsFromTransaction(this.source);
   }
 
   private _getAccounts() {

@@ -1,11 +1,20 @@
-import { ContractLayout } from '~/systems/Contract/components/ContractLayout';
+import { ContractHeader } from '~/systems/Contract/components/ContractHeader';
+import type { ContractRouteParams } from '~/systems/Contract/types';
 
 export default function Layout({
   children,
   params: { id },
 }: {
   children: React.ReactNode;
-  params: { id: string };
+  params: ContractRouteParams;
 }) {
-  return <ContractLayout id={id}>{children}</ContractLayout>;
+  return (
+    <>
+      <ContractHeader id={id} />
+      {children}
+    </>
+  );
 }
+
+export const dynamic = 'force-static';
+export const revalidate = Infinity;

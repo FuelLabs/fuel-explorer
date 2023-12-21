@@ -11,6 +11,5 @@ type TxScreenProps = {
 
 export function TxScreenAdvanced({ transaction: tx }: TxScreenProps) {
   if (!tx) return null;
-
   return <CodeBlock value={tx} type="json" />;
 }

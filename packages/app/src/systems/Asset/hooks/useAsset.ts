@@ -1,3 +1,4 @@
+'use client';
 import { useMemo } from 'react';
 import { findAssetById } from '~/systems/Core/utils/asset';
 

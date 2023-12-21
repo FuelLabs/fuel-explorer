@@ -11,12 +11,11 @@ import {
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
+import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
 import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
-import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -33,9 +32,6 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
     const { isMobile } = useBreakpoints();
-    const asset = useAsset(assetId);
-    const fuelAsset = useFuelAsset(asset);
-    if (!asset) return null;
 
     return (
       <Collapsible {...props}>
@@ -48,7 +44,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
               linkProps={{
                 as: NextLink,
-                href: `/account/${input.owner}/assets`,
+                href: Routes.accountAssets(input.owner!),
               }}
             />
           </AssetItem>
@@ -57,19 +53,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
             https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
           */}
           {amount && (
-            <Text className="text-secondary hidden tablet:block">
-              {fuelAsset?.decimals ? (
-                <>
-                  {bn(amount).format({
-                    precision: isMobile ? 3 : undefined,
-                    units: fuelAsset.decimals,
-                  })}{' '}
-                </>
-              ) : (
-                formatZeroUnits(amount)
-              )}
-              {asset.symbol}
-            </Text>
+            <Amount hideIcon hideSymbol assetId={assetId} value={bn(amount)} />
           )}
         </Collapsible.Header>
         <Utxos items={inputs satisfies UtxoItem[]} assetId={assetId} />
@@ -95,14 +79,14 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
               <Address
                 value={sender}
                 prefix="Sender:"
-                linkProps={{ as: NextLink, href: `/account/${sender}/assets` }}
+                linkProps={{ as: NextLink, href: Routes.accountAssets(sender) }}
               />
               <Address
                 value={recipient}
                 prefix="Recipient:"
                 linkProps={{
                   as: NextLink,
-                  href: `/account/${recipient}/assets`,
+                  href: Routes.accountAssets(recipient),
                 }}
               />
             </VStack>

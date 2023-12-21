@@ -1,22 +1,17 @@
 import { Suspense } from 'react';
 import { ContractCode } from '~/systems/Contract/screens/ContractCode';
-import { CodeBlockSkeleton } from '~/systems/Core/components/CodeBlock/CodeBlockSkeleton';
+import type { ContractRouteProps } from '~/systems/Contract/types';
+import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
-type ContractProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function ContractCodePage({
+export default async function ContractPage({
   params: { id },
-}: ContractProps) {
+}: ContractRouteProps) {
   return (
-    <Suspense fallback={<CodeBlockSkeleton />}>
+    <Suspense fallback={<CodeBlock isLoading value="_" />}>
       <ContractCode id={id} />
     </Suspense>
   );
 }
 
-// Revalidate cache every 10 seconds
-export const revalidate = 10;
+export const dynamic = 'force-static';
+export const revalidate = Infinity;
