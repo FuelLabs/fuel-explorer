@@ -15,7 +15,7 @@
   "dependencies": {
     "@faker-js/faker": "8.3.1",
     "@fuel-explorer/graphql": "workspace:*",
-    "@fuel-ts/math": "next",
+    "@fuel-ts/math": "rc-salamander",
     "@fuel-wallet/sdk": "0.13.10",
     "@fuels/assets": "0.1.4",
     "@fuels/ui": "workspace:*",
@@ -25,7 +25,7 @@
     "csstype": "3.1.3",
     "dayjs": "1.11.10",
     "framer-motion": "10.16.16",
-    "fuels": "next",
+    "fuels": "rc-salamander",
     "geist": "1.2.0",
     "graphql": ">=16.8.1",
     "graphql-request": "6.1.0",

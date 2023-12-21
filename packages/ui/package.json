@@ -54,8 +54,8 @@
     "generate:defs": "node scripts/create-defs.mjs"
   },
   "dependencies": {
-    "@fuel-ts/address": "next",
-    "@fuel-ts/math": "next",
+    "@fuel-ts/address": "rc-salamander",
+    "@fuel-ts/math": "rc-salamander",
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",

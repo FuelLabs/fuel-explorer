@@ -21,7 +21,7 @@
     "prepare": "pnpm build"
   },
   "dependencies": {
-    "@fuel-ts/math": "next",
+    "@fuel-ts/math": "rc-salamander",
     "@graphql-tools/delegate": "^10.0.3",
     "@graphql-tools/schema": "^10.0.2",
     "@graphql-tools/stitch": "^9.0.3",
@@ -34,7 +34,7 @@
     "esbuild": "0.19.8",
     "ethers": "6.9.0",
     "express": "5.0.0-beta.1",
-    "fuels": "next",
+    "fuels": "rc-salamander",
     "get-port": "7.0.0",
     "graphql": ">=16.8.1",
     "graphql-http": "^1.22.0",

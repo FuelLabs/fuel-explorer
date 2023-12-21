@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ChainInfo } from 'fuels';
 import type { GraphQLField, GraphQLResolveInfo } from 'graphql/type';
 
-import type { ChainInfoResult } from './chainInfo';
 import { getClient } from './client';
 
 export type Context = {
   url: string;
-  chainInfo: ChainInfoResult;
+  chainInfo: ChainInfo;
 };
 
 export class Domain<S = any, A = any> {

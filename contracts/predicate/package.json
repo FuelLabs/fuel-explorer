@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "dotenv": "16.3.1",
-    "fuels": "next",
+    "fuels": "rc-salamander",
     "vitest": "1.0.2",
     "tsx": "4.6.2"
   }
