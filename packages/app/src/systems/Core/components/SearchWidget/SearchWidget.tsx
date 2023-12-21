@@ -103,7 +103,7 @@ export const SearchWidget = ({
                   closed: { scaleX: '0%' },
                 }}
               >
-                <SearchForm className={classes.input()} />
+                <SearchForm className={classes.input()} autoFocus={true} />
               </motion.div>
             </>
           )}
