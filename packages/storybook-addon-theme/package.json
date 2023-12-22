@@ -42,16 +42,16 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@storybook/addons": "^7.6.4",
-    "@storybook/components": "^7.6.4",
-    "@storybook/core-events": "^7.6.4",
-    "@storybook/manager-api": "7.6.4",
-    "@storybook/theming": "^7.6.4",
+    "@storybook/addons": "^7.6.6",
+    "@storybook/components": "^7.6.6",
+    "@storybook/core-events": "^7.6.6",
+    "@storybook/manager-api": "7.6.6",
+    "@storybook/theming": "^7.6.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.42",
-    "@types/react-dom": "^18.2.17"
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18"
   }
 }
