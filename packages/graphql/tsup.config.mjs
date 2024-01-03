@@ -15,7 +15,7 @@ export default defineConfig((options) => ({
   entry: { index: 'src/bin.ts' },
   async onSuccess() {
     const port = await getPort({ port: 4444 });
-    const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {
+    const cmd = execa('node', ['--loader', 'tsx/esm', './dist/index.js'], {
       stdio: 'inherit',
       cleanup: true,
       env: {
