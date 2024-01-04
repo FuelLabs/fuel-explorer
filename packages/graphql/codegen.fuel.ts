@@ -1,5 +1,7 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
+console.log(`process.env.FUEL_PROVIDER_URL`, process.env.FUEL_PROVIDER_URL);
+
 const config: CodegenConfig = {
   generates: {
     './src/schemas/fuelcore.graphql': {
