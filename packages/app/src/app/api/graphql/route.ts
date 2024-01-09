@@ -2,7 +2,7 @@ import { createExecutor, createSchema } from '@fuel-explorer/graphql';
 import { ContextDomain } from '@fuel-explorer/graphql/src/domains/Context';
 import { createYoga } from 'graphql-yoga';
 
-const url = process.env.FUEL_PROVIDER_URL!;
+const url = process.env.FUEL_PROVIDER_BETA5!;
 const executor = createExecutor(async ({ body }) => {
   return fetch(url, {
     body,

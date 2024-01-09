@@ -21,8 +21,8 @@ export default defineConfig((options) => ({
       env: {
         SERVER_PORT: port,
         WATCH: Boolean(options.watch),
-        FUEL_PROVIDER_URL:
-          process.env.FUEL_PROVIDER_URL ||
+        FUEL_PROVIDER_BETA5:
+          process.env.FUEL_PROVIDER_BETA5 ||
           'https://beta-5.fuel.network/graphql',
       },
     });
