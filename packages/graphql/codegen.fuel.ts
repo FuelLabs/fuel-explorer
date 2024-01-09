@@ -6,7 +6,7 @@ const config: CodegenConfig = {
   generates: {
     './src/schemas/fuelcore.graphql': {
       schema:
-        process.env.FUEL_PROVIDER_URL || 'https://beta-5.swayswap.io/graphql',
+        process.env.FUEL_PROVIDER_URL || 'https://beta-5.fuel.network/graphql',
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,
