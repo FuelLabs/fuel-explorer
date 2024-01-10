@@ -6,13 +6,17 @@ import { search } from '~/systems/Core/actions/search';
 import { SearchInput } from '../SearchInput/SearchInput';
 import { SearchContext } from '../SearchWidget/SearchWidget';
 
+type SearchFormProps = {
+  className: string;
+  autoFocus?: boolean;
+  alwaysDisplayActionButtons?: boolean;
+};
+
 export function SearchForm({
   className,
   autoFocus,
-}: {
-  className: string;
-  autoFocus?: boolean;
-}) {
+  alwaysDisplayActionButtons,
+}: SearchFormProps) {
   const [results, action] = useFormState(
     (_: SearchResult | null, formData: FormData) => {
       return search({ query: formData.get('query')?.toString() || '' });
@@ -26,8 +30,9 @@ export function SearchForm({
       <SearchInput
         className={className}
         searchResult={results}
-        onClear={onClear}
         autoFocus={autoFocus}
+        alwaysDisplayActionButtons={alwaysDisplayActionButtons}
+        onClear={onClear}
       />
     </form>
   );

@@ -153,6 +153,7 @@ type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
   onSubmit?: (value: string) => void;
   onClear?: (value: string) => void;
   searchResult?: Maybe<SearchResult>;
+  alwaysDisplayActionButtons?: boolean;
 };
 
 export function SearchInput({
@@ -162,6 +163,7 @@ export function SearchInput({
   autoFocus,
   placeholder = 'Search here...',
   searchResult,
+  alwaysDisplayActionButtons,
   ...props
 }: SearchInputProps) {
   const [value, setValue] = useState<string>(initialValue as string);
@@ -221,28 +223,30 @@ export function SearchInput({
             value={value}
             onChange={handleChange}
           />
-          <Input.Slot className="mx-1">
-            <IconButton
-              aria-label="Clear"
-              icon={IconX}
-              iconColor="text-icon"
-              variant="link"
-              className="!ml-0 tablet:ml-2"
-              onClick={handleClear}
-            />
-            <Tooltip content="Submit">
+          {(alwaysDisplayActionButtons || !!value.length) && (
+            <Input.Slot className="mx-1">
               <IconButton
-                type="submit"
-                aria-label="Submit"
-                icon={IconCheck}
-                iconColor="text-brand"
+                aria-label="Clear"
+                icon={IconX}
+                iconColor="text-icon"
                 variant="link"
                 className="!ml-0 tablet:ml-2"
-                isLoading={pending}
-                onClick={handleSubmit}
+                onClick={handleClear}
               />
-            </Tooltip>
-          </Input.Slot>
+              <Tooltip content="Submit">
+                <IconButton
+                  type="submit"
+                  aria-label="Submit"
+                  icon={IconCheck}
+                  iconColor="text-brand"
+                  variant="link"
+                  className="!ml-0 tablet:ml-2"
+                  isLoading={pending}
+                  onClick={handleSubmit}
+                />
+              </Tooltip>
+            </Input.Slot>
+          )}
         </Input>
       </Focus.ArrowNavigator>
       <SearchResultDropdown
