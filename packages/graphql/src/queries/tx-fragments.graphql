@@ -218,7 +218,6 @@ fragment TransactionItem on Transaction {
   # Transaction Data
   __typename
   gasPrice
-  gasLimit
   maturity
   txPointer
   isScript

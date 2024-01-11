@@ -4,7 +4,7 @@ FROM node:20-slim AS base
 
 # Expose the ENVs to the env of the container
 ENV PORT="${PORT}"
-ENV FUEL_PROVIDER_URL="${FUEL_PROVIDER_URL}"
+ENV FUEL_PROVIDER_BETA5="${FUEL_PROVIDER_BETA5}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 

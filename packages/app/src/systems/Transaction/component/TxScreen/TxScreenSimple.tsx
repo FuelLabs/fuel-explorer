@@ -132,17 +132,11 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           description={
             <LoadingWrapper
               isLoading={isLoading}
+              regularEl={<>Gas used: {formatZeroUnits(tx.gasUsed || '')}</>}
               loadingEl={
                 <>
                   <LoadingBox className="w-28 h-5 mt-2" />
                   <LoadingBox className="w-28 h-5 mt-1" />
-                </>
-              }
-              regularEl={
-                <>
-                  Gas used: {formatZeroUnits(tx.gasUsed || '')}
-                  <br />
-                  Gas limit: {formatZeroUnits(tx.gasLimit || '')}
                 </>
               }
             />

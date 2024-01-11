@@ -1,9 +1,6 @@
-import { getBytesCopy } from 'ethers';
 import {
-  TransactionCoder,
   bn,
   calculateTransactionFee,
-  calculateTxChargeableBytes,
   getGasUsedFromReceipts,
   processGqlReceipt,
 } from 'fuels';
@@ -104,28 +101,19 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
 
   async getFee() {
     const { source: transaction, context } = this;
-    const { gasPerByte, gasPriceFactor } =
-      context.chainInfo.consensusParameters;
-
-    const gasUsed = this._getGasUsed();
-    const transactionBytes = getBytesCopy(transaction.rawPayload);
-    const [decodedTransaction] = new TransactionCoder().decode(
-      getBytesCopy(transaction.rawPayload),
-      0,
-    );
-
-    const chargeableBytes = calculateTxChargeableBytes({
-      transactionBytes,
-      transactionWitnesses: decodedTransaction.witnesses || [],
-    });
-
+    const { consensusParameters, gasCosts } = context.chainInfo;
+    const { gasPriceFactor, gasPerByte } = consensusParameters;
+    const { rawPayload, gasUsed } = transaction;
     const { minFee: fee } = calculateTransactionFee({
+      consensusParameters: {
+        feeParams: {
+          gasPriceFactor,
+          gasPerByte,
+        },
+        gasCosts,
+      },
+      rawPayload,
       gasUsed: bn(gasUsed),
-      gasPrice: bn(transaction.gasPrice),
-      gasLimit: bn(transaction.gasLimit),
-      gasPerByte: bn(gasPerByte),
-      gasPriceFactor: bn(gasPriceFactor),
-      chargeableBytes,
     });
 
     return fee;
@@ -209,7 +197,6 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const receipts = (transaction.receipts ?? []) as any[];
     const decodedReceipts = receipts.map(processGqlReceipt);
-
     return getGasUsedFromReceipts(decodedReceipts).toString();
   }
 }
