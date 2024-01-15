@@ -334,7 +334,7 @@ function ReceiptItem({
         <Collapsible
           {...props}
           opened={opened}
-          className="py-0 gap-0"
+          className="gap-0"
           onOpenChange={setOpened}
         >
           <ReceiptHeader />
@@ -375,14 +375,11 @@ function ReceiptBadge() {
   const type = receipt?.item?.receiptType ?? 'UNKNOWN';
   const color = getBadgeColor(Boolean(hasPanic), receipt?.item);
   return (
-    <Badge
-      size="1"
-      className="ml-1 font-mono py-1"
-      variant="ghost"
-      color={color}
-    >
-      {type}
-    </Badge>
+    <div>
+      <Badge size="1" className="font-mono" variant="ghost" color={color}>
+        {type}
+      </Badge>
+    </div>
   );
 }
 
@@ -400,12 +397,12 @@ function ReceiptAmount() {
           iconSize={16}
           assetId={assetId}
           value={amount}
-          className="text-xs mt-1"
+          className="text-xs tablet:text-sm"
         />
         <Address
           iconSize={14}
           value={assetId}
-          className="text-xs font-mono"
+          className="text-xs tablet:text-sm font-mono"
           linkProps={{
             as: NextLink,
             href: `/contract/${contract}/assets`,
@@ -433,7 +430,7 @@ function ReceiptHeader() {
         <VStack className="flex-1 gap-[2px]">
           {param1 && (
             <Code
-              className="text-xs font-mono bg-transparent text-muted p-0"
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
               color="gray"
             >
               Method: {bn(param1).toHex()}
@@ -443,7 +440,7 @@ function ReceiptHeader() {
             <Address
               iconSize={14}
               value={contract}
-              className="text-xs font-mono"
+              className="text-xs tablet:text-sm font-mono"
               prefix="Contract:"
               linkProps={{
                 as: NextLink,
@@ -468,12 +465,12 @@ function ReceiptHeader() {
                 iconSize={16}
                 assetId={receipt.contract?.id}
                 value={bn(receipt.val)}
-                className="text-xs mt-1"
+                className="text-xs tablet:text-sm"
               />
             )}
             <Address
               value={receipt.contract?.id}
-              className="text-xs font-mono"
+              className="text-xs tablet:text-sm font-mono"
               prefix="Asset:"
               linkProps={{
                 as: NextLink,
@@ -497,11 +494,11 @@ function ReceiptHeader() {
               iconSize={16}
               assetId={assetId}
               value={amount}
-              className="text-xs mt-1"
+              className="text-xs tablet:text-sm"
             />
             <Address
               value={receipt.toAddress}
-              className="text-xs font-mono"
+              className="text-xs tablet:text-sm font-mono"
               prefix="To:"
               linkProps={{
                 as: NextLink,
@@ -522,7 +519,7 @@ function ReceiptHeader() {
           <VStack className="flex-1 gap-[2px]">
             <Address
               value={receipt.sender}
-              className="text-xs font-mono"
+              className="text-xs tablet:text-sm font-mono"
               prefix="To:"
               linkProps={{
                 as: NextLink,
@@ -531,7 +528,7 @@ function ReceiptHeader() {
             />
             <Address
               value={receipt.recipient}
-              className="text-xs font-mono"
+              className="text-xs tablet:text-sm font-mono"
               prefix="From:"
               linkProps={{
                 as: NextLink,
@@ -546,7 +543,7 @@ function ReceiptHeader() {
 
   return (
     <Collapsible.Header className={classes.header()}>
-      <div className="flex-1">
+      <div>
         <ReceiptBadge />
       </div>
       <ReceiptAmount />
@@ -557,14 +554,14 @@ function ReceiptHeader() {
 const styles = tv({
   slots: {
     icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
-    utxos: 'bg-gray-3 mx-3 mb-3 p-0 rounded',
+    utxos: 'bg-gray-3 mx-3 my-3 p-0 rounded',
     lines: [
       'relative flex-1 border-t border-b border-border',
       'before:h-[1px] before:absolute before:top-1/2 before:left-0',
       'before:w-full before:bg-border before:content-[""]',
     ],
     receiptRow: 'peer relative',
-    header: 'group px-3 pr-4 py-0 h-16',
+    header: 'group min-h-[42px] gap-2 tablet:gap-4',
     operation: [
       'relative flex flex-col gap-3',
       '[&[data-nested=true]]:before:absolute',
