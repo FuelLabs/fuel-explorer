@@ -103,8 +103,8 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const { source: transaction, context } = this;
     const { consensusParameters, gasCosts } = context.chainInfo;
     const { gasPriceFactor, gasPerByte } = consensusParameters;
-    const { rawPayload, gasUsed } = transaction;
-    const { minFee: fee } = calculateTransactionFee({
+    const { rawPayload } = transaction;
+    const { fee } = calculateTransactionFee({
       consensusParameters: {
         feeParams: {
           gasPriceFactor,
@@ -113,7 +113,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
         gasCosts,
       },
       rawPayload,
-      gasUsed: bn(gasUsed),
+      gasUsed: bn(this._getGasUsed()),
     });
 
     return fee;
