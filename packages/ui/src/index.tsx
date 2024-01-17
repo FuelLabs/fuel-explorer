@@ -40,6 +40,8 @@ export * from './components/InputPassword';
 export * from './components/Inset';
 export * from './components/Link';
 export * from './components/List';
+export * from './components/LoadingBox';
+export * from './components/LoadingWrapper';
 export * from './components/Nav';
 export * from './components/Popover';
 export * from './components/RadioGroup';

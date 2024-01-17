@@ -20,3 +20,15 @@ export const Loading: Story = {
     <IconButton isLoading aria-label="Settings" icon={IconSettings} />
   ),
 };
+
+export const Disabled: Story = {
+  render: () => (
+    <IconButton disabled aria-label="Settings" icon={IconSettings} />
+  ),
+};
+
+export const ReadOnly: Story = {
+  render: () => (
+    <IconButton aria-readonly aria-label="Settings" icon={IconSettings} />
+  ),
+};

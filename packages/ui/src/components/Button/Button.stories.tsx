@@ -75,3 +75,19 @@ export const Loading: Story = {
 export const onClick: Story = {
   render: () => <Button onClick={action('onClick')}>Click here</Button>,
 };
+
+export const Disabled: Story = {
+  render: () => (
+    <Button disabled leftIcon={IconBookmark}>
+      Bookmark
+    </Button>
+  ),
+};
+
+export const ReadOnly: Story = {
+  render: () => (
+    <Button aria-readonly leftIcon={IconBookmark}>
+      Bookmark
+    </Button>
+  ),
+};

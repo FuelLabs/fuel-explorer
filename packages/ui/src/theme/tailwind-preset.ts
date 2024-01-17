@@ -7,6 +7,7 @@ import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
 
 import { animation, keyframes } from './animations';
+import { breakpoints } from './breakpoints';
 
 function getComponents() {
   return globbySync(['**'], {
@@ -72,6 +73,10 @@ const preset: Config = {
     space: tailwindDefaultTheme.space,
     spacing: tailwindDefaultTheme.spacing,
     extend: {
+      fontFamily: {
+        sans: ['var(--font-geist-sans)'],
+        mono: ['var(--font-geist-mono)'],
+      },
       keyframes,
       animation,
       width: tailwindDefaultTheme.maxWidth,
@@ -87,9 +92,10 @@ const preset: Config = {
         ...refColorVariablesAsObj(),
       },
       screens: {
-        tablet: '640px',
-        laptop: '960px',
-        desktop: '1280px',
+        mobile: `${breakpoints.mobile}px`,
+        tablet: `${breakpoints.tablet}px`,
+        laptop: `${breakpoints.laptop}px`,
+        desktop: `${breakpoints.desktop}px`,
       },
     },
   },

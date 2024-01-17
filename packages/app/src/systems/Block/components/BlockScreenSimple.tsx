@@ -1,64 +1,78 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { Card, Flex, VStack, Grid, Address } from '@fuels/ui';
-import { IconChecklist } from '@tabler/icons-react';
-import { bn } from 'fuels';
+import {
+  VStack,
+  Grid,
+  Address,
+  Icon,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
+import { IconListDetails } from '@tabler/icons-react';
 import NextLink from 'next/link';
+import { Routes } from '~/routes';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
-import { TxCard } from '~/systems/Transaction/component/TxCard/TxCard';
+import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
+import { TxList } from '~/systems/Transactions/components/TxList/TxList';
+import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
 type BlockScreenSimpleProps = {
   block?: Maybe<BlockItemFragment>;
-  producer: Maybe<string>;
+  producer?: Maybe<string>;
+  isLoading?: boolean;
 };
 
-export function BlockScreenSimple({ block, producer }: BlockScreenSimpleProps) {
+export function BlockScreenSimple({
+  block,
+  producer,
+  isLoading,
+}: BlockScreenSimpleProps) {
+  const txList = (block?.transactions.map((v) => ({ node: v })) as any) || [];
   return (
-    <VStack className="px-4 desktop:px-0">
-      <Grid
-        className="my-6 grid-rows-4 tablet:grid-rows-1 tablet:grid-cols-4"
-        gap="3"
-      >
+    <VStack>
+      <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">
         <CardInfo name="Producer" className="flex-1">
           <Address
             value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
-          >
-            <Address.Link as={NextLink} href={`/account/${producer}`}>
-              View Account
-            </Address.Link>
-          </Address>
+            linkProps={{ as: NextLink, href: Routes.accountAssets(producer!) }}
+          />
         </CardInfo>
         <CardInfo
           name="Created"
-          description={block?.time?.full}
           className="flex-1"
+          description={
+            <LoadingWrapper
+              isLoading={isLoading}
+              loadingEl={<LoadingBox className="w-40 h-5 mt-1" />}
+              regularEl={block?.time?.full}
+            />
+          }
         >
-          {block?.time?.fromNow}
-        </CardInfo>
-        <CardInfo name="Gas spent (gwei)" className="flex-1">
-          {bn(block?.totalGasUsed).format()}
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={<LoadingBox className="w-24 h-6" />}
+            regularEl={block?.time?.fromNow}
+          />
         </CardInfo>
         <CardInfo name="# of transactions" className="flex-1">
-          {block?.header.transactionsCount}
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={<LoadingBox className="w-12 h-6" />}
+            regularEl={block?.header.transactionsCount}
+          />
         </CardInfo>
       </Grid>
-      <Flex className="border-b border-border pb-4">
-        <Card>
-          <Card.Body>
-            <Flex>
-              <IconChecklist /> Transactions
-            </Flex>
-          </Card.Body>
-        </Card>
-      </Flex>
-      <Grid
-        className="grid-cols-1 tablet:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3"
-        gap="6"
-      >
-        {block?.transactions.map((transaction) => (
-          <TxCard key={transaction.id} transaction={transaction} />
-        ))}
-      </Grid>
+      <PageTitle size="3" icon={<Icon icon={IconListDetails} />}>
+        Transactions
+      </PageTitle>
+      {isLoading ? (
+        <TxListLoader numberOfTxs={4} />
+      ) : (
+        <TxList hidePagination transactions={txList} />
+      )}
     </VStack>
   );
 }

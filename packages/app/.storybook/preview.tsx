@@ -1,4 +1,4 @@
-import '@fontsource-variable/inter/slnt.css';
+import './fonts.css';
 import '@fuels/ui/styles.css';
 import '../src/app/globals.css';
 

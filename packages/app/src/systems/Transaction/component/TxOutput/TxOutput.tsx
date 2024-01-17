@@ -1,81 +1,88 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
-import type { GroupedOutput } from '@fuel-explorer/graphql';
+import type {
+  GroupedOutput,
+  TransactionItemFragment,
+} from '@fuel-explorer/graphql';
 import {
   Address,
   Card,
   HStack,
+  HelperIcon,
+  Icon,
   Text,
   VStack,
   createComponent,
   cx,
-  useBreakpoints,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
+import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
-import Image from 'next/image';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { Routes } from '~/routes';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
-const ICON_SIZE = 36;
+function getTooltipText(tx: TransactionItemFragment, output: GroupedOutput) {
+  if (tx.isMint) {
+    return 'This is the amount minted in the transaction';
+  }
+  if (output.type === GroupedOutputType.ChangeOutput) {
+    return 'This is the amount remaining after transaction';
+  }
+  return 'This is the amount spent in the transaction';
+}
 
 export type TxOutputProps = CardProps & {
+  tx: TransactionItemFragment;
   output: GroupedOutput;
-  title?: string;
 };
 
 const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputCoin',
-  render: (_, { output, title, ...props }) => {
+  render: (_, { tx, output, ...props }) => {
     const classes = styles();
-    const { isMobile } = useBreakpoints();
-
     if (!output.assetId) return null;
     const assetId = output.assetId;
     const amount = output.totalAmount;
-    const asset = useAsset(assetId);
+    const isReceiving =
+      output.type === GroupedOutputType.ChangeOutput ||
+      (output.outputs?.length === 1 &&
+        output.outputs[0]?.__typename === 'CoinOutput');
 
-    if (!asset) return null;
     return (
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
-          <HStack align="center">
-            {asset.icon ? (
-              <Image
-                src={asset.icon as string}
-                width={ICON_SIZE}
-                height={ICON_SIZE}
-                alt={asset.name}
-              />
-            ) : (
-              <TxIcon type="Mint" status="Submitted" />
-            )}
-            <VStack gap="0">
-              <Text className="flex items-center gap-2 text-md font-medium">
-                {title || asset.name}
-                {asset.symbol && (
-                  <Text className="text-muted text-sm">({asset.symbol})</Text>
-                )}
-                <Address value={output.assetId} fixed="b256" />
-              </Text>
-              <HStack>
-                <Address prefix="To:" value={output.to || ''}>
-                  <Address.Link as={NextLink} href={`/account/${output.to}`}>
-                    View Account
-                  </Address.Link>
-                </Address>
-              </HStack>
-            </VStack>
-          </HStack>
-          <HStack align="center">
+          <AssetItem assetId={assetId}>
+            <Address
+              prefix="To:"
+              value={output.to || ''}
+              linkProps={{
+                as: NextLink,
+                href: Routes.accountAssets(output.to!),
+              }}
+            />
+          </AssetItem>
+          {/*
+            I'm just hidding this until we get the output/input design merged 
+            https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
+          */}
+          <HStack className="hidden tablet:flex items-center gap-2">
+            <Icon
+              icon={isReceiving ? IconArrowUp : IconArrowDown}
+              className={isReceiving ? 'text-success' : 'text-error'}
+            />
             {amount && (
-              <Text className="text-secondary">
-                {bn(amount).format(isMobile ? { precision: 3 } : undefined)}{' '}
-                {asset.symbol}
-              </Text>
+              <Amount
+                hideSymbol
+                hideIcon
+                assetId={assetId}
+                value={bn(amount)}
+              />
             )}
+            <HelperIcon message={getTooltipText(tx, output)} />
           </HStack>
         </Card.Header>
       </Card>
@@ -119,11 +126,14 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
             <TxIcon status="Success" type="Contract" />
             <VStack gap="1">
               <Text className="font-medium">Contract Created</Text>
-              <Address prefix="Id:" value={contractId}>
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
-                  View Contract
-                </Address.Link>
-              </Address>
+              <Address
+                prefix="Id:"
+                value={contractId}
+                linkProps={{
+                  as: NextLink,
+                  href: Routes.contractAssets(contractId),
+                }}
+              />
             </VStack>
           </HStack>
         </Card.Header>
@@ -145,24 +155,22 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
           <HStack align="center" gap="1" className="flex-1 justify-between">
             <Text>Message</Text>
             <VStack gap="1" className="mr-2">
-              <Address value={recipient || ''} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${recipient}`}
-                  className="w-[60px] text-right"
-                >
-                  Recipient
-                </Address.Link>
-              </Address>
-              <Address value={output.to || ''} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${output.to}`}
-                  className="w-[60px] text-right"
-                >
-                  To
-                </Address.Link>
-              </Address>
+              <Address
+                prefix="From: "
+                value={recipient || ''}
+                linkProps={{
+                  as: NextLink,
+                  href: Routes.accountAssets(recipient!),
+                }}
+              />
+              <Address
+                prefix="To: "
+                value={output.to || ''}
+                linkProps={{
+                  as: NextLink,
+                  href: Routes.accountAssets(output.to!),
+                }}
+              />
             </VStack>
           </HStack>
         </Card.Header>
@@ -172,14 +180,11 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
 });
 
 export function TxOutput({ output, ...props }: TxOutputProps) {
-  if (output.type === GroupedOutputType.CoinOutput) {
+  if (
+    output.type === GroupedOutputType.CoinOutput ||
+    output.type === GroupedOutputType.ChangeOutput
+  ) {
     return <TxOutputCoin output={output} {...props} />;
-  }
-  if (output.type === GroupedOutputType.VariableOutput) {
-    return <TxOutputCoin output={output} {...props} title="Variable Output" />;
-  }
-  if (output.type === GroupedOutputType.ChangeOutput) {
-    return <TxOutputCoin output={output} {...props} title="Change Output" />;
   }
   if (output.type === GroupedOutputType.ContractOutput) {
     return <TxOutputContract output={output} {...props} />;

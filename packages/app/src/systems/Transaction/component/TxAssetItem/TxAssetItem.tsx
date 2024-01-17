@@ -1,11 +1,12 @@
 import type { CardProps } from '@fuels/ui';
-import { Text, Card, EntityItem, HStack, cx } from '@fuels/ui';
+import { Text, Card, EntityItem, HStack, cx, useBreakpoints } from '@fuels/ui';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import type { BN } from 'fuels';
 import Image from 'next/image';
-import { useMemo } from 'react';
-import { findAssetById } from '~/systems/Core/utils/asset';
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
 import { TxIcon } from '../TxIcon/TxIcon';
 
@@ -24,9 +25,11 @@ export function TxAssetItem({
   amountOut,
   ...props
 }: TxAssetItemProps) {
-  const asset = useMemo(() => findAssetById(assetId), [assetId]);
-  const assetName = asset?.name ?? 'Unknown';
-  const assetSymbol = asset?.symbol ?? null;
+  const asset = useAsset(assetId);
+  const { isMobile } = useBreakpoints();
+  const fuelAsset = useFuelAsset(asset);
+  if (!asset) return null;
+
   return (
     <Card {...props} className={cx('gap-2 pb-2', className)}>
       <EntityItem className="px-4 pb-4 border-b border-border">
@@ -42,7 +45,7 @@ export function TxAssetItem({
             <TxIcon type="Mint" status="Submitted" />
           )}
         </EntityItem.Slot>
-        <EntityItem.Info id={assetId} title={assetName} />
+        <EntityItem.Info id={assetId} title={asset.name} />
       </EntityItem>
       <HStack className="px-4 justify-between">
         <Text
@@ -50,14 +53,34 @@ export function TxAssetItem({
           iconColor="text-success"
           leftIcon={IconArrowUp}
         >
-          {bn(amountIn).format()} {assetSymbol}
+          {fuelAsset?.decimals ? (
+            <>
+              {bn(amountIn).format({
+                precision: isMobile ? 3 : undefined,
+                units: fuelAsset.decimals,
+              })}{' '}
+            </>
+          ) : (
+            formatZeroUnits(amountIn)
+          )}
+          {asset.symbol}
         </Text>
         <Text
           className="text-sm"
           iconColor="text-error"
           leftIcon={IconArrowDown}
         >
-          {bn(amountOut).format()} {assetSymbol}
+          {fuelAsset?.decimals ? (
+            <>
+              {bn(amountOut).format({
+                precision: isMobile ? 3 : undefined,
+                units: fuelAsset.decimals,
+              })}{' '}
+            </>
+          ) : (
+            formatZeroUnits(amountOut)
+          )}
+          {asset.symbol}
         </Text>
       </HStack>
     </Card>

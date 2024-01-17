@@ -1,9 +1,11 @@
+import { redirects } from './src/redirects.mjs';
 const externals = [
   'bcryptjs',
   'ws',
   'isomorphic-ws',
   'node-fetch',
   '@whatwg/node-fetch',
+  'graphql',
   '@graphql-tools/delegate',
   '@graphql-tools/load',
   '@graphql-tools/schema',
@@ -38,6 +40,7 @@ const config = {
         destination: '/ui/index.html',
         permanent: false,
       },
+      ...redirects,
     ];
   },
   webpack: (config) => {

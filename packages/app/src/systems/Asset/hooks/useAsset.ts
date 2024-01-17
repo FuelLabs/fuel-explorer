@@ -1,3 +1,4 @@
+'use client';
 import { useMemo } from 'react';
 import { findAssetById } from '~/systems/Core/utils/asset';
 
@@ -8,8 +9,9 @@ export function useAsset(assetId?: string) {
     return {
       assetId,
       name: found?.name ?? 'Unknown Asset',
-      symbol: found?.symbol ?? null,
-      icon: found?.icon ?? null,
+      symbol: found?.symbol || '',
+      icon: found?.icon || '',
+      networks: found?.networks ?? [],
     };
   }, [assetId]);
 }

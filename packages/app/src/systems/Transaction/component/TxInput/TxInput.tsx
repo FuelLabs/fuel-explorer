@@ -1,28 +1,24 @@
 import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
 import {
   Address,
-  Card,
-  EntityItem,
   HStack,
   Collapsible,
   Text,
   VStack,
   createComponent,
-  cx,
   useBreakpoints,
+  Box,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
-import Image from 'next/image';
 import NextLink from 'next/link';
-import { tv } from 'tailwind-variants';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { Routes } from '~/routes';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
 import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
 
 import { TxIcon } from '../TxIcon/TxIcon';
-
-const ICON_SIZE = 36;
 
 export type TxInputProps = CardProps & {
   input: GroupedInput;
@@ -36,88 +32,36 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
     const assetId = input.assetId;
     const amount = input.totalAmount;
     const inputs = input.inputs as InputCoin[];
-    const asset = useAsset(assetId);
     const { isMobile } = useBreakpoints();
 
-    if (!asset) return null;
     return (
       <Collapsible {...props}>
-        <Collapsible.Header>
-          {asset.icon ? (
-            <Image
-              src={asset.icon as string}
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              alt={asset.name}
-            />
-          ) : (
-            <TxIcon type="Mint" status="Submitted" />
-          )}
-          <VStack gap="0" className="flex-1">
-            <Text className="flex items-center gap-2 text-md font-medium">
-              {asset.name}
-              {asset.symbol && (
-                <Text className="ml-2 text-muted text-sm">
-                  ({asset.symbol})
-                </Text>
-              )}
-              <Address
-                value={assetId}
-                fixed="b256"
-                addressOpts={
-                  isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
-                }
-              />
-            </Text>
+        <Collapsible.Header className="gap-2 tablet:gap-4">
+          <AssetItem assetId={assetId} className="flex-1">
             <Address
               prefix="From:"
               value={input.owner || ''}
               className="text-white"
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
-            >
-              <Address.Link as={NextLink} href={`/account/${input.owner}`}>
-                View Account
-              </Address.Link>
-            </Address>
-          </VStack>
+              linkProps={{
+                as: NextLink,
+                href: Routes.accountAssets(input.owner!),
+              }}
+            />
+          </AssetItem>
           {amount && (
-            <Text className="text-secondary">
-              {bn(amount).format({ precision: isMobile ? 3 : undefined })}{' '}
-              {asset.symbol}
-            </Text>
+            <Box className="ml-14 tablet:ml-0">
+              <Amount
+                hideIcon
+                hideSymbol
+                assetId={assetId}
+                value={bn(amount)}
+              />
+            </Box>
           )}
         </Collapsible.Header>
         <Utxos items={inputs satisfies UtxoItem[]} assetId={assetId} />
       </Collapsible>
-    );
-  },
-});
-
-const TxInputContract = createComponent<TxInputProps, typeof Card>({
-  id: 'TxInputContract',
-  render: (_, { input, ...props }) => {
-    const classes = styles();
-
-    if (!input.contractId) return null;
-    const contractId = input.contractId;
-
-    return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header className={classes.header()}>
-          <EntityItem>
-            <EntityItem.Slot>
-              <TxIcon status="Submitted" type="Contract" />
-            </EntityItem.Slot>
-            <EntityItem.Info title="Contract Input">
-              <Address value={contractId} prefix="Id:">
-                <Address.Link as={NextLink} href={`/contract/${contractId}`}>
-                  View Contract
-                </Address.Link>
-              </Address>
-            </EntityItem.Info>
-          </EntityItem>
-        </Card.Header>
-      </Card>
     );
   },
 });
@@ -133,27 +77,22 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
       <Collapsible {...props}>
         <Collapsible.Header>
           <TxIcon type="Message" status="Submitted" />
-          <HStack align="center" gap="1" className="flex-1">
-            <Text>Message</Text>
-            <VStack gap="1" className="ml-4">
-              <Address value={sender} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${sender}`}
-                  className="w-[60px]"
-                >
-                  Sender
-                </Address.Link>
-              </Address>
-              <Address value={recipient} linkPos="left">
-                <Address.Link
-                  as={NextLink}
-                  href={`/account/${recipient}`}
-                  className="w-[60px]"
-                >
-                  Recipient
-                </Address.Link>
-              </Address>
+          <HStack className="gap-1 flex-col tablet:flex-row tablet:items-center tablet:flex-1">
+            <Text className="hidden tablet:block">Message</Text>
+            <VStack className="gap-1 tablet:flex-1 tablet:items-end">
+              <Address
+                value={sender}
+                prefix="Sender:"
+                linkProps={{ as: NextLink, href: Routes.accountAssets(sender) }}
+              />
+              <Address
+                value={recipient}
+                prefix="Recipient:"
+                linkProps={{
+                  as: NextLink,
+                  href: Routes.accountAssets(recipient),
+                }}
+              />
             </VStack>
           </HStack>
         </Collapsible.Header>
@@ -172,17 +111,7 @@ export function TxInput({ input, ...props }: TxInputProps) {
   if (input.type === 'InputCoin') {
     return <TxInputCoin input={input} {...props} />;
   }
-  if (input.type === 'InputContract') {
-    return <TxInputContract input={input} {...props} />;
-  }
   if (input.type === 'InputMessage') {
     return <TxInputMessage input={input} {...props} />;
   }
 }
-
-const styles = tv({
-  slots: {
-    header: 'group flex flex-row gap-4 justify-between items-center',
-    icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
-  },
-});

@@ -1,17 +1,13 @@
-import '@fontsource-variable/inter/slnt.css';
 import '@fuels/ui/styles.css';
 import './globals.css';
 
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
+import { Layout } from '~/systems/Core/components/Layout/Layout';
 import { Provider } from '~/systems/Core/components/Provider';
 import { cx } from '~/systems/Core/utils/cx';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-});
 
 export const metadata: Metadata = {
   title: 'Fuel Explorer',
@@ -28,14 +24,18 @@ export default function RootLayout({
     <html
       suppressHydrationWarning
       lang="en"
-      className={cx(`${inter.variable}`, theme)}
+      className={cx(`${GeistSans.variable} ${GeistMono.variable}`, theme)}
       style={{ colorScheme: theme } as React.CSSProperties}
     >
       <head>
         <link rel="icon" href="/favicon.svg" />
       </head>
       <body>
-        <Provider theme={theme}>{children}</Provider>
+        <Provider theme={theme}>
+          <Layout contentClassName="[&_.rt-ContainerInner]:space-y-10">
+            {children}
+          </Layout>
+        </Provider>
       </body>
     </html>
   );

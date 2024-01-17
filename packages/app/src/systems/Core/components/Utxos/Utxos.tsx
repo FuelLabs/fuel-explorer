@@ -1,76 +1,72 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import {
-  Text,
-  HStack,
-  Address,
-  Icon,
-  Collapsible,
-  useBreakpoints,
-} from '@fuels/ui';
+import { Address, Collapsible, useBreakpoints, Box } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
-import {
-  IconCoins,
-  IconExternalLink,
-  IconSquareKey,
-} from '@tabler/icons-react';
+import { IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { Routes } from '~/routes';
+
+import { Amount } from '../Amount/Amount';
 
 export type UtxoItem = Partial<Omit<TUtxoItem, '__typename'>>;
 
 type UtxoItemProps = {
   item: UtxoItem;
-  assetId: string;
+  assetId?: string;
   style?: React.CSSProperties;
+  index: number;
 };
 
-function UtxoItem({ item, assetId, style }: UtxoItemProps) {
+function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
   const { isMobile } = useBreakpoints();
-
   if (!item.utxoId) return null;
+  const trim = isMobile ? 8 : 16;
+  const { item: itemStyle } = styles({
+    color: index % 2 !== 0 ? 'odd' : undefined,
+  });
 
-  const asset = useAsset(assetId);
-  const classes = styles();
   return (
-    <HStack style={style} align="center" gap="4" className={classes.item()}>
+    <Box style={style} className={itemStyle()}>
       <Address
         prefix="ID:"
         value={item.utxoId}
-        className="flex-1"
-        addressOpts={
-          isMobile
-            ? { trimLeft: 7, trimRight: 7 }
-            : { trimLeft: 14, trimRight: 14 }
-        }
-      >
-        <Address.Link as={NextLink} href={`/tx/${item.utxoId.slice(0, -2)}`}>
-          Transaction <Icon icon={IconExternalLink} size={14} />
-        </Address.Link>
-      </Address>
-      <Text className="text-secondary flex items-center gap-2">
-        <Icon icon={IconCoins} size={14} />{' '}
-        {bn(item.amount).format({ precision: isMobile ? 3 : undefined })}{' '}
-        {asset?.symbol ?? ''}
-      </Text>
-    </HStack>
+        className="flex-col items-start gap-1 flex-1 tablet:flex-row tablet:items-center tablet:gap-4"
+        addressOpts={{ trimLeft: trim, trimRight: trim }}
+        linkProps={{
+          as: NextLink,
+          href: Routes.txSimple(item.utxoId.slice(0, -2)),
+        }}
+      />
+      <Amount
+        hideSymbol
+        hideIcon
+        assetId={assetId}
+        value={bn(item.amount)}
+        className="text-xs"
+        iconSize={14}
+      />
+    </Box>
   );
 }
 
 type UtxosProps = BoxProps & {
-  assetId: string;
+  assetId?: string;
   items?: UtxoItem[] | null;
 };
 
 function VirtualList({ items, assetId }: UtxosProps) {
+  const { isMobile } = useBreakpoints();
+
+  const itemSize = isMobile ? 60 : 35;
+  const len = items?.length ?? 0;
   return (
     <List
-      height={350}
+      height={len >= 10 ? 350 : itemSize * len}
       itemCount={items?.length ?? 0}
-      itemSize={35}
       width="100%"
+      itemSize={itemSize}
     >
       {({ index: idx, style }) => {
         const item = items?.[idx];
@@ -81,6 +77,7 @@ function VirtualList({ items, assetId }: UtxosProps) {
               style={style}
               item={item}
               assetId={assetId}
+              index={idx}
             />
           )
         );
@@ -89,27 +86,14 @@ function VirtualList({ items, assetId }: UtxosProps) {
   );
 }
 
-function CommonList({ items, assetId }: UtxosProps) {
-  return (
-    items?.map((item) => (
-      <UtxoItem key={item.utxoId} item={item} assetId={assetId} />
-    )) ?? null
-  );
-}
-
 export function Utxos({ items, assetId, ...props }: UtxosProps) {
-  const len = items?.length ?? 0;
   return (
     <Collapsible.Content {...props}>
-      <Collapsible.Title leftIcon={IconSquareKey} iconColor="text-icon">
+      <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">
         UTXOs ({items?.length ?? 0})
       </Collapsible.Title>
       <Collapsible.Body className="p-0">
-        {len > 10 ? (
-          <VirtualList items={items} assetId={assetId} />
-        ) : (
-          <CommonList items={items} assetId={assetId} />
-        )}
+        <VirtualList items={items} assetId={assetId} />
       </Collapsible.Body>
     </Collapsible.Content>
   );
@@ -118,8 +102,17 @@ export function Utxos({ items, assetId, ...props }: UtxosProps) {
 const styles = tv({
   slots: {
     item: [
-      'odd:bg-gray-4 p-2 px-4 [&_*]:text-xs h-[35px]',
+      'flex flex-col p-2 px-4 gap-2',
+      'tablet:flex-row',
       'last:rounded-b-sm',
+      'fuel-[Address]:text-[0.8rem] fuel-[Address]:leading-none',
     ],
+  },
+  variants: {
+    color: {
+      odd: {
+        item: 'bg-gray-4',
+      },
+    },
   },
 });

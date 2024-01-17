@@ -1,25 +1,17 @@
-@layer tw-base, fuel, tw-components, tw-utilities;
-
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-
 :root {
   --hero-bg: #000;
 }
 
-@layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 600;
-    letter-spacing: -0.025em;
-  }
-  kbd {
-    font-size: 0.875rem;
-    font-family: var(--default-font-family);
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+kbd {
+  font-size: 0.875rem;
+  font-family: var(--default-font-family);
 }

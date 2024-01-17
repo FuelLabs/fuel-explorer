@@ -1,4 +1,12 @@
-import { bn } from 'fuels';
+import { getBytesCopy } from 'ethers';
+import {
+  TransactionCoder,
+  bn,
+  calculateTransactionFee,
+  calculateTxChargeableBytes,
+  getGasUsedFromReceipts,
+  processGqlReceipt,
+} from 'fuels';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
@@ -6,24 +14,27 @@ import { tai64toDate } from '../utils/dayjs';
 import { Domain } from '../utils/domain';
 
 import { InputDomain } from './Input';
+import { OperationDomain } from './Operation';
 import { OutputDomain } from './Output';
 
 export class TransactionDomain extends Domain<TransactionItemFragment> {
   static createResolvers() {
     const domain = new TransactionDomain();
     return {
-      ...domain.createResolver('title', 'getTitle'),
-      ...domain.createResolver('time'),
-      ...domain.createResolver('blockHeight'),
-      ...domain.createResolver('statusType'),
-      ...domain.createResolver('totalAssets'),
-      ...domain.createResolver('totalOperations'),
-      ...domain.createResolver('totalAccounts'),
-      ...domain.createResolver('gasUsed'),
       ...domain.createResolver('accountsInvolved'),
+      ...domain.createResolver('blockHeight'),
+      ...domain.createResolver('fee', 'getFee'),
+      ...domain.createResolver('gasUsed'),
       ...domain.createResolver('groupedInputs'),
       ...domain.createResolver('groupedOutputs'),
       ...domain.createResolver('isPredicate'),
+      ...domain.createResolver('operations', 'getOperations'),
+      ...domain.createResolver('statusType'),
+      ...domain.createResolver('time'),
+      ...domain.createResolver('title', 'getTitle'),
+      ...domain.createResolver('totalAccounts'),
+      ...domain.createResolver('totalAssets'),
+      ...domain.createResolver('totalOperations'),
     };
   }
 
@@ -31,7 +42,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const { source: transaction } = this;
     if (transaction.isMint) return 'Mint';
     if (transaction.isCreate) return 'Contract Created';
-    return 'ContractCall';
+    return 'Script';
   }
 
   get time() {
@@ -52,7 +63,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const { source: transaction } = this;
     const status = transaction.status;
     if (status?.__typename === 'SuccessStatus') {
-      return status?.block?.header?.daHeight ?? null;
+      return status?.block?.header?.height ?? null;
     }
     return null;
   }
@@ -88,13 +99,36 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   }
 
   get gasUsed() {
-    const { source: transaction } = this;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const receipts = (transaction.receipts ?? []) as any[];
-    const gasUsed = receipts.reduce((acc, receipt) => {
-      return acc.add(bn(receipt.gasUsed));
-    }, bn(0));
-    return gasUsed.toString();
+    return this._getGasUsed();
+  }
+
+  async getFee() {
+    const { source: transaction, context } = this;
+    const { gasPerByte, gasPriceFactor } =
+      context.chainInfo.consensusParameters;
+
+    const gasUsed = this._getGasUsed();
+    const transactionBytes = getBytesCopy(transaction.rawPayload);
+    const [decodedTransaction] = new TransactionCoder().decode(
+      getBytesCopy(transaction.rawPayload),
+      0,
+    );
+
+    const chargeableBytes = calculateTxChargeableBytes({
+      transactionBytes,
+      transactionWitnesses: decodedTransaction.witnesses || [],
+    });
+
+    const { minFee: fee } = calculateTransactionFee({
+      gasUsed: bn(gasUsed),
+      gasPrice: bn(transaction.gasPrice),
+      gasLimit: bn(transaction.gasLimit),
+      gasPerByte: bn(gasPerByte),
+      gasPriceFactor: bn(gasPriceFactor),
+      chargeableBytes,
+    });
+
+    return fee;
   }
 
   get accountsInvolved() {
@@ -127,6 +161,11 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     });
   }
 
+  async getOperations() {
+    const domain = new OperationDomain();
+    return domain.operationsFromTransaction(this.source);
+  }
+
   private _getAccounts() {
     const { source: transaction } = this;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -156,11 +195,21 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
       if (isContract) {
         return {
           type: 'Contract',
-          id: input.contract.id,
+          id: input.contract?.id,
         };
       }
     });
 
     return uniqBy(ids, 'id');
+  }
+
+  private _getGasUsed() {
+    const { source: transaction } = this;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const receipts = (transaction.receipts ?? []) as any[];
+    const decodedReceipts = receipts.map(processGqlReceipt);
+
+    return getGasUsedFromReceipts(decodedReceipts).toString();
   }
 }

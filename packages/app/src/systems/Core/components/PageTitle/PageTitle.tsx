@@ -4,6 +4,8 @@ import { Heading, Badge, HStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 export type PageTitleProps = BaseProps<{
+  as?: string;
+  size?: '1' | '2' | '3';
   children: React.ReactNode;
   icon?: React.ReactNode;
   rightElement?: React.ReactNode;
@@ -11,22 +13,24 @@ export type PageTitleProps = BaseProps<{
 
 export function PageTitle({
   children,
+  as = 'h2',
+  size = '1',
   icon,
   rightElement,
   className,
 }: PageTitleProps) {
-  const classes = styles();
+  const classes = styles({ size });
   return (
-    <Heading as="h2" className={classes.root({ className })}>
-      <HStack className={classes.title()}>
-        {icon && (
-          <Badge color="gray" size="2" className={classes.icon()}>
-            {icon}
-          </Badge>
-        )}
-        <div className={classes.text()}>{children}</div>
-      </HStack>
-      <div className="flex items-center h-full">{rightElement}</div>
+    <Heading as={as} className={classes.root({ className })}>
+      {icon && (
+        <Badge color="gray" size="2" className={classes.icon()}>
+          {icon}
+        </Badge>
+      )}
+      <HStack className={classes.title()}>{children}</HStack>
+      <div className="flex items-center h-full tablet:self-end">
+        {rightElement}
+      </div>
     </Heading>
   );
 }
@@ -34,12 +38,35 @@ export function PageTitle({
 const styles = tv({
   slots: {
     root: [
-      'tablet:grid tablet:grid-cols-[1fr_auto] tablet:items-start',
-      'tablet:border-b border-border tablet:pb-4',
-      'mx-4 tablet:mx-8 desktop:mx-0',
+      'flex items-center justify-between gap-2',
+      'border-border border-b',
+      'tablet:flex-nowrap tablet:gap-4',
     ],
-    title: ['items-center tablet:items-start flex-1'],
-    text: ['text-[1.7rem] tablet:text-[2rem]'],
-    icon: ['h-full self-stretch text-lg px-2 mt-2'],
+    icon: ['h-full flex-shrink-0 px-2', 'tablet:self-start tablet:mt-2'],
+    title: [
+      'items-center basis-full gap-3 order-3 flex-shrink-0 justify-between',
+      'tablet:flex-col tablet:items-start tablet:gap-0',
+      'text-[1.7rem] tablet:text-[2rem] laptop:text-[2.2rem]',
+      'tablet:order-none tablet:flex-1 tablet:justify-start',
+    ],
+  },
+  variants: {
+    size: {
+      '1': {
+        root: 'flex-wrap pb-2 tablet:pb-4',
+        title: 'text-[1.7rem] tablet:text-[2rem] laptop:text-[2.2rem]',
+      },
+      '2': {
+        title: 'text-[1.4rem] tablet:text-[1.7rem] laptop:text-[1.9rem]',
+        root: 'pb-2 tablet:pb-4',
+      },
+      '3': {
+        title: 'text-[1.2rem] tablet:text-[1.4rem] laptop:text-[1.6rem]',
+        root: 'pb-2',
+      },
+    },
+  },
+  defaultVariants: {
+    size: '1',
   },
 });

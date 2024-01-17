@@ -132,6 +132,36 @@ fragment TransactionReceipt on Receipt {
   subId
 }
 
+fragment InnerReceiptItem on OperationReceipt {
+  item {
+    ...TransactionReceipt
+  }
+}
+
+fragment OperationReceiptItem on OperationReceipt {
+  ...InnerReceiptItem
+  receipts {
+    ...InnerReceiptItem
+    receipts {
+      ...InnerReceiptItem
+      receipts {
+        ...InnerReceiptItem
+      }
+    }
+  }
+}
+
+fragment OperationItem on Operation {
+  __typename
+  type
+  receipts {
+    ...OperationReceiptItem
+    receipts {
+      ...OperationReceiptItem
+    }
+  }
+}
+
 fragment TransactionItem on Transaction {
   # Custom resolvers
   id
@@ -173,6 +203,9 @@ fragment TransactionItem on Transaction {
     id
     type
   }
+  operations {
+    ...OperationItem
+  }
   isPredicate
   blockHeight
   statusType
@@ -180,6 +213,7 @@ fragment TransactionItem on Transaction {
   totalAssets
   totalOperations
   gasUsed
+  fee
 
   # Transaction Data
   __typename

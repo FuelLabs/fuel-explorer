@@ -1,76 +1,57 @@
 'use client';
 import type { BaseProps } from '@fuels/ui';
-import { Button, Flex, HStack } from '@fuels/ui';
 import { IconChecklist, IconCodeAsterix, IconCoins } from '@tabler/icons-react';
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { tv } from 'tailwind-variants';
+import { useMemo } from 'react';
+import { Routes } from '~/routes';
+import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type AccountTabsProps = BaseProps<{
-  accountId: string;
+  address: string;
   isPredicate?: boolean;
 }>;
 
 export function AccountTabs({
-  className,
-  accountId,
+  address,
   isPredicate,
   ...props
 }: AccountTabsProps) {
-  const classes = styles({ className });
   const pathname = usePathname();
+  const defaultValue = useMemo(() => {
+    if (pathname.includes('transactions')) return 'transactions';
+    if (pathname.includes('predicate')) return 'predicate';
+    return 'assets';
+  }, [pathname]);
+
   return (
-    <Flex className={classes.root()} {...props}>
-      <HStack gap="2">
-        <Button
-          as={NextLink}
-          href={`/account/${accountId}`}
-          color="gray"
-          className={classes.button()}
-          data-active={pathname === `/account/${accountId}`}
-          variant="surface"
-          leftIcon={IconCoins}
-        >
-          Assets
-        </Button>
-        <Button
-          as={NextLink}
-          href={`/account/${accountId}/transactions`}
-          color="gray"
-          className={classes.button()}
-          data-active={pathname === `/account/${accountId}/transactions`}
-          variant="surface"
-          leftIcon={IconChecklist}
-        >
-          Transactions
-        </Button>
-        <Button
-          as={NextLink}
-          href={isPredicate ? `/account/${accountId}/predicate` : ''}
-          color="gray"
-          className={classes.button()}
-          data-active={pathname === `/account/${accountId}/predicate`}
-          variant="surface"
-          leftIcon={IconCodeAsterix}
-          disabled={!isPredicate}
-        >
-          Predicate
-        </Button>
-      </HStack>
-    </Flex>
+    <NavigationTab
+      {...props}
+      defaultValue={defaultValue}
+      value={defaultValue}
+      renderTab={(children, item) => (
+        <Link prefetch={true} href={Routes.account(address, item.value)}>
+          {children}
+        </Link>
+      )}
+      items={[
+        {
+          icon: IconCoins,
+          value: 'assets',
+          label: 'Assets',
+        },
+        {
+          icon: IconChecklist,
+          value: 'transactions',
+          label: 'Transactions',
+        },
+        {
+          icon: IconCodeAsterix,
+          value: 'predicate',
+          label: 'Predicate',
+          disabled: !isPredicate,
+        },
+      ]}
+    />
   );
 }
-
-const styles = tv({
-  slots: {
-    root: 'justify-between items-center',
-    button: [
-      'bg-transparent text-muted',
-      'enabled:hover:bg-gray-2 enabled:hover:text-heading transition-colors',
-      'data-[active=true]:bg-gray-2 data-[active=true]:text-heading',
-      'fuel-[Icon]:hover:text-icon',
-      'fuel-[Icon]:data-[active=true]:text-icon',
-      'disabled:opacity-50',
-    ],
-  },
-});

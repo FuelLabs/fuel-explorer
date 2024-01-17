@@ -1,67 +1,62 @@
+'use client';
 import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
-import { createComponent, Text, VStack, Address, Collapsible } from '@fuels/ui';
+import {
+  Address,
+  Box,
+  Collapsible,
+  Flex,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import { bn } from 'fuels';
-import Image from 'next/image';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 
+import { Amount } from '../Amount/Amount';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
-const ICON_SIZE = 36;
-
 type BalanceItemProps = BaseProps<{
   item: Omit<AccountBalanceFragment, 'owner' | '__typename'>;
+  isLoading?: boolean;
 }>;
 
-export const BalanceItem = createComponent<
-  BalanceItemProps,
-  typeof Collapsible
->({
-  id: 'BalanceItem',
-  render: (_, { item, ...props }) => {
-    const assetId = item.assetId;
-    const amount = item.amount;
-    const asset = useAsset(assetId);
-    if (!asset) return null;
+export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
+  const assetId = item.assetId;
+  const amount = item.amount;
+  const hasUTXOs = !!item.utxos?.length;
 
-    const hasUTXOs = !!item.utxos?.length;
-
-    return (
-      <Collapsible {...props}>
-        <Collapsible.Header hideIcon={!hasUTXOs}>
-          {asset.icon ? (
-            <Image
-              src={asset.icon as string}
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              alt={asset.name}
+  return (
+    <Collapsible {...props} hideIcon={!hasUTXOs}>
+      <Collapsible.Header>
+        <Flex className="flex-1 flex-col tablet:flex-row tablet:justify-between tablet:items-center">
+          <AssetItem assetId={assetId} isLoading={isLoading}>
+            <Address
+              value={item.assetId}
+              prefix="Id:"
+              fixed="b256"
+              isLoading={isLoading}
             />
-          ) : (
-            <TxIcon type="Mint" status="Submitted" />
-          )}
-          <VStack gap="1" className="flex-1">
-            <Text className="text-md font-medium">
-              {asset.name}
-              {asset.symbol && (
-                <Text className="ml-2 text-muted text-sm">
-                  ({asset.symbol})
-                </Text>
-              )}
-            </Text>
-            <Address value={item.assetId} prefix="Id:" fixed="b256" />
-          </VStack>
-          {amount && (
-            <Text className="text-secondary">
-              {bn(amount).format()} {asset.symbol}
-            </Text>
-          )}
-        </Collapsible.Header>
-        {hasUTXOs && (
-          <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />
-        )}
-      </Collapsible>
-    );
-  },
-});
+          </AssetItem>
+          <Box className="ml-14 mt-2 tablet:ml-0 tablet:mt-0">
+            <LoadingWrapper
+              isLoading={isLoading}
+              loadingEl={<LoadingBox className="w-30 h-5" />}
+              regularEl={
+                amount && (
+                  <Amount
+                    hideIcon
+                    hideSymbol
+                    assetId={assetId}
+                    value={bn(amount)}
+                  />
+                )
+              }
+            />
+          </Box>
+        </Flex>
+      </Collapsible.Header>
+      {hasUTXOs && <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />}
+    </Collapsible>
+  );
+}

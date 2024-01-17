@@ -1,28 +1,16 @@
-import {
-  getContract,
-  getContractBalances,
-} from '~/systems/Contract/actions/get-contract';
-import { ContractScreen } from '~/systems/Contract/screens/ContractScreen/ContractScreen';
-import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { Suspense } from 'react';
+import { AssetsLoader } from '~/systems/Asset/components/AssetsLoader';
+import { ContractAssets } from '~/systems/Contract/screens/ContractAsset';
+import type { ContractRouteProps } from '~/systems/Contract/types';
 
-type ContractProps = {
-  params: {
-    id?: string | null;
-  };
-};
-
-export default async function ContractAssets({
-  params: { id = null },
-}: ContractProps) {
-  const contract = await getContract({ id });
-  const contractBalances = await getContractBalances({ id });
-
+export default async function ContractPage({
+  params: { id },
+}: ContractRouteProps) {
   return (
-    <Layout>
-      <ContractScreen contract={contract} contractBalances={contractBalances} />
-    </Layout>
+    <Suspense fallback={<AssetsLoader />}>
+      <ContractAssets id={id} />
+    </Suspense>
   );
 }
 
-// Revalidate cache every 10 seconds
 export const revalidate = 10;

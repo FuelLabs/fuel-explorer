@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "esModuleInterop": true,
     "isolatedModules": true,
     "outDir": "./dist",
     "module": "commonjs",
@@ -10,5 +11,5 @@
       }
     ]
   },
-  "include": ["src", "scripts", "*.config.*"]
+  "include": ["src", "scripts", "*.config.*", "codegen.*"]
 }

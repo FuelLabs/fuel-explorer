@@ -4,7 +4,7 @@ import {
   IconCode,
   IconCoins,
   IconFlame,
-  IconMessageCode,
+  IconMailForward,
   IconScript,
   IconSwitch3,
   IconTransfer,
@@ -17,6 +17,7 @@ import type { TxIconType, TxStatus } from '../../types';
 
 const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   'Contract Created': IconCode,
+  Script: IconCode,
   ContractCall: IconCode,
   Mint: IconCoins,
   Transfer: IconTransfer,
@@ -24,7 +25,7 @@ const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   Contract: IconScript,
   Wallet: IconWallet,
   Predicate: IconSwitch3,
-  Message: IconMessageCode,
+  Message: IconMailForward,
 } as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,15 +86,15 @@ const styles = tv({
   variants: {
     size: {
       sm: {
-        root: 'w-8 h-8',
+        root: 'w-9 h-9',
         icon: 'w-4 h-4',
       },
       md: {
-        root: 'w-11 h-11',
+        root: 'w-10 h-10',
         icon: 'w-5 h-5',
       },
       lg: {
-        root: 'w-12 h-12',
+        root: 'w-11 h-11',
         icon: 'w-6 h-6',
       },
     },

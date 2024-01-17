@@ -78,6 +78,22 @@ type TransactionAccount {
   id: String
 }
 
+enum OperationType {
+  FROM_CONTRACT
+  FROM_ACCOUNT
+  FINAL_RESULT
+}
+
+type OperationReceipt {
+  item: Receipt
+  receipts: [OperationReceipt]
+}
+
+type Operation {
+  type: OperationType
+  receipts: [OperationReceipt]
+}
+
 extend type Transaction {
   title: String
   time: ParsedTime
@@ -87,10 +103,12 @@ extend type Transaction {
   totalAssets: Int
   totalOperations: Int
   gasUsed: U64
+  operations: [Operation]
   accountsInvolved: [TransactionAccount]
   groupedInputs: [GroupedInput]
   groupedOutputs: [GroupedOutput]
   isPredicate: Boolean
+  fee: U64
 }
 
 # --------------------------------
@@ -116,4 +134,36 @@ extend type Block {
   time: ParsedTime
   totalGasUsed: U64
   producer: Address
+}
+
+# --------------------------------
+# Query
+# --------------------------------
+type SearchAccount {
+  address: Address
+  transactions: [SearchTransaction]
+}
+
+type SearchContract {
+  id: ContractId
+}
+
+type SearchBlock {
+  id: BlockId
+  height: String
+}
+
+type SearchTransaction {
+  id: TransactionId
+}
+
+type SearchResult {
+  account: SearchAccount
+  contract: SearchContract
+  block: SearchBlock
+  transaction: SearchTransaction
+}
+
+extend type Query {
+  search(query: String!): SearchResult
 }

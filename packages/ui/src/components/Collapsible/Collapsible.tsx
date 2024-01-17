@@ -1,11 +1,12 @@
 import type { TextProps } from '@radix-ui/themes/dist/cjs/components/text';
 import { IconChevronDown } from '@tabler/icons-react';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
 import { createComponent, withNamespace } from '../../utils/component';
-import { Box, HStack } from '../Box';
+import { cx } from '../../utils/css';
+import { Box } from '../Box';
 import type { BoxProps } from '../Box';
 import { Card } from '../Card';
 import type { CardProps, CardHeaderProps, CardBodyProps } from '../Card';
@@ -14,20 +15,22 @@ import { Text } from '../Text';
 
 type CollapsibleBaseProps = VariantProps<typeof styles> & {
   defaultOpened?: boolean;
+  opened?: boolean;
+  onOpenChange?: (opened: boolean) => void;
 };
 
 type Context = CollapsibleBaseProps & {
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
   defaultOpened?: boolean;
+  hideIcon?: boolean;
 };
 
 const ctx = createContext<Context>({} as Context);
 
-export type CollapsibleProps = CollapsibleBaseProps & CardProps;
-export type CollapsibleHeaderProps = CardHeaderProps & {
-  hideIcon?: boolean;
-};
+export type CollapsibleProps = CollapsibleBaseProps &
+  CardProps & { hideIcon?: boolean };
+export type CollapsibleHeaderProps = CardHeaderProps;
 export type CollapsibleContentProps = CardBodyProps;
 export type CollapsibleTitleProps = TextProps;
 export type CollapsibleBodyProps = BoxProps;
@@ -37,13 +40,37 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
   baseElement: Card,
   render: (
     Root,
-    { children, className, defaultOpened, variant = 'surface', ...props },
+    {
+      children,
+      className,
+      defaultOpened,
+      hideIcon,
+      opened: initialOpened,
+      onOpenChange,
+      variant = 'surface',
+      ...props
+    },
   ) => {
     const classes = styles();
-    const [opened, setOpened] = useState(Boolean(defaultOpened));
+    const [opened, setOpened] = useState(
+      Boolean(defaultOpened || initialOpened),
+    );
+
+    useEffect(() => {
+      onOpenChange?.(opened);
+    }, [opened, onOpenChange]);
+
     return (
-      <ctx.Provider value={{ opened, setOpened, defaultOpened, variant }}>
-        <Root {...props} className={classes.root({ className })}>
+      <ctx.Provider
+        value={{ opened, setOpened, defaultOpened, variant, hideIcon }}
+      >
+        <Root
+          {...props}
+          className={cx(
+            classes.root({ className }),
+            hideIcon ? 'cursor-default' : '',
+          )}
+        >
           {children}
         </Root>
       </ctx.Provider>
@@ -57,16 +84,20 @@ export const CollapsibleHeader = createComponent<
 >({
   id: 'CollapsibleHeader',
   baseElement: Card.Header,
-  render: (Root, { children, className, hideIcon, ...props }) => {
+  render: (Root, { children, className, ...props }) => {
     const classes = styles();
-    const { opened, setOpened } = useContext(ctx);
+    const { opened, setOpened, hideIcon } = useContext(ctx);
     return (
       <Root
         {...props}
-        className={classes.header({ className })}
         data-state={opened ? 'opened' : 'closed'}
+        className={cx(
+          classes.header({ className }),
+          hideIcon ? 'cursor-default' : '',
+        )}
+        onClick={() => setOpened(!opened)}
       >
-        <HStack align="center">{children}</HStack>
+        {children}
         {!hideIcon && (
           <IconButton
             iconSize={20}
@@ -74,7 +105,6 @@ export const CollapsibleHeader = createComponent<
             variant="link"
             className={classes.icon()}
             icon={IconChevronDown}
-            onClick={() => setOpened(!opened)}
           />
         )}
       </Root>
@@ -133,8 +163,9 @@ export const Collapsible = withNamespace(CollapsibleRoot, {
 const styles = tv({
   slots: {
     root: 'py-[10px]',
-    header: 'group grid grid-cols-[1fr_auto] grid-rows-1 gap-4 items-center',
-    icon: 'transition-transform group-data-[state=opened]:-rotate-180',
+    header:
+      'group relative gap-4 cursor-pointer pr-9 flex flex-col justify-center tablet:items-center tablet:flex-row tablet:justify-start',
+    icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
     content: 'mx-4 mb-2 border border-border',
     body: '',
     title: 'flex items-center gap-2 text-sm font-medium',

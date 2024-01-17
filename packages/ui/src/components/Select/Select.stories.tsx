@@ -13,7 +13,7 @@ type Story = StoryObj<typeof Select>;
 export const Usage: Story = {
   render: () => (
     <Select>
-      <Select.Trigger className="w-[300px]" placeholder="Select a fruit…" />
+      <Select.Trigger className="w-[300px]" />
       <Select.Content>
         <Select.Group>
           <Select.Label>Fruits</Select.Label>

@@ -1,22 +1,15 @@
-import {
-  IconExternalLink,
-  IconGridScan,
-  IconLineScan,
-} from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
-import { createComponent, withNamespace } from '../../utils/component';
+import { createComponent } from '../../utils/component';
 import { cx } from '../../utils/css';
 import type { BaseProps, WithAsProps } from '../../utils/types';
 import { HStack } from '../Box';
 import { Copyable } from '../Copyable';
-import { Icon } from '../Icon/Icon';
-import { IconButton } from '../IconButton';
 import type { LinkProps } from '../Link';
 import { Link } from '../Link';
-import { Text } from '../Text';
-import { Tooltip } from '../Tooltip/Tooltip';
+import { LoadingBox } from '../LoadingBox';
+import { LoadingWrapper } from '../LoadingWrapper';
 
 import type { UseFuelAddressOpts } from './useFuelAddress';
 import { useFuelAddress } from './useFuelAddress';
@@ -27,109 +20,121 @@ export type AddressBaseProps = {
   full?: boolean;
   addressOpts?: UseFuelAddressOpts;
   fixed?: UseFuelAddressOpts['fixed'];
-  linkPos?: 'left' | 'right';
+  linkProps?: AddressLinkProps;
+  isLoading?: boolean;
+  iconSize?: number;
 };
 
+export type AddressLinkProps = Omit<LinkProps, 'children'>;
 export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
-export type AddressLinkProps = Omit<LinkProps, 'children'> & {
-  children?: ReactNode;
+
+const AddressSpan = ({
+  address,
+  short,
+  full,
+  className,
+}: {
+  full?: boolean;
+  address: string;
+  short: string;
+  className?: string;
+}) => {
+  const baseClass = cx(['text-[1em]', className]);
+  return (
+    <>
+      {full && (
+        <span className={cx(baseClass, 'mobile:max-laptop:hidden')}>
+          {address}
+        </span>
+      )}
+      <span
+        className={cx(baseClass, {
+          'laptop:hidden': full,
+        })}
+      >
+        {short}
+      </span>
+    </>
+  );
 };
 
-export const AddressRoot = createComponent<AddressProps, typeof HStack>({
+export const Address = createComponent<AddressProps, 'div'>({
   id: 'Address',
-  baseElement: HStack,
   render: (
-    Root,
+    _,
     {
       value,
-      linkPos = 'right',
       full,
+      iconSize = 16,
       fixed,
       prefix,
       className,
       addressOpts,
-      children,
+      linkProps,
+      isLoading,
       ...props
     },
   ) => {
     const classes = styles();
-    const { isValid, isShowingB256, address, short, toggle } = useFuelAddress(
-      value || '',
-      { ...addressOpts, fixed },
-    );
-
-    const type = isShowingB256 ? 'Bech32' : 'HEX';
-    const tooltipMsg = `Click to show ${type} address or press CMD+k to toggle all`;
-    const isToggleable = isValid && !fixed;
+    const { address, short } = useFuelAddress(value || '', {
+      ...addressOpts,
+      fixed,
+    });
 
     return (
-      <Root
+      <HStack
         gap="3"
         align="center"
         {...props}
         className={classes.root({ className })}
       >
-        {linkPos === 'left' && children}
-        <HStack align="center" gap="1">
-          {prefix && <Text className={classes.prefix()}>{prefix}</Text>}
-          <Copyable value={address} className={classes.address()} iconSize={16}>
-            {isToggleable ? (
-              <Tooltip content={tooltipMsg}>
-                <Text
-                  as="button"
-                  className="text-sm text-muted"
-                  onClick={toggle}
-                >
-                  {full ? address : short}
-                </Text>
-              </Tooltip>
-            ) : (
-              <span className="text-muted">{full ? address : short}</span>
-            )}
-          </Copyable>
-        </HStack>
-        {isToggleable && (
-          <Tooltip content={tooltipMsg}>
-            <IconButton
-              data-active={!isShowingB256}
-              icon={isShowingB256 ? IconLineScan : IconGridScan}
-              variant="link"
-              color="gray"
-              iconSize={16}
-              className={classes.toggleBtn()}
-              onClick={toggle}
-            />
-          </Tooltip>
-        )}
-        {linkPos === 'right' && children}
-      </Root>
+        <LoadingWrapper
+          isLoading={isLoading}
+          loadingEl={<LoadingBox className="w-32 h-5 mt-1" />}
+          regularEl={
+            <HStack align="center" gap="1">
+              {prefix && <span className={classes.prefix()}>{prefix}</span>}
+              <Copyable
+                value={address}
+                className={classes.address()}
+                iconSize={iconSize}
+              >
+                {linkProps ? (
+                  <Link
+                    {...linkProps}
+                    className={cx('text-xs text-[1em]')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <AddressSpan
+                      full={full}
+                      address={address}
+                      short={short}
+                      className="text-link"
+                    />
+                  </Link>
+                ) : (
+                  <AddressSpan
+                    full={full}
+                    address={address}
+                    short={short}
+                    className="text-muted"
+                  />
+                )}
+              </Copyable>
+            </HStack>
+          }
+        />
+      </HStack>
     );
   },
-});
-
-export const AddressLink = createComponent<AddressLinkProps, typeof Link>({
-  id: 'AddressLink',
-  render: (_, { className, children, ...props }) => {
-    return (
-      <Link {...props} className={cx('text-xs', className)}>
-        {children ?? <Icon icon={IconExternalLink} size={16} />}
-      </Link>
-    );
-  },
-});
-
-export const Address = withNamespace(AddressRoot, {
-  Link: AddressLink,
 });
 
 const styles = tv({
   slots: {
-    root: '',
-    prefix: 'text-sm text-secondary',
-    address: 'text-sm text-muted mt-px',
-    toggleBtn: [
-      'transition-all duration-500 text-muted rotate-0',
-      'data-[active=true]:rotate-180',
-    ],
+    root: 'flex gap-1 text-sm font-mono',
+    prefix: 'mr-px text-[1em] text-secondary',
+    address: 'text-[1em] text-muted mt-px gap-3',
   },
 });
