@@ -58,7 +58,8 @@ type UtxosProps = BoxProps & {
 
 function VirtualList({ items, assetId }: UtxosProps) {
   const { isMobile } = useBreakpoints();
-  const itemSize = isMobile ? 85 : 35;
+
+  const itemSize = isMobile ? 60 : 35;
   const len = items?.length ?? 0;
   return (
     <List
