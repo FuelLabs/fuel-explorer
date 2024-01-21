@@ -154,10 +154,12 @@ export const NavMobileContent = createComponent<
     return (
       <Root {...props} data-open={isOpen}>
         <AnimatePresence initial={false}>
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {Children.toArray(children).map((child: any) => {
-            return cloneElement(child, { key: child.type.id });
-          })}
+          <HStack gap="2" className="flex-1 justify-between items-center">
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {Children.toArray(children).map((child: any) => {
+              return cloneElement(child, { key: child.type.id });
+            })}
+          </HStack>
         </AnimatePresence>
         <IconButton
           aria-label="Toggle Menu"

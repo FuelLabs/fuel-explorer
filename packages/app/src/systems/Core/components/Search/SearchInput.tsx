@@ -13,27 +13,30 @@ import {
   Link,
   VStack,
   useBreakpoints,
+  Box,
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import type { KeyboardEvent } from 'react';
 import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { tv } from 'tailwind-variants';
 import { Routes } from '~/routes';
 
 import { cx } from '../../utils/cx';
-import { SearchContext } from '../SearchWidget/SearchWidget';
+
+import { SearchContext } from './SearchWidget';
+import { styles } from './styles';
 
 type SearchDropdownProps = {
   searchResult?: Maybe<SearchResult>;
   openDropdown: boolean;
   onOpenChange: () => void;
   searchValue: string;
+  width: number;
 };
 
 const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
-  ({ searchResult, searchValue, openDropdown, onOpenChange }, ref) => {
+  ({ searchResult, searchValue, openDropdown, onOpenChange, width }, ref) => {
     const classes = styles();
     const { isMobile } = useBreakpoints();
     const trimL = isMobile ? 15 : 20;
@@ -42,9 +45,13 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
         <Dropdown.Trigger>
-          <div></div>
+          <Box className="w-full"></Box>
         </Dropdown.Trigger>
-        <Dropdown.Content ref={ref} className="w-[311px] tablet:w-[400px]">
+        <Dropdown.Content
+          ref={ref}
+          className={cx(classes.dropdownContent(), classes.searchSize())}
+          style={{ width: width - 0.5 }}
+        >
           {!searchResult && (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
@@ -163,13 +170,14 @@ export function SearchInput({
   autoFocus,
   placeholder = 'Search here...',
   searchResult,
-  alwaysDisplayActionButtons,
   ...props
 }: SearchInputProps) {
+  const classes = styles();
   const [value, setValue] = useState<string>(initialValue as string);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputWrapperRef = useRef<HTMLInputElement>(null);
   const { pending } = useFormStatus();
   const { dropdownRef } = useContext(SearchContext);
 
@@ -196,12 +204,15 @@ export function SearchInput({
   }
 
   return (
-    <VStack gap="0" className="justify-center">
+    <VStack gap="0" className="justify-center items-center">
       <Focus.ArrowNavigator autoFocus={autoFocus}>
         <Input
-          className={cx(className)}
+          ref={inputWrapperRef}
+          variant="surface"
           radius="large"
           size="3"
+          data-opened={openDropdown}
+          className={cx(className, classes.inputWrapper())}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -212,9 +223,6 @@ export function SearchInput({
             }
           }}
         >
-          <Input.Slot className="mx-1">
-            <Icon icon={IconSearch} size={16} />
-          </Input.Slot>
           <Input.Field
             {...props}
             ref={inputRef}
@@ -223,34 +231,41 @@ export function SearchInput({
             value={value}
             onChange={handleChange}
           />
-          {(alwaysDisplayActionButtons || !!value.length) && (
-            <Input.Slot className="mx-1">
-              <IconButton
-                aria-label="Clear"
-                icon={IconX}
-                iconColor="text-icon"
-                variant="link"
-                className="!ml-0 tablet:ml-2"
-                onClick={handleClear}
-              />
-              <Tooltip content="Submit">
+          {value?.length ? (
+            <>
+              <Input.Slot className="">
+                <Tooltip content="Submit">
+                  <IconButton
+                    type="submit"
+                    aria-label="Submit"
+                    icon={IconCheck}
+                    iconColor="text-brand"
+                    variant="link"
+                    className="!ml-0 tablet:ml-2"
+                    isLoading={pending}
+                    onClick={handleSubmit}
+                  />
+                </Tooltip>
                 <IconButton
-                  type="submit"
-                  aria-label="Submit"
-                  icon={IconCheck}
-                  iconColor="text-brand"
+                  aria-label="Clear"
+                  icon={IconX}
+                  iconColor="text-gray-11"
                   variant="link"
-                  className="!ml-0 tablet:ml-2"
-                  isLoading={pending}
-                  onClick={handleSubmit}
+                  className="m-0"
+                  onClick={handleClear}
                 />
-              </Tooltip>
+              </Input.Slot>
+            </>
+          ) : (
+            <Input.Slot>
+              <Icon icon={IconSearch} size={16} />
             </Input.Slot>
           )}
         </Input>
       </Focus.ArrowNavigator>
       <SearchResultDropdown
         ref={dropdownRef}
+        width={inputWrapperRef.current?.offsetWidth || 0}
         searchResult={searchResult}
         searchValue={value}
         openDropdown={openDropdown}
@@ -264,9 +279,3 @@ export function SearchInput({
     </VStack>
   );
 }
-
-const styles = tv({
-  slots: {
-    dropdownItem: 'hover:bg-border focus:bg-border',
-  },
-});
