@@ -4,7 +4,7 @@
 
 This project includes both frontend and contracts. To begin, install dependencies:
 
-- [Node.js v20.11.0 or latest stable](https://nodejs.org/en/). We recommend using [nvm](https://github.com/nvm-sh/nvm) to install.
+- [Node.js v18.19.0 or latest stable](https://nodejs.org/en/). We recommend using [nvm](https://github.com/nvm-sh/nvm) to install.
 - [PNPM v7.18.2 or latest stable](https://pnpm.io/installation/)
 - [Docker v20.0.21 or latest stable](https://docs.docker.com/get-docker/)
 - [Docker Compose v2.15.1 or latest stable](https://docs.docker.com/get-docker/)
