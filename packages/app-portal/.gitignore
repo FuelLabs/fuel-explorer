@@ -1,0 +1,6 @@
+node_modules/
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/playwright/e2e/dist-crx/
+/playwright/e2e/fuel-wallet.zip

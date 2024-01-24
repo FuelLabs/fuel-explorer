@@ -1,17 +1,15 @@
+build:
+	docker compose --env-file ./envs/ports.env build
+
 start:
-	# sh ./scripts/start.sh
-	# docker compose up
-	echo "Docker env is temporary disabled on this project";
-	echo "Run pnpm dev for development";
+	docker compose --env-file ./envs/ports.env up -d --build
 
-down:
-	docker compose down
-
-restart:
-	docker compose restart
+stop:
+	docker compose stop
 
 clean:
 	docker compose down --rmi local -v --remove-orphans
 
 logs:
 	docker compose logs -f
+

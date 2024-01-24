@@ -1,11 +1,4 @@
-const { resolve } = require('path');
-const { dependencies } = require('./packages/app/package.json');
-
-const project = [
-  resolve(__dirname, './tsconfig.json'),
-  resolve(__dirname, './packages/**/tsconfig.json'),
-  resolve(__dirname, './contracts/**/tsconfig.json'),
-];
+const { dependencies } = require('./packages/app-explorer/package.json');
 
 module.exports = {
   root: true,
@@ -16,7 +9,6 @@ module.exports = {
   ],
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project,
   },
   settings: {
     react: {
@@ -29,7 +21,6 @@ module.exports = {
       },
       [require.resolve('eslint-import-resolver-typescript')]: {
         alwaysTryTypes: true,
-        project,
       },
     },
   },
@@ -40,6 +31,7 @@ module.exports = {
       { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
     ],
     'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+    'import/namespace': 'off',
     'import/order': [
       'error',
       {

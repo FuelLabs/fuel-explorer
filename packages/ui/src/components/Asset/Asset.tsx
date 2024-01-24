@@ -69,7 +69,7 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
       children,
       gap = '4',
       ...props
-    },
+    }
   ) => {
     {
       const newChildren = useStrictedChildren('Asset', CHILD_ITEMS, children);

@@ -98,7 +98,7 @@ async function getAllComponents() {
       cwd: COMPONENT_DIR,
       absolute: true,
       onlyFiles: true,
-    },
+    }
   );
 
   const components = await Promise.all(
@@ -109,7 +109,7 @@ async function getAllComponents() {
         const component = name === baseComponent ? null : name;
         const sourceFile = ts.createSourceFile(
           comp,
-          await fs.readFile(comp, 'utf8'),
+          await fs.readFile(comp, 'utf8')
         );
 
         const { valueExports, typeExports } = extractExports(sourceFile);
@@ -121,7 +121,7 @@ async function getAllComponents() {
           types: [...new Set(typeExports)],
         };
       })
-      .filter(Boolean),
+      .filter(Boolean)
   );
 
   return components;
@@ -166,7 +166,7 @@ async function createComponentIndex(components) {
       (c) =>
         c.baseComponent === component &&
         c.component &&
-        !c.component?.startsWith('index'),
+        !c.component?.startsWith('index')
     );
 
     const mainExportsStr = createExportStr(component, item.exports);
@@ -201,13 +201,13 @@ async function createMainComponentsIndex(components) {
       item.baseComponent,
       uniqueExports,
       false,
-      'components/',
+      'components/'
     );
     const typesStr = createExportStr(
       item.baseComponent,
       uniqueTypes,
       true,
-      'components/',
+      'components/'
     );
     if (exportsStr.length) list.push(exportsStr);
     if (typesStr.length) list.push(typesStr);
@@ -220,7 +220,7 @@ async function createMainComponentsIndex(components) {
 
 async function pkgJSON(components) {
   const pkgJSONBuffer = await fs.readFile(
-    path.join(__dirname, '../package.json'),
+    path.join(__dirname, '../package.json')
   );
   let pkgJSON = JSON.parse(pkgJSONBuffer.toString());
   let typesVersions = { '*': {} };
@@ -255,7 +255,7 @@ async function pkgJSON(components) {
 
   await fs.writeFile(
     path.join(__dirname, '../package.json'),
-    JSON.stringify(pkgJSON, null, 2),
+    JSON.stringify(pkgJSON, null, 2)
   );
 }
 
@@ -265,7 +265,7 @@ export async function tsup(components) {
 
   await fs.writeFile(
     path.join(__dirname, '../tsup.text'),
-    JSON.stringify({ entry: entryPoints }),
+    JSON.stringify({ entry: entryPoints })
   );
 }
 

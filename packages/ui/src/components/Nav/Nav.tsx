@@ -334,7 +334,7 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
         </>
       );
     },
-  },
+  }
 );
 
 /**

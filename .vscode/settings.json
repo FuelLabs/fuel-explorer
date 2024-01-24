@@ -4,7 +4,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "rust-analyzer.linkedProjects": ["./packages/indexer/Cargo.toml"],
   "editor.quickSuggestions": {
     "strings": "on"
   },

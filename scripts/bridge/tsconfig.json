@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "preserveConstEnums": true,
+    "strict": true,
+    "target": "es2017"
+  }
+}
