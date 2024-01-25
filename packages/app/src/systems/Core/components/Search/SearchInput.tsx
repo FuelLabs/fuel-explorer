@@ -33,10 +33,21 @@ type SearchDropdownProps = {
   onOpenChange: () => void;
   searchValue: string;
   width: number;
+  onSelectItem: () => void;
 };
 
 const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
-  ({ searchResult, searchValue, openDropdown, onOpenChange, width }, ref) => {
+  (
+    {
+      searchResult,
+      searchValue,
+      openDropdown,
+      onOpenChange,
+      width,
+      onSelectItem,
+    },
+    ref,
+  ) => {
     const classes = styles();
     const { isMobile } = useBreakpoints();
     const trimL = isMobile ? 15 : 20;
@@ -67,6 +78,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   as={NextLink}
                   href={Routes.accountAssets(searchResult.account.address!)}
                   className="text-color"
+                  onClick={onSelectItem}
                 >
                   {shortAddress(
                     searchResult.account.address || '',
@@ -87,6 +99,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       as={NextLink}
                       href={Routes.txSimple(transaction!.id!)}
                       className="text-color"
+                      onClick={onSelectItem}
                     >
                       {shortAddress(transaction?.id || '', trimL, trimR)}
                     </Link>
@@ -103,6 +116,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   as={NextLink}
                   href={Routes.blockSimple(searchResult.block.id!)}
                   className="text-color"
+                  onClick={onSelectItem}
                 >
                   {shortAddress(searchResult.block.id || '', trimL, trimR)}
                 </Link>
@@ -112,6 +126,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   as={NextLink}
                   href={Routes.blockSimple(searchResult.block.height!)}
                   className="text-color"
+                  onClick={onSelectItem}
                 >
                   {searchResult.block.height}
                 </Link>
@@ -126,6 +141,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   as={NextLink}
                   href={Routes.contractAssets(searchResult.contract.id!)}
                   className="text-color"
+                  onClick={onSelectItem}
                 >
                   {shortAddress(searchResult.contract.id || '', trimL, trimR)}
                 </Link>
@@ -140,6 +156,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   as={NextLink}
                   href={Routes.txSimple(searchResult.transaction.id!)}
                   className="text-color"
+                  onClick={onSelectItem}
                 >
                   {shortAddress(
                     searchResult.transaction.id || '',
@@ -269,6 +286,10 @@ export function SearchInput({
         searchResult={searchResult}
         searchValue={value}
         openDropdown={openDropdown}
+        onSelectItem={() => {
+          setOpenDropdown(false);
+          handleClear();
+        }}
         onOpenChange={() => {
           if (openDropdown) {
             setHasSubmitted(false);
