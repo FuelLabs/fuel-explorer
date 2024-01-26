@@ -11,11 +11,15 @@ export const SearchContext = createContext<{
 }>({ dropdownRef: null, onClear: () => {} });
 
 type SearchWidgetProps = {
+  autoFocus?: boolean;
   isSearchOpen: boolean;
   setIsSearchOpen: (value: boolean) => void;
 };
 
-export const SearchWidget = ({ setIsSearchOpen }: SearchWidgetProps) => {
+export const SearchWidget = ({
+  autoFocus,
+  setIsSearchOpen,
+}: SearchWidgetProps) => {
   const classes = styles();
   const widgetRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -71,7 +75,7 @@ export const SearchWidget = ({ setIsSearchOpen }: SearchWidgetProps) => {
         ref={widgetRef}
         className="items-center gap-0 laptop:gap-4 justify-center flex-1"
       >
-        <SearchForm className={classes.searchSize()} autoFocus={true} />
+        <SearchForm className={classes.searchSize()} autoFocus={autoFocus} />
       </HStack>
     </SearchContext.Provider>
   );

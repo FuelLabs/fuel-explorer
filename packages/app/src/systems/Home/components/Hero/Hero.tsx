@@ -19,6 +19,7 @@ export function Hero() {
           </Heading>
           <Box className={classes.searchWrapper()}>
             <SearchWidget
+              autoFocus={true}
               setIsSearchOpen={setIsSearchOpen}
               isSearchOpen={isSearchOpen}
             />
@@ -59,6 +60,6 @@ const styles = tv({
       'tablet:text-left tablet:text-4xl tablet:justify-start',
     ],
     subtitle: ['text-base mb-8 justify-center'],
-    searchWrapper: 'max-w-[400px]'
+    searchWrapper: 'max-w-[400px]',
   },
 });
