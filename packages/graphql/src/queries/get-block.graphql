@@ -29,7 +29,7 @@ fragment BlockItem on Block {
   }
 }
 
-query getBlockByHeight($height: U64) {
+query getBlockByHeight($height: U32) {
   block(height: $height) {
     ...BlockItem
   }
