@@ -1,10 +1,13 @@
 'use client';
 
-import { Box, Container, Heading, Text, Theme } from '@fuels/ui';
+import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
+import { useState } from 'react';
 import { tv } from 'tailwind-variants';
+import { SearchWidget } from '~/systems/Core/components/Search/SearchWidget';
 
 export function Hero() {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const classes = styles();
 
   return (
@@ -14,9 +17,10 @@ export function Hero() {
           <Heading as="h1" className={classes.title()}>
             Explore Fuel Network
           </Heading>
-          <Text className={classes.subtitle()}>
-            The World&rsquo;s Fastest Modular Execution Layer
-          </Text>
+          <SearchWidget
+            setIsSearchOpen={setIsSearchOpen}
+            isSearchOpen={isSearchOpen}
+          />
         </Container>
         <Box as="figure" className={classes.img()}>
           <Box className={classes.imgWrapper()}>
@@ -40,8 +44,9 @@ const styles = tv({
   slots: {
     root: 'hero-bg overflow-clip relative w-full border-b border-border',
     container: [
-      'z-20 relative py-8 pt-6 px-8 tablet:py-28 tablet:pt-24 tablet:px-10 max-w-[470px]',
-      '[&_.rt-ContainerInner]:bg-black [&_.rt-ContainerInner]:bg-opacity-60 [&_.rt-ContainerInner]:p-2 [&_.rt-ContainerInner]:rounded-lg [&_.rt-ContainerInner]:shadow-2xl',
+      'z-20 relative py-8 pt-6 px-8 tablet:py-28 tablet:pt-24 tablet:px-10 max-w-[500px]',
+      '[&_.rt-ContainerInner]:p-2',
+      '[&_.rt-ContainerInner]:tablet:max-laptop:bg-black [&_.rt-ContainerInner]:tablet:max-laptop:bg-opacity-60 [&_.rt-ContainerInner]:tablet:max-laptop:rounded-lg [&_.rt-ContainerInner]:tablet:max-laptop:shadow-2xl',
     ],
     img: 'hidden absolute inset-0 tablet:block',
     imgChild: 'absolute -top-1/2 right-0',
