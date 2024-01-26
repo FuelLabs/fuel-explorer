@@ -17,10 +17,12 @@ export function Hero() {
           <Heading as="h1" className={classes.title()}>
             Explore Fuel Network
           </Heading>
-          <SearchWidget
-            setIsSearchOpen={setIsSearchOpen}
-            isSearchOpen={isSearchOpen}
-          />
+          <Box className={classes.searchWrapper()}>
+            <SearchWidget
+              setIsSearchOpen={setIsSearchOpen}
+              isSearchOpen={isSearchOpen}
+            />
+          </Box>
         </Container>
         <Box as="figure" className={classes.img()}>
           <Box className={classes.imgWrapper()}>
@@ -44,8 +46,8 @@ const styles = tv({
   slots: {
     root: 'hero-bg overflow-clip relative w-full border-b border-border',
     container: [
-      'z-20 relative py-8 pt-6 px-8 tablet:py-28 tablet:pt-24 tablet:px-10 max-w-[500px]',
-      '[&_.rt-ContainerInner]:p-2',
+      'z-20 relative py-8 pt-6 px-8 tablet:py-28 tablet:pt-24 tablet:px-10',
+      'tablet:max-laptop:max-w-[500px] [&_.rt-ContainerInner]:p-2',
       '[&_.rt-ContainerInner]:tablet:max-laptop:bg-black [&_.rt-ContainerInner]:tablet:max-laptop:bg-opacity-60 [&_.rt-ContainerInner]:tablet:max-laptop:rounded-lg [&_.rt-ContainerInner]:tablet:max-laptop:shadow-2xl',
     ],
     img: 'hidden absolute inset-0 tablet:block',
@@ -57,5 +59,6 @@ const styles = tv({
       'tablet:text-left tablet:text-4xl tablet:justify-start',
     ],
     subtitle: ['text-base mb-8 justify-center'],
+    searchWrapper: 'max-w-[400px]'
   },
 });

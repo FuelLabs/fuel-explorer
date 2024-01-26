@@ -82,10 +82,12 @@ export function TopNav() {
           {externalLinks}
         </Nav.Menu>
         <Nav.Menu>
-          <SearchWidget
-            setIsSearchOpen={setIsDesktopSearchOpen}
-            isSearchOpen={isDesktopSearchOpen}
-          />
+          {!isHomePage && (
+            <SearchWidget
+              setIsSearchOpen={setIsDesktopSearchOpen}
+              isSearchOpen={isDesktopSearchOpen}
+            />
+          )}
         </Nav.Menu>
         <Nav.Menu>
           {tooling}
