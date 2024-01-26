@@ -581,8 +581,8 @@ importers:
         specifier: ^4.0.0
         version: 4.2.1(vite@4.5.2)
       '@xstate/cli':
-        specifier: ^0.4.2
-        version: 0.4.2(prettier@3.2.4)
+        specifier: ^0.5.17
+        version: 0.5.17
       adm-zip:
         specifier: ^0.5.10
         version: 0.5.10
@@ -14031,21 +14031,6 @@ packages:
     resolution: {integrity: sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==}
     dev: false
 
-  /@xstate/cli@0.4.2(prettier@3.2.4):
-    resolution: {integrity: sha512-lxj7YrpCl3azlzHO98oBp+qklKUvkw3AjWG815pVyNNf5Wm7JunYtPkGiqif6wCg1K/7V0x8cMdLzxhFkKBk9w==}
-    hasBin: true
-    dependencies:
-      '@babel/core': 7.23.9
-      '@xstate/machine-extractor': 0.9.2(xstate@4.38.3)
-      '@xstate/tools-shared': 2.0.2(prettier@3.2.4)(xstate@4.38.3)
-      chokidar: 3.5.3
-      commander: 8.3.0
-      xstate: 4.38.3
-    transitivePeerDependencies:
-      - prettier
-      - supports-color
-    dev: true
-
   /@xstate/cli@0.5.17:
     resolution: {integrity: sha512-t/R0PeKamiyshT4SYlo4RwBRpuwzYlUuVesMeIxLZ01C2wfbB1mtFb5kMMN35opkDpyYh72fxi8Pt8HxpLZm+w==}
     hasBin: true
@@ -14093,20 +14078,6 @@ packages:
       - supports-color
     dev: true
 
-  /@xstate/machine-extractor@0.9.2(xstate@4.38.3):
-    resolution: {integrity: sha512-AjSVpvEodvXWxaIpb5fDu0SMxvApmWZUuCVAuggLrkskco+nxtb8pxkjy+HqF2DwrmSirjrRrSRBT+rlERkUtA==}
-    peerDependencies:
-      xstate: ^4
-    dependencies:
-      '@babel/parser': 7.23.6
-      '@babel/traverse': 7.23.7(supports-color@5.5.0)
-      '@babel/types': 7.23.6
-      recast: 0.23.4
-      xstate: 4.38.3
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@xstate/react@3.2.2(@types/react@18.2.48)(react@18.2.0)(xstate@4.38.3):
     resolution: {integrity: sha512-feghXWLedyq8JeL13yda3XnHPZKwYDN5HPBLykpLeuNpr9178tQd2/3d0NrH6gSd0sG5mLuLeuD+ck830fgzLQ==}
     peerDependencies:
@@ -14128,19 +14099,6 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
     dev: false
-
-  /@xstate/tools-shared@2.0.2(prettier@3.2.4)(xstate@4.38.3):
-    resolution: {integrity: sha512-Lg8RD19Jq62M8KsnSF8Tenqo0a8/j7eqzHCpxG7ewc9PklkOcLvOWN4rrGTtYG5zkxJNQTXq8kt2x0TsWwnumQ==}
-    peerDependencies:
-      prettier: ^2.3.1
-      xstate: ^4
-    dependencies:
-      '@xstate/machine-extractor': 0.9.2(xstate@4.38.3)
-      prettier: 3.2.4
-      xstate: 4.38.3
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
 
   /@xstate/tools-shared@4.1.0(prettier@2.8.8)(xstate@4.38.3):
     resolution: {integrity: sha512-AVqlHFlGjoceexIK33D8CDm8zev17gdRFqGRPiDLE9yvjCSzlzPcc65/VlWCV2EvQt99gUHR1bLMw6ONafkF6g==}
@@ -18175,6 +18133,7 @@ packages:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
     dev: false
+    bundledDependencies: false
 
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}

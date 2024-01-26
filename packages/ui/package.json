@@ -43,7 +43,7 @@
     ]
   },
   "scripts": {
-    "build:storybook": "pnpm ts:check && storybook build -o ../app/public/ui",
+    "build:storybook": "pnpm ts:check && storybook build -o ../app-explorer/public/ui",
     "build:preview": "pnpm build:storybook",
     "build": "tsup --dts",
     "build:watch": "tsup --watch",

@@ -31,6 +31,16 @@ const config = {
   redirects: async () => {
     return [
       {
+        source: '/portal',
+        destination: '/portal/index.html',
+        permanent: false,
+      },
+      {
+        source: '/portal-storybook',
+        destination: '/portal-storybook/index.html',
+        permanent: false,
+      },
+      {
         source: '/storybook',
         destination: '/storybook/index.html',
         permanent: false,

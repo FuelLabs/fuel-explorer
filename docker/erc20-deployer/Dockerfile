@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Setup workdir
 WORKDIR /ecr20-deployer

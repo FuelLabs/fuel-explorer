@@ -1,9 +1,10 @@
 # ====== Build Image ======
-FROM node:18-alpine AS BUILD_IMAGE
+FROM node:20-alpine AS BUILD_IMAGE
 
 # dependencies
 RUN apk --no-cache add git
 RUN npm i -g pnpm
+
 
 # set workdir
 WORKDIR /l1chain
@@ -17,7 +18,7 @@ ADD ./.fuelChainConsts.env /l1chain/portal-contracts/.fuelChainConsts.env
 WORKDIR /l1chain/portal-contracts
 
 # build the ethereum contracts and environment
-RUN pnpm install
+RUN pnpm install --force
 # replace the fuel chain consts values and change contract code
 RUN pnpm ts-node scripts/replaceFuelChainConsts.ts
 # run contract compile with the new consts
@@ -28,7 +29,7 @@ RUN pnpm compile
 COPY ./hardhat/hardhat.config.ts .
 
 # ====== Final Image ======
-FROM node:18-alpine
+FROM node:20-alpine
 
 ARG L1_IP=0.0.0.0
 ARG L1_PORT=8545

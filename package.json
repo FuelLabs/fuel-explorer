@@ -24,6 +24,7 @@
   ],
   "scripts": {
     "build": "pnpm turbo:run build",
+    "build:preview": "pnpm turbo:run build:preview",
     "build:explorer": "pnpm turbo:run build --filter=app-explorer",
     "build:explorer:preview": "pnpm turbo:run build:preview --filter=app-explorer",
     "build:explorer:storybook": "pnpm turbo:run build:storybook --filter=app-explorer",
@@ -32,7 +33,8 @@
     "build:portal:storybook": "pnpm turbo:run build:storybook --filter=app-portal",
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
     "dev": "pnpm turbo:run dev",
-    "dev:explorer": "pnpm --filter=app dev",
+    "dev:explorer": "pnpm --filter=app-explorer dev",
+    "dev:portal": "pnpm --filter=app-portal dev",
     "dev:graphql": "pnpm --filter=graphql dev",
     "dev:notification": "pnpm --filter=notification-service dev:notification",
     "lint": "run-s lint:check prettier:check",

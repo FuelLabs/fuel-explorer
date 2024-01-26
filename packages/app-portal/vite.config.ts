@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
@@ -17,6 +18,6 @@ export default defineConfig({
   },
   build: {
     target: ['es2020'],
-    outDir: process.env.BUILD_PATH || 'dist',
+    outDir: resolve(__dirname, '../app-explorer/public/portal'),
   },
 });
