@@ -1,11 +1,11 @@
 import { cssObj } from '@fuel-ui/css';
-import { ButtonLink, Tabs, Heading } from '@fuel-ui/react';
-import { useNodeInfo } from '@fuels-portal/sdk-react';
+import { Tabs, Heading } from '@fuel-ui/react';
+import { useNodeInfo } from '@fuel-wallet/react';
 import type { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { VITE_FUEL_VERSION } from '~/config';
 import { FuelVersionDialog } from '~/systems/Chains/fuel/containers/FuelVersionDialog';
-import { Layout, removeTrailingSlash } from '~/systems/Core';
+import { Layout } from '~/systems/Core';
 import { Pages } from '~/types';
 
 type BridgeHomeProps = {
@@ -13,13 +13,11 @@ type BridgeHomeProps = {
 };
 
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
-  const location = useLocation();
   const { isCompatible } = useNodeInfo({
     version: VITE_FUEL_VERSION,
   });
-  const isCurrentPage = (pageUrl: string) =>
-    removeTrailingSlash(location.pathname) === removeTrailingSlash(pageUrl);
-  const currentTab = isCurrentPage(Pages.bridge) ? 'bridge' : 'transactions';
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Layout>
@@ -28,14 +26,13 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
           Fuel Native Bridge
         </Heading>
         <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
-        <Tabs defaultValue={currentTab}>
+        <Tabs
+          defaultValue={location.pathname.replace(/\/$/, '')}
+          onValueChange={(path) => navigate(path)}
+        >
           <Tabs.List css={styles.tabs}>
-            <ButtonLink href={Pages.bridge} css={styles.buttonLink}>
-              <Tabs.Trigger value="bridge">Bridge</Tabs.Trigger>
-            </ButtonLink>
-            <ButtonLink href={Pages.transactions} css={styles.buttonLink}>
-              <Tabs.Trigger value="transactions">Transactions</Tabs.Trigger>
-            </ButtonLink>
+            <Tabs.Trigger value={Pages.bridge}>Bridge</Tabs.Trigger>
+            <Tabs.Trigger value={Pages.transactions}>History</Tabs.Trigger>
           </Tabs.List>
           {children}
         </Tabs>
@@ -51,7 +48,8 @@ const styles = {
   heading: cssObj({
     mt: 0,
     mb: '$4',
-    ml: '$1',
+    // Align title with the content of the page
+    ml: -2,
   }),
   tabs: cssObj({
     ml: 0,

@@ -1,15 +1,26 @@
 import { cssObj } from '@fuel-ui/css';
-import { Box, Dialog, Text } from '@fuel-ui/react';
+import { Box, Button, Dialog, Text } from '@fuel-ui/react';
+import { useAsset } from '~/systems/Assets/hooks/useAsset';
 import { BridgeTxOverview, BridgeSteps } from '~/systems/Bridge';
 import { shortAddress } from '~/systems/Core';
 import { useOverlay } from '~/systems/Overlay';
 
 import { useTxEthToFuel } from '../hooks';
-import { ETH_SYMBOL, ethLogoSrc } from '../utils';
 
 export function TxEthToFuelDialog() {
+  const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
-  const { steps, ethBlockDate, amount } = useTxEthToFuel({
+  const {
+    steps,
+    date,
+    asset,
+    handlers,
+    shouldShowConfirmButton,
+    status,
+    isLoadingReceipts,
+    amount,
+    explorerLink,
+  } = useTxEthToFuel({
     id: metadata.txId,
   });
 
@@ -17,7 +28,7 @@ export function TxEthToFuelDialog() {
     <>
       <Dialog.Close aria-label="Close Transaction Dialog" />
       <Dialog.Heading>
-        Transaction: {shortAddress(metadata.txId)}
+        Deposit
         <Box css={styles.divider} />
       </Dialog.Heading>
       <Dialog.Description>
@@ -27,16 +38,28 @@ export function TxEthToFuelDialog() {
           <Box css={styles.border} />
           <BridgeTxOverview
             transactionId={shortAddress(metadata.txId)}
-            date={ethBlockDate}
+            date={date}
             isDeposit={true}
-            asset={{
-              assetSymbol: ETH_SYMBOL,
-              imageUrl: ethLogoSrc,
-              assetAmount: amount,
-            }}
+            asset={asset}
+            isLoading={isLoadingReceipts}
+            amount={amount}
+            ethAsset={ethAsset}
+            explorerLink={explorerLink}
           />
         </Box.Stack>
       </Dialog.Description>
+      {shouldShowConfirmButton && (
+        <Dialog.Footer>
+          <Button
+            intent="primary"
+            css={styles.actionButton}
+            isLoading={status?.isConfirmTransactionLoading}
+            onClick={handlers.relayMessageToFuel}
+          >
+            Confirm Transaction
+          </Button>
+        </Dialog.Footer>
+      )}
     </>
   );
 }

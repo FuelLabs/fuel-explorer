@@ -1,3 +1,4 @@
+import { cssObj, globalCss } from '@fuel-ui/css';
 import {
   darkTheme,
   lightTheme,
@@ -10,9 +11,18 @@ import type { PropsWithChildren } from 'react';
 // eslint-disable-next-line import/no-unresolved
 import icons from '/icons/sprite.svg';
 
+const globalStyles = cssObj({
+  ':root': {
+    '--colors-inputBaseBg': 'var(--colors-dialogBg)',
+    '--colors-cardBg': 'var(--colors-intentsBase1)',
+  },
+  'h2, h3, h4': {
+    fontWeight: '$base',
+  },
+});
+
 loadIcons(icons);
 setFuelThemes({
-  initial: 'light',
   themes: {
     dark: darkTheme,
     light: lightTheme,
@@ -20,5 +30,10 @@ setFuelThemes({
 });
 
 export function FuelUiProvider({ children }: PropsWithChildren) {
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider>
+      {globalCss(globalStyles)()}
+      {children}
+    </ThemeProvider>
+  );
 }

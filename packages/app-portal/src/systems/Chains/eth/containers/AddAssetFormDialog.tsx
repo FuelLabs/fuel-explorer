@@ -10,29 +10,31 @@ import {
 } from '@fuel-ui/react';
 import { Controller } from 'react-hook-form';
 import { store } from '~/store';
+import { useAssets } from '~/systems/Assets';
 import { shortAddress } from '~/systems/Core';
 import { useOverlay } from '~/systems/Overlay';
 
-import { useAddAssetForm, useAssets } from '../hooks';
+import { useAddAssetForm } from '../hooks';
 import type { AddAssetFormValues } from '../hooks';
 
 export function AddAssetFormDialog() {
   const { metadata } = useOverlay<{ assetAddress: string }>();
-  const { handlers, isLoading } = useAssets();
+  const { isLoading } = useAssets();
 
   const form = useAddAssetForm();
   const { control } = form;
 
-  const onSubmit = (data: AddAssetFormValues) => {
-    handlers.addAsset({
-      asset: {
-        address: metadata.assetAddress,
-        image: '',
-        decimals: Number(data.decimals),
-        symbol: data.symbol.toUpperCase(),
-      },
-    });
-    store.openEthAssetsDialog();
+  const onSubmit = (_: AddAssetFormValues) => {
+    // this code will be needed in next PR when implementing asset crud
+    // handlers.addAsset({
+    //   asset: {
+    //     address: metadata.assetAddress,
+    //     image: '',
+    //     decimals: Number(data.decimals),
+    //     symbol: data.symbol.toUpperCase(),
+    //   },
+    // });
+    // store.openAssetsDialog();
   };
 
   return (
@@ -44,7 +46,7 @@ export function AddAssetFormDialog() {
             aria-label="Open eth assets dialog"
             variant="link"
             icon="ArrowLeft"
-            onPress={store.openEthAssetsDialog}
+            onClick={store.openAssetsDialog}
           />
           <Text color="intentsBase12" fontSize="sm">
             Add token {shortAddress(metadata.assetAddress)}

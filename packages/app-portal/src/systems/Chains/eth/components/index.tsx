@@ -1,1 +1,1 @@
-export * from './EthAssetCard';
+export * from './RemoveAssetDialog';

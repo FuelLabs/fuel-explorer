@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Card, Text, Image, Button, Box, Icon, Tooltip } from '@fuel-ui/react';
+import { Card, Text, Image, Button, Box } from '@fuel-ui/react';
 import type { ReactNode } from 'react';
 import { shortAddress } from '~/systems/Core';
 
@@ -31,11 +31,9 @@ export const AccountConnectionInput = ({
   return (
     <Card css={styles.root} variant="outlined">
       <Card.Body css={styles.cardBody}>
-        <Box.Stack gap="$1">
-          <Box>
+        <Box.Flex justify="space-between" gap="$1">
+          <Box.Stack gap="$1">
             <Text fontSize="sm">{label}</Text>
-          </Box>
-          <Box.Flex align="center" wrap="wrap" justify="space-between">
             <Box.Flex gap="$2" align="center">
               {typeof networkImage === 'string' ? (
                 <Image
@@ -49,6 +47,8 @@ export const AccountConnectionInput = ({
               )}
               <Text color="intentsBase12">{networkName}</Text>
             </Box.Flex>
+          </Box.Stack>
+          <Box.Stack align="flex-end" gap="0">
             {!account?.address ? (
               showConnect && (
                 <Button
@@ -57,7 +57,7 @@ export const AccountConnectionInput = ({
                   size="xs"
                   intent="primary"
                   aria-label={`${label} Connect wallet`}
-                  onPress={onConnect}
+                  onClick={onConnect}
                 >
                   <Text fontSize="sm" color="inherit">
                     Connect wallet
@@ -65,8 +65,18 @@ export const AccountConnectionInput = ({
                 </Button>
               )
             ) : (
-              <Box.Flex gap={'$1'} justify={'center'} align={'center'}>
-                <Text>
+              <>
+                <Button
+                  size="xs"
+                  variant="link"
+                  css={styles.disconnectButton}
+                  rightIcon="X"
+                  iconSize={13}
+                  onClick={onDisconnect}
+                >
+                  Disconnect
+                </Button>
+                <Text aria-label={`${networkName}: Connected Wallet`}>
                   {shortAddress(account.alias, {
                     minLength: 16,
                   }) ||
@@ -75,15 +85,10 @@ export const AccountConnectionInput = ({
                       end: 6,
                     })}
                 </Text>
-                <Box css={styles.disconnectButton} onClick={onDisconnect}>
-                  <Tooltip content="Disconnect account">
-                    <Icon icon="X" size={20} aria-label="Disconnect account" />
-                  </Tooltip>
-                </Box>
-              </Box.Flex>
+              </>
             )}
-          </Box.Flex>
-        </Box.Stack>
+          </Box.Stack>
+        </Box.Flex>
       </Card.Body>
     </Card>
   );
@@ -93,7 +98,8 @@ const styles = {
   root: cssObj({
     minHeight: '$15',
     overflowX: 'hidden',
-    backgroundColor: '$cardBg !important',
+    backgroundColor: '$inputBaseBg !important',
+    borderColor: '$inputBaseBorder !important',
   }),
   cardBody: cssObj({
     px: '$3',
@@ -102,27 +108,7 @@ const styles = {
   connectButton: cssObj({
     width: '$36',
   }),
-  connectedButton: cssObj({
-    justifyContent: 'space-between',
-    gap: 0,
-    borderColor: '$border',
-  }),
-  circle: cssObj({
-    minWidth: '$3',
-    height: '$3',
-    backgroundColor: '$intentsError9',
-    borderRadius: '$full',
-  }),
-  disconnectButtonIcon: cssObj({
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 'fit-content',
-  }),
   disconnectButton: cssObj({
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    cursor: 'pointer',
+    mr: '-$1',
   }),
 };

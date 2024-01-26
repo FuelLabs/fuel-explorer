@@ -1,16 +1,17 @@
 import { AccountConnectionInput } from '~/systems/Accounts';
+import { useAsset } from '~/systems/Assets';
 
 import { ETH_CHAIN } from '../../config';
 import { useEthAccountConnection } from '../hooks';
-import { ethLogoSrc } from '../utils';
 
 export const EthAccountConnection = ({ label }: { label?: string }) => {
+  const { asset: ethAsset } = useAsset();
   const { address, ens, handlers, isConnecting } = useEthAccountConnection();
 
   return (
     <AccountConnectionInput
       networkName={ETH_CHAIN.name}
-      networkImage={ethLogoSrc}
+      networkImage={ethAsset?.icon}
       label={label}
       isConnecting={isConnecting}
       account={{

@@ -24,8 +24,8 @@ export function Ecosystem() {
 
   return (
     <Layout {...animations.slideInTop()}>
-      <Layout.Content>
-        <Box.Stack gap="$12" grow={1}>
+      <Layout.Content css={{ padding: '$16 $1 $4 $4' }}>
+        <Box.Stack gap="$12" grow={1} css={styles.content}>
           <Box.Flex css={styles.headingWrapper}>
             <Box.Stack gap="$2" wrap="wrap">
               <Heading as="h2" css={styles.heading}>
@@ -50,8 +50,8 @@ export function Ecosystem() {
             tags={tags}
             activeTag={filter}
             isLoading={isLoading}
-            onPressTag={handleTagButtonClick}
-            onPressAllCategories={handlers.clearFilters}
+            onClickTag={handleTagButtonClick}
+            onClickAllCategories={handlers.clearFilters}
           />
           <ProjectList
             isLoading={isLoading}
@@ -65,6 +65,9 @@ export function Ecosystem() {
 }
 
 const styles = {
+  content: cssObj({
+    paddingBottom: '$20',
+  }),
   heading: cssObj({
     margin: 0,
   }),

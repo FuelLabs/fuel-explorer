@@ -1,17 +1,35 @@
-import { useTransaction } from '@fuels-portal/sdk-react';
-import { useInterpret, useSelector } from '@xstate/react';
-import { fromTai64ToUnix, getReceiptsMessageOut } from 'fuels';
-import { useEffect, useMemo } from 'react';
-import { store } from '~/store';
+import {
+  ReceiptType,
+  fromTai64ToUnix,
+  getReceiptsMessageOut,
+  hexlify,
+} from 'fuels';
+import { useMemo } from 'react';
+import { store, Services } from '~/store';
+import { useAssets } from '~/systems/Assets';
+import type { Asset } from '~/systems/Assets/services/asset';
+import { getAssetEth } from '~/systems/Assets/utils';
+import type { BridgeTxsMachineState } from '~/systems/Bridge';
+import { useExplorerLink } from '~/systems/Bridge/hooks/useExplorerLink';
 
 import { useEthAccountConnection } from '../../eth/hooks';
+import { isSameEthAddress, parseFuelAddressToEth } from '../../eth/utils';
 import type { TxFuelToEthMachineState } from '../machines';
-import { txFuelToEthMachine } from '../machines';
-import { FUEL_UNITS } from '../utils';
+import { distanceToNow } from '../utils';
 
 import { useFuelAccountConnection } from './useFuelAccountConnection';
 
-const selectors = {
+const bridgeTxsSelectors = {
+  txFuelToEth: (txId?: string) => (state: BridgeTxsMachineState) => {
+    if (!txId) return undefined;
+
+    const machine = state.context?.fuelToEthTxRefs?.[txId]?.getSnapshot();
+
+    return machine;
+  },
+};
+
+const txFuelToEthSelectors = {
   status: (state: TxFuelToEthMachineState) => {
     const isSubmitToBridgeLoading = state.hasTag('isSubmitToBridgeLoading');
     const isSubmitToBridgeSelected = state.hasTag('isSubmitToBridgeSelected');
@@ -50,12 +68,20 @@ const selectors = {
     };
   },
   steps: (state: TxFuelToEthMachineState) => {
-    const status = selectors.status(state);
+    const status = txFuelToEthSelectors.status(state);
+    const estimatedTimeRemaining =
+      txFuelToEthSelectors.estimatedTimeRemaining(state);
 
     function getConfirmStatusText() {
       if (status.isWaitingEthWalletApproval) return 'Action required';
       if (status.isConfirmTransactionDone) return 'Done!';
       return 'Action';
+    }
+
+    function getSettlementStatusText() {
+      if (status.isSettlementDone) return 'Done!';
+      if (estimatedTimeRemaining) return `~${estimatedTimeRemaining} left`;
+      return 'Waiting';
     }
 
     const steps = [
@@ -69,8 +95,7 @@ const selectors = {
       },
       {
         name: 'Settlement',
-        // TODO: put correct time left '~XX days left', how? waiting for message Proof in this stage
-        status: status.isSettlementDone ? 'Done!' : 'Waiting',
+        status: getSettlementStatusText(),
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
@@ -83,7 +108,7 @@ const selectors = {
         isSelected: status.isConfirmTransactionSelected,
       },
       {
-        name: 'Receive on ETH',
+        name: 'Receive on Ethereum',
         status: status.isReceiveDone ? 'Done!' : 'Automatic',
         isLoading: status.isReceiveLoading,
         isDone: status.isReceiveDone,
@@ -96,35 +121,119 @@ const selectors = {
     const fuelTxResult = state.context.fuelTxResult;
     return fuelTxResult;
   },
-  amountSent: (state: TxFuelToEthMachineState) => {
+  assetAmount: (assets: Asset[]) => (state: TxFuelToEthMachineState) => {
     const fuelTxResult = state.context.fuelTxResult;
 
     const messageOutReceipt = getReceiptsMessageOut(
       fuelTxResult?.receipts || []
     )[0];
 
-    const amountSent = messageOutReceipt?.amount;
-    return amountSent;
+    if (messageOutReceipt) {
+      const burnReceipt = fuelTxResult?.receipts?.find(
+        (receipt) => receipt.type === ReceiptType.Burn
+      );
+      if (burnReceipt) {
+        const receipt = burnReceipt as Extract<
+          typeof burnReceipt,
+          { type: ReceiptType.Burn }
+        >;
+        const amount = receipt.val;
+        const ethAssetId = messageOutReceipt.data
+          ? parseFuelAddressToEth(
+              hexlify(messageOutReceipt.data).replace('0x', '').slice(72, 136)
+            )
+          : undefined;
+        const ethAsset = assets
+          .map((asset) => ({
+            asset,
+            ethNetwork: getAssetEth(asset),
+          }))
+          .find(({ ethNetwork }) => {
+            return isSameEthAddress(ethNetwork?.address, ethAssetId);
+          });
+
+        return {
+          asset: ethAsset?.asset,
+          amount: amount.format({
+            precision: ethAsset?.ethNetwork?.decimals,
+          }),
+        };
+      }
+    }
+
+    const asset = assets.find((asset) => asset.symbol === 'ETH');
+
+    if (!asset) return undefined;
+
+    const ethNetwork = getAssetEth(asset);
+
+    return {
+      asset,
+      amount: messageOutReceipt?.amount?.format({
+        precision: ethNetwork?.decimals,
+      }),
+    };
+  },
+  isLoadingTxResult: (state: TxFuelToEthMachineState) => {
+    return state.matches('submittingToBridge.waitingFuelTxResult');
+  },
+  estimatedTimeRemaining: (state: TxFuelToEthMachineState) => {
+    const estimatedFinishDate = state.context.estimatedFinishDate;
+    if (!estimatedFinishDate) return undefined;
+
+    return distanceToNow(estimatedFinishDate);
   },
 };
 
-export function useTxFuelToEth({
-  txId,
-  skipAnalyzeTx,
-}: {
-  txId: string;
-  skipAnalyzeTx?: boolean;
-}) {
-  const { walletClient: ethWalletClient, publicClient: ethPublicClient } =
-    useEthAccountConnection();
+export function useTxFuelToEth({ txId }: { txId: string }) {
+  const { walletClient: ethWalletClient } = useEthAccountConnection();
   const { provider: fuelProvider } = useFuelAccountConnection();
-  const service = useInterpret(txFuelToEthMachine);
-  const status = useSelector(service, selectors.status);
-  const steps = useSelector(service, selectors.steps);
-  const fuelTxResult = useSelector(service, selectors.fuelTxResult);
-  const fuelTxAmount = useSelector(service, selectors.amountSent);
+  const { assets } = useAssets();
+  const { href: explorerLink } = useExplorerLink({
+    network: 'fuel',
+    providerUrl: fuelProvider?.url || '',
+    id: txId,
+  });
 
-  const fuelTxDate = useMemo(
+  const txFuelToEthState = store.useSelector(
+    Services.bridgeTxs,
+    bridgeTxsSelectors.txFuelToEth(txId)
+  );
+
+  const {
+    steps,
+    status,
+    fuelTxResult,
+    asset,
+    amount,
+    isLoadingTxResult,
+    estimatedTimeRemaining,
+  } = useMemo(() => {
+    if (!txFuelToEthState) return {};
+
+    const steps = txFuelToEthSelectors.steps(txFuelToEthState);
+    const status = txFuelToEthSelectors.status(txFuelToEthState);
+    const fuelTxResult = txFuelToEthSelectors.fuelTxResult(txFuelToEthState);
+    const assetAmount =
+      txFuelToEthSelectors.assetAmount(assets)(txFuelToEthState);
+    const isLoadingTxResult =
+      txFuelToEthSelectors.isLoadingTxResult(txFuelToEthState);
+    const estimatedTimeRemaining =
+      txFuelToEthSelectors.estimatedTimeRemaining(txFuelToEthState);
+
+    return {
+      steps,
+      status,
+      fuelTxResult,
+      asset: assetAmount?.asset,
+      amount: assetAmount?.amount,
+      isLoadingTxResult,
+      estimatedTimeRemaining,
+    };
+  }, [txFuelToEthState, assets]);
+
+  // TODO: remove this conversion when sdk already returns the date in unix format
+  const date = useMemo(
     () =>
       fuelTxResult?.time
         ? new Date(fromTai64ToUnix(fuelTxResult?.time) * 1000)
@@ -132,25 +241,14 @@ export function useTxFuelToEth({
     [fuelTxResult?.time]
   );
 
-  const { transaction: fuelTx } = useTransaction(txId);
-
-  useEffect(() => {
-    if (txId && !skipAnalyzeTx && fuelProvider) {
-      service.send('START_ANALYZE_TX', {
-        input: {
-          fuelTxId: txId,
-          fuelProvider,
-          ethPublicClient,
-        },
-      });
-    }
-  }, [txId, fuelProvider, ethPublicClient, skipAnalyzeTx]);
-
   function relayToEth() {
-    service.send('RELAY_TO_ETH', {
+    if (!ethWalletClient) return;
+
+    store.relayTxFuelToEth({
       input: {
         ethWalletClient,
       },
+      fuelTxId: txId,
     });
   }
 
@@ -160,13 +258,14 @@ export function useTxFuelToEth({
       relayToEth,
       openTxFuelToEth: store.openTxFuelToEth,
     },
-    fuelTx,
-    fuelTxDate,
-    fuelTxAmount: fuelTxAmount?.format({
-      precision: 9,
-      units: FUEL_UNITS,
-    }),
+    fuelTxResult,
+    date,
+    asset,
+    amount,
     steps,
     status,
+    isLoadingTxResult,
+    estimatedTimeRemaining,
+    explorerLink,
   };
 }

@@ -1,2 +1,2 @@
 export * from './txEthToFuel';
-export * from './assetService';
+export * from './connectors';

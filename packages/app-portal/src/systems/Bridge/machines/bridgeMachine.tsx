@@ -1,7 +1,7 @@
 import type { BN } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import { store } from '~/store';
+import type { Asset } from '~/systems/Assets/services/asset';
 import type { FromToNetworks } from '~/systems/Chains';
 import { FetchMachine } from '~/systems/Core/machines';
 
@@ -10,7 +10,7 @@ import type { BridgeInputs, PossibleBridgeInputs } from '../services';
 
 type MachineContext = {
   assetAmount?: BN;
-  assetAddress?: string;
+  asset?: Asset;
 } & Partial<FromToNetworks>;
 
 type MachineServices = {
@@ -25,7 +25,7 @@ export enum BridgeStatus {
   waitingConnectFrom = 'Connect From Wallet',
   waitingConnectTo = 'Connect To Wallet',
   waitingAsset = 'Pick asset',
-  waitingAssetAmount = 'Type amount to operation',
+  waitingAssetAmount = 'Enter amount',
   insufficientBalance = 'Insufficient funds',
   ready = 'ready',
 }
@@ -36,8 +36,8 @@ export type BridgeMachineEvents =
       input: FromToNetworks;
     }
   | {
-      type: 'CHANGE_ASSET_ADDRESS';
-      input: { assetAddress?: string };
+      type: 'CHANGE_ASSET';
+      input: { asset?: Asset };
     }
   | {
       type: 'CHANGE_ASSET_AMOUNT';
@@ -69,8 +69,8 @@ export const bridgeMachine = createMachine(
           CHANGE_ASSET_AMOUNT: {
             actions: ['assignAssetAmount'],
           },
-          CHANGE_ASSET_ADDRESS: {
-            actions: ['assignAssetAddress', 'closeOverlay'],
+          CHANGE_ASSET: {
+            actions: ['assignAsset'],
           },
           START_BRIDGING: {
             target: 'bridging',
@@ -89,11 +89,13 @@ export const bridgeMachine = createMachine(
               toNetwork: ctx.toNetwork,
               assetAmount: ctx.assetAmount,
               fuelAddress: ev.input.fuelAddress,
-              ethAsset: ev.input.ethAsset,
+              asset: ev.input.asset,
               ethWalletClient: ev.input.ethWalletClient,
               ethPublicClient: ev.input.ethPublicClient,
               fuelWallet: ev.input.fuelWallet,
               ethAddress: ev.input.ethAddress,
+              fuelAsset: ev.input.fuelAsset,
+              fuelProvider: ev.input.fuelProvider,
             }),
           },
           onDone: [
@@ -113,23 +115,19 @@ export const bridgeMachine = createMachine(
   },
   {
     actions: {
-      assignNetworks: assign((ctx, ev) => ({
-        ...ctx,
-        fromNetwork: ev.input.fromNetwork,
-        toNetwork: ev.input.toNetwork,
-      })),
+      assignNetworks: assign({
+        fromNetwork: (_, ev) => ev.input.fromNetwork,
+        toNetwork: (_, ev) => ev.input.toNetwork,
+      }),
       assignAssetAmount: assign({
         assetAmount: (_, ev) => ev.input.assetAmount,
       }),
-      assignAssetAddress: assign({
-        assetAddress: (_, ev) => ev.input.assetAddress,
+      assignAsset: assign({
+        asset: (_, ev) => ev.input.asset,
       }),
       clearAssetAmmount: assign({
         assetAmount: undefined,
       }),
-      closeOverlay: () => {
-        store.closeOverlay();
-      },
     },
     services: {
       bridge: FetchMachine.create<BridgeInputs['bridge'], void>({

@@ -1,15 +1,18 @@
 import { cssObj } from '@fuel-ui/css';
 import { Card, Box, Text, InputAmount, Alert, Link } from '@fuel-ui/react';
 import { motion, useAnimationControls } from 'framer-motion';
+import { getAssetEth } from '~/systems/Assets/utils';
 import {
   EthAccountConnection,
   FuelAccountConnection,
   isEthChain,
   isFuelChain,
+  useFuelAccountConnection,
 } from '~/systems/Chains';
 
 import { BridgeButton, BridgeTabs } from '../containers';
 import { useBridge } from '../hooks';
+import { useWithdrawDelay } from '../hooks/useWithdrawDelay';
 
 export const Bridge = () => {
   const {
@@ -22,11 +25,15 @@ export const Bridge = () => {
     asset,
     handlers,
   } = useBridge();
+  const { balance } = useFuelAccountConnection();
 
   const fromControls = useAnimationControls();
   const toControls = useAnimationControls();
+  const { timeToWithdrawFormatted } = useWithdrawDelay();
 
   if (!fromNetwork || !toNetwork) return null;
+
+  const ethAssetAddress = asset ? getAssetEth(asset)?.address : undefined;
 
   return (
     <Card>
@@ -52,29 +59,40 @@ export const Bridge = () => {
             </Box.Stack>
           )}
           <Box.Stack gap="$2">
-            <Text color="intentsBase12">Asset</Text>
+            <Text color="intentsBase12">Asset amount</Text>
             <InputAmount
               isDisabled={!ethAddress && !fuelAddress}
               balance={assetBalance}
               value={assetAmount}
               asset={{
                 name: asset?.symbol,
-                imageUrl: asset?.image,
+                imageUrl: asset?.icon || '',
+                address: ethAssetAddress,
               }}
+              onClickAsset={handlers.openAssetsDialog}
               onChange={(val) =>
                 handlers.changeAssetAmount({ assetAmount: val || undefined })
               }
-              // TODO: enable this when we include erc-20 deposit
-              // onClickAsset={handlers.openAssetsDialog}
             />
           </Box.Stack>
+          {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
+            <Alert status="warning">
+              <Alert.Description>
+                You don&apos;t have any ETH on Fuel to pay for gas. We recommend
+                you bridge some ETH before you bridge any other assets.
+              </Alert.Description>
+            </Alert>
+          )}
           <BridgeButton />
           <Alert status="warning">
             <Alert.Description>
-              Any assets deposited to Fuel takes 7 days to withdraw back to
-              Ethereum. Learn more about our architecture and security in
-              our&nbsp;
-              <Link isExternal href="https://fuel.sh/">
+              Any assets deposited to Fuel can take up to{' '}
+              {timeToWithdrawFormatted} to withdraw back to Ethereum. Learn more
+              about our architecture and security in our&nbsp;
+              <Link
+                isExternal
+                href="https://github.com/FuelLabs/fuel-bridge/blob/main/docs/ARCHITECTURE.md"
+              >
                 docs
               </Link>
             </Alert.Description>

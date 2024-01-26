@@ -12,5 +12,5 @@ export const calculateDateDiff = (date?: Date) => {
   if (!date) return '';
 
   const diffInDays = formatDistanceToNow(date, { addSuffix: true });
-  return diffInDays;
+  return diffInDays.replace('less than a minute ago', 'just now');
 };

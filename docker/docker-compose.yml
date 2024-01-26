@@ -28,10 +28,18 @@ services:
     ports:
       # expose the service to the host for integration testing
       - ${FUEL_CORE_HTTP_PORT:-4000}:4001
+    healthcheck:
+      test: curl --fail http://localhost:4001/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 100
 
   fuel_block_commiter:
     depends_on:
-      - fuel_core
+      fuel_core:
+        condition: service_healthy
+      l1_chain:
+        condition: service_started
     image: fueldev/block-committer:${DOCKER_TAG_FUEL_CORE:-latest}
     platform: linux/amd64
     build:
@@ -45,3 +53,21 @@ services:
     ports:
       # expose the service to the host for integration testing
       - ${COMMITTER_HTTP_PORT:-8888}:8888
+
+  erc20_deployer:
+    depends_on:
+      fuel_core:
+        condition: service_healthy
+      l1_chain:
+        condition: service_started
+    platform: linux/amd64
+    build:
+      context: ./erc20-deployer/
+    environment:
+      L1_CHAIN_HTTP: http://l1_chain:8545
+      FUEL_GRAPHQL_ENDPOINT: http://fuel_core:4001/graphql
+      DEPLOYMENTS_HTTP: http://l1_chain:8081
+      PK_ETH_WALLET: 59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
+    ports:
+      # expose the service to the host for integration testing
+      - ${ERC20_HTTP_PORT:-8082}:9090

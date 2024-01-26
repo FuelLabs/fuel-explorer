@@ -1,7 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Box, Text, Button } from '@fuel-ui/react';
-
-import { BridgeTxItemsLoading } from '../BridgeTxItemsLoading';
+import { Card, Box, Text, Button } from '@fuel-ui/react';
 
 type BridgeTxListEmptyProps = {
   isConnecting: boolean;
@@ -13,29 +11,38 @@ export const BridgeTxListNotConnected = ({
   onClick,
 }: BridgeTxListEmptyProps) => {
   return (
-    <Box.Stack justify="center" gap="$4">
-      <BridgeTxItemsLoading />
-      <Box.Flex justify="center">
-        <Text fontSize="lg" color="intentsBase12">
-          Connect your wallet to see transactions
-        </Text>
-      </Box.Flex>
-      <Box.Flex justify="center">
-        <Button
-          isLoading={isConnecting}
-          intent="primary"
-          css={styles.connectButton}
-          onPress={onClick}
-        >
-          Connect Fuel Wallet
-        </Button>
-      </Box.Flex>
-    </Box.Stack>
+    <Card variant="outlined">
+      <Card.Body css={styles.cardBody}>
+        <Box.Stack justify="center" align="center" gap="$6">
+          <Box.Stack justify="center" align="center" gap="$1">
+            <Text fontSize="lg" color="intentsBase12">
+              Wallet not detected
+            </Text>
+            <Text color="intentsBase10" fontSize="sm">
+              Connect a wallet to see your transactions
+            </Text>
+          </Box.Stack>
+          <Box.Flex justify="center">
+            <Button
+              isLoading={isConnecting}
+              intent="primary"
+              css={styles.connectButton}
+              onClick={onClick}
+            >
+              Connect Fuel Wallet
+            </Button>
+          </Box.Flex>
+        </Box.Stack>
+      </Card.Body>
+    </Card>
   );
 };
 
 const styles = {
   connectButton: cssObj({
-    width: '$50',
+    width: 180,
+  }),
+  cardBody: cssObj({
+    py: '$8',
   }),
 };

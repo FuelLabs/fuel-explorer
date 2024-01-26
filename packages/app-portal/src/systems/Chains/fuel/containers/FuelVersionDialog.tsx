@@ -45,7 +45,7 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => (
           intent="primary"
           size="lg"
         >
-          <b>Install Fuel Wallet</b>
+          Install Fuel Wallet
         </Button>
       </Dialog.Footer>
     </Dialog.Content>

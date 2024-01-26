@@ -1,75 +1,70 @@
 import {
-  useFuel,
-  useConnect,
   useAccount,
   useDisconnect,
   useIsConnected,
-  useProvider,
-  useBalance,
   useWallet,
-} from '@fuels-portal/sdk-react';
+  useConnector,
+  useFuel,
+} from '@fuel-wallet/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { store } from '~/store';
+import type { AssetFuel } from '~/systems/Assets/utils';
+import { useFuelNetwork } from '~/systems/Settings/providers/FuelNetworkProvider';
 
-import { ETH_SYMBOL, EthTxCache, ethLogoSrc } from '../../eth';
-import { FUEL_UNITS, FuelTxCache } from '../utils';
+import { useBalance } from './useBalance';
+import { useHasFuelWallet } from './useHasFuelWallet';
 
-export const useFuelAccountConnection = () => {
+export const useFuelAccountConnection = (props?: { assetId?: string }) => {
+  const { assetId } = props || {};
+  const { fuelProvider } = useFuelNetwork();
   const { fuel } = useFuel();
   const { account } = useAccount();
-  const { balance } = useBalance({ address: account || '' });
-  const { isConnected } = useIsConnected();
-  const { connect, error, isLoading: isConnecting } = useConnect();
+  const { balance } = useBalance({
+    address: account || '',
+    assetId,
+    provider: fuelProvider,
+  });
+  const { hasWallet } = useHasFuelWallet();
+  const { isLoading: isLoadingConnection } = useIsConnected();
+  const { connect, error, isConnecting } = useConnector();
   const { disconnect } = useDisconnect();
-  const { provider } = useProvider();
+  // const { provider: fuelProvider } = useProvider();
   const { wallet } = useWallet({ address: account || '' });
-
-  // TODO: replace here when we support multiple assets (ERC-20)
-  const asset = {
-    // TODO: replace with ETH_ASSET_ID from asset-list package after this task gets done
-    // https://linear.app/fuel-network/issue/FRO-144/make-asset-list-package-public-and-publish-in-npm
-    address:
-      '0x0000000000000000000000000000000000000000000000000000000000000000',
-    decimals: FUEL_UNITS,
-    symbol: ETH_SYMBOL,
-    image: ethLogoSrc,
-  };
 
   const address = useMemo(
     () => (account ? Address.fromString(account) : undefined),
     [account]
   );
-  const hasInstalledFuel = Boolean(fuel);
 
-  function handleConnect() {
-    if (hasInstalledFuel) {
-      connect();
-    } else {
-      store.openFuelInstall();
-    }
+  function addAsset(asset: AssetFuel) {
+    const { decimals, assetId, icon, symbol, name } = asset;
+
+    fuel?.addAsset({
+      assetId,
+      imageUrl: icon ?? undefined,
+      symbol,
+      decimals,
+      name,
+    });
   }
 
   return {
     handlers: {
-      connect: handleConnect,
-      disconnect: () => {
-        disconnect();
-        EthTxCache.clean();
-        FuelTxCache.clean();
-      },
-      openFuelInstall: store.openFuelInstall,
+      connect,
+      disconnect,
       closeDialog: store.closeOverlay,
+      addAsset,
     },
-    hasInstalledFuel,
     account,
     address,
-    isConnected,
+    isConnected: !!account,
     error,
+    hasWallet,
+    isLoadingConnection,
     isConnecting,
-    provider,
+    provider: fuelProvider,
     balance,
     wallet,
-    asset,
   };
 };

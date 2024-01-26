@@ -1,16 +1,24 @@
 import { cssObj } from '@fuel-ui/css';
 
+export const SCROLL_WIDTH = `14px`;
+
+export const scrollableContent = cssObj({
+  width: `calc(100vw - ${SCROLL_WIDTH})`,
+  maxWidth: `calc(100vw - ${SCROLL_WIDTH})`,
+  paddingLeft: SCROLL_WIDTH,
+  boxSizing: 'border-box',
+});
+
 export const scrollable = (
-  regularColor: string = '$gray1',
+  regularColor: string = '$gray8',
   hoverColor: string = '$gray10'
 ) =>
   cssObj({
     overflowY: 'overlay',
-    overflowX: 'hidden',
     scrollBehavior: 'smooth',
 
     '&::-webkit-scrollbar': {
-      width: '14px',
+      width: SCROLL_WIDTH,
       backgroundColor: 'transparent',
     },
     '&::-webkit-scrollbar-track': {
@@ -29,5 +37,6 @@ export const scrollable = (
   });
 
 export const coreStyles = {
+  scrollableContent,
   scrollable,
 };

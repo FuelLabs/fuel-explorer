@@ -21,7 +21,51 @@ function getEnvName() {
   }
 }
 
-function getEthFuelL1Contracts() {
+function getBridgeTokenContracts() {
+  if (process.env.VITE_FUEL_CHAIN === 'fuelDev') {
+    // On the ci I was encountering issues
+    // with the erc20-deployer server not
+    // completely started before the e2e tests began
+    const IS_CI = !!process.env.CI;
+    const { body } = retus('http://localhost:8082/deployments', {
+      json: true,
+      retry: {
+        limit: IS_CI ? 5 : 2,
+        delay: IS_CI ? 15000 : 0,
+      },
+    });
+
+    return body;
+  }
+
+  const ETH_ERC20 = '0xC6387efAD0F184a90B34f397C3d6Fd63135ef790';
+
+  if (
+    process.env.VITE_ETH_CHAIN === 'sepolia' &&
+    process.env.VITE_FUEL_CHAIN === 'fuelBeta5Dev'
+  ) {
+    return {
+      ETH_ERC20,
+      FUEL_TokenContract:
+        '0x7d3e3721d96108b71e187aa17c3330ac400637a2649490f4b3d964cbf1b8943e',
+    };
+  }
+
+  if (
+    process.env.VITE_ETH_CHAIN === 'sepolia' &&
+    process.env.VITE_FUEL_CHAIN === 'fuelBeta5'
+  ) {
+    return {
+      ETH_ERC20,
+      FUEL_TokenContract:
+        '0x84233a3696f4ca759e7f07348f33efa98e1dc1fe65bc1cc5ea693a1368b0f9e9',
+    };
+  }
+
+  return {};
+}
+
+function getBridgeSolidityContracts() {
   if (process.env.VITE_ETH_CHAIN === 'foundry') {
     const { body } = retus('http://localhost:8080/deployments.local.json', {
       json: true,
@@ -30,15 +74,27 @@ function getEthFuelL1Contracts() {
     return body;
   }
 
-  // sepolia config is got from: https://github.com/FuelLabs/fuel-bridge/blob/main/packages/portal-contracts/deployments/deployments.sepolia.json
-  if (process.env.VITE_ETH_CHAIN === 'sepolia') {
+  if (
+    process.env.VITE_ETH_CHAIN === 'sepolia' &&
+    process.env.VITE_FUEL_CHAIN === 'fuelBeta5Dev'
+  ) {
     return {
-      FuelChainState: '0xbe7aB12653e705642eb42EF375fd0d35Cfc45b03',
-      FuelMessagePortal: '0x03f2901Db5723639978deBed3aBA66d4EA03aF73',
-      FuelERC20Gateway: '0x0C817d089c693Ea435a95c52409984F45847F53c',
-      FuelChainState_impl: '0x9fe3f180aa29Cd49a73e99129A988F36A5800ADa',
-      FuelMessagePortal_impl: '0xaf4EBaF4D853809D984d4ee3D6DAA8fa2367396A',
-      FuelERC20Gateway_impl: '0xea8BE566210aE54687bFA3b0BF8Ddc3e49767655',
+      FuelChainState: '0xb65850FB7eA866f8730Ce713657ed965407F6472',
+      FuelMessagePortal: '0xBf340BAC79c301B264E2a5dEa51b7F61eb3e666A',
+      FuelERC20Gateway: '0x749E27d070E2F4a3D6CED522a0D4BDCB37fA95ba',
+      FuelERC721Gateway: '0x4aC11e55652b4e13Fc8dB6F42bB26793605d03B8',
+    };
+  }
+
+  if (
+    process.env.VITE_ETH_CHAIN === 'sepolia' &&
+    process.env.VITE_FUEL_CHAIN === 'fuelBeta5'
+  ) {
+    return {
+      FuelChainState: '0x395B125343ADebCcB05dd70e117774E3AB08a8a7',
+      FuelMessagePortal: '0x557c5cE22F877d975C2cB13D0a961a182d740fD5',
+      FuelERC20Gateway: '0xE52af7c9A2F6b243CEE9F0C423E06BAb6E5c6E3b',
+      FuelERC721Gateway: '0xc094fC648101920B1C37C733AF022942eF4042D3',
     };
   }
 }
@@ -61,9 +117,20 @@ const versions = getVersion();
 process.env.VITE_APP_VERSION = versions.version;
 
 // Export ETH Fuel contracts addresses
-const ethFuelContracts = getEthFuelL1Contracts();
-if (ethFuelContracts && ethFuelContracts.FuelMessagePortal) {
-  process.env.VITE_ETH_FUEL_MESSAGE_PORTAL = ethFuelContracts.FuelMessagePortal;
-  process.env.VITE_ETH_FUEL_ERC20_GATEWAY = ethFuelContracts.FuelERC20Gateway;
-  process.env.VITE_ETH_FUEL_CHAIN_STATE = ethFuelContracts.FuelChainState;
+const bridgeSolidityContracts = getBridgeSolidityContracts();
+if (bridgeSolidityContracts && bridgeSolidityContracts.FuelMessagePortal) {
+  process.env.VITE_ETH_FUEL_MESSAGE_PORTAL =
+    bridgeSolidityContracts.FuelMessagePortal;
+  process.env.VITE_ETH_FUEL_ERC20_GATEWAY =
+    bridgeSolidityContracts.FuelERC20Gateway;
+  process.env.VITE_ETH_FUEL_CHAIN_STATE =
+    bridgeSolidityContracts.FuelChainState;
+}
+const bridgeTokenContracts = getBridgeTokenContracts();
+if (bridgeTokenContracts) {
+  process.env.VITE_FUEL_FUNGIBLE_CONTRACT_ID =
+    bridgeTokenContracts.FUEL_TokenContract;
+  process.env.VITE_FUEL_FUNGIBLE_ASSET_ID =
+    bridgeTokenContracts.FUEL_TokenAsset || '';
+  process.env.VITE_ETH_ERC20 = bridgeTokenContracts.ETH_ERC20;
 }

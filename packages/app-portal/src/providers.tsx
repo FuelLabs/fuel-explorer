@@ -1,8 +1,13 @@
-import { FuelProvider } from '@fuels-portal/sdk-react';
+import { FuelProvider } from '@fuel-wallet/react';
 import type { ReactNode } from 'react';
 
 import { StoreProvider } from './store';
-import { ConnectProvider, FuelUiProvider } from './systems/Settings';
+import {
+  ConnectProvider,
+  FuelUiProvider,
+  FuelConnectProvider,
+} from './systems/Settings';
+import { FuelNetworkProvider } from './systems/Settings/providers/FuelNetworkProvider';
 
 type ProvidersProps = {
   children: ReactNode;
@@ -12,9 +17,13 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <StoreProvider>
       <FuelProvider>
-        <ConnectProvider>
-          <FuelUiProvider>{children}</FuelUiProvider>
-        </ConnectProvider>
+        <FuelConnectProvider>
+          <ConnectProvider>
+            <FuelUiProvider>
+              <FuelNetworkProvider>{children}</FuelNetworkProvider>
+            </FuelUiProvider>
+          </ConnectProvider>
+        </FuelConnectProvider>
       </FuelProvider>
     </StoreProvider>
   );

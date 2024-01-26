@@ -1,37 +1,25 @@
 import { Image, FuelLogo, Text, Box, Spinner } from '@fuel-ui/react';
-import type { ReactNode } from 'react';
+import { useAsset } from '~/systems/Assets';
 import { BridgeTxItem } from '~/systems/Bridge';
 
-import { ethLogoSrc } from '../../eth';
 import { ActionRequiredBadge } from '../components';
 import { useTxFuelToEth } from '../hooks';
 
 type TxListItemFuelToEthProps = {
-  asset: {
-    assetImageSrc: ReactNode | string;
-    assetAmount: string;
-    assetSymbol: string;
-  };
   txHash: string;
-  date?: Date;
-  isDone?: boolean;
 };
 
-export const TxListItemFuelToEth = ({
-  asset,
-  txHash,
-  date,
-  isDone,
-}: TxListItemFuelToEthProps) => {
-  const { steps, handlers, status } = useTxFuelToEth({
-    txId: txHash,
-    skipAnalyzeTx: isDone,
-  });
+export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
+  const { asset: ethAsset } = useAsset();
+  const { steps, handlers, asset, date, status, amount, isLoadingTxResult } =
+    useTxFuelToEth({
+      txId: txHash,
+    });
 
   const bridgeTxStatus = steps?.find(({ isSelected }) => !!isSelected);
 
   function getStatusComponent() {
-    if (isDone || status.isReceiveDone)
+    if (status?.isReceiveDone)
       return (
         <Text fontSize="xs" color="intentsBase11">
           Settled
@@ -60,12 +48,15 @@ export const TxListItemFuelToEth = ({
       date={date}
       asset={asset}
       status={getStatusComponent()}
+      txId={txHash}
+      amount={amount}
+      isLoading={isLoadingTxResult}
       toLogo={
         <Image
           width={18}
           height={18}
-          src={ethLogoSrc}
-          alt={asset.assetSymbol}
+          src={ethAsset?.icon || undefined}
+          alt={asset?.symbol}
         />
       }
       onClick={() => handlers.openTxFuelToEth({ txId: txHash })}

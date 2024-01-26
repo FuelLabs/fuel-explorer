@@ -1,6 +1,7 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices, defineConfig } from '@playwright/test';
 import { join } from 'path';
+import './load.envs';
 
 const IS_CI = !!process.env.CI;
 const PORT = process.env.PORT || 3005;
@@ -9,15 +10,15 @@ const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
   testMatch: join(__dirname, './playwright/**/*.test.ts'),
   testDir: join(__dirname, './playwright/'),
-  timeout: 60_000 * 3,
+  timeout: 60_000 * 10,
   expect: {
     timeout: 5000,
   },
-  reporter: 'html',
+  reporter: [['html'], ['list', { printSteps: true }]],
   // Retry tests on CI if they fail
   retries: IS_CI ? 2 : 0,
   webServer: {
-    command: `pnpm dev`,
+    command: `pnpm dev --mode test --port ${PORT}`,
     port: Number(PORT),
     reuseExistingServer: true,
   },

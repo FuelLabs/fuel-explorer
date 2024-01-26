@@ -1,19 +1,22 @@
 import { cssObj } from '@fuel-ui/css';
-import { Box, Text, Image, Icon, CardList } from '@fuel-ui/react';
+import { Box, Text, Icon, CardList } from '@fuel-ui/react';
 import type { ReactNode } from 'react';
-import { calculateDateDiff } from '~/systems/Core';
+import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
+import type { Asset } from '~/systems/Assets/services/asset';
+import { calculateDateDiff, shortAddress } from '~/systems/Core';
+
+import { ItemLoader } from './ItemLoader';
 
 type BridgeTxItemProps = {
   date?: Date;
   fromLogo: ReactNode;
   toLogo: ReactNode;
-  asset: {
-    assetImageSrc: ReactNode | string;
-    assetAmount: string;
-    assetSymbol: string;
-  };
+  asset?: Asset;
   onClick: () => void;
   status: ReactNode;
+  txId?: string;
+  amount?: string;
+  isLoading?: boolean;
 };
 
 export const BridgeTxItem = ({
@@ -23,41 +26,46 @@ export const BridgeTxItem = ({
   fromLogo,
   toLogo,
   status,
+  txId,
+  amount,
+  isLoading,
 }: BridgeTxItemProps) => {
   return (
-    <CardList.Item css={styles.root} variant="outlined" onClick={onClick}>
-      <Box.Flex css={styles.wrapper}>
-        <Box css={styles.ageColumn}>
-          <Text css={styles.ageText}>{calculateDateDiff(date)}</Text>
-        </Box>
-        <Box.Flex css={styles.txColumn}>
-          <Box.Flex>
-            {fromLogo}
-            <Icon icon="ArrowNarrowRight" />
-            {toLogo}
-          </Box.Flex>
-          <Box.Flex align="center" gap="$1">
-            {typeof asset.assetImageSrc === 'string' ? (
-              <Image
-                width={18}
-                height={18}
-                src={asset.assetImageSrc}
-                alt={asset.assetSymbol}
-              />
-            ) : (
-              asset.assetImageSrc
-            )}
-            <Text
-              aria-label="Asset amount"
-              fontSize="sm"
-              css={styles.assetAmountText}
-            >
-              {asset.assetAmount} {asset.assetSymbol}
+    <CardList.Item
+      css={styles.cardItem}
+      aria-label={`Transaction ID: ${shortAddress(txId)}`}
+      onClick={onClick}
+    >
+      <Box.Flex gap={'$1'}>
+        {fromLogo}
+        <Icon icon="ArrowNarrowRight" />
+        {toLogo}
+      </Box.Flex>
+      <Box.Flex align="center" gap="$1">
+        {isLoading ? (
+          <ItemLoader />
+        ) : (
+          <>
+            <AssetLogo asset={asset} alt={asset?.symbol} />
+            <Text fontSize="sm" css={styles.assetAmountText}>
+              {amount} {asset?.symbol}
             </Text>
-          </Box.Flex>
-          <Box.Flex css={styles.statusColumn} align="center" justify="flex-end">
-            {status}
-          </Box.Flex>
+          </>
+        )}
+      </Box.Flex>
+      <Box.Flex css={styles.statusTime} justify={'space-between'}>
+        {isLoading ? (
+          <ItemLoader />
+        ) : (
+          <Text css={styles.ageText}>{calculateDateDiff(date)}</Text>
+        )}
+        <Box.Flex
+          css={styles.statusColumn}
+          align="center"
+          justify="flex-end"
+          aria-label={`Transaction Status: ${status?.toString()}`}
+        >
+          {status}
         </Box.Flex>
       </Box.Flex>
     </CardList.Item>
@@ -65,47 +73,28 @@ export const BridgeTxItem = ({
 };
 
 const styles = cssObj({
-  root: cssObj({
-    display: 'flex',
-
-    '@md': {
-      alignItems: 'center',
-      p: '$4 !important',
-    },
-  }),
-  wrapper: cssObj({
-    gap: '$0',
+  cardItem: cssObj({
+    // This minHeight ensures component size equals loader size
+    minHeight: 24,
+    gap: '$6',
     alignItems: 'center',
+  }),
+  statusTime: cssObj({
     flex: 1,
-    flexWrap: 'wrap',
-    '@md': {
-      flexWrap: 'nowrap',
+    '@media (max-width: 400px)': {
+      flexDirection: 'column-reverse',
+      flexWrap: 'wrap',
+      alignItems: 'flex-end',
+      gap: '$1',
     },
   }),
-  ageColumn: {
-    flex: '1 0 100%',
-
-    '@md': {
-      flex: '0 0 108px',
-      pr: '$1',
-    },
-  },
+  line: cssObj({
+    flex: 1,
+  }),
   ageText: cssObj({
     fontSize: '$xs',
     color: '$intentsBase12',
   }),
-  txColumn: cssObj({
-    gap: '$2',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: 1,
-  }),
-  directionInfo: cssObj({
-    gap: '$1',
-  }),
-  statusColumn: {
-    flex: '0 0 90px',
-  },
   assetAmountText: cssObj({
     color: '$intentsBase12',
   }),

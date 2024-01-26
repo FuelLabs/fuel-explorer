@@ -15,11 +15,9 @@ export type RelayMessageParams = {
   rootBlockHeader: CommitBlockHeader;
 };
 
-export async function createRelayMessageParams({
-  withdrawMessageProof,
-}: {
-  withdrawMessageProof: MessageProof;
-}): Promise<RelayMessageParams> {
+export function createRelayMessageParams(
+  withdrawMessageProof: MessageProof
+): RelayMessageParams {
   // construct data objects for relaying message on L1
   const message: Message = {
     sender: withdrawMessageProof.sender.toHexString(),

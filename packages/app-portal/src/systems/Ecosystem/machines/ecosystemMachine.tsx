@@ -62,6 +62,11 @@ const initialState: MachineContext = {
   tags: [],
   filter: '',
 };
+
+function sortAtoZ(a: string, b: string) {
+  return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
+}
+
 export const ecosystemMachine = createMachine(
   {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -118,8 +123,8 @@ export const ecosystemMachine = createMachine(
           );
           const tags = new Set(tagsArray);
           return {
-            projects: PROJECTS,
-            tags: Array.from(tags),
+            projects: PROJECTS.sort((pa, pb) => sortAtoZ(pa.name, pb.name)),
+            tags: Array.from(tags).sort(sortAtoZ),
           };
         },
       }),

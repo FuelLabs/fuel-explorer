@@ -1,3 +1,4 @@
+import { toast } from '@fuel-ui/react';
 import type {
   Provider as FuelProvider,
   MessageProof,
@@ -10,19 +11,21 @@ import { FetchMachine } from '~/systems/Core/machines';
 
 import type { TxFuelToEthInputs } from '../services';
 import { TxFuelToEthService } from '../services';
-import { FuelTxCache } from '../utils';
+import { FuelTxCache } from '../utils/txCache';
 
 type MachineContext = {
-  fuelProvider: FuelProvider;
-  fuelTxId: string;
+  fuelProvider?: FuelProvider;
+  fuelTxId?: string;
   fuelTxResult?: TransactionResult;
   fuelLastBlockId?: string;
+  nonce?: string;
   messageId?: string;
   messageProof?: MessageProof;
   fuelBlockHashCommited?: string;
   ethTxId?: string;
   ethPublicClient?: EthPublicClient;
   txHashMessageRelayed?: string;
+  estimatedFinishDate?: Date;
 };
 
 type MachineServices = {
@@ -30,16 +33,23 @@ type MachineServices = {
     data: {
       txResult: TransactionResult;
       messageId: string;
+      nonce: string;
     };
   };
   getMessageProof: {
     data: MessageProof | undefined;
   };
   waitBlockCommit: {
-    data: string | undefined;
+    data: {
+      blockHashCommited?: string | undefined;
+      estimatedFinishDate?: Date | undefined;
+    };
   };
   waitBlockFinalization: {
-    data: boolean | undefined;
+    data: {
+      isFinalized?: boolean | undefined;
+      estimatedFinishDate?: Date | undefined;
+    };
   };
   getMessageRelayed: {
     data: string | undefined;
@@ -81,6 +91,10 @@ export const txFuelToEthMachine = createMachine(
     initial: 'idle',
     states: {
       idle: {
+        always: {
+          cond: 'hasAnalyzeTxInput',
+          target: 'submittingToBridge',
+        },
         on: {
           START_ANALYZE_TX: {
             actions: ['assignAnalyzeTxInput'],
@@ -106,17 +120,35 @@ export const txFuelToEthMachine = createMachine(
                   cond: FetchMachine.hasError,
                 },
                 {
-                  actions: ['assignFuelTxResult', 'assignMessageId'],
-                  cond: 'hasMessageId',
-                  target: 'checkingSettlement',
+                  actions: [
+                    'assignFuelTxResult',
+                    'assignMessageId',
+                    'assignNonce',
+                    'notifyFuelTxSuccess',
+                  ],
+                  cond: 'hasTxResultInfo',
+                  target: 'checkingDoneCache',
                 },
               ],
             },
             after: {
-              10000: {
+              5000: {
                 target: 'waitingFuelTxResult',
               },
             },
+          },
+          checkingDoneCache: {
+            tags: ['isSubmitToBridgeLoading', 'isSubmitToBridgeSelected'],
+            always: [
+              {
+                cond: 'isTxFuelToEthDone',
+                target:
+                  '#(machine).submittingToBridge.checkingSettlement.checkingRelayed.waitingReceive.done',
+              },
+              {
+                target: 'checkingSettlement',
+              },
+            ],
           },
           checkingSettlement: {
             tags: ['isSubmitToBridgeDone'],
@@ -138,6 +170,10 @@ export const txFuelToEthMachine = createMachine(
                       cond: FetchMachine.hasError,
                     },
                     {
+                      actions: ['assignEstimatedFinishDate'],
+                      cond: 'hasEstimatedFinishDate',
+                    },
+                    {
                       actions: ['assignFuelBlockHashCommited'],
                       cond: 'hasBlockCommited',
                       target: 'checkingMessageProof',
@@ -157,9 +193,10 @@ export const txFuelToEthMachine = createMachine(
                   data: {
                     input: (ctx: MachineContext) => ({
                       fuelTxId: ctx.fuelTxId,
-                      messageId: ctx.messageId,
+                      nonce: ctx.nonce,
                       fuelBlockHashCommited: ctx.fuelBlockHashCommited,
                       fuelProvider: ctx.fuelProvider,
+                      fuelLastBlockId: ctx.fuelLastBlockId,
                     }),
                   },
                   onDone: [
@@ -187,11 +224,17 @@ export const txFuelToEthMachine = createMachine(
                     input: (ctx: MachineContext) => ({
                       messageProof: ctx.messageProof,
                       ethPublicClient: ctx.ethPublicClient,
+                      fuelBlockHashCommited: ctx.fuelBlockHashCommited,
+                      fuelProvider: ctx.fuelProvider,
                     }),
                   },
                   onDone: [
                     {
                       cond: FetchMachine.hasError,
+                    },
+                    {
+                      actions: ['assignEstimatedFinishDate'],
+                      cond: 'hasEstimatedFinishDate',
                     },
                     {
                       cond: 'hasBlockFinalized',
@@ -300,7 +343,7 @@ export const txFuelToEthMachine = createMachine(
                           onDone: [
                             {
                               cond: FetchMachine.hasError,
-                              // if some problem happened with the transaction, move to prec state to try a new transaction
+                              // if some problem happened with the transaction, move to prev state to try a new transaction
                               target:
                                 '#(machine).submittingToBridge.checkingSettlement.checkingRelayed.checkingHasRelayedInEth',
                             },
@@ -345,6 +388,9 @@ export const txFuelToEthMachine = createMachine(
       assignMessageId: assign({
         messageId: (_, ev) => ev.data.messageId,
       }),
+      assignNonce: assign({
+        nonce: (_, ev) => ev.data.nonce,
+      }),
       assignMessageProof: assign({
         messageProof: (_, ev) => ev.data,
       }),
@@ -352,22 +398,45 @@ export const txFuelToEthMachine = createMachine(
         txHashMessageRelayed: (_, ev) => ev.data,
       }),
       assignFuelBlockHashCommited: assign({
-        fuelBlockHashCommited: (_, ev) => ev.data,
+        fuelBlockHashCommited: (_, ev) => ev.data.blockHashCommited,
+      }),
+      assignEstimatedFinishDate: assign({
+        estimatedFinishDate: (_, ev) => {
+          return ev.data.estimatedFinishDate;
+        },
       }),
       setFuelToEthTxDone: (ctx) => {
         if (ctx.fuelTxId) {
           FuelTxCache.setTxIsDone(ctx.fuelTxId);
         }
       },
+      notifyFuelTxSuccess: (ctx) => {
+        if (ctx.fuelTxId && FuelTxCache.getTxIsCreated(ctx.fuelTxId)) {
+          setTimeout(() => {
+            toast.success(
+              'Withdraw successfully initiated. You may now close the popup.',
+              { duration: 5000 }
+            );
+          }, 2000);
+          FuelTxCache.removeTxCreated(ctx.fuelTxId);
+        }
+      },
     },
     guards: {
-      hasMessageId: (ctx, ev) => !!ctx.messageId || !!ev?.data.messageId,
+      hasTxResultInfo: (ctx, ev) =>
+        (!!ctx.messageId || !!ev?.data.messageId) &&
+        (!!ctx.nonce || !!ev?.data.nonce),
       hasMessageProof: (ctx, ev) => !!ctx.messageProof || !!ev?.data,
-      hasBlockCommited: (ctx, ev) => !!ctx.fuelBlockHashCommited || !!ev?.data,
-      hasBlockFinalized: (_, ev) => !!ev?.data,
+      hasBlockCommited: (ctx, ev) =>
+        !!ctx.fuelBlockHashCommited || !!ev?.data?.blockHashCommited,
+      hasEstimatedFinishDate: (_, ev) => !!ev?.data?.estimatedFinishDate,
+      hasBlockFinalized: (_, ev) => !!ev?.data?.isFinalized,
       hasTxHashMessageRelayed: (ctx, ev) =>
         !!ctx.txHashMessageRelayed || !!ev?.data,
       hasTxMessageRelayed: (_, ev) => !!ev?.data,
+      hasAnalyzeTxInput: (ctx) =>
+        !!ctx.fuelTxId && !!ctx.fuelProvider && !!ctx.ethPublicClient,
+      isTxFuelToEthDone: (ctx) => FuelTxCache.getTxIsDone(ctx.fuelTxId || ''),
     },
     services: {
       waitFuelTxResult: FetchMachine.create<

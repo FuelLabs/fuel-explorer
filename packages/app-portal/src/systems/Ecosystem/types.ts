@@ -5,5 +5,8 @@ export type Project = {
   image?: string;
   url: string;
   github?: string;
+  twitter?: string;
+  discord?: string;
+  status: string[];
   isLive?: boolean;
 };

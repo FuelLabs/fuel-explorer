@@ -1,5 +1,5 @@
 # ====== Build Image ======
-FROM node:16-alpine AS BUILD_IMAGE
+FROM node:18-alpine AS BUILD_IMAGE
 
 # dependencies
 RUN apk --no-cache add git
@@ -10,7 +10,7 @@ WORKDIR /l1chain
 
 # clone the contracts repo
 RUN git clone --depth 1 --branch main https://github.com/FuelLabs/fuel-bridge.git /tmp/fuel-bridge
-RUN mv /tmp/fuel-bridge/packages/portal-contracts /l1chain/portal-contracts
+RUN mv /tmp/fuel-bridge/packages/solidity-contracts /l1chain/portal-contracts
 
 # copy over the fuel chain and replace consts values
 ADD ./.fuelChainConsts.env /l1chain/portal-contracts/.fuelChainConsts.env
@@ -21,14 +21,14 @@ RUN pnpm install
 # replace the fuel chain consts values and change contract code
 RUN pnpm ts-node scripts/replaceFuelChainConsts.ts
 # run contract compile with the new consts
-RUN pnpm run build
+RUN pnpm compile
 
 # remove build dependencies
 # RUN pnpm prune --prod
 COPY ./hardhat/hardhat.config.ts .
 
 # ====== Final Image ======
-FROM node:16-alpine
+FROM node:18-alpine
 
 ARG L1_IP=0.0.0.0
 ARG L1_PORT=8545

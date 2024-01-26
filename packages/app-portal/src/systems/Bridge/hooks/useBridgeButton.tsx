@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { getChainName } from '~/systems/Chains';
+import { getAssetEth } from '~/systems/Assets/utils';
+import { getChainName, useFuelAccountConnection } from '~/systems/Chains';
 
 import { BridgeStatus } from '../machines';
 
@@ -15,7 +16,10 @@ export function useBridgeButton() {
     isDeposit,
     isLoadingConnectFrom,
     isLoadingConnectTo,
+    asset,
   } = useBridge();
+  const { balance } = useFuelAccountConnection();
+  const ethAssetAddress = asset ? getAssetEth(asset)?.address : undefined;
 
   const button = useMemo(() => {
     switch (status) {
@@ -33,7 +37,12 @@ export function useBridgeButton() {
         };
       case BridgeStatus.ready:
         return {
-          text: isDeposit ? 'Deposit' : 'Withdraw',
+          text:
+            !!ethAssetAddress && balance?.eq(0) && isDeposit
+              ? 'Bridge asset anyway'
+              : isDeposit
+                ? 'Deposit'
+                : 'Withdraw',
           isLoading,
           action: handlers.startBridging,
         };

@@ -35,12 +35,12 @@ export const RemoveAssetDialog = ({
         </AlertDialog.Description>
         <AlertDialog.Footer>
           <AlertDialog.Cancel>
-            <Button variant="outlined" onPress={handleCancel}>
+            <Button variant="outlined" onClick={handleCancel}>
               Cancel
             </Button>
           </AlertDialog.Cancel>
           <AlertDialog.Action>
-            <Button variant="ghost" intent="error" onPress={handleConfirm}>
+            <Button variant="ghost" intent="error" onClick={handleConfirm}>
               Confirm
             </Button>
           </AlertDialog.Action>

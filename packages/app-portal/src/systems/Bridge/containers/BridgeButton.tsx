@@ -13,9 +13,9 @@ export const BridgeButton = () => {
       intent={isDisabled ? 'base' : 'primary'}
       size="lg"
       aria-label={text}
-      onPress={handlers.action}
+      onClick={handlers.action}
     >
-      <b>{text}</b>
+      {text}
     </Button>
   );
 };

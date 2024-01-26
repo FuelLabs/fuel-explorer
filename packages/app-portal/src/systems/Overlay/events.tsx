@@ -35,15 +35,7 @@ export function overlayEvents(store: Store) {
         },
       });
     },
-    openFuelInstall() {
-      store.send(Services.overlay, {
-        type: 'OPEN',
-        input: {
-          modal: 'fuel.install',
-        },
-      });
-    },
-    openEthAssetsDialog() {
+    openAssetsDialog() {
       store.send(Services.overlay, {
         type: 'OPEN',
         input: {

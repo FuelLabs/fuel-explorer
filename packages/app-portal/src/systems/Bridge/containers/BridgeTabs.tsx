@@ -34,7 +34,7 @@ export const BridgeTabs = ({ fromControls, toControls }: BridgeTabsProps) => {
   };
 
   return (
-    <Tabs defaultValue={isWithdraw ? 'withdraw' : 'deposit'} variant="subtle">
+    <Tabs value={isWithdraw ? 'withdraw' : 'deposit'} variant="subtle">
       <Tabs.List aria-label="Manage deposits">
         <Tabs.Trigger
           value="deposit"
