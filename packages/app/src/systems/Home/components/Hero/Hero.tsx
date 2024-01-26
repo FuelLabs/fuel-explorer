@@ -4,7 +4,8 @@ import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
-import { SearchWidget } from '~/systems/Core/components/Search/SearchWidget';
+
+import { SearchWidget } from '../../../Core/components/Search/SearchWidget';
 
 export function Hero() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
