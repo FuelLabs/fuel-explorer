@@ -24,11 +24,11 @@ export function TopNav() {
 
   const tooling = (
     <>
-      <Nav.MenuItem href="/bridge">Bridge</Nav.MenuItem>
+      <Nav.MenuItem href="/portal">Bridge</Nav.MenuItem>
       <Nav.MenuItem isActive as={NextLink} href="/">
         Explorer
       </Nav.MenuItem>
-      <Nav.MenuItem href="/ecosystem">Ecosystem</Nav.MenuItem>
+      <Nav.MenuItem href="/portal">Ecosystem</Nav.MenuItem>
     </>
   );
 

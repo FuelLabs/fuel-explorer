@@ -5,11 +5,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 import './load.envs.js';
 
-const { PORT, VERCEL } = process.env;
+const { PORT, VERCEL, NODE_ENV } = process.env;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: VERCEL ? '/portal/' : '/',
+  base: VERCEL || NODE_ENV !== 'development' ? '/portal/' : '/',
   server: {
     port: Number(PORT),
   },
