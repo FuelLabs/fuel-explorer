@@ -24,23 +24,11 @@ export function TopNav() {
 
   const tooling = (
     <>
-      <Nav.MenuItem
-        isExternal
-        href="https://alpha.fuel.network/bridge"
-        target="_blank"
-      >
-        Bridge
-      </Nav.MenuItem>
+      <Nav.MenuItem href="/portal/bridge">Bridge</Nav.MenuItem>
       <Nav.MenuItem isActive as={NextLink} href="/">
         Explorer
       </Nav.MenuItem>
-      <Nav.MenuItem
-        isExternal
-        href="https://alpha.fuel.network/ecosystem"
-        target="_blank"
-      >
-        Ecosystem
-      </Nav.MenuItem>
+      <Nav.MenuItem href="/portal/ecosystem">Ecosystem</Nav.MenuItem>
     </>
   );
 
