@@ -1,7 +1,7 @@
 'use client';
 import { Nav, useBreakpoints } from '@fuels/ui';
 import NextLink from 'next/link';
-// import { usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { setTheme } from '../../actions/setTheme';
@@ -13,8 +13,8 @@ export function TopNav() {
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { isLaptop } = useBreakpoints();
-  // const pathname = usePathname();
-  // const isHomePage = pathname === '/';
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     if (isLaptop && isMobileSearchOpen) {
@@ -95,12 +95,12 @@ export function TopNav() {
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
-          {/* {!isHomePage && ( */}
-          <SearchWidget
-            setIsSearchOpen={setIsMobileSearchOpen}
-            isSearchOpen={isMobileSearchOpen}
-          />
-          {/* )} */}
+          {!isHomePage && (
+            <SearchWidget
+              setIsSearchOpen={setIsMobileSearchOpen}
+              isSearchOpen={isMobileSearchOpen}
+            />
+          )}
           {themeToggle}
         </Nav.MobileContent>
         <Nav.Menu>

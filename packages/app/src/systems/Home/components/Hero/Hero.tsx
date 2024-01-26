@@ -2,13 +2,12 @@
 
 import { Box, Container, Heading, Theme } from '@fuels/ui';
 import Image from 'next/image';
-// import { useState } from 'react';
+import { useState } from 'react';
 import { tv } from 'tailwind-variants';
-
-// import { SearchWidget } from '../../../Core/components/Search/SearchWidget';
+import { SearchWidget } from '~/systems/Core/components/Search/SearchWidget';
 
 export function Hero() {
-  // const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const classes = styles();
 
   return (
@@ -18,10 +17,10 @@ export function Hero() {
           <Heading as="h1" className={classes.title()}>
             Explore Fuel Network
           </Heading>
-          {/* <SearchWidget
+          <SearchWidget
             setIsSearchOpen={setIsSearchOpen}
             isSearchOpen={isSearchOpen}
-          /> */}
+          />
         </Container>
         <Box as="figure" className={classes.img()}>
           <Box className={classes.imgWrapper()}>
