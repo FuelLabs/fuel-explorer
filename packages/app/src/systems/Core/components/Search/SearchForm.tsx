@@ -3,20 +3,17 @@ import { useContext } from 'react';
 import { useFormState } from 'react-dom';
 import { search } from '~/systems/Core/actions/search';
 
-import { SearchInput } from '../SearchInput/SearchInput';
-import { SearchContext } from '../SearchWidget/SearchWidget';
+import { SearchInput } from './SearchInput';
+import { SearchContext } from './SearchWidget';
+import { styles } from './styles';
 
 type SearchFormProps = {
   className: string;
   autoFocus?: boolean;
-  alwaysDisplayActionButtons?: boolean;
 };
 
-export function SearchForm({
-  className,
-  autoFocus,
-  alwaysDisplayActionButtons,
-}: SearchFormProps) {
+export function SearchForm({ className, autoFocus }: SearchFormProps) {
+  const classes = styles();
   const [results, action] = useFormState(
     (_: SearchResult | null, formData: FormData) => {
       return search({ query: formData.get('query')?.toString() || '' });
@@ -26,12 +23,11 @@ export function SearchForm({
   const { onClear } = useContext(SearchContext);
 
   return (
-    <form action={action}>
+    <form action={action} className={classes.searchSize()}>
       <SearchInput
         className={className}
         searchResult={results}
         autoFocus={autoFocus}
-        alwaysDisplayActionButtons={alwaysDisplayActionButtons}
         onClear={onClear}
       />
     </form>

@@ -1,11 +1,9 @@
-import { HStack, IconButton, Tooltip } from '@fuels/ui';
-import { IconSearch } from '@tabler/icons-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { HStack } from '@fuels/ui';
 import type { MutableRefObject } from 'react';
 import { useEffect, useRef, createContext } from 'react';
-import { tv } from 'tailwind-variants';
 
-import { SearchForm } from '../SearchForm/SearchForm';
+import { SearchForm } from './SearchForm';
+import { styles } from './styles';
 
 export const SearchContext = createContext<{
   dropdownRef: null | MutableRefObject<HTMLDivElement | null>;
@@ -13,16 +11,13 @@ export const SearchContext = createContext<{
 }>({ dropdownRef: null, onClear: () => {} });
 
 type SearchWidgetProps = {
-  setIsExitComplete: (value: boolean) => void;
-  isExitComplete: boolean;
+  autoFocus?: boolean;
   isSearchOpen: boolean;
   setIsSearchOpen: (value: boolean) => void;
 };
 
 export const SearchWidget = ({
-  setIsExitComplete,
-  isExitComplete,
-  isSearchOpen,
+  autoFocus,
   setIsSearchOpen,
 }: SearchWidgetProps) => {
   const classes = styles();
@@ -74,63 +69,14 @@ export const SearchWidget = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (isSearchOpen) {
-      setIsExitComplete(false);
-    }
-  }, [isSearchOpen]);
-
   return (
     <SearchContext.Provider value={{ dropdownRef, onClear }}>
       <HStack
         ref={widgetRef}
-        className="items-center gap-0 laptop:gap-4 justify-center"
+        className="items-center gap-0 laptop:gap-4 justify-center flex-1"
       >
-        <AnimatePresence
-          onExitComplete={() => {
-            setIsExitComplete(true);
-          }}
-        >
-          {isSearchOpen && (
-            <>
-              <motion.div
-                initial="closed"
-                animate="open"
-                exit="closed"
-                transition={{ duration: 0.2 }}
-                variants={{
-                  open: { scaleX: '100%' },
-                  closed: { scaleX: '0%' },
-                }}
-              >
-                <SearchForm
-                  className={classes.input()}
-                  autoFocus={true}
-                  alwaysDisplayActionButtons={true}
-                />
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-        {isExitComplete && (
-          <Tooltip content="Search by address, contract id, transaction id, or block id">
-            <IconButton
-              icon={IconSearch}
-              variant="link"
-              className="mr-1 text-color laptop:mr-0"
-              onClick={() => {
-                setIsSearchOpen(!isSearchOpen);
-              }}
-            />
-          </Tooltip>
-        )}
+        <SearchForm className={classes.searchSize()} autoFocus={autoFocus} />
       </HStack>
     </SearchContext.Provider>
   );
 };
-
-const styles = tv({
-  slots: {
-    input: 'w-full tablet:w-[400px]',
-  },
-});
