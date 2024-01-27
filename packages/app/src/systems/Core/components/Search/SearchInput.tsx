@@ -34,6 +34,7 @@ type SearchDropdownProps = {
   searchValue: string;
   width: number;
   onSelectItem: () => void;
+  isExpanded?: boolean;
 };
 
 const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
@@ -45,6 +46,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
       onOpenChange,
       width,
       onSelectItem,
+      isExpanded
     },
     ref,
   ) => {
@@ -60,9 +62,11 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
-          className={cx(classes.dropdownContent(), classes.searchSize())}
+          className={cx(classes.dropdownContent(isExpanded), classes.searchSize())}
           style={{ width: width - 0.5 }}
+          data-expanded={isExpanded}
         >
+          <Box data-expanded={isExpanded} />
           {!searchResult && (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
@@ -178,6 +182,7 @@ type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
   onClear?: (value: string) => void;
   searchResult?: Maybe<SearchResult>;
   alwaysDisplayActionButtons?: boolean;
+  expandOnFocus?: boolean;
 };
 
 export function SearchInput({
@@ -187,12 +192,14 @@ export function SearchInput({
   autoFocus,
   placeholder = 'Search here...',
   searchResult,
+  expandOnFocus,
   ...props
 }: SearchInputProps) {
   const classes = styles();
   const [value, setValue] = useState<string>(initialValue as string);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const inputWrapperRef = useRef<HTMLInputElement>(null);
   const { pending } = useFormStatus();
@@ -217,11 +224,21 @@ export function SearchInput({
     setValue('');
     setHasSubmitted(false);
     onClear?.(value);
-    inputRef.current?.focus();
+    if (isExpanded) {
+      setIsExpanded(false);
+    } else {
+      inputRef.current?.focus();
+    }
+  }
+
+  function expandOnFocusHandler() {
+    if (expandOnFocus) {
+      setIsExpanded(true);
+    }
   }
 
   return (
-    <VStack gap="0" className="justify-center items-center">
+    <VStack gap="0" className={classes.searchBox()} data-expanded={isExpanded}>
       <Focus.ArrowNavigator autoFocus={autoFocus}>
         <Input
           ref={inputWrapperRef}
@@ -230,6 +247,7 @@ export function SearchInput({
           size="3"
           data-opened={openDropdown}
           className={cx(className, classes.inputWrapper())}
+          onFocus={expandOnFocusHandler}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -248,21 +266,23 @@ export function SearchInput({
             value={value}
             onChange={handleChange}
           />
-          {value?.length ? (
+          {isExpanded || value?.length ? (
             <>
               <Input.Slot className="">
-                <Tooltip content="Submit">
-                  <IconButton
-                    type="submit"
-                    aria-label="Submit"
-                    icon={IconCheck}
-                    iconColor="text-brand"
-                    variant="link"
-                    className="!ml-0 tablet:ml-2"
-                    isLoading={pending}
-                    onClick={handleSubmit}
-                  />
-                </Tooltip>
+                { !!value?.length && (
+                  <Tooltip content="Submit">
+                    <IconButton
+                      type="submit"
+                      aria-label="Submit"
+                      icon={IconCheck}
+                      iconColor="text-brand"
+                      variant="link"
+                      className="!ml-0 tablet:ml-2"
+                      isLoading={pending}
+                      onClick={handleSubmit}
+                    />
+                  </Tooltip>
+                ) }
                 <IconButton
                   aria-label="Clear"
                   icon={IconX}
@@ -296,6 +316,7 @@ export function SearchInput({
           }
           setOpenDropdown(!openDropdown);
         }}
+        isExpanded={isExpanded}
       />
     </VStack>
   );
