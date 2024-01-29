@@ -14,6 +14,7 @@ import {
   VStack,
   useBreakpoints,
   Box,
+  Text,
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
@@ -46,7 +47,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
       onOpenChange,
       width,
       onSelectItem,
-      isExpanded
+      isExpanded,
     },
     ref,
   ) => {
@@ -55,7 +56,11 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
     const trimL = isMobile ? 15 : 20;
     const trimR = isMobile ? 13 : 18;
 
-    const hasResult = searchResult?.account || searchResult?.block || searchResult?.contract || searchResult?.transaction;
+    const hasResult =
+      searchResult?.account ||
+      searchResult?.block ||
+      searchResult?.contract ||
+      searchResult?.transaction;
 
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
@@ -64,7 +69,10 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
-          className={cx(classes.dropdownContent(isExpanded), classes.searchSize())}
+          className={cx(
+            classes.dropdownContent(isExpanded),
+            classes.searchSize(),
+          )}
           style={{ width: width - 0.5 }}
           data-expanded={isExpanded}
         >
@@ -75,7 +83,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               </Dropdown.Item>
             </>
           )}
-          { hasResult ? (
+          {hasResult ? (
             <>
               {searchResult?.account && (
                 <>
@@ -150,7 +158,11 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       className="text-color"
                       onClick={onSelectItem}
                     >
-                      {shortAddress(searchResult.contract.id || '', trimL, trimR)}
+                      {shortAddress(
+                        searchResult.contract.id || '',
+                        trimL,
+                        trimR,
+                      )}
                     </Link>
                   </Dropdown.Item>
                 </>
@@ -178,7 +190,16 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
           ) : (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-                {`No instances found for "${searchValue}".`}
+                <Dropdown.Label>No instances found for:</Dropdown.Label>
+                <Dropdown.Item className={classes.dropdownItem()}>
+                  <Text>
+                    {`No instances found for "${shortAddress(
+                      searchValue,
+                      trimL,
+                      trimR,
+                    )}".`}
+                  </Text>
+                </Dropdown.Item>
               </Dropdown.Item>
             </>
           )}
@@ -280,7 +301,7 @@ export function SearchInput({
           {isExpanded || value?.length ? (
             <>
               <Input.Slot className="">
-                { !!value?.length && (
+                {!!value?.length && (
                   <Tooltip content="Submit">
                     <IconButton
                       type="submit"
@@ -293,7 +314,7 @@ export function SearchInput({
                       onClick={handleSubmit}
                     />
                   </Tooltip>
-                ) }
+                )}
                 <IconButton
                   aria-label="Clear"
                   icon={IconX}
