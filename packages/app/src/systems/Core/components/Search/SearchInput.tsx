@@ -189,17 +189,15 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
             </>
           ) : (
             <>
-              <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-                <Dropdown.Label>No instances found for:</Dropdown.Label>
-                <Dropdown.Item className={classes.dropdownItem()}>
-                  <Text>
-                    {`No instances found for "${shortAddress(
-                      searchValue,
-                      trimL,
-                      trimR,
-                    )}".`}
-                  </Text>
-                </Dropdown.Item>
+              <Dropdown.Label>No instances found for:</Dropdown.Label>
+              <Dropdown.Item className={classes.dropdownItem()}>
+                <Text>
+                  {`No instances found for "${shortAddress(
+                    searchValue,
+                    trimL,
+                    trimR,
+                  )}".`}
+                </Text>
               </Dropdown.Item>
             </>
           )}
