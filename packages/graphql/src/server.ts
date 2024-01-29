@@ -8,7 +8,7 @@ import { createSchema } from './schema';
 import { createGraphqlFetch } from './utils/executor';
 import { requireEnv } from './utils/requireEnv';
 
-const { FUEL_PROVIDER_URL } = requireEnv(['FUEL_PROVIDER_URL']);
+const { FUEL_PROVIDER_BETA5 } = requireEnv(['FUEL_PROVIDER_BETA5']);
 
 // Create a server:
 const app = express();
@@ -26,7 +26,7 @@ app.get(
   }),
 );
 
-const executor = createGraphqlFetch(FUEL_PROVIDER_URL);
+const executor = createGraphqlFetch(FUEL_PROVIDER_BETA5);
 const schema = createSchema(executor);
 
 app.post(
@@ -34,7 +34,7 @@ app.post(
   createHandler({
     schema,
     async context() {
-      return ContextDomain.createContext(FUEL_PROVIDER_URL);
+      return ContextDomain.createContext(FUEL_PROVIDER_BETA5);
     },
   }),
 );
