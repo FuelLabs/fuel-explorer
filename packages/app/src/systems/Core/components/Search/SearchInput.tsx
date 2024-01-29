@@ -55,6 +55,8 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
     const trimL = isMobile ? 15 : 20;
     const trimR = isMobile ? 13 : 18;
 
+    const hasResult = searchResult?.account || searchResult?.block || searchResult?.contract || searchResult?.transaction;
+
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
         <Dropdown.Trigger>
@@ -66,7 +68,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
           style={{ width: width - 0.5 }}
           data-expanded={isExpanded}
         >
-          <Box data-expanded={isExpanded} />
           {!searchResult && (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
@@ -74,100 +75,110 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               </Dropdown.Item>
             </>
           )}
-          {searchResult?.account && (
+          { hasResult ? (
             <>
-              <Dropdown.Label>Account</Dropdown.Label>
-              <Dropdown.Item className={classes.dropdownItem()}>
-                <Link
-                  as={NextLink}
-                  href={Routes.accountAssets(searchResult.account.address!)}
-                  className="text-color"
-                  onClick={onSelectItem}
-                >
-                  {shortAddress(
-                    searchResult.account.address || '',
-                    trimL,
-                    trimR,
-                  )}
-                </Link>
-              </Dropdown.Item>
-              <Dropdown.Separator />
-              <Dropdown.Label>Recent Transactions</Dropdown.Label>
-              {searchResult.account.transactions?.map((transaction) => {
-                return (
-                  <Dropdown.Item
-                    key={transaction?.id}
-                    className={classes.dropdownItem()}
-                  >
+              {searchResult?.account && (
+                <>
+                  <Dropdown.Label>Account</Dropdown.Label>
+                  <Dropdown.Item className={classes.dropdownItem()}>
                     <Link
                       as={NextLink}
-                      href={Routes.txSimple(transaction!.id!)}
+                      href={Routes.accountAssets(searchResult.account.address!)}
                       className="text-color"
                       onClick={onSelectItem}
                     >
-                      {shortAddress(transaction?.id || '', trimL, trimR)}
+                      {shortAddress(
+                        searchResult.account.address || '',
+                        trimL,
+                        trimR,
+                      )}
                     </Link>
                   </Dropdown.Item>
-                );
-              })}
+                  <Dropdown.Separator />
+                  <Dropdown.Label>Recent Transactions</Dropdown.Label>
+                  {searchResult.account.transactions?.map((transaction) => {
+                    return (
+                      <Dropdown.Item
+                        key={transaction?.id}
+                        className={classes.dropdownItem()}
+                      >
+                        <Link
+                          as={NextLink}
+                          href={Routes.txSimple(transaction!.id!)}
+                          className="text-color"
+                          onClick={onSelectItem}
+                        >
+                          {shortAddress(transaction?.id || '', trimL, trimR)}
+                        </Link>
+                      </Dropdown.Item>
+                    );
+                  })}
+                </>
+              )}
+              {searchResult?.block && (
+                <>
+                  <Dropdown.Label>Block</Dropdown.Label>
+                  <Dropdown.Item className={classes.dropdownItem()}>
+                    <Link
+                      as={NextLink}
+                      href={Routes.blockSimple(searchResult.block.id!)}
+                      className="text-color"
+                      onClick={onSelectItem}
+                    >
+                      {shortAddress(searchResult.block.id || '', trimL, trimR)}
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item className={classes.dropdownItem()}>
+                    <Link
+                      as={NextLink}
+                      href={Routes.blockSimple(searchResult.block.height!)}
+                      className="text-color"
+                      onClick={onSelectItem}
+                    >
+                      {searchResult.block.height}
+                    </Link>
+                  </Dropdown.Item>
+                </>
+              )}
+              {searchResult?.contract && (
+                <>
+                  <Dropdown.Label>Contract</Dropdown.Label>
+                  <Dropdown.Item className={classes.dropdownItem()}>
+                    <Link
+                      as={NextLink}
+                      href={Routes.contractAssets(searchResult.contract.id!)}
+                      className="text-color"
+                      onClick={onSelectItem}
+                    >
+                      {shortAddress(searchResult.contract.id || '', trimL, trimR)}
+                    </Link>
+                  </Dropdown.Item>
+                </>
+              )}
+              {searchResult?.transaction && (
+                <>
+                  <Dropdown.Label>Transaction</Dropdown.Label>
+                  <Dropdown.Item className={classes.dropdownItem()}>
+                    <Link
+                      as={NextLink}
+                      href={Routes.txSimple(searchResult.transaction.id!)}
+                      className="text-color"
+                      onClick={onSelectItem}
+                    >
+                      {shortAddress(
+                        searchResult.transaction.id || '',
+                        trimL,
+                        trimR,
+                      )}
+                    </Link>
+                  </Dropdown.Item>
+                </>
+              )}
             </>
-          )}
-          {searchResult?.block && (
+          ) : (
             <>
-              <Dropdown.Label>Block</Dropdown.Label>
-              <Dropdown.Item className={classes.dropdownItem()}>
-                <Link
-                  as={NextLink}
-                  href={Routes.blockSimple(searchResult.block.id!)}
-                  className="text-color"
-                  onClick={onSelectItem}
-                >
-                  {shortAddress(searchResult.block.id || '', trimL, trimR)}
-                </Link>
-              </Dropdown.Item>
-              <Dropdown.Item className={classes.dropdownItem()}>
-                <Link
-                  as={NextLink}
-                  href={Routes.blockSimple(searchResult.block.height!)}
-                  className="text-color"
-                  onClick={onSelectItem}
-                >
-                  {searchResult.block.height}
-                </Link>
-              </Dropdown.Item>
-            </>
-          )}
-          {searchResult?.contract && (
-            <>
-              <Dropdown.Label>Contract</Dropdown.Label>
-              <Dropdown.Item className={classes.dropdownItem()}>
-                <Link
-                  as={NextLink}
-                  href={Routes.contractAssets(searchResult.contract.id!)}
-                  className="text-color"
-                  onClick={onSelectItem}
-                >
-                  {shortAddress(searchResult.contract.id || '', trimL, trimR)}
-                </Link>
-              </Dropdown.Item>
-            </>
-          )}
-          {searchResult?.transaction && (
-            <>
-              <Dropdown.Label>Transaction</Dropdown.Label>
-              <Dropdown.Item className={classes.dropdownItem()}>
-                <Link
-                  as={NextLink}
-                  href={Routes.txSimple(searchResult.transaction.id!)}
-                  className="text-color"
-                  onClick={onSelectItem}
-                >
-                  {shortAddress(
-                    searchResult.transaction.id || '',
-                    trimL,
-                    trimR,
-                  )}
-                </Link>
+              <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
+                {`No instances found for "${searchValue}".`}
               </Dropdown.Item>
             </>
           )}
