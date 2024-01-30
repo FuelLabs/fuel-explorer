@@ -14,11 +14,13 @@ type SearchWidgetProps = {
   autoFocus?: boolean;
   isSearchOpen: boolean;
   setIsSearchOpen: (value: boolean) => void;
+  expandOnFocus?: boolean;
 };
 
 export const SearchWidget = ({
   autoFocus,
   setIsSearchOpen,
+  expandOnFocus,
 }: SearchWidgetProps) => {
   const classes = styles();
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -75,7 +77,7 @@ export const SearchWidget = ({
         ref={widgetRef}
         className="items-center gap-0 laptop:gap-4 justify-center flex-1"
       >
-        <SearchForm className={classes.searchSize()} autoFocus={autoFocus} />
+        <SearchForm className={classes.searchSize()} autoFocus={autoFocus} expandOnFocus={expandOnFocus} />
       </HStack>
     </SearchContext.Provider>
   );
