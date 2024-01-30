@@ -28,3 +28,4 @@ packages/app-portal/src/types
 pnpm-lock.yaml
 scripts/bridge/fuel-bridge
 **/**/tsconfig.json
+**.js
