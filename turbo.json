@@ -12,8 +12,13 @@
       "cache": true
     },
     "build:preview": {
-      "outputs": ["dist/**", "build/**", ".next/**"],
+      "outputs": ["public/**", "dist/**", "build/**", ".next/**"],
       "dependsOn": ["^build"],
+      "cache": true
+    },
+    "app-explorer#build:preview": {
+      "outputs": ["public/**", "dist/**", "build/**", ".next/**"],
+      "dependsOn": ["^build", "app-portal#build:preview"],
       "cache": true
     },
     "build:storybook": {
