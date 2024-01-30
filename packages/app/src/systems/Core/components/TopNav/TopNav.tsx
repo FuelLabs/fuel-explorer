@@ -12,7 +12,7 @@ export function TopNav() {
   // nav elements are in the DOM and respond to click events.
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const { isLaptop } = useBreakpoints();
+  const { isMobile, isLaptop } = useBreakpoints();
   const pathname = usePathname();
   const isHomePage = pathname === '/';
 
@@ -101,6 +101,7 @@ export function TopNav() {
             <SearchWidget
               setIsSearchOpen={setIsMobileSearchOpen}
               isSearchOpen={isMobileSearchOpen}
+              expandOnFocus={isMobile || isLaptop}
             />
           )}
           {themeToggle}

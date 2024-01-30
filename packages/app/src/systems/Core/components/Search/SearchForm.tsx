@@ -10,9 +10,10 @@ import { styles } from './styles';
 type SearchFormProps = {
   className: string;
   autoFocus?: boolean;
+  expandOnFocus?: boolean;
 };
 
-export function SearchForm({ className, autoFocus }: SearchFormProps) {
+export function SearchForm({ className, autoFocus, expandOnFocus }: SearchFormProps) {
   const classes = styles();
   const [results, action] = useFormState(
     (_: SearchResult | null, formData: FormData) => {
@@ -29,6 +30,7 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
         searchResult={results}
         autoFocus={autoFocus}
         onClear={onClear}
+        expandOnFocus={expandOnFocus}
       />
     </form>
   );
