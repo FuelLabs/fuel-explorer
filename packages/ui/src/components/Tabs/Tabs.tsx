@@ -29,7 +29,7 @@ export const TabsRoot = createComponent<TabsProps, typeof RT.Root>({
   baseElement: RT.Root,
   render: (
     Root,
-    { children, className, size = '1', variant = 'line', ...props },
+    { children, className, size = '1', variant = 'line', ...props }
   ) => {
     const classes = styles({ size, variant });
     return (
@@ -74,7 +74,7 @@ export const TabsContent = createComponent<TabsContentProps, typeof RT.Content>(
       const { size, variant } = useContext(ctx);
       return styles({ size, variant }).content();
     },
-  },
+  }
 );
 
 export const Tabs = withNamespace(TabsRoot, {

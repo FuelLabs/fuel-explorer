@@ -43,7 +43,7 @@ async function main() {
       BaseAssetId,
       {
         gasPrice,
-      },
+      }
     );
     const res2 = await tx2.waitForResult();
     console.log(`→ Transaction Id: ${res2.id}`);

@@ -1,6 +1,0 @@
-{
-  "exec": "forc index deploy -p ./fuel-explorer --url http://0.0.0.0:29987",
-  "watch": ["fuel-explorer/"],
-  "ext": "rs,graphql",
-  "delay": 1000
-}

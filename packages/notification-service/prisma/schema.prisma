@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  addresses Address[]
+}
+
+model Address {
+  address      String        @id
+  transactions Transaction[]
+  withdrawer   User          @relation(fields: [withdrawerId], references: [id], onDelete: Cascade)
+  withdrawerId Int
+}
+
+model Transaction {
+  transactionId String  @id
+  status        String
+  emailSent     Boolean @default(false)
+  address       Address @relation(fields: [addressId], references: [address], onDelete: Cascade)
+  addressId     String
+  blockHeight   BigInt?
+}

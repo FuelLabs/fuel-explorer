@@ -1,3 +1,5 @@
 packages:
   - 'packages/*'
   - 'contracts/*'
+  - 'docker/l1-chain/hardhat'
+  - 'docker/erc20-deployer/deployer'

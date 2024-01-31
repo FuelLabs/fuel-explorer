@@ -11,13 +11,13 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Enable pnpm using corepack form node.js
 RUN corepack enable
 
-COPY . /app
-WORKDIR /app
+COPY . /app-explorer
+WORKDIR /app-explorer
 
 RUN pnpm install --frozen-lockfile
 
 EXPOSE 4444
 
-WORKDIR /app/packages/graphql
+WORKDIR /app-explorer/packages/graphql
 
 CMD ["pnpm", "start"]

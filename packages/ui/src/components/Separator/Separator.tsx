@@ -9,5 +9,5 @@ export const Separator = createComponent<SeparatorProps, typeof RadixSeparator>(
   {
     id: 'Separator',
     baseElement: RadixSeparator,
-  },
+  }
 );

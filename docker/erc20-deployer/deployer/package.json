@@ -1,0 +1,14 @@
+{
+  "name": "erc20-deployer",
+  "scripts": {
+    "start": "ts-node ./src/index.ts"
+  },
+  "dependencies": {
+    "@fuel-bridge/test-utils": "next",
+    "ethers": "5.7.2",
+    "fuels": "0.71.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
+}

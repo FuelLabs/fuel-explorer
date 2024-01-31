@@ -14,5 +14,5 @@ export const VStack = createPolymorphicComponent<VStackProps, typeof RadixFlex>(
       direction: 'column',
       gap: '4',
     } as FlexProps,
-  },
+  }
 );

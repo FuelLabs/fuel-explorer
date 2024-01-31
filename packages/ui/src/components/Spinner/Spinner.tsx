@@ -38,7 +38,7 @@ export const Spinner = createComponent<SpinnerProps, 'svg'>({
           '--spinner-circumference': `${circumference}px`,
           '--spinner-color': getColor(color),
         }) as React.CSSProperties,
-      [size, color],
+      [size, color]
     );
 
     return (
