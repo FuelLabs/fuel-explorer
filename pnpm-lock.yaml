@@ -741,6 +741,12 @@ importers:
         specifier: 4.7.0
         version: 4.7.0
 
+  packages/indexer:
+    devDependencies:
+      nodemon:
+        specifier: ^3.0.2
+        version: 3.0.3
+
   packages/notification-service:
     dependencies:
       '@fuel-bridge/solidity-contracts':
@@ -921,56 +927,56 @@ importers:
         version: 4.0.0(tailwindcss@3.4.1)
     devDependencies:
       '@chialab/esbuild-plugin-meta-url':
-        specifier: 0.18.0
-        version: 0.18.0
+        specifier: 0.17.7
+        version: 0.17.7
       '@storybook/addon-a11y':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10
       '@storybook/addon-actions':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10
       '@storybook/addon-essentials':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
       '@storybook/addon-interactions':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10
       '@storybook/addon-links':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10(react@18.2.0)
       '@storybook/addon-storysource':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10
       '@storybook/addon-viewport':
-        specifier: 7.6.10
-        version: 7.6.10
+        specifier: 7.6.7
+        version: 7.6.7
       '@storybook/addons':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10(react-dom@18.2.0)(react@18.2.0)
       '@storybook/react':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)
       '@storybook/react-vite':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)(vite@5.0.12)
       '@storybook/testing-library':
         specifier: ^0.2.2
         version: 0.2.2
       '@storybook/types':
-        specifier: ^7.6.10
+        specifier: ^7.6.7
         version: 7.6.10
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
       '@types/react':
-        specifier: ^18.2.48
+        specifier: ^18.2.47
         version: 18.2.48
       '@types/react-dom':
         specifier: ^18.2.18
         version: 18.2.18
       autoprefixer:
-        specifier: 10.4.17
-        version: 10.4.17(postcss@8.4.33)
+        specifier: 10.4.16
+        version: 10.4.16(postcss@8.4.33)
       globby:
         specifier: 14.0.0
         version: 14.0.0
@@ -2617,34 +2623,34 @@ packages:
       lodash.mergewith: 4.6.2
     dev: false
 
-  /@chialab/esbuild-plugin-meta-url@0.18.0:
-    resolution: {integrity: sha512-4O6epI7sDfS+tQz0KEutKlpfe97u5//qz7PC25F9CCptzcyB75F023IH8+48OmiF2JeXuqHDYI3/T2jBpG+HmA==}
-    engines: {node: '>=18'}
+  /@chialab/esbuild-plugin-meta-url@0.17.7:
+    resolution: {integrity: sha512-f4Eg/+XSrcf9JlYUjI8IEupMOuGR7P3hMlfdbE8aMHM0+PJSIYeFV+udMZyNmSpCYfO3dpVtdulv5QDZfTvzWg==}
+    engines: {node: '>=13'}
     dependencies:
-      '@chialab/esbuild-rna': 0.18.0
-      '@chialab/estransform': 0.18.0
-      '@chialab/node-resolve': 0.18.0
+      '@chialab/esbuild-rna': 0.17.8
+      '@chialab/estransform': 0.17.5
+      '@chialab/node-resolve': 0.17.1
       mime-types: 2.1.35
     dev: true
 
-  /@chialab/esbuild-rna@0.18.0:
-    resolution: {integrity: sha512-7UdivnoeYFcMMKTcM2R8EKSJsRRnVhjuS79tLtkBmcZl13ZeGoLAUxA/fLx2Godr3yG7dhyr4Fj0QfJeVjNPmQ==}
-    engines: {node: '>=18'}
+  /@chialab/esbuild-rna@0.17.8:
+    resolution: {integrity: sha512-hovU4W5zlyMnbJjexdczpQ9mcUfFsJuv9FWUhzpXiQwPprlp5lul+frTed9s8AyVDTDq2yq3Gx2Ac411QsXYGA==}
+    engines: {node: '>=13'}
     dependencies:
-      '@chialab/estransform': 0.18.0
-      '@chialab/node-resolve': 0.18.0
+      '@chialab/estransform': 0.17.5
+      '@chialab/node-resolve': 0.17.1
     dev: true
 
-  /@chialab/estransform@0.18.0:
-    resolution: {integrity: sha512-GqQV36E/NZeAKjxq178i6XlbN9B6cGYYliw1grWghGo9YE4r1yO0eylYm9WaaDvvO1ozN/arVvyQ9G1TNJsRsQ==}
-    engines: {node: '>=18'}
+  /@chialab/estransform@0.17.5:
+    resolution: {integrity: sha512-maJUFkwk0ie0L4VvDO74NDYyRvaTQAI0qmSmrms8bZxUkZ+zQZd1ByWKDCYTRwtR6AOzTvgEOl2ZvEG+OUKv/A==}
+    engines: {node: '>=13'}
     dependencies:
       '@parcel/source-map': 2.1.1
     dev: true
 
-  /@chialab/node-resolve@0.18.0:
-    resolution: {integrity: sha512-eV1m70Qn9pLY9xwFmZ2FlcOzwiaUywsJ7NB/ud8VB7DouvCQtIHkQ3Om7uPX0ojXGEG1LCyO96kZkvbNTxNu0Q==}
-    engines: {node: '>=18'}
+  /@chialab/node-resolve@0.17.1:
+    resolution: {integrity: sha512-YWaK0MKKeB0FILI6j7qiAlGoSC9MqJZDFXzlAgfOaMCbn8Feqh6njxv7mI3oVkdi7QwV6zPRaTN6hKig/NriMA==}
+    engines: {node: '>=13'}
     dev: true
 
   /@coinbase/wallet-sdk@3.7.2:
@@ -10647,6 +10653,12 @@ packages:
       memoizerific: 1.11.3
     dev: true
 
+  /@storybook/addon-viewport@7.6.7:
+    resolution: {integrity: sha512-Q/BKjJaKzl4RWxH45K2iIXwkicj4ReVAUIpIyd7dPBb/Bx+hEDYZxR5dDg82AMkZdA71x5ttMnuDSuVpmWAE6g==}
+    dependencies:
+      memoizerific: 1.11.3
+    dev: true
+
   /@storybook/addons@7.6.10(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-lv/oT4ZGMKfXh6bB7LbuRP85bwRprBPYuMMl+e1Ikvu5WTfqVoJRYjc7mvXaIHGCI6DZ/nFcbRjra6q8ZhoDgw==}
     dependencies:
@@ -14159,6 +14171,10 @@ packages:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
     deprecated: Use your platform's native atob() and btoa() methods instead
 
+  /abbrev@1.1.1:
+    resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
+    dev: true
+
   /abitype@0.8.7(typescript@4.9.5):
     resolution: {integrity: sha512-wQ7hV8Yg/yKmGyFpqrNZufCxbszDe5es4AZGYPBitocfSqXtjrTG9JMWFcc4N30ukl2ve48aBTwt7NJxVQdU3w==}
     peerDependencies:
@@ -14781,6 +14797,22 @@ packages:
   /auto-bind@4.0.0:
     resolution: {integrity: sha512-Hdw8qdNiqdJ8LqT0iK0sVzkFbzg6fhnQqqfWhBDxcHZvU75+B+ayzTy8x+k5Ix0Y92XOhOUlx74ps+bA6BeYMQ==}
     engines: {node: '>=8'}
+    dev: true
+
+  /autoprefixer@10.4.16(postcss@8.4.33):
+    resolution: {integrity: sha512-7vd3UC6xKp0HLfua5IjZlcXvGAGy7cBAXTg2lyQ/8WpNhd6SiZ8Be+xm3FyBSYJx5GKcpRCzBh7RH4/0dnY+uQ==}
+    engines: {node: ^10 || ^12 || >=14}
+    hasBin: true
+    peerDependencies:
+      postcss: ^8.1.0
+    dependencies:
+      browserslist: 4.22.2
+      caniuse-lite: 1.0.30001579
+      fraction.js: 4.3.7
+      normalize-range: 0.1.2
+      picocolors: 1.0.0
+      postcss: 8.4.33
+      postcss-value-parser: 4.2.0
     dev: true
 
   /autoprefixer@10.4.17(postcss@8.4.33):
@@ -20331,6 +20363,10 @@ packages:
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
+  /ignore-by-default@1.0.1:
+    resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
+    dev: true
+
   /ignore@5.3.0:
     resolution: {integrity: sha512-g7dmpshy+gD7mh88OC9NwSGTKoc3kyLAZQRU1mt53Aw/vnvfXnbC+F/7F7QoYVKbV+KNvJx8wArewKy1vXMtlg==}
     engines: {node: '>= 4'}
@@ -23089,9 +23125,33 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
+  /nodemon@3.0.3:
+    resolution: {integrity: sha512-7jH/NXbFPxVaMwmBCC2B9F/V6X1VkEdNgx3iu9jji8WxWcvhMWkmhNWhI5077zknOnZnBzba9hZP6bCPJLSReQ==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      debug: 4.3.4(supports-color@5.5.0)
+      ignore-by-default: 1.0.1
+      minimatch: 3.1.2
+      pstree.remy: 1.1.8
+      semver: 7.5.4
+      simple-update-notifier: 2.0.0
+      supports-color: 5.5.0
+      touch: 3.1.0
+      undefsafe: 2.0.5
+    dev: true
+
   /nofilter@3.1.0:
     resolution: {integrity: sha512-l2NNj07e9afPnhAhvgVrCD/oy2Ai1yfLpuo3EpiO1jFTsB4sFz6oIfAfSZyQzVpkZQ9xS8ZS5g1jCBgq4Hwo0g==}
     engines: {node: '>=12.19'}
+
+  /nopt@1.0.10:
+    resolution: {integrity: sha512-NWmpvLSqUrgrAC9HCuxEvb+PSloHpqVu+FqcO4eeF2h5qYRhA7ev6KvelyQAKtegUbC6RypJnlEOhd8vloNKYg==}
+    hasBin: true
+    dependencies:
+      abbrev: 1.1.1
+    dev: true
 
   /normalize-package-data@2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
@@ -24323,6 +24383,10 @@ packages:
 
   /psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
+
+  /pstree.remy@1.1.8:
+    resolution: {integrity: sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==}
+    dev: true
 
   /public-encrypt@4.0.3:
     resolution: {integrity: sha512-zVpa8oKZSz5bTMTFClc1fQOnyyEzpl5ozpi1B5YcvBrdohMjH2rfsBtyXcuNuwjsDIXmBYlF2N5FlJYhR29t8Q==}
@@ -25940,6 +26004,13 @@ packages:
     dependencies:
       is-arrayish: 0.3.2
 
+  /simple-update-notifier@2.0.0:
+    resolution: {integrity: sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w==}
+    engines: {node: '>=10'}
+    dependencies:
+      semver: 7.5.4
+    dev: true
+
   /sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -27143,6 +27214,13 @@ packages:
   /toposort@2.0.2:
     resolution: {integrity: sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==}
 
+  /touch@3.1.0:
+    resolution: {integrity: sha512-WBx8Uy5TLtOSRtIq+M03/sKDrXCLHxwDcquSP2c43Le03/9serjQBIztjRz6FkJez9D/hleyAXTBGLwwZUw9lA==}
+    hasBin: true
+    dependencies:
+      nopt: 1.0.10
+    dev: true
+
   /tough-cookie@2.4.3:
     resolution: {integrity: sha512-Q5srk/4vDM54WJsJio3XNn6K2sCG+CQ8G5Wz6bZhRZoAe/+TxjWB/GlFAnYEbkYVlON9FMk/fE3h2RLpPXo4lQ==}
     engines: {node: '>=0.8'}
@@ -27736,6 +27814,10 @@ packages:
   /uncrypto@0.1.3:
     resolution: {integrity: sha512-Ql87qFHB3s/De2ClA9e0gsnS6zXG27SkTiSJwjCc9MebbfapQfuPzumMIUMi38ezPZVNFcHI9sUIepeQfw8J8Q==}
     dev: false
+
+  /undefsafe@2.0.5:
+    resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}
+    dev: true
 
   /underscore@1.13.6:
     resolution: {integrity: sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==}
