@@ -6,7 +6,7 @@ import { Children, useEffect, useMemo } from 'react';
 export function useStrictedChildren(
   name: string,
   list: string[],
-  children: ReactNode | ReactNode[],
+  children: ReactNode | ReactNode[]
 ) {
   const count = Children.count(children);
   const items = Children.toArray(children);
@@ -16,8 +16,8 @@ export function useStrictedChildren(
   if (count === 0) {
     throw new Error(
       `${name} must have at least one child of type ${head.join(
-        ', ',
-      )} or ${last}`,
+        ', '
+      )} or ${last}`
     );
   }
 
@@ -27,7 +27,7 @@ export function useStrictedChildren(
       const id = (child as any)?.type?.id;
       if (!list.includes(id)) {
         throw new Error(
-          `${name} only accepts ${head.join(', ')} or ${last} as children`,
+          `${name} only accepts ${head.join(', ')} or ${last} as children`
         );
       }
     });

@@ -1,27 +1,23 @@
-FROM ghcr.io/fuellabs/fuel-core:v0.17.10
+FROM ghcr.io/fuellabs/fuel-core:v0.22.0
 
-ENV MIN_GAS_PRICE="${MIN_GAS_PRICE}"
-ENV CONSENSUS_KEY_SECRET="${CONSENSUS_KEY}"
+ARG FUEL_IP=0.0.0.0
+ARG FUEL_PORT=4001
+ARG CONSENSUS_KEY_SECRET=""
 
-# Install curl to use on healthcheck config
-RUN apt update && apt install curl -y && apt install zip -y
+# dependencies
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y curl jq && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /root/
+# copy chain config
+WORKDIR /fuel
+COPY ./chainConfig.json .
 
-COPY chainConfig.json .
-COPY node-beta.zip .
+# expose fuel node port
+ENV FUEL_IP="${FUEL_IP}"
+ENV FUEL_PORT="${FUEL_PORT}"
+ENV CONSENSUS_KEY_SECRET="${CONSENSUS_KEY_SECRET}"
+EXPOSE ${FUEL_PORT}
 
-RUN unzip node-beta.zip -d /mnt/node-beta
-
-# https://stackoverflow.com/a/44671685
-# https://stackoverflow.com/a/40454758
-# hadolint ignore=DL3025
-CMD ./fuel-core run \
-    --ip 0.0.0.0 \
-    --port 4000 \
-    --db-path /mnt/node-beta \
-    --utxo-validation \
-    --min-gas-price ${MIN_GAS_PRICE} \
-    --chain ./chainConfig.json
-
-EXPOSE ${PORT}
+# copy over script and run
+COPY ./fuel_core.sh .
+CMD ["sh", "./fuel_core.sh"]

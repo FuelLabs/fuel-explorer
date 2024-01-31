@@ -60,7 +60,7 @@ function refColorVariablesAsObj() {
       acc[curr] = `var(--color-${curr})`;
       return acc;
     },
-    {} as Record<string, string>,
+    {} as Record<string, string>
   );
 }
 
@@ -112,7 +112,7 @@ const preset: Config = {
       addVariant('not-disabled', '&:not([aria-disabled=true],:disabled)');
       addVariant(
         'not-disabled-hover',
-        '&:not([aria-disabled=true],:disabled):hover',
+        '&:not([aria-disabled=true],:disabled):hover'
       );
       addVariant('first-type', '&:first-of-type');
       addVariant('last-type', '&:last-of-type');

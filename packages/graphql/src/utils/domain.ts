@@ -30,7 +30,7 @@ export class Domain<S = any, A = any> {
           source: S,
           args: A,
           context: Context,
-          info: GraphQLResolveInfo,
+          info: GraphQLResolveInfo
         ) => {
           this.source = source;
           this.args = args;
@@ -44,7 +44,7 @@ export class Domain<S = any, A = any> {
 
   async query<R, V extends Record<string, any> = Record<string, any>>(
     val: string,
-    variables: V = {} as V,
+    variables: V = {} as V
   ) {
     const client = getClient(this.context.url);
     return client.request<R>(val, variables);

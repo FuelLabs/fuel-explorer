@@ -48,7 +48,7 @@ export const CardListItem = createComponent<CardListItemProps, typeof Card>({
       rightEl,
       autoFocus: initAutoFocus,
       ...props
-    },
+    }
   ) => {
     const ctx = useCardListContext();
     const isClickable = Boolean(props.onClick || ctx.isClickable);

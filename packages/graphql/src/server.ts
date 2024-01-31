@@ -23,7 +23,7 @@ app.get(
     settings: {
       'schema.polling.enable': false,
     },
-  }),
+  })
 );
 
 const executor = createGraphqlFetch(FUEL_PROVIDER_BETA5);
@@ -36,7 +36,7 @@ app.post(
     async context() {
       return ContextDomain.createContext(FUEL_PROVIDER_BETA5);
     },
-  }),
+  })
 );
 
 export default app;
