@@ -61,7 +61,7 @@ const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
 function scheduleToastRemoval(
   toastId: string,
-  duration: number = DEFAULT_TOAST_DURATION,
+  duration: number = DEFAULT_TOAST_DURATION
 ) {
   if (toastTimeouts.has(toastId)) return;
   const timeout = setTimeout(() => {
@@ -79,7 +79,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         toasts: [action.toast, ...state.toasts].slice(
           0,
-          action.toast.limit || DEFAULT_TOAST_LIMIT,
+          action.toast.limit || DEFAULT_TOAST_LIMIT
         ),
       };
 
@@ -87,7 +87,7 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t,
+          t.id === action.toast.id ? { ...t, ...action.toast } : t
         ),
       };
 
@@ -105,7 +105,7 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === toastId || !toastId ? { ...t, open: false } : t,
+          t.id === toastId || !toastId ? { ...t, open: false } : t
         ),
       };
     }
@@ -195,13 +195,13 @@ function useToast() {
 let toast = createToast as typeof createToast & {
   success: (
     msg: string,
-    props?: Partial<Omit<ToasterToast, 'variant'>>,
+    props?: Partial<Omit<ToasterToast, 'variant'>>
   ) => void;
   base: (msg: string, props?: Partial<Omit<ToasterToast, 'variant'>>) => void;
   info: (msg: string, props?: Partial<Omit<ToasterToast, 'variant'>>) => void;
   warning: (
     msg: string,
-    props?: Partial<Omit<ToasterToast, 'variant'>>,
+    props?: Partial<Omit<ToasterToast, 'variant'>>
   ) => void;
   error: (msg: string, props?: Partial<Omit<ToasterToast, 'variant'>>) => void;
 };

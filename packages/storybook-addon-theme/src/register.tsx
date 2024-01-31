@@ -51,7 +51,7 @@ addons.register(ADDON_ID, (api) => {
         api.setOptions({ theme: isDark ? dark : light });
 
         const iframe = document.getElementById(
-          'storybook-preview-iframe',
+          'storybook-preview-iframe'
         ) as any;
 
         const doc = iframe.contentDocument || iframe.contentWindow?.document;

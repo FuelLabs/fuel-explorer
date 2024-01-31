@@ -104,7 +104,7 @@ export class OperationDomain {
   private _findNextReturnIdx(
     current: TxReceipt,
     idx: number,
-    hasError?: boolean,
+    hasError?: boolean
   ) {
     return (receipt: TxReceipt, nIdx: number) => {
       if (hasError) return nIdx > idx && isError(receipt);

@@ -38,7 +38,7 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
       iconClassName,
       iconColor,
       ...props
-    },
+    }
   ) => {
     const variantProps = useVariants(props);
     const isDisabled = Boolean(disabled || isLoading);
@@ -51,7 +51,7 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
         className={cx(
           props.className,
           variantProps.className,
-          !isDisabled && !props['aria-readonly'] ? 'cursor-pointer' : '',
+          !isDisabled && !props['aria-readonly'] ? 'cursor-pointer' : ''
         )}
       >
         {isLoading ? (

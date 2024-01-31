@@ -33,7 +33,7 @@ export const HelperIcon = createComponent<HelperIconProps, 'span'>({
       iconColor = 'text-icon',
       iconAriaLabel: ariaLabel = 'Helper Icon',
       ...props
-    },
+    }
   ) => {
     return (
       <Comp {...props}>

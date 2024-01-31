@@ -33,7 +33,7 @@ function getVariant<V = Variant>({ variant, className }: VariantProps<V>) {
       variant: 'ghost',
       className: cx(
         'hover:bg-transparent hover:underline px-0.5 py-0.5',
-        className,
+        className
       ),
     };
   }

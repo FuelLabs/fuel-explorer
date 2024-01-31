@@ -8,7 +8,7 @@ export const styles = tv({
       'not-first:border-t not-first:border-border desktop:not-first:border-t-0 border-t-0',
     ],
     menuItem: [
-      'relative h-auto text-color data-[active=true]:text-brand hover:text-brand',
+      'relative h-auto text-color data-[active=true]:text-brand hover:text-brand flex items-center',
       'desktop:data-[active=true]:before:content-[""]',
       'desktop:data-[active=true]:before:absolute',
       'desktop:data-[active=true]:before:block',

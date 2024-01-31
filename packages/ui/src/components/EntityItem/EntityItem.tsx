@@ -42,7 +42,7 @@ export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
   baseElement: Box,
   render: (
     Comp,
-    { title, id, children, className, idPrefix, shortId = true, ...props },
+    { title, id, children, className, idPrefix, shortId = true, ...props }
   ) => {
     const classes = styles();
     return (
