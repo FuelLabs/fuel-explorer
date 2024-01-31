@@ -19,6 +19,8 @@ export default defineConfig({
   },
   build: {
     target: ['es2020'],
-    outDir: resolve(__dirname, '../app-explorer/public/portal'),
+    ...(CI
+      ? { outDir: resolve(__dirname, '../app-explorer/public/portal') }
+      : {}),
   },
 });
