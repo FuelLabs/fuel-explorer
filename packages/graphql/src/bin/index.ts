@@ -1,9 +1,9 @@
-import { runDevelopment, runServer } from './server';
+import { runServerCodegen, runServer } from './server';
 
-const { WATCH } = process.env;
+const { CODE_GEN = 'false' } = process.env;
 
-if (WATCH === 'true') {
-  runDevelopment();
+if (CODE_GEN === 'true') {
+  runServerCodegen();
 } else {
   runServer();
 }

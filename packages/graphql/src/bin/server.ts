@@ -7,6 +7,7 @@ import app from '../server';
 import { requireEnv } from '../utils/requireEnv';
 
 const { SERVER_PORT = 4444 } = requireEnv(['SERVER_PORT']);
+const { WATCH = 'false' } = process.env;
 
 const server = createServer(app);
 
@@ -30,7 +31,7 @@ export async function closeServer() {
   });
 }
 
-export async function runDevelopment() {
+export async function runServerCodegen() {
   const cwd = resolve(__dirname, '../');
   const gqlWatcher = chokidar.watch(['src/**/*.graphql'], {
     cwd,
@@ -56,6 +57,11 @@ export async function runDevelopment() {
   async function exitHandler() {
     await closeServer();
     gqlWatcher.close();
+  }
+
+  if (WATCH !== 'true') {
+    exitHandler();
+    return;
   }
 
   process.on('exit', exitHandler);
