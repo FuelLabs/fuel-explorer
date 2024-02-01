@@ -29,7 +29,10 @@ export default defineConfig((options) => ({
         SERVER_PORT: port,
         CODE_GEN: true,
         WATCH: Boolean(options.watch),
-        FUEL_PROVIDER: process.env.FUEL_PROVIDER,
+        // TODO: remove the requirement of fetching the fuel provider
+        // at build time.
+        FUEL_PROVIDER:
+          process.env.FUEL_PROVIDER || 'https://beta-5.fuel.network/graphql',
       },
     });
     // Wait process to close until restarting
