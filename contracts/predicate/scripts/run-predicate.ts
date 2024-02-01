@@ -7,7 +7,7 @@ const BIN_PATH = resolve(__dirname, '../out/debug/predicate-app.bin');
 const AMOUNT = 300_000;
 
 if (!FUEL_PROVIDER || !PRIVATE_KEY) {
-  throw new Error('Missing some config on your .env file');
+  throw new Error('Missing some config in .env file. Should have FUEL_PROVIDER and PRIVATE_KEY');
 }
 
 async function main() {
