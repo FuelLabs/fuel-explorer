@@ -7,6 +7,7 @@ ENV PORT="${PORT}"
 ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV SERVER_BUILD=true
 
 # Enable pnpm using corepack form node.js
 RUN corepack enable

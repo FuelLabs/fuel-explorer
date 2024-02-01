@@ -6,6 +6,9 @@ import { defineConfig } from 'tsup';
 const graphqlLoaderPlugin = graphqlLoaderPluginPkg.default;
 // Assign a single port for the process
 const port = await getPort({ port: 4444 });
+const { SERVER_BUILD } = process.env;
+
+const isServerBuild = SERVER_BUILD === 'true';
 
 export default defineConfig((options) => ({
   outDir: 'dist',
@@ -13,11 +16,12 @@ export default defineConfig((options) => ({
   format: ['esm', 'cjs'],
   sourcemap: true,
   clean: false,
-  dts: true,
+  dts: !isServerBuild,
   minify: false,
   esbuildPlugins: [graphqlLoaderPlugin()],
   entry: { index: 'src/bin/index.ts' },
   async onSuccess() {
+    if (isServerBuild) return;
     const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {
       stdio: 'inherit',
       cleanup: true,
