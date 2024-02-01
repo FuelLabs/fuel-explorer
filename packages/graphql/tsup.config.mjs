@@ -13,30 +13,28 @@ export default defineConfig((options) => ({
   format: ['esm', 'cjs'],
   sourcemap: true,
   clean: false,
-  dts: false,
+  dts: true,
   minify: false,
   esbuildPlugins: [graphqlLoaderPlugin()],
   entry: { index: 'src/bin/index.ts' },
   async onSuccess() {
-    if (options.watch) {
-      const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {
-        stdio: 'inherit',
-        cleanup: true,
-        env: {
-          SERVER_PORT: port,
-          CODE_GEN: true,
-          WATCH: Boolean(options.watch),
-          FUEL_PROVIDER: process.env.FUEL_PROVIDER,
-        },
+    const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {
+      stdio: 'inherit',
+      cleanup: true,
+      env: {
+        SERVER_PORT: port,
+        CODE_GEN: true,
+        WATCH: Boolean(options.watch),
+        FUEL_PROVIDER: process.env.FUEL_PROVIDER,
+      },
+    });
+    // Wait process to close until restarting
+    return async () => {
+      const killProcess = new Promise((resolve) => {
+        cmd.on('close', () => resolve(true));
       });
-      // Wait process to close until restarting
-      return async () => {
-        const killProcess = new Promise((resolve) => {
-          cmd.on('close', () => resolve(true));
-        });
-        cmd.kill('SIGTERM');
-        await killProcess;
-      };
-    }
+      cmd.kill('SIGTERM');
+      await killProcess;
+    };
   },
 }));

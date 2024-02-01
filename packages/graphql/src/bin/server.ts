@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import app from '../server';
 import { requireEnv } from '../utils/requireEnv';
 
-const { SERVER_PORT = 4444 } = requireEnv(['SERVER_PORT']);
+const { SERVER_PORT } = requireEnv([['SERVER_PORT', '4444']]);
 const { WATCH = 'false' } = process.env;
 
 const server = createServer(app);
