@@ -8,8 +8,8 @@ import { createSchema } from './schema';
 import { createGraphqlFetch } from './utils/executor';
 import { requireEnv } from './utils/requireEnv';
 
-const { FUEL_PROVIDER = 'https://beta-5.fuel.network/graphql' } = requireEnv([
-  'FUEL_PROVIDER',
+const { FUEL_PROVIDER } = requireEnv([
+  ['FUEL_PROVIDER', 'https://beta-5.fuel.network/graphql'],
 ]);
 
 // Create a server:
