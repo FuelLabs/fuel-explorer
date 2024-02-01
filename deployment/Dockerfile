@@ -4,7 +4,7 @@ FROM node:20-slim AS base
 
 # Expose the ENVs to the env of the container
 ENV PORT="${PORT}"
-ENV FUEL_PROVIDER_BETA5="${FUEL_PROVIDER_BETA5}"
+ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
@@ -14,10 +14,10 @@ RUN corepack enable
 COPY . /app-explorer
 WORKDIR /app-explorer
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 EXPOSE ${PORT}
 
-WORKDIR /app-explorer/packages/graphql
+WORKDIR /app-explorer
 
-CMD ["pnpm", "start"]
+CMD ["pnpm", "server:start"]

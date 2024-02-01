@@ -13,6 +13,8 @@ export default defineConfig((options) => ({
   format: ['esm', 'cjs'],
   sourcemap: true,
   clean: false,
+  dts: false,
+  minify: false,
   esbuildPlugins: [graphqlLoaderPlugin()],
   entry: { index: 'src/bin/index.ts' },
   async onSuccess() {

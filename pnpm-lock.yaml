@@ -737,9 +737,15 @@ importers:
       graphql-codegen-typescript-mock-data:
         specifier: 3.7.1
         version: 3.7.1(graphql@16.8.1)
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
+      tsup:
+        specifier: 8.0.1
+        version: 8.0.1(@swc/core@1.3.106)(ts-node@10.9.2)(typescript@5.3.3)
       tsx:
         specifier: 4.7.0
         version: 4.7.0

@@ -10,11 +10,12 @@
   "typings": "./src/index.ts",
   "scripts": {
     "build": "run-s codegen:fuel build:lib",
-    "build:lib": "tsup --dts",
+    "build:lib": "tsup",
     "build:watch": "pnpm build:lib --watch",
     "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts",
     "codegen:app": "gql-gen -r dotenv/config --config codegen.ts",
     "dev": "pnpm build:watch",
+    "server:start": "node ./dist/index.js",
     "fix:generated": "node ./scripts/fix-generated.mjs",
     "ts:check": "tsc --noEmit",
     "prepare": "pnpm build"
@@ -63,7 +64,9 @@
     "execa": "8.0.1",
     "graphql-codegen-typescript-common": "0.18.2",
     "graphql-codegen-typescript-mock-data": "3.7.1",
+    "npm-run-all": "^4.1.5",
     "tsconfig-paths": "^4.2.0",
+    "tsup": "8.0.1",
     "tsx": "4.7.0"
   }
 }
