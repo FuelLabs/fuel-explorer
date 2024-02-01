@@ -682,6 +682,9 @@ importers:
       typescript:
         specifier: 5.3.3
         version: 5.3.3
+      wait-port:
+        specifier: 1.1.0
+        version: 1.1.0
     devDependencies:
       '@babel/cli':
         specifier: 7.23.9
@@ -734,9 +737,15 @@ importers:
       graphql-codegen-typescript-mock-data:
         specifier: 3.7.1
         version: 3.7.1(graphql@16.8.1)
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
+      tsup:
+        specifier: 8.0.1
+        version: 8.0.1(@swc/core@1.3.106)(ts-node@10.9.2)(typescript@5.3.3)
       tsx:
         specifier: 4.7.0
         version: 4.7.0
@@ -28524,6 +28533,18 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
+
+  /wait-port@1.1.0:
+    resolution: {integrity: sha512-3e04qkoN3LxTMLakdqeWth8nih8usyg+sf1Bgdf9wwUkp05iuK1eSY/QpLvscT/+F/gA89+LpUmmgBtesbqI2Q==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      chalk: 4.1.2
+      commander: 9.5.0
+      debug: 4.3.4(supports-color@5.5.0)
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /walker@1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}

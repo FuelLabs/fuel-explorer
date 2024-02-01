@@ -8,7 +8,9 @@ import { createSchema } from './schema';
 import { createGraphqlFetch } from './utils/executor';
 import { requireEnv } from './utils/requireEnv';
 
-const { FUEL_PROVIDER_BETA5 } = requireEnv(['FUEL_PROVIDER_BETA5']);
+const { FUEL_PROVIDER } = requireEnv([
+  ['FUEL_PROVIDER', 'https://beta-5.fuel.network/graphql'],
+]);
 
 // Create a server:
 const app = express();
@@ -26,7 +28,7 @@ app.get(
   })
 );
 
-const executor = createGraphqlFetch(FUEL_PROVIDER_BETA5);
+const executor = createGraphqlFetch(FUEL_PROVIDER);
 const schema = createSchema(executor);
 
 app.post(
@@ -34,9 +36,28 @@ app.post(
   createHandler({
     schema,
     async context() {
-      return ContextDomain.createContext(FUEL_PROVIDER_BETA5);
+      return ContextDomain.createContext(FUEL_PROVIDER);
     },
   })
 );
+
+// Check health of the graphql endpoint and the fuel provider
+app.get('/health', async (_, res) => {
+  let providerUp = null;
+  try {
+    providerUp = (
+      await fetch(`${FUEL_PROVIDER.replace('/graphql', '/health')}`).then(
+        (res) => res.json()
+      )
+    ).up;
+  } catch (e) {
+    providerUp = false;
+  }
+
+  res.status(200).send({
+    up: true,
+    providerUp: providerUp,
+  });
+});
 
 export default app;
