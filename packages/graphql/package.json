@@ -15,7 +15,6 @@
     "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts",
     "codegen:app": "gql-gen -r dotenv/config --config codegen.ts",
     "dev": "pnpm build:watch",
-    "start": "pnpm dev",
     "fix:generated": "node ./scripts/fix-generated.mjs",
     "ts:check": "tsc --noEmit",
     "prepare": "pnpm build"
@@ -43,7 +42,8 @@
     "graphql-tag": "2.12.6",
     "lodash": "^4.17.21",
     "tai64": "1.0.0",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "wait-port": "1.1.0"
   },
   "devDependencies": {
     "@babel/cli": "7.23.9",

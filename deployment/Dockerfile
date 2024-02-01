@@ -16,7 +16,7 @@ WORKDIR /app-explorer
 
 RUN pnpm install --frozen-lockfile
 
-EXPOSE 4444
+EXPOSE ${PORT}
 
 WORKDIR /app-explorer/packages/graphql
 

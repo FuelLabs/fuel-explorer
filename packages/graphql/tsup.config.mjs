@@ -4,6 +4,8 @@ import getPort from 'get-port';
 import { defineConfig } from 'tsup';
 
 const graphqlLoaderPlugin = graphqlLoaderPluginPkg.default;
+// Assign a single port for the process
+const port = await getPort({ port: 4444 });
 
 export default defineConfig((options) => ({
   outDir: 'dist',
@@ -12,23 +14,26 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: false,
   esbuildPlugins: [graphqlLoaderPlugin()],
-  entry: { index: 'src/bin.ts' },
+  entry: { index: 'src/bin/index.ts' },
   async onSuccess() {
-    const port = await getPort({ port: 4444 });
-    const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {
-      stdio: 'inherit',
-      cleanup: true,
-      env: {
-        SERVER_PORT: port,
-        WATCH: Boolean(options.watch),
-        FUEL_PROVIDER_BETA5:
-          process.env.FUEL_PROVIDER_BETA5 ||
-          'https://beta-5.fuel.network/graphql',
-      },
-    });
-
-    return () => {
-      cmd.kill('SIGTERM');
-    };
+    if (options.watch) {
+      const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {
+        stdio: 'inherit',
+        cleanup: true,
+        env: {
+          SERVER_PORT: port,
+          WATCH: Boolean(options.watch),
+          FUEL_PROVIDER: process.env.FUEL_PROVIDER,
+        },
+      });
+      // Wait process to close until restarting
+      return async () => {
+        const killProcess = new Promise((resolve) => {
+          cmd.on('close', () => resolve(true));
+        });
+        cmd.kill('SIGTERM');
+        await killProcess;
+      };
+    }
   },
 }));

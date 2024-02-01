@@ -1,13 +1,13 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
-console.log(`process.env.FUEL_PROVIDER_BETA5`, process.env.FUEL_PROVIDER_BETA5);
+import { requireEnv } from './src/utils/requireEnv';
+
+const { FUEL_PROVIDER } = requireEnv(['FUEL_PROVIDER']);
 
 const config: CodegenConfig = {
   generates: {
     './src/schemas/fuelcore.graphql': {
-      schema:
-        process.env.FUEL_PROVIDER_BETA5 ||
-        'https://beta-5.fuel.network/graphql',
+      schema: FUEL_PROVIDER,
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,
