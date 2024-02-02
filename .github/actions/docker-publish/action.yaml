@@ -19,6 +19,10 @@ inputs:
   dockerfile:
     description: 'Path to the Dockerfile'
     required: true
+  context:
+    description: 'Path to the Context'
+    default: .
+    required: true
   build-args:
     description: 'List of build-time variables'
     required: false
@@ -65,7 +69,7 @@ runs:
       uses: docker/build-push-action@v4
       id: publish
       with:
-        context: .
+        context: ${{ inputs.context }}
         file: ${{ inputs.dockerfile }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
