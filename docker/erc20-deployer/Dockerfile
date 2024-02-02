@@ -27,10 +27,3 @@ EXPOSE ${PORT}
 
 # copy over script and run
 CMD ["pnpm", "start"]
-
-
-      # L1_CHAIN_HTTP=http://localhost:8545 \
-      # FUEL_GRAPHQL_ENDPOINT=http://localhost:4000/graphql \
-      # DEPLOYMENTS_HTTP=http://localhost:8080 \
-      # PK_ETH_WALLET=59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d \
-      # pnpm start
