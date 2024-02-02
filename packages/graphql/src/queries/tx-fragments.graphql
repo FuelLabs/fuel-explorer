@@ -232,6 +232,8 @@ fragment TransactionItem on Transaction {
   salt
   storageSlots
   rawPayload
+  mintAmount
+  mintAssetId
 
   status {
     ...TransactionStatus

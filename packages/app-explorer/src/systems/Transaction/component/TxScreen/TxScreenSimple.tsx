@@ -16,11 +16,14 @@ import {
   LoadingBox,
   LoadingWrapper,
   Card,
+  Address,
 } from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
+import { tv } from 'tailwind-variants';
 import { Routes } from '~/routes';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { formatZeroUnits } from '~/systems/Core/utils/format';
 
@@ -40,184 +43,250 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
   const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
   const title = tx.title as string;
+  const isMint = Boolean(tx.isMint);
+  const classes = styles({ isMint });
 
-  return (
-    <Grid className="grid-cols-1 gap-10 laptop:grid-cols-[300px_1fr] laptop:items-start">
-      <Box className="grid grid-cols-1 gap-4 tablet:grid-cols-2 tablet:gap-6 laptop:grid-cols-1">
-        <CardInfo>
-          <EntityItem>
-            <EntityItem.Slot>
+  const cards = [
+    <CardInfo key="type">
+      <EntityItem>
+        <EntityItem.Slot>
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={<LoadingBox className="w-11 h-11 rounded-full" />}
+            regularEl={
+              <TxIcon
+                type={title}
+                size="lg"
+                status={tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)}
+              />
+            }
+          />
+        </EntityItem.Slot>
+        <EntityItem.Info
+          title={
+            (
               <LoadingWrapper
                 isLoading={isLoading}
-                loadingEl={<LoadingBox className="w-11 h-11 rounded-full" />}
-                regularEl={
-                  <TxIcon
-                    type={title}
-                    size="lg"
-                    status={
-                      tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)
-                    }
-                  />
-                }
+                loadingEl={<LoadingBox className="w-20 h-6" />}
+                regularEl={title}
               />
-            </EntityItem.Slot>
-            <EntityItem.Info
-              title={
-                (
-                  <LoadingWrapper
-                    isLoading={isLoading}
-                    loadingEl={<LoadingBox className="w-20 h-6" />}
-                    regularEl={title}
-                  />
-                ) as any
-              }
-            >
-              <HStack gap="1">
-                {tx.isPredicate && (
-                  <Badge color="blue" variant="ghost">
-                    Predicate
-                  </Badge>
-                )}
-                <LoadingWrapper
-                  isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-20 h-6" />}
-                  regularEl={
-                    <Badge
-                      color={TX_INTENT_MAP[tx.statusType as string]}
-                      variant="ghost"
-                    >
-                      {tx.statusType}
-                    </Badge>
-                  }
-                />
-              </HStack>
-            </EntityItem.Info>
-          </EntityItem>
-        </CardInfo>
-        <CardInfo
-          name={'Timestamp'}
-          description={
-            <LoadingWrapper
-              isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-40 h-5 mt-1" />}
-              regularEl={tx.time?.full}
-            />
+            ) as any
           }
         >
-          <LoadingWrapper
-            isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-24 h-6" />}
-            regularEl={tx.time?.fromNow}
-          />
-        </CardInfo>
-        {(tx.blockHeight || isLoading) && (
-          <CardInfo name={'Block'}>
+          <HStack gap="1">
+            {tx.isPredicate && (
+              <Badge color="blue" variant="ghost">
+                Predicate
+              </Badge>
+            )}
             <LoadingWrapper
               isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-28 h-6" />}
+              loadingEl={<LoadingBox className="w-20 h-6" />}
               regularEl={
-                <Link
-                  as={NextLink}
-                  href={Routes.blockSimple(tx.blockHeight || '')}
-                  className="text-link"
+                <Badge
+                  color={TX_INTENT_MAP[tx.statusType as string]}
+                  variant="ghost"
                 >
-                  #{tx.blockHeight}
-                </Link>
+                  {tx.statusType}
+                </Badge>
               }
             />
-          </CardInfo>
-        )}
-        <CardInfo
-          name={'Network Fee'}
-          description={
-            <LoadingWrapper
-              isLoading={isLoading}
-              regularEl={<>Gas used: {formatZeroUnits(tx.gasUsed || '')}</>}
-              loadingEl={
-                <>
-                  <LoadingBox className="w-28 h-5 mt-2" />
-                  <LoadingBox className="w-28 h-5 mt-1" />
-                </>
-              }
-            />
+          </HStack>
+        </EntityItem.Info>
+      </EntityItem>
+    </CardInfo>,
+    <CardInfo
+      key="timestamp"
+      name={'Timestamp'}
+      description={
+        <LoadingWrapper
+          isLoading={isLoading}
+          loadingEl={<LoadingBox className="w-40 h-5 mt-1" />}
+          regularEl={tx.time?.full}
+        />
+      }
+    >
+      <LoadingWrapper
+        isLoading={isLoading}
+        loadingEl={<LoadingBox className="w-24 h-6" />}
+        regularEl={tx.time?.fromNow}
+      />
+    </CardInfo>,
+    (tx.blockHeight || isLoading) && (
+      <CardInfo key="block" name={'Block'}>
+        <LoadingWrapper
+          isLoading={isLoading}
+          loadingEl={<LoadingBox className="w-28 h-6" />}
+          regularEl={
+            <Link
+              as={NextLink}
+              href={Routes.blockSimple(tx.blockHeight || '')}
+              className="text-link"
+            >
+              #{tx.blockHeight}
+            </Link>
           }
-        >
+        />
+      </CardInfo>
+    ),
+    <CardInfo
+      key={'fee'}
+      name={'Network Fee'}
+      description={
+        <LoadingWrapper
+          isLoading={isLoading}
+          regularEl={<>Gas used: {formatZeroUnits(tx.gasUsed || '')}</>}
+          loadingEl={
+            <>
+              <LoadingBox className="w-28 h-5 mt-2" />
+              <LoadingBox className="w-28 h-5 mt-1" />
+            </>
+          }
+        />
+      }
+    >
+      <LoadingWrapper
+        isLoading={isLoading}
+        loadingEl={<LoadingBox className="w-36 h-6" />}
+        regularEl={`${bn(tx.fee).format()} ETH`}
+      />
+    </CardInfo>,
+    <CardInfo
+      key="assetMinted"
+      name="Asset Minted"
+      description={
+        tx.mintAssetId && (
           <LoadingWrapper
             isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-36 h-6" />}
-            regularEl={`${bn(tx.fee).format()} ETH`}
-          />
-        </CardInfo>
-      </Box>
-      <VStack>
-        <VStack>
-          <Heading as="h2" size="5" className="leading-none">
-            Inputs
-          </Heading>
-          <LoadingWrapper
-            isLoading={isLoading}
-            repeatLoader={2}
-            noItems={!hasInputs}
-            loadingEl={
-              <Card className="py-4 px-4 flex flex-row items-center justify-between">
-                <LoadingBox className="rounded-full w-[38px] h-[38px]" />
-                <LoadingBox className="w-24 h-6" />
-              </Card>
-            }
-            regularEl={tx.groupedInputs?.map((input, i) => (
-              // here we use only index as key because this component will not change
-              <TxInput key={i} input={input as GroupedInput} />
-            ))}
-            noItemsEl={
-              <EmptyCard hideImage>
-                <EmptyCard.Title>No Inputs</EmptyCard.Title>
-                <EmptyCard.Description>
-                  This transaction does not have any inputs.
-                </EmptyCard.Description>
-              </EmptyCard>
-            }
-          />
-        </VStack>
-        <Flex justify="center">
-          <Icon icon={IconArrowDown} size={30} color="text-muted" />
-        </Flex>
-        <TxScripts tx={tx} isLoading={isLoading} />
-        <Flex justify="center">
-          <Icon icon={IconArrowDown} size={30} color="text-muted" />
-        </Flex>
-        <VStack>
-          <Heading as="h2" size="5" className="leading-none">
-            Outputs
-          </Heading>
-          <LoadingWrapper
-            isLoading={isLoading}
-            repeatLoader={2}
-            noItems={!hasOutputs}
-            loadingEl={
-              <Card className="py-4 px-4 flex flex-row items-center justify-between">
-                <LoadingBox className="rounded-full w-[38px] h-[38px]" />
-                <LoadingBox className="w-24 h-6" />
-              </Card>
-            }
-            regularEl={tx.groupedOutputs?.map((output, i) => (
-              <TxOutput
-                // here we use only index as key because this component will not change
-                key={i}
-                tx={tx}
-                output={output as GroupedOutput}
+            regularEl={
+              <Address
+                prefix="Id:"
+                value={tx.mintAssetId}
+                className="mt-2 text-xs"
               />
-            ))}
-            noItemsEl={
-              <EmptyCard hideImage>
-                <EmptyCard.Title>No Outputs</EmptyCard.Title>
-                <EmptyCard.Description>
-                  This transaction does not have any outputs.
-                </EmptyCard.Description>
-              </EmptyCard>
+            }
+            loadingEl={
+              <>
+                <LoadingBox className="w-28 h-5 mt-2" />
+              </>
             }
           />
-        </VStack>
+        )
+      }
+    >
+      <LoadingWrapper
+        isLoading={isLoading}
+        regularEl={
+          <Amount
+            assetId={tx.mintAssetId}
+            value={bn(tx.mintAmount)}
+            className="text-text text-md"
+          />
+        }
+        loadingEl={
+          <>
+            <LoadingBox className="w-28 h-5" />
+          </>
+        }
+      />
+    </CardInfo>,
+  ];
+
+  const content = !isMint && (
+    <VStack>
+      <VStack>
+        <Heading as="h2" size="5" className="leading-none">
+          Inputs
+        </Heading>
+        <LoadingWrapper
+          isLoading={isLoading}
+          repeatLoader={2}
+          noItems={!hasInputs}
+          loadingEl={
+            <Card className="py-4 px-4 flex flex-row items-center justify-between">
+              <LoadingBox className="rounded-full w-[38px] h-[38px]" />
+              <LoadingBox className="w-24 h-6" />
+            </Card>
+          }
+          regularEl={tx.groupedInputs?.map((input, i) => (
+            // here we use only index as key because this component will not change
+            <TxInput key={i} input={input as GroupedInput} />
+          ))}
+          noItemsEl={
+            <EmptyCard hideImage>
+              <EmptyCard.Title>No Inputs</EmptyCard.Title>
+              <EmptyCard.Description>
+                This transaction does not have any inputs.
+              </EmptyCard.Description>
+            </EmptyCard>
+          }
+        />
       </VStack>
+      <Flex justify="center">
+        <Icon icon={IconArrowDown} size={30} color="text-muted" />
+      </Flex>
+      <TxScripts tx={tx} isLoading={isLoading} />
+      <Flex justify="center">
+        <Icon icon={IconArrowDown} size={30} color="text-muted" />
+      </Flex>
+      <VStack>
+        <Heading as="h2" size="5" className="leading-none">
+          Outputs
+        </Heading>
+        <LoadingWrapper
+          isLoading={isLoading}
+          repeatLoader={2}
+          noItems={!hasOutputs}
+          loadingEl={
+            <Card className="py-4 px-4 flex flex-row items-center justify-between">
+              <LoadingBox className="rounded-full w-[38px] h-[38px]" />
+              <LoadingBox className="w-24 h-6" />
+            </Card>
+          }
+          regularEl={tx.groupedOutputs?.map((output, i) => (
+            <TxOutput
+              // here we use only index as key because this component will not change
+              key={i}
+              tx={tx}
+              output={output as GroupedOutput}
+            />
+          ))}
+          noItemsEl={
+            <EmptyCard hideImage>
+              <EmptyCard.Title>No Outputs</EmptyCard.Title>
+              <EmptyCard.Description>
+                This transaction does not have any outputs.
+              </EmptyCard.Description>
+            </EmptyCard>
+          }
+        />
+      </VStack>
+    </VStack>
+  );
+
+  return (
+    <Grid className={classes.wrapper()}>
+      <Box className={classes.cards()}>{cards}</Box>
+      {content}
     </Grid>
   );
 }
+
+const styles = tv({
+  slots: {
+    wrapper: [
+      'grid-cols-1 gap-10 laptop:grid-cols-[300px_1fr] laptop:items-start',
+    ],
+    cards: [
+      'grid grid-cols-1 gap-4 tablet:grid-cols-2 tablet:gap-6 laptop:grid-cols-1',
+    ],
+  },
+  variants: {
+    isMint: {
+      true: {
+        wrapper: ['laptop:grid-cols-1'],
+        cards: ['laptop:grid-cols-3'],
+      },
+    },
+  },
+});
