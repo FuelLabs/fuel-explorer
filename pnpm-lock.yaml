@@ -410,7 +410,7 @@ importers:
         version: 0.1.5
       '@fuels/react-xstore':
         specifier: 0.1.5
-        version: 0.1.5(@types/react@18.2.54)(@xstate/react@4.0.3)(react-dom@18.2.0)(react@18.2.0)(xstate@5.6.0)
+        version: 0.1.5(@types/react@18.2.54)(@xstate/react@4.0.3)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
       '@hookform/resolvers':
         specifier: ^3.3.4
         version: 3.3.4(react-hook-form@7.50.0)
@@ -419,7 +419,7 @@ importers:
         version: 5.18.1(react@18.2.0)
       '@xstate/react':
         specifier: ^4.0.3
-        version: 4.0.3(@types/react@18.2.54)(react@18.2.0)(xstate@5.6.0)
+        version: 4.0.3(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3)
       connectkit:
         specifier: ^1.7.0
         version: 1.7.0(@babel/core@7.23.9)(@tanstack/react-query@5.18.1)(react-dom@18.2.0)(react@18.2.0)(viem@0.3.50)(wagmi@1.4.13)
@@ -457,8 +457,8 @@ importers:
         specifier: ^1.0.6
         version: 1.4.13(@types/react@18.2.54)(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@0.3.50)
       xstate:
-        specifier: ^5.6.0
-        version: 5.6.0
+        specifier: ^4.37.2
+        version: 4.38.3
       yup:
         specifier: ^1.3.3
         version: 1.3.3
@@ -5211,7 +5211,7 @@ packages:
     resolution: {integrity: sha512-HMfJWUgSHIRfvmZuiQk7gqQs1kIsjX32R1Nh2FIJ4Be7u0nVWJytHLEY/m0QO7KDWdppbR4Si4AqEO4o7cOIyg==}
     dev: false
 
-  /@fuels/react-xstore@0.1.5(@types/react@18.2.54)(@xstate/react@4.0.3)(react-dom@18.2.0)(react@18.2.0)(xstate@5.6.0):
+  /@fuels/react-xstore@0.1.5(@types/react@18.2.54)(@xstate/react@4.0.3)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
     resolution: {integrity: sha512-4A36XldTGQdocoeYP/vyRWyF/d9u7id7j3OHlAo/OtrpnW02EhkvwovifBYCL37bg9EUMLPRZOCmOuBt3/HUGQ==}
     peerDependencies:
       '@xstate/react': ^3.2.2
@@ -5225,14 +5225,14 @@ packages:
         optional: true
     dependencies:
       '@fuels/local-storage': 0.1.5
-      '@xstate/inspect': 0.8.0(xstate@5.6.0)
-      '@xstate/react': 4.0.3(@types/react@18.2.54)(react@18.2.0)(xstate@5.6.0)
+      '@xstate/inspect': 0.8.0(xstate@4.38.3)
+      '@xstate/react': 4.0.3(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3)
       fast-equals: 5.0.1
       jotai: 2.6.2(@types/react@18.2.54)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       uuid: 9.0.1
-      xstate: 5.6.0
+      xstate: 4.38.3
     transitivePeerDependencies:
       - '@types/react'
       - '@types/ws'
@@ -14257,7 +14257,7 @@ packages:
       - supports-color
     dev: true
 
-  /@xstate/inspect@0.8.0(xstate@5.6.0):
+  /@xstate/inspect@0.8.0(xstate@4.38.3):
     resolution: {integrity: sha512-wSkFeOnp+7dhn+zTThO0M4D2FEqZN9lGIWowJu5JLa2ojjtlzRwK8SkjcHZ4rLX8VnMev7kGjgQLrGs8kxy+hw==}
     peerDependencies:
       '@types/ws': ^8.0.0
@@ -14268,7 +14268,7 @@ packages:
         optional: true
     dependencies:
       fast-safe-stringify: 2.1.1
-      xstate: 5.6.0
+      xstate: 4.38.3
     dev: false
 
   /@xstate/machine-extractor@0.16.0(xstate@4.38.3):
@@ -14307,7 +14307,7 @@ packages:
       - '@types/react'
     dev: false
 
-  /@xstate/react@4.0.3(@types/react@18.2.54)(react@18.2.0)(xstate@5.6.0):
+  /@xstate/react@4.0.3(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3):
     resolution: {integrity: sha512-yGxW6WljN04tyKxHrmejVdnKeRt26rzqNmJFYXtMZSUTDI98xFToI18eSoW2tSoyGRH/3Bmb8kUsa3l9Mr2E4Q==}
     peerDependencies:
       react: '*'
@@ -14321,7 +14321,7 @@ packages:
       react: 18.2.0
       use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.54)(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
-      xstate: 5.6.0
+      xstate: 4.38.3
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -18021,6 +18021,7 @@ packages:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
     dev: false
+    bundledDependencies: false
 
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
@@ -28639,10 +28640,6 @@ packages:
   /xstate@5.0.0-beta.54:
     resolution: {integrity: sha512-BTnCPBQ2iTKe4uCnHEe1hNx6VTbXU+5mQGybSQHOjTLiBi4Ryi+tL9T6N1tmqagvM8rfl4XRfvndogfWCWcdpw==}
     dev: true
-
-  /xstate@5.6.0:
-    resolution: {integrity: sha512-l62p4ZHM/fkGl68574s1dFzFmY8B3BeOff9EqBZbuonTSOXGx1fWTnh4SHSrS8Vhr5wyRT9afqWliMoO6Q+hUQ==}
-    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
