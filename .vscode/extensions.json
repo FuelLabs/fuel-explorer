@@ -1,8 +1,9 @@
 {
-	"recommendations": [
-		"statelyai.stately-vscode",
-		"firsttris.vscode-jest-runner",
-		"rust-lang.rust-analyzer",
-		"bradlc.vscode-tailwindcss"
-	]
+  "recommendations": [
+    "biomejs.biome",
+    "statelyai.stately-vscode",
+    "firsttris.vscode-jest-runner",
+    "rust-lang.rust-analyzer",
+    "bradlc.vscode-tailwindcss"
+  ]
 }
