@@ -1,7 +1,7 @@
 export type ContractRouteParams = {
-  id: string;
+	id: string;
 };
 
 export type ContractRouteProps = {
-  params: ContractRouteParams;
+	params: ContractRouteParams;
 };

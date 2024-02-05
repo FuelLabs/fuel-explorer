@@ -1,0 +1,48 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"noNonNullAssertion": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "warn"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off"
+			}
+		}
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignore": [
+			"**/node_modules",
+			"**/.turbo",
+			"**/.next",
+			"**/.vercel",
+			"**/dist",
+			"**/build",
+			"**/fuel-v2-contracts",
+			"**/coverage",
+			"**/generated",
+			"**/storybook-static",
+			"*.typegen.ts",
+			"./packages/app-explorer/public/storybook",
+			"./packages/app-explorer/public/ui",
+			"./packages/app-explorer/public/portal",
+			"./packages/app-explorer/public/portal-storybook",
+			"./packages/app-portal/public/**",
+			"./packages/app-portal/src/types",
+			"pnpm-lock.yaml"
+		]
+	}
+}

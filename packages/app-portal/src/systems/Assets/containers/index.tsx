@@ -1,1 +1,1 @@
-export * from './AssetsDialog';
+export * from "./AssetsDialog";

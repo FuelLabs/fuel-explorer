@@ -1,6 +1,6 @@
-import projects from '~public/ecosystem/projects.json';
+import projects from "~public/ecosystem/projects.json";
 
-import type { Project } from '../types';
+import type { Project } from "../types";
 
 const PROJECTS: Project[] = projects;
 

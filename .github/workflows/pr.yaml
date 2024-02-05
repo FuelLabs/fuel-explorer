@@ -1,4 +1,4 @@
-name: 'PR Checks'
+name: "PR Checks"
 
 on:
   pull_request:
@@ -48,5 +48,5 @@ jobs:
       - name: Run lint & ts:check
         run: |
           pnpm build
-          pnpm lint:check
+          pnpm lint
           pnpm ts:check

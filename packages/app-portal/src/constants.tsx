@@ -1,2 +1,2 @@
-export const META_DESC = '';
-export const META_OGIMG = '';
+export const META_DESC = "";
+export const META_OGIMG = "";

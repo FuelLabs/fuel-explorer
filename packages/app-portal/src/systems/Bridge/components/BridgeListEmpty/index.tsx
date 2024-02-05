@@ -1,1 +1,1 @@
-export * from './BridgeListEmpty';
+export * from "./BridgeListEmpty";

@@ -1,6 +1,6 @@
-import { foundry, sepolia } from 'wagmi/chains';
+import { foundry, sepolia } from "wagmi/chains";
 
 export const ETH_CHAINS = {
-  foundry,
-  sepolia,
+	foundry,
+	sepolia,
 };

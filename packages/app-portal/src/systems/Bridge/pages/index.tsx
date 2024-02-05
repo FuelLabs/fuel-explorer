@@ -1,3 +1,3 @@
-export * from './Bridge';
-export * from './BridgeHome';
-export * from './BridgeTxList';
+export * from "./Bridge";
+export * from "./BridgeHome";
+export * from "./BridgeTxList";

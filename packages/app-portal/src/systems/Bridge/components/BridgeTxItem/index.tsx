@@ -1,1 +1,1 @@
-export * from './BridgeTxItem';
+export * from "./BridgeTxItem";

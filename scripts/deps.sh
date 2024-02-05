@@ -19,7 +19,7 @@ if [ "$LINK_FUEL_UI" = true ]; then
 fi
 
 if [ "$LINK_FUELS" = true ]; then
-	fuels_deps="@fuels/react-xstore @fuels/local-storage @fuels/ts-config @fuels/eslint-plugin @fuels/jest @fuels/prettier-config @fuels/tsup-config"
+	fuels_deps="@fuels/react-xstore @fuels/local-storage @fuels/ts-config @fuels/jest @fuels/tsup-config"
 	deps="$deps $fuels_deps"
 fi
 

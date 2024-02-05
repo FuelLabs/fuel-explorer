@@ -1,36 +1,36 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { Hero } from './Hero';
+import { Hero } from "./Hero";
 
 const meta: Meta<typeof Hero> = {
-  title: 'Home/Hero',
-  component: Hero,
-  parameters: {
-    layout: 'fullscreen',
-  },
+	title: "Home/Hero",
+	component: Hero,
+	parameters: {
+		layout: "fullscreen",
+	},
 };
 
 export default meta;
 type Story = StoryObj<typeof Hero>;
 
 export const Desktop: Story = {
-  args: {},
+	args: {},
 };
 
 export const Tablet: Story = {
-  args: {},
-  parameters: {
-    viewport: {
-      defaultViewport: 'ipad',
-    },
-  },
+	args: {},
+	parameters: {
+		viewport: {
+			defaultViewport: "ipad",
+		},
+	},
 };
 
 export const Mobile: Story = {
-  args: {},
-  parameters: {
-    viewport: {
-      defaultViewport: 'iphonex',
-    },
-  },
+	args: {},
+	parameters: {
+		viewport: {
+			defaultViewport: "iphonex",
+		},
+	},
 };

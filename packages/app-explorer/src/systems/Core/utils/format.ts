@@ -1,5 +1,5 @@
-import type { BNInput } from 'fuels';
-import { bn } from 'fuels';
+import type { BNInput } from "fuels";
+import { bn } from "fuels";
 
 /**
  * Formats the given amount by multiplying it by 10 and formatting it with 1 unit.
@@ -8,6 +8,6 @@ import { bn } from 'fuels';
  * @returns The formatted amount.
  */
 export function formatZeroUnits(amount: BNInput) {
-  const formatted = bn(amount).mul(10).format({ units: 1, precision: 0 });
-  return formatted;
+	const formatted = bn(amount).mul(10).format({ units: 1, precision: 0 });
+	return formatted;
 }

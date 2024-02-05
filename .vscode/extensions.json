@@ -1,10 +1,8 @@
 {
-  "recommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "statelyai.stately-vscode",
-    "firsttris.vscode-jest-runner",
-    "rust-lang.rust-analyzer",
-    "bradlc.vscode-tailwindcss"
-  ]
+	"recommendations": [
+		"statelyai.stately-vscode",
+		"firsttris.vscode-jest-runner",
+		"rust-lang.rust-analyzer",
+		"bradlc.vscode-tailwindcss"
+	]
 }

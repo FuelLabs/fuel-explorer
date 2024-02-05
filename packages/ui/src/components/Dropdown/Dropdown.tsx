@@ -1,7 +1,7 @@
-import { DropdownMenu as RD } from '@radix-ui/themes';
+import { DropdownMenu as RD } from "@radix-ui/themes";
 
-import { createComponent, withNamespace } from '../../utils/component';
-import type { PropsOf } from '../../utils/types';
+import { createComponent, withNamespace } from "../../utils/component";
+import type { PropsOf } from "../../utils/types";
 
 export type DropdownProps = PropsOf<typeof RD.Root>;
 export type DropdownTriggerProps = PropsOf<typeof RD.Trigger>;
@@ -17,102 +17,102 @@ export type DropdownSubContentProps = PropsOf<typeof RD.SubContent>;
 export type DropdownSeparatorProps = PropsOf<typeof RD.Separator>;
 
 export const DropdownRoot = createComponent<DropdownProps, typeof RD.Root>({
-  id: 'Dropdown',
-  baseElement: RD.Root,
+	id: "Dropdown",
+	baseElement: RD.Root,
 });
 
 export const DropdownTrigger = createComponent<
-  DropdownTriggerProps,
-  typeof RD.Trigger
+	DropdownTriggerProps,
+	typeof RD.Trigger
 >({
-  id: 'DropdownTrigger',
-  baseElement: RD.Trigger,
+	id: "DropdownTrigger",
+	baseElement: RD.Trigger,
 });
 
 export const DropdownContent = createComponent<
-  DropdownContentProps,
-  typeof RD.Content
+	DropdownContentProps,
+	typeof RD.Content
 >({
-  id: 'DropdownContent',
-  baseElement: RD.Content,
+	id: "DropdownContent",
+	baseElement: RD.Content,
 });
 
 export const DropdownLabel = createComponent<
-  DropdownLabelProps,
-  typeof RD.Label
+	DropdownLabelProps,
+	typeof RD.Label
 >({
-  id: 'DropdownLabel',
-  baseElement: RD.Label,
+	id: "DropdownLabel",
+	baseElement: RD.Label,
 });
 
 export const DropdownItem = createComponent<DropdownItemProps, typeof RD.Item>({
-  id: 'DropdownItem',
-  baseElement: RD.Item,
+	id: "DropdownItem",
+	baseElement: RD.Item,
 });
 
 export const DropdownGroup = createComponent<
-  DropdownGroupProps,
-  typeof RD.Group
+	DropdownGroupProps,
+	typeof RD.Group
 >({
-  id: 'DropdownGroup',
-  baseElement: RD.Group,
+	id: "DropdownGroup",
+	baseElement: RD.Group,
 });
 
 export const DropdownRadioGroup = createComponent<
-  DropdownRadioGroupProps,
-  typeof RD.RadioGroup
+	DropdownRadioGroupProps,
+	typeof RD.RadioGroup
 >({
-  id: 'DropdownRadioGroup',
-  baseElement: RD.RadioGroup,
+	id: "DropdownRadioGroup",
+	baseElement: RD.RadioGroup,
 });
 
 export const DropdownCheckboxItem = createComponent<
-  DropdownCheckboxItemProps,
-  typeof RD.CheckboxItem
+	DropdownCheckboxItemProps,
+	typeof RD.CheckboxItem
 >({
-  id: 'DropdownCheckboxItem',
-  baseElement: RD.CheckboxItem,
+	id: "DropdownCheckboxItem",
+	baseElement: RD.CheckboxItem,
 });
 
 export const DropdownSub = createComponent<DropdownSubProps, typeof RD.Sub>({
-  id: 'DropdownSub',
-  baseElement: RD.Sub,
+	id: "DropdownSub",
+	baseElement: RD.Sub,
 });
 
 export const DropdownSubContent = createComponent<
-  DropdownSubContentProps,
-  typeof RD.SubContent
+	DropdownSubContentProps,
+	typeof RD.SubContent
 >({
-  id: 'DropdownSubContent',
-  baseElement: RD.SubContent,
+	id: "DropdownSubContent",
+	baseElement: RD.SubContent,
 });
 
 export const DropdownSubTrigger = createComponent<
-  DropdownSubTriggerProps,
-  typeof RD.SubTrigger
+	DropdownSubTriggerProps,
+	typeof RD.SubTrigger
 >({
-  id: 'DropdownSubTrigger',
-  baseElement: RD.SubTrigger,
+	id: "DropdownSubTrigger",
+	baseElement: RD.SubTrigger,
 });
 
 export const DropdownSeparator = createComponent<
-  DropdownSeparatorProps,
-  typeof RD.Separator
+	DropdownSeparatorProps,
+	typeof RD.Separator
 >({
-  id: 'DropdownSeparator',
-  baseElement: RD.Separator,
+	id: "DropdownSeparator",
+	baseElement: RD.Separator,
 });
 
 export const Dropdown = withNamespace(DropdownRoot, {
-  Trigger: DropdownTrigger,
-  Content: DropdownContent,
-  Label: DropdownLabel,
-  Item: DropdownItem,
-  Group: DropdownGroup,
-  RadioGroup: DropdownRadioGroup,
-  CheckboxItem: DropdownCheckboxItem,
-  Sub: DropdownSub,
-  SubTrigger: DropdownSubTrigger,
-  SubContent: DropdownSubContent,
-  Separator: DropdownSeparator,
+	Trigger: DropdownTrigger,
+	Content: DropdownContent,
+	Label: DropdownLabel,
+	Item: DropdownItem,
+	Group: DropdownGroup,
+	RadioGroup: DropdownRadioGroup,
+	CheckboxItem: DropdownCheckboxItem,
+	Sub: DropdownSub,
+	SubTrigger: DropdownSubTrigger,
+	SubContent: DropdownSubContent,
+	Separator: DropdownSeparator,
 });

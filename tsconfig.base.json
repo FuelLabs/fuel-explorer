@@ -1,15 +1,15 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@fuels/ts-config/base.json",
-  "exclude": [
-    "node_modules",
-    "**/**/node_modules",
-    "dist",
-    "**/**/dist",
-    "coverage",
-    "storybook-static",
-    "generated",
-    "**/**/generated",
-    "**/.*"
-  ]
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "@fuels/ts-config/base.json",
+	"exclude": [
+		"node_modules",
+		"**/**/node_modules",
+		"dist",
+		"**/**/dist",
+		"coverage",
+		"storybook-static",
+		"generated",
+		"**/**/generated",
+		"**/.*"
+	]
 }

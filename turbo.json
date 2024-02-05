@@ -1,45 +1,45 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["NODE_ENV", "IS_PREVIEW", "FUEL_PROVIDER"],
-  "pipeline": {
-    "ts:check": {
-      "dependsOn": ["^build"],
-      "cache": true
-    },
-    "build": {
-      "outputs": ["dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build"],
-      "cache": true
-    },
-    "build:preview": {
-      "outputs": ["public/**", "dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build"],
-      "cache": true
-    },
-    "app-explorer#build:preview": {
-      "outputs": ["public/**", "dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build", "app-portal#build:preview"],
-      "cache": true
-    },
-    "build:storybook": {
-      "outputs": ["storybook-static/**"],
-      "dependsOn": ["^build"],
-      "cache": true
-    },
-    "test": {
-      "outputs": ["**/**/report.json", "coverage/**"],
-      "dependsOn": [],
-      "outputMode": "full"
-    },
-    "dev": {
-      "cache": false
-    },
-    "lint": {
-      "dependsOn": [],
-      "cache": true
-    },
-    "start": {
-      "cache": false
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"globalEnv": ["NODE_ENV", "IS_PREVIEW", "FUEL_PROVIDER"],
+	"pipeline": {
+		"ts:check": {
+			"dependsOn": ["^build"],
+			"cache": true
+		},
+		"build": {
+			"outputs": ["dist/**", "build/**", ".next/**"],
+			"dependsOn": ["^build"],
+			"cache": true
+		},
+		"build:preview": {
+			"outputs": ["public/**", "dist/**", "build/**", ".next/**"],
+			"dependsOn": ["^build"],
+			"cache": true
+		},
+		"app-explorer#build:preview": {
+			"outputs": ["public/**", "dist/**", "build/**", ".next/**"],
+			"dependsOn": ["^build", "app-portal#build:preview"],
+			"cache": true
+		},
+		"build:storybook": {
+			"outputs": ["storybook-static/**"],
+			"dependsOn": ["^build"],
+			"cache": true
+		},
+		"test": {
+			"outputs": ["**/**/report.json", "coverage/**"],
+			"dependsOn": [],
+			"outputMode": "full"
+		},
+		"dev": {
+			"cache": false
+		},
+		"lint": {
+			"dependsOn": [],
+			"cache": true
+		},
+		"start": {
+			"cache": false
+		}
+	}
 }

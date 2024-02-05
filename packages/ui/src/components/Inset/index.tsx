@@ -1,3 +1,3 @@
-export { Inset } from './Inset';
+export { Inset } from "./Inset";
 
-export type { InsetProps } from './Inset';
+export type { InsetProps } from "./Inset";

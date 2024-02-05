@@ -1,1 +1,1 @@
-export * from '~/systems/Store';
+export * from "~/systems/Store";

@@ -1,1 +1,1 @@
-export * from './BridgeTxItemsLoading';
+export * from "./BridgeTxItemsLoading";

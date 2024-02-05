@@ -1,8 +1,8 @@
-import type { SupportedChain } from '../Chains';
+import type { SupportedChain } from "../Chains";
 
 export type BridgeTx = {
-  date?: Date;
-  txHash: string;
-  fromNetwork: SupportedChain;
-  toNetwork: SupportedChain;
+	date?: Date;
+	txHash: string;
+	fromNetwork: SupportedChain;
+	toNetwork: SupportedChain;
 };

@@ -1,42 +1,42 @@
-import './fonts.css';
-import '@fuels/ui/styles.css';
-import '../src/app/globals.css';
+import "@fuels/ui/styles.css";
+import "../src/app/globals.css";
+import "./fonts.css";
 
-import React from 'react';
-import { withThemeDecorator } from 'storybook-addon-theme';
-import { Preview } from '@storybook/react';
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
+import { Preview } from "@storybook/react";
+import React from "react";
+import { withThemeDecorator } from "storybook-addon-theme";
 
-import { Provider } from '../src/systems/Core/components/Provider';
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
+import { Provider } from "../src/systems/Core/components/Provider";
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
-  const initTheme = localStorage.getItem('fuel-ui-theme') ?? 'dark';
-  return <Provider theme={initTheme}>{children}</Provider>;
+	const initTheme = localStorage.getItem("fuel-ui-theme") ?? "dark";
+	return <Provider theme={initTheme}>{children}</Provider>;
 }
 
 const preview: Preview = {
-  decorators: [withThemeDecorator(ThemeWrapper)],
+	decorators: [withThemeDecorator(ThemeWrapper)],
 
-  parameters: {
-    actions: {
-      argTypesRegex: '^on[A-Z].*',
-    },
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/,
-      },
-    },
-    options: {
-      storySort: {
-        order: ['Base', 'Layout', 'Form', 'Overlay', 'UI', 'Helpers', 'Web3'],
-      },
-    },
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
+	parameters: {
+		actions: {
+			argTypesRegex: "^on[A-Z].*",
+		},
+		controls: {
+			matchers: {
+				color: /(background|color)$/i,
+				date: /Date$/,
+			},
+		},
+		options: {
+			storySort: {
+				order: ["Base", "Layout", "Form", "Overlay", "UI", "Helpers", "Web3"],
+			},
+		},
+		viewport: {
+			viewports: INITIAL_VIEWPORTS,
+		},
+	},
 };
 
 export default preview;

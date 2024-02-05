@@ -1,16 +1,16 @@
-import { useFuelTheme } from '@fuel-ui/react';
+import { useFuelTheme } from "@fuel-ui/react";
 
 export function useTheme() {
-  const { current, setTheme } = useFuelTheme();
+	const { current, setTheme } = useFuelTheme();
 
-  function toggle() {
-    setTheme(current === 'light' ? 'dark' : 'light');
-  }
+	function toggle() {
+		setTheme(current === "light" ? "dark" : "light");
+	}
 
-  return {
-    handlers: {
-      toggle,
-    },
-    theme: current as 'light' | 'dark',
-  };
+	return {
+		handlers: {
+			toggle,
+		},
+		theme: current as "light" | "dark",
+	};
 }

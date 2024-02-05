@@ -1,3 +1,3 @@
-export { HelperIcon } from './HelperIcon';
+export { HelperIcon } from "./HelperIcon";
 
-export type { HelperIconBaseProps, HelperIconProps } from './HelperIcon';
+export type { HelperIconBaseProps, HelperIconProps } from "./HelperIcon";
