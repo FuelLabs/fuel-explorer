@@ -47,6 +47,5 @@ jobs:
 
       - name: Run lint & ts:check
         run: |
-          pnpm build
           pnpm lint
           pnpm ts:check
