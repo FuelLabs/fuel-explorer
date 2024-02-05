@@ -45,7 +45,7 @@ export async function getBlock({
   providerUrl: string;
   height?: string;
 }): Promise<Block> {
-  const variables = {};
+  const variables: Record<string, any> = {};
   if (height) {
     variables.height = height;
   } else {
