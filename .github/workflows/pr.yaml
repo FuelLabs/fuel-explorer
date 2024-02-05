@@ -47,5 +47,5 @@ jobs:
 
       - name: Run lint & ts:check
         run: |
-          pnpm biome check . --log-level=error 
+          pnpm biome check . --diagnostic-level=error 
           pnpm ts:check
