@@ -17,6 +17,7 @@ import {
   LoadingWrapper,
   Card,
   Address,
+  Text,
 } from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';
@@ -40,8 +41,6 @@ type TxScreenProps = {
 };
 
 export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
-  const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
-  const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
   const title = tx.title as string;
   const isMint = Boolean(tx.isMint);
   const classes = styles({ isMint });
@@ -151,53 +150,29 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
         regularEl={`${bn(tx.fee).format()} ETH`}
       />
     </CardInfo>,
-    <CardInfo
-      key="assetMinted"
-      name="Asset Minted"
-      description={
-        tx.mintAssetId && (
-          <LoadingWrapper
-            isLoading={isLoading}
-            regularEl={
-              <Address
-                prefix="Id:"
-                value={tx.mintAssetId}
-                className="mt-2 text-xs"
-              />
-            }
-            loadingEl={
-              <>
-                <LoadingBox className="w-28 h-5 mt-2" />
-              </>
-            }
-          />
-        )
-      }
-    >
-      <LoadingWrapper
-        isLoading={isLoading}
-        regularEl={
-          <Amount
-            assetId={tx.mintAssetId}
-            value={bn(tx.mintAmount)}
-            className="text-text text-md"
-          />
-        }
-        loadingEl={
-          <>
-            <LoadingBox className="w-28 h-5" />
-          </>
-        }
-      />
-    </CardInfo>,
   ];
 
-  const content = !isMint && (
+  return (
+    <Grid className={classes.wrapper()}>
+      <Box className={classes.cards()}>{cards}</Box>
+      <ContentMain tx={tx} isLoading={isLoading} />
+    </Grid>
+  );
+}
+
+function ContentMain({
+  tx,
+  isLoading,
+}: {
+  tx: TransactionNode;
+  isLoading?: boolean;
+}) {
+  const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
+  const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
+
+  return (
     <VStack>
       <VStack>
-        <Heading as="h2" size="5" className="leading-none">
-          Inputs
-        </Heading>
         <LoadingWrapper
           isLoading={isLoading}
           repeatLoader={2}
@@ -210,7 +185,12 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           }
           regularEl={tx.groupedInputs?.map((input, i) => (
             // here we use only index as key because this component will not change
-            <TxInput key={i} input={input as GroupedInput} />
+            <>
+              <Heading as="h2" size="5" className="leading-none">
+                Inputs
+              </Heading>
+              <TxInput key={i} input={input as GroupedInput} />
+            </>
           ))}
           noItemsEl={
             <EmptyCard hideImage>
@@ -230,45 +210,134 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
         <Icon icon={IconArrowDown} size={30} color="text-muted" />
       </Flex>
       <VStack>
-        <Heading as="h2" size="5" className="leading-none">
-          Outputs
-        </Heading>
-        <LoadingWrapper
-          isLoading={isLoading}
-          repeatLoader={2}
-          noItems={!hasOutputs}
-          loadingEl={
-            <Card className="py-4 px-4 flex flex-row items-center justify-between">
-              <LoadingBox className="rounded-full w-[38px] h-[38px]" />
-              <LoadingBox className="w-24 h-6" />
-            </Card>
-          }
-          regularEl={tx.groupedOutputs?.map((output, i) => (
-            <TxOutput
-              // here we use only index as key because this component will not change
-              key={i}
-              tx={tx}
-              output={output as GroupedOutput}
-            />
-          ))}
-          noItemsEl={
-            <EmptyCard hideImage>
-              <EmptyCard.Title>No Outputs</EmptyCard.Title>
-              <EmptyCard.Description>
-                This transaction does not have any outputs.
-              </EmptyCard.Description>
-            </EmptyCard>
-          }
-        />
+        {tx.isMint ? (
+          <MintOutputs tx={tx} isLoading={Boolean(isLoading)} />
+        ) : (
+          <LoadingWrapper
+            isLoading={isLoading}
+            repeatLoader={2}
+            noItems={!hasOutputs}
+            loadingEl={
+              <Card className="py-4 px-4 flex flex-row items-center justify-between">
+                <LoadingBox className="rounded-full w-[38px] h-[38px]" />
+                <LoadingBox className="w-24 h-6" />
+              </Card>
+            }
+            regularEl={tx.groupedOutputs?.map((output, i) => (
+              <>
+                <Heading as="h2" size="5" className="leading-none">
+                  Outputs
+                </Heading>
+
+                <TxOutput
+                  // here we use only index as key because this component will not change
+                  key={i}
+                  tx={tx}
+                  output={output as GroupedOutput}
+                />
+              </>
+            ))}
+            noItemsEl={
+              <EmptyCard hideImage>
+                <EmptyCard.Title>No Outputs</EmptyCard.Title>
+                <EmptyCard.Description>
+                  This transaction does not have any outputs.
+                </EmptyCard.Description>
+              </EmptyCard>
+            }
+          />
+        )}
       </VStack>
+    </VStack>
+  );
+}
+
+function MintOutputs({
+  tx,
+  isLoading,
+}: {
+  tx: TransactionNode;
+  isLoading: boolean;
+}) {
+  const inputContractId = tx.inputContract?.contract?.id;
+  const hasInputContract = Boolean(inputContractId);
+
+  const content = (
+    <VStack>
+      <Heading as="h2" size="5" className="leading-none">
+        Outputs
+      </Heading>
+      <Card>
+        <Card.Body className="flex flex-col gap-2">
+          {tx.mintAssetId && (
+            <HStack>
+              <Text as="span" className="text-sm">
+                Mint Amount
+              </Text>
+              <Amount
+                iconSize={16}
+                assetId={tx.mintAssetId}
+                value={bn(tx.mintAmount)}
+                className="text-xs tablet:text-sm"
+              />
+            </HStack>
+          )}
+          {tx.mintAssetId && (
+            <HStack>
+              <Text as="span" className="text-sm">
+                Asset ID Minted
+              </Text>
+              <Address value={tx.mintAssetId} />
+            </HStack>
+          )}
+          {hasInputContract && (
+            <HStack>
+              <Text as="span" className="text-sm">
+                Input Contract
+              </Text>
+              <Address
+                value={inputContractId}
+                linkProps={{
+                  as: NextLink,
+                  href: Routes.accountAssets(inputContractId!),
+                }}
+              />
+            </HStack>
+          )}
+          {tx.txPointer && (
+            <HStack>
+              <Text as="span" className="text-sm">
+                Tx Pointer
+              </Text>
+              <Address full value={tx.txPointer} />
+            </HStack>
+          )}
+        </Card.Body>
+      </Card>
     </VStack>
   );
 
   return (
-    <Grid className={classes.wrapper()}>
-      <Box className={classes.cards()}>{cards}</Box>
-      {content}
-    </Grid>
+    <LoadingWrapper
+      isLoading={isLoading}
+      regularEl={content}
+      loadingEl={
+        <Card className="py-4 px-4 flex flex-col gap-2">
+          <HStack>
+            <LoadingBox className="w-20 h-6" />
+            <LoadingBox className="w-40 h-6" />
+          </HStack>
+          <HStack>
+            <LoadingBox className="w-20 h-6" />
+            <LoadingBox className="w-40 h-6" />
+          </HStack>
+          <HStack>
+            <LoadingBox className="w-20 h-6" />
+            <LoadingBox className="w-40 h-6" />
+          </HStack>
+        </Card>
+      }
+    />
   );
 }
 
@@ -284,8 +353,8 @@ const styles = tv({
   variants: {
     isMint: {
       true: {
-        wrapper: ['laptop:grid-cols-1'],
-        cards: ['laptop:grid-cols-3'],
+        wrapper: [''],
+        cards: [''],
       },
     },
   },

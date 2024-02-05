@@ -234,6 +234,14 @@ fragment TransactionItem on Transaction {
   rawPayload
   mintAmount
   mintAssetId
+  inputContract {
+    contract {
+      id
+    }
+  }
+  outputContract {
+    inputIndex
+  }
 
   status {
     ...TransactionStatus
