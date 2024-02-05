@@ -1,3 +1,3 @@
 export default {
-  '**/*.(js|jsx|ts|tsx|md|mdx|html|css)': ['biome check --apply-unsafe'],
+  '**/*.(js|jsx|ts|tsx|md|json|mdx|html|css)': ['biome check --apply-unsafe'],
 };
