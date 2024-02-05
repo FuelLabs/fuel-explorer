@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box, Flex } from "../Box";
-import { Text } from "../Text/Text";
+import { Box, Flex } from '../Box';
+import { Text } from '../Text/Text';
 
-import { Separator } from "./Separator";
+import { Separator } from './Separator';
 
 const meta: Meta<typeof Separator> = {
-  title: "UI/Separator",
+  title: 'UI/Separator',
   component: Separator,
 };
 

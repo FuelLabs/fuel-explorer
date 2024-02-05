@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
-import { BlockHeader } from "~/systems/Block/components/BlockHeader";
-import type { BlockRouteParams } from "~/systems/Block/types";
+import type { ReactNode } from 'react';
+import { BlockHeader } from '~/systems/Block/components/BlockHeader';
+import type { BlockRouteParams } from '~/systems/Block/types';
 
 export default function BlockLayout({
   children,
@@ -17,5 +17,5 @@ export default function BlockLayout({
   );
 }
 
-export const dynamic = "force-static";
+export const dynamic = 'force-static';
 export const invalidate = Infinity;

@@ -1,5 +1,5 @@
-import type { FetchRequestOptions } from "fuels";
-import { Provider } from "fuels";
+import type { FetchRequestOptions } from 'fuels';
+import { Provider } from 'fuels';
 
 let requestTimestamps: number[] = [];
 const maxRequestsPerSecond = 20;
@@ -19,7 +19,7 @@ export const rateLimitedFetch = async (
       `Reached the rate limit of ${maxRequestsPerSecond} requests per second. Waiting for 1 second...`,
     );
     await new Promise((resolve) => setTimeout(resolve, waitTime));
-    console.log("Done waiting. Resuming requests...");
+    console.log('Done waiting. Resuming requests...');
     // Do not clear the request timestamps. Rely on the filter to remove old ones.
     // Call the function recursively to recheck the limit
     return rateLimitedFetch(url, options);

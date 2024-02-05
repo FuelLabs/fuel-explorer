@@ -1,6 +1,6 @@
-import { useAssets } from "~/systems/Assets/hooks/useAssets";
+import { useAssets } from '~/systems/Assets/hooks/useAssets';
 
-import { useEthAccountConnection } from "./useEthAccountConnection";
+import { useEthAccountConnection } from './useEthAccountConnection';
 
 export const useFaucetErc20 = () => {
   const { walletClient, publicClient } = useEthAccountConnection();

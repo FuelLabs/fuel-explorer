@@ -1,7 +1,7 @@
-import type { PublicClient, WalletClient } from "viem";
-import { Services, store } from "~/store";
+import type { PublicClient, WalletClient } from 'viem';
+import { Services, store } from '~/store';
 
-import type { AssetsMachineState } from "../machines/assetsMachine";
+import type { AssetsMachineState } from '../machines/assetsMachine';
 
 const selectors = {
   assets: (query?: string) => (state: AssetsMachineState) => {
@@ -18,10 +18,10 @@ const selectors = {
     return state.context.assets;
   },
   isLoading: (state: AssetsMachineState) => {
-    return state.hasTag("loading");
+    return state.hasTag('loading');
   },
   isLoadingFaucet: (state: AssetsMachineState) => {
-    return state.hasTag("loadingFaucet");
+    return state.hasTag('loadingFaucet');
   },
 };
 

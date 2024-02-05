@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box } from "../Box";
+import { Box } from '../Box';
 
-import { TextArea } from "./TextArea";
+import { TextArea } from './TextArea';
 
 const meta: Meta<typeof TextArea> = {
-  title: "Form/TextArea",
+  title: 'Form/TextArea',
   component: TextArea,
 };
 

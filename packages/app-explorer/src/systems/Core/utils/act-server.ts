@@ -1,5 +1,5 @@
-import type z from "zod";
-import { fromZodError } from "zod-validation-error";
+import type z from 'zod';
+import { fromZodError } from 'zod-validation-error';
 
 type ActionType<InputType extends z.ZodTypeAny, ResponseType> = (
   input: z.infer<InputType>,

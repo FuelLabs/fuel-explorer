@@ -1,10 +1,10 @@
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { stitchSchemas } from "@graphql-tools/stitch";
-import type { Executor } from "@graphql-tools/utils";
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { stitchSchemas } from '@graphql-tools/stitch';
+import type { Executor } from '@graphql-tools/utils';
 
-import fuelSchema from "./schemas/fuelcore.graphql";
-import { extendsResolvers, extendsTypeDefs } from "./services/extends";
-import { customSchema } from "./services/metadata";
+import fuelSchema from './schemas/fuelcore.graphql';
+import { extendsResolvers, extendsTypeDefs } from './services/extends';
+import { customSchema } from './services/metadata';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createSchema<F extends Executor<any>>(executor: F) {

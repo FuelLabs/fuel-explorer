@@ -1,8 +1,8 @@
-import { tv } from "tailwind-variants";
+import { tv } from 'tailwind-variants';
 
 export const styles = tv({
   base: [
-    "m-0 font-medium tracking-tight text-heading",
+    'm-0 font-medium tracking-tight text-heading',
     'data-[size="1"]:text-h1',
     'data-[size="2"]:text-h2',
     'data-[size="3"]:text-h3',
@@ -12,7 +12,7 @@ export const styles = tv({
   ],
   variants: {
     withIcon: {
-      true: "flex items-center gap-2",
+      true: 'flex items-center gap-2',
     },
   },
   defaultVariants: {

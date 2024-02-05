@@ -1,11 +1,11 @@
-"use client";
-import { Nav, useBreakpoints } from "@fuels/ui";
-import NextLink from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+'use client';
+import { Nav, useBreakpoints } from '@fuels/ui';
+import NextLink from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import { setTheme } from "../../actions/setTheme";
-import { SearchWidget } from "../Search/SearchWidget";
+import { setTheme } from '../../actions/setTheme';
+import { SearchWidget } from '../Search/SearchWidget';
 
 export function TopNav() {
   // We need two of each variable bc both the mobile and desktop
@@ -14,7 +14,7 @@ export function TopNav() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { isMobile, isLaptop } = useBreakpoints();
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     if (isLaptop && isMobileSearchOpen) {
@@ -68,7 +68,7 @@ export function TopNav() {
 
   return (
     <Nav>
-      <Nav.Desktop className={"px-10 justify-between"}>
+      <Nav.Desktop className={'px-10 justify-between'}>
         <Nav.Menu>
           {logo}
           {externalLinks}

@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { HelperIcon } from "./HelperIcon";
+import { HelperIcon } from './HelperIcon';
 
 const meta: Meta<typeof HelperIcon> = {
-  title: "Helpers/HelperIcon",
+  title: 'Helpers/HelperIcon',
   component: HelperIcon,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

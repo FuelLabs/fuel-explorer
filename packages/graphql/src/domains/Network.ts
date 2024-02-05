@@ -1,6 +1,6 @@
-import { Provider } from "fuels";
+import { Provider } from 'fuels';
 
-import { Cache } from "../utils";
+import { Cache } from '../utils';
 
 const CHAIN_CACHE = 43200000;
 

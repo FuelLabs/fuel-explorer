@@ -1,6 +1,6 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, Button, Dialog, Text } from "@fuel-ui/react";
-import { VITE_WALLET_INSTALL_NEXT } from "~/config";
+import { cssObj } from '@fuel-ui/css';
+import { Box, Button, Dialog, Text } from '@fuel-ui/react';
+import { VITE_WALLET_INSTALL_NEXT } from '~/config';
 
 type FuelVersionDialogOptions = {
   isOpen: boolean;
@@ -30,7 +30,7 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => (
         */}
           <Text>
             Install a newer version of the Fuel Wallet available on the link
-            bellow and following the{" "}
+            bellow and following the{' '}
             <b>install from source code instructions</b>.
           </Text>
         </Box.Stack>
@@ -54,9 +54,9 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => (
 
 const styles = {
   content: cssObj({
-    py: "$6",
+    py: '$6',
   }),
   installButton: cssObj({
-    width: "$full",
+    width: '$full',
   }),
 };

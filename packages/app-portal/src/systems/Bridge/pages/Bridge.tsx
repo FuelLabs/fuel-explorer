@@ -1,18 +1,18 @@
-import { cssObj } from "@fuel-ui/css";
-import { Alert, Box, Card, InputAmount, Link, Text } from "@fuel-ui/react";
-import { motion, useAnimationControls } from "framer-motion";
-import { getAssetEth } from "~/systems/Assets/utils";
+import { cssObj } from '@fuel-ui/css';
+import { Alert, Box, Card, InputAmount, Link, Text } from '@fuel-ui/react';
+import { motion, useAnimationControls } from 'framer-motion';
+import { getAssetEth } from '~/systems/Assets/utils';
 import {
   EthAccountConnection,
   FuelAccountConnection,
   isEthChain,
   isFuelChain,
   useFuelAccountConnection,
-} from "~/systems/Chains";
+} from '~/systems/Chains';
 
-import { BridgeButton, BridgeTabs } from "../containers";
-import { useBridge } from "../hooks";
-import { useWithdrawDelay } from "../hooks/useWithdrawDelay";
+import { BridgeButton, BridgeTabs } from '../containers';
+import { useBridge } from '../hooks';
+import { useWithdrawDelay } from '../hooks/useWithdrawDelay';
 
 export const Bridge = () => {
   const {
@@ -66,7 +66,7 @@ export const Bridge = () => {
               value={assetAmount}
               asset={{
                 name: asset?.symbol,
-                imageUrl: asset?.icon || "",
+                imageUrl: asset?.icon || '',
                 address: ethAssetAddress,
               }}
               onClickAsset={handlers.openAssetsDialog}
@@ -86,7 +86,7 @@ export const Bridge = () => {
           <BridgeButton />
           <Alert status="warning">
             <Alert.Description>
-              Any assets deposited to Fuel can take up to{" "}
+              Any assets deposited to Fuel can take up to{' '}
               {timeToWithdrawFormatted} to withdraw back to Ethereum. Learn more
               about our architecture and security in our&nbsp;
               <Link
@@ -105,12 +105,12 @@ export const Bridge = () => {
 
 const styles = {
   cardBody: cssObj({
-    p: "$7",
+    p: '$7',
   }),
   divider: cssObj({
-    h: "1px",
-    bg: "$border",
-    mt: "$1",
-    mb: "$5",
+    h: '1px',
+    bg: '$border',
+    mt: '$1',
+    mb: '$5',
   }),
 };

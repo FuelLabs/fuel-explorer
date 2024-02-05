@@ -1,13 +1,13 @@
-import { Suspense } from "react";
-import { AssetsLoader } from "~/systems/Asset/components/AssetsLoader";
-import { CodeBlock } from "~/systems/Core/components/CodeBlock/CodeBlock";
+import { Suspense } from 'react';
+import { AssetsLoader } from '~/systems/Asset/components/AssetsLoader';
+import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
-import { ContractTabs } from "../components/ContractTabs";
-import { ContractTitle } from "../components/ContractTitle";
-import { isAssetsTab, isCodeTab } from "../utils/tabs";
+import { ContractTabs } from '../components/ContractTabs';
+import { ContractTitle } from '../components/ContractTitle';
+import { isAssetsTab, isCodeTab } from '../utils/tabs';
 
-import { ContractAssets } from "./ContractAsset";
-import { ContractCode } from "./ContractCode";
+import { ContractAssets } from './ContractAsset';
+import { ContractCode } from './ContractCode';
 
 type ContractProps = {
   tab: string;

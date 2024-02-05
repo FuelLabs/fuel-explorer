@@ -1,11 +1,11 @@
-import { bn } from "@fuel-ts/math";
-import type { BN } from "@fuel-ts/math";
-import type { CardProps } from "@fuels/ui";
-import { Card, EntityItem, Text, VStack } from "@fuels/ui";
-import { IconCoins } from "@tabler/icons-react";
+import { bn } from '@fuel-ts/math';
+import type { BN } from '@fuel-ts/math';
+import type { CardProps } from '@fuels/ui';
+import { Card, EntityItem, Text, VStack } from '@fuels/ui';
+import { IconCoins } from '@tabler/icons-react';
 
-import type { TxAccountType } from "../../types";
-import { TxIcon } from "../TxIcon/TxIcon";
+import type { TxAccountType } from '../../types';
+import { TxIcon } from '../TxIcon/TxIcon';
 
 export type TxAccountItemProps = CardProps & {
   type: TxAccountType;
@@ -14,9 +14,9 @@ export type TxAccountItemProps = CardProps & {
 };
 
 const COLOR_MAP = {
-  Contract: "gray",
-  Wallet: "gray",
-  Predicate: "blue",
+  Contract: 'gray',
+  Wallet: 'gray',
+  Predicate: 'blue',
 } as const;
 
 export function TxAccountItem({

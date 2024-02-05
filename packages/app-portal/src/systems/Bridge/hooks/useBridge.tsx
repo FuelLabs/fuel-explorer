@@ -1,11 +1,11 @@
-import type { BN } from "fuels";
-import { DECIMAL_UNITS, bn } from "fuels";
-import { useEffect, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Services, store } from "~/store";
-import { useAsset } from "~/systems/Assets/hooks/useAsset";
-import { getAssetEth, getAssetFuel } from "~/systems/Assets/utils";
-import type { SupportedChain } from "~/systems/Chains";
+import type { BN } from 'fuels';
+import { DECIMAL_UNITS, bn } from 'fuels';
+import { useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Services, store } from '~/store';
+import { useAsset } from '~/systems/Assets/hooks/useAsset';
+import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
+import type { SupportedChain } from '~/systems/Chains';
 import {
   ETH_CHAIN,
   FUEL_CHAIN,
@@ -13,12 +13,12 @@ import {
   isFuelChain,
   useEthAccountConnection,
   useFuelAccountConnection,
-} from "~/systems/Chains";
-import { Pages } from "~/types";
+} from '~/systems/Chains';
+import { Pages } from '~/types';
 
-import { BridgeStatus } from "../machines";
-import type { BridgeMachineState } from "../machines";
-import { getChainFromUrlParam } from "../utils";
+import { BridgeStatus } from '../machines';
+import type { BridgeMachineState } from '../machines';
+import { getChainFromUrlParam } from '../utils';
 
 const selectors = {
   fromNetwork: (state: BridgeMachineState) => state.context?.fromNetwork,
@@ -59,7 +59,7 @@ const selectors = {
 
       return BridgeStatus.ready;
     },
-  isLoading: (state: BridgeMachineState) => state.matches("bridging"),
+  isLoading: (state: BridgeMachineState) => state.matches('bridging'),
   assetAmount: (state: BridgeMachineState) => state.context?.assetAmount,
   asset: (state: BridgeMachineState) => state.context?.asset,
 };
@@ -83,7 +83,7 @@ export function useBridge() {
     walletClient: ethWalletClient,
     publicClient: ethPublicClient,
   } = useEthAccountConnection({
-    erc20Address: ethAssetAddress?.startsWith("0x")
+    erc20Address: ethAssetAddress?.startsWith('0x')
       ? (ethAssetAddress as `0x${string}`)
       : undefined,
   });
@@ -97,7 +97,7 @@ export function useBridge() {
     wallet: fuelWallet,
     provider: fuelProvider,
   } = useFuelAccountConnection({
-    assetId: fuelAssetAddress?.startsWith("0x")
+    assetId: fuelAssetAddress?.startsWith('0x')
       ? (fuelAssetAddress as `0x${string}`)
       : undefined,
   });
@@ -107,9 +107,9 @@ export function useBridge() {
   const assetBalance = useMemo(() => {
     if (isEthChain(fromNetwork)) {
       if (ethBalance) {
-        const [intPart, decimalPart] = ethBalance?.formatted?.split(".") || [];
+        const [intPart, decimalPart] = ethBalance?.formatted?.split('.') || [];
         const formattedUnits = `${intPart}.${
-          decimalPart?.slice(0, DECIMAL_UNITS) || "0"
+          decimalPart?.slice(0, DECIMAL_UNITS) || '0'
         }`;
         return bn.parseUnits(formattedUnits);
       }
@@ -130,7 +130,7 @@ export function useBridge() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   // TODO: add "to" param when we add support to other chain than eth/fuel
-  const fromInput = queryParams.get("from");
+  const fromInput = queryParams.get('from');
 
   function getToInputNetwork() {
     if (!fromInputNetwork) return undefined;
@@ -163,8 +163,8 @@ export function useBridge() {
 
   function goToDeposit() {
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("from", "eth");
-    searchParams.set("to", "fuel");
+    searchParams.set('from', 'eth');
+    searchParams.set('to', 'fuel');
 
     navigate({
       pathname: Pages.bridge,
@@ -174,8 +174,8 @@ export function useBridge() {
 
   function goToWithdraw() {
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("from", "fuel");
-    searchParams.set("to", "eth");
+    searchParams.set('from', 'fuel');
+    searchParams.set('to', 'eth');
 
     navigate({
       pathname: Pages.bridge,

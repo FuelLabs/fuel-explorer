@@ -1,1 +1,1 @@
-export * from "./AssetCard";
+export * from './AssetCard';

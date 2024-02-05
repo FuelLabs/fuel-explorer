@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
 import {
   IconAlertCircle,
   IconAlertTriangle,
   IconCheck,
   IconHelpCircle,
-} from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+} from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 
-import { Icon } from "../Icon/Icon";
+import { Icon } from '../Icon/Icon';
 
-import type { ToastActionElement, ToastIconElement, ToastProps } from "./Toast";
+import type { ToastActionElement, ToastIconElement, ToastProps } from './Toast';
 
 // Constants
 const DEFAULT_TOAST_LIMIT = 3;
@@ -18,14 +18,14 @@ const DEFAULT_TOAST_DURATION = 2000;
 
 // Action Types
 const ACTION_TYPES = {
-  ADD_TOAST: "ADD_TOAST",
-  UPDATE_TOAST: "UPDATE_TOAST",
-  DISMISS_TOAST: "DISMISS_TOAST",
-  REMOVE_TOAST: "REMOVE_TOAST",
+  ADD_TOAST: 'ADD_TOAST',
+  UPDATE_TOAST: 'UPDATE_TOAST',
+  DISMISS_TOAST: 'DISMISS_TOAST',
+  REMOVE_TOAST: 'REMOVE_TOAST',
 } as const;
 
 // Toast Types
-type Toast = Omit<ToasterToast, "id">;
+type Toast = Omit<ToasterToast, 'id'>;
 type ToasterToast = ToastProps & {
   id: string;
   title?: React.ReactNode;
@@ -40,10 +40,10 @@ type ToasterToast = ToastProps & {
 // Action Definitions
 type ActionType = typeof ACTION_TYPES;
 type Action =
-  | { type: ActionType["ADD_TOAST"]; toast: ToasterToast }
-  | { type: ActionType["UPDATE_TOAST"]; toast: Partial<ToasterToast> }
-  | { type: ActionType["DISMISS_TOAST"]; toastId?: string; duration?: number }
-  | { type: ActionType["REMOVE_TOAST"]; toastId?: string };
+  | { type: ActionType['ADD_TOAST']; toast: ToasterToast }
+  | { type: ActionType['UPDATE_TOAST']; toast: Partial<ToasterToast> }
+  | { type: ActionType['DISMISS_TOAST']; toastId?: string; duration?: number }
+  | { type: ActionType['REMOVE_TOAST']; toastId?: string };
 
 // State
 interface State {
@@ -195,55 +195,55 @@ function useToast() {
 let toast = createToast as typeof createToast & {
   success: (
     msg: string,
-    props?: Partial<Omit<ToasterToast, "variant">>,
+    props?: Partial<Omit<ToasterToast, 'variant'>>,
   ) => void;
-  base: (msg: string, props?: Partial<Omit<ToasterToast, "variant">>) => void;
-  info: (msg: string, props?: Partial<Omit<ToasterToast, "variant">>) => void;
+  base: (msg: string, props?: Partial<Omit<ToasterToast, 'variant'>>) => void;
+  info: (msg: string, props?: Partial<Omit<ToasterToast, 'variant'>>) => void;
   warning: (
     msg: string,
-    props?: Partial<Omit<ToasterToast, "variant">>,
+    props?: Partial<Omit<ToasterToast, 'variant'>>,
   ) => void;
-  error: (msg: string, props?: Partial<Omit<ToasterToast, "variant">>) => void;
+  error: (msg: string, props?: Partial<Omit<ToasterToast, 'variant'>>) => void;
 };
 
 toast = Object.assign(toast, {
-  success: (msg: string, props?: Omit<ToasterToast, "variant">) => {
+  success: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
     createToast({
       ...props,
       title: msg,
-      variant: "success",
+      variant: 'success',
       icon: props?.icon || <Icon icon={IconCheck} />,
     });
   },
-  base: (msg: string, props?: Omit<ToasterToast, "variant">) => {
+  base: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
     createToast({
       ...props,
       title: msg,
-      variant: "base",
+      variant: 'base',
       icon: props?.icon || <Icon icon={IconHelpCircle} />,
     });
   },
-  info: (msg: string, props?: Omit<ToasterToast, "variant">) => {
+  info: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
     createToast({
       ...props,
       title: msg,
-      variant: "info",
+      variant: 'info',
       icon: props?.icon || <Icon icon={IconHelpCircle} />,
     });
   },
-  warning: (msg: string, props?: Omit<ToasterToast, "variant">) => {
+  warning: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
     createToast({
       ...props,
       title: msg,
-      variant: "warning",
+      variant: 'warning',
       icon: props?.icon || <Icon icon={IconAlertCircle} />,
     });
   },
-  error: (msg: string, props?: Omit<ToasterToast, "variant">) => {
+  error: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
     createToast({
       ...props,
       title: msg,
-      variant: "error",
+      variant: 'error',
       icon: props?.icon || <Icon icon={IconAlertTriangle} />,
     });
   },

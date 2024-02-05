@@ -1,4 +1,4 @@
-import type { HStackProps } from "@fuels/ui";
+import type { HStackProps } from '@fuels/ui';
 import {
   Box,
   Copyable,
@@ -9,11 +9,11 @@ import {
   Text,
   Tooltip,
   shortAddress,
-} from "@fuels/ui";
-import Image from "next/image";
-import { TxIcon } from "~/systems/Transaction/component/TxIcon/TxIcon";
+} from '@fuels/ui';
+import Image from 'next/image';
+import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
-import { useAsset } from "../../hooks/useAsset";
+import { useAsset } from '../../hooks/useAsset';
 
 const ICON_SIZE = 38;
 

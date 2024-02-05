@@ -1,14 +1,14 @@
-import { cssObj } from "@fuel-ui/css";
-import { CardList } from "@fuel-ui/react";
-import assetList from "@fuels/assets";
+import { cssObj } from '@fuel-ui/css';
+import { CardList } from '@fuel-ui/react';
+import assetList from '@fuels/assets';
 
-import { AssetLogo } from "./AssetLogo";
+import { AssetLogo } from './AssetLogo';
 
 export default {
   component: AssetLogo,
-  title: "AssetLogo",
+  title: 'AssetLogo',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -31,7 +31,7 @@ export const Big = () => {
 const generatedAsset = {
   ...assetList[0],
   icon: null,
-  networks: [{ ...assetList[0].networks[0], address: "0x123123123123" }],
+  networks: [{ ...assetList[0].networks[0], address: '0x123123123123' }],
 };
 export const Generated = () => {
   return (
@@ -43,7 +43,7 @@ export const Generated = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
-    width: "386px",
+    margin: '20px',
+    width: '386px',
   }),
 };

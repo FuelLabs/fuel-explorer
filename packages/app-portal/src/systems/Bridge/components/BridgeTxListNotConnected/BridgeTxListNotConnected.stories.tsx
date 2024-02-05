@@ -1,13 +1,13 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box } from '@fuel-ui/react';
 
-import { BridgeTxListNotConnected } from "./BridgeTxListNotConnected";
+import { BridgeTxListNotConnected } from './BridgeTxListNotConnected';
 
 export default {
   component: BridgeTxListNotConnected,
-  title: "BridgeTxListNotConnected",
+  title: 'BridgeTxListNotConnected',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -29,7 +29,7 @@ export const IsConnecting = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
-    width: "100%",
+    margin: '20px',
+    width: '100%',
   }),
 };

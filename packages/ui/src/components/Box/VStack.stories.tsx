@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import type { VStackProps } from "./";
-import { Box, VStack } from "./";
+import type { VStackProps } from './';
+import { Box, VStack } from './';
 
 const meta: Meta<typeof VStack> = {
-  title: "Layout/VStack",
+  title: 'Layout/VStack',
   component: VStack,
 };
 
@@ -21,7 +21,7 @@ const DecorativeBox = (props: VStackProps) => {
 };
 
 export const Usage: Story = {
-  name: "VStack",
+  name: 'VStack',
   render: () => (
     <VStack gap="3">
       <Box className="block w-8 h-8">

@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box } from "./Box";
-import { Flex } from "./Flex";
-import type { FlexProps } from "./Flex";
+import { Box } from './Box';
+import { Flex } from './Flex';
+import type { FlexProps } from './Flex';
 
 const meta: Meta<typeof Box> = {
-  title: "Layout/Box",
+  title: 'Layout/Box',
   component: Box,
 };
 
@@ -30,7 +30,7 @@ export const Usage: Story = {
 };
 
 export const AsChild: Story = {
-  name: "AsChild",
+  name: 'AsChild',
   render: () => (
     <Box asChild className="bg-gray-2">
       <span>I&apos;m a span</span>

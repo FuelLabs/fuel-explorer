@@ -1,13 +1,13 @@
-import { action } from "@storybook/addon-actions";
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconBookmark } from "@tabler/icons-react";
+import { action } from '@storybook/addon-actions';
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconBookmark } from '@tabler/icons-react';
 
-import { HStack } from "../Box";
+import { HStack } from '../Box';
 
-import { Button } from "./Button";
+import { Button } from './Button';
 
 const meta: Meta<typeof Button> = {
-  title: "UI/Button",
+  title: 'UI/Button',
   component: Button,
 };
 
@@ -73,7 +73,7 @@ export const Loading: Story = {
 };
 
 export const onClick: Story = {
-  render: () => <Button onClick={action("onClick")}>Click here</Button>,
+  render: () => <Button onClick={action('onClick')}>Click here</Button>,
 };
 
 export const Disabled: Story = {

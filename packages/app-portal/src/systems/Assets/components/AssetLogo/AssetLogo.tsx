@@ -1,8 +1,8 @@
-import { Avatar, Image } from "@fuel-ui/react";
-import { useMemo } from "react";
+import { Avatar, Image } from '@fuel-ui/react';
+import { useMemo } from 'react';
 
-import type { Asset } from "../../services";
-import { getAssetEth, getAssetFuel } from "../../utils";
+import type { Asset } from '../../services';
+import { getAssetEth, getAssetFuel } from '../../utils';
 
 type EthAssetLogoProps = {
   asset?: Asset;
@@ -13,7 +13,7 @@ type EthAssetLogoProps = {
 const DEFAULT_SIZE = 18;
 
 export const AssetLogo = ({
-  alt = "AssetLogo",
+  alt = 'AssetLogo',
   asset,
   size = DEFAULT_SIZE,
 }: EthAssetLogoProps) => {
@@ -36,7 +36,7 @@ export const AssetLogo = ({
       {image ? (
         <Image width={size} height={size} src={image} alt={alt} />
       ) : (
-        <Avatar.Generated size={size} hash={address || ""} />
+        <Avatar.Generated size={size} hash={address || ''} />
       )}
     </>
   );

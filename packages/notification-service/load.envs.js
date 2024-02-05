@@ -1,12 +1,12 @@
-const { config } = require("dotenv");
-const { readFileSync } = require("fs");
-const nodemailer = require("nodemailer");
-const { resolve } = require("path");
-const retus = require("retus");
+const { config } = require('dotenv');
+const { readFileSync } = require('fs');
+const nodemailer = require('nodemailer');
+const { resolve } = require('path');
+const retus = require('retus');
 
 function getVersion() {
   const packageJson = JSON.parse(
-    readFileSync(resolve(__dirname, "./package.json")).toString(),
+    readFileSync(resolve(__dirname, './package.json')).toString(),
   );
   return {
     version: packageJson.version,
@@ -14,34 +14,34 @@ function getVersion() {
 }
 
 function getEnvName() {
-  if (process.env.NODE_ENV === "production") {
-    return ".env.production";
+  if (process.env.NODE_ENV === 'production') {
+    return '.env.production';
   }
-  if (process.env.NODE_ENV === "test") {
-    return ".env.test";
+  if (process.env.NODE_ENV === 'test') {
+    return '.env.test';
   }
 }
 
 function getEthFuelL1Contracts() {
-  if (process.env.ETH_CHAIN === "foundry") {
-    const { body } = retus("http://localhost:8080/deployments.local.json", {
+  if (process.env.ETH_CHAIN === 'foundry') {
+    const { body } = retus('http://localhost:8080/deployments.local.json', {
       json: true,
     });
 
     return body;
   }
 
-  if (process.env.ETH_CHAIN === "sepolia") {
+  if (process.env.ETH_CHAIN === 'sepolia') {
     return {
-      FuelChainState: "0xbe7aB12653e705642eb42EF375fd0d35Cfc45b03",
-      FuelMessagePortal: "0x03f2901Db5723639978deBed3aBA66d4EA03aF73",
-      FuelERC20Gateway: "0x0C817d089c693Ea435a95c52409984F45847F53c",
+      FuelChainState: '0xbe7aB12653e705642eb42EF375fd0d35Cfc45b03',
+      FuelMessagePortal: '0x03f2901Db5723639978deBed3aBA66d4EA03aF73',
+      FuelERC20Gateway: '0x0C817d089c693Ea435a95c52409984F45847F53c',
     };
   }
 }
 
 // Load from more specific env file to generic ->
-[getEnvName(), ".env"].forEach((envFile) => {
+[getEnvName(), '.env'].forEach((envFile) => {
   if (!envFile) return;
   config({
     path: resolve(__dirname, envFile),
@@ -62,7 +62,7 @@ if (ethFuelContracts?.FuelMessagePortal) {
 }
 
 async function getMailServiceOptions() {
-  if (process.env.ETH_CHAIN === "foundry") {
+  if (process.env.ETH_CHAIN === 'foundry') {
     const account = await nodemailer.createTestAccount();
     const mailServiceOptions = {
       host: account.smtp.host,

@@ -1,5 +1,5 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, Button, Card, Text } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box, Button, Card, Text } from '@fuel-ui/react';
 
 type BridgeTxListEmptyProps = {
   isConnecting: boolean;
@@ -43,6 +43,6 @@ const styles = {
     width: 180,
   }),
   cardBody: cssObj({
-    py: "$8",
+    py: '$8',
   }),
 };

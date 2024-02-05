@@ -1,13 +1,13 @@
-import path from "path";
-import nodemailer from "nodemailer";
-import hbs from "nodemailer-express-handlebars";
+import path from 'path';
+import nodemailer from 'nodemailer';
+import hbs from 'nodemailer-express-handlebars';
 
 const handlebarOptions = {
   viewEngine: {
-    partialDirs: path.resolve("./src/views/"),
+    partialDirs: path.resolve('./src/views/'),
     defaultLayout: false as unknown as string, // false is a valid express-handlebars type, but somehow nodemailer-express-handlebars only accepts string
   },
-  viewPath: path.resolve("./src/views/"),
+  viewPath: path.resolve('./src/views/'),
 };
 
 export default class MailService {
@@ -31,13 +31,13 @@ export default class MailService {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_SECURE === "true",
+      secure: process.env.SMTP_SECURE === 'true',
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
     });
-    this.transporter.use("compile", hbs(handlebarOptions));
+    this.transporter.use('compile', hbs(handlebarOptions));
   }
 
   async sendMail(
@@ -55,7 +55,7 @@ export default class MailService {
     const mailOptions = {
       from: options.from,
       to: options.to,
-      template: "email",
+      template: 'email',
       subject: options.subject,
       context,
     };

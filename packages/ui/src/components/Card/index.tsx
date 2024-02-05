@@ -6,7 +6,7 @@ export {
   CardHeader,
   CardRoot,
   CardTitle,
-} from "./Card";
+} from './Card';
 
 export type {
   CardBodyProps,
@@ -15,4 +15,4 @@ export type {
   CardHeaderProps,
   CardProps,
   CardTitleProps,
-} from "./Card";
+} from './Card';

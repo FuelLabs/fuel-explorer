@@ -1,15 +1,15 @@
-import { promises as fs } from "fs";
-import path from "path";
-import * as url from "url";
-import { globby } from "globby";
-import _ from "lodash";
-import prettier from "prettier";
-import ts from "typescript";
+import { promises as fs } from 'fs';
+import path from 'path';
+import * as url from 'url';
+import { globby } from 'globby';
+import _ from 'lodash';
+import prettier from 'prettier';
+import ts from 'typescript';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const COMPONENT_DIR = path.join(__dirname, "../src/components");
-const INDEX_FILE = path.join(__dirname, "../src/index.tsx");
+const COMPONENT_DIR = path.join(__dirname, '../src/components');
+const INDEX_FILE = path.join(__dirname, '../src/index.tsx');
 
 const PRETTIER_CONFIG = {
   printWidth: 80,
@@ -18,12 +18,12 @@ const PRETTIER_CONFIG = {
   useTabs: false,
   singleQuote: true,
   bracketSpacing: true,
-  arrowParens: "always",
-  quoteProps: "as-needed",
+  arrowParens: 'always',
+  quoteProps: 'as-needed',
 };
 
 function prettierFormat(str) {
-  return prettier.format(str, { parser: "typescript", ...PRETTIER_CONFIG });
+  return prettier.format(str, { parser: 'typescript', ...PRETTIER_CONFIG });
 }
 
 function extractExports(sourceFile) {
@@ -34,7 +34,7 @@ function extractExports(sourceFile) {
 
   function visit(node) {
     if (ts.isExportAssignment(node)) {
-      exports.valueExports.push("default");
+      exports.valueExports.push('default');
     } else if (ts.isExportDeclaration(node)) {
       if (node.exportClause && ts.isNamedExports(node.exportClause)) {
         for (const element of node.exportClause.elements) {
@@ -81,11 +81,11 @@ function extractExports(sourceFile) {
 async function getAllComponents() {
   const allComponents = await globby(
     [
-      "**/*.tsx",
-      "**/use**.ts",
-      "!**/*.stories.tsx",
-      "!**/*.test.{tsx,ts}",
-      "!**/styles.ts",
+      '**/*.tsx',
+      '**/use**.ts',
+      '!**/*.stories.tsx',
+      '!**/*.test.{tsx,ts}',
+      '!**/styles.ts',
     ],
     {
       deep: 2,
@@ -103,7 +103,7 @@ async function getAllComponents() {
         const component = name === baseComponent ? null : name;
         const sourceFile = ts.createSourceFile(
           comp,
-          await fs.readFile(comp, "utf8"),
+          await fs.readFile(comp, 'utf8'),
         );
 
         const { valueExports, typeExports } = extractExports(sourceFile);
@@ -121,18 +121,18 @@ async function getAllComponents() {
   return components;
 }
 
-function createExportStr(from, exports, isType, pathPrefix = "") {
-  const listStr = exports?.sort().join(",");
+function createExportStr(from, exports, isType, pathPrefix = '') {
+  const listStr = exports?.sort().join(',');
   return exports.length
     ? `export ${
-        isType ? "type" : ""
+        isType ? 'type' : ''
       } { ${listStr} } from './${pathPrefix}${from}';`
-    : "";
+    : '';
 }
 
 function createNestedExportStr(main, nested, isType) {
-  if (!nested.length) return "";
-  const key = isType ? "types" : "exports";
+  if (!nested.length) return '';
+  const key = isType ? 'types' : 'exports';
   let items = [];
   for (const n of nested) {
     const list = n[key]
@@ -149,7 +149,7 @@ function createNestedExportStr(main, nested, isType) {
     })
     .filter(Boolean)
     .sort()
-    .join("\n");
+    .join('\n');
 }
 
 async function createComponentIndex(components) {
@@ -160,7 +160,7 @@ async function createComponentIndex(components) {
       (c) =>
         c.baseComponent === component &&
         c.component &&
-        !c.component?.startsWith("index"),
+        !c.component?.startsWith('index'),
     );
 
     const mainExportsStr = createExportStr(component, item.exports);
@@ -173,7 +173,7 @@ async function createComponentIndex(components) {
       mainTypesStr,
       nestedExportStr,
       nestedTypesStr,
-    ].join("\n\n");
+    ].join('\n\n');
 
     const content = await prettierFormat(index);
     await fs.writeFile(`${item.dir}/index.tsx`, content);
@@ -186,7 +186,7 @@ async function createMainComponentsIndex(components) {
 
   for (const item of mainComponents) {
     const mainPath = `${item.dir}/index.tsx`;
-    const mainStr = await fs.readFile(mainPath, "utf8");
+    const mainStr = await fs.readFile(mainPath, 'utf8');
     const sourceFile = ts.createSourceFile(mainPath, mainStr);
     const { valueExports, typeExports } = extractExports(sourceFile);
     const uniqueExports = [...new Set(valueExports)];
@@ -195,60 +195,60 @@ async function createMainComponentsIndex(components) {
       item.baseComponent,
       uniqueExports,
       false,
-      "components/",
+      'components/',
     );
     const typesStr = createExportStr(
       item.baseComponent,
       uniqueTypes,
       true,
-      "components/",
+      'components/',
     );
     if (exportsStr.length) list.push(exportsStr);
     if (typesStr.length) list.push(typesStr);
   }
 
-  list = list.join("\n\n");
+  list = list.join('\n\n');
   const content = await prettierFormat(list);
   await fs.writeFile(INDEX_FILE, content);
 }
 
 async function pkgJSON(components) {
   const pkgJSONBuffer = await fs.readFile(
-    path.join(__dirname, "../package.json"),
+    path.join(__dirname, '../package.json'),
   );
   const pkgJSON = JSON.parse(pkgJSONBuffer.toString());
-  const typesVersions = { "*": {} };
+  const typesVersions = { '*': {} };
   const exportsConfig = {};
 
   const comps = Array.from(new Set(components.map((c) => c.baseComponent)));
   comps.forEach((component) => {
     const name = component;
-    const folder = path.join("./dist/components", name);
-    typesVersions["*"][name] = [`./${folder}/index.d.ts`];
+    const folder = path.join('./dist/components', name);
+    typesVersions['*'][name] = [`./${folder}/index.d.ts`];
     exportsConfig[`./${name}`] = {
       import: `./${folder}/index.esm.js`,
       types: `./${folder}/index.d.ts`,
       typings: `./${folder}/index.d.ts`,
     };
   });
-  typesVersions["*"]["."] = ["./dist/index.d.ts"];
-  exportsConfig["."] = {
-    import: "./dist/index.esm.mjs",
-    types: "./dist/index.d.ts",
-    typings: "./dist/index.d.ts",
+  typesVersions['*']['.'] = ['./dist/index.d.ts'];
+  exportsConfig['.'] = {
+    import: './dist/index.esm.mjs',
+    types: './dist/index.d.ts',
+    typings: './dist/index.d.ts',
   };
-  exportsConfig["./index.css"] = "./dist/index.css";
-  exportsConfig["./theme"] = {
-    import: "./dist/theme.esm.js",
-    types: "./dist/theme.d.ts",
-    typings: "./dist/theme.d.ts",
+  exportsConfig['./index.css'] = './dist/index.css';
+  exportsConfig['./theme'] = {
+    import: './dist/theme.esm.js',
+    types: './dist/theme.d.ts',
+    typings: './dist/theme.d.ts',
   };
 
   pkgJSON.exports = exportsConfig;
   pkgJSON.typesVersions = typesVersions;
 
   await fs.writeFile(
-    path.join(__dirname, "../package.json"),
+    path.join(__dirname, '../package.json'),
     JSON.stringify(pkgJSON, null, 2),
   );
 }
@@ -258,7 +258,7 @@ export async function tsup(components) {
   const entryPoints = comps.map((c) => `src/components/${c}/index.tsx`);
 
   await fs.writeFile(
-    path.join(__dirname, "../tsup.text"),
+    path.join(__dirname, '../tsup.text'),
     JSON.stringify({ entry: entryPoints }),
   );
 }

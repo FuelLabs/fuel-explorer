@@ -1,5 +1,5 @@
-import type { SupportedChain } from "../../types";
-import { FUEL_CHAINS } from "../chains";
+import type { SupportedChain } from '../../types';
+import { FUEL_CHAINS } from '../chains';
 
 export const FUEL_UNITS = 9;
 

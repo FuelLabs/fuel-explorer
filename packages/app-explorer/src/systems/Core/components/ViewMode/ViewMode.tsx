@@ -1,11 +1,11 @@
-import { Flex } from "@fuels/ui";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { tv } from "tailwind-variants";
+import { Flex } from '@fuels/ui';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { tv } from 'tailwind-variants';
 
 export enum ViewModes {
-  Simple = "simple",
-  Advanced = "advanced",
+  Simple = 'simple',
+  Advanced = 'advanced',
 }
 
 export function ViewMode() {
@@ -46,11 +46,11 @@ export function ViewMode() {
 
 const styles = tv({
   slots: {
-    root: "bg-gray-3 p-1 rounded h-9",
+    root: 'bg-gray-3 p-1 rounded h-9',
     viewItem: [
-      "px-3 text-xs flex-1 rounded-xs cursor-pointer text-gray-9",
-      "data-[active=true]:bg-gray-1 data-[active=true]:cursor-default",
-      "data-[active=true]:text-gray-12",
+      'px-3 text-xs flex-1 rounded-xs cursor-pointer text-gray-9',
+      'data-[active=true]:bg-gray-1 data-[active=true]:cursor-default',
+      'data-[active=true]:text-gray-12',
     ],
   },
 });

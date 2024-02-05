@@ -1,16 +1,16 @@
-import { Link as RadixLink } from "@radix-ui/themes";
-import { IconLink } from "@tabler/icons-react";
-import { tv } from "tailwind-variants";
-import type { VariantProps } from "tailwind-variants";
+import { Link as RadixLink } from '@radix-ui/themes';
+import { IconLink } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
+import type { VariantProps } from 'tailwind-variants';
 
-import { createPolymorphicComponent } from "../../utils/component";
-import type { PropsOf, WithAsProps } from "../../utils/types";
-import { Icon } from "../Icon/Icon";
+import { createPolymorphicComponent } from '../../utils/component';
+import type { PropsOf, WithAsProps } from '../../utils/types';
+import { Icon } from '../Icon/Icon';
 
 const link = tv({
   variants: {
     isExternal: {
-      true: "inline-flex items-center gap-2",
+      true: 'inline-flex items-center gap-2',
     },
   },
   defaultVariants: {
@@ -27,12 +27,12 @@ export type LinkProps = PropsOf<typeof RadixLink> &
   };
 
 export const Link = createPolymorphicComponent<LinkProps, typeof RadixLink>({
-  id: "Link",
+  id: 'Link',
   baseElement: RadixLink,
   render: (
     Comp,
     {
-      as: Root = "a",
+      as: Root = 'a',
       asChild,
       children,
       className,
@@ -44,8 +44,8 @@ export const Link = createPolymorphicComponent<LinkProps, typeof RadixLink>({
   ) => {
     const isExternal =
       initIsExternal ||
-      props.href?.startsWith("http") ||
-      props.target === "_blank";
+      props.href?.startsWith('http') ||
+      props.target === '_blank';
 
     const classes = link({ isExternal, className });
     const innerChildren = asChild ? children : <Root>{children}</Root>;

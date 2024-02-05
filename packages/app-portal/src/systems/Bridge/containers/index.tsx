@@ -1,2 +1,2 @@
-export * from "./BridgeButton";
-export * from "./BridgeTabs";
+export * from './BridgeButton';
+export * from './BridgeTabs';

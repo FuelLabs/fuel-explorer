@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { Services, store } from "~/store";
+import { useEffect, useState } from 'react';
+import { Services, store } from '~/store';
 import {
   useEthAccountConnection,
   useFuelAccountConnection,
-} from "~/systems/Chains";
+} from '~/systems/Chains';
 
-import type { BridgeTxsMachineState } from "../machines";
+import type { BridgeTxsMachineState } from '../machines';
 
 const MAX_BY_PAGE = 15;
 
@@ -14,7 +14,7 @@ const selectors = {
     return state.context.bridgeTxs;
   },
   isLoading: (state: BridgeTxsMachineState) => {
-    return state.hasTag("isLoading");
+    return state.hasTag('isLoading');
   },
 };
 

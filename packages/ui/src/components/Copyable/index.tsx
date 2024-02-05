@@ -1,3 +1,3 @@
-export { Copyable } from "./Copyable";
+export { Copyable } from './Copyable';
 
-export type { CopyableBaseProps, CopyableProps } from "./Copyable";
+export type { CopyableBaseProps, CopyableProps } from './Copyable';

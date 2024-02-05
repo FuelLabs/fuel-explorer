@@ -3,21 +3,21 @@ import {
   fromTai64ToUnix,
   getReceiptsMessageOut,
   hexlify,
-} from "fuels";
-import { useMemo } from "react";
-import { Services, store } from "~/store";
-import { useAssets } from "~/systems/Assets";
-import type { Asset } from "~/systems/Assets/services/asset";
-import { getAssetEth } from "~/systems/Assets/utils";
-import type { BridgeTxsMachineState } from "~/systems/Bridge";
-import { useExplorerLink } from "~/systems/Bridge/hooks/useExplorerLink";
+} from 'fuels';
+import { useMemo } from 'react';
+import { Services, store } from '~/store';
+import { useAssets } from '~/systems/Assets';
+import type { Asset } from '~/systems/Assets/services/asset';
+import { getAssetEth } from '~/systems/Assets/utils';
+import type { BridgeTxsMachineState } from '~/systems/Bridge';
+import { useExplorerLink } from '~/systems/Bridge/hooks/useExplorerLink';
 
-import { useEthAccountConnection } from "../../eth/hooks";
-import { isSameEthAddress, parseFuelAddressToEth } from "../../eth/utils";
-import type { TxFuelToEthMachineState } from "../machines";
-import { distanceToNow } from "../utils";
+import { useEthAccountConnection } from '../../eth/hooks';
+import { isSameEthAddress, parseFuelAddressToEth } from '../../eth/utils';
+import type { TxFuelToEthMachineState } from '../machines';
+import { distanceToNow } from '../utils';
 
-import { useFuelAccountConnection } from "./useFuelAccountConnection";
+import { useFuelAccountConnection } from './useFuelAccountConnection';
 
 const bridgeTxsSelectors = {
   txFuelToEth: (txId?: string) => (state: BridgeTxsMachineState) => {
@@ -31,25 +31,25 @@ const bridgeTxsSelectors = {
 
 const txFuelToEthSelectors = {
   status: (state: TxFuelToEthMachineState) => {
-    const isSubmitToBridgeLoading = state.hasTag("isSubmitToBridgeLoading");
-    const isSubmitToBridgeSelected = state.hasTag("isSubmitToBridgeSelected");
-    const isSubmitToBridgeDone = state.hasTag("isSubmitToBridgeDone");
-    const isSettlementLoading = state.hasTag("isSettlementLoading");
-    const isSettlementSelected = state.hasTag("isSettlementSelected");
-    const isSettlementDone = state.hasTag("isSettlementDone");
+    const isSubmitToBridgeLoading = state.hasTag('isSubmitToBridgeLoading');
+    const isSubmitToBridgeSelected = state.hasTag('isSubmitToBridgeSelected');
+    const isSubmitToBridgeDone = state.hasTag('isSubmitToBridgeDone');
+    const isSettlementLoading = state.hasTag('isSettlementLoading');
+    const isSettlementSelected = state.hasTag('isSettlementSelected');
+    const isSettlementDone = state.hasTag('isSettlementDone');
     const isConfirmTransactionSelected = state.hasTag(
-      "isConfirmTransactionSelected",
+      'isConfirmTransactionSelected',
     );
     const isConfirmTransactionLoading = state.hasTag(
-      "isConfirmTransactionLoading",
+      'isConfirmTransactionLoading',
     );
-    const isConfirmTransactionDone = state.hasTag("isConfirmTransactionDone");
+    const isConfirmTransactionDone = state.hasTag('isConfirmTransactionDone');
     const isWaitingEthWalletApproval = state.hasTag(
-      "isWaitingEthWalletApproval",
+      'isWaitingEthWalletApproval',
     );
-    const isReceiveLoading = state.hasTag("isReceiveLoading");
-    const isReceiveSelected = state.hasTag("isReceiveSelected");
-    const isReceiveDone = state.hasTag("isReceiveDone");
+    const isReceiveLoading = state.hasTag('isReceiveLoading');
+    const isReceiveSelected = state.hasTag('isReceiveSelected');
+    const isReceiveDone = state.hasTag('isReceiveDone');
 
     return {
       isSubmitToBridgeLoading,
@@ -73,43 +73,43 @@ const txFuelToEthSelectors = {
       txFuelToEthSelectors.estimatedTimeRemaining(state);
 
     function getConfirmStatusText() {
-      if (status.isWaitingEthWalletApproval) return "Action required";
-      if (status.isConfirmTransactionDone) return "Done!";
-      return "Action";
+      if (status.isWaitingEthWalletApproval) return 'Action required';
+      if (status.isConfirmTransactionDone) return 'Done!';
+      return 'Action';
     }
 
     function getSettlementStatusText() {
-      if (status.isSettlementDone) return "Done!";
+      if (status.isSettlementDone) return 'Done!';
       if (estimatedTimeRemaining) return `~${estimatedTimeRemaining} left`;
-      return "Waiting";
+      return 'Waiting';
     }
 
     const steps = [
       {
-        name: "Submit to bridge",
+        name: 'Submit to bridge',
         // TODO: put correct time left '~XX minutes left', how?
-        status: status.isSubmitToBridgeDone ? "Done!" : "Waiting",
+        status: status.isSubmitToBridgeDone ? 'Done!' : 'Waiting',
         isLoading: status.isSubmitToBridgeLoading,
         isSelected: status.isSubmitToBridgeSelected,
         isDone: status.isSubmitToBridgeDone,
       },
       {
-        name: "Settlement",
+        name: 'Settlement',
         status: getSettlementStatusText(),
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
       },
       {
-        name: "Confirm transaction",
+        name: 'Confirm transaction',
         status: getConfirmStatusText(),
         isLoading: status.isConfirmTransactionLoading,
         isDone: status.isConfirmTransactionDone,
         isSelected: status.isConfirmTransactionSelected,
       },
       {
-        name: "Receive on Ethereum",
-        status: status.isReceiveDone ? "Done!" : "Automatic",
+        name: 'Receive on Ethereum',
+        status: status.isReceiveDone ? 'Done!' : 'Automatic',
         isLoading: status.isReceiveLoading,
         isDone: status.isReceiveDone,
         isSelected: status.isReceiveSelected,
@@ -140,7 +140,7 @@ const txFuelToEthSelectors = {
         const amount = receipt.val;
         const ethAssetId = messageOutReceipt.data
           ? parseFuelAddressToEth(
-              hexlify(messageOutReceipt.data).replace("0x", "").slice(72, 136),
+              hexlify(messageOutReceipt.data).replace('0x', '').slice(72, 136),
             )
           : undefined;
         const ethAsset = assets
@@ -161,7 +161,7 @@ const txFuelToEthSelectors = {
       }
     }
 
-    const asset = assets.find((asset) => asset.symbol === "ETH");
+    const asset = assets.find((asset) => asset.symbol === 'ETH');
 
     if (!asset) return undefined;
 
@@ -175,7 +175,7 @@ const txFuelToEthSelectors = {
     };
   },
   isLoadingTxResult: (state: TxFuelToEthMachineState) => {
-    return state.matches("submittingToBridge.waitingFuelTxResult");
+    return state.matches('submittingToBridge.waitingFuelTxResult');
   },
   estimatedTimeRemaining: (state: TxFuelToEthMachineState) => {
     const estimatedFinishDate = state.context.estimatedFinishDate;
@@ -190,8 +190,8 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
   const { provider: fuelProvider } = useFuelAccountConnection();
   const { assets } = useAssets();
   const { href: explorerLink } = useExplorerLink({
-    network: "fuel",
-    providerUrl: fuelProvider?.url || "",
+    network: 'fuel',
+    providerUrl: fuelProvider?.url || '',
     id: txId,
   });
 

@@ -1,6 +1,6 @@
-import { cssObj } from "@fuel-ui/css";
-import { Card, ContentLoader } from "@fuel-ui/react";
-import type { ContentLoaderProps } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Card, ContentLoader } from '@fuel-ui/react';
+import type { ContentLoaderProps } from '@fuel-ui/react';
 
 export const ProjectItemLoader = (props: ContentLoaderProps) => {
   return (
@@ -24,7 +24,7 @@ export const ProjectItemLoader = (props: ContentLoaderProps) => {
 
 const styles = {
   loader: cssObj({
-    width: "100%",
-    maxWidth: "496px",
+    width: '100%',
+    maxWidth: '496px',
   }),
 };

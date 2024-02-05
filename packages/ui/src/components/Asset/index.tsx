@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export {
   Asset,
@@ -7,7 +7,7 @@ export {
   AssetName,
   AssetRoot,
   AssetSymbol,
-} from "./Asset";
+} from './Asset';
 
 export type {
   AssetAmountProps,
@@ -17,6 +17,6 @@ export type {
   AssetObj,
   AssetProps,
   AssetSymbolProps,
-} from "./Asset";
+} from './Asset';
 
-export { AssetProvider, useAssetContext } from "./useAssetContext";
+export { AssetProvider, useAssetContext } from './useAssetContext';

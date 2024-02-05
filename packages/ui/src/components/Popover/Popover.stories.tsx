@@ -1,22 +1,22 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconMessageDots } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconMessageDots } from '@tabler/icons-react';
 
-import { Avatar } from "../Avatar/Avatar";
-import { Box, Flex, HStack } from "../Box";
-import { Button } from "../Button/Button";
-import { Checkbox } from "../Checkbox/Checkbox";
-import { Icon } from "../Icon/Icon";
-import { Text } from "../Text/Text";
-import { TextArea } from "../TextArea/TextArea";
+import { Avatar } from '../Avatar/Avatar';
+import { Box, Flex, HStack } from '../Box';
+import { Button } from '../Button/Button';
+import { Checkbox } from '../Checkbox/Checkbox';
+import { Icon } from '../Icon/Icon';
+import { Text } from '../Text/Text';
+import { TextArea } from '../TextArea/TextArea';
 
-import { Popover } from "./Popover";
+import { Popover } from './Popover';
 
 const meta: Meta<typeof Popover> = {
-  title: "Overlay/Popover",
+  title: 'Overlay/Popover',
   component: Popover,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

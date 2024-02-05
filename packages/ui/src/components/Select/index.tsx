@@ -7,7 +7,7 @@ export {
   SelectRoot,
   SelectSeparator,
   SelectTrigger,
-} from "./Select";
+} from './Select';
 
 export type {
   SelectContentProps,
@@ -17,4 +17,4 @@ export type {
   SelectProps,
   SelectSeparatorProps,
   SelectTriggerProps,
-} from "./Select";
+} from './Select';

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useRef, useState, useTransition } from "react";
-import type z from "zod";
+import { useRef, useState, useTransition } from 'react';
+import type z from 'zod';
 
-import type { Action } from "./act-server";
+import type { Action } from './act-server';
 
 type UseActOpts<Response> = {
   onSuccess?: (res: Response) => void;

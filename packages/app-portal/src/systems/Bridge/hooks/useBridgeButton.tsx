@@ -1,10 +1,10 @@
-import { useMemo } from "react";
-import { getAssetEth } from "~/systems/Assets/utils";
-import { getChainName, useFuelAccountConnection } from "~/systems/Chains";
+import { useMemo } from 'react';
+import { getAssetEth } from '~/systems/Assets/utils';
+import { getChainName, useFuelAccountConnection } from '~/systems/Chains';
 
-import { BridgeStatus } from "../machines";
+import { BridgeStatus } from '../machines';
 
-import { useBridge } from "./useBridge";
+import { useBridge } from './useBridge';
 
 export function useBridgeButton() {
   const {
@@ -25,13 +25,13 @@ export function useBridgeButton() {
     switch (status) {
       case BridgeStatus.waitingConnectFrom:
         return {
-          text: status.replace("From", getChainName(fromNetwork)),
+          text: status.replace('From', getChainName(fromNetwork)),
           isLoading: isLoadingConnectFrom,
           action: handlers.connectFrom,
         };
       case BridgeStatus.waitingConnectTo:
         return {
-          text: status.replace("To", getChainName(toNetwork)),
+          text: status.replace('To', getChainName(toNetwork)),
           isLoading: isLoadingConnectTo,
           action: handlers.connectTo,
         };
@@ -39,18 +39,18 @@ export function useBridgeButton() {
         return {
           text:
             !!ethAssetAddress && balance?.eq(0) && isDeposit
-              ? "Bridge asset anyway"
+              ? 'Bridge asset anyway'
               : isDeposit
-                ? "Deposit"
-                : "Withdraw",
+                ? 'Deposit'
+                : 'Withdraw',
           isLoading,
           action: handlers.startBridging,
         };
       case BridgeStatus.waitingAssetAmount:
         return {
           text: isDeposit
-            ? status.replace("operation", "deposit")
-            : status.replace("operation", "withdraw"),
+            ? status.replace('operation', 'deposit')
+            : status.replace('operation', 'withdraw'),
           isDisabled: true,
         };
       default:

@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCalendar } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCalendar } from '@tabler/icons-react';
 
-import { Button } from "../Button/Button";
+import { Button } from '../Button/Button';
 
-import { ButtonGroup } from "./ButtonGroup";
+import { ButtonGroup } from './ButtonGroup';
 
 const meta: Meta<typeof ButtonGroup> = {
-  title: "UI/ButtonGroup",
+  title: 'UI/ButtonGroup',
   component: ButtonGroup,
 };
 

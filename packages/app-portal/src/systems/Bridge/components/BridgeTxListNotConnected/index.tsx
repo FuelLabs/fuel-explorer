@@ -1,1 +1,1 @@
-export * from "./BridgeTxListNotConnected";
+export * from './BridgeTxListNotConnected';

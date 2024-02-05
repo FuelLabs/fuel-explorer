@@ -1,6 +1,6 @@
-import type { Context } from "../utils/domain";
+import type { Context } from '../utils/domain';
 
-import { NetworkDomain } from "./Network";
+import { NetworkDomain } from './Network';
 
 export class ContextDomain {
   static async createContext(providerUrl: string): Promise<Context> {

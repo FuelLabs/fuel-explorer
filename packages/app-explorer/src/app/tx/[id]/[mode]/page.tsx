@@ -1,11 +1,11 @@
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { Routes } from "~/routes";
-import { ViewModes } from "~/systems/Core/components/ViewMode/ViewMode";
-import { TxScreenLoader } from "~/systems/Transaction/component/TxScreen/TxScreenLoader";
-import { TxScreenAdvancedSync } from "~/systems/Transaction/screens/TxScreenAdvancedSync";
-import { TxScreenSimpleSync } from "~/systems/Transaction/screens/TxScreenSimpleSync";
-import type { TxRouteProps } from "~/systems/Transaction/types";
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import { Routes } from '~/routes';
+import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
+import { TxScreenLoader } from '~/systems/Transaction/component/TxScreen/TxScreenLoader';
+import { TxScreenAdvancedSync } from '~/systems/Transaction/screens/TxScreenAdvancedSync';
+import { TxScreenSimpleSync } from '~/systems/Transaction/screens/TxScreenSimpleSync';
+import type { TxRouteProps } from '~/systems/Transaction/types';
 
 export default async function Transaction({
   params: { id, mode },
@@ -28,5 +28,5 @@ export default async function Transaction({
   }
 }
 
-export const fetchCache = "force-cache";
+export const fetchCache = 'force-cache';
 export const revalidate = Infinity;

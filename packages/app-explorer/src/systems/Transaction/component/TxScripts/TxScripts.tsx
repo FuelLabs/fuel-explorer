@@ -1,10 +1,10 @@
-import { ReceiptType } from "@fuel-explorer/graphql";
+import { ReceiptType } from '@fuel-explorer/graphql';
 import type {
   Maybe,
   OperationReceipt,
   TransactionReceiptFragment,
-} from "@fuel-explorer/graphql";
-import type { BaseProps } from "@fuels/ui";
+} from '@fuel-explorer/graphql';
+import type { BaseProps } from '@fuels/ui';
 import {
   Address,
   Badge,
@@ -22,24 +22,24 @@ import {
   Text,
   VStack,
   cx,
-} from "@fuels/ui";
+} from '@fuels/ui';
 import {
   IconArrowRight,
   IconArrowsMoveVertical,
   IconFold,
-} from "@tabler/icons-react";
-import { bn } from "fuels";
-import NextLink from "next/link";
-import { createContext, useContext, useState } from "react";
+} from '@tabler/icons-react';
+import { bn } from 'fuels';
+import NextLink from 'next/link';
+import { createContext, useContext, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "react-json-view-lite/dist/index.css";
-import { useMeasure } from "react-use";
-import { tv } from "tailwind-variants";
-import { Amount } from "~/systems/Core/components/Amount/Amount";
-import { EmptyCard } from "~/systems/Core/components/EmptyCard/EmptyCard";
-import { JsonViewer } from "~/systems/Core/components/JsonViewer/JsonViewer";
+import 'react-json-view-lite/dist/index.css';
+import { useMeasure } from 'react-use';
+import { tv } from 'tailwind-variants';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
+import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { JsonViewer } from '~/systems/Core/components/JsonViewer/JsonViewer';
 
-import type { TransactionNode } from "../../types";
+import type { TransactionNode } from '../../types';
 
 export type TxScriptsProps = BaseProps<{
   tx: TransactionNode;
@@ -143,7 +143,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
                 leftIcon={IconArrowsMoveVertical}
                 onClick={() => setOpened(true)}
               >
-                Expand{" "}
+                Expand{' '}
                 <span className="text-muted">
                   (+{tx.receipts?.length ?? 0 - 2} operations)
                 </span>
@@ -166,13 +166,13 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
   return (
     <div className="flex flex-col gap-3">
       {operations.map((item, i) => (
-        <div key={`${i}-${item?.type ?? ""}`} className={classes.operation()}>
+        <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
           {item?.receipts?.map((receipt, idx) => {
             const hasNested = Boolean(receipt?.receipts?.length);
             if (!hasNested) {
               return (
                 <ReceiptItem
-                  key={`${idx}-${receipt?.item?.receiptType ?? ""}`}
+                  key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
                   receipt={receipt as OperationReceipt}
                   isIndented={idx > 0}
                   hasPanic={hasPanic}
@@ -181,7 +181,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
             }
             return (
               <div
-                key={`${idx}-${receipt?.item?.receiptType ?? ""}`}
+                key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
                 data-nested="true"
                 className={classes.operation()}
               >
@@ -192,7 +192,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
                 />
                 {receipt?.receipts?.map((sub, j) => (
                   <div
-                    key={`${j}-${sub?.item?.receiptType ?? ""}`}
+                    key={`${j}-${sub?.item?.receiptType ?? ''}`}
                     className="ml-10"
                   >
                     <ReceiptItem
@@ -212,7 +212,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
 }
 
 function CountReceipt({ num, op }: { num: number; op: string }) {
-  const length = new Intl.NumberFormat("en-IN", {
+  const length = new Intl.NumberFormat('en-IN', {
     minimumIntegerDigits: 2,
   }).format(num);
   const text = num > 1 ? `${op}s` : op;
@@ -294,18 +294,18 @@ function getBadgeColor(
   hasError: boolean,
   receipt?: Maybe<TransactionReceiptFragment>,
 ) {
-  const type = receipt?.receiptType ?? "UNKNOWN";
+  const type = receipt?.receiptType ?? 'UNKNOWN';
   if (type === ReceiptType.Revert || type === ReceiptType.Panic) {
-    return "red";
+    return 'red';
   }
   if (
     RETURN_TYPES.some((t) => t === type) &&
     !hasError &&
     !receipt?.contract?.id
   ) {
-    return "green";
+    return 'green';
   }
-  return "gray";
+  return 'gray';
 }
 
 export type ReceiptItemProps = BaseProps<{
@@ -327,7 +327,7 @@ function ReceiptItem({
   return (
     <ctx.Provider value={{ receipt: receipt, isIndented, hasPanic }}>
       <div
-        className={cx(classes.receiptRow({ className }), "group")}
+        className={cx(classes.receiptRow({ className }), 'group')}
         data-opened={opened}
       >
         <Collapsible
@@ -349,8 +349,8 @@ function parseJson(
 ): Record<string, any> {
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {
-    if (!value || key === "__typename") return acc;
-    if (typeof value === "object")
+    if (!value || key === '__typename') return acc;
+    if (typeof value === 'object')
       return { ...acc, [key]: parseJson(value as any) };
     return { ...acc, [key]: value };
   }, {});
@@ -371,7 +371,7 @@ function ReceiptBlock() {
 
 function ReceiptBadge() {
   const { receipt, hasPanic } = useContext(ctx);
-  const type = receipt?.item?.receiptType ?? "UNKNOWN";
+  const type = receipt?.item?.receiptType ?? 'UNKNOWN';
   const color = getBadgeColor(Boolean(hasPanic), receipt?.item);
   return (
     <div>
@@ -385,7 +385,7 @@ function ReceiptBadge() {
 function ReceiptAmount() {
   const { receipt: item } = useContext(ctx);
   const receipt = item?.item;
-  const assetId = receipt?.assetId ?? "";
+  const assetId = receipt?.assetId ?? '';
   const amount = bn(receipt?.amount);
   const contract = receipt?.to?.id ?? receipt?.contract?.id ?? null;
 
@@ -416,13 +416,13 @@ function ReceiptHeader() {
   const { receipt: item } = useContext(ctx);
   const receipt = item?.item;
   const classes = styles();
-  const type = receipt?.receiptType ?? "UNKNOWN";
+  const type = receipt?.receiptType ?? 'UNKNOWN';
   const param1 = receipt?.param1;
   const contract = receipt?.to?.id ?? receipt?.contract?.id ?? null;
-  const assetId = receipt?.assetId ?? "";
+  const assetId = receipt?.assetId ?? '';
   const amount = bn(receipt?.amount);
 
-  if (type === "CALL" && Boolean(contract)) {
+  if (type === 'CALL' && Boolean(contract)) {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -453,7 +453,7 @@ function ReceiptHeader() {
     );
   }
 
-  if (type === "MINT" || type === "BURN") {
+  if (type === 'MINT' || type === 'BURN') {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -483,7 +483,7 @@ function ReceiptHeader() {
     );
   }
 
-  if (type === "TRANSFER_OUT" || type === "TRANSFER") {
+  if (type === 'TRANSFER_OUT' || type === 'TRANSFER') {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -510,7 +510,7 @@ function ReceiptHeader() {
     );
   }
 
-  if (type === "MESSAGE_OUT") {
+  if (type === 'MESSAGE_OUT') {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -552,38 +552,38 @@ function ReceiptHeader() {
 
 const styles = tv({
   slots: {
-    icon: "transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180",
-    utxos: "bg-gray-3 mx-3 my-3 p-0 rounded",
+    icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
+    utxos: 'bg-gray-3 mx-3 my-3 p-0 rounded',
     lines: [
-      "relative flex-1 border-t border-b border-border",
-      "before:h-[1px] before:absolute before:top-1/2 before:left-0",
+      'relative flex-1 border-t border-b border-border',
+      'before:h-[1px] before:absolute before:top-1/2 before:left-0',
       'before:w-full before:bg-border before:content-[""]',
     ],
-    receiptRow: "peer relative",
-    header: "group min-h-[42px] gap-2 tablet:gap-4",
+    receiptRow: 'peer relative',
+    header: 'group min-h-[42px] gap-2 tablet:gap-4',
     operation: [
-      "relative flex flex-col gap-3",
-      "[&[data-nested=true]]:before:absolute",
+      'relative flex flex-col gap-3',
+      '[&[data-nested=true]]:before:absolute',
       '[&[data-nested=true]]:before:content-[""]',
-      "[&[data-nested=true]]:before:block",
-      "[&[data-nested=true]]:before:border-l",
-      "[&[data-nested=true]]:before:border-border",
-      "[&[data-nested=true]]:before:border-dashed",
-      "[&[data-nested=true]]:before:top-[40px]",
-      "[&[data-nested=true]]:before:bottom-[20px]",
-      "[&[data-nested=true]]:before:left-0",
-      "[&[data-nested=true]]:before:right-0",
+      '[&[data-nested=true]]:before:block',
+      '[&[data-nested=true]]:before:border-l',
+      '[&[data-nested=true]]:before:border-border',
+      '[&[data-nested=true]]:before:border-dashed',
+      '[&[data-nested=true]]:before:top-[40px]',
+      '[&[data-nested=true]]:before:bottom-[20px]',
+      '[&[data-nested=true]]:before:left-0',
+      '[&[data-nested=true]]:before:right-0',
     ],
   },
   variants: {
     indent: {
       true: {
         receiptRow: [
-          "ml-10 before:absolute before:top-[-35px] before:left-[-40px]",
-          "before:bottom-[20px] before:right-[100%]",
+          'ml-10 before:absolute before:top-[-35px] before:left-[-40px]',
+          'before:bottom-[20px] before:right-[100%]',
           'before:content-[""] before:block before:border-l before:border-b',
-          "before:border-border before:border-dashed before:rounded-bl",
-          "[&[data-opened=true]:before+&]:top-[-120px]",
+          'before:border-border before:border-dashed before:rounded-bl',
+          '[&[data-opened=true]:before+&]:top-[-120px]',
         ],
       },
     },

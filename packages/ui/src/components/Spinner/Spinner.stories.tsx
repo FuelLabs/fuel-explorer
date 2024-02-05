@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { VStack } from "../Box";
+import { VStack } from '../Box';
 
-import { Spinner } from "./Spinner";
+import { Spinner } from './Spinner';
 
 const meta: Meta<typeof Spinner> = {
-  title: "UI/Spinner",
+  title: 'UI/Spinner',
   component: Spinner,
 };
 

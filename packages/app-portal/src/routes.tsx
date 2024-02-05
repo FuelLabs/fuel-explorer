@@ -1,8 +1,8 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-import { bridgeRoutes } from "./systems/Bridge/routes";
-import { ecosystemRoutes } from "./systems/Ecosystem/routes";
-import { Pages } from "./types";
+import { bridgeRoutes } from './systems/Bridge/routes';
+import { ecosystemRoutes } from './systems/Ecosystem/routes';
+import { Pages } from './types';
 
 export const routes = (
   <BrowserRouter>

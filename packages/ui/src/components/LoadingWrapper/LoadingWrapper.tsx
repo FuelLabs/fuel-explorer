@@ -1,5 +1,5 @@
-import { cloneElement } from "react";
-import type { ReactNode } from "react";
+import { cloneElement } from 'react';
+import type { ReactNode } from 'react';
 
 type LoadingBoxProps = {
   isLoading?: boolean;

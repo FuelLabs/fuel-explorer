@@ -1,5 +1,5 @@
-import { toast } from "@fuel-ui/react";
-import type { FuelWalletLocked as FuelWallet } from "@fuel-wallet/sdk";
+import { toast } from '@fuel-ui/react';
+import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type {
   Address as FuelAddress,
   BN,
@@ -7,16 +7,16 @@ import type {
   MessageStatus,
   Provider as FuelProvider,
   TransactionResult,
-} from "fuels";
-import type { PublicClient } from "wagmi";
-import type { FetchTokenResult } from "wagmi/actions";
-import type { InterpreterFrom, StateFrom } from "xstate";
-import { assign, createMachine } from "xstate";
-import { FetchMachine } from "~/systems/Core/machines";
+} from 'fuels';
+import type { PublicClient } from 'wagmi';
+import type { FetchTokenResult } from 'wagmi/actions';
+import type { InterpreterFrom, StateFrom } from 'xstate';
+import { assign, createMachine } from 'xstate';
+import { FetchMachine } from '~/systems/Core/machines';
 
-import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from "../services";
-import { TxEthToFuelService } from "../services";
-import { EthTxCache } from "../utils";
+import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
+import { TxEthToFuelService } from '../services';
+import { EthTxCache } from '../utils';
 
 type MachineContext = {
   ethTxId?: `0x${string}`;
@@ -49,15 +49,15 @@ type MachineServices = {
   };
 };
 
-type AnalyzeInputs = TxEthToFuelInputs["getReceiptsInfo"] &
-  TxEthToFuelInputs["getFuelMessage"];
+type AnalyzeInputs = TxEthToFuelInputs['getReceiptsInfo'] &
+  TxEthToFuelInputs['getFuelMessage'];
 export type TxEthToFuelMachineEvents =
   | {
-      type: "START_ANALYZE_TX";
-      input: Omit<AnalyzeInputs, "ethTxNonce">;
+      type: 'START_ANALYZE_TX';
+      input: Omit<AnalyzeInputs, 'ethTxNonce'>;
     }
   | {
-      type: "RELAY_MESSAGE_ON_FUEL";
+      type: 'RELAY_MESSAGE_ON_FUEL';
       input: {
         fuelWallet: FuelWallet;
       };
@@ -68,48 +68,48 @@ export const txEthToFuelMachine = createMachine(
     // TODO: work on the visualization of xstate to show in next demo / put in the docs of bridge
     /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOlwgBswBiAZQBUBBAJXoH1GA5RgGQE0AWgFE29ABoBtAAwBdRKAAOAe1i4ALriX55IAB6IAjACYArCRNTLBqQA5TAdhMBmAGwBOADQgAnontubEiN3F1CXIzdHFxsAXxivNCw8QlJyKmppOSQQZVUNLR19BGMzCytbB2d3L18ERyMgkJcAFikTeycnKRc4hIwcAmISHDBMAGsCKFowNTUqVDB8NRIYWcnmUbBcBTVYAEl8ADMlaggtMDJ8ADclMYvEgZTh7FGJ-CmZubAFpZXP9c2212B2OCAIN0w6Hy+EymR0uXUmm02SKJmagXszSMBhsUnsNmaLic9iMNUMAXMRksRns9SkzXaTl6IAeySGI3Gk2ms3mi2Wqw07w2mC2O32RxOZ0IlxudxIrMGpA5bw+PO+fL+ayFgLFIKUYOuSkh0NhBiyihUiIKKMQLnaQRxmOCzhsbgMJjJCFMDXRUjczXdRkJTn9TPiLP6bKVL05725Xx+-P+2pFQPFx2oulgaihF3QhzUYAATshrJYpERqAqnsquZ9eb8BQDU7qJXDsgjoYVbV0SAZ7DiTOEpJ08c1Pe6DCQpFSZwH3KPms1mdX2TGVfGG8ta+8ACLnADCSRo7YteSR3YQJhs9nMNhMbrR96MrnsnpM9pMBjckSH0SDrorpGirPK8dZqomoGxlA+6EEeIwZGa8KWl2NpXjed4Pu66ImC+Lhvj4iD3reBjuK6IZVO0y7hqu0ZgXG9bqr8ECjOQkwHuuACycCwOgMCMJg0IZLIyHntaoBFNYRiBHa4Q0sE9I0uOhEIG4fqNAEP6dCGBjGEBSQgTuqoJhqLGYGx7wca83GwLx-GCUiiHmjkKEXmh1hODJQ5GPJLiKZinqOFOwQ-l+Aa0rYBj6Y8a70cZW5QWMtDePgmC7ugAASWxQNgainOcMq3PcwE1uu4Emb8yrJal6VZbgOVqAaEJQkisIiR2rniXoiBOFUJDhM0AS2HODLKbU+EuNO36RO4aKEkY0VRol5UJVVKVpZl2W5fl0rgkV8olbF0Gbkx27rtVG11Q1TVGi1Wims5nZuRJPVqSQNjGINRIWJETgTgEt4dBU7hSAYTj9tRfQGaVcUnZBa01Zt9XbVmOaFiQ+aFiWZaWJWtHLQxEEagjl1bWop4uWJyIvcUM5eXJJJ+ViAUqfYI4kPY7j+viTiDW40mLYZZWExVSZalAABiACuYAUDZdk0FKFx7XK+NGXDGpNu80uy-LfFgDdxqtbIFNPV1RS9UuJDEnzI74u6BG1DYvNTT+AFs6EJiCzDx2MZBWuSzLcs8frO3K4aquHXRvtE42yaB7rIcwIbd0wibSEdVTl6eVI72fW431+h0npUr1QRdM79IEiOwTe0dG5+5r8c68Htmh6juYYwWxaluWFZVlHBPxadmqCgnrcK6bnXU91tOef13m+f5Y1ES4U6c5p7Rft+D519HDex2dcUt-QugkGZFlQBsFDoN4AlCVPWfucYTj9UGANosEzsGBOdrBWRH1rwEgDHvIeGtKrC3Hqfc+rEIAAhvnfByWgnKiStDPSSL836DRvJ-aI4N-rGHMN+GwroSEEhJKA9WjcIHHyDtAoyLdr63z1jAMOhVI7Q3ritEeDC6Fn14bLJh3gWEGz2kbe6Jt2pnjQZeAwzQ2bW2aMSLoaJrx+hXsURkRCAY+XttiShkDwFH2giffhkDGGy2YUnRWBUVbFU4fvbh8NzF8KHhYhBIiU4mnTo9aesiPq5wiNEJcS5rzohsL-AMHMK4vhfO0AWNFB5UMPm41xAiKBCJEWwuxB0HFgOocYlUpjUmCMscI6xXjjYyAkEYXxT8aY4msEEAuwDQkEhIROToZhQYBGiLNVou9El5OSaLEpFBoEAHd0CIm1B46x1BmBCB4IwPgbBOJCFoLQRgABxEQAB5TgbAJYAFUlmPxke5H8k17yBj8n+IkE5pLNG0TeHEI4SF4gMbDApYzoFFjKZMERez8At2yRHexMVHEi1Wi42WfyAXvCBSCoOlSJHVKkZTC5DTMEDQ-liPBP8VKkXZhvG8uI2gkmvF8mOoz0nwoQYC6xwLQVK3YRCpaIyYW0LhWff5DLEVMuRbLVFadqkZ2kahbFL4sF4q-vgolSjgoVw8qDUwQ5qUH1pbC8ZZjuUZLKZAU+wk6lYtngBSaeI6ZyNsDeB5RLQivx6SQkMwQc5hihpC-JKS6W6pMUHIRhrdAoMzqaooVJIgc1dHbWkA43AeiJf4Z5TqSF+R8oM8M+AlAsXgNkWiqDJWzwALQuE9IW6VkQfy9LRJFUikMIx5LSGAfNz1Z5YkCkOEgbhXBOCDJ0Qklh3X1s9Zy06zbzY9R7Xnd+hdfqeiJJSKwNJ2gDW+hqpxTdxbClFMCCUY70GIFaLnXqXaOhuhvKejRpgpwzgHWDXmnMPJruhTwyBsEwDwReHu7O94p1fV6kXP6KkCRuGnDXB8wTMSASGcOwxPyL5wMslxax98W1m33XUXCHMWmEm-FSHyhKnYfhIAGAIztGYMlwk+4ezjXgXVqmTL97kfKBADK0JcQZ8J2A0SSQIX4fy4mcAOWkg61awZSQHFuIjGMNKDLePyXb8LWFdGEz0KbtH8wJM4HOdbRPfO9dq0+0nZ64gaHIgkNJbCOA-BEol35bw9OiLpF0OIqNGN+WfeD8Db4oa6mhy8alAgkOkvSXm-oIgEcMK6EDrp0SnvpIvVzPyfVjMydYozkk+bvTUg+f0oMCTfl-sEV2OCbB+WduERL+m9WTOmWPVLbcYDpcQD5cInbK3BOdkNDRYNpLEdcEOOwLRfyVa1dV3lCKoBIpbk1hA95c5meZpZj814Jwfkmi0Qa2I0QhFpCNrlfqeUpYNRAQzIaC1huCA0St2HOu4m66Ef+ANXA-n7LEaDHKxOjYOzq8+5wZtKQtS+Vo34KMjgnGp5N8i2b8z0u9kChxplUAgDNttKkyJ9aJKDLotIuZxDiEAA */
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    tsTypes: {} as import("./txEthToFuelMachine.typegen").Typegen0,
+    tsTypes: {} as import('./txEthToFuelMachine.typegen').Typegen0,
     schema: {
       context: {} as MachineContext,
       services: {} as MachineServices,
       events: {} as TxEthToFuelMachineEvents,
     },
     predictableActionArguments: true,
-    id: "(machine)",
-    initial: "idle",
+    id: '(machine)',
+    initial: 'idle',
     states: {
       idle: {
         always: {
-          cond: "hasAnalyzeTxInput",
-          target: "checkingSettlement",
+          cond: 'hasAnalyzeTxInput',
+          target: 'checkingSettlement',
         },
         on: {
           START_ANALYZE_TX: {
-            actions: ["assignAnalyzeTxInput"],
-            target: "checkingSettlement",
+            actions: ['assignAnalyzeTxInput'],
+            target: 'checkingSettlement',
           },
         },
       },
       checkingSettlement: {
-        initial: "checkingDoneCache",
+        initial: 'checkingDoneCache',
         states: {
           checkingDoneCache: {
-            tags: ["isSettlementLoading", "isSettlementSelected"],
+            tags: ['isSettlementLoading', 'isSettlementSelected'],
             always: [
               {
-                actions: ["assignReceiptsInfoFromCache"],
-                cond: "isTxEthToFuelDone",
-                target: "#(machine).checkingSettlement.checkingRelay.done",
+                actions: ['assignReceiptsInfoFromCache'],
+                cond: 'isTxEthToFuelDone',
+                target: '#(machine).checkingSettlement.checkingRelay.done',
               },
               {
-                target: "gettingReceiptsInfo",
+                target: 'gettingReceiptsInfo',
               },
             ],
           },
           gettingReceiptsInfo: {
-            tags: ["isSettlementLoading", "isSettlementSelected"],
+            tags: ['isSettlementLoading', 'isSettlementSelected'],
             invoke: {
-              src: "getReceiptsInfo",
+              src: 'getReceiptsInfo',
               data: {
                 input: (ctx: MachineContext) => ({
                   ethTxId: ctx.ethTxId,
@@ -121,22 +121,22 @@ export const txEthToFuelMachine = createMachine(
                   cond: FetchMachine.hasError,
                 },
                 {
-                  actions: ["assignReceiptsInfo", "notifyEthTxSuccess"],
-                  cond: "hasEthTxNonce",
-                  target: "gettingFuelMessageStatus",
+                  actions: ['assignReceiptsInfo', 'notifyEthTxSuccess'],
+                  cond: 'hasEthTxNonce',
+                  target: 'gettingFuelMessageStatus',
                 },
               ],
             },
             after: {
               10000: {
-                target: "gettingReceiptsInfo",
+                target: 'gettingReceiptsInfo',
               },
             },
           },
           gettingFuelMessageStatus: {
-            tags: ["isSettlementLoading", "isSettlementSelected"],
+            tags: ['isSettlementLoading', 'isSettlementSelected'],
             invoke: {
-              src: "getFuelMessageStatus",
+              src: 'getFuelMessageStatus',
               data: {
                 input: (ctx: MachineContext) => ({
                   fuelProvider: ctx.fuelProvider,
@@ -148,50 +148,50 @@ export const txEthToFuelMachine = createMachine(
                   cond: FetchMachine.hasError,
                 },
                 {
-                  actions: ["assignFuelMessageStatus"],
-                  target: "decidingFuelMessageAction",
+                  actions: ['assignFuelMessageStatus'],
+                  target: 'decidingFuelMessageAction',
                 },
               ],
             },
             after: {
               10000: {
-                target: "gettingFuelMessageStatus",
+                target: 'gettingFuelMessageStatus',
               },
             },
           },
           decidingFuelMessageAction: {
-            tags: ["isSettlementLoading", "isSettlementSelected"],
+            tags: ['isSettlementLoading', 'isSettlementSelected'],
             always: [
               {
                 // if message is spent, assume it's done as message has arrived and already spent
-                cond: "isMessageSpent",
-                target: "#(machine).checkingSettlement.checkingRelay.done",
+                cond: 'isMessageSpent',
+                target: '#(machine).checkingSettlement.checkingRelay.done',
               },
               {
                 // if message is unspent for a eth deposit, it's done as message has arrived and ready to use
-                cond: "isMessageUnspentEth",
-                target: "#(machine).checkingSettlement.checkingRelay.done",
+                cond: 'isMessageUnspentEth',
+                target: '#(machine).checkingSettlement.checkingRelay.done',
               },
               {
                 // if message is unspent for a erc20 deposit, it means the predicate has the message, user needs to relay it
-                cond: "isMessageUnspentErc20",
-                target: "gettingFuelMessage",
+                cond: 'isMessageUnspentErc20',
+                target: 'gettingFuelMessage',
               },
               {
-                target: "waitingForRetryFuelMessage",
+                target: 'waitingForRetryFuelMessage',
               },
             ],
           },
           waitingForRetryFuelMessage: {
-            tags: ["isSettlementLoading", "isSettlementSelected"],
+            tags: ['isSettlementLoading', 'isSettlementSelected'],
             after: {
-              2000: "gettingFuelMessageStatus",
+              2000: 'gettingFuelMessageStatus',
             },
           },
           gettingFuelMessage: {
-            tags: ["isSettlementLoading", "isSettlementSelected"],
+            tags: ['isSettlementLoading', 'isSettlementSelected'],
             invoke: {
-              src: "getFuelMessage",
+              src: 'getFuelMessage',
               data: {
                 input: (ctx: MachineContext) => ({
                   ethTxNonce: ctx.ethTxNonce,
@@ -204,46 +204,46 @@ export const txEthToFuelMachine = createMachine(
                   cond: FetchMachine.hasError,
                 },
                 {
-                  actions: ["assignFuelMessage"],
-                  cond: "hasFuelMessage",
-                  target: "checkingRelay",
+                  actions: ['assignFuelMessage'],
+                  cond: 'hasFuelMessage',
+                  target: 'checkingRelay',
                 },
               ],
             },
             after: {
               10000: {
-                target: "gettingFuelMessage",
+                target: 'gettingFuelMessage',
               },
             },
           },
           checkingRelay: {
-            tags: ["isSettlementDone"],
-            initial: "waitingRelayMessage",
+            tags: ['isSettlementDone'],
+            initial: 'waitingRelayMessage',
             states: {
               waitingRelayMessage: {
                 tags: [
-                  "isConfirmTransactionSelected",
-                  "isWaitingFuelWalletApproval",
+                  'isConfirmTransactionSelected',
+                  'isWaitingFuelWalletApproval',
                 ],
                 on: {
                   RELAY_MESSAGE_ON_FUEL: {
-                    target: "relayingMessageOnFuel",
+                    target: 'relayingMessageOnFuel',
                   },
                 },
               },
               relayingMessageOnFuel: {
                 tags: [
-                  "isConfirmTransactionLoading",
-                  "isConfirmTransactionSelected",
+                  'isConfirmTransactionLoading',
+                  'isConfirmTransactionSelected',
                 ],
                 invoke: {
-                  src: "relayMessageOnFuel",
+                  src: 'relayMessageOnFuel',
                   data: {
                     input: (
                       ctx: MachineContext,
                       ev: Extract<
                         TxEthToFuelMachineEvents,
-                        { type: "RELAY_MESSAGE_ON_FUEL" }
+                        { type: 'RELAY_MESSAGE_ON_FUEL' }
                       >,
                     ) => ({
                       fuelWallet: ev.input.fuelWallet,
@@ -253,21 +253,21 @@ export const txEthToFuelMachine = createMachine(
                   onDone: [
                     {
                       cond: FetchMachine.hasError,
-                      target: "waitingRelayMessage",
+                      target: 'waitingRelayMessage',
                     },
                     {
-                      target: "gettingFuelMessageStatus",
+                      target: 'gettingFuelMessageStatus',
                     },
                   ],
                 },
               },
               gettingFuelMessageStatus: {
                 tags: [
-                  "isConfirmTransactionLoading",
-                  "isConfirmTransactionSelected",
+                  'isConfirmTransactionLoading',
+                  'isConfirmTransactionSelected',
                 ],
                 invoke: {
-                  src: "getFuelMessageStatus",
+                  src: 'getFuelMessageStatus',
                   data: {
                     input: (ctx: MachineContext) => ({
                       fuelProvider: ctx.fuelProvider,
@@ -279,45 +279,45 @@ export const txEthToFuelMachine = createMachine(
                       cond: FetchMachine.hasError,
                     },
                     {
-                      actions: ["assignFuelMessageStatus"],
-                      target: "decidingFuelMessageAction",
+                      actions: ['assignFuelMessageStatus'],
+                      target: 'decidingFuelMessageAction',
                     },
                   ],
                 },
                 after: {
                   10000: {
-                    target: "gettingFuelMessageStatus",
+                    target: 'gettingFuelMessageStatus',
                   },
                 },
               },
               decidingFuelMessageAction: {
                 tags: [
-                  "isConfirmTransactionLoading",
-                  "isConfirmTransactionSelected",
+                  'isConfirmTransactionLoading',
+                  'isConfirmTransactionSelected',
                 ],
                 always: [
                   {
-                    cond: "isMessageSpent",
-                    target: "done",
+                    cond: 'isMessageSpent',
+                    target: 'done',
                   },
                   {
-                    target: "waitingForRetryFuelMessage",
+                    target: 'waitingForRetryFuelMessage',
                   },
                 ],
               },
               waitingForRetryFuelMessage: {
                 tags: [
-                  "isConfirmTransactionLoading",
-                  "isConfirmTransactionSelected",
+                  'isConfirmTransactionLoading',
+                  'isConfirmTransactionSelected',
                 ],
                 after: {
-                  2000: "gettingFuelMessageStatus",
+                  2000: 'gettingFuelMessageStatus',
                 },
               },
               done: {
-                entry: ["setEthToFuelTxDone", "setEthToFuelTxReceiptCached"],
-                tags: ["isReceiveDone"],
-                type: "final",
+                entry: ['setEthToFuelTxDone', 'setEthToFuelTxReceiptCached'],
+                tags: ['isReceiveDone'],
+                type: 'final',
               },
             },
           },
@@ -358,7 +358,7 @@ export const txEthToFuelMachine = createMachine(
         if (ctx.ethTxId && EthTxCache.getTxIsCreated(ctx.ethTxId)) {
           setTimeout(() => {
             toast.success(
-              "Deposit successfully initiated. You may now close the popup.",
+              'Deposit successfully initiated. You may now close the popup.',
               {
                 duration: 5000,
               },
@@ -387,9 +387,9 @@ export const txEthToFuelMachine = createMachine(
         }
       },
       assignReceiptsInfoFromCache: assign((ctx) => {
-        const receiptInfo = EthTxCache.getTxReceipt(ctx.ethTxId || "");
+        const receiptInfo = EthTxCache.getTxReceipt(ctx.ethTxId || '');
         if (!receiptInfo) {
-          throw new Error("No receipt");
+          throw new Error('No receipt');
         }
         return {
           erc20Token: receiptInfo.erc20Token,
@@ -411,69 +411,69 @@ export const txEthToFuelMachine = createMachine(
         !!ctx.ethPublicClient,
       isTxEthToFuelDone: (ctx) => {
         return (
-          EthTxCache.getTxIsDone(ctx.ethTxId || "") &&
-          !!EthTxCache.getTxReceipt(ctx.ethTxId || "")
+          EthTxCache.getTxIsDone(ctx.ethTxId || '') &&
+          !!EthTxCache.getTxReceipt(ctx.ethTxId || '')
         );
       },
-      isMessageSpent: (ctx) => ctx.fuelMessageStatus?.state === "SPENT",
+      isMessageSpent: (ctx) => ctx.fuelMessageStatus?.state === 'SPENT',
       isMessageUnspentEth: (ctx) =>
-        ctx.fuelMessageStatus?.state === "UNSPENT" && !ctx.erc20Token,
+        ctx.fuelMessageStatus?.state === 'UNSPENT' && !ctx.erc20Token,
       isMessageUnspentErc20: (ctx) =>
-        ctx.fuelMessageStatus?.state === "UNSPENT" && !!ctx.erc20Token,
+        ctx.fuelMessageStatus?.state === 'UNSPENT' && !!ctx.erc20Token,
     },
     services: {
       getReceiptsInfo: FetchMachine.create<
-        TxEthToFuelInputs["getReceiptsInfo"],
-        MachineServices["getReceiptsInfo"]["data"]
+        TxEthToFuelInputs['getReceiptsInfo'],
+        MachineServices['getReceiptsInfo']['data']
       >({
         showError: true,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to getNonce");
+            throw new Error('No input to getNonce');
           }
 
-          console.log("getReceiptsInfo");
+          console.log('getReceiptsInfo');
           return TxEthToFuelService.getReceiptsInfo(input);
         },
       }),
       getFuelMessageStatus: FetchMachine.create<
-        TxEthToFuelInputs["getFuelMessageStatus"],
-        MachineServices["getFuelMessageStatus"]["data"]
+        TxEthToFuelInputs['getFuelMessageStatus'],
+        MachineServices['getFuelMessageStatus']['data']
       >({
         showError: true,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to getFuelMessageStatus");
+            throw new Error('No input to getFuelMessageStatus');
           }
 
-          console.log("getFuelMessageStatus");
+          console.log('getFuelMessageStatus');
           return TxEthToFuelService.getFuelMessageStatus(input);
         },
       }),
       getFuelMessage: FetchMachine.create<
-        TxEthToFuelInputs["getFuelMessage"],
-        MachineServices["getFuelMessage"]["data"]
+        TxEthToFuelInputs['getFuelMessage'],
+        MachineServices['getFuelMessage']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to get fuel message");
+            throw new Error('No input to get fuel message');
           }
 
-          console.log("getFuelMessage");
+          console.log('getFuelMessage');
           return TxEthToFuelService.getFuelMessage(input);
         },
       }),
       relayMessageOnFuel: FetchMachine.create<
-        TxEthToFuelInputs["relayMessageOnFuel"],
-        MachineServices["relayMessageOnFuel"]["data"]
+        TxEthToFuelInputs['relayMessageOnFuel'],
+        MachineServices['relayMessageOnFuel']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to relay message on fuel");
+            throw new Error('No input to relay message on fuel');
           }
 
           await TxEthToFuelService.relayMessageOnFuel(input);

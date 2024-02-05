@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Footer } from "./Footer";
+import { Footer } from './Footer';
 
 const meta: Meta<typeof Footer> = {
-  title: "Core/Footer",
+  title: 'Core/Footer',
   component: Footer,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -21,7 +21,7 @@ export const Tablet: Story = {
   args: {},
   parameters: {
     viewport: {
-      defaultViewport: "ipad",
+      defaultViewport: 'ipad',
     },
   },
 };
@@ -30,7 +30,7 @@ export const Mobile: Story = {
   args: {},
   parameters: {
     viewport: {
-      defaultViewport: "iphonex",
+      defaultViewport: 'iphonex',
     },
   },
 };

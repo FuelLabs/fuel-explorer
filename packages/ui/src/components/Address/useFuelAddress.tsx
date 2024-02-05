@@ -1,11 +1,11 @@
-import { Address, isB256, isBech32 } from "@fuel-ts/address";
-import { useMemo, useState } from "react";
-import { useKey } from "react-use";
+import { Address, isB256, isBech32 } from '@fuel-ts/address';
+import { useMemo, useState } from 'react';
+import { useKey } from 'react-use';
 
-import { shortAddress } from "../../utils/helpers";
+import { shortAddress } from '../../utils/helpers';
 
 export type UseFuelAddressOpts = {
-  fixed?: "bech32" | "b256";
+  fixed?: 'bech32' | 'b256';
   trimLeft?: number;
   trimRight?: number;
 };
@@ -17,8 +17,8 @@ export function useFuelAddress(address: string, opts: UseFuelAddressOpts = {}) {
   const value = useMemo(() => {
     if (!isValid) return address;
     const addressInstance = Address.fromString(address);
-    if (opts.fixed === "bech32") return addressInstance.toString();
-    if (opts.fixed === "b256") return addressInstance.toB256();
+    if (opts.fixed === 'bech32') return addressInstance.toString();
+    if (opts.fixed === 'b256') return addressInstance.toB256();
     return isShowingB256
       ? addressInstance.toB256()
       : addressInstance.toString();
@@ -31,7 +31,7 @@ export function useFuelAddress(address: string, opts: UseFuelAddressOpts = {}) {
 
   useKey((e) => {
     if (opts.fixed) return false;
-    return e.metaKey && e.code === "KeyK";
+    return e.metaKey && e.code === 'KeyK';
   }, toggle);
 
   return {

@@ -2,6 +2,6 @@ export type {
   CollapsibleProps,
   CollapsibleBodyProps,
   CollapsibleHeaderProps,
-} from "./Collapsible";
+} from './Collapsible';
 
-export { Collapsible } from "./Collapsible";
+export { Collapsible } from './Collapsible';

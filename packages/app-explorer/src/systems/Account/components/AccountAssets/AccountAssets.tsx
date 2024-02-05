@@ -1,7 +1,7 @@
-import type { AccountBalanceFragment } from "@fuel-explorer/graphql";
-import { VStack } from "@fuels/ui";
-import { BalanceItem } from "~/systems/Core/components/BalanceItem/BalanceItem";
-import { EmptyAssets } from "~/systems/Core/components/EmptyBlocks/EmptyAsset";
+import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
+import { VStack } from '@fuels/ui';
+import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
+import { EmptyAssets } from '~/systems/Core/components/EmptyBlocks/EmptyAsset';
 
 export type AccountAssetsProps = {
   balances: AccountBalanceFragment[];

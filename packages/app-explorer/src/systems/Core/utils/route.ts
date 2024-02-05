@@ -27,16 +27,16 @@ export function route<P extends Array<string> = [string]>(path: string) {
     const split = path.match(/[^/]+/g);
     const parsed = split
       ?.map((str) => {
-        if (str.startsWith(":")) {
+        if (str.startsWith(':')) {
           return _params.shift();
         }
-        if (str.includes(":")) {
-          return str.replace(/:([a-z]+)/gi, () => _params.shift() || "");
+        if (str.includes(':')) {
+          return str.replace(/:([a-z]+)/gi, () => _params.shift() || '');
         }
         return str;
       })
-      .join("/");
-    return `/${parsed ?? ""}`;
+      .join('/');
+    return `/${parsed ?? ''}`;
   };
 }
 
@@ -52,7 +52,7 @@ export function route<P extends Array<string> = [string]>(path: string) {
  */
 export function searchStringify(query?: Record<any, any>) {
   const qs = new URLSearchParams(query).toString();
-  return qs.length ? `?${qs}` : "";
+  return qs.length ? `?${qs}` : '';
 }
 
 /**
@@ -67,6 +67,6 @@ export function searchStringify(query?: Record<any, any>) {
  * // returns 'https://example.com/?foo=bar&baz=qux'
  */
 export function stringifyUrl(url: string, query?: Record<any, any>) {
-  const { href } = new URL(url, "https://fuel.network/");
+  const { href } = new URL(url, 'https://fuel.network/');
   return `${href}${searchStringify(query)}`;
 }

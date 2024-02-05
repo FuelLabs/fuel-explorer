@@ -1,16 +1,16 @@
-import { VStack } from "@fuels/ui";
-import type { Meta, StoryObj } from "@storybook/react";
+import { VStack } from '@fuels/ui';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import {
   GROUPED_INPUT_ASSET,
   GROUPED_INPUT_ASSET_UNKNOWN,
   GROUPED_INPUT_MESSAGE,
-} from "../../__mocks__/tx";
+} from '../../__mocks__/tx';
 
-import { TxInput } from "./TxInput";
+import { TxInput } from './TxInput';
 
 const meta: Meta<typeof TxInput> = {
-  title: "Transaction/TxInput",
+  title: 'Transaction/TxInput',
   component: TxInput,
 };
 

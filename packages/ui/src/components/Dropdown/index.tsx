@@ -12,7 +12,7 @@ export {
   DropdownSubContent,
   DropdownSubTrigger,
   DropdownTrigger,
-} from "./Dropdown";
+} from './Dropdown';
 
 export type {
   DropdownCheckboxItemProps,
@@ -27,4 +27,4 @@ export type {
   DropdownSubProps,
   DropdownSubTriggerProps,
   DropdownTriggerProps,
-} from "./Dropdown";
+} from './Dropdown';

@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { HStack } from "../Box";
-import { Button } from "../Button/Button";
+import { HStack } from '../Box';
+import { Button } from '../Button/Button';
 
-import { AlertDialog } from "./AlertDialog";
+import { AlertDialog } from './AlertDialog';
 
 const meta: Meta<typeof AlertDialog> = {
-  title: "Overlay/AlertDialog",
+  title: 'Overlay/AlertDialog',
   component: AlertDialog,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

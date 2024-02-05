@@ -1,11 +1,11 @@
-import { Tabs } from "@fuels/ui";
-import type { IconProps, TabsProps } from "@fuels/ui";
-import { Fragment } from "react";
-import type { ReactNode } from "react";
-import { tv } from "tailwind-variants";
+import { Tabs } from '@fuels/ui';
+import type { IconProps, TabsProps } from '@fuels/ui';
+import { Fragment } from 'react';
+import type { ReactNode } from 'react';
+import { tv } from 'tailwind-variants';
 
 type TabItem = {
-  icon: IconProps["icon"];
+  icon: IconProps['icon'];
   value: string;
   label: ReactNode;
   onClick?: () => void;
@@ -52,9 +52,9 @@ export function NavigationTab({
 const styles = tv({
   slots: {
     root: [
-      "mobile:max-tablet:pb-4",
-      "grid gap-2",
-      "flex justify-start max-w-full overflow-x-auto",
+      'mobile:max-tablet:pb-4',
+      'grid gap-2',
+      'flex justify-start max-w-full overflow-x-auto',
     ],
   },
 });

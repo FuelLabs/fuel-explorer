@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconHome } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconHome } from '@tabler/icons-react';
 
-import { Icon } from "../Icon/Icon";
+import { Icon } from '../Icon/Icon';
 
-import { Breadcrumb } from "./Breadcrumb";
+import { Breadcrumb } from './Breadcrumb';
 
 const meta: Meta<typeof Breadcrumb> = {
-  title: "UI/Breadcrumb",
+  title: 'UI/Breadcrumb',
   component: Breadcrumb,
 };
 

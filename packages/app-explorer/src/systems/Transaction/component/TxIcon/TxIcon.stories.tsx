@@ -1,13 +1,13 @@
-import { HStack, VStack } from "@fuels/ui";
-import type { Meta, StoryObj } from "@storybook/react";
+import { HStack, VStack } from '@fuels/ui';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import type { TxStatus, TxType } from "../../types";
-import { TX_ICON_TYPES, TX_STATUS } from "../../types";
+import type { TxStatus, TxType } from '../../types';
+import { TX_ICON_TYPES, TX_STATUS } from '../../types';
 
-import { TxIcon } from "./TxIcon";
+import { TxIcon } from './TxIcon';
 
 const meta: Meta<typeof TxIcon> = {
-  title: "Transaction/TxIcon",
+  title: 'Transaction/TxIcon',
   component: TxIcon,
 };
 

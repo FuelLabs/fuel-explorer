@@ -1,18 +1,18 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconHelpCircle } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconHelpCircle } from '@tabler/icons-react';
 
-import { HStack } from "../Box";
-import { Button } from "../Button/Button";
-import { Icon } from "../Icon/Icon";
+import { HStack } from '../Box';
+import { Button } from '../Button/Button';
+import { Icon } from '../Icon/Icon';
 
-import { Toast } from "./Toast";
-import { toast, useToast } from "./useToast";
+import { Toast } from './Toast';
+import { toast, useToast } from './useToast';
 
 const meta: Meta<typeof Toast> = {
-  title: "Overlay/Toast",
+  title: 'Overlay/Toast',
   component: Toast,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 
@@ -26,8 +26,8 @@ export const Usage: Story = {
       <Button
         onClick={() => {
           toast({
-            title: "Scheduled: Catch up",
-            description: "Friday, February 10, 2023 at 5:57 PM",
+            title: 'Scheduled: Catch up',
+            description: 'Friday, February 10, 2023 at 5:57 PM',
           });
         }}
       >
@@ -38,8 +38,8 @@ export const Usage: Story = {
 };
 
 const toastProps = {
-  title: "Some title",
-  description: "Some description",
+  title: 'Some title',
+  description: 'Some description',
   icon: <Icon icon={IconHelpCircle} size={24} />,
   action: <Toast.Action altText="Try again">Action</Toast.Action>,
 };
@@ -77,10 +77,10 @@ export const WithAction: Story = {
         onClick={() =>
           toast({
             ...toastProps,
-            title: "Uh oh! Something went wrong.",
-            description: "There was a problem with your request.",
-            variant: "error",
-            width: "auto",
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was a problem with your request.',
+            variant: 'error',
+            width: 'auto',
             duration: 2000,
           })
         }

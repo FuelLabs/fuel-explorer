@@ -1,18 +1,18 @@
-import { DECIMAL_UNITS, bn, fromTai64ToUnix } from "fuels";
+import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
   Address as FuelAddress,
   BN,
   Provider as FuelProvider,
-} from "fuels";
-import type { PublicClient, WalletClient } from "wagmi";
-import { store } from "~/store";
-import type { Asset } from "~/systems/Assets/services/asset";
-import { getAssetEth, getAssetFuel } from "~/systems/Assets/utils";
+} from 'fuels';
+import type { PublicClient, WalletClient } from 'wagmi';
+import { store } from '~/store';
+import type { Asset } from '~/systems/Assets/services/asset';
+import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
 import type {
   FromToNetworks,
   TxEthToFuelInputs,
   TxFuelToEthInputs,
-} from "~/systems/Chains";
+} from '~/systems/Chains';
 import {
   ETH_CHAIN,
   EthTxCache,
@@ -23,9 +23,9 @@ import {
   getBlockDate,
   isEthChain,
   isFuelChain,
-} from "~/systems/Chains";
+} from '~/systems/Chains';
 
-import type { BridgeTx } from "../types";
+import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
   assetAmount?: BN;
@@ -33,8 +33,8 @@ export type PossibleBridgeInputs = {
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
   asset?: Asset;
-} & Omit<TxEthToFuelInputs["startErc20"], "amount"> &
-  Omit<TxFuelToEthInputs["startFungibleToken"], "amount">;
+} & Omit<TxEthToFuelInputs['startErc20'], 'amount'> &
+  Omit<TxFuelToEthInputs['startFungibleToken'], 'amount'>;
 export type BridgeInputs = {
   bridge: FromToNetworks & PossibleBridgeInputs;
   fetchTxs: {
@@ -45,7 +45,7 @@ export type BridgeInputs = {
 };
 
 export class BridgeService {
-  static async bridge(input: BridgeInputs["bridge"]) {
+  static async bridge(input: BridgeInputs['bridge']) {
     const {
       fromNetwork,
       toNetwork,
@@ -63,10 +63,10 @@ export class BridgeService {
       throw new Error('"Network From" and "Network To" are required');
     }
     if (!assetAmount || assetAmount.isZero()) {
-      throw new Error("Need to inform amount to be transfered");
+      throw new Error('Need to inform amount to be transfered');
     }
     if (!asset) {
-      throw new Error("Need to inform asset to be transfered");
+      throw new Error('Need to inform asset to be transfered');
     }
 
     if (isEthChain(fromNetwork) && isFuelChain(toNetwork)) {
@@ -138,13 +138,13 @@ export class BridgeService {
   }
 
   static async fetchTxs(
-    input?: BridgeInputs["fetchTxs"],
+    input?: BridgeInputs['fetchTxs'],
   ): Promise<BridgeTx[] | undefined> {
     if (!input?.ethPublicClient) {
-      throw new Error("Need to inform ethPublicClient");
+      throw new Error('Need to inform ethPublicClient');
     }
     if (!input?.fuelProvider) {
-      throw new Error("Need to inform fuelProvider");
+      throw new Error('Need to inform fuelProvider');
     }
     if (!input?.fuelAddress) {
       return undefined;
@@ -158,7 +158,7 @@ export class BridgeService {
     ]);
 
     const fuelToEthBridgeTxs = fuelToEthTxs.map((tx) => ({
-      txHash: tx.id || "",
+      txHash: tx.id || '',
       fromNetwork: FUEL_CHAIN,
       toNetwork: ETH_CHAIN,
       // TODO: remove this conversion when sdk already returns the date in unix format
@@ -167,7 +167,7 @@ export class BridgeService {
 
     const ethToFuelBridgeTxs = await Promise.all(
       ethDepositLogs.map(async (log) => {
-        const blockHash = log?.blockHash || "0x";
+        const blockHash = log?.blockHash || '0x';
 
         const date = await getBlockDate({
           blockHash,
@@ -175,7 +175,7 @@ export class BridgeService {
         });
 
         return {
-          txHash: log?.transactionHash || "0x",
+          txHash: log?.transactionHash || '0x',
           fromNetwork: ETH_CHAIN,
           toNetwork: FUEL_CHAIN,
           date,

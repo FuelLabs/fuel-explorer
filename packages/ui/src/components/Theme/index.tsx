@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-export { Theme } from "./Theme";
-export { useThemeContext as useRadixTheme } from "@radix-ui/themes";
+export { Theme } from './Theme';
+export { useThemeContext as useRadixTheme } from '@radix-ui/themes';
 
-export type { ThemeProps } from "./Theme";
+export type { ThemeProps } from './Theme';
 
-export { useTheme } from "./useTheme";
+export { useTheme } from './useTheme';

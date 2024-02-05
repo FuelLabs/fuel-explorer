@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconAlertCircle } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconAlertCircle } from '@tabler/icons-react';
 
-import { Icon } from "../Icon/Icon";
+import { Icon } from '../Icon/Icon';
 
-import { Alert } from "./Alert";
+import { Alert } from './Alert';
 
 const meta: Meta<typeof Alert> = {
-  title: "UI/Alert",
+  title: 'UI/Alert',
   component: Alert,
 };
 

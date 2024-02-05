@@ -1,5 +1,5 @@
-import type { BrowserContext } from "@playwright/test";
-import { setTimeout } from "timers/promises";
+import type { BrowserContext } from '@playwright/test';
+import { setTimeout } from 'timers/promises';
 
 export async function waitForExtensions(
   context: BrowserContext,
@@ -12,21 +12,21 @@ export async function waitForExtensions(
   >,
   attempts = 0,
 ) {
-  console.log("Checking extensions...");
+  console.log('Checking extensions...');
   const pages = await context.pages();
   const hasMetamask = pages.find((page) => {
     return page.url().includes(extensions.metamask?.id);
   });
   const hasFuelWallet = pages.find((page) => {
-    return page.url().includes(extensions["fuel wallet"]?.id);
+    return page.url().includes(extensions['fuel wallet']?.id);
   });
   if (!hasMetamask || !hasFuelWallet) {
     if (attempts > 5) {
-      throw new Error("Too many attempts to wait for the extensions");
+      throw new Error('Too many attempts to wait for the extensions');
     }
     await setTimeout(3000);
     return waitForExtensions(context, extensions, attempts + 1);
   }
-  console.log("Extensions ready!");
+  console.log('Extensions ready!');
   return true;
 }

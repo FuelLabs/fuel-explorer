@@ -1,6 +1,6 @@
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { TAI64 } from "tai64";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { TAI64 } from 'tai64';
 dayjs.extend(relativeTime);
 
 export const tai64toDate = (tai64Timestamp: string) => {

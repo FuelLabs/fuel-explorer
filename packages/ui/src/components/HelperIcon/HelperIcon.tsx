@@ -1,10 +1,10 @@
-import { Tooltip } from "@radix-ui/themes";
-import { IconHelpCircle } from "@tabler/icons-react";
+import { Tooltip } from '@radix-ui/themes';
+import { IconHelpCircle } from '@tabler/icons-react';
 
-import { createComponent } from "../../utils/component";
-import type { Colors, PropsOf } from "../../utils/types";
-import { Icon } from "../Icon/Icon";
-import type { IconContext } from "../Icon/useIconContext";
+import { createComponent } from '../../utils/component';
+import type { Colors, PropsOf } from '../../utils/types';
+import { Icon } from '../Icon/Icon';
+import type { IconContext } from '../Icon/useIconContext';
 
 export type HelperIconBaseProps = {
   message: string;
@@ -15,12 +15,12 @@ export type HelperIconBaseProps = {
   iconColor?: Colors;
   iconAriaLabel?: string;
 };
-export type HelperIconProps = PropsOf<"span"> & HelperIconBaseProps;
+export type HelperIconProps = PropsOf<'span'> & HelperIconBaseProps;
 
-export const HelperIcon = createComponent<HelperIconProps, "span">({
-  id: "HelperIcon",
-  baseElement: "span",
-  className: "inline-flex items-center gap-2",
+export const HelperIcon = createComponent<HelperIconProps, 'span'>({
+  id: 'HelperIcon',
+  baseElement: 'span',
+  className: 'inline-flex items-center gap-2',
   render: (
     Comp,
     {
@@ -30,8 +30,8 @@ export const HelperIcon = createComponent<HelperIconProps, "span">({
       iconSize,
       iconStroke,
       iconClassName,
-      iconColor = "text-icon",
-      iconAriaLabel: ariaLabel = "Helper Icon",
+      iconColor = 'text-icon',
+      iconAriaLabel: ariaLabel = 'Helper Icon',
       ...props
     },
   ) => {

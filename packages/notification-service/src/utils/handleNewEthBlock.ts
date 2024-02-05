@@ -1,19 +1,19 @@
-import type { PrismaClient } from "@prisma/client";
-import type { ReceiptMessageOut } from "fuels";
+import type { PrismaClient } from '@prisma/client';
+import type { ReceiptMessageOut } from 'fuels';
 import {
   Address,
   ChainName,
   Provider,
   ReceiptType,
   getTransactionsSummaries,
-} from "fuels";
-import type { PublicClient } from "viem";
-import { FUEL_CHAIN_STATE } from "~/contracts/FuelChainState";
-import { FUEL_MESSAGE_PORTAL } from "~/contracts/FuelMessagePortal";
+} from 'fuels';
+import type { PublicClient } from 'viem';
+import { FUEL_CHAIN_STATE } from '~/contracts/FuelChainState';
+import { FUEL_MESSAGE_PORTAL } from '~/contracts/FuelMessagePortal';
 
-import MailService from "../services/mailService";
+import MailService from '../services/mailService';
 
-import { shortAddress } from "./address";
+import { shortAddress } from './address';
 
 export const handleNewEthBlock = async (
   prisma: PrismaClient,
@@ -23,18 +23,18 @@ export const handleNewEthBlock = async (
   const mailService = await MailService.getInstance();
 
   const abiFuelChainState = FUEL_CHAIN_STATE.abi.find(
-    ({ name, type }) => name === "CommitSubmitted" && type === "event",
+    ({ name, type }) => name === 'CommitSubmitted' && type === 'event',
   );
 
   // Grab the last logs of commit state to the fuelChainState
   const logs = await ethPublicClient.getLogs({
     address: process.env.ETH_FUEL_CHAIN_STATE as `0x${string}`,
     event: {
-      type: "event",
-      name: "CommitSubmitted",
+      type: 'event',
+      name: 'CommitSubmitted',
       inputs: abiFuelChainState?.inputs || [],
     },
-    fromBlock: "earliest",
+    fromBlock: 'earliest',
   });
 
   for (const lastLog of logs) {
@@ -76,21 +76,21 @@ export const handleNewEthBlock = async (
             ) as ReceiptMessageOut;
 
             const abiMessageRelayed = FUEL_MESSAGE_PORTAL.abi.find(
-              ({ name, type }) => name === "MessageRelayed" && type === "event",
+              ({ name, type }) => name === 'MessageRelayed' && type === 'event',
             );
 
             const logs = await ethPublicClient.getLogs({
               address: process.env.ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
               event: {
-                type: "event",
-                name: "MessageRelayed",
+                type: 'event',
+                name: 'MessageRelayed',
                 inputs: abiMessageRelayed?.inputs || [],
               },
               args: {
                 messageId: messageReceipt?.messageId as `0x${string}`,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               } as any,
-              fromBlock: "earliest",
+              fromBlock: 'earliest',
             });
 
             const isAlreadyRelayed = !!logs[0];
@@ -156,7 +156,7 @@ export const handleNewEthBlock = async (
               {
                 from: process.env.FROM_EMAIL,
                 to: dbTransaction.address.withdrawer.email,
-                subject: "Withdraw Notification",
+                subject: 'Withdraw Notification',
               },
               {
                 address: shortAddress(dbTransaction.address.address),
@@ -174,7 +174,7 @@ export const handleNewEthBlock = async (
       }
     } catch (e) {
       console.error(e);
-      console.log("Not finalized yet");
+      console.log('Not finalized yet');
     }
   }
 };

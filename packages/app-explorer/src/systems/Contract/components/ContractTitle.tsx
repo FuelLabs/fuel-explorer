@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Address, useBreakpoints } from "@fuels/ui";
-import { IconChecklist } from "@tabler/icons-react";
-import { PageTitle } from "~/systems/Core/components/PageTitle/PageTitle";
+import { Address, useBreakpoints } from '@fuels/ui';
+import { IconChecklist } from '@tabler/icons-react';
+import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
 export function ContractTitle({ id }: { id: string }) {
   const { isLaptop } = useBreakpoints();

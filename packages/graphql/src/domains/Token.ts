@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { delegateToSchema } from "@graphql-tools/delegate";
-import type { GraphQLResolveInfo } from "graphql";
-import { OperationTypeNode } from "graphql";
+import { delegateToSchema } from '@graphql-tools/delegate';
+import type { GraphQLResolveInfo } from 'graphql';
+import { OperationTypeNode } from 'graphql';
 
-import tokensData from "../data/tokens.json";
-import { Domain } from "../utils/domain";
+import tokensData from '../data/tokens.json';
+import { Domain } from '../utils/domain';
 
 type Args = {
   assetsId: Array<string>;
@@ -19,7 +19,7 @@ export class TokenDomain extends Domain<any, Args> {
     return delegateToSchema({
       schema: info.schema,
       operation: OperationTypeNode.QUERY,
-      fieldName: "tokens",
+      fieldName: 'tokens',
       args: { assetsId },
       context,
       info,
@@ -29,7 +29,7 @@ export class TokenDomain extends Domain<any, Args> {
   static createResolvers() {
     const domain = new TokenDomain();
     return {
-      ...domain.createResolver("tokens"),
+      ...domain.createResolver('tokens'),
     };
   }
 

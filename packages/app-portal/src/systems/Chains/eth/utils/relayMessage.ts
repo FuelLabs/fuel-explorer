@@ -1,11 +1,11 @@
-import type { MessageProof } from "fuels";
+import type { MessageProof } from 'fuels';
 
 import type {
   CommitBlockHeader,
   Message,
   MessageBlockHeader,
   Proof,
-} from "../types";
+} from '../types';
 
 export type RelayMessageParams = {
   message: Message;

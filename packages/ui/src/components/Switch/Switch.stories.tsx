@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Text } from "../Text/Text";
+import { Text } from '../Text/Text';
 
-import { Switch } from "./Switch";
+import { Switch } from './Switch';
 
 const meta: Meta<typeof Switch> = {
-  title: "Form/Switch",
+  title: 'Form/Switch',
   component: Switch,
 };
 
@@ -16,7 +16,7 @@ export const Usage: Story = {
   render: () => (
     <Text size="2">
       <label>
-        <Switch defaultChecked mr="2" /> Sync settings{" "}
+        <Switch defaultChecked mr="2" /> Sync settings{' '}
         <Text color="gray">(Default)</Text>
       </label>
     </Text>

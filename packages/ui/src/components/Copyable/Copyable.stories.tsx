@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconClipboardCopy } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconClipboardCopy } from '@tabler/icons-react';
 
-import { Copyable } from "./Copyable";
+import { Copyable } from './Copyable';
 
 const meta: Meta<typeof Copyable> = {
-  title: "Helpers/Copyable",
+  title: 'Helpers/Copyable',
   component: Copyable,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

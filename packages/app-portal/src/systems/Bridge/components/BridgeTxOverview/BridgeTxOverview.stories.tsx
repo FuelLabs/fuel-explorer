@@ -1,15 +1,15 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box } from "@fuel-ui/react";
-import assetList from "@fuels/assets";
-import { bn } from "fuels";
+import { cssObj } from '@fuel-ui/css';
+import { Box } from '@fuel-ui/react';
+import assetList from '@fuels/assets';
+import { bn } from 'fuels';
 
-import { BridgeTxOverview } from "./BridgeTxOverview";
+import { BridgeTxOverview } from './BridgeTxOverview';
 
 export default {
   component: BridgeTxOverview,
-  title: "BridgeTxOverview",
+  title: 'BridgeTxOverview',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -60,7 +60,7 @@ export const Loading = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
-    width: "348px",
+    margin: '20px',
+    width: '348px',
   }),
 };

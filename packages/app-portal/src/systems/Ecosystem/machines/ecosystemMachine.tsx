@@ -1,9 +1,9 @@
-import type { InterpreterFrom, StateFrom } from "xstate";
-import { assign, createMachine } from "xstate";
-import { FetchMachine } from "~/systems/Core";
+import type { InterpreterFrom, StateFrom } from 'xstate';
+import { assign, createMachine } from 'xstate';
+import { FetchMachine } from '~/systems/Core';
 
-import { PROJECTS } from "../data";
-import type { Project } from "../types";
+import { PROJECTS } from '../data';
+import type { Project } from '../types';
 
 export type EcosystemInputs = {
   filter: {
@@ -40,27 +40,27 @@ type MachineServices = {
 
 type EcosystemMachineEvents =
   | {
-      type: "FILTER";
+      type: 'FILTER';
       input: { tag?: string };
     }
   | {
-      type: "SEARCH";
+      type: 'SEARCH';
       input: { query?: string };
     }
   | {
-      type: "FETCH_PROJECTS_AND_TAGS";
+      type: 'FETCH_PROJECTS_AND_TAGS';
       input: null;
     }
   | {
-      type: "CLEAR_FILTER";
+      type: 'CLEAR_FILTER';
       input: null;
     };
 
 const initialState: MachineContext = {
   projects: [],
-  search: "",
+  search: '',
   tags: [],
-  filter: "",
+  filter: '',
 };
 
 function sortAtoZ(a: string, b: string) {
@@ -70,39 +70,39 @@ function sortAtoZ(a: string, b: string) {
 export const ecosystemMachine = createMachine(
   {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    tsTypes: {} as import("./ecosystemMachine.typegen").Typegen0,
+    tsTypes: {} as import('./ecosystemMachine.typegen').Typegen0,
     schema: {
       context: initialState as MachineContext,
       services: {} as MachineServices,
       events: {} as EcosystemMachineEvents,
     },
     predictableActionArguments: true,
-    id: "(machine)",
-    initial: "idle",
+    id: '(machine)',
+    initial: 'idle',
     states: {
       idle: {
         on: {
           FETCH_PROJECTS_AND_TAGS: {
-            target: "fetching",
+            target: 'fetching',
           },
           FILTER: {
-            actions: ["clearSearch", "assignFilter"],
+            actions: ['clearSearch', 'assignFilter'],
           },
           SEARCH: {
-            actions: ["clearFilter", "assignSearch"],
+            actions: ['clearFilter', 'assignSearch'],
           },
           CLEAR_FILTER: {
-            actions: ["clearFilter"],
+            actions: ['clearFilter'],
           },
         },
       },
       fetching: {
-        tags: ["isLoading"],
+        tags: ['isLoading'],
         invoke: {
-          src: "fetchProjectsAndTags",
+          src: 'fetchProjectsAndTags',
           onDone: {
-            target: "idle",
-            actions: ["assignProjectsAndTags", "clearSearchAndFilter"],
+            target: 'idle',
+            actions: ['assignProjectsAndTags', 'clearSearchAndFilter'],
           },
         },
       },
@@ -112,7 +112,7 @@ export const ecosystemMachine = createMachine(
     services: {
       fetchProjectsAndTags: FetchMachine.create<
         null,
-        MachineServices["fetchProjectsAndTags"]["data"]
+        MachineServices['fetchProjectsAndTags']['data']
       >({
         showError: true,
         maxAttempts: 1,
@@ -145,16 +145,16 @@ export const ecosystemMachine = createMachine(
       })),
       clearFilter: assign((ctx) => ({
         ...ctx,
-        filter: "",
+        filter: '',
       })),
       clearSearch: assign((ctx) => ({
         ...ctx,
-        search: "",
+        search: '',
       })),
       clearSearchAndFilter: assign((ctx) => ({
         ...ctx,
-        search: "",
-        filter: "",
+        search: '',
+        filter: '',
       })),
     },
   },

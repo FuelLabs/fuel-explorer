@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { bn } from "fuels";
+import type { Meta, StoryObj } from '@storybook/react';
+import { bn } from 'fuels';
 
-import { TxAssetItem } from "./TxAssetItem";
+import { TxAssetItem } from './TxAssetItem';
 
 const meta: Meta<typeof TxAssetItem> = {
-  title: "Transaction/TxAssetItem",
+  title: 'Transaction/TxAssetItem',
   component: TxAssetItem,
 };
 

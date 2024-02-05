@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { FuelLogo } from "./FuelLogo";
+import { FuelLogo } from './FuelLogo';
 
 const meta: Meta<typeof FuelLogo> = {
-  title: "UI/FuelLogo",
+  title: 'UI/FuelLogo',
   component: FuelLogo,
 };
 

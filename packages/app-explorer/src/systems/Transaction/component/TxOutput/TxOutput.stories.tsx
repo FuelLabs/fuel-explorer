@@ -1,5 +1,5 @@
-import { VStack } from "@fuels/ui";
-import type { Meta, StoryObj } from "@storybook/react";
+import { VStack } from '@fuels/ui';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import {
   GROUPED_OUTPUT_ASSET,
@@ -7,12 +7,12 @@ import {
   GROUPED_OUTPUT_CONTRACT_CREATED,
   GROUPED_OUTPUT_MESSAGE,
   TX_MOCK,
-} from "../../__mocks__/tx";
+} from '../../__mocks__/tx';
 
-import { TxOutput } from "./TxOutput";
+import { TxOutput } from './TxOutput';
 
 const meta: Meta<typeof TxOutput> = {
-  title: "Transaction/TxOutput",
+  title: 'Transaction/TxOutput',
   component: TxOutput,
 };
 

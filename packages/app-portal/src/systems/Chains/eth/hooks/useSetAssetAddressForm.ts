@@ -1,13 +1,13 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 export type SetAddressFormValues = {
   address: string;
 };
 
 const DEFAULT_VALUES = {
-  address: "",
+  address: '',
 };
 
 type UseSetAddressOpts = {
@@ -16,13 +16,13 @@ type UseSetAddressOpts = {
 
 export const useSetAddressForm = (opts: UseSetAddressOpts = {}) => {
   const schema = yup.object({
-    address: yup.string().required("Address is required"),
+    address: yup.string().required('Address is required'),
   });
 
   const form = useForm<SetAddressFormValues>({
     resolver: yupResolver(schema),
-    reValidateMode: "onChange",
-    mode: "onChange",
+    reValidateMode: 'onChange',
+    mode: 'onChange',
     defaultValues: opts.defaultValues || DEFAULT_VALUES,
   });
 

@@ -1,7 +1,7 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, Button, Card, Image, Text } from "@fuel-ui/react";
-import type { ReactNode } from "react";
-import { shortAddress } from "~/systems/Core";
+import { cssObj } from '@fuel-ui/css';
+import { Box, Button, Card, Image, Text } from '@fuel-ui/react';
+import type { ReactNode } from 'react';
+import { shortAddress } from '~/systems/Core';
 
 type AccountConnectionInputProps = {
   networkName?: string;
@@ -35,7 +35,7 @@ export const AccountConnectionInput = ({
           <Box.Stack gap="$1">
             <Text fontSize="sm">{label}</Text>
             <Box.Flex gap="$2" align="center">
-              {typeof networkImage === "string" ? (
+              {typeof networkImage === 'string' ? (
                 <Image
                   width="20"
                   height="20"
@@ -96,19 +96,19 @@ export const AccountConnectionInput = ({
 
 const styles = {
   root: cssObj({
-    minHeight: "$15",
-    overflowX: "hidden",
-    backgroundColor: "$inputBaseBg !important",
-    borderColor: "$inputBaseBorder !important",
+    minHeight: '$15',
+    overflowX: 'hidden',
+    backgroundColor: '$inputBaseBg !important',
+    borderColor: '$inputBaseBorder !important',
   }),
   cardBody: cssObj({
-    px: "$3",
-    py: "$2",
+    px: '$3',
+    py: '$2',
   }),
   connectButton: cssObj({
-    width: "$36",
+    width: '$36',
   }),
   disconnectButton: cssObj({
-    mr: "-$1",
+    mr: '-$1',
   }),
 };

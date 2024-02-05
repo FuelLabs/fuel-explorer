@@ -1,6 +1,6 @@
-"use client";
-import type { AccountBalanceFragment } from "@fuel-explorer/graphql";
-import type { BaseProps } from "@fuels/ui";
+'use client';
+import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
+import type { BaseProps } from '@fuels/ui';
 import {
   Address,
   Box,
@@ -8,16 +8,16 @@ import {
   Flex,
   LoadingBox,
   LoadingWrapper,
-} from "@fuels/ui";
-import { bn } from "fuels";
-import { AssetItem } from "~/systems/Asset/components/AssetItem/AssetItem";
+} from '@fuels/ui';
+import { bn } from 'fuels';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 
-import { Amount } from "../Amount/Amount";
-import type { UtxoItem } from "../Utxos/Utxos";
-import { Utxos } from "../Utxos/Utxos";
+import { Amount } from '../Amount/Amount';
+import type { UtxoItem } from '../Utxos/Utxos';
+import { Utxos } from '../Utxos/Utxos';
 
 type BalanceItemProps = BaseProps<{
-  item: Omit<AccountBalanceFragment, "owner" | "__typename">;
+  item: Omit<AccountBalanceFragment, 'owner' | '__typename'>;
   isLoading?: boolean;
 }>;
 

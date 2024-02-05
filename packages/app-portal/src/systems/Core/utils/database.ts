@@ -1,14 +1,14 @@
-import type { Table } from "dexie";
-import Dexie from "dexie";
-import type { Asset } from "~/systems/Assets/services/asset";
+import type { Table } from 'dexie';
+import Dexie from 'dexie';
+import type { Asset } from '~/systems/Assets/services/asset';
 
 export class FuelDB extends Dexie {
   assets!: Table<Asset, string>;
 
   constructor() {
-    super("FuelDB");
+    super('FuelDB');
     this.version(1).stores({
-      assets: "&name, $symbol",
+      assets: '&name, $symbol',
     });
   }
 

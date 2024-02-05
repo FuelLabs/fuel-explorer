@@ -1,29 +1,29 @@
-import { ConnectKitProvider } from "connectkit";
-import type { ReactNode } from "react";
-import type { ChainProviderFn } from "wagmi";
-import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { infuraProvider } from "wagmi/providers/infura";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import { publicProvider } from "wagmi/providers/public";
+import { ConnectKitProvider } from 'connectkit';
+import type { ReactNode } from 'react';
+import type { ChainProviderFn } from 'wagmi';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { publicProvider } from 'wagmi/providers/public';
 import {
   VITE_ALCHEMY_ID,
   VITE_INFURA_ID,
   VITE_WALLETCONNECT_ID,
-} from "~/config";
-import { ETH_CHAIN } from "~/systems/Chains";
+} from '~/config';
+import { ETH_CHAIN } from '~/systems/Chains';
 
-import { useTheme } from "../hooks";
+import { useTheme } from '../hooks';
 
 const app = {
-  name: "Fuel Bridge",
-  description: "Bridge assets between Fuel and Other Chains",
-  url: "https://fuels-portal.vercel.app",
-  icons: ["https://fuels-portal.vercel.app/fuel-logo.svg"],
+  name: 'Fuel Bridge',
+  description: 'Bridge assets between Fuel and Other Chains',
+  url: 'https://fuels-portal.vercel.app',
+  icons: ['https://fuels-portal.vercel.app/fuel-logo.svg'],
 };
 const chainsToConnect = [ETH_CHAIN];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,9 +72,9 @@ const connectKitClient = {
         shimDisconnect: true,
         name: (detectedName) =>
           `Injected (${
-            typeof detectedName === "string"
+            typeof detectedName === 'string'
               ? detectedName
-              : detectedName.join(", ")
+              : detectedName.join(', ')
           })`,
       },
     }),

@@ -1,17 +1,17 @@
-import "@fuels/ui/styles.css";
-import "./globals.css";
+import '@fuels/ui/styles.css';
+import './globals.css';
 
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
-import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { Layout } from "~/systems/Core/components/Layout/Layout";
-import { Provider } from "~/systems/Core/components/Provider";
-import { cx } from "~/systems/Core/utils/cx";
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { Layout } from '~/systems/Core/components/Layout/Layout';
+import { Provider } from '~/systems/Core/components/Provider';
+import { cx } from '~/systems/Core/utils/cx';
 
 export const metadata: Metadata = {
-  title: "Fuel Explorer",
-  description: "Explorer of the Fastest execution layer",
+  title: 'Fuel Explorer',
+  description: 'Explorer of the Fastest execution layer',
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { value: theme } = cookies().get("fuel-theme") ?? { value: "dark" };
+  const { value: theme } = cookies().get('fuel-theme') ?? { value: 'dark' };
   return (
     <html
       suppressHydrationWarning

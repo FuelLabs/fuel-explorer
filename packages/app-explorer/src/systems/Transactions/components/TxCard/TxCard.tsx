@@ -1,4 +1,4 @@
-import { bn } from "@fuel-ts/math";
+import { bn } from '@fuel-ts/math';
 import {
   Badge,
   Box,
@@ -8,14 +8,14 @@ import {
   Text,
   cx,
   shortAddress,
-} from "@fuels/ui";
-import type { BaseProps } from "@fuels/ui";
-import { IconGasStation } from "@tabler/icons-react";
-import Link from "next/link";
-import { Routes } from "~/routes";
+} from '@fuels/ui';
+import type { BaseProps } from '@fuels/ui';
+import { IconGasStation } from '@tabler/icons-react';
+import Link from 'next/link';
+import { Routes } from '~/routes';
 
-import { TX_INTENT_MAP } from "../../../Transaction/component/TxIcon/TxIcon";
-import type { TransactionNode } from "../../../Transaction/types";
+import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
+import type { TransactionNode } from '../../../Transaction/types';
 
 type TxCardProps = BaseProps<{
   transaction: TransactionNode;

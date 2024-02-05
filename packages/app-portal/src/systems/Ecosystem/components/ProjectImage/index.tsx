@@ -1,6 +1,6 @@
-import { cssObj } from "@fuel-ui/css";
-import { IconButton, Image } from "@fuel-ui/react";
-import { useState } from "react";
+import { cssObj } from '@fuel-ui/css';
+import { IconButton, Image } from '@fuel-ui/react';
+import { useState } from 'react';
 
 type ProjecImageProps = {
   name: string;
@@ -38,10 +38,10 @@ export const ProjecImage = ({ name, image }: ProjecImageProps) => {
 
 const styles = {
   projectIcon: cssObj({
-    pointerEvents: "none",
-    padding: "$3 $2",
-    "& svg": {
-      strokeWidth: "1.5px",
+    pointerEvents: 'none',
+    padding: '$3 $2',
+    '& svg': {
+      strokeWidth: '1.5px',
     },
   }),
 };

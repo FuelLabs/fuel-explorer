@@ -1,15 +1,15 @@
-import { action } from "@storybook/addon-actions";
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconArrowRight } from "@tabler/icons-react";
+import { action } from '@storybook/addon-actions';
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconArrowRight } from '@tabler/icons-react';
 
-import { Avatar } from "../Avatar/Avatar";
-import { Heading } from "../Heading/Heading";
-import { IconButton } from "../IconButton/IconButton";
+import { Avatar } from '../Avatar/Avatar';
+import { Heading } from '../Heading/Heading';
+import { IconButton } from '../IconButton/IconButton';
 
-import { CardList } from "./CardList";
+import { CardList } from './CardList';
 
 const meta: Meta<typeof CardList> = {
-  title: "UI/CardList",
+  title: 'UI/CardList',
   component: CardList,
 };
 
@@ -29,7 +29,7 @@ export const Usage: Story = {
             variant="link"
           />
         }
-        onClick={action("onClick")}
+        onClick={action('onClick')}
       >
         <Avatar
           fallback="Colm Tuite"

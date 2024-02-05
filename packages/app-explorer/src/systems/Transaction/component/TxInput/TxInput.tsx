@@ -1,4 +1,4 @@
-import type { GroupedInput, InputCoin } from "@fuel-explorer/graphql";
+import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
 import {
   Address,
   Box,
@@ -8,24 +8,24 @@ import {
   VStack,
   createComponent,
   useBreakpoints,
-} from "@fuels/ui";
-import type { CardProps } from "@fuels/ui";
-import { bn } from "fuels";
-import NextLink from "next/link";
-import { Routes } from "~/routes";
-import { AssetItem } from "~/systems/Asset/components/AssetItem/AssetItem";
-import { Amount } from "~/systems/Core/components/Amount/Amount";
-import type { UtxoItem } from "~/systems/Core/components/Utxos/Utxos";
-import { Utxos } from "~/systems/Core/components/Utxos/Utxos";
+} from '@fuels/ui';
+import type { CardProps } from '@fuels/ui';
+import { bn } from 'fuels';
+import NextLink from 'next/link';
+import { Routes } from '~/routes';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
+import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
+import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
 
-import { TxIcon } from "../TxIcon/TxIcon";
+import { TxIcon } from '../TxIcon/TxIcon';
 
 export type TxInputProps = CardProps & {
   input: GroupedInput;
 };
 
 const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
-  id: "TxInputCoin",
+  id: 'TxInputCoin',
   render: (_, { input, ...props }) => {
     if (!input.assetId) return null;
 
@@ -40,7 +40,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
           <AssetItem assetId={assetId} className="flex-1">
             <Address
               prefix="From:"
-              value={input.owner || ""}
+              value={input.owner || ''}
               className="text-white"
               addressOpts={isMobile ? { trimLeft: 4, trimRight: 2 } : undefined}
               linkProps={{
@@ -67,7 +67,7 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
 });
 
 const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
-  id: "TxInputMessage",
+  id: 'TxInputMessage',
   render: (_, { input, ...props }) => {
     const { sender, recipient, data } = input;
 
@@ -108,10 +108,10 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
 });
 
 export function TxInput({ input, ...props }: TxInputProps) {
-  if (input.type === "InputCoin") {
+  if (input.type === 'InputCoin') {
     return <TxInputCoin input={input} {...props} />;
   }
-  if (input.type === "InputMessage") {
+  if (input.type === 'InputMessage') {
     return <TxInputMessage input={input} {...props} />;
   }
 }

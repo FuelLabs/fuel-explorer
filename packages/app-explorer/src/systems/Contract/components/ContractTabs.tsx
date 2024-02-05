@@ -1,11 +1,11 @@
-"use client";
-import type { BaseProps } from "@fuels/ui";
-import { IconCodeAsterix, IconCoins } from "@tabler/icons-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useMemo } from "react";
-import { Routes } from "~/routes";
-import { NavigationTab } from "~/systems/Core/components/NavigationTab/NavigationTab";
+'use client';
+import type { BaseProps } from '@fuels/ui';
+import { IconCodeAsterix, IconCoins } from '@tabler/icons-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
+import { Routes } from '~/routes';
+import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type ContractTabsProps = BaseProps<{
   contractId: string;
@@ -14,8 +14,8 @@ type ContractTabsProps = BaseProps<{
 export function ContractTabs({ contractId }: ContractTabsProps) {
   const pathname = usePathname();
   const defaultValue = useMemo(() => {
-    if (pathname.includes("code")) return "code";
-    return "assets";
+    if (pathname.includes('code')) return 'code';
+    return 'assets';
   }, [pathname]);
 
   return (
@@ -29,13 +29,13 @@ export function ContractTabs({ contractId }: ContractTabsProps) {
       )}
       items={[
         {
-          value: "assets",
-          label: "Assets",
+          value: 'assets',
+          label: 'Assets',
           icon: IconCoins,
         },
         {
-          value: "code",
-          label: "Source Code",
+          value: 'code',
+          label: 'Source Code',
           icon: IconCodeAsterix,
         },
       ]}

@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Text } from "../Text/Text";
+import { Text } from '../Text/Text';
 
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from './Checkbox';
 
 const meta: Meta<typeof Checkbox> = {
-  title: "Form/Checkbox",
+  title: 'Form/Checkbox',
   component: Checkbox,
 };
 

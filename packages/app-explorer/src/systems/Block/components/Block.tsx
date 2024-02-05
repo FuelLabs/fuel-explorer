@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import type { BlockItemFragment, Maybe } from "@fuel-explorer/graphql";
-import { ViewModes } from "~/systems/Core/components/ViewMode/ViewMode";
+import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
+import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
-import { BlockHeader } from "./BlockHeader";
-import { BlockScreenAdvanced } from "./BlockScreenAdvanced";
-import { BlockScreenSimple } from "./BlockScreenSimple";
+import { BlockHeader } from './BlockHeader';
+import { BlockScreenAdvanced } from './BlockScreenAdvanced';
+import { BlockScreenSimple } from './BlockScreenSimple';
 
 type BlockScreenProps = {
   id: string;

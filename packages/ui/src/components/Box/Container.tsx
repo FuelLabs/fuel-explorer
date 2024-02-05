@@ -1,13 +1,13 @@
-import { Container as RadixContainer } from "@radix-ui/themes";
+import { Container as RadixContainer } from '@radix-ui/themes';
 
-import { createComponent } from "../../utils/component";
-import type { PropsOf, WithAsProps } from "../../utils/types";
+import { createComponent } from '../../utils/component';
+import type { PropsOf, WithAsProps } from '../../utils/types';
 
 export type ContainerProps = WithAsProps & PropsOf<typeof RadixContainer>;
 
 export const Container = createComponent<ContainerProps, typeof RadixContainer>(
   {
-    id: "Container",
+    id: 'Container',
     baseElement: RadixContainer,
   },
 );

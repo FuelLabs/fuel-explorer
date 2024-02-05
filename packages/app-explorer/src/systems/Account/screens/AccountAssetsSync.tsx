@@ -1,5 +1,5 @@
-import { getBalances } from "../actions/get-balances";
-import { AccountAssets } from "../components/AccountAssets/AccountAssets";
+import { getBalances } from '../actions/get-balances';
+import { AccountAssets } from '../components/AccountAssets/AccountAssets';
 
 type AccountAssetsProps = {
   id: string;

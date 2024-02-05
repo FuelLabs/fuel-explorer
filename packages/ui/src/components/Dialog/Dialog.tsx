@@ -1,7 +1,7 @@
-import { Dialog as RD, DialogTitle } from "@radix-ui/themes";
+import { Dialog as RD, DialogTitle } from '@radix-ui/themes';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type DialogProps = PropsOf<typeof RD.Root>;
 export type DialogTriggerProps = PropsOf<typeof RD.Trigger>;
@@ -11,7 +11,7 @@ export type DialogCloseProps = PropsOf<typeof RD.Close>;
 export type DialogDescriptionProps = PropsOf<typeof RD.Description>;
 
 export const DialogRoot = createComponent<DialogProps, typeof RD.Root>({
-  id: "Dialog",
+  id: 'Dialog',
   baseElement: RD.Root,
 });
 
@@ -19,7 +19,7 @@ export const DialogTrigger = createComponent<
   DialogTriggerProps,
   typeof RD.Trigger
 >({
-  id: "DialogTrigger",
+  id: 'DialogTrigger',
   baseElement: RD.Trigger,
 });
 
@@ -27,12 +27,12 @@ export const DialogContent = createComponent<
   DialogContentProps,
   typeof RD.Content
 >({
-  id: "DialogContent",
+  id: 'DialogContent',
   baseElement: RD.Content,
 });
 
 export const DialogClose = createComponent<DialogCloseProps, typeof RD.Close>({
-  id: "DialogClose",
+  id: 'DialogClose',
   baseElement: RD.Close,
 });
 
@@ -40,7 +40,7 @@ export const DialogDescription = createComponent<
   DialogDescriptionProps,
   typeof RD.Description
 >({
-  id: "DialogDescription",
+  id: 'DialogDescription',
   baseElement: RD.Description,
 });
 

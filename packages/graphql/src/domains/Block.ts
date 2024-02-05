@@ -1,16 +1,16 @@
-import { Signer, bn } from "fuels";
+import { Signer, bn } from 'fuels';
 
-import type { BlockItemFragment } from "../generated/types";
-import { tai64toDate } from "../utils/dayjs";
-import { Domain } from "../utils/domain";
+import type { BlockItemFragment } from '../generated/types';
+import { tai64toDate } from '../utils/dayjs';
+import { Domain } from '../utils/domain';
 
 export class BlockDomain extends Domain<BlockItemFragment> {
   static createResolvers() {
     const domain = new BlockDomain();
     return {
-      ...domain.createResolver("time"),
-      ...domain.createResolver("totalGasUsed"),
-      ...domain.createResolver("producer"),
+      ...domain.createResolver('time'),
+      ...domain.createResolver('totalGasUsed'),
+      ...domain.createResolver('producer'),
     };
   }
 
@@ -20,7 +20,7 @@ export class BlockDomain extends Domain<BlockItemFragment> {
     const date = tai64toDate(time);
     return {
       fromNow: date.fromNow(),
-      full: date.format("DD MMM YYYY - HH:mm:ss A"),
+      full: date.format('DD MMM YYYY - HH:mm:ss A'),
       rawTai64: time.toString(),
       rawUnix: date.unix().toString(),
     };
@@ -36,7 +36,7 @@ export class BlockDomain extends Domain<BlockItemFragment> {
 
   get producer() {
     const { source: block } = this;
-    if (block.consensus.__typename === "Genesis") {
+    if (block.consensus.__typename === 'Genesis') {
       return null;
     }
     const signature = block.consensus.signature;

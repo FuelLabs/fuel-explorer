@@ -1,14 +1,14 @@
-import { bn } from "@fuel-ts/math";
-import { groupBy } from "lodash";
+import { bn } from '@fuel-ts/math';
+import { groupBy } from 'lodash';
 
 import type {
   InputCoin,
   InputContract,
   InputMessage,
   TransactionItemFragment,
-} from "../generated/types";
+} from '../generated/types';
 
-type Inputs = TransactionItemFragment["inputs"];
+type Inputs = TransactionItemFragment['inputs'];
 
 export class InputDomain {
   constructor(private inputs: Inputs) {}
@@ -18,7 +18,7 @@ export class InputDomain {
   }
 
   get assetInputs() {
-    const inputs = this._filterByTypename<InputCoin>("InputCoin");
+    const inputs = this._filterByTypename<InputCoin>('InputCoin');
     const entries = Object.entries(groupBy(inputs, (i) => i.assetId));
     return entries.map(([assetId, inputs]) => {
       const type = inputs[0].__typename;
@@ -29,7 +29,7 @@ export class InputDomain {
   }
 
   get contractInputs() {
-    const inputs = this._filterByTypename<InputContract>("InputContract");
+    const inputs = this._filterByTypename<InputContract>('InputContract');
     const entries = Object.entries(groupBy(inputs, (i) => i.contract.id));
     return entries.map(([contractId, inputs]) => {
       const type = inputs[0].__typename;
@@ -38,7 +38,7 @@ export class InputDomain {
   }
 
   get messageInputs() {
-    const inputs = this._filterByTypename<InputMessage>("InputMessage");
+    const inputs = this._filterByTypename<InputMessage>('InputMessage');
     return inputs.map((input) => {
       const type = input.__typename;
       const sender = input.sender;

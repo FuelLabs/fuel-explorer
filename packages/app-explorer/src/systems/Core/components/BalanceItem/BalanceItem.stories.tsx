@@ -1,10 +1,10 @@
-import { mocks } from "@fuel-explorer/graphql";
-import type { Meta, StoryObj } from "@storybook/react";
+import { mocks } from '@fuel-explorer/graphql';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { BalanceItem } from "./BalanceItem";
+import { BalanceItem } from './BalanceItem';
 
 const meta: Meta<typeof BalanceItem> = {
-  title: "Account/BalanceItem",
+  title: 'Account/BalanceItem',
   component: BalanceItem,
 };
 
@@ -16,7 +16,7 @@ export const Usage: Story = {
     <BalanceItem
       item={mocks.aBalance({
         assetId:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
       })}
     />
   ),

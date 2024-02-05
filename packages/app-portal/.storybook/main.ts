@@ -1,22 +1,22 @@
-import { join } from "node:path";
-import type { StorybookConfig } from "@storybook/react-vite";
-import { mergeConfig } from "vite";
-import tsconfigpath from "vite-tsconfig-paths";
+import { join } from 'node:path';
+import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
+import tsconfigpath from 'vite-tsconfig-paths';
 
 const config: StorybookConfig = {
   stories: [
-    "../src/**/*.stories.mdx",
-    "../src/**/*.stories.@(js|jsx|ts|tsx)",
-    "../../sdk-react/src/**/*.stories.@(js|jsx|ts|tsx)",
+    '../src/**/*.stories.mdx',
+    '../src/**/*.stories.@(js|jsx|ts|tsx)',
+    '../../sdk-react/src/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-    "@storybook/addon-a11y",
-    "@storybook/addon-storysource",
-    "storybook-dark-mode",
-    "storybook-addon-react-router-v6",
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+    '@storybook/addon-a11y',
+    '@storybook/addon-storysource',
+    'storybook-dark-mode',
+    'storybook-addon-react-router-v6',
   ],
   env: (config) => {
     // Filter out all env variables
@@ -29,21 +29,21 @@ const config: StorybookConfig = {
       STORYBOOK: config.STORYBOOK,
     };
   },
-  staticDirs: ["../public"],
+  staticDirs: ['../public'],
   core: {
-    builder: "@storybook/builder-vite",
+    builder: '@storybook/builder-vite',
   },
   framework: {
-    name: "@storybook/react-vite",
+    name: '@storybook/react-vite',
     options: {},
   },
   async viteFinal(config: any) {
     return mergeConfig(config, {
-      base: join(process.env.STORYBOOK_BASE_URL || config.base || ""),
+      base: join(process.env.STORYBOOK_BASE_URL || config.base || ''),
       plugins: [tsconfigpath()],
       resolve: {
         alias: {
-          "/icons/sprite.svg": "/public/icons/sprite.svg",
+          '/icons/sprite.svg': '/public/icons/sprite.svg',
         },
       },
     });

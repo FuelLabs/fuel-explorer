@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export {
   Toast,
@@ -9,7 +9,7 @@ export {
   ToastRoot,
   ToastTitle,
   ToastViewport,
-} from "./Toast";
+} from './Toast';
 
 export type {
   ToastActionElement,
@@ -22,7 +22,7 @@ export type {
   ToastTitleProps,
   ToastVariantProps,
   ToastViewportProps,
-} from "./Toast";
+} from './Toast';
 
-export { Toaster } from "./toaster";
-export { reducer, toast, useToast } from "./useToast";
+export { Toaster } from './toaster';
+export { reducer, toast, useToast } from './useToast';

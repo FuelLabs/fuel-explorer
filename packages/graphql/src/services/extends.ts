@@ -1,10 +1,10 @@
-import { BalanceDomain } from "../domains/Balance";
-import { BlockDomain } from "../domains/Block";
-import { SearchDomain } from "../domains/Search";
-import { TransactionDomain } from "../domains/Transaction";
-import { TransactionConnectionDomain } from "../domains/TransactionConnection";
+import { BalanceDomain } from '../domains/Balance';
+import { BlockDomain } from '../domains/Block';
+import { SearchDomain } from '../domains/Search';
+import { TransactionDomain } from '../domains/Transaction';
+import { TransactionConnectionDomain } from '../domains/TransactionConnection';
 
-import typeDefs from "./extends.graphql";
+import typeDefs from './extends.graphql';
 
 export const extendsTypeDefs = typeDefs;
 export const extendsResolvers = {

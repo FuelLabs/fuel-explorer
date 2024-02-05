@@ -3,7 +3,7 @@ import type {
   OperationReceipt,
   TransactionItemFragment,
   TransactionReceiptFragment,
-} from "../generated/types";
+} from '../generated/types';
 
 type Tx = TransactionItemFragment;
 type TxReceipt = TransactionReceiptFragment;
@@ -13,20 +13,20 @@ function createReceiptTypeChecker(types: string[]) {
     types.some((type) => type === receipt?.receiptType);
 }
 
-const isCall = createReceiptTypeChecker(["CALL"]);
-const isReturn = createReceiptTypeChecker(["RETURN"]);
-const isResult = createReceiptTypeChecker(["SCRIPT_RESULT"]);
-const isError = createReceiptTypeChecker(["PANIC", "REVERT"]);
+const isCall = createReceiptTypeChecker(['CALL']);
+const isReturn = createReceiptTypeChecker(['RETURN']);
+const isResult = createReceiptTypeChecker(['SCRIPT_RESULT']);
+const isError = createReceiptTypeChecker(['PANIC', 'REVERT']);
 
 function getType(receipt: TxReceipt) {
   if (receipt?.sender) {
-    return "FROM_ACCOUNT";
+    return 'FROM_ACCOUNT';
   }
   if (receipt?.contract?.id ?? receipt?.contractId ?? receipt?.to?.id) {
-    return "FROM_CONTRACT";
+    return 'FROM_CONTRACT';
   }
   if (isReturn(receipt) && !receipt?.contract?.id) {
-    return "FINAL_RESULT";
+    return 'FINAL_RESULT';
   }
   return null;
 }

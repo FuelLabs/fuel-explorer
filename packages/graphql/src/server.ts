@@ -1,15 +1,15 @@
-import cors from "cors";
-import express from "express";
-import { createHandler } from "graphql-http/lib/use/express";
-import expressPlayground from "graphql-playground-middleware-express";
+import cors from 'cors';
+import express from 'express';
+import { createHandler } from 'graphql-http/lib/use/express';
+import expressPlayground from 'graphql-playground-middleware-express';
 
-import { ContextDomain } from "./domains/Context";
-import { createSchema } from "./schema";
-import { createGraphqlFetch } from "./utils/executor";
-import { requireEnv } from "./utils/requireEnv";
+import { ContextDomain } from './domains/Context';
+import { createSchema } from './schema';
+import { createGraphqlFetch } from './utils/executor';
+import { requireEnv } from './utils/requireEnv';
 
 const { FUEL_PROVIDER } = requireEnv([
-  ["FUEL_PROVIDER", "https://beta-5.fuel.network/graphql"],
+  ['FUEL_PROVIDER', 'https://beta-5.fuel.network/graphql'],
 ]);
 
 // Create a server:
@@ -19,11 +19,11 @@ app.use(cors<cors.CorsRequest>());
 app.use(express.json());
 
 app.get(
-  "/graphql",
+  '/graphql',
   expressPlayground({
-    endpoint: "/graphql",
+    endpoint: '/graphql',
     settings: {
-      "schema.polling.enable": false,
+      'schema.polling.enable': false,
     },
   }),
 );
@@ -32,7 +32,7 @@ const executor = createGraphqlFetch(FUEL_PROVIDER);
 const schema = createSchema(executor);
 
 app.post(
-  "/graphql",
+  '/graphql',
   createHandler({
     schema,
     async context() {
@@ -42,11 +42,11 @@ app.post(
 );
 
 // Check health of the graphql endpoint and the fuel provider
-app.get("/health", async (_, res) => {
+app.get('/health', async (_, res) => {
   let providerUp = null;
   try {
     providerUp = (
-      await fetch(`${FUEL_PROVIDER.replace("/graphql", "/health")}`).then(
+      await fetch(`${FUEL_PROVIDER.replace('/graphql', '/health')}`).then(
         (res) => res.json(),
       )
     ).up;

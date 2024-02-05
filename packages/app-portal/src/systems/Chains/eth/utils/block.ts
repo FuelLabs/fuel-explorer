@@ -1,7 +1,7 @@
-import { bn } from "fuels";
-import type { PublicClient } from "wagmi";
+import { bn } from 'fuels';
+import type { PublicClient } from 'wagmi';
 
-import { EthTxCache } from "./txCache";
+import { EthTxCache } from './txCache';
 
 export const getBlockDate = async ({
   blockHash,

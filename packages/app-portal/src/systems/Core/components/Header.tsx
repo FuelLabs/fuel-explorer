@@ -1,9 +1,9 @@
-import { cssObj } from "@fuel-ui/css";
-import { Nav } from "@fuel-ui/react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Pages } from "~/types";
+import { cssObj } from '@fuel-ui/css';
+import { Nav } from '@fuel-ui/react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Pages } from '~/types';
 
-import { removeTrailingSlash } from "../utils";
+import { removeTrailingSlash } from '../utils';
 
 export function Header() {
   const location = useLocation();
@@ -69,6 +69,6 @@ export function Header() {
 
 const styles = {
   menuItem: cssObj({
-    cursor: "pointer",
+    cursor: 'pointer',
   }),
 };

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
-import type { BlockItemFragment, Maybe } from "@fuel-explorer/graphql";
+import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import {
   Address,
   Grid,
@@ -9,14 +9,14 @@ import {
   LoadingBox,
   LoadingWrapper,
   VStack,
-} from "@fuels/ui";
-import { IconListDetails } from "@tabler/icons-react";
-import NextLink from "next/link";
-import { Routes } from "~/routes";
-import { CardInfo } from "~/systems/Core/components/CardInfo/CardInfo";
-import { PageTitle } from "~/systems/Core/components/PageTitle/PageTitle";
-import { TxList } from "~/systems/Transactions/components/TxList/TxList";
-import { TxListLoader } from "~/systems/Transactions/components/TxList/TxListLoader";
+} from '@fuels/ui';
+import { IconListDetails } from '@tabler/icons-react';
+import NextLink from 'next/link';
+import { Routes } from '~/routes';
+import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
+import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
+import { TxList } from '~/systems/Transactions/components/TxList/TxList';
+import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
 type BlockScreenSimpleProps = {
   block?: Maybe<BlockItemFragment>;
@@ -35,7 +35,7 @@ export function BlockScreenSimple({
       <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">
         <CardInfo name="Producer" className="flex-1">
           <Address
-            value={producer || ""}
+            value={producer || ''}
             className="[&_button]:text-color [&_svg]:text-color [&_button]:text-base"
             linkProps={{ as: NextLink, href: Routes.accountAssets(producer!) }}
           />

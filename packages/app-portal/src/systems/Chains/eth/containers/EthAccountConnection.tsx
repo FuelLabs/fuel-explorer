@@ -1,8 +1,8 @@
-import { AccountConnectionInput } from "~/systems/Accounts";
-import { useAsset } from "~/systems/Assets";
+import { AccountConnectionInput } from '~/systems/Accounts';
+import { useAsset } from '~/systems/Assets';
 
-import { ETH_CHAIN } from "../../config";
-import { useEthAccountConnection } from "../hooks";
+import { ETH_CHAIN } from '../../config';
+import { useEthAccountConnection } from '../hooks';
 
 export const EthAccountConnection = ({ label }: { label?: string }) => {
   const { asset: ethAsset } = useAsset();

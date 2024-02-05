@@ -1,14 +1,14 @@
-import type { BaseProps } from "@fuels/ui";
-import { Icon, Text, useBreakpoints } from "@fuels/ui";
-import { IconCoins } from "@tabler/icons-react";
-import type { BN } from "fuels";
-import { bn } from "fuels";
-import Image from "next/image";
-import { useAsset } from "~/systems/Asset/hooks/useAsset";
-import { useFuelAsset } from "~/systems/Asset/hooks/useFuelAsset";
+import type { BaseProps } from '@fuels/ui';
+import { Icon, Text, useBreakpoints } from '@fuels/ui';
+import { IconCoins } from '@tabler/icons-react';
+import type { BN } from 'fuels';
+import { bn } from 'fuels';
+import Image from 'next/image';
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 
-import { cx } from "../../utils/cx";
-import { formatZeroUnits } from "../../utils/format";
+import { cx } from '../../utils/cx';
+import { formatZeroUnits } from '../../utils/format';
 
 type AmountProps = BaseProps<{
   value?: BN | null;
@@ -26,7 +26,7 @@ export function Amount({
   className,
   iconSize = 18,
 }: AmountProps) {
-  const asset = useAsset(assetId ?? "");
+  const asset = useAsset(assetId ?? '');
   const fuelAsset = useFuelAsset(asset);
   const amount = bn(value);
   const { isMobile } = useBreakpoints();
@@ -34,7 +34,7 @@ export function Amount({
     <Text
       as="div"
       className={cx(
-        "text-secondary text-sm flex items-center gap-2",
+        'text-secondary text-sm flex items-center gap-2',
         className,
       )}
     >
@@ -53,7 +53,7 @@ export function Amount({
           {bn(amount).format({
             precision: isMobile ? 3 : undefined,
             units: fuelAsset.decimals,
-          })}{" "}
+          })}{' '}
         </>
       ) : (
         formatZeroUnits(amount)

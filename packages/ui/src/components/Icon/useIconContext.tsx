@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import type { ComponentType } from "react";
-import { createContext, useContext } from "react";
+import type { ComponentType } from 'react';
+import { createContext, useContext } from 'react';
 
-import type { Colors } from "../../utils/types";
+import type { Colors } from '../../utils/types';
 
-import { INIT_ICON_SIZE, INIT_ICON_STROKE } from "./constants";
+import { INIT_ICON_SIZE, INIT_ICON_STROKE } from './constants';
 
 export type IconContext = {
   stroke?: number;

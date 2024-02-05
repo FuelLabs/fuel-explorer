@@ -1,11 +1,11 @@
-import { cssObj } from "@fuel-ui/css";
-import { Grid } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Grid } from '@fuel-ui/react';
 
-import type { Project } from "../../types";
-import { ProjectItem } from "../ProjectItem";
+import type { Project } from '../../types';
+import { ProjectItem } from '../ProjectItem';
 
-import { ProjectListEmpty } from "./ProjectListEmpty";
-import { ProjectListLoading } from "./ProjectListLoading";
+import { ProjectListEmpty } from './ProjectListEmpty';
+import { ProjectListLoading } from './ProjectListLoading';
 
 type ProjectListProps = {
   projects: Project[];
@@ -33,14 +33,14 @@ export const ProjectList = ({
 
 const styles = {
   grid: cssObj({
-    gridTemplateColumns: "1fr",
-    alignItems: "stretch",
-    gap: "$6",
+    gridTemplateColumns: '1fr',
+    alignItems: 'stretch',
+    gap: '$6',
 
     /// show only 1 column on mobile
-    "@sm": {
-      gridTemplateColumns: "repeat(2, 1fr)",
-      gridTemplateRows: "repeat(2, 1fr)",
+    '@sm': {
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gridTemplateRows: 'repeat(2, 1fr)',
     },
   }),
 };

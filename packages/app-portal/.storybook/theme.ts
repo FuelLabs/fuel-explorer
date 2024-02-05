@@ -1,10 +1,10 @@
-const PRIMARY_COLOR = "#00E182";
+const PRIMARY_COLOR = '#00E182';
 const LOGO =
-  "https://assets-global.website-files.com/62e273f312d561347ce33306/6400d0b82c501d62b75963ff_Fuel%20New.png";
+  'https://assets-global.website-files.com/62e273f312d561347ce33306/6400d0b82c501d62b75963ff_Fuel%20New.png';
 
 export default {
-  brandTitle: "Fuel",
-  brandUrl: "https://fuel.sh",
+  brandTitle: 'Fuel',
+  brandUrl: 'https://fuel.sh',
   brandImage: LOGO,
   colorPrimary: PRIMARY_COLOR,
   colorSecondary: PRIMARY_COLOR,

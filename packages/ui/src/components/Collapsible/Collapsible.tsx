@@ -1,17 +1,17 @@
-import type { TextProps } from "@radix-ui/themes/dist/cjs/components/text";
-import { IconChevronDown } from "@tabler/icons-react";
-import { createContext, useContext, useEffect, useState } from "react";
-import type { VariantProps } from "tailwind-variants";
-import { tv } from "tailwind-variants";
+import type { TextProps } from '@radix-ui/themes/dist/cjs/components/text';
+import { IconChevronDown } from '@tabler/icons-react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { VariantProps } from 'tailwind-variants';
+import { tv } from 'tailwind-variants';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import { cx } from "../../utils/css";
-import { Box } from "../Box";
-import type { BoxProps } from "../Box";
-import { Card } from "../Card";
-import type { CardBodyProps, CardHeaderProps, CardProps } from "../Card";
-import { IconButton } from "../IconButton";
-import { Text } from "../Text";
+import { createComponent, withNamespace } from '../../utils/component';
+import { cx } from '../../utils/css';
+import { Box } from '../Box';
+import type { BoxProps } from '../Box';
+import { Card } from '../Card';
+import type { CardBodyProps, CardHeaderProps, CardProps } from '../Card';
+import { IconButton } from '../IconButton';
+import { Text } from '../Text';
 
 type CollapsibleBaseProps = VariantProps<typeof styles> & {
   defaultOpened?: boolean;
@@ -36,7 +36,7 @@ export type CollapsibleTitleProps = TextProps;
 export type CollapsibleBodyProps = BoxProps;
 
 export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
-  id: "Collapsible",
+  id: 'Collapsible',
   baseElement: Card,
   render: (
     Root,
@@ -47,7 +47,7 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
       hideIcon,
       opened: initialOpened,
       onOpenChange,
-      variant = "surface",
+      variant = 'surface',
       ...props
     },
   ) => {
@@ -68,7 +68,7 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
           {...props}
           className={cx(
             classes.root({ className }),
-            hideIcon ? "cursor-default" : "",
+            hideIcon ? 'cursor-default' : '',
           )}
         >
           {children}
@@ -82,7 +82,7 @@ export const CollapsibleHeader = createComponent<
   CollapsibleHeaderProps,
   typeof Card.Header
 >({
-  id: "CollapsibleHeader",
+  id: 'CollapsibleHeader',
   baseElement: Card.Header,
   render: (Root, { children, className, ...props }) => {
     const classes = styles();
@@ -90,10 +90,10 @@ export const CollapsibleHeader = createComponent<
     return (
       <Root
         {...props}
-        data-state={opened ? "opened" : "closed"}
+        data-state={opened ? 'opened' : 'closed'}
         className={cx(
           classes.header({ className }),
-          hideIcon ? "cursor-default" : "",
+          hideIcon ? 'cursor-default' : '',
         )}
         onClick={() => setOpened(!opened)}
       >
@@ -116,7 +116,7 @@ export const CollapsibleContent = createComponent<
   CollapsibleContentProps,
   typeof Card.Body
 >({
-  id: "CollapsibleContent",
+  id: 'CollapsibleContent',
   baseElement: Card.Body,
   render: (Root, { children, className, ...props }) => {
     const { opened, variant } = useContext(ctx);
@@ -133,7 +133,7 @@ export const CollapsibleTitle = createComponent<
   CollapsibleTitleProps,
   typeof Text
 >({
-  id: "CollapsibleTitle",
+  id: 'CollapsibleTitle',
   baseElement: Text,
   className: () => {
     const { variant } = useContext(ctx);
@@ -145,7 +145,7 @@ export const CollapsibleBody = createComponent<
   CollapsibleBodyProps,
   typeof Box
 >({
-  id: "CollapsibleBody",
+  id: 'CollapsibleBody',
   baseElement: Box,
   className: () => {
     const { variant } = useContext(ctx);
@@ -162,28 +162,28 @@ export const Collapsible = withNamespace(CollapsibleRoot, {
 
 const styles = tv({
   slots: {
-    root: "py-[10px]",
+    root: 'py-[10px]',
     header:
-      "group relative gap-4 cursor-pointer pr-9 flex flex-col justify-center tablet:items-center tablet:flex-row tablet:justify-start",
-    icon: "transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]",
-    content: "mx-4 mb-2 border border-border",
-    body: "",
-    title: "flex items-center gap-2 text-sm font-medium",
+      'group relative gap-4 cursor-pointer pr-9 flex flex-col justify-center tablet:items-center tablet:flex-row tablet:justify-start',
+    icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
+    content: 'mx-4 mb-2 border border-border',
+    body: '',
+    title: 'flex items-center gap-2 text-sm font-medium',
   },
   variants: {
     variant: {
       surface: {
-        content: "p-0 bg-gray-3 rounded-sm",
-        body: "px-3 py-3",
-        title: "py-3 px-3 border-b border-border",
+        content: 'p-0 bg-gray-3 rounded-sm',
+        body: 'px-3 py-3',
+        title: 'py-3 px-3 border-b border-border',
       },
       ghost: {
-        content: "p-3 rounded-sm",
-        body: "pt-2",
+        content: 'p-3 rounded-sm',
+        body: 'pt-2',
       },
     },
   },
   defaultVariants: {
-    variant: "surface",
+    variant: 'surface',
   },
 });

@@ -1,5 +1,5 @@
-import { cssObj } from "@fuel-ui/css";
-import { Badge, Text } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Badge, Text } from '@fuel-ui/react';
 
 export const ActionRequiredBadge = () => {
   return (
@@ -13,9 +13,9 @@ export const ActionRequiredBadge = () => {
 
 const styles = {
   actionBadge: cssObj({
-    fontSize: "$xs",
+    fontSize: '$xs',
     lineHeight: 1,
-    fontWeight: "$medium",
-    textTransform: "none",
+    fontWeight: '$medium',
+    textTransform: 'none',
   }),
 };

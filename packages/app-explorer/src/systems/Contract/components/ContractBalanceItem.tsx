@@ -1,4 +1,4 @@
-import { BalanceItem } from "~/systems/Core/components/BalanceItem/BalanceItem";
+import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 
 type ContractBalanceItemProps = {
   amount: string;

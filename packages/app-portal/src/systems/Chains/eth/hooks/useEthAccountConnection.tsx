@@ -1,4 +1,4 @@
-import { useModal } from "connectkit";
+import { useModal } from 'connectkit';
 import {
   useAccount,
   useBalance,
@@ -7,10 +7,10 @@ import {
   useEnsName,
   usePublicClient,
   useWalletClient,
-} from "wagmi";
-import type { AssetEth } from "~/systems/Assets/utils";
+} from 'wagmi';
+import type { AssetEth } from '~/systems/Assets/utils';
 
-import { parseEthAddressToFuel } from "../utils";
+import { parseEthAddressToFuel } from '../utils';
 
 export function useEthAccountConnection(props?: {
   erc20Address?: `0x${string}`;
@@ -33,7 +33,7 @@ export function useEthAccountConnection(props?: {
   async function addAsset(asset: AssetEth) {
     if (asset.address && walletClient) {
       await walletClient?.watchAsset({
-        type: "ERC20",
+        type: 'ERC20',
         options: {
           address: asset.address,
           decimals: asset.decimals,

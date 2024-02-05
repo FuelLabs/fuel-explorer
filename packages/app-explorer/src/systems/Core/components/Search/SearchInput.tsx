@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import type { Maybe, SearchResult } from "@fuel-explorer/graphql";
-import type { BaseProps, InputFieldProps, InputProps } from "@fuels/ui";
+import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
+import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
 import {
   Box,
   Dropdown,
@@ -15,18 +15,18 @@ import {
   VStack,
   shortAddress,
   useBreakpoints,
-} from "@fuels/ui";
-import { IconCheck, IconSearch, IconX } from "@tabler/icons-react";
-import NextLink from "next/link";
-import type { KeyboardEvent } from "react";
-import { forwardRef, useContext, useEffect, useRef, useState } from "react";
-import { useFormStatus } from "react-dom";
-import { Routes } from "~/routes";
+} from '@fuels/ui';
+import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import NextLink from 'next/link';
+import type { KeyboardEvent } from 'react';
+import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { Routes } from '~/routes';
 
-import { cx } from "../../utils/cx";
+import { cx } from '../../utils/cx';
 
-import { SearchContext } from "./SearchWidget";
-import { styles } from "./styles";
+import { SearchContext } from './SearchWidget';
+import { styles } from './styles';
 
 type SearchDropdownProps = {
   searchResult?: Maybe<SearchResult>;
@@ -96,7 +96,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       onClick={onSelectItem}
                     >
                       {shortAddress(
-                        searchResult.account.address || "",
+                        searchResult.account.address || '',
                         trimL,
                         trimR,
                       )}
@@ -116,7 +116,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                           className="text-color"
                           onClick={onSelectItem}
                         >
-                          {shortAddress(transaction?.id || "", trimL, trimR)}
+                          {shortAddress(transaction?.id || '', trimL, trimR)}
                         </Link>
                       </Dropdown.Item>
                     );
@@ -133,7 +133,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       className="text-color"
                       onClick={onSelectItem}
                     >
-                      {shortAddress(searchResult.block.id || "", trimL, trimR)}
+                      {shortAddress(searchResult.block.id || '', trimL, trimR)}
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item className={classes.dropdownItem()}>
@@ -159,7 +159,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       onClick={onSelectItem}
                     >
                       {shortAddress(
-                        searchResult.contract.id || "",
+                        searchResult.contract.id || '',
                         trimL,
                         trimR,
                       )}
@@ -178,7 +178,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       onClick={onSelectItem}
                     >
                       {shortAddress(
-                        searchResult.transaction.id || "",
+                        searchResult.transaction.id || '',
                         trimL,
                         trimR,
                       )}
@@ -210,11 +210,11 @@ type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
 };
 
 export function SearchInput({
-  value: initialValue = "",
+  value: initialValue = '',
   className,
   onClear,
   autoFocus,
-  placeholder = "Search here...",
+  placeholder = 'Search here...',
   searchResult,
   expandOnFocus,
   ...props
@@ -245,7 +245,7 @@ export function SearchInput({
   }
 
   function handleClear() {
-    setValue("");
+    setValue('');
     setHasSubmitted(false);
     onClear?.(value);
     if (isExpanded) {
@@ -273,10 +273,10 @@ export function SearchInput({
           className={cx(className, classes.inputWrapper())}
           onFocus={expandOnFocusHandler}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               e.preventDefault();
               (e.target as HTMLFormElement).form?.dispatchEvent(
-                new Event("submit", { cancelable: true, bubbles: true }),
+                new Event('submit', { cancelable: true, bubbles: true }),
               );
               handleSubmit();
             }

@@ -1,15 +1,15 @@
-import { darkTheme, lightTheme } from "@fuel-ui/react";
-import { themes } from "@storybook/theming";
-import React, { useEffect } from "react";
+import { darkTheme, lightTheme } from '@fuel-ui/react';
+import { themes } from '@storybook/theming';
+import React, { useEffect } from 'react';
 
-import { ThemeProvider, useFuelTheme } from "@fuel-ui/react";
-import { useDarkMode } from "storybook-dark-mode";
-import { StoreProvider } from "../src/systems/Store";
-import theme from "./theme";
+import { ThemeProvider, useFuelTheme } from '@fuel-ui/react';
+import { useDarkMode } from 'storybook-dark-mode';
+import { StoreProvider } from '../src/systems/Store';
+import theme from './theme';
 
 export const parameters = {
   actions: {
-    argTypesRegex: "^on[A-Z].*",
+    argTypesRegex: '^on[A-Z].*',
   },
   controls: {
     matchers: {
@@ -19,7 +19,7 @@ export const parameters = {
   },
   options: {
     storySort: {
-      method: "alphabetical",
+      method: 'alphabetical',
     },
   },
   darkMode: {
@@ -27,8 +27,8 @@ export const parameters = {
     dark: {
       ...themes.dark,
       ...theme,
-      appBg: "#101010",
-      barBg: "#151515",
+      appBg: '#101010',
+      barBg: '#151515',
     },
     light: {
       ...themes.light,
@@ -44,7 +44,7 @@ function ThemeWrapper(props: any) {
   const { setTheme } = useFuelTheme();
 
   useEffect(() => {
-    setTheme(isDark ? "dark" : "light");
+    setTheme(isDark ? 'dark' : 'light');
   }, [isDark]);
 
   return <ThemeProvider>{props.children}</ThemeProvider>;

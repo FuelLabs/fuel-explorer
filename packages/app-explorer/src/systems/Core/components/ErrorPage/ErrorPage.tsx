@@ -1,5 +1,5 @@
-import { Button } from "@fuels/ui";
-import Link from "next/link";
+import { Button } from '@fuels/ui';
+import Link from 'next/link';
 
 export function ErrorPageComponent() {
   return (

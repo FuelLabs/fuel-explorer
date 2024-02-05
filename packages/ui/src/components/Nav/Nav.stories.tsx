@@ -1,13 +1,13 @@
-import { action } from "@storybook/addon-actions";
-import type { Meta, StoryObj } from "@storybook/react";
+import { action } from '@storybook/addon-actions';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Nav } from "./Nav";
+import { Nav } from './Nav';
 
 const meta: Meta<typeof Nav> = {
-  title: "Layout/Nav",
+  title: 'Layout/Nav',
   component: Nav,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -15,12 +15,12 @@ export default meta;
 type Story = StoryObj<typeof Nav>;
 
 const ACCOUNT =
-  "fuel10va6297tkerdcn5u8mxjm9emudsmkj85pq5x7t7stkmzmc4nvs3qvn99qz";
+  'fuel10va6297tkerdcn5u8mxjm9emudsmkj85pq5x7t7stkmzmc4nvs3qvn99qz';
 
 const NETWORK = {
-  id: "1",
-  name: "Mainnet",
-  url: "https://mainnet.fuel.sh",
+  id: '1',
+  name: 'Mainnet',
+  url: 'https://mainnet.fuel.sh',
 };
 
 export const Usage: Story = {
@@ -52,7 +52,7 @@ export const Usage: Story = {
 
 export const NoConnection: Story = {
   render: () => (
-    <Nav onConnect={action("onConnect")}>
+    <Nav onConnect={action('onConnect')}>
       <Nav.Desktop>
         <Nav.Logo />
         <Nav.Menu>
@@ -103,7 +103,7 @@ export const Mobile: Story = {
   ),
   parameters: {
     viewport: {
-      defaultViewport: "iphonex",
+      defaultViewport: 'iphonex',
     },
   },
 };

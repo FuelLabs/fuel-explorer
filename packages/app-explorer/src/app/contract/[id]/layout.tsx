@@ -1,5 +1,5 @@
-import { ContractHeader } from "~/systems/Contract/components/ContractHeader";
-import type { ContractRouteParams } from "~/systems/Contract/types";
+import { ContractHeader } from '~/systems/Contract/components/ContractHeader';
+import type { ContractRouteParams } from '~/systems/Contract/types';
 
 export default function Layout({
   children,
@@ -16,5 +16,5 @@ export default function Layout({
   );
 }
 
-export const dynamic = "force-static";
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

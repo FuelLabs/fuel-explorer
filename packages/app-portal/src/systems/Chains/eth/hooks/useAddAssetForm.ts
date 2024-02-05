@@ -1,6 +1,6 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 export type AddAssetFormValues = {
   symbol: string;
@@ -8,8 +8,8 @@ export type AddAssetFormValues = {
 };
 
 const DEFAULT_VALUES = {
-  symbol: "",
-  decimals: "",
+  symbol: '',
+  decimals: '',
 };
 
 type UseAddAssetOpts = {
@@ -18,21 +18,21 @@ type UseAddAssetOpts = {
 
 export const useAddAssetForm = (opts: UseAddAssetOpts = {}) => {
   const schema = yup.object({
-    symbol: yup.string().required("Symbol is required"),
+    symbol: yup.string().required('Symbol is required'),
     decimals: yup
       .string()
-      .required("Decimals is required")
+      .required('Decimals is required')
       .test(
-        "Number",
-        "Decimals must be greater than 0",
+        'Number',
+        'Decimals must be greater than 0',
         (val) => Number(val) > 0,
       ),
   });
 
   const form = useForm<AddAssetFormValues>({
     resolver: yupResolver(schema),
-    reValidateMode: "onChange",
-    mode: "onChange",
+    reValidateMode: 'onChange',
+    mode: 'onChange',
     defaultValues: opts.defaultValues || DEFAULT_VALUES,
   });
 

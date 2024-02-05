@@ -1,4 +1,4 @@
-import { Box, ContentLoader } from "@fuel-ui/react";
+import { Box, ContentLoader } from '@fuel-ui/react';
 
 export const TagLoader = () => {
   return (

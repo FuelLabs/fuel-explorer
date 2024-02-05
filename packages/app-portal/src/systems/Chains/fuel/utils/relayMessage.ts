@@ -1,14 +1,14 @@
 import {
   contractMessagePredicate,
   contractMessageScript,
-} from "@fuel-bridge/message-predicates";
+} from '@fuel-bridge/message-predicates';
 import type {
   Message,
   Provider,
   ScriptTransactionRequestLike,
   TransactionResponse,
   WalletUnlocked as FuelWallet,
-} from "fuels";
+} from 'fuels';
 import {
   InputType,
   OutputType,
@@ -18,9 +18,9 @@ import {
   arrayify,
   bn,
   hexlify,
-} from "fuels";
+} from 'fuels';
 
-import { resourcesToInputs } from "./transaction";
+import { resourcesToInputs } from './transaction';
 
 function getCommonRelayableMessages(provider: Provider) {
   // Create a predicate for common messages
@@ -29,7 +29,7 @@ function getCommonRelayableMessages(provider: Provider) {
   // Details for relaying common messages with certain predicate roots
   const relayableMessages: CommonMessageDetails[] = [
     {
-      name: "Message To Contract v1.3",
+      name: 'Message To Contract v1.3',
       predicateRoot: predicate.address.toHexString(),
       predicate: contractMessagePredicate,
       script: contractMessageScript,
@@ -53,7 +53,7 @@ function getCommonRelayableMessages(provider: Provider) {
         // get contract id
         const data = arrayify(message.data);
         if (data.length < 32)
-          throw new Error("cannot find contract ID in message data");
+          throw new Error('cannot find contract ID in message data');
         const contractId = hexlify(data.slice(0, 32));
 
         // build the transaction
@@ -90,7 +90,7 @@ function getCommonRelayableMessages(provider: Provider) {
           type: OutputType.Variable,
         });
 
-        transaction.witnesses.push("0x");
+        transaction.witnesses.push('0x');
 
         const transactionCost =
           await relayer.provider.getTransactionCost(transaction);
@@ -116,7 +116,7 @@ type CommonMessageDetails = {
     details: CommonMessageDetails,
     txParams: Pick<
       ScriptTransactionRequestLike,
-      "gasLimit" | "gasPrice" | "maturity"
+      'gasLimit' | 'gasPrice' | 'maturity'
     >,
   ) => Promise<ScriptTransactionRequest>;
 };
@@ -131,7 +131,7 @@ export async function relayCommonMessage({
   message: Message;
   txParams?: Pick<
     ScriptTransactionRequestLike,
-    "gasLimit" | "gasPrice" | "maturity"
+    'gasLimit' | 'gasPrice' | 'maturity'
   >;
 }): Promise<TransactionResponse> {
   // find the relay details for the specified message
@@ -145,7 +145,7 @@ export async function relayCommonMessage({
     }
   }
   if (!messageRelayDetails)
-    throw new Error("message is not a common relayable message");
+    throw new Error('message is not a common relayable message');
 
   // build and send transaction
   const transaction = await messageRelayDetails.buildTx(

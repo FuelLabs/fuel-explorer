@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
-import { Address } from "fuels";
+import { PrismaClient } from '@prisma/client';
+import { Address } from 'fuels';
 
 const prisma = new PrismaClient();
 
-export const fuelTestEmail = "test@test.com";
+export const fuelTestEmail = 'test@test.com';
 export const fuelTestAddress = new Address(
-  "fuel1x9lxcuqjw3vw9tsz9earr2d9etnxueg70m6jhppz65vwlauyescsa2seta",
+  'fuel1x9lxcuqjw3vw9tsz9earr2d9etnxueg70m6jhppz65vwlauyescsa2seta',
 ).toB256();
 
 async function main() {

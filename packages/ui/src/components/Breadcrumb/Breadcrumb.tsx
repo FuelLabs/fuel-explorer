@@ -1,26 +1,26 @@
-import { IconChevronRight } from "@tabler/icons-react";
-import { Children } from "react";
+import { IconChevronRight } from '@tabler/icons-react';
+import { Children } from 'react';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
-import { Icon } from "../Icon/Icon";
-import { Link } from "../Link/Link";
-import type { LinkProps } from "../Link/Link";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
+import { Icon } from '../Icon/Icon';
+import { Link } from '../Link/Link';
+import type { LinkProps } from '../Link/Link';
 
-export type BreadcrumbProps = PropsOf<"ul">;
-export type BreadcrumbItemProps = PropsOf<"li">;
+export type BreadcrumbProps = PropsOf<'ul'>;
+export type BreadcrumbItemProps = PropsOf<'li'>;
 export type BreadcrumbLinkProps = LinkProps;
 
-export const BreadcrumbRoot = createComponent<BreadcrumbProps, "ul">({
-  id: "Breadcrumb",
-  className: "flex gap-4 items-stretch",
+export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
+  id: 'Breadcrumb',
+  className: 'flex gap-4 items-stretch',
   render: (_, { children, ...props }) => {
     const newChildren = Children.toArray(children).flatMap((child, index) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const id = (child as any)?.type?.id;
-      if (id !== "BreadcrumbItem" && id !== "BreadcrumbLink") {
+      if (id !== 'BreadcrumbItem' && id !== 'BreadcrumbLink') {
         throw new Error(
-          "Breadcrumb only accepts Breadcrumb.Item or Breadcrumb.Link as children",
+          'Breadcrumb only accepts Breadcrumb.Item or Breadcrumb.Link as children',
         );
       }
 
@@ -39,15 +39,15 @@ export const BreadcrumbRoot = createComponent<BreadcrumbProps, "ul">({
   },
 });
 
-export const BreadcrumbItem = createComponent<BreadcrumbItemProps, "li">({
-  id: "BreadcrumbItem",
-  baseElement: "li",
+export const BreadcrumbItem = createComponent<BreadcrumbItemProps, 'li'>({
+  id: 'BreadcrumbItem',
+  baseElement: 'li',
 });
 
 export const BreadcrumbLink = createComponent<BreadcrumbLinkProps, typeof Link>(
   {
-    id: "BreadcrumbLink",
-    className: "inline-flex",
+    id: 'BreadcrumbLink',
+    className: 'inline-flex',
     baseElement: Link,
   },
 );

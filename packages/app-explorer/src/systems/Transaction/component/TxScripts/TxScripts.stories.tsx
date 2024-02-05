@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { MOCK_TX_CONTRACT_CALL_WITH_RECEIPTS } from "../../__mocks__/receipts";
+import { MOCK_TX_CONTRACT_CALL_WITH_RECEIPTS } from '../../__mocks__/receipts';
 
-import { TxScripts } from "./TxScripts";
+import { TxScripts } from './TxScripts';
 
 const meta: Meta<typeof TxScripts> = {
-  title: "Transaction/TxScript",
+  title: 'Transaction/TxScript',
   component: TxScripts,
 };
 

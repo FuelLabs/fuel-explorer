@@ -1,14 +1,14 @@
-import type { FuelWalletLocked as FuelWallet } from "@fuel-wallet/sdk";
-import { useMemo } from "react";
-import { Services, store } from "~/store";
-import { getAssetEth, getAssetFuel } from "~/systems/Assets/utils";
-import type { BridgeTxsMachineState } from "~/systems/Bridge";
-import { useExplorerLink } from "~/systems/Bridge/hooks/useExplorerLink";
+import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
+import { useMemo } from 'react';
+import { Services, store } from '~/store';
+import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
+import type { BridgeTxsMachineState } from '~/systems/Bridge';
+import { useExplorerLink } from '~/systems/Bridge/hooks/useExplorerLink';
 
-import { useAsset } from "../../../Assets/hooks/useAsset";
-import { useFuelAccountConnection } from "../../fuel";
-import type { TxEthToFuelMachineState } from "../machines";
-import { isErc20Address } from "../utils";
+import { useAsset } from '../../../Assets/hooks/useAsset';
+import { useFuelAccountConnection } from '../../fuel';
+import type { TxEthToFuelMachineState } from '../machines';
+import { isErc20Address } from '../utils';
 
 const bridgeTxsSelectors = {
   txEthToFuel: (txId?: `0x${string}`) => (state: BridgeTxsMachineState) => {
@@ -22,18 +22,18 @@ const bridgeTxsSelectors = {
 
 const txEthToFuelSelectors = {
   status: (state: TxEthToFuelMachineState) => {
-    const isSettlementLoading = state.hasTag("isSettlementLoading");
-    const isSettlementSelected = state.hasTag("isSettlementSelected");
-    const isSettlementDone = state.hasTag("isSettlementDone");
+    const isSettlementLoading = state.hasTag('isSettlementLoading');
+    const isSettlementSelected = state.hasTag('isSettlementSelected');
+    const isSettlementDone = state.hasTag('isSettlementDone');
     const isConfirmTransactionLoading = state.hasTag(
-      "isConfirmTransactionLoading",
+      'isConfirmTransactionLoading',
     );
     const isConfirmTransactionSelected = state.hasTag(
-      "isConfirmTransactionSelected",
+      'isConfirmTransactionSelected',
     );
-    const isReceiveDone = state.hasTag("isReceiveDone");
+    const isReceiveDone = state.hasTag('isReceiveDone');
     const isWaitingFuelWalletApproval = state.hasTag(
-      "isWaitingFuelWalletApproval",
+      'isWaitingFuelWalletApproval',
     );
 
     return {
@@ -53,33 +53,33 @@ const txEthToFuelSelectors = {
     if (!ethTxId) return undefined;
 
     const confirmTransactionText = isErc20Address(erc20Token?.address)
-      ? "Action"
-      : "Automatic";
+      ? 'Action'
+      : 'Automatic';
 
     const steps = [
       {
-        name: "Submit to bridge",
-        status: "Done!",
+        name: 'Submit to bridge',
+        status: 'Done!',
         isDone: true,
       },
       {
-        name: "Settlement",
+        name: 'Settlement',
         // TODO: put correct time left '~XX minutes left', how?
-        status: status.isSettlementDone ? "Done!" : "Waiting",
+        status: status.isSettlementDone ? 'Done!' : 'Waiting',
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
       },
       {
-        name: "Confirm transaction",
-        status: status.isReceiveDone ? "Done!" : confirmTransactionText,
+        name: 'Confirm transaction',
+        status: status.isReceiveDone ? 'Done!' : confirmTransactionText,
         isLoading: status.isConfirmTransactionLoading,
         isDone: status.isReceiveDone,
         isSelected: status.isConfirmTransactionSelected,
       },
       {
-        name: "Receive on Fuel",
-        status: status.isReceiveDone ? "Done!" : "Automatic",
+        name: 'Receive on Fuel',
+        status: status.isReceiveDone ? 'Done!' : 'Automatic',
         isLoading: false,
         isDone: status.isReceiveDone,
         isSelected: false,
@@ -107,15 +107,15 @@ const txEthToFuelSelectors = {
     return ethTxId;
   },
   isLoadingReceipts: (state: TxEthToFuelMachineState) => {
-    return state.matches("checkingSettlement.gettingReceiptsInfo");
+    return state.matches('checkingSettlement.gettingReceiptsInfo');
   },
 };
 
 export function useTxEthToFuel({ id }: { id: string }) {
   const { wallet: fuelWallet } = useFuelAccountConnection();
-  const txId = id.startsWith("0x") ? (id as `0x${string}`) : undefined;
+  const txId = id.startsWith('0x') ? (id as `0x${string}`) : undefined;
   const { href: explorerLink } = useExplorerLink({
-    network: "ethereum",
+    network: 'ethereum',
     id: txId,
   });
 

@@ -1,7 +1,7 @@
-import { ContextMenu as RC } from "@radix-ui/themes";
+import { ContextMenu as RC } from '@radix-ui/themes';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type ContextMenuProps = PropsOf<typeof RC.Root>;
 export type ContextMenuTriggerProps = PropsOf<typeof RC.Trigger>;
@@ -20,7 +20,7 @@ export const ContextMenuRoot = createComponent<
   ContextMenuProps,
   typeof RC.Root
 >({
-  id: "ContextMenu",
+  id: 'ContextMenu',
   baseElement: RC.Root,
 });
 
@@ -28,7 +28,7 @@ export const ContextMenuTrigger = createComponent<
   ContextMenuTriggerProps,
   typeof RC.Trigger
 >({
-  id: "ContextMenuTrigger",
+  id: 'ContextMenuTrigger',
   baseElement: RC.Trigger,
 });
 
@@ -36,7 +36,7 @@ export const ContextMenuContent = createComponent<
   ContextMenuContentProps,
   typeof RC.Content
 >({
-  id: "ContextMenuContent",
+  id: 'ContextMenuContent',
   baseElement: RC.Content,
 });
 
@@ -44,7 +44,7 @@ export const ContextMenuLabel = createComponent<
   ContextMenuLabelProps,
   typeof RC.Label
 >({
-  id: "ContextMenuLabel",
+  id: 'ContextMenuLabel',
   baseElement: RC.Label,
 });
 
@@ -52,7 +52,7 @@ export const ContextMenuItem = createComponent<
   ContextMenuItemProps,
   typeof RC.Item
 >({
-  id: "ContextMenuItem",
+  id: 'ContextMenuItem',
   baseElement: RC.Item,
 });
 
@@ -60,7 +60,7 @@ export const ContextMenuGroup = createComponent<
   ContextMenuGroupProps,
   typeof RC.Group
 >({
-  id: "ContextMenuGroup",
+  id: 'ContextMenuGroup',
   baseElement: RC.Group,
 });
 
@@ -68,7 +68,7 @@ export const ContextMenuRadioGroup = createComponent<
   ContextMenuRadioGroupProps,
   typeof RC.RadioGroup
 >({
-  id: "ContextMenuRadioGroup",
+  id: 'ContextMenuRadioGroup',
   baseElement: RC.RadioGroup,
 });
 
@@ -76,7 +76,7 @@ export const ContextMenuCheckboxItem = createComponent<
   ContextMenuCheckboxItemProps,
   typeof RC.CheckboxItem
 >({
-  id: "ContextMenuCheckboxItem",
+  id: 'ContextMenuCheckboxItem',
   baseElement: RC.CheckboxItem,
 });
 
@@ -84,7 +84,7 @@ export const ContextMenuSub = createComponent<
   ContextMenuSubProps,
   typeof RC.Sub
 >({
-  id: "ContextMenuSub",
+  id: 'ContextMenuSub',
   baseElement: RC.Sub,
 });
 
@@ -92,7 +92,7 @@ export const ContextMenuSubContent = createComponent<
   ContextMenuSubContentProps,
   typeof RC.SubContent
 >({
-  id: "ContextMenuSubContent",
+  id: 'ContextMenuSubContent',
   baseElement: RC.SubContent,
 });
 
@@ -100,7 +100,7 @@ export const ContextMenuSubTrigger = createComponent<
   ContextMenuSubTriggerProps,
   typeof RC.SubTrigger
 >({
-  id: "ContextMenuSubTrigger",
+  id: 'ContextMenuSubTrigger',
   baseElement: RC.SubTrigger,
 });
 
@@ -108,7 +108,7 @@ export const ContextMenuSeparator = createComponent<
   ContextMenuSeparatorProps,
   typeof RC.Separator
 >({
-  id: "ContextSeparator",
+  id: 'ContextSeparator',
   baseElement: RC.Separator,
 });
 

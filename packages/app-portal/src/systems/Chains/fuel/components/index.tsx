@@ -1,1 +1,1 @@
-export * from "./ActionRequiredBadge";
+export * from './ActionRequiredBadge';

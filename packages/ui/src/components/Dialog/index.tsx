@@ -5,7 +5,7 @@ export {
   DialogDescription,
   DialogRoot,
   DialogTrigger,
-} from "./Dialog";
+} from './Dialog';
 
 export type {
   DialogCloseProps,
@@ -14,4 +14,4 @@ export type {
   DialogProps,
   DialogTitleProps,
   DialogTriggerProps,
-} from "./Dialog";
+} from './Dialog';

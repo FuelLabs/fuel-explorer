@@ -1,2 +1,2 @@
-export * from "./handleNewEthBlock";
-export * from "./address";
+export * from './handleNewEthBlock';
+export * from './address';

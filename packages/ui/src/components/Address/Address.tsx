@@ -1,31 +1,31 @@
-import type { ReactNode } from "react";
-import { tv } from "tailwind-variants";
+import type { ReactNode } from 'react';
+import { tv } from 'tailwind-variants';
 
-import { createComponent } from "../../utils/component";
-import { cx } from "../../utils/css";
-import type { BaseProps, WithAsProps } from "../../utils/types";
-import { HStack } from "../Box";
-import { Copyable } from "../Copyable";
-import type { LinkProps } from "../Link";
-import { Link } from "../Link";
-import { LoadingBox } from "../LoadingBox";
-import { LoadingWrapper } from "../LoadingWrapper";
+import { createComponent } from '../../utils/component';
+import { cx } from '../../utils/css';
+import type { BaseProps, WithAsProps } from '../../utils/types';
+import { HStack } from '../Box';
+import { Copyable } from '../Copyable';
+import type { LinkProps } from '../Link';
+import { Link } from '../Link';
+import { LoadingBox } from '../LoadingBox';
+import { LoadingWrapper } from '../LoadingWrapper';
 
-import type { UseFuelAddressOpts } from "./useFuelAddress";
-import { useFuelAddress } from "./useFuelAddress";
+import type { UseFuelAddressOpts } from './useFuelAddress';
+import { useFuelAddress } from './useFuelAddress';
 
 export type AddressBaseProps = {
   value?: string;
   prefix?: ReactNode;
   full?: boolean;
   addressOpts?: UseFuelAddressOpts;
-  fixed?: UseFuelAddressOpts["fixed"];
+  fixed?: UseFuelAddressOpts['fixed'];
   linkProps?: AddressLinkProps;
   isLoading?: boolean;
   iconSize?: number;
 };
 
-export type AddressLinkProps = Omit<LinkProps, "children">;
+export type AddressLinkProps = Omit<LinkProps, 'children'>;
 export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
 
 const AddressSpan = ({
@@ -39,17 +39,17 @@ const AddressSpan = ({
   short: string;
   className?: string;
 }) => {
-  const baseClass = cx(["text-[1em]", className]);
+  const baseClass = cx(['text-[1em]', className]);
   return (
     <>
       {full && (
-        <span className={cx(baseClass, "mobile:max-laptop:hidden")}>
+        <span className={cx(baseClass, 'mobile:max-laptop:hidden')}>
           {address}
         </span>
       )}
       <span
         className={cx(baseClass, {
-          "laptop:hidden": full,
+          'laptop:hidden': full,
         })}
       >
         {short}
@@ -58,8 +58,8 @@ const AddressSpan = ({
   );
 };
 
-export const Address = createComponent<AddressProps, "div">({
-  id: "Address",
+export const Address = createComponent<AddressProps, 'div'>({
+  id: 'Address',
   render: (
     _,
     {
@@ -76,7 +76,7 @@ export const Address = createComponent<AddressProps, "div">({
     },
   ) => {
     const classes = styles();
-    const { address, short } = useFuelAddress(value || "", {
+    const { address, short } = useFuelAddress(value || '', {
       ...addressOpts,
       fixed,
     });
@@ -102,7 +102,7 @@ export const Address = createComponent<AddressProps, "div">({
                 {linkProps ? (
                   <Link
                     {...linkProps}
-                    className={cx("text-xs text-[1em]")}
+                    className={cx('text-xs text-[1em]')}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -133,8 +133,8 @@ export const Address = createComponent<AddressProps, "div">({
 
 const styles = tv({
   slots: {
-    root: "flex gap-1 text-sm font-mono",
-    prefix: "mr-px text-[1em] text-secondary",
-    address: "text-[1em] text-muted mt-px gap-3",
+    root: 'flex gap-1 text-sm font-mono',
+    prefix: 'mr-px text-[1em] text-secondary',
+    address: 'text-[1em] text-muted mt-px gap-3',
   },
 });

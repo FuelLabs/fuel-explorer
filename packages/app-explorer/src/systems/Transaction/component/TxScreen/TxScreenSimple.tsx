@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
-import type { GroupedInput, GroupedOutput } from "@fuel-explorer/graphql";
+import type { GroupedInput, GroupedOutput } from '@fuel-explorer/graphql';
 import {
   Badge,
   Box,
@@ -16,20 +16,20 @@ import {
   LoadingBox,
   LoadingWrapper,
   VStack,
-} from "@fuels/ui";
-import { IconArrowDown } from "@tabler/icons-react";
-import { bn } from "fuels";
-import NextLink from "next/link";
-import { Routes } from "~/routes";
-import { EmptyCard } from "~/systems/Core/components/EmptyCard/EmptyCard";
-import { formatZeroUnits } from "~/systems/Core/utils/format";
+} from '@fuels/ui';
+import { IconArrowDown } from '@tabler/icons-react';
+import { bn } from 'fuels';
+import NextLink from 'next/link';
+import { Routes } from '~/routes';
+import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
-import { CardInfo } from "../../../Core/components/CardInfo/CardInfo";
-import { TxInput } from "../../component/TxInput/TxInput";
-import { TxOutput } from "../../component/TxOutput/TxOutput";
-import type { TransactionNode, TxStatus } from "../../types";
-import { TX_INTENT_MAP, TxIcon } from "../TxIcon/TxIcon";
-import { TxScripts } from "../TxScripts/TxScripts";
+import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
+import { TxInput } from '../../component/TxInput/TxInput';
+import { TxOutput } from '../../component/TxOutput/TxOutput';
+import type { TransactionNode, TxStatus } from '../../types';
+import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
+import { TxScripts } from '../TxScripts/TxScripts';
 
 type TxScreenProps = {
   transaction: TransactionNode;
@@ -55,7 +55,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
                     type={title}
                     size="lg"
                     status={
-                      tx.isPredicate ? "Info" : (tx.statusType as TxStatus)
+                      tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)
                     }
                   />
                 }
@@ -95,7 +95,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           </EntityItem>
         </CardInfo>
         <CardInfo
-          name={"Timestamp"}
+          name={'Timestamp'}
           description={
             <LoadingWrapper
               isLoading={isLoading}
@@ -111,14 +111,14 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           />
         </CardInfo>
         {(tx.blockHeight || isLoading) && (
-          <CardInfo name={"Block"}>
+          <CardInfo name={'Block'}>
             <LoadingWrapper
               isLoading={isLoading}
               loadingEl={<LoadingBox className="w-28 h-6" />}
               regularEl={
                 <Link
                   as={NextLink}
-                  href={Routes.blockSimple(tx.blockHeight || "")}
+                  href={Routes.blockSimple(tx.blockHeight || '')}
                   className="text-link"
                 >
                   #{tx.blockHeight}
@@ -128,11 +128,11 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           </CardInfo>
         )}
         <CardInfo
-          name={"Network Fee"}
+          name={'Network Fee'}
           description={
             <LoadingWrapper
               isLoading={isLoading}
-              regularEl={<>Gas used: {formatZeroUnits(tx.gasUsed || "")}</>}
+              regularEl={<>Gas used: {formatZeroUnits(tx.gasUsed || '')}</>}
               loadingEl={
                 <>
                   <LoadingBox className="w-28 h-5 mt-2" />

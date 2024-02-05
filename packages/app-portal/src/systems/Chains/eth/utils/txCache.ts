@@ -1,12 +1,12 @@
-import { bn } from "fuels";
-import type { Address } from "viem";
+import { bn } from 'fuels';
+import type { Address } from 'viem';
 
-import type { GetReceiptsInfoReturn } from "../services";
+import type { GetReceiptsInfoReturn } from '../services';
 
-const BLOCK_DATE_KEY_SUBSTRING = "ethBlockDate-";
-const HASH_DONE_KEY_SUBSTRING = "ethToFuelTx";
-const TX_CREATED_KEY_SUBSTRING = "ethTxCreated";
-const TX_RECEIPT_KEY_SUBSTRING = "ethToFuelTxReceipt";
+const BLOCK_DATE_KEY_SUBSTRING = 'ethBlockDate-';
+const HASH_DONE_KEY_SUBSTRING = 'ethToFuelTx';
+const TX_CREATED_KEY_SUBSTRING = 'ethTxCreated';
+const TX_RECEIPT_KEY_SUBSTRING = 'ethToFuelTxReceipt';
 
 export const EthTxCache = {
   getBlockDate: (blockHash: string) => {
@@ -18,11 +18,11 @@ export const EthTxCache = {
   getTxIsDone: (blockHash: string) => {
     return (
       !!blockHash &&
-      localStorage.getItem(generateHashDoneKey(blockHash)) === "true"
+      localStorage.getItem(generateHashDoneKey(blockHash)) === 'true'
     );
   },
   setTxIsDone: (blockHash: string) => {
-    return localStorage.setItem(generateHashDoneKey(blockHash), "true");
+    return localStorage.setItem(generateHashDoneKey(blockHash), 'true');
   },
   clean: () => {
     Object.keys(localStorage).forEach((key) => {
@@ -35,13 +35,13 @@ export const EthTxCache = {
     });
   },
   setTxIsCreated: (txId: string) => {
-    localStorage.setItem(generateTxCreatedKey(txId), "true");
+    localStorage.setItem(generateTxCreatedKey(txId), 'true');
   },
   removeTxCreated: (txId: string) => {
     localStorage.removeItem(generateTxCreatedKey(txId));
   },
   getTxIsCreated: (txId: string) => {
-    return localStorage.getItem(generateTxCreatedKey(txId)) === "true";
+    return localStorage.getItem(generateTxCreatedKey(txId)) === 'true';
   },
   setTxReceipt: (txId: string, receiptInfo: GetReceiptsInfoReturn) => {
     const receiptInfoToStringify = {
@@ -67,7 +67,7 @@ export const EthTxCache = {
     }
     const parsedReceipt = JSON.parse(stringifiedReceipt) as Omit<
       GetReceiptsInfoReturn,
-      "erc20Token" | "nonce" | "amount"
+      'erc20Token' | 'nonce' | 'amount'
     > & {
       nonce: string;
       amount: string;

@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { VStack } from "../Box";
+import { VStack } from '../Box';
 
-import { Collapsible } from "./Collapsible";
+import { Collapsible } from './Collapsible';
 
 const meta: Meta<typeof Collapsible> = {
-  title: "UI/Collapsible",
+  title: 'UI/Collapsible',
   component: Collapsible,
 };
 

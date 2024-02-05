@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box } from "../Box";
+import { Box } from '../Box';
 
-import { Slider } from "./Slider";
+import { Slider } from './Slider';
 
 const meta: Meta<typeof Slider> = {
-  title: "Form/Slider",
+  title: 'Form/Slider',
   component: Slider,
 };
 

@@ -7,7 +7,7 @@ export {
   Strong,
   Text,
   TextBase,
-} from "./Text";
+} from './Text';
 
 export type {
   BlockquoteProps,
@@ -17,4 +17,4 @@ export type {
   QuoteProps,
   StrongProps,
   TextProps,
-} from "./Text";
+} from './Text';

@@ -52,7 +52,7 @@ export async function getBlock({
     variables.id = blockHash;
   }
   const response = await fetch(providerUrl, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       query: blockQuery,
       variables: {
@@ -61,7 +61,7 @@ export async function getBlock({
       },
     }),
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   }).then((res) => res.json());
 

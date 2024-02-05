@@ -1,6 +1,6 @@
-import { CHAIN_IDS, getAssetFuel } from "@fuels/assets";
-import type { Asset } from "@fuels/assets";
-import { useMemo } from "react";
+import { CHAIN_IDS, getAssetFuel } from '@fuels/assets';
+import type { Asset } from '@fuels/assets';
+import { useMemo } from 'react';
 
 export const useFuelAsset = (asset?: Asset | null) => {
   const fuelAsset = useMemo(

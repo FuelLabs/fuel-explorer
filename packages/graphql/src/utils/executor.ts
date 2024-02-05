@@ -1,5 +1,5 @@
-import type { Executor } from "@graphql-tools/utils";
-import { print } from "graphql";
+import type { Executor } from '@graphql-tools/utils';
+import { print } from 'graphql';
 
 export type GraphQLExecutor = Executor<{ url: string }>;
 export type ExecutorParams = {
@@ -12,7 +12,7 @@ export function createExecutor(
   cb: (params: ExecutorParams) => Promise<any>,
 ): GraphQLExecutor {
   return async ({ document, variables, operationName }) => {
-    const query = typeof document === "string" ? document : print(document);
+    const query = typeof document === 'string' ? document : print(document);
     const body = JSON.stringify({ operationName, query, variables });
     return cb({ query, body });
   };
@@ -28,9 +28,9 @@ export function createGraphqlFetch(
     }
     const fetchResult = await fetch(url, {
       body,
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
     return fetchResult.json();

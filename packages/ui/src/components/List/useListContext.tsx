@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { createContext, useContext } from "react";
+import { createContext, useContext } from 'react';
 
-import type { Colors } from "../../utils/types";
-import type { IconProps } from "../Icon/Icon";
+import type { Colors } from '../../utils/types';
+import type { IconProps } from '../Icon/Icon';
 
 export type ListContext = {
-  icon?: IconProps["icon"];
+  icon?: IconProps['icon'];
   iconColor?: Colors;
   iconSize?: number;
   iconAriaLabel?: string;

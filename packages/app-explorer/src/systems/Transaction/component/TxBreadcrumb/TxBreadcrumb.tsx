@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import type { BreadcrumbProps } from "@fuels/ui";
+import type { BreadcrumbProps } from '@fuels/ui';
 import {
   Address,
   Breadcrumb,
@@ -8,9 +8,9 @@ import {
   BreadcrumbLink,
   Icon,
   Text,
-} from "@fuels/ui";
-import { IconHome } from "@tabler/icons-react";
-import NextLink from "next/link";
+} from '@fuels/ui';
+import { IconHome } from '@tabler/icons-react';
+import NextLink from 'next/link';
 
 type TxBreadcrumbProps = BreadcrumbProps & {
   transactionId: string;
@@ -25,7 +25,7 @@ export function TxBreadcrumb({ transactionId, ...props }: TxBreadcrumbProps) {
         </NextLink>
       </BreadcrumbLink>
       <BreadcrumbItem>
-        <Text size={"6"} weight={"medium"} className="mr-4 color-current">
+        <Text size={'6'} weight={'medium'} className="mr-4 color-current">
           Transaction
         </Text>
         <Address full value={transactionId} fixed="b256" />

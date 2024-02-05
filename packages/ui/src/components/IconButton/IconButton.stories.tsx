@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconSettings } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconSettings } from '@tabler/icons-react';
 
-import { IconButton } from "./IconButton";
+import { IconButton } from './IconButton';
 
 const meta: Meta<typeof IconButton> = {
-  title: "UI/IconButton",
+  title: 'UI/IconButton',
   component: IconButton,
 };
 

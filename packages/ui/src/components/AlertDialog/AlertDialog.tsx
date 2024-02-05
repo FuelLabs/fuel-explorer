@@ -1,7 +1,7 @@
-import { AlertDialog as RAD } from "@radix-ui/themes";
+import { AlertDialog as RAD } from '@radix-ui/themes';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type AlertDialogProps = PropsOf<typeof RAD.Root>;
 export type AlertDialogTriggerProps = PropsOf<typeof RAD.Trigger>;
@@ -15,7 +15,7 @@ export const AlertDialogRoot = createComponent<
   AlertDialogProps,
   typeof RAD.Root
 >({
-  id: "AlertDialog",
+  id: 'AlertDialog',
   baseElement: RAD.Root,
 });
 
@@ -23,7 +23,7 @@ export const AlertDialogTrigger = createComponent<
   AlertDialogTriggerProps,
   typeof RAD.Trigger
 >({
-  id: "AlertDialogTrigger",
+  id: 'AlertDialogTrigger',
   baseElement: RAD.Trigger,
 });
 
@@ -31,7 +31,7 @@ export const AlertDialogContent = createComponent<
   AlertDialogContentProps,
   typeof RAD.Content
 >({
-  id: "AlertDialogContent",
+  id: 'AlertDialogContent',
   baseElement: RAD.Content,
 });
 
@@ -39,7 +39,7 @@ export const AlertDialogTitle = createComponent<
   AlertDialogTitleProps,
   typeof RAD.Title
 >({
-  id: "AlertDialogTitle",
+  id: 'AlertDialogTitle',
   baseElement: RAD.Title,
 });
 
@@ -47,7 +47,7 @@ export const AlertDialogDescription = createComponent<
   AlertDialogDescriptionProps,
   typeof RAD.Description
 >({
-  id: "AlertDialogDescription",
+  id: 'AlertDialogDescription',
   baseElement: RAD.Description,
 });
 
@@ -55,7 +55,7 @@ export const AlertDialogAction = createComponent<
   AlertDialogActionProps,
   typeof RAD.Action
 >({
-  id: "AlertDialogAction",
+  id: 'AlertDialogAction',
   baseElement: RAD.Action,
 });
 
@@ -63,7 +63,7 @@ export const AlertDialogCancel = createComponent<
   AlertDialogCancelProps,
   typeof RAD.Cancel
 >({
-  id: "AlertDialogCancel",
+  id: 'AlertDialogCancel',
   baseElement: RAD.Cancel,
 });
 

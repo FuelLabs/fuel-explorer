@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { gql } from "graphql-request";
+import { gql } from 'graphql-request';
 
-import { parseAddressParam } from "../utils/address";
-import { Domain } from "../utils/domain";
+import { parseAddressParam } from '../utils/address';
+import { Domain } from '../utils/domain';
 
 type Args = {
   query: string;
@@ -29,7 +29,7 @@ export class SearchDomain extends Domain<any, Args> {
   static createResolvers() {
     const domain = new SearchDomain();
     return {
-      ...domain.createResolver("search", "getSearch"),
+      ...domain.createResolver('search', 'getSearch'),
     };
   }
 

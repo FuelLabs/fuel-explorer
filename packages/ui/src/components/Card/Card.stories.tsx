@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCalendar } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCalendar } from '@tabler/icons-react';
 
-import { Button } from "../Button/Button";
-import { Icon } from "../Icon/Icon";
+import { Button } from '../Button/Button';
+import { Icon } from '../Icon/Icon';
 
-import { Card } from "./Card";
+import { Card } from './Card';
 
 const meta: Meta<typeof Card> = {
-  title: "UI/Card",
+  title: 'UI/Card',
   component: Card,
 };
 
@@ -48,7 +48,7 @@ export const FullVersion: Story = {
 };
 
 export const AsChild: Story = {
-  name: "AsChild",
+  name: 'AsChild',
   render: () => (
     <Card asChild className="max-w-sm">
       <section>

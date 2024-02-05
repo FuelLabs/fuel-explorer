@@ -3,54 +3,54 @@ import {
   calculateTransactionFee,
   getGasUsedFromReceipts,
   processGqlReceipt,
-} from "fuels";
-import { uniqBy } from "lodash";
+} from 'fuels';
+import { uniqBy } from 'lodash';
 
-import type { TransactionItemFragment } from "../generated/types";
-import { tai64toDate } from "../utils/dayjs";
-import { Domain } from "../utils/domain";
+import type { TransactionItemFragment } from '../generated/types';
+import { tai64toDate } from '../utils/dayjs';
+import { Domain } from '../utils/domain';
 
-import { InputDomain } from "./Input";
-import { OperationDomain } from "./Operation";
-import { OutputDomain } from "./Output";
+import { InputDomain } from './Input';
+import { OperationDomain } from './Operation';
+import { OutputDomain } from './Output';
 
 export class TransactionDomain extends Domain<TransactionItemFragment> {
   static createResolvers() {
     const domain = new TransactionDomain();
     return {
-      ...domain.createResolver("accountsInvolved"),
-      ...domain.createResolver("blockHeight"),
-      ...domain.createResolver("fee", "getFee"),
-      ...domain.createResolver("gasUsed"),
-      ...domain.createResolver("groupedInputs"),
-      ...domain.createResolver("groupedOutputs"),
-      ...domain.createResolver("isPredicate"),
-      ...domain.createResolver("operations", "getOperations"),
-      ...domain.createResolver("statusType"),
-      ...domain.createResolver("time"),
-      ...domain.createResolver("title", "getTitle"),
-      ...domain.createResolver("totalAccounts"),
-      ...domain.createResolver("totalAssets"),
-      ...domain.createResolver("totalOperations"),
+      ...domain.createResolver('accountsInvolved'),
+      ...domain.createResolver('blockHeight'),
+      ...domain.createResolver('fee', 'getFee'),
+      ...domain.createResolver('gasUsed'),
+      ...domain.createResolver('groupedInputs'),
+      ...domain.createResolver('groupedOutputs'),
+      ...domain.createResolver('isPredicate'),
+      ...domain.createResolver('operations', 'getOperations'),
+      ...domain.createResolver('statusType'),
+      ...domain.createResolver('time'),
+      ...domain.createResolver('title', 'getTitle'),
+      ...domain.createResolver('totalAccounts'),
+      ...domain.createResolver('totalAssets'),
+      ...domain.createResolver('totalOperations'),
     };
   }
 
   async getTitle() {
     const { source: transaction } = this;
-    if (transaction.isMint) return "Mint";
-    if (transaction.isCreate) return "Contract Created";
-    return "Script";
+    if (transaction.isMint) return 'Mint';
+    if (transaction.isCreate) return 'Contract Created';
+    return 'Script';
   }
 
   get time() {
     const { source: transaction } = this;
     const status = transaction.status;
-    if (status?.__typename === "SqueezedOutStatus") return null;
-    const time = status?.time || "";
+    if (status?.__typename === 'SqueezedOutStatus') return null;
+    const time = status?.time || '';
     const date = tai64toDate(time);
     return {
       fromNow: date.fromNow(),
-      full: date.format("DD MMM YYYY - HH:mm:ss A"),
+      full: date.format('DD MMM YYYY - HH:mm:ss A'),
       rawTai64: time.toString(),
       rawUnix: date.unix().toString(),
     };
@@ -59,7 +59,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   get blockHeight() {
     const { source: transaction } = this;
     const status = transaction.status;
-    if (status?.__typename === "SuccessStatus") {
+    if (status?.__typename === 'SuccessStatus') {
       return status?.block?.header?.height ?? null;
     }
     return null;
@@ -68,13 +68,13 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   get statusType() {
     const { source: transaction } = this;
     const typename = transaction.status?.__typename;
-    if (typename === "SuccessStatus") {
-      return "Success";
+    if (typename === 'SuccessStatus') {
+      return 'Success';
     }
-    if (typename === "FailureStatus") {
-      return "Failure";
+    if (typename === 'FailureStatus') {
+      return 'Failure';
     }
-    return "Submitted";
+    return 'Submitted';
   }
 
   get totalAssets() {
@@ -141,10 +141,10 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const inputs = this.source.inputs ?? [];
     return inputs.some((input) => {
       if (
-        input.__typename === "InputMessage" ||
-        input.__typename === "InputCoin"
+        input.__typename === 'InputMessage' ||
+        input.__typename === 'InputCoin'
       ) {
-        return !!input.predicate && input.predicate !== "0x";
+        return !!input.predicate && input.predicate !== '0x';
       }
     });
   }
@@ -159,36 +159,36 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const ids = transaction.inputs?.flatMap((input: any) => {
       const typename = input?.__typename;
-      const isCoin = typename === "InputCoin";
-      const isMessage = typename === "InputMessage";
-      const isContract = typename === "InputContract";
+      const isCoin = typename === 'InputCoin';
+      const isMessage = typename === 'InputMessage';
+      const isContract = typename === 'InputContract';
       if ((isCoin || isMessage) && input.predicate) {
         return {
-          type: "Predicate",
+          type: 'Predicate',
           id: input.owner,
         };
       }
       if (isCoin) {
         return {
-          type: "Contract",
+          type: 'Contract',
           id: input.owner,
         };
       }
       if (isMessage) {
         return [
-          { type: "Wallet", id: input.sender },
-          { type: "Wallet", id: input.sender },
+          { type: 'Wallet', id: input.sender },
+          { type: 'Wallet', id: input.sender },
         ];
       }
       if (isContract) {
         return {
-          type: "Contract",
+          type: 'Contract',
           id: input.contract?.id,
         };
       }
     });
 
-    return uniqBy(ids, "id");
+    return uniqBy(ids, 'id');
   }
 
   private _getGasUsed() {

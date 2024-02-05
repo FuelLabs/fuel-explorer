@@ -1,1 +1,1 @@
-export * from "./BridgeTxOverview";
+export * from './BridgeTxOverview';

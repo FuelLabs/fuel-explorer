@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import type { FlexProps } from "../Box";
-import { Flex } from "../Box";
+import type { FlexProps } from '../Box';
+import { Flex } from '../Box';
 
-import { ContextMenu } from "./ContextMenu";
+import { ContextMenu } from './ContextMenu';
 
 const meta: Meta<typeof ContextMenu> = {
-  title: "Overlay/ContextMenu",
+  title: 'Overlay/ContextMenu',
   component: ContextMenu,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

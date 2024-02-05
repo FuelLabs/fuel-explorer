@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconHome } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconHome } from '@tabler/icons-react';
 
-import { Theme } from "../Theme/Theme";
+import { Theme } from '../Theme/Theme';
 
-import { Icon } from "./Icon";
+import { Icon } from './Icon';
 
 const meta: Meta<typeof Icon> = {
-  title: "UI/Icon",
+  title: 'UI/Icon',
   component: Icon,
 };
 

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 import type {
   ContractBalanceConnectionItemFragment,
   Maybe,
-} from "@fuel-explorer/graphql";
-import { VStack } from "@fuels/ui";
-import { bn } from "fuels";
-import { EmptyCard } from "~/systems/Core/components/EmptyCard/EmptyCard";
+} from '@fuel-explorer/graphql';
+import { VStack } from '@fuels/ui';
+import { bn } from 'fuels';
+import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
-import { ContractBalanceItem } from "./ContractBalanceItem";
+import { ContractBalanceItem } from './ContractBalanceItem';
 
 type TabAssetsProps = {
   balances?: Maybe<ContractBalanceConnectionItemFragment>;

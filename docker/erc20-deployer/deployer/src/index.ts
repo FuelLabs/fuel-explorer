@@ -1,10 +1,10 @@
-import { createServer } from "http";
+import { createServer } from 'http';
 import {
   getOrDeployECR20Contract,
   getOrDeployFuelTokenContract,
   getTokenId,
   setupEnvironment,
-} from "@fuel-bridge/test-utils";
+} from '@fuel-bridge/test-utils';
 
 const {
   PORT,
@@ -46,16 +46,16 @@ function startServer(deployments: Record<string, string>) {
   return new Promise((resolve) => {
     createServer((req, res) => {
       switch (req.url) {
-        case "/health":
-          res.writeHead(200, { "Content-Type": "text/plain" });
-          res.end("OK");
+        case '/health':
+          res.writeHead(200, { 'Content-Type': 'text/plain' });
+          res.end('OK');
           break;
-        case "/deployments":
-          res.writeHead(200, { "Content-Type": "application/json" });
+        case '/deployments':
+          res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(deployments));
           break;
         default:
-          res.writeHead(404, "Not Found");
+          res.writeHead(404, 'Not Found');
           res.end();
       }
     }).listen(Number(APP_PORT), 511, () => resolve(true));

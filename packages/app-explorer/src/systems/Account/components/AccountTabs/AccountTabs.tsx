@@ -1,11 +1,11 @@
-"use client";
-import type { BaseProps } from "@fuels/ui";
-import { IconChecklist, IconCodeAsterix, IconCoins } from "@tabler/icons-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useMemo } from "react";
-import { Routes } from "~/routes";
-import { NavigationTab } from "~/systems/Core/components/NavigationTab/NavigationTab";
+'use client';
+import type { BaseProps } from '@fuels/ui';
+import { IconChecklist, IconCodeAsterix, IconCoins } from '@tabler/icons-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
+import { Routes } from '~/routes';
+import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type AccountTabsProps = BaseProps<{
   address: string;
@@ -19,9 +19,9 @@ export function AccountTabs({
 }: AccountTabsProps) {
   const pathname = usePathname();
   const defaultValue = useMemo(() => {
-    if (pathname.includes("transactions")) return "transactions";
-    if (pathname.includes("predicate")) return "predicate";
-    return "assets";
+    if (pathname.includes('transactions')) return 'transactions';
+    if (pathname.includes('predicate')) return 'predicate';
+    return 'assets';
   }, [pathname]);
 
   return (
@@ -37,18 +37,18 @@ export function AccountTabs({
       items={[
         {
           icon: IconCoins,
-          value: "assets",
-          label: "Assets",
+          value: 'assets',
+          label: 'Assets',
         },
         {
           icon: IconChecklist,
-          value: "transactions",
-          label: "Transactions",
+          value: 'transactions',
+          label: 'Transactions',
         },
         {
           icon: IconCodeAsterix,
-          value: "predicate",
-          label: "Predicate",
+          value: 'predicate',
+          label: 'Predicate',
           disabled: !isPredicate,
         },
       ]}

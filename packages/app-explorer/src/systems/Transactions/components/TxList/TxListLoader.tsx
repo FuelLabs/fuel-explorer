@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TxList } from "./TxList";
+import { TxList } from './TxList';
 
 type TxListLoaderProps = {
   page?: string;
@@ -8,7 +8,7 @@ type TxListLoaderProps = {
 
 export const TxListLoader = ({
   numberOfTxs = 4,
-  page = "1",
+  page = '1',
 }: TxListLoaderProps) => {
   const baseArray = Array.from(
     { length: numberOfTxs },

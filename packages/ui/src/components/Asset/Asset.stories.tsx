@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCurrencyEthereum } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCurrencyEthereum } from '@tabler/icons-react';
 
-import { HStack, VStack } from "../Box";
-import { Icon } from "../Icon/Icon";
+import { HStack, VStack } from '../Box';
+import { Icon } from '../Icon/Icon';
 
-import { Asset } from "./Asset";
-import { MOCK_ASSETS } from "./__mocks__/assets";
+import { Asset } from './Asset';
+import { MOCK_ASSETS } from './__mocks__/assets';
 
 const meta: Meta<typeof Asset> = {
-  title: "Web3/Asset",
+  title: 'Web3/Asset',
   component: Asset,
 };
 
@@ -17,7 +17,7 @@ type Story = StoryObj<typeof Asset>;
 
 const DEFAULT_ARGS = {
   asset: MOCK_ASSETS.eth,
-  amount: "1000000000",
+  amount: '1000000000',
 };
 
 export const Usage: Story = {
@@ -34,7 +34,7 @@ export const Usage: Story = {
 };
 
 export const IconName: Story = {
-  name: "Icon + Name",
+  name: 'Icon + Name',
   render: (args) => (
     <Asset {...args} {...DEFAULT_ARGS}>
       <Asset.Icon />
@@ -57,7 +57,7 @@ export const NoIcon: Story = {
     <Asset
       {...args}
       {...DEFAULT_ARGS}
-      asset={{ name: "Ethereum", symbol: "ETH" }}
+      asset={{ name: 'Ethereum', symbol: 'ETH' }}
     >
       <Asset.Icon />
       <Asset.Name />
@@ -66,7 +66,7 @@ export const NoIcon: Story = {
 };
 
 export const AmountSymbol: Story = {
-  name: "Amount + Symbol",
+  name: 'Amount + Symbol',
   render: (args) => (
     <Asset {...args} {...DEFAULT_ARGS}>
       <Asset.Amount />
@@ -77,7 +77,7 @@ export const AmountSymbol: Story = {
 
 const AMOUNT_ARGS = {
   asset: MOCK_ASSETS.eth,
-  amount: "1000000001",
+  amount: '1000000001',
   precision: 9,
 };
 export const AmountExamples: Story = {

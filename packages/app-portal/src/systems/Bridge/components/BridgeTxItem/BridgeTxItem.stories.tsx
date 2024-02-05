@@ -1,14 +1,14 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, FuelLogo, Image, Text } from "@fuel-ui/react";
-import assetList from "@fuels/assets";
+import { cssObj } from '@fuel-ui/css';
+import { Box, FuelLogo, Image, Text } from '@fuel-ui/react';
+import assetList from '@fuels/assets';
 
-import { BridgeTxItem } from "./BridgeTxItem";
+import { BridgeTxItem } from './BridgeTxItem';
 
 export default {
   component: BridgeTxItem,
-  title: "BridgeTxItem",
+  title: 'BridgeTxItem',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -25,7 +25,7 @@ export const Usage = () => {
             width={18}
             height={18}
             src={assetList[0].icon}
-            alt={"ETH logo"}
+            alt={'ETH logo'}
           />
         }
         status={
@@ -53,7 +53,7 @@ export const Loading = () => {
             width={18}
             height={18}
             src={assetList[0].icon}
-            alt={"ETH logo"}
+            alt={'ETH logo'}
           />
         }
         status={
@@ -69,15 +69,15 @@ export const Loading = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
-    width: "328px",
+    margin: '20px',
+    width: '328px',
 
     article: {
       flex: 1,
     },
 
-    "@md": {
-      width: "$sm",
+    '@md': {
+      width: '$sm',
     },
   }),
 };

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { toast } from "@fuel-ui/react";
-import type { TransitionConfig } from "xstate";
-import { assign, createMachine } from "xstate";
+import { toast } from '@fuel-ui/react';
+import type { TransitionConfig } from 'xstate';
+import { assign, createMachine } from 'xstate';
 
 export type FetchResponse<T> = T & {
   error?: unknown;
@@ -49,52 +49,52 @@ export const FetchMachine = {
       {
         predictableActionArguments: true,
         // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-        tsTypes: {} as import("./fetchMachine.typegen").Typegen0,
+        tsTypes: {} as import('./fetchMachine.typegen').Typegen0,
         schema: {
           context: {} as MachineContext<Input>,
           services: {} as MachineServices<Result>,
         },
-        id: "(machine)",
-        initial: "loading",
+        id: '(machine)',
+        initial: 'loading',
         context: {
           attempts: 0,
         },
         states: {
           loading: {
-            tags: ["loading"],
-            entry: ["incrementAttempts"],
+            tags: ['loading'],
+            entry: ['incrementAttempts'],
             invoke: {
-              src: "fetch",
+              src: 'fetch',
               onDone: {
-                target: "success",
+                target: 'success',
               },
               onError: [
                 {
-                  target: "failed",
-                  cond: "hasManyAttempts",
+                  target: 'failed',
+                  cond: 'hasManyAttempts',
                 },
                 {
-                  actions: ["logError"],
-                  target: "retrying",
+                  actions: ['logError'],
+                  target: 'retrying',
                 },
               ],
             },
           },
           retrying: {
-            tags: ["loading"],
+            tags: ['loading'],
             after: {
               500: {
-                target: "loading",
+                target: 'loading',
               },
             },
           },
           failed: {
-            entry: ["assignError", "showError", "logError"],
-            type: "final",
+            entry: ['assignError', 'showError', 'logError'],
+            type: 'final',
             data: (ctx, ev) => ({ error: ev.data }),
           },
           success: {
-            type: "final",
+            type: 'final',
             data: (_, ev) => ev.data,
           },
         },

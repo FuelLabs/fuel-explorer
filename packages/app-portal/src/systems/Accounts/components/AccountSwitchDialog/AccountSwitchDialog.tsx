@@ -1,4 +1,4 @@
-import { cssObj } from "@fuel-ui/css";
+import { cssObj } from '@fuel-ui/css';
 import {
   Avatar,
   Box,
@@ -9,8 +9,8 @@ import {
   IconButton,
   List,
   Text,
-} from "@fuel-ui/react";
-import { shortAddress } from "~/systems/Core/utils";
+} from '@fuel-ui/react';
+import { shortAddress } from '~/systems/Core/utils';
 
 type AccountSwitchDialogProps = {
   accounts: string[];
@@ -53,7 +53,7 @@ export const AccountSwitchDialog = ({
                 onClick={() => onSelect?.(account)}
               >
                 <Box.Flex align="center" gap="$3">
-                  <Avatar.Generated size={"xsm"} hash={account} />
+                  <Avatar.Generated size={'xsm'} hash={account} />
                   <Text color="gray12">{shortAddress(account)}</Text>
                   <Copyable value={account} />
                 </Box.Flex>
@@ -82,30 +82,30 @@ export const AccountSwitchDialog = ({
 
 const styles = {
   stack: cssObj({
-    width: "100%",
+    width: '100%',
   }),
   listItem: cssObj({
-    pl: "$1",
-    pt: "$1",
-    pb: "$1",
+    pl: '$1',
+    pt: '$1',
+    pb: '$1',
   }),
   description: cssObj({
-    px: "$8",
-    pt: "$8",
+    px: '$8',
+    pt: '$8',
   }),
   button: cssObj({
-    borderRadius: "$md",
-    backgroundColor: "$gray6",
-    color: "$gray12",
+    borderRadius: '$md',
+    backgroundColor: '$gray6',
+    color: '$gray12',
   }),
   select: cssObj({
-    "&:hover": { backgroundColor: "$gray1" },
-    cursor: "pointer",
-    borderRadius: "$md",
+    '&:hover': { backgroundColor: '$gray1' },
+    cursor: 'pointer',
+    borderRadius: '$md',
   }),
   footer: cssObj({
-    px: "$8",
-    pb: "$8",
-    justifyContent: "center",
+    px: '$8',
+    pb: '$8',
+    justifyContent: 'center',
   }),
 };

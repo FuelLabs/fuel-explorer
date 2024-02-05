@@ -1,11 +1,11 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, CardList, Icon, Text } from "@fuel-ui/react";
-import type { ReactNode } from "react";
-import { AssetLogo } from "~/systems/Assets/components/AssetLogo";
-import type { Asset } from "~/systems/Assets/services/asset";
-import { calculateDateDiff, shortAddress } from "~/systems/Core";
+import { cssObj } from '@fuel-ui/css';
+import { Box, CardList, Icon, Text } from '@fuel-ui/react';
+import type { ReactNode } from 'react';
+import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
+import type { Asset } from '~/systems/Assets/services/asset';
+import { calculateDateDiff, shortAddress } from '~/systems/Core';
 
-import { ItemLoader } from "./ItemLoader";
+import { ItemLoader } from './ItemLoader';
 
 type BridgeTxItemProps = {
   date?: Date;
@@ -36,7 +36,7 @@ export const BridgeTxItem = ({
       aria-label={`Transaction ID: ${shortAddress(txId)}`}
       onClick={onClick}
     >
-      <Box.Flex gap={"$1"}>
+      <Box.Flex gap={'$1'}>
         {fromLogo}
         <Icon icon="ArrowNarrowRight" />
         {toLogo}
@@ -53,7 +53,7 @@ export const BridgeTxItem = ({
           </>
         )}
       </Box.Flex>
-      <Box.Flex css={styles.statusTime} justify={"space-between"}>
+      <Box.Flex css={styles.statusTime} justify={'space-between'}>
         {isLoading ? (
           <ItemLoader />
         ) : (
@@ -76,26 +76,26 @@ const styles = cssObj({
   cardItem: cssObj({
     // This minHeight ensures component size equals loader size
     minHeight: 24,
-    gap: "$6",
-    alignItems: "center",
+    gap: '$6',
+    alignItems: 'center',
   }),
   statusTime: cssObj({
     flex: 1,
-    "@media (max-width: 400px)": {
-      flexDirection: "column-reverse",
-      flexWrap: "wrap",
-      alignItems: "flex-end",
-      gap: "$1",
+    '@media (max-width: 400px)': {
+      flexDirection: 'column-reverse',
+      flexWrap: 'wrap',
+      alignItems: 'flex-end',
+      gap: '$1',
     },
   }),
   line: cssObj({
     flex: 1,
   }),
   ageText: cssObj({
-    fontSize: "$xs",
-    color: "$intentsBase12",
+    fontSize: '$xs',
+    color: '$intentsBase12',
   }),
   assetAmountText: cssObj({
-    color: "$intentsBase12",
+    color: '$intentsBase12',
   }),
 });

@@ -1,14 +1,14 @@
-import type { CardProps } from "@fuels/ui";
-import { Card, EntityItem, HStack, Text, cx, useBreakpoints } from "@fuels/ui";
-import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
-import { bn } from "fuels";
-import type { BN } from "fuels";
-import Image from "next/image";
-import { useAsset } from "~/systems/Asset/hooks/useAsset";
-import { useFuelAsset } from "~/systems/Asset/hooks/useFuelAsset";
-import { formatZeroUnits } from "~/systems/Core/utils/format";
+import type { CardProps } from '@fuels/ui';
+import { Card, EntityItem, HStack, Text, cx, useBreakpoints } from '@fuels/ui';
+import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
+import { bn } from 'fuels';
+import type { BN } from 'fuels';
+import Image from 'next/image';
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
+import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
+import { formatZeroUnits } from '~/systems/Core/utils/format';
 
-import { TxIcon } from "../TxIcon/TxIcon";
+import { TxIcon } from '../TxIcon/TxIcon';
 
 export type TxAssetItemProps = CardProps & {
   assetId: string;
@@ -31,7 +31,7 @@ export function TxAssetItem({
   if (!asset) return null;
 
   return (
-    <Card {...props} className={cx("gap-2 pb-2", className)}>
+    <Card {...props} className={cx('gap-2 pb-2', className)}>
       <EntityItem className="px-4 pb-4 border-b border-border">
         <EntityItem.Slot>
           {asset?.icon ? (
@@ -58,7 +58,7 @@ export function TxAssetItem({
               {bn(amountIn).format({
                 precision: isMobile ? 3 : undefined,
                 units: fuelAsset.decimals,
-              })}{" "}
+              })}{' '}
             </>
           ) : (
             formatZeroUnits(amountIn)
@@ -75,7 +75,7 @@ export function TxAssetItem({
               {bn(amountOut).format({
                 precision: isMobile ? 3 : undefined,
                 units: fuelAsset.decimals,
-              })}{" "}
+              })}{' '}
             </>
           ) : (
             formatZeroUnits(amountOut)

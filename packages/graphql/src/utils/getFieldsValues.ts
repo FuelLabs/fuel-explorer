@@ -2,13 +2,13 @@
 export function deepIterateObject(
   obj: any,
   callback: (path: string, value: any) => void,
-  parentKey = "",
+  parentKey = '',
 ) {
   Object.keys(obj).forEach((key) => {
     const value = obj[key];
     const currentKey = parentKey ? `${parentKey}.${key}` : key;
 
-    if (typeof value === "object" && value !== null) {
+    if (typeof value === 'object' && value !== null) {
       // If the value is an object, recursively call the function
       deepIterateObject(value, callback, currentKey);
     } else {
@@ -25,7 +25,7 @@ export function getFieldsValues<T = any>(
   const values: Array<T> = [];
 
   deepIterateObject(obj, (path, value) => {
-    const [key] = path.split(".").slice(-1);
+    const [key] = path.split('.').slice(-1);
     if (keys.includes(key)) {
       values.push(value);
     }

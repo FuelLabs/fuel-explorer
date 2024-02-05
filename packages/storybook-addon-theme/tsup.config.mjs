@@ -1,9 +1,9 @@
-import tsconfig from "./tsconfig.json";
+import tsconfig from './tsconfig.json';
 
 const defConfig = {
-  outDir: "dist",
+  outDir: 'dist',
   splitting: true,
-  format: ["cjs", "esm"],
+  format: ['cjs', 'esm'],
   outExtension({ format }) {
     return {
       js: `.${format}.js`,
@@ -18,8 +18,8 @@ export default [
   {
     ...defConfig,
     entry: {
-      index: "src/index.tsx",
-      register: "src/register.tsx",
+      index: 'src/index.tsx',
+      register: 'src/register.tsx',
     },
   },
 ];

@@ -1,4 +1,4 @@
-import { cssObj } from "@fuel-ui/css";
+import { cssObj } from '@fuel-ui/css';
 import {
   Box,
   ButtonLink,
@@ -7,15 +7,15 @@ import {
   Tag,
   Text,
   Tooltip,
-} from "@fuel-ui/react";
-import { motion } from "framer-motion";
-import type { FC } from "react";
-import { animations, getUrlHostName } from "~/systems/Core";
+} from '@fuel-ui/react';
+import { motion } from 'framer-motion';
+import type { FC } from 'react';
+import { animations, getUrlHostName } from '~/systems/Core';
 
-import type { Project } from "../../types";
-import { ProjecImage } from "../ProjectImage";
+import type { Project } from '../../types';
+import { ProjecImage } from '../ProjectImage';
 
-import { ProjectItemLoader } from "./ProjectItemLoader";
+import { ProjectItemLoader } from './ProjectItemLoader';
 
 const MotionCard = motion(Card);
 
@@ -39,14 +39,14 @@ export const ProjectItem: ProjectItemComponent = ({
   isLive,
 }: ProjectItemProps) => {
   const onCardPress = () => {
-    window.open(url, "_blank");
+    window.open(url, '_blank');
   };
 
   return (
     <MotionCard
       withDividers
       {...animations.appearIn({
-        transition: { type: "spring" },
+        transition: { type: 'spring' },
       })}
       variant="outlined"
       css={styles.card}
@@ -126,7 +126,7 @@ export const ProjectItem: ProjectItemComponent = ({
             {isLive ? (
               <Tag intent="base" size="xs" css={styles.tag} variant="ghost">
                 <Box css={styles.dot} />
-                {"Live on testnet"}
+                {'Live on testnet'}
               </Tag>
             ) : null}
           </Box.Flex>
@@ -156,57 +156,57 @@ export const ProjectItem: ProjectItemComponent = ({
 
 const styles = {
   card: cssObj({
-    transition: "transform 0.2s ease-in-out, border 0.2s ease-in-out",
-    "&:hover": {
-      cursor: "pointer",
-      border: "1px solid #00F58C",
-      transform: "scale(1.02)",
+    transition: 'transform 0.2s ease-in-out, border 0.2s ease-in-out',
+    '&:hover': {
+      cursor: 'pointer',
+      border: '1px solid #00F58C',
+      transform: 'scale(1.02)',
     },
   }),
   details: cssObj({
     flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   }),
 
   link: cssObj({
-    textDecoration: "underline",
-    padding: "0",
-    pointerEvents: "none",
+    textDecoration: 'underline',
+    padding: '0',
+    pointerEvents: 'none',
   }),
   dot: cssObj({
-    width: "$1",
-    height: "$1",
-    borderRadius: "50%",
-    border: "1px solid #A9F6D5",
-    background: "#00F58C",
-    boxShadow: "0px 0px 4px 0px #00F58C",
+    width: '$1',
+    height: '$1',
+    borderRadius: '50%',
+    border: '1px solid #A9F6D5',
+    background: '#00F58C',
+    boxShadow: '0px 0px 4px 0px #00F58C',
   }),
   tag: cssObj({
-    color: "$intentsBase12",
-    borderRadius: "$sm",
-    padding: "0 $1",
-    backgroundColor: "$gray5",
-    marginRight: "8px",
+    color: '$intentsBase12',
+    borderRadius: '$sm',
+    padding: '0 $1',
+    backgroundColor: '$gray5',
+    marginRight: '8px',
   }),
   title: cssObj({
-    width: "100%",
+    width: '100%',
   }),
   body: cssObj({
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: "$4",
-    justifyContent: "flex-start",
-    padding: "$6",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: '$4',
+    justifyContent: 'flex-start',
+    padding: '$6',
   }),
   statusContainer: cssObj({
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    flexWrap: "wrap",
-    marginTop: "auto",
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap',
+    marginTop: 'auto',
   }),
 };
 

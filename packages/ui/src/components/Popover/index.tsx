@@ -4,11 +4,11 @@ export {
   PopoverContent,
   PopoverRoot,
   PopoverTrigger,
-} from "./Popover";
+} from './Popover';
 
 export type {
   PopoverCloseProps,
   PopoverContentProps,
   PopoverProps,
   PopoverTriggerProps,
-} from "./Popover";
+} from './Popover';

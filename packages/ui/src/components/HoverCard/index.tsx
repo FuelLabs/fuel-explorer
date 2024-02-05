@@ -3,10 +3,10 @@ export {
   HoverCardContent,
   HoverCardRoot,
   HoverCardTrigger,
-} from "./HoverCard";
+} from './HoverCard';
 
 export type {
   HoverCardContentProps,
   HoverCardProps,
   HoverCardTriggerProps,
-} from "./HoverCard";
+} from './HoverCard';

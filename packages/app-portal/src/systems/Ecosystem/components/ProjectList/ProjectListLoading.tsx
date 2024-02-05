@@ -1,7 +1,7 @@
-import { cssObj } from "@fuel-ui/css";
-import { Grid } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Grid } from '@fuel-ui/react';
 
-import { ProjectItem } from "../ProjectItem";
+import { ProjectItem } from '../ProjectItem';
 
 type ProjectListLoadingProps = {
   items?: number;
@@ -19,14 +19,14 @@ export const ProjectListLoading = ({ items = 8 }: ProjectListLoadingProps) => {
 
 const styles = {
   grid: cssObj({
-    gridTemplateColumns: "1fr",
-    alignItems: "stretch",
-    gap: "$6",
+    gridTemplateColumns: '1fr',
+    alignItems: 'stretch',
+    gap: '$6',
 
     /// show only 1 column on mobile
-    "@media (max-width: 768px)": {
-      gridTemplateColumns: "repeat(2, 1fr)",
-      gridTemplateRows: "repeat(2, 1fr)",
+    '@media (max-width: 768px)': {
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gridTemplateRows: 'repeat(2, 1fr)',
     },
   }),
 };

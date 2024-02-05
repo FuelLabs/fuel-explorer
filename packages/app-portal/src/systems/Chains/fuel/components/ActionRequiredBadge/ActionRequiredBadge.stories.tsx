@@ -1,13 +1,13 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box } from '@fuel-ui/react';
 
-import { ActionRequiredBadge } from "./ActionRequiredBadge";
+import { ActionRequiredBadge } from './ActionRequiredBadge';
 
 export default {
   component: ActionRequiredBadge,
-  title: "ActionRequiredBadge",
+  title: 'ActionRequiredBadge',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -21,6 +21,6 @@ export const Usage = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
+    margin: '20px',
   }),
 };

@@ -1,10 +1,10 @@
-import { Badge, VStack } from "@fuels/ui";
-import type { Meta, StoryObj } from "@storybook/react";
+import { Badge, VStack } from '@fuels/ui';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { CardInfo } from "./CardInfo";
+import { CardInfo } from './CardInfo';
 
 const meta: Meta<typeof CardInfo> = {
-  title: "Transaction/CardInfo",
+  title: 'Transaction/CardInfo',
   component: CardInfo,
 };
 
@@ -19,7 +19,7 @@ export const Usage: Story = {
         name="Status"
         description="Here a description"
       >
-        <Badge color={"green"} size="1" variant="solid">
+        <Badge color={'green'} size="1" variant="solid">
           Success
         </Badge>
       </CardInfo>

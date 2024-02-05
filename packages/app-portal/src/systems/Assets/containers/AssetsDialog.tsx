@@ -1,4 +1,4 @@
-import { cssObj } from "@fuel-ui/css";
+import { cssObj } from '@fuel-ui/css';
 import {
   Box,
   CardList,
@@ -8,22 +8,22 @@ import {
   Input,
   Spinner,
   Text,
-} from "@fuel-ui/react";
-import { useState } from "react";
-import { Controller, useWatch } from "react-hook-form";
-import { VITE_ETH_ERC20 } from "~/config";
-import { store } from "~/store";
-import { useBridge } from "~/systems/Bridge/hooks";
-import { useFuelAccountConnection } from "~/systems/Chains";
+} from '@fuel-ui/react';
+import { useState } from 'react';
+import { Controller, useWatch } from 'react-hook-form';
+import { VITE_ETH_ERC20 } from '~/config';
+import { store } from '~/store';
+import { useBridge } from '~/systems/Bridge/hooks';
+import { useFuelAccountConnection } from '~/systems/Chains';
 
 import {
   useEthAccountConnection,
   useFaucetErc20,
   useSetAddressForm,
-} from "../../Chains/eth/hooks";
-import { AssetCard } from "../components/AssetCard";
-import { useAssets } from "../hooks";
-import { getAssetEth, getAssetFuel } from "../utils";
+} from '../../Chains/eth/hooks';
+import { AssetCard } from '../components/AssetCard';
+import { useAssets } from '../hooks';
+import { getAssetEth, getAssetFuel } from '../utils';
 
 export function AssetsDialog() {
   const {
@@ -39,7 +39,7 @@ export function AssetsDialog() {
 
   const form = useSetAddressForm();
 
-  const assetQuery = useWatch({ name: "address", control: form.control });
+  const assetQuery = useWatch({ name: 'address', control: form.control });
 
   const {
     assets,
@@ -68,7 +68,7 @@ export function AssetsDialog() {
             />
           )}
           <Text color="intentsBase12" fontSize="sm">
-            {!editable ? "Select token" : "Manage token list"}
+            {!editable ? 'Select token' : 'Manage token list'}
           </Text>
         </Box.Flex>
       </Dialog.Heading>
@@ -79,7 +79,7 @@ export function AssetsDialog() {
             control={form.control}
             render={(props) => {
               return (
-                <Form.Control css={{ width: "$full" }}>
+                <Form.Control css={{ width: '$full' }}>
                   <Input size="md" css={styles.headerInput}>
                     <Input.Field
                       {...props.field}
@@ -112,8 +112,8 @@ export function AssetsDialog() {
 
               return (
                 <AssetCard
-                  key={`${ethAsset.address || ""}${
-                    ethAsset.symbol || ""
+                  key={`${ethAsset.address || ''}${
+                    ethAsset.symbol || ''
                   }${String(i)}`}
                   asset={asset}
                   isFaucetLoading={isFaucetable && isLoadingFaucet}
@@ -169,17 +169,17 @@ export function AssetsDialog() {
 
 const styles = {
   actionButton: cssObj({
-    width: "100%",
+    width: '100%',
   }),
   controllerWrapper: cssObj({
-    pb: "$2",
+    pb: '$2',
   }),
   dialogFooter: cssObj({
-    borderTop: "1px solid $border",
-    justifyContent: "center",
-    paddingTop: "$2",
+    borderTop: '1px solid $border',
+    justifyContent: 'center',
+    paddingTop: '$2',
   }),
   headerInput: cssObj({
-    fontSize: "$sm",
+    fontSize: '$sm',
   }),
 };

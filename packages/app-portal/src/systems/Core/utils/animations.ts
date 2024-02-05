@@ -1,4 +1,4 @@
-import type { Transition } from "framer-motion";
+import type { Transition } from 'framer-motion';
 
 type Opts = Transition & {
   factor?: number;
@@ -6,8 +6,8 @@ type Opts = Transition & {
 };
 
 const defaultTransition = {
-  duration: "0.3",
-  ease: "easeInOut",
+  duration: '0.3',
+  ease: 'easeInOut',
 };
 
 export const animations = {

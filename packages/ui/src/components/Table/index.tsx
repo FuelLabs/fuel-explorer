@@ -7,7 +7,7 @@ export {
   TableRoot,
   TableRow,
   TableRowHeaderCell,
-} from "./Table";
+} from './Table';
 
 export type {
   TableBodyProps,
@@ -17,4 +17,4 @@ export type {
   TableProps,
   TableRowHeaderCellProps,
   TableRowProps,
-} from "./Table";
+} from './Table';

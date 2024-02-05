@@ -1,1 +1,1 @@
-export * from "./RemoveAssetDialog";
+export * from './RemoveAssetDialog';

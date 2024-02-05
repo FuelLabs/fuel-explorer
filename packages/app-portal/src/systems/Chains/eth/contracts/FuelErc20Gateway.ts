@@ -1,4 +1,4 @@
-import FuelERC20Gateway from "@fuel-bridge/solidity-contracts/artifacts/contracts/messaging/gateway/FuelERC20Gateway.sol/FuelERC20Gateway.json";
+import FuelERC20Gateway from '@fuel-bridge/solidity-contracts/artifacts/contracts/messaging/gateway/FuelERC20Gateway.sol/FuelERC20Gateway.json';
 
 export type FuelERC20GatewayArgs = {
   Deposit: {

@@ -1,14 +1,14 @@
-import { cssObj } from "@fuel-ui/css";
-import { CardList } from "@fuel-ui/react";
-import assetList from "@fuels/assets";
+import { cssObj } from '@fuel-ui/css';
+import { CardList } from '@fuel-ui/react';
+import assetList from '@fuels/assets';
 
-import { AssetCard } from "./AssetCard";
+import { AssetCard } from './AssetCard';
 
 export default {
   component: AssetCard,
-  title: "AssetCard",
+  title: 'AssetCard',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 // TODO: fix stories
@@ -34,7 +34,7 @@ export const OnPress = () => {
       <AssetCard
         asset={assetList[0]}
         onClick={() => {
-          console.log("press");
+          console.log('press');
         }}
       />
     </CardList>
@@ -47,7 +47,7 @@ export const OnAdd = () => {
       <AssetCard
         asset={assetList[0]}
         onAdd={() => {
-          console.log("add");
+          console.log('add');
         }}
       />
     </CardList>
@@ -60,7 +60,7 @@ export const OnRemove = () => {
       <AssetCard
         asset={assetList[0]}
         onRemove={() => {
-          console.log("remove");
+          console.log('remove');
         }}
       />
     </CardList>
@@ -73,7 +73,7 @@ export const OnFaucet = () => {
       <AssetCard
         asset={assetList[0]}
         onFaucet={() => {
-          console.log("faucet");
+          console.log('faucet');
         }}
       />
     </CardList>
@@ -87,7 +87,7 @@ export const OnRemoveDisabled = () => {
         isRemoveDisabled
         asset={assetList[0]}
         onRemove={() => {
-          console.log("remove");
+          console.log('remove');
         }}
       />
     </CardList>
@@ -96,7 +96,7 @@ export const OnRemoveDisabled = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
-    width: "386px",
+    margin: '20px',
+    width: '386px',
   }),
 };

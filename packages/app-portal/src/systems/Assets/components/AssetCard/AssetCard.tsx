@@ -1,9 +1,9 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, CardList, IconButton, Text } from "@fuel-ui/react";
-import { RemoveAssetDialog } from "~/systems/Chains/eth/components";
+import { cssObj } from '@fuel-ui/css';
+import { Box, CardList, IconButton, Text } from '@fuel-ui/react';
+import { RemoveAssetDialog } from '~/systems/Chains/eth/components';
 
-import type { Asset } from "../../services";
-import { AssetLogo } from "../AssetLogo";
+import type { Asset } from '../../services';
+import { AssetLogo } from '../AssetLogo';
 
 type AssetCardProps = {
   asset: Asset;
@@ -36,7 +36,7 @@ export const AssetCard = ({
       // need this empty onPress to keep click effect. will be removed when we migrate to new UI package
       onPress={() => {}}
     >
-      <Box.Flex align="center" justify="space-between" css={{ width: "$full" }}>
+      <Box.Flex align="center" justify="space-between" css={{ width: '$full' }}>
         <Box.Flex gap="$3" align="center">
           <AssetLogo asset={asset} size={30} />
           <Box.Flex direction="column" gap="$0">
@@ -82,7 +82,7 @@ export const AssetCard = ({
                 tooltip={removeToolTip}
                 variant="link"
                 icon="SquareRoundedX"
-                intent={isRemoveDisabled ? "base" : "error"}
+                intent={isRemoveDisabled ? 'base' : 'error'}
                 size="lg"
                 css={styles.cardAction}
               />
@@ -107,10 +107,10 @@ export const AssetCard = ({
 
 const styles = {
   cardListItem: cssObj({
-    alignSelf: "stretch",
-    flexDirection: "row",
+    alignSelf: 'stretch',
+    flexDirection: 'row',
   }),
   cardAction: cssObj({
-    p: "0px",
+    p: '0px',
   }),
 };

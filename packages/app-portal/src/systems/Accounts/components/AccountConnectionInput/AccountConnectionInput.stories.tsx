@@ -1,13 +1,13 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, FuelLogo } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box, FuelLogo } from '@fuel-ui/react';
 
-import { AccountConnectionInput } from "./AccountConnectionInput";
+import { AccountConnectionInput } from './AccountConnectionInput';
 
 export default {
   component: AccountConnectionInput,
-  title: "AccountConnectionInput",
+  title: 'AccountConnectionInput',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -49,7 +49,7 @@ export const ConnectedAccount = () => {
         isConnecting={false}
         account={{
           address:
-            "fuel14kz7u7jpd8txfe2vtgh5hxjx4wk7s03kq8hcl2k7slwe3yqh5sas974464",
+            'fuel14kz7u7jpd8txfe2vtgh5hxjx4wk7s03kq8hcl2k7slwe3yqh5sas974464',
         }}
         onConnect={() => {}}
       />
@@ -67,8 +67,8 @@ export const ConnectedENSAccount = () => {
         isConnecting={false}
         account={{
           address:
-            "fuel14kz7u7jpd8txfe2vtgh5hxjx4wk7s03kq8hcl2k7slwe3yqh5sas974464",
-          alias: "luizasfight.eth",
+            'fuel14kz7u7jpd8txfe2vtgh5hxjx4wk7s03kq8hcl2k7slwe3yqh5sas974464',
+          alias: 'luizasfight.eth',
         }}
         onConnect={() => {}}
       />
@@ -78,6 +78,6 @@ export const ConnectedENSAccount = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
+    margin: '20px',
   }),
 };

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-export { Focus, FocusArrowNavigator } from "./Focus";
+export { Focus, FocusArrowNavigator } from './Focus';
 
-export type { FocusArrowNavigatorProps } from "./Focus";
+export type { FocusArrowNavigatorProps } from './Focus';
 
-export { isRightChildrenType, useFocusNavigator } from "./useFocusNavigator";
+export { isRightChildrenType, useFocusNavigator } from './useFocusNavigator';

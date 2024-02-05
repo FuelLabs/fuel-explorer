@@ -1,5 +1,5 @@
-import type { BNInput } from "fuels";
-import { bn } from "fuels";
+import type { BNInput } from 'fuels';
+import { bn } from 'fuels';
 
 /**
  * Formats the given amount by multiplying it by 10 and formatting it with 1 unit.

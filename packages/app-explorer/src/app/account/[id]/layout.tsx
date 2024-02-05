@@ -1,5 +1,5 @@
-import { AccountHeader } from "~/systems/Account/components/AccountHeader";
-import type { AccountRouteParams } from "~/systems/Account/types";
+import { AccountHeader } from '~/systems/Account/components/AccountHeader';
+import type { AccountRouteParams } from '~/systems/Account/types';
 
 export default function Layout({
   children,
@@ -16,5 +16,5 @@ export default function Layout({
   );
 }
 
-export const dynamic = "force-static";
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

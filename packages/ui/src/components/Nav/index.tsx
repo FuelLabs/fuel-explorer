@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export {
   Nav,
@@ -12,7 +12,7 @@ export {
   NavRoot,
   NavSpacer,
   NavThemeToggle,
-} from "./Nav";
+} from './Nav';
 
 export type {
   NavConnectionProps,
@@ -25,7 +25,7 @@ export type {
   NavProps,
   NavThemeToggleProps,
   NetworkObj,
-} from "./Nav";
+} from './Nav';
 
-export { NavMobileProvider, useNavMobileContext } from "./useNavMobileContext";
-export { NavProvider, useNavContext } from "./useNavContext";
+export { NavMobileProvider, useNavMobileContext } from './useNavMobileContext';
+export { NavProvider, useNavContext } from './useNavContext';

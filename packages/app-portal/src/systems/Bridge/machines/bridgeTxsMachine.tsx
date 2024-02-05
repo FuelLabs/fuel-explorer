@@ -1,14 +1,14 @@
-import type { Address as FuelAddress, Provider as FuelProvider } from "fuels";
-import type { PublicClient } from "wagmi";
-import type { ActorRefFrom, InterpreterFrom, StateFrom } from "xstate";
-import { assign, createMachine, spawn } from "xstate";
-import { isEthChain, isFuelChain, txFuelToEthMachine } from "~/systems/Chains";
-import { txEthToFuelMachine } from "~/systems/Chains/eth/machines";
-import { FetchMachine, delay } from "~/systems/Core";
+import type { Address as FuelAddress, Provider as FuelProvider } from 'fuels';
+import type { PublicClient } from 'wagmi';
+import type { ActorRefFrom, InterpreterFrom, StateFrom } from 'xstate';
+import { assign, createMachine, spawn } from 'xstate';
+import { isEthChain, isFuelChain, txFuelToEthMachine } from '~/systems/Chains';
+import { txEthToFuelMachine } from '~/systems/Chains/eth/machines';
+import { FetchMachine, delay } from '~/systems/Core';
 
-import { BridgeService } from "../services";
-import type { BridgeInputs } from "../services";
-import type { BridgeTx } from "../types";
+import { BridgeService } from '../services';
+import type { BridgeInputs } from '../services';
+import type { BridgeTx } from '../types';
 
 export type BridgeTxsMachineContext = {
   ethToFuelTxRefs: {
@@ -31,53 +31,53 @@ type MachineServices = {
 
 export type BridgeTxsMachineEvents =
   | {
-      type: "FETCH";
-      input: BridgeInputs["fetchTxs"];
+      type: 'FETCH';
+      input: BridgeInputs['fetchTxs'];
     }
   | {
-      type: "ADD_TX_ETH_TO_FUEL";
+      type: 'ADD_TX_ETH_TO_FUEL';
       input: {
         ethTxId?: `0x${string}`;
-      } & BridgeInputs["fetchTxs"];
+      } & BridgeInputs['fetchTxs'];
     }
   | {
-      type: "ADD_TX_FUEL_TO_ETH";
+      type: 'ADD_TX_FUEL_TO_ETH';
       input: {
         fuelTxId?: string;
-      } & Omit<BridgeInputs["fetchTxs"], "fuelAddress">;
+      } & Omit<BridgeInputs['fetchTxs'], 'fuelAddress'>;
     };
 
 export const bridgeTxsMachine = createMachine(
   {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    tsTypes: {} as import("./bridgeTxsMachine.typegen").Typegen0,
+    tsTypes: {} as import('./bridgeTxsMachine.typegen').Typegen0,
     schema: {
       context: {} as BridgeTxsMachineContext,
       services: {} as MachineServices,
       events: {} as BridgeTxsMachineEvents,
     },
     predictableActionArguments: true,
-    id: "(machine)",
-    initial: "idle",
+    id: '(machine)',
+    initial: 'idle',
     states: {
       idle: {
         on: {
           FETCH: {
-            actions: ["assignFetchInputs"],
-            target: "fetching",
+            actions: ['assignFetchInputs'],
+            target: 'fetching',
           },
           ADD_TX_ETH_TO_FUEL: {
-            actions: ["assignTxEthToFuel"],
+            actions: ['assignTxEthToFuel'],
           },
           ADD_TX_FUEL_TO_ETH: {
-            actions: ["assignTxFuelToEth"],
+            actions: ['assignTxFuelToEth'],
           },
         },
       },
       fetching: {
-        tags: ["isLoading"],
+        tags: ['isLoading'],
         invoke: {
-          src: "fetchTxs",
+          src: 'fetchTxs',
           data: {
             input: (ctx: BridgeTxsMachineContext) => ({
               ethPublicClient: ctx.ethPublicClient,
@@ -88,11 +88,11 @@ export const bridgeTxsMachine = createMachine(
           onDone: [
             {
               cond: FetchMachine.hasError,
-              target: "idle",
+              target: 'idle',
             },
             {
-              actions: ["assignTxMachines", "assignBridgeTxs"],
-              target: "idle",
+              actions: ['assignTxMachines', 'assignBridgeTxs'],
+              target: 'idle',
             },
           ],
         },
@@ -220,14 +220,14 @@ export const bridgeTxsMachine = createMachine(
     },
     services: {
       fetchTxs: FetchMachine.create<
-        BridgeInputs["fetchTxs"],
-        MachineServices["fetchTxs"]["data"]
+        BridgeInputs['fetchTxs'],
+        MachineServices['fetchTxs']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to bridge");
+            throw new Error('No input to bridge');
           }
 
           // Enforce a minimum delay to show the loading state

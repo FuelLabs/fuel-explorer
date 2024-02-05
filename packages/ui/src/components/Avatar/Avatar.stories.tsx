@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { HStack } from "../Box";
+import { HStack } from '../Box';
 
-import { Avatar } from "./Avatar";
+import { Avatar } from './Avatar';
 
 const meta: Meta<typeof Avatar> = {
-  title: "UI/Avatar",
+  title: 'UI/Avatar',
   component: Avatar,
 };
 

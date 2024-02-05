@@ -1,26 +1,26 @@
-import * as RD from "@radix-ui/react-dialog";
+import * as RD from '@radix-ui/react-dialog';
 
 import {
   createComponent,
   createPolymorphicComponent,
   withNamespace,
-} from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
-import { Box } from "../Box";
-import type { BoxProps } from "../Box";
-import type { ButtonCloseProps } from "../ButtonClose/ButtonClose";
-import { ButtonClose } from "../ButtonClose/ButtonClose";
-import type { IconButtonProps } from "../IconButton";
-import { Theme } from "../Theme";
+} from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
+import { Box } from '../Box';
+import type { BoxProps } from '../Box';
+import type { ButtonCloseProps } from '../ButtonClose/ButtonClose';
+import { ButtonClose } from '../ButtonClose/ButtonClose';
+import type { IconButtonProps } from '../IconButton';
+import { Theme } from '../Theme';
 
-import { styles } from "./styles";
+import { styles } from './styles';
 
 export type DrawerProps = PropsOf<typeof RD.Root>;
 export type DrawerPortalProps = PropsOf<typeof RD.Portal>;
 export type DrawerTriggerProps = PropsOf<typeof RD.Trigger>;
 export type DrawerOverlayProps = PropsOf<typeof RD.Overlay>;
 export type DrawerContentProps = PropsOf<typeof RD.Content> & {
-  side?: "left" | "right" | "top" | "bottom";
+  side?: 'left' | 'right' | 'top' | 'bottom';
 };
 export type DrawerCloseProps = PropsOf<typeof RD.Close>;
 export type DrawerCloseIconProps = ButtonCloseProps;
@@ -32,7 +32,7 @@ export type DrawerBodyProps = BoxProps;
 export type DrawerFooterProps = BoxProps;
 
 export const DrawerRoot = createComponent<DrawerProps, typeof RD.Root>({
-  id: "Drawer",
+  id: 'Drawer',
   baseElement: RD.Root,
 });
 
@@ -40,7 +40,7 @@ export const DrawerTrigger = createComponent<
   DrawerTriggerProps,
   typeof RD.Trigger
 >({
-  id: "DrawerTrigger",
+  id: 'DrawerTrigger',
   baseElement: RD.Trigger,
   defaultProps: {
     asChild: true,
@@ -51,7 +51,7 @@ export const DrawerPortal = createComponent<
   DrawerPortalProps,
   typeof RD.Portal
 >({
-  id: "DrawerPortal",
+  id: 'DrawerPortal',
   baseElement: RD.Portal,
 });
 
@@ -59,13 +59,13 @@ export const DrawerOverlay = createComponent<
   DrawerOverlayProps,
   typeof RD.Overlay
 >({
-  id: "DrawerOverlay",
+  id: 'DrawerOverlay',
   baseElement: RD.Overlay,
   className: () => styles().overlay(),
 });
 
 export const DrawerClose = createComponent<DrawerCloseProps, typeof RD.Close>({
-  id: "DrawerClose",
+  id: 'DrawerClose',
   baseElement: RD.Close,
   defaultProps: {
     asChild: true,
@@ -76,7 +76,7 @@ export const DrawerCloseIcon = createComponent<
   DrawerCloseIconProps,
   typeof ButtonClose
 >({
-  id: "DrawerCloseIcon",
+  id: 'DrawerCloseIcon',
   className: () => styles().closeIcon(),
   baseElement: ButtonClose,
   render: (Comp, props) => {
@@ -87,8 +87,8 @@ export const DrawerCloseIcon = createComponent<
     );
   },
   defaultProps: {
-    variant: "link",
-    color: "gray",
+    variant: 'link',
+    color: 'gray',
   },
 });
 
@@ -96,9 +96,9 @@ export const DrawerContent = createComponent<
   DrawerContentProps,
   typeof RD.Content
 >({
-  id: "DrawerContent",
+  id: 'DrawerContent',
   baseElement: RD.Content,
-  render: (Comp, { className, children, side = "right", ...props }) => {
+  render: (Comp, { className, children, side = 'right', ...props }) => {
     const classes = styles({ side });
     return (
       <DrawerPortal>
@@ -118,13 +118,13 @@ export const DrawerDescription = createComponent<
   DrawerDescriptionProps,
   typeof RD.Description
 >({
-  id: "DrawerDescription",
+  id: 'DrawerDescription',
   baseElement: RD.Description,
   className: () => styles().description(),
 });
 
 export const DrawerTitle = createComponent<DrawerTitleProps, typeof RD.Title>({
-  id: "DrawerTitle",
+  id: 'DrawerTitle',
   baseElement: RD.Title,
   className: () => styles().title(),
 });
@@ -133,11 +133,11 @@ export const DrawerHeader = createPolymorphicComponent<
   DrawerHeaderProps,
   typeof Box
 >({
-  id: "DrawerHeader",
+  id: 'DrawerHeader',
   baseElement: Box,
   className: () => styles().header(),
   defaultProps: {
-    as: "header",
+    as: 'header',
   },
 });
 
@@ -145,7 +145,7 @@ export const DrawerBody = createPolymorphicComponent<
   DrawerBodyProps,
   typeof Box
 >({
-  id: "DrawerBody",
+  id: 'DrawerBody',
   baseElement: Box,
   className: () => styles().body(),
 });
@@ -154,11 +154,11 @@ export const DrawerFooter = createPolymorphicComponent<
   DrawerFooterProps,
   typeof Box
 >({
-  id: "DrawerFooter",
+  id: 'DrawerFooter',
   baseElement: Box,
   className: () => styles().footer(),
   defaultProps: {
-    as: "header",
+    as: 'header',
   },
 });
 

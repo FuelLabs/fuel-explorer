@@ -1,17 +1,17 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Flex, Grid, VStack } from "../Box";
-import { Button } from "../Button/Button";
-import { Card } from "../Card/Card";
-import { Switch } from "../Switch/Switch";
-import { Text } from "../Text/Text";
-import { TextArea } from "../TextArea/TextArea";
+import { Flex, Grid, VStack } from '../Box';
+import { Button } from '../Button/Button';
+import { Card } from '../Card/Card';
+import { Switch } from '../Switch/Switch';
+import { Text } from '../Text/Text';
+import { TextArea } from '../TextArea/TextArea';
 
-import { Theme } from "./Theme";
+import { Theme } from './Theme';
 
 const meta: Meta<typeof Theme> = {
-  title: "Helpers/Theme",
+  title: 'Helpers/Theme',
   component: Theme,
 };
 
@@ -46,6 +46,6 @@ export const Usage: Story = {
     </Theme>
   ),
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };

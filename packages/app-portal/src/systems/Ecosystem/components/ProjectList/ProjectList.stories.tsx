@@ -1,17 +1,17 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box } from "@fuel-ui/react";
-import type { Meta, StoryObj } from "@storybook/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box } from '@fuel-ui/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { PROJECTS } from "../../data";
-import type { Project } from "../../types";
+import { PROJECTS } from '../../data';
+import type { Project } from '../../types';
 
-import { ProjectList } from "./ProjectList";
+import { ProjectList } from './ProjectList';
 
 const meta: Meta<typeof ProjectList> = {
   component: ProjectList,
-  title: "Ecosystem / ProjectList",
+  title: 'Ecosystem / ProjectList',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -36,6 +36,6 @@ export const Loading = () => (
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
+    margin: '20px',
   }),
 };

@@ -1,17 +1,17 @@
-import { toast } from "@fuel-ui/react";
+import { toast } from '@fuel-ui/react';
 import type {
   MessageProof,
   Provider as FuelProvider,
   TransactionResult,
-} from "fuels";
-import type { PublicClient as EthPublicClient } from "wagmi";
-import type { InterpreterFrom, StateFrom } from "xstate";
-import { assign, createMachine } from "xstate";
-import { FetchMachine } from "~/systems/Core/machines";
+} from 'fuels';
+import type { PublicClient as EthPublicClient } from 'wagmi';
+import type { InterpreterFrom, StateFrom } from 'xstate';
+import { assign, createMachine } from 'xstate';
+import { FetchMachine } from '~/systems/Core/machines';
 
-import type { TxFuelToEthInputs } from "../services";
-import { TxFuelToEthService } from "../services";
-import { FuelTxCache } from "../utils/txCache";
+import type { TxFuelToEthInputs } from '../services';
+import { TxFuelToEthService } from '../services';
+import { FuelTxCache } from '../utils/txCache';
 
 type MachineContext = {
   fuelProvider?: FuelProvider;
@@ -62,53 +62,53 @@ type MachineServices = {
   };
 };
 
-type AnalyzeInputs = TxFuelToEthInputs["getMessageProof"] &
-  TxFuelToEthInputs["getMessageRelayed"];
+type AnalyzeInputs = TxFuelToEthInputs['getMessageProof'] &
+  TxFuelToEthInputs['getMessageRelayed'];
 export type TxFuelToEthMachineEvents =
   | {
-      type: "START_ANALYZE_TX";
+      type: 'START_ANALYZE_TX';
       input: AnalyzeInputs;
     }
   | {
-      type: "RELAY_TO_ETH";
+      type: 'RELAY_TO_ETH';
       input: Omit<
-        TxFuelToEthInputs["relayMessageFromFuelBlock"],
-        "messageProof"
+        TxFuelToEthInputs['relayMessageFromFuelBlock'],
+        'messageProof'
       >;
     };
 
 export const txFuelToEthMachine = createMachine(
   {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    tsTypes: {} as import("./txFuelToEthMachine.typegen").Typegen0,
+    tsTypes: {} as import('./txFuelToEthMachine.typegen').Typegen0,
     schema: {
       context: {} as MachineContext,
       services: {} as MachineServices,
       events: {} as TxFuelToEthMachineEvents,
     },
     predictableActionArguments: true,
-    id: "(machine)",
-    initial: "idle",
+    id: '(machine)',
+    initial: 'idle',
     states: {
       idle: {
         always: {
-          cond: "hasAnalyzeTxInput",
-          target: "submittingToBridge",
+          cond: 'hasAnalyzeTxInput',
+          target: 'submittingToBridge',
         },
         on: {
           START_ANALYZE_TX: {
-            actions: ["assignAnalyzeTxInput"],
-            target: "submittingToBridge",
+            actions: ['assignAnalyzeTxInput'],
+            target: 'submittingToBridge',
           },
         },
       },
       submittingToBridge: {
-        initial: "waitingFuelTxResult",
+        initial: 'waitingFuelTxResult',
         states: {
           waitingFuelTxResult: {
-            tags: ["isSubmitToBridgeLoading", "isSubmitToBridgeSelected"],
+            tags: ['isSubmitToBridgeLoading', 'isSubmitToBridgeSelected'],
             invoke: {
-              src: "waitFuelTxResult",
+              src: 'waitFuelTxResult',
               data: {
                 input: (ctx: MachineContext) => ({
                   fuelTxId: ctx.fuelTxId,
@@ -121,43 +121,43 @@ export const txFuelToEthMachine = createMachine(
                 },
                 {
                   actions: [
-                    "assignFuelTxResult",
-                    "assignMessageId",
-                    "assignNonce",
-                    "notifyFuelTxSuccess",
+                    'assignFuelTxResult',
+                    'assignMessageId',
+                    'assignNonce',
+                    'notifyFuelTxSuccess',
                   ],
-                  cond: "hasTxResultInfo",
-                  target: "checkingDoneCache",
+                  cond: 'hasTxResultInfo',
+                  target: 'checkingDoneCache',
                 },
               ],
             },
             after: {
               5000: {
-                target: "waitingFuelTxResult",
+                target: 'waitingFuelTxResult',
               },
             },
           },
           checkingDoneCache: {
-            tags: ["isSubmitToBridgeLoading", "isSubmitToBridgeSelected"],
+            tags: ['isSubmitToBridgeLoading', 'isSubmitToBridgeSelected'],
             always: [
               {
-                cond: "isTxFuelToEthDone",
+                cond: 'isTxFuelToEthDone',
                 target:
-                  "#(machine).submittingToBridge.checkingSettlement.checkingRelayed.waitingReceive.done",
+                  '#(machine).submittingToBridge.checkingSettlement.checkingRelayed.waitingReceive.done',
               },
               {
-                target: "checkingSettlement",
+                target: 'checkingSettlement',
               },
             ],
           },
           checkingSettlement: {
-            tags: ["isSubmitToBridgeDone"],
-            initial: "waitingBlockCommit",
+            tags: ['isSubmitToBridgeDone'],
+            initial: 'waitingBlockCommit',
             states: {
               waitingBlockCommit: {
-                tags: ["isSettlementLoading", "isSettlementSelected"],
+                tags: ['isSettlementLoading', 'isSettlementSelected'],
                 invoke: {
-                  src: "waitBlockCommit",
+                  src: 'waitBlockCommit',
                   data: {
                     input: (ctx: MachineContext) => ({
                       fuelWithdrawBlockId: ctx.fuelTxResult?.blockId,
@@ -170,26 +170,26 @@ export const txFuelToEthMachine = createMachine(
                       cond: FetchMachine.hasError,
                     },
                     {
-                      actions: ["assignEstimatedFinishDate"],
-                      cond: "hasEstimatedFinishDate",
+                      actions: ['assignEstimatedFinishDate'],
+                      cond: 'hasEstimatedFinishDate',
                     },
                     {
-                      actions: ["assignFuelBlockHashCommited"],
-                      cond: "hasBlockCommited",
-                      target: "checkingMessageProof",
+                      actions: ['assignFuelBlockHashCommited'],
+                      cond: 'hasBlockCommited',
+                      target: 'checkingMessageProof',
                     },
                   ],
                 },
                 after: {
                   10000: {
-                    target: "waitingBlockCommit",
+                    target: 'waitingBlockCommit',
                   },
                 },
               },
               checkingMessageProof: {
-                tags: ["isSettlementLoading", "isSettlementSelected"],
+                tags: ['isSettlementLoading', 'isSettlementSelected'],
                 invoke: {
-                  src: "getMessageProof",
+                  src: 'getMessageProof',
                   data: {
                     input: (ctx: MachineContext) => ({
                       fuelTxId: ctx.fuelTxId,
@@ -204,22 +204,22 @@ export const txFuelToEthMachine = createMachine(
                       cond: FetchMachine.hasError,
                     },
                     {
-                      actions: ["assignMessageProof"],
-                      cond: "hasMessageProof",
-                      target: "waitingBlockFinalization",
+                      actions: ['assignMessageProof'],
+                      cond: 'hasMessageProof',
+                      target: 'waitingBlockFinalization',
                     },
                   ],
                 },
                 after: {
                   10000: {
-                    target: "checkingMessageProof",
+                    target: 'checkingMessageProof',
                   },
                 },
               },
               waitingBlockFinalization: {
-                tags: ["isSettlementLoading", "isSettlementSelected"],
+                tags: ['isSettlementLoading', 'isSettlementSelected'],
                 invoke: {
-                  src: "waitBlockFinalization",
+                  src: 'waitBlockFinalization',
                   data: {
                     input: (ctx: MachineContext) => ({
                       messageProof: ctx.messageProof,
@@ -233,29 +233,29 @@ export const txFuelToEthMachine = createMachine(
                       cond: FetchMachine.hasError,
                     },
                     {
-                      actions: ["assignEstimatedFinishDate"],
-                      cond: "hasEstimatedFinishDate",
+                      actions: ['assignEstimatedFinishDate'],
+                      cond: 'hasEstimatedFinishDate',
                     },
                     {
-                      cond: "hasBlockFinalized",
-                      target: "checkingRelayed",
+                      cond: 'hasBlockFinalized',
+                      target: 'checkingRelayed',
                     },
                   ],
                 },
                 after: {
                   10000: {
-                    target: "waitingBlockFinalization",
+                    target: 'waitingBlockFinalization',
                   },
                 },
               },
               checkingRelayed: {
-                tags: ["isSettlementDone"],
-                initial: "checkingHasRelayedInEth",
+                tags: ['isSettlementDone'],
+                initial: 'checkingHasRelayedInEth',
                 states: {
                   checkingHasRelayedInEth: {
-                    tags: ["isConfirmTransactionSelected"],
+                    tags: ['isConfirmTransactionSelected'],
                     invoke: {
-                      src: "getMessageRelayed",
+                      src: 'getMessageRelayed',
                       data: {
                         input: (ctx: MachineContext) => ({
                           messageProof: ctx.messageProof,
@@ -268,45 +268,45 @@ export const txFuelToEthMachine = createMachine(
                           cond: FetchMachine.hasError,
                         },
                         {
-                          actions: ["assignTxHashMessageRelayed"],
-                          cond: "hasTxHashMessageRelayed",
-                          target: "waitingReceive",
+                          actions: ['assignTxHashMessageRelayed'],
+                          cond: 'hasTxHashMessageRelayed',
+                          target: 'waitingReceive',
                         },
                         {
-                          target: "waitingEthWalletApproval",
+                          target: 'waitingEthWalletApproval',
                         },
                       ],
                     },
                     after: {
                       10000: {
-                        target: "checkingHasRelayedInEth",
+                        target: 'checkingHasRelayedInEth',
                       },
                     },
                   },
                   waitingEthWalletApproval: {
                     tags: [
-                      "isConfirmTransactionSelected",
-                      "isWaitingEthWalletApproval",
+                      'isConfirmTransactionSelected',
+                      'isWaitingEthWalletApproval',
                     ],
                     on: {
                       RELAY_TO_ETH: {
-                        target: ["relayingMessageFromFuelBlock"],
+                        target: ['relayingMessageFromFuelBlock'],
                       },
                     },
                   },
                   relayingMessageFromFuelBlock: {
                     tags: [
-                      "isConfirmTransactionLoading",
-                      "isConfirmTransactionSelected",
+                      'isConfirmTransactionLoading',
+                      'isConfirmTransactionSelected',
                     ],
                     invoke: {
-                      src: "relayMessageFromFuelBlock",
+                      src: 'relayMessageFromFuelBlock',
                       data: {
                         input: (
                           ctx: MachineContext,
                           ev: Extract<
                             TxFuelToEthMachineEvents,
-                            { type: "RELAY_TO_ETH" }
+                            { type: 'RELAY_TO_ETH' }
                           >,
                         ) => ({
                           messageProof: ctx.messageProof,
@@ -316,24 +316,24 @@ export const txFuelToEthMachine = createMachine(
                       onDone: [
                         {
                           cond: FetchMachine.hasError,
-                          target: "waitingEthWalletApproval",
+                          target: 'waitingEthWalletApproval',
                         },
                         {
-                          actions: ["assignTxHashMessageRelayed"],
-                          cond: "hasTxHashMessageRelayed",
-                          target: "waitingReceive",
+                          actions: ['assignTxHashMessageRelayed'],
+                          cond: 'hasTxHashMessageRelayed',
+                          target: 'waitingReceive',
                         },
                       ],
                     },
                   },
                   waitingReceive: {
-                    tags: ["isConfirmTransactionDone"],
-                    initial: "waitTxMessageRelayed",
+                    tags: ['isConfirmTransactionDone'],
+                    initial: 'waitTxMessageRelayed',
                     states: {
                       waitTxMessageRelayed: {
-                        tags: ["isReceiveLoading", "isReceiveSelected"],
+                        tags: ['isReceiveLoading', 'isReceiveSelected'],
                         invoke: {
-                          src: "waitTxMessageRelayed",
+                          src: 'waitTxMessageRelayed',
                           data: {
                             input: (ctx: MachineContext) => ({
                               txHash: ctx.txHashMessageRelayed,
@@ -345,24 +345,24 @@ export const txFuelToEthMachine = createMachine(
                               cond: FetchMachine.hasError,
                               // if some problem happened with the transaction, move to prev state to try a new transaction
                               target:
-                                "#(machine).submittingToBridge.checkingSettlement.checkingRelayed.checkingHasRelayedInEth",
+                                '#(machine).submittingToBridge.checkingSettlement.checkingRelayed.checkingHasRelayedInEth',
                             },
                             {
-                              cond: "hasTxMessageRelayed",
-                              target: "done",
+                              cond: 'hasTxMessageRelayed',
+                              target: 'done',
                             },
                           ],
                         },
                         after: {
                           10000: {
-                            target: "waitTxMessageRelayed",
+                            target: 'waitTxMessageRelayed',
                           },
                         },
                       },
                       done: {
-                        entry: ["setFuelToEthTxDone"],
-                        tags: ["isReceiveDone"],
-                        type: "final",
+                        entry: ['setFuelToEthTxDone'],
+                        tags: ['isReceiveDone'],
+                        type: 'final',
                       },
                     },
                   },
@@ -414,7 +414,7 @@ export const txFuelToEthMachine = createMachine(
         if (ctx.fuelTxId && FuelTxCache.getTxIsCreated(ctx.fuelTxId)) {
           setTimeout(() => {
             toast.success(
-              "Withdraw successfully initiated. You may now close the popup.",
+              'Withdraw successfully initiated. You may now close the popup.',
               {
                 duration: 5000,
               },
@@ -438,21 +438,21 @@ export const txFuelToEthMachine = createMachine(
       hasTxMessageRelayed: (_, ev) => !!ev?.data,
       hasAnalyzeTxInput: (ctx) =>
         !!ctx.fuelTxId && !!ctx.fuelProvider && !!ctx.ethPublicClient,
-      isTxFuelToEthDone: (ctx) => FuelTxCache.getTxIsDone(ctx.fuelTxId || ""),
+      isTxFuelToEthDone: (ctx) => FuelTxCache.getTxIsDone(ctx.fuelTxId || ''),
     },
     services: {
       waitFuelTxResult: FetchMachine.create<
-        TxFuelToEthInputs["waitTxResult"],
-        MachineServices["waitFuelTxResult"]["data"]
+        TxFuelToEthInputs['waitTxResult'],
+        MachineServices['waitFuelTxResult']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to wait tx result");
+            throw new Error('No input to wait tx result');
           }
 
-          console.log("waitFuelTxResult");
+          console.log('waitFuelTxResult');
 
           const result = await TxFuelToEthService.waitTxResult(input);
 
@@ -460,82 +460,82 @@ export const txFuelToEthMachine = createMachine(
         },
       }),
       getMessageProof: FetchMachine.create<
-        TxFuelToEthInputs["getMessageProof"],
-        MachineServices["getMessageProof"]["data"]
+        TxFuelToEthInputs['getMessageProof'],
+        MachineServices['getMessageProof']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to get fuel message");
+            throw new Error('No input to get fuel message');
           }
 
-          console.log("getMessageProof");
+          console.log('getMessageProof');
           const result = await TxFuelToEthService.getMessageProof(input);
           return result;
         },
       }),
       waitBlockCommit: FetchMachine.create<
-        TxFuelToEthInputs["waitBlockCommit"],
-        MachineServices["waitBlockCommit"]["data"]
+        TxFuelToEthInputs['waitBlockCommit'],
+        MachineServices['waitBlockCommit']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to wait block commit");
+            throw new Error('No input to wait block commit');
           }
 
-          console.log("waitBlockCommit");
+          console.log('waitBlockCommit');
           const result = await TxFuelToEthService.waitBlockCommit(input);
           return result;
         },
       }),
       waitBlockFinalization: FetchMachine.create<
-        TxFuelToEthInputs["waitBlockFinalization"],
-        MachineServices["waitBlockFinalization"]["data"]
+        TxFuelToEthInputs['waitBlockFinalization'],
+        MachineServices['waitBlockFinalization']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to wait block commit");
+            throw new Error('No input to wait block commit');
           }
 
-          console.log("waitBlockFinalization");
+          console.log('waitBlockFinalization');
           const result = TxFuelToEthService.waitBlockFinalization(input);
           return result;
         },
       }),
       getMessageRelayed: FetchMachine.create<
-        TxFuelToEthInputs["getMessageRelayed"],
-        MachineServices["getMessageRelayed"]["data"]
+        TxFuelToEthInputs['getMessageRelayed'],
+        MachineServices['getMessageRelayed']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to get message relayed");
+            throw new Error('No input to get message relayed');
           }
 
-          console.log("getMessageRelayed");
+          console.log('getMessageRelayed');
           const txHashMessageRelayed =
             await TxFuelToEthService.getMessageRelayed(input);
           return txHashMessageRelayed;
         },
       }),
       relayMessageFromFuelBlock: FetchMachine.create<
-        TxFuelToEthInputs["relayMessageFromFuelBlock"],
-        MachineServices["relayMessageFromFuelBlock"]["data"]
+        TxFuelToEthInputs['relayMessageFromFuelBlock'],
+        MachineServices['relayMessageFromFuelBlock']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to get fuel message");
+            throw new Error('No input to get fuel message');
           }
 
-          console.log("relayMessageFromFuelBlock");
+          console.log('relayMessageFromFuelBlock');
           const resp =
             await TxFuelToEthService.relayMessageFromFuelBlock(input);
 
@@ -543,17 +543,17 @@ export const txFuelToEthMachine = createMachine(
         },
       }),
       waitTxMessageRelayed: FetchMachine.create<
-        TxFuelToEthInputs["waitTxMessageRelayed"],
-        MachineServices["waitTxMessageRelayed"]["data"]
+        TxFuelToEthInputs['waitTxMessageRelayed'],
+        MachineServices['waitTxMessageRelayed']['data']
       >({
         showError: true,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {
-            throw new Error("No input to wait tx message relayed");
+            throw new Error('No input to wait tx message relayed');
           }
 
-          console.log("waitTxMessageRelayed");
+          console.log('waitTxMessageRelayed');
           const resp = await TxFuelToEthService.waitTxMessageRelayed(input);
 
           return resp;

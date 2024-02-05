@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Theme, Toaster } from "@fuels/ui";
+import { Theme, Toaster } from '@fuels/ui';
 
 export function Provider({
   children,

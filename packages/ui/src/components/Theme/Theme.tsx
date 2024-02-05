@@ -1,13 +1,13 @@
-import { Theme as RadixTheme } from "@radix-ui/themes";
+import { Theme as RadixTheme } from '@radix-ui/themes';
 
-import { createComponent } from "../../utils/component";
-import type { Colors, PropsOf } from "../../utils/types";
+import { createComponent } from '../../utils/component';
+import type { Colors, PropsOf } from '../../utils/types';
 import {
   INIT_ICON_COLOR,
   INIT_ICON_SIZE,
   INIT_ICON_STROKE,
-} from "../Icon/constants";
-import { IconProvider } from "../Icon/useIconContext";
+} from '../Icon/constants';
+import { IconProvider } from '../Icon/useIconContext';
 
 export type ThemeProps = PropsOf<typeof RadixTheme> & {
   iconSize?: number;
@@ -16,7 +16,7 @@ export type ThemeProps = PropsOf<typeof RadixTheme> & {
 };
 
 export const Theme = createComponent<ThemeProps, typeof RadixTheme>({
-  id: "Theme",
+  id: 'Theme',
   baseElement: RadixTheme,
   render: (
     Comp,
@@ -36,11 +36,11 @@ export const Theme = createComponent<ThemeProps, typeof RadixTheme>({
     );
   },
   defaultProps: {
-    grayColor: "slate",
-    accentColor: "grass",
-    appearance: "dark",
-    radius: "medium",
-    panelBackground: "translucent",
-    scaling: "105%",
+    grayColor: 'slate',
+    accentColor: 'grass',
+    appearance: 'dark',
+    radius: 'medium',
+    panelBackground: 'translucent',
+    scaling: '105%',
   },
 });

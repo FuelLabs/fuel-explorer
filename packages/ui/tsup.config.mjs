@@ -1,9 +1,9 @@
-import tsconfig from "./tsconfig.json";
+import tsconfig from './tsconfig.json';
 
 const defConfig = {
-  outDir: "dist",
+  outDir: 'dist',
   splitting: true,
-  format: ["esm", "cjs"],
+  format: ['esm', 'cjs'],
   outExtension({ format }) {
     return {
       js: `.${format}.js`,
@@ -23,24 +23,24 @@ export default [
   {
     ...defConfig,
     entry: {
-      index: "src/index.tsx",
+      index: 'src/index.tsx',
     },
-    publicDir: "public",
+    publicDir: 'public',
   },
   {
     ...defConfig,
     entry: {
-      index: "src/theme/tailwind-preset.ts",
+      index: 'src/theme/tailwind-preset.ts',
     },
-    format: ["cjs"],
-    outDir: "dist/theme",
+    format: ['cjs'],
+    outDir: 'dist/theme',
   },
   {
     entry: {
-      styles: "src/theme/index.css",
+      styles: 'src/theme/index.css',
     },
     loader: {
-      ".css": "css",
+      '.css': 'css',
     },
   },
 ];

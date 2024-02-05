@@ -1,18 +1,18 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Avatar } from "../Avatar/Avatar";
-import { Box, HStack } from "../Box";
-import { Heading } from "../Heading/Heading";
-import { Link } from "../Link/Link";
-import { Text } from "../Text/Text";
+import { Avatar } from '../Avatar/Avatar';
+import { Box, HStack } from '../Box';
+import { Heading } from '../Heading/Heading';
+import { Link } from '../Link/Link';
+import { Text } from '../Text/Text';
 
-import { HoverCard } from "./HoverCard";
+import { HoverCard } from './HoverCard';
 
 const meta: Meta<typeof HoverCard> = {
-  title: "Overlay/HoverCard",
+  title: 'Overlay/HoverCard',
   component: HoverCard,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 
@@ -22,7 +22,7 @@ type Story = StoryObj<typeof HoverCard>;
 export const Usage: Story = {
   render: () => (
     <Text>
-      Follow{" "}
+      Follow{' '}
       <HoverCard>
         <HoverCard.Trigger>
           <Link
@@ -54,7 +54,7 @@ export const Usage: Story = {
             </Box>
           </HStack>
         </HoverCard.Content>
-      </HoverCard>{" "}
+      </HoverCard>{' '}
       for updates.
     </Text>
   ),

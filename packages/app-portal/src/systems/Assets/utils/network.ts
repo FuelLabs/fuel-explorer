@@ -1,13 +1,13 @@
-import type { Ethereum, Fuel } from "@fuels/assets";
-import { ETH_CHAIN, FUEL_CHAIN } from "~/systems/Chains";
+import type { Ethereum, Fuel } from '@fuels/assets';
+import { ETH_CHAIN, FUEL_CHAIN } from '~/systems/Chains';
 
-import type { Asset } from "../services";
+import type { Asset } from '../services';
 
 type Network = Ethereum | Fuel; // Assuming Ethereum and Fuel are your types
-export type NetworkTypes = Ethereum["type"] | Fuel["type"];
-type NetworkTypeToNetwork<T> = T extends "ethereum"
+export type NetworkTypes = Ethereum['type'] | Fuel['type'];
+type NetworkTypeToNetwork<T> = T extends 'ethereum'
   ? Ethereum
-  : T extends "fuel"
+  : T extends 'fuel'
     ? Fuel
     : Network;
 
@@ -29,15 +29,15 @@ export const getAssetNetwork = <T extends NetworkTypes | undefined>({
   return network;
 };
 
-export type AssetEth = Omit<Asset, "networks"> & Ethereum;
-export type AssetFuel = Omit<Asset, "networks"> & Fuel;
+export type AssetEth = Omit<Asset, 'networks'> & Ethereum;
+export type AssetFuel = Omit<Asset, 'networks'> & Fuel;
 
 export const getAssetEth = (asset: Asset): AssetEth => {
   const { networks: _, ...assetRest } = asset;
   const assetNetwork = getAssetNetwork({
     asset,
     chainId: ETH_CHAIN.id,
-    networkType: "ethereum",
+    networkType: 'ethereum',
   });
 
   return {
@@ -51,7 +51,7 @@ export const getAssetFuel = (asset: Asset): AssetFuel => {
   const assetNetwork = getAssetNetwork({
     asset,
     chainId: FUEL_CHAIN.id,
-    networkType: "fuel",
+    networkType: 'fuel',
   });
 
   return {

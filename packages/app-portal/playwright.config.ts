@@ -1,20 +1,20 @@
-import { join } from "path";
-import type { PlaywrightTestConfig } from "@playwright/test";
-import { defineConfig, devices } from "@playwright/test";
-import "./load.envs";
+import { join } from 'path';
+import type { PlaywrightTestConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
+import './load.envs';
 
 const IS_CI = !!process.env.CI;
 const PORT = process.env.PORT || 3005;
 
 const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
-  testMatch: join(__dirname, "./playwright/**/*.test.ts"),
-  testDir: join(__dirname, "./playwright/"),
+  testMatch: join(__dirname, './playwright/**/*.test.ts'),
+  testDir: join(__dirname, './playwright/'),
   timeout: 60_000 * 10,
   expect: {
     timeout: 5000,
   },
-  reporter: [["html"], ["list", { printSteps: true }]],
+  reporter: [['html'], ['list', { printSteps: true }]],
   // Retry tests on CI if they fail
   retries: IS_CI ? 2 : 0,
   webServer: {
@@ -24,14 +24,14 @@ const config: PlaywrightTestConfig = defineConfig({
   },
   use: {
     baseURL: `http://localhost:${PORT}/`,
-    permissions: ["clipboard-read", "clipboard-write"],
-    trace: "on-first-retry",
+    permissions: ['clipboard-read', 'clipboard-write'],
+    trace: 'on-first-retry',
     headless: false,
   },
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
 });

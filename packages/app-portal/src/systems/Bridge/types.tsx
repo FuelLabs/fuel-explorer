@@ -1,4 +1,4 @@
-import type { SupportedChain } from "../Chains";
+import type { SupportedChain } from '../Chains';
 
 export type BridgeTx = {
   date?: Date;

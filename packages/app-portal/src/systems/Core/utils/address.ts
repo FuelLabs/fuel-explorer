@@ -5,7 +5,7 @@ type ShortAddressOptions = {
 };
 
 export function shortAddress(
-  address = "",
+  address = '',
   { minLength = 10, start = 6, end = 4 }: ShortAddressOptions = {},
 ) {
   return address.length > minLength

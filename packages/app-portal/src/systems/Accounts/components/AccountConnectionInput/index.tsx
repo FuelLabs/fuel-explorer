@@ -1,1 +1,1 @@
-export * from "./AccountConnectionInput";
+export * from './AccountConnectionInput';

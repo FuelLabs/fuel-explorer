@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconPlus } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconPlus } from '@tabler/icons-react';
 
-import { IconButton } from "../IconButton/IconButton";
+import { IconButton } from '../IconButton/IconButton';
 
-import { Tooltip } from "./Tooltip";
+import { Tooltip } from './Tooltip';
 
 const meta: Meta<typeof Tooltip> = {
-  title: "Overlay/Tooltip",
+  title: 'Overlay/Tooltip',
   component: Tooltip,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

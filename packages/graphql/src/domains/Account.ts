@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { delegateToSchema } from "@graphql-tools/delegate";
-import type { GraphQLResolveInfo } from "graphql";
-import { OperationTypeNode } from "graphql";
-import { gql } from "graphql-request";
+import { delegateToSchema } from '@graphql-tools/delegate';
+import type { GraphQLResolveInfo } from 'graphql';
+import { OperationTypeNode } from 'graphql';
+import { gql } from 'graphql-request';
 
-import accountsData from "../data/accounts.json";
-import { parseAddressParam } from "../utils/address";
-import { Domain } from "../utils/domain";
+import accountsData from '../data/accounts.json';
+import { parseAddressParam } from '../utils/address';
+import { Domain } from '../utils/domain';
 
 type Args = {
   addresses: string[];
@@ -22,7 +22,7 @@ export class AccountDomain extends Domain<any, Args> {
     return delegateToSchema({
       schema: info.schema,
       operation: OperationTypeNode.QUERY,
-      fieldName: "accounts",
+      fieldName: 'accounts',
       args: { addresses },
       context,
       info,
@@ -32,8 +32,8 @@ export class AccountDomain extends Domain<any, Args> {
   static createResolvers() {
     const domain = new AccountDomain();
     return {
-      ...domain.createResolver("accounts"),
-      ...domain.createResolver("predicate", "getPredicate"),
+      ...domain.createResolver('accounts'),
+      ...domain.createResolver('predicate', 'getPredicate'),
     };
   }
 
@@ -53,7 +53,7 @@ export class AccountDomain extends Domain<any, Args> {
     const owner = parseAddressParam(address);
 
     function findBytecodeInput(id: string, i: any) {
-      return (i.owner === id || i.sender === id) && i.predicate !== "0x";
+      return (i.owner === id || i.sender === id) && i.predicate !== '0x';
     }
 
     const query = gql`

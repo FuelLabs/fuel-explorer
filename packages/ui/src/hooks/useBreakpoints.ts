@@ -1,6 +1,6 @@
-import { useMedia } from "react-use";
+import { useMedia } from 'react-use';
 
-import { breakpoints } from "../theme/breakpoints";
+import { breakpoints } from '../theme/breakpoints';
 
 const mobile = `(max-width: ${breakpoints.tablet - 1}px)`;
 const tablet = `(min-width: ${breakpoints.tablet}px)`;

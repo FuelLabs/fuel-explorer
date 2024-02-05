@@ -1,22 +1,22 @@
-import type { Store } from "../Store";
-import { Services } from "../Store";
+import type { Store } from '../Store';
+import { Services } from '../Store';
 
-import type { OverlayData } from "./machines/overlayMachine";
+import type { OverlayData } from './machines/overlayMachine';
 
 export function overlayEvents(store: Store) {
   return {
     openOverlay(input: OverlayData) {
-      store.send(Services.overlay, { type: "OPEN", input });
+      store.send(Services.overlay, { type: 'OPEN', input });
     },
     closeOverlay() {
-      store.send(Services.overlay, { type: "CLOSE" });
+      store.send(Services.overlay, { type: 'CLOSE' });
     },
     openTxEthToFuel({ txId }: { txId?: string }) {
       if (txId) {
         store.send(Services.overlay, {
-          type: "OPEN",
+          type: 'OPEN',
           input: {
-            modal: "tx.fromEth.toFuel",
+            modal: 'tx.fromEth.toFuel',
             params: {
               txId,
             },
@@ -26,9 +26,9 @@ export function overlayEvents(store: Store) {
     },
     openTxFuelToEth({ txId }: { txId: string }) {
       store.send(Services.overlay, {
-        type: "OPEN",
+        type: 'OPEN',
         input: {
-          modal: "tx.fromFuel.toEth",
+          modal: 'tx.fromFuel.toEth',
           params: {
             txId,
           },
@@ -37,17 +37,17 @@ export function overlayEvents(store: Store) {
     },
     openAssetsDialog() {
       store.send(Services.overlay, {
-        type: "OPEN",
+        type: 'OPEN',
         input: {
-          modal: "eth.assets",
+          modal: 'eth.assets',
         },
       });
     },
     openAddAssetsDialog({ assetAddress }: { assetAddress: string }) {
       store.send(Services.overlay, {
-        type: "OPEN",
+        type: 'OPEN',
         input: {
-          modal: "eth.assets.add",
+          modal: 'eth.assets.add',
           params: {
             assetAddress,
           },

@@ -1,8 +1,8 @@
-"use server";
+'use server';
 
-import { z } from "zod";
-import { act } from "~/systems/Core/utils/act-server";
-import { sdk } from "~/systems/Core/utils/sdk";
+import { z } from 'zod';
+import { act } from '~/systems/Core/utils/act-server';
+import { sdk } from '~/systems/Core/utils/sdk';
 
 const schema = z.object({
   owner: z.string().nullable(),

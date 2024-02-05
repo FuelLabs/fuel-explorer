@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { Services, store } from "~/store";
+import { useEffect } from 'react';
+import { Services, store } from '~/store';
 
-import type { EcosystemInputs, EcosystemMachineState } from "../machines";
+import type { EcosystemInputs, EcosystemMachineState } from '../machines';
 
 const selectors = {
   filteredProjects: (state: EcosystemMachineState) => {
@@ -23,7 +23,7 @@ const selectors = {
   tags: (state: EcosystemMachineState) => state.context?.tags,
   filter: (state: EcosystemMachineState) => state.context?.filter,
   search: (state: EcosystemMachineState) => state.context?.search,
-  isLoading: (state: EcosystemMachineState) => state.hasTag("isLoading"),
+  isLoading: (state: EcosystemMachineState) => state.hasTag('isLoading'),
 };
 
 export function useEcosystem() {
@@ -38,21 +38,21 @@ export function useEcosystem() {
 
   useEffect(() => {
     store.send(Services.ecosystem, {
-      type: "FETCH_PROJECTS_AND_TAGS",
+      type: 'FETCH_PROJECTS_AND_TAGS',
       input: null,
     });
   }, []);
 
-  const filterProjects = (input: EcosystemInputs["filter"]) => {
-    store.send(Services.ecosystem, { type: "FILTER", input });
+  const filterProjects = (input: EcosystemInputs['filter']) => {
+    store.send(Services.ecosystem, { type: 'FILTER', input });
   };
 
-  const searchProjects = (input: EcosystemInputs["search"]) => {
-    store.send(Services.ecosystem, { type: "SEARCH", input });
+  const searchProjects = (input: EcosystemInputs['search']) => {
+    store.send(Services.ecosystem, { type: 'SEARCH', input });
   };
 
   const clearFilters = () => {
-    store.send(Services.ecosystem, { type: "CLEAR_FILTER", input: null });
+    store.send(Services.ecosystem, { type: 'CLEAR_FILTER', input: null });
   };
 
   return {

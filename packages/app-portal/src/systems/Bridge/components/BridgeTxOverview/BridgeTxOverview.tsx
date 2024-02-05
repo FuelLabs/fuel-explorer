@@ -1,11 +1,11 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, FuelLogo, Icon, Link, Text } from "@fuel-ui/react";
-import type { BigNumberish } from "fuels";
-import { AssetLogo } from "~/systems/Assets/components/AssetLogo";
-import type { Asset } from "~/systems/Assets/services/asset";
-import { calculateDateDiff } from "~/systems/Core";
+import { cssObj } from '@fuel-ui/css';
+import { Box, FuelLogo, Icon, Link, Text } from '@fuel-ui/react';
+import type { BigNumberish } from 'fuels';
+import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
+import type { Asset } from '~/systems/Assets/services/asset';
+import { calculateDateDiff } from '~/systems/Core';
 
-import { InfoTextLoader } from "./InfoTextLoader";
+import { InfoTextLoader } from './InfoTextLoader';
 
 type BridgeTxOverviewProps = {
   transactionId: BigNumberish;
@@ -47,7 +47,7 @@ export const BridgeTxOverview = ({
         {isDeposit ? (
           <Box.Flex css={styles.directionInfo}>
             <Text css={styles.subtleText}>(Deposit)</Text>
-            {ethAsset && <AssetLogo asset={ethAsset} alt={"Deposit"} />}
+            {ethAsset && <AssetLogo asset={ethAsset} alt={'Deposit'} />}
             <Icon icon="ArrowNarrowRight" />
             <FuelLogo size={17} />
           </Box.Flex>
@@ -56,7 +56,7 @@ export const BridgeTxOverview = ({
             <Text css={styles.subtleText}>(Withdrawal)</Text>
             <FuelLogo size={17} />
             <Icon icon="ArrowNarrowRight" />
-            <AssetLogo asset={ethAsset} alt={"withdrawal"} />
+            <AssetLogo asset={ethAsset} alt={'withdrawal'} />
           </Box.Flex>
         )}
       </Box.Flex>
@@ -82,30 +82,30 @@ export const BridgeTxOverview = ({
 
 const styles = {
   stack: cssObj({
-    width: "100%",
+    width: '100%',
   }),
   txItem: cssObj({
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   }),
   labelText: cssObj({
-    fontSize: "$sm",
-    color: "$intentsBase11",
+    fontSize: '$sm',
+    color: '$intentsBase11',
   }),
   subtleText: cssObj({
-    fontSize: "$xs",
-    color: "$intentsBase10",
+    fontSize: '$xs',
+    color: '$intentsBase10',
   }),
   infoText: cssObj({
-    fontSize: "$sm",
-    color: "$intentsBase12",
+    fontSize: '$sm',
+    color: '$intentsBase12',
   }),
   linkText: cssObj({
-    fontSize: "$sm",
-    color: "$intentsPrimary9",
+    fontSize: '$sm',
+    color: '$intentsPrimary9',
   }),
   directionInfo: cssObj({
-    gap: "$1",
-    alignItems: "center",
+    gap: '$1',
+    alignItems: 'center',
   }),
 };

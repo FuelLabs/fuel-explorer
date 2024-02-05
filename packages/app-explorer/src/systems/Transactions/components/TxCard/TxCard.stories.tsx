@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { TX_MOCK } from "../../../Transaction/__mocks__/tx";
+import { TX_MOCK } from '../../../Transaction/__mocks__/tx';
 
-import { TxCard } from "./TxCard";
+import { TxCard } from './TxCard';
 
 const meta: Meta<typeof TxCard> = {
-  title: "Transaction/TxCard",
+  title: 'Transaction/TxCard',
   component: TxCard,
 };
 

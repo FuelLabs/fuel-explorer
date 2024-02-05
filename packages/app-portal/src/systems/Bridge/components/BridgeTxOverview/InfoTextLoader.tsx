@@ -1,4 +1,4 @@
-import { ContentLoader } from "@fuel-ui/react";
+import { ContentLoader } from '@fuel-ui/react';
 
 export const InfoTextLoader = () => {
   return (

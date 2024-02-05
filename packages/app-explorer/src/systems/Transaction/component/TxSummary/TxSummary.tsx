@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { bn } from "@fuel-ts/math";
-import type { BaseProps, BoxProps, CardProps } from "@fuels/ui";
+import { bn } from '@fuel-ts/math';
+import type { BaseProps, BoxProps, CardProps } from '@fuels/ui';
 import {
   Badge,
   Box,
@@ -12,19 +12,19 @@ import {
   VStack,
   createComponent,
   withNamespace,
-} from "@fuels/ui";
+} from '@fuels/ui';
 import {
   IconCalendar,
   IconCoins,
   IconGasStation,
   IconTransfer,
   IconUsers,
-} from "@tabler/icons-react";
-import { createContext, useContext } from "react";
-import { tv } from "tailwind-variants";
+} from '@tabler/icons-react';
+import { createContext, useContext } from 'react';
+import { tv } from 'tailwind-variants';
 
-import type { TransactionNode, TxStatus } from "../../types";
-import { TX_INTENT_MAP, TxIcon } from "../TxIcon/TxIcon";
+import type { TransactionNode, TxStatus } from '../../types';
+import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 
 export type TxSummaryProps = BaseProps<{ transaction: TransactionNode }>;
 export type TxSummaryDetailsProps = CardProps;
@@ -34,7 +34,7 @@ type Context = TxSummaryProps;
 const ctx = createContext<Context>({} as Context);
 
 export const TxSummaryRoot = createComponent<TxSummaryProps, typeof HStack>({
-  id: "TxSummary",
+  id: 'TxSummary',
   baseElement: HStack,
   render: (Comp, { transaction, className, ...props }) => {
     const classes = styles();
@@ -48,7 +48,7 @@ export const TxSummaryRoot = createComponent<TxSummaryProps, typeof HStack>({
 
 type TxSummaryRowProps = BoxProps & { label: string };
 const TxSummaryRow = createComponent<TxSummaryRowProps, typeof Box>({
-  id: "TxSummaryRow",
+  id: 'TxSummaryRow',
   baseElement: Box,
   render: (Comp, { className, children, label, ...props }) => {
     const classes = styles();
@@ -65,7 +65,7 @@ export const TxSummaryDetails = createComponent<
   TxSummaryDetailsProps,
   typeof Card
 >({
-  id: "TxSummaryDetails",
+  id: 'TxSummaryDetails',
   baseElement: Card,
   render: (Comp, { className, ...props }) => {
     const { transaction: tx } = useContext(ctx);
@@ -116,7 +116,7 @@ export const TxSummaryParams = createComponent<
   TxSummaryParamsProps,
   typeof Card
 >({
-  id: "TxSummaryParams",
+  id: 'TxSummaryParams',
   baseElement: Card,
   render: (Comp, { className, ...props }) => {
     const { transaction: tx } = useContext(ctx);
@@ -146,10 +146,10 @@ export const TxSummary = withNamespace(TxSummaryRoot, {
 
 const styles = tv({
   slots: {
-    root: "grid grid-cols-[2fr,1fr] gap-6",
-    details: "p-6",
-    params: "p-6 fuel-[Text]:text-lg",
-    row: "grid grid-cols-[100px,1fr] gap-8 items-center",
-    rowLabel: "text-lg text-medium text-secondary",
+    root: 'grid grid-cols-[2fr,1fr] gap-6',
+    details: 'p-6',
+    params: 'p-6 fuel-[Text]:text-lg',
+    row: 'grid grid-cols-[100px,1fr] gap-8 items-center',
+    rowLabel: 'text-lg text-medium text-secondary',
   },
 });

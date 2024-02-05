@@ -1,12 +1,12 @@
-import "../src/theme/fonts.css";
-import "../src/theme/index.css";
+import '../src/theme/fonts.css';
+import '../src/theme/index.css';
 
-import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
-import { Preview } from "@storybook/react";
-import React, { ReactNode } from "react";
-import { withThemeDecorator } from "storybook-addon-theme";
-import { Theme } from "../src/components/Theme";
-import { Toaster } from "../src/components/Toast";
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { Preview } from '@storybook/react';
+import React, { ReactNode } from 'react';
+import { withThemeDecorator } from 'storybook-addon-theme';
+import { Theme } from '../src/components/Theme';
+import { Toaster } from '../src/components/Toast';
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
   return (
@@ -22,7 +22,7 @@ const preview: Preview = {
 
   parameters: {
     actions: {
-      argTypesRegex: "^on[A-Z].*",
+      argTypesRegex: '^on[A-Z].*',
     },
     controls: {
       matchers: {
@@ -32,7 +32,7 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        order: ["Base", "Layout", "Form", "Overlay", "UI", "Helpers", "Web3"],
+        order: ['Base', 'Layout', 'Form', 'Overlay', 'UI', 'Helpers', 'Web3'],
       },
     },
     viewport: {

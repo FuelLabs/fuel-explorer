@@ -1,3 +1,3 @@
-export { Input, InputField, InputRoot, InputSlot } from "./Input";
+export { Input, InputField, InputRoot, InputSlot } from './Input';
 
-export type { InputFieldProps, InputProps, InputSlotProps } from "./Input";
+export type { InputFieldProps, InputProps, InputSlotProps } from './Input';

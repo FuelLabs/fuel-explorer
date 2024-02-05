@@ -1,13 +1,13 @@
-import { FuelProvider } from "@fuel-wallet/react";
-import type { ReactNode } from "react";
+import { FuelProvider } from '@fuel-wallet/react';
+import type { ReactNode } from 'react';
 
-import { StoreProvider } from "./store";
+import { StoreProvider } from './store';
 import {
   ConnectProvider,
   FuelConnectProvider,
   FuelUiProvider,
-} from "./systems/Settings";
-import { FuelNetworkProvider } from "./systems/Settings/providers/FuelNetworkProvider";
+} from './systems/Settings';
+import { FuelNetworkProvider } from './systems/Settings/providers/FuelNetworkProvider';
 
 type ProvidersProps = {
   children: ReactNode;

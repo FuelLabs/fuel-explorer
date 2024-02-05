@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { HStack, VStack } from "../Box";
-import { Text } from "../Text/Text";
+import { HStack, VStack } from '../Box';
+import { Text } from '../Text/Text';
 
-import { RadioGroup } from "./RadioGroup";
+import { RadioGroup } from './RadioGroup';
 
 const meta: Meta<typeof RadioGroup> = {
-  title: "Form/RadioGroup",
+  title: 'Form/RadioGroup',
   component: RadioGroup,
 };
 

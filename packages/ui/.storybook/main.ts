@@ -1,29 +1,29 @@
-import type { StorybookConfig } from "@storybook/react-vite";
-import { UserConfig, mergeConfig } from "vite";
-import tsconfigpath from "vite-tsconfig-paths";
+import type { StorybookConfig } from '@storybook/react-vite';
+import { UserConfig, mergeConfig } from 'vite';
+import tsconfigpath from 'vite-tsconfig-paths';
 
 const config: StorybookConfig = {
-  stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.tsx"],
+  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.tsx'],
   addons: [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-    "@storybook/addon-storysource",
-    "@storybook/addon-a11y",
-    "storybook-addon-theme/register",
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+    '@storybook/addon-storysource',
+    '@storybook/addon-a11y',
+    'storybook-addon-theme/register',
   ],
-  staticDirs: ["../public"],
+  staticDirs: ['../public'],
   core: {
     disableTelemetry: true,
-    builder: "@storybook/builder-vite",
+    builder: '@storybook/builder-vite',
   },
   framework: {
-    name: "@storybook/react-vite",
+    name: '@storybook/react-vite',
     options: {},
   },
   typescript: {
     check: false,
-    reactDocgen: "react-docgen",
+    reactDocgen: 'react-docgen',
   },
   async viteFinal(config: UserConfig) {
     return mergeConfig(config, {

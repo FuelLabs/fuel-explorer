@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconChevronDown } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconChevronDown } from '@tabler/icons-react';
 
-import { Button } from "../Button/Button";
+import { Button } from '../Button/Button';
 
-import { Dropdown } from "./Dropdown";
+import { Dropdown } from './Dropdown';
 
 const meta: Meta<typeof Dropdown> = {
-  title: "Overlay/Dropdown",
+  title: 'Overlay/Dropdown',
   component: Dropdown,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

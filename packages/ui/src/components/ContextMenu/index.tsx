@@ -12,7 +12,7 @@ export {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from "./ContextMenu";
+} from './ContextMenu';
 
 export type {
   ContextMenuCheckboxItemProps,
@@ -27,4 +27,4 @@ export type {
   ContextMenuSubProps,
   ContextMenuSubTriggerProps,
   ContextMenuTriggerProps,
-} from "./ContextMenu";
+} from './ContextMenu';

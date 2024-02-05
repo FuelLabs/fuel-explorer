@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box } from "../Box";
+import { Box } from '../Box';
 
-import { Accordion } from "./Accordion";
+import { Accordion } from './Accordion';
 
 const meta: Meta<typeof Accordion> = {
-  title: "UI/Accordion",
+  title: 'UI/Accordion',
   component: Accordion,
 };
 

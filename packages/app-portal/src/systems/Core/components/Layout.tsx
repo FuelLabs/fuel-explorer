@@ -1,14 +1,14 @@
-import type { ThemeUtilsCSS } from "@fuel-ui/css";
-import { cssObj } from "@fuel-ui/css";
-import { Box, Flex } from "@fuel-ui/react";
-import type { FC, ReactNode } from "react";
-import { Helmet } from "react-helmet";
-import { META_DESC, META_OGIMG } from "~/constants";
-import { OverlayDialog } from "~/systems/Overlay";
+import type { ThemeUtilsCSS } from '@fuel-ui/css';
+import { cssObj } from '@fuel-ui/css';
+import { Box, Flex } from '@fuel-ui/react';
+import type { FC, ReactNode } from 'react';
+import { Helmet } from 'react-helmet';
+import { META_DESC, META_OGIMG } from '~/constants';
+import { OverlayDialog } from '~/systems/Overlay';
 
-import { coreStyles } from "../styles";
+import { coreStyles } from '../styles';
 
-import { Header } from "./Header";
+import { Header } from './Header';
 
 type ContentProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,7 +39,7 @@ type LayoutProps = {
 };
 
 export const Layout: LayoutComponent = ({ title, children }: LayoutProps) => {
-  const titleText = title || "";
+  const titleText = title || '';
   return (
     <>
       <Helmet>
@@ -70,18 +70,18 @@ Layout.Content = Content;
 
 const styles = {
   root: cssObj({
-    width: "100vw",
-    height: "100vh",
-    overflow: "hidden",
-    position: "absolute",
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+    position: 'absolute',
   }),
   scrollView: cssObj({
     flex: 1,
     ...coreStyles.scrollable(),
   }),
   content: cssObj({
-    padding: "$16 $4 $4 $4",
+    padding: '$16 $4 $4 $4',
     maxWidth: 955,
-    margin: "0 auto",
+    margin: '0 auto',
   }),
 };

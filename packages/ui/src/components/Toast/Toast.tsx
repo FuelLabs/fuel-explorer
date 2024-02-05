@@ -1,14 +1,14 @@
-import * as TP from "@radix-ui/react-toast";
-import type { VariantProps } from "tailwind-variants";
+import * as TP from '@radix-ui/react-toast';
+import type { VariantProps } from 'tailwind-variants';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { BaseProps, PropsOf } from "../../utils/types";
-import type { ButtonCloseProps } from "../ButtonClose/ButtonClose";
-import { ButtonClose } from "../ButtonClose/ButtonClose";
-import type { Icon } from "../Icon/Icon";
-import type { IconButtonProps } from "../IconButton";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { BaseProps, PropsOf } from '../../utils/types';
+import type { ButtonCloseProps } from '../ButtonClose/ButtonClose';
+import { ButtonClose } from '../ButtonClose/ButtonClose';
+import type { Icon } from '../Icon/Icon';
+import type { IconButtonProps } from '../IconButton';
 
-import { styles } from "./styles";
+import { styles } from './styles';
 
 export type ToastProviderProps = PropsOf<typeof TP.Provider>;
 export type ToastViewportProps = PropsOf<typeof TP.Viewport>;
@@ -25,7 +25,7 @@ export const ToastProvider = createComponent<
   ToastProviderProps,
   typeof TP.Provider
 >({
-  id: "ToastProvider",
+  id: 'ToastProvider',
   baseElement: TP.Provider,
 });
 
@@ -33,28 +33,28 @@ export const ToastViewport = createComponent<
   ToastViewportProps,
   typeof TP.Viewport
 >({
-  id: "ToastViewport",
+  id: 'ToastViewport',
   baseElement: TP.Viewport,
   className: () => styles().viewport(),
 });
 
 export const ToastRoot = createComponent<ToastProps, typeof TP.Root>({
-  id: "Toast",
+  id: 'Toast',
   baseElement: TP.Root,
-  render: (Comp, { className, variant = "base", hasDescription, ...props }) => {
+  render: (Comp, { className, variant = 'base', hasDescription, ...props }) => {
     const classes = styles({ variant, hasDescription }).toast({ className });
     return <Comp {...props} className={classes} />;
   },
 });
 
 export const ToastAction = createComponent<ToastActionProps, typeof TP.Action>({
-  id: "ToastAction",
+  id: 'ToastAction',
   baseElement: TP.Action,
   className: () => styles().action(),
 });
 
 export const ToastClose = createComponent<ToastCloseProps, typeof TP.Close>({
-  id: "ToastClose",
+  id: 'ToastClose',
   baseElement: TP.Close,
   className: () => styles().close(),
   render: (Comp, props) => {
@@ -65,12 +65,12 @@ export const ToastClose = createComponent<ToastCloseProps, typeof TP.Close>({
     );
   },
   defaultProps: {
-    variant: "link",
+    variant: 'link',
   },
 });
 
 export const ToastTitle = createComponent<ToastTitleProps, typeof TP.Title>({
-  id: "ToastTitle",
+  id: 'ToastTitle',
   baseElement: TP.Title,
   className: () => styles().title(),
 });
@@ -79,7 +79,7 @@ export const ToastDescription = createComponent<
   ToastDescriptionProps,
   typeof TP.Description
 >({
-  id: "ToastDescription",
+  id: 'ToastDescription',
   baseElement: TP.Description,
   className: () => styles().description(),
 });

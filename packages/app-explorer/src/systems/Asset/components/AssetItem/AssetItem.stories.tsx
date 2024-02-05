@@ -1,10 +1,10 @@
-import { VStack } from "@fuels/ui";
-import type { Meta, StoryObj } from "@storybook/react";
+import { VStack } from '@fuels/ui';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { AssetItem } from "./AssetItem";
+import { AssetItem } from './AssetItem';
 
 const meta: Meta<typeof AssetItem> = {
-  title: "Asset/AssetItem",
+  title: 'Asset/AssetItem',
   component: AssetItem,
 };
 

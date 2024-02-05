@@ -1,13 +1,13 @@
-import { gql } from "graphql-request";
+import { gql } from 'graphql-request';
 
-import type { Balance } from "../generated/types";
-import { Domain } from "../utils/domain";
+import type { Balance } from '../generated/types';
+import { Domain } from '../utils/domain';
 
 export class BalanceDomain extends Domain<Balance> {
   static createResolvers() {
     const domain = new BalanceDomain();
     return {
-      ...domain.createResolver("utxos", "getUtxos"),
+      ...domain.createResolver('utxos', 'getUtxos'),
     };
   }
 

@@ -1,7 +1,7 @@
-import { Table as RT } from "@radix-ui/themes";
+import { Table as RT } from '@radix-ui/themes';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type TableProps = PropsOf<typeof RT.Root>;
 export type TableHeaderProps = PropsOf<typeof RT.Header>;
@@ -12,27 +12,27 @@ export type TableColumnHeaderCellProps = PropsOf<typeof RT.ColumnHeaderCell>;
 export type TableRowHeaderCellProps = PropsOf<typeof RT.RowHeaderCell>;
 
 export const TableRoot = createComponent<TableProps, typeof RT.Root>({
-  id: "Table",
+  id: 'Table',
   baseElement: RT.Root,
 });
 
 export const TableHeader = createComponent<TableHeaderProps, typeof RT.Header>({
-  id: "TableHeader",
+  id: 'TableHeader',
   baseElement: RT.Header,
 });
 
 export const TableBody = createComponent<TableBodyProps, typeof RT.Body>({
-  id: "TableBody",
+  id: 'TableBody',
   baseElement: RT.Body,
 });
 
 export const TableRow = createComponent<TableRowProps, typeof RT.Row>({
-  id: "TableRow",
+  id: 'TableRow',
   baseElement: RT.Row,
 });
 
 export const TableCell = createComponent<TableCellProps, typeof RT.Cell>({
-  id: "TableCell",
+  id: 'TableCell',
   baseElement: RT.Cell,
 });
 
@@ -40,7 +40,7 @@ export const TableColumnHeaderCell = createComponent<
   TableColumnHeaderCellProps,
   typeof RT.ColumnHeaderCell
 >({
-  id: "TableColumnHeaderCell",
+  id: 'TableColumnHeaderCell',
   baseElement: RT.ColumnHeaderCell,
 });
 
@@ -48,7 +48,7 @@ export const TableRowHeaderCell = createComponent<
   TableRowHeaderCellProps,
   typeof RT.RowHeaderCell
 >({
-  id: "TableRowHeaderCell",
+  id: 'TableRowHeaderCell',
   baseElement: RT.RowHeaderCell,
 });
 

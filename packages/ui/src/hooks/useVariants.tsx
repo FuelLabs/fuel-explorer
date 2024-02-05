@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { cx } from "../utils/css";
+import { cx } from '../utils/css';
 
 export type Variant =
-  | "solid"
-  | "ghost"
-  | "outline"
-  | "surface"
-  | "link"
-  | "soft";
+  | 'solid'
+  | 'ghost'
+  | 'outline'
+  | 'surface'
+  | 'link'
+  | 'soft';
 export type VariantProps<V = Variant> = {
   className?: string;
   variant?: V;
@@ -16,23 +16,23 @@ export type VariantProps<V = Variant> = {
 
 export type WithVariants<
   P,
-  V = P extends VariantProps ? P["variant"] : Variant,
-> = Omit<P, "variant"> & {
+  V = P extends VariantProps ? P['variant'] : Variant,
+> = Omit<P, 'variant'> & {
   variant?: V;
 };
 
 function getVariant<V = Variant>({ variant, className }: VariantProps<V>) {
-  if (variant === "ghost") {
+  if (variant === 'ghost') {
     return {
-      variant: "soft",
+      variant: 'soft',
       className,
     };
   }
-  if (variant === "link") {
+  if (variant === 'link') {
     return {
-      variant: "ghost",
+      variant: 'ghost',
       className: cx(
-        "hover:bg-transparent hover:underline px-0.5 py-0.5",
+        'hover:bg-transparent hover:underline px-0.5 py-0.5',
         className,
       ),
     };

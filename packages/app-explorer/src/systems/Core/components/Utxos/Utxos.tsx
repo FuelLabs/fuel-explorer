@@ -1,16 +1,16 @@
-import type { UtxoItem as TUtxoItem } from "@fuel-explorer/graphql";
-import { Address, Box, Collapsible, useBreakpoints } from "@fuels/ui";
-import type { BoxProps } from "@fuels/ui";
-import { IconCoins } from "@tabler/icons-react";
-import { bn } from "fuels";
-import NextLink from "next/link";
-import { FixedSizeList as List } from "react-window";
-import { tv } from "tailwind-variants";
-import { Routes } from "~/routes";
+import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
+import { Address, Box, Collapsible, useBreakpoints } from '@fuels/ui';
+import type { BoxProps } from '@fuels/ui';
+import { IconCoins } from '@tabler/icons-react';
+import { bn } from 'fuels';
+import NextLink from 'next/link';
+import { FixedSizeList as List } from 'react-window';
+import { tv } from 'tailwind-variants';
+import { Routes } from '~/routes';
 
-import { Amount } from "../Amount/Amount";
+import { Amount } from '../Amount/Amount';
 
-export type UtxoItem = Partial<Omit<TUtxoItem, "__typename">>;
+export type UtxoItem = Partial<Omit<TUtxoItem, '__typename'>>;
 
 type UtxoItemProps = {
   item: UtxoItem;
@@ -24,7 +24,7 @@ function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
   if (!item.utxoId) return null;
   const trim = isMobile ? 8 : 16;
   const { item: itemStyle } = styles({
-    color: index % 2 !== 0 ? "odd" : undefined,
+    color: index % 2 !== 0 ? 'odd' : undefined,
   });
 
   return (
@@ -102,16 +102,16 @@ export function Utxos({ items, assetId, ...props }: UtxosProps) {
 const styles = tv({
   slots: {
     item: [
-      "flex flex-col p-2 px-4 gap-2",
-      "tablet:flex-row",
-      "last:rounded-b-sm",
-      "fuel-[Address]:text-[0.8rem] fuel-[Address]:leading-none",
+      'flex flex-col p-2 px-4 gap-2',
+      'tablet:flex-row',
+      'last:rounded-b-sm',
+      'fuel-[Address]:text-[0.8rem] fuel-[Address]:leading-none',
     ],
   },
   variants: {
     color: {
       odd: {
-        item: "bg-gray-4",
+        item: 'bg-gray-4',
       },
     },
   },

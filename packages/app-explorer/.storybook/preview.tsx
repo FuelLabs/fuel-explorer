@@ -1,17 +1,17 @@
-import "@fuels/ui/styles.css";
-import "../src/app/globals.css";
-import "./fonts.css";
+import '@fuels/ui/styles.css';
+import '../src/app/globals.css';
+import './fonts.css';
 
-import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
-import { Preview } from "@storybook/react";
-import React from "react";
-import { withThemeDecorator } from "storybook-addon-theme";
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { Preview } from '@storybook/react';
+import React from 'react';
+import { withThemeDecorator } from 'storybook-addon-theme';
 
-import { ReactNode } from "react";
-import { Provider } from "../src/systems/Core/components/Provider";
+import { ReactNode } from 'react';
+import { Provider } from '../src/systems/Core/components/Provider';
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
-  const initTheme = localStorage.getItem("fuel-ui-theme") ?? "dark";
+  const initTheme = localStorage.getItem('fuel-ui-theme') ?? 'dark';
   return <Provider theme={initTheme}>{children}</Provider>;
 }
 
@@ -20,7 +20,7 @@ const preview: Preview = {
 
   parameters: {
     actions: {
-      argTypesRegex: "^on[A-Z].*",
+      argTypesRegex: '^on[A-Z].*',
     },
     controls: {
       matchers: {
@@ -30,7 +30,7 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        order: ["Base", "Layout", "Form", "Overlay", "UI", "Helpers", "Web3"],
+        order: ['Base', 'Layout', 'Form', 'Overlay', 'UI', 'Helpers', 'Web3'],
       },
     },
     viewport: {

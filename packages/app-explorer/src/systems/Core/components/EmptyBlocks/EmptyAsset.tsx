@@ -1,5 +1,5 @@
-"use client";
-import { EmptyCard } from "../EmptyCard/EmptyCard";
+'use client';
+import { EmptyCard } from '../EmptyCard/EmptyCard';
 
 export function EmptyAssets({ entity }: { entity: string }) {
   return (

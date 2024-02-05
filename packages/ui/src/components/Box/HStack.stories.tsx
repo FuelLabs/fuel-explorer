@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import type { HStackProps } from "./";
-import { Box, HStack } from "./";
+import type { HStackProps } from './';
+import { Box, HStack } from './';
 
 const meta: Meta<typeof HStack> = {
-  title: "Layout/HStack",
+  title: 'Layout/HStack',
   component: HStack,
 };
 
@@ -21,7 +21,7 @@ const DecorativeBox = (props: HStackProps) => {
 };
 
 export const Usage: Story = {
-  name: "HStack",
+  name: 'HStack',
   render: () => (
     <HStack gap="3">
       <Box className="block w-8 h-8">

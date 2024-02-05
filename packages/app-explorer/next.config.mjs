@@ -1,24 +1,24 @@
-import { redirects } from "./src/redirects.mjs";
+import { redirects } from './src/redirects.mjs';
 const externals = [
-  "bcryptjs",
-  "ws",
-  "isomorphic-ws",
-  "node-fetch",
-  "@whatwg/node-fetch",
-  "graphql",
-  "@graphql-tools/delegate",
-  "@graphql-tools/load",
-  "@graphql-tools/schema",
-  "@graphql-tools/stitch",
-  "@graphql-tools/url-loader",
-  "@graphql-tools/utils",
+  'bcryptjs',
+  'ws',
+  'isomorphic-ws',
+  'node-fetch',
+  '@whatwg/node-fetch',
+  'graphql',
+  '@graphql-tools/delegate',
+  '@graphql-tools/load',
+  '@graphql-tools/schema',
+  '@graphql-tools/stitch',
+  '@graphql-tools/url-loader',
+  '@graphql-tools/utils',
 ];
 
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ["@fuel-explorer/graphql"],
+  transpilePackages: ['@fuel-explorer/graphql'],
   experimental: {
     externalDir: true,
     serverComponentsExternalPackages: externals,
@@ -31,23 +31,23 @@ const config = {
   redirects: async () => {
     return [
       {
-        source: "/portal",
-        destination: "/portal/index.html",
+        source: '/portal',
+        destination: '/portal/index.html',
         permanent: false,
       },
       {
-        source: "/portal-storybook",
-        destination: "/portal-storybook/index.html",
+        source: '/portal-storybook',
+        destination: '/portal-storybook/index.html',
         permanent: false,
       },
       {
-        source: "/storybook",
-        destination: "/storybook/index.html",
+        source: '/storybook',
+        destination: '/storybook/index.html',
         permanent: false,
       },
       {
-        source: "/ui",
-        destination: "/ui/index.html",
+        source: '/ui',
+        destination: '/ui/index.html',
         permanent: false,
       },
       ...redirects,
@@ -55,20 +55,20 @@ const config = {
   },
   webpack: (config) => {
     config.externals.push({
-      "utf-8-validate": "commonjs utf-8-validate",
-      bufferutil: "commonjs bufferutil",
-      encoding: "commonjs encoding",
-      module: "commonjs module",
+      'utf-8-validate': 'commonjs utf-8-validate',
+      bufferutil: 'commonjs bufferutil',
+      encoding: 'commonjs encoding',
+      module: 'commonjs module',
     });
     config.module.rules.push({
       test: /\.(graphql|gql)/,
       exclude: /node_modules/,
-      loader: "graphql-tag/loader",
+      loader: 'graphql-tag/loader',
     });
 
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>
-      rule.test?.test?.(".svg"),
+      rule.test?.test?.('.svg'),
     );
     config.module.rules.push(
       {
@@ -82,9 +82,9 @@ const config = {
         resourceQuery: { not: /url/ }, // exclude if *.svg?url
         use: [
           {
-            loader: "@svgr/webpack",
+            loader: '@svgr/webpack',
             options: {
-              exportType: "named",
+              exportType: 'named',
             },
           },
         ],

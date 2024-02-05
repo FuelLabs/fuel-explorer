@@ -1,1 +1,1 @@
-export * from "./txFuelToEth";
+export * from './txFuelToEth';

@@ -1,7 +1,7 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, Button } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box, Button } from '@fuel-ui/react';
 
-import { EcosystemTagsLoading } from "./EcosystemTagsLoading";
+import { EcosystemTagsLoading } from './EcosystemTagsLoading';
 
 type EcosystemTagsProps = {
   tags?: string[];
@@ -47,16 +47,16 @@ export const EcosystemTags = ({
 
 const styles = {
   tag: cssObj({
-    color: "$intentsBase12",
+    color: '$intentsBase12',
   }),
   active: cssObj({
-    borderColor: "$intentsPrimary10",
-    color: "$intentsBase12",
+    borderColor: '$intentsPrimary10',
+    color: '$intentsBase12',
   }),
   divider: cssObj({
-    width: "1px",
-    height: "$3",
-    backgroundColor: "$intentsBase6",
+    width: '1px',
+    height: '$3',
+    backgroundColor: '$intentsBase6',
   }),
 };
 

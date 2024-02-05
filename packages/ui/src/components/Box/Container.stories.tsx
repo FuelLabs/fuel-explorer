@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box } from "./Box";
-import type { ContainerProps } from "./Container";
-import { Container } from "./Container";
+import { Box } from './Box';
+import type { ContainerProps } from './Container';
+import { Container } from './Container';
 
 const meta: Meta<typeof Container> = {
-  title: "Layout/Container",
+  title: 'Layout/Container',
   component: Container,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -25,7 +25,7 @@ const DecorativeBox = (props: ContainerProps) => {
 };
 
 export const UsageContainer: Story = {
-  name: "Container",
+  name: 'Container',
   render: () => (
     <Box className="bg-gray-2 rounded-3">
       <Container className="h-[80px]" size="1">

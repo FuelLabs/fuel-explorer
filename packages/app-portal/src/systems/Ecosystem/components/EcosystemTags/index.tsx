@@ -1,1 +1,1 @@
-export * from "./EcosystemTags";
+export * from './EcosystemTags';

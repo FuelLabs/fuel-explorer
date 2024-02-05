@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import type { FlexProps } from "./";
-import { Box, Flex } from "./";
+import type { FlexProps } from './';
+import { Box, Flex } from './';
 
 const meta: Meta<typeof Flex> = {
-  title: "Layout/Flex",
+  title: 'Layout/Flex',
   component: Flex,
 };
 
@@ -21,7 +21,7 @@ const DecorativeBox = (props: FlexProps) => {
 };
 
 export const Usage: Story = {
-  name: "Flex",
+  name: 'Flex',
   render: () => (
     <Flex>
       <Box className="block w-8 h-8">

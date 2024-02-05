@@ -1,7 +1,7 @@
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from 'date-fns';
 
 export const calculateDateDiffFromTimestamp = (timestamp?: number) => {
-  if (!timestamp) return "";
+  if (!timestamp) return '';
 
   const blockDate = new Date(timestamp * 1000);
 
@@ -9,8 +9,8 @@ export const calculateDateDiffFromTimestamp = (timestamp?: number) => {
 };
 
 export const calculateDateDiff = (date?: Date) => {
-  if (!date) return "";
+  if (!date) return '';
 
   const diffInDays = formatDistanceToNow(date, { addSuffix: true });
-  return diffInDays.replace("less than a minute ago", "just now");
+  return diffInDays.replace('less than a minute ago', 'just now');
 };

@@ -1,8 +1,8 @@
-import { GroupedOutputType } from "@fuel-explorer/graphql";
+import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type {
   GroupedOutput,
   TransactionItemFragment,
-} from "@fuel-explorer/graphql";
+} from '@fuel-explorer/graphql';
 import {
   Address,
   Card,
@@ -13,26 +13,26 @@ import {
   VStack,
   createComponent,
   cx,
-} from "@fuels/ui";
-import type { CardProps } from "@fuels/ui";
-import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
-import { bn } from "fuels";
-import NextLink from "next/link";
-import { tv } from "tailwind-variants";
-import { Routes } from "~/routes";
-import { AssetItem } from "~/systems/Asset/components/AssetItem/AssetItem";
-import { Amount } from "~/systems/Core/components/Amount/Amount";
+} from '@fuels/ui';
+import type { CardProps } from '@fuels/ui';
+import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
+import { bn } from 'fuels';
+import NextLink from 'next/link';
+import { tv } from 'tailwind-variants';
+import { Routes } from '~/routes';
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 
-import { TxIcon } from "../TxIcon/TxIcon";
+import { TxIcon } from '../TxIcon/TxIcon';
 
 function getTooltipText(tx: TransactionItemFragment, output: GroupedOutput) {
   if (tx.isMint) {
-    return "This is the amount minted in the transaction";
+    return 'This is the amount minted in the transaction';
   }
   if (output.type === GroupedOutputType.ChangeOutput) {
-    return "This is the amount remaining after transaction";
+    return 'This is the amount remaining after transaction';
   }
-  return "This is the amount spent in the transaction";
+  return 'This is the amount spent in the transaction';
 }
 
 export type TxOutputProps = CardProps & {
@@ -41,7 +41,7 @@ export type TxOutputProps = CardProps & {
 };
 
 const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
-  id: "TxOutputCoin",
+  id: 'TxOutputCoin',
   render: (_, { tx, output, ...props }) => {
     const classes = styles();
     if (!output.assetId) return null;
@@ -50,15 +50,15 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
     const isReceiving =
       output.type === GroupedOutputType.ChangeOutput ||
       (output.outputs?.length === 1 &&
-        output.outputs[0]?.__typename === "CoinOutput");
+        output.outputs[0]?.__typename === 'CoinOutput');
 
     return (
-      <Card {...props} className={cx("py-3", props.className)}>
+      <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <AssetItem assetId={assetId}>
             <Address
               prefix="To:"
-              value={output.to || ""}
+              value={output.to || ''}
               linkProps={{
                 as: NextLink,
                 href: Routes.accountAssets(output.to!),
@@ -72,7 +72,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack className="hidden tablet:flex items-center gap-2">
             <Icon
               icon={isReceiving ? IconArrowUp : IconArrowDown}
-              className={isReceiving ? "text-success" : "text-error"}
+              className={isReceiving ? 'text-success' : 'text-error'}
             />
             {amount && (
               <Amount
@@ -91,12 +91,12 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
 });
 
 const TxOutputContract = createComponent<TxOutputProps, typeof Card>({
-  id: "TxOutputContract",
+  id: 'TxOutputContract',
   render: (_, { output, ...props }) => {
     const classes = styles();
 
     return (
-      <Card {...props} className={cx("py-3", props.className)}>
+      <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <HStack align="center">
             <TxIcon status="Submitted" type="Contract" />
@@ -114,13 +114,13 @@ const TxOutputContract = createComponent<TxOutputProps, typeof Card>({
 });
 
 const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
-  id: "TxOutputContractCreated",
+  id: 'TxOutputContractCreated',
   render: (_, { output, ...props }) => {
     const classes = styles();
     const contractId = output.contract?.id as string;
 
     return (
-      <Card {...props} className={cx("py-3", props.className)}>
+      <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <HStack align="center">
             <TxIcon status="Success" type="Contract" />
@@ -143,13 +143,13 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
 });
 
 const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
-  id: "TxOutputMessage",
+  id: 'TxOutputMessage',
   render: (_, { output, ...props }) => {
     const classes = styles();
     const { recipient } = output;
 
     return (
-      <Card {...props} className={cx("py-3", props.className)}>
+      <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
           <TxIcon type="Message" status="Submitted" />
           <HStack align="center" gap="1" className="flex-1 justify-between">
@@ -157,7 +157,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
             <VStack gap="1" className="mr-2">
               <Address
                 prefix="From: "
-                value={recipient || ""}
+                value={recipient || ''}
                 linkProps={{
                   as: NextLink,
                   href: Routes.accountAssets(recipient!),
@@ -165,7 +165,7 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
               />
               <Address
                 prefix="To: "
-                value={output.to || ""}
+                value={output.to || ''}
                 linkProps={{
                   as: NextLink,
                   href: Routes.accountAssets(output.to!),
@@ -199,8 +199,8 @@ export function TxOutput({ output, ...props }: TxOutputProps) {
 
 const styles = tv({
   slots: {
-    header: "group flex flex-row gap-4 justify-between items-center",
-    icon: "transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180",
-    utxos: "bg-gray-2 mx-4 py-3 px-4 rounded",
+    header: 'group flex flex-row gap-4 justify-between items-center',
+    icon: 'transition-transform group-data-[state=closed]:hover:rotate-180 group-data-[state=open]:rotate-180',
+    utxos: 'bg-gray-2 mx-4 py-3 px-4 rounded',
   },
 });

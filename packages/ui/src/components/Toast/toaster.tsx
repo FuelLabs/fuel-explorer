@@ -1,4 +1,4 @@
-import { HStack, VStack } from "../Box";
+import { HStack, VStack } from '../Box';
 
 import {
   Toast,
@@ -7,8 +7,8 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "./Toast";
-import { useToast } from "./useToast";
+} from './Toast';
+import { useToast } from './useToast';
 
 export function Toaster() {
   const { toasts } = useToast();
@@ -22,7 +22,7 @@ export function Toaster() {
             {...props}
             hasDescription={!!description}
             style={
-              { "--radix-toast-width": `${width}px` } as React.CSSProperties
+              { '--radix-toast-width': `${width}px` } as React.CSSProperties
             }
           >
             <HStack align="center" className="flex-1">

@@ -1,6 +1,6 @@
-import type { PublicClient, WalletClient } from "viem";
-import { Services } from "~/store";
-import type { Store } from "~/store";
+import type { PublicClient, WalletClient } from 'viem';
+import { Services } from '~/store';
+import type { Store } from '~/store';
 
 export function assetsEvents(store: Store) {
   return {
@@ -9,7 +9,7 @@ export function assetsEvents(store: Store) {
       walletClient?: WalletClient;
       publicClient?: PublicClient;
     }) {
-      store.send(Services.assets, { type: "FAUCET_ERC20", input });
+      store.send(Services.assets, { type: 'FAUCET_ERC20', input });
     },
   };
 }

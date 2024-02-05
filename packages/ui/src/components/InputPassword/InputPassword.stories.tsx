@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { InputPassword } from "./InputPassword";
+import { InputPassword } from './InputPassword';
 
 const meta: Meta<typeof InputPassword> = {
-  title: "Form/InputPassword",
+  title: 'Form/InputPassword',
   component: InputPassword,
 };
 

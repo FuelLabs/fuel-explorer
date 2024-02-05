@@ -1,12 +1,12 @@
-"use client";
-import { Container, VStack } from "@fuels/ui";
-import type { BaseProps } from "@fuels/ui";
-import { usePathname } from "next/navigation";
-import { Hero } from "~/systems/Home/components/Hero/Hero";
+'use client';
+import { Container, VStack } from '@fuels/ui';
+import type { BaseProps } from '@fuels/ui';
+import { usePathname } from 'next/navigation';
+import { Hero } from '~/systems/Home/components/Hero/Hero';
 
-import { cx } from "../../utils/cx";
-import { Footer } from "../Footer/Footer";
-import { TopNav } from "../TopNav/TopNav";
+import { cx } from '../../utils/cx';
+import { Footer } from '../Footer/Footer';
+import { TopNav } from '../TopNav/TopNav';
 
 export type LayoutProps = BaseProps<{
   hero?: boolean;
@@ -15,7 +15,7 @@ export type LayoutProps = BaseProps<{
 
 export function Layout({ children, contentClassName }: LayoutProps) {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+  const isHomePage = pathname === '/';
 
   return (
     <VStack className="min-w-screen min-h-screen" gap="0">
@@ -24,7 +24,7 @@ export function Layout({ children, contentClassName }: LayoutProps) {
       <Container
         size="4"
         className={cx(
-          "py-8 pb-10 px-6 tablet:px-10 tablet:py-12 tablet:pb-8 laptop:py-16 laptop:pb-18 min-h-[80vh]",
+          'py-8 pb-10 px-6 tablet:px-10 tablet:py-12 tablet:pb-8 laptop:py-16 laptop:pb-18 min-h-[80vh]',
           contentClassName,
         )}
       >

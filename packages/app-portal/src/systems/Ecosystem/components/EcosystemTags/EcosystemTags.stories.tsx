@@ -1,27 +1,27 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box } from '@fuel-ui/react';
 
-import { EcosystemTags } from "./EcosystemTags";
+import { EcosystemTags } from './EcosystemTags';
 
 export default {
   component: EcosystemTags,
-  title: "Ecosystem / EcosystemTags",
+  title: 'Ecosystem / EcosystemTags',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
 export const Usage = () => {
   const TAGS = [
-    "DeFi",
-    "NFTs",
-    "DAOs",
-    "Social",
-    "Lending",
-    "Games",
-    "DEX",
-    "Stablecoins",
-    "Infrastructure",
+    'DeFi',
+    'NFTs',
+    'DAOs',
+    'Social',
+    'Lending',
+    'Games',
+    'DEX',
+    'Stablecoins',
+    'Infrastructure',
   ];
 
   return (
@@ -39,6 +39,6 @@ export const Loader = () => (
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
+    margin: '20px',
   }),
 };

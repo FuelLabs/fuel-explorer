@@ -1,41 +1,41 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, Text } from "@fuel-ui/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box, Text } from '@fuel-ui/react';
 
-import { BridgeSteps } from "./BridgeSteps";
+import { BridgeSteps } from './BridgeSteps';
 
 export default {
   component: BridgeSteps,
-  title: "BridgeSteps",
+  title: 'BridgeSteps',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
 export const Usage = () => {
   const steps = [
     {
-      name: "Submit to bridge",
+      name: 'Submit to bridge',
       status: <Text css={styles.statusText}>Action</Text>,
       isLoading: false,
       isDone: false,
       isSelected: true,
     },
     {
-      name: "Settlement",
+      name: 'Settlement',
       status: <Text css={styles.statusText}>Wait ~15 min</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
     {
-      name: "Confirm transaction",
+      name: 'Confirm transaction',
       status: <Text css={styles.statusText}>Action</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
     {
-      name: "Receive funds",
+      name: 'Receive funds',
       status: <Text css={styles.statusText}>Automatic</Text>,
       isLoading: false,
       isDone: false,
@@ -52,19 +52,19 @@ export const Usage = () => {
 export const Mixed = () => {
   const steps = [
     {
-      name: "Submit to bridge",
+      name: 'Submit to bridge',
       status: <Text css={styles.statusText}>Done!</Text>,
       isLoading: false,
       isDone: true,
       isSelected: false,
     },
     {
-      name: "Settlement",
+      name: 'Settlement',
       status: (
         <Text
           leftIcon="SpinnerGap"
           iconSize={10}
-          css={{ gap: "$1", ...styles.statusText }}
+          css={{ gap: '$1', ...styles.statusText }}
         >
           ~5 minutes left
         </Text>
@@ -74,14 +74,14 @@ export const Mixed = () => {
       isSelected: true,
     },
     {
-      name: "Confirm transaction",
+      name: 'Confirm transaction',
       status: <Text css={styles.statusText}>Action</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
     {
-      name: "Receive funds",
+      name: 'Receive funds',
       status: <Text css={styles.statusText}>Automatic</Text>,
       isLoading: false,
       isDone: false,
@@ -97,10 +97,10 @@ export const Mixed = () => {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
+    margin: '20px',
   }),
   statusText: cssObj({
-    color: "$intentsBase8",
-    fontSize: "$xs",
+    color: '$intentsBase8',
+    fontSize: '$xs',
   }),
 };

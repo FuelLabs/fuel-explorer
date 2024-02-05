@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCalendar } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCalendar } from '@tabler/icons-react';
 
-import { Link } from "../Link";
+import { Link } from '../Link';
 
-import { Text } from "./Text";
+import { Text } from './Text';
 
 const meta: Meta<typeof Text> = {
-  title: "Base/Text",
+  title: 'Base/Text',
   component: Text,
 };
 
@@ -14,7 +14,7 @@ export default meta;
 type Story = StoryObj<typeof Text>;
 
 export const UsageText: Story = {
-  name: "Text",
+  name: 'Text',
   render: () => <Text>The quick brown fox jumps over the lazy dog.</Text>,
 };
 
@@ -58,7 +58,7 @@ export const Quote: Story = {
 export const Strong: Story = {
   render: () => (
     <Text>
-      The most important thing to remember is,{" "}
+      The most important thing to remember is,{' '}
       <Text.Strong>stay positive</Text.Strong>.
     </Text>
   ),

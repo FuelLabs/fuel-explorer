@@ -1,12 +1,12 @@
-import { cssObj } from "@fuel-ui/css";
-import { Heading, Tabs } from "@fuel-ui/react";
-import { useNodeInfo } from "@fuel-wallet/react";
-import type { ReactNode } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { VITE_FUEL_VERSION } from "~/config";
-import { FuelVersionDialog } from "~/systems/Chains/fuel/containers/FuelVersionDialog";
-import { Layout } from "~/systems/Core";
-import { Pages } from "~/types";
+import { cssObj } from '@fuel-ui/css';
+import { Heading, Tabs } from '@fuel-ui/react';
+import { useNodeInfo } from '@fuel-wallet/react';
+import type { ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { VITE_FUEL_VERSION } from '~/config';
+import { FuelVersionDialog } from '~/systems/Chains/fuel/containers/FuelVersionDialog';
+import { Layout } from '~/systems/Core';
+import { Pages } from '~/types';
 
 type BridgeHomeProps = {
   children: ReactNode;
@@ -27,7 +27,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
         </Heading>
         <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
         <Tabs
-          defaultValue={location.pathname.replace(/\/$/, "")}
+          defaultValue={location.pathname.replace(/\/$/, '')}
           onValueChange={(path) => navigate(path)}
         >
           <Tabs.List css={styles.tabs}>
@@ -43,11 +43,11 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
 const styles = {
   content: cssObj({
-    maxWidth: "$sm",
+    maxWidth: '$sm',
   }),
   heading: cssObj({
     mt: 0,
-    mb: "$4",
+    mb: '$4',
     // Align title with the content of the page
     ml: -2,
   }),
@@ -55,8 +55,8 @@ const styles = {
     ml: 0,
   }),
   buttonLink: cssObj({
-    "&:hover": {
-      textDecoration: "none",
+    '&:hover': {
+      textDecoration: 'none',
     },
   }),
 };

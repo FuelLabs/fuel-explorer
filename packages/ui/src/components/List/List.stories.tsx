@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCheck } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCheck } from '@tabler/icons-react';
 
-import { List } from "./List";
+import { List } from './List';
 
 const meta: Meta<typeof List> = {
-  title: "Base/List",
+  title: 'Base/List',
   component: List,
 };
 

@@ -7,7 +7,7 @@ export {
   AlertDialogRoot,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./AlertDialog";
+} from './AlertDialog';
 
 export type {
   AlertDialogActionProps,
@@ -17,4 +17,4 @@ export type {
   AlertDialogProps,
   AlertDialogTitleProps,
   AlertDialogTriggerProps,
-} from "./AlertDialog";
+} from './AlertDialog';

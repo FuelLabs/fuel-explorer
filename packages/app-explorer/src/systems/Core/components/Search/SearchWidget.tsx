@@ -1,9 +1,9 @@
-import { HStack } from "@fuels/ui";
-import type { MutableRefObject } from "react";
-import { createContext, useEffect, useRef } from "react";
+import { HStack } from '@fuels/ui';
+import type { MutableRefObject } from 'react';
+import { createContext, useEffect, useRef } from 'react';
 
-import { SearchForm } from "./SearchForm";
-import { styles } from "./styles";
+import { SearchForm } from './SearchForm';
+import { styles } from './styles';
 
 export const SearchContext = createContext<{
   dropdownRef: null | MutableRefObject<HTMLDivElement | null>;
@@ -65,9 +65,9 @@ export const SearchWidget = ({
         setIsSearchOpen(false);
       }
     };
-    document.addEventListener("click", handleClickOutside, true);
+    document.addEventListener('click', handleClickOutside, true);
     return () => {
-      document.removeEventListener("click", handleClickOutside, true);
+      document.removeEventListener('click', handleClickOutside, true);
     };
   }, []);
 

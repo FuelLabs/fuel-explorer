@@ -1,23 +1,23 @@
-import { cssObj, globalCss } from "@fuel-ui/css";
+import { cssObj, globalCss } from '@fuel-ui/css';
 import {
   ThemeProvider,
   darkTheme,
   lightTheme,
   loadIcons,
   setFuelThemes,
-} from "@fuel-ui/react";
-import type { PropsWithChildren } from "react";
+} from '@fuel-ui/react';
+import type { PropsWithChildren } from 'react';
 
 // eslint-disable-next-line import/no-unresolved
-import icons from "/icons/sprite.svg";
+import icons from '/icons/sprite.svg';
 
 const globalStyles = cssObj({
-  ":root": {
-    "--colors-inputBaseBg": "var(--colors-dialogBg)",
-    "--colors-cardBg": "var(--colors-intentsBase1)",
+  ':root': {
+    '--colors-inputBaseBg': 'var(--colors-dialogBg)',
+    '--colors-cardBg': 'var(--colors-intentsBase1)',
   },
-  "h2, h3, h4": {
-    fontWeight: "$base",
+  'h2, h3, h4': {
+    fontWeight: '$base',
   },
 });
 

@@ -1,11 +1,11 @@
-import * as AC from "@radix-ui/react-accordion";
-import { IconChevronDown } from "@tabler/icons-react";
+import * as AC from '@radix-ui/react-accordion';
+import { IconChevronDown } from '@tabler/icons-react';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
-import { Icon } from "../Icon/Icon";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
+import { Icon } from '../Icon/Icon';
 
-import { styles } from "./styles";
+import { styles } from './styles';
 
 export type AccordionProps = PropsOf<typeof AC.Root>;
 export type AccordionContentProps = PropsOf<typeof AC.Content>;
@@ -14,7 +14,7 @@ export type AccordionHeaderProps = PropsOf<typeof AC.Header>;
 export type AccordionTriggerProps = PropsOf<typeof AC.Trigger>;
 
 export const AccordionRoot = createComponent<AccordionProps, typeof AC.Root>({
-  id: "Accordion",
+  id: 'Accordion',
   className: () => styles().root(),
   baseElement: AC.Root,
 });
@@ -23,7 +23,7 @@ export const AccordionContent = createComponent<
   AccordionContentProps,
   typeof AC.Content
 >({
-  id: "AccordionContent",
+  id: 'AccordionContent',
   className: () => styles().content(),
   baseElement: AC.Content,
 });
@@ -32,7 +32,7 @@ export const AccordionItem = createComponent<
   AccordionItemProps,
   typeof AC.Item
 >({
-  id: "AccordionItem",
+  id: 'AccordionItem',
   className: () => styles().item(),
   baseElement: AC.Item,
 });
@@ -41,7 +41,7 @@ export const AccordionHeader = createComponent<
   AccordionHeaderProps,
   typeof AC.Header
 >({
-  id: "AccordionHeader",
+  id: 'AccordionHeader',
   className: () => styles().header(),
   baseElement: AC.Header,
 });
@@ -50,7 +50,7 @@ export const AccordionTrigger = createComponent<
   AccordionTriggerProps,
   typeof AC.Trigger
 >({
-  id: "AccordionTrigger",
+  id: 'AccordionTrigger',
   baseElement: AC.Trigger,
   render: (Comp, { children, className, ...props }) => {
     const classes = styles();

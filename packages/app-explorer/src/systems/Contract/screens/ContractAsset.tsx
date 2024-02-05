@@ -1,5 +1,5 @@
-import { getContractBalances } from "../actions/get-contract";
-import { ContractAssetList } from "../components/ContractAssetList";
+import { getContractBalances } from '../actions/get-contract';
+import { ContractAssetList } from '../components/ContractAssetList';
 
 type ContractAssetsProps = {
   id: string;

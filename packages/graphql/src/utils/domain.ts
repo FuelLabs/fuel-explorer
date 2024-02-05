@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ChainInfo } from "fuels";
-import type { GraphQLField, GraphQLResolveInfo } from "graphql/type";
+import type { ChainInfo } from 'fuels';
+import type { GraphQLField, GraphQLResolveInfo } from 'graphql/type';
 
-import { getClient } from "./client";
+import { getClient } from './client';
 
 /** @todo: Get types from the query directly instead of creating custom types */
 export type ChainInfoResult = {

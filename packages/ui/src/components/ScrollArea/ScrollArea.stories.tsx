@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box, VStack } from "../Box";
-import { Heading } from "../Heading/Heading";
-import { Text } from "../Text/Text";
+import { Box, VStack } from '../Box';
+import { Heading } from '../Heading/Heading';
+import { Text } from '../Text/Text';
 
-import { ScrollArea } from "./ScrollArea";
+import { ScrollArea } from './ScrollArea';
 
 const meta: Meta<typeof ScrollArea> = {
-  title: "Base/ScrollArea",
+  title: 'Base/ScrollArea',
   component: ScrollArea,
 };
 

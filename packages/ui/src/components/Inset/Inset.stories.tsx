@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconBrandGithub } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconBrandGithub } from '@tabler/icons-react';
 
-import { Flex, HStack, VStack } from "../Box";
-import { Card } from "../Card/Card";
-import { Icon } from "../Icon/Icon";
-import { Text } from "../Text/Text";
+import { Flex, HStack, VStack } from '../Box';
+import { Card } from '../Card/Card';
+import { Icon } from '../Icon/Icon';
+import { Text } from '../Text/Text';
 
-import { Inset } from "./Inset";
+import { Inset } from './Inset';
 
 const meta: Meta<typeof Inset> = {
-  title: "UI/Inset",
+  title: 'UI/Inset',
   component: Inset,
 };
 

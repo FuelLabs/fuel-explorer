@@ -1,1 +1,1 @@
-export * from "./assetsMachine";
+export * from './assetsMachine';

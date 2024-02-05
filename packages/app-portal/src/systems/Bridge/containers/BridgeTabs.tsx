@@ -1,7 +1,7 @@
-import { Tabs } from "@fuel-ui/react";
-import type { AnimationControls } from "framer-motion";
+import { Tabs } from '@fuel-ui/react';
+import type { AnimationControls } from 'framer-motion';
 
-import { useBridge } from "../hooks";
+import { useBridge } from '../hooks';
 
 type BridgeTabsProps = {
   fromControls: AnimationControls;
@@ -19,7 +19,7 @@ export const BridgeTabs = ({ fromControls, toControls }: BridgeTabsProps) => {
     control.set({ y: factor, zIndex });
     await control.start({
       y: 0,
-      zIndex: "auto",
+      zIndex: 'auto',
       transition: { duration: 0.3 },
     });
   };
@@ -34,7 +34,7 @@ export const BridgeTabs = ({ fromControls, toControls }: BridgeTabsProps) => {
   };
 
   return (
-    <Tabs value={isWithdraw ? "withdraw" : "deposit"} variant="subtle">
+    <Tabs value={isWithdraw ? 'withdraw' : 'deposit'} variant="subtle">
       <Tabs.List aria-label="Manage deposits">
         <Tabs.Trigger
           value="deposit"

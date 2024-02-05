@@ -1,18 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { HStack, VStack } from "../Box";
-import { Button } from "../Button/Button";
-import { Input } from "../Input/Input";
-import { Text } from "../Text/Text";
+import { HStack, VStack } from '../Box';
+import { Button } from '../Button/Button';
+import { Input } from '../Input/Input';
+import { Text } from '../Text/Text';
 
-import { Dialog } from "./Dialog";
+import { Dialog } from './Dialog';
 
 const meta: Meta<typeof Dialog> = {
-  title: "Overlay/Dialog",
+  title: 'Overlay/Dialog',
   component: Dialog,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 

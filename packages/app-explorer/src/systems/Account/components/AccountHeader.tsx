@@ -1,10 +1,10 @@
-import { Address } from "@fuels/ui";
-import { IconHash } from "@tabler/icons-react";
-import { Suspense } from "react";
-import { PageTitle } from "~/systems/Core/components/PageTitle/PageTitle";
+import { Address } from '@fuels/ui';
+import { IconHash } from '@tabler/icons-react';
+import { Suspense } from 'react';
+import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
-import { AccountTabs } from "./AccountTabs/AccountTabs";
-import { AccountsTabsSync } from "./AccountTabs/AccountTabsSync";
+import { AccountTabs } from './AccountTabs/AccountTabs';
+import { AccountsTabsSync } from './AccountTabs/AccountTabsSync';
 
 export function AccountHeader({ id }: { id: string }) {
   return (

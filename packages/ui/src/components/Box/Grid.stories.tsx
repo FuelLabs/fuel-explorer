@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import type { GridProps } from "./";
-import { Box, Grid } from "./";
+import type { GridProps } from './';
+import { Box, Grid } from './';
 
 const meta: Meta<typeof Grid> = {
-  title: "Layout/Grid",
+  title: 'Layout/Grid',
   component: Grid,
 };
 
@@ -21,7 +21,7 @@ const DecorativeBox = (props: GridProps) => {
 };
 
 export const Usage: Story = {
-  name: "Grid",
+  name: 'Grid',
   render: () => (
     <Grid columns="3" gap="3" width="auto">
       <Box height="9">

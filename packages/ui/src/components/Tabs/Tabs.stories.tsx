@@ -1,17 +1,17 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   IconFileDescription,
   IconSettings,
   IconUsers,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
-import { Box, VStack } from "../Box";
-import { Text } from "../Text/Text";
+import { Box, VStack } from '../Box';
+import { Text } from '../Text/Text';
 
-import { Tabs } from "./Tabs";
+import { Tabs } from './Tabs';
 
 const meta: Meta<typeof Tabs> = {
-  title: "UI/Tabs",
+  title: 'UI/Tabs',
   component: Tabs,
 };
 

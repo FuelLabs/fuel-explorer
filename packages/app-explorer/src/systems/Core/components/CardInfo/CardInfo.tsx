@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Box, Card, Text } from "@fuels/ui";
-import type { BaseProps } from "@fuels/ui";
-import type { ReactNode } from "react";
-import { tv } from "tailwind-variants";
+import { Box, Card, Text } from '@fuels/ui';
+import type { BaseProps } from '@fuels/ui';
+import type { ReactNode } from 'react';
+import { tv } from 'tailwind-variants';
 
 type CardInfoProps = BaseProps<{
   name?: string;
@@ -36,8 +36,8 @@ export function CardInfo({
 
 const styles = tv({
   slots: {
-    root: "py-2 gap-0 border border-card-border",
-    name: "mb-2 text-sm text-muted leading-1",
-    body: "py-2",
+    root: 'py-2 gap-0 border border-card-border',
+    name: 'mb-2 text-sm text-muted leading-1',
+    body: 'py-2',
   },
 });

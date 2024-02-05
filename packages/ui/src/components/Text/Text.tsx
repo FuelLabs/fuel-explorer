@@ -6,23 +6,23 @@ import {
   Quote as RadixQuote,
   Strong as RadixStrong,
   Text as RadixText,
-} from "@radix-ui/themes";
-import { tv } from "tailwind-variants";
+} from '@radix-ui/themes';
+import { tv } from 'tailwind-variants';
 
-import { useIconProps } from "../../hooks/useIconProps";
-import type { WithIconProps } from "../../hooks/useIconProps";
+import { useIconProps } from '../../hooks/useIconProps';
+import type { WithIconProps } from '../../hooks/useIconProps';
 import {
   createComponent,
   createPolymorphicComponent,
   withNamespace,
-} from "../../utils/component";
-import type { PropsOf, WithAsProps } from "../../utils/types";
+} from '../../utils/component';
+import type { PropsOf, WithAsProps } from '../../utils/types';
 
 const styles = {
   root: tv({
     variants: {
       withIcon: {
-        true: "flex items-center gap-1",
+        true: 'flex items-center gap-1',
       },
     },
     defaultVariants: {
@@ -36,58 +36,58 @@ export const Blockquote = createComponent<
   BlockquoteProps,
   typeof RadixBlockquote
 >({
-  id: "Blockquote",
+  id: 'Blockquote',
   baseElement: RadixBlockquote,
 });
 
 export type CodeProps = PropsOf<typeof RadixCode>;
 export const Code = createComponent<CodeProps, typeof RadixCode>({
-  id: "Code",
+  id: 'Code',
   baseElement: RadixCode,
 });
 
 export type EmProps = PropsOf<typeof RadixEm>;
 export const Em = createComponent<EmProps, typeof RadixEm>({
-  id: "Em",
+  id: 'Em',
   baseElement: RadixEm,
 });
 
 export type KbdProps = PropsOf<typeof RadixKbd>;
 export const Kbd = createComponent<KbdProps, typeof RadixKbd>({
-  id: "Kbd",
+  id: 'Kbd',
   baseElement: RadixKbd,
 });
 
 export type QuoteProps = PropsOf<typeof RadixQuote>;
 export const Quote = createComponent<QuoteProps, typeof RadixQuote>({
-  id: "Quote",
+  id: 'Quote',
   baseElement: RadixQuote,
 });
 
 export type StrongProps = PropsOf<typeof RadixStrong>;
 export const Strong = createComponent<StrongProps, typeof RadixStrong>({
-  id: "Strong",
+  id: 'Strong',
   baseElement: RadixStrong,
 });
 
 export type TextProps = WithAsProps &
   WithIconProps &
-  Omit<PropsOf<typeof RadixText>, "as" | "asChild">;
+  Omit<PropsOf<typeof RadixText>, 'as' | 'asChild'>;
 
 export const TextBase = createPolymorphicComponent<TextProps, typeof RadixText>(
   {
-    id: "Text",
+    id: 'Text',
     baseElement: RadixText,
     render: (
       Comp,
       {
-        as: Root = "span",
+        as: Root = 'span',
         asChild,
-        size = "3",
+        size = '3',
         className,
         leftIcon,
         rightIcon,
-        iconColor = "text-icon",
+        iconColor = 'text-icon',
         ...props
       },
     ) => {

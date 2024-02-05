@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCode } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCode } from '@tabler/icons-react';
 
-import { VStack } from "../Box";
-import { Icon } from "../Icon";
+import { VStack } from '../Box';
+import { Icon } from '../Icon';
 
-import { EntityItem } from "./EntityItem";
+import { EntityItem } from './EntityItem';
 
 const meta: Meta<typeof EntityItem> = {
-  title: "Web3/EntityItem",
+  title: 'Web3/EntityItem',
   component: EntityItem,
 };
 

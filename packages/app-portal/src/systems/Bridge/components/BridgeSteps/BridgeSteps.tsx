@@ -1,6 +1,6 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, Icon, Spinner, Text } from "@fuel-ui/react";
-import type { ReactNode } from "react";
+import { cssObj } from '@fuel-ui/css';
+import { Box, Icon, Spinner, Text } from '@fuel-ui/react';
+import type { ReactNode } from 'react';
 
 type Step = {
   name: ReactNode;
@@ -22,17 +22,17 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
           <Box.Flex key={`${index}_${step.name?.toString()}`} css={styles.item}>
             <Box.Flex css={styles.action}>
               <Box
-                className={step.isDone ? "circleDone" : undefined}
+                className={step.isDone ? 'circleDone' : undefined}
                 css={{
                   ...styles.circle,
-                  borderColor: step.isSelected ? "$intentsPrimary9" : undefined,
+                  borderColor: step.isSelected ? '$intentsPrimary9' : undefined,
                 }}
               >
                 {step.isDone ? (
                   <Icon icon="Check" size={12} css={styles.icon} />
                 ) : (
                   <Text
-                    color={step.isSelected ? "intentsBase12" : undefined}
+                    color={step.isSelected ? 'intentsBase12' : undefined}
                     css={styles.number}
                     fontSize="xs"
                   >
@@ -62,49 +62,49 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
 
 const styles = {
   stack: cssObj({
-    gap: "$0",
-    minWidth: "344px",
-    borderRadius: "$md",
-    border: "1px solid $border",
-    backgroundColor: "$inputBaseBg",
+    gap: '$0',
+    minWidth: '344px',
+    borderRadius: '$md',
+    border: '1px solid $border',
+    backgroundColor: '$inputBaseBg',
   }),
   item: cssObj({
-    alignItems: "center",
-    justifyContent: "space-between",
-    px: "$3",
-    py: "$2",
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    px: '$3',
+    py: '$2',
 
-    "& ~ &": {
-      borderTop: "1px solid $border",
+    '& ~ &': {
+      borderTop: '1px solid $border',
     },
 
-    ".circleDone": {
-      backgroundColor: "$intentsPrimary9",
-      border: "1px solid $intentsPrimary9",
+    '.circleDone': {
+      backgroundColor: '$intentsPrimary9',
+      border: '1px solid $intentsPrimary9',
     },
   }),
   action: cssObj({
-    gap: "$2",
-    alignItems: "center",
+    gap: '$2',
+    alignItems: 'center',
   }),
   name: cssObj({
-    lineHeight: "1.5rem",
+    lineHeight: '1.5rem',
   }),
   icon: cssObj({
-    color: "$blackA12",
+    color: '$blackA12',
   }),
   number: cssObj({
-    display: "flex",
-    justifyContent: "center",
-    fontSize: "10px",
+    display: 'flex',
+    justifyContent: 'center',
+    fontSize: '10px',
   }),
   circle: cssObj({
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minWidth: "$4",
-    height: "$4",
-    border: "1px solid $intentsBase5",
-    borderRadius: "$full",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: '$4',
+    height: '$4',
+    border: '1px solid $intentsBase5',
+    borderRadius: '$full',
   }),
 };

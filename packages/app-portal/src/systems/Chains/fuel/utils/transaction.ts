@@ -3,8 +3,8 @@ import type {
   MessageCoin,
   Resource,
   TransactionRequestInput,
-} from "fuels";
-import { InputType, ZeroBytes32, isCoin, isMessage } from "fuels";
+} from 'fuels';
+import { InputType, ZeroBytes32, isCoin, isMessage } from 'fuels';
 
 export function resourcesToInputs(resources: Array<Resource>) {
   const coinResources: Coin[] = resources.filter((r) =>

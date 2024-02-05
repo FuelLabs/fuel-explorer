@@ -1,5 +1,5 @@
-import { TxHeader } from "~/systems/Transaction/component/TxHeader/TxHeader";
-import type { TxRouteParams } from "~/systems/Transaction/types";
+import { TxHeader } from '~/systems/Transaction/component/TxHeader/TxHeader';
+import type { TxRouteParams } from '~/systems/Transaction/types';
 
 export default function TxLayout({
   children,
@@ -16,5 +16,5 @@ export default function TxLayout({
   );
 }
 
-export const dynamic = "force-static";
+export const dynamic = 'force-static';
 export const revalidate = Infinity;

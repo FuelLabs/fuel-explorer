@@ -1,9 +1,9 @@
-import { Box, FuelLogo, Image, Spinner, Text } from "@fuel-ui/react";
-import { useAsset } from "~/systems/Assets";
-import { BridgeTxItem } from "~/systems/Bridge";
+import { Box, FuelLogo, Image, Spinner, Text } from '@fuel-ui/react';
+import { useAsset } from '~/systems/Assets';
+import { BridgeTxItem } from '~/systems/Bridge';
 
-import { ActionRequiredBadge } from "../../fuel";
-import { useTxEthToFuel } from "../hooks";
+import { ActionRequiredBadge } from '../../fuel';
+import { useTxEthToFuel } from '../hooks';
 
 type TxListItemEthToFuelProps = {
   txHash: string;
@@ -33,10 +33,10 @@ export const TxListItemEthToFuel = ({ txHash }: TxListItemEthToFuelProps) => {
         </Box.Flex>
       );
 
-    if (bridgeTxStatus?.name === "Confirm transaction") {
+    if (bridgeTxStatus?.name === 'Confirm transaction') {
       return <ActionRequiredBadge />;
     }
-    return "";
+    return '';
   }
 
   return (

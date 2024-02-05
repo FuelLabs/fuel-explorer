@@ -1,4 +1,4 @@
-import { cssObj } from "@fuel-ui/css";
+import { cssObj } from '@fuel-ui/css';
 import {
   Box,
   Button,
@@ -7,15 +7,15 @@ import {
   IconButton,
   Input,
   Text,
-} from "@fuel-ui/react";
-import { Controller } from "react-hook-form";
-import { store } from "~/store";
-import { useAssets } from "~/systems/Assets";
-import { shortAddress } from "~/systems/Core";
-import { useOverlay } from "~/systems/Overlay";
+} from '@fuel-ui/react';
+import { Controller } from 'react-hook-form';
+import { store } from '~/store';
+import { useAssets } from '~/systems/Assets';
+import { shortAddress } from '~/systems/Core';
+import { useOverlay } from '~/systems/Overlay';
 
-import { useAddAssetForm } from "../hooks";
-import type { AddAssetFormValues } from "../hooks";
+import { useAddAssetForm } from '../hooks';
+import type { AddAssetFormValues } from '../hooks';
 
 export function AddAssetFormDialog() {
   const { metadata } = useOverlay<{ assetAddress: string }>();
@@ -127,9 +127,9 @@ export function AddAssetFormDialog() {
 
 const styles = {
   fieldLabel: cssObj({
-    fontSize: "$sm",
+    fontSize: '$sm',
   }),
   addTokenButton: cssObj({
-    width: "$full",
+    width: '$full',
   }),
 };

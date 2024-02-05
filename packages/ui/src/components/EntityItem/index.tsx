@@ -2,11 +2,11 @@ export type {
   EntityItemProps,
   EntityItemSlotProps,
   EntityItemVariantProps,
-} from "./EntityItem";
+} from './EntityItem';
 
 export {
   EntityItem,
   EntityItemRoot,
   EntityItemSlot,
   EntityItemInfo,
-} from "./EntityItem";
+} from './EntityItem';

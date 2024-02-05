@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCalendarX } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCalendarX } from '@tabler/icons-react';
 
-import { HStack } from "../Box";
-import { ButtonClose } from "../ButtonClose/ButtonClose";
+import { HStack } from '../Box';
+import { ButtonClose } from '../ButtonClose/ButtonClose';
 
-import { Badge } from "./Badge";
+import { Badge } from './Badge';
 
 const meta: Meta<typeof Badge> = {
-  title: "UI/Badge",
+  title: 'UI/Badge',
   component: Badge,
 };
 

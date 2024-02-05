@@ -1,15 +1,15 @@
-import { createComponent, withNamespace } from "../../utils/component";
-import { HStack, VStack } from "../Box";
-import type { VStackProps } from "../Box";
-import { Card } from "../Card/Card";
-import type { CardProps } from "../Card/Card";
-import { Focus } from "../Focus/Focus";
+import { createComponent, withNamespace } from '../../utils/component';
+import { HStack, VStack } from '../Box';
+import type { VStackProps } from '../Box';
+import { Card } from '../Card/Card';
+import type { CardProps } from '../Card/Card';
+import { Focus } from '../Focus/Focus';
 
-import { styles } from "./styles";
-import { CardListContext, useCardListContext } from "./useCardListContext";
+import { styles } from './styles';
+import { CardListContext, useCardListContext } from './useCardListContext';
 
 export type CardListProps = VStackProps &
-  Omit<CardListContext, "isFocused" | "children">;
+  Omit<CardListContext, 'isFocused' | 'children'>;
 
 export type CardListItemProps = CardProps & {
   isActive?: boolean;
@@ -17,9 +17,9 @@ export type CardListItemProps = CardProps & {
 };
 
 export const CardListRoot = createComponent<CardListProps, typeof VStack>({
-  id: "CardList",
+  id: 'CardList',
   baseElement: VStack,
-  render: (Comp, { children, gap = "3", isClickable, autoFocus, ...props }) => {
+  render: (Comp, { children, gap = '3', isClickable, autoFocus, ...props }) => {
     return (
       <CardListContext.Provider value={{ isClickable, autoFocus }}>
         <Comp gap={gap} {...props}>
@@ -37,7 +37,7 @@ export const CardListRoot = createComponent<CardListProps, typeof VStack>({
 });
 
 export const CardListItem = createComponent<CardListItemProps, typeof Card>({
-  id: "CardListItem",
+  id: 'CardListItem',
   baseElement: Card,
   render: (
     Comp,

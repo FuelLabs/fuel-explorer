@@ -1,6 +1,6 @@
-import { FuelChainState } from "@fuel-bridge/solidity-contracts";
-import type { PublicClient } from "viem";
-import { VITE_ETH_FUEL_CHAIN_STATE } from "~/config";
+import { FuelChainState } from '@fuel-bridge/solidity-contracts';
+import type { PublicClient } from 'viem';
+import { VITE_ETH_FUEL_CHAIN_STATE } from '~/config';
 
 export const FUEL_CHAIN_STATE = {
   abi: FuelChainState.abi,
@@ -10,16 +10,16 @@ export const FUEL_CHAIN_STATE = {
     ethPublicClient: PublicClient;
   }) => {
     const abiCommitSubmitted = FUEL_CHAIN_STATE.abi.find(
-      ({ name, type }) => name === "CommitSubmitted" && type === "event",
+      ({ name, type }) => name === 'CommitSubmitted' && type === 'event',
     );
     const logs = await ethPublicClient.getLogs({
       address: VITE_ETH_FUEL_CHAIN_STATE as `0x${string}`,
       event: {
-        type: "event",
-        name: "CommitSubmitted",
+        type: 'event',
+        name: 'CommitSubmitted',
         inputs: abiCommitSubmitted?.inputs || [],
       },
-      fromBlock: "earliest",
+      fromBlock: 'earliest',
     });
 
     return logs;

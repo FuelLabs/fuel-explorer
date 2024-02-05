@@ -1,11 +1,11 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box, Button, Dialog, Text } from "@fuel-ui/react";
-import { useAsset } from "~/systems/Assets/hooks/useAsset";
-import { BridgeSteps, BridgeTxOverview } from "~/systems/Bridge";
-import { shortAddress } from "~/systems/Core";
-import { useOverlay } from "~/systems/Overlay";
+import { cssObj } from '@fuel-ui/css';
+import { Box, Button, Dialog, Text } from '@fuel-ui/react';
+import { useAsset } from '~/systems/Assets/hooks/useAsset';
+import { BridgeSteps, BridgeTxOverview } from '~/systems/Bridge';
+import { shortAddress } from '~/systems/Core';
+import { useOverlay } from '~/systems/Overlay';
 
-import { useTxEthToFuel } from "../hooks";
+import { useTxEthToFuel } from '../hooks';
 
 export function TxEthToFuelDialog() {
   const { asset: ethAsset } = useAsset();
@@ -66,15 +66,15 @@ export function TxEthToFuelDialog() {
 
 const styles = {
   border: cssObj({
-    my: "$4",
-    borderBottom: "1px solid $border",
+    my: '$4',
+    borderBottom: '1px solid $border',
   }),
   divider: cssObj({
-    h: "1px",
-    bg: "$border",
-    mt: "$5",
+    h: '1px',
+    bg: '$border',
+    mt: '$5',
   }),
   actionButton: cssObj({
-    width: "100%",
+    width: '100%',
   }),
 };

@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { IconCalendar } from "@tabler/icons-react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconCalendar } from '@tabler/icons-react';
 
-import { VStack } from "../Box";
+import { VStack } from '../Box';
 
-import { Heading } from "./Heading";
+import { Heading } from './Heading';
 
 const meta: Meta<typeof Heading> = {
-  title: "Base/Heading",
+  title: 'Base/Heading',
   component: Heading,
 };
 

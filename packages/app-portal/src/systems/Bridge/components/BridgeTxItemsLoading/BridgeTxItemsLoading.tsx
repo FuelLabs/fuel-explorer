@@ -1,11 +1,11 @@
-import { darkColors, lightColors } from "@fuel-ui/css";
-import { Box, ContentLoader } from "@fuel-ui/react";
-import { useTheme } from "~/systems/Settings";
+import { darkColors, lightColors } from '@fuel-ui/css';
+import { Box, ContentLoader } from '@fuel-ui/react';
+import { useTheme } from '~/systems/Settings';
 
 export const BridgeTxItemsLoading = () => {
   const { theme } = useTheme();
 
-  const currentColors = theme === "light" ? lightColors : darkColors;
+  const currentColors = theme === 'light' ? lightColors : darkColors;
   return (
     <Box.Stack
       justify="center"

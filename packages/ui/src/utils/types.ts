@@ -6,74 +6,74 @@ import type {
   ComponentType,
   ElementType,
   ReactNode,
-} from "react";
+} from 'react';
 
-import type { ColorVariables } from "../theme/tailwind-preset";
+import type { ColorVariables } from '../theme/tailwind-preset';
 
 export type RadixColors =
-  | "gray"
-  | "tomato"
-  | "red"
-  | "ruby"
-  | "red"
-  | "pink"
-  | "plum"
-  | "purple"
-  | "violet"
-  | "iris"
-  | "indigo"
-  | "blue"
-  | "cyan"
-  | "teal"
-  | "jade"
-  | "green"
-  | "grass"
-  | "bronze"
-  | "gold"
-  | "brown"
-  | "orange"
-  | "amber"
-  | "yellow"
-  | "lime"
-  | "mint";
+  | 'gray'
+  | 'tomato'
+  | 'red'
+  | 'ruby'
+  | 'red'
+  | 'pink'
+  | 'plum'
+  | 'purple'
+  | 'violet'
+  | 'iris'
+  | 'indigo'
+  | 'blue'
+  | 'cyan'
+  | 'teal'
+  | 'jade'
+  | 'green'
+  | 'grass'
+  | 'bronze'
+  | 'gold'
+  | 'brown'
+  | 'orange'
+  | 'amber'
+  | 'yellow'
+  | 'lime'
+  | 'mint';
 
 export type RadixColorScale =
-  | "1"
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "10"
-  | "11"
-  | "12";
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '10'
+  | '11'
+  | '12';
 
 /**
  * CSS Types
  */
 
 export type Spacing =
-  | "1"
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "10"
-  | "11"
-  | "12"
-  | "13"
-  | "14"
-  | "15"
-  | "16"
-  | "17"
-  | "18"
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '10'
+  | '11'
+  | '12'
+  | '13'
+  | '14'
+  | '15'
+  | '16'
+  | '17'
+  | '18'
   | `${string}px`
   | `${string}%`
   | `${string}rem`
@@ -82,22 +82,22 @@ export type Spacing =
 
 export type Sizes =
   | Spacing
-  | "xs"
-  | "sm"
-  | "md"
-  | "lg"
-  | "xl"
-  | "2xl"
-  | "3xl"
-  | "4xl"
-  | "5xl"
-  | "6xl"
-  | "7xl"
-  | "full"
-  | "min"
-  | "max"
-  | "fit"
-  | "prose"
+  | 'xs'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | '2xl'
+  | '3xl'
+  | '4xl'
+  | '5xl'
+  | '6xl'
+  | '7xl'
+  | 'full'
+  | 'min'
+  | 'max'
+  | 'fit'
+  | 'prose'
   | `${string}px`
   | `${string}%`
   | `${string}rem`
@@ -105,7 +105,7 @@ export type Sizes =
   | number;
 
 export type Colors =
-  | "text-current"
+  | 'text-current'
   | `text-${ColorVariables}`
   | `text-${RadixColors}-${RadixColorScale}`;
 
@@ -118,7 +118,7 @@ export type BaseProps<P> = P & {
   className?: string;
   children?: Children;
   autoFocus?: boolean;
-  style?: HTMLPropsOf<"div">["style"];
+  style?: HTMLPropsOf<'div'>['style'];
 };
 
 export type WithGap = {
@@ -165,7 +165,7 @@ type InheritedProps<C extends ElementType, P = {}> = Extended<
 >;
 
 export type PolymorphicRef<C> = C extends React.ElementType
-  ? React.ComponentPropsWithRef<C>["ref"]
+  ? React.ComponentPropsWithRef<C>['ref']
   : never;
 
 export type PolymorphicProps<C, P = {}> = C extends React.ElementType

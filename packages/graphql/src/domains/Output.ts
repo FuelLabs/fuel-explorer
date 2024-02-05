@@ -1,14 +1,14 @@
-import { bn } from "@fuel-ts/math";
-import { groupBy } from "lodash";
+import { bn } from '@fuel-ts/math';
+import { groupBy } from 'lodash';
 
 import type {
   ChangeOutput,
   CoinOutput,
   ContractCreated,
   TransactionItemFragment,
-} from "../generated/types";
+} from '../generated/types';
 
-type Outputs = TransactionItemFragment["outputs"];
+type Outputs = TransactionItemFragment['outputs'];
 
 export class OutputDomain {
   constructor(private outputs: Outputs) {}
@@ -22,7 +22,7 @@ export class OutputDomain {
   }
 
   get coinOutputs() {
-    const outputs = this._filterByTypename<CoinOutput>("CoinOutput");
+    const outputs = this._filterByTypename<CoinOutput>('CoinOutput');
     const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
     return entries.map(([assetId, outputs]) => {
       const type = outputs[0].__typename;
@@ -33,7 +33,7 @@ export class OutputDomain {
   }
 
   get changeOutputs() {
-    const outputs = this._filterByTypename<ChangeOutput>("ChangeOutput");
+    const outputs = this._filterByTypename<ChangeOutput>('ChangeOutput');
     const entries = Object.entries(groupBy(outputs, (i) => i.assetId));
     return entries.map(([assetId, outputs]) => {
       const type = outputs[0].__typename;
@@ -44,7 +44,7 @@ export class OutputDomain {
   }
 
   get contractCreatedOutputs() {
-    const outputs = this._filterByTypename<ContractCreated>("ContractCreated");
+    const outputs = this._filterByTypename<ContractCreated>('ContractCreated');
     const entries = Object.entries(groupBy(outputs, (i) => i.contract.id));
     return entries.map(([_, outputs]) => {
       const type = outputs[0].__typename;

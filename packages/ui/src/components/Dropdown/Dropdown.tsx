@@ -1,7 +1,7 @@
-import { DropdownMenu as RD } from "@radix-ui/themes";
+import { DropdownMenu as RD } from '@radix-ui/themes';
 
-import { createComponent, withNamespace } from "../../utils/component";
-import type { PropsOf } from "../../utils/types";
+import { createComponent, withNamespace } from '../../utils/component';
+import type { PropsOf } from '../../utils/types';
 
 export type DropdownProps = PropsOf<typeof RD.Root>;
 export type DropdownTriggerProps = PropsOf<typeof RD.Trigger>;
@@ -17,7 +17,7 @@ export type DropdownSubContentProps = PropsOf<typeof RD.SubContent>;
 export type DropdownSeparatorProps = PropsOf<typeof RD.Separator>;
 
 export const DropdownRoot = createComponent<DropdownProps, typeof RD.Root>({
-  id: "Dropdown",
+  id: 'Dropdown',
   baseElement: RD.Root,
 });
 
@@ -25,7 +25,7 @@ export const DropdownTrigger = createComponent<
   DropdownTriggerProps,
   typeof RD.Trigger
 >({
-  id: "DropdownTrigger",
+  id: 'DropdownTrigger',
   baseElement: RD.Trigger,
 });
 
@@ -33,7 +33,7 @@ export const DropdownContent = createComponent<
   DropdownContentProps,
   typeof RD.Content
 >({
-  id: "DropdownContent",
+  id: 'DropdownContent',
   baseElement: RD.Content,
 });
 
@@ -41,12 +41,12 @@ export const DropdownLabel = createComponent<
   DropdownLabelProps,
   typeof RD.Label
 >({
-  id: "DropdownLabel",
+  id: 'DropdownLabel',
   baseElement: RD.Label,
 });
 
 export const DropdownItem = createComponent<DropdownItemProps, typeof RD.Item>({
-  id: "DropdownItem",
+  id: 'DropdownItem',
   baseElement: RD.Item,
 });
 
@@ -54,7 +54,7 @@ export const DropdownGroup = createComponent<
   DropdownGroupProps,
   typeof RD.Group
 >({
-  id: "DropdownGroup",
+  id: 'DropdownGroup',
   baseElement: RD.Group,
 });
 
@@ -62,7 +62,7 @@ export const DropdownRadioGroup = createComponent<
   DropdownRadioGroupProps,
   typeof RD.RadioGroup
 >({
-  id: "DropdownRadioGroup",
+  id: 'DropdownRadioGroup',
   baseElement: RD.RadioGroup,
 });
 
@@ -70,12 +70,12 @@ export const DropdownCheckboxItem = createComponent<
   DropdownCheckboxItemProps,
   typeof RD.CheckboxItem
 >({
-  id: "DropdownCheckboxItem",
+  id: 'DropdownCheckboxItem',
   baseElement: RD.CheckboxItem,
 });
 
 export const DropdownSub = createComponent<DropdownSubProps, typeof RD.Sub>({
-  id: "DropdownSub",
+  id: 'DropdownSub',
   baseElement: RD.Sub,
 });
 
@@ -83,7 +83,7 @@ export const DropdownSubContent = createComponent<
   DropdownSubContentProps,
   typeof RD.SubContent
 >({
-  id: "DropdownSubContent",
+  id: 'DropdownSubContent',
   baseElement: RD.SubContent,
 });
 
@@ -91,7 +91,7 @@ export const DropdownSubTrigger = createComponent<
   DropdownSubTriggerProps,
   typeof RD.SubTrigger
 >({
-  id: "DropdownSubTrigger",
+  id: 'DropdownSubTrigger',
   baseElement: RD.SubTrigger,
 });
 
@@ -99,7 +99,7 @@ export const DropdownSeparator = createComponent<
   DropdownSeparatorProps,
   typeof RD.Separator
 >({
-  id: "DropdownSeparator",
+  id: 'DropdownSeparator',
   baseElement: RD.Separator,
 });
 

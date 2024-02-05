@@ -1,17 +1,17 @@
-import { cssObj } from "@fuel-ui/css";
-import { Box } from "@fuel-ui/react";
-import type { Meta, StoryObj } from "@storybook/react";
+import { cssObj } from '@fuel-ui/css';
+import { Box } from '@fuel-ui/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { PROJECTS } from "../../data";
-import type { Project } from "../../types";
+import { PROJECTS } from '../../data';
+import type { Project } from '../../types';
 
-import { ProjectItem } from "./ProjectItem";
+import { ProjectItem } from './ProjectItem';
 
 const meta: Meta<typeof ProjectItem> = {
   component: ProjectItem,
-  title: "Ecosystem / ProjectItem",
+  title: 'Ecosystem / ProjectItem',
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 };
 
@@ -29,9 +29,9 @@ export const Usage: Story = {
 
 const styles = {
   storybook: cssObj({
-    margin: "20px",
+    margin: '20px',
     width: 465,
-    ".fuel_Card": {
+    '.fuel_Card': {
       flex: 1,
     },
   }),

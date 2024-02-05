@@ -1,6 +1,6 @@
-import type { BlockItemFragment, Maybe } from "@fuel-explorer/graphql";
-import { VStack } from "@fuels/ui";
-import { CodeBlock } from "~/systems/Core/components/CodeBlock/CodeBlock";
+import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
+import { VStack } from '@fuels/ui';
+import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
 type BlockScreenAdvancedProps = {
   block?: Maybe<BlockItemFragment & { producer?: Maybe<string> }>;
