@@ -1,6 +1,6 @@
 'use client';
 import type { CardProps, HeadingProps, TextProps } from '@fuels/ui';
-import { Card, Heading, createComponent, Text, withNamespace } from '@fuels/ui';
+import { Card, Heading, Text, createComponent, withNamespace } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 import { ReactComponent as EmptySvg } from './empty.svg';

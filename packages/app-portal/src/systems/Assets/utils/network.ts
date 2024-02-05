@@ -23,7 +23,7 @@ export const getAssetNetwork = <T extends NetworkTypes | undefined>({
   networkType,
 }: GetAssetNetworkParams<T>): NetworkTypeToNetwork<T> => {
   const network = asset.networks.find(
-    (network) => network.chainId === chainId && network.type === networkType
+    (network) => network.chainId === chainId && network.type === networkType,
   ) as NetworkTypeToNetwork<T>;
 
   return network;

@@ -119,7 +119,7 @@ export const ecosystemMachine = createMachine(
         async fetch() {
           const tagsArray = PROJECTS.reduce(
             (acc, project) => [...acc, ...project.tags],
-            [] as string[]
+            [] as string[],
           );
           const tags = new Set(tagsArray);
           return {
@@ -157,7 +157,7 @@ export const ecosystemMachine = createMachine(
         filter: '',
       })),
     },
-  }
+  },
 );
 
 export type EcosystemMachine = typeof ecosystemMachine;

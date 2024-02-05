@@ -1,10 +1,10 @@
 import {
   useAccount,
+  useConnector,
   useDisconnect,
+  useFuel,
   useIsConnected,
   useWallet,
-  useConnector,
-  useFuel,
 } from '@fuel-wallet/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
@@ -34,7 +34,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
 
   const address = useMemo(
     () => (account ? Address.fromString(account) : undefined),
-    [account]
+    [account],
   );
 
   function addAsset(asset: AssetFuel) {

@@ -1,5 +1,5 @@
 import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
-import { Address, Collapsible, useBreakpoints, Box } from '@fuels/ui';
+import { Address, Box, Collapsible, useBreakpoints } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';

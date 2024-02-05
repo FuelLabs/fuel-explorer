@@ -3,18 +3,18 @@
 import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
 import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
 import {
+  Box,
+  Dropdown,
   Focus,
   Icon,
   IconButton,
-  Tooltip,
   Input,
-  Dropdown,
-  shortAddress,
   Link,
-  VStack,
-  useBreakpoints,
-  Box,
   Text,
+  Tooltip,
+  VStack,
+  shortAddress,
+  useBreakpoints,
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
@@ -65,7 +65,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
         <Dropdown.Trigger>
-          <Box className="w-full"></Box>
+          <Box className="w-full" />
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}

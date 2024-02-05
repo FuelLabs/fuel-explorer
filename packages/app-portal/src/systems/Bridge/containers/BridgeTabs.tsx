@@ -13,8 +13,8 @@ export const BridgeTabs = ({ fromControls, toControls }: BridgeTabsProps) => {
 
   const moveVertically = async (
     control: AnimationControls,
-    factor: number = 15,
-    zIndex: number = 1
+    factor = 15,
+    zIndex = 1,
   ) => {
     control.set({ y: factor, zIndex });
     await control.start({

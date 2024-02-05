@@ -9,5 +9,5 @@ export const Container = createComponent<ContainerProps, typeof RadixContainer>(
   {
     id: 'Container',
     baseElement: RadixContainer,
-  }
+  },
 );

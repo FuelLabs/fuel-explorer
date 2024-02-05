@@ -1,4 +1,4 @@
-import { Image, FuelLogo, Text, Box, Spinner } from '@fuel-ui/react';
+import { Box, FuelLogo, Image, Spinner, Text } from '@fuel-ui/react';
 import { useAsset } from '~/systems/Assets';
 import { BridgeTxItem } from '~/systems/Bridge';
 

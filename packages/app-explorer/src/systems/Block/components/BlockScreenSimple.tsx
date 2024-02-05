@@ -3,12 +3,12 @@
 
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
 import {
-  VStack,
-  Grid,
   Address,
+  Grid,
   Icon,
   LoadingBox,
   LoadingWrapper,
+  VStack,
 } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
 import NextLink from 'next/link';

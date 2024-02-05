@@ -1,7 +1,7 @@
 import { ConnectKitProvider } from 'connectkit';
 import type { ReactNode } from 'react';
 import type { ChainProviderFn } from 'wagmi';
-import { WagmiConfig, createConfig, configureChains } from 'wagmi';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
@@ -39,7 +39,7 @@ const providers: ChainProviderFn<any>[] = [
 ];
 export const { publicClient, chains, webSocketPublicClient } = configureChains(
   chainsToConnect,
-  providers
+  providers,
 );
 const connectKitClient = {
   autoConnect: true,

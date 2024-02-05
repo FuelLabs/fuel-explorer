@@ -2,7 +2,7 @@ import { HStack, VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import type { TxStatus, TxType } from '../../types';
-import { TX_STATUS, TX_ICON_TYPES } from '../../types';
+import { TX_ICON_TYPES, TX_STATUS } from '../../types';
 
 import { TxIcon } from './TxIcon';
 

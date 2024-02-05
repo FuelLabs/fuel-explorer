@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { resolveIconPath, assets } from '@fuels/assets';
+import { assets, resolveIconPath } from '@fuels/assets';
 
 export const ASSET_LIST = resolveIconPath('/assets', assets);
 

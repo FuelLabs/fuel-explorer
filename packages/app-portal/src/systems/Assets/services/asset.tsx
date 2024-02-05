@@ -39,7 +39,7 @@ export class AssetService {
       [walletClient.account?.address, bn.parseUnits('1000000', 18)],
       {
         account: walletClient.account,
-      }
+      },
     );
 
     await publicClient.waitForTransactionReceipt({

@@ -1,11 +1,11 @@
 import type { PrismaClient } from '@prisma/client';
 import type { ReceiptMessageOut } from 'fuels';
 import {
-  getTransactionsSummaries,
-  Provider,
   Address,
   ChainName,
+  Provider,
   ReceiptType,
+  getTransactionsSummaries,
 } from 'fuels';
 import type { PublicClient } from 'viem';
 import { FUEL_CHAIN_STATE } from '~/contracts/FuelChainState';
@@ -18,12 +18,12 @@ import { shortAddress } from './address';
 export const handleNewEthBlock = async (
   prisma: PrismaClient,
   fuelProviderUrl: string,
-  ethPublicClient: PublicClient
+  ethPublicClient: PublicClient,
 ) => {
   const mailService = await MailService.getInstance();
 
   const abiFuelChainState = FUEL_CHAIN_STATE.abi.find(
-    ({ name, type }) => name === 'CommitSubmitted' && type === 'event'
+    ({ name, type }) => name === 'CommitSubmitted' && type === 'event',
   );
 
   // Grab the last logs of commit state to the fuelChainState
@@ -65,18 +65,18 @@ export const handleNewEthBlock = async (
         const withdrawTransactions = transactionsByOwner.transactions.filter(
           (t) => {
             return t.operations.find((o) => o.to?.chain === ChainName.ethereum);
-          }
+          },
         );
 
         // Get the blocks that need to be notified
         const withdrawsWithBlocks = await Promise.all(
           withdrawTransactions.map(async (tranasction) => {
             const messageReceipt = tranasction.receipts.find(
-              (r) => r.type === ReceiptType.MessageOut
+              (r) => r.type === ReceiptType.MessageOut,
             ) as ReceiptMessageOut;
 
             const abiMessageRelayed = FUEL_MESSAGE_PORTAL.abi.find(
-              ({ name, type }) => name === 'MessageRelayed' && type === 'event'
+              ({ name, type }) => name === 'MessageRelayed' && type === 'event',
             );
 
             const logs = await ethPublicClient.getLogs({
@@ -97,7 +97,7 @@ export const handleNewEthBlock = async (
 
             const isReady = tranasction.blockId
               ? (await fuelProvider.getBlock(tranasction.blockId))?.height.lte(
-                  block?.height || 0
+                  block?.height || 0,
                 )
               : false;
 
@@ -107,7 +107,7 @@ export const handleNewEthBlock = async (
               isAlreadyRelayed,
               isReady,
             };
-          })
+          }),
         );
 
         for (const w of withdrawsWithBlocks) {
@@ -162,7 +162,7 @@ export const handleNewEthBlock = async (
                 address: shortAddress(dbTransaction.address.address),
                 transactionId: shortAddress(w.tranasction.id),
                 completeWithdrawLink: process.env.WITHDRAW_LINK!,
-              }
+              },
             );
             // Update the email is sent
             await prisma.transaction.update({

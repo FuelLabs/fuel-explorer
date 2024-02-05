@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ComponentType, ElementType, ElementRef } from 'react';
+import type { ComponentType, ElementRef, ElementType } from 'react';
 import { forwardRef } from 'react';
 
 import { cx, fClass } from './css';
@@ -38,7 +38,7 @@ export function createComponent<
       const classes = cx(baseClass, className, fClass(id));
       const itemProps = { ref, className: classes, ...props } as any;
       return render ? render(El as C, itemProps) : <El {...itemProps} />;
-    }
+    },
   );
 
   if (opts.defaultProps) {
@@ -84,7 +84,7 @@ export function createPolymorphicComponent<
 >(opts: CreateOpts<P, C>) {
   type Props = Omit<P, 'as' | 'asChild'>;
   type PolymorphicComponent = <T = C>(
-    props: PolymorphicProps<T, Props>
+    props: PolymorphicProps<T, Props>,
   ) => React.ReactElement;
 
   const Comp = createComponent<P, C>({

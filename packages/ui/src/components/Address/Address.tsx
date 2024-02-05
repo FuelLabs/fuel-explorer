@@ -73,7 +73,7 @@ export const Address = createComponent<AddressProps, 'div'>({
       linkProps,
       isLoading,
       ...props
-    }
+    },
   ) => {
     const classes = styles();
     const { address, short } = useFuelAddress(value || '', {

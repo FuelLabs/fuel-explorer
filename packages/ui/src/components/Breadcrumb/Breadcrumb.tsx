@@ -20,7 +20,7 @@ export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
       const id = (child as any)?.type?.id;
       if (id !== 'BreadcrumbItem' && id !== 'BreadcrumbLink') {
         throw new Error(
-          'Breadcrumb only accepts Breadcrumb.Item or Breadcrumb.Link as children'
+          'Breadcrumb only accepts Breadcrumb.Item or Breadcrumb.Link as children',
         );
       }
 
@@ -49,7 +49,7 @@ export const BreadcrumbLink = createComponent<BreadcrumbLinkProps, typeof Link>(
     id: 'BreadcrumbLink',
     className: 'inline-flex',
     baseElement: Link,
-  }
+  },
 );
 
 export const Breadcrumb = withNamespace(BreadcrumbRoot, {

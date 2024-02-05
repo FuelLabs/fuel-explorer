@@ -8,7 +8,7 @@ import { InputType, ZeroBytes32, isCoin, isMessage } from 'fuels';
 
 export function resourcesToInputs(resources: Array<Resource>) {
   const coinResources: Coin[] = resources.filter((r) =>
-    isCoin(r)
+    isCoin(r),
   ) as unknown as Coin[];
 
   const coinInputs: Array<TransactionRequestInput> = coinResources.map(
@@ -20,10 +20,10 @@ export function resourcesToInputs(resources: Array<Resource>) {
       assetId: r.assetId,
       txPointer: ZeroBytes32,
       witnessIndex: 0,
-    })
+    }),
   );
   const messageCoinResources: MessageCoin[] = resources.filter((r) =>
-    isMessage(r)
+    isMessage(r),
   ) as unknown as MessageCoin[];
 
   const messageCoinInputs: Array<TransactionRequestInput> =

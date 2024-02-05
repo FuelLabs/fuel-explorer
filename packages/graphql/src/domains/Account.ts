@@ -17,7 +17,7 @@ export class AccountDomain extends Domain<any, Args> {
   static delegateQuery(
     addresses: Array<string>,
     context: any,
-    info: GraphQLResolveInfo
+    info: GraphQLResolveInfo,
   ) {
     return delegateToSchema({
       schema: info.schema,
@@ -42,8 +42,8 @@ export class AccountDomain extends Domain<any, Args> {
     return addresses
       .map((addres) =>
         accountsData.find(
-          (account) => account.address.toLowerCase() === addres.toLowerCase()
-        )
+          (account) => account.address.toLowerCase() === addres.toLowerCase(),
+        ),
       )
       .filter((i) => !!i);
   }

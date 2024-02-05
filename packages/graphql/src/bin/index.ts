@@ -1,4 +1,4 @@
-import { runServerCodegen, runServer } from './server';
+import { runServer, runServerCodegen } from './server';
 
 const { CODE_GEN = 'false' } = process.env;
 

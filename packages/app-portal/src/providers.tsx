@@ -4,8 +4,8 @@ import type { ReactNode } from 'react';
 import { StoreProvider } from './store';
 import {
   ConnectProvider,
-  FuelUiProvider,
   FuelConnectProvider,
+  FuelUiProvider,
 } from './systems/Settings';
 import { FuelNetworkProvider } from './systems/Settings/providers/FuelNetworkProvider';
 

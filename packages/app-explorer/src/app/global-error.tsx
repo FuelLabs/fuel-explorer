@@ -1,6 +1,6 @@
 'use client';
-import './error.css';
 import '@fuels/ui/styles.css';
+import './error.css';
 import './globals.css';
 
 import Cookies from 'js-cookie';

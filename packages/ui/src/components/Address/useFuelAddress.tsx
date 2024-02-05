@@ -1,4 +1,4 @@
-import { isB256, isBech32, Address } from '@fuel-ts/address';
+import { Address, isB256, isBech32 } from '@fuel-ts/address';
 import { useMemo, useState } from 'react';
 import { useKey } from 'react-use';
 

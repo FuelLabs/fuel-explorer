@@ -53,7 +53,6 @@ export const useBridgeTxs = () => {
       : !hasWallet,
     shouldShowEmpty:
       isConnected && !isLoading && bridgeTxs && bridgeTxs.length === 0,
-    shouldShowList:
-      !isLoading && isConnected && ((bridgeTxs && bridgeTxs.length) || 0) > 0,
+    shouldShowList: !isLoading && isConnected && (bridgeTxs?.length || 0) > 0,
   };
 };

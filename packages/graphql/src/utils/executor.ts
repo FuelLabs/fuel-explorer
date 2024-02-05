@@ -9,7 +9,7 @@ export type ExecutorParams = {
 
 export function createExecutor(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  cb: (params: ExecutorParams) => Promise<any>
+  cb: (params: ExecutorParams) => Promise<any>,
 ): GraphQLExecutor {
   return async ({ document, variables, operationName }) => {
     const query = typeof document === 'string' ? document : print(document);
@@ -20,7 +20,7 @@ export function createExecutor(
 
 export function createGraphqlFetch(
   url: string,
-  log?: boolean
+  log?: boolean,
 ): GraphQLExecutor {
   return createExecutor(async ({ query, body }) => {
     if (log) {

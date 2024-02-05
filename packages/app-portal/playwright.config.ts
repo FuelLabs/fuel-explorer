@@ -1,6 +1,6 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices, defineConfig } from '@playwright/test';
 import { join } from 'path';
+import type { PlaywrightTestConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import './load.envs';
 
 const IS_CI = !!process.env.CI;

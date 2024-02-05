@@ -13,5 +13,5 @@ export const HStack = createPolymorphicComponent<HStackProps, typeof RadixFlex>(
     defaultProps: {
       gap: '4',
     } as FlexProps,
-  }
+  },
 );

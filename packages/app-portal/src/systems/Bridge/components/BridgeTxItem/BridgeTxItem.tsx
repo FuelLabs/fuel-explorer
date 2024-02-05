@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Box, Text, Icon, CardList } from '@fuel-ui/react';
+import { Box, CardList, Icon, Text } from '@fuel-ui/react';
 import type { ReactNode } from 'react';
 import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
 import type { Asset } from '~/systems/Assets/services/asset';

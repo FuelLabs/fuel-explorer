@@ -1,7 +1,7 @@
-import chokidar from 'chokidar';
-import { execa } from 'execa';
 import { createServer } from 'http';
 import { resolve } from 'path';
+import chokidar from 'chokidar';
+import { execa } from 'execa';
 
 import app from '../server';
 import { requireEnv } from '../utils/requireEnv';
@@ -15,7 +15,7 @@ export async function runServer() {
   return new Promise((resolve) => {
     server.listen(SERVER_PORT, async () => {
       console.log(
-        `🚀 Server running at http://localhost:${SERVER_PORT}/graphql`
+        `🚀 Server running at http://localhost:${SERVER_PORT}/graphql`,
       );
       resolve(null);
     });
