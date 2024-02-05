@@ -8,24 +8,24 @@ export type AlertIconProps = PropsOf<typeof RC.Icon>;
 export type AlertTextProps = PropsOf<typeof RC.Text>;
 
 export const AlertRoot = createComponent<AlertProps, typeof RC.Root>({
-	id: "Alert",
-	baseElement: RC.Root,
-	defaultProps: {
-		color: "blue",
-	},
+  id: "Alert",
+  baseElement: RC.Root,
+  defaultProps: {
+    color: "blue",
+  },
 });
 
 export const AlertIcon = createComponent<AlertIconProps, typeof RC.Icon>({
-	id: "AlertIcon",
-	baseElement: RC.Icon,
+  id: "AlertIcon",
+  baseElement: RC.Icon,
 });
 
 export const AlertText = createComponent<AlertTextProps, typeof RC.Text>({
-	id: "AlertText",
-	baseElement: RC.Text,
+  id: "AlertText",
+  baseElement: RC.Text,
 });
 
 export const Alert = withNamespace(AlertRoot, {
-	Icon: AlertIcon,
-	Text: AlertText,
+  Icon: AlertIcon,
+  Text: AlertText,
 });

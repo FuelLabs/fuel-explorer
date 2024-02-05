@@ -6,6 +6,6 @@ import type { PropsOf } from "../../utils/types";
 export type TooltipProps = PropsOf<typeof RadixTooltip>;
 
 export const Tooltip = createComponent<TooltipProps, typeof RadixTooltip>({
-	id: "Tooltip",
-	baseElement: RadixTooltip,
+  id: "Tooltip",
+  baseElement: RadixTooltip,
 });

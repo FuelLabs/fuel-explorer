@@ -1,12 +1,12 @@
 export {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbRoot,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbRoot,
 } from "./Breadcrumb";
 
 export type {
-	BreadcrumbItemProps,
-	BreadcrumbLinkProps,
-	BreadcrumbProps,
+  BreadcrumbItemProps,
+  BreadcrumbLinkProps,
+  BreadcrumbProps,
 } from "./Breadcrumb";

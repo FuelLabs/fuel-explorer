@@ -8,22 +8,22 @@ import type { Colors } from "../../utils/types";
 import { INIT_ICON_SIZE, INIT_ICON_STROKE } from "./constants";
 
 export type IconContext = {
-	stroke?: number;
-	size?: number;
-	color?: Colors;
+  stroke?: number;
+  size?: number;
+  color?: Colors;
 };
 
 export type IconComponent = ComponentType<
-	Partial<IconContext> & { className?: string }
+  Partial<IconContext> & { className?: string }
 >;
 
 const context = createContext<IconContext>({
-	size: INIT_ICON_SIZE,
-	stroke: INIT_ICON_STROKE,
+  size: INIT_ICON_SIZE,
+  stroke: INIT_ICON_STROKE,
 } as IconContext);
 
 export function useIconContext() {
-	return useContext(context);
+  return useContext(context);
 }
 
 export const IconProvider = context.Provider;

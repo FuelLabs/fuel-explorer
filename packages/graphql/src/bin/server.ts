@@ -12,68 +12,68 @@ const { WATCH = "false" } = process.env;
 const server = createServer(app);
 
 export async function runServer() {
-	return new Promise((resolve) => {
-		server.listen(SERVER_PORT, async () => {
-			console.log(
-				`🚀 Server running at http://localhost:${SERVER_PORT}/graphql`,
-			);
-			resolve(null);
-		});
-	});
+  return new Promise((resolve) => {
+    server.listen(SERVER_PORT, async () => {
+      console.log(
+        `🚀 Server running at http://localhost:${SERVER_PORT}/graphql`,
+      );
+      resolve(null);
+    });
+  });
 }
 
 export async function closeServer() {
-	return new Promise((resolve) => {
-		server.close(() => {
-			resolve(null);
-			console.log("🛑 GraphQL server stopped!");
-		});
-	});
+  return new Promise((resolve) => {
+    server.close(() => {
+      resolve(null);
+      console.log("🛑 GraphQL server stopped!");
+    });
+  });
 }
 
 export async function runServerCodegen() {
-	const cwd = resolve(__dirname, "../");
-	const gqlWatcher = chokidar.watch(["src/**/*.graphql"], {
-		cwd,
-		ignoreInitial: true,
-		ignored: ["src/schemas"],
-	});
+  const cwd = resolve(__dirname, "../");
+  const gqlWatcher = chokidar.watch(["src/**/*.graphql"], {
+    cwd,
+    ignoreInitial: true,
+    ignored: ["src/schemas"],
+  });
 
-	async function codegen() {
-		console.log("⌛️ Generating GraphQL code...");
-		try {
-			await execa("pnpm", ["codegen:app"], { stdio: "inherit" });
-			console.log("✅ GraphQL code generated!");
-		} catch (err) {
-			console.log("❌ GraphQL error!");
-		}
+  async function codegen() {
+    console.log("⌛️ Generating GraphQL code...");
+    try {
+      await execa("pnpm", ["codegen:app"], { stdio: "inherit" });
+      console.log("✅ GraphQL code generated!");
+    } catch (err) {
+      console.log("❌ GraphQL error!");
+    }
 
-		console.log("👀 Watching for GraphQL changes...");
-	}
+    console.log("👀 Watching for GraphQL changes...");
+  }
 
-	await runServer();
-	await codegen();
+  await runServer();
+  await codegen();
 
-	async function exitHandler() {
-		await closeServer();
-		gqlWatcher.close();
-	}
+  async function exitHandler() {
+    await closeServer();
+    gqlWatcher.close();
+  }
 
-	if (WATCH !== "true") {
-		exitHandler();
-		return;
-	}
+  if (WATCH !== "true") {
+    exitHandler();
+    return;
+  }
 
-	process.on("exit", exitHandler);
-	process.on("SIGTERM", exitHandler);
-	process.on("SIGINT", exitHandler);
-	process.on("SIGUSR1", exitHandler);
+  process.on("exit", exitHandler);
+  process.on("SIGTERM", exitHandler);
+  process.on("SIGINT", exitHandler);
+  process.on("SIGUSR1", exitHandler);
 
-	gqlWatcher.on("all", async () => {
-		await closeServer();
-		await runServer();
-		await codegen();
-	});
+  gqlWatcher.on("all", async () => {
+    await closeServer();
+    await runServer();
+    await codegen();
+  });
 
-	return exitHandler;
+  return exitHandler;
 }

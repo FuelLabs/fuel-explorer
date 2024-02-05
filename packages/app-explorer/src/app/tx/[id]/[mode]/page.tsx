@@ -8,24 +8,24 @@ import { TxScreenSimpleSync } from "~/systems/Transaction/screens/TxScreenSimple
 import type { TxRouteProps } from "~/systems/Transaction/types";
 
 export default async function Transaction({
-	params: { id, mode },
+  params: { id, mode },
 }: TxRouteProps) {
-	switch (mode) {
-		case ViewModes.Advanced:
-			return (
-				<Suspense fallback={<TxScreenLoader />}>
-					<TxScreenAdvancedSync id={id} />
-				</Suspense>
-			);
-		case ViewModes.Simple:
-			return (
-				<Suspense fallback={<TxScreenLoader />}>
-					<TxScreenSimpleSync id={id} />
-				</Suspense>
-			);
-		default:
-			redirect(Routes.txSimple(id));
-	}
+  switch (mode) {
+    case ViewModes.Advanced:
+      return (
+        <Suspense fallback={<TxScreenLoader />}>
+          <TxScreenAdvancedSync id={id} />
+        </Suspense>
+      );
+    case ViewModes.Simple:
+      return (
+        <Suspense fallback={<TxScreenLoader />}>
+          <TxScreenSimpleSync id={id} />
+        </Suspense>
+      );
+    default:
+      redirect(Routes.txSimple(id));
+  }
 }
 
 export const fetchCache = "force-cache";

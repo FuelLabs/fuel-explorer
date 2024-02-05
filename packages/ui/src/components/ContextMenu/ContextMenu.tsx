@@ -17,111 +17,111 @@ export type ContextMenuSubContentProps = PropsOf<typeof RC.SubContent>;
 export type ContextMenuSeparatorProps = PropsOf<typeof RC.Separator>;
 
 export const ContextMenuRoot = createComponent<
-	ContextMenuProps,
-	typeof RC.Root
+  ContextMenuProps,
+  typeof RC.Root
 >({
-	id: "ContextMenu",
-	baseElement: RC.Root,
+  id: "ContextMenu",
+  baseElement: RC.Root,
 });
 
 export const ContextMenuTrigger = createComponent<
-	ContextMenuTriggerProps,
-	typeof RC.Trigger
+  ContextMenuTriggerProps,
+  typeof RC.Trigger
 >({
-	id: "ContextMenuTrigger",
-	baseElement: RC.Trigger,
+  id: "ContextMenuTrigger",
+  baseElement: RC.Trigger,
 });
 
 export const ContextMenuContent = createComponent<
-	ContextMenuContentProps,
-	typeof RC.Content
+  ContextMenuContentProps,
+  typeof RC.Content
 >({
-	id: "ContextMenuContent",
-	baseElement: RC.Content,
+  id: "ContextMenuContent",
+  baseElement: RC.Content,
 });
 
 export const ContextMenuLabel = createComponent<
-	ContextMenuLabelProps,
-	typeof RC.Label
+  ContextMenuLabelProps,
+  typeof RC.Label
 >({
-	id: "ContextMenuLabel",
-	baseElement: RC.Label,
+  id: "ContextMenuLabel",
+  baseElement: RC.Label,
 });
 
 export const ContextMenuItem = createComponent<
-	ContextMenuItemProps,
-	typeof RC.Item
+  ContextMenuItemProps,
+  typeof RC.Item
 >({
-	id: "ContextMenuItem",
-	baseElement: RC.Item,
+  id: "ContextMenuItem",
+  baseElement: RC.Item,
 });
 
 export const ContextMenuGroup = createComponent<
-	ContextMenuGroupProps,
-	typeof RC.Group
+  ContextMenuGroupProps,
+  typeof RC.Group
 >({
-	id: "ContextMenuGroup",
-	baseElement: RC.Group,
+  id: "ContextMenuGroup",
+  baseElement: RC.Group,
 });
 
 export const ContextMenuRadioGroup = createComponent<
-	ContextMenuRadioGroupProps,
-	typeof RC.RadioGroup
+  ContextMenuRadioGroupProps,
+  typeof RC.RadioGroup
 >({
-	id: "ContextMenuRadioGroup",
-	baseElement: RC.RadioGroup,
+  id: "ContextMenuRadioGroup",
+  baseElement: RC.RadioGroup,
 });
 
 export const ContextMenuCheckboxItem = createComponent<
-	ContextMenuCheckboxItemProps,
-	typeof RC.CheckboxItem
+  ContextMenuCheckboxItemProps,
+  typeof RC.CheckboxItem
 >({
-	id: "ContextMenuCheckboxItem",
-	baseElement: RC.CheckboxItem,
+  id: "ContextMenuCheckboxItem",
+  baseElement: RC.CheckboxItem,
 });
 
 export const ContextMenuSub = createComponent<
-	ContextMenuSubProps,
-	typeof RC.Sub
+  ContextMenuSubProps,
+  typeof RC.Sub
 >({
-	id: "ContextMenuSub",
-	baseElement: RC.Sub,
+  id: "ContextMenuSub",
+  baseElement: RC.Sub,
 });
 
 export const ContextMenuSubContent = createComponent<
-	ContextMenuSubContentProps,
-	typeof RC.SubContent
+  ContextMenuSubContentProps,
+  typeof RC.SubContent
 >({
-	id: "ContextMenuSubContent",
-	baseElement: RC.SubContent,
+  id: "ContextMenuSubContent",
+  baseElement: RC.SubContent,
 });
 
 export const ContextMenuSubTrigger = createComponent<
-	ContextMenuSubTriggerProps,
-	typeof RC.SubTrigger
+  ContextMenuSubTriggerProps,
+  typeof RC.SubTrigger
 >({
-	id: "ContextMenuSubTrigger",
-	baseElement: RC.SubTrigger,
+  id: "ContextMenuSubTrigger",
+  baseElement: RC.SubTrigger,
 });
 
 export const ContextMenuSeparator = createComponent<
-	ContextMenuSeparatorProps,
-	typeof RC.Separator
+  ContextMenuSeparatorProps,
+  typeof RC.Separator
 >({
-	id: "ContextSeparator",
-	baseElement: RC.Separator,
+  id: "ContextSeparator",
+  baseElement: RC.Separator,
 });
 
 export const ContextMenu = withNamespace(ContextMenuRoot, {
-	Trigger: ContextMenuTrigger,
-	Content: ContextMenuContent,
-	Label: ContextMenuLabel,
-	Item: ContextMenuItem,
-	Group: ContextMenuGroup,
-	RadioGroup: ContextMenuRadioGroup,
-	CheckboxItem: ContextMenuCheckboxItem,
-	Sub: ContextMenuSub,
-	SubTrigger: ContextMenuSubTrigger,
-	SubContent: ContextMenuSubContent,
-	Separator: ContextMenuSeparator,
+  Trigger: ContextMenuTrigger,
+  Content: ContextMenuContent,
+  Label: ContextMenuLabel,
+  Item: ContextMenuItem,
+  Group: ContextMenuGroup,
+  RadioGroup: ContextMenuRadioGroup,
+  CheckboxItem: ContextMenuCheckboxItem,
+  Sub: ContextMenuSub,
+  SubTrigger: ContextMenuSubTrigger,
+  SubContent: ContextMenuSubContent,
+  Separator: ContextMenuSeparator,
 });

@@ -8,41 +8,41 @@ import { ProjectListEmpty } from "./ProjectListEmpty";
 import { ProjectListLoading } from "./ProjectListLoading";
 
 type ProjectListProps = {
-	projects: Project[];
-	isLoading?: boolean;
-	emptyText?: string;
+  projects: Project[];
+  isLoading?: boolean;
+  emptyText?: string;
 };
 
 export const ProjectList = ({
-	projects,
-	isLoading,
-	emptyText,
+  projects,
+  isLoading,
+  emptyText,
 }: ProjectListProps) => {
-	if (isLoading) return <ProjectList.Loading />;
-	const isEmpty = projects.length === 0;
+  if (isLoading) return <ProjectList.Loading />;
+  const isEmpty = projects.length === 0;
 
-	if (isEmpty) return <ProjectList.Empty text={emptyText} />;
-	return (
-		<Grid css={styles.grid}>
-			{projects.map((project) => (
-				<ProjectItem {...project} key={project.url} />
-			))}
-		</Grid>
-	);
+  if (isEmpty) return <ProjectList.Empty text={emptyText} />;
+  return (
+    <Grid css={styles.grid}>
+      {projects.map((project) => (
+        <ProjectItem {...project} key={project.url} />
+      ))}
+    </Grid>
+  );
 };
 
 const styles = {
-	grid: cssObj({
-		gridTemplateColumns: "1fr",
-		alignItems: "stretch",
-		gap: "$6",
+  grid: cssObj({
+    gridTemplateColumns: "1fr",
+    alignItems: "stretch",
+    gap: "$6",
 
-		/// show only 1 column on mobile
-		"@sm": {
-			gridTemplateColumns: "repeat(2, 1fr)",
-			gridTemplateRows: "repeat(2, 1fr)",
-		},
-	}),
+    /// show only 1 column on mobile
+    "@sm": {
+      gridTemplateColumns: "repeat(2, 1fr)",
+      gridTemplateRows: "repeat(2, 1fr)",
+    },
+  }),
 };
 
 ProjectList.Loading = ProjectListLoading;

@@ -4,11 +4,11 @@ import { AccountPredicateSync } from "~/systems/Account/screens/AccountPredicate
 import type { AccountRouteProps } from "~/systems/Account/types";
 
 export default async function Account({ params: { id } }: AccountRouteProps) {
-	return (
-		<Suspense fallback={<AccountPredicateLoader />}>
-			<AccountPredicateSync id={id} />
-		</Suspense>
-	);
+  return (
+    <Suspense fallback={<AccountPredicateLoader />}>
+      <AccountPredicateSync id={id} />
+    </Suspense>
+  );
 }
 
 export const dynamic = "force-static";

@@ -1,7 +1,7 @@
 export type TxsRouteSearchParams = {
-	page: string;
+  page: string;
 };
 
 export type TxsRouteProps = {
-	searchParams: TxsRouteSearchParams;
+  searchParams: TxsRouteSearchParams;
 };

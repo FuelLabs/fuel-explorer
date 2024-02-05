@@ -12,60 +12,60 @@ import { Spinner } from "../Spinner/Spinner";
 
 type RadixIconButtonProps = Omit<PropsOf<typeof RadixIconButton>, "children">;
 type IconButtonBaseProps = RadixIconButtonProps & {
-	disabled?: boolean;
-	isLoading?: boolean;
-	icon: React.ComponentType<Partial<IconContext>>;
-	iconSize?: number;
-	iconStroke?: number;
-	iconClassName?: string;
-	iconColor?: Colors;
-	"aria-label"?: string;
+  disabled?: boolean;
+  isLoading?: boolean;
+  icon: React.ComponentType<Partial<IconContext>>;
+  iconSize?: number;
+  iconStroke?: number;
+  iconClassName?: string;
+  iconColor?: Colors;
+  "aria-label"?: string;
 };
 
 export type IconButtonProps = WithVariants<IconButtonBaseProps, Variant>;
 
 export const IconButton = createComponent<IconButtonProps, "button">({
-	id: "IconButton",
-	render: (
-		_,
-		{
-			size,
-			disabled,
-			isLoading,
-			icon,
-			iconSize,
-			iconStroke,
-			iconClassName,
-			iconColor,
-			...props
-		},
-	) => {
-		const variantProps = useVariants(props);
-		const isDisabled = Boolean(disabled || isLoading);
-		return (
-			<RadixIconButton
-				{...(props as RadixIconButtonProps)}
-				{...(variantProps as RadixIconButtonProps)}
-				disabled={isDisabled}
-				size={size}
-				className={cx(
-					props.className,
-					variantProps.className,
-					!isDisabled && !props["aria-readonly"] ? "cursor-pointer" : "",
-				)}
-			>
-				{isLoading ? (
-					<Spinner color="current" size={getIconSize(size, iconSize)} />
-				) : (
-					<Icon
-						className={iconClassName}
-						color={iconColor}
-						icon={icon}
-						size={iconSize}
-						stroke={iconStroke}
-					/>
-				)}
-			</RadixIconButton>
-		);
-	},
+  id: "IconButton",
+  render: (
+    _,
+    {
+      size,
+      disabled,
+      isLoading,
+      icon,
+      iconSize,
+      iconStroke,
+      iconClassName,
+      iconColor,
+      ...props
+    },
+  ) => {
+    const variantProps = useVariants(props);
+    const isDisabled = Boolean(disabled || isLoading);
+    return (
+      <RadixIconButton
+        {...(props as RadixIconButtonProps)}
+        {...(variantProps as RadixIconButtonProps)}
+        disabled={isDisabled}
+        size={size}
+        className={cx(
+          props.className,
+          variantProps.className,
+          !isDisabled && !props["aria-readonly"] ? "cursor-pointer" : "",
+        )}
+      >
+        {isLoading ? (
+          <Spinner color="current" size={getIconSize(size, iconSize)} />
+        ) : (
+          <Icon
+            className={iconClassName}
+            color={iconColor}
+            icon={icon}
+            size={iconSize}
+            stroke={iconStroke}
+          />
+        )}
+      </RadixIconButton>
+    );
+  },
 });

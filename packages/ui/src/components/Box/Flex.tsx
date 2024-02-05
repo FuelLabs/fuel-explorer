@@ -6,6 +6,6 @@ import type { PropsOf, WithAsProps } from "../../utils/types";
 export type FlexProps = WithAsProps & PropsOf<typeof RadixFlex>;
 
 export const Flex = createPolymorphicComponent<FlexProps, typeof RadixFlex>({
-	id: "Flex",
-	baseElement: RadixFlex,
+  id: "Flex",
+  baseElement: RadixFlex,
 });

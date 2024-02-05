@@ -6,8 +6,8 @@ import type { PropsOf, WithAsProps } from "../../utils/types";
 export type ContainerProps = WithAsProps & PropsOf<typeof RadixContainer>;
 
 export const Container = createComponent<ContainerProps, typeof RadixContainer>(
-	{
-		id: "Container",
-		baseElement: RadixContainer,
-	},
+  {
+    id: "Container",
+    baseElement: RadixContainer,
+  },
 );

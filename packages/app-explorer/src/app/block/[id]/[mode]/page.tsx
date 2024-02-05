@@ -8,22 +8,22 @@ import type { BlockRouteProps } from "~/systems/Block/types";
 import { ViewModes } from "~/systems/Core/components/ViewMode/ViewMode";
 
 export default async function Block({ params: { id, mode } }: BlockRouteProps) {
-	switch (mode) {
-		case ViewModes.Simple:
-			return (
-				<Suspense fallback={<BlockScreenSimple isLoading={true} />}>
-					<BlockScreenSimpleSync id={id} />
-				</Suspense>
-			);
-		case ViewModes.Advanced:
-			return (
-				<Suspense fallback={<BlockScreenSimple isLoading={true} />}>
-					<BlockScreenAdvancedSync id={id} />
-				</Suspense>
-			);
-		default:
-			redirect(Routes.blockSimple(id));
-	}
+  switch (mode) {
+    case ViewModes.Simple:
+      return (
+        <Suspense fallback={<BlockScreenSimple isLoading={true} />}>
+          <BlockScreenSimpleSync id={id} />
+        </Suspense>
+      );
+    case ViewModes.Advanced:
+      return (
+        <Suspense fallback={<BlockScreenSimple isLoading={true} />}>
+          <BlockScreenAdvancedSync id={id} />
+        </Suspense>
+      );
+    default:
+      redirect(Routes.blockSimple(id));
+  }
 }
 
 export const dynamic = "force-static";

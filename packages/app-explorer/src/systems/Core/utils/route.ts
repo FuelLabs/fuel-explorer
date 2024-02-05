@@ -22,22 +22,22 @@
  * ```
  */
 export function route<P extends Array<string> = [string]>(path: string) {
-	return function parse(...params: P): string {
-		const _params = Array.from(params);
-		const split = path.match(/[^/]+/g);
-		const parsed = split
-			?.map((str) => {
-				if (str.startsWith(":")) {
-					return _params.shift();
-				}
-				if (str.includes(":")) {
-					return str.replace(/:([a-z]+)/gi, () => _params.shift() || "");
-				}
-				return str;
-			})
-			.join("/");
-		return `/${parsed ?? ""}`;
-	};
+  return function parse(...params: P): string {
+    const _params = Array.from(params);
+    const split = path.match(/[^/]+/g);
+    const parsed = split
+      ?.map((str) => {
+        if (str.startsWith(":")) {
+          return _params.shift();
+        }
+        if (str.includes(":")) {
+          return str.replace(/:([a-z]+)/gi, () => _params.shift() || "");
+        }
+        return str;
+      })
+      .join("/");
+    return `/${parsed ?? ""}`;
+  };
 }
 
 /**
@@ -51,8 +51,8 @@ export function route<P extends Array<string> = [string]>(path: string) {
  * // returns '?foo=bar&baz=qux'
  */
 export function searchStringify(query?: Record<any, any>) {
-	const qs = new URLSearchParams(query).toString();
-	return qs.length ? `?${qs}` : "";
+  const qs = new URLSearchParams(query).toString();
+  return qs.length ? `?${qs}` : "";
 }
 
 /**
@@ -67,6 +67,6 @@ export function searchStringify(query?: Record<any, any>) {
  * // returns 'https://example.com/?foo=bar&baz=qux'
  */
 export function stringifyUrl(url: string, query?: Record<any, any>) {
-	const { href } = new URL(url, "https://fuel.network/");
-	return `${href}${searchStringify(query)}`;
+  const { href } = new URL(url, "https://fuel.network/");
+  return `${href}${searchStringify(query)}`;
 }

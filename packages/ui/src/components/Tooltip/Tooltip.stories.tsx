@@ -6,20 +6,20 @@ import { IconButton } from "../IconButton/IconButton";
 import { Tooltip } from "./Tooltip";
 
 const meta: Meta<typeof Tooltip> = {
-	title: "Overlay/Tooltip",
-	component: Tooltip,
-	parameters: {
-		layout: "centered",
-	},
+  title: "Overlay/Tooltip",
+  component: Tooltip,
+  parameters: {
+    layout: "centered",
+  },
 };
 
 export default meta;
 type Story = StoryObj<typeof Tooltip>;
 
 export const Usage: Story = {
-	render: () => (
-		<Tooltip content="Add to library">
-			<IconButton aria-label="Add" icon={IconPlus} radius="full" />
-		</Tooltip>
-	),
+  render: () => (
+    <Tooltip content="Add to library">
+      <IconButton aria-label="Add" icon={IconPlus} radius="full" />
+    </Tooltip>
+  ),
 };

@@ -5,38 +5,38 @@ import { FUEL_CHAIN } from "~/systems/Chains/config";
 import { createProvider } from "~/systems/Chains/fuel/utils/provider";
 
 type FuelNetworkProviderProps = {
-	children?: ReactNode;
+  children?: ReactNode;
 };
 
 export type FuelReactContextType = {
-	fuelProvider: Provider | undefined;
+  fuelProvider: Provider | undefined;
 };
 
 export const FuelReactContext = createContext<FuelReactContextType | null>(
-	null,
+  null,
 );
 
 export const useFuelNetwork = () => {
-	return useContext(FuelReactContext) as FuelReactContextType;
+  return useContext(FuelReactContext) as FuelReactContextType;
 };
 
 export const FuelNetworkProvider = ({ children }: FuelNetworkProviderProps) => {
-	const [fuelProvider, setFuelProvider] = useState<Provider | undefined>();
+  const [fuelProvider, setFuelProvider] = useState<Provider | undefined>();
 
-	useEffect(() => {
-		if (fuelProvider) return;
+  useEffect(() => {
+    if (fuelProvider) return;
 
-		async function getFuelProvider() {
-			const provider = await createProvider(FUEL_CHAIN.providerUrl);
-			setFuelProvider(provider);
-		}
+    async function getFuelProvider() {
+      const provider = await createProvider(FUEL_CHAIN.providerUrl);
+      setFuelProvider(provider);
+    }
 
-		getFuelProvider();
-	}, [fuelProvider]);
+    getFuelProvider();
+  }, [fuelProvider]);
 
-	return (
-		<FuelReactContext.Provider value={{ fuelProvider }}>
-			{children}
-		</FuelReactContext.Provider>
-	);
+  return (
+    <FuelReactContext.Provider value={{ fuelProvider }}>
+      {children}
+    </FuelReactContext.Provider>
+  );
 };

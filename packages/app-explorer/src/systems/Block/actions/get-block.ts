@@ -8,41 +8,41 @@ import { isValidAddress } from "~/systems/Core/utils/address";
 import { sdk } from "~/systems/Core/utils/sdk";
 
 const schema = z.object({
-	id: z.string().nullable(),
+  id: z.string().nullable(),
 });
 
 export const getBlock = act(schema, async (input) => {
-	const id = input.id;
-	const isAddressValid = isValidAddress(id);
-	const isValidBlockHeight = !Number.isNaN(Number(id));
-	if (!isValidBlockHeight && !isValidAddress) {
-		throw new Error("Invalid block number or block id");
-	}
+  const id = input.id;
+  const isAddressValid = isValidAddress(id);
+  const isValidBlockHeight = !Number.isNaN(Number(id));
+  if (!isValidBlockHeight && !isValidAddress) {
+    throw new Error("Invalid block number or block id");
+  }
 
-	if (isAddressValid) {
-		const { data } = await sdk.getBlockById({ id });
-		const producer = getProducer(data);
-		return { block: data.block, producer };
-	}
+  if (isAddressValid) {
+    const { data } = await sdk.getBlockById({ id });
+    const producer = getProducer(data);
+    return { block: data.block, producer };
+  }
 
-	const { data } = await sdk.getBlockByHeight({ height: id });
-	const producer = getProducer(data);
-	return { block: data.block, producer };
+  const { data } = await sdk.getBlockByHeight({ height: id });
+  const producer = getProducer(data);
+  return { block: data.block, producer };
 });
 
 const getProducer = (
-	data:
-		| GetBlockByHeightQuery
-		| {
-				block: null;
-		  },
+  data:
+    | GetBlockByHeightQuery
+    | {
+        block: null;
+      },
 ) => {
-	// TODO use custom resolver once a fix is found
-	let producer: string | null = null;
-	if (data.block && data.block.consensus.__typename === "PoAConsensus") {
-		const signature = data?.block?.consensus.signature;
-		producer = Signer.recoverAddress(data.block.id, signature).toAddress();
-	}
+  // TODO use custom resolver once a fix is found
+  let producer: string | null = null;
+  if (data.block && data.block.consensus.__typename === "PoAConsensus") {
+    const signature = data?.block?.consensus.signature;
+    producer = Signer.recoverAddress(data.block.id, signature).toAddress();
+  }
 
-	return producer;
+  return producer;
 };

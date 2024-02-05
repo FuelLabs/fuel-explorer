@@ -6,10 +6,10 @@ import type { PropsOf } from "../../utils/types";
 export type SwitchProps = PropsOf<typeof RadixSwitch>;
 
 export const Switch = createComponent<SwitchProps, typeof RadixSwitch>({
-	id: "Switch",
-	baseElement: RadixSwitch,
-	defaultProps: {
-		radius: "full",
-		size: "1",
-	},
+  id: "Switch",
+  baseElement: RadixSwitch,
+  defaultProps: {
+    radius: "full",
+    size: "1",
+  },
 });

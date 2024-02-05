@@ -7,12 +7,12 @@ import type { FlexProps } from "./Flex";
 export type VStackProps = Omit<FlexProps, "direction">;
 
 export const VStack = createPolymorphicComponent<VStackProps, typeof RadixFlex>(
-	{
-		id: "VStack",
-		baseElement: RadixFlex,
-		defaultProps: {
-			direction: "column",
-			gap: "4",
-		} as FlexProps,
-	},
+  {
+    id: "VStack",
+    baseElement: RadixFlex,
+    defaultProps: {
+      direction: "column",
+      gap: "4",
+    } as FlexProps,
+  },
 );

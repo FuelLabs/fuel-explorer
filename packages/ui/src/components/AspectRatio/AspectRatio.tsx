@@ -7,9 +7,9 @@ import type { PropsOf } from "../../utils/types";
 export type AspectRatioProps = PropsOf<typeof RadixAspectRatio>;
 
 export const AspectRatio = createComponent<
-	AspectRatioProps,
-	typeof RadixAspectRatio
+  AspectRatioProps,
+  typeof RadixAspectRatio
 >({
-	id: "AspectRatio",
-	baseElement: RadixAspectRatio,
+  id: "AspectRatio",
+  baseElement: RadixAspectRatio,
 });

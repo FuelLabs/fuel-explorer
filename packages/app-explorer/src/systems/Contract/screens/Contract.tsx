@@ -10,25 +10,25 @@ import { ContractAssets } from "./ContractAsset";
 import { ContractCode } from "./ContractCode";
 
 type ContractProps = {
-	tab: string;
-	id: string;
+  tab: string;
+  id: string;
 };
 
 export async function ContractScreen({ tab, id }: ContractProps) {
-	return (
-		<>
-			<ContractTitle id={id} />
-			<ContractTabs contractId={id} />
-			{isAssetsTab(tab) && (
-				<Suspense fallback={<AssetsLoader />}>
-					<ContractAssets id={id} />
-				</Suspense>
-			)}
-			{isCodeTab(tab) && (
-				<Suspense fallback={<CodeBlock isLoading value="_" />}>
-					<ContractCode id={id} />
-				</Suspense>
-			)}
-		</>
-	);
+  return (
+    <>
+      <ContractTitle id={id} />
+      <ContractTabs contractId={id} />
+      {isAssetsTab(tab) && (
+        <Suspense fallback={<AssetsLoader />}>
+          <ContractAssets id={id} />
+        </Suspense>
+      )}
+      {isCodeTab(tab) && (
+        <Suspense fallback={<CodeBlock isLoading value="_" />}>
+          <ContractCode id={id} />
+        </Suspense>
+      )}
+    </>
+  );
 }

@@ -8,21 +8,21 @@ export type InputSlotProps = PropsOf<typeof RT.Slot>;
 export type InputFieldProps = PropsOf<typeof RT.Input>;
 
 export const InputRoot = createComponent<InputProps, typeof RT.Root>({
-	id: "Input",
-	baseElement: RT.Root,
+  id: "Input",
+  baseElement: RT.Root,
 });
 
 export const InputSlot = createComponent<InputSlotProps, typeof RT.Slot>({
-	id: "InputSlot",
-	baseElement: RT.Slot,
+  id: "InputSlot",
+  baseElement: RT.Slot,
 });
 
 export const InputField = createComponent<InputFieldProps, typeof RT.Input>({
-	id: "InputField",
-	baseElement: RT.Input,
+  id: "InputField",
+  baseElement: RT.Input,
 });
 
 export const Input = withNamespace(InputRoot, {
-	Slot: InputSlot,
-	Field: InputField,
+  Slot: InputSlot,
+  Field: InputField,
 });

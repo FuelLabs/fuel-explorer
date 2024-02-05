@@ -6,11 +6,11 @@ import { TokenDomain } from "../domains/Token";
 import typeDefs from "./metadata.graphql";
 
 export const customSchema = makeExecutableSchema({
-	typeDefs,
-	resolvers: {
-		Query: {
-			...AccountDomain.createResolvers(),
-			...TokenDomain.createResolvers(),
-		},
-	},
+  typeDefs,
+  resolvers: {
+    Query: {
+      ...AccountDomain.createResolvers(),
+      ...TokenDomain.createResolvers(),
+    },
+  },
 });

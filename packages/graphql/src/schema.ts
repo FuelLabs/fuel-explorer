@@ -8,17 +8,17 @@ import { customSchema } from "./services/metadata";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createSchema<F extends Executor<any>>(executor: F) {
-	return stitchSchemas({
-		subschemas: [
-			{
-				executor,
-				// TODO: delete this once we start using local database or indexer
-				// Load remote schame from Fuel Core
-				schema: makeExecutableSchema({ typeDefs: fuelSchema }),
-			},
-			{ schema: customSchema },
-		],
-		typeDefs: extendsTypeDefs,
-		resolvers: extendsResolvers,
-	});
+  return stitchSchemas({
+    subschemas: [
+      {
+        executor,
+        // TODO: delete this once we start using local database or indexer
+        // Load remote schame from Fuel Core
+        schema: makeExecutableSchema({ typeDefs: fuelSchema }),
+      },
+      { schema: customSchema },
+    ],
+    typeDefs: extendsTypeDefs,
+    resolvers: extendsResolvers,
+  });
 }

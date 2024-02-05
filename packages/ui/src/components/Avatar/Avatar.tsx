@@ -6,9 +6,9 @@ import type { PropsOf } from "../../utils/types";
 export type AvatarProps = PropsOf<typeof RadixAvatar>;
 
 export const Avatar = createComponent<AvatarProps, typeof RadixAvatar>({
-	id: "Avatar",
-	baseElement: RadixAvatar,
-	defaultProps: {
-		radius: "full",
-	},
+  id: "Avatar",
+  baseElement: RadixAvatar,
+  defaultProps: {
+    radius: "full",
+  },
 });

@@ -4,13 +4,13 @@ import { ContractAssets } from "~/systems/Contract/screens/ContractAsset";
 import type { ContractRouteProps } from "~/systems/Contract/types";
 
 export default async function ContractPage({
-	params: { id },
+  params: { id },
 }: ContractRouteProps) {
-	return (
-		<Suspense fallback={<AssetsLoader />}>
-			<ContractAssets id={id} />
-		</Suspense>
-	);
+  return (
+    <Suspense fallback={<AssetsLoader />}>
+      <ContractAssets id={id} />
+    </Suspense>
+  );
 }
 
 export const revalidate = 10;

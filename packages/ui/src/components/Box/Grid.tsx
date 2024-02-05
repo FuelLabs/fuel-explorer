@@ -6,6 +6,6 @@ import type { PropsOf, WithAsProps } from "../../utils/types";
 export type GridProps = WithAsProps & PropsOf<typeof RadixGrid>;
 
 export const Grid = createPolymorphicComponent<GridProps, typeof RadixGrid>({
-	id: "Grid",
-	baseElement: RadixGrid,
+  id: "Grid",
+  baseElement: RadixGrid,
 });

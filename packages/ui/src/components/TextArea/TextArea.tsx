@@ -6,6 +6,6 @@ import type { PropsOf } from "../../utils/types";
 export type TextAreaProps = PropsOf<typeof RadixTextArea>;
 
 export const TextArea = createComponent<TextAreaProps, typeof RadixTextArea>({
-	id: "TextArea",
-	baseElement: RadixTextArea,
+  id: "TextArea",
+  baseElement: RadixTextArea,
 });

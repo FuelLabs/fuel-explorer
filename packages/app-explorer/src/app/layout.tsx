@@ -10,33 +10,33 @@ import { Provider } from "~/systems/Core/components/Provider";
 import { cx } from "~/systems/Core/utils/cx";
 
 export const metadata: Metadata = {
-	title: "Fuel Explorer",
-	description: "Explorer of the Fastest execution layer",
+  title: "Fuel Explorer",
+  description: "Explorer of the Fastest execution layer",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	const { value: theme } = cookies().get("fuel-theme") ?? { value: "dark" };
-	return (
-		<html
-			suppressHydrationWarning
-			lang="en"
-			className={cx(`${GeistSans.variable} ${GeistMono.variable}`, theme)}
-			style={{ colorScheme: theme } as React.CSSProperties}
-		>
-			<head>
-				<link rel="icon" href="/favicon.svg" />
-			</head>
-			<body>
-				<Provider theme={theme}>
-					<Layout contentClassName="[&_.rt-ContainerInner]:space-y-10">
-						{children}
-					</Layout>
-				</Provider>
-			</body>
-		</html>
-	);
+  const { value: theme } = cookies().get("fuel-theme") ?? { value: "dark" };
+  return (
+    <html
+      suppressHydrationWarning
+      lang="en"
+      className={cx(`${GeistSans.variable} ${GeistMono.variable}`, theme)}
+      style={{ colorScheme: theme } as React.CSSProperties}
+    >
+      <head>
+        <link rel="icon" href="/favicon.svg" />
+      </head>
+      <body>
+        <Provider theme={theme}>
+          <Layout contentClassName="[&_.rt-ContainerInner]:space-y-10">
+            {children}
+          </Layout>
+        </Provider>
+      </body>
+    </html>
+  );
 }

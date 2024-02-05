@@ -7,13 +7,13 @@ import { IconButton } from "../IconButton/IconButton";
 export type ButtonCloseProps = Partial<IconButtonProps>;
 
 export const ButtonClose = createComponent<ButtonCloseProps, typeof IconButton>(
-	{
-		id: "ButtonClose",
-		baseElement: IconButton,
-		defaultProps: {
-			"aria-label": "Close",
-			icon: IconX,
-			variant: "link",
-		},
-	},
+  {
+    id: "ButtonClose",
+    baseElement: IconButton,
+    defaultProps: {
+      "aria-label": "Close",
+      icon: IconX,
+      variant: "link",
+    },
+  },
 );

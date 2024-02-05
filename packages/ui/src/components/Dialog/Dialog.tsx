@@ -11,43 +11,43 @@ export type DialogCloseProps = PropsOf<typeof RD.Close>;
 export type DialogDescriptionProps = PropsOf<typeof RD.Description>;
 
 export const DialogRoot = createComponent<DialogProps, typeof RD.Root>({
-	id: "Dialog",
-	baseElement: RD.Root,
+  id: "Dialog",
+  baseElement: RD.Root,
 });
 
 export const DialogTrigger = createComponent<
-	DialogTriggerProps,
-	typeof RD.Trigger
+  DialogTriggerProps,
+  typeof RD.Trigger
 >({
-	id: "DialogTrigger",
-	baseElement: RD.Trigger,
+  id: "DialogTrigger",
+  baseElement: RD.Trigger,
 });
 
 export const DialogContent = createComponent<
-	DialogContentProps,
-	typeof RD.Content
+  DialogContentProps,
+  typeof RD.Content
 >({
-	id: "DialogContent",
-	baseElement: RD.Content,
+  id: "DialogContent",
+  baseElement: RD.Content,
 });
 
 export const DialogClose = createComponent<DialogCloseProps, typeof RD.Close>({
-	id: "DialogClose",
-	baseElement: RD.Close,
+  id: "DialogClose",
+  baseElement: RD.Close,
 });
 
 export const DialogDescription = createComponent<
-	DialogDescriptionProps,
-	typeof RD.Description
+  DialogDescriptionProps,
+  typeof RD.Description
 >({
-	id: "DialogDescription",
-	baseElement: RD.Description,
+  id: "DialogDescription",
+  baseElement: RD.Description,
 });
 
 export const Dialog = withNamespace(DialogRoot, {
-	Trigger: DialogTrigger,
-	Content: DialogContent,
-	Close: DialogClose,
-	Description: DialogDescription,
-	Title: DialogTitle,
+  Trigger: DialogTrigger,
+  Content: DialogContent,
+  Close: DialogClose,
+  Description: DialogDescription,
+  Title: DialogTitle,
 });

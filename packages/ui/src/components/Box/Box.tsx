@@ -6,6 +6,6 @@ import type { PropsOf, WithAsProps } from "../../utils/types";
 export type BoxProps = WithAsProps & PropsOf<typeof RadixBox>;
 
 export const Box = createPolymorphicComponent<BoxProps, typeof RadixBox>({
-	id: "Box",
-	baseElement: RadixBox,
+  id: "Box",
+  baseElement: RadixBox,
 });

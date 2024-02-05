@@ -7,18 +7,18 @@ import { AccountTabs } from "./AccountTabs/AccountTabs";
 import { AccountsTabsSync } from "./AccountTabs/AccountTabsSync";
 
 export function AccountHeader({ id }: { id: string }) {
-	return (
-		<>
-			<PageTitle
-				icon={<IconHash size={20} stroke={1.2} />}
-				className="border-b-gray-3"
-			>
-				Account
-				<Address full={true} value={id} />
-			</PageTitle>
-			<Suspense fallback={<AccountTabs address={id} />}>
-				<AccountsTabsSync id={id} />
-			</Suspense>
-		</>
-	);
+  return (
+    <>
+      <PageTitle
+        icon={<IconHash size={20} stroke={1.2} />}
+        className="border-b-gray-3"
+      >
+        Account
+        <Address full={true} value={id} />
+      </PageTitle>
+      <Suspense fallback={<AccountTabs address={id} />}>
+        <AccountsTabsSync id={id} />
+      </Suspense>
+    </>
+  );
 }

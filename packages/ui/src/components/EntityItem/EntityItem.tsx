@@ -11,69 +11,69 @@ import { Text } from "../Text";
 
 export type EntityItemVariantProps = VariantProps<typeof styles>;
 export type EntityItemProps = Omit<HStackProps, "size"> &
-	EntityItemVariantProps;
+  EntityItemVariantProps;
 
 export type EntityItemSlotProps = BoxProps;
 export type EntityItemInfo = BoxProps & {
-	title: ReactNode;
-	id?: string;
-	shortId?: boolean;
-	idPrefix?: ReactNode;
+  title: ReactNode;
+  id?: string;
+  shortId?: boolean;
+  idPrefix?: ReactNode;
 };
 
 export const EntityItemRoot = createComponent<EntityItemProps, typeof HStack>({
-	id: "EntityItem",
-	baseElement: HStack,
-	render: (Comp, { gap = "2", className, ...props }) => {
-		const classes = styles();
-		return (
-			<Comp {...props} className={classes.root({ className })} gap={gap} />
-		);
-	},
+  id: "EntityItem",
+  baseElement: HStack,
+  render: (Comp, { gap = "2", className, ...props }) => {
+    const classes = styles();
+    return (
+      <Comp {...props} className={classes.root({ className })} gap={gap} />
+    );
+  },
 });
 
 export const EntityItemSlot = createComponent<EntityItemSlotProps, typeof Box>({
-	id: "EntityItemSlot",
-	baseElement: Box,
+  id: "EntityItemSlot",
+  baseElement: Box,
 });
 
 export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
-	id: "EntityItemInfo",
-	baseElement: Box,
-	render: (
-		Comp,
-		{ title, id, children, className, idPrefix, shortId = true, ...props },
-	) => {
-		const classes = styles();
-		return (
-			<Comp {...props} className={classes.info({ className })}>
-				<Text as="p" className={classes.name()}>
-					{title}
-				</Text>
-				{id && (
-					<Copyable className={classes.copyable()} value={id}>
-						{idPrefix}
-						{shortId ? shortAddress(id) : id}
-					</Copyable>
-				)}
-				{children}
-			</Comp>
-		);
-	},
+  id: "EntityItemInfo",
+  baseElement: Box,
+  render: (
+    Comp,
+    { title, id, children, className, idPrefix, shortId = true, ...props },
+  ) => {
+    const classes = styles();
+    return (
+      <Comp {...props} className={classes.info({ className })}>
+        <Text as="p" className={classes.name()}>
+          {title}
+        </Text>
+        {id && (
+          <Copyable className={classes.copyable()} value={id}>
+            {idPrefix}
+            {shortId ? shortAddress(id) : id}
+          </Copyable>
+        )}
+        {children}
+      </Comp>
+    );
+  },
 });
 
 export const EntityItem = withNamespace(EntityItemRoot, {
-	Slot: EntityItemSlot,
-	Info: EntityItemInfo,
+  Slot: EntityItemSlot,
+  Info: EntityItemInfo,
 });
 
 const styles = tv({
-	slots: {
-		root: "gap-4 items-center",
-		name: "mt-0 font-medium",
-		info: "flex flex-col justify-center gap-1",
-		tag: "mt-0",
-		copyable: "text-sm text-muted",
-		assetId: "text-sm leading-tight",
-	},
+  slots: {
+    root: "gap-4 items-center",
+    name: "mt-0 font-medium",
+    info: "flex flex-col justify-center gap-1",
+    tag: "mt-0",
+    copyable: "text-sm text-muted",
+    assetId: "text-sm leading-tight",
+  },
 });

@@ -6,9 +6,9 @@ import type { PropsOf } from "../../utils/types";
 export type ScrollAreaProps = PropsOf<typeof RadixScrollArea>;
 
 export const ScrollArea = createComponent<
-	ScrollAreaProps,
-	typeof RadixScrollArea
+  ScrollAreaProps,
+  typeof RadixScrollArea
 >({
-	id: "ScrollArea",
-	baseElement: RadixScrollArea,
+  id: "ScrollArea",
+  baseElement: RadixScrollArea,
 });

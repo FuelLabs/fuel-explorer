@@ -15,126 +15,126 @@ import type { UseFuelAddressOpts } from "./useFuelAddress";
 import { useFuelAddress } from "./useFuelAddress";
 
 export type AddressBaseProps = {
-	value?: string;
-	prefix?: ReactNode;
-	full?: boolean;
-	addressOpts?: UseFuelAddressOpts;
-	fixed?: UseFuelAddressOpts["fixed"];
-	linkProps?: AddressLinkProps;
-	isLoading?: boolean;
-	iconSize?: number;
+  value?: string;
+  prefix?: ReactNode;
+  full?: boolean;
+  addressOpts?: UseFuelAddressOpts;
+  fixed?: UseFuelAddressOpts["fixed"];
+  linkProps?: AddressLinkProps;
+  isLoading?: boolean;
+  iconSize?: number;
 };
 
 export type AddressLinkProps = Omit<LinkProps, "children">;
 export type AddressProps = BaseProps<AddressBaseProps> & WithAsProps;
 
 const AddressSpan = ({
-	address,
-	short,
-	full,
-	className,
+  address,
+  short,
+  full,
+  className,
 }: {
-	full?: boolean;
-	address: string;
-	short: string;
-	className?: string;
+  full?: boolean;
+  address: string;
+  short: string;
+  className?: string;
 }) => {
-	const baseClass = cx(["text-[1em]", className]);
-	return (
-		<>
-			{full && (
-				<span className={cx(baseClass, "mobile:max-laptop:hidden")}>
-					{address}
-				</span>
-			)}
-			<span
-				className={cx(baseClass, {
-					"laptop:hidden": full,
-				})}
-			>
-				{short}
-			</span>
-		</>
-	);
+  const baseClass = cx(["text-[1em]", className]);
+  return (
+    <>
+      {full && (
+        <span className={cx(baseClass, "mobile:max-laptop:hidden")}>
+          {address}
+        </span>
+      )}
+      <span
+        className={cx(baseClass, {
+          "laptop:hidden": full,
+        })}
+      >
+        {short}
+      </span>
+    </>
+  );
 };
 
 export const Address = createComponent<AddressProps, "div">({
-	id: "Address",
-	render: (
-		_,
-		{
-			value,
-			full,
-			iconSize = 16,
-			fixed,
-			prefix,
-			className,
-			addressOpts,
-			linkProps,
-			isLoading,
-			...props
-		},
-	) => {
-		const classes = styles();
-		const { address, short } = useFuelAddress(value || "", {
-			...addressOpts,
-			fixed,
-		});
+  id: "Address",
+  render: (
+    _,
+    {
+      value,
+      full,
+      iconSize = 16,
+      fixed,
+      prefix,
+      className,
+      addressOpts,
+      linkProps,
+      isLoading,
+      ...props
+    },
+  ) => {
+    const classes = styles();
+    const { address, short } = useFuelAddress(value || "", {
+      ...addressOpts,
+      fixed,
+    });
 
-		return (
-			<HStack
-				gap="3"
-				align="center"
-				{...props}
-				className={classes.root({ className })}
-			>
-				<LoadingWrapper
-					isLoading={isLoading}
-					loadingEl={<LoadingBox className="w-32 h-5 mt-1" />}
-					regularEl={
-						<HStack align="center" gap="1">
-							{prefix && <span className={classes.prefix()}>{prefix}</span>}
-							<Copyable
-								value={address}
-								className={classes.address()}
-								iconSize={iconSize}
-							>
-								{linkProps ? (
-									<Link
-										{...linkProps}
-										className={cx("text-xs text-[1em]")}
-										onClick={(e) => {
-											e.stopPropagation();
-										}}
-									>
-										<AddressSpan
-											full={full}
-											address={address}
-											short={short}
-											className="text-link"
-										/>
-									</Link>
-								) : (
-									<AddressSpan
-										full={full}
-										address={address}
-										short={short}
-										className="text-muted"
-									/>
-								)}
-							</Copyable>
-						</HStack>
-					}
-				/>
-			</HStack>
-		);
-	},
+    return (
+      <HStack
+        gap="3"
+        align="center"
+        {...props}
+        className={classes.root({ className })}
+      >
+        <LoadingWrapper
+          isLoading={isLoading}
+          loadingEl={<LoadingBox className="w-32 h-5 mt-1" />}
+          regularEl={
+            <HStack align="center" gap="1">
+              {prefix && <span className={classes.prefix()}>{prefix}</span>}
+              <Copyable
+                value={address}
+                className={classes.address()}
+                iconSize={iconSize}
+              >
+                {linkProps ? (
+                  <Link
+                    {...linkProps}
+                    className={cx("text-xs text-[1em]")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <AddressSpan
+                      full={full}
+                      address={address}
+                      short={short}
+                      className="text-link"
+                    />
+                  </Link>
+                ) : (
+                  <AddressSpan
+                    full={full}
+                    address={address}
+                    short={short}
+                    className="text-muted"
+                  />
+                )}
+              </Copyable>
+            </HStack>
+          }
+        />
+      </HStack>
+    );
+  },
 });
 
 const styles = tv({
-	slots: {
-		root: "flex gap-1 text-sm font-mono",
-		prefix: "mr-px text-[1em] text-secondary",
-		address: "text-[1em] text-muted mt-px gap-3",
-	},
+  slots: {
+    root: "flex gap-1 text-sm font-mono",
+    prefix: "mr-px text-[1em] text-secondary",
+    address: "text-[1em] text-muted mt-px gap-3",
+  },
 });

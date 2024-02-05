@@ -1,12 +1,12 @@
 export {
-	HoverCard,
-	HoverCardContent,
-	HoverCardRoot,
-	HoverCardTrigger,
+  HoverCard,
+  HoverCardContent,
+  HoverCardRoot,
+  HoverCardTrigger,
 } from "./HoverCard";
 
 export type {
-	HoverCardContentProps,
-	HoverCardProps,
-	HoverCardTriggerProps,
+  HoverCardContentProps,
+  HoverCardProps,
+  HoverCardTriggerProps,
 } from "./HoverCard";

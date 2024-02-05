@@ -1,8 +1,8 @@
 export type AccountRouteParams = {
-	id: string;
-	tab: string;
+  id: string;
+  tab: string;
 };
 
 export type AccountRouteProps = {
-	params: AccountRouteParams;
+  params: AccountRouteParams;
 };

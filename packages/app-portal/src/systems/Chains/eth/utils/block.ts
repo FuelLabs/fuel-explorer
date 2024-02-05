@@ -4,20 +4,20 @@ import type { PublicClient } from "wagmi";
 import { EthTxCache } from "./txCache";
 
 export const getBlockDate = async ({
-	blockHash,
-	publicClient,
+  blockHash,
+  publicClient,
 }: {
-	blockHash: `0x${string}`;
-	publicClient: PublicClient;
+  blockHash: `0x${string}`;
+  publicClient: PublicClient;
 }) => {
-	const cachedBlockDate = EthTxCache.getBlockDate(blockHash);
+  const cachedBlockDate = EthTxCache.getBlockDate(blockHash);
 
-	if (!cachedBlockDate) {
-		const block = await publicClient.getBlock({ blockHash });
-		const parsedDate = bn(block.timestamp.toString()).mul(1000);
-		EthTxCache.setBlockDate(blockHash, parsedDate.toString());
-		return new Date(parsedDate.toNumber());
-	}
+  if (!cachedBlockDate) {
+    const block = await publicClient.getBlock({ blockHash });
+    const parsedDate = bn(block.timestamp.toString()).mul(1000);
+    EthTxCache.setBlockDate(blockHash, parsedDate.toString());
+    return new Date(parsedDate.toNumber());
+  }
 
-	return new Date(Number(cachedBlockDate));
+  return new Date(Number(cachedBlockDate));
 };

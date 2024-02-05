@@ -6,6 +6,6 @@ import type { PropsOf } from "../../utils/types";
 export type CheckboxProps = PropsOf<typeof RadixCheckbox>;
 
 export const Checkbox = createComponent<CheckboxProps, typeof RadixCheckbox>({
-	id: "Checkbox",
-	baseElement: RadixCheckbox,
+  id: "Checkbox",
+  baseElement: RadixCheckbox,
 });

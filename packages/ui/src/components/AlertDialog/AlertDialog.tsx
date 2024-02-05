@@ -12,66 +12,66 @@ export type AlertDialogActionProps = PropsOf<typeof RAD.Action>;
 export type AlertDialogCancelProps = PropsOf<typeof RAD.Cancel>;
 
 export const AlertDialogRoot = createComponent<
-	AlertDialogProps,
-	typeof RAD.Root
+  AlertDialogProps,
+  typeof RAD.Root
 >({
-	id: "AlertDialog",
-	baseElement: RAD.Root,
+  id: "AlertDialog",
+  baseElement: RAD.Root,
 });
 
 export const AlertDialogTrigger = createComponent<
-	AlertDialogTriggerProps,
-	typeof RAD.Trigger
+  AlertDialogTriggerProps,
+  typeof RAD.Trigger
 >({
-	id: "AlertDialogTrigger",
-	baseElement: RAD.Trigger,
+  id: "AlertDialogTrigger",
+  baseElement: RAD.Trigger,
 });
 
 export const AlertDialogContent = createComponent<
-	AlertDialogContentProps,
-	typeof RAD.Content
+  AlertDialogContentProps,
+  typeof RAD.Content
 >({
-	id: "AlertDialogContent",
-	baseElement: RAD.Content,
+  id: "AlertDialogContent",
+  baseElement: RAD.Content,
 });
 
 export const AlertDialogTitle = createComponent<
-	AlertDialogTitleProps,
-	typeof RAD.Title
+  AlertDialogTitleProps,
+  typeof RAD.Title
 >({
-	id: "AlertDialogTitle",
-	baseElement: RAD.Title,
+  id: "AlertDialogTitle",
+  baseElement: RAD.Title,
 });
 
 export const AlertDialogDescription = createComponent<
-	AlertDialogDescriptionProps,
-	typeof RAD.Description
+  AlertDialogDescriptionProps,
+  typeof RAD.Description
 >({
-	id: "AlertDialogDescription",
-	baseElement: RAD.Description,
+  id: "AlertDialogDescription",
+  baseElement: RAD.Description,
 });
 
 export const AlertDialogAction = createComponent<
-	AlertDialogActionProps,
-	typeof RAD.Action
+  AlertDialogActionProps,
+  typeof RAD.Action
 >({
-	id: "AlertDialogAction",
-	baseElement: RAD.Action,
+  id: "AlertDialogAction",
+  baseElement: RAD.Action,
 });
 
 export const AlertDialogCancel = createComponent<
-	AlertDialogCancelProps,
-	typeof RAD.Cancel
+  AlertDialogCancelProps,
+  typeof RAD.Cancel
 >({
-	id: "AlertDialogCancel",
-	baseElement: RAD.Cancel,
+  id: "AlertDialogCancel",
+  baseElement: RAD.Cancel,
 });
 
 export const AlertDialog = withNamespace(AlertDialogRoot, {
-	Trigger: AlertDialogTrigger,
-	Content: AlertDialogContent,
-	Title: AlertDialogTitle,
-	Description: AlertDialogDescription,
-	Action: AlertDialogAction,
-	Cancel: AlertDialogCancel,
+  Trigger: AlertDialogTrigger,
+  Content: AlertDialogContent,
+  Title: AlertDialogTitle,
+  Description: AlertDialogDescription,
+  Action: AlertDialogAction,
+  Cancel: AlertDialogCancel,
 });
