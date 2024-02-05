@@ -186,7 +186,7 @@ test.describe("Bridge", () => {
 				await assetAmountLocator.innerText();
 
 				// check if it's settled on the list
-				const statusLocator = depositLocator.getByText(`Settled`);
+				const statusLocator = depositLocator.getByText("Settled");
 				await statusLocator.innerText();
 
 				goToBridgePage(page);
@@ -302,7 +302,7 @@ test.describe("Bridge", () => {
 				await closeTransactionPopup(page);
 
 				// check if it's settled on the list
-				const statusLocator = withdrawTxLocator.getByText(`Settled`);
+				const statusLocator = withdrawTxLocator.getByText("Settled");
 				await statusLocator.innerText();
 			});
 		});
@@ -469,7 +469,7 @@ test.describe("Bridge", () => {
 				).toBe(DEPOSIT_AMOUNT);
 
 				// check if it's settled on the list
-				const statusLocator = depositTxLocator.getByText(`Settled`);
+				const statusLocator = depositTxLocator.getByText("Settled");
 				await statusLocator.innerText();
 			});
 		});
@@ -590,7 +590,7 @@ test.describe("Bridge", () => {
 				await closeTransactionPopup(page);
 
 				// check if it's settled on the list
-				const statusLocator = withdrawTxLocator.getByText(`Settled`);
+				const statusLocator = withdrawTxLocator.getByText("Settled");
 				await statusLocator.innerText();
 			});
 		});

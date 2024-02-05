@@ -65,7 +65,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
 		return (
 			<Dropdown open={openDropdown} onOpenChange={onOpenChange}>
 				<Dropdown.Trigger>
-					<Box className="w-full"></Box>
+					<Box className="w-full" />
 				</Dropdown.Trigger>
 				<Dropdown.Content
 					ref={ref}

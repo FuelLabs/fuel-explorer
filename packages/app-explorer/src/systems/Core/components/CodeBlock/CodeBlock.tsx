@@ -42,7 +42,7 @@ export function CodeBlock({
 	}
 
 	function getTitle() {
-		if (title != undefined) return title;
+		if (title !== undefined) return title;
 		if (type === "json") return "JSON";
 		return "Code";
 	}

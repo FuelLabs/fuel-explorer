@@ -1,6 +1,6 @@
 import { cssObj } from "@fuel-ui/css";
 
-export const SCROLL_WIDTH = `14px`;
+export const SCROLL_WIDTH = "14px";
 
 export const scrollableContent = cssObj({
 	width: `calc(100vw - ${SCROLL_WIDTH})`,

@@ -55,7 +55,7 @@ process.env.APP_VERSION = versions.version;
 
 // Export ETH Fuel contracts addresses
 const ethFuelContracts = getEthFuelL1Contracts();
-if (ethFuelContracts && ethFuelContracts.FuelMessagePortal) {
+if (ethFuelContracts?.FuelMessagePortal) {
 	process.env.ETH_FUEL_MESSAGE_PORTAL = ethFuelContracts.FuelMessagePortal;
 	process.env.ETH_FUEL_ERC20_GATEWAY = ethFuelContracts.FuelERC20Gateway;
 	process.env.ETH_FUEL_CHAIN_STATE = ethFuelContracts.FuelChainState;

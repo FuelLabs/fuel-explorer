@@ -37,7 +37,7 @@
     "dev:portal": "pnpm --filter=app-portal dev",
     "dev:graphql": "pnpm --filter=graphql dev",
     "dev:notification": "pnpm --filter=notification-service dev:notification",
-    "lint": "biome check --apply .",
+    "lint": "biome check --apply-unsafe .",
     "format": "biome format . --write",
     "node:clean": "make -C ./docker clean",
     "node:logs": "make -C ./docker logs",

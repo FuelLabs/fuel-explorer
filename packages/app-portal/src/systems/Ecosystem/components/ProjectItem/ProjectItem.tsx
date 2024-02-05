@@ -136,18 +136,17 @@ export const ProjectItem: ProjectItemComponent = ({
 						wrap="wrap"
 						css={styles.statusContainer}
 					>
-						{status &&
-							status.map((s, index) => (
-								<Tag
-									key={index}
-									intent="base"
-									size="xs"
-									css={styles.tag}
-									variant="ghost"
-								>
-									{s}
-								</Tag>
-							))}
+						{status?.map((s, index) => (
+							<Tag
+								key={index}
+								intent="base"
+								size="xs"
+								css={styles.tag}
+								variant="ghost"
+							>
+								{s}
+							</Tag>
+						))}
 					</Box.Flex>
 				</Box.Stack>
 			</Card.Body>

@@ -170,7 +170,7 @@ export const bridgeTxsMachine = createMachine(
 					if (!ethTxId || ctx.ethToFuelTxRefs?.[ethTxId])
 						return ctx.ethToFuelTxRefs;
 
-					console.log("NEW: creating machine Fuel To Eth: " + ethTxId);
+					console.log(`NEW: creating machine Fuel To Eth: ${ethTxId}`);
 					const newRef = {
 						[ethTxId]: spawn(
 							txEthToFuelMachine.withContext({
@@ -196,7 +196,7 @@ export const bridgeTxsMachine = createMachine(
 					if (!fuelTxId || ctx.fuelToEthTxRefs?.[fuelTxId])
 						return ctx.fuelToEthTxRefs;
 
-					console.log("NEW: creating machine Fuel To Eth: " + fuelTxId);
+					console.log(`NEW: creating machine Fuel To Eth: ${fuelTxId}`);
 					const newRef = {
 						[fuelTxId]: spawn(
 							txFuelToEthMachine.withContext({

@@ -50,7 +50,7 @@ export const AccountSwitchDialog = ({
 										? { ...styles.listItem, ...styles.select }
 										: styles.listItem
 								}
-								onClick={() => onSelect && onSelect(account)}
+								onClick={() => onSelect?.(account)}
 							>
 								<Box.Flex align="center" gap="$3">
 									<Avatar.Generated size={"xsm"} hash={account} />

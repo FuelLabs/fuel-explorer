@@ -456,7 +456,7 @@ export class TxEthToFuelService {
 			} as any,
 			fromBlock: "earliest",
 		});
-		console.log(`erc20AllLogs`, erc20AllLogs);
+		console.log("erc20AllLogs", erc20AllLogs);
 
 		const erc20Logs = erc20AllLogs.filter((log) => {
 			const messageSentEvent = decodeEventLog({

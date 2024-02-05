@@ -32,8 +32,6 @@ function getType(receipt: TxReceipt) {
 }
 
 export class OperationDomain {
-	constructor() {}
-
 	async operationsFromTransaction(transaction: Tx) {
 		const receipts = transaction.receipts || [];
 		return this._createOperations(receipts);

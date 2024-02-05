@@ -118,7 +118,7 @@ process.env.VITE_APP_VERSION = versions.version;
 
 // Export ETH Fuel contracts addresses
 const bridgeSolidityContracts = getBridgeSolidityContracts();
-if (bridgeSolidityContracts && bridgeSolidityContracts.FuelMessagePortal) {
+if (bridgeSolidityContracts?.FuelMessagePortal) {
 	process.env.VITE_ETH_FUEL_MESSAGE_PORTAL =
 		bridgeSolidityContracts.FuelMessagePortal;
 	process.env.VITE_ETH_FUEL_ERC20_GATEWAY =

@@ -21,7 +21,6 @@ export class Domain<S = any, A = any> {
 	args!: A;
 	context!: Context;
 	info!: GraphQLResolveInfo;
-	constructor() {}
 
 	createResolver(key: string, func?: string) {
 		return {

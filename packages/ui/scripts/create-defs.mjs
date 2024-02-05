@@ -51,10 +51,7 @@ function extractExports(sourceFile) {
 			ts.isVariableStatement(node) ||
 			ts.isEnumDeclaration(node)
 		) {
-			if (
-				node.modifiers &&
-				node.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
-			) {
+			if (node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
 				if (ts.isVariableStatement(node)) {
 					for (const declaration of node.declarationList.declarations) {
 						exports.valueExports.push(declaration.name.getText(sourceFile));
@@ -67,10 +64,7 @@ function extractExports(sourceFile) {
 			ts.isTypeAliasDeclaration(node) ||
 			ts.isInterfaceDeclaration(node)
 		) {
-			if (
-				node.modifiers &&
-				node.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
-			) {
+			if (node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
 				exports.typeExports.push(node.name.text);
 			}
 		}

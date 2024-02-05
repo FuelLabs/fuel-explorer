@@ -12,9 +12,8 @@ export class Cache {
 		if (data) {
 			if (Date.now() < data.expire) {
 				return data.value as T;
-			} else {
-				delete this._cache[key];
 			}
+			delete this._cache[key];
 		}
 		return null;
 	}
