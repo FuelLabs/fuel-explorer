@@ -2,16 +2,16 @@
 
 import { updateThemeAppearanceClass, useThemeContext } from '@radix-ui/themes';
 
-const THEME_KEY = 'fuel-ui-theme';
+import { changeStorageTheme, getNextTheme, getStorageTheme } from './storage';
 
 export function useTheme() {
   const { appearance: theme } = useThemeContext();
 
   function toggleTheme() {
-    const current = localStorage.getItem(THEME_KEY);
-    const next = current === 'light' ? 'dark' : 'light';
+    const current = getStorageTheme();
+    const next = getNextTheme(current);
     updateThemeAppearanceClass(next);
-    localStorage.setItem(THEME_KEY, next);
+    changeStorageTheme(next);
   }
 
   return { theme, toggleTheme };
