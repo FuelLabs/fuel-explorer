@@ -1,7 +1,7 @@
+import type { Asset } from '@fuels/assets';
 import type { BN } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import type { Asset } from '~/systems/Assets/services/asset';
 import type { FromToNetworks } from '~/systems/Chains';
 import { FetchMachine } from '~/systems/Core/machines';
 

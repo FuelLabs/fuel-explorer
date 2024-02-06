@@ -1,8 +1,8 @@
 import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
+import type { Asset } from '@fuels/assets';
 import type { BN } from 'fuels';
 import type { WalletClient } from 'viem';
 
-import type { Asset } from '../Assets';
 import type { FromToNetworks } from '../Chains';
 import type { Store } from '../Store';
 import { Services } from '../Store';

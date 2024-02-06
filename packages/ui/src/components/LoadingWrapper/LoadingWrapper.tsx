@@ -1,5 +1,5 @@
 import { cloneElement } from 'react';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 type LoadingBoxProps = {
   isLoading?: boolean;
@@ -17,12 +17,17 @@ export function LoadingWrapper({
   regularEl,
   noItems,
   noItemsEl,
-}: LoadingBoxProps) {
-  if (!isLoading && noItems) return noItemsEl ?? null;
-  return isLoading && loadingEl
-    ? Array.from({ length: repeatLoader }).map((_, i) =>
+}: LoadingBoxProps): ReactElement | null {
+  if (!isLoading && noItems) return noItemsEl ? <>{noItemsEl}</> : null;
+
+  return isLoading && loadingEl ? (
+    <>
+      {Array.from({ length: repeatLoader }).map((_, i) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         loadingEl ? cloneElement(loadingEl as any, { key: i }) : null
-      )
-    : regularEl ?? null;
+      )}
+    </>
+  ) : (
+    <>{regularEl}</> ?? null
+  );
 }
