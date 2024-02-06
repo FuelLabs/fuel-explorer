@@ -1,4 +1,4 @@
-import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { bridgeRoutes } from './systems/Bridge/routes';
 import { ecosystemRoutes } from './systems/Ecosystem/routes';

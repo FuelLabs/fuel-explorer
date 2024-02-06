@@ -1,16 +1,16 @@
 import {
-  FuelWalletTestHelper,
-  getByAriaLabel,
-  getButtonByText,
-  hasText,
   FUEL_MNEMONIC,
+  FuelWalletTestHelper,
+  getButtonByText,
+  getByAriaLabel,
+  hasText,
 } from '@fuel-wallet/playwright-utils';
 import type { Locator } from '@playwright/test';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
-import type { WalletUnlocked, BigNumberish } from 'fuels';
-import { BaseAssetId, Wallet, bn, Provider, format } from 'fuels';
+import type { BigNumberish, WalletUnlocked } from 'fuels';
+import { BaseAssetId, Provider, Wallet, bn, format } from 'fuels';
 import type { HDAccount } from 'viem';
-import { createPublicClient, http, getContract } from 'viem';
+import { http, createPublicClient, getContract } from 'viem';
 import { mnemonicToAccount } from 'viem/accounts';
 import { foundry } from 'viem/chains';
 import type { PublicClient } from 'wagmi';
@@ -18,7 +18,7 @@ import type { PublicClient } from 'wagmi';
 import { ERC_20 } from '../../src/systems/Chains/eth/contracts/Erc20';
 import { ETH_MNEMONIC } from '../mocks';
 
-import { test, expect } from './fixtures';
+import { expect, test } from './fixtures';
 import {
   checkTxItemDone,
   clickDepositTab,
@@ -48,7 +48,7 @@ test.describe('Bridge', () => {
       context,
       extensionId,
       FUEL_PROVIDER_URL,
-      chainName
+      chainName,
     );
     await fuelWalletTestHelper.addAccount();
     await fuelWalletTestHelper.addAccount();
@@ -148,8 +148,8 @@ test.describe('Bridge', () => {
           parseFloat(
             bn(prevDepositBalanceEth.toString())
               .sub(postDepositBalanceEth.toString())
-              .format({ precision: 6, units: 18 })
-          )
+              .format({ precision: 6, units: 18 }),
+          ),
         ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
 
         // check the popup is correct
@@ -168,7 +168,7 @@ test.describe('Bridge', () => {
         expect(
           postDepositBalanceFuel
             .sub(preDepositBalanceFuel)
-            .format({ precision: 6, units: 9 })
+            .format({ precision: 6, units: 9 }),
         ).toBe(DEPOSIT_AMOUNT);
 
         await goToTransactionsPage(page);
@@ -176,17 +176,17 @@ test.describe('Bridge', () => {
         // check the transaction is there
         const depositLocator = getByAriaLabel(
           page,
-          `Transaction ID: ${depositEthTxId}`
+          `Transaction ID: ${depositEthTxId}`,
         );
 
         // check if has correct asset amount
         const assetAmountLocator = depositLocator.getByText(
-          `${DEPOSIT_AMOUNT} ETH`
+          `${DEPOSIT_AMOUNT} ETH`,
         );
         await assetAmountLocator.innerText();
 
         // check if it's settled on the list
-        const statusLocator = depositLocator.getByText(`Settled`);
+        const statusLocator = depositLocator.getByText('Settled');
         await statusLocator.innerText();
 
         goToBridgePage(page);
@@ -235,7 +235,7 @@ test.describe('Bridge', () => {
         ).trim();
         const assetAmountWithdraw = getByAriaLabel(page, 'Asset amount');
         expect((await assetAmountWithdraw.innerHTML()).trim()).toBe(
-          WITHDRAW_AMOUNT
+          WITHDRAW_AMOUNT,
         );
       });
 
@@ -250,11 +250,11 @@ test.describe('Bridge', () => {
         // Check the transaction is there
         withdrawTxLocator = getByAriaLabel(
           page,
-          `Transaction ID: ${withdrawEthTxId}`
+          `Transaction ID: ${withdrawEthTxId}`,
         );
 
         const assetAmountLocator = withdrawTxLocator.getByText(
-          `${WITHDRAW_AMOUNT} ETH`
+          `${WITHDRAW_AMOUNT} ETH`,
         );
         await assetAmountLocator.innerText();
 
@@ -289,20 +289,20 @@ test.describe('Bridge', () => {
           parseFloat(
             bn(postWithdrawBalanceEth.toString())
               .sub(bn(prevWithdrawBalanceEth.toString()))
-              .format({ precision: 6, units: 18 })
-          )
+              .format({ precision: 6, units: 18 }),
+          ),
         ).toBeCloseTo(0.0122);
 
         expect(
           preWithdrawBalanceFuel
             .sub(postWithdrawBalanceFuel)
-            .format({ precision: 6, units: 9 })
+            .format({ precision: 6, units: 9 }),
         ).toBe('0.012345');
 
         await closeTransactionPopup(page);
 
         // check if it's settled on the list
-        const statusLocator = withdrawTxLocator.getByText(`Settled`);
+        const statusLocator = withdrawTxLocator.getByText('Settled');
         await statusLocator.innerText();
       });
     });
@@ -340,7 +340,7 @@ test.describe('Bridge', () => {
           account.address,
         ]);
         expect(String(postFaucetBalance)).toBe(
-          bn(preFaucetBalance).add(bn.parseUnits('1000000', 18)).toString()
+          bn(preFaucetBalance).add(bn.parseUnits('1000000', 18)).toString(),
         );
       });
 
@@ -355,7 +355,7 @@ test.describe('Bridge', () => {
         `Balance: ${format(postFaucetBalance as BigNumberish, {
           units: 18,
           precision: 3,
-        })}`
+        })}`,
       );
     });
 
@@ -363,7 +363,7 @@ test.describe('Bridge', () => {
       await goToBridgePage(page);
       await clickDepositTab(page);
       const preDepositBalanceFuel = await fuelWallet.getBalance(
-        VITE_FUEL_FUNGIBLE_ASSET_ID
+        VITE_FUEL_FUNGIBLE_ASSET_ID,
       );
       const preDepositBalanceEth = await erc20Contract.read.balanceOf([
         account.address,
@@ -406,8 +406,8 @@ test.describe('Bridge', () => {
           parseFloat(
             bn(preDepositBalanceEth.toString())
               .sub(postDepositBalanceEth.toString())
-              .format({ precision: 6, units: 18 })
-          )
+              .format({ precision: 6, units: 18 }),
+          ),
         ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
       });
 
@@ -427,7 +427,7 @@ test.describe('Bridge', () => {
         // check the transaction is there
         depositTxLocator = getByAriaLabel(
           page,
-          `Transaction ID: ${depositERC20TxId}`
+          `Transaction ID: ${depositERC20TxId}`,
         );
         // Check that action required is shown
         const actionRequiredLocator =
@@ -435,7 +435,7 @@ test.describe('Bridge', () => {
         await actionRequiredLocator.innerText();
         // check if has correct asset amount
         const assetAmountLocator = depositTxLocator.getByText(
-          `${DEPOSIT_AMOUNT} TKN`
+          `${DEPOSIT_AMOUNT} TKN`,
         );
         await assetAmountLocator.innerText();
 
@@ -459,24 +459,24 @@ test.describe('Bridge', () => {
         await closeTransactionPopup(page);
 
         const postDepositBalanceFuel = await fuelWallet.getBalance(
-          VITE_FUEL_FUNGIBLE_ASSET_ID
+          VITE_FUEL_FUNGIBLE_ASSET_ID,
         );
 
         expect(
           postDepositBalanceFuel
             .sub(preDepositBalanceFuel)
-            .format({ precision: 6, units: 9 })
+            .format({ precision: 6, units: 9 }),
         ).toBe(DEPOSIT_AMOUNT);
 
         // check if it's settled on the list
-        const statusLocator = depositTxLocator.getByText(`Settled`);
+        const statusLocator = depositTxLocator.getByText('Settled');
         await statusLocator.innerText();
       });
     });
 
     await test.step('Withdraw TKN from Fuel to ETH', async () => {
       const preWithdrawBalanceFuel = await fuelWallet.getBalance(
-        VITE_FUEL_FUNGIBLE_ASSET_ID
+        VITE_FUEL_FUNGIBLE_ASSET_ID,
       );
       const preWithdrawBalanceEth = await erc20Contract.read.balanceOf([
         account.address,
@@ -521,7 +521,7 @@ test.describe('Bridge', () => {
         ).trim();
         const assetAmountWithdraw = getByAriaLabel(page, 'Asset amount');
         expect((await assetAmountWithdraw.innerHTML()).trim()).toBe(
-          WITHDRAW_AMOUNT
+          WITHDRAW_AMOUNT,
         );
       });
 
@@ -536,14 +536,14 @@ test.describe('Bridge', () => {
         // Check the transaction is there
         withdrawTxLocator = getByAriaLabel(
           page,
-          `Transaction ID: ${withdrawERC20TxId}`
+          `Transaction ID: ${withdrawERC20TxId}`,
         );
 
         const actionRequiredLocator =
           withdrawTxLocator.getByText('Action Required');
         await actionRequiredLocator.innerText();
         const assetAmountLocator = withdrawTxLocator.getByText(
-          `${WITHDRAW_AMOUNT} TKN`
+          `${WITHDRAW_AMOUNT} TKN`,
         );
         await assetAmountLocator.innerText();
 
@@ -571,26 +571,26 @@ test.describe('Bridge', () => {
           account.address,
         ]);
         const postWithdrawBalanceFuel = await fuelWallet.getBalance(
-          VITE_FUEL_FUNGIBLE_ASSET_ID
+          VITE_FUEL_FUNGIBLE_ASSET_ID,
         );
 
         expect(
           parseFloat(
             bn(postWithdrawBalanceEth.toString())
               .sub(bn(preWithdrawBalanceEth.toString()))
-              .format({ precision: 6, units: 18 })
-          )
+              .format({ precision: 6, units: 18 }),
+          ),
         ).toBeCloseTo(parseFloat(WITHDRAW_AMOUNT));
 
         expect(
           preWithdrawBalanceFuel
             .sub(postWithdrawBalanceFuel)
-            .format({ precision: 6, units: 9 })
+            .format({ precision: 6, units: 9 }),
         ).toBe(WITHDRAW_AMOUNT);
         await closeTransactionPopup(page);
 
         // check if it's settled on the list
-        const statusLocator = withdrawTxLocator.getByText(`Settled`);
+        const statusLocator = withdrawTxLocator.getByText('Settled');
         await statusLocator.innerText();
       });
     });
@@ -613,7 +613,7 @@ test.describe('Bridge', () => {
 
       const connectedWallet = getByAriaLabel(
         page,
-        'Fuel Devnet: Connected Wallet'
+        'Fuel Devnet: Connected Wallet',
       );
       const address = await connectedWallet.innerText();
       const balance = getByAriaLabel(page, 'Balance: ');
@@ -624,7 +624,7 @@ test.describe('Bridge', () => {
 
       const connectedWalletAferRefresh = getByAriaLabel(
         page,
-        'Fuel Devnet: Connected Wallet'
+        'Fuel Devnet: Connected Wallet',
       );
       const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
       const balanceAfterRefresh = getByAriaLabel(page, 'Balance: ');
@@ -644,7 +644,7 @@ test.describe('Bridge', () => {
         const noActivity = page.getByText('No activity yet');
         await noActivity.innerText();
         const subText = page.getByText(
-          "When you make a transaction you'll see it here"
+          "When you make a transaction you'll see it here",
         );
         await subText.innerText();
       });
@@ -656,7 +656,7 @@ test.describe('Bridge', () => {
         const notDetected = page.getByText('Wallet not detected');
         await notDetected.innerText();
         const subText = page.getByText(
-          'Connect a wallet to see your transactions'
+          'Connect a wallet to see your transactions',
         );
         await subText.innerText();
         const connectButton = getButtonByText(page, 'Connect Fuel Wallet');
@@ -696,7 +696,7 @@ test.describe('Bridge', () => {
         // Test alert
         await hasText(
           page,
-          "You don't have any ETH on Fuel to pay for gas. We recommend you bridge some ETH before you bridge any other assets."
+          "You don't have any ETH on Fuel to pay for gas. We recommend you bridge some ETH before you bridge any other assets.",
         );
         const bridgeButton = getByAriaLabel(page, 'Bridge asset anyway');
         await expect(bridgeButton).toHaveText('Bridge asset anyway', {
@@ -727,8 +727,8 @@ test.describe('Bridge', () => {
           parseFloat(
             bn(preDepositBalanceTkn.toString())
               .sub(postDepositBalanceTkn.toString())
-              .format({ precision: 6, units: 18 })
-          )
+              .format({ precision: 6, units: 18 }),
+          ),
         ).toBeCloseTo(parseFloat(depositAmount));
 
         const confirmTransactionButton = page.getByRole('button', {
@@ -738,7 +738,7 @@ test.describe('Bridge', () => {
 
         await hasText(
           page,
-          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.'
+          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.',
         );
       });
       await closeTransactionPopup(page);

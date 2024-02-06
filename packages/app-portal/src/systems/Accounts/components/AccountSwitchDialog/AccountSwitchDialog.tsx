@@ -1,14 +1,14 @@
 import { cssObj } from '@fuel-ui/css';
 import {
-  Button,
-  Dialog,
-  Text,
-  Copyable,
   Avatar,
-  List,
-  IconButton,
-  Icon,
   Box,
+  Button,
+  Copyable,
+  Dialog,
+  Icon,
+  IconButton,
+  List,
+  Text,
 } from '@fuel-ui/react';
 import { shortAddress } from '~/systems/Core/utils';
 
@@ -50,7 +50,7 @@ export const AccountSwitchDialog = ({
                     ? { ...styles.listItem, ...styles.select }
                     : styles.listItem
                 }
-                onClick={() => onSelect && onSelect(account)}
+                onClick={() => onSelect?.(account)}
               >
                 <Box.Flex align="center" gap="$3">
                   <Avatar.Generated size={'xsm'} hash={account} />

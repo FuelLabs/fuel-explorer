@@ -1,4 +1,4 @@
-import { isB256, isBech32, Address } from 'fuels';
+import { Address, isB256, isBech32 } from 'fuels';
 
 export function parseAddressParam(id?: string | null) {
   const isValid = isValidAddress(id);

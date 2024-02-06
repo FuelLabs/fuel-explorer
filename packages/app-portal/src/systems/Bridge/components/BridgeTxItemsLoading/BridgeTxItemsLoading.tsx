@@ -1,4 +1,4 @@
-import { lightColors, darkColors } from '@fuel-ui/css';
+import { darkColors, lightColors } from '@fuel-ui/css';
 import { Box, ContentLoader } from '@fuel-ui/react';
 import { useTheme } from '~/systems/Settings';
 

@@ -6,7 +6,7 @@ import {
   hexlify,
 } from 'fuels';
 import { useMemo } from 'react';
-import { store, Services } from '~/store';
+import { Services, store } from '~/store';
 import { useAssets } from '~/systems/Assets';
 import { getAssetEth } from '~/systems/Assets/utils';
 import type { BridgeTxsMachineState } from '~/systems/Bridge';
@@ -38,14 +38,14 @@ const txFuelToEthSelectors = {
     const isSettlementSelected = state.hasTag('isSettlementSelected');
     const isSettlementDone = state.hasTag('isSettlementDone');
     const isConfirmTransactionSelected = state.hasTag(
-      'isConfirmTransactionSelected'
+      'isConfirmTransactionSelected',
     );
     const isConfirmTransactionLoading = state.hasTag(
-      'isConfirmTransactionLoading'
+      'isConfirmTransactionLoading',
     );
     const isConfirmTransactionDone = state.hasTag('isConfirmTransactionDone');
     const isWaitingEthWalletApproval = state.hasTag(
-      'isWaitingEthWalletApproval'
+      'isWaitingEthWalletApproval',
     );
     const isReceiveLoading = state.hasTag('isReceiveLoading');
     const isReceiveSelected = state.hasTag('isReceiveSelected');
@@ -125,12 +125,12 @@ const txFuelToEthSelectors = {
     const fuelTxResult = state.context.fuelTxResult;
 
     const messageOutReceipt = getReceiptsMessageOut(
-      fuelTxResult?.receipts || []
+      fuelTxResult?.receipts || [],
     )[0];
 
     if (messageOutReceipt) {
       const burnReceipt = fuelTxResult?.receipts?.find(
-        (receipt) => receipt.type === ReceiptType.Burn
+        (receipt) => receipt.type === ReceiptType.Burn,
       );
       if (burnReceipt) {
         const receipt = burnReceipt as Extract<
@@ -140,7 +140,7 @@ const txFuelToEthSelectors = {
         const amount = receipt.val;
         const ethAssetId = messageOutReceipt.data
           ? parseFuelAddressToEth(
-              hexlify(messageOutReceipt.data).replace('0x', '').slice(72, 136)
+              hexlify(messageOutReceipt.data).replace('0x', '').slice(72, 136),
             )
           : undefined;
         const ethAsset = assets
@@ -197,7 +197,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
 
   const txFuelToEthState = store.useSelector(
     Services.bridgeTxs,
-    bridgeTxsSelectors.txFuelToEth(txId)
+    bridgeTxsSelectors.txFuelToEth(txId),
   );
 
   const {
@@ -238,7 +238,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
       fuelTxResult?.time
         ? new Date(fromTai64ToUnix(fuelTxResult?.time) * 1000)
         : undefined,
-    [fuelTxResult?.time]
+    [fuelTxResult?.time],
   );
 
   function relayToEth() {

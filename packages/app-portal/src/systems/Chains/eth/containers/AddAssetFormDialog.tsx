@@ -3,10 +3,10 @@ import {
   Box,
   Button,
   Dialog,
-  Input,
-  Text,
   Form,
   IconButton,
+  Input,
+  Text,
 } from '@fuel-ui/react';
 import { Controller } from 'react-hook-form';
 import { store } from '~/store';

@@ -45,11 +45,11 @@ export async function getBlock({
   providerUrl: string;
   height?: string;
 }): Promise<Block> {
-  const variables = {};
+  const variables: Record<string, any> = {};
   if (height) {
-    variables['height'] = height;
+    variables.height = height;
   } else {
-    variables['id'] = blockHash;
+    variables.id = blockHash;
   }
   const response = await fetch(providerUrl, {
     method: 'POST',

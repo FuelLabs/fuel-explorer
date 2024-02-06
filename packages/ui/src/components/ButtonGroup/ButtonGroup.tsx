@@ -40,8 +40,8 @@ export const ButtonGroup = createComponent<ButtonGroupProps, 'div'>({
           child,
           mergeProps(child.props, pick(BUTTON_BASE_PROPS, props), {
             className: styles().button(),
-          })
-        )
+          }),
+        ),
     );
     return (
       <Comp {...props}>

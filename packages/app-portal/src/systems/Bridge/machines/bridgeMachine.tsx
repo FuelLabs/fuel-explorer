@@ -83,7 +83,7 @@ export const bridgeMachine = createMachine(
           data: {
             input: (
               ctx: MachineContext,
-              ev: Extract<BridgeMachineEvents, { type: 'START_BRIDGING' }>
+              ev: Extract<BridgeMachineEvents, { type: 'START_BRIDGING' }>,
             ) => ({
               fromNetwork: ctx.fromNetwork,
               toNetwork: ctx.toNetwork,
@@ -142,7 +142,7 @@ export const bridgeMachine = createMachine(
         },
       }),
     },
-  }
+  },
 );
 
 export type BridgeMachine = typeof bridgeMachine;

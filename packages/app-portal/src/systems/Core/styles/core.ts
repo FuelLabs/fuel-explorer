@@ -1,6 +1,6 @@
 import { cssObj } from '@fuel-ui/css';
 
-export const SCROLL_WIDTH = `14px`;
+export const SCROLL_WIDTH = '14px';
 
 export const scrollableContent = cssObj({
   width: `calc(100vw - ${SCROLL_WIDTH})`,
@@ -9,10 +9,7 @@ export const scrollableContent = cssObj({
   boxSizing: 'border-box',
 });
 
-export const scrollable = (
-  regularColor: string = '$gray8',
-  hoverColor: string = '$gray10'
-) =>
+export const scrollable = (regularColor = '$gray8', hoverColor = '$gray10') =>
   cssObj({
     overflowY: 'overlay',
     scrollBehavior: 'smooth',

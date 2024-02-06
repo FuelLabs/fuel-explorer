@@ -1,5 +1,5 @@
 export function isAllowedTab(
-  tab: string
+  tab: string,
 ): tab is 'assets' | 'transactions' | 'predicate' {
   return ['assets', 'transactions', 'predicate'].includes(tab);
 }

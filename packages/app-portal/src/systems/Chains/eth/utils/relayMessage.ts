@@ -16,7 +16,7 @@ export type RelayMessageParams = {
 };
 
 export function createRelayMessageParams(
-  withdrawMessageProof: MessageProof
+  withdrawMessageProof: MessageProof,
 ): RelayMessageParams {
   // construct data objects for relaying message on L1
   const message: Message = {

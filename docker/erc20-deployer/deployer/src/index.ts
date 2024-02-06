@@ -1,10 +1,10 @@
+import { createServer } from 'http';
 import {
   getOrDeployECR20Contract,
   getOrDeployFuelTokenContract,
   getTokenId,
   setupEnvironment,
 } from '@fuel-bridge/test-utils';
-import { createServer } from 'http';
 
 const {
   PORT,
@@ -32,7 +32,7 @@ async function main() {
       gasPrice: 1,
       gasLimit: 1_000_000,
     },
-    9
+    9,
   );
   const tokenId = getTokenId(FuelToken);
   await startServer({
@@ -44,7 +44,7 @@ async function main() {
 
 function startServer(deployments: Record<string, string>) {
   return new Promise((resolve) => {
-    createServer(function (req, res) {
+    createServer((req, res) => {
       switch (req.url) {
         case '/health':
           res.writeHead(200, { 'Content-Type': 'text/plain' });

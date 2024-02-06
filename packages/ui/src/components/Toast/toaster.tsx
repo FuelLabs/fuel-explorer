@@ -15,16 +15,8 @@ export function Toaster() {
 
   return (
     <ToastProvider>
-      {toasts.map(function ({
-        id,
-        title,
-        description,
-        action,
-        icon,
-        width = 350,
-        ...props
-      }) {
-        return (
+      {toasts.map(
+        ({ id, title, description, action, icon, width = 350, ...props }) => (
           <Toast
             key={id}
             {...props}
@@ -45,8 +37,8 @@ export function Toaster() {
             {action}
             <ToastClose />
           </Toast>
-        );
-      })}
+        ),
+      )}
       <ToastViewport />
     </ToastProvider>
   );

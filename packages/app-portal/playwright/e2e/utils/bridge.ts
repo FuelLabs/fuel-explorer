@@ -36,7 +36,7 @@ export const clickWithdrawTab = async (page: Page) => {
 export const checkTxItemDone = async (page: Page, txHash: string) => {
   const listItem = getByAriaLabel(
     page,
-    `Transaction ID: ${shortAddress(txHash)}`
+    `Transaction ID: ${shortAddress(txHash)}`,
   );
   const listItemText = await listItem.innerText();
   expect(listItemText).toBeTruthy();
@@ -55,7 +55,7 @@ export const proceedAnyways = async (context: BrowserContext) => {
     });
   }
   const proceedAnyways = metamaskNotificationPage.getByText(
-    'I want to proceed anyway'
+    'I want to proceed anyway',
   );
   const count = await proceedAnyways.count();
   if (count) {

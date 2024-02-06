@@ -15,7 +15,7 @@ type TabAssetsProps = {
 
 export function ContractAssetList({ balances }: TabAssetsProps) {
   const nonZeroBalances = balances?.edges.filter(
-    (contractBalance) => !bn(contractBalance.node.amount).isZero()
+    (contractBalance) => !bn(contractBalance.node.amount).isZero(),
   );
 
   return (

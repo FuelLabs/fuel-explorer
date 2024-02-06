@@ -14,7 +14,7 @@ const schema = z.object({
 export const getBlock = act(schema, async (input) => {
   const id = input.id;
   const isAddressValid = isValidAddress(id);
-  const isValidBlockHeight = !isNaN(Number(id));
+  const isValidBlockHeight = !Number.isNaN(Number(id));
   if (!isValidBlockHeight && !isValidAddress) {
     throw new Error('Invalid block number or block id');
   }
@@ -35,7 +35,7 @@ const getProducer = (
     | GetBlockByHeightQuery
     | {
         block: null;
-      }
+      },
 ) => {
   // TODO use custom resolver once a fix is found
   let producer: string | null = null;

@@ -11,7 +11,7 @@ export default {
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
   ],
   plugins: [
-    plugin(function ({ addComponents }) {
+    plugin(({ addComponents }) => {
       addComponents({
         '.hero-bg': {
           background:

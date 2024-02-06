@@ -16,7 +16,7 @@ export class TransactionConnectionDomain extends Domain {
   get tokens() {
     const { source: connection, context, info } = this;
     const assetsId = removeDuplicates(
-      getFieldsValues(connection.nodes, ['assetId'])
+      getFieldsValues(connection.nodes, ['assetId']),
     );
     return TokenDomain.delegateQuery(assetsId, context, info);
   }
@@ -30,7 +30,7 @@ export class TransactionConnectionDomain extends Domain {
         'recipient',
         'sender',
         'toAddress',
-      ])
+      ]),
     );
     return AccountDomain.delegateQuery(assetsId, context, info);
   }

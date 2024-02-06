@@ -119,7 +119,7 @@ export const assetsMachine = createMachine(
         },
       }),
     },
-  }
+  },
 );
 
 export type AssetsMachine = typeof assetsMachine;

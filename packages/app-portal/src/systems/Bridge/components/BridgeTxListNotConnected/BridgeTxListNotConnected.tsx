@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Card, Box, Text, Button } from '@fuel-ui/react';
+import { Box, Button, Card, Text } from '@fuel-ui/react';
 
 type BridgeTxListEmptyProps = {
   isConnecting: boolean;

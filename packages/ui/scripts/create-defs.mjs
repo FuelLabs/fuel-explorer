@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs';
+import path from 'path';
+import * as url from 'url';
 import { globby } from 'globby';
 import _ from 'lodash';
-import path from 'path';
 import prettier from 'prettier';
 import ts from 'typescript';
-import * as url from 'url';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
@@ -51,10 +51,7 @@ function extractExports(sourceFile) {
       ts.isVariableStatement(node) ||
       ts.isEnumDeclaration(node)
     ) {
-      if (
-        node.modifiers &&
-        node.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
-      ) {
+      if (node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
         if (ts.isVariableStatement(node)) {
           for (const declaration of node.declarationList.declarations) {
             exports.valueExports.push(declaration.name.getText(sourceFile));
@@ -67,10 +64,7 @@ function extractExports(sourceFile) {
       ts.isTypeAliasDeclaration(node) ||
       ts.isInterfaceDeclaration(node)
     ) {
-      if (
-        node.modifiers &&
-        node.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
-      ) {
+      if (node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
         exports.typeExports.push(node.name.text);
       }
     }
@@ -98,7 +92,7 @@ async function getAllComponents() {
       cwd: COMPONENT_DIR,
       absolute: true,
       onlyFiles: true,
-    }
+    },
   );
 
   const components = await Promise.all(
@@ -109,7 +103,7 @@ async function getAllComponents() {
         const component = name === baseComponent ? null : name;
         const sourceFile = ts.createSourceFile(
           comp,
-          await fs.readFile(comp, 'utf8')
+          await fs.readFile(comp, 'utf8'),
         );
 
         const { valueExports, typeExports } = extractExports(sourceFile);
@@ -121,7 +115,7 @@ async function getAllComponents() {
           types: [...new Set(typeExports)],
         };
       })
-      .filter(Boolean)
+      .filter(Boolean),
   );
 
   return components;
@@ -141,7 +135,7 @@ function createNestedExportStr(main, nested, isType) {
   const key = isType ? 'types' : 'exports';
   let items = [];
   for (const n of nested) {
-    let list = n[key]
+    const list = n[key]
       .filter((i) => main.indexOf(i) === -1)
       .filter((i) => items.every((item) => item.list.indexOf(i) === -1));
     const from = n.component;
@@ -166,7 +160,7 @@ async function createComponentIndex(components) {
       (c) =>
         c.baseComponent === component &&
         c.component &&
-        !c.component?.startsWith('index')
+        !c.component?.startsWith('index'),
     );
 
     const mainExportsStr = createExportStr(component, item.exports);
@@ -201,13 +195,13 @@ async function createMainComponentsIndex(components) {
       item.baseComponent,
       uniqueExports,
       false,
-      'components/'
+      'components/',
     );
     const typesStr = createExportStr(
       item.baseComponent,
       uniqueTypes,
       true,
-      'components/'
+      'components/',
     );
     if (exportsStr.length) list.push(exportsStr);
     if (typesStr.length) list.push(typesStr);
@@ -220,11 +214,11 @@ async function createMainComponentsIndex(components) {
 
 async function pkgJSON(components) {
   const pkgJSONBuffer = await fs.readFile(
-    path.join(__dirname, '../package.json')
+    path.join(__dirname, '../package.json'),
   );
-  let pkgJSON = JSON.parse(pkgJSONBuffer.toString());
-  let typesVersions = { '*': {} };
-  let exportsConfig = {};
+  const pkgJSON = JSON.parse(pkgJSONBuffer.toString());
+  const typesVersions = { '*': {} };
+  const exportsConfig = {};
 
   const comps = Array.from(new Set(components.map((c) => c.baseComponent)));
   comps.forEach((component) => {
@@ -255,7 +249,7 @@ async function pkgJSON(components) {
 
   await fs.writeFile(
     path.join(__dirname, '../package.json'),
-    JSON.stringify(pkgJSON, null, 2)
+    JSON.stringify(pkgJSON, null, 2),
   );
 }
 
@@ -265,7 +259,7 @@ export async function tsup(components) {
 
   await fs.writeFile(
     path.join(__dirname, '../tsup.text'),
-    JSON.stringify({ entry: entryPoints })
+    JSON.stringify({ entry: entryPoints }),
   );
 }
 

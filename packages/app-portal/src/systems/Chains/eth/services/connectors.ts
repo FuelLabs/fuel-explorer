@@ -1,4 +1,4 @@
-import type { WalletClient, PublicClient } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 import { getContract } from 'viem';
 import {
   VITE_ETH_FUEL_CHAIN_STATE,

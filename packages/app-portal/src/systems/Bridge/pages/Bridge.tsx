@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Card, Box, Text, InputAmount, Alert, Link } from '@fuel-ui/react';
+import { Alert, Box, Card, InputAmount, Link, Text } from '@fuel-ui/react';
 import { motion, useAnimationControls } from 'framer-motion';
 import { getAssetEth } from '~/systems/Assets/utils';
 import {

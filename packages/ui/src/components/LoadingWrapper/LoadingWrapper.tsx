@@ -24,10 +24,11 @@ export function LoadingWrapper({
     <>
       {Array.from({ length: repeatLoader }).map((_, i) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        loadingEl ? cloneElement(loadingEl as any, { key: i }) : null
+        loadingEl ? cloneElement(loadingEl as any, { key: i }) : null,
       )}
     </>
   ) : (
+    // biome-ignore lint: we need to "unnecessary Fragment" to make sure it's a ReactElement output
     <>{regularEl}</> ?? null
   );
 }

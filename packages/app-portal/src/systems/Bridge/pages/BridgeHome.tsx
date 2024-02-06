@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Tabs, Heading } from '@fuel-ui/react';
+import { Heading, Tabs } from '@fuel-ui/react';
 import { useNodeInfo } from '@fuel-wallet/react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';

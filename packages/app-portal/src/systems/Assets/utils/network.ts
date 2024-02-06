@@ -1,4 +1,4 @@
-import type { Ethereum, Fuel, Asset } from '@fuels/assets';
+import type { Asset, Ethereum, Fuel } from '@fuels/assets';
 import { ETH_CHAIN, FUEL_CHAIN } from '~/systems/Chains';
 
 type Network = Ethereum | Fuel; // Assuming Ethereum and Fuel are your types
@@ -21,7 +21,7 @@ export const getAssetNetwork = <T extends NetworkTypes | undefined>({
   networkType,
 }: GetAssetNetworkParams<T>): NetworkTypeToNetwork<T> => {
   const network = asset.networks.find(
-    (network) => network.chainId === chainId && network.type === networkType
+    (network) => network.chainId === chainId && network.type === networkType,
   ) as NetworkTypeToNetwork<T>;
 
   return network;

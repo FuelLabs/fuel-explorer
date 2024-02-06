@@ -72,7 +72,7 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
       children,
       gap = '4',
       ...props
-    }
+    },
   ) => {
     {
       const fuelAsset = useFuelAsset(asset);
@@ -130,11 +130,12 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
 
     if (imageUrl) {
       return (
+        // biome-ignore lint: false positive asking for `alt` but it was informed before {...props}
         <img
           className={cx(className, classes.iconImage())}
           data-size={iconSize}
-          alt={`${name} logo`}
           src={imageUrl}
+          alt={`${name} logo`}
           {...props}
         />
       );

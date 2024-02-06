@@ -22,7 +22,7 @@ export const Heading = createComponent<HeadingProps, 'h2'>({
       className,
       iconColor = 'text-icon',
       ...props
-    }
+    },
   ) {
     const { size: __, ...itemProps } = useIconProps({
       iconColor,

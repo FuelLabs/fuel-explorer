@@ -8,7 +8,7 @@ import { mergeProps } from 'react-aria';
 
 import { createComponent } from '../../utils/component';
 
-import { useFocusNavigator, isRightChildrenType } from './useFocusNavigator';
+import { isRightChildrenType, useFocusNavigator } from './useFocusNavigator';
 
 export type FocusArrowNavigatorProps = FocusScopeProps;
 
@@ -25,7 +25,7 @@ export const FocusArrowNavigator = createComponent<
         children as ReactElement[],
         (child: ReactElement) => {
           return cloneElement(child, mergeProps(child.props, { onKeyDown }));
-        }
+        },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ) as any;
       return <FocusScope {...props}>{child}</FocusScope>;
