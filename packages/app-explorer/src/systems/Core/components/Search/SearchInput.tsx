@@ -69,12 +69,12 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
+          style={{ width: width - 0.5 }}
+          data-expanded={isExpanded}
           className={cx(
             classes.dropdownContent(isExpanded),
             classes.searchSize(),
           )}
-          style={{ width: width - 0.5 }}
-          data-expanded={isExpanded}
         >
           {!searchResult && (
             <>
@@ -330,6 +330,7 @@ export function SearchInput({
         searchResult={searchResult}
         searchValue={value}
         openDropdown={openDropdown}
+        isExpanded={isExpanded}
         onSelectItem={() => {
           setOpenDropdown(false);
           handleClear();
@@ -340,7 +341,6 @@ export function SearchInput({
           }
           setOpenDropdown(!openDropdown);
         }}
-        isExpanded={isExpanded}
       />
     </VStack>
   );

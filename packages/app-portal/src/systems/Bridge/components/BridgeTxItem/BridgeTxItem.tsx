@@ -1,6 +1,5 @@
-import { CardList } from '@fuel-ui/react';
 import type { Asset as FuelsAsset } from '@fuels/assets';
-import { Asset, Flex, Text } from '@fuels/ui';
+import { Asset, Card, Flex, Text } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
@@ -33,52 +32,52 @@ export const BridgeTxItem = ({
 }: BridgeTxItemProps) => {
   const classes = styles();
   return (
-    <CardList.Item
-      css={classes.cardItem()}
+    <Card
       aria-label={`Transaction ID: ${shortAddress(txId)}`}
       onClick={onClick}
     >
-      <Flex className={classes.networks()}>
-        {fromLogo}
-        <IconArrowRight size={16} />
-        {/* <Icon icon="ArrowNarrowRight" /> */}
-        {toLogo}
-      </Flex>
-      <Flex className={classes.assetAmountWrapper()}>
-        {isLoading ? (
-          <ItemLoader />
-        ) : (
-          <>
-            <Asset asset={asset} iconSize="xs">
-              <Asset.Icon />
-            </Asset>
-            <Text className={classes.assetAmountText()}>
-              {amount} {asset?.symbol}
-            </Text>
-          </>
-        )}
-      </Flex>
-      <Flex className={classes.statusTime()}>
-        {isLoading ? (
-          <ItemLoader />
-        ) : (
-          <Text className={classes.ageText()}>{calculateDateDiff(date)}</Text>
-        )}
-        <Flex
-          className={classes.statusColumn()}
-          aria-label={`Transaction Status: ${status?.toString()}`}
-        >
-          {status}
+      <Card.Body className={classes.cardItem()}>
+        <Flex className={classes.networks()}>
+          {fromLogo}
+          <IconArrowRight size={16} />
+          {toLogo}
         </Flex>
-      </Flex>
-    </CardList.Item>
+        <Flex className={classes.assetAmountWrapper()}>
+          {isLoading ? (
+            <ItemLoader />
+          ) : (
+            <>
+              <Asset asset={asset} iconSize="xs">
+                <Asset.Icon />
+              </Asset>
+              <Text className={classes.assetAmountText()}>
+                {amount} {asset?.symbol}
+              </Text>
+            </>
+          )}
+        </Flex>
+        <Flex className={classes.statusTime()}>
+          {isLoading ? (
+            <ItemLoader />
+          ) : (
+            <Text className={classes.ageText()}>{calculateDateDiff(date)}</Text>
+          )}
+          <Flex
+            className={classes.statusColumn()}
+            aria-label={`Transaction Status: ${status?.toString()}`}
+          >
+            {status}
+          </Flex>
+        </Flex>
+      </Card.Body>
+    </Card>
   );
 };
 
 const styles = tv({
   slots: {
     networks: 'gap-1',
-    cardItem: 'min-h-24 gap-6 items-center',
+    cardItem: 'flex flex-row min-h-[24px] gap-6 items-center',
     statusTime: [
       'flex-1 justify-between',
       'mobile:max-tablet:flex-col-reverse mobile:max-tablet:flex-wrap',
@@ -86,39 +85,9 @@ const styles = tv({
     ],
     statusColumn: 'items-center, justify-end',
     line: 'flex-1',
-    // to activate text-heading, should fix first light/dark theme stuff
+    // TODO: to activate text-heading and theme colors, should fix first light/dark css variables not being set
     ageText: 'text-xs text-heading',
-    assetAmountWrapper: 'ml-1 items-center gap-2',
+    assetAmountWrapper: 'items-center gap-2',
     assetAmountText: 'text-xs text-heading',
   },
 });
-// const styles = cssObj({
-//   cardItem: cssObj({
-//     // This minHeight ensures component size equals loader size
-//     minHeight: 24,
-//     gap: '$6',
-//     alignItems: 'center',
-//   }),
-//   statusTime: cssObj({
-//     flex: 1,
-//     '@media (max-width: 400px)': {
-//       flexDirection: 'column-reverse',
-//       flexWrap: 'wrap',
-//       alignItems: 'flex-end',
-//       gap: '$1',
-//     },
-//   }),
-//   line: cssObj({
-//     flex: 1,
-//   }),
-//   ageText: cssObj({
-//     fontSize: '$xs',
-//     color: '$intentsBase12',
-//   }),
-//   assetAmountWrapper: cssObj({
-//     ml: '$1',
-//   }),
-//   assetAmountText: cssObj({
-//     color: '$intentsBase12',
-//   }),
-// });

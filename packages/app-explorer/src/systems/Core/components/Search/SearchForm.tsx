@@ -29,8 +29,8 @@ export function SearchForm({ className, autoFocus, expandOnFocus }: SearchFormPr
         className={className}
         searchResult={results}
         autoFocus={autoFocus}
-        onClear={onClear}
         expandOnFocus={expandOnFocus}
+        onClear={onClear}
       />
     </form>
   );
