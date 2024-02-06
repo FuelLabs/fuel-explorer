@@ -1,21 +1,21 @@
 import {
   Box,
   Container,
-  HStack,
-  VStack,
   FuelLogo,
+  HStack,
   Heading,
   Icon,
   Link,
   List,
   Text,
   Theme,
+  VStack,
 } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
 import {
-  IconBrandTwitter,
-  IconBrandGithub,
   IconBrandDiscord,
+  IconBrandGithub,
+  IconBrandTwitter,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { tv } from 'tailwind-variants';

@@ -1,12 +1,12 @@
 import { toast } from '@fuel-ui/react';
 import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type {
+  Address as FuelAddress,
   BN,
   Message as FuelMessage,
-  Address as FuelAddress,
+  MessageStatus,
   Provider as FuelProvider,
   TransactionResult,
-  MessageStatus,
 } from 'fuels';
 import type { PublicClient } from 'wagmi';
 import type { FetchTokenResult } from 'wagmi/actions';
@@ -244,7 +244,7 @@ export const txEthToFuelMachine = createMachine(
                       ev: Extract<
                         TxEthToFuelMachineEvents,
                         { type: 'RELAY_MESSAGE_ON_FUEL' }
-                      >
+                      >,
                     ) => ({
                       fuelWallet: ev.input.fuelWallet,
                       fuelMessage: ctx.fuelMessage,
@@ -359,7 +359,9 @@ export const txEthToFuelMachine = createMachine(
           setTimeout(() => {
             toast.success(
               'Deposit successfully initiated. You may now close the popup.',
-              { duration: 5000 }
+              {
+                duration: 5000,
+              },
             );
           }, 2000);
           EthTxCache.removeTxCreated(ctx.ethTxId);
@@ -478,7 +480,7 @@ export const txEthToFuelMachine = createMachine(
         },
       }),
     },
-  }
+  },
 );
 
 export type TxEthToFuelMachine = typeof txEthToFuelMachine;

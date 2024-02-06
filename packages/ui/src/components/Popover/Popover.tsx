@@ -33,7 +33,7 @@ export const PopoverClose = createComponent<PopoverCloseProps, typeof RP.Close>(
   {
     id: 'PopoverClose',
     baseElement: RP.Close,
-  }
+  },
 );
 
 export const Popover = withNamespace(PopoverRoot, {

@@ -1,6 +1,6 @@
+import path from 'path';
 import { globbySync } from 'globby';
 import _ from 'lodash';
-import path from 'path';
 import radixThemePlugin from 'radix-ui-themes-with-tailwind';
 import type { Config } from 'tailwindcss';
 import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
@@ -60,7 +60,7 @@ function refColorVariablesAsObj() {
       acc[curr] = `var(--color-${curr})`;
       return acc;
     },
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
 }
 
@@ -105,14 +105,14 @@ const preset: Config = {
     require('tailwindcss-radix')({
       variantPrefix: false,
     }),
-    plugin(function ({ addVariant, matchVariant }) {
+    plugin(({ addVariant, matchVariant }) => {
       // Add a `third` variant, ie. `third:pb-0`
       addVariant('not-first', '& ~ &');
       addVariant('not-first-last', '&:not(:first-of-type,:last-of-type)');
       addVariant('not-disabled', '&:not([aria-disabled=true],:disabled)');
       addVariant(
         'not-disabled-hover',
-        '&:not([aria-disabled=true],:disabled):hover'
+        '&:not([aria-disabled=true],:disabled):hover',
       );
       addVariant('first-type', '&:first-of-type');
       addVariant('last-type', '&:last-of-type');

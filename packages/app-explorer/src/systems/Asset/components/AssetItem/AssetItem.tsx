@@ -1,14 +1,14 @@
 import type { HStackProps } from '@fuels/ui';
 import {
-  HStack,
-  Text,
-  shortAddress,
-  Copyable,
-  Tooltip,
   Box,
+  Copyable,
+  Flex,
+  HStack,
   LoadingBox,
   LoadingWrapper,
-  Flex,
+  Text,
+  Tooltip,
+  shortAddress,
 } from '@fuels/ui';
 import Image from 'next/image';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';

@@ -1,5 +1,5 @@
 import type { CardProps } from '@fuels/ui';
-import { Text, Card, EntityItem, HStack, cx, useBreakpoints } from '@fuels/ui';
+import { Card, EntityItem, HStack, Text, cx, useBreakpoints } from '@fuels/ui';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import type { BN } from 'fuels';

@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Box, Image, FuelLogo, Text } from '@fuel-ui/react';
+import { Box, FuelLogo, Image, Text } from '@fuel-ui/react';
 import assetList from '@fuels/assets';
 
 import { BridgeTxItem } from './BridgeTxItem';

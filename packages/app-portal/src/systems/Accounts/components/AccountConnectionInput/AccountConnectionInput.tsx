@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Card, Text, Image, Button, Box } from '@fuel-ui/react';
+import { Box, Button, Card, Image, Text } from '@fuel-ui/react';
 import type { ReactNode } from 'react';
 import { shortAddress } from '~/systems/Core';
 

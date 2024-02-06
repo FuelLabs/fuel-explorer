@@ -2,7 +2,7 @@
 export function deepIterateObject(
   obj: any,
   callback: (path: string, value: any) => void,
-  parentKey = ''
+  parentKey = '',
 ) {
   Object.keys(obj).forEach((key) => {
     const value = obj[key];
@@ -20,7 +20,7 @@ export function deepIterateObject(
 
 export function getFieldsValues<T = any>(
   obj: any,
-  keys: Array<string>
+  keys: Array<string>,
 ): Array<T> {
   const values: Array<T> = [];
 
@@ -40,7 +40,7 @@ export function removeDuplicates(values: Array<string>): Array<string> {
       vals[val] = true;
       return vals;
     },
-    {}
+    {},
   );
   return Object.keys(_values);
 }

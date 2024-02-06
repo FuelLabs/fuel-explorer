@@ -15,5 +15,5 @@ export const ButtonClose = createComponent<ButtonCloseProps, typeof IconButton>(
       icon: IconX,
       variant: 'link',
     },
-  }
+  },
 );

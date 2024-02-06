@@ -9,7 +9,7 @@ const selectors = {
       const queriedAssets = state.context.assets?.filter(
         (asset) =>
           asset.symbol?.toLowerCase().startsWith(query.toLowerCase()) ||
-          asset.name?.toLowerCase().startsWith(query.toLowerCase())
+          asset.name?.toLowerCase().startsWith(query.toLowerCase()),
       );
 
       return queriedAssets;
@@ -34,12 +34,12 @@ export const useAssets = (params?: UseAssetParams) => {
   const assetList = store.useSelector(Services.assets, selectors.assets());
   const filteredAssetList = store.useSelector(
     Services.assets,
-    selectors.assets(assetQuery)
+    selectors.assets(assetQuery),
   );
   const isLoading = store.useSelector(Services.assets, selectors.isLoading);
   const isLoadingFaucet = store.useSelector(
     Services.assets,
-    selectors.isLoadingFaucet
+    selectors.isLoadingFaucet,
   );
   function faucetErc20({
     address,

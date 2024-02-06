@@ -1,4 +1,4 @@
-import { DialogTitle, Dialog as RD } from '@radix-ui/themes';
+import { Dialog as RD, DialogTitle } from '@radix-ui/themes';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';

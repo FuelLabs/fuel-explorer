@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import type { Request, Response } from 'express';
 import express from 'express';
 import { Provider } from 'fuels';
-import { createPublicClient, http } from 'viem';
+import { http, createPublicClient } from 'viem';
 import { foundry, sepolia } from 'viem/chains';
 
 import { handleNewEthBlock } from './utils/handleNewEthBlock';

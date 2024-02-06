@@ -4,14 +4,14 @@ import type { Fuel } from '@fuels/assets';
 import { addSeconds } from 'date-fns';
 import type { BN, MessageProof } from 'fuels';
 import {
-  bn,
-  TransactionResponse,
   Address as FuelAddress,
+  Contract,
   Provider as FuelProvider,
+  TransactionResponse,
+  TransactionStatus,
+  bn,
   getReceiptsMessageOut,
   getTransactionsSummaries,
-  Contract,
-  TransactionStatus,
 } from 'fuels';
 import type { WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'wagmi';
@@ -91,7 +91,7 @@ export class TxFuelToEthService {
   }
 
   static assertStartFungibleToken(
-    input: TxFuelToEthInputs['startFungibleToken']
+    input: TxFuelToEthInputs['startFungibleToken'],
   ) {
     TxFuelToEthService.assertStartBase(input);
     if (!input?.fuelAsset?.contractId) {
@@ -118,7 +118,7 @@ export class TxFuelToEthService {
         amount,
         {
           gasLimit: bn(100_000),
-        }
+        },
       );
 
       return txFuel.id;
@@ -126,7 +126,7 @@ export class TxFuelToEthService {
   }
 
   static async startFungibleToken(
-    input: TxFuelToEthInputs['startFungibleToken']
+    input: TxFuelToEthInputs['startFungibleToken'],
   ) {
     TxFuelToEthService.assertStartFungibleToken(input);
 
@@ -137,7 +137,7 @@ export class TxFuelToEthService {
       const fungibleToken = new Contract(
         fuelAsset.contractId,
         fungibleTokenABI,
-        fuelWallet
+        fuelWallet,
       );
       const fuelTestAssetId =
         fuelAsset.assetId ||
@@ -224,7 +224,7 @@ export class TxFuelToEthService {
     // We need to divide the desired block by the BLOCKS_PER_COMMIT_INTERVAL
     // and round up. Ex.: 225/100 sould be on the slot 3
     const { mod, div } = bn(nextBlockHeight).divmod(
-      (blocksPerCommitInterval as bigint).toString()
+      (blocksPerCommitInterval as bigint).toString(),
     );
     const commitHeight = mod.isZero() ? div : div.add(1);
 
@@ -278,14 +278,14 @@ export class TxFuelToEthService {
     const withdrawMessageProof = await provider.getMessageProof(
       fuelTxId,
       nonce,
-      fuelBlockHashCommited
+      fuelBlockHashCommited,
     );
 
     return withdrawMessageProof || undefined;
   }
 
   static async waitBlockFinalization(
-    input: TxFuelToEthInputs['waitBlockFinalization']
+    input: TxFuelToEthInputs['waitBlockFinalization'],
   ) {
     if (!input?.messageProof) {
       throw new Error('Need message proof ');
@@ -320,7 +320,7 @@ export class TxFuelToEthService {
     const dateLastCommit = new Date(Number(lastBlock.timestamp) * 1000);
     const estimatedFinishDate = addSeconds(
       dateLastCommit,
-      Number(timeToFinalize)
+      Number(timeToFinalize),
     );
 
     return {
@@ -329,7 +329,7 @@ export class TxFuelToEthService {
   }
 
   static async getMessageRelayed(
-    input: TxFuelToEthInputs['getMessageRelayed']
+    input: TxFuelToEthInputs['getMessageRelayed'],
   ) {
     if (!input?.messageProof) {
       throw new Error('Need message proof to relay on ETH side');
@@ -344,7 +344,7 @@ export class TxFuelToEthService {
     const { ethPublicClient } = input;
 
     const abiMessageRelayed = FUEL_MESSAGE_PORTAL.abi.find(
-      ({ name, type }) => name === 'MessageRelayed' && type === 'event'
+      ({ name, type }) => name === 'MessageRelayed' && type === 'event',
     );
 
     const logs = await ethPublicClient.getLogs({
@@ -365,7 +365,7 @@ export class TxFuelToEthService {
   }
 
   static async relayMessageFromFuelBlock(
-    input: TxFuelToEthInputs['relayMessageFromFuelBlock']
+    input: TxFuelToEthInputs['relayMessageFromFuelBlock'],
   ) {
     if (!input?.ethWalletClient) {
       throw new Error('Need to connect ETH Wallet');
@@ -394,7 +394,7 @@ export class TxFuelToEthService {
   }
 
   static async waitTxMessageRelayed(
-    input: TxFuelToEthInputs['waitTxMessageRelayed']
+    input: TxFuelToEthInputs['waitTxMessageRelayed'],
   ) {
     if (!input?.ethPublicClient) {
       throw new Error('Need to connect ETH Wallet');
@@ -443,7 +443,7 @@ export class TxFuelToEthService {
     });
 
     const bridgeTxs = txSummaries.transactions.filter(
-      (txSummary) => !!getReceiptsMessageOut(txSummary.receipts)?.[0]
+      (txSummary) => !!getReceiptsMessageOut(txSummary.receipts)?.[0],
     );
 
     return bridgeTxs;

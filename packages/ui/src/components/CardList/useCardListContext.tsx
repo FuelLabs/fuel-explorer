@@ -9,7 +9,7 @@ export type CardListContext = {
 };
 
 export const CardListContext = createContext<CardListContext>(
-  {} as CardListContext
+  {} as CardListContext,
 );
 
 export function useCardListContext() {

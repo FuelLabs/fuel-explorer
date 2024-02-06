@@ -1,7 +1,7 @@
-import type { HardhatUserConfig } from 'hardhat/types';
 import '@nomiclabs/hardhat-etherscan';
 import '@openzeppelin/hardhat-upgrades';
 import 'hardhat-typechain';
+import type { HardhatUserConfig } from 'hardhat/types';
 
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || '';
 const LOCALHOST_HTTP = process.env.LOCALHOST_HTTP || '';

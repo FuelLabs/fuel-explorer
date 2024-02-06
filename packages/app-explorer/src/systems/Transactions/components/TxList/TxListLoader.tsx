@@ -12,7 +12,7 @@ export const TxListLoader = ({
 }: TxListLoaderProps) => {
   const baseArray = Array.from(
     { length: numberOfTxs },
-    (_, index) => index + 1
+    (_, index) => index + 1,
   );
   const txs = baseArray.map((v) => ({
     node: { id: v },

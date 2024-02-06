@@ -1,4 +1,4 @@
-import { bn, DECIMAL_UNITS, fromTai64ToUnix } from 'fuels';
+import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
   Address as FuelAddress,
   BN,
@@ -14,15 +14,15 @@ import type {
   TxFuelToEthInputs,
 } from '~/systems/Chains';
 import {
+  ETH_CHAIN,
+  EthTxCache,
+  FUEL_CHAIN,
+  FuelTxCache,
+  TxEthToFuelService,
   TxFuelToEthService,
+  getBlockDate,
   isEthChain,
   isFuelChain,
-  TxEthToFuelService,
-  getBlockDate,
-  ETH_CHAIN,
-  FUEL_CHAIN,
-  EthTxCache,
-  FuelTxCache,
 } from '~/systems/Chains';
 
 import type { BridgeTx } from '../types';
@@ -133,12 +133,12 @@ export class BridgeService {
     }
 
     throw new Error(
-      `Bridging from "${fromNetwork.name}" to "${toNetwork.name}" is not yet supported.`
+      `Bridging from "${fromNetwork.name}" to "${toNetwork.name}" is not yet supported.`,
     );
   }
 
   static async fetchTxs(
-    input?: BridgeInputs['fetchTxs']
+    input?: BridgeInputs['fetchTxs'],
   ): Promise<BridgeTx[] | undefined> {
     if (!input?.ethPublicClient) {
       throw new Error('Need to inform ethPublicClient');
@@ -180,7 +180,7 @@ export class BridgeService {
           toNetwork: FUEL_CHAIN,
           date,
         };
-      })
+      }),
     );
 
     // logic to merge txs and sort by date

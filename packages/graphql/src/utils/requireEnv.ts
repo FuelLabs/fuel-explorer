@@ -7,12 +7,12 @@ export function requireEnv<
   return keys.reduce(
     (ret, value) => {
       const [key, defaultValue] = Array.isArray(value) ? value : [value];
-      if (!process.env[key] && defaultValue == undefined) {
+      if (!process.env[key] && defaultValue === undefined) {
         throw new Error(`Environment variable ${key} is required`);
       }
       ret[key] = (process.env[key] ? process.env[key] : defaultValue)!;
       return ret;
     },
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
 }

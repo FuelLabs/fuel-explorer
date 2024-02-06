@@ -2,9 +2,9 @@ import { cssObj } from '@fuel-ui/css';
 import { Dialog } from '@fuel-ui/react';
 import { AssetsDialog } from '~/systems/Assets/containers';
 import {
+  AddAssetFormDialog,
   TxEthToFuelDialog,
   TxFuelToEthDialog,
-  AddAssetFormDialog,
 } from '~/systems/Chains';
 import { useOverlay } from '~/systems/Overlay';
 

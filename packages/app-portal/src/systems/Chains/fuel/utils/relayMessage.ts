@@ -4,20 +4,20 @@ import {
 } from '@fuel-bridge/message-predicates';
 import type {
   Message,
-  WalletUnlocked as FuelWallet,
-  TransactionResponse,
   Provider,
   ScriptTransactionRequestLike,
+  TransactionResponse,
+  WalletUnlocked as FuelWallet,
 } from 'fuels';
 import {
-  ZeroBytes32,
-  ScriptTransactionRequest,
-  arrayify,
   InputType,
-  hexlify,
   OutputType,
   Predicate,
+  ScriptTransactionRequest,
+  ZeroBytes32,
+  arrayify,
   bn,
+  hexlify,
 } from 'fuels';
 
 import { resourcesToInputs } from './transaction';
@@ -36,7 +36,7 @@ function getCommonRelayableMessages(provider: Provider) {
       buildTx: async (
         relayer: FuelWallet,
         message: Message,
-        details: CommonMessageDetails
+        details: CommonMessageDetails,
       ): Promise<ScriptTransactionRequest> => {
         const script = arrayify(details.script);
         const predicateBytecode = arrayify(details.predicate);
@@ -117,7 +117,7 @@ type CommonMessageDetails = {
     txParams: Pick<
       ScriptTransactionRequestLike,
       'gasLimit' | 'gasPrice' | 'maturity'
-    >
+    >,
   ) => Promise<ScriptTransactionRequest>;
 };
 
@@ -152,7 +152,7 @@ export async function relayCommonMessage({
     relayer,
     message,
     messageRelayDetails,
-    txParams || {}
+    txParams || {},
   );
 
   return relayer.sendTransaction(transaction);

@@ -35,7 +35,7 @@ export function Amount({
       as="div"
       className={cx(
         'text-secondary text-sm flex items-center gap-2',
-        className
+        className,
       )}
     >
       {asset?.icon && !hideIcon ? (

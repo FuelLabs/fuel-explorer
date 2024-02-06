@@ -3,11 +3,11 @@ import {
   Box,
   CardList,
   Dialog,
-  Text,
   Form,
-  Input,
   IconButton,
+  Input,
   Spinner,
+  Text,
 } from '@fuel-ui/react';
 import { useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
@@ -47,7 +47,9 @@ export function AssetsDialog() {
     isLoadingFaucet,
     isSearchResultsEmpty,
     showAssetList,
-  } = useAssets({ assetQuery });
+  } = useAssets({
+    assetQuery,
+  });
   const {
     handlers: { faucetErc20 },
   } = useFaucetErc20();

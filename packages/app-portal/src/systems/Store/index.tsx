@@ -1,11 +1,11 @@
 import { createStore } from '@fuels/react-xstore';
 import {
-  bridgeMachine,
   bridgeEvents,
+  bridgeMachine,
   bridgeTxsMachine,
 } from '~/systems/Bridge';
 import { ecosystemMachine } from '~/systems/Ecosystem';
-import { overlayMachine, overlayEvents } from '~/systems/Overlay';
+import { overlayEvents, overlayMachine } from '~/systems/Overlay';
 
 import { assetsEvents, assetsMachine } from '../Assets';
 

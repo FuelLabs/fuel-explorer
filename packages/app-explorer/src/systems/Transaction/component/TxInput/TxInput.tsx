@@ -1,13 +1,13 @@
 import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
 import {
   Address,
-  HStack,
+  Box,
   Collapsible,
+  HStack,
   Text,
   VStack,
   createComponent,
   useBreakpoints,
-  Box,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';

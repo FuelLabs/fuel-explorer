@@ -23,7 +23,8 @@ test.describe('Asset List', () => {
 
       await hasText(page, 'Select token');
       // Check that assets are displayed
-      let ethAsset, tknAsset;
+      let ethAsset;
+      let tknAsset;
       ethAsset = getByAriaLabel(page, 'ETH symbol');
       expect(await ethAsset.innerText()).toBe('ETH');
       tknAsset = getByAriaLabel(page, 'TKN symbol');
@@ -57,7 +58,8 @@ test.describe('Asset List', () => {
 
       await hasText(page, 'Select token');
       // Check that assets are displayed
-      let ethAsset, tknAsset;
+      let ethAsset;
+      let tknAsset;
       ethAsset = getByAriaLabel(page, 'ETH symbol');
       expect(await ethAsset.innerText()).toBe('ETH');
       tknAsset = getByAriaLabel(page, 'TKN symbol');

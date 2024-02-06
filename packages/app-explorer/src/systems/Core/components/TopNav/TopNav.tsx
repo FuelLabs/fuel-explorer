@@ -64,7 +64,7 @@ export function TopNav() {
 
   return (
     <Nav>
-      <Nav.Desktop className={`px-10 justify-between`}>
+      <Nav.Desktop className={'px-10 justify-between'}>
         <Nav.Menu>
           {logo}
           {externalLinks}

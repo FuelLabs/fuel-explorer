@@ -1,17 +1,17 @@
 'use client';
 
 import { bn } from '@fuel-ts/math';
-import type { BaseProps, CardProps, BoxProps } from '@fuels/ui';
+import type { BaseProps, BoxProps, CardProps } from '@fuels/ui';
 import {
-  Text,
-  HStack,
-  createComponent,
-  Card,
-  withNamespace,
-  Box,
-  EntityItem,
-  VStack,
   Badge,
+  Box,
+  Card,
+  EntityItem,
+  HStack,
+  Text,
+  VStack,
+  createComponent,
+  withNamespace,
 } from '@fuels/ui';
 import {
   IconCalendar,

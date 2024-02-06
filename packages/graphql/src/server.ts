@@ -25,7 +25,7 @@ app.get(
     settings: {
       'schema.polling.enable': false,
     },
-  })
+  }),
 );
 
 const executor = createGraphqlFetch(FUEL_PROVIDER);
@@ -38,7 +38,7 @@ app.post(
     async context() {
       return ContextDomain.createContext(FUEL_PROVIDER);
     },
-  })
+  }),
 );
 
 // Check health of the graphql endpoint and the fuel provider
@@ -47,7 +47,7 @@ app.get('/health', async (_, res) => {
   try {
     providerUp = (
       await fetch(`${FUEL_PROVIDER.replace('/graphql', '/health')}`).then(
-        (res) => res.json()
+        (res) => res.json(),
       )
     ).up;
   } catch (e) {

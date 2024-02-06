@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
 import { darkTheme, lightTheme } from '@fuel-ui/react';
 import { themes } from '@storybook/theming';
+import React, { useEffect } from 'react';
 
-import theme from './theme';
-import { useFuelTheme, ThemeProvider } from '@fuel-ui/react';
+import { ThemeProvider, useFuelTheme } from '@fuel-ui/react';
 import { useDarkMode } from 'storybook-dark-mode';
 import { StoreProvider } from '../src/systems/Store';
+import theme from './theme';
 
 export const parameters = {
   actions: {

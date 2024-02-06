@@ -1,4 +1,3 @@
 export default {
-  '**/*.(js|jsx|ts|jsx|md|mdx|json|html|css)': ['prettier --write'],
-  '**/*.ts?(x)': ['eslint'],
+  '**/*.(js|jsx|ts|tsx|md|json|mdx|html|css)': ['biome check --apply-unsafe'],
 };

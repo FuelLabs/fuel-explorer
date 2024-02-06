@@ -1,13 +1,13 @@
 import { bn } from '@fuel-ts/math';
 import {
-  Card,
-  Text,
   Badge,
   Box,
-  shortAddress,
-  cx,
+  Card,
   LoadingBox,
   LoadingWrapper,
+  Text,
+  cx,
+  shortAddress,
 } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';

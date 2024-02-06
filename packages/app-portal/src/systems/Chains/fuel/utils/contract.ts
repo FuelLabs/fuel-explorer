@@ -3,7 +3,7 @@ import { ZeroBytes32, arrayify, hash } from 'fuels';
 
 export function getContractTokenId(
   contractId: `0x${string}`,
-  subId = ZeroBytes32
+  subId = ZeroBytes32,
 ) {
   const byteContract = arrayify(contractId);
   const byteSubId = arrayify(subId);

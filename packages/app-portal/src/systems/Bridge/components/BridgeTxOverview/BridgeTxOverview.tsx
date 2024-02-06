@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Box, Text, FuelLogo, Icon, Link } from '@fuel-ui/react';
+import { Box, FuelLogo, Icon, Link, Text } from '@fuel-ui/react';
 import type { BigNumberish } from 'fuels';
 import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
 import type { Asset } from '~/systems/Assets/services/asset';

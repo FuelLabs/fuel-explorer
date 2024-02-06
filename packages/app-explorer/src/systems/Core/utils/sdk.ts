@@ -1,6 +1,6 @@
+import { resolve } from 'url';
 import { getSdk } from '@fuel-explorer/graphql';
 import { GraphQLClient } from 'graphql-request';
-import { resolve } from 'url';
 
 const VERCEL_URL = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
 const VERCEL_ENV =

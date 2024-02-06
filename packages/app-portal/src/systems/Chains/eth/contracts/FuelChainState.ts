@@ -10,7 +10,7 @@ export const FUEL_CHAIN_STATE = {
     ethPublicClient: PublicClient;
   }) => {
     const abiCommitSubmitted = FUEL_CHAIN_STATE.abi.find(
-      ({ name, type }) => name === 'CommitSubmitted' && type === 'event'
+      ({ name, type }) => name === 'CommitSubmitted' && type === 'event',
     );
     const logs = await ethPublicClient.getLogs({
       address: VITE_ETH_FUEL_CHAIN_STATE as `0x${string}`,

@@ -29,7 +29,7 @@ export function bridgeEvents(store: Store) {
       store.send(Services.bridgeTxs, { type: 'FETCH', input });
     },
     addTxEthToFuel(
-      input?: { ethTxId?: `0x${string}` } & BridgeInputs['fetchTxs']
+      input?: { ethTxId?: `0x${string}` } & BridgeInputs['fetchTxs'],
     ) {
       if (!input) return;
 
@@ -39,7 +39,7 @@ export function bridgeEvents(store: Store) {
       input?: { fuelTxId?: string } & Omit<
         BridgeInputs['fetchTxs'],
         'fuelAddress'
-      >
+      >,
     ) {
       if (!input) return;
 
