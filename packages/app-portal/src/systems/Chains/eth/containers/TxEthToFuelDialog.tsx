@@ -1,7 +1,7 @@
 import { cssObj } from '@fuel-ui/css';
 import { Box, Button, Dialog, Text } from '@fuel-ui/react';
 import { useAsset } from '~/systems/Assets/hooks/useAsset';
-import { BridgeTxOverview, BridgeSteps } from '~/systems/Bridge';
+import { BridgeSteps, BridgeTxOverview } from '~/systems/Bridge';
 import { shortAddress } from '~/systems/Core';
 import { useOverlay } from '~/systems/Overlay';
 

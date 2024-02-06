@@ -14,7 +14,7 @@ export class TokenDomain extends Domain<any, Args> {
   static delegateQuery(
     assetsId: Array<string>,
     context: any,
-    info: GraphQLResolveInfo
+    info: GraphQLResolveInfo,
   ) {
     return delegateToSchema({
       schema: info.schema,
@@ -38,8 +38,8 @@ export class TokenDomain extends Domain<any, Args> {
     return assetsId
       .map((id) =>
         tokensData.find(
-          (token) => token.assetId.toLowerCase() === id.toLowerCase()
-        )
+          (token) => token.assetId.toLowerCase() === id.toLowerCase(),
+        ),
       )
       .filter((i) => !!i);
   }

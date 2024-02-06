@@ -3,10 +3,10 @@ import {
   Box,
   Button,
   Card,
-  ScrollArea,
-  Text,
   LoadingBox,
   LoadingWrapper,
+  ScrollArea,
+  Text,
 } from '@fuels/ui';
 import { IconChevronUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
@@ -42,7 +42,7 @@ export function CodeBlock({
   }
 
   function getTitle() {
-    if (title != undefined) return title;
+    if (title !== undefined) return title;
     if (type === 'json') return 'JSON';
     return 'Code';
   }

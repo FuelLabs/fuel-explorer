@@ -1,7 +1,7 @@
-import tsconfigpath from 'vite-tsconfig-paths';
-import { mergeConfig } from 'vite';
-import type { StorybookConfig } from '@storybook/react-vite';
 import { join } from 'node:path';
+import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
+import tsconfigpath from 'vite-tsconfig-paths';
 
 const config: StorybookConfig = {
   stories: [

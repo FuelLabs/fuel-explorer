@@ -10,12 +10,12 @@ export async function waitForExtensions(
       version: string;
     }
   >,
-  attempts: number = 0
+  attempts = 0,
 ) {
   console.log('Checking extensions...');
   const pages = await context.pages();
   const hasMetamask = pages.find((page) => {
-    return page.url().includes(extensions['metamask']?.id);
+    return page.url().includes(extensions.metamask?.id);
   });
   const hasFuelWallet = pages.find((page) => {
     return page.url().includes(extensions['fuel wallet']?.id);

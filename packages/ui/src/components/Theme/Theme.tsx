@@ -25,7 +25,7 @@ export const Theme = createComponent<ThemeProps, typeof RadixTheme>({
       iconColor = INIT_ICON_COLOR,
       iconStroke = INIT_ICON_STROKE,
       ...props
-    }
+    },
   ) => {
     return (
       <IconProvider

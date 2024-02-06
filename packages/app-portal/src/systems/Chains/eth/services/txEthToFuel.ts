@@ -1,11 +1,11 @@
 import type {
   BN,
   Message,
-  WalletUnlocked as FuelWallet,
-  TransactionResponse,
   Provider as FuelProvider,
+  TransactionResponse,
+  WalletUnlocked as FuelWallet,
 } from 'fuels';
-import { Address as FuelAddress, bn, ZeroBytes32 } from 'fuels';
+import { Address as FuelAddress, ZeroBytes32, bn } from 'fuels';
 import type { WalletClient } from 'viem';
 import { decodeEventLog } from 'viem';
 import type { PublicClient } from 'wagmi';
@@ -25,7 +25,7 @@ import {
   FUEL_MESSAGE_PORTAL,
   decodeMessageSentData,
 } from '../contracts/FuelMessagePortal';
-import { isErc20Address, getBlockDate } from '../utils';
+import { getBlockDate, isErc20Address } from '../utils';
 
 import { EthConnectorService } from './connectors';
 
@@ -134,7 +134,7 @@ export class TxEthToFuelService {
           {
             value: BigInt(amount),
             account: ethWalletClient.account,
-          }
+          },
         );
 
         return txHash;
@@ -222,7 +222,7 @@ export class TxEthToFuelService {
   }
 
   static async getReceiptsInfo(
-    input: TxEthToFuelInputs['getReceiptsInfo']
+    input: TxEthToFuelInputs['getReceiptsInfo'],
   ): Promise<GetReceiptsInfoReturn> {
     if (!input?.ethTxId) {
       throw new Error('No eth Tx id');
@@ -314,7 +314,7 @@ export class TxEthToFuelService {
   }
 
   static async getFuelMessageStatus(
-    input: TxEthToFuelInputs['getFuelMessageStatus']
+    input: TxEthToFuelInputs['getFuelMessageStatus'],
   ) {
     if (!input?.fuelProvider) {
       throw new Error('No Fuel provider found');
@@ -325,7 +325,7 @@ export class TxEthToFuelService {
 
     const { fuelProvider, ethTxNonce } = input;
     const messageStatus = await fuelProvider.getMessageStatus(
-      ethTxNonce.toHex(32).toString()
+      ethTxNonce.toHex(32).toString(),
     );
     return messageStatus;
   }
@@ -354,7 +354,7 @@ export class TxEthToFuelService {
   }
 
   static async relayMessageOnFuel(
-    input: TxEthToFuelInputs['relayMessageOnFuel']
+    input: TxEthToFuelInputs['relayMessageOnFuel'],
   ) {
     if (!input?.fuelWallet) {
       throw new Error('No fuel wallet found');
@@ -376,7 +376,7 @@ export class TxEthToFuelService {
       if (err instanceof Error) {
         const messageToParse = err.message.replace(
           'not enough coins to fit the target:',
-          ''
+          '',
         );
 
         const noEthError =
@@ -424,7 +424,7 @@ export class TxEthToFuelService {
     const { ethPublicClient, fuelAddress } = input;
 
     const abiMessageSent = FUEL_MESSAGE_PORTAL.abi.find(
-      ({ name, type }) => name === 'MessageSent' && type === 'event'
+      ({ name, type }) => name === 'MessageSent' && type === 'event',
     );
 
     const ethLogs = await ethPublicClient!.getLogs({
@@ -456,7 +456,7 @@ export class TxEthToFuelService {
       } as any,
       fromBlock: 'earliest',
     });
-    console.log(`erc20AllLogs`, erc20AllLogs);
+    console.log('erc20AllLogs', erc20AllLogs);
 
     const erc20Logs = erc20AllLogs.filter((log) => {
       const messageSentEvent = decodeEventLog({
@@ -466,7 +466,7 @@ export class TxEthToFuelService {
       }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
 
       const { to } = decodeMessageSentData.erc20Deposit(
-        messageSentEvent.args.data
+        messageSentEvent.args.data,
       );
 
       return to === fuelAddress?.toHexString();

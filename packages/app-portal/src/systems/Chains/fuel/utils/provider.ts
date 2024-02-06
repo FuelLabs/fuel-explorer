@@ -7,16 +7,16 @@ const waitTime = 1000; // 1 second in milliseconds
 
 export const rateLimitedFetch = async (
   url: string,
-  options: FetchRequestOptions
+  options: FetchRequestOptions,
 ): Promise<Response> => {
   const now = Date.now();
   requestTimestamps = requestTimestamps.filter(
-    (timestamp) => now - timestamp < waitTime
+    (timestamp) => now - timestamp < waitTime,
   );
 
   if (requestTimestamps.length >= maxRequestsPerSecond) {
     console.log(
-      `Reached the rate limit of ${maxRequestsPerSecond} requests per second. Waiting for 1 second...`
+      `Reached the rate limit of ${maxRequestsPerSecond} requests per second. Waiting for 1 second...`,
     );
     await new Promise((resolve) => setTimeout(resolve, waitTime));
     console.log('Done waiting. Resuming requests...');

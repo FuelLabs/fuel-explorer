@@ -21,7 +21,7 @@ export const ListRoot = createComponent<ListProps, 'ul'>({
   },
   render: (
     _,
-    { type = 'none', icon, iconColor, iconSize, iconAriaLabel, ...props }
+    { type = 'none', icon, iconColor, iconSize, iconAriaLabel, ...props },
   ) => {
     const El = type === 'ol' ? 'ol' : 'ul';
     return (

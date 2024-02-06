@@ -1,13 +1,15 @@
-import { BaseAssetId, Predicate, Provider, Wallet, bn, hexlify } from 'fuels';
 import { promises as fs } from 'node:fs';
 import { resolve } from 'node:path';
+import { BaseAssetId, Predicate, Provider, Wallet, bn, hexlify } from 'fuels';
 
 const { FUEL_PROVIDER, PRIVATE_KEY } = process.env;
 const BIN_PATH = resolve(__dirname, '../out/debug/predicate-app.bin');
 const AMOUNT = 300_000;
 
 if (!FUEL_PROVIDER || !PRIVATE_KEY) {
-  throw new Error('Missing some config in .env file. Should have FUEL_PROVIDER and PRIVATE_KEY');
+  throw new Error(
+    'Missing some config in .env file. Should have FUEL_PROVIDER and PRIVATE_KEY',
+  );
 }
 
 async function main() {
@@ -43,7 +45,7 @@ async function main() {
       BaseAssetId,
       {
         gasPrice,
-      }
+      },
     );
     const res2 = await tx2.waitForResult();
     console.log(`→ Transaction Id: ${res2.id}`);

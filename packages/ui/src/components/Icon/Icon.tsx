@@ -22,7 +22,7 @@ export const Icon = createComponent<IconProps, 'svg'>({
       stroke: initStroke = INIT_ICON_STROKE,
       icon: IconComponent,
       ...props
-    }
+    },
   ) => {
     const iconContext = useIconContext();
     const size = initSize || iconContext.size;

@@ -1,7 +1,6 @@
 {
   "recommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
+    "biomejs.biome",
     "statelyai.stately-vscode",
     "firsttris.vscode-jest-runner",
     "rust-lang.rust-analyzer",

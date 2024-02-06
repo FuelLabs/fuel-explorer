@@ -109,7 +109,7 @@ export const bridgeTxsMachine = createMachine(
       assignTxMachines: assign({
         ethToFuelTxRefs: (ctx, ev) => {
           const ethToFuelBridgeTxs = ev.data?.filter(({ fromNetwork }) =>
-            isEthChain(fromNetwork)
+            isEthChain(fromNetwork),
           );
 
           const newRefs = ethToFuelBridgeTxs?.reduce((prev, tx) => {
@@ -125,7 +125,7 @@ export const bridgeTxsMachine = createMachine(
                   fuelProvider: ctx.fuelProvider,
                   ethPublicClient: ctx.ethPublicClient,
                 }),
-                { name: tx.txHash, sync: true }
+                { name: tx.txHash, sync: true },
               ),
             };
           }, {});
@@ -137,7 +137,7 @@ export const bridgeTxsMachine = createMachine(
         },
         fuelToEthTxRefs: (ctx, ev) => {
           const fuelToEthBridgeTxs = ev.data?.filter(({ fromNetwork }) =>
-            isFuelChain(fromNetwork)
+            isFuelChain(fromNetwork),
           );
 
           const newRefs = fuelToEthBridgeTxs?.reduce((prev, tx) => {
@@ -152,7 +152,7 @@ export const bridgeTxsMachine = createMachine(
                   fuelProvider: ctx.fuelProvider,
                   ethPublicClient: ctx.ethPublicClient,
                 }),
-                { name: tx.txHash, sync: true }
+                { name: tx.txHash, sync: true },
               ),
             };
           }, {});
@@ -170,7 +170,7 @@ export const bridgeTxsMachine = createMachine(
           if (!ethTxId || ctx.ethToFuelTxRefs?.[ethTxId])
             return ctx.ethToFuelTxRefs;
 
-          console.log('NEW: creating machine Fuel To Eth: ' + ethTxId);
+          console.log(`NEW: creating machine Fuel To Eth: ${ethTxId}`);
           const newRef = {
             [ethTxId]: spawn(
               txEthToFuelMachine.withContext({
@@ -179,7 +179,7 @@ export const bridgeTxsMachine = createMachine(
                 fuelProvider: fuelProvider,
                 ethPublicClient: ethPublicClient,
               }),
-              { name: ethTxId, sync: true }
+              { name: ethTxId, sync: true },
             ),
           };
 
@@ -196,7 +196,7 @@ export const bridgeTxsMachine = createMachine(
           if (!fuelTxId || ctx.fuelToEthTxRefs?.[fuelTxId])
             return ctx.fuelToEthTxRefs;
 
-          console.log('NEW: creating machine Fuel To Eth: ' + fuelTxId);
+          console.log(`NEW: creating machine Fuel To Eth: ${fuelTxId}`);
           const newRef = {
             [fuelTxId]: spawn(
               txFuelToEthMachine.withContext({
@@ -204,7 +204,7 @@ export const bridgeTxsMachine = createMachine(
                 fuelProvider: fuelProvider,
                 ethPublicClient: ethPublicClient,
               }),
-              { name: fuelTxId, sync: true }
+              { name: fuelTxId, sync: true },
             ),
           };
 
@@ -241,7 +241,7 @@ export const bridgeTxsMachine = createMachine(
         },
       }),
     },
-  }
+  },
 );
 
 export type BridgeTxsMachine = typeof bridgeTxsMachine;

@@ -1,4 +1,4 @@
-import { bn, Signer } from 'fuels';
+import { Signer, bn } from 'fuels';
 
 import type { BlockItemFragment } from '../generated/types';
 import { tai64toDate } from '../utils/dayjs';

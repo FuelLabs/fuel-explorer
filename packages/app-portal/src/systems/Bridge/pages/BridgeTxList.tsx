@@ -1,11 +1,11 @@
 import { cssObj } from '@fuel-ui/css';
 import { Button, CardList } from '@fuel-ui/react';
 import {
-  useFuelAccountConnection,
   TxListItemEthToFuel,
+  TxListItemFuelToEth,
   isEthChain,
   isFuelChain,
-  TxListItemFuelToEth,
+  useFuelAccountConnection,
 } from '~/systems/Chains';
 
 import {

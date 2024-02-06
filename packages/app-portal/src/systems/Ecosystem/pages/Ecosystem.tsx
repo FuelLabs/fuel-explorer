@@ -1,5 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
-import { Text, Box, Heading, Input, Icon } from '@fuel-ui/react';
+import { Box, Heading, Icon, Input, Text } from '@fuel-ui/react';
 import { Layout, animations } from '~/systems/Core';
 
 import { EcosystemTags } from '../components/EcosystemTags';

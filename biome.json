@@ -1,0 +1,80 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn",
+        "noImplicitAnyLet": "warn",
+        "noArrayIndexKey": "off",
+        "noConfusingVoidType": "off",
+        "noSelfCompare": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off",
+        "noForEach": "warn",
+        "noBannedTypes": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "json": {
+    "parser": {
+      "allowTrailingCommas": true
+    }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignore": [
+      "**/node_modules",
+      "**/.turbo",
+      "**/.next",
+      "**/.vercel",
+      "**/dist",
+      "**/build",
+      "**/fuel-v2-contracts",
+      "**/coverage",
+      "**/generated",
+      "**/storybook-static",
+      "*.typegen.ts",
+      "./packages/app-explorer/public/storybook",
+      "./packages/app-explorer/public/ui",
+      "./packages/app-explorer/public/portal",
+      "./packages/app-explorer/public/portal-storybook",
+      "./packages/app-portal/public/**",
+      "./packages/app-portal/src/types",
+      "pnpm-lock.yaml"
+    ]
+  }
+}

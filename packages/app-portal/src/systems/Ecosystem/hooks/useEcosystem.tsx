@@ -30,7 +30,7 @@ export function useEcosystem() {
   const tags = store.useSelector(Services.ecosystem, selectors.tags);
   const filteredProjects = store.useSelector(
     Services.ecosystem,
-    selectors.filteredProjects
+    selectors.filteredProjects,
   );
   const filter = store.useSelector(Services.ecosystem, selectors.filter);
   const search = store.useSelector(Services.ecosystem, selectors.search);
