@@ -1,8 +1,8 @@
-import { cssObj } from '@fuel-ui/css';
-import { Heading, Tabs } from '@fuel-ui/react';
 import { useNodeInfo } from '@fuel-wallet/react';
+import { Heading, Tabs } from '@fuels/ui';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { tv } from 'tailwind-variants';
 import { VITE_FUEL_VERSION } from '~/config';
 import { FuelVersionDialog } from '~/systems/Chains/fuel/containers/FuelVersionDialog';
 import { Layout } from '~/systems/Core';
@@ -13,6 +13,7 @@ type BridgeHomeProps = {
 };
 
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
+  const classes = styles();
   const { isCompatible } = useNodeInfo({
     version: VITE_FUEL_VERSION,
   });
@@ -21,16 +22,17 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
   return (
     <Layout>
-      <Layout.Content css={styles.content}>
-        <Heading as="h2" css={styles.heading}>
+      <Layout.Content className={classes.content()}>
+        <Heading as="h2" className={classes.heading()}>
           Fuel Native Bridge
         </Heading>
         <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
         <Tabs
           defaultValue={location.pathname.replace(/\/$/, '')}
           onValueChange={(path) => navigate(path)}
+          variant="surface"
         >
-          <Tabs.List css={styles.tabs}>
+          <Tabs.List className={classes.tabs()}>
             <Tabs.Trigger value={Pages.bridge}>Bridge</Tabs.Trigger>
             <Tabs.Trigger value={Pages.transactions}>History</Tabs.Trigger>
           </Tabs.List>
@@ -41,22 +43,10 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
   );
 };
 
-const styles = {
-  content: cssObj({
-    maxWidth: '$sm',
-  }),
-  heading: cssObj({
-    mt: 0,
-    mb: '$4',
-    // Align title with the content of the page
-    ml: -2,
-  }),
-  tabs: cssObj({
-    ml: 0,
-  }),
-  buttonLink: cssObj({
-    '&:hover': {
-      textDecoration: 'none',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    content: 'max-w-[455px]',
+    heading: 'mt-0 mb-4 ml-[-2px]',
+    tabs: 'ml-0',
+  },
+});
