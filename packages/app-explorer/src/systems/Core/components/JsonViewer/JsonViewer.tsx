@@ -1,5 +1,5 @@
 import type { BaseProps } from '@fuels/ui';
-import { cx, useRadixTheme } from '@fuels/ui';
+import { cx, useTheme } from '@fuels/ui';
 import {
   JsonView,
   collapseAllNested,
@@ -14,14 +14,14 @@ export type JsonViewerProps = BaseProps<{
 
 export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
   const classes = styles();
-  const ctx = useRadixTheme();
+  const { theme } = useTheme();
   return (
     <JsonView
       data={data}
       shouldExpandNode={collapseAllNested}
       style={
         {
-          ...(ctx.appearance === 'dark' ? darkStyles : defaultStyles),
+          ...(theme === 'dark' ? darkStyles : defaultStyles),
           container: cx(classes.json(), className),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any
