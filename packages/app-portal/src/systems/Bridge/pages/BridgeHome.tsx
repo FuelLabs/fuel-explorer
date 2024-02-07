@@ -2,7 +2,7 @@ import { cssObj } from '@fuel-ui/css';
 import { Heading, Tabs } from '@fuel-ui/react';
 import { useNodeInfo } from '@fuel-wallet/react';
 import type { ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { VITE_FUEL_VERSION } from '~/config';
 import { FuelVersionDialog } from '~/systems/Chains/fuel/containers/FuelVersionDialog';
 import { Layout } from '~/systems/Core';
@@ -16,7 +16,6 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const { isCompatible } = useNodeInfo({
     version: VITE_FUEL_VERSION,
   });
-  const navigate = useNavigate();
   const location = useLocation();
 
   return (
@@ -26,13 +25,14 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
           Fuel Native Bridge
         </Heading>
         <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
-        <Tabs
-          defaultValue={location.pathname.replace(/\/$/, '')}
-          onValueChange={(path) => navigate(path)}
-        >
+        <Tabs defaultValue={location.pathname.replace(/\/$/, '')}>
           <Tabs.List css={styles.tabs}>
-            <Tabs.Trigger value={Pages.bridge}>Bridge</Tabs.Trigger>
-            <Tabs.Trigger value={Pages.transactions}>History</Tabs.Trigger>
+            <NavLink to={Pages.bridge}>
+              <Tabs.Trigger value={Pages.bridge}>Bridge</Tabs.Trigger>
+            </NavLink>
+            <NavLink to={Pages.transactions}>
+              <Tabs.Trigger value={Pages.transactions}>History</Tabs.Trigger>
+            </NavLink>
           </Tabs.List>
           {children}
         </Tabs>
@@ -53,8 +53,15 @@ const styles = {
   }),
   tabs: cssObj({
     ml: 0,
+    a: {
+      color: 'inherit',
+      textDecoration: 'none',
+    },
+    'a.active': {
+      color: '$accent9',
+    },
   }),
-  buttonLink: cssObj({
+  buttonNavLink: cssObj({
     '&:hover': {
       textDecoration: 'none',
     },

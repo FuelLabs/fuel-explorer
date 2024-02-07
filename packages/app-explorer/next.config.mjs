@@ -23,6 +23,7 @@ const config = {
     externalDir: true,
     serverComponentsExternalPackages: externals,
     esmExternals: true,
+    typedRoutes: true,
   },
   /** We run eslint as a separate task in CI */
   eslint: {
@@ -33,6 +34,16 @@ const config = {
       {
         source: '/portal',
         destination: '/portal/index.html',
+        permanent: false,
+      },
+      {
+        source: '/ecosystem',
+        destination: '/portal/index.html#/ecosystem',
+        permanent: false,
+      },
+      {
+        source: '/bridge',
+        destination: '/portal/index.html#/bridge',
         permanent: false,
       },
       {
