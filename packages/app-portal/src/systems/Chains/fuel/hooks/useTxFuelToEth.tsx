@@ -1,3 +1,4 @@
+import type { Asset } from '@fuels/assets';
 import {
   ReceiptType,
   fromTai64ToUnix,
@@ -7,7 +8,6 @@ import {
 import { useMemo } from 'react';
 import { Services, store } from '~/store';
 import { useAssets } from '~/systems/Assets';
-import type { Asset } from '~/systems/Assets/services/asset';
 import { getAssetEth } from '~/systems/Assets/utils';
 import type { BridgeTxsMachineState } from '~/systems/Bridge';
 import { useExplorerLink } from '~/systems/Bridge/hooks/useExplorerLink';

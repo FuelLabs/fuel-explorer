@@ -9,7 +9,7 @@
       "~public/*": ["./public/*"],
       "~/*": ["./src/*"]
     },
-    "types": ["@fuel-wallet/sdk", "jest"]
+    "types": ["jest"]
   },
   "include": ["./src", ".storybook", "public/ecosystem/images"],
   "references": [{ "path": "./tsconfig.node.json" }]

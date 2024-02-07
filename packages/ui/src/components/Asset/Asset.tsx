@@ -1,5 +1,6 @@
 import { bn } from '@fuel-ts/math';
 import type { BNInput } from '@fuel-ts/math';
+import type { Asset as FuelsAsset } from '@fuels/assets';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 
@@ -7,26 +8,25 @@ import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
 import type { PropsOf } from '../../utils/types';
-import { Badge } from '../Badge/Badge';
-import { Box, HStack } from '../Box';
+import { Box, Flex, HStack } from '../Box';
 import type { HStackProps } from '../Box';
 import type { TextProps } from '../Text/Text';
 import { Text } from '../Text/Text';
 
+import { styles } from './styles';
 import { AssetProvider, useAssetContext } from './useAssetContext';
+import { useEthAsset } from './useEthAsset';
+import { useFuelAsset } from './useFuelAsset';
 
 export type AssetIconSize = 'xs' | 'sm' | 'md' | 'lg';
 
-export type AssetObj = {
-  name: string;
-  symbol: string;
-  imageUrl?: string;
-};
-
 export type AssetProps = HStackProps & {
-  asset: AssetObj;
+  asset?: FuelsAsset;
+  name?: string;
+  symbol?: string;
+  imageUrl?: string;
   amount?: BNInput;
-  units?: number;
+  decimals?: number;
   precision?: number;
   iconSize?: AssetIconSize | number;
   negative?: boolean;
@@ -61,7 +61,10 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
     {
       asset,
       amount,
-      units,
+      name,
+      symbol,
+      imageUrl,
+      decimals,
       precision,
       iconSize,
       negative,
@@ -72,15 +75,29 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
     },
   ) => {
     {
+      const fuelAsset = useFuelAsset(asset);
+      const ethAsset = useEthAsset(asset);
+      const assetNetwork = fuelAsset || ethAsset;
+
+      const assetName = assetNetwork?.name || name || 'Unknown';
+      const assetSymbol = assetNetwork?.symbol || symbol || 'TKN';
+      const assetDecimals = assetNetwork?.decimals || decimals || 0;
+      const assetImageUrl = assetNetwork?.icon || imageUrl;
+
       const newChildren = useStrictedChildren('Asset', CHILD_ITEMS, children);
-      const amountStr = bn(amount).format({ units, precision });
+      const amountStr = bn(amount).format({ units: assetDecimals, precision });
       const isNegative = negative || bn(amount).lt(0);
+
       return (
         <AssetProvider
           value={{
             iconSize,
             asset,
-            units,
+            assetNetwork,
+            name: assetName,
+            symbol: assetSymbol,
+            decimals: assetDecimals,
+            imageUrl: assetImageUrl,
             precision,
             hideIcon,
             amount,
@@ -97,52 +114,39 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
   },
 });
 
-const SIZES_MAP = {
-  xs: 20,
-  sm: 24,
-  md: 32,
-  lg: 40,
-};
-
 export const AssetIcon = createComponent<AssetIconProps, 'img'>({
   id: 'AssetIcon',
-  render: (_, { icon, ...props }) => {
-    const { asset, iconSize = 'md' } = useAssetContext();
-    const size = typeof iconSize === 'string' ? SIZES_MAP[iconSize] : iconSize;
+  render: (_, { icon, className, ...props }) => {
+    const classes = styles();
+    const { name, imageUrl, symbol, iconSize = 'md' } = useAssetContext();
 
     if (icon) {
       return (
-        <Box asChild aria-label={`${asset.name} icon`} role="img" {...props}>
+        <Box asChild aria-label={`${name} icon`} role="img" {...props}>
           <span>{icon}</span>
         </Box>
       );
     }
 
-    if (!asset.imageUrl) {
+    if (imageUrl) {
       return (
-        <Badge
-          aria-label={`${asset.name} initials`}
-          color="gray"
-          radius="full"
-          role="img"
-          size="2"
-          variant="solid"
+        // biome-ignore lint: false positive asking for `alt` but it was informed before {...props}
+        <img
+          className={cx(className, classes.iconImage())}
+          data-size={iconSize}
+          src={imageUrl}
+          alt={`${name} logo`}
           {...props}
-          className={cx(props.className, 'h-8 w-8 px-2')}
-        >
-          {asset.symbol.slice(0, 2).toUpperCase()}
-        </Badge>
+        />
       );
     }
 
     return (
-      <img
-        {...props}
-        alt={`${asset.name} logo`}
-        src={asset.imageUrl}
-        height={size}
-        width={size}
-      />
+      <Flex className={classes.iconWritten()} data-size={iconSize}>
+        <Text className={classes.iconText()} data-size={iconSize}>
+          {symbol?.slice(0, 2).toUpperCase()}
+        </Text>
+      </Flex>
     );
   },
 });
@@ -150,16 +154,16 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
 export const AssetSymbol = createComponent<AssetSymbolProps, 'span'>({
   id: 'AssetSymbol',
   render: (_, props) => {
-    const assetProps = useAssetContext();
-    return <span {...props}>{assetProps.asset.symbol}</span>;
+    const { symbol } = useAssetContext();
+    return <span {...props}>{symbol}</span>;
   },
 });
 
 export const AssetName = createComponent<AssetNameProps, 'span'>({
   id: 'AssetName',
   render: (_, props) => {
-    const assetProps = useAssetContext();
-    return <span {...props}>{assetProps.asset.name}</span>;
+    const { name } = useAssetContext();
+    return <span {...props}>{name}</span>;
   },
 });
 

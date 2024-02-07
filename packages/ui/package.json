@@ -56,6 +56,7 @@
   "dependencies": {
     "@fuel-ts/address": "0.73.0",
     "@fuel-ts/math": "0.73.0",
+    "@fuels/assets": "0.1.5",
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",

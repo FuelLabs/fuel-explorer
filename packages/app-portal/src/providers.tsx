@@ -6,6 +6,7 @@ import {
   ConnectProvider,
   FuelConnectProvider,
   FuelUiProvider,
+  FuelsUiProvider,
 } from './systems/Settings';
 import { FuelNetworkProvider } from './systems/Settings/providers/FuelNetworkProvider';
 
@@ -20,7 +21,9 @@ export function Providers({ children }: ProvidersProps) {
         <FuelConnectProvider>
           <ConnectProvider>
             <FuelUiProvider>
-              <FuelNetworkProvider>{children}</FuelNetworkProvider>
+              <FuelsUiProvider>
+                <FuelNetworkProvider>{children}</FuelNetworkProvider>
+              </FuelsUiProvider>
             </FuelUiProvider>
           </ConnectProvider>
         </FuelConnectProvider>

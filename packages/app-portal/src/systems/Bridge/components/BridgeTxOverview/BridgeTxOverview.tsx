@@ -1,8 +1,8 @@
 import { cssObj } from '@fuel-ui/css';
 import { Box, FuelLogo, Icon, Link, Text } from '@fuel-ui/react';
+import type { Asset } from '@fuels/assets';
 import type { BigNumberish } from 'fuels';
 import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
-import type { Asset } from '~/systems/Assets/services/asset';
 import { calculateDateDiff } from '~/systems/Core';
 
 import { InfoTextLoader } from './InfoTextLoader';

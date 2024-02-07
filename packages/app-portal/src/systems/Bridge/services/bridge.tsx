@@ -1,3 +1,4 @@
+import type { Asset } from '@fuels/assets';
 import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
   Address as FuelAddress,
@@ -6,7 +7,6 @@ import type {
 } from 'fuels';
 import type { PublicClient, WalletClient } from 'wagmi';
 import { store } from '~/store';
-import type { Asset } from '~/systems/Assets/services/asset';
 import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
 import type {
   FromToNetworks,

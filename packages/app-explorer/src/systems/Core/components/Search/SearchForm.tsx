@@ -33,8 +33,8 @@ export function SearchForm({
         className={className}
         searchResult={results}
         autoFocus={autoFocus}
-        onClear={onClear}
         expandOnFocus={expandOnFocus}
+        onClear={onClear}
       />
     </form>
   );

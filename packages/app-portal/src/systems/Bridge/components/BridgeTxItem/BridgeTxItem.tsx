@@ -1,8 +1,8 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, CardList, Icon, Text } from '@fuel-ui/react';
+import type { Asset as FuelsAsset } from '@fuels/assets';
+import { Asset, Card, Flex, Text } from '@fuels/ui';
+import { IconArrowRight } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
-import type { Asset } from '~/systems/Assets/services/asset';
+import { tv } from 'tailwind-variants';
 import { calculateDateDiff, shortAddress } from '~/systems/Core';
 
 import { ItemLoader } from './ItemLoader';
@@ -11,7 +11,7 @@ type BridgeTxItemProps = {
   date?: Date;
   fromLogo: ReactNode;
   toLogo: ReactNode;
-  asset?: Asset;
+  asset?: FuelsAsset;
   onClick: () => void;
   status: ReactNode;
   txId?: string;
@@ -30,72 +30,64 @@ export const BridgeTxItem = ({
   amount,
   isLoading,
 }: BridgeTxItemProps) => {
+  const classes = styles();
   return (
-    <CardList.Item
-      css={styles.cardItem}
+    <Card
       aria-label={`Transaction ID: ${shortAddress(txId)}`}
       onClick={onClick}
     >
-      <Box.Flex gap={'$1'}>
-        {fromLogo}
-        <Icon icon="ArrowNarrowRight" />
-        {toLogo}
-      </Box.Flex>
-      <Box.Flex align="center" gap="$1">
-        {isLoading ? (
-          <ItemLoader />
-        ) : (
-          <>
-            <AssetLogo asset={asset} alt={asset?.symbol} />
-            <Text fontSize="sm" css={styles.assetAmountText}>
-              {amount} {asset?.symbol}
-            </Text>
-          </>
-        )}
-      </Box.Flex>
-      <Box.Flex css={styles.statusTime} justify={'space-between'}>
-        {isLoading ? (
-          <ItemLoader />
-        ) : (
-          <Text css={styles.ageText}>{calculateDateDiff(date)}</Text>
-        )}
-        <Box.Flex
-          css={styles.statusColumn}
-          align="center"
-          justify="flex-end"
-          aria-label={`Transaction Status: ${status?.toString()}`}
-        >
-          {status}
-        </Box.Flex>
-      </Box.Flex>
-    </CardList.Item>
+      <Card.Body className={classes.cardItem()}>
+        <Flex className={classes.networks()}>
+          {fromLogo}
+          <IconArrowRight size={16} />
+          {toLogo}
+        </Flex>
+        <Flex className={classes.assetAmountWrapper()}>
+          {isLoading ? (
+            <ItemLoader />
+          ) : (
+            <>
+              <Asset asset={asset} iconSize="xs">
+                <Asset.Icon />
+              </Asset>
+              <Text className={classes.assetAmountText()}>
+                {amount} {asset?.symbol}
+              </Text>
+            </>
+          )}
+        </Flex>
+        <Flex className={classes.statusTime()}>
+          {isLoading ? (
+            <ItemLoader />
+          ) : (
+            <Text className={classes.ageText()}>{calculateDateDiff(date)}</Text>
+          )}
+          <Flex
+            className={classes.statusColumn()}
+            aria-label={`Transaction Status: ${status?.toString()}`}
+          >
+            {status}
+          </Flex>
+        </Flex>
+      </Card.Body>
+    </Card>
   );
 };
 
-const styles = cssObj({
-  cardItem: cssObj({
-    // This minHeight ensures component size equals loader size
-    minHeight: 24,
-    gap: '$6',
-    alignItems: 'center',
-  }),
-  statusTime: cssObj({
-    flex: 1,
-    '@media (max-width: 400px)': {
-      flexDirection: 'column-reverse',
-      flexWrap: 'wrap',
-      alignItems: 'flex-end',
-      gap: '$1',
-    },
-  }),
-  line: cssObj({
-    flex: 1,
-  }),
-  ageText: cssObj({
-    fontSize: '$xs',
-    color: '$intentsBase12',
-  }),
-  assetAmountText: cssObj({
-    color: '$intentsBase12',
-  }),
+const styles = tv({
+  slots: {
+    networks: 'gap-1',
+    cardItem: 'flex flex-row min-h-[24px] gap-6 items-center',
+    statusTime: [
+      'flex-1 justify-between',
+      'mobile:max-tablet:flex-col-reverse mobile:max-tablet:flex-wrap',
+      'mobile:max-tablet:items-end mobile:max-tablet:gap-1',
+    ],
+    statusColumn: 'items-center, justify-end',
+    line: 'flex-1',
+    // TODO: to activate text-heading and theme colors, should fix first light/dark css variables not being set
+    ageText: 'text-xs text-heading',
+    assetAmountWrapper: 'items-center gap-2',
+    assetAmountText: 'text-xs text-heading',
+  },
 });

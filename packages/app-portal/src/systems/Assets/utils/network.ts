@@ -1,7 +1,5 @@
-import type { Ethereum, Fuel } from '@fuels/assets';
+import type { Asset, Ethereum, Fuel } from '@fuels/assets';
 import { ETH_CHAIN, FUEL_CHAIN } from '~/systems/Chains';
-
-import type { Asset } from '../services';
 
 type Network = Ethereum | Fuel; // Assuming Ethereum and Fuel are your types
 export type NetworkTypes = Ethereum['type'] | Fuel['type'];
