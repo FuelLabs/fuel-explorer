@@ -68,7 +68,7 @@ export const Layout: LayoutComponent = ({ title, children }: LayoutProps) => {
 
 Layout.Content = Content;
 
-export const styles = tv({
+const styles = tv({
   slots: {
     root: 'w-screen h-screen overflow-hidden absolute',
     // TODO: add scrollable in scrollView

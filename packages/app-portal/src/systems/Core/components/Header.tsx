@@ -74,7 +74,7 @@ export function Header() {
   );
 }
 
-export const styles = tv({
+const styles = tv({
   slots: {
     menuItem: 'pointer',
   },
