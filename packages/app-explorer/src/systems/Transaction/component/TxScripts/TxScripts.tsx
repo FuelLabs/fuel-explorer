@@ -1,9 +1,9 @@
-import { ReceiptType } from '@fuel-explorer/graphql';
+import { ReceiptType } from '@fuel-explorer/graphql/src/sdk';
 import type {
   Maybe,
   OperationReceipt,
   TransactionReceiptFragment,
-} from '@fuel-explorer/graphql';
+} from '@fuel-explorer/graphql/src/sdk';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
