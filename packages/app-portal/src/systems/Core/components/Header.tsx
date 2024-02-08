@@ -1,11 +1,13 @@
-import { cssObj } from '@fuel-ui/css';
-import { Nav } from '@fuel-ui/react';
+import { Nav, useTheme } from '@fuels/ui';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Pages } from '~/types';
 
+import { tv } from 'tailwind-variants';
 import { removeTrailingSlash } from '../utils';
 
 export function Header() {
+  const classes = styles();
+  const { toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const isLinkActive = (url: string) => {
@@ -14,15 +16,20 @@ export function Header() {
     );
   };
 
+  const themeToggle = (
+    <Nav.ThemeToggle whenOpened="no-effect" onToggle={() => toggleTheme()} />
+  );
+
   return (
     <Nav>
-      <Nav.Desktop>
-        <Nav.Logo />
-        <Nav.Spacer />
+      <Nav.Desktop className={'px-10 justify-between'}>
+        <Nav.Menu>
+          <Nav.Logo />
+        </Nav.Menu>
         <Nav.Menu>
           <Nav.MenuItem
             as="div"
-            css={styles.menuItem}
+            className={classes.menuItem()}
             isActive={isLinkActive(Pages.bridge)}
             onClick={() => navigate(Pages.bridge)}
           >
@@ -30,24 +37,24 @@ export function Header() {
           </Nav.MenuItem>
           <Nav.MenuItem
             as="div"
-            css={styles.menuItem}
+            className={classes.menuItem()}
             isActive={isLinkActive(Pages.ecosystem)}
             onClick={() => navigate(Pages.ecosystem)}
           >
             Ecosystem
           </Nav.MenuItem>
+          {themeToggle}
         </Nav.Menu>
-        <Nav.ThemeToggle />
       </Nav.Desktop>
       <Nav.Mobile>
         <Nav.MobileContent>
           <Nav.Logo />
-          <Nav.ThemeToggle />
+          {themeToggle}
         </Nav.MobileContent>
         <Nav.Menu>
           <Nav.MenuItem
             as="div"
-            css={styles.menuItem}
+            className={classes.menuItem()}
             isActive={isLinkActive(Pages.bridge)}
             onClick={() => navigate(Pages.bridge)}
           >
@@ -55,7 +62,7 @@ export function Header() {
           </Nav.MenuItem>
           <Nav.MenuItem
             as="div"
-            css={styles.menuItem}
+            className={classes.menuItem()}
             isActive={isLinkActive(Pages.ecosystem)}
             onClick={() => navigate(Pages.ecosystem)}
           >
@@ -67,8 +74,8 @@ export function Header() {
   );
 }
 
-const styles = {
-  menuItem: cssObj({
-    cursor: 'pointer',
-  }),
-};
+const styles = tv({
+  slots: {
+    menuItem: 'pointer',
+  },
+});

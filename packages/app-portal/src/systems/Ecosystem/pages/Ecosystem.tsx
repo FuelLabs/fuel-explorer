@@ -24,7 +24,7 @@ export function Ecosystem() {
 
   return (
     <Layout {...animations.slideInTop()}>
-      <Layout.Content css={{ padding: '$16 $1 $4 $4' }}>
+      <Layout.Content className="pt-16 pr-1 pb-4 pl-4">
         <Box.Stack gap="$12" grow={1} css={styles.content}>
           <Box.Flex css={styles.headingWrapper}>
             <Box.Stack gap="$2" wrap="wrap">
