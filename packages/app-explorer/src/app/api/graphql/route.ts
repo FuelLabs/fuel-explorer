@@ -1,6 +1,7 @@
 import { createExecutor, createSchema } from '@fuel-explorer/graphql';
 import { ContextDomain } from '@fuel-explorer/graphql/src/domains/Context';
 import { createYoga } from 'graphql-yoga';
+import { NextResponse } from 'next/server';
 import { requireEnv } from '~/systems/utils/requireEnv';
 
 const { FUEL_PROVIDER: url } = requireEnv(['FUEL_PROVIDER']);
@@ -29,8 +30,17 @@ const { handleRequest } = createYoga({
   },
 });
 
+const authenticatiohMiddleware = async (request: Request, ctx: Object) => {
+  if (process.env.FUEL_EXPLORER_API) {
+    return new NextResponse('Unauthorized', {
+      status: 401,
+    });
+  }
+  return handleRequest(request, ctx);
+};
+
 export {
-  handleRequest as GET,
-  handleRequest as POST,
-  handleRequest as OPTIONS,
+  authenticatiohMiddleware as GET,
+  authenticatiohMiddleware as POST,
+  authenticatiohMiddleware as OPTIONS,
 };
