@@ -11,9 +11,7 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": [
-        "./src/theme/tailwind-preset.ts"
-      ]
+      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
     }
   },
   "publishConfig": {
@@ -38,9 +36,7 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build:storybook": "pnpm ts:check && storybook build -o ../app-explorer/public/ui",

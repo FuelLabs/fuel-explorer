@@ -1,15 +1,15 @@
 'use client';
 import { Nav, useBreakpoints } from '@fuels/ui';
+import { useTheme } from 'next-themes';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-import { setTheme } from '../../actions/setTheme';
 import { SearchWidget } from '../Search/SearchWidget';
 
 export function TopNav() {
   // We need two of each variable bc both the mobile and desktop
   // nav elements are in the DOM and respond to click events.
+  const { setTheme } = useTheme();
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { isMobile, isLaptop } = useBreakpoints();
@@ -62,7 +62,7 @@ export function TopNav() {
   const themeToggle = (
     <Nav.ThemeToggle
       whenOpened="no-effect"
-      onToggle={(theme) => setTheme({ theme })}
+      onToggle={(theme) => setTheme(theme)}
     />
   );
 
