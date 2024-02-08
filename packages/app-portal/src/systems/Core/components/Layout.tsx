@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { META_DESC, META_OGIMG } from '~/constants';
 import { OverlayDialog } from '~/systems/Overlay';
 
-import { coreStyles } from '../styles';
+import { scrollableTwClasses } from '../styles';
 
 import { Box, Flex, cx } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
@@ -57,9 +57,7 @@ export const Layout: LayoutComponent = ({ title, children }: LayoutProps) => {
         <Header />
         <OverlayDialog />
         <Box className={classes.scrollView()}>
-          <Box>{children}</Box>
-          {/* TODO: add scrollable content class */}
-          {/* <Box className={coreStyles.scrollableContent()}>{children}</Box> */}
+          <Box className={classes.scrollViewContent()}>{children}</Box>
         </Box>
       </Flex>
     </>
@@ -71,13 +69,8 @@ Layout.Content = Content;
 const styles = tv({
   slots: {
     root: 'w-screen h-screen overflow-hidden absolute',
-    // TODO: add scrollable in scrollView
-    scrollView: 'flex-1',
+    scrollView: ['flex-1', scrollableTwClasses.scrollableClasses],
+    scrollViewContent: scrollableTwClasses.scrollableContentClasses,
     content: 'p-4 pt-16 max-w-[955px] mx-auto',
-
-    // scrollView: cssObj({
-    //   flex: 1,
-    //   ...coreStyles.scrollable(),
-    // }),
   },
 });
