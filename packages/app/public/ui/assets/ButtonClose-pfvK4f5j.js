@@ -1,0 +1,1 @@
+import{c as o}from"./component-GWnuE1KC.js";import{I as t}from"./IconButton-9L2R6k4w.js";import{I as a}from"./IconX-6LOxEXLl.js";const s=o({id:"ButtonClose",baseElement:t,defaultProps:{"aria-label":"Close",icon:a,variant:"link"}});export{s as B};

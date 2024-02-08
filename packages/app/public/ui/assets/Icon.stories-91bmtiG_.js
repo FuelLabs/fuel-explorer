@@ -1,0 +1,7 @@
+import{a as e}from"./component-GWnuE1KC.js";import{T as d}from"./Theme-ElRRBZX-.js";import{I as t}from"./Icon-yMpA7scP.js";import{I as s}from"./IconHome-dkmHMq4D.js";import"./index-4g5l5LRQ.js";import"./_commonjsHelpers-4gQjN7DL.js";import"./theme-IUFKUlFK.js";import"./index-PzP5oypK.js";import"./extends-dGVwEr9R.js";import"./index-pbeB-vsG.js";import"./index-uUL8xeMH.js";import"./index-K96gYvhf.js";import"./index-OvZZPJzn.js";import"./index-jmm5gWkb.js";import"./index-i6iaJq_c.js";import"./index-q_8alis5.js";import"./index-YxBGvUbs.js";import"./index-uCXP6D8h.js";import"./index-RaHu7lN4.js";import"./theme-options-gOxTq-NJ.js";import"./createReactComponent-rTvSjvh2.js";import"./index-tvtfaFq4.js";const w={title:"UI/Icon",component:t},o={render:()=>e(t,{color:"text-icon",icon:s})},r={render:()=>e(d,{accentColor:"orange",iconSize:24,children:e(t,{color:"text-accent",icon:s})})};var c,m,n;o.parameters={...o.parameters,docs:{...(c=o.parameters)==null?void 0:c.docs,source:{originalSource:`{
+  render: () => <Icon color="text-icon" icon={IconHome} />
+}`,...(n=(m=o.parameters)==null?void 0:m.docs)==null?void 0:n.source}}};var i,a,p;r.parameters={...r.parameters,docs:{...(i=r.parameters)==null?void 0:i.docs,source:{originalSource:`{
+  render: () => <Theme accentColor="orange" iconSize={24}>
+      <Icon color="text-accent" icon={IconHome} />
+    </Theme>
+}`,...(p=(a=r.parameters)==null?void 0:a.docs)==null?void 0:p.source}}};const y=["Usage","WithTheme"];export{o as Usage,r as WithTheme,y as __namedExportsOrder,w as default};

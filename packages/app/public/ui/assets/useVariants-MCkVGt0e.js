@@ -1,0 +1,1 @@
+import{b as e}from"./component-GWnuE1KC.js";function o({variant:r,className:t}){return r==="ghost"?{variant:"soft",className:t}:r==="link"?{variant:"ghost",className:e("hover:bg-transparent hover:underline px-0.5 py-0.5",t)}:{variant:r,className:t}}function i(r){const{variant:t,className:n}=o(r);return{variant:t,className:n}}export{i as u};
