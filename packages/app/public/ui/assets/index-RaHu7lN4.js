@@ -1,1 +1,0 @@
-import{r as t}from"./index-4g5l5LRQ.js";const n=t.createContext(void 0),d=e=>{const{dir:r,children:o}=e;return t.createElement(n.Provider,{value:r},o)};function a(e){const r=t.useContext(n);return e||r||"ltr"}export{a as $,d as a};
