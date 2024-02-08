@@ -3,7 +3,13 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
   overwrite: true,
   documents: ['./src/queries/**.graphql'],
-  schema: `http://localhost:${process.env.SERVER_PORT}/graphql`,
+  schema: {
+    [`http://localhost:${process.env.SERVER_PORT}/graphql`]: {
+      headers: {
+        Authorization: `Bearer ${process.env.FUEL_EXPLORER_API_KEY}`,
+      },
+    },
+  },
   generates: {
     'src/generated/types.ts': {
       plugins: [
