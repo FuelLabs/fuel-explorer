@@ -1,10 +1,8 @@
-import { FuelLogo } from '@fuel-ui/react';
-import type { Asset } from '@fuels/assets';
 import type { BigNumberish } from 'fuels';
-import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
 import { calculateDateDiff } from '~/systems/Core';
 
-import { Box, Flex, Link, Text, VStack } from '@fuels/ui';
+import { Asset as FuelsAsset } from '@fuels/assets';
+import { Asset, Box, Flex, FuelLogo, Link, Text, VStack } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import { InfoTextLoader } from './InfoTextLoader';
@@ -13,8 +11,8 @@ type BridgeTxOverviewProps = {
   transactionId: BigNumberish;
   date?: Date;
   isDeposit?: boolean;
-  asset?: Asset;
-  ethAsset?: Asset;
+  asset?: FuelsAsset;
+  ethAsset?: FuelsAsset;
   isLoading?: boolean;
   amount?: string;
   explorerLink?: string;
@@ -51,7 +49,11 @@ export const BridgeTxOverview = ({
         {isDeposit ? (
           <Flex className={classes.directionInfo()}>
             <Text className={classes.subtleText()}>(Deposit)</Text>
-            {ethAsset && <AssetLogo asset={ethAsset} alt={'Deposit'} />}
+            {ethAsset && (
+              <Asset asset={ethAsset} iconSize={18}>
+                <Asset.Icon alt={'Deposit'} />
+              </Asset>
+            )}
             <IconArrowRight size={16} />
             <FuelLogo size={17} />
           </Flex>
@@ -60,7 +62,9 @@ export const BridgeTxOverview = ({
             <Text className={classes.subtleText()}>(Withdrawal)</Text>
             <FuelLogo size={17} />
             <IconArrowRight size={16} />
-            <AssetLogo asset={ethAsset} alt={'withdrawal'} />
+            <Asset asset={ethAsset} iconSize={18}>
+              <Asset.Icon alt={'withdrawal'} />
+            </Asset>
           </Flex>
         )}
       </Flex>
@@ -71,7 +75,9 @@ export const BridgeTxOverview = ({
             <InfoTextLoader />
           ) : (
             <>
-              <AssetLogo asset={asset} alt={`Asset ${asset?.symbol}`} />
+              <Asset asset={ethAsset} iconSize={18}>
+                <Asset.Icon alt={`Asset ${asset?.symbol}`} />
+              </Asset>
               <Text aria-label="Asset amount" className={classes.infoText()}>
                 {amount}
               </Text>

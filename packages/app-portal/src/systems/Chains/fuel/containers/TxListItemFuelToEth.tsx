@@ -1,8 +1,7 @@
-import { FuelLogo } from '@fuel-ui/react';
 import { useAsset } from '~/systems/Assets';
 import { BridgeTxItem } from '~/systems/Bridge';
 
-import { Asset, Flex, Spinner, Text } from '@fuels/ui';
+import { Asset, Flex, FuelLogo, Spinner, Text } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 import { ActionRequiredBadge } from '../components';
 import { useTxFuelToEth } from '../hooks';

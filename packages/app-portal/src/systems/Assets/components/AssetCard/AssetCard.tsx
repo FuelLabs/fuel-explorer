@@ -3,8 +3,6 @@ import { Box, CardList, IconButton, Text } from '@fuel-ui/react';
 import type { Asset } from '@fuels/assets';
 import { RemoveAssetDialog } from '~/systems/Chains/eth/components';
 
-import { AssetLogo } from '../AssetLogo';
-
 type AssetCardProps = {
   asset: Asset;
   onAdd?: () => void;
@@ -38,7 +36,7 @@ export const AssetCard = ({
     >
       <Box.Flex align="center" justify="space-between" css={{ width: '$full' }}>
         <Box.Flex gap="$3" align="center">
-          <AssetLogo asset={asset} size={30} />
+          {/* <AssetLogo asset={asset} size={30} /> */}
           <Box.Flex direction="column" gap="$0">
             <Text
               color="intentsPrimary12"
