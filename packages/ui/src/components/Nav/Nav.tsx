@@ -56,7 +56,7 @@ export type NavConnectionProps = HStackProps & {
 export type NavThemeToggleProps = AsChildProp &
   PropsOf<'span'> & {
     whenOpened?: 'hide' | 'show' | 'no-effect';
-    theme: 'dark' | 'light' | string;
+    theme?: 'dark' | 'light' | string;
     onToggle?: (theme: string) => void;
   };
 
