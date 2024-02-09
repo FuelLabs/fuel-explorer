@@ -11,8 +11,7 @@ import { ReactNode } from 'react';
 import { Provider } from '../src/systems/Core/components/Provider';
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
-  const initTheme = localStorage.getItem('fuel-ui-theme') ?? 'dark';
-  return <Provider theme={initTheme}>{children}</Provider>;
+  return <Provider>{children}</Provider>;
 }
 
 const preview: Preview = {
