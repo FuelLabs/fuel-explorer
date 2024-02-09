@@ -1,17 +1,16 @@
 'use client';
 
-import { updateThemeAppearanceClass, useThemeContext } from '@radix-ui/themes';
+import { useTheme as useNextThemes } from 'next-themes';
 
 const THEME_KEY = 'fuel-ui-theme';
 
 export function useTheme() {
-  const { appearance: theme, onAppearanceChange } = useThemeContext();
+  const { theme, setTheme } = useNextThemes();
 
   function toggleTheme() {
     const current = localStorage.getItem(THEME_KEY);
     const next = current === 'light' ? 'dark' : 'light';
-    updateThemeAppearanceClass(next);
-    onAppearanceChange(next);
+    setTheme(next);
     localStorage.setItem(THEME_KEY, next);
   }
 
