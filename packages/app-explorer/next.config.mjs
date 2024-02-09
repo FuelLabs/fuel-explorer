@@ -23,18 +23,22 @@ const config = {
     externalDir: true,
     serverComponentsExternalPackages: externals,
     esmExternals: true,
+    typedRoutes: true,
   },
   /** We run eslint as a separate task in CI */
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
-  redirects: async () => {
+  rewrites: async () => {
     return [
       {
-        source: '/portal',
+        source: '/portal/:path*',
         destination: '/portal/index.html',
-        permanent: false,
       },
+    ];
+  },
+  redirects: async () => {
+    return [
       {
         source: '/portal-storybook',
         destination: '/portal-storybook/index.html',

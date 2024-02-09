@@ -1,5 +1,4 @@
-import { concatBytes } from '@fuel-ts/utils';
-import { ZeroBytes32, arrayify, hash } from 'fuels';
+import { ZeroBytes32, arrayify, concatBytes, hash } from 'fuels';
 
 export function getContractTokenId(
   contractId: `0x${string}`,

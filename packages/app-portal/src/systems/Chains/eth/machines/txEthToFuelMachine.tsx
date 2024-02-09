@@ -18,6 +18,8 @@ import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
 import { EthTxCache } from '../utils';
 
+const FUEL_MESSAGE_GET_INTERVAL = 10000;
+
 type MachineContext = {
   ethTxId?: `0x${string}`;
   ethTxNonce?: BN;
@@ -185,7 +187,7 @@ export const txEthToFuelMachine = createMachine(
           waitingForRetryFuelMessage: {
             tags: ['isSettlementLoading', 'isSettlementSelected'],
             after: {
-              2000: 'gettingFuelMessageStatus',
+              [FUEL_MESSAGE_GET_INTERVAL]: 'gettingFuelMessageStatus',
             },
           },
           gettingFuelMessage: {
@@ -311,7 +313,7 @@ export const txEthToFuelMachine = createMachine(
                   'isConfirmTransactionSelected',
                 ],
                 after: {
-                  2000: 'gettingFuelMessageStatus',
+                  [FUEL_MESSAGE_GET_INTERVAL]: 'gettingFuelMessageStatus',
                 },
               },
               done: {
@@ -363,7 +365,7 @@ export const txEthToFuelMachine = createMachine(
                 duration: 5000,
               },
             );
-          }, 2000);
+          }, FUEL_MESSAGE_GET_INTERVAL);
           EthTxCache.removeTxCreated(ctx.ethTxId);
         }
       },

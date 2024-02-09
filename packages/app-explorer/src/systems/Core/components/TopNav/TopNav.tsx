@@ -42,9 +42,6 @@ export function TopNav() {
 
   const tooling = (
     <>
-      <Nav.MenuItem href="https://next-alpha.fuel.network/bridge">
-        Bridge
-      </Nav.MenuItem>
       <Nav.MenuItem
         isActive
         as={NextLink}
@@ -53,9 +50,8 @@ export function TopNav() {
       >
         Explorer
       </Nav.MenuItem>
-      <Nav.MenuItem href="https://next-alpha.fuel.network/ecosystem">
-        Ecosystem
-      </Nav.MenuItem>
+      <Nav.MenuItem href="/portal/bridge">Bridge</Nav.MenuItem>
+      <Nav.MenuItem href="/portal/ecosystem">Ecosystem</Nav.MenuItem>
     </>
   );
 

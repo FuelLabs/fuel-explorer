@@ -1,9 +1,5 @@
-import {
-  FUELET_CONNECTOR,
-  FUEL_WALLET_CONNECTOR,
-  FUEL_WALLET_DEVELOPMENT_CONNECTOR,
-  FuelConnectorProvider,
-} from '@fuel-wallet/react';
+import { FuelProvider } from '@fuel-wallet/react';
+import { defaultConnectors } from '@fuel-wallet/sdk';
 import type { ReactNode } from 'react';
 import { IS_PREVIEW, IS_TEST } from '~/config';
 
@@ -13,17 +9,20 @@ type ProvidersProps = {
   children: ReactNode;
 };
 
-const connectors =
-  IS_PREVIEW && !IS_TEST
-    ? [FUEL_WALLET_CONNECTOR, FUEL_WALLET_DEVELOPMENT_CONNECTOR]
-    : [FUEL_WALLET_CONNECTOR, FUELET_CONNECTOR];
+const IS_DEV = IS_PREVIEW && !IS_TEST;
 
 export function FuelConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
 
   return (
-    <FuelConnectorProvider theme={theme} connectors={connectors}>
+    <FuelProvider
+      theme={theme}
+      fuelConfig={{
+        devMode: IS_DEV,
+        connnectors: defaultConnectors(),
+      }}
+    >
       {children}
-    </FuelConnectorProvider>
+    </FuelProvider>
   );
 }
