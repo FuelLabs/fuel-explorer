@@ -4787,7 +4787,7 @@ packages:
     peerDependencies:
       fuels: '>=0.73.0'
     dependencies:
-      '@fuels/assets': 0.1.4
+      '@fuels/assets': 0.1.5
       dexie-observable: 4.0.1-beta.13(dexie@3.2.4)
       fuels: 0.73.0
       json-rpc-2.0: 1.7.0
@@ -27815,7 +27815,7 @@ packages:
       debug: 4.3.4(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.0.1(typescript@5.3.3)
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: 5.0.12(@types/node@20.11.6)
     transitivePeerDependencies:
       - supports-color
       - typescript
