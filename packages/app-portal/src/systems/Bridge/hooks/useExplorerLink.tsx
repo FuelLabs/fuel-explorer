@@ -1,5 +1,6 @@
-import { getBlockExplorerLink } from '@fuel-wallet/sdk';
+import { buildBlockExplorerUrl } from 'fuels';
 import { useMemo } from 'react';
+import { FUEL_PROVIDER, VITE_BLOCK_EXPLORER_URL } from '~/config';
 
 export type ExplorerLinkProps = {
   network: 'ethereum' | 'fuel' | string | undefined;
@@ -15,9 +16,11 @@ export function useExplorerLink({
     if (network === 'ethereum') {
       return `https://sepolia.etherscan.io/tx/${id}`;
     }
-
     if (network === 'fuel') {
-      return getBlockExplorerLink({
+      if (providerUrl === FUEL_PROVIDER) {
+        return `${VITE_BLOCK_EXPLORER_URL}tx/${id}`;
+      }
+      return buildBlockExplorerUrl({
         path: `transaction/${id || ''}`,
         providerUrl,
       });

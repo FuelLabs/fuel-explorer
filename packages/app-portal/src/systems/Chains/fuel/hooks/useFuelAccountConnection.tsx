@@ -1,6 +1,6 @@
 import {
   useAccount,
-  useConnector,
+  useConnectUI,
   useDisconnect,
   useFuel,
   useIsConnected,
@@ -13,7 +13,6 @@ import type { AssetFuel } from '~/systems/Assets/utils';
 import { useFuelNetwork } from '~/systems/Settings/providers/FuelNetworkProvider';
 
 import { useBalance } from './useBalance';
-import { useHasFuelWallet } from './useHasFuelWallet';
 
 export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { assetId } = props || {};
@@ -25,12 +24,10 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     assetId,
     provider: fuelProvider,
   });
-  const { hasWallet } = useHasFuelWallet();
   const { isLoading: isLoadingConnection } = useIsConnected();
-  const { connect, error, isConnecting } = useConnector();
+  const { connect, error, isConnecting } = useConnectUI();
   const { disconnect } = useDisconnect();
-  // const { provider: fuelProvider } = useProvider();
-  const { wallet } = useWallet({ address: account || '' });
+  const { wallet } = useWallet(account);
 
   const address = useMemo(
     () => (account ? Address.fromString(account) : undefined),
@@ -56,15 +53,14 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
       closeDialog: store.closeOverlay,
       addAsset,
     },
-    account,
+    account: account || undefined,
     address,
     isConnected: !!account,
     error,
-    hasWallet,
     isLoadingConnection,
     isConnecting,
     provider: fuelProvider,
     balance,
-    wallet,
+    wallet: wallet || undefined,
   };
 };
