@@ -30,7 +30,7 @@ const selectors = {
       assetBalance,
     }: {
       ethAccount?: string;
-      fuelAccount?: string;
+      fuelAccount?: string | null;
       assetBalance?: BN;
     }) =>
     (state: BridgeMachineState) => {
@@ -166,10 +166,15 @@ export function useBridge() {
     searchParams.set('from', 'eth');
     searchParams.set('to', 'fuel');
 
-    navigate({
-      pathname: Pages.bridge,
-      search: searchParams.toString(),
-    });
+    navigate(
+      {
+        pathname: Pages.bridge,
+        search: searchParams.toString(),
+      },
+      {
+        replace: true,
+      },
+    );
   }
 
   function goToWithdraw() {
@@ -177,10 +182,15 @@ export function useBridge() {
     searchParams.set('from', 'fuel');
     searchParams.set('to', 'eth');
 
-    navigate({
-      pathname: Pages.bridge,
-      search: searchParams.toString(),
-    });
+    navigate(
+      {
+        pathname: Pages.bridge,
+        search: searchParams.toString(),
+      },
+      {
+        replace: true,
+      },
+    );
   }
 
   function connectNetwork(network?: SupportedChain) {
@@ -213,7 +223,6 @@ export function useBridge() {
         store.startBridging({
           fuelAddress,
           ethWalletClient,
-          fuelWallet,
           fuelProvider,
           ethAddress,
           asset,

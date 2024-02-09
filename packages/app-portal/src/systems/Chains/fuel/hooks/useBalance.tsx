@@ -34,17 +34,6 @@ export const useBalance = ({
     },
   );
 
-  const listenerAccountFetcher = () => {
-    query.refetch();
-  };
-
-  useEffect(() => {
-    window.addEventListener('focus', listenerAccountFetcher);
-    return () => {
-      window.removeEventListener('focus', listenerAccountFetcher);
-    };
-  }, []);
-
   return {
     balance: query.data || undefined,
     ...query,
