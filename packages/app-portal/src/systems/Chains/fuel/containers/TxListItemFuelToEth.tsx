@@ -1,7 +1,8 @@
-import { Box, FuelLogo, Image, Spinner, Text } from '@fuel-ui/react';
 import { useAsset } from '~/systems/Assets';
 import { BridgeTxItem } from '~/systems/Bridge';
 
+import { Asset, Flex, FuelLogo, Spinner, Text } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { ActionRequiredBadge } from '../components';
 import { useTxFuelToEth } from '../hooks';
 
@@ -10,6 +11,7 @@ type TxListItemFuelToEthProps = {
 };
 
 export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
+  const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { steps, handlers, asset, date, status, amount, isLoadingTxResult } =
     useTxFuelToEth({
@@ -20,18 +22,14 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
 
   function getStatusComponent() {
     if (status?.isReceiveDone)
-      return (
-        <Text fontSize="xs" color="intentsBase11">
-          Settled
-        </Text>
-      );
+      return <Text className={classes.settledText()}>Settled</Text>;
 
     if (bridgeTxStatus?.isLoading) {
       return (
-        <Box.Flex align="center" gap="$1">
+        <Flex align="center" gap="1">
           <Spinner size={14} />
-          <Text fontSize="xs">Processing</Text>
-        </Box.Flex>
+          <Text className={classes.loadingText()}>Processing</Text>
+        </Flex>
       );
     }
 
@@ -52,14 +50,18 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
       amount={amount}
       isLoading={isLoadingTxResult}
       toLogo={
-        <Image
-          width={18}
-          height={18}
-          src={ethAsset?.icon || undefined}
-          alt={asset?.symbol}
-        />
+        <Asset asset={ethAsset} iconSize={18}>
+          <Asset.Icon />
+        </Asset>
       }
       onClick={() => handlers.openTxFuelToEth({ txId: txHash })}
     />
   );
 };
+
+const styles = tv({
+  slots: {
+    settledText: 'text-xs text-muted',
+    loadingText: 'text-xs',
+  },
+});

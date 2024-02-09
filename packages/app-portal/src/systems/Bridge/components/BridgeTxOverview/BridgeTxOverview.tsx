@@ -1,18 +1,18 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, FuelLogo, Icon, Link, Text } from '@fuel-ui/react';
-import type { Asset } from '@fuels/assets';
 import type { BigNumberish } from 'fuels';
-import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
 import { calculateDateDiff } from '~/systems/Core';
 
+import { Asset as FuelsAsset } from '@fuels/assets';
+import { Asset, Box, Flex, FuelLogo, Link, Text, VStack } from '@fuels/ui';
+import { IconArrowRight } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
 import { InfoTextLoader } from './InfoTextLoader';
 
 type BridgeTxOverviewProps = {
   transactionId: BigNumberish;
   date?: Date;
   isDeposit?: boolean;
-  asset?: Asset;
-  ethAsset?: Asset;
+  asset?: FuelsAsset;
+  ethAsset?: FuelsAsset;
   isLoading?: boolean;
   amount?: string;
   explorerLink?: string;
@@ -28,84 +28,76 @@ export const BridgeTxOverview = ({
   amount,
   explorerLink,
 }: BridgeTxOverviewProps) => {
+  const classes = styles();
+
   return (
-    <Box.Stack css={styles.stack}>
-      <Box.Flex css={styles.txItem}>
-        <Text css={styles.labelText}>ID</Text>
-        <Link isExternal href={explorerLink} css={styles.linkText}>
+    <VStack className={classes.stack()} gap="2">
+      <Flex className={classes.txItem()}>
+        <Text className={classes.labelText()}>ID</Text>
+        <Link isExternal href={explorerLink} className={classes.linkText()}>
           <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
         </Link>
-      </Box.Flex>
-      <Box.Flex css={styles.txItem}>
-        <Text css={styles.labelText}>Age</Text>
-        <Text css={styles.infoText}>
+      </Flex>
+      <Flex className={classes.txItem()}>
+        <Text className={classes.labelText()}>Age</Text>
+        <Text className={classes.infoText()}>
           {isLoading ? <InfoTextLoader /> : calculateDateDiff(date)}
         </Text>
-      </Box.Flex>
-      <Box.Flex css={styles.txItem}>
-        <Text css={styles.labelText}>Direction</Text>
+      </Flex>
+      <Flex className={classes.txItem()}>
+        <Text className={classes.labelText()}>Direction</Text>
         {isDeposit ? (
-          <Box.Flex css={styles.directionInfo}>
-            <Text css={styles.subtleText}>(Deposit)</Text>
-            {ethAsset && <AssetLogo asset={ethAsset} alt={'Deposit'} />}
-            <Icon icon="ArrowNarrowRight" />
+          <Flex className={classes.directionInfo()}>
+            <Text className={classes.subtleText()}>(Deposit)</Text>
+            {ethAsset && (
+              <Asset asset={ethAsset} iconSize={18}>
+                <Asset.Icon alt={'Deposit'} />
+              </Asset>
+            )}
+            <IconArrowRight size={16} />
             <FuelLogo size={17} />
-          </Box.Flex>
+          </Flex>
         ) : (
-          <Box.Flex css={styles.directionInfo}>
-            <Text css={styles.subtleText}>(Withdrawal)</Text>
+          <Flex className={classes.directionInfo()}>
+            <Text className={classes.subtleText()}>(Withdrawal)</Text>
             <FuelLogo size={17} />
-            <Icon icon="ArrowNarrowRight" />
-            <AssetLogo asset={ethAsset} alt={'withdrawal'} />
-          </Box.Flex>
+            <IconArrowRight size={16} />
+            <Asset asset={ethAsset} iconSize={18}>
+              <Asset.Icon alt={'withdrawal'} />
+            </Asset>
+          </Flex>
         )}
-      </Box.Flex>
-      <Box.Flex css={styles.txItem}>
-        <Text css={styles.labelText}>Asset</Text>
-        <Box.Flex css={styles.directionInfo}>
+      </Flex>
+      <Flex className={classes.txItem()}>
+        <Text className={classes.labelText()}>Asset</Text>
+        <Flex className={classes.directionInfo()}>
           {isLoading ? (
             <InfoTextLoader />
           ) : (
             <>
-              <AssetLogo asset={asset} alt={`Asset ${asset?.symbol}`} />
-              <Text aria-label="Asset amount" css={styles.infoText}>
+              <Asset asset={ethAsset} iconSize={18}>
+                <Asset.Icon alt={`Asset ${asset?.symbol}`} />
+              </Asset>
+              <Text aria-label="Asset amount" className={classes.infoText()}>
                 {amount}
               </Text>
-              <Text css={styles.infoText}>{asset?.symbol}</Text>
+              <Text className={classes.infoText()}>{asset?.symbol}</Text>
             </>
           )}
-        </Box.Flex>
-      </Box.Flex>
-    </Box.Stack>
+        </Flex>
+      </Flex>
+    </VStack>
   );
 };
 
-const styles = {
-  stack: cssObj({
-    width: '100%',
-  }),
-  txItem: cssObj({
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  }),
-  labelText: cssObj({
-    fontSize: '$sm',
-    color: '$intentsBase11',
-  }),
-  subtleText: cssObj({
-    fontSize: '$xs',
-    color: '$intentsBase10',
-  }),
-  infoText: cssObj({
-    fontSize: '$sm',
-    color: '$intentsBase12',
-  }),
-  linkText: cssObj({
-    fontSize: '$sm',
-    color: '$intentsPrimary9',
-  }),
-  directionInfo: cssObj({
-    gap: '$1',
-    alignItems: 'center',
-  }),
-};
+const styles = tv({
+  slots: {
+    stack: 'w-full',
+    txItem: 'flex-wrap justify-between',
+    labelText: 'text-xs text-intentsBase11',
+    subtleText: 'text-[10px] leading-tight text-muted',
+    infoText: 'text-xs text-heading',
+    linkText: 'text-xs',
+    directionInfo: 'gap-1 items-center',
+  },
+});

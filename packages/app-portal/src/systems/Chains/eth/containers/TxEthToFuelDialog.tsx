@@ -1,13 +1,14 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Button, Dialog, Text } from '@fuel-ui/react';
 import { useAsset } from '~/systems/Assets/hooks/useAsset';
 import { BridgeSteps, BridgeTxOverview } from '~/systems/Bridge';
 import { shortAddress } from '~/systems/Core';
 import { useOverlay } from '~/systems/Overlay';
 
+import { Box, Button, Dialog, Text, VStack } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { useTxEthToFuel } from '../hooks';
 
 export function TxEthToFuelDialog() {
+  const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
   const {
@@ -27,54 +28,43 @@ export function TxEthToFuelDialog() {
   return (
     <>
       <Dialog.Close aria-label="Close Transaction Dialog" />
-      <Dialog.Heading>
+      <Dialog.Title>
         Deposit
-        <Box css={styles.divider} />
-      </Dialog.Heading>
-      <Dialog.Description>
-        <Box.Stack gap="$2">
-          <Text color="intentsBase12">Status</Text>
+        <Box className={classes.divider()} />
+      </Dialog.Title>
+      <VStack gap="3">
+        <VStack gap="1">
+          <Text>Status</Text>
           <BridgeSteps steps={steps} />
-          <Box css={styles.border} />
-          <BridgeTxOverview
-            transactionId={shortAddress(metadata.txId)}
-            date={date}
-            isDeposit={true}
-            asset={asset}
-            isLoading={isLoadingReceipts}
-            amount={amount}
-            ethAsset={ethAsset}
-            explorerLink={explorerLink}
-          />
-        </Box.Stack>
-      </Dialog.Description>
-      {shouldShowConfirmButton && (
-        <Dialog.Footer>
+        </VStack>
+        <Box className={classes.divider()} />
+        <BridgeTxOverview
+          transactionId={shortAddress(metadata.txId)}
+          date={date}
+          isDeposit={true}
+          asset={asset}
+          isLoading={isLoadingReceipts}
+          amount={amount}
+          ethAsset={ethAsset}
+          explorerLink={explorerLink}
+        />
+        {shouldShowConfirmButton && (
           <Button
-            intent="primary"
-            css={styles.actionButton}
+            className={classes.actionButton()}
             isLoading={status?.isConfirmTransactionLoading}
             onClick={handlers.relayMessageToFuel}
           >
             Confirm Transaction
           </Button>
-        </Dialog.Footer>
-      )}
+        )}
+      </VStack>
     </>
   );
 }
 
-const styles = {
-  border: cssObj({
-    my: '$4',
-    borderBottom: '1px solid $border',
-  }),
-  divider: cssObj({
-    h: '1px',
-    bg: '$border',
-    mt: '$5',
-  }),
-  actionButton: cssObj({
-    width: '100%',
-  }),
-};
+const styles = tv({
+  slots: {
+    divider: 'h-[2px] bg-border mt-2 w-full',
+    actionButton: 'w-full',
+  },
+});

@@ -129,6 +129,13 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
     }
 
     if (imageUrl) {
+      let imageProps = {};
+      if (typeof iconSize === 'number') {
+        imageProps = {
+          width: iconSize,
+          // height: iconSize,
+        };
+      }
       return (
         // biome-ignore lint: false positive asking for `alt` but it was informed before {...props}
         <img
@@ -136,6 +143,7 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
           data-size={iconSize}
           src={imageUrl}
           alt={`${name} logo`}
+          {...imageProps}
           {...props}
         />
       );

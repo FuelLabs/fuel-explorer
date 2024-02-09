@@ -1,5 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Dialog } from '@fuel-ui/react';
+import { Dialog } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { AssetsDialog } from '~/systems/Assets/containers';
 import {
   AddAssetFormDialog,
@@ -8,19 +8,16 @@ import {
 } from '~/systems/Chains';
 import { useOverlay } from '~/systems/Overlay';
 
-const OVERLAY_HEIGHT = 100;
-const OVERLAY_WIDTH = 400;
-
 export function OverlayDialog() {
+  const classes = styles();
   const overlay = useOverlay();
 
   return (
     <Dialog
-      isOpen={overlay.isDialogOpen}
-      css={styles.dialog}
+      open={overlay.isDialogOpen}
       onOpenChange={(isOpen) => !isOpen && overlay.close()}
     >
-      <Dialog.Content css={styles.content}>
+      <Dialog.Content className={classes.content()}>
         {overlay.is('tx.fromEth.toFuel') && <TxEthToFuelDialog />}
         {overlay.is('tx.fromFuel.toEth') && <TxFuelToEthDialog />}
         {overlay.is('eth.assets') && <AssetsDialog />}
@@ -30,15 +27,8 @@ export function OverlayDialog() {
   );
 }
 
-const styles = {
-  dialog: cssObj({
-    backdropFilter: 'blur(10px)',
-  }),
-  content: cssObj({
-    width: OVERLAY_WIDTH,
-    minHeight: OVERLAY_HEIGHT,
-    maxWidth: OVERLAY_WIDTH,
-    maxHeight: 'none',
-    backgroundColor: '$cardBg',
-  }),
-};
+const styles = tv({
+  slots: {
+    content: 'max-w-sm min-h-[100px]',
+  },
+});
