@@ -11,7 +11,9 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -36,7 +38,9 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build:storybook": "pnpm ts:check && storybook build -o ../app-explorer/public/ui",
@@ -69,6 +73,7 @@
     "geist": "1.2.2",
     "modern-normalize": "2.0.0",
     "next": "14.1.0",
+    "next-themes": "0.2.1",
     "radix-ui-themes-with-tailwind": "1.2.6",
     "react": "^18.2.0",
     "react-aria": "3.31.1",
