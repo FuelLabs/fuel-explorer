@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Children, cloneElement, useEffect, useState } from 'react';
 import { useWindowSize } from 'react-use';
 
+import { useTheme } from 'next-themes';
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
@@ -23,8 +24,6 @@ import { Icon } from '../Icon/Icon';
 import { IconButton } from '../IconButton';
 import type { LinkProps } from '../Link/Link';
 import { Link } from '../Link/Link';
-import { useTheme } from '../Theme/useTheme';
-
 import { styles } from './styles';
 import { NavProvider, useNavContext } from './useNavContext';
 import { NavMobileProvider, useNavMobileContext } from './useNavMobileContext';
@@ -347,12 +346,11 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
   id: 'NavThemeToggle',
   baseElement: 'span',
   render: (Root, { className, whenOpened = 'hide', onToggle, ...props }) => {
-    const { theme: current, toggleTheme } = useTheme();
+    const { theme: current } = useTheme();
     const mobileProps = useNavMobileContext();
     const classes = styles();
 
     function handleToggle() {
-      toggleTheme();
       const next = current === 'light' ? 'dark' : 'light';
       onToggle?.(next);
     }
