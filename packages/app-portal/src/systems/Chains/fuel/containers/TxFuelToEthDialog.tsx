@@ -1,13 +1,14 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Button, Dialog, Text } from '@fuel-ui/react';
 import { useAsset } from '~/systems/Assets/hooks/useAsset';
 import { BridgeSteps, BridgeTxOverview } from '~/systems/Bridge';
 import { shortAddress } from '~/systems/Core';
 import { useOverlay } from '~/systems/Overlay';
 
+import { Box, Button, Dialog, Text, VStack } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { useTxFuelToEth } from '../hooks';
 
 export function TxFuelToEthDialog() {
+  const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
   const {
@@ -26,55 +27,44 @@ export function TxFuelToEthDialog() {
   return (
     <>
       <Dialog.Close aria-label="Close Transaction Dialog" />
-      <Dialog.Heading>
+      <Dialog.Title>
         Withdrawal
-        <Box css={styles.divider} />
-      </Dialog.Heading>
-      <Dialog.Description>
-        <Box.Stack gap="$2">
-          <Text color="intentsBase12">Status</Text>
+        <Box className={classes.divider()} />
+      </Dialog.Title>
+      <VStack gap="3">
+        <VStack gap="1">
+          <Text>Status</Text>
           <BridgeSteps steps={steps} />
-          <Box css={styles.border} />
-          <BridgeTxOverview
-            explorerLink={explorerLink}
-            transactionId={shortAddress(metadata.txId)}
-            date={date}
-            isDeposit={false}
-            asset={asset}
-            ethAsset={ethAsset}
-            amount={amount}
-            isLoading={isLoadingTxResult}
-          />
-        </Box.Stack>
-      </Dialog.Description>
+        </VStack>
+        <Box className={classes.divider()} />
+        <BridgeTxOverview
+          explorerLink={explorerLink}
+          transactionId={shortAddress(metadata.txId)}
+          date={date}
+          isDeposit={false}
+          asset={asset}
+          ethAsset={ethAsset}
+          amount={amount}
+          isLoading={isLoadingTxResult}
+        />
+      </VStack>
       {(status?.isWaitingEthWalletApproval ||
         status?.isConfirmTransactionLoading) && (
-        <Dialog.Footer>
-          <Button
-            intent="primary"
-            css={styles.actionButton}
-            isLoading={status.isConfirmTransactionLoading}
-            onClick={handlers.relayToEth}
-          >
-            Confirm Transaction
-          </Button>
-        </Dialog.Footer>
+        <Button
+          className={classes.actionButton()}
+          isLoading={status.isConfirmTransactionLoading}
+          onClick={handlers.relayToEth}
+        >
+          Confirm Transaction
+        </Button>
       )}
     </>
   );
 }
 
-const styles = {
-  border: cssObj({
-    my: '$4',
-    borderBottom: '1px solid $border',
-  }),
-  actionButton: cssObj({
-    width: '$full',
-  }),
-  divider: cssObj({
-    h: '1px',
-    bg: '$border',
-    mt: '$5',
-  }),
-};
+const styles = tv({
+  slots: {
+    divider: 'h-[2px] bg-border mt-2 w-full',
+    actionButton: 'w-full',
+  },
+});
