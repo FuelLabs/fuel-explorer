@@ -30,7 +30,7 @@ const selectors = {
       assetBalance,
     }: {
       ethAccount?: string;
-      fuelAccount?: string;
+      fuelAccount?: string | null;
       assetBalance?: BN;
     }) =>
     (state: BridgeMachineState) => {
@@ -223,7 +223,6 @@ export function useBridge() {
         store.startBridging({
           fuelAddress,
           ethWalletClient,
-          fuelWallet,
           fuelProvider,
           ethAddress,
           asset,

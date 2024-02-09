@@ -53,7 +53,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
       closeDialog: store.closeOverlay,
       addAsset,
     },
-    account,
+    account: account || undefined,
     address,
     isConnected: !!account,
     error,
@@ -61,6 +61,6 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     isConnecting,
     provider: fuelProvider,
     balance,
-    wallet,
+    wallet: wallet || undefined,
   };
 };
