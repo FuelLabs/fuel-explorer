@@ -1,40 +1,23 @@
 import { cssObj } from '@fuel-ui/css';
 import { Nav } from '@fuel-ui/react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Pages } from '~/types';
 
-import { removeTrailingSlash } from '../utils';
-
 export function Header() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isLinkActive = (url: string) => {
-    return removeTrailingSlash(location.pathname).startsWith(
-      removeTrailingSlash(url),
-    );
-  };
-
   return (
     <Nav>
       <Nav.Desktop>
         <Nav.Logo />
         <Nav.Spacer />
         <Nav.Menu>
-          <Nav.MenuItem
-            as="div"
-            css={styles.menuItem}
-            isActive={isLinkActive(Pages.bridge)}
-            onClick={() => navigate(Pages.bridge)}
-          >
-            Bridge
+          <Nav.MenuItem css={styles.menuItem}>
+            <a href={window.location.origin}>Explorer</a>
           </Nav.MenuItem>
-          <Nav.MenuItem
-            as="div"
-            css={styles.menuItem}
-            isActive={isLinkActive(Pages.ecosystem)}
-            onClick={() => navigate(Pages.ecosystem)}
-          >
-            Ecosystem
+          <Nav.MenuItem css={styles.menuItem}>
+            <NavLink to={Pages.bridge}>Bridge</NavLink>
+          </Nav.MenuItem>
+          <Nav.MenuItem css={styles.menuItem}>
+            <NavLink to={Pages.ecosystem}>Ecosystem</NavLink>
           </Nav.MenuItem>
         </Nav.Menu>
         <Nav.ThemeToggle />
@@ -45,21 +28,14 @@ export function Header() {
           <Nav.ThemeToggle />
         </Nav.MobileContent>
         <Nav.Menu>
-          <Nav.MenuItem
-            as="div"
-            css={styles.menuItem}
-            isActive={isLinkActive(Pages.bridge)}
-            onClick={() => navigate(Pages.bridge)}
-          >
-            Bridge
+          <Nav.MenuItem css={styles.menuItem}>
+            <a href={window.location.origin}>Explorer</a>
           </Nav.MenuItem>
-          <Nav.MenuItem
-            as="div"
-            css={styles.menuItem}
-            isActive={isLinkActive(Pages.ecosystem)}
-            onClick={() => navigate(Pages.ecosystem)}
-          >
-            Ecosystem
+          <Nav.MenuItem css={styles.menuItem}>
+            <NavLink to={Pages.bridge}>Bridge</NavLink>
+          </Nav.MenuItem>
+          <Nav.MenuItem css={styles.menuItem}>
+            <NavLink to={Pages.ecosystem}>Ecosystem</NavLink>
           </Nav.MenuItem>
         </Nav.Menu>
       </Nav.Mobile>
@@ -70,5 +46,12 @@ export function Header() {
 const styles = {
   menuItem: cssObj({
     cursor: 'pointer',
+    a: {
+      color: 'inherit',
+      textDecoration: 'none',
+    },
+    'a.active': {
+      color: '$accent9',
+    },
   }),
 };

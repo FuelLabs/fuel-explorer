@@ -451,7 +451,7 @@ importers:
         specifier: ^7.45.2
         version: 7.50.0(react@18.2.0)
       react-router-dom:
-        specifier: ^6.8.2
+        specifier: 6.22.0
         version: 6.22.0(react-dom@18.2.0)(react@18.2.0)
       viem:
         specifier: 0.3.36
