@@ -29,23 +29,16 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
-  redirects: async () => {
+  rewrites: async () => {
     return [
       {
-        source: '/portal',
+        source: '/portal/:path*',
         destination: '/portal/index.html',
-        permanent: false,
       },
-      {
-        source: '/ecosystem',
-        destination: '/portal/index.html#/ecosystem',
-        permanent: false,
-      },
-      {
-        source: '/bridge',
-        destination: '/portal/index.html#/bridge',
-        permanent: false,
-      },
+    ];
+  },
+  redirects: async () => {
+    return [
       {
         source: '/portal-storybook',
         destination: '/portal-storybook/index.html',

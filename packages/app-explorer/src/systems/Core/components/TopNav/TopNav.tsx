@@ -50,8 +50,8 @@ export function TopNav() {
       >
         Explorer
       </Nav.MenuItem>
-      <Nav.MenuItem href="/bridge">Bridge</Nav.MenuItem>
-      <Nav.MenuItem href="/portal">Ecosystem</Nav.MenuItem>
+      <Nav.MenuItem href="/portal/bridge">Bridge</Nav.MenuItem>
+      <Nav.MenuItem href="/portal/ecosystem">Ecosystem</Nav.MenuItem>
     </>
   );
 
