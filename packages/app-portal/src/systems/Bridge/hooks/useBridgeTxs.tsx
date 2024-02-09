@@ -20,7 +20,7 @@ const selectors = {
 
 export const useBridgeTxs = () => {
   const {
-    hasWallet,
+    isConnected,
     isLoadingConnection,
     provider: fuelProvider,
     address: fuelAddress,
@@ -39,8 +39,6 @@ export const useBridgeTxs = () => {
   const paginatedBridgeTxs = bridgeTxs?.slice(0, amountTxsToShow);
   const hasMorePages = (bridgeTxs?.length || 0) > amountTxsToShow;
 
-  const isConnected = !!fuelAddress?.toAddress();
-
   return {
     handlers: {
       showMore: () => setAmountTxsToShow(amountTxsToShow + MAX_BY_PAGE),
@@ -48,9 +46,7 @@ export const useBridgeTxs = () => {
     bridgeTxs: paginatedBridgeTxs,
     isLoading,
     hasMorePages,
-    shouldShowNotConnected: hasWallet
-      ? !isLoadingConnection && !isConnected && !isLoading
-      : !hasWallet,
+    shouldShowNotConnected: !isLoadingConnection && !isConnected && !isLoading,
     shouldShowEmpty:
       isConnected && !isLoading && bridgeTxs && bridgeTxs.length === 0,
     shouldShowList: !isLoading && isConnected && (bridgeTxs?.length || 0) > 0,

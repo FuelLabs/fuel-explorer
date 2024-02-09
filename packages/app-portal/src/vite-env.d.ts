@@ -16,6 +16,8 @@ interface ImportMetaEnv {
   readonly VITE_IS_PUBLIC_PREVIEW: string;
   readonly VITE_WALLET_INSTALL: string;
   readonly VITE_WALLET_INSTALL_NEXT: string;
+  readonly VITE_FUEL_PROVIDER_URL: string;
+  readonly VITE_BLOCK_EXPLORER_URL: string;
 }
 
 interface ImportMeta {

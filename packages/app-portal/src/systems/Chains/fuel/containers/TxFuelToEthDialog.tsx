@@ -23,6 +23,8 @@ export function TxFuelToEthDialog() {
     txId: metadata.txId,
   });
 
+  console.log(amount);
+
   return (
     <>
       <Dialog.Close aria-label="Close Transaction Dialog" />
