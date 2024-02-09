@@ -14,6 +14,7 @@ import { IconGasStation } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Routes } from '~/routes';
 
+import { isValidAddress } from '~/systems/Core/utils/address';
 import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
 import type { TransactionNode } from '../../../Transaction/types';
 
@@ -29,9 +30,10 @@ export function TxCard({
   ...props
 }: TxCardProps) {
   const fee = bn(tx.fee);
+  const isValidTxID = isValidAddress(tx.id);
 
   return (
-    <Link scroll={true} href={Routes.txSimple(tx.id)}>
+    <Link scroll={true} href={Routes.txSimple(tx.id)} prefetch={isValidTxID}>
       <Card {...props} className={cx(className)}>
         <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
           <Box className="flex gap-3 h-[26px]">

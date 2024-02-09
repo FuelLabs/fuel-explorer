@@ -1,5 +1,5 @@
 import { Nav, useTheme } from '@fuels/ui';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Pages } from '~/types';
 
 import { tv } from 'tailwind-variants';
@@ -8,13 +8,6 @@ import { removeTrailingSlash } from '../utils';
 export function Header() {
   const classes = styles();
   const { toggleTheme } = useTheme();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isLinkActive = (url: string) => {
-    return removeTrailingSlash(location.pathname).startsWith(
-      removeTrailingSlash(url),
-    );
-  };
 
   const themeToggle = (
     <Nav.ThemeToggle whenOpened="no-effect" onToggle={() => toggleTheme()} />
@@ -27,21 +20,14 @@ export function Header() {
           <Nav.Logo />
         </Nav.Menu>
         <Nav.Menu>
-          <Nav.MenuItem
-            as="div"
-            className={classes.menuItem()}
-            isActive={isLinkActive(Pages.bridge)}
-            onClick={() => navigate(Pages.bridge)}
-          >
-            Bridge
+          <Nav.MenuItem className={classes.menuItem()}>
+            <a href={window.location.origin}>Explorer</a>
           </Nav.MenuItem>
-          <Nav.MenuItem
-            as="div"
-            className={classes.menuItem()}
-            isActive={isLinkActive(Pages.ecosystem)}
-            onClick={() => navigate(Pages.ecosystem)}
-          >
-            Ecosystem
+          <Nav.MenuItem className={classes.menuItem()}>
+            <NavLink to={Pages.bridge}>Bridge</NavLink>
+          </Nav.MenuItem>
+          <Nav.MenuItem className={classes.menuItem()}>
+            <NavLink to={Pages.ecosystem}>Ecosystem</NavLink>
           </Nav.MenuItem>
           {themeToggle}
         </Nav.Menu>
@@ -52,21 +38,14 @@ export function Header() {
           {themeToggle}
         </Nav.MobileContent>
         <Nav.Menu>
-          <Nav.MenuItem
-            as="div"
-            className={classes.menuItem()}
-            isActive={isLinkActive(Pages.bridge)}
-            onClick={() => navigate(Pages.bridge)}
-          >
-            Bridge
+          <Nav.MenuItem className={classes.menuItem()}>
+            <a href={window.location.origin}>Explorer</a>
           </Nav.MenuItem>
-          <Nav.MenuItem
-            as="div"
-            className={classes.menuItem()}
-            isActive={isLinkActive(Pages.ecosystem)}
-            onClick={() => navigate(Pages.ecosystem)}
-          >
-            Ecosystem
+          <Nav.MenuItem className={classes.menuItem()}>
+            <NavLink to={Pages.bridge}>Bridge</NavLink>
+          </Nav.MenuItem>
+          <Nav.MenuItem className={classes.menuItem()}>
+            <NavLink to={Pages.ecosystem}>Ecosystem</NavLink>
           </Nav.MenuItem>
         </Nav.Menu>
       </Nav.Mobile>
@@ -76,6 +55,7 @@ export function Header() {
 
 const styles = tv({
   slots: {
-    menuItem: 'pointer',
+    menuItem:
+      'pointer [a]:color-inherit [a.active]:text-success [a]:decoration-none [a.active]:decoration-none',
   },
 });
