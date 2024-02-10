@@ -14,7 +14,8 @@ export function OverlayDialog() {
 
   return (
     <Dialog
-      open={overlay.isDialogOpen}
+      isOpen={overlay.isDialogOpen}
+      shouldCloseOnInteractOutside={() => overlay.settings.closeOnBlur}
       onOpenChange={(isOpen) => !isOpen && overlay.close()}
     >
       <Dialog.Content className={classes.content()}>
