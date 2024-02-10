@@ -9,7 +9,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Children, cloneElement, useEffect, useState } from 'react';
 import { useWindowSize } from 'react-use';
 
-import { useTheme } from 'next-themes';
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
@@ -57,6 +56,7 @@ export type NavConnectionProps = HStackProps & {
 export type NavThemeToggleProps = AsChildProp &
   PropsOf<'span'> & {
     whenOpened?: 'hide' | 'show' | 'no-effect';
+    theme?: 'dark' | 'light' | string;
     onToggle?: (theme: string) => void;
   };
 
@@ -345,13 +345,15 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
 export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
   id: 'NavThemeToggle',
   baseElement: 'span',
-  render: (Root, { className, whenOpened = 'hide', onToggle, ...props }) => {
-    const { theme: current } = useTheme();
+  render: (
+    Root,
+    { className, theme, whenOpened = 'hide', onToggle, ...props },
+  ) => {
     const mobileProps = useNavMobileContext();
     const classes = styles();
 
     function handleToggle() {
-      const next = current === 'light' ? 'dark' : 'light';
+      const next = theme === 'light' ? 'dark' : 'light';
       onToggle?.(next);
     }
 
@@ -360,7 +362,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         {...props}
         aria-label="Toggle Theme"
         className={classes.themeToggle({ className })}
-        data-theme={current}
+        data-theme={theme}
         role="button"
         tabIndex={0}
         onClick={handleToggle}

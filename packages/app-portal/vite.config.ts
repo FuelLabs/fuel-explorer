@@ -5,9 +5,12 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 import './load.envs.js';
 
-const { PORT, NODE_ENV, CI } = process.env;
+const { PORT, NO_PORTAL, CI } = process.env;
 
-const basePortal = NODE_ENV === 'production' ? '/portal' : '/';
+// NO_PORTAL can be set on .env for local development
+// directly on the .env file or on the command line
+// to run the app without the /portal prefix
+const basePortal = NO_PORTAL ? '/' : '/portal';
 process.env.BASE_URL = basePortal;
 
 // https://vitejs.dev/config/

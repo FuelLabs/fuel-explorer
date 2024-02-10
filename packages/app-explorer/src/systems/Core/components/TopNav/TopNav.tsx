@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react';
 import { SearchWidget } from '../Search/SearchWidget';
 
 export function TopNav() {
+  const { theme, setTheme } = useTheme();
   // We need two of each variable bc both the mobile and desktop
   // nav elements are in the DOM and respond to click events.
-  const { setTheme } = useTheme();
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { isMobile, isLaptop } = useBreakpoints();
@@ -58,6 +58,7 @@ export function TopNav() {
   const themeToggle = (
     <Nav.ThemeToggle
       whenOpened="no-effect"
+      theme={theme!}
       onToggle={(theme) => setTheme(theme)}
     />
   );
