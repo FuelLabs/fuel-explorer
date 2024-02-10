@@ -5,12 +5,18 @@ import { useOverlay } from '~/systems/Overlay';
 
 import { Box, Button, Dialog, Text, VStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
+import { useEthAccountConnection } from '../../eth';
 import { useTxFuelToEth } from '../hooks';
 
 export function TxFuelToEthDialog() {
   const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
+  const {
+    isConnected,
+    isConnecting,
+    handlers: ethHandlers,
+  } = useEthAccountConnection();
   const {
     steps,
     status,
@@ -50,13 +56,25 @@ export function TxFuelToEthDialog() {
       </VStack>
       {(status?.isWaitingEthWalletApproval ||
         status?.isConfirmTransactionLoading) && (
-        <Button
-          className={classes.actionButton()}
-          isLoading={status.isConfirmTransactionLoading}
-          onClick={handlers.relayToEth}
-        >
-          Confirm Transaction
-        </Button>
+        <>
+          {isConnected ? (
+            <Button
+              className={classes.actionButton()}
+              isLoading={status.isConfirmTransactionLoading}
+              onClick={handlers.relayToEth}
+            >
+              Confirm Transaction
+            </Button>
+          ) : (
+            <Button
+              className={classes.actionButton()}
+              isLoading={isConnecting}
+              onClick={ethHandlers.connect}
+            >
+              Connect Ethereum Wallet
+            </Button>
+          )}
+        </>
       )}
     </>
   );
