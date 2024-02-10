@@ -15,6 +15,10 @@ const selectors = {
   },
 };
 
+const settings = {
+  closeOnBlur: true,
+};
+
 export function useOverlay<T = void>() {
   const isDialogOpen = store.useSelector(
     Services.overlay,
@@ -31,6 +35,7 @@ export function useOverlay<T = void>() {
     is,
     isDialogOpen,
     overlay,
+    settings,
     metadata: metadata as T,
     open: store.openOverlay,
     close: store.closeOverlay,

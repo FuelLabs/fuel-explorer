@@ -18,6 +18,7 @@ export function OverlayDialog() {
     <Dialog
       isOpen={overlay.isDialogOpen}
       css={styles.dialog}
+      shouldCloseOnInteractOutside={() => overlay.settings.closeOnBlur}
       onOpenChange={(isOpen) => !isOpen && overlay.close()}
     >
       <Dialog.Content css={styles.content}>
