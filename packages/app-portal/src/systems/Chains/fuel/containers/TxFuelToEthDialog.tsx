@@ -5,11 +5,17 @@ import { BridgeSteps, BridgeTxOverview } from '~/systems/Bridge';
 import { shortAddress } from '~/systems/Core';
 import { useOverlay } from '~/systems/Overlay';
 
+import { useEthAccountConnection } from '../../eth';
 import { useTxFuelToEth } from '../hooks';
 
 export function TxFuelToEthDialog() {
   const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
+  const {
+    isConnected,
+    isConnecting,
+    handlers: ethHandlers,
+  } = useEthAccountConnection();
   const {
     steps,
     status,
@@ -50,14 +56,25 @@ export function TxFuelToEthDialog() {
       {(status?.isWaitingEthWalletApproval ||
         status?.isConfirmTransactionLoading) && (
         <Dialog.Footer>
-          <Button
-            intent="primary"
-            css={styles.actionButton}
-            isLoading={status.isConfirmTransactionLoading}
-            onClick={handlers.relayToEth}
-          >
-            Confirm Transaction
-          </Button>
+          {isConnected ? (
+            <Button
+              intent="primary"
+              css={styles.actionButton}
+              isLoading={status.isConfirmTransactionLoading}
+              onClick={handlers.relayToEth}
+            >
+              Confirm Transaction
+            </Button>
+          ) : (
+            <Button
+              intent="primary"
+              css={styles.actionButton}
+              isLoading={isConnecting}
+              onClick={ethHandlers.connect}
+            >
+              Connect Ethereum Wallet
+            </Button>
+          )}
         </Dialog.Footer>
       )}
     </>

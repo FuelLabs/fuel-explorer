@@ -10,11 +10,14 @@ import {
 } from 'wagmi';
 import type { AssetEth } from '~/systems/Assets/utils';
 
+import { useEffect } from 'react';
+import { useOverlay } from '~/systems/Overlay';
 import { parseEthAddressToFuel } from '../utils';
 
 export function useEthAccountConnection(props?: {
   erc20Address?: `0x${string}`;
 }) {
+  const overlay = useOverlay();
   const { erc20Address } = props || {};
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
@@ -30,6 +33,10 @@ export function useEthAccountConnection(props?: {
   const { disconnect } = useDisconnect();
   const paddedAddress = parseEthAddressToFuel(address);
 
+  useEffect(() => {
+    overlay.settings.closeOnBlur = !isConnecting;
+  }, [isConnecting]);
+
   async function addAsset(asset: AssetEth) {
     if (asset.address && walletClient) {
       await walletClient?.watchAsset({
@@ -43,9 +50,14 @@ export function useEthAccountConnection(props?: {
     }
   }
 
+  function connect() {
+    overlay.settings.closeOnBlur = false;
+    setOpen(true);
+  }
+
   return {
     handlers: {
-      connect: () => setOpen(true),
+      connect,
       disconnect,
       addAsset,
     },
