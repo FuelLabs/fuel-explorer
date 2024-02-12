@@ -12,6 +12,7 @@ import {
   Grid,
   HStack,
   Heading,
+  HelperIcon,
   Icon,
   Link,
   LoadingBox,
@@ -19,7 +20,7 @@ import {
   Text,
   VStack,
 } from '@fuels/ui';
-import { IconArrowDown } from '@tabler/icons-react';
+import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
@@ -28,6 +29,7 @@ import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { formatZeroUnits } from '~/systems/Core/utils/format';
 
+import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
@@ -259,37 +261,42 @@ function MintOutputs({
   tx: TransactionNode;
   isLoading: boolean;
 }) {
+  const classes = styles();
   const inputContractId = tx.inputContract?.contract?.id;
   const hasInputContract = Boolean(inputContractId);
+  const amount = bn(tx.mintAmount);
 
   const content = (
     <VStack>
       <Heading as="h2" size="5" className="leading-none">
-        Outputs
+        Minted Assets
       </Heading>
-      <Card>
-        <Card.Body className="flex flex-col gap-2">
+      <Card className="pb-3">
+        <Card.Header className={classes.header()}>
           {tx.mintAssetId && (
-            <HStack>
-              <Text as="span" className="text-sm">
-                Mint Amount
-              </Text>
-              <Amount
-                iconSize={16}
-                assetId={tx.mintAssetId}
-                value={bn(tx.mintAmount)}
-                className="text-xs tablet:text-sm"
+            <AssetItem assetId={tx.mintAssetId}>
+              <Address
+                prefix="Id:"
+                value={tx.mintAssetId}
+                linkProps={{
+                  as: NextLink,
+                  href: Routes.accountAssets(tx.mintAssetId),
+                }}
               />
-            </HStack>
+            </AssetItem>
           )}
-          {tx.mintAssetId && (
-            <HStack>
-              <Text as="span" className="text-sm">
-                Asset ID Minted
-              </Text>
-              <Address value={tx.mintAssetId} />
-            </HStack>
-          )}
+          <HStack className="hidden tablet:flex items-center gap-2">
+            <Icon icon={IconArrowUp} className="text-success" />
+            <Amount
+              hideSymbol
+              hideIcon
+              assetId={tx.mintAssetId}
+              value={amount}
+            />
+            <HelperIcon message="This is the amount minted in the transaction" />
+          </HStack>
+        </Card.Header>
+        <Card.Body className="flex flex-col gap-1 border-t border-border pt-3">
           {hasInputContract && (
             <HStack>
               <Text as="span" className="text-sm">
@@ -343,6 +350,7 @@ function MintOutputs({
 
 const styles = tv({
   slots: {
+    header: 'group flex flex-row gap-4 justify-between items-center',
     wrapper: [
       'grid-cols-1 gap-10 laptop:grid-cols-[300px_1fr] laptop:items-start',
     ],
