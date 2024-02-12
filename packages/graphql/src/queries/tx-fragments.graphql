@@ -232,6 +232,16 @@ fragment TransactionItem on Transaction {
   salt
   storageSlots
   rawPayload
+  mintAmount
+  mintAssetId
+  inputContract {
+    contract {
+      id
+    }
+  }
+  outputContract {
+    inputIndex
+  }
 
   status {
     ...TransactionStatus

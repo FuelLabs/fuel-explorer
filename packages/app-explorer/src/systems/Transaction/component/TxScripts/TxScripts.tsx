@@ -51,30 +51,32 @@ export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
   const hasOperations = tx.operations?.length ?? 0 > 0;
   return (
     <VStack {...props}>
-      <Heading
-        as="h2"
-        size="5"
-        className="leading-none flex items-center gap-8"
-      >
-        Operations
-        {opened && (
-          <Button
-            className="text-muted"
-            variant="link"
-            color="gray"
-            leftIcon={IconFold}
-            onClick={() => setOpened(false)}
-          >
-            Collapse
-          </Button>
-        )}
-      </Heading>
       <LoadingWrapper
         repeatLoader={2}
         isLoading={isLoading}
         noItems={!hasOperations}
         regularEl={
-          <ScriptsContent tx={tx} opened={opened} setOpened={setOpened} />
+          <>
+            <Heading
+              as="h2"
+              size="5"
+              className="leading-none flex items-center gap-8"
+            >
+              Operations
+              {opened && (
+                <Button
+                  className="text-muted"
+                  variant="link"
+                  color="gray"
+                  leftIcon={IconFold}
+                  onClick={() => setOpened(false)}
+                >
+                  Collapse
+                </Button>
+              )}
+            </Heading>
+            <ScriptsContent tx={tx} opened={opened} setOpened={setOpened} />
+          </>
         }
         loadingEl={
           <Card className="py-5 px-4 flex flex-row items-center justify-between">
