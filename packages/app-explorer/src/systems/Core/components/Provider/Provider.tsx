@@ -1,19 +1,13 @@
 'use client';
 
-import { Theme, Toaster } from '@fuels/ui';
+import { Toaster } from '@fuels/ui';
+import { ThemeProvider } from '../Theme';
 
-export function Provider({
-  children,
-  theme,
-}: {
-  children: React.ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  theme: any;
-}) {
+export function Provider({ children }: { children: React.ReactNode }) {
   return (
-    <Theme appearance={theme} hasBackground={false}>
+    <ThemeProvider>
       {children}
       <Toaster />
-    </Theme>
+    </ThemeProvider>
   );
 }

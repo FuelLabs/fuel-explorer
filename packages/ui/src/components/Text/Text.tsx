@@ -89,7 +89,7 @@ export const TextBase = createPolymorphicComponent<TextProps, typeof RadixText>(
         rightIcon,
         iconColor = 'text-icon',
         ...props
-      }
+      },
     ) => {
       const { children, ...itemProps } = useIconProps({
         size,
@@ -111,7 +111,7 @@ export const TextBase = createPolymorphicComponent<TextProps, typeof RadixText>(
         </Comp>
       );
     },
-  }
+  },
 );
 
 export const Text = withNamespace(TextBase, {

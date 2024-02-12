@@ -69,7 +69,7 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
       children,
       gap = '4',
       ...props
-    }
+    },
   ) => {
     {
       const newChildren = useStrictedChildren('Asset', CHILD_ITEMS, children);
@@ -137,9 +137,9 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
 
     return (
       <img
+        {...props}
         alt={`${asset.name} logo`}
         src={asset.imageUrl}
-        {...props}
         height={size}
         width={size}
       />

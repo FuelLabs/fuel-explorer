@@ -1,6 +1,6 @@
 'use client';
-import './error.css';
 import '@fuels/ui/styles.css';
+import './error.css';
 import './globals.css';
 
 import Cookies from 'js-cookie';
@@ -27,7 +27,7 @@ export default function Page() {
         <link rel="icon" href="/favicon.svg" />
       </head>
       <body>
-        <Provider theme={value}>
+        <Provider>
           <ErrorPageComponent />
         </Provider>
       </body>

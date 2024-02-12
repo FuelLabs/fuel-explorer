@@ -1,7 +1,7 @@
 import { toast } from '@fuel-ui/react';
 import type {
-  Provider as FuelProvider,
   MessageProof,
+  Provider as FuelProvider,
   TransactionResult,
 } from 'fuels';
 import type { PublicClient as EthPublicClient } from 'wagmi';
@@ -307,7 +307,7 @@ export const txFuelToEthMachine = createMachine(
                           ev: Extract<
                             TxFuelToEthMachineEvents,
                             { type: 'RELAY_TO_ETH' }
-                          >
+                          >,
                         ) => ({
                           messageProof: ctx.messageProof,
                           ethWalletClient: ev.input.ethWalletClient,
@@ -415,7 +415,9 @@ export const txFuelToEthMachine = createMachine(
           setTimeout(() => {
             toast.success(
               'Withdraw successfully initiated. You may now close the popup.',
-              { duration: 5000 }
+              {
+                duration: 5000,
+              },
             );
           }, 2000);
           FuelTxCache.removeTxCreated(ctx.fuelTxId);
@@ -558,7 +560,7 @@ export const txFuelToEthMachine = createMachine(
         },
       }),
     },
-  }
+  },
 );
 
 export type TxFuelToEthMachine = typeof txFuelToEthMachine;

@@ -1,6 +1,6 @@
 import { HStack } from '@fuels/ui';
 import type { MutableRefObject } from 'react';
-import { useEffect, useRef, createContext } from 'react';
+import { createContext, useEffect, useRef } from 'react';
 
 import { SearchForm } from './SearchForm';
 import { styles } from './styles';
@@ -77,7 +77,11 @@ export const SearchWidget = ({
         ref={widgetRef}
         className="items-center gap-0 laptop:gap-4 justify-center flex-1"
       >
-        <SearchForm className={classes.searchSize()} autoFocus={autoFocus} expandOnFocus={expandOnFocus} />
+        <SearchForm
+          className={classes.searchSize()}
+          autoFocus={autoFocus}
+          expandOnFocus={expandOnFocus}
+        />
       </HStack>
     </SearchContext.Provider>
   );

@@ -9,7 +9,7 @@ import { cx } from '../../utils/css';
 import { Box } from '../Box';
 import type { BoxProps } from '../Box';
 import { Card } from '../Card';
-import type { CardProps, CardHeaderProps, CardBodyProps } from '../Card';
+import type { CardBodyProps, CardHeaderProps, CardProps } from '../Card';
 import { IconButton } from '../IconButton';
 import { Text } from '../Text';
 
@@ -49,11 +49,11 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
       onOpenChange,
       variant = 'surface',
       ...props
-    }
+    },
   ) => {
     const classes = styles();
     const [opened, setOpened] = useState(
-      Boolean(defaultOpened || initialOpened)
+      Boolean(defaultOpened || initialOpened),
     );
 
     useEffect(() => {
@@ -68,7 +68,7 @@ export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({
           {...props}
           className={cx(
             classes.root({ className }),
-            hideIcon ? 'cursor-default' : ''
+            hideIcon ? 'cursor-default' : '',
           )}
         >
           {children}
@@ -93,7 +93,7 @@ export const CollapsibleHeader = createComponent<
         data-state={opened ? 'opened' : 'closed'}
         className={cx(
           classes.header({ className }),
-          hideIcon ? 'cursor-default' : ''
+          hideIcon ? 'cursor-default' : '',
         )}
         onClick={() => setOpened(!opened)}
       >

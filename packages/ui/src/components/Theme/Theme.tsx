@@ -1,6 +1,4 @@
 import { Theme as RadixTheme } from '@radix-ui/themes';
-
-import { createComponent } from '../../utils/component';
 import type { Colors, PropsOf } from '../../utils/types';
 import {
   INIT_ICON_COLOR,
@@ -15,32 +13,31 @@ export type ThemeProps = PropsOf<typeof RadixTheme> & {
   iconColor?: Colors;
 };
 
-export const Theme = createComponent<ThemeProps, typeof RadixTheme>({
-  id: 'Theme',
-  baseElement: RadixTheme,
-  render: (
-    Comp,
-    {
-      iconSize = INIT_ICON_SIZE,
-      iconColor = INIT_ICON_COLOR,
-      iconStroke = INIT_ICON_STROKE,
-      ...props
-    }
-  ) => {
-    return (
+const defaultProps = {
+  grayColor: 'slate',
+  accentColor: 'grass',
+  appearance: 'dark',
+  radius: 'medium',
+  panelBackground: 'translucent',
+  scaling: '105%',
+  iconSize: INIT_ICON_SIZE,
+  iconColor: INIT_ICON_COLOR,
+  iconStroke: INIT_ICON_STROKE,
+};
+
+export const Theme = (themeProps: ThemeProps) => {
+  const { iconSize, iconColor, iconStroke, children, ...props } = Object.assign(
+    defaultProps,
+    themeProps,
+  );
+  return (
+    <RadixTheme>
       <IconProvider
         value={{ size: iconSize, color: iconColor, stroke: iconStroke }}
+        {...props}
       >
-        <Comp {...props} />
+        {children}
       </IconProvider>
-    );
-  },
-  defaultProps: {
-    grayColor: 'slate',
-    accentColor: 'grass',
-    appearance: 'dark',
-    radius: 'medium',
-    panelBackground: 'translucent',
-    scaling: '105%',
-  },
-});
+    </RadixTheme>
+  );
+};

@@ -1,6 +1,6 @@
 'use client';
 import type { BaseProps } from '@fuels/ui';
-import { Heading, Badge, HStack } from '@fuels/ui';
+import { Badge, HStack, Heading } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 export type PageTitleProps = BaseProps<{

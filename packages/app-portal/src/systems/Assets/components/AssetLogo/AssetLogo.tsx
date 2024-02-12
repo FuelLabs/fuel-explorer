@@ -1,4 +1,4 @@
-import { Image, Avatar } from '@fuel-ui/react';
+import { Avatar, Image } from '@fuel-ui/react';
 import { useMemo } from 'react';
 
 import type { Asset } from '../../services';

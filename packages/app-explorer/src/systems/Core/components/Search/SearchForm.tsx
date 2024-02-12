@@ -13,7 +13,11 @@ type SearchFormProps = {
   expandOnFocus?: boolean;
 };
 
-export function SearchForm({ className, autoFocus, expandOnFocus }: SearchFormProps) {
+export function SearchForm({
+  className,
+  autoFocus,
+  expandOnFocus,
+}: SearchFormProps) {
   const classes = styles();
   const [results, action] = useFormState(
     (_: SearchResult | null, formData: FormData) => {

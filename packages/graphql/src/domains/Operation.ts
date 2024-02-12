@@ -32,8 +32,6 @@ function getType(receipt: TxReceipt) {
 }
 
 export class OperationDomain {
-  constructor() {}
-
   async operationsFromTransaction(transaction: Tx) {
     const receipts = transaction.receipts || [];
     return this._createOperations(receipts);
@@ -104,7 +102,7 @@ export class OperationDomain {
   private _findNextReturnIdx(
     current: TxReceipt,
     idx: number,
-    hasError?: boolean
+    hasError?: boolean,
   ) {
     return (receipt: TxReceipt, nIdx: number) => {
       if (hasError) return nIdx > idx && isError(receipt);

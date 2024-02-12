@@ -1,4 +1,4 @@
-import { Button, AlertDialog } from '@fuel-ui/react';
+import { AlertDialog, Button } from '@fuel-ui/react';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 

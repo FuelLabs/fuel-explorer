@@ -1,13 +1,13 @@
 'use client';
 import { Nav, useBreakpoints } from '@fuels/ui';
+import { useTheme } from 'next-themes';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-import { setTheme } from '../../actions/setTheme';
 import { SearchWidget } from '../Search/SearchWidget';
 
 export function TopNav() {
+  const { theme, setTheme } = useTheme();
   // We need two of each variable bc both the mobile and desktop
   // nav elements are in the DOM and respond to click events.
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
@@ -42,9 +42,6 @@ export function TopNav() {
 
   const tooling = (
     <>
-      <Nav.MenuItem href="https://next-alpha.fuel.network/bridge">
-        Bridge
-      </Nav.MenuItem>
       <Nav.MenuItem
         isActive
         as={NextLink}
@@ -53,22 +50,22 @@ export function TopNav() {
       >
         Explorer
       </Nav.MenuItem>
-      <Nav.MenuItem href="https://next-alpha.fuel.network/ecosystem">
-        Ecosystem
-      </Nav.MenuItem>
+      <Nav.MenuItem href="/portal/bridge">Bridge</Nav.MenuItem>
+      <Nav.MenuItem href="/portal/ecosystem">Ecosystem</Nav.MenuItem>
     </>
   );
 
   const themeToggle = (
     <Nav.ThemeToggle
       whenOpened="no-effect"
-      onToggle={(theme) => setTheme({ theme })}
+      theme={theme!}
+      onToggle={(theme) => setTheme(theme)}
     />
   );
 
   return (
     <Nav>
-      <Nav.Desktop className={`px-10 justify-between`}>
+      <Nav.Desktop className={'px-10 justify-between'}>
         <Nav.Menu>
           {logo}
           {externalLinks}

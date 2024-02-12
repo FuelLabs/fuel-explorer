@@ -19,6 +19,6 @@ export function refColorVariablesAsObj(list: string[]) {
       acc[curr] = `var(--color-${curr})`;
       return acc;
     },
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
 }

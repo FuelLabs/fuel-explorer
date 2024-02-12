@@ -13,8 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "dotenv": "16.4.1",
-    "fuels": "0.71.1",
-    "vitest": "1.2.1",
+    "fuels": "0.73.0",
+    "vitest": "1.2.2",
     "tsx": "4.7.0"
   }
 }

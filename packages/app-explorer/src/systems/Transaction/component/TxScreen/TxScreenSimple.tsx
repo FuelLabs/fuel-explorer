@@ -3,8 +3,10 @@
 
 import type { GroupedInput, GroupedOutput } from '@fuel-explorer/graphql';
 import {
+  Address,
   Badge,
   Box,
+  Card,
   EntityItem,
   Flex,
   Grid,
@@ -12,12 +14,10 @@ import {
   Heading,
   Icon,
   Link,
-  VStack,
   LoadingBox,
   LoadingWrapper,
-  Card,
-  Address,
   Text,
+  VStack,
 } from '@fuels/ui';
 import { IconArrowDown } from '@tabler/icons-react';
 import { bn } from 'fuels';

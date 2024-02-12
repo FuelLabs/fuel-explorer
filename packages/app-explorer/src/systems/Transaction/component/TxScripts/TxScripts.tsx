@@ -1,38 +1,38 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import 'react-json-view-lite/dist/index.css';
-import { ReceiptType } from '@fuel-explorer/graphql';
+import { ReceiptType } from '@fuel-explorer/graphql/src/sdk';
 import type {
   Maybe,
   OperationReceipt,
   TransactionReceiptFragment,
-} from '@fuel-explorer/graphql';
+} from '@fuel-explorer/graphql/src/sdk';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
-  Text,
   Badge,
   Box,
   Button,
+  Card,
   Code,
   Collapsible,
   HStack,
   Heading,
   HoverCard,
-  ScrollArea,
-  VStack,
-  cx,
-  Card,
   LoadingBox,
   LoadingWrapper,
+  ScrollArea,
+  Text,
+  VStack,
+  cx,
 } from '@fuels/ui';
 import {
-  IconFold,
-  IconArrowsMoveVertical,
   IconArrowRight,
+  IconArrowsMoveVertical,
+  IconFold,
 } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { createContext, useContext, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import 'react-json-view-lite/dist/index.css';
 import { useMeasure } from 'react-use';
 import { tv } from 'tailwind-variants';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
@@ -119,15 +119,15 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
     );
   }
 
-  const receipts = operations.map((i) => i?.receipts ?? []).flat();
+  const receipts = operations.flatMap((i) => i?.receipts ?? []);
   const first = receipts?.[0];
   const last = receipts?.[receipts.length - 1];
   const hasPanic = operations?.some((o) =>
     o?.receipts?.some(
       (r) =>
         r?.item?.receiptType === ReceiptType.Panic ||
-        r?.item?.receiptType === ReceiptType.Revert
-    )
+        r?.item?.receiptType === ReceiptType.Revert,
+    ),
   );
 
   if (!opened && receipts.length > 3) {
@@ -239,30 +239,30 @@ function TypesCounter({
   const transfers = receipts.filter(
     (i) =>
       i?.receiptType === ReceiptType.Transfer ||
-      i?.receiptType === ReceiptType.TransferOut
+      i?.receiptType === ReceiptType.TransferOut,
   );
   const mints = receipts.filter((i) => i?.receiptType === ReceiptType.Mint);
   const burns = receipts.filter((i) => i?.receiptType === ReceiptType.Burn);
   const messages = receipts.filter(
-    (i) => i?.receiptType === ReceiptType.MessageOut
+    (i) => i?.receiptType === ReceiptType.MessageOut,
   );
   const returns = receipts.filter(
     (i) =>
       i?.receiptType === ReceiptType.Return ||
-      i?.receiptType === ReceiptType.ReturnData
+      i?.receiptType === ReceiptType.ReturnData,
   );
   const results = receipts.filter(
-    (i) => i?.receiptType === ReceiptType.ScriptResult
+    (i) => i?.receiptType === ReceiptType.ScriptResult,
   );
   const errors = receipts.filter(
     (i) =>
       i?.receiptType === ReceiptType.Panic ||
-      i?.receiptType === ReceiptType.Revert
+      i?.receiptType === ReceiptType.Revert,
   );
   const logs = receipts.filter(
     (i) =>
       i?.receiptType === ReceiptType.Log ||
-      i?.receiptType === ReceiptType.LogData
+      i?.receiptType === ReceiptType.LogData,
   );
   return (
     <div className="flex flex-col gap-0 text-sm font-mono w-full">
@@ -294,7 +294,7 @@ const RETURN_TYPES = [ReceiptType.Return, ReceiptType.ReturnData];
 
 function getBadgeColor(
   hasError: boolean,
-  receipt?: Maybe<TransactionReceiptFragment>
+  receipt?: Maybe<TransactionReceiptFragment>,
 ) {
   const type = receipt?.receiptType ?? 'UNKNOWN';
   if (type === ReceiptType.Revert || type === ReceiptType.Panic) {
@@ -347,7 +347,7 @@ function ReceiptItem({
 }
 
 function parseJson(
-  item?: Maybe<TransactionReceiptFragment>
+  item?: Maybe<TransactionReceiptFragment>,
 ): Record<string, any> {
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {

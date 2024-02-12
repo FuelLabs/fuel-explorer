@@ -40,7 +40,7 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
       iconColor = 'text-icon',
       iconAriaLabel: ariaLabel = 'Copy to clipboard',
       ...props
-    }
+    },
   ) => {
     async function handleCopy() {
       await navigator.clipboard.writeText(value);

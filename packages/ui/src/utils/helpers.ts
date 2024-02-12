@@ -7,7 +7,7 @@ export function omit<T extends UnknownProps>(list: string[], props: T) {
       if (list.some((k) => k === key)) return obj;
       return { ...obj, [key]: value };
     },
-    {} as unknown as T
+    {} as unknown as T,
   );
 }
 
@@ -17,19 +17,19 @@ export function pick<T extends Record<any, any>>(list: string[], props: T) {
       if (list.some((k) => k === key)) return { ...obj, [key]: value };
       return obj;
     },
-    {} as unknown as T
+    {} as unknown as T,
   );
 }
 
 type MapFunction<T> = (
   value: T,
   key: string,
-  obj: Record<string, T>
+  obj: Record<string, T>,
 ) => [string, any];
 
 export function mapObjIndexed<T>(
   fn: MapFunction<T>,
-  obj: Record<string, T>
+  obj: Record<string, T>,
 ): Record<string, any> {
   return Object.keys(obj).reduce((acc: Record<string, any>, key: string) => {
     const value = obj[key];
@@ -51,11 +51,7 @@ export function toCamelCase(str: string): string {
   });
 }
 
-export function shortAddress(
-  address: string = '',
-  trimLeft = 6,
-  trimRight = 4
-) {
+export function shortAddress(address = '', trimLeft = 6, trimRight = 4) {
   return address.length > 10
     ? `${address.slice(0, trimLeft)}...${address.slice(-trimRight)}`
     : address;

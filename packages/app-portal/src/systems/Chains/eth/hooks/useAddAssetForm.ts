@@ -25,7 +25,7 @@ export const useAddAssetForm = (opts: UseAddAssetOpts = {}) => {
       .test(
         'Number',
         'Decimals must be greater than 0',
-        (val) => Number(val) > 0
+        (val) => Number(val) > 0,
       ),
   });
 

@@ -1,5 +1,5 @@
 import type { BN } from 'fuels';
-import { bn, DECIMAL_UNITS } from 'fuels';
+import { DECIMAL_UNITS, bn } from 'fuels';
 import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Services, store } from '~/store';
@@ -7,12 +7,12 @@ import { useAsset } from '~/systems/Assets/hooks/useAsset';
 import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
 import type { SupportedChain } from '~/systems/Chains';
 import {
-  useFuelAccountConnection,
-  useEthAccountConnection,
-  isEthChain,
-  isFuelChain,
   ETH_CHAIN,
   FUEL_CHAIN,
+  isEthChain,
+  isFuelChain,
+  useEthAccountConnection,
+  useFuelAccountConnection,
 } from '~/systems/Chains';
 import { Pages } from '~/types';
 
@@ -30,7 +30,7 @@ const selectors = {
       assetBalance,
     }: {
       ethAccount?: string;
-      fuelAccount?: string;
+      fuelAccount?: string | null;
       assetBalance?: BN;
     }) =>
     (state: BridgeMachineState) => {
@@ -123,7 +123,7 @@ export function useBridge() {
   }, [ethBalance, fromNetwork, fuelBalance]);
   const status = store.useSelector(
     Services.bridge,
-    selectors.status({ ethAccount: ethAddress, fuelAccount, assetBalance })
+    selectors.status({ ethAccount: ethAddress, fuelAccount, assetBalance }),
   );
 
   const navigate = useNavigate();
@@ -166,10 +166,15 @@ export function useBridge() {
     searchParams.set('from', 'eth');
     searchParams.set('to', 'fuel');
 
-    navigate({
-      pathname: Pages.bridge,
-      search: searchParams.toString(),
-    });
+    navigate(
+      {
+        pathname: Pages.bridge,
+        search: searchParams.toString(),
+      },
+      {
+        replace: true,
+      },
+    );
   }
 
   function goToWithdraw() {
@@ -177,10 +182,15 @@ export function useBridge() {
     searchParams.set('from', 'fuel');
     searchParams.set('to', 'eth');
 
-    navigate({
-      pathname: Pages.bridge,
-      search: searchParams.toString(),
-    });
+    navigate(
+      {
+        pathname: Pages.bridge,
+        search: searchParams.toString(),
+      },
+      {
+        replace: true,
+      },
+    );
   }
 
   function connectNetwork(network?: SupportedChain) {
@@ -213,7 +223,6 @@ export function useBridge() {
         store.startBridging({
           fuelAddress,
           ethWalletClient,
-          fuelWallet,
           fuelProvider,
           ethAddress,
           asset,

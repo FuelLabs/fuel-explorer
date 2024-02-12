@@ -1,6 +1,7 @@
 import { cssObj } from '@fuel-ui/css';
 import { IconButton, Image } from '@fuel-ui/react';
 import { useState } from 'react';
+import { relativeUrl } from '~/systems/Core';
 
 type ProjecImageProps = {
   name: string;
@@ -14,7 +15,7 @@ export const ProjecImage = ({ name, image }: ProjecImageProps) => {
     <div>
       {image && !imageFallback ? (
         <Image
-          src={`/ecosystem/images/${image}.jpeg`}
+          src={relativeUrl(`/ecosystem/images/${image}.jpeg`)}
           alt={name}
           width={40}
           height={40}

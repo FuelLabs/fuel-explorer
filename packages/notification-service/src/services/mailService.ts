@@ -1,6 +1,6 @@
+import path from 'path';
 import nodemailer from 'nodemailer';
 import hbs from 'nodemailer-express-handlebars';
-import path from 'path';
 
 const handlebarOptions = {
   viewEngine: {
@@ -50,7 +50,7 @@ export default class MailService {
       address: string;
       transactionId: string;
       completeWithdrawLink: string;
-    }
+    },
   ) {
     const mailOptions = {
       from: options.from,

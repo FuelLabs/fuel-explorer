@@ -1,5 +1,5 @@
 import { Tabs } from '@fuels/ui';
-import type { TabsProps, IconProps } from '@fuels/ui';
+import type { IconProps, TabsProps } from '@fuels/ui';
 import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';

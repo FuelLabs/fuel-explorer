@@ -23,8 +23,6 @@ import { Icon } from '../Icon/Icon';
 import { IconButton } from '../IconButton';
 import type { LinkProps } from '../Link/Link';
 import { Link } from '../Link/Link';
-import { useTheme } from '../Theme/useTheme';
-
 import { styles } from './styles';
 import { NavProvider, useNavContext } from './useNavContext';
 import { NavMobileProvider, useNavMobileContext } from './useNavMobileContext';
@@ -58,6 +56,7 @@ export type NavConnectionProps = HStackProps & {
 export type NavThemeToggleProps = AsChildProp &
   PropsOf<'span'> & {
     whenOpened?: 'hide' | 'show' | 'no-effect';
+    theme?: 'dark' | 'light' | string;
     onToggle?: (theme: string) => void;
   };
 
@@ -336,7 +335,7 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
         </>
       );
     },
-  }
+  },
 );
 
 /**
@@ -346,14 +345,15 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
 export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
   id: 'NavThemeToggle',
   baseElement: 'span',
-  render: (Root, { className, whenOpened = 'hide', onToggle, ...props }) => {
-    const { theme: current, toggleTheme } = useTheme();
+  render: (
+    Root,
+    { className, theme, whenOpened = 'hide', onToggle, ...props },
+  ) => {
     const mobileProps = useNavMobileContext();
     const classes = styles();
 
     function handleToggle() {
-      toggleTheme();
-      const next = current === 'light' ? 'dark' : 'light';
+      const next = theme === 'light' ? 'dark' : 'light';
       onToggle?.(next);
     }
 
@@ -362,7 +362,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         {...props}
         aria-label="Toggle Theme"
         className={classes.themeToggle({ className })}
-        data-theme={current}
+        data-theme={theme}
         role="button"
         tabIndex={0}
         onClick={handleToggle}

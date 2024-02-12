@@ -14,6 +14,7 @@ export const {
   VITE_FUEL_FUNGIBLE_ASSET_ID,
   VITE_WALLET_INSTALL,
   VITE_WALLET_INSTALL_NEXT,
+  VITE_BLOCK_EXPLORER_URL,
 } = import.meta.env;
 
 export const IS_PREVIEW = import.meta.env.VITE_IS_PUBLIC_PREVIEW === 'true';

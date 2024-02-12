@@ -13,7 +13,7 @@ type UseActOpts<Response> = {
 
 export function useAct<InputType extends z.ZodTypeAny, Response>(
   action: Action<InputType, Response>,
-  opts: UseActOpts<Response> = {}
+  opts: UseActOpts<Response> = {},
 ) {
   const doAction = useRef(action);
   const [data, setData] = useState<Response | null>(null);

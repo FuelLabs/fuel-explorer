@@ -1,5 +1,5 @@
 import type { BaseProps } from '@fuels/ui';
-import { HStack, Button, cx } from '@fuels/ui';
+import { Button, HStack, cx } from '@fuels/ui';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 
 type PaginationProps = BaseProps<{
@@ -17,7 +17,7 @@ export function Pagination({ page, onChange, ...props }: PaginationProps) {
       {...props}
       className={cx(
         'w-full tablet:w-auto grid grid-cols-[auto_1fr_auto]',
-        props.className
+        props.className,
       )}
     >
       <Button

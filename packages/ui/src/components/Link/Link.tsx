@@ -40,7 +40,7 @@ export const Link = createPolymorphicComponent<LinkProps, typeof RadixLink>({
       externalIcon: ExternalIcon = IconLink,
       iconSize = 18,
       ...props
-    }
+    },
   ) => {
     const isExternal =
       initIsExternal ||

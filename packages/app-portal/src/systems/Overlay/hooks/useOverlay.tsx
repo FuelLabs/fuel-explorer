@@ -1,8 +1,8 @@
 import { Services, store } from '~/store';
 
 import type {
-  OverlayMachineState,
   OverlayKeys,
+  OverlayMachineState,
 } from '../machines/overlayMachine';
 
 const selectors = {
@@ -15,10 +15,14 @@ const selectors = {
   },
 };
 
+const settings = {
+  closeOnBlur: true,
+};
+
 export function useOverlay<T = void>() {
   const isDialogOpen = store.useSelector(
     Services.overlay,
-    selectors.isDialogOpen
+    selectors.isDialogOpen,
   );
   const overlay = store.useSelector(Services.overlay, selectors.overlay);
   const metadata = store.useSelector(Services.overlay, selectors.metadata);
@@ -31,6 +35,7 @@ export function useOverlay<T = void>() {
     is,
     isDialogOpen,
     overlay,
+    settings,
     metadata: metadata as T,
     open: store.openOverlay,
     close: store.closeOverlay,

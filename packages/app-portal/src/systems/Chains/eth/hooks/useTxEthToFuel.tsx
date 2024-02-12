@@ -1,6 +1,6 @@
 import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import { useMemo } from 'react';
-import { store, Services } from '~/store';
+import { Services, store } from '~/store';
 import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
 import type { BridgeTxsMachineState } from '~/systems/Bridge';
 import { useExplorerLink } from '~/systems/Bridge/hooks/useExplorerLink';
@@ -26,14 +26,14 @@ const txEthToFuelSelectors = {
     const isSettlementSelected = state.hasTag('isSettlementSelected');
     const isSettlementDone = state.hasTag('isSettlementDone');
     const isConfirmTransactionLoading = state.hasTag(
-      'isConfirmTransactionLoading'
+      'isConfirmTransactionLoading',
     );
     const isConfirmTransactionSelected = state.hasTag(
-      'isConfirmTransactionSelected'
+      'isConfirmTransactionSelected',
     );
     const isReceiveDone = state.hasTag('isReceiveDone');
     const isWaitingFuelWalletApproval = state.hasTag(
-      'isWaitingFuelWalletApproval'
+      'isWaitingFuelWalletApproval',
     );
 
     return {
@@ -121,7 +121,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
 
   const txEthToFuelState = store.useSelector(
     Services.bridgeTxs,
-    bridgeTxsSelectors.txEthToFuel(txId)
+    bridgeTxsSelectors.txEthToFuel(txId),
   );
 
   const {

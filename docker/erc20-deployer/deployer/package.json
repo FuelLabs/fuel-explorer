@@ -6,9 +6,9 @@
   "dependencies": {
     "@fuel-bridge/test-utils": "next",
     "ethers": "5.7.2",
-    "fuels": "0.71.1"
+    "fuels": "0.73.0"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.2"
   }
 }
