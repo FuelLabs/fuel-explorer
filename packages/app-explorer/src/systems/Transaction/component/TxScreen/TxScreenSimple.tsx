@@ -185,15 +185,17 @@ function ContentMain({
               <LoadingBox className="w-24 h-6" />
             </Card>
           }
-          regularEl={tx.groupedInputs?.map((input, i) => (
-            // here we use only index as key because this component will not change
+          regularEl={
             <>
               <Heading as="h2" size="5" className="leading-none">
                 Inputs
               </Heading>
-              <TxInput key={i} input={input as GroupedInput} />
+              {tx.groupedInputs?.map((input, i) => (
+                // here we use only index as key because this component will not change
+                <TxInput key={i} input={input as GroupedInput} />
+              ))}
             </>
-          ))}
+          }
           noItemsEl={
             <EmptyCard hideImage>
               <EmptyCard.Title>No Inputs</EmptyCard.Title>
