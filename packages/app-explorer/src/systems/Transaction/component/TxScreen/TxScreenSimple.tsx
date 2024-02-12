@@ -227,20 +227,21 @@ function ContentMain({
                 <LoadingBox className="w-24 h-6" />
               </Card>
             }
-            regularEl={tx.groupedOutputs?.map((output, i) => (
+            regularEl={
               <>
                 <Heading as="h2" size="5" className="leading-none">
                   Outputs
                 </Heading>
-
-                <TxOutput
-                  // here we use only index as key because this component will not change
-                  key={i}
-                  tx={tx}
-                  output={output as GroupedOutput}
-                />
+                {tx.groupedOutputs?.map((output, i) => (
+                  <TxOutput
+                    // here we use only index as key because this component will not change
+                    key={i}
+                    tx={tx}
+                    output={output as GroupedOutput}
+                  />
+                ))}
               </>
-            ))}
+            }
             noItemsEl={
               <EmptyCard hideImage>
                 <EmptyCard.Title>No Outputs</EmptyCard.Title>
