@@ -42,6 +42,10 @@ export class Db {
       migrationsFolder: path.join(__dirname, '../../drizzle'),
     });
   }
+
+  connectionString() {
+    return `postgres://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}`;
+  }
 }
 
 export const db = new Db();
