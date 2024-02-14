@@ -8,13 +8,29 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "typings": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "require": "./dist/index.js",
+        "default": "./dist/index.mjs"
+      }
+    },
+    "files": ["dist"]
+  },
   "scripts": {
+    "build": "run-s codegen build:lib",
+    "build:lib": "tsup",
+    "codegen": "gql-gen -r dotenv/config --config codegen.ts",
     "db:generate": "drizzle-kit generate:pg",
     "db:studio": "drizzle-kit studio",
-    "codegen": "gql-gen -r dotenv/config --config codegen.ts",
+    "dev": "tsx watch src/server.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
-    "sync:missing": "tsx ./src/cli.ts sync --missing",
-    "dev": "tsx watch src/server.ts"
+    "sync:missing": "tsx ./src/cli.ts sync --missing"
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.2",
