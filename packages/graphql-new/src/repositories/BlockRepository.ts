@@ -1,13 +1,19 @@
 import { asc, eq } from 'drizzle-orm';
 import { db } from '../core/Database';
-import { GQLClient } from '../core/GraphQLSDK';
+import { GraphQLSDK } from '../core/GraphQLSDK';
+import { Paginator, PaginatorParams } from '../core/Paginator';
 import { blocks } from '../core/Schema';
 import { GQLBlock } from '../generated/types';
 import { tai64toDate } from '../utils/date';
 import { executeInQueue } from '../utils/promise';
 
 export class BlockRepository {
-  constructor(private sdk: GQLClient) {}
+  sdk: GraphQLSDK['sdk'];
+
+  constructor() {
+    const { sdk } = new GraphQLSDK();
+    this.sdk = sdk;
+  }
 
   async findOne(id: string) {
     const item = await db
@@ -18,7 +24,22 @@ export class BlockRepository {
     return item[0];
   }
 
-  async insert(block: GQLBlock) {
+  async findMany(params: PaginatorParams) {
+    const paginator = new Paginator(blocks, params);
+    return paginator.queryPaginated();
+  }
+
+  async findLatestAdded() {
+    const [latest] = await db
+      .connection()
+      .select()
+      .from(blocks)
+      .orderBy(asc(blocks.id))
+      .limit(1);
+    return latest;
+  }
+
+  async insertOne(block: GQLBlock) {
     const found = await this.findOne(block.id);
     if (found) {
       console.log(`Block ${block.id} already exists`);
@@ -42,14 +63,14 @@ export class BlockRepository {
 
   async insertMany(blocks: GQLBlock[]) {
     const results = await executeInQueue(blocks, async (block) => {
-      const blockId = await this.insert(block);
+      const blockId = await this.insertOne(block);
       if (!blockId) return null;
       return { blockId, block };
     });
     return results.filter(Boolean) as { blockId: number; block: GQLBlock }[];
   }
 
-  async fetchBlocks({ page, perPage }: { page: number; perPage: number }) {
+  async blocksFromNode({ page, perPage }: { page: number; perPage: number }) {
     const after = (page - 1) * perPage;
     const { data } = await this.sdk.QueryBlocks({
       first: perPage,
@@ -59,20 +80,10 @@ export class BlockRepository {
     return data.blocks.nodes as GQLBlock[];
   }
 
-  async findLatest() {
+  async latestOnNode() {
     const { data } = await this.sdk.QueryBlocks({ last: 1 });
     const block = data.blocks.nodes[0];
     const pageInfo = data.blocks.pageInfo;
     return { block, pageInfo };
-  }
-
-  async findLatestAdded() {
-    const [latest] = await db
-      .connection()
-      .select()
-      .from(blocks)
-      .orderBy(asc(blocks.id))
-      .limit(1);
-    return latest;
   }
 }

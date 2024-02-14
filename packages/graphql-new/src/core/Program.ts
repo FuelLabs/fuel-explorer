@@ -1,8 +1,8 @@
 import yargs from 'yargs/yargs';
-import { BlockDomain } from '../domains/BlockDomain';
 import { BlockRepository } from '../repositories/BlockRepository';
+import { TransactionRepository } from '../repositories/TransactionRepository';
 import { db } from './Database';
-import { GraphQLSDK } from './GraphQLSDK';
+import { Sync } from './Sync';
 
 export class Program {
   async create() {
@@ -42,17 +42,17 @@ export class Program {
 
   async sync(argv: { all: boolean; missing: boolean }) {
     await db.connect();
-    const { sdk } = new GraphQLSDK();
-    const blockRepository = new BlockRepository(sdk);
-    const blockDomain = new BlockDomain(blockRepository);
+    const blockRepository = new BlockRepository();
+    const transactionRepository = new TransactionRepository();
+    const sync = new Sync(blockRepository, transactionRepository);
 
     if (argv.all) {
       console.log('Syncing all blocks');
-      await blockDomain.syncAllBlocks();
+      await sync.syncAllBlocks();
     }
     if (argv.missing) {
       console.log('Syncing missing blocks');
-      await blockDomain.syncMissingBlocks();
+      await sync.syncMissingBlocks();
     }
 
     await db.close();

@@ -1,14 +1,39 @@
+import { and, eq, like, sql } from 'drizzle-orm';
 import { db } from '../core/Database';
+import { Paginator, PaginatorParams } from '../core/Paginator';
 import { transactions } from '../core/Schema';
 import { GQLTransaction } from '../generated/types';
 import { tai64toDate } from '../utils/date';
 
 export class TransactionRepository {
-  async insert(transaction: GQLTransaction, blockId: number) {
+  async findById(id: string) {
+    const [transaction] = await db
+      .connection()
+      .select()
+      .from(transactions)
+      .where(eq(transactions.id, id));
+    if (!transaction) return null;
+    return transaction.data;
+  }
+
+  async findMany(params: PaginatorParams) {
+    const paginator = new Paginator(transactions, params);
+    return paginator.queryPaginated();
+  }
+
+  async findByOwner(owner: string, params: PaginatorParams) {
+    const paginator = new Paginator(transactions, params);
+    await paginator.validateParams();
+    return paginator.getPaginatedResult(
+      like(transactions.accountsIndex, `%${owner}%`),
+    );
+  }
+
+  async insertOne(transaction: GQLTransaction, blockId: number) {
     const [{ transactionId }] = await db
       .connection()
       .insert(transactions)
-      .values(this.parseTransaction(transaction, blockId))
+      .values(this._parseTransaction(transaction, blockId))
       .returning({
         transactionId: transactions._id,
       });
@@ -21,7 +46,7 @@ export class TransactionRepository {
       const queries = txs.map(async (tx) => {
         const [{ transactionId }] = await trx
           .insert(transactions)
-          .values(this.parseTransaction(tx, blockId))
+          .values(this._parseTransaction(tx, blockId))
           .returning({
             transactionId: transactions._id,
           });
@@ -31,7 +56,7 @@ export class TransactionRepository {
     });
   }
 
-  private parseTransaction(transaction: GQLTransaction, blockId: number) {
+  private _parseTransaction(transaction: GQLTransaction, blockId: number) {
     return {
       id: transaction.id,
       data: transaction,
