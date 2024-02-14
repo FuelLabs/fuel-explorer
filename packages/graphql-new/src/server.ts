@@ -2,7 +2,7 @@ import { GraphQLServer } from './core/GraphQLServer';
 import { Server } from './core/Server';
 import { requireEnv } from './utils/require-env';
 
-const env = requireEnv([['SERVER_PORT', '4000']]);
+const env = requireEnv([['SERVER_PORT', '3002']]);
 const port = Number(env.SERVER_PORT);
 
 const graphQLServer = new GraphQLServer();
@@ -14,5 +14,7 @@ const app = httpServer.setup();
 
 app.use(yoga.graphqlEndpoint, yoga);
 httpServer.listen(app, port).then(() => {
-  console.log(`📟 Server is running on http://localhost:${port}`);
+  console.log(
+    `📟 GraphQL server is running on http://localhost:${port}${yoga.graphqlEndpoint}`,
+  );
 });
