@@ -1,11 +1,11 @@
 import { desc, eq } from 'drizzle-orm';
-import { db } from '../core/Database';
-import { GraphQLSDK } from '../core/GraphQLSDK';
-import { blocks } from '../core/Schema';
-import { GQLBlock } from '../generated/types';
-import { DateHelper } from '../helpers/Date';
-import { Paginator, PaginatorParams } from '../helpers/Paginator';
-import { PromiseHelper } from '../helpers/Promise';
+import { db } from '../../core/Database';
+import { GraphQLSDK } from '../../core/GraphQLSDK';
+import { GQLBlock } from '../../generated/types';
+import { DateHelper } from '../../helpers/Date';
+import { Paginator, PaginatorParams } from '../../helpers/Paginator';
+import { PromiseHelper } from '../../helpers/Promise';
+import { BlocksTable } from './BlockEntity';
 
 export class BlockRepository {
   sdk: GraphQLSDK['sdk'];
@@ -19,13 +19,13 @@ export class BlockRepository {
     const item = await db
       .connection()
       .select()
-      .from(blocks)
-      .where(eq(blocks.id, id));
+      .from(BlocksTable)
+      .where(eq(BlocksTable.id, id));
     return item[0];
   }
 
   async findMany(params: PaginatorParams) {
-    const paginator = new Paginator(blocks, params);
+    const paginator = new Paginator(BlocksTable, params);
     return paginator.queryPaginated();
   }
 
@@ -33,8 +33,8 @@ export class BlockRepository {
     const [latest] = await db
       .connection()
       .select()
-      .from(blocks)
-      .orderBy(desc(blocks.height))
+      .from(BlocksTable)
+      .orderBy(desc(BlocksTable.height))
       .limit(1);
     return latest;
   }
@@ -48,7 +48,7 @@ export class BlockRepository {
 
     const [{ blockId }] = await db
       .connection()
-      .insert(blocks)
+      .insert(BlocksTable)
       .values({
         id: block.id,
         data: block,
@@ -56,7 +56,7 @@ export class BlockRepository {
         timestamp: DateHelper.tai64toDate(block.header.time),
       })
       .returning({
-        blockId: blocks._id,
+        blockId: BlocksTable._id,
       });
 
     return blockId;

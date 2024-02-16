@@ -1,6 +1,6 @@
 import { GraphQLServer } from './core/GraphQLServer';
 import { Server } from './core/Server';
-import { EnvHelper } from './helpers/env';
+import { EnvHelper } from './helpers/Env';
 
 const env = EnvHelper.requireEnv([['SERVER_PORT', '3002']]);
 const port = Number(env.SERVER_PORT);

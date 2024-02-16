@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { serve } from 'inngest/express';
-import { CreatedBlock } from '../domains/BlockDomain';
-import { SyncDomain } from '../domains/SyncDomain';
-import { TransactionDomain } from '../domains/TransactionDomain';
+import { CreatedBlock } from '../entities/blocks/BlockDomain';
+import { SyncDomain } from '../entities/sync/SyncDomain';
+import { TransactionDomain } from '../entities/transactions/TransactionDomain';
 
 dotenv.config();
 

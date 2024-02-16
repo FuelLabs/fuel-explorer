@@ -1,41 +1,41 @@
 import { eq, like } from 'drizzle-orm';
-import { db } from '../core/Database';
-import { transactions } from '../core/Schema';
-import { GQLTransaction } from '../generated/types';
-import { DateHelper } from '../helpers/Date';
-import { Paginator, PaginatorParams } from '../helpers/Paginator';
+import { db } from '../../core/Database';
+import { GQLTransaction } from '../../generated/types';
+import { DateHelper } from '../../helpers/Date';
+import { Paginator, PaginatorParams } from '../../helpers/Paginator';
+import { TransactionsTable } from './TransactionEntity';
 
 export class TransactionRepository {
   async findById(id: string) {
     const [transaction] = await db
       .connection()
       .select()
-      .from(transactions)
-      .where(eq(transactions.id, id));
+      .from(TransactionsTable)
+      .where(eq(TransactionsTable.id, id));
     if (!transaction) return null;
     return transaction.data;
   }
 
   async findMany(params: PaginatorParams) {
-    const paginator = new Paginator(transactions, params);
+    const paginator = new Paginator(TransactionsTable, params);
     return paginator.queryPaginated();
   }
 
   async findByOwner(owner: string, params: PaginatorParams) {
-    const paginator = new Paginator(transactions, params);
+    const paginator = new Paginator(TransactionsTable, params);
     await paginator.validateParams();
     return paginator.getPaginatedResult(
-      like(transactions.accountsIndex, `%${owner}%`),
+      like(TransactionsTable.accountsIndex, `%${owner}%`),
     );
   }
 
   async insertOne(transaction: GQLTransaction, blockId: number) {
     const [{ transactionId }] = await db
       .connection()
-      .insert(transactions)
+      .insert(TransactionsTable)
       .values(this._parseTransaction(transaction, blockId))
       .returning({
-        transactionId: transactions._id,
+        transactionId: TransactionsTable._id,
       });
 
     return transactionId;
@@ -45,10 +45,10 @@ export class TransactionRepository {
     return db.connection().transaction(async (trx) => {
       const queries = txs.map(async (tx) => {
         const [{ transactionId }] = await trx
-          .insert(transactions)
+          .insert(TransactionsTable)
           .values(this._parseTransaction(tx, blockId))
           .returning({
-            transactionId: transactions._id,
+            transactionId: TransactionsTable._id,
           });
         return transactionId;
       });

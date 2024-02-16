@@ -1,7 +1,7 @@
-import { Context } from '../core/GraphQLServer';
-import { GQLBlock } from '../generated/types';
-import { PaginatorParams } from '../helpers/Paginator';
-import { TransactionRepository } from '../repositories/TransactionRepository';
+import { GraphQLContext } from '../../core/GraphQLServer';
+import { GQLBlock } from '../../generated/types';
+import { PaginatorParams } from '../../helpers/Paginator';
+import { TransactionRepository } from './TransactionRepository';
 
 export class TransactionDomain {
   async syncTransactions(block: GQLBlock, blockId: number) {
@@ -19,18 +19,18 @@ export class TransactionDomain {
     };
   }
 
-  async transaction(_ctx: Context, { id }: { id: string }) {
+  async transaction(_ctx: GraphQLContext, { id }: { id: string }) {
     const repository = new TransactionRepository();
     return repository.findById(id);
   }
 
-  async transactions(_ctx: Context, params: PaginatorParams) {
+  async transactions(_ctx: GraphQLContext, params: PaginatorParams) {
     const repository = new TransactionRepository();
     return repository.findMany(params);
   }
 
   async transactionsByOwner(
-    _ctx: Context,
+    _ctx: GraphQLContext,
     params: PaginatorParams & { owner: string },
   ) {
     const repository = new TransactionRepository();

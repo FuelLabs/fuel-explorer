@@ -1,6 +1,6 @@
-import { inngest } from '../core/Inngest';
-import { BlockRepository } from '../repositories/BlockRepository';
-import { BlockDomain } from './BlockDomain';
+import { inngest } from '../../core/Inngest';
+import { BlockDomain } from '../blocks/BlockDomain';
+import { BlockRepository } from '../blocks/BlockRepository';
 
 export class SyncDomain {
   async syncBlocks(page = 1, perPage = 1000) {

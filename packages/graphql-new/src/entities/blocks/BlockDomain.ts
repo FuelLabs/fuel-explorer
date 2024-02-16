@@ -1,9 +1,9 @@
-import { Context } from '../core/GraphQLServer';
-import { inngest } from '../core/Inngest';
-import { GQLBlock } from '../generated/types';
-import { PaginatorParams } from '../helpers/Paginator';
-import { PromiseHelper } from '../helpers/Promise';
-import { BlockRepository } from '../repositories/BlockRepository';
+import { GraphQLContext } from '../../core/GraphQLServer';
+import { inngest } from '../../core/Inngest';
+import { GQLBlock } from '../../generated/types';
+import { PaginatorParams } from '../../helpers/Paginator';
+import { PromiseHelper } from '../../helpers/Promise';
+import { BlockRepository } from './BlockRepository';
 
 export type CreatedBlock = {
   blockId: number;
@@ -31,7 +31,7 @@ export class BlockDomain {
     };
   }
 
-  async blocks(_ctx: Context, params: PaginatorParams) {
+  async blocks(_ctx: GraphQLContext, params: PaginatorParams) {
     const repository = new BlockRepository();
     return repository.findMany(params);
   }

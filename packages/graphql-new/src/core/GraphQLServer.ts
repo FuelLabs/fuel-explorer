@@ -4,10 +4,10 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { stitchSchemas } from '@graphql-tools/stitch';
 import { GraphQLSchema } from 'graphql';
 import { createYoga } from 'graphql-yoga';
-import { BlockDomain } from '../domains/BlockDomain';
-import { TransactionDomain } from '../domains/TransactionDomain';
+import { BlockDomain } from '../entities/blocks/BlockDomain';
+import { TransactionDomain } from '../entities/transactions/TransactionDomain';
 
-export type Context = {};
+export type GraphQLContext = {};
 
 export class GraphQLServer {
   schema() {
