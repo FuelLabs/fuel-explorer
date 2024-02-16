@@ -1,9 +1,9 @@
 import type { BN } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import type { Asset } from '~/systems/Assets/services/asset';
-import type { FromToNetworks } from '~/systems/Chains';
-import { FetchMachine } from '~/systems/Core/machines';
+import type { Asset } from '~portal/systems/Assets/services/asset';
+import type { FromToNetworks } from '~portal/systems/Chains';
+import { FetchMachine } from '~portal/systems/Core/machines';
 
 import { BridgeService } from '../services';
 import type { BridgeInputs, PossibleBridgeInputs } from '../services';

@@ -1,6 +1,6 @@
 import type { Table } from 'dexie';
 import Dexie from 'dexie';
-import type { Asset } from '~/systems/Assets/services/asset';
+import type { Asset } from '~portal/systems/Assets/services/asset';
 
 export class FuelDB extends Dexie {
   assets!: Table<Asset, string>;

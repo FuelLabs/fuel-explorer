@@ -1,7 +1,7 @@
 import { cssObj } from '@fuel-ui/css';
 import { Box, Button, Card, Image, Text } from '@fuel-ui/react';
 import type { ReactNode } from 'react';
-import { shortAddress } from '~/systems/Core';
+import { shortAddress } from '~portal/systems/Core';
 
 type AccountConnectionInputProps = {
   networkName?: string;

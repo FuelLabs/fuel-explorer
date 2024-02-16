@@ -14,8 +14,8 @@ import {
   VITE_ALCHEMY_ID,
   VITE_INFURA_ID,
   VITE_WALLETCONNECT_ID,
-} from '~/config';
-import { ETH_CHAIN } from '~/systems/Chains';
+} from '~portal/config';
+import { ETH_CHAIN } from '~portal/systems/Chains/config';
 
 import { useTheme } from '../hooks';
 
@@ -25,6 +25,7 @@ const app = {
   url: 'https://fuels-portal.vercel.app',
   icons: ['https://fuels-portal.vercel.app/fuel-logo.svg'],
 };
+
 const chainsToConnect = [ETH_CHAIN];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const providers: ChainProviderFn<any>[] = [

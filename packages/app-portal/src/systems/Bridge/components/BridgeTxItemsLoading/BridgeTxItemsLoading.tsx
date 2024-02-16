@@ -1,6 +1,6 @@
 import { darkColors, lightColors } from '@fuel-ui/css';
 import { Box, ContentLoader } from '@fuel-ui/react';
-import { useTheme } from '~/systems/Settings';
+import { useTheme } from '~portal/systems/Settings';
 
 export const BridgeTxItemsLoading = () => {
   const { theme } = useTheme();

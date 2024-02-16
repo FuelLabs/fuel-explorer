@@ -6,7 +6,10 @@ import { chromium, test as base } from '@playwright/test';
 import { initialSetup } from '@synthetixio/synpress/commands/metamask';
 import { prepareMetamask } from '@synthetixio/synpress/helpers';
 
-import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../../mocks';
+import {
+  ETH_MNEMONIC,
+  ETH_WALLET_PASSWORD,
+} from '../../../app-portal/playwright/mocks';
 
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';

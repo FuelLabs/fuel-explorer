@@ -1,12 +1,12 @@
 import { cssObj } from '@fuel-ui/css';
 import { Dialog } from '@fuel-ui/react';
-import { AssetsDialog } from '~/systems/Assets/containers';
+import { AssetsDialog } from '~portal/systems/Assets/containers';
 import {
   AddAssetFormDialog,
   TxEthToFuelDialog,
   TxFuelToEthDialog,
-} from '~/systems/Chains';
-import { useOverlay } from '~/systems/Overlay';
+} from '~portal/systems/Chains';
+import { useOverlay } from '~portal/systems/Overlay';
 
 const OVERLAY_HEIGHT = 100;
 const OVERLAY_WIDTH = 400;

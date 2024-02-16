@@ -1,6 +1,6 @@
 import { cssObj } from '@fuel-ui/css';
 import { Box, Button, Dialog, Text } from '@fuel-ui/react';
-import { VITE_WALLET_INSTALL_NEXT } from '~/config';
+import { VITE_WALLET_INSTALL_NEXT } from '~portal/config';
 
 type FuelVersionDialogOptions = {
   isOpen: boolean;

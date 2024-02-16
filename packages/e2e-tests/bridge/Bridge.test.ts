@@ -15,8 +15,8 @@ import { mnemonicToAccount } from 'viem/accounts';
 import { foundry } from 'viem/chains';
 import type { PublicClient } from 'wagmi';
 
-import { ERC_20 } from '../../src/systems/Chains/eth/contracts/Erc20';
-import { ETH_MNEMONIC } from '../mocks';
+import { ETH_MNEMONIC } from '../../app-portal/playwright/mocks';
+import { ERC_20 } from '../../app-portal/src/systems/Chains/eth/contracts/Erc20';
 
 import { expect, test } from './fixtures';
 import {

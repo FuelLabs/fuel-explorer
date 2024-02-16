@@ -7,7 +7,7 @@ import type {
 import type { PublicClient as EthPublicClient } from 'wagmi';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import { FetchMachine } from '~/systems/Core/machines';
+import { FetchMachine } from '~portal/systems/Core/machines';
 
 import type { TxFuelToEthInputs } from '../services';
 import { TxFuelToEthService } from '../services';

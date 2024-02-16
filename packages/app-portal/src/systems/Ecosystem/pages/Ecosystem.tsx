@@ -1,6 +1,5 @@
 import { cssObj } from '@fuel-ui/css';
 import { Box, Heading, Icon, Input, Text } from '@fuel-ui/react';
-import { Layout, animations } from '~/systems/Core';
 
 import { EcosystemTags } from '../components/EcosystemTags';
 import { ProjectList } from '../components/ProjectList/ProjectList';
@@ -23,44 +22,40 @@ export function Ecosystem() {
     : undefined;
 
   return (
-    <Layout {...animations.slideInTop()}>
-      <Layout.Content css={{ padding: '$16 $1 $4 $4' }}>
-        <Box.Stack gap="$12" grow={1} css={styles.content}>
-          <Box.Flex css={styles.headingWrapper}>
-            <Box.Stack gap="$2" wrap="wrap">
-              <Heading as="h2" css={styles.heading}>
-                Explore Fuel Dapps
-              </Heading>
-              <Text color="intentsBase11">
-                Here&apos;s a list of dapps built on Fuel
-              </Text>
-            </Box.Stack>
-            <Input css={styles.searchBar}>
-              <Input.Field
-                name="search"
-                placeholder="Search"
-                type="text"
-                value={search || ''}
-                onChange={handleSearch}
-              />
-              <Input.ElementRight element={<Icon icon="Search" />} />
-            </Input>
-          </Box.Flex>
-          <EcosystemTags
-            tags={tags}
-            activeTag={filter}
-            isLoading={isLoading}
-            onClickTag={handleTagButtonClick}
-            onClickAllCategories={handlers.clearFilters}
-          />
-          <ProjectList
-            isLoading={isLoading}
-            projects={filteredProjects || []}
-            emptyText={emptyText}
-          />
+    <Box.Stack gap="$12" grow={1} css={styles.content}>
+      <Box.Flex css={styles.headingWrapper}>
+        <Box.Stack gap="$2" wrap="wrap">
+          <Heading as="h2" css={styles.heading}>
+            Explore Fuel Dapps
+          </Heading>
+          <Text color="intentsBase11">
+            Here&apos;s a list of dapps built on Fuel
+          </Text>
         </Box.Stack>
-      </Layout.Content>
-    </Layout>
+        <Input css={styles.searchBar}>
+          <Input.Field
+            name="search"
+            placeholder="Search"
+            type="text"
+            value={search || ''}
+            onChange={handleSearch}
+          />
+          <Input.ElementRight element={<Icon icon="Search" />} />
+        </Input>
+      </Box.Flex>
+      <EcosystemTags
+        tags={tags}
+        activeTag={filter}
+        isLoading={isLoading}
+        onClickTag={handleTagButtonClick}
+        onClickAllCategories={handlers.clearFilters}
+      />
+      <ProjectList
+        isLoading={isLoading}
+        projects={filteredProjects || []}
+        emptyText={emptyText}
+      />
+    </Box.Stack>
   );
 }
 

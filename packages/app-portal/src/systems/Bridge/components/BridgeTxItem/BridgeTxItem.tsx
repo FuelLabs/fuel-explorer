@@ -1,9 +1,9 @@
 import { cssObj } from '@fuel-ui/css';
 import { Box, CardList, Icon, Text } from '@fuel-ui/react';
 import type { ReactNode } from 'react';
-import { AssetLogo } from '~/systems/Assets/components/AssetLogo';
-import type { Asset } from '~/systems/Assets/services/asset';
-import { calculateDateDiff, shortAddress } from '~/systems/Core';
+import { AssetLogo } from '~portal/systems/Assets/components/AssetLogo';
+import type { Asset } from '~portal/systems/Assets/services/asset';
+import { calculateDateDiff, shortAddress } from '~portal/systems/Core';
 
 import { ItemLoader } from './ItemLoader';
 

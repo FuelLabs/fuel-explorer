@@ -1,11 +1,10 @@
 import type { BN } from 'fuels';
 import { DECIMAL_UNITS, bn } from 'fuels';
 import { useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Services, store } from '~/store';
-import { useAsset } from '~/systems/Assets/hooks/useAsset';
-import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
-import type { SupportedChain } from '~/systems/Chains';
+import { Services, store } from '~portal/store';
+import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
+import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
+import type { SupportedChain } from '~portal/systems/Chains';
 import {
   ETH_CHAIN,
   FUEL_CHAIN,
@@ -13,8 +12,7 @@ import {
   isFuelChain,
   useEthAccountConnection,
   useFuelAccountConnection,
-} from '~/systems/Chains';
-import { Pages } from '~/types';
+} from '~portal/systems/Chains';
 
 import { BridgeStatus } from '../machines';
 import type { BridgeMachineState } from '../machines';
@@ -126,11 +124,12 @@ export function useBridge() {
     selectors.status({ ethAccount: ethAddress, fuelAccount, assetBalance }),
   );
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
   // TODO: add "to" param when we add support to other chain than eth/fuel
-  const fromInput = queryParams.get('from');
+  // const fromInput = queryParams.get('from');
+  const fromInput = 'eth';
 
   function getToInputNetwork() {
     if (!fromInputNetwork) return undefined;
@@ -166,15 +165,15 @@ export function useBridge() {
     searchParams.set('from', 'eth');
     searchParams.set('to', 'fuel');
 
-    navigate(
-      {
-        pathname: Pages.bridge,
-        search: searchParams.toString(),
-      },
-      {
-        replace: true,
-      },
-    );
+    // navigate(
+    //   {
+    //     pathname: Pages.bridge,
+    //     search: searchParams.toString(),
+    //   },
+    //   {
+    //     replace: true,
+    //   },
+    // );
   }
 
   function goToWithdraw() {
@@ -182,15 +181,15 @@ export function useBridge() {
     searchParams.set('from', 'fuel');
     searchParams.set('to', 'eth');
 
-    navigate(
-      {
-        pathname: Pages.bridge,
-        search: searchParams.toString(),
-      },
-      {
-        replace: true,
-      },
-    );
+    // navigate(
+    //   {
+    //     pathname: Pages.bridge,
+    //     search: searchParams.toString(),
+    //   },
+    //   {
+    //     replace: true,
+    //   },
+    // );
   }
 
   function connectNetwork(network?: SupportedChain) {

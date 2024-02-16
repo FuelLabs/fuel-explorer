@@ -129,7 +129,7 @@ importers:
         version: 10.9.2(@swc/core@1.4.0)(@types/node@20.11.16)(typescript@5.3.3)
       tsup:
         specifier: 8.0.1
-        version: 8.0.1(@swc/core@1.4.0)(ts-node@10.9.2)(typescript@5.3.3)
+        version: 8.0.1(@swc/core@1.4.0)(postcss@8.4.33)(ts-node@10.9.2)(typescript@5.3.3)
       tsx:
         specifier: 4.7.0
         version: 4.7.0
@@ -345,6 +345,9 @@ importers:
       '@xstate/cli':
         specifier: ^0.5.17
         version: 0.5.17
+      app-portal:
+        specifier: workspace:*
+        version: link:../app-portal
       autoprefixer:
         specifier: 10.4.17
         version: 10.4.17(postcss@8.4.33)
@@ -375,6 +378,9 @@ importers:
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.1.0
+      tsup:
+        specifier: 8.0.1
+        version: 8.0.1(@swc/core@1.4.0)(postcss@8.4.33)(ts-node@10.9.2)(typescript@5.3.3)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -409,11 +415,11 @@ importers:
         specifier: 0.15.2
         version: 0.15.2(dexie@3.2.4)(fuels@0.73.0)
       '@fuels/assets':
-        specifier: 0.1.0
-        version: 0.1.0
+        specifier: 0.15.1
+        version: 0.15.1
       '@fuels/react-xstore':
-        specifier: 0.0.8
-        version: 0.0.8(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
+        specifier: 0.15.1
+        version: 0.15.1(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
       '@hookform/resolvers':
         specifier: ^3.1.1
         version: 3.3.4(react-hook-form@7.50.0)
@@ -706,7 +712,7 @@ importers:
         version: 4.2.0
       tsup:
         specifier: 8.0.1
-        version: 8.0.1(@swc/core@1.4.0)(ts-node@10.9.2)(typescript@5.3.3)
+        version: 8.0.1(@swc/core@1.4.0)(postcss@8.4.33)(ts-node@10.9.2)(typescript@5.3.3)
       tsx:
         specifier: 4.7.0
         version: 4.7.0
@@ -4762,12 +4768,12 @@ packages:
       - dexie
     dev: false
 
-  /@fuels/assets@0.1.0:
-    resolution: {integrity: sha512-oeSi0ECt23yuDBmNpZcJP1menCyGl97IXk2JqRtuG+rnXDJHuZdQUQ23UGyoanY8a6IKkeqvXgHtwFEjPIjhiQ==}
-    dev: false
-
   /@fuels/assets@0.1.4:
     resolution: {integrity: sha512-6rSbzxxDlDkoW9u4vvSbTfnA4Cy9WjZ1ajBOuKTnvoQ9EzQKvrP4lYpN2SjqdfJkdhRfCItaf1aQq/avaN51BQ==}
+    dev: false
+
+  /@fuels/assets@0.15.1:
+    resolution: {integrity: sha512-sgzqSr0N+HmPVuetpx0TkulKBB2X41b8NEhIXQdffj1gavt5FKcOpKHvO7cla5KyFhNx/X+N0gh8ZzQDg5rpoA==}
     dev: false
 
   /@fuels/jest@0.1.5(@types/jest@29.5.12)(jest@29.7.0):
@@ -4810,12 +4816,12 @@ packages:
       - vitest
     dev: false
 
-  /@fuels/local-storage@0.0.8:
-    resolution: {integrity: sha512-qX+lJI+DE9DP13u3qLB0PUA4W+eRo4qxkET3gsWtRt9U6WQCTXkOrkLSakFIFjoOR2NQ8Q8Mk/ZNKXr4abf4Qw==}
+  /@fuels/local-storage@0.15.1:
+    resolution: {integrity: sha512-XJ3wQTgM/zpEZSay9+SssSSl44fz70xwEueePoKv1RSueOiYykgLPiI7EaKSw3TRuBZjPkv3BzuLriSHgKu+4g==}
     dev: false
 
-  /@fuels/react-xstore@0.0.8(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
-    resolution: {integrity: sha512-HprAvR7dUO7ppuVVNesR16YctRRuZCRVkUbyevZsk3yMRoJnTiPhmlqS/zdXzXq9LMp6PK5SkHBnLAe/HuqW5w==}
+  /@fuels/react-xstore@0.15.1(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
+    resolution: {integrity: sha512-/01w/0aSkZ/1+n/pNkc89P2GOMBZQ1VDSTxMh9PwoNibr6IsE1YGuJMMQ7ByiGbqCcYg2cP1JfsCcstKgsuTsQ==}
     peerDependencies:
       '@xstate/react': ^3.2.2
       react: '*'
@@ -4827,7 +4833,7 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      '@fuels/local-storage': 0.0.8
+      '@fuels/local-storage': 0.15.1
       '@xstate/inspect': 0.8.0(xstate@4.38.3)
       '@xstate/react': 3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3)
       fast-equals: 5.0.1
@@ -4857,7 +4863,7 @@ packages:
       dotenv: 16.4.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      tsup: 8.0.1(@swc/core@1.4.0)(ts-node@10.9.2)(typescript@5.3.3)
+      tsup: 8.0.1(@swc/core@1.4.0)(postcss@8.4.33)(ts-node@10.9.2)(typescript@5.3.3)
     dev: true
 
   /@fuels/vm-asm@0.36.1:
@@ -23807,6 +23813,24 @@ packages:
       camelcase-css: 2.0.1
       postcss: 8.4.34
 
+  /postcss-load-config@4.0.2(postcss@8.4.33)(ts-node@10.9.2):
+    resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      postcss: '>=8.0.9'
+      ts-node: '>=9.0.0'
+    peerDependenciesMeta:
+      postcss:
+        optional: true
+      ts-node:
+        optional: true
+    dependencies:
+      lilconfig: 3.0.0
+      postcss: 8.4.33
+      ts-node: 10.9.2(@swc/core@1.4.0)(@types/node@20.11.16)(typescript@5.3.3)
+      yaml: 2.3.4
+    dev: true
+
   /postcss-load-config@4.0.2(postcss@8.4.34)(ts-node@10.9.2):
     resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
     engines: {node: '>= 14'}
@@ -27208,7 +27232,7 @@ packages:
     resolution: {integrity: sha512-Tyrf5mxF8Ofs1tNoxA13lFeZ2Zrbd6cKbuH3V+MQ5sb6DtBj5FjrXVsRWT8YvNAQTqNoz66dz1WsbigI22aEnw==}
     dev: false
 
-  /tsup@8.0.1(@swc/core@1.4.0)(ts-node@10.9.2)(typescript@5.3.3):
+  /tsup@8.0.1(@swc/core@1.4.0)(postcss@8.4.33)(ts-node@10.9.2)(typescript@5.3.3):
     resolution: {integrity: sha512-hvW7gUSG96j53ZTSlT4j/KL0q1Q2l6TqGBFc6/mu/L46IoNWqLLUzLRLP1R8Q7xrJTmkDxxDoojV5uCVs1sVOg==}
     engines: {node: '>=18'}
     hasBin: true
@@ -27236,7 +27260,8 @@ packages:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      postcss-load-config: 4.0.2(postcss@8.4.34)(ts-node@10.9.2)
+      postcss: 8.4.33
+      postcss-load-config: 4.0.2(postcss@8.4.33)(ts-node@10.9.2)
       resolve-from: 5.0.0
       rollup: 4.9.6
       source-map: 0.8.0-beta.0

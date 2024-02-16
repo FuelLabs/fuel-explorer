@@ -1,7 +1,7 @@
 import { FuelProvider } from '@fuel-wallet/react';
 import { defaultConnectors } from '@fuel-wallet/sdk';
 import type { ReactNode } from 'react';
-import { IS_PREVIEW, IS_TEST } from '~/config';
+import { IS_PREVIEW, IS_TEST } from '~portal/config';
 
 import { useTheme } from '../hooks';
 

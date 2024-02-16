@@ -1,6 +1,6 @@
 import { FuelChainState } from '@fuel-bridge/solidity-contracts';
 import type { PublicClient } from 'viem';
-import { VITE_ETH_FUEL_CHAIN_STATE } from '~/config';
+import { VITE_ETH_FUEL_CHAIN_STATE } from '~portal/config';
 
 export const FUEL_CHAIN_STATE = {
   abi: FuelChainState.abi,

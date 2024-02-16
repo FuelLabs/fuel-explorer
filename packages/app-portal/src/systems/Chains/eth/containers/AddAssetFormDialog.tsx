@@ -9,10 +9,10 @@ import {
   Text,
 } from '@fuel-ui/react';
 import { Controller } from 'react-hook-form';
-import { store } from '~/store';
-import { useAssets } from '~/systems/Assets';
-import { shortAddress } from '~/systems/Core';
-import { useOverlay } from '~/systems/Overlay';
+import { store } from '~portal/store';
+import { useAssets } from '~portal/systems/Assets';
+import { shortAddress } from '~portal/systems/Core';
+import { useOverlay } from '~portal/systems/Overlay';
 
 import { useAddAssetForm } from '../hooks';
 import type { AddAssetFormValues } from '../hooks';

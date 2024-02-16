@@ -1,6 +1,6 @@
 import { Box, FuelLogo, Image, Spinner, Text } from '@fuel-ui/react';
-import { useAsset } from '~/systems/Assets';
-import { BridgeTxItem } from '~/systems/Bridge';
+import { useAsset } from '~portal/systems/Assets';
+import { BridgeTxItem } from '~portal/systems/Bridge/components';
 
 import { ActionRequiredBadge } from '../components';
 import { useTxFuelToEth } from '../hooks';

@@ -5,12 +5,12 @@ import {
   hexlify,
 } from 'fuels';
 import { useMemo } from 'react';
-import { Services, store } from '~/store';
-import { useAssets } from '~/systems/Assets';
-import type { Asset } from '~/systems/Assets/services/asset';
-import { getAssetEth } from '~/systems/Assets/utils';
-import type { BridgeTxsMachineState } from '~/systems/Bridge';
-import { useExplorerLink } from '~/systems/Bridge/hooks/useExplorerLink';
+import { Services, store } from '~portal/store';
+import { useAssets } from '~portal/systems/Assets';
+import type { Asset } from '~portal/systems/Assets/services/asset';
+import { getAssetEth } from '~portal/systems/Assets/utils';
+import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
+import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
 
 import { useEthAccountConnection } from '../../eth/hooks';
 import { isSameEthAddress, parseFuelAddressToEth } from '../../eth/utils';

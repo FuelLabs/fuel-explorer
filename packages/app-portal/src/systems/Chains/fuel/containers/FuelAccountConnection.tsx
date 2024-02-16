@@ -1,5 +1,5 @@
 import { FuelLogo } from '@fuel-ui/react';
-import { AccountConnectionInput } from '~/systems/Accounts';
+import { AccountConnectionInput } from '~portal/systems/Accounts';
 
 import { FUEL_CHAIN } from '../../config';
 import { useFuelAccountConnection } from '../hooks';

@@ -10,7 +10,7 @@ import {
   List,
   Text,
 } from '@fuel-ui/react';
-import { shortAddress } from '~/systems/Core/utils';
+import { shortAddress } from '~portal/systems/Core/utils';
 
 type AccountSwitchDialogProps = {
   accounts: string[];

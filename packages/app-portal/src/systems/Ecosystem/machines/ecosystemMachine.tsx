@@ -1,6 +1,6 @@
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import { FetchMachine } from '~/systems/Core';
+import { FetchMachine } from '~portal/systems/Core';
 
 import { PROJECTS } from '../data';
 import type { Project } from '../types';

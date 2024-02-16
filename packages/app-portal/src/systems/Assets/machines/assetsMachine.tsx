@@ -1,7 +1,7 @@
 import { toast } from '@fuel-ui/react';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import { FetchMachine } from '~/systems/Core/machines/fetchMachine';
+import { FetchMachine } from '~portal/systems/Core/machines/fetchMachine';
 
 import type { Asset, AssetServiceInputs } from '../services/asset';
 import { AssetService } from '../services/asset';

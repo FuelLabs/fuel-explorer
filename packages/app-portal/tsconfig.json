@@ -6,11 +6,9 @@
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "~public/*": ["./public/*"],
-      "~/*": ["./src/*"]
-    },
-    "types": ["@fuel-wallet/sdk", "jest"]
+      "~public-portal/*": ["./public/*"],
+      "~portal/*": ["./src/*"]
+    }
   },
-  "include": ["./src", ".storybook", "public/ecosystem/images"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["./src"]
 }

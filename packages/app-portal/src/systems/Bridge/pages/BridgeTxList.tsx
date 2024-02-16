@@ -6,7 +6,7 @@ import {
   isEthChain,
   isFuelChain,
   useFuelAccountConnection,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
 import {
   BridgeListEmpty,

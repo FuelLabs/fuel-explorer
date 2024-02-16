@@ -1,5 +1,5 @@
 import type { Ethereum, Fuel } from '@fuels/assets';
-import { ETH_CHAIN, FUEL_CHAIN } from '~/systems/Chains';
+import { ETH_CHAIN, FUEL_CHAIN } from '~portal/systems/Chains';
 
 import type { Asset } from '../services';
 

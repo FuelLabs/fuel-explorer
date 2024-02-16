@@ -1,7 +1,7 @@
 import { cssObj } from '@fuel-ui/css';
 import { IconButton, Image } from '@fuel-ui/react';
 import { useState } from 'react';
-import { relativeUrl } from '~/systems/Core';
+import { relativeUrl } from '~portal/systems/Core';
 
 type ProjecImageProps = {
   name: string;

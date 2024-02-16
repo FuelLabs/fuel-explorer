@@ -1,14 +1,14 @@
 import { cssObj } from '@fuel-ui/css';
 import { Alert, Box, Card, InputAmount, Link, Text } from '@fuel-ui/react';
 import { motion, useAnimationControls } from 'framer-motion';
-import { getAssetEth } from '~/systems/Assets/utils';
+import { getAssetEth } from '~portal/systems/Assets/utils';
 import {
   EthAccountConnection,
   FuelAccountConnection,
   isEthChain,
   isFuelChain,
   useFuelAccountConnection,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
 import { BridgeButton, BridgeTabs } from '../containers';
 import { useBridge } from '../hooks';
