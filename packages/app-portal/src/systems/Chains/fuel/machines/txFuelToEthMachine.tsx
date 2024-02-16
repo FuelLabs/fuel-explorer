@@ -1,4 +1,3 @@
-import { toast } from '@fuel-ui/react';
 import type {
   MessageProof,
   Provider as FuelProvider,
@@ -9,6 +8,7 @@ import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~/systems/Core/machines';
 
+import { toast } from '@fuels/ui';
 import type { TxFuelToEthInputs } from '../services';
 import { TxFuelToEthService } from '../services';
 import { FuelTxCache } from '../utils/txCache';

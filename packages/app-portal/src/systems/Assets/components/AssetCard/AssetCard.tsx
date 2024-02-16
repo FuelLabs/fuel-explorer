@@ -7,7 +7,6 @@ import {
   IconWallet,
 } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
-import { RemoveAssetDialog } from '~/systems/Chains/eth/components';
 
 type AssetCardProps = {
   asset: FuelsAsset;
@@ -32,6 +31,14 @@ export const AssetCard = ({
 }: AssetCardProps) => {
   const classes = styles();
 
+  function handleButtonClick(
+    e: React.MouseEvent<HTMLButtonElement>,
+    call: Function,
+  ) {
+    e.stopPropagation();
+    call();
+  }
+
   return (
     <CardList.Item onClick={onClick} className={classes.cardItem()}>
       <Flex gap="3" align="center">
@@ -54,7 +61,9 @@ export const AssetCard = ({
             variant="link"
             icon={IconCoin}
             isLoading={isFaucetLoading}
-            onClick={onFaucet}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+              handleButtonClick(e, onFaucet)
+            }
             className={classes.actionIcon()}
           />
         )}
@@ -63,26 +72,11 @@ export const AssetCard = ({
             aria-label="Add Asset To Wallet"
             variant="link"
             icon={IconWallet}
-            onClick={onAddToWallet}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+              handleButtonClick(e, onAddToWallet)
+            }
             className={classes.actionIcon()}
           />
-        )}
-        {onAdd && (
-          <IconButton
-            aria-label="Add Eth Asset"
-            variant="link"
-            icon={IconCirclePlus}
-            onClick={onAdd}
-          />
-        )}
-        {onRemove && (
-          <RemoveAssetDialog assetSymbol={asset.symbol} onConfirm={onRemove}>
-            <IconButton
-              aria-label="Remove Eth Asset"
-              variant="link"
-              icon={IconSquareRoundedX}
-            />
-          </RemoveAssetDialog>
         )}
       </Flex>
     </CardList.Item>

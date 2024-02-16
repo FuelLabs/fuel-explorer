@@ -1,5 +1,3 @@
-import { cssObj } from '@fuel-ui/css';
-import { Alert, Box, Card, InputAmount, Link, Text } from '@fuel-ui/react';
 import { motion, useAnimationControls } from 'framer-motion';
 import { getAssetEth } from '~/systems/Assets/utils';
 import {
@@ -10,11 +8,16 @@ import {
   useFuelAccountConnection,
 } from '~/systems/Chains';
 
+import { InputAmount } from '@fuel-ui/react';
+import { Alert, Box, Card, Link, Text, VStack } from '@fuels/ui';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
 import { BridgeButton, BridgeTabs } from '../containers';
 import { useBridge } from '../hooks';
 import { useWithdrawDelay } from '../hooks/useWithdrawDelay';
 
 export const Bridge = () => {
+  const classes = styles();
   const {
     ethAddress,
     fuelAddress,
@@ -37,13 +40,13 @@ export const Bridge = () => {
 
   return (
     <Card>
-      <Card.Body css={styles.cardBody}>
+      <Card.Body className={classes.cardBody()}>
         <BridgeTabs fromControls={fromControls} toControls={toControls} />
-        <Box css={styles.divider} />
-        <Box.Stack gap="$6">
+        <Box className={classes.divider()} />
+        <VStack gap="6">
           {Boolean(fromNetwork && toNetwork) && (
-            <Box.Stack gap="$2">
-              <Text color="intentsBase12">Network</Text>
+            <VStack gap="2">
+              <Text className={classes.textNetwork()}>Network</Text>
               <motion.div animate={fromControls}>
                 {isEthChain(fromNetwork) && (
                   <EthAccountConnection label="From" />
@@ -56,10 +59,10 @@ export const Bridge = () => {
                 {isEthChain(toNetwork) && <EthAccountConnection label="To" />}
                 {isFuelChain(toNetwork) && <FuelAccountConnection label="To" />}
               </motion.div>
-            </Box.Stack>
+            </VStack>
           )}
-          <Box.Stack gap="$2">
-            <Text color="intentsBase12">Asset amount</Text>
+          <VStack gap="2">
+            <Text className={classes.textNetwork()}>Asset amount</Text>
             <InputAmount
               isDisabled={!ethAddress && !fuelAddress}
               balance={assetBalance}
@@ -74,18 +77,24 @@ export const Bridge = () => {
                 handlers.changeAssetAmount({ assetAmount: val || undefined })
               }
             />
-          </Box.Stack>
+          </VStack>
           {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
-            <Alert status="warning">
-              <Alert.Description>
+            <Alert color="orange">
+              <Alert.Icon>
+                <IconAlertCircle size="md" />
+              </Alert.Icon>
+              <Alert.Text>
                 You don&apos;t have any ETH on Fuel to pay for gas. We recommend
                 you bridge some ETH before you bridge any other assets.
-              </Alert.Description>
+              </Alert.Text>
             </Alert>
           )}
           <BridgeButton />
-          <Alert status="warning">
-            <Alert.Description>
+          <Alert color="orange">
+            <Alert.Icon>
+              <IconAlertCircle size="md" />
+            </Alert.Icon>
+            <Alert.Text>
               Any assets deposited to Fuel can take up to{' '}
               {timeToWithdrawFormatted} to withdraw back to Ethereum. Learn more
               about our architecture and security in our&nbsp;
@@ -95,22 +104,18 @@ export const Bridge = () => {
               >
                 docs
               </Link>
-            </Alert.Description>
+            </Alert.Text>
           </Alert>
-        </Box.Stack>
+        </VStack>
       </Card.Body>
     </Card>
   );
 };
 
-const styles = {
-  cardBody: cssObj({
-    p: '$7',
-  }),
-  divider: cssObj({
-    h: '1px',
-    bg: '$border',
-    mt: '$1',
-    mb: '$5',
-  }),
-};
+export const styles = tv({
+  slots: {
+    cardBody: 'p-7',
+    divider: ['h-1 bg-border mt-1 mb-5'],
+    textNetwork: 'text-heading',
+  },
+});

@@ -1,6 +1,7 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Button, Card, Image, Text } from '@fuel-ui/react';
+import { Button, Card, Flex, Text, VStack } from '@fuels/ui';
+import { IconX } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
+import { tv } from 'tailwind-variants';
 import { shortAddress } from '~/systems/Core';
 
 type AccountConnectionInputProps = {
@@ -8,7 +9,6 @@ type AccountConnectionInputProps = {
   networkImage: ReactNode | string;
   label?: string;
   isConnecting?: boolean;
-  showConnect?: boolean;
   account?: {
     address?: string;
     alias?: string;
@@ -23,20 +23,21 @@ export const AccountConnectionInput = ({
   networkImage,
   label,
   isConnecting,
-  showConnect,
   account,
   onConnect,
   onDisconnect,
 }: AccountConnectionInputProps) => {
+  const classes = styles();
+
   return (
-    <Card css={styles.root} variant="outlined">
-      <Card.Body css={styles.cardBody}>
-        <Box.Flex justify="space-between" gap="$1">
-          <Box.Stack gap="$1">
-            <Text fontSize="sm">{label}</Text>
-            <Box.Flex gap="$2" align="center">
+    <Card className={classes.root()}>
+      <Card.Body className={classes.cardBody()}>
+        <Flex justify="between" gap="1">
+          <VStack gap="1">
+            <Text className={classes.textLabel()}>{label}</Text>
+            <Flex gap="2" align="center">
               {typeof networkImage === 'string' ? (
-                <Image
+                <img
                   width="20"
                   height="20"
                   src={networkImage}
@@ -45,36 +46,21 @@ export const AccountConnectionInput = ({
               ) : (
                 networkImage
               )}
-              <Text color="intentsBase12">{networkName}</Text>
-            </Box.Flex>
-          </Box.Stack>
-          <Box.Stack align="flex-end" gap="0">
-            {!account?.address ? (
-              showConnect && (
-                <Button
-                  isLoading={isConnecting}
-                  css={styles.connectButton}
-                  size="xs"
-                  intent="primary"
-                  aria-label={`${label} Connect wallet`}
-                  onClick={onConnect}
-                >
-                  <Text fontSize="sm" color="inherit">
-                    Connect wallet
-                  </Text>
-                </Button>
-              )
-            ) : (
+              <Text className={classes.textNetwork()}>{networkName}</Text>
+            </Flex>
+          </VStack>
+          <VStack align="end" justify="between" gap="0">
+            {account?.address && (
               <>
                 <Button
-                  size="xs"
+                  size="1"
                   variant="link"
-                  css={styles.disconnectButton}
-                  rightIcon="X"
+                  className={classes.disconnectButton()}
                   iconSize={13}
                   onClick={onDisconnect}
                 >
                   Disconnect
+                  <IconX size={13} />
                 </Button>
                 <Text aria-label={`${networkName}: Connected Wallet`}>
                   {shortAddress(account.alias, {
@@ -87,28 +73,23 @@ export const AccountConnectionInput = ({
                 </Text>
               </>
             )}
-          </Box.Stack>
-        </Box.Flex>
+          </VStack>
+        </Flex>
       </Card.Body>
     </Card>
   );
 };
 
-const styles = {
-  root: cssObj({
-    minHeight: '$15',
-    overflowX: 'hidden',
-    backgroundColor: '$inputBaseBg !important',
-    borderColor: '$inputBaseBorder !important',
-  }),
-  cardBody: cssObj({
-    px: '$3',
-    py: '$2',
-  }),
-  connectButton: cssObj({
-    width: '$36',
-  }),
-  disconnectButton: cssObj({
-    mr: '-$1',
-  }),
-};
+export const styles = tv({
+  slots: {
+    root: [
+      'overflow-x-hidden bg-input border border-solid border-input px-0 py-1',
+    ],
+    cardBody: 'px-3 py-2',
+    connectButton: 'w-[50px]',
+    disconnectButton: 'text-[12px]  mr-[-2px]',
+    textLabel: 'text-xs',
+    textNetwork: 'text-heading',
+    textConnect: 'text-xs text-inherit',
+  },
+});

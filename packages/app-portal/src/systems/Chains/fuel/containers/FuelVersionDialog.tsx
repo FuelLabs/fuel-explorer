@@ -1,23 +1,22 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Button, Dialog, Text } from '@fuel-ui/react';
+import { Button, Dialog, Flex, Text, VStack } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { VITE_WALLET_INSTALL_NEXT } from '~/config';
 
 type FuelVersionDialogOptions = {
   isOpen: boolean;
 };
 
-export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => (
-  <Dialog isOpen={isOpen} isDismissable={false}>
+export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => {
+  const classes = styles();
+  <Dialog open={isOpen}>
     <Dialog.Content>
-      <Dialog.Heading>
-        <Box.Flex align="center" gap="$2">
-          <Text fontSize="lg" color="intentsBase12">
-            Fuel Wallet Version
-          </Text>
-        </Box.Flex>
-      </Dialog.Heading>
+      <Dialog.Title>
+        <Flex align="center" gap="2">
+          Fuel Wallet Version
+        </Flex>
+      </Dialog.Title>
       <Dialog.Description>
-        <Box.Stack gap="$4" css={styles.content}>
+        <VStack gap="4" className={classes.content()}>
           <Text>
             The current version of the Fuel Wallet you are using, is not
             compatible with the Fuel Bridge.
@@ -33,30 +32,26 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => (
             bellow and following the{' '}
             <b>install from source code instructions</b>.
           </Text>
-        </Box.Stack>
-      </Dialog.Description>
-      <Dialog.Footer>
+        </VStack>
         <Button
-          css={styles.installButton}
+          className={classes.installButton()}
           as="a"
           href={VITE_WALLET_INSTALL_NEXT}
           target="_blank"
           rel="noreferrer"
-          intent="primary"
-          size="lg"
+          color="green"
+          size="4"
         >
           Install Fuel Wallet
         </Button>
-      </Dialog.Footer>
+      </Dialog.Description>
     </Dialog.Content>
-  </Dialog>
-);
-
-const styles = {
-  content: cssObj({
-    py: '$6',
-  }),
-  installButton: cssObj({
-    width: '$full',
-  }),
+  </Dialog>;
 };
+
+export const styles = tv({
+  slots: {
+    content: 'py-6',
+    installButton: 'w-full',
+  },
+});

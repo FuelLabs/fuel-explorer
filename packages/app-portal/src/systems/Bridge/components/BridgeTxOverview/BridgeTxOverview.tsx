@@ -62,7 +62,7 @@ export const BridgeTxOverview = ({
             <Text className={classes.subtleText()}>(Withdrawal)</Text>
             <FuelLogo size={17} />
             <IconArrowRight size={16} />
-            <Asset asset={ethAsset} iconSize={18}>
+            <Asset asset={ethAsset} iconSize={17}>
               <Asset.Icon alt={'withdrawal'} />
             </Asset>
           </Flex>
@@ -75,7 +75,7 @@ export const BridgeTxOverview = ({
             <InfoTextLoader />
           ) : (
             <>
-              <Asset asset={ethAsset} iconSize={18}>
+              <Asset asset={ethAsset} iconSize={17}>
                 <Asset.Icon alt={`Asset ${asset?.symbol}`} />
               </Asset>
               <Text aria-label="Asset amount" className={classes.infoText()}>

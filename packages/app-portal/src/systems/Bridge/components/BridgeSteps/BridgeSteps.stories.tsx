@@ -1,6 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Text } from '@fuel-ui/react';
-
+import { Flex, Text } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { BridgeSteps } from './BridgeSteps';
 
 export default {
@@ -12,95 +11,87 @@ export default {
 };
 
 export const Usage = () => {
+  const classes = styles();
+
   const steps = [
     {
       name: 'Submit to bridge',
-      status: <Text css={styles.statusText}>Action</Text>,
+      status: <Text className={classes.statusText()}>Action</Text>,
       isLoading: false,
       isDone: false,
       isSelected: true,
     },
     {
       name: 'Settlement',
-      status: <Text css={styles.statusText}>Wait ~15 min</Text>,
+      status: <Text className={classes.statusText()}>Wait ~15 min</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
     {
       name: 'Confirm transaction',
-      status: <Text css={styles.statusText}>Action</Text>,
+      status: <Text className={classes.statusText()}>Action</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
     {
       name: 'Receive funds',
-      status: <Text css={styles.statusText}>Automatic</Text>,
+      status: <Text className={classes.statusText()}>Automatic</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
   ];
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeSteps steps={steps} />
-    </Box.Flex>
+    </Flex>
   );
 };
 
 export const Mixed = () => {
+  const classes = styles();
   const steps = [
     {
       name: 'Submit to bridge',
-      status: <Text css={styles.statusText}>Done!</Text>,
+      status: <Text className={classes.statusText()}>Done!</Text>,
       isLoading: false,
       isDone: true,
       isSelected: false,
     },
     {
       name: 'Settlement',
-      status: (
-        <Text
-          leftIcon="SpinnerGap"
-          iconSize={10}
-          css={{ gap: '$1', ...styles.statusText }}
-        >
-          ~5 minutes left
-        </Text>
-      ),
+      status: <Text className={classes.statusText()}>~5 minutes left</Text>,
       isLoading: true,
       isDone: false,
       isSelected: true,
     },
     {
       name: 'Confirm transaction',
-      status: <Text css={styles.statusText}>Action</Text>,
+      status: <Text className={classes.statusText()}>Action</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
     {
       name: 'Receive funds',
-      status: <Text css={styles.statusText}>Automatic</Text>,
+      status: <Text className={classes.statusText()}>Automatic</Text>,
       isLoading: false,
       isDone: false,
       isSelected: false,
     },
   ];
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeSteps steps={steps} />
-    </Box.Flex>
+    </Flex>
   );
 };
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-  }),
-  statusText: cssObj({
-    color: '$intentsBase8',
-    fontSize: '$xs',
-  }),
-};
+const styles = tv({
+  slots: {
+    storybook: 'm-4',
+    statusText: 'text-muted text-xs',
+  },
+});

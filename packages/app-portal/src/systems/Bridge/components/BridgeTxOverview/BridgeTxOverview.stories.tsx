@@ -1,8 +1,8 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box } from '@fuel-ui/react';
 import assetList from '@fuels/assets';
 import { bn } from 'fuels';
 
+import { Flex } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { BridgeTxOverview } from './BridgeTxOverview';
 
 export default {
@@ -14,8 +14,10 @@ export default {
 };
 
 export const Usage = () => {
+  const classes = styles();
+
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxOverview
         transactionId={bn(1234567876543456)}
         date={new Date()}
@@ -24,13 +26,14 @@ export const Usage = () => {
         asset={assetList[0]}
         ethAsset={assetList[0]}
       />
-    </Box.Flex>
+    </Flex>
   );
 };
 
 export const Withdrawal = () => {
+  const classes = styles();
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxOverview
         transactionId={bn(1234567876543456)}
         date={new Date()}
@@ -38,13 +41,14 @@ export const Withdrawal = () => {
         amount="1.500"
         ethAsset={assetList[0]}
       />
-    </Box.Flex>
+    </Flex>
   );
 };
 
 export const Loading = () => {
+  const classes = styles();
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxOverview
         isLoading
         transactionId={bn(1234567876543456)}
@@ -54,13 +58,12 @@ export const Loading = () => {
         asset={assetList[0]}
         ethAsset={assetList[0]}
       />
-    </Box.Flex>
+    </Flex>
   );
 };
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-    width: '348px',
-  }),
-};
+const styles = tv({
+  slots: {
+    storybook: 'm-4 w-[348px]',
+  },
+});

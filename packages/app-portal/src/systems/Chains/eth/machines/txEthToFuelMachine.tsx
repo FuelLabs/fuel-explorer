@@ -1,4 +1,3 @@
-import { toast } from '@fuel-ui/react';
 import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type {
   Address as FuelAddress,
@@ -14,6 +13,7 @@ import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~/systems/Core/machines';
 
+import { toast } from '@fuels/ui';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
 import { EthTxCache } from '../utils';

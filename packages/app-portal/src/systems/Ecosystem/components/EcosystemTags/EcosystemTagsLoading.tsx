@@ -1,4 +1,5 @@
-import { Box, ContentLoader } from '@fuel-ui/react';
+import { ContentLoader } from '@fuel-ui/react';
+import { Flex } from '@fuels/ui';
 
 export const TagLoader = () => {
   return (
@@ -16,10 +17,10 @@ export const EcosystemTagsLoading = ({
   items = 8,
 }: EcosystemTagsLoadingProps) => {
   return (
-    <Box.Flex justify="flex-start" align="center" gap="$3" wrap="wrap">
+    <Flex justify="start" align="center" gap="3" wrap="wrap">
       {Array.from({ length: items }).map((_, i) => (
         <TagLoader key={i} />
       ))}
-    </Box.Flex>
+    </Flex>
   );
 };

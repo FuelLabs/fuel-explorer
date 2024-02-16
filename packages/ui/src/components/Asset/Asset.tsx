@@ -161,7 +161,7 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
           data-size={dataSize}
           src={imageUrl}
           alt={`${name} logo`}
-          {...imageProps}
+          style={{ ...imageProps }}
           {...props}
         />
       );

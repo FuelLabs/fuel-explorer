@@ -1,5 +1,5 @@
 import type { Asset as FuelsAsset } from '@fuels/assets';
-import { Asset, Card, CardList, Flex, Text } from '@fuels/ui';
+import { Asset, CardList, Flex, Text } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
