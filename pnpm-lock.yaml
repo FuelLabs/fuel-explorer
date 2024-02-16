@@ -50,8 +50,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
       '@fuels/tsup-config':
-        specifier: ^0.15.1
-        version: 0.15.1(tsup@8.0.2)
+        specifier: ^0.1.5
+        version: 0.1.5(tsup@8.0.2)
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
@@ -195,11 +195,11 @@ importers:
         specifier: 0.73.0
         version: 0.73.0
       '@fuel-wallet/sdk':
-        specifier: 0.15.2
-        version: 0.15.2(dexie@3.2.4)(fuels@0.73.0)
+        specifier: 0.14.3
+        version: 0.14.3(fuels@0.73.0)
       '@fuels/assets':
-        specifier: 0.15.1
-        version: 0.15.1
+        specifier: 0.1.4
+        version: 0.1.4
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -4787,6 +4787,22 @@ packages:
       - react-native
     dev: false
 
+  /@fuel-wallet/sdk@0.14.3(fuels@0.73.0):
+    resolution: {integrity: sha512-/OYh/FKsjOHO7DY42yeiI6lCmM4dxsZb4k4HH+B0yM5EpJlAk3XnJf2zuQzHTivl82Aox5g1J7r5WtzSveSmaA==}
+    peerDependencies:
+      fuels: '>=0.71.1'
+    dependencies:
+      '@fuel-wallet/types': 0.14.3(fuels@0.73.0)
+      dexie-observable: 4.0.1-beta.13(dexie@3.2.4)
+      events: 3.3.0
+      fuels: 0.73.0
+      json-rpc-2.0: 1.7.0
+      uuid: 9.0.1
+      xstate: 4.38.3
+    transitivePeerDependencies:
+      - dexie
+    dev: false
+
   /@fuel-wallet/sdk@0.15.2(dexie@3.2.4)(fuels@0.73.0):
     resolution: {integrity: sha512-hUrCNpWqso968h8oExhVCWp8lOgAR0ZA1dkv7/bOYT+HEpWebl90GjJ2q2xx6+ijq4WrRJi8fIDVgnB7+LD+mw==}
     peerDependencies:
@@ -4794,6 +4810,19 @@ packages:
     dependencies:
       '@fuel-wallet/types': 0.15.2(dexie@3.2.4)(fuels@0.73.0)
       events: 3.3.0
+      fuels: 0.73.0
+      json-rpc-2.0: 1.7.0
+    transitivePeerDependencies:
+      - dexie
+    dev: false
+
+  /@fuel-wallet/types@0.14.3(fuels@0.73.0):
+    resolution: {integrity: sha512-QZIfraAnCVlE1wd1/qwFgKAcKzriMxXDwqJ9dq2FmpLevD1O/HUEmiUmXRHuc9AH4yUcB63B0Lwnl5356LdUeg==}
+    peerDependencies:
+      fuels: '>=0.71.1'
+    dependencies:
+      '@types/chrome': 0.0.246
+      dexie-observable: 4.0.1-beta.13(dexie@3.2.4)
       fuels: 0.73.0
       json-rpc-2.0: 1.7.0
     transitivePeerDependencies:
@@ -4819,10 +4848,6 @@ packages:
 
   /@fuels/assets@0.1.4:
     resolution: {integrity: sha512-6rSbzxxDlDkoW9u4vvSbTfnA4Cy9WjZ1ajBOuKTnvoQ9EzQKvrP4lYpN2SjqdfJkdhRfCItaf1aQq/avaN51BQ==}
-    dev: false
-
-  /@fuels/assets@0.15.1:
-    resolution: {integrity: sha512-sgzqSr0N+HmPVuetpx0TkulKBB2X41b8NEhIXQdffj1gavt5FKcOpKHvO7cla5KyFhNx/X+N0gh8ZzQDg5rpoA==}
     dev: false
 
   /@fuels/jest@0.15.1(@types/jest@29.5.12)(jest@29.7.0):
@@ -4899,8 +4924,8 @@ packages:
     dependencies:
       typescript: 5.3.3
 
-  /@fuels/tsup-config@0.15.1(tsup@8.0.2):
-    resolution: {integrity: sha512-zcnJM/T+dorqtgCg1vofe0pG9Bmpg4LGk1uwt10DgMND0ec40Mo6D1Z/SIF/YPPGifWzhyM94HcUcbjcB2CO/Q==}
+  /@fuels/tsup-config@0.1.5(tsup@8.0.2):
+    resolution: {integrity: sha512-6QWweGkMnTyfLCspQNSxyf9dJjpZEA+uGzSyhFjNIrFCMRwHgnFBkVswEAtkDbcI4mZlzDGI7nYOcltc5OWWbw==}
     peerDependencies:
       tsup: ^7.2.0
     dependencies:
@@ -16097,6 +16122,13 @@ packages:
     resolution: {integrity: sha512-qQR1dr2rGIHYlJulmr8Ioq3De0Le9E4MJ5AiaeAETJJpndT1uUNHsGFK3L/UIu+rbkQSdj8J/w2bCsBZc/Y5fQ==}
     dev: false
 
+  /@types/chrome@0.0.246:
+    resolution: {integrity: sha512-MxGxEomGxsJiL9xe/7ZwVgwdn8XVKWbPvxpVQl3nWOjrS0Ce63JsfzxUc4aU3GvRcUPYsfufHmJ17BFyKxeA4g==}
+    dependencies:
+      '@types/filesystem': 0.0.35
+      '@types/har-format': 1.2.15
+    dev: false
+
   /@types/concat-stream@1.6.1:
     resolution: {integrity: sha512-eHE4cQPoj6ngxBZMvVf6Hw7Mh4jMW4U9lpGmS5GBPB9RYxlFg+CHaVN7ErNY4W9XfLIEn20b4VDYaIrbq0q4uA==}
     dependencies:
@@ -16198,6 +16230,16 @@ packages:
       '@types/qs': 6.9.11
       '@types/serve-static': 1.15.5
 
+  /@types/filesystem@0.0.35:
+    resolution: {integrity: sha512-1eKvCaIBdrD2mmMgy5dwh564rVvfEhZTWVQQGRNn0Nt4ZEnJ0C8oSUCzvMKRA4lGde5oEVo+q2MrTTbV/GHDCQ==}
+    dependencies:
+      '@types/filewriter': 0.0.33
+    dev: false
+
+  /@types/filewriter@0.0.33:
+    resolution: {integrity: sha512-xFU8ZXTw4gd358lb2jw25nxY9QAgqn2+bKKjKOYfNCzN4DKCFetK7sPtrlpg66Ywe3vWY9FNxprZawAh9wfJ3g==}
+    dev: false
+
   /@types/find-cache-dir@3.2.1:
     resolution: {integrity: sha512-frsJrz2t/CeGifcu/6uRo4b+SzAwT4NYCVPu1GN8IB9XTzrpPkGuV0tmh9mN+/L0PklAlsC3u5Fxt0ju00LXIw==}
     dev: true
@@ -16219,6 +16261,10 @@ packages:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
       '@types/node': 20.11.19
+
+  /@types/har-format@1.2.15:
+    resolution: {integrity: sha512-RpQH4rXLuvTXKR0zqHq3go0RVXYv/YVqv4TnPH95VbwUxZdQlK1EtcMvQvMpDngHbt13Csh9Z4qT9AbkiQH5BA==}
+    dev: false
 
   /@types/html-minifier-terser@5.1.2:
     resolution: {integrity: sha512-h4lTMgMJctJybDp8CQrxTUiiYmedihHWkjnF/8Pxseu2S6Nlfcy8kwboQ8yejh456rP2yWoEVm1sS/FVsfM48w==}
