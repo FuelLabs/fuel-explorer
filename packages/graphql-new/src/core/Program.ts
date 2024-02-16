@@ -1,8 +1,6 @@
 import yargs from 'yargs/yargs';
-import { BlockRepository } from '../repositories/BlockRepository';
-import { TransactionRepository } from '../repositories/TransactionRepository';
 import { db } from './Database';
-import { Sync } from './Sync';
+import { inngest } from './Inngest';
 
 export class Program {
   async create() {
@@ -42,17 +40,12 @@ export class Program {
 
   async sync(argv: { all: boolean; missing: boolean }) {
     await db.connect();
-    const blockRepository = new BlockRepository();
-    const transactionRepository = new TransactionRepository();
-    const sync = new Sync(blockRepository, transactionRepository);
 
     if (argv.all) {
-      console.log('Syncing all blocks');
-      await sync.syncAllBlocks();
+      await inngest.syncBlocks();
     }
     if (argv.missing) {
-      console.log('Syncing missing blocks');
-      await sync.syncMissingBlocks();
+      await inngest.syncMissing();
     }
 
     await db.close();

@@ -1,50 +1,22 @@
-import { GQLBlock } from '../generated/types';
+import { BlockDomain } from '../domains/BlockDomain';
 import { BlockRepository } from '../repositories/BlockRepository';
-import { TransactionRepository } from '../repositories/TransactionRepository';
-import { executeInQueue } from '../utils/promise';
-
-const NUM_PAGES = 1000;
+import { inngest } from './Inngest';
 
 export class Sync {
-  constructor(
-    private blockRepository: BlockRepository,
-    private transactionRepository: TransactionRepository,
-  ) {}
+  async syncBlocks(page = 1, perPage = 1000) {
+    const domain = new BlockDomain();
+    const { hasNext } = await domain.syncBlocks(page, perPage);
 
-  async syncAllBlocks() {
-    await this._sync(1);
+    if (hasNext) {
+      await inngest.syncBlocks(page + 1, perPage);
+    }
   }
 
   async syncMissingBlocks() {
-    // const latestAddedBlock = await this.blockRepository.findLatestAdded();
-    // const startPage = Math.ceil(latestAddedBlock._id / NUM_PAGES);
-    // await this._sync(startPage);
-  }
-
-  async syncTransactions(blocks: { blockId: number; block: GQLBlock }[]) {
-    await executeInQueue(blocks, async ({ blockId, block }) => {
-      console.log(`Syncing transactions for block ${blockId}`);
-      await this.transactionRepository.insertMany(block.transactions, blockId);
-    });
-  }
-
-  private async _sync(startPage: number) {
-    const data = await this.blockRepository.latestOnNode();
-    const latestBlockId = Number(data.pageInfo.endCursor ?? 1);
-    const pages = Math.ceil(latestBlockId / NUM_PAGES);
-    const iterationArray = Array.from({ length: pages }, (_, i) => i + 1);
-
-    for (const page of iterationArray) {
-      if (page < startPage) continue;
-      const perPage = NUM_PAGES;
-      console.log(`Fetching page ${page} of ${pages}`);
-      const blocks = await this.blockRepository.blocksFromNode({
-        page,
-        perPage,
-      });
-      const blocksCreated = await this.blockRepository.insertMany(blocks);
-      console.log(`Synced ${blocksCreated.length} blocks`);
-      await this.syncTransactions(blocksCreated);
-    }
+    const blockRepo = new BlockRepository();
+    const latest = await blockRepo.findLatestAdded();
+    const id = latest.data.header.height;
+    const page = Math.ceil(Number(id) / 1000);
+    // await this.syncBlocks(page);
   }
 }

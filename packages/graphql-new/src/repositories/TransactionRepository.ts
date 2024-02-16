@@ -1,4 +1,4 @@
-import { and, eq, like, sql } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 import { db } from '../core/Database';
 import { Paginator, PaginatorParams } from '../core/Paginator';
 import { transactions } from '../core/Schema';

@@ -1,8 +1,14 @@
 import { Context } from '../core/GraphQLServer';
 import { PaginatorParams } from '../core/Paginator';
+import { GQLBlock } from '../generated/types';
 import { TransactionRepository } from '../repositories/TransactionRepository';
 
 export class TransactionDomain {
+  async syncTransactions(block: GQLBlock, blockId: number) {
+    const repository = new TransactionRepository();
+    await repository.insertMany(block.transactions, blockId);
+  }
+
   createResolvers() {
     return {
       Query: {

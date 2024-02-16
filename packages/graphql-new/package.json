@@ -20,7 +20,9 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build": "run-s codegen build:lib",
@@ -44,6 +46,7 @@
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "graphql-yoga": "5.1.1",
+    "inngest": "3.14.0",
     "pg": "^8.11.3",
     "tai64": "^1.0.0",
     "yargs": "17.7.2"

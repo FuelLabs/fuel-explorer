@@ -34,7 +34,7 @@ export class BlockRepository {
       .connection()
       .select()
       .from(blocks)
-      .orderBy(asc(blocks.id))
+      .orderBy(asc(blocks.height))
       .limit(1);
     return latest;
   }
@@ -70,20 +70,15 @@ export class BlockRepository {
     return results.filter(Boolean) as { blockId: number; block: GQLBlock }[];
   }
 
-  async blocksFromNode({ page, perPage }: { page: number; perPage: number }) {
+  async blocksFromNode(page: number, perPage: number) {
     const after = (page - 1) * perPage;
     const { data } = await this.sdk.QueryBlocks({
       first: perPage,
       after: String(after),
     });
 
-    return data.blocks.nodes as GQLBlock[];
-  }
-
-  async latestOnNode() {
-    const { data } = await this.sdk.QueryBlocks({ last: 1 });
-    const block = data.blocks.nodes[0];
-    const pageInfo = data.blocks.pageInfo;
-    return { block, pageInfo };
+    const blocks = data.blocks.nodes as GQLBlock[];
+    const hasNext = data.blocks.pageInfo.hasNextPage;
+    return { blocks, hasNext };
   }
 }

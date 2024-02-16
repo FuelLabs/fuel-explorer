@@ -1,3 +1,4 @@
+import { serve } from 'inngest/express';
 import { GraphQLServer } from './core/GraphQLServer';
 import { Server } from './core/Server';
 import { requireEnv } from './utils/require-env';
