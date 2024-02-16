@@ -88,7 +88,7 @@ export const BridgeTxList = () => {
   );
 };
 
-export const styles = tv({
+const styles = tv({
   slots: {
     cardList: 'cursor-pointer select-none :hover:bg-muted', // was intentsBase3
     buttonShowMore: 'mt-2',

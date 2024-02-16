@@ -115,7 +115,7 @@ export const Bridge = () => {
 export const styles = tv({
   slots: {
     cardBody: 'p-7',
-    divider: ['h-1 bg-border mt-1 mb-5'],
+    divider: 'h-[1px] bg-border mt-6 mb-5',
     textNetwork: 'text-heading',
   },
 });
