@@ -1,9 +1,9 @@
 import { eq, like } from 'drizzle-orm';
 import { db } from '../core/Database';
-import { Paginator, PaginatorParams } from '../core/Paginator';
 import { transactions } from '../core/Schema';
 import { GQLTransaction } from '../generated/types';
-import { tai64toDate } from '../utils/date';
+import { DateHelper } from '../helpers/Date';
+import { Paginator, PaginatorParams } from '../helpers/Paginator';
 
 export class TransactionRepository {
   async findById(id: string) {
@@ -64,7 +64,7 @@ export class TransactionRepository {
       accountsIndex: this._getAccounts(transaction),
       timestamp:
         transaction.status && 'time' in transaction.status
-          ? tai64toDate(transaction.status.time)
+          ? DateHelper.tai64toDate(transaction.status.time)
           : null,
     };
   }

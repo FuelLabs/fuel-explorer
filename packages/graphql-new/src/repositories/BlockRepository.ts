@@ -1,11 +1,11 @@
 import { desc, eq } from 'drizzle-orm';
 import { db } from '../core/Database';
 import { GraphQLSDK } from '../core/GraphQLSDK';
-import { Paginator, PaginatorParams } from '../core/Paginator';
 import { blocks } from '../core/Schema';
 import { GQLBlock } from '../generated/types';
-import { tai64toDate } from '../utils/date';
-import { executeInQueue } from '../utils/promise';
+import { DateHelper } from '../helpers/Date';
+import { Paginator, PaginatorParams } from '../helpers/Paginator';
+import { PromiseHelper } from '../helpers/Promise';
 
 export class BlockRepository {
   sdk: GraphQLSDK['sdk'];
@@ -53,7 +53,7 @@ export class BlockRepository {
         id: block.id,
         data: block,
         height: Number(block.header.height),
-        timestamp: tai64toDate(block.header.time),
+        timestamp: DateHelper.tai64toDate(block.header.time),
       })
       .returning({
         blockId: blocks._id,
@@ -63,11 +63,14 @@ export class BlockRepository {
   }
 
   async insertMany(blocks: GQLBlock[]) {
-    const results = await executeInQueue(blocks, async (block) => {
-      const blockId = await this.insertOne(block);
-      if (!blockId) return null;
-      return { blockId, block };
-    });
+    const results = await PromiseHelper.executeInQueue(
+      blocks,
+      async (block) => {
+        const blockId = await this.insertOne(block);
+        if (!blockId) return null;
+        return { blockId, block };
+      },
+    );
     return results.filter(Boolean) as { blockId: number; block: GQLBlock }[];
   }
 

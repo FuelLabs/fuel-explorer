@@ -1,9 +1,9 @@
 import { Context } from '../core/GraphQLServer';
 import { inngest } from '../core/Inngest';
-import { PaginatorParams } from '../core/Paginator';
 import { GQLBlock } from '../generated/types';
+import { PaginatorParams } from '../helpers/Paginator';
+import { PromiseHelper } from '../helpers/Promise';
 import { BlockRepository } from '../repositories/BlockRepository';
-import { executeInQueue } from '../utils/promise';
 
 export type CreatedBlock = {
   blockId: number;
@@ -16,7 +16,7 @@ export class BlockDomain {
     const { blocks, hasNext } = await repository.blocksFromNode(page, perPage);
     const created = await repository.insertMany(blocks);
 
-    await executeInQueue(created, async (block) => {
+    await PromiseHelper.executeInQueue(created, async (block) => {
       await inngest.syncTransactions(block);
     });
 

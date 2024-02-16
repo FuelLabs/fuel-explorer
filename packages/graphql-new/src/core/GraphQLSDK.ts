@@ -1,8 +1,10 @@
 import { GraphQLClient } from 'graphql-request';
 import { getSdk } from '../generated/types';
-import { requireEnv } from '../utils/require-env';
+import { EnvHelper } from '../helpers/Env';
 
-const env = requireEnv([['FUEL_PROVIDER', 'http://127.0.0.1:4000/graphql']]);
+const env = EnvHelper.requireEnv([
+  ['FUEL_PROVIDER', 'http://127.0.0.1:4000/graphql'],
+]);
 
 export type GQLClient = ReturnType<typeof getSdk>;
 

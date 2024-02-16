@@ -1,6 +1,6 @@
 import { SQL, and, asc, desc, gt, lt, sql } from 'drizzle-orm';
 import { PgColumn, PgTableWithColumns } from 'drizzle-orm/pg-core';
-import { db } from './Database';
+import { db } from '../core/Database';
 
 export type PaginatorParams = {
   first: number;

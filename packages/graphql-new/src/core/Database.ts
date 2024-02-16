@@ -2,9 +2,9 @@ import path from 'path';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Client } from 'pg';
-import { requireEnv } from '../utils/require-env';
+import { EnvHelper } from '../helpers/Env';
 
-const env = requireEnv([
+const env = EnvHelper.requireEnv([
   ['DB_HOST', '127.0.0.1'],
   ['DB_PORT', '5435'],
   ['DB_USER', 'postgres'],

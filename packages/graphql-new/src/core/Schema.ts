@@ -111,17 +111,3 @@ export const outputsRelations = relations(outputs, ({ one }) => ({
     relationName: 'output_transaction',
   }),
 }));
-
-export class Schema {
-  blocks: typeof blocks;
-  transactions: typeof transactions;
-  inputs: typeof inputs;
-  outputs: typeof outputs;
-
-  constructor() {
-    this.blocks = blocks;
-    this.transactions = transactions;
-    this.inputs = inputs;
-    this.outputs = outputs;
-  }
-}

@@ -1,9 +1,8 @@
-import { serve } from 'inngest/express';
 import { GraphQLServer } from './core/GraphQLServer';
 import { Server } from './core/Server';
-import { requireEnv } from './utils/require-env';
+import { EnvHelper } from './helpers/env';
 
-const env = requireEnv([['SERVER_PORT', '3002']]);
+const env = EnvHelper.requireEnv([['SERVER_PORT', '3002']]);
 const port = Number(env.SERVER_PORT);
 
 const graphQLServer = new GraphQLServer();

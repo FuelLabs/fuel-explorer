@@ -1,8 +1,8 @@
-import { BlockDomain } from '../domains/BlockDomain';
+import { inngest } from '../core/Inngest';
 import { BlockRepository } from '../repositories/BlockRepository';
-import { inngest } from './Inngest';
+import { BlockDomain } from './BlockDomain';
 
-export class Sync {
+export class SyncDomain {
   async syncBlocks(page = 1, perPage = 1000) {
     const domain = new BlockDomain();
     const { hasNext } = await domain.syncBlocks(page, perPage);

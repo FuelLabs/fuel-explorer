@@ -1,6 +1,6 @@
 import { Context } from '../core/GraphQLServer';
-import { PaginatorParams } from '../core/Paginator';
 import { GQLBlock } from '../generated/types';
+import { PaginatorParams } from '../helpers/Paginator';
 import { TransactionRepository } from '../repositories/TransactionRepository';
 
 export class TransactionDomain {

@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { serve } from 'inngest/express';
-import { BlockDomain, CreatedBlock } from '../domains/BlockDomain';
+import { CreatedBlock } from '../domains/BlockDomain';
+import { SyncDomain } from '../domains/SyncDomain';
 import { TransactionDomain } from '../domains/TransactionDomain';
-import { Sync } from './Sync';
 
 dotenv.config();
 
@@ -31,7 +31,7 @@ const functions = [
     { event: 'sync/sync:blocks' },
     async ({ event: { data } }) => {
       console.log(`Syncing block page ${data.page}`);
-      const sync = new Sync();
+      const sync = new SyncDomain();
       await sync.syncBlocks(data.page);
     },
   ),
@@ -41,7 +41,7 @@ const functions = [
     { event: 'sync/sync:missing' },
     async () => {
       console.log('Syncing missing blocks');
-      const sync = new Sync();
+      const sync = new SyncDomain();
       await sync.syncMissingBlocks();
     },
   ),
