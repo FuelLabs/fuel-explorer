@@ -2,7 +2,6 @@ import { QUERY_KEYS } from '@fuel-wallet/react';
 import { useQuery } from '@tanstack/react-query';
 import type { BytesLike, Provider as FuelProvider } from 'fuels';
 import { Address } from 'fuels';
-import { useEffect } from 'react';
 
 export const useBalance = ({
   address,
@@ -25,7 +24,7 @@ export const useBalance = ({
             '0x0000000000000000000000000000000000000000000000000000000000000000',
         );
         return currentFuelBalance || null;
-      } catch (error: unknown) {
+      } catch (_error: unknown) {
         return null;
       }
     },

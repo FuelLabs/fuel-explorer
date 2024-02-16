@@ -185,7 +185,7 @@ export class TxEthToFuelService {
           approveTxHashReceipt = await ethPublicClient.getTransactionReceipt({
             hash: approveTxHash,
           });
-        } catch (err: unknown) {
+        } catch (_err: unknown) {
           // workaround in place because waitForTransactionReceipt stop working after first time using it
           approveTxHashReceipt =
             await ethPublicClient.waitForTransactionReceipt({
@@ -238,7 +238,7 @@ export class TxEthToFuelService {
       receipt = await ethPublicClient.getTransactionReceipt({
         hash: ethTxId,
       });
-    } catch (err: unknown) {
+    } catch (_err: unknown) {
       // workaround in place because waitForTransactionReceipt stop working after first time using it
       receipt = await ethPublicClient.waitForTransactionReceipt({
         hash: ethTxId,

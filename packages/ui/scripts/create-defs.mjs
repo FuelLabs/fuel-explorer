@@ -1,3 +1,4 @@
+// biome-ignore lint/correctness/noUnusedVariables: <explanation>
 import { promises as fs } from 'fs';
 import path from 'path';
 import * as url from 'url';
@@ -152,6 +153,7 @@ function createNestedExportStr(main, nested, isType) {
     .join('\n');
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: <explanation>
 async function createComponentIndex(components) {
   const mainComponents = components.filter((s) => !s.component);
   for (const item of mainComponents) {
@@ -180,6 +182,7 @@ async function createComponentIndex(components) {
   }
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: <explanation>
 async function createMainComponentsIndex(components) {
   const mainComponents = components.filter((s) => !s.component);
   let list = [];

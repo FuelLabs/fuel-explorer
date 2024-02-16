@@ -141,7 +141,7 @@ export function AssetsDialog() {
                       ? async () => {
                           try {
                             await addAssetEth(ethAsset);
-                          } catch (e) {
+                          } catch (_e) {
                             /* empty */
                           }
                           addAssetFuel(fuelAsset);
