@@ -20,16 +20,16 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build": "run-s codegen build:lib",
     "build:lib": "tsup",
     "codegen": "gql-gen -r dotenv/config --config codegen.ts",
-    "db:generate": "drizzle-kit generate:pg",
     "db:studio": "drizzle-kit studio",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:migrate": "tsx ./src/cli.ts migrate",
+    "inngest": "inngest-cli dev -u http://localhost:3002/api/inngest",
     "dev": "tsx watch src/server.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
     "sync:missing": "tsx ./src/cli.ts sync --missing"
@@ -44,6 +44,7 @@
     "dotenv": "16.4.4",
     "drizzle-orm": "^0.29.3",
     "graphql": "^16.8.1",
+    "graphql-request": "6.1.0",
     "graphql-tag": "^2.12.6",
     "graphql-yoga": "5.1.1",
     "inngest": "3.14.0",
@@ -61,6 +62,7 @@
     "@types/node": "^20.11.5",
     "@types/pg": "^8.11.0",
     "drizzle-kit": "^0.20.14",
+    "inngest-cli": "0.25.2",
     "tsx": "4.7.0",
     "typescript": "^5.3.3"
   }

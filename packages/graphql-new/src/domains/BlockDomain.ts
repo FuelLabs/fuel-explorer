@@ -3,6 +3,7 @@ import { inngest } from '../core/Inngest';
 import { PaginatorParams } from '../core/Paginator';
 import { GQLBlock } from '../generated/types';
 import { BlockRepository } from '../repositories/BlockRepository';
+import { executeInQueue } from '../utils/promise';
 
 export type CreatedBlock = {
   blockId: number;
@@ -15,7 +16,10 @@ export class BlockDomain {
     const { blocks, hasNext } = await repository.blocksFromNode(page, perPage);
     const created = await repository.insertMany(blocks);
 
-    await Promise.all(created.map(inngest.syncTransactions));
+    await executeInQueue(created, async (block) => {
+      await inngest.syncTransactions(block);
+    });
+
     return { blocks, hasNext };
   }
 

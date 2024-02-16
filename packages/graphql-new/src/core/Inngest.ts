@@ -1,52 +1,44 @@
+import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { serve } from 'inngest/express';
 import { BlockDomain, CreatedBlock } from '../domains/BlockDomain';
 import { TransactionDomain } from '../domains/TransactionDomain';
 import { Sync } from './Sync';
 
+dotenv.config();
+
 const schemas = new EventSchemas().fromRecord<{
-  'sync/sync-blocks': {
+  'sync/sync:blocks': {
     data: {
       page: number;
       perPage: number;
     };
   };
-  'sync/sync-missing': {
+  'sync/sync:missing': {
     data: undefined;
   };
-  'sync/sync-transactions': {
+  'sync/sync:transactions': {
     data: CreatedBlock;
   };
 }>();
 
-const client = new Inngest({ id: 'graphql-new', schemas });
+const client = new Inngest({ id: 'fuel-indexer', schemas });
 export type Events = GetEvents<typeof client>;
 
 const functions = [
   client.createFunction(
-    { id: 'sync-blocks', concurrency: 100 },
-    { event: 'sync/sync-blocks' },
+    { id: 'sync:blocks', concurrency: 100 },
+    { event: 'sync/sync:blocks' },
     async ({ event: { data } }) => {
       console.log(`Syncing block page ${data.page}`);
-
-      const domain = new BlockDomain();
-      const { hasNext } = await domain.syncBlocks(data.page, data.perPage);
-
-      if (hasNext) {
-        await client.send({
-          name: 'sync/sync-blocks',
-          data: {
-            perPage: data.perPage,
-            page: data.page + 1,
-          },
-        });
-      }
+      const sync = new Sync();
+      await sync.syncBlocks(data.page);
     },
   ),
 
   client.createFunction(
-    { id: 'sync-missing' },
-    { event: 'sync/sync-missing' },
+    { id: 'sync:missing' },
+    { event: 'sync/sync:missing' },
     async () => {
       console.log('Syncing missing blocks');
       const sync = new Sync();
@@ -55,8 +47,8 @@ const functions = [
   ),
 
   client.createFunction(
-    { id: 'sync-transactions' },
-    { event: 'sync/sync-transactions', concurrency: 100 },
+    { id: 'sync:transactions' },
+    { event: 'sync/sync:transactions', concurrency: 10 },
     async ({ event: { data } }) => {
       console.log(`Syncing transactions for block ${data.blockId}`);
       const domain = new TransactionDomain();
@@ -75,21 +67,21 @@ export class InngestClient {
 
   async syncBlocks(page = 1, perPage = 1000) {
     await client.send({
-      name: 'sync/sync-blocks',
+      name: 'sync/sync:blocks',
       data: { page, perPage },
     });
   }
 
   async syncMissing() {
     await client.send({
-      name: 'sync/sync-missing',
+      name: 'sync/sync:missing',
       data: undefined,
     });
   }
 
   async syncTransactions(block: CreatedBlock) {
     await client.send({
-      name: 'sync/sync-transactions',
+      name: 'sync/sync:transactions',
       data: block,
     });
   }

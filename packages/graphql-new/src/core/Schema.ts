@@ -17,9 +17,11 @@ export const blocks = pgTable(
     _id: serial('_id').primaryKey(),
     id: varchar('id', { length: 66 }).notNull().unique(),
     timestamp: timestamp('timestamp').notNull(),
+    height: integer('height').notNull(),
     data: jsonb('data').notNull().$type<GQLBlock>(),
   },
   (table) => ({
+    heightIdx: index().on(table.height),
     timestampIdx: index().on(table.timestamp),
     idIdx: index().on(table.id),
   }),
@@ -66,14 +68,12 @@ export const outputs = pgTable(
     _id: serial('_id').primaryKey(),
     id: varchar('id', { length: 66 }).notNull().unique(),
     timestamp: timestamp('timestamp').notNull(),
-    height: integer('height').notNull(),
     data: jsonb('data'),
     transactionId: integer('transaction_id')
       .notNull()
       .references(() => transactions._id),
   },
   (table) => ({
-    heightIdx: index().on(table.height),
     timestampIdx: index().on(table.timestamp),
     idIdx: index().on(table.id),
   }),

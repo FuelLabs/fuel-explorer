@@ -1,4 +1,4 @@
-import { asc, eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { db } from '../core/Database';
 import { GraphQLSDK } from '../core/GraphQLSDK';
 import { Paginator, PaginatorParams } from '../core/Paginator';
@@ -34,7 +34,7 @@ export class BlockRepository {
       .connection()
       .select()
       .from(blocks)
-      .orderBy(asc(blocks.height))
+      .orderBy(desc(blocks.height))
       .limit(1);
     return latest;
   }
@@ -52,6 +52,7 @@ export class BlockRepository {
       .values({
         id: block.id,
         data: block,
+        height: Number(block.header.height),
         timestamp: tai64toDate(block.header.time),
       })
       .returning({
