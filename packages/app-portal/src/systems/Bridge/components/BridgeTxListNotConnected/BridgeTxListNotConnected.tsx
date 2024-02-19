@@ -1,5 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Button, Card, Text } from '@fuel-ui/react';
+import { Button, Card, Flex, Text, VStack } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 
 type BridgeTxListEmptyProps = {
   isConnecting: boolean;
@@ -10,39 +10,39 @@ export const BridgeTxListNotConnected = ({
   isConnecting,
   onClick,
 }: BridgeTxListEmptyProps) => {
+  const classes = styles();
+
   return (
-    <Card variant="outlined">
-      <Card.Body css={styles.cardBody}>
-        <Box.Stack justify="center" align="center" gap="$6">
-          <Box.Stack justify="center" align="center" gap="$1">
-            <Text fontSize="lg" color="intentsBase12">
-              Wallet not detected
-            </Text>
-            <Text color="intentsBase10" fontSize="sm">
+    <Card>
+      <Card.Body className={classes.cardBody()}>
+        <VStack justify="center" align="center" gap="6">
+          <VStack justify="center" align="center" gap="1">
+            <Text className={classes.title()}>Wallet not detected</Text>
+            <Text className={classes.subtitle()}>
               Connect a wallet to see your transactions
             </Text>
-          </Box.Stack>
-          <Box.Flex justify="center">
+          </VStack>
+          <Flex justify="center">
             <Button
               isLoading={isConnecting}
-              intent="primary"
-              css={styles.connectButton}
+              color="green"
+              className={classes.connectButton()}
               onClick={onClick}
             >
               Connect Fuel Wallet
             </Button>
-          </Box.Flex>
-        </Box.Stack>
+          </Flex>
+        </VStack>
       </Card.Body>
     </Card>
   );
 };
 
-const styles = {
-  connectButton: cssObj({
-    width: 180,
-  }),
-  cardBody: cssObj({
-    py: '$8',
-  }),
-};
+const styles = tv({
+  slots: {
+    connectButton: 'w-[180px]',
+    cardBody: 'p-3',
+    title: 'text-md text-heading',
+    subtitle: 'text-xs text-muted',
+  },
+});

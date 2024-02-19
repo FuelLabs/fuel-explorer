@@ -1,6 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Button } from '@fuel-ui/react';
-
+import { Box, Button, Flex } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { EcosystemTagsLoading } from './EcosystemTagsLoading';
 
 type EcosystemTagsProps = {
@@ -18,46 +17,38 @@ export const EcosystemTags = ({
   onClickAllCategories,
   isLoading,
 }: EcosystemTagsProps) => {
+  const classes = styles();
   if (isLoading) return <EcosystemTagsLoading />;
   return (
-    <Box.Flex justify="flex-start" align="center" gap="$2" wrap="wrap">
+    <Flex justify="start" align="center" gap="2" wrap="wrap">
       <Button
-        variant="outlined"
-        css={{ ...styles.tag, ...(!activeTag && styles.active) }}
-        size="sm"
+        data-active={!activeTag}
+        className={classes.tag()}
+        size="3"
         onClick={onClickAllCategories}
       >
         All categories
       </Button>
-      <Box css={styles.divider} />
+      <Box className={classes.divider()} />
       {(tags || []).map((tag) => (
         <Button
           key={tag}
-          variant="outlined"
-          css={{ ...styles.tag, ...(activeTag === tag && styles.active) }}
-          size="sm"
+          className={classes.tag()}
+          size="3"
           onClick={() => onClickTag?.(tag)}
         >
           {tag}
         </Button>
       ))}
-    </Box.Flex>
+    </Flex>
   );
 };
 
-const styles = {
-  tag: cssObj({
-    color: '$intentsBase12',
-  }),
-  active: cssObj({
-    borderColor: '$intentsPrimary10',
-    color: '$intentsBase12',
-  }),
-  divider: cssObj({
-    width: '1px',
-    height: '$3',
-    backgroundColor: '$intentsBase6',
-  }),
-};
+export const styles = tv({
+  slots: {
+    tag: 'text-heading data-[active=true]:border-success data-[active=true]:text-heading',
+    divider: 'w-[1px] h-2 bg-card-border',
+  },
+});
 
 EcosystemTags.Loading = EcosystemTagsLoading;

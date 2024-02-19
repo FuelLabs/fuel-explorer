@@ -1,5 +1,5 @@
 import type { Asset as FuelsAsset } from '@fuels/assets';
-import { Asset, Card, Flex, Text } from '@fuels/ui';
+import { Asset, CardList, Flex, Text } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
@@ -32,45 +32,44 @@ export const BridgeTxItem = ({
 }: BridgeTxItemProps) => {
   const classes = styles();
   return (
-    <Card
+    <CardList.Item
       aria-label={`Transaction ID: ${shortAddress(txId)}`}
       onClick={onClick}
+      className={classes.cardItem()}
     >
-      <Card.Body className={classes.cardItem()}>
-        <Flex className={classes.networks()}>
-          {fromLogo}
-          <IconArrowRight size={16} />
-          {toLogo}
+      <Flex className={classes.networks()}>
+        {fromLogo}
+        <IconArrowRight size={16} />
+        {toLogo}
+      </Flex>
+      <Flex className={classes.assetAmountWrapper()}>
+        {isLoading ? (
+          <ItemLoader />
+        ) : (
+          <>
+            <Asset asset={asset} iconSize="xs">
+              <Asset.Icon />
+            </Asset>
+            <Text className={classes.assetAmountText()}>
+              {amount} {asset?.symbol}
+            </Text>
+          </>
+        )}
+      </Flex>
+      <Flex className={classes.statusTime()}>
+        {isLoading ? (
+          <ItemLoader />
+        ) : (
+          <Text className={classes.ageText()}>{calculateDateDiff(date)}</Text>
+        )}
+        <Flex
+          className={classes.statusColumn()}
+          aria-label={`Transaction Status: ${status?.toString()}`}
+        >
+          {status}
         </Flex>
-        <Flex className={classes.assetAmountWrapper()}>
-          {isLoading ? (
-            <ItemLoader />
-          ) : (
-            <>
-              <Asset asset={asset} iconSize="xs">
-                <Asset.Icon />
-              </Asset>
-              <Text className={classes.assetAmountText()}>
-                {amount} {asset?.symbol}
-              </Text>
-            </>
-          )}
-        </Flex>
-        <Flex className={classes.statusTime()}>
-          {isLoading ? (
-            <ItemLoader />
-          ) : (
-            <Text className={classes.ageText()}>{calculateDateDiff(date)}</Text>
-          )}
-          <Flex
-            className={classes.statusColumn()}
-            aria-label={`Transaction Status: ${status?.toString()}`}
-          >
-            {status}
-          </Flex>
-        </Flex>
-      </Card.Body>
-    </Card>
+      </Flex>
+    </CardList.Item>
   );
 };
 

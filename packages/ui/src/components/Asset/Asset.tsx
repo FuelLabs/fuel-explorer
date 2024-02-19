@@ -120,6 +120,23 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
     const classes = styles();
     const { name, imageUrl, symbol, iconSize = 'md' } = useAssetContext();
 
+    function getDataSize() {
+      if (typeof iconSize === 'number') {
+        if (iconSize <= 24) {
+          return 'xs';
+        }
+        if (iconSize <= 32) {
+          return 'sm';
+        }
+        if (iconSize <= 36) {
+          return 'md';
+        }
+        return 'lg';
+      }
+      return iconSize;
+    }
+    const dataSize = getDataSize();
+
     if (icon) {
       return (
         <Box asChild aria-label={`${name} icon`} role="img" {...props}>
@@ -128,30 +145,35 @@ export const AssetIcon = createComponent<AssetIconProps, 'img'>({
       );
     }
 
+    let imageProps = {};
+    if (typeof iconSize === 'number') {
+      imageProps = {
+        width: `${iconSize}px`,
+        height: `${iconSize}px`,
+      };
+    }
+
     if (imageUrl) {
-      let imageProps = {};
-      if (typeof iconSize === 'number') {
-        imageProps = {
-          width: iconSize,
-          // height: iconSize,
-        };
-      }
       return (
         // biome-ignore lint: false positive asking for `alt` but it was informed before {...props}
         <img
           className={cx(className, classes.iconImage())}
-          data-size={iconSize}
+          data-size={dataSize}
           src={imageUrl}
           alt={`${name} logo`}
-          {...imageProps}
+          style={{ ...imageProps }}
           {...props}
         />
       );
     }
 
     return (
-      <Flex className={classes.iconWritten()} data-size={iconSize}>
-        <Text className={classes.iconText()} data-size={iconSize}>
+      <Flex
+        className={classes.iconWritten()}
+        data-size={dataSize}
+        style={{ ...imageProps }}
+      >
+        <Text className={classes.iconText()} data-size={dataSize}>
           {symbol?.slice(0, 2).toUpperCase()}
         </Text>
       </Flex>
