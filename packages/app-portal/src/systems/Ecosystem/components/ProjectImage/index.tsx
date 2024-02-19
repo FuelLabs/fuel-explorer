@@ -2,6 +2,7 @@ import { IconButton } from '@fuels/ui';
 import { IconBolt } from '@tabler/icons-react';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
+import { relativeUrl } from '~/systems/Core';
 
 type ProjecImageProps = {
   name: string;
@@ -17,7 +18,7 @@ export const ProjecImage = ({ name, image }: ProjecImageProps) => {
     <div>
       {image && !imageFallback ? (
         <img
-          src={`/ecosystem/images/${image}.jpeg`}
+          src={relativeUrl(`/ecosystem/images/${image}.jpeg`)}
           alt={name}
           width={40}
           height={40}

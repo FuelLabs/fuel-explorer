@@ -98,7 +98,7 @@ const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
         </Collapsible.Header>
         <Collapsible.Content>
           <Collapsible.Title>Data</Collapsible.Title>
-          <Collapsible.Body className="text-xs leading-normal">
+          <Collapsible.Body className="text-xs leading-normal text-wrap break-all">
             {data}
           </Collapsible.Body>
         </Collapsible.Content>
