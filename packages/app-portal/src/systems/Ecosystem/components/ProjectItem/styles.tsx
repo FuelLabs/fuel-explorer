@@ -92,7 +92,7 @@ export const styles = {
     top: 0,
     height: '100%',
     width: '100%',
-    animation: 'slideIn 0.5s forwards !important',
+    animation: 'slideIn 0.5s forwards',
   }),
   panelHidden: cssObj({
     position: 'fixed',
@@ -100,7 +100,7 @@ export const styles = {
     top: 0,
     height: '100%',
     width: '100%',
-    animation: 'slideOut 0.5s forwards !important',
+    animation: 'slideOut 0.5s forwards',
   }),
   boxBottom: cssObj({
     display: 'flex',

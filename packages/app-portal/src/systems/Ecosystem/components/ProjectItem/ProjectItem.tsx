@@ -8,6 +8,7 @@ import type { Project } from '../../types';
 import { ProjectDetailPanel } from '../ProjectDetailPanel';
 import { ProjectImage } from '../ProjectImage';
 
+import './CSS/animations.css';
 import { ProjectItemLoader } from './ProjectItemLoader';
 import { styles } from './styles';
 
@@ -134,7 +135,6 @@ export const ProjectItem: ProjectItemComponent = ({
               ></Button>
             )}
             {github && (
-              // biome-ignore lint/style/useSelfClosingElements: <explanation>
               <Button
                 as="a"
                 href={github}
@@ -144,10 +144,9 @@ export const ProjectItem: ProjectItemComponent = ({
                 intent="base"
                 leftIcon={'BrandGithub'}
                 variant="ghost"
-              ></Button>
+              />
             )}
             {discord && (
-              // biome-ignore lint/style/useSelfClosingElements: <explanation>
               <Button
                 as="a"
                 href={discord}
@@ -157,9 +156,8 @@ export const ProjectItem: ProjectItemComponent = ({
                 intent="base"
                 leftIcon={'BrandDiscord'}
                 variant="ghost"
-              ></Button>
+              />
             )}
-            {/* biome-ignore lint/style/useSelfClosingElements: <explanation> */}
             <Button
               as="a"
               href={url}
@@ -169,7 +167,7 @@ export const ProjectItem: ProjectItemComponent = ({
               variant="outlined"
               intent="base"
               leftIcon={'ExternalLink'}
-            ></Button>
+            />
           </Box>
         </Card.Footer>
       </MotionCard>

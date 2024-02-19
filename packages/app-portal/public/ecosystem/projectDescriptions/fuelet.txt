@@ -12,6 +12,6 @@
 ### **Planned features**
 - Pay gas in any token  Social recovery with guardians, 2FA, and multi-device
 - Daily limits for safety, in case somebody gets access to your wallet, they won’t be able to get all the money away
-- Batch transactions - sign multiple transactions or buy multiple NFTs at once, save money on gas fees
+- Batch transactions — sign multiple transactions or buy multiple NFTs at once, save money on gas fees
 - Browser-based (no install version) using WebAuthn (P-256)
 - Passcodes

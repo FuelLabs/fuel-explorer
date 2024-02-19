@@ -1,0 +1,7 @@
+.panelVisible {
+    animation: slideIn 0.5s forwards;
+  }
+  
+.panelHidden {
+    animation: slideOut 0.5s forwards;
+  }
