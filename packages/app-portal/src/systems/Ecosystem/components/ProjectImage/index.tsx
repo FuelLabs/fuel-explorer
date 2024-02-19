@@ -8,7 +8,7 @@ type ProjecImageProps = {
   image?: string;
 };
 
-export const ProjecImage = ({ name, image }: ProjecImageProps) => {
+export const ProjectImage = ({ name, image }: ProjecImageProps) => {
   const [imageFallback, setImageFallback] = useState(false);
 
   return (

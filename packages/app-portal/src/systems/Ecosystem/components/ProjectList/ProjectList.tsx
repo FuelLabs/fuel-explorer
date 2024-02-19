@@ -1,7 +1,7 @@
 import { cssObj } from '@fuel-ui/css';
 import { Grid } from '@fuel-ui/react';
 
-import type { Project } from '../../types';
+import { type Project } from '../../types';
 import { ProjectItem } from '../ProjectItem';
 
 import { ProjectListEmpty } from './ProjectListEmpty';
@@ -11,12 +11,14 @@ type ProjectListProps = {
   projects: Project[];
   isLoading?: boolean;
   emptyText?: string;
+  onSelect?: (project: Project) => void;
 };
 
 export const ProjectList = ({
   projects,
   isLoading,
   emptyText,
+  onSelect,
 }: ProjectListProps) => {
   if (isLoading) return <ProjectList.Loading />;
   const isEmpty = projects.length === 0;
@@ -25,7 +27,7 @@ export const ProjectList = ({
   return (
     <Grid css={styles.grid}>
       {projects.map((project) => (
-        <ProjectItem {...project} key={project.url} />
+        <ProjectItem key={project.name} {...project} onSelect={onSelect} />
       ))}
     </Grid>
   );
