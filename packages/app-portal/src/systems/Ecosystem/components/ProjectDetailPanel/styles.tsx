@@ -12,7 +12,7 @@ export const styles = {
     width: '650px',
     backgroundColor: '$intentsBase1',
     padding: '30px',
-    overflowY: 'auto',
+    overflowY: 'scroll',
     zIndex: 1000,
     borderLeft: '0.5px solid #2E2E2E',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.6)',
@@ -86,6 +86,11 @@ export const styles = {
   badge: cssObj({
     fontSize: 'small',
     fontWeight: '500',
+    position: 'relative',
+  }),
+  contentWrapper: cssObj({
+    overflowY: 'auto', // Allows scrolling within just the content area
+    maxHeight: 'calc(100% - 50px)', // Adjust based on your layout needs
     position: 'relative',
   }),
   h1: cssObj({

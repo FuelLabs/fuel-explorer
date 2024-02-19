@@ -20,6 +20,7 @@ const ProjectDetailPanel: FC<ProjectDetailPanelProps> = ({
   const panelRef = useRef<HTMLDivElement>(null);
   const [isPanelVisible, setPanelVisible] = useState(true);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 750);
+  const [longDescription, setLongDescription] = useState('');
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -49,6 +50,76 @@ const ProjectDetailPanel: FC<ProjectDetailPanelProps> = ({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  const parseTxtContent = (txtContent: string): string => {
+    // Escape HTML tags to prevent XSS attacks
+    let escapedContent = txtContent.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // Convert **text** to <strong>text</strong> for bold
+    escapedContent = escapedContent.replace(
+      /\*\*(.*?)\*\*/g,
+      '<strong>$1</strong>',
+    );
+
+    // Convert headers (lines starting with '# ')
+    escapedContent = escapedContent.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    escapedContent = escapedContent.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    escapedContent = escapedContent.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+
+    // Convert bullet lists (lines starting with '* ')
+    escapedContent = escapedContent.replace(/(\n- (.*))+/g, (match) => {
+      const bullets = match
+        .trim()
+        .split('\n')
+        .map((item) => `<li>${item.substring(2)}</li>`)
+        .join('');
+      return `<ul>${bullets}</ul>`;
+    });
+    escapedContent = escapedContent.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2">$1</a>',
+    );
+
+    // Replace line breaks with <br> for proper display
+    escapedContent = escapedContent
+      .replace(/\n\n/g, '<p></p>')
+      .replace(/\n/g, '<br>');
+
+    // Handle bullet lists
+    escapedContent = escapedContent.replace(
+      /(?:<br \/>)*- (.+?)(?=<br \/>|$)/g,
+      (match, item) => {
+        return `<ul><li>${item}</li></ul>`;
+      },
+    );
+
+    // Combine consecutive <li> elements into a single <ul>
+    escapedContent = escapedContent.replace(/<\/ul><ul>/g, '');
+
+    return escapedContent;
+  };
+
+  useEffect(() => {
+    const fetchDescription = async () => {
+      const filePath = `/public/Ecosystem/projectDescriptions/${project.image}.txt`;
+      try {
+        const response = await fetch(filePath);
+        if (response.ok) {
+          let text = await response.text();
+          text = parseTxtContent(text); // Use the parser here
+          setLongDescription(text);
+        } else {
+          throw new Error('Text file not found, using short description');
+        }
+      } catch (error) {
+        console.error(error);
+        setLongDescription(parseTxtContent(project.description)); // Fallback and parse short description
+      }
+    };
+    if (project.name) {
+      fetchDescription();
+    }
+  }, [project.name, project.description]);
 
   return (
     <>
@@ -99,7 +170,6 @@ const ProjectDetailPanel: FC<ProjectDetailPanelProps> = ({
               Visit Website
             </Button>
           )}
-
           <Box style={styles.tagBox}>
             {project.tags?.map((tag, index) => (
               <Badge key={index} variant="outlined" style={styles.badge}>
@@ -107,9 +177,15 @@ const ProjectDetailPanel: FC<ProjectDetailPanelProps> = ({
               </Badge>
             ))}
           </Box>
-          <Box css={styles.divider} />
 
-          <p style={styles.paragraph}>{project.description}</p>
+          <Box css={styles.divider} />
+          <Box css={styles.contentWrapper}>
+            <Box
+              style={styles.paragraph}
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+              dangerouslySetInnerHTML={{ __html: longDescription }}
+            />
+          </Box>
           <Box css={styles.divider} />
           <h2 style={styles.h2}>Socials</h2>
           <Box css={styles.socials}>

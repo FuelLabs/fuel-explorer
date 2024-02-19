@@ -1,0 +1,17 @@
+**Fuelet** is a non-custodial wallet focused on UX and enhanced security through Fuel Networks’s Account Abstraction. Available for iOS / Android /Browsers: [https://fuelet.app/](https://fuelet.app/)
+### **Our key existing features**
+- Creating / importing the account
+- Sending / Receiving TRS
+- Faucet
+- Biometric auth + passcode
+- NFT portfolio and analytics
+- Cloud Backup for your seed phrase — no need to copy it manually
+- Dapps browser Watchlist to track any wallet
+### **In development now**
+- Hardware signer to turn your iPhone into a hardware wallet
+### **Planned features**
+- Pay gas in any token  Social recovery with guardians, 2FA, and multi-device
+- Daily limits for safety, in case somebody gets access to your wallet, they won’t be able to get all the money away
+- Batch transactions - sign multiple transactions or buy multiple NFTs at once, save money on gas fees
+- Browser-based (no install version) using WebAuthn (P-256)
+- Passcodes

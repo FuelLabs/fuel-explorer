@@ -9,4 +9,5 @@ export type Project = {
   twitter?: string;
   discord?: string;
   isLive?: boolean;
+  longDescription?: string;
 };
