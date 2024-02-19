@@ -1,30 +1,32 @@
-import { cssObj } from '@fuel-ui/css';
-import { Card, ContentLoader } from '@fuel-ui/react';
-import type { ContentLoaderProps } from '@fuel-ui/react';
+import { Card, LoadingBox } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 
-export const ProjectItemLoader = (props: ContentLoaderProps) => {
+export const ProjectItemLoader = () => {
+  const classes = styles();
+
   return (
-    <Card>
-      <ContentLoader
-        style={styles.loader}
-        height={148}
-        viewBox="0 0 496 148"
-        {...props}
-      >
-        <rect x="20" y="20" width="40" height="40" rx="4" />
-        <rect x="80" y="20" width="120" height="20" rx="4" />
-        <rect x="80" y="50" width="400" height="12" rx="4" />
-        <rect x="80" y="70" width="400" height="12" rx="4" />
-        <rect x="80" y="110" width="80" height="12" rx="4" />
-        <rect x="380" y="110" width="100" height="12" rx="4" />
-      </ContentLoader>
+    <Card className={classes.loaderWrapper()}>
+      <LoadingBox className={classes.loaderPicture()} />
+      <LoadingBox className={classes.loaderTitle()} />
+      <LoadingBox className={classes.loaderPicture()} />
+      <LoadingBox className={classes.loaderSubtitleRow1()} />
+      <LoadingBox className={classes.loaderSubtitleRow2()} />
+      <LoadingBox className={classes.loaderSubtitleRow3()} />
+      <LoadingBox className={classes.loaderSubtitleRow4()} />
     </Card>
   );
 };
 
-const styles = {
-  loader: cssObj({
-    width: '100%',
-    maxWidth: '496px',
-  }),
-};
+const styles = tv({
+  slots: {
+    loaderWrapper: 'w-full max-w-[496px] h-[148px] relative',
+    loaderPicture: 'w-[40px] h-[40px] absolute top-[20px] left-[20px]',
+    loaderTitle: 'w-[120px] h-[20px] absolute top-[20px] left-[80px]',
+    loaderSubtitleRow1:
+      'w-[calc(100%-100px)] h-[12px] absolute top-[50px] left-[80px]',
+    loaderSubtitleRow2:
+      'w-[calc(100%-100px)]  h-[12px] absolute top-[70px] left-[80px]',
+    loaderSubtitleRow3: 'w-[80px] h-[12px] absolute top-[110px] left-[80px]',
+    loaderSubtitleRow4: 'w-[100px] h-[12px] absolute top-[110px] right-[20px]',
+  },
+});

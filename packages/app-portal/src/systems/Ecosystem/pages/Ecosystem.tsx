@@ -1,12 +1,14 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Heading, Icon, Input, Text } from '@fuel-ui/react';
 import { Layout, animations } from '~/systems/Core';
 
+import { Flex, Heading, Input, Text, VStack } from '@fuels/ui';
+import { IconSearch } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
 import { EcosystemTags } from '../components/EcosystemTags';
 import { ProjectList } from '../components/ProjectList/ProjectList';
 import { useEcosystem } from '../hooks/useEcosystem';
 
 export function Ecosystem() {
+  const classes = styles();
   const { tags, isLoading, filter, search, handlers, filteredProjects } =
     useEcosystem();
 
@@ -25,17 +27,15 @@ export function Ecosystem() {
   return (
     <Layout {...animations.slideInTop()}>
       <Layout.Content className="pt-16 pr-1 pb-4 pl-4">
-        <Box.Stack gap="$12" grow={1} css={styles.content}>
-          <Box.Flex css={styles.headingWrapper}>
-            <Box.Stack gap="$2" wrap="wrap">
-              <Heading as="h2" css={styles.heading}>
+        <VStack gap="9" grow="1" className={classes.content()}>
+          <Flex className={classes.headingWrapper()}>
+            <VStack gap="2" wrap="wrap">
+              <Heading as="h2" className={classes.heading()}>
                 Explore Fuel Dapps
               </Heading>
-              <Text color="intentsBase11">
-                Here&apos;s a list of dapps built on Fuel
-              </Text>
-            </Box.Stack>
-            <Input css={styles.searchBar}>
+              <Text>Here&apos;s a list of dapps built on Fuel</Text>
+            </VStack>
+            <Input className={classes.searchBar()}>
               <Input.Field
                 name="search"
                 placeholder="Search"
@@ -43,9 +43,11 @@ export function Ecosystem() {
                 value={search || ''}
                 onChange={handleSearch}
               />
-              <Input.ElementRight element={<Icon icon="Search" />} />
+              <Input.Slot>
+                <IconSearch />
+              </Input.Slot>
             </Input>
-          </Box.Flex>
+          </Flex>
           <EcosystemTags
             tags={tags}
             activeTag={filter}
@@ -58,38 +60,21 @@ export function Ecosystem() {
             projects={filteredProjects || []}
             emptyText={emptyText}
           />
-        </Box.Stack>
+        </VStack>
       </Layout.Content>
     </Layout>
   );
 }
 
-const styles = {
-  content: cssObj({
-    paddingBottom: '$20',
-  }),
-  heading: cssObj({
-    margin: 0,
-  }),
-  subHeading: cssObj({
-    fontSize: '0.875rem',
-  }),
-  headingWrapper: cssObj({
-    flexDirection: 'column',
-    gap: '$10',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-
-    '@sm': {
-      flexDirection: 'row',
-      gap: '$10',
-      alignItems: 'flex-end',
-    },
-  }),
-  searchBar: cssObj({
-    width: '100%',
-    '@sm': {
-      width: 'auto',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    content: 'pb-20',
+    heading: 'm-0',
+    subHeading: 'text-sm',
+    headingWrapper: [
+      'flex flex-col gap-10 items-start justify-between',
+      'tablet:flex-row tablet:gap-10 tablet:items-end',
+    ],
+    searchBar: 'w-full tablet:w-auto',
+  },
+});

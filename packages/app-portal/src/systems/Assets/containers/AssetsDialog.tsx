@@ -1,4 +1,3 @@
-import { Form } from '@fuel-ui/react';
 import { useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
 import { VITE_ETH_ERC20 } from '~/config';
@@ -76,7 +75,7 @@ export function AssetsDialog() {
           control={form.control}
           render={(props) => {
             return (
-              <Form.Control className={classes.formControl()}>
+              <>
                 <Input className={classes.headerInput()}>
                   <Input.Field
                     {...props.field}
@@ -89,9 +88,9 @@ export function AssetsDialog() {
                   )}
                 </Input>
                 {!!isSearchResultsEmpty && (
-                  <Form.HelperText>{`No asset found for your search "${assetQuery}"`}</Form.HelperText>
+                  <Text>No asset found for your search "{assetQuery}"</Text>
                 )}
-              </Form.Control>
+              </>
             );
           }}
         />

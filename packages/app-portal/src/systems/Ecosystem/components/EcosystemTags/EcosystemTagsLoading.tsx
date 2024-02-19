@@ -1,12 +1,7 @@
-import { ContentLoader } from '@fuel-ui/react';
-import { Flex } from '@fuels/ui';
+import { Flex, LoadingBox } from '@fuels/ui';
 
 export const TagLoader = () => {
-  return (
-    <ContentLoader height={32} width={80} viewBox="0 0 80 32">
-      <rect height={32} width={80} rx="4" />
-    </ContentLoader>
-  );
+  return <LoadingBox className="w-[80px] h-[32px]" />;
 };
 
 type EcosystemTagsLoadingProps = {
