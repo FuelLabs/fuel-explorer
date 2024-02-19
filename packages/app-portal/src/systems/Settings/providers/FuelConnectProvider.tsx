@@ -9,7 +9,7 @@ type ProvidersProps = {
   children: ReactNode;
 };
 
-const IS_DEV = IS_PREVIEW && !IS_TEST;
+// const IS_DEV = IS_PREVIEW && !IS_TEST;
 
 export function FuelConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
@@ -18,7 +18,7 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
     <FuelProvider
       theme={theme}
       fuelConfig={{
-        devMode: IS_DEV,
+        devMode: true,
         connnectors: defaultConnectors(),
       }}
     >

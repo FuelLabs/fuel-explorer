@@ -1,4 +1,4 @@
-import { route } from '~/systems/Core/utils/route';
+import { route } from 'app-commons';
 
 export const Routes = {
   home: route<[page: string]>('/?page=:page'),

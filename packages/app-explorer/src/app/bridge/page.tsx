@@ -1,5 +1,5 @@
-import { AppBridge } from '~/systems/app';
+import { BridgePage } from 'app-portal/src/systems/Bridge/page';
 
-export default async function Bridge() {
-  return <AppBridge />;
+export default async function AppBridge() {
+  return <BridgePage />;
 }

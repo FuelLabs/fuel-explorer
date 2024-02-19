@@ -33,6 +33,7 @@ export function OverlayDialog() {
 
 const styles = {
   dialog: cssObj({
+    zIndex: 1000,
     backdropFilter: 'blur(10px)',
   }),
   content: cssObj({

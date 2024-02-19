@@ -1,6 +1,8 @@
 import type { BN } from 'fuels';
 import { DECIMAL_UNITS, bn } from 'fuels';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
+import { Routes } from '~portal/routes';
 import { Services, store } from '~portal/store';
 import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
@@ -124,12 +126,13 @@ export function useBridge() {
     selectors.status({ ethAccount: ethAddress, fuelAccount, assetBalance }),
   );
 
-  // const navigate = useNavigate();
+  const router = useRouter();
+  const params = useSearchParams();
+  // console.log(params);
   // const location = useLocation();
   // const queryParams = new URLSearchParams(location.search);
   // TODO: add "to" param when we add support to other chain than eth/fuel
-  // const fromInput = queryParams.get('from');
-  const fromInput = 'eth';
+  const fromInput = params.get('from');
 
   function getToInputNetwork() {
     if (!fromInputNetwork) return undefined;
@@ -161,35 +164,11 @@ export function useBridge() {
   }, [asset, ethAsset]);
 
   function goToDeposit() {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set('from', 'eth');
-    searchParams.set('to', 'fuel');
-
-    // navigate(
-    //   {
-    //     pathname: Pages.bridge,
-    //     search: searchParams.toString(),
-    //   },
-    //   {
-    //     replace: true,
-    //   },
-    // );
+    router.replace(Routes.bridgeFromTo('eth', 'fuel'));
   }
 
   function goToWithdraw() {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set('from', 'fuel');
-    searchParams.set('to', 'eth');
-
-    // navigate(
-    //   {
-    //     pathname: Pages.bridge,
-    //     search: searchParams.toString(),
-    //   },
-    //   {
-    //     replace: true,
-    //   },
-    // );
+    router.replace(Routes.bridgeFromTo('fuel', 'eth'));
   }
 
   function connectNetwork(network?: SupportedChain) {

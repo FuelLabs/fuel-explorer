@@ -1,4 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+type PathRender<T extends Array<string>> = ((...params: T) => string) & {
+  pathname: string;
+};
+
 /**
  * Create a route that can be parsed using a typed-obj as param
  *
@@ -21,8 +26,10 @@
  *              ^^ 'test' does not exist in type 'Record<"id", any>'.
  * ```
  */
-export function route<P extends Array<string> = [string]>(path: string) {
-  return function parse(...params: P): string {
+export function route<P extends Array<string> = []>(
+  path: string,
+): PathRender<P> {
+  function parse(...params: P): string {
     const _params = Array.from(params);
     const split = path.match(/[^/]+/g);
     const parsed = split
@@ -37,7 +44,11 @@ export function route<P extends Array<string> = [string]>(path: string) {
       })
       .join('/');
     return `/${parsed ?? ''}`;
-  };
+  }
+
+  parse.pathname = path;
+
+  return parse;
 }
 
 /**
@@ -62,11 +73,15 @@ export function searchStringify(query?: Record<any, any>) {
  * @param query An optional object to convert into a query string and append to the URL.
  * @returns A full URL string.
  *
- * @example
+
  * stringifyUrl('https://example.com', { foo: 'bar', baz: 'qux' });
  * // returns 'https://example.com/?foo=bar&baz=qux'
  */
 export function stringifyUrl(url: string, query?: Record<any, any>) {
   const { href } = new URL(url, 'https://fuel.network/');
   return `${href}${searchStringify(query)}`;
+}
+
+export function isRoute(path: string, routes: Array<PathRender<any>>) {
+  return !!routes.find((r) => r.pathname === path);
 }

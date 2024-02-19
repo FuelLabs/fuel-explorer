@@ -3,13 +3,10 @@ import {
   ThemeProvider,
   darkTheme,
   lightTheme,
-  // loadIcons,
+  loadIcons,
   setFuelThemes,
 } from '@fuel-ui/react';
 import type { PropsWithChildren } from 'react';
-
-// // eslint-disable-next-line import/no-unresolved
-// import icons from "~portal/public/icons/sprite.svg";
 
 const globalStyles = cssObj({
   ':root': {
@@ -21,7 +18,7 @@ const globalStyles = cssObj({
   },
 });
 
-// loadIcons(icons);
+loadIcons('/icons/sprite.svg');
 setFuelThemes({
   themes: {
     dark: darkTheme,
