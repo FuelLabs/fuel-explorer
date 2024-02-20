@@ -4,7 +4,7 @@
     "plugins": [{ "name": "next" }],
     "allowJs": true,
     "noEmit": true,
-    "lib": ["dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "incremental": true,
     "isolatedModules": true,
     "jsx": "preserve",

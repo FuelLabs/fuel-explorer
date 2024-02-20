@@ -8,8 +8,7 @@ import {
   useFuelAccountConnection,
 } from '~portal/systems/Chains';
 
-import { InputAmount } from '@fuel-ui/react';
-import { Alert, Box, Card, Link, Text, VStack } from '@fuels/ui';
+import { Alert, Box, Card, InputAmount, Link, Text, VStack } from '@fuels/ui';
 import { IconAlertCircle } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import { BridgeButton, BridgeTabs } from '../containers';
