@@ -81,11 +81,18 @@ export const InputAmount = ({
       variant={variant}
     >
       <Flex>
-        <Input.Field
+        <Input.Number
           autoComplete="off"
           inputMode="decimal"
           placeholder="0.00"
+          allowedDecimalSeparators={['.', ',']}
+          allowNegative={false}
+          thousandSeparator={false}
           value={assetAmount}
+          onChange={(e) => {
+            handleAmountChange(e.target.value);
+          }}
+          decimalScale={DECIMAL_UNITS}
         />
 
         <Input.Slot>
