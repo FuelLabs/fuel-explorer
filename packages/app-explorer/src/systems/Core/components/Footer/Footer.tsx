@@ -5,6 +5,7 @@ import {
   HStack,
   Icon,
   IconBrandDiscordFilled,
+  IconBrandTelegramFilled,
   IconBrandWarpCastFilled,
   IconBrandXFilled,
   IconBrandYoutubeFilled,
@@ -17,7 +18,6 @@ import {
 import dayjs from 'dayjs';
 import { tv } from 'tailwind-variants';
 
-import { IconBrandTelegram } from '@tabler/icons-react';
 import data from './data.json';
 
 type FooterNavProps = {
@@ -111,7 +111,7 @@ export function Footer() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Icon icon={IconBrandTelegram} size={24} />
+              <Icon icon={IconBrandTelegramFilled} size={24} />
             </a>
           </HStack>
           <Text className="text-secondary" size="2">
