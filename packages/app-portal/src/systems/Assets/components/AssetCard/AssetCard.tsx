@@ -1,11 +1,6 @@
 import type { Asset as FuelsAsset } from '@fuels/assets';
 import { Asset, CardList, Flex, IconButton, Text } from '@fuels/ui';
-import {
-  IconCirclePlus,
-  IconCoin,
-  IconSquareRoundedX,
-  IconWallet,
-} from '@tabler/icons-react';
+import { IconCoin, IconWallet } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 
 type AssetCardProps = {

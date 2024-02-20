@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import type { FC } from 'react';
-import { animations, getUrlHostName } from '~/systems/Core';
+import { animations, getUrlHostName } from '~portal/systems/Core';
 
 import type { Project } from '../../types';
 import { ProjecImage } from '../ProjectImage';

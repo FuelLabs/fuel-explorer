@@ -1,6 +1,6 @@
 import { Button, Dialog, Flex, Text, VStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
-import { VITE_WALLET_INSTALL_NEXT } from '~/config';
+import { VITE_WALLET_INSTALL_NEXT } from '~portal/config';
 
 type FuelVersionDialogOptions = {
   isOpen: boolean;

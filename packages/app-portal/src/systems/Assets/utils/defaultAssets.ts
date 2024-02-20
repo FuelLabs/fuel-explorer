@@ -4,9 +4,9 @@ import {
   VITE_ETH_ERC20,
   VITE_FUEL_FUNGIBLE_ASSET_ID,
   VITE_FUEL_FUNGIBLE_CONTRACT_ID,
-} from '~/config';
-import { ETH_CHAIN, FUEL_CHAIN } from '~/systems/Chains/config';
-import { getContractTokenId } from '~/systems/Chains/fuel/utils/contract';
+} from '~portal/config';
+import { ETH_CHAIN, FUEL_CHAIN } from '~portal/systems/Chains/config';
+import { getContractTokenId } from '~portal/systems/Chains/fuel/utils/contract';
 
 const defaultAssets: Asset[] = [...assetList];
 

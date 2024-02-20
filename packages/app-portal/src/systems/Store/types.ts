@@ -1,7 +1,10 @@
 import type { StoreClass } from '@fuels/react-xstore';
-import type { BridgeMachine, BridgeTxsMachine } from '~/systems/Bridge';
-import type { EcosystemMachine } from '~/systems/Ecosystem';
-import type { OverlayMachine } from '~/systems/Overlay';
+import type {
+  BridgeMachine,
+  BridgeTxsMachine,
+} from '~portal/systems/Bridge/machines';
+import type { EcosystemMachine } from '~portal/systems/Ecosystem';
+import type { OverlayMachine } from '~portal/systems/Overlay';
 
 import type { AssetsMachine } from '../Assets/machines/assetsMachine';
 

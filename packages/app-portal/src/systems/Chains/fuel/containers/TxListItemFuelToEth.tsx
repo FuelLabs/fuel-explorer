@@ -1,5 +1,5 @@
-import { useAsset } from '~/systems/Assets';
-import { BridgeTxItem } from '~/systems/Bridge';
+import { useAsset } from '~portal/systems/Assets';
+import { BridgeTxItem } from '~portal/systems/Bridge/components';
 
 import { Asset, Flex, FuelLogo, Spinner, Text } from '@fuels/ui';
 import { tv } from 'tailwind-variants';

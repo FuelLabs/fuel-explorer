@@ -8,9 +8,6 @@ import {
 } from '@fuel-ui/react';
 import type { PropsWithChildren } from 'react';
 
-// eslint-disable-next-line import/no-unresolved
-import icons from '/icons/sprite.svg';
-
 const globalStyles = cssObj({
   ':root': {
     '--colors-inputBaseBg': 'var(--colors-dialogBg)',
@@ -21,7 +18,7 @@ const globalStyles = cssObj({
   },
 });
 
-loadIcons(icons);
+loadIcons('/icons/sprite.svg');
 setFuelThemes({
   themes: {
     dark: darkTheme,

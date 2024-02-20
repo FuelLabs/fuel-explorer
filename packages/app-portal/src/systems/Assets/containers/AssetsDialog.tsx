@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
-import { VITE_ETH_ERC20 } from '~/config';
-import { store } from '~/store';
-import { useBridge } from '~/systems/Bridge/hooks';
-import { useFuelAccountConnection } from '~/systems/Chains';
+import { VITE_ETH_ERC20 } from '~portal/config';
+import { store } from '~portal/store';
+import { useBridge } from '~portal/systems/Bridge/hooks';
+import { useFuelAccountConnection } from '~portal/systems/Chains';
 
 import {
   CardList,

@@ -1,6 +1,6 @@
 import type { Asset } from '@fuels/assets';
 import { useMemo } from 'react';
-import { isSameEthAddress } from '~/systems/Chains/eth/utils/address';
+import { isSameEthAddress } from '~portal/systems/Chains/eth/utils/address';
 
 import { getAssetEth, getAssetFuel } from '../utils';
 

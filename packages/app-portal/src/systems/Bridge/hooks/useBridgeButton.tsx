@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { getAssetEth } from '~/systems/Assets/utils';
-import { getChainName, useFuelAccountConnection } from '~/systems/Chains';
+import { getAssetEth } from '~portal/systems/Assets/utils';
+import { getChainName, useFuelAccountConnection } from '~portal/systems/Chains';
 
 import { BridgeStatus } from '../machines';
 

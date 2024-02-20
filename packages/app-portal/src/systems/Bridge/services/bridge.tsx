@@ -6,13 +6,13 @@ import type {
   Provider as FuelProvider,
 } from 'fuels';
 import type { PublicClient, WalletClient } from 'wagmi';
-import { store } from '~/store';
-import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
+import { store } from '~portal/store';
+import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import type {
   FromToNetworks,
   TxEthToFuelInputs,
   TxFuelToEthInputs,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 import {
   ETH_CHAIN,
   EthTxCache,
@@ -23,7 +23,7 @@ import {
   getBlockDate,
   isEthChain,
   isFuelChain,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
 import type { BridgeTx } from '../types';
 

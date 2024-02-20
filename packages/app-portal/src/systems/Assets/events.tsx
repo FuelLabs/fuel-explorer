@@ -1,6 +1,6 @@
 import type { PublicClient, WalletClient } from 'viem';
-import { Services } from '~/store';
-import type { Store } from '~/store';
+import { Services } from '~portal/store';
+import type { Store } from '~portal/store';
 
 export function assetsEvents(store: Store) {
   return {

@@ -2,7 +2,7 @@ import { Button, Card, Flex, Text, VStack } from '@fuels/ui';
 import { IconX } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
-import { shortAddress } from '~/systems/Core';
+import { shortAddress } from '~portal/systems/Core';
 
 type AccountConnectionInputProps = {
   networkName?: string;

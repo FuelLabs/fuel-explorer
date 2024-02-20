@@ -1,4 +1,4 @@
-import { ETH_CHAIN, FUEL_CHAIN } from '~/systems/Chains';
+import { ETH_CHAIN, FUEL_CHAIN } from '~portal/systems/Chains';
 
 type ChainUrlParams = 'eth' | 'fuel' | string | undefined | null;
 

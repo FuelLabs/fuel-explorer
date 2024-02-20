@@ -1,4 +1,4 @@
-import { AccountConnectionInput } from '~/systems/Accounts';
+import { AccountConnectionInput } from '~portal/systems/Accounts';
 
 import { FuelLogo } from '@fuels/ui';
 import { FUEL_CHAIN } from '../../config';

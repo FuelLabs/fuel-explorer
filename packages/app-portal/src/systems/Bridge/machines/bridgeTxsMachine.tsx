@@ -2,9 +2,14 @@ import type { Address as FuelAddress, Provider as FuelProvider } from 'fuels';
 import type { PublicClient } from 'wagmi';
 import type { ActorRefFrom, InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine, spawn } from 'xstate';
-import { isEthChain, isFuelChain, txFuelToEthMachine } from '~/systems/Chains';
-import { txEthToFuelMachine } from '~/systems/Chains/eth/machines';
-import { FetchMachine, delay } from '~/systems/Core';
+import {
+  isEthChain,
+  isFuelChain,
+  txFuelToEthMachine,
+} from '~portal/systems/Chains';
+import { txEthToFuelMachine } from '~portal/systems/Chains/eth/machines';
+import { FetchMachine } from '~portal/systems/Core/machines';
+import { delay } from '~portal/systems/Core/utils';
 
 import { BridgeService } from '../services';
 import type { BridgeInputs } from '../services';

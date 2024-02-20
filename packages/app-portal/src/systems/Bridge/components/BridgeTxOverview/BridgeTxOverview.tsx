@@ -1,5 +1,5 @@
 import type { BigNumberish } from 'fuels';
-import { calculateDateDiff } from '~/systems/Core';
+import { calculateDateDiff } from '~portal/systems/Core';
 
 import { Asset as FuelsAsset } from '@fuels/assets';
 import { Asset, Box, Flex, FuelLogo, Link, Text, VStack } from '@fuels/ui';

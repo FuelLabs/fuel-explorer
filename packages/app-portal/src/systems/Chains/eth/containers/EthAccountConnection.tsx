@@ -1,5 +1,5 @@
-import { AccountConnectionInput } from '~/systems/Accounts';
-import { useAsset } from '~/systems/Assets';
+import { AccountConnectionInput } from '~portal/systems/Accounts';
+import { useAsset } from '~portal/systems/Assets';
 
 import { ETH_CHAIN } from '../../config';
 import { useEthAccountConnection } from '../hooks';

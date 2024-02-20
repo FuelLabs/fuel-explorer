@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { addSeconds } from 'date-fns';
 import { useMemo } from 'react';
 import { usePublicClient } from 'wagmi';
-import { EthConnectorService, distanceToNow } from '~/systems/Chains';
+import { EthConnectorService, distanceToNow } from '~portal/systems/Chains';
 
 export function useWithdrawDelay() {
   const publicClient = usePublicClient();

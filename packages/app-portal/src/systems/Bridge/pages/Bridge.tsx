@@ -1,12 +1,12 @@
 import { motion, useAnimationControls } from 'framer-motion';
-import { getAssetEth } from '~/systems/Assets/utils';
+import { getAssetEth } from '~portal/systems/Assets/utils';
 import {
   EthAccountConnection,
   FuelAccountConnection,
   isEthChain,
   isFuelChain,
   useFuelAccountConnection,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
 import { InputAmount } from '@fuel-ui/react';
 import { Alert, Box, Card, Link, Text, VStack } from '@fuels/ui';

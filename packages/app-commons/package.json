@@ -1,0 +1,4 @@
+{
+  "name": "app-commons",
+  "main": "./src/index.ts"
+}

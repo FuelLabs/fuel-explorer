@@ -1,4 +1,4 @@
-import { Services, store } from '~/store';
+import { Services, store } from '~portal/store';
 
 import type {
   OverlayKeys,

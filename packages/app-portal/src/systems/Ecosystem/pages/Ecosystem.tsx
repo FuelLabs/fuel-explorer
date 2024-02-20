@@ -1,5 +1,3 @@
-import { Layout, animations } from '~/systems/Core';
-
 import { Flex, Heading, Input, Text, VStack } from '@fuels/ui';
 import { IconSearch } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
@@ -25,44 +23,40 @@ export function Ecosystem() {
     : undefined;
 
   return (
-    <Layout {...animations.slideInTop()}>
-      <Layout.Content className="pt-16 pr-1 pb-4 pl-4">
-        <VStack gap="9" grow="1" className={classes.content()}>
-          <Flex className={classes.headingWrapper()}>
-            <VStack gap="2" wrap="wrap">
-              <Heading as="h2" className={classes.heading()}>
-                Explore Fuel Dapps
-              </Heading>
-              <Text>Here&apos;s a list of dapps built on Fuel</Text>
-            </VStack>
-            <Input className={classes.searchBar()}>
-              <Input.Field
-                name="search"
-                placeholder="Search"
-                type="text"
-                value={search || ''}
-                onChange={handleSearch}
-              />
-              <Input.Slot>
-                <IconSearch />
-              </Input.Slot>
-            </Input>
-          </Flex>
-          <EcosystemTags
-            tags={tags}
-            activeTag={filter}
-            isLoading={isLoading}
-            onClickTag={handleTagButtonClick}
-            onClickAllCategories={handlers.clearFilters}
-          />
-          <ProjectList
-            isLoading={isLoading}
-            projects={filteredProjects || []}
-            emptyText={emptyText}
-          />
+    <VStack gap="9" grow="1" className={classes.content()}>
+      <Flex className={classes.headingWrapper()}>
+        <VStack gap="2" wrap="wrap">
+          <Heading as="h2" className={classes.heading()}>
+            Explore Fuel Dapps
+          </Heading>
+          <Text>Here&apos;s a list of dapps built on Fuel</Text>
         </VStack>
-      </Layout.Content>
-    </Layout>
+        <Input className={classes.searchBar()}>
+          <Input.Field
+            name="search"
+            placeholder="Search"
+            type="text"
+            value={search || ''}
+            onChange={handleSearch}
+          />
+          <Input.Slot>
+            <IconSearch />
+          </Input.Slot>
+        </Input>
+      </Flex>
+      <EcosystemTags
+        tags={tags}
+        activeTag={filter}
+        isLoading={isLoading}
+        onClickTag={handleTagButtonClick}
+        onClickAllCategories={handlers.clearFilters}
+      />
+      <ProjectList
+        isLoading={isLoading}
+        projects={filteredProjects || []}
+        emptyText={emptyText}
+      />
+    </VStack>
   );
 }
 

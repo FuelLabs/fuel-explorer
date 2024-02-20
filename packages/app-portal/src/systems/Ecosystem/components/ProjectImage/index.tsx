@@ -2,7 +2,7 @@ import { IconButton } from '@fuels/ui';
 import { IconBolt } from '@tabler/icons-react';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';
-import { relativeUrl } from '~/systems/Core';
+import { relativeUrl } from '~portal/systems/Core';
 
 type ProjecImageProps = {
   name: string;

@@ -1,13 +1,15 @@
 import { createStore } from '@fuels/react-xstore';
+import { bridgeEvents } from '~portal/systems/Bridge/events';
 import {
-  bridgeEvents,
   bridgeMachine,
   bridgeTxsMachine,
-} from '~/systems/Bridge';
-import { ecosystemMachine } from '~/systems/Ecosystem';
-import { overlayEvents, overlayMachine } from '~/systems/Overlay';
+} from '~portal/systems/Bridge/machines';
+import { ecosystemMachine } from '~portal/systems/Ecosystem/machines';
+import { overlayEvents } from '~portal/systems/Overlay/events';
+import { overlayMachine } from '~portal/systems/Overlay/machines';
 
-import { assetsEvents, assetsMachine } from '../Assets';
+import { assetsEvents } from '../Assets/events';
+import { assetsMachine } from '../Assets/machines';
 
 import { Services } from './types';
 import type { StoreMachines } from './types';

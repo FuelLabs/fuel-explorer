@@ -1,12 +1,12 @@
 import { useNodeInfo } from '@fuel-wallet/react';
-import { Heading, Tabs } from '@fuels/ui';
+import { Box, Heading, Tabs } from '@fuels/ui';
+import NextLink from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { VITE_FUEL_VERSION } from '~/config';
-import { FuelVersionDialog } from '~/systems/Chains/fuel/containers/FuelVersionDialog';
-import { Layout } from '~/systems/Core';
-import { Pages } from '~/types';
+import { VITE_FUEL_VERSION } from '~portal/config';
+import { Routes } from '~portal/routes';
+import { FuelVersionDialog } from '~portal/systems/Chains/fuel/containers/FuelVersionDialog';
 
 type BridgeHomeProps = {
   children: ReactNode;
@@ -17,28 +17,26 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const { isCompatible } = useNodeInfo({
     version: VITE_FUEL_VERSION,
   });
-  const location = useLocation();
+  const pathname = usePathname();
 
   return (
-    <Layout>
-      <Layout.Content className={classes.content()}>
-        <Heading as="h2" className={classes.heading()}>
-          Fuel Native Bridge
-        </Heading>
-        <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
-        <Tabs defaultValue={location.pathname.replace(/\/$/, '')}>
-          <Tabs.List className={classes.tabs()}>
-            <NavLink to={Pages.bridge}>
-              <Tabs.Trigger value={Pages.bridge}>Bridge</Tabs.Trigger>
-            </NavLink>
-            <NavLink to={Pages.transactions}>
-              <Tabs.Trigger value={Pages.transactions}>History</Tabs.Trigger>
-            </NavLink>
-          </Tabs.List>
-          {children}
-        </Tabs>
-      </Layout.Content>
-    </Layout>
+    <Box className={classes.content()}>
+      <Heading as="h2" className={classes.heading()}>
+        Fuel Native Bridge
+      </Heading>
+      <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
+      <Tabs defaultValue={pathname}>
+        <Tabs.List className={classes.tabs()}>
+          <NextLink href={Routes.bridge()}>
+            <Tabs.Trigger value={Routes.bridge()}>Bridge</Tabs.Trigger>
+          </NextLink>
+          <NextLink href={Routes.bridgeHistory()}>
+            <Tabs.Trigger value={Routes.bridgeHistory()}>History</Tabs.Trigger>
+          </NextLink>
+        </Tabs.List>
+        {children}
+      </Tabs>
+    </Box>
   );
 };
 
