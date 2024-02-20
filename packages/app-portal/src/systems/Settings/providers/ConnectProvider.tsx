@@ -1,4 +1,6 @@
 import { ConnectKitProvider } from 'connectkit';
+import { Mode } from 'connectkit/build/types';
+import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
 import type { ChainProviderFn } from 'wagmi';
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
@@ -16,8 +18,6 @@ import {
   VITE_WALLETCONNECT_ID,
 } from '~portal/config';
 import { ETH_CHAIN } from '~portal/systems/Chains/config';
-
-import { useTheme } from '../hooks';
 
 const app = {
   name: 'Fuel Bridge',
@@ -95,7 +95,7 @@ export function ConnectProvider({ children }: ProvidersProps) {
 
   return (
     <WagmiConfig config={config}>
-      <ConnectKitProvider mode={theme}>{children}</ConnectKitProvider>
+      <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
     </WagmiConfig>
   );
 }
