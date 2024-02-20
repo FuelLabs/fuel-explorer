@@ -1,5 +1,14 @@
 import { cssObj } from '@fuel-ui/css';
-import { Box, Heading, Icon, Input, Text } from '@fuel-ui/react';
+import {
+  Box,
+  Button,
+  ButtonLink,
+  Heading,
+  Icon,
+  Input,
+  Link,
+  Text,
+} from '@fuel-ui/react';
 import { Layout, animations } from '~/systems/Core';
 
 import { EcosystemTags } from '../components/EcosystemTags';
@@ -26,26 +35,40 @@ export function Ecosystem() {
     <Layout {...animations.slideInTop()}>
       <Layout.Content css={{ padding: '$16 $1 $4 $4' }}>
         <Box.Stack gap="$12" grow={1} css={styles.content}>
-          <Box.Flex css={styles.headingWrapper}>
+          <Box.Stack gap="$6">
             <Box.Stack gap="$2" wrap="wrap">
               <Heading as="h2" css={styles.heading}>
-                Explore Fuel Dapps
+                Explore the Fuel Ecosystem
               </Heading>
               <Text color="intentsBase11">
                 Here&apos;s a list of dapps built on Fuel
               </Text>
             </Box.Stack>
-            <Input css={styles.searchBar}>
-              <Input.Field
-                name="search"
-                placeholder="Search"
-                type="text"
-                value={search || ''}
-                onChange={handleSearch}
-              />
-              <Input.ElementRight element={<Icon icon="Search" />} />
-            </Input>
-          </Box.Flex>
+            <Box.Flex
+              justify="space-between"
+              align="center"
+              css={styles.searchArea}
+            >
+              <Input css={styles.searchBar}>
+                <Input.Field
+                  name="search"
+                  placeholder="Search"
+                  type="text"
+                  value={search || ''}
+                  onChange={handleSearch}
+                />
+                <Input.ElementRight element={<Icon icon="Search" />} />
+              </Input>
+              <Button
+                as="a"
+                intent="primary"
+                target="_blank"
+                href="https://fuelnetwork.typeform.com/addproject?utm_source=ecosystem-page"
+              >
+                List your project
+              </Button>
+            </Box.Flex>
+          </Box.Stack>
           <EcosystemTags
             tags={tags}
             activeTag={filter}
@@ -74,22 +97,22 @@ const styles = {
   subHeading: cssObj({
     fontSize: '0.875rem',
   }),
-  headingWrapper: cssObj({
+  searchArea: cssObj({
     flexDirection: 'column',
-    gap: '$10',
-    alignItems: 'flex-start',
+    gap: '$6',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
 
     '@sm': {
       flexDirection: 'row',
-      gap: '$10',
-      alignItems: 'flex-end',
+      gap: '$6',
+      alignItems: 'center',
     },
   }),
   searchBar: cssObj({
     width: '100%',
     '@sm': {
-      width: 'auto',
+      width: 340,
     },
   }),
 };
