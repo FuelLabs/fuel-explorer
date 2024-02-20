@@ -1,4 +1,4 @@
-import { inngest } from '../../core/Inngest';
+import { inngest } from '~/infra/inngest/Inngest';
 import { BlockDomain } from '../blocks/BlockDomain';
 import { BlockRepository } from '../blocks/BlockRepository';
 

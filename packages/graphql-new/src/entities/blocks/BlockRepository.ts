@@ -1,11 +1,11 @@
 import { desc, eq } from 'drizzle-orm';
-import { db } from '../../core/Database';
-import { GraphQLSDK } from '../../core/GraphQLSDK';
-import { GQLBlock } from '../../generated/types';
-import { DateHelper } from '../../helpers/Date';
-import { Paginator, PaginatorParams } from '../../helpers/Paginator';
-import { PromiseHelper } from '../../helpers/Promise';
-import { BlocksTable } from './BlockEntity';
+import { GQLBlock } from '~/generated/types';
+import { DateHelper } from '~/helpers/Date';
+import { Paginator, PaginatorParams } from '~/helpers/Paginator';
+import { PromiseHelper } from '~/helpers/Promise';
+import { db } from '~/infra/database/Db';
+import { GraphQLSDK } from '~/infra/graphql/GraphQLSDK';
+import { BlocksTable } from './BlockModel';
 
 export class BlockRepository {
   sdk: GraphQLSDK['sdk'];

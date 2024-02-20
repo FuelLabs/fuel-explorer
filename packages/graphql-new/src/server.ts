@@ -1,10 +1,8 @@
-import { GraphQLServer } from './core/GraphQLServer';
-import { Server } from './core/Server';
-import { EnvHelper } from './helpers/Env';
+import { env } from './config';
+import { Server } from './infra/core/Server';
+import { GraphQLServer } from './infra/graphql/GraphQLServer';
 
-const env = EnvHelper.requireEnv([['SERVER_PORT', '3002']]);
-const port = Number(env.SERVER_PORT);
-
+const port = Number(env.get('SERVER_PORT'));
 const graphQLServer = new GraphQLServer();
 const schema = graphQLServer.schema();
 const yoga = graphQLServer.setup(schema);

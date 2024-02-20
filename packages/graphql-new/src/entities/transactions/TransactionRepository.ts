@@ -1,9 +1,9 @@
 import { eq, like } from 'drizzle-orm';
-import { db } from '../../core/Database';
-import { GQLTransaction } from '../../generated/types';
-import { DateHelper } from '../../helpers/Date';
-import { Paginator, PaginatorParams } from '../../helpers/Paginator';
-import { TransactionsTable } from './TransactionEntity';
+import { GQLTransaction } from '~/generated/types';
+import { DateHelper } from '~/helpers/Date';
+import { Paginator, PaginatorParams } from '~/helpers/Paginator';
+import { db } from '~/infra/database/Db';
+import { TransactionsTable } from './TransactionModel';
 
 export class TransactionRepository {
   async findById(id: string) {

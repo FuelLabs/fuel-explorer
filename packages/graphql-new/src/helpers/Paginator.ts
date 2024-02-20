@@ -1,6 +1,6 @@
 import { SQL, and, asc, desc, gt, lt, sql } from 'drizzle-orm';
 import { PgColumn, PgTableWithColumns } from 'drizzle-orm/pg-core';
-import { db } from '../core/Database';
+import { db } from '~/infra/database/Db';
 
 export type PaginatorParams = {
   first: number;
@@ -9,6 +9,7 @@ export type PaginatorParams = {
   before: string;
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export class Paginator<Source extends PgTableWithColumns<any>> {
   constructor(
     private source: Source,

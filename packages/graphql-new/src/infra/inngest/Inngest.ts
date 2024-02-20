@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { serve } from 'inngest/express';
-import { CreatedBlock } from '../entities/blocks/BlockDomain';
-import { SyncDomain } from '../entities/sync/SyncDomain';
-import { TransactionDomain } from '../entities/transactions/TransactionDomain';
+import { env } from '~/config';
+import { CreatedBlock } from '~/entities/blocks/BlockDomain';
+import { SyncDomain } from '~/entities/sync/SyncDomain';
+import { TransactionDomain } from '~/entities/transactions/TransactionDomain';
 
 dotenv.config();
 
@@ -22,7 +23,12 @@ const schemas = new EventSchemas().fromRecord<{
   };
 }>();
 
-const client = new Inngest({ id: 'fuel-indexer', schemas });
+const client = new Inngest({
+  schemas,
+  id: 'fuel-indexer',
+  eventKey: env.get('INNGEST_EVENT_KEY'),
+});
+
 export type Events = GetEvents<typeof client>;
 
 const functions = [

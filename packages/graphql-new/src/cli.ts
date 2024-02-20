@@ -1,4 +1,4 @@
-import { Program } from './core/Program';
+import { Program } from './infra/core/Program';
 
 (async () => {
   const program = new Program();

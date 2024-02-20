@@ -1,8 +1,8 @@
 import cors from 'cors';
 import { Express } from 'express';
 import express from 'express';
-import { db } from './Database';
-import { inngest } from './Inngest';
+import { db } from '../database/Db';
+import { inngest } from '../inngest/Inngest';
 
 export class Server {
   setup() {

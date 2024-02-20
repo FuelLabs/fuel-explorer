@@ -29,6 +29,7 @@
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "tsx ./src/cli.ts migrate",
+    "db:setup": "run-s db:generate db:migrate",
     "inngest": "inngest-cli dev -u http://localhost:3002/api/inngest",
     "dev": "tsx watch src/server.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
@@ -50,7 +51,9 @@
     "inngest": "3.14.0",
     "pg": "^8.11.3",
     "tai64": "^1.0.0",
-    "yargs": "17.7.2"
+    "winston": "3.11.0",
+    "yargs": "17.7.2",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.2",

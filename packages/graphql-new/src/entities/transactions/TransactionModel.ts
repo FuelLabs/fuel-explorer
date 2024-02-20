@@ -9,10 +9,10 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { GQLTransaction } from '../../generated/types';
-import { BlocksTable } from '../blocks/BlockEntity';
-import { InputsTable } from '../inputs/InputEntity';
-import { OutputsTable } from '../outputs/OutputEntity';
+import { GQLTransaction } from '~/generated/types';
+import { BlocksTable } from '../blocks/BlockModel';
+import { InputsTable } from '../inputs/InputModel';
+import { OutputsTable } from '../outputs/OutputModel';
 
 export const TransactionsTable = pgTable(
   'transactions',

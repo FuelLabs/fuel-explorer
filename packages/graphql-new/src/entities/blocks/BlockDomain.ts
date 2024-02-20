@@ -1,8 +1,8 @@
-import { GraphQLContext } from '../../core/GraphQLServer';
-import { inngest } from '../../core/Inngest';
-import { GQLBlock } from '../../generated/types';
-import { PaginatorParams } from '../../helpers/Paginator';
-import { PromiseHelper } from '../../helpers/Promise';
+import { GQLBlock } from '~/generated/types';
+import { PaginatorParams } from '~/helpers/Paginator';
+import { PromiseHelper } from '~/helpers/Promise';
+import { GraphQLContext } from '~/infra/graphql/GraphQLServer';
+import { inngest } from '~/infra/inngest/Inngest';
 import { BlockRepository } from './BlockRepository';
 
 export type CreatedBlock = {

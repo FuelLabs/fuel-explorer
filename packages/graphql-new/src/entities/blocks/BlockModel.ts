@@ -8,8 +8,8 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { GQLBlock } from '../../generated/types';
-import { TransactionsTable } from '../transactions/TransactionEntity';
+import { GQLBlock } from '~/generated/types';
+import { TransactionsTable } from '../transactions/TransactionModel';
 
 export const BlocksTable = pgTable(
   'blocks',

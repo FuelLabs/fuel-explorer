@@ -1,6 +1,6 @@
 import yargs from 'yargs/yargs';
-import { db } from './Database';
-import { inngest } from './Inngest';
+import { db } from '../database/Db';
+import { inngest } from '../inngest/Inngest';
 
 export class Program {
   async create() {

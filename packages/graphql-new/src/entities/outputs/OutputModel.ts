@@ -7,7 +7,7 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { TransactionsTable } from '../transactions/TransactionEntity';
+import { TransactionsTable } from '../transactions/TransactionModel';
 
 export const OutputsTable = pgTable(
   'outputs',
