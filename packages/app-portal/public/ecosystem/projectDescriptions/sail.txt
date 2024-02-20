@@ -1,0 +1,3 @@
+Sail is a predicate-based trading protocol, allowing for trading of any asset whose ownership can be represented onchain including spot and perpetual contracts. At the core of its design are third-party matching, security, and low-state bloat. Which leads to a low latency, resource-efficient, trustless solution for trading.
+
+Sail works by taking advantage of improvements made by the Fuel — mainly predicates. Predicates enable a new way to represent and interact with orders onchain, without worrying about immense state bloat and high transaction fees. Sail takes it further to say that makers can have the lowest possible fees if not zero fees, while managing their orders.
