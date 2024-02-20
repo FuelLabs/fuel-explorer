@@ -1,26 +1,24 @@
 'use client';
 
-import { cssObj } from '@fuel-ui/css';
-import { Box } from '@fuel-ui/react';
-import { Providers } from '~portal/providers';
+import { Flex } from '@fuels/ui';
 import { Bridge, BridgeHome, BridgeTxList } from './pages';
 
 export function BridgePage() {
   return (
-    <Box.Flex justify="center">
+    <Flex justify="center">
       <BridgeHome>
         <Bridge />
       </BridgeHome>
-    </Box.Flex>
+    </Flex>
   );
 }
 
 export function BridgeListPage() {
   return (
-    <Box.Flex justify="center">
+    <Flex justify="center">
       <BridgeHome>
         <BridgeTxList />
       </BridgeHome>
-    </Box.Flex>
+    </Flex>
   );
 }
