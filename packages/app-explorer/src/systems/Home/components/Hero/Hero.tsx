@@ -25,19 +25,6 @@ export function Hero() {
             />
           </Box>
         </Container>
-        <Box as="figure" className={classes.img()}>
-          <Box className={classes.imgWrapper()}>
-            <Image
-              priority
-              alt="Fuel Brand Image"
-              className={classes.imgChild()}
-              height={680}
-              quality={80}
-              src="/brand-img.png"
-              width={680}
-            />
-          </Box>
-        </Box>
       </Box>
     </Theme>
   );
@@ -51,9 +38,6 @@ const styles = tv({
       'tablet:max-laptop:max-w-[500px] [&_.rt-ContainerInner]:p-2',
       '[&_.rt-ContainerInner]:tablet:max-laptop:bg-black [&_.rt-ContainerInner]:tablet:max-laptop:bg-opacity-60 [&_.rt-ContainerInner]:tablet:max-laptop:rounded-lg [&_.rt-ContainerInner]:tablet:max-laptop:shadow-2xl',
     ],
-    img: 'hidden absolute inset-0 tablet:block',
-    imgChild: 'absolute -top-1/2 right-0',
-    imgWrapper: 'absolute inset-0',
     input: 'w-full tablet:w-[400px]',
     title: [
       'text-2xl leading-snug text-white mb-4 justify-center',
