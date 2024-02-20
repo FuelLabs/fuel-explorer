@@ -15,7 +15,7 @@ export function Hero() {
       <Box className={classes.root()}>
         <Container className={classes.container()} size="4">
           <Heading as="h1" className={classes.title()}>
-            Explore Fuel Network
+            Explore Fuel
           </Heading>
           <Box className={classes.searchWrapper()}>
             <SearchWidget
