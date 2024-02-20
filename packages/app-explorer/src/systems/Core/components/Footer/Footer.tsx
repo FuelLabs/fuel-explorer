@@ -1,56 +1,50 @@
 import {
   Box,
-  Container,
+  Flex,
   FuelLogo,
   HStack,
-  Heading,
   Icon,
+  IconBrandDiscordFilled,
+  IconBrandWarpCastFilled,
+  IconBrandXFilled,
+  IconBrandYoutubeFilled,
   Link,
   List,
   Text,
   Theme,
   VStack,
 } from '@fuels/ui';
-import type { BaseProps } from '@fuels/ui';
-import {
-  IconBrandDiscord,
-  IconBrandGithub,
-  IconBrandTwitter,
-} from '@tabler/icons-react';
-import Image from 'next/image';
+import dayjs from 'dayjs';
 import { tv } from 'tailwind-variants';
 
+import { IconBrandTelegram } from '@tabler/icons-react';
 import data from './data.json';
 
-type FooterNavProps = BaseProps<{
+type FooterNavProps = {
   title: string;
-  img: string;
-  alt: string;
   links: {
     href: string;
     label: string;
   }[];
-}>;
+};
 
-function FooterNav({
-  title,
-  links,
-  img,
-  alt,
-  className,
-  ...props
-}: FooterNavProps) {
+function FooterNav({ title, links }: FooterNavProps) {
   const classes = styles();
+
   return (
-    <VStack as="nav" gap="2" className={classes.nav({ className })} {...props}>
-      <Image alt={alt} height={40} src={img} width={40} />
-      <Heading className={classes.navHeading()} size="5">
+    <VStack as="nav" gap="4" className={classes.nav()}>
+      <Text as="h2" className={classes.navHeading()} size="3">
         {title}
-      </Heading>
+      </Text>
       <List className={classes.navList()}>
         {links.map((link) => (
           <List.Item key={link.href}>
-            <Link isExternal className={classes.navLink()} href={link.href}>
+            <Link
+              isExternal
+              className={classes.navLink()}
+              href={link.href}
+              size="2"
+            >
               {link.label}
             </Link>
           </List.Item>
@@ -60,92 +54,91 @@ function FooterNav({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function Footer({ className }: BaseProps<{}>) {
+export function Footer() {
   const classes = styles();
+
   return (
     <Theme appearance="dark">
-      <Container className={classes.container()} size="4">
-        <Box as="footer" className={classes.root({ className })}>
-          <VStack className={classes.brand()} gap="3">
-            <FuelLogo showLettering size={24} />
-            <Text className="text-secondary">
-              © All rights reserved Fuel Labs
-            </Text>
-            <HStack gap="4">
-              <a
-                className={classes.socialIcon()}
-                href="https://twitter.com/fuel_network"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <Icon icon={IconBrandTwitter} size={30} />
-              </a>
-              <a
-                className={classes.socialIcon()}
-                href="https://github.com/FuelLabs"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <Icon icon={IconBrandGithub} size={30} />
-              </a>
-              <a
-                className={classes.socialIcon()}
-                href="https://discord.com/invite/xfpK4Pe"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <Icon icon={IconBrandDiscord} size={30} />
-              </a>
-            </HStack>
-          </VStack>
+      <Box as="footer" className={classes.container()}>
+        <Flex className={classes.root()}>
+          <FuelLogo showLettering size={32} />
 
           <Box className={classes.navs()}>
-            <FooterNav
-              alt="Brandbook Icon"
-              img="/icons/fuel_icon_brandbook.svg"
-              links={data.links.resources}
-              title="Resources"
-            />
-            <FooterNav
-              alt="About Icon"
-              img="/icons/fuel_icon_about.svg"
-              links={data.links.aboutUs}
-              title="About us"
-            />
-            <FooterNav
-              alt="Code Icon"
-              img="/icons/fuel_icon_code.svg"
-              links={data.links.developers}
-              title="Developers"
-            />
+            <FooterNav title="Learn" links={data.links.learn} />
+            <FooterNav title="Build" links={data.links.build} />
+            <FooterNav title="Use" links={data.links.use} />
+            <FooterNav title="Community" links={data.links.community} />
           </Box>
-        </Box>
-      </Container>
+        </Flex>
+
+        <VStack gap="3" className={classes.social()}>
+          <HStack gap="4">
+            <a
+              className={classes.socialIcon()}
+              href="https://twitter.com/fuel_network"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Icon icon={IconBrandXFilled} size={24} />
+            </a>
+            <a
+              className={classes.socialIcon()}
+              href="https://discord.com/invite/xfpK4Pe"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Icon icon={IconBrandDiscordFilled} size={24} />
+            </a>
+            <a
+              className={classes.socialIcon()}
+              href="https://warpcast.com/fuel-network"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Icon icon={IconBrandWarpCastFilled} size={24} />
+            </a>
+            <a
+              className={classes.socialIcon()}
+              href="https://www.youtube.com/channel/UCam2Sj3SvFSAIfDbP-4jWZQ"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Icon icon={IconBrandYoutubeFilled} size={24} />
+            </a>
+            <a
+              className={classes.socialIcon()}
+              href="https://t.me/fuelcommunity"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Icon icon={IconBrandTelegram} size={24} />
+            </a>
+          </HStack>
+          <Text className="text-secondary" size="2">
+            © {dayjs().year()} Fuel Labs. All rights reserved
+          </Text>
+        </VStack>
+      </Box>
     </Theme>
   );
 }
 
 const styles = tv({
   slots: {
-    container: ['hero-bg border-t border-border px-8 tablet:px-10'],
+    container: [
+      'hero-bg border-t border-border px-10 py-10 flex flex-col gap-y-5',
+    ],
     root: [
-      'py-14 grid gap-8 grid-cols-1 grid-rows-[auto,1fr]',
-      'laptop:py-16 laptop:grid-cols-[1fr,2fr] laptop:grid-rows-auto',
+      'justify-between items-start flex-col desktop:flex-row gap-y-10 mb-12',
     ],
-    brand: [
-      'items-center pb-8 border-b border-border',
-      'laptop:pb-0 laptop:items-start laptop:border-b-0',
-    ],
-    socialIcon: ['text-white hover:text-brand transition-colors duration-200'],
-    navs: [
-      'flex flex-col gap-8 justify-between tablet:flex-row tablet:text-center',
-    ],
-    nav: ['flex-1 tablet:items-center laptop:text-left laptop:items-start'],
-    navHeading: [
-      'justify-start tablet:justify-center laptop:justify-start text-heading',
-    ],
+    social: ['mt-12'],
+    socialIcon: ['text-white hover:text-brand transition-colors duration-200 '],
+    navs: ['flex flex-wrap justify-between gap-y-10 w-full max-w-screen-md'],
+    nav: ['w-full tablet:w-1/2 desktop:w-auto'],
+    navHeading: ['font-mono justify-start text-gray-400'],
     navList: ['flex flex-col gap-0 fuel-[Icon]:hidden'],
-    navLink: ['text-secondary hover:text-brand'],
+    navLink: [
+      'font-mono text-white hover:text-brand hover:no-underline transition-colors duration-200',
+    ],
   },
 });
