@@ -89,7 +89,7 @@ export const InputAmount = ({
           allowNegative={false}
           thousandSeparator={false}
           value={assetAmount}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             handleAmountChange(e.target.value);
           }}
           decimalScale={DECIMAL_UNITS}
