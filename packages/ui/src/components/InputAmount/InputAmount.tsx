@@ -82,6 +82,7 @@ export const InputAmount = ({
     >
       <Flex>
         <Input.Number
+          className="p-0.5 font-mono text-lg"
           autoComplete="off"
           inputMode="decimal"
           placeholder="0.00"
@@ -95,11 +96,13 @@ export const InputAmount = ({
           decimalScale={DECIMAL_UNITS}
         />
 
-        <Input.Slot>
+        <Input.Slot gap="4">
           <Button
             aria-label="Max"
             variant="link"
             size="1"
+            color="green"
+            className="font-mono"
             onClick={handleSetBalance}
           >
             MAX
@@ -108,34 +111,36 @@ export const InputAmount = ({
             <Button
               aria-label="Coin Selector"
               variant="outline"
+              color="gray"
+              className="gap-1.5 text-xs py-1 px-2"
               onClick={onClickAsset}
               disabled={!onClickAsset}
-              size="2"
             >
               <Avatar
                 src={asset?.imageUrl}
                 fallback=""
                 radius="full"
-                size="1"
+                className="w-5 h-5"
               />
 
               {asset.name}
-              <Icon color="text-green-10" icon={IconChevronDown} size={16} />
+              <IconChevronDown height={20} width={20} />
             </Button>
           )}
         </Input.Slot>
       </Flex>
 
-      <Tooltip content={format(balance, formatOpts)} sideOffset={-5}>
-        <Text
-          size="2"
-          color="blue"
-          className="pl-2 pb-2 self-start"
-          aria-label={`Balance: ${formattedBalance}`}
-        >
-          Balance: {formattedBalance}
-        </Text>
-      </Tooltip>
+      <Input.Slot>
+        <Tooltip content={format(balance, formatOpts)} sideOffset={-5}>
+          <Text
+            size="1"
+            className="pb-3 self-start"
+            aria-label={`Balance: ${formattedBalance}`}
+          >
+            Balance: {formattedBalance}
+          </Text>
+        </Tooltip>
+      </Input.Slot>
     </Input>
   );
 };
