@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { Pages } from '~/types';
 
 import { tv } from 'tailwind-variants';
-import { removeTrailingSlash } from '../utils';
 
 export function Header() {
   const classes = styles();
