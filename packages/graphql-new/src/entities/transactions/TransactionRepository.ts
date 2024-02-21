@@ -39,7 +39,7 @@ export class TransactionRepository {
     const [{ transactionId }] = await db
       .connection()
       .insert(TransactionsTable)
-      .values(this._parseTransaction(transaction, blockId))
+      .values(this._createItem(transaction, blockId))
       .returning({
         transactionId: TransactionsTable._id,
       });
@@ -52,7 +52,7 @@ export class TransactionRepository {
       const queries = txs.map(async (transaction) => {
         const [{ transactionId }] = await trx
           .insert(TransactionsTable)
-          .values(this._parseTransaction(transaction, blockId))
+          .values(this._createItem(transaction, blockId))
           .returning({
             transactionId: TransactionsTable._id,
           });
@@ -62,7 +62,7 @@ export class TransactionRepository {
     });
   }
 
-  private _parseTransaction(transaction: GQLTransaction, blockId: number) {
+  private _createItem(transaction: GQLTransaction, blockId: number) {
     const _id = TransactionID.create(transaction);
     const id = HashID.create(transaction.id);
     const data = TransactionData.create(transaction);

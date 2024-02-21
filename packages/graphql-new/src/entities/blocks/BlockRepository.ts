@@ -43,7 +43,7 @@ export class BlockRepository {
     const [{ blockId }] = await db
       .connection()
       .insert(BlocksTable)
-      .values(this._parseBlock(block))
+      .values(this._createItem(block))
       .returning({
         blockId: BlocksTable._id,
       });
@@ -62,7 +62,7 @@ export class BlockRepository {
 
         const [{ blockId }] = await trx
           .insert(BlocksTable)
-          .values(this._parseBlock(block))
+          .values(this._createItem(block))
           .returning({
             blockId: BlocksTable._id,
           });
@@ -70,19 +70,6 @@ export class BlockRepository {
       });
       return Promise.all(queries.filter(Boolean));
     });
-  }
-
-  private _parseBlock(block: GQLBlock) {
-    const _id = BlockID.create(block);
-    const timestamp = Timestamp.create(block.header.time);
-    const data = BlockData.create(block);
-    const id = HashID.create(block.id);
-    return {
-      _id: _id.get(),
-      id: id.get(),
-      timestamp: timestamp.get(),
-      data: data.get(),
-    };
   }
 
   async blocksFromNode(page: number, perPage: number) {
@@ -96,5 +83,18 @@ export class BlockRepository {
     const blocks = data.blocks.nodes as GQLBlock[];
     const hasNext = data.blocks.pageInfo.hasNextPage;
     return { blocks, hasNext };
+  }
+
+  private _createItem(block: GQLBlock) {
+    const _id = BlockID.create(block);
+    const timestamp = Timestamp.create(block.header.time);
+    const data = BlockData.create(block);
+    const id = HashID.create(block.id);
+    return {
+      _id: _id.get(),
+      id: id.get(),
+      timestamp: timestamp.get(),
+      data: data.get(),
+    };
   }
 }
