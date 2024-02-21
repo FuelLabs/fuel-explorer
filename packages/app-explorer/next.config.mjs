@@ -22,6 +22,7 @@ const config = {
   experimental: {
     externalDir: true,
     serverComponentsExternalPackages: externals,
+    missingSuspenseWithCSRBailout: false,
     esmExternals: true,
     typedRoutes: true,
   },

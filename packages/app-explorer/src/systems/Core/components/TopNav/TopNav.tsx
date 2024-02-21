@@ -1,11 +1,12 @@
 'use client';
 import { Nav, useBreakpoints } from '@fuels/ui';
 import { isRoute } from 'app-commons';
-import { Routes as PortalRoutes } from 'app-portal/src/routes';
 import { useTheme } from 'next-themes';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+import { Routes as PortalRoutes } from 'app-portal/src/routes';
 import { SearchWidget } from '../Search/SearchWidget';
 
 export function TopNav() {

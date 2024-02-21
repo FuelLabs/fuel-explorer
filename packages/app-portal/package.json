@@ -2,7 +2,6 @@
   "name": "app-portal",
   "private": true,
   "version": "0.0.0",
-  "main": "./src/App.tsx",
   "files": [
     "./src"
   ],
