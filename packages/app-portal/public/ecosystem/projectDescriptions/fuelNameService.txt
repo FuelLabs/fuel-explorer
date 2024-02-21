@@ -1,0 +1,1 @@
+FNS is making crypto addresses human-readable, easy to use, and less confusing by linking the .fuel domain to a Fuel address.
