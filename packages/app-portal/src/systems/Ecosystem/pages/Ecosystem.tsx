@@ -1,4 +1,4 @@
-import { Flex, Heading, Input, Text, VStack } from '@fuels/ui';
+import { Box, Button, Flex, Heading, Input, Text, VStack } from '@fuels/ui';
 import { IconSearch } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import { EcosystemTags } from '../components/EcosystemTags';
@@ -31,7 +31,9 @@ export function Ecosystem() {
           </Heading>
           <Text>Here&apos;s a list of dapps built on Fuel</Text>
         </VStack>
-        <Input className={classes.searchBar()}>
+      </Flex>
+      <Flex gap="4" className={classes.searchBar()}>
+        <Input className={classes.searchBarInput()} size="3">
           <Input.Field
             name="search"
             placeholder="Search"
@@ -40,9 +42,14 @@ export function Ecosystem() {
             onChange={handleSearch}
           />
           <Input.Slot>
-            <IconSearch />
+            <IconSearch size={16} />
           </Input.Slot>
         </Input>
+        <Flex justify="end">
+          <Button as="a" href="" target="_blank" size="3" color="green">
+            List your project
+          </Button>
+        </Flex>
       </Flex>
       <EcosystemTags
         tags={tags}
@@ -69,6 +76,7 @@ const styles = tv({
       'flex flex-col gap-10 items-start justify-between',
       'tablet:flex-row tablet:gap-10 tablet:items-end',
     ],
-    searchBar: 'w-full tablet:w-auto',
+    searchBar: 'flex-col tablet:justify-between tablet:flex-row',
+    searchBarInput: 'w-full tablet:w-[350px]',
   },
 });
