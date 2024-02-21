@@ -34,12 +34,7 @@ export class BlockRepository {
   }
 
   async insertOne(block: GQLBlock) {
-    const found = await this.findOne(block.id);
-    if (found) {
-      console.log(`Block ${block.id} already exists`);
-      return;
-    }
-
+    await this._validateExists(block);
     const [{ blockId }] = await db
       .connection()
       .insert(BlocksTable)
@@ -54,12 +49,7 @@ export class BlockRepository {
   async insertMany(blocks: GQLBlock[]) {
     return db.connection().transaction(async (trx) => {
       const queries = blocks.map(async (block) => {
-        const found = await this.findOne(block.id);
-        if (found) {
-          console.log(`Block ${block.id} already exists`);
-          return null;
-        }
-
+        await this._validateExists(block);
         const [{ blockId }] = await trx
           .insert(BlocksTable)
           .values(this._parseBlock(block))
@@ -83,5 +73,12 @@ export class BlockRepository {
       timestamp: timestamp.get(),
       data: data.get(),
     };
+  }
+
+  private async _validateExists(block: GQLBlock) {
+    const found = await this.findOne(block.id);
+    if (found) {
+      throw new Error(`Block ${block.id} already exists`);
+    }
   }
 }

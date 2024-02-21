@@ -59,7 +59,6 @@ export class BlockDomain {
   }
 
   static async blocksFromNode(page: number, perPage: number) {
-    console.log('page', page);
     const { sdk } = new GraphQLSDK();
     const after = (page - 1) * perPage;
     const { data } = await sdk.QueryBlocks({
