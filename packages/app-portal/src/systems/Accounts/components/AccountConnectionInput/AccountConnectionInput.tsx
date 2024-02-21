@@ -32,7 +32,7 @@ export const AccountConnectionInput = ({
   return (
     <Card className={classes.root()}>
       <Card.Body className={classes.cardBody()}>
-        <Flex justify="between" gap="1">
+        <Flex align="center" justify="between" gap="1">
           <VStack gap="1">
             <Text className={classes.textLabel()}>{label}</Text>
             <Flex gap="2" align="center">
@@ -49,7 +49,7 @@ export const AccountConnectionInput = ({
               <Text className={classes.textNetwork()}>{networkName}</Text>
             </Flex>
           </VStack>
-          <VStack align="end" justify="between" gap="0">
+          <VStack align="end" gap="0">
             {account?.address && (
               <>
                 <Button
@@ -58,11 +58,17 @@ export const AccountConnectionInput = ({
                   className={classes.disconnectButton()}
                   iconSize={13}
                   onClick={onDisconnect}
+                  color="gray"
                 >
-                  Disconnect
+                  <Text className={classes.textDisconnect()} size="1">
+                    Disconnect
+                  </Text>
                   <IconX size={13} />
                 </Button>
-                <Text aria-label={`${networkName}: Connected Wallet`}>
+                <Text
+                  className={classes.textAccountConnected()}
+                  aria-label={`${networkName}: Connected Wallet`}
+                >
                   {shortAddress(account.alias, {
                     minLength: 16,
                   }) ||
@@ -82,14 +88,14 @@ export const AccountConnectionInput = ({
 
 export const styles = tv({
   slots: {
-    root: [
-      'overflow-x-hidden bg-input border border-solid border-input px-0 py-1',
-    ],
+    root: ['overflow-x-hidden border border-solid p-0 bg-gray-1'],
     cardBody: 'px-3 py-2',
     connectButton: 'w-[50px]',
-    disconnectButton: 'text-[12px]  mr-[-2px]',
+    disconnectButton: 'text-[12px] mr-[-2px] my-[2px] text-gray-10',
     textLabel: 'text-xs',
     textNetwork: 'text-heading',
     textConnect: 'text-xs text-inherit',
+    textDisconnect: 'text-[11px]',
+    textAccountConnected: 'text-gray-11',
   },
 });

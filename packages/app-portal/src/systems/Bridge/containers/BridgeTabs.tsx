@@ -1,6 +1,6 @@
 import type { AnimationControls } from 'framer-motion';
 
-import { Tabs } from '@fuels/ui';
+import { ButtonSwitch } from '@fuels/ui';
 import { useBridge } from '../hooks';
 
 type BridgeTabsProps = {
@@ -34,35 +34,31 @@ export const BridgeTabs = ({ fromControls, toControls }: BridgeTabsProps) => {
   };
 
   return (
-    <Tabs
-      value={isWithdraw ? 'withdraw' : 'deposit'}
-      variant="surface"
-      defaultValue="deposit"
-    >
-      <Tabs.List aria-label="Manage deposits">
-        <Tabs.Trigger
-          value="deposit"
-          onClick={() => {
+    <ButtonSwitch
+      leftButton={{
+        label: 'Deposit to Fuel',
+        active: !isWithdraw,
+        props: {
+          onClick: () => {
             if (isWithdraw) {
               handleDepositAnimation();
               handlers.goToDeposit();
             }
-          }}
-        >
-          Deposit to Fuel
-        </Tabs.Trigger>
-        <Tabs.Trigger
-          value="withdraw"
-          onClick={() => {
+          },
+        },
+      }}
+      rightButton={{
+        label: 'Withdraw from Fuel',
+        active: !!isWithdraw,
+        props: {
+          onClick: () => {
             if (!isWithdraw) {
               handleWithdrawAnimation();
               handlers.goToWithdraw();
             }
-          }}
-        >
-          Withdraw from Fuel
-        </Tabs.Trigger>
-      </Tabs.List>
-    </Tabs>
+          },
+        },
+      }}
+    />
   );
 };

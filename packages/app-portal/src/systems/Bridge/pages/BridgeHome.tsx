@@ -25,7 +25,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
         Fuel Native Bridge
       </Heading>
       <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
-      <Tabs defaultValue={pathname}>
+      <Tabs defaultValue={pathname} variant="line" size="2">
         <Tabs.List className={classes.tabs()}>
           <NextLink href={Routes.bridge()}>
             <Tabs.Trigger value={Routes.bridge()}>Bridge</Tabs.Trigger>
@@ -42,7 +42,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
 const styles = tv({
   slots: {
-    content: 'max-w-[455px]',
+    content: 'w-full max-w-[455px]',
     heading: 'mt-0 mb-4 ml-[-2px]',
     tabs: 'ml-0 color-inherit decoration-none :active:text-success',
   },

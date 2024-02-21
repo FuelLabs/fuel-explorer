@@ -8,7 +8,6 @@ import { IconChevronDown } from '@tabler/icons-react';
 import { cx } from '../../utils/css';
 import { Flex } from '../Box';
 import { Button } from '../Button';
-import { Icon } from '../Icon';
 import type { InputProps } from '../Input/Input';
 import { Input } from '../Input/Input';
 import { Text } from '../Text';
@@ -82,7 +81,7 @@ export const InputAmount = ({
     >
       <Flex>
         <Input.Number
-          className="p-0.5 font-mono text-lg"
+          className="mt-1 p-0.5 font-mono text-lg"
           autoComplete="off"
           inputMode="decimal"
           placeholder="0.00"
@@ -96,7 +95,7 @@ export const InputAmount = ({
           decimalScale={DECIMAL_UNITS}
         />
 
-        <Input.Slot gap="4">
+        <Input.Slot gap="4" className="mt-2">
           <Button
             aria-label="Max"
             variant="link"
@@ -109,8 +108,9 @@ export const InputAmount = ({
           </Button>
           {asset && (
             <Button
+              id="CoinSelector"
               aria-label="Coin Selector"
-              variant="outline"
+              variant="surface"
               color="gray"
               className="gap-1.5 text-xs py-1 px-2"
               onClick={onClickAsset}
