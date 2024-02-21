@@ -40,7 +40,7 @@ export const ProjectItem: ProjectItemComponent = ({
   discord,
   status,
   github,
-  isLive,
+  isLive: _isLive,
 }: ProjectItemProps) => {
   const classes = styles();
 

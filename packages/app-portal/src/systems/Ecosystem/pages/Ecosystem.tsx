@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Input, Text, VStack } from '@fuels/ui';
+import { Button, Flex, Input, Text, VStack } from '@fuels/ui';
 import { IconApps, IconSearch } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
 import { tv } from 'tailwind-variants';
@@ -25,7 +25,7 @@ export function Ecosystem() {
 
   return (
     <VStack gap="6" grow="1" className={classes.content()}>
-      <PageTitle icon={<IconApps size={22} />}>
+      <PageTitle icon={<IconApps size={22} />} className="first:mb-0">
         <VStack gap="2" wrap="wrap">
           Explore Fuel Dapps
           <Text className="text-secondary">

@@ -17,11 +17,11 @@ type AssetCardProps = {
 
 export const AssetCard = ({
   asset,
-  onAdd,
+  onAdd: _onAdd,
   onFaucet,
   isFaucetLoading,
   onClick,
-  onRemove,
+  onRemove: _onRemove,
   onAddToWallet,
 }: AssetCardProps) => {
   const classes = styles();

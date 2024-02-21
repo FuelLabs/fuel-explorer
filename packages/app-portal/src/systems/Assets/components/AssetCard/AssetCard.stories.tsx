@@ -40,7 +40,7 @@ export const OnPress = () => {
       <AssetCard
         asset={assetList[0]}
         onClick={() => {
-          const classes = styles();
+          const _classes = styles();
 
           console.log('press');
         }}
@@ -57,7 +57,7 @@ export const OnAdd = () => {
       <AssetCard
         asset={assetList[0]}
         onAdd={() => {
-          const classes = styles();
+          const _classes = styles();
 
           console.log('add');
         }}
@@ -74,7 +74,7 @@ export const OnRemove = () => {
       <AssetCard
         asset={assetList[0]}
         onRemove={() => {
-          const classes = styles();
+          const _classes = styles();
 
           console.log('remove');
         }}
@@ -91,7 +91,7 @@ export const OnFaucet = () => {
       <AssetCard
         asset={assetList[0]}
         onFaucet={() => {
-          const classes = styles();
+          const _classes = styles();
 
           console.log('faucet');
         }}

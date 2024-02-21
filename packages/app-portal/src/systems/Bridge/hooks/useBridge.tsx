@@ -94,7 +94,7 @@ export function useBridge() {
     handlers: fuelHandlers,
     isConnecting: fuelIsConnecting,
     balance: fuelBalance,
-    wallet: fuelWallet,
+    wallet: _fuelWallet,
     provider: fuelProvider,
   } = useFuelAccountConnection({
     assetId: fuelAssetAddress?.startsWith('0x')

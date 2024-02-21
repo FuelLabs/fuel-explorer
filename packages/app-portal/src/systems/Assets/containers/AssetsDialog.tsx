@@ -5,15 +5,7 @@ import { store } from '~portal/store';
 import { useBridge } from '~portal/systems/Bridge/hooks';
 import { useFuelAccountConnection } from '~portal/systems/Chains';
 
-import {
-  CardList,
-  Dialog,
-  Flex,
-  IconButton,
-  Input,
-  Spinner,
-  Text,
-} from '@fuels/ui';
+import { CardList, Dialog, IconButton, Input, Spinner, Text } from '@fuels/ui';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import {
@@ -135,7 +127,7 @@ export function AssetsDialog() {
                     ? async () => {
                         try {
                           await addAssetEth(ethAsset);
-                        } catch (e) {
+                        } catch (_e) {
                           /* empty */
                         }
                         addAssetFuel(fuelAsset);

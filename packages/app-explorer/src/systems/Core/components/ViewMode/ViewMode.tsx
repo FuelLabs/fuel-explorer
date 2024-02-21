@@ -1,7 +1,6 @@
-import { ButtonSwitch, Flex } from '@fuels/ui';
+import { ToggleGroup } from '@fuels/ui';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { tv } from 'tailwind-variants';
 
 export enum ViewModes {
   Simple = 'simple',
@@ -9,30 +8,20 @@ export enum ViewModes {
 }
 
 export function ViewMode() {
-  const { mode } = useParams<{
-    mode: ViewModes;
-  }>();
+  const { mode } = useParams<{ mode: ViewModes }>();
 
   return (
-    <ButtonSwitch
-      leftButton={{
-        label: 'Simple',
-        active: mode === ViewModes.Simple,
-        props: {
-          as: Link,
-          prefetch: true,
-          href: `./${ViewModes.Simple}`,
-        },
-      }}
-      rightButton={{
-        label: 'Advanced',
-        active: mode === ViewModes.Advanced,
-        props: {
-          as: Link,
-          prefetch: true,
-          href: `./${ViewModes.Advanced}`,
-        },
-      }}
-    />
+    <ToggleGroup type="single" defaultValue={mode} aria-label="View mode">
+      <ToggleGroup.Item value="simple" aria-label="Simple view" asChild>
+        <Link prefetch href={`./${ViewModes.Simple}`}>
+          Simple
+        </Link>
+      </ToggleGroup.Item>
+      <ToggleGroup.Item value="advanced" aria-label="Advanced view" asChild>
+        <Link prefetch href={`./${ViewModes.Advanced}`}>
+          Advanced
+        </Link>
+      </ToggleGroup.Item>
+    </ToggleGroup>
   );
 }

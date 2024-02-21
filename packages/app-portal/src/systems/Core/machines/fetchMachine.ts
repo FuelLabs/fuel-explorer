@@ -91,7 +91,7 @@ export const FetchMachine = {
           failed: {
             entry: ['assignError', 'showError', 'logError'],
             type: 'final',
-            data: (ctx, ev) => ({ error: ev.data }),
+            data: (_ctx, ev) => ({ error: ev.data }),
           },
           success: {
             type: 'final',

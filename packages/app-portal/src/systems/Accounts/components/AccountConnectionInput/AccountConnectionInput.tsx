@@ -22,9 +22,9 @@ export const AccountConnectionInput = ({
   networkName,
   networkImage,
   label,
-  isConnecting,
+  isConnecting: _isConnecting,
   account,
-  onConnect,
+  onConnect: _onConnect,
   onDisconnect,
 }: AccountConnectionInputProps) => {
   const classes = styles();

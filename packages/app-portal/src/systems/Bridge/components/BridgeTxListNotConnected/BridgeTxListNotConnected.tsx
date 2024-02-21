@@ -13,7 +13,7 @@ export const BridgeTxListNotConnected = ({
   const classes = styles();
 
   return (
-    <Card>
+    <Card className="border-0">
       <Card.Body className={classes.cardBody()}>
         <VStack justify="center" align="center" gap="6">
           <VStack justify="center" align="center" gap="1">

@@ -28,7 +28,7 @@ export function PageTitle({
         </Badge>
       )}
       <HStack className={classes.title()}>{children}</HStack>
-      <div className="flex items-center h-full tablet:self-end">
+      <div className="flex items-center h-full tablet:self-center">
         {rightElement}
       </div>
     </Heading>
@@ -38,7 +38,7 @@ export function PageTitle({
 const styles = tv({
   slots: {
     root: [
-      'flex items-center justify-between gap-2',
+      'first:mb-8 flex items-center justify-between gap-2',
       'border-border border-b',
       'tablet:flex-nowrap tablet:gap-4',
     ],

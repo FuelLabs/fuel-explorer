@@ -5,7 +5,7 @@ const trimPath = (path = '') => path.replace(trimRegex, '');
 export const getUrlHostName = (url: string) => {
   try {
     return new URL(url || 'https://#').hostname;
-  } catch (e) {
+  } catch (_e) {
     return '';
   }
 };
