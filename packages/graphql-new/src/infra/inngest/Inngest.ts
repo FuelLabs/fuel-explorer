@@ -9,7 +9,6 @@ import { serve } from 'inngest/express';
 import { env } from '~/config';
 import { CreatedBlock } from '~/entities/blocks/BlockDomain';
 import { SyncDomain } from '~/entities/sync/SyncDomain';
-import { TransactionDomain } from '~/entities/transactions/TransactionDomain';
 
 dotenv.config();
 
@@ -71,7 +70,7 @@ const functions = [
     async ({ attempt, event: { data } }) => {
       try {
         console.log(`Syncing transactions for block ${data.blockId}`);
-        await TransactionDomain.syncTransactions(data.block, data.blockId);
+        await SyncDomain.syncTransactions(data.block, data.blockId);
       } catch (error) {
         console.error(error);
         throw new RetryAfterError(`Sync transactions attempt ${attempt}`, '1s');

@@ -18,3 +18,5 @@ export const OutputsTable = pgTable(
     idIdx: index().on(table.id),
   }),
 );
+
+export type OutputItem = typeof OutputsTable.$inferSelect;

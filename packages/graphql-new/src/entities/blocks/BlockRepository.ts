@@ -1,6 +1,7 @@
 import { desc, eq } from 'drizzle-orm';
 import { GQLBlock } from '~/generated/types';
 import { db } from '~/infra/database/Db';
+import { GraphQLSDK } from '~/infra/graphql/GraphQLSDK';
 import { Paginator, PaginatorParams } from '~/shared/service';
 import { HashID, Timestamp } from '~/shared/vo';
 import { CreatedBlock } from './BlockDomain';
@@ -34,7 +35,11 @@ export class BlockRepository {
   }
 
   async insertOne(block: GQLBlock) {
-    await this._validateExists(block);
+    const found = await this.findOne(block.id);
+    if (found) {
+      throw new Error(`Block ${block.id} already exists`);
+    }
+
     const [{ blockId }] = await db
       .connection()
       .insert(BlocksTable)
@@ -49,7 +54,12 @@ export class BlockRepository {
   async insertMany(blocks: GQLBlock[]) {
     return db.connection().transaction(async (trx) => {
       const queries = blocks.map(async (block) => {
-        await this._validateExists(block);
+        const found = await this.findOne(block.id);
+        if (found) {
+          console.warn(`Block ${block.id} already exists`);
+          return null;
+        }
+
         const [{ blockId }] = await trx
           .insert(BlocksTable)
           .values(this._parseBlock(block))
@@ -75,10 +85,16 @@ export class BlockRepository {
     };
   }
 
-  private async _validateExists(block: GQLBlock) {
-    const found = await this.findOne(block.id);
-    if (found) {
-      throw new Error(`Block ${block.id} already exists`);
-    }
+  async blocksFromNode(page: number, perPage: number) {
+    const { sdk } = new GraphQLSDK();
+    const after = (page - 1) * perPage;
+    const { data } = await sdk.QueryBlocks({
+      first: perPage,
+      ...(page > 1 && { after: String(after) }),
+    });
+
+    const blocks = data.blocks.nodes as GQLBlock[];
+    const hasNext = data.blocks.pageInfo.hasNextPage;
+    return { blocks, hasNext };
   }
 }

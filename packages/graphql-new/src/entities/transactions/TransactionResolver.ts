@@ -2,7 +2,6 @@ import { GQLTransaction } from '~/generated/types';
 import { ResolverAdapter, ResolverInterface } from '~/shared/adapter/Resolver';
 import { PaginatorParams } from '~/shared/service';
 import { PaginatedResults } from '~/shared/service/Paginator';
-import { TransactionDomain } from './TransactionDomain';
 import { TransactionItem } from './TransactionModel';
 import { TransactionRepository } from './TransactionRepository';
 
@@ -51,14 +50,10 @@ export class TransactionResolver implements ResolverInterface<Source> {
   private _parseMany(result: PaginatedResults<TransactionItem>) {
     return {
       ...result,
-      nodes: result.nodes.map((item) => {
-        const domain = new TransactionDomain(item);
-        console.log(domain.getInternalId());
-        return {
-          ...item,
-          ...item.data,
-        };
-      }),
+      nodes: result.nodes.map((item) => ({
+        ...item,
+        ...item.data,
+      })),
     };
   }
 }

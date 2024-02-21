@@ -1,7 +1,5 @@
-import { GQLBlock } from '~/generated/types';
 import { TransactionsTable } from '~/infra/database/schema';
 import { HashID } from '~/shared/vo';
-import { TransactionRepository } from './TransactionRepository';
 import { TransactionResolver } from './TransactionResolver';
 import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
@@ -43,10 +41,5 @@ export class TransactionDomain {
 
   static getResolvers() {
     return new TransactionResolver().getResolvers();
-  }
-
-  static async syncTransactions(block: GQLBlock, blockId: number) {
-    const repository = new TransactionRepository();
-    await repository.insertMany(block.transactions, blockId);
   }
 }
