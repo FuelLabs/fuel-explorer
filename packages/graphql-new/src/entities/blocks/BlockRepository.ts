@@ -1,20 +1,14 @@
 import { desc, eq } from 'drizzle-orm';
 import { GQLBlock } from '~/generated/types';
-import { DateHelper } from '~/helpers/Date';
-import { Paginator, PaginatorParams } from '~/helpers/Paginator';
-import { PromiseHelper } from '~/helpers/Promise';
 import { db } from '~/infra/database/Db';
-import { GraphQLSDK } from '~/infra/graphql/GraphQLSDK';
+import { Paginator, PaginatorParams } from '~/shared/service';
+import { HashID, Timestamp } from '~/shared/vo';
+import { CreatedBlock } from './BlockDomain';
 import { BlocksTable } from './BlockModel';
+import { BlockData } from './vo/BlockData';
+import { BlockID } from './vo/BlockID';
 
 export class BlockRepository {
-  sdk: GraphQLSDK['sdk'];
-
-  constructor() {
-    const { sdk } = new GraphQLSDK();
-    this.sdk = sdk;
-  }
-
   async findOne(id: string) {
     const item = await db
       .connection()
@@ -34,7 +28,7 @@ export class BlockRepository {
       .connection()
       .select()
       .from(BlocksTable)
-      .orderBy(desc(BlocksTable.height))
+      .orderBy(desc(BlocksTable._id))
       .limit(1);
     return latest;
   }
@@ -49,12 +43,7 @@ export class BlockRepository {
     const [{ blockId }] = await db
       .connection()
       .insert(BlocksTable)
-      .values({
-        id: block.id,
-        data: block,
-        height: Number(block.header.height),
-        timestamp: DateHelper.tai64toDate(block.header.time),
-      })
+      .values(this._parseBlock(block))
       .returning({
         blockId: BlocksTable._id,
       });
@@ -63,26 +52,36 @@ export class BlockRepository {
   }
 
   async insertMany(blocks: GQLBlock[]) {
-    const results = await PromiseHelper.executeInQueue(
-      blocks,
-      async (block) => {
-        const blockId = await this.insertOne(block);
-        if (!blockId) return null;
-        return { blockId, block };
-      },
-    );
-    return results.filter(Boolean) as { blockId: number; block: GQLBlock }[];
+    return db.connection().transaction(async (trx) => {
+      const queries = blocks.map(async (block) => {
+        const found = await this.findOne(block.id);
+        if (found) {
+          console.log(`Block ${block.id} already exists`);
+          return null;
+        }
+
+        const [{ blockId }] = await trx
+          .insert(BlocksTable)
+          .values(this._parseBlock(block))
+          .returning({
+            blockId: BlocksTable._id,
+          });
+        return { block, blockId } as CreatedBlock;
+      });
+      return Promise.all(queries.filter(Boolean));
+    });
   }
 
-  async blocksFromNode(page: number, perPage: number) {
-    const after = (page - 1) * perPage;
-    const { data } = await this.sdk.QueryBlocks({
-      first: perPage,
-      after: String(after),
-    });
-
-    const blocks = data.blocks.nodes as GQLBlock[];
-    const hasNext = data.blocks.pageInfo.hasNextPage;
-    return { blocks, hasNext };
+  private _parseBlock(block: GQLBlock) {
+    const _id = BlockID.create(block);
+    const timestamp = Timestamp.create(block.header.time);
+    const data = BlockData.create(block);
+    const id = HashID.create(block.id);
+    return {
+      _id: _id.get(),
+      id: id.get(),
+      timestamp: timestamp.get(),
+      data: data.get(),
+    };
   }
 }

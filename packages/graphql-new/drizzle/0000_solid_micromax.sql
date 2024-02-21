@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "blocks" (
-	"_id" serial PRIMARY KEY NOT NULL,
+	"_id" integer PRIMARY KEY NOT NULL,
 	"id" varchar(66) NOT NULL,
 	"timestamp" timestamp NOT NULL,
 	"data" jsonb NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "inputs" (
 	"_id" serial PRIMARY KEY NOT NULL,
 	"id" varchar(66) NOT NULL,
 	"timestamp" timestamp NOT NULL,
-	"data" jsonb,
+	"data" jsonb NOT NULL,
 	"transaction_id" integer NOT NULL,
 	CONSTRAINT "inputs_id_unique" UNIQUE("id")
 );
@@ -19,16 +19,16 @@ CREATE TABLE IF NOT EXISTS "outputs" (
 	"_id" serial PRIMARY KEY NOT NULL,
 	"id" varchar(66) NOT NULL,
 	"timestamp" timestamp NOT NULL,
-	"data" jsonb,
+	"data" jsonb NOT NULL,
 	"transaction_id" integer NOT NULL,
 	CONSTRAINT "outputs_id_unique" UNIQUE("id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "transactions" (
-	"_id" serial PRIMARY KEY NOT NULL,
+	"_id" integer PRIMARY KEY NOT NULL,
 	"id" varchar(66) NOT NULL,
 	"timestamp" timestamp,
-	"data" jsonb,
+	"data" jsonb NOT NULL,
 	"accountsIndex" text DEFAULT '' NOT NULL,
 	"block_id" integer NOT NULL,
 	CONSTRAINT "transactions_id_unique" UNIQUE("id")

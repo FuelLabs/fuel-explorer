@@ -1,5 +1,5 @@
 {
-  "id": "e4467ae4-7c22-4e7e-b17c-86d4e9730432",
+  "id": "ed9ad34d-fa66-4555-89c0-3d4a473a5c29",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -10,7 +10,7 @@
       "columns": {
         "_id": {
           "name": "_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true
         },
@@ -81,7 +81,7 @@
           "name": "data",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "transaction_id": {
           "name": "transaction_id",
@@ -148,7 +148,7 @@
           "name": "data",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "transaction_id": {
           "name": "transaction_id",
@@ -195,7 +195,7 @@
       "columns": {
         "_id": {
           "name": "_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true
         },
@@ -215,7 +215,7 @@
           "name": "data",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "accountsIndex": {
           "name": "accountsIndex",

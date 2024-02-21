@@ -1,9 +1,14 @@
 import { eq, like } from 'drizzle-orm';
 import { GQLTransaction } from '~/generated/types';
-import { DateHelper } from '~/helpers/Date';
-import { Paginator, PaginatorParams } from '~/helpers/Paginator';
 import { db } from '~/infra/database/Db';
+import { Paginator, PaginatorParams } from '~/shared/service';
+import { HashID } from '~/shared/vo';
+import { BlockRef } from '../blocks/vo/BlockRef';
 import { TransactionsTable } from './TransactionModel';
+import { AccountIndex } from './vo/AccountIndex';
+import { TransactionData } from './vo/TransactionData';
+import { TransactionID } from './vo/TransactionID';
+import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
 export class TransactionRepository {
   async findById(id: string) {
@@ -13,7 +18,7 @@ export class TransactionRepository {
       .from(TransactionsTable)
       .where(eq(TransactionsTable.id, id));
     if (!transaction) return null;
-    return transaction.data;
+    return transaction;
   }
 
   async findMany(params: PaginatorParams) {
@@ -24,9 +29,10 @@ export class TransactionRepository {
   async findByOwner(owner: string, params: PaginatorParams) {
     const paginator = new Paginator(TransactionsTable, params);
     await paginator.validateParams();
-    return paginator.getPaginatedResult(
+    const results = await paginator.getPaginatedResult(
       like(TransactionsTable.accountsIndex, `%${owner}%`),
     );
+    return paginator.createPaginatedResult(results);
   }
 
   async insertOne(transaction: GQLTransaction, blockId: number) {
@@ -43,10 +49,10 @@ export class TransactionRepository {
 
   async insertMany(txs: GQLTransaction[], blockId: number) {
     return db.connection().transaction(async (trx) => {
-      const queries = txs.map(async (tx) => {
+      const queries = txs.map(async (transaction) => {
         const [{ transactionId }] = await trx
           .insert(TransactionsTable)
-          .values(this._parseTransaction(tx, blockId))
+          .values(this._parseTransaction(transaction, blockId))
           .returning({
             transactionId: TransactionsTable._id,
           });
@@ -57,57 +63,19 @@ export class TransactionRepository {
   }
 
   private _parseTransaction(transaction: GQLTransaction, blockId: number) {
+    const _id = TransactionID.create(transaction);
+    const id = HashID.create(transaction.id);
+    const data = TransactionData.create(transaction);
+    const blockIdRef = BlockRef.create(blockId);
+    const accountsIndex = AccountIndex.create(transaction);
+    const timestamp = TransactionTimestamp.create(transaction);
     return {
-      id: transaction.id,
-      data: transaction,
-      blockId,
-      accountsIndex: this._getAccounts(transaction),
-      timestamp:
-        transaction.status && 'time' in transaction.status
-          ? DateHelper.tai64toDate(transaction.status.time)
-          : null,
+      _id: _id.get(),
+      id: id.get(),
+      data: data.get(),
+      blockId: blockIdRef.get(),
+      accountsIndex: accountsIndex.get(),
+      timestamp: timestamp.get(),
     };
-  }
-
-  private _getAccounts(transaction: GQLTransaction): string {
-    return [
-      ...new Set(
-        [
-          transaction.inputContract?.contract.id || '',
-          ...(transaction.inputs || []).reduce(
-            (acc, i) => {
-              switch (i.__typename) {
-                case 'InputCoin':
-                  return acc.concat([i.owner]);
-                case 'InputMessage':
-                  return acc.concat([i.recipient, i.sender]);
-                case 'InputContract':
-                  return acc.concat([i.contract.id]);
-                default:
-                  return acc;
-              }
-            },
-            [] as Array<string>,
-          ),
-          ...(transaction.outputs || []).reduce(
-            (acc, i) => {
-              switch (i.__typename) {
-                case 'ChangeOutput':
-                  return acc.concat([i.to]);
-                case 'CoinOutput':
-                  return acc.concat([i.to]);
-                default:
-                  return acc;
-              }
-            },
-            [] as Array<string>,
-          ),
-        ]
-          .map((a) => a.toLocaleLowerCase())
-          .filter((i) => !!i),
-      ),
-    ]
-      .sort()
-      .join('|');
   }
 }

@@ -1,5 +1,10 @@
 import dotenv from 'dotenv';
-import { EventSchemas, type GetEvents, Inngest } from 'inngest';
+import {
+  EventSchemas,
+  type GetEvents,
+  Inngest,
+  RetryAfterError,
+} from 'inngest';
 import { serve } from 'inngest/express';
 import { env } from '~/config';
 import { CreatedBlock } from '~/entities/blocks/BlockDomain';
@@ -33,32 +38,44 @@ export type Events = GetEvents<typeof client>;
 
 const functions = [
   client.createFunction(
-    { id: 'sync:blocks', concurrency: 100 },
+    { id: 'sync:blocks', concurrency: 500 },
     { event: 'sync/sync:blocks' },
-    async ({ event: { data } }) => {
-      console.log(`Syncing block page ${data.page}`);
-      const sync = new SyncDomain();
-      await sync.syncBlocks(data.page);
+    async ({ event: { data }, attempt }) => {
+      try {
+        console.log(`Syncing block page ${data.page}`);
+        await SyncDomain.syncBlocks(data.page);
+      } catch (error) {
+        console.error(error);
+        throw new RetryAfterError(`Sync block attempt ${attempt}`, '1s');
+      }
     },
   ),
 
   client.createFunction(
     { id: 'sync:missing' },
-    { event: 'sync/sync:missing' },
-    async () => {
-      console.log('Syncing missing blocks');
-      const sync = new SyncDomain();
-      await sync.syncMissingBlocks();
+    { event: 'sync/sync:missing', concurrency: 500 },
+    async ({ attempt }) => {
+      try {
+        console.log('Syncing missing blocks');
+        await SyncDomain.syncMissingBlocks();
+      } catch (error) {
+        console.error(error);
+        throw new RetryAfterError(`Sync missing attempt ${attempt}`, '1s');
+      }
     },
   ),
 
   client.createFunction(
     { id: 'sync:transactions' },
-    { event: 'sync/sync:transactions', concurrency: 10 },
-    async ({ event: { data } }) => {
-      console.log(`Syncing transactions for block ${data.blockId}`);
-      const domain = new TransactionDomain();
-      await domain.syncTransactions(data.block, data.blockId);
+    { event: 'sync/sync:transactions', concurrency: 500 },
+    async ({ attempt, event: { data } }) => {
+      try {
+        console.log(`Syncing transactions for block ${data.blockId}`);
+        await TransactionDomain.syncTransactions(data.block, data.blockId);
+      } catch (error) {
+        console.error(error);
+        throw new RetryAfterError(`Sync transactions attempt ${attempt}`, '1s');
+      }
     },
   ),
 ];

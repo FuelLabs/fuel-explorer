@@ -1,39 +1,52 @@
 import { GQLBlock } from '~/generated/types';
-import { PaginatorParams } from '~/helpers/Paginator';
-import { GraphQLContext } from '~/infra/graphql/GraphQLServer';
+import { TransactionsTable } from '~/infra/database/schema';
+import { HashID } from '~/shared/vo';
 import { TransactionRepository } from './TransactionRepository';
+import { TransactionResolver } from './TransactionResolver';
+import { AccountIndex } from './vo/AccountIndex';
+import { TransactionData } from './vo/TransactionData';
+import { TransactionID } from './vo/TransactionID';
+import { TransactionTimestamp } from './vo/TransactionTimestamp';
+
+type TransactionItem = typeof TransactionsTable.$inferSelect;
 
 export class TransactionDomain {
-  async syncTransactions(block: GQLBlock, blockId: number) {
+  private _id: TransactionID;
+  private id: HashID;
+  private timestamp: TransactionTimestamp;
+  private data: TransactionData;
+  private accountsIndex: AccountIndex;
+
+  constructor(transaction: TransactionItem) {
+    this._id = TransactionID.create(transaction.data);
+    this.id = HashID.create(transaction.id);
+    this.timestamp = TransactionTimestamp.create(transaction.data);
+    this.data = TransactionData.create(transaction.data);
+    this.accountsIndex = AccountIndex.create(transaction.data);
+  }
+
+  getInternalId() {
+    return this._id.get();
+  }
+  getId() {
+    return this.id.get();
+  }
+  getTimestamp() {
+    return this.timestamp.get();
+  }
+  getData() {
+    return this.data.get();
+  }
+  getAccountsIndex() {
+    return this.accountsIndex.get();
+  }
+
+  static getResolvers() {
+    return new TransactionResolver().getResolvers();
+  }
+
+  static async syncTransactions(block: GQLBlock, blockId: number) {
     const repository = new TransactionRepository();
     await repository.insertMany(block.transactions, blockId);
-  }
-
-  createResolvers() {
-    return {
-      Query: {
-        transactions: this.transactions,
-        transactionsByOwner: this.transactionsByOwner,
-        transaction: this.transaction,
-      },
-    };
-  }
-
-  async transaction(_ctx: GraphQLContext, { id }: { id: string }) {
-    const repository = new TransactionRepository();
-    return repository.findById(id);
-  }
-
-  async transactions(_ctx: GraphQLContext, params: PaginatorParams) {
-    const repository = new TransactionRepository();
-    return repository.findMany(params);
-  }
-
-  async transactionsByOwner(
-    _ctx: GraphQLContext,
-    params: PaginatorParams & { owner: string },
-  ) {
-    const repository = new TransactionRepository();
-    return repository.findByOwner(params.owner, params);
   }
 }

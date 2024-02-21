@@ -23,12 +23,10 @@ export class GraphQLServer {
   }
 
   private _createResolvers() {
-    const blockDomain = new BlockDomain();
-    const transactionDomain = new TransactionDomain();
     return {
       Query: {
-        ...blockDomain.createResolvers().Query,
-        ...transactionDomain.createResolvers().Query,
+        ...BlockDomain.getResolvers(),
+        ...TransactionDomain.getResolvers(),
       },
     };
   }

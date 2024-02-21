@@ -9,6 +9,16 @@ export type PaginatorParams = {
   before: string;
 };
 
+export type PaginatedResults<T> = {
+  nodes: T[];
+  pageInfo: {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    endCursor: any;
+    startCursor: any;
+  };
+};
+
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export class Paginator<Source extends PgTableWithColumns<any>> {
   constructor(
@@ -98,7 +108,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
   }: Awaited<ReturnType<typeof this.getPaginatedResult>>) {
     const { first, last } = this.params;
     const limit = first || last;
-    const nodes = items.slice(0, limit).map((item) => item.data);
+    const nodes = items.slice(0, limit).map((item) => item);
     const startCursor = items[0]?._id ?? 0;
     const endCursor = items[nodes.length - 1]?._id || null;
     const hasNextPage = first ? limit < items.length : startCursor < maxId;

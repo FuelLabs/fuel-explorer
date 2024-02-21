@@ -1,24 +1,17 @@
-import {
-  index,
-  integer,
-  jsonb,
-  pgTable,
-  serial,
-  timestamp,
-  varchar,
-} from 'drizzle-orm/pg-core';
-import { TransactionsTable } from '../transactions/TransactionModel';
+import { index, pgTable } from 'drizzle-orm/pg-core';
+import { HashID, Timestamp } from '~/shared/vo';
+import { SerialID } from '~/shared/vo/SerialID';
+import { TransactionRef } from '../transactions/vo/TransactionRef';
+import { InputData } from './vo/InputData';
 
 export const InputsTable = pgTable(
   'inputs',
   {
-    _id: serial('_id').primaryKey(),
-    id: varchar('id', { length: 66 }).notNull().unique(),
-    timestamp: timestamp('timestamp').notNull(),
-    data: jsonb('data'),
-    transactionId: integer('transaction_id')
-      .notNull()
-      .references(() => TransactionsTable._id),
+    _id: SerialID.type(),
+    id: HashID.type(),
+    timestamp: Timestamp.type(),
+    data: InputData.type(),
+    transactionId: TransactionRef.type(),
   },
   (table) => ({
     timestampIdx: index().on(table.timestamp),
