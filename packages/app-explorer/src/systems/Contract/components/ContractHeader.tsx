@@ -2,8 +2,8 @@
 
 import { Address } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
-import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
+import { PageTitle } from 'app-commons';
 import { ContractTabs } from './ContractTabs';
 
 export function ContractHeader({ id }: { id: string }) {

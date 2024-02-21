@@ -1,5 +1,7 @@
 import { useNodeInfo } from '@fuel-wallet/react';
-import { Box, Heading, Tabs } from '@fuels/ui';
+import { Box, Tabs } from '@fuels/ui';
+import { IconArrowsShuffle } from '@tabler/icons-react';
+import { PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -21,9 +23,9 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
   return (
     <Box className={classes.content()}>
-      <Heading as="h2" className={classes.heading()}>
+      <PageTitle size="2" icon={<IconArrowsShuffle size={18} stroke={1.5} />}>
         Fuel Native Bridge
-      </Heading>
+      </PageTitle>
       <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
       <Tabs defaultValue={pathname} variant="line" size="2">
         <Tabs.List className={classes.tabs()}>
@@ -43,7 +45,6 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 const styles = tv({
   slots: {
     content: 'w-full max-w-[455px]',
-    heading: 'mt-0 mb-4 ml-[-2px]',
     tabs: 'ml-0 color-inherit decoration-none :active:text-success',
   },
 });

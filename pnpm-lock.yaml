@@ -183,7 +183,27 @@ importers:
         specifier: ^2.19.5
         version: 2.19.5(ts-node@10.9.2)(typescript@5.3.3)
 
-  packages/app-commons: {}
+  packages/app-commons:
+    dependencies:
+      '@fuels/ui':
+        specifier: workspace:*
+        version: link:../ui
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      tailwind-variants:
+        specifier: 0.1.20
+        version: 0.1.20(tailwindcss@3.4.1)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.54
+        version: 18.2.54
+      '@types/react-dom':
+        specifier: ^18.2.18
+        version: 18.2.18
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
 
   packages/app-explorer:
     dependencies:
@@ -4484,11 +4504,6 @@ packages:
     resolution: {integrity: sha512-GZ/NxWEHfGjvUq6ipM/BMfLt9n4jabZPEkJSQiJvmPrq2Dvp/TOEESfw5s+CdH3/hjf/T9imMekhHphZvl7RnQ==}
     peerDependencies:
       jest: ^29.6.4
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-dom:
-        optional: true
     dependencies:
       '@ariakit/test': 0.2.5(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
@@ -13456,9 +13471,6 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependenciesMeta:
-      ajv:
-        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true
@@ -16484,7 +16496,6 @@ packages:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
     dev: false
-    bundledDependencies: false
 
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}

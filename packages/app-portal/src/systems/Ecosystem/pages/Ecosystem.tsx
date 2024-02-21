@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Heading, Input, Text, VStack } from '@fuels/ui';
-import { IconSearch } from '@tabler/icons-react';
+import { IconApps, IconSearch } from '@tabler/icons-react';
+import { PageTitle } from 'app-commons';
 import { tv } from 'tailwind-variants';
 import { EcosystemTags } from '../components/EcosystemTags';
 import { ProjectList } from '../components/ProjectList/ProjectList';
@@ -23,15 +24,15 @@ export function Ecosystem() {
     : undefined;
 
   return (
-    <VStack gap="9" grow="1" className={classes.content()}>
-      <Flex className={classes.headingWrapper()}>
+    <VStack gap="6" grow="1" className={classes.content()}>
+      <PageTitle icon={<IconApps size={22} />}>
         <VStack gap="2" wrap="wrap">
-          <Heading as="h2" className={classes.heading()}>
-            Explore Fuel Dapps
-          </Heading>
-          <Text>Here&apos;s a list of dapps built on Fuel</Text>
+          Explore Fuel Dapps
+          <Text className="text-secondary">
+            Here&apos;s a list of dapps built on Fuel
+          </Text>
         </VStack>
-      </Flex>
+      </PageTitle>
       <Flex gap="4" className={classes.searchBar()}>
         <Input className={classes.searchBarInput()} size="3">
           <Input.Field
@@ -70,7 +71,6 @@ export function Ecosystem() {
 const styles = tv({
   slots: {
     content: 'pb-20',
-    heading: 'm-0',
     subHeading: 'text-sm',
     headingWrapper: [
       'flex flex-col gap-10 items-start justify-between',

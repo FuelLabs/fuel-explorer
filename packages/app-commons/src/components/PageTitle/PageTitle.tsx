@@ -42,7 +42,7 @@ const styles = tv({
       'border-border border-b',
       'tablet:flex-nowrap tablet:gap-4',
     ],
-    icon: ['h-full flex-shrink-0 px-2', 'tablet:self-start tablet:mt-2'],
+    icon: ['h-full flex-shrink-0 px-2', 'tablet:self-start tablet:mt-1.5'],
     title: [
       'items-center basis-full gap-3 order-3 flex-shrink-0 justify-between',
       'tablet:flex-col tablet:items-start tablet:gap-0',
