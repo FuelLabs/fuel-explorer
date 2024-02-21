@@ -69,33 +69,31 @@ export function AssetsDialog() {
         )}
         {!editable ? 'Select token' : 'Manage token list'}
       </Dialog.Title>
-      <Flex align="center" className={classes.controllerWrapper()}>
-        <Controller
-          name="address"
-          control={form.control}
-          render={(props) => {
-            return (
-              <>
-                <Input className={classes.headerInput()}>
-                  <Input.Field
-                    {...props.field}
-                    placeholder="Type here to search"
-                  />
-                  {isLoading && (
-                    <Input.Slot>
-                      <Spinner />
-                    </Input.Slot>
-                  )}
-                </Input>
-                {!!isSearchResultsEmpty && (
-                  <Text>No asset found for your search "{assetQuery}"</Text>
+      <Controller
+        name="address"
+        control={form.control}
+        render={(props) => {
+          return (
+            <>
+              <Input className={classes.headerInput()}>
+                <Input.Field
+                  {...props.field}
+                  placeholder="Type here to search"
+                />
+                {isLoading && (
+                  <Input.Slot>
+                    <Spinner />
+                  </Input.Slot>
                 )}
-              </>
-            );
-          }}
-        />
-      </Flex>
-      <CardList isClickable={!editable}>
+              </Input>
+              {!!isSearchResultsEmpty && (
+                <Text>No asset found for your search "{assetQuery}"</Text>
+              )}
+            </>
+          );
+        }}
+      />
+      <CardList isClickable={!editable} className={classes.cardList()}>
         {showAssetList &&
           assets.map((asset, i) => {
             const ethAsset = getAssetEth(asset);
@@ -155,8 +153,9 @@ export function AssetsDialog() {
 const styles = tv({
   slots: {
     actionButton: 'w-full',
-    controllerWrapper: 'pb-2 mb-4',
+    controllerWrapper: 'pb-2 mb-4 mt-2 w-full',
     formControl: 'w-full',
-    headerInput: 'text-xs',
+    headerInput: 'text-xs mt-4',
+    cardList: 'mt-4',
   },
 });
