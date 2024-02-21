@@ -75,7 +75,7 @@ export function AssetsDialog() {
         render={(props) => {
           return (
             <>
-              <Input className={classes.headerInput()}>
+              <Input className={classes.headerInput()} size="3">
                 <Input.Field
                   {...props.field}
                   placeholder="Type here to search"
@@ -93,7 +93,7 @@ export function AssetsDialog() {
           );
         }}
       />
-      <CardList isClickable={!editable} className={classes.cardList()}>
+      <CardList isClickable={!editable}>
         {showAssetList &&
           assets.map((asset, i) => {
             const ethAsset = getAssetEth(asset);
@@ -155,7 +155,6 @@ const styles = tv({
     actionButton: 'w-full',
     controllerWrapper: 'pb-2 mb-4 mt-2 w-full',
     formControl: 'w-full',
-    headerInput: 'text-xs mt-4',
-    cardList: 'mt-4',
+    headerInput: 'my-4',
   },
 });

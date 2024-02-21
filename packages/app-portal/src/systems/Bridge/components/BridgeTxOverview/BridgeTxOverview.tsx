@@ -34,7 +34,12 @@ export const BridgeTxOverview = ({
     <VStack className={classes.stack()} gap="2">
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>ID</Text>
-        <Link isExternal href={explorerLink} className={classes.linkText()}>
+        <Link
+          isExternal
+          href={explorerLink}
+          className={classes.linkText()}
+          color="green"
+        >
           <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
         </Link>
       </Flex>
