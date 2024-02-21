@@ -414,11 +414,11 @@ importers:
         specifier: 0.15.2
         version: 0.15.2(dexie@3.2.4)(fuels@0.73.0)
       '@fuels/assets':
-        specifier: 0.15.1
-        version: 0.15.1
+        specifier: 0.15.2
+        version: 0.15.2
       '@fuels/react-xstore':
-        specifier: 0.15.1
-        version: 0.15.1(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
+        specifier: 0.15.2
+        version: 0.15.2(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -4476,8 +4476,8 @@ packages:
     resolution: {integrity: sha512-3rFZdY2f5/h7e2Rlhv/+WKz1CVsTnydKoxLdVjQfUaNsj7zbMLSfT37bsBSB42AnXKOlPs/vyMbS77LxhN8a2A==}
     dev: false
 
-  /@fuels/assets@0.15.1:
-    resolution: {integrity: sha512-sgzqSr0N+HmPVuetpx0TkulKBB2X41b8NEhIXQdffj1gavt5FKcOpKHvO7cla5KyFhNx/X+N0gh8ZzQDg5rpoA==}
+  /@fuels/assets@0.15.2:
+    resolution: {integrity: sha512-SRHUz0+2+qjo0DJ6B0Eh45s/I8gHQcoZY3TUvJxhytKOpdq+OaLOv+GzihSd/VBwUd+b70V1nQiwLTzVd/8R5A==}
     dev: false
 
   /@fuels/jest@0.1.5(@types/jest@29.5.12)(jest@29.7.0):
@@ -4520,12 +4520,12 @@ packages:
       - vitest
     dev: false
 
-  /@fuels/local-storage@0.15.1:
-    resolution: {integrity: sha512-XJ3wQTgM/zpEZSay9+SssSSl44fz70xwEueePoKv1RSueOiYykgLPiI7EaKSw3TRuBZjPkv3BzuLriSHgKu+4g==}
+  /@fuels/local-storage@0.15.2:
+    resolution: {integrity: sha512-NY4RJRfqTajDDPRhvzJi/enkp4QDFUZbwLx9q0m0qEZtz2VfILiG+OvRCAxpyIm4ue4wXPYpXuFTkJawewPjRg==}
     dev: false
 
-  /@fuels/react-xstore@0.15.1(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
-    resolution: {integrity: sha512-/01w/0aSkZ/1+n/pNkc89P2GOMBZQ1VDSTxMh9PwoNibr6IsE1YGuJMMQ7ByiGbqCcYg2cP1JfsCcstKgsuTsQ==}
+  /@fuels/react-xstore@0.15.2(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
+    resolution: {integrity: sha512-OjL4Y2TYqLl4ssOQsqRBqkKNtAP6bIVaNJCmzwph7ynz7UYSYzA40ezY8SJf5NTbosIJWK73Gblz4ngXer3M8g==}
     peerDependencies:
       '@xstate/react': ^3.2.2
       react: '*'
@@ -4537,7 +4537,7 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      '@fuels/local-storage': 0.15.1
+      '@fuels/local-storage': 0.15.2
       '@xstate/inspect': 0.8.0(xstate@4.38.3)
       '@xstate/react': 3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3)
       fast-equals: 5.0.1

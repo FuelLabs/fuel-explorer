@@ -1,9 +1,9 @@
-import type { BigNumberish } from 'fuels';
 import { calculateDateDiff } from '~portal/systems/Core';
 
 import { Asset as FuelsAsset } from '@fuels/assets';
 import { Asset, Box, Flex, FuelLogo, Link, Text, VStack } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
+import { BigNumberish } from 'ethers';
 import { tv } from 'tailwind-variants';
 import { InfoTextLoader } from './InfoTextLoader';
 
@@ -34,7 +34,12 @@ export const BridgeTxOverview = ({
     <VStack className={classes.stack()} gap="2">
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>ID</Text>
-        <Link isExternal href={explorerLink} className={classes.linkText()}>
+        <Link
+          isExternal
+          href={explorerLink}
+          className={classes.linkText()}
+          color="green"
+        >
           <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
         </Link>
       </Flex>
