@@ -73,46 +73,46 @@ export function Footer() {
 
         <VStack gap="3" className={classes.social()}>
           <HStack gap="4">
-            <a
+            <Link
               className={classes.socialIcon()}
               href="https://twitter.com/fuel_network"
               rel="noopener noreferrer"
               target="_blank"
             >
               <Icon icon={IconBrandXFilled} size={24} />
-            </a>
-            <a
+            </Link>
+            <Link
               className={classes.socialIcon()}
               href="https://discord.com/invite/xfpK4Pe"
               rel="noopener noreferrer"
               target="_blank"
             >
               <Icon icon={IconBrandDiscordFilled} size={24} />
-            </a>
-            <a
+            </Link>
+            <Link
               className={classes.socialIcon()}
               href="https://warpcast.com/fuel-network"
               rel="noopener noreferrer"
               target="_blank"
             >
               <Icon icon={IconBrandWarpCastFilled} size={24} />
-            </a>
-            <a
+            </Link>
+            <Link
               className={classes.socialIcon()}
               href="https://www.youtube.com/channel/UCam2Sj3SvFSAIfDbP-4jWZQ"
               rel="noopener noreferrer"
               target="_blank"
             >
               <Icon icon={IconBrandYoutubeFilled} size={24} />
-            </a>
-            <a
+            </Link>
+            <Link
               className={classes.socialIcon()}
               href="https://t.me/fuelcommunity"
               rel="noopener noreferrer"
               target="_blank"
             >
               <Icon icon={IconBrandTelegramFilled} size={24} />
-            </a>
+            </Link>
           </HStack>
           <Text className="text-secondary" size="2">
             © {dayjs().year()} Fuel Labs. All rights reserved
@@ -126,7 +126,7 @@ export function Footer() {
 const styles = tv({
   slots: {
     container: [
-      'hero-bg border-t border-border px-10 py-10 flex flex-col gap-y-5',
+      'hero-bg border-t border-border px-10 py-10 flex flex-col gap-y-5 fuel-[Icon]:hidden',
     ],
     root: [
       'justify-between items-start flex-col desktop:flex-row gap-y-10 mb-12',
@@ -136,7 +136,7 @@ const styles = tv({
     navs: ['flex flex-wrap justify-between gap-y-10 w-full max-w-screen-md'],
     nav: ['w-full tablet:w-1/2 desktop:w-auto'],
     navHeading: ['font-mono justify-start text-gray-400'],
-    navList: ['flex flex-col gap-0 fuel-[Icon]:hidden'],
+    navList: ['flex flex-col gap-0'],
     navLink: [
       'font-mono text-white hover:text-brand hover:no-underline transition-colors duration-200',
     ],
