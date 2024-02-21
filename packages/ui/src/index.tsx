@@ -18,6 +18,7 @@ export * from './components/Breadcrumb';
 export * from './components/Button';
 export * from './components/ButtonClose';
 export * from './components/ButtonGroup';
+export * from './components/ButtonSwitch';
 export * from './components/Card';
 export * from './components/CardList';
 export * from './components/Checkbox';

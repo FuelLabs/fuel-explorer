@@ -38,7 +38,7 @@ export const Bridge = () => {
   const ethAssetAddress = asset ? getAssetEth(asset)?.address : undefined;
 
   return (
-    <Card>
+    <Card className={classes.card()}>
       <Card.Body className={classes.cardBody()}>
         <BridgeTabs fromControls={fromControls} toControls={toControls} />
         <Box className={classes.divider()} />
@@ -66,6 +66,7 @@ export const Bridge = () => {
               isDisabled={!ethAddress && !fuelAddress}
               balance={assetBalance}
               value={assetAmount}
+              color="green"
               asset={{
                 name: asset?.symbol,
                 imageUrl: asset?.icon || '',
@@ -75,6 +76,7 @@ export const Bridge = () => {
               onChange={(val) =>
                 handlers.changeAssetAmount({ assetAmount: val || undefined })
               }
+              className={classes.inputAmount()}
             />
           </VStack>
           {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
@@ -113,8 +115,13 @@ export const Bridge = () => {
 
 export const styles = tv({
   slots: {
+    card: 'p-0',
     cardBody: 'p-7',
     divider: 'h-[1px] bg-border mt-6 mb-5',
     textNetwork: 'text-heading',
+    inputAmount: [
+      '[&_.rt-TextFieldChrome]:bg-gray-1 [&_.rt-TextFieldChrome]:shadow-none',
+      '[&_.rt-TextFieldChrome]:border [&_.rt-TextFieldChrome]:border-card-border',
+    ],
   },
 });
