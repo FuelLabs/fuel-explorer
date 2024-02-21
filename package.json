@@ -24,7 +24,8 @@
   ],
   "scripts": {
     "build": "pnpm turbo:run build",
-    "build:preview": "pnpm turbo:run build:preview",
+    "build:preview": "run-s ts:check build:preview-only",
+    "build:preview-only": "pnpm turbo:run build:preview",
     "build:explorer": "pnpm turbo:run build --filter=app-explorer",
     "build:explorer:preview": "pnpm turbo:run build:preview --filter=app-explorer",
     "build:explorer:storybook": "pnpm turbo:run build:storybook --filter=app-explorer",
