@@ -22,9 +22,9 @@ export const EcosystemTags = ({
   return (
     <Flex justify="start" align="center" gap="2" wrap="wrap">
       <Button
-        data-active={!activeTag}
-        className={classes.tag()}
-        size="3"
+        size="2"
+        variant="outline"
+        color={!activeTag ? 'green' : 'gray'}
         onClick={onClickAllCategories}
       >
         All categories
@@ -33,8 +33,9 @@ export const EcosystemTags = ({
       {(tags || []).map((tag) => (
         <Button
           key={tag}
-          className={classes.tag()}
-          size="3"
+          color={activeTag === tag ? 'green' : 'gray'}
+          size="2"
+          variant="outline"
           onClick={() => onClickTag?.(tag)}
         >
           {tag}
@@ -46,7 +47,6 @@ export const EcosystemTags = ({
 
 export const styles = tv({
   slots: {
-    tag: 'text-heading data-[active=true]:border-success data-[active=true]:text-heading',
     divider: 'w-[1px] h-2 bg-card-border',
   },
 });

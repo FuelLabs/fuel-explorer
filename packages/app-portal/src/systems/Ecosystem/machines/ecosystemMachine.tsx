@@ -17,6 +17,7 @@ export type EcosystemInputs = {
 };
 
 type MachineContext = {
+  allProjects: Project[];
   projects: Project[];
   search: string;
   tags: string[];
@@ -57,6 +58,7 @@ type EcosystemMachineEvents =
     };
 
 const initialState: MachineContext = {
+  allProjects: [],
   projects: [],
   search: '',
   tags: [],

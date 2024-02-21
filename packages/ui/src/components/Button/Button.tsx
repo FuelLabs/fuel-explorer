@@ -19,14 +19,15 @@ export const Button = createPolymorphicComponent<ButtonProps, 'button'>({
     const { children, ...itemProps } = useIconProps(props);
     const variantProps = useVariants(props);
     const innerChildren = asChild ? children : <Root>{children}</Root>;
+
     return (
       <RadixButton
         asChild
         {...(itemProps as RadixButtonProps)}
         {...(variantProps as RadixButtonProps)}
         className={cx(
-          itemProps.className,
           variantProps.className,
+          itemProps.className,
           !itemProps.disabled && !itemProps['aria-readonly']
             ? 'cursor-pointer'
             : '',

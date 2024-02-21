@@ -3,7 +3,7 @@ import type {
   BridgeMachine,
   BridgeTxsMachine,
 } from '~portal/systems/Bridge/machines';
-import type { EcosystemMachine } from '~portal/systems/Ecosystem';
+import type { EcosystemMachine } from '~portal/systems/Ecosystem/machines';
 import type { OverlayMachine } from '~portal/systems/Overlay';
 
 import type { AssetsMachine } from '../Assets/machines/assetsMachine';

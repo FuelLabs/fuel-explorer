@@ -10,6 +10,7 @@ export default {
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
     '../app-portal/src/**/*.{js,jsx,ts,tsx}',
+    '../app-portal/tailwind.config.ts',
   ],
   plugins: [
     plugin(({ addComponents }) => {
