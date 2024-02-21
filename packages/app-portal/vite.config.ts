@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 import './load.envs.js';
 
-const { PORT, NO_PORTAL, CI } = process.env;
+const { PORT, NO_PORTAL, BUILD_PREVIEW } = process.env;
 
 // NO_PORTAL can be set on .env for local development
 // directly on the .env file or on the command line
@@ -25,7 +25,7 @@ export default defineConfig({
   },
   build: {
     target: ['es2020'],
-    ...(CI
+    ...(BUILD_PREVIEW
       ? { outDir: resolve(__dirname, '../app-explorer/public/portal') }
       : {}),
   },
