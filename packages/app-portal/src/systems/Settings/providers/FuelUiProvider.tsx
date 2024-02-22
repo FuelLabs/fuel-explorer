@@ -49,7 +49,7 @@ export function FuelUiProvider({ children }: PropsWithChildren) {
         setFounded(true);
         return;
       }
-      const version = window.fuel?.connectorName;
+      const version = (window as any).fuel?.connectorName;
       return fuelet ? false : Boolean(version);
     },
     {
