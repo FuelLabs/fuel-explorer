@@ -5,7 +5,7 @@ const trimPath = (path = '') => path.replace(trimRegex, '');
 export const getUrlHostName = (url: string) => {
   try {
     return new URL(url || 'https://#').hostname;
-  } catch (e) {
+  } catch (_e) {
     return '';
   }
 };
@@ -24,7 +24,7 @@ export function urlJoin(
 }
 
 export function relativeUrl(path: string) {
-  return urlJoin(import.meta.env.BASE_URL, path);
+  return urlJoin(process.env.BASE_URL, path);
 }
 
 export function parseUrl(url: string) {

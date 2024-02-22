@@ -1,8 +1,8 @@
 import { Dialog } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
-import { AssetsDialog } from '~/systems/Assets/containers';
-import { TxEthToFuelDialog, TxFuelToEthDialog } from '~/systems/Chains';
-import { useOverlay } from '~/systems/Overlay';
+import { AssetsDialog } from '~portal/systems/Assets/containers';
+import { TxEthToFuelDialog, TxFuelToEthDialog } from '~portal/systems/Chains';
+import { useOverlay } from '~portal/systems/Overlay';
 
 export function OverlayDialog() {
   const classes = styles();

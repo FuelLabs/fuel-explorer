@@ -1,12 +1,18 @@
 import { useNodeInfo } from '@fuel-wallet/react';
-import { Heading, Tabs } from '@fuels/ui';
+import { Box, Button } from '@fuels/ui';
+import {
+  IconArrowBack,
+  IconArrowsShuffle,
+  IconHistory,
+} from '@tabler/icons-react';
+import { PageTitle } from 'app-commons';
+import NextLink from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
-import { VITE_FUEL_VERSION } from '~/config';
-import { FuelVersionDialog } from '~/systems/Chains/fuel/containers/FuelVersionDialog';
-import { Layout } from '~/systems/Core';
-import { Pages } from '~/types';
+import { VITE_FUEL_VERSION } from '~portal/config';
+import { Routes } from '~portal/routes';
+import { FuelVersionDialog } from '~portal/systems/Chains/fuel/containers/FuelVersionDialog';
 
 type BridgeHomeProps = {
   children: ReactNode;
@@ -14,38 +20,61 @@ type BridgeHomeProps = {
 
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const classes = styles();
-  const { isCompatible } = useNodeInfo({
-    version: VITE_FUEL_VERSION,
-  });
-  const location = useLocation();
+  const { isCompatible } = useNodeInfo({ version: VITE_FUEL_VERSION });
+  const pathname = usePathname();
+  const isBridgeHistory = pathname === Routes.bridgeHistory();
 
   return (
-    <Layout>
-      <Layout.Content className={classes.content()}>
-        <Heading as="h2" className={classes.heading()}>
-          Fuel Native Bridge
-        </Heading>
-        <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
-        <Tabs defaultValue={location.pathname.replace(/\/$/, '')}>
-          <Tabs.List className={classes.tabs()}>
-            <NavLink to={Pages.bridge}>
-              <Tabs.Trigger value={Pages.bridge}>Bridge</Tabs.Trigger>
-            </NavLink>
-            <NavLink to={Pages.transactions}>
-              <Tabs.Trigger value={Pages.transactions}>History</Tabs.Trigger>
-            </NavLink>
-          </Tabs.List>
-          {children}
-        </Tabs>
-      </Layout.Content>
-    </Layout>
+    <Box className={classes.content()}>
+      <PageTitle
+        size="2"
+        icon={<IconArrowsShuffle size={18} stroke={1.5} />}
+        className="border-b-0 first:mb-0"
+        rightElement={
+          isBridgeHistory ? (
+            <Button
+              as={NextLink}
+              prefetch
+              href={Routes.bridge()}
+              size="1"
+              color="gray"
+              variant="ghost"
+              leftIcon={IconArrowBack}
+              className="rounded-md"
+            >
+              Back
+            </Button>
+          ) : (
+            <Button
+              as={NextLink}
+              prefetch
+              href={Routes.bridgeHistory()}
+              size="1"
+              color="gray"
+              variant="ghost"
+              leftIcon={IconHistory}
+              className="rounded-md"
+            >
+              History
+            </Button>
+          )
+        }
+      >
+        Fuel Native Bridge
+      </PageTitle>
+      <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
+      {children}
+    </Box>
   );
 };
 
 const styles = tv({
   slots: {
-    content: 'max-w-[455px]',
-    heading: 'mt-0 mb-4 ml-[-2px]',
+    content: 'w-full max-w-[455px]',
     tabs: 'ml-0 color-inherit decoration-none :active:text-success',
+    toggle: [
+      'w-full mb-4 rounded-md fuel-[ToggleGroupItem]:h-9',
+      'fuel-[ToggleGroupItem]:text-md',
+    ],
   },
 });

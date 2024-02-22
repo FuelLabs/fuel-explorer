@@ -4,7 +4,7 @@ import {
   isEthChain,
   isFuelChain,
   useFuelAccountConnection,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
 import { Button, CardList } from '@fuels/ui';
 import { IconChevronDown } from '@tabler/icons-react';

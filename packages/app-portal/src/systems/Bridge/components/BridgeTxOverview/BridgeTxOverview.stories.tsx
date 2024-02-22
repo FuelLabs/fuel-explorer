@@ -19,7 +19,7 @@ export const Usage = () => {
   return (
     <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxOverview
-        transactionId={bn(1234567876543456)}
+        transactionId={bn(1234567876543456).toHex()}
         date={new Date()}
         isDeposit={true}
         amount="1.500"
@@ -35,7 +35,7 @@ export const Withdrawal = () => {
   return (
     <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxOverview
-        transactionId={bn(1234567876543456)}
+        transactionId={bn(1234567876543456).toHex()}
         date={new Date()}
         asset={assetList[0]}
         amount="1.500"
@@ -51,7 +51,7 @@ export const Loading = () => {
     <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxOverview
         isLoading
-        transactionId={bn(1234567876543456)}
+        transactionId={bn(1234567876543456).toHex()}
         date={new Date()}
         isDeposit={true}
         amount="1.500"

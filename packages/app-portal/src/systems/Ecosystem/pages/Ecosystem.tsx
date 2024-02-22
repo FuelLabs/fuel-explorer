@@ -1,7 +1,6 @@
-import { Layout, animations } from '~/systems/Core';
-
-import { Flex, Heading, Input, Text, VStack } from '@fuels/ui';
-import { IconSearch } from '@tabler/icons-react';
+import { Button, Flex, Input, Text, VStack } from '@fuels/ui';
+import { IconApps, IconSearch } from '@tabler/icons-react';
+import { PageTitle } from 'app-commons';
 import { tv } from 'tailwind-variants';
 import { EcosystemTags } from '../components/EcosystemTags';
 import { ProjectList } from '../components/ProjectList/ProjectList';
@@ -25,56 +24,59 @@ export function Ecosystem() {
     : undefined;
 
   return (
-    <Layout {...animations.slideInTop()}>
-      <Layout.Content className="pt-16 pr-1 pb-4 pl-4">
-        <VStack gap="9" grow="1" className={classes.content()}>
-          <Flex className={classes.headingWrapper()}>
-            <VStack gap="2" wrap="wrap">
-              <Heading as="h2" className={classes.heading()}>
-                Explore Fuel Dapps
-              </Heading>
-              <Text>Here&apos;s a list of dapps built on Fuel</Text>
-            </VStack>
-            <Input className={classes.searchBar()}>
-              <Input.Field
-                name="search"
-                placeholder="Search"
-                type="text"
-                value={search || ''}
-                onChange={handleSearch}
-              />
-              <Input.Slot>
-                <IconSearch />
-              </Input.Slot>
-            </Input>
-          </Flex>
-          <EcosystemTags
-            tags={tags}
-            activeTag={filter}
-            isLoading={isLoading}
-            onClickTag={handleTagButtonClick}
-            onClickAllCategories={handlers.clearFilters}
-          />
-          <ProjectList
-            isLoading={isLoading}
-            projects={filteredProjects || []}
-            emptyText={emptyText}
-          />
+    <VStack gap="6" grow="1" className={classes.content()}>
+      <PageTitle icon={<IconApps size={22} />} className="first:mb-0">
+        <VStack gap="2" wrap="wrap">
+          Explore Fuel Dapps
+          <Text className="text-secondary">
+            Here&apos;s a list of dapps built on Fuel
+          </Text>
         </VStack>
-      </Layout.Content>
-    </Layout>
+      </PageTitle>
+      <Flex gap="4" className={classes.searchBar()}>
+        <Input className={classes.searchBarInput()} size="3">
+          <Input.Field
+            name="search"
+            placeholder="Search"
+            type="text"
+            value={search || ''}
+            onChange={handleSearch}
+          />
+          <Input.Slot>
+            <IconSearch size={16} />
+          </Input.Slot>
+        </Input>
+        <Flex justify="end">
+          <Button as="a" href="" target="_blank" size="3" color="green">
+            List your project
+          </Button>
+        </Flex>
+      </Flex>
+      <EcosystemTags
+        tags={tags}
+        activeTag={filter}
+        isLoading={isLoading}
+        onClickTag={handleTagButtonClick}
+        onClickAllCategories={handlers.clearFilters}
+      />
+      <ProjectList
+        isLoading={isLoading}
+        projects={filteredProjects || []}
+        emptyText={emptyText}
+      />
+    </VStack>
   );
 }
 
 const styles = tv({
   slots: {
     content: 'pb-20',
-    heading: 'm-0',
     subHeading: 'text-sm',
     headingWrapper: [
       'flex flex-col gap-10 items-start justify-between',
       'tablet:flex-row tablet:gap-10 tablet:items-end',
     ],
-    searchBar: 'w-full tablet:w-auto',
+    searchBar: 'flex-col tablet:justify-between tablet:flex-row',
+    searchBarInput: 'w-full tablet:w-[350px]',
   },
 });

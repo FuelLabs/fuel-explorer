@@ -1,19 +1,11 @@
 import { useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
-import { VITE_ETH_ERC20 } from '~/config';
-import { store } from '~/store';
-import { useBridge } from '~/systems/Bridge/hooks';
-import { useFuelAccountConnection } from '~/systems/Chains';
+import { VITE_ETH_ERC20 } from '~portal/config';
+import { store } from '~portal/store';
+import { useBridge } from '~portal/systems/Bridge/hooks';
+import { useFuelAccountConnection } from '~portal/systems/Chains';
 
-import {
-  CardList,
-  Dialog,
-  Flex,
-  IconButton,
-  Input,
-  Spinner,
-  Text,
-} from '@fuels/ui';
+import { CardList, Dialog, IconButton, Input, Spinner, Text } from '@fuels/ui';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import {
@@ -69,32 +61,30 @@ export function AssetsDialog() {
         )}
         {!editable ? 'Select token' : 'Manage token list'}
       </Dialog.Title>
-      <Flex align="center" className={classes.controllerWrapper()}>
-        <Controller
-          name="address"
-          control={form.control}
-          render={(props) => {
-            return (
-              <>
-                <Input className={classes.headerInput()}>
-                  <Input.Field
-                    {...props.field}
-                    placeholder="Type here to search"
-                  />
-                  {isLoading && (
-                    <Input.Slot>
-                      <Spinner />
-                    </Input.Slot>
-                  )}
-                </Input>
-                {!!isSearchResultsEmpty && (
-                  <Text>No asset found for your search "{assetQuery}"</Text>
+      <Controller
+        name="address"
+        control={form.control}
+        render={(props) => {
+          return (
+            <>
+              <Input className={classes.headerInput()} size="3">
+                <Input.Field
+                  {...props.field}
+                  placeholder="Type here to search"
+                />
+                {isLoading && (
+                  <Input.Slot>
+                    <Spinner />
+                  </Input.Slot>
                 )}
-              </>
-            );
-          }}
-        />
-      </Flex>
+              </Input>
+              {!!isSearchResultsEmpty && (
+                <Text>No asset found for your search "{assetQuery}"</Text>
+              )}
+            </>
+          );
+        }}
+      />
       <CardList isClickable={!editable}>
         {showAssetList &&
           assets.map((asset, i) => {
@@ -137,7 +127,7 @@ export function AssetsDialog() {
                     ? async () => {
                         try {
                           await addAssetEth(ethAsset);
-                        } catch (e) {
+                        } catch (_e) {
                           /* empty */
                         }
                         addAssetFuel(fuelAsset);
@@ -155,8 +145,8 @@ export function AssetsDialog() {
 const styles = tv({
   slots: {
     actionButton: 'w-full',
-    controllerWrapper: 'pb-2 mb-4',
+    controllerWrapper: 'pb-2 mb-4 mt-2 w-full',
     formControl: 'w-full',
-    headerInput: 'text-xs',
+    headerInput: 'my-4',
   },
 });

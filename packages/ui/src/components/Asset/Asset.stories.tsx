@@ -6,7 +6,6 @@ import { HStack, VStack } from '../Box';
 import { Icon } from '../Icon/Icon';
 
 import { Asset } from './Asset';
-import { MOCK_ASSETS } from './__mocks__/assets';
 
 const meta: Meta<typeof Asset> = {
   title: 'Web3/Asset',

@@ -1,6 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, FuelLogo } from '@fuel-ui/react';
-
+import { Flex, FuelLogo } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { AccountConnectionInput } from './AccountConnectionInput';
 
 export default {
@@ -12,8 +11,10 @@ export default {
 };
 
 export const Usage = () => {
+  const classes = styles();
+
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <AccountConnectionInput
         networkName="Fuel"
         networkImage={<FuelLogo size={18} />}
@@ -21,13 +22,15 @@ export const Usage = () => {
         isConnecting={false}
         onConnect={() => {}}
       />
-    </Box.Flex>
+    </Flex>
   );
 };
 
 export const Loading = () => {
+  const classes = styles();
+
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <AccountConnectionInput
         networkName="Fuel"
         networkImage={<FuelLogo size={18} />}
@@ -35,13 +38,15 @@ export const Loading = () => {
         isConnecting={true}
         onConnect={() => {}}
       />
-    </Box.Flex>
+    </Flex>
   );
 };
 
 export const ConnectedAccount = () => {
+  const classes = styles();
+
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <AccountConnectionInput
         networkName="Fuel"
         networkImage={<FuelLogo size={18} />}
@@ -53,13 +58,15 @@ export const ConnectedAccount = () => {
         }}
         onConnect={() => {}}
       />
-    </Box.Flex>
+    </Flex>
   );
 };
 
 export const ConnectedENSAccount = () => {
+  const classes = styles();
+
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <AccountConnectionInput
         networkName="Fuel"
         networkImage={<FuelLogo size={18} />}
@@ -72,12 +79,12 @@ export const ConnectedENSAccount = () => {
         }}
         onConnect={() => {}}
       />
-    </Box.Flex>
+    </Flex>
   );
 };
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-  }),
-};
+export const styles = tv({
+  slots: {
+    storybook: 'm-6',
+  },
+});

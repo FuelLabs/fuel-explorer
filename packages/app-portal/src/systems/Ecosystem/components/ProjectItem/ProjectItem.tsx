@@ -1,13 +1,12 @@
 import { motion } from 'framer-motion';
 import type { FC } from 'react';
-import { animations, getUrlHostName } from '~/systems/Core';
+import { animations, getUrlHostName } from '~portal/systems/Core';
 
 import type { Project } from '../../types';
 import { ProjecImage } from '../ProjectImage';
 
 import {
   Badge,
-  Box,
   Button,
   Card,
   HStack,
@@ -41,7 +40,7 @@ export const ProjectItem: ProjectItemComponent = ({
   discord,
   status,
   github,
-  isLive,
+  isLive: _isLive,
 }: ProjectItemProps) => {
   const classes = styles();
 
@@ -60,19 +59,21 @@ export const ProjectItem: ProjectItemComponent = ({
       <Card.Body className={classes.body()}>
         <ProjecImage name={name} image={image} />
         <VStack gap="2" justify="between" className={classes.details()}>
-          <VStack align="start" gap="1">
+          <VStack align="start" gap="3">
             <HStack align="start" justify="between" className={classes.title()}>
               <Text className={classes.textProjectName()}>{name}</Text>
-              <HStack>
+              <HStack gap="0">
                 {twitter && (
                   <Tooltip content={twitter}>
                     <Button
                       as="a"
                       href={twitter}
                       className={classes.socialButton()}
-                      size="2"
+                      onClick={(e) => e.preventDefault()}
+                      variant="ghost"
+                      size="1"
                     >
-                      <IconBrandX size={20} stroke={1} />
+                      <IconBrandX size={20} stroke={1} color="gray" />
                     </Button>
                   </Tooltip>
                 )}
@@ -82,9 +83,11 @@ export const ProjectItem: ProjectItemComponent = ({
                       as="a"
                       href={discord}
                       className={classes.socialButton()}
-                      size="2"
+                      onClick={(e) => e.preventDefault()}
+                      variant="ghost"
+                      size="1"
                     >
-                      <IconBrandDiscord size={20} stroke={1} />
+                      <IconBrandDiscord size={20} stroke={1} color="gray" />
                     </Button>
                   </Tooltip>
                 )}
@@ -94,14 +97,22 @@ export const ProjectItem: ProjectItemComponent = ({
                       as="a"
                       href={github}
                       className={classes.socialButton()}
-                      size="2"
+                      onClick={(e) => e.preventDefault()}
+                      variant="ghost"
+                      size="1"
                     >
-                      <IconBrandGithub size={20} stroke={1} />
+                      <IconBrandGithub size={20} stroke={1} color="gray" />
                     </Button>
                   </Tooltip>
                 )}
                 <Tooltip content={url}>
-                  <IconArrowUpRight size={20} stroke={1} />
+                  <Button
+                    className={classes.socialButton()}
+                    variant="ghost"
+                    size="1"
+                  >
+                    <IconArrowUpRight size={20} stroke={1} color="gray" />
+                  </Button>
                 </Tooltip>
               </HStack>
             </HStack>
@@ -113,40 +124,27 @@ export const ProjectItem: ProjectItemComponent = ({
               className={classes.link()}
               href={url}
               color="gray"
-              size="2"
+              size="3"
               externalIcon={null}
             >
               {getUrlHostName(url)}
             </Link>
-            {isLive ? (
-              <Box />
-              // This was not migrated to new UI because it's not being used anymore
-              // <Tag intent="base" size="xs" className={classes.tag()} variant="ghost">
-              //   <Box className={classes.dot()} />
-              //   {'Live on testnet'}
-              // </Tag>
-            ) : null}
-          </HStack>
-          <HStack
-            align="center"
-            justify="end"
-            wrap="wrap"
-            className={classes.statusContainer()}
-          >
-            {status?.map((s, index) => (
-              <Badge
-                key={index}
-                color="gray"
-                size="1"
-                className={classes.tag()}
-                variant="ghost"
-              >
-                {s}
-              </Badge>
-            ))}
           </HStack>
         </VStack>
       </Card.Body>
+      <Card.Footer>
+        {status?.map((s, index) => (
+          <Badge
+            key={index}
+            color="gray"
+            size="1"
+            className={classes.tag()}
+            variant="ghost"
+          >
+            {s}
+          </Badge>
+        ))}
+      </Card.Footer>
     </MotionCard>
   );
 };
@@ -154,25 +152,23 @@ export const ProjectItem: ProjectItemComponent = ({
 const styles = tv({
   slots: {
     card: [
-      'transition-transform duration-200 ease-in-out transition-border',
-      ':hover:pointer :hover:border-1 :hover:border-border :hover:transform-scale-102',
+      'bg-transparent cursor-pointer gap-2',
+      'transition-all duration-200 ease-in-out',
+      'hover:border-1 hover:border-brand hover:scale-105',
     ],
     details: 'flex flex-col justify-between flex-1',
-    link: 'underline p-0 pointer-events-none',
+    link: 'underline p-0 pointer-events-none text-sm',
     dot: [
       'w-1 h-1 rounded-full border border-solid border-border',
       'bg-green-500 shadow-[0_0_4px_0_#00F58C]',
     ],
-    tag: [
-      'text-heading rounded-sm py-1 px-2',
-      // 'bg-gray-500 mr-2',
-    ],
+    tag: ['text-heading rounded-sm py-1 px-2'],
     title: ['w-full'],
-    body: 'flex flex-row items-start gap-4 justify-start p-6',
+    body: 'flex flex-1 flex-row items-start gap-4 justify-start px-6 py-4',
     statusContainer: 'flex flex-wrap justify-end items-end mt-auto',
-    textProjectName: 'text-sm text-heading',
-    textDescription: 'text-xs',
-    socialButton: 'text-heading',
+    textProjectName: 'text-heading',
+    textDescription: 'text-sm',
+    socialButton: 'bg-transparent',
   },
 });
 

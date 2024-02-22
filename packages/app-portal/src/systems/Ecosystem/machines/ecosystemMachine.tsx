@@ -1,6 +1,6 @@
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import { FetchMachine } from '~/systems/Core';
+import { FetchMachine } from '~portal/systems/Core';
 
 import { PROJECTS } from '../data';
 import type { Project } from '../types';
@@ -17,6 +17,7 @@ export type EcosystemInputs = {
 };
 
 type MachineContext = {
+  allProjects: Project[];
   projects: Project[];
   search: string;
   tags: string[];
@@ -57,6 +58,7 @@ type EcosystemMachineEvents =
     };
 
 const initialState: MachineContext = {
+  allProjects: [],
   projects: [],
   search: '',
   tags: [],

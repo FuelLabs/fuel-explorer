@@ -1,4 +1,4 @@
-import { VITE_ETH_CHAIN, VITE_FUEL_CHAIN } from '~/config';
+import { VITE_ETH_CHAIN, VITE_FUEL_CHAIN } from '~portal/config';
 
 import { ETH_CHAINS } from './eth/chains';
 import { FUEL_CHAINS } from './fuel/chains';

@@ -8,8 +8,7 @@ export const BridgeButton = () => {
     <Button
       isLoading={isLoading}
       disabled={isDisabled}
-      // variant={isDisabled ? 'ghost' : 'solid'}
-      // intent={isDisabled ? 'base' : 'primary'}
+      color="green"
       size="3"
       aria-label={text}
       onClick={handlers.action}

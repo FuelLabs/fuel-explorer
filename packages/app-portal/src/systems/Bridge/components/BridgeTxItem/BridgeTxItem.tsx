@@ -2,9 +2,9 @@ import type { Asset as FuelsAsset } from '@fuels/assets';
 import { Asset, CardList, Flex, Text } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { tv } from 'tailwind-variants';
-import { calculateDateDiff, shortAddress } from '~/systems/Core';
+import { calculateDateDiff, shortAddress } from '~portal/systems/Core';
 
+import { tv } from 'tailwind-variants';
 import { ItemLoader } from './ItemLoader';
 
 type BridgeTxItemProps = {

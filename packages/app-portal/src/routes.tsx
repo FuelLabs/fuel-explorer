@@ -1,17 +1,8 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { route } from 'app-commons';
 
-import { bridgeRoutes } from './systems/Bridge/routes';
-import { ecosystemRoutes } from './systems/Ecosystem/routes';
-import { Pages } from './types';
-
-export const routes = (
-  <BrowserRouter basename={import.meta.env.BASE_URL}>
-    <Routes>
-      <Route>
-        <Route path="*" element={<Navigate to={Pages.ecosystem} />} />
-        {bridgeRoutes}
-        {ecosystemRoutes}
-      </Route>
-    </Routes>
-  </BrowserRouter>
-);
+export const Routes = {
+  bridge: route('/bridge'),
+  bridgeFromTo: route<[from: string, to: string]>('/bridge?from=:from&to=:to'),
+  bridgeHistory: route('/bridge/history'),
+  ecosystem: route('/ecosystem'),
+};

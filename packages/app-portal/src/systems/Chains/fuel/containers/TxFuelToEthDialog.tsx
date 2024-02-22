@@ -1,7 +1,10 @@
-import { useAsset } from '~/systems/Assets/hooks/useAsset';
-import { BridgeSteps, BridgeTxOverview } from '~/systems/Bridge';
-import { shortAddress } from '~/systems/Core';
-import { useOverlay } from '~/systems/Overlay';
+import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
+import {
+  BridgeSteps,
+  BridgeTxOverview,
+} from '~portal/systems/Bridge/components';
+import { shortAddress } from '~portal/systems/Core';
+import { useOverlay } from '~portal/systems/Overlay';
 
 import { Box, Button, Dialog, Text, VStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';

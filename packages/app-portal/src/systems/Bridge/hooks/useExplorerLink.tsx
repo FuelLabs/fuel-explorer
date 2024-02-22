@@ -1,7 +1,7 @@
 import { buildBlockExplorerUrl } from 'fuels';
 import { useMemo } from 'react';
-import { VITE_BLOCK_EXPLORER_URL } from '~/config';
-import { FUEL_CHAIN } from '~/systems/Chains';
+import { VITE_BLOCK_EXPLORER_URL } from '~portal/config';
+import { FUEL_CHAIN } from '~portal/systems/Chains';
 
 export type ExplorerLinkProps = {
   network: 'ethereum' | 'fuel' | string | undefined;

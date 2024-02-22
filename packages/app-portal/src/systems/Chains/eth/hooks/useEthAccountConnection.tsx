@@ -8,10 +8,10 @@ import {
   usePublicClient,
   useWalletClient,
 } from 'wagmi';
-import type { AssetEth } from '~/systems/Assets/utils';
+import type { AssetEth } from '~portal/systems/Assets/utils';
 
 import { useEffect } from 'react';
-import { useOverlay } from '~/systems/Overlay';
+import { useOverlay } from '~portal/systems/Overlay';
 import { parseEthAddressToFuel } from '../utils';
 
 export function useEthAccountConnection(props?: {

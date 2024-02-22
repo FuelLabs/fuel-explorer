@@ -69,8 +69,8 @@ const styles = tv({
     ],
     circle: [
       'flex justify-center items-center w-4 h-4 border rounded-full',
-      'group-[&[data-selected=true]]:border-green-8',
-      'group-[&[data-done=true]]:border-green-8 group-[&[data-done=true]]:bg-green-8',
+      'group-[&[data-selected=true]]:border-green-9',
+      'group-[&[data-done=true]]:border-green-9 group-[&[data-done=true]]:bg-green-9',
     ],
   },
 });

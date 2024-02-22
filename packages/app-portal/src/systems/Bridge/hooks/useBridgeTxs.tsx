@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Services, store } from '~/store';
+import { Services, store } from '~portal/store';
 import {
   useEthAccountConnection,
   useFuelAccountConnection,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
 import type { BridgeTxsMachineState } from '../machines';
 

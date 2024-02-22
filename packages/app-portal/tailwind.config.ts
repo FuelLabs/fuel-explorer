@@ -7,6 +7,7 @@ export default {
   content: [
     '../ui/src/**/*.{js,jsx,ts,tsx}',
     '../ui/tailwind.config.ts',
+    '../app-commons/src/**/*.{js,jsx,ts,tsx}',
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/**/*.stories.{js,jsx,ts,tsx}',
   ],

@@ -4,14 +4,15 @@
     "plugins": [{ "name": "next" }],
     "allowJs": true,
     "noEmit": true,
-    "lib": ["dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "incremental": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
-    "rootDir": ".",
     "paths": {
       "~/*": ["./src/*"],
+      "~portal/*": ["../app-portal/src/*"],
+      "~public-portal/*": ["../app-portal/public/*"],
       "fuels": ["../../node_modules/fuels"],
       "tailwind-variants": ["../../node_modules/tailwind-variants"],
       "@react-aria/interactions": [

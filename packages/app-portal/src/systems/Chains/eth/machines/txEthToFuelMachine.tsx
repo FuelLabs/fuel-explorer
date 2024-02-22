@@ -11,7 +11,7 @@ import type { PublicClient } from 'wagmi';
 import type { FetchTokenResult } from 'wagmi/actions';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import { FetchMachine } from '~/systems/Core/machines';
+import { FetchMachine } from '~portal/systems/Core/machines';
 
 import { toast } from '@fuels/ui';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';

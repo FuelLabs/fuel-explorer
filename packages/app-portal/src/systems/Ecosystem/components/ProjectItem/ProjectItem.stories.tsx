@@ -1,10 +1,10 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box } from '@fuel-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { PROJECTS } from '../../data';
 import type { Project } from '../../types';
 
+import { Flex } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { ProjectItem } from './ProjectItem';
 
 const meta: Meta<typeof ProjectItem> = {
@@ -19,26 +19,33 @@ export default meta;
 type Story = StoryObj<typeof ProjectItem>;
 
 export const Usage: Story = {
-  render: (args) => (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
-      <ProjectItem {...args} />
-    </Box.Flex>
-  ),
+  render: (args: any) => {
+    const classes = styles();
+    return (
+      <Flex align="center" justify="center" className={classes.storybook()}>
+        <ProjectItem {...args} />
+      </Flex>
+    );
+  },
   args: PROJECTS[0] as Project,
 };
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-    width: 465,
-    '.fuel_Card': {
-      flex: 1,
-    },
-  }),
+export const Loader = () => {
+  const classes = styles();
+  return (
+    <Flex align="center" justify="center" className={classes.storybook()}>
+      <ProjectItem.Loader />
+    </Flex>
+  );
 };
 
-export const Loader = () => (
-  <Box.Flex align="center" justify="center" css={styles.storybook}>
-    <ProjectItem.Loader />
-  </Box.Flex>
-);
+export const styles = tv({
+  slots: {
+    storybook: [
+      'm-6 w-[465px]',
+      // {
+      //   '.fuel_Card': 'flex-1',
+      // },
+    ],
+  },
+});

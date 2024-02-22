@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "@faker-js/faker": "8.4.0",
+    "app-portal": "workspace:*",
     "@fuel-explorer/graphql": "workspace:*",
+    "app-commons": "workspace:*",
     "@fuel-ts/math": "0.73.0",
     "@fuel-wallet/sdk": "0.14.3",
     "@fuels/assets": "0.1.5",
@@ -78,6 +80,7 @@
     "tailwindcss-animate": "1.0.7",
     "tailwindcss-radix": "2.8.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "tsup": "8.0.1",
     "typescript": "5.3.3",
     "vite": "^5.0.12",
     "vite-tsconfig-paths": "^4.3.1"
