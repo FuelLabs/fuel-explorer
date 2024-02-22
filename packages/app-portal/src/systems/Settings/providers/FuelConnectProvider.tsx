@@ -19,7 +19,7 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
       theme={theme}
       fuelConfig={{
         devMode: IS_DEV,
-        connnectors: defaultConnectors(),
+        connectors: defaultConnectors(),
       }}
     >
       {children}
