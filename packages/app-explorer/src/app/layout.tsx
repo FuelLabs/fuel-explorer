@@ -11,7 +11,15 @@ import { cx } from '~/systems/Core/utils/cx';
 
 export const metadata: Metadata = {
   title: 'Fuel Explorer',
-  description: 'Explorer of the Fastest execution layer',
+  description: 'Explorer of The Rollup OS for Ethereum',
+  openGraph: {
+    type: 'website',
+    images: [
+      {
+        url: '/preview.png',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
