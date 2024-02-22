@@ -1,5 +1,8 @@
 import { FuelProvider } from '@fuel-wallet/react';
-import { defaultConnectors } from '@fuel-wallet/sdk';
+import {
+  FuelWalletConnector,
+  FuelWalletDevelopmentConnector,
+} from '@fuel-wallet/sdk';
 import type { ReactNode } from 'react';
 import { IS_PREVIEW, IS_TEST } from '~/config';
 
@@ -19,7 +22,10 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
       theme={theme}
       fuelConfig={{
         devMode: IS_DEV,
-        connnectors: defaultConnectors(),
+        connectors: [
+          new FuelWalletConnector(),
+          new FuelWalletDevelopmentConnector(),
+        ],
       }}
     >
       {children}
