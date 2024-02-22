@@ -12,7 +12,14 @@
       "cache": true
     },
     "build:preview": {
-      "outputs": ["public/**", "dist/**", "build/**", ".next/**"],
+      "outputs": [
+        "app-explorer/public/portal/**",
+        "app-explorer/public/ui/**",
+        "dist/**",
+        "build/**",
+        ".next/**",
+        "public/**"
+      ],
       "dependsOn": ["^build"],
       "cache": true
     },
