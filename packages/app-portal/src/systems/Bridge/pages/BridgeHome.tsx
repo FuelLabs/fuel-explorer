@@ -5,12 +5,11 @@ import {
   IconArrowsShuffle,
   IconHistory,
 } from '@tabler/icons-react';
-import { PageTitle } from 'app-commons';
+import { NEXT_PUBLIC_FUEL_VERSION, PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
-import { VITE_FUEL_VERSION } from '~portal/config';
 import { Routes } from '~portal/routes';
 import { FuelVersionDialog } from '~portal/systems/Chains/fuel/containers/FuelVersionDialog';
 
@@ -20,7 +19,7 @@ type BridgeHomeProps = {
 
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const classes = styles();
-  const { isCompatible } = useNodeInfo({ version: VITE_FUEL_VERSION });
+  const { isCompatible } = useNodeInfo({ version: NEXT_PUBLIC_FUEL_VERSION });
   const pathname = usePathname();
   const isBridgeHistory = pathname === Routes.bridgeHistory();
 

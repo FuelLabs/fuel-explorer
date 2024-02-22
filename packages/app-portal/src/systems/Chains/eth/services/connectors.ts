@@ -1,11 +1,11 @@
 import type { PublicClient, WalletClient } from 'viem';
 import { getContract } from 'viem';
-import {
-  VITE_ETH_FUEL_CHAIN_STATE,
-  VITE_ETH_FUEL_ERC20_GATEWAY,
-  VITE_ETH_FUEL_MESSAGE_PORTAL,
-} from '~portal/config';
 
+import {
+  ETH_FUEL_CHAIN_STATE,
+  ETH_FUEL_ERC20_GATEWAY,
+  ETH_FUEL_MESSAGE_PORTAL,
+} from 'app-commons';
 import { ERC_20 } from '../contracts/Erc20';
 import { FUEL_CHAIN_STATE } from '../contracts/FuelChainState';
 import { FUEL_ERC_20_GATEWAY } from '../contracts/FuelErc20Gateway';
@@ -20,7 +20,7 @@ export class EthConnectorService {
 
     const contract = getContract({
       abi: FUEL_ERC_20_GATEWAY.abi,
-      address: VITE_ETH_FUEL_ERC20_GATEWAY as `0x${string}`,
+      address: ETH_FUEL_ERC20_GATEWAY as `0x${string}`,
       walletClient,
       publicClient,
     });
@@ -36,7 +36,7 @@ export class EthConnectorService {
 
     const contract = getContract({
       abi: FUEL_MESSAGE_PORTAL.abi,
-      address: VITE_ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
       walletClient,
       publicClient,
     });
@@ -69,7 +69,7 @@ export class EthConnectorService {
 
     const contract = getContract({
       abi: FUEL_CHAIN_STATE.abi,
-      address: VITE_ETH_FUEL_CHAIN_STATE as `0x${string}`,
+      address: ETH_FUEL_CHAIN_STATE as `0x${string}`,
       walletClient,
       publicClient,
     });

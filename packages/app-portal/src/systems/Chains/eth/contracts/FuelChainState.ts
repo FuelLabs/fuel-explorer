@@ -1,6 +1,6 @@
 import { FuelChainState } from '@fuel-bridge/solidity-contracts';
+import { ETH_FUEL_CHAIN_STATE } from 'app-commons';
 import type { PublicClient } from 'viem';
-import { VITE_ETH_FUEL_CHAIN_STATE } from '~portal/config';
 
 export const FUEL_CHAIN_STATE = {
   abi: FuelChainState.abi,
@@ -13,7 +13,7 @@ export const FUEL_CHAIN_STATE = {
       ({ name, type }) => name === 'CommitSubmitted' && type === 'event',
     );
     const logs = await ethPublicClient.getLogs({
-      address: VITE_ETH_FUEL_CHAIN_STATE as `0x${string}`,
+      address: ETH_FUEL_CHAIN_STATE as `0x${string}`,
       event: {
         type: 'event',
         name: 'CommitSubmitted',

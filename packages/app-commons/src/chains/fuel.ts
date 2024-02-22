@@ -35,3 +35,6 @@ export const FUEL_CHAINS = {
   fuelBeta5Dev,
   fuelBeta5,
 };
+
+export const FUEL_CHAIN =
+  FUEL_CHAINS[process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME as string];

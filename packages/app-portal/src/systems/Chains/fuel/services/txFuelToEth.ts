@@ -15,8 +15,8 @@ import {
 } from 'fuels';
 import type { WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'wagmi';
-import { VITE_ETH_FUEL_MESSAGE_PORTAL } from '~portal/config';
 
+import { ETH_FUEL_MESSAGE_PORTAL } from 'app-commons';
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
 import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
 import { EthConnectorService } from '../../eth/services';
@@ -348,7 +348,7 @@ export class TxFuelToEthService {
     );
 
     const logs = await ethPublicClient.getLogs({
-      address: VITE_ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
       event: {
         type: 'event',
         name: 'MessageRelayed',

@@ -12,10 +12,6 @@ import { decodeEventLog } from 'viem';
 import type { PublicClient } from 'wagmi';
 import type { FetchTokenResult } from 'wagmi/actions';
 import { fetchToken } from 'wagmi/actions';
-import {
-  VITE_ETH_FUEL_ERC20_GATEWAY,
-  VITE_ETH_FUEL_MESSAGE_PORTAL,
-} from '~portal/config';
 
 import { relayCommonMessage } from '../../fuel/utils/relayMessage';
 import type { FuelERC20GatewayArgs } from '../contracts/FuelErc20Gateway';
@@ -27,6 +23,7 @@ import {
 } from '../contracts/FuelMessagePortal';
 import { getBlockDate, isErc20Address } from '../utils';
 
+import { ETH_FUEL_ERC20_GATEWAY, ETH_FUEL_MESSAGE_PORTAL } from 'app-commons';
 import { EthConnectorService } from './connectors';
 
 export type TxEthToFuelInputs = {
@@ -176,7 +173,7 @@ export class TxEthToFuelService {
         });
 
         const approveTxHash = await erc20Token.write.approve([
-          VITE_ETH_FUEL_ERC20_GATEWAY,
+          ETH_FUEL_ERC20_GATEWAY,
           amount,
         ]);
 
@@ -428,7 +425,7 @@ export class TxEthToFuelService {
     );
 
     const ethLogs = await ethPublicClient!.getLogs({
-      address: VITE_ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
       event: {
         type: 'event',
         name: 'MessageSent',
@@ -442,7 +439,7 @@ export class TxEthToFuelService {
     });
 
     const erc20AllLogs = await ethPublicClient!.getLogs({
-      address: VITE_ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
       event: {
         type: 'event',
         name: 'MessageSent',

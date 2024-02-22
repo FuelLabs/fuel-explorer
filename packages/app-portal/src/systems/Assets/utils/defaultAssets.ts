@@ -1,16 +1,17 @@
 import assetList from '@fuels/assets';
 import type { Asset } from '@fuels/assets';
 import {
-  VITE_ETH_ERC20,
-  VITE_FUEL_FUNGIBLE_ASSET_ID,
-  VITE_FUEL_FUNGIBLE_CONTRACT_ID,
-} from '~portal/config';
-import { ETH_CHAIN, FUEL_CHAIN } from '~portal/systems/Chains/config';
+  ETH_ERC20,
+  FUEL_CHAIN,
+  FUEL_FUNGIBLE_ASSET_ID,
+  FUEL_FUNGIBLE_CONTRACT_ID,
+} from 'app-commons';
+import { ETH_CHAIN } from '~portal/systems/Chains/config';
 import { getContractTokenId } from '~portal/systems/Chains/fuel/utils/contract';
 
 const defaultAssets: Asset[] = [...assetList];
 
-if (VITE_ETH_ERC20) {
+if (ETH_ERC20) {
   defaultAssets.push({
     icon: '',
     name: 'Test Token',
@@ -20,16 +21,16 @@ if (VITE_ETH_ERC20) {
         type: 'ethereum',
         chainId: ETH_CHAIN.id,
         decimals: 18,
-        address: VITE_ETH_ERC20,
+        address: ETH_ERC20,
       },
       {
         type: 'fuel',
         chainId: FUEL_CHAIN.id,
         decimals: 9,
-        contractId: VITE_FUEL_FUNGIBLE_CONTRACT_ID,
+        contractId: FUEL_FUNGIBLE_CONTRACT_ID,
         assetId:
-          VITE_FUEL_FUNGIBLE_ASSET_ID ||
-          getContractTokenId(VITE_FUEL_FUNGIBLE_CONTRACT_ID as `0x${string}`),
+          FUEL_FUNGIBLE_ASSET_ID ||
+          getContractTokenId(FUEL_FUNGIBLE_CONTRACT_ID as `0x${string}`),
       },
     ],
   });

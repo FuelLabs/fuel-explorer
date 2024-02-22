@@ -1,6 +1,6 @@
 import { Button, Dialog, Flex, Text, VStack } from '@fuels/ui';
+import { NEXT_PUBLIC_WALLET_INSTALL_NEXT } from 'app-commons';
 import { tv } from 'tailwind-variants';
-import { VITE_WALLET_INSTALL_NEXT } from '~portal/config';
 
 type FuelVersionDialogOptions = {
   isOpen: boolean;
@@ -38,7 +38,7 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => {
           <Button
             className={classes.installButton()}
             as="a"
-            href={VITE_WALLET_INSTALL_NEXT}
+            href={NEXT_PUBLIC_WALLET_INSTALL_NEXT}
             target="_blank"
             rel="noreferrer"
             color="green"

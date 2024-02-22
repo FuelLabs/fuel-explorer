@@ -1,3 +1,8 @@
+import {
+  NEXT_PUBLIC_ALCHEMY_ID,
+  NEXT_PUBLIC_INFURA_ID,
+  NEXT_PUBLIC_WALLETCONNECT_ID,
+} from 'app-commons';
 import { ConnectKitProvider } from 'connectkit';
 import { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
@@ -12,11 +17,6 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { publicProvider } from 'wagmi/providers/public';
-import {
-  VITE_ALCHEMY_ID,
-  VITE_INFURA_ID,
-  VITE_WALLETCONNECT_ID,
-} from '~portal/config';
 import { ETH_CHAIN } from '~portal/systems/Chains/config';
 
 const app = {
@@ -29,8 +29,8 @@ const app = {
 const chainsToConnect = [ETH_CHAIN];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const providers: ChainProviderFn<any>[] = [
-  alchemyProvider({ apiKey: VITE_ALCHEMY_ID }),
-  infuraProvider({ apiKey: VITE_INFURA_ID }),
+  alchemyProvider({ apiKey: NEXT_PUBLIC_ALCHEMY_ID as string }),
+  infuraProvider({ apiKey: NEXT_PUBLIC_INFURA_ID as string }),
   jsonRpcProvider({
     rpc: (c) => {
       return { http: c.rpcUrls.default.http[0] };
@@ -63,7 +63,7 @@ const connectKitClient = {
       chains,
       options: {
         showQrModal: false,
-        projectId: VITE_WALLETCONNECT_ID,
+        projectId: NEXT_PUBLIC_WALLETCONNECT_ID as string,
         metadata: app,
       },
     }),

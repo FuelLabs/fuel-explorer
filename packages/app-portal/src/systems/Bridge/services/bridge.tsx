@@ -16,7 +16,6 @@ import type {
 import {
   ETH_CHAIN,
   EthTxCache,
-  FUEL_CHAIN,
   FuelTxCache,
   TxEthToFuelService,
   TxFuelToEthService,
@@ -25,6 +24,7 @@ import {
   isFuelChain,
 } from '~portal/systems/Chains';
 
+import { FUEL_CHAIN } from 'app-commons';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
