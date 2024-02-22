@@ -6,7 +6,7 @@ import { Pages } from '~/types';
 export function Header() {
   return (
     <Nav>
-      <Nav.Desktop>
+      <Nav.Desktop css={{ zIndex: 10 }}>
         <Nav.Logo />
         <Nav.Spacer />
         <Nav.Menu>
@@ -22,7 +22,7 @@ export function Header() {
         </Nav.Menu>
         <Nav.ThemeToggle />
       </Nav.Desktop>
-      <Nav.Mobile>
+      <Nav.Mobile css={{ zIndex: 10 }}>
         <Nav.MobileContent>
           <Nav.Logo />
           <Nav.ThemeToggle />
