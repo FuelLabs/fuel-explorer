@@ -25,6 +25,7 @@ import {
   isFuelChain,
 } from '~/systems/Chains';
 
+import { FuelWalletLocked } from '@fuel-wallet/sdk';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
@@ -32,6 +33,7 @@ export type PossibleBridgeInputs = {
   ethWalletClient?: WalletClient;
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
+  fuelWallet?: FuelWalletLocked;
   asset?: Asset;
 } & Omit<TxEthToFuelInputs['startErc20'], 'amount'> &
   Omit<TxFuelToEthInputs['startFungibleToken'], 'amount'>;
