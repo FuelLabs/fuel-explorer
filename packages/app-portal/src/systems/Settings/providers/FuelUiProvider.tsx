@@ -1,5 +1,6 @@
 import { cssObj, globalCss } from '@fuel-ui/css';
 import {
+  Box,
   Button,
   Dialog,
   Icon,
@@ -10,7 +11,7 @@ import {
   loadIcons,
   setFuelThemes,
 } from '@fuel-ui/react';
-import type { PropsWithChildren } from 'react';
+import { PropsWithChildren, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 // eslint-disable-next-line import/no-unresolved
@@ -35,22 +36,33 @@ setFuelThemes({
 });
 
 export function FuelUiProvider({ children }: PropsWithChildren) {
-  const { data, isLoading } = useQuery(['network'], async () => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const oldWindowFuel = (window as any).fuel as any;
-    if (!oldWindowFuel) return;
-    const { url } = await oldWindowFuel.network();
-    return url;
-  });
+  const [founded, setFounded] = useState(false);
+  const { data: isOldWallet, isLoading } = useQuery(
+    ['network'],
+    async () => {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      const oldWindowFuel = (window as any).fuel as any;
+      if (!oldWindowFuel && !founded) {
+        throw new Error('No Fuel Wallet found');
+      }
+      if (!oldWindowFuel && founded) {
+        setFounded(true);
+        return;
+      }
+      const version = window.fuel?.connectorName;
+      return Boolean(version);
+    },
+    {
+      retry: 5,
+      retryDelay: 1000,
+    },
+  );
 
   return (
     <ThemeProvider>
-      {!isLoading && data?.includes('beta-4') && (
-        <Dialog isOpen css={styles.dialog}>
-          <Dialog.Heading>
-            <Icon icon="Warning" /> Wrong Wallet Version
-          </Dialog.Heading>
-          <Dialog.Content css={styles.content}>
+      {!isLoading && isOldWallet && (
+        <Box css={styles.dialog}>
+          <Box css={styles.content}>
             Your wallet version is incompatible with this application. Please
             update your wallet for version 0.15.2.
             <Button
@@ -64,8 +76,8 @@ export function FuelUiProvider({ children }: PropsWithChildren) {
             >
               Update Wallet
             </Button>
-          </Dialog.Content>
-        </Dialog>
+          </Box>
+        </Box>
       )}
 
       {globalCss(globalStyles)()}
@@ -79,14 +91,29 @@ const OVERLAY_WIDTH = 300;
 
 const styles = {
   dialog: cssObj({
-    backdropFilter: 'blur(10px)',
+    zIndex: 1,
+    top: 64,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'fixed',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backdropFilter: 'blur(15px)',
   }),
   content: cssObj({
+    borderRadius: '$md',
+    padding: '$4',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '$4',
     width: OVERLAY_WIDTH,
     minHeight: OVERLAY_HEIGHT,
     maxWidth: OVERLAY_WIDTH,
     maxHeight: 'none',
     backgroundColor: '$cardBg',
     textAlign: 'center',
+    boxShadow: '$md',
   }),
 };
