@@ -40,8 +40,8 @@ export function FuelUiProvider({ children }: PropsWithChildren) {
   const { data: isOldWallet, isLoading } = useQuery(
     ['network'],
     async () => {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       const oldWindowFuel = (window as any).fuel as any;
+      const fuelet = (window as any).fuelet;
       if (!oldWindowFuel && !founded) {
         throw new Error('No Fuel Wallet found');
       }
@@ -50,7 +50,7 @@ export function FuelUiProvider({ children }: PropsWithChildren) {
         return;
       }
       const version = window.fuel?.connectorName;
-      return Boolean(version);
+      return fuelet ? false : Boolean(version);
     },
     {
       retry: 5,
