@@ -51,7 +51,7 @@ export function FuelUiProvider({ children }: PropsWithChildren) {
             <Icon icon="Warning" /> Wrong Wallet Version
           </Dialog.Heading>
           <Dialog.Content css={styles.content}>
-            Your wallet version is impatible with this application. Please
+            Your wallet version is incompatible with this application. Please
             update your wallet for version 0.15.2.
             <Button
               as="a"
