@@ -201,6 +201,7 @@ export function useBridge() {
         store.startBridging({
           fuelAddress,
           ethWalletClient,
+          fuelWallet,
           fuelProvider,
           ethAddress,
           asset,
