@@ -45,3 +45,67 @@ export const Usage: Story = {
     </InputAmount>
   ),
 };
+
+export const OnlyField: Story = {
+  render: () => (
+    <InputAmount
+      color="green"
+      className="anything"
+      balance={undefined}
+      value={undefined}
+      disabled={false}
+      onChange={(balance) => console.log(balance)}
+    >
+      <InputAmount.Field placeholder="0.00" />
+    </InputAmount>
+  ),
+};
+
+export const WithoutBalance: Story = {
+  render: () => (
+    <InputAmount
+      color="green"
+      className="anything"
+      balance={undefined}
+      value={undefined}
+      disabled={false}
+      onChange={(balance) => console.log(balance)}
+    >
+      <Flex align="center">
+        <InputAmount.Field placeholder="0.00" />
+
+        <InputAmount.Slot pb="2">
+          <InputAmount.ButtonMaxBalance
+            onClick={() => {
+              alert('Max Balance has been clicked');
+            }}
+          />
+          <InputAmount.CoinSelector
+            asset={{
+              name: 'ETH',
+              imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+              address: '',
+            }}
+            onClick={() => alert('Coin selector has been clicked')}
+          />
+        </InputAmount.Slot>
+      </Flex>
+    </InputAmount>
+  ),
+};
+
+export const OnlyBalance: Story = {
+  render: () => (
+    <InputAmount
+      color="green"
+      className="anything"
+      balance={undefined}
+      value={undefined}
+      disabled={false}
+      onChange={(balance) => console.log(balance)}
+    >
+      <InputAmount.Field placeholder="0.00" />
+      <InputAmount.Balance />
+    </InputAmount>
+  ),
+};
