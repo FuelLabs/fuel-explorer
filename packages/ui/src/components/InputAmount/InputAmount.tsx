@@ -16,8 +16,8 @@ import { Text } from '../Text';
 import { Tooltip } from '../Tooltip';
 
 import { mergeProps } from 'react-aria';
-import { createComponent, withNamespace } from 'src/utils/component';
 import { tv } from 'tailwind-variants';
+import { createComponent, withNamespace } from '../../utils/component';
 import { Avatar } from '../Avatar';
 import { createAmount } from './utils';
 
