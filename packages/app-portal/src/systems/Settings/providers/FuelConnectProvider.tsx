@@ -1,5 +1,8 @@
 import { FuelProvider } from '@fuel-wallet/react';
-import { defaultConnectors } from '@fuel-wallet/sdk';
+import {
+  FuelWalletConnector,
+  FuelWalletDevelopmentConnector,
+} from '@fuel-wallet/sdk';
 import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
 
@@ -15,7 +18,10 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
       theme={theme}
       fuelConfig={{
         devMode: true,
-        connnectors: defaultConnectors(),
+        connectors: [
+          new FuelWalletConnector(),
+          new FuelWalletDevelopmentConnector(),
+        ],
       }}
     >
       {children}

@@ -36,3 +36,11 @@ export const Sizes: Story = {
     </VStack>
   ),
 };
+
+export const Numeric: Story = {
+  render: () => (
+    <Input>
+      <Input.Number placeholder="0.00" />
+    </Input>
+  ),
+};

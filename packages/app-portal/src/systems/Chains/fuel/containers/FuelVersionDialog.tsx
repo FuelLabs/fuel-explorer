@@ -20,7 +20,7 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => {
         <Dialog.Description>
           <VStack gap="4" className={classes.content()}>
             <Text>
-              The current version of the Fuel Wallet you are using, is not
+              The current version of the Fuel Wallet you are using is not
               compatible with the Fuel Bridge.
             </Text>
             {/*
@@ -30,8 +30,8 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => {
             Install a Fuel Wallet Development version available on Chrome Web Store.
           */}
             <Text>
-              Install a newer version of the Fuel Wallet available on the link
-              bellow and following the{' '}
+              Please install a newer version of the Fuel Wallet available on the
+              link below and follow the{' '}
               <b>install from source code instructions</b>.
             </Text>
           </VStack>

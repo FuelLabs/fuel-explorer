@@ -35,14 +35,14 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   );
 
   function addAsset(asset: AssetFuel) {
-    const { decimals, assetId, icon, symbol, name } = asset;
+    const { decimals, assetId, icon, symbol, name, chainId, contractId } =
+      asset;
 
     fuel?.addAsset({
-      assetId,
-      imageUrl: icon ?? undefined,
-      symbol,
-      decimals,
+      icon: icon ?? '',
       name,
+      symbol,
+      networks: [{ type: 'fuel', assetId, chainId, decimals, contractId }],
     });
   }
 
