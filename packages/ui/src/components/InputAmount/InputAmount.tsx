@@ -30,7 +30,7 @@ export type InputAmountProps = Omit<InputProps, 'size' | 'onChange'> & {
 
 export type InputAmountFieldProps = Omit<InputNumberProps, 'disabled'>;
 export type InputAmountBalanceProps = InputSlotProps;
-export type InputAmountMaxBalanceProps = ButtonProps;
+export type InputAmountButtonMaxBalanceProps = ButtonProps;
 export type InputAmountCoinSelectorProps = ButtonProps & {
   asset?: { name?: string; imageUrl?: string; address?: string };
   onClick?: () => void;
@@ -184,11 +184,11 @@ export const InputAmountBalance = createComponent<
   },
 });
 
-export const InputAmountMaxBalance = createComponent<
-  InputAmountMaxBalanceProps,
+export const InputAmountButtonMaxBalance = createComponent<
+  InputAmountButtonMaxBalanceProps,
   typeof Button
 >({
-  id: 'InputAmountMaxBalance',
+  id: 'InputAmountButtonMaxBalance',
   defaultProps: {
     variant: 'link',
     size: '1',
@@ -262,7 +262,7 @@ export const InputAmount = withNamespace(InputAmountRoot, {
   Field: InputAmountField,
   Slot: InputAmountSlot,
   Balance: InputAmountBalance,
-  MaxBalance: InputAmountMaxBalance,
+  ButtonMaxBalance: InputAmountButtonMaxBalance,
   CoinSelector: InputAmountCoinSelector,
 });
 

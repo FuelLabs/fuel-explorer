@@ -82,7 +82,7 @@ export const Bridge = () => {
             <Flex>
               <InputAmount.Field />
               <InputAmount.Slot>
-                <InputAmount.MaxBalance />
+                <InputAmount.ButtonMaxBalance />
                 <InputAmount.CoinSelector
                   asset={{
                     name: asset?.symbol,

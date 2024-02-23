@@ -25,7 +25,7 @@ export const Usage: Story = {
         <InputAmount.Field placeholder="0.00" />
 
         <InputAmount.Slot>
-          <InputAmount.MaxBalance
+          <InputAmount.ButtonMaxBalance
             onClick={() => {
               alert('Max Balance has been clicked');
             }}
