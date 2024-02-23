@@ -1,6 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Grid } from '@fuel-ui/react';
-
+import { Grid } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { ProjectItem } from '../ProjectItem';
 
 type ProjectListLoadingProps = {
@@ -8,8 +7,10 @@ type ProjectListLoadingProps = {
 };
 
 export const ProjectListLoading = ({ items = 8 }: ProjectListLoadingProps) => {
+  const classes = styles();
+
   return (
-    <Grid css={styles.grid}>
+    <Grid className={classes.grid()}>
       {Array.from({ length: items }).map((_, idx) => (
         <ProjectItem.Loader key={idx} />
       ))}
@@ -17,16 +18,11 @@ export const ProjectListLoading = ({ items = 8 }: ProjectListLoadingProps) => {
   );
 };
 
-const styles = {
-  grid: cssObj({
-    gridTemplateColumns: '1fr',
-    alignItems: 'stretch',
-    gap: '$6',
-
-    /// show only 1 column on mobile
-    '@media (max-width: 768px)': {
-      gridTemplateColumns: 'repeat(2, 1fr)',
-      gridTemplateRows: 'repeat(2, 1fr)',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    grid: [
+      'grid-cols-1 items-stretch gap-6',
+      'tablet:grid-cols-2 tablet:grid-rows-2',
+    ],
+  },
+});

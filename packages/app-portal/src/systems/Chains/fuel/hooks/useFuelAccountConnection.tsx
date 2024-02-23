@@ -8,9 +8,9 @@ import {
 } from '@fuel-wallet/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
-import { store } from '~/store';
-import type { AssetFuel } from '~/systems/Assets/utils';
-import { useFuelNetwork } from '~/systems/Settings/providers/FuelNetworkProvider';
+import { store } from '~portal/store';
+import type { AssetFuel } from '~portal/systems/Assets/utils';
+import { useFuelNetwork } from '~portal/systems/Settings/providers/FuelNetworkProvider';
 
 import { useBalance } from './useBalance';
 

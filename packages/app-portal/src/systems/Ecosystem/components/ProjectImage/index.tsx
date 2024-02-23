@@ -1,7 +1,8 @@
-import { cssObj } from '@fuel-ui/css';
-import { IconButton, Image } from '@fuel-ui/react';
+import { IconButton } from '@fuels/ui';
+import { IconBolt } from '@tabler/icons-react';
 import { useState } from 'react';
-import { relativeUrl } from '~/systems/Core';
+import { tv } from 'tailwind-variants';
+import { relativeUrl } from '~portal/systems/Core';
 
 type ProjecImageProps = {
   name: string;
@@ -9,12 +10,14 @@ type ProjecImageProps = {
 };
 
 export const ProjecImage = ({ name, image }: ProjecImageProps) => {
+  const classes = styles();
+
   const [imageFallback, setImageFallback] = useState(false);
 
   return (
     <div>
       {image && !imageFallback ? (
-        <Image
+        <img
           src={relativeUrl(`/ecosystem/images/${image}.jpeg`)}
           alt={name}
           width={40}
@@ -25,24 +28,20 @@ export const ProjecImage = ({ name, image }: ProjecImageProps) => {
         />
       ) : (
         <IconButton
-          intent="error"
+          color="red"
           variant="ghost"
-          icon="Bolt"
+          icon={IconBolt}
           aria-label="project-icon"
           iconSize={20}
-          css={styles.projectIcon}
+          className={classes.projectIcon()}
         />
       )}
     </div>
   );
 };
 
-const styles = {
-  projectIcon: cssObj({
-    pointerEvents: 'none',
-    padding: '$3 $2',
-    '& svg': {
-      strokeWidth: '1.5px',
-    },
-  }),
-};
+export const styles = tv({
+  slots: {
+    projectIcon: 'pointer-events-none px-3 py-2 [&_svg]:stroke-2',
+  },
+});

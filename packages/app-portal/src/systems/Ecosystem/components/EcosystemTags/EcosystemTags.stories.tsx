@@ -1,6 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box } from '@fuel-ui/react';
-
+import { Flex } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { EcosystemTags } from './EcosystemTags';
 
 export default {
@@ -12,6 +11,7 @@ export default {
 };
 
 export const Usage = () => {
+  const classes = styles();
   const TAGS = [
     'DeFi',
     'NFTs',
@@ -25,20 +25,23 @@ export const Usage = () => {
   ];
 
   return (
-    <Box.Flex align="center" justify="flex-start" css={styles.storybook}>
+    <Flex align="center" justify="start" className={classes.storybook()}>
       <EcosystemTags tags={TAGS} />
-    </Box.Flex>
+    </Flex>
   );
 };
 
-export const Loader = () => (
-  <Box.Flex align="center" justify="flex-start" css={styles.storybook}>
-    <EcosystemTags.Loading />
-  </Box.Flex>
-);
-
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-  }),
+export const Loader = () => {
+  const classes = styles();
+  return (
+    <Flex align="center" justify="start" className={classes.storybook()}>
+      <EcosystemTags.Loading />
+    </Flex>
+  );
 };
+
+export const styles = tv({
+  slots: {
+    storybook: 'm-6',
+  },
+});

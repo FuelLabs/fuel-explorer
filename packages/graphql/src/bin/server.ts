@@ -44,7 +44,7 @@ export async function runServerCodegen() {
     try {
       await execa('pnpm', ['codegen:app'], { stdio: 'inherit' });
       console.log('✅ GraphQL code generated!');
-    } catch (err) {
+    } catch (_err) {
       console.log('❌ GraphQL error!');
     }
 

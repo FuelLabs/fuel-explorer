@@ -2,7 +2,7 @@
 
 import { Address, useBreakpoints } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
-import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
+import { PageTitle } from 'app-commons';
 
 export function ContractTitle({ id }: { id: string }) {
   const { isLaptop } = useBreakpoints();

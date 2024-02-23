@@ -1,12 +1,10 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, CardList, IconButton, Text } from '@fuel-ui/react';
-import { RemoveAssetDialog } from '~/systems/Chains/eth/components';
-
-import type { Asset } from '../../services';
-import { AssetLogo } from '../AssetLogo';
+import type { Asset as FuelsAsset } from '@fuels/assets';
+import { Asset, CardList, Flex, IconButton, Text } from '@fuels/ui';
+import { IconCoin, IconWallet } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
 
 type AssetCardProps = {
-  asset: Asset;
+  asset: FuelsAsset;
   onAdd?: () => void;
   onClick?: () => void;
   onRemove?: () => void;
@@ -19,98 +17,72 @@ type AssetCardProps = {
 
 export const AssetCard = ({
   asset,
-  onAdd,
+  onAdd: _onAdd,
   onFaucet,
   isFaucetLoading,
   onClick,
-  onRemove,
+  onRemove: _onRemove,
   onAddToWallet,
-  isRemoveDisabled,
-  removeToolTip,
 }: AssetCardProps) => {
+  const classes = styles();
+
+  function handleButtonClick(
+    e: React.MouseEvent<HTMLButtonElement>,
+    call: Function,
+  ) {
+    e.stopPropagation();
+    call();
+  }
+
   return (
-    <CardList.Item
-      variant="outlined"
-      css={styles.cardListItem}
-      onClick={onClick}
-      // need this empty onPress to keep click effect. will be removed when we migrate to new UI package
-      onPress={() => {}}
-    >
-      <Box.Flex align="center" justify="space-between" css={{ width: '$full' }}>
-        <Box.Flex gap="$3" align="center">
-          <AssetLogo asset={asset} size={30} />
-          <Box.Flex direction="column" gap="$0">
-            <Text
-              color="intentsPrimary12"
-              aria-label={`${asset.symbol} symbol`}
-            >
-              {asset.symbol}
-            </Text>
-          </Box.Flex>
-        </Box.Flex>
-        <Box.Flex gap="$2">
-          {onFaucet && (
-            <IconButton
-              aria-label="Faucet Eth Asset"
-              variant="link"
-              icon="Coins"
-              tooltip="Get some tokens"
-              size="lg"
-              isLoading={isFaucetLoading}
-              loadingText=" "
-              css={styles.cardAction}
-              onClick={onFaucet}
-            />
-          )}
-          {onAdd && (
-            <IconButton
-              aria-label="Add Eth Asset"
-              variant="link"
-              icon="CirclePlus"
-              tooltip="Add asset"
-              intent="primary"
-              size="lg"
-              css={styles.cardAction}
-              onClick={onAdd}
-            />
-          )}
-          {onRemove && (
-            <RemoveAssetDialog assetSymbol={asset.symbol} onConfirm={onRemove}>
-              <IconButton
-                aria-label="Remove Eth Asset"
-                isDisabled={isRemoveDisabled}
-                tooltip={removeToolTip}
-                variant="link"
-                icon="SquareRoundedX"
-                intent={isRemoveDisabled ? 'base' : 'error'}
-                size="lg"
-                css={styles.cardAction}
-              />
-            </RemoveAssetDialog>
-          )}
-          {onAddToWallet && (
-            <IconButton
-              aria-label="Add Asset To Wallet"
-              variant="link"
-              icon="Wallet"
-              tooltip="Add to wallet"
-              size="lg"
-              css={styles.cardAction}
-              onClick={onAddToWallet}
-            />
-          )}
-        </Box.Flex>
-      </Box.Flex>
+    <CardList.Item onClick={onClick} className={classes.cardItem()}>
+      <Flex gap="3" align="center">
+        <Asset asset={asset} iconSize={24}>
+          <Asset.Icon />
+        </Asset>
+        <Flex direction="column" gap="0">
+          <Text
+            className={classes.assetSymbol()}
+            aria-label={`${asset.symbol} symbol`}
+          >
+            {asset.symbol}
+          </Text>
+        </Flex>
+      </Flex>
+      <Flex gap="2">
+        {onFaucet && (
+          <IconButton
+            aria-label="Faucet Eth Asset"
+            variant="link"
+            icon={IconCoin}
+            isLoading={isFaucetLoading}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+              handleButtonClick(e, onFaucet)
+            }
+            className={classes.actionIcon()}
+          />
+        )}
+        {onAddToWallet && (
+          <IconButton
+            aria-label="Add Asset To Wallet"
+            variant="link"
+            icon={IconWallet}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+              handleButtonClick(e, onAddToWallet)
+            }
+            className={classes.actionIcon()}
+          />
+        )}
+      </Flex>
     </CardList.Item>
   );
 };
 
-const styles = {
-  cardListItem: cssObj({
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-  }),
-  cardAction: cssObj({
-    p: '0px',
-  }),
-};
+const styles = tv({
+  slots: {
+    assetWrapper: 'w-full',
+    assetSymbol: 'text-heading',
+    cardItem: 'gap-6 items-center fuel-[HStack]:justify-between',
+    actionIcon: 'p-[2px] m-[2px] text-heading',
+  },
+});

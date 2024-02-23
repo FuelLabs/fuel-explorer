@@ -13,6 +13,8 @@ import type { CardBodyProps, CardHeaderProps, CardProps } from '../Card';
 import { IconButton } from '../IconButton';
 import { Text } from '../Text';
 
+import { WithIconProps } from '../../hooks/useIconProps';
+
 type CollapsibleBaseProps = VariantProps<typeof styles> & {
   defaultOpened?: boolean;
   opened?: boolean;
@@ -32,7 +34,7 @@ export type CollapsibleProps = CollapsibleBaseProps &
   CardProps & { hideIcon?: boolean };
 export type CollapsibleHeaderProps = CardHeaderProps;
 export type CollapsibleContentProps = CardBodyProps;
-export type CollapsibleTitleProps = TextProps;
+export type CollapsibleTitleProps = TextProps & WithIconProps;
 export type CollapsibleBodyProps = BoxProps;
 
 export const CollapsibleRoot = createComponent<CollapsibleProps, typeof Card>({

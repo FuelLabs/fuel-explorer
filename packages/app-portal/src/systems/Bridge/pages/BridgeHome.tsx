@@ -1,69 +1,80 @@
-import { cssObj } from '@fuel-ui/css';
-import { Heading, Tabs } from '@fuel-ui/react';
 import { useNodeInfo } from '@fuel-wallet/react';
+import { Box, Button } from '@fuels/ui';
+import {
+  IconArrowBack,
+  IconArrowsShuffle,
+  IconHistory,
+} from '@tabler/icons-react';
+import { PageTitle } from 'app-commons';
+import NextLink from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { VITE_FUEL_VERSION } from '~/config';
-import { FuelVersionDialog } from '~/systems/Chains/fuel/containers/FuelVersionDialog';
-import { Layout } from '~/systems/Core';
-import { Pages } from '~/types';
+import { tv } from 'tailwind-variants';
+import { VITE_FUEL_VERSION } from '~portal/config';
+import { Routes } from '~portal/routes';
+import { FuelVersionDialog } from '~portal/systems/Chains/fuel/containers/FuelVersionDialog';
 
 type BridgeHomeProps = {
   children: ReactNode;
 };
 
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
-  const { isCompatible } = useNodeInfo({
-    version: VITE_FUEL_VERSION,
-  });
-  const location = useLocation();
+  const classes = styles();
+  const { isCompatible } = useNodeInfo({ version: VITE_FUEL_VERSION });
+  const pathname = usePathname();
+  const isBridgeHistory = pathname === Routes.bridgeHistory();
 
   return (
-    <Layout>
-      <Layout.Content css={styles.content}>
-        <Heading as="h2" css={styles.heading}>
-          Fuel Native Bridge
-        </Heading>
-        <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
-        <Tabs defaultValue={location.pathname.replace(/\/$/, '')}>
-          <Tabs.List css={styles.tabs}>
-            <NavLink to={Pages.bridge}>
-              <Tabs.Trigger value={Pages.bridge}>Bridge</Tabs.Trigger>
-            </NavLink>
-            <NavLink to={Pages.transactions}>
-              <Tabs.Trigger value={Pages.transactions}>History</Tabs.Trigger>
-            </NavLink>
-          </Tabs.List>
-          {children}
-        </Tabs>
-      </Layout.Content>
-    </Layout>
+    <Box className={classes.content()}>
+      <PageTitle
+        size="2"
+        icon={<IconArrowsShuffle size={18} stroke={1.5} />}
+        className="border-b-0 first:mb-0"
+        rightElement={
+          isBridgeHistory ? (
+            <Button
+              as={NextLink}
+              prefetch
+              href={Routes.bridge()}
+              size="1"
+              color="gray"
+              variant="ghost"
+              leftIcon={IconArrowBack}
+              className="rounded-md"
+            >
+              Back
+            </Button>
+          ) : (
+            <Button
+              as={NextLink}
+              prefetch
+              href={Routes.bridgeHistory()}
+              size="1"
+              color="gray"
+              variant="ghost"
+              leftIcon={IconHistory}
+              className="rounded-md"
+            >
+              History
+            </Button>
+          )
+        }
+      >
+        Fuel Native Bridge
+      </PageTitle>
+      <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
+      {children}
+    </Box>
   );
 };
 
-const styles = {
-  content: cssObj({
-    maxWidth: '$sm',
-  }),
-  heading: cssObj({
-    mt: 0,
-    mb: '$4',
-    // Align title with the content of the page
-    ml: -2,
-  }),
-  tabs: cssObj({
-    ml: 0,
-    a: {
-      color: 'inherit',
-      textDecoration: 'none',
-    },
-    'a.active': {
-      color: '$accent9',
-    },
-  }),
-  buttonNavLink: cssObj({
-    '&:hover': {
-      textDecoration: 'none',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    content: 'w-full max-w-[455px]',
+    tabs: 'ml-0 color-inherit decoration-none :active:text-success',
+    toggle: [
+      'w-full mb-4 rounded-md fuel-[ToggleGroupItem]:h-9',
+      'fuel-[ToggleGroupItem]:text-md',
+    ],
+  },
+});

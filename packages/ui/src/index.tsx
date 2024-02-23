@@ -59,6 +59,6 @@ export * from './components/Text';
 export * from './components/TextArea';
 export * from './components/Theme';
 export * from './components/Toast';
+export * from './components/ToggleGroup';
 export * from './components/Tooltip';
-
 export * from './utils/component';

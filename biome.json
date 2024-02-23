@@ -25,7 +25,8 @@
         "noSelfCompare": "off"
       },
       "correctness": {
-        "useExhaustiveDependencies": "off"
+        "useExhaustiveDependencies": "off",
+        "noUnusedVariables": "error"
       },
       "complexity": {
         "noStaticOnlyClass": "off",

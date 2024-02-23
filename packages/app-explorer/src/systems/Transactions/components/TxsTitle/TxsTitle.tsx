@@ -1,7 +1,7 @@
 'use client';
 import { Icon } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
-import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
+import { PageTitle } from 'app-commons';
 
 export function TxsTitle() {
   return (

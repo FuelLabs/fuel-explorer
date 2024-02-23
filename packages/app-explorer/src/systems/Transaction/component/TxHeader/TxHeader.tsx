@@ -1,7 +1,7 @@
 'use client';
 import { Address, useBreakpoints } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
-import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
+import { PageTitle } from 'app-commons';
 import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
 
 export function TxHeader({

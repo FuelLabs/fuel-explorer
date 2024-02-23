@@ -15,7 +15,7 @@ import {
 } from 'fuels';
 import type { WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'wagmi';
-import { VITE_ETH_FUEL_MESSAGE_PORTAL } from '~/config';
+import { VITE_ETH_FUEL_MESSAGE_PORTAL } from '~portal/config';
 
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
 import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
@@ -410,7 +410,7 @@ export class TxFuelToEthService {
       txReceipts = await ethPublicClient.getTransactionReceipt({
         hash: txHash,
       });
-    } catch (err: unknown) {
+    } catch (_err: unknown) {
       // workaround in place because waitForTransactionReceipt stop working after first time using it
       txReceipts = await ethPublicClient.waitForTransactionReceipt({
         hash: txHash,

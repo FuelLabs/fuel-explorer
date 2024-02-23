@@ -1,9 +1,9 @@
 import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import { useMemo } from 'react';
-import { Services, store } from '~/store';
-import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
-import type { BridgeTxsMachineState } from '~/systems/Bridge';
-import { useExplorerLink } from '~/systems/Bridge/hooks/useExplorerLink';
+import { Services, store } from '~portal/store';
+import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
+import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
+import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
 
 import { useAsset } from '../../../Assets/hooks/useAsset';
 import { useFuelAccountConnection } from '../../fuel';

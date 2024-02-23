@@ -1,4 +1,6 @@
 import { ConnectKitProvider } from 'connectkit';
+import { Mode } from 'connectkit/build/types';
+import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
 import type { ChainProviderFn } from 'wagmi';
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
@@ -14,10 +16,8 @@ import {
   VITE_ALCHEMY_ID,
   VITE_INFURA_ID,
   VITE_WALLETCONNECT_ID,
-} from '~/config';
-import { ETH_CHAIN } from '~/systems/Chains';
-
-import { useTheme } from '../hooks';
+} from '~portal/config';
+import { ETH_CHAIN } from '~portal/systems/Chains/config';
 
 const app = {
   name: 'Fuel Bridge',
@@ -25,6 +25,7 @@ const app = {
   url: 'https://fuels-portal.vercel.app',
   icons: ['https://fuels-portal.vercel.app/fuel-logo.svg'],
 };
+
 const chainsToConnect = [ETH_CHAIN];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const providers: ChainProviderFn<any>[] = [
@@ -94,7 +95,7 @@ export function ConnectProvider({ children }: ProvidersProps) {
 
   return (
     <WagmiConfig config={config}>
-      <ConnectKitProvider mode={theme}>{children}</ConnectKitProvider>
+      <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
     </WagmiConfig>
   );
 }

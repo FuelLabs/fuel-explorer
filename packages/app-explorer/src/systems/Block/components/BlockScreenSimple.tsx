@@ -11,10 +11,10 @@ import {
   VStack,
 } from '@fuels/ui';
 import { IconListDetails } from '@tabler/icons-react';
+import { PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { Routes } from '~/routes';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
-import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
