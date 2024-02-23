@@ -11,6 +11,7 @@ import {
 import {
   Alert,
   Card,
+  Flex,
   HStack,
   InputAmount,
   Link,
@@ -69,21 +70,31 @@ export const Bridge = () => {
         <Card.Body as={VStack} className="gap-2">
           <Text className={classes.textNetwork()}>Asset amount</Text>
           <InputAmount
-            isDisabled={!ethAddress && !fuelAddress}
+            disabled={!ethAddress && !fuelAddress}
             balance={assetBalance}
             value={assetAmount}
             color="green"
-            asset={{
-              name: asset?.symbol,
-              imageUrl: asset?.icon || '',
-              address: ethAssetAddress,
-            }}
-            onClickAsset={handlers.openAssetsDialog}
             onChange={(val) =>
               handlers.changeAssetAmount({ assetAmount: val || undefined })
             }
             className={classes.inputAmount()}
-          />
+          >
+            <Flex>
+              <InputAmount.Field />
+              <InputAmount.Slot>
+                <InputAmount.MaxBalance />
+                <InputAmount.CoinSelector
+                  asset={{
+                    name: asset?.symbol,
+                    imageUrl: asset?.icon || '',
+                    address: ethAssetAddress,
+                  }}
+                  onClick={handlers.openAssetsDialog}
+                />
+              </InputAmount.Slot>
+            </Flex>
+            <InputAmount.Balance />
+          </InputAmount>
           {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
             <Alert color="orange">
               <Alert.Icon>
