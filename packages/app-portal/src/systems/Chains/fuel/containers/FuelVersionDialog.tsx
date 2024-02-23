@@ -30,8 +30,9 @@ export const FuelVersionDialog = ({ isOpen }: FuelVersionDialogOptions) => {
             Install a Fuel Wallet Development version available on Chrome Web Store.
           */}
             <Text>
-              Install a newer version of the Fuel Wallet available on the link
-              below and follow the <b>install from source code instructions</b>.
+              Please install a newer version of the Fuel Wallet available on the
+              link below and follow the{' '}
+              <b>install from source code instructions</b>.
             </Text>
           </VStack>
           <Button
