@@ -220,8 +220,8 @@ importers:
         specifier: 0.15.2
         version: 0.15.2(dexie@3.2.4)(fuels@0.74.0)
       '@fuels/assets':
-        specifier: 0.1.4
-        version: 0.1.4
+        specifier: 0.1.5
+        version: 0.1.5
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -4744,10 +4744,6 @@ packages:
       json-rpc-2.0: 1.7.0
     transitivePeerDependencies:
       - dexie
-    dev: false
-
-  /@fuels/assets@0.1.4:
-    resolution: {integrity: sha512-6rSbzxxDlDkoW9u4vvSbTfnA4Cy9WjZ1ajBOuKTnvoQ9EzQKvrP4lYpN2SjqdfJkdhRfCItaf1aQq/avaN51BQ==}
     dev: false
 
   /@fuels/assets@0.1.5:
