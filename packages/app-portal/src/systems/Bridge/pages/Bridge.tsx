@@ -42,7 +42,6 @@ export const Bridge = () => {
   const fromControls = useAnimationControls();
   const toControls = useAnimationControls();
   const { timeToWithdrawFormatted } = useWithdrawDelay();
-  if (!fromNetwork || !toNetwork) return null;
   const ethAssetAddress = asset ? getAssetEth(asset)?.address : undefined;
 
   return (
