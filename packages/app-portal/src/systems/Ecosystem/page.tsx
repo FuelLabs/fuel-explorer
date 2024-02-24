@@ -1,6 +1,5 @@
-'use cliete';
 import { Ecosystem } from './pages';
 
-export function EcosystemPage() {
+export default function EcosystemPage() {
   return <Ecosystem />;
 }

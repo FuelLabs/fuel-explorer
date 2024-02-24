@@ -1,3 +1,4 @@
+'use client';
 import { motion, useAnimationControls } from 'framer-motion';
 import { getAssetEth } from '~portal/systems/Assets/utils';
 import {

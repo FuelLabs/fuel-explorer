@@ -18,10 +18,15 @@ export const ProjectList = ({
   emptyText,
 }: ProjectListProps) => {
   const classes = styles();
+  const isEmpty = !isLoading && !projects.length;
 
-  if (isLoading) return <ProjectList.Loading />;
-  const isEmpty = projects.length === 0;
-  if (isEmpty) return <ProjectList.Empty text={emptyText} />;
+  if (isLoading) {
+    return <ProjectList.Loading />;
+  }
+
+  if (isEmpty) {
+    return <ProjectList.Empty text={emptyText} />;
+  }
 
   return (
     <Grid className={classes.grid()}>
