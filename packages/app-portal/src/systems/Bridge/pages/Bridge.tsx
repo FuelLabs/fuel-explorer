@@ -1,5 +1,5 @@
 'use client';
-import { motion, useAnimationControls } from 'framer-motion';
+import { LayoutGroup, motion } from 'framer-motion';
 import { getAssetEth } from '~portal/systems/Assets/utils';
 import {
   EthAccountConnection,
@@ -40,30 +40,34 @@ export const Bridge = () => {
     handlers,
   } = useBridge();
   const { balance } = useFuelAccountConnection();
-  const fromControls = useAnimationControls();
-  const toControls = useAnimationControls();
   const { timeToWithdrawFormatted } = useWithdrawDelay();
   const ethAssetAddress = asset ? getAssetEth(asset)?.address : undefined;
+  const isEthFrom = isEthChain(fromNetwork);
+  const isFuelTo = isFuelChain(toNetwork);
+
+  const items = [
+    <motion.div key="eth" layout>
+      <EthAccountConnection label={isEthFrom ? 'From' : 'To'} />
+    </motion.div>,
+    <motion.div key="fuel" layout>
+      <FuelAccountConnection label={isFuelTo ? 'To' : 'From'} />
+    </motion.div>,
+  ];
+
+  function getItemsOrder() {
+    return isEthFrom ? items : items.reverse();
+  }
 
   return (
     <VStack gap="4">
-      <BridgeTabs fromControls={fromControls} toControls={toControls} />
+      <BridgeTabs />
       {fromNetwork && toNetwork ? (
         <Card className="border-0">
           <Card.Body as={VStack} className="gap-2">
             <HStack className="items-center justify-between">
               <Text className={classes.textNetwork()}>Network</Text>
             </HStack>
-            <motion.div animate={fromControls}>
-              {isEthChain(fromNetwork) && <EthAccountConnection label="From" />}
-              {isFuelChain(fromNetwork) && (
-                <FuelAccountConnection label="From" />
-              )}
-            </motion.div>
-            <motion.div animate={toControls}>
-              {isEthChain(toNetwork) && <EthAccountConnection label="To" />}
-              {isFuelChain(toNetwork) && <FuelAccountConnection label="To" />}
-            </motion.div>
+            <LayoutGroup>{getItemsOrder()}</LayoutGroup>
           </Card.Body>
         </Card>
       ) : (
