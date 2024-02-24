@@ -16,6 +16,7 @@ import {
   HStack,
   InputAmount,
   Link,
+  LoadingBox,
   Text,
   VStack,
 } from '@fuels/ui';
@@ -47,7 +48,7 @@ export const Bridge = () => {
   return (
     <VStack gap="4">
       <BridgeTabs fromControls={fromControls} toControls={toControls} />
-      {Boolean(fromNetwork && toNetwork) && (
+      {fromNetwork && toNetwork ? (
         <Card className="border-0">
           <Card.Body as={VStack} className="gap-2">
             <HStack className="items-center justify-between">
@@ -65,6 +66,8 @@ export const Bridge = () => {
             </motion.div>
           </Card.Body>
         </Card>
+      ) : (
+        <LoadingBox className="w-full h-[196px]" />
       )}
       <Card className="border-0">
         <Card.Body as={VStack} className="gap-2">
