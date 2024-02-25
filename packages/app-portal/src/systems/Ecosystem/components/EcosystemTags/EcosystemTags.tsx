@@ -25,6 +25,7 @@ export const EcosystemTags = ({
         size="2"
         variant="outline"
         color={!activeTag ? 'green' : 'gray'}
+        className="bg-white"
         onClick={onClickAllCategories}
       >
         All categories
@@ -34,6 +35,7 @@ export const EcosystemTags = ({
         <Button
           key={tag}
           color={activeTag === tag ? 'green' : 'gray'}
+          className="bg-white"
           size="2"
           variant="outline"
           onClick={() => onClickTag?.(tag)}

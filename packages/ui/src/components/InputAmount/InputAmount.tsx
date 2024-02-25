@@ -52,13 +52,10 @@ const formatOpts: FormatConfig = {
 
 export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
   id: 'InputAmount',
-  baseElement: Input,
   render: (
-    Root,
+    _,
     {
       className,
-      variant,
-      color,
       value,
       balance: initialBalance,
       onChange,
@@ -99,15 +96,9 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
           handleAmountChange,
         }}
       >
-        <Root
-          className={classes.root({ className })}
-          size="3"
-          color={color}
-          variant={variant}
-          {...props}
-        >
+        <Input className={classes.root({ className })} size="3" {...props}>
           {children}
-        </Root>
+        </Input>
       </ctx.Provider>
     );
   },

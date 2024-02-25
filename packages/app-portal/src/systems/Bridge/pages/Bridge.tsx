@@ -62,7 +62,7 @@ export const Bridge = () => {
     <VStack gap="4">
       <BridgeTabs />
       {fromNetwork && toNetwork ? (
-        <Card className="border-0">
+        <Card>
           <Card.Body as={VStack} className="gap-2">
             <HStack className="items-center justify-between">
               <Text className={classes.textNetwork()}>Network</Text>
@@ -73,7 +73,7 @@ export const Bridge = () => {
       ) : (
         <LoadingBox className="w-full h-[196px]" />
       )}
-      <Card className="border-0">
+      <Card>
         <Card.Body as={VStack} className="gap-2">
           <Text className={classes.textNetwork()}>Asset amount</Text>
           <InputAmount
@@ -84,7 +84,6 @@ export const Bridge = () => {
             onChange={(val) =>
               handlers.changeAssetAmount({ assetAmount: val || undefined })
             }
-            className={classes.inputAmount()}
           >
             <Flex>
               <InputAmount.Field />
@@ -141,9 +140,5 @@ export const styles = tv({
     card: 'p-0',
     cardBody: 'p-7',
     textNetwork: 'text-heading',
-    inputAmount: [
-      '[&_.rt-TextFieldChrome]:bg-gray-1 [&_.rt-TextFieldChrome]:shadow-none',
-      '[&_.rt-TextFieldChrome]:border [&_.rt-TextFieldChrome]:border-card-border',
-    ],
   },
 });

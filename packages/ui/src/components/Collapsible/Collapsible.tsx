@@ -175,7 +175,7 @@ const styles = tv({
   variants: {
     variant: {
       surface: {
-        content: 'p-0 bg-gray-3 rounded-sm',
+        content: 'p-0 light-theme:bg-gray-2 dark-theme:bg-gray-1 rounded-sm',
         body: 'px-3 py-3',
         title: 'py-3 px-3 border-b border-border',
       },

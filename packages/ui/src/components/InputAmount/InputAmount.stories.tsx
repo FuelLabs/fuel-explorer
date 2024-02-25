@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { Box } from '@radix-ui/themes';
 import { Flex } from '../Box';
 import { InputAmount } from './InputAmount';
 
@@ -13,99 +14,107 @@ type Story = StoryObj<typeof InputAmount>;
 
 export const Usage: Story = {
   render: () => (
-    <InputAmount
-      color="green"
-      className="anything"
-      balance={undefined}
-      value={undefined}
-      disabled={false}
-      onChange={(balance) => console.log(balance)}
-    >
-      <Flex>
-        <InputAmount.Field placeholder="0.00" />
+    <Box className="max-w-[400px]">
+      <InputAmount
+        color="green"
+        className="anything"
+        balance={undefined}
+        value={undefined}
+        disabled={false}
+        onChange={(balance) => console.log(balance)}
+      >
+        <Flex>
+          <InputAmount.Field placeholder="0.00" />
 
-        <InputAmount.Slot>
-          <InputAmount.ButtonMaxBalance
-            onClick={() => {
-              alert('Max Balance has been clicked');
-            }}
-          />
-          <InputAmount.CoinSelector
-            asset={{
-              name: 'ETH',
-              imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
-              address: '',
-            }}
-            onClick={() => alert('Coin selector has been clicked')}
-          />
-        </InputAmount.Slot>
-      </Flex>
+          <InputAmount.Slot>
+            <InputAmount.ButtonMaxBalance
+              onClick={() => {
+                alert('Max Balance has been clicked');
+              }}
+            />
+            <InputAmount.CoinSelector
+              asset={{
+                name: 'ETH',
+                imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+                address: '',
+              }}
+              onClick={() => alert('Coin selector has been clicked')}
+            />
+          </InputAmount.Slot>
+        </Flex>
 
-      <InputAmount.Balance />
-    </InputAmount>
+        <InputAmount.Balance />
+      </InputAmount>
+    </Box>
   ),
 };
 
 export const OnlyField: Story = {
   render: () => (
-    <InputAmount
-      color="green"
-      className="anything"
-      balance={undefined}
-      value={undefined}
-      disabled={false}
-      onChange={(balance) => console.log(balance)}
-    >
-      <InputAmount.Field placeholder="0.00" />
-    </InputAmount>
+    <Box className="max-w-[400px]">
+      <InputAmount
+        color="green"
+        className="anything"
+        balance={undefined}
+        value={undefined}
+        disabled={false}
+        onChange={(balance) => console.log(balance)}
+      >
+        <InputAmount.Field placeholder="0.00" />
+      </InputAmount>
+    </Box>
   ),
 };
 
 export const WithoutBalance: Story = {
   render: () => (
-    <InputAmount
-      color="green"
-      className="anything"
-      balance={undefined}
-      value={undefined}
-      disabled={false}
-      onChange={(balance) => console.log(balance)}
-    >
-      <Flex align="center">
-        <InputAmount.Field placeholder="0.00" />
+    <Box className="max-w-[400px]">
+      <InputAmount
+        color="green"
+        className="anything"
+        balance={undefined}
+        value={undefined}
+        disabled={false}
+        onChange={(balance) => console.log(balance)}
+      >
+        <Flex align="center">
+          <InputAmount.Field placeholder="0.00" />
 
-        <InputAmount.Slot pb="2">
-          <InputAmount.ButtonMaxBalance
-            onClick={() => {
-              alert('Max Balance has been clicked');
-            }}
-          />
-          <InputAmount.CoinSelector
-            asset={{
-              name: 'ETH',
-              imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
-              address: '',
-            }}
-            onClick={() => alert('Coin selector has been clicked')}
-          />
-        </InputAmount.Slot>
-      </Flex>
-    </InputAmount>
+          <InputAmount.Slot pb="2">
+            <InputAmount.ButtonMaxBalance
+              onClick={() => {
+                alert('Max Balance has been clicked');
+              }}
+            />
+            <InputAmount.CoinSelector
+              asset={{
+                name: 'ETH',
+                imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+                address: '',
+              }}
+              onClick={() => alert('Coin selector has been clicked')}
+            />
+          </InputAmount.Slot>
+        </Flex>
+      </InputAmount>
+    </Box>
   ),
 };
 
 export const OnlyBalance: Story = {
   render: () => (
-    <InputAmount
-      color="green"
-      className="anything"
-      balance={undefined}
-      value={undefined}
-      disabled={false}
-      onChange={(balance) => console.log(balance)}
-    >
-      <InputAmount.Field placeholder="0.00" />
-      <InputAmount.Balance />
-    </InputAmount>
+    <Box className="max-w-[400px]">
+      <InputAmount
+        color="green"
+        className="anything"
+        balance={undefined}
+        value={undefined}
+        disabled={false}
+        onChange={(balance) => console.log(balance)}
+      >
+        <InputAmount.Field placeholder="0.00" />
+        <InputAmount.Balance />
+      </InputAmount>
+    </Box>
   ),
 };
