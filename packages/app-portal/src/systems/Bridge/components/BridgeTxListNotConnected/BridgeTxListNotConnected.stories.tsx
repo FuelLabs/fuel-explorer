@@ -1,6 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box } from '@fuel-ui/react';
-
+import { Flex } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { BridgeTxListNotConnected } from './BridgeTxListNotConnected';
 
 export default {
@@ -12,24 +11,27 @@ export default {
 };
 
 export const Usage = () => {
+  const classes = styles();
+
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxListNotConnected isConnecting={false} onClick={() => {}} />
-    </Box.Flex>
+    </Flex>
   );
 };
 
 export const IsConnecting = () => {
+  const classes = styles();
+
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <Flex align="center" justify="center" className={classes.storybook()}>
       <BridgeTxListNotConnected isConnecting={true} onClick={() => {}} />
-    </Box.Flex>
+    </Flex>
   );
 };
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-    width: '100%',
-  }),
-};
+const styles = tv({
+  slots: {
+    storybook: 'm-4 w-full',
+  },
+});

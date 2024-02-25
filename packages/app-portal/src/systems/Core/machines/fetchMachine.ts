@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { toast } from '@fuel-ui/react';
+import { toast } from '@fuels/ui';
 import type { TransitionConfig } from 'xstate';
 import { assign, createMachine } from 'xstate';
 

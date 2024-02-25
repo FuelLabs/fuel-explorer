@@ -1,4 +1,3 @@
-import { toast } from '@fuel-ui/react';
 import type {
   MessageProof,
   Provider as FuelProvider,
@@ -7,8 +6,9 @@ import type {
 import type { PublicClient as EthPublicClient } from 'wagmi';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import { FetchMachine } from '~/systems/Core/machines';
+import { FetchMachine } from '~portal/systems/Core/machines';
 
+import { toast } from '@fuels/ui';
 import type { TxFuelToEthInputs } from '../services';
 import { TxFuelToEthService } from '../services';
 import { FuelTxCache } from '../utils/txCache';

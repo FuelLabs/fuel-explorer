@@ -11,7 +11,15 @@ import { cx } from '~/systems/Core/utils/cx';
 
 export const metadata: Metadata = {
   title: 'Fuel Explorer',
-  description: 'Explorer of the Fastest execution layer',
+  description: 'Explorer of The Rollup OS for Ethereum',
+  openGraph: {
+    type: 'website',
+    images: [
+      {
+        url: '/preview.png',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +38,7 @@ export default function RootLayout({
       </head>
       <body>
         <Provider>
-          <Layout contentClassName="[&_.rt-ContainerInner]:space-y-10">
+          <Layout contentClassName="[&_.rt-ContainerInner]:flex-col [&_.rt-ContainerInner]:gap-10">
             {children}
           </Layout>
           <Analytics />

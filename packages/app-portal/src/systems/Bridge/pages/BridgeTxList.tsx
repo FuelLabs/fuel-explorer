@@ -1,13 +1,14 @@
-import { cssObj } from '@fuel-ui/css';
-import { Button, CardList } from '@fuel-ui/react';
 import {
   TxListItemEthToFuel,
   TxListItemFuelToEth,
   isEthChain,
   isFuelChain,
   useFuelAccountConnection,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
+import { Button, CardList } from '@fuels/ui';
+import { IconChevronDown } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
 import {
   BridgeListEmpty,
   BridgeTxItemsLoading,
@@ -16,6 +17,7 @@ import {
 import { useBridgeTxs } from '../hooks';
 
 export const BridgeTxList = () => {
+  const classes = styles();
   const { isConnecting, handlers: fuelHandlers } = useFuelAccountConnection();
   const {
     handlers,
@@ -39,7 +41,7 @@ export const BridgeTxList = () => {
       {shouldShowEmpty && <BridgeListEmpty />}
       {shouldShowList && (
         <>
-          <CardList isClickable css={styles.cardList}>
+          <CardList isClickable className={classes.cardList()}>
             {bridgeTxs?.map((txDatum, index) => {
               if (
                 isEthChain(txDatum.fromNetwork) &&
@@ -70,10 +72,10 @@ export const BridgeTxList = () => {
           {hasMorePages && (
             <Button
               variant="link"
-              size="sm"
-              intent="info"
-              css={styles.buttonShowMore}
-              rightIcon="ChevronDown"
+              size="2"
+              color="blue"
+              className={classes.buttonShowMore()}
+              rightIcon={IconChevronDown}
               iconSize={13}
               onClick={handlers.showMore}
             >
@@ -86,16 +88,9 @@ export const BridgeTxList = () => {
   );
 };
 
-const styles = {
-  cardList: cssObj({
-    cursor: 'pointer',
-    userSelect: 'none',
-
-    ':hover': {
-      backgroundColor: '$intentsBase3',
-    },
-  }),
-  buttonShowMore: cssObj({
-    mt: '$2',
-  }),
-};
+const styles = tv({
+  slots: {
+    cardList: 'cursor-pointer select-none :hover:bg-muted', // was intentsBase3
+    buttonShowMore: 'mt-2',
+  },
+});

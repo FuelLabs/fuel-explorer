@@ -1,3 +1,4 @@
+import type { Asset } from '@fuels/assets';
 import type {
   BN,
   Message,
@@ -14,8 +15,7 @@ import { fetchToken } from 'wagmi/actions';
 import {
   VITE_ETH_FUEL_ERC20_GATEWAY,
   VITE_ETH_FUEL_MESSAGE_PORTAL,
-} from '~/config';
-import type { Asset } from '~/systems/Assets/services/asset';
+} from '~portal/config';
 
 import { relayCommonMessage } from '../../fuel/utils/relayMessage';
 import type { FuelERC20GatewayArgs } from '../contracts/FuelErc20Gateway';

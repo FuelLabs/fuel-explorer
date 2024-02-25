@@ -1,8 +1,7 @@
-import type { Asset as FuelsAsset } from '@fuels/assets';
 import { bn } from 'fuels';
 import { isAddress } from 'viem';
 import type { PublicClient, WalletClient } from 'viem';
-import { EthConnectorService } from '~/systems/Chains/eth';
+import { EthConnectorService } from '~portal/systems/Chains/eth';
 
 export type AssetServiceInputs = {
   faucetErc20: {
@@ -10,10 +9,6 @@ export type AssetServiceInputs = {
     walletClient?: WalletClient;
     publicClient?: PublicClient;
   };
-};
-
-export type Asset = Omit<FuelsAsset, 'icon'> & {
-  icon: string | null;
 };
 
 export class AssetService {

@@ -12,6 +12,7 @@ export function overlayEvents(store: Store) {
       store.send(Services.overlay, { type: 'CLOSE' });
     },
     openTxEthToFuel({ txId }: { txId?: string }) {
+      console.log(txId);
       if (txId) {
         store.send(Services.overlay, {
           type: 'OPEN',
@@ -40,17 +41,6 @@ export function overlayEvents(store: Store) {
         type: 'OPEN',
         input: {
           modal: 'eth.assets',
-        },
-      });
-    },
-    openAddAssetsDialog({ assetAddress }: { assetAddress: string }) {
-      store.send(Services.overlay, {
-        type: 'OPEN',
-        input: {
-          modal: 'eth.assets.add',
-          params: {
-            assetAddress,
-          },
         },
       });
     },

@@ -1,3 +1,4 @@
+import type { Asset } from '@fuels/assets';
 import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
   Address as FuelAddress,
@@ -5,14 +6,13 @@ import type {
   Provider as FuelProvider,
 } from 'fuels';
 import type { PublicClient, WalletClient } from 'wagmi';
-import { store } from '~/store';
-import type { Asset } from '~/systems/Assets/services/asset';
-import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
+import { store } from '~portal/store';
+import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import type {
   FromToNetworks,
   TxEthToFuelInputs,
   TxFuelToEthInputs,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 import {
   ETH_CHAIN,
   EthTxCache,
@@ -23,8 +23,9 @@ import {
   getBlockDate,
   isEthChain,
   isFuelChain,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
+import { FuelWalletLocked } from '@fuel-wallet/sdk';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
@@ -32,6 +33,7 @@ export type PossibleBridgeInputs = {
   ethWalletClient?: WalletClient;
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
+  fuelWallet?: FuelWalletLocked;
   asset?: Asset;
 } & Omit<TxEthToFuelInputs['startErc20'], 'amount'> &
   Omit<TxFuelToEthInputs['startFungibleToken'], 'amount'>;

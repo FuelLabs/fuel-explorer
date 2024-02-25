@@ -1,12 +1,13 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Heading, Icon, Input, Text } from '@fuel-ui/react';
-import { Layout, animations } from '~/systems/Core';
-
+import { Button, Flex, Input, Text, VStack } from '@fuels/ui';
+import { IconApps, IconSearch } from '@tabler/icons-react';
+import { PageTitle } from 'app-commons';
+import { tv } from 'tailwind-variants';
 import { EcosystemTags } from '../components/EcosystemTags';
 import { ProjectList } from '../components/ProjectList/ProjectList';
 import { useEcosystem } from '../hooks/useEcosystem';
 
 export function Ecosystem() {
+  const classes = styles();
   const { tags, isLoading, filter, search, handlers, filteredProjects } =
     useEcosystem();
 
@@ -23,73 +24,59 @@ export function Ecosystem() {
     : undefined;
 
   return (
-    <Layout {...animations.slideInTop()}>
-      <Layout.Content css={{ padding: '$16 $1 $4 $4' }}>
-        <Box.Stack gap="$12" grow={1} css={styles.content}>
-          <Box.Flex css={styles.headingWrapper}>
-            <Box.Stack gap="$2" wrap="wrap">
-              <Heading as="h2" css={styles.heading}>
-                Explore Fuel Dapps
-              </Heading>
-              <Text color="intentsBase11">
-                Here&apos;s a list of dapps built on Fuel
-              </Text>
-            </Box.Stack>
-            <Input css={styles.searchBar}>
-              <Input.Field
-                name="search"
-                placeholder="Search"
-                type="text"
-                value={search || ''}
-                onChange={handleSearch}
-              />
-              <Input.ElementRight element={<Icon icon="Search" />} />
-            </Input>
-          </Box.Flex>
-          <EcosystemTags
-            tags={tags}
-            activeTag={filter}
-            isLoading={isLoading}
-            onClickTag={handleTagButtonClick}
-            onClickAllCategories={handlers.clearFilters}
+    <VStack gap="6" grow="1" className={classes.content()}>
+      <PageTitle icon={<IconApps size={22} />} className="first:mb-0">
+        <VStack gap="2" wrap="wrap">
+          Explore Fuel Dapps
+          <Text className="text-secondary">
+            Here&apos;s a list of dapps built on Fuel
+          </Text>
+        </VStack>
+      </PageTitle>
+      <Flex gap="4" className={classes.searchBar()}>
+        <Input className={classes.searchBarInput()} size="3">
+          <Input.Field
+            name="search"
+            placeholder="Search"
+            type="text"
+            value={search || ''}
+            onChange={handleSearch}
           />
-          <ProjectList
-            isLoading={isLoading}
-            projects={filteredProjects || []}
-            emptyText={emptyText}
-          />
-        </Box.Stack>
-      </Layout.Content>
-    </Layout>
+          <Input.Slot>
+            <IconSearch size={16} />
+          </Input.Slot>
+        </Input>
+        <Flex justify="end">
+          <Button as="a" href="" target="_blank" size="3" color="green">
+            List your project
+          </Button>
+        </Flex>
+      </Flex>
+      <EcosystemTags
+        tags={tags}
+        activeTag={filter}
+        isLoading={isLoading}
+        onClickTag={handleTagButtonClick}
+        onClickAllCategories={handlers.clearFilters}
+      />
+      <ProjectList
+        isLoading={isLoading}
+        projects={filteredProjects || []}
+        emptyText={emptyText}
+      />
+    </VStack>
   );
 }
 
-const styles = {
-  content: cssObj({
-    paddingBottom: '$20',
-  }),
-  heading: cssObj({
-    margin: 0,
-  }),
-  subHeading: cssObj({
-    fontSize: '0.875rem',
-  }),
-  headingWrapper: cssObj({
-    flexDirection: 'column',
-    gap: '$10',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-
-    '@sm': {
-      flexDirection: 'row',
-      gap: '$10',
-      alignItems: 'flex-end',
-    },
-  }),
-  searchBar: cssObj({
-    width: '100%',
-    '@sm': {
-      width: 'auto',
-    },
-  }),
-};
+const styles = tv({
+  slots: {
+    content: 'pb-20',
+    subHeading: 'text-sm',
+    headingWrapper: [
+      'flex flex-col gap-10 items-start justify-between',
+      'tablet:flex-row tablet:gap-10 tablet:items-end',
+    ],
+    searchBar: 'flex-col tablet:justify-between tablet:flex-row',
+    searchBarInput: 'w-full tablet:w-[350px]',
+  },
+});

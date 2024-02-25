@@ -1,4 +1,4 @@
-import projects from '~public/ecosystem/projects.json';
+import projects from './projects.json';
 
 import type { Project } from '../types';
 

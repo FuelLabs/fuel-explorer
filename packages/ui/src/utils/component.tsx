@@ -9,10 +9,7 @@ import type {
   PropsOf,
   WithAsProps,
 } from './types';
-type CreateOpts<
-  P extends PropsOf<any>,
-  C extends ComponentType<any> | ElementType<any>,
-> = {
+type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
   id: string;
   baseElement?: C;
   className?: string | ((props: P) => string);
@@ -22,24 +19,27 @@ type CreateOpts<
 
 export function createComponent<
   P extends PropsOf<any>,
-  C extends ComponentType<any> | ElementType<any>,
+  C extends ElementType<any>,
 >(opts: CreateOpts<P, C>) {
-  const { id, baseElement: El = 'div', className: getClass, render } = opts;
+  const {
+    id,
+    baseElement: El = 'div' as C,
+    className: getClass,
+    render,
+  } = opts;
 
   if (!El && !render) {
     throw new Error('Must provide either baseElement or render');
   }
 
   type T = ElementRef<typeof El>;
-  const Comp = forwardRef<T, P & PropsOf<typeof El>>(
-    ({ className, ...props }, ref) => {
-      const baseClass =
-        typeof getClass === 'function' ? getClass(props as P) : getClass;
-      const classes = cx(baseClass, className, fClass(id));
-      const itemProps = { ref, className: classes, ...props } as any;
-      return render ? render(El as C, itemProps) : <El {...itemProps} />;
-    },
-  );
+  const Comp = forwardRef<T, P>(({ className, ...props }, ref) => {
+    const baseClass =
+      typeof getClass === 'function' ? getClass(props as P) : getClass;
+    const classes = cx(baseClass, className, fClass(id));
+    const itemProps = { ref, className: classes, ...props } as any;
+    return render ? render(El, itemProps) : <El {...itemProps} />;
+  });
 
   if (opts.defaultProps) {
     Comp.defaultProps = opts.defaultProps;

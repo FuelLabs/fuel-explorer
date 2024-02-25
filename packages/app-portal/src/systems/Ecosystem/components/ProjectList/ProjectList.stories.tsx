@@ -1,10 +1,10 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box } from '@fuel-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { PROJECTS } from '../../data';
 import type { Project } from '../../types';
 
+import { Flex } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { ProjectList } from './ProjectList';
 
 const meta: Meta<typeof ProjectList> = {
@@ -20,22 +20,29 @@ export default meta;
 type Story = StoryObj<typeof ProjectList>;
 
 export const Usage: Story = {
-  render: (args) => (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
-      <ProjectList {...args} />
-    </Box.Flex>
-  ),
+  render: (args: any) => {
+    const classes = styles();
+    return (
+      <Flex align="center" justify="center" className={classes.storybook()}>
+        <ProjectList {...args} />
+      </Flex>
+    );
+  },
   args: { projects: PROJECTS as Project[] },
 };
 
-export const Loading = () => (
-  <Box.Flex align="center" justify="center" css={styles.storybook}>
-    <ProjectList.Loading />
-  </Box.Flex>
-);
+export const Loading = () => {
+  const classes = styles();
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-  }),
+  return (
+    <Flex align="center" justify="center" className={classes.storybook()}>
+      <ProjectList.Loading />
+    </Flex>
+  );
 };
+
+export const styles = tv({
+  slots: {
+    storybook: 'm-20',
+  },
+});
