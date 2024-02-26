@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, ElementRef, ElementType } from 'react';
-import { forwardRef, useEffect, useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 
 import { cx, fClass } from './css';
 import type {
@@ -50,10 +50,6 @@ export function createComponent<
 
       return fClass(id);
     }, [baseClass]);
-
-    useEffect(() => {
-      console.log('classes', classes);
-    }, [classes]);
 
     const itemProps = { ref, className: classes, ...props } as any;
     return render ? render(El, itemProps) : <El {...itemProps} />;
