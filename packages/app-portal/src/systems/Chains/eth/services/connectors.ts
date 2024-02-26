@@ -1,11 +1,7 @@
 import type { PublicClient, WalletClient } from 'viem';
 import { getContract } from 'viem';
 
-import {
-  ETH_FUEL_CHAIN_STATE,
-  ETH_FUEL_ERC20_GATEWAY,
-  ETH_FUEL_MESSAGE_PORTAL,
-} from 'app-commons';
+import { BridgeSolidityContracts } from 'app-commons';
 import { ERC_20 } from '../contracts/Erc20';
 import { FUEL_CHAIN_STATE } from '../contracts/FuelChainState';
 import { FUEL_ERC_20_GATEWAY } from '../contracts/FuelErc20Gateway';
@@ -15,12 +11,13 @@ export class EthConnectorService {
   static connectToFuelErc20Gateway(options: {
     walletClient?: WalletClient;
     publicClient?: PublicClient;
+    bridgeSolidityContracts: BridgeSolidityContracts;
   }) {
-    const { walletClient, publicClient } = options;
+    const { walletClient, publicClient, bridgeSolidityContracts } = options;
 
     const contract = getContract({
       abi: FUEL_ERC_20_GATEWAY.abi,
-      address: ETH_FUEL_ERC20_GATEWAY as `0x${string}`,
+      address: bridgeSolidityContracts.FuelERC20Gateway,
       walletClient,
       publicClient,
     });
@@ -31,12 +28,13 @@ export class EthConnectorService {
   static connectToFuelMessagePortal(options: {
     walletClient?: WalletClient;
     publicClient?: PublicClient;
+    bridgeSolidityContracts: BridgeSolidityContracts;
   }) {
-    const { walletClient, publicClient } = options;
+    const { walletClient, publicClient, bridgeSolidityContracts } = options;
 
     const contract = getContract({
       abi: FUEL_MESSAGE_PORTAL.abi,
-      address: ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: bridgeSolidityContracts.FuelMessagePortal,
       walletClient,
       publicClient,
     });
@@ -64,12 +62,13 @@ export class EthConnectorService {
   static connectToFuelChainState(options: {
     walletClient?: WalletClient;
     publicClient?: PublicClient;
+    bridgeSolidityContracts: BridgeSolidityContracts;
   }) {
-    const { walletClient, publicClient } = options;
+    const { walletClient, publicClient, bridgeSolidityContracts } = options;
 
     const contract = getContract({
       abi: FUEL_CHAIN_STATE.abi,
-      address: ETH_FUEL_CHAIN_STATE as `0x${string}`,
+      address: bridgeSolidityContracts.FuelChainState,
       walletClient,
       publicClient,
     });

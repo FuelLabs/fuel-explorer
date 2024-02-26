@@ -14,7 +14,7 @@ import type { ToastActionElement, ToastIconElement, ToastProps } from './Toast';
 
 // Constants
 const DEFAULT_TOAST_LIMIT = 3;
-const DEFAULT_TOAST_DURATION = 2000;
+const DEFAULT_TOAST_DURATION = 4000;
 
 // Action Types
 const ACTION_TYPES = {

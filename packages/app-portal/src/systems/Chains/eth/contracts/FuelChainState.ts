@@ -1,5 +1,5 @@
 import { FuelChainState } from '@fuel-bridge/solidity-contracts';
-import { ETH_FUEL_CHAIN_STATE } from 'app-commons';
+import { getBridgeSolidityContracts } from 'app-commons';
 import type { PublicClient } from 'viem';
 
 export const FUEL_CHAIN_STATE = {
@@ -9,11 +9,12 @@ export const FUEL_CHAIN_STATE = {
   }: {
     ethPublicClient: PublicClient;
   }) => {
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const abiCommitSubmitted = FUEL_CHAIN_STATE.abi.find(
       ({ name, type }) => name === 'CommitSubmitted' && type === 'event',
     );
     const logs = await ethPublicClient.getLogs({
-      address: ETH_FUEL_CHAIN_STATE as `0x${string}`,
+      address: bridgeSolidityContracts.FuelChainState,
       event: {
         type: 'event',
         name: 'CommitSubmitted',

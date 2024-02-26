@@ -1,8 +1,4 @@
-import {
-  NEXT_PUBLIC_ALCHEMY_ID,
-  NEXT_PUBLIC_INFURA_ID,
-  NEXT_PUBLIC_WALLETCONNECT_ID,
-} from 'app-commons';
+import { ALCHEMY_ID, INFURA_ID, WALLETCONNECT_ID } from 'app-commons';
 import { ConnectKitProvider } from 'connectkit';
 import { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
@@ -29,8 +25,8 @@ const app = {
 const chainsToConnect = [ETH_CHAIN];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const providers: ChainProviderFn<any>[] = [
-  alchemyProvider({ apiKey: NEXT_PUBLIC_ALCHEMY_ID as string }),
-  infuraProvider({ apiKey: NEXT_PUBLIC_INFURA_ID as string }),
+  alchemyProvider({ apiKey: ALCHEMY_ID as string }),
+  infuraProvider({ apiKey: INFURA_ID as string }),
   jsonRpcProvider({
     rpc: (c) => {
       return { http: c.rpcUrls.default.http[0] };
@@ -63,7 +59,7 @@ const connectKitClient = {
       chains,
       options: {
         showQrModal: false,
-        projectId: NEXT_PUBLIC_WALLETCONNECT_ID as string,
+        projectId: WALLETCONNECT_ID as string,
         metadata: app,
       },
     }),

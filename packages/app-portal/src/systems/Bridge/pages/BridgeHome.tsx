@@ -5,7 +5,7 @@ import {
   IconArrowsShuffle,
   IconHistory,
 } from '@tabler/icons-react';
-import { NEXT_PUBLIC_FUEL_VERSION, PageTitle } from 'app-commons';
+import { FUEL_VERSION, PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -19,7 +19,7 @@ type BridgeHomeProps = {
 
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const classes = styles();
-  const { isCompatible } = useNodeInfo({ version: NEXT_PUBLIC_FUEL_VERSION });
+  const { isCompatible } = useNodeInfo({ version: FUEL_VERSION });
   const pathname = usePathname();
   const isBridgeHistory = pathname === Routes.bridgeHistory();
 

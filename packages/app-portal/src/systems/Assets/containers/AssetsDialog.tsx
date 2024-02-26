@@ -6,7 +6,6 @@ import { useFuelAccountConnection } from '~portal/systems/Chains';
 
 import { CardList, Dialog, IconButton, Input, Spinner, Text } from '@fuels/ui';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { ETH_ERC20 } from 'app-commons';
 import { tv } from 'tailwind-variants';
 import {
   useEthAccountConnection,
@@ -91,7 +90,7 @@ export function AssetsDialog() {
             const ethAsset = getAssetEth(asset);
             const fuelAsset = getAssetFuel(asset);
 
-            const isFaucetable = ethAsset?.address === ETH_ERC20;
+            const isFaucetable = !!ethAsset?.address;
             const isETH = !ethAsset?.address;
             const shouldShowAddToWallet =
               !isETH && (isConnectedEth || isConnectedFuel);
