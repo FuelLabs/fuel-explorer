@@ -13,7 +13,7 @@ import type {
 type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
   id: string;
   baseElement?: C;
-  className?: string | ((props: Omit<P, 'className'>) => string);
+  className?: string | ((props: P) => string);
   defaultProps?: ComponentType<P>['defaultProps'];
   render?: (Comp: C, props: P) => JSX.Element | null;
 };
@@ -34,24 +34,16 @@ export function createComponent<
   }
 
   type T = ElementRef<typeof El>;
-  const Comp = forwardRef<T, P>(({ className, ...props }, ref) => {
-    const baseClass = useMemo<string | undefined>(() => {
+  const Comp = forwardRef<T, P>((props, ref) => {
+    const className = useMemo<string | undefined>(() => {
       if (typeof getClass === 'function') {
-        return getClass(props);
+        return cx(getClass(props), fClass(id));
       }
 
-      return getClass;
+      return cx(getClass, props.className, fClass(id));
     }, [props]);
 
-    const classes = useMemo<string>(() => {
-      if (baseClass || className) {
-        return cx(baseClass, className, fClass(id));
-      }
-
-      return fClass(id);
-    }, [baseClass]);
-
-    const itemProps = { ref, className: classes, ...props } as any;
+    const itemProps = { ...props, ref, className } as any;
     return render ? render(El, itemProps) : <El {...itemProps} />;
   });
 

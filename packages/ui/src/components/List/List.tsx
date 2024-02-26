@@ -16,8 +16,8 @@ export type ListItemProps = PropsOf<'li'>;
 
 export const ListRoot = createComponent<ListProps, 'ul'>({
   id: 'List',
-  className: ({ icon, type = 'none' }) => {
-    return styles({ type, withIcon: Boolean(icon) }).root();
+  className: ({ className, icon, type = 'none' }) => {
+    return styles({ type, withIcon: Boolean(icon) }).root({ className });
   },
   render: (
     _,

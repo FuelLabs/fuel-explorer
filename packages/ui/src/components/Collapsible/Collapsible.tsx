@@ -137,9 +137,9 @@ export const CollapsibleTitle = createComponent<
 >({
   id: 'CollapsibleTitle',
   baseElement: Text,
-  className: () => {
+  className: ({ className }) => {
     const { variant } = useContext(ctx);
-    return styles({ variant }).title();
+    return styles({ variant }).title({ className });
   },
 });
 
@@ -149,9 +149,9 @@ export const CollapsibleBody = createComponent<
 >({
   id: 'CollapsibleBody',
   baseElement: Box,
-  className: () => {
+  className: ({ className }) => {
     const { variant } = useContext(ctx);
-    return styles({ variant }).body();
+    return styles({ variant }).body({ className });
   },
 });
 

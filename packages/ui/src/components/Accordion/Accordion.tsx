@@ -15,7 +15,7 @@ export type AccordionTriggerProps = PropsOf<typeof AC.Trigger>;
 
 export const AccordionRoot = createComponent<AccordionProps, typeof AC.Root>({
   id: 'Accordion',
-  className: () => styles().root(),
+  className: ({ className }) => styles().root({ className }),
   baseElement: AC.Root,
 });
 
@@ -24,7 +24,7 @@ export const AccordionContent = createComponent<
   typeof AC.Content
 >({
   id: 'AccordionContent',
-  className: () => styles().content(),
+  className: ({ className }) => styles().content({ className }),
   baseElement: AC.Content,
 });
 
@@ -33,7 +33,7 @@ export const AccordionItem = createComponent<
   typeof AC.Item
 >({
   id: 'AccordionItem',
-  className: () => styles().item(),
+  className: ({ className }) => styles().item({ className }),
   baseElement: AC.Item,
 });
 
@@ -42,7 +42,7 @@ export const AccordionHeader = createComponent<
   typeof AC.Header
 >({
   id: 'AccordionHeader',
-  className: () => styles().header(),
+  className: ({ className }) => styles().header({ className }),
   baseElement: AC.Header,
 });
 

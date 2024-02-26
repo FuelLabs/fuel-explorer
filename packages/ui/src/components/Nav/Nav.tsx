@@ -117,7 +117,7 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
 export const NavMobile = createComponent<NavMobileProps, 'nav'>({
   id: 'NavMobile',
   baseElement: 'nav',
-  className: () => styles().mobile(),
+  className: ({ className }) => styles().mobile({ className }),
   render: (Root, { isOpen, onOpenChange, children, className, ...props }) => {
     const [open, setOpen] = useState(() => Boolean(isOpen));
     const classes = styles();
@@ -146,7 +146,7 @@ export const NavMobileContent = createComponent<
 >({
   id: 'NavMobileContent',
   baseElement: 'header',
-  className: () => styles().mobileContent(),
+  className: ({ className }) => styles().mobileContent({ className }),
   render: (Root, { children, ...props }) => {
     const { isOpen, onOpenChange } = useNavMobileContext();
 
@@ -190,7 +190,7 @@ export const NavSpacer = createComponent<{}, 'hr'>({
 
 export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
   id: 'NavLogo',
-  className: () => styles().logo(),
+  className: ({ className }) => styles().logo({ className }),
   render: (_, { size, ...props }) => {
     const { width } = useWindowSize();
     const defaultSize = width < 960 ? 28 : 32;
@@ -204,7 +204,7 @@ export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
 
 export const NavMenu = createComponent<NavMenuProps, 'div'>({
   id: 'NavMenu',
-  className: () => styles().menu(),
+  className: ({ className }) => styles().menu({ className }),
   render: (Root, props) => {
     const mobileProps = useNavMobileContext();
     const content = <Root {...props} />;
@@ -255,7 +255,7 @@ export const NavMenu = createComponent<NavMenuProps, 'div'>({
 export const NavMenuItem = createComponent<NavMenuItemProps, typeof Link>({
   id: 'NavMenuItem',
   baseElement: Link,
-  className: () => styles().menuItem(),
+  className: ({ className }) => styles().menuItem({ className }),
   render: (Comp, { isActive, ...props }) => {
     return <Comp {...props} data-active={isActive} />;
   },
@@ -269,7 +269,7 @@ const MotionHStack = motion<HStackProps>(HStack);
 export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
   {
     id: 'NavConnection',
-    className: () => styles().navConnection(),
+    className: ({ className }) => styles().navConnection({ className }),
     render: (_, { whenOpened = 'show', ...props }) => {
       const navProps = useNavContext();
       const mobileProps = useNavMobileContext();
