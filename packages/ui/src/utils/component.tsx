@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, ElementRef, ElementType } from 'react';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 
 import { cx, fClass } from './css';
 import type {
@@ -35,9 +35,13 @@ export function createComponent<
 
   type T = ElementRef<typeof El>;
   const Comp = forwardRef<T, P>((props, ref) => {
-    const baseClass =
-      typeof getClass === 'function' ? getClass(props) : getClass;
-    const className = cx(baseClass, props.className, fClass(id));
+    const className = useMemo<string | undefined>(() => {
+      if (typeof getClass === 'function') {
+        return cx(getClass(props), fClass(id));
+      }
+
+      return cx(getClass, props.className, fClass(id));
+    }, [props.className]);
 
     const itemProps = { ref, ...props, className } as any;
     return render ? render(El, itemProps) : <El {...itemProps} />;
