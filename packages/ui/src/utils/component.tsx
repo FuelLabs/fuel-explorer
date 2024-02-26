@@ -35,7 +35,8 @@ export function createComponent<
 
   type T = ElementRef<typeof El>;
   const Comp = forwardRef<T, P>((props, ref) => {
-    const className = cx(getClass?.(props), fClass(id));
+    const baseClass = getClass?.(props) ?? props.className;
+    const className = cx(baseClass, fClass(id));
     const itemProps = { ref, ...props, className } as any;
 
     return render ? render(El, itemProps) : <El {...itemProps} />;
