@@ -22,7 +22,7 @@ export type CardFooterProps = BoxProps;
 export const CardRoot = createPolymorphicComponent<CardProps, typeof Box>({
   id: 'Card',
   baseElement: Box,
-  className: ({ className }) => styles().root({ className }),
+  className: () => styles().root(),
   defaultProps: {
     as: 'article',
   },
@@ -34,7 +34,7 @@ export const CardHeader = createPolymorphicComponent<
 >({
   id: 'CardHeader',
   baseElement: Box,
-  className: ({ className }) => styles().header({ className }),
+  className: () => styles().header(),
   defaultProps: {
     as: 'header',
   },
@@ -43,7 +43,7 @@ export const CardHeader = createPolymorphicComponent<
 export const CardTitle = createComponent<CardTitleProps, typeof Heading>({
   id: 'CardTitle',
   baseElement: Heading,
-  className: ({ className }) => styles().title({ className }),
+  className: () => styles().title(),
   defaultProps: {
     size: '6',
   },
@@ -52,7 +52,7 @@ export const CardTitle = createComponent<CardTitleProps, typeof Heading>({
 export const CardBody = createPolymorphicComponent<CardBodyProps, typeof Box>({
   id: 'CardBody',
   baseElement: Box,
-  className: ({ className }) => styles().body({ className }),
+  className: () => styles().body(),
 });
 
 export const CardDescription = createComponent<
@@ -61,7 +61,7 @@ export const CardDescription = createComponent<
 >({
   id: 'CardDescription',
   baseElement: Text,
-  className: ({ className }) => styles().description({ className }),
+  className: () => styles().description(),
 });
 
 export const CardFooter = createPolymorphicComponent<
@@ -70,7 +70,7 @@ export const CardFooter = createPolymorphicComponent<
 >({
   id: 'CardFooter',
   baseElement: Box,
-  className: ({ className }) => styles().footer({ className }),
+  className: () => styles().footer(),
   defaultProps: {
     as: 'footer',
   },

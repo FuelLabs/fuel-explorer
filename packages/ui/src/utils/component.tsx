@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, ElementRef, ElementType } from 'react';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useMemo } from 'react';
 
 import { cx, fClass } from './css';
 import type {
@@ -9,10 +9,11 @@ import type {
   PropsOf,
   WithAsProps,
 } from './types';
+
 type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
   id: string;
   baseElement?: C;
-  className?: string | ((props: P) => string);
+  className?: string | ((props: Omit<P, 'className'>) => string);
   defaultProps?: ComponentType<P>['defaultProps'];
   render?: (Comp: C, props: P) => JSX.Element | null;
 };
@@ -34,9 +35,26 @@ export function createComponent<
 
   type T = ElementRef<typeof El>;
   const Comp = forwardRef<T, P>(({ className, ...props }, ref) => {
-    const baseClass =
-      typeof getClass === 'function' ? getClass(props as P) : getClass;
-    const classes = cx(baseClass, className, fClass(id));
+    const baseClass = useMemo<string | undefined>(() => {
+      if (typeof getClass === 'function') {
+        return getClass(props);
+      }
+
+      return getClass;
+    }, [props]);
+
+    const classes = useMemo<string>(() => {
+      if (baseClass || className) {
+        return cx(baseClass, className, fClass(id));
+      }
+
+      return fClass(id);
+    }, [baseClass]);
+
+    useEffect(() => {
+      console.log('classes', classes);
+    }, [classes]);
+
     const itemProps = { ref, className: classes, ...props } as any;
     return render ? render(El, itemProps) : <El {...itemProps} />;
   });
