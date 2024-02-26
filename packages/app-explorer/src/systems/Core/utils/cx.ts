@@ -1,3 +1,3 @@
-import { twJoin } from 'tailwind-merge';
+import clsx from 'clsx';
 
-export const cx = twJoin;
+export const cx = clsx;

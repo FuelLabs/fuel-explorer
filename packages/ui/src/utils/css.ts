@@ -1,4 +1,4 @@
-import { twJoin } from 'tailwind-merge';
+import clsx from 'clsx';
 
 export function fClass(root: string, ...args: string[]) {
   const nested = args.reduce((acc, curr) => {
@@ -7,7 +7,7 @@ export function fClass(root: string, ...args: string[]) {
   return `fuel-${root}${nested}`;
 }
 
-export const cx = twJoin;
+export const cx = clsx;
 
 export function refColorVariablesAsObj(list: string[]) {
   return list.reduce(

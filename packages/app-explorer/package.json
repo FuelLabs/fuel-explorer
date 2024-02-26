@@ -14,9 +14,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "8.4.0",
-    "app-portal": "workspace:*",
     "@fuel-explorer/graphql": "workspace:*",
-    "app-commons": "workspace:*",
     "@fuel-ts/math": "0.74.0",
     "@fuel-wallet/sdk": "0.15.2",
     "@fuels/assets": "0.1.5",
@@ -24,6 +22,8 @@
     "@tabler/icons-react": "2.46.0",
     "@tanstack/react-query": "5.17.19",
     "@vercel/analytics": "1.1.3",
+    "app-commons": "workspace:*",
+    "app-portal": "workspace:*",
     "clsx": "2.1.0",
     "csstype": "3.1.3",
     "dayjs": "1.11.10",
@@ -43,7 +43,6 @@
     "react-use": "17.5.0",
     "react-window": "1.8.10",
     "tai64": "1.0.0",
-    "tailwind-merge": "2.2.1",
     "tailwind-variants": "0.1.20",
     "zod": "3.22.4",
     "zod-validation-error": "3.0.0"
