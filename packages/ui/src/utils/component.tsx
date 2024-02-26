@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, ElementRef, ElementType } from 'react';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef } from 'react';
 
 import { cx, fClass } from './css';
 import type {
@@ -13,7 +13,7 @@ import type {
 type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
   id: string;
   baseElement?: C;
-  className?: string | ((props: P) => string);
+  className?: (props: P) => string;
   defaultProps?: ComponentType<P>['defaultProps'];
   render?: (Comp: C, props: P) => JSX.Element | null;
 };
@@ -35,15 +35,9 @@ export function createComponent<
 
   type T = ElementRef<typeof El>;
   const Comp = forwardRef<T, P>((props, ref) => {
-    const className = useMemo<string | undefined>(() => {
-      if (typeof getClass === 'function') {
-        return cx(getClass(props), fClass(id));
-      }
-
-      return cx(getClass, props.className, fClass(id));
-    }, [props.className]);
-
+    const className = cx(getClass?.(props), fClass(id));
     const itemProps = { ref, ...props, className } as any;
+
     return render ? render(El, itemProps) : <El {...itemProps} />;
   });
 

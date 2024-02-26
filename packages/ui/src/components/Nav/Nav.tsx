@@ -12,7 +12,12 @@ import { useWindowSize } from 'react-use';
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
-import type { AsChildProp, PropsOf, WithAsProps } from '../../utils/types';
+import {
+  type AsChildProp,
+  BaseProps,
+  type PropsOf,
+  type WithAsProps,
+} from '../../utils/types';
 import { Badge } from '../Badge/Badge';
 import { Box, HStack } from '../Box';
 import type { BoxProps, HStackProps } from '../Box';
@@ -154,7 +159,6 @@ export const NavMobileContent = createComponent<
       <Root {...props} data-open={isOpen}>
         <AnimatePresence initial={false}>
           <HStack gap="2" className="flex-1 justify-between items-center">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {Children.toArray(children).map((child: any) => {
               return cloneElement(child, { key: child.type.id });
             })}
@@ -176,12 +180,10 @@ export const NavMobileContent = createComponent<
 /**
  * NavSpacer
  */
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const NavSpacer = createComponent<{}, 'hr'>({
+export const NavSpacer = createComponent<BaseProps<{}>, 'hr'>({
   id: 'NavSpacer',
   baseElement: 'hr',
-  className: 'flex-1 opacity-0',
+  className: ({ className }) => styles().spacer({ className }),
 });
 
 /**
@@ -313,7 +315,6 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
 
       const animContent = (
         <MotionHStack
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           {...(props as any)}
           animate="open"
           exit="collapsed"
