@@ -82,7 +82,7 @@ const styles = tv({
   slots: {
     assetWrapper: 'w-full',
     assetSymbol: 'text-heading',
-    cardItem: 'gap-6 items-center fuel-[HStack]:justify-between',
+    cardItem: 'p-3 gap-6 items-center fuel-[HStack]:justify-between',
     actionIcon: 'p-[2px] m-[2px] text-heading',
   },
 });

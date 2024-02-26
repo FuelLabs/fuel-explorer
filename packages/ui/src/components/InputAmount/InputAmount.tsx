@@ -52,13 +52,10 @@ const formatOpts: FormatConfig = {
 
 export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
   id: 'InputAmount',
-  baseElement: Input,
   render: (
-    Root,
+    _,
     {
       className,
-      variant,
-      color,
       value,
       balance: initialBalance,
       onChange,
@@ -99,15 +96,9 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
           handleAmountChange,
         }}
       >
-        <Root
-          className={classes.root({ className })}
-          size="3"
-          color={color}
-          variant={variant}
-          {...props}
-        >
+        <Input className={classes.root({ className })} size="3" {...props}>
           {children}
-        </Root>
+        </Input>
       </ctx.Provider>
     );
   },
@@ -268,7 +259,7 @@ export const InputAmount = withNamespace(InputAmountRoot, {
 
 const styles = tv({
   slots: {
-    root: 'flex-col',
+    root: 'flex-col pt-1',
     maxBalance: 'font-mono',
     inputNumber: 'p-0.5 font-mono text-lg',
     coinSelector: 'gap-1.5 text-xs py-1 px-2',

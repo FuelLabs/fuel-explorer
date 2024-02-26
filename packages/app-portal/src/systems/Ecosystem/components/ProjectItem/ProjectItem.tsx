@@ -152,7 +152,7 @@ export const ProjectItem: ProjectItemComponent = ({
 const styles = tv({
   slots: {
     card: [
-      'bg-transparent cursor-pointer gap-2',
+      'cursor-pointer gap-2',
       'transition-all duration-200 ease-in-out',
       'hover:border-1 hover:border-brand hover:scale-105',
     ],

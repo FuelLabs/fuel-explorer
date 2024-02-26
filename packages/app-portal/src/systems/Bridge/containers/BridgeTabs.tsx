@@ -1,54 +1,30 @@
 import { ToggleGroup } from '@fuels/ui';
-import type { AnimationControls } from 'framer-motion';
 import { tv } from 'tailwind-variants';
+import { isEthChain, isFuelChain } from '~portal/systems/Chains';
 import { useBridge } from '../hooks';
 
-type BridgeTabsProps = {
-  fromControls: AnimationControls;
-  toControls: AnimationControls;
-};
-
-export const BridgeTabs = ({ fromControls, toControls }: BridgeTabsProps) => {
-  const { handlers, isWithdraw } = useBridge();
+export const BridgeTabs = () => {
+  const { handlers, fromNetwork } = useBridge();
   const classes = styles();
-
-  const moveVertically = async (
-    control: AnimationControls,
-    factor = 15,
-    zIndex = 1,
-  ) => {
-    control.set({ y: factor, zIndex });
-    await control.start({
-      y: 0,
-      zIndex: 'auto',
-      transition: { duration: 0.3 },
-    });
-  };
 
   const handleDeposit = async () => {
     handlers.goToDeposit();
-    await Promise.all([
-      moveVertically(fromControls, 78),
-      moveVertically(toControls, -78, 999),
-    ]);
   };
 
   const handleWithdraw = async () => {
     handlers.goToWithdraw();
-    await Promise.all([
-      moveVertically(fromControls, 78, 999),
-      moveVertically(toControls, -78),
-    ]);
   };
 
   function getDefaultValue() {
-    return isWithdraw ? 'withdraw' : 'bridge';
+    if (isEthChain(fromNetwork)) return 'bridge';
+    if (isFuelChain(fromNetwork)) return 'withdraw';
   }
 
   return (
     <ToggleGroup
       type="single"
       defaultValue={getDefaultValue()}
+      value={getDefaultValue()}
       className={classes.toggle()}
     >
       <ToggleGroup.Item
