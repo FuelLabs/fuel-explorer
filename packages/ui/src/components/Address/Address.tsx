@@ -47,13 +47,7 @@ const AddressSpan = ({
           {address}
         </span>
       )}
-      <span
-        className={cx(baseClass, {
-          'laptop:hidden': full,
-        })}
-      >
-        {short}
-      </span>
+      <span className={cx(baseClass, full && 'laptop:hidden')}>{short}</span>
     </>
   );
 };

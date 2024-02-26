@@ -61,7 +61,7 @@ export const DrawerOverlay = createComponent<
 >({
   id: 'DrawerOverlay',
   baseElement: RD.Overlay,
-  className: () => styles().overlay(),
+  className: ({ className }) => styles().overlay({ className }),
 });
 
 export const DrawerClose = createComponent<DrawerCloseProps, typeof RD.Close>({
@@ -77,7 +77,7 @@ export const DrawerCloseIcon = createComponent<
   typeof ButtonClose
 >({
   id: 'DrawerCloseIcon',
-  className: () => styles().closeIcon(),
+  className: ({ className }) => styles().closeIcon({ className }),
   baseElement: ButtonClose,
   render: (Comp, props) => {
     return (
@@ -120,13 +120,13 @@ export const DrawerDescription = createComponent<
 >({
   id: 'DrawerDescription',
   baseElement: RD.Description,
-  className: () => styles().description(),
+  className: ({ className }) => styles().description({ className }),
 });
 
 export const DrawerTitle = createComponent<DrawerTitleProps, typeof RD.Title>({
   id: 'DrawerTitle',
   baseElement: RD.Title,
-  className: () => styles().title(),
+  className: ({ className }) => styles().title({ className }),
 });
 
 export const DrawerHeader = createPolymorphicComponent<
@@ -135,7 +135,7 @@ export const DrawerHeader = createPolymorphicComponent<
 >({
   id: 'DrawerHeader',
   baseElement: Box,
-  className: () => styles().header(),
+  className: ({ className }) => styles().header({ className }),
   defaultProps: {
     as: 'header',
   },
@@ -147,7 +147,7 @@ export const DrawerBody = createPolymorphicComponent<
 >({
   id: 'DrawerBody',
   baseElement: Box,
-  className: () => styles().body(),
+  className: ({ className }) => styles().body({ className }),
 });
 
 export const DrawerFooter = createPolymorphicComponent<
@@ -156,7 +156,7 @@ export const DrawerFooter = createPolymorphicComponent<
 >({
   id: 'DrawerFooter',
   baseElement: Box,
-  className: () => styles().footer(),
+  className: ({ className }) => styles().footer({ className }),
   defaultProps: {
     as: 'header',
   },

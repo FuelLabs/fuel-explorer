@@ -35,7 +35,7 @@ export const ToastViewport = createComponent<
 >({
   id: 'ToastViewport',
   baseElement: TP.Viewport,
-  className: () => styles().viewport(),
+  className: ({ className }) => styles().viewport({ className }),
 });
 
 export const ToastRoot = createComponent<ToastProps, typeof TP.Root>({
@@ -50,13 +50,13 @@ export const ToastRoot = createComponent<ToastProps, typeof TP.Root>({
 export const ToastAction = createComponent<ToastActionProps, typeof TP.Action>({
   id: 'ToastAction',
   baseElement: TP.Action,
-  className: () => styles().action(),
+  className: ({ className }) => styles().action({ className }),
 });
 
 export const ToastClose = createComponent<ToastCloseProps, typeof TP.Close>({
   id: 'ToastClose',
   baseElement: TP.Close,
-  className: () => styles().close(),
+  className: ({ className }) => styles().close({ className }),
   render: (Comp, props) => {
     return (
       <Comp>
@@ -72,7 +72,7 @@ export const ToastClose = createComponent<ToastCloseProps, typeof TP.Close>({
 export const ToastTitle = createComponent<ToastTitleProps, typeof TP.Title>({
   id: 'ToastTitle',
   baseElement: TP.Title,
-  className: () => styles().title(),
+  className: ({ className }) => styles().title({ className }),
 });
 
 export const ToastDescription = createComponent<
@@ -81,7 +81,7 @@ export const ToastDescription = createComponent<
 >({
   id: 'ToastDescription',
   baseElement: TP.Description,
-  className: () => styles().description(),
+  className: ({ className }) => styles().description({ className }),
 });
 
 export const Toast = withNamespace(ToastRoot, {

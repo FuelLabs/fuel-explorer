@@ -45,9 +45,9 @@ export const TabsRoot = createComponent<TabsProps, typeof RT.Root>({
 export const TabsList = createComponent<TabsListProps, typeof RT.List>({
   id: 'TabsList',
   baseElement: RT.List,
-  className: () => {
+  className: ({ className }) => {
     const { size, variant } = useContext(ctx);
-    return styles({ size, variant }).list();
+    return styles({ size, variant }).list({ className });
   },
 });
 
@@ -70,9 +70,9 @@ export const TabsContent = createComponent<TabsContentProps, typeof RT.Content>(
   {
     id: 'TabsContent',
     baseElement: RT.Content,
-    className: () => {
+    className: ({ className }) => {
       const { size, variant } = useContext(ctx);
-      return styles({ size, variant }).content();
+      return styles({ size, variant }).content({ className });
     },
   },
 );

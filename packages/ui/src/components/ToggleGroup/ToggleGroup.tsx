@@ -12,7 +12,7 @@ export const ToggleGroupRoot = createComponent<
   typeof TG.Root
 >({
   id: 'ToggleGroup',
-  className: () => styles().root(),
+  className: ({ className }) => styles().root({ className }),
   baseElement: TG.Root,
 });
 
@@ -21,7 +21,7 @@ export const ToggleGroupItem = createComponent<
   typeof TG.Item
 >({
   id: 'ToggleGroupItem',
-  className: () => styles().item(),
+  className: ({ className }) => styles().item({ className }),
   baseElement: TG.Item,
 });
 

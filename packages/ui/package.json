@@ -11,7 +11,9 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -36,7 +38,9 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build:storybook": "pnpm ts:check && storybook build -o ../app-explorer/public/ui",
@@ -78,7 +82,6 @@
     "react-number-format": "5.3.1",
     "react-stately": "3.29.1",
     "react-use": "17.5.0",
-    "tailwind-merge": "2.2.1",
     "tailwind-variants": "0.1.20",
     "tailwindcss-animate": "1.0.7",
     "tailwindcss-radix": "2.8.0",

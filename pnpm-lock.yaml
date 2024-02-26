@@ -297,9 +297,6 @@ importers:
       tai64:
         specifier: 1.0.0
         version: 1.0.0
-      tailwind-merge:
-        specifier: 2.2.1
-        version: 2.2.1
       tailwind-variants:
         specifier: 0.1.20
         version: 0.1.20(tailwindcss@3.4.1)
@@ -490,9 +487,6 @@ importers:
       react-hook-form:
         specifier: ^7.45.2
         version: 7.50.0(react@18.2.0)
-      tailwind-merge:
-        specifier: 2.2.1
-        version: 2.2.1
       tailwind-variants:
         specifier: 0.1.20
         version: 0.1.20(tailwindcss@3.4.1)
@@ -859,9 +853,6 @@ importers:
       react-use:
         specifier: 17.5.0
         version: 17.5.0(react-dom@18.2.0)(react@18.2.0)
-      tailwind-merge:
-        specifier: 2.2.1
-        version: 2.2.1
       tailwind-variants:
         specifier: 0.1.20
         version: 0.1.20(tailwindcss@3.4.1)
@@ -24060,12 +24051,6 @@ packages:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
     dev: false
 
-  /tailwind-merge@2.2.1:
-    resolution: {integrity: sha512-o+2GTLkthfa5YUt4JxPfzMIpQzZ3adD1vLVkvKE1Twl9UAhGsEbIZhHHZVRttyW177S8PDJI3bTQNaebyofK3Q==}
-    dependencies:
-      '@babel/runtime': 7.23.9
-    dev: false
-
   /tailwind-variants@0.1.20(tailwindcss@3.4.1):
     resolution: {integrity: sha512-AMh7x313t/V+eTySKB0Dal08RHY7ggYK0MSn/ad8wKWOrDUIzyiWNayRUm2PIJ4VRkvRnfNuyRuKbLV3EN+ewQ==}
     engines: {node: '>=16.x', pnpm: '>=7.x'}
@@ -25386,7 +25371,7 @@ packages:
       debug: 4.3.4(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.0.1(typescript@5.3.3)
-      vite: 5.0.12(@types/node@20.11.6)
+      vite: 5.0.12(@types/node@20.11.16)
     transitivePeerDependencies:
       - supports-color
       - typescript
