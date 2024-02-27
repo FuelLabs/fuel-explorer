@@ -39,6 +39,7 @@ export const BridgeTxOverview = ({
           href={explorerLink}
           className={classes.linkText()}
           color="green"
+          iconSize={16}
         >
           <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
         </Link>
@@ -50,24 +51,27 @@ export const BridgeTxOverview = ({
         </Text>
       </Flex>
       <Flex className={classes.txItem()}>
-        <Text className={classes.labelText()}>Direction</Text>
+        <Text className={classes.labelText()}>
+          Direction{' '}
+          <Text as="span" className={classes.subtleText()}>
+            {isDeposit ? '(Deposit)' : '(Withdraw)'}
+          </Text>
+        </Text>
         {isDeposit ? (
           <Flex className={classes.directionInfo()}>
-            <Text className={classes.subtleText()}>(Deposit)</Text>
             {ethAsset && (
-              <Asset asset={ethAsset} iconSize={18}>
+              <Asset asset={ethAsset} iconSize={16}>
                 <Asset.Icon alt={'Deposit'} />
               </Asset>
             )}
             <IconArrowRight size={16} />
-            <FuelLogo size={17} />
+            <FuelLogo size={16} />
           </Flex>
         ) : (
           <Flex className={classes.directionInfo()}>
-            <Text className={classes.subtleText()}>(Withdrawal)</Text>
-            <FuelLogo size={17} />
+            <FuelLogo size={16} />
             <IconArrowRight size={16} />
-            <Asset asset={ethAsset} iconSize={17}>
+            <Asset asset={ethAsset} iconSize={16}>
               <Asset.Icon alt={'withdrawal'} />
             </Asset>
           </Flex>
