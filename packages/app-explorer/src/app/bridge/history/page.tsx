@@ -2,7 +2,7 @@ import dynamicImport from 'next/dynamic';
 import { BridgeScreenLoader } from '~/systems/Bridge/components/BridgeScreenLoader';
 
 const Page = dynamicImport(
-  async () => import('app-portal/src/systems/Bridge/page-history'),
+  async () => import('app-portal').then((mod) => mod.BridgeHistoryPage),
   {
     ssr: false,
     loading: () => <BridgeScreenLoader view="history" />,

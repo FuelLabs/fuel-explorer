@@ -2,7 +2,8 @@
   "name": "app-portal",
   "private": true,
   "version": "0.0.0",
-  "files": ["./src"],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "ts:check": "pnpm xstate:typegen && tsc --noEmit",
     "xstate:typegen": "xstate typegen 'src/**/*.ts?(x)'"

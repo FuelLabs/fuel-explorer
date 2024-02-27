@@ -3,7 +3,7 @@
 import { Flex } from '@fuels/ui';
 import { BridgeHome, BridgeTxList } from './pages';
 
-export default function BridgeListPage() {
+export function BridgeHistoryPage() {
   return (
     <Flex justify="center">
       <BridgeHome>

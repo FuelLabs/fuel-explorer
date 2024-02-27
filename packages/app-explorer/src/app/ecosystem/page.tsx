@@ -4,7 +4,7 @@ import dynamicImport from 'next/dynamic';
 import { EcosystemScreenLoader } from '~/systems/Ecosystem/components/EcosystemScreenLoader';
 
 const Page = dynamicImport(
-  async () => import('app-portal/src/systems/Ecosystem/page'),
+  async () => import('app-portal').then((mod) => mod.EcosystemPage),
   {
     ssr: false,
     loading: () => <EcosystemScreenLoader />,

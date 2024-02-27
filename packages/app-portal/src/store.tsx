@@ -1,1 +1,1 @@
-export * from '~portal/systems/Store';
+export * from './systems/Store';
