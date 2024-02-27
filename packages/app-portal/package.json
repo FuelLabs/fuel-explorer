@@ -2,12 +2,14 @@
   "name": "app-portal",
   "private": true,
   "version": "0.0.0",
-  "files": [
-    "./src"
-  ],
+  "files": ["./src"],
   "scripts": {
     "ts:check": "pnpm xstate:typegen && tsc --noEmit",
     "xstate:typegen": "xstate typegen 'src/**/*.ts?(x)'"
+  },
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "dependencies": {
     "@fuel-bridge/fungible-token": "next",
@@ -19,7 +21,6 @@
     "@fuels/react-xstore": "0.15.2",
     "@fuels/ui": "workspace:*",
     "@hookform/resolvers": "^3.1.1",
-    "@storybook/react": "^7.6.10",
     "@tabler/icons-react": "2.46.0",
     "@tanstack/react-query": "4.36.1",
     "@xstate/react": "^3.2.1",
@@ -30,9 +31,6 @@
     "framer-motion": "^10.12.16",
     "fuels": "0.74.0",
     "next-themes": "0.2.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0",
     "react-hook-form": "^7.45.2",
     "tailwind-variants": "0.1.20",
     "viem": "0.3.36",
@@ -41,6 +39,10 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@storybook/react": "^7.6.10",
+    "@tanstack/react-query": "4.36.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "@types/node": "^18.13.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",

@@ -12,9 +12,9 @@ export const useBalance = ({
   assetId?: BytesLike;
   provider?: FuelProvider;
 }) => {
-  const query = useQuery(
-    [QUERY_KEYS.balance, address, assetId],
-    async () => {
+  const query = useQuery({
+    queryKey: [QUERY_KEYS.balance, address, assetId],
+    queryFn: async () => {
       try {
         // TODO: replace with ETH_ASSET_ID from asset-list package after this task gets done
         // https://linear.app/fuel-network/issue/FRO-144/make-asset-list-package-public-and-publish-in-npm
@@ -28,10 +28,8 @@ export const useBalance = ({
         return null;
       }
     },
-    {
-      enabled: !!provider,
-    },
-  );
+    enabled: !!provider,
+  });
 
   return {
     balance: query.data || undefined,
