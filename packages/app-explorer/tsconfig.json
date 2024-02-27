@@ -11,6 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
+      "~portal/*": ["../app-portal/src/*"],
+      "~public-portal/*": ["../app-portal/public/*"],
       "fuels": ["../../node_modules/fuels"],
       "tailwind-variants": ["../../node_modules/tailwind-variants"],
       "@react-aria/interactions": [
