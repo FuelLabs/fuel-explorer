@@ -363,7 +363,6 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         {...props}
         aria-label="Toggle Theme"
         className={classes.themeToggle({ className })}
-        data-theme={theme}
         role="button"
         tabIndex={0}
         onClick={handleToggle}
