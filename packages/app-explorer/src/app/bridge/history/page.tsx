@@ -1,3 +1,5 @@
+'use client';
+
 import dynamicImport from 'next/dynamic';
 import { BridgeScreenLoader } from '~/systems/Bridge/components/BridgeScreenLoader';
 
