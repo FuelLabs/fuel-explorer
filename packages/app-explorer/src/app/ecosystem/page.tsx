@@ -1,19 +1,16 @@
-'use client';
-
 import dynamicImport from 'next/dynamic';
 import { EcosystemScreenLoader } from '~/systems/Ecosystem/components/EcosystemScreenLoader';
 
 const Page = dynamicImport(
-  async () => import('app-portal/src/systems/Ecosystem/page'),
+  async () => import('~/systems/Ecosystem/screens/EcosystemScreen'),
   {
     ssr: false,
-    loading: () => <EcosystemScreenLoader />,
+    loading: EcosystemScreenLoader,
   },
 );
 
-export default function AppBridge() {
+export default function Ecosystem() {
   return <Page />;
 }
 
 export const dynamic = 'force-static';
-export const revalidate = Infinity;

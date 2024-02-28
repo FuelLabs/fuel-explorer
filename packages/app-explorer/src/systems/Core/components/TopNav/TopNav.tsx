@@ -6,7 +6,7 @@ import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { Routes as PortalRoutes } from 'app-portal/src/routes';
+import { Routes as PortalRoutes } from 'app-portal';
 import { SearchWidget } from '../Search/SearchWidget';
 
 export function TopNav() {

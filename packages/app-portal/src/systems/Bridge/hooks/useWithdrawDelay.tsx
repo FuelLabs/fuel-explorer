@@ -34,6 +34,7 @@ export function useWithdrawDelay() {
   }, [publicClient, bridgeSolidityContracts]);
 
   const { data, ...params } = useQuery({
+    queryKey: ['withdrawDelay'],
     queryFn: async () => {
       const [blocksPerCommitInterval, timeToFinalize] = (await Promise.all([
         fuelChainState?.read.BLOCKS_PER_COMMIT_INTERVAL(),
@@ -51,6 +52,8 @@ export function useWithdrawDelay() {
         timeToWithdrawSeconds: totalTimeInSeconds,
       };
     },
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
     enabled: !!fuelChainState,
   });
 
