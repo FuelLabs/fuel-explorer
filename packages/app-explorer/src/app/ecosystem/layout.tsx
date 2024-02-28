@@ -8,3 +8,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </Providers>
   );
 }
+
+export const dynamic = 'force-static';

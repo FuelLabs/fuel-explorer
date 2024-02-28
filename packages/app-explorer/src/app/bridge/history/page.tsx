@@ -1,7 +1,7 @@
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 import { BridgeScreenLoader } from '~/systems/Bridge/components/BridgeScreenLoader';
 
-const Page = dynamic(
+const Page = dynamicImport(
   async () => import('~/systems/Bridge/screens/BridgeHistoryScreen'),
   {
     ssr: false,
@@ -12,3 +12,5 @@ const Page = dynamic(
 export default function BridgeHistory() {
   return <Page />;
 }
+
+export const dynamic = 'force-static';

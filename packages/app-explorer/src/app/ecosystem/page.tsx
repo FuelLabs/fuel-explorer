@@ -1,7 +1,7 @@
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 import { EcosystemScreenLoader } from '~/systems/Ecosystem/components/EcosystemScreenLoader';
 
-const Page = dynamic(
+const Page = dynamicImport(
   async () => import('~/systems/Ecosystem/screens/EcosystemScreen'),
   {
     ssr: false,
@@ -12,3 +12,5 @@ const Page = dynamic(
 export default function Ecosystem() {
   return <Page />;
 }
+
+export const dynamic = 'force-static';
