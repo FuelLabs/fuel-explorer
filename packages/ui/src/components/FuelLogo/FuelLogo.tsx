@@ -1,3 +1,4 @@
+import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 
@@ -7,9 +8,15 @@ export type FuelLogoProps = PropsOf<'span'> & {
   showSymbol?: boolean;
 };
 
+const styles = tv({
+  slots: {
+    root: 'inline-flex items-center gap-3',
+  },
+});
+
 export const FuelLogo = createComponent<FuelLogoProps, 'span'>({
   id: 'FuelLogo',
-  className: 'inline-flex items-center gap-3',
+  className: ({ className }) => styles().root({ className }),
   render: (_, { size = 40, showLettering, showSymbol = true, ...props }) => {
     return (
       <span {...props}>

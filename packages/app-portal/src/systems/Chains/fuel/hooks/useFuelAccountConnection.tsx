@@ -8,26 +8,41 @@ import {
 } from '@fuel-wallet/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
-import { store } from '~/store';
-import type { AssetFuel } from '~/systems/Assets/utils';
-import { useFuelNetwork } from '~/systems/Settings/providers/FuelNetworkProvider';
+import { store } from '~portal/store';
+import type { AssetFuel } from '~portal/systems/Assets/utils';
+import { useFuelNetwork } from '~portal/systems/Settings/providers/FuelNetworkProvider';
 
 import { useBalance } from './useBalance';
 
 export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { assetId } = props || {};
-  const { fuelProvider } = useFuelNetwork();
   const { fuel } = useFuel();
-  const { account } = useAccount();
-  const { balance } = useBalance({
-    address: account || '',
+  const { fuelProvider, isLoading: isLoadingProvider } = useFuelNetwork();
+  const { account, isLoading: isLoadingAccount } = useAccount();
+  const { balance, isLoading: isLoadingBalance } = useBalance({
     assetId,
+    address: account || '',
     provider: fuelProvider,
   });
-  const { isLoading: isLoadingConnection } = useIsConnected();
-  const { connect, error, isConnecting } = useConnectUI();
-  const { disconnect } = useDisconnect();
-  const { wallet } = useWallet(account);
+
+  const { isLoading: isLoadingConnected } = useIsConnected();
+  const { disconnect, isLoading: isLoadingDisconnecting } = useDisconnect();
+  const { wallet, isLoading: isLoadingWallet } = useWallet(account);
+  const {
+    connect,
+    error,
+    isConnecting,
+    isLoading: isLoadingConnectUI,
+  } = useConnectUI();
+
+  const isLoadingConnection =
+    isLoadingProvider ||
+    isLoadingAccount ||
+    isLoadingBalance ||
+    isLoadingConnected ||
+    isLoadingDisconnecting ||
+    isLoadingWallet ||
+    isLoadingConnectUI;
 
   const address = useMemo(
     () => (account ? Address.fromString(account) : undefined),

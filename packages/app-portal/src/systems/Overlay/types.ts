@@ -3,5 +3,4 @@ export enum Overlays {
   'tx.fromFuel.toEth' = 'tx.fromFuel.toEth',
   'fuel.install' = 'fuel.install',
   'eth.assets' = 'eth.assets',
-  'eth.assets.add' = 'eth.assets.add',
 }

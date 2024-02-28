@@ -1,45 +1,29 @@
-import { cssObj } from '@fuel-ui/css';
-import { Dialog } from '@fuel-ui/react';
-import { AssetsDialog } from '~/systems/Assets/containers';
-import {
-  AddAssetFormDialog,
-  TxEthToFuelDialog,
-  TxFuelToEthDialog,
-} from '~/systems/Chains';
-import { useOverlay } from '~/systems/Overlay';
-
-const OVERLAY_HEIGHT = 100;
-const OVERLAY_WIDTH = 400;
+import { Dialog } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
+import { AssetsDialog } from '~portal/systems/Assets/containers';
+import { TxEthToFuelDialog, TxFuelToEthDialog } from '~portal/systems/Chains';
+import { useOverlay } from '~portal/systems/Overlay';
 
 export function OverlayDialog() {
+  const classes = styles();
   const overlay = useOverlay();
 
   return (
     <Dialog
-      isOpen={overlay.isDialogOpen}
-      css={styles.dialog}
-      shouldCloseOnInteractOutside={() => overlay.settings.closeOnBlur}
+      open={overlay.isDialogOpen}
       onOpenChange={(isOpen) => !isOpen && overlay.close()}
     >
-      <Dialog.Content css={styles.content}>
+      <Dialog.Content className={classes.content()}>
         {overlay.is('tx.fromEth.toFuel') && <TxEthToFuelDialog />}
         {overlay.is('tx.fromFuel.toEth') && <TxFuelToEthDialog />}
         {overlay.is('eth.assets') && <AssetsDialog />}
-        {overlay.is('eth.assets.add') && <AddAssetFormDialog />}
       </Dialog.Content>
     </Dialog>
   );
 }
 
-const styles = {
-  dialog: cssObj({
-    backdropFilter: 'blur(10px)',
-  }),
-  content: cssObj({
-    width: OVERLAY_WIDTH,
-    minHeight: OVERLAY_HEIGHT,
-    maxWidth: OVERLAY_WIDTH,
-    maxHeight: 'none',
-    backgroundColor: '$cardBg',
-  }),
-};
+const styles = tv({
+  slots: {
+    content: 'max-w-sm min-h-[100px]',
+  },
+});

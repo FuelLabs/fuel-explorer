@@ -1,22 +1,43 @@
 import { useQuery } from '@tanstack/react-query';
+import {
+  BridgeSolidityContracts,
+  getBridgeSolidityContracts,
+} from 'app-commons';
 import { addSeconds } from 'date-fns';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePublicClient } from 'wagmi';
-import { EthConnectorService, distanceToNow } from '~/systems/Chains';
+import { EthConnectorService, distanceToNow } from '~portal/systems/Chains';
 
 export function useWithdrawDelay() {
+  const [bridgeSolidityContracts, setBridgeSolidityContracts] =
+    useState<BridgeSolidityContracts>();
   const publicClient = usePublicClient();
+
+  useEffect(() => {
+    if (!publicClient) return;
+
+    async function getContract() {
+      const contracts = await getBridgeSolidityContracts();
+      setBridgeSolidityContracts(contracts);
+    }
+
+    getContract();
+  }, [publicClient]);
+
   const fuelChainState = useMemo(() => {
+    if (!bridgeSolidityContracts) return;
+
     return EthConnectorService.connectToFuelChainState({
       publicClient,
+      bridgeSolidityContracts,
     });
-  }, [publicClient]);
+  }, [publicClient, bridgeSolidityContracts]);
 
   const { data, ...params } = useQuery({
     queryFn: async () => {
       const [blocksPerCommitInterval, timeToFinalize] = (await Promise.all([
-        fuelChainState.read.BLOCKS_PER_COMMIT_INTERVAL(),
-        fuelChainState.read.TIME_TO_FINALIZE(),
+        fuelChainState?.read.BLOCKS_PER_COMMIT_INTERVAL(),
+        fuelChainState?.read.TIME_TO_FINALIZE(),
       ])) as [bigint, bigint];
       // It's safe to convert bigint to number in this case as the values of
       // blockPerCommitInterval and timeToFinalize are not too big.
@@ -30,6 +51,7 @@ export function useWithdrawDelay() {
         timeToWithdrawSeconds: totalTimeInSeconds,
       };
     },
+    enabled: !!fuelChainState,
   });
 
   return {

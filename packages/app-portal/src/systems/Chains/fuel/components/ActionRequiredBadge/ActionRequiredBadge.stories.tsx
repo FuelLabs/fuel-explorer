@@ -1,6 +1,5 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box } from '@fuel-ui/react';
-
+import { HStack } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { ActionRequiredBadge } from './ActionRequiredBadge';
 
 export default {
@@ -12,15 +11,16 @@ export default {
 };
 
 export const Usage = () => {
+  const classes = styles();
   return (
-    <Box.Flex align="center" justify="center" css={styles.storybook}>
+    <HStack align="center" justify="center" className={classes.storybook()}>
       <ActionRequiredBadge />
-    </Box.Flex>
+    </HStack>
   );
 };
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-  }),
-};
+export const styles = tv({
+  slots: {
+    storybook: 'm-4',
+  },
+});

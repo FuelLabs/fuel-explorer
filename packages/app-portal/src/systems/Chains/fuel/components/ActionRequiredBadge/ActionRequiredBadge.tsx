@@ -1,21 +1,20 @@
-import { cssObj } from '@fuel-ui/css';
-import { Badge, Text } from '@fuel-ui/react';
+import { Badge, Text } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 
 export const ActionRequiredBadge = () => {
+  const classes = styles();
+
   return (
     <Text>
-      <Badge css={styles.actionBadge} intent="primary">
+      <Badge className={classes.actionBadge()} color="green">
         Action Required
       </Badge>
     </Text>
   );
 };
 
-const styles = {
-  actionBadge: cssObj({
-    fontSize: '$xs',
-    lineHeight: 1,
-    fontWeight: '$medium',
-    textTransform: 'none',
-  }),
-};
+export const styles = tv({
+  slots: {
+    actionBadge: 'text-[13px] font-medium leading-1 normal-case',
+  },
+});

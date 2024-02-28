@@ -11,7 +11,9 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -36,7 +38,9 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build:storybook": "pnpm ts:check && storybook build -o ../app-explorer/public/ui",
@@ -50,8 +54,9 @@
     "generate:defs": "node scripts/create-defs.mjs"
   },
   "dependencies": {
-    "@fuel-ts/address": "0.73.0",
+    "@fuel-ts/address": "0.74.0",
     "@fuel-ts/math": "0.74.0",
+    "@fuels/assets": "0.1.5",
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",
@@ -59,6 +64,7 @@
     "@radix-ui/react-slot": "1.0.2",
     "@radix-ui/react-tabs": "1.0.4",
     "@radix-ui/react-toast": "1.1.5",
+    "@radix-ui/react-toggle-group": "1.0.4",
     "@radix-ui/themes": "^2.0.3",
     "@react-aria/focus": "3.16.0",
     "@tabler/icons-react": "2.47.0",
@@ -73,9 +79,9 @@
     "react": "^18.2.0",
     "react-aria": "3.31.1",
     "react-dom": "^18.2.0",
+    "react-number-format": "5.3.1",
     "react-stately": "3.29.1",
     "react-use": "17.5.0",
-    "tailwind-merge": "2.2.1",
     "tailwind-variants": "0.1.20",
     "tailwindcss-animate": "1.0.7",
     "tailwindcss-radix": "2.8.0",
@@ -83,18 +89,18 @@
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "0.18.0",
-    "@storybook/addon-a11y": "^7.6.12",
-    "@storybook/addon-actions": "^7.6.12",
-    "@storybook/addon-essentials": "^7.6.12",
-    "@storybook/addon-interactions": "^7.6.12",
-    "@storybook/addon-links": "^7.6.12",
-    "@storybook/addon-storysource": "^7.6.12",
-    "@storybook/addon-viewport": "7.6.12",
-    "@storybook/addons": "^7.6.12",
-    "@storybook/react": "^7.6.12",
-    "@storybook/react-vite": "^7.6.12",
+    "@storybook/addon-a11y": "^8.0.0-beta.5",
+    "@storybook/addon-actions": "^8.0.0-beta.5",
+    "@storybook/addon-essentials": "^8.0.0-beta.5",
+    "@storybook/addon-interactions": "^8.0.0-beta.5",
+    "@storybook/addon-links": "^8.0.0-beta.5",
+    "@storybook/addon-storysource": "^8.0.0-beta.5",
+    "@storybook/addon-viewport": "^8.0.0-beta.5",
+    "@storybook/addons": "7.6.17",
+    "@storybook/react": "^8.0.0-beta.5",
+    "@storybook/react-vite": "^8.0.0-beta.5",
     "@storybook/testing-library": "^0.2.2",
-    "@storybook/types": "^7.6.12",
+    "@storybook/types": "^8.0.0-beta.5",
     "@types/lodash": "4.14.202",
     "@types/react": "^18.2.54",
     "@types/react-dom": "^18.2.18",
@@ -103,7 +109,7 @@
     "lodash": "^4.17.21",
     "postcss": "8.4.34",
     "postcss-import": "16.0.0",
-    "storybook": "^7.6.12",
+    "storybook": "^8.0.0-beta.5",
     "storybook-addon-theme": "workspace:*",
     "tailwindcss": "3.4.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",

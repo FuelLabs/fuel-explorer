@@ -37,6 +37,7 @@ export * from './components/Icon';
 export * from './components/IconBrand';
 export * from './components/IconButton';
 export * from './components/Input';
+export * from './components/InputAmount';
 export * from './components/InputPassword';
 export * from './components/Inset';
 export * from './components/Link';
@@ -58,6 +59,6 @@ export * from './components/Text';
 export * from './components/TextArea';
 export * from './components/Theme';
 export * from './components/Toast';
+export * from './components/ToggleGroup';
 export * from './components/Tooltip';
-
 export * from './utils/component';

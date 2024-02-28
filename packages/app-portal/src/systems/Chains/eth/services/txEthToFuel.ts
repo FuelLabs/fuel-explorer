@@ -1,3 +1,4 @@
+import type { Asset } from '@fuels/assets';
 import type {
   BN,
   Message,
@@ -11,11 +12,6 @@ import { decodeEventLog } from 'viem';
 import type { PublicClient } from 'wagmi';
 import type { FetchTokenResult } from 'wagmi/actions';
 import { fetchToken } from 'wagmi/actions';
-import {
-  VITE_ETH_FUEL_ERC20_GATEWAY,
-  VITE_ETH_FUEL_MESSAGE_PORTAL,
-} from '~/config';
-import type { Asset } from '~/systems/Assets/services/asset';
 
 import { relayCommonMessage } from '../../fuel/utils/relayMessage';
 import type { FuelERC20GatewayArgs } from '../contracts/FuelErc20Gateway';
@@ -27,6 +23,7 @@ import {
 } from '../contracts/FuelMessagePortal';
 import { getBlockDate, isErc20Address } from '../utils';
 
+import { getBridgeSolidityContracts } from 'app-commons';
 import { EthConnectorService } from './connectors';
 
 export type TxEthToFuelInputs = {
@@ -125,8 +122,10 @@ export class TxEthToFuelService {
     try {
       const { ethWalletClient, fuelAddress, amount } = input;
       if (fuelAddress && ethWalletClient) {
+        const bridgeSolidityContracts = await getBridgeSolidityContracts();
         const fuelPortal = EthConnectorService.connectToFuelMessagePortal({
           walletClient: ethWalletClient,
+          bridgeSolidityContracts,
         });
 
         const txHash = await fuelPortal.write.depositETH(
@@ -175,8 +174,9 @@ export class TxEthToFuelService {
           walletClient: ethWalletClient,
         });
 
+        const bridgeSolidityContracts = await getBridgeSolidityContracts();
         const approveTxHash = await erc20Token.write.approve([
-          VITE_ETH_FUEL_ERC20_GATEWAY,
+          bridgeSolidityContracts.FuelERC20Gateway,
           amount,
         ]);
 
@@ -185,7 +185,7 @@ export class TxEthToFuelService {
           approveTxHashReceipt = await ethPublicClient.getTransactionReceipt({
             hash: approveTxHash,
           });
-        } catch (err: unknown) {
+        } catch (_err: unknown) {
           // workaround in place because waitForTransactionReceipt stop working after first time using it
           approveTxHashReceipt =
             await ethPublicClient.waitForTransactionReceipt({
@@ -199,6 +199,7 @@ export class TxEthToFuelService {
 
         const fuelErc20Gateway = EthConnectorService.connectToFuelErc20Gateway({
           walletClient: ethWalletClient,
+          bridgeSolidityContracts,
         });
         const depositTxHash = await fuelErc20Gateway.write.deposit([
           fuelAddress.toB256() as `0x${string}`,
@@ -238,7 +239,7 @@ export class TxEthToFuelService {
       receipt = await ethPublicClient.getTransactionReceipt({
         hash: ethTxId,
       });
-    } catch (err: unknown) {
+    } catch (_err: unknown) {
       // workaround in place because waitForTransactionReceipt stop working after first time using it
       receipt = await ethPublicClient.waitForTransactionReceipt({
         hash: ethTxId,
@@ -427,8 +428,9 @@ export class TxEthToFuelService {
       ({ name, type }) => name === 'MessageSent' && type === 'event',
     );
 
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const ethLogs = await ethPublicClient!.getLogs({
-      address: VITE_ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: bridgeSolidityContracts.FuelMessagePortal,
       event: {
         type: 'event',
         name: 'MessageSent',
@@ -442,7 +444,7 @@ export class TxEthToFuelService {
     });
 
     const erc20AllLogs = await ethPublicClient!.getLogs({
-      address: VITE_ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: bridgeSolidityContracts.FuelMessagePortal,
       event: {
         type: 'event',
         name: 'MessageSent',

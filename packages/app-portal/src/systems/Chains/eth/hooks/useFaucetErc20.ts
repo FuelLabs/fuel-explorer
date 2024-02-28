@@ -1,4 +1,4 @@
-import { useAssets } from '~/systems/Assets/hooks/useAssets';
+import { useAssets } from '~portal/systems/Assets/hooks/useAssets';
 
 import { useEthAccountConnection } from './useEthAccountConnection';
 

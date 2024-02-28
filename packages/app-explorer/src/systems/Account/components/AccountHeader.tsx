@@ -1,8 +1,8 @@
 import { Address } from '@fuels/ui';
 import { IconHash } from '@tabler/icons-react';
 import { Suspense } from 'react';
-import { PageTitle } from '~/systems/Core/components/PageTitle/PageTitle';
 
+import { PageTitle } from 'app-commons';
 import { AccountTabs } from './AccountTabs/AccountTabs';
 import { AccountsTabsSync } from './AccountTabs/AccountTabsSync';
 

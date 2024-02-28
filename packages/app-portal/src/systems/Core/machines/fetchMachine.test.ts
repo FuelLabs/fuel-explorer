@@ -1,7 +1,7 @@
-import { toast } from '@fuel-ui/react';
 import { interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
 
+import { toast } from '@fuels/ui';
 import type { CreateFetchMachineOpts } from './fetchMachine';
 import { FetchMachine } from './fetchMachine';
 

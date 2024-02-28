@@ -14,7 +14,6 @@ export type {
   AssetIconProps,
   AssetIconSize,
   AssetNameProps,
-  AssetObj,
   AssetProps,
   AssetSymbolProps,
 } from './Asset';

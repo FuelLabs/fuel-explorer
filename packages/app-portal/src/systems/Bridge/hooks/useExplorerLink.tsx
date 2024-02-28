@@ -1,7 +1,6 @@
+import { BLOCK_EXPLORER_URL, FUEL_CHAIN } from 'app-commons';
 import { buildBlockExplorerUrl } from 'fuels';
 import { useMemo } from 'react';
-import { VITE_BLOCK_EXPLORER_URL } from '~/config';
-import { FUEL_CHAIN } from '~/systems/Chains';
 
 export type ExplorerLinkProps = {
   network: 'ethereum' | 'fuel' | string | undefined;
@@ -19,7 +18,7 @@ export function useExplorerLink({
     }
     if (network === 'fuel') {
       if (providerUrl === FUEL_CHAIN.providerUrl) {
-        return `${VITE_BLOCK_EXPLORER_URL}tx/${id}`;
+        return `${BLOCK_EXPLORER_URL}tx/${id}`;
       }
       return buildBlockExplorerUrl({
         path: `transaction/${id || ''}`,

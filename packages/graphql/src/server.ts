@@ -61,7 +61,7 @@ app.get('/health', async (_, res) => {
         (res) => res.json(),
       )
     ).up;
-  } catch (e) {
+  } catch (_e) {
     providerUp = false;
   }
 

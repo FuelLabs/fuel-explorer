@@ -1,3 +1,4 @@
+import assetList from '@fuels/assets';
 import type { Meta, StoryObj } from '@storybook/react';
 import { IconCurrencyEthereum } from '@tabler/icons-react';
 
@@ -5,7 +6,6 @@ import { HStack, VStack } from '../Box';
 import { Icon } from '../Icon/Icon';
 
 import { Asset } from './Asset';
-import { MOCK_ASSETS } from './__mocks__/assets';
 
 const meta: Meta<typeof Asset> = {
   title: 'Web3/Asset',
@@ -16,7 +16,7 @@ export default meta;
 type Story = StoryObj<typeof Asset>;
 
 const DEFAULT_ARGS = {
-  asset: MOCK_ASSETS.eth,
+  asset: assetList[0],
   amount: '1000000000',
 };
 
@@ -52,13 +52,16 @@ export const CustomIcon: Story = {
   ),
 };
 
+const NO_ICON_ARGS = {
+  asset: {
+    ...assetList[0],
+    icon: '',
+  },
+};
+
 export const NoIcon: Story = {
   render: (args) => (
-    <Asset
-      {...args}
-      {...DEFAULT_ARGS}
-      asset={{ name: 'Ethereum', symbol: 'ETH' }}
-    >
+    <Asset {...args} {...DEFAULT_ARGS} {...NO_ICON_ARGS}>
       <Asset.Icon />
       <Asset.Name />
     </Asset>
@@ -76,7 +79,6 @@ export const AmountSymbol: Story = {
 };
 
 const AMOUNT_ARGS = {
-  asset: MOCK_ASSETS.eth,
   amount: '1000000001',
   precision: 9,
 };

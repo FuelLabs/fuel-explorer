@@ -1,7 +1,7 @@
-import { cssObj } from '@fuel-ui/css';
-import { CardList } from '@fuel-ui/react';
 import assetList from '@fuels/assets';
 
+import { CardList } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
 import { AssetCard } from './AssetCard';
 
 export default {
@@ -13,27 +13,35 @@ export default {
 };
 // TODO: fix stories
 export const Usage = () => {
+  const classes = styles();
+
   return (
-    <CardList css={styles.storybook}>
+    <CardList className={classes.storybook()}>
       <AssetCard asset={assetList[0]} />
     </CardList>
   );
 };
 
 export const AvatarUsage = () => {
+  const classes = styles();
+
   return (
-    <CardList css={styles.storybook}>
+    <CardList className={classes.storybook()}>
       <AssetCard asset={assetList[0]} />
     </CardList>
   );
 };
 
 export const OnPress = () => {
+  const classes = styles();
+
   return (
-    <CardList css={styles.storybook}>
+    <CardList className={classes.storybook()}>
       <AssetCard
         asset={assetList[0]}
         onClick={() => {
+          const _classes = styles();
+
           console.log('press');
         }}
       />
@@ -42,11 +50,15 @@ export const OnPress = () => {
 };
 
 export const OnAdd = () => {
+  const classes = styles();
+
   return (
-    <CardList css={styles.storybook}>
+    <CardList className={classes.storybook()}>
       <AssetCard
         asset={assetList[0]}
         onAdd={() => {
+          const _classes = styles();
+
           console.log('add');
         }}
       />
@@ -55,11 +67,15 @@ export const OnAdd = () => {
 };
 
 export const OnRemove = () => {
+  const classes = styles();
+
   return (
-    <CardList css={styles.storybook}>
+    <CardList className={classes.storybook()}>
       <AssetCard
         asset={assetList[0]}
         onRemove={() => {
+          const _classes = styles();
+
           console.log('remove');
         }}
       />
@@ -68,11 +84,15 @@ export const OnRemove = () => {
 };
 
 export const OnFaucet = () => {
+  const classes = styles();
+
   return (
-    <CardList css={styles.storybook}>
+    <CardList className={classes.storybook()}>
       <AssetCard
         asset={assetList[0]}
         onFaucet={() => {
+          const _classes = styles();
+
           console.log('faucet');
         }}
       />
@@ -81,8 +101,10 @@ export const OnFaucet = () => {
 };
 
 export const OnRemoveDisabled = () => {
+  const classes = styles();
+
   return (
-    <CardList css={styles.storybook}>
+    <CardList className={classes.storybook()}>
       <AssetCard
         isRemoveDisabled
         asset={assetList[0]}
@@ -94,9 +116,8 @@ export const OnRemoveDisabled = () => {
   );
 };
 
-const styles = {
-  storybook: cssObj({
-    margin: '20px',
-    width: '386px',
-  }),
-};
+export const styles = tv({
+  slots: {
+    storybook: ['m-4 w-[386px]'],
+  },
+});

@@ -1,64 +1,55 @@
-import { Tabs } from '@fuel-ui/react';
-import type { AnimationControls } from 'framer-motion';
-
+import { ToggleGroup } from '@fuels/ui';
+import { tv } from 'tailwind-variants';
+import { isEthChain, isFuelChain } from '~portal/systems/Chains';
 import { useBridge } from '../hooks';
 
-type BridgeTabsProps = {
-  fromControls: AnimationControls;
-  toControls: AnimationControls;
-};
+export const BridgeTabs = () => {
+  const { handlers, fromNetwork } = useBridge();
+  const classes = styles();
 
-export const BridgeTabs = ({ fromControls, toControls }: BridgeTabsProps) => {
-  const { handlers, isWithdraw } = useBridge();
-
-  const moveVertically = async (
-    control: AnimationControls,
-    factor = 15,
-    zIndex = 1,
-  ) => {
-    control.set({ y: factor, zIndex });
-    await control.start({
-      y: 0,
-      zIndex: 'auto',
-      transition: { duration: 0.3 },
-    });
-  };
-  const handleDepositAnimation = async () => {
-    moveVertically(fromControls, 78);
-    await moveVertically(toControls, -78, 999);
+  const handleDeposit = async () => {
+    handlers.goToDeposit();
   };
 
-  const handleWithdrawAnimation = async () => {
-    moveVertically(fromControls, 78, 999);
-    await moveVertically(toControls, -78);
+  const handleWithdraw = async () => {
+    handlers.goToWithdraw();
   };
+
+  function getDefaultValue() {
+    if (isEthChain(fromNetwork)) return 'bridge';
+    if (isFuelChain(fromNetwork)) return 'withdraw';
+  }
 
   return (
-    <Tabs value={isWithdraw ? 'withdraw' : 'deposit'} variant="subtle">
-      <Tabs.List aria-label="Manage deposits">
-        <Tabs.Trigger
-          value="deposit"
-          onClick={() => {
-            if (isWithdraw) {
-              handleDepositAnimation();
-              handlers.goToDeposit();
-            }
-          }}
-        >
-          Deposit to Fuel
-        </Tabs.Trigger>
-        <Tabs.Trigger
-          value="withdraw"
-          onClick={() => {
-            if (!isWithdraw) {
-              handleWithdrawAnimation();
-              handlers.goToWithdraw();
-            }
-          }}
-        >
-          Withdraw from Fuel
-        </Tabs.Trigger>
-      </Tabs.List>
-    </Tabs>
+    <ToggleGroup
+      type="single"
+      defaultValue={getDefaultValue()}
+      value={getDefaultValue()}
+      className={classes.toggle()}
+    >
+      <ToggleGroup.Item
+        value="bridge"
+        aria-label="Bridge"
+        onClick={handleDeposit}
+      >
+        Deposit
+      </ToggleGroup.Item>
+      <ToggleGroup.Item
+        value="withdraw"
+        aria-label="Withdraw"
+        onClick={handleWithdraw}
+      >
+        Withdraw
+      </ToggleGroup.Item>
+    </ToggleGroup>
   );
 };
+
+const styles = tv({
+  slots: {
+    toggle: [
+      'w-full rounded-md fuel-[ToggleGroupItem]:h-9',
+      'fuel-[ToggleGroupItem]:text-md',
+    ],
+  },
+});

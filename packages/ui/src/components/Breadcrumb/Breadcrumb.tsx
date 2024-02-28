@@ -1,6 +1,7 @@
 import { IconChevronRight } from '@tabler/icons-react';
 import { Children } from 'react';
 
+import { tv } from 'tailwind-variants';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
@@ -11,9 +12,16 @@ export type BreadcrumbProps = PropsOf<'ul'>;
 export type BreadcrumbItemProps = PropsOf<'li'>;
 export type BreadcrumbLinkProps = LinkProps;
 
+const styles = tv({
+  slots: {
+    root: 'flex gap-4 items-stretch',
+    link: 'inline-flex',
+  },
+});
+
 export const BreadcrumbRoot = createComponent<BreadcrumbProps, 'ul'>({
   id: 'Breadcrumb',
-  className: 'flex gap-4 items-stretch',
+  className: ({ className }) => styles().root({ className }),
   render: (_, { children, ...props }) => {
     const newChildren = Children.toArray(children).flatMap((child, index) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,7 +55,7 @@ export const BreadcrumbItem = createComponent<BreadcrumbItemProps, 'li'>({
 export const BreadcrumbLink = createComponent<BreadcrumbLinkProps, typeof Link>(
   {
     id: 'BreadcrumbLink',
-    className: 'inline-flex',
+    className: ({ className }) => styles().link({ className }),
     baseElement: Link,
   },
 );

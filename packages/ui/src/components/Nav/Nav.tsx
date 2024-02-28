@@ -12,7 +12,12 @@ import { useWindowSize } from 'react-use';
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
-import type { AsChildProp, PropsOf, WithAsProps } from '../../utils/types';
+import {
+  type AsChildProp,
+  BaseProps,
+  type PropsOf,
+  type WithAsProps,
+} from '../../utils/types';
 import { Badge } from '../Badge/Badge';
 import { Box, HStack } from '../Box';
 import type { BoxProps, HStackProps } from '../Box';
@@ -117,7 +122,7 @@ export const NavDesktop = createComponent<NavDesktopProps, 'nav'>({
 export const NavMobile = createComponent<NavMobileProps, 'nav'>({
   id: 'NavMobile',
   baseElement: 'nav',
-  className: () => styles().mobile(),
+  className: ({ className }) => styles().mobile({ className }),
   render: (Root, { isOpen, onOpenChange, children, className, ...props }) => {
     const [open, setOpen] = useState(() => Boolean(isOpen));
     const classes = styles();
@@ -146,7 +151,7 @@ export const NavMobileContent = createComponent<
 >({
   id: 'NavMobileContent',
   baseElement: 'header',
-  className: () => styles().mobileContent(),
+  className: ({ className }) => styles().mobileContent({ className }),
   render: (Root, { children, ...props }) => {
     const { isOpen, onOpenChange } = useNavMobileContext();
 
@@ -154,7 +159,6 @@ export const NavMobileContent = createComponent<
       <Root {...props} data-open={isOpen}>
         <AnimatePresence initial={false}>
           <HStack gap="2" className="flex-1 justify-between items-center">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {Children.toArray(children).map((child: any) => {
               return cloneElement(child, { key: child.type.id });
             })}
@@ -176,12 +180,10 @@ export const NavMobileContent = createComponent<
 /**
  * NavSpacer
  */
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const NavSpacer = createComponent<{}, 'hr'>({
+export const NavSpacer = createComponent<BaseProps<{}>, 'hr'>({
   id: 'NavSpacer',
   baseElement: 'hr',
-  className: 'flex-1 opacity-0',
+  className: ({ className }) => styles().spacer({ className }),
 });
 
 /**
@@ -190,7 +192,7 @@ export const NavSpacer = createComponent<{}, 'hr'>({
 
 export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
   id: 'NavLogo',
-  className: () => styles().logo(),
+  className: ({ className }) => styles().logo({ className }),
   render: (_, { size, ...props }) => {
     const { width } = useWindowSize();
     const defaultSize = width < 960 ? 28 : 32;
@@ -204,7 +206,7 @@ export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
 
 export const NavMenu = createComponent<NavMenuProps, 'div'>({
   id: 'NavMenu',
-  className: () => styles().menu(),
+  className: ({ className }) => styles().menu({ className }),
   render: (Root, props) => {
     const mobileProps = useNavMobileContext();
     const content = <Root {...props} />;
@@ -255,7 +257,7 @@ export const NavMenu = createComponent<NavMenuProps, 'div'>({
 export const NavMenuItem = createComponent<NavMenuItemProps, typeof Link>({
   id: 'NavMenuItem',
   baseElement: Link,
-  className: () => styles().menuItem(),
+  className: ({ className }) => styles().menuItem({ className }),
   render: (Comp, { isActive, ...props }) => {
     return <Comp {...props} data-active={isActive} />;
   },
@@ -269,7 +271,7 @@ const MotionHStack = motion<HStackProps>(HStack);
 export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
   {
     id: 'NavConnection',
-    className: () => styles().navConnection(),
+    className: ({ className }) => styles().navConnection({ className }),
     render: (_, { whenOpened = 'show', ...props }) => {
       const navProps = useNavContext();
       const mobileProps = useNavMobileContext();
@@ -313,7 +315,6 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
 
       const animContent = (
         <MotionHStack
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           {...(props as any)}
           animate="open"
           exit="collapsed"
@@ -362,7 +363,6 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         {...props}
         aria-label="Toggle Theme"
         className={classes.themeToggle({ className })}
-        data-theme={theme}
         role="button"
         tabIndex={0}
         onClick={handleToggle}

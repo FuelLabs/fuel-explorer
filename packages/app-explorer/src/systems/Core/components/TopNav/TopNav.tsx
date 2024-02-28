@@ -1,9 +1,12 @@
 'use client';
 import { Nav, useBreakpoints } from '@fuels/ui';
+import { isRoute } from 'app-commons';
 import { useTheme } from 'next-themes';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+import { Routes as PortalRoutes } from 'app-portal/src/routes';
 import { SearchWidget } from '../Search/SearchWidget';
 
 export function TopNav() {
@@ -14,7 +17,13 @@ export function TopNav() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { isMobile, isLaptop } = useBreakpoints();
   const pathname = usePathname();
+  const isBridge = isRoute(pathname, [
+    PortalRoutes.bridge,
+    PortalRoutes.bridgeHistory,
+  ]);
+  const isEcosystemBridge = isRoute(pathname, [PortalRoutes.ecosystem]);
   const isHomePage = pathname === '/';
+  const isExplorer = !isBridge && !isEcosystemBridge;
 
   useEffect(() => {
     if (isLaptop && isMobileSearchOpen) {
@@ -43,24 +52,27 @@ export function TopNav() {
   const tooling = (
     <>
       <Nav.MenuItem
-        isActive
+        isActive={isExplorer}
         as={NextLink}
         href="/"
         className="flex items-center"
       >
         Explorer
       </Nav.MenuItem>
-      <Nav.MenuItem href="/portal/bridge">Bridge</Nav.MenuItem>
-      <Nav.MenuItem href="/portal/ecosystem">Ecosystem</Nav.MenuItem>
+      <Nav.MenuItem isActive={isBridge} href={PortalRoutes.bridge()}>
+        Bridge
+      </Nav.MenuItem>
+      <Nav.MenuItem
+        isActive={isEcosystemBridge}
+        href={PortalRoutes.ecosystem()}
+      >
+        Ecosystem
+      </Nav.MenuItem>
     </>
   );
 
   const themeToggle = (
-    <Nav.ThemeToggle
-      whenOpened="no-effect"
-      theme={theme!}
-      onToggle={(theme) => setTheme(theme)}
-    />
+    <Nav.ThemeToggle whenOpened="no-effect" theme={theme} onToggle={setTheme} />
   );
 
   return (

@@ -1,20 +1,24 @@
-import { cssObj } from '@fuel-ui/css';
-import {
-  Box,
-  ButtonLink,
-  Card,
-  Icon,
-  Tag,
-  Text,
-  Tooltip,
-} from '@fuel-ui/react';
 import { motion } from 'framer-motion';
 import type { FC } from 'react';
-import { animations, getUrlHostName } from '~/systems/Core';
+import { animations, getUrlHostName } from '~portal/systems/Core';
 
 import type { Project } from '../../types';
 import { ProjecImage } from '../ProjectImage';
 
+import {
+  Badge,
+  Button,
+  Card,
+  HStack,
+  Link,
+  Text,
+  Tooltip,
+  VStack,
+} from '@fuels/ui';
+import { IconBrandDiscord, IconBrandX } from '@tabler/icons-react';
+import { IconBrandGithub } from '@tabler/icons-react';
+import { IconArrowUpRight } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
 import { ProjectItemLoader } from './ProjectItemLoader';
 
 const MotionCard = motion(Card);
@@ -36,178 +40,136 @@ export const ProjectItem: ProjectItemComponent = ({
   discord,
   status,
   github,
-  isLive,
+  isLive: _isLive,
 }: ProjectItemProps) => {
+  const classes = styles();
+
   const onCardPress = () => {
     window.open(url, '_blank');
   };
 
   return (
     <MotionCard
-      withDividers
       {...animations.appearIn({
         transition: { type: 'spring' },
       })}
-      variant="outlined"
-      css={styles.card}
+      className={classes.card()}
       onClick={onCardPress}
     >
-      <Card.Body css={styles.body}>
+      <Card.Body className={classes.body()}>
         <ProjecImage name={name} image={image} />
-        <Box.Stack gap="$2" justify="space-between" css={styles.details}>
-          <Box.Stack align="flex-start" gap="$1">
-            <Box.Flex
-              align="flex-start"
-              justify="space-between"
-              css={styles.title}
-            >
-              <Text fontSize="base" color="intentsBase12">
-                {name}
-              </Text>
-              <Box.Flex>
+        <VStack gap="2" justify="between" className={classes.details()}>
+          <VStack align="start" gap="3">
+            <HStack align="start" justify="between" className={classes.title()}>
+              <Text className={classes.textProjectName()}>{name}</Text>
+              <HStack gap="0">
                 {twitter && (
                   <Tooltip content={twitter}>
-                    <ButtonLink
+                    <Button
                       as="a"
                       href={twitter}
-                      color="intentsBase12"
-                      size="sm"
+                      className={classes.socialButton()}
+                      onClick={(e) => e.preventDefault()}
+                      variant="ghost"
+                      size="1"
                     >
-                      <Icon icon="BrandX" size={20} stroke={1} />
-                    </ButtonLink>
+                      <IconBrandX size={20} stroke={1} color="gray" />
+                    </Button>
                   </Tooltip>
                 )}
                 {discord && (
                   <Tooltip content={discord}>
-                    <ButtonLink
+                    <Button
                       as="a"
                       href={discord}
-                      color="intentsBase12"
-                      size="sm"
+                      className={classes.socialButton()}
+                      onClick={(e) => e.preventDefault()}
+                      variant="ghost"
+                      size="1"
                     >
-                      <Icon icon="BrandDiscord" size={20} stroke={1} />
-                    </ButtonLink>
+                      <IconBrandDiscord size={20} stroke={1} color="gray" />
+                    </Button>
                   </Tooltip>
                 )}
                 {github && (
                   <Tooltip content={github}>
-                    <ButtonLink
+                    <Button
                       as="a"
                       href={github}
-                      color="intentsBase12"
-                      size="sm"
+                      className={classes.socialButton()}
+                      onClick={(e) => e.preventDefault()}
+                      variant="ghost"
+                      size="1"
                     >
-                      <Icon icon="BrandGithub" size={20} stroke={1} />
-                    </ButtonLink>
+                      <IconBrandGithub size={20} stroke={1} color="gray" />
+                    </Button>
                   </Tooltip>
                 )}
                 <Tooltip content={url}>
-                  <Icon
-                    icon="ArrowUpRight"
-                    color="intentsBase8"
-                    size={20}
-                    stroke={1}
-                  />
+                  <Button
+                    className={classes.socialButton()}
+                    variant="ghost"
+                    size="1"
+                  >
+                    <IconArrowUpRight size={20} stroke={1} color="gray" />
+                  </Button>
                 </Tooltip>
-              </Box.Flex>
-            </Box.Flex>
-            <Text fontSize="sm"> {description}</Text>
-          </Box.Stack>
-          <Box.Flex align="center" justify="space-between" wrap="wrap">
-            <ButtonLink
+              </HStack>
+            </HStack>
+            <Text className={classes.textDescription()}>{description}</Text>
+          </VStack>
+          <HStack align="center" justify="between" wrap="wrap">
+            <Link
               as="a"
-              css={styles.link}
+              className={classes.link()}
               href={url}
-              color="intentsBase10"
-              size="sm"
+              color="gray"
+              size="3"
+              externalIcon={null}
             >
               {getUrlHostName(url)}
-            </ButtonLink>
-            {isLive ? (
-              <Tag intent="base" size="xs" css={styles.tag} variant="ghost">
-                <Box css={styles.dot} />
-                {'Live on testnet'}
-              </Tag>
-            ) : null}
-          </Box.Flex>
-          <Box.Flex
-            align="center"
-            justify="flex-end"
-            wrap="wrap"
-            css={styles.statusContainer}
-          >
-            {status?.map((s, index) => (
-              <Tag
-                key={index}
-                intent="base"
-                size="xs"
-                css={styles.tag}
-                variant="ghost"
-              >
-                {s}
-              </Tag>
-            ))}
-          </Box.Flex>
-        </Box.Stack>
+            </Link>
+          </HStack>
+        </VStack>
       </Card.Body>
+      <Card.Footer>
+        {status?.map((s, index) => (
+          <Badge
+            key={index}
+            color="gray"
+            size="1"
+            className={classes.tag()}
+            variant="ghost"
+          >
+            {s}
+          </Badge>
+        ))}
+      </Card.Footer>
     </MotionCard>
   );
 };
 
-const styles = {
-  card: cssObj({
-    transition: 'transform 0.2s ease-in-out, border 0.2s ease-in-out',
-    '&:hover': {
-      cursor: 'pointer',
-      border: '1px solid #00F58C',
-      transform: 'scale(1.02)',
-    },
-  }),
-  details: cssObj({
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  }),
-
-  link: cssObj({
-    textDecoration: 'underline',
-    padding: '0',
-    pointerEvents: 'none',
-  }),
-  dot: cssObj({
-    width: '$1',
-    height: '$1',
-    borderRadius: '50%',
-    border: '1px solid #A9F6D5',
-    background: '#00F58C',
-    boxShadow: '0px 0px 4px 0px #00F58C',
-  }),
-  tag: cssObj({
-    color: '$intentsBase12',
-    borderRadius: '$sm',
-    padding: '0 $1',
-    backgroundColor: '$gray5',
-    marginRight: '8px',
-  }),
-  title: cssObj({
-    width: '100%',
-  }),
-  body: cssObj({
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: '$4',
-    justifyContent: 'flex-start',
-    padding: '$6',
-  }),
-  statusContainer: cssObj({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    flexWrap: 'wrap',
-    marginTop: 'auto',
-  }),
-};
+const styles = tv({
+  slots: {
+    card: [
+      'cursor-pointer gap-2',
+      'transition-all duration-200 ease-in-out',
+      'hover:border-1 hover:border-brand hover:scale-105',
+    ],
+    details: 'flex flex-col justify-between flex-1',
+    link: 'underline p-0 pointer-events-none text-sm',
+    dot: [
+      'w-1 h-1 rounded-full border border-solid border-border',
+      'bg-green-500 shadow-[0_0_4px_0_#00F58C]',
+    ],
+    tag: ['text-heading rounded-sm py-1 px-2'],
+    title: ['w-full'],
+    body: 'flex flex-1 flex-row items-start gap-4 justify-start px-6 py-4',
+    statusContainer: 'flex flex-wrap justify-end items-end mt-auto',
+    textProjectName: 'text-heading',
+    textDescription: 'text-sm',
+    socialButton: 'bg-transparent',
+  },
+});
 
 ProjectItem.Loader = ProjectItemLoader;

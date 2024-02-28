@@ -1,5 +1,5 @@
 import type { PublicClient, WalletClient } from 'viem';
-import { Services, store } from '~/store';
+import { Services, store } from '~portal/store';
 
 import type { AssetsMachineState } from '../machines/assetsMachine';
 

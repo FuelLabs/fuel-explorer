@@ -18,10 +18,11 @@ const externals = [
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['@fuel-explorer/graphql'],
+  transpilePackages: ['@fuel-explorer/graphql', 'app-commons'],
   experimental: {
     externalDir: true,
     serverComponentsExternalPackages: externals,
+    missingSuspenseWithCSRBailout: false,
     esmExternals: true,
     typedRoutes: true,
   },

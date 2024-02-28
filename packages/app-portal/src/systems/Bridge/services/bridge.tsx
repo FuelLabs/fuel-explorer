@@ -1,3 +1,4 @@
+import type { Asset } from '@fuels/assets';
 import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
   Address as FuelAddress,
@@ -5,27 +6,26 @@ import type {
   Provider as FuelProvider,
 } from 'fuels';
 import type { PublicClient, WalletClient } from 'wagmi';
-import { store } from '~/store';
-import type { Asset } from '~/systems/Assets/services/asset';
-import { getAssetEth, getAssetFuel } from '~/systems/Assets/utils';
+import { store } from '~portal/store';
+import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import type {
   FromToNetworks,
   TxEthToFuelInputs,
   TxFuelToEthInputs,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 import {
   ETH_CHAIN,
   EthTxCache,
-  FUEL_CHAIN,
   FuelTxCache,
   TxEthToFuelService,
   TxFuelToEthService,
   getBlockDate,
   isEthChain,
   isFuelChain,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
 import { FuelWalletLocked } from '@fuel-wallet/sdk';
+import { FUEL_CHAIN } from 'app-commons';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
@@ -64,7 +64,7 @@ export class BridgeService {
     if (!fromNetwork || !toNetwork) {
       throw new Error('"Network From" and "Network To" are required');
     }
-    if (!assetAmount || assetAmount.isZero()) {
+    if (!assetAmount || assetAmount.eq(0)) {
       throw new Error('Need to inform amount to be transfered');
     }
     if (!asset) {

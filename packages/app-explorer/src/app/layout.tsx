@@ -38,7 +38,7 @@ export default function RootLayout({
       </head>
       <body>
         <Provider>
-          <Layout contentClassName="[&_.rt-ContainerInner]:space-y-10">
+          <Layout contentClassName="[&_.rt-ContainerInner]:flex-col [&_.rt-ContainerInner]:gap-10">
             {children}
           </Layout>
           <Analytics />

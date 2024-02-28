@@ -1,13 +1,18 @@
-import { cssObj } from '@fuel-ui/css';
-import { Box, Button, Dialog, Text } from '@fuel-ui/react';
-import { useAsset } from '~/systems/Assets/hooks/useAsset';
-import { BridgeSteps, BridgeTxOverview } from '~/systems/Bridge';
-import { shortAddress } from '~/systems/Core';
-import { useOverlay } from '~/systems/Overlay';
+import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
+import { shortAddress } from '~portal/systems/Core';
+import { useOverlay } from '~portal/systems/Overlay';
 
+import { Button, Dialog, HStack, VStack } from '@fuels/ui';
+import { IconTransferIn } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
+import {
+  BridgeSteps,
+  BridgeTxOverview,
+} from '~portal/systems/Bridge/components';
 import { useTxEthToFuel } from '../hooks';
 
 export function TxEthToFuelDialog() {
+  const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
   const {
@@ -25,56 +30,39 @@ export function TxEthToFuelDialog() {
   });
 
   return (
-    <>
-      <Dialog.Close aria-label="Close Transaction Dialog" />
-      <Dialog.Heading>
-        Deposit
-        <Box css={styles.divider} />
-      </Dialog.Heading>
-      <Dialog.Description>
-        <Box.Stack gap="$2">
-          <Text color="intentsBase12">Status</Text>
-          <BridgeSteps steps={steps} />
-          <Box css={styles.border} />
-          <BridgeTxOverview
-            transactionId={shortAddress(metadata.txId)}
-            date={date}
-            isDeposit={true}
-            asset={asset}
-            isLoading={isLoadingReceipts}
-            amount={amount}
-            ethAsset={ethAsset}
-            explorerLink={explorerLink}
-          />
-        </Box.Stack>
-      </Dialog.Description>
+    <VStack className="max-w-sm">
+      <Dialog.Title className="mb-0">
+        <HStack className="items-center gap-2">
+          <IconTransferIn size={20} stroke={1.5} />
+          Deposit
+        </HStack>
+      </Dialog.Title>
+      <BridgeSteps steps={steps} />
+      <BridgeTxOverview
+        transactionId={shortAddress(metadata.txId)}
+        date={date}
+        isDeposit={true}
+        asset={asset}
+        isLoading={isLoadingReceipts}
+        amount={amount}
+        ethAsset={ethAsset}
+        explorerLink={explorerLink}
+      />
       {shouldShowConfirmButton && (
-        <Dialog.Footer>
-          <Button
-            intent="primary"
-            css={styles.actionButton}
-            isLoading={status?.isConfirmTransactionLoading}
-            onClick={handlers.relayMessageToFuel}
-          >
-            Confirm Transaction
-          </Button>
-        </Dialog.Footer>
+        <Button
+          className={classes.actionButton()}
+          isLoading={status?.isConfirmTransactionLoading}
+          onClick={handlers.relayMessageToFuel}
+        >
+          Confirm Transaction
+        </Button>
       )}
-    </>
+    </VStack>
   );
 }
 
-const styles = {
-  border: cssObj({
-    my: '$4',
-    borderBottom: '1px solid $border',
-  }),
-  divider: cssObj({
-    h: '1px',
-    bg: '$border',
-    mt: '$5',
-  }),
-  actionButton: cssObj({
-    width: '100%',
-  }),
-};
+const styles = tv({
+  slots: {
+    actionButton: 'w-full',
+  },
+});

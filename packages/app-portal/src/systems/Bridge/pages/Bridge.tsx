@@ -1,20 +1,34 @@
-import { cssObj } from '@fuel-ui/css';
-import { Alert, Box, Card, InputAmount, Link, Text } from '@fuel-ui/react';
-import { motion, useAnimationControls } from 'framer-motion';
-import { getAssetEth } from '~/systems/Assets/utils';
+'use client';
+import { LayoutGroup, motion } from 'framer-motion';
+import { getAssetEth } from '~portal/systems/Assets/utils';
 import {
   EthAccountConnection,
   FuelAccountConnection,
   isEthChain,
   isFuelChain,
   useFuelAccountConnection,
-} from '~/systems/Chains';
+} from '~portal/systems/Chains';
 
-import { BridgeButton, BridgeTabs } from '../containers';
+import {
+  Alert,
+  Card,
+  Flex,
+  HStack,
+  InputAmount,
+  Link,
+  LoadingBox,
+  Text,
+  VStack,
+} from '@fuels/ui';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { tv } from 'tailwind-variants';
+import { BridgeButton } from '../containers/BridgeButton';
+import { BridgeTabs } from '../containers/BridgeTabs';
 import { useBridge } from '../hooks';
 import { useWithdrawDelay } from '../hooks/useWithdrawDelay';
 
 export const Bridge = () => {
+  const classes = styles();
   const {
     ethAddress,
     fuelAddress,
@@ -26,91 +40,105 @@ export const Bridge = () => {
     handlers,
   } = useBridge();
   const { balance } = useFuelAccountConnection();
-
-  const fromControls = useAnimationControls();
-  const toControls = useAnimationControls();
   const { timeToWithdrawFormatted } = useWithdrawDelay();
-
-  if (!fromNetwork || !toNetwork) return null;
-
   const ethAssetAddress = asset ? getAssetEth(asset)?.address : undefined;
+  const isEthFrom = isEthChain(fromNetwork);
+  const isFuelTo = isFuelChain(toNetwork);
+
+  const items = [
+    <motion.div key="eth" layout>
+      <EthAccountConnection label={isEthFrom ? 'From' : 'To'} />
+    </motion.div>,
+    <motion.div key="fuel" layout>
+      <FuelAccountConnection label={isFuelTo ? 'To' : 'From'} />
+    </motion.div>,
+  ];
+
+  function getItemsOrder() {
+    return isEthFrom ? items : items.reverse();
+  }
 
   return (
-    <Card>
-      <Card.Body css={styles.cardBody}>
-        <BridgeTabs fromControls={fromControls} toControls={toControls} />
-        <Box css={styles.divider} />
-        <Box.Stack gap="$6">
-          {Boolean(fromNetwork && toNetwork) && (
-            <Box.Stack gap="$2">
-              <Text color="intentsBase12">Network</Text>
-              <motion.div animate={fromControls}>
-                {isEthChain(fromNetwork) && (
-                  <EthAccountConnection label="From" />
-                )}
-                {isFuelChain(fromNetwork) && (
-                  <FuelAccountConnection label="From" />
-                )}
-              </motion.div>
-              <motion.div animate={toControls}>
-                {isEthChain(toNetwork) && <EthAccountConnection label="To" />}
-                {isFuelChain(toNetwork) && <FuelAccountConnection label="To" />}
-              </motion.div>
-            </Box.Stack>
-          )}
-          <Box.Stack gap="$2">
-            <Text color="intentsBase12">Asset amount</Text>
-            <InputAmount
-              isDisabled={!ethAddress && !fuelAddress}
-              balance={assetBalance}
-              value={assetAmount}
-              asset={{
-                name: asset?.symbol,
-                imageUrl: asset?.icon || '',
-                address: ethAssetAddress,
-              }}
-              onClickAsset={handlers.openAssetsDialog}
-              onChange={(val) =>
-                handlers.changeAssetAmount({ assetAmount: val || undefined })
-              }
-            />
-          </Box.Stack>
+    <VStack gap="4">
+      <BridgeTabs />
+      {fromNetwork && toNetwork ? (
+        <Card>
+          <Card.Body as={VStack} className="gap-2">
+            <HStack className="items-center justify-between">
+              <Text className={classes.textNetwork()}>Network</Text>
+            </HStack>
+            <LayoutGroup>{getItemsOrder()}</LayoutGroup>
+          </Card.Body>
+        </Card>
+      ) : (
+        <LoadingBox className="w-full h-[196px]" />
+      )}
+      <Card>
+        <Card.Body as={VStack} className="gap-2">
+          <Text className={classes.textNetwork()}>Asset amount</Text>
+          <InputAmount
+            disabled={!ethAddress && !fuelAddress}
+            balance={assetBalance}
+            value={assetAmount}
+            color="green"
+            onChange={(val) =>
+              handlers.changeAssetAmount({ assetAmount: val || undefined })
+            }
+          >
+            <Flex>
+              <InputAmount.Field />
+              <InputAmount.Slot>
+                <InputAmount.ButtonMaxBalance />
+                <InputAmount.CoinSelector
+                  asset={{
+                    name: asset?.symbol,
+                    imageUrl: asset?.icon || '',
+                    address: ethAssetAddress,
+                  }}
+                  onClick={handlers.openAssetsDialog}
+                />
+              </InputAmount.Slot>
+            </Flex>
+            <InputAmount.Balance />
+          </InputAmount>
           {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
-            <Alert status="warning">
-              <Alert.Description>
+            <Alert color="orange">
+              <Alert.Icon>
+                <IconAlertCircle size="md" />
+              </Alert.Icon>
+              <Alert.Text>
                 You don&apos;t have any ETH on Fuel to pay for gas. We recommend
                 you bridge some ETH before you bridge any other assets.
-              </Alert.Description>
+              </Alert.Text>
             </Alert>
           )}
-          <BridgeButton />
-          <Alert status="warning">
-            <Alert.Description>
-              Any assets deposited to Fuel can take up to{' '}
-              {timeToWithdrawFormatted} to withdraw back to Ethereum. Learn more
-              about our architecture and security in our&nbsp;
-              <Link
-                isExternal
-                href="https://github.com/FuelLabs/fuel-bridge/blob/main/docs/ARCHITECTURE.md"
-              >
-                docs
-              </Link>
-            </Alert.Description>
-          </Alert>
-        </Box.Stack>
-      </Card.Body>
-    </Card>
+        </Card.Body>
+      </Card>
+      <BridgeButton />
+      <Alert color="orange">
+        <Alert.Icon>
+          <IconAlertCircle size="md" />
+        </Alert.Icon>
+        <Alert.Text>
+          Any assets deposited to Fuel can take up to {timeToWithdrawFormatted}{' '}
+          to withdraw back to Ethereum. Learn more about our architecture and
+          security in our&nbsp;
+          <Link
+            isExternal
+            href="https://github.com/FuelLabs/fuel-bridge/blob/main/docs/ARCHITECTURE.md"
+          >
+            docs
+          </Link>
+        </Alert.Text>
+      </Alert>
+    </VStack>
   );
 };
 
-const styles = {
-  cardBody: cssObj({
-    p: '$7',
-  }),
-  divider: cssObj({
-    h: '1px',
-    bg: '$border',
-    mt: '$1',
-    mb: '$5',
-  }),
-};
+export const styles = tv({
+  slots: {
+    card: 'p-0',
+    cardBody: 'p-7',
+    textNetwork: 'text-heading',
+  },
+});
