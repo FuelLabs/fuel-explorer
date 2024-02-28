@@ -64,7 +64,7 @@ export class BridgeService {
     if (!fromNetwork || !toNetwork) {
       throw new Error('"Network From" and "Network To" are required');
     }
-    if (!assetAmount || assetAmount.isZero()) {
+    if (!assetAmount || assetAmount.eq(0)) {
       throw new Error('Need to inform amount to be transfered');
     }
     if (!asset) {
