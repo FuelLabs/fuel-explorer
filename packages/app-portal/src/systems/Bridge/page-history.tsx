@@ -1,5 +1,3 @@
-'use client';
-
 import { Flex } from '@fuels/ui';
 import { BridgeHome, BridgeTxList } from './pages';
 

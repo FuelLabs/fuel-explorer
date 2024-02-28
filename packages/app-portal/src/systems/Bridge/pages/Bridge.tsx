@@ -1,4 +1,3 @@
-'use client';
 import { LayoutGroup, motion } from 'framer-motion';
 import { getAssetEth } from '~portal/systems/Assets/utils';
 import {

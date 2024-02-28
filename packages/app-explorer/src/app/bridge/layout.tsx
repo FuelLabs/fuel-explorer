@@ -1,4 +1,3 @@
-'use client';
 import { OverlayDialog, Providers } from 'app-portal';
 
 export default function Layout({ children }: { children: React.ReactNode }) {

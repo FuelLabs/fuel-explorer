@@ -1,4 +1,3 @@
-'use client';
 import { useNodeInfo } from '@fuel-wallet/react';
 import { Box, Button } from '@fuels/ui';
 import {

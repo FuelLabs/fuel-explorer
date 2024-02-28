@@ -1,4 +1,3 @@
-'use client';
 import { OverlayDialog, Providers } from 'app-portal';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -11,4 +10,3 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export const dynamic = 'force-static';
-export const revalidate = Infinity;
