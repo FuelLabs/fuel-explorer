@@ -9,7 +9,7 @@ RUN npm i -g pnpm
 WORKDIR /l1chain
 
 # clone the contracts repo
-RUN git clone --depth 1 --branch main https://github.com/FuelLabs/fuel-bridge.git /tmp/fuel-bridge
+RUN git clone --depth 1 --branch lf/fix/add-cors https://github.com/FuelLabs/fuel-bridge.git /tmp/fuel-bridge
 RUN mv /tmp/fuel-bridge/packages/solidity-contracts /l1chain/portal-contracts
 
 # copy over the fuel chain and replace consts values

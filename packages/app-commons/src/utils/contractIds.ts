@@ -27,6 +27,7 @@ export async function getBridgeTokenContracts() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       },
     });
     const body = await res.json();
@@ -65,6 +66,7 @@ export async function getBridgeSolidityContracts() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       },
     });
     const body = await res.json();
