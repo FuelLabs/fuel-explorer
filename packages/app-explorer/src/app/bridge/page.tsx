@@ -2,14 +2,14 @@ import dynamicImport from 'next/dynamic';
 import { BridgeScreenLoader } from '~/systems/Bridge/components/BridgeScreenLoader';
 
 const Page = dynamicImport(
-  async () => import('app-portal/src/systems/Bridge/page-root'),
+  async () => import('~/systems/Bridge/screens/BridgeScreen'),
   {
     ssr: false,
     loading: () => <BridgeScreenLoader view="bridge" />,
   },
 );
 
-export default function BridgeHistory() {
+export default function Bridge() {
   return <Page />;
 }
 

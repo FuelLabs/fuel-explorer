@@ -1,5 +1,3 @@
-'use client';
-
 import { VStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 import { EcosystemHeader } from '../components/EcosystemHeader/EcosystemHeader';

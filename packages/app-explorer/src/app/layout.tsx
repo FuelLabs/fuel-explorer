@@ -10,6 +10,7 @@ import { Provider } from '~/systems/Core/components/Provider';
 import { cx } from '~/systems/Core/utils/cx';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://app.fuel.network'),
   title: 'Fuel Explorer',
   description: 'Explorer of The Rollup OS for Ethereum',
   openGraph: {

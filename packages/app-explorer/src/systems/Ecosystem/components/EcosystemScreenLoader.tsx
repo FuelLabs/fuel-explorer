@@ -1,6 +1,6 @@
 import { Flex, Grid, LoadingBox, VStack } from '@fuels/ui';
+import { EcosystemHeader } from 'app-portal';
 import { tv } from 'tailwind-variants';
-import { EcosystemHeader } from '~portal/systems/Ecosystem/components/EcosystemHeader/EcosystemHeader';
 
 export function EcosystemScreenLoader() {
   const classes = styles();

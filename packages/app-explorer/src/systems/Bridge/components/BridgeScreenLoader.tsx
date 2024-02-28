@@ -1,7 +1,7 @@
 import { Box, LoadingBox, VStack } from '@fuels/ui';
 import { IconArrowsShuffle } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
-import { BridgeTxItemsLoading } from '~portal/systems/Bridge/components';
+import { BridgeTxItemsLoading } from 'app-portal';
 
 export function BridgeScreenLoader({ view }: { view: 'history' | 'bridge' }) {
   return (

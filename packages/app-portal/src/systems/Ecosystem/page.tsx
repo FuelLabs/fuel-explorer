@@ -1,5 +1,5 @@
 import { Ecosystem } from './pages';
 
-export default function EcosystemPage() {
+export function EcosystemPage() {
   return <Ecosystem />;
 }

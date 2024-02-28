@@ -1,4 +1,5 @@
 import { redirects } from './src/redirects.mjs';
+
 const externals = [
   'bcryptjs',
   'ws',
@@ -18,7 +19,7 @@ const externals = [
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['@fuel-explorer/graphql', 'app-commons'],
+  transpilePackages: ['@fuel-explorer/graphql', 'app-commons', 'app-portal'],
   experimental: {
     externalDir: true,
     serverComponentsExternalPackages: externals,
@@ -59,12 +60,17 @@ const config = {
     ];
   },
   webpack: (config) => {
-    config.externals.push({
-      'utf-8-validate': 'commonjs utf-8-validate',
-      bufferutil: 'commonjs bufferutil',
-      encoding: 'commonjs encoding',
-      module: 'commonjs module',
-    });
+    config.externals.push(
+      {
+        'utf-8-validate': 'commonjs utf-8-validate',
+        bufferutil: 'commonjs bufferutil',
+        encoding: 'commonjs encoding',
+        module: 'commonjs module',
+      },
+      // https://github.com/WalletConnect/walletconnect-monorepo/issues/1908
+      'pino-pretty',
+    );
+
     config.module.rules.push({
       test: /\.(graphql|gql)/,
       exclude: /node_modules/,
