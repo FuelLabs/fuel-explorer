@@ -1,5 +1,6 @@
 import type { Asset, Ethereum, Fuel } from '@fuels/assets';
-import { ETH_CHAIN, FUEL_CHAIN } from '~portal/systems/Chains';
+import { FUEL_CHAIN } from 'app-commons';
+import { ETH_CHAIN } from '~portal/systems/Chains';
 
 type Network = Ethereum | Fuel; // Assuming Ethereum and Fuel are your types
 export type NetworkTypes = Ethereum['type'] | Fuel['type'];

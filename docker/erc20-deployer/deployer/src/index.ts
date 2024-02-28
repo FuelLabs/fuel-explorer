@@ -45,6 +45,18 @@ async function main() {
 function startServer(deployments: Record<string, string>) {
   return new Promise((resolve) => {
     createServer((req, res) => {
+      // add cors headers
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Request-Method', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+      res.setHeader('Access-Control-Allow-Headers', '*');
+      if (req.method === 'OPTIONS') {
+        res.writeHead(200);
+        res.end();
+        return;
+      }
+
+      // Handle requests
       switch (req.url) {
         case '/health':
           res.writeHead(200, { 'Content-Type': 'text/plain' });

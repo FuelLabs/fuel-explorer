@@ -1,7 +1,7 @@
 import { AccountConnectionInput } from '~portal/systems/Accounts';
 
 import { FuelLogo } from '@fuels/ui';
-import { FUEL_CHAIN } from '../../config';
+import { FUEL_CHAIN } from 'app-commons';
 import { useFuelAccountConnection } from '../hooks';
 
 export const FuelAccountConnection = ({ label }: { label?: string }) => {
