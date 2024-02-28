@@ -9,10 +9,11 @@ import type {
   PropsOf,
   WithAsProps,
 } from './types';
+
 type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
   id: string;
   baseElement?: C;
-  className?: string | ((props: P) => string);
+  className?: (props: P) => string;
   defaultProps?: ComponentType<P>['defaultProps'];
   render?: (Comp: C, props: P) => JSX.Element | null;
 };
@@ -33,11 +34,11 @@ export function createComponent<
   }
 
   type T = ElementRef<typeof El>;
-  const Comp = forwardRef<T, P>(({ className, ...props }, ref) => {
-    const baseClass =
-      typeof getClass === 'function' ? getClass(props as P) : getClass;
-    const classes = cx(baseClass, className, fClass(id));
-    const itemProps = { ref, className: classes, ...props } as any;
+  const Comp = forwardRef<T, P>((props, ref) => {
+    const baseClass = getClass?.(props) ?? props.className;
+    const className = cx(baseClass, fClass(id));
+    const itemProps = { ref, ...props, className } as any;
+
     return render ? render(El, itemProps) : <El {...itemProps} />;
   });
 

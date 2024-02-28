@@ -6,7 +6,8 @@ import {
 import { shortAddress } from '~portal/systems/Core';
 import { useOverlay } from '~portal/systems/Overlay';
 
-import { Box, Button, Dialog, Text, VStack } from '@fuels/ui';
+import { Button, Dialog, HStack, VStack } from '@fuels/ui';
+import { IconTransferOut } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import { useEthAccountConnection } from '../../eth';
 import { useTxFuelToEth } from '../hooks';
@@ -34,29 +35,23 @@ export function TxFuelToEthDialog() {
   });
 
   return (
-    <>
-      <Dialog.Close aria-label="Close Transaction Dialog" />
-      <Dialog.Title>
-        Withdrawal
-        <Box className={classes.divider()} />
+    <VStack className="max-w-sm">
+      <Dialog.Title className="mb-0">
+        <HStack className="items-center">
+          <IconTransferOut size={20} stroke={1.5} /> Withdraw
+        </HStack>
       </Dialog.Title>
-      <VStack gap="3">
-        <VStack gap="1">
-          <Text>Status</Text>
-          <BridgeSteps steps={steps} />
-        </VStack>
-        <Box className={classes.divider()} />
-        <BridgeTxOverview
-          explorerLink={explorerLink}
-          transactionId={shortAddress(metadata.txId)}
-          date={date}
-          isDeposit={false}
-          asset={asset}
-          ethAsset={ethAsset}
-          amount={amount}
-          isLoading={isLoadingTxResult}
-        />
-      </VStack>
+      <BridgeSteps steps={steps} />
+      <BridgeTxOverview
+        explorerLink={explorerLink}
+        transactionId={shortAddress(metadata.txId)}
+        date={date}
+        isDeposit={false}
+        asset={asset}
+        ethAsset={ethAsset}
+        amount={amount}
+        isLoading={isLoadingTxResult}
+      />
       {(status?.isWaitingEthWalletApproval ||
         status?.isConfirmTransactionLoading) && (
         <>
@@ -79,7 +74,7 @@ export function TxFuelToEthDialog() {
           )}
         </>
       )}
-    </>
+    </VStack>
   );
 }
 

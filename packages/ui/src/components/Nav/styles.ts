@@ -19,6 +19,7 @@ export const styles = tv({
     ],
     navConnection: 'items-center',
     navNetwork: 'h-8',
+    spacer: 'flex-1 opacity-0',
     themeToggle: [
       'relative cursor-pointer flex items-center px-2 w-12 h-8 rounded-full border-border',
       'bg-gray-3 select-none',

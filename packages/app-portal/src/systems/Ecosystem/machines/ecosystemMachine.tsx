@@ -80,8 +80,16 @@ export const ecosystemMachine = createMachine(
     },
     predictableActionArguments: true,
     id: '(machine)',
-    initial: 'idle',
+    initial: 'waiting',
     states: {
+      waiting: {
+        tags: ['isLoading'],
+        on: {
+          FETCH_PROJECTS_AND_TAGS: {
+            target: 'fetching',
+          },
+        },
+      },
       idle: {
         on: {
           FETCH_PROJECTS_AND_TAGS: {

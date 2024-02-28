@@ -72,11 +72,7 @@ export function TopNav() {
   );
 
   const themeToggle = (
-    <Nav.ThemeToggle
-      whenOpened="no-effect"
-      theme={theme!}
-      onToggle={(theme) => setTheme(theme)}
-    />
+    <Nav.ThemeToggle whenOpened="no-effect" theme={theme} onToggle={setTheme} />
   );
 
   return (

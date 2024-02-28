@@ -15,3 +15,7 @@ kbd {
   font-size: 0.875rem;
   font-family: var(--default-font-family);
 }
+
+.rt-DialogOverlay {
+  backdrop-filter: blur(12px);
+}

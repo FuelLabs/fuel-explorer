@@ -80,7 +80,6 @@ addons.register(ADDON_ID, (api) => {
       return (
         <IconButton
           key="theme"
-          placeholder="Toggle theme"
           title="Toggle theme"
           onClick={() => {
             setState(current === 'light' ? 'dark' : 'light');
