@@ -1,7 +1,8 @@
 import { FUEL_CHAIN } from 'app-commons';
 import type { Provider } from 'fuels';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
+import { useQuery } from 'wagmi';
 import { createProvider } from '~portal/systems/Chains/fuel/utils/provider';
 
 type FuelNetworkProviderProps = {
@@ -10,6 +11,7 @@ type FuelNetworkProviderProps = {
 
 export type FuelReactContextType = {
   fuelProvider: Provider | undefined;
+  isLoading: boolean;
 };
 
 export const FuelReactContext = createContext<FuelReactContextType | null>(
@@ -21,21 +23,12 @@ export const useFuelNetwork = () => {
 };
 
 export const FuelNetworkProvider = ({ children }: FuelNetworkProviderProps) => {
-  const [fuelProvider, setFuelProvider] = useState<Provider | undefined>();
-
-  useEffect(() => {
-    if (fuelProvider) return;
-
-    async function getFuelProvider() {
-      const provider = await createProvider(FUEL_CHAIN.providerUrl);
-      setFuelProvider(provider);
-    }
-
-    getFuelProvider();
-  }, [fuelProvider]);
+  const { data, isLoading } = useQuery(['fuel-provider'], () =>
+    createProvider(FUEL_CHAIN.providerUrl),
+  );
 
   return (
-    <FuelReactContext.Provider value={{ fuelProvider }}>
+    <FuelReactContext.Provider value={{ fuelProvider: data, isLoading }}>
       {children}
     </FuelReactContext.Provider>
   );

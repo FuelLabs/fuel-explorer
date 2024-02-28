@@ -60,8 +60,8 @@ export const CardDescription = createComponent<
   typeof Text
 >({
   id: 'CardDescription',
-  baseElement: Text,
   className: ({ className }) => styles().description({ className }),
+  baseElement: Text,
 });
 
 export const CardFooter = createPolymorphicComponent<

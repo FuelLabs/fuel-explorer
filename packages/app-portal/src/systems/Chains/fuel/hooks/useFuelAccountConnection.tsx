@@ -16,18 +16,33 @@ import { useBalance } from './useBalance';
 
 export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { assetId } = props || {};
-  const { fuelProvider } = useFuelNetwork();
   const { fuel } = useFuel();
-  const { account } = useAccount();
-  const { balance } = useBalance({
-    address: account || '',
+  const { fuelProvider, isLoading: isLoadingProvider } = useFuelNetwork();
+  const { account, isLoading: isLoadingAccount } = useAccount();
+  const { balance, isLoading: isLoadingBalance } = useBalance({
     assetId,
+    address: account || '',
     provider: fuelProvider,
   });
-  const { isLoading: isLoadingConnection } = useIsConnected();
-  const { connect, error, isConnecting } = useConnectUI();
-  const { disconnect } = useDisconnect();
-  const { wallet } = useWallet(account);
+
+  const { isLoading: isLoadingConnected } = useIsConnected();
+  const { disconnect, isLoading: isLoadingDisconnecting } = useDisconnect();
+  const { wallet, isLoading: isLoadingWallet } = useWallet(account);
+  const {
+    connect,
+    error,
+    isConnecting,
+    isLoading: isLoadingConnectUI,
+  } = useConnectUI();
+
+  const isLoadingConnection =
+    isLoadingProvider ||
+    isLoadingAccount ||
+    isLoadingBalance ||
+    isLoadingConnected ||
+    isLoadingDisconnecting ||
+    isLoadingWallet ||
+    isLoadingConnectUI;
 
   const address = useMemo(
     () => (account ? Address.fromString(account) : undefined),
@@ -35,14 +50,14 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   );
 
   function addAsset(asset: AssetFuel) {
-    const { decimals, assetId, icon, symbol, name } = asset;
+    const { decimals, assetId, icon, symbol, name, chainId, contractId } =
+      asset;
 
     fuel?.addAsset({
-      assetId,
-      imageUrl: icon ?? undefined,
-      symbol,
-      decimals,
+      icon: icon ?? '',
       name,
+      symbol,
+      networks: [{ type: 'fuel', assetId, chainId, decimals, contractId }],
     });
   }
 

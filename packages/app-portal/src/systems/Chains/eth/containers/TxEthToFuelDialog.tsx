@@ -2,7 +2,8 @@ import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
 import { shortAddress } from '~portal/systems/Core';
 import { useOverlay } from '~portal/systems/Overlay';
 
-import { Box, Button, Dialog, Text, VStack } from '@fuels/ui';
+import { Button, Dialog, HStack, VStack } from '@fuels/ui';
+import { IconTransferIn } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import {
   BridgeSteps,
@@ -29,45 +30,39 @@ export function TxEthToFuelDialog() {
   });
 
   return (
-    <>
-      <Dialog.Close aria-label="Close Transaction Dialog" />
-      <Dialog.Title>
-        Deposit
-        <Box className={classes.divider()} />
+    <VStack className="max-w-sm">
+      <Dialog.Title className="mb-0">
+        <HStack className="items-center gap-2">
+          <IconTransferIn size={20} stroke={1.5} />
+          Deposit
+        </HStack>
       </Dialog.Title>
-      <VStack gap="3">
-        <VStack gap="1">
-          <Text>Status</Text>
-          <BridgeSteps steps={steps} />
-        </VStack>
-        <Box className={classes.divider()} />
-        <BridgeTxOverview
-          transactionId={shortAddress(metadata.txId)}
-          date={date}
-          isDeposit={true}
-          asset={asset}
-          isLoading={isLoadingReceipts}
-          amount={amount}
-          ethAsset={ethAsset}
-          explorerLink={explorerLink}
-        />
-        {shouldShowConfirmButton && (
-          <Button
-            className={classes.actionButton()}
-            isLoading={status?.isConfirmTransactionLoading}
-            onClick={handlers.relayMessageToFuel}
-          >
-            Confirm Transaction
-          </Button>
-        )}
-      </VStack>
-    </>
+      <BridgeSteps steps={steps} />
+      <BridgeTxOverview
+        transactionId={shortAddress(metadata.txId)}
+        date={date}
+        isDeposit={true}
+        asset={asset}
+        isLoading={isLoadingReceipts}
+        amount={amount}
+        ethAsset={ethAsset}
+        explorerLink={explorerLink}
+      />
+      {shouldShowConfirmButton && (
+        <Button
+          className={classes.actionButton()}
+          isLoading={status?.isConfirmTransactionLoading}
+          onClick={handlers.relayMessageToFuel}
+        >
+          Confirm Transaction
+        </Button>
+      )}
+    </VStack>
   );
 }
 
 const styles = tv({
   slots: {
-    divider: 'h-[2px] bg-border mt-2 w-full',
     actionButton: 'w-full',
   },
 });

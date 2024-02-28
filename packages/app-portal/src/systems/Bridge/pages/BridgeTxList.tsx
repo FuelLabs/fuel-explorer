@@ -1,3 +1,4 @@
+'use client';
 import {
   TxListItemEthToFuel,
   TxListItemFuelToEth,
@@ -25,64 +26,68 @@ export const BridgeTxList = () => {
     isLoading,
     shouldShowNotConnected,
     shouldShowEmpty,
-    shouldShowList,
     hasMorePages,
   } = useBridgeTxs();
 
+  if (isLoading) {
+    return <BridgeTxItemsLoading />;
+  }
+
+  if (shouldShowNotConnected) {
+    return (
+      <BridgeTxListNotConnected
+        isConnecting={isConnecting}
+        onClick={fuelHandlers.connect}
+      />
+    );
+  }
+
+  if (shouldShowEmpty) {
+    return <BridgeListEmpty />;
+  }
+
   return (
     <>
-      {isLoading && <BridgeTxItemsLoading />}
-      {shouldShowNotConnected && (
-        <BridgeTxListNotConnected
-          isConnecting={isConnecting}
-          onClick={fuelHandlers.connect}
-        />
-      )}
-      {shouldShowEmpty && <BridgeListEmpty />}
-      {shouldShowList && (
-        <>
-          <CardList isClickable className={classes.cardList()}>
-            {bridgeTxs?.map((txDatum, index) => {
-              if (
-                isEthChain(txDatum.fromNetwork) &&
-                isFuelChain(txDatum.toNetwork)
-              ) {
-                return (
-                  <TxListItemEthToFuel
-                    key={`${index}-${txDatum.txHash}`}
-                    txHash={txDatum.txHash || ''}
-                  />
-                );
-              }
-              if (
-                isFuelChain(txDatum.fromNetwork) &&
-                isEthChain(txDatum.toNetwork)
-              ) {
-                return (
-                  <TxListItemFuelToEth
-                    key={`${index}-${txDatum.txHash}`}
-                    txHash={txDatum.txHash || ''}
-                  />
-                );
-              }
+      <CardList isClickable className={classes.cardList()}>
+        {bridgeTxs?.map((txDatum, index) => {
+          if (
+            isEthChain(txDatum.fromNetwork) &&
+            isFuelChain(txDatum.toNetwork)
+          ) {
+            return (
+              <TxListItemEthToFuel
+                key={`${index}-${txDatum.txHash}`}
+                txHash={txDatum.txHash || ''}
+              />
+            );
+          }
+          if (
+            isFuelChain(txDatum.fromNetwork) &&
+            isEthChain(txDatum.toNetwork)
+          ) {
+            return (
+              <TxListItemFuelToEth
+                key={`${index}-${txDatum.txHash}`}
+                txHash={txDatum.txHash || ''}
+              />
+            );
+          }
 
-              return null;
-            })}
-          </CardList>
-          {hasMorePages && (
-            <Button
-              variant="link"
-              size="2"
-              color="blue"
-              className={classes.buttonShowMore()}
-              rightIcon={IconChevronDown}
-              iconSize={13}
-              onClick={handlers.showMore}
-            >
-              Show more
-            </Button>
-          )}
-        </>
+          return null;
+        })}
+      </CardList>
+      {hasMorePages && (
+        <Button
+          variant="link"
+          size="2"
+          color="blue"
+          className={classes.buttonShowMore()}
+          rightIcon={IconChevronDown}
+          iconSize={13}
+          onClick={handlers.showMore}
+        >
+          Show more
+        </Button>
       )}
     </>
   );

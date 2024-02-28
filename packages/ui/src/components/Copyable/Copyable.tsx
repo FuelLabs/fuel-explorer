@@ -2,6 +2,7 @@ import { Tooltip } from '@radix-ui/themes';
 import { IconCopy } from '@tabler/icons-react';
 import type { SyntheticEvent } from 'react';
 
+import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';
 import type { Colors } from '../../utils/types';
 import { Box } from '../Box';
@@ -23,9 +24,15 @@ export type CopyableBaseProps = {
 
 export type CopyableProps = Omit<BoxProps, 'asChild'> & CopyableBaseProps;
 
+const styles = tv({
+  slots: {
+    root: 'inline-flex items-center gap-2',
+  },
+});
+
 export const Copyable = createComponent<CopyableProps, 'span'>({
   id: 'Copyable',
-  className: 'inline-flex items-center gap-2',
+  className: ({ className }) => styles().root({ className }),
   render: (
     _,
     {

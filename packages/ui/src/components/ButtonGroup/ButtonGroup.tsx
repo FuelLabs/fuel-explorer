@@ -32,7 +32,7 @@ const BUTTON_BASE_PROPS = ['size', 'color', 'variant', 'isDisabled', 'intent'];
 export const ButtonGroup = createComponent<ButtonGroupProps, 'div'>({
   id: 'ButtonGroup',
   baseElement: 'div',
-  className: () => styles().root(),
+  className: ({ className }) => styles().root({ className }),
   render: (Comp, { children, ...props }) => {
     const buttons = (Children.toArray(children) as ReactElement[]).map(
       (child: ReactElement) =>

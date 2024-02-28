@@ -4,8 +4,16 @@ import { store } from '~portal/store';
 import { useBridge } from '~portal/systems/Bridge/hooks';
 import { useFuelAccountConnection } from '~portal/systems/Chains';
 
-import { CardList, Dialog, IconButton, Input, Spinner, Text } from '@fuels/ui';
-import { IconArrowLeft } from '@tabler/icons-react';
+import {
+  CardList,
+  Dialog,
+  Flex,
+  IconButton,
+  Input,
+  Spinner,
+  Text,
+} from '@fuels/ui';
+import { IconArrowLeft, IconCoins } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import {
   useEthAccountConnection,
@@ -48,17 +56,20 @@ export function AssetsDialog() {
 
   return (
     <>
-      <Dialog.Close />
       <Dialog.Title>
-        {editable && (
-          <IconButton
-            aria-label="Set editable to false"
-            variant="link"
-            icon={IconArrowLeft}
-            onClick={() => setEditable(false)}
-          />
-        )}
-        {!editable ? 'Select token' : 'Manage token list'}
+        <Flex className="items-center gap-3 font-semibold">
+          {editable ? (
+            <IconButton
+              aria-label="Set editable to false"
+              variant="link"
+              icon={IconArrowLeft}
+              onClick={() => setEditable(false)}
+            />
+          ) : (
+            <IconCoins stroke={1} className="text-muted" />
+          )}
+          {!editable ? 'Select token' : 'Manage token list'}
+        </Flex>
       </Dialog.Title>
       <Controller
         name="address"
