@@ -12,5 +12,3 @@ const Page = dynamicImport(
 export default function Bridge() {
   return <Page />;
 }
-
-export const dynamic = 'force-static';
