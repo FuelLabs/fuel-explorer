@@ -1,14 +1,5 @@
-import dynamicImport from 'next/dynamic';
-import { BridgeScreenLoader } from '~/systems/Bridge/components/BridgeScreenLoader';
-
-const Page = dynamicImport(
-  import('app-portal').then((mod) => mod.BridgePage),
-  {
-    ssr: false,
-    loading: () => <BridgeScreenLoader view="bridge" />,
-  },
-);
+import { BridgePage } from 'app-portal';
 
 export default function Bridge() {
-  return <Page />;
+  return <BridgePage />;
 }
