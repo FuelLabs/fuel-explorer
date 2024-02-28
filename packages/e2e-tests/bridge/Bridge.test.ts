@@ -30,8 +30,7 @@ import {
   proceedAnyways,
 } from './utils/bridge';
 
-const { FUEL_PROVIDER_URL, VITE_ETH_ERC20, VITE_FUEL_FUNGIBLE_ASSET_ID } =
-  process.env;
+const { FUEL_PROVIDER_URL, ETH_ERC20, FUEL_FUNGIBLE_ASSET_ID } = process.env;
 
 test.describe('Bridge', () => {
   let client: PublicClient;
@@ -310,7 +309,7 @@ test.describe('Bridge', () => {
     await test.step('Faucet TKN', async () => {
       erc20Contract = getContract({
         abi: ERC_20.abi,
-        address: VITE_ETH_ERC20 as `0x${string}`,
+        address: ETH_ERC20 as `0x${string}`,
         publicClient: client,
       });
       const preFaucetBalance = (await erc20Contract.read.balanceOf([
@@ -363,7 +362,7 @@ test.describe('Bridge', () => {
       await goToBridgePage(page);
       await clickDepositTab(page);
       const preDepositBalanceFuel = await fuelWallet.getBalance(
-        VITE_FUEL_FUNGIBLE_ASSET_ID,
+        FUEL_FUNGIBLE_ASSET_ID,
       );
       const preDepositBalanceEth = await erc20Contract.read.balanceOf([
         account.address,
@@ -459,7 +458,7 @@ test.describe('Bridge', () => {
         await closeTransactionPopup(page);
 
         const postDepositBalanceFuel = await fuelWallet.getBalance(
-          VITE_FUEL_FUNGIBLE_ASSET_ID,
+          FUEL_FUNGIBLE_ASSET_ID,
         );
 
         expect(
@@ -476,7 +475,7 @@ test.describe('Bridge', () => {
 
     await test.step('Withdraw TKN from Fuel to ETH', async () => {
       const preWithdrawBalanceFuel = await fuelWallet.getBalance(
-        VITE_FUEL_FUNGIBLE_ASSET_ID,
+        FUEL_FUNGIBLE_ASSET_ID,
       );
       const preWithdrawBalanceEth = await erc20Contract.read.balanceOf([
         account.address,
@@ -571,7 +570,7 @@ test.describe('Bridge', () => {
           account.address,
         ]);
         const postWithdrawBalanceFuel = await fuelWallet.getBalance(
-          VITE_FUEL_FUNGIBLE_ASSET_ID,
+          FUEL_FUNGIBLE_ASSET_ID,
         );
 
         expect(

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
-import { VITE_ETH_ERC20 } from '~portal/config';
 import { store } from '~portal/store';
 import { useBridge } from '~portal/systems/Bridge/hooks';
 import { useFuelAccountConnection } from '~portal/systems/Chains';
@@ -102,7 +101,7 @@ export function AssetsDialog() {
             const ethAsset = getAssetEth(asset);
             const fuelAsset = getAssetFuel(asset);
 
-            const isFaucetable = ethAsset?.address === VITE_ETH_ERC20;
+            const isFaucetable = !!ethAsset?.address;
             const isETH = !ethAsset?.address;
             const shouldShowAddToWallet =
               !isETH && (isConnectedEth || isConnectedFuel);

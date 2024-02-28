@@ -15,8 +15,8 @@ import {
 } from 'fuels';
 import type { WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'wagmi';
-import { VITE_ETH_FUEL_MESSAGE_PORTAL } from '~portal/config';
 
+import { getBridgeSolidityContracts } from 'app-commons';
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
 import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
 import { EthConnectorService } from '../../eth/services';
@@ -208,8 +208,10 @@ export class TxFuelToEthService {
     });
     const withdrawBlockHeight = withdrawBlock.header.height;
 
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const fuelChainState = EthConnectorService.connectToFuelChainState({
       publicClient: ethPublicClient,
+      bridgeSolidityContracts,
     });
 
     const [blocksPerCommitInterval, timeToFinalize] = await Promise.all([
@@ -296,8 +298,10 @@ export class TxFuelToEthService {
 
     const { ethPublicClient, messageProof, fuelBlockHashCommited } = input;
 
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const fuelChainState = EthConnectorService.connectToFuelChainState({
       publicClient: ethPublicClient,
+      bridgeSolidityContracts,
     });
 
     const isFinalized = await fuelChainState.read.finalized([
@@ -347,8 +351,9 @@ export class TxFuelToEthService {
       ({ name, type }) => name === 'MessageRelayed' && type === 'event',
     );
 
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const logs = await ethPublicClient.getLogs({
-      address: VITE_ETH_FUEL_MESSAGE_PORTAL as `0x${string}`,
+      address: bridgeSolidityContracts.FuelMessagePortal,
       event: {
         type: 'event',
         name: 'MessageRelayed',
@@ -378,8 +383,10 @@ export class TxFuelToEthService {
 
     const relayMessageParams = await createRelayMessageParams(messageProof);
 
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const fuelPortal = EthConnectorService.connectToFuelMessagePortal({
       walletClient: ethWalletClient,
+      bridgeSolidityContracts,
     });
 
     const txHash = await fuelPortal.write.relayMessage([

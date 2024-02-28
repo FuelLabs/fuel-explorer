@@ -9,13 +9,13 @@ import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import type { SupportedChain } from '~portal/systems/Chains';
 import {
   ETH_CHAIN,
-  FUEL_CHAIN,
   isEthChain,
   isFuelChain,
   useEthAccountConnection,
   useFuelAccountConnection,
 } from '~portal/systems/Chains';
 
+import { FUEL_CHAIN } from 'app-commons';
 import { BridgeStatus } from '../machines';
 import type { BridgeMachineState } from '../machines';
 import { getChainFromUrlParam } from '../utils';
