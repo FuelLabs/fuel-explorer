@@ -1,3 +1,5 @@
+import { FUEL_CHAIN_NAME } from '../config';
+
 export type FuelChain = {
   id: number;
   network: string;
@@ -35,3 +37,5 @@ export const FUEL_CHAINS = {
   fuelBeta5Dev,
   fuelBeta5,
 };
+
+export const FUEL_CHAIN = FUEL_CHAINS[FUEL_CHAIN_NAME as string];

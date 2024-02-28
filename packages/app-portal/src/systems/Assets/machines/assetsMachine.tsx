@@ -4,9 +4,10 @@ import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines/fetchMachine';
 
 import { toast } from '@fuels/ui';
+import { getBridgeTokenContracts } from 'app-commons';
 import type { AssetServiceInputs } from '../services/asset';
 import { AssetService } from '../services/asset';
-import { defaultAssets } from '../utils/defaultAssets';
+import { getDefaultAssets } from '../utils/defaultAssets';
 
 export type MachineContext = {
   assets?: Asset[];
@@ -99,7 +100,9 @@ export const assetsMachine = createMachine(
       >({
         showError: true,
         async fetch() {
-          // TODO: fetch from service when add support to custom assets
+          const bridgeTokenContracts = await getBridgeTokenContracts();
+          const defaultAssets = await getDefaultAssets(bridgeTokenContracts);
+
           return defaultAssets;
         },
       }),

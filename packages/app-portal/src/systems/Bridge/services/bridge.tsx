@@ -16,7 +16,6 @@ import type {
 import {
   ETH_CHAIN,
   EthTxCache,
-  FUEL_CHAIN,
   FuelTxCache,
   TxEthToFuelService,
   TxFuelToEthService,
@@ -26,6 +25,7 @@ import {
 } from '~portal/systems/Chains';
 
 import { FuelWalletLocked } from '@fuel-wallet/sdk';
+import { FUEL_CHAIN } from 'app-commons';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
@@ -64,7 +64,7 @@ export class BridgeService {
     if (!fromNetwork || !toNetwork) {
       throw new Error('"Network From" and "Network To" are required');
     }
-    if (!assetAmount || assetAmount.isZero()) {
+    if (!assetAmount || assetAmount.eq(0)) {
       throw new Error('Need to inform amount to be transfered');
     }
     if (!asset) {
