@@ -1,0 +1,245 @@
+fragment InputsQuery on Input {
+  __create: __typename
+  __typename
+  ... on InputCoin {
+    utxoId
+    owner
+    amount
+    assetId
+    txPointer
+    witnessIndex
+    maturity
+    predicateGasUsed
+    predicate
+    predicateData
+  }
+  ... on InputContract {
+    utxoId
+    balanceRoot
+    stateRoot
+    txPointer
+    # Contract to link to
+    contract {
+      __typename
+      id
+    }
+  }
+  ... on InputMessage {
+    sender
+    recipient
+    amount
+    nonce
+    witnessIndex
+    predicateGasUsed
+    data
+    predicate
+    predicateData
+  }
+}
+
+fragment OutputsQuery on Output {
+  __typename
+  ... on CoinOutput {
+    to
+    amount
+    assetId
+  }
+  ... on ContractOutput {
+    inputIndex
+    balanceRoot
+    stateRoot
+  }
+  ... on ChangeOutput {
+    to
+    amount
+    assetId
+  }
+  ... on VariableOutput {
+    assetId
+    amount
+    to
+  }
+  ... on ContractCreated {
+    stateRoot
+    contract {
+      __typename
+      id
+      salt
+      bytecode
+    }
+  }
+}
+
+fragment StatusQuery on TransactionStatus {
+  __typename
+  ... on SubmittedStatus {
+    time
+  }
+  ... on SuccessStatus {
+    transactionId
+    # Link block to id
+    block {
+      __typename
+      id
+    }
+    time
+    programState {
+      data
+      returnType
+    }
+  }
+  ... on SqueezedOutStatus {
+    reason
+  }
+  ... on FailureStatus {
+    reason
+    time
+    programState {
+      data
+      returnType
+    }
+  }
+}
+
+fragment ReceiptQuery on Receipt {
+  __typename
+  # Link to contract to id
+  contract {
+    __typename
+    id
+  }
+  pc
+  is
+  ## Link to contract id
+  to {
+    __typename
+    id
+  }
+  toAddress
+  amount
+  assetId
+  gas
+  param1
+  param2
+  val
+  ptr
+  digest
+  reason
+  ra
+  rb
+  rc
+  rd
+  len
+  receiptType
+  result
+  gasUsed
+  data
+  sender
+  recipient
+  nonce
+  contractId
+  subId
+}
+
+# Write your query or mutation here
+query QueryBlocks($first: Int, $last: Int, $after: String) {
+  blocks(first: $first, last: $last, after: $after) {
+    nodes {
+      __typename
+      id
+      header {
+        __typename
+        id
+        daHeight
+        transactionsCount
+        messageReceiptCount
+        transactionsRoot
+        messageReceiptRoot
+        height
+        prevRoot
+        time
+        applicationHash
+      }
+      consensus {
+        __typename
+        ... on Genesis {
+          chainConfigHash
+          coinsRoot
+          contractsRoot
+          messagesRoot
+        }
+        ... on PoAConsensus {
+          signature
+        }
+      }
+      transactions {
+        __typename
+        id
+        inputAssetIds
+        inputContracts {
+          id
+        }
+        inputContract {
+          __typename
+          utxoId
+          balanceRoot
+          stateRoot
+          txPointer
+          contract {
+            __typename
+            id
+          }
+        }
+        policies {
+          __typename
+          gasPrice
+          witnessLimit
+          maturity
+          maxFee
+        }
+        gasPrice
+        scriptGasLimit
+        maturity
+        mintAmount
+        mintAssetId
+        txPointer
+        isScript
+        isCreate
+        isMint
+        inputs {
+          ...InputsQuery
+        }
+        outputs {
+          ...OutputsQuery
+        }
+        outputContract {
+          __typename
+          inputIndex
+          balanceRoot
+          stateRoot
+        }
+        witnesses
+        receiptsRoot
+        status {
+          ...StatusQuery
+        }
+        receipts {
+          ...ReceiptQuery
+        }
+        script
+        scriptData
+        bytecodeWitnessIndex
+        bytecodeLength
+        salt
+        storageSlots
+        rawPayload
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

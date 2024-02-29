@@ -31,7 +31,7 @@
     "db:migrate": "tsx ./src/cli.ts migrate",
     "db:setup": "run-s db:generate db:migrate",
     "inngest": "inngest-cli dev -u http://localhost:3002/api/inngest",
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/app.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
     "sync:missing": "tsx ./src/cli.ts sync --missing"
   },

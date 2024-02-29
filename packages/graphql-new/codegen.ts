@@ -6,16 +6,16 @@ const SERVER_URL = process.env.FUEL_PROVIDER || 'http://127.0.0.1:4000/graphql';
 
 const config: CodegenConfig = {
   overwrite: true,
-  documents: ['./src/gql/queries/**.graphql'],
+  documents: ['./src/domain/**/*.graphql'],
   schema: SERVER_URL,
   generates: {
-    './src/gql/schemas/fuelcore.graphql': {
+    './src/application/schemas/fuelcore.graphql': {
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,
       },
     },
-    './src/gql/schemas/fuelcore-types.graphql': {
+    './src/application/schemas/fuelcore-types.graphql': {
       plugins: ['schema-ast'],
       config: {
         includeDirectives: false,

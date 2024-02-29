@@ -1,5 +1,5 @@
 {
-  "id": "ed9ad34d-fa66-4555-89c0-3d4a473a5c29",
+  "id": "54a09d19-ece1-401c-8a3b-ad3cd399ebc6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -39,9 +39,9 @@
           "columns": ["timestamp"],
           "isUnique": false
         },
-        "blocks_id_index": {
-          "name": "blocks_id_index",
-          "columns": ["id"],
+        "blocks__id_index": {
+          "name": "blocks__id_index",
+          "columns": ["_id"],
           "isUnique": false
         }
       },
@@ -55,150 +55,10 @@
         }
       }
     },
-    "inputs": {
-      "name": "inputs",
-      "schema": "",
-      "columns": {
-        "_id": {
-          "name": "_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar(66)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "timestamp": {
-          "name": "timestamp",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "data": {
-          "name": "data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "transaction_id": {
-          "name": "transaction_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "inputs_timestamp_index": {
-          "name": "inputs_timestamp_index",
-          "columns": ["timestamp"],
-          "isUnique": false
-        },
-        "inputs_id_index": {
-          "name": "inputs_id_index",
-          "columns": ["id"],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "inputs_transaction_id_transactions__id_fk": {
-          "name": "inputs_transaction_id_transactions__id_fk",
-          "tableFrom": "inputs",
-          "tableTo": "transactions",
-          "columnsFrom": ["transaction_id"],
-          "columnsTo": ["_id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "inputs_id_unique": {
-          "name": "inputs_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        }
-      }
-    },
-    "outputs": {
-      "name": "outputs",
-      "schema": "",
-      "columns": {
-        "_id": {
-          "name": "_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar(66)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "timestamp": {
-          "name": "timestamp",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "data": {
-          "name": "data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "transaction_id": {
-          "name": "transaction_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "outputs_timestamp_index": {
-          "name": "outputs_timestamp_index",
-          "columns": ["timestamp"],
-          "isUnique": false
-        },
-        "outputs_id_index": {
-          "name": "outputs_id_index",
-          "columns": ["id"],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "outputs_transaction_id_transactions__id_fk": {
-          "name": "outputs_transaction_id_transactions__id_fk",
-          "tableFrom": "outputs",
-          "tableTo": "transactions",
-          "columnsFrom": ["transaction_id"],
-          "columnsTo": ["_id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "outputs_id_unique": {
-          "name": "outputs_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        }
-      }
-    },
     "transactions": {
       "name": "transactions",
       "schema": "",
       "columns": {
-        "_id": {
-          "name": "_id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
-        },
         "id": {
           "name": "id",
           "type": "varchar(66)",
