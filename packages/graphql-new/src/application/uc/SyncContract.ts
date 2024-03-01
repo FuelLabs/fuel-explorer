@@ -3,12 +3,12 @@ import { ContractRepository } from '~/domain/Contract/ContractRepository';
 import { GQLContract } from '~/graphql/generated/sdk';
 import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
-type Input = {
+type Props = {
   contract: GQLContract;
 };
 
 export class SyncContract {
-  async execute({ contract }: Input) {
+  async execute({ contract }: Props) {
     const repository = new ContractRepository();
     await repository.insertOne(contract);
   }

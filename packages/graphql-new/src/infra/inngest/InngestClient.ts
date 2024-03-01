@@ -18,6 +18,7 @@ export enum InngestEvents {
   SYNC_OUTPUTS = 'indexer/sync:outputs',
   SYNC_CONTRACT = 'indexer/sync:contract',
   SYNC_CHAIN_INFO = 'indexer/sync:chain-info',
+  SYNC_PREDICATE = 'indexer/sync:predicate',
 }
 
 const schemas = new EventSchemas().fromRecord<{
@@ -55,6 +56,12 @@ const schemas = new EventSchemas().fromRecord<{
   };
   [InngestEvents.SYNC_CHAIN_INFO]: {
     data: {};
+  };
+  [InngestEvents.SYNC_PREDICATE]: {
+    data: {
+      bytecode: string;
+      address: string;
+    };
   };
 }>();
 
@@ -118,6 +125,13 @@ export class InngestClient {
     await client.send({
       name: InngestEvents.SYNC_CHAIN_INFO,
       data: {},
+    });
+  }
+
+  async syncPredicate(predicate: { bytecode: string; address: string }) {
+    await client.send({
+      name: InngestEvents.SYNC_PREDICATE,
+      data: predicate,
     });
   }
 }

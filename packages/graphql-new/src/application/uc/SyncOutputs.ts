@@ -3,13 +3,13 @@ import { OutputRepository } from '~/domain/Output/OutputRepository';
 import { GQLOutput } from '~/graphql/generated/sdk';
 import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
-type Output = {
+type Props = {
   outputs: GQLOutput[];
   transactionId: number;
 };
 
 export class SyncOutputs {
-  async execute({ outputs, transactionId }: Output) {
+  async execute({ outputs, transactionId }: Props) {
     const repository = new OutputRepository();
     await repository.insertMany(outputs, transactionId);
   }

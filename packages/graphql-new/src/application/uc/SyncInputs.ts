@@ -1,17 +1,38 @@
-import { RetryAfterError } from 'inngest';
+import { GetStepTools, RetryAfterError } from 'inngest';
+import { InputEntity } from '~/domain/Input/InputEntity';
 import { InputRepository } from '~/domain/Input/InputRepository';
+import { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import { GQLInput } from '~/graphql/generated/sdk';
-import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
+import { Events, InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
-type Input = {
+type Step = GetStepTools<typeof inngest._client, InngestEvents.SYNC_INPUTS>;
+type Props = {
   inputs: GQLInput[];
   transactionId: number;
 };
 
 export class SyncInputs {
-  async execute({ inputs, transactionId }: Input) {
+  constructor(private readonly step: Step) {}
+
+  async execute({ inputs, transactionId }: Props) {
     const repository = new InputRepository();
-    await repository.insertMany(inputs, transactionId);
+    const created = await repository.insertMany(inputs, transactionId);
+    await this.addPredicates(created);
+  }
+
+  private async addPredicates(inputs: InputEntity[]) {
+    const predicates = inputs
+      .map((input) => input.data.predicate)
+      .filter(Boolean) as PredicatePayload[];
+
+    const events = predicates.map<Events[InngestEvents.SYNC_PREDICATE]>(
+      (predicate) => ({
+        name: InngestEvents.SYNC_PREDICATE,
+        data: predicate,
+      }),
+    );
+
+    await this.step.sendEvent('sync:predicates', events);
   }
 }
 
@@ -20,10 +41,10 @@ export const syncInputs = inngest
   .createFunction(
     { id: 'sync:inputs', concurrency: 100 },
     { event: InngestEvents.SYNC_INPUTS },
-    async ({ event: { data }, attempt }) => {
+    async ({ event: { data }, attempt, step }) => {
       try {
         console.log(`Syncing inputs for transaction ${data.transactionId}...`);
-        const syncInputs = new SyncInputs();
+        const syncInputs = new SyncInputs(step);
         await syncInputs.execute(data);
       } catch (error) {
         console.error(error);

@@ -29,6 +29,6 @@ export class InputEntity extends Entity<InputProps, SerialID> {
   }
 
   get data() {
-    return this.props.data.value();
+    return this.props.data;
   }
 }

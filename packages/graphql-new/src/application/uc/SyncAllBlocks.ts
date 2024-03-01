@@ -4,14 +4,14 @@ import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { Events, InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
 type Step = GetStepTools<typeof inngest._client, InngestEvents.SYNC_BLOCKS>;
-type Input = {
+type Props = {
   page?: number;
   perPage?: number;
 };
 
 export class SyncAllBlocks {
   constructor(private step: Step) {}
-  async execute({ page = 1, perPage = 1000 }: Input) {
+  async execute({ page = 1, perPage = 1000 }: Props) {
     const repo = new BlockRepository();
     const { blocks, hasNext } = await repo.blocksFromNode(page, perPage);
     const created = await repo.insertMany(blocks);
