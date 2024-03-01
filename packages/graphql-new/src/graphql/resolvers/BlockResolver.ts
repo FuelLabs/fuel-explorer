@@ -1,13 +1,17 @@
-import { Paginator, type PaginatorParams } from '~/core/Paginator';
+import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { BlocksTable } from '~/domain/Block/BlockModel';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
-import { GQLBlock } from '~/graphql/generated/sdk';
+import {
+  GQLBlock,
+  GQLQueryBlockArgs,
+  GQLQueryBlocksArgs,
+} from '~/graphql/generated/sdk';
 
 type Source = GQLBlock;
 type Params = {
-  blocks: PaginatorParams;
-  block: { id: string; height: string };
+  blocks: GQLQueryBlocksArgs;
+  block: GQLQueryBlockArgs;
 };
 
 export class BlockResolver extends ResolverAdapter<Source> {

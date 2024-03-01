@@ -5,10 +5,10 @@ import { Entity } from './Entity';
 import { Identifier } from './Identifier';
 
 export type PaginatorParams = {
-  first: number;
-  last: number;
-  after: string;
-  before: string;
+  first?: number | null;
+  last?: number | null;
+  after?: string | null;
+  before?: string | null;
 };
 
 export type PaginatedResults<T> = {
@@ -119,7 +119,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
   ): PaginatedResults<R> {
     const { maxId } = this;
     const { first, last } = this.params;
-    const limit = first || last;
+    const limit = (first || last) ?? 1;
     const nodes = items.slice(0, limit).map((item) => item);
     const hasNextPage = first ? limit < items.length : startCursor < maxId;
     const hasPreviousPage = first ? startCursor > 1 : limit < items.length;

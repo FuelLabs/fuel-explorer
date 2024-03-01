@@ -1,14 +1,19 @@
-import { Paginator, type PaginatorParams } from '~/core/Paginator';
+import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import { GQLTransaction } from '~/graphql/generated/sdk';
+import {
+  GQLQueryTransactionArgs,
+  GQLQueryTransactionsArgs,
+  GQLQueryTransactionsByOwnerArgs,
+  GQLTransaction,
+} from '~/graphql/generated/sdk';
 
 type Source = GQLTransaction;
 type Params = {
-  transaction: { id: string };
-  transactions: PaginatorParams;
-  transactionByOwner: PaginatorParams & { owner: string };
+  transaction: GQLQueryTransactionArgs;
+  transactions: GQLQueryTransactionsArgs;
+  transactionByOwner: GQLQueryTransactionsByOwnerArgs;
 };
 
 export class TransactionResolver extends ResolverAdapter<Source> {

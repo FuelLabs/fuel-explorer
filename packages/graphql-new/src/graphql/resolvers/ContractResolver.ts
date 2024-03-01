@@ -2,12 +2,12 @@ import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { ContractsTable } from '~/domain/Contract/ContractModel';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
-import { GQLContract } from '~/graphql/generated/sdk';
+import { GQLContract, GQLQueryContractArgs } from '~/graphql/generated/sdk';
 
 type Source = GQLContract;
 type Params = {
   contracts: PaginatorParams;
-  contract: { id: string };
+  contract: GQLQueryContractArgs;
 };
 
 export class ContractResolver extends ResolverAdapter<Source> {
