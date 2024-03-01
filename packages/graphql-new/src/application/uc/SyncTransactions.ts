@@ -1,8 +1,13 @@
-import { RetryAfterError } from 'inngest';
+import { GetStepTools, RetryAfterError } from 'inngest';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
 import { GQLBlock } from '~/graphql/generated/sdk';
 import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
+
+type Step = GetStepTools<
+  typeof inngest._client,
+  InngestEvents.SYNC_TRANSACTIONS
+>;
 
 type Input = {
   block: GQLBlock;
@@ -10,6 +15,8 @@ type Input = {
 };
 
 export class SyncTransactions {
+  constructor(private readonly step: Step) {}
+
   async execute({ block, blockId }: Input) {
     const repository = new TransactionRepository();
     const added = await repository.insertMany(block.transactions, blockId);
@@ -24,7 +31,10 @@ export class SyncTransactions {
     const transactionId = transaction._id.value();
     if (inputs?.length) {
       console.log(`Adding inputs for transaction ${transaction.transactionId}`);
-      await inngest.syncInputs({ inputs, transactionId });
+      await this.step.sendEvent('sync:inputs', {
+        name: InngestEvents.SYNC_INPUTS,
+        data: { inputs, transactionId },
+      });
     }
   }
 
@@ -35,7 +45,10 @@ export class SyncTransactions {
       console.log(
         `Adding outputs for transaction ${transaction.transactionId}`,
       );
-      await inngest.syncOutputs({ outputs, transactionId });
+      await this.step.sendEvent('sync:outputs', {
+        name: InngestEvents.SYNC_OUTPUTS,
+        data: { outputs, transactionId },
+      });
     }
   }
 
@@ -43,7 +56,10 @@ export class SyncTransactions {
     const contract = transaction.getContractCreated();
     if (!contract) return;
     console.log(`Adding contract for transaction ${transaction.transactionId}`);
-    await inngest.syncContract({ contract });
+    await this.step.sendEvent('sync:contract', {
+      name: InngestEvents.SYNC_CONTRACT,
+      data: { contract },
+    });
   }
 }
 
@@ -52,10 +68,10 @@ export const syncTransactions = inngest
   .createFunction(
     { id: 'sync:transactions' },
     { event: InngestEvents.SYNC_TRANSACTIONS, concurrency: 100 },
-    async ({ attempt, event: { data: block } }) => {
+    async ({ step, attempt, event: { data: block } }) => {
       try {
         console.log(`Syncing transactions for block ${block.blockId}`);
-        const syncTransactions = new SyncTransactions();
+        const syncTransactions = new SyncTransactions(step);
         return syncTransactions.execute(block);
       } catch (error) {
         console.error(error);

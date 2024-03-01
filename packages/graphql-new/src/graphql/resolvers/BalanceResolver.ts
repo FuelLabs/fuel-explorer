@@ -21,10 +21,12 @@ export class BalanceResolver extends ResolverAdapter<Source> {
     });
   }
 
+  // TODO: need to check how to implement this using Postgres
   async balance(_: Source, params: Params['balance']) {
     return this.client.sdk.balance(params);
   }
 
+  // TODO: need to check how to implement this using Postgres
   async balances(_: Source, params: Params['balances']) {
     return this.client.sdk.balances(params);
   }

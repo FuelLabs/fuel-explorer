@@ -1,8 +1,12 @@
-import { RetryAfterError } from 'inngest';
+import { GetStepTools, RetryAfterError } from 'inngest';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
+type Step = GetStepTools<typeof inngest._client, InngestEvents.SYNC_MISSING>;
+
 export class SyncMissingBlocks {
+  constructor(private readonly step: Step) {}
+
   async execute() {
     const repo = new BlockRepository();
     const latest = await repo.findLatestAdded();
@@ -12,7 +16,10 @@ export class SyncMissingBlocks {
     }
 
     const page = Math.ceil(Number(id) / 1000);
-    await inngest.syncBlocks(page);
+    await this.step.sendEvent('sync:chain', {
+      name: InngestEvents.SYNC_BLOCKS,
+      data: { page, perPage: 1000 },
+    });
   }
 }
 
@@ -21,10 +28,10 @@ export const syncMissingBlocks = inngest
   .createFunction(
     { id: 'sync:missing' },
     { event: InngestEvents.SYNC_MISSING, concurrency: 100 },
-    async ({ attempt }) => {
+    async ({ step, attempt }) => {
       try {
         console.log('Syncing missing blocks');
-        const syncMissingBlocks = new SyncMissingBlocks();
+        const syncMissingBlocks = new SyncMissingBlocks(step);
         await syncMissingBlocks.execute();
       } catch (error) {
         console.error(error);

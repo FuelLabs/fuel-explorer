@@ -2,20 +2,33 @@ import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { ContractsTable } from '~/domain/Contract/ContractModel';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
-import { GQLContract, GQLQueryContractArgs } from '~/graphql/generated/sdk';
+import {
+  GQLContract,
+  GQLQueryContractArgs,
+  GQLQueryContractBalanceArgs,
+  GQLQueryContractBalancesArgs,
+} from '~/graphql/generated/sdk';
+import { GraphQLSDK } from '../GraphQLSDK';
 
 type Source = GQLContract;
 type Params = {
   contracts: PaginatorParams;
   contract: GQLQueryContractArgs;
+  contractBalance: GQLQueryContractBalanceArgs;
+  contractBalances: GQLQueryContractBalancesArgs;
 };
 
 export class ContractResolver extends ResolverAdapter<Source> {
-  constructor(private readonly contractRepository = new ContractRepository()) {
+  constructor(
+    private readonly contractRepository = new ContractRepository(),
+    private readonly client = new GraphQLSDK(),
+  ) {
     super();
     this.setResolvers({
       contract: this.contract.bind(this),
       contracts: this.contracts.bind(this),
+      contractBalance: this.contractBalance.bind(this),
+      contractBalances: this.contractBalances.bind(this),
     });
   }
 
@@ -39,5 +52,15 @@ export class ContractResolver extends ResolverAdapter<Source> {
       endCursor,
       (item) => item.toGQLNode(),
     );
+  }
+
+  // TODO: need to check how to implement this using Postgres
+  async contractBalance(_: Source, params: Params['contractBalance']) {
+    return this.client.sdk.contractBalance(params);
+  }
+
+  // TODO: need to check how to implement this using Postgres
+  async contractBalances(_: Source, params: Params['contractBalances']) {
+    return this.client.sdk.contractBalances(params);
   }
 }
