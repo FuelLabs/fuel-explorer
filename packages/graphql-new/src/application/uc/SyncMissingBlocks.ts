@@ -1,8 +1,8 @@
-import { IUseCase } from '~/core/UseCase';
+import { RetryAfterError } from 'inngest';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { inngest } from '~/infra/inngest/InngestClient';
 
-export class SyncMissingBlocks implements IUseCase<unknown, void> {
+export class SyncMissingBlocks {
   async execute() {
     const repo = new BlockRepository();
     const latest = await repo.findLatestAdded();
@@ -15,3 +15,20 @@ export class SyncMissingBlocks implements IUseCase<unknown, void> {
     await inngest.syncBlocks(page);
   }
 }
+
+export const syncMissingBlocks = inngest
+  .client()
+  .createFunction(
+    { id: 'sync:missing' },
+    { event: 'indexer/sync:missing', concurrency: 500 },
+    async ({ attempt }) => {
+      try {
+        console.log('Syncing missing blocks');
+        const syncMissingBlocks = new SyncMissingBlocks();
+        await syncMissingBlocks.execute();
+      } catch (error) {
+        console.error(error);
+        throw new RetryAfterError(`Sync missing attempt ${attempt}`, '1s');
+      }
+    },
+  );

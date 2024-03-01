@@ -26,7 +26,7 @@ export const TransactionsTable = pgTable(
   }),
 );
 
-export const transactionsReletaions = relations(
+export const TransactionsRelations = relations(
   TransactionsTable,
   ({ one, many }) => ({
     inputs: many(InputsTable, { relationName: 'transaction_inputs' }),

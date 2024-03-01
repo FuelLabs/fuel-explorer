@@ -7,19 +7,15 @@ CREATE TABLE IF NOT EXISTS "blocks" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "inputs" (
-	"id" varchar(66) NOT NULL,
-	"timestamp" timestamp NOT NULL,
+	"_id" serial PRIMARY KEY NOT NULL,
 	"data" jsonb NOT NULL,
-	"transaction_id" integer NOT NULL,
-	CONSTRAINT "inputs_id_unique" UNIQUE("id")
+	"transaction_id" integer NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "outputs" (
-	"id" varchar(66) NOT NULL,
-	"timestamp" timestamp NOT NULL,
+	"_id" serial PRIMARY KEY NOT NULL,
 	"data" jsonb NOT NULL,
-	"transaction_id" integer NOT NULL,
-	CONSTRAINT "outputs_id_unique" UNIQUE("id")
+	"transaction_id" integer NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "transactions" (
@@ -34,10 +30,8 @@ CREATE TABLE IF NOT EXISTS "transactions" (
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "blocks_timestamp_index" ON "blocks" ("timestamp");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "blocks__id_index" ON "blocks" ("_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "inputs_timestamp_index" ON "inputs" ("timestamp");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "inputs_id_index" ON "inputs" ("id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "outputs_timestamp_index" ON "outputs" ("timestamp");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "outputs_id_index" ON "outputs" ("id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "inputs__id_index" ON "inputs" ("_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "outputs__id_index" ON "outputs" ("_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "transactions_timestamp_index" ON "transactions" ("timestamp");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "transactions__id_index" ON "transactions" ("_id");--> statement-breakpoint
 DO $$ BEGIN

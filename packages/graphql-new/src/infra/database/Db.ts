@@ -4,6 +4,8 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Client } from 'pg';
 import { env } from '~/config';
 
+import * as schema from './schema';
+
 const DB_HOST = env.get('DB_HOST');
 const DB_PORT = env.get('DB_PORT');
 const DB_USER = env.get('DB_USER');
@@ -25,7 +27,7 @@ export class Db {
   }
 
   connection() {
-    return drizzle(this.#connection);
+    return drizzle(this.#connection, { schema });
   }
 
   async connect() {

@@ -1,4 +1,4 @@
-import { IUseCase } from '~/core/UseCase';
+import { RetryAfterError } from 'inngest';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { inngest } from '~/infra/inngest/InngestClient';
 
@@ -7,7 +7,7 @@ type Input = {
   perPage?: number;
 };
 
-export class SyncAllBlocks implements IUseCase<Input, void> {
+export class SyncAllBlocks {
   async execute({ page = 1, perPage = 1000 }: Input): Promise<void> {
     const repo = new BlockRepository();
     const { blocks, hasNext } = await repo.blocksFromNode(page, perPage);
@@ -28,3 +28,20 @@ export class SyncAllBlocks implements IUseCase<Input, void> {
     }
   }
 }
+
+export const syncAllBlocks = inngest
+  .client()
+  .createFunction(
+    { id: 'sync:blocks', concurrency: 500 },
+    { event: 'indexer/sync:blocks' },
+    async ({ event: { data }, attempt }) => {
+      try {
+        console.log(`Syncing block page ${data.page}`);
+        const syncAllBlocks = new SyncAllBlocks();
+        await syncAllBlocks.execute(data);
+      } catch (error) {
+        console.error(error);
+        throw new RetryAfterError(`Sync block attempt ${attempt}`, '1s');
+      }
+    },
+  );

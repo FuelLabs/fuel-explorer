@@ -1,5 +1,5 @@
 {
-  "id": "1ee41920-3961-4cc2-bbdd-d01f320ebec6",
+  "id": "64222490-2eb0-4642-aab6-c409eeeb5ce6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -59,16 +59,10 @@
       "name": "inputs",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(66)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "timestamp": {
-          "name": "timestamp",
-          "type": "timestamp",
-          "primaryKey": false,
+        "_id": {
+          "name": "_id",
+          "type": "serial",
+          "primaryKey": true,
           "notNull": true
         },
         "data": {
@@ -85,14 +79,9 @@
         }
       },
       "indexes": {
-        "inputs_timestamp_index": {
-          "name": "inputs_timestamp_index",
-          "columns": ["timestamp"],
-          "isUnique": false
-        },
-        "inputs_id_index": {
-          "name": "inputs_id_index",
-          "columns": ["id"],
+        "inputs__id_index": {
+          "name": "inputs__id_index",
+          "columns": ["_id"],
           "isUnique": false
         }
       },
@@ -108,28 +97,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "inputs_id_unique": {
-          "name": "inputs_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "outputs": {
       "name": "outputs",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(66)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "timestamp": {
-          "name": "timestamp",
-          "type": "timestamp",
-          "primaryKey": false,
+        "_id": {
+          "name": "_id",
+          "type": "serial",
+          "primaryKey": true,
           "notNull": true
         },
         "data": {
@@ -146,14 +123,9 @@
         }
       },
       "indexes": {
-        "outputs_timestamp_index": {
-          "name": "outputs_timestamp_index",
-          "columns": ["timestamp"],
-          "isUnique": false
-        },
-        "outputs_id_index": {
-          "name": "outputs_id_index",
-          "columns": ["id"],
+        "outputs__id_index": {
+          "name": "outputs__id_index",
+          "columns": ["_id"],
           "isUnique": false
         }
       },
@@ -169,13 +141,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "outputs_id_unique": {
-          "name": "outputs_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "transactions": {
       "name": "transactions",

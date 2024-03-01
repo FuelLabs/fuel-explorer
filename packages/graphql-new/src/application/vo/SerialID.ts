@@ -1,24 +1,16 @@
 import { serial } from 'drizzle-orm/pg-core';
-import { ValueObject } from '~/core/ValueObject';
+import { Identifier } from '~/core/Identifier';
 
-interface Props {
-  value: string;
-}
-
-export class SerialID extends ValueObject<Props> {
-  private constructor(props: Props) {
-    super(props);
+export class SerialID extends Identifier<number> {
+  private constructor(id: number) {
+    super(id);
   }
 
   static type() {
-    return serial('id').primaryKey();
+    return serial('_id').primaryKey();
   }
 
-  static create(value: string) {
-    return new SerialID({ value });
-  }
-
-  value() {
-    return this.props.value;
+  static create(id: number) {
+    return new SerialID(id);
   }
 }

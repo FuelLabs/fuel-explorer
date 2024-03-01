@@ -4,7 +4,7 @@ import express from 'express';
 import { serve } from 'inngest/express';
 import { db } from '../database/Db';
 import { inngest } from '../inngest/InngestClient';
-import { inngestFunctions } from '../inngest/inngestFunctions';
+import { inngestFunctions } from '../inngest/functions';
 
 export class Server {
   setup() {
