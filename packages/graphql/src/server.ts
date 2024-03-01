@@ -8,8 +8,7 @@ import { ContextDomain } from './domains/Context';
 import { createSchema } from './schema';
 import { createGraphqlFetch } from './utils/executor';
 
-const providerUrl =
-  FUEL_CHAIN?.providerUrl || 'https://beta-5.fuel.network/graphql';
+const providerUrl = FUEL_CHAIN.providerUrl;
 
 const { FUEL_EXPLORER_API_KEY } = process.env;
 
