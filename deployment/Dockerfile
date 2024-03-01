@@ -12,13 +12,17 @@ ENV SERVER_BUILD=true
 # Enable pnpm using corepack form node.js
 RUN corepack enable
 
-COPY . /app-explorer
-WORKDIR /app-explorer
+# Install dependencies for the entire monorepo
+COPY packages/app-commons ./packages/app-commons
+COPY packages/graphql ./packages/graphql
+COPY package.json turbo.json pnpm-workspace.yaml ./
 
+# Install dependencies for the entire monorepo
 RUN pnpm install
 
+# Expose the specified port
 EXPOSE ${PORT}
 
-WORKDIR /app-explorer
-
+# Start GraphQL server
+WORKDIR /packages/graphql
 CMD ["pnpm", "server:start"]
