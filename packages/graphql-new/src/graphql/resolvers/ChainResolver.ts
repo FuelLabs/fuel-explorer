@@ -17,6 +17,7 @@ export class ChainResolver extends ResolverAdapter<Source> {
 
   async chain(_: Source, _params: Params['chain']) {
     // TODO: need to check with @luizstacio about the chain resolver
-    return this.client.sdk.chain();
+    const res = await this.client.sdk.chain();
+    return res.data.chain;
   }
 }

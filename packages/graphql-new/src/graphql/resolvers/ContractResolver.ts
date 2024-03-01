@@ -56,11 +56,13 @@ export class ContractResolver extends ResolverAdapter<Source> {
 
   // TODO: need to check how to implement this using Postgres
   async contractBalance(_: Source, params: Params['contractBalance']) {
-    return this.client.sdk.contractBalance(params);
+    const res = await this.client.sdk.contractBalance(params);
+    return res.data.contractBalance;
   }
 
   // TODO: need to check how to implement this using Postgres
   async contractBalances(_: Source, params: Params['contractBalances']) {
-    return this.client.sdk.contractBalances(params);
+    const res = await this.client.sdk.contractBalances(params);
+    return res.data.contractBalances;
   }
 }

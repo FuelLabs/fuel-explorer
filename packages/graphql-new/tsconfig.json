@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
     "target": "ESNext",
@@ -11,7 +12,11 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "outDir": "./dist",
-    "plugins": [{ "name": "ts-gql-plugin" }],
+    "plugins": [
+      {
+        "name": "ts-gql-plugin"
+      }
+    ],
     "baseUrl": "./",
     "paths": {
       "~/*": ["src/*"]

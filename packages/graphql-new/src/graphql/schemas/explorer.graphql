@@ -2,40 +2,65 @@ schema {
   query: Query
 }
 
+# --------------------------------
+# Contract
+# --------------------------------
+
 type ContractConnection {
   nodes: [Contract]
   pageInfo: PageInfo!
 }
 
+# --------------------------------
+# Predicate
+# --------------------------------
+
+type PredicateItem {
+  address: Address
+  bytecode: String
+}
+
+# --------------------------------
+# Search
+# --------------------------------
+
+type SearchAccount {
+  address: Address
+  transactions: [SearchTransaction]
+}
+
+type SearchContract {
+  id: ContractId
+}
+
+type SearchBlock {
+  id: BlockId
+  height: String
+}
+
+type SearchTransaction {
+  id: TransactionId
+}
+
+type SearchResult {
+  account: SearchAccount
+  contract: SearchContract
+  block: SearchBlock
+  transaction: SearchTransaction
+}
+
+# --------------------------------
+# Query
+# --------------------------------
+
 type Query {
-  transaction(id: TransactionId!): Transaction
-  transactions(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): TransactionConnection!
-  transactionsByOwner(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    owner: Address!
-  ): TransactionConnection!
-  blocks(after: String, before: String, first: Int, last: Int): BlockConnection!
-  contract(id: ContractId!): Contract
   contracts(
     after: String
     before: String
     first: Int
     last: Int
   ): ContractConnection!
-  contractBalance(asset: AssetId!, contract: ContractId!): ContractBalance!
-  contractBalances(
-    after: String
-    before: String
-    filter: ContractBalanceFilterInput!
-    first: Int
-    last: Int
-  ): ContractBalanceConnection!
+
+  search(query: String!): SearchResult
+  predicate(address: String!): PredicateItem
 }
