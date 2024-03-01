@@ -773,8 +773,8 @@ importers:
         specifier: 0.74.0
         version: 0.74.0
       '@fuels/assets':
-        specifier: 0.1.5
-        version: 0.1.5
+        specifier: 0.15.2
+        version: 0.15.2
       '@radix-ui/colors':
         specifier: 3.0.0
         version: 3.0.0

@@ -11,9 +11,7 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": [
-        "./src/theme/tailwind-preset.ts"
-      ]
+      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
     }
   },
   "publishConfig": {
@@ -38,9 +36,7 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build:storybook": "pnpm ts:check && storybook build -o ../app-explorer/public/ui",
@@ -56,7 +52,7 @@
   "dependencies": {
     "@fuel-ts/address": "0.74.0",
     "@fuel-ts/math": "0.74.0",
-    "@fuels/assets": "0.1.5",
+    "@fuels/assets": "0.15.2",
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",
