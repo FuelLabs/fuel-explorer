@@ -14,14 +14,14 @@ export class TransactionRef extends ValueObject<Props> {
   static type() {
     return integer('transaction_id')
       .notNull()
-      .references(() => TransactionsTable.id);
+      .references(() => TransactionsTable._id);
   }
 
   static create(value: number) {
     return new TransactionRef({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

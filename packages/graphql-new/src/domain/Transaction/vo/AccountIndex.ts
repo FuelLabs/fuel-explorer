@@ -20,7 +20,7 @@ export class AccountIndex extends ValueObject<Props> {
     return new AccountIndex({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 

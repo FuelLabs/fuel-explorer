@@ -19,7 +19,7 @@ export class HashID extends ValueObject<Props> {
     return new HashID({ value: hash });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

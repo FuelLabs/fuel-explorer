@@ -7,13 +7,13 @@ import { InputsTable } from '~/domain/Input/InputModel';
 import { OutputsTable } from '~/domain/Output/OutputModel';
 import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
-import { TransactionID } from './vo/TransactionID';
+import { TransactionModelID } from './vo/TransactionModelID';
 import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
 export const TransactionsTable = pgTable(
   'transactions',
   {
-    _id: TransactionID.type(),
+    _id: TransactionModelID.type(),
     transactionId: HashID.type(),
     timestamp: TransactionTimestamp.type(),
     data: TransactionData.type(),

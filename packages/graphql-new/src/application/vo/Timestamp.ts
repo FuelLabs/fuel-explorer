@@ -20,7 +20,7 @@ export class Timestamp extends ValueObject<Props> {
     return new Timestamp({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

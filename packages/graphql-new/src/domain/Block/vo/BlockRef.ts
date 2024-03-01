@@ -21,7 +21,7 @@ export class BlockRef extends ValueObject<Props> {
     return new BlockRef({ value: id });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

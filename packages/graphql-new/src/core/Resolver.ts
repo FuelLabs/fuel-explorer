@@ -1,5 +1,5 @@
 import { IFieldResolver } from '@graphql-tools/utils';
-import { GraphQLContext } from '~/infra/graphql/GraphQLContext';
+import { GraphQLContext } from '~/graphql/GraphQLContext';
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type Resolver<Source> = IFieldResolver<Source, GraphQLContext, any, any>;

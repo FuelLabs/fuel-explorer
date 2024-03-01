@@ -19,7 +19,7 @@ export class BlockData extends ValueObject<Props> {
     return new BlockData({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

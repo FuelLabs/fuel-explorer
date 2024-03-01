@@ -31,6 +31,6 @@ export class GraphQLServer<R extends IResolvers<unknown, unknown>> {
   }
 
   private schemasPath(schemaFile: string) {
-    return join(__dirname, '../../application/schemas/', schemaFile);
+    return join(__dirname, './schemas/', schemaFile);
   }
 }

@@ -18,7 +18,7 @@ export class SerialID extends ValueObject<Props> {
     return new SerialID({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

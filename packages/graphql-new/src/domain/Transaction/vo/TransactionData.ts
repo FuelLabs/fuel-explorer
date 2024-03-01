@@ -19,7 +19,7 @@ export class TransactionData extends ValueObject<Props> {
     return new TransactionData({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

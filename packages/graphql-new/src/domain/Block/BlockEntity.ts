@@ -22,20 +22,20 @@ export class BlockEntity extends Entity<BlockProps, BlockModelID> {
   }
 
   get blockId() {
-    return this.props.blockId.get();
+    return this.props.blockId.value();
   }
 
   get data() {
-    return this.props.data.get();
+    return this.props.data.value();
   }
 
   get timestamp() {
-    return this.props.timestamp.get();
+    return this.props.timestamp.value();
   }
 
   static create(block: BlockItem) {
     const id = BlockModelID.create(block.data);
-    const blockId = HashID.create(block.blockId);
+    const blockId = HashID.create(block.data.id);
     const data = BlockData.create(block.data);
     const timestamp = Timestamp.create(block.data.header.time);
     return new BlockEntity(id, {
@@ -45,7 +45,16 @@ export class BlockEntity extends Entity<BlockProps, BlockModelID> {
     });
   }
 
-  toGQLNode() {
+  static toDBItem(block: GQLBlock) {
+    return {
+      _id: BlockModelID.create(block).value(),
+      blockId: HashID.create(block.id).value(),
+      timestamp: Timestamp.create(block.header.time).value(),
+      data: block,
+    };
+  }
+
+  toGQLNode(): GQLBlock & { timestamp: Date } {
     const timestamp = this.timestamp;
     const data = this.data;
     return { timestamp, ...data };

@@ -1,4 +1,4 @@
-import { GraphQLServer } from './infra/graphql/GraphQLServer';
+import { GraphQLServer } from './graphql/GraphQLServer';
 
 const graphQLServer = new GraphQLServer({});
 const schema = graphQLServer.schema();

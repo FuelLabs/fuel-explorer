@@ -19,7 +19,7 @@ export class OutputData extends ValueObject<Props> {
     return new OutputData({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

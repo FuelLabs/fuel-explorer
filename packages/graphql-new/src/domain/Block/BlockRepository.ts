@@ -1,11 +1,10 @@
 import { desc, eq } from 'drizzle-orm';
-import { HashID, Timestamp } from '~/application/vo';
 import { Paginator, PaginatorParams } from '~/core/Paginator';
 import { GQLBlock } from '~/generated/types';
+import { GraphQLSDK } from '~/graphql/GraphQLSDK';
 import { db } from '~/infra/database/Db';
 import { BlockEntity } from './BlockEntity';
 import { BlocksTable } from './BlockModel';
-import { BlockModelID } from './vo/BlockModelID';
 
 export class BlockRepository {
   async findOne(blockId: string) {
@@ -15,6 +14,7 @@ export class BlockRepository {
       .from(BlocksTable)
       .where(eq(BlocksTable.blockId, blockId));
 
+    if (!first) return null;
     return BlockEntity.create(first);
   }
 
@@ -41,11 +41,10 @@ export class BlockRepository {
       throw new Error(`Block ${block.id} already exists`);
     }
 
-    const values = this.parseBlock(block);
     const [item] = await db
       .connection()
       .insert(BlocksTable)
-      .values(values)
+      .values(BlockEntity.toDBItem(block))
       .returning();
 
     return BlockEntity.create(item);
@@ -62,7 +61,7 @@ export class BlockRepository {
 
         const [item] = await trx
           .insert(BlocksTable)
-          .values(this.parseBlock(block))
+          .values(BlockEntity.toDBItem(block))
           .returning();
 
         return BlockEntity.create(item);
@@ -71,12 +70,16 @@ export class BlockRepository {
     });
   }
 
-  private parseBlock(block: GQLBlock) {
-    return {
-      _id: BlockModelID.create(block).toValue(),
-      blockId: HashID.create(block.id).get(),
-      timestamp: Timestamp.create(block.header.time).get(),
-      data: block,
-    };
+  async blocksFromNode(page: number, perPage: number) {
+    const { sdk } = new GraphQLSDK();
+    const after = (page - 1) * perPage;
+    const { data } = await sdk.QueryBlocks({
+      first: perPage,
+      ...(page > 1 && { after: String(after) }),
+    });
+
+    const blocks = data.blocks.nodes as GQLBlock[];
+    const hasNext = data.blocks.pageInfo.hasNextPage;
+    return { blocks, hasNext };
   }
 }

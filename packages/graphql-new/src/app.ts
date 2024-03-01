@@ -1,6 +1,6 @@
-import { MainResolver } from './application/resolvers/MainResolver';
 import { env } from './config';
-import { GraphQLServer } from './infra/graphql/GraphQLServer';
+import { GraphQLServer } from './graphql/GraphQLServer';
+import { MainResolver } from './graphql/resolvers/MainResolver';
 import { Server } from './infra/server/App';
 
 const port = Number(env.get('SERVER_PORT'));

@@ -10,7 +10,7 @@ type Params = {
 };
 
 export class BlockResolver extends ResolverAdapter<Source> {
-  constructor() {
+  constructor(private readonly blockRepository = new BlockRepository()) {
     super();
     this.setResolvers({
       blocks: this.blocks.bind(this),
@@ -18,9 +18,15 @@ export class BlockResolver extends ResolverAdapter<Source> {
   }
 
   async blocks(_: Source, params: Params['blocks']) {
-    const repository = new BlockRepository();
     const paginator = new Paginator(BlocksTable, params);
-    const blocks = await repository.findMany(params);
-    return paginator.createPaginatedResult(blocks, (node) => node.toGQLNode());
+    const blocks = await this.blockRepository.findMany(params);
+    const startCursor = paginator.getStartCursor(blocks);
+    const endCursor = paginator.getEndCursor(blocks);
+    return paginator.createPaginatedResult(
+      blocks,
+      startCursor,
+      endCursor,
+      (item) => item.toGQLNode(),
+    );
   }
 }

@@ -9,20 +9,20 @@ const config: CodegenConfig = {
   documents: ['./src/domain/**/*.graphql'],
   schema: SERVER_URL,
   generates: {
-    './src/application/schemas/fuelcore.graphql': {
+    './src/graphql/schemas/fuelcore.graphql': {
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,
       },
     },
-    './src/application/schemas/fuelcore-types.graphql': {
+    './src/graphql/schemas/fuelcore-types.graphql': {
       plugins: ['schema-ast'],
       config: {
         includeDirectives: false,
       },
     },
     './src/generated/types.ts': {
-      schema: './src/gql/schemas/generated/fuelcore.graphql',
+      schema: './src/graphql/schemas/fuelcore.graphql',
       plugins: [
         'typescript',
         'typescript-operations',

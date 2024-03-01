@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { env } from '~/config';
-import { CreatedBlock } from '~/domain/Block/Block';
+import { GQLBlock } from '~/generated/types';
 
 dotenv.config();
 
@@ -16,7 +16,10 @@ const schemas = new EventSchemas().fromRecord<{
     data: undefined;
   };
   'sync/sync:transactions': {
-    data: CreatedBlock;
+    data: {
+      block: GQLBlock;
+      blockId: number;
+    };
   };
 }>();
 
@@ -47,7 +50,7 @@ export class InngestClient {
     });
   }
 
-  async syncTransactions(block: CreatedBlock) {
+  async syncTransactions(block: { block: GQLBlock; blockId: number }) {
     await client.send({
       name: 'sync/sync:transactions',
       data: block,

@@ -25,7 +25,7 @@ export class TransactionTimestamp extends ValueObject<Props> {
     return new TransactionTimestamp({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }

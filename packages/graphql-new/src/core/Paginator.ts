@@ -11,13 +11,13 @@ export type PaginatorParams = {
   before: string;
 };
 
-export type PaginatedResults<T extends Entity<unknown, Identifier<unknown>>> = {
+export type PaginatedResults<T> = {
   nodes: T[];
   pageInfo: {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
-    endCursor: any;
-    startCursor: any;
+    startCursor: number;
+    endCursor: number | null;
   };
 };
 
@@ -102,21 +102,31 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     }
   }
 
-  async createPaginatedResult<
-    T extends Entity<unknown, Identifier<unknown>>,
-    R,
-  >(items: T[], iterator?: (item: T) => R) {
+  getStartCursor<T extends Entity<unknown, Identifier<number>>>(items: T[]) {
+    const first = items[0];
+    return first ? first._id.value() : 0;
+  }
+  getEndCursor<T extends Entity<unknown, Identifier<number>>>(items: T[]) {
+    const last = items[items.length - 1];
+    return last ? last._id.value() : null;
+  }
+
+  createPaginatedResult<T extends Entity<unknown, Identifier<number>>, R = T>(
+    items: T[],
+    startCursor: number,
+    endCursor: number | null,
+    iterator: (node: T) => R = (node) => node as unknown as R,
+  ): PaginatedResults<R> {
     const { maxId } = this;
     const { first, last } = this.params;
     const limit = first || last;
     const nodes = items.slice(0, limit).map((item) => item);
-    const startCursor = Number(items[0]?._id.toString()) ?? 0;
-    const endCursor = items[nodes.length - 1]?._id || null;
     const hasNextPage = first ? limit < items.length : startCursor < maxId;
     const hasPreviousPage = first ? startCursor > 1 : limit < items.length;
+    const newNodes = nodes.map(iterator);
 
     return {
-      nodes: iterator ? nodes.map(iterator) : nodes,
+      nodes: newNodes,
       pageInfo: {
         hasNextPage,
         hasPreviousPage,

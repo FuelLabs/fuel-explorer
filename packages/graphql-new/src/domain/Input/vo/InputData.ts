@@ -19,7 +19,7 @@ export class InputData extends ValueObject<Props> {
     return new InputData({ value });
   }
 
-  get() {
+  value() {
     return this.props.value;
   }
 }
