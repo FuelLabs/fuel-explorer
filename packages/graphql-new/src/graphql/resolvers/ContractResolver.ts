@@ -2,7 +2,7 @@ import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { ContractsTable } from '~/domain/Contract/ContractModel';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
-import { GQLContract } from '~/generated/types';
+import { GQLContract } from '~/graphql/generated/sdk';
 
 type Source = GQLContract;
 type Params = {

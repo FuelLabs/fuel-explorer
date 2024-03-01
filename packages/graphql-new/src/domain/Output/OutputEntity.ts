@@ -1,6 +1,6 @@
 import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import { GQLOutput } from '~/generated/types';
+import { GQLOutput } from '~/graphql/generated/sdk';
 import { OutputItem } from './OutputModel';
 import { OutputData } from './vo/OutputData';
 

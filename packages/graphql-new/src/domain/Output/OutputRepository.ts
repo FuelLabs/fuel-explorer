@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { GQLOutput } from '~/generated/types';
+import { GQLOutput } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
 import { OutputEntity } from './OutputEntity';
 import { OutputsTable } from './OutputModel';

@@ -1,6 +1,6 @@
 import { HashID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import { GQLTransaction } from '~/generated/types';
+import { GQLTransaction } from '~/graphql/generated/sdk';
 import { BlockRef } from '../Block/vo/BlockRef';
 import { TransactionItem } from './TransactionModel';
 import { AccountIndex } from './vo/AccountIndex';

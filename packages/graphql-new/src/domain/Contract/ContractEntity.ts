@@ -1,6 +1,6 @@
 import { HashID, SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import { GQLContract } from '~/generated/types';
+import { GQLContract } from '~/graphql/generated/sdk';
 import { ContractItem } from './ContractModel';
 import { ContractData } from './vo/ContractData';
 

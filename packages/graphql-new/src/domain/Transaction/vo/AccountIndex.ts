@@ -1,6 +1,6 @@
 import { text } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
-import { GQLTransaction } from '~/generated/types';
+import { GQLTransaction } from '~/graphql/generated/sdk';
 
 interface Props {
   value: string;

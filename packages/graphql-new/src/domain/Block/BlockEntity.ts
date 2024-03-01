@@ -1,14 +1,9 @@
 import { HashID, Timestamp } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import { GQLBlock } from '~/generated/types';
+import { GQLBlock } from '~/graphql/generated/sdk';
 import { BlockItem } from './BlockModel';
 import { BlockData } from './vo/BlockData';
 import { BlockModelID } from './vo/BlockModelID';
-
-export type CreatedBlock = {
-  id: number;
-  block: GQLBlock;
-};
 
 type BlockProps = {
   blockId: HashID;

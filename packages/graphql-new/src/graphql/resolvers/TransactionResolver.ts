@@ -2,7 +2,7 @@ import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import { GQLTransaction } from '~/generated/types';
+import { GQLTransaction } from '~/graphql/generated/sdk';
 
 type Source = GQLTransaction;
 type Params = {

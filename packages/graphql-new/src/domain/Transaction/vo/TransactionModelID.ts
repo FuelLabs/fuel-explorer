@@ -2,7 +2,7 @@ import { integer } from 'drizzle-orm/pg-core';
 import { getBytesCopy } from 'ethers';
 import { TxPointerCoder } from 'fuels';
 import { Identifier } from '~/core/Identifier';
-import { GQLTransaction } from '~/generated/types';
+import { GQLTransaction } from '~/graphql/generated/sdk';
 
 export class TransactionModelID extends Identifier<number> {
   private constructor(id: number) {

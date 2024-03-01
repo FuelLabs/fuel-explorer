@@ -1,7 +1,7 @@
 import { desc, eq } from 'drizzle-orm';
 import { Paginator, PaginatorParams } from '~/core/Paginator';
-import { GQLBlock } from '~/generated/types';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
+import { GQLBlock } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
 import { BlockEntity } from './BlockEntity';
 import { BlocksTable } from './BlockModel';
@@ -84,7 +84,7 @@ export class BlockRepository {
   async blocksFromNode(page: number, perPage: number) {
     const { sdk } = new GraphQLSDK();
     const after = (page - 1) * perPage;
-    const { data } = await sdk.QueryBlocks({
+    const { data } = await sdk.blocks({
       first: perPage,
       ...(page > 1 && { after: String(after) }),
     });

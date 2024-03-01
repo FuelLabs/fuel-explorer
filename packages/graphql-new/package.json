@@ -25,7 +25,9 @@
   "scripts": {
     "build": "run-s codegen build:lib",
     "build:lib": "tsup",
-    "codegen": "gql-gen -r dotenv/config --config codegen.ts",
+    "codegen": "run-s codegen:queries codegen:schema",
+    "codegen:queries": "gqlg --schemaFilePath ./src/graphql/schemas/fuelcore.graphql --destDirPath ./src/graphql/generated",
+    "codegen:schema": "gql-gen -r dotenv/config --config codegen.ts",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "tsx ./src/cli.ts migrate",
@@ -68,6 +70,7 @@
     "@types/node": "^20.11.19",
     "@types/pg": "^8.11.0",
     "drizzle-kit": "^0.20.14",
+    "gql-generator": "2.0.0",
     "inngest-cli": "0.25.2",
     "tsx": "4.7.1",
     "typescript": "^5.3.3"

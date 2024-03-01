@@ -2,7 +2,7 @@ import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { BlocksTable } from '~/domain/Block/BlockModel';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
-import { GQLBlock } from '~/generated/types';
+import { GQLBlock } from '~/graphql/generated/sdk';
 
 type Source = GQLBlock;
 type Params = {
