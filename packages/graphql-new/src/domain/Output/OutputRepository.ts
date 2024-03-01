@@ -5,7 +5,7 @@ import { OutputEntity } from './OutputEntity';
 import { OutputsTable } from './OutputModel';
 
 export class OutputRepository {
-  async findOneById(id: number) {
+  async findById(id: number) {
     const [first] = await db
       .connection()
       .select()

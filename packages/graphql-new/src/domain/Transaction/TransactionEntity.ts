@@ -75,4 +75,22 @@ export class TransactionEntity extends Entity<
       timestamp: this.timestamp,
     };
   }
+
+  getContractCreated() {
+    const data = this.data;
+    const status = data.status?.__typename;
+    const outputs = data.outputs;
+    const isSuccess = status === 'SuccessStatus';
+    const contractCreated = outputs?.find(
+      (output) => output.__typename === 'ContractCreated',
+    );
+
+    if (
+      isSuccess &&
+      contractCreated &&
+      contractCreated.__typename === 'ContractCreated'
+    ) {
+      return contractCreated.contract;
+    }
+  }
 }

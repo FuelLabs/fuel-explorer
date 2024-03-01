@@ -15,7 +15,7 @@ export class SyncInputs {
   }
 }
 
-export const syncAllBlocks = inngest
+export const syncInputs = inngest
   .client()
   .createFunction(
     { id: 'sync:inputs', concurrency: 500 },

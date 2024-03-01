@@ -25,11 +25,11 @@ export class BlockResolver extends ResolverAdapter<Source> {
     }
 
     if (id) {
-      const item = await this.blockRepository.findOneById(id);
+      const item = await this.blockRepository.findById(id);
       return item?.toGQLNode();
     }
 
-    const item = await this.blockRepository.findOneByHeight(Number(height));
+    const item = await this.blockRepository.findByHeight(Number(height));
     return item?.toGQLNode();
   }
 

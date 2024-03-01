@@ -23,4 +23,8 @@ export class OutputEntity extends Entity<OutputProps, SerialID> {
     const data = OutputData.create(output).value();
     return { data, transactionId };
   }
+
+  get data() {
+    return this.props.data.value();
+  }
 }

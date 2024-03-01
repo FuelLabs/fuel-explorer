@@ -1,6 +1,6 @@
 {
-  "id": "7b4abf23-ce17-4c21-89ad-2b0748650145",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "dca4bf84-e082-43e0-992b-a73328d3f913",
+  "prevId": "7b4abf23-ce17-4c21-89ad-2b0748650145",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -82,6 +82,11 @@
         "contracts__id_index": {
           "name": "contracts__id_index",
           "columns": ["_id"],
+          "isUnique": false
+        },
+        "contracts_id_index": {
+          "name": "contracts_id_index",
+          "columns": ["id"],
           "isUnique": false
         }
       },

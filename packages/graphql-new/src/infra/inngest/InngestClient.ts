@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { env } from '~/config';
-import { GQLBlock, GQLInput, GQLOutput } from '~/generated/types';
+import { GQLBlock, GQLContract, GQLInput, GQLOutput } from '~/generated/types';
 
 dotenv.config();
 
@@ -31,6 +31,11 @@ const schemas = new EventSchemas().fromRecord<{
     data: {
       outputs: GQLOutput[];
       transactionId: number;
+    };
+  };
+  'indexer/sync:contract': {
+    data: {
+      contract: GQLContract;
     };
   };
 }>();
@@ -79,6 +84,13 @@ export class InngestClient {
     await client.send({
       name: 'indexer/sync:outputs',
       data: outputs,
+    });
+  }
+
+  async syncContract(contract: { contract: GQLContract }) {
+    await client.send({
+      name: 'indexer/sync:contract',
+      data: contract,
     });
   }
 }

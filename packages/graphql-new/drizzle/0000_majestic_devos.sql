@@ -6,6 +6,13 @@ CREATE TABLE IF NOT EXISTS "blocks" (
 	CONSTRAINT "blocks_id_unique" UNIQUE("id")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "contracts" (
+	"_id" serial PRIMARY KEY NOT NULL,
+	"id" varchar(66) NOT NULL,
+	"data" jsonb NOT NULL,
+	CONSTRAINT "contracts_id_unique" UNIQUE("id")
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "inputs" (
 	"_id" serial PRIMARY KEY NOT NULL,
 	"data" jsonb NOT NULL,
@@ -30,6 +37,7 @@ CREATE TABLE IF NOT EXISTS "transactions" (
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "blocks_timestamp_index" ON "blocks" ("timestamp");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "blocks__id_index" ON "blocks" ("_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "contracts__id_index" ON "contracts" ("_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "inputs__id_index" ON "inputs" ("_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "outputs__id_index" ON "outputs" ("_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "transactions_timestamp_index" ON "transactions" ("timestamp");--> statement-breakpoint

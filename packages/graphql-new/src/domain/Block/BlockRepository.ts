@@ -7,7 +7,7 @@ import { BlockEntity } from './BlockEntity';
 import { BlocksTable } from './BlockModel';
 
 export class BlockRepository {
-  async findOneById(blockId: string) {
+  async findById(blockId: string) {
     const [first] = await db
       .connection()
       .select()
@@ -18,7 +18,7 @@ export class BlockRepository {
     return BlockEntity.create(first);
   }
 
-  async findOneByHeight(height: number) {
+  async findByHeight(height: number) {
     const [first] = await db
       .connection()
       .select()
@@ -47,7 +47,7 @@ export class BlockRepository {
   }
 
   async insertOne(block: GQLBlock) {
-    const found = await this.findOneById(block.id);
+    const found = await this.findById(block.id);
     if (found) {
       throw new Error(`Block ${block.id} already exists`);
     }
@@ -64,7 +64,7 @@ export class BlockRepository {
   async insertMany(blocks: GQLBlock[]) {
     return db.connection().transaction(async (trx) => {
       const queries = blocks.map(async (block) => {
-        const found = await this.findOneById(block.id);
+        const found = await this.findById(block.id);
         if (found) {
           console.warn(`Block ${block.id} already exists`);
           return null;

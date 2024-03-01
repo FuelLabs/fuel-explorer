@@ -2,6 +2,11 @@ schema {
   query: Query
 }
 
+type ContractConnection {
+  nodes: [Contract]
+  pageInfo: PageInfo!
+}
+
 type Query {
   transaction(id: TransactionId!): Transaction
   transactions(
@@ -18,4 +23,19 @@ type Query {
     owner: Address!
   ): TransactionConnection!
   blocks(after: String, before: String, first: Int, last: Int): BlockConnection!
+  contract(id: ContractId!): Contract
+  contracts(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ContractConnection!
+  contractBalance(asset: AssetId!, contract: ContractId!): ContractBalance!
+  contractBalances(
+    after: String
+    before: String
+    filter: ContractBalanceFilterInput!
+    first: Int
+    last: Int
+  ): ContractBalanceConnection!
 }

@@ -1,4 +1,5 @@
 import { RetryAfterError } from 'inngest';
+import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
 import { GQLBlock } from '~/generated/types';
 import { inngest } from '~/infra/inngest/InngestClient';
@@ -12,20 +13,37 @@ export class SyncTransactions {
   async execute({ block, blockId }: Input) {
     const repository = new TransactionRepository();
     const added = await repository.insertMany(block.transactions, blockId);
+    const inputs = added.map(this.addInputs);
+    const outputs = added.map(this.addOutputs);
+    const contract = added.map(this.addContract);
+    await Promise.all([...inputs, ...outputs, ...contract]);
+  }
 
-    await Promise.all(
-      added.map(async (transaction) => {
-        const transactionId = transaction._id.value();
-        const inputs = transaction.data.inputs;
-        const outputs = transaction.data.outputs;
-        if (inputs?.length) {
-          await inngest.syncInputs({ inputs, transactionId });
-        }
-        if (outputs?.length) {
-          await inngest.syncOutputs({ outputs, transactionId });
-        }
-      }),
-    );
+  private async addInputs(transaction: TransactionEntity) {
+    const inputs = transaction.data.inputs;
+    const transactionId = transaction._id.value();
+    if (inputs?.length) {
+      console.log(`Adding inputs for transaction ${transaction.transactionId}`);
+      await inngest.syncInputs({ inputs, transactionId });
+    }
+  }
+
+  private async addOutputs(transaction: TransactionEntity) {
+    const outputs = transaction.data.outputs;
+    const transactionId = transaction._id.value();
+    if (outputs?.length) {
+      console.log(
+        `Adding outputs for transaction ${transaction.transactionId}`,
+      );
+      await inngest.syncOutputs({ outputs, transactionId });
+    }
+  }
+
+  private async addContract(transaction: TransactionEntity) {
+    const contract = transaction.getContractCreated();
+    if (!contract) return;
+    console.log(`Adding contract for transaction ${transaction.transactionId}`);
+    await inngest.syncContract({ contract });
   }
 }
 

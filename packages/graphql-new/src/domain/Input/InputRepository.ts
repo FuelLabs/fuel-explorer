@@ -5,7 +5,7 @@ import { InputEntity } from './InputEntity';
 import { InputsTable } from './InputModel';
 
 export class InputRepository {
-  async findOneById(id: number) {
+  async findById(id: number) {
     const [first] = await db
       .connection()
       .select()
