@@ -15,6 +15,7 @@ export default defineConfig((options) => ({
   outDir: 'dist',
   splitting: true,
   format: ['esm', 'cjs'],
+  external: ['@fuels/assets'],
   noExternal: ['app-commons'],
   sourcemap: true,
   clean: false,
