@@ -2,6 +2,7 @@ import { ResolverAdapter } from '~/core/Resolver';
 import { BlockResolver } from '~/graphql/resolvers/BlockResolver';
 import { ChainResolver } from './ChainResolver';
 import { ContractResolver } from './ContractResolver';
+import { NodeResolver } from './NodeResolver';
 import { TransactionResolver } from './TransactionResolver';
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -13,12 +14,14 @@ export class MainResolver extends ResolverAdapter<any> {
     const transactionResolver = new TransactionResolver();
     const contractResolver = new ContractResolver();
     const chainResolver = new ChainResolver();
+    const nodeResolver = new NodeResolver();
 
     this.setResolvers({
       ...blockResolver.getResolvers(),
       ...transactionResolver.getResolvers(),
       ...contractResolver.getResolvers(),
       ...chainResolver.getResolvers(),
+      ...nodeResolver.getResolvers(),
     });
   }
 }

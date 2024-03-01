@@ -1,22 +1,22 @@
 import { ResolverAdapter } from '~/core/Resolver';
-import { ChainRepository } from '~/domain/Chain/ChainRepository';
 import { GQLChainInfo } from '~/graphql/generated/sdk';
+import { GraphQLSDK } from '../GraphQLSDK';
 
 type Source = GQLChainInfo;
 type Params = {
-  chains: null;
+  chain: null;
 };
 
 export class ChainResolver extends ResolverAdapter<Source> {
-  constructor(private readonly chainRepository = new ChainRepository()) {
+  constructor(private client = new GraphQLSDK()) {
     super();
     this.setResolvers({
       chain: this.chain.bind(this),
     });
   }
 
-  async chain(_source: Source, _params: Params) {
-    const chain = await this.chainRepository.findLatestAdded();
-    return chain.toGQLNode();
+  async chain(_: Source, _params: Params['chain']) {
+    // TODO: need to check with @luizstacio about the chain resolver
+    return this.client.sdk.chain();
   }
 }
