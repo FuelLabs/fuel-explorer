@@ -1,5 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { resolve } from 'node:path';
+import { FUEL_CHAIN } from 'app-commons';
 import { BaseAssetId, Predicate, Provider, Wallet, bn, hexlify } from 'fuels';
 
 const { NEXT_PUBLIC_FUEL_CHAIN_NAME, PRIVATE_KEY } = process.env;
@@ -12,9 +13,11 @@ if (!NEXT_PUBLIC_FUEL_CHAIN_NAME || !PRIVATE_KEY) {
   );
 }
 
+const providerUrl = FUEL_CHAIN.providerUrl;
+
 async function main() {
   const binHex = hexlify(await fs.readFile(BIN_PATH));
-  const provider = await Provider.create(NEXT_PUBLIC_FUEL_CHAIN_NAME!);
+  const provider = await Provider.create(providerUrl);
   const wallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
   const { minGasPrice: gasPrice } = wallet.provider.getGasConfig();
   const walletAddress = wallet.address.toB256();

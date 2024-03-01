@@ -141,6 +141,10 @@ importers:
         version: 15.1.1
 
   contracts/predicate:
+    dependencies:
+      app-commons:
+        specifier: workspace:*
+        version: link:../../packages/app-commons
     devDependencies:
       dotenv:
         specifier: 16.4.1
