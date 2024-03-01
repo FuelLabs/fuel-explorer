@@ -1,9 +1,8 @@
+import 'dotenv/config';
 import graphqlLoaderPluginPkg from '@luckycatfactory/esbuild-graphql-loader';
 import { execa } from 'execa';
 import getPort from 'get-port';
 import { defineConfig } from 'tsup';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const graphqlLoaderPlugin = graphqlLoaderPluginPkg.default;
 // Assign a single port for the process
