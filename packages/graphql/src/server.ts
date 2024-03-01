@@ -3,14 +3,14 @@ import express from 'express';
 import { createHandler } from 'graphql-http/lib/use/express';
 import expressPlayground from 'graphql-playground-middleware-express';
 
+import { FUEL_CHAIN } from 'app-commons';
 import { ContextDomain } from './domains/Context';
 import { createSchema } from './schema';
 import { createGraphqlFetch } from './utils/executor';
-import { requireEnv } from './utils/requireEnv';
 
-const { FUEL_PROVIDER } = requireEnv([
-  ['FUEL_PROVIDER', 'https://beta-5.fuel.network/graphql'],
-]);
+const providerUrl =
+  FUEL_CHAIN?.providerUrl || 'https://beta-5.fuel.network/graphql';
+
 const { FUEL_EXPLORER_API_KEY } = process.env;
 
 // Create a server:
@@ -39,7 +39,7 @@ app.get(
   }),
 );
 
-const executor = createGraphqlFetch(FUEL_PROVIDER);
+const executor = createGraphqlFetch(providerUrl);
 const schema = createSchema(executor);
 
 app.post(
@@ -47,7 +47,7 @@ app.post(
   createHandler({
     schema,
     async context() {
-      return ContextDomain.createContext(FUEL_PROVIDER);
+      return ContextDomain.createContext(providerUrl);
     },
   }),
 );
@@ -57,8 +57,8 @@ app.get('/health', async (_, res) => {
   let providerUp = null;
   try {
     providerUp = (
-      await fetch(`${FUEL_PROVIDER.replace('/graphql', '/health')}`).then(
-        (res) => res.json(),
+      await fetch(`${providerUrl.replace('/graphql', '/health')}`).then((res) =>
+        res.json(),
       )
     ).up;
   } catch (_e) {

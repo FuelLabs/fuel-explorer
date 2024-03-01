@@ -14,12 +14,13 @@ export default defineConfig((options) => ({
   outDir: 'dist',
   splitting: true,
   format: ['esm', 'cjs'],
+  noExternal: ['app-commons'],
   sourcemap: true,
   clean: false,
   dts: !isServerBuild,
   minify: false,
   esbuildPlugins: [graphqlLoaderPlugin()],
-  entry: { index: 'src/bin/index.ts' },
+  entry: ['src/bin/index.ts'],
   async onSuccess() {
     if (isServerBuild) return;
     const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {
@@ -29,7 +30,7 @@ export default defineConfig((options) => ({
         SERVER_PORT: port,
         CODE_GEN: true,
         WATCH: Boolean(options.watch),
-        FUEL_PROVIDER: process.env.FUEL_PROVIDER,
+        NEXT_PUBLIC_FUEL_CHAIN_NAME: process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME,
       },
     });
     // Wait process to close until restarting
