@@ -13,6 +13,8 @@ export class ResolverAdapter<S> {
   }
 
   getResolvers() {
-    return this.resolvers;
+    return {
+      Query: this.resolvers,
+    };
   }
 }

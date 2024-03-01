@@ -7,8 +7,8 @@ type Params = {
   predicate: { address: string };
 };
 
-export class PredicateResolver extends ResolverAdapter<Source> {
-  constructor(
+class PredicateResolver extends ResolverAdapter<Source> {
+  private constructor(
     private readonly predicateRepository = new PredicateRepository(),
   ) {
     super();
@@ -17,8 +17,14 @@ export class PredicateResolver extends ResolverAdapter<Source> {
     });
   }
 
+  static create() {
+    return new PredicateResolver().getResolvers();
+  }
+
   async predicate(_: Source, params: Params['predicate']) {
     const item = await this.predicateRepository.findByAddress(params.address);
     return item?.toGQLNode();
   }
 }
+
+export default PredicateResolver.create();

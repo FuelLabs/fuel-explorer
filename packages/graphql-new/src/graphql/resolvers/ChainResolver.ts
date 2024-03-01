@@ -7,12 +7,16 @@ type Params = {
   chain: null;
 };
 
-export class ChainResolver extends ResolverAdapter<Source> {
-  constructor(private client = new GraphQLSDK()) {
+class ChainResolver extends ResolverAdapter<Source> {
+  private constructor(private client = new GraphQLSDK()) {
     super();
     this.setResolvers({
       chain: this.chain.bind(this),
     });
+  }
+
+  static create() {
+    return new ChainResolver().getResolvers();
   }
 
   async chain(_: Source, _params: Params['chain']) {
@@ -21,3 +25,5 @@ export class ChainResolver extends ResolverAdapter<Source> {
     return res.data.chain;
   }
 }
+
+export default ChainResolver.create();

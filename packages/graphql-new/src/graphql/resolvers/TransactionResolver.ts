@@ -16,8 +16,8 @@ type Params = {
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
 };
 
-export class TransactionResolver extends ResolverAdapter<Source> {
-  constructor(
+class TransactionResolver extends ResolverAdapter<Source> {
+  private constructor(
     private readonly transactionRepository = new TransactionRepository(),
   ) {
     super();
@@ -26,6 +26,10 @@ export class TransactionResolver extends ResolverAdapter<Source> {
       transactions: this.transactions.bind(this),
       transactionsByOwner: this.transactionsByOwner.bind(this),
     });
+  }
+
+  static create() {
+    return new TransactionResolver().getResolvers();
   }
 
   async transaction(_: Source, params: Params['transaction']) {
@@ -59,3 +63,5 @@ export class TransactionResolver extends ResolverAdapter<Source> {
     );
   }
 }
+
+export default TransactionResolver.create();

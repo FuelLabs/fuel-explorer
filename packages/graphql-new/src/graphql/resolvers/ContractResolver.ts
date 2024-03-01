@@ -18,8 +18,8 @@ type Params = {
   contractBalances: GQLQueryContractBalancesArgs;
 };
 
-export class ContractResolver extends ResolverAdapter<Source> {
-  constructor(
+class ContractResolver extends ResolverAdapter<Source> {
+  private constructor(
     private readonly contractRepository = new ContractRepository(),
     private readonly client = new GraphQLSDK(),
   ) {
@@ -30,6 +30,10 @@ export class ContractResolver extends ResolverAdapter<Source> {
       contractBalance: this.contractBalance.bind(this),
       contractBalances: this.contractBalances.bind(this),
     });
+  }
+
+  static create() {
+    return new ContractResolver().getResolvers();
   }
 
   async contract(_: Source, { id }: Params['contract']) {
@@ -66,3 +70,5 @@ export class ContractResolver extends ResolverAdapter<Source> {
     return res.data.contractBalances;
   }
 }
+
+export default ContractResolver.create();

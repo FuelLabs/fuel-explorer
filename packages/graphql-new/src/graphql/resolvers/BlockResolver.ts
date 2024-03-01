@@ -14,13 +14,19 @@ type Params = {
   block: GQLQueryBlockArgs;
 };
 
-export class BlockResolver extends ResolverAdapter<Source> {
-  constructor(private readonly blockRepository = new BlockRepository()) {
+class BlockResolver extends ResolverAdapter<Source> {
+  private constructor(
+    private readonly blockRepository = new BlockRepository(),
+  ) {
     super();
     this.setResolvers({
       block: this.block.bind(this),
       blocks: this.blocks.bind(this),
     });
+  }
+
+  static create() {
+    return new BlockResolver().getResolvers();
   }
 
   async block(_: Source, { id, height }: Params['block']) {
@@ -50,3 +56,5 @@ export class BlockResolver extends ResolverAdapter<Source> {
     );
   }
 }
+
+export default BlockResolver.create();

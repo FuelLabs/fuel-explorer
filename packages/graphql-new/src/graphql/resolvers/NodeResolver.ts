@@ -7,12 +7,16 @@ type Params = {
   nodeInfo: null;
 };
 
-export class NodeResolver extends ResolverAdapter<Source> {
-  constructor(private readonly client: GraphQLSDK) {
+class NodeResolver extends ResolverAdapter<Source> {
+  private constructor(private readonly client = new GraphQLSDK()) {
     super();
     this.setResolvers({
       nodeInfo: this.nodeInfo.bind(this),
     });
+  }
+
+  static create() {
+    return new NodeResolver().getResolvers();
   }
 
   async nodeInfo(_: Source, _params: Params['nodeInfo']) {
@@ -21,3 +25,5 @@ export class NodeResolver extends ResolverAdapter<Source> {
     return res.data.nodeInfo;
   }
 }
+
+export default NodeResolver.create();

@@ -1,13 +1,9 @@
 import { env } from './config';
 import { GraphQLServer } from './graphql/GraphQLServer';
-import { MainResolver } from './graphql/resolvers/MainResolver';
 import { Server } from './infra/server/App';
 
 const port = Number(env.get('SERVER_PORT'));
-const mainResolver = new MainResolver();
-const graphQLServer = new GraphQLServer({
-  Query: mainResolver.getResolvers(),
-});
+const graphQLServer = new GraphQLServer();
 
 const schema = graphQLServer.schema();
 const yoga = graphQLServer.setup(schema);

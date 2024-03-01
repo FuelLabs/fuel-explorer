@@ -12,13 +12,17 @@ type Params = {
   balances: GQLBalancesQueryVariables;
 };
 
-export class BalanceResolver extends ResolverAdapter<Source> {
-  constructor(private client = new GraphQLSDK()) {
+class BalanceResolver extends ResolverAdapter<Source> {
+  private constructor(private client = new GraphQLSDK()) {
     super();
     this.setResolvers({
       balance: this.balance.bind(this),
       balances: this.balances.bind(this),
     });
+  }
+
+  static create() {
+    return new BalanceResolver().getResolvers();
   }
 
   // TODO: need to check how to implement this using Postgres
@@ -33,3 +37,5 @@ export class BalanceResolver extends ResolverAdapter<Source> {
     return res.data.balances;
   }
 }
+
+export default BalanceResolver.create();
