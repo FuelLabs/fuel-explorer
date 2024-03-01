@@ -1,5 +1,6 @@
 import { ResolverAdapter } from '~/core/Resolver';
-import { BlockResolver } from '~/graphql/resolvers/BlockResolver';
+import { BalanceResolver } from './BalanceResolver';
+import { BlockResolver } from './BlockResolver';
 import { ChainResolver } from './ChainResolver';
 import { ContractResolver } from './ContractResolver';
 import { NodeResolver } from './NodeResolver';
@@ -10,18 +11,20 @@ export class MainResolver extends ResolverAdapter<any> {
   constructor() {
     super();
 
+    const balanceResolver = new BalanceResolver();
     const blockResolver = new BlockResolver();
-    const transactionResolver = new TransactionResolver();
-    const contractResolver = new ContractResolver();
     const chainResolver = new ChainResolver();
+    const contractResolver = new ContractResolver();
     const nodeResolver = new NodeResolver();
+    const transactionResolver = new TransactionResolver();
 
     this.setResolvers({
+      ...balanceResolver.getResolvers(),
       ...blockResolver.getResolvers(),
-      ...transactionResolver.getResolvers(),
-      ...contractResolver.getResolvers(),
       ...chainResolver.getResolvers(),
+      ...contractResolver.getResolvers(),
       ...nodeResolver.getResolvers(),
+      ...transactionResolver.getResolvers(),
     });
   }
 }
