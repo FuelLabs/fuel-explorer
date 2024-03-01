@@ -1,5 +1,5 @@
 import { index, pgTable } from 'drizzle-orm/pg-core';
-import { Address } from '~/application/vo/Address';
+import { HashID } from '~/application/vo';
 import { Bytecode } from '~/application/vo/Bytecode';
 import { SerialID } from '~/application/vo/SerialID';
 
@@ -8,7 +8,7 @@ export const PredicatesTable = pgTable(
   {
     _id: SerialID.type(),
     bytecode: Bytecode.type(),
-    address: Address.type(),
+    address: HashID.type(),
   },
   (table) => ({
     idIdx: index().on(table._id),

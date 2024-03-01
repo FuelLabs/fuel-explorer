@@ -1,12 +1,11 @@
-import { SerialID } from '~/application/vo';
-import { Address } from '~/application/vo/Address';
+import { HashID, SerialID } from '~/application/vo';
 import { Bytecode } from '~/application/vo/Bytecode';
 import { Entity } from '~/core/Entity';
 import { PredicateItem, PredicatePayload } from './PredicateModel';
 
 type PredicateProps = {
   bytecode: Bytecode;
-  address: Address;
+  address: HashID;
 };
 
 export class PredicateEntity extends Entity<PredicateProps, SerialID> {
@@ -17,13 +16,13 @@ export class PredicateEntity extends Entity<PredicateProps, SerialID> {
   static create(output: PredicateItem) {
     const id = SerialID.create(output._id);
     const bytecode = Bytecode.create(output.bytecode);
-    const address = Address.create(output.address);
+    const address = HashID.create(output.address);
     return new PredicateEntity(id, { bytecode, address });
   }
 
   static toDBItem(item: PredicatePayload) {
     const bytecode = Bytecode.create(item.bytecode).value();
-    const address = Address.create(item.address).value();
+    const address = HashID.create(item.address).value();
     return { bytecode, address };
   }
 

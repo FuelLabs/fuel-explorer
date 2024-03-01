@@ -15,6 +15,7 @@ export const BlocksTable = pgTable(
   },
   (table) => ({
     timestampIdx: index().on(table.timestamp),
+    blockIdIdx: index().on(table.blockId),
     idIdx: index().on(table._id),
   }),
 );
