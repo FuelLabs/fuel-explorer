@@ -14,6 +14,10 @@ export class InputEntity extends Entity<InputProps, SerialID> {
   }
 
   static create(input: InputItem) {
+    if (!input?.data) {
+      throw new Error('Input data is required');
+    }
+
     const id = SerialID.create(input._id);
     const data = InputData.create(input.data);
     return new InputEntity(id, { data });

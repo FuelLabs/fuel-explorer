@@ -24,22 +24,6 @@ export class TransactionEntity extends Entity<
     super(id, props);
   }
 
-  get transactionId() {
-    return this.props.transactionId.value();
-  }
-  get data() {
-    return this.props.data.value();
-  }
-  get timestamp() {
-    return this.props.timestamp.value();
-  }
-  get accountIndex() {
-    return this.props.accountIndex.value();
-  }
-  get blockId() {
-    return this.props.blockId.value();
-  }
-
   static create(transaction: TransactionItem) {
     const item = transaction.data;
     const id = TransactionModelID.create(item);
@@ -66,6 +50,22 @@ export class TransactionEntity extends Entity<
       accountIndex: AccountIndex.create(transaction).value(),
       blockId: BlockRef.create(blockId).value(),
     };
+  }
+
+  get transactionId() {
+    return this.props.transactionId.value();
+  }
+  get data() {
+    return this.props.data.value();
+  }
+  get timestamp() {
+    return this.props.timestamp.value();
+  }
+  get accountIndex() {
+    return this.props.accountIndex.value();
+  }
+  get blockId() {
+    return this.props.blockId.value();
   }
 
   toGQLNode(): GQLTransaction & { blockId: number; timestamp: Date | null } {

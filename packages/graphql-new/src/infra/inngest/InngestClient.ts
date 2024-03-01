@@ -1,42 +1,60 @@
 import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { env } from '~/config';
-import { GQLBlock, GQLContract, GQLInput, GQLOutput } from '~/generated/types';
+import {
+  GQLBlock,
+  GQLContract,
+  GQLInput,
+  GQLOutput,
+} from '~/graphql/generated/sdk';
 
 dotenv.config();
 
+export enum InngestEvents {
+  SYNC_BLOCKS = 'indexer/sync:blocks',
+  SYNC_MISSING = 'indexer/sync:missing',
+  SYNC_TRANSACTIONS = 'indexer/sync:transactions',
+  SYNC_INPUTS = 'indexer/sync:inputs',
+  SYNC_OUTPUTS = 'indexer/sync:outputs',
+  SYNC_CONTRACT = 'indexer/sync:contract',
+  SYNC_CHAIN_INFO = 'indexer/sync:chain-info',
+}
+
 const schemas = new EventSchemas().fromRecord<{
-  'indexer/sync:blocks': {
+  [InngestEvents.SYNC_BLOCKS]: {
     data: {
       page: number;
       perPage: number;
     };
   };
-  'indexer/sync:missing': {
+  [InngestEvents.SYNC_MISSING]: {
     data: undefined;
   };
-  'indexer/sync:transactions': {
+  [InngestEvents.SYNC_TRANSACTIONS]: {
     data: {
       block: GQLBlock;
       blockId: number;
     };
   };
-  'indexer/sync:inputs': {
+  [InngestEvents.SYNC_INPUTS]: {
     data: {
       inputs: GQLInput[];
       transactionId: number;
     };
   };
-  'indexer/sync:outputs': {
+  [InngestEvents.SYNC_OUTPUTS]: {
     data: {
       outputs: GQLOutput[];
       transactionId: number;
     };
   };
-  'indexer/sync:contract': {
+  [InngestEvents.SYNC_CONTRACT]: {
     data: {
       contract: GQLContract;
     };
+  };
+  [InngestEvents.SYNC_CHAIN_INFO]: {
+    data: {};
   };
 }>();
 
@@ -48,49 +66,58 @@ const client = new Inngest({
 
 export type Events = GetEvents<typeof client>;
 export class InngestClient {
+  _client = client;
+
   client() {
     return client;
   }
 
   async syncBlocks(page = 1, perPage = 1000) {
     await client.send({
-      name: 'indexer/sync:blocks',
+      name: InngestEvents.SYNC_BLOCKS,
       data: { page, perPage },
     });
   }
 
   async syncMissing() {
     await client.send({
-      name: 'indexer/sync:missing',
+      name: InngestEvents.SYNC_MISSING,
       data: undefined,
     });
   }
 
   async syncTransactions(block: { block: GQLBlock; blockId: number }) {
     await client.send({
-      name: 'indexer/sync:transactions',
+      name: InngestEvents.SYNC_TRANSACTIONS,
       data: block,
     });
   }
 
   async syncInputs(inputs: { inputs: GQLInput[]; transactionId: number }) {
     await client.send({
-      name: 'indexer/sync:inputs',
+      name: InngestEvents.SYNC_INPUTS,
       data: inputs,
     });
   }
 
   async syncOutputs(outputs: { outputs: GQLOutput[]; transactionId: number }) {
     await client.send({
-      name: 'indexer/sync:outputs',
+      name: InngestEvents.SYNC_OUTPUTS,
       data: outputs,
     });
   }
 
   async syncContract(contract: { contract: GQLContract }) {
     await client.send({
-      name: 'indexer/sync:contract',
+      name: InngestEvents.SYNC_CONTRACT,
       data: contract,
+    });
+  }
+
+  async syncChain() {
+    await client.send({
+      name: InngestEvents.SYNC_CHAIN_INFO,
+      data: {},
     });
   }
 }

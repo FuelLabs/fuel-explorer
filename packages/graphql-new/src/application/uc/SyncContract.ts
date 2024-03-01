@@ -1,7 +1,7 @@
 import { RetryAfterError } from 'inngest';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
-import { GQLContract } from '~/generated/types';
-import { inngest } from '~/infra/inngest/InngestClient';
+import { GQLContract } from '~/graphql/generated/sdk';
+import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
 type Input = {
   contract: GQLContract;
@@ -17,8 +17,8 @@ export class SyncContract {
 export const syncContract = inngest
   .client()
   .createFunction(
-    { id: 'sync:contract', concurrency: 500 },
-    { event: 'indexer/sync:contract' },
+    { id: 'sync:contract', concurrency: 100 },
+    { event: InngestEvents.SYNC_CONTRACT },
     async ({ event: { data }, attempt }) => {
       try {
         console.log(`Syncing contract ${data.contract.id}...`);
@@ -26,7 +26,9 @@ export const syncContract = inngest
         await syncContract.execute(data);
       } catch (error) {
         console.error(error);
-        throw new RetryAfterError(`Sync contract attempt ${attempt}`, '1s');
+        throw new RetryAfterError(`Sync contract attempt ${attempt}`, '1s', {
+          cause: error,
+        });
       }
     },
   );

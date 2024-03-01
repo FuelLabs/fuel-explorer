@@ -1,4 +1,5 @@
 import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
+import { syncChainInfo } from '~/application/uc/SyncChainInfo';
 import { syncContract } from '~/application/uc/SyncContract';
 import { syncInputs } from '~/application/uc/SyncInputs';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
@@ -12,4 +13,5 @@ export const inngestFunctions = [
   syncInputs,
   syncOutputs,
   syncContract,
+  syncChainInfo,
 ];

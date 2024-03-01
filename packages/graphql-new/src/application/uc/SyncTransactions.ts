@@ -1,8 +1,8 @@
 import { RetryAfterError } from 'inngest';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import { GQLBlock } from '~/generated/types';
-import { inngest } from '~/infra/inngest/InngestClient';
+import { GQLBlock } from '~/graphql/generated/sdk';
+import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
 type Input = {
   block: GQLBlock;
@@ -51,7 +51,7 @@ export const syncTransactions = inngest
   .client()
   .createFunction(
     { id: 'sync:transactions' },
-    { event: 'indexer/sync:transactions', concurrency: 500 },
+    { event: InngestEvents.SYNC_TRANSACTIONS, concurrency: 100 },
     async ({ attempt, event: { data: block } }) => {
       try {
         console.log(`Syncing transactions for block ${block.blockId}`);
@@ -59,7 +59,13 @@ export const syncTransactions = inngest
         return syncTransactions.execute(block);
       } catch (error) {
         console.error(error);
-        throw new RetryAfterError(`Sync transactions attempt ${attempt}`, '1s');
+        throw new RetryAfterError(
+          `Sync transactions attempt ${attempt}`,
+          '1s',
+          {
+            cause: error,
+          },
+        );
       }
     },
   );

@@ -1,1 +1,0 @@
-CREATE INDEX IF NOT EXISTS "contracts_id_index" ON "contracts" ("id");

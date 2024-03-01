@@ -1,6 +1,6 @@
 import { RetryAfterError } from 'inngest';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
-import { inngest } from '~/infra/inngest/InngestClient';
+import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
 export class SyncMissingBlocks {
   async execute() {
@@ -20,7 +20,7 @@ export const syncMissingBlocks = inngest
   .client()
   .createFunction(
     { id: 'sync:missing' },
-    { event: 'indexer/sync:missing', concurrency: 500 },
+    { event: InngestEvents.SYNC_MISSING, concurrency: 100 },
     async ({ attempt }) => {
       try {
         console.log('Syncing missing blocks');
@@ -28,7 +28,9 @@ export const syncMissingBlocks = inngest
         await syncMissingBlocks.execute();
       } catch (error) {
         console.error(error);
-        throw new RetryAfterError(`Sync missing attempt ${attempt}`, '1s');
+        throw new RetryAfterError(`Sync missing attempt ${attempt}`, '1s', {
+          cause: error,
+        });
       }
     },
   );

@@ -15,6 +15,10 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
   }
 
   static create(contract: ContractItem) {
+    if (!contract?.data) {
+      throw new Error('Contract data is required');
+    }
+
     const id = SerialID.create(contract._id);
     const data = ContractData.create(contract.data);
     const contractId = HashID.create(contract.contractId);

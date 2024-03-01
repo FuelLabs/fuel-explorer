@@ -1,7 +1,7 @@
 import { RetryAfterError } from 'inngest';
 import { OutputRepository } from '~/domain/Output/OutputRepository';
-import { GQLOutput } from '~/generated/types';
-import { inngest } from '~/infra/inngest/InngestClient';
+import { GQLOutput } from '~/graphql/generated/sdk';
+import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
 type Output = {
   outputs: GQLOutput[];
@@ -18,8 +18,8 @@ export class SyncOutputs {
 export const syncOutputs = inngest
   .client()
   .createFunction(
-    { id: 'sync:outputs', concurrency: 500 },
-    { event: 'indexer/sync:outputs' },
+    { id: 'sync:outputs', concurrency: 100 },
+    { event: InngestEvents.SYNC_OUTPUTS },
     async ({ event: { data }, attempt }) => {
       try {
         console.log(`Syncing outputs for transaction ${data.transactionId}...`);
@@ -27,7 +27,9 @@ export const syncOutputs = inngest
         await syncoutputs.execute(data);
       } catch (error) {
         console.error(error);
-        throw new RetryAfterError(`Sync outputs attempt ${attempt}`, '1s');
+        throw new RetryAfterError(`Sync outputs attempt ${attempt}`, '1s', {
+          cause: error,
+        });
       }
     },
   );

@@ -14,6 +14,10 @@ export class OutputEntity extends Entity<OutputProps, SerialID> {
   }
 
   static create(output: OutputItem) {
+    if (!output?.data) {
+      throw new Error('Output data is required');
+    }
+
     const id = SerialID.create(output._id);
     const data = OutputData.create(output.data);
     return new OutputEntity(id, { data });

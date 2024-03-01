@@ -29,6 +29,10 @@ export class BlockEntity extends Entity<BlockProps, BlockModelID> {
   }
 
   static create(block: BlockItem) {
+    if (!block?.data) {
+      throw new Error('Block data is required');
+    }
+
     const id = BlockModelID.create(block.data);
     const blockId = HashID.create(block.data.id);
     const data = BlockData.create(block.data);

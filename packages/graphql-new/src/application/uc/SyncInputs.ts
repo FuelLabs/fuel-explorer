@@ -1,7 +1,7 @@
 import { RetryAfterError } from 'inngest';
 import { InputRepository } from '~/domain/Input/InputRepository';
-import { GQLInput } from '~/generated/types';
-import { inngest } from '~/infra/inngest/InngestClient';
+import { GQLInput } from '~/graphql/generated/sdk';
+import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
 type Input = {
   inputs: GQLInput[];
@@ -18,8 +18,8 @@ export class SyncInputs {
 export const syncInputs = inngest
   .client()
   .createFunction(
-    { id: 'sync:inputs', concurrency: 500 },
-    { event: 'indexer/sync:inputs' },
+    { id: 'sync:inputs', concurrency: 100 },
+    { event: InngestEvents.SYNC_INPUTS },
     async ({ event: { data }, attempt }) => {
       try {
         console.log(`Syncing inputs for transaction ${data.transactionId}...`);
@@ -27,7 +27,9 @@ export const syncInputs = inngest
         await syncInputs.execute(data);
       } catch (error) {
         console.error(error);
-        throw new RetryAfterError(`Sync inputs attempt ${attempt}`, '1s');
+        throw new RetryAfterError(`Sync inputs attempt ${attempt}`, '1s', {
+          cause: error,
+        });
       }
     },
   );
