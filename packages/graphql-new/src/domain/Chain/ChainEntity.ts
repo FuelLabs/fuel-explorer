@@ -1,38 +1,29 @@
 import { Entity } from '~/core/Entity';
 import { GQLChainInfo } from '~/graphql/generated/sdk';
-import { ChainItem } from './ChainModel';
 import { ChainData } from './vo/ChainData';
-import { ChainModelID } from './vo/ChainModelID';
+import { ChainID } from './vo/ChainID';
 
 type ChainProps = {
   data: ChainData;
 };
 
-export class ChainEntity extends Entity<ChainProps, ChainModelID> {
-  private constructor(id: ChainModelID, props: ChainProps) {
+export class ChainEntity extends Entity<ChainProps, ChainID> {
+  private constructor(id: ChainID, props: ChainProps) {
     super(id, props);
   }
 
-  static create(chain: ChainItem) {
-    if (!chain?.data) {
-      throw new Error('Invalid chain data');
-    }
-
-    const item = chain.data;
-    const id = ChainModelID.create(item);
-    const data = ChainData.create(item);
+  static create(chain: GQLChainInfo) {
+    const id = ChainID.create(chain);
+    const data = ChainData.create(chain);
     return new ChainEntity(id, { data });
-  }
-
-  static toDBItem(chain: GQLChainInfo) {
-    return {
-      _id: ChainModelID.create(chain).value(),
-      data: ChainData.create(chain).value(),
-    };
   }
 
   get data() {
     return this.props.data.value();
+  }
+
+  get chainId() {
+    return this.data.consensusParameters.chainId;
   }
 
   toGQLNode(): GQLChainInfo {

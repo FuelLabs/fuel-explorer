@@ -20,8 +20,10 @@ class BlockResolver extends ResolverAdapter<Source> {
   ) {
     super();
     this.setResolvers({
-      block: this.block.bind(this),
-      blocks: this.blocks.bind(this),
+      Query: {
+        block: this.block.bind(this),
+        blocks: this.blocks.bind(this),
+      },
     });
   }
 

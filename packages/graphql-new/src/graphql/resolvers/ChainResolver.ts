@@ -11,7 +11,9 @@ class ChainResolver extends ResolverAdapter<Source> {
   private constructor(private client = new GraphQLSDK()) {
     super();
     this.setResolvers({
-      chain: this.chain.bind(this),
+      Query: {
+        chain: this.chain.bind(this),
+      },
     });
   }
 

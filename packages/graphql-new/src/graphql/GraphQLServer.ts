@@ -4,6 +4,7 @@ import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { GraphQLSchema } from 'graphql';
 import { createYoga } from 'graphql-yoga';
+import { GraphQLContextFactory } from './GraphQLContext';
 
 const typesArray = loadFilesSync(join(__dirname, './schemas'));
 const typeDefs = mergeTypeDefs(typesArray);
@@ -16,6 +17,12 @@ export class GraphQLServer {
   }
 
   setup(schema: GraphQLSchema) {
-    return createYoga({ schema, logging: true });
+    return createYoga({
+      schema,
+      logging: true,
+      context: async () => {
+        return GraphQLContextFactory.create();
+      },
+    });
   }
 }

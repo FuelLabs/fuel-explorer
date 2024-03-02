@@ -1,19 +1,24 @@
 import { HashID } from '~/application/vo';
+import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
 import { GQLTransaction } from '~/graphql/generated/sdk';
 import { BlockRef } from '../Block/vo/BlockRef';
+import { ContractEntity } from '../Contract/ContractEntity';
 import { TransactionItem } from './TransactionModel';
 import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
 import { TransactionModelID } from './vo/TransactionModelID';
+import { TransactionStatus } from './vo/TransactionStatus';
 import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
 type TransactionProps = {
+  status: TransactionStatus;
   transactionId: HashID;
   data: TransactionData;
   timestamp: TransactionTimestamp;
   accountIndex: AccountIndex;
   blockId: BlockRef;
+  time: ParsedTime;
 };
 
 export class TransactionEntity extends Entity<
@@ -27,14 +32,18 @@ export class TransactionEntity extends Entity<
   static create(transaction: TransactionItem) {
     const item = transaction.data;
     const id = TransactionModelID.create(item);
+    const status = TransactionStatus.create(item);
     const transactionId = HashID.create(item.id);
     const data = TransactionData.create(item);
     const timestamp = TransactionTimestamp.create(item);
     const accountIndex = AccountIndex.create(item);
     const blockRef = BlockRef.create(transaction.blockId);
+    const time = ParsedTime.create(timeFromStatus(transaction));
     return new TransactionEntity(id, {
+      status,
       transactionId,
       data,
+      time,
       timestamp,
       accountIndex,
       blockId: blockRef,
@@ -55,42 +64,61 @@ export class TransactionEntity extends Entity<
   get transactionId() {
     return this.props.transactionId.value();
   }
+
   get data() {
     return this.props.data.value();
   }
+
   get timestamp() {
     return this.props.timestamp.value();
   }
+
+  get parsedTime() {
+    return this.props.time.value();
+  }
+
   get accountIndex() {
     return this.props.accountIndex.value();
   }
-  get blockId() {
+
+  get inputs() {
+    return this.data.inputs;
+  }
+
+  get outputs() {
+    return this.data.outputs;
+  }
+
+  get blockHeight() {
     return this.props.blockId.value();
   }
 
-  toGQLNode(): GQLTransaction & { blockId: number; timestamp: Date | null } {
+  get title() {
+    const transaction = this.data;
+    if (transaction.isMint) return 'Mint';
+    if (transaction.isCreate) return 'Contract Created';
+    return 'Script';
+  }
+
+  get status() {
+    return this.props.status;
+  }
+
+  toGQLNode() {
     return {
       ...this.data,
-      blockId: this.blockId,
-      timestamp: this.timestamp,
+      time: this.parsedTime,
     };
   }
 
-  getContractCreated() {
-    const data = this.data;
-    const status = data.status?.__typename;
-    const outputs = data.outputs;
-    const isSuccess = status === 'SuccessStatus';
-    const contractCreated = outputs?.find(
-      (output) => output.__typename === 'ContractCreated',
-    );
-
-    if (
-      isSuccess &&
-      contractCreated &&
-      contractCreated.__typename === 'ContractCreated'
-    ) {
-      return contractCreated.contract;
-    }
+  getContractsCreated() {
+    if (!this.status.is('Success')) return [];
+    return ContractEntity.fromOutputs(this.outputs);
   }
+}
+
+function timeFromStatus(item?: TransactionItem) {
+  if (!item) return null;
+  if (item.data.status?.__typename === 'SqueezedOutStatus') return null;
+  return item.data.status?.time;
 }

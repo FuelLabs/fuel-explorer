@@ -2,7 +2,7 @@ import { GetStepTools, RetryAfterError } from 'inngest';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
 import { GQLBlock } from '~/graphql/generated/sdk';
-import { InngestEvents, inngest } from '~/infra/inngest/InngestClient';
+import { Events, InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
 type Step = GetStepTools<
   typeof inngest._client,
@@ -53,13 +53,16 @@ export class SyncTransactions {
   }
 
   private async addContract(transaction: TransactionEntity) {
-    const contract = transaction.getContractCreated();
-    if (!contract) return;
+    const contracts = transaction.getContractsCreated();
+    const events = contracts.map<Events[InngestEvents.SYNC_CONTRACT]>(
+      (contract) => ({
+        name: InngestEvents.SYNC_CONTRACT,
+        data: { contract },
+      }),
+    );
+
     console.log(`Adding contract for transaction ${transaction.transactionId}`);
-    await this.step.sendEvent('sync:contract', {
-      name: InngestEvents.SYNC_CONTRACT,
-      data: { contract },
-    });
+    await this.step.sendEvent('sync:contracts', events);
   }
 }
 
@@ -78,9 +81,7 @@ export const syncTransactions = inngest
         throw new RetryAfterError(
           `Sync transactions attempt ${attempt}`,
           '1s',
-          {
-            cause: error,
-          },
+          { cause: error },
         );
       }
     },

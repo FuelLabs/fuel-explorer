@@ -16,7 +16,9 @@ class SearchResolver extends ResolverAdapter<null> {
   ) {
     super();
     this.setResolvers({
-      search: this.search.bind(this),
+      Query: {
+        search: this.search.bind(this),
+      },
     });
   }
 

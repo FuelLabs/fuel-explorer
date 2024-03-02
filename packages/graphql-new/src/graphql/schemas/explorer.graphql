@@ -3,6 +3,27 @@ schema {
 }
 
 # --------------------------------
+# Transaction
+# --------------------------------
+
+type ParsedTime {
+  fromNow: String
+  full: String
+  rawTai64: String
+  rawUnix: String
+}
+
+type TransactionGasCosts {
+  gasUsed: String
+  fee: String
+}
+
+extend type Transaction {
+  time: ParsedTime
+  gasCosts: TransactionGasCosts
+}
+
+# --------------------------------
 # Contract
 # --------------------------------
 

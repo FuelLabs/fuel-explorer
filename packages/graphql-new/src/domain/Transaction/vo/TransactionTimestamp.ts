@@ -19,7 +19,7 @@ export class TransactionTimestamp extends ValueObject<Props> {
   static create(transaction: GQLTransaction) {
     const value =
       transaction.status && 'time' in transaction.status
-        ? DateHelper.tai64toDate(transaction.status.time)
+        ? DateHelper.tai64toDate(transaction.status.time).toDate()
         : null;
 
     return new TransactionTimestamp({ value });

@@ -11,7 +11,9 @@ class NodeResolver extends ResolverAdapter<Source> {
   private constructor(private readonly client = new GraphQLSDK()) {
     super();
     this.setResolvers({
-      nodeInfo: this.nodeInfo.bind(this),
+      Query: {
+        nodeInfo: this.nodeInfo.bind(this),
+      },
     });
   }
 

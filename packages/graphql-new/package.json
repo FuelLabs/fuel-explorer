@@ -20,7 +20,9 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build": "run-s codegen build:lib",
@@ -48,6 +50,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "cors": "^2.8.5",
+    "dayjs": "1.11.10",
     "dotenv": "16.4.4",
     "drizzle-orm": "^0.29.3",
     "ethers": "^6.7.1",

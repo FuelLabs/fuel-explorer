@@ -17,7 +17,7 @@ export class Timestamp extends ValueObject<Props> {
 
   static create(timestamp: string) {
     const value = DateHelper.tai64toDate(timestamp);
-    return new Timestamp({ value });
+    return new Timestamp({ value: value.toDate() });
   }
 
   value() {

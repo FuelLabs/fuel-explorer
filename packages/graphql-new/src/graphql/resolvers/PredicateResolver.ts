@@ -13,7 +13,9 @@ class PredicateResolver extends ResolverAdapter<Source> {
   ) {
     super();
     this.setResolvers({
-      predicate: this.predicate.bind(this),
+      Query: {
+        predicate: this.predicate.bind(this),
+      },
     });
   }
 

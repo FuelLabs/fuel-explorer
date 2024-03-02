@@ -25,10 +25,12 @@ class ContractResolver extends ResolverAdapter<Source> {
   ) {
     super();
     this.setResolvers({
-      contract: this.contract.bind(this),
-      contracts: this.contracts.bind(this),
-      contractBalance: this.contractBalance.bind(this),
-      contractBalances: this.contractBalances.bind(this),
+      Query: {
+        contract: this.contract.bind(this),
+        contracts: this.contracts.bind(this),
+        contractBalance: this.contractBalance.bind(this),
+        contractBalances: this.contractBalances.bind(this),
+      },
     });
   }
 

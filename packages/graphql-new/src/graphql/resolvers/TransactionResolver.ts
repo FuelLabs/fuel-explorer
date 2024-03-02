@@ -1,3 +1,4 @@
+import { GasCosts } from '~/application/vo/GasCosts';
 import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
@@ -8,6 +9,7 @@ import {
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk';
+import { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLTransaction;
 type Params = {
@@ -22,9 +24,14 @@ class TransactionResolver extends ResolverAdapter<Source> {
   ) {
     super();
     this.setResolvers({
-      transaction: this.transaction.bind(this),
-      transactions: this.transactions.bind(this),
-      transactionsByOwner: this.transactionsByOwner.bind(this),
+      Query: {
+        transaction: this.transaction.bind(this),
+        transactions: this.transactions.bind(this),
+        transactionsByOwner: this.transactionsByOwner.bind(this),
+      },
+      Transaction: {
+        gasCosts: this.gasCosts.bind(this),
+      },
     });
   }
 
@@ -61,6 +68,11 @@ class TransactionResolver extends ResolverAdapter<Source> {
       endCursor,
       (item) => item.toGQLNode(),
     );
+  }
+
+  async gasCosts(source: Source, _: unknown, ctx: GraphQLContext) {
+    if (!ctx.chain) throw new Error('Chain not found');
+    return GasCosts.create(source, ctx.chain?.data).toGQL();
   }
 }
 

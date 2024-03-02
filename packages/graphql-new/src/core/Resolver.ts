@@ -1,9 +1,8 @@
-import { IFieldResolver } from '@graphql-tools/utils';
+import { IResolvers } from '@graphql-tools/utils';
 import { GraphQLContext } from '~/graphql/GraphQLContext';
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type Resolver<Source> = IFieldResolver<Source, GraphQLContext, any, any>;
-type Resolvers<Source> = Record<string, Resolver<Source>>;
+type Resolvers<Source> = IResolvers<Source, GraphQLContext, any, any>;
 
 export class ResolverAdapter<S> {
   private resolvers: Resolvers<S> = {};
@@ -13,8 +12,6 @@ export class ResolverAdapter<S> {
   }
 
   getResolvers() {
-    return {
-      Query: this.resolvers,
-    };
+    return this.resolvers;
   }
 }

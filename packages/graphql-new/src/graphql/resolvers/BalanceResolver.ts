@@ -16,8 +16,10 @@ class BalanceResolver extends ResolverAdapter<Source> {
   private constructor(private client = new GraphQLSDK()) {
     super();
     this.setResolvers({
-      balance: this.balance.bind(this),
-      balances: this.balances.bind(this),
+      Query: {
+        balance: this.balance.bind(this),
+        balances: this.balances.bind(this),
+      },
     });
   }
 
