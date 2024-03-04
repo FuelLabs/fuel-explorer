@@ -21,7 +21,7 @@ export class SyncInputs {
 
   private async addPredicates(inputs: InputEntity[]) {
     const predicates = inputs
-      .map((input) => input.getPredicateData())
+      .map((input) => input.predicateData)
       .filter(Boolean);
 
     const events = predicates.map<Events[InngestEvents.SYNC_PREDICATE]>(

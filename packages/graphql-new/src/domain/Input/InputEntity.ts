@@ -1,17 +1,15 @@
 import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import {
-  GQLInput,
-  GQLInputCoin,
-  GQLInputMessage,
-} from '~/graphql/generated/sdk';
+import { GQLInput } from '~/graphql/generated/sdk';
 import { InputItem, InputPayload } from './InputModel';
 import { InputData } from './vo/InputData';
+import { InputPredicateData } from './vo/InputPredicateData';
 import { InputType } from './vo/InputType';
 
 type InputProps = {
   data: InputData;
   type: InputType;
+  predicateData: InputPredicateData;
 };
 
 export class InputEntity extends Entity<
@@ -26,7 +24,8 @@ export class InputEntity extends Entity<
     const id = inputId ? SerialID.create(inputId) : null;
     const data = InputData.create(input.data);
     const type = InputType.create(input.data);
-    return new InputEntity({ data, type }, id);
+    const predicateData = InputPredicateData.create(input.data);
+    return new InputEntity({ data, type, predicateData }, id);
   }
 
   static toDBItem(
@@ -57,21 +56,7 @@ export class InputEntity extends Entity<
     return this.type.is('InputContract');
   }
 
-  getPredicateData() {
-    if (!this.isCoin && !this.isMessage) return;
-    const bytecode = this.getPredicateBytecode();
-    const address = this.getPredicateAddress() as string;
-    return { bytecode, address };
-  }
-
-  private getPredicateAddress() {
-    const data = this.data.value();
-    if (this.isCoin) return (data as GQLInputCoin).owner;
-    return (data as GQLInputMessage).sender;
-  }
-
-  private getPredicateBytecode() {
-    const data = this.data.value() as GQLInputCoin | GQLInputMessage;
-    return data.predicate;
+  get predicateData() {
+    return this.props.predicateData.value();
   }
 }

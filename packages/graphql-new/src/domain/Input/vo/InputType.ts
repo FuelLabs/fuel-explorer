@@ -26,4 +26,16 @@ export class InputType extends ValueObject<Props> {
   is(type: GQLInput['__typename']) {
     return this.value() === type;
   }
+
+  get isCoin() {
+    return this.is('InputCoin');
+  }
+
+  get isMessage() {
+    return this.is('InputMessage');
+  }
+
+  get isContract() {
+    return this.is('InputContract');
+  }
 }
