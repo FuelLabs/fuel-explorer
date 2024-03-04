@@ -1,10 +1,10 @@
-import { Box, Flex, Spinner, Text, VStack } from '@fuels/ui';
+import { Box, Flex, HStack, Spinner, Text, VStack } from '@fuels/ui';
 import { IconCheck } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 type Step = {
-  name: ReactNode;
+  name: string;
   status: ReactNode;
   isLoading?: boolean;
   isDone?: boolean;
@@ -23,7 +23,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
       {steps?.map((step, index) => {
         return (
           <Flex
-            key={`${index}_${step.name?.toString()}`}
+            key={step.name}
             className={classes.item()}
             data-done={step.isDone}
             data-selected={step.isSelected}
@@ -39,7 +39,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
               </Box>
               <Text className={classes.name()}>{step.name}</Text>
             </Flex>
-            <Flex align="center">
+            <HStack align="center" gap="1">
               {step.isLoading && <Spinner size={14} />}
               <Text
                 aria-label={`Step ${step.name?.toString()}: ${step.status}`}
@@ -47,7 +47,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
               >
                 {step.status}
               </Text>
-            </Flex>
+            </HStack>
           </Flex>
         );
       })}
