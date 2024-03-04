@@ -1,34 +1,29 @@
 import { BN, bn } from 'fuels';
 import { groupBy } from 'lodash';
+import { GQLNode } from '~/core/GQLNode';
 import { GQLInput, GQLInputCoin } from '~/graphql/generated/sdk';
 
+type Source = GQLInputCoin;
 export type InputCoinGroupedEntry = {
   type: 'InputCoin';
   owner: string;
   assetId: string;
   totalAmount: BN;
-  inputs: GQLInputCoin[];
+  inputs: Source[];
 };
 
 export class InputCoinFactory {
-  entries: InputCoinGroupedEntry[];
-  private constructor(inputsData: GQLInput[]) {
-    const inputs = inputsData.filter(
-      (input) => input.__typename === 'InputCoin',
-    ) as GQLInputCoin[];
-
-    this.entries = this.entriesFromInputs(inputs);
+  value: InputCoinGroupedEntry[];
+  private constructor(data: GQLInput[]) {
+    const inputs = GQLNode.filterByType(data, 'InputCoin');
+    this.value = this.entriesFromInputs(inputs as Source[]);
   }
 
   static create(inputsData: GQLInput[]) {
     return new InputCoinFactory(inputsData);
   }
 
-  value() {
-    return this.entries;
-  }
-
-  private entriesFromInputs(inputs: GQLInputCoin[]) {
+  private entriesFromInputs(inputs: Source[]) {
     return Object.entries(groupBy(inputs, (i) => i.assetId)).map(
       ([assetId, inputs]) => {
         const type = inputs[0].__typename;
@@ -39,7 +34,7 @@ export class InputCoinFactory {
     );
   }
 
-  private getTotalAmount(inputs: GQLInputCoin[]) {
+  private getTotalAmount(inputs: Source[]) {
     return inputs.reduce((acc, input) => acc.add(bn(input.amount)), bn(0));
   }
 }

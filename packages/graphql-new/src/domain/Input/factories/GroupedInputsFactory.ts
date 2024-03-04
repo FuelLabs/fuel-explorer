@@ -23,14 +23,14 @@ interface Props {
 export class GroupedInputsFactory {
   private constructor(readonly props: Props) {}
 
-  static create(value?: GQLInput[] | null) {
-    if (!value) {
+  static create(data?: GQLInput[] | null) {
+    if (!data) {
       return new GroupedInputsFactory({ value: [] });
     }
 
-    const inputsCoin = InputCoinFactory.create(value).value();
-    const inputsMessage = InputMessageFactory.create(value).value();
-    const inputsContract = InputContractFactory.create(value).value();
+    const inputsCoin = InputCoinFactory.create(data).value;
+    const inputsMessage = InputMessageFactory.create(data).value;
+    const inputsContract = InputContractFactory.create(data).value;
     return new GroupedInputsFactory({
       value: [...inputsCoin, ...inputsMessage, ...inputsContract],
     });

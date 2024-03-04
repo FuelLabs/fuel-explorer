@@ -1,32 +1,26 @@
+import { GQLNode } from '~/core/GQLNode';
 import { GQLInput, GQLInputMessage } from '~/graphql/generated/sdk';
-
+type Source = GQLInputMessage;
 export type InputMessageGroupedEntry = {
   type: 'InputMessage';
   sender: string;
   recipient: string;
   data: string;
-  inputs: GQLInputMessage[];
+  inputs: Source[];
 };
 
 export class InputMessageFactory {
-  entries: InputMessageGroupedEntry[];
-  private constructor(inputsData: GQLInput[]) {
-    const inputs = inputsData.filter(
-      (input) => input.__typename === 'InputMessage',
-    ) as GQLInputMessage[];
-
-    this.entries = this.entriesFromInputs(inputs);
+  value: InputMessageGroupedEntry[];
+  private constructor(data: GQLInput[]) {
+    const inputs = GQLNode.filterByType(data, 'InputMessage');
+    this.value = this.entriesFromInputs(inputs as Source[]);
   }
 
   static create(inputsData: GQLInput[]) {
     return new InputMessageFactory(inputsData);
   }
 
-  value() {
-    return this.entries;
-  }
-
-  private entriesFromInputs(inputs: GQLInputMessage[]) {
+  private entriesFromInputs(inputs: Source[]) {
     return inputs.map((input) => {
       const type = input.__typename;
       const sender = input.sender;
