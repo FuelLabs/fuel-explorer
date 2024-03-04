@@ -32,7 +32,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
             <Flex className={classes.action()}>
               <Box className={classes.circle()}>
                 {step.isDone ? (
-                  <IconCheck size={12} className={classes.icon()} />
+                  <IconCheck size={10} className={classes.icon()} />
                 ) : (
                   <Text className={classes.number()}>{index + 1}</Text>
                 )}
@@ -57,14 +57,14 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
 
 const styles = tv({
   slots: {
-    item: 'group flex justify-between px-3 py-2 [&_~_&]:border-t [&_~_&]:border-border',
+    item: 'group flex justify-between p-3 [&_~_&]:border-t [&_~_&]:border-border',
     stack: 'gap-0 rounded-md border border-border bg-inputBaseBg',
     action: 'gap-2 items-center',
     name: 'leading-tight text-xs text-heading',
     status: 'text-xs text-muted',
-    icon: 'text-gray-1',
+    icon: 'text-white',
     number: [
-      'flex justify-center text-xs',
+      'flex justify-center text-[9px]',
       'group-[&[data-selected=true]]:text-gray-11',
     ],
     circle: [
