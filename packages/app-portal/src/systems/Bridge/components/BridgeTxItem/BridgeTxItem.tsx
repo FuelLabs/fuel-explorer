@@ -76,7 +76,7 @@ export const BridgeTxItem = ({
 const styles = tv({
   slots: {
     networks: 'gap-1',
-    cardItem: 'flex flex-row min-h-[24px] gap-6 items-center',
+    cardItem: 'flex flex-row min-h-[58px] gap-6 items-center',
     statusTime: [
       'flex-1 justify-between',
       'mobile:max-tablet:flex-col-reverse mobile:max-tablet:flex-wrap',
