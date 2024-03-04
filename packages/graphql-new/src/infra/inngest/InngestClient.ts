@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { EventSchemas, type GetEvents, Inngest } from 'inngest';
 import { env } from '~/config';
+import { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import {
   GQLBlock,
   GQLContract,
@@ -58,10 +59,7 @@ const schemas = new EventSchemas().fromRecord<{
     data: {};
   };
   [InngestEvents.SYNC_PREDICATE]: {
-    data: {
-      bytecode: string;
-      address: string;
-    };
+    data: PredicatePayload | undefined;
   };
 }>();
 

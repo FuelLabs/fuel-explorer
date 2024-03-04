@@ -36,13 +36,13 @@ export class TransactionEntity extends Entity<
     const blockRef = BlockRef.create(transaction.blockId);
     const time = ParsedTime.create(timeFromStatus(transaction));
     const props = {
+      blockId: blockRef,
       status,
       txHash,
       data,
       time,
       timestamp,
       accountIndex,
-      blockId: blockRef,
     };
     return new TransactionEntity(props, id);
   }
@@ -86,10 +86,6 @@ export class TransactionEntity extends Entity<
 
   get accountIndex() {
     return this.props.accountIndex.value();
-  }
-
-  get inputs() {
-    return this.data.inputs;
   }
 
   get outputs() {

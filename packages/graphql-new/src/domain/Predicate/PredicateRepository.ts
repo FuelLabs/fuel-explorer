@@ -13,7 +13,7 @@ export class PredicateRepository {
       .limit(1);
 
     if (!first) return null;
-    return PredicateEntity.create(first);
+    return PredicateEntity.create(first, first._id);
   }
 
   async insertOne(predicate: PredicatePayload) {
@@ -26,7 +26,7 @@ export class PredicateRepository {
       .values(PredicateEntity.toDBItem(predicate))
       .returning();
 
-    return PredicateEntity.create(item);
+    return PredicateEntity.create(item, item._id);
   }
 
   async insertMany(predicates: PredicatePayload[]) {
@@ -37,7 +37,7 @@ export class PredicateRepository {
           .values(PredicateEntity.toDBItem(predicate))
           .returning();
 
-        return PredicateEntity.create(item);
+        return PredicateEntity.create(item, item._id);
       });
       return Promise.all(queries.filter(Boolean));
     });

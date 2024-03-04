@@ -18,6 +18,7 @@ export const syncPredicate = inngest
     { id: 'sync:predicate', concurrency: 100 },
     { event: InngestEvents.SYNC_PREDICATE },
     async ({ event: { data }, attempt }) => {
+      if (!data) return;
       try {
         console.log(`Syncing predicate ${data.address}...`);
         const syncPredicate = new SyncPredicate();

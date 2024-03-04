@@ -1,7 +1,6 @@
 import { GetStepTools, RetryAfterError } from 'inngest';
 import { InputEntity } from '~/domain/Input/InputEntity';
 import { InputRepository } from '~/domain/Input/InputRepository';
-import { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import { GQLInput } from '~/graphql/generated/sdk';
 import { Events, InngestEvents, inngest } from '~/infra/inngest/InngestClient';
 
@@ -22,8 +21,8 @@ export class SyncInputs {
 
   private async addPredicates(inputs: InputEntity[]) {
     const predicates = inputs
-      .map((input) => input.data.predicate)
-      .filter(Boolean) as PredicatePayload[];
+      .map((input) => input.getPredicateData())
+      .filter(Boolean);
 
     const events = predicates.map<Events[InngestEvents.SYNC_PREDICATE]>(
       (predicate) => ({
