@@ -78,7 +78,7 @@ const styles = tv({
     networks: 'gap-1',
     cardItem: 'flex flex-row min-h-[58px] gap-6 items-center',
     statusTime: [
-      'flex-1 justify-between',
+      'flex-1 justify-between items-center',
       'mobile:max-tablet:flex-col-reverse mobile:max-tablet:flex-wrap',
       'mobile:max-tablet:items-end mobile:max-tablet:gap-1',
     ],
