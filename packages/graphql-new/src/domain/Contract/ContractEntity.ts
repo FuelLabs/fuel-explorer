@@ -10,7 +10,7 @@ import { ContractData } from './vo/ContractData';
 
 type ContractProps = {
   data: ContractData;
-  contractId: HashID;
+  contractHash: HashID;
 };
 
 export class ContractEntity extends Entity<ContractProps, SerialID> {
@@ -25,13 +25,13 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
 
     const id = SerialID.create(contract._id);
     const data = ContractData.create(contract.data);
-    const contractId = HashID.create(contract.contractId);
-    return new ContractEntity(id, { data, contractId });
+    const contractHash = HashID.create(contract.contractHash);
+    return new ContractEntity(id, { data, contractHash });
   }
 
-  static toDBItem(contract: GQLContract) {
+  static toDBItem(contract: GQLContract): Omit<ContractItem, '_id'> {
     const data = ContractData.create(contract).value();
-    return { data, contractId: contract.id };
+    return { data, contractHash: contract.id };
   }
 
   static fromOutputs(outputs: GQLOutput[]) {
@@ -41,8 +41,8 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
     return found?.length ? found.map((i) => i.contract) : [];
   }
 
-  get contractId() {
-    return this.props.contractId.value();
+  get contractHash() {
+    return this.props.contractHash.value();
   }
 
   get data() {

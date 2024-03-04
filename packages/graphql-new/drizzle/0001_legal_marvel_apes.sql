@@ -1,1 +1,0 @@
-CREATE INDEX IF NOT EXISTS "blocks_id_index" ON "blocks" ("id");

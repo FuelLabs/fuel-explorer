@@ -28,21 +28,21 @@ class SearchResolver extends ResolverAdapter<null> {
 
   async search(_: null, params: Params['search']) {
     const address = HashID.create(params.query).value();
-    const block = await this.blockRepository.findById(address);
+    const block = await this.blockRepository.findByHash(address);
     if (block) {
       return {
         block: block.toGQLNode(),
       };
     }
 
-    const contract = await this.contractRepository.findById(address);
+    const contract = await this.contractRepository.findByHash(address);
     if (contract) {
       return {
         contract: contract.toGQLNode(),
       };
     }
 
-    const transaction = await this.transactionRepository.findById(address);
+    const transaction = await this.transactionRepository.findByHash(address);
     if (transaction) {
       return {
         transaction: transaction.toGQLNode(),

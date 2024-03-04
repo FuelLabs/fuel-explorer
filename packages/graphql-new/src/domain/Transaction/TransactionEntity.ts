@@ -13,7 +13,7 @@ import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
 type TransactionProps = {
   status: TransactionStatus;
-  transactionId: HashID;
+  txHash: HashID;
   data: TransactionData;
   timestamp: TransactionTimestamp;
   accountIndex: AccountIndex;
@@ -33,7 +33,7 @@ export class TransactionEntity extends Entity<
     const item = transaction.data;
     const id = TransactionModelID.create(item);
     const status = TransactionStatus.create(item);
-    const transactionId = HashID.create(item.id);
+    const txHash = HashID.create(item.id);
     const data = TransactionData.create(item);
     const timestamp = TransactionTimestamp.create(item);
     const accountIndex = AccountIndex.create(item);
@@ -41,7 +41,7 @@ export class TransactionEntity extends Entity<
     const time = ParsedTime.create(timeFromStatus(transaction));
     return new TransactionEntity(id, {
       status,
-      transactionId,
+      txHash,
       data,
       time,
       timestamp,
@@ -50,19 +50,29 @@ export class TransactionEntity extends Entity<
     });
   }
 
-  static toDBItem(transaction: GQLTransaction, blockId: number) {
+  static toDBItem(
+    transaction: GQLTransaction,
+    blockId: number,
+  ): TransactionItem {
     return {
       _id: TransactionModelID.create(transaction).value(),
-      transactionId: HashID.create(transaction.id).value(),
+      txHash: HashID.create(transaction.id).value(),
       data: TransactionData.create(transaction).value(),
       timestamp: TransactionTimestamp.create(transaction).value(),
-      accountIndex: AccountIndex.create(transaction).value(),
+      accountsIndex: AccountIndex.create(transaction).value(),
       blockId: BlockRef.create(blockId).value(),
     };
   }
 
-  get transactionId() {
-    return this.props.transactionId.value();
+  toGQLNode() {
+    return {
+      ...this.data,
+      time: this.parsedTime,
+    };
+  }
+
+  get txHash() {
+    return this.props.txHash.value();
   }
 
   get data() {
@@ -102,13 +112,6 @@ export class TransactionEntity extends Entity<
 
   get status() {
     return this.props.status;
-  }
-
-  toGQLNode() {
-    return {
-      ...this.data,
-      time: this.parsedTime,
-    };
   }
 
   getContractsCreated() {

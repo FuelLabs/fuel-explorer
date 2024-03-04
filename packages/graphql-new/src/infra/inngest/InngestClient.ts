@@ -121,13 +121,6 @@ export class InngestClient {
     });
   }
 
-  async syncChain() {
-    await client.send({
-      name: InngestEvents.SYNC_CHAIN_INFO,
-      data: {},
-    });
-  }
-
   async syncPredicate(predicate: { bytecode: string; address: string }) {
     await client.send({
       name: InngestEvents.SYNC_PREDICATE,

@@ -1,5 +1,5 @@
 {
-  "id": "a750cbb6-07b7-419a-ad4c-37df5482ec22",
+  "id": "e3b1474b-54b6-4adc-919f-acceb1dc52db",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -39,6 +39,11 @@
           "columns": ["timestamp"],
           "isUnique": false
         },
+        "blocks_id_index": {
+          "name": "blocks_id_index",
+          "columns": ["id"],
+          "isUnique": false
+        },
         "blocks__id_index": {
           "name": "blocks__id_index",
           "columns": ["_id"],
@@ -54,34 +59,6 @@
           "columns": ["id"]
         }
       }
-    },
-    "chains": {
-      "name": "chains",
-      "schema": "",
-      "columns": {
-        "_id": {
-          "name": "_id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "data": {
-          "name": "data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "chains__id_index": {
-          "name": "chains__id_index",
-          "columns": ["_id"],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
     },
     "contracts": {
       "name": "contracts",
@@ -215,6 +192,56 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
+    },
+    "predicates": {
+      "name": "predicates",
+      "schema": "",
+      "columns": {
+        "_id": {
+          "name": "_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "bytecode": {
+          "name": "bytecode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar(66)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "predicates__id_index": {
+          "name": "predicates__id_index",
+          "columns": ["_id"],
+          "isUnique": false
+        },
+        "predicates_id_index": {
+          "name": "predicates_id_index",
+          "columns": ["id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "predicates_bytecode_unique": {
+          "name": "predicates_bytecode_unique",
+          "nullsNotDistinct": false,
+          "columns": ["bytecode"]
+        },
+        "predicates_id_unique": {
+          "name": "predicates_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["id"]
+        }
+      }
     },
     "transactions": {
       "name": "transactions",

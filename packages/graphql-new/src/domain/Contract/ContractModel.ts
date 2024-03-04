@@ -7,12 +7,12 @@ export const ContractsTable = pgTable(
   'contracts',
   {
     _id: SerialID.type(),
-    contractId: HashID.type(),
+    contractHash: HashID.type(),
     data: ContractData.type(),
   },
   (table) => ({
-    idIdx: index().on(table._id),
-    contractIdIdx: index().on(table.contractId),
+    contractIdIdx: index().on(table._id),
+    contractHashIdx: index().on(table.contractHash),
   }),
 );
 

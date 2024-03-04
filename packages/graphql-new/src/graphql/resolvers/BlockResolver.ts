@@ -37,7 +37,7 @@ class BlockResolver extends ResolverAdapter<Source> {
     }
 
     if (id) {
-      const item = await this.blockRepository.findById(id);
+      const item = await this.blockRepository.findByHash(id);
       return item?.toGQLNode();
     }
 

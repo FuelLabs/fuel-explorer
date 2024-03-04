@@ -30,7 +30,7 @@ export class SyncTransactions {
     const inputs = transaction.data.inputs;
     const transactionId = transaction._id.value();
     if (inputs?.length) {
-      console.log(`Adding inputs for transaction ${transaction.transactionId}`);
+      console.log(`Adding inputs for transaction ${transaction.txHash}`);
       await this.step.sendEvent('sync:inputs', {
         name: InngestEvents.SYNC_INPUTS,
         data: { inputs, transactionId },
@@ -42,9 +42,7 @@ export class SyncTransactions {
     const outputs = transaction.data.outputs;
     const transactionId = transaction._id.value();
     if (outputs?.length) {
-      console.log(
-        `Adding outputs for transaction ${transaction.transactionId}`,
-      );
+      console.log(`Adding outputs for transaction ${transaction.txHash}`);
       await this.step.sendEvent('sync:outputs', {
         name: InngestEvents.SYNC_OUTPUTS,
         data: { outputs, transactionId },
@@ -61,7 +59,7 @@ export class SyncTransactions {
       }),
     );
 
-    console.log(`Adding contract for transaction ${transaction.transactionId}`);
+    console.log(`Adding contract for transaction ${transaction.txHash}`);
     await this.step.sendEvent('sync:contracts', events);
   }
 }

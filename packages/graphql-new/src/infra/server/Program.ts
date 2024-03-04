@@ -42,11 +42,9 @@ export class Program {
     await db.connect();
 
     if (argv.all) {
-      await inngest.syncChain();
       await inngest.syncBlocks(1, 1000);
     }
     if (argv.missing) {
-      await inngest.syncChain();
       await inngest.syncMissing();
     }
 

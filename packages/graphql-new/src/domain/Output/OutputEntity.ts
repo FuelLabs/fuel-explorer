@@ -23,7 +23,10 @@ export class OutputEntity extends Entity<OutputProps, SerialID> {
     return new OutputEntity(id, { data });
   }
 
-  static toDBItem(output: GQLOutput, transactionId: number) {
+  static toDBItem(
+    output: GQLOutput,
+    transactionId: number,
+  ): Omit<OutputItem, '_id'> {
     const data = OutputData.create(output).value();
     return { data, transactionId };
   }

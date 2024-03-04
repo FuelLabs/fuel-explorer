@@ -6,12 +6,12 @@ import { ContractEntity } from './ContractEntity';
 import { ContractsTable } from './ContractModel';
 
 export class ContractRepository {
-  async findById(id: string) {
+  async findByHash(id: string) {
     const [first] = await db
       .connection()
       .select()
       .from(ContractsTable)
-      .where(eq(ContractsTable.contractId, id));
+      .where(eq(ContractsTable.contractHash, id));
 
     if (!first) return null;
     return ContractEntity.create(first);

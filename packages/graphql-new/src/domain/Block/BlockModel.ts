@@ -9,14 +9,14 @@ export const BlocksTable = pgTable(
   'blocks',
   {
     _id: BlockModelID.type(),
-    blockId: HashID.type(),
+    blockHash: HashID.type(),
     timestamp: Timestamp.type(),
     data: BlockData.type(),
   },
   (table) => ({
-    timestampIdx: index().on(table.timestamp),
-    blockIdIdx: index().on(table.blockId),
-    idIdx: index().on(table._id),
+    blockTimestampIdx: index().on(table.timestamp),
+    blockHashIdx: index().on(table.blockHash),
+    blockIdIdx: index().on(table._id),
   }),
 );
 

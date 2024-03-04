@@ -4,15 +4,15 @@ import { Bytecode } from '~/application/vo/Bytecode';
 import { SerialID } from '~/application/vo/SerialID';
 
 export const PredicatesTable = pgTable(
-  'outputs',
+  'predicates',
   {
     _id: SerialID.type(),
     bytecode: Bytecode.type(),
     address: HashID.type(),
   },
   (table) => ({
-    idIdx: index().on(table._id),
-    addressIdx: index().on(table.address),
+    predicateIdIdx: index().on(table._id),
+    predicateAddressIdx: index().on(table.address),
   }),
 );
 

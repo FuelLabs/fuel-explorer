@@ -11,7 +11,7 @@ export const InputsTable = pgTable(
     transactionId: TransactionRef.type(),
   },
   (table) => ({
-    idIdx: index().on(table._id),
+    inputIdIdx: index().on(table._id),
   }),
 );
 

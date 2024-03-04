@@ -6,7 +6,7 @@ import { BlockData } from './vo/BlockData';
 import { BlockModelID } from './vo/BlockModelID';
 
 type BlockProps = {
-  blockId: HashID;
+  blockHash: HashID;
   data: BlockData;
   timestamp: Timestamp;
 };
@@ -16,8 +16,8 @@ export class BlockEntity extends Entity<BlockProps, BlockModelID> {
     super(id, props);
   }
 
-  get blockId() {
-    return this.props.blockId.value();
+  get blockHash() {
+    return this.props.blockHash.value();
   }
 
   get data() {
@@ -34,20 +34,20 @@ export class BlockEntity extends Entity<BlockProps, BlockModelID> {
     }
 
     const id = BlockModelID.create(block.data);
-    const blockId = HashID.create(block.data.id);
+    const blockHash = HashID.create(block.data.id);
     const data = BlockData.create(block.data);
     const timestamp = Timestamp.create(block.data.header.time);
     return new BlockEntity(id, {
-      blockId,
+      blockHash,
       data,
       timestamp,
     });
   }
 
-  static toDBItem(block: GQLBlock) {
+  static toDBItem(block: GQLBlock): BlockItem {
     return {
       _id: BlockModelID.create(block).value(),
-      blockId: HashID.create(block.id).value(),
+      blockHash: HashID.create(block.id).value(),
       timestamp: Timestamp.create(block.header.time).value(),
       data: block,
     };

@@ -6,12 +6,12 @@ import { TransactionEntity } from './TransactionEntity';
 import { TransactionsTable } from './TransactionModel';
 
 export class TransactionRepository {
-  async findById(id: string) {
+  async findByHash(id: string) {
     const [transaction] = await db
       .connection()
       .select()
       .from(TransactionsTable)
-      .where(eq(TransactionsTable.transactionId, id));
+      .where(eq(TransactionsTable.txHash, id));
     if (!transaction) return null;
     return TransactionEntity.create(transaction);
   }
@@ -32,7 +32,7 @@ export class TransactionRepository {
   }
 
   async insertOne(transaction: GQLTransaction, blockId: number) {
-    const found = await this.findById(transaction.id);
+    const found = await this.findByHash(transaction.id);
     if (found) {
       throw new Error(`Transaction ${transaction.id} already exists`);
     }
@@ -49,7 +49,7 @@ export class TransactionRepository {
   async insertMany(txs: GQLTransaction[], blockId: number) {
     return db.connection().transaction(async (trx) => {
       const queries = txs.map(async (transaction) => {
-        const found = await this.findById(transaction.id);
+        const found = await this.findByHash(transaction.id);
         if (found) {
           throw new Error(`Transaction ${transaction.id} already exists`);
         }

@@ -43,7 +43,7 @@ class ContractResolver extends ResolverAdapter<Source> {
       throw new Error('Contract ID is required');
     }
 
-    const item = await this.contractRepository.findById(id);
+    const item = await this.contractRepository.findByHash(id);
     return item?.toGQLNode();
   }
 

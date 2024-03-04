@@ -7,12 +7,12 @@ import { BlockEntity } from './BlockEntity';
 import { BlocksTable } from './BlockModel';
 
 export class BlockRepository {
-  async findById(blockId: string) {
+  async findByHash(blockHash: string) {
     const [first] = await db
       .connection()
       .select()
       .from(BlocksTable)
-      .where(eq(BlocksTable.blockId, blockId));
+      .where(eq(BlocksTable.blockHash, blockHash));
 
     if (!first) return null;
     return BlockEntity.create(first);
@@ -47,7 +47,7 @@ export class BlockRepository {
   }
 
   async insertOne(block: GQLBlock) {
-    const found = await this.findById(block.id);
+    const found = await this.findByHash(block.id);
     if (found) {
       throw new Error(`Block ${block.id} already exists`);
     }
@@ -64,7 +64,7 @@ export class BlockRepository {
   async insertMany(blocks: GQLBlock[]) {
     return db.connection().transaction(async (trx) => {
       const queries = blocks.map(async (block) => {
-        const found = await this.findById(block.id);
+        const found = await this.findByHash(block.id);
         if (found) {
           console.warn(`Block ${block.id} already exists`);
           return null;

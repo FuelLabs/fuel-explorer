@@ -14,15 +14,15 @@ export const TransactionsTable = pgTable(
   'transactions',
   {
     _id: TransactionModelID.type(),
-    transactionId: HashID.type(),
+    txHash: HashID.type(),
     timestamp: TransactionTimestamp.type(),
     data: TransactionData.type(),
     accountsIndex: AccountIndex.type(),
     blockId: BlockRef.type(),
   },
   (table) => ({
-    timestampIdx: index().on(table.timestamp),
-    idIdx: index().on(table._id),
+    txTimestampIdx: index().on(table.timestamp),
+    txIdIdx: index().on(table._id),
   }),
 );
 
