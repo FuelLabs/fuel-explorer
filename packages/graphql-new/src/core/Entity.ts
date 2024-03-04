@@ -5,13 +5,18 @@ const isEntity = (v: any): v is Entity<any, any> => {
   return v instanceof Entity;
 };
 
-export abstract class Entity<T, ID extends Identifier<unknown>> {
-  readonly _id: ID;
+export abstract class Entity<
+  T,
+  ID extends Identifier<unknown> | null | undefined,
+> {
+  readonly _id!: ID;
   public readonly props: T;
 
-  constructor(id: ID, props: T) {
-    this._id = id;
+  constructor(props: T, id?: ID) {
     this.props = props;
+    if (id) {
+      this._id = id;
+    }
   }
 
   public equals(object?: Entity<T, ID>): boolean {
@@ -27,6 +32,7 @@ export abstract class Entity<T, ID extends Identifier<unknown>> {
       return false;
     }
 
+    if (!this._id || !object._id) return false;
     return this._id.equals(object._id);
   }
 }

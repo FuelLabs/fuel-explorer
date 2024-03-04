@@ -9,15 +9,11 @@ type PredicateProps = {
 };
 
 export class PredicateEntity extends Entity<PredicateProps, SerialID> {
-  private constructor(id: SerialID, props: PredicateProps) {
-    super(id, props);
-  }
-
   static create(output: PredicateItem) {
     const id = SerialID.create(output._id);
     const bytecode = Bytecode.create(output.bytecode);
     const address = HashID.create(output.address);
-    return new PredicateEntity(id, { bytecode, address });
+    return new PredicateEntity({ bytecode, address }, id);
   }
 
   static toDBItem(item: PredicatePayload) {

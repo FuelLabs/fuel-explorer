@@ -25,10 +25,6 @@ export class TransactionEntity extends Entity<
   TransactionProps,
   TransactionModelID
 > {
-  private constructor(id: TransactionModelID, props: TransactionProps) {
-    super(id, props);
-  }
-
   static create(transaction: TransactionItem) {
     const item = transaction.data;
     const id = TransactionModelID.create(item);
@@ -39,7 +35,7 @@ export class TransactionEntity extends Entity<
     const accountIndex = AccountIndex.create(item);
     const blockRef = BlockRef.create(transaction.blockId);
     const time = ParsedTime.create(timeFromStatus(transaction));
-    return new TransactionEntity(id, {
+    const props = {
       status,
       txHash,
       data,
@@ -47,7 +43,8 @@ export class TransactionEntity extends Entity<
       timestamp,
       accountIndex,
       blockId: blockRef,
-    });
+    };
+    return new TransactionEntity(props, id);
   }
 
   static toDBItem(

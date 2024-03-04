@@ -8,14 +8,10 @@ type ChainProps = {
 };
 
 export class ChainEntity extends Entity<ChainProps, ChainID> {
-  private constructor(id: ChainID, props: ChainProps) {
-    super(id, props);
-  }
-
   static create(chain: GQLChainInfo) {
     const id = ChainID.create(chain);
     const data = ChainData.create(chain);
-    return new ChainEntity(id, { data });
+    return new ChainEntity({ data }, id);
   }
 
   get data() {

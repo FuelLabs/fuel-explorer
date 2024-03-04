@@ -13,7 +13,7 @@ export class OutputRepository {
       .where(eq(OutputsTable._id, id));
 
     if (!first) return null;
-    return OutputEntity.create(first);
+    return OutputEntity.create(first, first._id);
   }
 
   async insertOne(output: GQLOutput, transactionId: number) {
@@ -23,7 +23,7 @@ export class OutputRepository {
       .values(OutputEntity.toDBItem(output, transactionId))
       .returning();
 
-    return OutputEntity.create(item);
+    return OutputEntity.create(item, item._id);
   }
 
   async insertMany(outputs: GQLOutput[], transactionId: number) {
@@ -34,7 +34,7 @@ export class OutputRepository {
           .values(OutputEntity.toDBItem(output, transactionId))
           .returning();
 
-        return OutputEntity.create(item);
+        return OutputEntity.create(item, item._id);
       });
       return Promise.all(queries.filter(Boolean));
     });

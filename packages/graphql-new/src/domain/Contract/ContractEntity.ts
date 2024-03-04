@@ -14,10 +14,6 @@ type ContractProps = {
 };
 
 export class ContractEntity extends Entity<ContractProps, SerialID> {
-  private constructor(id: SerialID, props: ContractProps) {
-    super(id, props);
-  }
-
   static create(contract: ContractItem) {
     if (!contract?.data) {
       throw new Error('Contract data is required');
@@ -26,7 +22,7 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
     const id = SerialID.create(contract._id);
     const data = ContractData.create(contract.data);
     const contractHash = HashID.create(contract.contractHash);
-    return new ContractEntity(id, { data, contractHash });
+    return new ContractEntity({ data, contractHash }, id);
   }
 
   static toDBItem(contract: GQLContract): Omit<ContractItem, '_id'> {

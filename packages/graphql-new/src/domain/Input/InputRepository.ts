@@ -13,7 +13,7 @@ export class InputRepository {
       .where(eq(InputsTable._id, id));
 
     if (!first) return null;
-    return InputEntity.create(first);
+    return InputEntity.create(first, first._id);
   }
 
   async insertOne(input: GQLInput, transactionId: number) {
@@ -23,7 +23,7 @@ export class InputRepository {
       .values(InputEntity.toDBItem(input, transactionId))
       .returning();
 
-    return InputEntity.create(item);
+    return InputEntity.create(item, item._id);
   }
 
   async insertMany(inputs: GQLInput[], transactionId: number) {
@@ -34,7 +34,7 @@ export class InputRepository {
           .values(InputEntity.toDBItem(input, transactionId))
           .returning();
 
-        return InputEntity.create(item);
+        return InputEntity.create(item, item._id);
       });
       return Promise.all(queries.filter(Boolean));
     });

@@ -12,10 +12,6 @@ type BlockProps = {
 };
 
 export class BlockEntity extends Entity<BlockProps, BlockModelID> {
-  private constructor(id: BlockModelID, props: BlockProps) {
-    super(id, props);
-  }
-
   get blockHash() {
     return this.props.blockHash.value();
   }
@@ -37,11 +33,8 @@ export class BlockEntity extends Entity<BlockProps, BlockModelID> {
     const blockHash = HashID.create(block.data.id);
     const data = BlockData.create(block.data);
     const timestamp = Timestamp.create(block.data.header.time);
-    return new BlockEntity(id, {
-      blockHash,
-      data,
-      timestamp,
-    });
+    const props = { blockHash, data, timestamp };
+    return new BlockEntity(props, id);
   }
 
   static toDBItem(block: GQLBlock): BlockItem {

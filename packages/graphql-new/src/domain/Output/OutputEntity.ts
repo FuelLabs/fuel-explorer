@@ -1,26 +1,25 @@
 import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 import { GQLOutput } from '~/graphql/generated/sdk';
-import { OutputItem } from './OutputModel';
+import { OutputItem, OutputPayload } from './OutputModel';
 import { OutputData } from './vo/OutputData';
 
 type OutputProps = {
   data: OutputData;
 };
 
-export class OutputEntity extends Entity<OutputProps, SerialID> {
-  private constructor(id: SerialID, props: OutputProps) {
-    super(id, props);
-  }
-
-  static create(output: OutputItem) {
+export class OutputEntity extends Entity<
+  OutputProps,
+  SerialID | null | undefined
+> {
+  static create(output: OutputPayload, outputId?: number) {
     if (!output?.data) {
       throw new Error('Output data is required');
     }
 
-    const id = SerialID.create(output._id);
+    const id = outputId ? SerialID.create(outputId) : null;
     const data = OutputData.create(output.data);
-    return new OutputEntity(id, { data });
+    return new OutputEntity({ data }, id);
   }
 
   static toDBItem(

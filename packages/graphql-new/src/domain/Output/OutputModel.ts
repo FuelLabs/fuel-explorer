@@ -16,3 +16,4 @@ export const OutputsTable = pgTable(
 );
 
 export type OutputItem = typeof OutputsTable.$inferSelect;
+export type OutputPayload = Omit<OutputItem, '_id'>;
