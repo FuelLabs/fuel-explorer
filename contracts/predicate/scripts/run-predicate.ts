@@ -1,20 +1,23 @@
 import { promises as fs } from 'node:fs';
 import { resolve } from 'node:path';
+import { FUEL_CHAIN } from 'app-commons';
 import { BaseAssetId, Predicate, Provider, Wallet, bn, hexlify } from 'fuels';
 
-const { FUEL_PROVIDER, PRIVATE_KEY } = process.env;
+const { NEXT_PUBLIC_FUEL_CHAIN_NAME, PRIVATE_KEY } = process.env;
 const BIN_PATH = resolve(__dirname, '../out/debug/predicate-app.bin');
 const AMOUNT = 300_000;
 
-if (!FUEL_PROVIDER || !PRIVATE_KEY) {
+if (!NEXT_PUBLIC_FUEL_CHAIN_NAME || !PRIVATE_KEY) {
   throw new Error(
-    'Missing some config in .env file. Should have FUEL_PROVIDER and PRIVATE_KEY',
+    'Missing some config in .env file. Should have NEXT_PUBLIC_FUEL_CHAIN_NAME and PRIVATE_KEY',
   );
 }
 
+const providerUrl = FUEL_CHAIN.providerUrl;
+
 async function main() {
   const binHex = hexlify(await fs.readFile(BIN_PATH));
-  const provider = await Provider.create(FUEL_PROVIDER!);
+  const provider = await Provider.create(providerUrl);
   const wallet = Wallet.fromPrivateKey(PRIVATE_KEY!, provider);
   const { minGasPrice: gasPrice } = wallet.provider.getGasConfig();
   const walletAddress = wallet.address.toB256();

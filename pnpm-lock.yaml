@@ -141,6 +141,10 @@ importers:
         version: 15.1.1
 
   contracts/predicate:
+    dependencies:
+      app-commons:
+        specifier: workspace:*
+        version: link:../../packages/app-commons
     devDependencies:
       dotenv:
         specifier: 16.4.1
@@ -217,8 +221,8 @@ importers:
         specifier: 0.15.2
         version: 0.15.2(dexie@3.2.4)(fuels@0.74.0)
       '@fuels/assets':
-        specifier: 0.15.2
-        version: 0.15.2
+        specifier: 0.15.3
+        version: 0.15.3
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -428,11 +432,11 @@ importers:
         specifier: 0.15.2
         version: 0.15.2(dexie@3.2.4)(fuels@0.74.0)
       '@fuels/assets':
-        specifier: 0.15.2
-        version: 0.15.2
+        specifier: 0.15.3
+        version: 0.15.3
       '@fuels/react-xstore':
-        specifier: 0.15.2
-        version: 0.15.2(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
+        specifier: 0.15.3
+        version: 0.15.3(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -556,6 +560,9 @@ importers:
       '@luckycatfactory/esbuild-graphql-loader':
         specifier: 3.8.1
         version: 3.8.1(esbuild@0.20.0)(graphql-tag@2.12.6)(graphql@16.8.1)
+      app-commons:
+        specifier: workspace:*
+        version: link:../app-commons
       chokidar:
         specifier: 3.5.3
         version: 3.5.3
@@ -770,8 +777,8 @@ importers:
         specifier: 0.74.0
         version: 0.74.0
       '@fuels/assets':
-        specifier: 0.1.5
-        version: 0.1.5
+        specifier: 0.15.3
+        version: 0.15.3
       '@radix-ui/colors':
         specifier: 3.0.0
         version: 3.0.0
@@ -4741,8 +4748,8 @@ packages:
   /@fuels/assets@0.1.5:
     resolution: {integrity: sha512-3rFZdY2f5/h7e2Rlhv/+WKz1CVsTnydKoxLdVjQfUaNsj7zbMLSfT37bsBSB42AnXKOlPs/vyMbS77LxhN8a2A==}
 
-  /@fuels/assets@0.15.2:
-    resolution: {integrity: sha512-SRHUz0+2+qjo0DJ6B0Eh45s/I8gHQcoZY3TUvJxhytKOpdq+OaLOv+GzihSd/VBwUd+b70V1nQiwLTzVd/8R5A==}
+  /@fuels/assets@0.15.3:
+    resolution: {integrity: sha512-HzwMrGKhfiNBIL7m0RXiNxOE9pY34j207QTdZXYxrreKftS4OsCTsEwgtv7GHF4bfaIa7tw4/HEbM/N4efYlhQ==}
     dev: false
 
   /@fuels/jest@0.1.5(@types/jest@29.5.12)(jest@29.7.0):
@@ -4780,12 +4787,12 @@ packages:
       - vitest
     dev: false
 
-  /@fuels/local-storage@0.15.2:
-    resolution: {integrity: sha512-NY4RJRfqTajDDPRhvzJi/enkp4QDFUZbwLx9q0m0qEZtz2VfILiG+OvRCAxpyIm4ue4wXPYpXuFTkJawewPjRg==}
+  /@fuels/local-storage@0.15.3:
+    resolution: {integrity: sha512-XpnI6d6URBZjhck6Mo/QBZp9rQs53F+f9Kg4FOTPKY3tKH1P4rjxZy1XaDmneaT5xAEMv+iPDBb3FQW3rORSIw==}
     dev: false
 
-  /@fuels/react-xstore@0.15.2(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
-    resolution: {integrity: sha512-OjL4Y2TYqLl4ssOQsqRBqkKNtAP6bIVaNJCmzwph7ynz7UYSYzA40ezY8SJf5NTbosIJWK73Gblz4ngXer3M8g==}
+  /@fuels/react-xstore@0.15.3(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
+    resolution: {integrity: sha512-DXbz+2NY5RkCbADJUO0g4EPNOE8nqXgunXekOXXIwe2xwVBM6FaHmPmJysMKRASRVEyPBHcwwXYBjcvb8dzlBA==}
     peerDependencies:
       '@xstate/react': ^3.2.2
       react: '*'
@@ -4797,7 +4804,7 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      '@fuels/local-storage': 0.15.2
+      '@fuels/local-storage': 0.15.3
       '@xstate/inspect': 0.8.0(xstate@4.38.3)
       '@xstate/react': 3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3)
       fast-equals: 5.0.1
