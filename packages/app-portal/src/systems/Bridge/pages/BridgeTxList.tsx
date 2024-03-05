@@ -48,26 +48,27 @@ export const BridgeTxList = () => {
   return (
     <>
       <CardList isClickable className={classes.cardList()}>
-        {bridgeTxs?.map((txDatum, index) => {
+        {bridgeTxs?.map((txDatum) => {
           if (
             isEthChain(txDatum.fromNetwork) &&
             isFuelChain(txDatum.toNetwork)
           ) {
             return (
               <TxListItemEthToFuel
-                key={`${index}-${txDatum.txHash}`}
-                txHash={txDatum.txHash || ''}
+                key={txDatum.txHash}
+                txHash={txDatum.txHash}
               />
             );
           }
+
           if (
             isFuelChain(txDatum.fromNetwork) &&
             isEthChain(txDatum.toNetwork)
           ) {
             return (
               <TxListItemFuelToEth
-                key={`${index}-${txDatum.txHash}`}
-                txHash={txDatum.txHash || ''}
+                key={txDatum.txHash}
+                txHash={txDatum.txHash}
               />
             );
           }

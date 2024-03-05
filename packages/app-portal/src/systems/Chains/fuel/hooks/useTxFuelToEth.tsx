@@ -1,4 +1,3 @@
-import type { Asset } from '@fuels/assets';
 import {
   ReceiptType,
   fromTai64ToUnix,
@@ -6,71 +5,71 @@ import {
   hexlify,
 } from 'fuels';
 import { useMemo } from 'react';
-import { Services, store } from '~portal/store';
+import { store } from '~portal/store';
 import { useAssets } from '~portal/systems/Assets';
 import { getAssetEth } from '~portal/systems/Assets/utils';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
-import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
 
 import { useEthAccountConnection } from '../../eth/hooks';
 import { isSameEthAddress, parseFuelAddressToEth } from '../../eth/utils';
-import type { TxFuelToEthMachineState } from '../machines';
 import { distanceToNow } from '../utils';
 
+import { useQuery } from '@tanstack/react-query';
+import { TxFuelToEthService } from '../services';
 import { useFuelAccountConnection } from './useFuelAccountConnection';
 
-const bridgeTxsSelectors = {
-  txFuelToEth: (txId?: string) => (state: BridgeTxsMachineState) => {
-    if (!txId) return undefined;
+export function useTxFuelToEth({ txId }: { txId: string }) {
+  const { walletClient: ethWalletClient } = useEthAccountConnection();
+  const { provider: fuelProvider } = useFuelAccountConnection();
+  const { assets } = useAssets();
+  const { href: explorerLink } = useExplorerLink({
+    network: 'fuel',
+    providerUrl: fuelProvider?.url || '',
+    id: txId,
+  });
 
-    const machine = state.context?.fuelToEthTxRefs?.[txId]?.getSnapshot();
+  // @TODO: Move it to "queries" folder
+  const { data: tx, isLoading: isLoadingTxResult } = useQuery({
+    queryKey: ['bridgeTxs', txId],
+    queryFn: () => {
+      return TxFuelToEthService.waitTxResult({
+        fuelTxId: txId,
+        fuelProvider,
+      });
+    },
+    enabled: !!txId && !!fuelProvider,
+    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
+    cacheTime: 1000 * 60, // 1 minute
+    staleTime: Infinity,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
 
-    return machine;
-  },
-};
+  const fuelTxResult = tx?.txResult;
 
-const txFuelToEthSelectors = {
-  status: (state: TxFuelToEthMachineState) => {
-    const isSubmitToBridgeLoading = state.hasTag('isSubmitToBridgeLoading');
-    const isSubmitToBridgeSelected = state.hasTag('isSubmitToBridgeSelected');
-    const isSubmitToBridgeDone = state.hasTag('isSubmitToBridgeDone');
-    const isSettlementLoading = state.hasTag('isSettlementLoading');
-    const isSettlementSelected = state.hasTag('isSettlementSelected');
-    const isSettlementDone = state.hasTag('isSettlementDone');
-    const isConfirmTransactionSelected = state.hasTag(
-      'isConfirmTransactionSelected',
-    );
-    const isConfirmTransactionLoading = state.hasTag(
-      'isConfirmTransactionLoading',
-    );
-    const isConfirmTransactionDone = state.hasTag('isConfirmTransactionDone');
-    const isWaitingEthWalletApproval = state.hasTag(
-      'isWaitingEthWalletApproval',
-    );
-    const isReceiveLoading = state.hasTag('isReceiveLoading');
-    const isReceiveSelected = state.hasTag('isReceiveSelected');
-    const isReceiveDone = state.hasTag('isReceiveDone');
-
+  const status = useMemo(() => {
+    // @TODO: Detect these status correctly
     return {
-      isSubmitToBridgeLoading,
-      isSubmitToBridgeSelected,
-      isSubmitToBridgeDone,
-      isSettlementLoading,
-      isSettlementSelected,
-      isSettlementDone,
-      isConfirmTransactionSelected,
-      isConfirmTransactionLoading,
-      isConfirmTransactionDone,
-      isWaitingEthWalletApproval,
-      isReceiveLoading,
-      isReceiveSelected,
-      isReceiveDone,
+      isSubmitToBridgeLoading: false,
+      isSubmitToBridgeSelected: false,
+      isSubmitToBridgeDone: false,
+      isSettlementLoading: false,
+      isSettlementSelected: false,
+      isSettlementDone: false,
+      isConfirmTransactionSelected: false,
+      isConfirmTransactionLoading: false,
+      isConfirmTransactionDone: false,
+      isWaitingEthWalletApproval: false,
+      isReceiveLoading: false,
+      isReceiveSelected: false,
+      isReceiveDone: false,
     };
-  },
-  steps: (state: TxFuelToEthMachineState) => {
-    const status = txFuelToEthSelectors.status(state);
-    const estimatedTimeRemaining =
-      txFuelToEthSelectors.estimatedTimeRemaining(state);
+  }, []);
+
+  const steps = useMemo(() => {
+    const estimatedTimeRemaining = '@TODO';
 
     function getConfirmStatusText() {
       if (status.isWaitingEthWalletApproval) return 'Action required';
@@ -84,10 +83,10 @@ const txFuelToEthSelectors = {
       return 'Waiting';
     }
 
-    const steps = [
+    return [
       {
         name: 'Submit to bridge',
-        // TODO: put correct time left '~XX minutes left', how?
+        // @TODO: put correct time left '~XX minutes left', how?
         status: status.isSubmitToBridgeDone ? 'Done!' : 'Waiting',
         isLoading: status.isSubmitToBridgeLoading,
         isSelected: status.isSubmitToBridgeSelected,
@@ -115,14 +114,10 @@ const txFuelToEthSelectors = {
         isSelected: status.isReceiveSelected,
       },
     ];
-    return steps;
-  },
-  fuelTxResult: (state: TxFuelToEthMachineState) => {
-    const fuelTxResult = state.context.fuelTxResult;
-    return fuelTxResult;
-  },
-  assetAmount: (assets: Asset[]) => (state: TxFuelToEthMachineState) => {
-    const fuelTxResult = state.context.fuelTxResult;
+  }, [status]);
+
+  const { asset, amount } = useMemo(() => {
+    if (!fuelTxResult) return {};
 
     const messageOutReceipt = getReceiptsMessageOut(
       fuelTxResult?.receipts || [],
@@ -163,7 +158,12 @@ const txFuelToEthSelectors = {
 
     const asset = assets.find((asset) => asset.symbol === 'ETH');
 
-    if (!asset) return undefined;
+    if (!asset) {
+      return {
+        asset: undefined,
+        amount: undefined,
+      };
+    }
 
     const ethNetwork = getAssetEth(asset);
 
@@ -173,66 +173,9 @@ const txFuelToEthSelectors = {
         precision: ethNetwork?.decimals,
       }),
     };
-  },
-  isLoadingTxResult: (state: TxFuelToEthMachineState) => {
-    return state.matches('submittingToBridge.waitingFuelTxResult');
-  },
-  estimatedTimeRemaining: (state: TxFuelToEthMachineState) => {
-    const estimatedFinishDate = state.context.estimatedFinishDate;
-    if (!estimatedFinishDate) return undefined;
+  }, [fuelTxResult, assets]);
 
-    return distanceToNow(estimatedFinishDate);
-  },
-};
-
-export function useTxFuelToEth({ txId }: { txId: string }) {
-  const { walletClient: ethWalletClient } = useEthAccountConnection();
-  const { provider: fuelProvider } = useFuelAccountConnection();
-  const { assets } = useAssets();
-  const { href: explorerLink } = useExplorerLink({
-    network: 'fuel',
-    providerUrl: fuelProvider?.url || '',
-    id: txId,
-  });
-
-  const txFuelToEthState = store.useSelector(
-    Services.bridgeTxs,
-    bridgeTxsSelectors.txFuelToEth(txId),
-  );
-
-  const {
-    steps,
-    status,
-    fuelTxResult,
-    asset,
-    amount,
-    isLoadingTxResult,
-    estimatedTimeRemaining,
-  } = useMemo(() => {
-    if (!txFuelToEthState) return {};
-
-    const steps = txFuelToEthSelectors.steps(txFuelToEthState);
-    const status = txFuelToEthSelectors.status(txFuelToEthState);
-    const fuelTxResult = txFuelToEthSelectors.fuelTxResult(txFuelToEthState);
-    const assetAmount =
-      txFuelToEthSelectors.assetAmount(assets)(txFuelToEthState);
-    const isLoadingTxResult =
-      txFuelToEthSelectors.isLoadingTxResult(txFuelToEthState);
-    const estimatedTimeRemaining =
-      txFuelToEthSelectors.estimatedTimeRemaining(txFuelToEthState);
-
-    return {
-      steps,
-      status,
-      fuelTxResult,
-      asset: assetAmount?.asset,
-      amount: assetAmount?.amount,
-      isLoadingTxResult,
-      estimatedTimeRemaining,
-    };
-  }, [txFuelToEthState, assets]);
-
-  // TODO: remove this conversion when sdk already returns the date in unix format
+  // @TODO: remove this conversion when sdk already returns the date in unix format
   const date = useMemo(
     () =>
       fuelTxResult?.time
@@ -265,7 +208,8 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     steps,
     status,
     isLoadingTxResult,
-    estimatedTimeRemaining,
+    // @TODO: Get this date correctly
+    estimatedTimeRemaining: distanceToNow(new Date()),
     explorerLink,
   };
 }

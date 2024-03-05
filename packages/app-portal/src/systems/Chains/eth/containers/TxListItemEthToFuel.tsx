@@ -12,6 +12,7 @@ type TxListItemEthToFuelProps = {
 
 export const TxListItemEthToFuel = ({ txHash }: TxListItemEthToFuelProps) => {
   const classes = styles();
+
   const { asset: ethAsset } = useAsset();
   const { steps, date, handlers, asset, status, amount, isLoadingReceipts } =
     useTxEthToFuel({
@@ -21,19 +22,23 @@ export const TxListItemEthToFuel = ({ txHash }: TxListItemEthToFuelProps) => {
   const bridgeTxStatus = steps?.find(({ isSelected }) => !!isSelected);
 
   function getStatusComponent() {
-    if (status?.isReceiveDone)
+    if (status?.isReceiveDone) {
       return <Text className={classes.settledText()}>Settled</Text>;
-    if (bridgeTxStatus?.isLoading)
+    }
+
+    if (bridgeTxStatus?.isLoading) {
       return (
         <Flex align="center" gap="1">
           <Spinner size={14} />
           <Text className={classes.loadingText()}>Processing</Text>
         </Flex>
       );
+    }
 
     if (bridgeTxStatus?.name === 'Confirm transaction') {
       return <ActionRequiredBadge />;
     }
+
     return '';
   }
 

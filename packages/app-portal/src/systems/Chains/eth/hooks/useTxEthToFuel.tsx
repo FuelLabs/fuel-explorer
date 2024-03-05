@@ -1,62 +1,82 @@
 import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import { useMemo } from 'react';
-import { Services, store } from '~portal/store';
+import { store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
-import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
 
+import { useQuery } from '@tanstack/react-query';
 import { useAsset } from '../../../Assets/hooks/useAsset';
 import { useFuelAccountConnection } from '../../fuel';
-import type { TxEthToFuelMachineState } from '../machines';
+import { TxEthToFuelService } from '../services';
 import { isErc20Address } from '../utils';
+import { useEthAccountConnection } from './useEthAccountConnection';
 
-const bridgeTxsSelectors = {
-  txEthToFuel: (txId?: `0x${string}`) => (state: BridgeTxsMachineState) => {
-    if (!txId) return undefined;
+export function useTxEthToFuel({ id }: { id: string }) {
+  const { publicClient: ethPublicClient } = useEthAccountConnection();
+  const { provider: fuelProvider, wallet: fuelWallet } =
+    useFuelAccountConnection();
 
-    const machine = state.context?.ethToFuelTxRefs?.[txId]?.getSnapshot();
+  const txId = id.startsWith('0x') ? (id as `0x${string}`) : undefined;
+  const { href: explorerLink } = useExplorerLink({
+    network: 'ethereum',
+    id: txId,
+  });
 
-    return machine;
-  },
-};
+  // @TODO: Move it to "queries" folder
+  const { data: tx, isLoading: isLoadingReceipts } = useQuery({
+    queryKey: ['bridgeTxs', id],
+    queryFn: () => {
+      return TxEthToFuelService.getReceiptsInfo({
+        ethTxId: txId,
+        ethPublicClient,
+      });
+    },
+    enabled: !!txId && !!ethPublicClient,
+    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
+    cacheTime: 1000 * 60, // 1 minute
+    staleTime: Infinity,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
 
-const txEthToFuelSelectors = {
-  status: (state: TxEthToFuelMachineState) => {
-    const isSettlementLoading = state.hasTag('isSettlementLoading');
-    const isSettlementSelected = state.hasTag('isSettlementSelected');
-    const isSettlementDone = state.hasTag('isSettlementDone');
-    const isConfirmTransactionLoading = state.hasTag(
-      'isConfirmTransactionLoading',
-    );
-    const isConfirmTransactionSelected = state.hasTag(
-      'isConfirmTransactionSelected',
-    );
-    const isReceiveDone = state.hasTag('isReceiveDone');
-    const isWaitingFuelWalletApproval = state.hasTag(
-      'isWaitingFuelWalletApproval',
-    );
+  // @TODO: Add long pooling to it and stop when it gets settled
+  const { data: message } = useQuery({
+    queryKey: ['bridgeTxs', id, 'message'],
+    queryFn: () => {
+      return TxEthToFuelService.getFuelMessageStatus({
+        fuelProvider,
+        ethTxNonce: tx?.nonce,
+      });
+    },
+    enabled: !!fuelProvider && !!tx?.nonce,
+  });
 
+  const status = useMemo(() => {
+    const isMessageSpent = message?.state === 'SPENT';
+    const isUnspent = message?.state === 'UNSPENT';
+    const _isMessageUnspentEth = isUnspent && !tx?.erc20Token;
+    const _isMessageUnspentErc20 = isUnspent && !!tx?.erc20Token;
+
+    // @TODO: Detect these status correctly
     return {
-      isSettlementLoading,
-      isSettlementSelected,
-      isSettlementDone,
-      isConfirmTransactionLoading,
-      isConfirmTransactionSelected,
-      isReceiveDone,
-      isWaitingFuelWalletApproval,
+      isSettlementLoading: true,
+      isSettlementSelected: true,
+      isSettlementDone: false,
+      isConfirmTransactionLoading: false,
+      isConfirmTransactionSelected: false,
+      isReceiveDone: isMessageSpent,
+      isWaitingFuelWalletApproval: false,
     };
-  },
-  steps: (state: TxEthToFuelMachineState) => {
-    const status = txEthToFuelSelectors.status(state);
-    const { ethTxId, erc20Token } = state.context;
+  }, [tx, message]);
 
-    if (!ethTxId) return undefined;
-
-    const confirmTransactionText = isErc20Address(erc20Token?.address)
+  const steps = useMemo(() => {
+    const confirmTransactionText = isErc20Address(tx?.erc20Token?.address)
       ? 'Action'
       : 'Automatic';
 
-    const steps = [
+    return [
       {
         name: 'Submit to bridge',
         status: 'Done!',
@@ -64,7 +84,7 @@ const txEthToFuelSelectors = {
       },
       {
         name: 'Settlement',
-        // TODO: put correct time left '~XX minutes left', how?
+        // @TODO: put correct time left '~XX minutes left', how?
         status: status.isSettlementDone ? 'Done!' : 'Waiting',
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
@@ -85,75 +105,23 @@ const txEthToFuelSelectors = {
         isSelected: false,
       },
     ];
+  }, [status]);
 
-    return steps;
-  },
-  amount: (state: TxEthToFuelMachineState) => {
-    const { amount } = state.context;
+  const { amount, date, erc20Token, ethTxId } = useMemo(() => {
+    if (!tx) return {};
 
-    return amount;
-  },
-  blockDate: (state: TxEthToFuelMachineState) => {
-    const { blockDate } = state.context;
-
-    return blockDate;
-  },
-  erc20Token: (state: TxEthToFuelMachineState) => {
-    const { erc20Token } = state.context;
-    return erc20Token;
-  },
-  ethTxId: (state: TxEthToFuelMachineState) => {
-    const { ethTxId } = state.context;
-    return ethTxId;
-  },
-  isLoadingReceipts: (state: TxEthToFuelMachineState) => {
-    return state.matches('checkingSettlement.gettingReceiptsInfo');
-  },
-};
-
-export function useTxEthToFuel({ id }: { id: string }) {
-  const { wallet: fuelWallet } = useFuelAccountConnection();
-  const txId = id.startsWith('0x') ? (id as `0x${string}`) : undefined;
-  const { href: explorerLink } = useExplorerLink({
-    network: 'ethereum',
-    id: txId,
-  });
-
-  const txEthToFuelState = store.useSelector(
-    Services.bridgeTxs,
-    bridgeTxsSelectors.txEthToFuel(txId),
-  );
-
-  const {
-    steps,
-    status,
-    amount,
-    date,
-    erc20Token,
-    ethTxId,
-    isLoadingReceipts,
-  } = useMemo(() => {
-    if (!txEthToFuelState) return {};
-
-    const steps = txEthToFuelSelectors.steps(txEthToFuelState);
-    const status = txEthToFuelSelectors.status(txEthToFuelState);
-    const amount = txEthToFuelSelectors.amount(txEthToFuelState);
-    const date = txEthToFuelSelectors.blockDate(txEthToFuelState);
-    const erc20Token = txEthToFuelSelectors.erc20Token(txEthToFuelState);
-    const ethTxId = txEthToFuelSelectors.ethTxId(txEthToFuelState);
-    const isLoadingReceipts =
-      txEthToFuelSelectors.isLoadingReceipts(txEthToFuelState);
+    const amount = tx?.amount;
+    const date = tx?.blockDate;
+    const erc20Token = tx?.erc20Token;
+    const ethTxId = txId;
 
     return {
-      steps,
-      status,
       amount,
       date,
       erc20Token,
       ethTxId,
-      isLoadingReceipts,
     };
-  }, [txEthToFuelState]);
+  }, [tx, txId]);
 
   const { asset } = useAsset({
     ethTokenId: erc20Token?.address,
