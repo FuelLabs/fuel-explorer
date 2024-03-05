@@ -26,7 +26,7 @@ export class TransactionRepository {
     const { owner } = params;
     const paginator = new Paginator(TransactionsTable, params);
     await paginator.validateParams();
-    const paginateFn = like(TransactionsTable.accountsIndex, `%${owner}%`);
+    const paginateFn = like(TransactionsTable.accountIndex, `%${owner}%`);
     const results = await paginator.getPaginatedResult(paginateFn);
     return results.map((item) => TransactionEntity.create(item));
   }

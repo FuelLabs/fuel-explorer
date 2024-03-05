@@ -3,6 +3,83 @@ schema {
 }
 
 # --------------------------------
+# GroupedInputs
+# --------------------------------
+
+enum GroupedInputType {
+  InputCoin
+  InputContract
+  InputMessage
+}
+
+type GroupedInputCoin {
+  type: GroupedInputType
+  totalAmount: U64
+  owner: Address
+  assetId: AssetId
+  inputs: [Input]
+}
+
+type GroupedInputContract {
+  type: GroupedInputType
+  contractId: ContractId
+  inputs: [Input]
+}
+
+type GroupedInputMessage {
+  type: GroupedInputType
+  sender: Address
+  recipient: Address
+  data: HexString
+  inputs: [Input]
+}
+
+union GroupedInput =
+  | GroupedInputCoin
+  | GroupedInputContract
+  | GroupedInputMessage
+
+# --------------------------------
+# GroupedOutputs
+# --------------------------------
+
+enum GroupedOutputType {
+  CoinOutput
+  ContractOutput
+  MessageOutput
+  ChangeOutput
+  VariableOutput
+  ContractCreated
+}
+
+type GroupedOutputCoin {
+  type: GroupedOutputType
+  to: Address
+  assetId: AssetId
+  totalAmount: U64
+  outputs: [Output]
+}
+
+type GroupedOutputChanged {
+  type: GroupedOutputType
+  to: Address
+  assetId: AssetId
+  totalAmount: U64
+  outputs: [Output]
+}
+
+type GroupedOutputContractCreadted {
+  type: GroupedOutputType
+  contract: Contract
+  outputs: [Output]
+}
+
+union GroupedOutput =
+  | GroupedOutputCoin
+  | GroupedOutputChanged
+  | GroupedOutputContractCreadted
+
+# --------------------------------
 # Transaction
 # --------------------------------
 
@@ -13,14 +90,26 @@ type ParsedTime {
   rawUnix: String
 }
 
+enum TransactionStatusType {
+  Success
+  Failure
+  Submitted
+}
+
 type TransactionGasCosts {
   gasUsed: String
   fee: String
 }
 
 extend type Transaction {
-  time: ParsedTime
+  blockHeight: String
   gasCosts: TransactionGasCosts
+  groupedInputs: [GroupedInput]!
+  groupedOutputs: [GroupedOutput]!
+  hasPredicate: Boolean
+  statusType: TransactionStatusType
+  time: ParsedTime
+  title: String
 }
 
 # --------------------------------

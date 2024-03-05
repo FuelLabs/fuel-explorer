@@ -20,17 +20,16 @@ export class SyncTransactions {
   async execute({ block, blockId }: Input) {
     const repository = new TransactionRepository();
     const added = await repository.insertMany(block.transactions, blockId);
-    const inputs = added.map(this.addInputs);
-    const outputs = added.map(this.addOutputs);
-    const contract = added.map(this.addContract);
+    const inputs = added.map(this.syncInputs);
+    const outputs = added.map(this.syncOutputs);
+    const contract = added.map(this.syncContracts);
     await Promise.all([...inputs, ...outputs, ...contract]);
   }
 
-  private async addInputs(transaction: TransactionEntity) {
+  private async syncInputs(transaction: TransactionEntity) {
     const inputs = transaction.data.inputs;
     const transactionId = transaction._id.value();
     if (inputs?.length) {
-      console.log(`Adding inputs for transaction ${transaction.txHash}`);
       await this.step.sendEvent('sync:inputs', {
         name: InngestEvents.SYNC_INPUTS,
         data: { inputs, transactionId },
@@ -38,11 +37,10 @@ export class SyncTransactions {
     }
   }
 
-  private async addOutputs(transaction: TransactionEntity) {
+  private async syncOutputs(transaction: TransactionEntity) {
     const outputs = transaction.data.outputs;
     const transactionId = transaction._id.value();
     if (outputs?.length) {
-      console.log(`Adding outputs for transaction ${transaction.txHash}`);
       await this.step.sendEvent('sync:outputs', {
         name: InngestEvents.SYNC_OUTPUTS,
         data: { outputs, transactionId },
@@ -50,7 +48,7 @@ export class SyncTransactions {
     }
   }
 
-  private async addContract(transaction: TransactionEntity) {
+  private async syncContracts(transaction: TransactionEntity) {
     const contracts = transaction.getContractsCreated();
     const events = contracts.map<Events[InngestEvents.SYNC_CONTRACT]>(
       (contract) => ({
@@ -58,8 +56,6 @@ export class SyncTransactions {
         data: { contract },
       }),
     );
-
-    console.log(`Adding contract for transaction ${transaction.txHash}`);
     await this.step.sendEvent('sync:contracts', events);
   }
 }

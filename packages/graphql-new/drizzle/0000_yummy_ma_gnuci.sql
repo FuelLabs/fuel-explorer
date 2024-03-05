@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS "transactions" (
 	"id" varchar(66) NOT NULL,
 	"timestamp" timestamp,
 	"data" jsonb NOT NULL,
-	"accountsIndex" text DEFAULT '' NOT NULL,
+	"accountIndex" text DEFAULT '' NOT NULL,
 	"block_id" integer NOT NULL,
 	CONSTRAINT "transactions_id_unique" UNIQUE("id")
 );

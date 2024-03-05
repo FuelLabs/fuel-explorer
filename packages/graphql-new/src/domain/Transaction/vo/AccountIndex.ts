@@ -12,7 +12,7 @@ export class AccountIndex extends ValueObject<Props> {
   }
 
   static type() {
-    return text('accountsIndex').notNull().default('');
+    return text('accountIndex').notNull().default('');
   }
 
   static create(transaction: GQLTransaction) {

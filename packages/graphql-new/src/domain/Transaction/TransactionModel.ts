@@ -17,7 +17,7 @@ export const TransactionsTable = pgTable(
     txHash: HashID.type(),
     timestamp: TransactionTimestamp.type(),
     data: TransactionData.type(),
-    accountsIndex: AccountIndex.type(),
+    accountIndex: AccountIndex.type(),
     blockId: BlockRef.type(),
   },
   (table) => ({

@@ -12,31 +12,27 @@ import {
 } from '~/domain/Input/factories/InputMessageFactory';
 import { GQLInput } from '~/graphql/generated/sdk';
 
-interface Props {
-  value: (
-    | InputCoinGroupedEntry
-    | InputMessageGroupedEntry
-    | InputContractGroupedEntry
-  )[];
-}
+export type GroupedInputsValue = (
+  | InputCoinGroupedEntry
+  | InputMessageGroupedEntry
+  | InputContractGroupedEntry
+)[];
 
 export class GroupedInputsFactory {
-  private constructor(readonly props: Props) {}
+  private constructor(readonly value: GroupedInputsValue) {}
 
   static create(data?: GQLInput[] | null) {
     if (!data) {
-      return new GroupedInputsFactory({ value: [] });
+      return new GroupedInputsFactory([]);
     }
 
     const inputsCoin = InputCoinFactory.create(data).value;
     const inputsMessage = InputMessageFactory.create(data).value;
     const inputsContract = InputContractFactory.create(data).value;
-    return new GroupedInputsFactory({
-      value: [...inputsCoin, ...inputsMessage, ...inputsContract],
-    });
-  }
-
-  value() {
-    return this.props.value;
+    return new GroupedInputsFactory([
+      ...inputsCoin,
+      ...inputsMessage,
+      ...inputsContract,
+    ]);
   }
 }

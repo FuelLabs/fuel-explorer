@@ -27,3 +27,5 @@ export abstract class ValueObject<T extends ValueObjectProps> {
     return shallowEqual(this.props, vo.props);
   }
 }
+
+export type VOData<T> = T extends ValueObject<infer U> ? U['value'] : never;

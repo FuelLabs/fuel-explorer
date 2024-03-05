@@ -16,10 +16,10 @@ export class SyncInputs {
   async execute({ inputs, transactionId }: Props) {
     const repository = new InputRepository();
     const created = await repository.insertMany(inputs, transactionId);
-    await this.addPredicates(created);
+    await this.syncPredicates(created);
   }
 
-  private async addPredicates(inputs: InputEntity[]) {
+  private async syncPredicates(inputs: InputEntity[]) {
     const predicates = inputs
       .map((input) => input.predicateData)
       .filter(Boolean);

@@ -16,7 +16,7 @@ export class SyncMissingBlocks {
     }
 
     const page = Math.ceil(Number(id) / 1000);
-    await this.step.sendEvent('sync:chain', {
+    await this.step.sendEvent('sync:blocks', {
       name: InngestEvents.SYNC_BLOCKS,
       data: { page, perPage: 1000 },
     });

@@ -59,4 +59,8 @@ export class InputEntity extends Entity<
   get predicateData() {
     return this.props.predicateData.value();
   }
+
+  get hasPredicate() {
+    return Boolean(this.predicateData);
+  }
 }

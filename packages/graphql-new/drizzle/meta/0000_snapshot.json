@@ -271,8 +271,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "accountsIndex": {
-          "name": "accountsIndex",
+        "accountIndex": {
+          "name": "accountIndex",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

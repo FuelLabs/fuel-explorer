@@ -1,8 +1,6 @@
 import { GasCosts } from '~/application/vo/GasCosts';
 import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
-import { GroupedInputsFactory } from '~/domain/Input/factories/GroupedInputsFactory';
-import { GroupedOutputsFactory } from '~/domain/Output/factories/GroupedOutputsFactory';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
 import {
@@ -33,8 +31,6 @@ class TransactionResolver extends ResolverAdapter<Source> {
       },
       Transaction: {
         gasCosts: this.gasCosts.bind(this),
-        groupedInputs: this.groupedInputs.bind(this),
-        groupedOutputs: this.groupedOutputs.bind(this),
       },
     });
   }
@@ -77,14 +73,6 @@ class TransactionResolver extends ResolverAdapter<Source> {
   async gasCosts(source: Source, _: unknown, ctx: GraphQLContext) {
     if (!ctx.chain) throw new Error('Chain not found');
     return GasCosts.create(source, ctx.chain?.data).toGQL();
-  }
-
-  async groupedInputs(source: Source) {
-    return GroupedInputsFactory.create(source.inputs).value();
-  }
-
-  async groupedOutputs(source: Source) {
-    return GroupedOutputsFactory.create(source.outputs).value();
   }
 }
 

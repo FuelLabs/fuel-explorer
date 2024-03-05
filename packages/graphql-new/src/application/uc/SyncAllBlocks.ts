@@ -15,8 +15,15 @@ export class SyncAllBlocks {
     const repo = new BlockRepository();
     const { blocks, hasNext } = await repo.blocksFromNode(page, perPage);
     const created = await repo.insertMany(blocks);
-    await this.addTransactions(created);
+    await this.syncTransactions(created);
+    await this.syncNextOrDone(hasNext, page, perPage);
+  }
 
+  private async syncNextOrDone(
+    hasNext: boolean,
+    page: number,
+    perPage: number,
+  ) {
     if (hasNext) {
       await this.step.sendEvent('sync:blocks', {
         name: InngestEvents.SYNC_BLOCKS,
@@ -31,7 +38,7 @@ export class SyncAllBlocks {
     }
   }
 
-  private async addTransactions(blocks: (BlockEntity | null)[]) {
+  private async syncTransactions(blocks: (BlockEntity | null)[]) {
     const filtered = blocks.filter(Boolean) as BlockEntity[];
     const events = filtered.map<Events[InngestEvents.SYNC_TRANSACTIONS]>(
       (block) => ({
