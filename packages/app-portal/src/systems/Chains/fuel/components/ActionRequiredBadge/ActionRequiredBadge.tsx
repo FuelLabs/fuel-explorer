@@ -13,6 +13,7 @@ export const ActionRequiredBadge = () => {
 
 export const styles = tv({
   slots: {
-    actionBadge: 'text-[13px] font-medium leading-1 normal-case cursor-pointer',
+    actionBadge:
+      'text-[11px] px-2 font-medium leading-1 normal-case cursor-pointer',
   },
 });
