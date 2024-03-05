@@ -24,15 +24,17 @@ export const useBridgeTxs = () => {
   const { data: bridgeTxs, isLoading: isLoadingState } = useQuery({
     queryKey: ['bridgeTxs'],
     queryFn: async () => {
-      const data = await BridgeService.fetchTxs({
+      return await BridgeService.fetchTxs({
         fuelAddress,
         fuelProvider,
         ethPublicClient,
       });
-
-      return data;
     },
-    enabled: !!fuelAddress && !!fuelProvider && !!ethPublicClient,
+    enabled:
+      !!fuelAddress &&
+      !!fuelProvider &&
+      !!ethPublicClient &&
+      !isLoadingConnection,
     // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
     cacheTime: 1000 * 60, // 1 minute
     staleTime: Infinity,
