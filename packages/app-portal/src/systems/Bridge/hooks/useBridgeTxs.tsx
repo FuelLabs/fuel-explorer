@@ -32,7 +32,6 @@ export const useBridgeTxs = () => {
 
       return data;
     },
-    select: (data) => data?.slice(0, amountTxsToShow),
     enabled: !!fuelAddress && !!fuelProvider && !!ethPublicClient,
     // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
     cacheTime: 1000 * 60, // 1 minute
@@ -45,12 +44,13 @@ export const useBridgeTxs = () => {
 
   const isLoading = isLoadingState || isLoadingConnection;
   const length = bridgeTxs?.length ?? 0;
+  const paginatedBridgeTxs = bridgeTxs?.slice(0, amountTxsToShow);
   const hasMorePages = (bridgeTxs?.length || 0) > amountTxsToShow;
 
   return {
     isLoading,
     hasMorePages,
-    bridgeTxs,
+    bridgeTxs: paginatedBridgeTxs,
     shouldShowNotConnected: !isLoading && !isConnected,
     shouldShowEmpty: !isLoading && isConnected && !length,
     handlers: {
