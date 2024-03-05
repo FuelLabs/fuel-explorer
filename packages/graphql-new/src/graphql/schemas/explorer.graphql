@@ -3,6 +3,21 @@ schema {
 }
 
 # --------------------------------
+# Balances
+# --------------------------------
+
+type UtxoItem {
+  amount: U64!
+  blockCreated: U32
+  txCreatedIdx: U64
+  utxoId: UtxoId!
+}
+
+type Balance {
+  utxos: [UtxoItem]
+}
+
+# --------------------------------
 # Blocks
 # --------------------------------
 
@@ -23,25 +38,25 @@ enum GroupedInputType {
 }
 
 type GroupedInputCoin {
-  type: GroupedInputType
-  totalAmount: U64
-  owner: Address
   assetId: AssetId
   inputs: [Input]
+  owner: Address
+  totalAmount: U64
+  type: GroupedInputType
 }
 
 type GroupedInputContract {
-  type: GroupedInputType
   contractId: ContractId
   inputs: [Input]
+  type: GroupedInputType
 }
 
 type GroupedInputMessage {
-  type: GroupedInputType
-  sender: Address
-  recipient: Address
   data: HexString
   inputs: [Input]
+  recipient: Address
+  sender: Address
+  type: GroupedInputType
 }
 
 union GroupedInput =
@@ -54,34 +69,31 @@ union GroupedInput =
 # --------------------------------
 
 enum GroupedOutputType {
-  CoinOutput
-  ContractOutput
-  MessageOutput
   ChangeOutput
-  VariableOutput
+  CoinOutput
   ContractCreated
 }
 
 type GroupedOutputCoin {
-  type: GroupedOutputType
-  to: Address
   assetId: AssetId
-  totalAmount: U64
   outputs: [Output]
+  to: Address
+  totalAmount: U64
+  type: GroupedOutputType
 }
 
 type GroupedOutputChanged {
-  type: GroupedOutputType
-  to: Address
   assetId: AssetId
-  totalAmount: U64
   outputs: [Output]
+  to: Address
+  totalAmount: U64
+  type: GroupedOutputType
 }
 
 type GroupedOutputContractCreadted {
-  type: GroupedOutputType
   contract: Contract
   outputs: [Output]
+  type: GroupedOutputType
 }
 
 union GroupedOutput =
@@ -164,8 +176,8 @@ type SearchTransaction {
 
 type SearchResult {
   account: SearchAccount
-  contract: SearchContract
   block: SearchBlock
+  contract: SearchContract
   transaction: SearchTransaction
 }
 

@@ -3,6 +3,7 @@ import {
   GQLBalance,
   GQLBalanceQueryVariables,
   GQLBalancesQueryVariables,
+  GQLCoinsQueryVariables,
 } from '~/graphql/generated/sdk';
 import { GraphQLSDK } from '../GraphQLSDK';
 
@@ -10,6 +11,7 @@ type Source = GQLBalance;
 type Params = {
   balance: GQLBalanceQueryVariables;
   balances: GQLBalancesQueryVariables;
+  utxos: GQLCoinsQueryVariables['filter'];
 };
 
 class BalanceResolver extends ResolverAdapter<Source> {
@@ -19,6 +21,9 @@ class BalanceResolver extends ResolverAdapter<Source> {
       Query: {
         balance: this.balance.bind(this),
         balances: this.balances.bind(this),
+      },
+      Balance: {
+        utxos: this.utoxs.bind(this),
       },
     });
   }
@@ -37,6 +42,12 @@ class BalanceResolver extends ResolverAdapter<Source> {
   async balances(_: Source, params: Params['balances']) {
     const res = await this.client.sdk.balances(params);
     return res.data.balances;
+  }
+
+  // TODO: need to check how to implement this using Postgres
+  async utoxs(_: Source, params: Params['utxos']) {
+    const res = await this.client.sdk.coins({ first: 100, filter: params });
+    return res.data.coins.nodes;
   }
 }
 
