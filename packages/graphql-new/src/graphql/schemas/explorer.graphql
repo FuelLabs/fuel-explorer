@@ -3,6 +3,16 @@ schema {
 }
 
 # --------------------------------
+# Blocks
+# --------------------------------
+
+type Block {
+  time: ParsedTime
+  totalGasUsed: U64
+  producer: Address
+}
+
+# --------------------------------
 # GroupedInputs
 # --------------------------------
 
@@ -97,11 +107,11 @@ enum TransactionStatusType {
 }
 
 type TransactionGasCosts {
-  gasUsed: String
-  fee: String
+  gasUsed: U64
+  fee: U64
 }
 
-extend type Transaction {
+type Transaction {
   blockHeight: String
   gasCosts: TransactionGasCosts
   groupedInputs: [GroupedInput]!

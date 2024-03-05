@@ -1,4 +1,4 @@
-import { HashID } from '~/application/vo';
+import { Hash256 } from '~/application/vo';
 import { ResolverAdapter } from '~/core/Resolver';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
@@ -27,7 +27,7 @@ class SearchResolver extends ResolverAdapter<null> {
   }
 
   async search(_: null, params: Params['search']) {
-    const address = HashID.create(params.query).value();
+    const address = Hash256.create(params.query).value();
     const block = await this.blockRepository.findByHash(address);
     if (block) {
       return {

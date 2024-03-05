@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
-import { HashID } from '~/application/vo';
+import { Hash256 } from '~/application/vo';
 import { BlocksTable } from '~/domain/Block/BlockModel';
 import { BlockRef } from '~/domain/Block/vo/BlockRef';
 import { InputsTable } from '~/domain/Input/InputModel';
@@ -14,7 +14,7 @@ export const TransactionsTable = pgTable(
   'transactions',
   {
     _id: TransactionModelID.type(),
-    txHash: HashID.type(),
+    txHash: Hash256.type('tx_hash'),
     timestamp: TransactionTimestamp.type(),
     data: TransactionData.type(),
     accountIndex: AccountIndex.type(),

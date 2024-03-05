@@ -1,17 +1,65 @@
-import { HashID, Timestamp } from '~/application/vo';
+import { Hash256, Timestamp } from '~/application/vo';
+import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
+import { VOData } from '~/core/ValueObject';
 import { GQLBlock } from '~/graphql/generated/sdk';
 import { BlockItem } from './BlockModel';
 import { BlockData } from './vo/BlockData';
+import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
+import { BlockProducer } from './vo/BlockProducer';
 
-type BlockProps = {
-  blockHash: HashID;
+type BlockInputProps = {
+  blockHash: Hash256;
   data: BlockData;
-  timestamp: Timestamp;
+  producer: BlockProducer;
+  time: ParsedTime;
+  totalGasUsed: BlockGasUsed;
 };
 
-export class BlockEntity extends Entity<BlockProps, BlockModelID> {
+type BlockGQLOutput = GQLBlock & {
+  producer: string | null;
+  time: VOData<ParsedTime>;
+  totalGasUsed: VOData<BlockGasUsed>;
+};
+
+export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
+  static create(block: BlockItem) {
+    const item = block.data;
+    if (!item) {
+      throw new Error('item is required');
+    }
+
+    const id = BlockModelID.create(item);
+    const blockHash = Hash256.create(item.id);
+    const data = BlockData.create(item);
+    const timestamp = Timestamp.create(item.header.time);
+    const time = ParsedTime.create(item.header.time);
+    const totalGasUsed = BlockGasUsed.create(item);
+    const producer = BlockProducer.create(item);
+    const props = {
+      blockHash,
+      data,
+      totalGasUsed,
+      time,
+      timestamp,
+      producer,
+    };
+
+    return new BlockEntity(props, id);
+  }
+
+  static toDBItem(block: GQLBlock): BlockItem {
+    return {
+      _id: BlockModelID.create(block).value(),
+      blockHash: Hash256.create(block.id).value(),
+      data: BlockData.create(block).value(),
+      producer: BlockProducer.create(block).value()?.toB256() ?? null,
+      timestamp: Timestamp.create(block.header.time).value(),
+      totalGasUsed: BlockGasUsed.create(block).value(),
+    };
+  }
+
   get blockHash() {
     return this.props.blockHash.value();
   }
@@ -20,35 +68,25 @@ export class BlockEntity extends Entity<BlockProps, BlockModelID> {
     return this.props.data.value();
   }
 
-  get timestamp() {
-    return this.props.timestamp.value();
+  get producer() {
+    return this.props.producer.value()?.toB256() ?? null;
   }
 
-  static create(block: BlockItem) {
-    if (!block?.data) {
-      throw new Error('Block data is required');
-    }
-
-    const id = BlockModelID.create(block.data);
-    const blockHash = HashID.create(block.data.id);
-    const data = BlockData.create(block.data);
-    const timestamp = Timestamp.create(block.data.header.time);
-    const props = { blockHash, data, timestamp };
-    return new BlockEntity(props, id);
+  get time() {
+    return this.props.time.value();
   }
 
-  static toDBItem(block: GQLBlock): BlockItem {
-    return {
-      _id: BlockModelID.create(block).value(),
-      blockHash: HashID.create(block.id).value(),
-      timestamp: Timestamp.create(block.header.time).value(),
-      data: block,
-    };
+  get totalGasUsed() {
+    return this.props.totalGasUsed.value();
   }
 
-  toGQLNode(): GQLBlock & { timestamp: Date } {
-    const timestamp = this.timestamp;
+  toGQLNode(): BlockGQLOutput {
     const data = this.data;
-    return { timestamp, ...data };
+    return {
+      ...data,
+      producer: this.producer,
+      time: this.time,
+      totalGasUsed: this.totalGasUsed,
+    };
   }
 }

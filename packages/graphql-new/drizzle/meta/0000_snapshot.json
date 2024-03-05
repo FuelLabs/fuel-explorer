@@ -1,5 +1,5 @@
 {
-  "id": "e3b1474b-54b6-4adc-919f-acceb1dc52db",
+  "id": "cfd25ab4-8b2d-4817-8fc6-9cbf1ec2c355",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -31,6 +31,18 @@
           "type": "jsonb",
           "primaryKey": false,
           "notNull": true
+        },
+        "gas_used": {
+          "name": "gas_used",
+          "type": "varchar(66)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "producer": {
+          "name": "producer",
+          "type": "varchar(66)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -70,8 +82,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "id": {
-          "name": "id",
+        "contract_hash": {
+          "name": "contract_hash",
           "type": "varchar(66)",
           "primaryKey": false,
           "notNull": true
@@ -89,19 +101,19 @@
           "columns": ["_id"],
           "isUnique": false
         },
-        "contracts_id_index": {
-          "name": "contracts_id_index",
-          "columns": ["id"],
+        "contracts_contract_hash_index": {
+          "name": "contracts_contract_hash_index",
+          "columns": ["contract_hash"],
           "isUnique": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "contracts_id_unique": {
-          "name": "contracts_id_unique",
+        "contracts_contract_hash_unique": {
+          "name": "contracts_contract_hash_unique",
           "nullsNotDistinct": false,
-          "columns": ["id"]
+          "columns": ["contract_hash"]
         }
       }
     },
@@ -209,8 +221,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "id": {
-          "name": "id",
+        "address": {
+          "name": "address",
           "type": "varchar(66)",
           "primaryKey": false,
           "notNull": true
@@ -222,9 +234,9 @@
           "columns": ["_id"],
           "isUnique": false
         },
-        "predicates_id_index": {
-          "name": "predicates_id_index",
-          "columns": ["id"],
+        "predicates_address_index": {
+          "name": "predicates_address_index",
+          "columns": ["address"],
           "isUnique": false
         }
       },
@@ -236,10 +248,10 @@
           "nullsNotDistinct": false,
           "columns": ["bytecode"]
         },
-        "predicates_id_unique": {
-          "name": "predicates_id_unique",
+        "predicates_address_unique": {
+          "name": "predicates_address_unique",
           "nullsNotDistinct": false,
-          "columns": ["id"]
+          "columns": ["address"]
         }
       }
     },
@@ -253,8 +265,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "id": {
-          "name": "id",
+        "tx_hash": {
+          "name": "tx_hash",
           "type": "varchar(66)",
           "primaryKey": false,
           "notNull": true
@@ -310,10 +322,10 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "transactions_id_unique": {
-          "name": "transactions_id_unique",
+        "transactions_tx_hash_unique": {
+          "name": "transactions_tx_hash_unique",
           "nullsNotDistinct": false,
-          "columns": ["id"]
+          "columns": ["tx_hash"]
         }
       }
     }

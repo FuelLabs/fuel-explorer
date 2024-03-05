@@ -30,8 +30,9 @@ export class SyncInputs {
         data: predicate,
       }),
     );
-
-    await this.step.sendEvent('sync:predicates', events);
+    if (events.length) {
+      await this.step.sendEvent('sync:predicates', events);
+    }
   }
 }
 

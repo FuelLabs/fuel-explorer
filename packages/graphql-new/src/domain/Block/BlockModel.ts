@@ -1,17 +1,21 @@
 import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
-import { HashID, Timestamp } from '~/application/vo';
+import { Hash256, Timestamp } from '~/application/vo';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
 import { BlockData } from './vo/BlockData';
+import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
+import { BlockProducer } from './vo/BlockProducer';
 
 export const BlocksTable = pgTable(
   'blocks',
   {
     _id: BlockModelID.type(),
-    blockHash: HashID.type(),
+    blockHash: Hash256.type('id'),
     timestamp: Timestamp.type(),
     data: BlockData.type(),
+    totalGasUsed: BlockGasUsed.type(),
+    producer: BlockProducer.type(),
   },
   (table) => ({
     blockTimestampIdx: index().on(table.timestamp),

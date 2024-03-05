@@ -1,4 +1,4 @@
-import { HashID, SerialID } from '~/application/vo';
+import { Hash256, SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 import {
   GQLContract,
@@ -10,7 +10,7 @@ import { ContractData } from './vo/ContractData';
 
 type ContractProps = {
   data: ContractData;
-  contractHash: HashID;
+  contractHash: Hash256;
 };
 
 export class ContractEntity extends Entity<ContractProps, SerialID> {
@@ -21,7 +21,7 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
 
     const id = SerialID.create(contract._id);
     const data = ContractData.create(contract.data);
-    const contractHash = HashID.create(contract.contractHash);
+    const contractHash = Hash256.create(contract.contractHash);
     return new ContractEntity({ data, contractHash }, id);
   }
 

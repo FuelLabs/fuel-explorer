@@ -20,9 +20,9 @@ export class SyncTransactions {
   async execute({ block, blockId }: Input) {
     const repository = new TransactionRepository();
     const added = await repository.insertMany(block.transactions, blockId);
-    const inputs = added.map(this.syncInputs);
-    const outputs = added.map(this.syncOutputs);
-    const contract = added.map(this.syncContracts);
+    const inputs = added.map(this.syncInputs.bind(this));
+    const outputs = added.map(this.syncOutputs.bind(this));
+    const contract = added.map(this.syncContracts.bind(this));
     await Promise.all([...inputs, ...outputs, ...contract]);
   }
 
@@ -56,7 +56,9 @@ export class SyncTransactions {
         data: { contract },
       }),
     );
-    await this.step.sendEvent('sync:contracts', events);
+    if (events.length) {
+      await this.step.sendEvent('sync:contracts', events);
+    }
   }
 }
 

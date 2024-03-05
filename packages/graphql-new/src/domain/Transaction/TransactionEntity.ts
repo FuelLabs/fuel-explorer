@@ -1,4 +1,4 @@
-import { HashID } from '~/application/vo';
+import { Hash256 } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
 import { VOData } from '~/core/ValueObject';
@@ -24,7 +24,7 @@ type TransactionInputProps = {
   status: TransactionStatus;
   time: ParsedTime;
   timestamp: TransactionTimestamp;
-  txHash: HashID;
+  txHash: Hash256;
 };
 
 export type TransactionGQLOutput = GQLTransaction & {
@@ -52,7 +52,7 @@ export class TransactionEntity extends Entity<
     const status = TransactionStatus.create(item);
     const time = ParsedTime.create(timeFromStatus(transaction));
     const timestamp = TransactionTimestamp.create(item);
-    const txHash = HashID.create(item.id);
+    const txHash = Hash256.create(item.id);
     const props = {
       blockId: blockRef,
       status,
@@ -74,7 +74,7 @@ export class TransactionEntity extends Entity<
   ): TransactionItem {
     return {
       _id: TransactionModelID.create(transaction).value(),
-      txHash: HashID.create(transaction.id).value(),
+      txHash: Hash256.create(transaction.id).value(),
       data: TransactionData.create(transaction).value(),
       timestamp: TransactionTimestamp.create(transaction).value(),
       accountIndex: AccountIndex.create(transaction).value(),

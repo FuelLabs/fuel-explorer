@@ -1,5 +1,5 @@
 import { index, pgTable } from 'drizzle-orm/pg-core';
-import { HashID } from '~/application/vo';
+import { Hash256 } from '~/application/vo';
 import { SerialID } from '~/application/vo/SerialID';
 import { ContractData } from './vo/ContractData';
 
@@ -7,7 +7,7 @@ export const ContractsTable = pgTable(
   'contracts',
   {
     _id: SerialID.type(),
-    contractHash: HashID.type(),
+    contractHash: Hash256.type('contract_hash'),
     data: ContractData.type(),
   },
   (table) => ({

@@ -38,11 +38,11 @@ class BlockResolver extends ResolverAdapter<Source> {
 
     if (id) {
       const item = await this.blockRepository.findByHash(id);
-      return item?.toGQLNode();
+      return item?.toGQLNode() ?? null;
     }
 
     const item = await this.blockRepository.findByHeight(Number(height));
-    return item?.toGQLNode();
+    return item?.toGQLNode() ?? null;
   }
 
   async blocks(_: Source, params: Params['blocks']) {
