@@ -24,7 +24,8 @@ export type BridgeTxsMachineContext = {
   fuelToEthTxRefs: {
     [key: string]: ActorRefFrom<typeof txFuelToEthMachine>;
   };
-  bridgeTxs?: BridgeTx[] | undefined;
+  allTxs?: BridgeTx[];
+  paginatedTxs?: BridgeTx[];
   fuelProvider?: FuelProvider;
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
@@ -76,7 +77,11 @@ export const bridgeTxsMachine = createMachine(
             target: 'fetching',
           },
           FETCH_NEXT_PAGE: {
-            actions: ['assignFetchNextPage', 'assignTxMachines'],
+            actions: [
+              'assignFetchNextPage',
+              'assignPaginatedTxs',
+              'assignTxMachines',
+            ],
           },
           ADD_TX_ETH_TO_FUEL: {
             actions: ['assignTxEthToFuel'],
@@ -103,7 +108,11 @@ export const bridgeTxsMachine = createMachine(
               target: 'idle',
             },
             {
-              actions: ['assignBridgeTxs', 'assignTxMachines'],
+              actions: [
+                'assignAllTxs',
+                'assignPaginatedTxs',
+                'assignTxMachines',
+              ],
               target: 'idle',
             },
           ],
@@ -124,9 +133,8 @@ export const bridgeTxsMachine = createMachine(
       })),
       assignTxMachines: assign({
         ethToFuelTxRefs: (ctx) => {
-          const paginated = ctx.bridgeTxs?.slice(0, ctx.amountTxsToShow);
-          const ethToFuelBridgeTxs = paginated?.filter(({ fromNetwork }) =>
-            isEthChain(fromNetwork),
+          const ethToFuelBridgeTxs = ctx.paginatedTxs?.filter(
+            ({ fromNetwork }) => isEthChain(fromNetwork),
           );
 
           const newRefs = ethToFuelBridgeTxs?.reduce((prev, tx) => {
@@ -153,9 +161,8 @@ export const bridgeTxsMachine = createMachine(
           };
         },
         fuelToEthTxRefs: (ctx) => {
-          const paginated = ctx.bridgeTxs?.slice(0, ctx.amountTxsToShow);
-          const fuelToEthBridgeTxs = paginated?.filter(({ fromNetwork }) =>
-            isFuelChain(fromNetwork),
+          const fuelToEthBridgeTxs = ctx.paginatedTxs?.filter(
+            ({ fromNetwork }) => isFuelChain(fromNetwork),
           );
 
           const newRefs = fuelToEthBridgeTxs?.reduce((prev, tx) => {
@@ -232,8 +239,11 @@ export const bridgeTxsMachine = createMachine(
           };
         },
       }),
-      assignBridgeTxs: assign((_, ev) => ({
-        bridgeTxs: ev.data,
+      assignAllTxs: assign((_, ev) => ({
+        allTxs: ev.data,
+      })),
+      assignPaginatedTxs: assign((ctx) => ({
+        paginatedTxs: ctx.allTxs?.slice(0, ctx.amountTxsToShow),
       })),
     },
     services: {
