@@ -2,7 +2,7 @@ import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
 import type { FuelWalletLocked } from '@fuel-wallet/sdk';
 import type { Fuel } from '@fuels/assets';
 import { addSeconds } from 'date-fns';
-import type { BN, MessageProof } from 'fuels';
+import type { BN, MessageProof, TransactionResult } from 'fuels';
 import {
   Address as FuelAddress,
   Contract,
@@ -72,6 +72,12 @@ export type TxFuelToEthInputs = {
     fuelAddress: FuelAddress;
     fuelProvider: FuelProvider;
   };
+};
+
+export type TxFuelToEthData = {
+  txResult?: TransactionResult<void>;
+  messageId?: string;
+  nonce?: string;
 };
 
 export class TxFuelToEthService {
@@ -168,7 +174,9 @@ export class TxFuelToEthService {
     }
   }
 
-  static async waitTxResult(input: TxFuelToEthInputs['waitTxResult']) {
+  static async waitTxResult(
+    input: TxFuelToEthInputs['waitTxResult'],
+  ): Promise<TxFuelToEthData> {
     if (!input?.fuelProvider) {
       throw new Error('Need to connect Fuel Provider');
     }
