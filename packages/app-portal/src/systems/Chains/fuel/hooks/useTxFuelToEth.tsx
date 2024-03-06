@@ -227,9 +227,10 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
 
   // @TODO: Move it to "mutations" folder
   // @TODO: Replace it from state machine call
-  const { mutate: relayMessageFromFuelBlock } = useMutation({
-    mutationFn: TxFuelToEthService.relayMessageFromFuelBlock,
-  });
+  const { mutate: relayMessageFromFuelBlock, isLoading: isRelaying } =
+    useMutation({
+      mutationFn: TxFuelToEthService.relayMessageFromFuelBlock,
+    });
 
   const fuelTxResult = tx?.txResult;
 
@@ -253,32 +254,37 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
   ]);
 
   const status = useMemo(() => {
-    // @TODO: Detect these status correctly
-    /**
-     * 1. isSubmitToBridgeLoading, isSubmitToBridgeSelected
-     * 1. waitingBlockCommit
-     * 2. checkingMessageProof
-     * 3. waitingBlockFinalization
-     * 4. checkingRelayed
-     */
+    const isSubmitToBridgeDone = true;
+    const isSettlementDone = blockFinalization?.isFinalized;
+    const isConfirmTransactionDone =
+      messageRelayed && !!messageRelayed.transactionHash;
+    const isWaitingEthWalletApproval =
+      messageRelayed && !messageRelayed.transactionHash;
+    const isReceiveDone = !!waitingReceive;
 
     return {
-      isSubmitToBridgeLoading: true,
-      isSubmitToBridgeSelected: true,
-      isSubmitToBridgeDone: false,
-      isSettlementLoading: false,
-      isSettlementSelected: false,
-      isSettlementDone: false,
-      isConfirmTransactionSelected: false,
-      isConfirmTransactionLoading: false,
-      isConfirmTransactionDone: false,
-      isWaitingEthWalletApproval:
-        messageRelayed && !messageRelayed.transactionHash,
+      isSubmitToBridgeLoading: !isSubmitToBridgeDone,
+      isSubmitToBridgeSelected: !isSubmitToBridgeDone,
+      isSubmitToBridgeDone,
+      isSettlementLoading: !isSettlementDone,
+      isSettlementSelected: !isSettlementDone,
+      isSettlementDone,
+      isConfirmTransactionSelected: !isConfirmTransactionDone,
+      isConfirmTransactionLoading: isRelaying,
+      isConfirmTransactionDone,
+      isWaitingEthWalletApproval,
       isReceiveLoading: false,
-      isReceiveSelected: false,
-      isReceiveDone: false,
+      isReceiveSelected: isConfirmTransactionDone,
+      isReceiveDone,
     };
-  }, [tx, blockCommit, messageProof, blockFinalization, messageRelayed]);
+  }, [
+    tx,
+    blockCommit,
+    messageProof,
+    blockFinalization,
+    messageRelayed,
+    isRelaying,
+  ]);
 
   const estimatedTimeRemaining = useMemo<string | null>(() => {
     if (!blockCommit?.estimatedFinishDate) return null;
@@ -400,14 +406,25 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
   );
 
   function relayToEth() {
-    if (!ethWalletClient) return;
+    if (!ethWalletClient || !messageProof) return;
 
-    store.relayTxFuelToEth({
-      input: {
+    relayMessageFromFuelBlock(
+      {
         ethWalletClient,
+        messageProof: messageProof,
       },
-      fuelTxId: txId,
-    });
+      {
+        onSuccess: (data) => {
+          // @TODO: Invalidate bridge
+          console.log('onSuccess', 'relayMessageFromFuelBlock');
+          console.log(data);
+        },
+        onError: (error) => {
+          console.log('onError', 'relayMessageFromFuelBlock');
+          console.log(error);
+        },
+      },
+    );
   }
 
   return {
