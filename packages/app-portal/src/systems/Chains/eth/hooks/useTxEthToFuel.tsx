@@ -1,15 +1,33 @@
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import { useMemo } from 'react';
 import { store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
 
 import { useQuery } from '@tanstack/react-query';
+import { MessageStatus } from 'fuels';
 import { useAsset } from '../../../Assets/hooks/useAsset';
 import { useFuelAccountConnection } from '../../fuel';
-import { TxEthToFuelService } from '../services';
+import { GetReceiptsInfoReturn, TxEthToFuelService } from '../services';
 import { isErc20Address } from '../utils';
 import { useEthAccountConnection } from './useEthAccountConnection';
+
+const LONG_POOLING_INTERVAL = 10000; // in ms
+
+const refetchIntervalTx = (data?: GetReceiptsInfoReturn) => {
+  if (data?.nonce) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
+const refetchIntervalMsg = (data?: MessageStatus) => {
+  if (data && ['SPENT', 'UNSPENT'].includes(data.state)) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
 
 export function useTxEthToFuel({ id }: { id: string }) {
   const { publicClient: ethPublicClient } = useEthAccountConnection();
@@ -32,6 +50,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
       });
     },
     enabled: !!txId && !!ethPublicClient,
+    refetchInterval: refetchIntervalTx,
     // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
     cacheTime: 1000 * 60, // 1 minute
     staleTime: Infinity,
@@ -41,7 +60,6 @@ export function useTxEthToFuel({ id }: { id: string }) {
     retry: false,
   });
 
-  // @TODO: Add long pooling to it and stop when it gets settled
   const { data: message } = useQuery({
     queryKey: ['bridgeTxs', id, 'message'],
     queryFn: () => {
@@ -50,24 +68,33 @@ export function useTxEthToFuel({ id }: { id: string }) {
         ethTxNonce: tx?.nonce,
       });
     },
+    refetchInterval: refetchIntervalMsg,
     enabled: !!fuelProvider && !!tx?.nonce,
   });
 
   const status = useMemo(() => {
-    const isMessageSpent = message?.state === 'SPENT';
     const isUnspent = message?.state === 'UNSPENT';
-    const _isMessageUnspentEth = isUnspent && !tx?.erc20Token;
-    const _isMessageUnspentErc20 = isUnspent && !!tx?.erc20Token;
 
-    // @TODO: Detect these status correctly
+    // if message is spent, assume it's done as message has arrived and already spent
+    const isSpent = message?.state === 'SPENT';
+
+    // if message is unspent for a eth deposit, it's done as message has arrived and ready to use
+    const isUnspentEth = isUnspent && !tx?.erc20Token;
+
+    // if message is unspent for a erc20 deposit, it means the predicate has the message, user needs to approve it
+    const isUnspentErc20 = isUnspent && !!tx?.erc20Token;
+
+    const isReceiveDone = isSpent || isUnspentEth;
+    const isWaitingApproval = !isReceiveDone && isUnspentErc20;
+
     return {
-      isSettlementLoading: true,
-      isSettlementSelected: true,
-      isSettlementDone: false,
-      isConfirmTransactionLoading: false,
-      isConfirmTransactionSelected: false,
-      isReceiveDone: isMessageSpent,
-      isWaitingFuelWalletApproval: false,
+      isSettlementLoading: !isReceiveDone && !isUnspentErc20,
+      isSettlementSelected: !isReceiveDone && !isUnspentErc20,
+      isSettlementDone: isReceiveDone || isUnspentErc20,
+      isConfirmTransactionLoading: isWaitingApproval,
+      isConfirmTransactionSelected: isWaitingApproval,
+      isWaitingFuelWalletApproval: isWaitingApproval,
+      isReceiveDone: isReceiveDone,
     };
   }, [tx, message]);
 
@@ -140,8 +167,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
 
     store.relayMessageEthToFuel({
       input: {
-        // TODO: remove this workaround when we get versions organized and using the same version
-        fuelWallet: fuelWallet as unknown as FuelWallet,
+        fuelWallet,
       },
       ethTxId,
     });
