@@ -7,7 +7,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { BridgeService } from '../services';
 
-const MAX_BY_PAGE = 5;
+const MAX_BY_PAGE = 1;
 
 export const useBridgeTxs = () => {
   const {
