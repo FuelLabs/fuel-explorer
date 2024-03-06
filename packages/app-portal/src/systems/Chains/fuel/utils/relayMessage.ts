@@ -2,12 +2,12 @@ import {
   contractMessagePredicate,
   contractMessageScript,
 } from '@fuel-bridge/message-predicates';
+import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type {
   Message,
   Provider,
   ScriptTransactionRequestLike,
   TransactionResponse,
-  WalletUnlocked as FuelWallet,
 } from 'fuels';
 import {
   InputType,

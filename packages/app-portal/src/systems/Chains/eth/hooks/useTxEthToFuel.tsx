@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
 
-import { useQuery } from '@tanstack/react-query';
-import { MessageStatus } from 'fuels';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Message, MessageStatus } from 'fuels';
 import { useAsset } from '../../../Assets/hooks/useAsset';
 import { useFuelAccountConnection } from '../../fuel';
 import { GetReceiptsInfoReturn, TxEthToFuelService } from '../services';
@@ -21,8 +21,16 @@ const refetchIntervalTx = (data?: GetReceiptsInfoReturn) => {
   return LONG_POOLING_INTERVAL;
 };
 
-const refetchIntervalMsg = (data?: MessageStatus) => {
+const refetchIntervalMsgStatus = (data?: MessageStatus) => {
   if (data && ['SPENT', 'UNSPENT'].includes(data.state)) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
+const refetchIntervalMsg = (data?: Message) => {
+  if (data?.messageId) {
     return false;
   }
 
@@ -40,6 +48,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
     id: txId,
   });
 
+  // @TODO: Move it to "queries" folder
   const { data: tx, isLoading: isLoadingReceipts } = useQuery({
     queryKey: ['bridgeTxs', 'detail', id],
     queryFn: () => {
@@ -59,23 +68,43 @@ export function useTxEthToFuel({ id }: { id: string }) {
     retry: false,
   });
 
-  const { data: message } = useQuery({
-    queryKey: ['bridgeTxs', id, 'message'],
+  // @TODO: Move it to "queries" folder
+  const { data: messageStatus } = useQuery({
+    queryKey: ['bridgeTxs', 'detail', id, 'messageStatus'],
     queryFn: () => {
       return TxEthToFuelService.getFuelMessageStatus({
         fuelProvider,
         ethTxNonce: tx?.nonce,
       });
     },
-    refetchInterval: refetchIntervalMsg,
     enabled: !!fuelProvider && !!tx?.nonce,
+    refetchInterval: refetchIntervalMsgStatus,
+  });
+
+  // @TODO: Move it to "queries" folder
+  const { data: message } = useQuery({
+    queryKey: ['bridgeTxs', 'detail', id, 'message'],
+    queryFn: () => {
+      return TxEthToFuelService.getFuelMessage({
+        fuelProvider,
+        ethTxNonce: tx?.nonce,
+        fuelRecipient: tx?.recipient,
+      });
+    },
+    enabled: !!fuelProvider && !!tx?.nonce && !!tx?.recipient,
+    refetchInterval: refetchIntervalMsg,
+  });
+
+  // @TODO: Move it to "mutations" folder
+  const { mutate: relayMessageOnFuel } = useMutation({
+    mutationFn: TxEthToFuelService.relayMessageOnFuel,
   });
 
   const status = useMemo(() => {
-    const isUnspent = message?.state === 'UNSPENT';
+    const isUnspent = messageStatus?.state === 'UNSPENT';
 
     // if message is spent, assume it's done as message has arrived and already spent
-    const isSpent = message?.state === 'SPENT';
+    const isSpent = messageStatus?.state === 'SPENT';
 
     // if message is unspent for a eth deposit, it's done as message has arrived and ready to use
     const isUnspentEth = isUnspent && !tx?.erc20Token;
@@ -95,7 +124,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
       isWaitingFuelWalletApproval: isWaitingApproval,
       isReceiveDone: isReceiveDone,
     };
-  }, [tx, message]);
+  }, [tx, messageStatus]);
 
   const steps = useMemo(() => {
     const confirmTransactionText = isErc20Address(tx?.erc20Token?.address)
@@ -164,18 +193,37 @@ export function useTxEthToFuel({ id }: { id: string }) {
   function relayMessageToFuel() {
     if (!ethTxId || !fuelWallet) return;
 
-    store.relayMessageEthToFuel({
-      input: {
-        fuelWallet,
+    relayMessageOnFuel(
+      {
+        fuelMessage: message,
+        fuelWallet: fuelWallet,
       },
-      ethTxId,
-    });
+      {
+        onSuccess: (data) => {
+          // @TODO: Invalidate bridge
+          console.log('onSuccess', 'relayMessageOnFuel');
+          console.log(data);
+        },
+        onError: (error) => {
+          console.log('onError', 'relayMessageOnFuel');
+          console.log(error);
+        },
+      },
+    );
   }
 
   const shouldShowConfirmButton =
     isErc20Address(erc20Token?.address) &&
     (status?.isWaitingFuelWalletApproval ||
       status?.isConfirmTransactionLoading);
+
+  useEffect(() => {
+    console.group('TxEthToFuel', txId);
+    console.log('1. getReceiptsInfo', tx);
+    console.log('2. messageStatus', messageStatus);
+    console.log('3. message', message);
+    console.groupEnd();
+  }, [txId, tx, messageStatus, message]);
 
   return {
     handlers: {

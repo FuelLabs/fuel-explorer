@@ -4,7 +4,6 @@ import type {
   Message,
   Provider as FuelProvider,
   TransactionResponse,
-  WalletUnlocked as FuelWallet,
 } from 'fuels';
 import { Address as FuelAddress, ZeroBytes32, bn } from 'fuels';
 import type { WalletClient } from 'viem';
@@ -23,6 +22,7 @@ import {
 } from '../contracts/FuelMessagePortal';
 import { getBlockDate, isErc20Address } from '../utils';
 
+import { FuelWalletLocked } from '@fuel-wallet/sdk';
 import { getBridgeSolidityContracts } from 'app-commons';
 import { EthConnectorService } from './connectors';
 
@@ -56,7 +56,7 @@ export type TxEthToFuelInputs = {
     ethTxNonce?: BN;
   };
   relayMessageOnFuel: {
-    fuelWallet?: FuelWallet;
+    fuelWallet?: FuelWalletLocked;
     fuelMessage?: Message;
   };
   fetchDepositLogs: {
