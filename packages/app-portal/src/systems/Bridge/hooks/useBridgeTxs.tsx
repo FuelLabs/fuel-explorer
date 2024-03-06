@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Services, store } from '~portal/store';
 import {
   useEthAccountConnection,
@@ -7,11 +7,12 @@ import {
 
 import type { BridgeTxsMachineState } from '../machines';
 
-const MAX_BY_PAGE = 5;
-
 const selectors = {
   bridgeTxs: (state: BridgeTxsMachineState) => {
     return state.context.bridgeTxs;
+  },
+  amountTxsToShow: (state: BridgeTxsMachineState) => {
+    return state.context.amountTxsToShow;
   },
   isLoading: (state: BridgeTxsMachineState) => {
     return state.hasTag('isLoading');
@@ -26,8 +27,11 @@ export const useBridgeTxs = () => {
     address: fuelAddress,
   } = useFuelAccountConnection();
 
-  const [amountTxsToShow, setAmountTxsToShow] = useState(MAX_BY_PAGE);
   const { publicClient: ethPublicClient } = useEthAccountConnection();
+  const amountTxsToShow = store.useSelector(
+    Services.bridgeTxs,
+    selectors.amountTxsToShow,
+  );
   const bridgeTxs = store.useSelector(Services.bridgeTxs, selectors.bridgeTxs);
   const isLoadingState = store.useSelector(
     Services.bridgeTxs,
@@ -56,7 +60,7 @@ export const useBridgeTxs = () => {
     shouldShowNotConnected: !isLoading && !isConnected,
     shouldShowEmpty: !isLoading && isConnected && !length,
     handlers: {
-      showMore: () => setAmountTxsToShow(amountTxsToShow + MAX_BY_PAGE),
+      showMore: store.fetchNextPage,
     },
   };
 };
