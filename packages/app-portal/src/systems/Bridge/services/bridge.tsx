@@ -15,8 +15,6 @@ import type {
 } from '~portal/systems/Chains';
 import {
   ETH_CHAIN,
-  EthTxCache,
-  FuelTxCache,
   TxEthToFuelService,
   TxFuelToEthService,
   getBlockDate,
@@ -91,16 +89,9 @@ export class BridgeService {
 
       if (txId) {
         if (fuelWallet) {
-          store.addTxEthToFuel({
-            ethTxId: txId,
-            fuelProvider,
-            ethPublicClient,
-            fuelAddress,
-          });
           store.openTxEthToFuel({
             txId,
           });
-          EthTxCache.setTxIsCreated(txId);
         }
       }
 
@@ -119,15 +110,9 @@ export class BridgeService {
 
       if (txId) {
         if (fuelWallet) {
-          store.addTxFuelToEth({
-            fuelTxId: txId,
-            fuelProvider,
-            ethPublicClient,
-          });
           store.openTxFuelToEth({
             txId,
           });
-          FuelTxCache.setTxIsCreated(txId);
         }
 
         return;
