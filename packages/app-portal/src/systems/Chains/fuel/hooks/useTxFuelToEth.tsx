@@ -16,6 +16,7 @@ import { isSameEthAddress, parseFuelAddressToEth } from '../../eth/utils';
 import { distanceToNow } from '../utils';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { FUEL_QUERY_KEYS } from '../queries/keys';
 import {
   BlockCommitData,
   BlockFinalizationData,
@@ -25,7 +26,6 @@ import {
 } from '../services';
 import { useFuelAccountConnection } from './useFuelAccountConnection';
 
-// @TODO: Share it between bridge hooks (move to constants folder)
 const LONG_POOLING_INTERVAL = 10000; // in ms
 
 const refetchIntervalTx = (data?: TxFuelToEthData) => {
@@ -87,9 +87,8 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     id: txId,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: tx, isLoading: isLoadingTxResult } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', txId],
+    queryKey: FUEL_QUERY_KEYS.detail(txId),
     queryFn: () => {
       return TxFuelToEthService.waitTxResult({
         fuelTxId: txId,
@@ -98,18 +97,10 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     },
     enabled: !!txId && !!fuelProvider,
     refetchInterval: refetchIntervalTx,
-    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
-    cacheTime: 1000 * 60, // 1 minute
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: blockCommit } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', txId, 'blockCommit'],
+    queryKey: FUEL_QUERY_KEYS.blockCommit(txId),
     queryFn: () => {
       return TxFuelToEthService.waitBlockCommit({
         fuelWithdrawBlockId: tx?.txResult?.blockId,
@@ -119,18 +110,10 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     },
     enabled: !!tx?.txResult?.blockId && !!ethPublicClient && !!fuelProvider,
     refetchInterval: refetchIntervalBlockCommit,
-    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
-    cacheTime: 1000 * 60, // 1 minute
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: messageProof } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', txId, 'messageProof'],
+    queryKey: FUEL_QUERY_KEYS.messageProof(txId),
     queryFn: () => {
       return TxFuelToEthService.getMessageProof({
         fuelTxId: txId,
@@ -145,18 +128,10 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
       !!blockCommit?.blockHashCommited &&
       !!fuelProvider,
     refetchInterval: refetchIntervalMessageProof,
-    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
-    cacheTime: 1000 * 60, // 1 minute
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: blockFinalization } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', txId, 'blockFinalization'],
+    queryKey: FUEL_QUERY_KEYS.blockFinalization(txId),
     queryFn: () => {
       return TxFuelToEthService.waitBlockFinalization({
         messageProof,
@@ -171,18 +146,10 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
       !!ethPublicClient &&
       !!fuelProvider,
     refetchInterval: refetchIntervalBlockFinalization,
-    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
-    cacheTime: 1000 * 60, // 1 minute
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: messageRelayed } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', txId, 'messageRelayed'],
+    queryKey: FUEL_QUERY_KEYS.messageRelayed(txId),
     queryFn: () => {
       return TxFuelToEthService.getMessageRelayed({
         messageProof,
@@ -196,18 +163,10 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
       !!ethWalletClient &&
       !!tx?.messageId,
     refetchInterval: refetchIntervalMessageRelayed,
-    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
-    cacheTime: 1000 * 60, // 1 minute
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: waitingReceive } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', txId, 'waitingReceive'],
+    queryKey: FUEL_QUERY_KEYS.waitingReceive(txId),
     queryFn: () => {
       return TxFuelToEthService.waitTxMessageRelayed({
         txHash: messageRelayed?.transactionHash,
@@ -216,17 +175,8 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     },
     enabled: !!ethPublicClient && !!messageRelayed?.transactionHash,
     refetchInterval: refetchIntervalWaitingReceive,
-    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
-    cacheTime: 1000 * 60, // 1 minute
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
   });
 
-  // @TODO: Move it to "mutations" folder
-  // @TODO: Replace it from state machine call
   const { mutate: relayMessageFromFuelBlock, isLoading: isRelaying } =
     useMutation({
       mutationFn: TxFuelToEthService.relayMessageFromFuelBlock,

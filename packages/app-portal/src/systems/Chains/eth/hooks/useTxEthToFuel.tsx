@@ -7,6 +7,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Message, MessageStatus } from 'fuels';
 import { useAsset } from '../../../Assets/hooks/useAsset';
 import { useFuelAccountConnection } from '../../fuel';
+import { ETH_QUERY_KEYS } from '../queries/keys';
 import { GetReceiptsInfoReturn, TxEthToFuelService } from '../services';
 import { isErc20Address } from '../utils';
 import { useEthAccountConnection } from './useEthAccountConnection';
@@ -48,9 +49,8 @@ export function useTxEthToFuel({ id }: { id: string }) {
     id: txId,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: tx, isLoading: isLoadingReceipts } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', id],
+    queryKey: ETH_QUERY_KEYS.detail(id),
     queryFn: () => {
       return TxEthToFuelService.getReceiptsInfo({
         ethTxId: txId,
@@ -59,18 +59,10 @@ export function useTxEthToFuel({ id }: { id: string }) {
     },
     enabled: !!txId && !!ethPublicClient,
     refetchInterval: refetchIntervalTx,
-    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
-    cacheTime: 1000 * 60, // 1 minute
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: messageStatus } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', id, 'messageStatus'],
+    queryKey: ETH_QUERY_KEYS.messageStatus(id),
     queryFn: () => {
       return TxEthToFuelService.getFuelMessageStatus({
         fuelProvider,
@@ -81,9 +73,8 @@ export function useTxEthToFuel({ id }: { id: string }) {
     refetchInterval: refetchIntervalMsgStatus,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: message } = useQuery({
-    queryKey: ['bridgeTxs', 'detail', id, 'message'],
+    queryKey: ETH_QUERY_KEYS.message(id),
     queryFn: () => {
       return TxEthToFuelService.getFuelMessage({
         fuelProvider,
@@ -95,7 +86,6 @@ export function useTxEthToFuel({ id }: { id: string }) {
     refetchInterval: refetchIntervalMsg,
   });
 
-  // @TODO: Move it to "mutations" folder
   const { mutate: relayMessageOnFuel } = useMutation({
     mutationFn: TxEthToFuelService.relayMessageOnFuel,
   });
