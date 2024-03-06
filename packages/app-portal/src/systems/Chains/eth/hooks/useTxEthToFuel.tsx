@@ -40,9 +40,8 @@ export function useTxEthToFuel({ id }: { id: string }) {
     id: txId,
   });
 
-  // @TODO: Move it to "queries" folder
   const { data: tx, isLoading: isLoadingReceipts } = useQuery({
-    queryKey: ['bridgeTxs', id],
+    queryKey: ['bridgeTxs', 'detail', id],
     queryFn: () => {
       return TxEthToFuelService.getReceiptsInfo({
         ethTxId: txId,

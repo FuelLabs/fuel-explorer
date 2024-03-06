@@ -13,7 +13,7 @@ import {
   getReceiptsMessageOut,
   getTransactionsSummaries,
 } from 'fuels';
-import type { WalletClient } from 'viem';
+import type { TransactionReceipt, WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'wagmi';
 
 import { getBridgeSolidityContracts } from 'app-commons';
@@ -40,7 +40,7 @@ export type TxFuelToEthInputs = {
   };
   getMessageProof: {
     fuelTxId: string;
-    nonce: string;
+    nonce?: string;
     fuelProvider?: FuelProvider;
     fuelBlockHashCommited?: string;
   };
@@ -52,20 +52,20 @@ export type TxFuelToEthInputs = {
   waitBlockFinalization: {
     messageProof?: MessageProof;
     ethPublicClient: EthPublicClient;
-    fuelBlockHashCommited: string;
-    fuelProvider: FuelProvider;
+    fuelBlockHashCommited?: string;
+    fuelProvider?: FuelProvider;
   };
   getMessageRelayed: {
-    messageProof: MessageProof;
+    messageProof?: MessageProof;
     ethPublicClient: EthPublicClient;
-    messageId: string;
+    messageId?: string;
   };
   relayMessageFromFuelBlock: {
     messageProof: MessageProof;
     ethWalletClient: WalletClient;
   };
   waitTxMessageRelayed: {
-    txHash: `0x${string}`;
+    txHash?: `0x${string}` | null;
     ethPublicClient: EthPublicClient;
   };
   fetchTxs: {
@@ -78,6 +78,20 @@ export type TxFuelToEthData = {
   txResult?: TransactionResult<void>;
   messageId?: string;
   nonce?: string;
+};
+
+export type BlockCommitData = {
+  blockHashCommited?: string;
+  estimatedFinishDate?: Date;
+};
+
+export type BlockFinalizationData = {
+  isFinalized?: boolean;
+  estimatedFinishDate?: Date;
+};
+
+export type MessageRelayedData = {
+  transactionHash: `0x${string}` | null;
 };
 
 export class TxFuelToEthService {
@@ -197,7 +211,9 @@ export class TxFuelToEthService {
     };
   }
 
-  static async waitBlockCommit(input: TxFuelToEthInputs['waitBlockCommit']) {
+  static async waitBlockCommit(
+    input: TxFuelToEthInputs['waitBlockCommit'],
+  ): Promise<BlockCommitData> {
     if (!input?.fuelWithdrawBlockId) {
       throw new Error('Need withdraw block id');
     }
@@ -269,7 +285,9 @@ export class TxFuelToEthService {
     };
   }
 
-  static async getMessageProof(input: TxFuelToEthInputs['getMessageProof']) {
+  static async getMessageProof(
+    input: TxFuelToEthInputs['getMessageProof'],
+  ): Promise<MessageProof | null> {
     if (!input?.fuelProvider) {
       throw new Error('Need to connect Fuel Provider');
     }
@@ -291,17 +309,20 @@ export class TxFuelToEthService {
       fuelBlockHashCommited,
     );
 
-    return withdrawMessageProof || undefined;
+    return withdrawMessageProof || null;
   }
 
   static async waitBlockFinalization(
     input: TxFuelToEthInputs['waitBlockFinalization'],
-  ) {
+  ): Promise<BlockFinalizationData> {
     if (!input?.messageProof) {
       throw new Error('Need message proof ');
     }
     if (!input?.ethPublicClient) {
       throw new Error('Need to connect ETH Wallet');
+    }
+    if (!input?.fuelBlockHashCommited) {
+      throw new Error('Need last block ID');
     }
 
     const { ethPublicClient, messageProof, fuelBlockHashCommited } = input;
@@ -342,7 +363,7 @@ export class TxFuelToEthService {
 
   static async getMessageRelayed(
     input: TxFuelToEthInputs['getMessageRelayed'],
-  ) {
+  ): Promise<MessageRelayedData> {
     if (!input?.messageProof) {
       throw new Error('Need message proof to relay on ETH side');
     }
@@ -369,17 +390,18 @@ export class TxFuelToEthService {
       },
       args: {
         messageId: input.messageId as `0x${string}`,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       fromBlock: 'earliest',
     });
 
-    return logs?.[0]?.transactionHash || undefined;
+    return {
+      transactionHash: logs?.[0]?.transactionHash || null,
+    };
   }
 
   static async relayMessageFromFuelBlock(
     input: TxFuelToEthInputs['relayMessageFromFuelBlock'],
-  ) {
+  ): Promise<`0x${string}`> {
     if (!input?.ethWalletClient) {
       throw new Error('Need to connect ETH Wallet');
     }
@@ -410,7 +432,7 @@ export class TxFuelToEthService {
 
   static async waitTxMessageRelayed(
     input: TxFuelToEthInputs['waitTxMessageRelayed'],
-  ) {
+  ): Promise<boolean> {
     if (!input?.ethPublicClient) {
       throw new Error('Need to connect ETH Wallet');
     }
@@ -420,7 +442,7 @@ export class TxFuelToEthService {
 
     const { ethPublicClient, txHash } = input;
 
-    let txReceipts;
+    let txReceipts: TransactionReceipt | null = null;
     try {
       txReceipts = await ethPublicClient.getTransactionReceipt({
         hash: txHash,

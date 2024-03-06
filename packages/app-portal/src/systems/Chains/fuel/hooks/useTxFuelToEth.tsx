@@ -1,10 +1,11 @@
 import {
+  MessageProof,
   ReceiptType,
   fromTai64ToUnix,
   getReceiptsMessageOut,
   hexlify,
 } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { store } from '~portal/store';
 import { useAssets } from '~portal/systems/Assets';
 import { getAssetEth } from '~portal/systems/Assets/utils';
@@ -14,12 +15,70 @@ import { useEthAccountConnection } from '../../eth/hooks';
 import { isSameEthAddress, parseFuelAddressToEth } from '../../eth/utils';
 import { distanceToNow } from '../utils';
 
-import { useQuery } from '@tanstack/react-query';
-import { TxFuelToEthService } from '../services';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  BlockCommitData,
+  BlockFinalizationData,
+  MessageRelayedData,
+  TxFuelToEthData,
+  TxFuelToEthService,
+} from '../services';
 import { useFuelAccountConnection } from './useFuelAccountConnection';
 
+// @TODO: Share it between bridge hooks (move to constants folder)
+const LONG_POOLING_INTERVAL = 10000; // in ms
+
+const refetchIntervalTx = (data?: TxFuelToEthData) => {
+  if (data?.nonce) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
+const refetchIntervalBlockCommit = (data?: BlockCommitData) => {
+  if (data?.blockHashCommited) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
+const refetchIntervalMessageProof = (data?: MessageProof) => {
+  if (data) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
+const refetchIntervalBlockFinalization = (data?: BlockFinalizationData) => {
+  if (data?.isFinalized) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
+const refetchIntervalMessageRelayed = (data?: MessageRelayedData) => {
+  if (data) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
+const refetchIntervalWaitingReceive = (data?: boolean) => {
+  if (data) {
+    return false;
+  }
+
+  return LONG_POOLING_INTERVAL;
+};
+
 export function useTxFuelToEth({ txId }: { txId: string }) {
-  const { walletClient: ethWalletClient } = useEthAccountConnection();
+  const { publicClient: ethPublicClient, walletClient: ethWalletClient } =
+    useEthAccountConnection();
   const { provider: fuelProvider } = useFuelAccountConnection();
   const { assets } = useAssets();
   const { href: explorerLink } = useExplorerLink({
@@ -30,7 +89,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
 
   // @TODO: Move it to "queries" folder
   const { data: tx, isLoading: isLoadingTxResult } = useQuery({
-    queryKey: ['bridgeTxs', txId],
+    queryKey: ['bridgeTxs', 'detail', txId],
     queryFn: () => {
       return TxFuelToEthService.waitTxResult({
         fuelTxId: txId,
@@ -38,6 +97,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
       });
     },
     enabled: !!txId && !!fuelProvider,
+    refetchInterval: refetchIntervalTx,
     // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
     cacheTime: 1000 * 60, // 1 minute
     staleTime: Infinity,
@@ -47,13 +107,164 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     retry: false,
   });
 
+  // @TODO: Move it to "queries" folder
+  const { data: blockCommit } = useQuery({
+    queryKey: ['bridgeTxs', 'detail', txId, 'blockCommit'],
+    queryFn: () => {
+      return TxFuelToEthService.waitBlockCommit({
+        fuelWithdrawBlockId: tx?.txResult?.blockId,
+        ethPublicClient,
+        fuelProvider,
+      });
+    },
+    enabled: !!tx?.txResult?.blockId && !!ethPublicClient && !!fuelProvider,
+    refetchInterval: refetchIntervalBlockCommit,
+    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
+    cacheTime: 1000 * 60, // 1 minute
+    staleTime: Infinity,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  // @TODO: Move it to "queries" folder
+  const { data: messageProof } = useQuery({
+    queryKey: ['bridgeTxs', 'detail', txId, 'messageProof'],
+    queryFn: () => {
+      return TxFuelToEthService.getMessageProof({
+        fuelTxId: txId,
+        nonce: tx?.nonce,
+        fuelBlockHashCommited: blockCommit?.blockHashCommited,
+        fuelProvider,
+      });
+    },
+    enabled:
+      !!txId &&
+      !!tx?.nonce &&
+      !!blockCommit?.blockHashCommited &&
+      !!fuelProvider,
+    refetchInterval: refetchIntervalMessageProof,
+    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
+    cacheTime: 1000 * 60, // 1 minute
+    staleTime: Infinity,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  // @TODO: Move it to "queries" folder
+  const { data: blockFinalization } = useQuery({
+    queryKey: ['bridgeTxs', 'detail', txId, 'blockFinalization'],
+    queryFn: () => {
+      return TxFuelToEthService.waitBlockFinalization({
+        messageProof,
+        ethPublicClient,
+        fuelBlockHashCommited: blockCommit?.blockHashCommited,
+        fuelProvider,
+      });
+    },
+    enabled:
+      !!messageProof &&
+      !!blockCommit?.blockHashCommited &&
+      !!ethPublicClient &&
+      !!fuelProvider,
+    refetchInterval: refetchIntervalBlockFinalization,
+    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
+    cacheTime: 1000 * 60, // 1 minute
+    staleTime: Infinity,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  // @TODO: Move it to "queries" folder
+  const { data: messageRelayed } = useQuery({
+    queryKey: ['bridgeTxs', 'detail', txId, 'messageRelayed'],
+    queryFn: () => {
+      return TxFuelToEthService.getMessageRelayed({
+        messageProof,
+        messageId: tx?.messageId,
+        ethPublicClient,
+      });
+    },
+    enabled:
+      !!blockFinalization &&
+      !!messageProof &&
+      !!ethWalletClient &&
+      !!tx?.messageId,
+    refetchInterval: refetchIntervalMessageRelayed,
+    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
+    cacheTime: 1000 * 60, // 1 minute
+    staleTime: Infinity,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  // @TODO: Move it to "queries" folder
+  const { data: waitingReceive } = useQuery({
+    queryKey: ['bridgeTxs', 'detail', txId, 'waitingReceive'],
+    queryFn: () => {
+      return TxFuelToEthService.waitTxMessageRelayed({
+        txHash: messageRelayed?.transactionHash,
+        ethPublicClient,
+      });
+    },
+    enabled: !!ethPublicClient && !!messageRelayed?.transactionHash,
+    refetchInterval: refetchIntervalWaitingReceive,
+    // @TODO: Move it to global the setting, basically it keeps everything on cache but always getting once fresh data
+    cacheTime: 1000 * 60, // 1 minute
+    staleTime: Infinity,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  // @TODO: Move it to "mutations" folder
+  // @TODO: Replace it from state machine call
+  const { mutate: relayMessageFromFuelBlock } = useMutation({
+    mutationFn: TxFuelToEthService.relayMessageFromFuelBlock,
+  });
+
   const fuelTxResult = tx?.txResult;
+
+  useEffect(() => {
+    console.group('TxFuelToEth', txId);
+    console.log('1. fuelTxResult', tx?.txResult);
+    console.log('2. blockCommit', blockCommit);
+    console.log('3. messageProof', messageProof);
+    console.log('4. blockFinalization', blockFinalization);
+    console.log('5. messageRelayed', messageRelayed);
+    console.log('6. waitingReceive', waitingReceive);
+    console.groupEnd();
+  }, [
+    txId,
+    tx,
+    blockCommit,
+    messageProof,
+    blockFinalization,
+    messageRelayed,
+    waitingReceive,
+  ]);
 
   const status = useMemo(() => {
     // @TODO: Detect these status correctly
+    /**
+     * 1. isSubmitToBridgeLoading, isSubmitToBridgeSelected
+     * 1. waitingBlockCommit
+     * 2. checkingMessageProof
+     * 3. waitingBlockFinalization
+     * 4. checkingRelayed
+     */
+
     return {
-      isSubmitToBridgeLoading: false,
-      isSubmitToBridgeSelected: false,
+      isSubmitToBridgeLoading: true,
+      isSubmitToBridgeSelected: true,
       isSubmitToBridgeDone: false,
       isSettlementLoading: false,
       isSettlementSelected: false,
@@ -61,12 +272,13 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
       isConfirmTransactionSelected: false,
       isConfirmTransactionLoading: false,
       isConfirmTransactionDone: false,
-      isWaitingEthWalletApproval: false,
+      isWaitingEthWalletApproval:
+        messageRelayed && !messageRelayed.transactionHash,
       isReceiveLoading: false,
       isReceiveSelected: false,
       isReceiveDone: false,
     };
-  }, []);
+  }, [tx, blockCommit, messageProof, blockFinalization, messageRelayed]);
 
   const steps = useMemo(() => {
     const estimatedTimeRemaining = '@TODO';

@@ -7,7 +7,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { BridgeService } from '../services';
 
-const MAX_BY_PAGE = 2;
+const MAX_BY_PAGE = 1;
 
 export const useBridgeTxs = () => {
   const {
@@ -22,7 +22,7 @@ export const useBridgeTxs = () => {
 
   // @TODO: Move it to "queries" folder
   const { data: bridgeTxs, isLoading: isLoadingState } = useQuery({
-    queryKey: ['bridgeTxs'],
+    queryKey: ['bridgeTxs', 'list'],
     queryFn: async () => {
       return await BridgeService.fetchTxs({
         fuelAddress,
