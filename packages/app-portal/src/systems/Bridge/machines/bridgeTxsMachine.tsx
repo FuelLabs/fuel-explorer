@@ -78,11 +78,8 @@ export const bridgeTxsMachine = createMachine(
             target: 'fetching',
           },
           FETCH_NEXT_PAGE: {
-            actions: [
-              'assignFetchNextPage',
-              'assignPaginatedTxs',
-              'assignTxMachines',
-            ],
+            actions: ['assignFetchNextPage'],
+            target: 'fetchingNextPage',
             cond: 'hasNextPage',
           },
           ADD_TX_ETH_TO_FUEL: {
@@ -118,6 +115,12 @@ export const bridgeTxsMachine = createMachine(
               target: 'idle',
             },
           ],
+        },
+      },
+      fetchingNextPage: {
+        always: {
+          actions: ['assignPaginatedTxs', 'assignTxMachines'],
+          target: 'idle',
         },
       },
     },
