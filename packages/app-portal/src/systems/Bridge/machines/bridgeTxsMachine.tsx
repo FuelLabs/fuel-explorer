@@ -29,6 +29,7 @@ export type BridgeTxsMachineContext = {
   fuelProvider?: FuelProvider;
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
+  hasNextPage: boolean;
   amountTxsToShow: number;
 };
 
@@ -82,6 +83,7 @@ export const bridgeTxsMachine = createMachine(
               'assignPaginatedTxs',
               'assignTxMachines',
             ],
+            cond: 'hasNextPage',
           },
           ADD_TX_ETH_TO_FUEL: {
             actions: ['assignTxEthToFuel'],
@@ -121,11 +123,15 @@ export const bridgeTxsMachine = createMachine(
     },
   },
   {
+    guards: {
+      hasNextPage: (context) => context.hasNextPage,
+    },
     actions: {
       assignFetchInputs: assign((ctx, ev) => ({
         fuelProvider: ev.input?.fuelProvider || ctx.fuelProvider,
         ethPublicClient: ev.input?.ethPublicClient || ctx.ethPublicClient,
         fuelAddress: ev.input?.fuelAddress,
+        hasNextPage: false,
         amountTxsToShow: TXS_PER_PAGE,
       })),
       assignFetchNextPage: assign((ctx) => ({
@@ -244,6 +250,7 @@ export const bridgeTxsMachine = createMachine(
       })),
       assignPaginatedTxs: assign((ctx) => ({
         paginatedTxs: ctx.allTxs?.slice(0, ctx.amountTxsToShow),
+        hasNextPage: ctx.allTxs && ctx.allTxs.length > ctx.amountTxsToShow,
       })),
     },
     services: {

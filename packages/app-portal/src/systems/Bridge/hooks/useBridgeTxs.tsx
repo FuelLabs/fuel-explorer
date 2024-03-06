@@ -8,11 +8,11 @@ import {
 import type { BridgeTxsMachineState } from '../machines';
 
 const selectors = {
-  allTxs: (state: BridgeTxsMachineState) => {
-    return state.context.allTxs;
-  },
   paginatedTxs: (state: BridgeTxsMachineState) => {
     return state.context.paginatedTxs;
+  },
+  hasNextPage: (state: BridgeTxsMachineState) => {
+    return state.context.hasNextPage;
   },
   isLoading: (state: BridgeTxsMachineState) => {
     return state.hasTag('isLoading');
@@ -28,10 +28,13 @@ export const useBridgeTxs = () => {
   } = useFuelAccountConnection();
 
   const { publicClient: ethPublicClient } = useEthAccountConnection();
-  const allTxs = store.useSelector(Services.bridgeTxs, selectors.allTxs);
   const paginatedTxs = store.useSelector(
     Services.bridgeTxs,
     selectors.paginatedTxs,
+  );
+  const hasNextPage = store.useSelector(
+    Services.bridgeTxs,
+    selectors.hasNextPage,
   );
   const isLoadingState = store.useSelector(
     Services.bridgeTxs,
@@ -40,7 +43,6 @@ export const useBridgeTxs = () => {
 
   const isLoading = isLoadingState || isLoadingConnection;
   const length = paginatedTxs?.length ?? 0;
-  const hasMorePages = (allTxs?.length || 0) > length;
 
   useEffect(() => {
     if (isLoadingConnection || !fuelProvider || !ethPublicClient) return;
@@ -54,7 +56,7 @@ export const useBridgeTxs = () => {
 
   return {
     isLoading,
-    hasMorePages,
+    hasMorePages: hasNextPage,
     bridgeTxs: paginatedTxs,
     shouldShowNotConnected: !isLoading && !isConnected,
     shouldShowEmpty: !isLoading && isConnected && !length,
