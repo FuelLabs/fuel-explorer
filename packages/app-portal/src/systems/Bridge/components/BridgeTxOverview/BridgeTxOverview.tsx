@@ -101,10 +101,10 @@ export const BridgeTxOverview = ({
 
 const styles = tv({
   slots: {
-    stack: 'w-full',
+    stack: 'w-full mt-2',
     txItem: 'flex-wrap justify-between',
     labelText: 'text-xs text-intentsBase11',
-    subtleText: 'text-[10px] leading-tight text-muted',
+    subtleText: 'text-xs leading-tight text-muted',
     infoText: 'text-xs text-heading',
     linkText: 'text-xs',
     directionInfo: 'gap-1 items-center',
