@@ -280,9 +280,12 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     };
   }, [tx, blockCommit, messageProof, blockFinalization, messageRelayed]);
 
-  const steps = useMemo(() => {
-    const estimatedTimeRemaining = '@TODO';
+  const estimatedTimeRemaining = useMemo<string | null>(() => {
+    if (!blockCommit?.estimatedFinishDate) return null;
+    return distanceToNow(blockCommit.estimatedFinishDate);
+  }, [blockCommit?.estimatedFinishDate]);
 
+  const steps = useMemo(() => {
     function getConfirmStatusText() {
       if (status.isWaitingEthWalletApproval) return 'Action required';
       if (status.isConfirmTransactionDone) return 'Done!';
@@ -326,7 +329,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
         isSelected: status.isReceiveSelected,
       },
     ];
-  }, [status]);
+  }, [status, estimatedTimeRemaining]);
 
   const { asset, amount } = useMemo(() => {
     if (!fuelTxResult) return {};
@@ -420,8 +423,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
     steps,
     status,
     isLoadingTxResult,
-    // @TODO: Get this date correctly
-    estimatedTimeRemaining: distanceToNow(new Date()),
+    estimatedTimeRemaining,
     explorerLink,
   };
 }
