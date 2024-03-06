@@ -7,7 +7,7 @@ import {
 
 import type { BridgeTxsMachineState } from '../machines';
 
-const MAX_BY_PAGE = 15;
+const MAX_BY_PAGE = 5;
 
 const selectors = {
   bridgeTxs: (state: BridgeTxsMachineState) => {
