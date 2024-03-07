@@ -1,13 +1,14 @@
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import { GQLInput, GQLInputContract } from '~/graphql/generated/sdk';
+import {
+  GQLGroupedInputContract,
+  GQLInput,
+  GQLInputContract,
+} from '~/graphql/generated/sdk';
 
 type Source = GQLInputContract;
-export type InputContractGroupedEntry = {
-  type: 'InputContract';
-  contractId: string;
-  inputs: Source[];
-};
+type Typename = GQLGroupedInputContract['__typename'];
+export type InputContractGroupedEntry = GQLGroupedInputContract;
 
 export class InputContractFactory {
   value: InputContractGroupedEntry[];
@@ -21,10 +22,13 @@ export class InputContractFactory {
   }
 
   private entriesFromInputs(inputs: Source[]) {
-    return Object.entries(groupBy(inputs, (i) => i.contract.id)).map(
+    return Object.entries(groupBy(inputs, (i) => i.contract?.id)).map(
       ([contractId, inputs]) => {
-        const type = inputs[0].__typename;
-        return { contractId, type, inputs };
+        return {
+          __typename: 'GroupedInputContract' as Typename,
+          contractId,
+          inputs,
+        };
       },
     );
   }

@@ -25,21 +25,6 @@ export class PredicateRepository {
       .insert(PredicatesTable)
       .values(PredicateEntity.toDBItem(predicate))
       .returning();
-
     return PredicateEntity.create(item, item._id);
-  }
-
-  async insertMany(predicates: PredicatePayload[]) {
-    return db.connection().transaction(async (trx) => {
-      const queries = predicates.map(async (predicate) => {
-        const [item] = await trx
-          .insert(PredicatesTable)
-          .values(PredicateEntity.toDBItem(predicate))
-          .returning();
-
-        return PredicateEntity.create(item, item._id);
-      });
-      return Promise.all(queries.filter(Boolean));
-    });
   }
 }

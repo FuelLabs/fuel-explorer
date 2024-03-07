@@ -31,7 +31,8 @@ export class BlockRepository {
 
   async findMany(params: PaginatorParams) {
     const paginator = new Paginator(BlocksTable, params);
-    const results = await paginator.getPaginatedResult();
+    const config = await paginator.getQueryPaginationConfig();
+    const results = await paginator.getPaginatedResult(config);
     return results.map((item) => BlockEntity.create(item));
   }
 
@@ -67,7 +68,7 @@ export class BlockRepository {
         const found = await this.findByHash(block.id);
         if (found) {
           console.warn(`Block ${block.id} already exists`);
-          return null;
+          return found;
         }
 
         const [item] = await trx
@@ -85,12 +86,19 @@ export class BlockRepository {
     const { sdk } = new GraphQLSDK();
     const after = (page - 1) * perPage;
     const { data } = await sdk.blocks({
-      first: perPage,
+      first: page > 1 ? perPage : perPage + 1,
       ...(page > 1 && { after: String(after) }),
     });
 
     const blocks = data.blocks.nodes as GQLBlock[];
     const hasNext = data.blocks.pageInfo.hasNextPage;
-    return { blocks, hasNext };
+    const hasPrev = data.blocks.pageInfo.hasPreviousPage;
+    return { blocks, hasNext, hasPrev };
+  }
+
+  async latestBlockFromNode() {
+    const { sdk } = new GraphQLSDK();
+    const { data } = await sdk.blocks({ last: 1 });
+    return data.blocks.nodes[0] as GQLBlock;
   }
 }

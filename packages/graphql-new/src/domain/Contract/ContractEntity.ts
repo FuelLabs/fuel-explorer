@@ -32,9 +32,10 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
 
   static fromOutputs(outputs: GQLOutput[]) {
     const found = outputs?.filter(
-      (output) => output.__typename === 'ContractCreated',
-    ) as GQLContractCreated[];
-    return found?.length ? found.map((i) => i.contract) : [];
+      (output) =>
+        output.__typename === 'ContractCreated' && output.contract?.id,
+    ) as GQLContractCreated[] | undefined;
+    return found?.map((i) => i.contract) ?? [];
   }
 
   get contractHash() {

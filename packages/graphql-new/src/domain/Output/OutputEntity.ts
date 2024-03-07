@@ -1,6 +1,7 @@
 import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 import { GQLOutput } from '~/graphql/generated/sdk';
+import { TxID } from '../Transaction/vo/TransactionModelID';
 import { OutputItem, OutputPayload } from './OutputModel';
 import { OutputData } from './vo/OutputData';
 
@@ -24,7 +25,7 @@ export class OutputEntity extends Entity<
 
   static toDBItem(
     output: GQLOutput,
-    transactionId: number,
+    transactionId: TxID,
   ): Omit<OutputItem, '_id'> {
     const data = OutputData.create(output).value();
     return { data, transactionId };

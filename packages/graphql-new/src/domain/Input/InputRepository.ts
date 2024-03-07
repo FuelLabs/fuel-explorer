@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { GQLInput } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
+import { TxID } from '../Transaction/vo/TransactionModelID';
 import { InputEntity } from './InputEntity';
 import { InputsTable } from './InputModel';
 
@@ -16,7 +17,7 @@ export class InputRepository {
     return InputEntity.create(first, first._id);
   }
 
-  async insertOne(input: GQLInput, transactionId: number) {
+  async insertOne(input: GQLInput, transactionId: TxID) {
     const [item] = await db
       .connection()
       .insert(InputsTable)
@@ -26,7 +27,7 @@ export class InputRepository {
     return InputEntity.create(item, item._id);
   }
 
-  async insertMany(inputs: GQLInput[], transactionId: number) {
+  async insertMany(inputs: GQLInput[], transactionId: TxID) {
     return db.connection().transaction(async (trx) => {
       const queries = inputs.map(async (input) => {
         const [item] = await trx

@@ -1,5 +1,5 @@
 {
-  "id": "cfd25ab4-8b2d-4817-8fc6-9cbf1ec2c355",
+  "id": "841c62d8-fa00-42aa-9958-f5278e0548de",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -135,7 +135,7 @@
         },
         "transaction_id": {
           "name": "transaction_id",
-          "type": "integer",
+          "type": "varchar(66)",
           "primaryKey": false,
           "notNull": true
         }
@@ -151,6 +151,56 @@
         "inputs_transaction_id_transactions__id_fk": {
           "name": "inputs_transaction_id_transactions__id_fk",
           "tableFrom": "inputs",
+          "tableTo": "transactions",
+          "columnsFrom": ["transaction_id"],
+          "columnsTo": ["_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "operations": {
+      "name": "operations",
+      "schema": "",
+      "columns": {
+        "_id": {
+          "name": "_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "varchar(66)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "transaction_hash": {
+          "name": "transaction_hash",
+          "type": "varchar(66)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "operations__id_index": {
+          "name": "operations__id_index",
+          "columns": ["_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "operations_transaction_id_transactions__id_fk": {
+          "name": "operations_transaction_id_transactions__id_fk",
+          "tableFrom": "operations",
           "tableTo": "transactions",
           "columnsFrom": ["transaction_id"],
           "columnsTo": ["_id"],
@@ -179,7 +229,7 @@
         },
         "transaction_id": {
           "name": "transaction_id",
-          "type": "integer",
+          "type": "varchar(66)",
           "primaryKey": false,
           "notNull": true
         }
@@ -243,11 +293,6 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "predicates_bytecode_unique": {
-          "name": "predicates_bytecode_unique",
-          "nullsNotDistinct": false,
-          "columns": ["bytecode"]
-        },
         "predicates_address_unique": {
           "name": "predicates_address_unique",
           "nullsNotDistinct": false,
@@ -261,7 +306,7 @@
       "columns": {
         "_id": {
           "name": "_id",
-          "type": "integer",
+          "type": "varchar(66)",
           "primaryKey": true,
           "notNull": true
         },

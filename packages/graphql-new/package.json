@@ -20,9 +20,7 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build": "run-s codegen build:lib",
@@ -38,7 +36,8 @@
     "inngest": "inngest-cli dev -u http://localhost:3002/api/inngest",
     "dev": "tsx watch src/app.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
-    "sync:missing": "tsx ./src/cli.ts sync --missing"
+    "sync:missing": "tsx ./src/cli.ts sync --missing",
+    "sync:from-block": "tsx ./src/cli.ts sync --from"
   },
   "dependencies": {
     "@graphql-tools/load": "8.0.2",

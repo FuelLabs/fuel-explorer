@@ -8,7 +8,7 @@ interface Props {
 
 export class Hash256 extends ValueObject<Props> {
   static type(field: string) {
-    return varchar(field, { length: 66 }).notNull().unique();
+    return varchar(field, { length: 66 }).notNull();
   }
 
   static create(id: string) {

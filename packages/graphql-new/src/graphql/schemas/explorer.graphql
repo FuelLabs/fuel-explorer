@@ -68,18 +68,11 @@ union GroupedInput =
 # GroupedOutputs
 # --------------------------------
 
-enum GroupedOutputType {
-  ChangeOutput
-  CoinOutput
-  ContractCreated
-}
-
 type GroupedOutputCoin {
   assetId: AssetId
   outputs: [Output]
   to: Address
   totalAmount: U64
-  type: GroupedOutputType
 }
 
 type GroupedOutputChanged {
@@ -87,19 +80,41 @@ type GroupedOutputChanged {
   outputs: [Output]
   to: Address
   totalAmount: U64
-  type: GroupedOutputType
 }
 
 type GroupedOutputContractCreadted {
   contract: Contract
   outputs: [Output]
-  type: GroupedOutputType
 }
 
 union GroupedOutput =
   | GroupedOutputCoin
   | GroupedOutputChanged
   | GroupedOutputContractCreadted
+
+# --------------------------------
+# Operations
+# --------------------------------
+
+input OperationsFilterInput {
+  transactionHash: String!
+}
+
+enum OperationType {
+  FROM_CONTRACT
+  FROM_ACCOUNT
+  FINAL_RESULT
+}
+
+type OperationReceipt {
+  item: Receipt
+  receipts: [OperationReceipt]
+}
+
+type Operation {
+  type: OperationType
+  receipts: [OperationReceipt]
+}
 
 # --------------------------------
 # Transaction
@@ -112,26 +127,21 @@ type ParsedTime {
   rawUnix: String
 }
 
-enum TransactionStatusType {
-  Success
-  Failure
-  Submitted
-}
-
 type TransactionGasCosts {
   gasUsed: U64
   fee: U64
 }
 
 type Transaction {
-  blockHeight: String
-  gasCosts: TransactionGasCosts
+  blockHeight: U32
+  gasCosts: TransactionGasCosts!
   groupedInputs: [GroupedInput]!
   groupedOutputs: [GroupedOutput]!
   hasPredicate: Boolean
-  statusType: TransactionStatusType
-  time: ParsedTime
-  title: String
+  operations: [Operation]
+  statusType: String
+  time: ParsedTime!
+  title: String!
 }
 
 # --------------------------------
@@ -195,4 +205,11 @@ type Query {
 
   search(query: String!): SearchResult
   predicate(address: String!): PredicateItem
+  operations(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    filter: OperationsFilterInput!
+  ): [Operation]
 }

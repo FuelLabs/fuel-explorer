@@ -1,22 +1,25 @@
-import { integer } from 'drizzle-orm/pg-core';
-import { getBytesCopy } from 'ethers';
-import { TxPointerCoder } from 'fuels';
+import { varchar } from 'drizzle-orm/pg-core';
 import { Identifier } from '~/core/Identifier';
-import { GQLTransaction } from '~/graphql/generated/sdk';
+import { GQLBlock } from '~/graphql/generated/sdk';
+import { TransactionItem } from '../TransactionModel';
 
-export class TransactionModelID extends Identifier<number> {
-  private constructor(id: number) {
+export type TxID = string;
+export class TransactionModelID extends Identifier<TxID> {
+  private constructor(id: TxID) {
     super(id);
   }
 
   static type() {
-    return integer('_id').primaryKey();
+    return varchar('_id', { length: 66 }).notNull().primaryKey();
   }
 
-  static create(transaction: GQLTransaction) {
-    const rawPayload = transaction.rawPayload;
-    const encoded = getBytesCopy(rawPayload);
-    const [decoded, _offset] = new TxPointerCoder().decode(encoded, 0);
-    return new TransactionModelID(decoded.txIndex);
+  static create(transaction: TransactionItem) {
+    return new TransactionModelID(transaction._id);
+  }
+
+  static createSerial(block: GQLBlock, index: number) {
+    const blockHeight = block.header.height.padStart(32, '0');
+    const indexStr = (index + 1).toString().padStart(16, '0');
+    return new TransactionModelID(`${blockHeight}-${indexStr}`);
   }
 }

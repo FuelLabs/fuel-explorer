@@ -11,7 +11,7 @@ export class Bytecode extends ValueObject<Props> {
   }
 
   static type() {
-    return text('bytecode').notNull().unique();
+    return text('bytecode').notNull();
   }
 
   static create(value: string) {

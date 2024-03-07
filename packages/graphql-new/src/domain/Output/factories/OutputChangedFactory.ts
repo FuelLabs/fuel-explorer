@@ -1,16 +1,15 @@
-import { BN, bn } from 'fuels';
+import { bn } from 'fuels';
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import { GQLChangeOutput, GQLOutput } from '~/graphql/generated/sdk';
+import {
+  GQLChangeOutput,
+  GQLGroupedOutputChanged,
+  GQLOutput,
+} from '~/graphql/generated/sdk';
 
 type Source = GQLChangeOutput;
-export type OutputChangeGroupedEntry = {
-  type: 'ChangeOutput';
-  to: string;
-  assetId: string;
-  totalAmount: BN;
-  outputs: Source[];
-};
+type Typename = GQLGroupedOutputChanged['__typename'];
+export type OutputChangeGroupedEntry = GQLGroupedOutputChanged;
 
 export class OutputChangedFactory {
   value: OutputChangeGroupedEntry[];
@@ -26,10 +25,15 @@ export class OutputChangedFactory {
   private entriesFromOutputs(outputs: Source[]) {
     return Object.entries(groupBy(outputs, (i) => i.assetId)).map(
       ([assetId, outputs]) => {
-        const type = outputs[0].__typename;
         const to = outputs[0].to;
-        const totalAmount = this.getTotalAmount(outputs);
-        return { to, assetId, type, totalAmount, outputs };
+        const totalAmount = this.getTotalAmount(outputs).toString();
+        return {
+          __typename: 'GroupedOutputChanged' as Typename,
+          to,
+          assetId,
+          totalAmount,
+          outputs,
+        };
       },
     );
   }

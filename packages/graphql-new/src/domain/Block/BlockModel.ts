@@ -11,7 +11,7 @@ export const BlocksTable = pgTable(
   'blocks',
   {
     _id: BlockModelID.type(),
-    blockHash: Hash256.type('id'),
+    blockHash: Hash256.type('id').unique(),
     timestamp: Timestamp.type(),
     data: BlockData.type(),
     totalGasUsed: BlockGasUsed.type(),

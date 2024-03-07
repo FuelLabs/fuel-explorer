@@ -19,7 +19,8 @@ export class ContractRepository {
 
   async findMany(params: PaginatorParams) {
     const paginator = new Paginator(ContractsTable, params);
-    const results = await paginator.getPaginatedResult();
+    const config = await paginator.getQueryPaginationConfig();
+    const results = await paginator.getPaginatedResult(config);
     return results.map((item) => ContractEntity.create(item));
   }
 

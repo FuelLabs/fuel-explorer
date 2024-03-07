@@ -25,10 +25,13 @@ export class AccountIndex extends ValueObject<Props> {
   }
 
   private static getAccountIndex(transaction: GQLTransaction): string {
+    if (!transaction.inputs?.length && !transaction.outputs?.length) {
+      return '';
+    }
     return [
       ...new Set(
         [
-          transaction.inputContract?.contract.id || '',
+          transaction.inputContract?.contract?.id || '',
           ...(transaction.inputs || []).reduce(
             (acc, i) => {
               switch (i.__typename) {
@@ -37,7 +40,7 @@ export class AccountIndex extends ValueObject<Props> {
                 case 'InputMessage':
                   return acc.concat([i.recipient, i.sender]);
                 case 'InputContract':
-                  return acc.concat([i.contract.id]);
+                  return acc.concat([i.contract?.id]);
                 default:
                   return acc;
               }
@@ -58,7 +61,7 @@ export class AccountIndex extends ValueObject<Props> {
             [] as Array<string>,
           ),
         ]
-          .map((a) => a.toLocaleLowerCase())
+          .map((a) => a?.toLocaleLowerCase())
           .filter((i) => !!i),
       ),
     ]

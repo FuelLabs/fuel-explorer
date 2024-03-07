@@ -7,7 +7,7 @@ export const ContractsTable = pgTable(
   'contracts',
   {
     _id: SerialID.type(),
-    contractHash: Hash256.type('contract_hash'),
+    contractHash: Hash256.type('contract_hash').unique(),
     data: ContractData.type(),
   },
   (table) => ({

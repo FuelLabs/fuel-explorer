@@ -1,18 +1,17 @@
-import { GQLOutput } from '~/graphql/generated/sdk';
 import {
-  OutputChangeGroupedEntry,
-  OutputChangedFactory,
-} from './OutputChangedFactory';
-import { OutputCoinFactory, OutputCoinGroupedEntry } from './OutputCoinFactory';
-import {
-  OutputContractCreatedFactory,
-  OutputContractCreatedGroupedEntry,
-} from './OutputContractCreatedFactory';
+  GQLGroupedOutputChanged,
+  GQLGroupedOutputCoin,
+  GQLGroupedOutputContractCreadted,
+  GQLOutput,
+} from '~/graphql/generated/sdk';
+import { OutputChangedFactory } from './OutputChangedFactory';
+import { OutputCoinFactory } from './OutputCoinFactory';
+import { OutputContractCreatedFactory } from './OutputContractCreatedFactory';
 
 export type GroupedOutputsValue = (
-  | OutputCoinGroupedEntry
-  | OutputChangeGroupedEntry
-  | OutputContractCreatedGroupedEntry
+  | GQLGroupedOutputCoin
+  | GQLGroupedOutputChanged
+  | GQLGroupedOutputContractCreadted
 )[];
 
 export class GroupedOutputsFactory {

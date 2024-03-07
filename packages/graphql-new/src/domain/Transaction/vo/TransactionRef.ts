@@ -1,9 +1,10 @@
-import { integer } from 'drizzle-orm/pg-core';
+import { varchar } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
 import { TransactionsTable } from '../TransactionModel';
+import { TxID } from './TransactionModelID';
 
 interface Props {
-  value: number;
+  value: TxID;
 }
 
 export class TransactionRef extends ValueObject<Props> {
@@ -12,12 +13,12 @@ export class TransactionRef extends ValueObject<Props> {
   }
 
   static type() {
-    return integer('transaction_id')
+    return varchar('transaction_id', { length: 66 })
       .notNull()
       .references(() => TransactionsTable._id);
   }
 
-  static create(value: number) {
+  static create(value: TxID) {
     return new TransactionRef({ value });
   }
 

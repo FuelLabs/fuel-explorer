@@ -10,7 +10,7 @@ export class SyncMissingBlocks {
   async execute() {
     const repo = new BlockRepository();
     const latest = await repo.findLatestAdded();
-    const id = latest?.data.header.height ?? null;
+    const id = latest?._id.value();
     if (!id) {
       throw new Error('No blocks found');
     }
@@ -23,21 +23,23 @@ export class SyncMissingBlocks {
   }
 }
 
-export const syncMissingBlocks = inngest
-  .client()
-  .createFunction(
-    { id: 'sync:missing' },
-    { event: InngestEvents.SYNC_MISSING, concurrency: 100 },
-    async ({ step, attempt }) => {
-      try {
-        console.log('Syncing missing blocks');
-        const syncMissingBlocks = new SyncMissingBlocks(step);
-        await syncMissingBlocks.execute();
-      } catch (error) {
-        console.error(error);
-        throw new RetryAfterError(`Sync missing attempt ${attempt}`, '1s', {
-          cause: error,
-        });
-      }
-    },
-  );
+export const syncMissingBlocks = inngest.client().createFunction(
+  { id: 'sync:missing' },
+  {
+    event: InngestEvents.SYNC_MISSING,
+    concurrency: 1,
+    debounce: { period: '2s' },
+  },
+  async ({ step, attempt }) => {
+    try {
+      console.log('Syncing missing blocks');
+      const syncMissingBlocks = new SyncMissingBlocks(step);
+      await syncMissingBlocks.execute();
+    } catch (error) {
+      console.error(error);
+      throw new RetryAfterError(`Sync missing attempt ${attempt}`, '1s', {
+        cause: error,
+      });
+    }
+  },
+);

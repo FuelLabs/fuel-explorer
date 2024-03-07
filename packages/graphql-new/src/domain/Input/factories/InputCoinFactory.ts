@@ -1,16 +1,15 @@
-import { BN, bn } from 'fuels';
+import { bn } from 'fuels';
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import { GQLInput, GQLInputCoin } from '~/graphql/generated/sdk';
+import {
+  GQLGroupedInputCoin,
+  GQLInput,
+  GQLInputCoin,
+} from '~/graphql/generated/sdk';
 
 type Source = GQLInputCoin;
-export type InputCoinGroupedEntry = {
-  type: 'InputCoin';
-  owner: string;
-  assetId: string;
-  totalAmount: BN;
-  inputs: Source[];
-};
+type Typename = GQLGroupedInputCoin['__typename'];
+export type InputCoinGroupedEntry = GQLGroupedInputCoin;
 
 export class InputCoinFactory {
   value: InputCoinGroupedEntry[];
@@ -26,10 +25,15 @@ export class InputCoinFactory {
   private entriesFromInputs(inputs: Source[]) {
     return Object.entries(groupBy(inputs, (i) => i.assetId)).map(
       ([assetId, inputs]) => {
-        const type = inputs[0].__typename;
         const owner = inputs[0].owner;
-        const totalAmount = this.getTotalAmount(inputs);
-        return { owner, assetId, type, totalAmount, inputs };
+        const totalAmount = this.getTotalAmount(inputs).toString();
+        return {
+          __typename: 'GroupedInputCoin' as Typename,
+          owner,
+          assetId,
+          totalAmount,
+          inputs,
+        };
       },
     );
   }

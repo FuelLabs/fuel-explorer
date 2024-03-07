@@ -7,7 +7,7 @@ import {
 } from '~/graphql/generated/sdk';
 
 interface Props {
-  value: Maybe<GQLTransactionStatus> | undefined;
+  value: Maybe<GQLTransactionStatus['__typename']> | undefined;
 }
 
 export class TransactionStatus extends ValueObject<Props> {
@@ -20,7 +20,7 @@ export class TransactionStatus extends ValueObject<Props> {
   }
 
   static create(transaction: GQLTransaction) {
-    return new TransactionStatus({ value: transaction.status });
+    return new TransactionStatus({ value: transaction.status?.__typename });
   }
 
   value() {
@@ -28,7 +28,7 @@ export class TransactionStatus extends ValueObject<Props> {
   }
 
   is(status: 'Success' | 'Failure' | 'Squeezed' | 'Submitted') {
-    const statusType = this.value()?.__typename;
+    const statusType = this.value();
     if (status === 'Success') return statusType === 'SuccessStatus';
     if (status === 'Failure') return statusType === 'FailureStatus';
     if (status === 'Squeezed') return statusType === 'SqueezedOutStatus';

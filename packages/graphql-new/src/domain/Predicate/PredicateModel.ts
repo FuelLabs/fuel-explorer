@@ -8,7 +8,7 @@ export const PredicatesTable = pgTable(
   {
     _id: SerialID.type(),
     bytecode: Bytecode.type(),
-    address: Hash256.type('address'),
+    address: Hash256.type('address').unique(),
   },
   (table) => ({
     predicateIdIdx: index().on(table._id),

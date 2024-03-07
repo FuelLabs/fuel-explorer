@@ -1,13 +1,13 @@
 import { GQLNode } from '~/core/GQLNode';
-import { GQLInput, GQLInputMessage } from '~/graphql/generated/sdk';
+import {
+  GQLGroupedInputMessage,
+  GQLInput,
+  GQLInputMessage,
+} from '~/graphql/generated/sdk';
+
 type Source = GQLInputMessage;
-export type InputMessageGroupedEntry = {
-  type: 'InputMessage';
-  sender: string;
-  recipient: string;
-  data: string;
-  inputs: Source[];
-};
+type Typename = GQLGroupedInputMessage['__typename'];
+export type InputMessageGroupedEntry = GQLGroupedInputMessage;
 
 export class InputMessageFactory {
   value: InputMessageGroupedEntry[];
@@ -22,11 +22,16 @@ export class InputMessageFactory {
 
   private entriesFromInputs(inputs: Source[]) {
     return inputs.map((input) => {
-      const type = input.__typename;
       const sender = input.sender;
       const recipient = input.recipient;
       const data = input.data;
-      return { type, sender, recipient, data, inputs: [input] };
+      return {
+        __typename: 'GroupedInputMessage' as Typename,
+        sender,
+        recipient,
+        data,
+        inputs: [input],
+      };
     });
   }
 }

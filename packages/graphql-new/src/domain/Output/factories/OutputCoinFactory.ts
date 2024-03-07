@@ -1,16 +1,15 @@
-import { BN, bn } from 'fuels';
+import { bn } from 'fuels';
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import { GQLCoinOutput, GQLOutput } from '~/graphql/generated/sdk';
+import {
+  GQLCoinOutput,
+  GQLGroupedOutputCoin,
+  GQLOutput,
+} from '~/graphql/generated/sdk';
 
 type Source = GQLCoinOutput;
-export type OutputCoinGroupedEntry = {
-  type: 'CoinOutput';
-  to: string;
-  assetId: string;
-  totalAmount: BN;
-  outputs: Source[];
-};
+type Typename = GQLGroupedOutputCoin['__typename'];
+export type OutputCoinGroupedEntry = GQLGroupedOutputCoin;
 
 export class OutputCoinFactory {
   value: OutputCoinGroupedEntry[];
@@ -26,10 +25,15 @@ export class OutputCoinFactory {
   private entriesFromOutputs(outputs: Source[]) {
     return Object.entries(groupBy(outputs, (i) => i.assetId)).map(
       ([assetId, outputs]) => {
-        const type = outputs[0].__typename;
         const to = outputs[0].to;
-        const totalAmount = this.getTotalAmount(outputs);
-        return { to, assetId, type, totalAmount, outputs };
+        const totalAmount = this.getTotalAmount(outputs).toString();
+        return {
+          __typename: 'GroupedOutputCoin' as Typename,
+          to,
+          assetId,
+          totalAmount,
+          outputs,
+        };
       },
     );
   }

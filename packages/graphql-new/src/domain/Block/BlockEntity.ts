@@ -1,7 +1,6 @@
 import { Hash256, Timestamp } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
-import { VOData } from '~/core/ValueObject';
 import { GQLBlock } from '~/graphql/generated/sdk';
 import { BlockItem } from './BlockModel';
 import { BlockData } from './vo/BlockData';
@@ -15,12 +14,6 @@ type BlockInputProps = {
   producer: BlockProducer;
   time: ParsedTime;
   totalGasUsed: BlockGasUsed;
-};
-
-type BlockGQLOutput = GQLBlock & {
-  producer: string | null;
-  time: VOData<ParsedTime>;
-  totalGasUsed: VOData<BlockGasUsed>;
 };
 
 export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
@@ -80,7 +73,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     return this.props.totalGasUsed.value();
   }
 
-  toGQLNode(): BlockGQLOutput {
+  toGQLNode(): GQLBlock {
     const data = this.data;
     return {
       ...data,

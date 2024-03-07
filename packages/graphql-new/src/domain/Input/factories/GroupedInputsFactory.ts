@@ -1,21 +1,17 @@
+import { InputCoinFactory } from '~/domain/Input/factories/InputCoinFactory';
+import { InputContractFactory } from '~/domain/Input/factories/InputContractFactory';
+import { InputMessageFactory } from '~/domain/Input/factories/InputMessageFactory';
 import {
-  InputCoinFactory,
-  InputCoinGroupedEntry,
-} from '~/domain/Input/factories/InputCoinFactory';
-import {
-  InputContractFactory,
-  InputContractGroupedEntry,
-} from '~/domain/Input/factories/InputContractFactory';
-import {
-  InputMessageFactory,
-  InputMessageGroupedEntry,
-} from '~/domain/Input/factories/InputMessageFactory';
-import { GQLInput } from '~/graphql/generated/sdk';
+  GQLGroupedInputCoin,
+  GQLGroupedInputContract,
+  GQLGroupedInputMessage,
+  GQLInput,
+} from '~/graphql/generated/sdk';
 
 export type GroupedInputsValue = (
-  | InputCoinGroupedEntry
-  | InputMessageGroupedEntry
-  | InputContractGroupedEntry
+  | GQLGroupedInputCoin
+  | GQLGroupedInputMessage
+  | GQLGroupedInputContract
 )[];
 
 export class GroupedInputsFactory {

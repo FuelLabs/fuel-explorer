@@ -1,8 +1,7 @@
 import { Hash256 } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
-import { VOData } from '~/core/ValueObject';
-import { GQLTransaction } from '~/graphql/generated/sdk';
+import { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
 import { BlockRef } from '../Block/vo/BlockRef';
 import { ContractEntity } from '../Contract/ContractEntity';
 import { InputEntity } from '../Input/InputEntity';
@@ -27,23 +26,14 @@ type TransactionInputProps = {
   txHash: Hash256;
 };
 
-export type TransactionGQLOutput = GQLTransaction & {
-  blockHeight: VOData<BlockRef>;
-  groupedInputs: VOData<TransactionGroupedInputs>;
-  groupedOutputs: VOData<TransactionGroupedOutputs>;
-  hasPredicate: boolean;
-  statusType: VOData<TransactionStatus>;
-  time: VOData<ParsedTime>;
-  title: string;
-};
-
 export class TransactionEntity extends Entity<
   TransactionInputProps,
   TransactionModelID
 > {
-  static create(transaction: TransactionItem) {
+  static async create(transaction: TransactionItem) {
     const item = transaction.data;
-    const id = TransactionModelID.create(item);
+    if (!item) throw new Error('Transaction data is required');
+    const id = TransactionModelID.create(transaction);
     const accountIndex = AccountIndex.create(item);
     const blockRef = BlockRef.create(transaction.blockId);
     const data = TransactionData.create(item);
@@ -68,21 +58,22 @@ export class TransactionEntity extends Entity<
     return new TransactionEntity(props, id);
   }
 
-  static toDBItem(
+  static async toDBItem(
+    block: GQLBlock,
     transaction: GQLTransaction,
-    blockId: number,
-  ): TransactionItem {
+    index: number,
+  ): Promise<TransactionItem> {
     return {
-      _id: TransactionModelID.create(transaction).value(),
+      _id: TransactionModelID.createSerial(block, index).value(),
       txHash: Hash256.create(transaction.id).value(),
       data: TransactionData.create(transaction).value(),
       timestamp: TransactionTimestamp.create(transaction).value(),
       accountIndex: AccountIndex.create(transaction).value(),
-      blockId: BlockRef.create(blockId).value(),
+      blockId: BlockRef.create(Number(block.header.height)).value(),
     };
   }
 
-  toGQLNode(): TransactionGQLOutput {
+  toGQLNode(): GQLTransaction {
     return {
       ...this.data,
       blockHeight: this.blockHeight,
@@ -103,6 +94,10 @@ export class TransactionEntity extends Entity<
     return this.props.data.value();
   }
 
+  get receipts() {
+    return this.data.receipts;
+  }
+
   get timestamp() {
     return this.props.timestamp.value();
   }
@@ -116,7 +111,7 @@ export class TransactionEntity extends Entity<
   }
 
   get blockHeight() {
-    return this.props.blockId.value();
+    return this.props.blockId.value().toString();
   }
 
   get title() {
