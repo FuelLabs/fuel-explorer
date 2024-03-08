@@ -182,9 +182,20 @@ type TxGraphItemNode {
   graph: TxGraph
 }
 
+type WithdrawReceipt {
+  type: String
+  messageId: String
+  sender: String
+  recipient: String
+  amount: String
+  nonce: String
+  digest: String
+  data: [String]
+}
+
 type TxGraph {
   utxos: [Input]
-  withdrawalReceipts: [Receipt]
+  withdrawalReceipts: [WithdrawReceipt]
   transactions: [Transaction]
   from: [TxGraphItemNode]
   to: [TxGraphItemNode]

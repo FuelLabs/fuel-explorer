@@ -1,6 +1,14 @@
-import { bn } from 'fuels';
+import {
+  Provider,
+  ReceiptType,
+  TransactionCoder,
+  arrayify,
+  assembleTransactionSummary,
+  bn,
+  processGqlReceipt,
+} from 'fuels';
 import { gql } from 'graphql-request';
-import { groupBy } from 'lodash';
+import { groupBy, uniqBy } from 'lodash';
 import { Transaction } from '../sdk';
 import { parseAddressParam } from '../utils/address';
 import { getClient } from '../utils/client';
@@ -29,6 +37,7 @@ export class TxGraphDomain extends Domain<any> {
 
 async function createGraphFromAddress(addr: string, url: string) {
   if (!addr) return null;
+  const provider = await Provider.create(url);
   try {
     const address = parseAddressParam(addr);
     const allTransactions = (await getTransactions(
@@ -36,16 +45,18 @@ async function createGraphFromAddress(addr: string, url: string) {
       url,
     )) as Transaction[];
 
-    const withdrawalReceipts = allTransactions
+    const codedTransactions = await Promise.all(
+      allTransactions.map(async (t) => {
+        return getTransactionSummary(t, provider);
+      }),
+    );
+
+    const withdrawalReceipts = codedTransactions
       .flatMap((t) => {
         return t.receipts;
       })
-      .filter((r: any) => {
-        return (
-          r!.digest &&
-          (r?.receiptType === 'MESSAGE_OUT' ||
-            r?.receiptType === 'MESSAGE_OUT_RECEIPT')
-        );
+      .filter((r) => {
+        return r.type === ReceiptType.MessageOut;
       })
       .map((receipt) => {
         return receipt;
@@ -53,7 +64,7 @@ async function createGraphFromAddress(addr: string, url: string) {
 
     const inputs = allTransactions.flatMap((t) =>
       (t?.inputs ?? [])
-        .filter((i: any) => bn(i.amount).gt('1000000000'))
+        .filter((i: any) => bn(i.amount).gt('10000000000'))
         ?.map((i) => ({
           ...i,
           timestamp: (t.status as any)?.time,
@@ -64,7 +75,7 @@ async function createGraphFromAddress(addr: string, url: string) {
 
     const outputs = allTransactions.flatMap((t) =>
       (t?.outputs ?? [])
-        .filter((i: any) => bn(i.amount).gt('1000000000'))
+        .filter((i: any) => bn(i.amount).gt('10000000000'))
         ?.map((o) => ({
           ...o,
           timestamp: (t.status as any)?.time,
@@ -73,11 +84,18 @@ async function createGraphFromAddress(addr: string, url: string) {
         .filter(Boolean),
     );
 
-    const utxos = allTransactions.flatMap((t) =>
-      (t?.inputs ?? [])
-        .filter((i: any) => bn(i.amount).gt('1000000000'))
-        .filter(Boolean),
+    const utxos = uniqBy(
+      allTransactions.flatMap((t) =>
+        (t?.inputs ?? [])
+          .filter((i: any) => bn(i.amount).gt('10000000000'))
+          .filter(Boolean),
+      ),
+      'utxoId',
     );
+
+    for (const u of utxos) {
+      console.log((u as any).utxoId);
+    }
 
     const groupedInputsByOwner = groupBy(
       inputs,
@@ -202,6 +220,35 @@ async function getTransactions(address: String, url: string) {
     console.log(err);
     return [];
   }
+}
+function getTransactionSummary(gqlTransaction: any, provider: any) {
+  const [decodedTransaction] = new TransactionCoder().decode(
+    arrayify(gqlTransaction.rawPayload),
+    0,
+  );
+
+  const receipts = gqlTransaction.receipts?.map(processGqlReceipt) || [];
+
+  const {
+    consensusParameters: { gasPerByte, gasPriceFactor, maxInputs, gasCosts },
+  } = provider.getChain();
+
+  const transactionInfo = assembleTransactionSummary<any>({
+    id: gqlTransaction.id,
+    receipts,
+    transaction: decodedTransaction,
+    transactionBytes: arrayify(gqlTransaction.rawPayload),
+    gqlTransactionStatus: gqlTransaction.status,
+    gasPerByte: bn(gasPerByte),
+    gasPriceFactor: bn(gasPriceFactor),
+    maxInputs,
+    gasCosts,
+  });
+
+  return {
+    gqlTransaction,
+    ...transactionInfo,
+  };
 }
 
 const fragment = `
