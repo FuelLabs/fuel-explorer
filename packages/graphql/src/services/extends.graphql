@@ -178,6 +178,7 @@ type TxGraphItem {
 type TxGraphItemNode {
   id: Address
   transactions: [TxGraphItem]
+  graph: [TxGraphItemNode]
 }
 
 type TxGraph {

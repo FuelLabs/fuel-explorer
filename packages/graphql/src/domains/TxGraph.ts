@@ -13,7 +13,11 @@ export class TxGraphDomain extends Domain<any> {
   }
 
   async createTxGraph() {
-    const address = parseAddressParam(this.args.address);
+    return this.createGraphFromAddress(this.args.address);
+  }
+
+  private async createGraphFromAddress(addr: string) {
+    const address = parseAddressParam(addr);
     const allTransactions = (await this.getTransactions(
       address,
     )) as Transaction[];
@@ -46,59 +50,69 @@ export class TxGraphDomain extends Domain<any> {
       (o: any) => o?.to || o?.recipient || o?.contract?.id,
     );
 
-    const from = Object.entries(groupedInputsByOwner).map(([key, value]) => {
-      return {
-        __typename: 'TxGraphItemNode',
-        id: key,
-        transactions: value.map((v: any) => {
-          const from = v.owner ?? v.sender ?? v.contract?.id;
-          const to = address;
-          const assetId = v.assetId;
-          const amount = v.amount;
-          const isContract = Boolean(v.contract);
-          const isPredicate = Boolean(v.predicate);
-          const timestamp = v.timestamp;
-          const txHash = v.txHash;
-          const utoxId = v.utxoId;
-          return {
-            __typename: 'TxGraphItem',
-            from,
-            to,
-            assetId,
-            amount,
-            isContract,
-            isPredicate,
-            timestamp,
-            txHash,
-            utoxId,
-          };
-        }),
-      };
-    });
+    const from = await Promise.all(
+      Object.entries(groupedInputsByOwner).map(async ([key, value]) => {
+        const graph = (await this.createGraphFromAddress(key)) as any;
+        return {
+          __typename: 'TxGraphItemNode',
+          id: key,
+          graph,
+          transactions: value.map((v: any) => {
+            const from = v.owner ?? v.sender ?? v.contract?.id;
+            const to = address;
+            const assetId = v.assetId;
+            const amount = v.amount;
+            const isContract = Boolean(v.contract);
+            const isPredicate = Boolean(v.predicate);
+            const timestamp = v.timestamp;
+            const txHash = v.txHash;
+            const utoxId = v.utxoId;
+            return {
+              __typename: 'TxGraphItem',
+              from,
+              to,
+              assetId,
+              amount,
+              isContract,
+              isPredicate,
+              timestamp,
+              txHash,
+              utoxId,
+            };
+          }),
+        };
+      }),
+    );
 
-    const to = Object.entries(_groupedOutputsByOwner).map(([key, value]) => {
-      return {
-        id: key,
-        transactions: value.map((v: any) => {
-          const from = address;
-          const to = v.to || v.recipient || v.contract?.id;
-          const assetId = v.assetId;
-          const amount = v.amount;
-          const isContract = Boolean(v.contract);
-          const timestamp = v.timestamp;
-          const txHash = v.txHash;
-          return {
-            from,
-            to,
-            assetId,
-            amount,
-            isContract,
-            timestamp,
-            txHash,
-          };
-        }),
-      };
-    });
+    const to = await Promise.all(
+      Object.entries(_groupedOutputsByOwner).map(async ([key, value]) => {
+        const graph = (await this.createGraphFromAddress(key)) as any;
+        return {
+          __typename: 'TxGraphItemNode',
+          graph,
+          id: key,
+          transactions: value.map((v: any) => {
+            const from = address;
+            const to = v.to || v.recipient || v.contract?.id;
+            const assetId = v.assetId;
+            const amount = v.amount;
+            const isContract = Boolean(v.contract);
+            const timestamp = v.timestamp;
+            const txHash = v.txHash;
+            return {
+              __typename: 'TxGraphItem',
+              from,
+              to,
+              assetId,
+              amount,
+              isContract,
+              timestamp,
+              txHash,
+            };
+          }),
+        };
+      }),
+    );
 
     return {
       transactions: allTransactions,
