@@ -45,6 +45,7 @@ export class Domain<S = any, A = any> {
     val: string,
     variables: V = {} as V,
   ) {
+    console.log(this);
     const client = getClient(this.context.url);
     return client.request<R>(val, variables);
   }

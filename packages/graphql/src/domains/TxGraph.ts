@@ -2,6 +2,7 @@ import { gql } from 'graphql-request';
 import { groupBy } from 'lodash';
 import { Transaction } from '../sdk';
 import { parseAddressParam } from '../utils/address';
+import { getClient } from '../utils/client';
 import { Domain } from '../utils/domain';
 
 export class TxGraphDomain extends Domain<any> {
@@ -11,19 +12,31 @@ export class TxGraphDomain extends Domain<any> {
       ...domain.createResolver('txGraph', 'createTxGraph'),
     };
   }
-
-  async createTxGraph() {
-    return this.createGraphFromAddress(this.args.address);
+  static createResolverForItem() {
+    return {
+      graph: async (parent: any, _args: any, context: any) => {
+        if (parent.id === parent.rootAddress) return;
+        console.log({ parent });
+        return createGraphFromAddress(parent.id, context.url);
+      },
+    };
   }
 
-  private async createGraphFromAddress(addr: string) {
+  async createTxGraph() {
+    return createGraphFromAddress(this.args.address, this.context.url);
+  }
+}
+
+async function createGraphFromAddress(addr: string, url: string) {
+  try {
     const address = parseAddressParam(addr);
-    const allTransactions = (await this.getTransactions(
+    const allTransactions = (await getTransactions(
       address,
+      url,
     )) as Transaction[];
 
     const inputs = allTransactions.flatMap((t) =>
-      t.inputs
+      t?.inputs
         ?.map((i) => ({
           ...i,
           timestamp: (t.status as any)?.time,
@@ -32,7 +45,7 @@ export class TxGraphDomain extends Domain<any> {
         .filter(Boolean),
     );
     const outputs = allTransactions.flatMap((t) =>
-      t.outputs
+      t?.outputs
         ?.map((o) => ({
           ...o,
           timestamp: (t.status as any)?.time,
@@ -50,85 +63,94 @@ export class TxGraphDomain extends Domain<any> {
       (o: any) => o?.to || o?.recipient || o?.contract?.id,
     );
 
-    const from = await Promise.all(
-      Object.entries(groupedInputsByOwner)
-        .filter(([id]) => id !== address)
-        .map(async ([key, value]) => {
-          const graph = (await this.createGraphFromAddress(key)) as any;
+    const from = [];
+    const fromEntries = Object.entries(groupedInputsByOwner).filter(
+      ([id]) => id !== address,
+    );
+    for (const [key, value] of fromEntries) {
+      const fromData = {
+        __typename: 'TxGraphItemNode',
+        id: key,
+        rootAddress: address,
+        transactions: value.map((v: any) => {
+          const from = v.owner ?? v.sender ?? v.contract?.id;
+          const to = address;
+          const assetId = v.assetId;
+          const amount = v.amount;
+          const isContract = Boolean(v.contract);
+          const isPredicate = Boolean(v.predicate);
+          const timestamp = v.timestamp;
+          const txHash = v.txHash;
+          const utxoId = v.utxoId;
           return {
-            __typename: 'TxGraphItemNode',
-            id: key,
-            graph,
-            transactions: value.map((v: any) => {
-              const from = v.owner ?? v.sender ?? v.contract?.id;
-              const to = address;
-              const assetId = v.assetId;
-              const amount = v.amount;
-              const isContract = Boolean(v.contract);
-              const isPredicate = Boolean(v.predicate);
-              const timestamp = v.timestamp;
-              const txHash = v.txHash;
-              const utoxId = v.utxoId;
-              return {
-                __typename: 'TxGraphItem',
-                from,
-                to,
-                assetId,
-                amount,
-                isContract,
-                isPredicate,
-                timestamp,
-                txHash,
-                utoxId,
-              };
-            }),
+            __typename: 'TxGraphItem',
+            from,
+            to,
+            assetId,
+            amount,
+            isContract,
+            isPredicate,
+            timestamp,
+            txHash,
+            utxoId,
           };
         }),
-    );
+      };
+      from.push(fromData);
+    }
 
-    const to = await Promise.all(
-      Object.entries(_groupedOutputsByOwner)
-        .filter(([id]) => id !== address)
-        .map(async ([key, value]) => {
-          const graph = (await this.createGraphFromAddress(key)) as any;
+    const to = [];
+    const toEntries = Object.entries(_groupedOutputsByOwner).filter(
+      ([id]) => id !== address,
+    );
+    for (const [key, value] of toEntries) {
+      const toData = {
+        __typename: 'TxGraphItemNode',
+        id: key,
+        rootAddress: address,
+        transactions: value.map((v: any) => {
+          const from = address;
+          const to = v.to || v.recipient || v.contract?.id;
+          const assetId = v.assetId;
+          const amount = v.amount;
+          const isContract = Boolean(v.contract);
+          const timestamp = v.timestamp;
+          const txHash = v.txHash;
           return {
-            __typename: 'TxGraphItemNode',
-            graph,
-            id: key,
-            transactions: value.map((v: any) => {
-              const from = address;
-              const to = v.to || v.recipient || v.contract?.id;
-              const assetId = v.assetId;
-              const amount = v.amount;
-              const isContract = Boolean(v.contract);
-              const timestamp = v.timestamp;
-              const txHash = v.txHash;
-              return {
-                __typename: 'TxGraphItem',
-                from,
-                to,
-                assetId,
-                amount,
-                isContract,
-                timestamp,
-                txHash,
-              };
-            }),
+            __typename: 'TxGraphItem',
+            from,
+            to,
+            assetId,
+            amount,
+            isContract,
+            timestamp,
+            txHash,
           };
         }),
-    );
+      };
+      to.push(toData);
+    }
 
     return {
       transactions: allTransactions,
       from,
       to,
     };
+  } catch (_err) {
+    console.log(_err);
+    return {
+      transactions: [],
+      from: [],
+      to: [],
+    };
   }
+}
 
-  private async getTransactions(address: String) {
+async function getTransactions(address: String, url: string) {
+  try {
     const query = gql`
       query addressTxs($address: Address!) {
-        transactionsByOwner(owner: $address, first: 1000) {
+        transactionsByOwner(owner: $address, first: 100) {
           nodes {
             ...TransactionItem
           }
@@ -141,7 +163,8 @@ export class TxGraphDomain extends Domain<any> {
     `;
 
     let txs = [] as any[];
-    const data = await this.query<any>(query, {
+    const client = getClient(url);
+    const data = await client.request<any>(query, {
       address: address,
     });
 
@@ -149,11 +172,13 @@ export class TxGraphDomain extends Domain<any> {
       txs = data.transactionsByOwner.nodes;
     }
     if (data.transactionsByOwner.pageInfo.hasNextPage) {
-      const res = await this.getTransactions(address);
+      const res = await getTransactions(address, url);
       txs = txs.concat(res);
     }
 
     return txs;
+  } catch (err) {
+    console.log(err);
   }
 }
 

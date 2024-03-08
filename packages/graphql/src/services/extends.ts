@@ -17,4 +17,5 @@ export const extendsResolvers = {
     ...SearchDomain.createResolvers(),
     ...TxGraphDomain.createResolvers(),
   },
+  TxGraphItemNode: TxGraphDomain.createResolverForItem(),
 };
