@@ -41,7 +41,11 @@ async function createGraphFromAddress(addr: string, url: string) {
         return t.receipts;
       })
       .filter((r: any) => {
-        return r!.digest && r?.receiptType === 'MESSAGE_OUT';
+        return (
+          r!.digest &&
+          (r?.receiptType === 'MESSAGE_OUT' ||
+            r?.receiptType === 'MESSAGE_OUT_RECEIPT')
+        );
       })
       .map((receipt) => {
         return receipt;
@@ -143,6 +147,7 @@ async function createGraphFromAddress(addr: string, url: string) {
     });
 
     return {
+      utxos: [],
       transactions: allTransactions,
       withdrawalReceipts,
       from,
