@@ -51,73 +51,77 @@ export class TxGraphDomain extends Domain<any> {
     );
 
     const from = await Promise.all(
-      Object.entries(groupedInputsByOwner).map(async ([key, value]) => {
-        const graph = (await this.createGraphFromAddress(key)) as any;
-        return {
-          __typename: 'TxGraphItemNode',
-          id: key,
-          graph,
-          transactions: value.map((v: any) => {
-            const from = v.owner ?? v.sender ?? v.contract?.id;
-            const to = address;
-            const assetId = v.assetId;
-            const amount = v.amount;
-            const isContract = Boolean(v.contract);
-            const isPredicate = Boolean(v.predicate);
-            const timestamp = v.timestamp;
-            const txHash = v.txHash;
-            const utoxId = v.utxoId;
-            return {
-              __typename: 'TxGraphItem',
-              from,
-              to,
-              assetId,
-              amount,
-              isContract,
-              isPredicate,
-              timestamp,
-              txHash,
-              utoxId,
-            };
-          }),
-        };
-      }),
+      Object.entries(groupedInputsByOwner)
+        .filter(([id]) => id !== address)
+        .map(async ([key, value]) => {
+          const graph = (await this.createGraphFromAddress(key)) as any;
+          return {
+            __typename: 'TxGraphItemNode',
+            id: key,
+            graph,
+            transactions: value.map((v: any) => {
+              const from = v.owner ?? v.sender ?? v.contract?.id;
+              const to = address;
+              const assetId = v.assetId;
+              const amount = v.amount;
+              const isContract = Boolean(v.contract);
+              const isPredicate = Boolean(v.predicate);
+              const timestamp = v.timestamp;
+              const txHash = v.txHash;
+              const utoxId = v.utxoId;
+              return {
+                __typename: 'TxGraphItem',
+                from,
+                to,
+                assetId,
+                amount,
+                isContract,
+                isPredicate,
+                timestamp,
+                txHash,
+                utoxId,
+              };
+            }),
+          };
+        }),
     );
 
     const to = await Promise.all(
-      Object.entries(_groupedOutputsByOwner).map(async ([key, value]) => {
-        const graph = (await this.createGraphFromAddress(key)) as any;
-        return {
-          __typename: 'TxGraphItemNode',
-          graph,
-          id: key,
-          transactions: value.map((v: any) => {
-            const from = address;
-            const to = v.to || v.recipient || v.contract?.id;
-            const assetId = v.assetId;
-            const amount = v.amount;
-            const isContract = Boolean(v.contract);
-            const timestamp = v.timestamp;
-            const txHash = v.txHash;
-            return {
-              __typename: 'TxGraphItem',
-              from,
-              to,
-              assetId,
-              amount,
-              isContract,
-              timestamp,
-              txHash,
-            };
-          }),
-        };
-      }),
+      Object.entries(_groupedOutputsByOwner)
+        .filter(([id]) => id !== address)
+        .map(async ([key, value]) => {
+          const graph = (await this.createGraphFromAddress(key)) as any;
+          return {
+            __typename: 'TxGraphItemNode',
+            graph,
+            id: key,
+            transactions: value.map((v: any) => {
+              const from = address;
+              const to = v.to || v.recipient || v.contract?.id;
+              const assetId = v.assetId;
+              const amount = v.amount;
+              const isContract = Boolean(v.contract);
+              const timestamp = v.timestamp;
+              const txHash = v.txHash;
+              return {
+                __typename: 'TxGraphItem',
+                from,
+                to,
+                assetId,
+                amount,
+                isContract,
+                timestamp,
+                txHash,
+              };
+            }),
+          };
+        }),
     );
 
     return {
       transactions: allTransactions,
-      from: from.filter((i) => i.id !== address),
-      to: to.filter((i) => i.id !== address),
+      from,
+      to,
     };
   }
 
