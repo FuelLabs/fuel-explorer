@@ -7,7 +7,7 @@ const VERCEL_URL = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
 const VERCEL_ENV =
   process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV || 'development';
 
-export const getBaseUrl = () => {
+const getBaseUrl = () => {
   if (FUEL_EXPLORER_API && FUEL_EXPLORER_API_KEY) return FUEL_EXPLORER_API;
   if (VERCEL_ENV !== 'development')
     return resolve(`https://${VERCEL_URL}`, '/api/graphql');
