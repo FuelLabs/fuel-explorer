@@ -58,7 +58,7 @@ async function createGraphFromAddress(addr: string, url: string) {
       inputs,
       (i: any) => i?.owner || i?.sender || i?.contract?.id,
     );
-    const _groupedOutputsByOwner = groupBy(
+    const groupedOutputsByOwner = groupBy(
       outputs,
       (o: any) => o?.to || o?.recipient || o?.contract?.id,
     );
@@ -100,7 +100,7 @@ async function createGraphFromAddress(addr: string, url: string) {
     }
 
     const to = [];
-    const toEntries = Object.entries(_groupedOutputsByOwner).filter(
+    const toEntries = Object.entries(groupedOutputsByOwner).filter(
       ([id]) => id !== address,
     );
     for (const [key, value] of toEntries) {
