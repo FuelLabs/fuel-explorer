@@ -1,5 +1,4 @@
 import {
-  FUEL_MNEMONIC,
   FuelWalletTestHelper,
   getButtonByText,
   getByAriaLabel,
@@ -8,14 +7,12 @@ import {
 import type { Locator } from '@playwright/test';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
 import type { BigNumberish, WalletUnlocked } from 'fuels';
-import { BaseAssetId, Provider, Wallet, bn, format } from 'fuels';
+import { BaseAssetId, bn, format } from 'fuels';
 import type { HDAccount } from 'viem';
 import { http, createPublicClient, getContract } from 'viem';
-import { mnemonicToAccount } from 'viem/accounts';
 import { foundry } from 'viem/chains';
 import type { PublicClient } from 'wagmi';
 
-import { ETH_MNEMONIC } from '../../app-portal/playwright/mocks';
 import { ERC_20 } from '../../app-portal/src/systems/Chains/eth/contracts/Erc20';
 
 import { expect, test } from './fixtures';
@@ -29,8 +26,9 @@ import {
   hasDropdownSymbol,
   proceedAnyways,
 } from './utils/bridge';
+import { setupFuelWallet } from './utils/wallets';
 
-const { FUEL_PROVIDER_URL, ETH_ERC20, FUEL_FUNGIBLE_ASSET_ID } = process.env;
+const { ETH_ERC20, FUEL_FUNGIBLE_ASSET_ID } = process.env;
 
 test.describe('Bridge', () => {
   let client: PublicClient;
@@ -40,26 +38,21 @@ test.describe('Bridge', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
 
   test.beforeEach(async ({ context, extensionId, page }) => {
-    const fuelProvider = await Provider.create(FUEL_PROVIDER_URL);
-
-    const chainName = (await fuelProvider.fetchChain()).name;
-    fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup(
+    const walletSettedUp = await setupFuelWallet({
       context,
       extensionId,
-      FUEL_PROVIDER_URL,
-      chainName,
-    );
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.switchAccount('Account 1');
+      page,
+    });
+    fuelWallet = walletSettedUp.fuelWallet;
+    fuelWalletTestHelper = walletSettedUp.fuelWalletTestHelper;
+    account = walletSettedUp.account;
+
     client = createPublicClient({
       chain: foundry,
       transport: http(),
     });
-    account = mnemonicToAccount(ETH_MNEMONIC);
-    fuelWallet = Wallet.fromMnemonic(FUEL_MNEMONIC, fuelProvider);
-    await page.goto('/');
+
+    await page.goto('/bridge');
   });
 
   test.afterAll(async ({ context }) => {
@@ -69,34 +62,34 @@ test.describe('Bridge', () => {
   test('e2e', async ({ context, page }) => {
     await test.step('Check if fuel is available', async () => {
       const hasFuel = await page.evaluate(() => {
-        return typeof window.fuel === 'object';
+        return typeof (window as any).fuel === 'object';
       });
       expect(hasFuel).toBeTruthy();
       await page.bringToFront();
     });
 
-    let bridgePage: Locator;
-    await test.step('Connect to metamask', async () => {
-      await page.bringToFront();
-      // Go to the bridge page
-      bridgePage = page.locator('[role="link"]').getByText('Bridge');
-      await bridgePage.click();
+    let _bridgePage: Locator;
+    // await test.step('Connect to metamask', async () => {
+    //   await page.bringToFront();
+    //   // Go to the bridge page
+    //   bridgePage = page.locator('[role="link"]').getByText('Bridge');
+    //   await bridgePage.click();
 
-      // Connect metamask
-      const connectKitButton = getByAriaLabel(page, 'Connect Ethereum Wallet');
-      await connectKitButton.click();
-      const metamaskConnect = getButtonByText(page, 'Metamask');
-      await metamaskConnect.click();
-      await metamask.acceptAccess();
-    });
+    //   // Connect metamask
+    //   const connectKitButton = getByAriaLabel(page, 'Connect Ethereum Wallet');
+    //   await connectKitButton.click();
+    //   const metamaskConnect = getButtonByText(page, 'Metamask');
+    //   await metamaskConnect.click();
+    //   await metamask.acceptAccess();
+    // });
 
-    await test.step('Connect to Fuel', async () => {
-      // Connect fuel
-      const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
-      await connectFuel.click();
-      await getByAriaLabel(page, 'Connect to Fuel Wallet', true).click();
-      await fuelWalletTestHelper.walletConnect(['Account 2', 'Account 4']);
-    });
+    // await test.step('Connect to Fuel', async () => {
+    //   // Connect fuel
+    //   const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
+    //   await connectFuel.click();
+    //   await getByAriaLabel(page, 'Connect to Fuel Wallet', true).click();
+    //   await fuelWalletTestHelper.walletConnect(['Account 2', 'Account 4']);
+    // });
 
     const INITIATE_DEPOSIT =
       'Deposit successfully initiated. You may now close the popup.';

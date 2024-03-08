@@ -45,7 +45,7 @@ export const useBridgeTxs = () => {
   }, [
     isLoadingConnection,
     fuelProvider?.url,
-    ethPublicClient.chain.id,
+    ethPublicClient?.chain.id,
     fuelAddress?.toAddress(),
   ]);
 

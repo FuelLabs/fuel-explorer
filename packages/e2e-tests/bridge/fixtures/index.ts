@@ -6,19 +6,15 @@ import { chromium, test as base } from '@playwright/test';
 import { initialSetup } from '@synthetixio/synpress/commands/metamask';
 import { prepareMetamask } from '@synthetixio/synpress/helpers';
 
-import {
-  ETH_MNEMONIC,
-  ETH_WALLET_PASSWORD,
-} from '../../../app-portal/playwright/mocks';
+import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
 
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
-
 export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async (_, use) => {
+  context: async ({ context: _ }, use) => {
     // required for synpress
     global.expect = expect;
     // download fuel wallet

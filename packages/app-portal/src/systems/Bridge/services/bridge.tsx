@@ -5,7 +5,6 @@ import type {
   BN,
   Provider as FuelProvider,
 } from 'fuels';
-import type { PublicClient, WalletClient } from 'wagmi';
 import { store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import type {
@@ -26,6 +25,7 @@ import {
 
 import { FuelWalletLocked } from '@fuel-wallet/sdk';
 import { FUEL_CHAIN } from 'app-commons';
+import { PublicClient, WalletClient } from 'viem';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {

@@ -1,6 +1,6 @@
 import { bn } from 'fuels';
-import type { PublicClient } from 'wagmi';
 
+import { PublicClient } from 'viem';
 import { EthTxCache } from './txCache';
 
 export const getBlockDate = async ({

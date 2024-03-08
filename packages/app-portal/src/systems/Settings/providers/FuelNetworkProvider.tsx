@@ -1,8 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import { FUEL_CHAIN } from 'app-commons';
 import type { Provider } from 'fuels';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
-import { useQuery } from 'wagmi';
 import { createProvider } from '~portal/systems/Chains/fuel/utils/provider';
 
 type FuelNetworkProviderProps = {

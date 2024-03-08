@@ -13,6 +13,23 @@ const {
   FUEL_GRAPHQL_ENDPOINT,
   PK_ETH_WALLET,
 } = process.env;
+
+console.log(
+  `{
+  PORT,
+  L1_CHAIN_HTTP,
+  DEPLOYMENTS_HTTP,
+  FUEL_GRAPHQL_ENDPOINT,
+  PK_ETH_WALLET,
+}`,
+  {
+    PORT,
+    L1_CHAIN_HTTP,
+    DEPLOYMENTS_HTTP,
+    FUEL_GRAPHQL_ENDPOINT,
+    PK_ETH_WALLET,
+  },
+);
 const APP_PORT = PORT || 9090;
 
 async function main() {
@@ -24,6 +41,7 @@ async function main() {
     pk_eth_deployer: PK_ETH_WALLET,
   });
   const ETHToken = await getOrDeployECR20Contract(env);
+  console.log('ETHToken', ETHToken);
   const FuelToken = await getOrDeployFuelTokenContract(
     env,
     ETHToken,
@@ -35,8 +53,10 @@ async function main() {
     9,
   );
   const tokenId = getTokenId(FuelToken);
+  const erc20Address = await ETHToken.getAddress();
+
   await startServer({
-    ETH_ERC20: ETHToken.address,
+    ETH_ERC20: erc20Address,
     FUEL_TokenContract: FuelToken.id.toB256(),
     FUEL_TokenAsset: tokenId,
   });

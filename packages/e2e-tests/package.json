@@ -1,4 +1,10 @@
 {
   "name": "e2e-tests",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@fuel-wallet/playwright-utils": "0.15.2",
+    "@synthetixio/synpress": "3.7.2-beta.7",
+    "viem": "2.7.20",
+    "wagmi": "2.5.7"
+  }
 }

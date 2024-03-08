@@ -14,7 +14,7 @@ import {
   getTransactionsSummaries,
 } from 'fuels';
 import type { WalletClient } from 'viem';
-import type { PublicClient as EthPublicClient } from 'wagmi';
+import type { PublicClient as EthPublicClient } from 'viem';
 
 import { getBridgeSolidityContracts } from 'app-commons';
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
@@ -389,7 +389,7 @@ export class TxFuelToEthService {
       bridgeSolidityContracts,
     });
 
-    const txHash = await fuelPortal.write.relayMessage([
+    const txHash = await (fuelPortal as any).write.relayMessage([
       relayMessageParams.message,
       relayMessageParams.rootBlockHeader,
       relayMessageParams.blockHeader,

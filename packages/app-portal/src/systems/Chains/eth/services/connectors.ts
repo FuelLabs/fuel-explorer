@@ -1,8 +1,7 @@
 import type { PublicClient, WalletClient } from 'viem';
-import { getContract } from 'viem';
+import { erc20Abi, getContract } from 'viem';
 
 import { BridgeSolidityContracts } from 'app-commons';
-import { ERC_20 } from '../contracts/Erc20';
 import { FUEL_CHAIN_STATE } from '../contracts/FuelChainState';
 import { FUEL_ERC_20_GATEWAY } from '../contracts/FuelErc20Gateway';
 import { FUEL_MESSAGE_PORTAL } from '../contracts/FuelMessagePortal';
@@ -18,8 +17,10 @@ export class EthConnectorService {
     const contract = getContract({
       abi: FUEL_ERC_20_GATEWAY.abi,
       address: bridgeSolidityContracts.FuelERC20Gateway,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;
@@ -35,8 +36,10 @@ export class EthConnectorService {
     const contract = getContract({
       abi: FUEL_MESSAGE_PORTAL.abi,
       address: bridgeSolidityContracts.FuelMessagePortal,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;
@@ -50,10 +53,13 @@ export class EthConnectorService {
     const { walletClient, publicClient, address } = options;
 
     const contract = getContract({
-      abi: ERC_20.abi,
+      abi: erc20Abi,
+      // abi: ERC_20.abi,
       address,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;
@@ -69,8 +75,10 @@ export class EthConnectorService {
     const contract = getContract({
       abi: FUEL_CHAIN_STATE.abi,
       address: bridgeSolidityContracts.FuelChainState,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;

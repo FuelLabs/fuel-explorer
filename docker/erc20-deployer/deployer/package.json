@@ -4,8 +4,8 @@
     "start": "ts-node ./src/index.ts"
   },
   "dependencies": {
-    "@fuel-bridge/test-utils": "next",
-    "ethers": "5.7.2",
+    "@fuel-bridge/test-utils": "pr-134",
+    "ethers": "6.11.0",
     "fuels": "0.73.0"
   },
   "devDependencies": {

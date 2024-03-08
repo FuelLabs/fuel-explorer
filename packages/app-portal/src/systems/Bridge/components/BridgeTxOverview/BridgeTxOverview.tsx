@@ -84,7 +84,7 @@ export const BridgeTxOverview = ({
             <InfoTextLoader />
           ) : (
             <>
-              <Asset asset={ethAsset} iconSize={17}>
+              <Asset asset={asset} iconSize={'xs'}>
                 <Asset.Icon alt={`Asset ${asset?.symbol}`} />
               </Asset>
               <Text aria-label="Asset amount" className={classes.infoText()}>
