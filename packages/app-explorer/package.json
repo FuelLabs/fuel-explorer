@@ -10,7 +10,7 @@
     "dev:storybook": "storybook dev -p 6007",
     "start": "next start",
     "test": "jest --verbose --passWithNoTests",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "cd ../app-portal && pnpm xstate:typegen && cd ../app-explorer tsc --noEmit"
   },
   "dependencies": {
     "@faker-js/faker": "8.4.0",
