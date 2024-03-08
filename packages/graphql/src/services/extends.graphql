@@ -183,7 +183,7 @@ type TxGraphItemNode {
 }
 
 type TxGraph {
-  utoxs: [Utxo]
+  utxos: [Input]
   withdrawalReceipts: [Receipt]
   transactions: [Transaction]
   from: [TxGraphItemNode]

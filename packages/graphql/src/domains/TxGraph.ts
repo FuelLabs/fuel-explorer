@@ -73,6 +73,12 @@ async function createGraphFromAddress(addr: string, url: string) {
         .filter(Boolean),
     );
 
+    const utxos = allTransactions.flatMap((t) =>
+      (t?.inputs ?? [])
+        .filter((i: any) => bn(i.amount).gt('1000000000'))
+        .filter(Boolean),
+    );
+
     const groupedInputsByOwner = groupBy(
       inputs,
       (i: any) => i?.owner || i?.sender || i?.contract?.id,
@@ -147,7 +153,7 @@ async function createGraphFromAddress(addr: string, url: string) {
     });
 
     return {
-      utxos: [],
+      utxos,
       transactions: allTransactions,
       withdrawalReceipts,
       from,
@@ -167,7 +173,7 @@ async function getTransactions(address: String, url: string) {
   try {
     const query = gql`
       query addressTxs($address: Address!) {
-        transactionsByOwner(owner: $address, first: 1000) {
+        transactionsByOwner(owner: $address, first: 5000) {
           nodes {
             ...TransactionItem
           }
