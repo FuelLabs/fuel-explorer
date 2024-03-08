@@ -1,3 +1,4 @@
+import { bn } from 'fuels';
 import { gql } from 'graphql-request';
 import { groupBy } from 'lodash';
 import { Transaction } from '../sdk';
@@ -16,7 +17,6 @@ export class TxGraphDomain extends Domain<any> {
     return {
       graph: async (parent: any, _args: any, context: any) => {
         if (parent.id === parent.rootAddress) return;
-        console.log({ parent });
         return createGraphFromAddress(parent.id, context.url);
       },
     };
@@ -28,6 +28,7 @@ export class TxGraphDomain extends Domain<any> {
 }
 
 async function createGraphFromAddress(addr: string, url: string) {
+  if (!addr) return null;
   try {
     const address = parseAddressParam(addr);
     const allTransactions = (await getTransactions(
@@ -35,8 +36,20 @@ async function createGraphFromAddress(addr: string, url: string) {
       url,
     )) as Transaction[];
 
+    const withdrawalReceipts = allTransactions
+      .flatMap((t) => {
+        return t.receipts;
+      })
+      .filter((r: any) => {
+        return r!.digest && r?.receiptType === 'MESSAGE_OUT';
+      })
+      .map((receipt) => {
+        return receipt;
+      });
+
     const inputs = allTransactions.flatMap((t) =>
-      t?.inputs
+      (t?.inputs ?? [])
+        .filter((i: any) => bn(i.amount).gt('1000000000'))
         ?.map((i) => ({
           ...i,
           timestamp: (t.status as any)?.time,
@@ -44,8 +57,10 @@ async function createGraphFromAddress(addr: string, url: string) {
         }))
         .filter(Boolean),
     );
+
     const outputs = allTransactions.flatMap((t) =>
-      t?.outputs
+      (t?.outputs ?? [])
+        .filter((i: any) => bn(i.amount).gt('1000000000'))
         ?.map((o) => ({
           ...o,
           timestamp: (t.status as any)?.time,
@@ -58,17 +73,16 @@ async function createGraphFromAddress(addr: string, url: string) {
       inputs,
       (i: any) => i?.owner || i?.sender || i?.contract?.id,
     );
-    const groupedOutputsByOwner = groupBy(
+    const _groupedOutputsByOwner = groupBy(
       outputs,
       (o: any) => o?.to || o?.recipient || o?.contract?.id,
     );
 
-    const from = [];
-    const fromEntries = Object.entries(groupedInputsByOwner).filter(
+    const fromInputs = Object.entries(groupedInputsByOwner).filter(
       ([id]) => id !== address,
     );
-    for (const [key, value] of fromEntries) {
-      const fromData = {
+    const from = fromInputs.map(([key, value]) => {
+      return {
         __typename: 'TxGraphItemNode',
         id: key,
         rootAddress: address,
@@ -81,7 +95,7 @@ async function createGraphFromAddress(addr: string, url: string) {
           const isPredicate = Boolean(v.predicate);
           const timestamp = v.timestamp;
           const txHash = v.txHash;
-          const utxoId = v.utxoId;
+          const utoxId = v.utxoId;
           return {
             __typename: 'TxGraphItem',
             from,
@@ -92,19 +106,17 @@ async function createGraphFromAddress(addr: string, url: string) {
             isPredicate,
             timestamp,
             txHash,
-            utxoId,
+            utoxId,
           };
         }),
       };
-      from.push(fromData);
-    }
+    });
 
-    const to = [];
-    const toEntries = Object.entries(groupedOutputsByOwner).filter(
+    const toInputs = Object.entries(_groupedOutputsByOwner).filter(
       ([id]) => id !== address,
     );
-    for (const [key, value] of toEntries) {
-      const toData = {
+    const to = toInputs.map(async ([key, value]) => {
+      return {
         __typename: 'TxGraphItemNode',
         id: key,
         rootAddress: address,
@@ -128,11 +140,11 @@ async function createGraphFromAddress(addr: string, url: string) {
           };
         }),
       };
-      to.push(toData);
-    }
+    });
 
     return {
       transactions: allTransactions,
+      withdrawalReceipts,
       from,
       to,
     };
@@ -150,7 +162,7 @@ async function getTransactions(address: String, url: string) {
   try {
     const query = gql`
       query addressTxs($address: Address!) {
-        transactionsByOwner(owner: $address, first: 100) {
+        transactionsByOwner(owner: $address, first: 1000) {
           nodes {
             ...TransactionItem
           }
@@ -164,21 +176,20 @@ async function getTransactions(address: String, url: string) {
 
     let txs = [] as any[];
     const client = getClient(url);
-    const data = await client.request<any>(query, {
-      address: address,
-    });
+    const data = await client.request<any>(query, { address: address });
 
     if (data.transactionsByOwner.nodes.length > 0) {
       txs = data.transactionsByOwner.nodes;
     }
-    if (data.transactionsByOwner.pageInfo.hasNextPage) {
-      const res = await getTransactions(address, url);
-      txs = txs.concat(res);
-    }
+    // if (data.transactionsByOwner.pageInfo.hasNextPage) {
+    //   const res = await getTransactions(address, url);
+    //   txs = txs.concat(res);
+    // }
 
     return txs;
   } catch (err) {
     console.log(err);
+    return [];
   }
 }
 

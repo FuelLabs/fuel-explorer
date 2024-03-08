@@ -183,6 +183,7 @@ type TxGraphItemNode {
 }
 
 type TxGraph {
+  withdrawalReceipts: [Receipt]
   transactions: [Transaction]
   from: [TxGraphItemNode]
   to: [TxGraphItemNode]
