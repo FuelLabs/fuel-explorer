@@ -93,10 +93,6 @@ async function createGraphFromAddress(addr: string, url: string) {
       'utxoId',
     );
 
-    for (const u of utxos) {
-      console.log((u as any).utxoId);
-    }
-
     const groupedInputsByOwner = groupBy(
       inputs,
       (i: any) => i?.owner || i?.sender || i?.contract?.id,
@@ -143,7 +139,7 @@ async function createGraphFromAddress(addr: string, url: string) {
     const toInputs = Object.entries(_groupedOutputsByOwner).filter(
       ([id]) => id !== address,
     );
-    const to = toInputs.map(async ([key, value]) => {
+    const to = toInputs.map(([key, value]) => {
       return {
         __typename: 'TxGraphItemNode',
         id: key,
@@ -169,6 +165,11 @@ async function createGraphFromAddress(addr: string, url: string) {
         }),
       };
     });
+
+    // for (const u of uniqBy(withdrawalReceipts, 'messageId')) {
+    //   console.log((u as any).sender);
+    //   console.log((u as any).recipient);
+    // }
 
     return {
       utxos,
