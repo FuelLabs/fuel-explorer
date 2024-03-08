@@ -102,8 +102,8 @@ export class TxGraphDomain extends Domain<any> {
 
     return {
       transactions: allTransactions,
-      from,
-      to,
+      from: from.filter((i) => i.id !== address),
+      to: to.filter((i) => i.id !== address),
     };
   }
 
