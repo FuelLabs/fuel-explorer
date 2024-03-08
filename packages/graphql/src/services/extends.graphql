@@ -164,6 +164,29 @@ type SearchResult {
   transaction: SearchTransaction
 }
 
+type TxGraphItem {
+  from: Address
+  to: Address
+  assetId: AssetId
+  amount: U64
+  isContract: Boolean
+  isPredicate: Boolean
+  utxoId: UtxoId
+  txHash: Address
+  timestamp: String
+}
+type TxGraphItemNode {
+  id: Address
+  transactions: [TxGraphItem]
+}
+
+type TxGraph {
+  transactions: [Transaction]
+  from: [TxGraphItemNode]
+  to: [TxGraphItemNode]
+}
+
 extend type Query {
   search(query: String!): SearchResult
+  txGraph(address: Address): TxGraph
 }

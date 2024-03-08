@@ -3,6 +3,7 @@ import { BlockDomain } from '../domains/Block';
 import { SearchDomain } from '../domains/Search';
 import { TransactionDomain } from '../domains/Transaction';
 import { TransactionConnectionDomain } from '../domains/TransactionConnection';
+import { TxGraphDomain } from '../domains/TxGraph';
 
 import typeDefs from './extends.graphql';
 
@@ -12,5 +13,8 @@ export const extendsResolvers = {
   Transaction: TransactionDomain.createResolvers(),
   TransactionConnection: TransactionConnectionDomain.createResolvers(),
   Block: BlockDomain.createResolvers(),
-  Query: SearchDomain.createResolvers(),
+  Query: {
+    ...SearchDomain.createResolvers(),
+    ...TxGraphDomain.createResolvers(),
+  },
 };
