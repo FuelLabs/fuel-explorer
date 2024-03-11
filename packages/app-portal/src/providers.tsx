@@ -1,4 +1,3 @@
-import { FuelProvider } from '@fuel-wallet/react';
 import type { ReactNode } from 'react';
 
 import { StoreProvider } from './store';
@@ -12,13 +11,11 @@ type ProvidersProps = {
 export function Providers({ children }: ProvidersProps) {
   return (
     <StoreProvider>
-      <FuelProvider>
-        <FuelConnectProvider>
-          <ConnectProvider>
-            <FuelNetworkProvider>{children}</FuelNetworkProvider>
-          </ConnectProvider>
-        </FuelConnectProvider>
-      </FuelProvider>
+      <FuelConnectProvider>
+        <ConnectProvider>
+          <FuelNetworkProvider>{children}</FuelNetworkProvider>
+        </ConnectProvider>
+      </FuelConnectProvider>
     </StoreProvider>
   );
 }
