@@ -31,6 +31,7 @@ export const BridgeTxItem = ({
   isLoading,
 }: BridgeTxItemProps) => {
   const classes = styles();
+
   return (
     <CardList.Item
       aria-label={`Transaction ID: ${shortAddress(txId)}`}
@@ -57,17 +58,17 @@ export const BridgeTxItem = ({
         )}
       </Flex>
       <Flex className={classes.statusTime()}>
-        {isLoading ? (
-          <ItemLoader />
-        ) : (
-          <Text className={classes.ageText()}>{calculateDateDiff(date)}</Text>
-        )}
         <Flex
           className={classes.statusColumn()}
           aria-label={`Transaction Status: ${status?.toString()}`}
         >
           {status}
         </Flex>
+        {isLoading ? (
+          <ItemLoader />
+        ) : (
+          <Text className={classes.ageText()}>{calculateDateDiff(date)}</Text>
+        )}
       </Flex>
     </CardList.Item>
   );
@@ -75,18 +76,19 @@ export const BridgeTxItem = ({
 
 const styles = tv({
   slots: {
-    networks: 'gap-1 items-center',
+    networks: 'shrink-0 gap-1 items-center',
     cardItem: 'flex flex-row min-h-[58px] px-5 gap-1 items-center',
     statusTime: [
-      'flex-1 justify-between items-center',
-      'mobile:max-tablet:flex-col-reverse mobile:max-tablet:flex-wrap',
-      'mobile:max-tablet:items-end mobile:max-tablet:gap-1',
+      'grow',
+      'shrink flex-wrap gap-x-3 gap-y-1',
+      'flex-col tablet:flex-row-reverse',
+      'items-end tablet:items-center',
     ],
     statusColumn: 'items-center, justify-end',
     line: 'flex-1',
     // TODO: to activate text-heading and theme colors, should fix first light/dark css variables not being set
-    ageText: 'text-xs text-heading',
-    assetAmountWrapper: 'items-center gap-2',
-    assetAmountText: 'text-xs text-heading',
+    ageText: 'text-xs text-heading text-nowrap',
+    assetAmountWrapper: 'grow shrink-0 items-center gap-2',
+    assetAmountText: 'text-xs text-heading text-nowrap',
   },
 });
