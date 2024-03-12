@@ -16,7 +16,7 @@
     "@fuel-bridge/fungible-token": "next",
     "@fuel-bridge/message-predicates": "next",
     "@fuel-bridge/solidity-contracts": "next",
-    "@fuel-wallet/react": "0.16.0-preview-62ac831",
+    "@fuel-wallet/react": "0.16.0",
     "@fuel-wallet/sdk": "0.15.2",
     "@fuels/assets": "0.15.3",
     "@fuels/react-xstore": "0.15.3",

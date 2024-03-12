@@ -423,8 +423,8 @@ importers:
         specifier: next
         version: 0.5.0-next-66634bc(ethers@5.7.2)
       '@fuel-wallet/react':
-        specifier: 0.16.0-preview-62ac831
-        version: 0.16.0-preview-62ac831(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.16.0
+        version: 0.16.0(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
       '@fuel-wallet/sdk':
         specifier: 0.15.2
         version: 0.15.2(dexie@3.2.4)(fuels@0.74.0)
@@ -4695,8 +4695,8 @@ packages:
     engines: {node: ^18.18.2 || ^20.0.0}
     dev: false
 
-  /@fuel-wallet/react@0.16.0-preview-62ac831(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-ivPwVV3TqL4TXD6ektA2eDoW3uy3Ty757ofQH/2ydBn+IRpj/FuuGKM7sUqLoMNRMAvODA1YRShwj4NcMdUHFA==}
+  /@fuel-wallet/react@0.16.0(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-SHH1MzFAW2JJzymBCmT6bo/Q2W6Bw8xev9nVB4am/XZq6saCYf7K5eC4ZRn54flVMeiB3VThkmDnujr5GDNQqQ==}
     peerDependencies:
       fuels: '>=0.73.0'
       react: '*'
