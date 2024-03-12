@@ -25,7 +25,7 @@ export const TxListItemEthToFuel = ({ txHash }: TxListItemEthToFuelProps) => {
       return <Text className={classes.settledText()}>Settled</Text>;
     if (bridgeTxStatus?.isLoading)
       return (
-        <Flex align="center" gap="1">
+        <Flex align="center" gap="1" mb="1">
           <Spinner size={14} />
           <Text className={classes.loadingText()}>Processing</Text>
         </Flex>
@@ -58,7 +58,7 @@ export const TxListItemEthToFuel = ({ txHash }: TxListItemEthToFuelProps) => {
 
 const styles = tv({
   slots: {
-    settledText: 'text-xs text-muted',
+    settledText: 'text-xs text-muted text-right',
     loadingText: 'text-xs',
   },
 });
