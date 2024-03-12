@@ -27,7 +27,7 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
 
     if (bridgeTxStatus?.isLoading) {
       return (
-        <Flex align="center" gap="1" mb="1">
+        <Flex align="center" gap="1">
           <Spinner size={14} />
           <Text className={classes.loadingText()}>Processing</Text>
         </Flex>

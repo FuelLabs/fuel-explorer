@@ -74,12 +74,12 @@ export const BridgeTxItem = ({
 const styles = tv({
   slots: {
     networks: 'shrink-0 gap-1 items-center',
-    cardItem: 'flex flex-row px-3 py-0 min-h-[56px] gap-1 items-center',
-    statusTime: 'flex-col gap-y-0 items-end',
+    cardItem: 'flex flex-row px-4 py-0 min-h-[56px] gap-1 items-center',
+    statusTime: 'flex-col gap-y-1 items-end',
     line: 'flex-1',
     timeLoader: 'flex items-center h-[16.8px]',
-    ageText: 'text-xs text-heading text-nowrap text-right',
+    ageText: 'text-xs text-heading text-right',
     assetAmountWrapper: 'grow shrink-0 items-center gap-2',
-    assetAmountText: 'text-xs text-heading text-nowrap',
+    assetAmountText: 'text-xs text-heading',
   },
 });
