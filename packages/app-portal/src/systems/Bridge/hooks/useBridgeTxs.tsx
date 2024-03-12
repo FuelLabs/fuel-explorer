@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Services, store } from '~portal/store';
 import {
   useEthAccountConnection,
@@ -7,11 +7,12 @@ import {
 
 import type { BridgeTxsMachineState } from '../machines';
 
-const MAX_BY_PAGE = 5;
-
 const selectors = {
-  bridgeTxs: (state: BridgeTxsMachineState) => {
-    return state.context.bridgeTxs;
+  paginatedTxs: (state: BridgeTxsMachineState) => {
+    return state.context.paginatedTxs;
+  },
+  hasNextPage: (state: BridgeTxsMachineState) => {
+    return state.context.hasNextPage;
   },
   isLoading: (state: BridgeTxsMachineState) => {
     return state.hasTag('isLoading');
@@ -26,18 +27,22 @@ export const useBridgeTxs = () => {
     address: fuelAddress,
   } = useFuelAccountConnection();
 
-  const [amountTxsToShow, setAmountTxsToShow] = useState(MAX_BY_PAGE);
   const { publicClient: ethPublicClient } = useEthAccountConnection();
-  const bridgeTxs = store.useSelector(Services.bridgeTxs, selectors.bridgeTxs);
+  const paginatedTxs = store.useSelector(
+    Services.bridgeTxs,
+    selectors.paginatedTxs,
+  );
+  const hasNextPage = store.useSelector(
+    Services.bridgeTxs,
+    selectors.hasNextPage,
+  );
   const isLoadingState = store.useSelector(
     Services.bridgeTxs,
     selectors.isLoading,
   );
 
   const isLoading = isLoadingState || isLoadingConnection;
-  const length = bridgeTxs?.length ?? 0;
-  const paginatedBridgeTxs = bridgeTxs?.slice(0, amountTxsToShow);
-  const hasMorePages = (bridgeTxs?.length || 0) > amountTxsToShow;
+  const length = paginatedTxs?.length ?? 0;
 
   useEffect(() => {
     if (isLoadingConnection || !fuelProvider || !ethPublicClient) return;
@@ -51,12 +56,12 @@ export const useBridgeTxs = () => {
 
   return {
     isLoading,
-    hasMorePages,
-    bridgeTxs: paginatedBridgeTxs,
+    hasMorePages: hasNextPage,
+    bridgeTxs: paginatedTxs,
     shouldShowNotConnected: !isLoading && !isConnected,
     shouldShowEmpty: !isLoading && isConnected && !length,
     handlers: {
-      showMore: () => setAmountTxsToShow(amountTxsToShow + MAX_BY_PAGE),
+      showMore: store.fetchNextPage,
     },
   };
 };

@@ -15,6 +15,8 @@ import { BridgeService } from '../services';
 import type { BridgeInputs } from '../services';
 import type { BridgeTx } from '../types';
 
+const TXS_PER_PAGE = 5;
+
 export type BridgeTxsMachineContext = {
   ethToFuelTxRefs: {
     [key: string]: ActorRefFrom<typeof txEthToFuelMachine>;
@@ -22,10 +24,13 @@ export type BridgeTxsMachineContext = {
   fuelToEthTxRefs: {
     [key: string]: ActorRefFrom<typeof txFuelToEthMachine>;
   };
-  bridgeTxs?: BridgeTx[] | undefined;
+  allTxs?: BridgeTx[];
+  paginatedTxs?: BridgeTx[];
   fuelProvider?: FuelProvider;
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
+  hasNextPage: boolean;
+  amountTxsToShow: number;
 };
 
 type MachineServices = {
@@ -39,6 +44,7 @@ export type BridgeTxsMachineEvents =
       type: 'FETCH';
       input: BridgeInputs['fetchTxs'];
     }
+  | { type: 'FETCH_NEXT_PAGE' }
   | {
       type: 'ADD_TX_ETH_TO_FUEL';
       input: {
@@ -71,6 +77,11 @@ export const bridgeTxsMachine = createMachine(
             actions: ['assignFetchInputs'],
             target: 'fetching',
           },
+          FETCH_NEXT_PAGE: {
+            actions: ['assignFetchNextPage'],
+            target: 'fetchingNextPage',
+            cond: 'hasNextPage',
+          },
           ADD_TX_ETH_TO_FUEL: {
             actions: ['assignTxEthToFuel'],
           },
@@ -96,25 +107,43 @@ export const bridgeTxsMachine = createMachine(
               target: 'idle',
             },
             {
-              actions: ['assignTxMachines', 'assignBridgeTxs'],
+              actions: [
+                'assignAllTxs',
+                'assignPaginatedTxs',
+                'assignTxMachines',
+              ],
               target: 'idle',
             },
           ],
         },
       },
+      fetchingNextPage: {
+        always: {
+          actions: ['assignPaginatedTxs', 'assignTxMachines'],
+          target: 'idle',
+        },
+      },
     },
   },
   {
+    guards: {
+      hasNextPage: (context) => context.hasNextPage,
+    },
     actions: {
       assignFetchInputs: assign((ctx, ev) => ({
         fuelProvider: ev.input?.fuelProvider || ctx.fuelProvider,
         ethPublicClient: ev.input?.ethPublicClient || ctx.ethPublicClient,
         fuelAddress: ev.input?.fuelAddress,
+        hasNextPage: false,
+        amountTxsToShow: TXS_PER_PAGE,
+      })),
+      assignFetchNextPage: assign((ctx) => ({
+        amountTxsToShow: ctx.amountTxsToShow + TXS_PER_PAGE,
       })),
       assignTxMachines: assign({
-        ethToFuelTxRefs: (ctx, ev) => {
-          const ethToFuelBridgeTxs = ev.data?.filter(({ fromNetwork }) =>
-            isEthChain(fromNetwork),
+        ethToFuelTxRefs: (ctx) => {
+          const ethToFuelBridgeTxs = ctx.paginatedTxs?.filter(
+            ({ fromNetwork }) => isEthChain(fromNetwork),
           );
 
           const newRefs = ethToFuelBridgeTxs?.reduce((prev, tx) => {
@@ -140,9 +169,9 @@ export const bridgeTxsMachine = createMachine(
             ...newRefs,
           };
         },
-        fuelToEthTxRefs: (ctx, ev) => {
-          const fuelToEthBridgeTxs = ev.data?.filter(({ fromNetwork }) =>
-            isFuelChain(fromNetwork),
+        fuelToEthTxRefs: (ctx) => {
+          const fuelToEthBridgeTxs = ctx.paginatedTxs?.filter(
+            ({ fromNetwork }) => isFuelChain(fromNetwork),
           );
 
           const newRefs = fuelToEthBridgeTxs?.reduce((prev, tx) => {
@@ -219,8 +248,12 @@ export const bridgeTxsMachine = createMachine(
           };
         },
       }),
-      assignBridgeTxs: assign((_, ev) => ({
-        bridgeTxs: ev.data,
+      assignAllTxs: assign((_, ev) => ({
+        allTxs: ev.data,
+      })),
+      assignPaginatedTxs: assign((ctx) => ({
+        paginatedTxs: ctx.allTxs?.slice(0, ctx.amountTxsToShow),
+        hasNextPage: ctx.allTxs && ctx.allTxs.length > ctx.amountTxsToShow,
       })),
     },
     services: {
