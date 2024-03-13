@@ -302,7 +302,7 @@
   {
     "isLive": false,
     "name": "Swaylend",
-    "url": "swaylend.com",
+    "url": "https://swaylend.com",
     "tags": ["DEX (Orderbook)", "DeFi", "Infrastructure Tooling or Platform"],
     "description": "Swaylend is the first lending protocol on Fuel.",
     "github": "https://github.com/compolabs/sway-lend",
