@@ -60,8 +60,8 @@
     "turbo:run": "./scripts/turbo.sh"
   },
   "dependencies": {
-    "@fuels/jest": "^0.1.5",
-    "@fuels/ts-config": "^0.1.5",
+    "@fuels/jest": "^0.16.0",
+    "@fuels/ts-config": "^0.16.0",
     "ethers": "5.7.2",
     "fuels": "0.74.0",
     "jest": "29.7.0",
@@ -71,7 +71,7 @@
     "@babel/core": "^7.23.9",
     "@biomejs/biome": "1.5.3",
     "@fuels/jest": "^0.1.5",
-    "@fuels/tsup-config": "^0.1.5",
+    "@fuels/tsup-config": "^0.16.0",
     "@jest/types": "29.6.3",
     "@next/eslint-plugin-next": "^14.1.0",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",

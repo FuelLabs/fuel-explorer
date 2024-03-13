@@ -21,7 +21,7 @@
     "prepare": "pnpm build"
   },
   "dependencies": {
-    "@fuel-ts/math": "0.74.0",
+    "@fuel-ts/math": "0.76.0",
     "@graphql-tools/delegate": "^10.0.3",
     "@graphql-tools/schema": "^10.0.2",
     "@graphql-tools/stitch": "^9.0.3",
@@ -50,7 +50,7 @@
   "devDependencies": {
     "@babel/cli": "7.23.9",
     "@babel/core": "^7.23.9",
-    "@fuels/ts-config": "^0.1.5",
+    "@fuels/ts-config": "^0.16.0",
     "@graphql-codegen/cli": "5.0.1",
     "@graphql-codegen/introspection": "4.0.1",
     "@graphql-codegen/schema-ast": "4.0.1",
