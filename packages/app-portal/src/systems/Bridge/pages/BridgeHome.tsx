@@ -1,4 +1,4 @@
-import { useNodeInfo } from '@fuel-wallet/react';
+import { useNodeInfo } from '@fuels/react';
 import { Box, Button } from '@fuels/ui';
 import {
   IconArrowBack,

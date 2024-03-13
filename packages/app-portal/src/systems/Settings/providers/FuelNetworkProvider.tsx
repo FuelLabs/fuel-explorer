@@ -1,4 +1,4 @@
-import { useNamedQuery } from '@fuel-wallet/react';
+import { useNamedQuery } from '@fuels/react';
 import { FUEL_CHAIN } from 'app-commons';
 import { createProvider } from '~portal/systems/Chains/fuel/utils/provider';
 

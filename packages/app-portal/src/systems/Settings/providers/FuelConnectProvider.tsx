@@ -1,8 +1,8 @@
-import { FuelProvider } from '@fuel-wallet/react';
 import {
   FuelWalletConnector,
   FuelWalletDevelopmentConnector,
 } from '@fuel-wallet/sdk';
+import { FuelProvider } from '@fuels/react';
 import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
 
