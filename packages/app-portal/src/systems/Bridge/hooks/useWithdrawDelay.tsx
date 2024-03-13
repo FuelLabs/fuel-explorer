@@ -1,40 +1,27 @@
-import { useQuery } from '@tanstack/react-query';
-import {
-  BridgeSolidityContracts,
-  getBridgeSolidityContracts,
-} from 'app-commons';
+import { useNamedQuery } from '@fuels/react';
+import { getBridgeSolidityContracts } from 'app-commons';
 import { addSeconds } from 'date-fns';
-import { useEffect, useMemo, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 import { EthConnectorService, distanceToNow } from '~portal/systems/Chains';
 
 export function useWithdrawDelay() {
-  const [bridgeSolidityContracts, setBridgeSolidityContracts] =
-    useState<BridgeSolidityContracts>();
   const publicClient = usePublicClient();
 
-  useEffect(() => {
-    if (!publicClient) return;
+  const { fuelChainState } = useNamedQuery('fuelChainState', {
+    queryKey: ['bridge', 'withdraw', 'state'],
+    queryFn: getBridgeSolidityContracts,
+    select: (bridgeSolidityContracts) => {
+      return EthConnectorService.connectToFuelChainState({
+        publicClient,
+        bridgeSolidityContracts,
+      });
+    },
+    staleTime: Infinity,
+    enabled: !!publicClient,
+  });
 
-    async function getContract() {
-      const contracts = await getBridgeSolidityContracts();
-      setBridgeSolidityContracts(contracts);
-    }
-
-    getContract();
-  }, [publicClient]);
-
-  const fuelChainState = useMemo(() => {
-    if (!bridgeSolidityContracts) return;
-
-    return EthConnectorService.connectToFuelChainState({
-      publicClient,
-      bridgeSolidityContracts,
-    });
-  }, [publicClient, bridgeSolidityContracts]);
-
-  const { data, ...params } = useQuery({
-    queryKey: ['withdrawDelay'],
+  return useNamedQuery('timeToWithdrawFormatted', {
+    queryKey: ['bridge', 'withdraw', 'formatted'],
     queryFn: async () => {
       const [blocksPerCommitInterval, timeToFinalize] = (await Promise.all([
         fuelChainState?.read.BLOCKS_PER_COMMIT_INTERVAL(),
@@ -47,18 +34,9 @@ export function useWithdrawDelay() {
       const currentDate = new Date();
       const futureDate = addSeconds(currentDate, totalTimeInSeconds);
 
-      return {
-        timeToWithdrawFormatted: distanceToNow(futureDate),
-        timeToWithdrawSeconds: totalTimeInSeconds,
-      };
+      return distanceToNow(futureDate);
     },
     staleTime: Infinity,
-    refetchOnWindowFocus: false,
     enabled: !!fuelChainState,
   });
-
-  return {
-    ...data,
-    ...params,
-  };
 }
