@@ -1,4 +1,4 @@
-import { useNamedQuery } from '@fuel-wallet/react';
+import { useNamedQuery } from '@fuels/react';
 import { getBridgeSolidityContracts } from 'app-commons';
 import { addSeconds } from 'date-fns';
 import { usePublicClient } from 'wagmi';

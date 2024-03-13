@@ -1,6 +1,7 @@
 import type { Asset } from '@fuels/assets';
 import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
+  Account,
   Address as FuelAddress,
   BN,
   Provider as FuelProvider,
@@ -24,7 +25,6 @@ import {
   isFuelChain,
 } from '~portal/systems/Chains';
 
-import { FuelWalletLocked } from '@fuel-wallet/sdk';
 import { FUEL_CHAIN } from 'app-commons';
 import type { BridgeTx } from '../types';
 
@@ -33,7 +33,7 @@ export type PossibleBridgeInputs = {
   ethWalletClient?: WalletClient;
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
-  fuelWallet?: FuelWalletLocked;
+  fuelWallet?: Account;
   asset?: Asset;
 } & Omit<TxEthToFuelInputs['startErc20'], 'amount'> &
   Omit<TxFuelToEthInputs['startFungibleToken'], 'amount'>;
