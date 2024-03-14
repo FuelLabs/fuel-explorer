@@ -121,19 +121,18 @@ export class TxEthToFuelService {
       const { ethWalletClient, fuelAddress, amount } = input;
       if (fuelAddress && ethWalletClient) {
         const bridgeSolidityContracts = await getBridgeSolidityContracts();
-        const _fuelPortal = EthConnectorService.connectToFuelMessagePortal({
+        const fuelPortal = EthConnectorService.connectToFuelMessagePortal({
           walletClient: ethWalletClient,
           bridgeSolidityContracts,
         });
 
-        const txHash = await ethWalletClient.writeContract({
-          address: bridgeSolidityContracts.FuelMessagePortal,
-          abi: FUEL_MESSAGE_PORTAL.abi,
-          functionName: 'depositETH',
-          args: [fuelAddress.toB256() as `0x${string}`],
-          value: BigInt(amount),
-          account: ethWalletClient.account,
-        } as any);
+        const txHash = await (fuelPortal as any).write.depositETH(
+          [fuelAddress.toB256() as `0x${string}`],
+          {
+            value: BigInt(amount),
+            account: ethWalletClient.account,
+          },
+        );
 
         return txHash;
       }

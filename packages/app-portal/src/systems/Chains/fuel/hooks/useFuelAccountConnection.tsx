@@ -5,7 +5,7 @@ import {
   useFuel,
   useIsConnected,
   useWallet,
-} from '@fuel-wallet/react';
+} from '@fuels/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { store } from '~portal/store';
@@ -25,7 +25,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     provider: fuelProvider,
   });
 
-  const { isLoading: isLoadingConnected } = useIsConnected();
+  const { isConnected: _, isLoading: isLoadingConnected } = useIsConnected();
   const { disconnect, isLoading: isLoadingDisconnecting } = useDisconnect();
   const { wallet, isLoading: isLoadingWallet } = useWallet(account);
   const {
