@@ -1,4 +1,4 @@
-import { QUERY_KEYS, useNamedQuery } from '@fuel-wallet/react';
+import { QUERY_KEYS, useNamedQuery } from '@fuels/react';
 import type { BytesLike, Provider as FuelProvider } from 'fuels';
 import { Address } from 'fuels';
 
