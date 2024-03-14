@@ -11,7 +11,7 @@ export function BridgeScreenLoader({ view }: { view: 'history' | 'bridge' }) {
         icon={<IconArrowsShuffle size={18} stroke={1.5} />}
         className="border-b-0 first:mb-0"
       >
-        Fuel Native Bridge
+        Fuel Bridge
       </PageTitle>
       {view === 'history' ? (
         <BridgeTxItemsLoading />
