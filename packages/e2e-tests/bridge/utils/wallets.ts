@@ -3,7 +3,7 @@ import {
   FuelWalletTestHelper,
   getButtonByText,
   getByAriaLabel,
-} from '@fuel-wallet/playwright-utils';
+} from '@fuels/playwright-utils';
 import type { BrowserContext, Page } from '@playwright/test';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
 import { Provider, Wallet } from 'fuels';
@@ -11,7 +11,7 @@ import { mnemonicToAccount } from 'viem/accounts';
 
 import { ETH_MNEMONIC } from '../mocks';
 
-const { FUEL_PROVIDER_URL = '' } = process.env;
+const PROVIDER_URL = 'http://localhost:4000/graphql';
 
 export const connectToMetamask = async (page: Page) => {
   await page.bringToFront();
@@ -20,7 +20,7 @@ export const connectToMetamask = async (page: Page) => {
   // Connect metamask
   const connectKitButton = getByAriaLabel(page, 'Connect Ethereum Wallet');
   await connectKitButton.click();
-  const metamaskConnect = getButtonByText(page, 'Metamask');
+  const metamaskConnect = getButtonByText(page, 'Browser Wallet');
   await metamaskConnect.click();
   await metamask.acceptAccess();
 };
@@ -30,13 +30,13 @@ export const setupFuelWallet = async ({
   context,
   extensionId,
 }: { page: Page; context: BrowserContext; extensionId: string }) => {
-  const fuelProvider = await Provider.create(FUEL_PROVIDER_URL);
+  const fuelProvider = await Provider.create(PROVIDER_URL);
   const chainName = (await fuelProvider.fetchChain()).name;
 
   const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup(
     context,
     extensionId,
-    FUEL_PROVIDER_URL,
+    PROVIDER_URL,
     chainName,
   );
   await fuelWalletTestHelper.addAccount();
@@ -52,4 +52,16 @@ export const setupFuelWallet = async ({
   );
 
   return { fuelWallet, fuelWalletTestHelper, account };
+};
+
+export const connectToFuel = async (
+  page: Page,
+  fuelWalletTestHelper: FuelWalletTestHelper,
+  accountsToConnect: string[],
+) => {
+  const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
+  await connectFuel.click();
+  await getByAriaLabel(page, 'Connect to Fuel Wallet', true).click();
+  await new Promise((resolve) => setTimeout(resolve, 20000));
+  await fuelWalletTestHelper.walletConnect(accountsToConnect);
 };

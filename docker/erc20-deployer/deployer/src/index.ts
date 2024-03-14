@@ -41,10 +41,9 @@ async function main() {
     pk_eth_deployer: PK_ETH_WALLET,
   });
   const ETHToken = await getOrDeployECR20Contract(env);
-  console.log('ETHToken', ETHToken);
   const FuelToken = await getOrDeployFuelTokenContract(
     env,
-    ETHToken,
+    ETHToken as any,
     env.eth.fuelERC20Gateway,
     {
       gasPrice: 1,

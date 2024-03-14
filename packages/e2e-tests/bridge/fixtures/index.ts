@@ -1,6 +1,6 @@
 /* eslint-disable no-empty-pattern */
 // Use a test fixture to set the context so tests have access to the wallet extension.
-import { downloadFuel } from '@fuel-wallet/playwright-utils';
+import { downloadFuel } from '@fuels/playwright-utils';
 import type { BrowserContext } from '@playwright/test';
 import { chromium, test as base } from '@playwright/test';
 import { initialSetup } from '@synthetixio/synpress/commands/metamask';
@@ -18,7 +18,7 @@ export const test = base.extend<{
     // required for synpress
     global.expect = expect;
     // download fuel wallet
-    const fuelPathExtension = await downloadFuel('0.14.3');
+    const fuelPathExtension = await downloadFuel('0.15.2');
     // download metamask
     const metamaskPath = await prepareMetamask(
       process.env.META_MASK_VERSION || '10.25.0',

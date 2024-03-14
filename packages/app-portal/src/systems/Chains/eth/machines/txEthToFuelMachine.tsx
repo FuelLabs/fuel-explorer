@@ -388,23 +388,20 @@ export const txEthToFuelMachine = createMachine(
           });
         }
       },
-      assignReceiptsInfoFromCache: assign((_ctx) => {
-        return {};
+      assignReceiptsInfoFromCache: assign((ctx) => {
+        const receiptInfo = EthTxCache.getTxReceipt(ctx.ethTxId || '');
+        if (!receiptInfo) {
+          throw new Error('No receipt');
+        }
 
-        // const receiptInfo = EthTxCache.getTxReceipt(ctx.ethTxId || '');
-        // if (!receiptInfo) {
-        //   throw new Error('No receipt');
-        // }
-
-        // console.log(`receiptInfo`, receiptInfo);
-        // return {
-        //   erc20Token: receiptInfo.erc20Token,
-        //   ethTxNonce: receiptInfo.nonce,
-        //   amount: receiptInfo.amount,
-        //   fuelRecipient: receiptInfo.recipient,
-        //   ethDepositBlockHeight: receiptInfo.ethDepositBlockHeight,
-        //   blockDate: receiptInfo.blockDate,
-        // };
+        return {
+          erc20Token: receiptInfo.erc20Token,
+          ethTxNonce: receiptInfo.nonce,
+          amount: receiptInfo.amount,
+          fuelRecipient: receiptInfo.recipient,
+          ethDepositBlockHeight: receiptInfo.ethDepositBlockHeight,
+          blockDate: receiptInfo.blockDate,
+        };
       }),
     },
     guards: {
@@ -415,13 +412,11 @@ export const txEthToFuelMachine = createMachine(
         !!ctx.fuelAddress &&
         !!ctx.fuelProvider &&
         !!ctx.ethPublicClient,
-      isTxEthToFuelDone: (_ctx) => {
-        return false;
-
-        // return (
-        //   EthTxCache.getTxIsDone(ctx.ethTxId || '') &&
-        //   !!EthTxCache.getTxReceipt(ctx.ethTxId || '')
-        // );
+      isTxEthToFuelDone: (ctx) => {
+        return (
+          EthTxCache.getTxIsDone(ctx.ethTxId || '') &&
+          !!EthTxCache.getTxReceipt(ctx.ethTxId || '')
+        );
       },
       isMessageSpent: (ctx) => ctx.fuelMessageStatus?.state === 'SPENT',
       isMessageUnspentEth: (ctx) =>

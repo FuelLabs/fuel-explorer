@@ -1,4 +1,4 @@
-import { getButtonByText, getByAriaLabel } from '@fuel-wallet/playwright-utils';
+import { getButtonByText, getByAriaLabel } from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
 
@@ -24,12 +24,12 @@ export const goToTransactionsPage = async (page: Page) => {
 };
 
 export const clickDepositTab = async (page: Page) => {
-  const tab = getButtonByText(page, 'Deposit to Fuel');
+  const tab = getButtonByText(page, 'Deposit');
   await tab.click();
 };
 
 export const clickWithdrawTab = async (page: Page) => {
-  const tab = getButtonByText(page, 'Withdraw from Fuel');
+  const tab = getButtonByText(page, 'Withdraw');
   await tab.click();
 };
 

@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from '@fuel-wallet/react';
+import { QUERY_KEYS } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
 import type { BytesLike, Provider as FuelProvider } from 'fuels';
 import { Address } from 'fuels';

@@ -38,4 +38,4 @@ export const FUEL_CHAINS = {
   fuelBeta5,
 };
 
-export const FUEL_CHAIN = FUEL_CHAINS[FUEL_CHAIN_NAME as string];
+export const FUEL_CHAIN: FuelChain = FUEL_CHAINS[FUEL_CHAIN_NAME as string];

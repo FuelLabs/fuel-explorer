@@ -19,7 +19,6 @@
   "workspaces": [
     "./packages/*",
     "./contracts/*",
-    "docker/l1-chain/hardhat",
     "docker/erc20-deployer/deployer"
   ],
   "scripts": {
@@ -33,7 +32,7 @@
     "build:portal:preview": "pnpm turbo:run build:preview --filter=app-portal",
     "build:portal:storybook": "pnpm turbo:run build:storybook --filter=app-portal",
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
-    "dev": "pnpm turbo:run dev",
+    "dev": "./scripts/dev.sh",
     "dev:explorer": "pnpm --filter=app-explorer dev",
     "dev:portal": "pnpm --filter=app-portal dev",
     "dev:graphql": "pnpm --filter=graphql dev",

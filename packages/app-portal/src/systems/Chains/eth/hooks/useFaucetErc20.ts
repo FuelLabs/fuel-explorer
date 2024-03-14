@@ -7,7 +7,11 @@ export const useFaucetErc20 = () => {
   const { handlers, isLoadingFaucet } = useAssets();
 
   function faucetErc20({ address }: { address?: string }) {
-    handlers.faucetErc20({ address, walletClient, publicClient });
+    handlers.faucetErc20({
+      address,
+      walletClient,
+      publicClient: publicClient as any,
+    });
   }
 
   return {
