@@ -422,8 +422,8 @@ importers:
         specifier: 1.0.0-main-057e59975e78113121e1684ecbdd0cded1e6ebed
         version: 1.0.0-main-057e59975e78113121e1684ecbdd0cded1e6ebed(fuels@0.74.0)
       '@fuels/react':
-        specifier: file:/Users/luizfelipebolsonigomes/Development/Fuel/fuels-npm-packs/packages/react/fuels-react-0.16.0.tgz
-        version: file:../fuels-npm-packs/packages/react/fuels-react-0.16.0.tgz(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.16.0
+        version: 0.16.0(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
       '@fuels/react-xstore':
         specifier: 0.16.0
         version: 0.16.0(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
@@ -4992,6 +4992,27 @@ packages:
       - '@types/react'
       - '@types/ws'
       - ws
+    dev: false
+
+  /@fuels/react@0.16.0(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-+VE2yczITKhAW9343f9MrOV29YSRpyS/oRa46A9yCY/Ks/BtG1XwbC2lCs5amGHRDmBB35kQcuUL9cvL36+gdA==}
+    peerDependencies:
+      fuels: '>=0.74.0'
+      react: '*'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      '@radix-ui/react-dialog': 1.0.5(@types/react-dom@18.2.18)(@types/react@18.2.54)(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
+      events: 3.3.0
+      fuels: 0.74.0(dexie@3.2.4)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+      - react-dom
+      - react-native
     dev: false
 
   /@fuels/ts-config@0.1.5(typescript@5.3.3):
@@ -27149,27 +27170,3 @@ packages:
       '@types/react': 18.2.54
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-
-  file:../fuels-npm-packs/packages/react/fuels-react-0.16.0.tgz(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-cmcmHh8h+ibYS4BRuvDQaKawQHEGv4L3qtqVtlTiwMs9aBrQLffHDwpMHnBbXZCmGj+WT210rn0XS7pqJjtCwA==, tarball: file:../fuels-npm-packs/packages/react/fuels-react-0.16.0.tgz}
-    id: file:../fuels-npm-packs/packages/react/fuels-react-0.16.0.tgz
-    name: '@fuels/react'
-    version: 0.16.0
-    peerDependencies:
-      fuels: '>=0.74.0'
-      react: '*'
-    peerDependenciesMeta:
-      react:
-        optional: true
-    dependencies:
-      '@radix-ui/react-dialog': 1.0.5(@types/react-dom@18.2.18)(@types/react@18.2.54)(react-dom@18.2.0)(react@18.2.0)
-      '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
-      events: 3.3.0
-      fuels: 0.74.0(dexie@3.2.4)
-      react: 18.2.0
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
-      - react-dom
-      - react-native
-    dev: false
