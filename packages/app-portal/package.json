@@ -18,7 +18,7 @@
     "@fuel-bridge/solidity-contracts": "0.5.0",
     "@fuel-wallet/sdk": "0.15.2",
     "@fuels/assets": "0.16.0",
-    "@fuels/connectors": "1.0.0-main-057e59975e78113121e1684ecbdd0cded1e6ebed",
+    "@fuels/connectors": "0.1.0",
     "@fuels/react": "0.16.0",
     "@fuels/react-xstore": "0.16.0",
     "@fuels/ui": "workspace:*",

@@ -419,8 +419,8 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
       '@fuels/connectors':
-        specifier: 1.0.0-main-057e59975e78113121e1684ecbdd0cded1e6ebed
-        version: 1.0.0-main-057e59975e78113121e1684ecbdd0cded1e6ebed(fuels@0.74.0)
+        specifier: 0.1.0
+        version: 0.1.0(fuels@0.74.0)
       '@fuels/react':
         specifier: 0.16.0
         version: 0.16.0(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
@@ -4902,8 +4902,8 @@ packages:
     resolution: {integrity: sha512-Kg/rzL9VIiY/pRaVEfcIC/Ky9EsI0ysrZ15egCiRk34Yng6IYI0ag6KiBRfC0siiV9PzzAwhQz3oai3VJaU+bA==}
     dev: false
 
-  /@fuels/connectors@1.0.0-main-057e59975e78113121e1684ecbdd0cded1e6ebed(fuels@0.74.0):
-    resolution: {integrity: sha512-ZgplGc1rUahSkiHQEfC+6R9WDvpxgMQZEO32i4DDCb3bD1mJpBPw26n/RIGmthfoaJwgIi+qAiFt7zadvaXyuw==}
+  /@fuels/connectors@0.1.0(fuels@0.74.0):
+    resolution: {integrity: sha512-bPZZWyVFpHZ3L461PJCTQIehX4crFw1f09qXfggadKyEDpsT2RBhuiMaLhfJVM1g7qMxxIR8nooVxRuzFifshQ==}
     peerDependencies:
       fuels: '>=0.74.0'
     dependencies:
