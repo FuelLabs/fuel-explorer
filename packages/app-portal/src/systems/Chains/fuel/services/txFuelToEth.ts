@@ -1,8 +1,7 @@
 import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
-import type { FuelWalletLocked } from '@fuel-wallet/sdk';
 import type { Fuel } from '@fuels/assets';
 import { addSeconds } from 'date-fns';
-import type { BN, MessageProof } from 'fuels';
+import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
 import {
   Address as FuelAddress,
   Contract,
@@ -27,7 +26,7 @@ import { getBlock, getContractTokenId } from '../utils';
 export type TxFuelToEthInputs = {
   startBase: {
     amount?: BN;
-    fuelWallet?: FuelWalletLocked;
+    fuelWallet?: FuelWallet;
     fuelProvider?: FuelProvider;
     ethAddress?: string;
   };

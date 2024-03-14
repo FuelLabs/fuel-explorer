@@ -1,4 +1,4 @@
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
+import type { Account as FuelWallet } from 'fuels';
 import { useMemo } from 'react';
 import { Services, store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';

@@ -1,5 +1,5 @@
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type {
+  Account as FuelWallet,
   Address as FuelAddress,
   BN,
   Message as FuelMessage,
