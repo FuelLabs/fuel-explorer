@@ -1,5 +1,4 @@
-import { QUERY_KEYS } from '@fuels/react';
-import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS, useNamedQuery } from '@fuels/react';
 import type { BytesLike, Provider as FuelProvider } from 'fuels';
 import { Address } from 'fuels';
 
@@ -12,7 +11,7 @@ export const useBalance = ({
   assetId?: BytesLike;
   provider?: FuelProvider;
 }) => {
-  const query = useQuery({
+  return useNamedQuery('balance', {
     queryKey: [QUERY_KEYS.balance, address, assetId],
     queryFn: async () => {
       try {
@@ -30,9 +29,4 @@ export const useBalance = ({
     },
     enabled: !!provider,
   });
-
-  return {
-    balance: query.data || undefined,
-    ...query,
-  };
 };

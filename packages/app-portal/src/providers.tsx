@@ -1,9 +1,8 @@
-import { FuelProvider } from '@fuels/react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { ReactNode } from 'react';
 
 import { StoreProvider } from './store';
 import { ConnectProvider, FuelConnectProvider } from './systems/Settings';
-import { FuelNetworkProvider } from './systems/Settings/providers/FuelNetworkProvider';
 
 type ProvidersProps = {
   children: ReactNode;
@@ -12,13 +11,11 @@ type ProvidersProps = {
 export function Providers({ children }: ProvidersProps) {
   return (
     <StoreProvider>
-      <FuelProvider>
-        <FuelConnectProvider>
-          <ConnectProvider>
-            <FuelNetworkProvider>{children}</FuelNetworkProvider>
-          </ConnectProvider>
-        </FuelConnectProvider>
-      </FuelProvider>
+      <FuelConnectProvider>
+        <ConnectProvider>{children}</ConnectProvider>
+
+        <ReactQueryDevtools initialIsOpen={false} />
+      </FuelConnectProvider>
     </StoreProvider>
   );
 }

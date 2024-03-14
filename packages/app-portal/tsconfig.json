@@ -10,5 +10,5 @@
       "~portal/*": ["./src/*"]
     }
   },
-  "include": ["./src"]
+  "include": ["./src", "../app-commons/src/process.env.d.ts"]
 }

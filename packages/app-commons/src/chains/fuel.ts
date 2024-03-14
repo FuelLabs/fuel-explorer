@@ -1,5 +1,7 @@
 import { FUEL_CHAIN_NAME } from '../config';
 
+type ChainName = typeof process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME;
+
 export type FuelChain = {
   id: number;
   network: string;
@@ -32,10 +34,10 @@ const fuelBeta5: FuelChain = {
   providerUrl: 'https://beta-5.fuel.network/graphql',
 };
 
-export const FUEL_CHAINS = {
+export const FUEL_CHAINS: Record<ChainName, FuelChain> = {
   fuelDev,
   fuelBeta5Dev,
   fuelBeta5,
 };
 
-export const FUEL_CHAIN: FuelChain = FUEL_CHAINS[FUEL_CHAIN_NAME as string];
+export const FUEL_CHAIN: FuelChain = FUEL_CHAINS[FUEL_CHAIN_NAME];

@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["NODE_ENV", "IS_PREVIEW", "FUEL_PROVIDER"],
+  "globalEnv": ["NODE_ENV", "IS_PREVIEW"],
   "pipeline": {
     "ts:check": {
       "dependsOn": ["^build"],

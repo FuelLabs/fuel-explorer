@@ -27,6 +27,9 @@ export function bridgeEvents(store: Store) {
 
       store.send(Services.bridgeTxs, { type: 'FETCH', input });
     },
+    fetchNextPage() {
+      store.send(Services.bridgeTxs, { type: 'FETCH_NEXT_PAGE' });
+    },
     addTxEthToFuel(
       input?: { ethTxId?: `0x${string}` } & BridgeInputs['fetchTxs'],
     ) {

@@ -1,10 +1,10 @@
 import { createExecutor, createSchema } from '@fuel-explorer/graphql';
 import { ContextDomain } from '@fuel-explorer/graphql/src/domains/Context';
+import { FUEL_CHAIN } from 'app-commons';
 import { createYoga } from 'graphql-yoga';
 import { NextResponse } from 'next/server';
-import { requireEnv } from '~/systems/utils/requireEnv';
 
-const { FUEL_PROVIDER: url } = requireEnv(['FUEL_PROVIDER']);
+const { providerUrl: url } = FUEL_CHAIN;
 
 const executor = createExecutor(async ({ body }) => {
   return fetch(url, {

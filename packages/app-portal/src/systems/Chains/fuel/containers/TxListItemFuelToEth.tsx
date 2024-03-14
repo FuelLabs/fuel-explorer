@@ -21,8 +21,9 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
   const bridgeTxStatus = steps?.find(({ isSelected }) => !!isSelected);
 
   function getStatusComponent() {
-    if (status?.isReceiveDone)
+    if (status?.isReceiveDone) {
       return <Text className={classes.settledText()}>Settled</Text>;
+    }
 
     if (bridgeTxStatus?.isLoading) {
       return (
@@ -37,7 +38,7 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
       return <ActionRequiredBadge />;
     }
 
-    return '';
+    return null;
   }
 
   return (
@@ -61,7 +62,7 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
 
 const styles = tv({
   slots: {
-    settledText: 'text-xs text-muted',
+    settledText: 'text-xs text-muted text-right',
     loadingText: 'text-xs',
   },
 });

@@ -59,7 +59,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
           )
         }
       >
-        Fuel Native Bridge
+        Fuel Bridge
       </PageTitle>
       <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
       {children}
