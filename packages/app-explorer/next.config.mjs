@@ -31,14 +31,6 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
-  rewrites: async () => {
-    return [
-      {
-        source: '/portal/:path*',
-        destination: '/portal/index.html',
-      },
-    ];
-  },
   redirects: async () => {
     return [
       {
