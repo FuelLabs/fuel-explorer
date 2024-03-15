@@ -33,13 +33,14 @@ export const BridgeTxOverview = ({
   return (
     <VStack className={classes.stack()} gap="2">
       <Flex className={classes.txItem()}>
-        <Text className={classes.labelText()}>ID</Text>
+        <Text className={classes.labelText()}>Transaction ID</Text>
         <Link
           isExternal
           href={explorerLink}
           className={classes.linkText()}
           color="green"
           iconSize={16}
+          target="_blank"
         >
           <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
         </Link>

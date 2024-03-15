@@ -34,7 +34,7 @@
         "label": "Block explorer"
       },
       {
-        "href": "https://app.fuel.network/portal/ecosystem",
+        "href": "https://app.fuel.network/ecosystem",
         "label": "Ecosystem"
       },
       {
@@ -42,7 +42,7 @@
         "label": "Wallet"
       },
       {
-        "href": "https://app.fuel.network/portal/bridge",
+        "href": "https://app.fuel.network/bridge",
         "label": "Bridge"
       }
     ],
