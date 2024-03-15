@@ -47,9 +47,12 @@ export const BridgeTxOverview = ({
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>Age</Text>
-        <Text className={classes.infoText()}>
-          {isLoading ? <InfoTextLoader /> : calculateDateDiff(date)}
-        </Text>
+
+        {isLoading ? (
+          <InfoTextLoader />
+        ) : (
+          <Text className={classes.infoText()}>{calculateDateDiff(date)}</Text>
+        )}
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>
@@ -62,7 +65,7 @@ export const BridgeTxOverview = ({
           <Flex className={classes.directionInfo()}>
             {ethAsset && (
               <Asset asset={ethAsset} iconSize={16}>
-                <Asset.Icon alt={'Deposit'} />
+                <Asset.Icon alt="Deposit" />
               </Asset>
             )}
             <IconArrowRight size={16} />
@@ -73,28 +76,27 @@ export const BridgeTxOverview = ({
             <FuelLogo size={16} />
             <IconArrowRight size={16} />
             <Asset asset={ethAsset} iconSize={16}>
-              <Asset.Icon alt={'withdrawal'} />
+              <Asset.Icon alt="withdrawal" />
             </Asset>
           </Flex>
         )}
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>Asset</Text>
-        <Flex className={classes.directionInfo()}>
-          {isLoading ? (
-            <InfoTextLoader />
-          ) : (
-            <>
-              <Asset asset={ethAsset} iconSize={17}>
-                <Asset.Icon alt={`Asset ${asset?.symbol}`} />
-              </Asset>
-              <Text aria-label="Asset amount" className={classes.infoText()}>
-                {amount}
-              </Text>
-              <Text className={classes.infoText()}>{asset?.symbol}</Text>
-            </>
-          )}
-        </Flex>
+
+        {isLoading ? (
+          <InfoTextLoader />
+        ) : (
+          <Flex className={classes.directionInfo()}>
+            <Asset asset={ethAsset} iconSize={17}>
+              <Asset.Icon alt={`Asset ${asset?.symbol}`} />
+            </Asset>
+            <Text aria-label="Asset amount" className={classes.infoText()}>
+              {amount}
+            </Text>
+            <Text className={classes.infoText()}>{asset?.symbol}</Text>
+          </Flex>
+        )}
       </Flex>
     </VStack>
   );
