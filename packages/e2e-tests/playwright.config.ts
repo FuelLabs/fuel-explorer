@@ -5,9 +5,6 @@ import { defineConfig, devices } from '@playwright/test';
 const IS_CI = !!process.env.CI;
 const PORT = process.env.PORT || 3000;
 
-console.log('IS_CI', IS_CI);
-console.log('PORT', PORT);
-
 const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
   testMatch: join(__dirname, './bridge/**/*.test.ts'),

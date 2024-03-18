@@ -538,8 +538,8 @@ importers:
         specifier: ^0.17.0
         version: 0.17.0(@playwright/test@1.41.2)(fuels@0.74.0)
       '@synthetixio/synpress':
-        specifier: 3.7.2-beta.9
-        version: 3.7.2-beta.9(@babel/core@7.23.9)(typescript@5.3.3)
+        specifier: https://github.com/LuizAsFight/synpress
+        version: github.com/LuizAsFight/synpress/dab4f61185941ae931b911ed0800b8608d7e892b(@babel/core@7.23.9)(typescript@5.3.3)
       viem:
         specifier: 2.7.20
         version: 2.7.20(typescript@5.3.3)
@@ -2638,8 +2638,8 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  /@cypress/code-coverage@3.12.29(@babel/core@7.23.9)(cypress@12.17.3):
-    resolution: {integrity: sha512-+iWvC58iZtdx+863NMtgfOGzvzGeYng9syLGRGVAymxpZYvkgnP/tSdHCWI2L5yyql9xY1y3LHOfL4g29FMmlw==}
+  /@cypress/code-coverage@3.12.30(@babel/core@7.23.9)(cypress@12.17.3):
+    resolution: {integrity: sha512-3pE2NgAIHPw92MCzgXAtJJe6Z0z4HUJuorWBSh9Ly0s/BpLf9lZKRI8WhMIDA35oFjAmNCsChiXHFy47evasfw==}
     peerDependencies:
       '@babel/core': ^7.0.1
       '@babel/preset-env': ^7.0.0
@@ -11464,60 +11464,6 @@ packages:
   /@swc/types@0.1.5:
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
 
-  /@synthetixio/synpress@3.7.2-beta.9(@babel/core@7.23.9)(typescript@5.3.3):
-    resolution: {integrity: sha512-1fnr3jzQA2op6YnXxx6ERZ4babB+Ib1Xc5URGTcndH891Oa5uVlIaP0zRm5udTJuNdENOTLgkAdjv4WTGurBVA==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dependencies:
-      '@cypress/code-coverage': 3.12.29(@babel/core@7.23.9)(cypress@12.17.3)
-      '@cypress/webpack-dev-server': 3.7.4(debug@4.3.4)
-      '@drptbl/gremlins.js': 2.2.1
-      '@foundry-rs/easy-foundryup': 0.1.3
-      '@playwright/test': 1.41.2
-      '@testing-library/cypress': 9.0.0(cypress@12.17.3)
-      '@testing-library/react': 14.2.1(react-dom@18.2.0)(react@18.2.0)
-      '@types/testing-library__cypress': 5.0.13
-      '@viem/anvil': 0.0.6(debug@4.3.4)
-      app-root-path: 3.1.0
-      axios: 1.6.7(debug@4.3.4)
-      babel-plugin-istanbul: 6.1.1
-      babel-plugin-react-generate-property: 1.1.2
-      babel-plugin-react-remove-properties: 0.3.0
-      babel-plugin-transform-react-qa-classes: 1.6.0
-      babel-plugin-transform-react-styled-components-qa: 2.1.0
-      bytes32: 0.0.3
-      commander: 11.1.0
-      cypress: 12.17.3
-      cypress-wait-until: 2.0.1
-      debug: 4.3.4(supports-color@8.1.1)
-      dotenv: 16.4.1
-      dotenv-parse-variables: 2.0.0
-      download: 8.0.0
-      ethers: 6.11.0
-      etherscan-api: 10.3.0(debug@4.3.4)
-      find-config: 1.0.0
-      get-port: 7.0.0
-      node-fetch: 2.7.0
-      underscore: 1.13.6
-      viem: 1.21.4(typescript@5.3.3)
-      wait-on: 7.2.0(debug@4.3.4)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@babel/preset-env'
-      - '@rspack/core'
-      - babel-loader
-      - bufferutil
-      - encoding
-      - react
-      - react-dom
-      - supports-color
-      - typescript
-      - utf-8-validate
-      - webpack
-      - webpack-cli
-      - zod
-    dev: true
-
   /@tabler/icons-react@2.46.0(react@18.2.0):
     resolution: {integrity: sha512-X8MRxuslIOFqMjAo+GvUZDpjlOwNYNJTuOsHXf/NBvVI6ygqUf0FUNsDLLA5fQ6k6KtRwxMlgGB+eR8ZG1UP0g==}
     peerDependencies:
@@ -12042,8 +11988,8 @@ packages:
   /@types/node@10.12.18:
     resolution: {integrity: sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==}
 
-  /@types/node@16.18.89:
-    resolution: {integrity: sha512-QlrE8QI5z62nfnkiUZysUsAaxWaTMoGqFVcB3PvK1WxJ0c699bacErV4Fabe9Hki6ZnaHalgzihLbTl2d34XfQ==}
+  /@types/node@16.18.90:
+    resolution: {integrity: sha512-ofx8kJGTumXmOfYHrJckfdunEiEoq6Aa8x3JKVtGS25z/DTV/fUqIolnHPssDs8P3fq2ZWayNwkAWEk/RmdmwQ==}
     dev: true
 
   /@types/node@18.15.13:
@@ -15402,7 +15348,7 @@ packages:
     dependencies:
       '@cypress/request': 2.88.12
       '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
-      '@types/node': 16.18.89
+      '@types/node': 16.18.90
       '@types/sinonjs__fake-timers': 8.1.1
       '@types/sizzle': 2.3.8
       arch: 2.2.0
@@ -16611,6 +16557,21 @@ packages:
       - bufferutil
       - utf-8-validate
 
+  /ethers@6.10.0:
+    resolution: {integrity: sha512-nMNwYHzs6V1FR3Y4cdfxSQmNgZsRj1RiTU25JwvnJLmyzw9z3SKxNc2XKDuiXXo/v9ds5Mp9m6HBabgYQQ26tA==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@adraffy/ens-normalize': 1.10.0
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.2
+      '@types/node': 18.15.13
+      aes-js: 4.0.0-beta.5
+      tslib: 2.4.0
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   /ethers@6.11.0:
     resolution: {integrity: sha512-kPHNTnhVWiWU6AVo6CAeTjXEK24SpCXyZvwG9ROFjT0Vlux0EOhWKBAeC+45iDj80QNJTYaT1SDEmeunT0vDNw==}
     engines: {node: '>=14.0.0'}
@@ -17539,7 +17500,7 @@ packages:
       chokidar: 3.5.3
       commander: 9.5.0
       esbuild: 0.19.12
-      ethers: 6.11.0
+      ethers: 6.10.0
       glob: 10.3.10
       handlebars: 4.7.8
       joycon: 3.1.1
@@ -26923,3 +26884,60 @@ packages:
       '@types/react': 18.2.54
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
+
+  github.com/LuizAsFight/synpress/dab4f61185941ae931b911ed0800b8608d7e892b(@babel/core@7.23.9)(typescript@5.3.3):
+    resolution: {tarball: https://codeload.github.com/LuizAsFight/synpress/tar.gz/dab4f61185941ae931b911ed0800b8608d7e892b}
+    id: github.com/LuizAsFight/synpress/dab4f61185941ae931b911ed0800b8608d7e892b
+    name: '@synthetixio/synpress'
+    version: 3.7.2-beta.9
+    engines: {node: '>=14'}
+    hasBin: true
+    dependencies:
+      '@cypress/code-coverage': 3.12.30(@babel/core@7.23.9)(cypress@12.17.3)
+      '@cypress/webpack-dev-server': 3.7.4(debug@4.3.4)
+      '@drptbl/gremlins.js': 2.2.1
+      '@foundry-rs/easy-foundryup': 0.1.3
+      '@playwright/test': 1.41.2
+      '@testing-library/cypress': 9.0.0(cypress@12.17.3)
+      '@testing-library/react': 14.2.1(react-dom@18.2.0)(react@18.2.0)
+      '@types/testing-library__cypress': 5.0.13
+      '@viem/anvil': 0.0.6(debug@4.3.4)
+      app-root-path: 3.1.0
+      axios: 1.6.7(debug@4.3.4)
+      babel-plugin-istanbul: 6.1.1
+      babel-plugin-react-generate-property: 1.1.2
+      babel-plugin-react-remove-properties: 0.3.0
+      babel-plugin-transform-react-qa-classes: 1.6.0
+      babel-plugin-transform-react-styled-components-qa: 2.1.0
+      bytes32: 0.0.3
+      commander: 11.1.0
+      cypress: 12.17.3
+      cypress-wait-until: 2.0.1
+      debug: 4.3.4(supports-color@8.1.1)
+      dotenv: 16.4.1
+      dotenv-parse-variables: 2.0.0
+      download: 8.0.0
+      ethers: 6.11.0
+      etherscan-api: 10.3.0(debug@4.3.4)
+      find-config: 1.0.0
+      get-port: 7.0.0
+      node-fetch: 2.7.0
+      underscore: 1.13.6
+      viem: 1.21.4(typescript@5.3.3)
+      wait-on: 7.2.0(debug@4.3.4)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/preset-env'
+      - '@rspack/core'
+      - babel-loader
+      - bufferutil
+      - encoding
+      - react
+      - react-dom
+      - supports-color
+      - typescript
+      - utf-8-validate
+      - webpack
+      - webpack-cli
+      - zod
+    dev: true
