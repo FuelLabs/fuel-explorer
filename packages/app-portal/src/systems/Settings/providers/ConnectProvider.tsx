@@ -51,7 +51,7 @@ export const config = createConfig({
     }),
     coinbaseWallet({ appName: app.name, headlessMode: true }),
     walletConnect({
-      projectId: WALLETCONNECT_ID as string,
+      projectId: WALLETCONNECT_ID,
       showQrModal: false,
     }),
   ],

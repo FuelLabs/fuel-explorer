@@ -5,6 +5,9 @@ import { defineConfig, devices } from '@playwright/test';
 const IS_CI = !!process.env.CI;
 const PORT = process.env.PORT || 3000;
 
+console.log('IS_CI', IS_CI);
+console.log('PORT', PORT);
+
 const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
   testMatch: join(__dirname, './bridge/**/*.test.ts'),
@@ -14,12 +17,15 @@ const config: PlaywrightTestConfig = defineConfig({
     timeout: 5000,
   },
   reporter: [['html'], ['list', { printSteps: true }]],
+  // Fail the build on CI if left test.only in the source code
+  forbidOnly: !!process.env.CI,
   // Retry tests on CI if they fail
   retries: IS_CI ? 2 : 0,
   webServer: {
     command: 'pnpm dev',
-    port: Number(PORT),
+    url: `http://localhost:${PORT}`,
     reuseExistingServer: true,
+    cwd: join(__dirname, '../../'),
   },
   use: {
     baseURL: `http://localhost:${PORT}/`,

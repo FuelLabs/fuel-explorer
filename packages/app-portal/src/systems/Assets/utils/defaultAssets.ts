@@ -6,7 +6,7 @@ import { getContractTokenId } from '~portal/systems/Chains/fuel/utils/contract';
 
 const defaultAssets: Asset[] = [...assetList];
 
-export const getDefaultAssets = async (
+export const getDefaultAssets = (
   bridgeTokenContracts?: BridgeTokenContracts,
 ) => {
   const assets = [...defaultAssets];
