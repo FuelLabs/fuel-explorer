@@ -13,23 +13,6 @@ const {
   FUEL_GRAPHQL_ENDPOINT,
   PK_ETH_WALLET,
 } = process.env;
-
-console.log(
-  `{
-  PORT,
-  L1_CHAIN_HTTP,
-  DEPLOYMENTS_HTTP,
-  FUEL_GRAPHQL_ENDPOINT,
-  PK_ETH_WALLET,
-}`,
-  {
-    PORT,
-    L1_CHAIN_HTTP,
-    DEPLOYMENTS_HTTP,
-    FUEL_GRAPHQL_ENDPOINT,
-    PK_ETH_WALLET,
-  },
-);
 const APP_PORT = PORT || 9090;
 
 async function main() {

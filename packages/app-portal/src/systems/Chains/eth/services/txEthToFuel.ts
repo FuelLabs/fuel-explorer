@@ -293,10 +293,6 @@ export class TxEthToFuelService {
 
         if (isErc20Address(depositEvent.args.tokenAddress)) {
           const { amount, tokenAddress } = depositEvent.args;
-          // const erc20Contract = EthConnectorService.connectToErc20({
-          //   address: tokenAddress,
-          //   publicClient: input.ethPublicClient,
-          // });
           const decimals = await input.ethPublicClient.readContract({
             address: tokenAddress,
             abi: erc20Abi,

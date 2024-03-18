@@ -4,7 +4,6 @@ import {
   hasText,
 } from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
-// import * as metamask from '@synthetixio/synpress/commands/metamask';
 
 import { test } from './fixtures';
 import { hasDropdownSymbol } from './utils/bridge';
