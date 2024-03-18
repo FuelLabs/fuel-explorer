@@ -1,11 +1,12 @@
 import {
   FuelWalletTestHelper,
+  getButtonByText,
   getByAriaLabel,
   hasText,
 } from '@fuels/playwright-utils';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
 import type { BigNumberish, WalletUnlocked } from 'fuels';
-import { bn, format } from 'fuels';
+import { BaseAssetId, bn, format } from 'fuels';
 import type { HDAccount, PublicClient } from 'viem';
 import { http, createPublicClient, getContract } from 'viem';
 import { foundry } from 'viem/chains';
@@ -13,7 +14,15 @@ import { foundry } from 'viem/chains';
 import { ERC_20 } from '../../app-portal/src/systems/Chains/eth/contracts/Erc20';
 
 import { expect, test } from './fixtures';
-import { clickDepositTab, hasDropdownSymbol } from './utils/bridge';
+import {
+  clickDepositTab,
+  clickWithdrawTab,
+  closeTransactionPopup,
+  goToBridgePage,
+  goToTransactionsPage,
+  hasDropdownSymbol,
+  proceedAnyways,
+} from './utils/bridge';
 import { getBridgeTokenContracts } from './utils/contractIds';
 import {
   connectToFuel,
@@ -24,7 +33,7 @@ import {
 test.describe('Bridge', () => {
   let client: PublicClient;
   let account: HDAccount;
-  let _fuelWallet: WalletUnlocked;
+  let fuelWallet: WalletUnlocked;
   let erc20Contract;
   let fuelWalletTestHelper: FuelWalletTestHelper;
 
@@ -34,7 +43,7 @@ test.describe('Bridge', () => {
       extensionId,
       page,
     });
-    _fuelWallet = walletSettedUp.fuelWallet;
+    fuelWallet = walletSettedUp.fuelWallet;
     fuelWalletTestHelper = walletSettedUp.fuelWalletTestHelper;
     account = walletSettedUp.account;
 
@@ -45,7 +54,7 @@ test.describe('Bridge', () => {
 
     await page.goto('/bridge');
   });
-  test('e2e', async ({ page }) => {
+  test('e2e', async ({ page, context }) => {
     await test.step('Connect to metamask', async () => {
       await connectToMetamask(page);
     });
@@ -57,220 +66,209 @@ test.describe('Bridge', () => {
       ]);
     });
 
-    // const _INITIATE_DEPOSIT =
-    //   'Deposit successfully initiated. You may now close the popup.';
-    // const _INITIATE_WITHDRAW =
-    //   'Withdraw successfully initiated. You may now close the popup.';
-    // const _DEPOSIT_AMOUNT = '1.12345';
-    // const _WITHDRAW_AMOUNT = '0.012345';
+    const DEPOSIT_AMOUNT = '1.12345';
+    const WITHDRAW_AMOUNT = '0.012345';
 
-    // let _depositEthTxId: string;
-    // let _withdrawEthTxId: string;
-    // let _depositERC20TxId: string;
-    // let _withdrawERC20TxId: string;
+    let depositEthTxId: string;
+    let withdrawEthTxId: string;
+    let _depositERC20TxId: string;
+    let _withdrawERC20TxId: string;
 
-    // await test.step('Deposit ETH to Fuel', async () => {
-    //   const preDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
-    //   const prevDepositBalanceEth = await client.getBalance({
-    //     address: account.address,
-    //   });
+    await test.step('Deposit ETH to Fuel', async () => {
+      const preDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
+      const prevDepositBalanceEth = await client.getBalance({
+        address: account.address,
+      });
 
-    //   await test.step('Fill data and click on deposit', async () => {
-    //     await hasDropdownSymbol(page, 'ETH');
-    //     const depositInput = page.locator('.fuel-InputAmount input');
-    //     await depositInput.fill(DEPOSIT_AMOUNT);
-    //     const depositButton = getByAriaLabel(page, 'Deposit', true);
-    //     await depositButton.click();
-    //   });
+      await test.step('Fill data and click on deposit', async () => {
+        await hasDropdownSymbol(page, 'ETH');
+        const depositInput = page.locator('.fuel-InputAmount input');
+        await depositInput.fill(DEPOSIT_AMOUNT);
+        const depositButton = getByAriaLabel(page, 'Deposit', true);
+        await depositButton.click();
+      });
 
-    //   await test.step('Approve transaction on Metamask', async () => {
-    //     // Timeout needed until https://github.com/Synthetixio/synpress/issues/795 is fixed
-    //     await page.waitForTimeout(2000);
-    //     await metamask.confirmTransaction();
-    //   });
+      await test.step('Approve transaction on Metamask', async () => {
+        // Timeout needed until https://github.com/Synthetixio/synpress/issues/795 is fixed
+        await page.waitForTimeout(2000);
+        await metamask.confirmTransaction();
+      });
 
-    //   await test.step('Check if deposit is completed', async () => {
-    //     await page.locator(':nth-match(:text("Done"), 1)').waitFor();
+      await test.step('Check if deposit is completed', async () => {
+        await page.locator(':nth-match(:text("Done"), 1)').waitFor();
+        await page.locator(':nth-match(:text("Done"), 3)').waitFor();
 
-    //     // Check toast success feedback of tx created
-    //     // Toast message has delay of 2 seconds
-    //     await page.waitForTimeout(2000);
-    //     await hasText(page, INITIATE_DEPOSIT);
-    //     await page.locator(':nth-match(:text("Done"), 3)').waitFor();
+        const postDepositBalanceEth = await client.getBalance({
+          address: account.address,
+        });
 
-    //     const postDepositBalanceEth = await client.getBalance({
-    //       address: account.address,
-    //     });
+        expect(
+          parseFloat(
+            bn(prevDepositBalanceEth.toString())
+              .sub(postDepositBalanceEth.toString())
+              .format({ precision: 6, units: 18 }),
+          ),
+        ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
 
-    //     expect(
-    //       parseFloat(
-    //         bn(prevDepositBalanceEth.toString())
-    //           .sub(postDepositBalanceEth.toString())
-    //           .format({ precision: 6, units: 18 }),
-    //       ),
-    //     ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
+        // check the popup is correct
+        depositEthTxId = (
+          await getByAriaLabel(page, 'Transaction ID').innerText()
+        ).trim();
+        const assetAmount = getByAriaLabel(page, 'Asset amount');
+        expect((await assetAmount.innerHTML()).trim()).toBe(DEPOSIT_AMOUNT);
+      });
 
-    //     // check the popup is correct
-    //     depositEthTxId = (
-    //       await getByAriaLabel(page, 'Transaction ID').innerText()
-    //     ).trim();
-    //     const assetAmount = getByAriaLabel(page, 'Asset amount');
-    //     expect((await assetAmount.innerHTML()).trim()).toBe(DEPOSIT_AMOUNT);
-    //   });
+      await test.step('Check deposit tx in the Tx list', async () => {
+        await closeTransactionPopup(page);
 
-    //   await test.step('Check deposit tx in the Tx list', async () => {
-    //     await closeTransactionPopup(page);
+        const postDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
 
-    //     const postDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
+        expect(
+          postDepositBalanceFuel
+            .sub(preDepositBalanceFuel)
+            .format({ precision: 6, units: 9 }),
+        ).toBe(DEPOSIT_AMOUNT);
 
-    //     expect(
-    //       postDepositBalanceFuel
-    //         .sub(preDepositBalanceFuel)
-    //         .format({ precision: 6, units: 9 }),
-    //     ).toBe(DEPOSIT_AMOUNT);
+        await goToTransactionsPage(page);
 
-    //     await goToTransactionsPage(page);
+        // check the transaction is there
+        const depositLocator = getByAriaLabel(
+          page,
+          `Transaction ID: ${depositEthTxId}`,
+        );
 
-    //     // check the transaction is there
-    //     const depositLocator = getByAriaLabel(
-    //       page,
-    //       `Transaction ID: ${depositEthTxId}`,
-    //     );
+        // check if has correct asset amount
+        const assetAmountLocator = depositLocator.getByText(
+          `${DEPOSIT_AMOUNT} ETH`,
+        );
+        await assetAmountLocator.innerText();
 
-    //     // check if has correct asset amount
-    //     const assetAmountLocator = depositLocator.getByText(
-    //       `${DEPOSIT_AMOUNT} ETH`,
-    //     );
-    //     await assetAmountLocator.innerText();
+        // check if it's settled on the list
+        const statusLocator = depositLocator.getByText('Settled');
+        await statusLocator.innerText();
 
-    //     // check if it's settled on the list
-    //     const statusLocator = depositLocator.getByText('Settled');
-    //     await statusLocator.innerText();
+        goToBridgePage(page);
+      });
+    });
 
-    //     goToBridgePage(page);
-    //   });
-    // });
+    await test.step('Withdraw ETH from Fuel', async () => {
+      const preWithdrawBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
+      const prevWithdrawBalanceEth = await client.getBalance({
+        address: account.address,
+      });
 
-    // await test.step('Withdraw ETH from Fuel', async () => {
-    //   const preWithdrawBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
-    //   const prevWithdrawBalanceEth = await client.getBalance({
-    //     address: account.address,
-    //   });
+      await test.step('Fill data and click on withdraw', async () => {
+        await clickWithdrawTab(page);
+        await hasDropdownSymbol(page, 'ETH');
 
-    //   await test.step('Fill data and click on withdraw', async () => {
-    //     await clickWithdrawTab(page);
-    //     await hasDropdownSymbol(page, 'ETH');
-    //     const withdrawInput = page.locator('input');
-    //     await withdrawInput.fill(WITHDRAW_AMOUNT);
-    //     const withdrawButton = getByAriaLabel(page, 'Withdraw');
-    //     await withdrawButton.click();
-    //   });
+        const withdrawInput = page.locator('.fuel-InputAmount input');
+        await withdrawInput.fill(WITHDRAW_AMOUNT);
+        const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
+        await withdrawButton.click();
+      });
 
-    //   await test.step('Approve transaction on Fuel Wallet', async () => {
-    //     await fuelWalletTestHelper.walletApprove();
-    //   });
+      await test.step('Approve transaction on Fuel Wallet', async () => {
+        await fuelWalletTestHelper.walletApprove();
+      });
 
-    //   await test.step('Check transaction submitted to FUEL network', async () => {
-    //     // On withdraw we skip checking loading because it's blazingly fast on fuel
-    //     await page.locator(':nth-match(:text("Done"), 1)').waitFor();
+      await test.step('Check transaction submitted to FUEL network', async () => {
+        // On withdraw we skip checking loading because it's blazingly fast on fuel
+        await page.locator(':nth-match(:text("Done"), 1)').waitFor();
 
-    //     // Check toast success feedback of tx created
-    //     // Toast message has delay of 2 seconds
-    //     await page.waitForTimeout(2000);
-    //     await hasText(page, INITIATE_WITHDRAW);
+        // check time left feedback
+        const stepSettlementLocator = getByAriaLabel(page, ' left');
+        await stepSettlementLocator.innerText();
+      });
 
-    //     // check time left feedback
-    //     const stepSettlementLocator = getByAriaLabel(page, ' left');
-    //     await stepSettlementLocator.innerText();
-    //   });
+      await test.step('Check if get to relay action', async () => {
+        await page.locator(':text("Action Required")').waitFor();
 
-    //   await test.step('Check if get to relay action', async () => {
-    //     await page.locator(':text("Action Required")').waitFor();
+        // Check the popup is correct
+        withdrawEthTxId = (
+          await getByAriaLabel(page, 'Transaction ID').innerText()
+        ).trim();
+        const assetAmountWithdraw = getByAriaLabel(page, 'Asset amount');
+        expect((await assetAmountWithdraw.innerHTML()).trim()).toBe(
+          WITHDRAW_AMOUNT,
+        );
+      });
 
-    //     // Check the popup is correct
-    //     withdrawEthTxId = (
-    //       await getByAriaLabel(page, 'Transaction ID').innerText()
-    //     ).trim();
-    //     const assetAmountWithdraw = getByAriaLabel(page, 'Asset amount');
-    //     expect((await assetAmountWithdraw.innerHTML()).trim()).toBe(
-    //       WITHDRAW_AMOUNT,
-    //     );
-    //   });
+      let withdrawTxLocator;
+      await test.step('Check withdraw tx in the Tx list and open popup', async () => {
+        await closeTransactionPopup(page);
+        await goToTransactionsPage(page);
 
-    //   let withdrawTxLocator;
-    //   await test.step('Check withdraw tx in the Tx list and open popup', async () => {
-    //     await closeTransactionPopup(page);
-    //     await goToTransactionsPage(page);
+        // Wait for transactions to get fetched and sorted
+        await page.waitForTimeout(2000);
 
-    //     // Wait for transactions to get fetched and sorted
-    //     await page.waitForTimeout(2000);
+        // Check the transaction is there
+        withdrawTxLocator = getByAriaLabel(
+          page,
+          `Transaction ID: ${withdrawEthTxId}`,
+        );
 
-    //     // Check the transaction is there
-    //     withdrawTxLocator = getByAriaLabel(
-    //       page,
-    //       `Transaction ID: ${withdrawEthTxId}`,
-    //     );
+        const assetAmountLocator = withdrawTxLocator.getByText(
+          `${WITHDRAW_AMOUNT} ETH`,
+        );
+        await assetAmountLocator.innerText();
 
-    //     const assetAmountLocator = withdrawTxLocator.getByText(
-    //       `${WITHDRAW_AMOUNT} ETH`,
-    //     );
-    //     await assetAmountLocator.innerText();
+        await assetAmountLocator.click();
+      });
 
-    //     await assetAmountLocator.click();
-    //   });
+      await test.step('Relay transaction', async () => {
+        await page.waitForTimeout(10000);
+        const confirmButton = getButtonByText(page, 'Confirm Transaction');
+        await confirmButton.click();
+      });
 
-    //   await test.step('Relay transaction', async () => {
-    //     await page.waitForTimeout(10000);
-    //     const confirmButton = getButtonByText(page, 'Confirm Transaction');
-    //     await confirmButton.click();
-    //   });
+      await test.step('Confirm on Metamask', async () => {
+        // For some reason we need this even if we wait for load state on the metamask notification page
+        await page.waitForTimeout(3000);
 
-    //   await test.step('Confirm on Metamask', async () => {
-    //     // For some reason we need this even if we wait for load state on the metamask notification page
-    //     await page.waitForTimeout(3000);
+        await proceedAnyways(context);
 
-    //     await proceedAnyways(context);
+        // Timeout needed until https://github.com/Synthetixio/synpress/issues/795 is fixed
+        await page.waitForTimeout(10000);
+        await metamask.confirmTransaction();
+      });
 
-    //     // Timeout needed until https://github.com/Synthetixio/synpress/issues/795 is fixed
-    //     await page.waitForTimeout(10000);
-    //     await metamask.confirmTransaction();
-    //   });
+      await test.step('Check withdraw is completed', async () => {
+        const postWithdrawBalanceEth = await client.getBalance({
+          address: account.address,
+        });
+        const postWithdrawBalanceFuel =
+          await fuelWallet.getBalance(BaseAssetId);
 
-    //   await test.step('Check withdraw is completed', async () => {
-    //     const postWithdrawBalanceEth = await client.getBalance({
-    //       address: account.address,
-    //     });
-    //     const postWithdrawBalanceFuel =
-    //       await fuelWallet.getBalance(BaseAssetId);
+        expect(
+          parseFloat(
+            bn(postWithdrawBalanceEth.toString())
+              .sub(bn(prevWithdrawBalanceEth.toString()))
+              .format({ precision: 6, units: 18 }),
+          ),
+        ).toBeCloseTo(0.0122);
 
-    //     expect(
-    //       parseFloat(
-    //         bn(postWithdrawBalanceEth.toString())
-    //           .sub(bn(prevWithdrawBalanceEth.toString()))
-    //           .format({ precision: 6, units: 18 }),
-    //       ),
-    //     ).toBeCloseTo(0.0122);
+        expect(
+          preWithdrawBalanceFuel
+            .sub(postWithdrawBalanceFuel)
+            .format({ precision: 6, units: 9 }),
+        ).toBe('0.012345');
 
-    //     expect(
-    //       preWithdrawBalanceFuel
-    //         .sub(postWithdrawBalanceFuel)
-    //         .format({ precision: 6, units: 9 }),
-    //     ).toBe('0.012345');
+        await closeTransactionPopup(page);
 
-    //     await closeTransactionPopup(page);
+        // check if it's settled on the list
+        const statusLocator = withdrawTxLocator.getByText('Settled');
+        await statusLocator.innerText();
+      });
 
-    //     // check if it's settled on the list
-    //     const statusLocator = withdrawTxLocator.getByText('Settled');
-    //     await statusLocator.innerText();
-    //   });
-    // });
+      await test.step('Go back to bridge page', async () => {
+        await goToBridgePage(page);
+      });
+    });
 
     await test.step('Faucet TKN', async () => {
       const data = await getBridgeTokenContracts();
       const { ETH_ERC20 } = data;
 
-      console.log('data', data);
-      console.log('ETH_ERC20', ETH_ERC20);
       erc20Contract = getContract({
         abi: ERC_20.abi,
         address: ETH_ERC20 as `0x${string}`,
@@ -281,8 +279,6 @@ test.describe('Bridge', () => {
       const preFaucetBalance = (await erc20Contract.read.balanceOf([
         account.address,
       ])) as BigNumberish;
-
-      console.log('preFaucetBalance', preFaucetBalance);
 
       await test.step('Faucet ERC-20', async () => {
         await clickDepositTab(page);

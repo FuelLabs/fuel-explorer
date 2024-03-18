@@ -1,5 +1,5 @@
-import 'dotenv/config';
 import graphqlLoaderPluginPkg from '@luckycatfactory/esbuild-graphql-loader';
+import 'dotenv/config';
 import { execa } from 'execa';
 import getPort from 'get-port';
 import { defineConfig } from 'tsup';

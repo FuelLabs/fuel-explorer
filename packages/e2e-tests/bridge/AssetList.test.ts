@@ -39,7 +39,6 @@ test.describe('Asset List', () => {
       await hasDropdownSymbol(page, 'TKN');
 
       await assetDropdown.click();
-      console.log(10);
 
       await hasText(page, 'Select token');
       // Check that assets are displayed
@@ -101,7 +100,5 @@ test.describe('Asset List', () => {
 
       await hasDropdownSymbol(page, 'TKN');
     });
-
-    console.log(5);
   });
 });

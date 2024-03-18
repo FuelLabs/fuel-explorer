@@ -17,7 +17,7 @@
     "@fuel-explorer/graphql": "workspace:*",
     "@fuel-ts/math": "0.76.0",
     "@fuel-wallet/sdk": "0.15.2",
-    "@fuels/assets": "0.16.0",
+    "@fuels/assets": "dev",
     "@fuels/ui": "workspace:*",
     "@tabler/icons-react": "2.46.0",
     "@vercel/analytics": "1.1.3",

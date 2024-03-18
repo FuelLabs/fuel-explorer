@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   ALCHEMY_ID,
   INFURA_ID,
@@ -8,7 +7,7 @@ import {
 import { ConnectKitProvider } from 'connectkit';
 import { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode } from 'react';
 import { fallback } from 'viem';
 import { http, WagmiProvider, createConfig } from 'wagmi';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
@@ -66,13 +65,10 @@ type ProvidersProps = {
 
 export function ConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
-  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
-      </QueryClientProvider>
+      <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
     </WagmiProvider>
   );
 }

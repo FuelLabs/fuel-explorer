@@ -1,6 +1,7 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StoreProvider } from './store';
 import { ConnectProvider, FuelConnectProvider } from './systems/Settings';
 
@@ -9,13 +10,18 @@ type ProvidersProps = {
 };
 
 export function Providers({ children }: ProvidersProps) {
-  return (
-    <StoreProvider>
-      <FuelConnectProvider>
-        <ConnectProvider>{children}</ConnectProvider>
+  const [queryClient] = useState(() => new QueryClient());
 
-        <ReactQueryDevtools initialIsOpen={false} />
-      </FuelConnectProvider>
-    </StoreProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <StoreProvider>
+        <ConnectProvider>
+          <FuelConnectProvider>
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </FuelConnectProvider>
+        </ConnectProvider>
+      </StoreProvider>
+    </QueryClientProvider>
   );
 }

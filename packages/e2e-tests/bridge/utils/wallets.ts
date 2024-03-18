@@ -15,12 +15,10 @@ const PROVIDER_URL = 'http://localhost:4000/graphql';
 
 export const connectToMetamask = async (page: Page) => {
   await page.bringToFront();
-  // Go to the bridge page
 
-  // Connect metamask
   const connectKitButton = getByAriaLabel(page, 'Connect Ethereum Wallet');
   await connectKitButton.click();
-  const metamaskConnect = getButtonByText(page, 'Browser Wallet');
+  const metamaskConnect = getButtonByText(page, 'Metamask');
   await metamaskConnect.click();
   await metamask.acceptAccess();
 };

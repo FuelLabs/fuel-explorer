@@ -10,6 +10,10 @@ import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
 
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
+
+const FUEL_WALLET_VERSION = '0.15.2';
+const META_MASK_VERSION = '11.11.4';
+
 export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
@@ -18,11 +22,9 @@ export const test = base.extend<{
     // required for synpress
     global.expect = expect;
     // download fuel wallet
-    const fuelPathExtension = await downloadFuel('0.15.2');
+    const fuelPathExtension = await downloadFuel(FUEL_WALLET_VERSION);
     // download metamask
-    const metamaskPath = await prepareMetamask(
-      process.env.META_MASK_VERSION || '10.25.0',
-    );
+    const metamaskPath = await prepareMetamask(META_MASK_VERSION);
     // prepare browser args
     const browserArgs = [
       `--disable-extensions-except=${metamaskPath},${fuelPathExtension}`,
@@ -41,10 +43,10 @@ export const test = base.extend<{
     // Setup cynpress MetaMask
     await initialSetup(chromium, {
       secretWordsOrPrivateKey: ETH_MNEMONIC,
-      rpcUrl: 'http://localhost:8080',
       network: 'localhost',
       password: ETH_WALLET_PASSWORD,
       enableAdvancedSettings: true,
+      enableExperimentalSettings: false,
     });
     // Set context to playwright
     await use(context);
