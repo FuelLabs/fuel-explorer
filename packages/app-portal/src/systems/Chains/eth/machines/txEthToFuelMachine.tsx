@@ -1,6 +1,6 @@
 import { toast } from '@fuel-ui/react';
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type {
+  Account as FuelWallet,
   Address as FuelAddress,
   BN,
   Message as FuelMessage,

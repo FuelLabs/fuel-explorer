@@ -194,12 +194,12 @@ importers:
       '@fuel-ts/math':
         specifier: 0.74.0
         version: 0.74.0
-      '@fuel-wallet/sdk':
-        specifier: 0.15.2
-        version: 0.15.2(dexie@3.2.4)(fuels@0.74.0)
       '@fuels/assets':
         specifier: 0.1.4
         version: 0.1.4
+      '@fuels/connectors':
+        specifier: 0.1.1
+        version: 0.1.1(fuels@0.74.0)
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -408,12 +408,12 @@ importers:
       '@fuel-wallet/react':
         specifier: 0.15.2
         version: 0.15.2(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
-      '@fuel-wallet/sdk':
-        specifier: 0.15.2
-        version: 0.15.2(dexie@3.2.4)(fuels@0.74.0)
       '@fuels/assets':
         specifier: 0.1.0
         version: 0.1.0
+      '@fuels/connectors':
+        specifier: 0.1.1
+        version: 0.1.1(fuels@0.74.0)
       '@fuels/react-xstore':
         specifier: 0.0.8
         version: 0.0.8(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
@@ -4939,32 +4939,6 @@ packages:
       - react-native
     dev: false
 
-  /@fuel-wallet/sdk@0.15.2(dexie@3.2.4)(fuels@0.74.0):
-    resolution: {integrity: sha512-hUrCNpWqso968h8oExhVCWp8lOgAR0ZA1dkv7/bOYT+HEpWebl90GjJ2q2xx6+ijq4WrRJi8fIDVgnB7+LD+mw==}
-    peerDependencies:
-      fuels: '>=0.73.0'
-    dependencies:
-      '@fuel-wallet/types': 0.15.2(dexie@3.2.4)(fuels@0.74.0)
-      events: 3.3.0
-      fuels: 0.74.0(dexie@3.2.4)
-      json-rpc-2.0: 1.7.0
-    transitivePeerDependencies:
-      - dexie
-    dev: false
-
-  /@fuel-wallet/types@0.15.2(dexie@3.2.4)(fuels@0.74.0):
-    resolution: {integrity: sha512-RQCIImIItQiAjUrSWjpOp2t9o6YUlSyxakpSlX+myTBM7TjIWXFjZDSFthcLKhQdECMYIf7hZyRf7d0o2AJ6dQ==}
-    peerDependencies:
-      fuels: '>=0.73.0'
-    dependencies:
-      '@fuels/assets': 0.1.4
-      dexie-observable: 4.0.1-beta.13(dexie@3.2.4)
-      fuels: 0.74.0(dexie@3.2.4)
-      json-rpc-2.0: 1.7.0
-    transitivePeerDependencies:
-      - dexie
-    dev: false
-
   /@fuels/assets@0.1.0:
     resolution: {integrity: sha512-oeSi0ECt23yuDBmNpZcJP1menCyGl97IXk2JqRtuG+rnXDJHuZdQUQ23UGyoanY8a6IKkeqvXgHtwFEjPIjhiQ==}
     dev: false
@@ -4972,10 +4946,24 @@ packages:
   /@fuels/assets@0.1.4:
     resolution: {integrity: sha512-6rSbzxxDlDkoW9u4vvSbTfnA4Cy9WjZ1ajBOuKTnvoQ9EzQKvrP4lYpN2SjqdfJkdhRfCItaf1aQq/avaN51BQ==}
 
+  /@fuels/connectors@0.1.1(fuels@0.74.0):
+    resolution: {integrity: sha512-h0ErY8J8y58QaOyjVtcXICY/GjmSZMD/nLnrAMyrBpsrAUChLV6lYdwZ1MxVhHJFpbtaCG0IrclHxwJvQCFE5Q==}
+    peerDependencies:
+      fuels: '>=0.77.0'
+    dependencies:
+      fuels: 0.74.0(dexie@3.2.4)
+      json-rpc-2.0: 1.7.0
+    dev: false
+
   /@fuels/jest@0.1.5(@types/jest@29.5.12)(jest@29.7.0):
     resolution: {integrity: sha512-GZ/NxWEHfGjvUq6ipM/BMfLt9n4jabZPEkJSQiJvmPrq2Dvp/TOEESfw5s+CdH3/hjf/T9imMekhHphZvl7RnQ==}
     peerDependencies:
       jest: ^29.6.4
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
     dependencies:
       '@ariakit/test': 0.2.5(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
@@ -7110,6 +7098,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     dev: false
     bundledDependencies:
       - napi-wasm
@@ -14730,6 +14719,9 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true
@@ -22953,6 +22945,10 @@ packages:
 
   /napi-macros@2.2.2:
     resolution: {integrity: sha512-hmEVtAGYzVQpCKdbQea4skABsdXW4RUh5t5mJ2zzqowJS2OyXZTU1KhDVFhx+NlWZ4ap9mqR9TcDO3LTTttd+g==}
+    dev: false
+
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
     dev: false
 
   /natural-compare@1.4.0:

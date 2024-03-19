@@ -20,7 +20,7 @@
     "@fuel-ui/css": "0.23.1",
     "@fuel-ui/react": "0.23.1",
     "@fuel-wallet/react": "0.15.2",
-    "@fuel-wallet/sdk": "0.15.2",
+    "@fuels/connectors": "0.1.1",
     "@fuels/assets": "0.1.0",
     "@fuels/react-xstore": "0.0.8",
     "@hookform/resolvers": "^3.1.1",

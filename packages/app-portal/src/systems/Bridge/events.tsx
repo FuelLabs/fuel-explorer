@@ -1,5 +1,4 @@
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
-import type { BN } from 'fuels';
+import type { Account as FuelWallet, BN } from 'fuels';
 import type { WalletClient } from 'viem';
 
 import type { Asset } from '../Assets';

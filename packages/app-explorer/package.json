@@ -16,7 +16,7 @@
     "@faker-js/faker": "8.4.0",
     "@fuel-explorer/graphql": "workspace:*",
     "@fuel-ts/math": "0.74.0",
-    "@fuel-wallet/sdk": "0.15.2",
+    "@fuels/connectors": "0.1.1",
     "@fuels/assets": "0.1.4",
     "@fuels/ui": "workspace:*",
     "@tabler/icons-react": "2.46.0",

@@ -6,7 +6,6 @@
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "types": ["@fuel-wallet/sdk"]
   },
   "include": ["load.envs.js", "playwright/**/*.ts", "vite.config.ts"]
 }
