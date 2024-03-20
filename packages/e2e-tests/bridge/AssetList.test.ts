@@ -7,15 +7,15 @@ import { expect } from '@playwright/test';
 
 import { test } from './fixtures';
 // import { hasDropdownSymbol } from './utils/bridge';
-// import { connectToMetamask } from './utils/wallets';
+import { connectToMetamask } from './utils/wallets';
 
 test.describe('Asset List', () => {
   test.beforeEach(async ({ page }) => {
     console.log(1);
     await page.goto('/bridge');
     console.log(2);
-    // await connectToMetamask(page);
-    // console.log(3);
+    await connectToMetamask(page);
+    console.log(3);
   });
 
   test('e2e asset list', async ({ page: _ }) => {

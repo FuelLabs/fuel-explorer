@@ -14,13 +14,19 @@ import { ETH_MNEMONIC } from '../mocks';
 const PROVIDER_URL = 'http://localhost:4000/graphql';
 
 export const connectToMetamask = async (page: Page) => {
+  console.log(11);
   await page.bringToFront();
-
+  console.log(12);
   const connectKitButton = getByAriaLabel(page, 'Connect Ethereum Wallet');
+  console.log(13);
   await connectKitButton.click();
+  console.log(14);
   const metamaskConnect = getButtonByText(page, 'Metamask');
+  console.log(15);
   await metamaskConnect.click();
+  console.log(16);
   await metamask.acceptAccess();
+  console.log(17);
 };
 
 export const setupFuelWallet = async ({
