@@ -38,11 +38,13 @@ test.describe('Bridge', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
 
   test.beforeEach(async ({ context, extensionId, page }) => {
+    console.log(1);
     const walletSettedUp = await setupFuelWallet({
       context,
       extensionId,
       page,
     });
+    console.log(2);
     fuelWallet = walletSettedUp.fuelWallet;
     fuelWalletTestHelper = walletSettedUp.fuelWalletTestHelper;
     account = walletSettedUp.account;
@@ -51,8 +53,10 @@ test.describe('Bridge', () => {
       chain: foundry,
       transport: http(),
     });
+    console.log(3);
 
     await page.goto('/bridge');
+    console.log(4);
   });
   test('e2e', async ({ page, context }) => {
     await test.step('Connect to metamask', async () => {

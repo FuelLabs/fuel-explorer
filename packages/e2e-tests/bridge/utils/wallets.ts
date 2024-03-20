@@ -14,19 +14,12 @@ import { ETH_MNEMONIC } from '../mocks';
 const PROVIDER_URL = 'http://localhost:4000/graphql';
 
 export const connectToMetamask = async (page: Page) => {
-  console.log(11);
   await page.bringToFront();
-  console.log(12);
   const connectKitButton = getByAriaLabel(page, 'Connect Ethereum Wallet');
-  console.log(13);
   await connectKitButton.click();
-  console.log(14);
   const metamaskConnect = getButtonByText(page, 'Metamask');
-  console.log(15);
   await metamaskConnect.click();
-  console.log(16);
   await metamask.acceptAccess();
-  console.log(17);
 };
 
 export const setupFuelWallet = async ({
@@ -34,8 +27,11 @@ export const setupFuelWallet = async ({
   context,
   extensionId,
 }: { page: Page; context: BrowserContext; extensionId: string }) => {
+  console.log(11);
   const fuelProvider = await Provider.create(PROVIDER_URL);
+  console.log(12);
   const chainName = (await fuelProvider.fetchChain()).name;
+  console.log(13);
 
   const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup(
     context,
@@ -43,17 +39,22 @@ export const setupFuelWallet = async ({
     PROVIDER_URL,
     chainName,
   );
+  console.log(14);
   await fuelWalletTestHelper.addAccount();
   await fuelWalletTestHelper.addAccount();
   await fuelWalletTestHelper.addAccount();
+  console.log(15);
   await fuelWalletTestHelper.switchAccount('Account 1');
+  console.log(16);
   const account = mnemonicToAccount(ETH_MNEMONIC);
+  console.log(17);
   const fuelWallet = Wallet.fromMnemonic(
     FUEL_MNEMONIC,
     undefined,
     undefined,
     fuelProvider,
   );
+  console.log(18);
 
   return { fuelWallet, fuelWalletTestHelper, account };
 };
