@@ -99,4 +99,8 @@ test.describe('Asset List', () => {
       await hasDropdownSymbol(page, 'TKN');
     });
   });
+
+  test.afterEach(async ({ context }) => {
+    await context.close();
+  });
 });
