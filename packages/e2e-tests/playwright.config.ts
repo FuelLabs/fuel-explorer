@@ -20,7 +20,7 @@ const config: PlaywrightTestConfig = defineConfig({
   retries: IS_CI ? 2 : 0,
   webServer: {
     command: 'pnpm dev',
-    url: `http://localhost:${PORT}`,
+    port: Number(PORT),
     reuseExistingServer: true,
     cwd: join(__dirname, '../../'),
   },
