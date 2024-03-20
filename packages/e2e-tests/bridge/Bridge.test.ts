@@ -38,13 +38,11 @@ test.describe('Bridge', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
 
   test.beforeEach(async ({ context, extensionId, page }) => {
-    console.log(1);
     const walletSettedUp = await setupFuelWallet({
       context,
       extensionId,
       page,
     });
-    console.log(2);
     fuelWallet = walletSettedUp.fuelWallet;
     fuelWalletTestHelper = walletSettedUp.fuelWalletTestHelper;
     account = walletSettedUp.account;
@@ -53,21 +51,23 @@ test.describe('Bridge', () => {
       chain: foundry,
       transport: http(),
     });
-    console.log(3);
 
     await page.goto('/bridge');
-    console.log(4);
   });
   test('e2e', async ({ page, context }) => {
     await test.step('Connect to metamask', async () => {
+      console.log(1);
       await connectToMetamask(page);
+      console.log(2);
     });
 
     await test.step('Connect to Fuel', async () => {
+      console.log(3);
       await connectToFuel(page, fuelWalletTestHelper, [
         'Account 2',
         'Account 4',
       ]);
+      console.log(4);
     });
 
     const DEPOSIT_AMOUNT = '1.12345';
@@ -79,16 +79,24 @@ test.describe('Bridge', () => {
     let _withdrawERC20TxId: string;
 
     await test.step('Deposit ETH to Fuel', async () => {
+      console.log(5);
       const preDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
+      console.log(6);
       const prevDepositBalanceEth = await client.getBalance({
         address: account.address,
       });
+      console.log(7);
 
       await test.step('Fill data and click on deposit', async () => {
+        console.log(8);
         await hasDropdownSymbol(page, 'ETH');
+        console.log(9);
         const depositInput = page.locator('.fuel-InputAmount input');
+        console.log(10);
         await depositInput.fill(DEPOSIT_AMOUNT);
+        console.log(11);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
+        console.log(12);
         await depositButton.click();
       });
 
@@ -123,6 +131,7 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Check deposit tx in the Tx list', async () => {
+        console.log(13);
         await closeTransactionPopup(page);
 
         const postDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
@@ -162,6 +171,7 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Fill data and click on withdraw', async () => {
+        console.log(14);
         await clickWithdrawTab(page);
         await hasDropdownSymbol(page, 'ETH');
 

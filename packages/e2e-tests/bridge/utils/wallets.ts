@@ -27,11 +27,8 @@ export const setupFuelWallet = async ({
   context,
   extensionId,
 }: { page: Page; context: BrowserContext; extensionId: string }) => {
-  console.log(11);
   const fuelProvider = await Provider.create(PROVIDER_URL);
-  console.log(12);
   const chainName = (await fuelProvider.fetchChain()).name;
-  console.log(13);
 
   const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup(
     context,
@@ -39,22 +36,17 @@ export const setupFuelWallet = async ({
     PROVIDER_URL,
     chainName,
   );
-  console.log(14);
   await fuelWalletTestHelper.addAccount();
   await fuelWalletTestHelper.addAccount();
   await fuelWalletTestHelper.addAccount();
-  console.log(15);
   await fuelWalletTestHelper.switchAccount('Account 1');
-  console.log(16);
   const account = mnemonicToAccount(ETH_MNEMONIC);
-  console.log(17);
   const fuelWallet = Wallet.fromMnemonic(
     FUEL_MNEMONIC,
     undefined,
     undefined,
     fuelProvider,
   );
-  console.log(18);
 
   return { fuelWallet, fuelWalletTestHelper, account };
 };
