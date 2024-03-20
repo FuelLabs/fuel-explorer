@@ -39,7 +39,8 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run E2E Tests
-        run: xvfb-run --auto-servernum -- pnpm test:e2e
+        run: pnpm test:e2e
+        # run: xvfb-run --auto-servernum -- pnpm test:e2e
 
       - uses: actions/upload-artifact@v2
         if: always()
@@ -49,4 +50,4 @@ jobs:
           retention-days: 30
 
       - name: Stop Test Node
-        run: pnpm node:clean
+        run: pnpm node:stop
