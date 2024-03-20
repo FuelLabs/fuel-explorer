@@ -1,106 +1,102 @@
-// import {
-//   getButtonByText,
-//   getByAriaLabel,
-//   hasText,
-// } from '@fuels/playwright-utils';
+import {
+  getButtonByText,
+  getByAriaLabel,
+  hasText,
+} from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
 
 import { test } from './fixtures';
-// import { hasDropdownSymbol } from './utils/bridge';
+import { hasDropdownSymbol } from './utils/bridge';
 import { connectToMetamask } from './utils/wallets';
 
 test.describe('Asset List', () => {
   test.beforeEach(async ({ page }) => {
-    console.log(1);
     await page.goto('/bridge');
-    console.log(2);
     await connectToMetamask(page);
-    console.log(3);
   });
 
-  test('e2e asset list', async ({ page: _ }) => {
-    expect(true).toEqual(true);
-    // await test.step('Check if ETH is in the dropdown', async () => {
-    //   await hasDropdownSymbol(page, 'ETH');
-    // });
+  test('e2e asset list', async ({ page }) => {
+    await test.step('Check if ETH is in the dropdown', async () => {
+      await hasDropdownSymbol(page, 'ETH');
+    });
 
-    // await test.step('Check if we can switch assets on deposit page', async () => {
-    //   const assetDropdown = getByAriaLabel(page, 'Coin Selector');
-    //   await assetDropdown.click();
+    await test.step('Check if we can switch assets on deposit page', async () => {
+      const assetDropdown = getByAriaLabel(page, 'Coin Selector');
+      await assetDropdown.click();
 
-    //   await hasText(page, 'Select token');
-    //   // Check that assets are displayed
-    //   let ethAsset;
-    //   let tknAsset;
-    //   ethAsset = getByAriaLabel(page, 'ETH symbol');
-    //   expect(await ethAsset.innerText()).toBe('ETH');
-    //   tknAsset = getByAriaLabel(page, 'TKN symbol');
-    //   expect(await tknAsset.innerText()).toBe('TKN');
-    //   await tknAsset.click();
+      await hasText(page, 'Select token');
+      // Check that assets are displayed
+      let ethAsset;
+      let tknAsset;
+      ethAsset = getByAriaLabel(page, 'ETH symbol');
+      expect(await ethAsset.innerText()).toBe('ETH');
+      tknAsset = getByAriaLabel(page, 'TKN symbol');
+      expect(await tknAsset.innerText()).toBe('TKN');
+      await tknAsset.click();
 
-    //   await hasDropdownSymbol(page, 'TKN');
+      await hasDropdownSymbol(page, 'TKN');
 
-    //   await assetDropdown.click();
+      await assetDropdown.click();
 
-    //   await hasText(page, 'Select token');
-    //   // Check that assets are displayed
-    //   ethAsset = getByAriaLabel(page, 'ETH symbol');
-    //   expect(await ethAsset.innerText()).toBe('ETH');
-    //   tknAsset = getByAriaLabel(page, 'TKN symbol');
-    //   expect(await tknAsset.innerText()).toBe('TKN');
-    //   await ethAsset.click();
+      await hasText(page, 'Select token');
+      // Check that assets are displayed
+      ethAsset = getByAriaLabel(page, 'ETH symbol');
+      expect(await ethAsset.innerText()).toBe('ETH');
+      tknAsset = getByAriaLabel(page, 'TKN symbol');
+      expect(await tknAsset.innerText()).toBe('TKN');
+      await ethAsset.click();
 
-    //   await hasDropdownSymbol(page, 'ETH');
-    // });
+      await hasDropdownSymbol(page, 'ETH');
+    });
 
-    // await test.step('Check if we can switch asset on withdraw page', async () => {
-    //   await hasDropdownSymbol(page, 'ETH');
+    await test.step('Check if we can switch asset on withdraw page', async () => {
+      await hasDropdownSymbol(page, 'ETH');
 
-    //   // Go to withdraw page
-    //   const withdrawPageButton = getButtonByText(page, 'Withdraw');
-    //   await withdrawPageButton.click();
-    //   const assetDropdown = getByAriaLabel(page, 'Coin Selector');
-    //   await assetDropdown.click();
-    //   await hasText(page, 'Select token');
-    //   // Check that assets are displayed
-    //   let ethAsset;
-    //   let tknAsset;
-    //   ethAsset = getByAriaLabel(page, 'ETH symbol');
-    //   expect(await ethAsset.innerText()).toBe('ETH');
-    //   tknAsset = getByAriaLabel(page, 'TKN symbol');
-    //   expect(await tknAsset.innerText()).toBe('TKN');
-    //   await tknAsset.click();
+      // Go to withdraw page
+      const withdrawPageButton = getButtonByText(page, 'Withdraw');
+      await withdrawPageButton.click();
+      const assetDropdown = getByAriaLabel(page, 'Coin Selector');
+      await assetDropdown.click();
+      await hasText(page, 'Select token');
+      // Check that assets are displayed
+      let ethAsset;
+      let tknAsset;
+      ethAsset = getByAriaLabel(page, 'ETH symbol');
+      expect(await ethAsset.innerText()).toBe('ETH');
+      tknAsset = getByAriaLabel(page, 'TKN symbol');
+      expect(await tknAsset.innerText()).toBe('TKN');
+      await tknAsset.click();
 
-    //   await hasDropdownSymbol(page, 'TKN');
+      await hasDropdownSymbol(page, 'TKN');
 
-    //   await assetDropdown.click();
+      await assetDropdown.click();
 
-    //   await hasText(page, 'Select token');
-    //   // Check that assets are displayed
-    //   ethAsset = getByAriaLabel(page, 'ETH symbol');
-    //   expect(await ethAsset.innerText()).toBe('ETH');
-    //   tknAsset = getByAriaLabel(page, 'TKN symbol');
-    //   expect(await tknAsset.innerText()).toBe('TKN');
-    //   await ethAsset.click();
+      await hasText(page, 'Select token');
+      // Check that assets are displayed
+      ethAsset = getByAriaLabel(page, 'ETH symbol');
+      expect(await ethAsset.innerText()).toBe('ETH');
+      tknAsset = getByAriaLabel(page, 'TKN symbol');
+      expect(await tknAsset.innerText()).toBe('TKN');
+      await ethAsset.click();
 
-    //   await hasDropdownSymbol(page, 'ETH');
-    // });
+      await hasDropdownSymbol(page, 'ETH');
+    });
 
-    // await test.step('Check if selected asset persists between tabs', async () => {
-    //   const assetDropdown = getByAriaLabel(page, 'Coin Selector');
-    //   await assetDropdown.click();
+    await test.step('Check if selected asset persists between tabs', async () => {
+      const assetDropdown = getByAriaLabel(page, 'Coin Selector');
+      await assetDropdown.click();
 
-    //   const tknAsset = getByAriaLabel(page, 'TKN symbol');
-    //   expect(await tknAsset.innerText()).toBe('TKN');
-    //   await tknAsset.click();
+      const tknAsset = getByAriaLabel(page, 'TKN symbol');
+      expect(await tknAsset.innerText()).toBe('TKN');
+      await tknAsset.click();
 
-    //   await hasDropdownSymbol(page, 'TKN');
+      await hasDropdownSymbol(page, 'TKN');
 
-    //   // Go to Deposit tab
-    //   const depositPageButton = getButtonByText(page, 'Deposit');
-    //   await depositPageButton.click();
+      // Go to Deposit tab
+      const depositPageButton = getButtonByText(page, 'Deposit');
+      await depositPageButton.click();
 
-    //   await hasDropdownSymbol(page, 'TKN');
-    // });
+      await hasDropdownSymbol(page, 'TKN');
+    });
   });
 });
