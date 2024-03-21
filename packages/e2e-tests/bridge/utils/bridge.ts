@@ -1,12 +1,12 @@
-import { getButtonByText, getByAriaLabel } from '@fuel-wallet/playwright-utils';
+import { getByAriaLabel } from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
 
 import { shortAddress } from '../../../app-portal/src/systems/Core/utils';
 
 export async function closeTransactionPopup(page: Page) {
-  const popupTransactino = getByAriaLabel(page, 'Close Transaction Dialog');
-  await popupTransactino.click();
+  // click anywhere outside of popup
+  await page.mouse.click(2, 2);
 }
 
 export const hasDropdownSymbol = async (page: Page, symbol: string) => {
@@ -15,21 +15,23 @@ export const hasDropdownSymbol = async (page: Page, symbol: string) => {
 };
 
 export const goToBridgePage = async (page: Page) => {
-  const bridgeButton = page.locator('button').getByText('Bridge');
+  const bridgeButton = page
+    .locator('a[data-active="true"]')
+    .getByText('Bridge');
   await bridgeButton.click();
 };
 export const goToTransactionsPage = async (page: Page) => {
-  const transactionList = page.locator('button').getByText('History');
+  const transactionList = page.locator('a').getByText('History');
   await transactionList.click();
 };
 
 export const clickDepositTab = async (page: Page) => {
-  const tab = getButtonByText(page, 'Deposit to Fuel');
+  const tab = getByAriaLabel(page, 'Deposit Tab');
   await tab.click();
 };
 
 export const clickWithdrawTab = async (page: Page) => {
-  const tab = getButtonByText(page, 'Withdraw from Fuel');
+  const tab = getByAriaLabel(page, 'Withdraw Tab');
   await tab.click();
 };
 

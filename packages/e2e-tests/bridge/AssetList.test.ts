@@ -2,14 +2,18 @@ import {
   getButtonByText,
   getByAriaLabel,
   hasText,
-} from '@fuel-wallet/playwright-utils';
-import test, { expect } from '@playwright/test';
+} from '@fuels/playwright-utils';
+import { expect } from '@playwright/test';
 
+import { test } from './fixtures';
 import { hasDropdownSymbol } from './utils/bridge';
+import { connectToMetamask } from './utils/wallets';
 
 test.describe('Asset List', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/bridge');
+
+    await connectToMetamask(page);
   });
 
   test('e2e asset list', async ({ page }) => {
@@ -50,12 +54,10 @@ test.describe('Asset List', () => {
       await hasDropdownSymbol(page, 'ETH');
 
       // Go to withdraw page
-      const withdrawPageButton = getButtonByText(page, 'Withdraw from Fuel');
+      const withdrawPageButton = getButtonByText(page, 'Withdraw');
       await withdrawPageButton.click();
-
       const assetDropdown = getByAriaLabel(page, 'Coin Selector');
       await assetDropdown.click();
-
       await hasText(page, 'Select token');
       // Check that assets are displayed
       let ethAsset;
@@ -92,7 +94,7 @@ test.describe('Asset List', () => {
       await hasDropdownSymbol(page, 'TKN');
 
       // Go to Deposit tab
-      const depositPageButton = getButtonByText(page, 'Deposit to Fuel');
+      const depositPageButton = getButtonByText(page, 'Deposit');
       await depositPageButton.click();
 
       await hasDropdownSymbol(page, 'TKN');

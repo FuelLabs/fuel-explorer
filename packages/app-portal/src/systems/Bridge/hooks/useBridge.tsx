@@ -205,7 +205,7 @@ export function useBridge() {
           fuelProvider,
           ethAddress,
           asset,
-          ethPublicClient,
+          ethPublicClient: ethPublicClient as any,
         }),
       connectFrom: () => connectNetwork(fromNetwork),
       connectTo: () => connectNetwork(toNetwork),

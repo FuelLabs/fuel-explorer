@@ -12,7 +12,7 @@ export function useWithdrawDelay() {
     queryFn: getBridgeSolidityContracts,
     select: (bridgeSolidityContracts) => {
       return EthConnectorService.connectToFuelChainState({
-        publicClient,
+        publicClient: publicClient as any,
         bridgeSolidityContracts,
       });
     },

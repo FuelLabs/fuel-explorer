@@ -16,7 +16,7 @@ export const BridgeTabs = () => {
   };
 
   function getDefaultValue() {
-    if (isEthChain(fromNetwork)) return 'bridge';
+    if (isEthChain(fromNetwork)) return 'deposit';
     if (isFuelChain(fromNetwork)) return 'withdraw';
   }
 
@@ -28,15 +28,15 @@ export const BridgeTabs = () => {
       className={classes.toggle()}
     >
       <ToggleGroup.Item
-        value="bridge"
-        aria-label="Bridge"
+        value="deposit"
+        aria-label="Deposit Tab"
         onClick={handleDeposit}
       >
         Deposit
       </ToggleGroup.Item>
       <ToggleGroup.Item
         value="withdraw"
-        aria-label="Withdraw"
+        aria-label="Withdraw Tab"
         onClick={handleWithdraw}
       >
         Withdraw

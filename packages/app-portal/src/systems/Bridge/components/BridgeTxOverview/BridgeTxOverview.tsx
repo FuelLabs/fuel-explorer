@@ -83,7 +83,6 @@ export const BridgeTxOverview = ({
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>Asset</Text>
-
         {isLoading ? (
           <InfoTextLoader />
         ) : (

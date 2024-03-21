@@ -101,7 +101,7 @@ export const assetsMachine = createMachine(
         showError: true,
         async fetch() {
           const bridgeTokenContracts = await getBridgeTokenContracts();
-          const defaultAssets = await getDefaultAssets(bridgeTokenContracts);
+          const defaultAssets = getDefaultAssets(bridgeTokenContracts);
 
           return defaultAssets;
         },

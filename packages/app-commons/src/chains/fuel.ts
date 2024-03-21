@@ -40,4 +40,4 @@ export const FUEL_CHAINS: Record<ChainName, FuelChain> = {
   fuelBeta5,
 };
 
-export const FUEL_CHAIN = FUEL_CHAINS[FUEL_CHAIN_NAME];
+export const FUEL_CHAIN: FuelChain = FUEL_CHAINS[FUEL_CHAIN_NAME];

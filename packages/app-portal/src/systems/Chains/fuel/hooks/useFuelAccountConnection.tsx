@@ -26,7 +26,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   });
 
   const { isLoading: isLoadingConnected } = useIsConnected();
-  const { disconnect, isLoading: isLoadingDisconnecting } = useDisconnect();
+  const { disconnect, isPending: isLoadingDisconnecting } = useDisconnect();
   const { wallet, isLoading: isLoadingWallet } = useWallet(account);
   const {
     connect,

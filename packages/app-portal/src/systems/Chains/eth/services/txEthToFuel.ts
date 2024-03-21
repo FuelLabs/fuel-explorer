@@ -7,11 +7,9 @@ import type {
   WalletUnlocked as FuelWallet,
 } from 'fuels';
 import { Address as FuelAddress, ZeroBytes32, bn } from 'fuels';
-import type { WalletClient } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 import { decodeEventLog } from 'viem';
-import type { PublicClient } from 'wagmi';
-import type { FetchTokenResult } from 'wagmi/actions';
-import { fetchToken } from 'wagmi/actions';
+import { erc20Abi } from 'viem';
 
 import { relayCommonMessage } from '../../fuel/utils/relayMessage';
 import type { FuelERC20GatewayArgs } from '../contracts/FuelErc20Gateway';
@@ -66,7 +64,7 @@ export type TxEthToFuelInputs = {
 };
 
 export type GetReceiptsInfoReturn = {
-  erc20Token?: FetchTokenResult;
+  erc20Token?: any;
   amount?: BN;
   sender?: string;
   recipient?: FuelAddress;
@@ -128,7 +126,7 @@ export class TxEthToFuelService {
           bridgeSolidityContracts,
         });
 
-        const txHash = await fuelPortal.write.depositETH(
+        const txHash = await (fuelPortal as any).write.depositETH(
           [fuelAddress.toB256() as `0x${string}`],
           {
             value: BigInt(amount),
@@ -175,7 +173,7 @@ export class TxEthToFuelService {
         });
 
         const bridgeSolidityContracts = await getBridgeSolidityContracts();
-        const approveTxHash = await erc20Token.write.approve([
+        const approveTxHash = await (erc20Token as any).write.approve([
           bridgeSolidityContracts.FuelERC20Gateway,
           amount,
         ]);
@@ -201,7 +199,7 @@ export class TxEthToFuelService {
           walletClient: ethWalletClient,
           bridgeSolidityContracts,
         });
-        const depositTxHash = await fuelErc20Gateway.write.deposit([
+        const depositTxHash = await (fuelErc20Gateway as any).write.deposit([
           fuelAddress.toB256() as `0x${string}`,
           ethAssetAddress,
           fuelContractId,
@@ -261,7 +259,6 @@ export class TxEthToFuelService {
     };
 
     // search for logs of MessageSent event
-
     for (let i = 0; i < receipt.logs.length; i++) {
       try {
         const messageSentEvent = decodeEventLog({
@@ -296,14 +293,19 @@ export class TxEthToFuelService {
 
         if (isErc20Address(depositEvent.args.tokenAddress)) {
           const { amount, tokenAddress } = depositEvent.args;
-          const erc20Token = await fetchToken({
+          const decimals = await input.ethPublicClient.readContract({
             address: tokenAddress,
+            abi: erc20Abi,
+            functionName: 'decimals',
           });
 
           receiptsInfo = {
             ...receiptsInfo,
             amount: bn(amount.toString()),
-            erc20Token,
+            erc20Token: {
+              address: tokenAddress,
+              decimals,
+            },
           };
         }
       } catch (_) {

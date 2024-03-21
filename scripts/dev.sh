@@ -11,5 +11,5 @@ export LINK_DEPS="$deps"
 
 # Run the dev env requested
 if [ -z "$1" ]; then
-	turbo run dev --filter=app-portal
+  pnpm turbo:run dev
 fi
