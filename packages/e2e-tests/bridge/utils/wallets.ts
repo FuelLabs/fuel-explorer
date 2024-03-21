@@ -58,7 +58,7 @@ export const connectToFuel = async (
 ) => {
   console.log(11);
   // const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
-  const connectFuel = getByAriaLabel(page, 'Catchme');
+  const connectFuel = getByAriaLabel(page, 'Connect Ethereum Wallet');
   const html = await connectFuel.innerHTML();
   console.log('connectFuel.innerHTML', html);
   console.log(12);
