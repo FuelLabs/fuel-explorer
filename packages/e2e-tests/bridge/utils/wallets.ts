@@ -22,10 +22,6 @@ export const connectToMetamask = async (page: Page) => {
   await metamask.acceptAccess();
 };
 
-export const resetMetamask = async () => {
-  await metamask.helpers.resetState();
-};
-
 export const setupFuelWallet = async ({
   page: _,
   context,

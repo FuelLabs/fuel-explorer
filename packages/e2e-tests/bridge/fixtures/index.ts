@@ -18,7 +18,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({ page: _ }, use) => {
+  context: async ({ context: _ }, use) => {
     // required for synpress
     global.expect = expect;
     // download fuel wallet
