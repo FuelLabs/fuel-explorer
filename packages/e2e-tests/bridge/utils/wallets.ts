@@ -56,9 +56,15 @@ export const connectToFuel = async (
   fuelWalletTestHelper: FuelWalletTestHelper,
   accountsToConnect: string[],
 ) => {
+  console.log(11);
   const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
+  console.log(12);
   await connectFuel.click();
+  console.log(13);
   await getByAriaLabel(page, 'Connect to Fuel Wallet', true).click();
+  console.log(14);
   await new Promise((resolve) => setTimeout(resolve, 20000));
+  console.log(15);
   await fuelWalletTestHelper.walletConnect(accountsToConnect);
+  console.log(16);
 };
