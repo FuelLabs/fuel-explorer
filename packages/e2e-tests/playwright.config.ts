@@ -2,7 +2,7 @@ import { join } from 'path';
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 
-const _IS_CI = !!process.env.CI;
+const IS_CI = !!process.env.CI;
 const PORT = process.env.PORT || 3000;
 
 const config: PlaywrightTestConfig = defineConfig({
@@ -17,7 +17,7 @@ const config: PlaywrightTestConfig = defineConfig({
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,
   // Retry tests on CI if they fail
-  retries: 0,
+  retries: IS_CI ? 0 : 0,
   // retries: IS_CI ? 2 : 0,
   webServer: {
     command: 'pnpm dev',
