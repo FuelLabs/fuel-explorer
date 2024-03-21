@@ -57,7 +57,12 @@ export const connectToFuel = async (
   accountsToConnect: string[],
 ) => {
   console.log(11);
-  const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
+  // const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
+  const connectFuel = getByAriaLabel(page, 'Catchme');
+  console.log(
+    'connectFuel.innerHTML',
+    connectFuel.innerHTML({ timeout: 5000 }),
+  );
   console.log(12);
   await connectFuel.click();
   console.log(13);

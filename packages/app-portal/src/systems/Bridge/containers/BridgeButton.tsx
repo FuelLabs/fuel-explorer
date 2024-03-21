@@ -10,7 +10,7 @@ export const BridgeButton = () => {
       disabled={isDisabled}
       color="green"
       size="3"
-      aria-label={text}
+      aria-label={text === 'Connect Ethereum Wallet' ? text : 'Catchme'}
       onClick={handlers.action}
     >
       {text}
