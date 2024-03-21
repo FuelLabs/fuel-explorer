@@ -18,7 +18,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({ context: _ }, use) => {
+  context: async ({ page: _ }, use) => {
     // required for synpress
     global.expect = expect;
     // download fuel wallet
@@ -50,7 +50,6 @@ export const test = base.extend<{
     });
     // Set context to playwright
     await use(context);
-    //await context.close();
   },
   extensionId: async ({ context }, use) => {
     let [background] = context.serviceWorkers();

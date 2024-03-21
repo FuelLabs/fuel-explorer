@@ -15,7 +15,7 @@ test.describe('Asset List', () => {
     await connectToMetamask(page);
   });
 
-  test('e2e asset list', async ({ page }) => {
+  test('e2e asset list', async ({ page, context }) => {
     await test.step('Check if ETH is in the dropdown', async () => {
       await hasDropdownSymbol(page, 'ETH');
     });
@@ -98,9 +98,7 @@ test.describe('Asset List', () => {
 
       await hasDropdownSymbol(page, 'TKN');
     });
-  });
 
-  test.afterEach(async ({ context }) => {
     await context.close();
   });
 });
