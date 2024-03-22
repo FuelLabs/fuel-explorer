@@ -1,5 +1,6 @@
 import {
   useAccount,
+  useBalance,
   useConnectUI,
   useDisconnect,
   useFuel,
@@ -12,8 +13,6 @@ import { store } from '~portal/store';
 import type { AssetFuel } from '~portal/systems/Assets/utils';
 import { useFuelNetwork } from '~portal/systems/Settings/providers/FuelNetworkProvider';
 
-import { useBalance } from './useBalance';
-
 export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { assetId } = props || {};
   const { fuel } = useFuel();
@@ -21,8 +20,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { account, isLoading: isLoadingAccount } = useAccount();
   const { balance, isLoading: isLoadingBalance } = useBalance({
     assetId,
-    address: account || '',
-    provider: fuelProvider,
+    address: account || undefined,
   });
 
   const { isLoading: isLoadingConnected } = useIsConnected();

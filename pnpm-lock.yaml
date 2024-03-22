@@ -417,7 +417,7 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(fuels@0.74.0)
       '@fuels/react':
-        specifier: ^0.17.0
+        specifier: 0.17.0
         version: 0.17.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
       '@fuels/react-xstore':
         specifier: ^0.17.0
@@ -4584,11 +4584,6 @@ packages:
     resolution: {integrity: sha512-R+oMDcqHCKGzFTX+bDRwBk8bIOS0OKTo3Vrl3Gj0gphHn0C7ovF6ylxnM8kW4+VzMD6e6N64e2e506+RD1+yQQ==}
     peerDependencies:
       jest: ^29.6.4
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-dom:
-        optional: true
     dependencies:
       '@ariakit/test': 0.2.5(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
@@ -13253,9 +13248,6 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependenciesMeta:
-      ajv:
-        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true
@@ -17665,9 +17657,9 @@ packages:
     dependencies:
       es-errors: 1.3.0
       function-bind: 1.1.2
-      has-proto: 1.0.1
+      has-proto: 1.0.3
       has-symbols: 1.0.3
-      hasown: 2.0.0
+      hasown: 2.0.2
     dev: true
 
   /get-nonce@1.0.1:
