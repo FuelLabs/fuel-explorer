@@ -71,8 +71,11 @@ test.describe('Bridge', () => {
 
     let depositEthTxId: string;
     let withdrawEthTxId: string;
-    let _depositERC20TxId: string;
+    let depositERC20TxId: string;
     let _withdrawERC20TxId: string;
+
+    const data = await getBridgeTokenContracts();
+    const { ETH_ERC20, FUEL_TokenAsset } = data;
 
     await test.step('Deposit ETH to Fuel', async () => {
       const preDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
@@ -266,9 +269,6 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Faucet TKN', async () => {
-      const data = await getBridgeTokenContracts();
-      const { ETH_ERC20 } = data;
-
       erc20Contract = getContract({
         abi: ERC_20.abi,
         address: ETH_ERC20 as `0x${string}`,
@@ -321,120 +321,113 @@ test.describe('Bridge', () => {
       );
     });
 
-    // await test.step('Deposit TKN to Fuel', async () => {
-    //   await goToBridgePage(page);
-    //   await clickDepositTab(page);
-    //   const preDepositBalanceFuel = await fuelWallet.getBalance(
-    //     FUEL_FUNGIBLE_ASSET_ID,
-    //   );
-    //   const preDepositBalanceEth = await erc20Contract.read.balanceOf([
-    //     account.address,
-    //   ]);
-    //   const DEPOSIT_AMOUNT = '1.12345';
+    await test.step('Deposit TKN to Fuel', async () => {
+      await goToBridgePage(page);
+      await clickDepositTab(page);
+      const preDepositBalanceFuel =
+        await fuelWallet.getBalance(FUEL_TokenAsset);
+      const preDepositBalanceEth = await erc20Contract.read.balanceOf([
+        account.address,
+      ]);
+      const DEPOSIT_AMOUNT = '1.12345';
 
-    //   await test.step('Fill data and click on deposit', async () => {
-    //     await hasDropdownSymbol(page, 'TKN');
-    //     // Deposit asset
-    //     const depositButton = getByAriaLabel(page, 'Deposit', true);
+      await test.step('Fill data and click on deposit', async () => {
+        await hasDropdownSymbol(page, 'TKN');
+        // Deposit asset
+        const depositButton = getByAriaLabel(page, 'Deposit', true);
 
-    //     const depositInput = page.locator('input');
-    //     await depositInput.fill(DEPOSIT_AMOUNT);
-    //     await depositButton.click();
-    //   });
+        const depositInput = page.locator('input');
+        await depositInput.fill(DEPOSIT_AMOUNT);
+        await depositButton.click();
+      });
 
-    //   await test.step('Approve transaction on Metamask', async () => {
-    //     // Timeout needed until https://github.com/Synthetixio/synpress/issues/795 is fixed
-    //     await page.waitForTimeout(7500);
-    //     await metamask.confirmPermissionToSpend();
-    //     await metamask.confirmTransaction();
-    //   });
+      await test.step('Approve transaction on Metamask', async () => {
+        // Timeout needed until https://github.com/Synthetixio/synpress/issues/795 is fixed
+        await page.waitForTimeout(7500);
+        await metamask.confirmPermissionToSpend();
+        await metamask.confirmTransaction();
+      });
 
-    //   await test.step('Check transaction submitted to ETH network', async () => {
-    //     await page.locator(':nth-match(:text("Done"), 1)').waitFor();
+      await test.step('Check transaction submitted to ETH network', async () => {
+        await page.locator(':nth-match(:text("Done"), 1)').waitFor();
+        await page.locator(':nth-match(:text("Done"), 2)').waitFor();
+      });
 
-    //     // Check toast success feedback of tx created
-    //     // Toast message has delay of 2 seconds
-    //     await page.waitForTimeout(2000);
-    //     await hasText(page, INITIATE_DEPOSIT);
-    //     await page.locator(':nth-match(:text("Done"), 2)').waitFor();
-    //   });
+      await test.step('Check ETH TKN balance reduced', async () => {
+        const postDepositBalanceEth = await erc20Contract.read.balanceOf([
+          account.address,
+        ]);
 
-    //   await test.step('Check ETH TKN balance reduced', async () => {
-    //     const postDepositBalanceEth = await erc20Contract.read.balanceOf([
-    //       account.address,
-    //     ]);
+        expect(
+          parseFloat(
+            bn(preDepositBalanceEth.toString())
+              .sub(postDepositBalanceEth.toString())
+              .format({ precision: 6, units: 18 }),
+          ),
+        ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
+      });
 
-    //     expect(
-    //       parseFloat(
-    //         bn(preDepositBalanceEth.toString())
-    //           .sub(postDepositBalanceEth.toString())
-    //           .format({ precision: 6, units: 18 }),
-    //       ),
-    //     ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
-    //   });
+      await test.step('Check if deposit reach relay step', async () => {
+        depositERC20TxId = (
+          await getByAriaLabel(page, 'Transaction ID').innerText()
+        ).trim();
+        const assetAmount = getByAriaLabel(page, 'Asset amount');
+        expect((await assetAmount.innerHTML()).trim()).toBe(DEPOSIT_AMOUNT);
+      });
 
-    //   await test.step('Check if deposit reach relay step', async () => {
-    //     depositERC20TxId = (
-    //       await getByAriaLabel(page, 'Transaction ID').innerText()
-    //     ).trim();
-    //     const assetAmount = getByAriaLabel(page, 'Asset amount');
-    //     expect((await assetAmount.innerHTML()).trim()).toBe(DEPOSIT_AMOUNT);
-    //   });
+      let depositTxLocator;
+      await test.step('Check deposit tx in the Tx list and open popup', async () => {
+        await closeTransactionPopup(page);
+        await goToTransactionsPage(page);
 
-    //   let depositTxLocator;
-    //   await test.step('Check deposit tx in the Tx list and open popup', async () => {
-    //     await closeTransactionPopup(page);
-    //     await goToTransactionsPage(page);
+        // check the transaction is there
+        depositTxLocator = getByAriaLabel(
+          page,
+          `Transaction ID: ${depositERC20TxId}`,
+        );
+        // Check that action required is shown
+        const actionRequiredLocator =
+          depositTxLocator.getByText('Action Required');
+        await actionRequiredLocator.innerText();
+        // check if has correct asset amount
+        const assetAmountLocator = depositTxLocator.getByText(
+          `${DEPOSIT_AMOUNT} TKN`,
+        );
+        await assetAmountLocator.innerText();
 
-    //     // check the transaction is there
-    //     depositTxLocator = getByAriaLabel(
-    //       page,
-    //       `Transaction ID: ${depositERC20TxId}`,
-    //     );
-    //     // Check that action required is shown
-    //     const actionRequiredLocator =
-    //       depositTxLocator.getByText('Action Required');
-    //     await actionRequiredLocator.innerText();
-    //     // check if has correct asset amount
-    //     const assetAmountLocator = depositTxLocator.getByText(
-    //       `${DEPOSIT_AMOUNT} TKN`,
-    //     );
-    //     await assetAmountLocator.innerText();
+        // Confirm the transaction on the fuel side
+        await depositTxLocator.click();
+      });
 
-    //     // Confirm the transaction on the fuel side
-    //     await depositTxLocator.click();
-    //   });
+      await test.step('Relay transaction', async () => {
+        const confirmTransactionButton = page.getByRole('button', {
+          name: 'Confirm Transaction',
+        });
+        await confirmTransactionButton.click();
+      });
 
-    //   await test.step('Relay transaction', async () => {
-    //     const confirmTransactionButton = page.getByRole('button', {
-    //       name: 'Confirm Transaction',
-    //     });
-    //     await confirmTransactionButton.click();
-    //   });
+      await test.step('Confirm on Fuel Wallet', async () => {
+        await fuelWalletTestHelper.walletApprove();
+      });
 
-    //   await test.step('Confirm on Fuel Wallet', async () => {
-    //     await fuelWalletTestHelper.walletApprove();
-    //   });
+      await test.step('Check deposit is completed', async () => {
+        await page.locator(':nth-match(:text("Done"), 4)').waitFor();
+        await closeTransactionPopup(page);
 
-    //   await test.step('Check deposit is completed', async () => {
-    //     await page.locator(':nth-match(:text("Done"), 4)').waitFor();
-    //     await closeTransactionPopup(page);
+        const postDepositBalanceFuel =
+          await fuelWallet.getBalance(FUEL_TokenAsset);
 
-    //     const postDepositBalanceFuel = await fuelWallet.getBalance(
-    //       FUEL_FUNGIBLE_ASSET_ID,
-    //     );
+        expect(
+          postDepositBalanceFuel
+            .sub(preDepositBalanceFuel)
+            .format({ precision: 6, units: 9 }),
+        ).toBe(DEPOSIT_AMOUNT);
 
-    //     expect(
-    //       postDepositBalanceFuel
-    //         .sub(preDepositBalanceFuel)
-    //         .format({ precision: 6, units: 9 }),
-    //     ).toBe(DEPOSIT_AMOUNT);
-
-    //     // check if it's settled on the list
-    //     const statusLocator = depositTxLocator.getByText('Settled');
-    //     await statusLocator.innerText();
-    //   });
-    // });
+        // check if it's settled on the list
+        const statusLocator = depositTxLocator.getByText('Settled');
+        await statusLocator.innerText();
+      });
+    });
 
     // await test.step('Withdraw TKN from Fuel to ETH', async () => {
     //   const preWithdrawBalanceFuel = await fuelWallet.getBalance(

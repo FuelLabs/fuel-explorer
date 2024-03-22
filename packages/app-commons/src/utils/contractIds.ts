@@ -48,7 +48,7 @@ export async function getBridgeTokenContracts() {
       return bridgeTokenContract;
     }
 
-    if (process.env.VITE_FUEL_CHAIN === 'fuelBeta5') {
+    if (FUEL_CHAIN_NAME === 'fuelBeta5') {
       bridgeTokenContract = {
         ETH_ERC20,
         FUEL_TokenContract:
