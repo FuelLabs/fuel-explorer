@@ -74,8 +74,8 @@ test.describe('Bridge', () => {
     let depositERC20TxId: string;
     let _withdrawERC20TxId: string;
 
-    const data = await getBridgeTokenContracts();
-    const { ETH_ERC20, FUEL_TokenAsset } = data;
+    const bridgeTokenContracts = await getBridgeTokenContracts();
+    const { ETH_ERC20, FUEL_TokenAsset } = bridgeTokenContracts;
 
     await test.step('Deposit ETH to Fuel', async () => {
       const preDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
@@ -322,7 +322,6 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Deposit TKN to Fuel', async () => {
-      await goToBridgePage(page);
       await clickDepositTab(page);
       const preDepositBalanceFuel =
         await fuelWallet.getBalance(FUEL_TokenAsset);
@@ -333,11 +332,11 @@ test.describe('Bridge', () => {
 
       await test.step('Fill data and click on deposit', async () => {
         await hasDropdownSymbol(page, 'TKN');
-        // Deposit asset
-        const depositButton = getByAriaLabel(page, 'Deposit', true);
 
-        const depositInput = page.locator('input');
+        // Deposit asset
+        const depositInput = page.locator('.fuel-InputAmount input');
         await depositInput.fill(DEPOSIT_AMOUNT);
+        const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
       });
 
