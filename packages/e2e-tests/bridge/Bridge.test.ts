@@ -119,7 +119,6 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Check deposit tx in the Tx list', async () => {
-        console.log(13);
         await closeTransactionPopup(page);
 
         const postDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
@@ -159,7 +158,6 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Fill data and click on withdraw', async () => {
-        console.log(14);
         await clickWithdrawTab(page);
         await hasDropdownSymbol(page, 'ETH');
 

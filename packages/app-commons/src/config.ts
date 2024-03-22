@@ -13,8 +13,7 @@ export const NODE_ENV = process.env.NODE_ENV;
 export const BLOCK_EXPLORER_URL = process.env.NEXT_PUBLIC_BLOCK_EXPLORER_URL;
 
 export const IS_PREVIEW = process.env.NEXT_PUBLIC_IS_PUBLIC_PREVIEW === 'true';
-export const IS_DEVELOPMENT = process.env.DEV;
-export const IS_TEST = process.env.MODE === 'test';
+export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 const ethChainName = ETH_CHAIN_NAME?.toLowerCase();
 export const IS_ETH_DEV_CHAIN = ethChainName && ethChainName === 'foundry';
