@@ -117,7 +117,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
   const txId = id.startsWith('0x') ? (id as `0x${string}`) : undefined;
   const { href: explorerLink } = useExplorerLink({
     network: 'ethereum',
-    id: txId,
+    id,
   });
 
   const txEthToFuelState = store.useSelector(

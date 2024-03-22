@@ -10,8 +10,6 @@ export const WALLET_INSTALL = process.env.NEXT_PUBLIC_WALLET_INSTALL;
 export const WALLET_INSTALL_NEXT = process.env.NEXT_PUBLIC_WALLET_INSTALL_NEXT;
 export const NODE_ENV = process.env.NODE_ENV;
 
-export const BLOCK_EXPLORER_URL = process.env.NEXT_PUBLIC_BLOCK_EXPLORER_URL;
-
 export const IS_PREVIEW = process.env.NEXT_PUBLIC_IS_PUBLIC_PREVIEW === 'true';
 export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
