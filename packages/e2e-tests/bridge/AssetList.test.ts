@@ -12,11 +12,10 @@ import { connectToMetamask } from './utils/wallets';
 test.describe('Asset List', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/bridge');
-
     await connectToMetamask(page);
   });
 
-  test('e2e asset list', async ({ page }) => {
+  test('e2e asset list', async ({ page, context }) => {
     await test.step('Check if ETH is in the dropdown', async () => {
       await hasDropdownSymbol(page, 'ETH');
     });
@@ -99,5 +98,7 @@ test.describe('Asset List', () => {
 
       await hasDropdownSymbol(page, 'TKN');
     });
+
+    await context.close();
   });
 });

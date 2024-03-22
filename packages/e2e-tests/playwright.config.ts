@@ -17,15 +17,16 @@ const config: PlaywrightTestConfig = defineConfig({
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,
   // Retry tests on CI if they fail
-  retries: IS_CI ? 2 : 0,
+  retries: IS_CI ? 0 : 0,
+  // retries: IS_CI ? 2 : 0,
   webServer: {
     command: 'pnpm dev',
-    url: `http://localhost:${PORT}`,
+    port: Number(PORT),
     reuseExistingServer: true,
     cwd: join(__dirname, '../../'),
   },
   use: {
-    baseURL: `http://localhost:${PORT}/`,
+    baseURL: `http://127.0.0.1:${PORT}/`,
     permissions: ['clipboard-read', 'clipboard-write'],
     trace: 'on-first-retry',
     headless: false,

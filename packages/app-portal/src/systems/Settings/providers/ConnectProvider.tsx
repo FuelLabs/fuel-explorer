@@ -42,19 +42,25 @@ const transports = {
       ),
 };
 
-export const config = createConfig({
-  chains: chainsToConnect as any,
-  connectors: [
-    injected({
-      shimDisconnect: true,
-      target: 'metaMask',
-    }),
-    coinbaseWallet({ appName: app.name, headlessMode: true }),
+const connectors: any = [
+  injected({
+    shimDisconnect: true,
+    target: 'metaMask',
+  }),
+  coinbaseWallet({ appName: app.name, headlessMode: true }),
+];
+if (WALLETCONNECT_ID) {
+  connectors.push(
     walletConnect({
       projectId: WALLETCONNECT_ID,
       showQrModal: false,
     }),
-  ],
+  );
+}
+
+export const config = createConfig({
+  chains: chainsToConnect as any,
+  connectors,
   transports,
   ssr: true,
 });

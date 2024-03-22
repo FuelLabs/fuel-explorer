@@ -50,7 +50,6 @@ export const test = base.extend<{
     });
     // Set context to playwright
     await use(context);
-    //await context.close();
   },
   extensionId: async ({ context }, use) => {
     let [background] = context.serviceWorkers();
