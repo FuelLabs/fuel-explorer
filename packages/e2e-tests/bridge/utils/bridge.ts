@@ -64,3 +64,10 @@ export const proceedAnyways = async (context: BrowserContext) => {
     await proceedAnyways.click();
   }
 };
+
+export const selectToken = async (page: Page, token: string) => {
+  const assetDropdown = getByAriaLabel(page, 'Coin Selector');
+  await assetDropdown.click();
+  const tokenAsset = getByAriaLabel(page, `${token} symbol`);
+  await tokenAsset.click();
+};
