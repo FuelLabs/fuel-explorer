@@ -17,8 +17,7 @@ const config: PlaywrightTestConfig = defineConfig({
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,
   // Retry tests on CI if they fail
-  retries: IS_CI ? 0 : 0,
-  // retries: IS_CI ? 2 : 0,
+  retries: IS_CI ? 2 : 0,
   webServer: {
     command: 'pnpm dev',
     port: Number(PORT),
