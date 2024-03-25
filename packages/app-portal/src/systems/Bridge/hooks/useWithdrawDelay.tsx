@@ -8,7 +8,7 @@ export function useWithdrawDelay() {
   const publicClient = usePublicClient();
 
   const { fuelChainState } = useNamedQuery('fuelChainState', {
-    queryKey: ['bridge', 'withdraw', 'state'],
+    queryKey: ['fuel', 'bridge', 'withdraw', 'state'],
     queryFn: getBridgeSolidityContracts,
     select: (bridgeSolidityContracts) => {
       return EthConnectorService.connectToFuelChainState({
@@ -21,7 +21,7 @@ export function useWithdrawDelay() {
   });
 
   return useNamedQuery('timeToWithdrawFormatted', {
-    queryKey: ['bridge', 'withdraw', 'formatted'],
+    queryKey: ['fuel', 'bridge', 'withdraw', 'formatted'],
     queryFn: async () => {
       const [blocksPerCommitInterval, timeToFinalize] = (await Promise.all([
         fuelChainState?.read.BLOCKS_PER_COMMIT_INTERVAL(),

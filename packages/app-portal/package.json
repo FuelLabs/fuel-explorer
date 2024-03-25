@@ -19,7 +19,7 @@
     "@fuel-bridge/solidity-contracts": "0.5.0",
     "@fuels/assets": "^0.17.0",
     "@fuels/connectors": "0.1.0",
-    "@fuels/react": "^0.17.0",
+    "@fuels/react": "0.17.0",
     "@fuels/react-xstore": "^0.17.0",
     "@fuels/ui": "workspace:*",
     "@hookform/resolvers": "^3.1.1",

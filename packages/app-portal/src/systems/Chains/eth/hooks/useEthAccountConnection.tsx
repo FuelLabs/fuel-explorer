@@ -1,7 +1,6 @@
 import { useModal } from 'connectkit';
 import {
   useAccount,
-  useBalance,
   useDisconnect,
   useEnsAvatar,
   useEnsName,
@@ -14,18 +13,11 @@ import { useEffect } from 'react';
 import { useOverlay } from '~portal/systems/Overlay';
 import { parseEthAddressToFuel } from '../utils';
 
-export function useEthAccountConnection(props?: {
-  erc20Address?: `0x${string}`;
-}) {
+export function useEthAccountConnection() {
   const overlay = useOverlay();
-  const { erc20Address } = props || {};
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: address });
-  const { data: balance } = useBalance({
-    address,
-    token: erc20Address,
-  });
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
 
@@ -72,6 +64,5 @@ export function useEthAccountConnection(props?: {
     signer: walletClient || undefined,
     walletClient: walletClient || undefined,
     publicClient: publicClient || undefined,
-    balance,
   };
 }
