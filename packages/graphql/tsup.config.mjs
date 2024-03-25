@@ -32,7 +32,7 @@ export default defineConfig((options) => ({
         SERVER_PORT: port,
         CODE_GEN: true,
         WATCH: Boolean(options.watch),
-        NEXT_PUBLIC_FUEL_CHAIN_NAME: process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME,
+        FUEL_PROVIDER: process.env.FUEL_PROVIDER,
       },
     });
     // Wait process to close until restarting
