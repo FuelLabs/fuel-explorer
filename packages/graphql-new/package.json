@@ -37,8 +37,7 @@
     "db:setup": "run-s codegen db:generate",
     "inngest": "inngest-cli dev -u http://localhost:3002/api/inngest",
     "dev": "tsx watch src/app.ts",
-    "start": "tsx src/app.ts",
-    "server:start": "run-p inngest start",
+    "server:start": "tsx src/app.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
     "sync:missing": "tsx ./src/cli.ts sync --missing",
     "sync:from-block": "tsx ./src/cli.ts sync --from"
