@@ -1,13 +1,14 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
+import { requireEnv } from './src/utils/requireEnv';
 
-import { FUEL_CHAIN } from 'app-commons/src/chains/fuel';
-
-const { providerUrl } = FUEL_CHAIN;
+const { FUEL_PROVIDER } = requireEnv([
+  ['FUEL_PROVIDER', 'https://beta-5.fuel.network/graphql'],
+]);
 
 const config: CodegenConfig = {
   generates: {
     './src/schemas/fuelcore.graphql': {
-      schema: providerUrl,
+      schema: FUEL_PROVIDER,
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,

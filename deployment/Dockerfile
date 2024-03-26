@@ -4,7 +4,7 @@ FROM node:20-slim AS base
 
 # Expose the ENVs to the env of the container
 ENV PORT="${PORT}"
-ENV NEXT_PUBLIC_FUEL_CHAIN_NAME="${NEXT_PUBLIC_FUEL_CHAIN_NAME:-fuelBeta5}"
+ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV SERVER_BUILD=true
@@ -13,9 +13,8 @@ ENV SERVER_BUILD=true
 RUN corepack enable
 
 # Install dependencies for the entire monorepo
-COPY packages/app-commons ./packages/app-commons
-COPY packages/graphql ./packages/graphql
-COPY package.json turbo.json pnpm-workspace.yaml ./
+COPY . /app-explorer
+WORKDIR /app-explorer
 
 # Install dependencies for the entire monorepo
 RUN pnpm install
@@ -24,5 +23,5 @@ RUN pnpm install
 EXPOSE ${PORT}
 
 # Start GraphQL server
-WORKDIR /packages/graphql
+WORKDIR /app-explorer
 CMD ["pnpm", "server:start"]
