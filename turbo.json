@@ -3,34 +3,21 @@
   "globalEnv": ["NODE_ENV", "IS_PREVIEW"],
   "pipeline": {
     "ts:check": {
-      "dependsOn": ["^build"],
       "cache": true
     },
-    "build": {
+    "build:lib": {
       "outputs": ["dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build"],
       "cache": true
     },
     "build:preview": {
       "outputs": [
-        "app-explorer/public/portal/**",
-        "app-explorer/public/ui/**",
         "dist/**",
         "build/**",
         ".next/**",
-        "public/**"
+        "app-explorer/public/ui/**",
+        "app-explorer/public/storybook/**"
       ],
-      "dependsOn": ["^build"],
-      "cache": true
-    },
-    "app-explorer#build:preview": {
-      "outputs": ["public/**", "dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build", "app-portal#build:preview"],
-      "cache": true
-    },
-    "build:storybook": {
-      "outputs": ["storybook-static/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:lib", "^ts:check"],
       "cache": true
     },
     "test": {
