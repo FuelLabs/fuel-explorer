@@ -18,6 +18,7 @@ type BlockInputProps = {
 
 export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
   static create(block: BlockItem) {
+    if (!block) return null;
     const item = block.data;
     if (!item) {
       throw new Error('item is required');

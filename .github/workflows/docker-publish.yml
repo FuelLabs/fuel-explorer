@@ -31,3 +31,23 @@ jobs:
           image: ghcr.io/fuellabs/fuel-explorer
           dockerfile: deployment/Dockerfile
           context: ./packages/graphql
+
+  # Temporary publish a new version of the graphql-new
+  # until the graphql removed to use only the new version
+  build-and-publish-image-v2:
+    runs-on: buildjet-4vcpu-ubuntu-2204
+    if: |
+      (github.event_name == 'release' && github.event.action == 'published') ||
+      github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build and push Ethereum hardhat image
+        uses: ./.github/actions/docker-publish
+        id: publish
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          image: ghcr.io/fuellabs/fuel-explorer
+          dockerfile: deployment/Dockerfile.v2
+          context: ./packages/graphql-new

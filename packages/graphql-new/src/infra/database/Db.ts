@@ -41,6 +41,7 @@ export class Db {
   async migrate() {
     await migrate(this.connection(), {
       migrationsFolder: path.join(__dirname, '../../../drizzle'),
+      migrationsTable: 'migrations',
     });
   }
 

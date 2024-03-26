@@ -11,14 +11,11 @@ export class SyncMissingBlocks {
     const repo = new BlockRepository();
     const latest = await repo.findLatestAdded();
     const id = latest?._id.value();
-    if (!id) {
-      throw new Error('No blocks found');
-    }
+    const page = id ? Math.ceil(Number(id) / 1000) : 1;
 
-    const page = Math.ceil(Number(id) / 1000);
     await this.step.sendEvent('sync:blocks', {
       name: InngestEvents.SYNC_BLOCKS,
-      data: { page, perPage: 1000 },
+      data: { page, perPage: 100 },
     });
   }
 }

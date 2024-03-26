@@ -64,7 +64,7 @@ export const syncAllBlocks = inngest.client().createFunction(
   {
     id: 'sync:blocks',
     concurrency: 1,
-    debounce: { period: '1s' },
+    debounce: { period: '2s' },
   },
   { event: InngestEvents.SYNC_BLOCKS },
   async ({ step, event: { data }, attempt }) => {

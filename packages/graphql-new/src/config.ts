@@ -3,14 +3,14 @@ import { Env } from './core/Env';
 
 const schema = zod.object({
   FUEL_PROVIDER: zod.string(),
-  SERVER_PORT: zod.string(),
+  SERVER_PORT: zod.string().default('3000'),
   DB_HOST: zod.string(),
   DB_PORT: zod.string(),
   DB_USER: zod.string(),
   DB_PASS: zod.string(),
   DB_NAME: zod.string(),
-  INNGEST_EVENT_KEY: zod.string(),
-  INNGEST_SIGNING_KEY: zod.string(),
+  INNGEST_EVENT_KEY: zod.string().optional(),
+  INNGEST_SIGNING_KEY: zod.string().optional(),
   INNGEST_BASE_URL: zod.string().optional(),
 });
 
