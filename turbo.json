@@ -26,6 +26,7 @@
       "outputMode": "full"
     },
     "dev": {
+      "dependsOn": ["^build:lib", "^ts:check"],
       "cache": false
     },
     "lint": {

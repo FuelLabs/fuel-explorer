@@ -11,7 +11,7 @@
   "scripts": {
     "build:lib": "run-s codegen:fuel build:sdk",
     "build:sdk": "tsup",
-    "build:watch": "pnpm build:lib --watch",
+    "build:watch": "pnpm build:sdk --watch",
     "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts",
     "codegen:app": "gql-gen -r dotenv/config --config codegen.ts",
     "dev": "pnpm build:watch",
