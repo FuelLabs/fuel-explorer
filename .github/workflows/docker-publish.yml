@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build and push Ethereum hardhat image
+      - name: Build and push Fuel Explorer Graphql image
         uses: ./.github/actions/docker-publish
         id: publish
         with:
@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build and push Ethereum hardhat image
+      - name: Build and push Fuel Explorer Graphql image V2
         uses: ./.github/actions/docker-publish
         id: publish
         with:
