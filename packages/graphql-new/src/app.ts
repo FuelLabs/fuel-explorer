@@ -21,17 +21,22 @@ httpServer.listen(app, port).then(async () => {
   );
 
   if (process.env.START_INNGEST_SERVER) {
-    console.log('🔗 Starting Inngest server');
-    const ingestProcess = spawn('pnpm', [
-      'inngest-cli',
-      'dev',
-      `-u http://localhost:${port}/api/inngest`,
-    ]);
-    ingestProcess.stdout.on('data', (data) => {
-      process.stdout.write(data);
-    });
-    ingestProcess.stderr.on('data', (data) => {
-      process.stdout.write(data);
+    await new Promise((resolve) => {
+      console.log('🔗 Starting Inngest server');
+      const ingestProcess = spawn('pnpm', [
+        'inngest-cli',
+        'dev',
+        `-u http://localhost:${port}/api/inngest`,
+      ]);
+      ingestProcess.stdout.on('data', (data) => {
+        process.stdout.write(data);
+      });
+      ingestProcess.stderr.on('data', (data) => {
+        if (data.includes('0.0.0.0:8288')) {
+          resolve(true);
+        }
+        process.stdout.write(data);
+      });
     });
   }
 
