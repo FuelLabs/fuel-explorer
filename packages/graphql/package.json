@@ -27,7 +27,6 @@
     "@graphql-tools/stitch": "^9.0.3",
     "@graphql-tools/utils": "^10.0.13",
     "@luckycatfactory/esbuild-graphql-loader": "3.8.1",
-    "app-commons": "workspace:*",
     "chokidar": "3.5.3",
     "cors": "^2.8.5",
     "dayjs": "1.11.10",

@@ -561,9 +561,6 @@ importers:
       '@luckycatfactory/esbuild-graphql-loader':
         specifier: 3.8.1
         version: 3.8.1(esbuild@0.20.0)(graphql-tag@2.12.6)(graphql@16.8.1)
-      app-commons:
-        specifier: workspace:*
-        version: link:../app-commons
       chokidar:
         specifier: 3.5.3
         version: 3.5.3
@@ -4584,6 +4581,11 @@ packages:
     resolution: {integrity: sha512-R+oMDcqHCKGzFTX+bDRwBk8bIOS0OKTo3Vrl3Gj0gphHn0C7ovF6ylxnM8kW4+VzMD6e6N64e2e506+RD1+yQQ==}
     peerDependencies:
       jest: ^29.6.4
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
     dependencies:
       '@ariakit/test': 0.2.5(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
@@ -13248,6 +13250,9 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true

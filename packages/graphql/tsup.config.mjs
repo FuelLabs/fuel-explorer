@@ -16,7 +16,6 @@ export default defineConfig((options) => ({
   splitting: true,
   format: ['esm', 'cjs'],
   external: ['@fuels/assets'],
-  noExternal: ['app-commons'],
   sourcemap: true,
   clean: false,
   dts: !isServerBuild,
