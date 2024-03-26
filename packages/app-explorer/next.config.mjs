@@ -31,14 +31,6 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
-  rewrites: async () => {
-    return [
-      {
-        source: '/portal/:path*',
-        destination: '/portal/index.html',
-      },
-    ];
-  },
   redirects: async () => {
     return [
       {
@@ -69,6 +61,8 @@ const config = {
       },
       // https://github.com/WalletConnect/walletconnect-monorepo/issues/1908
       'pino-pretty',
+      'net',
+      'tls',
     );
 
     config.module.rules.push({

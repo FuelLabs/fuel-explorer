@@ -31,7 +31,7 @@ export function TxEthToFuelDialog() {
 
   return (
     <VStack className="max-w-sm">
-      <Dialog.Title className="mb-0">
+      <Dialog.Title className="mb-0 justify-between">
         <HStack className="items-center gap-2">
           <IconTransferIn size={20} stroke={1.5} />
           Deposit

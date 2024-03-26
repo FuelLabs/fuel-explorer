@@ -1,4 +1,3 @@
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import { useMemo } from 'react';
 import { Services, store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
@@ -9,6 +8,8 @@ import { useAsset } from '../../../Assets/hooks/useAsset';
 import { useFuelAccountConnection } from '../../fuel';
 import type { TxEthToFuelMachineState } from '../machines';
 import { isErc20Address } from '../utils';
+
+import { deepCompare } from '../utils/deepCompare';
 
 const bridgeTxsSelectors = {
   txEthToFuel: (txId?: `0x${string}`) => (state: BridgeTxsMachineState) => {
@@ -116,12 +117,13 @@ export function useTxEthToFuel({ id }: { id: string }) {
   const txId = id.startsWith('0x') ? (id as `0x${string}`) : undefined;
   const { href: explorerLink } = useExplorerLink({
     network: 'ethereum',
-    id: txId,
+    id,
   });
 
   const txEthToFuelState = store.useSelector(
     Services.bridgeTxs,
     bridgeTxsSelectors.txEthToFuel(txId),
+    deepCompare,
   );
 
   const {
@@ -172,8 +174,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
 
     store.relayMessageEthToFuel({
       input: {
-        // TODO: remove this workaround when we get versions organized and using the same version
-        fuelWallet: fuelWallet as unknown as FuelWallet,
+        fuelWallet,
       },
       ethTxId,
     });

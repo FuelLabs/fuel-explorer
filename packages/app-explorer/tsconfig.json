@@ -28,6 +28,7 @@
     "src",
     ".storybook",
     "*.config.*",
-    "jest.setup.ts"
+    "jest.setup.ts",
+    "../app-commons/src/process.env.d.ts"
   ]
 }

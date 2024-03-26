@@ -1,6 +1,5 @@
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type { Asset } from '@fuels/assets';
-import type { BN } from 'fuels';
+import type { Account as FuelWallet, BN } from 'fuels';
 import type { WalletClient } from 'viem';
 
 import type { FromToNetworks } from '../Chains';
@@ -27,6 +26,9 @@ export function bridgeEvents(store: Store) {
       if (!input) return;
 
       store.send(Services.bridgeTxs, { type: 'FETCH', input });
+    },
+    fetchNextPage() {
+      store.send(Services.bridgeTxs, { type: 'FETCH_NEXT_PAGE' });
     },
     addTxEthToFuel(
       input?: { ethTxId?: `0x${string}` } & BridgeInputs['fetchTxs'],

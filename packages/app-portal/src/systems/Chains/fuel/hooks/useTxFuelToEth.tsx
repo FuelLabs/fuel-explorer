@@ -191,7 +191,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
   const { assets } = useAssets();
   const { href: explorerLink } = useExplorerLink({
     network: 'fuel',
-    providerUrl: fuelProvider?.url || '',
+    providerUrl: fuelProvider?.url,
     id: txId,
   });
 

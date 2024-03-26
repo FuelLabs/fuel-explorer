@@ -1,5 +1,4 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
-
 import { requireEnv } from './src/utils/requireEnv';
 
 const { FUEL_PROVIDER } = requireEnv([

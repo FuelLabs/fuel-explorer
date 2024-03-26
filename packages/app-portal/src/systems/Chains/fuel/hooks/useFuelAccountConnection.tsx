@@ -1,18 +1,17 @@
 import {
   useAccount,
+  useBalance,
   useConnectUI,
   useDisconnect,
   useFuel,
   useIsConnected,
   useWallet,
-} from '@fuel-wallet/react';
+} from '@fuels/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { store } from '~portal/store';
 import type { AssetFuel } from '~portal/systems/Assets/utils';
 import { useFuelNetwork } from '~portal/systems/Settings/providers/FuelNetworkProvider';
-
-import { useBalance } from './useBalance';
 
 export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { assetId } = props || {};
@@ -21,12 +20,11 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { account, isLoading: isLoadingAccount } = useAccount();
   const { balance, isLoading: isLoadingBalance } = useBalance({
     assetId,
-    address: account || '',
-    provider: fuelProvider,
+    address: account || undefined,
   });
 
   const { isLoading: isLoadingConnected } = useIsConnected();
-  const { disconnect, isLoading: isLoadingDisconnecting } = useDisconnect();
+  const { disconnect, isPending: isLoadingDisconnecting } = useDisconnect();
   const { wallet, isLoading: isLoadingWallet } = useWallet(account);
   const {
     connect,
