@@ -18,8 +18,9 @@ const config: CodegenConfig = {
     },
     './src/graphql/generated/sdk.ts': {
       schema: [
-        './src/graphql/schemas/fuelcore.graphql',
+        './src/graphql/schemas/bridge.graphql',
         './src/graphql/schemas/explorer.graphql',
+        './src/graphql/schemas/fuelcore.graphql',
       ],
       plugins: [
         'typescript',
