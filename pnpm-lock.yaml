@@ -44,14 +44,14 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
       '@fuels/jest':
-        specifier: ^0.17.0
-        version: 0.17.0(@types/jest@29.5.12)(jest@29.7.0)
+        specifier: ^0.18.0
+        version: 0.18.0(@types/jest@29.5.12)(jest@29.7.0)
       '@fuels/ts-config':
-        specifier: ^0.17.0
-        version: 0.17.0(typescript@5.3.3)
+        specifier: ^0.18.0
+        version: 0.18.0(typescript@5.3.3)
       '@fuels/tsup-config':
-        specifier: ^0.17.0
-        version: 0.17.0(tsup@8.0.1)
+        specifier: ^0.18.0
+        version: 0.18.0(tsup@8.0.1)
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
@@ -209,8 +209,8 @@ importers:
         specifier: 0.76.0
         version: 0.76.0
       '@fuels/assets':
-        specifier: ^0.17.0
-        version: 0.17.0
+        specifier: ^0.18.0
+        version: 0.18.0
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -411,17 +411,17 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       '@fuels/assets':
-        specifier: ^0.17.0
-        version: 0.17.0
+        specifier: ^0.18.0
+        version: 0.18.0
       '@fuels/connectors':
         specifier: 0.1.0
         version: 0.1.0(fuels@0.74.0)
       '@fuels/react':
-        specifier: 0.17.0
-        version: 0.17.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.18.0
+        version: 0.18.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0)
       '@fuels/react-xstore':
-        specifier: ^0.17.0
-        version: 0.17.0(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
+        specifier: ^0.18.0
+        version: 0.18.0(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3)
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -529,8 +529,8 @@ importers:
   packages/e2e-tests:
     devDependencies:
       '@fuels/playwright-utils':
-        specifier: ^0.17.0
-        version: 0.17.0(@playwright/test@1.41.2)(fuels@0.74.0)
+        specifier: ^0.18.0
+        version: 0.18.0(@playwright/test@1.41.2)(fuels@0.74.0)
       '@synthetixio/synpress':
         specifier: https://github.com/LuizAsFight/synpress
         version: github.com/LuizAsFight/synpress/edb6468a237b341a0014d2944cb43a33f22d2ff1(@babel/core@7.23.9)(typescript@5.3.3)
@@ -623,8 +623,8 @@ importers:
         specifier: ^7.23.9
         version: 7.23.9
       '@fuels/ts-config':
-        specifier: ^0.17.0
-        version: 0.17.0(typescript@5.3.3)
+        specifier: ^0.18.0
+        version: 0.18.0(typescript@5.3.3)
       '@graphql-codegen/cli':
         specifier: 5.0.1
         version: 5.0.1(@parcel/watcher@2.4.0)(@types/node@20.11.16)(graphql@16.8.1)(typescript@5.3.3)
@@ -775,8 +775,8 @@ importers:
         specifier: 0.76.0
         version: 0.76.0
       '@fuels/assets':
-        specifier: ^0.17.0
-        version: 0.17.0
+        specifier: ^0.18.0
+        version: 0.18.0
       '@radix-ui/colors':
         specifier: 3.0.0
         version: 3.0.0
@@ -4564,8 +4564,8 @@ packages:
   /@fuels/assets@0.1.5:
     resolution: {integrity: sha512-3rFZdY2f5/h7e2Rlhv/+WKz1CVsTnydKoxLdVjQfUaNsj7zbMLSfT37bsBSB42AnXKOlPs/vyMbS77LxhN8a2A==}
 
-  /@fuels/assets@0.17.0:
-    resolution: {integrity: sha512-rrWVmNl6PBDqMEhBSmBDDKt4rcmSomgV8aUPp1h9XG+6AOL7ISkIexSV+ryLUbd/Mya8upIziOwnHV2W+jm+zw==}
+  /@fuels/assets@0.18.0:
+    resolution: {integrity: sha512-OwnLbYTV+RkM0dBaIRdWht8lmADR4xOJzVUC/EE3TiP0z7fpXmtUAmbN1k6YnthVKf82awlL/UNru4f3JbD7ag==}
     dev: false
 
   /@fuels/connectors@0.1.0(fuels@0.74.0):
@@ -4577,8 +4577,8 @@ packages:
       json-rpc-2.0: 1.7.0
     dev: false
 
-  /@fuels/jest@0.17.0(@types/jest@29.5.12)(jest@29.7.0):
-    resolution: {integrity: sha512-R+oMDcqHCKGzFTX+bDRwBk8bIOS0OKTo3Vrl3Gj0gphHn0C7ovF6ylxnM8kW4+VzMD6e6N64e2e506+RD1+yQQ==}
+  /@fuels/jest@0.18.0(@types/jest@29.5.12)(jest@29.7.0):
+    resolution: {integrity: sha512-Pd0ABGGf7TM7DioatxWiZneTu+wtOpbwNJIUu7qgpcubNSjaVq9YK9CbSY/oTd9ST3GUfTkTCMfR7+L+MgqHMQ==}
     peerDependencies:
       jest: ^29.6.4
     peerDependenciesMeta:
@@ -4617,12 +4617,12 @@ packages:
       - vitest
     dev: true
 
-  /@fuels/local-storage@0.17.0:
-    resolution: {integrity: sha512-EV1ZxQB+9hnVDWL127mZz6zVHFXB/L3CBmK/ZxyD2usZxXl2x3xTl8uUWo12zO9b9idzqpwWFjU+tOZTBCi+NA==}
+  /@fuels/local-storage@0.18.0:
+    resolution: {integrity: sha512-rnDOPrKIkTP1Y3xJmSdUD9I5VTKb8j3ot6And3OIbHhctXv2ZuSkYU3iHcj1ZSG0qyP6x6sMK54UdJztfpkh0A==}
     dev: false
 
-  /@fuels/playwright-utils@0.17.0(@playwright/test@1.41.2)(fuels@0.74.0):
-    resolution: {integrity: sha512-dQr3or15HwQVsqnUDRinpPDWC6s1+qMLVLY+EReOANwcUvYEVuDN6l+YUMLFWpN5wHaiHJ6MxKq4SQEtqPcFWg==}
+  /@fuels/playwright-utils@0.18.0(@playwright/test@1.41.2)(fuels@0.74.0):
+    resolution: {integrity: sha512-gmv1T+5iSqXCCea6MVMAiWUajD/0KjvhSCcNkFfZW+eg5dDbqTka5eZ72BYFl3kbuURt4OzdBwzNEMNajFRbfA==}
     peerDependencies:
       '@playwright/test': ^1.39.0
       fuels: '>=0.74.0'
@@ -4632,8 +4632,8 @@ packages:
       fuels: 0.74.0(dexie@3.2.4)
     dev: true
 
-  /@fuels/react-xstore@0.17.0(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
-    resolution: {integrity: sha512-pQ02EcB3OwedDkgBT2+avJ89oDHBSHBInN9Azov+ZP38+fi/+H65dUpYBBSdLpFBMI1GO+DMxqal13HcZ27glg==}
+  /@fuels/react-xstore@0.18.0(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
+    resolution: {integrity: sha512-q9N4pGz2vY4JxDrrDmSDCdtKZVJAuC/vna25GTZGMp6NHnvqrGYcxjUtGTGK2wK2b15oyOD60QB9FIXw0BtyJA==}
     peerDependencies:
       '@xstate/react': ^3.2.2
       react: '*'
@@ -4645,7 +4645,7 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      '@fuels/local-storage': 0.17.0
+      '@fuels/local-storage': 0.18.0
       '@xstate/inspect': 0.8.0(xstate@4.38.3)
       '@xstate/react': 3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3)
       fast-equals: 5.0.1
@@ -4660,8 +4660,8 @@ packages:
       - ws
     dev: false
 
-  /@fuels/react@0.17.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-vGVLIEeOnjptU4mBiKjv9Cp4dsST/Q6CjhnZzT7nnsFHfzrQCPfP1Mz73qqlULi2l0pFR1SBroVk340BB5+srg==}
+  /@fuels/react@0.18.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.18)(@types/react@18.2.54)(fuels@0.74.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-y9IZ4/ZlZ7gq+VZFGMDoV4EzHbSvfv8GLVtwU/qfRL3aduZbUwg3/lJ8wMNArB/W8+o633ZswDHjGXEw0JPHIA==}
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
       fuels: '>=0.74.0'
@@ -4681,16 +4681,16 @@ packages:
       - react-dom
     dev: false
 
-  /@fuels/ts-config@0.17.0(typescript@5.3.3):
-    resolution: {integrity: sha512-OoEM1JHFCzWlOjsy/KG0T2RsQ8Z2uQVN8Y6qlszvZO0WzbLa8mJf1gFDayx0K0sv6SyABF0c17anNgsYf7ZM8Q==}
+  /@fuels/ts-config@0.18.0(typescript@5.3.3):
+    resolution: {integrity: sha512-xZos/RWXPdCdKk8ulyECnHHecl8C/ezstcJhqoQGo5w5PRXmcgVKYkkYj2p2U9dxnUJlcsCzjsRJfP+zw8gmcA==}
     peerDependencies:
       typescript: 5.2.2
     dependencies:
       typescript: 5.3.3
     dev: true
 
-  /@fuels/tsup-config@0.17.0(tsup@8.0.1):
-    resolution: {integrity: sha512-+ArWpkcWz9FLFCLgsHoV2qeAqpML5mnfkhM1rAqEJd12jfo7n/BUHTGMylt6a0mUdstfyFblbI3VUBQy7bgMmg==}
+  /@fuels/tsup-config@0.18.0(tsup@8.0.1):
+    resolution: {integrity: sha512-Xye9MKd8HEp8wR5CfHyNJZ+iD6bZfc42Mjifm28qH6TwMisw8UJQYzSR4JmE0IW7Jhlb7T2uvDnt+FXPLX2mjw==}
     peerDependencies:
       tsup: ^7.2.0
     dependencies:
