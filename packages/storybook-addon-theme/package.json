@@ -32,10 +32,12 @@
         "typings": "./dist/register.d.ts"
       }
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
-    "build": "tsup --dts",
+    "build:lib": "tsup --dts",
     "build:watch": "tsup --watch",
     "ts:check": "tsc --noEmit"
   },
