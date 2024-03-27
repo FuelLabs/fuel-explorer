@@ -6,7 +6,6 @@
   "types": "./src/index.ts",
   "scripts": {
     "ts:check": "pnpm xstate:typegen && tsc --noEmit",
-    "build": "pnpm ts:check",
     "xstate:typegen": "xstate typegen 'src/**/*.ts?(x)'"
   },
   "peerDependencies": {
