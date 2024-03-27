@@ -79,7 +79,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
           {!searchResult && (
             <>
               <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-                {`"${searchValue}" is not a valid address.`}
+                {`"${searchValue.length > 66 ? (searchValue.substring(0, 66) + '...') : searchValue}" is not a valid address.`}
               </Dropdown.Item>
             </>
           )}
