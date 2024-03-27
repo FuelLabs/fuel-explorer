@@ -1,5 +1,8 @@
 export { BlocksTable } from '~/domain/Block/BlockModel';
-export { BridgeTransactionsTable } from '~/domain/BridgeTransaction/BridgeTransactionModel';
+export {
+  BridgeTransactionsTable,
+  bridgeTransactionTypeEnum,
+} from '~/domain/BridgeTransaction/BridgeTransactionModel';
 export { ContractsTable } from '~/domain/Contract/ContractModel';
 export { InputsTable } from '~/domain/Input/InputModel';
 export { OutputsTable } from '~/domain/Output/OutputModel';
