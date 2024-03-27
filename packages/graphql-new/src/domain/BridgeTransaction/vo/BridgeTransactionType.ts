@@ -1,17 +1,17 @@
 import { pgEnum } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
 
-const options = ['DEPOSIT', 'WITHDRAW'] as const;
+const options = ['deposit', 'withdraw'] as const;
 
 type Value = (typeof options)[number];
 interface Props {
   value: Value;
 }
 
+export const bridgeTransactionTypeEnum = pgEnum('type', options);
 export class BridgeTransactionType extends ValueObject<Props> {
   static type() {
-    const typeEnum = pgEnum('type', options);
-    return typeEnum('type').notNull();
+    return bridgeTransactionTypeEnum('type').notNull();
   }
 
   static create(value: Value) {

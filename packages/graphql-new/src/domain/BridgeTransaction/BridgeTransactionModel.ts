@@ -2,7 +2,10 @@ import { index, pgTable } from 'drizzle-orm/pg-core';
 import { Hash256 } from '~/application/vo';
 import { SerialID } from '~/application/vo/SerialID';
 
-import { BridgeTransactionType } from './vo/BridgeTransactionType';
+import {
+  BridgeTransactionType,
+  bridgeTransactionTypeEnum,
+} from './vo/BridgeTransactionType';
 
 export const BridgeTransactionsTable = pgTable(
   'bridge_transactions',
@@ -18,3 +21,4 @@ export const BridgeTransactionsTable = pgTable(
 );
 
 export type BridgeTransactionItem = typeof BridgeTransactionsTable.$inferSelect;
+export { bridgeTransactionTypeEnum };
