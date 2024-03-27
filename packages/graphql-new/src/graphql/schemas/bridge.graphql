@@ -7,8 +7,8 @@ schema {
 # --------------------------------
 
 enum BridgeTransactionType {
-  DEPOSIT
-  WITHDRAW
+  deposit
+  withdraw
 }
 
 type BridgeTransaction {
