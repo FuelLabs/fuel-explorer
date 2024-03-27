@@ -3,6 +3,7 @@
   "globalEnv": ["NODE_ENV", "IS_PREVIEW"],
   "pipeline": {
     "ts:check": {
+      "outputs": ["app-portal/**/*.typegen.ts"],
       "cache": true
     },
     "build:lib": {
