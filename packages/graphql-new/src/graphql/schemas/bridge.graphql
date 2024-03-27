@@ -17,3 +17,22 @@ type BridgeTransaction {
   ethTxId: String!
   fuelTxId: String!
 }
+
+type BridgeTransactionsResult {
+  nodes: [BridgeTransaction!]!
+  pageInfo: PageInfo!
+}
+
+# --------------------------------
+# Query
+# --------------------------------
+
+type Query {
+  bridgeTransactions(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): BridgeTransactionsResult
+}
+
