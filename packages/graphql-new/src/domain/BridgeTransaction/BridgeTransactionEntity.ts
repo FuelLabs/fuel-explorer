@@ -53,7 +53,7 @@ export class BridgeTransactionEntity extends Entity<
   }
 
   get fuelTxId() {
-    return this.props.fuelTxId?.value() ?? null;
+    return this.props.fuelTxId.value();
   }
 
   toGQLNode() {
