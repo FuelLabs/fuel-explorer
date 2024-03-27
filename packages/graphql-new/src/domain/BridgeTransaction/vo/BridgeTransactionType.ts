@@ -8,7 +8,11 @@ interface Props {
   value: Value;
 }
 
-export const bridgeTransactionTypeEnum = pgEnum('type', options);
+export const bridgeTransactionTypeEnum = pgEnum(
+  'bridge_transaction_type_enum',
+  options,
+);
+
 export class BridgeTransactionType extends ValueObject<Props> {
   static type() {
     return bridgeTransactionTypeEnum('type').notNull();
