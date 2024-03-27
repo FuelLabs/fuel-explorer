@@ -1,0 +1,19 @@
+schema {
+  query: Query
+}
+
+# --------------------------------
+# BridgeTransactions
+# --------------------------------
+
+enum BridgeTransactionType {
+  DEPOSIT
+  WITHDRAW
+}
+
+type BridgeTransaction {
+  id: Int!
+  type: BridgeTransactionType!
+  ethTxId: String!
+  fuelTxId: String!
+}
