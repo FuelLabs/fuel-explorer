@@ -15,6 +15,8 @@ const externals = [
   '@graphql-tools/utils',
 ];
 
+// Force new release
+
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
