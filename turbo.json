@@ -15,7 +15,7 @@
         "dist/**",
         "build/**",
         ".next/**",
-        "ui/public/ui/**",
+        "app-explorer/public/ui/**",
         "app-explorer/public/storybook/**"
       ],
       "dependsOn": ["^build:lib", "^ts:check"],
