@@ -44,6 +44,7 @@
     "prepare": "pnpm build:lib"
   },
   "dependencies": {
+    "@fuel-bridge/solidity-contracts": "0.5.0",
     "@graphql-tools/load": "8.0.2",
     "@graphql-tools/load-files": "7.0.0",
     "@graphql-tools/merge": "9.0.3",
@@ -52,6 +53,8 @@
     "@graphql-tools/utils": "^10.0.13",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@wagmi/core": "2.6.10",
+    "app-commons": "workspace:*",
     "cors": "^2.8.5",
     "dayjs": "1.11.10",
     "dotenv": "16.4.4",
@@ -69,6 +72,7 @@
     "pg-boss": "9.0.3",
     "shallow-equal-object": "1.1.1",
     "tai64": "^1.0.0",
+    "viem": "2.9.4",
     "winston": "3.11.0",
     "yargs": "17.7.2",
     "zod": "3.22.4"

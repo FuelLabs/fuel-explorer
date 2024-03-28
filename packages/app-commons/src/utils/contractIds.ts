@@ -1,5 +1,3 @@
-import { ETH_CHAIN_NAME, FUEL_CHAIN_NAME } from '../config';
-
 export type BridgeTokenContracts = {
   ETH_ERC20: string;
   FUEL_TokenContract: string;
@@ -15,10 +13,13 @@ export type BridgeSolidityContracts = {
 let bridgeTokenContract: BridgeTokenContracts;
 let bridgeSolidityContracts: BridgeSolidityContracts;
 
-export async function getBridgeTokenContracts() {
+export async function getBridgeTokenContracts(
+  ethChainName: string,
+  fuelChainName: string,
+) {
   if (bridgeTokenContract) return bridgeTokenContract;
 
-  if (FUEL_CHAIN_NAME === 'fuelDev') {
+  if (fuelChainName === 'fuelDev') {
     // On the ci I was encountering issues
     // with the erc20-deployer server not
     // completely started before the e2e tests began
@@ -36,9 +37,9 @@ export async function getBridgeTokenContracts() {
     return bridgeTokenContract;
   }
 
-  if (ETH_CHAIN_NAME === 'sepolia') {
+  if (ethChainName === 'sepolia') {
     const ETH_ERC20 = '0xC6387efAD0F184a90B34f397C3d6Fd63135ef790';
-    if (FUEL_CHAIN_NAME === 'fuelBeta5Dev') {
+    if (fuelChainName === 'fuelBeta5Dev') {
       bridgeTokenContract = {
         ETH_ERC20,
         FUEL_TokenContract:
@@ -48,7 +49,7 @@ export async function getBridgeTokenContracts() {
       return bridgeTokenContract;
     }
 
-    if (FUEL_CHAIN_NAME === 'fuelBeta5') {
+    if (fuelChainName === 'fuelBeta5') {
       bridgeTokenContract = {
         ETH_ERC20,
         FUEL_TokenContract:
@@ -60,8 +61,11 @@ export async function getBridgeTokenContracts() {
   }
 }
 
-export async function getBridgeSolidityContracts() {
-  if (ETH_CHAIN_NAME === 'foundry') {
+export async function getBridgeSolidityContracts(
+  ethChainName: string,
+  fuelChainName: string,
+) {
+  if (ethChainName === 'foundry') {
     const res = await fetch('http://localhost:8080/deployments.local.json', {
       method: 'GET',
       headers: {
@@ -75,8 +79,8 @@ export async function getBridgeSolidityContracts() {
     return bridgeSolidityContracts;
   }
 
-  if (ETH_CHAIN_NAME === 'sepolia') {
-    if (FUEL_CHAIN_NAME === 'fuelBeta5Dev') {
+  if (ethChainName === 'sepolia') {
+    if (fuelChainName === 'fuelBeta5Dev') {
       bridgeSolidityContracts = {
         FuelChainState: '0xb65850FB7eA866f8730Ce713657ed965407F6472',
         FuelMessagePortal: '0xBf340BAC79c301B264E2a5dEa51b7F61eb3e666A',
@@ -87,7 +91,7 @@ export async function getBridgeSolidityContracts() {
       return bridgeSolidityContracts;
     }
 
-    if (FUEL_CHAIN_NAME === 'fuelBeta5') {
+    if (fuelChainName === 'fuelBeta5') {
       bridgeSolidityContracts = {
         FuelChainState: '0x395B125343ADebCcB05dd70e117774E3AB08a8a7',
         FuelMessagePortal: '0x557c5cE22F877d975C2cB13D0a961a182d740fD5',

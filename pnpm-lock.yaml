@@ -676,6 +676,9 @@ importers:
 
   packages/graphql-new:
     dependencies:
+      '@fuel-bridge/solidity-contracts':
+        specifier: 0.5.0
+        version: 0.5.0
       '@graphql-tools/load':
         specifier: 8.0.2
         version: 8.0.2(graphql@16.8.1)
@@ -700,6 +703,12 @@ importers:
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@wagmi/core':
+        specifier: 2.6.10
+        version: 2.6.10(typescript@5.3.3)(viem@2.9.4)(zod@3.22.4)
+      app-commons:
+        specifier: workspace:*
+        version: link:../app-commons
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -751,6 +760,9 @@ importers:
       tai64:
         specifier: ^1.0.0
         version: 1.0.0
+      viem:
+        specifier: 2.9.4
+        version: 2.9.4(typescript@5.3.3)(zod@3.22.4)
       winston:
         specifier: 3.11.0
         version: 3.11.0
@@ -10847,7 +10859,7 @@ packages:
     resolution: {integrity: sha512-XJbEPuaVc7b9n23MqlF6c+ToYIS3f7P2Sel8f3cSBQ9WORE4xrSuvhMpK9fDSFqJ7by/brc+rmJR/5HViRr0/w==}
     dependencies:
       '@safe-global/safe-gateway-typescript-sdk': 3.14.0
-      viem: 1.21.4(typescript@5.3.3)
+      viem: 1.21.4(typescript@5.3.3)(zod@3.22.4)
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -13594,6 +13606,32 @@ packages:
       - utf-8-validate
       - zod
 
+  /@wagmi/core@2.6.10(typescript@5.3.3)(viem@2.9.4)(zod@3.22.4):
+    resolution: {integrity: sha512-CwY6T5MZgvhahNltArxVUpeh9Fk+zPeumqXyA+MIB0bdudOaxw0BjHyUOWGwcE8BH+uzT8YuTigeFVW3sKecVg==}
+    peerDependencies:
+      '@tanstack/query-core': '>=5.0.0'
+      typescript: '>=5.0.4'
+      viem: 2.x
+    peerDependenciesMeta:
+      '@tanstack/query-core':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      eventemitter3: 5.0.1
+      mipd: 0.0.5(typescript@5.3.3)(zod@3.22.4)
+      typescript: 5.3.3
+      viem: 2.9.4(typescript@5.3.3)(zod@3.22.4)
+      zustand: 4.4.1(@types/react@18.2.54)(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - bufferutil
+      - immer
+      - react
+      - utf-8-validate
+      - zod
+    dev: false
+
   /@wagmi/core@2.6.5(@types/react@18.2.54)(react@18.2.0)(typescript@5.3.3)(viem@2.7.20):
     resolution: {integrity: sha512-DLyrc0o+dx05oIhBJuxnS7ekS5e6rB5mytlqPme+Km7aLdeBdcfYB4yJyYCyWoi93OLa7M5sbflTttz3o56bKw==}
     peerDependencies:
@@ -13607,7 +13645,7 @@ packages:
         optional: true
     dependencies:
       eventemitter3: 5.0.1
-      mipd: 0.0.5(typescript@5.3.3)
+      mipd: 0.0.5(typescript@5.3.3)(zod@3.22.4)
       typescript: 5.3.3
       viem: 2.7.20(typescript@5.3.3)
       zustand: 4.4.1(@types/react@18.2.54)(react@18.2.0)
@@ -14263,7 +14301,7 @@ packages:
       typescript: 5.3.3
     dev: false
 
-  /abitype@0.9.8(typescript@5.3.3):
+  /abitype@0.9.8(typescript@5.3.3)(zod@3.22.4):
     resolution: {integrity: sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -14275,8 +14313,9 @@ packages:
         optional: true
     dependencies:
       typescript: 5.3.3
+      zod: 3.22.4
 
-  /abitype@1.0.0(typescript@5.3.3):
+  /abitype@1.0.0(typescript@5.3.3)(zod@3.22.4):
     resolution: {integrity: sha512-NMeMah//6bJ56H5XRj8QCV4AwuW6hB6zqz2LnhhLdcWVQOsXki6/Pn3APeqxCma62nXIcmZWdu1DlHWS74umVQ==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -14288,6 +14327,7 @@ packages:
         optional: true
     dependencies:
       typescript: 5.3.3
+      zod: 3.22.4
 
   /abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -22504,7 +22544,7 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /mipd@0.0.5(typescript@5.3.3):
+  /mipd@0.0.5(typescript@5.3.3)(zod@3.22.4):
     resolution: {integrity: sha512-gbKA784D2WKb5H/GtqEv+Ofd1S9Zj+Z/PGDIl1u1QAbswkxD28BQ5bSXQxkeBzPBABg1iDSbiwGG1XqlOxRspA==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -22513,7 +22553,7 @@ packages:
         optional: true
     dependencies:
       typescript: 5.3.3
-      viem: 1.21.4(typescript@5.3.3)
+      viem: 1.21.4(typescript@5.3.3)(zod@3.22.4)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -27875,7 +27915,7 @@ packages:
       - zod
     dev: false
 
-  /viem@1.21.4(typescript@5.3.3):
+  /viem@1.21.4(typescript@5.3.3)(zod@3.22.4):
     resolution: {integrity: sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -27888,7 +27928,7 @@ packages:
       '@noble/hashes': 1.3.2
       '@scure/bip32': 1.3.2
       '@scure/bip39': 1.2.1
-      abitype: 0.9.8(typescript@5.3.3)
+      abitype: 0.9.8(typescript@5.3.3)(zod@3.22.4)
       isows: 1.0.3(ws@8.13.0)
       typescript: 5.3.3
       ws: 8.13.0
@@ -27910,7 +27950,7 @@ packages:
       '@noble/hashes': 1.3.2
       '@scure/bip32': 1.3.2
       '@scure/bip39': 1.2.1
-      abitype: 1.0.0(typescript@5.3.3)
+      abitype: 1.0.0(typescript@5.3.3)(zod@3.22.4)
       isows: 1.0.3(ws@8.13.0)
       typescript: 5.3.3
       ws: 8.13.0
@@ -27918,6 +27958,29 @@ packages:
       - bufferutil
       - utf-8-validate
       - zod
+
+  /viem@2.9.4(typescript@5.3.3)(zod@3.22.4):
+    resolution: {integrity: sha512-j239PwRYc9WU7GOogfJ5Iu/5jwYaidpR85gLxKCwQmuXkNILKiRHntEM15EAtC9bcgaa9oklYwQ+/MlLU593/A==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@adraffy/ens-normalize': 1.10.0
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.2
+      '@scure/bip32': 1.3.2
+      '@scure/bip39': 1.2.1
+      abitype: 1.0.0(typescript@5.3.3)(zod@3.22.4)
+      isows: 1.0.3(ws@8.13.0)
+      typescript: 5.3.3
+      ws: 8.13.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+    dev: false
 
   /vite-node@1.2.2:
     resolution: {integrity: sha512-1as4rDTgVWJO3n1uHmUYqq7nsFgINQ9u+mRcXpjeOMJUmviqNKjcZB7UfRZrlM7MjYXMKpuWp5oGkjaFLnjawg==}
@@ -28914,7 +28977,7 @@ packages:
       get-port: 7.0.0
       node-fetch: 2.7.0
       underscore: 1.13.6
-      viem: 1.21.4(typescript@5.3.3)
+      viem: 1.21.4(typescript@5.3.3)(zod@3.22.4)
       wait-on: 7.2.0(debug@4.3.4)
     transitivePeerDependencies:
       - '@babel/core'
