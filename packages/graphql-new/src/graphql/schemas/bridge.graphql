@@ -12,7 +12,7 @@ enum BridgeTransactionType {
 }
 
 type BridgeTransaction {
-  id: Int!
+  _id: Int!
   type: BridgeTransactionType!
   ethTxId: String!
   fuelTxId: String!
