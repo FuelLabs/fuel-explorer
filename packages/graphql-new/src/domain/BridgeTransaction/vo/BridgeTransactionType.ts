@@ -1,16 +1,13 @@
 import { pgEnum } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
-
-const options = ['deposit', 'withdraw'] as const;
-
-type Value = (typeof options)[number];
+import { GQLBridgeTransactionType } from '~/graphql/generated/sdk';
 interface Props {
-  value: Value;
+  value: GQLBridgeTransactionType;
 }
 
 export const bridgeTransactionTypeEnum = pgEnum(
   'bridge_transaction_type_enum',
-  options,
+  [GQLBridgeTransactionType.Deposit, GQLBridgeTransactionType.Withdraw],
 );
 
 export class BridgeTransactionType extends ValueObject<Props> {
@@ -18,7 +15,7 @@ export class BridgeTransactionType extends ValueObject<Props> {
     return bridgeTransactionTypeEnum('type').notNull();
   }
 
-  static create(value: Value) {
+  static create(value: GQLBridgeTransactionType) {
     return new BridgeTransactionType({ value });
   }
 
