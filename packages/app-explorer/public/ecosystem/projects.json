@@ -394,5 +394,27 @@
     "twitter": "https://twitter.com/zap_infra",
     "discord": "",
     "image": "zap"
+  },
+  {
+    "isLive": false,
+    "name": "Envio",
+    "url": "https://envio.dev/",
+    "tags": ["Indexer"],
+    "description": "Envio is a modern, multi-chain EVM blockchain indexing framework speed-optimized for querying real-time and historical data.",
+    "github": "https://github.com/enviodev",
+    "twitter": "https://twitter.com/envio_indexer",
+    "discord": "https://discord.gg/amcY528zbZ",
+    "image": "envio"
+  },
+  {
+    "isLive": false,
+    "name": "Pyth",
+    "url": "https://pyth.network",
+    "tags": ["Oracle"],
+    "description": "Build apps with high-fidelity oracle feeds designed for mission-critical systems.",
+    "github": "https://github.com/pyth-network",
+    "twitter": "https://x.com/PythNetwork",
+    "discord": "https://discord.gg/invite/PythNetwork",
+    "image": "pyth"
   }
 ]
