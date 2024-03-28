@@ -71,9 +71,6 @@
     "@swc/core": "1.4.1",
     "@swc/jest": "0.2.36",
     "@types/jest": "29.5.12",
-    "@types/node": "20.11.19",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "@xstate/cli": "^0.5.17",
@@ -98,14 +95,8 @@
   },
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": [
-        "react",
-        "react-dom"
-      ],
-      "ignoreMissing": [
-        "react",
-        "react-dom"
-      ]
+      "allowAny": ["react", "react-dom"],
+      "ignoreMissing": ["react", "react-dom"]
     },
     "overrides": {
       "glob-parent@<5.1.2": ">=5.1.2",

@@ -4,11 +4,11 @@
   "pipeline": {
     "ts:check": {
       "outputs": ["app-portal/**/*.typegen.ts"],
-      "cache": true
+      "cache": false
     },
     "build:lib": {
       "outputs": ["dist/**", "build/**", ".next/**"],
-      "cache": true
+      "cache": false
     },
     "build:preview": {
       "outputs": [
@@ -19,7 +19,7 @@
         "app-explorer/public/storybook/**"
       ],
       "dependsOn": ["^build:lib", "^ts:check"],
-      "cache": true
+      "cache": false
     },
     "test": {
       "outputs": ["**/**/report.json", "coverage/**"],
