@@ -27,15 +27,6 @@ const config = {
     esmExternals: true,
     typedRoutes: true,
   },
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - ui (UI storybook)
-     * - storybook (explorer storybook)
-     * - portal-storybook (bridge storybook)
-     */
-    "/((?!ui|storybook|portal-storybook).*)",
-  ],
   /** We run eslint as a separate task in CI */
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
