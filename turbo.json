@@ -2,6 +2,14 @@
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": ["NODE_ENV", "IS_PREVIEW"],
   "pipeline": {
+    "ts:check": {
+      "outputs": ["app-portal/**/*.typegen.ts"],
+      "cache": false
+    },
+    "build:lib": {
+      "outputs": ["dist/**", "build/**", ".next/**"],
+      "cache": false
+    },
     "build:preview": {
       "outputs": [
         "dist/**",
