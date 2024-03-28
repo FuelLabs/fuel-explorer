@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "cd ../app-portal && pnpm xstate:typegen && cd ../app-explorer && next build",
     "build:storybook": "./scripts/build-storybook.sh",
     "build:preview": "run-s build:storybook build",
     "dev": "next dev",
     "dev:storybook": "storybook dev -p 6007",
     "start": "next start",
     "test": "jest --verbose --passWithNoTests",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "cd ../app-portal && pnpm xstate:typegen && cd ../app-explorer && tsc --noEmit"
   },
   "dependencies": {
     "@faker-js/faker": "8.4.0",

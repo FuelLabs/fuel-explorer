@@ -164,6 +164,44 @@ type SearchResult {
   transaction: SearchTransaction
 }
 
+type TxGraphItem {
+  from: Address
+  to: Address
+  assetId: AssetId
+  amount: U64
+  isContract: Boolean
+  isPredicate: Boolean
+  utxoId: UtxoId
+  txHash: Address
+  timestamp: String
+}
+type TxGraphItemNode {
+  id: Address
+  rootAddress: Address
+  transactions: [TxGraphItem]
+  graph: TxGraph
+}
+
+type WithdrawReceipt {
+  type: String
+  messageId: String
+  sender: String
+  recipient: String
+  amount: String
+  nonce: String
+  digest: String
+  data: [String]
+}
+
+type TxGraph {
+  utxos: [Input]
+  withdrawalReceipts: [WithdrawReceipt]
+  transactions: [Transaction]
+  from: [TxGraphItemNode]
+  to: [TxGraphItemNode]
+}
+
 extend type Query {
   search(query: String!): SearchResult
+  txGraph(address: Address): TxGraph
 }
