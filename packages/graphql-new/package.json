@@ -38,6 +38,7 @@
     "dev": "tsx watch src/app.ts",
     "server:start": "tsx src/app.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
+    "sync:bridge": "tsx ./src/cli.ts sync --bridge",
     "sync:missing": "tsx ./src/cli.ts sync --missing",
     "sync:from-block": "tsx ./src/cli.ts sync --from",
     "sync:clean": "tsx ./src/cli.ts sync --clean",

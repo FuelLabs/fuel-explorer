@@ -12,5 +12,6 @@ export class BridgeTransactionRepository {
 
   async insertMany() {
     console.log('@TODO: Implement it');
+    return Promise.resolve();
   }
 }

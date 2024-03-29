@@ -1,5 +1,6 @@
 import PgBoss, { Job } from 'pg-boss';
 import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
+import { syncBridgeTransactions } from '~/application/uc/SyncBridgeTransactions';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransaction';
 import { env } from '~/config';
@@ -15,6 +16,7 @@ export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync:blocks',
   SYNC_MISSING = 'indexer/sync:missing',
   SYNC_TRANSACTION = 'indexer/sync:transaction',
+  SYNC_BRIDGE_TRANSACTION = 'indexer/sync:bridge-transaction',
 }
 
 export type QueueInputs = {
@@ -28,6 +30,9 @@ export type QueueInputs = {
     index: number;
     block: GQLBlock;
     txHash: string;
+  };
+  [QueueNames.SYNC_BRIDGE_TRANSACTION]: {
+    address: string;
   };
 };
 
@@ -63,9 +68,12 @@ export class Queue extends PgBoss {
 
   async setupWorkers() {
     await this.start();
-    this.work(QueueNames.SYNC_BLOCKS, syncAllBlocks);
-    this.work(QueueNames.SYNC_MISSING, syncMissingBlocks);
-    this.work(QueueNames.SYNC_TRANSACTION, syncTransactions);
+    await Promise.all([
+      this.work(QueueNames.SYNC_BLOCKS, syncAllBlocks),
+      this.work(QueueNames.SYNC_MISSING, syncMissingBlocks),
+      this.work(QueueNames.SYNC_TRANSACTION, syncTransactions),
+      this.work(QueueNames.SYNC_BRIDGE_TRANSACTION, syncBridgeTransactions),
+    ]);
     console.log('⚡️ Queue running');
   }
 }

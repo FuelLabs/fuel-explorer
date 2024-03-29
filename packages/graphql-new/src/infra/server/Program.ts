@@ -17,6 +17,11 @@ export class Program {
               type: 'boolean',
               default: false,
             })
+            .option('bridge', {
+              alias: 'b',
+              type: 'boolean',
+              default: false,
+            })
             .option('missing', {
               alias: 'm',
               type: 'boolean',
@@ -52,6 +57,7 @@ export class Program {
 
   async sync(argv: {
     all: boolean;
+    bridge: boolean;
     missing: boolean;
     from: number | null;
     clean: boolean;
@@ -64,6 +70,15 @@ export class Program {
     }
     if (argv.missing) {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
+    }
+    if (argv.bridge) {
+      // @TODO: We might change it to receive block range as an argument
+      // instead of the address
+      const mockAddress =
+        'fuel1r8c6r80lqd270amxum777vcl72qgprhsf53gt2u5nv4z8ktc8ffs40j74p';
+      await queue.push(QueueNames.SYNC_BRIDGE_TRANSACTION, {
+        address: mockAddress,
+      });
     }
     if (argv.all) {
       await queue.push(QueueNames.SYNC_BLOCKS, {
