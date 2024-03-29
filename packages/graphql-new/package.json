@@ -20,9 +20,7 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build:lib": "run-s codegen build:sdk",
@@ -41,7 +39,8 @@
     "sync:all": "tsx ./src/cli.ts sync --all",
     "sync:missing": "tsx ./src/cli.ts sync --missing",
     "sync:from-block": "tsx ./src/cli.ts sync --from",
-    "sync:clean": "tsx ./src/cli.ts sync --clean"
+    "sync:clean": "tsx ./src/cli.ts sync --clean",
+    "prepare": "pnpm build:lib"
   },
   "dependencies": {
     "@graphql-tools/load": "8.0.2",
