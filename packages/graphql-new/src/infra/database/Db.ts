@@ -42,6 +42,7 @@ export class Db {
     await migrate(this.connection(), {
       migrationsFolder: path.join(__dirname, '../../../drizzle'),
       migrationsTable: 'migrations',
+      migrationsSchema: 'public',
     });
   }
 
