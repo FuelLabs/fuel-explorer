@@ -29,7 +29,7 @@ export class BlockRepository {
     return BlockEntity.create(first);
   }
 
-  async findMany(params: PaginatorParams) {
+  async findMany(params: PaginatorParams): Promise<BlockEntity[]> {
     const paginator = new Paginator(BlocksTable, params);
     const config = await paginator.getQueryPaginationConfig();
     const results = await paginator.getPaginatedResult(config);
