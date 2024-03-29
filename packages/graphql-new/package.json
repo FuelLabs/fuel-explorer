@@ -25,8 +25,8 @@
     ]
   },
   "scripts": {
-    "build": "run-s codegen build:lib",
-    "build:lib": "tsup",
+    "build:lib": "run-s codegen build:sdk",
+    "build:sdk": "tsup",
     "codegen": "run-s codegen:queries codegen:schema",
     "codegen:queries": "gqlg --schemaFilePath ./src/graphql/schemas/fuelcore.graphql --destDirPath ./src/graphql/generated --ext graphql",
     "codegen:schema": "gql-gen -r dotenv/config --config codegen.ts",
@@ -43,8 +43,6 @@
     "sync:from-block": "tsx ./src/cli.ts sync --from"
   },
   "dependencies": {
-    "express": "5.0.0-beta.1",
-    "npm-run-all": "^4.1.5",
     "@graphql-tools/load": "8.0.2",
     "@graphql-tools/load-files": "7.0.0",
     "@graphql-tools/merge": "9.0.3",
@@ -58,6 +56,7 @@
     "dotenv": "16.4.4",
     "drizzle-orm": "^0.29.3",
     "ethers": "^6.7.1",
+    "express": "5.0.0-beta.1",
     "fuels": "0.74.0",
     "graphql": "^16.8.1",
     "graphql-request": "6.1.0",
@@ -65,6 +64,7 @@
     "graphql-yoga": "5.1.1",
     "inngest": "3.14.0",
     "lodash": "^4.17.21",
+    "npm-run-all": "^4.1.5",
     "pg": "^8.11.3",
     "shallow-equal-object": "1.1.1",
     "tai64": "^1.0.0",

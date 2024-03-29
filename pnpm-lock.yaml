@@ -4945,6 +4945,11 @@ packages:
     resolution: {integrity: sha512-Pd0ABGGf7TM7DioatxWiZneTu+wtOpbwNJIUu7qgpcubNSjaVq9YK9CbSY/oTd9ST3GUfTkTCMfR7+L+MgqHMQ==}
     peerDependencies:
       jest: ^29.6.4
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
     dependencies:
       '@ariakit/test': 0.2.5(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
@@ -14424,6 +14429,9 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true
