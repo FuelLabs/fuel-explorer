@@ -48,7 +48,7 @@ export class SyncAllBlocks {
 
 export const syncAllBlocks = async ({ data }: QueueData<Props>) => {
   try {
-    console.log(`Syncing block page ${data.page}`);
+    console.log(`Syncing block after cursor ${data.after}`);
     const syncAllBlocks = new SyncAllBlocks();
     await syncAllBlocks.execute(data);
   } catch (error) {
