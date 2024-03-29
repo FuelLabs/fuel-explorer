@@ -76,7 +76,10 @@ export class Program {
       // instead of the address
       const mockAddress =
         'fuel1r8c6r80lqd270amxum777vcl72qgprhsf53gt2u5nv4z8ktc8ffs40j74p';
-      await queue.push(QueueNames.SYNC_BRIDGE_TRANSACTION, {
+      await queue.push(QueueNames.SYNC_BRIDGE_FUEL_TO_ETH, {
+        address: mockAddress,
+      });
+      await queue.push(QueueNames.SYNC_BRIDGE_ETH_TO_FUEL, {
         address: mockAddress,
       });
     }

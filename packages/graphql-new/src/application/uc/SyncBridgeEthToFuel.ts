@@ -3,32 +3,28 @@ import { sepolia } from '@wagmi/core/chains';
 
 import { fallback } from 'viem';
 
-import { Address, Provider } from 'fuels';
+import { Address } from 'fuels';
 
 import { BridgeTransactionRepository } from '~/domain/BridgeTransaction/BridgeTransactionRepository';
 
 import { QueueData, type QueueInputs, QueueNames } from '~/infra/queue';
 import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
-import { TxFuelToEthService } from '~/infra/services/TxFuelToEthService';
 
 import { env } from '~/config';
 
 type Props = {
-  fuelToEthService: TxFuelToEthService;
-  ethToFuelService: TxEthToFuelService;
+  service: TxEthToFuelService;
   repository: BridgeTransactionRepository;
 };
 
-type Input = QueueInputs[QueueNames.SYNC_BRIDGE_TRANSACTION];
+type Input = QueueInputs[QueueNames.SYNC_BRIDGE_ETH_TO_FUEL];
 
-export class SyncBridgeTransactions {
-  private fuelToEthService: TxFuelToEthService;
-  private ethToFuelService: TxEthToFuelService;
+export class SyncBridgeEthToFuel {
+  private service: TxEthToFuelService;
   private repository: BridgeTransactionRepository;
 
-  constructor({ fuelToEthService, ethToFuelService, repository }: Props) {
-    this.fuelToEthService = fuelToEthService;
-    this.ethToFuelService = ethToFuelService;
+  constructor({ service, repository }: Props) {
+    this.service = service;
     this.repository = repository;
   }
 
@@ -36,25 +32,18 @@ export class SyncBridgeTransactions {
     const address = Address.fromString(input.address);
     console.log('Syncing bridge transactions', address.bech32Address);
 
-    const [fuelToEthTxs, ethToFuelTxs] = await Promise.all([
-      this.fuelToEthService.fetchTransactions({
-        address,
-      }),
-      this.ethToFuelService.fetchTransactions({
-        address,
-      }),
-    ]);
+    const transactions = await this.service.fetchTransactions({
+      address,
+    });
 
     // @TODO: Remove these logs and save correctly to the repository
-    console.log('fuelToEthTxs = ', fuelToEthTxs.length);
-    console.log('ethToFuelTxs = ', ethToFuelTxs.length, '\n\n');
+    console.log('ethToFuelTxs = ', transactions.length, '\n\n');
 
     await this.repository.insertMany();
   }
 }
 
-export const syncBridgeTransactions = async ({ data }: QueueData<Input>) => {
-  const FUEL_PROVIDER = env.get('FUEL_PROVIDER');
+export const syncBridgeEthToFuel = async ({ data }: QueueData<Input>) => {
   const ETH_CHAIN_NAME = env.get('ETH_CHAIN_NAME');
   const ALCHEMY_ID = env.get('ETH_ALCHEMY_ID');
   const INFURA_ID = env.get('ETH_INFURA_ID');
@@ -77,20 +66,17 @@ export const syncBridgeTransactions = async ({ data }: QueueData<Input>) => {
   try {
     console.log(`Syncing bridge transactions from ${data.address.toString()}`);
 
-    const fuelProvider = await Provider.create(FUEL_PROVIDER);
     const ethPublicClient = getPublicClient(config);
 
-    const fuelToEthService = new TxFuelToEthService(fuelProvider);
-    const ethToFuelService = new TxEthToFuelService(ethPublicClient);
+    const service = new TxEthToFuelService(ethPublicClient);
     const repository = new BridgeTransactionRepository();
 
-    const syncTransactions = new SyncBridgeTransactions({
-      fuelToEthService,
-      ethToFuelService,
+    const sync = new SyncBridgeEthToFuel({
+      service,
       repository,
     });
 
-    return syncTransactions.execute(data);
+    return sync.execute(data);
   } catch (error) {
     console.error(error);
     throw new Error(`Sync bridge transactions ${data.address.toString()}`, {

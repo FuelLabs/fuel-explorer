@@ -1,6 +1,7 @@
 import PgBoss, { Job } from 'pg-boss';
 import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
-import { syncBridgeTransactions } from '~/application/uc/SyncBridgeTransactions';
+import { syncBridgeEthToFuel } from '~/application/uc/SyncBridgeEthToFuel';
+import { syncBridgeFuelToEth } from '~/application/uc/SyncBridgeFuelToEth';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransaction';
 import { env } from '~/config';
@@ -16,7 +17,8 @@ export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync:blocks',
   SYNC_MISSING = 'indexer/sync:missing',
   SYNC_TRANSACTION = 'indexer/sync:transaction',
-  SYNC_BRIDGE_TRANSACTION = 'indexer/sync:bridge-transaction',
+  SYNC_BRIDGE_ETH_TO_FUEL = 'indexer/bridge/sync:eth-to-fuel',
+  SYNC_BRIDGE_FUEL_TO_ETH = 'indexer/bridge/sync:fuel-to-eth',
 }
 
 export type QueueInputs = {
@@ -31,7 +33,10 @@ export type QueueInputs = {
     block: GQLBlock;
     txHash: string;
   };
-  [QueueNames.SYNC_BRIDGE_TRANSACTION]: {
+  [QueueNames.SYNC_BRIDGE_ETH_TO_FUEL]: {
+    address: string;
+  };
+  [QueueNames.SYNC_BRIDGE_FUEL_TO_ETH]: {
     address: string;
   };
 };
@@ -72,7 +77,8 @@ export class Queue extends PgBoss {
       this.work(QueueNames.SYNC_BLOCKS, syncAllBlocks),
       this.work(QueueNames.SYNC_MISSING, syncMissingBlocks),
       this.work(QueueNames.SYNC_TRANSACTION, syncTransactions),
-      this.work(QueueNames.SYNC_BRIDGE_TRANSACTION, syncBridgeTransactions),
+      this.work(QueueNames.SYNC_BRIDGE_ETH_TO_FUEL, syncBridgeEthToFuel),
+      this.work(QueueNames.SYNC_BRIDGE_FUEL_TO_ETH, syncBridgeFuelToEth),
     ]);
     console.log('⚡️ Queue running');
   }
