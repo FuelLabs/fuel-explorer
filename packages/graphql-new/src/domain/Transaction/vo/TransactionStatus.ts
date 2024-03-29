@@ -1,4 +1,4 @@
-import { timestamp } from 'drizzle-orm/pg-core';
+import { text } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
 import {
   GQLTransaction,
@@ -16,7 +16,7 @@ export class TransactionStatus extends ValueObject<Props> {
   }
 
   static type() {
-    return timestamp('timestamp');
+    return text('timestamp');
   }
 
   static create(transaction: GQLTransaction) {
