@@ -20,7 +20,9 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build:lib": "run-s codegen build:sdk",
@@ -86,6 +88,7 @@
     "drizzle-kit": "^0.20.14",
     "gql-generator": "2.0.0",
     "graphql-config": "5.0.3",
+    "tsup": "8.0.2",
     "tsx": "4.7.1",
     "typescript": "^5.3.3"
   }
