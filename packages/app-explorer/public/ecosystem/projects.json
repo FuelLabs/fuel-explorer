@@ -405,16 +405,5 @@
     "twitter": "https://twitter.com/envio_indexer",
     "discord": "https://discord.gg/amcY528zbZ",
     "image": "envio"
-  },
-  {
-    "isLive": false,
-    "name": "Pyth",
-    "url": "https://pyth.network",
-    "tags": ["Oracle"],
-    "description": "Build apps with high-fidelity oracle feeds designed for mission-critical systems.",
-    "github": "https://github.com/pyth-network",
-    "twitter": "https://x.com/PythNetwork",
-    "discord": "https://discord.gg/invite/PythNetwork",
-    "image": "pyth"
   }
 ]
