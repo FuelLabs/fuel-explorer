@@ -19,8 +19,8 @@ export enum QueueNames {
 
 export type QueueInputs = {
   [QueueNames.SYNC_BLOCKS]: {
-    page: number;
-    perPage: number;
+    first: number;
+    after?: number;
     checkNext?: boolean;
   };
   [QueueNames.SYNC_MISSING]: undefined;

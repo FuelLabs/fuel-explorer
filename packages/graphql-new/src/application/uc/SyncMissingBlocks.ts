@@ -5,10 +5,9 @@ export class SyncMissingBlocks {
   async execute() {
     const repo = new BlockRepository();
     const latest = await repo.findLatestAdded();
-    const id = latest?._id.value();
-    const page = id ? Math.ceil(Number(id) / 1000) : 1;
+    const after = latest ? Number(latest.data.header.height) : undefined;
 
-    await queue.push(QueueNames.SYNC_BLOCKS, { page, perPage: 100 });
+    await queue.push(QueueNames.SYNC_BLOCKS, { after, first: 10 });
   }
 }
 
