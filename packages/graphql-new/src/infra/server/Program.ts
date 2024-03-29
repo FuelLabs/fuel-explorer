@@ -67,15 +67,13 @@ export class Program {
     }
     if (argv.all) {
       await queue.push(QueueNames.SYNC_BLOCKS, {
-        page: 1,
-        perPage: PER_PAGE,
+        first: PER_PAGE,
       });
     }
     if (!argv.all && argv.from) {
-      const page = Math.ceil(argv.from / PER_PAGE);
       await queue.push(QueueNames.SYNC_BLOCKS, {
-        page,
-        perPage: PER_PAGE,
+        after: argv.from,
+        first: PER_PAGE,
       });
     }
 
