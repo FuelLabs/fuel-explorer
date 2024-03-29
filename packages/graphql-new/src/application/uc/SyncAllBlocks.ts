@@ -14,14 +14,20 @@ type Props = InngestInputs[InngestEvents.SYNC_BLOCKS];
 
 export class SyncAllBlocks {
   constructor(private step: Step) {}
-  async execute({ page = 1, perPage = 100, checkNext = true }: Props) {
+  async execute({ after = undefined, first = 100, checkNext = true }: Props) {
     const repo = new BlockRepository();
-    const { blocks, hasNext } = await repo.blocksFromNode(page, perPage);
-    const created = await repo.insertMany(blocks);
-    await this.syncTransactions(created);
+    const { blocks, endCursor } = await repo.blocksFromNode(first, after);
+    const hasBlocks = blocks.length > 0;
 
+    if (hasBlocks) {
+      const created = await repo.insertMany(blocks);
+      await this.syncTransactions(created);
+    }
     if (checkNext) {
-      await this.syncNextOrDone(hasNext, page, perPage);
+      // If current page don't have blocks, we keep trying the same page
+      // until we have blocks after the final cursor
+      const cursor = !hasBlocks ? after : endCursor;
+      await this.syncNext(first, cursor);
     }
   }
 
@@ -46,17 +52,11 @@ export class SyncAllBlocks {
     }
   }
 
-  private async syncNextOrDone(
-    hasNext: boolean,
-    page: number,
-    perPage: number,
-  ) {
-    if (hasNext) {
-      await this.step.sendEvent('sync:blocks', {
-        name: InngestEvents.SYNC_BLOCKS,
-        data: { page: page + 1, perPage },
-      });
-    }
+  private async syncNext(first: number, after?: number) {
+    await this.step.sendEvent('sync:blocks', {
+      name: InngestEvents.SYNC_BLOCKS,
+      data: { first, after },
+    });
   }
 }
 
@@ -69,7 +69,7 @@ export const syncAllBlocks = inngest.client().createFunction(
   { event: InngestEvents.SYNC_BLOCKS },
   async ({ step, event: { data }, attempt }) => {
     try {
-      console.log(`Syncing block page ${data.page}`);
+      console.log(`Syncing blocks after ${data.after}`);
       const syncAllBlocks = new SyncAllBlocks(step);
       await syncAllBlocks.execute(data);
     } catch (error) {

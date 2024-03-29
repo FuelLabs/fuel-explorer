@@ -13,8 +13,8 @@ export enum InngestEvents {
 
 export type InngestInputs = {
   [InngestEvents.SYNC_BLOCKS]: {
-    page: number;
-    perPage: number;
+    after?: number;
+    first: number;
     checkNext?: boolean;
   };
   [InngestEvents.SYNC_MISSING]: undefined;

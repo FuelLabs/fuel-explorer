@@ -10,12 +10,11 @@ export class SyncMissingBlocks {
   async execute() {
     const repo = new BlockRepository();
     const latest = await repo.findLatestAdded();
-    const id = latest?._id.value();
-    const page = id ? Math.ceil(Number(id) / 1000) : 1;
+    const after = latest ? Number(latest.data.header.height) : undefined;
 
     await this.step.sendEvent('sync:blocks', {
       name: InngestEvents.SYNC_BLOCKS,
-      data: { page, perPage: 100 },
+      data: { after, first: 5 },
     });
   }
 }

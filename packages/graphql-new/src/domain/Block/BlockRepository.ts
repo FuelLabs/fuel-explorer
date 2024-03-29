@@ -82,18 +82,22 @@ export class BlockRepository {
     });
   }
 
-  async blocksFromNode(page: number, perPage: number) {
+  async blocksFromNode(first: number, after?: number) {
     const { sdk } = new GraphQLSDK();
-    const after = (page - 1) * perPage;
     const { data } = await sdk.blocks({
-      first: page > 1 ? perPage : perPage + 1,
-      ...(page > 1 && { after: String(after) }),
+      first,
+      ...(after ? { after: String(after) } : null),
     });
-
     const blocks = data.blocks.nodes as GQLBlock[];
     const hasNext = data.blocks.pageInfo.hasNextPage;
     const hasPrev = data.blocks.pageInfo.hasPreviousPage;
-    return { blocks, hasNext, hasPrev };
+    const endCursor = Number(data.blocks.pageInfo.endCursor);
+    return {
+      blocks,
+      hasNext,
+      hasPrev,
+      endCursor: endCursor || undefined,
+    };
   }
 
   async latestBlockFromNode() {
