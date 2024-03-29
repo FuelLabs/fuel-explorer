@@ -1,6 +1,6 @@
 import yargs from 'yargs/yargs';
 import { db } from '../database/Db';
-import { inngest } from '../inngest/InngestClient';
+import { QueueNames, queue } from '../queue';
 
 const PER_PAGE = 10;
 
@@ -25,7 +25,12 @@ export class Program {
             .option('from', {
               alias: 'fl',
               type: 'number',
-              default: 1,
+              default: null,
+            })
+            .option('clean', {
+              alias: 'c',
+              type: 'boolean',
+              default: false,
             });
         },
         handler: async (argv) => {
@@ -45,26 +50,36 @@ export class Program {
       .parse();
   }
 
-  async sync(argv: { all: boolean; missing: boolean; from: number }) {
+  async sync(argv: {
+    all: boolean;
+    missing: boolean;
+    from: number | null;
+    clean: boolean;
+  }) {
     await db.connect();
+    await queue.start();
 
+    if (argv.clean) {
+      await queue.deleteAllQueues();
+    }
     if (argv.missing) {
-      await inngest.syncMissing();
+      await queue.push(QueueNames.SYNC_MISSING, undefined);
     }
     if (argv.all) {
-      await inngest.syncBlocks({
+      await queue.push(QueueNames.SYNC_BLOCKS, {
         page: 1,
         perPage: PER_PAGE,
       });
     }
     if (!argv.all && argv.from) {
       const page = Math.ceil(argv.from / PER_PAGE);
-      await inngest.syncBlocks({
+      await queue.push(QueueNames.SYNC_BLOCKS, {
         page,
         perPage: PER_PAGE,
       });
     }
 
+    await queue.stop();
     await db.close();
   }
 }
