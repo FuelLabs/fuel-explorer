@@ -9,4 +9,8 @@ export class BridgeTransactionRepository {
     const results = await paginator.getPaginatedResult(config);
     return results.map((item) => BridgeTransactionEntity.create(item));
   }
+
+  async insertMany() {
+    console.log('@TODO: Implement it');
+  }
 }
