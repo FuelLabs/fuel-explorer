@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@fuels/ui": "workspace:*",
+    "@fuel-explorer/contract-ids": "workspace:*",
     "react": "18.2.0",
     "tailwind-variants": "0.1.20"
   },

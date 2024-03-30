@@ -1,9 +1,8 @@
 import type { GetPublicClientReturnType } from '@wagmi/core';
 
 import { FuelMessagePortal } from '@fuel-bridge/solidity-contracts';
+import { getBridgeSolidityContracts } from '@fuel-explorer/contract-ids';
 import type { Address } from 'fuels';
-
-import { getBridgeSolidityContracts } from 'app-commons';
 
 import { decodeEventLog } from 'viem';
 import { env } from '~/config';
