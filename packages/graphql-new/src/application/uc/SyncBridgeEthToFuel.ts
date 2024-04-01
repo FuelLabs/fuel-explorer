@@ -3,7 +3,7 @@ import { sepolia } from '@wagmi/core/chains';
 
 import { fallback } from 'viem';
 
-import { Address } from 'fuels';
+import { getBridgeSolidityContracts } from '@fuel-explorer/contract-ids';
 
 import { BridgeTransactionRepository } from '~/domain/BridgeTransaction/BridgeTransactionRepository';
 
@@ -28,12 +28,17 @@ export class SyncBridgeEthToFuel {
     this.repository = repository;
   }
 
-  async execute(input: Input) {
-    const address = Address.fromString(input.address);
-    console.log('Syncing bridge transactions', address.bech32Address);
+  async execute(_input: Input) {
+    const contracts = await getBridgeSolidityContracts(
+      env.get('ETH_CHAIN_NAME'),
+      env.get('FUEL_CHAIN_NAME'),
+    );
 
-    const transactions = await this.service.fetchTransactions({
-      address,
+    const transactions = await this.service.getDepositLogs({
+      contract: contracts.FuelMessagePortal,
+      // @TODO: Receive it from the input
+      fromBlock: 5606747n,
+      toBlock: 5606747n,
     });
 
     // @TODO: Remove these logs and save correctly to the repository
