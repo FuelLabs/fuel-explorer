@@ -3,6 +3,16 @@ schema {
 }
 
 # --------------------------------
+# BridgeBlocks
+# --------------------------------
+
+type BridgeBlock {
+  hash: String!
+  number: Int!
+  timestamp: Int!
+}
+
+# --------------------------------
 # BridgeContractLogs
 # --------------------------------
 
@@ -12,7 +22,7 @@ type BridgeContractLog {
   contractId: String!
   sender: String!
   recipient: String!
-  block: Int!
+  blockNumber: Int!
 }
 
 type BridgeContractLogsResult {

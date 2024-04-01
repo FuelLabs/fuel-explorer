@@ -1,21 +1,22 @@
-import { integer } from 'drizzle-orm/pg-core';
+import { bigint } from 'drizzle-orm/pg-core';
+
 import { ValueObject } from '~/core/ValueObject';
 
 interface Props {
   value: number;
 }
 
-export class BridgeContractLogBlock extends ValueObject<Props> {
+export class BridgeBlockNumber extends ValueObject<Props> {
   private constructor(props: Props) {
     super(props);
   }
 
   static type() {
-    return integer('block').notNull();
+    return bigint('number', { mode: 'number' }).notNull();
   }
 
   static create(value: number) {
-    return new BridgeContractLogBlock({ value });
+    return new BridgeBlockNumber({ value });
   }
 
   value() {
