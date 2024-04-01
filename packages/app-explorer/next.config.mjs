@@ -48,6 +48,16 @@ const config = {
         destination: '/ui/index.html',
         permanent: false,
       },
+      {
+        source: '/portal/bridge',
+        destination: '/bridge',
+        permanent: false,
+      },
+      {
+        source: '/portal/ecosystem',
+        destination: '/ecosystem',
+        permanent: false,
+      },
       ...redirects,
     ];
   },
