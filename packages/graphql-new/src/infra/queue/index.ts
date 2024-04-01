@@ -34,7 +34,8 @@ export type QueueInputs = {
     txHash: string;
   };
   [QueueNames.SYNC_BRIDGE_ETH_TO_FUEL]: {
-    address: string;
+    fromBlock: number;
+    toBlock: number;
   };
   [QueueNames.SYNC_BRIDGE_FUEL_TO_ETH]: {
     address: string;

@@ -13,6 +13,7 @@ type TxEthToFuelInputs = {
     toBlock: bigint;
   };
 };
+
 export class TxEthToFuelService {
   private ethPublicClient: GetPublicClientReturnType;
   private abi: ABI | undefined;

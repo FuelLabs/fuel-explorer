@@ -28,7 +28,7 @@ export class SyncBridgeEthToFuel {
     this.repository = repository;
   }
 
-  async execute(_input: Input) {
+  async execute({ fromBlock, toBlock }: Input) {
     const contracts = await getBridgeSolidityContracts(
       env.get('ETH_CHAIN_NAME'),
       env.get('FUEL_CHAIN_NAME'),
@@ -36,9 +36,8 @@ export class SyncBridgeEthToFuel {
 
     const transactions = await this.service.getDepositLogs({
       contract: contracts.FuelMessagePortal,
-      // @TODO: Receive it from the input
-      fromBlock: 5606747n,
-      toBlock: 5606747n,
+      fromBlock: BigInt(fromBlock),
+      toBlock: BigInt(toBlock),
     });
 
     // @TODO: Remove these logs and save correctly to the repository
@@ -69,7 +68,9 @@ export const syncBridgeEthToFuel = async ({ data }: QueueData<Input>) => {
   });
 
   try {
-    console.log(`Syncing bridge transactions from ${data.address.toString()}`);
+    console.log(
+      `Syncing bridge transactions from ${data.fromBlock} to ${data.toBlock}`,
+    );
 
     const ethPublicClient = getPublicClient(config);
 
@@ -84,8 +85,11 @@ export const syncBridgeEthToFuel = async ({ data }: QueueData<Input>) => {
     return sync.execute(data);
   } catch (error) {
     console.error(error);
-    throw new Error(`Sync bridge transactions ${data.address.toString()}`, {
-      cause: error,
-    });
+    throw new Error(
+      `Sync bridge transactions from block ${data.fromBlock} to block ${data.toBlock}`,
+      {
+        cause: error,
+      },
+    );
   }
 };

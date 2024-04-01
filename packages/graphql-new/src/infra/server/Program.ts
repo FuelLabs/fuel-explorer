@@ -72,17 +72,15 @@ export class Program {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
     }
     if (argv.bridge) {
-      // @TODO: We might change it to receive block range as an argument
-      // instead of the address
-      const mockAddress =
-        'fuel1r8c6r80lqd270amxum777vcl72qgprhsf53gt2u5nv4z8ktc8ffs40j74p';
+      const mockBlock = 5606747;
       // @TODO: Maybe we need to clean everything realted to fuel
       // since we have indexed everything from L2 already
       // await queue.push(QueueNames.SYNC_BRIDGE_FUEL_TO_ETH, {
       //   address: mockAddress,
       // });
       await queue.push(QueueNames.SYNC_BRIDGE_ETH_TO_FUEL, {
-        address: mockAddress,
+        fromBlock: mockBlock,
+        toBlock: mockBlock,
       });
     }
     if (argv.all) {
