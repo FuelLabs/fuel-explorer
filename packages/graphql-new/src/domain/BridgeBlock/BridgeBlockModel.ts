@@ -8,11 +8,11 @@ import { BridgeBlockNumber } from './vo/BridgeBlockNumber';
 import { BridgeBlockTimestamp } from './vo/BridgeBlockTimestamp';
 
 export const BridgeBlocksTable = pgTable(
-  'blocks',
+  'bridge_blocks',
   {
     hash: Hash256.type('hash').unique(),
-    number: BridgeBlockNumber.type(),
-    timestamp: BridgeBlockTimestamp.type(),
+    number: BridgeBlockNumber.type().unique(),
+    timestamp: BridgeBlockTimestamp.type().unique(),
   },
   (table) => ({
     bridgeBlockHashIdx: index().on(table.hash),
