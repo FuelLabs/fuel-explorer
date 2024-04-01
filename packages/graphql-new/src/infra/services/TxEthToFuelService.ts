@@ -1,14 +1,20 @@
 import type { GetPublicClientReturnType } from '@wagmi/core';
 
-import { FuelMessagePortal } from '@fuel-bridge/solidity-contracts';
+import { Address } from 'viem';
 
-import { AbiEvent } from 'viem';
+import {
+  FuelChainState,
+  FuelMessagePortal,
+} from '@fuel-bridge/solidity-contracts';
 
-type ABI = (typeof FuelMessagePortal.abi)[number];
+type FuelPortalABI = (typeof FuelMessagePortal.abi)[number];
+type ChainStateABI = (typeof FuelChainState.abi)[number];
+type EventABI = FuelPortalABI | ChainStateABI;
 
 type TxEthToFuelInputs = {
-  getDepositLogs: {
-    contract: `0x${string}`;
+  getLogs: {
+    contracts: Address[];
+    events: EventABI[];
     fromBlock: bigint;
     toBlock: bigint;
   };
@@ -16,36 +22,24 @@ type TxEthToFuelInputs = {
 
 export class TxEthToFuelService {
   private ethPublicClient: GetPublicClientReturnType;
-  private abi: ABI | undefined;
-  private event: Pick<AbiEvent, 'name' | 'type'>;
 
   constructor(ethPublicClient: GetPublicClientReturnType) {
     this.ethPublicClient = ethPublicClient;
-    this.event = {
-      type: 'event',
-      name: 'MessageSent',
-    };
-    this.abi = FuelMessagePortal.abi.find(
-      ({ name, type }) => name === this.event.name && type === this.event.type,
-    );
   }
 
-  async getDepositLogs({
-    contract,
+  async getLogs({
+    contracts,
+    events,
     fromBlock,
     toBlock,
-  }: TxEthToFuelInputs['getDepositLogs']) {
-    const events = await this.ethPublicClient!.getLogs({
-      address: contract,
-      event: {
-        type: this.event.type,
-        name: this.event.name,
-        inputs: this.abi?.inputs ?? [],
-      },
+  }: TxEthToFuelInputs['getLogs']) {
+    const logs = await this.ethPublicClient!.getLogs({
+      address: contracts,
+      events,
       fromBlock,
       toBlock,
     });
 
-    return events;
+    return logs;
   }
 }

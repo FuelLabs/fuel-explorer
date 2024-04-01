@@ -1,6 +1,6 @@
 import { Address, Provider } from 'fuels';
 
-import { BridgeTransactionRepository } from '~/domain/BridgeTransaction/BridgeTransactionRepository';
+import { BridgeContractLogRepository } from '~/domain/BridgeContractLog/BridgeContractLogRepository';
 
 import { QueueData, type QueueInputs, QueueNames } from '~/infra/queue';
 import { TxFuelToEthService } from '~/infra/services/TxFuelToEthService';
@@ -9,14 +9,14 @@ import { env } from '~/config';
 
 type Props = {
   service: TxFuelToEthService;
-  repository: BridgeTransactionRepository;
+  repository: BridgeContractLogRepository;
 };
 
 type Input = QueueInputs[QueueNames.SYNC_BRIDGE_FUEL_TO_ETH];
 
 export class SyncBridgeFuelToEth {
   private service: TxFuelToEthService;
-  private repository: BridgeTransactionRepository;
+  private repository: BridgeContractLogRepository;
 
   constructor({ service, repository }: Props) {
     this.service = service;
@@ -43,7 +43,7 @@ export const syncBridgeFuelToEth = async ({ data }: QueueData<Input>) => {
     const fuelProvider = await Provider.create(FUEL_PROVIDER);
 
     const service = new TxFuelToEthService(fuelProvider);
-    const repository = new BridgeTransactionRepository();
+    const repository = new BridgeContractLogRepository();
 
     const sync = new SyncBridgeFuelToEth({
       service,

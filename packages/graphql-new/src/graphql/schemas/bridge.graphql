@@ -3,23 +3,20 @@ schema {
 }
 
 # --------------------------------
-# BridgeTransactions
+# BridgeContractLogs
 # --------------------------------
 
-enum BridgeTransactionType {
-  deposit
-  withdraw
-}
-
-type BridgeTransaction {
+type BridgeContractLog {
   _id: Int!
-  type: BridgeTransactionType!
-  ethTxId: String!
-  fuelTxId: String!
+  name: String!
+  contractId: String!
+  sender: String!
+  recipient: String!
+  block: Int!
 }
 
-type BridgeTransactionsResult {
-  nodes: [BridgeTransaction!]!
+type BridgeContractLogsResult {
+  nodes: [BridgeContractLog!]!
   pageInfo: PageInfo!
 }
 
@@ -28,11 +25,11 @@ type BridgeTransactionsResult {
 # --------------------------------
 
 type Query {
-  bridgeTransactions(
+  bridgeContractLogs(
     after: String
     before: String
     first: Int
     last: Int
-  ): BridgeTransactionsResult
+  ): BridgeContractLogsResult
 }
 

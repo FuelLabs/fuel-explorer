@@ -1,13 +1,13 @@
 import { Paginator, PaginatorParams } from '~/core/Paginator';
-import { BridgeTransactionsTable } from '~/infra/database/DbSchema';
-import { BridgeTransactionEntity } from './BridgeTransactionEntity';
+import { BridgeContractLogsTable } from '~/infra/database/DbSchema';
+import { BridgeContractLogEntity } from './BridgeContractLogEntity';
 
-export class BridgeTransactionRepository {
+export class BridgeContractLogRepository {
   async findMany(params: PaginatorParams) {
-    const paginator = new Paginator(BridgeTransactionsTable, params);
+    const paginator = new Paginator(BridgeContractLogsTable, params);
     const config = await paginator.getQueryPaginationConfig();
     const results = await paginator.getPaginatedResult(config);
-    return results.map((item) => BridgeTransactionEntity.create(item));
+    return results.map((item) => BridgeContractLogEntity.create(item));
   }
 
   async insertMany() {

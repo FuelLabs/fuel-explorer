@@ -1,35 +1,35 @@
 import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
-import { BridgeTransactionsTable } from '~/domain/BridgeTransaction/BridgeTransactionModel';
-import { BridgeTransactionRepository } from '~/domain/BridgeTransaction/BridgeTransactionRepository';
+import { BridgeContractLogsTable } from '~/domain/BridgeContractLog/BridgeContractLogModel';
+import { BridgeContractLogRepository } from '~/domain/BridgeContractLog/BridgeContractLogRepository';
 import {
-  GQLBridgeTransaction,
-  GQLQueryBridgeTransactionsArgs,
+  GQLBridgeContractLog,
+  GQLQueryBridgeContractLogsArgs,
 } from '~/graphql/generated/sdk';
 
-type Source = GQLBridgeTransaction;
+type Source = GQLBridgeContractLog;
 type Params = {
-  bridgeTransactions: GQLQueryBridgeTransactionsArgs;
+  bridgeContractLogs: GQLQueryBridgeContractLogsArgs;
 };
 
-class BridgeTransactionsResolver extends ResolverAdapter<Source> {
+class BridgeContractLogsResolver extends ResolverAdapter<Source> {
   private constructor(
-    private readonly repository = new BridgeTransactionRepository(),
+    private readonly repository = new BridgeContractLogRepository(),
   ) {
     super();
     this.setResolvers({
       Query: {
-        bridgeTransactions: this.bridgeTransactions.bind(this),
+        bridgeContractLogs: this.bridgeContractLogs.bind(this),
       },
     });
   }
 
   static create() {
-    return new BridgeTransactionsResolver().getResolvers();
+    return new BridgeContractLogsResolver().getResolvers();
   }
 
-  async bridgeTransactions(_: Source, params: Params['bridgeTransactions']) {
-    const paginator = new Paginator(BridgeTransactionsTable, params);
+  async bridgeContractLogs(_: Source, params: Params['bridgeContractLogs']) {
+    const paginator = new Paginator(BridgeContractLogsTable, params);
     const transactions = await this.repository.findMany(params);
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
@@ -43,4 +43,4 @@ class BridgeTransactionsResolver extends ResolverAdapter<Source> {
   }
 }
 
-export default BridgeTransactionsResolver.create();
+export default BridgeContractLogsResolver.create();

@@ -3,9 +3,13 @@ import { sepolia } from '@wagmi/core/chains';
 
 import { fallback } from 'viem';
 
+import {
+  FuelChainState,
+  FuelMessagePortal,
+} from '@fuel-bridge/solidity-contracts';
 import { getBridgeSolidityContracts } from '@fuel-explorer/contract-ids';
 
-import { BridgeTransactionRepository } from '~/domain/BridgeTransaction/BridgeTransactionRepository';
+import { BridgeContractLogRepository } from '~/domain/BridgeContractLog/BridgeContractLogRepository';
 
 import { QueueData, type QueueInputs, QueueNames } from '~/infra/queue';
 import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
@@ -14,14 +18,14 @@ import { env } from '~/config';
 
 type Props = {
   service: TxEthToFuelService;
-  repository: BridgeTransactionRepository;
+  repository: BridgeContractLogRepository;
 };
 
 type Input = QueueInputs[QueueNames.SYNC_BRIDGE_ETH_TO_FUEL];
 
 export class SyncBridgeEthToFuel {
   private service: TxEthToFuelService;
-  private repository: BridgeTransactionRepository;
+  private repository: BridgeContractLogRepository;
 
   constructor({ service, repository }: Props) {
     this.service = service;
@@ -34,8 +38,14 @@ export class SyncBridgeEthToFuel {
       env.get('FUEL_CHAIN_NAME'),
     );
 
-    const transactions = await this.service.getDepositLogs({
-      contract: contracts.FuelMessagePortal,
+    const isEvent = ({ type }: { type: string }) => type === 'event';
+
+    const portalABI = FuelMessagePortal.abi.filter(isEvent);
+    const chainStateABI = FuelChainState.abi.filter(isEvent);
+
+    const transactions = await this.service.getLogs({
+      contracts: [contracts.FuelMessagePortal, contracts.FuelChainState],
+      events: portalABI.concat(chainStateABI),
       fromBlock: BigInt(fromBlock),
       toBlock: BigInt(toBlock),
     });
@@ -75,7 +85,7 @@ export const syncBridgeEthToFuel = async ({ data }: QueueData<Input>) => {
     const ethPublicClient = getPublicClient(config);
 
     const service = new TxEthToFuelService(ethPublicClient);
-    const repository = new BridgeTransactionRepository();
+    const repository = new BridgeContractLogRepository();
 
     const sync = new SyncBridgeEthToFuel({
       service,
