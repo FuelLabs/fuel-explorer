@@ -17,7 +17,6 @@ type MachineContext = {
   fuelProvider?: FuelProvider;
   fuelTxId?: string;
   fuelTxResult?: TransactionResult;
-  fuelLastBlockId?: string;
   nonce?: string;
   messageId?: string;
   messageProof?: MessageProof;
@@ -196,7 +195,6 @@ export const txFuelToEthMachine = createMachine(
                       nonce: ctx.nonce,
                       fuelBlockHashCommited: ctx.fuelBlockHashCommited,
                       fuelProvider: ctx.fuelProvider,
-                      fuelLastBlockId: ctx.fuelLastBlockId,
                     }),
                   },
                   onDone: [
@@ -258,7 +256,6 @@ export const txFuelToEthMachine = createMachine(
                       src: 'getMessageRelayed',
                       data: {
                         input: (ctx: MachineContext) => ({
-                          messageProof: ctx.messageProof,
                           ethPublicClient: ctx.ethPublicClient,
                           messageId: ctx.messageId,
                         }),
