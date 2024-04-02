@@ -7,14 +7,24 @@ schema {
 # --------------------------------
 
 type BridgeBlock {
+  _id: Int!
   hash: String!
   number: Int!
   timestamp: Int!
 }
 
+type BridgeBlocksResult {
+  nodes: [BridgeBlock!]!
+  pageInfo: PageInfo!
+}
+
 # --------------------------------
 # BridgeContractLogs
 # --------------------------------
+
+type BridgeContractLogData {
+  anything: String!
+}
 
 type BridgeContractLog {
   _id: Int!
@@ -22,7 +32,8 @@ type BridgeContractLog {
   contractId: String!
   sender: String!
   recipient: String!
-  blockNumber: Int!
+  blockId: Int!
+  data: BridgeContractLogData!
 }
 
 type BridgeContractLogsResult {
@@ -35,6 +46,12 @@ type BridgeContractLogsResult {
 # --------------------------------
 
 type Query {
+  bridgeBlocks(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): BridgeBlocksResult!
   bridgeContractLogs(
     after: String
     before: String

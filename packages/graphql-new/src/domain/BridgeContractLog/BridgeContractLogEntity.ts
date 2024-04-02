@@ -4,7 +4,8 @@ import { GQLBridgeContractLog } from '~/graphql/generated/sdk';
 
 import { BridgeContractLogItem } from './BridgeContractLogModel';
 
-import { BridgeContractLogBlockNumber } from './vo/BridgeContractLogBlockNumber';
+import { BridgeContractLogBlockID } from './vo/BridgeContractLogBlockID';
+import { BridgeContractLogData } from './vo/BridgeContractLogData';
 import { BridgeContractLogName } from './vo/BridgeContractLogName';
 
 type BridgeContractLogInputProps = {
@@ -13,7 +14,8 @@ type BridgeContractLogInputProps = {
   contractId: Hash256;
   sender: Hash256;
   recipient: Hash256;
-  blockNumber: BridgeContractLogBlockNumber;
+  blockId: BridgeContractLogBlockID;
+  data: BridgeContractLogData;
 };
 
 export class BridgeContractLogEntity extends Entity<
@@ -21,12 +23,15 @@ export class BridgeContractLogEntity extends Entity<
   SerialID
 > {
   static create(log: BridgeContractLogItem) {
+    console.log(log);
+
     const _id = SerialID.create(log._id);
     const name = BridgeContractLogName.create(log.name);
     const contractId = Hash256.create(log.contractId);
     const sender = Hash256.create(log.sender);
     const recipient = Hash256.create(log.recipient);
-    const blockNumber = BridgeContractLogBlockNumber.create(log.blockNumber);
+    const blockId = BridgeContractLogBlockID.create(log.blockId);
+    const data = BridgeContractLogData.create(log.data);
 
     const props: BridgeContractLogInputProps = {
       _id,
@@ -34,7 +39,8 @@ export class BridgeContractLogEntity extends Entity<
       contractId,
       sender,
       recipient,
-      blockNumber,
+      blockId,
+      data,
     };
 
     return new BridgeContractLogEntity(props, _id);
@@ -47,7 +53,8 @@ export class BridgeContractLogEntity extends Entity<
       contractId: Hash256.create(log.contractId).value(),
       sender: Hash256.create(log.sender).value(),
       recipient: Hash256.create(log.recipient).value(),
-      blockNumber: BridgeContractLogBlockNumber.create(log.blockNumber).value(),
+      blockId: BridgeContractLogBlockID.create(log.blockId).value(),
+      data: BridgeContractLogData.create(log.data).value(),
     };
   }
 
@@ -71,18 +78,23 @@ export class BridgeContractLogEntity extends Entity<
     return this.props.recipient.value();
   }
 
-  get blockNumber() {
-    return this.props.blockNumber.value();
+  get blockId() {
+    return this.props.blockId.value();
   }
 
-  toGQLNode(): Omit<GQLBridgeContractLog, '__typename'> {
+  get data() {
+    return this.props.data.value();
+  }
+
+  toGQLNode() {
     return {
       _id: this.id,
       name: this.name,
       contractId: this.contractId,
       sender: this.sender,
       recipient: this.recipient,
-      blockNumber: this.blockNumber,
+      blockId: this.blockId,
+      data: this.data,
     };
   }
 }

@@ -12,7 +12,7 @@ type Params = {
   bridgeContractLogs: GQLQueryBridgeContractLogsArgs;
 };
 
-class BridgeContractLogsResolver extends ResolverAdapter<Source> {
+class BridgeContractLogResolver extends ResolverAdapter<Source> {
   private constructor(
     private readonly repository = new BridgeContractLogRepository(),
   ) {
@@ -25,7 +25,7 @@ class BridgeContractLogsResolver extends ResolverAdapter<Source> {
   }
 
   static create() {
-    return new BridgeContractLogsResolver().getResolvers();
+    return new BridgeContractLogResolver().getResolvers();
   }
 
   async bridgeContractLogs(_: Source, params: Params['bridgeContractLogs']) {
@@ -43,4 +43,4 @@ class BridgeContractLogsResolver extends ResolverAdapter<Source> {
   }
 }
 
-export default BridgeContractLogsResolver.create();
+export default BridgeContractLogResolver.create();
