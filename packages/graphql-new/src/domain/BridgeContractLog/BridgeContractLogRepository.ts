@@ -1,20 +1,23 @@
+import { eq } from 'drizzle-orm';
+import { Log } from 'viem';
+
 import { Paginator, PaginatorParams } from '~/core/Paginator';
+import { db } from '~/infra/database/Db';
 import {
   BridgeBlocksTable,
   BridgeContractLogsTable,
 } from '~/infra/database/DbSchema';
 
-import { eq } from 'drizzle-orm';
 import { BridgeContractLogEntity } from './BridgeContractLogEntity';
 
 export class BridgeContractLogRepository {
-  async findMany(params: PaginatorParams) {
+  async findMany(params: PaginatorParams): Promise<BridgeContractLogEntity[]> {
     const paginator = new Paginator(BridgeContractLogsTable, params);
     const config = await paginator.getQueryPaginationConfig();
     const query = paginator.getPaginatedResult(config);
     const results = await query.innerJoin(
       BridgeBlocksTable,
-      eq(BridgeBlocksTable._id, BridgeContractLogsTable.blockId),
+      eq(BridgeBlocksTable.number, BridgeContractLogsTable.blockNumber),
     );
 
     return results.map((item) =>
@@ -25,8 +28,25 @@ export class BridgeContractLogRepository {
     );
   }
 
-  async insertMany() {
-    console.log('@TODO: Implement it');
-    return Promise.resolve();
+  async insertMany(logs: Log[]) {
+    const items = logs.map((log) => BridgeContractLogEntity.toDBItem(log));
+
+    return await db
+      .connection()
+      .insert(BridgeContractLogsTable)
+      .values(items)
+      .returning();
   }
+
+  // async findLatestAdded(): Promise<BridgeContractLogEntity | null> {
+  //   const latest = await db
+  //     .connection()
+  //     .query.BridgeContractLogsTable.findFirst({
+  //       orderBy: [desc(BridgeContractLogsTable.blockNumber)],
+  //     });
+
+  //   if (!latest) return null;
+
+  //   return BridgeContractLogEntity.create(latest);
+  // }
 }

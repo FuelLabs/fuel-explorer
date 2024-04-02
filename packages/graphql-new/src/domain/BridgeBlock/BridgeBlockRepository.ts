@@ -5,7 +5,7 @@ import { Paginator, PaginatorParams } from '~/core/Paginator';
 import { Block } from 'viem';
 import { db } from '~/infra/database/Db';
 import { BridgeBlockEntity } from './BridgeBlockEntity';
-import { BridgeBlocksTable } from './BridgeBlockModel';
+import { BridgeBlockItem, BridgeBlocksTable } from './BridgeBlockModel';
 
 export class BridgeBlockRepository {
   async findMany(params: PaginatorParams) {
@@ -15,7 +15,7 @@ export class BridgeBlockRepository {
     return results.map((item) => BridgeBlockEntity.create(item));
   }
 
-  async insertOne(block: Block) {
+  async insertOne(block: Block): Promise<BridgeBlockItem[]> {
     const item = BridgeBlockEntity.toDBItem(block);
     return await db
       .connection()
@@ -24,13 +24,12 @@ export class BridgeBlockRepository {
       .returning();
   }
 
-  async findLatestAdded() {
-    const [latest] = await db
-      .connection()
-      .select()
-      .from(BridgeBlocksTable)
-      .orderBy(desc(BridgeBlocksTable.number))
-      .limit(1);
+  async findLatestAdded(): Promise<BridgeBlockEntity | null> {
+    const latest = await db.connection().query.BridgeBlocksTable.findFirst({
+      orderBy: [desc(BridgeBlocksTable.number)],
+    });
+
+    if (!latest) return null;
 
     return BridgeBlockEntity.create(latest);
   }

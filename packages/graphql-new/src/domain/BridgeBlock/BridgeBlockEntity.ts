@@ -1,7 +1,5 @@
-import { Hash256, SerialID } from '~/application/vo';
+import { Hash256, Jsonb, SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-
-import { Jsonb } from '~/application/vo/Jsonb';
 
 import { Block } from 'viem';
 import { BridgeBlockItem } from './BridgeBlockModel';
@@ -36,7 +34,7 @@ export class BridgeBlockEntity extends Entity<BridgeBlockInputProps, SerialID> {
   }
 
   static toDBItem(block: Block): Omit<BridgeBlockItem, '_id'> {
-    if (!block.hash || !block.number || !block.timestamp) {
+    if (!block.hash || typeof block.number !== 'bigint' || !block.timestamp) {
       throw new Error('Block is not safe yet');
     }
 

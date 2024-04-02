@@ -1,4 +1,4 @@
-import { integer } from 'drizzle-orm/pg-core';
+import { bigint } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
 
 import { BridgeBlocksTable } from '~/domain/BridgeBlock/BridgeBlockModel';
@@ -13,9 +13,9 @@ export class BridgeContractLogBlockRef extends ValueObject<Props> {
   }
 
   static type() {
-    return integer('block_id')
+    return bigint('block_number', { mode: 'number' })
       .notNull()
-      .references(() => BridgeBlocksTable._id);
+      .references(() => BridgeBlocksTable.number);
   }
 
   static create(value: number) {

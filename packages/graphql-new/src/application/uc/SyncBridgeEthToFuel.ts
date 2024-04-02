@@ -9,12 +9,11 @@ import {
 } from '@fuel-bridge/solidity-contracts';
 import { getBridgeSolidityContracts } from '@fuel-explorer/contract-ids';
 
-import { BridgeContractLogRepository } from '~/domain/BridgeContractLog/BridgeContractLogRepository';
-
 import { QueueData, type QueueInputs, QueueNames } from '~/infra/queue';
 import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
 
 import { env } from '~/config';
+import { BridgeContractLogRepository } from '~/domain/BridgeContractLog/BridgeContractLogRepository';
 
 type Props = {
   service: TxEthToFuelService;
@@ -23,6 +22,7 @@ type Props = {
 
 type Input = QueueInputs[QueueNames.SYNC_BRIDGE_ETH_TO_FUEL];
 
+// @TODO: This queue will be used only for block sync
 export class SyncBridgeEthToFuel {
   private service: TxEthToFuelService;
   private repository: BridgeContractLogRepository;
@@ -39,7 +39,6 @@ export class SyncBridgeEthToFuel {
     );
 
     const isEvent = ({ type }: { type: string }) => type === 'event';
-
     const portalABI = FuelMessagePortal.abi.filter(isEvent);
     const chainStateABI = FuelChainState.abi.filter(isEvent);
 
@@ -50,10 +49,11 @@ export class SyncBridgeEthToFuel {
       toBlock: BigInt(toBlock),
     });
 
-    // @TODO: Remove these logs and save correctly to the repository
-    console.log('ethToFuelTxs = ', transactions.length, '\n\n');
+    // @TODO: Pre-insert these block numbers if necessary
+    const blockNumbers = transactions.map((tx) => tx.blockNumber);
+    console.log('blockNumbers', blockNumbers);
 
-    await this.repository.insertMany();
+    // await this.repository.insertMany(transactions);
   }
 }
 
@@ -78,15 +78,19 @@ export const syncBridgeEthToFuel = async ({ data }: QueueData<Input>) => {
   });
 
   try {
-    console.log(
-      `Syncing bridge transactions from ${data.fromBlock} to ${data.toBlock}`,
-    );
+    console.log(`Syncing block from ${data.fromBlock} to ${data.toBlock}`);
 
     const ethPublicClient = getPublicClient(config);
 
     const service = new TxEthToFuelService(ethPublicClient);
     const repository = new BridgeContractLogRepository();
 
+    // const block = await ethPublicClient.getBlockNumber();
+    // const latest = await repository.findLatestAdded();
+    // const block = await ethPublicClient.getBlock({
+    //   blockNumber: latest ? BigInt(latest.number + 1) : 0n,
+    // });
+    // const result = await repository.insertOne(block);
     const sync = new SyncBridgeEthToFuel({
       service,
       repository,

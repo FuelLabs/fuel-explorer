@@ -29,7 +29,16 @@ type BridgeBlocksResult {
 # --------------------------------
 
 type BridgeContractLogData {
-  anything: String!
+  eventName: String!
+  address: String!
+  blockHash: String
+  blockNumber: Int
+  data: String!
+  logIndex: Int
+  topics: [String!]!
+  transactionHash: String
+  transactionIndex: Int
+  removed: Boolean
 }
 
 type BridgeContractLog {

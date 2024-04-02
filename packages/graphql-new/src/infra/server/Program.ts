@@ -78,7 +78,7 @@ export class Program {
       //   address: mockAddress,
       // });
       await queue.push(QueueNames.SYNC_BRIDGE_ETH_TO_FUEL, {
-        fromBlock: 5607914,
+        fromBlock: 5607917,
         toBlock: 5607917,
       });
     }

@@ -1,11 +1,10 @@
 import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
 
-import { Hash256, SerialID } from '~/application/vo';
+import { Hash256, Jsonb, SerialID } from '~/application/vo';
 import { BridgeContractLogsTable } from '~/domain/BridgeContractLog/BridgeContractLogModel';
 
 import { Block } from 'viem';
-import { Jsonb } from '~/application/vo/Jsonb';
 import { BridgeBlockNumber } from './vo/BridgeBlockNumber';
 import { BridgeBlockTimestamp } from './vo/BridgeBlockTimestamp';
 
