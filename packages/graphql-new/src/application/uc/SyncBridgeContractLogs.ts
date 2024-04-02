@@ -10,7 +10,7 @@ import {
 } from '@fuel-bridge/solidity-contracts';
 import { getBridgeSolidityContracts } from '@fuel-explorer/contract-ids';
 
-import { QueueData, type QueueInputs, QueueNames } from '~/infra/queue';
+import { QueueData, type QueueInputs, QueueNames, queue } from '~/infra/queue';
 import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
 
 import { env } from '~/config';
@@ -25,6 +25,7 @@ type Props = {
 
 type Input = QueueInputs[QueueNames.SYNC_BRIDGE_CONTRACT_LOGS];
 
+const DEBOUNCE_TIME = 30000;
 export class SyncBridgeContractLogs {
   private service: TxEthToFuelService;
   private logsRepository: BridgeContractLogRepository;
@@ -36,7 +37,7 @@ export class SyncBridgeContractLogs {
     this.blocksRepository = blocksRepository;
   }
 
-  async execute({ fromBlock, toBlock }: Input) {
+  async execute({ initialBlock }: Input) {
     const contracts = await getBridgeSolidityContracts(
       env.get('ETH_CHAIN_NAME'),
       env.get('FUEL_CHAIN_NAME'),
@@ -46,11 +47,51 @@ export class SyncBridgeContractLogs {
     const portalABI = FuelMessagePortal.abi.filter(isEvent);
     const chainStateABI = FuelChainState.abi.filter(isEvent);
 
+    const indexedBlock = await this.blocksRepository.findLatestAdded();
+    const finalizedBlock = await this.service.getBlock('finalized');
+    const finalizedBlockNumber = finalizedBlock?.number as bigint;
+
+    // If queue is requesting an outdated block, we can jump to the next target block
+    if (indexedBlock && indexedBlock.number > initialBlock) {
+      console.log('📥 Jumping to a new block ', indexedBlock.number + 1, '\n');
+
+      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
+        initialBlock: indexedBlock.number + 1,
+      });
+      return;
+    }
+
+    const range = 30n;
+    const fromBlock = BigInt(initialBlock);
+    const target = fromBlock + range;
+    const toBlock =
+      target > finalizedBlockNumber ? finalizedBlockNumber : target;
+
+    // We're up to date, keep waiting for at least 1 finalized blocks
+    if (fromBlock >= toBlock) {
+      console.log('👀 Waiting for new finalized blocks');
+      console.log('Latest indexed block number = ', indexedBlock?.number);
+      console.log(
+        'Latest finalized block number = ',
+        finalizedBlockNumber,
+        '\n',
+      );
+
+      // Wait 30 seconds
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_TIME));
+      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
+        initialBlock: Number(fromBlock),
+      });
+      return;
+    }
+
+    console.log('🔄 Fetching range from [', fromBlock, '] to [', toBlock, ']');
+
     const logs = await this.service.getLogs({
       contracts: [contracts.FuelMessagePortal, contracts.FuelChainState],
       events: portalABI.concat(chainStateABI),
-      fromBlock: BigInt(fromBlock),
-      toBlock: BigInt(toBlock),
+      fromBlock,
+      toBlock,
     });
 
     const blockNumbers = uniq(logs.map((tx) => tx.blockNumber));
@@ -59,9 +100,16 @@ export class SyncBridgeContractLogs {
     try {
       await this.blocksRepository.insertMany(blocks);
       await this.logsRepository.insertMany(logs);
-      console.log('✅ Bridge block and logs inserted');
-      console.log(blocks.length, ' blocks');
-      console.log(logs.length, ' logs');
+
+      console.log('📥 Range synced');
+      console.log(blocks.length, 'new blocks');
+      console.log(logs.length, 'new logs\n');
+
+      // Wait 30 seconds
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_TIME));
+      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
+        initialBlock: Number(toBlock) + 1,
+      });
     } catch (error) {
       console.error(error);
       throw new Error('Sync bridge transactions from block and logs');
@@ -90,7 +138,7 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   });
 
   try {
-    console.log(`Syncing block from ${data.fromBlock} to ${data.toBlock}`);
+    console.log(`\n🔎 Syncing contract logs from [${data.initialBlock}] block`);
 
     const ethPublicClient = getPublicClient(config);
 
@@ -108,7 +156,7 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   } catch (error) {
     console.error(error);
     throw new Error(
-      `Sync bridge transactions from block ${data.fromBlock} to block ${data.toBlock}`,
+      `Failed to sync bridge transactions from block ${data.initialBlock}`,
       {
         cause: error,
       },

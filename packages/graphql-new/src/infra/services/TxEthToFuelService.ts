@@ -1,4 +1,4 @@
-import type { AbiEvent, Address, Block, PublicClient } from 'viem';
+import type { AbiEvent, Address, Block, BlockTag, PublicClient } from 'viem';
 
 import {
   FuelChainState,
@@ -25,8 +25,11 @@ export class TxEthToFuelService {
     this.ethPublicClient = ethPublicClient;
   }
 
-  async getBlockNumber() {
-    const block = await this.ethPublicClient.getBlockNumber();
+  async getBlock(blockTag: BlockTag = 'finalized') {
+    const block = await this.ethPublicClient.getBlock({
+      blockTag,
+    });
+
     return block;
   }
 

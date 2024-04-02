@@ -32,8 +32,7 @@ export type QueueInputs = {
     txHash: string;
   };
   [QueueNames.SYNC_BRIDGE_CONTRACT_LOGS]: {
-    fromBlock: number;
-    toBlock: number;
+    initialBlock: number;
   };
 };
 

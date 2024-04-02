@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 
 import { Paginator, PaginatorParams } from '~/core/Paginator';
 import { db } from '~/infra/database/Db';
@@ -51,15 +51,20 @@ export class BridgeContractLogRepository {
       .returning();
   }
 
-  // async findLatestAdded(): Promise<BridgeContractLogEntity | null> {
-  //   const latest = await db
-  //     .connection()
-  //     .query.BridgeContractLogsTable.findFirst({
-  //       orderBy: [desc(BridgeContractLogsTable.blockNumber)],
-  //     });
+  async findLatestAdded(): Promise<BridgeContractLogEntity | null> {
+    const latest = await db
+      .connection()
+      .query.BridgeContractLogsTable.findFirst({
+        orderBy: [desc(BridgeContractLogsTable.blockNumber)],
+        with: {
+          block: true,
+        },
+      });
 
-  //   if (!latest) return null;
+    if (!latest) return null;
 
-  //   return BridgeContractLogEntity.create(latest);
-  // }
+    const { block, ...log } = latest;
+
+    return BridgeContractLogEntity.create(log, block);
+  }
 }
