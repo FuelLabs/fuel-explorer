@@ -1,5 +1,8 @@
 export { BlocksTable } from '~/domain/Block/BlockModel';
-export { BridgeBlocksTable } from '~/domain/BridgeBlock/BridgeBlockModel';
+export {
+  BridgeBlocksTable,
+  BridgeBlocksRelations,
+} from '~/domain/BridgeBlock/BridgeBlockModel';
 export {
   BridgeContractLogsTable,
   BridgeContractsLogsRelations,
