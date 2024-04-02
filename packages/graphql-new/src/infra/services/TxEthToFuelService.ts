@@ -1,6 +1,4 @@
-import type { GetPublicClientReturnType } from '@wagmi/core';
-
-import { Address } from 'viem';
+import type { Address, Block, PublicClient } from 'viem';
 
 import {
   FuelChainState,
@@ -21,10 +19,25 @@ type TxEthToFuelInputs = {
 };
 
 export class TxEthToFuelService {
-  private ethPublicClient: GetPublicClientReturnType;
+  private ethPublicClient: PublicClient;
 
-  constructor(ethPublicClient: GetPublicClientReturnType) {
+  constructor(ethPublicClient: PublicClient) {
     this.ethPublicClient = ethPublicClient;
+  }
+
+  async getBlockNumber() {
+    const block = await this.ethPublicClient.getBlockNumber();
+    return block;
+  }
+
+  async getBlocks(blockNumbers: bigint[]): Promise<Block[]> {
+    const blocks = await Promise.all(
+      blockNumbers.map((blockNumber) =>
+        this.ethPublicClient.getBlock({ blockNumber }),
+      ),
+    );
+
+    return blocks;
   }
 
   async getLogs({
@@ -33,7 +46,7 @@ export class TxEthToFuelService {
     fromBlock,
     toBlock,
   }: TxEthToFuelInputs['getLogs']) {
-    const logs = await this.ethPublicClient!.getLogs({
+    const logs = await this.ethPublicClient.getLogs({
       address: contracts,
       events,
       fromBlock,

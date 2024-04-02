@@ -51,7 +51,9 @@ export class SyncBridgeEthToFuel {
 
     // @TODO: Pre-insert these block numbers if necessary
     const blockNumbers = transactions.map((tx) => tx.blockNumber);
-    console.log('blockNumbers', blockNumbers);
+    const blocks = await this.service.getBlocks(blockNumbers);
+
+    console.log('blocks', blocks);
 
     // await this.repository.insertMany(transactions);
   }
