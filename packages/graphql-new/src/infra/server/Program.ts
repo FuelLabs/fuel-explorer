@@ -73,8 +73,8 @@ export class Program {
     }
     if (argv.bridge) {
       await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
-        fromBlock: 5607917,
-        toBlock: 5607917,
+        fromBlock: 5615986,
+        toBlock: 5615986,
       });
     }
     if (argv.all) {

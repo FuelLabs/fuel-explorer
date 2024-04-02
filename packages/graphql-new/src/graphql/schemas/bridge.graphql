@@ -47,6 +47,7 @@ type BridgeContractLog {
   contractId: String!
   sender: String!
   recipient: String!
+  logIndex: Int!
   block: BridgeBlock!
   data: BridgeContractLogData!
 }

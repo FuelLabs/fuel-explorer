@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { Log } from 'viem';
 
 import { Paginator, PaginatorParams } from '~/core/Paginator';
@@ -35,6 +35,19 @@ export class BridgeContractLogRepository {
       .connection()
       .insert(BridgeContractLogsTable)
       .values(items)
+      .onConflictDoUpdate({
+        target: [
+          BridgeContractLogsTable.logIndex,
+          BridgeContractLogsTable.blockNumber,
+        ],
+        set: {
+          name: sql.raw('excluded.name'),
+          contractId: sql.raw('excluded.contract_id'),
+          sender: sql.raw('excluded.sender'),
+          recipient: sql.raw('excluded.recipient'),
+          data: sql.raw('excluded.data'),
+        },
+      })
       .returning();
   }
 

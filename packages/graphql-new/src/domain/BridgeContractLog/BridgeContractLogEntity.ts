@@ -7,6 +7,7 @@ import { BridgeContractLogItem } from './BridgeContractLogModel';
 
 import { BridgeBlockItem } from '../BridgeBlock/BridgeBlockModel';
 import { BridgeContractLogBlockRef } from '../BridgeBlock/vo/BridgeBlockRef';
+import { BridgeContractLogIndex } from './vo/BridgeContractLogIndex';
 import { BridgeContractLogName } from './vo/BridgeContractLogName';
 
 type BridgeContractLogInputProps = {
@@ -15,6 +16,7 @@ type BridgeContractLogInputProps = {
   contractId: Hash256;
   sender: Hash256;
   recipient: Hash256;
+  logIndex: BridgeContractLogIndex;
   block: BridgeBlockItem;
   data: Jsonb<Log>;
 };
@@ -32,6 +34,7 @@ export class BridgeContractLogEntity extends Entity<
     const contractId = Hash256.create(log.contractId);
     const sender = Hash256.create(log.sender);
     const recipient = Hash256.create(log.recipient);
+    const logIndex = BridgeContractLogIndex.create(log.logIndex);
     const data = Jsonb.create<Log>(log.data);
 
     const props: BridgeContractLogInputProps = {
@@ -40,6 +43,7 @@ export class BridgeContractLogEntity extends Entity<
       contractId,
       sender,
       recipient,
+      logIndex,
       block,
       data,
     };
@@ -54,6 +58,7 @@ export class BridgeContractLogEntity extends Entity<
       contractId: Hash256.create(log.address).value(),
       sender: Hash256.create(log.args.sender).value(),
       recipient: Hash256.create(log.args.recipient).value(),
+      logIndex: BridgeContractLogIndex.create(log.logIndex).value(),
       blockNumber: BridgeContractLogBlockRef.create(log.blockNumber).value(),
       data: Jsonb.create(log).value(),
     };
@@ -79,6 +84,10 @@ export class BridgeContractLogEntity extends Entity<
     return this.props.recipient.value();
   }
 
+  get logIndex() {
+    return this.props.logIndex.value();
+  }
+
   get block() {
     return this.props.block;
   }
@@ -94,6 +103,7 @@ export class BridgeContractLogEntity extends Entity<
       contractId: this.contractId,
       sender: this.sender,
       recipient: this.recipient,
+      logIndex: this.logIndex,
       block: this.block,
       data: this.data,
     };
