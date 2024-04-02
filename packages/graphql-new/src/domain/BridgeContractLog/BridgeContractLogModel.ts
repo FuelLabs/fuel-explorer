@@ -4,7 +4,7 @@ import { index, pgTable } from 'drizzle-orm/pg-core';
 import { Hash256, SerialID } from '~/application/vo';
 
 import { BridgeBlocksTable } from '../BridgeBlock/BridgeBlockModel';
-import { BridgeContractLogBlockID } from './vo/BridgeContractLogBlockID';
+import { BridgeContractLogBlockRef } from '../BridgeBlock/vo/BridgeBlockRef';
 import { BridgeContractLogData } from './vo/BridgeContractLogData';
 import { BridgeContractLogName } from './vo/BridgeContractLogName';
 
@@ -16,7 +16,7 @@ export const BridgeContractLogsTable = pgTable(
     contractId: Hash256.type('contract_id'),
     sender: Hash256.type('sender'),
     recipient: Hash256.type('recipient'),
-    blockId: BridgeContractLogBlockID.type(),
+    blockId: BridgeContractLogBlockRef.type(),
     data: BridgeContractLogData.type(),
   },
   (table) => ({
@@ -30,7 +30,6 @@ export const BridgeContractsLogsRelations = relations(
     block: one(BridgeBlocksTable, {
       fields: [BridgeContractLogsTable.blockId],
       references: [BridgeBlocksTable._id],
-      relationName: 'bridge_contract_log_block',
     }),
   }),
 );

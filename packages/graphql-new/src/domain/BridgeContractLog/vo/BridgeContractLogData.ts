@@ -1,10 +1,9 @@
 import { jsonb } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
+import { GQLBridgeContractLogData } from '~/graphql/generated/sdk';
 
 interface Props {
-  value: {
-    anything: string;
-  };
+  value: GQLBridgeContractLogData;
 }
 
 export class BridgeContractLogData extends ValueObject<Props> {
@@ -13,13 +12,11 @@ export class BridgeContractLogData extends ValueObject<Props> {
   }
 
   static type() {
-    return jsonb('data').notNull().$type<Props['value']>();
+    return jsonb('data').notNull().$type<GQLBridgeContractLogData>();
   }
 
-  static create(data: Props['value']) {
-    return new BridgeContractLogData({
-      value: data,
-    });
+  static create(value: GQLBridgeContractLogData) {
+    return new BridgeContractLogData({ value });
   }
 
   value() {

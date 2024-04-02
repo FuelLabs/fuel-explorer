@@ -1,12 +1,13 @@
 import { integer } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
+
 import { BridgeBlocksTable } from '~/domain/BridgeBlock/BridgeBlockModel';
 
 interface Props {
   value: number;
 }
 
-export class BridgeContractLogBlockID extends ValueObject<Props> {
+export class BridgeContractLogBlockRef extends ValueObject<Props> {
   private constructor(props: Props) {
     super(props);
   }
@@ -18,7 +19,7 @@ export class BridgeContractLogBlockID extends ValueObject<Props> {
   }
 
   static create(value: number) {
-    return new BridgeContractLogBlockID({ value });
+    return new BridgeContractLogBlockRef({ value });
   }
 
   value() {

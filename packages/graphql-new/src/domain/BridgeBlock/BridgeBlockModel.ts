@@ -26,9 +26,7 @@ export const BridgeBlocksTable = pgTable(
 export const BridgeBlocksRelations = relations(
   BridgeBlocksTable,
   ({ many }) => ({
-    contractLogs: many(BridgeContractLogsTable, {
-      relationName: 'bridge_block_contract_logs',
-    }),
+    contractLogs: many(BridgeContractLogsTable),
   }),
 );
 

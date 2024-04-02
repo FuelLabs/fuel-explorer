@@ -1,13 +1,28 @@
 import { Paginator, PaginatorParams } from '~/core/Paginator';
-import { BridgeContractLogsTable } from '~/infra/database/DbSchema';
+import {
+  BridgeBlocksTable,
+  BridgeContractLogsTable,
+} from '~/infra/database/DbSchema';
+
+import { eq } from 'drizzle-orm';
 import { BridgeContractLogEntity } from './BridgeContractLogEntity';
 
 export class BridgeContractLogRepository {
   async findMany(params: PaginatorParams) {
     const paginator = new Paginator(BridgeContractLogsTable, params);
     const config = await paginator.getQueryPaginationConfig();
-    const results = await paginator.getPaginatedResult(config);
-    return results.map((item) => BridgeContractLogEntity.create(item));
+    const query = paginator.getPaginatedResult(config);
+    const results = await query.innerJoin(
+      BridgeBlocksTable,
+      eq(BridgeBlocksTable._id, BridgeContractLogsTable.blockId),
+    );
+
+    return results.map((item) =>
+      BridgeContractLogEntity.create(
+        item.bridge_contract_logs,
+        item.bridge_blocks,
+      ),
+    );
   }
 
   async insertMany() {

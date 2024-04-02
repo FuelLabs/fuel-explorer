@@ -32,7 +32,7 @@ type BridgeContractLog {
   contractId: String!
   sender: String!
   recipient: String!
-  blockId: Int!
+  block: BridgeBlock!
   data: BridgeContractLogData!
 }
 
