@@ -4,7 +4,7 @@ import { ValueObject } from '~/core/ValueObject';
 import { BridgeBlocksTable } from '~/domain/BridgeBlock/BridgeBlockModel';
 
 interface Props {
-  value: number;
+  value: bigint;
 }
 
 export class BridgeContractLogBlockRef extends ValueObject<Props> {
@@ -18,11 +18,11 @@ export class BridgeContractLogBlockRef extends ValueObject<Props> {
       .references(() => BridgeBlocksTable.number);
   }
 
-  static create(value: number) {
+  static create(value: bigint) {
     return new BridgeContractLogBlockRef({ value });
   }
 
   value() {
-    return this.props.value;
+    return Number(this.props.value);
   }
 }

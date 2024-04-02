@@ -1,5 +1,4 @@
 import { eq, sql } from 'drizzle-orm';
-import { Log } from 'viem';
 
 import { Paginator, PaginatorParams } from '~/core/Paginator';
 import { db } from '~/infra/database/Db';
@@ -9,6 +8,7 @@ import {
 } from '~/infra/database/DbSchema';
 
 import { BridgeContractLogEntity } from './BridgeContractLogEntity';
+import { Log } from './vo/BridgeContractLogData';
 
 export class BridgeContractLogRepository {
   async findMany(params: PaginatorParams): Promise<BridgeContractLogEntity[]> {

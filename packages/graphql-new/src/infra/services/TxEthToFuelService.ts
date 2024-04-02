@@ -1,4 +1,4 @@
-import type { Address, Block, PublicClient } from 'viem';
+import type { AbiEvent, Address, Block, PublicClient } from 'viem';
 
 import {
   FuelChainState,
@@ -46,9 +46,15 @@ export class TxEthToFuelService {
     fromBlock,
     toBlock,
   }: TxEthToFuelInputs['getLogs']) {
-    const logs = await this.ethPublicClient.getLogs({
+    const logs = await this.ethPublicClient.getLogs<
+      undefined,
+      AbiEvent[],
+      false,
+      bigint,
+      bigint
+    >({
       address: contracts,
-      events,
+      events: events as AbiEvent[],
       fromBlock,
       toBlock,
     });

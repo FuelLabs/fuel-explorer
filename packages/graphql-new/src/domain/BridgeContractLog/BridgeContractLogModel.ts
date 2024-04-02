@@ -1,12 +1,11 @@
 import { relations } from 'drizzle-orm';
 import { index, pgTable, unique } from 'drizzle-orm/pg-core';
 
-import { Log } from 'viem';
-
-import { Hash256, Jsonb, SerialID } from '~/application/vo';
+import { Hash256, SerialID } from '~/application/vo';
 
 import { BridgeBlocksTable } from '../BridgeBlock/BridgeBlockModel';
 import { BridgeContractLogBlockRef } from '../BridgeBlock/vo/BridgeBlockRef';
+import { BridgeContractLogData } from './vo/BridgeContractLogData';
 import { BridgeContractLogIndex } from './vo/BridgeContractLogIndex';
 import { BridgeContractLogName } from './vo/BridgeContractLogName';
 
@@ -20,7 +19,7 @@ export const BridgeContractLogsTable = pgTable(
     recipient: Hash256.type('recipient'),
     logIndex: BridgeContractLogIndex.type(),
     blockNumber: BridgeContractLogBlockRef.type(),
-    data: Jsonb.type<Log>('data'),
+    data: BridgeContractLogData.type(),
   },
   (table) => ({
     contractLogIdIdx: index().on(table._id),
