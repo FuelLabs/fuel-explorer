@@ -6,11 +6,17 @@ schema {
 # BridgeBlocks
 # --------------------------------
 
+type BridgeBlockData {
+  nonce: String
+  number: Int
+}
+
 type BridgeBlock {
   _id: Int!
   hash: String!
   number: Int!
   timestamp: Int!
+  data: BridgeBlockData!
 }
 
 type BridgeBlocksResult {

@@ -4,6 +4,8 @@ import { index, pgTable } from 'drizzle-orm/pg-core';
 import { Hash256, SerialID } from '~/application/vo';
 import { BridgeContractLogsTable } from '~/domain/BridgeContractLog/BridgeContractLogModel';
 
+import { Block } from 'viem';
+import { Jsonb } from '~/application/vo/Jsonb';
 import { BridgeBlockNumber } from './vo/BridgeBlockNumber';
 import { BridgeBlockTimestamp } from './vo/BridgeBlockTimestamp';
 
@@ -14,6 +16,7 @@ export const BridgeBlocksTable = pgTable(
     hash: Hash256.type('hash').unique(),
     number: BridgeBlockNumber.type().unique(),
     timestamp: BridgeBlockTimestamp.type().unique(),
+    data: Jsonb.type<Block>('data'),
   },
   (table) => ({
     blockIdIdx: index().on(table._id),

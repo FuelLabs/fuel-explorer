@@ -3,7 +3,7 @@ import { bigint } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
 
 interface Props {
-  value: number;
+  value: bigint;
 }
 
 export class BridgeBlockTimestamp extends ValueObject<Props> {
@@ -15,11 +15,11 @@ export class BridgeBlockTimestamp extends ValueObject<Props> {
     return bigint('timestamp', { mode: 'number' }).notNull();
   }
 
-  static create(timestamp: number) {
+  static create(timestamp: bigint) {
     return new BridgeBlockTimestamp({ value: timestamp });
   }
 
   value() {
-    return this.props.value;
+    return Number(this.props.value);
   }
 }
