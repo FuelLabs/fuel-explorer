@@ -1,7 +1,8 @@
 import { http, createConfig, getPublicClient } from '@wagmi/core';
 import { sepolia } from '@wagmi/core/chains';
-
 import { fallback } from 'viem';
+
+import { uniq } from 'lodash';
 
 import {
   FuelChainState,
@@ -13,23 +14,26 @@ import { QueueData, type QueueInputs, QueueNames } from '~/infra/queue';
 import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
 
 import { env } from '~/config';
+import { BridgeBlockRepository } from '~/domain/BridgeBlock/BridgeBlockRepository';
 import { BridgeContractLogRepository } from '~/domain/BridgeContractLog/BridgeContractLogRepository';
 
 type Props = {
   service: TxEthToFuelService;
-  repository: BridgeContractLogRepository;
+  logsRepository: BridgeContractLogRepository;
+  blocksRepository: BridgeBlockRepository;
 };
 
-type Input = QueueInputs[QueueNames.SYNC_BRIDGE_ETH_TO_FUEL];
+type Input = QueueInputs[QueueNames.SYNC_BRIDGE_CONTRACT_LOGS];
 
-// @TODO: This queue will be used only for block sync
-export class SyncBridgeEthToFuel {
+export class SyncBridgeContractLogs {
   private service: TxEthToFuelService;
-  private repository: BridgeContractLogRepository;
+  private logsRepository: BridgeContractLogRepository;
+  private blocksRepository: BridgeBlockRepository;
 
-  constructor({ service, repository }: Props) {
+  constructor({ service, logsRepository, blocksRepository }: Props) {
     this.service = service;
-    this.repository = repository;
+    this.logsRepository = logsRepository;
+    this.blocksRepository = blocksRepository;
   }
 
   async execute({ fromBlock, toBlock }: Input) {
@@ -42,24 +46,30 @@ export class SyncBridgeEthToFuel {
     const portalABI = FuelMessagePortal.abi.filter(isEvent);
     const chainStateABI = FuelChainState.abi.filter(isEvent);
 
-    const transactions = await this.service.getLogs({
+    const logs = await this.service.getLogs({
       contracts: [contracts.FuelMessagePortal, contracts.FuelChainState],
       events: portalABI.concat(chainStateABI),
       fromBlock: BigInt(fromBlock),
       toBlock: BigInt(toBlock),
     });
 
-    // @TODO: Pre-insert these block numbers if necessary
-    const blockNumbers = transactions.map((tx) => tx.blockNumber);
+    const blockNumbers = uniq(logs.map((tx) => tx.blockNumber));
     const blocks = await this.service.getBlocks(blockNumbers);
 
-    console.log('blocks', blocks);
-
-    // await this.repository.insertMany(transactions);
+    try {
+      await this.blocksRepository.insertMany(blocks);
+      await this.logsRepository.insertMany(logs);
+      console.log('✅ Bridge block and logs inserted');
+      console.log(blocks.length, ' blocks');
+      console.log(logs.length, ' logs');
+    } catch (error) {
+      console.error(error);
+      throw new Error('Sync bridge transactions from block and logs');
+    }
   }
 }
 
-export const syncBridgeEthToFuel = async ({ data }: QueueData<Input>) => {
+export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   const ETH_CHAIN_NAME = env.get('ETH_CHAIN_NAME');
   const ALCHEMY_ID = env.get('ETH_ALCHEMY_ID');
   const INFURA_ID = env.get('ETH_INFURA_ID');
@@ -85,17 +95,13 @@ export const syncBridgeEthToFuel = async ({ data }: QueueData<Input>) => {
     const ethPublicClient = getPublicClient(config);
 
     const service = new TxEthToFuelService(ethPublicClient);
-    const repository = new BridgeContractLogRepository();
+    const logsRepository = new BridgeContractLogRepository();
+    const blocksRepository = new BridgeBlockRepository();
 
-    // const block = await ethPublicClient.getBlockNumber();
-    // const latest = await repository.findLatestAdded();
-    // const block = await ethPublicClient.getBlock({
-    //   blockNumber: latest ? BigInt(latest.number + 1) : 0n,
-    // });
-    // const result = await repository.insertOne(block);
-    const sync = new SyncBridgeEthToFuel({
+    const sync = new SyncBridgeContractLogs({
       service,
-      repository,
+      logsRepository,
+      blocksRepository,
     });
 
     return sync.execute(data);

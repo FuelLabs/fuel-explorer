@@ -1,4 +1,4 @@
-import { desc } from 'drizzle-orm';
+import { desc, sql } from 'drizzle-orm';
 
 import { Paginator, PaginatorParams } from '~/core/Paginator';
 
@@ -21,6 +21,22 @@ export class BridgeBlockRepository {
       .connection()
       .insert(BridgeBlocksTable)
       .values(item)
+      .returning();
+  }
+
+  async insertMany(blocks: Block[]) {
+    const items = blocks.map((block) => BridgeBlockEntity.toDBItem(block));
+
+    return await db
+      .connection()
+      .insert(BridgeBlocksTable)
+      .values(items)
+      .onConflictDoUpdate({
+        target: BridgeBlocksTable.number,
+        set: {
+          data: sql.raw('excluded.data'),
+        },
+      })
       .returning();
   }
 

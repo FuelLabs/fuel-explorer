@@ -72,12 +72,7 @@ export class Program {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
     }
     if (argv.bridge) {
-      // @TODO: Maybe we need to clean everything realted to fuel
-      // since we have indexed everything from L2 already
-      // await queue.push(QueueNames.SYNC_BRIDGE_FUEL_TO_ETH, {
-      //   address: mockAddress,
-      // });
-      await queue.push(QueueNames.SYNC_BRIDGE_ETH_TO_FUEL, {
+      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
         fromBlock: 5607917,
         toBlock: 5607917,
       });
