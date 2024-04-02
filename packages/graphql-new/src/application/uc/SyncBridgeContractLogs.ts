@@ -53,7 +53,11 @@ export class SyncBridgeContractLogs {
 
     // If queue is requesting an outdated block, we can jump to the next target block
     if (indexedBlock && indexedBlock.number > initialBlock) {
-      console.log('📥 Jumping to a new block ', indexedBlock.number + 1, '\n');
+      console.log(
+        '📥 Jumping to the latest indexed block [',
+        indexedBlock.number + 1,
+        ']\n',
+      );
 
       await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
         initialBlock: indexedBlock.number + 1,
@@ -70,11 +74,15 @@ export class SyncBridgeContractLogs {
     // We're up to date, keep waiting for at least 1 finalized blocks
     if (fromBlock >= toBlock) {
       console.log('👀 Waiting for new finalized blocks');
-      console.log('Latest indexed block number = ', indexedBlock?.number);
       console.log(
-        'Latest finalized block number = ',
+        'Latest indexed block number was [',
+        indexedBlock?.number,
+        ']',
+      );
+      console.log(
+        'Latest finalized block number was [',
         finalizedBlockNumber,
-        '\n',
+        ']\n',
       );
 
       // Wait 30 seconds
