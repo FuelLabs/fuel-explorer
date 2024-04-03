@@ -11,7 +11,10 @@ import {
 import { getBridgeSolidityContracts } from '@fuel-explorer/contract-ids';
 
 import { QueueData, type QueueInputs, QueueNames, queue } from '~/infra/queue';
-import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
+import {
+  type EventABI,
+  TxEthToFuelService,
+} from '~/infra/services/TxEthToFuelService';
 
 import { env } from '~/config';
 import { BridgeBlockRepository } from '~/domain/BridgeBlock/BridgeBlockRepository';
@@ -25,104 +28,113 @@ type Props = {
 
 type Input = QueueInputs[QueueNames.SYNC_BRIDGE_CONTRACT_LOGS];
 
-const DEBOUNCE_TIME = 30000;
+// in seconds, how much seconds we're going to wait before check the next finalized block again
+const DEBOUNCE_TIME = 10;
+
+// We need to be careful with Alchemy/Infura API limits here
+const BLOCKS_PER_SYNC = 10;
+
 export class SyncBridgeContractLogs {
   private service: TxEthToFuelService;
   private logsRepository: BridgeContractLogRepository;
   private blocksRepository: BridgeBlockRepository;
+  private events: EventABI[];
 
   constructor({ service, logsRepository, blocksRepository }: Props) {
     this.service = service;
     this.logsRepository = logsRepository;
     this.blocksRepository = blocksRepository;
+
+    const portalABI = FuelMessagePortal.abi.filter(this.isEvent);
+    const chainStateABI = FuelChainState.abi.filter(this.isEvent);
+
+    this.events = portalABI.concat(chainStateABI);
   }
 
-  async execute({ initialBlock }: Input) {
+  async execute({ fromBlock, toBlock }: Input) {
+    // Identifiy current finalized and latest block
+    const safeBlock = await this.service.getBlock('safe');
+    const latestBlock = await this.service.getBlock('latest');
+
+    if (
+      !safeBlock ||
+      !latestBlock ||
+      typeof safeBlock.number !== 'bigint' ||
+      typeof latestBlock.number !== 'bigint'
+    ) {
+      console.log('📦 No blocks found. Try again.');
+      return;
+    }
+
+    // Sync the logs
+    try {
+      await this.syncLogs(fromBlock, toBlock);
+    } catch (e) {
+      console.error(e);
+      throw new Error('Failed to sync logs');
+    }
+
+    // Requesting next iteration
+    const safeBlockNumber = Number(safeBlock.number);
+    const latestBlockNumber = Number(latestBlock.number);
+    const nextFromBlock = Math.min(toBlock + 1, safeBlockNumber);
+    const nextToBlock =
+      nextFromBlock >= safeBlockNumber
+        ? latestBlockNumber
+        : Math.min(nextFromBlock + BLOCKS_PER_SYNC, latestBlockNumber);
+    console.log(
+      '🔁 Preparing to fetch the next range',
+      nextFromBlock,
+      nextToBlock,
+    );
+    console.log('Current safe block = ', safeBlockNumber);
+    console.log('Current latest block = ', latestBlockNumber, '\n');
+
+    await this.syncNext(nextFromBlock, nextToBlock, DEBOUNCE_TIME);
+  }
+
+  private async syncLogs(fromBlock: number, toBlock: number) {
     const contracts = await getBridgeSolidityContracts(
       env.get('ETH_CHAIN_NAME'),
       env.get('FUEL_CHAIN_NAME'),
     );
 
-    const isEvent = ({ type }: { type: string }) => type === 'event';
-    const portalABI = FuelMessagePortal.abi.filter(isEvent);
-    const chainStateABI = FuelChainState.abi.filter(isEvent);
-
-    const indexedBlock = await this.blocksRepository.findLatestAdded();
-    const finalizedBlock = await this.service.getBlock('finalized');
-    const finalizedBlockNumber = finalizedBlock?.number as bigint;
-
-    // If queue is requesting an outdated block, we can jump to the next target block
-    if (indexedBlock && indexedBlock.number > initialBlock) {
-      console.log(
-        '📥 Jumping to the latest indexed block [',
-        indexedBlock.number + 1,
-        ']\n',
-      );
-
-      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
-        initialBlock: indexedBlock.number + 1,
-      });
-      return;
-    }
-
-    const range = 30n;
-    const fromBlock = BigInt(initialBlock);
-    const target = fromBlock + range;
-    const toBlock =
-      target > finalizedBlockNumber ? finalizedBlockNumber : target;
-
-    // We're up to date, keep waiting for at least 1 finalized blocks
-    if (fromBlock >= toBlock) {
-      console.log('👀 Waiting for new finalized blocks');
-      console.log(
-        'Latest indexed block number was [',
-        indexedBlock?.number,
-        ']',
-      );
-      console.log(
-        'Latest finalized block number was [',
-        finalizedBlockNumber,
-        ']\n',
-      );
-
-      // Wait 30 seconds
-      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_TIME));
-      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
-        initialBlock: Number(fromBlock),
-      });
-      return;
-    }
-
-    console.log('🔄 Fetching range from [', fromBlock, '] to [', toBlock, ']');
-
     const logs = await this.service.getLogs({
       contracts: [contracts.FuelMessagePortal, contracts.FuelChainState],
-      events: portalABI.concat(chainStateABI),
-      fromBlock,
-      toBlock,
+      events: this.events,
+      fromBlock: BigInt(fromBlock),
+      toBlock: BigInt(toBlock),
     });
 
     const blockNumbers = uniq(logs.map((tx) => tx.blockNumber));
     const blocks = await this.service.getBlocks(blockNumbers);
 
-    try {
-      await this.blocksRepository.insertMany(blocks);
-      await this.logsRepository.insertMany(logs);
+    await this.blocksRepository.insertMany(blocks);
+    await this.logsRepository.insertMany(logs);
 
-      console.log('📥 Range synced');
-      console.log(blocks.length, 'new blocks');
-      console.log(logs.length, 'new logs\n');
-
-      // Wait 30 seconds
-      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_TIME));
-      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
-        initialBlock: Number(toBlock) + 1,
-      });
-    } catch (error) {
-      console.error(error);
-      throw new Error('Sync bridge transactions from block and logs');
-    }
+    console.log(`📥 Range synced from [${fromBlock}] to [${toBlock}]`);
+    console.log(blocks.length, 'new blocks');
+    console.log(logs.length, 'new logs\n');
   }
+
+  private async syncNext(
+    fromBlock: number,
+    toBlock: number,
+    startAfter?: number,
+  ) {
+    await queue.push(
+      QueueNames.SYNC_BRIDGE_CONTRACT_LOGS,
+      {
+        fromBlock,
+        toBlock,
+      },
+      {
+        startAfter,
+      },
+    );
+  }
+
+  private isEvent = ({ type }: { type: string }) => type === 'event';
 }
 
 export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
@@ -130,7 +142,6 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   const ALCHEMY_ID = env.get('ETH_ALCHEMY_ID');
   const INFURA_ID = env.get('ETH_INFURA_ID');
 
-  // @TODO: Prepare it to use foundry as well (with "http" transport only)
   const config = createConfig({
     chains: [sepolia],
     transports: {
@@ -146,7 +157,9 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   });
 
   try {
-    console.log(`\n🔎 Syncing contract logs from [${data.initialBlock}] block`);
+    console.log(
+      `\n🔎 Syncing contract logs from [${data.fromBlock}] to [${data.toBlock}]`,
+    );
 
     const ethPublicClient = getPublicClient(config);
 
@@ -164,7 +177,7 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   } catch (error) {
     console.error(error);
     throw new Error(
-      `Failed to sync bridge transactions from block ${data.initialBlock}`,
+      `Failed to sync bridge transactions from block ${data.fromBlock} to ${data.toBlock}`,
       {
         cause: error,
       },

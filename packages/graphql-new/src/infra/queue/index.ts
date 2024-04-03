@@ -32,7 +32,8 @@ export type QueueInputs = {
     txHash: string;
   };
   [QueueNames.SYNC_BRIDGE_CONTRACT_LOGS]: {
-    initialBlock: number;
+    fromBlock: number;
+    toBlock: number;
   };
 };
 
@@ -74,6 +75,8 @@ export class Queue extends PgBoss {
       this.work(QueueNames.SYNC_TRANSACTION, syncTransactions),
       this.work(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, syncBridgeContractLogs),
     ]);
+    // @TODO: remove this once we're ready to merge
+    await this.deleteAllQueues();
     console.log('⚡️ Queue running');
   }
 }

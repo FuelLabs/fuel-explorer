@@ -7,7 +7,7 @@ import {
 
 type FuelPortalABI = (typeof FuelMessagePortal.abi)[number];
 type ChainStateABI = (typeof FuelChainState.abi)[number];
-type EventABI = FuelPortalABI | ChainStateABI;
+export type EventABI = FuelPortalABI | ChainStateABI;
 
 type TxEthToFuelInputs = {
   getLogs: {
