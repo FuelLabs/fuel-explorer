@@ -1,25 +1,17 @@
 import { bigint } from 'drizzle-orm/pg-core';
 
-import { ValueObject } from '~/core/ValueObject';
+import { Identifier } from '~/core/Identifier';
 
-interface Props {
-  value: bigint;
-}
-
-export class BridgeBlockNumber extends ValueObject<Props> {
-  private constructor(props: Props) {
-    super(props);
+export class BridgeBlockNumber extends Identifier<number> {
+  private constructor(value: number) {
+    super(value);
   }
 
   static type() {
     return bigint('number', { mode: 'number' }).notNull();
   }
 
-  static create(value: bigint) {
-    return new BridgeBlockNumber({ value });
-  }
-
-  value() {
-    return Number(this.props.value);
+  static create(value: number) {
+    return new BridgeBlockNumber(value);
   }
 }

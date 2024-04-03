@@ -17,7 +17,7 @@ export class BridgeContractLogRepository {
     const query = paginator.getPaginatedResult(config);
     const results = await query.innerJoin(
       BridgeBlocksTable,
-      eq(BridgeBlocksTable.number, BridgeContractLogsTable.blockNumber),
+      eq(BridgeBlocksTable._id, BridgeContractLogsTable.blockNumber),
     );
 
     return results.map((item) =>
@@ -36,10 +36,7 @@ export class BridgeContractLogRepository {
       .insert(BridgeContractLogsTable)
       .values(items)
       .onConflictDoUpdate({
-        target: [
-          BridgeContractLogsTable.logIndex,
-          BridgeContractLogsTable.blockNumber,
-        ],
+        target: BridgeContractLogsTable._id,
         set: {
           name: sql.raw('excluded.name'),
           contractId: sql.raw('excluded.contract_id'),

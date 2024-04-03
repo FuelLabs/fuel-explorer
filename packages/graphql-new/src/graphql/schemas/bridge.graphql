@@ -12,7 +12,6 @@ type BridgeBlockData {
 }
 
 type BridgeBlock {
-  _id: Int!
   hash: String!
   number: Int!
   timestamp: Int!
@@ -42,7 +41,6 @@ type BridgeContractLogData {
 }
 
 type BridgeContractLog {
-  _id: Int!
   name: String!
   contractId: String!
   sender: String!

@@ -15,7 +15,7 @@ export class BridgeContractLogBlockRef extends ValueObject<Props> {
   static type() {
     return bigint('block_number', { mode: 'number' })
       .notNull()
-      .references(() => BridgeBlocksTable.number);
+      .references(() => BridgeBlocksTable._id);
   }
 
   static create(value: bigint) {

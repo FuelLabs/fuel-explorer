@@ -32,7 +32,7 @@ export class BridgeBlockRepository {
       .insert(BridgeBlocksTable)
       .values(items)
       .onConflictDoUpdate({
-        target: BridgeBlocksTable.number,
+        target: BridgeBlocksTable._id,
         set: {
           data: sql.raw('excluded.data'),
         },
@@ -42,7 +42,7 @@ export class BridgeBlockRepository {
 
   async findLatestAdded(): Promise<BridgeBlockEntity | null> {
     const latest = await db.connection().query.BridgeBlocksTable.findFirst({
-      orderBy: [desc(BridgeBlocksTable.number)],
+      orderBy: [desc(BridgeBlocksTable._id)],
     });
 
     if (!latest) return null;

@@ -1,4 +1,4 @@
-import { Hash256, Jsonb, SerialID } from '~/application/vo';
+import { Hash256, Jsonb } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 
 import { BridgeContractLogItem } from './BridgeContractLogModel';
@@ -6,11 +6,12 @@ import { BridgeContractLogItem } from './BridgeContractLogModel';
 import { BridgeBlockItem } from '../BridgeBlock/BridgeBlockModel';
 import { BridgeContractLogBlockRef } from '../BridgeBlock/vo/BridgeBlockRef';
 import { BridgeContractLogData, Log } from './vo/BridgeContractLogData';
+import { BridgeContractLogId } from './vo/BridgeContractLogId';
 import { BridgeContractLogIndex } from './vo/BridgeContractLogIndex';
 import { BridgeContractLogName } from './vo/BridgeContractLogName';
 
 type BridgeContractLogInputProps = {
-  _id: SerialID;
+  _id: BridgeContractLogId;
   name: BridgeContractLogName;
   contractId: Hash256;
   sender: Hash256;
@@ -22,13 +23,13 @@ type BridgeContractLogInputProps = {
 
 export class BridgeContractLogEntity extends Entity<
   BridgeContractLogInputProps,
-  SerialID
+  BridgeContractLogId
 > {
   static create(
     log: BridgeContractLogItem,
     block: BridgeBlockItem,
   ): BridgeContractLogEntity {
-    const _id = SerialID.create(log._id);
+    const _id = BridgeContractLogId.create(log._id);
     const name = BridgeContractLogName.create(log.name);
     const contractId = Hash256.create(log.contractId);
     const sender = Hash256.create(log.sender);
@@ -50,22 +51,24 @@ export class BridgeContractLogEntity extends Entity<
     return new BridgeContractLogEntity(props, _id);
   }
 
-  static toDBItem(log: Log): Omit<BridgeContractLogItem, '_id'> {
+  static toDBItem(log: Log): BridgeContractLogItem {
     const args = log.args as { sender: string; recipient: string };
 
+    const logIndex = BridgeContractLogIndex.create(log.logIndex).value();
+    const blockNumber = BridgeContractLogBlockRef.create(
+      log.blockNumber,
+    ).value();
+
     return {
+      _id: BridgeContractLogId.create(`${logIndex}-${blockNumber}`).value(),
       name: BridgeContractLogName.create(log.eventName).value(),
       contractId: Hash256.create(log.address).value(),
       sender: Hash256.create(args.sender).value(),
       recipient: Hash256.create(args.recipient).value(),
-      logIndex: BridgeContractLogIndex.create(log.logIndex).value(),
-      blockNumber: BridgeContractLogBlockRef.create(log.blockNumber).value(),
+      logIndex,
+      blockNumber,
       data: Jsonb.create(log).value(),
     };
-  }
-
-  get id() {
-    return this.props._id.value();
   }
 
   get name() {
@@ -98,7 +101,6 @@ export class BridgeContractLogEntity extends Entity<
 
   toGQLNode() {
     return {
-      _id: this.id,
       name: this.name,
       contractId: this.contractId,
       sender: this.sender,

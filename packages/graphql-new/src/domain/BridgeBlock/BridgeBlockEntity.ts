@@ -1,4 +1,4 @@
-import { Hash256, Jsonb, SerialID } from '~/application/vo';
+import { Hash256, Jsonb } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 
 import { Block } from 'viem';
@@ -7,25 +7,25 @@ import { BridgeBlockNumber } from './vo/BridgeBlockNumber';
 import { BridgeBlockTimestamp } from './vo/BridgeBlockTimestamp';
 
 type BridgeBlockInputProps = {
-  _id: SerialID;
+  _id: BridgeBlockNumber;
   hash: Hash256;
-  number: BridgeBlockNumber;
   timestamp: BridgeBlockTimestamp;
   data: Jsonb<Block>;
 };
 
-export class BridgeBlockEntity extends Entity<BridgeBlockInputProps, SerialID> {
+export class BridgeBlockEntity extends Entity<
+  BridgeBlockInputProps,
+  BridgeBlockNumber
+> {
   static create(block: BridgeBlockItem): BridgeBlockEntity {
-    const _id = SerialID.create(block._id);
+    const _id = BridgeBlockNumber.create(block._id);
     const hash = Hash256.create(block.hash);
-    const number = BridgeBlockNumber.create(BigInt(block.number));
     const timestamp = BridgeBlockTimestamp.create(BigInt(block.timestamp));
     const data = Jsonb.create<Block>(block.data);
 
     const props = {
       _id,
       hash,
-      number,
       timestamp,
       data,
     };
@@ -33,21 +33,17 @@ export class BridgeBlockEntity extends Entity<BridgeBlockInputProps, SerialID> {
     return new BridgeBlockEntity(props, _id);
   }
 
-  static toDBItem(block: Block): Omit<BridgeBlockItem, '_id'> {
+  static toDBItem(block: Block): BridgeBlockItem {
     if (!block.hash || typeof block.number !== 'bigint' || !block.timestamp) {
       throw new Error('Block is not safe yet');
     }
 
     return {
+      _id: BridgeBlockNumber.create(Number(block.number)).value(),
       hash: Hash256.create(block.hash).value(),
-      number: BridgeBlockNumber.create(block.number).value(),
       timestamp: BridgeBlockTimestamp.create(block.timestamp).value(),
       data: Jsonb.create(block).value(),
     };
-  }
-
-  get id() {
-    return this.props._id.value();
   }
 
   get hash() {
@@ -55,7 +51,7 @@ export class BridgeBlockEntity extends Entity<BridgeBlockInputProps, SerialID> {
   }
 
   get number() {
-    return this.props.number.value();
+    return this.props._id.value();
   }
 
   get timestamp() {
@@ -68,7 +64,6 @@ export class BridgeBlockEntity extends Entity<BridgeBlockInputProps, SerialID> {
 
   toGQLNode() {
     return {
-      _id: this.id,
       hash: this.hash,
       number: this.number,
       timestamp: this.timestamp,
