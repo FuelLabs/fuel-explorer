@@ -8,7 +8,8 @@
     "github": "https://github.com/AcumenProtocol",
     "twitter": "https://twitter.com/acumenofficial",
     "discord": "https://discord.gg/vnUPngfB5D",
-    "image": "acumen"
+    "image": "acumen",
+    "status": ["Building"]
   },
   {
     "isLive": false,
