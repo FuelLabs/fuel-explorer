@@ -3,6 +3,7 @@ import { Entity } from '~/core/Entity';
 
 import { BridgeContractLogItem } from './BridgeContractLogModel';
 
+import { decodeMessageSentData } from '@fuel-explorer/contract-ids';
 import { BridgeBlockEntity } from '../BridgeBlock/BridgeBlockEntity';
 import { BridgeBlockItem } from '../BridgeBlock/BridgeBlockModel';
 import { BridgeContractLogBlockRef } from '../BridgeBlock/vo/BridgeBlockRef';
@@ -55,14 +56,17 @@ export class BridgeContractLogEntity extends Entity<
 
     const index = BridgeContractLogIndex.create(logIndex).value();
     const number = BridgeContractLogBlockRef.create(blockNumber).value();
+    const decoded = decodeMessageSentData.erc20Deposit(
+      (args as { data?: `0x${string}` }).data,
+    );
 
     return {
-      _id: BridgeContractLogId.create(`${index}-${number}`).value(),
+      _id: BridgeContractLogId.create(`${number}-${index}`).value(),
       name: BridgeContractLogName.create(eventName).value(),
       contractId: Hash256.create(address).value(),
       logIndex: index,
       blockNumber: number,
-      args: BridgeContractLogArgs.create(args).value(),
+      args: BridgeContractLogArgs.create({ ...args, decoded }).value(),
       data: BridgeContractLogData.create(data).value(),
     };
   }

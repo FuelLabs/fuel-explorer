@@ -4,6 +4,9 @@ import { ValueObject } from '~/core/ValueObject';
 type CustomArgs = {
   sender?: string;
   recipient?: string;
+  nonce?: string;
+  amount?: string;
+  data?: string;
 };
 
 interface Props {

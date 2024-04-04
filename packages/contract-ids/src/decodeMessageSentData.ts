@@ -1,5 +1,7 @@
 export const decodeMessageSentData = {
-  erc20Deposit: (data: `0x${string}`) => {
+  erc20Deposit: (data?: `0x${string}`) => {
+    if (!data) return null;
+
     const pattern =
       /^0x([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})$/;
     const match = data.match(pattern);

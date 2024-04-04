@@ -40,9 +40,21 @@ type BridgeContractLogData {
   removed: Boolean
 }
 
+type BridgeContractLogArgsDecoded {
+  fuelTokenId: String
+  tokenAddress: String
+  sender: String
+  to: String
+  amount: String
+}
+
 type BridgeContractLogArgs {
   sender: String
   recipient: String
+  nonce: String
+  amount: String
+  data: String
+  decoded: BridgeContractLogArgsDecoded
 }
 
 type BridgeContractLog {
