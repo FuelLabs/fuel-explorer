@@ -134,7 +134,7 @@ export class SyncBridgeContractLogs {
   private async syncNext(
     fromBlock: number,
     latestBlock: number,
-    startAfter?: number,
+    startAfter: number,
   ) {
     await queue.push(
       QueueNames.SYNC_BRIDGE_CONTRACT_LOGS,

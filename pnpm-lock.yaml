@@ -136,6 +136,9 @@ importers:
 
   contracts/predicate:
     dependencies:
+      '@fuel-explorer/contract-ids':
+        specifier: workspace:*
+        version: link:../../packages/contract-ids
       app-commons:
         specifier: workspace:*
         version: link:../../packages/app-commons
