@@ -2,7 +2,7 @@ import * as zod from 'zod';
 import { Env } from './core/Env';
 
 const schema = zod.object({
-  FUEL_PROVIDER: zod.string(), // @TODO: Remove it in order to use only FUEL_CHAIN_NAME
+  FUEL_PROVIDER: zod.string(),
   FUEL_CHAIN_NAME: zod.string(),
   ETH_CHAIN_NAME: zod.string(),
   ETH_ALCHEMY_ID: zod.string().optional(),
@@ -17,7 +17,7 @@ const schema = zod.object({
 });
 
 export const env = new Env(schema, {
-  FUEL_PROVIDER: 'http://localhost:4001/graphql', // @TODO: Remove it in order to use only FUEL_CHAIN_NAME
+  FUEL_PROVIDER: 'http://localhost:4001/graphql',
   FUEL_CHAIN_NAME: 'fuelBeta5',
   ETH_CHAIN_NAME: 'sepolia',
   ETH_ALCHEMY_ID: '',

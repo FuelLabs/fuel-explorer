@@ -1,11 +1,7 @@
-import { http, createConfig, getPublicClient } from '@wagmi/core';
-import { sepolia } from '@wagmi/core/chains';
-import { fallback } from 'viem';
-
+import { WagmiConfig } from '~/infra/config/WagmiConfig';
 import { QueueData, type QueueInputs, QueueNames, queue } from '~/infra/queue';
 import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
 
-import { env } from '~/config';
 import { BridgeBlockRepository } from '~/domain/BridgeBlock/BridgeBlockRepository';
 import { BridgeContractLogRepository } from '~/domain/BridgeContractLog/BridgeContractLogRepository';
 
@@ -124,26 +120,8 @@ export class SyncBridgeContractLogs {
 }
 
 export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
-  const ETH_CHAIN_NAME = env.get('ETH_CHAIN_NAME');
-  const ALCHEMY_ID = env.get('ETH_ALCHEMY_ID');
-  const INFURA_ID = env.get('ETH_INFURA_ID');
-
-  const config = createConfig({
-    chains: [sepolia],
-    transports: {
-      [sepolia.id]: fallback(
-        [
-          http(`https://eth-${ETH_CHAIN_NAME}.g.alchemy.com/v2/${ALCHEMY_ID}`),
-          http(`https://${ETH_CHAIN_NAME}.infura.io/v3/${INFURA_ID}`),
-          http(),
-        ],
-        { rank: false },
-      ),
-    },
-  });
-
   try {
-    const ethPublicClient = getPublicClient(config);
+    const ethPublicClient = new WagmiConfig().getPublicClient();
 
     const service = new TxEthToFuelService(ethPublicClient);
     const logsRepository = new BridgeContractLogRepository();
