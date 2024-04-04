@@ -171,9 +171,6 @@ importers:
 
   packages/app-commons:
     dependencies:
-      '@fuel-explorer/contract-ids':
-        specifier: workspace:*
-        version: link:../contract-ids
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
@@ -184,6 +181,9 @@ importers:
         specifier: 0.1.20
         version: 0.1.20(tailwindcss@3.4.1)
     devDependencies:
+      '@fuel-explorer/contract-ids':
+        specifier: workspace:*
+        version: link:../contract-ids
       '@types/react':
         specifier: 18.2.54
         version: 18.2.54
@@ -431,9 +431,6 @@ importers:
       '@xstate/react':
         specifier: ^3.2.1
         version: 3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3)
-      app-commons:
-        specifier: workspace:*
-        version: link:../app-commons
       connectkit:
         specifier: 1.7.2
         version: 1.7.2(@babel/core@7.23.9)(@tanstack/react-query@5.0.5)(react-dom@18.2.0)(react@18.2.0)(viem@2.7.20)(wagmi@2.5.7)
@@ -495,6 +492,9 @@ importers:
       '@xstate/cli':
         specifier: ^0.5.17
         version: 0.5.17
+      app-commons:
+        specifier: workspace:*
+        version: link:../app-commons
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
