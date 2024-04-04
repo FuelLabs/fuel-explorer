@@ -53,6 +53,7 @@ type BridgeContractLogArgs {
   recipient: String
   nonce: String
   amount: String
+  messageId: String
   data: String
   decoded: BridgeContractLogArgsDecoded
 }
@@ -75,6 +76,11 @@ type BridgeContractLogsResult {
 # Query
 # --------------------------------
 
+input bridgeContractLogsArgs {
+  recipient: String
+  messageId: String
+}
+
 type Query {
   bridgeBlocks(
     after: String
@@ -83,6 +89,8 @@ type Query {
     last: Int
   ): BridgeBlocksResult!
   bridgeContractLogs(
+    args: bridgeContractLogsArgs
+    name: String
     after: String
     before: String
     first: Int
