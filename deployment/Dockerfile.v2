@@ -22,8 +22,9 @@ ENV DB_NAME="${DB_NAME}"
 RUN corepack enable
 
 # Install dependencies for the entire monorepo
-COPY . /app-explorer
-WORKDIR /app-explorer
+COPY packages/contract-ids ./packages/contract-ids
+COPY packages/graphql-new ./packages/graphql-new
+COPY package.json turbo.json pnpm-workspace.yaml ./
 
 # Install dependencies for the entire monorepo
 RUN pnpm install
@@ -33,6 +34,5 @@ RUN pnpm db:setup
 EXPOSE ${PORT}
 
 # Start GraphQL server
-WORKDIR /app-explorer
-
+WORKDIR /packages/graphql-new
 CMD ["pnpm", "server:start"]
