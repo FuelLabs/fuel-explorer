@@ -11,14 +11,13 @@ import type { PublicClient, WalletClient } from 'viem';
 import { decodeEventLog } from 'viem';
 import { erc20Abi } from 'viem';
 
+import { decodeMessageSentData } from '@fuel-explorer/contract-ids';
+
 import { relayCommonMessage } from '../../fuel/utils/relayMessage';
 import type { FuelERC20GatewayArgs } from '../contracts/FuelErc20Gateway';
 import { FUEL_ERC_20_GATEWAY } from '../contracts/FuelErc20Gateway';
 import type { FuelMessagePortalArgs } from '../contracts/FuelMessagePortal';
-import {
-  FUEL_MESSAGE_PORTAL,
-  decodeMessageSentData,
-} from '../contracts/FuelMessagePortal';
+import { FUEL_MESSAGE_PORTAL } from '../contracts/FuelMessagePortal';
 import { getBlockDate, isErc20Address } from '../utils';
 
 import { getBridgeSolidityContracts } from 'app-commons';
@@ -439,7 +438,7 @@ export class TxEthToFuelService {
         inputs: abiMessageSent?.inputs || [],
       },
       args: {
-        recipient: fuelAddress?.toHexString() as `0x${string}`,
+        recipient: fuelAddress.toHexString() as `0x${string}`,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       fromBlock: 'earliest',
@@ -468,11 +467,15 @@ export class TxEthToFuelService {
         topics: log.topics,
       }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
 
-      const { to } = decodeMessageSentData.erc20Deposit(
+      const decoded = decodeMessageSentData.erc20Deposit(
         messageSentEvent.args.data,
       );
 
-      return to === fuelAddress?.toHexString();
+      if (!decoded) {
+        return false;
+      }
+
+      return decoded.to === fuelAddress.toHexString();
     });
 
     return [...ethLogs, ...erc20Logs];
