@@ -18,13 +18,22 @@ export class BridgeContractLogRepository {
     // Filtering by args
     const where: SQL[] = [];
     if (params?.args) {
-      const args = params.args;
+      const { decoded, ...args } = params.args;
       const sqls = {
         recipient: sql`${BridgeContractLogsTable.args} ->> 'recipient' = ${args.recipient}`,
         messageId: sql`${BridgeContractLogsTable.args} ->> 'messageId' = ${args.messageId}`,
       };
       for (const key of Object.keys(params.args)) {
         where.push(sqls[key]);
+      }
+
+      if (decoded) {
+        const decodedSqls = {
+          to: sql`${BridgeContractLogsTable.args} -> 'decoded' ->> 'to' = ${decoded.to}`,
+        };
+        for (const key of Object.keys(decoded)) {
+          where.push(decodedSqls[key]);
+        }
       }
     }
 

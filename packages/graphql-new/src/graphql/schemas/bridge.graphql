@@ -76,9 +76,14 @@ type BridgeContractLogsResult {
 # Query
 # --------------------------------
 
-input bridgeContractLogsArgs {
+input BridgeContractLogsArgsDecoded {
+  to: String
+}
+
+input BridgeContractLogsArgs {
   recipient: String
   messageId: String
+  decoded: BridgeContractLogsArgsDecoded
 }
 
 type Query {
@@ -89,7 +94,7 @@ type Query {
     last: Int
   ): BridgeBlocksResult!
   bridgeContractLogs(
-    args: bridgeContractLogsArgs
+    args: BridgeContractLogsArgs
     name: String
     after: String
     before: String
