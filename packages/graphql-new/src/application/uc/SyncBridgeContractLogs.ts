@@ -29,7 +29,7 @@ type Props = {
 type Input = QueueInputs[QueueNames.SYNC_BRIDGE_CONTRACT_LOGS];
 
 // in seconds, how much seconds we're going to wait before check the next finalized block again
-const DEBOUNCE_TIME = 2;
+const DEBOUNCE_TIME = 1;
 
 // We need to be careful with Alchemy/Infura API limits here
 const BLOCKS_PER_SYNC = 30;
@@ -53,13 +53,13 @@ export class SyncBridgeContractLogs {
 
   private async getLatestBlock(latestBlock?: number) {
     if (latestBlock) {
-      console.log('📦 Using cached latest block', latestBlock);
+      console.log('\n📦 Latest block: ', latestBlock);
       return latestBlock;
     }
 
     const block = await this.service.getBlock('latest');
     const blockNumber = Number(block?.number);
-    console.log('📦 Set latest block to', blockNumber);
+    console.log('\n📦 Set latest block to', blockNumber);
 
     return blockNumber;
   }
@@ -78,11 +78,11 @@ export class SyncBridgeContractLogs {
 
     // Set the range to sync
     const toBlock = Math.min(fromBlock + BLOCKS_PER_SYNC, latestBlockNumber);
-    console.log('📦 Syncing logs from block', fromBlock, toBlock);
+    console.log('📦 Syncing logs from block ', fromBlock, ' to ', toBlock);
 
     // Sync the logs
     try {
-      await this.syncLogs(fromBlock, toBlock);
+      await this.syncLogs(fromBlock, toBlock, latestBlockNumber);
     } catch (e) {
       console.error(e);
       throw new Error('Failed to sync logs');
@@ -92,7 +92,11 @@ export class SyncBridgeContractLogs {
     await this.syncNext(toBlock + 1, latestBlockNumber, DEBOUNCE_TIME);
   }
 
-  private async syncLogs(fromBlock: number, toBlock: number) {
+  private async syncLogs(
+    fromBlock: number,
+    toBlock: number,
+    latestBlockNumber: number,
+  ) {
     const contracts = await getBridgeSolidityContracts(
       env.get('ETH_CHAIN_NAME'),
       env.get('FUEL_CHAIN_NAME'),
@@ -111,9 +115,15 @@ export class SyncBridgeContractLogs {
     await this.blocksRepository.insertMany(blocks);
     await this.logsRepository.insertMany(logs);
 
-    console.log(`📥 Range synced from [${fromBlock}] to [${toBlock}]`);
-    console.log(blocks.length, 'new blocks');
-    console.log(logs.length, 'new logs\n');
+    console.log(
+      `📥 Range synced from [${fromBlock}] to [${toBlock}]: ${blocks.length} blocks and ${logs.length} logs`,
+    );
+    console.log(
+      `🔄 Blocks left to sync: ${Math.max(
+        latestBlockNumber - toBlock,
+        0,
+      )} blocks\n`,
+    );
   }
 
   private async syncNext(
@@ -156,8 +166,6 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   });
 
   try {
-    console.log(`\n🔎 Syncing contract logs from [${data.fromBlock}]`);
-
     const ethPublicClient = getPublicClient(config);
 
     const service = new TxEthToFuelService(ethPublicClient);
