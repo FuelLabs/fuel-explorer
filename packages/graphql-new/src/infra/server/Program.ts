@@ -1,4 +1,5 @@
 import yargs from 'yargs/yargs';
+import { env } from '~/config';
 import { db } from '../database/Db';
 import { QueueNames, queue } from '../queue';
 
@@ -72,9 +73,9 @@ export class Program {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
     }
     if (argv.bridge) {
-      // @TODO: move this value to a .env
+      const fromBlock = Number(env.get('ETH_INITIAL_BLOCK'));
       await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
-        fromBlock: 5624480,
+        fromBlock,
         latestBlock: undefined,
       });
     }
