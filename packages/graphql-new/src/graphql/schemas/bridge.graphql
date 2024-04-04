@@ -40,11 +40,15 @@ type BridgeContractLogData {
   removed: Boolean
 }
 
+type BridgeContractLogArgs {
+  sender: String
+  recipient: String
+}
+
 type BridgeContractLog {
   name: String!
   contractId: String!
-  sender: String!
-  recipient: String!
+  args: BridgeContractLogArgs!
   logIndex: Int!
   block: BridgeBlock!
   data: BridgeContractLogData!

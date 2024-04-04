@@ -5,6 +5,7 @@ import { Hash256 } from '~/application/vo';
 
 import { BridgeBlocksTable } from '../BridgeBlock/BridgeBlockModel';
 import { BridgeContractLogBlockRef } from '../BridgeBlock/vo/BridgeBlockRef';
+import { BridgeContractLogArgs } from './vo/BridgeContractLogArgs';
 import { BridgeContractLogData } from './vo/BridgeContractLogData';
 import { BridgeContractLogId } from './vo/BridgeContractLogId';
 import { BridgeContractLogIndex } from './vo/BridgeContractLogIndex';
@@ -16,10 +17,9 @@ export const BridgeContractLogsTable = pgTable(
     _id: BridgeContractLogId.type(),
     name: BridgeContractLogName.type(),
     contractId: Hash256.type('contract_id'),
-    sender: Hash256.type('sender'),
-    recipient: Hash256.type('recipient'),
     logIndex: BridgeContractLogIndex.type(),
     blockNumber: BridgeContractLogBlockRef.type(),
+    args: BridgeContractLogArgs.type(),
     data: BridgeContractLogData.type(),
   },
   (table) => ({

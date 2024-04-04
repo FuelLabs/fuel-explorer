@@ -40,8 +40,7 @@ export class BridgeContractLogRepository {
         set: {
           name: sql.raw('excluded.name'),
           contractId: sql.raw('excluded.contract_id'),
-          sender: sql.raw('excluded.sender'),
-          recipient: sql.raw('excluded.recipient'),
+          args: sql.raw('excluded.args'),
           data: sql.raw('excluded.data'),
         },
       })

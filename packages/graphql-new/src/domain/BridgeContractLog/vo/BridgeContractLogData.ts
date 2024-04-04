@@ -13,8 +13,13 @@ export type Log = LogEvent<
   string
 >;
 
+export type LogData = Omit<
+  Log,
+  'args' | 'eventName' | 'address' | 'logIndex' | 'blockNumber'
+>;
+
 interface Props {
-  value: Log;
+  value: LogData;
 }
 
 export class BridgeContractLogData extends ValueObject<Props> {
@@ -23,10 +28,10 @@ export class BridgeContractLogData extends ValueObject<Props> {
   }
 
   static type() {
-    return Jsonb.type<Log>('data');
+    return Jsonb.type<LogData>('data');
   }
 
-  static create(value: Log) {
+  static create(value: LogData) {
     return new BridgeContractLogData({ value });
   }
 
