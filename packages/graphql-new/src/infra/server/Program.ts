@@ -78,6 +78,7 @@ export class Program {
         fromBlock,
         latestBlock: undefined,
       });
+      await queue.push(QueueNames.WATCH_BRIDGE_CONTRACT_LOGS, undefined);
     }
     if (argv.all) {
       await queue.push(QueueNames.SYNC_BLOCKS, {

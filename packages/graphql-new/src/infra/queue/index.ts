@@ -3,6 +3,7 @@ import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
 import { syncBridgeContractLogs } from '~/application/uc/SyncBridgeContractLogs';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransaction';
+import { watchBridgeContractLogs } from '~/application/uc/WatchBridgeContractLogs';
 import { env } from '~/config';
 import { GQLBlock } from '~/graphql/generated/sdk';
 
@@ -16,7 +17,8 @@ export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync:blocks',
   SYNC_MISSING = 'indexer/sync:missing',
   SYNC_TRANSACTION = 'indexer/sync:transaction',
-  SYNC_BRIDGE_CONTRACT_LOGS = 'indexer/bridge/sync:contract-logs',
+  SYNC_BRIDGE_CONTRACT_LOGS = 'indexer/bridge/contract-logs/sync',
+  WATCH_BRIDGE_CONTRACT_LOGS = 'indexer/bridge/contract-logs/watch',
 }
 
 export type QueueInputs = {
@@ -35,6 +37,7 @@ export type QueueInputs = {
     fromBlock: number;
     latestBlock?: number;
   };
+  [QueueNames.WATCH_BRIDGE_CONTRACT_LOGS]: undefined;
 };
 
 export type QueueData<T = unknown> = Job<T>;
@@ -74,9 +77,8 @@ export class Queue extends PgBoss {
       this.work(QueueNames.SYNC_MISSING, syncMissingBlocks),
       this.work(QueueNames.SYNC_TRANSACTION, syncTransactions),
       this.work(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, syncBridgeContractLogs),
+      this.work(QueueNames.WATCH_BRIDGE_CONTRACT_LOGS, watchBridgeContractLogs),
     ]);
-    // @TODO: remove this once we're ready to merge
-    await this.deleteAllQueues();
     console.log('⚡️ Queue running');
   }
 }

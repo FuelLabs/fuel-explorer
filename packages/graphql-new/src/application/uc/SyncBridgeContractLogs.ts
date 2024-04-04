@@ -2,19 +2,8 @@ import { http, createConfig, getPublicClient } from '@wagmi/core';
 import { sepolia } from '@wagmi/core/chains';
 import { fallback } from 'viem';
 
-import { uniq } from 'lodash';
-
-import {
-  FuelChainState,
-  FuelMessagePortal,
-} from '@fuel-bridge/solidity-contracts';
-import { getBridgeSolidityContracts } from '@fuel-explorer/contract-ids';
-
 import { QueueData, type QueueInputs, QueueNames, queue } from '~/infra/queue';
-import {
-  type EventABI,
-  TxEthToFuelService,
-} from '~/infra/services/TxEthToFuelService';
+import { TxEthToFuelService } from '~/infra/services/TxEthToFuelService';
 
 import { env } from '~/config';
 import { BridgeBlockRepository } from '~/domain/BridgeBlock/BridgeBlockRepository';
@@ -38,17 +27,11 @@ export class SyncBridgeContractLogs {
   private service: TxEthToFuelService;
   private logsRepository: BridgeContractLogRepository;
   private blocksRepository: BridgeBlockRepository;
-  private events: EventABI[];
 
   constructor({ service, logsRepository, blocksRepository }: Props) {
     this.service = service;
     this.logsRepository = logsRepository;
     this.blocksRepository = blocksRepository;
-
-    const portalABI = FuelMessagePortal.abi.filter(this.isEvent);
-    const chainStateABI = FuelChainState.abi.filter(this.isEvent);
-
-    this.events = portalABI.concat(chainStateABI);
   }
 
   private async getLatestBlock(latestBlock?: number) {
@@ -71,7 +54,7 @@ export class SyncBridgeContractLogs {
     // Identify if it has finished syncing
     if (fromBlock > latestBlockNumber) {
       console.log(
-        '📦 No new blocks to sync – from now on, we will only sync new logs',
+        '📦 No new blocks to sync – from now on, we will only sync new logs\n',
       );
       return;
     }
@@ -97,14 +80,7 @@ export class SyncBridgeContractLogs {
     toBlock: number,
     latestBlockNumber: number,
   ) {
-    const contracts = await getBridgeSolidityContracts(
-      env.get('ETH_CHAIN_NAME'),
-      env.get('FUEL_CHAIN_NAME'),
-    );
-
     const logs = await this.service.getLogs({
-      contracts: [contracts.FuelMessagePortal, contracts.FuelChainState],
-      events: this.events,
       fromBlock: BigInt(fromBlock),
       toBlock: BigInt(toBlock),
     });
@@ -114,9 +90,7 @@ export class SyncBridgeContractLogs {
       return;
     }
 
-    const blockNumbers = uniq(logs.map((tx) => tx.blockNumber));
-    const blocks = await this.service.getBlocks(blockNumbers);
-
+    const blocks = await this.service.getBlocksFromLogs(logs);
     await this.blocksRepository.insertMany(blocks);
     await this.logsRepository.insertMany(logs);
 
@@ -147,8 +121,6 @@ export class SyncBridgeContractLogs {
       },
     );
   }
-
-  private isEvent = ({ type }: { type: string }) => type === 'event';
 }
 
 export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
