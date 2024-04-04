@@ -79,6 +79,7 @@ export class Queue extends PgBoss {
       this.work(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, syncBridgeContractLogs),
       this.work(QueueNames.WATCH_BRIDGE_CONTRACT_LOGS, watchBridgeContractLogs),
     ]);
+    await this.deleteAllQueues();
     console.log('⚡️ Queue running');
   }
 }
