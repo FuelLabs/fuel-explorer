@@ -3,6 +3,7 @@ import { Entity } from '~/core/Entity';
 
 import { BridgeContractLogItem } from './BridgeContractLogModel';
 
+import { BridgeBlockEntity } from '../BridgeBlock/BridgeBlockEntity';
 import { BridgeBlockItem } from '../BridgeBlock/BridgeBlockModel';
 import { BridgeContractLogBlockRef } from '../BridgeBlock/vo/BridgeBlockRef';
 import { BridgeContractLogData, Log } from './vo/BridgeContractLogData';
@@ -17,7 +18,7 @@ type BridgeContractLogInputProps = {
   sender: Hash256;
   recipient: Hash256;
   logIndex: BridgeContractLogIndex;
-  block: BridgeBlockItem;
+  block: BridgeBlockEntity;
   data: BridgeContractLogData;
 };
 
@@ -44,7 +45,7 @@ export class BridgeContractLogEntity extends Entity<
       sender,
       recipient,
       logIndex,
-      block,
+      block: BridgeBlockEntity.create(block),
       data,
     };
 
@@ -92,7 +93,7 @@ export class BridgeContractLogEntity extends Entity<
   }
 
   get block() {
-    return this.props.block;
+    return this.props.block.toGQLNode();
   }
 
   get data() {

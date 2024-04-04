@@ -29,10 +29,10 @@ type Props = {
 type Input = QueueInputs[QueueNames.SYNC_BRIDGE_CONTRACT_LOGS];
 
 // in seconds, how much seconds we're going to wait before check the next finalized block again
-const DEBOUNCE_TIME = 10;
+const DEBOUNCE_TIME = 2;
 
 // We need to be careful with Alchemy/Infura API limits here
-const BLOCKS_PER_SYNC = 10;
+const BLOCKS_PER_SYNC = 30;
 
 export class SyncBridgeContractLogs {
   private service: TxEthToFuelService;
@@ -51,20 +51,34 @@ export class SyncBridgeContractLogs {
     this.events = portalABI.concat(chainStateABI);
   }
 
-  async execute({ fromBlock, toBlock }: Input) {
-    // Identifiy current finalized and latest block
-    const safeBlock = await this.service.getBlock('safe');
-    const latestBlock = await this.service.getBlock('latest');
+  private async getLatestBlock(latestBlock?: number) {
+    if (latestBlock) {
+      console.log('📦 Using cached latest block', latestBlock);
+      return latestBlock;
+    }
 
-    if (
-      !safeBlock ||
-      !latestBlock ||
-      typeof safeBlock.number !== 'bigint' ||
-      typeof latestBlock.number !== 'bigint'
-    ) {
-      console.log('📦 No blocks found. Try again.');
+    const block = await this.service.getBlock('latest');
+    const blockNumber = Number(block?.number);
+    console.log('📦 Set latest block to', blockNumber);
+
+    return blockNumber;
+  }
+
+  async execute({ fromBlock, latestBlock = undefined }: Input) {
+    // Identify current finalized and latest block
+    const latestBlockNumber = await this.getLatestBlock(latestBlock);
+
+    // Identify if it has finished syncing
+    if (fromBlock > latestBlockNumber) {
+      console.log(
+        '📦 No new blocks to sync – from now on, we will only sync new logs',
+      );
       return;
     }
+
+    // Set the range to sync
+    const toBlock = Math.min(fromBlock + BLOCKS_PER_SYNC, latestBlockNumber);
+    console.log('📦 Syncing logs from block', fromBlock, toBlock);
 
     // Sync the logs
     try {
@@ -75,22 +89,7 @@ export class SyncBridgeContractLogs {
     }
 
     // Requesting next iteration
-    const safeBlockNumber = Number(safeBlock.number);
-    const latestBlockNumber = Number(latestBlock.number);
-    const nextFromBlock = Math.min(toBlock + 1, safeBlockNumber);
-    const nextToBlock =
-      nextFromBlock >= safeBlockNumber
-        ? latestBlockNumber
-        : Math.min(nextFromBlock + BLOCKS_PER_SYNC, latestBlockNumber);
-    console.log(
-      '🔁 Preparing to fetch the next range',
-      nextFromBlock,
-      nextToBlock,
-    );
-    console.log('Current safe block = ', safeBlockNumber);
-    console.log('Current latest block = ', latestBlockNumber, '\n');
-
-    await this.syncNext(nextFromBlock, nextToBlock, DEBOUNCE_TIME);
+    await this.syncNext(toBlock + 1, latestBlockNumber, DEBOUNCE_TIME);
   }
 
   private async syncLogs(fromBlock: number, toBlock: number) {
@@ -119,14 +118,14 @@ export class SyncBridgeContractLogs {
 
   private async syncNext(
     fromBlock: number,
-    toBlock: number,
+    latestBlock: number,
     startAfter?: number,
   ) {
     await queue.push(
       QueueNames.SYNC_BRIDGE_CONTRACT_LOGS,
       {
         fromBlock,
-        toBlock,
+        latestBlock,
       },
       {
         startAfter,
@@ -157,9 +156,7 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   });
 
   try {
-    console.log(
-      `\n🔎 Syncing contract logs from [${data.fromBlock}] to [${data.toBlock}]`,
-    );
+    console.log(`\n🔎 Syncing contract logs from [${data.fromBlock}]`);
 
     const ethPublicClient = getPublicClient(config);
 
@@ -177,7 +174,7 @@ export const syncBridgeContractLogs = async ({ data }: QueueData<Input>) => {
   } catch (error) {
     console.error(error);
     throw new Error(
-      `Failed to sync bridge transactions from block ${data.fromBlock} to ${data.toBlock}`,
+      `Failed to sync bridge transactions from block ${data.fromBlock}`,
       {
         cause: error,
       },

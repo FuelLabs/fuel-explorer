@@ -72,9 +72,10 @@ export class Program {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
     }
     if (argv.bridge) {
+      // @TODO: move this value to a .env
       await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
-        fromBlock: 5622652,
-        toBlock: 5622652,
+        fromBlock: 5624480,
+        latestBlock: undefined,
       });
     }
     if (argv.all) {

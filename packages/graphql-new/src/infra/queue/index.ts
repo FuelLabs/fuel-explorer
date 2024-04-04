@@ -33,7 +33,7 @@ export type QueueInputs = {
   };
   [QueueNames.SYNC_BRIDGE_CONTRACT_LOGS]: {
     fromBlock: number;
-    toBlock: number;
+    latestBlock?: number;
   };
 };
 

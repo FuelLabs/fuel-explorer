@@ -1,4 +1,11 @@
-import type { AbiEvent, Address, Block, BlockTag, PublicClient } from 'viem';
+import type {
+  AbiEvent,
+  Address,
+  Block,
+  BlockTag,
+  PublicClient,
+  WatchEventParameters,
+} from 'viem';
 
 import {
   FuelChainState,
@@ -9,12 +16,19 @@ type FuelPortalABI = (typeof FuelMessagePortal.abi)[number];
 type ChainStateABI = (typeof FuelChainState.abi)[number];
 export type EventABI = FuelPortalABI | ChainStateABI;
 
+type WatchEvent = WatchEventParameters<undefined, AbiEvent[], false>;
+
 type TxEthToFuelInputs = {
   getLogs: {
     contracts: Address[];
     events: EventABI[];
     fromBlock: bigint;
     toBlock: bigint;
+  };
+  watchEvents: {
+    address: Address[];
+    events: EventABI[];
+    onLogs: WatchEvent['onLogs'];
   };
 };
 
@@ -23,6 +37,18 @@ export class TxEthToFuelService {
 
   constructor(ethPublicClient: PublicClient) {
     this.ethPublicClient = ethPublicClient;
+  }
+
+  async watchEvents({
+    address,
+    events,
+    onLogs,
+  }: TxEthToFuelInputs['watchEvents']) {
+    return this.ethPublicClient.watchEvent({
+      address,
+      events: events as AbiEvent[],
+      onLogs,
+    });
   }
 
   async getBlock(blockTag: BlockTag = 'finalized') {
