@@ -109,6 +109,11 @@ export class SyncBridgeContractLogs {
       toBlock: BigInt(toBlock),
     });
 
+    if (logs.length === 0) {
+      console.log('⏭️ No logs found. Skipping...\n');
+      return;
+    }
+
     const blockNumbers = uniq(logs.map((tx) => tx.blockNumber));
     const blocks = await this.service.getBlocks(blockNumbers);
 
