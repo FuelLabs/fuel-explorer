@@ -3,8 +3,13 @@
 FROM node:20-slim AS base
 
 # Expose the ENVs to the env of the container
-ENV PORT="${PORT}"
+ENV SERVER_PORT="${PORT}"
 ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
+ENV FUEL_CHAIN_NAME="${FUEL_CHAIN_NAME:-fuelBeta5}"
+ENV ETH_CHAIN_NAME="${ETH_CHAIN_NAME:-sepolia}"
+ENV ETH_ALCHEMY_ID="${ETH_ALCHEMY_ID}"
+ENV ETH_INFURA_ID="${ETH_INFURA_ID}"
+ENV ETH_INITIAL_BLOCK="${ETH_INITIAL_BLOCK:0}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV SERVER_BUILD=true
@@ -33,7 +38,7 @@ WORKDIR /app/packages/graphql-new
 RUN pnpm db:setup
 
 # Expose the specified port
-EXPOSE ${PORT}
+EXPOSE ${SERVER_PORT}
 
 # Start GraphQL server
 CMD ["pnpm", "server:start"]
