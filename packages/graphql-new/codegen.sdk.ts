@@ -6,7 +6,7 @@ const documents = ['./src/graphql/**/**.graphql'];
 
 const config: CodegenConfig = {
   documents,
-  overwrite: false,
+  overwrite: true,
   generates: {
     './src/graphql/generated/sdk.ts': {
       schema: [
