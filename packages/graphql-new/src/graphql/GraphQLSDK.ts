@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { env } from '~/config';
-import { getSdk } from '~/graphql/generated/sdk';
+import { getSdk } from '~/graphql/generated/sdk-core';
 
 export type GQLClient = ReturnType<typeof getSdk>;
 
