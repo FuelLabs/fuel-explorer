@@ -12,8 +12,12 @@ export type PaginatorParams = {
 };
 
 type Cursor = string | number;
+
+type Edge<T> = { cursor: Cursor; node: T };
+
 export type PaginatedResults<T> = {
   nodes: T[];
+  edges: Edge<T>[];
   pageInfo: {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
@@ -114,16 +118,21 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     return last ? last._id.value() : null;
   }
 
-  createPaginatedResult<T extends Entity<unknown, Identifier<Cursor>>, R = T>(
+  createPaginatedResult<T, R extends { id: Edge<T>['cursor'] }>(
     items: T[],
     startCursor: Cursor,
     endCursor: Cursor | null,
-    iterator: (node: T) => R = (node) => node as unknown as R,
+    iterator: (node: T) => R,
   ): PaginatedResults<R> {
     const { first, last } = this.params;
     const limit = (first || last) ?? 1;
     const nodes = items.slice(0, limit).map((item) => item);
     const newNodes = nodes.map(iterator);
+    const newEdges = newNodes.map((node) => ({
+      node,
+      cursor: node.id,
+    }));
+
     const hasNextPage = first
       ? items.length > limit
       : this.compareCursor(endCursor ?? 0, this.maxId.toString()) < 0;
@@ -133,6 +142,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
 
     return {
       nodes: newNodes,
+      edges: newEdges,
       pageInfo: {
         hasNextPage,
         hasPreviousPage,

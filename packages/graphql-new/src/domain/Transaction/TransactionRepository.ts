@@ -23,7 +23,7 @@ export class TransactionRepository {
     const lastSql = this.getLastSql();
     const config = await paginator.getQueryPaginationConfig(lastSql);
     const results = await paginator.getPaginatedResult(config);
-    return Promise.all(results.map((item) => TransactionEntity.create(item)));
+    return results.map((item) => TransactionEntity.create(item));
   }
 
   async findByOwner(params: PaginatorParams & { owner: string }) {

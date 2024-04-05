@@ -53,8 +53,8 @@ export class OperationEntity extends Entity<OperationProps, SerialID> {
     return this.props.transactionHash.value();
   }
 
-  toGQLNode(): GQLOperation {
+  toGQLNode() {
     const data = this.data;
-    return data;
+    return { ...data, id: this._id.value() };
   }
 }

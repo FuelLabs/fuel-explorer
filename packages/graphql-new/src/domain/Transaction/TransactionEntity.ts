@@ -30,7 +30,7 @@ export class TransactionEntity extends Entity<
   TransactionInputProps,
   TransactionModelID
 > {
-  static async create(transaction: TransactionItem) {
+  static create(transaction: TransactionItem) {
     const item = transaction.data;
     if (!item) throw new Error('Transaction data is required');
     const id = TransactionModelID.create(transaction);
