@@ -20,6 +20,7 @@ ENV DB_NAME="${DB_NAME}"
 
 # Enable pnpm using corepack form node.js
 RUN corepack enable
+WORKDIR /app
 
 # Install dependencies for the entire monorepo
 COPY packages/contract-ids ./packages/contract-ids
@@ -28,7 +29,7 @@ COPY package.json turbo.json pnpm-workspace.yaml ./
 RUN pnpm install
 
 # DB Setup
-WORKDIR /packages/graphql-new
+WORKDIR /app/packages/graphql-new
 RUN pnpm db:setup
 
 # Expose the specified port
