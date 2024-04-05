@@ -55,7 +55,6 @@ export type TxFuelToEthInputs = {
     fuelProvider: FuelProvider;
   };
   getMessageRelayed: {
-    messageProof: MessageProof;
     ethPublicClient: EthPublicClient;
     messageId: string;
   };
@@ -334,9 +333,6 @@ export class TxFuelToEthService {
   static async getMessageRelayed(
     input: TxFuelToEthInputs['getMessageRelayed'],
   ) {
-    if (!input?.messageProof) {
-      throw new Error('Need message proof to relay on ETH side');
-    }
     if (!input?.ethPublicClient) {
       throw new Error('Need to connect ETH Wallet');
     }
