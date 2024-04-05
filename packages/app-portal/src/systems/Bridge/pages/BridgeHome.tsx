@@ -1,4 +1,4 @@
-import { useNodeInfo } from '@fuel-wallet/react';
+import { useNodeInfo } from '@fuels/react';
 import { Box, Button } from '@fuels/ui';
 import {
   IconArrowBack,
@@ -59,7 +59,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
           )
         }
       >
-        Fuel Native Bridge
+        Fuel Bridge
       </PageTitle>
       <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
       {children}

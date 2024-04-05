@@ -20,11 +20,14 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
-    "build": "run-s codegen build:lib",
-    "build:lib": "tsup",
+    "build:lib": "run-s codegen build:sdk",
+    "build:sdk": "tsup",
+    "ts:check": "tsc --noEmit",
     "codegen": "run-s codegen:queries codegen:schema",
     "codegen:queries": "gqlg --schemaFilePath ./src/graphql/schemas/fuelcore.graphql --destDirPath ./src/graphql/generated --ext graphql",
     "codegen:schema": "gql-gen -r dotenv/config --config codegen.ts",
@@ -33,11 +36,13 @@
     "db:migrate": "tsx ./src/cli.ts migrate",
     "db:push": "drizzle-kit push:pg",
     "db:setup": "run-s codegen db:generate",
-    "inngest": "inngest-cli dev -u http://localhost:3002/api/inngest",
     "dev": "tsx watch src/app.ts",
+    "server:start": "tsx src/app.ts",
     "sync:all": "tsx ./src/cli.ts sync --all",
     "sync:missing": "tsx ./src/cli.ts sync --missing",
-    "sync:from-block": "tsx ./src/cli.ts sync --from"
+    "sync:from-block": "tsx ./src/cli.ts sync --from",
+    "sync:clean": "tsx ./src/cli.ts sync --clean",
+    "prepare": "pnpm build:lib"
   },
   "dependencies": {
     "@graphql-tools/load": "8.0.2",
@@ -53,14 +58,16 @@
     "dotenv": "16.4.4",
     "drizzle-orm": "^0.29.3",
     "ethers": "^6.7.1",
+    "express": "5.0.0-beta.1",
     "fuels": "0.74.0",
     "graphql": "^16.8.1",
     "graphql-request": "6.1.0",
     "graphql-tag": "^2.12.6",
     "graphql-yoga": "5.1.1",
-    "inngest": "3.14.0",
     "lodash": "^4.17.21",
+    "npm-run-all": "^4.1.5",
     "pg": "^8.11.3",
+    "pg-boss": "9.0.3",
     "shallow-equal-object": "1.1.1",
     "tai64": "^1.0.0",
     "winston": "3.11.0",
@@ -68,6 +75,7 @@
     "zod": "3.22.4"
   },
   "devDependencies": {
+    "@fuels/ts-config": "^0.17.0",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/introspection": "^4.0.2",
     "@graphql-codegen/schema-ast": "^4.0.2",
@@ -80,7 +88,7 @@
     "drizzle-kit": "^0.20.14",
     "gql-generator": "2.0.0",
     "graphql-config": "5.0.3",
-    "inngest-cli": "0.25.2",
+    "tsup": "8.0.2",
     "tsx": "4.7.1",
     "typescript": "^5.3.3"
   }

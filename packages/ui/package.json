@@ -11,9 +11,7 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": [
-        "./src/theme/tailwind-preset.ts"
-      ]
+      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
     }
   },
   "publishConfig": {
@@ -38,14 +36,11 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
-    "build:storybook": "pnpm ts:check && storybook build -o ../app-explorer/public/ui",
-    "build:preview": "pnpm build:storybook",
-    "build": "tsup --dts",
+    "build:lib": "tsup --dts",
+    "build:preview": "storybook build -o ../app-explorer/public/ui",
     "build:watch": "tsup --watch",
     "dev:storybook": "storybook dev -p 6006",
     "test": "jest --verbose --passWithNoTests",
@@ -54,9 +49,9 @@
     "generate:defs": "node scripts/create-defs.mjs"
   },
   "dependencies": {
-    "@fuel-ts/address": "0.74.0",
-    "@fuel-ts/math": "0.74.0",
-    "@fuels/assets": "0.1.5",
+    "@fuel-ts/address": "0.76.0",
+    "@fuel-ts/math": "0.76.0",
+    "@fuels/assets": "^0.18.0",
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.0.3",
@@ -76,9 +71,9 @@
     "modern-normalize": "2.0.0",
     "next": "14.1.0",
     "radix-ui-themes-with-tailwind": "1.2.6",
-    "react": "^18.2.0",
+    "react": "18.2.0",
     "react-aria": "3.32.1",
-    "react-dom": "^18.2.0",
+    "react-dom": "18.2.0",
     "react-number-format": "5.3.1",
     "react-stately": "3.29.1",
     "react-use": "17.5.0",
@@ -102,8 +97,8 @@
     "@storybook/testing-library": "^0.2.2",
     "@storybook/types": "^8.0.0-beta.5",
     "@types/lodash": "4.14.202",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.19",
+    "@types/react": "18.2.54",
+    "@types/react-dom": "18.2.22",
     "autoprefixer": "10.4.17",
     "globby": "14.0.1",
     "lodash": "^4.17.21",

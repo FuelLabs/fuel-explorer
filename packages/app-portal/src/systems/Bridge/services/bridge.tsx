@@ -1,11 +1,11 @@
 import type { Asset } from '@fuels/assets';
 import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
+  Account as FuelAccount,
   Address as FuelAddress,
   BN,
   Provider as FuelProvider,
 } from 'fuels';
-import type { PublicClient, WalletClient } from 'wagmi';
 import { store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import type {
@@ -24,8 +24,8 @@ import {
   isFuelChain,
 } from '~portal/systems/Chains';
 
-import { FuelWalletLocked } from '@fuel-wallet/sdk';
 import { FUEL_CHAIN } from 'app-commons';
+import { PublicClient, WalletClient } from 'viem';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
@@ -33,7 +33,7 @@ export type PossibleBridgeInputs = {
   ethWalletClient?: WalletClient;
   ethPublicClient?: PublicClient;
   fuelAddress?: FuelAddress;
-  fuelWallet?: FuelWalletLocked;
+  fuelWallet?: FuelAccount;
   asset?: Asset;
 } & Omit<TxEthToFuelInputs['startErc20'], 'amount'> &
   Omit<TxFuelToEthInputs['startFungibleToken'], 'amount'>;

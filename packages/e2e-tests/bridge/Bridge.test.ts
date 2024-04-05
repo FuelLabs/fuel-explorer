@@ -1,21 +1,16 @@
 import {
-  FUEL_MNEMONIC,
   FuelWalletTestHelper,
   getButtonByText,
   getByAriaLabel,
   hasText,
-} from '@fuel-wallet/playwright-utils';
-import type { Locator } from '@playwright/test';
+} from '@fuels/playwright-utils';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
 import type { BigNumberish, WalletUnlocked } from 'fuels';
-import { BaseAssetId, Provider, Wallet, bn, format } from 'fuels';
-import type { HDAccount } from 'viem';
+import { BaseAssetId, bn, format } from 'fuels';
+import type { HDAccount, PublicClient } from 'viem';
 import { http, createPublicClient, getContract } from 'viem';
-import { mnemonicToAccount } from 'viem/accounts';
 import { foundry } from 'viem/chains';
-import type { PublicClient } from 'wagmi';
 
-import { ETH_MNEMONIC } from '../../app-portal/playwright/mocks';
 import { ERC_20 } from '../../app-portal/src/systems/Chains/eth/contracts/Erc20';
 
 import { expect, test } from './fixtures';
@@ -28,9 +23,14 @@ import {
   goToTransactionsPage,
   hasDropdownSymbol,
   proceedAnyways,
+  selectToken,
 } from './utils/bridge';
-
-const { FUEL_PROVIDER_URL, ETH_ERC20, FUEL_FUNGIBLE_ASSET_ID } = process.env;
+import { getBridgeTokenContracts } from './utils/contractIds';
+import {
+  connectToFuel,
+  connectToMetamask,
+  setupFuelWallet,
+} from './utils/wallets';
 
 test.describe('Bridge', () => {
   let client: PublicClient;
@@ -40,68 +40,34 @@ test.describe('Bridge', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
 
   test.beforeEach(async ({ context, extensionId, page }) => {
-    const fuelProvider = await Provider.create(FUEL_PROVIDER_URL);
-
-    const chainName = (await fuelProvider.fetchChain()).name;
-    fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup(
+    const walletSettedUp = await setupFuelWallet({
       context,
       extensionId,
-      FUEL_PROVIDER_URL,
-      chainName,
-    );
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.addAccount();
-    await fuelWalletTestHelper.switchAccount('Account 1');
+      page,
+    });
+    fuelWallet = walletSettedUp.fuelWallet;
+    fuelWalletTestHelper = walletSettedUp.fuelWalletTestHelper;
+    account = walletSettedUp.account;
+
     client = createPublicClient({
       chain: foundry,
       transport: http(),
     });
-    account = mnemonicToAccount(ETH_MNEMONIC);
-    fuelWallet = Wallet.fromMnemonic(FUEL_MNEMONIC, fuelProvider);
-    await page.goto('/');
+
+    await page.goto('/bridge');
   });
-
-  test.afterAll(async ({ context }) => {
-    await context.close();
-  });
-
-  test('e2e', async ({ context, page }) => {
-    await test.step('Check if fuel is available', async () => {
-      const hasFuel = await page.evaluate(() => {
-        return typeof window.fuel === 'object';
-      });
-      expect(hasFuel).toBeTruthy();
-      await page.bringToFront();
-    });
-
-    let bridgePage: Locator;
+  test('e2e', async ({ page, context }) => {
     await test.step('Connect to metamask', async () => {
-      await page.bringToFront();
-      // Go to the bridge page
-      bridgePage = page.locator('[role="link"]').getByText('Bridge');
-      await bridgePage.click();
-
-      // Connect metamask
-      const connectKitButton = getByAriaLabel(page, 'Connect Ethereum Wallet');
-      await connectKitButton.click();
-      const metamaskConnect = getButtonByText(page, 'Metamask');
-      await metamaskConnect.click();
-      await metamask.acceptAccess();
+      await connectToMetamask(page);
     });
 
     await test.step('Connect to Fuel', async () => {
-      // Connect fuel
-      const connectFuel = getByAriaLabel(page, 'Connect Fuel Wallet');
-      await connectFuel.click();
-      await getByAriaLabel(page, 'Connect to Fuel Wallet', true).click();
-      await fuelWalletTestHelper.walletConnect(['Account 2', 'Account 4']);
+      await connectToFuel(page, fuelWalletTestHelper, [
+        'Account 2',
+        'Account 4',
+      ]);
     });
 
-    const INITIATE_DEPOSIT =
-      'Deposit successfully initiated. You may now close the popup.';
-    const INITIATE_WITHDRAW =
-      'Withdraw successfully initiated. You may now close the popup.';
     const DEPOSIT_AMOUNT = '1.12345';
     const WITHDRAW_AMOUNT = '0.012345';
 
@@ -109,6 +75,17 @@ test.describe('Bridge', () => {
     let withdrawEthTxId: string;
     let depositERC20TxId: string;
     let withdrawERC20TxId: string;
+
+    const bridgeTokenContracts = await getBridgeTokenContracts();
+    const { ETH_ERC20, FUEL_TokenAsset } = bridgeTokenContracts;
+
+    erc20Contract = getContract({
+      abi: ERC_20.abi,
+      address: ETH_ERC20 as `0x${string}`,
+      client: {
+        public: client,
+      },
+    });
 
     await test.step('Deposit ETH to Fuel', async () => {
       const preDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
@@ -118,7 +95,7 @@ test.describe('Bridge', () => {
 
       await test.step('Fill data and click on deposit', async () => {
         await hasDropdownSymbol(page, 'ETH');
-        const depositInput = page.locator('input');
+        const depositInput = page.locator('.fuel-InputAmount input');
         await depositInput.fill(DEPOSIT_AMOUNT);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
@@ -132,11 +109,6 @@ test.describe('Bridge', () => {
 
       await test.step('Check if deposit is completed', async () => {
         await page.locator(':nth-match(:text("Done"), 1)').waitFor();
-
-        // Check toast success feedback of tx created
-        // Toast message has delay of 2 seconds
-        await page.waitForTimeout(2000);
-        await hasText(page, INITIATE_DEPOSIT);
         await page.locator(':nth-match(:text("Done"), 3)').waitFor();
 
         const postDepositBalanceEth = await client.getBalance({
@@ -187,8 +159,6 @@ test.describe('Bridge', () => {
         // check if it's settled on the list
         const statusLocator = depositLocator.getByText('Settled');
         await statusLocator.innerText();
-
-        goToBridgePage(page);
       });
     });
 
@@ -199,11 +169,13 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Fill data and click on withdraw', async () => {
+        await goToBridgePage(page);
         await clickWithdrawTab(page);
         await hasDropdownSymbol(page, 'ETH');
-        const withdrawInput = page.locator('input');
+
+        const withdrawInput = page.locator('.fuel-InputAmount input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
-        const withdrawButton = getByAriaLabel(page, 'Withdraw');
+        const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
       });
 
@@ -214,11 +186,6 @@ test.describe('Bridge', () => {
       await test.step('Check transaction submitted to FUEL network', async () => {
         // On withdraw we skip checking loading because it's blazingly fast on fuel
         await page.locator(':nth-match(:text("Done"), 1)').waitFor();
-
-        // Check toast success feedback of tx created
-        // Toast message has delay of 2 seconds
-        await page.waitForTimeout(2000);
-        await hasText(page, INITIATE_WITHDRAW);
 
         // check time left feedback
         const stepSettlementLocator = getByAriaLabel(page, ' left');
@@ -307,11 +274,6 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Faucet TKN', async () => {
-      erc20Contract = getContract({
-        abi: ERC_20.abi,
-        address: ETH_ERC20 as `0x${string}`,
-        publicClient: client,
-      });
       const preFaucetBalance = (await erc20Contract.read.balanceOf([
         account.address,
       ])) as BigNumberish;
@@ -344,8 +306,8 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Select TKN', async () => {
-        const tknButton = page.getByRole('button', { name: 'TKN' });
-        await tknButton.click();
+        const tknItem = getByAriaLabel(page, 'TKN symbol');
+        await tknItem.click();
         await hasDropdownSymbol(page, 'TKN');
       });
 
@@ -359,11 +321,9 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Deposit TKN to Fuel', async () => {
-      await goToBridgePage(page);
       await clickDepositTab(page);
-      const preDepositBalanceFuel = await fuelWallet.getBalance(
-        FUEL_FUNGIBLE_ASSET_ID,
-      );
+      const preDepositBalanceFuel =
+        await fuelWallet.getBalance(FUEL_TokenAsset);
       const preDepositBalanceEth = await erc20Contract.read.balanceOf([
         account.address,
       ]);
@@ -371,11 +331,11 @@ test.describe('Bridge', () => {
 
       await test.step('Fill data and click on deposit', async () => {
         await hasDropdownSymbol(page, 'TKN');
-        // Deposit asset
-        const depositButton = getByAriaLabel(page, 'Deposit', true);
 
-        const depositInput = page.locator('input');
+        // Deposit asset
+        const depositInput = page.locator('.fuel-InputAmount input');
         await depositInput.fill(DEPOSIT_AMOUNT);
+        const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
       });
 
@@ -388,11 +348,6 @@ test.describe('Bridge', () => {
 
       await test.step('Check transaction submitted to ETH network', async () => {
         await page.locator(':nth-match(:text("Done"), 1)').waitFor();
-
-        // Check toast success feedback of tx created
-        // Toast message has delay of 2 seconds
-        await page.waitForTimeout(2000);
-        await hasText(page, INITIATE_DEPOSIT);
         await page.locator(':nth-match(:text("Done"), 2)').waitFor();
       });
 
@@ -457,9 +412,8 @@ test.describe('Bridge', () => {
         await page.locator(':nth-match(:text("Done"), 4)').waitFor();
         await closeTransactionPopup(page);
 
-        const postDepositBalanceFuel = await fuelWallet.getBalance(
-          FUEL_FUNGIBLE_ASSET_ID,
-        );
+        const postDepositBalanceFuel =
+          await fuelWallet.getBalance(FUEL_TokenAsset);
 
         expect(
           postDepositBalanceFuel
@@ -474,9 +428,8 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Withdraw TKN from Fuel to ETH', async () => {
-      const preWithdrawBalanceFuel = await fuelWallet.getBalance(
-        FUEL_FUNGIBLE_ASSET_ID,
-      );
+      const preWithdrawBalanceFuel =
+        await fuelWallet.getBalance(FUEL_TokenAsset);
       const preWithdrawBalanceEth = await erc20Contract.read.balanceOf([
         account.address,
       ]);
@@ -485,10 +438,12 @@ test.describe('Bridge', () => {
       await test.step('Fill data and click on withdraw', async () => {
         await goToBridgePage(page);
         await clickWithdrawTab(page);
+        await selectToken(page, 'TKN');
         await hasDropdownSymbol(page, 'TKN');
-        const withdrawInput = page.locator('input');
+
+        const withdrawInput = page.locator('.fuel-InputAmount input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
-        const withdrawButton = getByAriaLabel(page, 'Withdraw');
+        const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
       });
 
@@ -500,11 +455,6 @@ test.describe('Bridge', () => {
       await test.step('Check transaction submitted to FUEL network', async () => {
         // On withdraw we skip checking loading because it's blazingly fast on fuel
         await page.locator(':nth-match(:text("Done"), 1)').waitFor();
-
-        // Check toast success feedback of tx created
-        // Toast message has delay of 2 seconds
-        await page.waitForTimeout(2000);
-        await hasText(page, INITIATE_WITHDRAW);
 
         // check time left feedback
         const stepSettlementLocator = getByAriaLabel(page, ' left');
@@ -569,9 +519,8 @@ test.describe('Bridge', () => {
         const postWithdrawBalanceEth = await erc20Contract.read.balanceOf([
           account.address,
         ]);
-        const postWithdrawBalanceFuel = await fuelWallet.getBalance(
-          FUEL_FUNGIBLE_ASSET_ID,
-        );
+        const postWithdrawBalanceFuel =
+          await fuelWallet.getBalance(FUEL_TokenAsset);
 
         expect(
           parseFloat(
@@ -678,17 +627,14 @@ test.describe('Bridge', () => {
       await fuelWalletTestHelper.switchAccount('Account 4');
       await goToBridgePage(page);
       await clickDepositTab(page);
-      const assetDropdown = getByAriaLabel(page, 'Coin Selector');
-      await assetDropdown.click();
-      const tknAsset = getByAriaLabel(page, 'TKN symbol');
-      await tknAsset.click();
+      await selectToken(page, 'TKN');
       const preDepositBalanceTkn = await erc20Contract.read.balanceOf([
         account.address,
       ]);
 
       // Deposit asset
       const depositAmount = '1.12345';
-      const depositInput = page.locator('input');
+      const depositInput = page.locator('.fuel-InputAmount input');
       await depositInput.fill(depositAmount);
 
       await test.step('Test deposit alert', async () => {
@@ -697,7 +643,7 @@ test.describe('Bridge', () => {
           page,
           "You don't have any ETH on Fuel to pay for gas. We recommend you bridge some ETH before you bridge any other assets.",
         );
-        const bridgeButton = getByAriaLabel(page, 'Bridge asset anyway');
+        const bridgeButton = getByAriaLabel(page, 'Bridge asset anyway', true);
         await expect(bridgeButton).toHaveText('Bridge asset anyway', {
           useInnerText: true,
         });
@@ -713,9 +659,6 @@ test.describe('Bridge', () => {
         await metamask.confirmTransaction();
 
         await page.locator(':nth-match(:text("Done"), 1)').waitFor();
-        await hasText(page, INITIATE_DEPOSIT);
-
-        // Check steps
         await page.locator(':nth-match(:text("Done"), 2)').waitFor();
 
         const postDepositBalanceTkn = await erc20Contract.read.balanceOf([

@@ -37,7 +37,7 @@ export function TxFuelToEthDialog() {
   return (
     <VStack className="max-w-sm">
       <Dialog.Title className="mb-0">
-        <HStack className="items-center">
+        <HStack gap="2" className="items-center">
           <IconTransferOut size={20} stroke={1.5} /> Withdraw
         </HStack>
       </Dialog.Title>
@@ -80,7 +80,6 @@ export function TxFuelToEthDialog() {
 
 const styles = tv({
   slots: {
-    divider: 'h-[2px] bg-border mt-2 w-full',
     actionButton: 'w-full',
   },
 });

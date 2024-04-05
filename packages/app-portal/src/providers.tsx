@@ -1,24 +1,27 @@
-import { FuelProvider } from '@fuel-wallet/react';
-import type { ReactNode } from 'react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { type ReactNode, useState } from 'react';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StoreProvider } from './store';
 import { ConnectProvider, FuelConnectProvider } from './systems/Settings';
-import { FuelNetworkProvider } from './systems/Settings/providers/FuelNetworkProvider';
 
 type ProvidersProps = {
   children: ReactNode;
 };
 
 export function Providers({ children }: ProvidersProps) {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
-    <StoreProvider>
-      <FuelProvider>
-        <FuelConnectProvider>
-          <ConnectProvider>
-            <FuelNetworkProvider>{children}</FuelNetworkProvider>
-          </ConnectProvider>
-        </FuelConnectProvider>
-      </FuelProvider>
-    </StoreProvider>
+    <QueryClientProvider client={queryClient}>
+      <StoreProvider>
+        <ConnectProvider>
+          <FuelConnectProvider>
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </FuelConnectProvider>
+        </ConnectProvider>
+      </StoreProvider>
+    </QueryClientProvider>
   );
 }

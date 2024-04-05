@@ -1,8 +1,7 @@
 import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
-import type { FuelWalletLocked } from '@fuel-wallet/sdk';
 import type { Fuel } from '@fuels/assets';
 import { addSeconds } from 'date-fns';
-import type { BN, MessageProof } from 'fuels';
+import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
 import {
   Address as FuelAddress,
   Contract,
@@ -14,7 +13,7 @@ import {
   getTransactionsSummaries,
 } from 'fuels';
 import type { WalletClient } from 'viem';
-import type { PublicClient as EthPublicClient } from 'wagmi';
+import type { PublicClient as EthPublicClient } from 'viem';
 
 import { getBridgeSolidityContracts } from 'app-commons';
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
@@ -27,7 +26,7 @@ import { getBlock, getContractTokenId } from '../utils';
 export type TxFuelToEthInputs = {
   startBase: {
     amount?: BN;
-    fuelWallet?: FuelWalletLocked;
+    fuelWallet?: FuelWallet;
     fuelProvider?: FuelProvider;
     ethAddress?: string;
   };
@@ -56,7 +55,6 @@ export type TxFuelToEthInputs = {
     fuelProvider: FuelProvider;
   };
   getMessageRelayed: {
-    messageProof: MessageProof;
     ethPublicClient: EthPublicClient;
     messageId: string;
   };
@@ -335,9 +333,6 @@ export class TxFuelToEthService {
   static async getMessageRelayed(
     input: TxFuelToEthInputs['getMessageRelayed'],
   ) {
-    if (!input?.messageProof) {
-      throw new Error('Need message proof to relay on ETH side');
-    }
     if (!input?.ethPublicClient) {
       throw new Error('Need to connect ETH Wallet');
     }
@@ -389,7 +384,7 @@ export class TxFuelToEthService {
       bridgeSolidityContracts,
     });
 
-    const txHash = await fuelPortal.write.relayMessage([
+    const txHash = await (fuelPortal as any).write.relayMessage([
       relayMessageParams.message,
       relayMessageParams.rootBlockHeader,
       relayMessageParams.blockHeader,

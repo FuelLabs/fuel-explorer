@@ -33,22 +33,26 @@ export const BridgeTxOverview = ({
   return (
     <VStack className={classes.stack()} gap="2">
       <Flex className={classes.txItem()}>
-        <Text className={classes.labelText()}>ID</Text>
+        <Text className={classes.labelText()}>Transaction ID</Text>
         <Link
           isExternal
           href={explorerLink}
           className={classes.linkText()}
           color="green"
           iconSize={16}
+          target="_blank"
         >
           <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
         </Link>
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>Age</Text>
-        <Text className={classes.infoText()}>
-          {isLoading ? <InfoTextLoader /> : calculateDateDiff(date)}
-        </Text>
+
+        {isLoading ? (
+          <InfoTextLoader />
+        ) : (
+          <Text className={classes.infoText()}>{calculateDateDiff(date)}</Text>
+        )}
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>
@@ -61,7 +65,7 @@ export const BridgeTxOverview = ({
           <Flex className={classes.directionInfo()}>
             {ethAsset && (
               <Asset asset={ethAsset} iconSize={16}>
-                <Asset.Icon alt={'Deposit'} />
+                <Asset.Icon alt="Deposit" />
               </Asset>
             )}
             <IconArrowRight size={16} />
@@ -72,28 +76,26 @@ export const BridgeTxOverview = ({
             <FuelLogo size={16} />
             <IconArrowRight size={16} />
             <Asset asset={ethAsset} iconSize={16}>
-              <Asset.Icon alt={'withdrawal'} />
+              <Asset.Icon alt="withdrawal" />
             </Asset>
           </Flex>
         )}
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>Asset</Text>
-        <Flex className={classes.directionInfo()}>
-          {isLoading ? (
-            <InfoTextLoader />
-          ) : (
-            <>
-              <Asset asset={ethAsset} iconSize={17}>
-                <Asset.Icon alt={`Asset ${asset?.symbol}`} />
-              </Asset>
-              <Text aria-label="Asset amount" className={classes.infoText()}>
-                {amount}
-              </Text>
-              <Text className={classes.infoText()}>{asset?.symbol}</Text>
-            </>
-          )}
-        </Flex>
+        {isLoading ? (
+          <InfoTextLoader />
+        ) : (
+          <Flex className={classes.directionInfo()}>
+            <Asset asset={ethAsset} iconSize={17}>
+              <Asset.Icon alt={`Asset ${asset?.symbol}`} />
+            </Asset>
+            <Text aria-label="Asset amount" className={classes.infoText()}>
+              {amount}
+            </Text>
+            <Text className={classes.infoText()}>{asset?.symbol}</Text>
+          </Flex>
+        )}
       </Flex>
     </VStack>
   );
@@ -101,10 +103,10 @@ export const BridgeTxOverview = ({
 
 const styles = tv({
   slots: {
-    stack: 'w-full',
+    stack: 'w-full mt-2',
     txItem: 'flex-wrap justify-between',
     labelText: 'text-xs text-intentsBase11',
-    subtleText: 'text-[10px] leading-tight text-muted',
+    subtleText: 'text-xs leading-tight text-muted',
     infoText: 'text-xs text-heading',
     linkText: 'text-xs',
     directionInfo: 'gap-1 items-center',

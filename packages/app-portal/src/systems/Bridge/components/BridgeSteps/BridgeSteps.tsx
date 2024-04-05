@@ -1,10 +1,10 @@
-import { Box, Flex, Spinner, Text, VStack } from '@fuels/ui';
+import { Box, Flex, HStack, Spinner, Text, VStack } from '@fuels/ui';
 import { IconCheck } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 type Step = {
-  name: ReactNode;
+  name: string;
   status: ReactNode;
   isLoading?: boolean;
   isDone?: boolean;
@@ -23,7 +23,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
       {steps?.map((step, index) => {
         return (
           <Flex
-            key={`${index}_${step.name?.toString()}`}
+            key={step.name}
             className={classes.item()}
             data-done={step.isDone}
             data-selected={step.isSelected}
@@ -32,14 +32,14 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
             <Flex className={classes.action()}>
               <Box className={classes.circle()}>
                 {step.isDone ? (
-                  <IconCheck size={12} className={classes.icon()} />
+                  <IconCheck size={10} className={classes.icon()} />
                 ) : (
                   <Text className={classes.number()}>{index + 1}</Text>
                 )}
               </Box>
               <Text className={classes.name()}>{step.name}</Text>
             </Flex>
-            <Flex align="center">
+            <HStack align="center" gap="1">
               {step.isLoading && <Spinner size={14} />}
               <Text
                 aria-label={`Step ${step.name?.toString()}: ${step.status}`}
@@ -47,7 +47,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
               >
                 {step.status}
               </Text>
-            </Flex>
+            </HStack>
           </Flex>
         );
       })}
@@ -57,14 +57,14 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
 
 const styles = tv({
   slots: {
-    item: 'group flex justify-between px-3 py-2 [&_~_&]:border-t [&_~_&]:border-border',
+    item: 'group flex justify-between p-3 [&_~_&]:border-t [&_~_&]:border-border',
     stack: 'gap-0 rounded-md border border-border bg-inputBaseBg',
     action: 'gap-2 items-center',
     name: 'leading-tight text-xs text-heading',
     status: 'text-xs text-muted',
-    icon: 'text-gray-1',
+    icon: 'text-white',
     number: [
-      'flex justify-center text-xs',
+      'flex justify-center text-[9px]',
       'group-[&[data-selected=true]]:text-gray-11',
     ],
     circle: [

@@ -1,5 +1,8 @@
+import { setTimeout } from 'timers/promises';
 import { env } from './config';
 import { GraphQLServer } from './graphql/GraphQLServer';
+import { db } from './infra/database/Db';
+import { QueueNames, queue } from './infra/queue';
 import { Server } from './infra/server/App';
 
 const port = Number(env.get('SERVER_PORT'));
@@ -11,8 +14,19 @@ const httpServer = new Server();
 const app = httpServer.setup();
 
 app.use(yoga.graphqlEndpoint, yoga);
-httpServer.listen(app, port).then(() => {
+httpServer.listen(app, port).then(async () => {
   console.log(
     `📟 GraphQL server is running on http://localhost:${port}${yoga.graphqlEndpoint}`,
   );
+
+  if (process.env.DB_MIGRATE) {
+    console.log('📦 Running database migrations...');
+    await db.migrate();
+  }
+
+  if (process.env.SYNC_MISSING) {
+    console.log('🕐 Syncing missing blocks in 5 seconds...');
+    await setTimeout(5000);
+    await queue.push(QueueNames.SYNC_MISSING, undefined);
+  }
 });

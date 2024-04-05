@@ -3,6 +3,7 @@ import type { Config } from 'tailwindcss';
 import plugin from 'tailwindcss/plugin';
 
 export default {
+  darkMode: 'selector',
   presets: [preset],
   content: [
     '../app-commons/src/**/*.{js,jsx,ts,tsx}',

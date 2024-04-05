@@ -1,4 +1,3 @@
-import { RetryAfterError } from 'inngest';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
 import { InputEntity } from '~/domain/Input/InputEntity';
 import { InputRepository } from '~/domain/Input/InputRepository';
@@ -8,13 +7,9 @@ import { OutputRepository } from '~/domain/Output/OutputRepository';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import {
-  InngestEvents,
-  InngestInputs,
-  inngest,
-} from '~/infra/inngest/InngestClient';
+import { QueueData, QueueInputs, QueueNames } from '~/infra/queue';
 
-type Input = InngestInputs[InngestEvents.SYNC_TRANSACTION];
+type Input = QueueInputs[QueueNames.SYNC_TRANSACTION];
 
 export class SyncTransactions {
   async execute({ txHash, block, index }: Input) {
@@ -96,23 +91,15 @@ export class SyncTransactions {
   }
 }
 
-export const syncTransactions = inngest.client().createFunction(
-  { id: 'sync:transaction' },
-  {
-    event: InngestEvents.SYNC_TRANSACTION,
-    concurrency: 1,
-    debounce: { key: 'transaction', period: '1s' },
-  },
-  async ({ attempt, event: { data } }) => {
-    try {
-      console.log(`Syncing transaction ${data.txHash}`);
-      const syncTransactions = new SyncTransactions();
-      return syncTransactions.execute(data);
-    } catch (error) {
-      console.error(error);
-      throw new RetryAfterError(`Sync transactions attempt ${attempt}`, '1s', {
-        cause: error,
-      });
-    }
-  },
-);
+export const syncTransactions = async ({ data }: QueueData<Input>) => {
+  try {
+    console.log(`Syncing transaction ${data.txHash}`);
+    const syncTransactions = new SyncTransactions();
+    return syncTransactions.execute(data);
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Sync transactions ${data.txHash}`, {
+      cause: error,
+    });
+  }
+};

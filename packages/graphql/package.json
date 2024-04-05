@@ -9,19 +9,19 @@
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
   "scripts": {
-    "build": "run-s codegen:fuel build:lib",
-    "build:lib": "tsup",
-    "build:watch": "pnpm build:lib --watch",
+    "build:lib": "run-s codegen:fuel build:sdk",
+    "build:sdk": "tsup",
+    "build:watch": "pnpm build:sdk --watch",
     "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts",
     "codegen:app": "gql-gen -r dotenv/config --config codegen.ts",
     "dev": "pnpm build:watch",
     "server:start": "node ./dist/index.js",
     "fix:generated": "node ./scripts/fix-generated.mjs",
     "ts:check": "tsc --noEmit",
-    "prepare": "pnpm build"
+    "prepare": "pnpm build:lib"
   },
   "dependencies": {
-    "@fuel-ts/math": "0.74.0",
+    "@fuel-ts/math": "0.76.0",
     "@graphql-tools/delegate": "^10.0.3",
     "@graphql-tools/schema": "^10.0.2",
     "@graphql-tools/stitch": "^9.0.3",
@@ -49,7 +49,7 @@
   "devDependencies": {
     "@babel/cli": "7.23.9",
     "@babel/core": "^7.23.9",
-    "@fuels/ts-config": "^0.15.1",
+    "@fuels/ts-config": "^0.18.0",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/introspection": "4.0.2",
     "@graphql-codegen/schema-ast": "4.0.2",

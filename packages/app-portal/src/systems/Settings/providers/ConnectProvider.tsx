@@ -1,19 +1,23 @@
-import { ALCHEMY_ID, INFURA_ID, WALLETCONNECT_ID } from 'app-commons';
+import {
+  ALCHEMY_ID,
+  INFURA_ID,
+  IS_ETH_DEV_CHAIN,
+  WALLETCONNECT_ID,
+} from 'app-commons';
 import { ConnectKitProvider } from 'connectkit';
 import { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
-import type { ReactNode } from 'react';
-import type { ChainProviderFn } from 'wagmi';
-import { WagmiConfig, configureChains, createConfig } from 'wagmi';
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { infuraProvider } from 'wagmi/providers/infura';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
-import { publicProvider } from 'wagmi/providers/public';
+import { type ReactNode } from 'react';
+import { fallback } from 'viem';
+import { http, WagmiProvider, createConfig } from 'wagmi';
+import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
 import { ETH_CHAIN } from '~portal/systems/Chains/config';
+
+declare module 'wagmi' {
+  interface Register {
+    config: typeof config;
+  }
+}
 
 const app = {
   name: 'Fuel Bridge',
@@ -23,64 +27,43 @@ const app = {
 };
 
 const chainsToConnect = [ETH_CHAIN];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const providers: ChainProviderFn<any>[] = [
-  alchemyProvider({ apiKey: ALCHEMY_ID as string }),
-  infuraProvider({ apiKey: INFURA_ID as string }),
-  jsonRpcProvider({
-    rpc: (c) => {
-      return { http: c.rpcUrls.default.http[0] };
-    },
-  }),
-  publicProvider(),
-];
-export const { publicClient, chains, webSocketPublicClient } = configureChains(
-  chainsToConnect,
-  providers,
-);
-const connectKitClient = {
-  autoConnect: true,
-  connectors: [
-    new MetaMaskConnector({
-      chains,
-      options: {
-        shimDisconnect: true,
-        UNSTABLE_shimOnConnectSelectAccount: true,
-      },
-    }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        appName: app.name,
-        headlessMode: true,
-      },
-    }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        showQrModal: false,
-        projectId: WALLETCONNECT_ID as string,
-        metadata: app,
-      },
-    }),
-    new InjectedConnector({
-      chains,
-      options: {
-        shimDisconnect: true,
-        name: (detectedName) =>
-          `Injected (${
-            typeof detectedName === 'string'
-              ? detectedName
-              : detectedName.join(', ')
-          })`,
-      },
-    }),
-  ],
-  publicClient,
-  webSocketPublicClient,
+
+const chainName = ETH_CHAIN?.name.toLowerCase();
+const transports = {
+  [chainsToConnect[0].id]: IS_ETH_DEV_CHAIN
+    ? http()
+    : fallback(
+        [
+          http(`https://eth-${chainName}.g.alchemy.com/v2/${ALCHEMY_ID}`),
+          http(`https://${chainName}.infura.io/v3/${INFURA_ID}`),
+          http(),
+        ],
+        { rank: false },
+      ),
 };
 
-const config = createConfig(connectKitClient);
+const connectors: any = [
+  injected({
+    shimDisconnect: true,
+    target: 'metaMask',
+  }),
+  coinbaseWallet({ appName: app.name, headlessMode: true }),
+];
+if (WALLETCONNECT_ID) {
+  connectors.push(
+    walletConnect({
+      projectId: WALLETCONNECT_ID,
+      showQrModal: false,
+    }),
+  );
+}
+
+export const config = createConfig({
+  chains: chainsToConnect as any,
+  connectors,
+  transports,
+  ssr: true,
+});
 
 type ProvidersProps = {
   children: ReactNode;
@@ -90,8 +73,8 @@ export function ConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
 
   return (
-    <WagmiConfig config={config}>
+    <WagmiProvider config={config}>
       <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
-    </WagmiConfig>
+    </WagmiProvider>
   );
 }

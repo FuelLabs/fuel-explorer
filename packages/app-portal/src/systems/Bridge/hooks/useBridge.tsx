@@ -16,6 +16,7 @@ import {
 } from '~portal/systems/Chains';
 
 import { FUEL_CHAIN } from 'app-commons';
+import { useEthBalance } from '~portal/systems/Chains/eth/hooks/useEthBalance';
 import { BridgeStatus } from '../machines';
 import type { BridgeMachineState } from '../machines';
 import { getChainFromUrlParam } from '../utils';
@@ -79,14 +80,14 @@ export function useBridge() {
     address: ethAddress,
     handlers: ethHandlers,
     isConnecting: ethIsConnecting,
-    balance: ethBalance,
     walletClient: ethWalletClient,
     publicClient: ethPublicClient,
-  } = useEthAccountConnection({
-    erc20Address: ethAssetAddress?.startsWith('0x')
+  } = useEthAccountConnection();
+  const { ethBalance } = useEthBalance(
+    ethAssetAddress?.startsWith('0x')
       ? (ethAssetAddress as `0x${string}`)
       : undefined,
-  });
+  );
 
   const {
     account: fuelAccount,
@@ -94,6 +95,7 @@ export function useBridge() {
     handlers: fuelHandlers,
     isConnecting: fuelIsConnecting,
     balance: fuelBalance,
+    wallet: fuelWallet,
     provider: fuelProvider,
   } = useFuelAccountConnection({
     assetId: fuelAssetAddress?.startsWith('0x')
@@ -120,6 +122,7 @@ export function useBridge() {
 
     return bn(0);
   }, [ethBalance, fromNetwork, fuelBalance]);
+
   const status = store.useSelector(
     Services.bridge,
     selectors.status({ ethAccount: ethAddress, fuelAccount, assetBalance }),
@@ -127,6 +130,7 @@ export function useBridge() {
 
   const router = useRouter();
   const params = useSearchParams();
+
   // console.log(params);
   // const location = useLocation();
   // const queryParams = new URLSearchParams(location.search);
@@ -204,7 +208,7 @@ export function useBridge() {
           fuelProvider,
           ethAddress,
           asset,
-          ethPublicClient,
+          ethPublicClient: ethPublicClient as any,
         }),
       connectFrom: () => connectNetwork(fromNetwork),
       connectTo: () => connectNetwork(toNetwork),

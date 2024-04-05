@@ -46,13 +46,7 @@ export const EthTxCache = {
   setTxReceipt: (txId: string, receiptInfo: GetReceiptsInfoReturn) => {
     const receiptInfoToStringify = {
       ...receiptInfo,
-      erc20Token: receiptInfo.erc20Token && {
-        ...receiptInfo.erc20Token,
-        totalSupply: {
-          ...receiptInfo.erc20Token?.totalSupply,
-          value: receiptInfo.erc20Token?.totalSupply.value.toString(),
-        },
-      },
+      erc20Token: receiptInfo.erc20Token,
       nonce: receiptInfo.nonce?.toString(),
       amount: receiptInfo.amount?.toString(),
       blockdate: receiptInfo.blockDate?.toUTCString(), // This is necessary bc stringyfing a Date type loses info
@@ -76,21 +70,11 @@ export const EthTxCache = {
         decimals: number;
         name: string;
         symbol: string;
-        totalSupply: {
-          formatted: string;
-          value: string;
-        };
       };
     };
     const typedReceipt = {
       ...parsedReceipt,
-      erc20Token: parsedReceipt.erc20Token && {
-        ...parsedReceipt.erc20Token,
-        totalSupply: {
-          ...parsedReceipt.erc20Token.totalSupply,
-          value: BigInt(parsedReceipt.erc20Token.totalSupply.value),
-        },
-      },
+      erc20Token: parsedReceipt.erc20Token,
       nonce: bn(parsedReceipt.nonce),
       amount: bn(parsedReceipt.amount),
       blockDate: new Date(parsedReceipt.blockDate!),

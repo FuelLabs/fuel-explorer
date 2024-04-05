@@ -1,5 +1,5 @@
-import type { FuelWalletLocked as FuelWallet } from '@fuel-wallet/sdk';
 import type {
+  Account as FuelWallet,
   Address as FuelAddress,
   BN,
   Message as FuelMessage,
@@ -7,13 +7,12 @@ import type {
   Provider as FuelProvider,
   TransactionResult,
 } from 'fuels';
-import type { PublicClient } from 'wagmi';
-import type { FetchTokenResult } from 'wagmi/actions';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
 import { toast } from '@fuels/ui';
+import { PublicClient } from 'viem';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
 import { EthTxCache } from '../utils';
@@ -29,7 +28,7 @@ type MachineContext = {
   fuelMessage?: FuelMessage;
   ethPublicClient?: PublicClient;
   ethDepositBlockHeight?: string;
-  erc20Token?: FetchTokenResult;
+  erc20Token?: any;
   amount?: BN;
   fuelRecipient?: FuelAddress;
   blockDate?: Date;
@@ -393,6 +392,7 @@ export const txEthToFuelMachine = createMachine(
         if (!receiptInfo) {
           throw new Error('No receipt');
         }
+
         return {
           erc20Token: receiptInfo.erc20Token,
           ethTxNonce: receiptInfo.nonce,

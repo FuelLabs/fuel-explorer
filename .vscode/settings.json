@@ -9,5 +9,8 @@
   },
   "tailwindCSS.experimental.classRegex": [
     ["tv\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ]
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }

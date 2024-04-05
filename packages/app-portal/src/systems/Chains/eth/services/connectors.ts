@@ -18,8 +18,10 @@ export class EthConnectorService {
     const contract = getContract({
       abi: FUEL_ERC_20_GATEWAY.abi,
       address: bridgeSolidityContracts.FuelERC20Gateway,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;
@@ -35,8 +37,10 @@ export class EthConnectorService {
     const contract = getContract({
       abi: FUEL_MESSAGE_PORTAL.abi,
       address: bridgeSolidityContracts.FuelMessagePortal,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;
@@ -52,8 +56,10 @@ export class EthConnectorService {
     const contract = getContract({
       abi: ERC_20.abi,
       address,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;
@@ -69,8 +75,10 @@ export class EthConnectorService {
     const contract = getContract({
       abi: FUEL_CHAIN_STATE.abi,
       address: bridgeSolidityContracts.FuelChainState,
-      walletClient,
-      publicClient,
+      client: {
+        public: publicClient!,
+        wallet: walletClient,
+      },
     });
 
     return contract;

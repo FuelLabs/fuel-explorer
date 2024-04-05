@@ -1,4 +1,5 @@
 import graphqlLoaderPluginPkg from '@luckycatfactory/esbuild-graphql-loader';
+import 'dotenv/config';
 import { execa } from 'execa';
 import getPort from 'get-port';
 import { defineConfig } from 'tsup';
@@ -14,12 +15,13 @@ export default defineConfig((options) => ({
   outDir: 'dist',
   splitting: true,
   format: ['esm', 'cjs'],
+  external: ['@fuels/assets'],
   sourcemap: true,
   clean: false,
   dts: !isServerBuild,
   minify: false,
   esbuildPlugins: [graphqlLoaderPlugin()],
-  entry: { index: 'src/bin/index.ts' },
+  entry: ['src/bin/index.ts'],
   async onSuccess() {
     if (isServerBuild) return;
     const cmd = execa('node', ['--import', 'tsx/esm', './dist/index.js'], {

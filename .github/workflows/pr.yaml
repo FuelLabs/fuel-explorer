@@ -10,12 +10,14 @@ concurrency:
 
 env:
   COVERAGE_FILE: report.json
+  NEXT_PUBLIC_FUEL_CHAIN_NAME: fuelBeta5 # For Next.JS apps
+  FUEL_PROVIDER: https://beta-5.fuel.network/graphql # For GraphQL apps
 
 jobs:
   validate-title:
     name: Validate PR Title
     if: ${{ github.head_ref != 'changeset-release/master' }}
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - uses: amannn/action-semantic-pull-request@v4
         env:
@@ -24,7 +26,7 @@ jobs:
   audit:
     name: Audit
     if: ${{ github.head_ref != 'changeset-release/master' }}
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - uses: actions/checkout@v3
       - uses: FuelLabs/github-actions/setups/node@master
@@ -38,7 +40,7 @@ jobs:
   lint-and-test:
     name: Lint
     if: ${{ github.head_ref != 'changeset-release/master' }}
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - uses: actions/checkout@v3
       - uses: FuelLabs/github-actions/setups/node@master

@@ -1,37 +1,25 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["NODE_ENV", "IS_PREVIEW", "FUEL_PROVIDER"],
+  "globalEnv": ["NODE_ENV", "IS_PREVIEW"],
   "pipeline": {
     "ts:check": {
-      "dependsOn": ["^build"],
-      "cache": true
+      "outputs": ["app-portal/**/*.typegen.ts"],
+      "cache": false
     },
-    "build": {
+    "build:lib": {
       "outputs": ["dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build"],
-      "cache": true
+      "cache": false
     },
     "build:preview": {
       "outputs": [
-        "app-explorer/public/portal/**",
-        "app-explorer/public/ui/**",
         "dist/**",
         "build/**",
         ".next/**",
-        "public/**"
+        "app-explorer/public/ui/**",
+        "app-explorer/public/storybook/**"
       ],
-      "dependsOn": ["^build"],
-      "cache": true
-    },
-    "app-explorer#build:preview": {
-      "outputs": ["public/**", "dist/**", "build/**", ".next/**"],
-      "dependsOn": ["^build", "app-portal#build:preview"],
-      "cache": true
-    },
-    "build:storybook": {
-      "outputs": ["storybook-static/**"],
-      "dependsOn": ["^build"],
-      "cache": true
+      "dependsOn": ["^build:lib", "^ts:check"],
+      "cache": false
     },
     "test": {
       "outputs": ["**/**/report.json", "coverage/**"],
@@ -39,6 +27,7 @@
       "outputMode": "full"
     },
     "dev": {
+      "dependsOn": ["^build:lib", "^ts:check"],
       "cache": false
     },
     "lint": {

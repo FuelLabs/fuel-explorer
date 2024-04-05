@@ -36,8 +36,8 @@ export async function getBridgeTokenContracts() {
     return bridgeTokenContract;
   }
 
-  const ETH_ERC20 = '0xC6387efAD0F184a90B34f397C3d6Fd63135ef790';
   if (ETH_CHAIN_NAME === 'sepolia') {
+    const ETH_ERC20 = '0xC6387efAD0F184a90B34f397C3d6Fd63135ef790';
     if (FUEL_CHAIN_NAME === 'fuelBeta5Dev') {
       bridgeTokenContract = {
         ETH_ERC20,
@@ -48,7 +48,7 @@ export async function getBridgeTokenContracts() {
       return bridgeTokenContract;
     }
 
-    if (process.env.VITE_FUEL_CHAIN === 'fuelBeta5') {
+    if (FUEL_CHAIN_NAME === 'fuelBeta5') {
       bridgeTokenContract = {
         ETH_ERC20,
         FUEL_TokenContract:
@@ -99,5 +99,5 @@ export async function getBridgeSolidityContracts() {
     }
   }
 
-  return bridgeSolidityContracts || {};
+  return bridgeSolidityContracts;
 }
