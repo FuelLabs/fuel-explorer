@@ -34,6 +34,8 @@ export class BridgeBlockRepository {
       .onConflictDoUpdate({
         target: BridgeBlocksTable._id,
         set: {
+          hash: sql.raw('excluded.hash'),
+          timestamp: sql.raw('excluded.timestamp'),
           data: sql.raw('excluded.data'),
         },
       })
