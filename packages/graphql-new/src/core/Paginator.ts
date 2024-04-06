@@ -1,5 +1,5 @@
 import { SQL, and, asc, desc, gt, lt } from 'drizzle-orm';
-import { PgColumn, PgTableWithColumns } from 'drizzle-orm/pg-core';
+import { PgTableWithColumns } from 'drizzle-orm/pg-core';
 import { db } from '~/infra/database/Db';
 import { Entity } from './Entity';
 import { Identifier } from './Identifier';
@@ -28,8 +28,6 @@ export type PaginatedResults<T> = {
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export class Paginator<Source extends PgTableWithColumns<any>> {
-  private maxId!: Cursor;
-
   constructor(
     private source: Source,
     private params: PaginatorParams,
@@ -39,11 +37,26 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
   async getQueryPaginationConfig<T extends SQL<any>>(_lastSql?: T) {
     const { source, params } = this;
     const { first, after, before, last } = params;
-    const idField = source._id as PgColumn;
+    const idField = source._id;
     const order = first ? asc : desc;
     const whereBy = first ? gt : lt;
     const cursor = after || before;
     const limit = first || last;
+
+    return {
+      idField,
+      order,
+      whereBy,
+      cursor,
+      limit,
+      limitQuery: Number(limit) + 1,
+    };
+  }
+
+  async getMaxId(): Promise<Cursor> {
+    const { source, params } = this;
+    const { last } = params;
+    const idField = source._id;
 
     // Query last id required for reverse pagination
     const [lastItem] = last
@@ -55,23 +68,14 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
           .limit(1)
       : [{ _id: 0 }];
 
-    return {
-      idField,
-      order,
-      whereBy,
-      cursor,
-      limit,
-      limitQuery: Number(limit) + 1,
-      maxId: lastItem._id,
-    };
+    return lastItem._id;
   }
 
   async getPaginatedResult<S extends SQL<unknown>>(
     config: Awaited<ReturnType<typeof this.getQueryPaginationConfig>>,
     customWhere?: S,
   ) {
-    const { idField, order, whereBy, cursor, limit, maxId } = config;
-    this.maxId = maxId;
+    const { idField, order, whereBy, cursor, limit } = config;
 
     let query = db
       .connection()
@@ -118,12 +122,12 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     return last ? last._id.value() : null;
   }
 
-  createPaginatedResult<T, R extends { id: Edge<T>['cursor'] }>(
+  async createPaginatedResult<T, R extends { id: Edge<T>['cursor'] }>(
     items: T[],
     startCursor: Cursor,
     endCursor: Cursor | null,
     iterator: (node: T) => R,
-  ): PaginatedResults<R> {
+  ): Promise<PaginatedResults<R>> {
     const { first, last } = this.params;
     const limit = (first || last) ?? 1;
     const nodes = items.slice(0, limit).map((item) => item);
@@ -133,9 +137,10 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
       cursor: node.id,
     }));
 
+    const maxId = await this.getMaxId();
     const hasNextPage = first
       ? items.length > limit
-      : this.compareCursor(endCursor ?? 0, this.maxId.toString()) < 0;
+      : this.compareCursor(endCursor ?? 0, maxId.toString()) < 0;
     const hasPreviousPage = first
       ? this.compareCursor(startCursor.toString(), '1') > 0
       : items.length > limit;
