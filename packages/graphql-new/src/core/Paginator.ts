@@ -33,8 +33,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     private params: PaginatorParams,
   ) {}
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  async getQueryPaginationConfig<T extends SQL<any>>(_lastSql?: T) {
+  async getQueryPaginationConfig() {
     const { source, params } = this;
     const { first, after, before, last } = params;
     const idField = source._id;
@@ -49,26 +48,49 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
       whereBy,
       cursor,
       limit,
-      limitQuery: Number(limit) + 1,
     };
   }
 
-  async getMaxId(): Promise<Cursor> {
+  async hasPreviousPage(startCursor: Cursor): Promise<boolean> {
     const { source, params } = this;
     const { last } = params;
+
     const idField = source._id;
+    const operator = last ? gt : lt;
 
-    // Query last id required for reverse pagination
-    const [lastItem] = last
-      ? await db
-          .connection()
-          .select()
-          .from(source)
-          .orderBy(desc(idField))
-          .limit(1)
-      : [{ _id: 0 }];
+    const total = await db
+      .connection()
+      .select({
+        [source._id.name]: idField,
+      })
+      .from(source)
+      .where(operator(idField, startCursor))
+      .limit(1);
 
-    return lastItem._id;
+    return total.length > 0;
+  }
+
+  async hasNextPage(endCursor: Cursor | null): Promise<boolean> {
+    if (!endCursor) {
+      return false;
+    }
+
+    const { source, params } = this;
+    const { last } = params;
+
+    const idField = source._id;
+    const operator = last ? lt : gt;
+
+    const total = await db
+      .connection()
+      .select({
+        [source._id.name]: idField,
+      })
+      .from(source)
+      .where(operator(idField, endCursor))
+      .limit(1);
+
+    return total.length > 0;
   }
 
   async getPaginatedResult<S extends SQL<unknown>>(
@@ -85,16 +107,21 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
       .$dynamic();
 
     if (cursor) {
-      const cursorWhere = whereBy(idField, Number(cursor));
+      const cursorWhere = whereBy(idField, cursor);
       query = customWhere
         ? query.where(and(cursorWhere, customWhere))
         : query.where(cursorWhere);
     }
+
     if (!cursor && customWhere) {
       query = query.where(customWhere);
     }
 
-    return query.limit(Number(limit) + 1);
+    if (limit) {
+      return query.limit(limit);
+    }
+
+    return query;
   }
 
   async validateParams() {
@@ -117,37 +144,30 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     const first = items[0];
     return first ? first._id.value() : 0;
   }
+
   getEndCursor<T extends Entity<unknown, Identifier<Cursor>>>(items: T[]) {
     const last = items[items.length - 1];
     return last ? last._id.value() : null;
   }
 
   async createPaginatedResult<T, R extends { id: Edge<T>['cursor'] }>(
-    items: T[],
+    nodes: T[],
     startCursor: Cursor,
     endCursor: Cursor | null,
     iterator: (node: T) => R,
   ): Promise<PaginatedResults<R>> {
-    const { first, last } = this.params;
-    const limit = (first || last) ?? 1;
-    const nodes = items.slice(0, limit).map((item) => item);
     const newNodes = nodes.map(iterator);
-    const newEdges = newNodes.map((node) => ({
+    const edges = newNodes.map((node) => ({
       node,
       cursor: node.id,
     }));
 
-    const maxId = await this.getMaxId();
-    const hasNextPage = first
-      ? items.length > limit
-      : this.compareCursor(endCursor ?? 0, maxId.toString()) < 0;
-    const hasPreviousPage = first
-      ? this.compareCursor(startCursor.toString(), '1') > 0
-      : items.length > limit;
+    const hasPreviousPage = await this.hasPreviousPage(startCursor);
+    const hasNextPage = await this.hasNextPage(endCursor);
 
     return {
       nodes: newNodes,
-      edges: newEdges,
+      edges,
       pageInfo: {
         hasNextPage,
         hasPreviousPage,
@@ -155,9 +175,5 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
         startCursor,
       },
     };
-  }
-
-  private compareCursor(cursor: Cursor, other: Cursor | null) {
-    return `${other}`.localeCompare(`${cursor}`, undefined, { numeric: true });
   }
 }

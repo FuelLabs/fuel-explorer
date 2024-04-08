@@ -1,4 +1,4 @@
-import { eq, like, sql } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 import { Paginator, PaginatorParams } from '~/core/Paginator';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
 import { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
@@ -20,8 +20,7 @@ export class TransactionRepository {
 
   async findMany(params: PaginatorParams) {
     const paginator = new Paginator(TransactionsTable, params);
-    const lastSql = this.getLastSql();
-    const config = await paginator.getQueryPaginationConfig(lastSql);
+    const config = await paginator.getQueryPaginationConfig();
     const results = await paginator.getPaginatedResult(config);
     return results.map((item) => TransactionEntity.create(item));
   }
@@ -31,8 +30,7 @@ export class TransactionRepository {
     const paginator = new Paginator(TransactionsTable, params);
     await paginator.validateParams();
 
-    const lastSql = this.getLastSql();
-    const config = await paginator.getQueryPaginationConfig(lastSql);
+    const config = await paginator.getQueryPaginationConfig();
     const paginateFn = like(TransactionsTable.accountIndex, `%${owner}%`);
     const results = await paginator.getPaginatedResult(config, paginateFn);
 
@@ -54,10 +52,5 @@ export class TransactionRepository {
       .values(dbItem)
       .returning();
     return TransactionEntity.create(item);
-  }
-
-  private getLastSql() {
-    const idField = TransactionsTable._id;
-    return sql`MAX(CAST(SUBSTRING(${idField} FROM POSITION('-' IN ${idField}) + 1) AS INTEGER))`;
   }
 }
