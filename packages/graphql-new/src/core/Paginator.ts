@@ -52,19 +52,15 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
   }
 
   async hasPreviousPage(startCursor: Cursor): Promise<boolean> {
-    const { source, params } = this;
-    const { last } = params;
-
-    const idField = source._id;
-    const operator = last ? gt : lt;
+    const idField = this.source._id;
 
     const total = await db
       .connection()
       .select({
-        [source._id.name]: idField,
+        [idField.name]: idField,
       })
-      .from(source)
-      .where(operator(idField, startCursor))
+      .from(this.source)
+      .where(lt(idField, startCursor))
       .limit(1);
 
     return total.length > 0;
@@ -75,19 +71,15 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
       return false;
     }
 
-    const { source, params } = this;
-    const { last } = params;
-
-    const idField = source._id;
-    const operator = last ? lt : gt;
+    const idField = this.source._id;
 
     const total = await db
       .connection()
       .select({
-        [source._id.name]: idField,
+        [idField.name]: idField,
       })
-      .from(source)
-      .where(operator(idField, endCursor))
+      .from(this.source)
+      .where(gt(idField, endCursor))
       .limit(1);
 
     return total.length > 0;
@@ -97,6 +89,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     config: Awaited<ReturnType<typeof this.getQueryPaginationConfig>>,
     customWhere?: S,
   ) {
+    const { last } = this.params;
     const { idField, order, whereBy, cursor, limit } = config;
 
     let query = db
@@ -118,10 +111,15 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     }
 
     if (limit) {
-      return query.limit(limit);
+      query = query.limit(limit);
     }
 
-    return query;
+    const result = await query;
+    if (last) {
+      return result.reverse();
+    }
+
+    return result;
   }
 
   async validateParams() {
