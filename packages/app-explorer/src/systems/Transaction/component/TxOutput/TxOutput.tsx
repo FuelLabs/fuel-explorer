@@ -3,6 +3,7 @@ import type {
   GroupedOutput,
   TransactionItemFragment,
 } from '@fuel-explorer/graphql';
+import type { GQLTransaction } from '@fuel-explorer/graphql-new';
 import {
   Address,
   Card,
@@ -36,7 +37,7 @@ function getTooltipText(tx: TransactionItemFragment, output: GroupedOutput) {
 }
 
 export type TxOutputProps = CardProps & {
-  tx: TransactionItemFragment;
+  tx: GQLTransaction;
   output: GroupedOutput;
 };
 

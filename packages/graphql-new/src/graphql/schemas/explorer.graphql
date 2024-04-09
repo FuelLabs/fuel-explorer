@@ -39,7 +39,7 @@ enum GroupedInputType {
 
 type GroupedInputCoin {
   assetId: AssetId
-  inputs: [Input]
+  inputs: [Input!]
   owner: Address
   totalAmount: U64
   type: GroupedInputType
@@ -47,13 +47,13 @@ type GroupedInputCoin {
 
 type GroupedInputContract {
   contractId: ContractId
-  inputs: [Input]
+  inputs: [Input!]
   type: GroupedInputType
 }
 
 type GroupedInputMessage {
   data: HexString
-  inputs: [Input]
+  inputs: [Input!]
   recipient: Address
   sender: Address
   type: GroupedInputType
@@ -132,7 +132,7 @@ type TransactionGasCosts {
   fee: U64
 }
 
-type Transaction {
+extend type Transaction {
   blockHeight: U32
   gasCosts: TransactionGasCosts!
   groupedInputs: [GroupedInput]!

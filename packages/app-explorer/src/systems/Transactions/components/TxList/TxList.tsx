@@ -1,6 +1,9 @@
 'use client';
 
-import type { GQLTransactionsQuery } from '@fuel-explorer/graphql-new';
+import type {
+  GQLTransactionEdge,
+  GQLTransactionsQuery,
+} from '@fuel-explorer/graphql-new';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
@@ -10,7 +13,7 @@ import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
-  transactions: GQLTransactionsQuery['transactions']['nodes'];
+  transactions: GQLTransactionEdge[];
   pageInfo?: GQLTransactionsQuery['transactions']['pageInfo'];
   hidePagination?: boolean;
   isLoading?: boolean;
