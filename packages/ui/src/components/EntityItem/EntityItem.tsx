@@ -14,7 +14,7 @@ export type EntityItemProps = Omit<HStackProps, 'size'> &
   EntityItemVariantProps;
 
 export type EntityItemSlotProps = BoxProps;
-export type EntityItemInfo = BoxProps & {
+export type EntityItemInfo = Omit<BoxProps, 'title'> & {
   title: ReactNode;
   id?: string;
   shortId?: boolean;
