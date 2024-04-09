@@ -1,7 +1,7 @@
 import {
   GQLGroupedOutputChanged,
   GQLGroupedOutputCoin,
-  GQLGroupedOutputContractCreadted,
+  GQLGroupedOutputContractCreated,
   GQLOutput,
 } from '~/graphql/generated/sdk';
 import { OutputChangedFactory } from './OutputChangedFactory';
@@ -11,7 +11,7 @@ import { OutputContractCreatedFactory } from './OutputContractCreatedFactory';
 export type GroupedOutputsValue = (
   | GQLGroupedOutputCoin
   | GQLGroupedOutputChanged
-  | GQLGroupedOutputContractCreadted
+  | GQLGroupedOutputContractCreated
 )[];
 
 export class GroupedOutputsFactory {

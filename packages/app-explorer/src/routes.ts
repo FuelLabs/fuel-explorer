@@ -1,7 +1,10 @@
 import { route } from 'app-commons';
 
 export const Routes = {
-  home: route<[page: string]>('/?page=:page'),
+  home: {
+    after: route<[after: string]>('/?after=:after'),
+    before: route<[before: string]>('/?before=:before'),
+  },
   txSimple: route<[id: string]>('/tx/:id/simple'),
   txAdvanced: route<[id: string]>('/tx/:id/advanced'),
   blockSimple: route<[id: string]>('/block/:id/simple'),

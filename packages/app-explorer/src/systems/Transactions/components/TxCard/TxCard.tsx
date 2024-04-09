@@ -29,7 +29,7 @@ export function TxCard({
   isLoading,
   ...props
 }: TxCardProps) {
-  const fee = bn(tx.fee);
+  const fee = bn(tx.gasCosts?.fee);
   const isValidTxID = isValidAddress(tx.id);
 
   return (
@@ -62,7 +62,7 @@ export function TxCard({
                 className="text-sm order-3 laptop:order-none"
                 leftIcon={IconGasStation}
               >
-                {bn(tx.fee).format()} ETH
+                {bn(tx.gasCosts.fee).format()} ETH
               </Text>
             )}
             <LoadingWrapper

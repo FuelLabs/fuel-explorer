@@ -48,6 +48,63 @@ const config: CodegenConfig = {
         },
       },
     },
+    './src/graphql/generated/mocks.ts': {
+      documents: ['./src/graphql/generated/explorer/**/**.graphql'],
+      schema: [
+        './src/graphql/schemas/fuelcore.graphql',
+        './src/graphql/schemas/explorer.graphql',
+      ],
+      plugins: [
+        {
+          'typescript-mock-data': {
+            addTypename: true,
+            useTypeImports: true,
+            enumsAsTypes: true,
+            typesFile: './sdk.ts',
+            typesNames: 'keep',
+            typesPrefix: 'GQL',
+            enumsPrefix: 'GQL',
+            generateLibrary: 'faker',
+            fieldGeneration: {
+              _all: {
+                totalAmount: {
+                  generator: 'datatype.hexadecimal',
+                },
+              },
+            },
+            scalars: {
+              Address: {
+                generator: 'random.alphaNumeric',
+                arguments: [40],
+              },
+              AssetId: {
+                generator: 'random.alphaNumeric',
+                arguments: [32],
+              },
+              ContractId: {
+                generator: 'random.alphaNumeric',
+                arguments: [32],
+              },
+              TransactionId: {
+                generator: 'random.alphaNumeric',
+                arguments: [32],
+              },
+              UtxoId: {
+                generator: 'random.alphaNumeric',
+                arguments: [32],
+              },
+              U64: {
+                generator: 'datatype.hexadecimal',
+              },
+              HexString: {
+                generator: 'datatype.hexadecimal',
+                arguments: [160],
+              },
+            },
+          },
+        },
+      ],
+    },
   },
 };
 export default config;

@@ -82,7 +82,7 @@ type GroupedOutputChanged {
   totalAmount: U64
 }
 
-type GroupedOutputContractCreadted {
+type GroupedOutputContractCreated {
   contract: Contract
   outputs: [Output]
 }
@@ -90,7 +90,7 @@ type GroupedOutputContractCreadted {
 union GroupedOutput =
   | GroupedOutputCoin
   | GroupedOutputChanged
-  | GroupedOutputContractCreadted
+  | GroupedOutputContractCreated
 
 # --------------------------------
 # Operations

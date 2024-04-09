@@ -1,6 +1,6 @@
 'use client';
 
-import type { GetLastTransactionsQuery } from '@fuel-explorer/graphql';
+import type { GQLTransactionsQuery } from '@fuel-explorer/graphql-new';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
@@ -10,43 +10,48 @@ import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
-  page?: string;
-  transactions: GetLastTransactionsQuery['transactions']['edges'];
+  transactions: GQLTransactionsQuery['transactions']['nodes'];
+  pageInfo?: GQLTransactionsQuery['transactions']['pageInfo'];
   hidePagination?: boolean;
   isLoading?: boolean;
 }>;
 
 export function TxList({
-  page: currentPage = '1',
-  transactions = [],
+  transactions,
+  pageInfo,
   hidePagination,
   className,
   isLoading,
 }: TxListProps) {
-  const page = Number(currentPage);
   const router = useRouter();
 
   return (
     <div className={cx('py-4 tablet:py-8 desktop:py-0', className)}>
-      <Grid className={'flex flex-col gap-6'}>
+      <Grid className="flex flex-col gap-6">
         {transactions.map((transaction) => (
           <TxCard
-            key={transaction.node.id}
+            key={transaction.id}
             isLoading={isLoading}
-            transaction={transaction.node}
+            transaction={transaction}
           />
         ))}
       </Grid>
       {!hidePagination && (
         <Flex className="mobile:justify-end">
           <Pagination
-            page={page}
-            className="mt-6 flex mobile:justify-end"
-            onChange={(page) =>
-              router.push(Routes.home(page.toString()), {
+            hasPrev={pageInfo?.hasNextPage}
+            hasNext={pageInfo?.hasPreviousPage}
+            onPrev={() =>
+              router.push(Routes.home.after(pageInfo?.endCursor ?? ''), {
                 scroll: false,
               })
             }
+            onNext={() =>
+              router.push(Routes.home.before(pageInfo?.startCursor ?? ''), {
+                scroll: false,
+              })
+            }
+            className="mt-6 flex mobile:justify-end"
           />
         </Flex>
       )}

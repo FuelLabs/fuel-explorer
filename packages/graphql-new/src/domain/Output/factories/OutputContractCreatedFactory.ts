@@ -2,14 +2,13 @@ import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
 import {
   GQLContractCreated,
-  GQLGroupedOutputContractCreadted,
+  GQLGroupedOutputContractCreated,
   GQLOutput,
 } from '~/graphql/generated/sdk';
 
 type Source = GQLContractCreated;
-type Typename = GQLGroupedOutputContractCreadted['__typename'];
-export type OutputContractCreatedGroupedEntry =
-  GQLGroupedOutputContractCreadted;
+type Typename = GQLGroupedOutputContractCreated['__typename'];
+export type OutputContractCreatedGroupedEntry = GQLGroupedOutputContractCreated;
 
 export class OutputContractCreatedFactory {
   value: OutputContractCreatedGroupedEntry[];
@@ -27,7 +26,7 @@ export class OutputContractCreatedFactory {
       ([_assetId, outputs]) => {
         const contract = outputs[0].contract;
         return {
-          __typename: 'GroupedOutputContractCreadted' as Typename,
+          __typename: 'GroupedOutputContractCreated' as Typename,
           contract,
           outputs,
         };

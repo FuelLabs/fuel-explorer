@@ -1,5 +1,6 @@
 export type TxsRouteSearchParams = {
-  page: string;
+  after?: string;
+  before?: string;
 };
 
 export type TxsRouteProps = {
