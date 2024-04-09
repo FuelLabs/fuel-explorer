@@ -1,4 +1,5 @@
-import type { GroupedInput, InputCoin } from '@fuel-explorer/graphql';
+import type { InputCoin } from '@fuel-explorer/graphql';
+import type { GQLGroupedInput } from '@fuel-explorer/graphql-new';
 import {
   Address,
   Box,
@@ -21,7 +22,7 @@ import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
 import { TxIcon } from '../TxIcon/TxIcon';
 
 export type TxInputProps = CardProps & {
-  input: GroupedInput;
+  input: GQLGroupedInput;
 };
 
 const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({

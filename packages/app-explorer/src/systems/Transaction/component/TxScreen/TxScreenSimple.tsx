@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { GroupedInput, GroupedOutput } from '@fuel-explorer/graphql';
+import type { GroupedOutput } from '@fuel-explorer/graphql';
 import {
   Address,
   Badge,
@@ -58,24 +58,22 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               <TxIcon
                 type={title}
                 size="lg"
-                status={tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)}
+                status={tx.hasPredicate ? 'Info' : (tx.statusType as TxStatus)}
               />
             }
           />
         </EntityItem.Slot>
         <EntityItem.Info
           title={
-            (
-              <LoadingWrapper
-                isLoading={isLoading}
-                loadingEl={<LoadingBox className="w-20 h-6" />}
-                regularEl={title}
-              />
-            ) as any
+            <LoadingWrapper
+              isLoading={isLoading}
+              loadingEl={<LoadingBox className="w-20 h-6" />}
+              regularEl={title}
+            />
           }
         >
           <HStack gap="1">
-            {tx.isPredicate && (
+            {tx.hasPredicate && (
               <Badge color="blue" variant="ghost">
                 Predicate
               </Badge>
@@ -131,12 +129,14 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       </CardInfo>
     ),
     <CardInfo
-      key={'fee'}
-      name={'Network Fee'}
+      key="fee"
+      name="Network Fee"
       description={
         <LoadingWrapper
           isLoading={isLoading}
-          regularEl={<>Gas used: {formatZeroUnits(tx.gasUsed || '')}</>}
+          regularEl={
+            <>Gas used: {formatZeroUnits(tx.gasCosts.gasUsed || '')}</>
+          }
           loadingEl={
             <>
               <LoadingBox className="w-28 h-5 mt-2" />
@@ -149,7 +149,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       <LoadingWrapper
         isLoading={isLoading}
         loadingEl={<LoadingBox className="w-36 h-6" />}
-        regularEl={`${bn(tx.fee).format()} ETH`}
+        regularEl={`${bn(tx.gasCosts.fee).format()} ETH`}
       />
     </CardInfo>,
   ];
@@ -192,7 +192,7 @@ function ContentMain({
               </Heading>
               {tx.groupedInputs?.map((input, i) => (
                 // here we use only index as key because this component will not change
-                <TxInput key={i} input={input as GroupedInput} />
+                <TxInput key={i} input={input} />
               ))}
             </>
           }
