@@ -103,7 +103,7 @@ export const TxSummaryDetails = createComponent<
               iconSize={24}
               leftIcon={IconGasStation}
             >
-              {bn(tx.gasUsed).format()} ETH
+              {bn(tx.gasCosts.fee).format()} ETH
             </Text>
           </TxSummaryRow>
         </Card.Body>

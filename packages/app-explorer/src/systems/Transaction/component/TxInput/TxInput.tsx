@@ -1,5 +1,9 @@
-import type { InputCoin } from '@fuel-explorer/graphql';
-import type { GQLGroupedInput } from '@fuel-explorer/graphql-new';
+import {
+  GQLGroupedInputCoin,
+  GQLGroupedInputMessage,
+  GQLGroupedInputType,
+  type GQLInputCoin,
+} from '@fuel-explorer/graphql-new';
 import {
   Address,
   Box,
@@ -19,20 +23,33 @@ import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { UtxoItem } from '~/systems/Core/components/Utxos/Utxos';
 import { Utxos } from '~/systems/Core/components/Utxos/Utxos';
 
+import { TransactionNode } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
 
 export type TxInputProps = CardProps & {
-  input: GQLGroupedInput;
+  input: TransactionNode['groupedInputs'][number];
 };
 
-const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
+export type TxInputCoinProps = CardProps & {
+  input: GQLGroupedInputCoin;
+};
+
+export type TxInputMessageProps = CardProps & {
+  input: GQLGroupedInputMessage;
+};
+
+const TxInputCoin = createComponent<TxInputCoinProps, typeof Collapsible>({
   id: 'TxInputCoin',
   render: (_, { input, ...props }) => {
+    if (!input) {
+      return null;
+    }
+
     if (!input.assetId) return null;
 
     const assetId = input.assetId;
     const amount = input.totalAmount;
-    const inputs = input.inputs as InputCoin[];
+    const inputs = input.inputs as GQLInputCoin[];
     const { isMobile } = useBreakpoints();
 
     return (
@@ -67,52 +84,66 @@ const TxInputCoin = createComponent<TxInputProps, typeof Collapsible>({
   },
 });
 
-const TxInputMessage = createComponent<TxInputProps, typeof Collapsible>({
-  id: 'TxInputMessage',
-  render: (_, { input, ...props }) => {
-    const { sender, recipient, data } = input;
+const TxInputMessage = createComponent<TxInputMessageProps, typeof Collapsible>(
+  {
+    id: 'TxInputMessage',
+    render: (_, { input, ...props }) => {
+      const { sender, recipient, data } = input;
 
-    if (!sender || !recipient) return null;
+      if (!sender || !recipient) return null;
 
-    return (
-      <Collapsible {...props}>
-        <Collapsible.Header>
-          <TxIcon type="Message" status="Submitted" />
-          <HStack className="gap-1 flex-col tablet:flex-row tablet:items-center tablet:flex-1">
-            <Text className="hidden tablet:block">Message</Text>
-            <VStack className="gap-1 tablet:flex-1 tablet:items-end">
-              <Address
-                value={sender}
-                prefix="Sender:"
-                linkProps={{ as: NextLink, href: Routes.accountAssets(sender) }}
-              />
-              <Address
-                value={recipient}
-                prefix="Recipient:"
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.accountAssets(recipient),
-                }}
-              />
-            </VStack>
-          </HStack>
-        </Collapsible.Header>
-        <Collapsible.Content>
-          <Collapsible.Title>Data</Collapsible.Title>
-          <Collapsible.Body className="text-xs leading-normal text-wrap break-all">
-            {data}
-          </Collapsible.Body>
-        </Collapsible.Content>
-      </Collapsible>
-    );
+      return (
+        <Collapsible {...props}>
+          <Collapsible.Header>
+            <TxIcon type="Message" status="Submitted" />
+            <HStack className="gap-1 flex-col tablet:flex-row tablet:items-center tablet:flex-1">
+              <Text className="hidden tablet:block">Message</Text>
+              <VStack className="gap-1 tablet:flex-1 tablet:items-end">
+                <Address
+                  value={sender}
+                  prefix="Sender:"
+                  linkProps={{
+                    as: NextLink,
+                    href: Routes.accountAssets(sender),
+                  }}
+                />
+                <Address
+                  value={recipient}
+                  prefix="Recipient:"
+                  linkProps={{
+                    as: NextLink,
+                    href: Routes.accountAssets(recipient),
+                  }}
+                />
+              </VStack>
+            </HStack>
+          </Collapsible.Header>
+          <Collapsible.Content>
+            <Collapsible.Title>Data</Collapsible.Title>
+            <Collapsible.Body className="text-xs leading-normal text-wrap break-all">
+              {data}
+            </Collapsible.Body>
+          </Collapsible.Content>
+        </Collapsible>
+      );
+    },
   },
-});
+);
 
 export function TxInput({ input, ...props }: TxInputProps) {
-  if (input.type === 'InputCoin') {
-    return <TxInputCoin input={input} {...props} />;
+  if (!input) {
+    return null;
   }
-  if (input.type === 'InputMessage') {
-    return <TxInputMessage input={input} {...props} />;
+
+  if (input.type === GQLGroupedInputType.InputCoin) {
+    return <TxInputCoin input={input as GQLGroupedInputCoin} {...props} />;
   }
+
+  if (input.type === GQLGroupedInputType.InputMessage) {
+    return (
+      <TxInputMessage input={input as GQLGroupedInputMessage} {...props} />
+    );
+  }
+
+  return null;
 }
