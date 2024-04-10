@@ -225,6 +225,11 @@ query block($height: U32, $id: BlockId){
                             to
                         }
                         ... on ContractCreated {
+                            contract{
+                                bytecode
+                                id
+                                salt
+                            }
                             stateRoot
                         }
                         ... on ContractOutput {
@@ -260,6 +265,11 @@ query block($height: U32, $id: BlockId){
                             to
                         }
                         ... on ContractCreated {
+                            contract{
+                                bytecode
+                                id
+                                salt
+                            }
                             stateRoot
                         }
                         ... on ContractOutput {
@@ -398,6 +408,11 @@ query block($height: U32, $id: BlockId){
                     to
                 }
                 ... on ContractCreated {
+                    contract{
+                        bytecode
+                        id
+                        salt
+                    }
                     stateRoot
                 }
                 ... on ContractOutput {

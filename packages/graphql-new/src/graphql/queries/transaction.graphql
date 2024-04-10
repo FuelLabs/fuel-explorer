@@ -191,6 +191,11 @@ query transaction($id: TransactionId!){
                         to
                     }
                     ... on ContractCreated {
+                        contract{
+                            bytecode
+                            id
+                            salt
+                        }
                         stateRoot
                     }
                     ... on ContractOutput {
@@ -226,6 +231,11 @@ query transaction($id: TransactionId!){
                         to
                     }
                     ... on ContractCreated {
+                        contract{
+                            bytecode
+                            id
+                            salt
+                        }
                         stateRoot
                     }
                     ... on ContractOutput {
@@ -364,6 +374,11 @@ query transaction($id: TransactionId!){
                 to
             }
             ... on ContractCreated {
+                contract{
+                    bytecode
+                    id
+                    salt
+                }
                 stateRoot
             }
             ... on ContractOutput {
@@ -620,6 +635,11 @@ query transaction($id: TransactionId!){
                                         to
                                     }
                                     ... on ContractCreated {
+                                        contract{
+                                            bytecode
+                                            id
+                                            salt
+                                        }
                                         stateRoot
                                     }
                                     ... on ContractOutput {
@@ -651,6 +671,11 @@ query transaction($id: TransactionId!){
                                         to
                                     }
                                     ... on ContractCreated {
+                                        contract{
+                                            bytecode
+                                            id
+                                            salt
+                                        }
                                         stateRoot
                                     }
                                     ... on ContractOutput {
@@ -681,6 +706,11 @@ query transaction($id: TransactionId!){
                                         to
                                     }
                                     ... on ContractCreated {
+                                        contract{
+                                            bytecode
+                                            id
+                                            salt
+                                        }
                                         stateRoot
                                     }
                                     ... on ContractOutput {
@@ -778,7 +808,12 @@ query transaction($id: TransactionId!){
                                 assetId
                                 to
                             }
-                            ... on ContractCreated {
+                            ... on ContractCreated {    
+                                contract{
+                                    bytecode
+                                    id
+                                    salt
+                                }
                                 stateRoot
                             }
                             ... on ContractOutput {
