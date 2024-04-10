@@ -212,7 +212,7 @@ query transaction($id: TransactionId!){
                 to
                 totalAmount
             }
-            ... on GroupedOutputContractCreadted {
+            ... on GroupedOutputContractCreated {
                 contract{
                     bytecode
                     id
@@ -692,7 +692,7 @@ query transaction($id: TransactionId!){
                                 to
                                 totalAmount
                             }
-                            ... on GroupedOutputContractCreadted {
+                            ... on GroupedOutputContractCreated {
                                 outputs{
                                     __typename
                                     ... on ChangeOutput {

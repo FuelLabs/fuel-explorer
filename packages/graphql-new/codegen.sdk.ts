@@ -49,7 +49,7 @@ const config: CodegenConfig = {
       },
     },
     './src/graphql/generated/mocks.ts': {
-      documents: ['./src/graphql/generated/explorer/**/**.graphql'],
+      documents: ['./src/graphql/queries/**.graphql'],
       schema: [
         './src/graphql/schemas/fuelcore.graphql',
         './src/graphql/schemas/explorer.graphql',

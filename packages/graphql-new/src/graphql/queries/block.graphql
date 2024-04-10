@@ -246,7 +246,7 @@ query block($height: U32, $id: BlockId){
                     to
                     totalAmount
                 }
-                ... on GroupedOutputContractCreadted {
+                ... on GroupedOutputContractCreated {
                     contract{
                         bytecode
                         id

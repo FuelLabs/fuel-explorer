@@ -215,7 +215,7 @@ query transactionsByOwner($after: String, $before: String, $first: Int, $last: I
                         to
                         totalAmount
                     }
-                    ... on GroupedOutputContractCreadted {
+                    ... on GroupedOutputContractCreated {
                         contract{
                             bytecode
                             id
@@ -695,7 +695,7 @@ query transactionsByOwner($after: String, $before: String, $first: Int, $last: I
                                         to
                                         totalAmount
                                     }
-                                    ... on GroupedOutputContractCreadted {
+                                    ... on GroupedOutputContractCreated {
                                         outputs{
                                             __typename
                                             ... on ChangeOutput {
@@ -1174,7 +1174,7 @@ query transactionsByOwner($after: String, $before: String, $first: Int, $last: I
                     to
                     totalAmount
                 }
-                ... on GroupedOutputContractCreadted {
+                ... on GroupedOutputContractCreated {
                     outputs{
                         __typename
                         ... on ChangeOutput {
