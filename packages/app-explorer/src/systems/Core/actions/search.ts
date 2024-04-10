@@ -9,7 +9,7 @@ const schema = z.object({
 });
 
 export const search = act(schema, async ({ query }) => {
-  const { data } = await sdk.searchQuery({ search: query }).catch((_) => {
+  const { data } = await sdk.search({ query }).catch((_) => {
     return { data: { search: null } };
   });
   return data?.search ?? null;
