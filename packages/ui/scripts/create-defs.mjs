@@ -1,3 +1,4 @@
+// biome-ignore lint/correctness/noUnusedVariables: <explanation>
 import { promises as fs } from 'fs';
 import path from 'path';
 import * as url from 'url';

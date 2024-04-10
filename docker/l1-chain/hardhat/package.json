@@ -1,0 +1,12 @@
+{
+  "name": "hardhat-node",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "hardhat node --network hardhat"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.4",
+    "hardhat": "^2.20.1"
+  }
+}

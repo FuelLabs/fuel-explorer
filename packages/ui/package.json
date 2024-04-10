@@ -11,9 +11,7 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": [
-        "./src/theme/tailwind-preset.ts"
-      ]
+      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
     }
   },
   "publishConfig": {
@@ -38,9 +36,7 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build:lib": "tsup --dts",
@@ -65,19 +61,19 @@
     "@radix-ui/react-toast": "1.1.5",
     "@radix-ui/react-toggle-group": "1.0.4",
     "@radix-ui/themes": "^2.0.3",
-    "@react-aria/focus": "3.16.0",
+    "@react-aria/focus": "3.16.2",
     "@tabler/icons-react": "2.47.0",
     "@tailwindcss/typography": "0.5.10",
     "clsx": "2.1.0",
     "csstype": "3.1.3",
-    "framer-motion": "11.0.3",
+    "framer-motion": "11.0.5",
     "geist": "1.2.2",
     "modern-normalize": "2.0.0",
     "next": "14.1.0",
     "radix-ui-themes-with-tailwind": "1.2.6",
-    "react": "^18.2.0",
-    "react-aria": "3.31.1",
-    "react-dom": "^18.2.0",
+    "react": "18.2.0",
+    "react-aria": "3.32.1",
+    "react-dom": "18.2.0",
     "react-number-format": "5.3.1",
     "react-stately": "3.29.1",
     "react-use": "17.5.0",
@@ -101,10 +97,10 @@
     "@storybook/testing-library": "^0.2.2",
     "@storybook/types": "^8.0.0-beta.5",
     "@types/lodash": "4.14.202",
-    "@types/react": "^18.2.54",
-    "@types/react-dom": "^18.2.18",
+    "@types/react": "18.2.54",
+    "@types/react-dom": "18.2.22",
     "autoprefixer": "10.4.17",
-    "globby": "14.0.0",
+    "globby": "14.0.1",
     "lodash": "^4.17.21",
     "postcss": "8.4.34",
     "postcss-import": "16.0.0",
@@ -113,7 +109,7 @@
     "tailwindcss": "3.4.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "5.3.3",
-    "vite": "^5.0.12",
+    "vite": "^5.1.3",
     "vite-tsconfig-paths": "^4.3.1"
   }
 }
