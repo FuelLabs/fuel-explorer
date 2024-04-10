@@ -1,10 +1,10 @@
-import type { GQLTransactionDetailsFragment } from '@fuel-explorer/graphql-new';
-import { ReceiptType } from '@fuel-explorer/graphql/src/sdk';
-import type {
-  Maybe,
-  OperationReceipt,
-  TransactionReceiptFragment,
-} from '@fuel-explorer/graphql/src/sdk';
+import {
+  GQLReceiptType,
+  type GQLTransactionDetailsFragment,
+  GQLTxDetailsOperationReceiptFragment,
+  type GQLTxDetailsReceiptItemFragment,
+  type Maybe,
+} from '@fuel-explorer/graphql-new';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
@@ -47,6 +47,7 @@ export type TxScriptsProps = BaseProps<{
 export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
   const [opened, setOpened] = useState(false);
   const hasOperations = tx.operations?.length ?? 0 > 0;
+
   return (
     <VStack {...props}>
       <LoadingWrapper
@@ -96,7 +97,7 @@ export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
 }
 
 type ScriptsContent = BaseProps<{
-  tx: TransactionNode;
+  tx: GQLTransactionDetailsFragment;
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
@@ -123,20 +124,21 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
   const hasPanic = operations?.some((o) =>
     o?.receipts?.some(
       (r) =>
-        r?.item?.receiptType === ReceiptType.Panic ||
-        r?.item?.receiptType === ReceiptType.Revert,
+        r?.item?.receiptType === GQLReceiptType.Panic ||
+        r?.item?.receiptType === GQLReceiptType.Revert,
     ),
   );
 
   if (!opened && receipts.length > 3) {
     return (
       <>
-        <ReceiptItem receipt={first as OperationReceipt} hasPanic={hasPanic} />
+        <ReceiptItem receipt={first} hasPanic={hasPanic} />
         <HStack>
           <Box className={classes.lines()} />
           <HoverCard openDelay={100}>
             <HoverCard.Trigger>
               <Button
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 ref={ref as any}
                 color="gray"
                 variant="outline"
@@ -158,7 +160,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
           </HoverCard>
           <Box className={classes.lines()} />
         </HStack>
-        <ReceiptItem receipt={last as OperationReceipt} hasPanic={hasPanic} />
+        <ReceiptItem receipt={last} hasPanic={hasPanic} />
       </>
     );
   }
@@ -173,7 +175,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               return (
                 <ReceiptItem
                   key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
-                  receipt={receipt as OperationReceipt}
+                  receipt={receipt}
                   isIndented={idx > 0}
                   hasPanic={hasPanic}
                 />
@@ -186,7 +188,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
                 className={classes.operation()}
               >
                 <ReceiptItem
-                  receipt={receipt as OperationReceipt}
+                  receipt={receipt}
                   isIndented={idx > 0}
                   hasPanic={hasPanic}
                 />
@@ -195,11 +197,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
                     key={`${j}-${sub?.item?.receiptType ?? ''}`}
                     className="ml-10"
                   >
-                    <ReceiptItem
-                      isIndented
-                      receipt={sub as OperationReceipt}
-                      hasPanic={hasPanic}
-                    />
+                    <ReceiptItem isIndented receipt={sub} hasPanic={hasPanic} />
                   </div>
                 ))}
               </div>
@@ -230,38 +228,39 @@ function CountReceipt({ num, op }: { num: number; op: string }) {
 function TypesCounter({
   receipts: items = [],
 }: {
-  receipts?: Maybe<TransactionReceiptFragment[]>;
+  receipts?: GQLTxDetailsReceiptItemFragment[] | null;
 }) {
   const receipts = items ?? [];
-  const calls = receipts.filter((i) => i?.receiptType === ReceiptType.Call);
+  const calls = receipts.filter((i) => i?.receiptType === GQLReceiptType.Call);
   const transfers = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Transfer ||
-      i?.receiptType === ReceiptType.TransferOut,
+      i?.receiptType === GQLReceiptType.Transfer ||
+      i?.receiptType === GQLReceiptType.TransferOut,
   );
-  const mints = receipts.filter((i) => i?.receiptType === ReceiptType.Mint);
-  const burns = receipts.filter((i) => i?.receiptType === ReceiptType.Burn);
+  const mints = receipts.filter((i) => i?.receiptType === GQLReceiptType.Mint);
+  const burns = receipts.filter((i) => i?.receiptType === GQLReceiptType.Burn);
   const messages = receipts.filter(
-    (i) => i?.receiptType === ReceiptType.MessageOut,
+    (i) => i?.receiptType === GQLReceiptType.MessageOut,
   );
   const returns = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Return ||
-      i?.receiptType === ReceiptType.ReturnData,
+      i?.receiptType === GQLReceiptType.Return ||
+      i?.receiptType === GQLReceiptType.ReturnData,
   );
   const results = receipts.filter(
-    (i) => i?.receiptType === ReceiptType.ScriptResult,
+    (i) => i?.receiptType === GQLReceiptType.ScriptResult,
   );
   const errors = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Panic ||
-      i?.receiptType === ReceiptType.Revert,
+      i?.receiptType === GQLReceiptType.Panic ||
+      i?.receiptType === GQLReceiptType.Revert,
   );
   const logs = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Log ||
-      i?.receiptType === ReceiptType.LogData,
+      i?.receiptType === GQLReceiptType.Log ||
+      i?.receiptType === GQLReceiptType.LogData,
   );
+
   return (
     <div className="flex flex-col gap-0 text-sm font-mono w-full">
       {Boolean(calls.length) && <CountReceipt num={calls.length} op="Call" />}
@@ -288,14 +287,14 @@ function TypesCounter({
 }
 
 const ctx = createContext<ReceiptItemProps>({} as ReceiptItemProps);
-const RETURN_TYPES = [ReceiptType.Return, ReceiptType.ReturnData];
+const RETURN_TYPES = [GQLReceiptType.Return, GQLReceiptType.ReturnData];
 
 function getBadgeColor(
   hasError: boolean,
-  receipt?: Maybe<TransactionReceiptFragment>,
+  receipt?: Maybe<GQLTxDetailsReceiptItemFragment>,
 ) {
   const type = receipt?.receiptType ?? 'UNKNOWN';
-  if (type === ReceiptType.Revert || type === ReceiptType.Panic) {
+  if (type === GQLReceiptType.Revert || type === GQLReceiptType.Panic) {
     return 'red';
   }
   if (
@@ -309,7 +308,7 @@ function getBadgeColor(
 }
 
 export type ReceiptItemProps = BaseProps<{
-  receipt?: Maybe<OperationReceipt>;
+  receipt?: GQLTxDetailsOperationReceiptFragment;
   isIndented?: boolean;
   hasPanic?: boolean;
 }>;
@@ -345,12 +344,14 @@ function ReceiptItem({
 }
 
 function parseJson(
-  item?: Maybe<TransactionReceiptFragment>,
+  item?: Maybe<GQLTxDetailsReceiptItemFragment>,
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Record<string, any> {
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {
     if (!value || key === '__typename') return acc;
     if (typeof value === 'object')
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       return { ...acc, [key]: parseJson(value as any) };
     return { ...acc, [key]: value };
   }, {});
@@ -361,6 +362,7 @@ function ReceiptBlock() {
   const classes = styles();
   const [ref, { width }] = useMeasure();
   return (
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     <Collapsible.Content ref={ref as any} className={classes.utxos()}>
       <ScrollArea style={{ width }}>
         <JsonViewer data={parseJson(receipt?.item)} />

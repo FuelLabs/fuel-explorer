@@ -44,6 +44,36 @@ fragment TxDetailsGroupedOutputContractCreated on GroupedOutputContractCreated {
   }
 }
 
+fragment TxDetailsReceiptItem on Receipt {
+  __typename
+  receiptType
+  toAddress
+  sender
+  recipient
+  subId
+  val
+  assetId
+  amount
+  param1
+  to {
+    id
+  }
+  contract {
+    id
+  }
+}
+
+fragment TxDetailsOperationReceipt on OperationReceipt {
+  item {
+    ...TxDetailsReceiptItem
+  }
+  receipts {
+    item {
+      ...TxDetailsReceiptItem
+    }
+  }
+}
+
 fragment TransactionDetails on Transaction {
   status {
     __typename
@@ -79,6 +109,15 @@ fragment TransactionDetails on Transaction {
     ...TxDetailsGroupedOutputCoin
     ...TxDetailsGroupedOutputChanged
     ...TxDetailsGroupedOutputContractCreated
+  }
+  operations {
+    type
+    receipts {
+      ...TxDetailsOperationReceipt
+    }
+  }
+  receipts {
+    ...TxDetailsReceiptItem
   }
 }
 

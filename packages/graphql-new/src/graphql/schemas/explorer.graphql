@@ -108,12 +108,12 @@ enum OperationType {
 
 type OperationReceipt {
   item: Receipt
-  receipts: [OperationReceipt]
+  receipts: [OperationReceipt!]
 }
 
 type Operation {
   type: OperationType
-  receipts: [OperationReceipt]
+  receipts: [OperationReceipt!]
 }
 
 # --------------------------------
@@ -138,7 +138,7 @@ extend type Transaction {
   groupedInputs: [GroupedInput!]!
   groupedOutputs: [GroupedOutput!]!
   hasPredicate: Boolean
-  operations: [Operation]
+  operations: [Operation!]
   statusType: String
   time: ParsedTime!
   title: String!
