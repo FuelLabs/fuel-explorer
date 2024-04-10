@@ -134,7 +134,7 @@ type TransactionGasCosts {
 
 extend type Transaction {
   blockHeight: U32
-  gasCosts: TransactionGasCosts!
+  gasCosts: TransactionGasCosts
   groupedInputs: [GroupedInput!]!
   groupedOutputs: [GroupedOutput!]!
   hasPredicate: Boolean

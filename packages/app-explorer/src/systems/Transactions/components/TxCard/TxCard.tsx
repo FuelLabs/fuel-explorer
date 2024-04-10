@@ -55,7 +55,7 @@ export function TxCard({ transaction: tx, isLoading }: TxCardProps) {
                 className="text-sm order-3 laptop:order-none"
                 leftIcon={IconGasStation}
               >
-                {bn(tx.gasCosts.fee).format()} ETH
+                {bn(tx.gasCosts?.fee).format()} ETH
               </Text>
             )}
             <LoadingWrapper

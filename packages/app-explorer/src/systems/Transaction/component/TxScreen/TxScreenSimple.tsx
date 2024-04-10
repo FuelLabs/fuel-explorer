@@ -134,7 +134,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
         <LoadingWrapper
           isLoading={isLoading}
           regularEl={
-            <>Gas used: {formatZeroUnits(tx.gasCosts.gasUsed || '')}</>
+            <>Gas used: {formatZeroUnits(tx.gasCosts?.gasUsed || '')}</>
           }
           loadingEl={
             <>
@@ -148,7 +148,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       <LoadingWrapper
         isLoading={isLoading}
         loadingEl={<LoadingBox className="w-36 h-6" />}
-        regularEl={`${bn(tx.gasCosts.fee).format()} ETH`}
+        regularEl={`${bn(tx.gasCosts?.fee).format()} ETH`}
       />
     </CardInfo>,
   ];
