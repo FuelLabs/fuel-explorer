@@ -1,11 +1,10 @@
 'use client';
 
+import type { GQLTransactionDetailsFragment } from '@fuel-explorer/graphql-new';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
-import type { TransactionNode } from '../../types';
-
 type TxScreenProps = {
-  transaction?: TransactionNode;
+  transaction?: GQLTransactionDetailsFragment;
 };
 
 export function TxScreenAdvanced({ transaction: tx }: TxScreenProps) {

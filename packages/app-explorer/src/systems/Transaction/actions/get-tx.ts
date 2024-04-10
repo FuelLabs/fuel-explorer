@@ -13,7 +13,7 @@ const schema = z.object({
 export const getTx = act(schema, async (input) => {
   try {
     const id = parseAddressParam(input.id);
-    const { data } = await sdk.transaction({ id });
+    const { data } = await sdk.transactionDetails({ id });
     return data.transaction;
   } catch (e) {
     console.error(e);

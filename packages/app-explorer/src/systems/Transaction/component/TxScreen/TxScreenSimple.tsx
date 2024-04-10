@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { GroupedOutput } from '@fuel-explorer/graphql';
+import type { GQLTransactionDetailsFragment } from '@fuel-explorer/graphql-new';
 import {
   Address,
   Badge,
@@ -33,12 +32,12 @@ import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
-import type { TransactionNode, TxStatus } from '../../types';
+import type { TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 import { TxScripts } from '../TxScripts/TxScripts';
 
 type TxScreenProps = {
-  transaction: TransactionNode;
+  transaction: GQLTransactionDetailsFragment;
   isLoading?: boolean;
 };
 
@@ -96,7 +95,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
     </CardInfo>,
     <CardInfo
       key="timestamp"
-      name={'Timestamp'}
+      name="Timestamp"
       description={
         <LoadingWrapper
           isLoading={isLoading}
@@ -112,7 +111,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       />
     </CardInfo>,
     (tx.blockHeight || isLoading) && (
-      <CardInfo key="block" name={'Block'}>
+      <CardInfo key="block" name="Block">
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-28 h-6" />}
@@ -166,7 +165,7 @@ function ContentMain({
   tx,
   isLoading,
 }: {
-  tx: TransactionNode;
+  tx: GQLTransactionDetailsFragment;
   isLoading?: boolean;
 }) {
   const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
@@ -237,7 +236,7 @@ function ContentMain({
                     // here we use only index as key because this component will not change
                     key={i}
                     tx={tx}
-                    output={output as GroupedOutput}
+                    output={output}
                   />
                 ))}
               </>
@@ -261,7 +260,7 @@ function MintOutputs({
   tx,
   isLoading,
 }: {
-  tx: TransactionNode;
+  tx: GQLTransactionDetailsFragment;
   isLoading: boolean;
 }) {
   const classes = styles();
