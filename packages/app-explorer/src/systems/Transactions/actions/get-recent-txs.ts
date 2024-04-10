@@ -21,10 +21,10 @@ const schema = z
     return true;
   });
 
-export const getLastTxs = act(schema, async ({ after, before }) => {
+export const getRecentTxs = act(schema, async ({ after, before }) => {
   const cursor = after ? 'first' : 'last';
 
-  const { data } = await sdk.transactions({
+  const { data } = await sdk.recentTransactions({
     [cursor]: PER_PAGE,
     after,
     before,

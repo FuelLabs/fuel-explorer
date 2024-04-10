@@ -1,3 +1,4 @@
+import type { GQLRecentTransactionFragment } from '@fuel-explorer/graphql-new';
 import { bn } from '@fuel-ts/math';
 import {
   Badge,
@@ -6,35 +7,27 @@ import {
   LoadingBox,
   LoadingWrapper,
   Text,
-  cx,
   shortAddress,
 } from '@fuels/ui';
-import type { BaseProps } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Routes } from '~/routes';
 
 import { isValidAddress } from '~/systems/Core/utils/address';
 import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
-import type { TransactionNode } from '../../../Transaction/types';
 
-type TxCardProps = BaseProps<{
-  transaction: TransactionNode;
+type TxCardProps = {
+  transaction: GQLRecentTransactionFragment;
   isLoading?: boolean;
-}>;
+};
 
-export function TxCard({
-  transaction: tx,
-  className,
-  isLoading,
-  ...props
-}: TxCardProps) {
+export function TxCard({ transaction: tx, isLoading }: TxCardProps) {
   const fee = bn(tx.gasCosts?.fee);
   const isValidTxID = isValidAddress(tx.id);
 
   return (
     <Link scroll={true} href={Routes.txSimple(tx.id)} prefetch={isValidTxID}>
-      <Card {...props} className={cx(className)}>
+      <Card>
         <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
           <Box className="flex gap-3 h-[26px]">
             <LoadingWrapper
@@ -70,7 +63,7 @@ export function TxCard({
               loadingEl={<LoadingBox className="w-16 h-6" />}
               regularEl={
                 <Badge
-                  color={TX_INTENT_MAP[tx.statusType as string]}
+                  color={tx.statusType ? TX_INTENT_MAP[tx.statusType] : 'gray'}
                   variant="ghost"
                 >
                   {tx.statusType}

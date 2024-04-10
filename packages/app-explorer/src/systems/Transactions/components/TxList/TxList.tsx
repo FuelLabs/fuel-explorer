@@ -1,7 +1,7 @@
 'use client';
 
 import type {
-  GQLTransaction,
+  GQLRecentTransactionFragment,
   GQLTransactionsQuery,
 } from '@fuel-explorer/graphql-new';
 import type { BaseProps } from '@fuels/ui';
@@ -13,7 +13,7 @@ import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
-  transactions: GQLTransaction[];
+  transactions: GQLRecentTransactionFragment[];
   pageInfo?: GQLTransactionsQuery['transactions']['pageInfo'];
   hidePagination?: boolean;
   isLoading?: boolean;
