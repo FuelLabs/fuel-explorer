@@ -46,6 +46,10 @@ export class BridgeBlockEntity extends Entity<
     };
   }
 
+  get id() {
+    return this._id.value();
+  }
+
   get hash() {
     return this.props.hash.value();
   }
@@ -64,6 +68,7 @@ export class BridgeBlockEntity extends Entity<
 
   toGQLNode() {
     return {
+      id: this.id,
       hash: this.hash,
       number: this.number,
       timestamp: this.timestamp,

@@ -71,6 +71,10 @@ export class BridgeContractLogEntity extends Entity<
     };
   }
 
+  get id() {
+    return this.props._id.value();
+  }
+
   get name() {
     return this.props.name.value();
   }
@@ -97,6 +101,7 @@ export class BridgeContractLogEntity extends Entity<
 
   toGQLNode() {
     return {
+      id: this.id,
       name: this.name,
       contractId: this.contractId,
       logIndex: this.logIndex,
