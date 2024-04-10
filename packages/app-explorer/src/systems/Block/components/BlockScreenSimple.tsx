@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
+import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql-new';
 import {
   Address,
   Grid,
@@ -19,7 +18,7 @@ import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
 type BlockScreenSimpleProps = {
-  block?: Maybe<BlockItemFragment>;
+  block?: Maybe<GQLBlockFragment>;
   producer?: Maybe<string>;
   isLoading?: boolean;
 };
@@ -29,7 +28,8 @@ export function BlockScreenSimple({
   producer,
   isLoading,
 }: BlockScreenSimpleProps) {
-  const txList = (block?.transactions.map((v) => ({ node: v })) as any) || [];
+  const txList = block?.transactions ?? [];
+
   return (
     <VStack>
       <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">

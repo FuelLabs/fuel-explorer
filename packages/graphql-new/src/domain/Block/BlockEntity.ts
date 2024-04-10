@@ -8,16 +8,20 @@ import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
 import { BlockProducer } from './vo/BlockProducer';
 
+import { TransactionEntity } from '../Transaction/TransactionEntity';
+import { TransactionItem } from '../Transaction/TransactionModel';
+
 type BlockInputProps = {
   blockHash: Hash256;
   data: BlockData;
   producer: BlockProducer;
   time: ParsedTime;
   totalGasUsed: BlockGasUsed;
+  transactions: TransactionEntity[];
 };
 
 export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
-  static create(block: BlockItem) {
+  static create(block: BlockItem, transactions: TransactionItem[]) {
     const item = block.data;
     if (!item) {
       throw new Error('item is required');
@@ -30,6 +34,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     const time = ParsedTime.create(item.header.time);
     const totalGasUsed = BlockGasUsed.create(item);
     const producer = BlockProducer.create(item);
+
     const props = {
       blockHash,
       data,
@@ -37,6 +42,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       time,
       timestamp,
       producer,
+      transactions: transactions.map((t) => TransactionEntity.create(t)),
     };
 
     return new BlockEntity(props, id);
@@ -73,6 +79,10 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     return this.props.totalGasUsed.value();
   }
 
+  get transactions() {
+    return this.props.transactions.map((t) => t.toGQLNode());
+  }
+
   toGQLNode(): GQLBlock {
     const data = this.data;
     return {
@@ -80,6 +90,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       producer: this.producer,
       time: this.time,
       totalGasUsed: this.totalGasUsed,
+      transactions: this.transactions,
     };
   }
 }

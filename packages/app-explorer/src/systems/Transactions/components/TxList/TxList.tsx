@@ -2,7 +2,7 @@
 
 import type {
   GQLRecentTransactionFragment,
-  GQLTransactionsQuery,
+  GQLRecentTransactionsQuery,
 } from '@fuel-explorer/graphql-new';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
@@ -14,7 +14,7 @@ import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
   transactions: GQLRecentTransactionFragment[];
-  pageInfo?: GQLTransactionsQuery['transactions']['pageInfo'];
+  pageInfo?: GQLRecentTransactionsQuery['transactions']['pageInfo'];
   hidePagination?: boolean;
   isLoading?: boolean;
 }>;

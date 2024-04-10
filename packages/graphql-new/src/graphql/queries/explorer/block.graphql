@@ -6,6 +6,16 @@ fragment Block on Block {
       signature
     }
   }
+  header {
+    transactionsCount
+  }
+  time {
+    full
+    fromNow
+  }
+  transactions {
+    ...RecentTransaction
+  }
 }
 
 query block($height: U32, $id: BlockId){

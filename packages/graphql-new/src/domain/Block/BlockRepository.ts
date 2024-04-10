@@ -1,50 +1,92 @@
 import { desc, eq } from 'drizzle-orm';
+import { values } from 'lodash';
 import { Paginator, PaginatorParams } from '~/core/Paginator';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
 import { GQLBlock } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
 import { BlockEntity } from './BlockEntity';
-import { BlocksTable } from './BlockModel';
+import { BlockItem, BlocksTable } from './BlockModel';
+
+import {
+  TransactionItem,
+  TransactionsTable,
+} from '../Transaction/TransactionModel';
 
 export class BlockRepository {
   async findByHash(blockHash: string) {
-    const [first] = await db
-      .connection()
-      .select()
-      .from(BlocksTable)
-      .where(eq(BlocksTable.blockHash, blockHash));
+    const first = await db.connection().query.BlocksTable.findFirst({
+      where: eq(BlocksTable.blockHash, blockHash),
+      with: {
+        transactions: true,
+      },
+    });
 
     if (!first) return null;
-    return BlockEntity.create(first);
+
+    const { transactions, ...block } = first;
+
+    return BlockEntity.create(block, transactions);
   }
 
   async findByHeight(height: number) {
-    const [first] = await db
-      .connection()
-      .select()
-      .from(BlocksTable)
-      .where(eq(BlocksTable._id, height));
+    const first = await db.connection().query.BlocksTable.findFirst({
+      where: eq(BlocksTable._id, height),
+      with: {
+        transactions: true,
+      },
+    });
 
     if (!first) return null;
-    return BlockEntity.create(first);
+
+    const { transactions, ...block } = first;
+
+    return BlockEntity.create(block, transactions);
   }
 
   async findMany(params: PaginatorParams): Promise<BlockEntity[]> {
     const paginator = new Paginator(BlocksTable, params);
     const config = await paginator.getQueryPaginationConfig();
-    const results = await paginator.getPaginatedResult(config);
-    return results.map((item) => BlockEntity.create(item));
+    const query = paginator.getPaginatedResult(config);
+    const results = await query.leftJoin(
+      TransactionsTable,
+      eq(TransactionsTable.blockId, BlocksTable._id),
+    );
+
+    const items = results.reduce<
+      Record<number, { block: BlockItem; transactions: TransactionItem[] }>
+    >((acc, row) => {
+      const block = row.blocks;
+      const transaction = row.transactions;
+
+      if (!acc[block._id]) {
+        acc[block._id] = { block, transactions: [] };
+      }
+
+      if (transaction) {
+        acc[block._id].transactions.push(transaction);
+      }
+
+      return acc;
+    }, {});
+
+    return values(items).map((item) =>
+      BlockEntity.create(item.block, item.transactions),
+    );
   }
 
   async findLatestAdded() {
-    const [latest] = await db
-      .connection()
-      .select()
-      .from(BlocksTable)
-      .orderBy(desc(BlocksTable._id))
-      .limit(1);
+    const latest = await db.connection().query.BlocksTable.findFirst({
+      with: {
+        transactions: true,
+      },
+      orderBy: desc(BlocksTable._id),
+    });
 
-    return BlockEntity.create(latest);
+    if (!latest) return null;
+
+    const { transactions, ...block } = latest;
+
+    return BlockEntity.create(block, transactions);
   }
 
   async insertOne(block: GQLBlock) {
@@ -59,7 +101,7 @@ export class BlockRepository {
       .values(BlockEntity.toDBItem(block))
       .returning();
 
-    return BlockEntity.create(item);
+    return BlockEntity.create(item, []);
   }
 
   async insertMany(blocks: GQLBlock[]) {
@@ -76,7 +118,7 @@ export class BlockRepository {
           .values(BlockEntity.toDBItem(block))
           .returning();
 
-        return BlockEntity.create(item);
+        return BlockEntity.create(item, []);
       });
       return Promise.all(queries.filter(Boolean));
     });
@@ -92,6 +134,7 @@ export class BlockRepository {
     const hasNext = data.blocks.pageInfo.hasNextPage;
     const hasPrev = data.blocks.pageInfo.hasPreviousPage;
     const endCursor = Number(data.blocks.pageInfo.endCursor);
+
     return {
       blocks,
       hasNext,

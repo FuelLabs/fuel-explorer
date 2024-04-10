@@ -25,7 +25,7 @@ export const BlocksTable = pgTable(
 );
 
 export const BlocksRelations = relations(BlocksTable, ({ many }) => ({
-  transactions: many(TransactionsTable, { relationName: 'block_transactions' }),
+  transactions: many(TransactionsTable),
 }));
 
 export type BlockItem = typeof BlocksTable.$inferSelect;

@@ -42,7 +42,6 @@ export const TransactionsRelations = relations(
     block: one(BlocksTable, {
       fields: [TransactionsTable.blockId],
       references: [BlocksTable._id],
-      relationName: 'transaction_block',
     }),
   }),
 );
