@@ -14,16 +14,6 @@ const config: CodegenConfig = {
         includeDirectives: true,
       },
     },
-    './src/graphql/generated/merged.graphql': {
-      schema: [
-        './src/graphql/schemas/fuelcore.graphql',
-        './src/graphql/schemas/explorer.graphql',
-      ],
-      plugins: ['schema-ast'],
-      config: {
-        includeDirectives: true,
-      },
-    },
   },
 };
 export default config;

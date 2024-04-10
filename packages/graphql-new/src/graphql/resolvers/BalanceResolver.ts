@@ -1,17 +1,17 @@
 import { ResolverAdapter } from '~/core/Resolver';
 import {
   GQLBalance,
-  GQLBalanceQueryVariables,
-  GQLBalancesQueryVariables,
-  GQLCoinsQueryVariables,
+  GQLQueryBalanceArgs,
+  GQLQueryBalancesArgs,
+  GQLQueryCoinsArgs,
 } from '~/graphql/generated/sdk';
 import { GraphQLSDK } from '../GraphQLSDK';
 
 type Source = GQLBalance;
 type Params = {
-  balance: GQLBalanceQueryVariables;
-  balances: GQLBalancesQueryVariables;
-  utxos: GQLCoinsQueryVariables['filter'];
+  balance: GQLQueryBalanceArgs;
+  balances: GQLQueryBalancesArgs;
+  utxos: GQLQueryCoinsArgs['filter'];
 };
 
 class BalanceResolver extends ResolverAdapter<Source> {
