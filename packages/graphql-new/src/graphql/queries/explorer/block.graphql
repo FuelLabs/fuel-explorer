@@ -1,0 +1,15 @@
+fragment Block on Block {
+  id
+  consensus {
+    __typename
+    ... on PoAConsensus {
+      signature
+    }
+  }
+}
+
+query block($height: U32, $id: BlockId){
+  block(height: $height, id: $id){
+    ...Block
+  }
+}

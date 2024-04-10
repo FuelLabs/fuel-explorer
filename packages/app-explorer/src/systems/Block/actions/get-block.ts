@@ -1,6 +1,6 @@
 'use server';
 
-import type { GetBlockByHeightQuery } from '@fuel-explorer/graphql';
+import type { GQLBlockFragment } from '@fuel-explorer/graphql-new';
 import { Signer } from 'fuels';
 import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';
@@ -20,28 +20,22 @@ export const getBlock = act(schema, async (input) => {
   }
 
   if (isAddressValid) {
-    const { data } = await sdk.getBlockById({ id });
-    const producer = getProducer(data);
+    const { data } = await sdk.block({ id });
+    const producer = getProducer(data?.block);
     return { block: data.block, producer };
   }
 
-  const { data } = await sdk.getBlockByHeight({ height: id });
-  const producer = getProducer(data);
+  const { data } = await sdk.block({ height: id });
+  const producer = getProducer(data?.block);
   return { block: data.block, producer };
 });
 
-const getProducer = (
-  data:
-    | GetBlockByHeightQuery
-    | {
-        block: null;
-      },
-) => {
+const getProducer = (block?: GQLBlockFragment | null) => {
   // TODO use custom resolver once a fix is found
   let producer: string | null = null;
-  if (data.block && data.block.consensus.__typename === 'PoAConsensus') {
-    const signature = data?.block?.consensus.signature;
-    producer = Signer.recoverAddress(data.block.id, signature).toAddress();
+  if (block && block.consensus.__typename === 'PoAConsensus') {
+    const signature = block?.consensus.signature;
+    producer = Signer.recoverAddress(block.id, signature).toAddress();
   }
 
   return producer;
