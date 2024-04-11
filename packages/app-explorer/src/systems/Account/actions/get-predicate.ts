@@ -11,6 +11,6 @@ const schema = z.object({
 export const getPredicate = act(schema, async (input) => {
   if (!input.owner) return null;
 
-  const { data } = await sdk.getPredicate({ address: input.owner });
+  const { data } = await sdk.predicate({ address: input.owner });
   return data.predicate;
 });
