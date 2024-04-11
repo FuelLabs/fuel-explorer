@@ -22,12 +22,6 @@ const config: StorybookConfig = {
   },
   webpack: (config: any) => {
     config.module.rules.push({
-      test: /\.(graphql|gql)/,
-      exclude: /node_modules/,
-      loader: 'graphql-tag/loader',
-    });
-
-    config.module.rules.push({
       test: /\.svg$/i,
       issuer: /\.[jt]sx?$/,
       resourceQuery: { not: /url/ }, // exclude if *.svg?url

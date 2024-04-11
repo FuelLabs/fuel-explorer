@@ -10,7 +10,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"],
+      "~/*": ["./src/*", "../graphql-new/src/*"],
       "~portal/*": ["../app-portal/src/*"],
       "~public-portal/*": ["../app-portal/public/*"],
       "fuels": ["../../node_modules/fuels"],
@@ -24,7 +24,6 @@
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
-    "./src/generated",
     "src",
     ".storybook",
     "*.config.*",

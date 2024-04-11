@@ -20,7 +20,6 @@ const config = {
   reactStrictMode: true,
   swcMinify: true,
   transpilePackages: [
-    '@fuel-explorer/graphql',
     '@fuel-explorer/graphql-new',
     'app-commons',
     'app-portal',
@@ -79,12 +78,6 @@ const config = {
       'net',
       'tls',
     );
-
-    config.module.rules.push({
-      test: /\.(graphql|gql)/,
-      exclude: /node_modules/,
-      loader: 'graphql-tag/loader',
-    });
 
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>

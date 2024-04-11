@@ -17,7 +17,7 @@ import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
 type BalanceItemProps = BaseProps<{
-  item: GQLBalanceFragment;
+  item: Omit<GQLBalanceFragment, '__typename' | 'owner'>;
   isLoading?: boolean;
 }>;
 
