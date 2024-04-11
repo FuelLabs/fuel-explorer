@@ -25,6 +25,15 @@ const config: StorybookConfig = {
     check: false,
     reactDocgen: 'react-docgen',
   },
+  swc: (_config, _options) => ({
+    jsc: {
+      transform: {
+        react: {
+          runtime: 'automatic',
+        },
+      },
+    },
+  }),
   async viteFinal(config: UserConfig) {
     return mergeConfig(config, {
       plugins: [tsconfigpath()],
