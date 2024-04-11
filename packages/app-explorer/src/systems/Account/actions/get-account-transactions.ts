@@ -11,6 +11,6 @@ const schema = z.object({
 
 export const getAccountTransactions = act(schema, async (input) => {
   const owner = parseAddressParam(input.owner);
-  const { data } = await sdk.getAccountTransactions({ owner });
-  return data.transactions;
+  const { data } = await sdk.transactionsByOwner({ owner });
+  return data.transactionsByOwner;
 });
