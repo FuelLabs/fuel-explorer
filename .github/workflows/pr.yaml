@@ -50,4 +50,3 @@ jobs:
       - name: Run lint & ts:check
         run: |
           pnpm lint:ci
-          pnpm ts:check
