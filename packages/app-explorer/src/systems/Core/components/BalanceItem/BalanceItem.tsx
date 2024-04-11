@@ -1,5 +1,5 @@
 'use client';
-import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
+import type { GQLBalanceFragment } from '@fuel-explorer/graphql-new';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
@@ -17,7 +17,7 @@ import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
 type BalanceItemProps = BaseProps<{
-  item: Omit<AccountBalanceFragment, 'owner' | '__typename'>;
+  item: GQLBalanceFragment;
   isLoading?: boolean;
 }>;
 
