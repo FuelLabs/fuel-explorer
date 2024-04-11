@@ -24,7 +24,8 @@ export class OperationRepository {
     const paginator = new Paginator(OperationsTable, params);
     const where = eq(OperationsTable.transactionHash, txHash);
     const config = await paginator.getQueryPaginationConfig();
-    const results = await paginator.getPaginatedResult(config, where);
+    const query = await paginator.getPaginatedQuery(config, where);
+    const results = paginator.getPaginatedResult(query);
     return results.map((item) => OperationEntity.create(item, item._id));
   }
 

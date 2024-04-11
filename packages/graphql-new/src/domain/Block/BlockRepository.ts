@@ -46,11 +46,13 @@ export class BlockRepository {
   async findMany(params: PaginatorParams): Promise<BlockEntity[]> {
     const paginator = new Paginator(BlocksTable, params);
     const config = await paginator.getQueryPaginationConfig();
-    const query = paginator.getPaginatedResult(config);
-    const results = await query.leftJoin(
+    const query = paginator.getPaginatedQuery(config);
+    const joined = await query.leftJoin(
       TransactionsTable,
       eq(TransactionsTable.blockId, BlocksTable._id),
     );
+
+    const results = paginator.getPaginatedResult(joined);
 
     const items = results.reduce<
       Record<number, { block: BlockItem; transactions: TransactionItem[] }>

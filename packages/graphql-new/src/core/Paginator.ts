@@ -85,7 +85,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     return total.length > 0;
   }
 
-  getPaginatedResult<S extends SQL<unknown>>(
+  getPaginatedQuery<S extends SQL<unknown>>(
     config: Awaited<ReturnType<typeof this.getQueryPaginationConfig>>,
     customWhere?: S,
   ) {
@@ -114,6 +114,16 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     }
 
     return query;
+  }
+
+  getPaginatedResult<T>(items: T[]) {
+    const { last } = this.params;
+
+    if (last) {
+      return items.reverse();
+    }
+
+    return items;
   }
 
   async validateParams() {
@@ -148,10 +158,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     endCursor: Cursor | null,
     iterator: (node: T) => R,
   ): Promise<PaginatedResults<R>> {
-    const { last } = this.params;
-
-    const sorted = last ? nodes.reverse() : nodes;
-    const newNodes = sorted.map(iterator);
+    const newNodes = nodes.map(iterator);
     const edges = newNodes.map((node) => ({
       node,
       cursor: node.id,

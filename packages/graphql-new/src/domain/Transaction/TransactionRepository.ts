@@ -21,7 +21,8 @@ export class TransactionRepository {
   async findMany(params: PaginatorParams) {
     const paginator = new Paginator(TransactionsTable, params);
     const config = await paginator.getQueryPaginationConfig();
-    const results = await paginator.getPaginatedResult(config);
+    const query = await paginator.getPaginatedQuery(config);
+    const results = paginator.getPaginatedResult(query);
     return results.map((item) => TransactionEntity.create(item));
   }
 
@@ -32,7 +33,8 @@ export class TransactionRepository {
 
     const config = await paginator.getQueryPaginationConfig();
     const paginateFn = like(TransactionsTable.accountIndex, `%${owner}%`);
-    const results = await paginator.getPaginatedResult(config, paginateFn);
+    const query = await paginator.getPaginatedQuery(config, paginateFn);
+    const results = paginator.getPaginatedResult(query);
 
     return Promise.all(results.map((item) => TransactionEntity.create(item)));
   }
