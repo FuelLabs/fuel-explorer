@@ -1,8 +1,8 @@
 'use client';
 import type {
-  ContractBalanceConnectionItemFragment,
+  GQLContractBalanceConnectionNodeFragment,
   Maybe,
-} from '@fuel-explorer/graphql';
+} from '@fuel-explorer/graphql-new';
 import { VStack } from '@fuels/ui';
 import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
@@ -10,7 +10,7 @@ import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { ContractBalanceItem } from './ContractBalanceItem';
 
 type TabAssetsProps = {
-  balances?: Maybe<ContractBalanceConnectionItemFragment>;
+  balances?: Maybe<GQLContractBalanceConnectionNodeFragment>;
 };
 
 export function ContractAssetList({ balances }: TabAssetsProps) {
@@ -34,7 +34,8 @@ export function ContractAssetList({ balances }: TabAssetsProps) {
         return (
           <ContractBalanceItem
             key={contractBalance.cursor + JSON.stringify(contractBalance.node)}
-            {...contractBalance.node}
+            amount={contractBalance.node.amount}
+            assetId={contractBalance.node.assetId}
           />
         );
       })}
