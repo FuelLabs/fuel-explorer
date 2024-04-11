@@ -1,3 +1,4 @@
+import type { GQLRecentTransactionFragment } from '@fuel-explorer/graphql-new';
 import { TxList } from './TxList';
 
 type TxListLoaderProps = {
@@ -9,9 +10,15 @@ export const TxListLoader = ({ numberOfTxs = 4 }: TxListLoaderProps) => {
     { length: numberOfTxs },
     (_, index) => index + 1,
   );
-  const txs = baseArray.map((v) => ({
-    node: { id: v },
-  })) as any;
+  const txs: GQLRecentTransactionFragment[] = baseArray.map((v) => ({
+    __typename: 'Transaction',
+    id: v.toString(),
+    title: '',
+    time: {
+      __typename: 'ParsedTime',
+      fromNow: null,
+    },
+  }));
 
   return <TxList isLoading transactions={txs} pageInfo={undefined} />;
 };

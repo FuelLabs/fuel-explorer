@@ -244,6 +244,9 @@ importers:
       graphql-request:
         specifier: '>=6.1.0'
         version: 6.1.0(graphql@16.8.1)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       js-cookies:
         specifier: 1.0.4
         version: 1.0.4
