@@ -409,7 +409,7 @@
   {
     "isLive": false,
     "name": "Sentio",
-    "url": "https://www.sentio.xyz/",
+    "url": "https://sentio.xyz/",
     "tags": ["Indexer"],
     "description": "Sentio builds data and dev tooling products with strong developer-focus. Our product covers indexer, analytics/monitoring, debugger/simulator and code search.",
     "github": "https://github.com/sentioxyz",
