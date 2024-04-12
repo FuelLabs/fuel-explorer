@@ -9,6 +9,8 @@ const VERCEL_ENV =
 
 const getBaseUrl = () => {
   if (FUEL_EXPLORER_API) return FUEL_EXPLORER_API;
+
+  // @TODO: What to do with this urls?
   if (VERCEL_ENV !== 'development')
     return resolve(`https://${VERCEL_URL}`, '/api/graphql');
   return 'http://localhost:3000/api/graphql';

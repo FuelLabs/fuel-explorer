@@ -8,19 +8,9 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
-  "publishConfig": {
-    "access": "public",
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
-    "typings": "./dist/index.d.ts",
-    "exports": {
-      ".": {
-        "require": "./dist/index.js",
-        "default": "./dist/index.mjs"
-      }
-    },
-    "files": ["dist"]
+  "exports": {
+    ".": "./src/index.ts",
+    "./src/graphql/generated/sdk": "./src/graphql/generated/sdk.ts"
   },
   "scripts": {
     "build:lib": "run-s codegen build:sdk",
@@ -43,6 +33,11 @@
     "sync:clean": "tsx ./src/cli.ts sync --clean",
     "prepare": "pnpm build:lib"
   },
+  "peerDependencies": {
+    "graphql": ">=16.8.1",
+    "graphql-request": ">=6.1.0",
+    "graphql-tag": ">=2.12.6"
+  },
   "dependencies": {
     "@graphql-tools/load": "8.0.2",
     "@graphql-tools/load-files": "7.0.0",
@@ -59,9 +54,6 @@
     "ethers": "^6.7.1",
     "express": "5.0.0-beta.1",
     "fuels": "0.74.0",
-    "graphql": "^16.8.1",
-    "graphql-request": "6.1.0",
-    "graphql-tag": "^2.12.6",
     "graphql-yoga": "5.1.1",
     "lodash": "^4.17.21",
     "npm-run-all": "^4.1.5",
@@ -85,6 +77,9 @@
     "@types/node": "^20.11.19",
     "@types/pg": "^8.11.0",
     "drizzle-kit": "^0.20.14",
+    "graphql": "^16.8.1",
+    "graphql-request": "6.1.0",
+    "graphql-tag": "^2.12.6",
     "gql-generator": "2.0.0",
     "graphql-codegen-typescript-mock-data": "3.7.1",
     "graphql-config": "5.0.3",

@@ -718,15 +718,6 @@ importers:
       fuels:
         specifier: 0.74.0
         version: 0.74.0(dexie@3.2.4)
-      graphql:
-        specifier: '>=16.8.1'
-        version: 16.8.1
-      graphql-request:
-        specifier: 6.1.0
-        version: 6.1.0(graphql@16.8.1)
-      graphql-tag:
-        specifier: ^2.12.6
-        version: 2.12.6(graphql@16.8.1)
       graphql-yoga:
         specifier: 5.1.1
         version: 5.1.1(graphql@16.8.1)
@@ -794,12 +785,21 @@ importers:
       gql-generator:
         specifier: 2.0.0
         version: 2.0.0
+      graphql:
+        specifier: '>=16.8.1'
+        version: 16.8.1
       graphql-codegen-typescript-mock-data:
         specifier: 3.7.1
         version: 3.7.1(graphql@16.8.1)
       graphql-config:
         specifier: 5.0.3
         version: 5.0.3(@types/node@20.11.19)(graphql@16.8.1)(typescript@5.3.3)
+      graphql-request:
+        specifier: 6.1.0
+        version: 6.1.0(graphql@16.8.1)
+      graphql-tag:
+        specifier: ^2.12.6
+        version: 2.12.6(graphql@16.8.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@swc/core@1.4.1)(ts-node@10.9.2)(typescript@5.3.3)
