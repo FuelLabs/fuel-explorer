@@ -17,6 +17,9 @@ export const getContract = act(schema, async (input) => {
 
 export const getContractBalances = act(schema, async (input) => {
   const id = parseAddressParam(input.id);
-  const { data } = await sdk.contractBalances({ filter: { contract: id } });
+  const { data } = await sdk.contractBalances({
+    first: 1000,
+    filter: { contract: id },
+  });
   return data.contractBalances;
 });
