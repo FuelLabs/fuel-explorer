@@ -41,7 +41,7 @@ class TransactionResolver extends ResolverAdapter<Source> {
 
   async transaction(_: Source, params: Params['transaction']) {
     const item = await this.transactionRepository.findByHash(params.id);
-    return item?.toGQLNode() ?? null;
+    return item?.toGQLNode();
   }
 
   async transactions(_: Source, params: Params['transactions']) {

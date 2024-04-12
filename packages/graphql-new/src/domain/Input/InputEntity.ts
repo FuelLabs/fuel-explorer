@@ -62,6 +62,11 @@ export class InputEntity extends Entity<
   }
 
   get hasPredicate() {
-    return Boolean(this.predicateData);
+    const data = this.data.value();
+    if ('predicate' in data) {
+      return !!data.predicate && data.predicate !== '0x';
+    }
+
+    return false;
   }
 }
