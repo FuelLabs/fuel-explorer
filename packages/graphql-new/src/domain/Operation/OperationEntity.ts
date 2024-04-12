@@ -15,8 +15,7 @@ type OperationProps = {
 export class OperationEntity extends Entity<OperationProps, SerialID> {
   static create(operation: OperationPayload, operationId: number) {
     const id = SerialID.create(operationId);
-    const type = 'Operation' as const;
-    const data = OperationData.create({ __typename: type, ...operation });
+    const data = OperationData.create(operation.data);
     const transactionId = TransactionRef.create(operation.transactionId);
     const transactionHash = Hash256.create(operation.transactionHash);
     const props = {

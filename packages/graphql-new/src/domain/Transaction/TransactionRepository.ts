@@ -8,13 +8,17 @@ import { TransactionsTable } from './TransactionModel';
 
 export class TransactionRepository {
   async findByHash(id: string) {
-    const [transaction] = await db
+    const transaction = await db
       .connection()
-      .select()
-      .from(TransactionsTable)
-      .where(eq(TransactionsTable.txHash, id))
-      .limit(1);
+      .query.TransactionsTable.findFirst({
+        where: eq(TransactionsTable.txHash, id),
+        with: {
+          operations: true,
+        },
+      });
+
     if (!transaction) return null;
+
     return TransactionEntity.create(transaction);
   }
 

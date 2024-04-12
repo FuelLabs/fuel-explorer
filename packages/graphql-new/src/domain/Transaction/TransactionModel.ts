@@ -1,11 +1,11 @@
 import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
 import { Hash256 } from '~/application/vo';
-import { BlocksTable } from '~/domain/Block/BlockModel';
+import { BlockItem, BlocksTable } from '~/domain/Block/BlockModel';
 import { BlockRef } from '~/domain/Block/vo/BlockRef';
 import { InputsTable } from '~/domain/Input/InputModel';
 import { OutputsTable } from '~/domain/Output/OutputModel';
-import { OperationsTable } from '../Operation/OperationModel';
+import { OperationItem, OperationsTable } from '../Operation/OperationModel';
 import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
 import { TransactionModelID } from './vo/TransactionModelID';
@@ -30,15 +30,9 @@ export const TransactionsTable = pgTable(
 export const TransactionsRelations = relations(
   TransactionsTable,
   ({ one, many }) => ({
-    inputs: many(InputsTable, {
-      relationName: 'transaction_inputs',
-    }),
-    outputs: many(OutputsTable, {
-      relationName: 'transaction_outputs',
-    }),
-    operations: many(OperationsTable, {
-      relationName: 'transaction_operations',
-    }),
+    inputs: many(InputsTable),
+    outputs: many(OutputsTable),
+    operations: many(OperationsTable),
     block: one(BlocksTable, {
       fields: [TransactionsTable.blockId],
       references: [BlocksTable._id],
@@ -46,4 +40,9 @@ export const TransactionsRelations = relations(
   }),
 );
 
-export type TransactionItem = typeof TransactionsTable.$inferSelect;
+type BaseTransactionItem = typeof TransactionsTable.$inferSelect;
+
+export interface TransactionItem extends BaseTransactionItem {
+  operations?: OperationItem[];
+  block?: BlockItem;
+}

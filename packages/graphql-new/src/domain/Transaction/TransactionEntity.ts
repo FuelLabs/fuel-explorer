@@ -14,6 +14,8 @@ import { TransactionModelID } from './vo/TransactionModelID';
 import { TransactionStatus } from './vo/TransactionStatus';
 import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
+import { OperationEntity } from '../Operation/OperationEntity';
+
 type TransactionInputProps = {
   accountIndex: AccountIndex;
   blockId: BlockRef;
@@ -24,6 +26,7 @@ type TransactionInputProps = {
   time: ParsedTime;
   timestamp: TransactionTimestamp;
   txHash: Hash256;
+  operations?: OperationEntity[];
 };
 
 export class TransactionEntity extends Entity<
@@ -43,6 +46,10 @@ export class TransactionEntity extends Entity<
     const time = ParsedTime.create(timeFromStatus(transaction));
     const timestamp = TransactionTimestamp.create(item);
     const txHash = Hash256.create(item.id);
+    const operations = transaction.operations?.map((o) =>
+      OperationEntity.create(o, o._id),
+    );
+
     const props = {
       blockId: blockRef,
       status,
@@ -53,6 +60,7 @@ export class TransactionEntity extends Entity<
       accountIndex,
       groupedInputs,
       groupedOutputs,
+      operations,
     };
 
     return new TransactionEntity(props, id);
@@ -81,6 +89,7 @@ export class TransactionEntity extends Entity<
       groupedOutputs: this.groupedOutputs,
       hasPredicate: this.hasPredicate,
       statusType: this.status.value(),
+      operations: this.operations,
       time: this.parsedTime,
       title: this.title,
     };
@@ -127,6 +136,10 @@ export class TransactionEntity extends Entity<
 
   get groupedOutputs() {
     return this.props.groupedOutputs.value();
+  }
+
+  get operations() {
+    return this.props.operations?.map((o) => o.toGQLNode()) ?? [];
   }
 
   get status() {

@@ -1,8 +1,12 @@
+import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
+
 import { Hash256 } from '~/application/vo';
 import { SerialID } from '~/application/vo/SerialID';
 import { TransactionRef } from '~/domain/Transaction/vo/TransactionRef';
 import { OperationData } from './vo/OperationData';
+
+import { TransactionsTable } from '../Transaction/TransactionModel';
 
 export const OperationsTable = pgTable(
   'operations',
@@ -16,6 +20,13 @@ export const OperationsTable = pgTable(
     operationIdIdx: index().on(table._id),
   }),
 );
+
+export const OperationsRelations = relations(OperationsTable, ({ one }) => ({
+  transaction: one(TransactionsTable, {
+    fields: [OperationsTable.transactionId],
+    references: [TransactionsTable._id],
+  }),
+}));
 
 export type OperationItem = typeof OperationsTable.$inferSelect;
 export type OperationPayload = Omit<OperationItem, '_id'>;
