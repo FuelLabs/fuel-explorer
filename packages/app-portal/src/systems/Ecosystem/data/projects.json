@@ -90,7 +90,7 @@
   {
     "isLive": false,
     "name": "Connext",
-    "url": "https://www.connext.network/",
+    "url": "https://connext.network/",
     "tags": ["Bridge"],
     "description": "Connext is a fast and secure modular interoperability protocol, powered by intents.",
     "github": "https://github.com/connext",
