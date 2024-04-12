@@ -1,6 +1,6 @@
 [
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Acumen",
     "url": "https://acumen.network/",
     "tags": ["DeFi", "Real World Assets"],
@@ -11,7 +11,7 @@
     "image": "acumen"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Aerv",
     "url": "https://aerv.finance",
     "tags": ["DeFi"],
@@ -52,7 +52,7 @@
     "github": "",
     "twitter": "https://twitter.com/bakoidentity",
     "discord": "",
-    "image": "bako"
+    "image": "bakoid"
   },
   {
     "isLive": true,
@@ -63,18 +63,18 @@
     "github": "",
     "twitter": "https://twitter.com/bakosafe",
     "discord": "",
-    "image": "bako"
+    "image": "bakosafe"
   },
   {
     "isLive": false,
-    "name": "Bald Boyz NFT",
-    "url": "https://baldboyznft.com/",
-    "tags": ["NFT"],
-    "description": "A positivity-fueled NFT community, celebrating your true self.",
-    "github": "",
-    "twitter": "https://twitter.com/BaldBoyzOnFuel",
-    "discord": "",
-    "image": "baldboyz"
+    "name": "CoChilli",
+    "url": "https://cochilli.io/",
+    "tags": ["Betting"],
+    "description": "CoChilli is bringing betting onchain, utilizing groundbreaking Virtual Engine technology to eliminate latency and gas fees, allowing for a frictionless UX.",
+    "github": "https://github.com/cochilli",
+    "twitter": "https://twitter.com/CoChilli_io",
+    "discord": "https://discord.gg/Un7tT2Tmkn",
+    "image": "cochilli"
   },
   {
     "isLive": true,
@@ -89,14 +89,36 @@
   },
   {
     "isLive": false,
-    "name": "Elix Finance",
-    "url": "https://elix.finance/",
-    "tags": ["DeFi"],
-    "description": "Elix Finance is a hybrid automated market maker featuring automated concentrated liquidity.",
-    "github": "https://github.com/elixfinance",
-    "twitter": "https://twitter.com/elixfinance",
-    "discord": "https://discord.gg/avrdk2tAY6",
-    "image": "elix"
+    "name": "Connext",
+    "url": "https://www.connext.network/",
+    "tags": ["Bridge"],
+    "description": "Connext is a fast and secure modular interoperability protocol, powered by intents.",
+    "github": "https://github.com/connext",
+    "twitter": "https://twitter.com/Connext",
+    "discord": "https://discord.com/invite/connext",
+    "image": "connext"
+  },
+  {
+    "isLive": false,
+    "name": "CryptoSage",
+    "url": "https://cryptosage.jump.trade/coming-soon",
+    "tags": ["Social"],
+    "description": "An innovative crypto opinion trading platform, where users can monetize their insights and predictions on various cryptocurrencies.",
+    "github": "https://github.com/GuardainDev/Cryptosage",
+    "twitter": "https://twitter.com/cryptosageoff",
+    "discord": "",
+    "image": "cryptosage"
+  },
+  {
+    "isLive": true,
+    "name": "Envio",
+    "url": "https://envio.dev/",
+    "tags": ["Indexer"],
+    "description": "Envio is a modern, multi-chain EVM blockchain indexing framework speed-optimized for querying real-time and historical data.",
+    "github": "https://github.com/enviodev",
+    "twitter": "https://twitter.com/envio_indexer",
+    "discord": "https://discord.gg/amcY528zbZ",
+    "image": "envio"
   },
   {
     "isLive": false,
@@ -144,8 +166,8 @@
   },
   {
     "isLive": true,
-    "name": "Fuel-Bridge",
-    "url": "https://alpha.fuel.network/bridge",
+    "name": "Fuel Bridge",
+    "url": "https://app.fuel.network/portal/bridge",
     "tags": ["Bridge", "Fuel", "Tooling"],
     "description": "Bridge assets from Ethereum to Fuel with Fuel's native bridge.",
     "github": "https://github.com/FuelLabs/fuel-bridge",
@@ -187,10 +209,21 @@
     "image": "fuelstat"
   },
   {
+    "isLive": false,
+    "name": "Griffy",
+    "url": "https://griffy.app",
+    "tags": ["Prediction Market"],
+    "description": "The NASDAQ for opinions. Griffy empowers users to trade their opinions. You can select your interest from real world events like sports, politics, celebrities, fashion and a wide range of topics and trade your opinions like you trade stocks!",
+    "github": "",
+    "twitter": "https://twitter.com/GriffyCommunity",
+    "discord": "",
+    "image": "griffy"
+  },
+  {
     "isLive": true,
     "name": "Guild",
-    "url": "https://guild.xyz",
-    "tags": ["Tooling"],
+    "url": "https://guild.xyz/fuel",
+    "tags": ["Social"],
     "description": "Automated membership management for the platforms your community already uses.",
     "github": "https://github.com/agoraxyz/guild.xyz",
     "twitter": "https://twitter.com/guildxyz",
@@ -220,11 +253,22 @@
     "image": "hyperlane"
   },
   {
+    "isLive": false,
+    "name": "Kassiopea",
+    "url": "https://kassiopea.xyz",
+    "tags": ["DeFi"],
+    "description": "Kassiopea is a decentralized perpetual trading platform that revolutionizes the way people trade commodities, RWA and cryptocurrencies amidst gameplay.",
+    "github": "",
+    "twitter": "https://twitter.com/Kassiopea_xyz",
+    "discord": "https://discord.gg/SX8M4YYT",
+    "image": "kassiopea"
+  },
+  {
     "isLive": true,
     "name": "LearnWeb3",
     "url": "https://learnweb3.io/",
     "tags": ["Education"],
-    "description": "LearnWeb3 is the platform to upskill yourself with next-gen technologies, proudly teaching 100K+ students without barriers.",
+    "description": "Access free, full stack, high quality education to become a Web3 expert!",
     "github": "https://github.com/LearnWeb3DAO",
     "twitter": "https://twitter.com/LearnWeb3DAO",
     "discord": "https://discord.gg/learnweb3",
@@ -243,28 +287,6 @@
   },
   {
     "isLive": false,
-    "name": "Microchain Systems",
-    "url": "https://microchain.systems/",
-    "tags": ["DeFi"],
-    "description": "A low-cost, easy-to-use token-swapping terminal with two major benefits: versatility and simplicity.",
-    "github": "",
-    "twitter": "https://twitter.com/MicrochainSys",
-    "discord": "",
-    "image": "microchain"
-  },
-  {
-    "isLive": false,
-    "name": "Nomen",
-    "url": "https://fuelnomen-testnet.netlify.app/",
-    "tags": ["Social"],
-    "description": "Nomen is a native name system of Fuel.",
-    "github": "",
-    "twitter": "https://twitter.com/fuelnomen",
-    "discord": "https://discord.gg/xPC87HyJ5n",
-    "image": "fuelnomen"
-  },
-  {
-    "isLive": false,
     "name": "ORAO",
     "url": "https://orao.network/",
     "tags": ["Oracle"],
@@ -273,6 +295,28 @@
     "twitter": "https://twitter.com/OraoNetwork",
     "discord": "",
     "image": "orao"
+  },
+  {
+    "isLive": false,
+    "name": "Orbiter Finance",
+    "url": "https://orbiter.finance",
+    "tags": ["Bridge"],
+    "description": "Decentralized cross-rollup bridge offers low cost and almost instant transfert.",
+    "github": "https://github.com/Orbiter-Finance",
+    "twitter": "https://twitter.com/Orbiter_Finance",
+    "discord": "",
+    "image": "orbiter"
+  },
+  {
+    "isLive": false,
+    "name": "Pantheon of Olympus",
+    "url": "https://side.xyz/the-olympians",
+    "tags": ["NFT"],
+    "description": "Witness the captivating pixelized realm of mythical deities and embark on a GameFi adventure.",
+    "github": "",
+    "twitter": "https://twitter.com/pantheonsnft",
+    "discord": "",
+    "image": "pantheonolympus"
   },
   {
     "isLive": false,
@@ -309,6 +353,28 @@
   },
   {
     "isLive": false,
+    "name": "Push Protocol",
+    "url": "https://push.org/",
+    "tags": ["Tooling"],
+    "description": "Push is 'The communication protocol of web3'. Push protocol helps dapps and protocols to notifications directly to user wallets, and enables native wallet to wallet messaging and token gated group chats.",
+    "github": "https://github.com/push-protocol/push-website",
+    "twitter": "https://twitter.com/pushprotocol",
+    "discord": "https://discord.gg/pushprotocol",
+    "image": "push"
+  },
+  {
+    "isLive": false,
+    "name": "Pyth",
+    "url": "https://pyth.network",
+    "tags": ["Oracle"],
+    "description": "Build apps with high-fidelity oracle feeds designed for mission-critical systems.",
+    "github": "https://github.com/pyth-network",
+    "twitter": "https://x.com/PythNetwork",
+    "discord": "https://discord.gg/invite/PythNetwork",
+    "image": "pyth"
+  },
+  {
+    "isLive": false,
     "name": "RedStone Oracle",
     "url": "https://redstone.finance/",
     "tags": ["Oracle"],
@@ -317,17 +383,6 @@
     "twitter": "https://twitter.com/redstone_defi",
     "discord": "",
     "image": "redstone"
-  },
-  {
-    "isLive": false,
-    "name": "Ruscet Exchange",
-    "url": "https://github.com/ruscet",
-    "tags": ["DeFi"],
-    "description": "A permissionless, hyper-efficient exchange on Fuel.",
-    "github": "https://github.com/ruscet",
-    "twitter": "https://twitter.com/ruscet_",
-    "discord": "https://discord.gg/g3eqZsA39z",
-    "image": "ruscet"
   },
   {
     "isLive": false,
@@ -342,14 +397,25 @@
   },
   {
     "isLive": false,
-    "name": "Smart Money Labs",
-    "url": "https://smartmoneylabs.vercel.app/",
-    "tags": ["DeFi"],
-    "description": "Smart Money is a truly decentralized lending and borrowing protocol on Fuel.",
-    "github": "https://github.com/SmartMoney-Labs",
-    "twitter": "https://twitter.com/smartmoney_labs",
-    "discord": "https://discord.gg/jFMuUcFe2G",
-    "image": "smartmoney"
+    "name": "Seda Protocol",
+    "url": "https://seda.xyz",
+    "tags": ["Infrastructure"],
+    "description": "SEDA is a permissionless modular data layer building the new standard for data transport and querying. Natively serving 230+ blockchains SEDA allows protocols to transport, query and configure any data available from any source.",
+    "github": "",
+    "twitter": "https://twitter.com/sedaprotocol",
+    "discord": "https://discord.com/invite/seda",
+    "image": "seda"
+  },
+  {
+    "isLive": false,
+    "name": "Sentio",
+    "url": "https://www.sentio.xyz/",
+    "tags": ["Indexer"],
+    "description": "Sentio builds data and dev tooling products with strong developer-focus. Our product covers indexer, analytics/monitoring, debugger/simulator and code search.",
+    "github": "https://github.com/sentioxyz",
+    "twitter": "https://twitter.com/sentioxyz",
+    "discord": "https://discord.gg/vSdkMYqnjb",
+    "image": "sentio"
   },
   {
     "isLive": true,
@@ -364,6 +430,39 @@
   },
   {
     "isLive": false,
+    "name": "Subsquid",
+    "url": "https://subsquid.io/",
+    "tags": ["Indexer"],
+    "description": "A peer-to-peer network to batch query and aggregate terabytes of on-chain and off-chain data in a ridiculously efficient way.",
+    "github": "https://github.com/subsquid/squid-sdk",
+    "twitter": "https://twitter.com/subsquid",
+    "discord": "https://discord.com/invite/subsquid",
+    "image": "subsquid"
+  },
+  {
+    "isLive": true,
+    "name": "Sway Farm",
+    "url": "https://swayfarm.xyz",
+    "tags": ["Fuel", "Gaming"],
+    "description": "Grow and sell tomatoes to become a Sway Farm Hero",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": "swayfarm"
+  },
+  {
+    "isLive": true,
+    "name": "Sway Playground",
+    "url": "https://sway-playground.org",
+    "tags": ["Fuel", "DevEx"],
+    "description": "Sway Playground enables developers to build, deploy, and interact with simple sway contracts in the browser with no installation of tools.",
+    "github": "",
+    "twitter": "https://twitter.com/SwayLang",
+    "discord": "",
+    "image": "swayplayground"
+  },
+  {
+    "isLive": false,
     "name": "Swaylend",
     "url": "swaylend.com",
     "tags": ["DeFi"],
@@ -375,6 +474,17 @@
   },
   {
     "isLive": false,
+    "name": "The Graph",
+    "url": "https://thegraph.com/",
+    "tags": ["Indexer"],
+    "description": "The Graph is a web3 protocol for organizing and accessing blockchain data.",
+    "github": "https://github.com/graphprotocol",
+    "twitter": "https://twitter.com/graphprotocol",
+    "discord": "https://discord.com/invite/graphprotocol",
+    "image": "thegraph"
+  },
+  {
+    "isLive": true,
     "name": "Thunder",
     "url": "https://beta.thundernft.market/",
     "tags": ["Marketplace", "NFT"],
@@ -383,38 +493,5 @@
     "twitter": "https://twitter.com/ThunderbyFuel",
     "discord": "https://discord.gg/thundernftmarket",
     "image": "thunder"
-  },
-  {
-    "isLive": false,
-    "name": "Unic/Nufutu",
-    "url": "https://unic.io/",
-    "tags": ["Marketplace", "NFT"],
-    "description": "RWA bridge solution that verifies assets in the digital and the physical world.",
-    "github": "",
-    "twitter": "https://twitter.com/0xUNIC",
-    "discord": "https://discord.gg/bkED7VZzWK",
-    "image": "unic"
-  },
-  {
-    "isLive": false,
-    "name": "Yama Finance",
-    "url": "https://yama.finance/",
-    "tags": ["DeFi"],
-    "description": "A novel omnichain stablecoin that makes CDPs as efficient and powerful as possible.",
-    "github": "",
-    "twitter": "https://twitter.com/YamaFinance",
-    "discord": "https://discord.gg/4tBE8w4SYW",
-    "image": "yama"
-  },
-  {
-    "isLive": false,
-    "name": "Zap",
-    "url": "https://zapinfra.com",
-    "tags": ["Tooling"],
-    "description": "Zap is the gateway to better UX, cheaper transactions, and faster execution on Fuel",
-    "github": "https://github.com/Layer3Labs/Zap-Protocol",
-    "twitter": "https://twitter.com/zap_infra",
-    "discord": "",
-    "image": "zap"
   }
 ]
