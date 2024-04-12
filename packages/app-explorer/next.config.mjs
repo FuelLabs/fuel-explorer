@@ -1,19 +1,6 @@
 import { redirects } from './src/redirects.mjs';
 
-const externals = [
-  'bcryptjs',
-  'ws',
-  'isomorphic-ws',
-  'node-fetch',
-  '@whatwg/node-fetch',
-  'graphql',
-  '@graphql-tools/delegate',
-  '@graphql-tools/load',
-  '@graphql-tools/schema',
-  '@graphql-tools/stitch',
-  '@graphql-tools/url-loader',
-  '@graphql-tools/utils',
-];
+const externals = [];
 
 /** @type {import('next').NextConfig} */
 const config = {
