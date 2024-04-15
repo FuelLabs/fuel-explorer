@@ -14,6 +14,7 @@ import {
   Text,
   Tooltip,
   VStack,
+  cx,
 } from '@fuels/ui';
 import { IconBrandDiscord, IconBrandX } from '@tabler/icons-react';
 import { IconBrandGithub } from '@tabler/icons-react';
@@ -40,7 +41,7 @@ export const ProjectItem: ProjectItemComponent = ({
   discord,
   status,
   github,
-  isLive: _isLive,
+  isLive,
 }: ProjectItemProps) => {
   const classes = styles();
 
@@ -138,12 +139,22 @@ export const ProjectItem: ProjectItemComponent = ({
             key={index}
             color="gray"
             size="1"
-            className={classes.tag()}
+            className={cx(classes.tag(), classes.tagStatus())}
             variant="ghost"
           >
             {s}
           </Badge>
         ))}
+        {isLive ? (
+          <Badge
+            color="green"
+            size="2"
+            className={classes.tag()}
+            variant="surface"
+          >
+            Live
+          </Badge>
+        ) : null}
       </Card.Footer>
     </MotionCard>
   );
@@ -162,7 +173,8 @@ const styles = tv({
       'w-1 h-1 rounded-full border border-solid border-border',
       'bg-green-500 shadow-[0_0_4px_0_#00F58C]',
     ],
-    tag: ['text-heading rounded-sm py-1 px-2'],
+    tag: ['rounded-sm py-1 px-2 pointer-events-none'],
+    tagStatus: ['text-heading'],
     title: ['w-full'],
     body: 'flex flex-1 flex-row items-start gap-4 justify-start px-6 py-4',
     statusContainer: 'flex flex-wrap justify-end items-end mt-auto',
