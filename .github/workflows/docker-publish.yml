@@ -17,7 +17,9 @@ jobs:
   build-and-publish-image:
     runs-on: buildjet-4vcpu-ubuntu-2204
     if: |
-      (github.event_name == 'release' && github.event.action == 'published') ||
+      (github.event_name == 'release' &&
+      github.event.action == 'published' &&
+      github.event.pull_request.head.repo.full_name == github.repository) ||
       github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v3
@@ -37,7 +39,9 @@ jobs:
   build-and-publish-image-v2:
     runs-on: buildjet-4vcpu-ubuntu-2204
     if: |
-      (github.event_name == 'release' && github.event.action == 'published') ||
+      (github.event_name == 'release' &&
+      github.event.action == 'published' &&
+      github.event.pull_request.head.repo.full_name == github.repository) ||
       github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v3
