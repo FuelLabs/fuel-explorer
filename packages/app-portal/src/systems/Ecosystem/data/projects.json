@@ -1,6 +1,7 @@
 [
   {
-    "isLive": true,
+    "isLive": false,
+    "status": ["Building"],
     "name": "Acumen",
     "url": "https://acumen.network/",
     "tags": ["DeFi", "Real World Assets"],
@@ -23,8 +24,9 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Aori",
-    "url": "https://www.aori.io/",
+    "url": "https://aori.io/",
     "tags": ["DeFi"],
     "description": "Non-custodial, high-performance order book trading infrastructure for decentralized options, spot trading, and OTC settlement.",
     "github": "https://github.com/aori-io",
@@ -34,9 +36,10 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "ArtDAO",
-    "url": "https://www.artdao.xyz/",
-    "tags": ["Marketplace", "NFT"],
+    "url": "https://artdao.xyz/",
+    "tags": ["DAO", "NFT", "Social"],
     "description": "Scaling the possibilities of digital art on Ethereum - artists helping artists.",
     "github": "",
     "twitter": "https://twitter.com/Artdao_xyz",
@@ -45,6 +48,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Bako ID",
     "url": "https://bako.id",
     "tags": ["Social"],
@@ -67,9 +71,10 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "CoChilli",
     "url": "https://cochilli.io/",
-    "tags": ["Betting"],
+    "tags": ["Prediction Market"],
     "description": "CoChilli is bringing betting onchain, utilizing groundbreaking Virtual Engine technology to eliminate latency and gas fees, allowing for a frictionless UX.",
     "github": "https://github.com/cochilli",
     "twitter": "https://twitter.com/CoChilli_io",
@@ -79,7 +84,7 @@
   {
     "isLive": true,
     "name": "Common Ground",
-    "url": "https://www.commonground.cg/",
+    "url": "https://commonground.cg/",
     "tags": ["Social"],
     "description": "The Web3-powered app for communities of all shapes and sizes. Chat, share, and earn with your audience and friends.",
     "github": "",
@@ -89,6 +94,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Connext",
     "url": "https://connext.network/",
     "tags": ["Bridge"],
@@ -100,9 +106,10 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "CryptoSage",
     "url": "https://cryptosage.jump.trade/coming-soon",
-    "tags": ["Social"],
+    "tags": ["Social", "Prediction Market"],
     "description": "An innovative crypto opinion trading platform, where users can monetize their insights and predictions on various cryptocurrencies.",
     "github": "https://github.com/GuardainDev/Cryptosage",
     "twitter": "https://twitter.com/cryptosageoff",
@@ -122,6 +129,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Fluid Protocol",
     "url": "https://fluidprotocol.xyz/",
     "tags": ["DeFi"],
@@ -133,6 +141,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Frank",
     "url": "https://fuelstat.xyz/frank/",
     "tags": ["Tooling"],
@@ -177,6 +186,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Fuelart",
     "url": "https://fuelart.io/",
     "tags": ["Marketplace", "NFT"],
@@ -199,6 +209,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Fuelstat",
     "url": "https://fuelstat.xyz/",
     "tags": ["Tooling"],
@@ -210,6 +221,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Griffy",
     "url": "https://griffy.app",
     "tags": ["Prediction Market"],
@@ -232,8 +244,9 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Helixa TCG",
-    "url": "https://www.helixatcg.com/",
+    "url": "https://helixatcg.com/",
     "tags": ["Gaming", "Marketplace", "NFT"],
     "description": "A trading card game that blends enthralling gameplay, rich lore, and unique mechanics for an engaging, interactive experience.",
     "github": "",
@@ -243,8 +256,9 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Hyperlane",
-    "url": "https://www.hyperlane.xyz/",
+    "url": "https://hyperlane.xyz/",
     "tags": ["Bridge"],
     "description": "Hyperlane is the permissionless Interoperability layer built for the modular future.",
     "github": "https://github.com/hyperlane-xyz",
@@ -254,6 +268,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Kassiopea",
     "url": "https://kassiopea.xyz",
     "tags": ["DeFi"],
@@ -287,6 +302,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "ORAO",
     "url": "https://orao.network/",
     "tags": ["Oracle"],
@@ -298,6 +314,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Orbiter Finance",
     "url": "https://orbiter.finance",
     "tags": ["Bridge"],
@@ -309,6 +326,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Pantheon of Olympus",
     "url": "https://side.xyz/the-olympians",
     "tags": ["NFT"],
@@ -320,6 +338,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Pepa Network",
     "url": "https://pepalabs.net/",
     "tags": ["DeFi", "Gaming", "Social"],
@@ -331,8 +350,9 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "PlayEstates",
-    "url": "https://www.playestates.com/",
+    "url": "https://playestates.com/",
     "tags": ["Real World Assets", "Gaming", "NFT"],
     "description": "PlayEstates brings real estate on-chain and makes RWA ownership easy and affordable.",
     "github": "",
@@ -342,8 +362,9 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "PoolShark Protocol",
-    "url": "https://www.poolshark.fi/",
+    "url": "https://poolshark.fi/",
     "tags": ["DeFi"],
     "description": "PoolShark is a directional AMM where users can profit from volatility with less maintenance. ",
     "github": "",
@@ -353,6 +374,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Push Protocol",
     "url": "https://push.org/",
     "tags": ["Tooling"],
@@ -363,7 +385,7 @@
     "image": "push"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Pyth",
     "url": "https://pyth.network",
     "tags": ["Oracle"],
@@ -374,7 +396,7 @@
     "image": "pyth"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "RedStone Oracle",
     "url": "https://redstone.finance/",
     "tags": ["Oracle"],
@@ -386,8 +408,9 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Sail Exchange",
-    "url": "https://www.sail.exchange/",
+    "url": "https://sail.exchange/",
     "tags": ["DeFi"],
     "description": "Sail Exchange is a central limit order book built on Fuel.",
     "github": "https://github.com/Sail-Exchange",
@@ -397,6 +420,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Seda Protocol",
     "url": "https://seda.xyz",
     "tags": ["Infrastructure"],
@@ -408,6 +432,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Sentio",
     "url": "https://sentio.xyz/",
     "tags": ["Indexer"],
@@ -430,6 +455,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Subsquid",
     "url": "https://subsquid.io/",
     "tags": ["Indexer"],
@@ -444,7 +470,7 @@
     "name": "Sway Farm",
     "url": "https://swayfarm.xyz",
     "tags": ["Fuel", "Gaming"],
-    "description": "Grow and sell tomatoes to become a Sway Farm Hero",
+    "description": "Grow and sell tomatoes to become a Sway Farm Hero.",
     "github": "",
     "twitter": "",
     "discord": "",
@@ -463,6 +489,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Swaylend",
     "url": "swaylend.com",
     "tags": ["DeFi"],
@@ -474,6 +501,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "The Graph",
     "url": "https://thegraph.com/",
     "tags": ["Indexer"],
