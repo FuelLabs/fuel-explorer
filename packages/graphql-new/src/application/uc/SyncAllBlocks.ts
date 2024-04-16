@@ -6,7 +6,7 @@ import {
   type QueueInputs,
   QueueNames,
   queue,
-} from '~/infra/queue';
+} from '~/infra/queue/Queue';
 
 type Props = QueueInputs[QueueNames.SYNC_BLOCKS];
 

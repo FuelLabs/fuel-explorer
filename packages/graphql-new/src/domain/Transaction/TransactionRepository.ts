@@ -45,7 +45,8 @@ export class TransactionRepository {
 
   async insertOne(txHash: string, block: GQLBlock, index: number) {
     const found = await this.findByHash(txHash);
-    if (found) return found;
+    if (found) return null;
+
     const { sdk } = new GraphQLSDK();
     const res = await sdk.transaction({ id: txHash });
     const transaction = res.data?.transaction as GQLTransaction;

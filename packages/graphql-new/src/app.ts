@@ -2,7 +2,7 @@ import { setTimeout } from 'node:timers/promises';
 import { env } from './config';
 import { GraphQLServer } from './graphql/GraphQLServer';
 import { db } from './infra/database/Db';
-import { QueueNames, queue } from './infra/queue';
+import { QueueNames, queue } from './infra/queue/Queue';
 import { Server } from './infra/server/App';
 
 const port = Number(env.get('SERVER_PORT'));

@@ -1,5 +1,11 @@
 import { Address as FuelAddr, isB256, isBech32 } from 'fuels';
 
+type ShortAddressOptions = {
+  minLength?: number;
+  start?: number;
+  end?: number;
+};
+
 export class Address {
   private raw: FuelAddr;
 
@@ -20,5 +26,12 @@ export class Address {
   }
   toString() {
     return this.raw.toString();
+  }
+
+  short({ minLength = 10, start = 6, end = 4 }: ShortAddressOptions = {}) {
+    const address = this.raw.toB256().toString();
+    return address.length > minLength
+      ? `${address.slice(0, start)}...${address.slice(end * -1)}`
+      : address;
   }
 }

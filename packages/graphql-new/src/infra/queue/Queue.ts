@@ -1,5 +1,6 @@
 import PgBoss, { type Job } from 'pg-boss';
 import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
+import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransaction';
 import { env } from '~/config';
@@ -15,6 +16,7 @@ export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync:blocks',
   SYNC_MISSING = 'indexer/sync:missing',
   SYNC_TRANSACTION = 'indexer/sync:transaction',
+  SYNC_LAST = 'indexer/sync:last',
 }
 
 export type QueueInputs = {
@@ -28,6 +30,9 @@ export type QueueInputs = {
     index: number;
     block: GQLBlock;
     txHash: string;
+  };
+  [QueueNames.SYNC_LAST]: {
+    last: number;
   };
 };
 
@@ -66,6 +71,7 @@ export class Queue extends PgBoss {
     this.work(QueueNames.SYNC_BLOCKS, syncAllBlocks);
     this.work(QueueNames.SYNC_MISSING, syncMissingBlocks);
     this.work(QueueNames.SYNC_TRANSACTION, syncTransactions);
+    this.work(QueueNames.SYNC_LAST, syncLastBlocks);
     console.log('⚡️ Queue running');
   }
 }

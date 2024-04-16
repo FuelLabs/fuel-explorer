@@ -2,7 +2,7 @@ import cors from 'cors';
 import type { Express } from 'express';
 import express from 'express';
 import { db } from '../database/Db';
-import { queue } from '../queue';
+import { queue } from '../queue/Queue';
 
 export class Server {
   setup() {

@@ -1,5 +1,5 @@
 import { BlockRepository } from '~/domain/Block/BlockRepository';
-import { QueueNames, queue } from '~/infra/queue';
+import { QueueNames, queue } from '~/infra/queue/Queue';
 
 export class SyncMissingBlocks {
   async execute() {

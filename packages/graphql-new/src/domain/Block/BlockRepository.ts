@@ -1,3 +1,4 @@
+import c from 'chalk';
 import { desc, eq } from 'drizzle-orm';
 import { values } from 'lodash';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
@@ -7,6 +8,7 @@ import { db } from '~/infra/database/Db';
 import { BlockEntity } from './BlockEntity';
 import { type BlockItem, BlocksTable } from './BlockModel';
 
+import { Address } from '~/core/Address';
 import {
   type TransactionItem,
   TransactionsTable,
@@ -22,9 +24,7 @@ export class BlockRepository {
     });
 
     if (!first) return null;
-
     const { transactions, ...block } = first;
-
     return BlockEntity.create(block, transactions);
   }
 
@@ -37,9 +37,7 @@ export class BlockRepository {
     });
 
     if (!first) return null;
-
     const { transactions, ...block } = first;
-
     return BlockEntity.create(block, transactions);
   }
 
@@ -63,11 +61,9 @@ export class BlockRepository {
       if (!acc[block._id]) {
         acc[block._id] = { block, transactions: [] };
       }
-
       if (transaction) {
         acc[block._id].transactions.push(transaction);
       }
-
       return acc;
     }, {});
 
@@ -85,9 +81,7 @@ export class BlockRepository {
     });
 
     if (!latest) return null;
-
     const { transactions, ...block } = latest;
-
     return BlockEntity.create(block, transactions);
   }
 
@@ -111,8 +105,8 @@ export class BlockRepository {
       const queries = blocks.map(async (block) => {
         const found = await this.findByHash(block.id);
         if (found) {
-          console.warn(`Block ${block.id} already exists`);
-          return found;
+          console.log(c.red(`Block ${block.header.height} already exists`));
+          return null;
         }
 
         const [item] = await trx

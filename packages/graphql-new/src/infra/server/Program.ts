@@ -1,8 +1,16 @@
 import yargs from 'yargs/yargs';
 import { db } from '../database/Db';
-import { QueueNames, queue } from '../queue';
+import { QueueNames, queue } from '../queue/Queue';
 
-const PER_PAGE = 10;
+type Arguments = {
+  all: boolean;
+  missing: boolean;
+  from: number | null;
+  clean: boolean;
+  last: number | null;
+  offset: number;
+  recursive: boolean;
+};
 
 export class Program {
   async create() {
@@ -16,21 +24,44 @@ export class Program {
               alias: 'a',
               type: 'boolean',
               default: false,
+              describe: 'Sync all blocks',
             })
             .option('missing', {
               alias: 'm',
               type: 'boolean',
               default: false,
+              describe: 'Sync missing blocks',
             })
             .option('from', {
               alias: 'fl',
               type: 'number',
               default: null,
+              describe: 'Sync blocks from a specific height',
             })
             .option('clean', {
               alias: 'c',
               type: 'boolean',
               default: false,
+              describe: 'Clean all queues',
+            })
+            .option('last', {
+              alias: 'l',
+              type: 'number',
+              default: null,
+              describe: 'Sync the last N blocks',
+            })
+            .option('offset', {
+              alias: 'o',
+              type: 'number',
+              default: 10,
+              describe: 'Number of blocks to sync',
+            })
+            .option('recursive', {
+              alias: 'r',
+              type: 'boolean',
+              default: true,
+              describe:
+                'Keep syncing blocks until the end of the chain is reached',
             });
         },
         handler: async (argv) => {
@@ -50,34 +81,37 @@ export class Program {
       .parse();
   }
 
-  async sync(argv: {
-    all: boolean;
-    missing: boolean;
-    from: number | null;
-    clean: boolean;
-  }) {
+  async sync(argv: Arguments) {
+    const { all, missing, recursive, clean, from, offset, last } = argv;
+
     await db.connect();
     await queue.start();
 
-    if (argv.clean) {
-      await queue.deleteAllQueues();
-    }
-    if (argv.missing) {
-      await queue.push(QueueNames.SYNC_MISSING, undefined);
-    }
-    if (argv.all) {
-      await queue.push(QueueNames.SYNC_BLOCKS, {
-        first: PER_PAGE,
-      });
-    }
-    if (!argv.all && argv.from) {
-      await queue.push(QueueNames.SYNC_BLOCKS, {
-        after: argv.from,
-        first: PER_PAGE,
-      });
+    async function finish() {
+      await queue.stop();
+      await db.close();
     }
 
-    await queue.stop();
-    await db.close();
+    if (clean) {
+      await queue.deleteAllQueues();
+    }
+    if (missing) {
+      await queue.push(QueueNames.SYNC_MISSING, undefined);
+    }
+    if (last) {
+      await queue.push(QueueNames.SYNC_LAST, { last });
+    }
+    if (from) {
+      await queue.push(QueueNames.SYNC_BLOCKS, {
+        after: from,
+        first: offset,
+        checkNext: recursive,
+      });
+    }
+    if (all) {
+      await queue.push(QueueNames.SYNC_BLOCKS, { first: offset });
+    }
+
+    await finish();
   }
 }
