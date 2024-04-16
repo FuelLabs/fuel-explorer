@@ -72,6 +72,7 @@ export const BridgeTxList = () => {
             );
           }
 
+          // biome-ignore lint/correctness/useJsxKeyInIterable: <explanation>
           return null;
         })}
       </CardList>
