@@ -14,4 +14,4 @@ export default async function ContractPage({
 }
 
 export const dynamic = 'force-static';
-export const revalidate = Infinity;
+export const revalidate = Number.POSITIVE_INFINITY;

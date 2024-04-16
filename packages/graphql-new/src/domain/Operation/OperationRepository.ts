@@ -1,9 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { Paginator } from '~/core/Paginator';
-import { GQLOperation, GQLQueryOperationsArgs } from '~/graphql/generated/sdk';
+import type {
+  GQLOperation,
+  GQLQueryOperationsArgs,
+} from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
 import { TransactionsTable } from '../Transaction/TransactionModel';
-import { TxID } from '../Transaction/vo/TransactionModelID';
+import type { TxID } from '../Transaction/vo/TransactionModelID';
 import { OperationEntity } from './OperationEntity';
 import { OperationsTable } from './OperationModel';
 

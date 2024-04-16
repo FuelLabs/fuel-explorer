@@ -1,5 +1,5 @@
 import cors from 'cors';
-import { Express } from 'express';
+import type { Express } from 'express';
 import express from 'express';
 import { db } from '../database/Db';
 import { queue } from '../queue';

@@ -2,7 +2,7 @@ import { varchar } from 'drizzle-orm/pg-core';
 import { Signer } from 'fuels';
 import { Address } from '~/core/Address';
 import { ValueObject } from '~/core/ValueObject';
-import { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk';
 
 interface Props {
   value: Address | null;

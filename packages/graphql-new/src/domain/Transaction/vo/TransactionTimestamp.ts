@@ -1,7 +1,7 @@
 import { timestamp } from 'drizzle-orm/pg-core';
 import { DateHelper } from '~/core/Date';
 import { ValueObject } from '~/core/ValueObject';
-import { GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLTransaction } from '~/graphql/generated/sdk';
 
 interface Props {
   value: Date | null;

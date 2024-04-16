@@ -2,7 +2,7 @@ import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { BlocksTable } from '~/domain/Block/BlockModel';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
-import {
+import type {
   GQLBlock,
   GQLQueryBlockArgs,
   GQLQueryBlocksArgs,

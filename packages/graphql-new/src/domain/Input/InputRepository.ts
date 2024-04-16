@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { GQLInput } from '~/graphql/generated/sdk';
+import type { GQLInput } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
-import { TxID } from '../Transaction/vo/TransactionModelID';
+import type { TxID } from '../Transaction/vo/TransactionModelID';
 import { InputEntity } from './InputEntity';
 import { InputsTable } from './InputModel';
 

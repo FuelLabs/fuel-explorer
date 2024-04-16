@@ -2,8 +2,8 @@ import '../src/theme/fonts.css';
 import '../src/theme/index.css';
 
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import { Preview } from '@storybook/react';
-import React, { ReactNode } from 'react';
+import type { Preview } from '@storybook/react';
+import React, { type ReactNode } from 'react';
 import { withThemeDecorator } from 'storybook-addon-theme';
 import { Theme } from '../src/components/Theme';
 import { Toaster } from '../src/components/Toast';

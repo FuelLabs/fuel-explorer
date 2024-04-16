@@ -1,7 +1,7 @@
 import { Hash256, SerialID } from '~/application/vo';
 import { Bytecode } from '~/application/vo/Bytecode';
 import { Entity } from '~/core/Entity';
-import { PredicatePayload } from './PredicateModel';
+import type { PredicatePayload } from './PredicateModel';
 
 type PredicateProps = {
   bytecode: Bytecode;

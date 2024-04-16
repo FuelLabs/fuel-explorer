@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-import { type BN, FormatConfig, bn, format } from '@fuel-ts/math';
+import { type BN, type FormatConfig, bn, format } from '@fuel-ts/math';
 import { DECIMAL_UNITS, DEFAULT_MIN_PRECISION } from '@fuel-ts/math/configs';
 
 import { IconChevronDown } from '@tabler/icons-react';
 
-import { Button, ButtonProps } from '../Button';
+import { Button, type ButtonProps } from '../Button';
 import type {
   InputNumberProps,
   InputProps,

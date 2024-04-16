@@ -1,10 +1,10 @@
 import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
 import type { Fuel } from '@fuels/assets';
 import { addSeconds } from 'date-fns';
-import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
+import type { BN, Account as FuelWallet, MessageProof } from 'fuels';
 import {
-  Address as FuelAddress,
   Contract,
+  Address as FuelAddress,
   Provider as FuelProvider,
   TransactionResponse,
   TransactionStatus,

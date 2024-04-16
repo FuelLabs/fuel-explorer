@@ -1,4 +1,4 @@
-import { Identifier } from './Identifier';
+import type { Identifier } from './Identifier';
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const isEntity = (v: any): v is Entity<any, any> => {

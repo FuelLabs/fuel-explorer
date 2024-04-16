@@ -18,4 +18,4 @@ export default function BlockLayout({
 }
 
 export const dynamic = 'force-static';
-export const invalidate = Infinity;
+export const invalidate = Number.POSITIVE_INFINITY;

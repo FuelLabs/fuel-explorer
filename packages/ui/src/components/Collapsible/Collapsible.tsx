@@ -13,7 +13,7 @@ import type { CardBodyProps, CardHeaderProps, CardProps } from '../Card';
 import { IconButton } from '../IconButton';
 import { Text } from '../Text';
 
-import { WithIconProps } from '../../hooks/useIconProps';
+import type { WithIconProps } from '../../hooks/useIconProps';
 
 type CollapsibleBaseProps = VariantProps<typeof styles> & {
   defaultOpened?: boolean;

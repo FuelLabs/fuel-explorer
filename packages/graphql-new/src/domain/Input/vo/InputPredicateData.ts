@@ -1,6 +1,6 @@
 import { ValueObject } from '~/core/ValueObject';
-import { PredicatePayload } from '~/domain/Predicate/PredicateModel';
-import {
+import type { PredicatePayload } from '~/domain/Predicate/PredicateModel';
+import type {
   GQLInput,
   GQLInputCoin,
   GQLInputMessage,

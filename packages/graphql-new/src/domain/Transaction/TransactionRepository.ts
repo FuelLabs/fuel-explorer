@@ -1,7 +1,7 @@
 import { eq, like } from 'drizzle-orm';
-import { Paginator, PaginatorParams } from '~/core/Paginator';
+import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
-import { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
 import { TransactionEntity } from './TransactionEntity';
 import { TransactionsTable } from './TransactionModel';

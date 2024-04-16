@@ -1,5 +1,5 @@
 import { ResolverAdapter } from '~/core/Resolver';
-import {
+import type {
   GQLBalance,
   GQLQueryBalanceArgs,
   GQLQueryBalancesArgs,

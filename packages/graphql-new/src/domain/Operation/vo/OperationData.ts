@@ -1,6 +1,6 @@
 import { jsonb } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
-import { GQLOperation } from '~/graphql/generated/sdk';
+import type { GQLOperation } from '~/graphql/generated/sdk';
 
 interface Props {
   value: GQLOperation;

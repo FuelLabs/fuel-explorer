@@ -1,5 +1,5 @@
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
-import { GQLChainInfo } from '~/graphql/generated/sdk';
+import type { GQLChainInfo } from '~/graphql/generated/sdk';
 
 export class ChainRepository {
   async chainInfoFromNode() {

@@ -1,7 +1,7 @@
 import {
   GQLReceiptType,
   type GQLTransactionDetailsFragment,
-  GQLTxDetailsOperationReceiptFragment,
+  type GQLTxDetailsOperationReceiptFragment,
   type GQLTxDetailsReceiptItemFragment,
   type Maybe,
 } from '@fuel-explorer/graphql-new';

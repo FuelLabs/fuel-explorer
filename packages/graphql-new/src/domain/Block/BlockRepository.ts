@@ -1,14 +1,14 @@
 import { desc, eq } from 'drizzle-orm';
 import { values } from 'lodash';
-import { Paginator, PaginatorParams } from '~/core/Paginator';
+import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
-import { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
 import { BlockEntity } from './BlockEntity';
-import { BlockItem, BlocksTable } from './BlockModel';
+import { type BlockItem, BlocksTable } from './BlockModel';
 
 import {
-  TransactionItem,
+  type TransactionItem,
   TransactionsTable,
 } from '../Transaction/TransactionModel';
 

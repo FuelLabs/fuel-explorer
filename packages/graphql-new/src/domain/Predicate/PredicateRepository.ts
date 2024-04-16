@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from '~/infra/database/Db';
 import { PredicateEntity } from './PredicateEntity';
-import { PredicatePayload, PredicatesTable } from './PredicateModel';
+import { type PredicatePayload, PredicatesTable } from './PredicateModel';
 
 export class PredicateRepository {
   async findByAddress(address: string) {

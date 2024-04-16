@@ -27,4 +27,4 @@ export default async function Block({ params: { id, mode } }: BlockRouteProps) {
 }
 
 export const dynamic = 'force-static';
-export const invalidate = Infinity;
+export const invalidate = Number.POSITIVE_INFINITY;

@@ -1,11 +1,11 @@
 import { Hash256 } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
-import { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
 import { BlockRef } from '../Block/vo/BlockRef';
 import { ContractEntity } from '../Contract/ContractEntity';
 import { InputEntity } from '../Input/InputEntity';
-import { TransactionItem } from './TransactionModel';
+import type { TransactionItem } from './TransactionModel';
 import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
 import { TransactionGroupedInputs } from './vo/TransactionGroupedInputs';

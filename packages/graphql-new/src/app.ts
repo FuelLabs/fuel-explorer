@@ -1,4 +1,4 @@
-import { setTimeout } from 'timers/promises';
+import { setTimeout } from 'node:timers/promises';
 import { env } from './config';
 import { GraphQLServer } from './graphql/GraphQLServer';
 import { db } from './infra/database/Db';

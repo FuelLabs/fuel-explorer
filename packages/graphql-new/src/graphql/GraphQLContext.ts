@@ -1,6 +1,6 @@
 import { ChainEntity } from '~/domain/Chain/ChainEntity';
 import { GraphQLSDK } from './GraphQLSDK';
-import { GQLChainInfo } from './generated/sdk';
+import type { GQLChainInfo } from './generated/sdk';
 
 export type GraphQLContext = {
   chain: ChainEntity | null;

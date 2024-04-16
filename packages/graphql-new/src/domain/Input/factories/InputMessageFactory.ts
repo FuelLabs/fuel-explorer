@@ -1,5 +1,5 @@
 import { GQLNode } from '~/core/GQLNode';
-import {
+import type {
   GQLGroupedInputMessage,
   GQLInput,
   GQLInputMessage,

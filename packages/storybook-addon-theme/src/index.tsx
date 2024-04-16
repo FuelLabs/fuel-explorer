@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { addons } from '@storybook/manager-api';
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 
 export const withThemeDecorator =
   (Wrapper: React.ComponentType<any>) => (Story: any) => {

@@ -2,7 +2,7 @@
 // Use a test fixture to set the context so tests have access to the wallet extension.
 import { downloadFuel } from '@fuels/playwright-utils';
 import type { BrowserContext } from '@playwright/test';
-import { chromium, test as base } from '@playwright/test';
+import { test as base, chromium } from '@playwright/test';
 import { initialSetup } from '@synthetixio/synpress/commands/metamask';
 import { prepareMetamask } from '@synthetixio/synpress/helpers';
 

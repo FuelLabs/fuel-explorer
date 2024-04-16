@@ -1,5 +1,5 @@
+import { setTimeout } from 'node:timers/promises';
 import type { BrowserContext } from '@playwright/test';
-import { setTimeout } from 'timers/promises';
 
 export async function waitForExtensions(
   context: BrowserContext,

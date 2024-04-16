@@ -1,5 +1,5 @@
-import { createServer } from 'http';
-import { resolve } from 'path';
+import { createServer } from 'node:http';
+import { resolve } from 'node:path';
 import chokidar from 'chokidar';
 import { execa } from 'execa';
 

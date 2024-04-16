@@ -3,11 +3,11 @@ import {
   contractMessageScript,
 } from '@fuel-bridge/message-predicates';
 import type {
+  WalletUnlocked as FuelWallet,
   Message,
   Provider,
   ScriptTransactionRequestLike,
   TransactionResponse,
-  WalletUnlocked as FuelWallet,
 } from 'fuels';
 import {
   InputType,

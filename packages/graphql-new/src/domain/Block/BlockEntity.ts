@@ -1,15 +1,15 @@
 import { Hash256, Timestamp } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
-import { GQLBlock } from '~/graphql/generated/sdk';
-import { BlockItem } from './BlockModel';
+import type { GQLBlock } from '~/graphql/generated/sdk';
+import type { BlockItem } from './BlockModel';
 import { BlockData } from './vo/BlockData';
 import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
 import { BlockProducer } from './vo/BlockProducer';
 
 import { TransactionEntity } from '../Transaction/TransactionEntity';
-import { TransactionItem } from '../Transaction/TransactionModel';
+import type { TransactionItem } from '../Transaction/TransactionModel';
 
 type BlockInputProps = {
   blockHash: Hash256;

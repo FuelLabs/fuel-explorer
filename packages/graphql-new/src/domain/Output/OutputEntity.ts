@@ -1,8 +1,8 @@
 import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import { GQLOutput } from '~/graphql/generated/sdk';
-import { TxID } from '../Transaction/vo/TransactionModelID';
-import { OutputItem, OutputPayload } from './OutputModel';
+import type { GQLOutput } from '~/graphql/generated/sdk';
+import type { TxID } from '../Transaction/vo/TransactionModelID';
+import type { OutputItem, OutputPayload } from './OutputModel';
 import { OutputData } from './vo/OutputData';
 
 type OutputProps = {

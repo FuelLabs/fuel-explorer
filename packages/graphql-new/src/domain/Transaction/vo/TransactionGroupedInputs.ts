@@ -1,9 +1,9 @@
 import { ValueObject } from '~/core/ValueObject';
 import {
   GroupedInputsFactory,
-  GroupedInputsValue,
+  type GroupedInputsValue,
 } from '~/domain/Input/factories/GroupedInputsFactory';
-import { GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLTransaction } from '~/graphql/generated/sdk';
 
 interface Props {
   value: GroupedInputsValue;

@@ -1,5 +1,5 @@
 import {
-  FuelWalletTestHelper,
+  type FuelWalletTestHelper,
   getButtonByText,
   getByAriaLabel,
   hasText,
@@ -116,12 +116,12 @@ test.describe('Bridge', () => {
         });
 
         expect(
-          parseFloat(
+          Number.parseFloat(
             bn(prevDepositBalanceEth.toString())
               .sub(postDepositBalanceEth.toString())
               .format({ precision: 6, units: 18 }),
           ),
-        ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
+        ).toBeCloseTo(Number.parseFloat(DEPOSIT_AMOUNT));
 
         // check the popup is correct
         depositEthTxId = (
@@ -252,7 +252,7 @@ test.describe('Bridge', () => {
           await fuelWallet.getBalance(BaseAssetId);
 
         expect(
-          parseFloat(
+          Number.parseFloat(
             bn(postWithdrawBalanceEth.toString())
               .sub(bn(prevWithdrawBalanceEth.toString()))
               .format({ precision: 6, units: 18 }),
@@ -357,12 +357,12 @@ test.describe('Bridge', () => {
         ]);
 
         expect(
-          parseFloat(
+          Number.parseFloat(
             bn(preDepositBalanceEth.toString())
               .sub(postDepositBalanceEth.toString())
               .format({ precision: 6, units: 18 }),
           ),
-        ).toBeCloseTo(parseFloat(DEPOSIT_AMOUNT));
+        ).toBeCloseTo(Number.parseFloat(DEPOSIT_AMOUNT));
       });
 
       await test.step('Check if deposit reach relay step', async () => {
@@ -523,12 +523,12 @@ test.describe('Bridge', () => {
           await fuelWallet.getBalance(FUEL_TokenAsset);
 
         expect(
-          parseFloat(
+          Number.parseFloat(
             bn(postWithdrawBalanceEth.toString())
               .sub(bn(preWithdrawBalanceEth.toString()))
               .format({ precision: 6, units: 18 }),
           ),
-        ).toBeCloseTo(parseFloat(WITHDRAW_AMOUNT));
+        ).toBeCloseTo(Number.parseFloat(WITHDRAW_AMOUNT));
 
         expect(
           preWithdrawBalanceFuel
@@ -666,12 +666,12 @@ test.describe('Bridge', () => {
         ]);
 
         expect(
-          parseFloat(
+          Number.parseFloat(
             bn(preDepositBalanceTkn.toString())
               .sub(postDepositBalanceTkn.toString())
               .format({ precision: 6, units: 18 }),
           ),
-        ).toBeCloseTo(parseFloat(depositAmount));
+        ).toBeCloseTo(Number.parseFloat(depositAmount));
 
         const confirmTransactionButton = page.getByRole('button', {
           name: 'Confirm Transaction',

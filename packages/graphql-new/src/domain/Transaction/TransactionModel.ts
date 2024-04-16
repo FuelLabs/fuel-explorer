@@ -1,11 +1,14 @@
 import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
 import { Hash256 } from '~/application/vo';
-import { BlockItem, BlocksTable } from '~/domain/Block/BlockModel';
+import { type BlockItem, BlocksTable } from '~/domain/Block/BlockModel';
 import { BlockRef } from '~/domain/Block/vo/BlockRef';
 import { InputsTable } from '~/domain/Input/InputModel';
 import { OutputsTable } from '~/domain/Output/OutputModel';
-import { OperationItem, OperationsTable } from '../Operation/OperationModel';
+import {
+  type OperationItem,
+  OperationsTable,
+} from '../Operation/OperationModel';
 import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
 import { TransactionModelID } from './vo/TransactionModelID';

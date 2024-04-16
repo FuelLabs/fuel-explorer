@@ -1,13 +1,13 @@
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
-import { InputEntity } from '~/domain/Input/InputEntity';
+import type { InputEntity } from '~/domain/Input/InputEntity';
 import { InputRepository } from '~/domain/Input/InputRepository';
 import { OperationRepository } from '~/domain/Operation/OperationRepository';
 import { OperationsFactory } from '~/domain/Operation/factories/OperationsFactory';
 import { OutputRepository } from '~/domain/Output/OutputRepository';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
-import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
+import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import { QueueData, QueueInputs, QueueNames } from '~/infra/queue';
+import type { QueueData, QueueInputs, QueueNames } from '~/infra/queue';
 
 type Input = QueueInputs[QueueNames.SYNC_TRANSACTION];
 

@@ -1,5 +1,5 @@
-import { IResolvers } from '@graphql-tools/utils';
-import { GraphQLContext } from '~/graphql/GraphQLContext';
+import type { IResolvers } from '@graphql-tools/utils';
+import type { GraphQLContext } from '~/graphql/GraphQLContext';
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type Resolvers<Source> = IResolvers<Source, GraphQLContext, any, any>;

@@ -1,5 +1,5 @@
 import type { Asset } from '@fuels/assets';
-import type { Account as FuelWallet, BN } from 'fuels';
+import type { BN, Account as FuelWallet } from 'fuels';
 import type { WalletClient } from 'viem';
 
 import type { FromToNetworks } from '../Chains';

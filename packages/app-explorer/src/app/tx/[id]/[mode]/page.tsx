@@ -29,4 +29,4 @@ export default async function Transaction({
 }
 
 export const fetchCache = 'force-cache';
-export const revalidate = Infinity;
+export const revalidate = Number.POSITIVE_INFINITY;

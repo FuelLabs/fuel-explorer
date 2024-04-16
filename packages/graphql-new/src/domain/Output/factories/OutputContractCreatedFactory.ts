@@ -1,6 +1,6 @@
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import {
+import type {
   GQLContractCreated,
   GQLGroupedOutputContractCreated,
   GQLOutput,

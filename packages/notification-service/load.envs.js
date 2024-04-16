@@ -1,7 +1,7 @@
 const { config } = require('dotenv');
-const { readFileSync } = require('fs');
+const { readFileSync } = require('node:fs');
 const nodemailer = require('nodemailer');
-const { resolve } = require('path');
+const { resolve } = require('node:path');
 const retus = require('retus');
 
 function getVersion() {

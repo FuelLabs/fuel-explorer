@@ -9,6 +9,6 @@ export const useFuelNetwork = () => {
       const provider = await createProvider(FUEL_CHAIN.providerUrl);
       return provider;
     },
-    staleTime: Infinity,
+    staleTime: Number.POSITIVE_INFINITY,
   });
 };

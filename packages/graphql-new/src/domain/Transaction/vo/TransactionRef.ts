@@ -1,7 +1,7 @@
 import { varchar } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
 import { TransactionsTable } from '../TransactionModel';
-import { TxID } from './TransactionModelID';
+import type { TxID } from './TransactionModelID';
 
 interface Props {
   value: TxID;

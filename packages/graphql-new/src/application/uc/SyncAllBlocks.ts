@@ -1,7 +1,12 @@
 import { uniqBy } from 'lodash';
-import { BlockEntity } from '~/domain/Block/BlockEntity';
+import type { BlockEntity } from '~/domain/Block/BlockEntity';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
-import { QueueData, QueueInputs, QueueNames, queue } from '~/infra/queue';
+import {
+  type QueueData,
+  type QueueInputs,
+  QueueNames,
+  queue,
+} from '~/infra/queue';
 
 type Props = QueueInputs[QueueNames.SYNC_BLOCKS];
 

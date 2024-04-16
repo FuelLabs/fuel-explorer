@@ -1,8 +1,8 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { GraphQLSchema } from 'graphql';
+import type { GraphQLSchema } from 'graphql';
 import { createYoga } from 'graphql-yoga';
 import { GraphQLContextFactory } from './GraphQLContext';
 

@@ -1,9 +1,9 @@
-import PgBoss, { Job } from 'pg-boss';
+import PgBoss, { type Job } from 'pg-boss';
 import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransaction';
 import { env } from '~/config';
-import { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk';
 
 const DB_HOST = env.get('DB_HOST');
 const DB_PORT = env.get('DB_PORT');

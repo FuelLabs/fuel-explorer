@@ -1,7 +1,7 @@
 import { varchar } from 'drizzle-orm/pg-core';
 import { Identifier } from '~/core/Identifier';
-import { GQLBlock } from '~/graphql/generated/sdk';
-import { TransactionItem } from '../TransactionModel';
+import type { GQLBlock } from '~/graphql/generated/sdk';
+import type { TransactionItem } from '../TransactionModel';
 
 export type TxID = string;
 export class TransactionModelID extends Identifier<TxID> {

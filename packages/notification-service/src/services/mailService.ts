@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import nodemailer from 'nodemailer';
 import hbs from 'nodemailer-express-handlebars';
 

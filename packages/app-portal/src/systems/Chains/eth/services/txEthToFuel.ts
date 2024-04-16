@@ -1,10 +1,10 @@
 import type { Asset } from '@fuels/assets';
 import type {
   BN,
-  Message,
   Provider as FuelProvider,
-  TransactionResponse,
   WalletUnlocked as FuelWallet,
+  Message,
+  TransactionResponse,
 } from 'fuels';
 import { Address as FuelAddress, ZeroBytes32, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';

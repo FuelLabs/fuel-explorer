@@ -1,7 +1,7 @@
 import { bn } from 'fuels';
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import {
+import type {
   GQLChangeOutput,
   GQLGroupedOutputChanged,
   GQLOutput,

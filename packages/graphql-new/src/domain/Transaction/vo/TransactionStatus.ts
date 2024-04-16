@@ -1,6 +1,6 @@
 import { text } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
-import {
+import type {
   GQLTransaction,
   GQLTransactionStatus,
   Maybe,

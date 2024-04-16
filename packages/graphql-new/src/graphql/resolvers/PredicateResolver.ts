@@ -1,5 +1,5 @@
 import { ResolverAdapter } from '~/core/Resolver';
-import { PredicateItem } from '~/domain/Predicate/PredicateModel';
+import type { PredicateItem } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 
 type Source = PredicateItem;

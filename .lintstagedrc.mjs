@@ -1,5 +1,5 @@
 export default {
-  '**/*.(js|jsx|ts|tsx|md|json|mdx|html|css)': [
-    'biome check --apply-unsafe --diagnostic-level=error --max-diagnostics=1000',
+  '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}': [
+    'biome check --apply-unsafe --no-errors-on-unmatched',
   ],
 };

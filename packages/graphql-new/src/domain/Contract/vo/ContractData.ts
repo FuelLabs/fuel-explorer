@@ -1,6 +1,6 @@
 import { jsonb } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
-import { GQLContract } from '~/graphql/generated/sdk';
+import type { GQLContract } from '~/graphql/generated/sdk';
 
 interface Props {
   value: GQLContract;

@@ -1,8 +1,8 @@
 import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import { GQLInput } from '~/graphql/generated/sdk';
-import { TxID } from '../Transaction/vo/TransactionModelID';
-import { InputItem, InputPayload } from './InputModel';
+import type { GQLInput } from '~/graphql/generated/sdk';
+import type { TxID } from '../Transaction/vo/TransactionModelID';
+import type { InputItem, InputPayload } from './InputModel';
 import { InputData } from './vo/InputData';
 import { InputPredicateData } from './vo/InputPredicateData';
 import { InputType } from './vo/InputType';

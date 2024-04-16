@@ -1,5 +1,5 @@
 import { Identifier } from '~/core/Identifier';
-import { GQLChainInfo } from '~/graphql/generated/sdk';
+import type { GQLChainInfo } from '~/graphql/generated/sdk';
 
 export class ChainID extends Identifier<number> {
   private constructor(id: number) {

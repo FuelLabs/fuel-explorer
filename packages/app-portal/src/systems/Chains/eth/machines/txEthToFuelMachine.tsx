@@ -1,10 +1,10 @@
 import type {
-  Account as FuelWallet,
-  Address as FuelAddress,
   BN,
+  Address as FuelAddress,
   Message as FuelMessage,
-  MessageStatus,
   Provider as FuelProvider,
+  Account as FuelWallet,
+  MessageStatus,
   TransactionResult,
 } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
@@ -12,7 +12,7 @@ import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
 import { toast } from '@fuels/ui';
-import { PublicClient } from 'viem';
+import type { PublicClient } from 'viem';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
 import { EthTxCache } from '../utils';

@@ -1,9 +1,9 @@
 import { calculateDateDiff } from '~portal/systems/Core';
 
-import { Asset as FuelsAsset } from '@fuels/assets';
+import type { Asset as FuelsAsset } from '@fuels/assets';
 import { Asset, Box, Flex, FuelLogo, Link, Text, VStack } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
-import { BigNumberish } from 'ethers';
+import type { BigNumberish } from 'ethers';
 import { tv } from 'tailwind-variants';
 import { InfoTextLoader } from './InfoTextLoader';
 

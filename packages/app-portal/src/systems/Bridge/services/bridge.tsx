@@ -1,9 +1,9 @@
 import type { Asset } from '@fuels/assets';
 import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
 import type {
+  BN,
   Account as FuelAccount,
   Address as FuelAddress,
-  BN,
   Provider as FuelProvider,
 } from 'fuels';
 import { store } from '~portal/store';
@@ -25,7 +25,7 @@ import {
 } from '~portal/systems/Chains';
 
 import { FUEL_CHAIN } from 'app-commons';
-import { PublicClient, WalletClient } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {

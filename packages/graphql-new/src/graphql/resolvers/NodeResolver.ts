@@ -1,5 +1,5 @@
 import { ResolverAdapter } from '~/core/Resolver';
-import { GQLNodeInfo } from '~/graphql/generated/sdk';
+import type { GQLNodeInfo } from '~/graphql/generated/sdk';
 import { GraphQLSDK } from '../GraphQLSDK';
 
 type Source = GQLNodeInfo;

@@ -1,6 +1,6 @@
 import assetList from '@fuels/assets';
 import type { Asset } from '@fuels/assets';
-import { BridgeTokenContracts, FUEL_CHAIN } from 'app-commons';
+import { type BridgeTokenContracts, FUEL_CHAIN } from 'app-commons';
 import { ETH_CHAIN } from '~portal/systems/Chains/config';
 import { getContractTokenId } from '~portal/systems/Chains/fuel/utils/contract';
 

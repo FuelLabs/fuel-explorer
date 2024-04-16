@@ -1,5 +1,5 @@
-import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
-import {
+import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
+import type {
   GQLOperation,
   GQLOperationReceipt,
   GQLReceipt,

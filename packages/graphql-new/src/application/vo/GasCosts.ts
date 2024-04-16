@@ -1,6 +1,6 @@
-import { BN } from 'fuels';
+import type { BN } from 'fuels';
 import { ValueObject } from '~/core/ValueObject';
-import { GQLChainInfo, GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLChainInfo, GQLTransaction } from '~/graphql/generated/sdk';
 import { GasFee } from './GasFee';
 import { GasUsed } from './GasUsed';
 

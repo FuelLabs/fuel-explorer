@@ -1,7 +1,7 @@
 import { InputCoinFactory } from '~/domain/Input/factories/InputCoinFactory';
 import { InputContractFactory } from '~/domain/Input/factories/InputContractFactory';
 import { InputMessageFactory } from '~/domain/Input/factories/InputMessageFactory';
-import {
+import type {
   GQLGroupedInputCoin,
   GQLGroupedInputContract,
   GQLGroupedInputMessage,

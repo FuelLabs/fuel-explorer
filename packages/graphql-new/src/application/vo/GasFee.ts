@@ -1,6 +1,6 @@
-import { BN, bn, calculateTransactionFee } from 'fuels';
+import { type BN, bn, calculateTransactionFee } from 'fuels';
 import { ValueObject } from '~/core/ValueObject';
-import { GQLChainInfo, GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLChainInfo, GQLTransaction } from '~/graphql/generated/sdk';
 import { GasUsed } from './GasUsed';
 
 interface Props {

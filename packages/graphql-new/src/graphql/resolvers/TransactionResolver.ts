@@ -3,13 +3,13 @@ import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import {
+import type {
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk';
-import { GraphQLContext } from '../GraphQLContext';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLTransaction;
 type Params = {

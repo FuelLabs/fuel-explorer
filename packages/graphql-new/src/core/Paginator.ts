@@ -1,8 +1,8 @@
-import { SQL, and, asc, desc, gt, lt } from 'drizzle-orm';
-import { PgTableWithColumns } from 'drizzle-orm/pg-core';
+import { type SQL, and, asc, desc, gt, lt } from 'drizzle-orm';
+import type { PgTableWithColumns } from 'drizzle-orm/pg-core';
 import { db } from '~/infra/database/Db';
-import { Entity } from './Entity';
-import { Identifier } from './Identifier';
+import type { Entity } from './Entity';
+import type { Identifier } from './Identifier';
 
 export type PaginatorParams = {
   first?: number | null;
