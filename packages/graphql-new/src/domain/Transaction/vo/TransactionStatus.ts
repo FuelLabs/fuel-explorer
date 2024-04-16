@@ -24,11 +24,11 @@ export class TransactionStatus extends ValueObject<Props> {
   }
 
   value() {
-    return this.props.value;
+    return this.type;
   }
 
   is(status: 'Success' | 'Failure' | 'Squeezed' | 'Submitted') {
-    const statusType = this.value();
+    const statusType = this.props.value;
     if (status === 'Success') return statusType === 'SuccessStatus';
     if (status === 'Failure') return statusType === 'FailureStatus';
     if (status === 'Squeezed') return statusType === 'SqueezedOutStatus';

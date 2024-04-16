@@ -17,13 +17,11 @@ const schema = z
         "Both 'after' and 'before' parameters cannot exist together.",
       );
     }
-
     return true;
   });
 
 export const getRecentTxs = act(schema, async ({ after, before }) => {
   const cursor = after ? 'first' : 'last';
-
   const { data } = await sdk.recentTransactions({
     [cursor]: PER_PAGE,
     after,
