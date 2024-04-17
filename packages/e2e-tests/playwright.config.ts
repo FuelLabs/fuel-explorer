@@ -21,7 +21,7 @@ const config: PlaywrightTestConfig = defineConfig({
   webServer: {
     command: 'pnpm dev',
     port: Number(PORT),
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     cwd: join(__dirname, '../../'),
   },
   use: {
