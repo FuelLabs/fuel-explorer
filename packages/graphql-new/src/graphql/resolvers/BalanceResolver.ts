@@ -45,8 +45,15 @@ class BalanceResolver extends ResolverAdapter<Source> {
   }
 
   // TODO: need to check how to implement this using Postgres
-  async utoxs(_: Source, params: Params['utxos']) {
-    const res = await this.client.sdk.coins({ first: 100, filter: params });
+  async utoxs(parent: Source, params: Params['utxos']) {
+    const filter = !params?.owner
+      ? {
+          assetId: parent.assetId,
+          owner: parent.owner,
+        }
+      : params;
+
+    const res = await this.client.sdk.coins({ first: 100, filter });
     return res.data.coins.nodes;
   }
 }

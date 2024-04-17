@@ -11,6 +11,6 @@ const schema = z.object({
 
 export const getBalances = act(schema, async (input) => {
   const owner = parseAddressParam(input.owner);
-  const { data } = await sdk.balances({ filter: { owner } });
+  const { data } = await sdk.balances({ first: 50, filter: { owner } });
   return data.balances.nodes;
 });
