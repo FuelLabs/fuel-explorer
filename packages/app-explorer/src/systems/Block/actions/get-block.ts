@@ -1,6 +1,6 @@
 'use server';
 
-import type { GQLBlockFragment } from '@fuel-explorer/graphql-new';
+import type { GQLBlockFragment } from '@fuel-explorer/graphql';
 import { Signer } from 'fuels';
 import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';

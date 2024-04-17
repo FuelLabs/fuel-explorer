@@ -10,7 +10,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*", "../graphql-new/src/*"],
+      "~/*": ["./src/*", "../graphql/src/*"],
       "~portal/*": ["../app-portal/src/*"],
       "~public-portal/*": ["../app-portal/public/*"],
       "fuels": ["../../node_modules/fuels"],

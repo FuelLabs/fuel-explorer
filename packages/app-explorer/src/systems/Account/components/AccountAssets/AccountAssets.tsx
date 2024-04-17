@@ -1,4 +1,4 @@
-import type { GQLBalanceFragment } from '@fuel-explorer/graphql-new';
+import type { GQLBalanceFragment } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 import { EmptyAssets } from '~/systems/Core/components/EmptyBlocks/EmptyAsset';

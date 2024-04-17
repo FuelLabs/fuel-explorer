@@ -1,6 +1,6 @@
 'use client';
 
-import type { GQLSearchResult, Maybe } from '@fuel-explorer/graphql-new';
+import type { GQLSearchResult, Maybe } from '@fuel-explorer/graphql';
 import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
 import {
   Box,

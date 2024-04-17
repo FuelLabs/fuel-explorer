@@ -1,5 +1,5 @@
 import { resolve } from 'node:url';
-import { getSdk } from '@fuel-explorer/graphql-new/src/graphql/generated/sdk';
+import { getSdk } from '@fuel-explorer/graphql/src/graphql/generated/sdk';
 import { GraphQLClient } from 'graphql-request';
 
 const { FUEL_EXPLORER_API, FUEL_EXPLORER_API_KEY } = process.env;

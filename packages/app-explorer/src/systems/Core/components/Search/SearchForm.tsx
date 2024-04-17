@@ -1,4 +1,4 @@
-import type { GQLSearchQuery } from '@fuel-explorer/graphql-new';
+import type { GQLSearchQuery } from '@fuel-explorer/graphql';
 import { useContext } from 'react';
 import { useFormState } from 'react-dom';
 import { search } from '~/systems/Core/actions/search';

@@ -3,7 +3,7 @@ import type {
   GQLTxDetailsGroupedInputCoinFragment,
   GQLTxDetailsGroupedInputContractFragment,
   GQLTxDetailsGroupedInputMessageFragment,
-} from '@fuel-explorer/graphql-new';
+} from '@fuel-explorer/graphql';
 import {
   Address,
   Box,

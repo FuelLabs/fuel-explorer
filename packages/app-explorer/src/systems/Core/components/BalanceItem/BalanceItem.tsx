@@ -1,5 +1,5 @@
 'use client';
-import type { GQLBalanceFragment } from '@fuel-explorer/graphql-new';
+import type { GQLBalanceFragment } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,

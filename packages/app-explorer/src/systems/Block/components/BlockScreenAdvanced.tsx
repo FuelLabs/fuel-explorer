@@ -1,4 +1,4 @@
-import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql-new';
+import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 

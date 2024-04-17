@@ -1,6 +1,6 @@
 'use client';
 
-import type { GQLTransactionDetailsFragment } from '@fuel-explorer/graphql-new';
+import type { GQLTransactionDetailsFragment } from '@fuel-explorer/graphql';
 import {
   Address,
   Badge,

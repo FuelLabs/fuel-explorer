@@ -4,7 +4,7 @@ import {
   type GQLTxDetailsOperationReceiptFragment,
   type GQLTxDetailsReceiptItemFragment,
   type Maybe,
-} from '@fuel-explorer/graphql-new';
+} from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,

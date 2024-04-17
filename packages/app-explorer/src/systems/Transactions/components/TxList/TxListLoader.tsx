@@ -1,4 +1,4 @@
-import type { GQLRecentTransactionFragment } from '@fuel-explorer/graphql-new';
+import type { GQLRecentTransactionFragment } from '@fuel-explorer/graphql';
 import { TxList } from './TxList';
 
 type TxListLoaderProps = {

@@ -1,4 +1,4 @@
-import type { GQLRecentTransactionFragment } from '@fuel-explorer/graphql-new';
+import type { GQLRecentTransactionFragment } from '@fuel-explorer/graphql';
 import { bn } from '@fuel-ts/math';
 import {
   Badge,
