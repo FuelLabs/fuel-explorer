@@ -4,7 +4,7 @@ FROM node:20-alpine
 WORKDIR /ecr20-deployer
 
 # Copy deployer project
-ADD ./deployer /erc20-deployer/deployer
+COPY ./deployer /erc20-deployer/deployer
 
 # Run install inside the depdencies
 WORKDIR /erc20-deployer/deployer

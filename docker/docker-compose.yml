@@ -89,5 +89,23 @@ services:
       timeout: 5s
       retries: 5
 
+  fuel-graphql-server:
+    platform: linux/amd64
+    depends_on:
+      fuel-explorer-pgsql:
+        condition: service_healthy
+    build:
+      context: ../packages/graphql
+      dockerfile: Dockerfile
+    env_file:
+      - ./envs/graphql.env
+    ports:
+      - "3004:${SERVER_PORT:-3004}"
+    environment:
+      - DB_HOST=fuel-explorer-pgsql
+      - DB_PORT=5432
+    volumes:
+      - ../packages/graphql:/app
+
 volumes:
   fuel-explorer-pgsql-db:

@@ -25,11 +25,13 @@ export class Env<T extends zod.ZodObject<any>> {
   }
 
   private parse() {
-    return this.schema.parse(process.env);
+    const env = this.parseEnv();
+    return this.schema.parse(env);
   }
 
   private safeParse() {
-    const result = this.schema.safeParse(process.env);
+    const env = this.parseEnv();
+    const result = this.schema.safeParse(env);
     if (!result.success) {
       logger.log({
         level: 'warn',
@@ -39,6 +41,30 @@ export class Env<T extends zod.ZodObject<any>> {
       return this.defaultValues;
     }
     return result.data;
+  }
+
+  private parseEnv() {
+    return Object.entries(process.env).reduce(
+      (obj, [key, value]) => {
+        if (value === 'false') {
+          return {
+            ...obj,
+            [key]: false,
+          };
+        }
+        if (value === 'true') {
+          return {
+            ...obj,
+            [key]: true,
+          };
+        }
+        return {
+          ...obj,
+          [key]: value,
+        };
+      },
+      {} as zod.infer<T>,
+    );
   }
 
   get<K extends keyof zod.infer<T>>(key: K): zod.infer<T>[K] {

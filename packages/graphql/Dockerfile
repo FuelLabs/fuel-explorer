@@ -3,16 +3,16 @@
 FROM node:20-slim AS base
 
 # Expose the ENVs to the env of the container
-ENV PORT="${PORT}"
-ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV SERVER_BUILD=true
-ENV SYNC_MISSING=false
-ENV DB_MIGRATE=false
+
+ENV SERVER_PORT="${SERVER_PORT:-3004}"
+ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
+ENV SERVER_BUILD="${SERVER_BUILD}"
+ENV SYNC_MISSING="${SYNC_MISSING}"
+ENV DB_MIGRATE="${DB_MIGRATE}"
 
 # Database config
-ENV SERVER_PORT="${PORT}"
 ENV DB_HOST="${DB_HOST}"
 ENV DB_PORT="${DB_PORT}"
 ENV DB_USER="${DB_USER}"
@@ -31,9 +31,6 @@ RUN pnpm install
 RUN pnpm db:setup
 
 # Expose the specified port
-EXPOSE ${PORT}
-
-# Start GraphQL server
+EXPOSE ${SERVER_PORT}
 WORKDIR /app-explorer
-
 CMD ["pnpm", "server:start"]

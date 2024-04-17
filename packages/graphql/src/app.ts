@@ -19,12 +19,12 @@ httpServer.listen(app, port).then(async () => {
     `📟 GraphQL server is running on http://localhost:${port}${yoga.graphqlEndpoint}`,
   );
 
-  if (process.env.DB_MIGRATE) {
+  if (env.get('DB_MIGRATE')) {
     console.log('📦 Running database migrations...');
     await db.migrate();
   }
 
-  if (process.env.SYNC_MISSING) {
+  if (env.get('SYNC_MISSING')) {
     console.log('🕐 Syncing missing blocks in 5 seconds...');
     await setTimeout(5000);
     await queue.push(QueueNames.SYNC_MISSING, undefined);
