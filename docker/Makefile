@@ -13,3 +13,8 @@ clean:
 logs:
 	docker compose logs -f
 
+dump-db:
+	docker compose exec fuel-explorer-pgsql pg_dump -U postgres -d postgres > ../packages/graphql/db/dev_dump.sql
+
+restore-db:
+	docker compose exec fuel-explorer-pgsql psql -U postgres -d postgres < ../packages/graphql/db/dev_dump.sql

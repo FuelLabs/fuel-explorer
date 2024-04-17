@@ -8,6 +8,16 @@ ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV SERVER_BUILD=true
+ENV SYNC_MISSING=false
+ENV DB_MIGRATE=false
+
+# Database config
+ENV SERVER_PORT="${PORT}"
+ENV DB_HOST="${DB_HOST}"
+ENV DB_PORT="${DB_PORT}"
+ENV DB_USER="${DB_USER}"
+ENV DB_PASS="${DB_PASS}"
+ENV DB_NAME="${DB_NAME}"
 
 # Enable pnpm using corepack form node.js
 RUN corepack enable
@@ -18,10 +28,12 @@ WORKDIR /app-explorer
 
 # Install dependencies for the entire monorepo
 RUN pnpm install
+RUN pnpm db:setup
 
 # Expose the specified port
 EXPOSE ${PORT}
 
 # Start GraphQL server
 WORKDIR /app-explorer
+
 CMD ["pnpm", "server:start"]

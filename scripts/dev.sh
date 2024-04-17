@@ -11,5 +11,6 @@ export LINK_DEPS="$deps"
 
 # Run the dev env requested
 if [ -z "$1" ]; then
-  pnpm turbo:run dev
+	pnpm turbo:run build:lib
+	pnpm turbo:run --filter=./packages/app-explorer --filter ./packages/graphql dev --parallel
 fi
