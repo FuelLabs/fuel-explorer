@@ -520,8 +520,8 @@ importers:
   packages/e2e-tests:
     devDependencies:
       '@fuels/playwright-utils':
-        specifier: ^0.18.0
-        version: 0.18.1(@playwright/test@1.43.1)(fuels@0.74.0)
+        specifier: 0.18.0
+        version: 0.18.0(@playwright/test@1.43.1)(fuels@0.74.0)
       '@synthetixio/synpress':
         specifier: https://github.com/LuizAsFight/synpress
         version: github.com/LuizAsFight/synpress/edb6468a237b341a0014d2944cb43a33f22d2ff1(@babel/core@7.24.4)(typescript@5.3.3)
@@ -4825,6 +4825,11 @@ packages:
     resolution: {integrity: sha512-OhRHnd0G/wN5Sw6I7pInxcit5J9PN6KfHogBIqvlhIl+DBTaTgEsbB0iEVeDQIlX+Szrnl/3FOBmcM1e58t+aQ==}
     peerDependencies:
       jest: ^29.6.4
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
     dependencies:
       '@ariakit/test': 0.2.5(@testing-library/dom@9.3.4)(@testing-library/react@14.3.1)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
@@ -4860,8 +4865,8 @@ packages:
     resolution: {integrity: sha512-G7aKjHxQ0QAoK90uaemG8HPecAokkO/NHC1HOWJ4fgPb6Mx1yV1dRxYWv0KZ8AL70mCxtTqhZusG/9fmKD7wFA==}
     dev: false
 
-  /@fuels/playwright-utils@0.18.1(@playwright/test@1.43.1)(fuels@0.74.0):
-    resolution: {integrity: sha512-A5g8SAaO0MPK5eToowz6mx3TeriXP1c64dPd2hM5GzCPscwo+MuVj7oD/TcKcDwwHwBDFVs81DuaqDVaU/aBxw==}
+  /@fuels/playwright-utils@0.18.0(@playwright/test@1.43.1)(fuels@0.74.0):
+    resolution: {integrity: sha512-gmv1T+5iSqXCCea6MVMAiWUajD/0KjvhSCcNkFfZW+eg5dDbqTka5eZ72BYFl3kbuURt4OzdBwzNEMNajFRbfA==}
     peerDependencies:
       '@playwright/test': ^1.39.0
       fuels: '>=0.74.0'
@@ -6741,6 +6746,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     bundledDependencies:
       - napi-wasm
 
@@ -13680,6 +13686,9 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true
@@ -21425,6 +21434,9 @@ packages:
   /napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
     dev: true
+
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}

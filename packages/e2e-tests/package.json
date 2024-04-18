@@ -2,7 +2,7 @@
   "name": "e2e-tests",
   "private": true,
   "devDependencies": {
-    "@fuels/playwright-utils": "^0.18.0",
+    "@fuels/playwright-utils": "0.18.0",
     "@synthetixio/synpress": "https://github.com/LuizAsFight/synpress",
     "viem": "2.7.20",
     "wagmi": "2.5.7"
