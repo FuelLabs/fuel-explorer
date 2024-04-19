@@ -30,7 +30,6 @@
     "dev": "./scripts/dev.sh",
     "dev:explorer": "pnpm --filter=app-explorer dev",
     "dev:graphql": "pnpm --filter=graphql dev",
-    "dev:notification": "pnpm --filter=notification-service dev:notification",
     "dev:portal": "pnpm --filter=app-portal dev",
     "format": "biome format --write .",
     "lint": "biome check --apply-unsafe .",
