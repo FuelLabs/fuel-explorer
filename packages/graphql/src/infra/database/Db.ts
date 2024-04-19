@@ -14,6 +14,7 @@ const DB_NAME = env.get('DB_NAME');
 
 export class Db {
   #connection: Client;
+  isConnected = false;
   private static instance: Db;
 
   constructor() {
@@ -31,7 +32,11 @@ export class Db {
   }
 
   async connect() {
+    if (this.isConnected) {
+      return;
+    }
     await this.#connection.connect();
+    this.isConnected = true;
   }
 
   async close() {

@@ -1,18 +1,18 @@
 import { ChainEntity } from '~/domain/Chain/ChainEntity';
-import { GraphQLSDK } from './GraphQLSDK';
+import type { GraphQLSDK } from './GraphQLSDK';
 import type { GQLChainInfo } from './generated/sdk';
 
 export type GraphQLContext = {
   chain: ChainEntity | null;
+  client: GraphQLSDK;
 };
 
 export class GraphQLContextFactory {
-  static async create(): Promise<GraphQLContext> {
-    const { sdk } = new GraphQLSDK();
-    const res = await sdk.chain();
+  static async create(client: GraphQLSDK): Promise<GraphQLContext> {
+    const res = await client.sdk.chain();
     const chainItem = res.data?.chain;
-    if (!chainItem) return { chain: null };
+    if (!chainItem) return { client, chain: null };
     const chain = ChainEntity.create(chainItem as GQLChainInfo);
-    return { chain };
+    return { client, chain };
   }
 }

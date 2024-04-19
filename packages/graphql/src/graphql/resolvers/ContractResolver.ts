@@ -8,7 +8,7 @@ import type {
   GQLQueryContractBalanceArgs,
   GQLQueryContractBalancesArgs,
 } from '~/graphql/generated/sdk';
-import { GraphQLSDK } from '../GraphQLSDK';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLContract;
 type Params = {
@@ -21,7 +21,6 @@ type Params = {
 class ContractResolver extends ResolverAdapter<Source> {
   private constructor(
     private readonly contractRepository = new ContractRepository(),
-    private readonly client = new GraphQLSDK(),
   ) {
     super();
     this.setResolvers({
@@ -61,14 +60,22 @@ class ContractResolver extends ResolverAdapter<Source> {
   }
 
   // TODO: need to check how to implement this using Postgres
-  async contractBalance(_: Source, params: Params['contractBalance']) {
-    const res = await this.client.sdk.contractBalance(params);
+  async contractBalance(
+    _: Source,
+    params: Params['contractBalance'],
+    { client }: GraphQLContext,
+  ) {
+    const res = await client.sdk.contractBalance(params);
     return res.data.contractBalance;
   }
 
   // TODO: need to check how to implement this using Postgres
-  async contractBalances(_: Source, params: Params['contractBalances']) {
-    const res = await this.client.sdk.contractBalances(params);
+  async contractBalances(
+    _: Source,
+    params: Params['contractBalances'],
+    { client }: GraphQLContext,
+  ) {
+    const res = await client.sdk.contractBalances(params);
     return res.data.contractBalances;
   }
 }

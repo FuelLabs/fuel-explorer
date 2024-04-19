@@ -96,7 +96,7 @@ services:
         condition: service_healthy
     build:
       context: ../packages/graphql
-      dockerfile: Dockerfile
+      dockerfile: ../../deployment/Dockerfile 
     env_file:
       - ./envs/graphql.env
     ports:

@@ -5,7 +5,7 @@ import type {
   GQLQueryBalancesArgs,
   GQLQueryCoinsArgs,
 } from '~/graphql/generated/sdk';
-import { GraphQLSDK } from '../GraphQLSDK';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLBalance;
 type Params = {
@@ -15,7 +15,7 @@ type Params = {
 };
 
 class BalanceResolver extends ResolverAdapter<Source> {
-  private constructor(private client = new GraphQLSDK()) {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -33,19 +33,31 @@ class BalanceResolver extends ResolverAdapter<Source> {
   }
 
   // TODO: need to check how to implement this using Postgres
-  async balance(_: Source, params: Params['balance']) {
-    const res = await this.client.sdk.balance(params);
+  async balance(
+    _: Source,
+    params: Params['balance'],
+    { client }: GraphQLContext,
+  ) {
+    const res = await client.sdk.balance(params);
     return res.data.balance;
   }
 
   // TODO: need to check how to implement this using Postgres
-  async balances(_: Source, params: Params['balances']) {
-    const res = await this.client.sdk.balances(params);
+  async balances(
+    _: Source,
+    params: Params['balances'],
+    { client }: GraphQLContext,
+  ) {
+    const res = await client.sdk.balances(params);
     return res.data.balances;
   }
 
   // TODO: need to check how to implement this using Postgres
-  async utoxs(parent: Source, params: Params['utxos']) {
+  async utoxs(
+    parent: Source,
+    params: Params['utxos'],
+    { client }: GraphQLContext,
+  ) {
     const filter = !params?.owner
       ? {
           assetId: parent.assetId,
@@ -53,7 +65,7 @@ class BalanceResolver extends ResolverAdapter<Source> {
         }
       : params;
 
-    const res = await this.client.sdk.coins({ first: 100, filter });
+    const res = await client.sdk.coins({ first: 100, filter });
     return res.data.coins.nodes;
   }
 }

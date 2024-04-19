@@ -1,6 +1,6 @@
 import { ResolverAdapter } from '~/core/Resolver';
 import type { GQLNodeInfo } from '~/graphql/generated/sdk';
-import { GraphQLSDK } from '../GraphQLSDK';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLNodeInfo;
 type Params = {
@@ -8,7 +8,7 @@ type Params = {
 };
 
 class NodeResolver extends ResolverAdapter<Source> {
-  private constructor(private readonly client = new GraphQLSDK()) {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -21,9 +21,13 @@ class NodeResolver extends ResolverAdapter<Source> {
     return new NodeResolver().getResolvers();
   }
 
-  async nodeInfo(_: Source, _params: Params['nodeInfo']) {
+  async nodeInfo(
+    _: Source,
+    _params: Params['nodeInfo'],
+    { client }: GraphQLContext,
+  ) {
     // TODO: need to check with @luizstacio about the nodeInfo resolver
-    const res = await this.client.sdk.nodeInfo();
+    const res = await client.sdk.nodeInfo();
     return res.data.nodeInfo;
   }
 }

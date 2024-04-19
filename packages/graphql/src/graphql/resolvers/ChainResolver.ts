@@ -1,6 +1,6 @@
 import { ResolverAdapter } from '~/core/Resolver';
 import type { GQLChainInfo } from '~/graphql/generated/sdk';
-import { GraphQLSDK } from '../GraphQLSDK';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLChainInfo;
 type Params = {
@@ -8,7 +8,7 @@ type Params = {
 };
 
 class ChainResolver extends ResolverAdapter<Source> {
-  private constructor(private client = new GraphQLSDK()) {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -21,8 +21,8 @@ class ChainResolver extends ResolverAdapter<Source> {
     return new ChainResolver().getResolvers();
   }
 
-  async chain(_: Source, _params: Params['chain']) {
-    const res = await this.client.sdk.chain();
+  async chain(_: Source, _params: Params['chain'], { client }: GraphQLContext) {
+    const res = await client.sdk.chain();
     return res.data.chain;
   }
 }

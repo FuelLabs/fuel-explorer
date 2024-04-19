@@ -1,30 +1,19 @@
-import { resolve } from 'node:url';
-import { getSdk } from '@fuel-explorer/graphql/src/graphql/generated/sdk';
+import { getSdk } from '@fuel-explorer/graphql/sdk';
 import { GraphQLClient } from 'graphql-request';
 
 const { FUEL_EXPLORER_API, FUEL_EXPLORER_API_KEY } = process.env;
-const VERCEL_URL = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
-const VERCEL_ENV =
-  process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV || 'development';
 
-const getBaseUrl = () => {
-  if (FUEL_EXPLORER_API) return FUEL_EXPLORER_API;
-
-  // @TODO: What to do with this urls?
-  if (VERCEL_ENV !== 'development')
-    return resolve(`https://${VERCEL_URL}`, '/api/graphql');
-  return 'http://localhost:3000/api/graphql';
-};
+if (!FUEL_EXPLORER_API) {
+  throw new Error('FUEL_EXPLORER_API is required');
+}
 
 const getHeaders = () => {
-  if (FUEL_EXPLORER_API_KEY) {
-    return { Authorization: `Bearer ${FUEL_EXPLORER_API_KEY}` };
-  }
-
-  return undefined;
+  return FUEL_EXPLORER_API_KEY
+    ? { Authorization: `Bearer ${FUEL_EXPLORER_API_KEY}` }
+    : undefined;
 };
 
-const client = new GraphQLClient(getBaseUrl(), {
+const client = new GraphQLClient(FUEL_EXPLORER_API, {
   fetch,
   headers: getHeaders(),
 });

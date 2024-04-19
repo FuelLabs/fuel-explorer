@@ -31,5 +31,5 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           image: ghcr.io/fuellabs/fuel-explorer
-          dockerfile: ./packages/graphql/Dockerfile
+          dockerfile: ./deployment/Dockerfile
           context: ./packages/graphql
