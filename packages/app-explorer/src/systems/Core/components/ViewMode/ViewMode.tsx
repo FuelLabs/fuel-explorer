@@ -1,3 +1,4 @@
+'use client';
 import { ToggleGroup } from '@fuels/ui';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
