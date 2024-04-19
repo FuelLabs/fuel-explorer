@@ -49,8 +49,8 @@
     "generate:defs": "node scripts/create-defs.mjs"
   },
   "dependencies": {
-    "@fuel-ts/address": "0.76.0",
-    "@fuel-ts/math": "0.76.0",
+    "@fuel-ts/address": "0.74.0",
+    "@fuel-ts/math": "0.74.0",
     "@fuels/assets": "^0.18.1",
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",

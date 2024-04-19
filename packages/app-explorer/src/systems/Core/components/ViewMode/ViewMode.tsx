@@ -1,16 +1,12 @@
-'use client';
 import { ToggleGroup } from '@fuels/ui';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 
 export enum ViewModes {
   Simple = 'simple',
   Advanced = 'advanced',
 }
 
-export function ViewMode() {
-  const { mode } = useParams<{ mode: ViewModes }>();
-
+export function ViewMode({ mode }: { mode: ViewModes }) {
   return (
     <ToggleGroup type="single" defaultValue={mode} aria-label="View mode">
       <ToggleGroup.Item value="simple" aria-label="Simple view" asChild>

@@ -97,9 +97,9 @@ const styles = tv({
         trigger: [
           'bg-transparent text-muted rounded border border-border',
           'enabled:hover:bg-gray-2 enabled:hover:text-heading transition-colors',
-          'state-active:text-heading',
+          'data-[state=active]:text-heading',
           'fuel-[Icon]:hover:text-icon',
-          'fuel-[Icon]:state-active:text-icon',
+          'fuel-[Icon]:data-[state=active]:text-icon',
           'disabled:opacity-50',
         ],
       },
@@ -108,7 +108,7 @@ const styles = tv({
         trigger: [
           'bg-transparent text-muted',
           'enabled:hover:text-heading transition-colors',
-          'state-active:text-heading state-active:border-b state-active:border-accent',
+          'data-[state=active]:text-heading data-[state=active]:border-b data-[state=active]:border-accent',
           'fuel-[Icon]:hover:text-icon',
           'fuel-[Icon]::text-icon',
           'disabled:opacity-50',
