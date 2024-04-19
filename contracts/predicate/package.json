@@ -15,9 +15,9 @@
     "app-commons": "workspace:*"
   },
   "devDependencies": {
-    "dotenv": "16.4.1",
-    "fuels": "0.74.0",
-    "vitest": "1.2.2",
-    "tsx": "4.7.1"
+    "dotenv": "16.4.5",
+    "fuels": "0.81.0",
+    "vitest": "1.5.0",
+    "tsx": "4.7.2"
   }
 }
