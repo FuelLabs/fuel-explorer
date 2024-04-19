@@ -23,7 +23,7 @@
     "@fuels/ui": "workspace:*",
     "@xstate/react": "^3.2.1",
     "@hookform/resolvers": "^3.3.4",
-    "@tabler/icons-react": "3.2.0",
+    "@tabler/icons-react": "2.46.0",
     "app-commons": "workspace:*",
     "fuels": "0.74.0",
     "xstate": "^4.37.2",

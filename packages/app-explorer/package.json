@@ -18,7 +18,7 @@
     "@fuel-ts/math": "0.81.0",
     "@fuels/assets": "^0.18.1",
     "@fuels/ui": "workspace:*",
-    "@tabler/icons-react": "3.2.0",
+    "@tabler/icons-react": "2.46.0",
     "@vercel/analytics": "1.2.2",
     "app-commons": "workspace:*",
     "app-portal": "workspace:*",

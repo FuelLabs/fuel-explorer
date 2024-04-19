@@ -5,6 +5,7 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import type { GraphQLSchema } from 'graphql';
 import { createYoga } from 'graphql-yoga';
 import { GraphQLContextFactory } from './GraphQLContext';
+import { GraphQLSDK } from './GraphQLSDK';
 
 const typesArray = loadFilesSync(join(__dirname, './schemas'));
 const typeDefs = mergeTypeDefs(typesArray);
@@ -21,7 +22,8 @@ export class GraphQLServer {
       schema,
       logging: true,
       context: async () => {
-        return GraphQLContextFactory.create();
+        const client = new GraphQLSDK();
+        return GraphQLContextFactory.create(client);
       },
     });
   }
