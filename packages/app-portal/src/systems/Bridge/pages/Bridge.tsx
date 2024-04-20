@@ -14,7 +14,6 @@ import {
   Flex,
   HStack,
   InputAmount,
-  Link,
   LoadingBox,
   Text,
   VStack,
@@ -122,12 +121,13 @@ export const Bridge = () => {
           Any assets deposited to Fuel can take up to {timeToWithdrawFormatted}{' '}
           to withdraw back to Ethereum. Learn more about our architecture and
           security in our&nbsp;
-          <Link
-            isExternal
+          <a
+            target="_blank"
             href="https://github.com/FuelLabs/fuel-bridge/blob/main/docs/ARCHITECTURE.md"
+            rel="noreferrer"
           >
             docs
-          </Link>
+          </a>
         </Alert.Text>
       </Alert>
     </VStack>
