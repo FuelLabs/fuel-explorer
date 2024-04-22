@@ -35,9 +35,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: fuel-explorer
+                name: {{ include "fuel-explorer.fullname" . }}
             - secretRef:
-                name: fuel-explorer
+                name: {{ include "fuel-explorer.fullname" . }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
