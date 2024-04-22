@@ -36,6 +36,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: fuel-explorer
+            - secretRef:
+                name: fuel-explorer
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
