@@ -98,6 +98,10 @@ function AutoCompleteRoot<T = string>({
 
   const handleSuggestionClick = (suggestion: T) => {
     inputRef.current?.focus();
+    const value = itemNameSelector?.(suggestion) ?? (suggestion as string);
+    if (inputRef.current) {
+      inputRef.current.value = value;
+    }
     setIsPopoverOpen(false);
     if (strict) {
       setItemSelected(true);
@@ -106,7 +110,7 @@ function AutoCompleteRoot<T = string>({
       onItemSelected(suggestion);
       return;
     }
-    onChange(itemNameSelector?.(suggestion) ?? (suggestion as string));
+    onChange(value);
   };
 
   const onFocus = (e: FocusEvent<HTMLInputElement, Element>) => {
