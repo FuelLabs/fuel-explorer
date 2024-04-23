@@ -1,0 +1,19 @@
+import { SerialID } from '@core/application/vo/SerialID';
+import { TransactionRef } from '@core/domain/Transaction/vo/TransactionRef';
+import { index, pgTable } from 'drizzle-orm/pg-core';
+import { InputData } from './vo/InputData';
+
+export const InputsTable = pgTable(
+  'inputs',
+  {
+    _id: SerialID.type(),
+    data: InputData.type(),
+    transactionId: TransactionRef.type(),
+  },
+  (table) => ({
+    inputIdIdx: index().on(table._id),
+  }),
+);
+
+export type InputItem = typeof InputsTable.$inferSelect;
+export type InputPayload = Omit<InputItem, '_id'>;
