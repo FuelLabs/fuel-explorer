@@ -17,9 +17,9 @@ export function EcosystemHeader({
     <>
       <PageTitle icon={<IconApps size={22} />} className="first:mb-0">
         <VStack gap="2" wrap="wrap">
-          Explore Fuel Dapps
+          Explore Fuel DApps
           <Text className="text-secondary">
-            Here&apos;s a list of dapps built on Fuel
+            Here&apos;s a list of DApps built on Fuel
           </Text>
         </VStack>
       </PageTitle>
