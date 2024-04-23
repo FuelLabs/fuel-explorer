@@ -11,6 +11,7 @@ export * from './components/Alert';
 export * from './components/AlertDialog';
 export * from './components/AspectRatio';
 export * from './components/Asset';
+export * from './components/AutoComplete';
 export * from './components/Avatar';
 export * from './components/Badge';
 export * from './components/Box';
