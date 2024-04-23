@@ -13,6 +13,7 @@
   },
   {
     "isLive": false,
+    "status": ["Building"],
     "name": "Aerv",
     "url": "https://aerv.finance",
     "tags": ["DeFi"],
