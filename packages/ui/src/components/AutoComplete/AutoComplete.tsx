@@ -244,5 +244,7 @@ export const AutoCompleteContent = createComponent<
 
 export const AutoComplete = withNamespace(AutoCompleteRoot, {
   Item: AutoCompleteItem,
-  Content: AutoCompleteContent,
+  Content: AutoCompleteContent as unknown as React.ComponentType<
+    Pick<AutoCompleteContentProps, 'className'>
+  >,
 });
