@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { AutoComplete, type AutoCompleteProps } from './AutoComplete';
+import { ComboBox, type ComboBoxProps } from './AutoComplete';
 
-const meta: Meta<typeof AutoComplete> = {
-  title: 'Form/AutoComplete',
-  component: AutoComplete,
+const meta: Meta<typeof ComboBox> = {
+  title: 'Form/ComboBox',
+  component: ComboBox,
   argTypes: {
     debounce: {
       control: 'number',
@@ -17,24 +17,24 @@ const meta: Meta<typeof AutoComplete> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof AutoComplete>;
+type Story = StoryObj<typeof ComboBox>;
 
-function AutoCompleteStory(args: Pick<AutoCompleteProps, 'debounce'>) {
+function ComboBoxStory(args: Pick<ComboBoxProps, 'debounce'>) {
   const [value, setValue] = useState<string>('');
 
   return (
-    <AutoComplete
+    <ComboBox
       {...args}
       suggestions={['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']}
       placeholder="Type a fruit name"
       value={value}
       onChange={(value) => setValue(value || '')}
     >
-      <AutoComplete.Content />
-    </AutoComplete>
+      <ComboBox.Content />
+    </ComboBox>
   );
 }
 
 export const Usage: Story = {
-  render: AutoCompleteStory,
+  render: ComboBoxStory,
 };

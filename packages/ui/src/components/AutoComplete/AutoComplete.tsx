@@ -14,7 +14,7 @@ import { Input, type InputFieldProps } from '../Input';
 import { Popover } from '../Popover';
 import { Text } from '../Text';
 
-export interface AutoCompleteProps<T = string> {
+export interface ComboBoxProps<T = string> {
   suggestions: T[];
   placeholder?: string;
   debounce?: number;
@@ -28,28 +28,28 @@ export interface AutoCompleteProps<T = string> {
   suggestionFilter?: (suggestion: T) => boolean;
   itemNameSelector?: (suggestion: T) => string;
   onItemSelected?: (suggestion: T) => void;
-  children: ReactElement<AutoCompleteContentProps<T>>;
+  children: ReactElement<ComboBoxContentProps<T>>;
   /**
-   * @description If true, input can only be a value from the autocomplete list
+   * @description If true, input can only be a value from the ComboBox list
    */
   strict?: boolean;
 }
 
-export interface AutoCompleteItemProps<T = string>
-  extends Pick<AutoCompleteProps<T>, 'itemNameSelector'> {
+export interface ComboBoxItemProps<T = string>
+  extends Pick<ComboBoxProps<T>, 'itemNameSelector'> {
   className?: string;
   suggestion: T | null;
   onItemSelected: (suggestion: T) => void;
 }
 
-export interface AutoCompleteContentProps<T = string>
-  extends Pick<AutoCompleteProps<T>, 'itemNameSelector' | 'suggestions'> {
+export interface ComboBoxContentProps<T = string>
+  extends Pick<ComboBoxProps<T>, 'itemNameSelector' | 'suggestions'> {
   suggestion: T | null;
   onItemSelected: (suggestion: T) => void;
   className?: string;
 }
 
-function AutoCompleteRoot<T = string>({
+function ComboBoxRoot<T = string>({
   suggestions,
   placeholder,
   strict,
@@ -65,7 +65,7 @@ function AutoCompleteRoot<T = string>({
   onItemSelected,
   inputFieldProps,
   children,
-}: AutoCompleteProps<T>) {
+}: ComboBoxProps<T>) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [itemSelected, setItemSelected] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -182,12 +182,12 @@ function AutoCompleteRoot<T = string>({
   );
 }
 
-function AutoCompleteItemBase<T = string>({
+function ComboBoxItemBase<T = string>({
   onItemSelected,
   suggestion,
   itemNameSelector,
   className,
-}: AutoCompleteItemProps<T>) {
+}: ComboBoxItemProps<T>) {
   if (!suggestion) return null;
 
   const onClick = () => {
@@ -207,23 +207,23 @@ function AutoCompleteItemBase<T = string>({
   );
 }
 
-export const AutoCompleteItem = memo(
+export const ComboBoxItem = memo(
   createComponent({
-    id: 'AutoCompleteItem',
-    baseElement: AutoCompleteItemBase,
+    id: 'ComboBoxItem',
+    baseElement: ComboBoxItemBase,
   }),
-) as typeof AutoCompleteItemBase;
+) as typeof ComboBoxItemBase;
 
-function AutoCompleteContentBase<T = string>({
+function ComboBoxContentBase<T = string>({
   suggestions,
   itemNameSelector,
   onItemSelected,
   className,
-}: AutoCompleteContentProps<T>) {
+}: ComboBoxContentProps<T>) {
   return (
     <Flex className={className} direction="column" gap="2">
       {suggestions.map((suggestion: T) => (
-        <AutoCompleteItem
+        <ComboBoxItem
           key={itemNameSelector?.(suggestion) ?? (suggestion as string)}
           suggestion={suggestion}
           itemNameSelector={itemNameSelector}
@@ -234,17 +234,17 @@ function AutoCompleteContentBase<T = string>({
   );
 }
 
-export const AutoCompleteContent = createComponent<
-  AutoCompleteContentProps,
-  typeof AutoCompleteContentBase
+export const ComboBoxContent = createComponent<
+  ComboBoxContentProps,
+  typeof ComboBoxContentBase
 >({
-  id: 'AutoCompleteContent',
-  baseElement: AutoCompleteContentBase,
+  id: 'ComboBoxContent',
+  baseElement: ComboBoxContentBase,
 });
 
-export const AutoComplete = withNamespace(AutoCompleteRoot, {
-  Item: AutoCompleteItem,
-  Content: AutoCompleteContent as unknown as React.ComponentType<
-    Pick<AutoCompleteContentProps, 'className'>
+export const ComboBox = withNamespace(ComboBoxRoot, {
+  Item: ComboBoxItem,
+  Content: ComboBoxContent as unknown as React.ComponentType<
+    Pick<ComboBoxContentProps, 'className'>
   >,
 });
