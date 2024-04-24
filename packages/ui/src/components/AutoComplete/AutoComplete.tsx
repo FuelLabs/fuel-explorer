@@ -8,7 +8,7 @@ import React, {
   type KeyboardEvent,
   type MouseEvent,
 } from 'react';
-import { withNamespace } from '../../utils/component';
+import { createComponent, withNamespace } from '../../utils/component';
 import { Flex } from '../Box';
 import { Input, type InputFieldProps } from '../Input';
 import { Popover } from '../Popover';
@@ -208,10 +208,13 @@ function AutoCompleteItemBase<T = string>({
 }
 
 export const AutoCompleteItem = memo(
-  AutoCompleteItemBase,
+  createComponent({
+    id: 'AutoCompleteItem',
+    baseElement: AutoCompleteItemBase,
+  }),
 ) as typeof AutoCompleteItemBase;
 
-export function AutoCompleteContent<T = string>({
+function AutoCompleteContentBase<T = string>({
   suggestions,
   itemNameSelector,
   onItemSelected,
@@ -231,7 +234,15 @@ export function AutoCompleteContent<T = string>({
   );
 }
 
+export const AutoCompleteContent = createComponent<
+  AutoCompleteContentProps,
+  typeof AutoCompleteContentBase
+>({
+  id: 'AutoCompleteContent',
+  baseElement: AutoCompleteContentBase,
+});
+
 export const AutoComplete = withNamespace(AutoCompleteRoot, {
   Item: AutoCompleteItem,
-  Content: AutoCompleteContent as unknown as React.FC,
+  Content: AutoCompleteContent,
 });
