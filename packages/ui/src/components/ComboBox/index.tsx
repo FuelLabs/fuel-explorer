@@ -1,11 +1,11 @@
 export {
-  AutoComplete,
-  AutoCompleteItem,
-  AutoCompleteContent,
-} from './AutoComplete';
+  ComboBox,
+  ComboBoxItem,
+  ComboBoxContent,
+} from './ComboBox';
 
 export type {
-  AutoCompleteProps,
-  AutoCompleteItemProps,
-  AutoCompleteContentProps,
-} from './AutoComplete';
+  ComboBoxProps,
+  ComboBoxItemProps,
+  ComboBoxContentProps,
+} from './ComboBox';
