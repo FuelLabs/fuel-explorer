@@ -1,30 +1,28 @@
 import { db } from '@core/db';
 import type { GQLBlock } from '@core/generated/gql-types';
+import type { DbConnection, DbTransaction } from '@core/infra/database/Db';
 import { GraphQLSDK } from '@core/infra/graphql/GraphQLSDK';
 import { Paginator, type PaginatorParams } from '@core/shared/Paginator';
 import c from 'chalk';
 import { desc, eq } from 'drizzle-orm';
-import { values } from 'lodash';
+import { NodeRepository } from '../Node/NodeRepository';
 import { BlockEntity } from './BlockEntity';
-import { type BlockItem, BlocksTable } from './BlockModel';
-
-import {
-  type TransactionItem,
-  TransactionsTable,
-} from '../Transaction/TransactionModel';
+import { BlocksTable } from './BlockModel';
 
 export class BlockRepository {
+  constructor(private readonly nodeRepository = new NodeRepository()) {}
+
   async findByHash(blockHash: string) {
     const first = await db.connection().query.BlocksTable.findFirst({
       where: eq(BlocksTable.blockHash, blockHash),
       with: {
         transactions: true,
+        node: true,
       },
     });
 
     if (!first) return null;
-    const { transactions, ...block } = first;
-    return BlockEntity.create(block, transactions);
+    return BlockEntity.create(first);
   }
 
   async findByHeight(height: number) {
@@ -32,89 +30,51 @@ export class BlockRepository {
       where: eq(BlocksTable._id, height),
       with: {
         transactions: true,
+        node: true,
       },
     });
 
     if (!first) return null;
-    const { transactions, ...block } = first;
-    return BlockEntity.create(block, transactions);
+    return BlockEntity.create(first);
   }
 
   async findMany(params: PaginatorParams): Promise<BlockEntity[]> {
     const paginator = new Paginator(BlocksTable, params);
     const config = await paginator.getQueryPaginationConfig();
-    const query = paginator.getPaginatedQuery(config);
-    const joined = await query.leftJoin(
-      TransactionsTable,
-      eq(TransactionsTable.blockId, BlocksTable._id),
-    );
+    const items = await db.connection().query.BlocksTable.findMany({
+      ...(config.limit && { limit: config.limit }),
+      orderBy: config.order(config.idField),
+      where: config.whereBy(config.idField, config.cursor),
+      with: {
+        transactions: true,
+        node: true,
+      },
+    });
 
-    const results = paginator.getPaginatedResult(joined);
-
-    const items = results.reduce<
-      Record<number, { block: BlockItem; transactions: TransactionItem[] }>
-    >((acc, row) => {
-      const block = row.blocks;
-      const transaction = row.transactions;
-
-      if (!acc[block._id]) {
-        acc[block._id] = { block, transactions: [] };
-      }
-      if (transaction) {
-        acc[block._id].transactions.push(transaction);
-      }
-      return acc;
-    }, {});
-
-    return values(items).map((item) =>
-      BlockEntity.create(item.block, item.transactions),
-    );
+    return items.map(BlockEntity.create);
   }
 
   async findLatestAdded() {
     const latest = await db.connection().query.BlocksTable.findFirst({
+      orderBy: desc(BlocksTable._id),
       with: {
         transactions: true,
+        node: true,
       },
-      orderBy: desc(BlocksTable._id),
     });
 
     if (!latest) return null;
-    const { transactions, ...block } = latest;
-    return BlockEntity.create(block, transactions);
+    return BlockEntity.create(latest);
   }
 
   async insertOne(block: GQLBlock) {
-    const found = await this.findByHash(block.id);
-    if (found) {
-      throw new Error(`Block ${block.id} already exists`);
-    }
-
-    const [item] = await db
-      .connection()
-      .insert(BlocksTable)
-      .values(BlockEntity.toDBItem(block))
-      .returning();
-
-    return BlockEntity.create(item, []);
+    const insertOne = this.createInsertOne(db.connection());
+    return insertOne(block);
   }
 
   async insertMany(blocks: GQLBlock[]) {
     return db.connection().transaction(async (trx) => {
-      const queries = blocks.map(async (block) => {
-        const found = await this.findByHash(block.id);
-        if (found) {
-          console.log(c.red(`Block ${block.header.height} already exists`));
-          return null;
-        }
-
-        const [item] = await trx
-          .insert(BlocksTable)
-          .values(BlockEntity.toDBItem(block))
-          .returning();
-
-        return BlockEntity.create(item, []);
-      });
+      const queries = blocks.map(this.createInsertOne(trx));
       return Promise.all(queries.filter(Boolean));
     });
   }
@@ -142,5 +102,32 @@ export class BlockRepository {
     const { sdk } = new GraphQLSDK();
     const { data } = await sdk.blocks({ last: 1 });
     return data.blocks.nodes[0] as GQLBlock;
+  }
+
+  // TODO: improve this query to be more efficient
+  private createInsertOne(conn: DbConnection | DbTransaction) {
+    return async (block: GQLBlock) => {
+      const node = await this.nodeRepository.findById(block.id);
+      if (!node) {
+        throw new Error(`Node ${block.id} not found`);
+      }
+
+      const found = await this.findByHash(block.id);
+      if (found) {
+        console.log(c.red(`Block ${block.header.height} already exists`));
+        return null;
+      }
+
+      const [item] = await conn
+        .insert(BlocksTable)
+        .values(BlockEntity.toDBItem(node.toNodeItem()))
+        .returning();
+
+      if (!item) {
+        throw new Error(`Failed to insert block ${block.header.height}`);
+      }
+
+      return this.findByHash(block.id);
+    };
   }
 }

@@ -14,7 +14,8 @@
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "@core/*": ["src/*"]
+      "@core/*": ["../core/src/*"],
+      "~/*": ["src/*"]
     }
   },
   "exclude": ["node_modules", "generated"],

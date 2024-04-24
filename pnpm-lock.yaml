@@ -38,8 +38,8 @@ importers:
         specifier: ^7.24.4
         version: 7.24.4
       '@biomejs/biome':
-        specifier: 1.7.0
-        version: 1.7.0
+        specifier: 1.7.1
+        version: 1.7.1
       '@fuels/jest':
         specifier: ^0.18.1
         version: 0.18.1(@types/jest@29.5.12)(jest@29.7.0)(vitest@1.5.0)
@@ -168,6 +168,188 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.4.16)(typescript@5.4.5)
+
+  indexer/archiver:
+    dependencies:
+      '@fuel-indexer/core':
+        specifier: workspace:*
+        version: link:../core
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      dotenv:
+        specifier: 16.4.5
+        version: 16.4.5
+      drizzle-orm:
+        specifier: ^0.30.8
+        version: 0.30.8(@types/pg@8.11.5)(pg@8.11.5)
+      pg:
+        specifier: ^8.11.5
+        version: 8.11.5
+      pg-boss:
+        specifier: 9.0.3
+        version: 9.0.3
+      shallow-equal-object:
+        specifier: 1.1.1
+        version: 1.1.1
+      tai64:
+        specifier: ^1.0.0
+        version: 1.0.0
+      winston:
+        specifier: 3.13.0
+        version: 3.13.0
+      yargs:
+        specifier: 17.7.2
+        version: 17.7.2
+      zod:
+        specifier: 3.22.5
+        version: 3.22.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.12.7
+      '@types/pg':
+        specifier: ^8.11.5
+        version: 8.11.5
+      chalk:
+        specifier: 5.3.0
+        version: 5.3.0
+      drizzle-kit:
+        specifier: ^0.20.16
+        version: 0.20.16
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(@swc/core@1.4.16)(postcss@8.4.38)(ts-node@10.9.2)(typescript@5.4.5)
+      tsx:
+        specifier: 4.7.2
+        version: 4.7.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
+  indexer/core:
+    dependencies:
+      '@graphql-tools/load':
+        specifier: 8.0.2
+        version: 8.0.2(graphql@16.8.1)
+      '@graphql-tools/load-files':
+        specifier: 7.0.0
+        version: 7.0.0(graphql@16.8.1)
+      '@graphql-tools/merge':
+        specifier: 9.0.3
+        version: 9.0.3(graphql@16.8.1)
+      '@graphql-tools/schema':
+        specifier: 10.0.3
+        version: 10.0.3(graphql@16.8.1)
+      '@graphql-tools/stitch':
+        specifier: ^9.1.0
+        version: 9.1.0(graphql@16.8.1)
+      '@graphql-tools/utils':
+        specifier: ^10.1.3
+        version: 10.1.3(graphql@16.8.1)
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      dayjs:
+        specifier: 1.11.10
+        version: 1.11.10
+      dotenv:
+        specifier: 16.4.5
+        version: 16.4.5
+      drizzle-orm:
+        specifier: ^0.30.8
+        version: 0.30.8(@types/pg@8.11.5)(pg@8.11.5)
+      fuels:
+        specifier: 0.74.0
+        version: 0.74.0(dexie@4.0.4)
+      graphql:
+        specifier: '>=16.8.1'
+        version: 16.8.1
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
+      pg:
+        specifier: ^8.11.5
+        version: 8.11.5
+      pg-boss:
+        specifier: 9.0.3
+        version: 9.0.3
+      shallow-equal-object:
+        specifier: 1.1.1
+        version: 1.1.1
+      tai64:
+        specifier: ^1.0.0
+        version: 1.0.0
+      winston:
+        specifier: 3.13.0
+        version: 3.13.0
+      yargs:
+        specifier: 17.7.2
+        version: 17.7.2
+      zod:
+        specifier: 3.22.5
+        version: 3.22.5
+    devDependencies:
+      '@graphql-codegen/cli':
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+      '@graphql-codegen/introspection':
+        specifier: ^4.0.3
+        version: 4.0.3(graphql@16.8.1)
+      '@graphql-codegen/schema-ast':
+        specifier: ^4.0.2
+        version: 4.0.2(graphql@16.8.1)
+      '@graphql-codegen/typescript':
+        specifier: ^4.0.6
+        version: 4.0.6(graphql@16.8.1)
+      '@graphql-codegen/typescript-graphql-request':
+        specifier: ^6.2.0
+        version: 6.2.0(graphql-request@6.1.0)(graphql-tag@2.12.6)(graphql@16.8.1)
+      '@graphql-codegen/typescript-operations':
+        specifier: ^4.2.0
+        version: 4.2.0(graphql@16.8.1)
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.12.7
+      '@types/pg':
+        specifier: ^8.11.5
+        version: 8.11.5
+      chalk:
+        specifier: 5.3.0
+        version: 5.3.0
+      drizzle-kit:
+        specifier: ^0.20.16
+        version: 0.20.16
+      gql-generator:
+        specifier: 2.0.0
+        version: 2.0.0
+      graphql-config:
+        specifier: 5.0.3
+        version: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+      graphql-request:
+        specifier: 6.1.0
+        version: 6.1.0(graphql@16.8.1)
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(@swc/core@1.4.16)(postcss@8.4.38)(ts-node@10.9.2)(typescript@5.4.5)
+      tsx:
+        specifier: 4.7.2
+        version: 4.7.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
 
   packages/app-commons:
     dependencies:
@@ -2399,24 +2581,24 @@ packages:
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  /@biomejs/biome@1.7.0:
-    resolution: {integrity: sha512-mejiRhnAq6UrXtYvjWJUKdstcT58n0/FfKemFf3d2Ou0HxOdS88HQmWtQ/UgyZvOEPD572YbFTb6IheyROpqkw==}
+  /@biomejs/biome@1.7.1:
+    resolution: {integrity: sha512-wb2UNoFXcgaMdKXKT5ytsYntaogl2FSTjDt20CZynF3v7OXQUcIpTrr+be3XoOGpoZRj3Ytq9TSpmplUREXmeA==}
     engines: {node: '>=14.21.3'}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 1.7.0
-      '@biomejs/cli-darwin-x64': 1.7.0
-      '@biomejs/cli-linux-arm64': 1.7.0
-      '@biomejs/cli-linux-arm64-musl': 1.7.0
-      '@biomejs/cli-linux-x64': 1.7.0
-      '@biomejs/cli-linux-x64-musl': 1.7.0
-      '@biomejs/cli-win32-arm64': 1.7.0
-      '@biomejs/cli-win32-x64': 1.7.0
+      '@biomejs/cli-darwin-arm64': 1.7.1
+      '@biomejs/cli-darwin-x64': 1.7.1
+      '@biomejs/cli-linux-arm64': 1.7.1
+      '@biomejs/cli-linux-arm64-musl': 1.7.1
+      '@biomejs/cli-linux-x64': 1.7.1
+      '@biomejs/cli-linux-x64-musl': 1.7.1
+      '@biomejs/cli-win32-arm64': 1.7.1
+      '@biomejs/cli-win32-x64': 1.7.1
     dev: true
 
-  /@biomejs/cli-darwin-arm64@1.7.0:
-    resolution: {integrity: sha512-12TaeaKHU4SAZt0fQJ2bYk1jUb4foope7LmgDE5p3c0uMxd3mFkg1k7G721T+K6UHYULcSOQDsNNM8DhYi8Irg==}
+  /@biomejs/cli-darwin-arm64@1.7.1:
+    resolution: {integrity: sha512-qfLrIIB58dkgiY/1tgG6fSCBK22PZaSIf6blweZBsG6iMij05mEuJt50ne+zPnNFNUmt8t43NC/qOXT3iFHQBA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
@@ -2424,8 +2606,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-darwin-x64@1.7.0:
-    resolution: {integrity: sha512-6Qq1BSIB0cpp0cQNqO/+EiUV7FE3jMpF6w7+AgIBXp0oJxUWb2Ff0RDZdO9bfzkimXD58j0vGpNHMGnCcjDV2Q==}
+  /@biomejs/cli-darwin-x64@1.7.1:
+    resolution: {integrity: sha512-OGeyNsEcp5VnKbF9/TBjPCTHNEOm7oHegEve07U3KZmzqfpw2Oe3i9DVW8t6vvj1TYbrwWYCld25H34kBDY7Vg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
@@ -2433,8 +2615,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-linux-arm64-musl@1.7.0:
-    resolution: {integrity: sha512-pwIY80nU7SAxrVVZ6HD9ah1pruwh9ZqlSR0Nvbg4ZJqQa0POhiB+RJx7+/1Ml2mTZdrl8kb/YiwQpD16uwb5wg==}
+  /@biomejs/cli-linux-arm64-musl@1.7.1:
+    resolution: {integrity: sha512-giH0/CzLOJ+wbxLxd5Shnr5xQf5fGnTRWLDe3lzjaF7IplVydNCEeZJtncB01SvyA6DAFJsvQ4LNxzAOQfEVCg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
@@ -2442,8 +2624,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-linux-arm64@1.7.0:
-    resolution: {integrity: sha512-GwSci7xBJ2j1CrdDXDUVXnUtrvypEz/xmiYPpFeVdlX5p95eXx+7FekPPbJfhGGw5WKSsKZ+V8AAlbN+kUwJWw==}
+  /@biomejs/cli-linux-arm64@1.7.1:
+    resolution: {integrity: sha512-MQDf5wErj1iBvlcxCyOa0XqZYN8WJrupVgbNnqhntO3yVATg8GxduVUn1fDSaolznkDRsj7Pz3Xu1esBFwvfmg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
@@ -2451,8 +2633,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-linux-x64-musl@1.7.0:
-    resolution: {integrity: sha512-KzCA0mW4LSbCd7XZWaEJvTOTTBjfJoVEXkfq1fsXxww1HB+ww5PGMbhbIcbYCsj2CTJUifeD5hOkyuBVppU1xQ==}
+  /@biomejs/cli-linux-x64-musl@1.7.1:
+    resolution: {integrity: sha512-ySNDtPhsLxU125IFHHAxfpoHBpkM56s4mEXeO70GZtgZay/o1h8IUPWCWf5Z7gKgc4jwgYN1U1U9xabI3hZVAg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
@@ -2460,8 +2642,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-linux-x64@1.7.0:
-    resolution: {integrity: sha512-1y+odKQsyHcw0JCGRuqhbx7Y6jxOVSh4lGIVDdJxW1b55yD22DY1kcMEfhUte6f95OIc2uqfkwtiI6xQAiZJdw==}
+  /@biomejs/cli-linux-x64@1.7.1:
+    resolution: {integrity: sha512-3wmCsGcC3KZ4pfTknXHfyMMlXPMhgfXVAcG5GlrR+Tq2JGiAw0EUydaLpsSBEbcG7IxH6OiUZEJZ95kAycCHBA==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
@@ -2469,8 +2651,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-win32-arm64@1.7.0:
-    resolution: {integrity: sha512-AvLDUYZBpOUFgS/mni4VruIoVV3uSGbKSkZQBPXsHgL0w4KttLll3NBrVanmWxOHsom6C6ocHLyfAY8HUc8TXg==}
+  /@biomejs/cli-win32-arm64@1.7.1:
+    resolution: {integrity: sha512-8hIDakEqZn0i6+388noYKdZ0ZrovTwnvMU/Qp/oJou0G7EPVdXupOe0oxiQSdRN0W7f6CS/yjPCYuVGzDG6r0g==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
@@ -2478,8 +2660,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-win32-x64@1.7.0:
-    resolution: {integrity: sha512-Pylm00BAAuLVb40IH9PC17432BTsY8K4pSUvhvgR1eaalnMaD6ug9SYJTTzKDbT6r24MPAGCTiSZERyhGkGzFQ==}
+  /@biomejs/cli-win32-x64@1.7.1:
+    resolution: {integrity: sha512-3W9k3uH6Ea6VOpAS9xkkAlS0LTfnGQjmIUCegZ8SDtK2NgJ1gO+qdEkGJb0ltahusFTN1QxJ107dM7ASA9IUEg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]

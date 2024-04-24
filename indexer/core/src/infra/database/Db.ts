@@ -1,9 +1,15 @@
 import path from 'node:path';
 import { env } from '@core/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import {
+  type NodePgDatabase,
+  type NodePgQueryResultHKT,
+  drizzle,
+} from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Client } from 'pg';
 
+import type { ExtractTablesWithRelations } from 'drizzle-orm';
+import type { PgTransaction } from 'drizzle-orm/pg-core';
 import * as DbSchema from './DbSchema';
 
 const DB_HOST = env.get('DB_HOST');
@@ -11,6 +17,14 @@ const DB_PORT = env.get('DB_PORT');
 const DB_USER = env.get('DB_USER');
 const DB_PASS = env.get('DB_PASS');
 const DB_NAME = env.get('DB_NAME');
+
+type Schema = typeof DbSchema;
+export type DbConnection = NodePgDatabase<Schema>;
+export type DbTransaction = PgTransaction<
+  NodePgQueryResultHKT,
+  Schema,
+  ExtractTablesWithRelations<Schema>
+>;
 
 export class Db {
   #connection: Client;

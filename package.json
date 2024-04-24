@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
-    "@biomejs/biome": "1.7.0",
+    "@biomejs/biome": "1.7.1",
     "@fuels/jest": "^0.18.1",
     "@fuels/ts-config": "^0.18.1",
     "@fuels/tsup-config": "^0.18.1",

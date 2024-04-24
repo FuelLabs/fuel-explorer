@@ -1,10 +1,14 @@
 import { Hash256, Timestamp } from '@core/application/vo';
-import { TransactionsTable } from '@core/domain/Transaction/TransactionModel';
+import {
+  type TransactionItem,
+  TransactionsTable,
+} from '@core/domain/Transaction/TransactionModel';
 import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
-import { BlockData } from './vo/BlockData';
+import { type NodeItem, NodesTable } from '../Node/NodeModel';
 import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
+import { BlockNodeRef } from './vo/BlockNodeRef';
 import { BlockProducer } from './vo/BlockProducer';
 
 export const BlocksTable = pgTable(
@@ -13,7 +17,7 @@ export const BlocksTable = pgTable(
     _id: BlockModelID.type(),
     blockHash: Hash256.type('id').unique(),
     timestamp: Timestamp.type(),
-    data: BlockData.type(),
+    nodeRef: BlockNodeRef.type(),
     totalGasUsed: BlockGasUsed.type(),
     producer: BlockProducer.type(),
   },
@@ -24,8 +28,13 @@ export const BlocksTable = pgTable(
   }),
 );
 
-export const BlocksRelations = relations(BlocksTable, ({ many }) => ({
+export const BlocksRelations = relations(BlocksTable, ({ many, one }) => ({
   transactions: many(TransactionsTable),
+  node: one(NodesTable),
 }));
 
 export type BlockItem = typeof BlocksTable.$inferSelect;
+export type BlockPayload = BlockItem & {
+  transactions: TransactionItem[];
+  node?: NodeItem | null;
+};
