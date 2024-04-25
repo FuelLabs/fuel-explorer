@@ -9,7 +9,12 @@ import { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
 import { type ReactNode } from 'react';
 import { type Chain, fallback } from 'viem';
-import { http, WagmiProvider, createConfig } from 'wagmi';
+import {
+  http,
+  type CreateConnectorFn,
+  WagmiProvider,
+  createConfig,
+} from 'wagmi';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
 import { ETH_CHAIN } from '~portal/systems/Chains/config';
 
@@ -42,7 +47,7 @@ const transports = {
       ),
 };
 
-const connectors: any = [
+const connectors: Array<CreateConnectorFn> = [
   injected({
     shimDisconnect: true,
     target: 'metaMask',
