@@ -42,13 +42,13 @@ import { JsonViewer } from '~/systems/Core/components/JsonViewer/JsonViewer';
 import type { TransactionNode } from '../../types';
 
 export type TxScriptsProps = BaseProps<{
-  tx: TransactionNode;
+  tx: TransactionNode | undefined;
   isLoading?: boolean;
 }>;
 
 export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
   const [opened, setOpened] = useState(false);
-  const hasOperations = tx.operations?.length ?? 0 > 0;
+  const hasOperations = tx?.operations?.length ?? 0 > 0;
   return (
     <VStack {...props}>
       <LoadingWrapper
@@ -98,13 +98,13 @@ export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
 }
 
 type ScriptsContent = BaseProps<{
-  tx: TransactionNode;
+  tx: TransactionNode | undefined;
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
 
 function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
-  const operations = tx.operations ?? [];
+  const operations = tx?.operations ?? [];
   const classes = styles();
   const [ref, { width }] = useMeasure();
 
@@ -147,7 +147,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               >
                 Expand{' '}
                 <span className="text-muted">
-                  (+{tx.receipts?.length ?? 0 - 2} operations)
+                  (+{tx?.receipts?.length ?? 0 - 2} operations)
                 </span>
               </Button>
             </HoverCard.Trigger>
@@ -155,7 +155,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               className="rounded-xs p-2 px-3"
               style={{ width }}
             >
-              <TypesCounter receipts={tx.receipts} />
+              <TypesCounter receipts={tx?.receipts} />
             </HoverCard.Content>
           </HoverCard>
           <Box className={classes.lines()} />

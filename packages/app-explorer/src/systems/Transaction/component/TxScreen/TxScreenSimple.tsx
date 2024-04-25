@@ -38,13 +38,13 @@ import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 import { TxScripts } from '../TxScripts/TxScripts';
 
 type TxScreenProps = {
-  transaction: TransactionNode;
+  transaction: TransactionNode | undefined;
   isLoading?: boolean;
 };
 
 export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
-  const title = tx.title as string;
-  const isMint = Boolean(tx.isMint);
+  const title = tx?.title as string;
+  const isMint = Boolean(tx?.isMint);
   const classes = styles({ isMint });
 
   const cards = [
@@ -58,7 +58,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               <TxIcon
                 type={title}
                 size="lg"
-                status={tx.isPredicate ? 'Info' : (tx.statusType as TxStatus)}
+                status={tx?.isPredicate ? 'Info' : (tx?.statusType as TxStatus)}
               />
             }
           />
@@ -75,7 +75,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           }
         >
           <HStack gap="1">
-            {tx.isPredicate && (
+            {tx?.isPredicate && (
               <Badge color="blue" variant="ghost">
                 Predicate
               </Badge>
@@ -85,10 +85,10 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               loadingEl={<LoadingBox className="w-20 h-6" />}
               regularEl={
                 <Badge
-                  color={TX_INTENT_MAP[tx.statusType as string]}
+                  color={TX_INTENT_MAP[tx?.statusType as string]}
                   variant="ghost"
                 >
-                  {tx.statusType}
+                  {tx?.statusType}
                 </Badge>
               }
             />
@@ -103,17 +103,17 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-40 h-5 mt-1" />}
-          regularEl={tx.time?.full}
+          regularEl={tx?.time?.full}
         />
       }
     >
       <LoadingWrapper
         isLoading={isLoading}
         loadingEl={<LoadingBox className="w-24 h-6" />}
-        regularEl={tx.time?.fromNow}
+        regularEl={tx?.time?.fromNow}
       />
     </CardInfo>,
-    (tx.blockHeight || isLoading) && (
+    (tx?.blockHeight || isLoading) && (
       <CardInfo key="block" name={'Block'}>
         <LoadingWrapper
           isLoading={isLoading}
@@ -121,10 +121,10 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           regularEl={
             <Link
               as={NextLink}
-              href={Routes.blockSimple(tx.blockHeight || '')}
+              href={Routes.blockSimple(tx?.blockHeight || '')}
               className="text-link"
             >
-              #{tx.blockHeight}
+              #{tx?.blockHeight}
             </Link>
           }
         />
@@ -136,7 +136,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       description={
         <LoadingWrapper
           isLoading={isLoading}
-          regularEl={<>Gas used: {formatZeroUnits(tx.gasUsed || '')}</>}
+          regularEl={<>Gas used: {formatZeroUnits(tx?.gasUsed || '')}</>}
           loadingEl={
             <>
               <LoadingBox className="w-28 h-5 mt-2" />
@@ -149,7 +149,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       <LoadingWrapper
         isLoading={isLoading}
         loadingEl={<LoadingBox className="w-36 h-6" />}
-        regularEl={`${bn(tx.fee).format()} ETH`}
+        regularEl={`${bn(tx?.fee).format()} ETH`}
       />
     </CardInfo>,
   ];
@@ -166,11 +166,11 @@ function ContentMain({
   tx,
   isLoading,
 }: {
-  tx: TransactionNode;
+  tx: TransactionNode | undefined;
   isLoading?: boolean;
 }) {
-  const hasInputs = tx.groupedInputs?.length ?? 0 > 0;
-  const hasOutputs = tx.groupedOutputs?.length ?? 0 > 0;
+  const hasInputs = tx?.groupedInputs?.length ?? 0 > 0;
+  const hasOutputs = tx?.groupedOutputs?.length ?? 0 > 0;
 
   return (
     <VStack>
@@ -190,7 +190,7 @@ function ContentMain({
               <Heading as="h2" size="5" className="leading-none">
                 Inputs
               </Heading>
-              {tx.groupedInputs?.map((input, i) => (
+              {tx?.groupedInputs?.map((input, i) => (
                 // here we use only index as key because this component will not change
                 <TxInput key={i} input={input as GroupedInput} />
               ))}
@@ -214,7 +214,7 @@ function ContentMain({
         <Icon icon={IconArrowDown} size={30} color="text-muted" />
       </Flex>
       <VStack>
-        {tx.isMint ? (
+        {tx?.isMint ? (
           <MintOutputs tx={tx} isLoading={Boolean(isLoading)} />
         ) : (
           <LoadingWrapper
@@ -232,7 +232,7 @@ function ContentMain({
                 <Heading as="h2" size="5" className="leading-none">
                   Outputs
                 </Heading>
-                {tx.groupedOutputs?.map((output, i) => (
+                {tx?.groupedOutputs?.map((output, i) => (
                   <TxOutput
                     // here we use only index as key because this component will not change
                     key={i}
