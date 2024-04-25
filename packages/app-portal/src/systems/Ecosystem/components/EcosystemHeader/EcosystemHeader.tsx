@@ -40,7 +40,7 @@ export function EcosystemHeader({
         <Flex justify="end">
           <Button
             as="a"
-            href=""
+            href="https://fuelnetwork.typeform.com/grantapply"
             target="_blank"
             size="3"
             color="green"

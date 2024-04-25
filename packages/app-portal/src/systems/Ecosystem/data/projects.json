@@ -12,7 +12,7 @@
     "image": "acumen"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Aerv",
     "url": "https://aerv.finance",
     "tags": ["DeFi"],
