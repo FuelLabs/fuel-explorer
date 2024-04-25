@@ -7,7 +7,7 @@ import type {
   WalletUnlocked as FuelWallet,
 } from 'fuels';
 import { Address as FuelAddress, ZeroBytes32, bn } from 'fuels';
-import type { PublicClient, WalletClient } from 'viem';
+import type { PublicClient, ReadContractReturnType, WalletClient } from 'viem';
 import { decodeEventLog } from 'viem';
 import { erc20Abi } from 'viem';
 
@@ -64,7 +64,10 @@ export type TxEthToFuelInputs = {
 };
 
 export type GetReceiptsInfoReturn = {
-  erc20Token?: any;
+  erc20Token?: {
+    address: `0x${string}`;
+    decimals: number;
+  };
   amount?: BN;
   sender?: string;
   recipient?: FuelAddress;
@@ -126,7 +129,7 @@ export class TxEthToFuelService {
           bridgeSolidityContracts,
         });
 
-        const txHash = await (fuelPortal as any).write.depositETH(
+        const txHash = await fuelPortal.write.depositETH(
           [fuelAddress.toB256() as `0x${string}`],
           {
             value: BigInt(amount),
@@ -173,7 +176,7 @@ export class TxEthToFuelService {
         });
 
         const bridgeSolidityContracts = await getBridgeSolidityContracts();
-        const approveTxHash = await (erc20Token as any).write.approve([
+        const approveTxHash = await erc20Token.write.approve([
           bridgeSolidityContracts.FuelERC20Gateway,
           amount,
         ]);
@@ -199,7 +202,7 @@ export class TxEthToFuelService {
           walletClient: ethWalletClient,
           bridgeSolidityContracts,
         });
-        const depositTxHash = await (fuelErc20Gateway as any).write.deposit([
+        const depositTxHash = await fuelErc20Gateway.write.deposit([
           fuelAddress.toB256() as `0x${string}`,
           ethAssetAddress,
           fuelContractId,
@@ -293,11 +296,11 @@ export class TxEthToFuelService {
 
         if (isErc20Address(depositEvent.args.tokenAddress)) {
           const { amount, tokenAddress } = depositEvent.args;
-          const decimals = await input.ethPublicClient.readContract({
+          const decimals = (await input.ethPublicClient.readContract({
             address: tokenAddress,
             abi: erc20Abi,
             functionName: 'decimals',
-          });
+          })) as ReadContractReturnType<typeof erc20Abi, 'decimals'>;
 
           receiptsInfo = {
             ...receiptsInfo,
