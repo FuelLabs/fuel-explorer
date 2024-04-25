@@ -8,7 +8,7 @@ import { ConnectKitProvider } from 'connectkit';
 import { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
 import { type ReactNode } from 'react';
-import { fallback } from 'viem';
+import { type Chain, fallback } from 'viem';
 import { http, WagmiProvider, createConfig } from 'wagmi';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
 import { ETH_CHAIN } from '~portal/systems/Chains/config';
@@ -26,7 +26,7 @@ const app = {
   icons: ['https://fuels-portal.vercel.app/fuel-logo.svg'],
 };
 
-const chainsToConnect = [ETH_CHAIN];
+const chainsToConnect = [ETH_CHAIN] as [Chain, ...Chain[]];
 
 const chainName = ETH_CHAIN?.name.toLowerCase();
 const transports = {
@@ -59,7 +59,7 @@ if (WALLETCONNECT_ID) {
 }
 
 export const config = createConfig({
-  chains: chainsToConnect as any,
+  chains: chainsToConnect,
   connectors,
   transports,
   ssr: true,
