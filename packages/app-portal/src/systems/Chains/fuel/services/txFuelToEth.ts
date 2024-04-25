@@ -383,7 +383,7 @@ export class TxFuelToEthService {
       bridgeSolidityContracts,
     });
 
-    const txHash = await (fuelPortal as any).write.relayMessage([
+    const txHash = await fuelPortal.write.relayMessage([
       relayMessageParams.message,
       relayMessageParams.rootBlockHeader,
       relayMessageParams.blockHeader,

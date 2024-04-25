@@ -30,7 +30,7 @@ export class AssetService {
       address: address as `0x${string}`,
     });
 
-    const erc20MintHash = await (erc20 as any).write.mint(
+    const erc20MintHash = await erc20.write.mint(
       [walletClient.account?.address, bn.parseUnits('1000000', 18)],
       {
         account: walletClient.account,
