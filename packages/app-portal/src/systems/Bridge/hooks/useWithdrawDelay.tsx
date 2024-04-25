@@ -1,18 +1,19 @@
 import { useNamedQuery } from '@fuels/react';
 import { getBridgeSolidityContracts } from 'app-commons';
 import { addSeconds } from 'date-fns';
+import type { PublicClient } from 'viem';
 import { usePublicClient } from 'wagmi';
 import { EthConnectorService, distanceToNow } from '~portal/systems/Chains';
 
 export function useWithdrawDelay() {
-  const publicClient = usePublicClient();
+  const publicClient = usePublicClient() as PublicClient;
 
   const { fuelChainState } = useNamedQuery('fuelChainState', {
     queryKey: ['fuel', 'bridge', 'withdraw', 'state'],
     queryFn: getBridgeSolidityContracts,
     select: (bridgeSolidityContracts) => {
       return EthConnectorService.connectToFuelChainState({
-        publicClient: publicClient as any,
+        publicClient,
         bridgeSolidityContracts,
       });
     },

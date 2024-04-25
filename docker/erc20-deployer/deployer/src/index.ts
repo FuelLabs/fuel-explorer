@@ -26,7 +26,7 @@ async function main() {
   const ETHToken = await getOrDeployECR20Contract(env);
   const FuelToken = await getOrDeployFuelTokenContract(
     env,
-    ETHToken as any,
+    ETHToken,
     env.eth.fuelERC20Gateway,
     {
       gasPrice: 1,

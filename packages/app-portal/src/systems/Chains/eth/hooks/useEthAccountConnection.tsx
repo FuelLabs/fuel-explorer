@@ -1,4 +1,6 @@
 import { useModal } from 'connectkit';
+import { useEffect } from 'react';
+import type { PublicClient } from 'viem';
 import {
   useAccount,
   useDisconnect,
@@ -7,9 +9,8 @@ import {
   usePublicClient,
   useWalletClient,
 } from 'wagmi';
-import type { AssetEth } from '~portal/systems/Assets/utils';
 
-import { useEffect } from 'react';
+import type { AssetEth } from '~portal/systems/Assets/utils';
 import { useOverlay } from '~portal/systems/Overlay';
 import { parseEthAddressToFuel } from '../utils';
 
@@ -18,7 +19,7 @@ export function useEthAccountConnection() {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: address });
-  const publicClient = usePublicClient();
+  const publicClient = usePublicClient() as PublicClient;
   const { data: walletClient } = useWalletClient();
 
   const { open: isConnecting, setOpen } = useModal();
@@ -63,6 +64,6 @@ export function useEthAccountConnection() {
     isConnecting,
     signer: walletClient || undefined,
     walletClient: walletClient || undefined,
-    publicClient: publicClient || undefined,
+    publicClient: (publicClient || undefined) as typeof publicClient,
   };
 }
