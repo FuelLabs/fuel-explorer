@@ -440,8 +440,7 @@ export class TxEthToFuelService {
       },
       args: {
         recipient: fuelAddress?.toHexString() as `0x${string}`,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
+      },
       fromBlock: 'earliest',
     });
 
@@ -456,8 +455,7 @@ export class TxEthToFuelService {
         recipient:
           // TODO: get predicate root contract address from FuelMessagePortal contract
           '0xb12658c759d8bae2cdc523ebd7aa8637912f32b1763d242ad3618448057b79cd',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
+      },
       fromBlock: 'earliest',
     });
     console.log('erc20AllLogs', erc20AllLogs);

@@ -356,8 +356,7 @@ export class TxFuelToEthService {
       },
       args: {
         messageId: input.messageId as `0x${string}`,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
+      },
       fromBlock: 'earliest',
     });
 
