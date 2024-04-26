@@ -35,7 +35,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: fuel-explorer
+                name: {{ include "fuel-explorer.fullname" . }}
+            - secretRef:
+                name: {{ include "fuel-explorer.fullname" . }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -43,10 +45,14 @@ spec:
           volumeMounts:
             - mountPath: /home/node/.cache
               name: node-cache
+            - mountPath: /tmp
+              name: tmp
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: node-cache
+          emptyDir: {}
+        - name: tmp
           emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:

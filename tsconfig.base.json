@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
-    "importsNotUsedAsValues": "error",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "importsNotUsedAsValues": "error"
   },
   "exclude": [
     "node_modules",

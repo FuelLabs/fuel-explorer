@@ -39,6 +39,10 @@ export type QueueInputs = {
 export type QueueData<T = unknown> = Job<T>;
 
 export class Queue extends PgBoss {
+  private workOpts = {
+    teamSize: 250,
+  };
+
   static defaultJobOptions: PgBoss.RetryOptions = {
     retryLimit: 100,
     retryDelay: 1,
@@ -67,11 +71,13 @@ export class Queue extends PgBoss {
   }
 
   async setupWorkers() {
+    const opts = this.workOpts;
+    this.work(QueueNames.SYNC_BLOCKS, opts, syncAllBlocks);
+    this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
+    this.work(QueueNames.SYNC_TRANSACTION, opts, syncTransactions);
+    this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
+
     await this.start();
-    this.work(QueueNames.SYNC_BLOCKS, syncAllBlocks);
-    this.work(QueueNames.SYNC_MISSING, syncMissingBlocks);
-    this.work(QueueNames.SYNC_TRANSACTION, syncTransactions);
-    this.work(QueueNames.SYNC_LAST, syncLastBlocks);
     console.log('⚡️ Queue running');
   }
 }
