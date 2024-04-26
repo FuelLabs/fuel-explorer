@@ -27,7 +27,6 @@
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
     "dev": "./scripts/dev.sh",
     "dev:explorer": "pnpm --filter=app-explorer dev",
-    "dev:portal": "pnpm --filter=app-portal dev",
     "dev:graphql": "pnpm --filter=graphql dev",
     "dev:notification": "pnpm --filter=notification-service dev:notification",
     "lint": "biome check --apply-unsafe .",
@@ -40,7 +39,8 @@
     "node:stop": "make -C ./docker stop",
     "prepare": "husky install",
     "start": "pnpm turbo:run start",
-    "storybook:portal": "pnpm turbo:run storybook --filter=app-portal",
+    "storybook:explorer": "pnpm turbo:run dev:storybook --filter=app-explorer",
+    "storybook:ui": "pnpm turbo:run dev:storybook --filter=@fuels/ui",
     "test": "pnpm turbo:run test",
     "test:all": "run-p test test:e2e",
     "test:e2e": "playwright test --config=packages/e2e-tests/playwright.config.ts",
@@ -89,14 +89,8 @@
   },
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": [
-        "react",
-        "react-dom"
-      ],
-      "ignoreMissing": [
-        "react",
-        "react-dom"
-      ]
+      "allowAny": ["react", "react-dom"],
+      "ignoreMissing": ["react", "react-dom"]
     },
     "overrides": {
       "glob-parent@<5.1.2": ">=5.1.2",
