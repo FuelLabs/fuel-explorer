@@ -123,8 +123,10 @@ export const Bridge = () => {
           to withdraw back to Ethereum. Learn more about our architecture and
           security in our&nbsp;
           <Link
-            isExternal
+            target="_blank"
             href="https://github.com/FuelLabs/fuel-bridge/blob/main/docs/ARCHITECTURE.md"
+            rel="noreferrer"
+            isExternal
           >
             docs
           </Link>
