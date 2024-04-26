@@ -2,32 +2,37 @@ import { useEffect } from 'react';
 import { Services, store } from '~portal/store';
 
 import type { EcosystemInputs, EcosystemMachineState } from '../machines';
+import type { Project } from '../types';
+
+const sortProjects = (a: Project, b: Project) => {
+  if (a.isLive && !b.isLive) return -1;
+  if (!a.isLive && b.isLive) return 1;
+
+  if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+  if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+
+  return 0;
+};
 
 const selectors = {
   filteredProjects: (state: EcosystemMachineState) => {
-    const { projects, search, filter } = state.context;
+    const { projects = [], search, filter } = state.context;
 
     if (search) {
-      return projects.filter((project) => {
+      const filtered = projects.filter((project) => {
         return project.name.toLowerCase().includes(search.toLowerCase());
       });
+      return filtered.sort(sortProjects);
     }
 
     if (filter) {
-      return projects.filter((project) => {
+      const filtered = projects.filter((project) => {
         return project.tags.includes(filter);
       });
+      return filtered.sort(sortProjects);
     }
 
-    return projects.sort((a, b) => {
-      if (a.isLive && !b.isLive) return -1;
-      if (!a.isLive && b.isLive) return 1;
-
-      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
-
-      return 0;
-    });
+    return projects.sort(sortProjects);
   },
   tags: (state: EcosystemMachineState) => state.context?.tags,
   filter: (state: EcosystemMachineState) => state.context?.filter,

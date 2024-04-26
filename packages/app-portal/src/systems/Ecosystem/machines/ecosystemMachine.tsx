@@ -17,8 +17,8 @@ export type EcosystemInputs = {
 };
 
 type MachineContext = {
-  allProjects: Project[];
-  projects: Project[];
+  allProjects: Project[] | undefined;
+  projects: Project[] | undefined;
   search: string;
   tags: string[];
   filter: string;
@@ -65,7 +65,7 @@ const initialState: MachineContext = {
   filter: '',
 };
 
-function sortAtoZ(a: string, b: string) {
+export function sortAtoZ(a: string, b: string) {
   return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
 }
 
@@ -133,7 +133,7 @@ export const ecosystemMachine = createMachine(
           );
           const tags = new Set(tagsArray);
           return {
-            projects: PROJECTS.sort((pa, pb) => sortAtoZ(pa.name, pb.name)),
+            projects: PROJECTS,
             tags: Array.from(tags).sort(sortAtoZ),
           };
         },
