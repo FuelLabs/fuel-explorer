@@ -25,7 +25,7 @@ import {
 } from '~portal/systems/Chains';
 
 import { FUEL_CHAIN } from 'app-commons';
-import { PublicClient, WalletClient } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 import type { BridgeTx } from '../types';
 
 export type PossibleBridgeInputs = {
