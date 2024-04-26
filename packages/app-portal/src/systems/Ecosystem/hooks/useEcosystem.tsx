@@ -6,6 +6,7 @@ import type { EcosystemInputs, EcosystemMachineState } from '../machines';
 const selectors = {
   filteredProjects: (state: EcosystemMachineState) => {
     const { projects, search, filter } = state.context;
+
     if (search) {
       return projects.filter((project) => {
         return project.name.toLowerCase().includes(search.toLowerCase());
