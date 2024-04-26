@@ -1,6 +1,6 @@
 import { useNamedQuery } from '@fuels/react';
 import { getBridgeSolidityContracts } from 'app-commons';
-import { addSeconds } from 'date-fns';
+import dayjs from 'dayjs';
 import { usePublicClient } from 'wagmi';
 import { EthConnectorService, distanceToNow } from '~portal/systems/Chains';
 
@@ -31,10 +31,9 @@ export function useWithdrawDelay() {
       // blockPerCommitInterval and timeToFinalize are not too big.
       const totalTimeInSeconds =
         Number(blocksPerCommitInterval) + Number(timeToFinalize);
-      const currentDate = new Date();
-      const futureDate = addSeconds(currentDate, totalTimeInSeconds);
+      const futureDate = dayjs().add(totalTimeInSeconds, 'seconds');
 
-      return distanceToNow(futureDate);
+      return distanceToNow(futureDate.toDate());
     },
     staleTime: Infinity,
     enabled: !!fuelChainState,

@@ -1,6 +1,6 @@
 import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
 import type { Fuel } from '@fuels/assets';
-import { addSeconds } from 'date-fns';
+import dayjs from 'dayjs';
 import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
 import {
   Address as FuelAddress,
@@ -252,7 +252,9 @@ export class TxFuelToEthService {
     // blockPerCommitInterval and timeToFinalize are not too big.
     const totalTimeInSeconds =
       Number(blocksPerCommitInterval) + Number(timeToFinalize);
-    const estimatedFinishDate = addSeconds(dateLastCommit, totalTimeInSeconds);
+    const estimatedFinishDate = dayjs(dateLastCommit)
+      .add(totalTimeInSeconds, 'seconds')
+      .toDate();
 
     return {
       estimatedFinishDate,
@@ -320,10 +322,9 @@ export class TxFuelToEthService {
       fuelBlockHashCommited,
     });
     const dateLastCommit = new Date(Number(lastBlock.timestamp) * 1000);
-    const estimatedFinishDate = addSeconds(
-      dateLastCommit,
-      Number(timeToFinalize),
-    );
+    const estimatedFinishDate = dayjs(dateLastCommit)
+      .add(Number(timeToFinalize), 'seconds')
+      .toDate();
 
     return {
       estimatedFinishDate,
