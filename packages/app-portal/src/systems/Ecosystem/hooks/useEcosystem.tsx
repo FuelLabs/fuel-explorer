@@ -19,7 +19,15 @@ const selectors = {
       });
     }
 
-    return projects;
+    return projects.sort((a, b) => {
+      if (a.isLive && !b.isLive) return -1;
+      if (!a.isLive && b.isLive) return 1;
+
+      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+
+      return 0;
+    });
   },
   tags: (state: EcosystemMachineState) => state.context?.tags,
   filter: (state: EcosystemMachineState) => state.context?.filter,
