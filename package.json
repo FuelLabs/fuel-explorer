@@ -39,6 +39,7 @@
     "node:stop": "make -C ./docker stop",
     "prepare": "husky install",
     "start": "pnpm turbo:run start",
+    "storybook": "pnpm turbo:run dev:storybook",
     "storybook:explorer": "pnpm turbo:run dev:storybook --filter=app-explorer",
     "storybook:ui": "pnpm turbo:run dev:storybook --filter=@fuels/ui",
     "test": "pnpm turbo:run test",
