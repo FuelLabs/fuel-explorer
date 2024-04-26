@@ -126,6 +126,7 @@ export const Bridge = () => {
             target="_blank"
             href="https://github.com/FuelLabs/fuel-bridge/blob/main/docs/ARCHITECTURE.md"
             rel="noreferrer"
+            isExternal
           >
             docs
           </Link>
