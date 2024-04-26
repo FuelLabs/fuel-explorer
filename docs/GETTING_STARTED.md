@@ -29,36 +29,50 @@ cd fuel-explorer
 pnpm install
 ```
 
-### 📒 - Run development
+### 📒 - Run local node
 
-This command will start all the development services;
+This command will start essential development services;
 
-- It will start a `fuel-core` local node;
-- It will start the explorer `graphql` API;
+- `L1` local node (to handle ethereum blockchain);
+- `Fuel` local node (to handle L2 chain);
+- `Postgres` database (that we use to index data); 
 
 ```
-pnpm dev
+pnpm node:start
 ```
 
-### 📗 Development
+> You can check more details in [docker-compose.yml](https://github.com/FuelLabs/fuel-explorer/blob/main/docker/docker-compose.yml) file.
 
-<!-- ### 💻 - Run Web App
+### 💻 Run Web App
 
-Start a local development frontend. After running the below command you can open [http://localhost:3004](http://localhost:3004) in your browser to view the frontend.
+Now that you have the local node running, you can start the frontend.
+
+First, let's create a `.env` file in the root of `packages/app-explorer` folder.
+
+```sh
+cp packages/app-explorer/.env.example packages/app-explorer/.env
+```
+
+Then, you can start the frontend with the following command:
+
+After running the below command you can open [http://localhost:3000](http://localhost:3000) in your browser to view the explorer working.
 
 ```sh
 pnpm dev
+``` 
+
+<!-- ## Run Tests
+
+To run all tests against the node and contract configured in `packages/app/.env` (or `packages/app/.env.test` if the file exists):
+
+```sh
+pnpm test
 ``` -->
-
-This section has a brief description of each directory. More details can be found inside each package, by clicking on the links.
-
-- [packages/app](../packages/app/) Frontend application
-- [packages/graphql](../packages/graphql/) Explorer Graphql API
-- [docker](../docker/) Network and postgres
 
 ## 🧰 Useful Scripts
 
-To make life easier we added as many useful scripts as possible to our [package.json](../package.json). These are some of the most used during development:
+To make life easier we added as many useful scripts as possible to our [package.json](../package.json). 
+These are some of the most used during development:
 
 ```sh
 pnpm <command name>
@@ -72,11 +86,3 @@ pnpm <command name>
 | `node:restart` | Restart all containers without removing data                         |
 
 > Other scripts can be found in [package.json](../package.json).
-
-<!-- ## Run Tests
-
-To run all tests against the node and contract configured in `packages/app/.env` (or `packages/app/.env.test` if the file exists):
-
-```sh
-pnpm test
-``` -->
