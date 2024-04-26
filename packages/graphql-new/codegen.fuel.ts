@@ -2,7 +2,8 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const SERVER_URL = process.env.FUEL_PROVIDER || 'http://127.0.0.1:4000/graphql';
+const SERVER_URL =
+  process.env.FUEL_PROVIDER || 'https://beta-5.fuel.network/graphql';
 
 const config: CodegenConfig = {
   overwrite: true,
