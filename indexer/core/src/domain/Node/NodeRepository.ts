@@ -2,7 +2,7 @@ import { db } from '@core/db';
 import type { DbConnection, DbTransaction } from '@core/infra/database/Db';
 import { eq } from 'drizzle-orm';
 import { type GQLNodeType, NodeEntity } from './NodeEntity';
-import { type NodeItem, NodesTable } from './NodeModel';
+import { NodesTable } from './NodeModel';
 
 export class NodeRepository {
   async findById(id: string) {

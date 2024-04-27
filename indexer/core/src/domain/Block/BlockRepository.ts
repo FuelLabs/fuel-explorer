@@ -42,9 +42,7 @@ export class BlockRepository {
     const paginator = new Paginator(BlocksTable, params);
     const config = await paginator.getQueryPaginationConfig();
     const items = await db.connection().query.BlocksTable.findMany({
-      ...(config.limit && { limit: config.limit }),
-      orderBy: config.order(config.idField),
-      where: config.whereBy(config.idField, config.cursor),
+      ...paginator.queryParamsFromConfig(config),
       with: {
         transactions: true,
         node: true,

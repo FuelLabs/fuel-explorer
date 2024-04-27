@@ -30,7 +30,10 @@ export const BlocksTable = pgTable(
 
 export const BlocksRelations = relations(BlocksTable, ({ many, one }) => ({
   transactions: many(TransactionsTable),
-  node: one(NodesTable),
+  node: one(NodesTable, {
+    fields: [BlocksTable.nodeRef],
+    references: [NodesTable.id],
+  }),
 }));
 
 export type BlockItem = typeof BlocksTable.$inferSelect;

@@ -178,4 +178,14 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
       },
     };
   }
+
+  queryParamsFromConfig(
+    config: Awaited<ReturnType<typeof this.getQueryPaginationConfig>>,
+  ) {
+    return {
+      ...(config.limit && { limit: config.limit }),
+      orderBy: config.order(config.idField),
+      where: config.whereBy(config.idField, config.cursor),
+    };
+  }
 }

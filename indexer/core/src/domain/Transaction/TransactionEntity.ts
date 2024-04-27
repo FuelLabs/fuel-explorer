@@ -5,21 +5,22 @@ import { Entity } from '@core/shared/Entity';
 import { BlockRef } from '../Block/vo/BlockRef';
 import { ContractEntity } from '../Contract/ContractEntity';
 import { InputEntity } from '../Input/InputEntity';
-import type { TransactionItem } from './TransactionModel';
+import type { TransactionItem, TransactionPayload } from './TransactionModel';
 import { AccountIndex } from './vo/AccountIndex';
-import { TransactionData } from './vo/TransactionData';
 import { TransactionGroupedInputs } from './vo/TransactionGroupedInputs';
 import { TransactionGroupedOutputs } from './vo/TransactionGroupedOutputs';
 import { TransactionModelID } from './vo/TransactionModelID';
+import { TransactionNodeRef } from './vo/TransactionNodeRef';
 import { TransactionStatus } from './vo/TransactionStatus';
 import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
+import type { NodeItem } from '../Node/NodeModel';
 import { OperationEntity } from '../Operation/OperationEntity';
 
 type TransactionInputProps = {
   accountIndex: AccountIndex;
   blockId: BlockRef;
-  data: TransactionData;
+  data: TransactionNodeRef;
   groupedInputs: TransactionGroupedInputs;
   groupedOutputs: TransactionGroupedOutputs;
   status: TransactionStatus;
@@ -33,20 +34,23 @@ export class TransactionEntity extends Entity<
   TransactionInputProps,
   TransactionModelID
 > {
-  static create(transaction: TransactionItem) {
-    const item = transaction.data;
-    if (!item) throw new Error('Transaction data is required');
-    const id = TransactionModelID.create(transaction);
-    const accountIndex = AccountIndex.create(item);
-    const blockRef = BlockRef.create(transaction.blockId);
-    const data = TransactionData.create(item);
-    const groupedInputs = TransactionGroupedInputs.create(item);
-    const groupedOutputs = TransactionGroupedOutputs.create(item);
-    const status = TransactionStatus.create(item);
-    const time = ParsedTime.create(timeFromStatus(transaction));
-    const timestamp = TransactionTimestamp.create(item);
-    const txHash = Hash256.create(item.id);
-    const operations = transaction.operations?.map((o) =>
+  static create(payload: TransactionPayload) {
+    if (!payload) {
+      throw new Error('Payload is required for create TransactionEntity');
+    }
+
+    const data = TransactionNodeRef.create(payload.node);
+    const transaction = data.value();
+    const id = TransactionModelID.create(payload);
+    const accountIndex = AccountIndex.create(transaction);
+    const blockRef = BlockRef.create(payload.blockId);
+    const groupedInputs = TransactionGroupedInputs.create(transaction);
+    const groupedOutputs = TransactionGroupedOutputs.create(transaction);
+    const status = TransactionStatus.create(transaction);
+    const time = ParsedTime.create(timeFromStatus(payload.node));
+    const timestamp = TransactionTimestamp.create(transaction);
+    const txHash = Hash256.create(transaction.id);
+    const operations = payload.operations?.map((o) =>
       OperationEntity.create(o, o._id),
     );
 
@@ -66,15 +70,16 @@ export class TransactionEntity extends Entity<
     return new TransactionEntity(props, id);
   }
 
-  static async toDBItem(
+  static toDBItem(
+    node: NodeItem,
     block: GQLBlock,
-    transaction: GQLTransaction,
     index: number,
-  ): Promise<TransactionItem> {
+  ): TransactionItem {
+    const transaction = node.data as GQLTransaction;
     return {
       _id: TransactionModelID.createSerial(block, index).value(),
       txHash: Hash256.create(transaction.id).value(),
-      data: TransactionData.create(transaction).value(),
+      nodeRef: TransactionNodeRef.create(node).id(),
       timestamp: TransactionTimestamp.create(transaction).value(),
       accountIndex: AccountIndex.create(transaction).value(),
       blockId: BlockRef.create(Number(block.header.height)).value(),
@@ -161,8 +166,9 @@ export class TransactionEntity extends Entity<
   }
 }
 
-function timeFromStatus(item?: TransactionItem) {
+function timeFromStatus(item?: NodeItem | null) {
   if (!item) return null;
-  if (item.data.status?.__typename === 'SqueezedOutStatus') return null;
-  return item.data.status?.time;
+  const data = item.data as GQLTransaction;
+  if (data.status?.__typename === 'SqueezedOutStatus') return null;
+  return data.status?.time;
 }

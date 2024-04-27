@@ -15,4 +15,7 @@ export const NodesTable = pgTable(
   }),
 );
 
-export type NodeItem = typeof NodesTable.$inferSelect;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type NodeItem<T = any> = typeof NodesTable.$inferSelect & {
+  data: T;
+};

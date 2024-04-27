@@ -49,7 +49,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
   }
 
   static toDBItem(node: NodeItem): BlockItem {
-    const block = node.data;
+    const block = node.data as GQLBlock;
     return {
       _id: BlockModelID.create(block).value(),
       blockHash: Hash256.create(block.id).value(),

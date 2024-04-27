@@ -2,11 +2,14 @@ import { db } from '@core/db';
 import type { GQLBlock, GQLTransaction } from '@core/generated/gql-types';
 import { GraphQLSDK } from '@core/infra/graphql/GraphQLSDK';
 import { Paginator, type PaginatorParams } from '@core/shared/Paginator';
-import { eq, like } from 'drizzle-orm';
+import { and, eq, like } from 'drizzle-orm';
+import { NodeRepository } from '../Node/NodeRepository';
 import { TransactionEntity } from './TransactionEntity';
 import { TransactionsTable } from './TransactionModel';
 
 export class TransactionRepository {
+  constructor(private readonly nodeRepository = new NodeRepository()) {}
+
   async findByHash(id: string) {
     const transaction = await db
       .connection()
@@ -14,33 +17,47 @@ export class TransactionRepository {
         where: eq(TransactionsTable.txHash, id),
         with: {
           operations: true,
+          node: true,
         },
       });
 
     if (!transaction) return null;
-
     return TransactionEntity.create(transaction);
   }
 
   async findMany(params: PaginatorParams) {
     const paginator = new Paginator(TransactionsTable, params);
     const config = await paginator.getQueryPaginationConfig();
-    const query = await paginator.getPaginatedQuery(config);
-    const results = paginator.getPaginatedResult(query);
-    return results.map((item) => TransactionEntity.create(item));
+    const items = await db.connection().query.TransactionsTable.findMany({
+      ...paginator.queryParamsFromConfig(config),
+      with: {
+        operations: true,
+        node: true,
+      },
+    });
+
+    return items.map(TransactionEntity.create);
   }
 
   async findByOwner(params: PaginatorParams & { owner: string }) {
     const { owner } = params;
     const paginator = new Paginator(TransactionsTable, params);
     await paginator.validateParams();
-
     const config = await paginator.getQueryPaginationConfig();
-    const paginateFn = like(TransactionsTable.accountIndex, `%${owner}%`);
-    const query = await paginator.getPaginatedQuery(config, paginateFn);
-    const results = paginator.getPaginatedResult(query);
+    const queryParams = paginator.queryParamsFromConfig(config);
+    const items = await db.connection().query.TransactionsTable.findMany({
+      ...queryParams,
+      where: and(
+        queryParams.where,
+        like(TransactionsTable.accountIndex, `%${owner}%`),
+      ),
+      with: {
+        operations: true,
+        node: true,
+      },
+    });
 
-    return Promise.all(results.map((item) => TransactionEntity.create(item)));
+    return items.map(TransactionEntity.create);
   }
 
   async insertOne(txHash: string, block: GQLBlock, index: number) {
@@ -52,11 +69,16 @@ export class TransactionRepository {
     const transaction = res.data?.transaction as GQLTransaction;
     if (!transaction) throw new Error('Transaction not found');
 
-    const dbItem = await TransactionEntity.toDBItem(block, transaction, index);
+    const node = await this.nodeRepository.findById(transaction.id);
+    if (!node) {
+      throw new Error(`Node ${transaction.id} not found`);
+    }
+
+    const nodeItem = node.toNodeItem();
     const [item] = await db
       .connection()
       .insert(TransactionsTable)
-      .values(dbItem)
+      .values(TransactionEntity.toDBItem(nodeItem, block, index))
       .returning();
     return TransactionEntity.create(item);
   }
