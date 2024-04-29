@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
-import { ComboBox, type ComboBoxProps } from './ComboBox';
+import { useRef, useState } from 'react';
+import { ComboBox } from './ComboBox';
+import type { ComboBoxProps } from './types';
 
 const meta: Meta<typeof ComboBox> = {
   title: 'Form/ComboBox',
@@ -20,16 +21,23 @@ export default meta;
 type Story = StoryObj<typeof ComboBox>;
 
 function ComboBoxStory(args: Pick<ComboBoxProps, 'debounce'>) {
-  const [value, setValue] = useState<string>('');
+  const [_value, setValue] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <ComboBox
       {...args}
+      inputRef={inputRef}
       suggestions={['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']}
-      placeholder="Type a fruit name"
-      value={value}
-      onChange={(value) => setValue(value || '')}
+      onItemSelected={(value) => setValue(value || '')}
     >
+      <ComboBox.Input>
+        <ComboBox.InputField
+          inputRef={inputRef}
+          placeholder="Type a fruit name"
+        />
+      </ComboBox.Input>
+      <ComboBox.Trigger />
       <ComboBox.Content />
     </ComboBox>
   );
