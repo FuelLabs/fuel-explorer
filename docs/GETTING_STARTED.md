@@ -5,11 +5,11 @@
 This project includes both frontend and contracts. To begin, install dependencies:
 
 - [Node.js v20.11.0 or latest stable](https://nodejs.org/en/). We recommend using [nvm](https://github.com/nvm-sh/nvm) to install.
-- [PNPM v7.18.2 or latest stable](https://pnpm.io/installation/)
-- [Docker v20.0.21 or latest stable](https://docs.docker.com/get-docker/)
-- [Docker Compose v2.15.1 or latest stable](https://docs.docker.com/get-docker/)
-- [Rust v1.68.2 or latest `stable`](https://www.rust-lang.org/tools/install)
-- [Forc v0.37.1 with latest toolchain with forc index version v0.8.0](https://install.fuel.network/latest)
+- [PNPM v8.15.7 or latest stable](https://pnpm.io/installation/)
+- [Docker v25.0.3 or latest stable](https://docs.docker.com/get-docker/)
+- [Docker Compose v2.24.6 or latest stable](https://docs.docker.com/get-docker/)
+- [Rust v1.76.0 or latest `stable`](https://www.rust-lang.org/tools/install)
+- [Forc v0.49.3 with latest toolchain](https://install.fuel.network/latest)
 
 ## Running Project Locally
 
@@ -89,7 +89,7 @@ pnpm test:e2e
 
 ## 🧰 Useful Scripts
 
-To make life easier we added as many useful scripts as possible to our [package.json](../package.json). 
+To make life easier we added as many useful scripts as possible to our [package.json](https://github.com/FuelLabs/fuel-explorer/blob/main/package.json). 
 These are some of the most used during development:
 
 ```sh
@@ -106,4 +106,4 @@ pnpm <command name>
 | `test:e2e`     | Run the E2E tests                                                   |
 | `ts:check`     | Run the TypeScript compiler                                          |
 
-> Other scripts can be found in [package.json](../package.json).
+> Other scripts can be found in [package.json](https://github.com/FuelLabs/fuel-explorer/blob/main/package.json).
