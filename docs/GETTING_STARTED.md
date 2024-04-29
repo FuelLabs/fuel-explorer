@@ -55,19 +55,37 @@ cp packages/app-explorer/.env.example packages/app-explorer/.env
 
 Then, you can start the frontend with the following command:
 
-After running the below command you can open [http://localhost:3000](http://localhost:3000) in your browser to view the explorer working.
-
 ```sh
 pnpm dev
 ``` 
 
-<!-- ## Run Tests
+After running that command, you can open [http://localhost:3000](http://localhost:3000) in your browser to view the explorer working.
 
-To run all tests against the node and contract configured in `packages/app/.env` (or `packages/app/.env.test` if the file exists):
+## 🧪 - Run E2E tests
+
+First, let's install `playwright` if you haven't yet:
 
 ```sh
-pnpm test
-``` -->
+pnpm exec playwright install --with-deps chromium
+```
+
+Second, let's create a `.env` file in the root of `packages/graphql` folder.
+
+```sh
+cp packages/graphql/.env.example packages/graphql/.env
+```
+
+Then, let's start a local node with the following command:
+
+```sh
+pnpm node:start
+```
+
+Finally, you can run the E2E tests with the following command:
+
+```sh
+pnpm test:e2e
+```
 
 ## 🧰 Useful Scripts
 
@@ -80,9 +98,12 @@ pnpm <command name>
 
 | Script         | Description                                                          |
 | -------------- | -------------------------------------------------------------------- |
+| `dev`          | Run the development server (frontend only)                           |
 | `node:start`   | Run the local network with `fuel-core` and the `faucet` API.         |
 | `node:stop`    | Stop all containers without removing data                            |
 | `node:clean`   | Stop and remove all development containers that are running locally. |
 | `node:restart` | Restart all containers without removing data                         |
+| `test:e2e`     | Run the E2E tests                                                   |
+| `ts:check`     | Run the TypeScript compiler                                          |
 
 > Other scripts can be found in [package.json](../package.json).
