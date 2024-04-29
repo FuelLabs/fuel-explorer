@@ -39,7 +39,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@fuels/assets": "^0.18.0",
+    "@fuels/assets": "0.18.0",
     "@fuels/ui": "workspace:*",
     "@tabler/icons-react": "2.46.0",
     "@tanstack/react-query": "5.0.5",
@@ -51,7 +51,7 @@
     "app-commons": "workspace:*",
     "dayjs": "1.11.10",
     "ethers": "6.11.0",
-    "framer-motion": "^11.0.3",
+    "framer-motion": "11.0.3",
     "fuels": "0.74.0",
     "next-themes": "0.2.1",
     "npm-run-all": "^4.1.5",
