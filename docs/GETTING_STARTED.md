@@ -13,7 +13,7 @@ This project includes both frontend and contracts. To begin, install dependencie
 
 ## Running Project Locally
 
-### 📚 - Getting the Repository
+### 📚 1. Getting the Repository
 
 1. Visit the [Fuel Explorer](https://github.com/FuelLabs/fuel-explorer) repo and fork the project.
 2. Then clone your forked copy to your local machine and get to work.
@@ -23,13 +23,13 @@ git clone https://github.com/FuelLabs/fuel-explorer
 cd fuel-explorer
 ```
 
-### 📦 - Install Dependencies
+### 📦 2. Install Dependencies
 
 ```sh
 pnpm install
 ```
 
-### 📒 - Run local node
+### 📒 3. Run Local Node
 
 This command will start essential development services;
 
@@ -43,7 +43,7 @@ pnpm node:start
 
 > You can check more details in [docker-compose.yml](https://github.com/FuelLabs/fuel-explorer/blob/main/docker/docker-compose.yml) file.
 
-### 💻 Run Web App
+### 💻 4. Run Web App
 
 Now that you have the local node running, you can start the frontend.
 
@@ -61,7 +61,7 @@ pnpm dev
 
 After running that command, you can open [http://localhost:3000](http://localhost:3000) in your browser to view the explorer working.
 
-## 🧪 - Run E2E tests
+## 🧪 Run E2E tests
 
 1. Use the following command to install `Playwright` along with its dependencies, including `Chromium` 
 
