@@ -47,13 +47,13 @@ pnpm node:start
 
 Now that you have the local node running, you can start the frontend.
 
-First, let's create a `.env` file in the root of `packages/app-explorer` folder.
+1. Create a `.env` file based on the provided example in the `packages/app-explorer` directory
 
 ```sh
 cp packages/app-explorer/.env.example packages/app-explorer/.env
 ```
 
-Then, you can start the frontend with the following command:
+2. Start the frontend with the following command:
 
 ```sh
 pnpm dev
@@ -63,25 +63,25 @@ After running that command, you can open [http://localhost:3000](http://localhos
 
 ## 🧪 - Run E2E tests
 
-First, let's install `playwright` if you haven't yet:
+1. Use the following command to install `Playwright` along with its dependencies, including `Chromium` 
 
 ```sh
 pnpm exec playwright install --with-deps chromium
 ```
 
-Second, let's create a `.env` file in the root of `packages/graphql` folder.
+2. Create a `.env` file based on the provided example in the `packages/graphql` directory
 
 ```sh
 cp packages/graphql/.env.example packages/graphql/.env
 ```
 
-Then, let's start a local node with the following command:
+3. Start local node server
 
 ```sh
 pnpm node:start
 ```
 
-Finally, you can run the E2E tests with the following command:
+4. Finally, you can run the E2E tests with the following command:
 
 ```sh
 pnpm test:e2e
