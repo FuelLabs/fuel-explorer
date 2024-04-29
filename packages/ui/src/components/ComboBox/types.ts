@@ -9,7 +9,7 @@ export type ComboBoxProps<T = string> = Pick<
 > & {
   suggestions: Array<T>;
   debounce?: number;
-  value: string | undefined;
+  value?: string | undefined;
   onChange?: (value: string | undefined) => void;
   suggestionFilter?: (suggestion: T) => boolean;
   itemNameSelector?: (suggestion: T) => string;
@@ -23,7 +23,7 @@ export type ComboBoxProps<T = string> = Pick<
 
 export type ComboBoxInputProps = InputProps;
 export type ComboBoxInputFieldProps = InputFieldProps & {
-  inputRef: React.Ref<HTMLInputElement>;
+  ref: React.Ref<HTMLInputElement>;
 };
 export type ComboBoxContentProps = FlexProps;
 export type ComboBoxItemProps<T = string> = BoxProps &
@@ -34,13 +34,9 @@ export type ComboBoxItemProps<T = string> = BoxProps &
 
 export type Context<T = string> = Pick<
   ComboBoxProps<T>,
-  | 'onItemSelected'
-  | 'itemNameSelector'
-  | 'onFocus'
-  | 'onClick'
-  | 'onBlur'
-  | 'onKeyDown'
+  'itemNameSelector' | 'onFocus' | 'onClick' | 'onBlur' | 'onKeyDown'
 > & {
   filteredSuggestions: Array<T>;
+  handleSuggestionClick: (suggestion: T) => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };

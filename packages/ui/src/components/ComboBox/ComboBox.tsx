@@ -137,7 +137,7 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
     const providerData = useMemo<Context>(
       () => ({
         itemNameSelector,
-        onItemSelected,
+        handleSuggestionClick,
         filteredSuggestions,
         onChange,
         onFocus,
@@ -178,13 +178,13 @@ export const ComboBoxInputField = createComponent<
   typeof Input.Field
 >({
   id: 'ComboBoxInputField',
-  render: (_, { inputRef, ...props }) => {
+  render: (_, { ref, ...props }) => {
     const { onChange, onFocus, onClick, onBlur, onKeyDown } =
       useComboBoxContext();
 
     return (
       <Input.Field
-        ref={inputRef}
+        ref={ref}
         onChange={onChange}
         onFocus={onFocus}
         onClick={onClick}
@@ -234,7 +234,7 @@ export const ComboBoxContent = createComponent<
 >({
   id: 'ComboBoxContent',
   render: (_, { className, style, ...props }) => {
-    const { filteredSuggestions, itemNameSelector, onItemSelected } =
+    const { filteredSuggestions, itemNameSelector, handleSuggestionClick } =
       useComboBoxContext();
 
     return (
@@ -254,7 +254,7 @@ export const ComboBoxContent = createComponent<
               key={itemNameSelector?.(suggestion) ?? (suggestion as string)}
               suggestion={suggestion}
               itemNameSelector={itemNameSelector}
-              onItemSelected={onItemSelected}
+              onItemSelected={handleSuggestionClick}
             />
           ))}
         </Flex>

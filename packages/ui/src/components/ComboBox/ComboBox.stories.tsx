@@ -32,10 +32,7 @@ function ComboBoxStory(args: Pick<ComboBoxProps, 'debounce'>) {
       onItemSelected={(value) => setValue(value || '')}
     >
       <ComboBox.Input>
-        <ComboBox.InputField
-          inputRef={inputRef}
-          placeholder="Type a fruit name"
-        />
+        <ComboBox.InputField ref={inputRef} placeholder="Type a fruit name" />
       </ComboBox.Input>
       <ComboBox.Trigger />
       <ComboBox.Content />
