@@ -11,7 +11,6 @@
     - [📒 3. Run Local Node](./docs/GETTING_STARTED.md#-3-run-local-node)
     - [💻 4. Run Web App](./docs/GETTING_STARTED.md#-4-run-web-app)
   - [🧪 Run E2E tests](./docs/GETTING_STARTED.md#-run-e2e-tests)
-  - [📗 Project Overview](./docs/GETTING_STARTED.md#-project-overview)
   - [🧰 Useful Scripts](./docs/GETTING_STARTED.md#-useful-scripts)
 - [Contribution Guide](./docs/CONTRIBUTING.md)
   - [Finding Something to Work On](./docs/CONTRIBUTING.md#finding-something-to-work-on)
