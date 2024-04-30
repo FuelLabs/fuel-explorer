@@ -3,7 +3,7 @@ import { type QueueInputs, QueueNames, queue } from '~/queue';
 
 type Props = QueueInputs[QueueNames.SYNC_LAST];
 
-export class SyncLastBlocks {
+export class SyncLastNodes {
   async execute(props: Props) {
     const repo = new BlockRepository();
     const lastBlock = await repo.latestBlockFromNode();
@@ -14,7 +14,7 @@ export class SyncLastBlocks {
       `Syncing last ${props.last} blocks from ${from} to ${blockHeight}`,
     );
 
-    await queue.push(QueueNames.SYNC_BLOCKS, {
+    await queue.push(QueueNames.SYNC_NODES, {
       after: from,
       first: props.last,
       checkNext: false,
@@ -22,10 +22,11 @@ export class SyncLastBlocks {
   }
 }
 
-export const syncLastBlocks = async ({ data }: QueueData<Props>) => {
+export const syncLastNodes = async ({ data }: QueueData<Props>) => {
+  console.log('Syncing last nodes');
   try {
-    const syncLastBlocks = new SyncLastBlocks();
-    await syncLastBlocks.execute(data);
+    const sync = new SyncLastNodes();
+    await sync.execute(data);
   } catch (error) {
     console.error(error);
     throw new Error('Sync last', {

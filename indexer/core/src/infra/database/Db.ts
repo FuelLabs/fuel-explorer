@@ -47,6 +47,7 @@ export class Db {
 
   async connect() {
     if (this.isConnected) {
+      console.log('Already connected to the database');
       return;
     }
     await this.#connection.connect();

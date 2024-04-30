@@ -2,15 +2,15 @@ import { ValueObject } from '@core/shared/ValueObject';
 import { pgEnum } from 'drizzle-orm/pg-core';
 
 export enum NodeTypeEnum {
-  Block = 'block',
-  Transaction = 'transaction',
+  Block = 'Block',
+  Transaction = 'Transaction',
 }
 
 interface Props {
   value: NodeTypeEnum;
 }
 
-const typeEnum = pgEnum('type', ['Block', 'Transaction']);
+export const typeEnum = pgEnum('type', ['Block', 'Transaction']);
 
 export class NodeType extends ValueObject<Props> {
   private constructor(props: Props) {

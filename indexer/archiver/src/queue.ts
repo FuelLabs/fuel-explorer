@@ -1,16 +1,13 @@
 import { Queue, env } from '@fuel-indexer/core';
-import { syncAllBlocks } from './application/uc/SyncAllBlocks';
-import { syncLastBlocks } from './application/uc/SyncLastBlocks';
-import { syncMissingBlocks } from './application/uc/SyncMissingBlocks';
 
 export enum QueueNames {
-  SYNC_BLOCKS = 'indexer/sync:blocks',
+  SYNC_NODES = 'indexer/sync:nodes',
   SYNC_MISSING = 'indexer/sync:missing',
   SYNC_LAST = 'indexer/sync:last',
 }
 
 export type QueueInputs = {
-  [QueueNames.SYNC_BLOCKS]: {
+  [QueueNames.SYNC_NODES]: {
     first: number;
     last?: number;
     after?: number;
@@ -29,7 +26,3 @@ export const queue = new Queue({
   password: env.get('DB_PASS'),
   database: env.get('DB_NAME'),
 });
-
-queue.work(QueueNames.SYNC_BLOCKS, syncAllBlocks);
-queue.work(QueueNames.SYNC_MISSING, syncMissingBlocks);
-queue.work(QueueNames.SYNC_LAST, syncLastBlocks);

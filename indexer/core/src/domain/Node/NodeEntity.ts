@@ -3,7 +3,7 @@ import { Entity } from '@core/shared/Entity';
 import type { NodeItem } from './NodeModel';
 import { NodeData } from './vo/NodeData';
 import { NodeID } from './vo/NodeID';
-import { NodeType } from './vo/NodeType';
+import { NodeType, type NodeTypeEnum } from './vo/NodeType';
 
 export type GQLNodeType = GQLBlock | GQLTransaction;
 type NodeProps = {
@@ -20,10 +20,14 @@ export class NodeEntity extends Entity<NodeProps, NodeID> {
     return new NodeEntity({ id, type, data }, id);
   }
 
-  static toDBItem(node: GQLNodeType): NodeItem {
+  static toDBItem(
+    node: GQLNodeType,
+    type: keyof typeof NodeTypeEnum,
+  ): NodeItem {
     return {
+      type,
+      status: 'not_synced',
       id: node.id,
-      type: node.__typename,
       data: node,
     };
   }
@@ -51,6 +55,6 @@ export class NodeEntity extends Entity<NodeProps, NodeID> {
   }
 
   toNodeItem(): NodeItem {
-    return NodeEntity.toDBItem(this.props.data.value());
+    return NodeEntity.toDBItem(this.props.data.value(), this.type.value());
   }
 }

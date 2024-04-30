@@ -14,9 +14,9 @@ export class TransactionNodeRef extends ValueObject<Props> {
   }
 
   static type() {
-    return varchar('node_data_id', { length: 66 })
-      .notNull()
-      .references(() => NodesTable.id);
+    return varchar('node_data_id', { length: 66 }).references(
+      () => NodesTable.id,
+    );
   }
 
   static create(node?: NodeItem | null) {

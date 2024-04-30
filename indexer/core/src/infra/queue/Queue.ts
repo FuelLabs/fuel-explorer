@@ -4,12 +4,14 @@ export type QueueData<T = unknown> = Job<T>;
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export class Queue<QueueInputs extends Record<any, unknown>> extends PgBoss {
-  workers: PgBoss.Worker[] = [];
-
   static defaultJobOptions: PgBoss.RetryOptions = {
-    retryLimit: 100,
+    retryLimit: 1,
     retryDelay: 1,
     retryBackoff: false,
+  };
+
+  workOpts = {
+    teamSize: 50,
   };
 
   push<Q extends keyof QueueInputs>(
@@ -36,8 +38,10 @@ export class Queue<QueueInputs extends Record<any, unknown>> extends PgBoss {
     return this.insert(jobs);
   }
 
-  async setupWorkers() {
-    await this.start();
-    console.log('⚡️ Queue running');
+  setWorkOpts<T>(key: string, value: T) {
+    this.workOpts = {
+      ...this.workOpts,
+      [key]: value,
+    };
   }
 }

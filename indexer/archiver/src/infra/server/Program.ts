@@ -85,24 +85,32 @@ export class Program {
 
     if (clean) {
       await queue.deleteAllQueues();
+      await finish();
+      return;
     }
     if (missing) {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
+      await finish();
+      return;
     }
     if (last) {
       await queue.push(QueueNames.SYNC_LAST, { last });
+      await finish();
+      return;
     }
     if (from) {
-      await queue.push(QueueNames.SYNC_BLOCKS, {
+      await queue.push(QueueNames.SYNC_NODES, {
         after: from,
         first: offset,
         checkNext: recursive,
       });
+      await finish();
+      return;
     }
     if (all) {
-      await queue.push(QueueNames.SYNC_BLOCKS, { first: offset });
+      await queue.push(QueueNames.SYNC_NODES, { first: offset });
+      await finish();
+      return;
     }
-
-    await finish();
   }
 }
