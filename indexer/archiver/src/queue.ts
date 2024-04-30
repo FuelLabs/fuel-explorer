@@ -1,20 +1,27 @@
+import type { GQLBlock } from '@core/generated/gql-types';
 import { Queue, env } from '@fuel-indexer/core';
 
 export enum QueueNames {
+  SYNC_NODE = 'indexer/sync:node',
   SYNC_NODES = 'indexer/sync:nodes',
   SYNC_MISSING = 'indexer/sync:missing',
   SYNC_LAST = 'indexer/sync:last',
 }
 
 export type QueueInputs = {
+  [QueueNames.SYNC_NODE]: {
+    block: GQLBlock;
+  };
   [QueueNames.SYNC_NODES]: {
-    first: number;
+    offset?: number;
+    cursor?: number;
     last?: number;
-    after?: number;
-    checkNext?: boolean;
+    from?: number;
+    to?: number;
   };
   [QueueNames.SYNC_MISSING]: undefined;
   [QueueNames.SYNC_LAST]: {
+    offset?: number;
     last: number;
   };
 };

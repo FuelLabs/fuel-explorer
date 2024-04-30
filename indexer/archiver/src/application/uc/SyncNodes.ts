@@ -1,41 +1,46 @@
-import { NodeRepository } from '@core/domain/Node/NodeRepository';
 import { BlockRepository, type QueueData } from '@fuel-indexer/core';
 import { type QueueInputs, QueueNames, queue } from '~/queue';
 
 type Props = QueueInputs[QueueNames.SYNC_NODES];
 
 export class SyncNodes {
-  async execute({ first = 10, after = undefined, checkNext = true }: Props) {
-    const nodeRepo = new NodeRepository();
+  async fetchRanges({ offset = 10, cursor = 0 }: Props) {
     const blockRepo = new BlockRepository();
-    const { blocks, endCursor } = await blockRepo.blocksFromNode(first, after);
-    const hasBlocks = blocks.length > 0;
+    const lastBlock = await blockRepo.latestBlockFromNode();
+    const lastBlockHeight = Number(lastBlock?.header.height ?? '0');
 
-    if (hasBlocks) {
-      await nodeRepo.upsertMany(blocks, 'Block');
-    }
-    if (checkNext) {
-      // If current page don't have blocks, we keep trying the same page
-      // until we have blocks after the final cursor
-      const cursor = !hasBlocks ? after : endCursor;
-      await this.syncNext(first, cursor);
-    }
+    const pages = Math.ceil(lastBlockHeight / offset);
+    const events = Array.from({ length: pages }).map(async (_, i) => {
+      if (i < cursor) return;
+      const from = i === 0 ? 0 : i * offset;
+      await queue.push(QueueNames.SYNC_NODES, { offset, from });
+    });
+
+    await Promise.all(events);
   }
 
-  private async syncNext(first: number, after?: number) {
-    console.log(`Syncing next block after cursor ${after}`);
-    await queue.push(QueueNames.SYNC_NODES, {
-      first,
-      after,
+  async execute({ from, offset = 10 }: Props) {
+    const blockRepo = new BlockRepository();
+    const { blocks } = await blockRepo.blocksFromNode(offset, from);
+    const events = blocks.map(async (block) => {
+      console.log(`Syncing block ${block.header.height}`);
+      await queue.push(QueueNames.SYNC_NODE, { block });
     });
+
+    await Promise.all(events);
   }
 }
 
 export const syncNodes = async ({ data }: QueueData<Props>) => {
   try {
-    console.log(`Syncing block after cursor ${data.after}`);
     const sync = new SyncNodes();
-    await sync.execute(data);
+
+    if (data.from) {
+      await sync.execute(data);
+      return;
+    }
+
+    await sync.fetchRanges(data);
   } catch (error) {
     console.error(error);
     throw new Error('Sync block attempt failed!', {

@@ -77,11 +77,12 @@ export class BlockRepository {
     });
   }
 
-  async blocksFromNode(first: number, after?: number) {
+  async blocksFromNode(first: number, after?: number, before?: number) {
     const { sdk } = new GraphQLSDK();
     const { data } = await sdk.blocks({
       first,
       ...(after ? { after: String(after) } : null),
+      ...(before ? { before: String(before) } : null),
     });
     const blocks = data.blocks.nodes as GQLBlock[];
     const hasNext = data.blocks.pageInfo.hasNextPage;
