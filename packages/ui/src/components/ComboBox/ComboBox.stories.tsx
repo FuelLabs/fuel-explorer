@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useRef, useState } from 'react';
-import { ComboBox } from './ComboBox';
-import type { ComboBoxProps } from './types';
+import { ComboBox, type ComboBoxProps } from './ComboBox';
 
 const meta: Meta<typeof ComboBox> = {
   title: 'Form/ComboBox',

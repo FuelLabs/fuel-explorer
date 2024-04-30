@@ -10,18 +10,48 @@ import React, {
   createContext,
 } from 'react';
 import { createComponent, withNamespace } from '../../utils/component';
-import { Flex } from '../Box';
-import { Input } from '../Input';
+import { type BoxProps, Flex, type FlexProps } from '../Box';
+import { Input, type InputFieldProps, type InputProps } from '../Input';
 import { Popover } from '../Popover';
 import { Text } from '../Text';
-import type {
-  ComboBoxContentProps,
-  ComboBoxInputFieldProps,
-  ComboBoxInputProps,
-  ComboBoxItemProps,
-  ComboBoxProps,
-  Context,
-} from './types';
+
+export type ComboBoxProps<T = string> = Pick<
+  InputFieldProps,
+  'onFocus' | 'onClick' | 'onBlur' | 'onKeyDown' | 'children'
+> & {
+  suggestions: Array<T>;
+  debounce?: number;
+  value?: string | undefined;
+  onChange?: (value: string | undefined) => void;
+  suggestionFilter?: (suggestion: T) => boolean;
+  itemNameSelector?: (suggestion: T) => string;
+  onItemSelected: (suggestion: T) => void;
+  inputRef: React.RefObject<HTMLInputElement>;
+  /**
+   * @description If true, input can only be a value from the ComboBox list
+   */
+  strict?: boolean;
+};
+
+export type ComboBoxInputProps = InputProps;
+export type ComboBoxInputFieldProps = InputFieldProps & {
+  ref: React.Ref<HTMLInputElement>;
+};
+export type ComboBoxContentProps = FlexProps;
+export type ComboBoxItemProps<T = string> = BoxProps &
+  Pick<ComboBoxProps<T>, 'itemNameSelector'> & {
+    suggestion: T | null;
+    onItemSelected: (suggestion: T) => void;
+  };
+
+export type Context<T = string> = Pick<
+  ComboBoxProps<T>,
+  'itemNameSelector' | 'onFocus' | 'onClick' | 'onBlur' | 'onKeyDown'
+> & {
+  filteredSuggestions: Array<T>;
+  handleSuggestionClick: (suggestion: T) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 const context = createContext<Context | undefined>(undefined);
 
