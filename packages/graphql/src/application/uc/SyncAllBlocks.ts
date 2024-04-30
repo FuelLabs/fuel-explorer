@@ -11,7 +11,7 @@ import {
 type Props = QueueInputs[QueueNames.SYNC_BLOCKS];
 
 export class SyncAllBlocks {
-  async execute({ first = 125, after = undefined, checkNext = true }: Props) {
+  async execute({ first = 10, after = undefined, checkNext = true }: Props) {
     const repo = new BlockRepository();
     const { blocks, endCursor } = await repo.blocksFromNode(first, after);
     const hasBlocks = blocks.length > 0;
