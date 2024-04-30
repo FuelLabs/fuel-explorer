@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fuel-explorer/contract-ids": "workspace:*",
     "app-commons": "workspace:*"
   },
   "devDependencies": {

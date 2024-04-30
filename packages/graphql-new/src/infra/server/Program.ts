@@ -1,4 +1,5 @@
 import yargs from 'yargs/yargs';
+import { env } from '~/config';
 import { db } from '../database/Db';
 import { QueueNames, queue } from '../queue';
 
@@ -14,6 +15,11 @@ export class Program {
           return yargs
             .option('all', {
               alias: 'a',
+              type: 'boolean',
+              default: false,
+            })
+            .option('bridge', {
+              alias: 'b',
               type: 'boolean',
               default: false,
             })
@@ -52,6 +58,7 @@ export class Program {
 
   async sync(argv: {
     all: boolean;
+    bridge: boolean;
     missing: boolean;
     from: number | null;
     clean: boolean;
@@ -64,6 +71,14 @@ export class Program {
     }
     if (argv.missing) {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
+    }
+    if (argv.bridge) {
+      const fromBlock = Number(env.get('ETH_INITIAL_BLOCK'));
+      await queue.push(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, {
+        fromBlock,
+        latestBlock: undefined,
+      });
+      await queue.push(QueueNames.WATCH_BRIDGE_CONTRACT_LOGS, undefined);
     }
     if (argv.all) {
       await queue.push(QueueNames.SYNC_BLOCKS, {

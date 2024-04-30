@@ -1,0 +1,105 @@
+schema {
+  query: Query
+}
+
+# --------------------------------
+# BridgeBlocks
+# --------------------------------
+
+type BridgeBlockData {
+  nonce: String
+  number: Int
+}
+
+type BridgeBlock {
+  hash: String!
+  number: Int!
+  timestamp: Int!
+  data: BridgeBlockData!
+}
+
+type BridgeBlocksResult {
+  nodes: [BridgeBlock!]!
+  pageInfo: PageInfo!
+}
+
+# --------------------------------
+# BridgeContractLogs
+# --------------------------------
+
+type BridgeContractLogData {
+  eventName: String!
+  address: String!
+  blockHash: String
+  blockNumber: Int
+  data: String!
+  logIndex: Int
+  topics: [String!]!
+  transactionHash: String
+  transactionIndex: Int
+  removed: Boolean
+}
+
+type BridgeContractLogArgsDecoded {
+  fuelTokenId: String
+  tokenAddress: String
+  sender: String
+  to: String
+  amount: String
+}
+
+type BridgeContractLogArgs {
+  sender: String
+  recipient: String
+  nonce: String
+  amount: String
+  messageId: String
+  data: String
+  decoded: BridgeContractLogArgsDecoded
+}
+
+type BridgeContractLog {
+  name: String!
+  contractId: String!
+  args: BridgeContractLogArgs!
+  logIndex: Int!
+  block: BridgeBlock!
+  data: BridgeContractLogData!
+}
+
+type BridgeContractLogsResult {
+  nodes: [BridgeContractLog!]!
+  pageInfo: PageInfo!
+}
+
+# --------------------------------
+# Query
+# --------------------------------
+
+input BridgeContractLogsArgsDecoded {
+  to: String
+}
+
+input BridgeContractLogsArgs {
+  recipient: String
+  messageId: String
+  decoded: BridgeContractLogsArgsDecoded
+}
+
+type Query {
+  bridgeBlocks(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): BridgeBlocksResult!
+  bridgeContractLogs(
+    args: BridgeContractLogsArgs
+    name: String
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): BridgeContractLogsResult
+}
+

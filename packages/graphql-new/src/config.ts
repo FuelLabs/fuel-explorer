@@ -3,6 +3,11 @@ import { Env } from './core/Env';
 
 const schema = zod.object({
   FUEL_PROVIDER: zod.string(),
+  FUEL_CHAIN_NAME: zod.string(),
+  ETH_CHAIN_NAME: zod.string(),
+  ETH_ALCHEMY_ID: zod.string().optional(),
+  ETH_INFURA_ID: zod.string().optional(),
+  ETH_INITIAL_BLOCK: zod.string().default('0'),
   SERVER_PORT: zod.string().default('3000'),
   DB_HOST: zod.string(),
   DB_PORT: zod.string(),
@@ -13,6 +18,11 @@ const schema = zod.object({
 
 export const env = new Env(schema, {
   FUEL_PROVIDER: 'http://localhost:4001/graphql',
+  FUEL_CHAIN_NAME: 'fuelBeta5',
+  ETH_CHAIN_NAME: 'sepolia',
+  ETH_ALCHEMY_ID: '',
+  ETH_INFURA_ID: '',
+  ETH_INITIAL_BLOCK: '0',
   SERVER_PORT: '3002',
   DB_HOST: 'localhost',
   DB_PORT: '5435',

@@ -1,7 +1,9 @@
 import PgBoss, { Job } from 'pg-boss';
 import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
+import { syncBridgeContractLogs } from '~/application/uc/SyncBridgeContractLogs';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransaction';
+import { watchBridgeContractLogs } from '~/application/uc/WatchBridgeContractLogs';
 import { env } from '~/config';
 import { GQLBlock } from '~/graphql/generated/sdk';
 
@@ -15,6 +17,8 @@ export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync:blocks',
   SYNC_MISSING = 'indexer/sync:missing',
   SYNC_TRANSACTION = 'indexer/sync:transaction',
+  SYNC_BRIDGE_CONTRACT_LOGS = 'indexer/bridge/contract-logs/sync',
+  WATCH_BRIDGE_CONTRACT_LOGS = 'indexer/bridge/contract-logs/watch',
 }
 
 export type QueueInputs = {
@@ -29,6 +33,11 @@ export type QueueInputs = {
     block: GQLBlock;
     txHash: string;
   };
+  [QueueNames.SYNC_BRIDGE_CONTRACT_LOGS]: {
+    fromBlock: number;
+    latestBlock?: number;
+  };
+  [QueueNames.WATCH_BRIDGE_CONTRACT_LOGS]: undefined;
 };
 
 export type QueueData<T = unknown> = Job<T>;
@@ -63,9 +72,14 @@ export class Queue extends PgBoss {
 
   async setupWorkers() {
     await this.start();
-    this.work(QueueNames.SYNC_BLOCKS, syncAllBlocks);
-    this.work(QueueNames.SYNC_MISSING, syncMissingBlocks);
-    this.work(QueueNames.SYNC_TRANSACTION, syncTransactions);
+    await Promise.all([
+      this.work(QueueNames.SYNC_BLOCKS, syncAllBlocks),
+      this.work(QueueNames.SYNC_MISSING, syncMissingBlocks),
+      this.work(QueueNames.SYNC_TRANSACTION, syncTransactions),
+      this.work(QueueNames.SYNC_BRIDGE_CONTRACT_LOGS, syncBridgeContractLogs),
+      this.work(QueueNames.WATCH_BRIDGE_CONTRACT_LOGS, watchBridgeContractLogs),
+    ]);
+    await this.deleteAllQueues();
     console.log('⚡️ Queue running');
   }
 }
