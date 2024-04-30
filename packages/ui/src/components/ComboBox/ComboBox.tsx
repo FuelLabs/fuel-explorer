@@ -191,18 +191,6 @@ export const ComboBoxInput = createComponent<ComboBoxInputProps, typeof Input>({
   baseElement: Input,
 });
 
-export const ComboBoxTrigger = createComponent<{}, typeof Popover.Trigger>({
-  id: 'ComboBoxTrigger',
-  baseElement: Popover.Trigger,
-  render: (Root, { ...props }) => {
-    return (
-      <Root {...props}>
-        <div />
-      </Root>
-    );
-  },
-});
-
 export const ComboBoxInputField = createComponent<
   ComboBoxInputFieldProps,
   typeof Input.Field
@@ -268,27 +256,33 @@ export const ComboBoxContent = createComponent<
       useComboBoxContext();
 
     return (
-      <Popover.Content
-        // Goes against accessibility rules but otherwise we'd be constantly losing focus on the input
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <Flex
-          className={className}
-          direction="column"
-          gap="2"
-          style={style}
-          {...props}
+      <>
+        {/* Popover uses the trigger's position and container to determine the position and size of the content window. */}
+        <Popover.Trigger>
+          <div />
+        </Popover.Trigger>
+        <Popover.Content
+          // Goes against accessibility rules but otherwise we'd be constantly losing focus on the input
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          {filteredSuggestions.map((suggestion: string) => (
-            <ComboBoxItem
-              key={itemNameSelector?.(suggestion) ?? (suggestion as string)}
-              suggestion={suggestion}
-              itemNameSelector={itemNameSelector}
-              onItemSelected={handleSuggestionClick}
-            />
-          ))}
-        </Flex>
-      </Popover.Content>
+          <Flex
+            className={className}
+            direction="column"
+            gap="2"
+            style={style}
+            {...props}
+          >
+            {filteredSuggestions.map((suggestion: string) => (
+              <ComboBoxItem
+                key={itemNameSelector?.(suggestion) ?? (suggestion as string)}
+                suggestion={suggestion}
+                itemNameSelector={itemNameSelector}
+                onItemSelected={handleSuggestionClick}
+              />
+            ))}
+          </Flex>
+        </Popover.Content>
+      </>
     );
   },
 });
@@ -300,6 +294,5 @@ export const ComboBox = withNamespace(
     Content: ComboBoxContent,
     Input: ComboBoxInput,
     InputField: ComboBoxInputField,
-    Trigger: ComboBoxTrigger,
   },
 );

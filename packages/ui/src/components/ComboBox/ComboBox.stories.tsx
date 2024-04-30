@@ -33,7 +33,6 @@ function ComboBoxStory(args: Pick<ComboBoxProps, 'debounce'>) {
       <ComboBox.Input>
         <ComboBox.InputField ref={inputRef} placeholder="Type a fruit name" />
       </ComboBox.Input>
-      <ComboBox.Trigger />
       <ComboBox.Content />
     </ComboBox>
   );
