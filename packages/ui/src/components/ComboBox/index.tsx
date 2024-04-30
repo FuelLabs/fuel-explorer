@@ -8,4 +8,4 @@ export type {
   ComboBoxProps,
   ComboBoxItemProps,
   ComboBoxContentProps,
-} from './types';
+} from './ComboBox';
