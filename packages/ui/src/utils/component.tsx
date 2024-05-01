@@ -32,7 +32,7 @@ type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
 export function createComponent<
   P extends PropsOf<any>,
   C extends ElementType<any>,
->(opts: CreateOpts<P, C>) {
+>(opts: CreateOpts<P, C>): CreatedForwardedComponent<P, C> {
   const {
     id,
     baseElement: El = 'div' as C,
