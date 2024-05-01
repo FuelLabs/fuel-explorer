@@ -6,7 +6,7 @@
     "build": "next build",
     "build:storybook": "./scripts/build-storybook.sh",
     "build:preview": "run-s build:storybook build",
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "dev:storybook": "storybook dev -p 6007",
     "start": "next start",
     "test": "jest --verbose --passWithNoTests",

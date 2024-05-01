@@ -141,7 +141,6 @@ export class TxFuelToEthService {
         fuelAsset.assetId ||
         getContractTokenId(fuelAsset.contractId as `0x${string}`);
 
-      const { minGasPrice } = fuelProvider.getGasConfig();
       const withdrawScope = fungibleToken.functions
         .withdraw(ethAddressInFuel)
         .callParams({
@@ -151,7 +150,6 @@ export class TxFuelToEthService {
           },
         })
         .txParams({
-          gasPrice: minGasPrice,
           gasLimit: bn(1_000_000),
         });
 

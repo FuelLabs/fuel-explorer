@@ -5,8 +5,8 @@ import {
 import type {
   Message,
   Provider,
-  ScriptTransactionRequestLike,
   TransactionResponse,
+  TxParamsType,
   WalletUnlocked as FuelWallet,
 } from 'fuels';
 import {
@@ -24,7 +24,10 @@ import { resourcesToInputs } from './transaction';
 
 function getCommonRelayableMessages(provider: Provider) {
   // Create a predicate for common messages
-  const predicate = new Predicate(contractMessagePredicate, provider);
+  const predicate = new Predicate({
+    bytecode: contractMessagePredicate,
+    provider,
+  });
 
   // Details for relaying common messages with certain predicate roots
   const relayableMessages: CommonMessageDetails[] = [
@@ -114,10 +117,7 @@ type CommonMessageDetails = {
     relayer: FuelWallet,
     message: Message,
     details: CommonMessageDetails,
-    txParams: Pick<
-      ScriptTransactionRequestLike,
-      'gasLimit' | 'gasPrice' | 'maturity'
-    >,
+    txParams: TxParamsType,
   ) => Promise<ScriptTransactionRequest>;
 };
 
@@ -129,10 +129,7 @@ export async function relayCommonMessage({
 }: {
   relayer: FuelWallet;
   message: Message;
-  txParams?: Pick<
-    ScriptTransactionRequestLike,
-    'gasLimit' | 'gasPrice' | 'maturity'
-  >;
+  txParams?: TxParamsType;
 }): Promise<TransactionResponse> {
   // find the relay details for the specified message
   let messageRelayDetails: CommonMessageDetails | undefined;

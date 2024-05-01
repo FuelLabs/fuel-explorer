@@ -26,16 +26,15 @@ async function main() {
   const ETHToken = await getOrDeployECR20Contract(env);
   const FuelToken = await getOrDeployFuelTokenContract(
     env,
-    ETHToken as any,
     env.eth.fuelERC20Gateway,
     {
+      gasLimit: 500000000,
       gasPrice: 1,
-      gasLimit: 1_000_000,
-    },
-    9,
+    } as any,
+    // DECIMAL_FUEL,
   );
-  const tokenId = getTokenId(FuelToken);
   const erc20Address = await ETHToken.getAddress();
+  const tokenId = getTokenId(FuelToken, erc20Address);
 
   await startServer({
     ETH_ERC20: erc20Address,
