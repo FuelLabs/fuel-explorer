@@ -82,7 +82,7 @@ export class Program {
   }
 
   async sync(argv: Arguments) {
-    const { all, missing, recursive, clean, from, offset, last } = argv;
+    const { all, missing, clean, from, offset, last } = argv;
 
     await db.connect();
     await queue.start();
@@ -94,24 +94,27 @@ export class Program {
 
     if (clean) {
       await queue.deleteAllQueues();
+      await queue.clearStorage();
+      await finish();
+      return;
     }
     if (missing) {
       await queue.push(QueueNames.SYNC_MISSING, undefined);
+      await finish();
+      return;
     }
     if (last) {
       await queue.push(QueueNames.SYNC_LAST, { last });
+      await finish();
+      return;
     }
-    if (from) {
-      await queue.push(QueueNames.SYNC_BLOCKS, {
-        after: from,
-        first: offset,
-        checkNext: recursive,
+    if (all || from) {
+      await queue.pushSingleton(QueueNames.SYNC_BLOCKS, {
+        offset,
+        ...(from && { cursor: from }),
       });
+      await finish();
+      return;
     }
-    if (all) {
-      await queue.push(QueueNames.SYNC_BLOCKS, { first: offset });
-    }
-
-    await finish();
   }
 }

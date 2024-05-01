@@ -20,9 +20,8 @@ export class SyncLastBlocks {
     );
 
     await queue.push(QueueNames.SYNC_BLOCKS, {
-      after: from,
-      first: props.last,
-      checkNext: false,
+      cursor: from,
+      offset: props.last,
     });
   }
 }

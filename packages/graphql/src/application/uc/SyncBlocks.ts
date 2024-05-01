@@ -10,22 +10,28 @@ import {
 
 type Props = QueueInputs[QueueNames.SYNC_BLOCKS];
 
-export class SyncAllBlocks {
-  async execute({ first = 10, after = undefined, checkNext = true }: Props) {
-    const repo = new BlockRepository();
-    const { blocks, endCursor } = await repo.blocksFromNode(first, after);
-    const hasBlocks = blocks.length > 0;
+export class SyncBlocks {
+  private limit = 1000;
 
-    if (hasBlocks) {
+  async execute({ offset = 10, cursor = 0 }: Props) {
+    const repo = new BlockRepository();
+    const lastBlock = await repo.latestBlockFromNode();
+    const lastBlockHeight = Number(lastBlock?.header.height ?? '0');
+    const max = Math.ceil(lastBlockHeight / offset);
+    const pages = max > this.limit ? this.limit : max;
+
+    const events = Array.from({ length: pages }).map(async (_, page) => {
+      const from = cursor + page * offset;
+      console.log(`Syncing blocks from ${from} to ${from + offset}`);
+      const { blocks, endCursor } = await repo.blocksFromNode(offset, from);
+      const hasBlocks = blocks.length > 0;
       const created = await repo.insertMany(blocks);
       await this.syncTransactions(created);
-    }
-    if (checkNext) {
-      // If current page don't have blocks, we keep trying the same page
-      // until we have blocks after the final cursor
-      const cursor = !hasBlocks ? after : endCursor;
-      await this.syncNext(first, cursor);
-    }
+      return { endCursor, hasBlocks };
+    });
+
+    const results = await Promise.all(events);
+    return results[results.length - 1];
   }
 
   private async syncTransactions(blocks: (BlockEntity | null)[]) {
@@ -45,18 +51,16 @@ export class SyncAllBlocks {
       await queue.pushBatch(QueueNames.SYNC_TRANSACTION, events);
     }
   }
-
-  private async syncNext(first: number, after?: number) {
-    await queue.push(QueueNames.SYNC_BLOCKS, { first, after });
-  }
 }
 
-export const syncAllBlocks = async ({ data }: QueueData<Props>) => {
+export const syncBlocks = async ({ data }: QueueData<Props>) => {
   try {
-    console.log(`Syncing block after cursor ${data.after}`);
-    const syncAllBlocks = new SyncAllBlocks();
-    await syncAllBlocks.execute(data);
+    const sync = new SyncBlocks();
+    const { endCursor, hasBlocks } = await sync.execute(data);
+    const cursor = !hasBlocks ? data.cursor : endCursor;
+    await queue.pushSingleton(QueueNames.SYNC_BLOCKS, { ...data, cursor });
   } catch (error) {
+    console.error(error);
     throw new Error('Sync block attempt failed!', {
       cause: error,
     });

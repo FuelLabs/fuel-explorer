@@ -29,4 +29,6 @@ httpServer.listen(app, port).then(async () => {
     await setTimeout(5000);
     await queue.push(QueueNames.SYNC_MISSING, undefined);
   }
+
+  await queue.setupWorkers();
 });

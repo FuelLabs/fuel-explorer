@@ -1,13 +1,7 @@
-export { BlocksTable, BlocksRelations } from '~/domain/Block/BlockModel';
-export { ContractsTable } from '~/domain/Contract/ContractModel';
-export { InputsTable } from '~/domain/Input/InputModel';
-export { OutputsTable } from '~/domain/Output/OutputModel';
-export {
-  OperationsTable,
-  OperationsRelations,
-} from '~/domain/Operation/OperationModel';
-export { PredicatesTable } from '~/domain/Predicate/PredicateModel';
-export {
-  TransactionsTable,
-  TransactionsRelations,
-} from '~/domain/Transaction/TransactionModel';
+export * from '../../domain/Block/BlockModel';
+export * from '../../domain/Contract/ContractModel';
+export * from '../../domain/Input/InputModel';
+export * from '../../domain/Operation/OperationModel';
+export * from '../../domain/Output/OutputModel';
+export * from '../../domain/Predicate/PredicateModel';
+export * from '../../domain/Transaction/TransactionModel';

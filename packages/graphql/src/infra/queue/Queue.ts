@@ -1,5 +1,5 @@
 import PgBoss, { type Job } from 'pg-boss';
-import { syncAllBlocks } from '~/application/uc/SyncAllBlocks';
+import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransaction';
@@ -20,12 +20,12 @@ export enum QueueNames {
 }
 
 export type QueueInputs = {
-  [QueueNames.SYNC_BLOCKS]: {
-    first: number;
-    after?: number;
-    checkNext?: boolean;
-  };
   [QueueNames.SYNC_MISSING]: undefined;
+  [QueueNames.SYNC_BLOCKS]: {
+    offset: number;
+    cursor?: number;
+    from?: number;
+  };
   [QueueNames.SYNC_TRANSACTION]: {
     index: number;
     block: GQLBlock;
@@ -39,12 +39,13 @@ export type QueueInputs = {
 export type QueueData<T = unknown> = Job<T>;
 
 export class Queue extends PgBoss {
-  private workOpts = {
+  private workOpts: PgBoss.WorkOptions = {
     teamSize: 250,
+    teamConcurrency: 250,
   };
 
   static defaultJobOptions: PgBoss.RetryOptions = {
-    retryLimit: 100,
+    retryLimit: 1,
     retryDelay: 1,
     retryBackoff: false,
   };
@@ -61,23 +62,41 @@ export class Queue extends PgBoss {
     });
   }
 
-  pushBatch<Q extends QueueNames>(queue: Q, data: Array<QueueInputs[Q]>) {
+  pushSingleton<Q extends QueueNames>(
+    queue: Q,
+    data: QueueInputs[Q],
+    options?: PgBoss.JobOptions,
+  ) {
+    console.log(`Pushing job to queue ${queue}`);
+    return this.send(queue, data as object, {
+      ...Queue.defaultJobOptions,
+      ...options,
+      singletonNextSlot: true,
+      useSingletonQueue: true,
+    });
+  }
+
+  pushBatch<Q extends QueueNames>(
+    queue: Q,
+    data: Array<QueueInputs[Q]>,
+    opts?: Partial<PgBoss.JobInsert<object>>,
+  ) {
     const jobs: Array<PgBoss.JobInsert<object>> = data.map((job) => ({
+      ...Queue.defaultJobOptions,
+      ...opts,
       name: queue,
       data: job,
-      ...Queue.defaultJobOptions,
     }));
     return this.insert(jobs);
   }
 
   async setupWorkers() {
     const opts = this.workOpts;
-    this.work(QueueNames.SYNC_BLOCKS, opts, syncAllBlocks);
-    this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
-    this.work(QueueNames.SYNC_TRANSACTION, opts, syncTransactions);
-    this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
-
     await this.start();
+    await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
+    await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
+    await this.work(QueueNames.SYNC_TRANSACTION, opts, syncTransactions);
+    await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
     console.log('⚡️ Queue running');
   }
 }

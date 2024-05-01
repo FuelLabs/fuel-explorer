@@ -2,7 +2,6 @@ import cors from 'cors';
 import type { Express } from 'express';
 import express from 'express';
 import { db } from '../database/Db';
-import { queue } from '../queue/Queue';
 
 export class Server {
   setup() {
@@ -14,9 +13,8 @@ export class Server {
 
   async listen(app: Express, port: number) {
     await db.connect();
-    await queue.setupWorkers();
     return new Promise((resolve) => {
-      app.listen(port, () => {
+      app.listen(port, async () => {
         resolve(null);
       });
     });
