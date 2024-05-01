@@ -18,7 +18,7 @@
     "@fuel-bridge/solidity-contracts": "pr-161",
     "@fuels/assets": "^0.18.0",
     "@fuels/connectors": "0.2.2",
-    "@fuels/react": "pr-161",
+    "@fuels/react": "pr-72",
     "@fuels/react-xstore": "^0.18.0",
     "@fuels/ui": "workspace:*",
     "@hookform/resolvers": "^3.1.1",
