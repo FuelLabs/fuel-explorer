@@ -24,6 +24,7 @@ export type QueueInputs = {
   [QueueNames.SYNC_BLOCKS]: {
     cursor?: number;
     offset?: number;
+    watch?: boolean;
   };
   [QueueNames.SYNC_TRANSACTION]: {
     index: number;
@@ -32,6 +33,7 @@ export type QueueInputs = {
   };
   [QueueNames.SYNC_LAST]: {
     last: number;
+    watch?: boolean;
   };
 };
 

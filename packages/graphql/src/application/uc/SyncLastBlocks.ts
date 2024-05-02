@@ -9,19 +9,14 @@ import {
 type Props = QueueInputs[QueueNames.SYNC_LAST];
 
 export class SyncLastBlocks {
-  async execute(props: Props) {
+  async execute({ last, watch }: Props) {
     const repo = new BlockRepository();
     const lastBlock = await repo.latestBlockFromNode();
     const blockHeight = Number(lastBlock?.header.height ?? '0');
-    const from = blockHeight - props.last;
+    const from = blockHeight - last;
 
-    console.log(
-      `Syncing last ${props.last} blocks from ${from} to ${blockHeight}`,
-    );
-
-    await queue.push(QueueNames.SYNC_BLOCKS, {
-      cursor: from,
-    });
+    console.log(`Syncing last ${last} blocks from ${from} to ${blockHeight}`);
+    await queue.push(QueueNames.SYNC_BLOCKS, { watch, cursor: from });
   }
 }
 

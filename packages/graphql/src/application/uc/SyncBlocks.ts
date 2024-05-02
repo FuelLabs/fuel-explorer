@@ -19,6 +19,7 @@ type Context = Input & {
   limit: number;
   lastBlock: GQLBlock | null;
   lastResult?: EventsReturn | null;
+  watch?: boolean;
 };
 
 type EventsReturn = {
@@ -69,7 +70,7 @@ class Syncer {
     }
 
     // This is a workaround to avoid rate limiting on the node
-    if (env.get('HAS_RATE_LIMIT')) {
+    if (env.get('IS_DEV_TEST')) {
       const results = [];
       for (const event of events) {
         const result = await this.syncBlocksRange(event);
@@ -84,16 +85,19 @@ class Syncer {
   }
 
   private async syncBlocksRange({ from, to }: { from: number; to: number }) {
-    console.log(c.gray(`Syncing blocks from ${from} to ${to}`));
-    // const repo = new BlockRepository();
-    // const { blocks, endCursor } = await repo.blocksFromNode(to - from, from);
-    // const hasBlocks = blocks.length > 0;
-    // const created = await repo.insertMany(blocks);
-    // await this.syncTransactions(created);
-    // return {
-    //   endCursor,
-    //   hasBlocks,
-    // };
+    console.log(c.gray(`🔄 Syncing blocks from ${from} to ${to}`));
+    if (!env.get('IS_DEV_TEST')) {
+      const repo = new BlockRepository();
+      const { blocks, endCursor } = await repo.blocksFromNode(to - from, from);
+      const hasBlocks = blocks.length > 0;
+      const created = await repo.insertMany(blocks);
+      await this.syncTransactions(created);
+
+      return {
+        endCursor,
+        hasBlocks,
+      };
+    }
     return {
       endCursor: to,
       hasBlocks: true,
@@ -155,13 +159,16 @@ const machine = setup({
     hasMoreEvents: ({ context }) => {
       return context.lastResult?.hasBlocks ?? false;
     },
+    needToWatch: ({ context }) => {
+      return Boolean(context.watch);
+    },
   },
 }).createMachine({
   id: 'syncBlocks',
   initial: 'idle',
   context: ({ input }) => ({
     ...input,
-    cursor: 0,
+    cursor: input.cursor ?? 0,
     offset: input.offset ?? Number(env.get('SYNC_OFFSET')),
     limit: Number(env.get('SYNC_LIMIT')),
     lastBlock: null,
@@ -204,7 +211,8 @@ const machine = setup({
     checking: {
       always: [
         { target: 'syncingBlocks', guard: 'hasMoreEvents' },
-        { target: 'waiting' },
+        { target: 'waiting', guard: 'needToWatch' },
+        { target: 'idle' },
       ],
     },
     waiting: {
@@ -246,7 +254,6 @@ const machine = setup({
 export const syncBlocks = async ({ data }: QueueData<Input>) => {
   try {
     const actor = createActor(machine, { input: data });
-
     actor.subscribe((state) => {
       console.log(c.yellow(`📟 State: ${state.value}`));
     });

@@ -8,6 +8,7 @@ export class SyncMissingBlocks {
     const cursor = latest ? Number(latest.data.header.height) : undefined;
     await queue.push(QueueNames.SYNC_BLOCKS, {
       cursor,
+      watch: true,
     });
   }
 }

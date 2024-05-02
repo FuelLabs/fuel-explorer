@@ -8,7 +8,7 @@ type Arguments = {
   from: number | null;
   clean: boolean;
   last: number | null;
-  recursive: boolean;
+  watch: boolean;
 };
 
 export class Program {
@@ -49,12 +49,11 @@ export class Program {
               default: null,
               describe: 'Sync the last N blocks',
             })
-            .option('recursive', {
-              alias: 'r',
+            .option('watch', {
+              alias: 'w',
               type: 'boolean',
-              default: true,
-              describe:
-                'Keep syncing blocks until the end of the chain is reached',
+              default: false,
+              describe: 'Watch for new blocks and sync them',
             });
         },
         handler: async (argv) => {
@@ -75,7 +74,7 @@ export class Program {
   }
 
   async sync(argv: Arguments) {
-    const { all, missing, clean, from, last } = argv;
+    const { all, missing, clean, from, watch, last } = argv;
 
     await db.connect();
     await queue.start();
@@ -97,12 +96,12 @@ export class Program {
       return;
     }
     if (last) {
-      await queue.push(QueueNames.SYNC_LAST, { last });
+      await queue.push(QueueNames.SYNC_LAST, { watch, last });
       await finish();
       return;
     }
     if (all || from) {
-      await queue.push(QueueNames.SYNC_BLOCKS, { cursor: from ?? 0 });
+      await queue.push(QueueNames.SYNC_BLOCKS, { watch, cursor: from ?? 0 });
       await finish();
       return;
     }
