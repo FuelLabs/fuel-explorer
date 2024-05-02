@@ -30,6 +30,7 @@
     "db:migrate": "tsx ./src/cli.ts migrate",
     "db:push": "drizzle-kit push:pg",
     "db:setup": "run-s codegen db:generate",
+    "db:clean": "tsx ./src/cli.ts clean-db",
     "dev": "tsx watch src/app.ts --inspect",
     "dev:inspect": "tsx --inspect-brk src/app.ts",
     "server:start": "pm2 start ecosystem.config.cjs --no-daemon",

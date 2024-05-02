@@ -34,4 +34,4 @@ RUN pnpm db:setup
 # Expose the specified port
 EXPOSE ${SERVER_PORT}
 WORKDIR /app-explorer
-CMD ["pnpm", "server:start"]
+CMD ["/app-explorer/scripts/run.sh"]

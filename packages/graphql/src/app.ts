@@ -1,6 +1,5 @@
 import { env } from './config';
 import { GraphQLServer } from './graphql/GraphQLServer';
-import { db } from './infra/database/Db';
 import { Server } from './infra/server/App';
 
 const port = Number(env.get('SERVER_PORT'));
@@ -16,9 +15,4 @@ httpServer.listen(app, port).then(async () => {
   console.log(
     `📟 GraphQL server is running on http://localhost:${port}${yoga.graphqlEndpoint}`,
   );
-
-  if (env.get('DB_MIGRATE')) {
-    console.log('📦 Running database migrations...');
-    await db.migrate();
-  }
 });

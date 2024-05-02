@@ -69,6 +69,16 @@ export class Program {
           await db.close();
         },
       })
+      .command({
+        command: 'clean-db',
+        describe: 'Clean database',
+        handler: async () => {
+          await db.connect();
+          await db.clean();
+          await db.close();
+        },
+      })
+
       .help('help')
       .parse();
   }

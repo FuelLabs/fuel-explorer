@@ -4,6 +4,7 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Client } from 'pg';
 import { env } from '~/config';
 
+import { sql } from 'drizzle-orm';
 import * as DbSchema from './DbSchema';
 
 const DB_HOST = env.get('DB_HOST');
@@ -49,6 +50,17 @@ export class Db {
       migrationsTable: 'migrations',
       migrationsSchema: 'public',
     });
+  }
+
+  async clean() {
+    const query = sql`
+      DROP SCHEMA public CASCADE;
+      CREATE SCHEMA public;
+      DROP SCHEMA pgboss CASCADE;
+    `;
+
+    console.log('🚨 Cleaning database...');
+    await this.connection().execute(query);
   }
 
   connectionString() {
