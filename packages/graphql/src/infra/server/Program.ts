@@ -8,7 +8,6 @@ type Arguments = {
   from: number | null;
   clean: boolean;
   last: number | null;
-  offset: number;
   recursive: boolean;
 };
 
@@ -50,12 +49,6 @@ export class Program {
               default: null,
               describe: 'Sync the last N blocks',
             })
-            .option('offset', {
-              alias: 'o',
-              type: 'number',
-              default: 10,
-              describe: 'Number of blocks to sync',
-            })
             .option('recursive', {
               alias: 'r',
               type: 'boolean',
@@ -82,7 +75,7 @@ export class Program {
   }
 
   async sync(argv: Arguments) {
-    const { all, missing, clean, from, offset, last } = argv;
+    const { all, missing, clean, from, last } = argv;
 
     await db.connect();
     await queue.start();
@@ -109,10 +102,7 @@ export class Program {
       return;
     }
     if (all || from) {
-      await queue.pushSingleton(QueueNames.SYNC_BLOCKS, {
-        offset,
-        ...(from && { cursor: from }),
-      });
+      await queue.push(QueueNames.SYNC_BLOCKS, { cursor: from ?? 0 });
       await finish();
       return;
     }

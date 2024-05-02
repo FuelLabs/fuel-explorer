@@ -609,6 +609,9 @@ importers:
       winston:
         specifier: 3.13.0
         version: 3.13.0
+      xstate:
+        specifier: ^5.12.0
+        version: 5.12.0
       yargs:
         specifier: 17.7.2
         version: 17.7.2
@@ -26217,6 +26220,10 @@ packages:
   /xstate@5.0.0-beta.54:
     resolution: {integrity: sha512-BTnCPBQ2iTKe4uCnHEe1hNx6VTbXU+5mQGybSQHOjTLiBi4Ryi+tL9T6N1tmqagvM8rfl4XRfvndogfWCWcdpw==}
     dev: true
+
+  /xstate@5.12.0:
+    resolution: {integrity: sha512-4W/Hj553mwVnTLQ1itc3rni/cGtM5OkjyavTjaxCelc0ZZKE/ks6tYllc98KbekIoUrEPm4CJH/wTB5p5pPGEw==}
+    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

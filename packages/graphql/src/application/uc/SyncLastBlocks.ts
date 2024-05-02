@@ -21,7 +21,6 @@ export class SyncLastBlocks {
 
     await queue.push(QueueNames.SYNC_BLOCKS, {
       cursor: from,
-      offset: props.last,
     });
   }
 }

@@ -22,9 +22,8 @@ export enum QueueNames {
 export type QueueInputs = {
   [QueueNames.SYNC_MISSING]: undefined;
   [QueueNames.SYNC_BLOCKS]: {
-    offset: number;
     cursor?: number;
-    from?: number;
+    offset?: number;
   };
   [QueueNames.SYNC_TRANSACTION]: {
     index: number;
@@ -59,20 +58,6 @@ export class Queue extends PgBoss {
     return this.send(queue, data as object, {
       ...Queue.defaultJobOptions,
       ...options,
-    });
-  }
-
-  pushSingleton<Q extends QueueNames>(
-    queue: Q,
-    data: QueueInputs[Q],
-    options?: PgBoss.JobOptions,
-  ) {
-    console.log(`Pushing job to queue ${queue}`);
-    return this.send(queue, data as object, {
-      ...Queue.defaultJobOptions,
-      ...options,
-      singletonNextSlot: true,
-      useSingletonQueue: true,
     });
   }
 

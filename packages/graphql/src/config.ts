@@ -14,6 +14,9 @@ const schema = zod.object({
   DB_MIGRATE: falsy.optional(),
   SYNC_MISSING: falsy.optional(),
   SERVER_BUILD: falsy.optional(),
+  HAS_RATE_LIMIT: falsy.optional(),
+  SYNC_OFFSET: zod.string().optional().default('10'),
+  SYNC_LIMIT: zod.string().optional().default('1000'),
 });
 
 export const env = new Env(schema, {
@@ -27,4 +30,7 @@ export const env = new Env(schema, {
   SERVER_BUILD: false,
   DB_MIGRATE: false,
   SYNC_MISSING: false,
+  HAS_RATE_LIMIT: false,
+  SYNC_OFFSET: '10',
+  SYNC_LIMIT: '1000',
 });
