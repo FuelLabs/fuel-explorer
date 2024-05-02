@@ -56,7 +56,6 @@ export class Db {
     const query = sql`
       DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;
-      DROP SCHEMA pgboss CASCADE;
     `;
 
     console.log('🚨 Cleaning database...');

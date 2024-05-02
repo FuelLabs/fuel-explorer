@@ -75,6 +75,7 @@ export class Program {
         handler: async () => {
           await db.connect();
           await db.clean();
+          await queue.clearStorage();
           await db.close();
         },
       })
