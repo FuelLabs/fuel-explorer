@@ -2,5 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "pnpm build:preview",
   "installCommand": "pnpm install --frozen-lockfile",
-  "outputDirectory": "packages/app-explorer/.next"
+  "outputDirectory": "packages/app-explorer/.next",
+  "functions": {
+    "app/**/*": {
+      "runtime": "edge",
+      "maxDuration": 5
+    }
+  }
 }
