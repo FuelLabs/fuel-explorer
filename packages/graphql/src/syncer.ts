@@ -7,7 +7,7 @@ const app = httpServer.setup();
 
 httpServer.listen(app, 3001).then(async () => {
   await queue.setupWorkers();
-  console.log(' 📟 Sync running on http://localhost:3001');
+  console.log('📟 Sync running on http://localhost:3001');
 
   console.log('🕐 Syncing missing blocks in 5 seconds...');
   await setTimeout(5000);

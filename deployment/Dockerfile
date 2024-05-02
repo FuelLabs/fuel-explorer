@@ -25,6 +25,7 @@ RUN corepack enable
 # Install dependencies for the entire monorepo
 COPY . /app-explorer
 WORKDIR /app-explorer
+ENV PM2_HOME=/app-explorer/.pm2
 
 # Install dependencies for the entire monorepo
 RUN pnpm install
