@@ -3,7 +3,6 @@ import { assign, createActor, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import type { GQLBlock } from '~/graphql/generated/sdk';
-import { db } from '~/infra/database/Db';
 import {
   type QueueData,
   type QueueInputs,
@@ -88,18 +87,13 @@ class Syncer {
     if (!env.get('IS_DEV_TEST')) {
       const repo = new BlockRepository();
       const { blocks, endCursor } = await repo.blocksFromNode(to - from, from);
+      await queue.push(QueueNames.ADD_BLOCK_RANGE, { blocks });
       const hasBlocks = blocks.length > 0;
-      return db.connection().transaction(async (trx) => {
-        await repo.insertMany(blocks, trx);
-        await queue.push(QueueNames.SYNC_TRANSACTIONS, {
-          blocks: blocks.filter(Boolean),
-        });
 
-        return {
-          endCursor,
-          hasBlocks,
-        };
-      });
+      return {
+        endCursor,
+        hasBlocks,
+      };
     }
     return {
       endCursor: to,

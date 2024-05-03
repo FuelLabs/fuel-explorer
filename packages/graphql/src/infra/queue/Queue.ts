@@ -1,4 +1,5 @@
 import PgBoss, { type Job } from 'pg-boss';
+import { addBlockRange } from '~/application/uc/AddBlockRange';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
@@ -13,10 +14,11 @@ const DB_PASS = env.get('DB_PASS');
 const DB_NAME = env.get('DB_NAME');
 
 export enum QueueNames {
-  SYNC_BLOCKS = 'indexer/sync:blocks',
-  SYNC_MISSING = 'indexer/sync:missing',
-  SYNC_TRANSACTIONS = 'indexer/sync:transactions',
-  SYNC_LAST = 'indexer/sync:last',
+  SYNC_BLOCKS = 'indexer/sync-blocks',
+  ADD_BLOCK_RANGE = 'indexer/add-block-range',
+  SYNC_MISSING = 'indexer/sync-missing',
+  SYNC_TRANSACTIONS = 'indexer/sync-transactions',
+  SYNC_LAST = 'indexer/sync-last',
 }
 
 export type QueueInputs = {
@@ -25,6 +27,9 @@ export type QueueInputs = {
     cursor?: number;
     offset?: number;
     watch?: boolean;
+  };
+  [QueueNames.ADD_BLOCK_RANGE]: {
+    blocks: GQLBlock[];
   };
   [QueueNames.SYNC_TRANSACTIONS]: {
     blocks: GQLBlock[];
@@ -79,7 +84,8 @@ export class Queue extends PgBoss {
   async setupWorkers() {
     const opts = this.workOpts;
     await this.start();
-    await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
+    await this.work(QueueNames.ADD_BLOCK_RANGE, opts, syncBlocks);
+    await this.work(QueueNames.SYNC_BLOCKS, opts, addBlockRange);
     await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
     await this.work(QueueNames.SYNC_TRANSACTIONS, opts, syncTransactions);
     await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);

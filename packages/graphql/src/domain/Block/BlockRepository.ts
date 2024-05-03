@@ -1,10 +1,9 @@
-import c from 'chalk';
 import { desc, eq } from 'drizzle-orm';
 import { values } from 'lodash';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk';
-import { type DbTransaction, db } from '~/infra/database/Db';
+import { type DbConnection, type DbTransaction, db } from '~/infra/database/Db';
 import {
   type TransactionItem,
   TransactionsTable,
@@ -13,19 +12,6 @@ import { BlockEntity } from './BlockEntity';
 import { type BlockItem, BlocksTable } from './BlockModel';
 
 export class BlockRepository {
-  async findByHash(blockHash: string) {
-    const first = await db.connection().query.BlocksTable.findFirst({
-      where: eq(BlocksTable.blockHash, blockHash),
-      with: {
-        transactions: true,
-      },
-    });
-
-    if (!first) return null;
-    const { transactions, ...block } = first;
-    return BlockEntity.create(block, transactions);
-  }
-
   async findByHeight(height: number) {
     const first = await db.connection().query.BlocksTable.findFirst({
       where: eq(BlocksTable._id, height),
@@ -83,37 +69,16 @@ export class BlockRepository {
     return BlockEntity.create(block, transactions);
   }
 
-  async insertOne(block: GQLBlock) {
-    const found = await this.findByHash(block.id);
-    if (found) {
-      throw new Error(`Block ${block.id} already exists`);
-    }
-
-    const [item] = await db
-      .connection()
-      .insert(BlocksTable)
-      .values(BlockEntity.toDBItem(block))
-      .returning();
-
-    return BlockEntity.create(item, []);
+  async upsertOne(block: GQLBlock) {
+    const upsertOne = this.createUpsertOne(db.connection());
+    return upsertOne(block);
   }
 
-  async insertMany(blocks: GQLBlock[], trx: DbTransaction) {
-    const queries = blocks.map(async (block) => {
-      const found = await this.findByHash(block.id);
-      if (found) {
-        console.log(c.red(`Block ${block.header.height} already exists`));
-        return null;
-      }
-
-      const [item] = await trx
-        .insert(BlocksTable)
-        .values(BlockEntity.toDBItem(block))
-        .returning();
-
-      return BlockEntity.create(item, []);
+  async upsertMany(blocks: GQLBlock[]) {
+    return db.connection().transaction(async (trx) => {
+      const queries = blocks.map(this.createUpsertOne(trx));
+      return Promise.all(queries.filter(Boolean));
     });
-    return Promise.all(queries.filter(Boolean));
   }
 
   async blocksFromNode(first: number, after?: number) {
@@ -139,5 +104,19 @@ export class BlockRepository {
     const { sdk } = new GraphQLSDK();
     const { data } = await sdk.blocks({ last: 1 });
     return data.blocks.nodes[0] as GQLBlock;
+  }
+
+  private createUpsertOne(conn: DbConnection | DbTransaction) {
+    return async (block: GQLBlock) => {
+      const [item] = await conn
+        .insert(BlocksTable)
+        .values(BlockEntity.toDBItem(block))
+        .onConflictDoUpdate({
+          target: [BlocksTable._id],
+          set: { data: block },
+        })
+        .returning();
+      return BlockEntity.create(item, []);
+    };
   }
 }
