@@ -34,4 +34,4 @@ RUN pnpm add -g pm2 tsx
 # Expose the specified port
 EXPOSE ${SERVER_PORT}
 WORKDIR /app-explorer
-CMD ["/app-explorer/scripts/run.sh"]
+CMD ["./scripts/run.sh"]
