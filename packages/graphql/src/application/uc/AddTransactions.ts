@@ -11,12 +11,11 @@ import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
 import type { GQLBlock } from '~/graphql/generated/sdk';
 import { db } from '~/infra/database/Db';
-import type { QueueData } from '~/infra/queue/Queue';
 import type { SyncTransactionEvent } from './SyncTransactions';
 
 type Input = SyncTransactionEvent[];
 
-export class RunTransactionsWorker {
+export class AddTransactions {
   async execute(input: Input) {
     await Promise.all(input.map((event) => this.syncTransaction(event)));
   }
@@ -135,11 +134,11 @@ export class RunTransactionsWorker {
   }
 }
 
-export const runTransactionsWorker = async ({ data }: QueueData<Input>) => {
+export const addTransactions = async (data: Input) => {
   await db.connect();
   try {
-    const syncTransactions = new RunTransactionsWorker();
-    await syncTransactions.execute(data);
+    const { execute } = new AddTransactions();
+    await execute(data);
   } catch (error) {
     console.error(error);
     throw new Error('Sync transactions', {

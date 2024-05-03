@@ -2,7 +2,7 @@ import c from 'chalk';
 import { uniqBy } from 'lodash';
 import type { GQLBlock } from '~/graphql/generated/sdk';
 import type { QueueData, QueueInputs, QueueNames } from '~/infra/queue/Queue';
-import { pool } from '~/infra/worker/WorkerPool';
+import { addTransactions } from './AddTransactions';
 
 type Input = QueueInputs[QueueNames.SYNC_TRANSACTIONS];
 export type SyncTransactionEvent = {
@@ -28,7 +28,7 @@ export class SyncTransactions {
       const toBlock = blocks[blocks.length - 1].header.height;
       const msg = `# Syncing ${events.length} transactions from ${fromBlock} to ${toBlock}`;
       console.log(c.gray(msg));
-      await pool.run({ data: events });
+      await addTransactions(events);
     }
   }
 }

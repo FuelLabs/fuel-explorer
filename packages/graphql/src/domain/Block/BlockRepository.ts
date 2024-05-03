@@ -12,6 +12,19 @@ import { BlockEntity } from './BlockEntity';
 import { type BlockItem, BlocksTable } from './BlockModel';
 
 export class BlockRepository {
+  async findByHash(blockHash: string) {
+    const first = await db.connection().query.BlocksTable.findFirst({
+      where: eq(BlocksTable.blockHash, blockHash),
+      with: {
+        transactions: true,
+      },
+    });
+
+    if (!first) return null;
+    const { transactions, ...block } = first;
+    return BlockEntity.create(block, transactions);
+  }
+
   async findByHeight(height: number) {
     const first = await db.connection().query.BlocksTable.findFirst({
       where: eq(BlocksTable._id, height),

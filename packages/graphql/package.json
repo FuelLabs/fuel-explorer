@@ -74,7 +74,6 @@
     "npm-run-all": "^4.1.5",
     "pg": "^8.11.5",
     "pg-boss": "9.0.3",
-    "piscina": "4.4.0",
     "pm2": "5.3.1",
     "shallow-equal-object": "1.1.1",
     "tai64": "^1.0.0",
