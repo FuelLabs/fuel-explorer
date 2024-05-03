@@ -15,7 +15,6 @@ docker run \
   -e FUEL_PROVIDER=http://beta-5.fuel.network/graphql \
   -e SERVER_PORT=3000 \
   -e SYNC_MISSING=true \
-  -e DB_MIGRATE=true \
   -e DB_HOST=192.168.3.240 \
   -e DB_PORT=5435 \
   -e DB_USER=postgres \
