@@ -41,8 +41,8 @@ export type QueueData<T = unknown> = Job<T>;
 
 export class Queue extends PgBoss {
   private workOpts: PgBoss.WorkOptions = {
-    teamSize: 250,
-    teamConcurrency: 250,
+    teamSize: 500,
+    teamConcurrency: 500,
   };
 
   static defaultJobOptions: PgBoss.RetryOptions = {
