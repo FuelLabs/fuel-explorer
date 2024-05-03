@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo "Running Server"
-pnpm db:migrate && pm2-runtime ecosystem.config.cjs
+pnpm db:migrate && pnpm server:start

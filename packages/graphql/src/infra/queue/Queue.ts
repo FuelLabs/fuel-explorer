@@ -2,7 +2,7 @@ import PgBoss, { type Job } from 'pg-boss';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
-import { syncTransactions } from '~/application/uc/SyncTransaction';
+import { syncTransaction } from '~/application/uc/SyncTransaction';
 import { env } from '~/config';
 import type { GQLBlock } from '~/graphql/generated/sdk';
 
@@ -43,10 +43,11 @@ export class Queue extends PgBoss {
   private workOpts: PgBoss.WorkOptions = {
     teamSize: Number(env.get('QUEUE_CONCURRENCY')),
     teamConcurrency: Number(env.get('QUEUE_CONCURRENCY')),
+    teamRefill: true,
   };
 
   static defaultJobOptions: PgBoss.RetryOptions = {
-    retryLimit: 1,
+    retryLimit: 3,
     retryDelay: 1,
     retryBackoff: false,
   };
@@ -82,7 +83,7 @@ export class Queue extends PgBoss {
     await this.start();
     await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
     await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
-    await this.work(QueueNames.SYNC_TRANSACTION, opts, syncTransactions);
+    await this.work(QueueNames.SYNC_TRANSACTION, opts, syncTransaction);
     await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
     console.log('⚡️ Queue running');
   }

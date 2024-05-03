@@ -128,6 +128,10 @@ class Syncer {
     });
 
     if (events.length) {
+      const fromBlock = filtered[0].data.header.height;
+      const toBlock = filtered[filtered.length - 1].data.header.height;
+      const msg = `# Syncing ${events.length} transactions from ${fromBlock} to ${toBlock}`;
+      console.log(c.gray(msg));
       await queue.pushBatch(QueueNames.SYNC_TRANSACTION, events);
     }
   }
