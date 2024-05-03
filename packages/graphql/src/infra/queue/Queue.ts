@@ -84,8 +84,8 @@ export class Queue extends PgBoss {
   async setupWorkers() {
     const opts = this.workOpts;
     await this.start();
-    await this.work(QueueNames.ADD_BLOCK_RANGE, opts, syncBlocks);
-    await this.work(QueueNames.SYNC_BLOCKS, opts, addBlockRange);
+    await this.work(QueueNames.ADD_BLOCK_RANGE, opts, addBlockRange);
+    await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
     await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
     await this.work(QueueNames.SYNC_TRANSACTIONS, opts, syncTransactions);
     await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
