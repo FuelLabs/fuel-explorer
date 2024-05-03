@@ -16,7 +16,8 @@ const schema = zod.object({
   SERVER_BUILD: falsy.optional(),
   IS_DEV_TEST: falsy.optional(),
   SYNC_OFFSET: zod.string().optional().default('10'),
-  SYNC_LIMIT: zod.string().optional().default('1000'),
+  SYNC_LIMIT: zod.string().optional().default('10000'),
+  QUEUE_CONCURRENCY: zod.string().optional().default('500'),
 });
 
 export const env = new Env(schema, {
@@ -32,5 +33,6 @@ export const env = new Env(schema, {
   SYNC_MISSING: false,
   IS_DEV_TEST: false,
   SYNC_OFFSET: '10',
-  SYNC_LIMIT: '1000',
+  SYNC_LIMIT: '10000',
+  QUEUE_CONCURRENCY: '500',
 });
