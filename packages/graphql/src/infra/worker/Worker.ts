@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { runTransactionWorker } from '~/application/uc/RunTransactionWorker';
+import { runTransactionsWorker } from '~/application/uc/RunTransactionsWorker';
 
 export const workerFilepath = path.resolve(__filename);
-export default runTransactionWorker;
+export default runTransactionsWorker;

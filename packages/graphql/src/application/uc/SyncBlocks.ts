@@ -1,10 +1,9 @@
 import c from 'chalk';
-import { uniqBy } from 'lodash';
 import { assign, createActor, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
-import type { BlockEntity } from '~/domain/Block/BlockEntity';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import type { GQLBlock } from '~/graphql/generated/sdk';
+import { db } from '~/infra/database/Db';
 import {
   type QueueData,
   type QueueInputs,
@@ -90,13 +89,17 @@ class Syncer {
       const repo = new BlockRepository();
       const { blocks, endCursor } = await repo.blocksFromNode(to - from, from);
       const hasBlocks = blocks.length > 0;
-      const created = await repo.insertMany(blocks);
-      await this.syncTransactions(created);
+      return db.connection().transaction(async (trx) => {
+        await repo.insertMany(blocks, trx);
+        await queue.push(QueueNames.SYNC_TRANSACTIONS, {
+          blocks: blocks.filter(Boolean),
+        });
 
-      return {
-        endCursor,
-        hasBlocks,
-      };
+        return {
+          endCursor,
+          hasBlocks,
+        };
+      });
     }
     return {
       endCursor: to,
@@ -112,28 +115,6 @@ class Syncer {
       from: cursor,
       to: height,
     });
-  }
-
-  private async syncTransactions(blocks: (BlockEntity | null)[]) {
-    const filtered = blocks.filter(Boolean) as BlockEntity[];
-    const events = filtered.flatMap((block) => {
-      const txs = uniqBy(block.data.transactions, 'id');
-      return txs.map<QueueInputs[QueueNames.SYNC_TRANSACTION]>(
-        (transaction, idx) => ({
-          index: idx,
-          block: block.data,
-          txHash: transaction.id,
-        }),
-      );
-    });
-
-    if (events.length) {
-      const fromBlock = filtered[0].data.header.height;
-      const toBlock = filtered[filtered.length - 1].data.header.height;
-      const msg = `# Syncing ${events.length} transactions from ${fromBlock} to ${toBlock}`;
-      console.log(c.gray(msg));
-      await queue.pushBatch(QueueNames.SYNC_TRANSACTION, events);
-    }
   }
 }
 

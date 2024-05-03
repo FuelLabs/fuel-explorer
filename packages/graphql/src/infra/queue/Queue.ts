@@ -2,7 +2,7 @@ import PgBoss, { type Job } from 'pg-boss';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
-import { syncTransaction } from '~/application/uc/SyncTransaction';
+import { syncTransactions } from '~/application/uc/SyncTransactions';
 import { env } from '~/config';
 import type { GQLBlock } from '~/graphql/generated/sdk';
 
@@ -15,7 +15,7 @@ const DB_NAME = env.get('DB_NAME');
 export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync:blocks',
   SYNC_MISSING = 'indexer/sync:missing',
-  SYNC_TRANSACTION = 'indexer/sync:transaction',
+  SYNC_TRANSACTIONS = 'indexer/sync:transactions',
   SYNC_LAST = 'indexer/sync:last',
 }
 
@@ -26,10 +26,8 @@ export type QueueInputs = {
     offset?: number;
     watch?: boolean;
   };
-  [QueueNames.SYNC_TRANSACTION]: {
-    index: number;
-    block: GQLBlock;
-    txHash: string;
+  [QueueNames.SYNC_TRANSACTIONS]: {
+    blocks: GQLBlock[];
   };
   [QueueNames.SYNC_LAST]: {
     last: number;
@@ -83,8 +81,9 @@ export class Queue extends PgBoss {
     await this.start();
     await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
     await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
-    await this.work(QueueNames.SYNC_TRANSACTION, opts, syncTransaction);
+    await this.work(QueueNames.SYNC_TRANSACTIONS, opts, syncTransactions);
     await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
+    await this.start();
     console.log('⚡️ Queue running');
   }
 }

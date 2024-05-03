@@ -4,15 +4,13 @@ import { values } from 'lodash';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk';
-import { db } from '~/infra/database/Db';
-import { BlockEntity } from './BlockEntity';
-import { type BlockItem, BlocksTable } from './BlockModel';
-
-import { Address } from '~/core/Address';
+import { type DbTransaction, db } from '~/infra/database/Db';
 import {
   type TransactionItem,
   TransactionsTable,
 } from '../Transaction/TransactionModel';
+import { BlockEntity } from './BlockEntity';
+import { type BlockItem, BlocksTable } from './BlockModel';
 
 export class BlockRepository {
   async findByHash(blockHash: string) {
@@ -100,24 +98,22 @@ export class BlockRepository {
     return BlockEntity.create(item, []);
   }
 
-  async insertMany(blocks: GQLBlock[]) {
-    return db.connection().transaction(async (trx) => {
-      const queries = blocks.map(async (block) => {
-        const found = await this.findByHash(block.id);
-        if (found) {
-          console.log(c.red(`Block ${block.header.height} already exists`));
-          return null;
-        }
+  async insertMany(blocks: GQLBlock[], trx: DbTransaction) {
+    const queries = blocks.map(async (block) => {
+      const found = await this.findByHash(block.id);
+      if (found) {
+        console.log(c.red(`Block ${block.header.height} already exists`));
+        return null;
+      }
 
-        const [item] = await trx
-          .insert(BlocksTable)
-          .values(BlockEntity.toDBItem(block))
-          .returning();
+      const [item] = await trx
+        .insert(BlocksTable)
+        .values(BlockEntity.toDBItem(block))
+        .returning();
 
-        return BlockEntity.create(item, []);
-      });
-      return Promise.all(queries.filter(Boolean));
+      return BlockEntity.create(item, []);
     });
+    return Promise.all(queries.filter(Boolean));
   }
 
   async blocksFromNode(first: number, after?: number) {
