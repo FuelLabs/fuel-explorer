@@ -10,8 +10,9 @@ type Input = QueueInputs[QueueNames.ADD_BLOCK_RANGE];
 
 export class AddBlockRange {
   async execute({ data }: QueueData<Input>) {
-    const { blocks } = data;
+    const { from, to } = data;
     const repo = new BlockRepository();
+    const { blocks } = await repo.blocksFromNode(to - from, from);
     await repo.upsertMany(blocks);
     await queue.push(QueueNames.SYNC_TRANSACTIONS, { blocks });
   }

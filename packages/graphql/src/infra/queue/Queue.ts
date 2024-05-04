@@ -29,7 +29,8 @@ export type QueueInputs = {
     watch?: boolean;
   };
   [QueueNames.ADD_BLOCK_RANGE]: {
-    blocks: GQLBlock[];
+    from: number;
+    to: number;
   };
   [QueueNames.SYNC_TRANSACTIONS]: {
     blocks: GQLBlock[];

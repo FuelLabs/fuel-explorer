@@ -22,7 +22,6 @@ type Context = Input & {
 
 type EventsReturn = {
   endCursor: number | undefined;
-  hasBlocks: boolean;
 };
 
 class Syncer {
@@ -31,7 +30,7 @@ class Syncer {
     return repo.latestBlockFromNode();
   }
 
-  private getLastBlockHeight(ctx: Context) {
+  getLastBlockHeight(ctx: Context) {
     return Number(ctx.lastBlock?.header.height ?? '0');
   }
 
@@ -85,20 +84,10 @@ class Syncer {
   private async syncBlocksRange({ from, to }: { from: number; to: number }) {
     console.log(c.gray(`🔄 Syncing blocks from ${from} to ${to}`));
     if (!env.get('IS_DEV_TEST')) {
-      const repo = new BlockRepository();
-      const { blocks, endCursor } = await repo.blocksFromNode(to - from, from);
-      await queue.push(QueueNames.ADD_BLOCK_RANGE, { blocks });
-      const hasBlocks = blocks.length > 0;
-
-      return {
-        endCursor,
-        hasBlocks,
-      };
+      await queue.push(QueueNames.ADD_BLOCK_RANGE, { from, to });
+      return { endCursor: to };
     }
-    return {
-      endCursor: to,
-      hasBlocks: true,
-    };
+    return { endCursor: to };
   }
 
   async syncMissingBlocks(ctx: Context) {
@@ -136,7 +125,9 @@ const machine = setup({
   },
   guards: {
     hasMoreEvents: ({ context }) => {
-      return context.lastResult?.hasBlocks ?? false;
+      const endCursor = context.lastResult?.endCursor ?? 0;
+      const lastBlockHeight = syncer.getLastBlockHeight(context);
+      return Boolean(endCursor < lastBlockHeight);
     },
     needToWatch: ({ context }) => {
       return Boolean(context.watch);
