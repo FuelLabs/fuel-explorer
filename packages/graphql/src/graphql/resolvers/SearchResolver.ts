@@ -3,6 +3,7 @@ import { ResolverAdapter } from '~/core/Resolver';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
+import { db } from '~/infra/database/Db';
 
 type Params = {
   search: { query: string };
@@ -10,9 +11,13 @@ type Params = {
 
 class SearchResolver extends ResolverAdapter<null> {
   private constructor(
-    private readonly transactionRepository = new TransactionRepository(),
-    private readonly contractRepository = new ContractRepository(),
     private readonly blockRepository = new BlockRepository(),
+    private readonly transactionRepository = new TransactionRepository(
+      db.connection(),
+    ),
+    private readonly contractRepository = new ContractRepository(
+      db.connection(),
+    ),
   ) {
     super();
     this.setResolvers({

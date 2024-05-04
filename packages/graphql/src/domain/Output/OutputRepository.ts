@@ -1,14 +1,15 @@
 import { eq } from 'drizzle-orm';
 import type { GQLOutput } from '~/graphql/generated/sdk';
-import { db } from '~/infra/database/Db';
+import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import type { TxID } from '../Transaction/vo/TransactionModelID';
 import { OutputEntity } from './OutputEntity';
 import { OutputsTable } from './OutputModel';
 
 export class OutputRepository {
+  constructor(readonly conn: DbConnection | DbTransaction) {}
+
   async findById(id: number) {
-    const [first] = await db
-      .connection()
+    const [first] = await this.conn
       .select()
       .from(OutputsTable)
       .where(eq(OutputsTable._id, id));
@@ -18,8 +19,7 @@ export class OutputRepository {
   }
 
   async insertOne(output: GQLOutput, transactionId: TxID) {
-    const [item] = await db
-      .connection()
+    const [item] = await this.conn
       .insert(OutputsTable)
       .values(OutputEntity.toDBItem(output, transactionId))
       .returning();
@@ -28,16 +28,14 @@ export class OutputRepository {
   }
 
   async insertMany(outputs: GQLOutput[], transactionId: TxID) {
-    return db.connection().transaction(async (trx) => {
-      const queries = outputs.map(async (output) => {
-        const [item] = await trx
-          .insert(OutputsTable)
-          .values(OutputEntity.toDBItem(output, transactionId))
-          .returning();
+    const queries = outputs.map(async (output) => {
+      const [item] = await this.conn
+        .insert(OutputsTable)
+        .values(OutputEntity.toDBItem(output, transactionId))
+        .returning();
 
-        return OutputEntity.create(item, item._id);
-      });
-      return Promise.all(queries.filter(Boolean));
+      return OutputEntity.create(item, item._id);
     });
+    return Promise.all(queries.filter(Boolean));
   }
 }

@@ -2,23 +2,22 @@ import { eq, like } from 'drizzle-orm';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { GraphQLSDK } from '~/graphql/GraphQLSDK';
 import type { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
-import { db } from '~/infra/database/Db';
+import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { TransactionEntity } from './TransactionEntity';
 import { TransactionsTable } from './TransactionModel';
 
 export class TransactionRepository {
+  constructor(readonly conn: DbConnection | DbTransaction) {}
+
   async findByHash(id: string) {
-    const transaction = await db
-      .connection()
-      .query.TransactionsTable.findFirst({
-        where: eq(TransactionsTable.txHash, id),
-        with: {
-          operations: true,
-        },
-      });
+    const transaction = await this.conn.query.TransactionsTable.findFirst({
+      where: eq(TransactionsTable.txHash, id),
+      with: {
+        operations: true,
+      },
+    });
 
     if (!transaction) return null;
-
     return TransactionEntity.create(transaction);
   }
 
@@ -44,7 +43,9 @@ export class TransactionRepository {
   }
 
   async insertOne(txHash: string, block: GQLBlock, index: number) {
-    const found = await this.findByHash(txHash);
+    const found = await this.conn.query.TransactionsTable.findFirst({
+      where: eq(TransactionsTable.txHash, txHash),
+    });
     if (found) return null;
 
     const { sdk } = new GraphQLSDK();
@@ -53,8 +54,7 @@ export class TransactionRepository {
     if (!transaction) throw new Error('Transaction not found');
 
     const dbItem = await TransactionEntity.toDBItem(block, transaction, index);
-    const [item] = await db
-      .connection()
+    const [item] = await this.conn
       .insert(TransactionsTable)
       .values(dbItem)
       .returning();

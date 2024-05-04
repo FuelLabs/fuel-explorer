@@ -1,6 +1,7 @@
 import { ResolverAdapter } from '~/core/Resolver';
 import type { PredicateItem } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
+import { db } from '~/infra/database/Db';
 
 type Source = PredicateItem;
 type Params = {
@@ -9,7 +10,9 @@ type Params = {
 
 class PredicateResolver extends ResolverAdapter<Source> {
   private constructor(
-    private readonly predicateRepository = new PredicateRepository(),
+    private readonly predicateRepository = new PredicateRepository(
+      db.connection(),
+    ),
   ) {
     super();
     this.setResolvers({

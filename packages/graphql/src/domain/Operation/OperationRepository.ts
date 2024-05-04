@@ -4,16 +4,17 @@ import type {
   GQLOperation,
   GQLQueryOperationsArgs,
 } from '~/graphql/generated/sdk';
-import { db } from '~/infra/database/Db';
+import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { TransactionsTable } from '../Transaction/TransactionModel';
 import type { TxID } from '../Transaction/vo/TransactionModelID';
 import { OperationEntity } from './OperationEntity';
 import { OperationsTable } from './OperationModel';
 
 export class OperationRepository {
+  constructor(readonly conn: DbConnection | DbTransaction) {}
+
   async findById(id: number) {
-    const [first] = await db
-      .connection()
+    const [first] = await this.conn
       .select()
       .from(OperationsTable)
       .where(eq(OperationsTable._id, id));
@@ -33,15 +34,13 @@ export class OperationRepository {
   }
 
   async insertOne(operation: GQLOperation, transactionId: TxID) {
-    const [transaction] = await db
-      .connection()
+    const [transaction] = await this.conn
       .select()
       .from(TransactionsTable)
       .where(eq(TransactionsTable._id, transactionId))
       .limit(1);
 
-    const [item] = await db
-      .connection()
+    const [item] = await this.conn
       .insert(OperationsTable)
       .values(OperationEntity.toDBItem(operation, transaction))
       .returning();
@@ -49,22 +48,20 @@ export class OperationRepository {
   }
 
   async insertMany(operations: GQLOperation[], transactionId: TxID) {
-    return db.connection().transaction(async (trx) => {
-      const queries = operations.map(async (operation) => {
-        const [transaction] = await trx
-          .select()
-          .from(TransactionsTable)
-          .where(eq(TransactionsTable._id, transactionId))
-          .limit(1);
+    const queries = operations.map(async (operation) => {
+      const [transaction] = await this.conn
+        .select()
+        .from(TransactionsTable)
+        .where(eq(TransactionsTable._id, transactionId))
+        .limit(1);
 
-        const [item] = await trx
-          .insert(OperationsTable)
-          .values(OperationEntity.toDBItem(operation, transaction))
-          .returning();
+      const [item] = await this.conn
+        .insert(OperationsTable)
+        .values(OperationEntity.toDBItem(operation, transaction))
+        .returning();
 
-        return OperationEntity.create(item, item._id);
-      });
-      return Promise.all(queries.filter(Boolean));
+      return OperationEntity.create(item, item._id);
     });
+    return Promise.all(queries.filter(Boolean));
   }
 }

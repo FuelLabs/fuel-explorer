@@ -6,6 +6,7 @@ import type {
   GQLOperation,
   GQLQueryOperationsArgs,
 } from '~/graphql/generated/sdk';
+import { db } from '~/infra/database/Db';
 
 type Source = GQLOperation;
 type Params = {
@@ -14,7 +15,9 @@ type Params = {
 
 class OperationResolver extends ResolverAdapter<Source> {
   private constructor(
-    private readonly operationRepository = new OperationRepository(),
+    private readonly operationRepository = new OperationRepository(
+      db.connection(),
+    ),
   ) {
     super();
     this.setResolvers({

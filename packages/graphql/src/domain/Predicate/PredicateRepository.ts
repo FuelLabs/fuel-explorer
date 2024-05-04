@@ -1,12 +1,13 @@
 import { eq } from 'drizzle-orm';
-import { db } from '~/infra/database/Db';
+import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { PredicateEntity } from './PredicateEntity';
 import { type PredicatePayload, PredicatesTable } from './PredicateModel';
 
 export class PredicateRepository {
+  constructor(readonly conn: DbConnection | DbTransaction) {}
+
   async findByAddress(address: string) {
-    const [first] = await db
-      .connection()
+    const [first] = await this.conn
       .select()
       .from(PredicatesTable)
       .where(eq(PredicatesTable.address, address))
@@ -20,8 +21,7 @@ export class PredicateRepository {
     const found = await this.findByAddress(predicate.address);
     if (found) return;
 
-    const [item] = await db
-      .connection()
+    const [item] = await this.conn
       .insert(PredicatesTable)
       .values(PredicateEntity.toDBItem(predicate))
       .returning();

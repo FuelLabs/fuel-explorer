@@ -9,6 +9,7 @@ import type {
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk';
+import { db } from '~/infra/database/Db';
 import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLTransaction;
@@ -20,7 +21,9 @@ type Params = {
 
 class TransactionResolver extends ResolverAdapter<Source> {
   private constructor(
-    private readonly transactionRepository = new TransactionRepository(),
+    private readonly transactionRepository = new TransactionRepository(
+      db.connection(),
+    ),
   ) {
     super();
     this.setResolvers({

@@ -8,6 +8,7 @@ import type {
   GQLQueryContractBalanceArgs,
   GQLQueryContractBalancesArgs,
 } from '~/graphql/generated/sdk';
+import { db } from '~/infra/database/Db';
 import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLContract;
@@ -20,7 +21,9 @@ type Params = {
 
 class ContractResolver extends ResolverAdapter<Source> {
   private constructor(
-    private readonly contractRepository = new ContractRepository(),
+    private readonly contractRepository = new ContractRepository(
+      db.connection(),
+    ),
   ) {
     super();
     this.setResolvers({

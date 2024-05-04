@@ -1,14 +1,15 @@
 import { eq } from 'drizzle-orm';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import type { GQLContract } from '~/graphql/generated/sdk';
-import { db } from '~/infra/database/Db';
+import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { ContractEntity } from './ContractEntity';
 import { ContractsTable } from './ContractModel';
 
 export class ContractRepository {
+  constructor(readonly conn: DbConnection | DbTransaction) {}
+
   async findByHash(id: string) {
-    const [first] = await db
-      .connection()
+    const [first] = await this.conn
       .select()
       .from(ContractsTable)
       .where(eq(ContractsTable.contractHash, id));
@@ -26,8 +27,7 @@ export class ContractRepository {
   }
 
   async insertOne(contract: GQLContract) {
-    const [item] = await db
-      .connection()
+    const [item] = await this.conn
       .insert(ContractsTable)
       .values(ContractEntity.toDBItem(contract))
       .returning();
@@ -36,16 +36,14 @@ export class ContractRepository {
   }
 
   async insertMany(contracts: GQLContract[]) {
-    return db.connection().transaction(async (trx) => {
-      const queries = contracts.map(async (contract) => {
-        const [item] = await trx
-          .insert(ContractsTable)
-          .values(ContractEntity.toDBItem(contract))
-          .returning();
+    const queries = contracts.map(async (contract) => {
+      const [item] = await this.conn
+        .insert(ContractsTable)
+        .values(ContractEntity.toDBItem(contract))
+        .returning();
 
-        return ContractEntity.create(item);
-      });
-      return Promise.all(queries.filter(Boolean));
+      return ContractEntity.create(item);
     });
+    return Promise.all(queries.filter(Boolean));
   }
 }
