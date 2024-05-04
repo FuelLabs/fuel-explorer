@@ -17,7 +17,7 @@ type Input = SyncTransactionEvent[];
 
 export class AddTransactions {
   async execute(input: Input) {
-    await Promise.all(input.map((event) => this.syncTransaction(event)));
+    await Promise.all(input.map(this.syncTransaction.bind(this)));
   }
 
   private async syncTransaction({
@@ -137,15 +137,13 @@ export class AddTransactions {
 export const addTransactions = async (data: Input) => {
   await db.connect();
   try {
-    const { execute } = new AddTransactions();
-    await execute(data);
+    const instance = new AddTransactions();
+    await instance.execute(data);
   } catch (error) {
     console.error(error);
     throw new Error('Sync transactions', {
       cause: error,
     });
-  } finally {
-    await db.close();
   }
 };
 
