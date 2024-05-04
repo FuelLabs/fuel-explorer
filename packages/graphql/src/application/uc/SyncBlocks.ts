@@ -87,7 +87,7 @@ class Syncer {
       await queue.push(
         QueueNames.ADD_BLOCK_RANGE,
         { from, to },
-        { priority: 1 },
+        { priority: 2 },
       );
       return { endCursor: to };
     }
