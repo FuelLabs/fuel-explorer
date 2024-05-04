@@ -17,6 +17,7 @@ const schema = zod.object({
   SYNC_OFFSET: zod.string().optional().default('10'),
   SYNC_LIMIT: zod.string().optional().default('10000'),
   QUEUE_CONCURRENCY: zod.string().optional().default('1000'),
+  WATCH_INTERVAL: zod.string().optional().default('5000'),
 });
 
 export const env = new Env(schema, {
@@ -33,4 +34,5 @@ export const env = new Env(schema, {
   SYNC_OFFSET: '10',
   SYNC_LIMIT: '10000',
   QUEUE_CONCURRENCY: '1000',
+  WATCH_INTERVAL: '5000',
 });

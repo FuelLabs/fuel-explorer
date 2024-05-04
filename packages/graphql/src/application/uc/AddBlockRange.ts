@@ -14,7 +14,7 @@ export class AddBlockRange {
     const repo = new BlockRepository();
     const { blocks } = await repo.blocksFromNode(to - from, from);
     await repo.upsertMany(blocks);
-    await queue.push(QueueNames.SYNC_TRANSACTIONS, { blocks });
+    await queue.push(QueueNames.SYNC_TRANSACTIONS, { blocks }, { priority: 1 });
   }
 }
 
@@ -22,6 +22,7 @@ export const addBlockRange = async (input: QueueData<Input>) => {
   try {
     const { execute } = new AddBlockRange();
     await execute(input);
+    await queue.complete(input.id);
   } catch (error) {
     console.error(error);
     throw new Error('Sync transactions', {

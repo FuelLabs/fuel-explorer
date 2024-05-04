@@ -1,3 +1,4 @@
+import c from 'chalk';
 import PgBoss, { type Job } from 'pg-boss';
 import { addBlockRange } from '~/application/uc/AddBlockRange';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
@@ -92,6 +93,19 @@ export class Queue extends PgBoss {
     await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
     await this.start();
     console.log('⚡️ Queue running');
+  }
+
+  async hasActiveJobs() {
+    const batchSize = Number(env.get('QUEUE_CONCURRENCY'));
+    const results = await Promise.all([
+      queue.fetch(QueueNames.SYNC_BLOCKS, batchSize),
+      queue.fetch(QueueNames.ADD_BLOCK_RANGE, batchSize),
+      queue.fetch(QueueNames.SYNC_TRANSACTIONS, batchSize),
+    ]);
+    console.log(c.gray(`⌛️ Active Blocks: ${results[0]?.length ?? 0}`));
+    console.log(c.gray(`⌛️ Active Range: ${results[1]?.length ?? 0}`));
+    console.log(c.gray(`⌛️ Active Transactions: ${results[2]?.length ?? 0}`));
+    return results.some((result) => Boolean(result?.length ?? 0 > 0));
   }
 }
 

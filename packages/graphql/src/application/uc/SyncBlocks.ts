@@ -84,7 +84,11 @@ class Syncer {
   private async syncBlocksRange({ from, to }: { from: number; to: number }) {
     console.log(c.gray(`🔄 Syncing blocks from ${from} to ${to}`));
     if (!env.get('IS_DEV_TEST')) {
-      await queue.push(QueueNames.ADD_BLOCK_RANGE, { from, to });
+      await queue.push(
+        QueueNames.ADD_BLOCK_RANGE,
+        { from, to },
+        { priority: 1 },
+      );
       return { endCursor: to };
     }
     return { endCursor: to };
@@ -102,6 +106,8 @@ class Syncer {
 }
 
 const syncer = new Syncer();
+const WATCH_INTERVAL = Number(env.get('WATCH_INTERVAL'));
+
 const machine = setup({
   types: {} as {
     context: Context;
@@ -122,6 +128,9 @@ const machine = setup({
         return syncer.syncMissingBlocks(context);
       },
     ),
+    hasActiveJobs: fromPromise<boolean>(async () => {
+      return queue.hasActiveJobs();
+    }),
   },
   guards: {
     hasMoreEvents: ({ context }) => {
@@ -181,55 +190,93 @@ const machine = setup({
     checking: {
       always: [
         { target: 'syncingBlocks', guard: 'hasMoreEvents' },
-        { target: 'waiting', guard: 'needToWatch' },
+        { target: 'waitingQueueJobs', guard: 'needToWatch' },
         { target: 'idle' },
       ],
     },
-    waiting: {
-      after: {
-        1000: {
-          target: 'syncingMissingBlocks',
+    waitingQueueJobs: {
+      initial: 'fetching',
+      states: {
+        fetching: {
+          invoke: {
+            id: 'checkQueue',
+            src: 'hasActiveJobs',
+            onDone: [
+              { target: 'waiting', guard: ({ event }) => event.output },
+              { target: 'finished' },
+            ],
+          },
         },
+        waiting: {
+          after: {
+            60000: 'fetching',
+          },
+        },
+        finished: {
+          type: 'final',
+        },
+      },
+      onDone: {
+        target: 'syncingMissingBlocks',
       },
     },
     syncingMissingBlocks: {
-      invoke: {
-        src: 'syncMissingBlocks',
-        input: ({ context }) => context,
-        onDone: {
-          target: 'resettingLastBlock',
-          actions: assign({
-            lastResult: ({ event }) => event.output,
-            cursor: ({ context, event }) => {
-              return event.output?.endCursor ?? context.cursor;
+      initial: 'syncing',
+      states: {
+        syncing: {
+          invoke: {
+            src: 'syncMissingBlocks',
+            input: ({ context }) => context,
+            onDone: {
+              target: 'resettingLastBlock',
+              actions: assign({
+                lastResult: ({ event }) => event.output,
+                cursor: ({ context, event }) => {
+                  return event.output?.endCursor ?? context.cursor;
+                },
+              }),
             },
-          }),
+          },
         },
-      },
-    },
-    resettingLastBlock: {
-      invoke: {
-        src: 'getLatestBlock',
-        onDone: {
-          target: 'waiting',
-          actions: assign({
-            lastBlock: ({ event }) => event.output,
-          }),
+        waiting: {
+          after: {
+            [WATCH_INTERVAL]: {
+              target: 'syncing',
+            },
+          },
+        },
+        resettingLastBlock: {
+          invoke: {
+            src: 'getLatestBlock',
+            onDone: {
+              target: 'waiting',
+              actions: assign({
+                lastBlock: ({ event }) => event.output,
+              }),
+            },
+          },
         },
       },
     },
   },
 });
 
-export const syncBlocks = async ({ data }: QueueData<Input>) => {
+export const syncBlocks = async ({ id, data }: QueueData<Input>) => {
   try {
     const actor = createActor(machine, { input: data });
     actor.subscribe((state) => {
-      console.log(c.yellow(`📟 State: ${state.value}`));
+      const val = state.value;
+      if (typeof val === 'string') {
+        console.log(c.yellow(`📟 State: ${val}`));
+        return;
+      }
+      const [key, value] = Object.entries(val)[0];
+      console.log(c.yellow(`📟 State: ${key}.${value}`));
     });
 
     actor.start();
     actor.send({ type: 'START_SYNC' });
+    await queue.complete(id);
   } catch (error) {
     console.error(error);
     throw new Error('Sync block attempt failed!', {

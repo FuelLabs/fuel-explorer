@@ -1,5 +1,12 @@
 import { BlockRepository } from '~/domain/Block/BlockRepository';
-import { QueueNames, queue } from '~/infra/queue/Queue';
+import {
+  type QueueData,
+  type QueueInputs,
+  QueueNames,
+  queue,
+} from '~/infra/queue/Queue';
+
+type Props = QueueInputs[QueueNames.SYNC_MISSING];
 
 export class SyncMissingBlocks {
   async execute() {
@@ -13,11 +20,12 @@ export class SyncMissingBlocks {
   }
 }
 
-export const syncMissingBlocks = async () => {
+export const syncMissingBlocks = async ({ id }: QueueData<Props>) => {
   try {
     console.log('Syncing missing blocks');
     const syncMissingBlocks = new SyncMissingBlocks();
     await syncMissingBlocks.execute();
+    await queue.complete(id);
   } catch (error) {
     console.error(error);
     throw new Error('Sync missing', {

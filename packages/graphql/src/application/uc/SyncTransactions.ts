@@ -1,7 +1,12 @@
 import c from 'chalk';
 import { uniqBy } from 'lodash';
 import type { GQLBlock } from '~/graphql/generated/sdk';
-import type { QueueData, QueueInputs, QueueNames } from '~/infra/queue/Queue';
+import {
+  type QueueData,
+  type QueueInputs,
+  type QueueNames,
+  queue,
+} from '~/infra/queue/Queue';
 import { addTransactions } from './AddTransactions';
 
 type Input = QueueInputs[QueueNames.SYNC_TRANSACTIONS];
@@ -37,6 +42,7 @@ export const syncTransactions = async (input: QueueData<Input>) => {
   try {
     const syncTransactions = new SyncTransactions();
     await syncTransactions.execute(input);
+    await queue.complete(input.id);
   } catch (error) {
     console.error(error);
     throw new Error('Sync transactions', {

@@ -20,10 +20,11 @@ export class SyncLastBlocks {
   }
 }
 
-export const syncLastBlocks = async ({ data }: QueueData<Props>) => {
+export const syncLastBlocks = async ({ id, data }: QueueData<Props>) => {
   try {
     const syncLastBlocks = new SyncLastBlocks();
     await syncLastBlocks.execute(data);
+    await queue.complete(id);
   } catch (error) {
     console.error(error);
     throw new Error('Sync last', {
