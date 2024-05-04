@@ -5,7 +5,7 @@ const commonOptions = {
   interpreter: 'tsx',
   node_args: IS_DEBUG ? ['--inspect-brk'] : [],
   watch: true,
-  ignore_watch: ['node_modules'],
+  ignore_watch: ['node_modules', './src/**/*.gen.js'],
 };
 
 module.exports = {

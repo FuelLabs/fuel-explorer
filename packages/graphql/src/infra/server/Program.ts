@@ -1,4 +1,5 @@
 import yargs from 'yargs/yargs';
+import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { db } from '../database/Db';
 import { QueueNames, queue } from '../queue/Queue';
 
@@ -93,6 +94,7 @@ export class Program {
     async function finish() {
       await queue.stop();
       await db.close();
+      process.exit(0);
     }
 
     if (clean) {
@@ -112,7 +114,7 @@ export class Program {
       return;
     }
     if (all || from) {
-      await queue.push(QueueNames.SYNC_BLOCKS, { watch, cursor: from ?? 0 });
+      await syncBlocks({ watch, cursor: from ?? 0 });
       await finish();
       return;
     }

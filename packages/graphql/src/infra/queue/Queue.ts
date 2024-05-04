@@ -1,7 +1,6 @@
 import c from 'chalk';
 import PgBoss, { type Job } from 'pg-boss';
 import { addBlockRange } from '~/application/uc/AddBlockRange';
-import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransactions';
@@ -15,7 +14,6 @@ const DB_PASS = env.get('DB_PASS');
 const DB_NAME = env.get('DB_NAME');
 
 export enum QueueNames {
-  SYNC_BLOCKS = 'indexer/sync-blocks',
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
   SYNC_MISSING = 'indexer/sync-missing',
   SYNC_TRANSACTIONS = 'indexer/sync-transactions',
@@ -24,11 +22,6 @@ export enum QueueNames {
 
 export type QueueInputs = {
   [QueueNames.SYNC_MISSING]: undefined;
-  [QueueNames.SYNC_BLOCKS]: {
-    cursor?: number;
-    offset?: number;
-    watch?: boolean;
-  };
   [QueueNames.ADD_BLOCK_RANGE]: {
     from: number;
     to: number;
@@ -51,10 +44,11 @@ export class Queue extends PgBoss {
     teamRefill: true,
   };
 
-  static defaultJobOptions: PgBoss.RetryOptions = {
+  static defaultJobOptions = {
     retryLimit: 3,
     retryDelay: 1,
     retryBackoff: false,
+    onComplete: true,
   };
 
   push<Q extends QueueNames>(
@@ -86,25 +80,34 @@ export class Queue extends PgBoss {
   async setupWorkers() {
     const opts = this.workOpts;
     await this.start();
-    await this.work(QueueNames.ADD_BLOCK_RANGE, opts, addBlockRange);
-    await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
+
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    await queue.onComplete(QueueNames.ADD_BLOCK_RANGE, async (job: any) => {
+      console.log('🚀 Block Range Job Completed', job.id);
+      const blocks = job?.data?.response?.value ?? ({} as GQLBlock[]);
+      await queue.push(
+        QueueNames.SYNC_TRANSACTIONS,
+        { blocks },
+        { priority: 1 },
+      );
+    });
+
+    await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
     await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
     await this.work(QueueNames.SYNC_TRANSACTIONS, opts, syncTransactions);
-    await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
-    await this.start();
+    await this.work(QueueNames.ADD_BLOCK_RANGE, opts, addBlockRange);
     console.log('⚡️ Queue running');
   }
 
   async hasActiveJobs() {
     const batchSize = Number(env.get('QUEUE_CONCURRENCY'));
     const results = await Promise.all([
-      queue.fetch(QueueNames.SYNC_BLOCKS, batchSize),
       queue.fetch(QueueNames.ADD_BLOCK_RANGE, batchSize),
       queue.fetch(QueueNames.SYNC_TRANSACTIONS, batchSize),
     ]);
-    console.log(c.gray(`⌛️ Active Blocks: ${results[0]?.length ?? 0}`));
-    console.log(c.gray(`⌛️ Active Range: ${results[1]?.length ?? 0}`));
-    console.log(c.gray(`⌛️ Active Transactions: ${results[2]?.length ?? 0}`));
+
+    console.log(c.gray(`⌛️ Active Range: ${results[0]?.length ?? 0}`));
+    console.log(c.gray(`⌛️ Active Transactions: ${results[1]?.length ?? 0}`));
     return results.some((result) => Boolean(result?.length ?? 0 > 0));
   }
 }
