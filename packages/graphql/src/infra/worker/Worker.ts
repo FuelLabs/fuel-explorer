@@ -18,5 +18,5 @@ worker.on('ADD_BLOCK_RANGE', async (events) => {
   const from = events[0].from;
   const to = events[events.length - 1].to;
   console.log(c.green(`🔗 Add blocks to sync: #${from} - #${to}`));
-  await queue.pushBatch(QueueNames.ADD_BLOCK_RANGE, events, { priority: to });
+  await queue.pushBatch(QueueNames.ADD_BLOCK_RANGE, events, { priority: 2 });
 });
