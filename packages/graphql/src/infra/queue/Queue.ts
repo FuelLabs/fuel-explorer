@@ -1,6 +1,7 @@
 import c from 'chalk';
 import PgBoss, { type Job } from 'pg-boss';
 import { addBlockRange } from '~/application/uc/AddBlockRange';
+import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { syncTransactions } from '~/application/uc/SyncTransactions';
@@ -14,6 +15,7 @@ const DB_PASS = env.get('DB_PASS');
 const DB_NAME = env.get('DB_NAME');
 
 export enum QueueNames {
+  SYNC_BLOCKS = 'indexer/sync-blocks',
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
   SYNC_MISSING = 'indexer/sync-missing',
   SYNC_TRANSACTIONS = 'indexer/sync-transactions',
@@ -21,7 +23,12 @@ export enum QueueNames {
 }
 
 export type QueueInputs = {
-  [QueueNames.SYNC_MISSING]: undefined;
+  [QueueNames.SYNC_MISSING]: null;
+  [QueueNames.SYNC_BLOCKS]: {
+    cursor?: number;
+    offset?: number;
+    watch?: boolean;
+  };
   [QueueNames.ADD_BLOCK_RANGE]: {
     from: number;
     to: number;
@@ -53,7 +60,7 @@ export class Queue extends PgBoss {
 
   push<Q extends QueueNames>(
     queue: Q,
-    data: QueueInputs[Q],
+    data?: QueueInputs[Q] | null,
     options?: PgBoss.JobOptions,
   ) {
     console.log(`Pushing job to queue ${queue}`);
@@ -72,7 +79,7 @@ export class Queue extends PgBoss {
       ...Queue.defaultJobOptions,
       ...opts,
       name: queue,
-      data: job,
+      data: job ?? {},
     }));
     return this.insert(jobs);
   }
@@ -83,7 +90,8 @@ export class Queue extends PgBoss {
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     await queue.onComplete(QueueNames.ADD_BLOCK_RANGE, async (job: any) => {
-      console.log('🚀 Block Range Job Completed', job.id);
+      const { data } = job?.data?.request ?? { data: null };
+      console.log(`✅ Block range completed: ${data.from} - ${data.to}`);
       const blocks = job?.data?.response?.value ?? ({} as GQLBlock[]);
       await queue.push(
         QueueNames.SYNC_TRANSACTIONS,
@@ -92,6 +100,7 @@ export class Queue extends PgBoss {
       );
     });
 
+    await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
     await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
     await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
     await this.work(QueueNames.SYNC_TRANSACTIONS, opts, syncTransactions);

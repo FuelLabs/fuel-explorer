@@ -2,10 +2,9 @@ import { BlockRepository } from '~/domain/Block/BlockRepository';
 import {
   type QueueData,
   type QueueInputs,
-  type QueueNames,
+  QueueNames,
   queue,
 } from '~/infra/queue/Queue';
-import { syncBlocks } from './SyncBlocks';
 
 type Props = QueueInputs[QueueNames.SYNC_LAST];
 
@@ -17,7 +16,7 @@ export class SyncLastBlocks {
     const from = blockHeight - last;
 
     console.log(`Syncing last ${last} blocks from ${from} to ${blockHeight}`);
-    await syncBlocks({ watch, cursor: from });
+    await queue.push(QueueNames.SYNC_BLOCKS, { watch, cursor: from });
   }
 }
 

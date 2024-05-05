@@ -1,12 +1,12 @@
 import c from 'chalk';
-import { assign, createActor, fromCallback, fromPromise, setup } from 'xstate';
+import { assign, createActor, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import type { GQLBlock } from '~/graphql/generated/sdk';
-import type { QueueInputs, QueueNames } from '~/infra/queue/Queue';
 import { worker } from '~/infra/worker/Worker';
+import type { SyncBlocksProps } from './SyncBlocks';
 
-type Input = QueueInputs[QueueNames.SYNC_BLOCKS];
+type Input = SyncBlocksProps;
 
 type Context = Input & {
   offset: number;
@@ -99,14 +99,6 @@ const machine = setup({
         return syncer.syncMissingBlocks(context);
       },
     ),
-    waitingActor: fromCallback(({ sendBack }) => {
-      worker.postMessage('GET_ACTIVE_JOBS');
-      return worker.on('ACTIVE_JOBS_RESPONSE', (data) => {
-        if (!data.hasActive) {
-          sendBack({ type: 'FINISH' });
-        }
-      });
-    }),
   },
   guards: {
     hasMoreEvents: ({ context }) => {
@@ -166,30 +158,9 @@ const machine = setup({
     checking: {
       always: [
         { target: 'syncingBlocks', guard: 'hasMoreEvents' },
-        { target: 'waitingQueueJobs', guard: 'needToWatch' },
+        { target: 'syncingMissingBlocks', guard: 'needToWatch' },
         { target: 'idle' },
       ],
-    },
-    waitingQueueJobs: {
-      initial: 'waiting',
-      states: {
-        waiting: {
-          invoke: {
-            src: 'waitingActor',
-          },
-          on: {
-            FINISH: {
-              target: 'finished',
-            },
-          },
-        },
-        finished: {
-          type: 'final',
-        },
-      },
-      onDone: {
-        target: 'syncingMissingBlocks',
-      },
     },
     syncingMissingBlocks: {
       initial: 'syncing',
@@ -232,7 +203,7 @@ const machine = setup({
   },
 });
 
-export const runSyncMachine = async (input: Input) => {
+export default async function runSyncMachine(input: Input) {
   const actor = createActor(machine, { input });
   actor.subscribe((state) => {
     const val = state.value;
@@ -246,4 +217,4 @@ export const runSyncMachine = async (input: Input) => {
 
   actor.start();
   actor.send({ type: 'START_SYNC' });
-};
+}

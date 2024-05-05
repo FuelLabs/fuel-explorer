@@ -1,11 +1,9 @@
+import type { Input } from 'fuels';
+import type { QueueData, QueueInputs, QueueNames } from '~/infra/queue/Queue';
 import { worker } from '~/infra/worker/Worker';
 
-type Props = {
-  cursor?: number;
-  offset?: number;
-  watch?: boolean;
-};
+export type SyncBlocksProps = QueueInputs[QueueNames.SYNC_BLOCKS];
 
-export const syncBlocks = async (data: Props) => {
-  worker.postMessage('SYNC_BLOCKS', data);
+export const syncBlocks = async (data: QueueData<Input>) => {
+  worker.run(data);
 };

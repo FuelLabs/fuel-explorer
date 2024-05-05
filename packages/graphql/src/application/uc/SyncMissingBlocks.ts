@@ -2,10 +2,9 @@ import { BlockRepository } from '~/domain/Block/BlockRepository';
 import {
   type QueueData,
   type QueueInputs,
-  type QueueNames,
+  QueueNames,
   queue,
 } from '~/infra/queue/Queue';
-import { syncBlocks } from './SyncBlocks';
 
 type Props = QueueInputs[QueueNames.SYNC_MISSING];
 
@@ -15,7 +14,7 @@ export class SyncMissingBlocks {
     const latest = await repo.findLatestAdded();
     const cursor = latest ? Number(latest.data.header.height) : undefined;
     console.log('Syncing missing blocks from', cursor);
-    await syncBlocks({ cursor, watch: true });
+    await queue.push(QueueNames.SYNC_BLOCKS, { cursor, watch: true });
   }
 }
 

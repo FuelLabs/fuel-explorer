@@ -1,5 +1,4 @@
 import yargs from 'yargs/yargs';
-import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { db } from '../database/Db';
 import { QueueNames, queue } from '../queue/Queue';
 
@@ -104,7 +103,7 @@ export class Program {
       return;
     }
     if (missing) {
-      await queue.push(QueueNames.SYNC_MISSING, undefined);
+      await queue.push(QueueNames.SYNC_MISSING);
       await finish();
       return;
     }
@@ -114,7 +113,7 @@ export class Program {
       return;
     }
     if (all || from) {
-      await syncBlocks({ watch, cursor: from ?? 0 });
+      await queue.push(QueueNames.SYNC_BLOCKS, { watch, cursor: from ?? 0 });
       await finish();
       return;
     }
