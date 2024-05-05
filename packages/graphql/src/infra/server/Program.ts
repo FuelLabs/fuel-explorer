@@ -58,6 +58,7 @@ export class Program {
         },
         handler: async (argv) => {
           await this.sync(argv);
+          process.exit(0);
         },
       })
       .command({
@@ -67,6 +68,7 @@ export class Program {
           await db.connect();
           await db.migrate();
           await db.close();
+          process.exit(0);
         },
       })
       .command({
@@ -77,6 +79,7 @@ export class Program {
           await db.clean();
           await queue.clearStorage();
           await db.close();
+          process.exit(0);
         },
       })
 
@@ -93,7 +96,6 @@ export class Program {
     async function finish() {
       await queue.stop();
       await db.close();
-      process.exit(0);
     }
 
     if (clean) {
