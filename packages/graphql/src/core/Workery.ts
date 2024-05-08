@@ -37,22 +37,18 @@ export class Workery<E extends Events> {
     event: K,
     listener: L,
   ) {
-    if (isMainThread) {
-      this.worker.on('message', async (message) => {
-        const parsed = JSON.parse(message);
-        const { type, data } = parsed;
-        if (type === event) {
-          await listener(data);
-        }
-      });
-    } else {
-      parentPort?.on('message', async (message: string) => {
-        const parsed = JSON.parse(message);
-        if (parsed.type === event) {
-          await listener(parsed.data);
-        }
-      });
-    }
+    const dispatcher = isMainThread ? this.worker : parentPort;
+    const callback = async (message: string) => {
+      const parsed = JSON.parse(message);
+      const { type, data } = parsed;
+      if (type === event) {
+        await listener(data);
+      }
+    };
+    dispatcher?.on('message', callback);
+    return () => {
+      dispatcher?.removeListener('message', callback);
+    };
   }
 
   postMessage<K extends keyof E>(event: K, data?: E[K]) {

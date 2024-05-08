@@ -15,4 +15,20 @@ httpServer.listen(app, 3001).then(async () => {
     await setTimeout(5000);
     await queue.push(QueueNames.SYNC_MISSING, undefined);
   }
+
+  const others = [
+    'SIGINT',
+    'SIGUSR1',
+    'SIGUSR2',
+    'uncaughtException',
+    'SIGTERM',
+    'exit',
+  ];
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  others.forEach((eventType) => {
+    process.on(eventType, async () => {
+      console.log('🛑 Queue stopped');
+      await queue.stop();
+    });
+  });
 });

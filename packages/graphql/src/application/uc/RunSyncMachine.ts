@@ -1,5 +1,5 @@
 import c from 'chalk';
-import { assign, createActor, fromPromise, setup } from 'xstate';
+import { assign, createActor, fromCallback, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import type { GQLBlock } from '~/graphql/generated/sdk';
@@ -82,7 +82,11 @@ const WATCH_INTERVAL = Number(env.get('WATCH_INTERVAL'));
 const machine = setup({
   types: {} as {
     context: Context;
-    events: { type: 'START_SYNC' } | { type: 'FINISH' };
+    events:
+      | { type: 'START_SYNC' }
+      | { type: 'FINISH' }
+      | { type: 'KEEP_SYNCING' }
+      | { type: 'WAIT' };
     input: Input;
   },
   actors: {
@@ -99,6 +103,17 @@ const machine = setup({
         return syncer.syncMissingBlocks(context);
       },
     ),
+    checkQueueTasks: fromCallback(({ sendBack }) => {
+      worker.postMessage('GET_ACTIVE_JOBS');
+      return worker.on('ACTIVE_JOBS_RESPONSE', (jobs) => {
+        console.log(`⚡️ Active jobs: ${jobs}`);
+        if (jobs === 0) {
+          sendBack({ type: 'KEEP_SYNCING' });
+        } else {
+          sendBack({ type: 'WAIT' });
+        }
+      });
+    }),
   },
   guards: {
     hasMoreEvents: ({ context }) => {
@@ -133,10 +148,38 @@ const machine = setup({
       invoke: {
         src: 'getLatestBlock',
         onDone: {
-          target: 'syncingBlocks',
+          target: 'checkingQueue',
           actions: assign({
             lastBlock: ({ event }) => event.output,
           }),
+        },
+      },
+    },
+    checkingQueue: {
+      initial: 'checking',
+      states: {
+        checking: {
+          invoke: {
+            src: 'checkQueueTasks',
+          },
+          on: {
+            KEEP_SYNCING: {
+              target: 'finishing',
+            },
+            WAIT: {
+              target: 'waiting',
+            },
+          },
+        },
+        waiting: {
+          after: {
+            5000: 'checking',
+          },
+        },
+        finishing: {
+          after: {
+            5000: '#syncBlocks.syncingBlocks',
+          },
         },
       },
     },
@@ -157,7 +200,7 @@ const machine = setup({
     },
     checking: {
       always: [
-        { target: 'syncingBlocks', guard: 'hasMoreEvents' },
+        { target: 'checkingQueue', guard: 'hasMoreEvents' },
         { target: 'syncingMissingBlocks', guard: 'needToWatch' },
         { target: 'idle' },
       ],

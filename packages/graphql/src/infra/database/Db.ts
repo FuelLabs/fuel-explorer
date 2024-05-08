@@ -67,12 +67,16 @@ export class Db {
 
   async clean() {
     const query = sql`
+      DROP SCHEMA pgboss CASCADE;
+      CREATE SCHEMA pgboss;
       DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;
     `;
 
     console.log('🚨 Cleaning database...');
     await this.connection().execute(query);
+    console.log('✅ Database cleaned');
+    await this.migrate();
   }
 
   connectionString() {

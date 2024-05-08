@@ -2,7 +2,7 @@ import { BlockRepository } from '~/domain/Block/BlockRepository';
 import {
   type QueueData,
   type QueueInputs,
-  type QueueNames,
+  QueueNames,
   queue,
 } from '~/infra/queue/Queue';
 
@@ -14,6 +14,7 @@ export class AddBlockRange {
     const repo = new BlockRepository();
     const { blocks } = await repo.blocksFromNode(to - from, from);
     await repo.upsertMany(blocks);
+    await queue.push(QueueNames.SYNC_TRANSACTIONS, { blocks }, { priority: 1 });
     await queue.complete(id, blocks);
   }
 }

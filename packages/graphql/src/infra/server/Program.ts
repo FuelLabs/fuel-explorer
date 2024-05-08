@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import yargs from 'yargs/yargs';
 import { db } from '../database/Db';
 import { QueueNames, queue } from '../queue/Queue';
@@ -77,7 +78,6 @@ export class Program {
         handler: async () => {
           await db.connect();
           await db.clean();
-          await queue.clearStorage();
           await db.close();
           process.exit(0);
         },
@@ -99,8 +99,11 @@ export class Program {
     }
 
     if (clean) {
-      await queue.deleteAllQueues();
-      await queue.clearStorage();
+      const query = sql`
+        DROP SCHEMA pgboss CASCADE;
+        CREATE SCHEMA pgboss;
+      `;
+      await db.connection().execute(query);
       await finish();
       return;
     }

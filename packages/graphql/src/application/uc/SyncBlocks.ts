@@ -4,6 +4,6 @@ import { worker } from '~/infra/worker/Worker';
 
 export type SyncBlocksProps = QueueInputs[QueueNames.SYNC_BLOCKS];
 
-export const syncBlocks = async (data: QueueData<Input>) => {
+export const syncBlocks = async ({ data }: QueueData<Input>) => {
   worker.run(data);
 };
