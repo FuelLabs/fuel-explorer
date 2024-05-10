@@ -1,8 +1,10 @@
 import c from 'chalk';
+import dayjs from 'dayjs';
 import { assign, createActor, fromCallback, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import type { GQLBlock } from '~/graphql/generated/sdk';
+import { db } from '~/infra/database/Db';
 import { worker } from '~/infra/worker/Worker';
 import type { SyncBlocksProps } from './SyncBlocks';
 
@@ -22,7 +24,7 @@ type EventsReturn = {
 
 class Syncer {
   async getLatestBlock() {
-    const repo = new BlockRepository();
+    const repo = new BlockRepository(db.connection());
     return repo.latestBlockFromNode();
   }
 
@@ -61,8 +63,16 @@ class Syncer {
       console.log(c.green('✅ All blocks are synced!'));
       return { endCursor: cursor };
     }
+    const blocks = await Promise.all(
+      events.map(async ({ from, to }) => {
+        console.log(c.green(`⌛️ Requesting blocks data: #${from} - #${to}`));
+        const res = await BlockRepository.blocksFromNode(to - from, to);
+        return { from, to, blocks: res.blocks };
+      }),
+    );
 
-    worker.postMessage('ADD_BLOCK_RANGE', events);
+    const payload = blocks.flat();
+    worker.postMessage('ADD_BLOCK_RANGE', payload);
     const last = events[events.length - 1];
     return { endCursor: last.to };
   }
@@ -71,7 +81,8 @@ class Syncer {
     const { cursor = 0 } = ctx;
     const lastBlock = await this.getLatestBlock();
     const to = this.getLastBlockHeight({ ...ctx, lastBlock });
-    worker.postMessage('ADD_BLOCK_RANGE', [{ from: cursor, to }]);
+    const { blocks } = await BlockRepository.blocksFromNode(to - cursor, to);
+    worker.postMessage('ADD_BLOCK_RANGE', [{ from: cursor, to, blocks }]);
     return { endCursor: to };
   }
 }
@@ -106,7 +117,6 @@ const machine = setup({
     checkQueueTasks: fromCallback(({ sendBack }) => {
       worker.postMessage('GET_ACTIVE_JOBS');
       return worker.on('ACTIVE_JOBS_RESPONSE', (jobs) => {
-        console.log(`⚡️ Active jobs: ${jobs}`);
         if (jobs === 0) {
           sendBack({ type: 'KEEP_SYNCING' });
         } else {
@@ -248,6 +258,7 @@ const machine = setup({
 
 export default async function runSyncMachine(input: Input) {
   const actor = createActor(machine, { input });
+  const start = new Date();
   actor.subscribe((state) => {
     const val = state.value;
     if (typeof val === 'string') {
@@ -255,7 +266,8 @@ export default async function runSyncMachine(input: Input) {
       return;
     }
     const [key, value] = Object.entries(val)[0];
-    console.log(c.yellow(`📟 State: ${key}.${value}`));
+    const time = c.grey(`(${dayjs(start).fromNow()})`);
+    console.log(c.yellow(`📟 State: ${key}.${value} ${time}`));
   });
 
   actor.start();

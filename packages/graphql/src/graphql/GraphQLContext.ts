@@ -1,5 +1,5 @@
 import { ChainEntity } from '~/domain/Chain/ChainEntity';
-import type { GraphQLSDK } from './GraphQLSDK';
+import { type GraphQLSDK, client } from './GraphQLSDK';
 import type { GQLChainInfo } from './generated/sdk';
 
 export type GraphQLContext = {
@@ -8,7 +8,7 @@ export type GraphQLContext = {
 };
 
 export class GraphQLContextFactory {
-  static async create(client: GraphQLSDK): Promise<GraphQLContext> {
+  static async create(): Promise<GraphQLContext> {
     const res = await client.sdk.chain();
     const chainItem = res.data?.chain;
     if (!chainItem) return { client, chain: null };

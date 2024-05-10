@@ -28,6 +28,16 @@ export class Workery<E extends Events> {
     return new Workery<E>(opts);
   }
 
+  static execInThreads(length: number, opts: Opts) {
+    return async <D>(data: D) =>
+      await Promise.all(
+        Array.from({ length }).map(async () => {
+          const worker = Workery.build(opts);
+          worker.run(data);
+        }),
+      );
+  }
+
   run<D>(data: D) {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     this.postMessage('run', data as any);

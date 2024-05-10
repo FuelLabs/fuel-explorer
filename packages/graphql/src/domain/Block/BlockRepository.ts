@@ -1,7 +1,7 @@
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, getTableColumns } from 'drizzle-orm';
 import { values } from 'lodash';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
-import { GraphQLSDK } from '~/graphql/GraphQLSDK';
+import { client } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk';
 import { type DbConnection, type DbTransaction, db } from '~/infra/database/Db';
 import {
@@ -12,8 +12,10 @@ import { BlockEntity } from './BlockEntity';
 import { type BlockItem, BlocksTable } from './BlockModel';
 
 export class BlockRepository {
+  constructor(readonly conn: DbConnection | DbTransaction = db.connection()) {}
+
   async findByHash(blockHash: string) {
-    const first = await db.connection().query.BlocksTable.findFirst({
+    const first = await this.conn.query.BlocksTable.findFirst({
       where: eq(BlocksTable.blockHash, blockHash),
       with: {
         transactions: true,
@@ -26,7 +28,7 @@ export class BlockRepository {
   }
 
   async findByHeight(height: number) {
-    const first = await db.connection().query.BlocksTable.findFirst({
+    const first = await this.conn.query.BlocksTable.findFirst({
       where: eq(BlocksTable._id, height),
       with: {
         transactions: true,
@@ -70,7 +72,7 @@ export class BlockRepository {
   }
 
   async findLatestAdded() {
-    const latest = await db.connection().query.BlocksTable.findFirst({
+    const latest = await this.conn.query.BlocksTable.findFirst({
       with: {
         transactions: true,
       },
@@ -83,20 +85,29 @@ export class BlockRepository {
   }
 
   async upsertOne(block: GQLBlock) {
-    const upsertOne = this.createUpsertOne(db.connection());
+    const upsertOne = this.createUpsertOne(this.conn);
     return upsertOne(block);
   }
 
-  async upsertMany(blocks: GQLBlock[]) {
-    return db.connection().transaction(async (trx) => {
-      const queries = blocks.map(this.createUpsertOne(trx));
-      return Promise.all(queries.filter(Boolean));
-    });
+  async upsertMany(blocks: GQLBlock[], trx?: DbTransaction) {
+    const values = blocks.map(BlockEntity.toDBItem);
+    const conn = trx || this.conn;
+    const cls = getTableColumns(BlocksTable);
+    const query = conn
+      .insert(BlocksTable)
+      .values(values)
+      .onConflictDoUpdate({
+        target: BlocksTable._id,
+        set: {
+          data: cls.data.getSQL(),
+        },
+      });
+    const items = await query.returning();
+    return items.map((item) => BlockEntity.create(item, []));
   }
 
-  async blocksFromNode(first: number, after?: number) {
-    const { sdk } = new GraphQLSDK();
-    const { data } = await sdk.blocks({
+  static async blocksFromNode(first: number, after?: number) {
+    const { data } = await client.sdk.blocks({
       first,
       ...(after ? { after: String(after) } : null),
     });
@@ -114,8 +125,7 @@ export class BlockRepository {
   }
 
   async latestBlockFromNode() {
-    const { sdk } = new GraphQLSDK();
-    const { data } = await sdk.blocks({ last: 1 });
+    const { data } = await client.sdk.blocks({ last: 1 });
     return data.blocks.nodes[0] as GQLBlock;
   }
 
@@ -125,7 +135,7 @@ export class BlockRepository {
         .insert(BlocksTable)
         .values(BlockEntity.toDBItem(block))
         .onConflictDoUpdate({
-          target: [BlocksTable._id],
+          target: BlocksTable._id,
           set: { data: block },
         })
         .returning();

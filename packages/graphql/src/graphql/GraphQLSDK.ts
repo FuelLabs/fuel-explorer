@@ -13,3 +13,5 @@ export class GraphQLSDK {
     this.sdk = getSdk(this.client);
   }
 }
+
+export const client = new GraphQLSDK();

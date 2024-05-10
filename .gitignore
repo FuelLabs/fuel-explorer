@@ -90,3 +90,5 @@ act-actions
 
 # playwright report
 **/**/playwright-report/*
+**/**/mnt/db
+**/**/db

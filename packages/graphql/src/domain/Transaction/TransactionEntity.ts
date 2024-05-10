@@ -66,11 +66,11 @@ export class TransactionEntity extends Entity<
     return new TransactionEntity(props, id);
   }
 
-  static async toDBItem(
+  static toDBItem(
     block: GQLBlock,
     transaction: GQLTransaction,
     index: number,
-  ): Promise<TransactionItem> {
+  ): TransactionItem {
     return {
       _id: TransactionModelID.createSerial(block, index).value(),
       txHash: Hash256.create(transaction.id).value(),

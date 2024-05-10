@@ -1,14 +1,10 @@
-import c from 'chalk';
-import { sql } from 'drizzle-orm/sql';
 import PgBoss, { type Job } from 'pg-boss';
 import { addBlockRange } from '~/application/uc/AddBlockRange';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
-import { syncTransactions } from '~/application/uc/SyncTransactions';
 import { env } from '~/config';
 import type { GQLBlock } from '~/graphql/generated/sdk';
-import { db } from '../database/Db';
 
 const DB_HOST = env.get('DB_HOST');
 const DB_PORT = env.get('DB_PORT');
@@ -20,7 +16,6 @@ export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync-blocks',
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
   SYNC_MISSING = 'indexer/sync-missing',
-  SYNC_TRANSACTIONS = 'indexer/sync-transactions',
   SYNC_LAST = 'indexer/sync-last',
 }
 
@@ -34,8 +29,6 @@ export type QueueInputs = {
   [QueueNames.ADD_BLOCK_RANGE]: {
     from: number;
     to: number;
-  };
-  [QueueNames.SYNC_TRANSACTIONS]: {
     blocks: GQLBlock[];
   };
   [QueueNames.SYNC_LAST]: {
@@ -54,10 +47,10 @@ export class Queue extends PgBoss {
   };
 
   static defaultJobOptions = {
-    retryLimit: 3,
+    retryLimit: 10,
     retryDelay: 1,
     retryBackoff: false,
-    expireInSeconds: 30,
+    expireInSeconds: 120,
   };
 
   push<Q extends QueueNames>(
@@ -67,6 +60,18 @@ export class Queue extends PgBoss {
   ) {
     // console.log(`Pushing job to queue ${queue}`);
     return this.send(queue, data as object, {
+      ...Queue.defaultJobOptions,
+      ...options,
+    });
+  }
+
+  pushSingleton<Q extends QueueNames>(
+    queue: Q,
+    data?: QueueInputs[Q] | null,
+    options?: PgBoss.JobOptions,
+  ) {
+    // console.log(`Pushing job to queue ${queue}`);
+    return this.sendSingleton(queue, data as object, {
       ...Queue.defaultJobOptions,
       ...options,
     });
@@ -92,18 +97,12 @@ export class Queue extends PgBoss {
     await this.work(QueueNames.SYNC_BLOCKS, opts, syncBlocks);
     await this.work(QueueNames.SYNC_LAST, opts, syncLastBlocks);
     await this.work(QueueNames.SYNC_MISSING, opts, syncMissingBlocks);
-    await this.work(QueueNames.SYNC_TRANSACTIONS, opts, syncTransactions);
     await this.work(QueueNames.ADD_BLOCK_RANGE, opts, addBlockRange);
     console.log('⚡️ Queue running');
   }
 
   async activeJobs() {
-    const blocksActive = await queue.getQueueSize(QueueNames.ADD_BLOCK_RANGE);
-    const transactionsActive = await queue.getQueueSize(
-      QueueNames.SYNC_TRANSACTIONS,
-      { before: 'completed' },
-    );
-    return blocksActive + transactionsActive;
+    return queue.getQueueSize(QueueNames.ADD_BLOCK_RANGE);
   }
 }
 
@@ -113,4 +112,5 @@ export const queue = new Queue({
   user: DB_USER,
   password: DB_PASS,
   database: DB_NAME,
+  max: 10,
 });

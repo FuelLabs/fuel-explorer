@@ -20,14 +20,15 @@ httpServer.listen(app, 3001).then(async () => {
     'SIGINT',
     'SIGUSR1',
     'SIGUSR2',
-    'uncaughtException',
+    // 'uncaughtException',
     'SIGTERM',
     'exit',
   ];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  //biome-ignore lint/complexity/noForEach: <explanation>
   others.forEach((eventType) => {
-    process.on(eventType, async () => {
+    process.on(eventType, async (err) => {
       console.log('🛑 Queue stopped');
+      console.error(err);
       await queue.stop();
     });
   });
