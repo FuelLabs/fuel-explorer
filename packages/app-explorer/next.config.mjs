@@ -1,19 +1,5 @@
 import { redirects } from './src/redirects.mjs';
 
-const externals = [
-  'bcryptjs',
-  'ws',
-  'isomorphic-ws',
-  '@whatwg/node-fetch',
-  'graphql',
-  '@graphql-tools/delegate',
-  '@graphql-tools/load',
-  '@graphql-tools/schema',
-  '@graphql-tools/stitch',
-  '@graphql-tools/url-loader',
-  '@graphql-tools/utils',
-];
-
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -21,7 +7,6 @@ const config = {
   transpilePackages: ['@fuel-explorer/graphql', 'app-commons', 'app-portal'],
   experimental: {
     externalDir: true,
-    serverComponentsExternalPackages: externals,
     missingSuspenseWithCSRBailout: false,
     esmExternals: true,
     typedRoutes: true,
