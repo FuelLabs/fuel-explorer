@@ -4,7 +4,6 @@ const externals = [
   'bcryptjs',
   'ws',
   'isomorphic-ws',
-  'node-fetch',
   '@whatwg/node-fetch',
   'graphql',
   '@graphql-tools/delegate',
