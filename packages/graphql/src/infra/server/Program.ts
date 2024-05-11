@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import yargs from 'yargs/yargs';
 import { db } from '../database/Db';
-import { QueueNames, queue } from '../queue/Queue';
+import { QueueNames, mq } from '../queue/Queue';
 
 type Arguments = {
   all: boolean;
@@ -90,35 +90,37 @@ export class Program {
   async sync(argv: Arguments) {
     const { all, missing, clean, from, watch, last } = argv;
 
-    await db.connect();
-    await queue.start();
+    async function start() {
+      await db.connect();
+      await mq.setup();
+    }
 
     async function finish() {
-      await queue.stop();
+      await mq.disconnect();
       await db.close();
     }
 
     if (clean) {
-      const query = sql`
-        DROP SCHEMA pgboss CASCADE;
-        CREATE SCHEMA pgboss;
-      `;
-      await db.connection().execute(query);
+      await mq.connect();
+      await mq.clean();
       await finish();
       return;
     }
     if (missing) {
-      await queue.push(QueueNames.SYNC_MISSING);
+      await start();
+      await mq.send(QueueNames.SYNC_MISSING);
       await finish();
       return;
     }
     if (last) {
-      await queue.push(QueueNames.SYNC_LAST, { watch, last });
+      await start();
+      await mq.send(QueueNames.SYNC_LAST, { watch, last });
       await finish();
       return;
     }
     if (all || from) {
-      await queue.push(QueueNames.SYNC_BLOCKS, { watch, cursor: from ?? 0 });
+      await start();
+      await mq.send(QueueNames.SYNC_BLOCKS, { watch, cursor: from ?? 0 });
       await finish();
       return;
     }
