@@ -101,16 +101,16 @@ class RabbitMQConnection {
 
   async consume<Q extends QueueNames, P extends Payload<QueueInputs[Q]>>(
     queue: Q,
-    handler: (data: P['data']) => void,
+    handler: (data: P['data']) => Promise<void>,
   ) {
     await this.channel.assertQueue(queue, { durable: true });
     await this.channel.consume(
       queue,
-      (msg) => {
+      async (msg) => {
         if (!msg) return;
         const payload = this.parsePayload<P>(msg);
         if (payload?.type === queue) {
-          handler(payload.data);
+          await handler(payload.data);
           this.channel.ack(msg);
         }
       },
