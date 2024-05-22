@@ -2,8 +2,12 @@
 import { Address, LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { IconCube } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
+import { useParams } from 'next/navigation';
 import { PageSubtitle } from '~/systems/Core/components/PageSubtitle/PageSubtitle';
-import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
+import {
+  ViewMode,
+  type ViewModes,
+} from '~/systems/Core/components/ViewMode/ViewMode';
 import { isValidAddress } from '~/systems/Core/utils/address';
 
 export function BlockHeader({
@@ -13,10 +17,11 @@ export function BlockHeader({
   id: string;
   isLoading?: boolean;
 }) {
+  const { mode } = useParams<{ mode: ViewModes }>();
   return (
     <PageTitle
       icon={<IconCube size={24} stroke={2.4} />}
-      rightElement={!isLoading && <ViewMode />}
+      rightElement={!isLoading && <ViewMode mode={mode} />}
     >
       Block
       <LoadingWrapper
