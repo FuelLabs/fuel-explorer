@@ -1,9 +1,4 @@
-import {
-  bn,
-  calculateTransactionFee,
-  getGasUsedFromReceipts,
-  processGqlReceipt,
-} from 'fuels';
+import { bn, getGasUsedFromReceipts, processGqlReceipt } from 'fuels';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
@@ -100,23 +95,24 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   }
 
   async getFee() {
-    const { source: transaction, context } = this;
-    const { consensusParameters, gasCosts } = context.chainInfo;
-    const { gasPriceFactor, gasPerByte } = consensusParameters;
-    const { rawPayload } = transaction;
-    const { fee } = calculateTransactionFee({
-      consensusParameters: {
-        feeParams: {
-          gasPriceFactor,
-          gasPerByte,
-        },
-        gasCosts,
-      },
-      rawPayload,
-      gasUsed: bn(this._getGasUsed()),
-    });
+    // const { source: transaction, context } = this;
+    // const { consensusParameters, gasCosts } = context.chainInfo;
+    // const { gasPriceFactor, gasPerByte } = consensusParameters;
+    // const { rawPayload } = transaction;
+    // const { fee } = calculateTransactionFee({
+    //   consensusParameters: {
+    //     feeParams: {
+    //       gasPriceFactor,
+    //       gasPerByte,
+    //     },
+    //     gasCosts,
+    //   },
+    //   rawPayload,
+    //   gasUsed: bn(this._getGasUsed()),
+    // });
 
-    return fee;
+    // return fee;
+    return bn(1);
   }
 
   get accountsInvolved() {
