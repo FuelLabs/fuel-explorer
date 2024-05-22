@@ -26,18 +26,9 @@ const fuelTestnet: FuelChain = {
   providerUrl: 'https://testnet.fuel.network/v1/graphql',
 };
 
-const fuelBeta5: FuelChain = {
-  id: 0,
-  network: 'fuel_beta5',
-  name: 'Fuel Beta 5',
-  testnet: true,
-  providerUrl: 'https://beta-5.fuel.network/v1/graphql',
-};
-
 export const FUEL_CHAINS: Record<ChainName, FuelChain> = {
   fuelDev,
-  fuelTestnet: fuelTestnet,
-  fuelBeta5,
+  fuelTestnet,
 };
 
 export const FUEL_CHAIN: FuelChain = FUEL_CHAINS[FUEL_CHAIN_NAME];

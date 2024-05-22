@@ -47,16 +47,6 @@ export async function getBridgeTokenContracts() {
 
       return bridgeTokenContract;
     }
-
-    if (FUEL_CHAIN_NAME === 'fuelBeta5') {
-      bridgeTokenContract = {
-        ETH_ERC20,
-        FUEL_TokenContract:
-          '0x84233a3696f4ca759e7f07348f33efa98e1dc1fe65bc1cc5ea693a1368b0f9e9',
-      };
-
-      return bridgeTokenContract;
-    }
   }
 }
 
