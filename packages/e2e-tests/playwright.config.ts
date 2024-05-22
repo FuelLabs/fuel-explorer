@@ -3,7 +3,7 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 
 const IS_CI = !!process.env.CI;
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
