@@ -19,21 +19,21 @@ export async function getBridgeTokenContracts() {
   if (bridgeTokenContract) return bridgeTokenContract;
 
   if (FUEL_CHAIN_NAME === 'fuelLocal') {
-    // On the ci I was encountering issues
-    // with the erc20-deployer server not
-    // completely started before the e2e tests began
-    // we need to add retries again?
-    const res = await fetch('http://localhost:8082/deployments', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
-    const body = await res.json();
-    bridgeTokenContract = body;
+    try {
+      const res = await fetch('http://localhost:8082/deployments', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      const body = await res.json();
+      bridgeTokenContract = body;
 
-    return bridgeTokenContract;
+      return bridgeTokenContract;
+    } catch (_) {
+      return undefined;
+    }
   }
 
   if (ETH_CHAIN_NAME === 'sepolia') {
@@ -66,22 +66,16 @@ export async function getBridgeSolidityContracts() {
   }
 
   if (ETH_CHAIN_NAME === 'sepolia') {
-    bridgeSolidityContracts =
-      FUEL_CHAIN_NAME !== 'fuelTestnet'
-        ? {
-            FuelChainState: '0xb65850FB7eA866f8730Ce713657ed965407F6472',
-            FuelMessagePortal: '0xBf340BAC79c301B264E2a5dEa51b7F61eb3e666A',
-            FuelERC20Gateway: '0x749E27d070E2F4a3D6CED522a0D4BDCB37fA95ba',
-            FuelERC721Gateway: '0x4aC11e55652b4e13Fc8dB6F42bB26793605d03B8',
-          }
-        : {
-            FuelChainState: '0x395B125343ADebCcB05dd70e117774E3AB08a8a7',
-            FuelMessagePortal: '0x557c5cE22F877d975C2cB13D0a961a182d740fD5',
-            FuelERC20Gateway: '0xE52af7c9A2F6b243CEE9F0C423E06BAb6E5c6E3b',
-            FuelERC721Gateway: '0xc094fC648101920B1C37C733AF022942eF4042D3',
-          };
+    if (FUEL_CHAIN_NAME === 'fuelTestnet') {
+      bridgeSolidityContracts = {
+        FuelChainState: '0x404F391F96798B14C5e99BBB4a9C858da9Cf63b5',
+        FuelMessagePortal: '0x01855B78C1f8868DE70e84507ec735983bf262dA',
+        FuelERC20Gateway: '0xa97200022c7aDb1b15f0f61f374E3A0c90e2Efa0',
+        FuelERC721Gateway: '0x',
+      };
 
-    return bridgeSolidityContracts;
+      return bridgeSolidityContracts;
+    }
   }
 
   return bridgeSolidityContracts;
