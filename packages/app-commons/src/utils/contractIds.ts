@@ -38,17 +38,25 @@ export async function getBridgeTokenContracts() {
 
   if (ETH_CHAIN_NAME === 'sepolia') {
     const ETH_ERC20 = '0xC6387efAD0F184a90B34f397C3d6Fd63135ef790';
-    const contractId =
-      FUEL_CHAIN_NAME !== 'fuelTestnet'
-        ? '0x7d3e3721d96108b71e187aa17c3330ac400637a2649490f4b3d964cbf1b8943e'
-        : '0x84233a3696f4ca759e7f07348f33efa98e1dc1fe65bc1cc5ea693a1368b0f9e9';
+    if (FUEL_CHAIN_NAME === 'fuelTestnet') {
+      // @TODO: needs to change this to enable ERC20
+      bridgeTokenContract = {
+        ETH_ERC20,
+        FUEL_TokenContract: '0x',
+      };
 
-    bridgeTokenContract = {
-      ETH_ERC20,
-      FUEL_TokenContract: contractId,
-    };
+      return bridgeTokenContract;
+    }
 
-    return bridgeTokenContract;
+    if (FUEL_CHAIN_NAME === 'fuelBeta5') {
+      bridgeTokenContract = {
+        ETH_ERC20,
+        FUEL_TokenContract:
+          '0x84233a3696f4ca759e7f07348f33efa98e1dc1fe65bc1cc5ea693a1368b0f9e9',
+      };
+
+      return bridgeTokenContract;
+    }
   }
 }
 

@@ -9,6 +9,10 @@ const defaultAssets: Asset[] = [...assetList];
 export const getDefaultAssets = (
   bridgeTokenContracts?: BridgeTokenContracts,
 ) => {
+  // @TODO: Remove when SDK provide correct asset id for the network
+  const _legacyFuelBaseAssetId =
+    '0x0000000000000000000000000000000000000000000000000000000000000000';
+
   const assets = [...defaultAssets];
 
   if (bridgeTokenContracts?.ETH_ERC20) {

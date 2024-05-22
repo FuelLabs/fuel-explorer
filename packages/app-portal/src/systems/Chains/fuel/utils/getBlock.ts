@@ -4,15 +4,20 @@ const blockQuery = `query blockQuery($id: BlockId, $height: U64) {
   block(id: $id, height: $height) {
     id
     header {
-      id
+      prevRoot
+      transactionsCount
+      applicationHash
+      transactionsRoot
+      height
       daHeight
       transactionsCount
+      messageOutboxRoot
       messageReceiptCount
       transactionsRoot
       height
       prevRoot
       time
-      applicationHash
+      id
     }
   }
 }
@@ -23,15 +28,16 @@ export interface Block {
 }
 
 export interface Header {
-  id: string;
-  daHeight: string;
+  prevRoot: string;
   transactionsCount: string;
-  messageReceiptCount: string;
+  applicationHash: string;
   transactionsRoot: string;
   height: string;
-  prevRoot: string;
+  daHeight: string;
+  messageOutboxRoot: string;
+  messageReceiptCount: string;
   time: string;
-  applicationHash: string;
+  id: string;
 }
 
 export async function getBlock({
