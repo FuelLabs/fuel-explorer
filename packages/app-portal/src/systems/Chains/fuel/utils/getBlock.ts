@@ -9,7 +9,6 @@ const blockQuery = `query blockQuery($id: BlockId, $height: U64) {
       transactionsCount
       messageReceiptCount
       transactionsRoot
-      messageReceiptRoot
       height
       prevRoot
       time
@@ -29,7 +28,6 @@ export interface Header {
   transactionsCount: string;
   messageReceiptCount: string;
   transactionsRoot: string;
-  messageReceiptRoot: string;
   height: string;
   prevRoot: string;
   time: string;

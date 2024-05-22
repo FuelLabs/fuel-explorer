@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ChainInfo } from 'fuels';
+import type { ChainInfo, Provider } from 'fuels';
 import type { GraphQLField, GraphQLResolveInfo } from 'graphql/type';
 
 import { getClient } from './client';
@@ -14,6 +13,7 @@ export type ChainInfoResult = {
 export type Context = {
   url: string;
   chainInfo: ChainInfo;
+  provider: Provider;
 };
 
 export class Domain<S = any, A = any> {
@@ -35,7 +35,9 @@ export class Domain<S = any, A = any> {
           this.args = args;
           this.context = context;
           this.info = info;
-          return func ? this[func]() : this[key as string] ?? null;
+          return func
+            ? this[func](source, args, context, info)
+            : this[key as string] ?? null;
         },
       },
     } as Record<string, Partial<GraphQLField<S, Context, A>>>;

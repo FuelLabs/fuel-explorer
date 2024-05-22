@@ -1,10 +1,10 @@
-import { bn, getGasUsedFromReceipts, processGqlReceipt } from 'fuels';
 import { uniqBy } from 'lodash';
 
 import type { TransactionItemFragment } from '../generated/types';
 import { tai64toDate } from '../utils/dayjs';
-import { Domain } from '../utils/domain';
+import { type Context, Domain } from '../utils/domain';
 
+import type { GQLTransaction } from '../graphql/generated/sdk';
 import { InputDomain } from './Input';
 import { OperationDomain } from './Operation';
 import { OutputDomain } from './Output';
@@ -16,7 +16,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
       ...domain.createResolver('accountsInvolved'),
       ...domain.createResolver('blockHeight'),
       ...domain.createResolver('fee', 'getFee'),
-      ...domain.createResolver('gasUsed'),
+      ...domain.createResolver('gasUsed', 'getGasUsed'),
       ...domain.createResolver('groupedInputs'),
       ...domain.createResolver('groupedOutputs'),
       ...domain.createResolver('isPredicate'),
@@ -90,29 +90,22 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     return this._getAccounts().length;
   }
 
-  get gasUsed() {
-    return this._getGasUsed();
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  async getGasUsed(source: GQLTransaction, _args: any, ctx: Context) {
+    const { provider } = ctx;
+    // TODO: Remove this logic apart of the SDK
+    const tx = await provider.getTransactionResponse(source.id);
+    const summ = await tx.getTransactionSummary();
+    return summ.gasUsed.toString();
   }
 
-  async getFee() {
-    // const { source: transaction, context } = this;
-    // const { consensusParameters, gasCosts } = context.chainInfo;
-    // const { gasPriceFactor, gasPerByte } = consensusParameters;
-    // const { rawPayload } = transaction;
-    // const { fee } = calculateTransactionFee({
-    //   consensusParameters: {
-    //     feeParams: {
-    //       gasPriceFactor,
-    //       gasPerByte,
-    //     },
-    //     gasCosts,
-    //   },
-    //   rawPayload,
-    //   gasUsed: bn(this._getGasUsed()),
-    // });
-
-    // return fee;
-    return bn(1);
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  async getFee(source: GQLTransaction, _args: any, ctx: Context) {
+    const { provider } = ctx;
+    // TODO: Remove this logic apart of the SDK
+    const tx = await provider.getTransactionResponse(source.id);
+    const summ = await tx.getTransactionSummary();
+    return summ.fee.toString();
   }
 
   get accountsInvolved() {
@@ -152,7 +145,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
 
   private _getAccounts() {
     const { source: transaction } = this;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const ids = transaction.inputs?.flatMap((input: any) => {
       const typename = input?.__typename;
       const isCoin = typename === 'InputCoin';
@@ -185,14 +178,5 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     });
 
     return uniqBy(ids, 'id');
-  }
-
-  private _getGasUsed() {
-    const { source: transaction } = this;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const receipts = (transaction.receipts ?? []) as any[];
-    const decodedReceipts = receipts.map(processGqlReceipt);
-    return getGasUsedFromReceipts(decodedReceipts).toString();
   }
 }

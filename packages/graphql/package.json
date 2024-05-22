@@ -43,7 +43,7 @@
     "graphql-tag": "2.12.6",
     "lodash": "^4.17.21",
     "tai64": "1.0.0",
-    "typescript": "5.3.3",
+    "typescript": "5.4.5",
     "wait-port": "1.1.0"
   },
   "devDependencies": {

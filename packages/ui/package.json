@@ -112,7 +112,7 @@
     "storybook-addon-theme": "workspace:*",
     "tailwindcss": "3.4.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "typescript": "5.3.3",
+    "typescript": "5.4.5",
     "vite": "^5.1.3",
     "vite-tsconfig-paths": "^4.3.1"
   }

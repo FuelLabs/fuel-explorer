@@ -35,7 +35,6 @@ export function createRelayMessageParams(
     txCount: header.transactionsCount.toString(),
     txRoot: header.transactionsRoot,
     outputMessagesRoot: header.messageOutboxRoot,
-    // outputMessagesRoot: header.messageReceiptRoot,
     outputMessagesCount: header.messageReceiptCount.toString(),
   };
   const messageProof = withdrawMessageProof.messageProof;
