@@ -4,7 +4,7 @@ import type { TransactionItemFragment } from '../generated/types';
 import { tai64toDate } from '../utils/dayjs';
 import { type Context, Domain } from '../utils/domain';
 
-import type { GQLTransaction } from '../graphql/generated/sdk';
+import type { GqlTransaction } from 'fuels';
 import { InputDomain } from './Input';
 import { OperationDomain } from './Operation';
 import { OutputDomain } from './Output';
@@ -91,7 +91,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   }
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  async getGasUsed(source: GQLTransaction, _args: any, ctx: Context) {
+  async getGasUsed(source: GqlTransaction, _args: any, ctx: Context) {
     const { provider } = ctx;
     // TODO: Remove this logic apart of the SDK
     const tx = await provider.getTransactionResponse(source.id);
@@ -100,7 +100,7 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
   }
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  async getFee(source: GQLTransaction, _args: any, ctx: Context) {
+  async getFee(source: GqlTransaction, _args: any, ctx: Context) {
     const { provider } = ctx;
     // TODO: Remove this logic apart of the SDK
     const tx = await provider.getTransactionResponse(source.id);
