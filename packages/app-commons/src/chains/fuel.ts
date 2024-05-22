@@ -12,18 +12,18 @@ export type FuelChain = {
 
 const fuelDev: FuelChain = {
   id: 10,
-  network: 'fuel_devnet',
-  name: 'Fuel Devnet',
+  network: 'fuel_local',
+  name: 'Fuel Local',
   testnet: true,
   providerUrl: 'http://localhost:4000/v1/graphql',
 };
 
-const fuelBeta5Dev: FuelChain = {
+const fuelTestnet: FuelChain = {
   id: 0,
-  network: 'fuel_devnet',
-  name: 'Fuel Devnet',
+  network: 'fuel_testnet',
+  name: 'Fuel Testnet',
   testnet: true,
-  providerUrl: 'https://beta-5.swayswap.io/v1/graphql',
+  providerUrl: 'https://testnet.fuel.network/v1/graphql',
 };
 
 const fuelBeta5: FuelChain = {
@@ -36,7 +36,7 @@ const fuelBeta5: FuelChain = {
 
 export const FUEL_CHAINS: Record<ChainName, FuelChain> = {
   fuelDev,
-  fuelBeta5Dev,
+  fuelTestnet: fuelTestnet,
   fuelBeta5,
 };
 

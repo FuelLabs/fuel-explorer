@@ -13,9 +13,9 @@
     "react-dom": "18.2.0"
   },
   "dependencies": {
-    "@fuel-bridge/fungible-token": "pr-161",
-    "@fuel-bridge/message-predicates": "pr-161",
-    "@fuel-bridge/solidity-contracts": "pr-161",
+    "@fuel-bridge/fungible-token": "pr-185",
+    "@fuel-bridge/message-predicates": "pr-185",
+    "@fuel-bridge/solidity-contracts": "pr-185",
     "@fuels/assets": "^0.18.0",
     "@fuels/connectors": "0.2.2",
     "@fuels/react": "pr-72",
@@ -29,7 +29,7 @@
     "date-fns": "^2.30.0",
     "dexie": "^3.2.4",
     "framer-motion": "^10.12.16",
-    "fuels": "0.83.0",
+    "fuels": "0.86.0",
     "next-themes": "0.2.1",
     "react-hook-form": "^7.45.2",
     "tailwind-variants": "0.1.20",

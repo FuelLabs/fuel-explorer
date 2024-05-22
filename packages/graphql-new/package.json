@@ -20,7 +20,9 @@
         "default": "./dist/index.mjs"
       }
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build:lib": "run-s codegen build:sdk",
@@ -58,7 +60,7 @@
     "drizzle-orm": "^0.29.3",
     "ethers": "^6.7.1",
     "express": "5.0.0-beta.1",
-    "fuels": "0.74.0",
+    "fuels": "0.86.0",
     "graphql": "^16.8.1",
     "graphql-request": "6.1.0",
     "graphql-tag": "^2.12.6",

@@ -12,7 +12,7 @@ pnpm dev
 
 ```
 docker run \
-  -e FUEL_PROVIDER=http://beta-5.fuel.network/graphql \
+  -e FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql \
   -e SERVER_PORT=3000 \
   -e SYNC_MISSING=true \
   -e DB_MIGRATE=true \

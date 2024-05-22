@@ -8,7 +8,7 @@
     "dev:notification": "ts-node-dev -r tsconfig-paths/register --transpile-only --watch ./src/**/*, src/index.ts"
   },
   "dependencies": {
-    "@fuel-bridge/solidity-contracts": "0.5.0",
+    "@fuel-bridge/solidity-contracts": "pr-185",
     "@prisma/client": "5.1.1",
     "@types/nodemailer": "^6.4.10",
     "@types/nodemailer-express-handlebars": "^4.0.3",

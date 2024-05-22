@@ -6,7 +6,7 @@ declare global {
       NEXT_PUBLIC_INFURA_ID: string;
       NEXT_PUBLIC_WALLETCONNECT_ID: string;
       NEXT_PUBLIC_ETH_CHAIN_NAME: 'foundry' | 'sepolia';
-      NEXT_PUBLIC_FUEL_CHAIN_NAME: 'fuelDev' | 'fuelBeta5' | 'fuelBeta5Dev';
+      NEXT_PUBLIC_FUEL_CHAIN_NAME: 'fuelDev' | 'fuelBeta5' | 'fuelTestnet';
       NEXT_PUBLIC_FUEL_VERSION: string;
       NEXT_PUBLIC_IS_PUBLIC_PREVIEW: string;
       NEXT_PUBLIC_WALLET_INSTALL: string;

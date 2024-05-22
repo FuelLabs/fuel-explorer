@@ -561,7 +561,7 @@ test.describe('Bridge', () => {
 
       const connectedWallet = getByAriaLabel(
         page,
-        'Fuel Devnet: Connected Wallet',
+        'Fuel Testnet: Connected Wallet',
       );
       const address = await connectedWallet.innerText();
       const balance = getByAriaLabel(page, 'Balance: ');
@@ -572,7 +572,7 @@ test.describe('Bridge', () => {
 
       const connectedWalletAferRefresh = getByAriaLabel(
         page,
-        'Fuel Devnet: Connected Wallet',
+        'Fuel Testnet: Connected Wallet',
       );
       const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
       const balanceAfterRefresh = getByAriaLabel(page, 'Balance: ');

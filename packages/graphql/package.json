@@ -34,7 +34,7 @@
     "esbuild": "0.20.0",
     "ethers": "5.7.2",
     "express": "5.0.0-beta.1",
-    "fuels": "0.74.0",
+    "fuels": "0.86.0",
     "get-port": "7.0.0",
     "graphql": ">=16.8.1",
     "graphql-http": "^1.22.0",
