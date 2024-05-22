@@ -1,6 +1,6 @@
 import assetList from '@fuels/assets';
 import type { Asset } from '@fuels/assets';
-import { BridgeTokenContracts, FUEL_CHAIN } from 'app-commons';
+import { BridgeTokenContracts } from 'app-commons';
 import { Provider, bn } from 'fuels';
 import { isAddress } from 'viem';
 import type { PublicClient, WalletClient } from 'viem';
@@ -63,11 +63,12 @@ export class AssetService {
     const legacyFuelBaseAssetId =
       '0x0000000000000000000000000000000000000000000000000000000000000000';
     const networkBaseAssetId = provider.getBaseAssetId();
+    const chainId = provider.getChainId();
 
     const initialAssets = defaultAssets.map((asset) => {
       const networks = asset.networks.map((network) => {
         if (
-          network.chainId === provider.getChainId() &&
+          network.chainId === chainId &&
           network.type === 'fuel' &&
           network.assetId === legacyFuelBaseAssetId
         ) {
@@ -101,7 +102,7 @@ export class AssetService {
           },
           {
             type: 'fuel',
-            chainId: FUEL_CHAIN.id,
+            chainId,
             decimals: 9,
             contractId: bridgeTokenContracts.FUEL_TokenContract,
             assetId:

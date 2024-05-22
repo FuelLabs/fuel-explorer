@@ -17,4 +17,4 @@ const ethChainName = ETH_CHAIN_NAME?.toLowerCase();
 export const IS_ETH_DEV_CHAIN = ethChainName && ethChainName === 'foundry';
 
 const fuelChainName = FUEL_CHAIN_NAME?.toLowerCase();
-export const IS_FUEL_DEV_CHAIN = fuelChainName && fuelChainName === 'fuelDev';
+export const IS_FUEL_DEV_CHAIN = fuelChainName && fuelChainName === 'fuelLocal';

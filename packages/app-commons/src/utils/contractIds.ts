@@ -18,7 +18,7 @@ let bridgeSolidityContracts: BridgeSolidityContracts;
 export async function getBridgeTokenContracts() {
   if (bridgeTokenContract) return bridgeTokenContract;
 
-  if (FUEL_CHAIN_NAME === 'fuelDev') {
+  if (FUEL_CHAIN_NAME === 'fuelLocal') {
     // On the ci I was encountering issues
     // with the erc20-deployer server not
     // completely started before the e2e tests began

@@ -10,7 +10,7 @@ export type FuelChain = {
   providerUrl: string;
 };
 
-const fuelDev: FuelChain = {
+const fuelLocal: FuelChain = {
   id: 10,
   network: 'fuel_local',
   name: 'Fuel Local',
@@ -27,7 +27,7 @@ const fuelTestnet: FuelChain = {
 };
 
 export const FUEL_CHAINS: Record<ChainName, FuelChain> = {
-  fuelDev,
+  fuelLocal,
   fuelTestnet,
 };
 
