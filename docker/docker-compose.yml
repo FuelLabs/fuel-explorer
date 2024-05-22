@@ -21,6 +21,8 @@ services:
       context: ./fuel-core/
     env_file:
       - ./envs/fuel_core.env
+    volumes:
+      - ./fuel-core/mnt/db:/fuel/mnt/db
     environment:
       L1_CHAIN_HTTP: http://l1_chain:9545/
       DEPLOYMENTS_HTTP: http://l1_chain:8081/deployments.local.json
@@ -89,23 +91,29 @@ services:
       timeout: 5s
       retries: 5
 
-  fuel-graphql-server:
-    platform: linux/amd64
-    depends_on:
-      fuel-explorer-pgsql:
-        condition: service_healthy
-    build:
-      context: ../packages/graphql
-      dockerfile: ../../deployment/Dockerfile 
-    env_file:
-      - ./envs/graphql.env
+  fuel-rabbitmq:
+    image: rabbitmq:3-management
     ports:
-      - "3004:${SERVER_PORT:-3004}"
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # Management UI port
     environment:
-      - DB_HOST=fuel-explorer-pgsql
-      - DB_PORT=5432
-    volumes:
-      - ../packages/graphql:/app
+      RABBITMQ_DEFAULT_USER: guest 
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - app-network
+
+  #   env_file:
+  #     - ./envs/graphql.env
+  #   ports:
+  #     - "3004:${SERVER_PORT:-3004}"
+  #   environment:
+  #     - DB_HOST=fuel-explorer-pgsql
+  #     - DB_PORT=5432
+  #   volumes:
+  #     - ../packages/graphql:/app
 
 volumes:
   fuel-explorer-pgsql-db:
+networks:
+  app-network:
+    driver: bridge

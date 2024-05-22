@@ -1,5 +1,5 @@
-import { sql } from 'drizzle-orm';
 import yargs from 'yargs/yargs';
+import { env } from '~/config';
 import { db } from '../database/Db';
 import { QueueNames, mq } from '../queue/Queue';
 
@@ -10,6 +10,7 @@ type Arguments = {
   clean: boolean;
   last: number | null;
   watch: boolean;
+  offset: number | null;
 };
 
 export class Program {
@@ -37,6 +38,12 @@ export class Program {
               type: 'number',
               default: null,
               describe: 'Sync blocks from a specific height',
+            })
+            .option('offset', {
+              alias: 'of',
+              type: 'number',
+              default: null,
+              describe: 'Sync blocks with an offset',
             })
             .option('clean', {
               alias: 'c',
@@ -88,7 +95,7 @@ export class Program {
   }
 
   async sync(argv: Arguments) {
-    const { all, missing, clean, from, watch, last } = argv;
+    const { all, missing, offset, clean, from, watch, last } = argv;
 
     async function start() {
       await db.connect();
@@ -120,7 +127,11 @@ export class Program {
     }
     if (all || from) {
       await start();
-      await mq.send(QueueNames.SYNC_BLOCKS, { watch, cursor: from ?? 0 });
+      await mq.send(QueueNames.SYNC_BLOCKS, {
+        watch,
+        cursor: from ?? 0,
+        offset: offset ?? Number(env.get('SYNC_OFFSET')),
+      });
       await finish();
       return;
     }

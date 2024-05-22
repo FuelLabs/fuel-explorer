@@ -3,11 +3,12 @@ import client, {
   type Connection,
   type ConsumeMessage,
 } from 'amqplib';
-import { addBlockRange } from '~/application/uc/AddBlockRange';
+import { createAddBlockRange } from '~/application/uc/AddBlockRange';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { env } from '~/config';
+import { BlockProducer } from '~/domain/Block/vo/BlockProducer';
 import type { GQLBlock } from '~/graphql/generated/sdk';
 
 const HOST = env.get('RABBITMQ_HOST');
@@ -120,6 +121,8 @@ class RabbitMQConnection {
 
   async setup() {
     await this.connect();
+    const blockProducer = await BlockProducer.fromSdk();
+    const addBlockRange = createAddBlockRange(blockProducer);
     await this.consume(QueueNames.ADD_BLOCK_RANGE, addBlockRange);
     await this.consume(QueueNames.SYNC_BLOCKS, syncBlocks);
     await this.consume(QueueNames.SYNC_MISSING, syncMissingBlocks);

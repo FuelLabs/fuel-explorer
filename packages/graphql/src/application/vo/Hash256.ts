@@ -12,7 +12,7 @@ export class Hash256 extends ValueObject<Props> {
   }
 
   static create(id: string) {
-    const value = new Address(id).toB256();
+    const { value } = new Address(id);
     return new Hash256({ value });
   }
 

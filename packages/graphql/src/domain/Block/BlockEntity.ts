@@ -21,7 +21,11 @@ type BlockInputProps = {
 };
 
 export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
-  static create(block: BlockItem, transactions: TransactionItem[]) {
+  static create(
+    block: BlockItem,
+    producerId: string | null,
+    transactions: TransactionItem[],
+  ) {
     const item = block.data;
     if (!item) {
       throw new Error('item is required');
@@ -33,7 +37,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     const timestamp = Timestamp.create(item.header.time);
     const time = ParsedTime.create(item.header.time);
     const totalGasUsed = BlockGasUsed.create(item);
-    const producer = BlockProducer.create(item);
+    const producer = BlockProducer.create(producerId);
 
     const props = {
       blockHash,
@@ -48,13 +52,13 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     return new BlockEntity(props, id);
   }
 
-  static toDBItem(block: GQLBlock): BlockItem {
+  static toDBItem(block: GQLBlock, producerId: string | null): BlockItem {
     return {
-      _id: BlockModelID.create(block).value(),
-      blockHash: Hash256.create(block.id).value(),
-      data: BlockData.create(block).value(),
-      producer: BlockProducer.create(block).value()?.toB256() ?? null,
-      timestamp: Timestamp.create(block.header.time).value(),
+      _id: Number(block.header.height),
+      blockHash: block.id,
+      data: block,
+      producer: producerId,
+      timestamp: new Date(block.header.time),
       totalGasUsed: BlockGasUsed.create(block).value(),
     };
   }
@@ -68,7 +72,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
   }
 
   get producer() {
-    return this.props.producer.value()?.toB256() ?? null;
+    return this.props.producer.value()?.raw() ?? null;
   }
 
   get time() {

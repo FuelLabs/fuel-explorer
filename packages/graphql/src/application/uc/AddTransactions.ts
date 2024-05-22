@@ -105,7 +105,6 @@ class TransactionResources {
             console.log(c.red(`Predicate ${shortAddr} already exists`));
             return;
           }
-          throw e;
         }
       }),
     );
@@ -123,7 +122,11 @@ export class AddTransactions {
     const items = blocks.flatMap((block) =>
       block.transactions.map((transaction) => ({ block, transaction })),
     );
-    const added = await repo.upsertMany(items);
+    const added = await repo.upsertMany(items, trx);
+    if (!added?.length) {
+      console.log(c.dim('No transactions to sync'));
+      return;
+    }
     await Promise.all(
       added.map(async (transaction) => {
         const height = transaction.blockHeight;

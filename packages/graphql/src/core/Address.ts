@@ -7,29 +7,24 @@ type ShortAddressOptions = {
 };
 
 export class Address {
-  private raw: FuelAddr;
+  constructor(public value: string) {}
 
-  constructor(value: string) {
-    const isValvalue = value && (isB256(value) || isBech32(value));
-    if (!value || !isValvalue) {
-      throw new Error('Invalvalue address');
+  parse() {
+    const value = this.value;
+    const isValue = value && (isB256(value) || isBech32(value));
+    if (!value || !isValue) {
+      throw new Error('Invalid value address');
     }
 
-    this.raw = FuelAddr.fromString(value);
+    return FuelAddr.fromString(value);
   }
 
-  toB256() {
-    return this.raw.toB256();
-  }
-  toBech32() {
-    return this.raw.bech32Address;
-  }
-  toString() {
-    return this.raw.toString();
+  raw() {
+    return this.value;
   }
 
   short({ minLength = 10, start = 6, end = 4 }: ShortAddressOptions = {}) {
-    const address = this.raw.toB256().toString();
+    const address = this.value;
     return address.length > minLength
       ? `${address.slice(0, start)}...${address.slice(end * -1)}`
       : address;

@@ -8,16 +8,20 @@ import { addTransactions } from './AddTransactions';
 type Data = QueueInputs[QueueNames.ADD_BLOCK_RANGE];
 
 export class AddBlockRange {
-  async execute(data: Data) {
+  async execute(data: Data, blockProducer: string | null) {
     const { blocks } = data;
     const from = blocks[0].header.height;
     const to = blocks[blocks.length - 1].header.height;
     console.log(c.green(`🔗 Adding blocks to sync: #${from} - #${to}`));
     const start = performance.now();
     await db.connection().transaction(async (trx) => {
-      const repo = new BlockRepository(trx);
-      await repo.upsertMany(blocks, trx);
-      await addTransactions({ blocks, trx });
+      try {
+        const repo = new BlockRepository(blockProducer, trx);
+        await repo.upsertMany(blocks, trx);
+        await addTransactions({ blocks, trx });
+      } catch (e) {
+        console.error(e);
+      }
     });
     const end = performance.now();
     const secs = Number.parseInt(`${(end - start) / 1000}`);
@@ -25,14 +29,15 @@ export class AddBlockRange {
   }
 }
 
-export const addBlockRange = async (data: Data) => {
-  try {
-    const { execute } = new AddBlockRange();
-    await execute(data);
-  } catch (error) {
-    console.error(error);
-    throw new Error('Sync transactions', {
-      cause: error,
-    });
-  }
-};
+export const createAddBlockRange =
+  (blockProducer: string | null) => async (data: Data) => {
+    try {
+      const { execute } = new AddBlockRange();
+      await execute(data, blockProducer);
+    } catch (error) {
+      console.error(error);
+      throw new Error('Sync transactions', {
+        cause: error,
+      });
+    }
+  };

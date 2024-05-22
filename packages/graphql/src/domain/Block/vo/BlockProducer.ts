@@ -2,7 +2,7 @@ import { varchar } from 'drizzle-orm/pg-core';
 import { Signer } from 'fuels';
 import { Address } from '~/core/Address';
 import { ValueObject } from '~/core/ValueObject';
-import type { GQLBlock } from '~/graphql/generated/sdk';
+import { client } from '~/graphql/GraphQLSDK';
 
 interface Props {
   value: Address | null;
@@ -13,14 +13,22 @@ export class BlockProducer extends ValueObject<Props> {
     return varchar('producer', { length: 66 });
   }
 
-  static create(block: GQLBlock) {
+  static create(id: string | null) {
+    if (!id) return new BlockProducer({ value: null });
+    const address = new Address(id);
+    return new BlockProducer({ value: address });
+  }
+
+  static async fromSdk() {
+    const blocks = await client.sdk.blocks({ first: 2 });
+    const block = blocks.data.blocks.nodes[1];
     if (block.consensus.__typename === 'Genesis') {
-      return new BlockProducer({ value: null });
+      return null;
     }
     const signature = block.consensus.signature;
     const producer = Signer.recoverAddress(block.id, signature).toB256();
-    const value = new Address(producer);
-    return new BlockProducer({ value });
+    const addr = new Address(producer);
+    return addr.toString();
   }
 
   value() {

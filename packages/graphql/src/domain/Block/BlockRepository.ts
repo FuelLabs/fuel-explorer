@@ -12,7 +12,10 @@ import { BlockEntity } from './BlockEntity';
 import { type BlockItem, BlocksTable } from './BlockModel';
 
 export class BlockRepository {
-  constructor(readonly conn: DbConnection | DbTransaction = db.connection()) {}
+  constructor(
+    readonly producer: string | null,
+    readonly conn: DbConnection | DbTransaction = db.connection(),
+  ) {}
 
   async findByHash(blockHash: string) {
     const first = await this.conn.query.BlocksTable.findFirst({
@@ -24,7 +27,7 @@ export class BlockRepository {
 
     if (!first) return null;
     const { transactions, ...block } = first;
-    return BlockEntity.create(block, transactions);
+    return BlockEntity.create(block, this.producer, transactions);
   }
 
   async findByHeight(height: number) {
@@ -37,7 +40,7 @@ export class BlockRepository {
 
     if (!first) return null;
     const { transactions, ...block } = first;
-    return BlockEntity.create(block, transactions);
+    return BlockEntity.create(block, this.producer, transactions);
   }
 
   async findMany(params: PaginatorParams): Promise<BlockEntity[]> {
@@ -50,7 +53,6 @@ export class BlockRepository {
     );
 
     const results = paginator.getPaginatedResult(joined);
-
     const items = results.reduce<
       Record<number, { block: BlockItem; transactions: TransactionItem[] }>
     >((acc, row) => {
@@ -67,7 +69,7 @@ export class BlockRepository {
     }, {});
 
     return values(items).map((item) =>
-      BlockEntity.create(item.block, item.transactions),
+      BlockEntity.create(item.block, this.producer, item.transactions),
     );
   }
 
@@ -81,16 +83,13 @@ export class BlockRepository {
 
     if (!latest) return null;
     const { transactions, ...block } = latest;
-    return BlockEntity.create(block, transactions);
+    return BlockEntity.create(block, this.producer, transactions);
   }
 
-  async upsertOne(block: GQLBlock) {
-    const upsertOne = this.createUpsertOne(this.conn);
-    return upsertOne(block);
-  }
-
-  async upsertMany(blocks: GQLBlock[], trx?: DbTransaction) {
-    const values = blocks.map(BlockEntity.toDBItem);
+  async upsertMany(blocks: GQLBlock[], trx: DbTransaction) {
+    const values = blocks.map((block) =>
+      BlockEntity.toDBItem(block, this.producer),
+    );
     const conn = trx || this.conn;
     const cls = getTableColumns(BlocksTable);
     const query = conn
@@ -102,8 +101,9 @@ export class BlockRepository {
           data: cls.data.getSQL(),
         },
       });
+
     const items = await query.returning();
-    return items.map((item) => BlockEntity.create(item, []));
+    return items.map((item) => BlockEntity.create(item, this.producer, []));
   }
 
   static async blocksFromNode(first: number, after?: number) {
@@ -121,25 +121,6 @@ export class BlockRepository {
       hasNext,
       hasPrev,
       endCursor: endCursor || undefined,
-    };
-  }
-
-  async latestBlockFromNode() {
-    const { data } = await client.sdk.blocks({ last: 1 });
-    return data.blocks.nodes[0] as GQLBlock;
-  }
-
-  private createUpsertOne(conn: DbConnection | DbTransaction) {
-    return async (block: GQLBlock) => {
-      const [item] = await conn
-        .insert(BlocksTable)
-        .values(BlockEntity.toDBItem(block))
-        .onConflictDoUpdate({
-          target: BlocksTable._id,
-          set: { data: block },
-        })
-        .returning();
-      return BlockEntity.create(item, []);
     };
   }
 }

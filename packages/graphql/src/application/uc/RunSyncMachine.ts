@@ -1,10 +1,11 @@
+import timer from 'node:timers/promises';
 import c from 'chalk';
 import dayjs from 'dayjs';
 import { assign, createActor, fromCallback, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
+import { client } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk';
-import { db } from '~/infra/database/Db';
 import { worker } from '~/infra/worker/Worker';
 import type { SyncBlocksProps } from './SyncBlocks';
 
@@ -24,8 +25,8 @@ type EventsReturn = {
 
 class Syncer {
   async getLatestBlock() {
-    const repo = new BlockRepository(db.connection());
-    return repo.latestBlockFromNode();
+    const { data } = await client.sdk.blocks({ last: 1 });
+    return data.blocks.nodes[0] as GQLBlock;
   }
 
   getLastBlockHeight(ctx: Context) {
@@ -64,7 +65,8 @@ class Syncer {
       return { endCursor: cursor };
     }
     const blocks = await Promise.all(
-      events.map(async ({ from, to }) => {
+      events.map(async ({ from, to }, i) => {
+        await timer.setTimeout(20 * i);
         console.log(c.green(`⌛️ Requesting blocks data: #${from} - #${to}`));
         const res = await BlockRepository.blocksFromNode(to - from, to);
         return { from, to, blocks: res.blocks };
@@ -102,7 +104,8 @@ const machine = setup({
   },
   actors: {
     getLatestBlock: fromPromise<GQLBlock>(async () => {
-      return syncer.getLatestBlock();
+      const { data } = await client.sdk.blocks({ last: 1 });
+      return data.blocks.nodes[0] as GQLBlock;
     }),
     syncBlocks: fromPromise<EventsReturn, Context>(
       async ({ input: context }) => {
