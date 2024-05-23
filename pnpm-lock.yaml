@@ -421,6 +421,9 @@ importers:
       '@fuel-bridge/solidity-contracts':
         specifier: pr-185
         version: 0.6.0-pr-185-3510665234fa9e4c45f01023d2f24cf9f00bbbd4
+      '@fuel-bridge/test-utils':
+        specifier: pr-185
+        version: 0.6.0-pr-185-c1dc351e61b9260da4030790d9296c3de10fd2d8(ethers@6.11.0)(fuels@0.86.0)
       '@fuels/assets':
         specifier: 0.19.0
         version: 0.19.0
@@ -4047,6 +4050,16 @@ packages:
 
   /@fuel-bridge/test-utils@0.6.0-pr-185-3510665234fa9e4c45f01023d2f24cf9f00bbbd4(ethers@6.11.0)(fuels@0.86.0):
     resolution: {integrity: sha512-ksn4oHhFFtnBXabwej2quTGnv3/nw7Qmd7RF1rmieeq+VkuHKEhPvYX6w3FUvJBeOrFGxa1uSXy28frHdiRwTQ==}
+    peerDependencies:
+      ethers: 6.11.0
+      fuels: 0.85.0
+    dependencies:
+      ethers: 6.11.0
+      fuels: 0.86.0
+    dev: false
+
+  /@fuel-bridge/test-utils@0.6.0-pr-185-c1dc351e61b9260da4030790d9296c3de10fd2d8(ethers@6.11.0)(fuels@0.86.0):
+    resolution: {integrity: sha512-OGuh7PnumzMKrtjpwRApl3LhX9En/ZYLhAbeEeLFdr8Gp8vwjECk0mFZFBr9/jPIT8Hx78LTQLvaYZPImPeyig==}
     peerDependencies:
       ethers: 6.11.0
       fuels: 0.85.0

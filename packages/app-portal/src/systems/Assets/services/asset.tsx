@@ -109,6 +109,7 @@ export class AssetService {
               bridgeTokenContracts.FUEL_TokenAsset ||
               getContractTokenId(
                 bridgeTokenContracts.FUEL_TokenContract as `0x${string}`,
+                bridgeTokenContracts.ETH_ERC20 as `0x${string}`,
               ),
           },
         ],

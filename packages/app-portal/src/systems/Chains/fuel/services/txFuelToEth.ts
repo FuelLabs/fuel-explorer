@@ -21,7 +21,7 @@ import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
 import { EthConnectorService } from '../../eth/services';
 import { parseEthAddressToFuel } from '../../eth/utils/address';
 import { createRelayMessageParams } from '../../eth/utils/relayMessage';
-import { getBlock, getContractTokenId } from '../utils';
+import { getBlock } from '../utils';
 
 export type TxFuelToEthInputs = {
   startBase: {
@@ -137,24 +137,24 @@ export class TxFuelToEthService {
         fungibleTokenABI,
         fuelWallet,
       );
-      const fuelTestAssetId =
-        fuelAsset.assetId ||
-        getContractTokenId(fuelAsset.contractId as `0x${string}`);
 
-      const withdrawScope = fungibleToken.functions
+      const transactionRequest = await fungibleToken.functions
         .withdraw(ethAddressInFuel)
+        .txParams({
+          tip: bn(0),
+          gasLimit: bn(1_000_000),
+          maxFee: bn(100_000),
+        })
         .callParams({
           forward: {
             amount: bn.parseUnits(amount.format(), fuelAsset.decimals),
-            assetId: fuelTestAssetId,
+            assetId: fuelAsset.assetId,
           },
         })
-        .txParams({
-          gasLimit: bn(1_000_000),
-        });
+        .fundWithRequiredCoins();
 
-      const fWithdrawTx = await withdrawScope.call();
-      const fWithdrawTxResult = fWithdrawTx.transactionResult;
+      const tx = await fuelWallet.sendTransaction(transactionRequest);
+      const fWithdrawTxResult = await tx.waitForResult();
       if (fWithdrawTxResult.status !== TransactionStatus.success) {
         console.log(fWithdrawTxResult);
         throw new Error('Failed to withdraw tokens to Ethereum');

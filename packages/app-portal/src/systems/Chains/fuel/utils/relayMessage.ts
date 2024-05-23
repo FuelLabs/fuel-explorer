@@ -17,6 +17,7 @@ import {
   ZeroBytes32,
   arrayify,
   bn,
+  concat,
   hexlify,
 } from 'fuels';
 
@@ -43,11 +44,12 @@ function getCommonRelayableMessages(provider: Provider) {
       ): Promise<ScriptTransactionRequest> => {
         const script = arrayify(details.script);
         const predicateBytecode = arrayify(details.predicate);
+        const baseAssetId = relayer.provider.getBaseAssetId();
         // get resources to fund the transaction
         const resources = await relayer.getResourcesToSpend([
           {
             amount: bn(100),
-            assetId: ZeroBytes32,
+            assetId: baseAssetId,
           },
         ]);
         // convert resources to inputs
@@ -87,18 +89,19 @@ function getCommonRelayableMessages(provider: Provider) {
         transaction.outputs.push({
           type: OutputType.Change,
           to: relayer.address.toB256(),
-          assetId: ZeroBytes32,
+          assetId: baseAssetId,
         });
         transaction.outputs.push({
           type: OutputType.Variable,
         });
 
-        transaction.witnesses.push('0x');
+        transaction.witnesses.push(concat([ZeroBytes32, ZeroBytes32]));
 
         const transactionCost =
           await relayer.provider.getTransactionCost(transaction);
 
         transaction.gasLimit = transactionCost.gasUsed.mul(1.2);
+        transaction.maxFee = transactionCost.maxFee;
 
         return transaction;
       },
@@ -151,6 +154,7 @@ export async function relayCommonMessage({
     messageRelayDetails,
     txParams || {},
   );
+  const estimatedTx = await relayer.provider.estimatePredicates(transaction);
 
-  return relayer.sendTransaction(transaction);
+  return relayer.sendTransaction(estimatedTx);
 }

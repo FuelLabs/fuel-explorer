@@ -42,7 +42,8 @@ export async function getBridgeTokenContracts() {
       // @TODO: needs to change this to enable ERC20
       bridgeTokenContract = {
         ETH_ERC20,
-        FUEL_TokenContract: '0x',
+        FUEL_TokenContract:
+          '0xf7e9720adf816640b4e0b91ab192d3d2e549cf978ab2318d45862f0cbc2e9f80',
       };
 
       return bridgeTokenContract;

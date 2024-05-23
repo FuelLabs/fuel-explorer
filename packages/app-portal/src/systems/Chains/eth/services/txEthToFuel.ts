@@ -33,7 +33,6 @@ export type TxEthToFuelInputs = {
   };
   startErc20: {
     ethAssetAddress?: string;
-    fuelContractId?: string;
   } & TxEthToFuelInputs['startEth'];
   createErc20Contract: {
     ethWalletClient?: WalletClient;
@@ -91,18 +90,12 @@ export class TxEthToFuelService {
     if (!input?.ethAssetAddress) {
       throw new Error('Need asset to send');
     }
-    if (!input?.fuelContractId) {
-      throw new Error('Need contract ID of Fuel asset');
-    }
 
     if (
       !input?.ethAssetAddress.startsWith('0x') ||
       !isErc20Address(input.ethAssetAddress)
     ) {
       throw new Error('Not valid asset');
-    }
-    if (!input?.fuelContractId.startsWith('0x')) {
-      throw new Error('Not valid Fuel contract id');
     }
   }
 
@@ -158,7 +151,6 @@ export class TxEthToFuelService {
         amount,
         ethAssetAddress,
         ethPublicClient,
-        fuelContractId,
       } = input;
 
       if (
@@ -202,7 +194,6 @@ export class TxEthToFuelService {
         const depositTxHash = await (fuelErc20Gateway as any).write.deposit([
           fuelAddress.toB256() as `0x${string}`,
           ethAssetAddress,
-          fuelContractId,
           amount,
         ]);
 
@@ -367,13 +358,12 @@ export class TxEthToFuelService {
     }
     const { fuelWallet, fuelMessage } = input;
 
-    const { maxGasPerTx } = await input.fuelWallet.provider.getGasConfig();
     let txMessageRelayed: TransactionResponse | undefined;
     try {
       txMessageRelayed = await relayCommonMessage({
         relayer: fuelWallet,
         message: fuelMessage,
-        txParams: { gasLimit: maxGasPerTx },
+        txParams: { gasLimit: 30000000, maturity: undefined },
       });
     } catch (err) {
       if (err instanceof Error) {
@@ -410,7 +400,6 @@ export class TxEthToFuelService {
     }
 
     const txMessageRelayedResult = await txMessageRelayed?.waitForResult();
-
     if (txMessageRelayedResult?.status !== 'success') {
       throw new Error('Failed to relay message on Fuel');
     }
@@ -455,12 +444,11 @@ export class TxEthToFuelService {
       args: {
         recipient:
           // TODO: get predicate root contract address from FuelMessagePortal contract
-          '0xb12658c759d8bae2cdc523ebd7aa8637912f32b1763d242ad3618448057b79cd',
+          '0xe821b978bcce9abbf40c3e50ea30143e68c65fa95b9da8907fef59c02d954cec',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       fromBlock: 'earliest',
     });
-    console.log('erc20AllLogs', erc20AllLogs);
 
     const erc20Logs = erc20AllLogs.filter((log) => {
       const messageSentEvent = decodeEventLog({
