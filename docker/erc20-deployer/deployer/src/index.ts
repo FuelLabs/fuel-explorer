@@ -29,7 +29,7 @@ async function main() {
     env.eth.fuelERC20Gateway,
     {
       gasLimit: 500000000,
-      gasPrice: 1,
+      maxFee: 50_000,
     } as any,
     // DECIMAL_FUEL,
   );
