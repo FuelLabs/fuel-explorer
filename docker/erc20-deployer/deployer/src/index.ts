@@ -21,7 +21,6 @@ async function main() {
     http_fuel_client: FUEL_GRAPHQL_ENDPOINT,
     http_deployer: DEPLOYMENTS_HTTP,
     pk_eth_signer2: PK_ETH_WALLET,
-    pk_eth_deployer: PK_ETH_WALLET,
   });
   const ETHToken = await getOrDeployECR20Contract(env);
   const FuelToken = await getOrDeployFuelTokenContract(
@@ -31,8 +30,11 @@ async function main() {
       gasLimit: 500000000,
       maxFee: 50_000,
     } as any,
-    // DECIMAL_FUEL,
   );
+
+  const fuelTokenId = FuelToken.id.toHexString();
+  await env.eth.fuelERC20Gateway.setAssetIssuerId(fuelTokenId);
+
   const erc20Address = await ETHToken.getAddress();
   const tokenId = getTokenId(FuelToken, erc20Address);
 

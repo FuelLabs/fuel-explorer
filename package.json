@@ -59,9 +59,9 @@
   "devDependencies": {
     "@babel/core": "^7.23.9",
     "@biomejs/biome": "1.5.3",
-    "@fuels/jest": "0.19.0",
-    "@fuels/ts-config": "0.19.0",
-    "@fuels/tsup-config": "0.19.0",
+    "@fuels/jest": "0.20.0",
+    "@fuels/ts-config": "0.20.0",
+    "@fuels/tsup-config": "0.20.0",
     "@jest/types": "29.6.3",
     "@next/eslint-plugin-next": "^14.1.0",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
