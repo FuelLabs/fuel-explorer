@@ -87,7 +87,7 @@ export const BridgeTxOverview = ({
           <InfoTextLoader />
         ) : (
           <Flex className={classes.directionInfo()}>
-            <Asset asset={ethAsset} iconSize={17}>
+            <Asset asset={asset} iconSize={17}>
               <Asset.Icon alt={`Asset ${asset?.symbol}`} />
             </Asset>
             <Text aria-label="Asset amount" className={classes.infoText()}>

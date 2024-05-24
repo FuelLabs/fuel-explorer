@@ -265,7 +265,7 @@ function MintOutputs({
   isLoading: boolean;
 }) {
   const classes = styles();
-  const inputContractId = tx.inputContract?.contract?.id;
+  const inputContractId = tx.inputContract?.contractId;
   const hasInputContract = Boolean(inputContractId);
   const amount = bn(tx.mintAmount);
 

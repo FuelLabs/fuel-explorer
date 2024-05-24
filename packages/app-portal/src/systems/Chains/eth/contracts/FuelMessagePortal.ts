@@ -13,9 +13,9 @@ export type FuelMessagePortalArgs = {
 export const decodeMessageSentData = {
   erc20Deposit: (data: `0x${string}`) => {
     const pattern =
-      /^0x([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})$/;
+      /^0x([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})$/;
     const match = data.match(pattern);
-    const [, fuelTokenId, tokenAddress, , sender, to, amount] = match || [];
+    const [, fuelTokenId, , tokenAddress, , sender, to, amount] = match || [];
     const parsed = {
       fuelTokenId: `0x${fuelTokenId}`,
       tokenAddress: `0x${tokenAddress}`,

@@ -11,7 +11,7 @@ import { mnemonicToAccount } from 'viem/accounts';
 
 import { ETH_MNEMONIC } from '../mocks';
 
-const PROVIDER_URL = 'http://localhost:4000/graphql';
+const PROVIDER_URL = 'http://localhost:4000/v1/graphql';
 
 export const connectToMetamask = async (page: Page) => {
   await page.bringToFront();

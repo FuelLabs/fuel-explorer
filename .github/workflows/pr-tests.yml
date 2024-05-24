@@ -20,9 +20,6 @@ jobs:
       - name: Create .env file graphql
         run: cp packages/graphql/.env.example packages/graphql/.env
 
-      - name: Create .env file graphql-new
-        run: cp packages/graphql-new/.env.example packages/graphql-new/.env
-      
       - name: Create .env file explorer
         run: cp packages/app-explorer/.env.example packages/app-explorer/.env
 

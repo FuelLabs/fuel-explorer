@@ -1,4 +1,3 @@
-import type { FetchRequestOptions } from 'fuels';
 import { Provider } from 'fuels';
 
 let requestTimestamps: number[] = [];
@@ -7,7 +6,7 @@ const waitTime = 1000; // 1 second in milliseconds
 
 export const rateLimitedFetch = async (
   url: string,
-  options: FetchRequestOptions,
+  options?: RequestInit,
 ): Promise<Response> => {
   const now = Date.now();
   requestTimestamps = requestTimestamps.filter(

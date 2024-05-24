@@ -1,5 +1,5 @@
 import type { Asset } from '@fuels/assets';
-import { DECIMAL_UNITS, bn, fromTai64ToUnix } from 'fuels';
+import { DECIMAL_FUEL, DateTime, bn } from 'fuels';
 import type {
   Account as FuelAccount,
   Address as FuelAddress,
@@ -73,19 +73,17 @@ export class BridgeService {
 
     if (isEthChain(fromNetwork) && isFuelChain(toNetwork)) {
       const amountFormatted = assetAmount.format({
-        precision: DECIMAL_UNITS,
-        units: DECIMAL_UNITS,
+        precision: DECIMAL_FUEL,
+        units: DECIMAL_FUEL,
       });
 
       const assetEth = getAssetEth(asset);
-      const assetFuel = getAssetFuel(asset);
       const amountEthUnits = bn.parseUnits(amountFormatted, assetEth.decimals);
       const txId = await TxEthToFuelService.start({
         amount: amountEthUnits.toHex(),
         ethWalletClient,
         fuelAddress,
         ethAssetAddress: assetEth.address,
-        fuelContractId: assetFuel.contractId,
         ethPublicClient,
       });
 
@@ -108,7 +106,7 @@ export class BridgeService {
     }
 
     if (isFuelChain(fromNetwork) && isEthChain(toNetwork)) {
-      const fuelAsset = getAssetFuel(asset);
+      const fuelAsset = getAssetFuel(asset, fuelWallet?.provider.getChainId());
       const txId = await TxFuelToEthService.start({
         amount: assetAmount,
         fuelWallet,
@@ -164,7 +162,9 @@ export class BridgeService {
       fromNetwork: FUEL_CHAIN,
       toNetwork: ETH_CHAIN,
       // TODO: remove this conversion when sdk already returns the date in unix format
-      date: tx?.time ? new Date(fromTai64ToUnix(tx?.time) * 1000) : undefined,
+      date: tx?.time
+        ? new Date(DateTime.fromTai64(tx?.time).toUnixMilliseconds())
+        : undefined,
     }));
 
     const ethToFuelBridgeTxs = await Promise.all(

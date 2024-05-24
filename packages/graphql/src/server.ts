@@ -9,7 +9,7 @@ import { createGraphqlFetch } from './utils/executor';
 import { requireEnv } from './utils/requireEnv';
 
 const { FUEL_PROVIDER } = requireEnv([
-  ['FUEL_PROVIDER', 'https://beta-5.fuel.network/graphql'],
+  ['FUEL_PROVIDER', 'https://testnet.fuel.network/v1/graphql'],
 ]);
 const { FUEL_EXPLORER_API_KEY } = process.env;
 

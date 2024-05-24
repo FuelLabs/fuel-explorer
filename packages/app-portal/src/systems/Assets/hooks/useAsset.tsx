@@ -8,10 +8,9 @@ import { useAssets } from './useAssets';
 
 export const useAsset = (params?: {
   ethTokenId?: string;
-  fuelContractId?: string;
   fuelTokenId?: string;
 }) => {
-  const { ethTokenId, fuelTokenId, fuelContractId } = params || {};
+  const { ethTokenId, fuelTokenId } = params || {};
   const { assets } = useAssets();
 
   const asset = useMemo((): Asset | undefined => {
@@ -31,7 +30,7 @@ export const useAsset = (params?: {
     });
 
     return appAsset || undefined;
-  }, [assets, ethTokenId, fuelTokenId, fuelContractId]);
+  }, [assets, ethTokenId, fuelTokenId]);
 
   return {
     asset,
