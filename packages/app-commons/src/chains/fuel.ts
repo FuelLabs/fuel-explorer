@@ -3,7 +3,6 @@ import { FUEL_CHAIN_NAME } from '../config';
 type ChainName = typeof process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME;
 
 export type FuelChain = {
-  id: number;
   network: string;
   name: string;
   testnet: boolean;
@@ -11,7 +10,6 @@ export type FuelChain = {
 };
 
 const fuelLocal: FuelChain = {
-  id: 10,
   network: 'fuel_local',
   name: 'Fuel Local',
   testnet: true,
@@ -19,7 +17,6 @@ const fuelLocal: FuelChain = {
 };
 
 const fuelTestnet: FuelChain = {
-  id: 0,
   network: 'fuel_testnet',
   name: 'Fuel Testnet',
   testnet: true,

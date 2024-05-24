@@ -106,7 +106,7 @@ export class BridgeService {
     }
 
     if (isFuelChain(fromNetwork) && isEthChain(toNetwork)) {
-      const fuelAsset = getAssetFuel(asset);
+      const fuelAsset = getAssetFuel(asset, fuelWallet?.provider.getChainId());
       const txId = await TxFuelToEthService.start({
         amount: assetAmount,
         fuelWallet,
