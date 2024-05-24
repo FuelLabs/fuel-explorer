@@ -4,7 +4,7 @@ import { BridgeTokenContracts } from 'app-commons';
 import { Provider, bn } from 'fuels';
 import { isAddress } from 'viem';
 import type { PublicClient, WalletClient } from 'viem';
-import { ETH_CHAIN, getContractTokenId } from '~portal/systems/Chains';
+import { ETH_CHAIN } from '~portal/systems/Chains';
 import { EthConnectorService } from '~portal/systems/Chains/eth';
 
 export type AssetServiceInputs = {
@@ -105,12 +105,7 @@ export class AssetService {
             chainId,
             decimals: 9,
             contractId: bridgeTokenContracts.FUEL_TokenContract,
-            assetId:
-              bridgeTokenContracts.FUEL_TokenAsset ||
-              getContractTokenId(
-                bridgeTokenContracts.FUEL_TokenContract as `0x${string}`,
-                bridgeTokenContracts.ETH_ERC20 as `0x${string}`,
-              ),
+            assetId: bridgeTokenContracts.FUEL_TokenAsset,
           },
         ],
       });

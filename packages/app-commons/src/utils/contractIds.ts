@@ -1,9 +1,12 @@
+import { zeroPadValue } from 'ethers';
+import { ZeroBytes32, concat, sha256 } from 'fuels';
+
 import { ETH_CHAIN_NAME, FUEL_CHAIN_NAME } from '../config';
 
 export type BridgeTokenContracts = {
   ETH_ERC20: string;
   FUEL_TokenContract: string;
-  FUEL_TokenAsset?: string;
+  FUEL_TokenAsset: string;
 };
 export type BridgeSolidityContracts = {
   FuelChainState: `0x${string}`;
@@ -39,11 +42,13 @@ export async function getBridgeTokenContracts() {
   if (ETH_CHAIN_NAME === 'sepolia') {
     const ETH_ERC20 = '0xC6387efAD0F184a90B34f397C3d6Fd63135ef790';
     if (FUEL_CHAIN_NAME === 'fuelTestnet') {
-      // @TODO: needs to change this to enable ERC20
-      bridgeTokenContract = {
+      const FUEL_TokenContract =
+        '0xf7e9720adf816640b4e0b91ab192d3d2e549cf978ab2318d45862f0cbc2e9f80';
+      const FUEL_TokenAsset = getContractTokenId(FUEL_TokenContract, ETH_ERC20);
+      const bridgeTokenContract = {
         ETH_ERC20,
-        FUEL_TokenContract:
-          '0xf7e9720adf816640b4e0b91ab192d3d2e549cf978ab2318d45862f0cbc2e9f80',
+        FUEL_TokenContract,
+        FUEL_TokenAsset,
       };
 
       return bridgeTokenContract;
@@ -80,4 +85,15 @@ export async function getBridgeSolidityContracts() {
   }
 
   return bridgeSolidityContracts;
+}
+
+export function getContractTokenId(
+  contractId: `0x${string}`,
+  erc20Address: `0x${string}`,
+  tokenId = ZeroBytes32,
+) {
+  const subId = sha256(concat([zeroPadValue(erc20Address, 32), tokenId]));
+  const assetId = sha256(concat([contractId, subId]));
+
+  return assetId;
 }
