@@ -2,7 +2,6 @@ import { join } from 'path';
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 
-const _IS_CI = !!process.env.CI;
 const PORT = process.env.PORT || 3001;
 
 const config: PlaywrightTestConfig = defineConfig({
@@ -13,10 +12,9 @@ const config: PlaywrightTestConfig = defineConfig({
   expect: {
     timeout: 5000,
   },
-  reporter: [['html'], ['list', { printSteps: true }]],
+  reporter: [['list', { printSteps: true }], ['html']],
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,
-  // Retry tests on CI if they fail
   retries: 0,
   webServer: {
     command: 'pnpm dev',
@@ -27,8 +25,9 @@ const config: PlaywrightTestConfig = defineConfig({
   use: {
     baseURL: `http://127.0.0.1:${PORT}/`,
     permissions: ['clipboard-read', 'clipboard-write'],
-    trace: 'on-first-retry',
     headless: false,
+    trace: 'on-first-retry',
+    actionTimeout: 5000,
   },
   projects: [
     {
