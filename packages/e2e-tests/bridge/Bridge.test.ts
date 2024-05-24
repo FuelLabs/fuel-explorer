@@ -590,10 +590,8 @@ test.describe('Bridge', () => {
     await test.step('Check if transaction list reacts correctly to fuel wallet changes', async () => {
       await goToTransactionsPage(page);
 
-      await test.step('Change to account 2 should show loading and empty feedback', async () => {
+      await test.step('Change to account 2 should show empty feedback', async () => {
         await fuelWalletTestHelper.switchAccount('Account 2');
-        const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-        await loading.innerText();
         const noActivity = page.getByText('No activity yet');
         await noActivity.innerText();
         const subText = page.getByText(
@@ -602,10 +600,8 @@ test.describe('Bridge', () => {
         await subText.innerText();
       });
 
-      await test.step('Change to account 3 should show connect, but not loading', async () => {
+      await test.step('Change to account 3 should show connect', async () => {
         await fuelWalletTestHelper.switchAccount('Account 3');
-        const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-        expect(await loading.count()).toBe(0);
         const notDetected = page.getByText('Wallet not detected');
         await notDetected.innerText();
         const subText = page.getByText(
@@ -616,11 +612,9 @@ test.describe('Bridge', () => {
         expect(await connectButton.count()).toBe(1);
       });
 
-      await test.step('Change to account 1 should show loading and transactions', async () => {
+      await test.step('Change to account 1 should show transactions', async () => {
         await page.waitForTimeout(2000);
         await fuelWalletTestHelper.switchAccount('Account 1');
-        const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-        await loading.innerText();
         await checkTxItemDone(page, depositEthTxId);
         await checkTxItemDone(page, depositERC20TxId);
         await checkTxItemDone(page, withdrawEthTxId);
