@@ -6,7 +6,7 @@ import type {
   TransactionResponse,
   WalletUnlocked as FuelWallet,
 } from 'fuels';
-import { Address as FuelAddress, ZeroBytes32, bn } from 'fuels';
+import { Address as FuelAddress, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { decodeEventLog } from 'viem';
 import { erc20Abi } from 'viem';
@@ -366,36 +366,15 @@ export class TxEthToFuelService {
         txParams: { gasLimit: 30000000, maturity: undefined },
       });
     } catch (err) {
-      if (err instanceof Error) {
-        const messageToParse = err.message.replace(
-          'not enough coins to fit the target:',
-          '',
+      if (
+        err instanceof Error &&
+        err.message.includes('not enough coins to fit the target')
+      ) {
+        throw new Error(
+          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.',
         );
-
-        const noEthError =
-          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.';
-
-        try {
-          const parsedMessage = JSON.parse(messageToParse);
-          if (
-            parsedMessage.response?.errors[0].message ===
-              'not enough coins to fit the target' &&
-            parsedMessage.request?.variables.queryPerAsset[0].assetId ===
-              ZeroBytes32
-          ) {
-            throw new Error(noEthError);
-          }
-        } catch (parseError) {
-          if (
-            parseError instanceof Error &&
-            parseError.message === noEthError
-          ) {
-            throw parseError;
-          }
-
-          throw err;
-        }
       }
+
       throw err;
     }
 
