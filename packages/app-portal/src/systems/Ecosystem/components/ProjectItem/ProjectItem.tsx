@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import type { FC } from 'react';
 import { animations, getUrlHostName } from '~portal/systems/Core';
+import { stopPropagation } from '~portal/systems/Core/utils/stopPropagation';
 
 import type { Project } from '../../types';
 import { ProjecImage } from '../ProjectImage';
@@ -70,9 +71,10 @@ export const ProjectItem: ProjectItemComponent = ({
                       as="a"
                       href={twitter}
                       className={classes.socialButton()}
-                      onClick={(e) => e.preventDefault()}
+                      onClick={stopPropagation}
                       variant="ghost"
                       size="1"
+                      target="_blank"
                     >
                       <IconBrandX size={20} stroke={1} color="gray" />
                     </Button>
@@ -84,9 +86,10 @@ export const ProjectItem: ProjectItemComponent = ({
                       as="a"
                       href={discord}
                       className={classes.socialButton()}
-                      onClick={(e) => e.preventDefault()}
+                      onClick={stopPropagation}
                       variant="ghost"
                       size="1"
+                      target="_blank"
                     >
                       <IconBrandDiscord size={20} stroke={1} color="gray" />
                     </Button>
@@ -98,9 +101,10 @@ export const ProjectItem: ProjectItemComponent = ({
                       as="a"
                       href={github}
                       className={classes.socialButton()}
-                      onClick={(e) => e.preventDefault()}
+                      onClick={stopPropagation}
                       variant="ghost"
                       size="1"
+                      target="_blank"
                     >
                       <IconBrandGithub size={20} stroke={1} color="gray" />
                     </Button>
