@@ -7,7 +7,12 @@ import type {
   WalletUnlocked as FuelWallet,
 } from 'fuels';
 import { Address as FuelAddress, bn } from 'fuels';
-import type { PublicClient, ReadContractReturnType, WalletClient } from 'viem';
+import type {
+  PublicClient,
+  ReadContractReturnType,
+  TransactionReceipt,
+  WalletClient,
+} from 'viem';
 import { decodeEventLog } from 'viem';
 import { erc20Abi } from 'viem';
 
@@ -173,7 +178,7 @@ export class TxEthToFuelService {
           amount,
         ]);
 
-        let approveTxHashReceipt;
+        let approveTxHashReceipt: TransactionReceipt;
         try {
           approveTxHashReceipt = await ethPublicClient.getTransactionReceipt({
             hash: approveTxHash,
@@ -226,7 +231,7 @@ export class TxEthToFuelService {
 
     const { ethTxId, ethPublicClient } = input;
 
-    let receipt;
+    let receipt: TransactionReceipt;
     try {
       receipt = await ethPublicClient.getTransactionReceipt({
         hash: ethTxId,
