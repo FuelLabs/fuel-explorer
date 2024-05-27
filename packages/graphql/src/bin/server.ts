@@ -15,7 +15,7 @@ export async function runServer() {
   return new Promise((resolve) => {
     server.listen(SERVER_PORT, async () => {
       console.log(
-        `🚀 Server running at http://localhost:${SERVER_PORT}/v1/graphql`,
+        `🚀 Server running at http://localhost:${SERVER_PORT}/graphql`,
       );
       resolve(null);
     });
