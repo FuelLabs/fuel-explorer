@@ -18,13 +18,12 @@ export const ProjectList = ({
   emptyText,
 }: ProjectListProps) => {
   const classes = styles();
-  const isEmpty = !isLoading && !projects.length;
 
   if (isLoading) {
     return <ProjectList.Loading />;
   }
 
-  if (isEmpty) {
+  if (!projects.length) {
     return <ProjectList.Empty text={emptyText} />;
   }
 
