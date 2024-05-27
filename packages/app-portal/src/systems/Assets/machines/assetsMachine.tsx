@@ -7,7 +7,6 @@ import { toast } from '@fuels/ui';
 import { getBridgeTokenContracts } from 'app-commons';
 import type { AssetServiceInputs } from '../services/asset';
 import { AssetService } from '../services/asset';
-import { getDefaultAssets } from '../utils/defaultAssets';
 
 export type MachineContext = {
   assets?: Asset[];
@@ -22,10 +21,15 @@ type MachineServices = {
   };
 };
 
-type MachineEvents = {
-  type: 'FAUCET_ERC20';
-  input: AssetServiceInputs['faucetErc20'];
-};
+type MachineEvents =
+  | {
+      type: 'FAUCET_ERC20';
+      input: AssetServiceInputs['faucetErc20'];
+    }
+  | {
+      type: 'GET_DEFAULT_ASSETS';
+      input: AssetServiceInputs['getDefaultAssets'];
+    };
 
 export const assetsMachine = createMachine(
   {
@@ -38,12 +42,15 @@ export const assetsMachine = createMachine(
       events: {} as MachineEvents,
     },
     id: '(machine)',
-    initial: 'fetchingAssets',
+    initial: 'idle',
     states: {
-      fetchingAssets: {
+      fetching: {
         tags: ['loading'],
         invoke: {
           src: 'fetchAssets',
+          data: {
+            input: (_: MachineContext, ev: MachineEvents) => ev.input,
+          },
           onDone: [
             {
               target: 'idle',
@@ -60,6 +67,9 @@ export const assetsMachine = createMachine(
         on: {
           FAUCET_ERC20: {
             target: 'fauceting',
+          },
+          GET_DEFAULT_ASSETS: {
+            target: 'fetching',
           },
         },
       },
@@ -95,13 +105,21 @@ export const assetsMachine = createMachine(
     },
     services: {
       fetchAssets: FetchMachine.create<
-        null,
+        AssetServiceInputs['getDefaultAssets'],
         MachineServices['fetchAssets']['data']
       >({
         showError: true,
-        async fetch() {
+        async fetch({ input }) {
           const bridgeTokenContracts = await getBridgeTokenContracts();
-          const defaultAssets = getDefaultAssets(bridgeTokenContracts);
+          const hasBridgeTokenContracts =
+            bridgeTokenContracts?.FUEL_TokenContract &&
+            bridgeTokenContracts?.FUEL_TokenContract !== '0x';
+          const defaultAssets = AssetService.getDefaultAssets({
+            provider: input?.provider,
+            bridgeTokenContracts: hasBridgeTokenContracts
+              ? bridgeTokenContracts
+              : undefined,
+          });
 
           return defaultAssets;
         },

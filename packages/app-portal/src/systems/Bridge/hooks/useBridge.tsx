@@ -1,5 +1,5 @@
 import type { BN } from 'fuels';
-import { DECIMAL_UNITS, bn } from 'fuels';
+import { DECIMAL_FUEL, bn } from 'fuels';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { Routes } from '~portal/routes';
@@ -110,7 +110,7 @@ export function useBridge() {
       if (ethBalance) {
         const [intPart, decimalPart] = ethBalance?.formatted?.split('.') || [];
         const formattedUnits = `${intPart}.${
-          decimalPart?.slice(0, DECIMAL_UNITS) || '0'
+          decimalPart?.slice(0, DECIMAL_FUEL) || '0'
         }`;
         return bn.parseUnits(formattedUnits);
       }

@@ -11,7 +11,7 @@ import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
 
-const FUEL_WALLET_VERSION = '0.15.2';
+const FUEL_WALLET_VERSION = '0.19.0';
 const META_MASK_VERSION = '11.11.4';
 
 export const test = base.extend<{

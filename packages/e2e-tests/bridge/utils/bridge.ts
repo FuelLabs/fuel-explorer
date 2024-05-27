@@ -23,6 +23,8 @@ export const goToBridgePage = async (page: Page) => {
 export const goToTransactionsPage = async (page: Page) => {
   const transactionList = page.locator('a').getByText('History');
   await transactionList.click();
+  const backBtn = page.locator('a').getByText('Back');
+  await expect(backBtn).toBeVisible();
 };
 
 export const clickDepositTab = async (page: Page) => {

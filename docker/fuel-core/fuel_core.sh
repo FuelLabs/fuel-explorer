@@ -59,8 +59,7 @@ exec /root/fuel-core run \
     --enable-relayer \
     --relayer $L1_CHAIN_HTTP \
     --relayer-v2-listening-contracts $FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS \
-    --coinbase-recipient 0x1111111111111111111111111111111111111111111111111111111111111111 \
-    --poa-interval-period 1s \
-    --min-gas-price 1 \
-    --chain ./chainConfig.json \
-    --debug
+    --poa-interval-period 1sec \
+    --debug \
+    --min-gas-price 0 \
+    --snapshot ./

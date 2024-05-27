@@ -30,7 +30,7 @@ export class InputDomain {
 
   get contractInputs() {
     const inputs = this._filterByTypename<InputContract>('InputContract');
-    const entries = Object.entries(groupBy(inputs, (i) => i.contract.id));
+    const entries = Object.entries(groupBy(inputs, (i) => i.contractId));
     return entries.map(([contractId, inputs]) => {
       const type = inputs[0].__typename;
       return { contractId, type, inputs };

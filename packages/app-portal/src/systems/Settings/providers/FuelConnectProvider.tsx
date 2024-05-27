@@ -18,7 +18,6 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
     <FuelProvider
       theme={theme}
       fuelConfig={{
-        devMode: true,
         connectors: [
           new FuelWalletConnector(),
           new FuelWalletDevelopmentConnector(),

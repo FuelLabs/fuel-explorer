@@ -10,6 +10,17 @@ import type {
   WithAsProps,
 } from './types';
 
+export type CreatedForwardedComponent<
+  P extends PropsOf<any>,
+  C extends ElementType<any>,
+> = React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<P> & React.RefAttributes<ElementRef<C>>
+>;
+export type PolymorphicComponentProps = {
+  id: string;
+  polymorphic?: boolean;
+};
+
 type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
   id: string;
   baseElement?: C;
@@ -21,7 +32,7 @@ type CreateOpts<P extends PropsOf<any>, C extends ElementType<any>> = {
 export function createComponent<
   P extends PropsOf<any>,
   C extends ElementType<any>,
->(opts: CreateOpts<P, C>) {
+>(opts: CreateOpts<P, C>): CreatedForwardedComponent<P, C> {
   const {
     id,
     baseElement: El = 'div' as C,
@@ -34,22 +45,22 @@ export function createComponent<
   }
 
   type T = ElementRef<typeof El>;
-  const Comp = forwardRef<T, P>((props, ref) => {
-    const baseClass = getClass?.(props) ?? props.className;
-    const className = cx(baseClass, fClass(id));
-    const itemProps = { ref, ...props, className } as any;
 
-    return render ? render(El, itemProps) : <El {...itemProps} />;
-  });
+  const Comp: CreatedForwardedComponent<P, C> = forwardRef<T, P>(
+    (props, ref) => {
+      const baseClass = getClass?.(props) ?? props.className;
+      const className = cx(baseClass, fClass(id));
+      const itemProps = { ref, ...props, className } as any;
+
+      return render ? render(El, itemProps) : <El {...itemProps} />;
+    },
+  );
 
   if (opts.defaultProps) {
     Comp.defaultProps = opts.defaultProps;
   }
 
-  const ReturnComp = Comp as typeof Comp & {
-    id: string;
-    polymorphic?: boolean;
-  };
+  const ReturnComp = Comp as typeof Comp & PolymorphicComponentProps;
 
   ReturnComp.id = id;
   ReturnComp.displayName = id;

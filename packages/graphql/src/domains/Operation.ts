@@ -1,6 +1,7 @@
 import type {
   Operation,
   OperationReceipt,
+  SuccessStatus,
   TransactionItemFragment,
   TransactionReceiptFragment,
 } from '../generated/types';
@@ -22,10 +23,10 @@ function getType(receipt: TxReceipt) {
   if (receipt?.sender) {
     return 'FROM_ACCOUNT';
   }
-  if (receipt?.contract?.id ?? receipt?.contractId ?? receipt?.to?.id) {
+  if (receipt?.contractId ?? receipt?.contractId ?? receipt?.to) {
     return 'FROM_CONTRACT';
   }
-  if (isReturn(receipt) && !receipt?.contract?.id) {
+  if (isReturn(receipt) && !receipt?.contractId) {
     return 'FINAL_RESULT';
   }
   return null;
@@ -33,7 +34,9 @@ function getType(receipt: TxReceipt) {
 
 export class OperationDomain {
   async operationsFromTransaction(transaction: Tx) {
-    const receipts = transaction.receipts || [];
+    if (transaction.status?.__typename !== 'SuccessStatus') return [];
+    const status = transaction.status as SuccessStatus;
+    const receipts = status?.receipts || [];
     return this._createOperations(receipts);
   }
 
@@ -49,7 +52,7 @@ export class OperationDomain {
       const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
       const isTypeCall = isFirstCall || isCurrentCall;
       const isOnlyResult = hasError && isResult(receipt);
-      const isFinalReturn = isReturn(receipt) && !receipt.contract?.id;
+      const isFinalReturn = isReturn(receipt) && !receipt.contractId;
 
       if (isTypeCall || isOnlyResult || isFinalReturn) {
         const type = getType(receipt);
@@ -106,7 +109,7 @@ export class OperationDomain {
   ) {
     return (receipt: TxReceipt, nIdx: number) => {
       if (hasError) return nIdx > idx && isError(receipt);
-      const hasSameId = current.to?.id === receipt.contract?.id;
+      const hasSameId = current.to === receipt.contractId;
       return nIdx > idx && isReturn(receipt) && hasSameId;
     };
   }
