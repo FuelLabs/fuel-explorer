@@ -44,7 +44,6 @@ function getVariant<V = Variant>({ variant, className }: VariantProps<V>) {
 }
 
 export function useVariants<P, V = Variant>(props: P) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { variant, className } = getVariant<V>(props as any);
   return { variant: variant as V, className };
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from '@fuels/ui';
 import type { TransitionConfig } from 'xstate';
 import { assign, createMachine } from 'xstate';
@@ -48,7 +47,6 @@ export const FetchMachine = {
     return createMachine(
       {
         predictableActionArguments: true,
-        // eslint-disable-next-line @typescript-eslint/consistent-type-imports
         tsTypes: {} as import('./fetchMachine.typegen').Typegen0,
         schema: {
           context: {} as MachineContext<Input>,

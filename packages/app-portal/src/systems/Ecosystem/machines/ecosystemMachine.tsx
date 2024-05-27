@@ -71,7 +71,6 @@ export function sortAtoZ(a: string, b: string) {
 
 export const ecosystemMachine = createMachine(
   {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     tsTypes: {} as import('./ecosystemMachine.typegen').Typegen0,
     schema: {
       context: initialState as MachineContext,

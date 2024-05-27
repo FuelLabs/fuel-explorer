@@ -31,7 +31,6 @@ import {
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { createContext, useContext, useState } from 'react';
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react-json-view-lite/dist/index.css';
 import { useMeasure } from 'react-use';
 import { tv } from 'tailwind-variants';

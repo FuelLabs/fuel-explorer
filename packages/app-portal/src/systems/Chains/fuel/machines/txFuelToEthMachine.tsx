@@ -78,7 +78,6 @@ export type TxFuelToEthMachineEvents =
 
 export const txFuelToEthMachine = createMachine(
   {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     tsTypes: {} as import('./txFuelToEthMachine.typegen').Typegen0,
     schema: {
       context: {} as MachineContext,

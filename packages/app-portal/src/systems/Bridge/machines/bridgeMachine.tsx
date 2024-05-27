@@ -50,7 +50,6 @@ export type BridgeMachineEvents =
 
 export const bridgeMachine = createMachine(
   {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     tsTypes: {} as import('./bridgeMachine.typegen').Typegen0,
     schema: {
       context: {} as MachineContext,

@@ -28,7 +28,6 @@ const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   Message: IconMailForward,
 } as const;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const TX_INTENT_MAP: Record<TxStatus, any> = {
   Success: 'green',
   Failure: 'red',

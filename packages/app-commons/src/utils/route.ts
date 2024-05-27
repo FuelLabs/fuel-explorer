@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 type PathRender<T extends Array<string>> = ((...params: T) => string) & {
   pathname: string;
 };

@@ -130,7 +130,6 @@ export class TxEthToFuelService {
         return txHash;
       }
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }
@@ -200,7 +199,6 @@ export class TxEthToFuelService {
         return depositTxHash;
       }
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }
@@ -408,7 +406,6 @@ export class TxEthToFuelService {
       },
       args: {
         recipient: fuelAddress?.toHexString() as `0x${string}`,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       fromBlock: 'earliest',
     });
@@ -424,7 +421,6 @@ export class TxEthToFuelService {
         recipient:
           // TODO: get predicate root contract address from FuelMessagePortal contract
           '0xe821b978bcce9abbf40c3e50ea30143e68c65fa95b9da8907fef59c02d954cec',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       fromBlock: 'earliest',
     });

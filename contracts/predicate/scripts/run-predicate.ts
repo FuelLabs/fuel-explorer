@@ -52,7 +52,6 @@ async function main() {
     );
     const res2 = await tx2.waitForResult();
     console.log(`→ Transaction Id: ${res2.id}`);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error(error?.response?.errors?.[0].message);
   }

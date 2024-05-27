@@ -1,4 +1,3 @@
-/* eslint-disable no-empty-pattern */
 // Use a test fixture to set the context so tests have access to the wallet extension.
 import { downloadFuel } from '@fuels/playwright-utils';
 import type { BrowserContext } from '@playwright/test';
