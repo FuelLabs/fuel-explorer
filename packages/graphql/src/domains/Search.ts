@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { gql } from 'graphql-request';
 
 import { parseAddressParam } from '../utils/address';

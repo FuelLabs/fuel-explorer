@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference types="@react-aria/focus" />
 import type { FocusScopeProps } from '@react-aria/focus';
 import { FocusScope } from '@react-aria/focus';
@@ -26,7 +25,6 @@ export const FocusArrowNavigator = createComponent<
         (child: ReactElement) => {
           return cloneElement(child, mergeProps(child.props, { onKeyDown }));
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ) as any;
       return <FocusScope {...props}>{child}</FocusScope>;
     }

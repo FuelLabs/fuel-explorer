@@ -6,7 +6,6 @@ export class Cache {
     this._cache[key] = { value, expire };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get<T = any>(key: string): T | null {
     const data = this._cache[key];
     if (data) {

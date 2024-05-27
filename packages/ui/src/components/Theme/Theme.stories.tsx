@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Flex, Grid, VStack } from '../Box';
