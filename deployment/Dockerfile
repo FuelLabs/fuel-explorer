@@ -4,7 +4,7 @@ FROM node:20-slim AS base
 
 # Expose the ENVs to the env of the container
 ENV PORT="${PORT}"
-ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://beta-5.fuel.network/graphql}"
+ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://testnet.fuel.network/v1/graphql}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV SERVER_BUILD=true

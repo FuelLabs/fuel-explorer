@@ -1,5 +1,4 @@
 import type { Asset, Ethereum, Fuel } from '@fuels/assets';
-import { FUEL_CHAIN } from 'app-commons';
 import { ETH_CHAIN } from '~portal/systems/Chains';
 
 type Network = Ethereum | Fuel; // Assuming Ethereum and Fuel are your types
@@ -45,11 +44,11 @@ export const getAssetEth = (asset: Asset): AssetEth => {
   };
 };
 
-export const getAssetFuel = (asset: Asset): AssetFuel => {
+export const getAssetFuel = (asset: Asset, chainId = 0): AssetFuel => {
   const { networks: _, ...assetRest } = asset;
   const assetNetwork = getAssetNetwork({
     asset,
-    chainId: FUEL_CHAIN.id,
+    chainId,
     networkType: 'fuel',
   });
 

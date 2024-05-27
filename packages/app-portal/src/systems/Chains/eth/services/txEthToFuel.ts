@@ -6,7 +6,7 @@ import type {
   TransactionResponse,
   WalletUnlocked as FuelWallet,
 } from 'fuels';
-import { Address as FuelAddress, ZeroBytes32, bn } from 'fuels';
+import { Address as FuelAddress, bn } from 'fuels';
 import type { PublicClient, ReadContractReturnType, WalletClient } from 'viem';
 import { decodeEventLog } from 'viem';
 import { erc20Abi } from 'viem';
@@ -33,7 +33,6 @@ export type TxEthToFuelInputs = {
   };
   startErc20: {
     ethAssetAddress?: string;
-    fuelContractId?: string;
   } & TxEthToFuelInputs['startEth'];
   createErc20Contract: {
     ethWalletClient?: WalletClient;
@@ -94,18 +93,12 @@ export class TxEthToFuelService {
     if (!input?.ethAssetAddress) {
       throw new Error('Need asset to send');
     }
-    if (!input?.fuelContractId) {
-      throw new Error('Need contract ID of Fuel asset');
-    }
 
     if (
       !input?.ethAssetAddress.startsWith('0x') ||
       !isErc20Address(input.ethAssetAddress)
     ) {
       throw new Error('Not valid asset');
-    }
-    if (!input?.fuelContractId.startsWith('0x')) {
-      throw new Error('Not valid Fuel contract id');
     }
   }
 
@@ -161,7 +154,6 @@ export class TxEthToFuelService {
         amount,
         ethAssetAddress,
         ethPublicClient,
-        fuelContractId,
       } = input;
 
       if (
@@ -205,7 +197,6 @@ export class TxEthToFuelService {
         const depositTxHash = await fuelErc20Gateway.write.deposit([
           fuelAddress.toB256() as `0x${string}`,
           ethAssetAddress,
-          fuelContractId,
           amount,
         ]);
 
@@ -370,50 +361,27 @@ export class TxEthToFuelService {
     }
     const { fuelWallet, fuelMessage } = input;
 
-    const { maxGasPerTx } = await input.fuelWallet.provider.getGasConfig();
     let txMessageRelayed: TransactionResponse | undefined;
     try {
       txMessageRelayed = await relayCommonMessage({
         relayer: fuelWallet,
         message: fuelMessage,
-        txParams: { gasLimit: maxGasPerTx },
+        txParams: { gasLimit: 30000000, maturity: undefined },
       });
     } catch (err) {
-      if (err instanceof Error) {
-        const messageToParse = err.message.replace(
-          'not enough coins to fit the target:',
-          '',
+      if (
+        err instanceof Error &&
+        err.message.includes('not enough coins to fit the target')
+      ) {
+        throw new Error(
+          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.',
         );
-
-        const noEthError =
-          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.';
-
-        try {
-          const parsedMessage = JSON.parse(messageToParse);
-          if (
-            parsedMessage.response?.errors[0].message ===
-              'not enough coins to fit the target' &&
-            parsedMessage.request?.variables.queryPerAsset[0].assetId ===
-              ZeroBytes32
-          ) {
-            throw new Error(noEthError);
-          }
-        } catch (parseError) {
-          if (
-            parseError instanceof Error &&
-            parseError.message === noEthError
-          ) {
-            throw parseError;
-          }
-
-          throw err;
-        }
       }
+
       throw err;
     }
 
     const txMessageRelayedResult = await txMessageRelayed?.waitForResult();
-
     if (txMessageRelayedResult?.status !== 'success') {
       throw new Error('Failed to relay message on Fuel');
     }
@@ -444,7 +412,7 @@ export class TxEthToFuelService {
       args: {
         recipient: fuelAddress?.toHexString() as `0x${string}`,
       },
-      fromBlock: 'earliest',
+      fromBlock: 'earliest' as const,
     });
 
     const erc20AllLogs = await ethPublicClient!.getLogs({
@@ -457,11 +425,10 @@ export class TxEthToFuelService {
       args: {
         recipient:
           // TODO: get predicate root contract address from FuelMessagePortal contract
-          '0xb12658c759d8bae2cdc523ebd7aa8637912f32b1763d242ad3618448057b79cd',
+          '0xe821b978bcce9abbf40c3e50ea30143e68c65fa95b9da8907fef59c02d954cec',
       },
-      fromBlock: 'earliest',
+      fromBlock: 'earliest' as const,
     });
-    console.log('erc20AllLogs', erc20AllLogs);
 
     const erc20Logs = erc20AllLogs.filter((log) => {
       const messageSentEvent = decodeEventLog({

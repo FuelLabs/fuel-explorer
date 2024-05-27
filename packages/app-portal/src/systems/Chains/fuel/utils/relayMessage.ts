@@ -5,8 +5,8 @@ import {
 import type {
   Message,
   Provider,
-  ScriptTransactionRequestLike,
   TransactionResponse,
+  TxParamsType,
   WalletUnlocked as FuelWallet,
 } from 'fuels';
 import {
@@ -17,6 +17,7 @@ import {
   ZeroBytes32,
   arrayify,
   bn,
+  concat,
   hexlify,
 } from 'fuels';
 
@@ -24,7 +25,10 @@ import { resourcesToInputs } from './transaction';
 
 function getCommonRelayableMessages(provider: Provider) {
   // Create a predicate for common messages
-  const predicate = new Predicate(contractMessagePredicate, provider);
+  const predicate = new Predicate({
+    bytecode: contractMessagePredicate,
+    provider,
+  });
 
   // Details for relaying common messages with certain predicate roots
   const relayableMessages: CommonMessageDetails[] = [
@@ -40,11 +44,12 @@ function getCommonRelayableMessages(provider: Provider) {
       ): Promise<ScriptTransactionRequest> => {
         const script = arrayify(details.script);
         const predicateBytecode = arrayify(details.predicate);
+        const baseAssetId = relayer.provider.getBaseAssetId();
         // get resources to fund the transaction
         const resources = await relayer.getResourcesToSpend([
           {
             amount: bn(100),
-            assetId: ZeroBytes32,
+            assetId: baseAssetId,
           },
         ]);
         // convert resources to inputs
@@ -84,18 +89,19 @@ function getCommonRelayableMessages(provider: Provider) {
         transaction.outputs.push({
           type: OutputType.Change,
           to: relayer.address.toB256(),
-          assetId: ZeroBytes32,
+          assetId: baseAssetId,
         });
         transaction.outputs.push({
           type: OutputType.Variable,
         });
 
-        transaction.witnesses.push('0x');
+        transaction.witnesses.push(concat([ZeroBytes32, ZeroBytes32]));
 
         const transactionCost =
           await relayer.provider.getTransactionCost(transaction);
 
         transaction.gasLimit = transactionCost.gasUsed.mul(1.2);
+        transaction.maxFee = transactionCost.maxFee;
 
         return transaction;
       },
@@ -114,10 +120,7 @@ type CommonMessageDetails = {
     relayer: FuelWallet,
     message: Message,
     details: CommonMessageDetails,
-    txParams: Pick<
-      ScriptTransactionRequestLike,
-      'gasLimit' | 'gasPrice' | 'maturity'
-    >,
+    txParams: TxParamsType,
   ) => Promise<ScriptTransactionRequest>;
 };
 
@@ -129,10 +132,7 @@ export async function relayCommonMessage({
 }: {
   relayer: FuelWallet;
   message: Message;
-  txParams?: Pick<
-    ScriptTransactionRequestLike,
-    'gasLimit' | 'gasPrice' | 'maturity'
-  >;
+  txParams?: TxParamsType;
 }): Promise<TransactionResponse> {
   // find the relay details for the specified message
   let messageRelayDetails: CommonMessageDetails | undefined;
@@ -154,6 +154,7 @@ export async function relayCommonMessage({
     messageRelayDetails,
     txParams || {},
   );
+  const estimatedTx = await relayer.provider.estimatePredicates(transaction);
 
-  return relayer.sendTransaction(transaction);
+  return relayer.sendTransaction(estimatedTx);
 }

@@ -34,7 +34,7 @@ export function Ecosystem() {
       />
       <ProjectList
         isLoading={isLoading}
-        projects={filteredProjects || []}
+        projects={filteredProjects}
         emptyText={emptyText}
       />
     </VStack>

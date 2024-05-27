@@ -45,7 +45,7 @@ export class OutputDomain {
 
   get contractCreatedOutputs() {
     const outputs = this._filterByTypename<ContractCreated>('ContractCreated');
-    const entries = Object.entries(groupBy(outputs, (i) => i.contract.id));
+    const entries = Object.entries(groupBy(outputs, (i) => i.contract));
     return entries.map(([_, outputs]) => {
       const type = outputs[0].__typename;
       const contract = outputs[0].contract;

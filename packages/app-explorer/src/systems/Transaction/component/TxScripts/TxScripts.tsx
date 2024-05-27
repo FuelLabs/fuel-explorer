@@ -31,7 +31,6 @@ import {
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { createContext, useContext, useState } from 'react';
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react-json-view-lite/dist/index.css';
 import { useMeasure } from 'react-use';
 import { tv } from 'tailwind-variants';
@@ -119,6 +118,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
     );
   }
 
+  const txReceipts = getReceipts(tx);
   const receipts = operations.flatMap((i) => i?.receipts ?? []);
   const first = receipts?.[0];
   const last = receipts?.[receipts.length - 1];
@@ -139,7 +139,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
           <HoverCard openDelay={100}>
             <HoverCard.Trigger>
               <Button
-                ref={ref as any}
+                ref={ref as React.Ref<HTMLButtonElement>}
                 color="gray"
                 variant="outline"
                 leftIcon={IconArrowsMoveVertical}
@@ -147,7 +147,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               >
                 Expand{' '}
                 <span className="text-muted">
-                  (+{tx?.receipts?.length ?? 0 - 2} operations)
+                  (+{txReceipts?.length ?? 0 - 2} operations)
                 </span>
               </Button>
             </HoverCard.Trigger>
@@ -155,7 +155,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
               className="rounded-xs p-2 px-3"
               style={{ width }}
             >
-              <TypesCounter receipts={tx?.receipts} />
+              <TypesCounter receipts={txReceipts} />
             </HoverCard.Content>
           </HoverCard>
           <Box className={classes.lines()} />
@@ -292,6 +292,11 @@ function TypesCounter({
 const ctx = createContext<ReceiptItemProps>({} as ReceiptItemProps);
 const RETURN_TYPES = [ReceiptType.Return, ReceiptType.ReturnData];
 
+function getReceipts(tx: TransactionNode | undefined) {
+  if (tx?.status?.__typename !== 'SuccessStatus') return [];
+  return tx.status.receipts ?? [];
+}
+
 function getBadgeColor(
   hasError: boolean,
   receipt?: Maybe<TransactionReceiptFragment>,
@@ -303,7 +308,7 @@ function getBadgeColor(
   if (
     RETURN_TYPES.some((t) => t === type) &&
     !hasError &&
-    !receipt?.contract?.id
+    !receipt?.contractId
   ) {
     return 'green';
   }
@@ -352,8 +357,7 @@ function parseJson(
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {
     if (!value || key === '__typename') return acc;
-    if (typeof value === 'object')
-      return { ...acc, [key]: parseJson(value as any) };
+    if (typeof value === 'object') return { ...acc, [key]: parseJson(value) };
     return { ...acc, [key]: value };
   }, {});
 }
@@ -363,7 +367,10 @@ function ReceiptBlock() {
   const classes = styles();
   const [ref, { width }] = useMeasure();
   return (
-    <Collapsible.Content ref={ref as any} className={classes.utxos()}>
+    <Collapsible.Content
+      ref={ref as React.Ref<HTMLDivElement>}
+      className={classes.utxos()}
+    >
       <ScrollArea style={{ width }}>
         <JsonViewer data={parseJson(receipt?.item)} />
       </ScrollArea>
@@ -389,7 +396,7 @@ function ReceiptAmount() {
   const receipt = item?.item;
   const assetId = receipt?.assetId ?? '';
   const amount = bn(receipt?.amount);
-  const contract = receipt?.to?.id ?? receipt?.contract?.id ?? null;
+  const contract = receipt?.to ?? receipt?.contractId ?? null;
 
   return (
     amount.gt(0) && (
@@ -420,7 +427,7 @@ function ReceiptHeader() {
   const classes = styles();
   const type = receipt?.receiptType ?? 'UNKNOWN';
   const param1 = receipt?.param1;
-  const contract = receipt?.to?.id ?? receipt?.contract?.id ?? null;
+  const contract = receipt?.to ?? receipt?.contractId ?? null;
   const assetId = receipt?.assetId ?? '';
   const amount = bn(receipt?.amount);
 
@@ -464,20 +471,22 @@ function ReceiptHeader() {
             {receipt.val && (
               <Amount
                 iconSize={16}
-                assetId={receipt.contract?.id}
+                assetId={receipt.contractId}
                 value={bn(receipt.val)}
                 className="text-xs tablet:text-sm"
               />
             )}
-            <Address
-              value={receipt.contract?.id}
-              className="text-xs tablet:text-sm font-mono"
-              prefix="Asset:"
-              linkProps={{
-                as: NextLink,
-                href: `/contract/${receipt.contract?.id}/assets`,
-              }}
-            />
+            {receipt.contractId && (
+              <Address
+                value={receipt.contractId}
+                className="text-xs tablet:text-sm font-mono"
+                prefix="Asset:"
+                linkProps={{
+                  as: NextLink,
+                  href: `/contract/${receipt.contractId}/assets`,
+                }}
+              />
+            )}
           </VStack>
         )}
         <ReceiptAmount />

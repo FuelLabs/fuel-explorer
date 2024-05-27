@@ -17,10 +17,12 @@ fragment TransactionStatus on TransactionStatus {
         height
         daHeight
         applicationHash
-        messageReceiptRoot
         messageReceiptCount
         time
       }
+    }
+    receipts {
+      ...TransactionReceipt
     }
     programState {
       data
@@ -53,9 +55,7 @@ fragment TransactionInput on Input {
     utxoId
     balanceRoot
     txPointer
-    contract {
-      ...TransactionContractItem
-    }
+    contractId
   }
   ... on InputMessage {
     sender
@@ -90,20 +90,14 @@ fragment TransactionOutput on Output {
     assetId
   }
   ... on ContractCreated {
-    contract {
-      ...TransactionContractItem
-    }
+    contract 
   }
 }
 
 fragment TransactionReceipt on Receipt {
   __typename
-  contract {
-    ...TransactionContractItem
-  }
-  to {
-    ...TransactionContractItem
-  }
+  contractId
+  to
   pc
   is
   toAddress
@@ -217,7 +211,6 @@ fragment TransactionItem on Transaction {
 
   # Transaction Data
   __typename
-  gasPrice
   maturity
   txPointer
   isScript
@@ -228,16 +221,13 @@ fragment TransactionItem on Transaction {
   script
   scriptData
   bytecodeWitnessIndex
-  bytecodeLength
   salt
   storageSlots
   rawPayload
   mintAmount
   mintAssetId
   inputContract {
-    contract {
-      id
-    }
+    contractId
   }
   outputContract {
     inputIndex
@@ -247,16 +237,11 @@ fragment TransactionItem on Transaction {
     ...TransactionStatus
   }
   inputAssetIds
-  inputContracts {
-    ...TransactionContractItem
-  }
+  inputContracts
   inputs {
     ...TransactionInput
   }
   outputs {
     ...TransactionOutput
-  }
-  receipts {
-    ...TransactionReceipt
   }
 }
