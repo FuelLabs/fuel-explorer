@@ -1,6 +1,6 @@
 import { bn } from 'fuels';
 
-import { PublicClient } from 'viem';
+import type { PublicClient } from 'viem';
 import { EthTxCache } from './txCache';
 
 export const getBlockDate = async ({

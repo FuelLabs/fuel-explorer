@@ -24,7 +24,7 @@ export const goToTransactionsPage = async (page: Page) => {
   const transactionList = page.locator('a').getByText('History');
   await transactionList.click();
   const backBtn = page.locator('a').getByText('Back');
-  await expect(backBtn).toBeVisible();
+  await expect(backBtn).toBeEnabled();
 };
 
 export const clickDepositTab = async (page: Page) => {

@@ -30,6 +30,10 @@
       "dependsOn": ["^build:lib", "^ts:check"],
       "cache": false
     },
+    "dev:storybook": {
+      "dependsOn": [],
+      "cache": false
+    },
     "lint": {
       "dependsOn": [],
       "cache": true

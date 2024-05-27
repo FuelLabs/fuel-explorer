@@ -3,40 +3,18 @@
 
 ## 📗 Table of contents
 
-### Explorer
-
-- [Getting Started](./docs/explorer/GETTING_STARTED.md)
-  - [Requirements](./docs/explorer/GETTING_STARTED.md#requirements)
-  - [Running Project Locally](./docs/explorer/GETTING_STARTED.md#running-project-locally)
-    - [📚 - Getting the Repository](./docs/explorer/GETTING_STARTED.md#---getting-the-repository)
-    - [📦 - Install Dependencies](./docs/explorer/GETTING_STARTED.md#---install-dependencies)
-    - [📒 - Run Local Node](./docs/explorer/GETTING_STARTED.md#---run-local-node)
-    - [💻 - Run Web App](./docs/explorer/GETTING_STARTED.md#---run-web-app)
-  - [📗 Project Overview](./docs/explorer/GETTING_STARTED.md#-project-overview)
-  - [🧰 Useful Scripts](./docs/explorer/GETTING_STARTED.md#-useful-scripts)
-  - [Running Tests](./docs/explorer/GETTING_STARTED.md#run-tests)
-    - [Run Tests in Development Mode](./docs/explorer/GETTING_STARTED.md#run-tests)
-- [Contribution Guide](./docs/explorer/CONTRIBUTING.md)
-  - [Finding Something to Work On](./docs/explorer/CONTRIBUTING.md#finding-something-to-work-on)
-  - [Contribution Flow](./docs/explorer/CONTRIBUTING.md#contribution-flow)
-- [License](#license)
-
-### Portal
-
-- [Getting Started](./docs/portal/GETTING_STARTED.md)
-  - [Requirements](./docs/portal/GETTING_STARTED.md#requirements)
-  - [Running Project Locally](./docs/portal/GETTING_STARTED.md#running-project-locally)
-    - [📚 - Getting the Repository](./docs/portal/GETTING_STARTED.md#---getting-the-repository)
-    - [📦 - Install Dependencies](./docs/portal/GETTING_STARTED.md#---install-dependencies)
-    - [📒 - Run Local Node](./docs/portal/GETTING_STARTED.md#---run-local-node)
-    - [💻 - Run Web App](./docs/portal/GETTING_STARTED.md#---run-web-app)
-  - [📗 Project Overview](./docs/portal/GETTING_STARTED.md#-project-overview)
-  - [🧰 Useful Scripts](./docs/portal/GETTING_STARTED.md#-useful-scripts)
-  - [Running Tests](./docs/portal/GETTING_STARTED.md#run-tests)
-    - [Run Tests in Development Mode](./docs/portal/GETTING_STARTED.md#run-tests)
-- [Contribution Guide](./docs/portal/CONTRIBUTING.md)
-  - [Finding Something to Work On](./docs/portal/CONTRIBUTING.md#finding-something-to-work-on)
-  - [Contribution Flow](./docs/portal/CONTRIBUTING.md#contribution-flow)
+- [Getting Started](./docs/GETTING_STARTED.md)
+  - [Requirements](./docs/GETTING_STARTED.md#requirements)
+  - [Running Project Locally](./docs/GETTING_STARTED.md#running-project-locally)
+    - [📚 1. Getting the Repository](./docs/GETTING_STARTED.md#-1-getting-the-repository)
+    - [📦 2. Install Dependencies](./docs/GETTING_STARTED.md#-2-install-dependencies)
+    - [📒 3. Run Local Node](./docs/GETTING_STARTED.md#-3-run-local-node)
+    - [💻 4. Run Web App](./docs/GETTING_STARTED.md#-4-run-web-app)
+  - [🧪 Run E2E tests](./docs/GETTING_STARTED.md#-run-e2e-tests)
+  - [🧰 Useful Scripts](./docs/GETTING_STARTED.md#-useful-scripts)
+- [Contribution Guide](./docs/CONTRIBUTING.md)
+  - [Finding Something to Work On](./docs/CONTRIBUTING.md#finding-something-to-work-on)
+  - [Contribution Flow](./docs/CONTRIBUTING.md#contribution-flow)
 - [License](#license)
 
 ## License
