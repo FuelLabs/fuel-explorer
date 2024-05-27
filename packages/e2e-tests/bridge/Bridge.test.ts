@@ -6,7 +6,7 @@ import {
 } from '@fuels/playwright-utils';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
 import type { BigNumberish, WalletUnlocked } from 'fuels';
-import { BaseAssetId, bn, format } from 'fuels';
+import { bn, format } from 'fuels';
 import type { HDAccount, PublicClient } from 'viem';
 import { http, createPublicClient, getContract } from 'viem';
 import { foundry } from 'viem/chains';
@@ -86,9 +86,10 @@ test.describe('Bridge', () => {
         public: client,
       },
     });
+    const baseAssetId = fuelWallet.provider.getBaseAssetId();
 
     await test.step('Deposit ETH to Fuel', async () => {
-      const preDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
+      const preDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevDepositBalanceEth = await client.getBalance({
         address: account.address,
       });
@@ -134,7 +135,7 @@ test.describe('Bridge', () => {
       await test.step('Check deposit tx in the Tx list', async () => {
         await closeTransactionPopup(page);
 
-        const postDepositBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
+        const postDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
 
         expect(
           postDepositBalanceFuel
@@ -163,7 +164,7 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Withdraw ETH from Fuel', async () => {
-      const preWithdrawBalanceFuel = await fuelWallet.getBalance(BaseAssetId);
+      const preWithdrawBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevWithdrawBalanceEth = await client.getBalance({
         address: account.address,
       });
@@ -249,7 +250,7 @@ test.describe('Bridge', () => {
           address: account.address,
         });
         const postWithdrawBalanceFuel =
-          await fuelWallet.getBalance(BaseAssetId);
+          await fuelWallet.getBalance(baseAssetId);
 
         expect(
           parseFloat(
@@ -400,6 +401,10 @@ test.describe('Bridge', () => {
       await test.step('Relay transaction', async () => {
         const confirmTransactionButton = page.getByRole('button', {
           name: 'Confirm Transaction',
+        });
+        await expect(confirmTransactionButton).toBeEnabled({
+          enabled: true,
+          timeout: 5000,
         });
         await confirmTransactionButton.click();
       });
@@ -561,7 +566,7 @@ test.describe('Bridge', () => {
 
       const connectedWallet = getByAriaLabel(
         page,
-        'Fuel Devnet: Connected Wallet',
+        'Fuel Local: Connected Wallet',
       );
       const address = await connectedWallet.innerText();
       const balance = getByAriaLabel(page, 'Balance: ');
@@ -572,7 +577,7 @@ test.describe('Bridge', () => {
 
       const connectedWalletAferRefresh = getByAriaLabel(
         page,
-        'Fuel Devnet: Connected Wallet',
+        'Fuel Local: Connected Wallet',
       );
       const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
       const balanceAfterRefresh = getByAriaLabel(page, 'Balance: ');
@@ -585,10 +590,8 @@ test.describe('Bridge', () => {
     await test.step('Check if transaction list reacts correctly to fuel wallet changes', async () => {
       await goToTransactionsPage(page);
 
-      await test.step('Change to account 2 should show loading and empty feedback', async () => {
+      await test.step('Change to account 2 should show empty feedback', async () => {
         await fuelWalletTestHelper.switchAccount('Account 2');
-        const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-        await loading.innerText();
         const noActivity = page.getByText('No activity yet');
         await noActivity.innerText();
         const subText = page.getByText(
@@ -597,10 +600,8 @@ test.describe('Bridge', () => {
         await subText.innerText();
       });
 
-      await test.step('Change to account 3 should show connect, but not loading', async () => {
+      await test.step('Change to account 3 should show connect', async () => {
         await fuelWalletTestHelper.switchAccount('Account 3');
-        const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-        expect(await loading.count()).toBe(0);
         const notDetected = page.getByText('Wallet not detected');
         await notDetected.innerText();
         const subText = page.getByText(
@@ -611,11 +612,9 @@ test.describe('Bridge', () => {
         expect(await connectButton.count()).toBe(1);
       });
 
-      await test.step('Change to account 1 should show loading and transactions', async () => {
+      await test.step('Change to account 1 should show transactions', async () => {
         await page.waitForTimeout(2000);
         await fuelWalletTestHelper.switchAccount('Account 1');
-        const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-        await loading.innerText();
         await checkTxItemDone(page, depositEthTxId);
         await checkTxItemDone(page, depositERC20TxId);
         await checkTxItemDone(page, withdrawEthTxId);

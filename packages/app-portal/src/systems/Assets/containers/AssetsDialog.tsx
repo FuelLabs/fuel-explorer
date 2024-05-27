@@ -29,6 +29,7 @@ export function AssetsDialog() {
   const {
     handlers: { addAsset: addAssetFuel },
     isConnected: isConnectedFuel,
+    wallet,
   } = useFuelAccountConnection();
   const {
     handlers: { addAsset: addAssetEth },
@@ -99,7 +100,10 @@ export function AssetsDialog() {
         {showAssetList &&
           assets.map((asset, i) => {
             const ethAsset = getAssetEth(asset);
-            const fuelAsset = getAssetFuel(asset);
+            const fuelAsset = getAssetFuel(
+              asset,
+              wallet?.provider.getChainId(),
+            );
 
             const isFaucetable = !!ethAsset?.address;
             const isETH = !ethAsset?.address;

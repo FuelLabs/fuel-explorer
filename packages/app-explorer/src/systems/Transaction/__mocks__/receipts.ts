@@ -328,8 +328,6 @@ export const MOCK_TX_CONTRACT_CALL_WITH_RECEIPTS = {
         height: '5175000',
         applicationHash:
           '0xbc800d9e9f7f5c8821b3afa4d10f14a8f1d214e10a2ddc758964c804beea39d4',
-        messageReceiptRoot:
-          '0x1c626a87bea26cc7f47825385251ffe09b9e4fd79d9864a10fea04c7a1d03da4',
         messageReceiptCount: '1',
         time: '4611686020124945002',
       },

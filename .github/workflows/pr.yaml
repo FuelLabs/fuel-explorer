@@ -10,8 +10,8 @@ concurrency:
 
 env:
   COVERAGE_FILE: report.json
-  NEXT_PUBLIC_FUEL_CHAIN_NAME: fuelBeta5 # For Next.JS apps
-  FUEL_PROVIDER: https://beta-5.fuel.network/graphql # For GraphQL apps
+  NEXT_PUBLIC_FUEL_CHAIN_NAME: fuelTestnet # For Next.JS apps
+  FUEL_PROVIDER: https://testnet.fuel.network/v1/graphql # For GraphQL apps
 
 jobs:
   validate-title:

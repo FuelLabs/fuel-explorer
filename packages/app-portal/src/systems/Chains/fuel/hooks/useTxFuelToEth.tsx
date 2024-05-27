@@ -1,10 +1,5 @@
 import type { Asset } from '@fuels/assets';
-import {
-  ReceiptType,
-  fromTai64ToUnix,
-  getReceiptsMessageOut,
-  hexlify,
-} from 'fuels';
+import { DateTime, ReceiptType, getReceiptsMessageOut, hexlify } from 'fuels';
 import { useMemo } from 'react';
 import { Services, store } from '~portal/store';
 import { useAssets } from '~portal/systems/Assets';
@@ -236,7 +231,7 @@ export function useTxFuelToEth({ txId }: { txId: string }) {
   const date = useMemo(
     () =>
       fuelTxResult?.time
-        ? new Date(fromTai64ToUnix(fuelTxResult?.time) * 1000)
+        ? new Date(DateTime.fromTai64(fuelTxResult?.time).toUnixMilliseconds())
         : undefined,
     [fuelTxResult?.time],
   );
