@@ -11,9 +11,8 @@ const config = {
     esmExternals: true,
     typedRoutes: true,
   },
-  /** We run eslint as a separate task in CI */
   eslint: {
-    ignoreDuringBuilds: !!process.env.CI,
+    ignoreDuringBuilds: true,
   },
   redirects: async () => {
     return [
