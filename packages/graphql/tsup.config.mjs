@@ -28,7 +28,6 @@ export default defineConfig((options) => ({
       env: {
         CODE_GEN: true,
         WATCH: Boolean(options.watch),
-        FUEL_PROVIDER: process.env.FUEL_PROVIDER,
       },
     });
     // Wait process to close until restarting
