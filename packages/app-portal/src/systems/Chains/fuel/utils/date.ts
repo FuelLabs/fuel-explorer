@@ -1,10 +1,10 @@
-import { differenceInSeconds, formatDistanceToNowStrict } from 'date-fns';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime, {
+  rounding: (num) => Math.ceil(num),
+});
 
 export const distanceToNow = (fromDate: Date) => {
-  const difference = differenceInSeconds(fromDate, new Date());
-
-  return formatDistanceToNowStrict(fromDate, {
-    roundingMethod: 'ceil',
-    unit: difference < 3600 ? 'minute' : 'hour',
-  });
+  return dayjs(fromDate).toNow(true);
 };

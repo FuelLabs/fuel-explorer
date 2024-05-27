@@ -1,4 +1,7 @@
-import { formatDistanceToNow } from 'date-fns';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 export const calculateDateDiffFromTimestamp = (timestamp?: number) => {
   if (!timestamp) return '';
@@ -11,6 +14,5 @@ export const calculateDateDiffFromTimestamp = (timestamp?: number) => {
 export const calculateDateDiff = (date?: Date) => {
   if (!date) return '';
 
-  const diffInDays = formatDistanceToNow(date, { addSuffix: true });
-  return diffInDays.replace('less than a minute ago', 'just now');
+  return dayjs(date).fromNow();
 };
