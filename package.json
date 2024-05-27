@@ -94,14 +94,8 @@
   },
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": [
-        "react",
-        "react-dom"
-      ],
-      "ignoreMissing": [
-        "react",
-        "react-dom"
-      ]
+      "allowAny": ["react", "react-dom"],
+      "ignoreMissing": ["react", "react-dom"]
     },
     "overrides": {
       "glob-parent@<5.1.2": ">=5.1.2",
