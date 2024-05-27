@@ -1,10 +1,13 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
+import { requireEnv } from './src/utils/requireEnv';
+
+const { SERVER_PORT } = requireEnv([['SERVER_PORT', '4444']]);
 
 const config: CodegenConfig = {
   overwrite: true,
   documents: ['./src/queries/**.graphql'],
   schema: {
-    [`http://localhost:${process.env.SERVER_PORT}/graphql`]: {
+    [`http://localhost:${SERVER_PORT}/graphql`]: {
       headers: {
         Authorization: `Bearer ${process.env.FUEL_EXPLORER_API_KEY}`,
       },
