@@ -1,12 +1,10 @@
 import graphqlLoaderPluginPkg from '@luckycatfactory/esbuild-graphql-loader';
 import 'dotenv/config';
 import { execa } from 'execa';
-import getPort from 'get-port';
 import { defineConfig } from 'tsup';
 
 const graphqlLoaderPlugin = graphqlLoaderPluginPkg.default;
 // Assign a single port for the process
-const port = await getPort({ port: 4444 });
 const { SERVER_BUILD } = process.env;
 
 const isServerBuild = SERVER_BUILD === 'true';
@@ -28,10 +26,8 @@ export default defineConfig((options) => ({
       stdio: 'inherit',
       cleanup: true,
       env: {
-        SERVER_PORT: port,
         CODE_GEN: true,
         WATCH: Boolean(options.watch),
-        FUEL_PROVIDER: process.env.FUEL_PROVIDER,
       },
     });
     // Wait process to close until restarting
