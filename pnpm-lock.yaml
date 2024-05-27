@@ -180,23 +180,31 @@ importers:
         version: 10.9.2(@swc/core@1.4.1)(typescript@5.4.5)
 
   packages/app-commons:
-    dependencies:
+    devDependencies:
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      tailwind-variants:
-        specifier: 0.1.20
-        version: 0.1.20(tailwindcss@3.4.1)
-    devDependencies:
       '@types/react':
         specifier: 18.2.54
         version: 18.2.54
       '@types/react-dom':
         specifier: 18.2.22
         version: 18.2.22
+      ethers:
+        specifier: 6.11.0
+        version: 6.11.0
+      fuels:
+        specifier: 0.86.0
+        version: 0.86.0
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: 18.2.0
+        version: 18.2.0(react@18.2.0)
+      tailwind-variants:
+        specifier: 0.1.20
+        version: 0.1.20(tailwindcss@3.4.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -239,6 +247,9 @@ importers:
       dayjs:
         specifier: 1.11.10
         version: 1.11.10
+      ethers:
+        specifier: 6.11.0
+        version: 6.11.0
       framer-motion:
         specifier: 11.0.3
         version: 11.0.3(react-dom@18.2.0)(react@18.2.0)
