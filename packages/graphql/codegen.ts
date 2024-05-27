@@ -4,7 +4,7 @@ const config: CodegenConfig = {
   overwrite: true,
   documents: ['./src/queries/**.graphql'],
   schema: {
-    [`http://localhost:${process.env.SERVER_PORT}/v1/graphql`]: {
+    [`http://localhost:${process.env.SERVER_PORT}/graphql`]: {
       headers: {
         Authorization: `Bearer ${process.env.FUEL_EXPLORER_API_KEY}`,
       },
