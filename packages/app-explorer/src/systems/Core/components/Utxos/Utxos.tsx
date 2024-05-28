@@ -2,12 +2,13 @@ import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
 import { Address, Box, Collapsible, useBreakpoints } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
-import { bn } from 'fuels';
+import { bn, toBytes, toHex } from 'fuels';
 import NextLink from 'next/link';
 import { FixedSizeList as List } from 'react-window';
 import { tv } from 'tailwind-variants';
 import { Routes } from '~/routes';
 
+import { useMemo } from 'react';
 import { Amount } from '../Amount/Amount';
 
 export type UtxoItem = Partial<Omit<TUtxoItem, '__typename'>>;
@@ -19,9 +20,20 @@ type UtxoItemProps = {
   index: number;
 };
 
+const UTXO_ID_SIZE = 34;
+const TX_ID_SIZE = 32;
+
 function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
   const { isMobile } = useBreakpoints();
-  if (!item.utxoId) return null;
+
+  const txId = useMemo<string | null>(() => {
+    if (!item.utxoId) return null;
+    const bytes = toBytes(item.utxoId, UTXO_ID_SIZE).slice(0, TX_ID_SIZE);
+    return toHex(bytes, TX_ID_SIZE);
+  }, []);
+
+  if (!txId) return null;
+
   const trim = isMobile ? 8 : 16;
   const { item: itemStyle } = styles({
     color: index % 2 !== 0 ? 'odd' : undefined,
@@ -36,7 +48,7 @@ function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
         addressOpts={{ trimLeft: trim, trimRight: trim }}
         linkProps={{
           as: NextLink,
-          href: Routes.txSimple(item.utxoId.slice(0, -2)),
+          href: Routes.txSimple(txId),
         }}
       />
       <Amount
