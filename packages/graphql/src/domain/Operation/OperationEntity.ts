@@ -28,13 +28,11 @@ export class OperationEntity extends Entity<OperationProps, SerialID> {
 
   static toDBItem(
     operation: GQLOperation,
-    transaction: TransactionItem,
+    transactionId: TransactionItem['_id'],
+    transactionHash: TransactionItem['txHash'],
   ): Omit<OperationItem, '_id'> {
-    const data = OperationData.create(operation).value();
-    const transactionId = TransactionRef.create(transaction._id).value();
-    const transactionHash = Hash256.create(transaction.txHash).value();
     return {
-      data,
+      data: operation,
       transactionId,
       transactionHash,
     };

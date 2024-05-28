@@ -17,14 +17,13 @@ export class PredicateRepository {
     return PredicateEntity.create(first, first._id);
   }
 
-  async insertOne(predicate: PredicatePayload) {
-    const found = await this.findByAddress(predicate.address);
-    if (found) return;
-
-    const [item] = await this.conn
+  async insertMany(predicates: PredicatePayload[]) {
+    const values = predicates.map(PredicateEntity.toDBItem);
+    const query = this.conn
       .insert(PredicatesTable)
-      .values(PredicateEntity.toDBItem(predicate))
-      .returning();
-    return PredicateEntity.create(item, item._id);
+      .values(values)
+      .onConflictDoNothing();
+    const items = await query.returning();
+    return items.map((item) => PredicateEntity.create(item, item._id));
   }
 }

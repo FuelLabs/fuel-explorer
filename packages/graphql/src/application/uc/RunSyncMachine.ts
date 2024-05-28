@@ -1,9 +1,7 @@
-import timer from 'node:timers/promises';
 import c from 'chalk';
 import dayjs from 'dayjs';
 import { assign, createActor, fromCallback, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
-import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { client } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk';
 import { worker } from '~/infra/worker/Worker';
@@ -64,17 +62,7 @@ class Syncer {
       console.log(c.green('✅ All blocks are synced!'));
       return { endCursor: cursor };
     }
-    const blocks = await Promise.all(
-      events.map(async ({ from, to }, i) => {
-        await timer.setTimeout(20 * i);
-        console.log(c.green(`⌛️ Requesting blocks data: #${from} - #${to}`));
-        const res = await BlockRepository.blocksFromNode(to - from, to);
-        return { from, to, blocks: res.blocks };
-      }),
-    );
-
-    const payload = blocks.flat();
-    worker.postMessage('ADD_BLOCK_RANGE', payload);
+    worker.postMessage('ADD_BLOCK_RANGE', events);
     const last = events[events.length - 1];
     return { endCursor: last.to };
   }
@@ -83,8 +71,7 @@ class Syncer {
     const { cursor = 0 } = ctx;
     const lastBlock = await this.getLatestBlock();
     const to = this.getLastBlockHeight({ ...ctx, lastBlock });
-    const { blocks } = await BlockRepository.blocksFromNode(to - cursor, to);
-    worker.postMessage('ADD_BLOCK_RANGE', [{ from: cursor, to, blocks }]);
+    worker.postMessage('ADD_BLOCK_RANGE', [{ from: cursor, to }]);
     return { endCursor: to };
   }
 }
@@ -186,12 +173,12 @@ const machine = setup({
         },
         waiting: {
           after: {
-            5000: 'checking',
+            2000: 'checking',
           },
         },
         finishing: {
           after: {
-            5000: '#syncBlocks.syncingBlocks',
+            2000: '#syncBlocks.syncingBlocks',
           },
         },
       },

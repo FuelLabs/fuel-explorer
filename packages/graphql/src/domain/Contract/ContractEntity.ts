@@ -26,8 +26,10 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
   }
 
   static toDBItem(contract: GQLContract): Omit<ContractItem, '_id'> {
-    const data = ContractData.create(contract).value();
-    return { data, contractHash: contract.id };
+    return {
+      data: contract,
+      contractHash: contract.id,
+    };
   }
 
   static fromOutputs(outputs: GQLOutput[]) {

@@ -28,14 +28,11 @@ export class OutputRepository {
   }
 
   async insertMany(outputs: GQLOutput[], transactionId: TxID) {
-    const queries = outputs.map(async (output) => {
-      const [item] = await this.conn
-        .insert(OutputsTable)
-        .values(OutputEntity.toDBItem(output, transactionId))
-        .returning();
-
-      return OutputEntity.create(item, item._id);
-    });
-    return Promise.all(queries.filter(Boolean));
+    const values = outputs.map((output) =>
+      OutputEntity.toDBItem(output, transactionId),
+    );
+    const query = this.conn.insert(OutputsTable).values(values);
+    const items = await query.returning();
+    return items.map((item) => OutputEntity.create(item, item._id));
   }
 }

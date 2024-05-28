@@ -58,7 +58,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       blockHash: block.id,
       data: block,
       producer: producerId,
-      timestamp: new Date(block.header.time),
+      timestamp: Timestamp.create(block.header.time).value(),
       totalGasUsed: BlockGasUsed.create(block).value(),
     };
   }

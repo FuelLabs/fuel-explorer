@@ -6,6 +6,7 @@ import { InputRepository } from '~/domain/Input/InputRepository';
 import { OperationRepository } from '~/domain/Operation/OperationRepository';
 import { OperationsFactory } from '~/domain/Operation/factories/OperationsFactory';
 import { OutputRepository } from '~/domain/Output/OutputRepository';
+import type { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
@@ -29,7 +30,7 @@ class TransactionResources {
   }
 
   private log(msg: string) {
-    return console.log(`${c.grey(`[#${this.blockHeight}]`)} ${msg}`);
+    return console.log(`${c.grey(`[#${this.blockHeight}]`)} → ${msg}`);
   }
 
   private async syncInputs() {
@@ -40,7 +41,7 @@ class TransactionResources {
     const transactionId = transaction._id.value();
     if (!inputs?.length) return;
 
-    this.log(`-- Syncing inputs on transaction ${hash}`);
+    this.log(`Syncing inputs on transaction ${hash}`);
     const repository = new InputRepository(trx);
     const created = await repository.insertMany(inputs, transactionId);
     await this.syncPredicates(created);
@@ -54,7 +55,7 @@ class TransactionResources {
     const transactionId = transaction._id.value();
     if (!outputs?.length) return;
 
-    this.log(`-- Syncing outputs on transaction ${hash}`);
+    this.log(`Syncing outputs on transaction ${hash}`);
     const repository = new OutputRepository(trx);
     await repository.insertMany(outputs, transactionId);
   }
@@ -66,7 +67,7 @@ class TransactionResources {
     const contracts = transaction.getContractsCreated();
     if (!contracts.length) return;
 
-    console.log(`-- Syncing contracts on transaction ${hash}`);
+    this.log(`Syncing contracts on transaction ${hash}`);
     const repository = new ContractRepository(trx);
     await repository.insertMany(contracts);
   }
@@ -78,10 +79,11 @@ class TransactionResources {
     const operations = OperationsFactory.create(transaction).value();
     if (!operations?.length) return;
 
-    console.log(`-- Syncing operations on transaction ${hash}`);
+    this.log(`Syncing operations on transaction ${hash}`);
     const repository = new OperationRepository(trx);
     const transactionId = transaction._id.value();
-    await repository.insertMany(operations, transactionId);
+    const transactionHash = transaction.txHash;
+    await repository.insertMany(operations, transactionId, transactionHash);
   }
 
   private async syncPredicates(inputs: InputEntity[]) {
@@ -90,24 +92,10 @@ class TransactionResources {
       .filter(Boolean);
 
     if (!predicates.length) return;
-    await Promise.all(
-      predicates.map(async (predicate) => {
-        if (!predicate) return;
-        const { bytecode, address } = predicate;
-        const repository = new PredicateRepository(this.trx);
-        const shortAddr = new Address(address).short();
-        try {
-          this.log(`-- Syncing predicate ${shortAddr}`);
-          await repository.insertOne({ bytecode, address });
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        } catch (e: any) {
-          if (e.toString().includes('duplicate key value')) {
-            console.log(c.red(`Predicate ${shortAddr} already exists`));
-            return;
-          }
-        }
-      }),
-    );
+    const txAddr = new Address(this.transaction.txHash);
+    this.log(`Syncing predicates on transaction ${txAddr.short()}`);
+    const repo = new PredicateRepository(this.trx);
+    await repo.insertMany(predicates as PredicatePayload[]);
   }
 }
 

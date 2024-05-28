@@ -20,9 +20,10 @@ export class PredicateEntity extends Entity<
   }
 
   static toDBItem(item: PredicatePayload): PredicatePayload {
-    const bytecode = Bytecode.create(item.bytecode).value();
-    const address = Hash256.create(item.address).value();
-    return { bytecode, address };
+    return {
+      bytecode: item.bytecode,
+      address: item.address,
+    };
   }
 
   get bytecode() {

@@ -5,7 +5,6 @@ import type {
   GQLQueryOperationsArgs,
 } from '~/graphql/generated/sdk';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
-import { TransactionsTable } from '../Transaction/TransactionModel';
 import type { TxID } from '../Transaction/vo/TransactionModelID';
 import { OperationEntity } from './OperationEntity';
 import { OperationsTable } from './OperationModel';
@@ -33,35 +32,16 @@ export class OperationRepository {
     return results.map((item) => OperationEntity.create(item, item._id));
   }
 
-  async insertOne(operation: GQLOperation, transactionId: TxID) {
-    const [transaction] = await this.conn
-      .select()
-      .from(TransactionsTable)
-      .where(eq(TransactionsTable._id, transactionId))
-      .limit(1);
-
-    const [item] = await this.conn
-      .insert(OperationsTable)
-      .values(OperationEntity.toDBItem(operation, transaction))
-      .returning();
-    return OperationEntity.create(item, item._id);
-  }
-
-  async insertMany(operations: GQLOperation[], transactionId: TxID) {
-    const queries = operations.map(async (operation) => {
-      const [transaction] = await this.conn
-        .select()
-        .from(TransactionsTable)
-        .where(eq(TransactionsTable._id, transactionId))
-        .limit(1);
-
-      const [item] = await this.conn
-        .insert(OperationsTable)
-        .values(OperationEntity.toDBItem(operation, transaction))
-        .returning();
-
-      return OperationEntity.create(item, item._id);
-    });
-    return Promise.all(queries.filter(Boolean));
+  async insertMany(
+    operations: GQLOperation[],
+    transactionId: TxID,
+    transactionHash: string,
+  ) {
+    const values = operations.map((operation) =>
+      OperationEntity.toDBItem(operation, transactionId, transactionHash),
+    );
+    const query = this.conn.insert(OperationsTable).values(values);
+    const items = await query.returning();
+    return items.map((item) => OperationEntity.create(item, item._id));
   }
 }

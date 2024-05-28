@@ -91,17 +91,7 @@ export class BlockRepository {
       BlockEntity.toDBItem(block, this.producer),
     );
     const conn = trx || this.conn;
-    const cls = getTableColumns(BlocksTable);
-    const query = conn
-      .insert(BlocksTable)
-      .values(values)
-      .onConflictDoUpdate({
-        target: BlocksTable._id,
-        set: {
-          data: cls.data.getSQL(),
-        },
-      });
-
+    const query = conn.insert(BlocksTable).values(values).onConflictDoNothing();
     const items = await query.returning();
     return items.map((item) => BlockEntity.create(item, this.producer, []));
   }

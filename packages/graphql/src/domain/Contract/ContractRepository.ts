@@ -26,24 +26,14 @@ export class ContractRepository {
     return results.map((item) => ContractEntity.create(item));
   }
 
-  async insertOne(contract: GQLContract) {
-    const [item] = await this.conn
-      .insert(ContractsTable)
-      .values(ContractEntity.toDBItem(contract))
-      .returning();
-
-    return ContractEntity.create(item);
-  }
-
   async insertMany(contracts: GQLContract[]) {
-    const queries = contracts.map(async (contract) => {
-      const [item] = await this.conn
-        .insert(ContractsTable)
-        .values(ContractEntity.toDBItem(contract))
-        .returning();
+    const values = contracts.map(ContractEntity.toDBItem);
+    const query = this.conn
+      .insert(ContractsTable)
+      .values(values)
+      .onConflictDoNothing();
 
-      return ContractEntity.create(item);
-    });
-    return Promise.all(queries.filter(Boolean));
+    const items = await query.returning();
+    return items.map((item) => ContractEntity.create(item));
   }
 }

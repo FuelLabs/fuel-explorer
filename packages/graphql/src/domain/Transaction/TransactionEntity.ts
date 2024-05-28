@@ -73,11 +73,11 @@ export class TransactionEntity extends Entity<
   ): TransactionItem {
     return {
       _id: TransactionModelID.createSerial(block, index).value(),
-      txHash: Hash256.create(transaction.id).value(),
-      data: TransactionData.create(transaction).value(),
+      txHash: transaction.id,
+      data: transaction,
       timestamp: TransactionTimestamp.create(transaction).value(),
       accountIndex: AccountIndex.create(transaction).value(),
-      blockId: BlockRef.create(Number(block.header.height)).value(),
+      blockId: Number(block.header.height),
     };
   }
 

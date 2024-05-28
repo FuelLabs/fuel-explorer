@@ -28,14 +28,11 @@ export class InputRepository {
   }
 
   async insertMany(inputs: GQLInput[], transactionId: TxID) {
-    const queries = inputs.map(async (input) => {
-      const [item] = await this.conn
-        .insert(InputsTable)
-        .values(InputEntity.toDBItem(input, transactionId))
-        .returning();
-
-      return InputEntity.create(item, item._id);
-    });
-    return Promise.all(queries.filter(Boolean));
+    const values = inputs.map((input) =>
+      InputEntity.toDBItem(input, transactionId),
+    );
+    const query = this.conn.insert(InputsTable).values(values);
+    const items = await query.returning();
+    return items.map((item) => InputEntity.create(item, item._id));
   }
 }

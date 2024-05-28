@@ -27,8 +27,10 @@ export class OutputEntity extends Entity<
     output: GQLOutput,
     transactionId: TxID,
   ): Omit<OutputItem, '_id'> {
-    const data = OutputData.create(output).value();
-    return { data, transactionId };
+    return {
+      data: output,
+      transactionId,
+    };
   }
 
   get data() {

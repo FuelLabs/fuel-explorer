@@ -9,7 +9,6 @@ import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { env } from '~/config';
 import { BlockProducer } from '~/domain/Block/vo/BlockProducer';
-import type { GQLBlock } from '~/graphql/generated/sdk';
 
 const HOST = env.get('RABBITMQ_HOST');
 const USER = env.get('RABBITMQ_USER');
@@ -38,7 +37,6 @@ export type QueueInputs = {
   [QueueNames.ADD_BLOCK_RANGE]: {
     from: number;
     to: number;
-    blocks: GQLBlock[];
   };
   [QueueNames.SYNC_LAST]: {
     last: number;

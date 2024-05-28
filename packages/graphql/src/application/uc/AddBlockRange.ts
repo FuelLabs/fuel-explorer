@@ -9,9 +9,14 @@ type Data = QueueInputs[QueueNames.ADD_BLOCK_RANGE];
 
 export class AddBlockRange {
   async execute(data: Data, blockProducer: string | null) {
-    const { blocks } = data;
-    const from = blocks[0].header.height;
-    const to = blocks[blocks.length - 1].header.height;
+    const { from, to } = data;
+    const res = await BlockRepository.blocksFromNode(to - from, to);
+    const { blocks } = res;
+    if (blocks.length === 0) {
+      console.log(c.yellow(`⚠️ No blocks to sync: #${from} - #${to}`));
+      return;
+    }
+
     console.log(c.green(`🔗 Adding blocks to sync: #${from} - #${to}`));
     const start = performance.now();
     await db.connection().transaction(async (trx) => {

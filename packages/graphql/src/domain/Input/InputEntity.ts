@@ -33,8 +33,10 @@ export class InputEntity extends Entity<
     input: GQLInput,
     transactionId: TxID,
   ): Omit<InputItem, '_id'> {
-    const data = InputData.create(input).value();
-    return { data, transactionId };
+    return {
+      data: input,
+      transactionId,
+    };
   }
 
   get data() {
