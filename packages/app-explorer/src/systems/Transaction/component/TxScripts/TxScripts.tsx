@@ -357,7 +357,9 @@ function parseJson(
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {
     if (!value || key === '__typename') return acc;
-    if (typeof value === 'object') return { ...acc, [key]: parseJson(value) };
+    if (typeof value === 'object') {
+      return { ...acc, [key]: parseJson(value) };
+    }
     return { ...acc, [key]: value };
   }, {});
 }
