@@ -37,10 +37,15 @@ import type { TransactionNode, TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 import { TxScripts } from '../TxScripts/TxScripts';
 
-type TxScreenProps = {
-  transaction: TransactionNode | undefined;
-  isLoading?: boolean;
-};
+type TxScreenProps =
+  | {
+      transaction: TransactionNode;
+      isLoading?: false;
+    }
+  | {
+      transaction?: TransactionNode;
+      isLoading: true;
+    };
 
 export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
   const title = tx?.title as string;
