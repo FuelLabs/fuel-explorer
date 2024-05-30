@@ -522,5 +522,72 @@
     "twitter": "https://twitter.com/ThunderbyFuel",
     "discord": "https://discord.gg/thundernftmarket",
     "image": "thunder"
+  },
+
+  {
+    "isLive": false,
+    "name": "Superchain",
+    "url": "",
+    "tags": ["Indexer"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Bubblemaps",
+    "url": "",
+    "tags": ["Analytics"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Igniters",
+    "url": "",
+    "tags": ["Multi-sig"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Cookbook",
+    "url": "",
+    "tags": ["Education"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Pipeline",
+    "url": "",
+    "tags": ["Token", "Streaming"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "LYNC",
+    "url": "",
+    "tags": ["Gaming", "Infra"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
   }
 ]
