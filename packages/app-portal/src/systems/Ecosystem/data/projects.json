@@ -1,7 +1,6 @@
 [
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Acumen",
     "url": "https://acumen.network/",
     "tags": ["DeFi", "Real World Assets"],
@@ -13,7 +12,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Aerv",
     "url": "https://aerv.finance",
     "tags": ["DeFi"],
@@ -25,7 +23,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Aori",
     "url": "https://aori.io/",
     "tags": ["DeFi"],
@@ -37,7 +34,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "ArtDAO",
     "url": "https://artdao.xyz/",
     "tags": ["DAO", "NFT", "Social"],
@@ -49,7 +45,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Bako ID",
     "url": "https://bako.id",
     "tags": ["Social"],
@@ -63,7 +58,7 @@
     "isLive": true,
     "name": "Bako Safe",
     "url": "https://bako.global",
-    "tags": ["DeFi", "Wallet"],
+    "tags": ["DeFi", "Wallet", "Multi-sig"],
     "description": "Bako Safe is the Native Multisig of Rollup OS.",
     "github": "",
     "twitter": "https://twitter.com/bakosafe",
@@ -72,7 +67,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "CoChilli",
     "url": "https://cochilli.io/",
     "tags": ["Prediction Market"],
@@ -95,7 +89,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Connext",
     "url": "https://connext.network/",
     "tags": ["Bridge"],
@@ -107,7 +100,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "CryptoSage",
     "url": "https://cryptosage.jump.trade/coming-soon",
     "tags": ["Social", "Prediction Market"],
@@ -130,7 +122,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Fluid Protocol",
     "url": "https://fluidprotocol.xyz/",
     "tags": ["DeFi"],
@@ -142,7 +133,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Frank",
     "url": "https://fuelstat.xyz/frank/",
     "tags": ["Tooling"],
@@ -153,7 +143,7 @@
     "image": "frank"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Fuel Name Service",
     "url": "https://fuelname.com",
     "tags": ["Social"],
@@ -187,7 +177,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Fuelart",
     "url": "https://fuelart.io/",
     "tags": ["Marketplace", "NFT"],
@@ -210,7 +199,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Fuelstat",
     "url": "https://fuelstat.xyz/",
     "tags": ["Tooling"],
@@ -222,7 +210,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Griffy",
     "url": "https://griffy.app",
     "tags": ["Prediction Market"],
@@ -233,7 +220,7 @@
     "image": "griffy"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Guild",
     "url": "https://guild.xyz/fuel",
     "tags": ["Social"],
@@ -245,7 +232,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Helixa TCG",
     "url": "https://helixatcg.com/",
     "tags": ["Gaming", "Marketplace", "NFT"],
@@ -257,7 +243,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Hyperlane",
     "url": "https://hyperlane.xyz/",
     "tags": ["Bridge"],
@@ -269,7 +254,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Kassiopea",
     "url": "https://kassiopea.xyz",
     "tags": ["DeFi"],
@@ -280,7 +264,7 @@
     "image": "kassiopea"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "LearnWeb3",
     "url": "https://learnweb3.io/",
     "tags": ["Education"],
@@ -291,7 +275,7 @@
     "image": "learnweb3"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Metaschool",
     "url": "https://metaschool.so/",
     "tags": ["Education"],
@@ -303,7 +287,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "ORAO",
     "url": "https://orao.network/",
     "tags": ["Oracle"],
@@ -315,7 +298,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Orbiter Finance",
     "url": "https://orbiter.finance",
     "tags": ["Bridge"],
@@ -327,7 +309,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Pantheon of Olympus",
     "url": "https://side.xyz/the-olympians",
     "tags": ["NFT"],
@@ -339,7 +320,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Pepa Network",
     "url": "https://pepalabs.net/",
     "tags": ["DeFi", "Gaming", "Social"],
@@ -351,7 +331,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "PlayEstates",
     "url": "https://playestates.com/",
     "tags": ["Real World Assets", "Gaming", "NFT"],
@@ -363,7 +342,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "PoolShark Protocol",
     "url": "https://poolshark.fi/",
     "tags": ["DeFi"],
@@ -375,7 +353,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Push Protocol",
     "url": "https://push.org/",
     "tags": ["Tooling"],
@@ -397,7 +374,7 @@
     "image": "pyth"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "RedStone Oracle",
     "url": "https://redstone.finance/",
     "tags": ["Oracle"],
@@ -409,7 +386,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Sail Exchange",
     "url": "https://sail.exchange/",
     "tags": ["DeFi"],
@@ -421,7 +397,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Seda Protocol",
     "url": "https://seda.xyz",
     "tags": ["Infrastructure"],
@@ -432,11 +407,10 @@
     "image": "seda"
   },
   {
-    "isLive": false,
-    "status": ["Building"],
+    "isLive": true,
     "name": "Sentio",
     "url": "https://sentio.xyz/",
-    "tags": ["Indexer"],
+    "tags": ["Indexer", "Analytics"],
     "description": "Sentio builds data and dev tooling products with strong developer-focus. Our product covers indexer, analytics/monitoring, debugger/simulator and code search.",
     "github": "https://github.com/sentioxyz",
     "twitter": "https://twitter.com/sentioxyz",
@@ -444,7 +418,7 @@
     "image": "sentio"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Spark",
     "url": "https://sprk.fi/",
     "tags": ["DeFi"],
@@ -455,8 +429,7 @@
     "image": "spark"
   },
   {
-    "isLive": false,
-    "status": ["Building"],
+    "isLive": true,
     "name": "Subsquid",
     "url": "https://subsquid.io/",
     "tags": ["Indexer"],
@@ -478,7 +451,7 @@
     "image": "swayfarm"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Sway Playground",
     "url": "https://sway-playground.org",
     "tags": ["Fuel", "DevEx"],
@@ -490,7 +463,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Swaylend",
     "url": "swaylend.com",
     "tags": ["DeFi"],
@@ -502,7 +474,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "The Graph",
     "url": "https://thegraph.com/",
     "tags": ["Indexer"],
@@ -513,7 +484,7 @@
     "image": "thegraph"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Thunder",
     "url": "https://beta.thundernft.market/",
     "tags": ["Marketplace", "NFT"],
@@ -522,5 +493,72 @@
     "twitter": "https://twitter.com/ThunderbyFuel",
     "discord": "https://discord.gg/thundernftmarket",
     "image": "thunder"
+  },
+
+  {
+    "isLive": false,
+    "name": "Superchain",
+    "url": "",
+    "tags": ["Indexer"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Bubblemaps",
+    "url": "",
+    "tags": ["Analytics"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Igniters",
+    "url": "",
+    "tags": ["Multi-sig"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Cookbook",
+    "url": "",
+    "tags": ["Education"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "Pipeline",
+    "url": "",
+    "tags": ["Token", "Streaming"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
+  },
+  {
+    "isLive": false,
+    "name": "LYNC",
+    "url": "",
+    "tags": ["Gaming", "Infra"],
+    "description": "",
+    "github": "",
+    "twitter": "",
+    "discord": "",
+    "image": ""
   }
 ]

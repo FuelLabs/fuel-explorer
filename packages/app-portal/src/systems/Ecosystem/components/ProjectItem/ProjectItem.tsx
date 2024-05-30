@@ -158,7 +158,16 @@ export const ProjectItem: ProjectItemComponent = ({
           >
             Live
           </Badge>
-        ) : null}
+        ) : (
+          <Badge
+            color="gray"
+            size="1"
+            className={cx(classes.tag(), classes.tagStatus())}
+            variant="ghost"
+          >
+            Building
+          </Badge>
+        )}
       </Card.Footer>
     </MotionCard>
   );
