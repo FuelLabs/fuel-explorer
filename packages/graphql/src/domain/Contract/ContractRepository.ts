@@ -28,12 +28,6 @@ export class ContractRepository {
 
   async insertMany(contracts: GQLContract[]) {
     const values = contracts.map(ContractEntity.toDBItem);
-    const query = this.conn
-      .insert(ContractsTable)
-      .values(values)
-      .onConflictDoNothing();
-
-    const items = await query.returning();
-    return items.map((item) => ContractEntity.create(item));
+    await this.conn.insert(ContractsTable).values(values).onConflictDoNothing();
   }
 }

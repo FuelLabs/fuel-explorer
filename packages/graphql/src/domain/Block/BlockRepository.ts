@@ -1,4 +1,4 @@
-import { desc, eq, getTableColumns } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { values } from 'lodash';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { client } from '~/graphql/GraphQLSDK';
@@ -91,9 +91,7 @@ export class BlockRepository {
       BlockEntity.toDBItem(block, this.producer),
     );
     const conn = trx || this.conn;
-    const query = conn.insert(BlocksTable).values(values).onConflictDoNothing();
-    const items = await query.returning();
-    return items.map((item) => BlockEntity.create(item, this.producer, []));
+    await conn.insert(BlocksTable).values(values).onConflictDoNothing();
   }
 
   static async blocksFromNode(first: number, after?: number) {

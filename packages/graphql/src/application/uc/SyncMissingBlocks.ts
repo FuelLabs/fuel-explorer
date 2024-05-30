@@ -11,7 +11,7 @@ export class SyncMissingBlocks {
     const latest = await repo.findLatestAdded();
     const cursor = latest ? Number(latest.data.header.height) : undefined;
     console.log('Syncing missing blocks from', cursor);
-    await mq.send(QueueNames.SYNC_BLOCKS, { cursor, watch: true });
+    await mq.send('block', QueueNames.SYNC_BLOCKS, { cursor, watch: true });
   }
 }
 

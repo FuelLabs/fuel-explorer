@@ -31,8 +31,6 @@ export class OutputRepository {
     const values = outputs.map((output) =>
       OutputEntity.toDBItem(output, transactionId),
     );
-    const query = this.conn.insert(OutputsTable).values(values);
-    const items = await query.returning();
-    return items.map((item) => OutputEntity.create(item, item._id));
+    await this.conn.insert(OutputsTable).values(values);
   }
 }

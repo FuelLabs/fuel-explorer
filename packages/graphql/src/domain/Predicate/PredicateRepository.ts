@@ -19,11 +19,9 @@ export class PredicateRepository {
 
   async insertMany(predicates: PredicatePayload[]) {
     const values = predicates.map(PredicateEntity.toDBItem);
-    const query = this.conn
+    await this.conn
       .insert(PredicatesTable)
       .values(values)
       .onConflictDoNothing();
-    const items = await query.returning();
-    return items.map((item) => PredicateEntity.create(item, item._id));
   }
 }

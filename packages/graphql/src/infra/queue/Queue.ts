@@ -4,11 +4,13 @@ import client, {
   type ConsumeMessage,
 } from 'amqplib';
 import { createAddBlockRange } from '~/application/uc/AddBlockRange';
+import { addTransactions } from '~/application/uc/AddTransactions';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { env } from '~/config';
 import { BlockProducer } from '~/domain/Block/vo/BlockProducer';
+import type { GQLTransaction } from '~/graphql/generated/sdk';
 
 const HOST = env.get('RABBITMQ_HOST');
 const USER = env.get('RABBITMQ_USER');
@@ -23,8 +25,14 @@ type Payload<D = unknown> = {
 export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync-blocks',
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
+  ADD_TRANSACTIONS = 'indexer/add-transactions',
   SYNC_MISSING = 'indexer/sync-missing',
   SYNC_LAST = 'indexer/sync-last',
+}
+export enum ChannelNames {
+  main = 'main',
+  block = 'block',
+  tx = 'tx',
 }
 
 export type QueueInputs = {
@@ -34,23 +42,33 @@ export type QueueInputs = {
     offset?: number;
     watch?: boolean;
   };
+  [QueueNames.SYNC_LAST]: {
+    last: number;
+    watch?: boolean;
+  };
   [QueueNames.ADD_BLOCK_RANGE]: {
     from: number;
     to: number;
   };
-  [QueueNames.SYNC_LAST]: {
-    last: number;
-    watch?: boolean;
+  [QueueNames.ADD_TRANSACTIONS]: {
+    items: {
+      blockHeight: number;
+      transaction: GQLTransaction;
+    }[];
   };
 };
 
 class RabbitMQConnection {
   connection!: Connection;
-  channel!: Channel;
   private connected!: Boolean;
+  channels: Record<ChannelNames, Channel> = {} as Record<ChannelNames, Channel>;
+
+  constructor() {
+    this.connected = false;
+  }
 
   async connect() {
-    if (this.connected && this.channel) return;
+    if (this.connected) return Promise.resolve();
     this.connected = true;
 
     try {
@@ -58,8 +76,9 @@ class RabbitMQConnection {
       const url = `amqp://${USER}:${PASS}@${HOST}:5672`;
       this.connection = await client.connect(url);
       console.log('✅ Rabbit MQ Connection is ready');
-      this.channel = await this.connection.createChannel();
-      await this.channel.prefetch(MAX_WORKERS);
+      await this.createChannel(ChannelNames.main, 5);
+      await this.createChannel(ChannelNames.block, MAX_WORKERS);
+      await this.createChannel(ChannelNames.tx, 100);
       console.log('🛸 Created RabbitMQ Channel successfully');
     } catch (error) {
       console.error(error);
@@ -68,30 +87,35 @@ class RabbitMQConnection {
   }
 
   async disconnect() {
-    await this.channel.close();
+    console.log('🔌 Disconnecting from RabbitMQ');
+    const channels = Object.entries(this.channels);
+    for (const [_, channel] of channels) {
+      await channel.close();
+    }
     await this.connection.close();
   }
 
   async clean() {
-    const names = Object.values(QueueNames);
-    for (const name of names) {
-      await this.channel.deleteQueue(name);
+    const channels = Object.entries(this.channels);
+    const queues = Object.values(QueueNames);
+    for (const [_, channel] of channels) {
+      for (const queue of queues) {
+        await channel.deleteQueue(queue);
+      }
     }
-    await this.channel.deleteExchange('blocks');
     console.log('🧹 Cleaned all queues');
   }
 
   async send<Q extends QueueNames, P extends Payload<QueueInputs[Q]>>(
+    channelName: keyof typeof ChannelNames,
     queue: Q,
     data?: P['data'],
   ) {
     try {
-      if (!this.channel) {
-        await this.connect();
-      }
+      const channel = await this.getChannel(ChannelNames[channelName]);
       const payload = { type: queue, data } as P;
       const buffer = Buffer.from(JSON.stringify(payload));
-      this.channel.sendToQueue(queue, buffer, { persistent: true });
+      channel.sendToQueue(queue, buffer, { persistent: true });
     } catch (error) {
       console.error(error);
       throw error;
@@ -99,18 +123,20 @@ class RabbitMQConnection {
   }
 
   async consume<Q extends QueueNames, P extends Payload<QueueInputs[Q]>>(
+    channelName: keyof typeof ChannelNames,
     queue: Q,
     handler: (data: P['data']) => Promise<void>,
   ) {
-    await this.channel.assertQueue(queue, { durable: true });
-    await this.channel.consume(
+    const channel = await this.getChannel(ChannelNames[channelName]);
+    await channel.assertQueue(queue, { durable: true });
+    await channel.consume(
       queue,
       async (msg) => {
         if (!msg) return;
         const payload = this.parsePayload<P>(msg);
         if (payload?.type === queue) {
           await handler(payload.data);
-          this.channel.ack(msg);
+          channel.ack(msg);
         }
       },
       { noAck: false },
@@ -121,10 +147,11 @@ class RabbitMQConnection {
     await this.connect();
     const blockProducer = await BlockProducer.fromSdk();
     const addBlockRange = createAddBlockRange(blockProducer);
-    await this.consume(QueueNames.ADD_BLOCK_RANGE, addBlockRange);
-    await this.consume(QueueNames.SYNC_BLOCKS, syncBlocks);
-    await this.consume(QueueNames.SYNC_MISSING, syncMissingBlocks);
-    await this.consume(QueueNames.SYNC_LAST, syncLastBlocks);
+    await this.consume('main', QueueNames.SYNC_BLOCKS, syncBlocks);
+    await this.consume('main', QueueNames.SYNC_MISSING, syncMissingBlocks);
+    await this.consume('main', QueueNames.SYNC_LAST, syncLastBlocks);
+    await this.consume('block', QueueNames.ADD_BLOCK_RANGE, addBlockRange);
+    await this.consume('tx', QueueNames.ADD_TRANSACTIONS, addTransactions);
   }
 
   private parsePayload<P extends Payload>(msg: ConsumeMessage | null) {
@@ -134,8 +161,29 @@ class RabbitMQConnection {
   }
 
   async getActive(queue: QueueNames) {
-    const res = await this.channel.checkQueue(queue);
-    return res.messageCount;
+    const channels = Object.values(this.channels);
+    const counters = await Promise.all(
+      channels.map((c) => c.checkQueue(queue)),
+    );
+    return counters.reduce((acc, res) => acc + res.messageCount, 0);
+  }
+
+  private async createChannel(name: ChannelNames, workers: number) {
+    if (this.channels[name]) return;
+    const channel = await this.connection.createChannel();
+    await channel.prefetch(workers);
+    this.channels[name] = channel;
+  }
+
+  private async getChannel(name: ChannelNames) {
+    if (!this.connected) {
+      await this.connect();
+    }
+    const channel = this.channels[name];
+    if (!channel) {
+      throw new Error(`Channel ${name} not found`);
+    }
+    return channel;
   }
 }
 

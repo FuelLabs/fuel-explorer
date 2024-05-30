@@ -1,7 +1,7 @@
 import { Hash256 } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
-import type { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLTransaction } from '~/graphql/generated/sdk';
 import { BlockRef } from '../Block/vo/BlockRef';
 import { ContractEntity } from '../Contract/ContractEntity';
 import { InputEntity } from '../Input/InputEntity';
@@ -67,17 +67,17 @@ export class TransactionEntity extends Entity<
   }
 
   static toDBItem(
-    block: GQLBlock,
+    blockHeight: number,
     transaction: GQLTransaction,
     index: number,
   ): TransactionItem {
     return {
-      _id: TransactionModelID.createSerial(block, index).value(),
+      _id: TransactionModelID.createSerial(blockHeight, index).value(),
       txHash: transaction.id,
       data: transaction,
       timestamp: TransactionTimestamp.create(transaction).value(),
       accountIndex: AccountIndex.create(transaction).value(),
-      blockId: Number(block.header.height),
+      blockId: blockHeight,
     };
   }
 

@@ -67,8 +67,6 @@ export class Db {
 
   async clean() {
     const query = sql`
-      DROP SCHEMA pgboss CASCADE;
-      CREATE SCHEMA pgboss;
       DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;
     `;

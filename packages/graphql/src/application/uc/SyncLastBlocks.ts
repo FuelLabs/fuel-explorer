@@ -11,7 +11,7 @@ export class SyncLastBlocks {
     const from = blockHeight - last;
 
     console.log(`Syncing last ${last} blocks from ${from} to ${blockHeight}`);
-    await mq.send(QueueNames.SYNC_BLOCKS, { watch, cursor: from });
+    await mq.send('main', QueueNames.SYNC_BLOCKS, { watch, cursor: from });
   }
 }
 

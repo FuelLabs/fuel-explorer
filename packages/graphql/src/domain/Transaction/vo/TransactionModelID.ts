@@ -1,6 +1,5 @@
 import { varchar } from 'drizzle-orm/pg-core';
 import { Identifier } from '~/core/Identifier';
-import type { GQLBlock } from '~/graphql/generated/sdk';
 import type { TransactionItem } from '../TransactionModel';
 
 export type TxID = string;
@@ -17,9 +16,9 @@ export class TransactionModelID extends Identifier<TxID> {
     return new TransactionModelID(transaction._id);
   }
 
-  static createSerial(block: GQLBlock, index: number) {
-    const blockHeight = block.header.height.padStart(32, '0');
+  static createSerial(blockHeight: number, index: number) {
+    const height = String(blockHeight).padStart(32, '0');
     const indexStr = (index + 1).toString().padStart(16, '0');
-    return new TransactionModelID(`${blockHeight}-${indexStr}`);
+    return new TransactionModelID(`${height}-${indexStr}`);
   }
 }

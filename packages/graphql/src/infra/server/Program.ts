@@ -115,19 +115,19 @@ export class Program {
     }
     if (missing) {
       await start();
-      await mq.send(QueueNames.SYNC_MISSING);
+      await mq.send('main', QueueNames.SYNC_MISSING);
       await finish();
       return;
     }
     if (last) {
       await start();
-      await mq.send(QueueNames.SYNC_LAST, { watch, last });
+      await mq.send('main', QueueNames.SYNC_LAST, { watch, last });
       await finish();
       return;
     }
     if (all || from) {
       await start();
-      await mq.send(QueueNames.SYNC_BLOCKS, {
+      await mq.send('main', QueueNames.SYNC_BLOCKS, {
         watch,
         cursor: from ?? 0,
         offset: offset ?? Number(env.get('SYNC_OFFSET')),

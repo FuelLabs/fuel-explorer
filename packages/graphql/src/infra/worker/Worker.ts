@@ -21,7 +21,7 @@ worker.on('ADD_BLOCK_RANGE', async (payloads) => {
   const to = String(payloads[payloads.length - 1].to);
   await Promise.all(
     payloads.map((payload) => {
-      return mq.send(QueueNames.ADD_BLOCK_RANGE, payload);
+      return mq.send('block', QueueNames.ADD_BLOCK_RANGE, payload);
     }),
   );
   worker.postMessage('BLOCK_RANGE_ADDED', { from, to });

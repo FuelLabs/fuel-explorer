@@ -1,8 +1,8 @@
 import c from 'chalk';
 import { Address } from '~/core/Address';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
-import type { InputEntity } from '~/domain/Input/InputEntity';
 import { InputRepository } from '~/domain/Input/InputRepository';
+import { InputPredicateData } from '~/domain/Input/vo/InputPredicateData';
 import { OperationRepository } from '~/domain/Operation/OperationRepository';
 import { OperationsFactory } from '~/domain/Operation/factories/OperationsFactory';
 import { OutputRepository } from '~/domain/Output/OutputRepository';
@@ -10,8 +10,9 @@ import type { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import type { GQLBlock } from '~/graphql/generated/sdk';
-import type { DbTransaction } from '~/infra/database/Db';
+import type { GQLInput } from '~/graphql/generated/sdk';
+import { type DbTransaction, db } from '~/infra/database/Db';
+import type { QueueInputs, QueueNames } from '~/infra/queue/Queue';
 
 class TransactionResources {
   constructor(
@@ -43,8 +44,8 @@ class TransactionResources {
 
     this.log(`Syncing inputs on transaction ${hash}`);
     const repository = new InputRepository(trx);
-    const created = await repository.insertMany(inputs, transactionId);
-    await this.syncPredicates(created);
+    await repository.insertMany(inputs, transactionId);
+    await this.syncPredicates(inputs);
   }
 
   private async syncOutputs() {
@@ -86,9 +87,12 @@ class TransactionResources {
     await repository.insertMany(operations, transactionId, transactionHash);
   }
 
-  private async syncPredicates(inputs: InputEntity[]) {
+  private async syncPredicates(inputs: GQLInput[]) {
     const predicates = inputs
-      .map((input) => input.predicateData)
+      .map((input) => {
+        const data = InputPredicateData.create(input);
+        return data.value();
+      })
       .filter(Boolean);
 
     if (!predicates.length) return;
@@ -99,37 +103,33 @@ class TransactionResources {
   }
 }
 
-type Input = {
-  blocks: GQLBlock[];
-  trx: DbTransaction;
-};
+type Data = QueueInputs[QueueNames.ADD_TRANSACTIONS];
 
 export class AddTransactions {
-  async execute({ trx, blocks }: Input) {
-    const repo = new TransactionRepository(trx);
-    const items = blocks.flatMap((block) =>
-      block.transactions.map((transaction) => ({ block, transaction })),
-    );
-    const added = await repo.upsertMany(items, trx);
-    if (!added?.length) {
-      console.log(c.dim('No transactions to sync'));
-      return;
-    }
-    await Promise.all(
-      added.map(async (transaction) => {
-        const height = transaction.blockHeight;
-        const txResources = new TransactionResources(trx, height, transaction);
-        return txResources.syncResources();
-      }),
-    );
+  async execute({ items }: Data) {
+    await db.connection().transaction(async (trx) => {
+      const repo = new TransactionRepository(trx);
+      const added = await repo.upsertMany(items, trx);
+      if (!added?.length) {
+        console.log(c.dim('No transactions to sync'));
+        return;
+      }
+      await Promise.all(
+        added.map(async (item) => {
+          const height = String(item.blockHeight);
+          const txResources = new TransactionResources(trx, height, item);
+          return txResources.syncResources();
+        }),
+      );
+    });
   }
 }
 
-export const addTransactions = async (data: Input) => {
+export const addTransactions = async (data: Data) => {
   try {
-    const { blocks } = data;
-    const fromBlock = blocks[0].header.height;
-    const toBlock = blocks[blocks.length - 1].header.height;
+    const { items } = data;
+    const fromBlock = items[0].blockHeight;
+    const toBlock = items[items.length - 1].blockHeight;
     const msg = `📪 Syncing transactions from #${fromBlock} to #${toBlock}`;
     console.log(c.dim(msg));
     const instance = new AddTransactions();

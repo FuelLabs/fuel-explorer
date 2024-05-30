@@ -40,8 +40,6 @@ export class OperationRepository {
     const values = operations.map((operation) =>
       OperationEntity.toDBItem(operation, transactionId, transactionHash),
     );
-    const query = this.conn.insert(OperationsTable).values(values);
-    const items = await query.returning();
-    return items.map((item) => OperationEntity.create(item, item._id));
+    await this.conn.insert(OperationsTable).values(values);
   }
 }

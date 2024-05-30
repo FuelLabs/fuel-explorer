@@ -1,6 +1,6 @@
 import { eq, like } from 'drizzle-orm';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
-import type { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLTransaction } from '~/graphql/generated/sdk';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { TransactionEntity } from './TransactionEntity';
 import { TransactionsTable } from './TransactionModel';
@@ -42,23 +42,19 @@ export class TransactionRepository {
   }
 
   async upsertMany(
-    inserts: { block: GQLBlock; transaction: GQLTransaction }[],
+    inserts: { blockHeight: number; transaction: GQLTransaction }[],
     trx: DbTransaction,
   ) {
-    try {
-      const conn = trx || this.conn;
-      const values = inserts.map((item, index) =>
-        TransactionEntity.toDBItem(item.block, item.transaction, index),
-      );
-      const query = conn
-        .insert(TransactionsTable)
-        .values(values)
-        .onConflictDoNothing();
+    const conn = trx || this.conn;
+    const values = inserts.map((item, index) =>
+      TransactionEntity.toDBItem(item.blockHeight, item.transaction, index),
+    );
+    const query = conn
+      .insert(TransactionsTable)
+      .values(values)
+      .onConflictDoNothing();
 
-      const items = await query.returning();
-      return items.map((item) => TransactionEntity.create(item));
-    } catch (e) {
-      console.log(e);
-    }
+    const items = await query.returning();
+    return items.map((item) => TransactionEntity.create(item));
   }
 }
