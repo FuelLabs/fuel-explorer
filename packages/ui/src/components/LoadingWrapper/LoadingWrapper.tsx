@@ -23,7 +23,6 @@ export function LoadingWrapper({
   return isLoading && loadingEl ? (
     <>
       {Array.from({ length: repeatLoader }).map((_, i) =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         loadingEl ? cloneElement(loadingEl as any, { key: i }) : null,
       )}
     </>

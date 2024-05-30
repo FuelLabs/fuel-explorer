@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const MOCK_TX_CONTRACT_CALL_WITH_RECEIPTS = {
   __typename: 'Transaction',
   id: '0x3470abd2b54137fd6ac4a9656e8cd8e91c6baf361250b30e05a2b546196237c4',

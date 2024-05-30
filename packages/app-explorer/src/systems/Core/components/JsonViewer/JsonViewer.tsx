@@ -34,7 +34,6 @@ export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
         {
           ...style,
           container: cx(classes.json(), className),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any
       }
       {...props}

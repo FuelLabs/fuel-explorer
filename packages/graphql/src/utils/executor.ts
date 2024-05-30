@@ -8,7 +8,6 @@ export type ExecutorParams = {
 };
 
 export function createExecutor(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cb: (params: ExecutorParams) => Promise<any>,
 ): GraphQLExecutor {
   return async ({ document, variables, operationName }) => {

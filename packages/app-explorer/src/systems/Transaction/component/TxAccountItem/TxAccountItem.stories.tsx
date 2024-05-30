@@ -31,7 +31,6 @@ const TYPES = Object.keys(TxAccountTypeEnum);
 export const AllTypes: Story = {
   render: () => (
     <VStack>
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       {TYPES.map((type: any) => (
         <TxAccountItem
           key={type}

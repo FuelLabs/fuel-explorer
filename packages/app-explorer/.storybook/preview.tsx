@@ -3,11 +3,11 @@ import '../src/app/globals.css';
 import './fonts.css';
 
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react';
 import React from 'react';
 import { withThemeDecorator } from 'storybook-addon-theme';
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Provider } from '../src/systems/Core/components/Provider';
 
 function ThemeWrapper({ children }: { children: ReactNode }) {

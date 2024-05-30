@@ -10,7 +10,7 @@ import { txEthToFuelMachine } from '~portal/systems/Chains/eth/machines';
 import { FetchMachine } from '~portal/systems/Core/machines';
 import { delay } from '~portal/systems/Core/utils';
 
-import { PublicClient } from 'viem';
+import type { PublicClient } from 'viem';
 import { BridgeService } from '../services';
 import type { BridgeInputs } from '../services';
 import type { BridgeTx } from '../types';
@@ -60,7 +60,6 @@ export type BridgeTxsMachineEvents =
 
 export const bridgeTxsMachine = createMachine(
   {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     tsTypes: {} as import('./bridgeTxsMachine.typegen').Typegen0,
     schema: {
       context: {} as BridgeTxsMachineContext,

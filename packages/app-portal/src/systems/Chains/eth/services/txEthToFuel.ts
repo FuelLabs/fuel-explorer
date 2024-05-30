@@ -138,7 +138,6 @@ export class TxEthToFuelService {
         return txHash;
       }
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }
@@ -208,7 +207,6 @@ export class TxEthToFuelService {
         return depositTxHash;
       }
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }

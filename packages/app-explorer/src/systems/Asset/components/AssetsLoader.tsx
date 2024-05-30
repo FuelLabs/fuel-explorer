@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { VStack } from '@fuels/ui';
 import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';

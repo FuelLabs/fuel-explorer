@@ -1,7 +1,7 @@
 import type { GetContractReturnType, PublicClient, WalletClient } from 'viem';
 import { getContract } from 'viem';
 
-import { BridgeSolidityContracts } from 'app-commons';
+import type { BridgeSolidityContracts } from 'app-commons';
 import { ERC_20 } from '../contracts/Erc20';
 import { FUEL_CHAIN_STATE } from '../contracts/FuelChainState';
 import { FUEL_ERC_20_GATEWAY } from '../contracts/FuelErc20Gateway';

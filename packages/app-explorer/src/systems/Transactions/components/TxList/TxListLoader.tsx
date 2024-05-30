@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { GetLastTransactionsQuery } from '@fuel-explorer/graphql';
 import { TxList } from './TxList';
 

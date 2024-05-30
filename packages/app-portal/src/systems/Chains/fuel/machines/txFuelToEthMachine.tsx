@@ -8,7 +8,7 @@ import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
 import { toast } from '@fuels/ui';
-import { PublicClient as EthPublicClient } from 'viem';
+import type { PublicClient as EthPublicClient } from 'viem';
 import type { TxFuelToEthInputs } from '../services';
 import { TxFuelToEthService } from '../services';
 import { FuelTxCache } from '../utils/txCache';
@@ -78,7 +78,6 @@ export type TxFuelToEthMachineEvents =
 
 export const txFuelToEthMachine = createMachine(
   {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     tsTypes: {} as import('./txFuelToEthMachine.typegen').Typegen0,
     schema: {
       context: {} as MachineContext,

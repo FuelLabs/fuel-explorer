@@ -5,9 +5,9 @@ import {
   WALLETCONNECT_ID,
 } from 'app-commons';
 import { ConnectKitProvider } from 'connectkit';
-import { Mode } from 'connectkit/build/types';
+import type { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
-import { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { type Chain, fallback } from 'viem';
 import {
   http,
