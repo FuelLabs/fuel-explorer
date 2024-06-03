@@ -135,14 +135,14 @@
 
 .dark body,
 .dark-theme body {
-  --color-page-background: #0e0e0e;
-  background: var(--color-page-background) !important;
+  --color-background: #0e0e0e;
+  background: var(--color-background) !important;
 }
 
 .light body,
-.light-body {
-  --color-page-background: var(--gray-2);
-  background: var(--color-page-background) !important;
+.light-theme body {
+  --color-background: var(--gray-2);
+  background: var(--color-background) !important;
 }
 
 body,
