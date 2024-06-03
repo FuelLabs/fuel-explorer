@@ -30,9 +30,7 @@ function ComboBoxStory(args: Pick<ComboBoxProps, 'debounce'>) {
       suggestions={['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']}
       onItemSelected={(value) => setValue(value || '')}
     >
-      <ComboBox.Input>
-        <ComboBox.InputField ref={inputRef} placeholder="Type a fruit name" />
-      </ComboBox.Input>
+      <ComboBox.Input ref={inputRef} placeholder="Type a fruit name" />
       <ComboBox.Content />
     </ComboBox>
   );

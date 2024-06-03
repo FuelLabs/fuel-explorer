@@ -1,22 +1,23 @@
-import React, {
-  useMemo,
-  useState,
-  useRef,
-  memo,
+import type React from 'react';
+import {
   type FocusEvent,
   type KeyboardEvent,
   type MouseEvent,
-  useContext,
   createContext,
+  memo,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 import { createComponent, withNamespace } from '../../utils/component';
 import { type BoxProps, Flex, type FlexProps } from '../Box';
-import { Input, type InputFieldProps, type InputProps } from '../Input';
+import { Input, type InputProps } from '../Input';
 import { Popover } from '../Popover';
 import { Text } from '../Text';
 
 export type ComboBoxProps<T = string> = Pick<
-  InputFieldProps,
+  InputProps,
   'onFocus' | 'onClick' | 'onBlur' | 'onKeyDown' | 'children'
 > & {
   suggestions: Array<T>;
@@ -33,10 +34,10 @@ export type ComboBoxProps<T = string> = Pick<
   strict?: boolean;
 };
 
-export type ComboBoxInputProps = InputProps;
-export type ComboBoxInputFieldProps = InputFieldProps & {
+export type ComboBoxInputProps = InputProps & {
   ref: React.Ref<HTMLInputElement>;
 };
+
 export type ComboBoxContentProps = FlexProps;
 export type ComboBoxItemProps<T = string> = BoxProps &
   Pick<ComboBoxProps<T>, 'itemNameSelector'> & {
@@ -175,7 +176,16 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
         onBlur,
         onKeyDown,
       }),
-      [filteredSuggestions, itemNameSelector, onItemSelected],
+      [
+        filteredSuggestions,
+        itemNameSelector,
+        handleSuggestionClick,
+        onChange,
+        onFocus,
+        onClick,
+        onBlur,
+        onKeyDown,
+      ],
     );
 
     return (
@@ -189,19 +199,12 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
 export const ComboBoxInput = createComponent<ComboBoxInputProps, typeof Input>({
   id: 'ComboBoxInput',
   baseElement: Input,
-});
-
-export const ComboBoxInputField = createComponent<
-  ComboBoxInputFieldProps,
-  typeof Input.Field
->({
-  id: 'ComboBoxInputField',
-  render: (_, { ref, ...props }) => {
+  render: (InputRoot, { ref, ...props }) => {
     const { onChange, onFocus, onClick, onBlur, onKeyDown } =
       useComboBoxContext();
 
     return (
-      <Input.Field
+      <InputRoot
         ref={ref}
         onChange={onChange}
         onFocus={onFocus}
@@ -293,6 +296,5 @@ export const ComboBox = withNamespace(
     Item: ComboBoxItem,
     Content: ComboBoxContent,
     Input: ComboBoxInput,
-    InputField: ComboBoxInputField,
   },
 );
