@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { createComponent } from '../../utils/component';
 import { Icon } from '../Icon/Icon';
 import { IconButton } from '../IconButton/IconButton';
-import type { InputFieldProps, InputProps } from '../Input/Input';
+import type { InputProps } from '../Input/Input';
 import { Input } from '../Input/Input';
 
-export type InputPasswordProps = InputProps & Omit<InputFieldProps, 'type'>;
+export type InputPasswordProps = Omit<InputProps, 'type'>;
 
 export const InputPassword = createComponent<InputPasswordProps, typeof Input>({
   id: 'InputPassword',
@@ -15,12 +15,18 @@ export const InputPassword = createComponent<InputPasswordProps, typeof Input>({
     const [opened, setOpened] = useState(false);
     const type = opened ? 'text' : 'password';
     return (
-      <Input className={className} color={color} size={size} variant={variant}>
-        <Input.Slot>
+      <Input
+        className={className}
+        color={color}
+        size={size}
+        variant={variant}
+        {...props}
+        type={type}
+      >
+        <Input.Slot side="left">
           <Icon color="text-icon" icon={IconLock} size={16} />
         </Input.Slot>
-        <Input.Field {...props} type={type} />
-        <Input.Slot className="mr-1">
+        <Input.Slot className="mr-1" side="right">
           <IconButton
             aria-label="Toggle passowrd"
             color="gray"
