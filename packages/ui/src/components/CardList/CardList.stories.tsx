@@ -21,7 +21,7 @@ export const Usage: Story = {
     <CardList className="max-w-sm">
       <CardList.Item
         isActive
-        as="section"
+        as={'div' as const}
         rightEl={
           <IconButton
             icon={IconArrowRight}
