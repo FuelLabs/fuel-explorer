@@ -76,7 +76,7 @@
     "storybook-addon-theme": "workspace:*",
     "tailwindcss": "3.4.1",
     "tailwindcss-animate": "1.0.7",
-    "tailwindcss-radix": "2.8.0",
+    "tailwindcss-radix": "3.0.3",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "tsup": "8.0.1",
     "typescript": "5.4.5",
