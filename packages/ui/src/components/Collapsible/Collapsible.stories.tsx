@@ -47,7 +47,7 @@ export const Variants: Story = {
 
 export const Polymorphic: Story = {
   render: () => (
-    <Collapsible as="article" className="max-w-[450px]">
+    <Collapsible as="div" className="max-w-[450px]">
       <Collapsible.Header>Header</Collapsible.Header>
       <Collapsible.Content>
         <Collapsible.Title>Title</Collapsible.Title>
