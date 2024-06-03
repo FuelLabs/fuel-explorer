@@ -1,5 +1,6 @@
-import { Dialog as RD, DialogTitle } from '@radix-ui/themes';
+import { Dialog as RD } from '@radix-ui/themes';
 
+import { DialogTitle } from '@radix-ui/react-dialog';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 
