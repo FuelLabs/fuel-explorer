@@ -8,7 +8,6 @@ import type { PropsOf } from '../../utils/types';
 
 export type InputProps = PropsOf<typeof RT.Root>;
 export type InputSlotProps = PropsOf<typeof RT.Slot>;
-export type InputFieldProps = PropsOf<typeof RT.Input>;
 export type InputNumberProps = Omit<NumericFormatProps, 'color' | 'size'>;
 
 export const InputRoot = createComponent<InputProps, typeof RT.Root>({
@@ -21,11 +20,6 @@ export const InputSlot = createComponent<InputSlotProps, typeof RT.Slot>({
   baseElement: RT.Slot,
 });
 
-export const InputField = createComponent<InputFieldProps, typeof RT.Input>({
-  id: 'InputField',
-  baseElement: RT.Input,
-});
-
 export const InputNumber = createComponent<
   InputNumberProps,
   typeof NumericFormat
@@ -33,12 +27,11 @@ export const InputNumber = createComponent<
   id: 'InputNumber',
   baseElement: NumericFormat,
   render: (Root, props) => {
-    return <Root {...props} customInput={InputField} />;
+    return <Root {...props} customInput={InputRoot} />;
   },
 });
 
 export const Input = withNamespace(InputRoot, {
   Slot: InputSlot,
-  Field: InputField,
   Number: InputNumber,
 });
