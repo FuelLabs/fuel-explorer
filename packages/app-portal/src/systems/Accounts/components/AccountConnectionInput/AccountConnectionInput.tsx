@@ -38,8 +38,8 @@ export const AccountConnectionInput = ({
             <Flex gap="2" align="center">
               {typeof networkImage === 'string' ? (
                 <img
-                  width="20"
-                  height="20"
+                  width="80px"
+                  height="80px"
                   src={networkImage}
                   alt={networkName}
                 />

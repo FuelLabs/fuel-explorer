@@ -24,22 +24,22 @@ export const Usage: Story = {
   name: 'Grid',
   render: () => (
     <Grid columns="3" gap="3" width="auto">
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
     </Grid>
