@@ -80,7 +80,7 @@ export const WithoutBalance: Story = {
         <Flex align="center">
           <InputAmount.Field placeholder="0.00" />
 
-          <InputAmount.Slot pb="2">
+          <InputAmount.Slot>
             <InputAmount.ButtonMaxBalance
               onClick={() => {
                 alert('Max Balance has been clicked');
