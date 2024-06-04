@@ -71,7 +71,6 @@
     "autoprefixer": "10.4.17",
     "postcss": "8.4.35",
     "postcss-import": "16.0.1",
-    "radix-ui-themes-with-tailwind": "1.2.6",
     "storybook": "^8.0.8",
     "storybook-addon-theme": "workspace:*",
     "tailwindcss": "3.4.3",
