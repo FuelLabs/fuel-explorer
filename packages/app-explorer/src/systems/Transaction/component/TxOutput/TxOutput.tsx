@@ -117,7 +117,7 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputContractCreated',
   render: (_, { output, ...props }) => {
     const classes = styles();
-    const contractId = output.contract?.id as string;
+    const contractId = output.contractId as string;
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
