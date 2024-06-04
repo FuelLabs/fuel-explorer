@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Box } from '@radix-ui/themes';
-import { Flex } from '../Box';
+import { Flex, HStack } from '../Box';
 import { InputAmount } from './InputAmount';
 
 const meta: Meta<typeof InputAmount> = {
@@ -14,38 +14,39 @@ type Story = StoryObj<typeof InputAmount>;
 
 export const Usage: Story = {
   render: () => (
-    <Box className="max-w-[400px]">
-      <InputAmount
-        color="green"
-        className="anything"
-        balance={undefined}
-        value={undefined}
-        disabled={false}
-        onChange={(balance) => console.log(balance)}
-      >
-        <Flex>
-          <InputAmount.Field placeholder="0.00" />
-
-          <InputAmount.Slot>
-            <InputAmount.ButtonMaxBalance
-              onClick={() => {
-                alert('Max Balance has been clicked');
-              }}
-            />
-            <InputAmount.CoinSelector
-              asset={{
-                name: 'ETH',
-                imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
-                address: '',
-              }}
-              onClick={() => alert('Coin selector has been clicked')}
-            />
-          </InputAmount.Slot>
-        </Flex>
-
-        <InputAmount.Balance />
-      </InputAmount>
-    </Box>
+    <InputAmount
+      color="green"
+      balance={undefined}
+      value={undefined}
+      disabled={false}
+      onChange={(balance) => console.log(balance)}
+      className="flex flex-wrap flex-row flex max-w-[400px]"
+      style={{
+        height: 'auto',
+        width: 'auto',
+      }}
+      placeholder="0.00"
+    >
+      <InputAmount.Slot side="right">
+        <HStack className="justify-center">
+          <InputAmount.ButtonMaxBalance
+            className="w-full w-[100%]"
+            onClick={() => {
+              alert('Max Balance has been clicked');
+            }}
+          />
+          <InputAmount.CoinSelector
+            asset={{
+              name: 'ETH',
+              imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+              address: '',
+            }}
+            onClick={() => alert('Coin selector has been clicked')}
+          />
+        </HStack>
+      </InputAmount.Slot>
+      <InputAmount.Balance className="order-2" side="right" />
+    </InputAmount>
   ),
 };
 
@@ -59,9 +60,8 @@ export const OnlyField: Story = {
         value={undefined}
         disabled={false}
         onChange={(balance) => console.log(balance)}
-      >
-        <InputAmount.Field placeholder="0.00" />
-      </InputAmount>
+        placeholder="0.00"
+      />
     </Box>
   ),
 };
@@ -76,11 +76,10 @@ export const WithoutBalance: Story = {
         value={undefined}
         disabled={false}
         onChange={(balance) => console.log(balance)}
+        placeholder="0.00"
       >
-        <Flex align="center">
-          <InputAmount.Field placeholder="0.00" />
-
-          <InputAmount.Slot>
+        <Flex>
+          <InputAmount.Slot side="right">
             <InputAmount.ButtonMaxBalance
               onClick={() => {
                 alert('Max Balance has been clicked');
@@ -111,9 +110,11 @@ export const OnlyBalance: Story = {
         value={undefined}
         disabled={false}
         onChange={(balance) => console.log(balance)}
+        placeholder="0.00"
       >
-        <InputAmount.Field placeholder="0.00" />
-        <InputAmount.Balance />
+        <Flex direction="column">
+          <InputAmount.Balance />
+        </Flex>
       </InputAmount>
     </Box>
   ),

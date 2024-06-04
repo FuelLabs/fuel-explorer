@@ -84,9 +84,8 @@ export const Bridge = () => {
               handlers.changeAssetAmount({ assetAmount: val || undefined })
             }
           >
-            <Flex>
-              <InputAmount.Field />
-              <InputAmount.Slot>
+            <InputAmount.Slot side="right">
+              <Flex>
                 <InputAmount.ButtonMaxBalance />
                 <InputAmount.CoinSelector
                   asset={{
@@ -96,9 +95,9 @@ export const Bridge = () => {
                   }}
                   onClick={handlers.openAssetsDialog}
                 />
-              </InputAmount.Slot>
-            </Flex>
-            <InputAmount.Balance />
+                <InputAmount.Balance />
+              </Flex>
+            </InputAmount.Slot>
           </InputAmount>
           {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
             <Alert color="orange">
