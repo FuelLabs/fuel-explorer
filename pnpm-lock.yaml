@@ -195,7 +195,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       tailwind-variants:
         specifier: 0.1.20
-        version: 0.1.20(tailwindcss@3.4.1)
+        version: 0.1.20(tailwindcss@3.4.3)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -291,7 +291,7 @@ importers:
         version: 1.0.0
       tailwind-variants:
         specifier: 0.1.20
-        version: 0.1.20(tailwindcss@3.4.1)
+        version: 0.1.20(tailwindcss@3.4.3)
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -371,9 +371,6 @@ importers:
       postcss-import:
         specifier: 16.0.1
         version: 16.0.1(postcss@8.4.35)
-      radix-ui-themes-with-tailwind:
-        specifier: 1.2.6
-        version: 1.2.6
       storybook:
         specifier: ^8.0.8
         version: 8.0.8(react-dom@18.2.0)(react@18.2.0)
@@ -381,11 +378,11 @@ importers:
         specifier: workspace:*
         version: link:../storybook-addon-theme
       tailwindcss:
-        specifier: 3.4.1
-        version: 3.4.1(ts-node@10.9.2)
+        specifier: 3.4.3
+        version: 3.4.3(ts-node@10.9.2)
       tailwindcss-animate:
         specifier: 1.0.7
-        version: 1.0.7(tailwindcss@3.4.1)
+        version: 1.0.7(tailwindcss@3.4.3)
       tailwindcss-radix:
         specifier: 3.0.3
         version: 3.0.3
@@ -521,13 +518,13 @@ importers:
         version: 18.2.0(react@18.2.0)
       tailwind-variants:
         specifier: 0.1.20
-        version: 0.1.20(tailwindcss@3.4.1)
+        version: 0.1.20(tailwindcss@3.4.3)
       tailwindcss:
-        specifier: 3.4.1
-        version: 3.4.1(ts-node@10.9.2)
+        specifier: 3.4.3
+        version: 3.4.3(ts-node@10.9.2)
       tailwindcss-animate:
         specifier: 1.0.7
-        version: 1.0.7(tailwindcss@3.4.1)
+        version: 1.0.7(tailwindcss@3.4.3)
       tailwindcss-radix:
         specifier: 3.0.3
         version: 3.0.3
@@ -769,7 +766,7 @@ importers:
         version: 2.47.0(react@18.2.0)
       '@tailwindcss/typography':
         specifier: 0.5.10
-        version: 0.5.10(tailwindcss@3.4.1)
+        version: 0.5.10(tailwindcss@3.4.3)
       clsx:
         specifier: 2.1.0
         version: 2.1.0
@@ -811,16 +808,16 @@ importers:
         version: 17.5.0(react-dom@18.2.0)(react@18.2.0)
       tailwind-variants:
         specifier: 0.1.20
-        version: 0.1.20(tailwindcss@3.4.1)
+        version: 0.1.20(tailwindcss@3.4.3)
       tailwindcss-animate:
         specifier: 1.0.7
-        version: 1.0.7(tailwindcss@3.4.1)
+        version: 1.0.7(tailwindcss@3.4.3)
       tailwindcss-radix:
         specifier: 3.0.3
         version: 3.0.3
       tailwindcss-themer:
         specifier: 4.0.0
-        version: 4.0.0(tailwindcss@3.4.1)
+        version: 4.0.0(tailwindcss@3.4.3)
     devDependencies:
       '@chialab/esbuild-plugin-meta-url':
         specifier: 0.18.0
@@ -892,8 +889,8 @@ importers:
         specifier: workspace:*
         version: link:../storybook-addon-theme
       tailwindcss:
-        specifier: 3.4.1
-        version: 3.4.1(ts-node@10.9.2)
+        specifier: 3.4.3
+        version: 3.4.3(ts-node@10.9.2)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.1.0
@@ -11786,7 +11783,7 @@ packages:
     resolution: {integrity: sha512-4w5evLh+7FUUiA1GucvGj2ReX2TvOjEr4ejXdwL/bsjoSkof6r1gQmzqI+VHrE2CpJpB3al7bCTulOkFa/RcyA==}
     dev: false
 
-  /@tailwindcss/typography@0.5.10(tailwindcss@3.4.1):
+  /@tailwindcss/typography@0.5.10(tailwindcss@3.4.3):
     resolution: {integrity: sha512-Pe8BuPJQJd3FfRnm6H0ulKIGoMEQS+Vq01R6M5aCrFB/ccR/shT+0kXLjouGC1gFLm9hopTFN+DMP0pfwRWzPw==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
@@ -11795,7 +11792,7 @@ packages:
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.1(ts-node@10.9.2)
+      tailwindcss: 3.4.3(ts-node@10.9.2)
     dev: false
 
   /@tanstack/query-core@5.0.5:
@@ -14768,6 +14765,7 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -22753,6 +22751,7 @@ packages:
 
   /radix-ui-themes-with-tailwind@1.2.6:
     resolution: {integrity: sha512-eIK4WnMckwrBvXBxldYrQNFSkXwgNDVCMWXJDJsgXZgjaCHoHTylOLYoKduEi9as005IoLr8GftyEV8WwdTdYQ==}
+    dev: false
 
   /radix3@1.1.0:
     resolution: {integrity: sha512-pNsHDxbGORSvuSScqNJ+3Km6QAVqk8CfsCBIEoDgpqLrkD2f3QM4I7d1ozJJ172OmIcoUcerZaNWqtLkRXTV3A==}
@@ -24933,26 +24932,26 @@ packages:
   /tailwind-merge@1.14.0:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
 
-  /tailwind-variants@0.1.20(tailwindcss@3.4.1):
+  /tailwind-variants@0.1.20(tailwindcss@3.4.3):
     resolution: {integrity: sha512-AMh7x313t/V+eTySKB0Dal08RHY7ggYK0MSn/ad8wKWOrDUIzyiWNayRUm2PIJ4VRkvRnfNuyRuKbLV3EN+ewQ==}
     engines: {node: '>=16.x', pnpm: '>=7.x'}
     peerDependencies:
       tailwindcss: '*'
     dependencies:
       tailwind-merge: 1.14.0
-      tailwindcss: 3.4.1(ts-node@10.9.2)
+      tailwindcss: 3.4.3(ts-node@10.9.2)
 
-  /tailwindcss-animate@1.0.7(tailwindcss@3.4.1):
+  /tailwindcss-animate@1.0.7(tailwindcss@3.4.3):
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
     dependencies:
-      tailwindcss: 3.4.1(ts-node@10.9.2)
+      tailwindcss: 3.4.3(ts-node@10.9.2)
 
   /tailwindcss-radix@3.0.3:
     resolution: {integrity: sha512-uueKWJIY98tU4Fip2FTL2eXBqX428e5HBwbu+8rqqJ9H3NuhkcAGS66wNHZjeix56f6nNBhkhMLpQeIrmVxH/w==}
 
-  /tailwindcss-themer@4.0.0(tailwindcss@3.4.1):
+  /tailwindcss-themer@4.0.0(tailwindcss@3.4.3):
     resolution: {integrity: sha512-kngKDW+z36JtjvaNziX0aesO95r8f5+3FFdANVFDt1uzNHZsL6XLla1YDK6EBAYFqPichoPDbO4lrrTyB+UAbA==}
     peerDependencies:
       tailwindcss: ^3.1.0
@@ -24961,17 +24960,17 @@ packages:
       just-unique: 4.2.0
       lodash.merge: 4.6.2
       lodash.mergewith: 4.6.2
-      tailwindcss: 3.4.1(ts-node@10.9.2)
+      tailwindcss: 3.4.3(ts-node@10.9.2)
     dev: false
 
-  /tailwindcss@3.4.1(ts-node@10.9.2):
-    resolution: {integrity: sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==}
+  /tailwindcss@3.4.3(ts-node@10.9.2):
+    resolution: {integrity: sha512-U7sxQk/n397Bmx4JHbJx/iSOOv5G+II3f1kpLpY2QeUv5DcPdcTsYLlusZfq1NthHS1c1cZoyFmmkex1rzke0A==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
-      chokidar: 3.5.3
+      chokidar: 3.6.0
       didyoumean: 1.2.2
       dlv: 1.1.3
       fast-glob: 3.3.2
