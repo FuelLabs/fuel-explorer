@@ -11,7 +11,7 @@ import type { HDAccount, PublicClient } from 'viem';
 import { http, createPublicClient, getContract } from 'viem';
 import { foundry } from 'viem/chains';
 
-import { ERC_20 } from '../../app-portal/src/systems/Chains/eth/contracts/Erc20';
+import { ERC_20 } from '../../../app-portal/src/systems/Chains/eth/contracts/Erc20';
 
 import { expect, test } from './fixtures';
 import {
