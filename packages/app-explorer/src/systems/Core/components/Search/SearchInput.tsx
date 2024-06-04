@@ -229,7 +229,6 @@ export function SearchInput({
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const inputWrapperRef = useRef<HTMLInputElement>(null);
   const { pending } = useFormStatus();
   const { dropdownRef } = useContext(SearchContext);
 
@@ -269,7 +268,12 @@ export function SearchInput({
     <VStack gap="0" className={classes.searchBox()} data-expanded={isExpanded}>
       <Focus.ArrowNavigator autoFocus={autoFocus}>
         <Input
-          ref={inputWrapperRef}
+          {...props}
+          ref={inputRef}
+          name="query"
+          placeholder={placeholder}
+          value={value}
+          onChange={handleChange}
           variant="surface"
           radius="large"
           size="3"
@@ -286,17 +290,9 @@ export function SearchInput({
             }
           }}
         >
-          <Input.Field
-            {...props}
-            ref={inputRef}
-            name="query"
-            placeholder={placeholder}
-            value={value}
-            onChange={handleChange}
-          />
           {isExpanded || value?.length ? (
             <>
-              <Input.Slot className="">
+              <Input.Slot className="" side="right">
                 {!!value?.length && (
                   <Tooltip content="Submit">
                     <IconButton
@@ -322,7 +318,7 @@ export function SearchInput({
               </Input.Slot>
             </>
           ) : (
-            <Input.Slot>
+            <Input.Slot side="right">
               <Icon icon={IconSearch} size={16} />
             </Input.Slot>
           )}
@@ -330,7 +326,7 @@ export function SearchInput({
       </Focus.ArrowNavigator>
       <SearchResultDropdown
         ref={dropdownRef}
-        width={inputWrapperRef.current?.offsetWidth || 0}
+        width={inputRef.current?.offsetWidth || 0}
         searchResult={searchResult}
         searchValue={value}
         openDropdown={openDropdown}

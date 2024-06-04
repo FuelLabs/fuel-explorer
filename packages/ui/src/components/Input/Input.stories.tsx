@@ -37,9 +37,5 @@ export const Sizes: Story = {
 };
 
 export const Numeric: Story = {
-  render: () => (
-    <Input>
-      <Input.Number placeholder="0.00" />
-    </Input>
-  ),
+  render: () => <Input type="number" placeholder="0.00" />,
 };
