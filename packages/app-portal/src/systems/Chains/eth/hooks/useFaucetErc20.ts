@@ -1,5 +1,4 @@
 import { useAssets } from '~portal/systems/Assets/hooks/useAssets';
-
 import { useEthAccountConnection } from './useEthAccountConnection';
 
 export const useFaucetErc20 = () => {
@@ -10,7 +9,7 @@ export const useFaucetErc20 = () => {
     handlers.faucetErc20({
       address,
       walletClient,
-      publicClient: publicClient as any,
+      publicClient,
     });
   }
 

@@ -48,13 +48,13 @@ export const useBridgeTxs = () => {
     if (isLoadingConnection || !fuelProvider || !ethPublicClient) return;
     store.fetchTxs({
       fuelProvider,
-      ethPublicClient: ethPublicClient as any,
+      ethPublicClient: ethPublicClient,
       fuelAddress,
     });
   }, [
     isLoadingConnection,
     fuelProvider?.url,
-    ethPublicClient?.chain.id,
+    ethPublicClient?.chain?.id,
     fuelAddress?.toAddress(),
   ]);
 

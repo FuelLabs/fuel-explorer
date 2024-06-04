@@ -1,4 +1,4 @@
-import type { PublicClient, WalletClient } from 'viem';
+import type { GetContractReturnType, PublicClient, WalletClient } from 'viem';
 import { getContract } from 'viem';
 
 import type { BridgeSolidityContracts } from 'app-commons';
@@ -22,7 +22,7 @@ export class EthConnectorService {
         public: publicClient!,
         wallet: walletClient,
       },
-    });
+    }) as GetContractReturnType<typeof FUEL_ERC_20_GATEWAY.abi, PublicClient>;
 
     return contract;
   }
@@ -41,7 +41,7 @@ export class EthConnectorService {
         public: publicClient!,
         wallet: walletClient,
       },
-    });
+    }) as GetContractReturnType<typeof FUEL_MESSAGE_PORTAL.abi, PublicClient>;
 
     return contract;
   }
@@ -60,7 +60,7 @@ export class EthConnectorService {
         public: publicClient!,
         wallet: walletClient,
       },
-    });
+    }) as GetContractReturnType<typeof ERC_20.abi, PublicClient>;
 
     return contract;
   }
@@ -79,7 +79,7 @@ export class EthConnectorService {
         public: publicClient!,
         wallet: walletClient,
       },
-    });
+    }) as GetContractReturnType<typeof FUEL_CHAIN_STATE.abi, PublicClient>;
 
     return contract;
   }

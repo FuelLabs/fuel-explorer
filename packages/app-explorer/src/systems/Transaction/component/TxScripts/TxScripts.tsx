@@ -41,13 +41,13 @@ import { JsonViewer } from '~/systems/Core/components/JsonViewer/JsonViewer';
 import type { TransactionNode } from '../../types';
 
 export type TxScriptsProps = BaseProps<{
-  tx: TransactionNode;
+  tx: TransactionNode | undefined;
   isLoading?: boolean;
 }>;
 
 export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
   const [opened, setOpened] = useState(false);
-  const hasOperations = tx.operations?.length ?? 0 > 0;
+  const hasOperations = tx?.operations?.length ?? 0 > 0;
   return (
     <VStack {...props}>
       <LoadingWrapper
@@ -97,13 +97,13 @@ export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
 }
 
 type ScriptsContent = BaseProps<{
-  tx: TransactionNode;
+  tx: TransactionNode | undefined;
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
 
 function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
-  const operations = tx.operations ?? [];
+  const operations = tx?.operations ?? [];
   const classes = styles();
   const [ref, { width }] = useMeasure();
 
@@ -139,7 +139,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
           <HoverCard openDelay={100}>
             <HoverCard.Trigger>
               <Button
-                ref={ref as any}
+                ref={ref as React.Ref<HTMLButtonElement>}
                 color="gray"
                 variant="outline"
                 leftIcon={IconArrowsMoveVertical}
@@ -292,8 +292,8 @@ function TypesCounter({
 const ctx = createContext<ReceiptItemProps>({} as ReceiptItemProps);
 const RETURN_TYPES = [ReceiptType.Return, ReceiptType.ReturnData];
 
-function getReceipts(tx: TransactionNode) {
-  if (tx.status?.__typename !== 'SuccessStatus') return [];
+function getReceipts(tx: TransactionNode | undefined) {
+  if (tx?.status?.__typename !== 'SuccessStatus') return [];
   return tx.status.receipts ?? [];
 }
 
@@ -357,8 +357,9 @@ function parseJson(
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {
     if (!value || key === '__typename') return acc;
-    if (typeof value === 'object')
-      return { ...acc, [key]: parseJson(value as any) };
+    if (typeof value === 'object') {
+      return { ...acc, [key]: parseJson(value) };
+    }
     return { ...acc, [key]: value };
   }, {});
 }
@@ -368,7 +369,10 @@ function ReceiptBlock() {
   const classes = styles();
   const [ref, { width }] = useMeasure();
   return (
-    <Collapsible.Content ref={ref as any} className={classes.utxos()}>
+    <Collapsible.Content
+      ref={ref as React.Ref<HTMLDivElement>}
+      className={classes.utxos()}
+    >
       <ScrollArea style={{ width }}>
         <JsonViewer data={parseJson(receipt?.item)} />
       </ScrollArea>
