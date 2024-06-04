@@ -6,8 +6,8 @@ const PORT = process.env.PORT || 3001;
 
 const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
-  testMatch: join(__dirname, './bridge/**/*.test.ts'),
-  testDir: join(__dirname, './bridge/'),
+  testMatch: join(__dirname, './tests/**/*.test.ts'),
+  testDir: join(__dirname, './tests/'),
   timeout: 60_000 * 10,
   expect: {
     timeout: 5000,

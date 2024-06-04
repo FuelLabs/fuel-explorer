@@ -2,7 +2,7 @@ import { getByAriaLabel } from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
 
-import { shortAddress } from '../../../app-portal/src/systems/Core/utils';
+import { shortAddress } from '../../../../app-portal/src/systems/Core/utils';
 
 export async function closeTransactionPopup(page: Page) {
   // click anywhere outside of popup

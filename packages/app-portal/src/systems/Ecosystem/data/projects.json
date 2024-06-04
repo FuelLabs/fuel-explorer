@@ -1,7 +1,6 @@
 [
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Acumen",
     "url": "https://acumen.network/",
     "tags": ["DeFi", "Real World Assets"],
@@ -13,9 +12,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Aerv",
-    "url": "https://aerv.finance",
+    "url": "https://aerv.finance/",
     "tags": ["DeFi"],
     "description": "The Leading Liquid Staking Solution on Fuel.",
     "github": "",
@@ -25,9 +23,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Aori",
-    "url": "https://aori.io/",
+    "url": "https://www.aori.io/",
     "tags": ["DeFi"],
     "description": "Non-custodial, high-performance order book trading infrastructure for decentralized options, spot trading, and OTC settlement.",
     "github": "https://github.com/aori-io",
@@ -37,7 +34,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "ArtDAO",
     "url": "https://artdao.xyz/",
     "tags": ["DAO", "NFT", "Social"],
@@ -49,9 +45,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Bako ID",
-    "url": "https://bako.id",
+    "url": "https://www.bako.id/",
     "tags": ["Social"],
     "description": "Bako ID is a comprehensive Identity System for Rollups.",
     "github": "",
@@ -62,8 +57,8 @@
   {
     "isLive": true,
     "name": "Bako Safe",
-    "url": "https://bako.global",
-    "tags": ["DeFi", "Wallet"],
+    "url": "https://www.bako.global/",
+    "tags": ["DeFi", "Wallet", "Multi-sig"],
     "description": "Bako Safe is the Native Multisig of Rollup OS.",
     "github": "",
     "twitter": "https://twitter.com/bakosafe",
@@ -72,7 +67,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "CoChilli",
     "url": "https://cochilli.io/",
     "tags": ["Prediction Market"],
@@ -85,7 +79,7 @@
   {
     "isLive": true,
     "name": "Common Ground",
-    "url": "https://commonground.cg/",
+    "url": "https://www.commonground.cg/",
     "tags": ["Social"],
     "description": "The Web3-powered app for communities of all shapes and sizes. Chat, share, and earn with your audience and friends.",
     "github": "",
@@ -95,9 +89,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Connext",
-    "url": "https://connext.network/",
+    "url": "https://www.connext.network/",
     "tags": ["Bridge"],
     "description": "Connext is a fast and secure modular interoperability protocol, powered by intents.",
     "github": "https://github.com/connext",
@@ -107,7 +100,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "CryptoSage",
     "url": "https://cryptosage.jump.trade/coming-soon",
     "tags": ["Social", "Prediction Market"],
@@ -130,7 +122,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Fluid Protocol",
     "url": "https://fluidprotocol.xyz/",
     "tags": ["DeFi"],
@@ -142,7 +133,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Frank",
     "url": "https://fuelstat.xyz/frank/",
     "tags": ["Tooling"],
@@ -153,9 +143,9 @@
     "image": "frank"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Fuel Name Service",
-    "url": "https://fuelname.com",
+    "url": "https://fuelname.com/",
     "tags": ["Social"],
     "description": "Fuel Name Service (FNS) is a domain name service built on the Fuel blockchain.",
     "github": "https://github.com/fuelet",
@@ -187,7 +177,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Fuelart",
     "url": "https://fuelart.io/",
     "tags": ["Marketplace", "NFT"],
@@ -210,7 +199,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Fuelstat",
     "url": "https://fuelstat.xyz/",
     "tags": ["Tooling"],
@@ -222,9 +210,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Griffy",
-    "url": "https://griffy.app",
+    "url": "https://griffy.app/",
     "tags": ["Prediction Market"],
     "description": "The NASDAQ for opinions. Griffy empowers users to trade their opinions. You can select your interest from real world events like sports, politics, celebrities, fashion and a wide range of topics and trade your opinions like you trade stocks!",
     "github": "",
@@ -233,7 +220,7 @@
     "image": "griffy"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Guild",
     "url": "https://guild.xyz/fuel",
     "tags": ["Social"],
@@ -245,7 +232,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Helixa TCG",
     "url": "https://helixatcg.com/",
     "tags": ["Gaming", "Marketplace", "NFT"],
@@ -257,9 +243,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Hyperlane",
-    "url": "https://hyperlane.xyz/",
+    "url": "https://www.hyperlane.xyz/",
     "tags": ["Bridge"],
     "description": "Hyperlane is the permissionless Interoperability layer built for the modular future.",
     "github": "https://github.com/hyperlane-xyz",
@@ -269,9 +254,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Kassiopea",
-    "url": "https://kassiopea.xyz",
+    "url": "https://www.kassiopea.xyz/",
     "tags": ["DeFi"],
     "description": "Kassiopea is a decentralized perpetual trading platform that revolutionizes the way people trade commodities, RWA and cryptocurrencies amidst gameplay.",
     "github": "",
@@ -280,7 +264,7 @@
     "image": "kassiopea"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "LearnWeb3",
     "url": "https://learnweb3.io/",
     "tags": ["Education"],
@@ -291,7 +275,7 @@
     "image": "learnweb3"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Metaschool",
     "url": "https://metaschool.so/",
     "tags": ["Education"],
@@ -303,7 +287,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "ORAO",
     "url": "https://orao.network/",
     "tags": ["Oracle"],
@@ -315,9 +298,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Orbiter Finance",
-    "url": "https://orbiter.finance",
+    "url": "https://www.orbiter.finance/",
     "tags": ["Bridge"],
     "description": "Decentralized cross-rollup bridge offers low cost and almost instant transfert.",
     "github": "https://github.com/Orbiter-Finance",
@@ -327,7 +309,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Pantheon of Olympus",
     "url": "https://side.xyz/the-olympians",
     "tags": ["NFT"],
@@ -339,7 +320,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Pepa Network",
     "url": "https://pepalabs.net/",
     "tags": ["DeFi", "Gaming", "Social"],
@@ -351,9 +331,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "PlayEstates",
-    "url": "https://playestates.com/",
+    "url": "https://www.playestates.com/",
     "tags": ["Real World Assets", "Gaming", "NFT"],
     "description": "PlayEstates brings real estate on-chain and makes RWA ownership easy and affordable.",
     "github": "",
@@ -363,9 +342,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "PoolShark Protocol",
-    "url": "https://poolshark.fi/",
+    "url": "https://www.poolshark.fi/",
     "tags": ["DeFi"],
     "description": "PoolShark is a directional AMM where users can profit from volatility with less maintenance. ",
     "github": "",
@@ -375,7 +353,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Push Protocol",
     "url": "https://push.org/",
     "tags": ["Tooling"],
@@ -388,7 +365,7 @@
   {
     "isLive": true,
     "name": "Pyth",
-    "url": "https://pyth.network",
+    "url": "https://pyth.network/",
     "tags": ["Oracle"],
     "description": "Build apps with high-fidelity oracle feeds designed for mission-critical systems.",
     "github": "https://github.com/pyth-network",
@@ -397,7 +374,7 @@
     "image": "pyth"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "RedStone Oracle",
     "url": "https://redstone.finance/",
     "tags": ["Oracle"],
@@ -409,9 +386,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Sail Exchange",
-    "url": "https://sail.exchange/",
+    "url": "https://www.sail.exchange/",
     "tags": ["DeFi"],
     "description": "Sail Exchange is a central limit order book built on Fuel.",
     "github": "https://github.com/Sail-Exchange",
@@ -421,9 +397,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Seda Protocol",
-    "url": "https://seda.xyz",
+    "url": "https://www.seda.xyz/",
     "tags": ["Infrastructure"],
     "description": "SEDA is a permissionless modular data layer building the new standard for data transport and querying. Natively serving 230+ blockchains SEDA allows protocols to transport, query and configure any data available from any source.",
     "github": "",
@@ -432,11 +407,10 @@
     "image": "seda"
   },
   {
-    "isLive": false,
-    "status": ["Building"],
+    "isLive": true,
     "name": "Sentio",
-    "url": "https://sentio.xyz/",
-    "tags": ["Indexer"],
+    "url": "https://www.sentio.xyz/",
+    "tags": ["Indexer", "Analytics"],
     "description": "Sentio builds data and dev tooling products with strong developer-focus. Our product covers indexer, analytics/monitoring, debugger/simulator and code search.",
     "github": "https://github.com/sentioxyz",
     "twitter": "https://twitter.com/sentioxyz",
@@ -444,7 +418,7 @@
     "image": "sentio"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Spark",
     "url": "https://sprk.fi/",
     "tags": ["DeFi"],
@@ -455,8 +429,7 @@
     "image": "spark"
   },
   {
-    "isLive": false,
-    "status": ["Building"],
+    "isLive": true,
     "name": "Subsquid",
     "url": "https://subsquid.io/",
     "tags": ["Indexer"],
@@ -469,7 +442,7 @@
   {
     "isLive": true,
     "name": "Sway Farm",
-    "url": "https://swayfarm.xyz",
+    "url": "https://swayfarm.xyz/",
     "tags": ["Fuel", "Gaming"],
     "description": "Grow and sell tomatoes to become a Sway Farm Hero.",
     "github": "",
@@ -478,9 +451,9 @@
     "image": "swayfarm"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Sway Playground",
-    "url": "https://sway-playground.org",
+    "url": "https://www.sway-playground.org/",
     "tags": ["Fuel", "DevEx"],
     "description": "Sway Playground enables developers to build, deploy, and interact with simple sway contracts in the browser with no installation of tools.",
     "github": "",
@@ -490,9 +463,8 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "Swaylend",
-    "url": "swaylend.com",
+    "url": "https://swaylend.com/",
     "tags": ["DeFi"],
     "description": "Swaylend is the first lending protocol on Fuel.",
     "github": "https://github.com/compolabs/sway-lend",
@@ -502,7 +474,6 @@
   },
   {
     "isLive": false,
-    "status": ["Building"],
     "name": "The Graph",
     "url": "https://thegraph.com/",
     "tags": ["Indexer"],
@@ -513,7 +484,7 @@
     "image": "thegraph"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Thunder",
     "url": "https://beta.thundernft.market/",
     "tags": ["Marketplace", "NFT"],
