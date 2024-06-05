@@ -48,42 +48,194 @@
   --space-96: calc(384px * var(--scaling));
 }
 
-.dark [data-accent-color],
-.dark-theme [data-accent-color] {
-  --inverse: white;
-  --inverse-a1: var(--white-a1);
-  --inverse-a2: var(--white-a2);
-  --inverse-a3: var(--white-a3);
-  --inverse-a4: var(--white-a4);
-  --inverse-a5: var(--white-a5);
-  --inverse-a6: var(--white-a6);
-  --inverse-a7: var(--white-a7);
-  --inverse-a8: var(--white-a8);
-  --inverse-a9: var(--white-a9);
-  --inverse-a10: var(--white-a10);
-  --inverse-a11: var(--white-a11);
-  --inverse-a12: var(--white-a12);
-  --color-brand: #00e182;
-  --color-panel-solid: var(--gray-2);
+:root,
+.light,
+.light-theme {
+  --gray-1: #FCFCFC;
+  --gray-2: #F9F9F9;
+  --gray-3: #F0F0F0;
+  --gray-4: #E8E8E8;
+  --gray-5: #E0E0E0;
+  --gray-6: #D9D9D9;
+  --gray-7: #CECECE;
+  --gray-8: #BBBBBB;
+  --gray-9: #8D8D8D;
+  --gray-10: #838383;
+  --gray-11: #646464;
+  --gray-12: #202020;
+
+  --blue-1: #FBFDFF;
+  --blue-2: #F4FAFF;
+  --blue-3: #E6F4FE;
+  --blue-4: #D5EFFF;
+  --blue-5: #C2E5FF;
+  --blue-6: #ACD8FC;
+  --blue-7: #8EC8F6;
+  --blue-8: #5EB1EF;
+  --blue-9: #0090FF;
+  --blue-10: #0588F0;
+  --blue-11: #0D74CE;
+  --blue-12: #113264;
+
+  --brand-1: #FAFEFB;
+  --brand-2: #F3FCF5;
+  --brand-3: #D9FCE3;
+  --brand-4: #C0F5D2;
+  --brand-5: #A8F1C0;
+  --brand-6: #90E5AD;
+  --brand-7: #72D596;
+  --brand-8: #37C276;
+  --brand-9: #00F58C;
+  --brand-10: #00EA82;
+  --brand-11: #008347;
+  --brand-12: #19452B;
+
+  --orange-1: #FEFCFB;
+  --orange-2: #FFF7ED;
+  --orange-3: #FFEFD6;
+  --orange-4: #FFDFB5;
+  --orange-5: #FFD19A;
+  --orange-6: #FFC182;
+  --orange-7: #F5AE73;
+  --orange-8: #EC9455;
+  --orange-9: #F76B15;
+  --orange-10: #EF5F00;
+  --orange-11: #CC4E00;
+  --orange-12: #582D1D;
+
+  --red-1: #FFFCFC;
+  --red-2: #FFF7F7;
+  --red-3: #FEEBEC;
+  --red-4: #FFDBDC;
+  --red-5: #FFCDCE;
+  --red-6: #FDBDBE;
+  --red-7: #F4A9AA;
+  --red-8: #EB8E90;
+  --red-9: #E5484D;
+  --red-10: #DC3E42;
+  --red-11: #CE2C31;
+  --red-12: #641723;
+
+  --violet-1: #FDFCFE;
+  --violet-2: #FAF8FF;
+  --violet-3: #F4F0FE;
+  --violet-4: #EBE4FF;
+  --violet-5: #E1D9FF;
+  --violet-6: #D4CAFE;
+  --violet-7: #C2B5;
+    --violet-7: #C2B5F5;
+  --violet-8: #AA99EC;
+  --violet-9: #6E56CF;
+  --violet-10: #654DC4;
+  --violet-11: #6550B9;
+  --violet-12: #2F265F;
+
+  --yellow-1: #FEFDFB;
+  --yellow-2: #FEFBE9;
+  --yellow-3: #FFF7C2;
+  --yellow-4: #FFEE9C;
+  --yellow-5: #FBE577;
+  --yellow-6: #F3D673;
+  --yellow-7: #E9C162;
+  --yellow-8: #E2A336;
+  --yellow-9: #FFC53D;
+  --yellow-10: #FFBA18;
+  --yellow-11: #AB6400;
+  --yellow-12: #4F3422;
 }
 
-.light [data-accent-color],
-.light-theme [data-accent-color] {
-  --inverse: black;
-  --inverse-a1: var(--black-a1);
-  --inverse-a2: var(--black-a2);
-  --inverse-a3: var(--black-a3);
-  --inverse-a4: var(--black-a4);
-  --inverse-a5: var(--black-a5);
-  --inverse-a6: var(--black-a6);
-  --inverse-a7: var(--black-a7);
-  --inverse-a8: var(--black-a8);
-  --inverse-a9: var(--black-a9);
-  --inverse-a10: var(--black-a10);
-  --inverse-a11: var(--black-a11);
-  --inverse-a12: var(--black-a12);
-  --color-brand: var(--grass-9);
-  --color-panel-solid: white;
+.dark,
+.dark-theme {
+  --gray-1: #111111;
+  --gray-2: #191919;
+  --gray-3: #222222;
+  --gray-4: #2A2A2A;
+  --gray-5: #313131;
+  --gray-6: #3A3A3A;
+  --gray-7: #484848;
+  --gray-8: #606060;
+  --gray-9: #6E6E6E;
+  --gray-10: #7B7B7B;
+  --gray-11: #B4B4B4;
+  --gray-12: #EEEEEE;
+
+  --blue-1: #0D1520;
+  --blue-2: #111927;
+  --blue-3: #0D2847;
+  --blue-4: #003362;
+  --blue-5: #004074;
+  --blue-6: #104D87;
+  --blue-7: #205D9E;
+  --blue-8: #2870BD;
+  --blue-9: #0090FF;
+  --blue-10: #3B9EFF;
+  --blue-11: #70B8FF;
+  --blue-12: #C2E6FF;
+
+  --brand-1: #0B130E;
+  --brand-2: #111B14;
+  --brand-3: #0F2E1B;
+  --brand-4: #073D20;
+  --brand-5: #0A4829;
+  --brand-6: #125A33;
+  --brand-7: #176B3E;
+  --brand-8: #177F49;
+  --brand-9: #00F58C;
+  --brand-10: #00EA82;
+  --brand-11: #00DD75;
+  --brand-12: #A6F5C0;
+
+  --orange-1: #17120E;
+  --orange-2: #1E160F;
+  --orange-3: #331E0B;
+  --orange-4: #462100;
+  --orange-5: #562800;
+  --orange-6: #66350C;
+  --orange-7: #7E451D;
+  --orange-8: #A35829;
+  --orange-9: #F76B15;
+  --orange-10: #FF801F;
+  --orange-11: #FFA057;
+  --orange-12: #FFE0C2;
+
+  --red-1: #191111;
+  --red-2: #201314;
+  --red-3: #3B1219;
+  --red-4: #500F1C;
+  --red-5: #611623;
+  --red-6: #72232D;
+  --red-7: #8C333A;
+  --red-8: #B54548;
+  --red-9: #E5484D;
+  --red-10: #EC5D5E;
+  --red-11: #FF9592;
+  --red-12: #FFD1D9;
+
+  --violet-1: #14121F;
+  --violet-2: #1B1525;
+  --violet-3: #291F43;
+  --violet-4: #33255B;
+  --violet-5: #3C2E69;
+  --violet-6: #473876;
+  --violet-7: #56468B;
+  --violet-8: #6958AD;
+  --violet-9: #6E56CF;
+  --violet-10: #7D66D9;
+  --violet-11: #BAA7FF;
+  --violet-12: #E2DDFE;
+
+  --yellow-1: #16120C;
+  --yellow-2: #1D180F;
+  --yellow-3: #302008;
+  --yellow-4: #3F2700;
+  --yellow-5: #4D3000;
+  --yellow-6: #5C3D05;
+  --yellow-7: #714F19;
+  --yellow-8: #8F6424;
+  --yellow-9: #FFC53D;
+  --yellow-10: #FFD60A;
+  --yellow-11: #FFCA16;
+  --yellow-12: #FFE7B3;
 }
 
 :root,
@@ -103,14 +255,14 @@
   --color-link: var(--color-brand);
 
   /* semantic colors */
-  --color-success: var(--grass-9);
-  --color-success-muted: var(--grass-8);
-  --color-success-contrast: var(--grass-9-contrast);
-  --color-success-border: var(--grass-6);
-  --color-info: var(--sky-9);
-  --color-info-muted: var(--sky-8);
-  --color-info-contrast: var(--sky-9-contrast);
-  --color-info-border: var(--sky-6);
+  --color-success: var(--brand-9);
+  --color-success-muted: var(--brand-8);
+  --color-success-contrast: var(--brand-9-contrast);
+  --color-success-border: var(--brand-6);
+  --color-info: var(--blue-9);
+  --color-info-muted: var(--blue-8);
+  --color-info-contrast: var(--blue-9-contrast);
+  --color-info-border: var(--blue-6);
   --color-warning: var(--yellow-9);
   --color-warning-muted: var(--yellow-8);
   --color-warning-contrast: var(--yellow-9-contrast);
@@ -135,13 +287,13 @@
 
 .dark body,
 .dark-theme body {
-  --color-page-background: #0e0e0e;
+  --color-page-background: var(--gray-2);
   background: var(--color-page-background) !important;
 }
 
 .light body,
 .light-body {
-  --color-page-background: var(--gray-2);
+  --color-page-background: #FFFFFF;
   background: var(--color-page-background) !important;
 }
 
