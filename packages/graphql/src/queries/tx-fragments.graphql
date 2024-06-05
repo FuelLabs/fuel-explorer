@@ -1,8 +1,3 @@
-fragment TransactionContractItem on Contract {
-  __typename
-  id
-}
-
 fragment TransactionStatus on TransactionStatus {
   __typename
   ... on SqueezedOutStatus {
@@ -186,9 +181,7 @@ fragment TransactionItem on Transaction {
     outputs {
       ...TransactionOutput
     }
-    contract {
-      id
-    }
+    contractId
     assetId
     inputIndex
     recipient
