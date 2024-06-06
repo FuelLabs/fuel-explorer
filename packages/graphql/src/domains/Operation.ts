@@ -44,22 +44,27 @@ export class OperationDomain {
     if (!receipts.length) return null;
     const hasError = receipts.some(isError);
     return receipts.reduce((acc, receipt, idx) => {
-      const last = receipts[idx - 1];
-      const isLastReturn = isReturn(last);
+      const prev = receipts[idx - 1];
+      const isPrevReturn = isReturn(prev);
       const isFirstCall = isCall(receipt) && idx === 0;
-      const isCurrentCall = isCall(receipt) && isLastReturn;
-      const findNextReturnIdx = this._findNextReturnIdx(receipt, idx, hasError);
-      const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
+      const isCurrentCall = isCall(receipt) && isPrevReturn;
       const isTypeCall = isFirstCall || isCurrentCall;
       const isOnlyResult = hasError && isResult(receipt);
-      const isFinalReturn = isReturn(receipt) && !receipt.contractId;
+      const isFinalReturn = isReturn(receipt) && !prev?.id;
 
       if (isTypeCall || isOnlyResult || isFinalReturn) {
         const type = getType(receipt);
+        const findNextReturnIdx = this._findNextReturnIdx(
+          receipts,
+          idx,
+          hasError,
+        );
+        const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
         const range = isTypeCall
           ? [...receipts].slice(idx, nextReturnIdx + 1)
           : [...receipts].slice(idx);
         const items = this._createItems(range);
+        // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
         return [...acc, { type, receipts: items }] as Operation[];
       }
       return acc;
@@ -78,9 +83,11 @@ export class OperationDomain {
         const nested = [...receipts].slice(startRange, endRange);
         const items = this._createItems(nested) as OperationReceipt[];
         const next = { item: receipt, receipts: items };
+        // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
         return [...acc, next] as OperationReceipt[];
       }
       if (!range) {
+        // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
         return [...acc, { item: receipt }] as OperationReceipt[];
       }
       return acc;
@@ -89,13 +96,14 @@ export class OperationDomain {
 
   private _findNestedIntervals(receipts: TxReceipt[]) {
     return receipts.reduce((acc, r, idx) => {
-      const last = receipts[idx - 1];
-      const isLastReturn = isReturn(last);
+      const prev = receipts[idx - 1];
+      const isPrevReturn = isReturn(prev);
       const isFirstCall = isCall(r) && idx === 0;
-      const findNextReturnIdx = this._findNextReturnIdx(r, idx);
+      const findNextReturnIdx = this._findNextReturnIdx(receipts, idx);
       const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
 
-      if (isCall(r) && !isFirstCall && !isLastReturn) {
+      if (isCall(r) && !isFirstCall && !isPrevReturn) {
+        // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
         return [...acc, [idx, nextReturnIdx]];
       }
       return acc;
@@ -103,14 +111,22 @@ export class OperationDomain {
   }
 
   private _findNextReturnIdx(
-    current: TxReceipt,
+    receipts: TxReceipt[],
     idx: number,
     hasError?: boolean,
   ) {
     return (receipt: TxReceipt, nIdx: number) => {
       if (hasError) return nIdx > idx && isError(receipt);
-      const hasSameId = current.to === receipt.contractId;
-      return nIdx > idx && isReturn(receipt) && hasSameId;
+
+      // only can find receipts after the idx inputted
+      if (nIdx <= idx) return false;
+
+      // only can find return receipts
+      if (!isReturn(receipt)) return false;
+
+      // previous receipt of RETURN will be RETURN_DATA, which will have the contractID in `id` prop
+      const hasSameId = receipts[nIdx - 1]?.to === receipt.id;
+      return hasSameId;
     };
   }
 }

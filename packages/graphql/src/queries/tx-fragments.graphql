@@ -91,7 +91,7 @@ fragment TransactionOutput on Output {
 
 fragment TransactionReceipt on Receipt {
   __typename
-  contractId
+  id
   to
   pc
   is
