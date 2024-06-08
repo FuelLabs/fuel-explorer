@@ -417,8 +417,8 @@ importers:
         specifier: pr-185
         version: 0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877
       '@fuels/connectors':
-        specifier: 0.5.0
-        version: 0.5.0(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
+        specifier: 0.5.1
+        version: 0.5.1(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
       '@fuels/react':
         specifier: 0.21.0
         version: 0.21.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)
@@ -4150,8 +4150,8 @@ packages:
   /@fuels/assets@0.20.0:
     resolution: {integrity: sha512-pIVzHCEXkIIKXlIvvrISrFyaRRjbxEMnypjV/UZOI9dr99woUgXV1MZnMsq44uhQ/T3VXiTu2cXo4/SSE5ny2g==}
 
-  /@fuels/connectors@0.5.0(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
-    resolution: {integrity: sha512-lwafZPzWO9dxOcUXYYrQPaOMRtmrmyn0SEb0RYwk/B5f8WeOKfiTL5yxP7QXaTYPNAyb1qW0Gx9Dykn517XxqA==}
+  /@fuels/connectors@0.5.1(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
+    resolution: {integrity: sha512-bkXnuIjjNEHzqVLKffc46CIrduDzvsu73/XS8368pyGTabeIEAtcctK+JkJf1AnPMp6DaTpmNfojVXnJr5WGlw==}
     peerDependencies:
       fuels: '>=0.88.1'
     dependencies:

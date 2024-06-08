@@ -59,8 +59,6 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     });
   }
 
-  console.log('asd walle', wallet);
-
   return {
     handlers: {
       connect,
