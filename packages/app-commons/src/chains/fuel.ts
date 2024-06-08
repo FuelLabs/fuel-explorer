@@ -23,9 +23,17 @@ const fuelTestnet: FuelChain = {
   providerUrl: 'https://testnet.fuel.network/v1/graphql',
 };
 
+const fuelDevnet: FuelChain = {
+  network: 'fuel_devnet',
+  name: 'Fuel Devnet',
+  testnet: true,
+  providerUrl: 'https://devnet.fuel.network/v1/graphql',
+};
+
 export const FUEL_CHAINS: Record<ChainName, FuelChain> = {
   fuelLocal,
   fuelTestnet,
+  fuelDevnet,
 };
 
 export const FUEL_CHAIN: FuelChain = FUEL_CHAINS[FUEL_CHAIN_NAME];
