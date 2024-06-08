@@ -43,7 +43,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     isLoadingConnectUI;
 
   const address = useMemo(
-    () => (account ? Address.fromString(account) : undefined),
+    () => (account ? Address.fromDynamicInput(account) : undefined),
     [account],
   );
 
@@ -58,6 +58,8 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
       networks: [{ type: 'fuel', assetId, chainId, decimals, contractId }],
     });
   }
+
+  console.log('asd walle', wallet);
 
   return {
     handlers: {
