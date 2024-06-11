@@ -44,6 +44,7 @@
     "test": "pnpm turbo:run test",
     "test:all": "run-p test test:e2e",
     "test:e2e": "playwright test --config=packages/e2e-tests/playwright.config.ts",
+    "test:e2e-soft": "playwright test --config=packages/e2e-tests/playwright-soft.config.ts",
     "test:ci": "pnpm turbo:run test -- --ci --testLocationInResults --json --coverage",
     "test:clear": "pnpm turbo:run test -- --clearCache",
     "test:coverage": " pnpm turbo:run test -- --coverage",
@@ -120,7 +121,8 @@
       "lodash@<4.17.12": ">=4.17.12",
       "gh-pages@<5.0.0": ">=5.0.0",
       "ejs@<3.1.10": ">=3.1.10",
-      "next@>=13.4.0 <14.1.1": ">=14.1.1"
+      "next@>=13.4.0 <14.1.1": ">=14.1.1",
+      "braces@<3.0.3": ">=3.0.3"
     }
   }
 }
