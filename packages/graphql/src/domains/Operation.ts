@@ -100,10 +100,10 @@ export class OperationDomain {
       const prev = receipts[idx - 1];
       const isPrevReturn = isReturn(prev);
       const isFirstCall = isCall(r) && idx === 0;
-      const findNextReturnIdx = this._findNextReturnIdx(receipts, idx);
-      const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
 
       if (isCall(r) && !isFirstCall && !isPrevReturn) {
+        const findNextReturnIdx = this._findNextReturnIdx(receipts, idx);
+        const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
         // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
         return [...acc, [idx, nextReturnIdx]];
       }
@@ -125,7 +125,6 @@ export class OperationDomain {
       // only can find return receipts
       if (!isReturnData(receipt)) return false;
 
-      // previous receipt of RETURN will be RETURN_DATA, which will have the contractID in `id` prop
       const hasSameId = receipts[idx]?.to === receipt.id;
       return hasSameId;
     };
