@@ -86,8 +86,14 @@
   },
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": ["react", "react-dom"],
-      "ignoreMissing": ["react", "react-dom"]
+      "allowAny": [
+        "react",
+        "react-dom"
+      ],
+      "ignoreMissing": [
+        "react",
+        "react-dom"
+      ]
     },
     "overrides": {
       "glob-parent@<5.1.2": ">=5.1.2",
@@ -120,7 +126,8 @@
       "lodash@<4.17.12": ">=4.17.12",
       "gh-pages@<5.0.0": ">=5.0.0",
       "ejs@<3.1.10": ">=3.1.10",
-      "next@>=13.4.0 <14.1.1": ">=14.1.1"
+      "next@>=13.4.0 <14.1.1": ">=14.1.1",
+      "braces@<3.0.3": ">=3.0.3"
     }
   }
 }
