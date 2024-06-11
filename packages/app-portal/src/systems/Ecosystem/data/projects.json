@@ -342,17 +342,6 @@
   },
   {
     "isLive": false,
-    "name": "Pepa Network",
-    "url": "https://pepalabs.net/",
-    "tags": ["DeFi", "Gaming", "Social"],
-    "description": "A blockchain-based gaming platform that combines traditional arcade games with the benefits of DeFi, NFTs, and social features.",
-    "github": "",
-    "twitter": "https://twitter.com/PEPAlabs",
-    "discord": "",
-    "image": "pepamarket"
-  },
-  {
-    "isLive": false,
     "name": "PlayEstates",
     "url": "https://www.playestates.com/",
     "tags": ["Real World Assets", "Gaming", "NFT"],
