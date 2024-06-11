@@ -55,7 +55,7 @@ jobs:
       - name: Stop Test Node
         run: pnpm node:stop
   tests-e2e-soft:
-    name: E2E Tests
+    name: E2E Tests Soft
     runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - name: Checkout
