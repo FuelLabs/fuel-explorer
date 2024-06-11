@@ -21,7 +21,10 @@ import { createComponent, withNamespace } from '../../utils/component';
 import { Avatar } from '../Avatar';
 import { createAmount } from './utils';
 
-export type InputAmountProps = Omit<InputProps, 'size' | 'onChange'> & {
+export type InputAmountProps = Omit<
+  InputProps,
+  'size' | 'onChange' | 'value'
+> & {
   disabled?: boolean;
   balance?: BN;
   value?: BN | null;
