@@ -1,7 +1,7 @@
 'use client';
 
 import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
-import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
+import type { BaseProps, InputProps } from '@fuels/ui';
 import {
   Box,
   Dropdown,
@@ -205,7 +205,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
   },
 );
 
-type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
+type SearchInputProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
   onClear?: (value: string) => void;
   searchResult?: Maybe<SearchResult>;
