@@ -134,7 +134,7 @@
   {
     "isLive": true,
     "name": "Envio",
-    "url": "https://envio.dev/",
+    "url": "https://docs.envio.dev/docs/hyperfuel",
     "tags": ["Indexer"],
     "description": "Envio is a modern, multi-chain EVM blockchain indexing framework speed-optimized for querying real-time and historical data.",
     "github": "https://github.com/enviodev",
@@ -442,7 +442,7 @@
   {
     "isLive": true,
     "name": "Subsquid",
-    "url": "https://subsquid.io/",
+    "url": "https://docs.subsquid.io/fuel-indexing/",
     "tags": ["Indexer"],
     "description": "A peer-to-peer network to batch query and aggregate terabytes of on-chain and off-chain data in a ridiculously efficient way.",
     "github": "https://github.com/subsquid/squid-sdk",
