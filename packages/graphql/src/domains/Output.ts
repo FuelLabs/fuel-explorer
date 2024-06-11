@@ -48,8 +48,8 @@ export class OutputDomain {
     const entries = Object.entries(groupBy(outputs, (i) => i.contract));
     return entries.map(([_, outputs]) => {
       const type = outputs[0].__typename;
-      const contract = outputs[0].contract;
-      return { contract, type, outputs };
+      const contractId = outputs[0].contract;
+      return { contractId, type, outputs };
     });
   }
 

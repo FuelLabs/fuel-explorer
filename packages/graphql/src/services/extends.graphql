@@ -64,7 +64,7 @@ type GroupedOutput {
   assetId: AssetId
   inputIndex: Int
   recipient: Address
-  contract: Contract
+  contractId: ContractId
 }
 
 enum TransactionAccountType {

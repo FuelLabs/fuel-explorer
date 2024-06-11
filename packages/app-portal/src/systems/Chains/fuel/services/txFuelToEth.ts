@@ -355,7 +355,7 @@ export class TxFuelToEthService {
       },
       args: {
         messageId: input.messageId as `0x${string}`,
-      } as any,
+      },
       fromBlock: 'earliest',
     });
 
@@ -382,7 +382,7 @@ export class TxFuelToEthService {
       bridgeSolidityContracts,
     });
 
-    const txHash = await (fuelPortal as any).write.relayMessage([
+    const txHash = await fuelPortal.write.relayMessage([
       relayMessageParams.message,
       relayMessageParams.rootBlockHeader,
       relayMessageParams.blockHeader,

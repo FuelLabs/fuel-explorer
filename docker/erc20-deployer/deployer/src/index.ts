@@ -29,7 +29,7 @@ async function main() {
     {
       gasLimit: 500000000,
       maxFee: 50_000,
-    } as any,
+    },
   );
 
   const fuelTokenId = FuelToken.id.toHexString();
