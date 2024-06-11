@@ -44,6 +44,7 @@
     "test": "pnpm turbo:run test",
     "test:all": "run-p test test:e2e",
     "test:e2e": "playwright test --config=packages/e2e-tests/playwright.config.ts",
+    "test:e2e-soft": "playwright test --config=packages/e2e-tests/playwright-soft.config.ts",
     "test:ci": "pnpm turbo:run test -- --ci --testLocationInResults --json --coverage",
     "test:clear": "pnpm turbo:run test -- --clearCache",
     "test:coverage": " pnpm turbo:run test -- --coverage",
@@ -86,14 +87,8 @@
   },
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": [
-        "react",
-        "react-dom"
-      ],
-      "ignoreMissing": [
-        "react",
-        "react-dom"
-      ]
+      "allowAny": ["react", "react-dom"],
+      "ignoreMissing": ["react", "react-dom"]
     },
     "overrides": {
       "glob-parent@<5.1.2": ">=5.1.2",
