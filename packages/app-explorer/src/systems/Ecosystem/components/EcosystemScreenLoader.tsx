@@ -5,7 +5,7 @@ import { tv } from 'tailwind-variants';
 export function EcosystemScreenLoader() {
   const classes = styles();
   return (
-    <VStack gap="6" grow="1" className={classes.content()}>
+    <VStack gap="6" flexGrow="1" className={classes.content()}>
       <EcosystemHeader disabled />
       <Flex justify="start" align="center" gap="3" wrap="wrap">
         {Array.from({ length: 8 }).map((_, i) => (
