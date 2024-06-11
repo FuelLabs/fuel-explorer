@@ -15,6 +15,7 @@ function createReceiptTypeChecker(types: string[]) {
 }
 
 const isCall = createReceiptTypeChecker(['CALL']);
+const isReturnData = createReceiptTypeChecker(['RETURN_DATA']);
 const isReturn = createReceiptTypeChecker(['RETURN']);
 const isResult = createReceiptTypeChecker(['SCRIPT_RESULT']);
 const isError = createReceiptTypeChecker(['PANIC', 'REVERT']);
@@ -26,7 +27,7 @@ function getType(receipt: TxReceipt) {
   if (receipt?.contractId ?? receipt?.contractId ?? receipt?.to) {
     return 'FROM_CONTRACT';
   }
-  if (isReturn(receipt) && !receipt?.contractId) {
+  if (isReturn(receipt)) {
     return 'FINAL_RESULT';
   }
   return null;
@@ -45,14 +46,14 @@ export class OperationDomain {
     const hasError = receipts.some(isError);
     return receipts.reduce((acc, receipt, idx) => {
       const prev = receipts[idx - 1];
-      const isPrevReturn = isReturn(prev);
+      const isPrevReturnData = isReturnData(prev);
       const isFirstCall = isCall(receipt) && idx === 0;
-      const isCurrentCall = isCall(receipt) && isPrevReturn;
-      const isTypeCall = isFirstCall || isCurrentCall;
+      const isCurrentCall = isCall(receipt) && isPrevReturnData;
+      const isRootCall = isFirstCall || isCurrentCall;
       const isOnlyResult = hasError && isResult(receipt);
-      const isFinalReturn = isReturn(receipt) && !prev?.id;
+      const isFinalReturn = isReturn(receipt);
 
-      if (isTypeCall || isOnlyResult || isFinalReturn) {
+      if (isRootCall || isOnlyResult || isFinalReturn) {
         const type = getType(receipt);
         const findNextReturnIdx = this._findNextReturnIdx(
           receipts,
@@ -60,7 +61,7 @@ export class OperationDomain {
           hasError,
         );
         const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
-        const range = isTypeCall
+        const range = isRootCall
           ? [...receipts].slice(idx, nextReturnIdx + 1)
           : [...receipts].slice(idx);
         const items = this._createItems(range);
@@ -122,10 +123,10 @@ export class OperationDomain {
       if (nIdx <= idx) return false;
 
       // only can find return receipts
-      if (!isReturn(receipt)) return false;
+      if (!isReturnData(receipt)) return false;
 
       // previous receipt of RETURN will be RETURN_DATA, which will have the contractID in `id` prop
-      const hasSameId = receipts[nIdx - 1]?.to === receipt.id;
+      const hasSameId = receipts[idx]?.to === receipt.id;
       return hasSameId;
     };
   }
