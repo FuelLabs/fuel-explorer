@@ -38,11 +38,6 @@ overrides:
   next@>=13.4.0 <14.1.1: '>=14.1.1'
   braces@<3.0.3: '>=3.0.3'
 
-patchedDependencies:
-  radix-ui-themes-with-tailwind@1.2.6:
-    hash: lfura77wank45vl7qn2tttngva
-    path: patches/radix-ui-themes-with-tailwind@1.2.6.patch
-
 importers:
 
   .:
@@ -791,9 +786,6 @@ importers:
       next:
         specifier: '>=14.1.1'
         version: 14.2.3(@babel/core@7.23.9)(@playwright/test@1.41.2)(react-dom@18.2.0)(react@18.2.0)
-      radix-ui-themes-with-tailwind:
-        specifier: 1.2.6
-        version: 1.2.6(patch_hash=lfura77wank45vl7qn2tttngva)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -22754,11 +22746,6 @@ packages:
 
   /quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
-
-  /radix-ui-themes-with-tailwind@1.2.6(patch_hash=lfura77wank45vl7qn2tttngva):
-    resolution: {integrity: sha512-eIK4WnMckwrBvXBxldYrQNFSkXwgNDVCMWXJDJsgXZgjaCHoHTylOLYoKduEi9as005IoLr8GftyEV8WwdTdYQ==}
-    dev: false
-    patched: true
 
   /radix3@1.1.0:
     resolution: {integrity: sha512-pNsHDxbGORSvuSScqNJ+3Km6QAVqk8CfsCBIEoDgpqLrkD2f3QM4I7d1ozJJ172OmIcoUcerZaNWqtLkRXTV3A==}

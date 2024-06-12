@@ -1,11 +1,11 @@
 import path from 'path';
 import { globbySync } from 'globby';
 import _ from 'lodash';
-import radixThemePlugin from 'radix-ui-themes-with-tailwind';
 import type { Config } from 'tailwindcss';
 import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
 
+import radixThemePlugin from '../utils/radixTailwind';
 import { animation, keyframes } from './animations';
 import { breakpoints } from './breakpoints';
 

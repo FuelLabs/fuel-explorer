@@ -123,9 +123,6 @@
       "ejs@<3.1.10": ">=3.1.10",
       "next@>=13.4.0 <14.1.1": ">=14.1.1",
       "braces@<3.0.3": ">=3.0.3"
-    },
-    "patchedDependencies": {
-      "radix-ui-themes-with-tailwind@1.2.6": "patches/radix-ui-themes-with-tailwind@1.2.6.patch"
     }
   }
 }
