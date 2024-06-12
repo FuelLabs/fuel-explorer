@@ -7,7 +7,7 @@ const softConfig = {
   testMatch: join(__dirname, './tests/soft/**/*.test.ts'),
   reporter: [
     ['list', { printSteps: true }],
-    ['html', { outputFolder: join(__dirname, './soft/playwright-html/') }],
+    ['html', { outputFolder: join(__dirname, './playwright-html/soft/') }],
   ],
 };
 

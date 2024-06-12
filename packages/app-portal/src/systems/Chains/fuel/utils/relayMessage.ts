@@ -155,6 +155,7 @@ export async function relayCommonMessage({
     txParams || {},
   );
   const estimatedTx = await relayer.provider.estimatePredicates(transaction);
+  estimatedTx.maxFee = estimatedTx.maxFee.add(bn(50_000));
 
   return relayer.sendTransaction(estimatedTx);
 }
