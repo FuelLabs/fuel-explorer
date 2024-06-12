@@ -1,9 +1,4 @@
-import {
-  FuelWalletConnector,
-  FuelWalletDevelopmentConnector,
-  FueletWalletConnector,
-} from '@fuels/connectors';
-import { WalletConnectConnector } from '@fuels/connectors/walletconnect';
+import { defaultConnectors } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
@@ -19,12 +14,7 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
     <FuelProvider
       theme={theme}
       fuelConfig={{
-        connectors: [
-          new FuelWalletConnector(),
-          new FuelWalletDevelopmentConnector(),
-          new FueletWalletConnector(),
-          new WalletConnectConnector(),
-        ],
+        connectors: defaultConnectors({ devMode: true }),
       }}
     >
       {children}

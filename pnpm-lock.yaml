@@ -418,8 +418,8 @@ importers:
         specifier: pr-185
         version: 0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877
       '@fuels/connectors':
-        specifier: 0.5.1
-        version: 0.5.1(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
+        specifier: 0.6.0
+        version: 0.6.0(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
       '@fuels/react':
         specifier: 0.21.0
         version: 0.21.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)
@@ -4151,8 +4151,8 @@ packages:
   /@fuels/assets@0.20.0:
     resolution: {integrity: sha512-pIVzHCEXkIIKXlIvvrISrFyaRRjbxEMnypjV/UZOI9dr99woUgXV1MZnMsq44uhQ/T3VXiTu2cXo4/SSE5ny2g==}
 
-  /@fuels/connectors@0.5.1(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
-    resolution: {integrity: sha512-bkXnuIjjNEHzqVLKffc46CIrduDzvsu73/XS8368pyGTabeIEAtcctK+JkJf1AnPMp6DaTpmNfojVXnJr5WGlw==}
+  /@fuels/connectors@0.6.0(@types/react@18.2.54)(fuels@0.86.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
+    resolution: {integrity: sha512-SP45GiBCv/GhLL5JzcMWhxvAPUnf/6d2UitTiz0sJApfo1bqdaesp13wN5dphPq2CUUSFFgc4vUp/KKYneVCiA==}
     peerDependencies:
       fuels: '>=0.88.1'
     dependencies:
@@ -4161,6 +4161,7 @@ packages:
       '@wagmi/core': 2.9.1(@types/react@18.2.54)(react@18.2.0)(typescript@5.4.5)(viem@2.10.2)
       '@web3modal/wagmi': 4.1.11(@types/react@18.2.54)(@wagmi/core@2.9.1)(react-dom@18.2.0)(react@18.2.0)(viem@2.10.2)
       fuels: 0.86.0
+      socket.io-client: 4.7.2
       viem: 2.10.2(typescript@5.4.5)
     transitivePeerDependencies:
       - '@tanstack/query-core'
@@ -4170,6 +4171,7 @@ packages:
       - immer
       - react
       - react-dom
+      - supports-color
       - typescript
       - utf-8-validate
       - vue
@@ -24424,6 +24426,20 @@ packages:
       dot-case: 3.0.4
       tslib: 2.6.2
     dev: true
+
+  /socket.io-client@4.7.2:
+    resolution: {integrity: sha512-vtA0uD4ibrYD793SOIAwlo8cj6haOeMHrGvwPxJsxH7CeIksqJ+3Zc06RvWTIFgiSqx4A3sOnTXpfAEE2Zyz6w==}
+    engines: {node: '>=10.0.0'}
+    dependencies:
+      '@socket.io/component-emitter': 3.1.0
+      debug: 4.3.4(supports-color@8.1.1)
+      engine.io-client: 6.5.3(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+      socket.io-parser: 4.2.4
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
 
   /socket.io-client@4.7.5(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution: {integrity: sha512-sJ/tqHOCe7Z50JCBCXrsY3I2k03iOiUe+tj1OmKeD2lXPiGH/RUCdTZFoqVyN7l1MnpIzPrGtLcijffmeouNlQ==}

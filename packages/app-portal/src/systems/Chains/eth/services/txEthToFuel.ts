@@ -369,7 +369,9 @@ export class TxEthToFuelService {
       txMessageRelayed = await relayCommonMessage({
         relayer: fuelWallet,
         message: fuelMessage,
-        txParams: { gasLimit: 30000000, maturity: undefined },
+        txParams: {
+          maturity: undefined,
+        },
       });
     } catch (err) {
       if (
