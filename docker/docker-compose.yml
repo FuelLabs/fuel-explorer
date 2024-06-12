@@ -81,7 +81,6 @@ services:
       - "5435:5432"
     volumes:
       - fuel-explorer-pgsql-db:/usr/local/postgres
-      - ../packages/graphql/db/dev_dump.sql:/docker-entrypoint-initdb.d/dump.sql
     environment:
       - POSTGRES_PASSWORD=postgres
       - PGUSER=postgres

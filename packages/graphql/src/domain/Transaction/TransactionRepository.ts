@@ -49,12 +49,6 @@ export class TransactionRepository {
     const values = inserts.map((item, index) =>
       TransactionEntity.toDBItem(item.blockHeight, item.transaction, index),
     );
-    const query = conn
-      .insert(TransactionsTable)
-      .values(values)
-      .onConflictDoNothing();
-
-    const items = await query.returning();
-    return items.map((item) => TransactionEntity.create(item));
+    await conn.insert(TransactionsTable).values(values).onConflictDoNothing();
   }
 }

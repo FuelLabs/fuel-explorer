@@ -13,6 +13,7 @@ import { TransactionRepository } from '~/domain/Transaction/TransactionRepositor
 import type { GQLInput, GQLTransaction } from '~/graphql/generated/sdk';
 import type { DbTransaction } from '~/infra/database/Db';
 
+// biome-ignore lint/correctness/noUnusedVariables: <explanation>
 class TransactionResources {
   constructor(
     readonly trx: DbTransaction,
@@ -112,18 +113,18 @@ export class AddTransactions {
 
   async execute(items: Data) {
     const repo = new TransactionRepository(this.trx);
-    const added = await repo.upsertMany(items, this.trx);
-    if (!added?.length) {
-      console.log(c.dim('No transactions to sync'));
-      return;
-    }
-    await Promise.all(
-      added.map(async (item) => {
-        const height = String(item.blockHeight);
-        const txResources = new TransactionResources(this.trx, height, item);
-        return txResources.syncResources();
-      }),
-    );
+    await repo.upsertMany(items, this.trx);
+    // if (!added?.length) {
+    //   console.log(c.dim('No transactions to sync'));
+    //   return;
+    // }
+    // await Promise.all(
+    //   added.map(async (item) => {
+    //     const height = String(item.blockHeight);
+    //     const txResources = new TransactionResources(this.trx, height, item);
+    //     return txResources.syncResources();
+    //   }),
+    // );
   }
 }
 
