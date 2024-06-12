@@ -96,7 +96,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.accountAssets(searchResult.account.address!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -117,7 +116,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                         <Link
                           as={NextLink}
                           href={Routes.txSimple(transaction!.id!)}
-                          className="text-color"
                           onClick={onSelectItem}
                         >
                           {shortAddress(transaction?.id || '', trimL, trimR)}
@@ -134,7 +132,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.blockSimple(searchResult.block.id!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(searchResult.block.id || '', trimL, trimR)}
@@ -144,7 +141,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.blockSimple(searchResult.block.height!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {searchResult.block.height}
@@ -159,7 +155,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.contractAssets(searchResult.contract.id!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -178,7 +173,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.txSimple(searchResult.transaction.id!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(

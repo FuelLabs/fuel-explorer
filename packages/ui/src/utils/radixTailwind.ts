@@ -154,9 +154,6 @@ const radixThemePlugin = withOptions(
   () => {
     return ({ addBase }) => {
       addBase({
-        '*': {
-          outlineColor: 'currentColor',
-        },
         'html, body': {
           height: '100%',
           '-webkit-font-smoothing': 'antialiased',

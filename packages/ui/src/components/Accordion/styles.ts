@@ -4,7 +4,7 @@ export const styles = tv({
   slots: {
     root: 'max-w-full',
     content: [
-      'overflow-hidden p-4 text-color',
+      'overflow-hidden p-4',
       'state-open:animate-accordion-open',
       'state-closed:animate-accordion-closed',
     ],

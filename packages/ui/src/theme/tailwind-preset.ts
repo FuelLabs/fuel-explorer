@@ -25,7 +25,6 @@ const COLORS_VARIABLES = [
   'border',
   'border-hover',
   // text colors
-  'color',
   'secondary',
   'muted',
   'heading',

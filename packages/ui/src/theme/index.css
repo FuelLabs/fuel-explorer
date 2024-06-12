@@ -48,11 +48,3 @@
   --space-80: calc(320px * var(--scaling));
   --space-96: calc(384px * var(--scaling));
 }
-
-
-body,
-html,
-.radix-themes {
-  font-size: var(--default-font-size);
-  /* color: var(--gray-11); */
-}
