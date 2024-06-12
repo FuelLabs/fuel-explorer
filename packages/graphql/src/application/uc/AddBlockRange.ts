@@ -2,7 +2,8 @@ import { performance } from 'node:perf_hooks';
 import c from 'chalk';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { db } from '~/infra/database/Db';
-import { type QueueInputs, QueueNames, mq } from '~/infra/queue/Queue';
+import type { QueueInputs, QueueNames } from '~/infra/queue/Queue';
+import { addTransactions } from './AddTransactions';
 
 type Data = QueueInputs[QueueNames.ADD_BLOCK_RANGE];
 
@@ -22,13 +23,13 @@ export class AddBlockRange {
       try {
         const blockRepo = new BlockRepository(blockProducer, trx);
         await blockRepo.upsertMany(blocks, trx);
-        const txsToAdd = blocks.flatMap((block) =>
+        const items = blocks.flatMap((block) =>
           block.transactions.map((transaction) => ({
             blockHeight: Number(block.header.height),
             transaction,
           })),
         );
-        await mq.send('tx', QueueNames.ADD_TRANSACTIONS, { items: txsToAdd });
+        await addTransactions(items, trx);
       } catch (e) {
         console.error(e);
       }

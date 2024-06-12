@@ -4,13 +4,11 @@ import client, {
   type ConsumeMessage,
 } from 'amqplib';
 import { createAddBlockRange } from '~/application/uc/AddBlockRange';
-import { addTransactions } from '~/application/uc/AddTransactions';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { env } from '~/config';
 import { BlockProducer } from '~/domain/Block/vo/BlockProducer';
-import type { GQLTransaction } from '~/graphql/generated/sdk';
 
 const HOST = env.get('RABBITMQ_HOST');
 const USER = env.get('RABBITMQ_USER');
@@ -25,7 +23,6 @@ type Payload<D = unknown> = {
 export enum QueueNames {
   SYNC_BLOCKS = 'indexer/sync-blocks',
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
-  ADD_TRANSACTIONS = 'indexer/add-transactions',
   SYNC_MISSING = 'indexer/sync-missing',
   SYNC_LAST = 'indexer/sync-last',
 }
@@ -49,12 +46,6 @@ export type QueueInputs = {
   [QueueNames.ADD_BLOCK_RANGE]: {
     from: number;
     to: number;
-  };
-  [QueueNames.ADD_TRANSACTIONS]: {
-    items: {
-      blockHeight: number;
-      transaction: GQLTransaction;
-    }[];
   };
 };
 
@@ -151,7 +142,6 @@ class RabbitMQConnection {
     await this.consume('main', QueueNames.SYNC_MISSING, syncMissingBlocks);
     await this.consume('main', QueueNames.SYNC_LAST, syncLastBlocks);
     await this.consume('block', QueueNames.ADD_BLOCK_RANGE, addBlockRange);
-    await this.consume('tx', QueueNames.ADD_TRANSACTIONS, addTransactions);
   }
 
   private parsePayload<P extends Payload>(msg: ConsumeMessage | null) {

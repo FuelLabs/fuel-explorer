@@ -28,9 +28,7 @@ worker.on('ADD_BLOCK_RANGE', async (payloads) => {
 });
 
 worker.on('GET_ACTIVE_JOBS', async () => {
-  const blockJobs = await mq.getActive(QueueNames.ADD_BLOCK_RANGE);
-  const txJobs = await mq.getActive(QueueNames.ADD_TRANSACTIONS);
-  const total = blockJobs + txJobs;
+  const total = await mq.getActive(QueueNames.ADD_BLOCK_RANGE);
   console.log(`⚡️ Active jobs: ${total}`);
   worker.postMessage('ACTIVE_JOBS_RESPONSE', total);
 });

@@ -10,9 +10,8 @@ import type { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import type { GQLInput } from '~/graphql/generated/sdk';
-import { type DbTransaction, db } from '~/infra/database/Db';
-import type { QueueInputs, QueueNames } from '~/infra/queue/Queue';
+import type { GQLInput, GQLTransaction } from '~/graphql/generated/sdk';
+import type { DbTransaction } from '~/infra/database/Db';
 
 class TransactionResources {
   constructor(
@@ -103,37 +102,39 @@ class TransactionResources {
   }
 }
 
-type Data = QueueInputs[QueueNames.ADD_TRANSACTIONS];
+type Data = {
+  blockHeight: number;
+  transaction: GQLTransaction;
+}[];
 
 export class AddTransactions {
-  async execute({ items }: Data) {
-    await db.connection().transaction(async (trx) => {
-      const repo = new TransactionRepository(trx);
-      const added = await repo.upsertMany(items, trx);
-      if (!added?.length) {
-        console.log(c.dim('No transactions to sync'));
-        return;
-      }
-      await Promise.all(
-        added.map(async (item) => {
-          const height = String(item.blockHeight);
-          const txResources = new TransactionResources(trx, height, item);
-          return txResources.syncResources();
-        }),
-      );
-    });
+  constructor(readonly trx: DbTransaction) {}
+
+  async execute(items: Data) {
+    const repo = new TransactionRepository(this.trx);
+    const added = await repo.upsertMany(items, this.trx);
+    if (!added?.length) {
+      console.log(c.dim('No transactions to sync'));
+      return;
+    }
+    await Promise.all(
+      added.map(async (item) => {
+        const height = String(item.blockHeight);
+        const txResources = new TransactionResources(this.trx, height, item);
+        return txResources.syncResources();
+      }),
+    );
   }
 }
 
-export const addTransactions = async (data: Data) => {
+export const addTransactions = async (items: Data, trx: DbTransaction) => {
   try {
-    const { items } = data;
     const fromBlock = items[0].blockHeight;
     const toBlock = items[items.length - 1].blockHeight;
     const msg = `📪 Syncing transactions from #${fromBlock} to #${toBlock}`;
     console.log(c.dim(msg));
-    const instance = new AddTransactions();
-    await instance.execute(data);
+    const instance = new AddTransactions(trx);
+    await instance.execute(items);
   } catch (error) {
     console.error(error);
     throw new Error('Sync transactions', {
