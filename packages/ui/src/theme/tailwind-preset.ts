@@ -50,7 +50,6 @@ const COLORS_VARIABLES = [
   // card colors
   'card-bg',
   'card-title',
-  'card-border',
 ] as const;
 
 function refColorVariablesAsObj() {
