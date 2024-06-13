@@ -43,7 +43,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     isLoadingConnectUI;
 
   const address = useMemo(
-    () => (account ? Address.fromString(account) : undefined),
+    () => (account ? Address.fromDynamicInput(account) : undefined),
     [account],
   );
 

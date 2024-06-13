@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3001;
 
 const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
-  testMatch: join(__dirname, './tests/**/*.test.ts'),
+  testMatch: join(__dirname, './tests/hard/**/*.test.ts'),
   testDir: join(__dirname, './tests/'),
   timeout: 60_000 * 10,
   expect: {
@@ -14,7 +14,7 @@ const config: PlaywrightTestConfig = defineConfig({
   },
   reporter: [
     ['list', { printSteps: true }],
-    ['html', { outputFolder: join(__dirname, './playwright-html/') }],
+    ['html', { outputFolder: join(__dirname, './playwright-html/hard/') }],
   ],
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,

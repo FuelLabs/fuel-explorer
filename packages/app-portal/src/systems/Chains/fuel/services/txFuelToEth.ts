@@ -116,6 +116,7 @@ export class TxFuelToEthService {
         amount,
         {
           gasLimit: bn(100_000),
+          maxFee: bn(50_000),
         },
       );
 
