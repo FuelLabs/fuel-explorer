@@ -111,6 +111,7 @@ const preset: Config = {
         'not-disabled-hover',
         '&:not([aria-disabled=true],:disabled):hover',
       );
+      addVariant('first-child', '& > :first-child');
       addVariant('first-type', '&:first-of-type');
       addVariant('last-type', '&:last-of-type');
       addVariant('dark-theme', ['.dark &', '.dark-theme &']);
