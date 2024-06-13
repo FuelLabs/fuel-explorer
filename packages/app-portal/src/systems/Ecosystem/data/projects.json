@@ -508,7 +508,7 @@
   {
     "isLive": false,
     "name": "Zap Protocol",
-    "url": "https://zapinfra.com",
+    "url": "https://zapinfra.com/",
     "tags": ["Infrastructure"],
     "description": "Zap is the gateway to better UX, cheaper transactions, and faster execution on Fuel",
     "github": "https://github.com/Layer3Labs/Zap-Protocol",
