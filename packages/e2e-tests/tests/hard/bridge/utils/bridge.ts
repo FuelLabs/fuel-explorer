@@ -22,12 +22,10 @@ export const goToBridgePage = async (page: Page) => {
 };
 
 export const goToTransactionsPage = async (page: Page) => {
-  const transactionList = page.locator('a').getByText('History');
+  const transactionList = getByAriaLabel(page, 'Transaction History');
   await transactionList.click();
 
   await waitAriaLabel(page, 'Back to home');
-
-  await page.pause();
 };
 
 export const clickDepositTab = async (page: Page) => {
