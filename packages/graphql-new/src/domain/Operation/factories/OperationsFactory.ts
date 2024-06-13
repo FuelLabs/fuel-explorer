@@ -27,19 +27,23 @@ export class OperationsFactory {
     if (!receipts.length) return null;
     const hasError = receipts.some(isError);
     return receipts.reduce((acc, receipt, idx) => {
-      const last = receipts[idx - 1];
-      const isLastReturn = isReturn(last);
+      const prev = receipts[idx - 1];
+      const isPrevReturnData = isReturnData(prev);
       const isFirstCall = isCall(receipt) && idx === 0;
-      const isCurrentCall = isCall(receipt) && isLastReturn;
-      const findNextReturnIdx = this.findNextReturnIdx(receipt, idx, hasError);
-      const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
-      const isTypeCall = isFirstCall || isCurrentCall;
+      const isCurrentCall = isCall(receipt) && isPrevReturnData;
+      const isRootCall = isFirstCall || isCurrentCall;
       const isOnlyResult = hasError && isResult(receipt);
-      const isFinalReturn = isReturn(receipt) && !receipt.contractId;
+      const isFinalReturn = isReturn(receipt);
 
-      if (isTypeCall || isOnlyResult || isFinalReturn) {
+      if (isRootCall || isOnlyResult || isFinalReturn) {
         const type = getType(receipt);
-        const range = isTypeCall
+        const findNextReturnIdx = this.findNextReturnIdx(
+          receipts,
+          idx,
+          hasError,
+        );
+        const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
+        const range = isRootCall
           ? [...receipts].slice(idx, nextReturnIdx + 1)
           : [...receipts].slice(idx);
         const items = this.createItems(range);
@@ -72,13 +76,13 @@ export class OperationsFactory {
 
   private findNestedIntervals(receipts: GQLReceipt[]) {
     return receipts.reduce((acc, r, idx) => {
-      const last = receipts[idx - 1];
-      const isLastReturn = isReturn(last);
+      const prev = receipts[idx - 1];
+      const isPrevReturn = isReturn(prev);
       const isFirstCall = isCall(r) && idx === 0;
-      const findNextReturnIdx = this.findNextReturnIdx(r, idx);
-      const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
 
-      if (isCall(r) && !isFirstCall && !isLastReturn) {
+      if (isCall(r) && !isFirstCall && !isPrevReturn) {
+        const findNextReturnIdx = this.findNextReturnIdx(receipts, idx);
+        const nextReturnIdx = receipts.findIndex(findNextReturnIdx);
         return [...acc, [idx, nextReturnIdx]];
       }
       return acc;
@@ -86,14 +90,21 @@ export class OperationsFactory {
   }
 
   private findNextReturnIdx(
-    current: GQLReceipt,
+    receipts: GQLReceipt[],
     idx: number,
     hasError?: boolean,
   ) {
     return (receipt: GQLReceipt, nIdx: number) => {
       if (hasError) return nIdx > idx && isError(receipt);
-      const hasSameId = current.to === receipt.contractId;
-      return nIdx > idx && isReturn(receipt) && hasSameId;
+
+      // only can find receipts after the idx inputted
+      if (nIdx <= idx) return false;
+
+      // only can find return receipts
+      if (!isReturnData(receipt)) return false;
+
+      const hasSameId = receipts[idx]?.to === receipt.id;
+      return hasSameId;
     };
   }
 }
@@ -104,6 +115,7 @@ function createReceiptTypeChecker(types: string[]) {
 }
 
 const isCall = createReceiptTypeChecker(['CALL']);
+const isReturnData = createReceiptTypeChecker(['RETURN_DATA']);
 const isReturn = createReceiptTypeChecker(['RETURN']);
 const isResult = createReceiptTypeChecker(['SCRIPT_RESULT']);
 const isError = createReceiptTypeChecker(['PANIC', 'REVERT']);
