@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Box } from '@radix-ui/themes';
-import { Flex, HStack } from '../Box';
+import { Flex } from '../Box';
 import { InputAmount } from './InputAmount';
 
 const meta: Meta<typeof InputAmount> = {
@@ -20,32 +20,25 @@ export const Usage: Story = {
       value={undefined}
       disabled={false}
       onChange={(balance) => console.log(balance)}
-      className="flex flex-wrap flex-row flex max-w-[400px]"
-      style={{
-        height: 'auto',
-        width: 'auto',
-      }}
+      className="max-w-[400px]"
       placeholder="0.00"
     >
-      <InputAmount.Slot side="right">
-        <HStack className="justify-center">
-          <InputAmount.ButtonMaxBalance
-            className="w-full w-[100%]"
-            onClick={() => {
-              alert('Max Balance has been clicked');
-            }}
-          />
-          <InputAmount.CoinSelector
-            asset={{
-              name: 'ETH',
-              imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
-              address: '',
-            }}
-            onClick={() => alert('Coin selector has been clicked')}
-          />
-        </HStack>
+      <InputAmount.Slot className="flex flex-row flex-1 basis-1/2 justify-end">
+        <InputAmount.ButtonMaxBalance
+          onClick={() => {
+            alert('Max Balance has been clicked');
+          }}
+        />
+        <InputAmount.CoinSelector
+          asset={{
+            name: 'ETH',
+            imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+            address: '',
+          }}
+          onClick={() => alert('Coin selector has been clicked')}
+        />
       </InputAmount.Slot>
-      <InputAmount.Balance className="order-2" side="right" />
+      <InputAmount.Balance className="w-full order-1" />
     </InputAmount>
   ),
 };
@@ -55,7 +48,6 @@ export const OnlyField: Story = {
     <Box className="max-w-[400px]">
       <InputAmount
         color="green"
-        className="anything"
         balance={undefined}
         value={undefined}
         disabled={false}
@@ -71,7 +63,6 @@ export const WithoutBalance: Story = {
     <Box className="max-w-[400px]">
       <InputAmount
         color="green"
-        className="anything"
         balance={undefined}
         value={undefined}
         disabled={false}

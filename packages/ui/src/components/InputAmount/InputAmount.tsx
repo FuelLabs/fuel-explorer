@@ -262,9 +262,12 @@ export const InputAmount = withNamespace(InputAmountRoot, {
 
 const styles = tv({
   slots: {
-    root: 'flex-col pt-1',
-    maxBalance: 'font-mono self-center item-center items-center w-[200%]',
+    root: [
+      'flex-row pt-1 flex-wrap',
+      'first-child:flex-1 first-child:basis-1/2 w-auto h-auto pt-3  first-child:indent-[var(--space-3)]',
+    ],
+    maxBalance: 'font-mono self-center item-center items-center',
     inputNumber: 'p-0.5 font-mono text-lg',
-    coinSelector: 'gap-1.5 text-xs py-1 px-2',
+    coinSelector: 'gap-1.5 text-xs py-1',
   },
 });
