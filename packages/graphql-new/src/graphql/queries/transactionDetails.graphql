@@ -1,0 +1,142 @@
+fragment TxDetailsGroupedInputCoin on GroupedInputCoin {
+  totalAmount
+  owner
+  assetId
+  inputs {
+    ... on InputCoin {
+      amount
+      utxoId
+    }
+  }
+}
+
+fragment TxDetailsGroupedInputMessage on GroupedInputMessage {
+  sender
+  data
+  recipient
+}
+
+fragment TxDetailsGroupedInputContract on GroupedInputContract {
+  contractId
+}
+
+fragment TxDetailsGroupedOutputCoin on GroupedOutputCoin {
+  assetId
+  totalAmount
+  to
+  outputs {
+    __typename
+  }
+}
+
+fragment TxDetailsGroupedOutputChanged on GroupedOutputChanged {
+  assetId
+  totalAmount
+  to
+  outputs {
+    __typename
+  }
+}
+
+fragment TxDetailsGroupedOutputContractCreated on GroupedOutputContractCreated {
+  contractId 
+}
+
+fragment TxDetailsReceiptItem on Receipt {
+  __typename
+  id
+  to
+  pc
+  is
+  toAddress
+  amount
+  assetId
+  gas
+  param1
+  param2
+  val
+  ptr
+  digest
+  reason
+  ra
+  rb
+  rc
+  rd
+  len
+  receiptType
+  result
+  gasUsed
+  data
+  sender
+  recipient
+  nonce
+  contractId
+  subId
+}
+
+fragment TxDetailsOperationReceipt on OperationReceipt {
+  item {
+    ...TxDetailsReceiptItem
+  }
+  receipts {
+    item {
+      ...TxDetailsReceiptItem
+    }
+  }
+}
+
+fragment TransactionDetails on Transaction {
+  status {
+    __typename
+    ... on SuccessStatus {
+        totalFee
+        totalGas
+        receipts {
+          ...TxDetailsReceiptItem
+        }
+    }
+  }
+  txPointer
+  title
+  statusType
+  hasPredicate
+  blockHeight
+  isMint
+  mintAmount
+  mintAssetId
+  inputContract {
+    contractId 
+  }
+  gasCosts {
+    fee
+    gasUsed
+  }
+  time {
+    fromNow
+    full
+  }
+  groupedInputs {
+    __typename
+    ...TxDetailsGroupedInputContract
+    ...TxDetailsGroupedInputCoin
+    ...TxDetailsGroupedInputMessage
+  }
+  groupedOutputs {
+    __typename
+    ...TxDetailsGroupedOutputCoin
+    ...TxDetailsGroupedOutputChanged
+    ...TxDetailsGroupedOutputContractCreated
+  }
+  operations {
+    type
+    receipts {
+      ...TxDetailsOperationReceipt
+    }
+  }
+}
+
+query transactionDetails($id: TransactionId!) {
+  transaction(id: $id){
+    ...TransactionDetails
+  }
+}

@@ -24,8 +24,6 @@ services:
     environment:
       L1_CHAIN_HTTP: http://l1_chain:9545/
       DEPLOYMENTS_HTTP: http://l1_chain:8081/deployments.local.json
-      RUST_LOG: debug
-      DEBUG: true
     ports:
       # expose the service to the host for integration testing
       - ${FUEL_CORE_HTTP_PORT:-4000}:4001
@@ -90,5 +88,19 @@ services:
       timeout: 5s
       retries: 5
 
+  fuel-rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: guest 
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - app-network
+
 volumes:
   fuel-explorer-pgsql-db:
+networks:
+  app-network:
+    driver: bridge
