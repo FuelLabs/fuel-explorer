@@ -1,14 +1,14 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
-import dotenv from 'dotenv';
-dotenv.config();
+import { requireEnv } from './src/utils/requireEnv';
 
-const SERVER_URL = process.env.FUEL_PROVIDER || 'http://127.0.0.1:4000/graphql';
+const { FUEL_PROVIDER } = requireEnv([
+  ['FUEL_PROVIDER', 'https://testnet.fuel.network/v1/graphql'],
+]);
 
 const config: CodegenConfig = {
-  overwrite: true,
   generates: {
-    './src/graphql/schemas/fuelcore.graphql': {
-      schema: SERVER_URL,
+    './src/schemas/fuelcore.graphql': {
+      schema: FUEL_PROVIDER,
       plugins: ['schema-ast'],
       config: {
         includeDirectives: true,

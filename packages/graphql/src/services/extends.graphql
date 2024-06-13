@@ -1,0 +1,169 @@
+scalar U64
+scalar HexString
+scalar Address
+scalar AssetId
+scalar ContractId
+scalar UtxoId
+
+# --------------------------------
+# Transaction
+# --------------------------------
+
+extend type TransactionConnection {
+  # custom
+  tokens: [Token]
+  # custom
+  accounts: [Account]
+}
+
+enum TransactionStatusType {
+  Success
+  Failure
+  Submitted
+}
+
+type ParsedTime {
+  fromNow: String
+  full: String
+  rawTai64: String
+  rawUnix: String
+}
+
+enum GroupedInputType {
+  InputCoin
+  InputContract
+  InputMessage
+}
+
+type GroupedInput {
+  type: GroupedInputType
+  totalAmount: U64
+  inputs: [Input]
+  contractId: ContractId
+  assetId: AssetId
+  sender: Address
+  recipient: Address
+  data: HexString
+  owner: Address
+}
+
+enum GroupedOutputType {
+  CoinOutput
+  ContractOutput
+  MessageOutput
+  ChangeOutput
+  VariableOutput
+  ContractCreated
+}
+
+type GroupedOutput {
+  type: GroupedOutputType
+  totalAmount: U64
+  outputs: [Output]
+  to: Address
+  assetId: AssetId
+  inputIndex: Int
+  recipient: Address
+  contractId: ContractId
+}
+
+enum TransactionAccountType {
+  Contract
+  Predicate
+  Wallet
+}
+
+type TransactionAccount {
+  type: TransactionAccountType
+  id: String
+}
+
+enum OperationType {
+  FROM_CONTRACT
+  FROM_ACCOUNT
+  FINAL_RESULT
+}
+
+type OperationReceipt {
+  item: Receipt
+  receipts: [OperationReceipt]
+}
+
+type Operation {
+  type: OperationType
+  receipts: [OperationReceipt]
+}
+
+extend type Transaction {
+  title: String
+  time: ParsedTime
+  blockHeight: String
+  statusType: TransactionStatusType
+  totalAccounts: Int
+  totalAssets: Int
+  totalOperations: Int
+  gasUsed: U64
+  operations: [Operation]
+  accountsInvolved: [TransactionAccount]
+  groupedInputs: [GroupedInput]
+  groupedOutputs: [GroupedOutput]
+  isPredicate: Boolean
+  fee: U64
+}
+
+# --------------------------------
+# Balance
+# --------------------------------
+
+type UtxoItem {
+  utxoId: UtxoId!
+  amount: U64!
+  blockCreated: U32
+  txCreatedIdx: U64
+}
+
+extend type Balance {
+  utxos: [UtxoItem]
+}
+
+# --------------------------------
+# Block
+# --------------------------------
+
+extend type Block {
+  time: ParsedTime
+  totalGasUsed: U64
+  producer: Address
+}
+
+# --------------------------------
+# Query
+# --------------------------------
+type SearchAccount {
+  address: Address
+  transactions: [SearchTransaction]
+}
+
+type SearchContract {
+  id: ContractId
+}
+
+type SearchBlock {
+  id: BlockId
+  height: String
+}
+
+type SearchTransaction {
+  id: TransactionId
+}
+
+type SearchResult {
+  account: SearchAccount
+  contract: SearchContract
+  block: SearchBlock
+  transaction: SearchTransaction
+}
+
+extend type Query {
+  search(query: String!): SearchResult
+}

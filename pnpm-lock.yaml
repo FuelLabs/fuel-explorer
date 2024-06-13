@@ -198,7 +198,7 @@ importers:
         version: 8.4.1
       '@fuel-explorer/graphql':
         specifier: workspace:*
-        version: link:../graphql
+        version: link:../graphql-new
       '@fuel-ts/math':
         specifier: 0.76.0
         version: 0.76.0
@@ -532,7 +532,7 @@ importers:
         specifier: 2.5.20
         version: 2.5.20(@swc/core@1.4.16)(@tanstack/react-query@5.29.2)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)(viem@2.9.23)
 
-  packages/graphql:
+  packages/graphql-new:
     dependencies:
       '@graphql-tools/load':
         specifier: 8.0.2
@@ -17913,6 +17913,7 @@ packages:
   /glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -23524,6 +23525,7 @@ packages:
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3

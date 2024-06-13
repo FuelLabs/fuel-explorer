@@ -1,0 +1,129 @@
+fragment TxDetailsGroupedInputCoin on GroupedInputCoin {
+  totalAmount
+  owner
+  assetId
+  inputs {
+    ... on InputCoin {
+      amount
+      utxoId
+    }
+  }
+}
+
+fragment TxDetailsGroupedInputMessage on GroupedInputMessage {
+  sender
+  data
+  recipient
+}
+
+fragment TxDetailsGroupedInputContract on GroupedInputContract {
+  contractId
+}
+
+fragment TxDetailsGroupedOutputCoin on GroupedOutputCoin {
+  assetId
+  totalAmount
+  to
+  outputs {
+    __typename
+  }
+}
+
+fragment TxDetailsGroupedOutputChanged on GroupedOutputChanged {
+  assetId
+  totalAmount
+  to
+  outputs {
+    __typename
+  }
+}
+
+fragment TxDetailsGroupedOutputContractCreated on GroupedOutputContractCreated {
+  contract {
+    id
+  }
+}
+
+fragment TxDetailsReceiptItem on Receipt {
+  __typename
+  receiptType
+  toAddress
+  sender
+  recipient
+  subId
+  val
+  assetId
+  amount
+  param1
+  to {
+    id
+  }
+  contract {
+    id
+  }
+}
+
+fragment TxDetailsOperationReceipt on OperationReceipt {
+  item {
+    ...TxDetailsReceiptItem
+  }
+  receipts {
+    item {
+      ...TxDetailsReceiptItem
+    }
+  }
+}
+
+fragment TransactionDetails on Transaction {
+  status {
+    __typename
+  }
+  txPointer
+  title
+  statusType
+  hasPredicate
+  blockHeight
+  isMint
+  mintAmount
+  mintAssetId
+  inputContract {
+    contract {
+      id
+    }
+  }
+  gasCosts {
+    fee
+    gasUsed
+  }
+  time {
+    fromNow
+    full
+  }
+  groupedInputs {
+    __typename
+    ...TxDetailsGroupedInputContract
+    ...TxDetailsGroupedInputCoin
+    ...TxDetailsGroupedInputMessage
+  }
+  groupedOutputs {
+    __typename
+    ...TxDetailsGroupedOutputCoin
+    ...TxDetailsGroupedOutputChanged
+    ...TxDetailsGroupedOutputContractCreated
+  }
+  operations {
+    type
+    receipts {
+      ...TxDetailsOperationReceipt
+    }
+  }
+  receipts {
+    ...TxDetailsReceiptItem
+  }
+}
+
+query transactionDetails($id: TransactionId!) {
+  transaction(id: $id){
+    ...TransactionDetails
+  }
+}
