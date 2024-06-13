@@ -11,7 +11,7 @@ export const styles = tv({
   variants: {
     clickable: {
       true: {
-        root: 'cursor-pointer focus:ring-2 focus:ring-gray-3 hover:border-border-hover',
+        root: 'cursor-pointer focus:ring-2 focus:ring-gray-3  hover:border-gray-8 hover:border transition-none',
       },
     },
   },

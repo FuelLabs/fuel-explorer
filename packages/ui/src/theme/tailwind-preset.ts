@@ -22,7 +22,6 @@ const COLORS_VARIABLES = [
   // general colors
   'accent',
   'brand',
-  'border',
   'border-hover',
   // text colors
   'secondary',

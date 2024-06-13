@@ -62,7 +62,7 @@ export const styles = tv({
       'fuel-[Icon]:text-[var(--radix-toast-action-color)]',
     ],
     action: [
-      'inline-flex h-7 shrink-0 items-center justify-center rounded-md border border-border',
+      'inline-flex h-7 shrink-0 items-center justify-center rounded-md border border-gray-8',
       'bg-transparent ml-4 px-3 text-sm font-medium transition-colors focus:outline-none',
       'disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-2',
       'text-[var(--radix-toast-action-color)]',

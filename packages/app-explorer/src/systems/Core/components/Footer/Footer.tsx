@@ -126,7 +126,7 @@ export function Footer() {
 const styles = tv({
   slots: {
     container: [
-      'hero-bg border-t border-border px-10 py-10 flex flex-col gap-y-5 fuel-[Icon]:hidden',
+      'hero-bg border-t border-gray-8 px-10 py-10 flex flex-col gap-y-5 fuel-[Icon]:hidden',
     ],
     root: [
       'justify-between items-start flex-col desktop:flex-row gap-y-10 mb-12',

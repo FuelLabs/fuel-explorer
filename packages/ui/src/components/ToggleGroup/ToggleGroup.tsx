@@ -31,7 +31,7 @@ export const ToggleGroup = withNamespace(ToggleGroupRoot, {
 
 export const styles = tv({
   slots: {
-    root: 'inline-flex bg-card-bg border border-border p-2 rounded-sm items-center gap-1',
+    root: 'inline-flex bg-card-bg border border-gray-8 p-2 rounded-sm items-center gap-1',
     item: [
       'flex-1 h-7 flex items-center justify-center rounded-sm px-2 text-sm text-muted',
       'dark-theme:state-on:bg-gray-5 light-theme:state-on:bg-gray-3 state-on:text-heading',

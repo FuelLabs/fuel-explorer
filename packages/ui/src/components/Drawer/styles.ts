@@ -15,7 +15,7 @@ export const styles = tv({
     ],
     content: [
       'flex flex-col fixed z-50 gap-4 bg-card-bg p-6',
-      'border-border shadow-lg transition ease-in-out',
+      'border-gray-8 shadow-lg transition ease-in-out',
       'state-open:animate-in state-closed:animate-out',
       'state-closed:duration-500 state-open:duration-700',
     ],

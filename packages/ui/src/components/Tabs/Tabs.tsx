@@ -95,7 +95,7 @@ const styles = tv({
       surface: {
         list: ['gap-4'],
         trigger: [
-          'bg-transparent text-muted rounded border border-border',
+          'bg-transparent text-muted rounded border border-gray-8',
           'enabled:hover:bg-gray-2 enabled:hover:text-heading transition-colors',
           'state-active:text-heading',
           'fuel-[Icon]:hover:text-icon',
@@ -104,7 +104,7 @@ const styles = tv({
         ],
       },
       line: {
-        list: ['border-b border-border'],
+        list: ['border-b border-gray-8'],
         trigger: [
           'bg-transparent text-muted',
           'enabled:hover:text-heading transition-colors',
