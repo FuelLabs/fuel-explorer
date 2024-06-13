@@ -1,10 +1,11 @@
 import { bn } from 'fuels';
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import type {
-  GQLChangeOutput,
-  GQLGroupedOutputChanged,
-  GQLOutput,
+import {
+  type GQLChangeOutput,
+  type GQLGroupedOutputChanged,
+  GQLGroupedOutputType,
+  type GQLOutput,
 } from '~/graphql/generated/sdk';
 
 type Source = GQLChangeOutput;
@@ -29,6 +30,7 @@ export class OutputChangedFactory {
         const totalAmount = this.getTotalAmount(outputs).toString();
         return {
           __typename: 'GroupedOutputChanged' as Typename,
+          type: GQLGroupedOutputType.OutputChanged,
           to,
           assetId,
           totalAmount,

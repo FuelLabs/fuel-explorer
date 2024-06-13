@@ -114,6 +114,7 @@ fragment TransactionDetails on Transaction {
   time {
     fromNow
     full
+    rawUnix
   }
   groupedInputs {
     __typename

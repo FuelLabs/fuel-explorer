@@ -5,7 +5,7 @@ import { getAccountTransactions } from '../actions/get-account-transactions';
 
 export async function AccountTransactionsSync({ id }: { id: string }) {
   const txs = await getAccountTransactions({ owner: id });
-  const transactions = txs.edges;
+  const transactions = txs.nodes;
   if (!transactions.length) {
     return <EmptyTransactions entity="account" />;
   }

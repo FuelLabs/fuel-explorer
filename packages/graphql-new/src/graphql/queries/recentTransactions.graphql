@@ -4,6 +4,7 @@ fragment RecentTransaction on Transaction {
   statusType
   time {
     fromNow
+    rawUnix
   }
   gasCosts {
     fee

@@ -206,7 +206,10 @@ importers:
       '@faker-js/faker':
         specifier: 8.4.0
         version: 8.4.0
-      '@fuel-explorer/graphql':
+      '':
+        specifier: workspace:*
+        version: link:../graphql
+      '@fuel-explorer/graphql-new':
         specifier: workspace:*
         version: link:../graphql-new
       '@fuel-ts/math':

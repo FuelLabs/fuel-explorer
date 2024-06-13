@@ -1,4 +1,4 @@
-import { mocks } from '@fuel-explorer/graphql';
+import { mocks } from '@fuel-explorer/graphql-new';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Utxos } from './Utxos';

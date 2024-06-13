@@ -1,10 +1,11 @@
 import { bn } from 'fuels';
 import { groupBy } from 'lodash';
 import { GQLNode } from '~/core/GQLNode';
-import type {
-  GQLCoinOutput,
-  GQLGroupedOutputCoin,
-  GQLOutput,
+import {
+  type GQLCoinOutput,
+  type GQLGroupedOutputCoin,
+  GQLGroupedOutputType,
+  type GQLOutput,
 } from '~/graphql/generated/sdk';
 
 type Source = GQLCoinOutput;
@@ -29,6 +30,7 @@ export class OutputCoinFactory {
         const totalAmount = this.getTotalAmount(outputs).toString();
         return {
           __typename: 'GroupedOutputCoin' as Typename,
+          type: GQLGroupedOutputType.OutputCoin,
           to,
           assetId,
           totalAmount,

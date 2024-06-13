@@ -31,12 +31,6 @@ type Block {
 # GroupedInputs
 # --------------------------------
 
-enum GroupedInputType {
-  InputCoin
-  InputContract
-  InputMessage
-}
-
 type GroupedInputCoin {
   assetId: AssetId
   inputs: [Input!]
@@ -59,6 +53,12 @@ type GroupedInputMessage {
   type: GroupedInputType
 }
 
+enum GroupedInputType {
+  InputCoin
+  InputContract
+  InputMessage
+}
+
 union GroupedInput =
   | GroupedInputCoin
   | GroupedInputContract
@@ -69,6 +69,7 @@ union GroupedInput =
 # --------------------------------
 
 type GroupedOutputCoin {
+  type: GroupedOutputType
   assetId: AssetId
   outputs: [Output]
   to: Address
@@ -76,6 +77,7 @@ type GroupedOutputCoin {
 }
 
 type GroupedOutputChanged {
+  type: GroupedOutputType
   assetId: AssetId
   outputs: [Output]
   to: Address
@@ -83,8 +85,15 @@ type GroupedOutputChanged {
 }
 
 type GroupedOutputContractCreated {
+  type: GroupedOutputType
   contractId: ContractId
   outputs: [Output]
+}
+
+enum GroupedOutputType {
+  OutputCoin
+  OutputChanged
+  OutputContractCreated
 }
 
 union GroupedOutput =

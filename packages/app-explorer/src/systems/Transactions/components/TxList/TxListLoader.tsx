@@ -1,4 +1,4 @@
-import type { GetLastTransactionsQuery } from '@fuel-explorer/graphql';
+import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql-new';
 import { TxList } from './TxList';
 
 type TxListLoaderProps = {
@@ -15,8 +15,8 @@ export const TxListLoader = ({
     (_, index) => index + 1,
   );
   const txs = baseArray.map((v) => ({
-    node: { id: `${v}` },
-  })) as GetLastTransactionsQuery['transactions']['edges'];
+    id: `${v}`,
+  })) as GQLRecentTransactionsQuery['transactions']['nodes'];
 
   return <TxList isLoading transactions={txs} page={page} />;
 };

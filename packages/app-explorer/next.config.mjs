@@ -4,7 +4,7 @@ import { redirects } from './src/redirects.mjs';
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['@fuel-explorer/graphql', 'app-commons', 'app-portal'],
+  transpilePackages: ['', 'app-commons', 'app-portal'],
   experimental: {
     externalDir: true,
     missingSuspenseWithCSRBailout: false,

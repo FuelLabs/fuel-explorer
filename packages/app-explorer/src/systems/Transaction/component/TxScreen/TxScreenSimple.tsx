@@ -1,6 +1,9 @@
 'use client';
 
-import type { GroupedInput, GroupedOutput } from '@fuel-explorer/graphql';
+import type {
+  GQLGroupedInput,
+  GQLGroupedOutput,
+} from '@fuel-explorer/graphql-new';
 import {
   Address,
   Badge,
@@ -62,7 +65,9 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               <TxIcon
                 type={title}
                 size="lg"
-                status={tx?.isPredicate ? 'Info' : (tx?.statusType as TxStatus)}
+                status={
+                  tx?.hasPredicate ? 'Info' : (tx?.statusType as TxStatus)
+                }
               />
             }
           />
@@ -79,7 +84,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           }
         >
           <HStack gap="1">
-            {tx?.isPredicate && (
+            {tx?.hasPredicate && (
               <Badge color="blue" variant="ghost">
                 Predicate
               </Badge>
@@ -140,7 +145,9 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       description={
         <LoadingWrapper
           isLoading={isLoading}
-          regularEl={<>Gas used: {formatZeroUnits(tx?.gasUsed || '')}</>}
+          regularEl={
+            <>Gas used: {formatZeroUnits(tx?.gasCosts?.gasUsed || '')}</>
+          }
           loadingEl={
             <>
               <LoadingBox className="w-28 h-5 mt-2" />
@@ -153,7 +160,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       <LoadingWrapper
         isLoading={isLoading}
         loadingEl={<LoadingBox className="w-36 h-6" />}
-        regularEl={`${bn(tx?.fee).format()} ETH`}
+        regularEl={`${bn(tx?.gasCosts?.fee ?? 0).format()} ETH`}
       />
     </CardInfo>,
   ];
@@ -196,7 +203,7 @@ function ContentMain({
               </Heading>
               {tx?.groupedInputs?.map((input, i) => (
                 // here we use only index as key because this component will not change
-                <TxInput key={i} input={input as GroupedInput} />
+                <TxInput key={i} input={input as GQLGroupedInput} />
               ))}
             </>
           }
@@ -241,7 +248,7 @@ function ContentMain({
                     // here we use only index as key because this component will not change
                     key={i}
                     tx={tx}
-                    output={output as GroupedOutput}
+                    output={output as GQLGroupedOutput}
                   />
                 ))}
               </>
