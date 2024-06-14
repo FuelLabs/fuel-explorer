@@ -7,7 +7,7 @@ import type {
   GQLQueryTransactionsArgs,
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import { db } from '~/infra/database/Db';
 
 type Source = GQLTransaction;

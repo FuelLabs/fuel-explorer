@@ -3,7 +3,7 @@ import {
   GroupedInputsFactory,
   type GroupedInputsValue,
 } from '~/domain/Input/factories/GroupedInputsFactory';
-import type { GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLTransaction } from '~/graphql/generated/sdk-provider';
 
 interface Props {
   value: GroupedInputsValue;

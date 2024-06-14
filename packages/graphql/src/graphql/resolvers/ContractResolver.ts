@@ -7,7 +7,7 @@ import type {
   GQLQueryContractArgs,
   GQLQueryContractBalanceArgs,
   GQLQueryContractBalancesArgs,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import { db } from '~/infra/database/Db';
 import type { GraphQLContext } from '../GraphQLContext';
 

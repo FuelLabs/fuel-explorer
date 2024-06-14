@@ -4,7 +4,7 @@ import type {
   GQLTransaction,
   GQLTransactionStatus,
   Maybe,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 interface Props {
   value: Maybe<GQLTransactionStatus['__typename']> | undefined;

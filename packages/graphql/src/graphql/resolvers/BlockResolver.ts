@@ -6,7 +6,7 @@ import type {
   GQLBlock,
   GQLQueryBlockArgs,
   GQLQueryBlocksArgs,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 type Source = GQLBlock;
 type Params = {

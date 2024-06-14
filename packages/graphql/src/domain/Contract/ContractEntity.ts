@@ -4,7 +4,7 @@ import type {
   GQLContract,
   GQLContractCreated,
   GQLOutput,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import type { ContractItem } from './ContractModel';
 import { ContractData } from './vo/ContractData';
 

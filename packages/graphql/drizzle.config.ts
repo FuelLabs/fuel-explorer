@@ -4,8 +4,8 @@ import { db } from './src/infra/database/Db';
 export default {
   schema: './src/infra/database/DbSchema.ts',
   out: './drizzle',
-  driver: 'pg',
+  dialect: 'postgresql',
   dbCredentials: {
-    connectionString: db.connectionString(),
+    url: db.connectionString(),
   },
 } satisfies Config;

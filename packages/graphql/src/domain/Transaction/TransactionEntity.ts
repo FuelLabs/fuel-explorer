@@ -2,7 +2,7 @@ import { Hash256 } from '~/application/vo';
 import { GasCosts } from '~/application/vo/GasCosts';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
-import type { GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLTransaction } from '~/graphql/generated/sdk-provider';
 import { BlockRef } from '../Block/vo/BlockRef';
 import { ContractEntity } from '../Contract/ContractEntity';
 import { InputEntity } from '../Input/InputEntity';

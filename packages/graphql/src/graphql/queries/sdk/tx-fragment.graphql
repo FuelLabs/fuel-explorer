@@ -82,7 +82,7 @@ fragment TransactionOutput on Output {
     assetId
   }
   ... on ContractCreated {
-    contract 
+    contract
   }
 }
 

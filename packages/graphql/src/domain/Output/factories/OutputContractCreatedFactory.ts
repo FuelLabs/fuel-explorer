@@ -5,7 +5,7 @@ import {
   type GQLGroupedOutputContractCreated,
   GQLGroupedOutputType,
   type GQLOutput,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 type Source = GQLContractCreated;
 type Typename = GQLGroupedOutputContractCreated['__typename'];

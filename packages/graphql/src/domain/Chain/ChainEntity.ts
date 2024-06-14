@@ -1,5 +1,5 @@
 import { Entity } from '~/core/Entity';
-import type { GQLChainInfo } from '~/graphql/generated/sdk';
+import type { GQLChainInfo } from '~/graphql/generated/sdk-provider';
 import { ChainData } from './vo/ChainData';
 import { ChainID } from './vo/ChainID';
 

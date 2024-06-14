@@ -1,6 +1,6 @@
 import { type BN, bn } from 'fuels';
 import { ValueObject } from '~/core/ValueObject';
-import type { GQLTransaction } from '~/graphql/generated/sdk';
+import type { GQLTransaction } from '~/graphql/generated/sdk-provider';
 
 interface Props {
   value: BN;

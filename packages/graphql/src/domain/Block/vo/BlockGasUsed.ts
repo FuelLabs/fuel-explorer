@@ -2,7 +2,7 @@ import { varchar } from 'drizzle-orm/pg-core';
 import { bn } from 'fuels';
 import { GasUsed } from '~/application/vo/GasUsed';
 import { ValueObject } from '~/core/ValueObject';
-import type { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 
 interface Props {
   value: string;

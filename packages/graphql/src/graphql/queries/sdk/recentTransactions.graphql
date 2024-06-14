@@ -11,12 +11,17 @@ fragment RecentTransaction on Transaction {
   }
 }
 
-query recentTransactions($after: String, $before: String, $first: Int, $last: Int) {
+query recentTransactions(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
   transactions(after: $after, before: $before, first: $first, last: $last) {
     nodes {
       ...RecentTransaction
     }
-    pageInfo{
+    pageInfo {
       endCursor
       hasNextPage
       hasPreviousPage

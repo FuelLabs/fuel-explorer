@@ -10,7 +10,10 @@ import c from 'chalk';
 // import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 // import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import type { GQLBlock, GQLTransaction } from '~/graphql/generated/sdk';
+import type {
+  GQLBlock,
+  GQLTransaction,
+} from '~/graphql/generated/sdk-provider';
 import type { DbTransaction } from '~/infra/database/Db';
 
 // class TransactionResources {

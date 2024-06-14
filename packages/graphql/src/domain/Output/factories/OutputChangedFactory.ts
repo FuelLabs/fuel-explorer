@@ -6,7 +6,7 @@ import {
   type GQLGroupedOutputChanged,
   GQLGroupedOutputType,
   type GQLOutput,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 type Source = GQLChangeOutput;
 type Typename = GQLGroupedOutputChanged['__typename'];

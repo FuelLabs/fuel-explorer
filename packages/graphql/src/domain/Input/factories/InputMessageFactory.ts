@@ -4,7 +4,7 @@ import {
   GQLGroupedInputType,
   type GQLInput,
   type GQLInputMessage,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 type Source = GQLInputMessage;
 type Typename = GQLGroupedInputMessage['__typename'];

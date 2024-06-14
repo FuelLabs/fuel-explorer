@@ -4,7 +4,7 @@ import type {
   GQLInput,
   GQLInputCoin,
   GQLInputMessage,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import { InputType } from './InputType';
 
 interface Props {

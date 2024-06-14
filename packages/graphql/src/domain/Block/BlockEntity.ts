@@ -1,7 +1,7 @@
 import { Hash256, Timestamp } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
-import type { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 import type { BlockItem } from './BlockModel';
 import { BlockData } from './vo/BlockData';
 import { BlockGasUsed } from './vo/BlockGasUsed';

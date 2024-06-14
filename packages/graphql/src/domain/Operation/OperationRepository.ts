@@ -1,4 +1,4 @@
-import type { GQLOperation } from '~/graphql/generated/sdk';
+import type { GQLOperation } from '~/graphql/generated/sdk-provider';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import type { TxID } from '../Transaction/vo/TransactionModelID';
 import { OperationEntity } from './OperationEntity';

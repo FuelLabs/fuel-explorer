@@ -1,6 +1,6 @@
 import { integer } from 'drizzle-orm/pg-core';
 import { Identifier } from '~/core/Identifier';
-import type { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 
 export class BlockModelID extends Identifier<number> {
   private constructor(id: number) {

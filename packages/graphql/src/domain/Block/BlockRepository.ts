@@ -2,7 +2,7 @@ import { desc, eq } from 'drizzle-orm';
 import { groupBy } from 'lodash';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
 import { client } from '~/graphql/GraphQLSDK';
-import type { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 import { type DbConnection, type DbTransaction, db } from '~/infra/database/Db';
 import {
   type TransactionItem,

@@ -5,7 +5,7 @@ import {
   GQLGroupedInputType,
   type GQLInput,
   type GQLInputContract,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 type Source = GQLInputContract;
 type Typename = GQLGroupedInputContract['__typename'];

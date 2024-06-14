@@ -1,6 +1,6 @@
 import { Hash256, type SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
-import type { GQLOperation } from '~/graphql/generated/sdk';
+import type { GQLOperation } from '~/graphql/generated/sdk-provider';
 import type { TransactionItem } from '../Transaction/TransactionModel';
 import { TransactionRef } from '../Transaction/vo/TransactionRef';
 import type { OperationItem } from './OperationModel';

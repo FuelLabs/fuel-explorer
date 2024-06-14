@@ -3,7 +3,7 @@ import type {
   GQLOperationReceipt,
   GQLReceipt,
   GQLTransaction,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import { OperationEntity } from '../OperationEntity';
 
 export class OperationsFactory {

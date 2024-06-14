@@ -1,5 +1,5 @@
 import { ResolverAdapter } from '~/core/Resolver';
-import type { GQLChainInfo } from '~/graphql/generated/sdk';
+import type { GQLChainInfo } from '~/graphql/generated/sdk-provider';
 import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLChainInfo;

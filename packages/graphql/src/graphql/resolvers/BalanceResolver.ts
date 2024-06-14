@@ -4,7 +4,7 @@ import type {
   GQLQueryBalanceArgs,
   GQLQueryBalancesArgs,
   GQLQueryCoinsArgs,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLBalance;
@@ -23,7 +23,7 @@ class BalanceResolver extends ResolverAdapter<Source> {
         balances: this.balances.bind(this),
       },
       Balance: {
-        utxos: this.utoxs.bind(this),
+        utxos: this.utxos.bind(this),
       },
     });
   }
@@ -53,7 +53,7 @@ class BalanceResolver extends ResolverAdapter<Source> {
   }
 
   // TODO: need to check how to implement this using Postgres
-  async utoxs(
+  async utxos(
     parent: Source,
     params: Params['utxos'],
     { client }: GraphQLContext,

@@ -5,9 +5,12 @@ dotenv.config();
 const config: CodegenConfig = {
   overwrite: true,
   generates: {
-    './src/graphql/generated/sdk-core.ts': {
-      documents: ['./src/graphql/generated/fuelcore/**/**.graphql'],
-      schema: ['./src/graphql/schemas/fuelcore.graphql'],
+    './src/graphql/generated/sdk-provider.ts': {
+      documents: ['./src/graphql/queries/provider/**.graphql'],
+      schema: [
+        './src/graphql/schemas/fuelcore.graphql',
+        './src/graphql/schemas/explorer.graphql',
+      ],
       plugins: [
         'typescript',
         'typescript-operations',
@@ -25,7 +28,7 @@ const config: CodegenConfig = {
       },
     },
     './src/graphql/generated/sdk.ts': {
-      documents: ['./src/graphql/queries/**/**.graphql'],
+      documents: ['./src/graphql/queries/sdk/**.graphql'],
       schema: [
         './src/graphql/schemas/fuelcore.graphql',
         './src/graphql/schemas/explorer.graphql',
@@ -48,7 +51,7 @@ const config: CodegenConfig = {
       },
     },
     './src/graphql/generated/mocks.ts': {
-      documents: ['./src/graphql/queries/**.graphql'],
+      documents: ['./src/graphql/queries/sdk/**.graphql'],
       schema: [
         './src/graphql/schemas/fuelcore.graphql',
         './src/graphql/schemas/explorer.graphql',

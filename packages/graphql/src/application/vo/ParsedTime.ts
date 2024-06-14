@@ -1,6 +1,6 @@
 import { DateHelper } from '~/core/Date';
 import { ValueObject } from '~/core/ValueObject';
-import type { GQLParsedTime } from '~/graphql/generated/sdk';
+import type { GQLParsedTime } from '~/graphql/generated/sdk-provider';
 
 type Typename = GQLParsedTime['__typename'];
 interface Props {

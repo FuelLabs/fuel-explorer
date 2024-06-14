@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import type { GQLInput } from '~/graphql/generated/sdk';
+import type { GQLInput } from '~/graphql/generated/sdk-provider';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import type { TxID } from '../Transaction/vo/TransactionModelID';
 import { InputEntity } from './InputEntity';

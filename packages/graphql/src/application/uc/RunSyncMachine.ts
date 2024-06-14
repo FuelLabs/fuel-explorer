@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { assign, createActor, fromCallback, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
 import { client } from '~/graphql/GraphQLSDK';
-import type { GQLBlock } from '~/graphql/generated/sdk';
+import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 import { worker } from '~/infra/worker/Worker';
 import type { SyncBlocksProps } from './SyncBlocks';
 

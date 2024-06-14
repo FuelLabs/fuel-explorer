@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
-import type { GQLContract } from '~/graphql/generated/sdk';
+import type { GQLContract } from '~/graphql/generated/sdk-provider';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { ContractEntity } from './ContractEntity';
 import { ContractsTable } from './ContractModel';

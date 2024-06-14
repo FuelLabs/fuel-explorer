@@ -6,7 +6,7 @@ import {
   type GQLGroupedOutputCoin,
   GQLGroupedOutputType,
   type GQLOutput,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 type Source = GQLCoinOutput;
 type Typename = GQLGroupedOutputCoin['__typename'];

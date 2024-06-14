@@ -6,7 +6,7 @@ import type {
   GQLGroupedInputContract,
   GQLGroupedInputMessage,
   GQLInput,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 
 export type GroupedInputsValue = (
   | GQLGroupedInputCoin

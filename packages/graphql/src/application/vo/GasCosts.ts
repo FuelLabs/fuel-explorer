@@ -2,7 +2,7 @@ import { ValueObject } from '~/core/ValueObject';
 import type {
   GQLTransaction,
   GQLTransactionGasCosts,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import { GasFee } from './GasFee';
 import { GasUsed } from './GasUsed';
 

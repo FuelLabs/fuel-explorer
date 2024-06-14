@@ -3,7 +3,7 @@ import type {
   GQLGroupedOutputCoin,
   GQLGroupedOutputContractCreated,
   GQLOutput,
-} from '~/graphql/generated/sdk';
+} from '~/graphql/generated/sdk-provider';
 import { OutputChangedFactory } from './OutputChangedFactory';
 import { OutputCoinFactory } from './OutputCoinFactory';
 import { OutputContractCreatedFactory } from './OutputContractCreatedFactory';
