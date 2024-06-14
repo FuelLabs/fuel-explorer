@@ -1,6 +1,5 @@
 import { Dialog as RD } from '@radix-ui/themes';
 
-import { DialogTitle } from '@radix-ui/react-dialog';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 
@@ -35,6 +34,11 @@ export const DialogContent = createComponent<
 export const DialogClose = createComponent<DialogCloseProps, typeof RD.Close>({
   id: 'DialogClose',
   baseElement: RD.Close,
+});
+
+export const DialogTitle = createComponent<DialogCloseProps, typeof RD.Title>({
+  id: 'DialogTitle',
+  baseElement: RD.Title,
 });
 
 export const DialogDescription = createComponent<
