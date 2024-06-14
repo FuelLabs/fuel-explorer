@@ -1,9 +1,9 @@
-import { GQLReceiptType } from '@fuel-explorer/graphql-new/sdk';
+import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import type {
   GQLOperationReceipt,
-  GQLTxDetailsReceiptItemFragment,
+  GQLTransactionReceiptFragment,
   Maybe,
-} from '@fuel-explorer/graphql-new/sdk';
+} from '@fuel-explorer/graphql/sdk';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
@@ -118,7 +118,7 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
     );
   }
 
-  const txReceipts = getReceipts(tx);
+  const txReceipts = tx?.receipts ?? [];
   const receipts = operations.flatMap((i) => i?.receipts ?? []);
   const first = receipts?.[0];
   const last = receipts?.[receipts.length - 1];
@@ -238,7 +238,7 @@ function CountReceipt({ num, op }: { num: number; op: string }) {
 function TypesCounter({
   receipts: items = [],
 }: {
-  receipts?: Maybe<GQLTxDetailsReceiptItemFragment[]>;
+  receipts?: Maybe<GQLTransactionReceiptFragment[]>;
 }) {
   const receipts = items ?? [];
   const calls = receipts.filter((i) => i?.receiptType === GQLReceiptType.Call);
@@ -298,14 +298,9 @@ function TypesCounter({
 const ctx = createContext<ReceiptItemProps>({} as ReceiptItemProps);
 const RETURN_TYPES = [GQLReceiptType.Return, GQLReceiptType.ReturnData];
 
-function getReceipts(tx: TransactionNode | undefined) {
-  if (tx?.status?.__typename !== 'SuccessStatus') return [];
-  return tx.status.receipts ?? [];
-}
-
 function getBadgeColor(
   hasError: boolean,
-  receipt?: Maybe<GQLTxDetailsReceiptItemFragment>,
+  receipt?: Maybe<GQLTransactionReceiptFragment>,
 ) {
   const type = receipt?.receiptType ?? 'UNKNOWN';
   if (type === GQLReceiptType.Revert || type === GQLReceiptType.Panic) {
@@ -358,7 +353,7 @@ function ReceiptItem({
 }
 
 function parseJson(
-  item?: Maybe<GQLTxDetailsReceiptItemFragment>,
+  item?: Maybe<GQLTransactionReceiptFragment>,
 ): Record<string, any> {
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {

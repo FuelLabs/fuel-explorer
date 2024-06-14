@@ -1,6 +1,6 @@
 'use client';
 
-import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql-new';
+import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql';
 import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
 
 import { BlockHeader } from './BlockHeader';

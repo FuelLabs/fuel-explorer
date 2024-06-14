@@ -11,7 +11,7 @@ import {
 import { bn } from 'fuels';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 
-import type { GQLBalanceFragment } from '@fuel-explorer/graphql-new';
+import type { GQLBalanceFragment } from '@fuel-explorer/graphql';
 import { Amount } from '../Amount/Amount';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';

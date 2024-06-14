@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useFormState } from 'react-dom';
 import { search } from '~/systems/Core/actions/search';
 
-import type { GQLSearchResult } from '@fuel-explorer/graphql-new';
+import type { GQLSearchResult } from '@fuel-explorer/graphql';
 import { SearchInput } from './SearchInput';
 import { SearchContext } from './SearchWidget';
 import { styles } from './styles';

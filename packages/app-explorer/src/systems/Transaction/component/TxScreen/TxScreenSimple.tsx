@@ -1,9 +1,6 @@
 'use client';
 
-import type {
-  GQLGroupedInput,
-  GQLGroupedOutput,
-} from '@fuel-explorer/graphql-new';
+import type { GQLGroupedInput, GQLGroupedOutput } from '@fuel-explorer/graphql';
 import {
   Address,
   Badge,
@@ -130,7 +127,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           regularEl={
             <Link
               as={NextLink}
-              href={Routes.blockSimple(tx?.blockHeight || '')}
+              href={`/block/${tx?.blockHeight}/simples`}
               className="text-link"
             >
               #{tx?.blockHeight}

@@ -1,11 +1,11 @@
-import { GQLGroupedOutputType } from '@fuel-explorer/graphql-new';
+import { GQLGroupedOutputType } from '@fuel-explorer/graphql';
 import type {
   GQLGroupedOutput,
   GQLGroupedOutputChanged,
   GQLGroupedOutputCoin,
   GQLGroupedOutputContractCreated,
-  GQLTransactionDetailsFragment,
-} from '@fuel-explorer/graphql-new';
+  GQLTransactionItemFragment,
+} from '@fuel-explorer/graphql';
 import {
   Address,
   Card,
@@ -29,7 +29,7 @@ import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { TxIcon } from '../TxIcon/TxIcon';
 
 function getTooltipText(
-  tx: GQLTransactionDetailsFragment,
+  tx: GQLTransactionItemFragment,
   output: GQLGroupedOutput,
 ) {
   if (tx.isMint) {
@@ -42,17 +42,17 @@ function getTooltipText(
 }
 
 export type TxOutputProps = CardProps & {
-  tx: GQLTransactionDetailsFragment;
+  tx: GQLTransactionItemFragment;
   output: GQLGroupedOutput;
 };
 
 export type TxOutputCoinProps = TxOutputProps & {
-  tx: GQLTransactionDetailsFragment;
+  tx: GQLTransactionItemFragment;
   output: GQLGroupedOutputCoin | GQLGroupedOutputChanged;
 };
 
 export type TxOutputOutputContractCreatedProps = TxOutputProps & {
-  tx: GQLTransactionDetailsFragment;
+  tx: GQLTransactionItemFragment;
   output: GQLGroupedOutputContractCreated;
 };
 

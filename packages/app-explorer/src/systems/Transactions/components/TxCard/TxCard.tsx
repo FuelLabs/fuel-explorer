@@ -14,7 +14,7 @@ import { IconGasStation } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Routes } from '~/routes';
 
-import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql-new';
+import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql';
 import { isValidAddress } from '~/systems/Core/utils/address';
 import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
 

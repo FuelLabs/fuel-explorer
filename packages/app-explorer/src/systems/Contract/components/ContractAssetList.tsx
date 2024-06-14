@@ -2,7 +2,7 @@
 import type {
   GQLContractBalanceConnectionNodeFragment,
   Maybe,
-} from '@fuel-explorer/graphql-new';
+} from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 import { bn } from 'fuels';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';

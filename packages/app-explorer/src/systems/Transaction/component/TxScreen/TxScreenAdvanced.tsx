@@ -1,6 +1,6 @@
 'use client';
 
-import type { Maybe } from '@fuel-explorer/graphql-new';
+import type { Maybe } from '@fuel-explorer/graphql';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
 import type { TransactionNode } from '../../types';

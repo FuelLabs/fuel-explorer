@@ -2,7 +2,7 @@ import {
   type GQLCoinOutput,
   type GQLInputCoin,
   mocks,
-} from '@fuel-explorer/graphql-new';
+} from '@fuel-explorer/graphql';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
 const date = dayjs().subtract(1, 'day');

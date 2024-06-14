@@ -1,10 +1,10 @@
-import {
-  type GQLGroupedInput,
-  type GQLGroupedInputCoin,
-  type GQLGroupedInputMessage,
-  GQLGroupedInputType,
-  type GQLInputCoin,
-} from '@fuel-explorer/graphql-new';
+import type {
+  GQLGroupedInput,
+  GQLGroupedInputCoin,
+  GQLGroupedInputMessage,
+  GQLInputCoin,
+} from '@fuel-explorer/graphql';
+import type { CardProps } from '@fuels/ui';
 import {
   Address,
   Box,
@@ -15,7 +15,6 @@ import {
   createComponent,
   useBreakpoints,
 } from '@fuels/ui';
-import type { CardProps } from '@fuels/ui';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { Routes } from '~/routes';
@@ -127,10 +126,10 @@ const TxInputMessage = createComponent<TxInputMessageProps, typeof Collapsible>(
 );
 
 export function TxInput({ input, ...props }: TxInputProps) {
-  if (input.type === GQLGroupedInputType.InputCoin) {
+  if (input.type?.includes('Coin')) {
     return <TxInputCoin input={input as GQLGroupedInputCoin} {...props} />;
   }
-  if (input.type === GQLGroupedInputType.InputMessage) {
+  if (input.type?.includes('Message')) {
     return (
       <TxInputMessage input={input as GQLGroupedInputMessage} {...props} />
     );

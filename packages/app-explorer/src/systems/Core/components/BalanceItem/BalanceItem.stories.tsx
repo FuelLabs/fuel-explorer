@@ -1,4 +1,4 @@
-import { mocks } from '@fuel-explorer/graphql-new';
+import { mocks } from '@fuel-explorer/graphql';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { BalanceItem } from './BalanceItem';

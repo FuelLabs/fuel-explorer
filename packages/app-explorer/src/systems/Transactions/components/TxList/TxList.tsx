@@ -1,5 +1,5 @@
 'use client';
-import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql-new';
+import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
