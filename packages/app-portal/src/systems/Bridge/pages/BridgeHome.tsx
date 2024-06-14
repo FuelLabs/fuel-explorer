@@ -40,6 +40,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
               variant="ghost"
               leftIcon={IconArrowBack}
               className="rounded-md"
+              aria-label="Back to home"
             >
               Back
             </Button>
@@ -53,6 +54,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
               variant="ghost"
               leftIcon={IconHistory}
               className="rounded-md"
+              aria-label="Transaction History"
             >
               History
             </Button>
