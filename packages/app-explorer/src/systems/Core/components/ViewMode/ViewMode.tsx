@@ -8,13 +8,13 @@ export enum ViewModes {
 
 export function ViewMode({ mode }: { mode: ViewModes }) {
   return (
-    <ToggleGroup type="single" defaultValue={mode} aria-label="View mode">
-      <ToggleGroup.Item value="simple" aria-label="Simple view" asChild>
+    <ToggleGroup defaultValue={mode} aria-label="View mode">
+      <ToggleGroup.Item value="simple" aria-label="Simple view">
         <Link prefetch href={`./${ViewModes.Simple}`}>
           Simple
         </Link>
       </ToggleGroup.Item>
-      <ToggleGroup.Item value="advanced" aria-label="Advanced view" asChild>
+      <ToggleGroup.Item value="advanced" aria-label="Advanced view">
         <Link prefetch href={`./${ViewModes.Advanced}`}>
           Advanced
         </Link>
