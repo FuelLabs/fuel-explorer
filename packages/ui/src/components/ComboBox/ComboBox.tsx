@@ -281,6 +281,7 @@ export const ComboBoxContent = createComponent<
                 suggestion={suggestion}
                 itemNameSelector={itemNameSelector}
                 onItemSelected={handleSuggestionClick}
+                className="cursor-pointer"
               />
             ))}
           </Flex>
