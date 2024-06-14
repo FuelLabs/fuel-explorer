@@ -14,7 +14,7 @@ export type BreadcrumbLinkProps = LinkProps;
 
 const styles = tv({
   slots: {
-    root: 'flex gap-4 items-stretch',
+    root: 'flex gap-4 items-stretch *:flex *:items-center',
     link: 'inline-flex',
   },
 });
