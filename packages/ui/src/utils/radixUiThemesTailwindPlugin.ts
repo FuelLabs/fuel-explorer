@@ -150,7 +150,7 @@ export type RadixThemePluginOptions = {
   mapMissingTailwindColors?: boolean | Partial<typeof tailwindColorsToRadixMap>;
 };
 
-const radixThemePlugin = withOptions(
+export const radixThemeTailwindPlugin = withOptions(
   () => {
     return ({ addBase }) => {
       addBase({
@@ -485,5 +485,3 @@ const radixThemePlugin = withOptions(
     };
   },
 );
-
-export default radixThemePlugin;

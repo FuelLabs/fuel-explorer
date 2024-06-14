@@ -5,7 +5,7 @@ import type { Config } from 'tailwindcss';
 import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
 
-import radixThemePlugin from '../utils/radixTailwind';
+import { radixThemeTailwindPlugin } from '../utils/radixUiThemesTailwindPlugin';
 import { animation, keyframes } from './animations';
 import { breakpoints } from './breakpoints';
 
@@ -127,7 +127,7 @@ const preset: Config = {
       matchVariant('group-fuel', (v) => `:merge(.group) > .fuel-${v}`, values);
       matchVariant('peer-fuel', (v) => `:merge(.peer) > .fuel-${v}`, values);
     }),
-    radixThemePlugin({
+    radixThemeTailwindPlugin({
       useTailwindColorNames: false, // optional
       useTailwindRadiusNames: true, // optional
       mapMissingTailwindColors: true, // optional
