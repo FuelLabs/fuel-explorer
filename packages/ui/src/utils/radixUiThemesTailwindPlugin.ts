@@ -1,4 +1,7 @@
-import { accentColors, grayColors } from '@radix-ui/themes/src/props';
+import {
+  accentColors,
+  grayColors,
+} from '@radix-ui/themes/dist/esm/props/color.prop.js';
 import * as colors from 'tailwindcss/colors';
 import { withOptions } from 'tailwindcss/plugin';
 /* 
