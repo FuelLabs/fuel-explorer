@@ -29,7 +29,7 @@ export const Usage: Story = {
   render: () => (
     <ContextMenu>
       <ContextMenu.Trigger>
-        <RightClickZone>Click here</RightClickZone>
+        <RightClickZone>Right-click here</RightClickZone>
       </ContextMenu.Trigger>
       <ContextMenu.Content>
         <ContextMenu.Item shortcut="⌘ E">Edit</ContextMenu.Item>
