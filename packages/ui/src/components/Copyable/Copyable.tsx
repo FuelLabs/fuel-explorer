@@ -27,6 +27,7 @@ export type CopyableProps = Omit<BoxProps, 'asChild'> & CopyableBaseProps;
 const styles = tv({
   slots: {
     root: 'inline-flex items-center gap-2',
+    icon: 'ml-1',
   },
 });
 
@@ -62,7 +63,7 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
             aria-label={ariaLabel}
             color="gray"
             icon={CopyIcon}
-            iconClassName={iconClassName}
+            iconClassName={styles().icon({ className: iconClassName })}
             iconColor={iconColor}
             iconSize={iconSize}
             iconStroke={iconStroke}

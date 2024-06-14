@@ -9,7 +9,6 @@ import type { Colors, PropsOf } from '../../utils/types';
 import { Icon } from '../Icon/Icon';
 import type { IconContext } from '../Icon/useIconContext';
 import { Spinner } from '../Spinner/Spinner';
-import { styles } from './styles';
 
 type RadixIconButtonProps = Omit<PropsOf<typeof RadixIconButton>, 'children'>;
 type IconButtonBaseProps = RadixIconButtonProps & {
@@ -59,7 +58,7 @@ export const IconButton = createComponent<IconButtonProps, 'button'>({
           <Spinner color="current" size={getIconSize(size, iconSize)} />
         ) : (
           <Icon
-            className={styles().icon({ className: iconClassName })}
+            className={iconClassName}
             color={iconColor}
             icon={icon}
             size={iconSize}
