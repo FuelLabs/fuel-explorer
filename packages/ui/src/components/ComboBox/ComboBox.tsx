@@ -104,11 +104,12 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
               : false);
         const newFilteredSuggestions = suggestions.filter(filter);
         _onChange?.(input);
-        setFilteredSuggestions(
+        const displayedSuggestions =
           !newFilteredSuggestions?.length && !input
             ? suggestions
-            : newFilteredSuggestions,
-        );
+            : newFilteredSuggestions;
+        setIsPopoverOpen(!!displayedSuggestions?.length);
+        setFilteredSuggestions(displayedSuggestions);
       }, debounce);
     };
 
