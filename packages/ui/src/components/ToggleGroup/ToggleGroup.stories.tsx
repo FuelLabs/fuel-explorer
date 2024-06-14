@@ -15,11 +15,7 @@ type Story = StoryObj<typeof ToggleGroup>;
 export const Usage: Story = {
   render: () => (
     <Box className="max-w-lg">
-      <ToggleGroup
-        type="single"
-        defaultValue="center"
-        aria-label="Text alignment"
-      >
+      <ToggleGroup defaultValue="center" aria-label="Text alignment">
         <ToggleGroup.Item value="left" aria-label="Left aligned">
           Left
         </ToggleGroup.Item>
