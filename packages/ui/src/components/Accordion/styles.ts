@@ -5,8 +5,8 @@ export const styles = tv({
     root: 'max-w-full',
     content: [
       'overflow-hidden p-4',
-      'state-open:animate-accordion-open',
-      'state-closed:animate-accordion-closed',
+      'data-[state=open]:animate-accordion-open',
+      'data-[state=closed]:animate-accordion-closed',
     ],
     item: ['overflow-hidden rounded-none not-first:mt-1'],
     trigger: [
@@ -17,7 +17,7 @@ export const styles = tv({
     ],
     header: 'flex',
     icon: [
-      'transition-transform text-icon group-hover:rotate-180 group-state-open:rotate-180',
+      'transition-transform text-icon group-hover:rotate-180 group-data-[state=open]:rotate-180',
     ],
   },
 });
