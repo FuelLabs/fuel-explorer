@@ -12,6 +12,11 @@
 }
 
 :root {
+
+  /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
+  --color-brand: var(--green-11);
+
+
   --screen-mobile: 300px;
   --screen-tablet: 640px;
   --screen-laptop: 960px;
