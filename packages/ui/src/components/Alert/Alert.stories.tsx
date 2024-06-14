@@ -44,9 +44,10 @@ export const Variants: Story = {
       </Alert>
       <Alert className="w-[600px]" color="green">
         <Alert.Icon>
-          <Icon icon={IconAlertCircle} />
+          <Icon icon={IconAlertCircle} size={24} />
         </Alert.Icon>
-        <Alert.Text>You now have access to all features.</Alert.Text>
+        <Alert.Text>You can use bigger icons.</Alert.Text>
+        <Alert.Text>As well as add multiple lines of text.</Alert.Text>
       </Alert>
     </Box>
   ),
