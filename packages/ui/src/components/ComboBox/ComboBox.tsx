@@ -152,13 +152,19 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
       _onKeyDown?.(event);
       switch (event.key) {
         case 'Enter': {
-          const selectedValue = strict ? suggestionFilter?.[0] : value;
-          selectedValue && handleSuggestionClick(selectedValue);
-          setIsPopoverOpen(false);
+            setIsPopoverOpen(prevIsOpen => {
+              if (!prevIsOpen) {
+                return prevIsOpen;
+              }
+
+              const selectedValue = strict ? suggestionFilter?.[0] : value;
+              selectedValue && handleSuggestionClick(selectedValue);
+              return false;
+            })
           break;
         }
         case 'Escape':
-          setIsPopoverOpen(false);
+          setIsPopoverOpen(prevIsOpen => prevIsOpen ? false : prevIsOpen);
           break;
         default:
           break;
