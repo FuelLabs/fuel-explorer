@@ -51,6 +51,7 @@ export type Context<T = string> = Pick<
 > & {
   filteredSuggestions: Array<T>;
   handleSuggestionClick: (suggestion: T) => void;
+  safeClose: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -171,6 +172,11 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
           break;
       }
     };
+    const safeClose = () => {
+      if (isPopoverOpen && (!strict || (strict && itemSelected))) {
+        setIsPopoverOpen(false);
+      }
+    };
 
     const providerData = useMemo<Context>(
       () => ({
@@ -181,6 +187,7 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
         onFocus,
         onClick,
         onBlur,
+        safeClose,
         onKeyDown,
       }),
       [
@@ -191,6 +198,7 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
         onFocus,
         onClick,
         onBlur,
+        safeClose,
         onKeyDown,
       ],
     );
@@ -262,8 +270,12 @@ export const ComboBoxContent = createComponent<
 >({
   id: 'ComboBoxContent',
   render: (_, { className, style, ...props }) => {
-    const { filteredSuggestions, itemNameSelector, handleSuggestionClick } =
-      useComboBoxContext();
+    const {
+      filteredSuggestions,
+      itemNameSelector,
+      handleSuggestionClick,
+      safeClose,
+    } = useComboBoxContext();
 
     return (
       <>
@@ -273,6 +285,9 @@ export const ComboBoxContent = createComponent<
         </Popover.Trigger>
         <Popover.Content
           // Goes against accessibility rules but otherwise we'd be constantly losing focus on the input
+          onPointerDownOutside={safeClose}
+          // @ TODO: remove prop below after fixing tab acessibility issues with popover
+          onInteractOutside={safeClose}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <Flex
