@@ -17,7 +17,7 @@
   --color-brand: var(--green-11);
   --color-muted: var(--gray-10);
   --color-heading: var(--gray-12);
-
+  --color-link: var(--color-brand);
 
   --screen-mobile: 300px;
   --screen-tablet: 640px;
