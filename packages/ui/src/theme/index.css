@@ -15,6 +15,8 @@
 
   /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
   --color-brand: var(--green-11);
+  --color-muted: var(--gray-10);
+  --color-heading: var(--gray-12);
 
 
   --screen-mobile: 300px;
