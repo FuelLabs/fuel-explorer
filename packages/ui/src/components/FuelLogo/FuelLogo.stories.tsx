@@ -14,12 +14,14 @@ export const Usage: Story = {
   args: {
     showLettering: true,
     showSymbol: true,
+    size: 40,
   },
 };
 
 export const NoLettering: Story = {
   args: {
     showLettering: false,
+    size: 40,
   },
 };
 
@@ -27,5 +29,6 @@ export const NoSymbol: Story = {
   args: {
     showLettering: true,
     showSymbol: false,
+    size: 40,
   },
 };
