@@ -15,7 +15,7 @@ type Story = StoryObj<typeof TextArea>;
 export const Usage: Story = {
   render: () => (
     <Box className="max-w-sm">
-      <TextArea placeholder="Reply to comment…" />
+      <TextArea placeholder="Reply to comment…" resize="both" />
     </Box>
   ),
 };
