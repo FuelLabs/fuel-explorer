@@ -1,8 +1,8 @@
-FROM ghcr.io/fuellabs/fuel-core:v0.26.0
+FROM ghcr.io/fuellabs/fuel-core:v0.28.0
 
 ARG FUEL_IP=0.0.0.0
-ARG FUEL_PORT=4001
-ARG CONSENSUS_KEY_SECRET=""
+ARG FUEL_PORT=4002
+ARG SERVICE_NAME="fuel-core-testnet-sepolia"
 
 # dependencies
 ENV DEBIAN_FRONTEND=noninteractive
@@ -13,16 +13,15 @@ WORKDIR /fuel
 COPY ./chain_config.json .
 COPY ./metadata.json .
 COPY ./state_config.json .
-RUN curl \
-  https://github.com/FuelLabs/fuel-core/raw/v0.26.0/bin/fuel-core/chainspec/testnet/ \
-  -o ./state_transition_bytecode.wasm
+COPY ./state_transition_bytecode.wasm .
 
-# expose fuel node port
 ENV FUEL_IP="${FUEL_IP}"
 ENV FUEL_PORT="${FUEL_PORT}"
-ENV CONSENSUS_KEY_SECRET="${CONSENSUS_KEY_SECRET}"
+ENV SERVICE_NAME="${SERVICE_NAME}"
+ENV RELAYER_URL="${RELAYER_URL}"
+ENV P2P_KEY_SECRET="${P2P_KEY_SECRET}"
 EXPOSE ${FUEL_PORT}
 
 # copy over script and run
-COPY ./fuel_core.sh .
-CMD ["sh", "./fuel_core.sh"]
+COPY ./run.sh .
+CMD ["sh", "./run.sh"]

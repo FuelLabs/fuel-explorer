@@ -7,28 +7,15 @@ query chain {
       contractParams {
         contractMaxSize
         maxStorageSlots
-        version
       }
       feeParams {
         gasPerByte
         gasPriceFactor
-        version
       }
       gasCosts {
         add
         addi
         aloc
-        alocDependentCost {
-          __typename
-          ... on HeavyOperation {
-            base
-            gasPerUnit
-          }
-          ... on LightOperation {
-            base
-            unitsPerGas
-          }
-        }
         and
         andi
         bal
@@ -319,7 +306,6 @@ query chain {
         time
         tr
         tro
-        version
         vmInitialization {
           __typename
           ... on HeavyOperation {
@@ -353,13 +339,11 @@ query chain {
         maxMessageDataLength
         maxPredicateDataLength
         maxPredicateLength
-        version
       }
       privilegedAddress
       scriptParams {
         maxScriptDataLength
         maxScriptLength
-        version
       }
       txParams {
         maxBytecodeSubsections
@@ -368,26 +352,13 @@ query chain {
         maxOutputs
         maxSize
         maxWitnesses
-        version
       }
-      version
     }
     daHeight
     gasCosts {
       add
       addi
       aloc
-      alocDependentCost {
-        __typename
-        ... on HeavyOperation {
-          base
-          gasPerUnit
-        }
-        ... on LightOperation {
-          base
-          unitsPerGas
-        }
-      }
       and
       andi
       bal
@@ -678,7 +649,6 @@ query chain {
       time
       tr
       tro
-      version
       vmInitialization {
         __typename
         ... on HeavyOperation {
@@ -735,7 +705,6 @@ query chain {
         time
         transactionsCount
         transactionsRoot
-        version
       }
       height
       id
@@ -869,7 +838,6 @@ query chain {
                 time
                 transactionsCount
                 transactionsRoot
-                version
               }
               height
               id
@@ -1010,7 +978,6 @@ query chain {
                 }
                 witnesses
               }
-              version
             }
             programState {
               data
@@ -1087,7 +1054,6 @@ query chain {
                 time
                 transactionsCount
                 transactionsRoot
-                version
               }
               height
               id
@@ -1228,7 +1194,6 @@ query chain {
                 }
                 witnesses
               }
-              version
             }
             programState {
               data
@@ -1286,7 +1251,6 @@ query chain {
         }
         witnesses
       }
-      version
     }
     name
   }

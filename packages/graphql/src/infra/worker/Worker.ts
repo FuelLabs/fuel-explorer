@@ -17,8 +17,8 @@ export const worker = Workery.build<WorkerEvents>({
 });
 
 worker.on('ADD_BLOCK_RANGE', async (payloads) => {
-  const from = String(payloads[0].from);
-  const to = String(payloads[payloads.length - 1].to);
+  const from = String(payloads[0]?.from);
+  const to = String(payloads[payloads.length - 1]?.to);
   await Promise.all(
     payloads.map((payload) => {
       return mq.send('block', QueueNames.ADD_BLOCK_RANGE, payload);

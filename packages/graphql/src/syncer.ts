@@ -5,10 +5,11 @@ import { Server } from './infra/server/App';
 
 const httpServer = new Server();
 const app = httpServer.setup();
+const port = Number(env.get('SYNCER_PORT'));
 
-httpServer.listen(app, 3003).then(async () => {
+httpServer.listen(app, port).then(async () => {
   await mq.setup();
-  console.log('📟 Sync running on http://localhost:3003');
+  console.log(`📟 Sync running on http://localhost:${port}`);
 
   if (env.get('SYNC_MISSING')) {
     console.log('🕐 Syncing missing blocks in 5 seconds...');

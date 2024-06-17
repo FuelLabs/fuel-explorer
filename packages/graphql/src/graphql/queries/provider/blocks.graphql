@@ -26,7 +26,6 @@ fragment BlockItem on Block {
     time
     transactionsCount
     transactionsRoot
-    version
   }
   height
   id
@@ -160,11 +159,9 @@ fragment BlockItem on Block {
             time
             transactionsCount
             transactionsRoot
-            version
           }
           height
           id
-          version
         }
         programState {
           data
@@ -241,11 +238,9 @@ fragment BlockItem on Block {
             time
             transactionsCount
             transactionsRoot
-            version
           }
           height
           id
-          version
         }
         programState {
           data
@@ -303,7 +298,6 @@ fragment BlockItem on Block {
     }
     witnesses
   }
-  version
 }
 
 query blocks($after: String, $before: String, $first: Int, $last: Int) {

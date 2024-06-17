@@ -11,6 +11,7 @@ import { env } from '~/config';
 import { BlockProducer } from '~/domain/Block/vo/BlockProducer';
 
 const HOST = env.get('RABBITMQ_HOST');
+const PORT = env.get('RABBITMQ_PORT');
 const USER = env.get('RABBITMQ_USER');
 const PASS = env.get('RABBITMQ_PASS');
 const MAX_WORKERS = Number(env.get('QUEUE_CONCURRENCY'));
@@ -64,7 +65,7 @@ class RabbitMQConnection {
 
     try {
       console.log('⌛️ Connecting to Rabbit-MQ Server');
-      const url = `amqp://${USER}:${PASS}@${HOST}:5672`;
+      const url = `amqp://${USER}:${PASS}@${HOST}:${PORT}`;
       this.connection = await client.connect(url);
       console.log('✅ Rabbit MQ Connection is ready');
       await this.createChannel(ChannelNames.main, 5);

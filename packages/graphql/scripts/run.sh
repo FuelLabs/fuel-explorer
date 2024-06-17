@@ -1,4 +1,6 @@
 #!/bin/bash
 
 echo "Running Server"
-pnpm db:migrate && pnpm server:start
+pnpm db:setup
+pnpm db:migrate
+pnpm server:start

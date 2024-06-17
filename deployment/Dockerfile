@@ -3,11 +3,11 @@
 FROM node:20-slim AS base
 
 # Expose the ENVs to the env of the container
-ENV PORT="${PORT}"
-ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://testnet.fuel.network/v1/graphql}"
-ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV SERVER_BUILD=true
+ENV PNPM_HOME="/pnpm"
+
+# We need this to build graphql codegen after PNPM install
+ARG FUEL_PROVIDER
 
 # Enable pnpm using corepack form node.js
 RUN corepack enable
@@ -17,11 +17,12 @@ COPY . /app-explorer
 WORKDIR /app-explorer
 
 # Install dependencies for the entire monorepo
-RUN pnpm install
+RUN pnpm install --ignore-scripts
 
 # Expose the specified port
-EXPOSE ${PORT}
+EXPOSE ${SERVER_PORT}
+EXPOSE ${SYNCER_PORT}
 
 # Start GraphQL server
 WORKDIR /app-explorer
-CMD ["pnpm", "server:start"]
+CMD ["./scripts/run.sh"]
