@@ -34,11 +34,14 @@ export type InputAmountCoinSelectorProps = ButtonProps & {
   onClick?: () => void;
 };
 
+type AmountChangeParameters =
+  | { text: string; incomingAmount?: never }
+  | { text?: never; incomingAmount: BN | null | undefined };
 type Context = {
   disabled?: boolean;
   balance: BN;
   assetAmount: string;
-  handleAmountChange: (text: string) => void;
+  handleAmountChange: (props: AmountChangeParameters) => void;
 };
 
 const ctx = createContext<Context>({} as Context);
@@ -69,20 +72,42 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
 
     const balance = initialBalance ?? bn(initialBalance);
 
-    function handleAmountChange(text: string) {
-      const { text: newText, amount } = createAmount(text, formatOpts.units);
+    function handleAmountChange({
+      text,
+      incomingAmount,
+    }: AmountChangeParameters) {
+      let amountText = text ?? incomingAmount?.format?.(formatOpts) ?? '';
+      const lastCharacter = amountText?.[amountText?.length - 1];
+      const shouldRemoveLastCharacter =
+        lastCharacter &&
+        lastCharacter !== '.' &&
+        Number.isNaN(parseFloat(lastCharacter));
+      if (shouldRemoveLastCharacter) {
+        amountText = amountText.slice(0, amountText.length - 1);
+      }
+
+      const { text: newText, amount } = createAmount(
+        amountText,
+        formatOpts.units,
+      );
       const { amount: currentAmount } = createAmount(
         assetAmount,
         formatOpts.units,
       );
-      if (!currentAmount.eq(amount)) {
+      const amountChanged = !currentAmount.eq(amount);
+
+      if (amountChanged || text) {
+        setAssetAmount((prevText) =>
+          prevText !== newText ? newText : prevText,
+        );
+      }
+      if (amountChanged) {
         onChange?.(newText.length ? amount : null);
-        setAssetAmount(newText);
       }
     }
 
     useEffect(() => {
-      handleAmountChange(value ? value.format(formatOpts) : '');
+      handleAmountChange({ incomingAmount: value });
     }, [value?.toString()]);
 
     return (
@@ -94,7 +119,17 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
           handleAmountChange,
         }}
       >
-        <Input className={classes.root({ className })} size="3" {...props}>
+        <Input
+          className={classes.root({ className })}
+          size="3"
+          {...props}
+          inputMode="decimal"
+          autoComplete="off"
+          placeholder="0.00"
+          value={assetAmount}
+          onChange={(e) => handleAmountChange({ text: e.target.value })}
+          disabled={disabled}
+        >
           {children}
         </Input>
       </ctx.Provider>
@@ -165,7 +200,7 @@ export const InputAmountButtonMaxBalance = createComponent<
     const mergedProps = mergeProps(props, {
       onClick: () => {
         if (balance) {
-          handleAmountChange(balance.format(formatOpts));
+          handleAmountChange({ text: balance.format(formatOpts) });
         }
       },
     });
