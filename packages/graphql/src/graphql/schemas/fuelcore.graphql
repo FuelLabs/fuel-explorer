@@ -289,9 +289,7 @@ type GasCosts {
   call: DependentCost!
   cb: U64!
   ccp: DependentCost!
-  cfe: DependentCost!
   cfei: U64!
-  cfeiDependentCost: DependentCost!
   cfsi: U64!
   contractRoot: DependentCost!
   croo: DependentCost!
