@@ -153,8 +153,9 @@ export const InputAmountBalance = createComponent<
   typeof Input.Slot
 >({
   id: 'InputAmountBalance',
-  render: (_, props) => {
+  render: (_, { className, ...props }) => {
     const { balance } = useContext(ctx);
+    const classes = styles();
 
     const formattedBalance = useMemo<string>(() => {
       return balance.format({
@@ -164,11 +165,11 @@ export const InputAmountBalance = createComponent<
     }, [balance]);
 
     return (
-      <Input.Slot {...props}>
+      <Input.Slot {...props} className={classes.balance({ className })}>
         <Tooltip content={format(balance, formatOpts)} sideOffset={-5}>
           <Text
             size="1"
-            className="pb-3 self-start"
+            className="self-start"
             aria-label={`Balance: ${formattedBalance}`}
           >
             Balance: {formattedBalance}
@@ -263,9 +264,10 @@ export const InputAmount = withNamespace(InputAmountRoot, {
 const styles = tv({
   slots: {
     root: [
-      'flex-row flex-wrap bg-clip-border w-auto h-auto pt-3',
+      'flex-row flex-wrap bg-clip-border w-auto h-auto py-3',
       'first-child:flex-1 first-child:basis-1/2 first-child:indent-[var(--space-3)]',
     ],
+    balance: 'pt-3 mb-auto',
     maxBalance: 'font-mono self-center item-center items-center',
     inputNumber: 'p-0.5 font-mono text-lg',
     coinSelector: 'gap-1.5 text-xs py-1',

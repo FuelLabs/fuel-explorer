@@ -69,23 +69,21 @@ export const WithoutBalance: Story = {
         onChange={(balance) => console.log(balance)}
         placeholder="0.00"
       >
-        <Flex>
-          <InputAmount.Slot side="right">
-            <InputAmount.ButtonMaxBalance
-              onClick={() => {
-                alert('Max Balance has been clicked');
-              }}
-            />
-            <InputAmount.CoinSelector
-              asset={{
-                name: 'ETH',
-                imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
-                address: '',
-              }}
-              onClick={() => alert('Coin selector has been clicked')}
-            />
-          </InputAmount.Slot>
-        </Flex>
+        <InputAmount.Slot className="flex flex-row flex-1 basis-1/2 justify-end">
+          <InputAmount.ButtonMaxBalance
+            onClick={() => {
+              alert('Max Balance has been clicked');
+            }}
+          />
+          <InputAmount.CoinSelector
+            asset={{
+              name: 'ETH',
+              imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+              address: '',
+            }}
+            onClick={() => alert('Coin selector has been clicked')}
+          />
+        </InputAmount.Slot>
       </InputAmount>
     </Box>
   ),
@@ -96,7 +94,7 @@ export const OnlyBalance: Story = {
     <Box className="max-w-[400px]">
       <InputAmount
         color="green"
-        className="anything"
+        className="items-center"
         balance={undefined}
         value={undefined}
         disabled={false}
@@ -104,7 +102,7 @@ export const OnlyBalance: Story = {
         placeholder="0.00"
       >
         <Flex direction="column">
-          <InputAmount.Balance />
+          <InputAmount.Balance className="pt-0" />
         </Flex>
       </InputAmount>
     </Box>
