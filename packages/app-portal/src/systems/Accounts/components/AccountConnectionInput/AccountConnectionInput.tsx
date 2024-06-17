@@ -37,12 +37,13 @@ export const AccountConnectionInput = ({
             <Text className={classes.textLabel()}>{label}</Text>
             <Flex gap="2" align="center">
               {typeof networkImage === 'string' ? (
-                <img
-                  width="80px"
-                  height="80px"
-                  src={networkImage}
-                  alt={networkName}
-                />
+                <Flex className="max-w-[20px] max-h-[20px]">
+                  <img
+                    className="w-full h-full"
+                    src={networkImage}
+                    alt={networkName}
+                  />
+                </Flex>
               ) : (
                 networkImage
               )}
