@@ -6,11 +6,7 @@ import { DECIMAL_UNITS, DEFAULT_MIN_PRECISION } from '@fuel-ts/math/configs';
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { Button, ButtonProps } from '../Button';
-import type {
-  InputNumberProps,
-  InputProps,
-  InputSlotProps,
-} from '../Input/Input';
+import type { InputProps, InputSlotProps } from '../Input/Input';
 import { Input } from '../Input/Input';
 import { Text } from '../Text';
 import { Tooltip } from '../Tooltip';
@@ -31,7 +27,6 @@ export type InputAmountProps = Omit<
   onChange?: (val: BN | null) => void;
 };
 
-export type InputAmountFieldProps = Omit<InputNumberProps, 'disabled'>;
 export type InputAmountBalanceProps = InputSlotProps;
 export type InputAmountButtonMaxBalanceProps = ButtonProps;
 export type InputAmountCoinSelectorProps = ButtonProps & {
@@ -103,34 +98,6 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
           {children}
         </Input>
       </ctx.Provider>
-    );
-  },
-});
-
-export const InputAmountField = createComponent<
-  InputAmountFieldProps,
-  typeof Input.Number
->({
-  id: 'InputAmountField',
-  render: (_, props) => {
-    const classes = styles();
-    const { disabled, assetAmount, handleAmountChange } = useContext(ctx);
-
-    return (
-      <Input.Number
-        className={classes.inputNumber()}
-        autoComplete="off"
-        inputMode="decimal"
-        placeholder="0.00"
-        allowedDecimalSeparators={['.', ',']}
-        allowNegative={false}
-        thousandSeparator={false}
-        value={assetAmount}
-        onChange={(e) => handleAmountChange(e.target.value)}
-        decimalScale={DECIMAL_UNITS}
-        disabled={disabled}
-        {...props}
-      />
     );
   },
 });
