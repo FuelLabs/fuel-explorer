@@ -1,6 +1,6 @@
 # 💚 Contributing
 
-Thanks for your interest in contributing! This document outlines the process for installing dependencies and setting up for development, as well as some conventions on contributing for the project.
+Thanks for your interest in contributing! This document outlines the process for installing dependencies and setting up for development, as well as some conventions for contributing to the project.
 
 If you run into any difficulties getting started, you can always ask questions on our [Discord](https://discord.gg/xfpK4Pe).
 
@@ -66,7 +66,7 @@ If the pull request links an issue but does not close it, you can use the keywor
 ref #456
 ```
 
-Multiple issues should use full syntax for each issue and separate by a comma, like:
+Multiple issues should use full syntax for each issue and be separated by a comma, like:
 
 ```md
 close #123, ref #456
