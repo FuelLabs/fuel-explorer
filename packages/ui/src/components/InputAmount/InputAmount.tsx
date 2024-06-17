@@ -271,7 +271,6 @@ const styles = tv({
     ],
     balance: 'pt-3 mb-auto',
     maxBalance: 'font-mono self-center item-center items-center',
-    inputNumber: 'p-0.5 font-mono text-lg',
     coinSelector: 'gap-1.5 text-xs py-1',
   },
 });
