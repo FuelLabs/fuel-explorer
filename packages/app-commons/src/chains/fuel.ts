@@ -13,7 +13,7 @@ const fuelLocal: FuelChain = {
   network: 'fuel_local',
   name: 'Fuel Local',
   testnet: true,
-  providerUrl: 'http://localhost:4000/v1/graphql',
+  providerUrl: process.env.FUEL_PROVIDER || 'http://localhost:4000/v1/graphql',
 };
 
 const fuelTestnet: FuelChain = {
