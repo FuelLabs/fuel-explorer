@@ -1,4 +1,4 @@
-PROFILE ?= all
+PROFILE ?= node
 ENV_FILE ?= ./envs/global.env
 
 build:
