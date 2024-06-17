@@ -24,14 +24,14 @@ export const InputPassword = createComponent<InputPasswordProps, typeof Input>({
         type={type}
       >
         <Input.Slot side="left">
-          <Icon color="text-icon" icon={IconLock} size={16} />
+          <Icon color="text-gray-12" icon={IconLock} size={16} />
         </Input.Slot>
         <Input.Slot className="mr-1" side="right">
           <IconButton
             aria-label="Toggle passowrd"
             color="gray"
             icon={opened ? IconEye : IconEyeOff}
-            iconColor={opened ? 'text-brand' : 'text-icon'}
+            iconColor={opened ? 'text-brand' : 'text-gray-12'}
             iconSize={16}
             variant="link"
             onClick={() => setOpened(!opened)}

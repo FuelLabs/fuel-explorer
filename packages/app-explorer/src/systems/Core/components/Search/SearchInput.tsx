@@ -78,7 +78,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         >
           {!searchResult && (
             <>
-              <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
+              <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-red-5 hover:text-red-5 focus:text-red-5">
                 {`"${shortAddress(
                   searchValue,
                   trimL,

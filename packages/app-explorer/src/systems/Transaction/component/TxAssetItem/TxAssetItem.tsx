@@ -48,11 +48,7 @@ export function TxAssetItem({
         <EntityItem.Info id={assetId} title={asset.name} />
       </EntityItem>
       <HStack className="px-4 justify-between">
-        <Text
-          className="text-sm"
-          iconColor="text-success"
-          leftIcon={IconArrowUp}
-        >
+        <Text className="text-sm" iconColor="text-brand" leftIcon={IconArrowUp}>
           {fuelAsset?.decimals ? (
             <>
               {bn(amountIn).format({
@@ -67,7 +63,7 @@ export function TxAssetItem({
         </Text>
         <Text
           className="text-sm"
-          iconColor="text-error"
+          iconColor="text-red-5"
           leftIcon={IconArrowDown}
         >
           {fuelAsset?.decimals ? (

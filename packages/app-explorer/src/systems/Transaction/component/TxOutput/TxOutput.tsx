@@ -72,7 +72,7 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
           <HStack className="hidden tablet:flex items-center gap-2">
             <Icon
               icon={isReceiving ? IconArrowUp : IconArrowDown}
-              className={isReceiving ? 'text-success' : 'text-error'}
+              className={isReceiving ? 'text-brand' : 'text-red-5'}
             />
             {amount && (
               <Amount

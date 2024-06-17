@@ -87,7 +87,7 @@ export const TextBase = createPolymorphicComponent<TextProps, typeof RadixText>(
         className,
         leftIcon,
         rightIcon,
-        iconColor = 'text-icon',
+        iconColor = 'text-gray-12',
         ...props
       },
     ) => {

@@ -45,7 +45,7 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
       iconSize,
       iconStroke,
       iconClassName,
-      iconColor = 'text-icon',
+      iconColor = 'text-gray-12',
       iconAriaLabel: ariaLabel = 'Copy to clipboard',
       ...props
     },

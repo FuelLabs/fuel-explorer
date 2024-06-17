@@ -14,13 +14,13 @@ export default meta;
 type Story = StoryObj<typeof Icon>;
 
 export const Usage: Story = {
-  render: () => <Icon color="text-icon" icon={IconHome} />,
+  render: () => <Icon color="text-gray-12" icon={IconHome} />,
 };
 
 export const WithTheme: Story = {
   render: () => (
     <Theme accentColor="orange" iconSize={24}>
-      <Icon color="text-accent" icon={IconHome} />
+      <Icon color="text-orange-12" icon={IconHome} />
     </Theme>
   ),
 };
