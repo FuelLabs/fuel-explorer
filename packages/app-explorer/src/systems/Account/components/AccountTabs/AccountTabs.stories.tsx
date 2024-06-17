@@ -5,6 +5,14 @@ import { AccountTabs } from './AccountTabs';
 const meta: Meta<typeof AccountTabs> = {
   title: 'Account/AccountTabs',
   component: AccountTabs,
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        pathname: '',
+      },
+    },
+  },
 };
 
 export default meta;
