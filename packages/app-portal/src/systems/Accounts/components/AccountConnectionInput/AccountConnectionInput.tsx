@@ -89,7 +89,7 @@ export const AccountConnectionInput = ({
 
 export const styles = tv({
   slots: {
-    root: ['overflow-x-hidden border border-solid p-0 bg-gray-1 h-[64px]'],
+    root: ['overflow-x-hidden p-0 bg-gray-1 h-[64px]'],
     cardBody: 'px-3 py-2',
     connectButton: 'w-[50px]',
     disconnectButton: 'text-[12px] mr-[-2px] my-[2px] text-gray-10',
