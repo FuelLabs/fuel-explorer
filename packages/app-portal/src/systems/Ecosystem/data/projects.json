@@ -67,6 +67,17 @@
   },
   {
     "isLive": false,
+    "name": "Bubblemaps",
+    "url": "https://bubblemaps.io/",
+    "tags": ["Analytics"],
+    "description": "Bubblemaps is the first supply auditing tool for DeFi tokens and NFTs. Our unique and colorful bubbles make on-chain data easy to understand.",
+    "github": "",
+    "twitter": "https://twitter.com/bubblemaps",
+    "discord": "https://discord.gg/6DexjezHzV",
+    "image": "bubblemaps"
+  },
+  {
+    "isLive": false,
     "name": "CoChilli",
     "url": "https://cochilli.io/",
     "tags": ["Prediction Market"],
@@ -89,14 +100,25 @@
   },
   {
     "isLive": false,
-    "name": "Connext",
-    "url": "https://www.connext.network/",
+    "name": "Cookbook",
+    "url": "https://www.cookbook.dev/chains/Fuel",
+    "tags": ["Education", "AI"],
+    "description": "Find smart contracts, Sway libraries, and discover protocols.",
+    "github": "",
+    "twitter": "https://twitter.com/cookbook_dev",
+    "discord": "https://discord.gg/cookbookdev",
+    "image": "cookbook"
+  },
+  {
+    "isLive": false,
+    "name": "Everclear",
+    "url": "https://www.everclear.org/",
     "tags": ["Bridge"],
-    "description": "Connext is a fast and secure modular interoperability protocol, powered by intents.",
-    "github": "https://github.com/connext",
-    "twitter": "https://twitter.com/Connext",
-    "discord": "https://discord.com/invite/connext",
-    "image": "connext"
+    "description": "Everclear coordinates the global settlement of liquidity between chains, solving fragmentation for modular blockchains.",
+    "github": "https://github.com/everclearorg",
+    "twitter": "https://x.com/everclearorg",
+    "discord": "https://discord.gg/everclear",
+    "image": "everclear"
   },
   {
     "isLive": false,
@@ -112,7 +134,7 @@
   {
     "isLive": true,
     "name": "Envio",
-    "url": "https://envio.dev/",
+    "url": "https://docs.envio.dev/docs/hyperfuel",
     "tags": ["Indexer"],
     "description": "Envio is a modern, multi-chain EVM blockchain indexing framework speed-optimized for querying real-time and historical data.",
     "github": "https://github.com/enviodev",
@@ -143,7 +165,7 @@
     "image": "frank"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Fuel Name Service",
     "url": "https://fuelname.com/",
     "tags": ["Social"],
@@ -220,7 +242,7 @@
     "image": "griffy"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Guild",
     "url": "https://guild.xyz/fuel",
     "tags": ["Social"],
@@ -264,7 +286,7 @@
     "image": "kassiopea"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "LearnWeb3",
     "url": "https://learnweb3.io/",
     "tags": ["Education"],
@@ -275,7 +297,7 @@
     "image": "learnweb3"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Metaschool",
     "url": "https://metaschool.so/",
     "tags": ["Education"],
@@ -286,7 +308,7 @@
     "image": "metaschool"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "ORAO",
     "url": "https://orao.network/",
     "tags": ["Oracle"],
@@ -317,17 +339,6 @@
     "twitter": "https://twitter.com/pantheonsnft",
     "discord": "",
     "image": "pantheonolympus"
-  },
-  {
-    "isLive": false,
-    "name": "Pepa Network",
-    "url": "https://pepalabs.net/",
-    "tags": ["DeFi", "Gaming", "Social"],
-    "description": "A blockchain-based gaming platform that combines traditional arcade games with the benefits of DeFi, NFTs, and social features.",
-    "github": "",
-    "twitter": "https://twitter.com/PEPAlabs",
-    "discord": "",
-    "image": "pepamarket"
   },
   {
     "isLive": false,
@@ -418,7 +429,7 @@
     "image": "sentio"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Spark",
     "url": "https://sprk.fi/",
     "tags": ["DeFi"],
@@ -431,7 +442,7 @@
   {
     "isLive": true,
     "name": "Subsquid",
-    "url": "https://subsquid.io/",
+    "url": "https://docs.subsquid.io/fuel-indexing/",
     "tags": ["Indexer"],
     "description": "A peer-to-peer network to batch query and aggregate terabytes of on-chain and off-chain data in a ridiculously efficient way.",
     "github": "https://github.com/subsquid/squid-sdk",
@@ -440,25 +451,36 @@
     "image": "subsquid"
   },
   {
+    "isLive": false,
+    "name": "Superchain",
+    "url": "https://www.superchain.network/",
+    "tags": ["Indexer"],
+    "description": "A trustless data network from which to explore and interact with blockchains, enabling the best crypto experience.",
+    "github": "https://github.com/SuperChainNetwork",
+    "twitter": "https://twitter.com/OpenSuperchain",
+    "discord": "",
+    "image": "superchain"
+  },
+  {
     "isLive": true,
     "name": "Sway Farm",
-    "url": "https://swayfarm.xyz/",
+    "url": "https://www.swayfarm.xyz/",
     "tags": ["Fuel", "Gaming"],
     "description": "Grow and sell tomatoes to become a Sway Farm Hero.",
-    "github": "",
-    "twitter": "",
-    "discord": "",
+    "github": "https://github.com/FuelLabs/sway-farm",
+    "twitter": "https://twitter.com/fuel_network",
+    "discord": "https://discord.gg/fuelnetwork",
     "image": "swayfarm"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Sway Playground",
     "url": "https://www.sway-playground.org/",
     "tags": ["Fuel", "DevEx"],
     "description": "Sway Playground enables developers to build, deploy, and interact with simple sway contracts in the browser with no installation of tools.",
-    "github": "",
+    "github": "https://github.com/FuelLabs/sway-playground",
     "twitter": "https://twitter.com/SwayLang",
-    "discord": "",
+    "discord": "https://discord.gg/fuelnetwork",
     "image": "swayplayground"
   },
   {
@@ -474,17 +496,6 @@
   },
   {
     "isLive": false,
-    "name": "The Graph",
-    "url": "https://thegraph.com/",
-    "tags": ["Indexer"],
-    "description": "The Graph is a web3 protocol for organizing and accessing blockchain data.",
-    "github": "https://github.com/graphprotocol",
-    "twitter": "https://twitter.com/graphprotocol",
-    "discord": "https://discord.com/invite/graphprotocol",
-    "image": "thegraph"
-  },
-  {
-    "isLive": false,
     "name": "Thunder",
     "url": "https://beta.thundernft.market/",
     "tags": ["Marketplace", "NFT"],
@@ -493,5 +504,15 @@
     "twitter": "https://twitter.com/ThunderbyFuel",
     "discord": "https://discord.gg/thundernftmarket",
     "image": "thunder"
+  },
+  {
+    "isLive": false,
+    "name": "Zap Protocol",
+    "url": "https://zapinfra.com/",
+    "tags": ["Infrastructure"],
+    "description": "Zap is the gateway to better UX, cheaper transactions, and faster execution on Fuel",
+    "github": "https://github.com/Layer3Labs/Zap-Protocol",
+    "twitter": "https://twitter.com/zap_infra",
+    "image": "zap"
   }
 ]
