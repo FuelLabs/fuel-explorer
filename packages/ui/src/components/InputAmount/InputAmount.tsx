@@ -263,8 +263,8 @@ export const InputAmount = withNamespace(InputAmountRoot, {
 const styles = tv({
   slots: {
     root: [
-      'flex-row pt-1 flex-wrap',
-      'first-child:flex-1 first-child:basis-1/2 w-auto h-auto pt-3  first-child:indent-[var(--space-3)]',
+      'flex-row flex-wrap bg-clip-border w-auto h-auto pt-3',
+      'first-child:flex-1 first-child:basis-1/2 first-child:indent-[var(--space-3)]',
     ],
     maxBalance: 'font-mono self-center item-center items-center',
     inputNumber: 'p-0.5 font-mono text-lg',
