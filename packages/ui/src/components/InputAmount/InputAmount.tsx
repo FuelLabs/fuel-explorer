@@ -63,7 +63,7 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
     },
   ) => {
     const classes = styles();
-    const [assetAmount, setAssetAmount] = useState<string>(
+    const [assetAmount, setAssetAmount] = useState<string>(() =>
       !value || value.eq(0) ? '' : value.format(formatOpts),
     );
 
