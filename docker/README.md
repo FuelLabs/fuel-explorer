@@ -24,7 +24,7 @@ make up
 
 ### Stop containers
 
-To stop to containers, use;
+To stop containers, use;
 
 ```
 make stop
