@@ -2,7 +2,7 @@
 import { Address, useBreakpoints } from '@fuels/ui';
 import { IconChecklist } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   ViewMode,
   type ViewModes,
@@ -17,10 +17,12 @@ export function TxHeader({
 }) {
   const { isLaptop } = useBreakpoints();
   const { mode } = useParams<{ mode: ViewModes }>();
+  const router = useRouter();
+
   return (
     <PageTitle
       icon={<IconChecklist size={24} stroke={1.2} />}
-      rightElement={!isLoading && <ViewMode mode={mode} />}
+      rightElement={!isLoading && <ViewMode mode={mode} router={router} />}
     >
       Transaction
       <Address full={isLaptop} value={id} fixed="b256" />
