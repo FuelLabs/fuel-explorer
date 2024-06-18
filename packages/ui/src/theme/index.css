@@ -18,6 +18,11 @@
   --color-muted: var(--gray-10);
   --color-heading: var(--gray-12);
   --color-link: var(--color-brand);
+  --color-border: var(--gray-5);
+  --color-border-hover: var(--gray-8);
+
+  /* card colors */
+  --color-card-border: var(--color-border);
 
   --screen-mobile: 300px;
   --screen-tablet: 640px;

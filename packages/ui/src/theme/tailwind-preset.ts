@@ -24,6 +24,9 @@ const COLORS_VARIABLES = [
   'muted',
   'heading',
   'link',
+  'border',
+  'border-hover',
+  'card-border',
 ] as const;
 
 function refColorVariablesAsObj() {
