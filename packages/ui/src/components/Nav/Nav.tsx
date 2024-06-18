@@ -258,6 +258,9 @@ export const NavMenuItem = createComponent<NavMenuItemProps, typeof Link>({
   id: 'NavMenuItem',
   baseElement: Link,
   className: ({ className }) => styles().menuItem({ className }),
+  defaultProps: {
+    color: 'gray',
+  },
   render: (Comp, { isActive, ...props }) => {
     return <Comp {...props} data-active={isActive} />;
   },
