@@ -37,7 +37,7 @@ export const HelperIcon = createComponent<HelperIconProps, 'span'>({
       iconSize,
       iconStroke,
       iconClassName,
-      iconColor = 'text-gray-12',
+      iconColor = 'text-icon',
       iconAriaLabel: ariaLabel = 'Helper Icon',
       ...props
     },

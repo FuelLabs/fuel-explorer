@@ -373,7 +373,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         <Icon
           aria-label="Sun"
           className={classes.themeToggleIcon()}
-          color="text-gray-12"
+          color="text-icon"
           icon={IconSunFilled}
           size={18}
           stroke={1}
@@ -381,7 +381,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         <Icon
           aria-label="Moon"
           className={classes.themeToggleIcon()}
-          color="text-gray-12"
+          color="text-icon"
           icon={IconMoonFilled}
           size={18}
           stroke={1}

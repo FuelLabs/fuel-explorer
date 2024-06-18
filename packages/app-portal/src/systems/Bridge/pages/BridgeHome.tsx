@@ -72,7 +72,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 const styles = tv({
   slots: {
     content: 'w-full max-w-[455px]',
-    tabs: 'ml-0 color-inherit decoration-none :active:text-brand',
+    tabs: 'ml-0 color-inherit decoration-none :active:text-success',
     toggle: [
       'w-full mb-4 rounded-md fuel-[ToggleGroupItem]:h-9',
       'fuel-[ToggleGroupItem]:text-md',

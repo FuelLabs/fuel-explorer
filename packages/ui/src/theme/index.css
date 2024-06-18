@@ -13,17 +13,6 @@
 
 :root {
 
-  /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
-  --color-brand: var(--green-11);
-  --color-muted: var(--gray-10);
-  --color-heading: var(--gray-12);
-  --color-link: var(--color-brand);
-  --color-border: var(--gray-5);
-  --color-border-hover: var(--gray-8);
-
-  /* card colors */
-  --color-card-border: var(--color-border);
-
   --screen-mobile: 300px;
   --screen-tablet: 640px;
   --screen-laptop: 960px;
@@ -59,4 +48,46 @@
   --space-72: calc(288px * var(--scaling));
   --space-80: calc(320px * var(--scaling));
   --space-96: calc(384px * var(--scaling));
+
+  /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
+  /* general colors */
+  --color-border: var(--gray-5);
+  --color-border-hover: var(--gray-8);
+  --color-transparent: transparent;
+  --color-accent: var(--color-brand);
+
+  /* card colors */
+  --color-card-border: var(--color-border);
+  --color-card-border-hover: var(--gray-8);
+  --color-card-title: var(--gray-1);
+  --color-card-bg: var(--color-panel-solid);
+
+  /* text colors */
+  --color-brand: var(--green-11);
+  --color-heading: var(--gray-12);
+  --color-color: var(--gray-11);
+  --color-secondary: var(--gray-10);
+  --color-muted: var(--gray-10);
+  --color-icon: var(--gray-9);
+  --color-link: var(--color-brand);
+
+  /* semantic colors */
+  --color-success: var(--grass-9);
+  --color-success-muted: var(--grass-8);
+  --color-success-contrast: var(--grass-9-contrast);
+  --color-success-border: var(--grass-6);
+  --color-info: var(--sky-9);
+  --color-info-muted: var(--sky-8);
+  --color-info-contrast: var(--sky-9-contrast);
+  --color-info-border: var(--sky-6);
+  --color-warning: var(--yellow-9);
+  --color-warning-muted: var(--yellow-8);
+  --color-warning-contrast: var(--yellow-9-contrast);
+  --color-warning-border: var(--yellow-6);
+  --color-error: var(--red-9);
+  --color-error-muted: var(--red-8);
+  --color-error-contrast: var(--red-9-contrast);
+  --color-error-border: var(--red-8);
+
+
 }

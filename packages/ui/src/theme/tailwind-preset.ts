@@ -20,12 +20,37 @@ function getComponents() {
 export type ColorVariables = (typeof COLORS_VARIABLES)[number];
 const COLORS_VARIABLES = [
   // general colors
+  'accent',
   'brand',
-  'muted',
-  'heading',
-  'link',
   'border',
   'border-hover',
+  // text colors
+  'color',
+  'secondary',
+  'muted',
+  'heading',
+  'icon',
+  'link',
+  // semantic colors
+  'success',
+  'success-muted',
+  'success-contract',
+  'success-border',
+  'warning',
+  'warning-muted',
+  'warning-contract',
+  'warning-border',
+  'error',
+  'error-muted',
+  'error-contract',
+  'error-border',
+  'info',
+  'info-muted',
+  'info-contract',
+  'info-border',
+  // card colors
+  'card-bg',
+  'card-title',
   'card-border',
 ] as const;
 

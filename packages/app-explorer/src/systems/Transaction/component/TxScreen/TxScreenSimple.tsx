@@ -293,7 +293,7 @@ function MintOutputs({
             </AssetItem>
           )}
           <HStack className="hidden tablet:flex items-center gap-2">
-            <Icon color="text-brand" icon={IconArrowUp} />
+            <Icon color="text-success" icon={IconArrowUp} />
             <Amount
               hideSymbol
               hideIcon
