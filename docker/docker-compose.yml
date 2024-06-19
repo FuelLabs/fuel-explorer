@@ -89,29 +89,6 @@ services:
     networks:
       - app-network
 
-  fuel_testnet:
-    profiles:
-      - indexer
-      - indexer-local
-    image: fueldev/fuelcore:v0.30.0
-    platform: linux/amd64
-    build:
-      context: ./fuel-testnet/
-    env_file:
-      - path: ./fuel-testnet/.env
-        required: true
-    ports:
-      - ${FUEL_TESTNET_HTTP_PORT:-4002}:4002
-    volumes:
-      - fuel_testnet-db:/data/fuel-sepolia-testnet
-    healthcheck:
-      test: curl --fail http://localhost:4001/v1/health || exit 1
-      interval: 10s
-      timeout: 10s
-      retries: 100
-    networks:
-      - app-network
-
   fuel_explorer_pgsql:
     profiles:
       - all
@@ -168,8 +145,8 @@ services:
     build:
       context: ../packages/graphql
       dockerfile: ../../deployment/Dockerfile
-      args:
-        - FUEL_PROVIDER=${FUEL_PROVIDER:-http://fuel_testnet:4002/v1/graphql}
+    environment:
+        - FUEL_PROVIDER=${FUEL_PROVIDER:-http://localhost:4004/v1/graphql}
     env_file:
       - ./envs/global.env
       - ./envs/indexer.env
@@ -183,7 +160,6 @@ services:
 
 volumes:
   fuel_explorer_pgsql-db:
-  fuel_testnet-db:
 
 networks:
   app-network:
