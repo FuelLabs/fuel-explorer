@@ -63,6 +63,8 @@
   --color-card-bg: var(--color-panel-solid);
 
   /* text colors */
+  --text-primary: var(--gray-12);
+  --text-secondary: var(--gray-10);
   --color-brand: var(--green-11);
   --color-heading: var(--gray-12);
   --color-color: var(--gray-11);
@@ -88,6 +90,5 @@
   --color-error-muted: var(--red-8);
   --color-error-contrast: var(--red-9-contrast);
   --color-error-border: var(--red-8);
-
 
 }
