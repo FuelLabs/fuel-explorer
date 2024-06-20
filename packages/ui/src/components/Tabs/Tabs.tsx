@@ -1,4 +1,4 @@
-import * as RT from '@radix-ui/react-tabs';
+import { Tabs as RT } from '@radix-ui/themes';
 import { createContext, useContext } from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
@@ -93,24 +93,19 @@ const styles = tv({
   variants: {
     variant: {
       surface: {
-        list: ['gap-4'],
         trigger: [
-          'bg-transparent text-muted rounded border border-border',
-          'enabled:hover:bg-gray-2 enabled:hover:text-heading transition-colors',
-          'state-active:text-heading',
-          'fuel-[Icon]:hover:text-icon',
-          'fuel-[Icon]:state-active:text-icon',
+          'bg-transparent',
+          'transition-colors',
+          'fuel-[Icon]:mr-2',
+          'fuel-[Icon]:mt-0.5',
           'disabled:opacity-50',
         ],
       },
       line: {
-        list: ['border-b border-border'],
+        list: ['border-b border-gray-8'],
         trigger: [
-          'bg-transparent text-muted',
-          'enabled:hover:text-heading transition-colors',
-          'state-active:text-heading state-active:border-b state-active:border-accent',
-          'fuel-[Icon]:hover:text-icon',
-          'fuel-[Icon]::text-icon',
+          'transition-colors',
+          'fuel-[Icon]:mr-2',
           'disabled:opacity-50',
         ],
       },

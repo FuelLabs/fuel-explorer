@@ -1,7 +1,7 @@
 'use client';
 
 import type { Maybe, SearchResult } from '@fuel-explorer/graphql';
-import type { BaseProps, InputFieldProps, InputProps } from '@fuels/ui';
+import type { BaseProps, InputProps } from '@fuels/ui';
 import {
   Box,
   Dropdown,
@@ -96,7 +96,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.accountAssets(searchResult.account.address!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -117,7 +116,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                         <Link
                           as={NextLink}
                           href={Routes.txSimple(transaction!.id!)}
-                          className="text-color"
                           onClick={onSelectItem}
                         >
                           {shortAddress(transaction?.id || '', trimL, trimR)}
@@ -134,7 +132,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.blockSimple(searchResult.block.id!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(searchResult.block.id || '', trimL, trimR)}
@@ -144,7 +141,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.blockSimple(searchResult.block.height!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {searchResult.block.height}
@@ -159,7 +155,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.contractAssets(searchResult.contract.id!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -178,7 +173,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                     <Link
                       as={NextLink}
                       href={Routes.txSimple(searchResult.transaction.id!)}
-                      className="text-color"
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -205,7 +199,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
   },
 );
 
-type SearchInputProps = BaseProps<InputProps & InputFieldProps> & {
+type SearchInputProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
   onClear?: (value: string) => void;
   searchResult?: Maybe<SearchResult>;
@@ -229,7 +223,6 @@ export function SearchInput({
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const inputWrapperRef = useRef<HTMLInputElement>(null);
   const { pending } = useFormStatus();
   const { dropdownRef } = useContext(SearchContext);
 
@@ -269,7 +262,12 @@ export function SearchInput({
     <VStack gap="0" className={classes.searchBox()} data-expanded={isExpanded}>
       <Focus.ArrowNavigator autoFocus={autoFocus}>
         <Input
-          ref={inputWrapperRef}
+          {...props}
+          ref={inputRef}
+          name="query"
+          placeholder={placeholder}
+          value={value}
+          onChange={handleChange}
           variant="surface"
           radius="large"
           size="3"
@@ -286,17 +284,9 @@ export function SearchInput({
             }
           }}
         >
-          <Input.Field
-            {...props}
-            ref={inputRef}
-            name="query"
-            placeholder={placeholder}
-            value={value}
-            onChange={handleChange}
-          />
           {isExpanded || value?.length ? (
             <>
-              <Input.Slot className="">
+              <Input.Slot className="" side="right">
                 {!!value?.length && (
                   <Tooltip content="Submit">
                     <IconButton
@@ -322,7 +312,7 @@ export function SearchInput({
               </Input.Slot>
             </>
           ) : (
-            <Input.Slot>
+            <Input.Slot side="right">
               <Icon icon={IconSearch} size={16} />
             </Input.Slot>
           )}
@@ -330,7 +320,7 @@ export function SearchInput({
       </Focus.ArrowNavigator>
       <SearchResultDropdown
         ref={dropdownRef}
-        width={inputWrapperRef.current?.offsetWidth || 0}
+        width={inputRef.current?.offsetWidth || 0}
         searchResult={searchResult}
         searchValue={value}
         openDropdown={openDropdown}

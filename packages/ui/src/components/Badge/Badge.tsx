@@ -29,6 +29,6 @@ export const Badge = createComponent<BadgeProps, 'span'>({
     );
   },
   defaultProps: {
-    size: '1',
+    size: '2',
   },
 });

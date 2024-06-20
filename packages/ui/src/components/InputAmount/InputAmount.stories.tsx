@@ -14,38 +14,32 @@ type Story = StoryObj<typeof InputAmount>;
 
 export const Usage: Story = {
   render: () => (
-    <Box className="max-w-[400px]">
-      <InputAmount
-        color="green"
-        className="anything"
-        balance={undefined}
-        value={undefined}
-        disabled={false}
-        onChange={(balance) => console.log(balance)}
-      >
-        <Flex>
-          <InputAmount.Field placeholder="0.00" />
-
-          <InputAmount.Slot>
-            <InputAmount.ButtonMaxBalance
-              onClick={() => {
-                alert('Max Balance has been clicked');
-              }}
-            />
-            <InputAmount.CoinSelector
-              asset={{
-                name: 'ETH',
-                imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
-                address: '',
-              }}
-              onClick={() => alert('Coin selector has been clicked')}
-            />
-          </InputAmount.Slot>
-        </Flex>
-
-        <InputAmount.Balance />
-      </InputAmount>
-    </Box>
+    <InputAmount
+      color="green"
+      balance={undefined}
+      value={undefined}
+      disabled={false}
+      onChange={(balance) => console.log(balance)}
+      className="max-w-[400px]"
+      placeholder="0.00"
+    >
+      <InputAmount.Slot className="flex flex-row flex-1 basis-1/2 justify-end">
+        <InputAmount.ButtonMaxBalance
+          onClick={() => {
+            alert('Max Balance has been clicked');
+          }}
+        />
+        <InputAmount.CoinSelector
+          asset={{
+            name: 'ETH',
+            imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+            address: '',
+          }}
+          onClick={() => alert('Coin selector has been clicked')}
+        />
+      </InputAmount.Slot>
+      <InputAmount.Balance className="w-full order-1" />
+    </InputAmount>
   ),
 };
 
@@ -54,14 +48,12 @@ export const OnlyField: Story = {
     <Box className="max-w-[400px]">
       <InputAmount
         color="green"
-        className="anything"
         balance={undefined}
         value={undefined}
         disabled={false}
         onChange={(balance) => console.log(balance)}
-      >
-        <InputAmount.Field placeholder="0.00" />
-      </InputAmount>
+        placeholder="0.00"
+      />
     </Box>
   ),
 };
@@ -71,31 +63,27 @@ export const WithoutBalance: Story = {
     <Box className="max-w-[400px]">
       <InputAmount
         color="green"
-        className="anything"
         balance={undefined}
         value={undefined}
         disabled={false}
         onChange={(balance) => console.log(balance)}
+        placeholder="0.00"
       >
-        <Flex align="center">
-          <InputAmount.Field placeholder="0.00" />
-
-          <InputAmount.Slot pb="2">
-            <InputAmount.ButtonMaxBalance
-              onClick={() => {
-                alert('Max Balance has been clicked');
-              }}
-            />
-            <InputAmount.CoinSelector
-              asset={{
-                name: 'ETH',
-                imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
-                address: '',
-              }}
-              onClick={() => alert('Coin selector has been clicked')}
-            />
-          </InputAmount.Slot>
-        </Flex>
+        <InputAmount.Slot className="flex flex-row flex-1 basis-1/2 justify-end">
+          <InputAmount.ButtonMaxBalance
+            onClick={() => {
+              alert('Max Balance has been clicked');
+            }}
+          />
+          <InputAmount.CoinSelector
+            asset={{
+              name: 'ETH',
+              imageUrl: 'https://cdn.fuel.network/assets/eth.svg',
+              address: '',
+            }}
+            onClick={() => alert('Coin selector has been clicked')}
+          />
+        </InputAmount.Slot>
       </InputAmount>
     </Box>
   ),
@@ -106,14 +94,16 @@ export const OnlyBalance: Story = {
     <Box className="max-w-[400px]">
       <InputAmount
         color="green"
-        className="anything"
+        className="items-center"
         balance={undefined}
         value={undefined}
         disabled={false}
         onChange={(balance) => console.log(balance)}
+        placeholder="0.00"
       >
-        <InputAmount.Field placeholder="0.00" />
-        <InputAmount.Balance />
+        <Flex direction="column">
+          <InputAmount.Balance className="pt-0" />
+        </Flex>
       </InputAmount>
     </Box>
   ),

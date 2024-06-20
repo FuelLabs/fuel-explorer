@@ -20,7 +20,7 @@ const RightClickZone = (props: FlexProps) => {
   return (
     <Flex
       {...props}
-      className="items-center justify-center w-[150px] h-[150px] border border-dashed border-border"
+      className="items-center justify-center w-[150px] h-[150px] border border-dashed border-gray-8"
     />
   );
 };
@@ -29,7 +29,7 @@ export const Usage: Story = {
   render: () => (
     <ContextMenu>
       <ContextMenu.Trigger>
-        <RightClickZone>Click here</RightClickZone>
+        <RightClickZone>Right-click here</RightClickZone>
       </ContextMenu.Trigger>
       <ContextMenu.Content>
         <ContextMenu.Item shortcut="⌘ E">Edit</ContextMenu.Item>

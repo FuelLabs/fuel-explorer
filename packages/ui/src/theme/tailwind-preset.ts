@@ -1,11 +1,11 @@
 import path from 'path';
 import { globbySync } from 'globby';
 import _ from 'lodash';
-import radixThemePlugin from 'radix-ui-themes-with-tailwind';
 import type { Config } from 'tailwindcss';
 import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
 
+import { radixThemeTailwindPlugin } from '../utils/radixUiThemesTailwindPlugin';
 import { animation, keyframes } from './animations';
 import { breakpoints } from './breakpoints';
 
@@ -114,6 +114,7 @@ const preset: Config = {
         'not-disabled-hover',
         '&:not([aria-disabled=true],:disabled):hover',
       );
+      addVariant('first-child', '& > :first-child');
       addVariant('first-type', '&:first-of-type');
       addVariant('last-type', '&:last-of-type');
       addVariant('dark-theme', ['.dark &', '.dark-theme &']);
@@ -129,7 +130,7 @@ const preset: Config = {
       matchVariant('group-fuel', (v) => `:merge(.group) > .fuel-${v}`, values);
       matchVariant('peer-fuel', (v) => `:merge(.peer) > .fuel-${v}`, values);
     }),
-    radixThemePlugin({
+    radixThemeTailwindPlugin({
       useTailwindColorNames: false, // optional
       useTailwindRadiusNames: true, // optional
       mapMissingTailwindColors: true, // optional

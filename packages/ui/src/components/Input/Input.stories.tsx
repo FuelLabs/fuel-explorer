@@ -17,11 +17,10 @@ type Story = StoryObj<typeof Input>;
 export const Usage: Story = {
   render: () => (
     <Box className="w-[300px]">
-      <Input>
-        <Input.Slot>
+      <Input placeholder="Search the docs…">
+        <Input.Slot side="left">
           <Icon className="text-icon" icon={IconSearch} size={16} />
         </Input.Slot>
-        <Input.Field placeholder="Search the docs…" />
       </Input>
     </Box>
   ),
@@ -30,17 +29,13 @@ export const Usage: Story = {
 export const Sizes: Story = {
   render: () => (
     <VStack className="w-[350px]">
-      <Input.Field placeholder="Search the docs…" size="1" />
-      <Input.Field placeholder="Search the docs…" size="2" />
-      <Input.Field placeholder="Search the docs…" size="3" />
+      <Input placeholder="Search the docs…" size="1" />
+      <Input placeholder="Search the docs…" size="2" />
+      <Input placeholder="Search the docs…" size="3" />
     </VStack>
   ),
 };
 
 export const Numeric: Story = {
-  render: () => (
-    <Input>
-      <Input.Number placeholder="0.00" />
-    </Input>
-  ),
+  render: () => <Input type="number" placeholder="0.00" />,
 };

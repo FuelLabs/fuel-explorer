@@ -168,7 +168,7 @@ const styles = tv({
     header:
       'group relative gap-4 cursor-pointer pr-9 flex flex-col justify-center tablet:items-center tablet:flex-row tablet:justify-start',
     icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
-    content: 'mx-4 mb-2 border border-border',
+    content: 'mx-4 mb-2 border border-gray-7',
     body: '',
     title: 'flex items-center gap-2 text-sm font-medium',
   },
@@ -177,7 +177,7 @@ const styles = tv({
       surface: {
         content: 'p-0 light-theme:bg-gray-2 dark-theme:bg-gray-1 rounded-sm',
         body: 'px-3 py-3',
-        title: 'py-3 px-3 border-b border-border',
+        title: 'py-3 px-3 border-b border-gray-7',
       },
       ghost: {
         content: 'p-3 rounded-sm',

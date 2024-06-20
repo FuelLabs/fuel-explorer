@@ -36,7 +36,7 @@ export function CardInfo({
 
 const styles = tv({
   slots: {
-    root: 'py-2 gap-0 border border-card-border',
+    root: 'py-2 gap-0',
     name: 'mb-2 text-sm text-muted leading-1',
     body: 'py-2',
   },
