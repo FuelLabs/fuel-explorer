@@ -145,8 +145,6 @@ services:
     build:
       context: ../packages/graphql
       dockerfile: ../../deployment/Dockerfile
-    environment:
-        - FUEL_PROVIDER=${FUEL_PROVIDER:-http://localhost:4004/v1/graphql}
     env_file:
       - ./envs/global.env
       - ./envs/indexer.env
