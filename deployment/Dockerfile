@@ -15,6 +15,7 @@ RUN corepack enable
 # Install dependencies for the entire monorepo
 COPY . /app-explorer
 WORKDIR /app-explorer
+RUN pnpm install
 
 # Expose the specified port
 EXPOSE ${SERVER_PORT}

@@ -5,6 +5,7 @@
   "private": true,
   "author": "Fuel Labs <contact@fuel.sh> (https://fuel.network/)",
   "license": "Apache-2.0",
+  "packageManager": "pnpm@8.1.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
