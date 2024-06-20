@@ -15,7 +15,7 @@ type Story = StoryObj<typeof Switch>;
 export const Usage: Story = {
   render: () => (
     <Text size="2">
-      <label>
+      <label className="flex flex-row items-center">
         <Switch defaultChecked mr="2" /> Sync settings{' '}
         <Text color="gray">(Default)</Text>
       </label>

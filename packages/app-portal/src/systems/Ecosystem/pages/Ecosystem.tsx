@@ -23,7 +23,7 @@ export function Ecosystem() {
     : undefined;
 
   return (
-    <VStack gap="6" grow="1" className={classes.content()}>
+    <VStack gap="6" flexGrow="1" className={classes.content()}>
       <EcosystemHeader search={search} onSearchChange={handleSearch} />
       <EcosystemTags
         tags={tags}

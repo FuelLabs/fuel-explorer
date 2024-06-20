@@ -34,7 +34,7 @@ export const Usage: Story = {
             <Text as="div" mb="1" size="2" weight="bold">
               Name
             </Text>
-            <Input.Field
+            <Input
               defaultValue="Freja Johnsen"
               placeholder="Enter your full name"
             />
@@ -43,7 +43,7 @@ export const Usage: Story = {
             <Text as="div" mb="1" size="2" weight="bold">
               Email
             </Text>
-            <Input.Field
+            <Input
               defaultValue="freja@example.com"
               placeholder="Enter your email"
             />

@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/nextjs';
+import webpack from 'webpack';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.tsx'],
@@ -42,6 +43,46 @@ const config: StorybookConfig = {
       resourceQuery: { not: /url/ }, // exclude if *.svg?url
       use: ['@svgr/webpack'],
     });
+
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
+        const mod = resource.request.replace(/^node:/, '');
+        switch (mod) {
+          case 'net':
+            resource.requeset = 'net';
+            break;
+          case 'util':
+            resource.request = 'util';
+            break;
+          case 'path':
+            resource.request = 'path';
+            break;
+          case 'http':
+            resource.request = 'stream-http';
+            break;
+          case 'https':
+            resource.request = 'https-browserify';
+            break;
+          case 'zlib':
+            resource.request = 'browserify-zlib';
+            break;
+          case 'url':
+            resource.request = 'url';
+            break;
+          case 'fs':
+            resource.request = 'fs';
+            break;
+          case 'buffer':
+            resource.request = 'buffer';
+            break;
+          case 'stream':
+            resource.request = 'readable-stream';
+            break;
+          default:
+            throw new Error(`Not found ${mod}`);
+        }
+      }),
+    );
 
     return config;
   },

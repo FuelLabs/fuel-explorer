@@ -1,22 +1,23 @@
-import React, {
-  useMemo,
-  useState,
-  useRef,
-  memo,
+import type React from 'react';
+import {
   type FocusEvent,
   type KeyboardEvent,
   type MouseEvent,
-  useContext,
   createContext,
+  memo,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 import { createComponent, withNamespace } from '../../utils/component';
 import { type BoxProps, Flex, type FlexProps } from '../Box';
-import { Input, type InputFieldProps, type InputProps } from '../Input';
+import { Input, type InputProps } from '../Input';
 import { Popover } from '../Popover';
 import { Text } from '../Text';
 
 export type ComboBoxProps<T = string> = Pick<
-  InputFieldProps,
+  InputProps,
   'onFocus' | 'onClick' | 'onBlur' | 'onKeyDown' | 'children'
 > & {
   suggestions: Array<T>;
@@ -33,10 +34,10 @@ export type ComboBoxProps<T = string> = Pick<
   strict?: boolean;
 };
 
-export type ComboBoxInputProps = InputProps;
-export type ComboBoxInputFieldProps = InputFieldProps & {
+export type ComboBoxInputProps = InputProps & {
   ref: React.Ref<HTMLInputElement>;
 };
+
 export type ComboBoxContentProps = FlexProps;
 export type ComboBoxItemProps<T = string> = BoxProps &
   Pick<ComboBoxProps<T>, 'itemNameSelector'> & {
@@ -50,6 +51,7 @@ export type Context<T = string> = Pick<
 > & {
   filteredSuggestions: Array<T>;
   handleSuggestionClick: (suggestion: T) => void;
+  safeClose: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -103,11 +105,12 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
               : false);
         const newFilteredSuggestions = suggestions.filter(filter);
         _onChange?.(input);
-        setFilteredSuggestions(
+        const displayedSuggestions =
           !newFilteredSuggestions?.length && !input
             ? suggestions
-            : newFilteredSuggestions,
-        );
+            : newFilteredSuggestions;
+        setIsPopoverOpen(!!displayedSuggestions?.length);
+        setFilteredSuggestions(displayedSuggestions);
       }, debounce);
     };
 
@@ -151,16 +154,27 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
       _onKeyDown?.(event);
       switch (event.key) {
         case 'Enter': {
-          const selectedValue = strict ? suggestionFilter?.[0] : value;
-          selectedValue && handleSuggestionClick(selectedValue);
-          setIsPopoverOpen(false);
+          setIsPopoverOpen((prevIsOpen) => {
+            if (!prevIsOpen && filteredSuggestions?.length) {
+              return true;
+            }
+
+            const selectedValue = strict ? suggestionFilter?.[0] : value;
+            selectedValue && handleSuggestionClick(selectedValue);
+            return false;
+          });
           break;
         }
         case 'Escape':
-          setIsPopoverOpen(false);
+          setIsPopoverOpen((prevIsOpen) => (prevIsOpen ? false : prevIsOpen));
           break;
         default:
           break;
+      }
+    };
+    const safeClose = () => {
+      if (isPopoverOpen && (!strict || (strict && itemSelected))) {
+        setIsPopoverOpen(false);
       }
     };
 
@@ -173,9 +187,20 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
         onFocus,
         onClick,
         onBlur,
+        safeClose,
         onKeyDown,
       }),
-      [filteredSuggestions, itemNameSelector, onItemSelected],
+      [
+        filteredSuggestions,
+        itemNameSelector,
+        handleSuggestionClick,
+        onChange,
+        onFocus,
+        onClick,
+        onBlur,
+        safeClose,
+        onKeyDown,
+      ],
     );
 
     return (
@@ -189,19 +214,12 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
 export const ComboBoxInput = createComponent<ComboBoxInputProps, typeof Input>({
   id: 'ComboBoxInput',
   baseElement: Input,
-});
-
-export const ComboBoxInputField = createComponent<
-  ComboBoxInputFieldProps,
-  typeof Input.Field
->({
-  id: 'ComboBoxInputField',
-  render: (_, { ref, ...props }) => {
+  render: (InputRoot, { ref, ...props }) => {
     const { onChange, onFocus, onClick, onBlur, onKeyDown } =
       useComboBoxContext();
 
     return (
-      <Input.Field
+      <InputRoot
         ref={ref}
         onChange={onChange}
         onFocus={onFocus}
@@ -252,8 +270,12 @@ export const ComboBoxContent = createComponent<
 >({
   id: 'ComboBoxContent',
   render: (_, { className, style, ...props }) => {
-    const { filteredSuggestions, itemNameSelector, handleSuggestionClick } =
-      useComboBoxContext();
+    const {
+      filteredSuggestions,
+      itemNameSelector,
+      handleSuggestionClick,
+      safeClose,
+    } = useComboBoxContext();
 
     return (
       <>
@@ -263,6 +285,9 @@ export const ComboBoxContent = createComponent<
         </Popover.Trigger>
         <Popover.Content
           // Goes against accessibility rules but otherwise we'd be constantly losing focus on the input
+          onPointerDownOutside={safeClose}
+          // @ TODO: remove prop below after fixing tab acessibility issues with popover
+          onInteractOutside={safeClose}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <Flex
@@ -278,6 +303,7 @@ export const ComboBoxContent = createComponent<
                 suggestion={suggestion}
                 itemNameSelector={itemNameSelector}
                 onItemSelected={handleSuggestionClick}
+                className="cursor-pointer"
               />
             ))}
           </Flex>
@@ -293,6 +319,5 @@ export const ComboBox = withNamespace(
     Item: ComboBoxItem,
     Content: ComboBoxContent,
     Input: ComboBoxInput,
-    InputField: ComboBoxInputField,
   },
 );

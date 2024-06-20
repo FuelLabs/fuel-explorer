@@ -1,23 +1,30 @@
 import { ToggleGroup } from '@fuels/ui';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export enum ViewModes {
   Simple = 'simple',
   Advanced = 'advanced',
 }
 
-export function ViewMode({ mode }: { mode: ViewModes }) {
+export function ViewMode({
+  mode,
+  router,
+}: { mode: ViewModes; router: ReturnType<typeof useRouter> }) {
   return (
-    <ToggleGroup type="single" defaultValue={mode} aria-label="View mode">
-      <ToggleGroup.Item value="simple" aria-label="Simple view" asChild>
-        <Link prefetch href={`./${ViewModes.Simple}`}>
-          Simple
-        </Link>
+    <ToggleGroup defaultValue={mode} aria-label="View mode">
+      <ToggleGroup.Item
+        value="simple"
+        aria-label="Simple view"
+        onClick={() => router.push(`./${ViewModes.Simple}`)}
+      >
+        Simple
       </ToggleGroup.Item>
-      <ToggleGroup.Item value="advanced" aria-label="Advanced view" asChild>
-        <Link prefetch href={`./${ViewModes.Advanced}`}>
-          Advanced
-        </Link>
+      <ToggleGroup.Item
+        value="advanced"
+        aria-label="Advanced view"
+        onClick={() => router.push(`./${ViewModes.Advanced}`)}
+      >
+        Advanced
       </ToggleGroup.Item>
     </ToggleGroup>
   );

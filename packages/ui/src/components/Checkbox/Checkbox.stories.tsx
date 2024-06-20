@@ -15,7 +15,7 @@ type Story = StoryObj<typeof Checkbox>;
 export const Usage: Story = {
   render: () => (
     <Text size="2">
-      <label>
+      <label className="flex flex-row items-center">
         <Checkbox defaultChecked mr="1" /> Agree to Terms and Conditions
       </label>
     </Text>

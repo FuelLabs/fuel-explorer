@@ -15,7 +15,7 @@ const DecorativeBox = (props: GridProps) => {
   return (
     <Grid
       {...props}
-      className={`w-full h-full bg-gray-a4 border border-dashed border-border ${props.className}`}
+      className={`w-full h-full bg-gray-a4 border border-dashed border-gray-8 ${props.className}`}
     />
   );
 };
@@ -24,22 +24,22 @@ export const Usage: Story = {
   name: 'Grid',
   render: () => (
     <Grid columns="3" gap="3" width="auto">
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
-      <Box height="9">
+      <Box height="64px">
         <DecorativeBox />
       </Box>
     </Grid>

@@ -57,8 +57,8 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
 
 const styles = tv({
   slots: {
-    item: 'group flex justify-between p-3 [&_~_&]:border-t [&_~_&]:border-border',
-    stack: 'gap-0 rounded-md border border-border bg-inputBaseBg',
+    item: 'group flex justify-between p-3 [&_~_&]:border-t [&_~_&]:border-gray-8',
+    stack: 'gap-0 rounded-md border border-gray-8 bg-inputBaseBg',
     action: 'gap-2 items-center',
     name: 'leading-tight text-xs text-heading',
     status: 'text-xs text-muted',

@@ -11,7 +11,6 @@ import {
 import {
   Alert,
   Card,
-  Flex,
   HStack,
   InputAmount,
   Link,
@@ -83,22 +82,20 @@ export const Bridge = () => {
             onChange={(val) =>
               handlers.changeAssetAmount({ assetAmount: val || undefined })
             }
+            placeholder="0.00"
           >
-            <Flex>
-              <InputAmount.Field />
-              <InputAmount.Slot>
-                <InputAmount.ButtonMaxBalance />
-                <InputAmount.CoinSelector
-                  asset={{
-                    name: asset?.symbol,
-                    imageUrl: asset?.icon || '',
-                    address: ethAssetAddress,
-                  }}
-                  onClick={handlers.openAssetsDialog}
-                />
-              </InputAmount.Slot>
-            </Flex>
-            <InputAmount.Balance />
+            <InputAmount.Slot className="flex flex-row flex-1 basis-1/2 justify-end">
+              <InputAmount.ButtonMaxBalance />
+              <InputAmount.CoinSelector
+                asset={{
+                  name: asset?.symbol,
+                  imageUrl: asset?.icon || '',
+                  address: ethAssetAddress,
+                }}
+                onClick={handlers.openAssetsDialog}
+              />
+            </InputAmount.Slot>
+            <InputAmount.Balance className="w-full order-1" />
           </InputAmount>
           {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
             <Alert color="orange">

@@ -24,16 +24,17 @@ export function EcosystemHeader({
         </VStack>
       </PageTitle>
       <Flex gap="4" className={classes.searchBar()}>
-        <Input className={classes.searchBarInput()} size="3">
-          <Input.Field
-            name="search"
-            type="text"
-            placeholder="Search"
-            value={search || ''}
-            disabled={disabled}
-            onChange={(e) => onSearchChange?.(e.target.value)}
-          />
-          <Input.Slot>
+        <Input
+          className={classes.searchBarInput()}
+          size="3"
+          name="search"
+          type="text"
+          placeholder="Search"
+          value={search || ''}
+          disabled={disabled}
+          onChange={(e) => onSearchChange?.(e.target.value)}
+        >
+          <Input.Slot side="right">
             <IconSearch size={16} />
           </Input.Slot>
         </Input>

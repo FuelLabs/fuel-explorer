@@ -32,17 +32,13 @@ function Content(props?: DrawerContentProps) {
           <VStack gap="2">
             <label htmlFor="name">Name</label>
             <Input>
-              <Input.Field className="w-full" id="name" value="Pedro Duarte" />
+              <Input className="w-full" id="name" value="Pedro Duarte" />
             </Input>
           </VStack>
           <VStack gap="2">
             <label htmlFor="username">Username</label>
             <Input>
-              <Input.Field
-                className="col-span-3"
-                id="username"
-                value="@peduarte"
-              />
+              <Input className="col-span-3" id="username" value="@peduarte" />
             </Input>
           </VStack>
         </VStack>

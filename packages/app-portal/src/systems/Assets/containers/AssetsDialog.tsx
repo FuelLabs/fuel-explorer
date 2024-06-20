@@ -78,13 +78,14 @@ export function AssetsDialog() {
         render={(props) => {
           return (
             <>
-              <Input className={classes.headerInput()} size="3">
-                <Input.Field
-                  {...props.field}
-                  placeholder="Type here to search"
-                />
+              <Input
+                className={classes.headerInput()}
+                size="3"
+                {...props.field}
+                placeholder="Type here to search"
+              >
                 {isLoading && (
-                  <Input.Slot>
+                  <Input.Slot side="right">
                     <Spinner />
                   </Input.Slot>
                 )}
