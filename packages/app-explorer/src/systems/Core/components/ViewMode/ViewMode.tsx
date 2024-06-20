@@ -1,11 +1,23 @@
+'use client';
+
 import { ToggleGroup } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import { ViewModes } from './constants';
 
-export function ViewMode({
-  mode,
-  router,
-}: { mode: ViewModes; router: ReturnType<typeof useRouter> }) {
+export function ViewMode({ mode }: { mode: ViewModes }) {
+  const router = useRouter();
+  const isMounted = useRef(false);
+
+  if (!isMounted.current) {
+    router.prefetch(`./${ViewModes.Simple}`);
+    router.prefetch(`./${ViewModes.Advanced}`);
+  }
+
+  useEffect(() => {
+    isMounted.current = true;
+  }, []);
+
   return (
     <ToggleGroup defaultValue={mode} aria-label="View mode">
       <ToggleGroup.Item
