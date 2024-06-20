@@ -7,7 +7,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./src/chains/fuel": "./src/chains/fuel.ts"
+    "./src/chains/fuel": "./src/chains/fuel.ts",
+    "./src/utils/dayjs": "./src/utils/dayjs.ts"
   },
   "scripts": {
     "ts:check": "tsc --noEmit"
@@ -18,7 +19,8 @@
     "fuels": "0.86.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwind-variants": "0.1.20"
+    "tailwind-variants": "0.1.20",
+    "dayjs": "1.11.10"
   },
   "devDependencies": {
     "@fuels/ui": "workspace:*",
@@ -29,6 +31,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-variants": "0.1.20",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "dayjs": "1.11.10"
   }
 }
