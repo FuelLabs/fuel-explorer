@@ -25,6 +25,5 @@ export function createDayjs() {
   };
 
   dayjs.locale('fuel', localeObject);
-  console.log(dayjs.locale());
   return dayjs;
 }
