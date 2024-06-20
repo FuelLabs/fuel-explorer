@@ -1,4 +1,18 @@
-/* Background */
+:root {
+  /* Brand (just a link for the green vars) */
+  --brand-1: var(--green-1);
+  --brand-2: var(--green-2);
+  --brand-3: var(--green-3);
+  --brand-4: var(--green-4);
+  --brand-5: var(--green-5);
+  --brand-6: var(--green-6);
+  --brand-7: var(--green-7);
+  --brand-8: var(--green-8);
+  --brand-9: var(--green-9);
+  --brand-10: var(--green-10);
+  --brand-11: var(--green-11);
+  --brand-12: var(--green-12);
+}
 
 :root .dark,
 :root .dark-theme,
@@ -32,8 +46,8 @@
 
   --red-contrast: #fff;
   --red-surface: #2f151580;
-  --red-indicator: #d65767;
-  --red-track: #d65767;
+  --red-indicator: var(--red-9);
+  --red-indicator: var(--red-9);
 
   /* Violet */
   --violet-1: #110f1c;
@@ -64,8 +78,8 @@
 
   --violet-contrast: #fff;
   --violet-surface: #1f193980;
-  --violet-indicator: #725bbd;
-  --violet-track: #725bbd;
+  --violet-indicator: var(--violet-9);
+  --violet-indicator: var(--violet-9);
 
   /* Yellow */
   --yellow-1: #14100c;
@@ -96,8 +110,8 @@
 
   --yellow-contrast: #2d1e0a;
   --yellow-surface: #291d1080;
-  --yellow-indicator: #f6c07a;
-  --yellow-track: #f6c07a;
+  --yellow-indicator: var(--yellow-9);
+  --yellow-indicator: var(--yellow-9);
 
   /* Orange */
   --orange-1: #15100c;
@@ -105,7 +119,8 @@
   --orange-3: #331d0e;
   --orange-4: #481f00;
   --orange-5: #562800;
-  --orange-6: #653611;
+  /*still needs update*/
+  --orange-6: #66350C;
   --orange-7: #7c471f;
   --orange-8: #a05b27;
   --orange-9: #d6844a;
@@ -128,8 +143,8 @@
 
   --orange-contrast: #fff;
   --orange-surface: #2b1b1080;
-  --orange-indicator: #d6844a;
-  --orange-track: #d6844a;
+  --orange-indicator: var(--orange-9);
+  --orange-indicator: var(--orange-9);
 
   /* Blue */
   --blue-1: #08121c;
@@ -160,40 +175,41 @@
 
   --blue-contrast: #fff;
   --blue-surface: #0c213980;
-  --blue-indicator: #3795ef;
-  --blue-track: #3795ef;
+  --blue-indicator: var(--blue-9);
+  --blue-indicator: var(--blue-9);
 
   /* Green */
-  --green-1: #000;
-  --green-2: #0a150e;
-  --green-3: #0c2a18;
-  --green-4: #043b1e;
-  --green-5: #084a28;
-  --green-6: #105932;
-  --green-7: #156b3d;
-  --green-8: #147f48;
-  --green-9: #0a4b29;
-  --green-10: #175e37;
-  --green-11: #71cf93;
+  --green-1: #0B130E;
+  --green-2: #111B14;
+  --green-3: #0F2E1B;
+  --green-4: #073D20;
+  --green-5: #0A4B29;
+  --green-6: #125A33;
+  --green-7: #176B3E;
+  --green-8: #177F49;
+  --green-9: #00F58C;
+  --green-10: #00EA82;
+  --green-11: #00DD75;
   --green-12: #a6f5c0;
 
-  --green-a1: #00000000;
-  --green-a2: #7affaa15;
-  --green-a3: #49ff922a;
-  --green-a4: #12ff823b;
-  --green-a5: #1cff8a4a;
-  --green-a6: #2eff9059;
-  --green-a7: #33ff926b;
-  --green-a8: #29ff917f;
-  --green-a9: #22ff8c4b;
-  --green-a10: #3fff965e;
-  --green-a11: #8bffb5cf;
+  --green-a1: #94ffbc13;
+  --green-a2: #a1ffbd1b;
+  --green-a3: #54ff962e;
+  --green-a4: #1eff863d;
+  --green-a5: #22ff8c4b;
+  --green-a6: #33ff915a;
+  --green-a7: #37ff946b;
+  --green-a8: #2fff937f;
+  --green-a9: #00ff92f5;
+  --green-a10: #00ff8eea;
+  --green-a11: #00ff87dd;
   --green-a12: #adffc8f5;
 
   --green-contrast: #fff;
   --green-surface: #142a1c80;
-  --green-indicator: #0a4b29;
-  --green-track: #0a4b29;
+  --green-indicator: var(--green-9);
+  --green-indicator: var(--green-9);
+  --green-9-contrast: #000;
 }
 
 :root .light,
@@ -229,8 +245,8 @@
 
   --red-contrast: #fff;
   --red-surface: #fff5f6cc;
-  --red-indicator: #b67375;
-  --red-track: #b67375;
+  --red-indicator: var(--red-9);
+  --red-indicator: var(--red-9);
 
   /* Violet */
   --violet-1: #fcfcfe;
@@ -261,8 +277,8 @@
 
   --violet-contrast: #fff;
   --violet-surface: #f9f6ffcc;
-  --violet-indicator: #726698;
-  --violet-track: #726698;
+  --violet-indicator: var(--violet-9);
+  --violet-indicator: var(--violet-9);
 
   /* Yellow */
   --yellow-1: #fdfdfb;
@@ -293,8 +309,8 @@
 
   --yellow-contrast: #262209;
   --yellow-surface: #fefae4cc;
-  --yellow-indicator: #dfd281;
-  --yellow-track: #dfd281;
+  --yellow-indicator: var(--yellow-9);
+  --yellow-indicator: var(--yellow-9);
 
   /* Orange */
   --orange-1: #fdfcfb;
@@ -302,7 +318,8 @@
   --orange-3: #feeedc;
   --orange-4: #ffdeb5;
   --orange-5: #ffd29b;
-  --orange-6: #f6c78e;
+  /* still needs update*/
+  --orange-6: #FFC182;
   --orange-7: #e5b67c;
   --orange-8: #d7a15b;
   --orange-9: #cd8c2e;
@@ -325,8 +342,8 @@
 
   --orange-contrast: #fff;
   --orange-surface: #fef5ebcc;
-  --orange-indicator: #cd8c2e;
-  --orange-track: #cd8c2e;
+  --orange-indicator: var(--orange-9);
+  --orange-indicator: var(--orange-9);
 
   /* Blue */
   --blue-1: #fbfdff;
@@ -357,41 +374,41 @@
 
   --blue-contrast: #fff;
   --blue-surface: #f1f9ffcc;
-  --blue-indicator: #689bc0;
-  --blue-track: #689bc0;
+  --blue-indicator: var(--blue-9);
+  --blue-indicator: var(--blue-9);
 
 
   /* Green */
-  --green-1: #f8fffa;
-  --green-2: #f1fdf4;
-  --green-3: #dbfce4;
-  --green-4: #c3f8d4;
-  --green-5: #a9f2c1;
-  --green-6: #89e8ab;
-  --green-7: #62d991;
-  --green-8: #45bf79;
-  --green-9: #53cb84;
-  --green-10: #46bf79;
-  --green-11: #00803f;
-  --green-12: #004421;
+  --green-1: #FAFEFB;
+  --green-2: #F3FCF5;
+  --green-3: #D9FCE3;
+  --green-4: #C0F9D2;
+  --green-5: #A8F1C0;
+  --green-6: #90E5AD;
+  --green-7: #72D596;
+  --green-8: #37C276;
+  --green-9: #00F58C;
+  --green-10: #00EA82;
+  --green-11: #008347;
+  --green-12: #19452B;
 
   --green-a1: #00ff4907;
-  --green-a2: #00db370e;
-  --green-a3: #00ea4024;
-  --green-a4: #00e2493c;
-  --green-a5: #00d94856;
-  --green-a6: #00ce4a76;
-  --green-a7: #00c24d9d;
-  --green-a8: #00a747ba;
-  --green-a9: #00b249ac;
-  --green-a10: #00a746b9;
-  --green-a11: #00803f;
-  --green-a12: #004421;
+  --green-a2: #00c02b0c;
+  --green-a3: #00eb4426;
+  --green-a4: #00e7493f;
+  --green-a5: #00d64757;
+  --green-a6: #00c4436f;
+  --green-a7: #00b3428d;
+  --green-a8: #00b150c8;
+  --green-a9: #00f58c;
+  --green-a10: #00ea82;
+  --green-a11: #008347;
+  --green-a12: #003114e6;
 
   --green-contrast: #102719;
   --green-surface: #eefdf1cc;
-  --green-indicator: #53cb84;
-  --green-track: #53cb84;
+  --green-indicator: var(--green-9);
+  --green-indicator: var(--green-9);
 }
 
 @supports (color: color(display-p3 1 1 1)) {
@@ -429,8 +446,8 @@
 
       --red-contrast: #fff;
       --red-surface: color(display-p3 0.165 0.078 0.086 / 0.5);
-      --red-indicator: oklch(62.5% 0.16 15.53);
-      --red-track: oklch(62.5% 0.16 15.53);
+      --red-indicator: var(--red-9);
+      --red-indicator: var(--red-9);
       /* Violet */
       --violet-1: oklch(17.8% 0.026 291.3);
       --violet-2: oklch(20.9% 0.032 291.3);
@@ -460,8 +477,8 @@
 
       --violet-contrast: #fff;
       --violet-surface: color(display-p3 0.118 0.094 0.212 / 0.5);
-      --violet-indicator: oklch(54.2% 0.149 291.3);
-      --violet-track: oklch(54.2% 0.149 291.3);
+      --violet-indicator: var(--violet-9);
+      --violet-indicator: var(--violet-9);
 
       /* Yellow */
       --yellow-1: oklch(17.8% 0.011 72.9);
@@ -492,8 +509,8 @@
 
       --yellow-contrast: #2d1e0a;
       --yellow-surface: color(display-p3 0.149 0.11 0.063 / 0.5);
-      --yellow-indicator: oklch(84.2% 0.108 72.9);
-      --yellow-track: oklch(84.2% 0.108 72.9);
+      --yellow-indicator: var(--yellow-9);
+      --yellow-indicator: var(--yellow-9);
 
       /* Orange */
       --orange-1: oklch(17.8% 0.011 54.38);
@@ -524,8 +541,8 @@
 
       --orange-contrast: #fff;
       --orange-surface: color(display-p3 0.157 0.102 0.063 / 0.5);
-      --orange-indicator: oklch(68.9% 0.125 54.38);
-      --orange-track: oklch(68.9% 0.125 54.38);
+      --orange-indicator: var(--orange-9);
+      --orange-indicator: var(--orange-9);
 
       /* Blue */
       --blue-1: oklch(17.8% 0.025 250.7);
@@ -556,41 +573,41 @@
 
       --blue-contrast: #fff;
       --blue-surface: color(display-p3 0.063 0.125 0.212 / 0.5);
-      --blue-indicator: oklch(65.9% 0.159 250.7);
-      --blue-track: oklch(65.9% 0.159 250.7);
+      --blue-indicator: var(--blue-9);
+      --blue-indicator: var(--blue-9);
 
 
       /* Green */
-      --green-1: oklch(0% 0.017 154.4);
-      --green-2: oklch(18.1% 0.021 154.4);
-      --green-3: oklch(25.6% 0.05 154.4);
-      --green-4: oklch(31% 0.074 154.4);
-      --green-5: oklch(36.1% 0.085 154.4);
-      --green-6: oklch(41.1% 0.095 154.4);
-      --green-7: oklch(46.6% 0.108 154.4);
-      --green-8: oklch(52.7% 0.125 154.4);
-      --green-9: oklch(36.5% 0.085 154.4);
-      --green-10: oklch(42.9% 0.095 154.4);
-      --green-11: oklch(78% 0.125 154.4);
-      --green-12: oklch(90.5% 0.107 154.4);
+      --green-1: oklch(17.66% 0.016 156.9);
+      --green-2: oklch(20.97% 0.0201 153.9);
+      --green-3: oklch(27.15% 0.0513 154.1);
+      --green-4: oklch(31.82% 0.0746 154);
+      --green-5: oklch(36.49% 0.0853 154.4);
+      --green-6: oklch(41.43% 0.0946 154.3);
+      --green-7: oklch(46.76% 0.1065 154.5);
+      --green-8: oklch(52.7% 0.1236 154.4);
+      --green-9: oklch(85.17% 0.2128 154.5);
+      --green-10: oklch(82.2% 0.2086 153.7);
+      --green-11: oklch(78.65% 0.2045 152.5);
+      --green-12: oklch(90.5% 0.1066 154.4);
 
-      --green-a1: color(display-p3 0 0 0 / 0);
-      --green-a2: color(display-p3 0.569 0.996 0.71 / 0.083);
-      --green-a3: color(display-p3 0.49 1 0.635 / 0.161);
-      --green-a4: color(display-p3 0.396 1 0.569 / 0.228);
-      --green-a5: color(display-p3 0.439 1 0.588 / 0.287);
-      --green-a6: color(display-p3 0.467 1 0.616 / 0.346);
-      --green-a7: color(display-p3 0.478 1 0.62 / 0.412);
-      --green-a8: color(display-p3 0.475 1 0.616 / 0.491);
-      --green-a9: color(display-p3 0.447 1 0.596 / 0.291);
-      --green-a10: color(display-p3 0.498 1 0.635 / 0.365);
-      --green-a11: color(display-p3 0.663 1 0.741 / 0.804);
-      --green-a12: color(display-p3 0.753 1 0.808 / 0.953);
+      --green-a1: color(display-p3 0.6824 0.9961 0.7333 / 0.075);
+      --green-a2: color(display-p3 0.7059 1 0.7804 / 0.106);
+      --green-a3: color(display-p3 0.5098 1 0.6431 / 0.177);
+      --green-a4: color(display-p3 0.4353 1 0.5843 / 0.236);
+      --green-a5: color(display-p3 0.4471 1 0.5961 / 0.291);
+      --green-a6: color(display-p3 0.4745 1 0.6196 / 0.35);
+      --green-a7: color(display-p3 0.4863 1 0.6314 / 0.412);
+      --green-a8: color(display-p3 0.4824 1 0.6235 / 0.491);
+      --green-a9: color(display-p3 0.4627 1 0.6235 / 0.946);
+      --green-a10: color(display-p3 0.4627 1 0.6078 / 0.906);
+      --green-a11: color(display-p3 0.4588 1 0.5882 / 0.855);
+      --green-a12: color(display-p3 0.7529 1 0.8078 / 0.953);
 
       --green-contrast: #fff;
       --green-surface: color(display-p3 0.094 0.157 0.11 / 0.5);
-      --green-indicator: oklch(36.5% 0.085 154.4);
-      --green-track: oklch(36.5% 0.085 154.4);
+      --green-indicator: var(--green-9);
+      --green-indicator: var(--green-9);
     }
 
     :root .light,
@@ -625,8 +642,8 @@
 
       --red-contrast: #fff;
       --red-surface: color(display-p3 0.996 0.965 0.965 / 0.8);
-      --red-indicator: oklch(62.6% 0.085 16.93);
-      --red-track: oklch(62.6% 0.085 16.93);
+      --red-indicator: var(--red-9);
+      --red-indicator: var(--red-9);
 
       /* Violet */
       --violet-1: oklch(99.2% 0.003 295);
@@ -657,8 +674,8 @@
 
       --violet-contrast: #fff;
       --violet-surface: color(display-p3 0.973 0.965 0.996 / 0.8);
-      --violet-indicator: oklch(54.2% 0.078 295);
-      --violet-track: oklch(54.2% 0.078 295);
+      --violet-indicator: var(--violet-9);
+      --violet-indicator: var(--violet-9);
 
       /* Yellow */
       --yellow-1: oklch(99.4% 0.003 100.4);
@@ -689,8 +706,8 @@
 
       --yellow-contrast: #262209;
       --yellow-surface: color(display-p3 0.992 0.98 0.902 / 0.8);
-      --yellow-indicator: oklch(85.6% 0.103 100.4);
-      --yellow-track: oklch(85.6% 0.103 100.4);
+      --yellow-indicator: var(--yellow-9);
+      --yellow-indicator: var(--yellow-9);
 
       /* Orange */
       --orange-1: oklch(99.2% 0.002 71.31);
@@ -721,8 +738,8 @@
 
       --orange-contrast: #fff;
       --orange-surface: color(display-p3 0.992 0.961 0.925 / 0.8);
-      --orange-indicator: oklch(68.9% 0.131 71.31);
-      --orange-track: oklch(68.9% 0.131 71.31);
+      --orange-indicator: var(--orange-9);
+      --orange-indicator: var(--orange-9);
 
       /* Blue */
       --blue-1: oklch(99.3% 0.003 240.3);
@@ -753,40 +770,40 @@
 
       --blue-contrast: #fff;
       --blue-surface: color(display-p3 0.953 0.976 0.996 / 0.8);
-      --blue-indicator: oklch(66.9% 0.077 240.3);
-      --blue-track: oklch(66.9% 0.077 240.3);
+      --blue-indicator: var(--blue-9);
+      --blue-indicator: var(--blue-9);
 
       /* Green */
-      --green-1: oklch(99.3% 0.009 154.6);
-      --green-2: oklch(98.2% 0.017 154.6);
-      --green-3: oklch(96% 0.046 154.6);
-      --green-4: oklch(93.4% 0.073 154.6);
-      --green-5: oklch(90% 0.099 154.6);
-      --green-6: oklch(85.7% 0.125 154.6);
-      --green-7: oklch(79.8% 0.149 154.6);
-      --green-8: oklch(71.9% 0.149 154.6);
-      --green-9: oklch(75.5% 0.149 154.6);
-      --green-10: oklch(72% 0.149 154.6);
-      --green-11: oklch(51.9% 0.149 154.6);
-      --green-12: oklch(33.8% 0.09 154.6);
+      --green-1: oklch(99.32% 0.0058 153.8);
+      --green-2: oklch(98.24% 0.0132 152.6);
+      --green-3: oklch(95.94% 0.0492 154.3);
+      --green-4: oklch(93.28% 0.0783 154.7);
+      --green-5: oklch(89.71% 0.0991 154.6);
+      --green-6: oklch(85.28% 0.1144 154.4);
+      --green-7: oklch(79.6% 0.1305 154.3);
+      --green-8: oklch(72.27% 0.1613 154.5);
+      --green-9: oklch(85.17% 0.2128 154.5);
+      --green-10: oklch(82.2% 0.2086 153.7);
+      --green-11: oklch(53.53% 0.135 154);
+      --green-12: oklch(35.16% 0.0668 154.8);
 
-      --green-a1: color(display-p3 0.024 1 0.184 / 0.024);
-      --green-a2: color(display-p3 0.024 0.839 0.184 / 0.048);
-      --green-a3: color(display-p3 0.004 0.871 0.173 / 0.118);
-      --green-a4: color(display-p3 0.008 0.82 0.188 / 0.193);
-      --green-a5: color(display-p3 0.004 0.788 0.176 / 0.275);
-      --green-a6: color(display-p3 0.004 0.741 0.18 / 0.377);
-      --green-a7: color(display-p3 0.004 0.675 0.169 / 0.491);
-      --green-a8: color(display-p3 0 0.553 0.149 / 0.589);
-      --green-a9: color(display-p3 0 0.604 0.153 / 0.542);
-      --green-a10: color(display-p3 0 0.553 0.141 / 0.585);
-      --green-a11: color(display-p3 0 0.357 0.075 / 0.785);
-      --green-a12: color(display-p3 0 0.18 0.043 / 0.899);
+      --green-a1: color(display-p3 0.0235 0.7569 0.0235 / 0.016);
+      --green-a2: color(display-p3 0.0235 0.7098 0.0235 / 0.04);
+      --green-a3: color(display-p3 0.0039 0.8745 0.1647 / 0.122);
+      --green-a4: color(display-p3 0 0.8431 0.1765 / 0.2);
+      --green-a5: color(display-p3 0.0039 0.7765 0.1725 / 0.279);
+      --green-a6: color(display-p3 0.0039 0.698 0.1529 / 0.361);
+      --green-a7: color(display-p3 0.0039 0.6235 0.1412 / 0.455);
+      --green-a8: color(display-p3 0 0.5882 0.1608 / 0.608);
+      --green-a9: color(display-p3 0 0.902 0.2667 / 0.561);
+      --green-a10: color(display-p3 0 0.8392 0.2235 / 0.581);
+      --green-a11: color(display-p3 0 0.3647 0.102 / 0.777);
+      --green-a12: color(display-p3 0 0.1412 0.0353 / 0.855);
 
       --green-contrast: #102719;
       --green-surface: color(display-p3 0.941 0.984 0.953 / 0.8);
-      --green-indicator: oklch(75.5% 0.149 154.6);
-      --green-track: oklch(75.5% 0.149 154.6);
+      --green-indicator: var(--green-9);
+      --green-indicator: var(--green-9);
     }
   }
 }
@@ -831,8 +848,8 @@
 
   --gray-contrast: #FFFFFF;
   --gray-surface: rgba(0, 0, 0, 0.05);
-  --gray-indicator: #6e6e6e;
-  --gray-track: #6e6e6e;
+  --gray-indicator: var(--gray-9);
+  --color-surface: #222;
 }
 
 /* Gray Light Mode L1 */
@@ -841,12 +858,12 @@
 :root.light .radix-themes:where([data-gray-color]),
 :root.light-theme .radix-themes:where([data-gray-color]),
 :root:is(.light, .light-theme) {
-  --gray-1: #fcfcfc;
-  --gray-2: #f9f9f9;
-  --gray-3: #efefef;
+  --gray-1: #FCFCFC;
+  --gray-2: #F9F9F9;
+  --gray-3: #F0F0F0;
   --gray-4: #e8e8e8;
   --gray-5: #e0e0e0;
-  --gray-6: #d8d8d8;
+  --gray-6: #d9d9d9;
   --gray-7: #cecece;
   --gray-8: #bbb;
   --gray-9: #8d8d8d;
@@ -856,10 +873,10 @@
 
   --gray-a1: #00000003;
   --gray-a2: #00000006;
-  --gray-a3: #00000010;
+  --gray-a3: #0000000f;
   --gray-a4: #00000017;
   --gray-a5: #0000001f;
-  --gray-a6: #00000027;
+  --gray-a6: #00000026;
   --gray-a7: #00000031;
   --gray-a8: #00000044;
   --gray-a9: #00000072;
@@ -869,8 +886,8 @@
 
   --gray-contrast: #FFFFFF;
   --gray-surface: #ffffffcc;
-  --gray-indicator: #8d8d8d;
-  --gray-track: #8d8d8d;
+  --gray-indicator: var(--gray-9);
+  --color-surface: #FFF;
 }
 
 @supports (color: color(display-p3 1 1 1)) {
@@ -912,8 +929,7 @@
 
       --gray-contrast: #FFFFFF;
       --gray-surface: color(display-p3 0 0 0 / 5%);
-      --gray-indicator: oklch(53.8% 0 0);
-      --gray-track: oklch(53.8% 0 0);
+      --gray-indicator: var(--gray-9);
     }
 
     /* Gray Light Mode L2 */
@@ -925,10 +941,10 @@
     :root:is(.light, .light-theme) .light-theme {
       --gray-1: oklch(99.1% 0 0);
       --gray-2: oklch(98.1% 0 0);
-      --gray-3: oklch(95.3% 0 0);
+      --gray-3: oklch(95.51% 0 none);
       --gray-4: oklch(93% 0 0);
       --gray-5: oklch(90.8% 0 0);
-      --gray-6: oklch(88.4% 0 0);
+      --gray-6: oklch(88.53% 0 none);
       --gray-7: oklch(85.1% 0 0);
       --gray-8: oklch(79.1% 0 0);
       --gray-9: oklch(64.3% 0 0);
@@ -938,10 +954,10 @@
 
       --gray-a1: color(display-p3 0 0 0 / 0.012);
       --gray-a2: color(display-p3 0 0 0 / 0.024);
-      --gray-a3: color(display-p3 0 0 0 / 0.063);
+      --gray-a3: color(display-p3 0 0 0 / 0.0588);
       --gray-a4: color(display-p3 0 0 0 / 0.09);
       --gray-a5: color(display-p3 0 0 0 / 0.122);
-      --gray-a6: color(display-p3 0 0 0 / 0.153);
+      --gray-a6: color(display-p3 0 0 0 / 0.149);
       --gray-a7: color(display-p3 0 0 0 / 0.192);
       --gray-a8: color(display-p3 0 0 0 / 0.267);
       --gray-a9: color(display-p3 0 0 0 / 0.447);
@@ -951,8 +967,7 @@
 
       --gray-contrast: #FFFFFF;
       --gray-surface: color(display-p3 1 1 1 / 80%);
-      --gray-indicator: oklch(64.3% 0 0);
-      --gray-track: oklch(64.3% 0 0);
+      --gray-indicator: var(--gray-9);
     }
 
   }
