@@ -49,7 +49,6 @@
   --space-80: calc(320px * var(--scaling));
   --space-96: calc(384px * var(--scaling));
 
-  /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
   /* general colors */
   --color-border: var(--gray-6);
   --color-border-hover: var(--gray-8);
