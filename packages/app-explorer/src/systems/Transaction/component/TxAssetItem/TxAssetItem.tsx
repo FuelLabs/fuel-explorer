@@ -32,7 +32,7 @@ export function TxAssetItem({
 
   return (
     <Card {...props} className={cx('gap-2 pb-2', className)}>
-      <EntityItem className="px-4 pb-4 border-b border-gray-8">
+      <EntityItem className="px-4 pb-4 border-b border-border">
         <EntityItem.Slot>
           {asset?.icon ? (
             <Image

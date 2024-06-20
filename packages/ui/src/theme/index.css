@@ -51,7 +51,7 @@
 
   /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
   /* general colors */
-  --color-border: var(--gray-5);
+  --color-border: var(--gray-6);
   --color-border-hover: var(--gray-8);
   --color-transparent: transparent;
   --color-accent: var(--color-brand);

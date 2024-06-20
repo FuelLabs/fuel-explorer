@@ -39,7 +39,7 @@ const styles = tv({
   slots: {
     root: [
       'first:mb-8 flex items-center justify-between gap-2',
-      'border-gray-8 border-b',
+      'border-border border-b',
       'tablet:flex-nowrap tablet:gap-4',
     ],
     icon: ['h-full flex-shrink-0 px-2', 'tablet:self-start tablet:mt-1.5'],
