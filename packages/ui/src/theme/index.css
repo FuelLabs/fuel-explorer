@@ -10,7 +10,7 @@
   --default-font-size: var(--font-size-3);
   --default-font-family: var(--font-geist-sans);
   /* Radix Adjustments */
-  --green-contrast: var(--gray-1);
+  --green-contrast: #111111;
 }
 
 :root {

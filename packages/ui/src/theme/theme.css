@@ -15,7 +15,7 @@
 }
 
 [data-accent-color='brand'] {
-  --accent-contrast: var(--gray-1);
+  --accent-contrast: #111111;
 }
 
 :root .dark,
