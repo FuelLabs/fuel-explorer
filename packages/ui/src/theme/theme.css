@@ -1,5 +1,5 @@
+/* Brand (just a link for the green vars) */
 :root {
-  /* Brand (just a link for the green vars) */
   --brand-1: var(--green-1);
   --brand-2: var(--green-2);
   --brand-3: var(--green-3);
@@ -12,6 +12,10 @@
   --brand-10: var(--green-10);
   --brand-11: var(--green-11);
   --brand-12: var(--green-12);
+}
+
+[data-accent-color='brand'] {
+  --accent-contrast: var(--gray-1);
 }
 
 :root .dark,
