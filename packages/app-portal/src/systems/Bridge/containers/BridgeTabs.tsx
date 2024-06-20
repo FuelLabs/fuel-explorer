@@ -22,7 +22,6 @@ export const BridgeTabs = () => {
 
   return (
     <ToggleGroup
-      type="single"
       defaultValue={getDefaultValue()}
       value={getDefaultValue()}
       className={classes.toggle()}

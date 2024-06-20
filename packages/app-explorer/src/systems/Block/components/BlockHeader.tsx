@@ -2,7 +2,7 @@
 import { Address, LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { IconCube } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { PageSubtitle } from '~/systems/Core/components/PageSubtitle/PageSubtitle';
 import {
   ViewMode,
@@ -18,10 +18,11 @@ export function BlockHeader({
   isLoading?: boolean;
 }) {
   const { mode } = useParams<{ mode: ViewModes }>();
+  const router = useRouter();
   return (
     <PageTitle
       icon={<IconCube size={24} stroke={2.4} />}
-      rightElement={!isLoading && <ViewMode mode={mode} />}
+      rightElement={!isLoading && <ViewMode mode={mode} router={router} />}
     >
       Block
       <LoadingWrapper

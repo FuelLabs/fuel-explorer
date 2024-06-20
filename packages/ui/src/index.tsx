@@ -63,3 +63,4 @@ export * from './components/Toast';
 export * from './components/ToggleGroup';
 export * from './components/Tooltip';
 export * from './utils/component';
+export * from './utils/radixUiThemesTailwindPlugin';

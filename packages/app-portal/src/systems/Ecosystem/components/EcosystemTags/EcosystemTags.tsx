@@ -49,7 +49,7 @@ export const EcosystemTags = ({
 
 export const styles = tv({
   slots: {
-    divider: 'w-[1px] h-2 bg-card-border',
+    divider: 'w-[1px] h-2',
   },
 });
 

@@ -1,3 +1,4 @@
+import { Card as RCard } from '@radix-ui/themes';
 import {
   createComponent,
   createPolymorphicComponent,
@@ -9,7 +10,6 @@ import type { HeadingProps } from '../Heading';
 import { Heading } from '../Heading';
 import { Text } from '../Text';
 import type { TextProps } from '../Text';
-
 import { styles } from './styles';
 
 export type CardProps = BoxProps;
@@ -21,10 +21,13 @@ export type CardFooterProps = BoxProps;
 
 export const CardRoot = createPolymorphicComponent<CardProps, typeof Box>({
   id: 'Card',
-  baseElement: Box,
   className: ({ className }) => styles().root({ className }),
   defaultProps: {
     as: 'article',
+  },
+  render: (_, props) => {
+    const { className, ...rest } = props;
+    return <RCard {...rest} className={className} />;
   },
 });
 

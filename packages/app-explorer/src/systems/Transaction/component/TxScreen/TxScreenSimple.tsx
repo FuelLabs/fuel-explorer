@@ -297,7 +297,7 @@ function MintOutputs({
             </AssetItem>
           )}
           <HStack className="hidden tablet:flex items-center gap-2">
-            <Icon icon={IconArrowUp} className="text-success" />
+            <Icon color="text-success" icon={IconArrowUp} />
             <Amount
               hideSymbol
               hideIcon
@@ -307,7 +307,7 @@ function MintOutputs({
             <HelperIcon message="This is the amount minted in the transaction" />
           </HStack>
         </Card.Header>
-        <Card.Body className="flex flex-col gap-1 border-t border-border pt-3">
+        <Card.Body className="flex flex-col gap-1 border-t border-gray-8 pt-3">
           {hasInputContract && (
             <HStack>
               <Text as="span" className="text-sm">

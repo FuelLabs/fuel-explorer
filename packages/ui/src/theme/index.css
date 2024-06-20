@@ -1,16 +1,18 @@
 @import "tailwindcss/base";
 @import "@radix-ui/themes/styles.css";
 @import "../components/Spinner/Spinner.css";
+@import "./theme.css";
 @tailwind components;
 @tailwind utilities;
 
 :root,
 .radix-themes {
   --default-font-size: var(--font-size-3);
-  --default-font-family: var(--font-sans);
+  --default-font-family: var(--font-geist-sans);
 }
 
 :root {
+
   --screen-mobile: 300px;
   --screen-tablet: 640px;
   --screen-laptop: 960px;
@@ -46,59 +48,26 @@
   --space-72: calc(288px * var(--scaling));
   --space-80: calc(320px * var(--scaling));
   --space-96: calc(384px * var(--scaling));
-}
 
-.dark [data-accent-color],
-.dark-theme [data-accent-color] {
-  --inverse: white;
-  --inverse-a1: var(--white-a1);
-  --inverse-a2: var(--white-a2);
-  --inverse-a3: var(--white-a3);
-  --inverse-a4: var(--white-a4);
-  --inverse-a5: var(--white-a5);
-  --inverse-a6: var(--white-a6);
-  --inverse-a7: var(--white-a7);
-  --inverse-a8: var(--white-a8);
-  --inverse-a9: var(--white-a9);
-  --inverse-a10: var(--white-a10);
-  --inverse-a11: var(--white-a11);
-  --inverse-a12: var(--white-a12);
-  --color-brand: #00e182;
-  --color-panel-solid: var(--gray-2);
-}
-
-.light [data-accent-color],
-.light-theme [data-accent-color] {
-  --inverse: black;
-  --inverse-a1: var(--black-a1);
-  --inverse-a2: var(--black-a2);
-  --inverse-a3: var(--black-a3);
-  --inverse-a4: var(--black-a4);
-  --inverse-a5: var(--black-a5);
-  --inverse-a6: var(--black-a6);
-  --inverse-a7: var(--black-a7);
-  --inverse-a8: var(--black-a8);
-  --inverse-a9: var(--black-a9);
-  --inverse-a10: var(--black-a10);
-  --inverse-a11: var(--black-a11);
-  --inverse-a12: var(--black-a12);
-  --color-brand: var(--grass-9);
-  --color-panel-solid: white;
-}
-
-:root,
-[data-accent-color] {
+  /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
   /* general colors */
-  --color-transparent: transparent;
-  --color-accent: var(--color-brand);
   --color-border: var(--gray-5);
   --color-border-hover: var(--gray-8);
+  --color-transparent: transparent;
+  --color-accent: var(--color-brand);
+
+  /* card colors */
+  --color-card-border: var(--color-border);
+  --color-card-border-hover: var(--gray-8);
+  --color-card-title: var(--gray-1);
+  --color-card-bg: var(--color-panel-solid);
 
   /* text colors */
+  --color-brand: var(--green-11);
+  --color-heading: var(--gray-12);
   --color-color: var(--gray-11);
   --color-secondary: var(--gray-10);
-  --color-muted: var(--gray-9);
-  --color-heading: var(--inverse);
+  --color-muted: var(--gray-10);
   --color-icon: var(--gray-9);
   --color-link: var(--color-brand);
 
@@ -120,34 +89,5 @@
   --color-error-contrast: var(--red-9-contrast);
   --color-error-border: var(--red-8);
 
-  /* card colors */
-  --color-card-bg: var(--color-panel-solid);
-  --color-card-title: var(--gray-1);
-  --color-card-border: var(--color-border);
-}
 
-.dark [data-accent-color="grass"],
-.dark-theme [data-accent-color="grass"] {
-  --accent-9-contrast: black;
-  --accent-9: var(--color-brand);
-  --accent-10: #00cd75;
-}
-
-.dark body,
-.dark-theme body {
-  --color-page-background: #0e0e0e;
-  background: var(--color-page-background) !important;
-}
-
-.light body,
-.light-body {
-  --color-page-background: var(--gray-2);
-  background: var(--color-page-background) !important;
-}
-
-body,
-html,
-.radix-themes {
-  font-size: var(--default-font-size);
-  color: var(--color-color);
 }
