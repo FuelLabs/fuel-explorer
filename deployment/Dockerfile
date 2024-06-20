@@ -5,8 +5,8 @@ FROM node:20-slim AS base
 # Expose the ENVs to the env of the container
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV SYNCER_PORT="${SYNCER_PORT}"
-ENV SERVER_PORT="${SERVER_PORT}"
+ENV SYNCER_PORT="${SYNCER_PORT:-3000}"
+ENV SERVER_PORT="${SERVER_PORT:-3001}"
 ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://testnet.fuel.network/v1/graphql}"
 ENV SERVER_BUILD=true
 ENV SYNC_MISSING=false
@@ -23,6 +23,7 @@ RUN pnpm install --ignore-scripts
 
 # Expose the specified port
 EXPOSE ${SYNCER_PORT}
+EXPOSE ${SERVER_PORT}
 
 # Start GraphQL server
 WORKDIR /app-explorer
