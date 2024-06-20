@@ -1,10 +1,6 @@
 import { ToggleGroup } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
-
-export enum ViewModes {
-  Simple = 'simple',
-  Advanced = 'advanced',
-}
+import { ViewModes } from './constants';
 
 export function ViewMode({
   mode,

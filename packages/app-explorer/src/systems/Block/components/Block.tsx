@@ -1,7 +1,7 @@
 'use client';
 
 import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
-import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
+import { ViewModes } from '~/systems/Core/components/ViewMode/constants';
 
 import { BlockHeader } from './BlockHeader';
 import { BlockScreenAdvanced } from './BlockScreenAdvanced';

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { Routes } from '~/routes';
-import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
+import { ViewModes } from '~/systems/Core/components/ViewMode/constants';
 import { TxScreenLoader } from '~/systems/Transaction/component/TxScreen/TxScreenLoader';
 import { TxScreenAdvancedSync } from '~/systems/Transaction/screens/TxScreenAdvancedSync';
 import { TxScreenSimpleSync } from '~/systems/Transaction/screens/TxScreenSimpleSync';

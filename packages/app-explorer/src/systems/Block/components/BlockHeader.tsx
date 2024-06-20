@@ -4,10 +4,9 @@ import { IconCube } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
 import { useParams, useRouter } from 'next/navigation';
 import { PageSubtitle } from '~/systems/Core/components/PageSubtitle/PageSubtitle';
-import {
-  ViewMode,
-  type ViewModes,
-} from '~/systems/Core/components/ViewMode/ViewMode';
+import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
+import type { ViewModes } from '~/systems/Core/components/ViewMode/constants';
+
 import { isValidAddress } from '~/systems/Core/utils/address';
 
 export function BlockHeader({

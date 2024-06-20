@@ -5,7 +5,7 @@ import { BlockScreenSimple } from '~/systems/Block/components/BlockScreenSimple'
 import { BlockScreenAdvancedSync } from '~/systems/Block/screens/BlockScreenAdvancedSync';
 import { BlockScreenSimpleSync } from '~/systems/Block/screens/BlockScreenSimpleSync';
 import type { BlockRouteProps } from '~/systems/Block/types';
-import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
+import { ViewModes } from '~/systems/Core/components/ViewMode/constants';
 
 export default async function Block({ params: { id, mode } }: BlockRouteProps) {
   switch (mode) {
