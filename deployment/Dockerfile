@@ -20,6 +20,7 @@ WORKDIR /app-explorer
 
 # Install dependencies for the entire monorepo
 RUN pnpm install --ignore-scripts
+RUN pnpm install -g pm2
 
 # Expose the specified port
 EXPOSE ${SYNCER_PORT}
