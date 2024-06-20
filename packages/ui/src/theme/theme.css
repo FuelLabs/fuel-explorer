@@ -844,18 +844,18 @@
   --gray-11: #646464;
   --gray-12: #202020;
 
-  --green-a1: #00000000;
-  --green-a2: #00000003;
-  --green-a3: #0000000c;
-  --green-a4: #00000014;
-  --green-a5: #0000001c;
-  --green-a6: #00000023;
-  --green-a7: #0000002f;
-  --green-a8: #00000042;
-  --green-a9: #00000070;
-  --green-a10: #0000007a;
-  --green-a11: #0000009a;
-  --green-a12: #000000df;
+  --gray-a1: #00000000;
+  --gray-a2: #00000003;
+  --gray-a3: #0000000c;
+  --gray-a4: #00000014;
+  --gray-a5: #0000001c;
+  --gray-a6: #00000023;
+  --gray-a7: #0000002f;
+  --gray-a8: #00000042;
+  --gray-a9: #00000070;
+  --gray-a10: #0000007a;
+  --gray-a11: #0000009a;
+  --gray-a12: #000000df;
 
   --gray-contrast: #FFFFFF;
   --gray-surface: #ffffffcc;
@@ -912,31 +912,31 @@
     :root:is(.light, .light-theme).light-theme .radix-themes:where([data-gray-color]),
     :root:is(.light, .light-theme) .light,
     :root:is(.light, .light-theme) .light-theme {
-      --green-1: oklch(99.11% 0 none);
-      --green-2: oklch(98.21% 0 none);
-      --green-3: oklch(95.51% 0 none);
-      --green-4: oklch(93.1% 0 none);
-      --green-5: oklch(90.67% 0 none);
-      --green-6: oklch(88.53% 0 none);
-      --green-7: oklch(85.14% 0 none);
-      --green-8: oklch(79.21% 0 none);
-      --green-9: oklch(64.34% 0 none);
-      --green-10: oklch(61% 0 none);
-      --green-11: oklch(50.32% 0 none);
-      --green-12: oklch(24.35% 0 none);
+      --gray-1: oklch(99.11% 0 none);
+      --gray-2: oklch(98.21% 0 none);
+      --gray-3: oklch(95.51% 0 none);
+      --gray-4: oklch(93.1% 0 none);
+      --gray-5: oklch(90.67% 0 none);
+      --gray-6: oklch(88.53% 0 none);
+      --gray-7: oklch(85.14% 0 none);
+      --gray-8: oklch(79.21% 0 none);
+      --gray-9: oklch(64.34% 0 none);
+      --gray-10: oklch(61% 0 none);
+      --gray-11: oklch(50.32% 0 none);
+      --gray-12: oklch(24.35% 0 none);
 
-      --green-a1: color(display-p3 0 0 0 / 0);
-      --green-a2: color(display-p3 0 0 0 / 0.0119);
-      --green-a3: color(display-p3 0 0 0 / 0.0476);
-      --green-a4: color(display-p3 0 0 0 / 0.0794);
-      --green-a5: color(display-p3 0 0 0 / 0.1111);
-      --green-a6: color(display-p3 0 0 0 / 0.1389);
-      --green-a7: color(display-p3 0 0 0 / 0.1825);
-      --green-a8: color(display-p3 0 0 0 / 0.2579);
-      --green-a9: color(display-p3 0 0 0 / 0.4405);
-      --green-a10: color(display-p3 0 0 0 / 0.4802);
-      --green-a11: color(display-p3 0 0 0 / 0.6032);
-      --green-a12: color(display-p3 0 0 0 / 0.873);
+      --gray-a1: color(display-p3 0 0 0 / 0);
+      --gray-a2: color(display-p3 0 0 0 / 0.0119);
+      --gray-a3: color(display-p3 0 0 0 / 0.0476);
+      --gray-a4: color(display-p3 0 0 0 / 0.0794);
+      --gray-a5: color(display-p3 0 0 0 / 0.1111);
+      --gray-a6: color(display-p3 0 0 0 / 0.1389);
+      --gray-a7: color(display-p3 0 0 0 / 0.1825);
+      --gray-a8: color(display-p3 0 0 0 / 0.2579);
+      --gray-a9: color(display-p3 0 0 0 / 0.4405);
+      --gray-a10: color(display-p3 0 0 0 / 0.4802);
+      --gray-a11: color(display-p3 0 0 0 / 0.6032);
+      --gray-a12: color(display-p3 0 0 0 / 0.873);
 
       --gray-contrast: #FFFFFF;
       --gray-surface: color(display-p3 1 1 1 / 80%);
