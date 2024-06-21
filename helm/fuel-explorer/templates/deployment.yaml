@@ -47,6 +47,12 @@ spec:
               name: node-cache
             - mountPath: /tmp
               name: tmp
+            - mountPath: /app-explorer/dist
+              name: dist
+            - mountPath: /app-explorer/src/graphql
+              name: graphql
+            - mountPath: /app-explorer/node_modules
+              name: node_modules
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -54,6 +60,12 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
+        - name: dist
+          emptyDir: { }
+        - name: graphql
+          emptyDir: { }
+        - name: node_modules
+          emptyDir: { }
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
