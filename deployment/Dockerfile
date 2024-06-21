@@ -14,19 +14,14 @@ ENV SYNC_MISSING=false
 # Enable pnpm using corepack form node.js
 RUN corepack enable
 
-# Install dependencies for the entire monorepo
-COPY . /app-explorer
-WORKDIR /app-explorer
+FROM base AS build
+COPY . /app
+WORKDIR /app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# Install dependencies for the entire monorepo
-RUN pnpm install --ignore-scripts
-
-# Expose the specified port
+FROM base AS explorer
+COPY --from=build /app /app-explorer
+WORKDIR /app-explorer/packages/graphql
 EXPOSE ${SYNCER_PORT}
 EXPOSE ${SERVER_PORT}
-
-# Start GraphQL server
-WORKDIR /app-explorer
-
 CMD ["sh", "./scripts/run.sh"]
-
