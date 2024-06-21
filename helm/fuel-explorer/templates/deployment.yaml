@@ -53,8 +53,6 @@ spec:
               name: dist
             - mountPath: /app-explorer/src/graphql
               name: graphql
-            - mountPath: /app-explorer/node_modules
-              name: node-modules
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -67,8 +65,6 @@ spec:
         - name: dist
           emptyDir: {}
         - name: graphql
-          emptyDir: {}
-        - name: node-modules
           emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
