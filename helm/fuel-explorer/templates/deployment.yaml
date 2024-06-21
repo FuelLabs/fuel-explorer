@@ -45,6 +45,8 @@ spec:
           volumeMounts:
             - mountPath: /home/node/.cache
               name: node-cache
+            - mountPath: /home/node/.pm2
+              name: pm2
             - mountPath: /tmp
               name: tmp
             - mountPath: /app-explorer/dist
@@ -58,14 +60,16 @@ spec:
       volumes:
         - name: node-cache
           emptyDir: {}
+        - name: pm2
+          emptyDir: {}
         - name: tmp
           emptyDir: {}
         - name: dist
-          emptyDir: { }
+          emptyDir: {}
         - name: graphql
-          emptyDir: { }
+          emptyDir: {}
         - name: node_modules
-          emptyDir: { }
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
