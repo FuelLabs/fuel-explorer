@@ -9,7 +9,8 @@ export function ViewMode({ mode }: { mode: ViewModes }) {
   const router = useRouter();
   const isMounted = useRef(false);
 
-  if (!isMounted.current) {
+  // Prefetching as soon as possible(useEffect is slow), but only on the client side
+  if (!isMounted.current && typeof window !== 'undefined') {
     router.prefetch(`./${ViewModes.Simple}`);
     router.prefetch(`./${ViewModes.Advanced}`);
   }
