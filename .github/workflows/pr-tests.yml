@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [main, master, release]
     types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - release
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
