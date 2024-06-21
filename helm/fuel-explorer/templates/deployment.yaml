@@ -49,10 +49,6 @@ spec:
               name: pm2
             - mountPath: /tmp
               name: tmp
-            - mountPath: /app-explorer/dist
-              name: dist
-            - mountPath: /app-explorer/src/graphql
-              name: graphql
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -61,10 +57,6 @@ spec:
         - name: pm2
           emptyDir: {}
         - name: tmp
-          emptyDir: {}
-        - name: dist
-          emptyDir: {}
-        - name: graphql
           emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
