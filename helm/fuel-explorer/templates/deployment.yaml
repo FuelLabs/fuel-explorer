@@ -45,12 +45,16 @@ spec:
           volumeMounts:
             - mountPath: /home/node/.cache
               name: node-cache
+            - mountPath: /home/node/.pm2
+              name: pm2
             - mountPath: /tmp
               name: tmp
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: node-cache
+          emptyDir: {}
+        - name: pm2
           emptyDir: {}
         - name: tmp
           emptyDir: {}
