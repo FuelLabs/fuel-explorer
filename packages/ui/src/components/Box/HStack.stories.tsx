@@ -15,7 +15,7 @@ const DecorativeBox = (props: HStackProps) => {
   return (
     <HStack
       {...props}
-      className={`w-full h-full bg-gray-a4 border border-dashed border-gray-8 ${props.className}`}
+      className={`w-full h-full bg-gray-a4 border border-dashed border-border ${props.className}`}
     />
   );
 };

@@ -23,7 +23,7 @@ export const Usage: Story = {
         <Inset side="left">
           <Flex
             align="center"
-            className="bg-black/30 border-r border-gray-8 h-full p-7"
+            className="bg-black/30 border-r border-border h-full p-7"
             justify="center"
           >
             <Icon icon={IconBrandGithub} size={50} />

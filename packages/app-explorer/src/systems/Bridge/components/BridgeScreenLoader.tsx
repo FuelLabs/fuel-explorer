@@ -17,9 +17,9 @@ export function BridgeScreenLoader({ view }: { view: 'history' | 'bridge' }) {
         <BridgeTxItemsLoading />
       ) : (
         <VStack gap="4">
-          <LoadingBox className="w-full h-[44px]" />
-          <LoadingBox className="w-full h-[200px]" />
-          <LoadingBox className="w-full h-[136px]" />
+          <LoadingBox className="w-full h-[var(--space-6)]" />
+          <LoadingBox className="w-full h-[201px]" />
+          <LoadingBox className="w-full h-[151px]" />
         </VStack>
       )}
     </Box>

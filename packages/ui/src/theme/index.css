@@ -9,6 +9,8 @@
 .radix-themes {
   --default-font-size: var(--font-size-3);
   --default-font-family: var(--font-geist-sans);
+  /* Radix Adjustments */
+  --green-contrast: #111111;
 }
 
 :root {
@@ -49,9 +51,8 @@
   --space-80: calc(320px * var(--scaling));
   --space-96: calc(384px * var(--scaling));
 
-  /* @TODO: Define if we'll continue using semantic vars for colors, or if we'll refer directly to specific color tokens */
   /* general colors */
-  --color-border: var(--gray-5);
+  --color-border: var(--gray-6);
   --color-border-hover: var(--gray-8);
   --color-transparent: transparent;
   --color-accent: var(--color-brand);
@@ -63,6 +64,8 @@
   --color-card-bg: var(--color-panel-solid);
 
   /* text colors */
+  --text-primary: var(--gray-12);
+  --text-secondary: var(--gray-10);
   --color-brand: var(--green-11);
   --color-heading: var(--gray-12);
   --color-color: var(--gray-11);
@@ -88,6 +91,5 @@
   --color-error-muted: var(--red-8);
   --color-error-contrast: var(--red-9-contrast);
   --color-error-border: var(--red-8);
-
 
 }

@@ -11,7 +11,7 @@ export const styles = tv({
     item: ['overflow-hidden rounded-none not-first:mt-1'],
     trigger: [
       'group bg-card-bg rounded-md transition-colors px-4 flex text-lg font-medium',
-      'w-full h-[45px] items-center justify-between border border-gray-8',
+      'w-full h-[45px] items-center justify-between border border-border',
       'focus:outline-none text-heading hover:text-accent',
       'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent',
     ],

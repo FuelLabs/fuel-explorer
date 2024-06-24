@@ -303,7 +303,7 @@ function MintOutputs({
             <HelperIcon message="This is the amount minted in the transaction" />
           </HStack>
         </Card.Header>
-        <Card.Body className="flex flex-col gap-1 border-t border-gray-8 pt-3">
+        <Card.Body className="flex flex-col gap-1 border-t border-border pt-3">
           {hasInputContract && (
             <HStack>
               <Text as="span" className="text-sm">
