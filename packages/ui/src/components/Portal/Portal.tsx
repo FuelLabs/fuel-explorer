@@ -1,4 +1,4 @@
-import { Portal as RadixPortal } from '@radix-ui/themes';
+import { Portal as RadixPortal } from '@radix-ui/react-portal';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
