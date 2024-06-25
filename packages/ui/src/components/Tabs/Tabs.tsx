@@ -102,7 +102,7 @@ const styles = tv({
         ],
       },
       line: {
-        list: ['border-b border-gray-8'],
+        list: ['border-b border-border'],
         trigger: [
           'transition-colors',
           'fuel-[Icon]:mr-2',

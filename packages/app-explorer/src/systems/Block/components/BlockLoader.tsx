@@ -1,4 +1,4 @@
-import { ViewModes } from '~/systems/Core/components/ViewMode/ViewMode';
+import { ViewModes } from '~/systems/Core/components/ViewMode/constants';
 
 import { Block } from './Block';
 

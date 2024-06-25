@@ -183,7 +183,7 @@ const styles = tv({
     details: 'flex flex-col justify-between flex-1',
     link: 'underline p-0 pointer-events-none text-sm',
     dot: [
-      'w-1 h-1 rounded-full border border-solid border-gray-8',
+      'w-1 h-1 rounded-full border border-solid border-border',
       'bg-green-500 shadow-[0_0_4px_0_#00F58C]',
     ],
     tag: ['rounded-sm py-1 px-2 pointer-events-none'],

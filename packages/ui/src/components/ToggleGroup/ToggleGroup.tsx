@@ -4,7 +4,9 @@ import type { PropsOf } from '../../utils/types';
 import { styles } from './styles';
 
 export type ToggleGroupProps = PropsOf<typeof SC.Root>;
-export type ToggleGroupItemProps = PropsOf<typeof SC.Item>;
+export type ToggleGroupItemProps = PropsOf<typeof SC.Item> & {
+  asChild?: boolean;
+};
 
 export const ToggleGroupRoot = createComponent<
   ToggleGroupProps,

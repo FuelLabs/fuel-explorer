@@ -1,15 +1,24 @@
+'use client';
+
 import { ToggleGroup } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import { ViewModes } from './constants';
 
-export enum ViewModes {
-  Simple = 'simple',
-  Advanced = 'advanced',
-}
+export function ViewMode({ mode }: { mode: ViewModes }) {
+  const router = useRouter();
+  const isMounted = useRef(false);
 
-export function ViewMode({
-  mode,
-  router,
-}: { mode: ViewModes; router: ReturnType<typeof useRouter> }) {
+  // Prefetching as soon as possible(useEffect is slow), but only on the client side
+  if (!isMounted.current && typeof window !== 'undefined') {
+    router.prefetch(`./${ViewModes.Simple}`);
+    router.prefetch(`./${ViewModes.Advanced}`);
+  }
+
+  useEffect(() => {
+    isMounted.current = true;
+  }, []);
+
   return (
     <ToggleGroup defaultValue={mode} aria-label="View mode">
       <ToggleGroup.Item

@@ -69,7 +69,7 @@ export const Bridge = () => {
           </Card.Body>
         </Card>
       ) : (
-        <LoadingBox className="w-full h-[196px]" />
+        <LoadingBox className="w-full h-[201px]" />
       )}
       <Card>
         <Card.Body as={VStack} className="gap-2">

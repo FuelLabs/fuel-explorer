@@ -1,4 +1,4 @@
-import type { ViewModes } from '../Core/components/ViewMode/ViewMode';
+import type { ViewModes } from '../Core/components/ViewMode/constants';
 
 export type BlockRouteParams = {
   id: string;

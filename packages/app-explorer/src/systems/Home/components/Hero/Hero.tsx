@@ -31,7 +31,7 @@ export function Hero() {
 
 const styles = tv({
   slots: {
-    root: 'hero-bg overflow-clip relative w-full border-b border-gray-8',
+    root: 'hero-bg overflow-clip relative w-full border-b border-border',
     container: [
       'z-20 relative py-8 pt-6 px-8 tablet:py-28 tablet:pt-24 tablet:px-10',
       'tablet:max-laptop:max-w-[500px] [&_.rt-ContainerInner]:p-2',
