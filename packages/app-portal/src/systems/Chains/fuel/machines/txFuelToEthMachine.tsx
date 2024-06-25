@@ -119,10 +119,10 @@ export const txFuelToEthMachine = createMachine(
                 },
                 {
                   actions: [
+                    'notifyFuelTxSuccess',
                     'assignFuelTxResult',
                     'assignMessageId',
                     'assignNonce',
-                    'notifyFuelTxSuccess',
                   ],
                   cond: 'hasTxResultInfo',
                   target: 'checkingDoneCache',

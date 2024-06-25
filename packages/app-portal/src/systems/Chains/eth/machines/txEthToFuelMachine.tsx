@@ -121,7 +121,7 @@ export const txEthToFuelMachine = createMachine(
                   cond: FetchMachine.hasError,
                 },
                 {
-                  actions: ['assignReceiptsInfo', 'notifyEthTxSuccess'],
+                  actions: ['notifyEthTxSuccess', 'assignReceiptsInfo'],
                   cond: 'hasEthTxNonce',
                   target: 'gettingFuelMessageStatus',
                 },
