@@ -4,8 +4,10 @@ import { Env } from './core/Env';
 const falsy = zod.coerce.string().transform((value) => value === 'true');
 
 const schema = zod.object({
+  NODE_ENV: zod.string().default('development').optional(),
   FUEL_PROVIDER: zod.string(),
   SERVER_PORT: zod.string(),
+  SERVER_API_KEY: zod.string().optional().nullable(),
   SYNCER_PORT: zod.string(),
   DB_HOST: zod.string(),
   DB_PORT: zod.string(),
@@ -26,8 +28,10 @@ const schema = zod.object({
 });
 
 export const env = new Env(schema, {
+  NODE_ENV: 'development',
   FUEL_PROVIDER: 'http://localhost:4000/v1/graphql',
   SERVER_PORT: '3002',
+  SERVER_API_KEY: 'secret',
   SYNCER_PORT: '3003',
   DB_HOST: 'localhost',
   DB_PORT: '5435',

@@ -15,6 +15,7 @@ const PORT = env.get('RABBITMQ_PORT');
 const USER = env.get('RABBITMQ_USER');
 const PASS = env.get('RABBITMQ_PASS');
 const MAX_WORKERS = Number(env.get('QUEUE_CONCURRENCY'));
+const PROTOCOL = env.get('NODE_ENV') !== 'development' ? 'amqps' : 'amqp';
 
 type Payload<D = unknown> = {
   type: QueueNames;
@@ -65,7 +66,7 @@ class RabbitMQConnection {
 
     try {
       console.log('⌛️ Connecting to Rabbit-MQ Server');
-      const url = `amqps://${USER}:${PASS}@${HOST}:${PORT}`;
+      const url = `${PROTOCOL}://${USER}:${PASS}@${HOST}:${PORT}`;
       this.connection = await client.connect(url);
       console.log('✅ Rabbit MQ Connection is ready');
       await this.createChannel(ChannelNames.main, 5);

@@ -38,7 +38,7 @@ export class Db {
       user: DB_USER,
       password: DB_PASS,
       database: DB_NAME,
-      ssl: true,
+      ssl: env.get('NODE_ENV') !== 'development',
     });
   }
 

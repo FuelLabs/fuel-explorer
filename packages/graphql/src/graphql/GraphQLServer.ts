@@ -20,8 +20,8 @@ export class GraphQLServer {
     return createYoga({
       schema,
       logging: true,
-      context: async () => {
-        return GraphQLContextFactory.create();
+      context: async ({ request }) => {
+        return GraphQLContextFactory.create(request);
       },
     });
   }
