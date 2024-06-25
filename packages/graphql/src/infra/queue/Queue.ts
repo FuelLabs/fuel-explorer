@@ -65,7 +65,7 @@ class RabbitMQConnection {
 
     try {
       console.log('⌛️ Connecting to Rabbit-MQ Server');
-      const url = `amqp://${USER}:${PASS}@${HOST}:${PORT}`;
+      const url = `amqps://${USER}:${PASS}@${HOST}:${PORT}`;
       this.connection = await client.connect(url);
       console.log('✅ Rabbit MQ Connection is ready');
       await this.createChannel(ChannelNames.main, 5);
