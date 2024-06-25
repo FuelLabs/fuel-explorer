@@ -2,13 +2,15 @@ module.exports = {
   apps: [
     {
       name: 'graphql',
-      script: './src/app.ts',
-      interpreter: 'tsx',
+      script: './dist/app.js',
+      instances: 'max',
+      exec_mode: 'cluster',
     },
     {
       name: 'syncer',
-      script: './src/syncer.ts',
-      interpreter: 'tsx',
+      script: './dist/syncer.js',
+      instances: 'max',
+      exec_mode: 'cluster',
     },
   ],
 };

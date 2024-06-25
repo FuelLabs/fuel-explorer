@@ -13,7 +13,7 @@ type WorkerEvents = {
 };
 
 export const worker = Workery.build<WorkerEvents>({
-  handler: path.resolve(__dirname, '../../application/uc/RunSyncMachine.ts'),
+  handler: path.resolve(process.cwd(), 'src/application/uc/RunSyncMachine.ts'),
 });
 
 worker.on('ADD_BLOCK_RANGE', async (payloads) => {

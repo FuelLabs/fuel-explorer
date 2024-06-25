@@ -14,7 +14,7 @@ type Opts = {
 export class Workery<E extends Events> {
   worker!: Worker;
   constructor(private readonly opts: Opts) {
-    const filepath = path.resolve(__filename);
+    const filepath = path.resolve(process.cwd(), 'src/core/Workery.ts');
     const content = `require('tsx/cjs');require('${filepath}').register();`;
     this.worker = new Worker(content, {
       eval: true,

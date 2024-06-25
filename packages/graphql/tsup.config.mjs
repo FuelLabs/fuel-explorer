@@ -11,5 +11,9 @@ export default defineConfig(() => ({
   clean: false,
   dts: !isServerBuild,
   minify: false,
-  entry: { index: 'src/index.ts' },
+  entry: {
+    index: 'src/index.ts',
+    app: 'src/app.ts',
+    syncer: 'src/syncer.ts',
+  },
 }));
