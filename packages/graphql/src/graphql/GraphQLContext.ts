@@ -13,7 +13,6 @@ export class GraphQLContextFactory {
     const secret = env.get('SERVER_API_KEY');
     const bearer = `Bearer ${secret}`;
     const token = req.headers.get('Authorization');
-
     if (!token || token !== bearer) {
       throw new Error('Authorization header is required');
     }
