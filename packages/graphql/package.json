@@ -102,6 +102,7 @@
     "@types/pg": "^8.11.6",
     "chalk": "5.3.0",
     "drizzle-kit": "^0.22.7",
+    "fs-extra": "11.2.0",
     "gql-generator": "2.0.0",
     "graphql": "^16.8.2",
     "graphql-codegen-typescript-mock-data": "3.8.0",
