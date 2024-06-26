@@ -6,9 +6,11 @@ import type { GraphQLSchema } from 'graphql';
 import { createYoga } from 'graphql-yoga';
 import { GraphQLContextFactory } from './GraphQLContext';
 
-const typesArray = loadFilesSync(join(__dirname, './schemas'));
+const typesArray = loadFilesSync(join(process.cwd(), 'src/graphql/schemas'));
 const typeDefs = mergeTypeDefs(typesArray);
-const resolversArray = loadFilesSync(join(__dirname, './resolvers'));
+const resolversArray = loadFilesSync(
+  join(process.cwd(), 'src/graphql/resolvers'),
+);
 const resolvers = mergeResolvers(resolversArray);
 
 export class GraphQLServer {

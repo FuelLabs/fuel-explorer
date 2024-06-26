@@ -3,14 +3,12 @@ module.exports = {
     {
       name: 'graphql',
       script: './dist/app.js',
-      instances: 'max',
+      instances: '1',
       exec_mode: 'cluster',
     },
     {
       name: 'syncer',
       script: './dist/syncer.js',
-      instances: 'max',
-      exec_mode: 'cluster',
     },
   ],
 };
