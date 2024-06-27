@@ -89,7 +89,24 @@ export class Program {
           process.exit(0);
         },
       })
-
+      .command({
+        command: 'sql',
+        describe: 'Exec custom SQL',
+        builder: (yargs) => {
+          return yargs.option('sql', {
+            alias: 's',
+            type: 'string',
+            demandOption: true,
+            describe: 'SQL to execute',
+          });
+        },
+        handler: async (argv) => {
+          await db.connect();
+          await db.execSQL(argv.sql);
+          await db.close();
+          process.exit(0);
+        },
+      })
       .help('help')
       .parse();
   }

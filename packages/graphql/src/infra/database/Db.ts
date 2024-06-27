@@ -32,14 +32,18 @@ export class Db {
   private static instance: Db;
 
   constructor() {
-    this.#connection = new Client({
+    this.#connection = new Client(this.connectionOpts);
+  }
+
+  get connectionOpts() {
+    return {
       host: DB_HOST,
       port: Number(DB_PORT),
       user: DB_USER,
       password: DB_PASS,
       database: DB_NAME,
-      ssl: env.get('NODE_ENV') !== 'development',
-    });
+      ssl: env.get('SSL'),
+    };
   }
 
   connection() {
@@ -78,8 +82,13 @@ export class Db {
     await this.migrate();
   }
 
-  connectionString() {
-    return `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+  async execSQL(raw: string) {
+    console.log('🚨 Executing SQL...');
+    console.log(raw);
+    const query = sql.raw(`${raw}`);
+    const res = await this.connection().execute(query);
+    console.log('✅ Executed SQL');
+    console.log(res);
   }
 
   static getInstance() {

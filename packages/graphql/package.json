@@ -34,6 +34,7 @@
     "db:push": "drizzle-kit push",
     "db:setup": "run-s codegen db:generate",
     "db:clean": "tsx ./src/cli.ts clean-db",
+    "db:sql": "tsx ./src/cli.ts sql",
     "dev:graphql": "APP=graphql pm2 start ecosystem-dev.config.cjs",
     "dev:syncer": "APP=syncer pm2 start ecosystem-dev.config.cjs",
     "pm2:start": "pm2 start ecosystem.config.cjs --update-env",

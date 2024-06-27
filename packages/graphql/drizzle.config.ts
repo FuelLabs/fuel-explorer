@@ -5,7 +5,5 @@ export default {
   schema: './src/infra/database/DbSchema.ts',
   out: './drizzle',
   dialect: 'postgresql',
-  dbCredentials: {
-    url: db.connectionString(),
-  },
+  dbCredentials: db.connectionOpts,
 } satisfies Config;

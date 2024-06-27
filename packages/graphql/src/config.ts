@@ -4,7 +4,6 @@ import { Env } from './core/Env';
 const falsy = zod.coerce.string().transform((value) => value === 'true');
 
 const schema = zod.object({
-  NODE_ENV: zod.string().default('development').optional(),
   FUEL_PROVIDER: zod.string(),
   SERVER_PORT: zod.string(),
   SERVER_API_KEY: zod.string().optional().nullable(),
@@ -25,10 +24,10 @@ const schema = zod.object({
   SYNC_LIMIT: zod.string().optional(),
   QUEUE_CONCURRENCY: zod.string().optional(),
   WATCH_INTERVAL: zod.string().optional(),
+  SSL: falsy.optional(),
 });
 
 export const env = new Env(schema, {
-  NODE_ENV: 'development',
   FUEL_PROVIDER: 'http://localhost:4000/v1/graphql',
   SERVER_PORT: '3002',
   SERVER_API_KEY: 'secret',
@@ -49,4 +48,5 @@ export const env = new Env(schema, {
   SYNC_LIMIT: '10000',
   QUEUE_CONCURRENCY: '1000',
   WATCH_INTERVAL: '5000',
+  SSL: false,
 });

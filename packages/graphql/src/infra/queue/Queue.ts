@@ -15,7 +15,7 @@ const PORT = env.get('RABBITMQ_PORT');
 const USER = env.get('RABBITMQ_USER');
 const PASS = env.get('RABBITMQ_PASS');
 const MAX_WORKERS = Number(env.get('QUEUE_CONCURRENCY'));
-const PROTOCOL = env.get('NODE_ENV') !== 'development' ? 'amqps' : 'amqp';
+const PROTOCOL = env.get('SSL') ? 'amqps' : 'amqp';
 
 type Payload<D = unknown> = {
   type: QueueNames;
