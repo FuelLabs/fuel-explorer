@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { logger } from '~/core/Logger';
 import { Workery } from '~/core/Workery';
 import { type QueueInputs, QueueNames, mq } from '../queue/Queue';
 
@@ -29,6 +30,6 @@ worker.on('ADD_BLOCK_RANGE', async (payloads) => {
 
 worker.on('GET_ACTIVE_JOBS', async () => {
   const total = await mq.getActive(QueueNames.ADD_BLOCK_RANGE);
-  console.log(`⚡️ Active jobs: ${total}`);
+  logger.syncer.info(`⚡️ Active jobs: ${total}`);
   worker.postMessage('ACTIVE_JOBS_RESPONSE', total);
 });

@@ -1,3 +1,4 @@
+import { logger } from '~/core/Logger';
 import { client } from '~/graphql/GraphQLSDK';
 import { type QueueInputs, QueueNames, mq } from '~/infra/queue/Queue';
 
@@ -10,7 +11,9 @@ export class SyncLastBlocks {
     const blockHeight = Number(lastBlock?.header.height ?? '0');
     const from = blockHeight - last;
 
-    console.log(`Syncing last ${last} blocks from ${from} to ${blockHeight}`);
+    logger.syncer.info(
+      `Syncing last ${last} blocks from ${from} to ${blockHeight}`,
+    );
     await mq.send('main', QueueNames.SYNC_BLOCKS, { watch, cursor: from });
   }
 }
@@ -20,9 +23,7 @@ export const syncLastBlocks = async (data: Data) => {
     const syncLastBlocks = new SyncLastBlocks();
     await syncLastBlocks.execute(data);
   } catch (error) {
-    console.error(error);
-    throw new Error('Sync last', {
-      cause: error,
-    });
+    logger.error('Sync last blocks error', error);
+    throw new Error('Sync last', { cause: error });
   }
 };

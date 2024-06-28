@@ -1,4 +1,5 @@
 import { eq, like } from 'drizzle-orm';
+import { logger } from '~/core/Logger';
 import type { Paginator } from '~/core/Paginator';
 import type {
   GQLBlock,
@@ -12,18 +13,24 @@ export class TransactionRepository {
   constructor(readonly conn: DbConnection | DbTransaction) {}
 
   async findByHash(id: string) {
+    logger.debugRequest('TransactionRepository.findByHash', { id });
     const transaction = await this.conn.query.TransactionsTable.findFirst({
       where: eq(TransactionsTable.txHash, id),
     });
 
+    logger.debugResponse('TransactionRepository.findByHash', { transaction });
     if (!transaction) return null;
+
+    logger.debugDone('TransactionRepository.findByHash');
     return TransactionEntity.create(transaction);
   }
 
   async findMany(paginator: Paginator<typeof TransactionsTable>) {
+    logger.debugRequest('TransactionRepository.findMany', { paginator });
     const config = await paginator.getQueryPaginationConfig();
     const query = await paginator.getPaginatedQuery(config);
     const results = paginator.getPaginatedResult(query);
+    logger.debugDone('TransactionRepository.findMany', { results });
     return results.map((item) => TransactionEntity.create(item));
   }
 
@@ -31,11 +38,16 @@ export class TransactionRepository {
     paginator: Paginator<typeof TransactionsTable>,
     owner: string,
   ) {
+    logger.debugRequest('TransactionRepository.findByOwner', {
+      paginator,
+      owner,
+    });
     await paginator.validateParams();
     const config = await paginator.getQueryPaginationConfig();
     const paginateFn = like(TransactionsTable.accountIndex, `%${owner}%`);
     const query = await paginator.getPaginatedQuery(config, paginateFn);
     const results = paginator.getPaginatedResult(query);
+    logger.debugDone('TransactionRepository.findByOwner', { results });
     return Promise.all(results.map((item) => TransactionEntity.create(item)));
   }
 

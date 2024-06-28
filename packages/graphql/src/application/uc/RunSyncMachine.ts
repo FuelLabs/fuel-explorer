@@ -2,6 +2,7 @@ import c from 'chalk';
 import dayjs from 'dayjs';
 import { assign, createActor, fromCallback, fromPromise, setup } from 'xstate';
 import { env } from '~/config';
+import { logger } from '~/core/Logger';
 import { client } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 import { worker } from '~/infra/worker/Worker';
@@ -59,7 +60,7 @@ class Syncer {
     const events = this.createBatchEvents(ctx);
 
     if (cursor > 0 && !events.length) {
-      console.log(c.green('✅ All blocks are synced!'));
+      logger.syncer.info(c.green('✅ All blocks are synced!'));
       return { endCursor: cursor };
     }
     worker.postMessage('ADD_BLOCK_RANGE', events);
@@ -252,12 +253,12 @@ export default async function runSyncMachine(input: Input) {
   actor.subscribe((state) => {
     const val = state.value;
     if (typeof val === 'string') {
-      console.log(c.yellow(`📟 State: ${val}`));
+      logger.syncer.debug(c.yellow(`📟 State: ${val}`));
       return;
     }
     const [key, value] = Object.entries(val)[0];
     const time = c.grey(`(${dayjs(start).fromNow()})`);
-    console.log(c.yellow(`📟 State: ${key}.${value} ${time}`));
+    logger.syncer.debug(c.yellow(`📟 State: ${key}.${value} ${time}`));
   });
 
   actor.start();

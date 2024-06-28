@@ -9,15 +9,15 @@ ENV SERVER_PORT="${SERVER_PORT:-3000}"
 ENV SYNCER_PORT="${SYNCER_PORT:-3001}"
 ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://testnet.fuel.network/v1/graphql}"
 ENV SERVER_BUILD=true
-ENV SYNC_MISSING=false
+ENV SYNC_MISSING=true
 
-# Enable pnpm using corepack form node.js
 RUN corepack enable
 
 FROM base AS build
 COPY . /app
 WORKDIR /app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile \
+  pnpm install -g pm2
 
 FROM base AS explorer
 COPY --from=build /app /app-explorer

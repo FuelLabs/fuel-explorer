@@ -1,5 +1,6 @@
 import { performance } from 'node:perf_hooks';
 import c from 'chalk';
+import { logger } from '~/core/Logger';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { db } from '~/infra/database/Db';
 import type { QueueInputs, QueueNames } from '~/infra/queue/Queue';
@@ -13,11 +14,11 @@ export class AddBlockRange {
     const res = await BlockRepository.blocksFromNode(to - from, to);
     const { blocks } = res;
     if (blocks.length === 0) {
-      console.log(c.yellow(`⚠️ No blocks to sync: #${from} - #${to}`));
+      logger.syncer.warn(c.yellow(`⚠️ No blocks to sync: #${from} - #${to}`));
       return;
     }
 
-    console.log(c.green(`🔗 Adding blocks to sync: #${from} - #${to}`));
+    logger.syncer.info(c.green(`🔗 Adding blocks to sync: #${from} - #${to}`));
     const start = performance.now();
     const conn = await db.connection();
     await conn.transaction(async (trx) => {
@@ -33,12 +34,14 @@ export class AddBlockRange {
         });
         await addTransactions(items, trx);
       } catch (e) {
-        console.error(e);
+        logger.error('Error adding blocks', e);
       }
     });
     const end = performance.now();
     const secs = Number.parseInt(`${(end - start) / 1000}`);
-    console.log(c.green(`✅ Synced blocks: #${from} - #${to} (${secs}s)`));
+    logger.syncer.info(
+      c.green(`✅ Synced blocks: #${from} - #${to} (${secs}s)`),
+    );
   }
 }
 
@@ -48,9 +51,7 @@ export const createAddBlockRange =
       const { execute } = new AddBlockRange();
       await execute(data, blockProducer);
     } catch (error) {
-      console.error(error);
-      throw new Error('Sync transactions', {
-        cause: error,
-      });
+      logger.error('Add block range failed', error);
+      throw new Error('Add block range failed', { cause: error });
     }
   };

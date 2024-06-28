@@ -1,3 +1,4 @@
+import { logger } from '~/core/Logger';
 import { Paginator } from '~/core/Paginator';
 import { ResolverAdapter } from '~/core/Resolver';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
@@ -38,9 +39,11 @@ export class TransactionResolver extends ResolverAdapter<Source> {
     params: Params['transaction'],
     { conn }: GraphQLContext,
   ) {
+    logger.debugRequest('TransactionResolver.transaction', { params });
     const transactionRepository = new TransactionRepository(conn);
     const item = await transactionRepository.findByHash(params.id);
-    return item?.toGQLNode();
+    const response = item?.toGQLNode();
+    logger.debugDone('TransactionResolver.transaction', { response });
   }
 
   async transactions(
@@ -48,17 +51,20 @@ export class TransactionResolver extends ResolverAdapter<Source> {
     params: Params['transactions'],
     { conn }: GraphQLContext,
   ) {
+    logger.debugRequest('TransactionResolver.transactions', { params });
     const paginator = new Paginator(TransactionsTable, params, conn);
     const transactionRepository = new TransactionRepository(conn);
     const transactions = await transactionRepository.findMany(paginator);
+    logger.debugResponse('TransactionResolver.transactions', { transactions });
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
-    return paginator.createPaginatedResult(
+    const results = paginator.createPaginatedResult(
       transactions,
       startCursor,
       endCursor,
       (item) => item.toGQLNode(),
     );
+    logger.debugDone('TransactionResolver.transactions', { results });
   }
 
   async transactionsByOwner(
@@ -66,19 +72,24 @@ export class TransactionResolver extends ResolverAdapter<Source> {
     params: Params['transactionByOwner'],
     { conn }: GraphQLContext,
   ) {
+    logger.debugRequest('TransactionResolver.transactionsByOwner', { params });
     const paginator = new Paginator(TransactionsTable, params, conn);
     const transactionRepository = new TransactionRepository(conn);
     const transactions = await transactionRepository.findByOwner(
       paginator,
       params.owner,
     );
+    logger.debugResponse('TransactionResolver.transactionsByOwner', {
+      transactions,
+    });
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
-    return paginator.createPaginatedResult(
+    const results = paginator.createPaginatedResult(
       transactions,
       startCursor,
       endCursor,
       (item) => item.toGQLNode(),
     );
+    logger.debugDone('TransactionResolver.transactionsByOwner', { results });
   }
 }

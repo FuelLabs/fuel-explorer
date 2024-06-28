@@ -10,6 +10,7 @@ import { env } from '~/config';
 
 import { type ExtractTablesWithRelations, sql } from 'drizzle-orm';
 import type { PgTransaction } from 'drizzle-orm/pg-core';
+import { logger } from '~/core/Logger';
 import * as DbSchema from './DbSchema';
 
 const DB_HOST = env.get('DB_HOST');
@@ -52,17 +53,17 @@ export class Db {
   }
 
   async connect() {
-    console.log('🚨 Connecting to database...');
+    logger.info('🚨 Connecting to database...');
     const client = await this.#pool.connect();
-    console.log('✅ Database connected');
+    logger.info('✅ Database connected');
     this.isConnected = true;
     return client;
   }
 
   async close(client?: PoolClient) {
-    console.log('🚨 Closing database...');
+    logger.info('🚨 Closing database...');
     client?.release(true);
-    console.log('✅ Database closed');
+    logger.info('✅ Database closed');
   }
 
   async migrate() {
@@ -74,7 +75,7 @@ export class Db {
       migrationsSchema: 'public',
     });
     await this.close(client);
-    console.log('✅ Database migrated');
+    logger.info('✅ Database migrated');
   }
 
   async clean() {
@@ -83,21 +84,19 @@ export class Db {
       CREATE SCHEMA public;
     `;
 
-    console.log('🚨 Cleaning database...');
+    logger.info('🚨 Cleaning database...');
     const conn = await this.connection();
     await conn.execute(query);
-    console.log('✅ Database cleaned');
+    logger.info('✅ Database cleaned');
     await this.migrate();
   }
 
   async execSQL(raw: string) {
-    console.log('🚨 Executing SQL...');
-    console.log(raw);
+    logger.info('🚨 Executing SQL...', raw);
     const query = sql.raw(`${raw}`);
     const conn = await this.connection();
     const res = await conn.execute(query);
-    console.log('✅ Executed SQL');
-    console.log(res);
+    logger.info('✅ Executed SQL', res);
   }
 
   static getInstance() {

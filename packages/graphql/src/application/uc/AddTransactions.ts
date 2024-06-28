@@ -1,4 +1,5 @@
 import c from 'chalk';
+import { logger } from '~/core/Logger';
 // import { Address } from '~/core/Address';
 // import { ContractRepository } from '~/domain/Contract/ContractRepository';
 // import { InputRepository } from '~/domain/Input/InputRepository';
@@ -135,11 +136,11 @@ export const addTransactions = async (items: Data, trx: DbTransaction) => {
     const fromBlock = items[0].block.header.height;
     const toBlock = items[items.length - 1].block.header.height;
     const msg = `📪 Syncing transactions from #${fromBlock} to #${toBlock}`;
-    console.log(c.dim(msg));
+    logger.syncer.info(c.dim(msg));
     const instance = new AddTransactions(trx);
     await instance.execute(items);
   } catch (error) {
-    console.error(error);
+    logger.error('Failed to sync transactions', error);
     throw new Error('Sync transactions', {
       cause: error,
     });

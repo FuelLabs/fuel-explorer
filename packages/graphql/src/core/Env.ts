@@ -1,13 +1,8 @@
 import * as dotenv from 'dotenv';
-import { createLogger, transports } from 'winston';
 import * as zod from 'zod';
+import { logger } from './Logger';
 
 dotenv.config();
-
-const logger = createLogger({
-  level: 'debug',
-  transports: [new transports.Console()],
-});
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export class Env<T extends zod.ZodObject<any>> {
@@ -33,11 +28,7 @@ export class Env<T extends zod.ZodObject<any>> {
     const env = this.parseEnv();
     const result = this.schema.safeParse(env);
     if (!result.success) {
-      logger.log({
-        level: 'warn',
-        message: 'The environment variables are not valid',
-      });
-      logger.error({ level: 'error', message: result.error });
+      logger.warn('The environment variables are not valid', result.error);
       return this.defaultValues;
     }
     return result.data;
