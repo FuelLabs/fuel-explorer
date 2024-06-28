@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { Paginator, type PaginatorParams } from '~/core/Paginator';
+import type { Paginator } from '~/core/Paginator';
 import type { GQLContract } from '~/graphql/generated/sdk-provider';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { ContractEntity } from './ContractEntity';
@@ -18,8 +18,7 @@ export class ContractRepository {
     return ContractEntity.create(first);
   }
 
-  async findMany(params: PaginatorParams) {
-    const paginator = new Paginator(ContractsTable, params);
+  async findMany(paginator: Paginator<typeof ContractsTable>) {
     const config = await paginator.getQueryPaginationConfig();
     const query = await paginator.getPaginatedQuery(config);
     const results = paginator.getPaginatedResult(query);

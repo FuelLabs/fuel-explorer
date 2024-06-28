@@ -1,6 +1,6 @@
 import { type SQL, and, asc, desc, gt, lt } from 'drizzle-orm';
 import type { PgTableWithColumns } from 'drizzle-orm/pg-core';
-import { db } from '~/infra/database/Db';
+import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import type { Entity } from './Entity';
 import type { Identifier } from './Identifier';
 
@@ -31,6 +31,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
   constructor(
     private source: Source,
     private params: PaginatorParams,
+    private conn: DbConnection | DbTransaction,
   ) {}
 
   async getQueryPaginationConfig() {
@@ -53,9 +54,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
 
   async hasPreviousPage(startCursor: Cursor): Promise<boolean> {
     const idField = this.source._id;
-
-    const total = await db
-      .connection()
+    const total = await this.conn
       .select({
         [idField.name]: idField,
       })
@@ -72,9 +71,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     }
 
     const idField = this.source._id;
-
-    const total = await db
-      .connection()
+    const total = await this.conn
       .select({
         [idField.name]: idField,
       })
@@ -91,8 +88,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
   ) {
     const { idField, order, whereBy, cursor, limit } = config;
 
-    let query = db
-      .connection()
+    let query = this.conn
       .select()
       .from(this.source)
       .orderBy(order(idField))

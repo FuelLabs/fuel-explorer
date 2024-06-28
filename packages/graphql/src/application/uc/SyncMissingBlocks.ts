@@ -1,11 +1,13 @@
 import { BlockRepository } from '~/domain/Block/BlockRepository';
+import { db } from '~/infra/database/Db';
 import { type QueueInputs, QueueNames, mq } from '~/infra/queue/Queue';
 
 type Data = QueueInputs[QueueNames.SYNC_MISSING];
 
 export class SyncMissingBlocks {
   async execute() {
-    const repo = new BlockRepository();
+    const conn = await db.connection();
+    const repo = new BlockRepository(conn);
     const latest = await repo.findLatestAdded();
     const cursor = latest ? Number(latest.data.header.height) : undefined;
     console.log('Syncing missing blocks from', cursor);

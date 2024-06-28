@@ -7,6 +7,7 @@ import type {
   GQLQueryBlockArgs,
   GQLQueryBlocksArgs,
 } from '~/graphql/generated/sdk-provider';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLBlock;
 type Params = {
@@ -14,10 +15,8 @@ type Params = {
   block: GQLQueryBlockArgs;
 };
 
-class BlockResolver extends ResolverAdapter<Source> {
-  private constructor(
-    private readonly blockRepository = new BlockRepository(),
-  ) {
+export class BlockResolver extends ResolverAdapter<Source> {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -31,23 +30,29 @@ class BlockResolver extends ResolverAdapter<Source> {
     return new BlockResolver().getResolvers();
   }
 
-  async block(_: Source, { id, height }: Params['block']) {
+  async block(
+    _: Source,
+    { id, height }: Params['block'],
+    { conn }: GraphQLContext,
+  ) {
     if (!id && !height) {
       throw new Error('Either id or height must be provided');
     }
 
+    const blockRepository = new BlockRepository(conn);
     if (id) {
-      const item = await this.blockRepository.findByHash(id);
+      const item = await blockRepository.findByHash(id);
       return item?.toGQLNode() ?? null;
     }
 
-    const item = await this.blockRepository.findByHeight(Number(height));
+    const item = await blockRepository.findByHeight(Number(height));
     return item?.toGQLNode() ?? null;
   }
 
-  async blocks(_: Source, params: Params['blocks']) {
-    const paginator = new Paginator(BlocksTable, params);
-    const blocks = await this.blockRepository.findMany(params);
+  async blocks(_: Source, params: Params['blocks'], { conn }: GraphQLContext) {
+    const paginator = new Paginator(BlocksTable, params, conn);
+    const blockRepository = new BlockRepository(conn);
+    const blocks = await blockRepository.findMany(paginator);
     const startCursor = paginator.getStartCursor(blocks);
     const endCursor = paginator.getEndCursor(blocks);
     return paginator.createPaginatedResult(
@@ -58,5 +63,3 @@ class BlockResolver extends ResolverAdapter<Source> {
     );
   }
 }
-
-export default BlockResolver.create();

@@ -7,7 +7,7 @@ type Params = {
   chain: null;
 };
 
-class ChainResolver extends ResolverAdapter<Source> {
+export class ChainResolver extends ResolverAdapter<Source> {
   private constructor() {
     super();
     this.setResolvers({
@@ -26,5 +26,3 @@ class ChainResolver extends ResolverAdapter<Source> {
     return res.data.chain;
   }
 }
-
-export default ChainResolver.create();

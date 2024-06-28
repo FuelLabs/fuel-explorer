@@ -19,7 +19,8 @@ export class AddBlockRange {
 
     console.log(c.green(`🔗 Adding blocks to sync: #${from} - #${to}`));
     const start = performance.now();
-    await db.connection().transaction(async (trx) => {
+    const conn = await db.connection();
+    await conn.transaction(async (trx) => {
       try {
         const blockRepo = new BlockRepository(trx);
         await blockRepo.upsertMany(blockProducer, blocks, trx);

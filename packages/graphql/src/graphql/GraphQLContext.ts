@@ -1,15 +1,20 @@
 import { env } from '~/config';
 import { ChainEntity } from '~/domain/Chain/ChainEntity';
+import type { DbConnection } from '~/infra/database/Db';
 import { type GraphQLSDK, client } from './GraphQLSDK';
 import type { GQLChainInfo } from './generated/sdk-provider';
 
 export type GraphQLContext = {
   chain: ChainEntity | null;
   client: GraphQLSDK;
+  conn: DbConnection;
 };
 
 export class GraphQLContextFactory {
-  static async create(req: Request): Promise<GraphQLContext> {
+  static async create(
+    req: Request,
+    conn: DbConnection,
+  ): Promise<GraphQLContext> {
     const secret = env.get('SERVER_API_KEY');
     const bearer = `Bearer ${secret}`;
     const token = req.headers.get('Authorization');
@@ -19,8 +24,8 @@ export class GraphQLContextFactory {
 
     const res = await client.sdk.chain();
     const chainItem = res.data?.chain;
-    if (!chainItem) return { client, chain: null };
+    if (!chainItem) return { conn, client, chain: null };
     const chain = ChainEntity.create(chainItem as GQLChainInfo);
-    return { client, chain };
+    return { conn, client, chain };
   }
 }

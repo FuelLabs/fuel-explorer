@@ -1,5 +1,5 @@
 import { eq, like } from 'drizzle-orm';
-import { Paginator, type PaginatorParams } from '~/core/Paginator';
+import type { Paginator } from '~/core/Paginator';
 import type {
   GQLBlock,
   GQLTransaction,
@@ -20,19 +20,18 @@ export class TransactionRepository {
     return TransactionEntity.create(transaction);
   }
 
-  async findMany(params: PaginatorParams) {
-    const paginator = new Paginator(TransactionsTable, params);
+  async findMany(paginator: Paginator<typeof TransactionsTable>) {
     const config = await paginator.getQueryPaginationConfig();
     const query = await paginator.getPaginatedQuery(config);
     const results = paginator.getPaginatedResult(query);
     return results.map((item) => TransactionEntity.create(item));
   }
 
-  async findByOwner(params: PaginatorParams & { owner: string }) {
-    const { owner } = params;
-    const paginator = new Paginator(TransactionsTable, params);
+  async findByOwner(
+    paginator: Paginator<typeof TransactionsTable>,
+    owner: string,
+  ) {
     await paginator.validateParams();
-
     const config = await paginator.getQueryPaginationConfig();
     const paginateFn = like(TransactionsTable.accountIndex, `%${owner}%`);
     const query = await paginator.getPaginatedQuery(config, paginateFn);

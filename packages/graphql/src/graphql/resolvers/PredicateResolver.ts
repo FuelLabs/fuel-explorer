@@ -1,19 +1,15 @@
 import { ResolverAdapter } from '~/core/Resolver';
 import type { PredicateItem } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
-import { db } from '~/infra/database/Db';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = PredicateItem;
 type Params = {
   predicate: { address: string };
 };
 
-class PredicateResolver extends ResolverAdapter<Source> {
-  private constructor(
-    private readonly predicateRepository = new PredicateRepository(
-      db.connection(),
-    ),
-  ) {
+export class PredicateResolver extends ResolverAdapter<Source> {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -26,10 +22,13 @@ class PredicateResolver extends ResolverAdapter<Source> {
     return new PredicateResolver().getResolvers();
   }
 
-  async predicate(_: Source, params: Params['predicate']) {
-    const item = await this.predicateRepository.findByAddress(params.address);
+  async predicate(
+    _: Source,
+    params: Params['predicate'],
+    { conn }: GraphQLContext,
+  ) {
+    const predicateRepository = new PredicateRepository(conn);
+    const item = await predicateRepository.findByAddress(params.address);
     return item?.toGQLNode();
   }
 }
-
-export default PredicateResolver.create();

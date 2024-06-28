@@ -8,7 +8,6 @@ import type {
   GQLQueryContractBalanceArgs,
   GQLQueryContractBalancesArgs,
 } from '~/graphql/generated/sdk-provider';
-import { db } from '~/infra/database/Db';
 import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLContract;
@@ -19,12 +18,8 @@ type Params = {
   contractBalances: GQLQueryContractBalancesArgs;
 };
 
-class ContractResolver extends ResolverAdapter<Source> {
-  private constructor(
-    private readonly contractRepository = new ContractRepository(
-      db.connection(),
-    ),
-  ) {
+export class ContractResolver extends ResolverAdapter<Source> {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -40,18 +35,28 @@ class ContractResolver extends ResolverAdapter<Source> {
     return new ContractResolver().getResolvers();
   }
 
-  async contract(_: Source, { id }: Params['contract']) {
+  async contract(
+    _: Source,
+    { id }: Params['contract'],
+    { conn }: GraphQLContext,
+  ) {
     if (!id) {
       throw new Error('Contract ID is required');
     }
 
-    const item = await this.contractRepository.findByHash(id);
+    const contractRepository = new ContractRepository(conn);
+    const item = await contractRepository.findByHash(id);
     return item?.toGQLNode();
   }
 
-  async contracts(_: Source, params: Params['contracts']) {
-    const paginator = new Paginator(ContractsTable, params);
-    const contracts = await this.contractRepository.findMany(params);
+  async contracts(
+    _: Source,
+    params: Params['contracts'],
+    { conn }: GraphQLContext,
+  ) {
+    const paginator = new Paginator(ContractsTable, params, conn);
+    const contractRepository = new ContractRepository(conn);
+    const contracts = await contractRepository.findMany(paginator);
     const startCursor = paginator.getStartCursor(contracts);
     const endCursor = paginator.getEndCursor(contracts);
     return paginator.createPaginatedResult(
@@ -82,5 +87,3 @@ class ContractResolver extends ResolverAdapter<Source> {
     return res.data.contractBalances;
   }
 }
-
-export default ContractResolver.create();

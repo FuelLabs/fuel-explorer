@@ -3,22 +3,14 @@ import { ResolverAdapter } from '~/core/Resolver';
 import { BlockRepository } from '~/domain/Block/BlockRepository';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
-import { db } from '~/infra/database/Db';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Params = {
   search: { query: string };
 };
 
-class SearchResolver extends ResolverAdapter<null> {
-  private constructor(
-    private readonly blockRepository = new BlockRepository(),
-    private readonly transactionRepository = new TransactionRepository(
-      db.connection(),
-    ),
-    private readonly contractRepository = new ContractRepository(
-      db.connection(),
-    ),
-  ) {
+export class SearchResolver extends ResolverAdapter<null> {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -31,23 +23,27 @@ class SearchResolver extends ResolverAdapter<null> {
     return new SearchResolver().getResolvers();
   }
 
-  async search(_: null, params: Params['search']) {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  async search(_null: any, params: Params['search'], { conn }: GraphQLContext) {
     const address = Hash256.create(params.query).value();
-    const block = await this.blockRepository.findByHash(address);
+    const blockRepository = new BlockRepository(conn);
+    const contractRepository = new ContractRepository(conn);
+    const transactionRepository = new TransactionRepository(conn);
+    const block = await blockRepository.findByHash(address);
     if (block) {
       return {
         block: block.toGQLNode(),
       };
     }
 
-    const contract = await this.contractRepository.findByHash(address);
+    const contract = await contractRepository.findByHash(address);
     if (contract) {
       return {
         contract: contract.toGQLNode(),
       };
     }
 
-    const transaction = await this.transactionRepository.findByHash(address);
+    const transaction = await transactionRepository.findByHash(address);
     if (transaction) {
       return {
         transaction: transaction.toGQLNode(),
@@ -55,5 +51,3 @@ class SearchResolver extends ResolverAdapter<null> {
     }
   }
 }
-
-export default SearchResolver.create();

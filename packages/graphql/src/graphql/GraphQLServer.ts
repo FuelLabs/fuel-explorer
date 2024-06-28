@@ -1,17 +1,19 @@
 import { join } from 'node:path';
 import { loadFilesSync } from '@graphql-tools/load-files';
-import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge';
+import { mergeTypeDefs } from '@graphql-tools/merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import type { GraphQLSchema } from 'graphql';
 import { createYoga } from 'graphql-yoga';
+import { type DbConnection, db } from '~/infra/database/Db';
 import { GraphQLContextFactory } from './GraphQLContext';
+import { resolvers } from './resolvers';
 
 const typesArray = loadFilesSync(join(__dirname, './schemas'));
 const typeDefs = mergeTypeDefs(typesArray);
-const resolversArray = loadFilesSync(join(__dirname, './resolvers'));
-const resolvers = mergeResolvers(resolversArray);
 
 export class GraphQLServer {
+  conn!: DbConnection;
+
   schema() {
     return makeExecutableSchema({ typeDefs, resolvers });
   }
@@ -21,7 +23,10 @@ export class GraphQLServer {
       schema,
       logging: true,
       context: async ({ request }) => {
-        return GraphQLContextFactory.create(request);
+        if (this.conn) return GraphQLContextFactory.create(request, this.conn);
+        const conn = await db.connection();
+        this.conn = conn;
+        return GraphQLContextFactory.create(request, conn);
       },
     });
   }

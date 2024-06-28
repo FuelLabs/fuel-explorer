@@ -1,9 +1,9 @@
 import { desc, eq } from 'drizzle-orm';
 import { groupBy } from 'lodash';
-import { Paginator, type PaginatorParams } from '~/core/Paginator';
+import type { Paginator } from '~/core/Paginator';
 import { client } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
-import { type DbConnection, type DbTransaction, db } from '~/infra/database/Db';
+import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import {
   type TransactionItem,
   TransactionsTable,
@@ -13,7 +13,7 @@ import { type BlockItem, BlocksTable } from './BlockModel';
 import { BlockProducer } from './vo/BlockProducer';
 
 export class BlockRepository {
-  constructor(readonly conn: DbConnection | DbTransaction = db.connection()) {}
+  constructor(readonly conn: DbConnection | DbTransaction) {}
 
   async findByHash(blockHash: string) {
     const first = await this.conn.query.BlocksTable.findFirst({
@@ -43,8 +43,9 @@ export class BlockRepository {
     return BlockEntity.create(block, producer, transactions);
   }
 
-  async findMany(params: PaginatorParams): Promise<BlockEntity[]> {
-    const paginator = new Paginator(BlocksTable, params);
+  async findMany(
+    paginator: Paginator<typeof BlocksTable>,
+  ): Promise<BlockEntity[]> {
     const config = await paginator.getQueryPaginationConfig();
     const query = paginator.getPaginatedQuery(config);
     const joined = await query.leftJoin(

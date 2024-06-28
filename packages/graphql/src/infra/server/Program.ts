@@ -1,3 +1,4 @@
+import type { PoolClient } from 'pg';
 import yargs from 'yargs/yargs';
 import { env } from '~/config';
 import { db } from '../database/Db';
@@ -66,16 +67,13 @@ export class Program {
         },
         handler: async (argv) => {
           await this.sync(argv);
-          process.exit(0);
         },
       })
       .command({
         command: 'migrate',
         describe: 'Run migrations',
         handler: async () => {
-          await db.connect();
           await db.migrate();
-          await db.close();
           process.exit(0);
         },
       })
@@ -83,9 +81,9 @@ export class Program {
         command: 'clean-db',
         describe: 'Clean database',
         handler: async () => {
-          await db.connect();
+          const client = await db.connect();
           await db.clean();
-          await db.close();
+          await db.close(client);
           process.exit(0);
         },
       })
@@ -101,9 +99,9 @@ export class Program {
           });
         },
         handler: async (argv) => {
-          await db.connect();
+          const client = await db.connect();
           await db.execSQL(argv.sql);
-          await db.close();
+          await db.close(client);
           process.exit(0);
         },
       })
@@ -115,13 +113,14 @@ export class Program {
     const { all, missing, offset, clean, from, watch, last } = argv;
 
     async function start() {
-      await db.connect();
+      const client = await db.connect();
       await mq.setup();
+      return client;
     }
 
-    async function finish() {
+    async function finish(client?: PoolClient) {
       await mq.disconnect();
-      await db.close();
+      await db.close(client);
     }
 
     if (clean) {
@@ -131,25 +130,25 @@ export class Program {
       return;
     }
     if (missing) {
-      await start();
+      const client = await start();
       await mq.send('main', QueueNames.SYNC_MISSING);
-      await finish();
+      await finish(client);
       return;
     }
     if (last) {
-      await start();
+      const client = await start();
       await mq.send('main', QueueNames.SYNC_LAST, { watch, last });
-      await finish();
+      await finish(client);
       return;
     }
     if (all || from) {
-      await start();
+      const client = await start();
       await mq.send('main', QueueNames.SYNC_BLOCKS, {
         watch,
         cursor: from ?? 0,
         offset: offset ?? Number(env.get('SYNC_OFFSET')),
       });
-      await finish();
+      await finish(client);
       return;
     }
   }

@@ -14,7 +14,7 @@ type Params = {
   utxos: GQLQueryCoinsArgs['filter'];
 };
 
-class BalanceResolver extends ResolverAdapter<Source> {
+export class BalanceResolver extends ResolverAdapter<Source> {
   private constructor() {
     super();
     this.setResolvers({
@@ -69,5 +69,3 @@ class BalanceResolver extends ResolverAdapter<Source> {
     return res.data.coins.nodes;
   }
 }
-
-export default BalanceResolver.create();

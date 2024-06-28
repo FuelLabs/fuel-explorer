@@ -7,7 +7,7 @@ type Params = {
   nodeInfo: null;
 };
 
-class NodeResolver extends ResolverAdapter<Source> {
+export class NodeResolver extends ResolverAdapter<Source> {
   private constructor() {
     super();
     this.setResolvers({
@@ -31,5 +31,3 @@ class NodeResolver extends ResolverAdapter<Source> {
     return res.data.nodeInfo;
   }
 }
-
-export default NodeResolver.create();

@@ -8,7 +8,7 @@ import type {
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
-import { db } from '~/infra/database/Db';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLTransaction;
 type Params = {
@@ -17,12 +17,8 @@ type Params = {
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
 };
 
-class TransactionResolver extends ResolverAdapter<Source> {
-  private constructor(
-    private readonly transactionRepository = new TransactionRepository(
-      db.connection(),
-    ),
-  ) {
+export class TransactionResolver extends ResolverAdapter<Source> {
+  private constructor() {
     super();
     this.setResolvers({
       Query: {
@@ -37,14 +33,24 @@ class TransactionResolver extends ResolverAdapter<Source> {
     return new TransactionResolver().getResolvers();
   }
 
-  async transaction(_: Source, params: Params['transaction']) {
-    const item = await this.transactionRepository.findByHash(params.id);
+  async transaction(
+    _: Source,
+    params: Params['transaction'],
+    { conn }: GraphQLContext,
+  ) {
+    const transactionRepository = new TransactionRepository(conn);
+    const item = await transactionRepository.findByHash(params.id);
     return item?.toGQLNode();
   }
 
-  async transactions(_: Source, params: Params['transactions']) {
-    const paginator = new Paginator(TransactionsTable, params);
-    const transactions = await this.transactionRepository.findMany(params);
+  async transactions(
+    _: Source,
+    params: Params['transactions'],
+    { conn }: GraphQLContext,
+  ) {
+    const paginator = new Paginator(TransactionsTable, params, conn);
+    const transactionRepository = new TransactionRepository(conn);
+    const transactions = await transactionRepository.findMany(paginator);
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
     return paginator.createPaginatedResult(
@@ -55,9 +61,17 @@ class TransactionResolver extends ResolverAdapter<Source> {
     );
   }
 
-  async transactionsByOwner(_: Source, params: Params['transactionByOwner']) {
-    const paginator = new Paginator(TransactionsTable, params);
-    const transactions = await this.transactionRepository.findByOwner(params);
+  async transactionsByOwner(
+    _: Source,
+    params: Params['transactionByOwner'],
+    { conn }: GraphQLContext,
+  ) {
+    const paginator = new Paginator(TransactionsTable, params, conn);
+    const transactionRepository = new TransactionRepository(conn);
+    const transactions = await transactionRepository.findByOwner(
+      paginator,
+      params.owner,
+    );
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
     return paginator.createPaginatedResult(
@@ -68,5 +82,3 @@ class TransactionResolver extends ResolverAdapter<Source> {
     );
   }
 }
-
-export default TransactionResolver.create();

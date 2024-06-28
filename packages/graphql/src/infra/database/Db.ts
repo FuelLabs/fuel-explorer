@@ -5,7 +5,7 @@ import {
   drizzle,
 } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { Client } from 'pg';
+import { Pool, type PoolClient } from 'pg';
 import { env } from '~/config';
 
 import { type ExtractTablesWithRelations, sql } from 'drizzle-orm';
@@ -27,12 +27,12 @@ export type DbTransaction = PgTransaction<
 >;
 
 export class Db {
-  #connection: Client;
+  #pool: Pool;
   isConnected = false;
   private static instance: Db;
 
   constructor() {
-    this.#connection = new Client(this.connectionOpts);
+    this.#pool = new Pool(this.connectionOpts);
   }
 
   get connectionOpts() {
@@ -46,28 +46,35 @@ export class Db {
     };
   }
 
-  connection() {
-    return drizzle(this.#connection, { schema: DbSchema });
+  async connection() {
+    if (!this.isConnected) await this.connect();
+    return drizzle(this.#pool, { schema: DbSchema });
   }
 
   async connect() {
-    if (this.isConnected) {
-      return;
-    }
-    await this.#connection.connect();
+    console.log('🚨 Connecting to database...');
+    const client = await this.#pool.connect();
+    console.log('✅ Database connected');
     this.isConnected = true;
+    return client;
   }
 
-  async close() {
-    await this.#connection.end();
+  async close(client?: PoolClient) {
+    console.log('🚨 Closing database...');
+    client?.release(true);
+    console.log('✅ Database closed');
   }
 
   async migrate() {
-    await migrate(this.connection(), {
+    const client = await this.connect();
+    const conn = await this.connection();
+    await migrate(conn, {
       migrationsFolder: path.join(__dirname, '../../../drizzle'),
       migrationsTable: 'migrations',
       migrationsSchema: 'public',
     });
+    await this.close(client);
+    console.log('✅ Database migrated');
   }
 
   async clean() {
@@ -77,7 +84,8 @@ export class Db {
     `;
 
     console.log('🚨 Cleaning database...');
-    await this.connection().execute(query);
+    const conn = await this.connection();
+    await conn.execute(query);
     console.log('✅ Database cleaned');
     await this.migrate();
   }
@@ -86,7 +94,8 @@ export class Db {
     console.log('🚨 Executing SQL...');
     console.log(raw);
     const query = sql.raw(`${raw}`);
-    const res = await this.connection().execute(query);
+    const conn = await this.connection();
+    const res = await conn.execute(query);
     console.log('✅ Executed SQL');
     console.log(res);
   }
