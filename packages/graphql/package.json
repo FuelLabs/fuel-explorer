@@ -25,7 +25,7 @@
     "build:sdk": "tsup",
     "ts:check": "tsc --noEmit",
     "codegen": "run-s codegen:*",
-    "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts && ./scripts/fix-schema.sh",
+    "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts && tsx ./scripts/fix-schema.ts",
     "codegen:gql-fuelcore": "gqlg --schemaFilePath ./src/graphql/schemas/fuelcore.graphql --destDirPath ./src/graphql/generated/fuelcore --ext graphql --includeCrossReferences --depthLimit 6",
     "codegen:sdk": "gql-gen -r dotenv/config --config codegen.sdk.ts",
     "db:studio": "drizzle-kit studio",
