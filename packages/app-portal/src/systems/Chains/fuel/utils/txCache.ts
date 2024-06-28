@@ -1,5 +1,6 @@
 const HASH_DONE_KEY_SUBSTRING = 'fuelToEthTx';
 const TX_CREATED_KEY_SUBSTRING = 'fuelTxCreated';
+const TX_TIME_TO_FINALIZE = 'fuelTxTimeToFinalize';
 
 export const FuelTxCache = {
   getTxIsDone: (blockHash: string) => {
@@ -11,9 +12,21 @@ export const FuelTxCache = {
   setTxIsDone: (blockHash: string) => {
     return localStorage.setItem(generateHashDoneKey(blockHash), 'true');
   },
+  setTxTimeToFinalize: (txId: string, timestamp: number) => {
+    return localStorage.setItem(
+      `${TX_TIME_TO_FINALIZE}${txId}`,
+      `${timestamp}`,
+    );
+  },
+  getTxTimeToFinalize: (txId: string) => {
+    return localStorage.getItem(`${TX_TIME_TO_FINALIZE}${txId}`);
+  },
   clean: () => {
     Object.keys(localStorage).forEach((key) => {
-      if (key.includes(HASH_DONE_KEY_SUBSTRING)) {
+      if (
+        key.includes(HASH_DONE_KEY_SUBSTRING) ||
+        key.includes(TX_TIME_TO_FINALIZE)
+      ) {
         localStorage.removeItem(key);
       }
     });
