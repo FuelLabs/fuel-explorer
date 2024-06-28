@@ -11,7 +11,6 @@ import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
-import { toast } from '@fuels/ui';
 import type { PublicClient } from 'viem';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
@@ -121,7 +120,7 @@ export const txEthToFuelMachine = createMachine(
                   cond: FetchMachine.hasError,
                 },
                 {
-                  actions: ['assignReceiptsInfo', 'notifyEthTxSuccess'],
+                  actions: ['clearTxCreated', 'assignReceiptsInfo'],
                   cond: 'hasEthTxNonce',
                   target: 'gettingFuelMessageStatus',
                 },
@@ -354,16 +353,8 @@ export const txEthToFuelMachine = createMachine(
       assignFuelMessageStatus: assign({
         fuelMessageStatus: (_, ev) => ev.data,
       }),
-      notifyEthTxSuccess: (ctx) => {
+      clearTxCreated: (ctx) => {
         if (ctx.ethTxId && EthTxCache.getTxIsCreated(ctx.ethTxId)) {
-          setTimeout(() => {
-            toast.success(
-              'Deposit successfully initiated. You may now close the popup.',
-              {
-                duration: 5000,
-              },
-            );
-          }, FUEL_MESSAGE_GET_INTERVAL);
           EthTxCache.removeTxCreated(ctx.ethTxId);
         }
       },
