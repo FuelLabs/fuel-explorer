@@ -35,19 +35,20 @@ export class TransactionEntity extends Entity<
   TransactionInputProps,
   TransactionModelID
 > {
-  static create(transaction: TransactionItem) {
-    const item = transaction.data;
+  static create(
+    item: GQLTransaction,
+    blockRef: BlockRef,
+    id: TransactionModelID,
+  ) {
     if (!item) throw new Error('Transaction data is required');
 
     const accountIndex = AccountIndex.create(item);
-    const blockRef = BlockRef.create(transaction.blockId);
     const data = TransactionData.create(item);
     const gasCosts = GasCosts.create(item);
     const groupedInputs = TransactionGroupedInputs.create(item);
     const groupedOutputs = TransactionGroupedOutputs.create(item);
-    const id = TransactionModelID.create(transaction);
     const status = TransactionStatus.create(item);
-    const time = ParsedTime.create(timeFromStatus(transaction));
+    const time = ParsedTime.create(timeFromStatus(item));
     const timestamp = TransactionTimestamp.create(item);
     const txHash = Hash256.create(item.id);
     // TODO: this should come from the database relations
@@ -71,6 +72,21 @@ export class TransactionEntity extends Entity<
     };
 
     return new TransactionEntity(props, id);
+  }
+
+  static createFromDB(item: TransactionItem) {
+    const id = TransactionModelID.create(item);
+    const blockId = BlockRef.create(item.blockId);
+    return TransactionEntity.create(item.data, blockId, id);
+  }
+  static createFromGQL(
+    item: GQLTransaction,
+    blockHeight: number,
+    index: number,
+  ) {
+    const id = TransactionModelID.createSerial(blockHeight, index);
+    const blockId = BlockRef.create(blockHeight);
+    return TransactionEntity.create(item, blockId, id);
   }
 
   static toDBItem(
@@ -177,8 +193,8 @@ export class TransactionEntity extends Entity<
   }
 }
 
-function timeFromStatus(item?: TransactionItem) {
+function timeFromStatus(item?: GQLTransaction) {
   if (!item) return null;
-  if (item.data.status?.__typename === 'SqueezedOutStatus') return null;
-  return item.data.status?.time;
+  if (item.status?.__typename === 'SqueezedOutStatus') return null;
+  return item.status?.time;
 }

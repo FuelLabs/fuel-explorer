@@ -1,16 +1,11 @@
 import { desc, eq } from 'drizzle-orm';
-import { groupBy } from 'lodash';
 import { logger } from '~/core/Logger';
 import type { Paginator } from '~/core/Paginator';
 import { client } from '~/graphql/GraphQLSDK';
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
-import {
-  type TransactionItem,
-  TransactionsTable,
-} from '../Transaction/TransactionModel';
 import { BlockEntity } from './BlockEntity';
-import { type BlockItem, BlocksTable } from './BlockModel';
+import { BlocksTable } from './BlockModel';
 import { BlockProducer } from './vo/BlockProducer';
 
 export class BlockRepository {
@@ -18,38 +13,30 @@ export class BlockRepository {
 
   async findByHash(blockHash: string) {
     logger.debugRequest('BlockRepository.findByHash', { blockHash });
-    const first = await this.conn.query.BlocksTable.findFirst({
+    const block = await this.conn.query.BlocksTable.findFirst({
       where: eq(BlocksTable.blockHash, blockHash),
-      with: {
-        transactions: true,
-      },
     });
 
-    logger.debugResponse('BlockRepository.findByHash', { first });
-    if (!first) return null;
-    const { transactions, ...block } = first;
+    logger.debugResponse('BlockRepository.findByHash', { first: block });
+    if (!block) return null;
     logger.debugRequest('Getting block producer from SDK', { block });
     const producer = await BlockProducer.fromSdk();
     logger.debugDone('BlockRepository.findByHash', { producer });
-    return BlockEntity.create(block, producer, transactions);
+    return BlockEntity.create(block, producer);
   }
 
   async findByHeight(height: number) {
     logger.debugRequest('BlockRepository.findByHeight', { height });
-    const first = await this.conn.query.BlocksTable.findFirst({
+    const block = await this.conn.query.BlocksTable.findFirst({
       where: eq(BlocksTable._id, height),
-      with: {
-        transactions: true,
-      },
     });
 
-    logger.debugResponse('BlockRepository.findByHeight', { first });
-    if (!first) return null;
-    const { transactions, ...block } = first;
+    logger.debugResponse('BlockRepository.findByHeight', { first: block });
+    if (!block) return null;
     logger.debugRequest('Getting block producer from SDK', { block });
     const producer = await BlockProducer.fromSdk();
     logger.debugDone('BlockRepository.findByHeight', { producer });
-    return BlockEntity.create(block, producer, transactions);
+    return BlockEntity.create(block, producer);
   }
 
   async findMany(
@@ -57,37 +44,25 @@ export class BlockRepository {
   ): Promise<BlockEntity[]> {
     logger.debugRequest('BlockRepository.findMany', { paginator });
     const config = await paginator.getQueryPaginationConfig();
-    const query = paginator.getPaginatedQuery(config);
-    const joined = await query.leftJoin(
-      TransactionsTable,
-      eq(TransactionsTable.blockId, BlocksTable._id),
-    );
-
-    const results = paginator.getPaginatedResult(joined);
-    const blockTransactionMap = this.groupBlockTransactions(results);
+    const query = await paginator.getPaginatedQuery(config);
+    const results = paginator.getPaginatedResult(query);
     logger.debugRequest('Getting block producer from SDK', { results });
     const producer = await BlockProducer.fromSdk();
     logger.debugDone('BlockRepository.findMany', { producer, results });
-    return Object.values(blockTransactionMap).map(({ block, transactions }) =>
-      BlockEntity.create(block, producer, transactions ?? []),
-    );
+    return results.map((block) => BlockEntity.create(block, producer));
   }
 
   async findLatestAdded() {
     logger.debugRequest('BlockRepository.findLatestAdded');
-    const latest = await this.conn.query.BlocksTable.findFirst({
-      with: {
-        transactions: true,
-      },
+    const block = await this.conn.query.BlocksTable.findFirst({
       orderBy: desc(BlocksTable._id),
     });
 
-    logger.debugResponse('BlockRepository.findLatestAdded', { latest });
-    if (!latest) return null;
-    const { transactions, ...block } = latest;
+    logger.debugResponse('BlockRepository.findLatestAdded', { block });
+    if (!block) return null;
     const producer = await BlockProducer.fromSdk();
     logger.debugDone('BlockRepository.findLatestAdded', { producer });
-    return BlockEntity.create(block, producer, transactions);
+    return BlockEntity.create(block, producer);
   }
 
   async upsertMany(
@@ -120,32 +95,5 @@ export class BlockRepository {
     };
     logger.debugDone('BlockRepository.blocksFromNode', results);
     return results;
-  }
-
-  private groupBlockTransactions(
-    rows: { blocks: BlockItem; transactions: TransactionItem | null }[],
-  ): Record<number, { block: BlockItem; transactions: TransactionItem[] }> {
-    logger.debugRequest('BlockRepository.groupBlockTransactions', { rows });
-    const groupedRows = groupBy(rows, 'blocks._id');
-    const response = Object.entries(groupedRows).reduce(
-      (acc, [blockId, rows]) => {
-        const block = rows[0].blocks;
-        const transactions = rows
-          .map((row) => row.transactions)
-          .filter(
-            (transaction): transaction is TransactionItem =>
-              transaction !== null,
-          );
-
-        acc[blockId] = { block, transactions };
-        return acc;
-      },
-      {} as Record<
-        string,
-        { block: BlockItem; transactions: TransactionItem[] }
-      >,
-    );
-    logger.debugDone('BlockRepository.groupBlockTransactions', { response });
-    return response;
   }
 }

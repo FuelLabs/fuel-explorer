@@ -10,6 +10,7 @@ class Logger {
     const commonFormat = winston.format.combine(
       winston.format.timestamp(),
       winston.format.json({ space: 2 }),
+      winston.format.cli(),
     );
 
     this.main = winston.createLogger({

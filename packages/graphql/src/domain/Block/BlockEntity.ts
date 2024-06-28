@@ -9,7 +9,6 @@ import { BlockModelID } from './vo/BlockModelID';
 import { BlockProducer } from './vo/BlockProducer';
 
 import { TransactionEntity } from '../Transaction/TransactionEntity';
-import type { TransactionItem } from '../Transaction/TransactionModel';
 
 type BlockInputProps = {
   blockHash: Hash256;
@@ -21,11 +20,7 @@ type BlockInputProps = {
 };
 
 export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
-  static create(
-    block: BlockItem,
-    producerId: string | null,
-    transactions: TransactionItem[],
-  ) {
+  static create(block: BlockItem, producerId: string | null) {
     const item = block.data;
     if (!item) {
       throw new Error('item is required');
@@ -46,7 +41,9 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       time,
       timestamp,
       producer,
-      transactions: transactions.map((t) => TransactionEntity.create(t)),
+      transactions: item.transactions.map((t, i) =>
+        TransactionEntity.createFromGQL(t, id.value(), i),
+      ),
     };
 
     return new BlockEntity(props, id);

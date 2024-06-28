@@ -25,7 +25,7 @@ httpServer.listen(app, port).then(async () => {
   others.forEach((eventType) => {
     process.on(eventType, async (err) => {
       await db.close(client);
-      logger.error('GraphQL shutdown error', err);
+      logger.error('❌ GraphQL shutdown error', err);
       process.exit(1);
     });
   });

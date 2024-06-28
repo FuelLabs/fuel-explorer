@@ -22,7 +22,7 @@ export class TransactionRepository {
     if (!transaction) return null;
 
     logger.debugDone('TransactionRepository.findByHash');
-    return TransactionEntity.create(transaction);
+    return TransactionEntity.createFromDB(transaction);
   }
 
   async findMany(paginator: Paginator<typeof TransactionsTable>) {
@@ -31,7 +31,7 @@ export class TransactionRepository {
     const query = await paginator.getPaginatedQuery(config);
     const results = paginator.getPaginatedResult(query);
     logger.debugDone('TransactionRepository.findMany', { results });
-    return results.map((item) => TransactionEntity.create(item));
+    return results.map((item) => TransactionEntity.createFromDB(item));
   }
 
   async findByOwner(
@@ -48,7 +48,9 @@ export class TransactionRepository {
     const query = await paginator.getPaginatedQuery(config, paginateFn);
     const results = paginator.getPaginatedResult(query);
     logger.debugDone('TransactionRepository.findByOwner', { results });
-    return Promise.all(results.map((item) => TransactionEntity.create(item)));
+    return Promise.all(
+      results.map((item) => TransactionEntity.createFromDB(item)),
+    );
   }
 
   async upsertMany(
