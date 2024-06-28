@@ -1,8 +1,9 @@
 import type { Asset } from '@fuels/assets';
+import { toast } from '@fuels/ui';
 import type { BN } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
-import type { FromToNetworks } from '~portal/systems/Chains';
+import { type FromToNetworks, isFuelChain } from '~portal/systems/Chains';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
 import { BridgeService } from '../services';
@@ -103,7 +104,7 @@ export const bridgeMachine = createMachine(
               target: 'idle',
             },
             {
-              actions: ['clearAssetAmmount'],
+              actions: ['clearAssetAmmount', 'notifyTxStarted'],
               target: 'idle',
             },
           ],
@@ -127,6 +128,17 @@ export const bridgeMachine = createMachine(
       clearAssetAmmount: assign({
         assetAmount: undefined,
       }),
+      notifyTxStarted: (ctx) => {
+        const isDeposit = isFuelChain(ctx.toNetwork);
+        toast.success(
+          `${
+            isDeposit ? 'Deposit' : 'Withdraw'
+          } successfully initiated. You may now close the popup.`,
+          {
+            duration: 5000,
+          },
+        );
+      },
     },
     services: {
       bridge: FetchMachine.create<BridgeInputs['bridge'], void>({

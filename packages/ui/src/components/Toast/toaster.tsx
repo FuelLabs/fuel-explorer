@@ -1,5 +1,5 @@
 import { HStack, VStack } from '../Box';
-
+import { Portal } from '../Portal';
 import {
   Toast,
   ToastClose,
@@ -14,32 +14,34 @@ export function Toaster() {
   const { toasts } = useToast();
 
   return (
-    <ToastProvider>
-      {toasts.map(
-        ({ id, title, description, action, icon, width = 350, ...props }) => (
-          <Toast
-            key={id}
-            {...props}
-            hasDescription={!!description}
-            style={
-              { '--radix-toast-width': `${width}px` } as React.CSSProperties
-            }
-          >
-            <HStack align="center" className="flex-1">
-              {icon}
-              <VStack gap="1">
-                {title && <ToastTitle>{title}</ToastTitle>}
-                {description && (
-                  <ToastDescription>{description}</ToastDescription>
-                )}
-              </VStack>
-            </HStack>
-            {action}
-            <ToastClose />
-          </Toast>
-        ),
-      )}
-      <ToastViewport />
-    </ToastProvider>
+    <Portal>
+      <ToastProvider>
+        {toasts.map(
+          ({ id, title, description, action, icon, width = 350, ...props }) => (
+            <Toast
+              key={id}
+              {...props}
+              hasDescription={!!description}
+              style={
+                { '--radix-toast-width': `${width}px` } as React.CSSProperties
+              }
+            >
+              <HStack align="center" className="flex-1">
+                {icon}
+                <VStack gap="1">
+                  {title && <ToastTitle>{title}</ToastTitle>}
+                  {description && (
+                    <ToastDescription>{description}</ToastDescription>
+                  )}
+                </VStack>
+              </HStack>
+              {action}
+              <ToastClose />
+            </Toast>
+          ),
+        )}
+        <ToastViewport />
+      </ToastProvider>
+    </Portal>
   );
 }

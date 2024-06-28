@@ -7,7 +7,6 @@ import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
-import { toast } from '@fuels/ui';
 import type { PublicClient as EthPublicClient } from 'viem';
 import type { TxFuelToEthInputs } from '../services';
 import { TxFuelToEthService } from '../services';
@@ -122,7 +121,7 @@ export const txFuelToEthMachine = createMachine(
                     'assignFuelTxResult',
                     'assignMessageId',
                     'assignNonce',
-                    'notifyFuelTxSuccess',
+                    'clearTxCreated',
                   ],
                   cond: 'hasTxResultInfo',
                   target: 'checkingDoneCache',
@@ -406,16 +405,8 @@ export const txFuelToEthMachine = createMachine(
           FuelTxCache.setTxIsDone(ctx.fuelTxId);
         }
       },
-      notifyFuelTxSuccess: (ctx) => {
+      clearTxCreated: (ctx) => {
         if (ctx.fuelTxId && FuelTxCache.getTxIsCreated(ctx.fuelTxId)) {
-          setTimeout(() => {
-            toast.success(
-              'Withdraw successfully initiated. You may now close the popup.',
-              {
-                duration: 5000,
-              },
-            );
-          }, 2000);
           FuelTxCache.removeTxCreated(ctx.fuelTxId);
         }
       },
