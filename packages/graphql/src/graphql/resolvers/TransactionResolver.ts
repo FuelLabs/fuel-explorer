@@ -44,6 +44,7 @@ export class TransactionResolver extends ResolverAdapter<Source> {
     const item = await transactionRepository.findByHash(params.id);
     const response = item?.toGQLNode();
     logger.debugDone('TransactionResolver.transaction', { response });
+    return response;
   }
 
   async transactions(
@@ -58,13 +59,14 @@ export class TransactionResolver extends ResolverAdapter<Source> {
     logger.debugResponse('TransactionResolver.transactions', { transactions });
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
-    const results = paginator.createPaginatedResult(
+    const results = await paginator.createPaginatedResult(
       transactions,
       startCursor,
       endCursor,
       (item) => item.toGQLNode(),
     );
     logger.debugDone('TransactionResolver.transactions', { results });
+    return results;
   }
 
   async transactionsByOwner(
@@ -84,12 +86,13 @@ export class TransactionResolver extends ResolverAdapter<Source> {
     });
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
-    const results = paginator.createPaginatedResult(
+    const results = await paginator.createPaginatedResult(
       transactions,
       startCursor,
       endCursor,
       (item) => item.toGQLNode(),
     );
     logger.debugDone('TransactionResolver.transactionsByOwner', { results });
+    return results;
   }
 }

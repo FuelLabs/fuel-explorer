@@ -65,7 +65,7 @@ export class BlockResolver extends ResolverAdapter<Source> {
     logger.debugResponse('BlockResolver.blocks', { blocks });
     const startCursor = paginator.getStartCursor(blocks);
     const endCursor = paginator.getEndCursor(blocks);
-    const result = paginator.createPaginatedResult(
+    const result = await paginator.createPaginatedResult(
       blocks,
       startCursor,
       endCursor,
