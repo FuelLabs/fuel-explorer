@@ -8,7 +8,9 @@ class LogFormats {
   static fileTransport(filename: string) {
     return pino.transport({
       target: 'pino/file',
-      options: { destination: `logs/${filename}.log` },
+      options: {
+        destination: `/var/log/${filename}.log`,
+      },
     });
   }
 
