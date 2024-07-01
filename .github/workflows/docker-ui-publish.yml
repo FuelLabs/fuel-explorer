@@ -1,0 +1,50 @@
+name: Build and publish Docker UI image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize]
+  release:
+    types: [published]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish-ui-image:
+    runs-on: buildjet-4vcpu-ubuntu-2204
+    if: |
+      (github.event_name == 'release' && github.event.action == 'published') ||
+      github.ref == 'refs/heads/main' ||
+      (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository)
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create .env file graphql
+        run: cp packages/graphql/.env.example packages/graphql/.env
+
+      - name: Create .env file explorer
+        run: cp packages/app-explorer/.env.example packages/app-explorer/.env
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.11.0
+          pnpm-version: 8.9.2
+
+      - name: Build production UI
+        run: pnpm build:prod
+
+      - name: Build and push Fuel Explorer Graphql image of Explorer UI
+        uses: ./.github/actions/docker-publish
+        id: publish
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          image: ghcr.io/fuellabs/fuel-ui-explorer
+          dockerfile: deployment/ui/Dockerfile
+          context: ./

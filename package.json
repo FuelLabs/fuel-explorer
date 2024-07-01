@@ -22,6 +22,7 @@
     "docker/erc20-deployer/deployer"
   ],
   "scripts": {
+    "build:prod": "pnpm turbo:run build:prod",
     "build:preview": "pnpm turbo:run build:preview",
     "build:lib": "pnpm turbo:run build:lib",
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
