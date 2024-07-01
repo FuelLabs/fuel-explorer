@@ -24,6 +24,7 @@ type MachineContext = {
   ethPublicClient?: EthPublicClient;
   txHashMessageRelayed?: string;
   estimatedFinishDate?: Date;
+  estimatedNextCommitDate?: Date;
 };
 
 type MachineServices = {
@@ -41,6 +42,7 @@ type MachineServices = {
     data: {
       blockHashCommited?: string | undefined;
       estimatedFinishDate?: Date | undefined;
+      estimatedNextCommitDate?: Date | undefined;
     };
   };
   waitBlockFinalization: {
@@ -167,7 +169,10 @@ export const txFuelToEthMachine = createMachine(
                       cond: FetchMachine.hasError,
                     },
                     {
-                      actions: ['assignEstimatedFinishDate'],
+                      actions: [
+                        'assignEstimatedNextCommitDate',
+                        'assignEstimatedFinishDate',
+                      ],
                       cond: 'hasEstimatedFinishDate',
                     },
                     {
@@ -178,7 +183,7 @@ export const txFuelToEthMachine = createMachine(
                   ],
                 },
                 after: {
-                  calculateDelayBasedOnTransactionTimeToFinalize: {
+                  calculateDelayBasedOnTimeToNextCommit: {
                     target: 'waitingBlockCommit',
                   },
                 },
@@ -239,7 +244,7 @@ export const txFuelToEthMachine = createMachine(
                   ],
                 },
                 after: {
-                  calculateDelayBasedOnTransactionTimeToFinalize: {
+                  calculateDelayBasedOnTimeToFinalize: {
                     target: 'waitingBlockFinalization',
                   },
                 },
@@ -395,6 +400,17 @@ export const txFuelToEthMachine = createMachine(
       assignFuelBlockHashCommited: assign({
         fuelBlockHashCommited: (_, ev) => ev.data.blockHashCommited,
       }),
+      assignEstimatedNextCommitDate: assign({
+        estimatedNextCommitDate: (ctx, ev) => {
+          if (ctx.fuelTxId && ev.data.estimatedNextCommitDate) {
+            FuelTxCache.setTxTimeToNextCommit(
+              ctx.fuelTxId,
+              ev.data.estimatedNextCommitDate.getTime(),
+            );
+          }
+          return ev.data.estimatedNextCommitDate;
+        },
+      }),
       assignEstimatedFinishDate: assign({
         estimatedFinishDate: (ctx, ev) => {
           if (ctx.fuelTxId && ev.data.estimatedFinishDate) {
@@ -434,13 +450,21 @@ export const txFuelToEthMachine = createMachine(
       isTxFuelToEthDone: (ctx) => FuelTxCache.getTxIsDone(ctx.fuelTxId || ''),
     },
     delays: {
-      calculateDelayBasedOnTransactionTimeToFinalize: (ctx) => {
-        return TxFuelToEthService.calculateDelayBasedOnTransactionTimeToFinalize(
-          {
-            txId: ctx.fuelTxId,
-            timeToFinalize: FuelTxCache.getTxTimeToFinalize(ctx.fuelTxId || ''),
-          },
-        );
+      calculateDelayBasedOnTimeToFinalize: (ctx) => {
+        const delay = TxFuelToEthService.calculateDelayBasedOnTimeRemaining({
+          txId: ctx.fuelTxId,
+          timeRemaining: FuelTxCache.getTxTimeToFinalize(ctx.fuelTxId || ''),
+        });
+        console.log('delay on time to finalize: ', delay);
+        return delay;
+      },
+      calculateDelayBasedOnTimeToNextCommit: (ctx) => {
+        const delay = TxFuelToEthService.calculateDelayBasedOnTimeRemaining({
+          txId: ctx.fuelTxId,
+          timeRemaining: FuelTxCache.getTxTimeToNextCommit(ctx.fuelTxId || ''),
+        });
+        console.log('delay on time to next commit: ', delay);
+        return delay;
       },
     },
     services: {
@@ -489,7 +513,7 @@ export const txFuelToEthMachine = createMachine(
             throw new Error('No input to wait block commit');
           }
 
-          console.log('waitBlockCommit');
+          console.log('waitBlockCommit', new Date());
           const result = await TxFuelToEthService.waitBlockCommit(input);
           return result;
         },
@@ -505,7 +529,7 @@ export const txFuelToEthMachine = createMachine(
             throw new Error('No input to wait block commit');
           }
 
-          console.log('waitBlockFinalization');
+          console.log('waitBlockFinalization', new Date());
           const result = TxFuelToEthService.waitBlockFinalization(input);
           return result;
         },

@@ -48,9 +48,9 @@ export type TxFuelToEthInputs = {
     ethPublicClient: EthPublicClient;
     fuelProvider?: FuelProvider;
   };
-  calculateDelayBasedOnTransactionTimeToFinalize: {
+  calculateDelayBasedOnTimeRemaining: {
     txId?: string;
-    timeToFinalize?: string | null;
+    timeRemaining?: string | null;
   };
   waitBlockFinalization: {
     messageProof?: MessageProof;
@@ -242,6 +242,7 @@ export class TxFuelToEthService {
     const isCommited = bn(block?.header.height).gte(nextBlockHeight);
 
     if (isCommited) {
+      console.log('block commited');
       return {
         blockHashCommited: commitHashAtL1 as `0x${string}`,
       };
@@ -253,22 +254,29 @@ export class TxFuelToEthService {
     const dateLastCommit = new Date(Number(lastBlockCommited.timestamp) * 1000);
     // It's safe to convert bigint to number in this case as the values of
     // blockPerCommitInterval and timeToFinalize are not too big.
-    const totalTimeInSeconds =
-      Number(blocksPerCommitInterval) + Number(timeToFinalize);
+    const nextCommitTime = Number(blocksPerCommitInterval);
+    const estimatedNextCommitDate = dayjs(dateLastCommit)
+      .add(nextCommitTime, 'seconds')
+      .toDate();
+
+    const totalTimeInSeconds = nextCommitTime + Number(timeToFinalize);
     const estimatedFinishDate = dayjs(dateLastCommit)
       .add(totalTimeInSeconds, 'seconds')
       .toDate();
 
+    console.log(estimatedNextCommitDate, estimatedFinishDate);
+
     return {
+      estimatedNextCommitDate,
       estimatedFinishDate,
     };
   }
 
-  static calculateDelayBasedOnTransactionTimeToFinalize(
-    input: TxFuelToEthInputs['calculateDelayBasedOnTransactionTimeToFinalize'],
+  static calculateDelayBasedOnTimeRemaining(
+    input: TxFuelToEthInputs['calculateDelayBasedOnTimeRemaining'],
   ) {
     const DEFAULT_DELAY_TIME_10_SECONDS = 10000;
-    if (!input.txId || !input.timeToFinalize) {
+    if (!input.txId || !input.timeRemaining) {
       return DEFAULT_DELAY_TIME_10_SECONDS;
     }
     const CURRENT_TIMESTAMP = new Date().getTime();
@@ -276,7 +284,7 @@ export class TxFuelToEthService {
     const TIME_1_HOUR = 3600000;
     const TIME_10_MINUTES = 600000;
     const TIME_1_MINUTE = 60000;
-    const remainingTime = parseInt(input.timeToFinalize) - CURRENT_TIMESTAMP;
+    const remainingTime = parseInt(input.timeRemaining) - CURRENT_TIMESTAMP;
     if (remainingTime > TIME_24_HOURS) return TIME_24_HOURS;
     if (remainingTime > TIME_1_HOUR) return TIME_1_HOUR;
     if (remainingTime > TIME_10_MINUTES) return TIME_10_MINUTES;

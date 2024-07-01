@@ -1,16 +1,16 @@
 import { TxFuelToEthService } from '../app-portal/src/systems/Chains/fuel/services/txFuelToEth';
-const calculateDelayBasedOnTransactionTimeToFinalize =
-  TxFuelToEthService.calculateDelayBasedOnTransactionTimeToFinalize;
+const calculateDelayBasedOnTimeRemaining =
+  TxFuelToEthService.calculateDelayBasedOnTimeRemaining;
 
-describe('calculateDelayBasedOnTransactionTimeToFinalize', () => {
+describe('calculateDelayBasedOnTimeRemaining', () => {
   test('Should calculate delay based on more than two days to finalize', () => {
     console.log(process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME);
     const actualDate = new Date('2024-06-20T15:00:01');
     const futureDate = new Date('2024-06-22T15:00:11');
     jest.useFakeTimers().setSystemTime(actualDate);
-    const delay = calculateDelayBasedOnTransactionTimeToFinalize({
+    const delay = calculateDelayBasedOnTimeRemaining({
       txId: 'abc',
-      timeToFinalize: `${futureDate.getTime()}`,
+      timeRemaining: `${futureDate.getTime()}`,
     });
     expect(delay).toBe(86400000);
     jest.restoreAllMocks();
@@ -20,9 +20,9 @@ describe('calculateDelayBasedOnTransactionTimeToFinalize', () => {
     const actualDate = new Date('2024-06-20T15:00:01');
     const futureDate = new Date('2024-06-21T15:00:11');
     jest.useFakeTimers().setSystemTime(actualDate);
-    const delay = calculateDelayBasedOnTransactionTimeToFinalize({
+    const delay = calculateDelayBasedOnTimeRemaining({
       txId: 'abc',
-      timeToFinalize: `${futureDate.getTime()}`,
+      timeRemaining: `${futureDate.getTime()}`,
     });
     expect(delay).toBe(86400000);
     jest.restoreAllMocks();
@@ -32,9 +32,9 @@ describe('calculateDelayBasedOnTransactionTimeToFinalize', () => {
     const actualDate = new Date('2024-06-20T15:00:01');
     const futureDate = new Date('2024-06-20T16:00:11');
     jest.useFakeTimers().setSystemTime(actualDate);
-    const delay = calculateDelayBasedOnTransactionTimeToFinalize({
+    const delay = calculateDelayBasedOnTimeRemaining({
       txId: 'abc',
-      timeToFinalize: `${futureDate.getTime()}`,
+      timeRemaining: `${futureDate.getTime()}`,
     });
     expect(delay).toBe(3600000);
     jest.restoreAllMocks();
@@ -44,9 +44,9 @@ describe('calculateDelayBasedOnTransactionTimeToFinalize', () => {
     const actualDate = new Date('2024-06-20T15:00:01');
     const futureDate = new Date('2024-06-20T15:10:11');
     jest.useFakeTimers().setSystemTime(actualDate);
-    const delay = calculateDelayBasedOnTransactionTimeToFinalize({
+    const delay = calculateDelayBasedOnTimeRemaining({
       txId: 'abc',
-      timeToFinalize: `${futureDate.getTime()}`,
+      timeRemaining: `${futureDate.getTime()}`,
     });
     expect(delay).toBe(600000);
     jest.restoreAllMocks();
@@ -56,9 +56,9 @@ describe('calculateDelayBasedOnTransactionTimeToFinalize', () => {
     const actualDate = new Date('2024-06-20T15:00:01');
     const futureDate = new Date('2024-06-20T15:01:11');
     jest.useFakeTimers().setSystemTime(actualDate);
-    const delay = calculateDelayBasedOnTransactionTimeToFinalize({
+    const delay = calculateDelayBasedOnTimeRemaining({
       txId: 'abc',
-      timeToFinalize: `${futureDate.getTime()}`,
+      timeRemaining: `${futureDate.getTime()}`,
     });
     expect(delay).toBe(60000);
     jest.restoreAllMocks();
@@ -68,9 +68,9 @@ describe('calculateDelayBasedOnTransactionTimeToFinalize', () => {
     const actualDate = new Date('2024-06-20T15:00:01');
     const futureDate = new Date('2024-06-20T15:00:11');
     jest.useFakeTimers().setSystemTime(actualDate);
-    const delay = calculateDelayBasedOnTransactionTimeToFinalize({
+    const delay = calculateDelayBasedOnTimeRemaining({
       txId: 'abc',
-      timeToFinalize: `${futureDate.getTime()}`,
+      timeRemaining: `${futureDate.getTime()}`,
     });
     expect(delay).toBe(10000);
     jest.restoreAllMocks();
