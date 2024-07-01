@@ -455,7 +455,6 @@ export const txFuelToEthMachine = createMachine(
           txId: ctx.fuelTxId,
           timeRemaining: FuelTxCache.getTxTimeToFinalize(ctx.fuelTxId || ''),
         });
-        console.log('delay on time to finalize: ', delay);
         return delay;
       },
       calculateDelayBasedOnTimeToNextCommit: (ctx) => {
@@ -463,7 +462,6 @@ export const txFuelToEthMachine = createMachine(
           txId: ctx.fuelTxId,
           timeRemaining: FuelTxCache.getTxTimeToNextCommit(ctx.fuelTxId || ''),
         });
-        console.log('delay on time to next commit: ', delay);
         return delay;
       },
     },
