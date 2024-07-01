@@ -14,9 +14,8 @@ COPY ./chain_config.json .
 COPY ./metadata.json .
 COPY ./state_config.json .
 RUN curl \
-    https://github.com/FuelLabs/fuel-core/raw/v0.26.0/bin/fuel-core/chainspec/testnet/ \
-    -o ./state_transition_bytecode.wasm
-
+  https://github.com/FuelLabs/fuel-core/raw/v0.26.0/bin/fuel-core/chainspec/testnet/ \
+  -o ./state_transition_bytecode.wasm
 
 # expose fuel node port
 ENV FUEL_IP="${FUEL_IP}"

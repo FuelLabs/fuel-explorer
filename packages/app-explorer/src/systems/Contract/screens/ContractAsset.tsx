@@ -7,5 +7,5 @@ type ContractAssetsProps = {
 
 export async function ContractAssets({ id }: ContractAssetsProps) {
   const balances = await getContractBalances({ id });
-  return <ContractAssetList balances={balances} />;
+  return <ContractAssetList balances={balances.edges} />;
 }

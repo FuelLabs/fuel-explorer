@@ -5,7 +5,6 @@ import {
   GROUPED_OUTPUT_ASSET,
   GROUPED_OUTPUT_ASSET_UNKNOWN,
   GROUPED_OUTPUT_CONTRACT_CREATED,
-  GROUPED_OUTPUT_MESSAGE,
   TX_MOCK,
 } from '../../__mocks__/tx';
 
@@ -42,16 +41,6 @@ export const ContractCreated: Story = {
       className="w-[500px]"
       tx={TX_MOCK}
       output={GROUPED_OUTPUT_CONTRACT_CREATED}
-    />
-  ),
-};
-
-export const Message: Story = {
-  render: () => (
-    <TxOutput
-      className="w-[500px]"
-      tx={TX_MOCK}
-      output={GROUPED_OUTPUT_MESSAGE}
     />
   ),
 };

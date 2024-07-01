@@ -1,5 +1,4 @@
-import type { TransactionItemFragment } from '@fuel-explorer/graphql';
-
+import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql';
 import type { ViewModes } from '../Core/components/ViewMode/constants';
 
 export type TxRouteParams = {
@@ -44,4 +43,4 @@ export const TX_TYPES = Object.keys({ ...TxTypeEnum, ...TxAccountTypeEnum });
 export const TX_STATUS = Object.keys(TxStatusEnum);
 export const TX_ICON_TYPES = TX_TYPES.concat(['Message']);
 
-export type TransactionNode = TransactionItemFragment;
+export type TransactionNode = GQLTransactionItemFragment;

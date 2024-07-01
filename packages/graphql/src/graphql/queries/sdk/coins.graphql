@@ -1,0 +1,41 @@
+query coins(
+  $after: String
+  $before: String
+  $filter: CoinFilterInput!
+  $first: Int
+  $last: Int
+) {
+  coins(
+    after: $after
+    before: $before
+    filter: $filter
+    first: $first
+    last: $last
+  ) {
+    edges {
+      cursor
+      node {
+        amount
+        assetId
+        blockCreated
+        owner
+        txCreatedIdx
+        utxoId
+      }
+    }
+    nodes {
+      amount
+      assetId
+      blockCreated
+      owner
+      txCreatedIdx
+      utxoId
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

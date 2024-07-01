@@ -1,0 +1,31 @@
+fragment RecentTransaction on Transaction {
+  id
+  title
+  statusType
+  time {
+    fromNow
+    rawUnix
+  }
+  gasCosts {
+    fee
+  }
+}
+
+query recentTransactions(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  transactions(after: $after, before: $before, first: $first, last: $last) {
+    nodes {
+      ...RecentTransaction
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

@@ -1,7 +1,0 @@
-# import TransactionItem from "./tx-fragments.graphql"
-
-query getTransaction($id: TransactionId!) {
-  transaction(id: $id) {
-    ...TransactionItem
-  }
-}

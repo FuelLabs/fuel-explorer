@@ -1,4 +1,5 @@
 import { bn } from '@fuel-ts/math';
+import type { BaseProps } from '@fuels/ui';
 import {
   Badge,
   Box,
@@ -9,17 +10,16 @@ import {
   cx,
   shortAddress,
 } from '@fuels/ui';
-import type { BaseProps } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Routes } from '~/routes';
 
+import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql';
 import { isValidAddress } from '~/systems/Core/utils/address';
 import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
-import type { TransactionNode } from '../../../Transaction/types';
 
 type TxCardProps = BaseProps<{
-  transaction: TransactionNode;
+  transaction: GQLRecentTransactionsQuery['transactions']['nodes'][number];
   isLoading?: boolean;
 }>;
 
@@ -29,7 +29,7 @@ export function TxCard({
   isLoading,
   ...props
 }: TxCardProps) {
-  const fee = bn(tx.fee);
+  const fee = bn(tx.gasCosts?.fee ?? 0);
   const isValidTxID = isValidAddress(tx.id);
 
   return (
@@ -62,7 +62,7 @@ export function TxCard({
                 className="text-sm order-3 laptop:order-none"
                 leftIcon={IconGasStation}
               >
-                {bn(tx.fee).format()} ETH
+                {bn(tx.gasCosts?.fee ?? 0).format()} ETH
               </Text>
             )}
             <LoadingWrapper

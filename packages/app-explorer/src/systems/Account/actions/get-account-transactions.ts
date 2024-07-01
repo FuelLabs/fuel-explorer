@@ -12,13 +12,13 @@ const schema = z.object({
 
 export const getAccountTransactions = act(schema, async (input) => {
   const owner = parseAddressParam(input.owner);
-  const { data } = await sdk.getAccountTransactions({ owner });
+  const { data } = await sdk.transactionsByOwner({ owner });
   // TODO: remove this after gets our own indexer working
-  const edges = data.transactions.edges.sort((a, b) => {
-    const aTime = dayjs(a.node.time?.rawUnix);
-    const bTime = dayjs(b.node.time?.rawUnix);
+  const nodes = data.transactionsByOwner.nodes.sort((a, b) => {
+    const aTime = dayjs(a.time?.rawUnix);
+    const bTime = dayjs(b.time?.rawUnix);
     return bTime.diff(aTime);
   });
-  data.transactions.edges = edges;
-  return data.transactions;
+  data.transactionsByOwner.nodes = nodes;
+  return data.transactionsByOwner;
 });

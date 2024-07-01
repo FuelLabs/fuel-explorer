@@ -13,8 +13,8 @@ const schema = z.object({
 export const getLastTxs = act(schema, async ({ page = 1 }) => {
   const currentPage = Number(page);
   const toFetch = !page ? PER_PAGE : page * PER_PAGE;
-  const { data } = await sdk.getLastTransactions({ last: toFetch });
-  const list = data.transactions.edges;
+  const { data } = await sdk.recentTransactions({ last: toFetch });
+  const list = data.transactions.nodes;
   if (!page) return list;
   const startRange = (currentPage - 1) * PER_PAGE;
   const endRange = currentPage * PER_PAGE;
