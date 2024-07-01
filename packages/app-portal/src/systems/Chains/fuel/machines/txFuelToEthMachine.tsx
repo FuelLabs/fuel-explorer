@@ -25,6 +25,7 @@ type MachineContext = {
   ethPublicClient?: EthPublicClient;
   txHashMessageRelayed?: string;
   estimatedFinishDate?: Date;
+  estimatedNextCommitDate?: Date;
 };
 
 type MachineServices = {
@@ -42,6 +43,7 @@ type MachineServices = {
     data: {
       blockHashCommited?: string | undefined;
       estimatedFinishDate?: Date | undefined;
+      estimatedNextCommitDate?: Date | undefined;
     };
   };
   waitBlockFinalization: {
@@ -168,7 +170,10 @@ export const txFuelToEthMachine = createMachine(
                       cond: FetchMachine.hasError,
                     },
                     {
-                      actions: ['assignEstimatedFinishDate'],
+                      actions: [
+                        'assignEstimatedNextCommitDate',
+                        'assignEstimatedFinishDate',
+                      ],
                       cond: 'hasEstimatedFinishDate',
                     },
                     {
@@ -179,7 +184,7 @@ export const txFuelToEthMachine = createMachine(
                   ],
                 },
                 after: {
-                  10000: {
+                  calculateDelayBasedOnTimeToNextCommit: {
                     target: 'waitingBlockCommit',
                   },
                 },
@@ -240,7 +245,7 @@ export const txFuelToEthMachine = createMachine(
                   ],
                 },
                 after: {
-                  10000: {
+                  calculateDelayBasedOnTimeToFinalize: {
                     target: 'waitingBlockFinalization',
                   },
                 },
@@ -396,8 +401,25 @@ export const txFuelToEthMachine = createMachine(
       assignFuelBlockHashCommited: assign({
         fuelBlockHashCommited: (_, ev) => ev.data.blockHashCommited,
       }),
+      assignEstimatedNextCommitDate: assign({
+        estimatedNextCommitDate: (ctx, ev) => {
+          if (ctx.fuelTxId && ev.data.estimatedNextCommitDate) {
+            FuelTxCache.setTxTimeToNextCommit(
+              ctx.fuelTxId,
+              ev.data.estimatedNextCommitDate.getTime(),
+            );
+          }
+          return ev.data.estimatedNextCommitDate;
+        },
+      }),
       assignEstimatedFinishDate: assign({
-        estimatedFinishDate: (_, ev) => {
+        estimatedFinishDate: (ctx, ev) => {
+          if (ctx.fuelTxId && ev.data.estimatedFinishDate) {
+            FuelTxCache.setTxTimeToFinalize(
+              ctx.fuelTxId,
+              ev.data.estimatedFinishDate.getTime(),
+            );
+          }
           return ev.data.estimatedFinishDate;
         },
       }),
@@ -435,6 +457,22 @@ export const txFuelToEthMachine = createMachine(
       hasAnalyzeTxInput: (ctx) =>
         !!ctx.fuelTxId && !!ctx.fuelProvider && !!ctx.ethPublicClient,
       isTxFuelToEthDone: (ctx) => FuelTxCache.getTxIsDone(ctx.fuelTxId || ''),
+    },
+    delays: {
+      calculateDelayBasedOnTimeToFinalize: (ctx) => {
+        const delay = TxFuelToEthService.calculateDelayBasedOnTimeRemaining({
+          txId: ctx.fuelTxId,
+          timeRemaining: FuelTxCache.getTxTimeToFinalize(ctx.fuelTxId || ''),
+        });
+        return delay;
+      },
+      calculateDelayBasedOnTimeToNextCommit: (ctx) => {
+        const delay = TxFuelToEthService.calculateDelayBasedOnTimeRemaining({
+          txId: ctx.fuelTxId,
+          timeRemaining: FuelTxCache.getTxTimeToNextCommit(ctx.fuelTxId || ''),
+        });
+        return delay;
+      },
     },
     services: {
       waitFuelTxResult: FetchMachine.create<
