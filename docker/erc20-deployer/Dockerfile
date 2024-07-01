@@ -6,7 +6,7 @@ WORKDIR /ecr20-deployer
 # Copy deployer project
 ADD ./deployer /erc20-deployer/deployer
 
-# Run install inside the depdencies
+# Run install inside the dependencies
 WORKDIR /erc20-deployer/deployer
 
 # Install Git

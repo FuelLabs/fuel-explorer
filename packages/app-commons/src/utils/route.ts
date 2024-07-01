@@ -7,7 +7,7 @@ type PathRender<T extends Array<string>> = ((...params: T) => string) & {
  *
  * @typeParam P - list of keys accepted as params
  * @param path - raw route path
- * @returns a strong-typed function to parse the route using object, if any
+ * @returns a strong-typed function to parse the route using an object, if any
  * param is passed, returns the path itself without parsing
  *
  * @example
