@@ -513,7 +513,7 @@ export const txFuelToEthMachine = createMachine(
             throw new Error('No input to wait block commit');
           }
 
-          console.log('waitBlockCommit', new Date());
+          console.log('waitBlockCommit');
           const result = await TxFuelToEthService.waitBlockCommit(input);
           return result;
         },
@@ -529,7 +529,7 @@ export const txFuelToEthMachine = createMachine(
             throw new Error('No input to wait block commit');
           }
 
-          console.log('waitBlockFinalization', new Date());
+          console.log('waitBlockFinalization');
           const result = TxFuelToEthService.waitBlockFinalization(input);
           return result;
         },

@@ -242,7 +242,6 @@ export class TxFuelToEthService {
     const isCommited = bn(block?.header.height).gte(nextBlockHeight);
 
     if (isCommited) {
-      console.log('block commited');
       return {
         blockHashCommited: commitHashAtL1 as `0x${string}`,
       };
@@ -263,8 +262,6 @@ export class TxFuelToEthService {
     const estimatedFinishDate = dayjs(dateLastCommit)
       .add(totalTimeInSeconds, 'seconds')
       .toDate();
-
-    console.log(estimatedNextCommitDate, estimatedFinishDate);
 
     return {
       estimatedNextCommitDate,
