@@ -48,6 +48,10 @@ export type TxFuelToEthInputs = {
     ethPublicClient: EthPublicClient;
     fuelProvider?: FuelProvider;
   };
+  calculateDelayBasedOnTimeRemaining: {
+    txId?: string;
+    timeRemaining?: string | null;
+  };
   waitBlockFinalization: {
     messageProof?: MessageProof;
     ethPublicClient: EthPublicClient;
@@ -249,15 +253,40 @@ export class TxFuelToEthService {
     const dateLastCommit = new Date(Number(lastBlockCommited.timestamp) * 1000);
     // It's safe to convert bigint to number in this case as the values of
     // blockPerCommitInterval and timeToFinalize are not too big.
-    const totalTimeInSeconds =
-      Number(blocksPerCommitInterval) + Number(timeToFinalize);
+    const nextCommitTime = Number(blocksPerCommitInterval);
+    const estimatedNextCommitDate = dayjs(dateLastCommit)
+      .add(nextCommitTime, 'seconds')
+      .toDate();
+
+    const totalTimeInSeconds = nextCommitTime + Number(timeToFinalize);
     const estimatedFinishDate = dayjs(dateLastCommit)
       .add(totalTimeInSeconds, 'seconds')
       .toDate();
 
     return {
+      estimatedNextCommitDate,
       estimatedFinishDate,
     };
+  }
+
+  static calculateDelayBasedOnTimeRemaining(
+    input: TxFuelToEthInputs['calculateDelayBasedOnTimeRemaining'],
+  ) {
+    const DEFAULT_DELAY_TIME_10_SECONDS = 10000;
+    if (!input.txId || !input.timeRemaining) {
+      return DEFAULT_DELAY_TIME_10_SECONDS;
+    }
+    const CURRENT_TIMESTAMP = new Date().getTime();
+    const TIME_24_HOURS = 86400000;
+    const TIME_1_HOUR = 3600000;
+    const TIME_10_MINUTES = 600000;
+    const TIME_1_MINUTE = 60000;
+    const remainingTime = parseInt(input.timeRemaining) - CURRENT_TIMESTAMP;
+    if (remainingTime > TIME_24_HOURS) return TIME_24_HOURS;
+    if (remainingTime > TIME_1_HOUR) return TIME_1_HOUR;
+    if (remainingTime > TIME_10_MINUTES) return TIME_10_MINUTES;
+    if (remainingTime > TIME_1_MINUTE) return TIME_1_MINUTE;
+    return DEFAULT_DELAY_TIME_10_SECONDS;
   }
 
   static async getMessageProof(input: TxFuelToEthInputs['getMessageProof']) {
