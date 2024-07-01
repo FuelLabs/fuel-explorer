@@ -1,15 +1,17 @@
+import { join } from 'node:path';
 import pino from 'pino';
 import { env } from '~/config';
 
 const DEBUG = env.get('DEBUG');
 const DEBUG_PAYLOAD = env.get('DEBUG_PAYLOAD');
+const LOG_DIR = env.get('LOG_DIR') || '/var/log';
 
 class LogFormats {
   static fileTransport(filename: string) {
     return pino.transport({
       target: 'pino/file',
       options: {
-        destination: `/var/log/${filename}.log`,
+        destination: join(LOG_DIR, `${filename}.log`),
       },
     });
   }

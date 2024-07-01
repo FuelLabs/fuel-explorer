@@ -12,6 +12,7 @@ const falsy = zod.coerce
   );
 
 const schema = zod.object({
+  LOG_DIR: zod.string().optional(),
   DEBUG: falsy.optional(),
   DEBUG_PAYLOAD: falsy.optional(),
   FUEL_PROVIDER: zod.string(),
@@ -38,6 +39,7 @@ const schema = zod.object({
 });
 
 export const env = new Env(schema, {
+  LOG_DIR: '/var/log',
   DEBUG: true,
   DEBUG_PAYLOAD: false,
   FUEL_PROVIDER: 'http://localhost:4000/v1/graphql',
