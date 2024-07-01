@@ -1,4 +1,3 @@
-import { merge } from 'lodash';
 import { BalanceResolver } from './BalanceResolver';
 import { BlockResolver } from './BlockResolver';
 import { ChainResolver } from './ChainResolver';
@@ -17,13 +16,16 @@ const predicateResolver = PredicateResolver.create();
 const searchResolver = SearchResolver.create();
 const transactionResolver = TransactionResolver.create();
 
-export const resolvers = merge(
-  balanceResolver,
-  blockResolver,
-  chainResolver,
-  contractResolver,
-  nodeResolver,
-  predicateResolver,
-  searchResolver,
-  transactionResolver,
-);
+export const resolvers = {
+  Query: {
+    ...balanceResolver.Query,
+    ...blockResolver.Query,
+    ...chainResolver.Query,
+    ...contractResolver.Query,
+    ...nodeResolver.Query,
+    ...predicateResolver.Query,
+    ...searchResolver.Query,
+    ...transactionResolver.Query,
+  },
+  Balance: balanceResolver.Balance,
+};

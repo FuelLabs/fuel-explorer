@@ -7,7 +7,7 @@ type Data = QueueInputs[QueueNames.SYNC_MISSING];
 
 export class SyncMissingBlocks {
   async execute() {
-    const conn = await db.connection();
+    const conn = await db.conn();
     const repo = new BlockRepository(conn);
     const latest = await repo.findLatestAdded();
     const cursor = latest ? Number(latest.data.header.height) : undefined;

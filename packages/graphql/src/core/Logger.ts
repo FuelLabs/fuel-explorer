@@ -1,102 +1,148 @@
-import winston from 'winston';
+import pino from 'pino';
 import { env } from '~/config';
 
-class Logger {
-  main: winston.Logger;
-  graphql: winston.Logger;
-  syncer: winston.Logger;
+const DEBUG = env.get('DEBUG');
+const DEBUG_PAYLOAD = env.get('DEBUG_PAYLOAD');
 
-  constructor() {
-    const commonFormat = winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.json({ space: 2 }),
-      winston.format.cli(),
+class LogFormats {
+  static fileTransport(filename: string) {
+    return pino.transport({
+      target: 'pino/file',
+      options: { destination: `logs/${filename}.log` },
+    });
+  }
+
+  static consoleTransport = pino.transport({
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      translateTime: 'SYS:yyyy-mm-dd HH:MM:ss.l',
+      ignore: 'pid,hostname',
+    },
+  });
+}
+
+class LoggerBase {
+  protected logger: pino.Logger;
+
+  constructor(serviceName: string, level: string) {
+    this.logger = pino(
+      {
+        level,
+        name: serviceName,
+        timestamp: pino.stdTimeFunctions.isoTime,
+      },
+      pino.multistream([
+        { stream: LogFormats.fileTransport(serviceName) },
+        ...(serviceName !== 'graphql'
+          ? [{ stream: LogFormats.consoleTransport }]
+          : []),
+      ]),
     );
-
-    this.main = winston.createLogger({
-      level: 'info',
-      format: commonFormat,
-      transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({
-          level: 'error',
-          filename: 'logs/error.log',
-        }),
-        new winston.transports.File({
-          filename: 'logs/combined.log',
-        }),
-      ],
-    });
-
-    this.graphql = winston.createLogger({
-      level: 'info',
-      format: commonFormat,
-      transports: [
-        new winston.transports.File({
-          filename: 'logs/graphql.log',
-        }),
-      ],
-    });
-
-    this.syncer = winston.createLogger({
-      level: 'info',
-      format: commonFormat,
-      transports: [
-        new winston.transports.File({
-          filename: 'logs/syncer.log',
-        }),
-      ],
-    });
   }
 
-  info(message: string, meta?: any) {
-    this.main.info(message, meta);
-  }
-
-  warn(message: string, meta?: any) {
-    this.main.warn(message, meta);
-  }
-
-  error(message: string, meta?: any) {
-    this.main.error(message, meta);
-  }
-
-  debug(message: string, meta?: any) {
-    if (env.get('DEBUG')) {
-      this.main.debug(message, meta);
+  protected log(level: string, message: string, data?: any) {
+    const params = { msg: message } as any;
+    if (DEBUG_PAYLOAD && data) {
+      params.payload = data;
+    }
+    switch (level) {
+      case 'debug':
+        this.logger.debug(params);
+        break;
+      case 'info':
+        this.logger.info(params);
+        break;
+      case 'warn':
+        this.logger.warn(params);
+        break;
+      case 'error':
+        this.logger.error(params);
+        break;
     }
   }
 
-  debugRequest(message: string, meta?: any) {
-    this.main.debug(`[REQUEST] ${message}`, meta);
+  info<T>(message: string, data?: T) {
+    this.log('info', message, data);
   }
-  debugResponse(message: string, meta?: any) {
-    this.main.debug(`[RESPONSE] ${message}`, meta);
+
+  warn<T>(message: string, data?: T) {
+    this.log('warn', message, data);
   }
-  debugDone(message: string, meta?: any) {
-    this.main.debug(`[DONE] ${message}`, meta);
+
+  error<T>(message: string, data?: T) {
+    this.log('error', message, data);
   }
-  debugError(message: string, meta?: any) {
-    this.main.debug(`[ERROR] ${message}`, meta);
+
+  debug<T>(message: string, data?: T) {
+    if (!DEBUG) return;
+    this.log('info', message, data);
+  }
+
+  protected debugWithPrefix<T>(prefix: string, message: string, data?: T) {
+    this.debug(`[${prefix}] ${message}`, data);
+  }
+}
+
+class GraphQLLogger extends LoggerBase {
+  constructor() {
+    super('graphql', 'debug');
   }
 
   yogaLogFn(eventName: string, args: any) {
     switch (eventName) {
       case 'execute-start':
       case 'subscribe-start':
-        this.graphql.info(`${eventName}`, { args });
+        this.debug(`${eventName}`, { args });
         break;
       case 'execute-end':
       case 'subscribe-end':
-        this.graphql.info(`${eventName}`, {
+        this.debug(`${eventName}`, {
           args,
           result: args.result,
           executionTime: args.executionTime,
         });
         break;
       default:
-        this.graphql.debug(`Unknown event: ${eventName}`, { args });
+        this.debug(`Unknown event: ${eventName}`, { args });
     }
+  }
+}
+
+class SyncerLogger extends LoggerBase {
+  constructor() {
+    super('syncer', DEBUG ? 'debug' : 'info');
+  }
+}
+
+class Logger extends LoggerBase {
+  graphql: GraphQLLogger;
+  syncer: SyncerLogger;
+
+  constructor() {
+    super('main', DEBUG ? 'debug' : 'info');
+    this.graphql = new GraphQLLogger();
+    this.syncer = new SyncerLogger();
+  }
+
+  debugRequest<T>(message: string, data?: T) {
+    this.debugWithPrefix('REQUEST', message, data);
+  }
+
+  debugResponse<T>(message: string, data?: T) {
+    this.debugWithPrefix('RESPONSE', message, data);
+  }
+
+  debugDone<T>(message: string, data?: T) {
+    this.debugWithPrefix('DONE', message, data);
+  }
+
+  debugError<T>(message: string, data?: T) {
+    this.debugWithPrefix('ERROR', message, data);
+  }
+
+  yogaLogFn(eventName: string, args: any) {
+    this.graphql.yogaLogFn(eventName, args);
   }
 }
 

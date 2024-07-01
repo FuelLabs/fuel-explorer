@@ -1,49 +1,42 @@
 import { Hash256 } from '~/application/vo';
-import { ResolverAdapter } from '~/core/Resolver';
-import { BlockRepository } from '~/domain/Block/BlockRepository';
-import { ContractRepository } from '~/domain/Contract/ContractRepository';
-import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
 import type { GraphQLContext } from '../GraphQLContext';
 
 type Params = {
   search: { query: string };
 };
 
-export class SearchResolver extends ResolverAdapter<null> {
-  private constructor() {
-    super();
-    this.setResolvers({
-      Query: {
-        search: this.search.bind(this),
-      },
-    });
-  }
-
+export class SearchResolver {
   static create() {
-    return new SearchResolver().getResolvers();
+    const resolvers = new SearchResolver();
+    return {
+      Query: {
+        search: resolvers.search,
+      },
+    };
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  async search(_null: any, params: Params['search'], { conn }: GraphQLContext) {
+  async search(
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    _null: any,
+    params: Params['search'],
+    { repositories }: GraphQLContext,
+  ) {
     const address = Hash256.create(params.query).value();
-    const blockRepository = new BlockRepository(conn);
-    const contractRepository = new ContractRepository(conn);
-    const transactionRepository = new TransactionRepository(conn);
-    const block = await blockRepository.findByHash(address);
+    const block = await repositories.block.findByHash(address);
     if (block) {
       return {
         block: block.toGQLNode(),
       };
     }
 
-    const contract = await contractRepository.findByHash(address);
+    const contract = await repositories.contract.findByHash(address);
     if (contract) {
       return {
         contract: contract.toGQLNode(),
       };
     }
 
-    const transaction = await transactionRepository.findByHash(address);
+    const transaction = await repositories.transaction.findByHash(address);
     if (transaction) {
       return {
         transaction: transaction.toGQLNode(),

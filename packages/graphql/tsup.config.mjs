@@ -16,16 +16,6 @@ export default defineConfig(() => [
       app: 'src/app.ts',
       syncer: 'src/syncer.ts',
     },
-  },
-  {
-    outDir: 'dist/resolvers',
-    splitting: false,
-    format: ['cjs'],
-    sourcemap: false,
-    clean: true,
-    dts: false,
-    minify: false,
-    entry: ['src/graphql/resolvers/**.ts'],
     async onSuccess() {
       const cwd = process.cwd();
       const dirPath = join(cwd, 'dist/schemas');

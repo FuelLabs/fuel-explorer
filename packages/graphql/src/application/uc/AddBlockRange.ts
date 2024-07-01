@@ -20,16 +20,17 @@ export class AddBlockRange {
 
     logger.syncer.info(c.green(`🔗 Adding blocks to sync: #${from} - #${to}`));
     const start = performance.now();
-    const conn = await db.connection();
+    const conn = await db.conn();
     await conn.transaction(async (trx) => {
       try {
         const blockRepo = new BlockRepository(trx);
         await blockRepo.upsertMany(blockProducer, blocks, trx);
         const items = blocks.flatMap((block) => {
           const { transactions, ...rest } = block;
-          return transactions.map((transaction) => ({
+          return transactions.map((transaction, index) => ({
             block: rest,
             transaction,
+            index,
           }));
         });
         await addTransactions(items, trx);

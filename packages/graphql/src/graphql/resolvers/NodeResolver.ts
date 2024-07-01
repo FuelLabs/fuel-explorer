@@ -1,4 +1,3 @@
-import { ResolverAdapter } from '~/core/Resolver';
 import type { GQLNodeInfo } from '~/graphql/generated/sdk-provider';
 import type { GraphQLContext } from '../GraphQLContext';
 
@@ -7,18 +6,14 @@ type Params = {
   nodeInfo: null;
 };
 
-export class NodeResolver extends ResolverAdapter<Source> {
-  private constructor() {
-    super();
-    this.setResolvers({
-      Query: {
-        nodeInfo: this.nodeInfo.bind(this),
-      },
-    });
-  }
-
+export class NodeResolver {
   static create() {
-    return new NodeResolver().getResolvers();
+    const resolvers = new NodeResolver();
+    return {
+      Query: {
+        nodeInfo: resolvers.nodeInfo,
+      },
+    };
   }
 
   async nodeInfo(

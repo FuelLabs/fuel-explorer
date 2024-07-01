@@ -1,7 +1,5 @@
-import { relations } from 'drizzle-orm';
 import { index, pgTable } from 'drizzle-orm/pg-core';
 import { Hash256, Timestamp } from '~/application/vo';
-import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
 import { BlockData } from './vo/BlockData';
 import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
@@ -23,9 +21,5 @@ export const BlocksTable = pgTable(
     blockIdIdx: index().on(table._id),
   }),
 );
-
-export const BlocksRelations = relations(BlocksTable, ({ many }) => ({
-  transactions: many(TransactionsTable),
-}));
 
 export type BlockItem = typeof BlocksTable.$inferSelect;

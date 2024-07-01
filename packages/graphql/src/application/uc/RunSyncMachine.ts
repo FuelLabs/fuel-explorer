@@ -49,7 +49,11 @@ class Syncer {
     const events = Array.from({ length: numberOfBatches }).map((_, page) => {
       const from = idsRange.from + page * offset;
       let to = from + offset;
-      to = to > lastHeight ? lastHeight : to;
+      if (page === numberOfBatches - 1) {
+        to = lastHeight; // Ensure the last batch goes up to the last height
+      } else {
+        to = Math.min(to, lastHeight);
+      }
       return { from, to };
     });
     return events;

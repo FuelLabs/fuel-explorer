@@ -1,6 +1,5 @@
 import * as dotenv from 'dotenv';
 import * as zod from 'zod';
-import { logger } from './Logger';
 
 dotenv.config();
 
@@ -28,7 +27,7 @@ export class Env<T extends zod.ZodObject<any>> {
     const env = this.parseEnv();
     const result = this.schema.safeParse(env);
     if (!result.success) {
-      logger.warn('The environment variables are not valid', result.error);
+      console.warn('The environment variables are not valid', result.error);
       return this.defaultValues;
     }
     return result.data;

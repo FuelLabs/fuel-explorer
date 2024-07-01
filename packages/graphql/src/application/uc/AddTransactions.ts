@@ -109,6 +109,7 @@ import type { DbTransaction } from '~/infra/database/Db';
 type Data = {
   block: Omit<GQLBlock, 'transactions'>;
   transaction: GQLTransaction;
+  index: number;
 }[];
 
 export class AddTransactions {

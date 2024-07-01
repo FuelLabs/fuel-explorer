@@ -1,4 +1,3 @@
-import { ResolverAdapter } from '~/core/Resolver';
 import type {
   GQLBalance,
   GQLQueryBalanceArgs,
@@ -14,22 +13,18 @@ type Params = {
   utxos: GQLQueryCoinsArgs['filter'];
 };
 
-export class BalanceResolver extends ResolverAdapter<Source> {
-  private constructor() {
-    super();
-    this.setResolvers({
+export class BalanceResolver {
+  static create() {
+    const resolvers = new BalanceResolver();
+    return {
       Query: {
-        balance: this.balance.bind(this),
-        balances: this.balances.bind(this),
+        balance: resolvers.balance,
+        balances: resolvers.balances,
       },
       Balance: {
-        utxos: this.utxos.bind(this),
+        utxos: resolvers.utxos,
       },
-    });
-  }
-
-  static create() {
-    return new BalanceResolver().getResolvers();
+    };
   }
 
   // TODO: need to check how to implement this using Postgres

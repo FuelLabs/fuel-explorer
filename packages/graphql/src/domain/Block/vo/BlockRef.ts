@@ -1,6 +1,6 @@
 import { integer } from 'drizzle-orm/pg-core';
 import { ValueObject } from '~/core/ValueObject';
-import { BlocksTable } from '../BlockModel';
+import { BlocksTable } from '~/domain/Block/BlockModel';
 
 interface Props {
   value: number;

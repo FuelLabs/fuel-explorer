@@ -6,6 +6,7 @@ import type { OutputItem, OutputPayload } from './OutputModel';
 import { OutputData } from './vo/OutputData';
 
 type OutputProps = {
+  id: SerialID | null | undefined;
   data: OutputData;
 };
 
@@ -20,7 +21,7 @@ export class OutputEntity extends Entity<
 
     const id = outputId ? SerialID.create(outputId) : null;
     const data = OutputData.create(output.data);
-    return new OutputEntity({ data }, id);
+    return new OutputEntity({ id, data }, id);
   }
 
   static toDBItem(
@@ -31,6 +32,10 @@ export class OutputEntity extends Entity<
       data: output,
       transactionId,
     };
+  }
+
+  get cursor() {
+    return this.props.id?.value();
   }
 
   get data() {

@@ -1,4 +1,3 @@
-import { ResolverAdapter } from '~/core/Resolver';
 import type { PredicateItem } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 import type { GraphQLContext } from '../GraphQLContext';
@@ -8,18 +7,14 @@ type Params = {
   predicate: { address: string };
 };
 
-export class PredicateResolver extends ResolverAdapter<Source> {
-  private constructor() {
-    super();
-    this.setResolvers({
-      Query: {
-        predicate: this.predicate.bind(this),
-      },
-    });
-  }
-
+export class PredicateResolver {
   static create() {
-    return new PredicateResolver().getResolvers();
+    const resolvers = new PredicateResolver();
+    return {
+      Query: {
+        predicate: resolvers.predicate,
+      },
+    };
   }
 
   async predicate(

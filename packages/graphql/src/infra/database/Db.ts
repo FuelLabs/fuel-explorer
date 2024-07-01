@@ -1,15 +1,14 @@
 import path from 'node:path';
+import { type ExtractTablesWithRelations, sql } from 'drizzle-orm';
 import {
   type NodePgDatabase,
   type NodePgQueryResultHKT,
   drizzle,
 } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import type { PgTransaction } from 'drizzle-orm/pg-core';
 import { Pool, type PoolClient } from 'pg';
 import { env } from '~/config';
-
-import { type ExtractTablesWithRelations, sql } from 'drizzle-orm';
-import type { PgTransaction } from 'drizzle-orm/pg-core';
 import { logger } from '~/core/Logger';
 import * as DbSchema from './DbSchema';
 
@@ -19,7 +18,7 @@ const DB_USER = env.get('DB_USER');
 const DB_PASS = env.get('DB_PASS');
 const DB_NAME = env.get('DB_NAME');
 
-type Schema = typeof DbSchema;
+export type Schema = typeof DbSchema;
 export type DbConnection = NodePgDatabase<Schema>;
 export type DbTransaction = PgTransaction<
   NodePgQueryResultHKT,
@@ -28,82 +27,88 @@ export type DbTransaction = PgTransaction<
 >;
 
 export class Db {
-  #pool: Pool;
-  isConnected = false;
   private static instance: Db;
+  private pool: Pool;
+  connection: DbConnection | null = null;
+  client: PoolClient | null = null;
 
-  constructor() {
-    this.#pool = new Pool(this.connectionOpts);
+  private constructor() {
+    this.pool = new Pool(Db.connectionOpts());
   }
 
-  get connectionOpts() {
+  public static getInstance() {
+    if (!Db.instance) {
+      Db.instance = new Db();
+    }
+    return Db.instance;
+  }
+
+  static connectionOpts() {
     return {
       host: DB_HOST,
       port: Number(DB_PORT),
       user: DB_USER,
       password: DB_PASS,
       database: DB_NAME,
-      ssl: env.get('SSL'),
+      ssl: Boolean(env.get('SSL')),
     };
   }
 
-  async connection() {
-    if (!this.isConnected) await this.connect();
-    return drizzle(this.#pool, { schema: DbSchema });
+  async conn(): Promise<DbConnection> {
+    if (!this.client) {
+      await this.connect();
+    }
+    this.connection = drizzle(this.pool, { schema: DbSchema });
+    return this.connection;
   }
 
-  async connect() {
-    logger.info('🚨 Connecting to database...');
-    const client = await this.#pool.connect();
-    logger.info('✅ Database connected');
-    this.isConnected = true;
-    return client;
+  async connect(): Promise<void> {
+    if (!this.client) {
+      logger.info('🚨 Connecting to database...');
+      this.client = await this.pool.connect();
+      logger.info('✅ Database connected');
+    }
   }
 
-  async close(client?: PoolClient) {
-    logger.info('🚨 Closing database...');
-    client?.release(true);
-    logger.info('✅ Database closed');
+  async close(): Promise<void> {
+    if (this.client) {
+      logger.info('🚨 Closing database connection...');
+      this.client.release(true);
+      this.client = null;
+      this.connection = null;
+      await this.pool.end();
+      logger.info('✅ Database connection closed');
+    }
   }
 
-  async migrate() {
-    const client = await this.connect();
-    const conn = await this.connection();
+  async migrate(): Promise<void> {
+    const conn = await this.conn();
     await migrate(conn, {
       migrationsFolder: path.join(__dirname, '../../../drizzle'),
       migrationsTable: 'migrations',
       migrationsSchema: 'public',
     });
-    await this.close(client);
     logger.info('✅ Database migrated');
   }
 
-  async clean() {
+  async clean(): Promise<void> {
     const query = sql`
       DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;
     `;
-
     logger.info('🚨 Cleaning database...');
-    const conn = await this.connection();
+    const conn = await this.conn();
     await conn.execute(query);
     logger.info('✅ Database cleaned');
-    await this.migrate();
   }
 
-  async execSQL(raw: string) {
+  async execSQL(raw: string): Promise<unknown> {
     logger.info('🚨 Executing SQL...', raw);
     const query = sql.raw(`${raw}`);
-    const conn = await this.connection();
+    const conn = await this.conn();
     const res = await conn.execute(query);
     logger.info('✅ Executed SQL', res);
-  }
-
-  static getInstance() {
-    if (!Db.instance) {
-      Db.instance = new Db();
-    }
-    return Db.instance;
+    return res;
   }
 }
 

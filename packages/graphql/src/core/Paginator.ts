@@ -1,5 +1,6 @@
-import { type SQL, and, asc, desc, gt, lt } from 'drizzle-orm';
+import { gt, lt } from 'drizzle-orm';
 import type { PgTableWithColumns } from 'drizzle-orm/pg-core';
+import type { Maybe } from '~/graphql/generated/sdk';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import type { Entity } from './Entity';
 import type { Identifier } from './Identifier';
@@ -11,8 +12,7 @@ export type PaginatorParams = {
   before?: string | null;
 };
 
-type Cursor = string | number;
-
+type Cursor = string | number | null | undefined;
 type Edge<T> = { cursor: Cursor; node: T };
 
 export type PaginatedResults<T> = {
@@ -26,31 +26,16 @@ export type PaginatedResults<T> = {
   };
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export class Paginator<Source extends PgTableWithColumns<any>> {
+export class Paginator<
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  Source extends PgTableWithColumns<any>,
+  Params extends PaginatorParams = PaginatorParams,
+> {
   constructor(
     private source: Source,
-    private params: PaginatorParams,
+    readonly params: Params,
     private conn: DbConnection | DbTransaction,
   ) {}
-
-  async getQueryPaginationConfig() {
-    const { source, params } = this;
-    const { first, after, before, last } = params;
-    const idField = source._id;
-    const order = first ? asc : desc;
-    const whereBy = first ? gt : lt;
-    const cursor = after || before;
-    const limit = first || last;
-
-    return {
-      idField,
-      order,
-      whereBy,
-      cursor,
-      limit,
-    };
-  }
 
   async hasPreviousPage(startCursor: Cursor): Promise<boolean> {
     const idField = this.source._id;
@@ -82,38 +67,8 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     return total.length > 0;
   }
 
-  getPaginatedQuery<S extends SQL<unknown>>(
-    config: Awaited<ReturnType<typeof this.getQueryPaginationConfig>>,
-    customWhere?: S,
-  ) {
-    const { idField, order, whereBy, cursor, limit } = config;
-
-    let query = this.conn
-      .select()
-      .from(this.source)
-      .orderBy(order(idField))
-      .$dynamic();
-
-    if (cursor) {
-      const cursorWhere = whereBy(idField, cursor);
-      query = customWhere
-        ? query.where(and(cursorWhere, customWhere))
-        : query.where(cursorWhere);
-    }
-
-    if (!cursor && customWhere) {
-      query = query.where(customWhere);
-    }
-
-    if (limit) {
-      query = query.limit(limit);
-    }
-
-    return query;
-  }
-
-  getPaginatedResult<T>(items: T[]) {
-    const { last } = this.params;
+  getPaginatedResult<T>(items: T[], params: Params) {
+    const { last } = params;
 
     if (last) {
       return items.reverse();
@@ -140,15 +95,19 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
 
   getStartCursor<T extends Entity<unknown, Identifier<Cursor>>>(items: T[]) {
     const first = items[0];
-    return first ? first._id.value() : 0;
+    return first ? first.cursor : null;
   }
 
   getEndCursor<T extends Entity<unknown, Identifier<Cursor>>>(items: T[]) {
     const last = items[items.length - 1];
-    return last ? last._id.value() : null;
+    return last ? last.cursor : null;
   }
 
-  async createPaginatedResult<T, R extends { id: Edge<T>['cursor'] }>(
+  async createPaginatedResult<
+    T,
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    R extends { cursor?: Maybe<Edge<T>['cursor']>; _id?: any; id?: any },
+  >(
     nodes: T[],
     startCursor: Cursor,
     endCursor: Cursor | null,
@@ -157,7 +116,7 @@ export class Paginator<Source extends PgTableWithColumns<any>> {
     const newNodes = nodes.map(iterator);
     const edges = newNodes.map((node) => ({
       node,
-      cursor: node.id,
+      cursor: node.cursor || node._id || node.id,
     }));
 
     const hasPreviousPage = await this.hasPreviousPage(startCursor);

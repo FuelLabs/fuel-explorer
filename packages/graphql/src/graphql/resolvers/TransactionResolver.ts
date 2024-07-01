@@ -1,8 +1,6 @@
 import { logger } from '~/core/Logger';
 import { Paginator } from '~/core/Paginator';
-import { ResolverAdapter } from '~/core/Resolver';
 import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
-import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
 import type {
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
@@ -18,30 +16,25 @@ type Params = {
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
 };
 
-export class TransactionResolver extends ResolverAdapter<Source> {
-  private constructor() {
-    super();
-    this.setResolvers({
-      Query: {
-        transaction: this.transaction.bind(this),
-        transactions: this.transactions.bind(this),
-        transactionsByOwner: this.transactionsByOwner.bind(this),
-      },
-    });
-  }
-
+export class TransactionResolver {
   static create() {
-    return new TransactionResolver().getResolvers();
+    const resolvers = new TransactionResolver();
+    return {
+      Query: {
+        transaction: resolvers.transaction,
+        transactions: resolvers.transactions,
+        transactionsByOwner: resolvers.transactionsByOwner,
+      },
+    };
   }
 
   async transaction(
     _: Source,
     params: Params['transaction'],
-    { conn }: GraphQLContext,
+    { repositories }: GraphQLContext,
   ) {
     logger.debugRequest('TransactionResolver.transaction', { params });
-    const transactionRepository = new TransactionRepository(conn);
-    const item = await transactionRepository.findByHash(params.id);
+    const item = await repositories.transaction.findByHash(params.id);
     const response = item?.toGQLNode();
     logger.debugDone('TransactionResolver.transaction', { response });
     return response;
@@ -50,12 +43,11 @@ export class TransactionResolver extends ResolverAdapter<Source> {
   async transactions(
     _: Source,
     params: Params['transactions'],
-    { conn }: GraphQLContext,
+    { conn, repositories }: GraphQLContext,
   ) {
     logger.debugRequest('TransactionResolver.transactions', { params });
     const paginator = new Paginator(TransactionsTable, params, conn);
-    const transactionRepository = new TransactionRepository(conn);
-    const transactions = await transactionRepository.findMany(paginator);
+    const transactions = await repositories.transaction.findMany(paginator);
     logger.debugResponse('TransactionResolver.transactions', { transactions });
     const startCursor = paginator.getStartCursor(transactions);
     const endCursor = paginator.getEndCursor(transactions);
@@ -63,7 +55,7 @@ export class TransactionResolver extends ResolverAdapter<Source> {
       transactions,
       startCursor,
       endCursor,
-      (item) => item.toGQLNode(),
+      (item) => ({ ...item.toGQLNode(), cursor: item.cursor }),
     );
     logger.debugDone('TransactionResolver.transactions', { results });
     return results;
@@ -72,12 +64,11 @@ export class TransactionResolver extends ResolverAdapter<Source> {
   async transactionsByOwner(
     _: Source,
     params: Params['transactionByOwner'],
-    { conn }: GraphQLContext,
+    { conn, repositories }: GraphQLContext,
   ) {
     logger.debugRequest('TransactionResolver.transactionsByOwner', { params });
     const paginator = new Paginator(TransactionsTable, params, conn);
-    const transactionRepository = new TransactionRepository(conn);
-    const transactions = await transactionRepository.findByOwner(
+    const transactions = await repositories.transaction.findManyByOwner(
       paginator,
       params.owner,
     );
@@ -90,7 +81,7 @@ export class TransactionResolver extends ResolverAdapter<Source> {
       transactions,
       startCursor,
       endCursor,
-      (item) => item.toGQLNode(),
+      (item) => ({ ...item.toGQLNode(), cursor: item.cursor }),
     );
     logger.debugDone('TransactionResolver.transactionsByOwner', { results });
     return results;

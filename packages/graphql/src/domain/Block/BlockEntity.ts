@@ -60,6 +60,14 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     };
   }
 
+  get cursor() {
+    return this._id.value();
+  }
+
+  get id() {
+    return this._id;
+  }
+
   get blockHash() {
     return this.props.blockHash.value();
   }
@@ -88,6 +96,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     const data = this.data;
     return {
       ...data,
+      _id: this.id.value(),
       producer: this.producer,
       time: this.time,
       totalGasUsed: this.totalGasUsed,

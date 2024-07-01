@@ -9,6 +9,7 @@ import type { ContractItem } from './ContractModel';
 import { ContractData } from './vo/ContractData';
 
 type ContractProps = {
+  id: SerialID;
   data: ContractData;
   contractHash: Hash256;
 };
@@ -22,7 +23,7 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
     const id = SerialID.create(contract._id);
     const data = ContractData.create(contract.data);
     const contractHash = Hash256.create(contract.contractHash);
-    return new ContractEntity({ data, contractHash }, id);
+    return new ContractEntity({ id, data, contractHash }, id);
   }
 
   static toDBItem(contract: GQLContract): Omit<ContractItem, '_id'> {
@@ -39,6 +40,14 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
     return found?.map((i) => i.contract) ?? [];
   }
 
+  get cursor() {
+    return this.contractHash;
+  }
+
+  get id() {
+    return this.props.id.value();
+  }
+
   get contractHash() {
     return this.props.contractHash.value();
   }
@@ -48,6 +57,9 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
   }
 
   toGQLNode(): GQLContract {
-    return this.data;
+    return {
+      ...this.data,
+      _id: this.id,
+    };
   }
 }

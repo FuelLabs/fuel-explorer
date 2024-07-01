@@ -8,6 +8,7 @@ import { InputPredicateData } from './vo/InputPredicateData';
 import { InputType } from './vo/InputType';
 
 type InputProps = {
+  id: SerialID | null | undefined;
   data: InputData;
   type: InputType;
   predicateData: InputPredicateData;
@@ -26,7 +27,7 @@ export class InputEntity extends Entity<
     const data = InputData.create(input.data);
     const type = InputType.create(input.data);
     const predicateData = InputPredicateData.create(input.data);
-    return new InputEntity({ data, type, predicateData }, id);
+    return new InputEntity({ id, data, type, predicateData }, id);
   }
 
   static toDBItem(
@@ -37,6 +38,10 @@ export class InputEntity extends Entity<
       data: input,
       transactionId,
     };
+  }
+
+  get cursor() {
+    return this.props.id?.value();
   }
 
   get data() {

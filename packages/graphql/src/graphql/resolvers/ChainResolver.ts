@@ -1,4 +1,3 @@
-import { ResolverAdapter } from '~/core/Resolver';
 import type { GQLChainInfo } from '~/graphql/generated/sdk-provider';
 import type { GraphQLContext } from '../GraphQLContext';
 
@@ -7,18 +6,14 @@ type Params = {
   chain: null;
 };
 
-export class ChainResolver extends ResolverAdapter<Source> {
-  private constructor() {
-    super();
-    this.setResolvers({
-      Query: {
-        chain: this.chain.bind(this),
-      },
-    });
-  }
-
+export class ChainResolver {
   static create() {
-    return new ChainResolver().getResolvers();
+    const resolvers = new ChainResolver();
+    return {
+      Query: {
+        chain: resolvers.chain,
+      },
+    };
   }
 
   async chain(_: Source, _params: Params['chain'], { client }: GraphQLContext) {

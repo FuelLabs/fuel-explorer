@@ -37,6 +37,14 @@ export class OperationEntity extends Entity<OperationProps, SerialID> {
     };
   }
 
+  get cursor() {
+    return this.id;
+  }
+
+  get id() {
+    return `${this.transactionId}-${this.transactionHash}`;
+  }
+
   get data() {
     return this.props.data.value();
   }
@@ -51,6 +59,6 @@ export class OperationEntity extends Entity<OperationProps, SerialID> {
 
   toGQLNode() {
     const data = this.data;
-    return { ...data, id: `${this.transactionId}-${this.transactionHash}` };
+    return { ...data, id: this.id };
   }
 }

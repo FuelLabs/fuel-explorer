@@ -1,7 +1,5 @@
 import { Paginator, type PaginatorParams } from '~/core/Paginator';
-import { ResolverAdapter } from '~/core/Resolver';
 import { ContractsTable } from '~/domain/Contract/ContractModel';
-import { ContractRepository } from '~/domain/Contract/ContractRepository';
 import type {
   GQLContract,
   GQLQueryContractArgs,
@@ -18,52 +16,46 @@ type Params = {
   contractBalances: GQLQueryContractBalancesArgs;
 };
 
-export class ContractResolver extends ResolverAdapter<Source> {
-  private constructor() {
-    super();
-    this.setResolvers({
-      Query: {
-        contract: this.contract.bind(this),
-        contracts: this.contracts.bind(this),
-        contractBalance: this.contractBalance.bind(this),
-        contractBalances: this.contractBalances.bind(this),
-      },
-    });
-  }
-
+export class ContractResolver {
   static create() {
-    return new ContractResolver().getResolvers();
+    const resolvers = new ContractResolver();
+    return {
+      Query: {
+        contract: resolvers.contract,
+        contracts: resolvers.contracts,
+        contractBalance: resolvers.contractBalance,
+        contractBalances: resolvers.contractBalances,
+      },
+    };
   }
 
   async contract(
     _: Source,
     { id }: Params['contract'],
-    { conn }: GraphQLContext,
+    { repositories }: GraphQLContext,
   ) {
     if (!id) {
       throw new Error('Contract ID is required');
     }
 
-    const contractRepository = new ContractRepository(conn);
-    const item = await contractRepository.findByHash(id);
+    const item = await repositories.contract.findByHash(id);
     return item?.toGQLNode();
   }
 
   async contracts(
     _: Source,
     params: Params['contracts'],
-    { conn }: GraphQLContext,
+    { conn, repositories }: GraphQLContext,
   ) {
     const paginator = new Paginator(ContractsTable, params, conn);
-    const contractRepository = new ContractRepository(conn);
-    const contracts = await contractRepository.findMany(paginator);
+    const contracts = await repositories.contract.findMany(paginator);
     const startCursor = paginator.getStartCursor(contracts);
     const endCursor = paginator.getEndCursor(contracts);
     return paginator.createPaginatedResult(
       contracts,
       startCursor,
       endCursor,
-      (item) => item.toGQLNode(),
+      (item) => ({ ...item.toGQLNode(), cursor: item.cursor }),
     );
   }
 

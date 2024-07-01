@@ -1,10 +1,19 @@
 import * as zod from 'zod';
 import { Env } from './core/Env';
 
-const falsy = zod.coerce.string().transform((value) => value === 'true');
+const falsy = zod.coerce
+  .string()
+  .transform((value) =>
+    value === 'true' || value === '1'
+      ? true
+      : value === 'false' || value === '0'
+        ? false
+        : value,
+  );
 
 const schema = zod.object({
   DEBUG: falsy.optional(),
+  DEBUG_PAYLOAD: falsy.optional(),
   FUEL_PROVIDER: zod.string(),
   SERVER_PORT: zod.string(),
   SERVER_API_KEY: zod.string().optional().nullable(),
@@ -30,6 +39,7 @@ const schema = zod.object({
 
 export const env = new Env(schema, {
   DEBUG: true,
+  DEBUG_PAYLOAD: false,
   FUEL_PROVIDER: 'http://localhost:4000/v1/graphql',
   SERVER_PORT: '3002',
   SERVER_API_KEY: 'secret',

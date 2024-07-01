@@ -1,154 +1,116 @@
-import type { PoolClient } from 'pg';
-import yargs from 'yargs/yargs';
+import { setTimeout } from 'node:timers/promises';
+import { Command } from 'commander';
 import { env } from '~/config';
 import { db } from '../database/Db';
 import { QueueNames, mq } from '../queue/Queue';
 
-type Arguments = {
+type SyncOptions = {
   all: boolean;
   missing: boolean;
-  from: number | null;
+  from: number;
+  offset: number;
   clean: boolean;
-  last: number | null;
+  last: number;
   watch: boolean;
-  offset: number | null;
 };
 
 export class Program {
-  async create() {
-    yargs(process.argv.slice(2))
-      .command({
-        command: 'sync',
-        describe: 'Sync blocks from node',
-        builder: (yargs) => {
-          return yargs
-            .option('all', {
-              alias: 'a',
-              type: 'boolean',
-              default: false,
-              describe: 'Sync all blocks',
-            })
-            .option('missing', {
-              alias: 'm',
-              type: 'boolean',
-              default: false,
-              describe: 'Sync missing blocks',
-            })
-            .option('from', {
-              alias: 'fl',
-              type: 'number',
-              default: null,
-              describe: 'Sync blocks from a specific height',
-            })
-            .option('offset', {
-              alias: 'of',
-              type: 'number',
-              default: null,
-              describe: 'Sync blocks with an offset',
-            })
-            .option('clean', {
-              alias: 'c',
-              type: 'boolean',
-              default: false,
-              describe: 'Clean all queues',
-            })
-            .option('last', {
-              alias: 'l',
-              type: 'number',
-              default: null,
-              describe: 'Sync the last N blocks',
-            })
-            .option('watch', {
-              alias: 'w',
-              type: 'boolean',
-              default: false,
-              describe: 'Watch for new blocks and sync them',
-            });
-        },
-        handler: async (argv) => {
-          await this.sync(argv);
-        },
-      })
-      .command({
-        command: 'migrate',
-        describe: 'Run migrations',
-        handler: async () => {
-          await db.migrate();
-          process.exit(0);
-        },
-      })
-      .command({
-        command: 'clean-db',
-        describe: 'Clean database',
-        handler: async () => {
-          const client = await db.connect();
-          await db.clean();
-          await db.close(client);
-          process.exit(0);
-        },
-      })
-      .command({
-        command: 'sql',
-        describe: 'Exec custom SQL',
-        builder: (yargs) => {
-          return yargs.option('sql', {
-            alias: 's',
-            type: 'string',
-            demandOption: true,
-            describe: 'SQL to execute',
-          });
-        },
-        handler: async (argv) => {
-          const client = await db.connect();
-          await db.execSQL(argv.sql);
-          await db.close(client);
-          process.exit(0);
-        },
-      })
-      .help('help')
-      .parse();
+  private program: Command;
+
+  constructor() {
+    this.program = new Command();
   }
 
-  async sync(argv: Arguments) {
-    const { all, missing, offset, clean, from, watch, last } = argv;
+  async create() {
+    this.program
+      .name('cli-tool')
+      .description(
+        'CLI tool for blockchain synchronization and database management',
+      )
+      .version('1.0.0');
 
-    async function start() {
-      const client = await db.connect();
-      await mq.setup();
-      return client;
-    }
+    this.program
+      .command('sync')
+      .description('Sync blocks from node')
+      .option('-a, --all', 'Sync all blocks', false)
+      .option('-m, --missing', 'Sync missing blocks', false)
+      .option('-fl, --from <number>', 'Sync blocks from a specific height')
+      .option('-of, --offset <number>', 'Sync blocks with an offset')
+      .option('-c, --clean', 'Clean all queues', false)
+      .option('-l, --last <number>', 'Sync the last N blocks')
+      .option('-w, --watch', 'Watch for new blocks and sync them', false)
+      .action(async (options: SyncOptions) => {
+        await this.sync(options);
+      });
 
-    async function finish(client?: PoolClient) {
-      await mq.disconnect();
-      await db.close(client);
+    this.program
+      .command('migrate')
+      .description('Run migrations')
+      .action(async () => {
+        await db.conn();
+        await db.migrate();
+        db.close();
+      });
+
+    this.program
+      .command('clean-db')
+      .description('Clean database')
+      .action(async () => {
+        await db.conn();
+        await db.clean();
+        await db.migrate();
+        db.close();
+      });
+
+    this.program
+      .command('sql')
+      .description('Execute custom SQL')
+      .requiredOption('-s, --sql <string>', 'SQL to execute')
+      .action(async (options) => {
+        await db.conn();
+        await db.execSQL(options.sql);
+        db.close();
+      });
+
+    await this.program.parseAsync(process.argv);
+    await setTimeout(2500);
+    process.exit(0);
+  }
+
+  async sync(options: SyncOptions) {
+    const { all, missing, offset, clean, from, watch, last } = options;
+    await db.conn();
+    await mq.connect();
+
+    function finish() {
+      db.close();
     }
 
     if (clean) {
-      await mq.connect();
       await mq.clean();
-      await finish();
+      finish();
       return;
     }
+
     if (missing) {
-      const client = await start();
       await mq.send('main', QueueNames.SYNC_MISSING);
-      await finish(client);
+      finish();
       return;
     }
+
     if (last) {
-      const client = await start();
       await mq.send('main', QueueNames.SYNC_LAST, { watch, last });
-      await finish(client);
+      finish();
       return;
     }
+
     if (all || from) {
-      const client = await start();
       await mq.send('main', QueueNames.SYNC_BLOCKS, {
         watch,
         cursor: from ?? 0,
         offset: offset ?? Number(env.get('SYNC_OFFSET')),
       });
-      await finish(client);
+      finish();
       return;
     }
   }

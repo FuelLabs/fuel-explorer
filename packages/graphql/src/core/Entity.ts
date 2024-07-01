@@ -11,6 +11,8 @@ export abstract class Entity<
 > {
   readonly _id!: ID;
   public readonly props: T;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  abstract get cursor(): any;
 
   constructor(props: T, id?: ID) {
     this.props = props;

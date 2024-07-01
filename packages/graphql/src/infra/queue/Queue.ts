@@ -54,16 +54,10 @@ export type QueueInputs = {
 
 class RabbitMQConnection {
   connection!: Connection;
-  private connected!: Boolean;
   channels: Record<ChannelNames, Channel> = {} as Record<ChannelNames, Channel>;
 
-  constructor() {
-    this.connected = false;
-  }
-
   async connect() {
-    if (this.connected) return Promise.resolve();
-    this.connected = true;
+    if (this.connection) return this.connection;
 
     try {
       logger.debug('⌛️ Connecting to Rabbit-MQ Server');
@@ -77,6 +71,7 @@ class RabbitMQConnection {
     } catch (error) {
       logger.error('Not connected to MQ Server', error);
     }
+    return this.connection;
   }
 
   async disconnect() {
@@ -87,6 +82,7 @@ class RabbitMQConnection {
     }
     await this.connection.close();
     logger.info('🔌 Disconnected from RabbitMQ');
+    return this.connection;
   }
 
   async clean() {
@@ -176,7 +172,7 @@ class RabbitMQConnection {
 
   private async getChannel(name: ChannelNames) {
     logger.debug(`🔗 Getting channel ${name}`);
-    if (!this.connected) {
+    if (!this.connection) {
       await this.connect();
     }
     const channel = this.channels[name];

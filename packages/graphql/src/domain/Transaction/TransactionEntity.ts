@@ -2,8 +2,8 @@ import { Hash256 } from '~/application/vo';
 import { GasCosts } from '~/application/vo/GasCosts';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
+import { BlockRef } from '~/domain/Block/vo/BlockRef';
 import type { GQLTransaction } from '~/graphql/generated/sdk-provider';
-import { BlockRef } from '../Block/vo/BlockRef';
 import { ContractEntity } from '../Contract/ContractEntity';
 import { InputEntity } from '../Input/InputEntity';
 import type { OperationEntity } from '../Operation/OperationEntity';
@@ -18,6 +18,7 @@ import { TransactionStatus } from './vo/TransactionStatus';
 import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
 type TransactionInputProps = {
+  id: TransactionModelID;
   accountIndex: AccountIndex;
   blockId: BlockRef;
   data: TransactionData;
@@ -58,6 +59,7 @@ export class TransactionEntity extends Entity<
     );
 
     const props = {
+      id,
       accountIndex,
       blockId: blockRef,
       data,
@@ -107,6 +109,7 @@ export class TransactionEntity extends Entity<
   toGQLNode(): GQLTransaction {
     return {
       ...this.data,
+      _id: this._id.value(),
       blockHeight: this.blockHeight,
       gasCosts: this.gasCosts,
       groupedInputs: this.groupedInputs,
@@ -119,6 +122,10 @@ export class TransactionEntity extends Entity<
       time: this.parsedTime,
       title: this.title,
     };
+  }
+
+  get cursor() {
+    return this._id.value();
   }
 
   get gasCosts() {

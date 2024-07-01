@@ -1,28 +1,37 @@
-import { eq } from 'drizzle-orm';
+import { logger } from '~/core/Logger';
 import type { Paginator } from '~/core/Paginator';
 import type { GQLContract } from '~/graphql/generated/sdk-provider';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { ContractEntity } from './ContractEntity';
 import { ContractsTable } from './ContractModel';
+import {
+  ContractStatements,
+  type ContractStatementsItem,
+} from './ContractStatements';
 
 export class ContractRepository {
-  constructor(readonly conn: DbConnection | DbTransaction) {}
+  statements!: ContractStatementsItem;
+  constructor(readonly conn: DbConnection | DbTransaction) {
+    const statements = new ContractStatements(conn);
+    this.statements = statements.build();
+  }
 
   async findByHash(id: string) {
-    const [first] = await this.conn
-      .select()
-      .from(ContractsTable)
-      .where(eq(ContractsTable.contractHash, id));
-
+    logger.debugRequest('ContractRepository.findByHash', { id });
+    const first = await this.statements.findByHash.execute({
+      contractHash: id,
+    });
+    logger.debugResponse('ContractRepository.findByHash', { first });
     if (!first) return null;
     return ContractEntity.create(first);
   }
 
   async findMany(paginator: Paginator<typeof ContractsTable>) {
-    const config = await paginator.getQueryPaginationConfig();
-    const query = await paginator.getPaginatedQuery(config);
-    const results = paginator.getPaginatedResult(query);
-    return results.map((item) => ContractEntity.create(item));
+    logger.debugRequest('ContractRepository.findMany', { paginator });
+    const statement = this.statements.findMany(paginator);
+    const contracts = await statement.execute();
+    logger.debugResponse('ContractRepository.findMany', { contracts });
+    return contracts.map(ContractEntity.create);
   }
 
   async insertMany(contracts: GQLContract[]) {
