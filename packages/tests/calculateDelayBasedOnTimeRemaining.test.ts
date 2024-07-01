@@ -4,7 +4,6 @@ const calculateDelayBasedOnTimeRemaining =
 
 describe('calculateDelayBasedOnTimeRemaining', () => {
   test('Should calculate delay based on more than two days to finalize', () => {
-    console.log(process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME);
     const actualDate = new Date('2024-06-20T15:00:01');
     const futureDate = new Date('2024-06-22T15:00:11');
     jest.useFakeTimers().setSystemTime(actualDate);
