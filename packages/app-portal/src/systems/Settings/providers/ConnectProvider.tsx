@@ -27,7 +27,7 @@ declare module 'wagmi' {
 const app = {
   name: 'Fuel Bridge',
   description: 'Bridge assets between Fuel and Other Chains',
-  url: 'https://fuels-portal.vercel.app',
+  url: 'https://app.fuel.network/bridge',
   icons: ['https://fuels-portal.vercel.app/fuel-logo.svg'],
 };
 
@@ -49,7 +49,7 @@ const transports = {
 
 const connectors: Array<CreateConnectorFn> = [
   injected({
-    shimDisconnect: true,
+    shimDisconnect: false,
     target: 'metaMask',
   }),
   coinbaseWallet({ appName: app.name, headlessMode: true }),
@@ -59,6 +59,7 @@ if (WALLETCONNECT_ID) {
     walletConnect({
       projectId: WALLETCONNECT_ID,
       showQrModal: false,
+      metadata: app,
     }),
   );
 }
