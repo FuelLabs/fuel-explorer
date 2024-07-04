@@ -1,5 +1,5 @@
 'use client';
-import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql';
+import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql/sdk';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
@@ -8,20 +8,17 @@ import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
-  page?: string;
   transactions: GQLRecentTransactionsQuery['transactions']['nodes'];
   hidePagination?: boolean;
   isLoading?: boolean;
 }>;
 
 export function TxList({
-  page: currentPage = '1',
   transactions = [],
   hidePagination,
   className,
   isLoading,
 }: TxListProps) {
-  const page = Number(currentPage);
   const router = useRouter();
 
   return (
@@ -38,10 +35,11 @@ export function TxList({
       {!hidePagination && (
         <Flex className="mobile:justify-end">
           <Pagination
-            page={page}
+            prevCursor={transactions[0]?._id}
+            nextCursor={transactions[transactions.length - 1]?._id}
             className="mt-6 flex mobile:justify-end"
-            onChange={(page) =>
-              router.push(Routes.home(page.toString()), {
+            onChange={(cursor, dir) =>
+              router.push(Routes.home(cursor, dir), {
                 scroll: false,
               })
             }

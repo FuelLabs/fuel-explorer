@@ -1,19 +1,19 @@
 import { getSdk } from '@fuel-explorer/graphql/sdk';
 import { GraphQLClient } from 'graphql-request';
 
-const { FUEL_EXPLORER_API, FUEL_EXPLORER_API_KEY } = process.env;
-const VERCEL_ENV =
-  process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV || 'development';
+const FUEL_INDEXER_API_KEY = process.env.FUEL_INDEXER_API_KEY;
+const FUEL_INDEXER_API =
+  process.env.FUEL_INDEXER_API ||
+  'https://testnet-indexer-staging.fuel.network/graphql';
 
 const getHeaders = () => {
-  if (VERCEL_ENV === 'development') return undefined;
-  if (FUEL_EXPLORER_API_KEY) {
-    return { Authorization: `Bearer ${FUEL_EXPLORER_API_KEY}` };
+  if (FUEL_INDEXER_API_KEY) {
+    return { Authorization: `Bearer ${FUEL_INDEXER_API_KEY}` };
   }
   return undefined;
 };
 
-const client = new GraphQLClient(FUEL_EXPLORER_API, {
+const client = new GraphQLClient(FUEL_INDEXER_API, {
   fetch,
   headers: getHeaders(),
 });

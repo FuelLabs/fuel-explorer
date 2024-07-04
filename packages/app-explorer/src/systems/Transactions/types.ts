@@ -1,5 +1,6 @@
 export type TxsRouteSearchParams = {
-  page: string;
+  cursor?: string | null;
+  dir?: 'next' | 'prev';
 };
 
 export type TxsRouteProps = {

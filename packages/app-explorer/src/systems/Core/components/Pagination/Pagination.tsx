@@ -1,16 +1,20 @@
+'use client';
 import type { BaseProps } from '@fuels/ui';
 import { Button, HStack, cx } from '@fuels/ui';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 
 type PaginationProps = BaseProps<{
-  page: number;
-  onChange?: (page: number) => void;
+  nextCursor?: string | null;
+  prevCursor?: string | null;
+  onChange?: (cursor: string, dir: 'next' | 'prev') => void;
 }>;
 
-export function Pagination({ page, onChange, ...props }: PaginationProps) {
-  const hasPrev = page > 1;
-  const hasNext = page < 10;
-
+export function Pagination({
+  onChange,
+  prevCursor,
+  nextCursor,
+  ...props
+}: PaginationProps) {
   return (
     <HStack
       gap="1"
@@ -24,26 +28,15 @@ export function Pagination({ page, onChange, ...props }: PaginationProps) {
         size="2"
         variant="ghost"
         color="gray"
-        disabled={!hasPrev}
-        onClick={() => onChange?.(page - 1)}
+        onClick={() => onChange?.(prevCursor ?? '', 'prev')}
       >
         <IconArrowLeft size={14} />
       </Button>
       <Button
-        aria-readonly
         size="2"
         variant="ghost"
         color="gray"
-        className="bg-gray-3"
-      >
-        Page {page}
-      </Button>
-      <Button
-        size="2"
-        variant="ghost"
-        color="gray"
-        disabled={!hasNext}
-        onClick={() => onChange?.(page + 1)}
+        onClick={() => onChange?.(nextCursor ?? '', 'next')}
       >
         <IconArrowRight size={14} />
       </Button>
