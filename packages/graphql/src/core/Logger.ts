@@ -28,6 +28,7 @@ class LogFormats {
 
 class LoggerBase {
   protected logger: pino.Logger;
+  turnOff = false;
 
   constructor(serviceName: string, level: string) {
     this.logger = pino(
@@ -45,7 +46,12 @@ class LoggerBase {
     );
   }
 
+  setTurnOff() {
+    this.turnOff = true;
+  }
+
   protected log(level: string, message: string, data?: any) {
+    if (this.turnOff) return;
     const params = { msg: message } as any;
     if (DEBUG_PAYLOAD && data) {
       params.payload = data;

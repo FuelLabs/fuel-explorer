@@ -1,19 +1,21 @@
-import { gt, lt } from 'drizzle-orm';
+import { gt, lt, sql } from 'drizzle-orm';
 import type { PgTableWithColumns } from 'drizzle-orm/pg-core';
-import type { Maybe } from '~/graphql/generated/sdk';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import type { Entity } from './Entity';
 import type { Identifier } from './Identifier';
 
+type Cursor = string | number | null | undefined;
 export type PaginatorParams = {
   first?: number | null;
   last?: number | null;
-  after?: string | null;
-  before?: string | null;
+  before?: Cursor | null;
+  after?: Cursor | null;
 };
 
-type Cursor = string | number | null | undefined;
-type Edge<T> = { cursor: Cursor; node: T };
+type Edge<T> = {
+  cursor: Cursor;
+  node: T;
+};
 
 export type PaginatedResults<T> = {
   nodes: T[];
@@ -26,99 +28,87 @@ export type PaginatedResults<T> = {
   };
 };
 
+type PaginatorEntity<T, ID extends Identifier<unknown>> = Entity<T, ID> & {
+  toGQLNode: () => T;
+};
+
 export class Paginator<
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  Source extends PgTableWithColumns<any>,
-  Params extends PaginatorParams = PaginatorParams,
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>,
+  Source extends PgTableWithColumns<any> = PgTableWithColumns<any>,
 > {
   constructor(
     private source: Source,
-    readonly params: Params,
+    readonly params: PaginatorParams,
     private conn: DbConnection | DbTransaction,
   ) {}
 
-  async hasPreviousPage(startCursor: Cursor): Promise<boolean> {
+  async hasPreviousPage(startCursor: Cursor) {
+    if (!startCursor) return false;
     const idField = this.source._id;
-    const total = await this.conn
-      .select({
-        [idField.name]: idField,
-      })
+    const operator = this.params.first ? lt : gt;
+    const result = await this.conn
+      .select({ count: sql<number>`count(*)` })
       .from(this.source)
-      .where(lt(idField, startCursor))
-      .limit(1);
+      .where(operator(idField, startCursor));
 
-    return total.length > 0;
+    return result[0].count > 0;
   }
 
-  async hasNextPage(endCursor: Cursor | null): Promise<boolean> {
-    if (!endCursor) {
-      return false;
-    }
-
+  async hasNextPage(endCursor: Cursor | null) {
+    if (!endCursor) return false;
     const idField = this.source._id;
-    const total = await this.conn
-      .select({
-        [idField.name]: idField,
-      })
+    const operator = this.params.first ? gt : lt;
+    const result = await this.conn
+      .select({ count: sql<number>`count(*)` })
       .from(this.source)
-      .where(gt(idField, endCursor))
-      .limit(1);
-
-    return total.length > 0;
-  }
-
-  getPaginatedResult<T>(items: T[], params: Params) {
-    const { last } = params;
-
-    if (last) {
-      return items.reverse();
-    }
-
-    return items;
+      .where(operator(idField, endCursor));
+    return result[0].count > 0;
   }
 
   async validateParams() {
-    const { first, last, after, before } = this.params;
+    const { first, last, before, after } = this.params;
+    if (!first && !last) {
+      throw new Error('Must use either first or last');
+    }
     if (first && last) {
-      throw new Error('Cannot use both first and last');
+      throw new Error('Cannot use both first and last at the same time');
     }
-    if (after && before) {
-      throw new Error('Cannot use both after and before');
-    }
-    if (first && before) {
-      throw new Error('Cannot use first with before');
-    }
-    if (last && after) {
-      throw new Error('Cannot use last with after');
+    if (before && after) {
+      throw new Error('Cannot use both before and after at the same time');
     }
   }
 
-  getStartCursor<T extends Entity<unknown, Identifier<Cursor>>>(items: T[]) {
+  getCursor<R extends PaginatorEntity<unknown, Identifier<unknown>>>(
+    item: R,
+  ): Cursor {
+    return item.cursor || item._id;
+  }
+
+  getStartCursor<R extends PaginatorEntity<unknown, Identifier<unknown>>>(
+    items: R[],
+  ): Cursor {
     const first = items[0];
-    return first ? first.cursor : null;
+    return first ? this.getCursor(first) : null;
   }
 
-  getEndCursor<T extends Entity<unknown, Identifier<Cursor>>>(items: T[]) {
+  getEndCursor<R extends PaginatorEntity<unknown, Identifier<unknown>>>(
+    items: R[],
+  ): Cursor {
     const last = items[items.length - 1];
-    return last ? last.cursor : null;
+    return last ? this.getCursor(last) : null;
   }
 
   async createPaginatedResult<
-    T,
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    R extends { cursor?: Maybe<Edge<T>['cursor']>; _id?: any; id?: any },
-  >(
-    nodes: T[],
-    startCursor: Cursor,
-    endCursor: Cursor | null,
-    iterator: (node: T) => R,
-  ): Promise<PaginatedResults<R>> {
-    const newNodes = nodes.map(iterator);
+    R extends PaginatorEntity<unknown, Identifier<unknown>>,
+  >(nodes: R[]) {
+    const newNodes = nodes.map((n) => n.toGQLNode()) as R[];
     const edges = newNodes.map((node) => ({
       node,
-      cursor: node.cursor || node._id || node.id,
-    }));
+      cursor: this.getCursor(node),
+    })) as Edge<R>[];
 
+    const startCursor = this.getStartCursor(newNodes);
+    const endCursor = this.getEndCursor(newNodes);
     const hasPreviousPage = await this.hasPreviousPage(startCursor);
     const hasNextPage = await this.hasNextPage(endCursor);
 

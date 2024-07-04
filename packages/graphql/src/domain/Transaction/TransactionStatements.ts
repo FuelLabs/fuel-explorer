@@ -32,12 +32,13 @@ export class TransactionStatements extends BaseStatements<typeof TABLE> {
 
   findManyByOwner() {
     const where = like(TABLE.accountIndex, sql.placeholder('owner'));
-    const byFirst = this.findManyByFirst(where);
-    const byLast = this.findManyByLast(where);
+    const methods = this.buildMethods(where);
     return (paginator: Paginator<typeof TABLE>) => {
-      const params = this.getPaginatorParams(paginator);
-      const exec = paginator.params.first ? byFirst : byLast;
-      return { execute: (owner: string) => exec.execute({ ...params, owner }) };
+      const exec = this.selectExec(methods, paginator.params);
+      return {
+        execute: (owner: string) =>
+          exec?.execute({ ...paginator.params, owner }),
+      };
     };
   }
 }

@@ -7,7 +7,7 @@ import {
 } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import type { PgTransaction } from 'drizzle-orm/pg-core';
-import { Pool, type PoolClient } from 'pg';
+import { Pool, type PoolClient, type PoolConfig } from 'pg';
 import { env } from '~/config';
 import { logger } from '~/core/Logger';
 import * as DbSchema from './DbSchema';
@@ -28,13 +28,10 @@ export type DbTransaction = PgTransaction<
 
 export class Db {
   private static instance: Db;
-  private pool: Pool;
+  private pool!: Pool;
   connection: DbConnection | null = null;
   client: PoolClient | null = null;
-
-  private constructor() {
-    this.pool = new Pool(Db.connectionOpts());
-  }
+  _opts: PoolConfig = Db.connectionOpts();
 
   public static getInstance() {
     if (!Db.instance) {
@@ -45,16 +42,23 @@ export class Db {
 
   static connectionOpts() {
     return {
-      host: DB_HOST,
-      port: Number(DB_PORT),
-      user: DB_USER,
-      password: DB_PASS,
-      database: DB_NAME,
-      ssl: Boolean(env.get('SSL')),
+      host: DB_HOST as string,
+      port: Number(DB_PORT) as number,
+      user: DB_USER as string,
+      password: DB_PASS as string,
+      database: DB_NAME as string,
+      ssl: Boolean(env.get('SSL')) as boolean,
     };
   }
 
+  setOpts(opts: PoolConfig) {
+    this._opts = opts;
+  }
+
   async conn(): Promise<DbConnection> {
+    if (!this.pool) {
+      this.pool = new Pool(this._opts);
+    }
     if (!this.client) {
       await this.connect();
     }
@@ -63,6 +67,9 @@ export class Db {
   }
 
   async connect(): Promise<void> {
+    if (!this.pool) {
+      this.pool = new Pool(this._opts);
+    }
     if (!this.client) {
       logger.info('🚨 Connecting to database...');
       this.client = await this.pool.connect();
@@ -91,7 +98,7 @@ export class Db {
     logger.info('✅ Database migrated');
   }
 
-  async clean(): Promise<void> {
+  async cleanFull(): Promise<void> {
     const query = sql`
       DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;

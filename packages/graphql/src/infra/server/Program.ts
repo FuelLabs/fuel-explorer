@@ -57,7 +57,7 @@ export class Program {
       .description('Clean database')
       .action(async () => {
         await db.conn();
-        await db.clean();
+        await db.cleanFull();
         await db.migrate();
         db.close();
       });

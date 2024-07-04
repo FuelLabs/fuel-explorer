@@ -16,6 +16,7 @@ export class ChainResolver {
     };
   }
 
+  // TODO: index data to Postgres instead of fetch from SDK
   async chain(_: Source, _params: Params['chain'], { client }: GraphQLContext) {
     const res = await client.sdk.chain();
     return res.data.chain;

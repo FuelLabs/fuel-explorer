@@ -12,21 +12,21 @@ module.exports = {
   apps: [
     ...(APP === 'graphql'
       ? [
-        {
-          ...commonOptions,
-          name: 'graphql',
-          script: './src/app.ts',
-        },
-      ]
+          {
+            ...commonOptions,
+            name: 'graphql',
+            script: './src/app.ts',
+          },
+        ]
       : []),
     ...(APP === 'syncer'
       ? [
-        {
-          ...commonOptions,
-          name: 'syncer',
-          script: './src/syncer.ts',
-        },
-      ]
+          {
+            ...commonOptions,
+            name: 'syncer',
+            script: './src/syncer.ts',
+          },
+        ]
       : []),
   ],
 };

@@ -35,7 +35,7 @@ export class TransactionRepository {
     const statement = this.statements.findMany(paginator);
     const transactions = await statement.execute();
     logger.debugResponse('TransactionRepository.findMany', { transactions });
-    return transactions.map((transaction) =>
+    return transactions?.map((transaction) =>
       TransactionEntity.createFromDB(transaction),
     );
   }

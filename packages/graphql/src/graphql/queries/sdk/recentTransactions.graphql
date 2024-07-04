@@ -1,4 +1,5 @@
 fragment RecentTransaction on Transaction {
+  _id
   id
   title
   statusType

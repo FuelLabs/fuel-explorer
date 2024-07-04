@@ -10,6 +10,7 @@ export class SyncMissingBlocks {
     const conn = await db.conn();
     const repo = new BlockRepository(conn);
     const latest = await repo.findLatestAdded();
+    console.log('latest', latest);
     const cursor = latest ? Number(latest.data.header.height) : undefined;
     logger.syncer.info('Syncing missing blocks from', cursor);
     await mq.send('block', QueueNames.SYNC_BLOCKS, { cursor, watch: true });

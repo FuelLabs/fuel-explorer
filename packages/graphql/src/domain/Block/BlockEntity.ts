@@ -65,7 +65,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
   }
 
   get id() {
-    return this._id;
+    return this._id.value();
   }
 
   get blockHash() {
@@ -96,7 +96,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     const data = this.data;
     return {
       ...data,
-      _id: this.id.value(),
+      _id: this.id,
       producer: this.producer,
       time: this.time,
       totalGasUsed: this.totalGasUsed,

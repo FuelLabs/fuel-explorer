@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql';
 import { logger } from '~/core/Logger';
 import { Paginator } from '~/core/Paginator';
 import { BlocksTable } from '~/domain/Block/BlockModel';
@@ -56,17 +57,13 @@ export class BlockResolver {
     { repositories, conn }: GraphQLContext,
   ) {
     logger.debugRequest('BlockResolver.blocks', { params });
+    if (!params.first && !params.last) {
+      throw new GraphQLError('Either first or last must be provided');
+    }
     const paginator = new Paginator(BlocksTable, params, conn);
     const blocks = await repositories.block.findMany(paginator);
     logger.debugResponse('BlockResolver.blocks', { blocks });
-    const startCursor = paginator.getStartCursor(blocks);
-    const endCursor = paginator.getEndCursor(blocks);
-    const result = await paginator.createPaginatedResult(
-      blocks,
-      startCursor,
-      endCursor,
-      (item) => ({ ...item.toGQLNode(), cursor: item.cursor }),
-    );
+    const result = await paginator.createPaginatedResult(blocks);
     logger.debugDone('BlockResolver.blocks', { result });
     return result;
   }

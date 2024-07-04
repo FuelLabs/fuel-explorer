@@ -17,6 +17,7 @@ export class PredicateResolver {
     };
   }
 
+  // TODO: index data to Postgres instead of fetch from SDK
   async predicate(
     _: Source,
     params: Params['predicate'],

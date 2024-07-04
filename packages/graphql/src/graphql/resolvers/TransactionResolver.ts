@@ -49,14 +49,7 @@ export class TransactionResolver {
     const paginator = new Paginator(TransactionsTable, params, conn);
     const transactions = await repositories.transaction.findMany(paginator);
     logger.debugResponse('TransactionResolver.transactions', { transactions });
-    const startCursor = paginator.getStartCursor(transactions);
-    const endCursor = paginator.getEndCursor(transactions);
-    const results = await paginator.createPaginatedResult(
-      transactions,
-      startCursor,
-      endCursor,
-      (item) => ({ ...item.toGQLNode(), cursor: item.cursor }),
-    );
+    const results = await paginator.createPaginatedResult(transactions);
     logger.debugDone('TransactionResolver.transactions', { results });
     return results;
   }
@@ -75,14 +68,7 @@ export class TransactionResolver {
     logger.debugResponse('TransactionResolver.transactionsByOwner', {
       transactions,
     });
-    const startCursor = paginator.getStartCursor(transactions);
-    const endCursor = paginator.getEndCursor(transactions);
-    const results = await paginator.createPaginatedResult(
-      transactions,
-      startCursor,
-      endCursor,
-      (item) => ({ ...item.toGQLNode(), cursor: item.cursor }),
-    );
+    const results = await paginator.createPaginatedResult(transactions);
     logger.debugDone('TransactionResolver.transactionsByOwner', { results });
     return results;
   }

@@ -60,4 +60,8 @@ export class Env<T extends zod.ZodObject<any>> {
   get<K extends keyof zod.infer<T>>(key: K): zod.infer<T>[K] {
     return this.parsedEnv![key];
   }
+
+  set<K extends keyof zod.infer<T>>(key: K, value: zod.infer<T>[K]) {
+    this.parsedEnv![key] = value;
+  }
 }

@@ -4,7 +4,6 @@ import { logger } from '~/core/Logger';
 
 async function updateSchema(): Promise<void> {
   try {
-    logger.debug(process.argv[1]);
     const filename = path.join('./src/graphql/schemas/fuelcore.graphql');
     logger.info(`Fixing schema file ${filename}`);
     const data = await fs.readFile(filename, 'utf8');

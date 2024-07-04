@@ -49,14 +49,7 @@ export class ContractResolver {
   ) {
     const paginator = new Paginator(ContractsTable, params, conn);
     const contracts = await repositories.contract.findMany(paginator);
-    const startCursor = paginator.getStartCursor(contracts);
-    const endCursor = paginator.getEndCursor(contracts);
-    return paginator.createPaginatedResult(
-      contracts,
-      startCursor,
-      endCursor,
-      (item) => ({ ...item.toGQLNode(), cursor: item.cursor }),
-    );
+    return paginator.createPaginatedResult(contracts);
   }
 
   // TODO: need to check how to implement this using Postgres
