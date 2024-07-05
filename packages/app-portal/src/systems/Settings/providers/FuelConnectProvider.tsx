@@ -5,11 +5,18 @@ import {
   WalletConnectConnector,
 } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
-import { WALLETCONNECT_ID } from 'app-commons';
+import {
+  ALCHEMY_ID,
+  INFURA_ID,
+  IS_ETH_DEV_CHAIN,
+  WALLETCONNECT_ID,
+} from 'app-commons';
 import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
-import { CreateConnectorFn } from 'wagmi';
+import { http, Chain, fallback } from 'viem';
+import { CreateConnectorFn, createConfig } from 'wagmi';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
+import { ETH_CHAIN } from '~portal/systems/Chains';
 
 type ProvidersProps = {
   children: ReactNode;
@@ -44,6 +51,39 @@ if (WALLETCONNECT_ID) {
   );
 }
 
+const ethChainsToConnect = [ETH_CHAIN] as [Chain, ...Chain[]];
+const ethChainName = ETH_CHAIN?.name.toLowerCase();
+const transports = {
+  [ethChainsToConnect[0].id]: IS_ETH_DEV_CHAIN
+    ? http()
+    : fallback(
+        [
+          http(`https://eth-${ethChainName}.g.alchemy.com/v2/${ALCHEMY_ID}`),
+          http(`https://${ethChainName}.infura.io/v3/${INFURA_ID}`),
+          http(),
+        ],
+        { rank: false },
+      ),
+};
+
+const config = createConfig({
+  chains: ethChainsToConnect,
+  connectors,
+  transports,
+  key: 'FuelWallet',
+  ssr: true,
+  // client: createClient({
+  //   transport: http(),
+  //   key: 'FuelWallet',
+  // }) as any,
+} as any);
+// const client = config.getClient();
+// client.key = 'FuelWallet';
+// console.log(
+//   `asd config._internal.transports[0]`,
+//   config._internal.transports[0],
+// );
+
 export function FuelConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
 
@@ -54,7 +94,9 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
         connectors: [
           new FuelWalletConnector(),
           new FueletWalletConnector(),
-          new WalletConnectConnector(),
+          new WalletConnectConnector({
+            wagmiConfig: config as any,
+          }),
           new FuelWalletDevelopmentConnector(),
         ],
       }}
