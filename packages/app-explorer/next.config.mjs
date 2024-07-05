@@ -12,7 +12,7 @@ const config = {
     esmExternals: true,
     typedRoutes: true,
     serverActions: {
-      allowedOrigins: ['localhost:3001', 'app.fuel.network'],
+      allowedOrigins: ['app.fuel.network'],
     },
   },
   eslint: {
