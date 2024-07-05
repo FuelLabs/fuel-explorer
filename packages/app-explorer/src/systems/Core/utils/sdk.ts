@@ -9,6 +9,8 @@ const VERCEL_ENV =
 
 const getBaseUrl = () => {
   if (FUEL_EXPLORER_API && FUEL_EXPLORER_API_KEY) return FUEL_EXPLORER_API;
+  if (typeof window !== 'undefined')
+    return resolve(`https://${window.location.origin}`, '/api/graphql');
   if (VERCEL_ENV !== 'development')
     return resolve(`https://${VERCEL_URL}`, '/api/graphql');
   return 'http://localhost:3001/api/graphql';
