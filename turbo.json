@@ -5,7 +5,7 @@
     "ts:check": {
       "outputs": ["app-portal/**/*.typegen.ts"],
       "cache": false,
-      "dependsOn": ["^build:lib"]
+      "dependsOn": ["build:lib"]
     },
     "build:lib": {
       "outputs": ["dist/**", "build/**", ".next/**"],
