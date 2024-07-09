@@ -17,8 +17,7 @@
     "dev": "pnpm build:watch",
     "server:start": "node ./dist/index.js",
     "fix:generated": "node ./scripts/fix-generated.mjs",
-    "ts:check": "tsc --noEmit",
-    "prepare": "pnpm build:lib"
+    "ts:check": "tsc --noEmit"
   },
   "dependencies": {
     "@fuel-ts/math": "0.76.0",
