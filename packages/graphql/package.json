@@ -9,7 +9,7 @@
   "types": "./src/index.ts",
   "typings": "./src/index.ts",
   "scripts": {
-    "build:lib": "run-s codegen:fuel build:sdk",
+    "build:lib": "run-s build:sdk",
     "build:sdk": "tsup",
     "build:watch": "pnpm build:sdk --watch",
     "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts",
@@ -17,8 +17,7 @@
     "dev": "pnpm build:watch",
     "server:start": "node ./dist/index.js",
     "fix:generated": "node ./scripts/fix-generated.mjs",
-    "ts:check": "tsc --noEmit",
-    "prepare": "pnpm build:lib"
+    "ts:check": "tsc --noEmit"
   },
   "dependencies": {
     "@fuel-ts/math": "0.76.0",
