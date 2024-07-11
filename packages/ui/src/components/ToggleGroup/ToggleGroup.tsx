@@ -29,10 +29,7 @@ export const ToggleGroupItem = createComponent<
     if (!href) return <Item {...props}>{children}</Item>;
 
     function onLinkClick(e: React.MouseEvent<HTMLAnchorElement>) {
-      const itemElement = e.currentTarget.closest('button');
-      if (itemElement) {
-        itemElement.click();
-      }
+      e.currentTarget.closest('button')?.click();
     }
 
     return (
