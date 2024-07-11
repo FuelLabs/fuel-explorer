@@ -32,7 +32,14 @@ export const ToggleGroupItem = createComponent<
 
     function onClick(e: React.MouseEvent<HTMLButtonElement>) {
       _onClick?.(e);
-      !e.defaultPrevented && e.currentTarget.querySelector('a')?.click();
+      !e.defaultPrevented &&
+        e.currentTarget.querySelector('a')?.dispatchEvent(
+          new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+          }),
+        );
     }
 
     return (
