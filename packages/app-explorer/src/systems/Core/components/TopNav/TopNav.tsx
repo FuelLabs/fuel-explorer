@@ -77,14 +77,14 @@ export function TopNav() {
 
   return (
     <>
-      <Box className="bg-brand py-2 px-4 text-xs text-center text-gray-2">
+      <Box className="bg-brand py-2 px-4 text-center text-gray-2 text-xs tablet:text-sm">
         Points Program: Earn rewards and contribute to the Fuel Network.
         <Link
           href="https://app.fuel.network/earn-points"
-          className="ml-1 text-blue-6 text-sm gap-1"
-          isExternal
+          className="ml-1 text-blue-6 gap-1 text-xs tablet:text-sm"
+          isExternal={false}
         >
-          Learn more
+          Learn more →
         </Link>
       </Box>
       <Nav>
