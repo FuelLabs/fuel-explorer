@@ -51,9 +51,7 @@ export const ToggleGroupItem = createComponent<
           passHref
           aria-hidden="true"
           className="h-[inherit] absolute invisible"
-        >
-          {children}
-        </Link>
+        />
       </Item>
     );
   },
