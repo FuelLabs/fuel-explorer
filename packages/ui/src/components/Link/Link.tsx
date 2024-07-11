@@ -32,39 +32,33 @@ export const Link = createPolymorphicComponent<LinkProps, typeof RadixLink>({
   render: (
     Comp,
     {
-      as: Root = 'a',
-      asChild,
       children,
       className,
       isExternal: initIsExternal,
       externalIcon: ExternalIcon = IconLink,
       iconSize = 18,
+      href = '',
       ...props
     },
   ) => {
     const isExternal =
-      initIsExternal ||
-      props.href?.startsWith('http') ||
-      props.target === '_blank';
+      initIsExternal ?? (href.startsWith('http') || props.target === '_blank');
+    const target = props.target ?? (isExternal ? '_blank' : undefined);
 
     const classes = link({ isExternal, className });
-    const innerChildren = asChild ? children : <Root>{children}</Root>;
 
-    if (isExternal) {
-      return (
-        <span className="inline-flex items-center gap-1">
-          <Comp {...props} asChild className={classes}>
-            {innerChildren}
-          </Comp>
-          {ExternalIcon && (
-            <Icon className="text-icon" icon={ExternalIcon} size={iconSize} />
-          )}
-        </span>
-      );
-    }
     return (
-      <Comp {...props} asChild className={classes}>
-        {innerChildren}
+      <Comp {...props} className={classes} href={href} target={target}>
+        <>
+          {children}
+          {isExternal && ExternalIcon && (
+            <Icon
+              className="text-inherit"
+              icon={ExternalIcon}
+              size={iconSize}
+            />
+          )}
+        </>
       </Comp>
     );
   },
