@@ -82,9 +82,9 @@ export function TopNav() {
         <Link
           href="https://app.fuel.network/earn-points"
           className="ml-1 text-blue-6 text-sm gap-1"
-          isExternal
+          isExternal={false}
         >
-          Learn more
+          Learn more →
         </Link>
       </Box>
       <Nav>
