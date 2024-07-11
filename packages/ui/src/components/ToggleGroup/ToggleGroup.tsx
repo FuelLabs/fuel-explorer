@@ -28,30 +28,25 @@ export const ToggleGroupItem = createComponent<
   render: (Item, { children, href, ...props }) => {
     if (!href) return <Item {...props}>{children}</Item>;
 
-    const { onClick: _onClick, ...rest } = props;
-
-    function onClick(e: React.MouseEvent<HTMLButtonElement>) {
-      _onClick?.(e);
-      !e.defaultPrevented &&
-        e.currentTarget.querySelector('a')?.dispatchEvent(
-          new MouseEvent('click', {
-            bubbles: true,
-            cancelable: true,
-            view: window,
-          }),
-        );
+    function onLinkClick(e: React.MouseEvent<HTMLAnchorElement>) {
+      const itemElement = e.currentTarget.closest('button');
+      if (itemElement) {
+        itemElement.click();
+      }
     }
 
     return (
-      <Item onClick={onClick} {...rest}>
-        {children}
+      <Item {...props}>
         <Link
           href={href}
           prefetch
           passHref
           aria-hidden="true"
           className="h-[inherit]"
-        />
+          onClick={onLinkClick}
+        >
+          {children}
+        </Link>
       </Item>
     );
   },
