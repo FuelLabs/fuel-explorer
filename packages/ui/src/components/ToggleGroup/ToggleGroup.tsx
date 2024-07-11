@@ -50,7 +50,7 @@ export const ToggleGroupItem = createComponent<
           prefetch
           passHref
           aria-hidden="true"
-          className="h-[inherit] absolute invisible"
+          className="h-[inherit]"
         />
       </Item>
     );
