@@ -37,7 +37,6 @@ export const ToggleGroupItem = createComponent<
         <Link
           href={href}
           prefetch
-          passHref
           className="h-[inherit]"
           onClick={onLinkClick}
         >
