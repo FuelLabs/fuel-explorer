@@ -26,34 +26,29 @@ export const ToggleGroupItem = createComponent<
   baseElement: SC.Item,
   className: ({ className }) => styles().item({ className }),
   render: (Item, { children, href, ...props }) => {
-    if (href) {
-      const { onClick: _onClick, ...rest } = props;
-      function onClick(e: React.MouseEvent<HTMLButtonElement>) {
-        _onClick?.(e);
-        if (!e.defaultPrevented) {
-          const linkElement = e.currentTarget.querySelector('a');
-          if (linkElement) {
-            linkElement.click();
-          }
-        }
-      }
+    if (!href) return <Item {...props}>{children}</Item>;
 
-      return (
-        <Item onClick={onClick} {...rest}>
-          {children}
-          <Link
-            href={href}
-            prefetch
-            passHref
-            aria-hidden="true"
-            className="h-[inherit] absolute invisible"
-          >
-            {children}
-          </Link>
-        </Item>
-      );
+    const { onClick: _onClick, ...rest } = props;
+
+    function onClick(e: React.MouseEvent<HTMLButtonElement>) {
+      _onClick?.(e);
+      !e.defaultPrevented && e.currentTarget.querySelector('a')?.click();
     }
-    return <Item {...props}>{children}</Item>;
+
+    return (
+      <Item onClick={onClick} {...rest}>
+        {children}
+        <Link
+          href={href}
+          prefetch
+          passHref
+          aria-hidden="true"
+          className="h-[inherit] absolute invisible"
+        >
+          {children}
+        </Link>
+      </Item>
+    );
   },
 });
 
