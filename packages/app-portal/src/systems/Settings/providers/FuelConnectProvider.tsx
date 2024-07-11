@@ -1,5 +1,4 @@
 import {
-  BakoSafeConnector,
   FuelWalletConnector,
   FuelWalletDevelopmentConnector,
   FueletWalletConnector,
@@ -22,7 +21,6 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
         connectors: [
           new FuelWalletConnector(),
           new FueletWalletConnector(),
-          new BakoSafeConnector(),
           new FuelWalletDevelopmentConnector(),
         ],
       }}
