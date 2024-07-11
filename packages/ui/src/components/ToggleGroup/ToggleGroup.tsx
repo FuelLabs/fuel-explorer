@@ -38,7 +38,6 @@ export const ToggleGroupItem = createComponent<
           href={href}
           prefetch
           passHref
-          aria-hidden="true"
           className="h-[inherit]"
           onClick={onLinkClick}
         >
