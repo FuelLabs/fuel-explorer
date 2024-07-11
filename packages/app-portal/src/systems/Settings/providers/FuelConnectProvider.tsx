@@ -1,8 +1,8 @@
 import {
+  BakoSafeConnector,
   FuelWalletConnector,
   FuelWalletDevelopmentConnector,
   FueletWalletConnector,
-  WalletConnectConnector,
 } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import { useTheme } from 'next-themes';
@@ -22,7 +22,7 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
         connectors: [
           new FuelWalletConnector(),
           new FueletWalletConnector(),
-          new WalletConnectConnector(),
+          new BakoSafeConnector(),
           new FuelWalletDevelopmentConnector(),
         ],
       }}
