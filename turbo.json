@@ -4,7 +4,8 @@
   "pipeline": {
     "ts:check": {
       "outputs": ["app-portal/**/*.typegen.ts"],
-      "cache": false
+      "cache": false,
+      "dependsOn": ["build:lib"]
     },
     "build:lib": {
       "outputs": ["dist/**", "build/**", ".next/**"],
@@ -18,7 +19,7 @@
         "app-explorer/public/ui/**",
         "app-explorer/public/storybook/**"
       ],
-      "dependsOn": ["^build:lib", "^ts:check"],
+      "dependsOn": ["^ts:check"],
       "cache": false
     },
     "test": {
@@ -27,7 +28,7 @@
       "outputMode": "full"
     },
     "dev": {
-      "dependsOn": ["^build:lib", "^ts:check"],
+      "dependsOn": ["^ts:check"],
       "cache": false
     },
     "dev:storybook": {

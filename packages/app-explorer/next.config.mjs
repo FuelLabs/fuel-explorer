@@ -1,5 +1,5 @@
 import { redirects } from './src/redirects.mjs';
-import path from "path";
+import path from 'path';
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -91,7 +91,7 @@ const config = {
     );
     // Modify the file loader rule to ignore *.svg, since we have it handled now.
     fileLoaderRule.exclude = /\.svg$/i;
-	config.resolve.alias.dayjs = path.resolve('./node_modules/dayjs');
+    config.resolve.alias.dayjs = path.resolve('./node_modules/dayjs');
     return config;
   },
 };
