@@ -15,6 +15,7 @@
   "dependencies": {
     "@faker-js/faker": "8.4.0",
     "@fuel-explorer/graphql": "workspace:*",
+    "@fuels/assets": "0.20.0",
     "@fuel-ts/account": "0.90.0",
     "@fuel-ts/math": "0.76.0",
     "@fuels/ui": "workspace:*",
