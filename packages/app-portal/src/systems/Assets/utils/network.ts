@@ -1,12 +1,12 @@
-import type { Asset, Ethereum, Fuel } from '@fuels/assets';
+import type { Asset, NetworkEthereum, NetworkFuel } from '@fuel-ts/account';
 import { ETH_CHAIN } from '~portal/systems/Chains';
 
-type Network = Ethereum | Fuel; // Assuming Ethereum and Fuel are your types
-export type NetworkTypes = Ethereum['type'] | Fuel['type'];
+type Network = NetworkEthereum | NetworkFuel; // Assuming Ethereum and Fuel are your types
+export type NetworkTypes = NetworkEthereum['type'] | NetworkFuel['type'];
 type NetworkTypeToNetwork<T> = T extends 'ethereum'
-  ? Ethereum
+  ? NetworkEthereum
   : T extends 'fuel'
-    ? Fuel
+    ? NetworkFuel
     : Network;
 
 export type GetAssetNetworkParams<T extends NetworkTypes | undefined> = {
@@ -27,8 +27,8 @@ export const getAssetNetwork = <T extends NetworkTypes | undefined>({
   return network;
 };
 
-export type AssetEth = Omit<Asset, 'networks'> & Ethereum;
-export type AssetFuel = Omit<Asset, 'networks'> & Fuel;
+export type AssetEth = Omit<Asset, 'networks'> & NetworkEthereum;
+export type AssetFuel = Omit<Asset, 'networks'> & NetworkFuel;
 
 export const getAssetEth = (asset: Asset): AssetEth => {
   const { networks: _, ...assetRest } = asset;

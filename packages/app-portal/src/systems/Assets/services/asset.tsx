@@ -1,5 +1,5 @@
-import assetList from '@fuels/assets';
-import type { Asset } from '@fuels/assets';
+import assetList from '@fuel-ts/account';
+import type { Asset } from '@fuel-ts/account';
 import { BridgeTokenContracts } from 'app-commons';
 import { Provider, bn } from 'fuels';
 import { isAddress } from 'viem';
@@ -19,7 +19,7 @@ export type AssetServiceInputs = {
   };
 };
 
-const defaultAssets: Asset[] = [...assetList];
+const defaultAssets: Asset[] = [...assetList.assets];
 
 export class AssetService {
   static async faucetErc20(input: AssetServiceInputs['faucetErc20']) {

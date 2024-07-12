@@ -9,7 +9,6 @@
     "xstate:typegen": "xstate typegen 'src/**/*.ts?(x)'"
   },
   "peerDependencies": {
-    "@fuels/assets": "0.20.0",
     "@fuels/ui": "workspace:*",
     "@tabler/icons-react": "2.46.0",
     "app-commons": "workspace:*",
@@ -26,6 +25,7 @@
     "@fuel-bridge/fungible-token": "pr-185",
     "@fuel-bridge/message-predicates": "pr-185",
     "@fuel-bridge/solidity-contracts": "pr-185",
+    "@fuel-ts/account": "0.90.0",
     "@fuels/connectors": "0.8.1",
     "@fuels/react": "0.22.0",
     "@fuels/react-xstore": "0.22.0",
@@ -40,7 +40,6 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@fuels/assets": "0.20.0",
     "@fuels/ui": "workspace:*",
     "@tabler/icons-react": "2.46.0",
     "@tanstack/react-query": "5.0.5",

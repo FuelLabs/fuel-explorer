@@ -1,4 +1,4 @@
-import assetList from '@fuels/assets';
+import assetList from '@fuel-ts/account';
 
 import { Flex, FuelLogo, Text } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
@@ -21,12 +21,12 @@ export const Usage = () => {
         toLogo={<FuelLogo size={17} />}
         date={new Date()}
         amount="0.050"
-        asset={assetList[0]}
+        asset={assetList.assets[0]}
         fromLogo={
           <img
             width={18}
             height={18}
-            src={assetList[0].icon}
+            src={assetList.assets[0].icon}
             alt={'ETH logo'}
           />
         }
@@ -47,12 +47,12 @@ export const Loading = () => {
         toLogo={<FuelLogo size={17} />}
         date={new Date()}
         amount="0.050"
-        asset={assetList[0]}
+        asset={assetList.assets[0]}
         fromLogo={
           <img
             width={18}
             height={18}
-            src={assetList[0].icon}
+            src={assetList.assets[0].icon}
             alt={'ETH logo'}
           />
         }
