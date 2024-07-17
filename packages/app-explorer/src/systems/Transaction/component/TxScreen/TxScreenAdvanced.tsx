@@ -1,5 +1,3 @@
-'use client';
-
 import type { Maybe } from '@fuel-explorer/graphql';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 

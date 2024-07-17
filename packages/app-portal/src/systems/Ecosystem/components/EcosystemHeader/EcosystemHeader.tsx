@@ -41,7 +41,7 @@ export function EcosystemHeader({
         <Flex justify="end">
           <Button
             as="a"
-            href="https://fuelnetwork.typeform.com/build-on-fuel"
+            href="https://airtable.com/appEO4t5bVydYgzCk/pagiUOEi5aqbtQK0T/form"
             target="_blank"
             size="3"
             color="green"

@@ -15,7 +15,7 @@ export default meta;
 type Story = StoryObj<typeof Nav>;
 
 const ACCOUNT =
-  'fuel10va6297tkerdcn5u8mxjm9emudsmkj85pq5x7t7stkmzmc4nvs3qvn99qz';
+  '0x7b3ba517cbb646dc4e9c3ecd2d973be361bb48f408286f2fd05db62de2b36422';
 
 const NETWORK = {
   id: '1',

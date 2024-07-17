@@ -54,7 +54,7 @@ export const ConnectedAccount = () => {
         isConnecting={false}
         account={{
           address:
-            'fuel14kz7u7jpd8txfe2vtgh5hxjx4wk7s03kq8hcl2k7slwe3yqh5sas974464',
+            '0xad85ee7a4169d664e54c5a2f4b9a46abade83e3601ef8faade87dd989017a43b',
         }}
         onConnect={() => {}}
       />
@@ -74,7 +74,7 @@ export const ConnectedENSAccount = () => {
         isConnecting={false}
         account={{
           address:
-            'fuel14kz7u7jpd8txfe2vtgh5hxjx4wk7s03kq8hcl2k7slwe3yqh5sas974464',
+            '0xad85ee7a4169d664e54c5a2f4b9a46abade83e3601ef8faade87dd989017a43b',
           alias: 'luizasfight.eth',
         }}
         onConnect={() => {}}
