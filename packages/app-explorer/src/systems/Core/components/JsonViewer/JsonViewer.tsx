@@ -9,6 +9,7 @@ import {
   darkStyles,
   defaultStyles,
 } from 'react-json-view-lite';
+import 'react-json-view-lite/dist/index.css';
 import { tv } from 'tailwind-variants';
 
 export type JsonViewerProps = BaseProps<{

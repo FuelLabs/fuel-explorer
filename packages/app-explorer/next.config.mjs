@@ -11,6 +11,9 @@ const config = {
     missingSuspenseWithCSRBailout: false,
     esmExternals: true,
     typedRoutes: true,
+    serverActions: {
+      allowedOrigins: ['app.fuel.network'],
+    },
   },
   eslint: {
     ignoreDuringBuilds: true,
