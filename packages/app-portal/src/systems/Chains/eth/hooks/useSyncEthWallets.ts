@@ -1,10 +1,5 @@
-import {
-  useAccount as useFuelAccount,
-  useFuel,
-  useProvider,
-} from '@fuels/react';
-import { toBech32 } from 'fuels';
-import { useEffect, useMemo } from 'react';
+import { useAccount as useFuelAccount, useFuel } from '@fuels/react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   useAccount as useWagmiAccount,
   useConnect as useWagmiConnect,
@@ -16,69 +11,65 @@ import {
  */
 export function useSyncEthWallets() {
   const { fuel } = useFuel();
-  const { connector: ethConnector, address: wagmiAddress } = useWagmiAccount();
+  const {
+    connector: ethConnector,
+    address: wagmiAddress,
+    status,
+  } = useWagmiAccount();
 
   const { connect: ethConnect, connectors } = useWagmiConnect();
   const { disconnect } = useWagmiDisconnect();
 
   const { account: fuelAccount } = useFuelAccount();
-  const { provider: fuelProvider } = useProvider();
   const fuelConnector = fuel.currentConnector();
   const metaMaskConnector = useMemo(
     () => connectors.find((c) => c.name === 'MetaMask'),
     [connectors],
   );
-  const fuelConnectorConnected = !!fuelConnector?.connected;
+  const fuelConnectorStatus = fuelConnector?.connected;
+  const previousFuelConnectorStatus =
+    useRef<typeof fuelConnectorStatus>(fuelConnectorStatus);
   const isEthConnectorMetaMask = ethConnector?.name === 'MetaMask';
   const isFuelConnectorEthereumWallets =
     fuelConnector?.name === 'Ethereum Wallets';
-  const fuelChainId = fuelProvider?.getChainId();
+  const wagmiConnected = status === 'connected';
+  const wagmiDisconnected = status === 'disconnected';
 
   // Should connect to MetaMask on the same account as Fuel's
   useEffect(() => {
+    const invalidWagmiWallet =
+      !isEthConnectorMetaMask || wagmiDisconnected || !wagmiAddress;
+
     if (
       isFuelConnectorEthereumWallets &&
-      fuelConnectorConnected &&
-      !isEthConnectorMetaMask &&
+      previousFuelConnectorStatus.current === true &&
+      invalidWagmiWallet &&
       metaMaskConnector
     ) {
+      // Should default to correct account since it's already been authed via Ethereum Wallets
       ethConnect({ connector: metaMaskConnector });
     }
   }, [
+    wagmiDisconnected,
+    wagmiAddress,
+    fuelAccount,
     metaMaskConnector,
     isFuelConnectorEthereumWallets,
-    fuelConnectorConnected,
+    fuelConnectorStatus,
     isEthConnectorMetaMask,
-  ]);
-
-  // Should connect to Fuel's account on MetaMask
-  useEffect(() => {
-    if (
-      isFuelConnectorEthereumWallets &&
-      fuelConnectorConnected &&
-      isEthConnectorMetaMask &&
-      fuelChainId &&
-      (!wagmiAddress || fuelAccount !== toBech32(wagmiAddress as string))
-    ) {
-      ethConnect({
-        connector: ethConnector,
-        chainId: fuelChainId,
-      });
-    }
-  }, [
-    isFuelConnectorEthereumWallets,
-    fuelConnectorConnected,
-    isEthConnectorMetaMask,
-    ethConnector,
-    fuelChainId,
-    fuelAccount,
-    wagmiAddress,
   ]);
 
   // If ethereum wallets was disconnected, we should disconnect from MetaMask
   useEffect(() => {
-    if (isFuelConnectorEthereumWallets && !fuelConnectorConnected) {
+    const hasDisconnected =
+      fuelConnectorStatus === false &&
+      previousFuelConnectorStatus.current === true;
+
+    if (isFuelConnectorEthereumWallets && hasDisconnected && wagmiConnected) {
       disconnect();
+      previousFuelConnectorStatus.current = false;
+      return;
     }
-  }, [isFuelConnectorEthereumWallets, fuelConnectorConnected]);
+    previousFuelConnectorStatus.current = fuelConnectorStatus;
+  }, [isFuelConnectorEthereumWallets, fuelConnectorStatus, wagmiConnected]);
 }
