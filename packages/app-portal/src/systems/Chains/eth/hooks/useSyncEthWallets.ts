@@ -1,12 +1,8 @@
 import { WalletConnectConnector } from '@fuels/connectors';
-import {
-  useAccount as useFuelAccount,
-  useConnectors,
-  useFuel,
-} from '@fuels/react';
+import { useConnectors, useFuel } from '@fuels/react';
 import { toast } from '@fuels/ui';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useAccount as useWagmiAccount,
   useConnect as useWagmiConnect,
@@ -16,39 +12,34 @@ import {
 const WalletConnectName = 'Ethereum Wallets';
 
 /**
- * @description This hooks exists to align the bridge with the same Metamask account when using Ethereum Wallets on the Fuel's side in bridge
+ * @description This hooks exists to align the bridge with the same account in the alternate wallet when using Ethereum Wallets on the Fuel's side in bridge
  */
 export function useSyncEthWallets() {
   const { fuel } = useFuel();
   const {
     connector: ethConnector,
     address: wagmiAddress,
-    status,
+    status: wagmiStatus,
   } = useWagmiAccount();
 
-  const { connect: ethConnect, connectors } = useWagmiConnect();
+  const { connect: ethConnect } = useWagmiConnect();
   const { disconnect } = useWagmiDisconnect();
   const [currentEVMAccount, setCurrentEVMAccount] = useState<string | null>(
     null,
   );
 
   const { connectors: fuelConnectors } = useConnectors();
-  const { account: fuelAccount } = useFuelAccount();
   const fuelConnector = fuel.currentConnector();
-  const metaMaskConnector = useMemo(
-    () => connectors.find((c) => c.name === 'MetaMask'),
-    [connectors],
-  );
+  const alternateWalletConnector = ethConnector;
   const fuelConnectorStatus = fuelConnector?.connected;
   const previousFuelConnectorStatus =
     useRef<typeof fuelConnectorStatus>(fuelConnectorStatus);
-  const isEthConnectorMetaMask = ethConnector?.name === 'MetaMask';
   const isFuelConnectorEthereumWallets =
     fuelConnector?.name === WalletConnectName;
-  const wagmiConnected = status === 'connected';
-  const wagmiDisconnected = status === 'disconnected';
-
-  const metaMaskConnectionTimeout = useRef<NodeJS.Timeout>();
+  const wagmiConnected = wagmiStatus === 'connected';
+  const wagmiDisconnected = wagmiStatus === 'disconnected';
+  const invalidWagmiWallet = wagmiDisconnected || !wagmiAddress;
+  const alternateWalletConnectionTimeout = useRef<NodeJS.Timeout>();
 
   function disconnectBoth() {
     // So it doesn't immediately attempt reconnect
@@ -60,7 +51,11 @@ export function useSyncEthWallets() {
   // Wallet Connector returns a predicate, we need to get the actual evm account
   // in this scenario both addresses must match (Eth and Fuel)
   useEffect(() => {
-    if (!wagmiAddress || !fuelConnectors.length) {
+    if (
+      !wagmiAddress ||
+      !fuelConnectors.length ||
+      !isFuelConnectorEthereumWallets
+    ) {
       setCurrentEVMAccount(null);
       return;
     }
@@ -82,45 +77,39 @@ export function useSyncEthWallets() {
       .catch((err) => {
         console.log(`Failed to get current evm account: ${err}`);
       });
-  }, [wagmiAddress, fuelConnectors]);
+  }, [wagmiAddress, fuelConnectors, isFuelConnectorEthereumWallets]);
 
-  // Should connect to MetaMask on the same account as Fuel's
+  // Should connect to alternate wallet on the same account as Fuel's
   useEffect(() => {
-    const invalidWagmiWallet =
-      !isEthConnectorMetaMask || wagmiDisconnected || !wagmiAddress;
-    clearTimeout(metaMaskConnectionTimeout.current);
+    clearTimeout(alternateWalletConnectionTimeout.current);
 
     if (
       isFuelConnectorEthereumWallets &&
       invalidWagmiWallet &&
-      metaMaskConnector
+      alternateWalletConnector
     ) {
       // Should default to correct account since it's already been authed via Ethereum Wallets
       // This is delayed because fuelConnectorStatus can still be true during wallet disconnection
-      metaMaskConnectionTimeout.current = setTimeout(() => {
+      alternateWalletConnectionTimeout.current = setTimeout(() => {
         if (previousFuelConnectorStatus.current === true) {
-          ethConnect({ connector: metaMaskConnector });
+          ethConnect({ connector: alternateWalletConnector });
         }
       }, 500);
     }
   }, [
-    wagmiDisconnected,
-    wagmiAddress,
-    fuelAccount,
-    metaMaskConnector,
+    invalidWagmiWallet,
+    alternateWalletConnector,
     isFuelConnectorEthereumWallets,
-    fuelConnectorStatus,
-    isEthConnectorMetaMask,
   ]);
 
-  // Checks if the current EVM account behind the predicate in Fuel matches the one behind MetaMask
-  // Since we can't manually select an account, we disconnect MetaMask and ask the user to select the correct one
+  // Checks if the current EVM account behind the predicate in Fuel matches the one behind alternate wallet
+  // Since we can't manually select an account, we disconnect the alternate wallet and ask the user to select the correct one
   useEffect(() => {
     if (
       !currentEVMAccount ||
-      !wagmiAddress ||
-      fuelConnectorStatus === false ||
-      wagmiDisconnected
+      invalidWagmiWallet ||
+      !isFuelConnectorEthereumWallets ||
+      fuelConnectorStatus === false
     ) {
       return;
     }
@@ -134,9 +123,15 @@ export function useSyncEthWallets() {
       });
       disconnectBoth();
     }
-  }, [currentEVMAccount, wagmiAddress, fuelConnectorStatus, wagmiDisconnected]);
+  }, [
+    currentEVMAccount,
+    wagmiAddress,
+    fuelConnectorStatus,
+    invalidWagmiWallet,
+    isFuelConnectorEthereumWallets,
+  ]);
 
-  // In a scenario where Fuel side is connected to MetaMask, if one side disconnects we must ensure the other side is disconnected as well
+  // In a scenario where Fuel side is connected via Ethereum Wallets, if one side disconnects we must ensure the other side is disconnected as well
   useEffect(() => {
     const hasDisconnected =
       fuelConnectorStatus === false &&
