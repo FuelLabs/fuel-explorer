@@ -17,6 +17,7 @@ import {
 
 import { FUEL_CHAIN } from 'app-commons';
 import { useEthBalance } from '~portal/systems/Chains/eth/hooks/useEthBalance';
+import { useSyncEthWallets } from '~portal/systems/Chains/eth/hooks/useSyncEthWallets';
 import { BridgeStatus } from '../machines';
 import type { BridgeMachineState } from '../machines';
 import { getChainFromUrlParam } from '../utils';
@@ -76,6 +77,7 @@ export function useBridge() {
   const ethAssetAddress = asset ? getAssetEth(asset).address : undefined;
   const fuelAssetAddress = asset ? getAssetFuel(asset).assetId : undefined;
 
+  useSyncEthWallets();
   const {
     address: ethAddress,
     handlers: ethHandlers,
@@ -202,6 +204,7 @@ export function useBridge() {
       goToWithdraw,
       startBridging: () =>
         store.startBridging({
+          // fuelAddress: sameAccount ? ethAddress : fuelAddress,
           fuelAddress,
           ethWalletClient,
           fuelWallet,
@@ -216,6 +219,7 @@ export function useBridge() {
       changeAsset: store.changeAsset,
       openAssetsDialog: store.openAssetsDialog,
     },
+    // fuelAddress: sameAccount ? ethAddress : fuelAddress,
     fuelAddress,
     ethAddress,
     fromNetwork,
