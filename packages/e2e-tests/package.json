@@ -6,6 +6,6 @@
     "@synthetixio/synpress": "https://github.com/LuizAsFight/synpress",
     "fuels": "0.86.0",
     "viem": "2.7.20",
-    "wagmi": "2.5.7"
+    "wagmi": "2.11.2"
   }
 }
