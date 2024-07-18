@@ -35,19 +35,26 @@ export function useSyncEthWallets() {
   const wagmiConnected = status === 'connected';
   const wagmiDisconnected = status === 'disconnected';
 
+  const metaMaskConnectionTimeout = useRef<NodeJS.Timeout>();
+
   // Should connect to MetaMask on the same account as Fuel's
   useEffect(() => {
     const invalidWagmiWallet =
       !isEthConnectorMetaMask || wagmiDisconnected || !wagmiAddress;
+    clearTimeout(metaMaskConnectionTimeout.current);
 
     if (
       isFuelConnectorEthereumWallets &&
-      previousFuelConnectorStatus.current === true &&
       invalidWagmiWallet &&
       metaMaskConnector
     ) {
       // Should default to correct account since it's already been authed via Ethereum Wallets
-      ethConnect({ connector: metaMaskConnector });
+      // This is delayed because fuelConnectorStatus can still be true during wallet disconnection
+      metaMaskConnectionTimeout.current = setTimeout(() => {
+        if (previousFuelConnectorStatus.current === true) {
+          ethConnect({ connector: metaMaskConnector });
+        }
+      }, 500);
     }
   }, [
     wagmiDisconnected,
@@ -59,7 +66,7 @@ export function useSyncEthWallets() {
     isEthConnectorMetaMask,
   ]);
 
-  // If ethereum wallets was disconnected, we should disconnect from MetaMask
+  // In a scenario where Fuel side is connected to MetaMask, if one side disconnects we must ensure the other side is disconnected as well
   useEffect(() => {
     const hasDisconnected =
       fuelConnectorStatus === false &&
