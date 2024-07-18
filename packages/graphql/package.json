@@ -15,7 +15,9 @@
   },
   "typesVersions": {
     "*": {
-      "sdk": ["./src/graphql/generated/sdk.ts"]
+      "sdk": [
+        "./src/graphql/generated/sdk.ts"
+      ]
     }
   },
   "scripts": {
@@ -23,7 +25,6 @@
     "build:sdk": "tsup",
     "ts:check": "tsc --noEmit",
     "codegen": "run-s codegen:*",
-    "codegen:fuel": "gql-gen -r dotenv/config --config codegen.fuel.ts && tsx ./scripts/fix-schema.ts",
     "codegen:gql-fuelcore": "gqlg --schemaFilePath ./src/graphql/schemas/fuelcore.graphql --destDirPath ./src/graphql/generated/fuelcore --ext graphql --includeCrossReferences --depthLimit 6",
     "codegen:sdk": "gql-gen -r dotenv/config --config codegen.sdk.ts",
     "db:studio": "drizzle-kit studio",
@@ -47,8 +48,7 @@
     "sync:clean": "tsx ./src/cli.ts sync --clean",
     "sync:last": "tsx ./src/cli.ts sync --last",
     "test": "jest --config jest.config.ts",
-    "test:watch": "jest --config jest.config.ts --watch",
-    "prepare": "pnpm build:lib"
+    "test:watch": "jest --config jest.config.ts --watch"
   },
   "peerDependencies": {
     "graphql": ">=16.9.0",

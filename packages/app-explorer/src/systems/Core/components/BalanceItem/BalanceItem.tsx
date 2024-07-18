@@ -11,13 +11,13 @@ import {
 import { bn } from 'fuels';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 
-import type { GQLBalanceFragment } from '@fuel-explorer/graphql';
+import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
 import { Amount } from '../Amount/Amount';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
 type BalanceItemProps = BaseProps<{
-  item: Omit<GQLBalanceFragment, 'owner' | '__typename'>;
+  item: Omit<GQLBalanceItemFragment, 'owner' | '__typename'>;
   isLoading?: boolean;
 }>;
 
