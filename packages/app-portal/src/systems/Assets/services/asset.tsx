@@ -6,6 +6,7 @@ import { isAddress } from 'viem';
 import type { PublicClient, WalletClient } from 'viem';
 import { ETH_CHAIN } from '~portal/systems/Chains';
 import { EthConnectorService } from '~portal/systems/Chains/eth';
+import { FUEL_CHAIN } from 'app-commons';
 
 export type AssetServiceInputs = {
   faucetErc20: {
@@ -76,6 +77,10 @@ export class AssetService {
             ...network,
             assetId: networkBaseAssetId,
           };
+        }
+        // @TODO: Remove when fuel-ts/account returns the correct assetId for fuel_local
+        if (network.type === 'fuel' && FUEL_CHAIN.network === 'fuel_local') {
+          network.assetId = legacyFuelBaseAssetId;
         }
         return network;
       });
