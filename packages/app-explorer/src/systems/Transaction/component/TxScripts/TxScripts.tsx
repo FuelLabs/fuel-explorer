@@ -31,7 +31,6 @@ import {
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { createContext, useContext, useState } from 'react';
-import 'react-json-view-lite/dist/index.css';
 import { useMeasure } from 'react-use';
 import { tv } from 'tailwind-variants';
 import { Amount } from '~/systems/Core/components/Amount/Amount';

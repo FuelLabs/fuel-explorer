@@ -266,7 +266,7 @@
   {
     "isLive": false,
     "name": "Hyperlane",
-    "url": "https://www.hyperlane.xyz/",
+    "url": "https://hyperlane.xyz/",
     "tags": ["Bridge"],
     "description": "Hyperlane is the permissionless Interoperability layer built for the modular future.",
     "github": "https://github.com/hyperlane-xyz",

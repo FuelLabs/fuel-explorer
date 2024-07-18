@@ -15,9 +15,7 @@
   },
   "typesVersions": {
     "*": {
-      "sdk": [
-        "./src/graphql/generated/sdk.ts"
-      ]
+      "sdk": ["./src/graphql/generated/sdk.ts"]
     }
   },
   "scripts": {
