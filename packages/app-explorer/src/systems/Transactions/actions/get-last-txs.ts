@@ -12,8 +12,9 @@ const schema = z.object({
 });
 
 export const getLastTxs = act(schema, async ({ cursor, dir = 'next' }) => {
-  const params = { first: PER_PAGE } as {
-    first: number;
+  const params = { last: PER_PAGE } as {
+    first?: number;
+    last?: number;
     before?: string;
     after?: string;
   };
