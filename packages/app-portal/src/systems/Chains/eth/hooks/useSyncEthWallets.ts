@@ -66,8 +66,7 @@ export function useSyncEthWallets() {
     return false;
   }, [ethConnector?.name, fuelConnector, wagmiConnected]);
 
-  // Wallet Connector returns a predicate, we need to get the actual evm account
-  // in this scenario both addresses must match (Eth and Fuel)
+  // Fetch EVM Account address from Wallet Connect, which by default returns the predicate address
   useEffect(() => {
     if (!wagmiAddress || !isFuelConnectorEthereumWallets) {
       setCurrentEVMAccount(null);
@@ -103,6 +102,7 @@ export function useSyncEthWallets() {
       return;
     }
 
+    // EVM Address that originated the predicate must match the ETH Wallet address
     if (currentEVMAccount !== wagmiAddress) {
       toast({
         title: 'Wallet Disconnected',
@@ -131,7 +131,7 @@ export function useSyncEthWallets() {
     bridgeWalletsMatch,
   ]);
 
-  // In a scenario where Fuel side is connected via Ethereum Wallets, if one side disconnects we must ensure the other side is disconnected as well
+  // When using Wallet Connect, if Fuel side disconnects, we must ensure the other side is disconnected as well
   useEffect(() => {
     const hasDisconnected =
       fuelConnectorStatus === false &&
