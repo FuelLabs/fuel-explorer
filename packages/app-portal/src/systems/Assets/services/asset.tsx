@@ -62,7 +62,7 @@ export class AssetService {
 
     // @TODO: Remove when SDK provide correct asset id for the network
     const legacyFuelBaseAssetId =
-      '0x0000000000000000000000000000000000000000000000000000000000000000';
+      '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
     const networkBaseAssetId = provider.getBaseAssetId();
     const chainId = provider.getChainId();
 
@@ -77,10 +77,6 @@ export class AssetService {
             ...network,
             assetId: networkBaseAssetId,
           };
-        }
-        // @TODO: Remove when fuel-ts/account returns the correct assetId for fuel_local
-        if (network.type === 'fuel' && FUEL_CHAIN.network === 'fuel_local') {
-          network.assetId = legacyFuelBaseAssetId;
         }
         return network;
       });
