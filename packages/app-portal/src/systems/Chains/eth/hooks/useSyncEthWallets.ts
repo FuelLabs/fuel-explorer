@@ -1,5 +1,5 @@
 import { WalletConnectConnector } from '@fuels/connectors';
-import { useFuel } from '@fuels/react';
+import { useDisconnect as useDisconnectFuel, useFuel } from '@fuels/react';
 import { toast } from '@fuels/ui';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -22,6 +22,7 @@ export function useSyncEthWallets() {
   } = useWagmiAccount();
 
   const { disconnect } = useWagmiDisconnect();
+  const { disconnect: fuelDisconnect } = useDisconnectFuel();
   const [currentEVMAccount, setCurrentEVMAccount] = useState<string | null>(
     null,
   );
@@ -40,6 +41,7 @@ export function useSyncEthWallets() {
     // So it doesn't immediately attempt reconnect
     previousFuelConnectorStatus.current = false;
     setCurrentEVMAccount(null);
+    fuelDisconnect();
     disconnect();
   }
 
