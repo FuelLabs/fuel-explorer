@@ -1,8 +1,9 @@
 import { WalletConnectConnector } from '@fuels/connectors';
 import { useDisconnect as useDisconnectFuel, useFuel } from '@fuels/react';
 import { toast } from '@fuels/ui';
+import { FuelConnectorEventTypes } from 'fuels';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useAccount as useWagmiAccount,
   useDisconnect as useWagmiDisconnect,
@@ -28,31 +29,47 @@ export function useSyncEthWallets() {
   );
 
   const fuelConnector = fuel.currentConnector();
-  const fuelConnectorStatus = fuelConnector?.connected;
-  const previousFuelConnectorStatus =
-    useRef<typeof fuelConnectorStatus>(fuelConnectorStatus);
+  const fuelWagmiConfig = (fuelConnector as any)?.wagmiConfig;
+  const [fuelConnected, setFuelConnected] = useState(false);
   const isFuelConnectorEthereumWallets =
     fuelConnector?.name === WalletConnectName;
   const wagmiConnected = wagmiStatus === 'connected';
   const wagmiDisconnected = wagmiStatus === 'disconnected';
   const invalidWagmiWallet = wagmiDisconnected || !wagmiAddress;
 
+  useEffect(() => {
+    if (!isFuelConnectorEthereumWallets || !wagmiConnected) return;
+    const onConnect = (status: boolean) => {
+      setFuelConnected((prev) => {
+        const nextState = !!status;
+        if (prev && !nextState) {
+          disconnectBoth();
+        }
+
+        return nextState;
+      });
+    };
+
+    fuelConnector?.on(FuelConnectorEventTypes.connection, onConnect);
+
+    return () => {
+      fuelConnector?.off(FuelConnectorEventTypes.connection, onConnect);
+    };
+  }, [isFuelConnectorEthereumWallets, wagmiConnected]);
+
   function disconnectBoth() {
-    // So it doesn't immediately attempt reconnect
-    previousFuelConnectorStatus.current = false;
     setCurrentEVMAccount(null);
     fuelDisconnect();
     disconnect();
   }
 
   const bridgeWalletsMatch = useMemo(() => {
-    if (!fuelConnector || fuelConnector?.connected !== true || !wagmiConnected)
-      return null;
+    if (!fuelConnected || !wagmiConnected) return null;
 
     const currentEthWalletName = ethConnector?.name;
-    const wagmiConfig = (fuelConnector as any).wagmiConfig;
-    const connections = wagmiConfig?.connectors;
-    const currentConnectorId = wagmiConfig?.state?.current;
+
+    const connections = fuelWagmiConfig?.connectors;
+    const currentConnectorId = fuelWagmiConfig?.state?.current;
 
     if (!connections?.length) {
       return null;
@@ -64,7 +81,7 @@ export function useSyncEthWallets() {
       }
     }
     return false;
-  }, [ethConnector?.name, fuelConnector, wagmiConnected]);
+  }, [ethConnector?.name, fuelConnected, fuelWagmiConfig, wagmiConnected]);
 
   // Fetch EVM Account address from Wallet Connect, which by default returns the predicate address
   useEffect(() => {
@@ -97,7 +114,7 @@ export function useSyncEthWallets() {
       !currentEVMAccount ||
       invalidWagmiWallet ||
       !isFuelConnectorEthereumWallets ||
-      fuelConnectorStatus === false
+      !fuelConnected
     ) {
       return;
     }
@@ -125,22 +142,9 @@ export function useSyncEthWallets() {
   }, [
     currentEVMAccount,
     wagmiAddress,
-    fuelConnectorStatus,
+    fuelConnected,
     invalidWagmiWallet,
     isFuelConnectorEthereumWallets,
     bridgeWalletsMatch,
   ]);
-
-  // When using Wallet Connect, if Fuel side disconnects, we must ensure the other side is disconnected as well
-  useEffect(() => {
-    const hasDisconnected =
-      fuelConnectorStatus === false &&
-      previousFuelConnectorStatus.current === true;
-
-    if (isFuelConnectorEthereumWallets && hasDisconnected && wagmiConnected) {
-      disconnectBoth();
-      return;
-    }
-    previousFuelConnectorStatus.current = fuelConnectorStatus;
-  }, [isFuelConnectorEthereumWallets, fuelConnectorStatus, wagmiConnected]);
 }
