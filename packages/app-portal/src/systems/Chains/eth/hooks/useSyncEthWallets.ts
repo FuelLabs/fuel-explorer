@@ -2,7 +2,7 @@ import { WalletConnectConnector } from '@fuels/connectors';
 import { useFuel } from '@fuels/react';
 import { toast } from '@fuels/ui';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useAccount as useWagmiAccount,
   useDisconnect as useWagmiDisconnect,
@@ -15,7 +15,11 @@ const WalletConnectName = 'Ethereum Wallets';
  */
 export function useSyncEthWallets() {
   const { fuel } = useFuel();
-  const { address: wagmiAddress, status: wagmiStatus } = useWagmiAccount();
+  const {
+    connector: ethConnector,
+    address: wagmiAddress,
+    status: wagmiStatus,
+  } = useWagmiAccount();
 
   const { disconnect } = useWagmiDisconnect();
   const [currentEVMAccount, setCurrentEVMAccount] = useState<string | null>(
@@ -38,6 +42,27 @@ export function useSyncEthWallets() {
     setCurrentEVMAccount(null);
     disconnect();
   }
+
+  const bridgeWalletsMatch = useMemo(() => {
+    if (!fuelConnector || fuelConnector?.connected !== true || !wagmiConnected)
+      return null;
+
+    const currentEthWalletName = ethConnector?.name;
+    const wagmiConfig = (fuelConnector as any).wagmiConfig;
+    const connections = wagmiConfig?.connectors;
+    const currentConnectorId = wagmiConfig?.state?.current;
+
+    if (!connections?.length) {
+      return null;
+    }
+
+    for (const { uid, name } of connections) {
+      if (uid === currentConnectorId) {
+        return name === currentEthWalletName;
+      }
+    }
+    return false;
+  }, [ethConnector?.name, fuelConnector, wagmiConnected]);
 
   // Wallet Connector returns a predicate, we need to get the actual evm account
   // in this scenario both addresses must match (Eth and Fuel)
@@ -85,12 +110,23 @@ export function useSyncEthWallets() {
       });
       disconnectBoth();
     }
+
+    if (bridgeWalletsMatch === false) {
+      toast({
+        title: 'Wallet Disconnected',
+        variant: 'error',
+        description:
+          'When sending funds to your Fuel Wallet through Wallet Connect, you must select the same wallet on both sides of the bridge.',
+      });
+      disconnectBoth();
+    }
   }, [
     currentEVMAccount,
     wagmiAddress,
     fuelConnectorStatus,
     invalidWagmiWallet,
     isFuelConnectorEthereumWallets,
+    bridgeWalletsMatch,
   ]);
 
   // In a scenario where Fuel side is connected via Ethereum Wallets, if one side disconnects we must ensure the other side is disconnected as well
