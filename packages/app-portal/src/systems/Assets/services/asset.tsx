@@ -6,7 +6,6 @@ import { isAddress } from 'viem';
 import type { PublicClient, WalletClient } from 'viem';
 import { ETH_CHAIN } from '~portal/systems/Chains';
 import { EthConnectorService } from '~portal/systems/Chains/eth';
-import { FUEL_CHAIN } from 'app-commons';
 
 export type AssetServiceInputs = {
   faucetErc20: {
