@@ -14,7 +14,7 @@ declare module 'wagmi' {
   }
 }
 
-export const config = createConfig({
+const config = createConfig({
   chains: CHAINS_TO_CONNECT,
   connectors: generateETHConnectors(),
   transports: TRANSPORTS,
