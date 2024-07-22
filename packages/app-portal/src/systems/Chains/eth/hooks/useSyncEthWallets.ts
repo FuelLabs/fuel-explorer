@@ -1,4 +1,8 @@
-import { useDisconnect as useDisconnectFuel, useFuel } from '@fuels/react';
+import {
+  useDisconnect as useDisconnectFuel,
+  useFuel,
+  useIsConnected,
+} from '@fuels/react';
 import { toast } from '@fuels/ui';
 import { FuelConnectorEventTypes } from 'fuels';
 
@@ -9,6 +13,7 @@ const WalletConnectName = 'Ethereum Wallets';
 
 /**
  * @description This hooks exists to align the bridge with the same account in the alternate wallet when using Wallet Connect on Fuel's side of the bridge
+ * Bridge flows that don't use Wallet Connect on Fuel's side will not be affected by this
  */
 export function useSyncEthWallets() {
   const { fuel } = useFuel();
@@ -24,7 +29,9 @@ export function useSyncEthWallets() {
   const isFuelConnectorEthereumWallets =
     fuelConnector?.name === WalletConnectName;
 
-  // Should disconnect both sides when WalletConnect disconnects
+  const { isConnected: isFuelConnected } = useIsConnected();
+
+  // Should disconnect ETH side when Fuels' disconnects first
   useEffect(() => {
     const onConnectionChange = (connected: boolean) => {
       if (!connected) {
@@ -56,11 +63,14 @@ export function useSyncEthWallets() {
           'You must use the same wallet and account on both sides of the bridge When handling funds through Wallet Connect',
       });
     }
-    // Default behavior + when ETH Wallet is disconnected (e.g. length is 0)
-    disconnectAll();
-  }, [isFuelConnectorEthereumWallets, ethConnections.length]);
+    // When ETH Wallet is disconnected first we should disconnect the Fuel side
+    if (isFuelConnected) {
+      disconnectAll();
+    }
+  }, [isFuelConnected, isFuelConnectorEthereumWallets, ethConnections.length]);
 
   function disconnectAll() {
+    console.log('fsk disconnecting all');
     fuelDisconnect();
     ethConnectors.forEach((connector: Connector, _) => {
       connector.disconnect();
