@@ -3,12 +3,7 @@ import { toast } from '@fuels/ui';
 import { FuelConnectorEventTypes } from 'fuels';
 
 import { useEffect } from 'react';
-import {
-  Connector,
-  useAccount as useWagmiAccount,
-  useConnections,
-  useConnectors,
-} from 'wagmi';
+import { Connector, useConnections, useConnectors } from 'wagmi';
 
 const WalletConnectName = 'Ethereum Wallets';
 
@@ -18,8 +13,8 @@ const WalletConnectName = 'Ethereum Wallets';
 export function useSyncEthWallets() {
   const { fuel } = useFuel();
 
-  const { address: wagmiAddress, status: wagmiStatus } = useWagmiAccount();
   const ethConnectors = useConnectors();
+
   const ethConnections = useConnections();
 
   const { disconnect: fuelDisconnect } = useDisconnectFuel();
@@ -28,26 +23,16 @@ export function useSyncEthWallets() {
 
   const isFuelConnectorEthereumWallets =
     fuelConnector?.name === WalletConnectName;
-  const wagmiConnected = wagmiStatus === 'connected';
-  const wagmiDisconnected = wagmiStatus === 'disconnected';
-
-  const activeWalletConnectBridge =
-    wagmiDisconnected ||
-    !wagmiAddress ||
-    !isFuelConnectorEthereumWallets ||
-    !wagmiConnected ||
-    !ethConnections.length;
 
   // Should disconnect both sides when WalletConnect disconnects
   useEffect(() => {
     const onConnectionChange = (connected: boolean) => {
       if (!connected) {
-        disconnectBoth();
+        disconnectAll();
       }
     };
     if (fuelConnector?.name === WalletConnectName) {
       fuelConnector?.on(FuelConnectorEventTypes.connection, onConnectionChange);
-
       return () => {
         fuelConnector?.off(
           FuelConnectorEventTypes.connection,
@@ -55,14 +40,14 @@ export function useSyncEthWallets() {
         );
       };
     }
-  }, [fuelConnector]);
+  }, [fuelConnector, ethConnections]);
 
-  // Should use the same wallet and accounts if using WalletConnect
   useEffect(() => {
-    if (activeWalletConnectBridge) {
+    if (!isFuelConnectorEthereumWallets || ethConnections.length === 1) {
       return;
     }
 
+    // Should use the same wallet and accounts if using WalletConnect
     if (ethConnections.length > 1) {
       toast({
         title: 'Wallet Disconnected',
@@ -70,11 +55,12 @@ export function useSyncEthWallets() {
         description:
           'You must use the same wallet and account on both sides of the bridge When handling funds through Wallet Connect',
       });
-      disconnectBoth();
     }
-  }, [activeWalletConnectBridge, ethConnections.length]);
+    // Default behavior + when ETH Wallet is disconnected (e.g. length is 0)
+    disconnectAll();
+  }, [isFuelConnectorEthereumWallets, ethConnections.length]);
 
-  function disconnectBoth() {
+  function disconnectAll() {
     fuelDisconnect();
     ethConnectors.forEach((connector: Connector, _) => {
       connector.disconnect();
