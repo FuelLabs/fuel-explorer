@@ -414,14 +414,14 @@ importers:
   packages/app-portal:
     dependencies:
       '@fuel-bridge/fungible-token':
-        specifier: pr-185
-        version: 0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877
+        specifier: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
+        version: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
       '@fuel-bridge/message-predicates':
-        specifier: pr-185
-        version: 0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877
+        specifier: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
+        version: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
       '@fuel-bridge/solidity-contracts':
-        specifier: pr-185
-        version: 0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877
+        specifier: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
+        version: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
       '@fuels/connectors':
         specifier: pr-164
         version: 0.9.1-pr-164-09745dbc238791525235b10055fcbb29aa777b34(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
@@ -3960,16 +3960,16 @@ packages:
       ts-interface-checker: 0.1.13
     dev: true
 
-  /@fuel-bridge/fungible-token@0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877:
-    resolution: {integrity: sha512-HwYoCOZdosjTd5pL0luF8OUkwYQ2wgUJx7pwRYObBNIAGSwvHSJRg+QWMr1PzatAQdx7LQ5pY+EoJMr0oo8GRg==}
+  /@fuel-bridge/fungible-token@0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed:
+    resolution: {integrity: sha512-U6dSf9ARvirq32aTaUnr120XL/v2B5bDSRlsI46sgkHEtSu5XhJUPZzXVK2U6KwUASJpgGDMnPxn5gLb01dWXA==}
     dev: false
 
-  /@fuel-bridge/message-predicates@0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877:
-    resolution: {integrity: sha512-nU4LDfDQecDniXAlK9iTRWxYHWwoaapeo2MniiUt2AkBGUJhMD5m5xM6TtJsK1hBK1OIBBSuTfUFq8GC3QinoA==}
+  /@fuel-bridge/message-predicates@0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed:
+    resolution: {integrity: sha512-vcH0HHXBO14Y0bAkMmgAmjrPRyehcfNRdnGGnszyXFy/PZjReloDh1ASMiKro19llRGkoUzWCWPo5zXCtgH/IQ==}
     dev: false
 
-  /@fuel-bridge/solidity-contracts@0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877:
-    resolution: {integrity: sha512-Syww8EM81RN0h9Ap+OLpKJCBjrOJnKBOSGQMA7G/03py+h9MSedrCdh74gQNpr1g+7C8IALENGvRUQz7itXJgg==}
+  /@fuel-bridge/solidity-contracts@0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed:
+    resolution: {integrity: sha512-T7RnJzqQZ0bQ2H17JQj0lXxsKtLMHNRNcD5voUKvR0HoRgrecer4p6a0uEeVxRg9mi4ub0+q33T60kY6EJDQXw==}
     dev: false
 
   /@fuel-bridge/test-utils@0.6.0-pr-185-9f6db38d239177f1b900486c4a8d645d2bd66877(ethers@6.11.0)(fuels@0.86.0):
