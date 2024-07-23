@@ -55,7 +55,12 @@ export function useSyncEthWallets() {
     }
 
     // Should use the same wallet and accounts if using WalletConnect
-    if (ethConnections.length > 1) {
+    if (
+      ethConnections.length > 1 &&
+      (ethConnections[0].connector?.name !==
+        ethConnections[1].connector?.name ||
+        ethConnections[0].accounts?.[0] !== ethConnections[1].accounts?.[0])
+    ) {
       toast({
         title: 'Wallet Disconnected',
         variant: 'error',
