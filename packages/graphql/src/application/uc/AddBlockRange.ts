@@ -11,7 +11,9 @@ type Data = QueueInputs[QueueNames.ADD_BLOCK_RANGE];
 export class AddBlockRange {
   async execute(data: Data, blockProducer: string | null) {
     const { from, to } = data;
-    const res = await BlockRepository.blocksFromNode(to - from, to);
+    const size = to - from;
+    const after = to - size;
+    const res = await BlockRepository.blocksFromNode(size, after);
     const { blocks } = res;
     if (blocks.length === 0) {
       logger.syncer.warn(c.yellow(`⚠️ No blocks to sync: #${from} - #${to}`));
