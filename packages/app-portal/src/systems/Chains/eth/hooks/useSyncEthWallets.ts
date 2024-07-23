@@ -70,7 +70,11 @@ export function useSyncEthWallets() {
   }, [isFuelConnected, isFuelConnectorEthereumWallets, ethConnections.length]);
 
   function disconnectAll() {
-    fuelDisconnect();
+    if (isFuelConnectorEthereumWallets) {
+      fuelDisconnect();
+      // Avoid zombie listeners for accounts changed
+      fuelConnector?.removeAllListeners('accountsChanged');
+    }
     ethConnectors.forEach((connector: Connector, _) => {
       connector.disconnect();
     });
