@@ -1,37 +1,41 @@
-import { defaultConnectors } from '@fuels/connectors';
+import {
+  BakoSafeConnector,
+  BurnerWalletConnector,
+  FuelWalletConnector,
+  FuelWalletDevelopmentConnector,
+  FueletWalletConnector,
+  WalletConnectConnector,
+} from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import { WALLETCONNECT_ID } from 'app-commons';
 import { useTheme } from 'next-themes';
 import { type ReactNode } from 'react';
-import { createConfig } from 'wagmi';
-import { CHAINS_TO_CONNECT, TRANSPORTS } from '~portal/systems/Chains';
 
-import { generateETHConnectors } from '~portal/systems/Core/utils/connectors';
+import { DEFAULT_WAGMI_CONFIG } from '~portal/systems/Chains';
 
 type ProvidersProps = {
   children: ReactNode;
 };
 
-const ethWagmiConfig = createConfig({
-  chains: CHAINS_TO_CONNECT,
-  connectors: generateETHConnectors(),
-  transports: TRANSPORTS,
-  ssr: true,
-});
+const fuelConfig = {
+  connectors: [
+    new FuelWalletConnector(),
+    new BakoSafeConnector(),
+    new FueletWalletConnector(),
+    new WalletConnectConnector({
+      projectId: WALLETCONNECT_ID,
+      wagmiConfig: DEFAULT_WAGMI_CONFIG,
+    }),
+    new BurnerWalletConnector(),
+    new FuelWalletDevelopmentConnector(),
+  ],
+};
 
 export function FuelConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
 
   return (
-    <FuelProvider
-      theme={theme}
-      fuelConfig={{
-        connectors: defaultConnectors({
-          wcProjectId: WALLETCONNECT_ID,
-          ethWagmiConfig: ethWagmiConfig,
-        }),
-      }}
-    >
+    <FuelProvider theme={theme} fuelConfig={fuelConfig}>
       {children}
     </FuelProvider>
   );

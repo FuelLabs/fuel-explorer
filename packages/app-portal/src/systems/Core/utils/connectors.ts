@@ -1,9 +1,10 @@
 import { WALLETCONNECT_ID } from 'app-commons';
 import { type CreateConnectorFn } from 'wagmi';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
-import { APP } from '~portal/systems/Chains';
 
-export function generateETHConnectors(): Array<CreateConnectorFn> {
+export function generateETHConnectors(
+  appName: string,
+): Array<CreateConnectorFn> {
   const connectors: Array<CreateConnectorFn> = [
     injected({
       shimDisconnect: true,
@@ -14,7 +15,7 @@ export function generateETHConnectors(): Array<CreateConnectorFn> {
         icon: 'https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/SVG_MetaMask_Icon_Color.svg',
       }),
     }),
-    coinbaseWallet({ appName: APP.name, headlessMode: true }),
+    coinbaseWallet({ appName, headlessMode: true }),
   ];
 
   if (WALLETCONNECT_ID) {

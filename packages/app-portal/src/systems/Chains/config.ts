@@ -6,6 +6,8 @@ import {
 } from 'app-commons';
 import { type Chain, fallback } from 'viem';
 import { http } from 'wagmi';
+import { createConfig } from 'wagmi';
+import { generateETHConnectors } from '~portal/systems/Core/utils/connectors';
 import { ETH_CHAINS } from './eth/chains';
 
 export const ETH_CHAIN = ETH_CHAINS[ETH_CHAIN_NAME];
@@ -34,3 +36,10 @@ export const TRANSPORTS = {
         { rank: false },
       ),
 };
+
+export const DEFAULT_WAGMI_CONFIG = createConfig({
+  chains: CHAINS_TO_CONNECT,
+  connectors: generateETHConnectors(APP.name),
+  transports: TRANSPORTS,
+  ssr: false,
+});

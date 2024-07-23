@@ -3,23 +3,14 @@ import type { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
 
-import { WagmiProvider, createConfig } from 'wagmi';
-import { CHAINS_TO_CONNECT, TRANSPORTS } from '~portal/systems/Chains';
-
-import { generateETHConnectors } from '~portal/systems/Core/utils/connectors';
+import { WagmiProvider } from 'wagmi';
+import { DEFAULT_WAGMI_CONFIG } from '~portal/systems/Chains';
 
 declare module 'wagmi' {
   interface Register {
-    config: typeof config;
+    config: typeof DEFAULT_WAGMI_CONFIG;
   }
 }
-
-const config = createConfig({
-  chains: CHAINS_TO_CONNECT,
-  connectors: generateETHConnectors(),
-  transports: TRANSPORTS,
-  ssr: true,
-});
 
 type ProvidersProps = {
   children: ReactNode;
@@ -29,7 +20,7 @@ export function ConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
 
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={DEFAULT_WAGMI_CONFIG} reconnectOnMount={false}>
       <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
     </WagmiProvider>
   );
