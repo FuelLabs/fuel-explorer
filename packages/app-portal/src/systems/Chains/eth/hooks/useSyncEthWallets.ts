@@ -70,7 +70,6 @@ export function useSyncEthWallets() {
   }, [isFuelConnected, isFuelConnectorEthereumWallets, ethConnections.length]);
 
   function disconnectAll() {
-    console.log('fsk disconnecting all');
     fuelDisconnect();
     ethConnectors.forEach((connector: Connector, _) => {
       connector.disconnect();
