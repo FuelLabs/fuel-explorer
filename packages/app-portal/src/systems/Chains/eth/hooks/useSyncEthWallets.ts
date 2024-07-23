@@ -54,6 +54,16 @@ export function useSyncEthWallets() {
       return;
     }
 
+    // When ETH Wallet is disconnected first we should disconnect the Fuel side
+    if (
+      !ethConnections.length &&
+      isFuelConnectorEthereumWallets &&
+      isFuelConnected
+    ) {
+      disconnectAll();
+      return;
+    }
+
     // Should use the same wallet and accounts if using WalletConnect
     if (
       ethConnections.length > 1 &&
@@ -67,10 +77,8 @@ export function useSyncEthWallets() {
         description:
           'You must use the same wallet and account on both sides of the bridge When handling funds through Wallet Connect',
       });
-    }
-    // When ETH Wallet is disconnected first we should disconnect the Fuel side
-    if (isFuelConnected) {
       disconnectAll();
+      return;
     }
   }, [isFuelConnected, isFuelConnectorEthereumWallets, ethConnections.length]);
 
