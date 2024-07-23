@@ -435,7 +435,12 @@ export class TxFuelToEthService {
 
     const { ethPublicClient, txHash } = input;
 
-    let txReceipts;
+    let txReceipts: Awaited<
+      ReturnType<
+        | typeof ethPublicClient.getTransactionReceipt
+        | typeof ethPublicClient.waitForTransactionReceipt
+      >
+    >;
     try {
       txReceipts = await ethPublicClient.getTransactionReceipt({
         hash: txHash,
