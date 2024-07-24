@@ -3,6 +3,7 @@
 export const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 export const INFURA_ID = process.env.NEXT_PUBLIC_INFURA_ID;
 export const WALLETCONNECT_ID = process.env.NEXT_PUBLIC_WALLETCONNECT_ID;
+export const USE_CAPSULE_KEY = process.env.NEXT_PUBLIC_USE_CAPSULE_KEY;
 export const ETH_CHAIN_NAME = process.env.NEXT_PUBLIC_ETH_CHAIN_NAME;
 export const FUEL_CHAIN_NAME = process.env.NEXT_PUBLIC_FUEL_CHAIN_NAME;
 export const FUEL_VERSION = process.env.NEXT_PUBLIC_FUEL_VERSION;

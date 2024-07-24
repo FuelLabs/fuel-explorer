@@ -1,13 +1,9 @@
-import {
-  useDisconnect as useDisconnectFuel,
-  useFuel,
-  useIsConnected,
-} from '@fuels/react';
+import { useFuel, useIsConnected } from '@fuels/react';
 import { toast } from '@fuels/ui';
 import { FuelConnectorEventTypes } from 'fuels';
 
 import { useEffect } from 'react';
-import { Connector, useConnections, useConnectors } from 'wagmi';
+import { useConnections } from 'wagmi';
 
 const WalletConnectName = 'Ethereum Wallets';
 
@@ -18,11 +14,7 @@ const WalletConnectName = 'Ethereum Wallets';
 export function useSyncEthWallets() {
   const { fuel } = useFuel();
 
-  const ethConnectors = useConnectors();
-
   const ethConnections = useConnections();
-
-  const { disconnect: fuelDisconnect } = useDisconnectFuel();
 
   const fuelConnector = fuel.currentConnector();
 
@@ -70,10 +62,10 @@ export function useSyncEthWallets() {
   }, [isFuelConnected, isFuelConnectorEthereumWallets, ethConnections.length]);
 
   function disconnectAll() {
-    console.log('fsk disconnecting all');
-    fuelDisconnect();
-    ethConnectors.forEach((connector: Connector, _) => {
-      connector.disconnect();
-    });
+    // console.log('fsk disconnecting all');
+    // fuelDisconnect();
+    // ethConnectors.forEach((connector: Connector, _) => {
+    //   connector.disconnect();
+    // });
   }
 }
