@@ -85,8 +85,6 @@ export function useSyncEthWallets() {
   function disconnectAll() {
     if (isFuelConnectorEthereumWallets) {
       fuelDisconnect();
-      // Avoid zombie listeners for accounts changed
-      fuelConnector?.removeAllListeners('accountsChanged');
     }
     ethConnectors.forEach((connector: Connector, _) => {
       connector.disconnect();
