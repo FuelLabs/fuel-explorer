@@ -202,7 +202,6 @@ export function useBridge() {
       goToWithdraw,
       startBridging: () =>
         store.startBridging({
-          // fuelAddress: sameAccount ? ethAddress : fuelAddress,
           fuelAddress,
           ethWalletClient,
           fuelWallet,
@@ -217,7 +216,6 @@ export function useBridge() {
       changeAsset: store.changeAsset,
       openAssetsDialog: store.openAssetsDialog,
     },
-    // fuelAddress: sameAccount ? ethAddress : fuelAddress,
     fuelAddress,
     ethAddress,
     fromNetwork,
