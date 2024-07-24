@@ -41,5 +41,5 @@ export const DEFAULT_WAGMI_CONFIG = createConfig({
   chains: CHAINS_TO_CONNECT,
   connectors: generateETHConnectors(APP.name),
   transports: TRANSPORTS,
-  ssr: false,
+  ssr: true,
 });
