@@ -40,16 +40,14 @@ const selectors = {
 
       if (!fromNetwork) return BridgeStatus.waitingNetworkFrom;
       if (!toNetwork) return BridgeStatus.waitingNetworkTo;
-      if (
-        (isEthChain(fromNetwork) && !ethAccount) ||
-        (isFuelChain(fromNetwork) && !fuelAccount)
-      )
-        return BridgeStatus.waitingConnectFrom;
-      if (
-        (isEthChain(toNetwork) && !ethAccount) ||
-        (isFuelChain(toNetwork) && !fuelAccount)
-      )
+      if (!fuelAccount) {
+        if (isFuelChain(fromNetwork)) return BridgeStatus.waitingConnectFrom;
         return BridgeStatus.waitingConnectTo;
+      }
+      if (!ethAccount) {
+        if (isEthChain(toNetwork)) return BridgeStatus.waitingConnectTo;
+        return BridgeStatus.waitingConnectFrom;
+      }
 
       if (!state.context?.assetAmount || state.context.assetAmount.isZero()) {
         return BridgeStatus.waitingAssetAmount;
