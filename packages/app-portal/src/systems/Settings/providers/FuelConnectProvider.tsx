@@ -1,4 +1,4 @@
-import { defaultConnectors } from '@fuels/connectors';
+import { WalletConnectConnector } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import { WALLETCONNECT_ID } from 'app-commons';
 import { useTheme } from 'next-themes';
@@ -14,7 +14,7 @@ type ProvidersProps = {
 
 const ethWagmiConfig = createConfig({
   chains: CHAINS_TO_CONNECT,
-  connectors: generateETHConnectors(),
+  connectors: generateETHConnectors(CHAINS_TO_CONNECT),
   transports: TRANSPORTS,
   ssr: true,
 });
@@ -26,10 +26,12 @@ export function FuelConnectProvider({ children }: ProvidersProps) {
     <FuelProvider
       theme={theme}
       fuelConfig={{
-        connectors: defaultConnectors({
-          wcProjectId: WALLETCONNECT_ID,
-          ethWagmiConfig: ethWagmiConfig,
-        }),
+        connectors: [
+          new WalletConnectConnector({
+            projectId: WALLETCONNECT_ID,
+            wagmiConfig: ethWagmiConfig,
+          }),
+        ],
       }}
     >
       {children}

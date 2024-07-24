@@ -16,7 +16,7 @@ declare module 'wagmi' {
 
 const config = createConfig({
   chains: CHAINS_TO_CONNECT,
-  connectors: generateETHConnectors(),
+  connectors: generateETHConnectors(CHAINS_TO_CONNECT),
   transports: TRANSPORTS,
   ssr: true,
 });
