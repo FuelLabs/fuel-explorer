@@ -426,8 +426,8 @@ importers:
         specifier: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
         version: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
       '@fuels/connectors':
-        specifier: pr-164
-        version: 0.9.1-pr-164-5cdaaeeaceea2f897c4af066539d099bbf5521ca(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
+        specifier: 0.9.1-pr-164-1c478320dedde5bc235f7635ec0fd87986524242
+        version: 0.9.1-pr-164-1c478320dedde5bc235f7635ec0fd87986524242(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
       '@fuels/react':
         specifier: 0.23.0
         version: 0.23.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)
@@ -4463,8 +4463,8 @@ packages:
   /@fuels/assets@0.20.0:
     resolution: {integrity: sha512-pIVzHCEXkIIKXlIvvrISrFyaRRjbxEMnypjV/UZOI9dr99woUgXV1MZnMsq44uhQ/T3VXiTu2cXo4/SSE5ny2g==}
 
-  /@fuels/connectors@0.9.1-pr-164-5cdaaeeaceea2f897c4af066539d099bbf5521ca(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
-    resolution: {integrity: sha512-KSIxVZjXte3dnA4Gf0mSZV1N09SHFo2sMrQfVdXqTaEfCLIaxoIxnwrhLL/RlTrTTu9qaO16mQtH4BbQ2SwPWw==}
+  /@fuels/connectors@0.9.1-pr-164-1c478320dedde5bc235f7635ec0fd87986524242(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
+    resolution: {integrity: sha512-nui1KuMbVsrc6ozmGlN8Qx9DoBj6auv0NmpHfPKjlstlPQrMOXyFaDY+/osNdVO0Pd0W817Ms1N6Us3gJ70TFQ==}
     peerDependencies:
       fuels: '>=0.92.0'
     dependencies:
