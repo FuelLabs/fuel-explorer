@@ -5,7 +5,7 @@ import { db } from '../../infra/database/Db';
 export class SyncLostBlocks {
   async execute() {
     logger.syncer.info('🔗 Syncing lost blocks');
-    // mover para o repository
+    // TODO: move to repository
     const res = (await db.execSQL(
       'select bs._id from (select generate_series(0, (select max(_id) from blocks)) as _id) as bs where bs._id not in (select _id from blocks)',
     )) as any;
