@@ -1,5 +1,6 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type {
+  ChangeOutput,
   CoinOutput,
   GroupedOutput,
   TransactionItemFragment,
@@ -26,7 +27,13 @@ import { Amount } from '~/systems/Core/components/Amount/Amount';
 
 import React, { useMemo } from 'react';
 import { TxIcon } from '../TxIcon/TxIcon';
-import { getTooltipText, isCoinOutput } from './TxOutput.utils';
+import {
+  getTooltipText,
+  hasCoins,
+  isChangeOutput,
+  isChangeOutputs,
+  isCoinOutputs,
+} from './TxOutput.utils';
 
 export type TxOutputProps = CardProps & {
   tx: TransactionItemFragment;
@@ -40,7 +47,7 @@ type TxOutputCoinsProps = {
 
 type TxOutputCoinProps = CardProps & {
   tx: TransactionItemFragment;
-  output: CoinOutput;
+  output: CoinOutput | ChangeOutput;
 };
 
 const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
@@ -60,6 +67,8 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
       });
       return change?.to === output.to;
     }, []);
+
+    const isChange = isChangeOutput(output);
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -91,7 +100,9 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
                 value={bn(amount)}
               />
             )}
-            <HelperIcon message={getTooltipText(tx, isReceiving)} />
+            <HelperIcon
+              message={getTooltipText(tx, isChange || !isReceiving)}
+            />
           </HStack>
         </Card.Header>
       </Card>
@@ -205,8 +216,12 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
 });
 
 export function TxOutput({ tx, output, ...props }: TxOutputProps) {
-  if (isCoinOutput(output.outputs)) {
+  tx.outputs;
+  if (isCoinOutputs(output.outputs)) {
     return <TxOutputCoins tx={tx} outputs={output.outputs} />;
+  }
+  if (isChangeOutputs(output.outputs) && !hasCoins(tx)) {
+    return <TxOutputCoin tx={tx} output={output.outputs[0]} {...props} />;
   }
   if (output.type === GroupedOutputType.ContractOutput) {
     return <TxOutputContract tx={tx} output={output} {...props} />;
