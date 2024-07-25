@@ -1,3 +1,4 @@
+'use client';
 import {
   useAccount,
   useBalance,
@@ -23,9 +24,11 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     address: account || undefined,
   });
 
-  const { isLoading: isLoadingConnected } = useIsConnected();
+  const { isLoading: isLoadingConnected, isConnected } = useIsConnected();
   const { disconnect, isPending: isLoadingDisconnecting } = useDisconnect();
-  const { wallet, isLoading: isLoadingWallet } = useWallet(account);
+  const { wallet, isLoading } = useWallet(account);
+
+  const isLoadingWallet = isLoading || (isConnected && !!account);
   const {
     connect,
     error,
@@ -68,7 +71,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     },
     account: account || undefined,
     address,
-    isConnected: !!account,
+    isConnected,
     error,
     isLoadingConnection,
     isConnecting,
