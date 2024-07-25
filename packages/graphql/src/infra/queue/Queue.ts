@@ -6,6 +6,7 @@ import client, {
 import { createAddBlockRange } from '~/application/uc/AddBlockRange';
 import { syncBlocks } from '~/application/uc/SyncBlocks';
 import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
+import { syncLostBlocks } from '~/application/uc/SyncLostBlocks';
 import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { env } from '~/config';
 import { logger } from '~/core/Logger';
@@ -28,6 +29,7 @@ export enum QueueNames {
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
   SYNC_MISSING = 'indexer/sync-missing',
   SYNC_LAST = 'indexer/sync-last',
+  SYNC_LOST_BLOCKS = 'indexer/sync-lost-blocks',
 }
 export enum ChannelNames {
   main = 'main',
@@ -50,6 +52,7 @@ export type QueueInputs = {
     from: number;
     to: number;
   };
+  [QueueNames.SYNC_LOST_BLOCKS]: {};
 };
 
 class RabbitMQConnection {
@@ -144,6 +147,7 @@ class RabbitMQConnection {
     await this.consume('main', QueueNames.SYNC_MISSING, syncMissingBlocks);
     await this.consume('main', QueueNames.SYNC_LAST, syncLastBlocks);
     await this.consume('block', QueueNames.ADD_BLOCK_RANGE, addBlockRange);
+    await this.consume('block', QueueNames.SYNC_LOST_BLOCKS, syncLostBlocks);
   }
 
   private parsePayload<P extends Payload>(msg: ConsumeMessage | null) {

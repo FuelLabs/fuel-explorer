@@ -79,6 +79,10 @@ class Syncer {
     worker.postMessage('ADD_BLOCK_RANGE', [{ from: cursor, to }]);
     return { endCursor: to };
   }
+
+  async syncLostBlocks() {
+    worker.postMessage('SYNC_LOST_BLOCKS');
+  }
 }
 
 const syncer = new Syncer();
@@ -251,6 +255,41 @@ const machine = setup({
   },
 });
 
+const machineLostBlocks = setup({
+  actors: {
+    syncLostBlocks: fromPromise(async () => {
+      await syncer.syncLostBlocks();
+    }),
+  },
+}).createMachine({
+  id: 'lostBlocks',
+  initial: 'idle',
+  states: {
+    idle: {
+      on: {
+        START_SYNC_LOST_BLOCKS: {
+          target: 'syncingLostBlocks',
+        },
+      },
+    },
+    syncingLostBlocks: {
+      invoke: {
+        src: 'syncLostBlocks',
+        onDone: {
+          target: 'wait',
+        },
+      },
+    },
+    wait: {
+      after: {
+        60000: {
+          target: 'syncingLostBlocks',
+        },
+      },
+    },
+  },
+});
+
 export default async function runSyncMachine(input: Input) {
   const actor = createActor(machine, { input });
   const start = new Date();
@@ -267,4 +306,7 @@ export default async function runSyncMachine(input: Input) {
 
   actor.start();
   actor.send({ type: 'START_SYNC' });
+  const actorLostBlocks = createActor(machineLostBlocks, { input });
+  actorLostBlocks.start();
+  actorLostBlocks.send({ type: 'START_SYNC_LOST_BLOCKS' });
 }

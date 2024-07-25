@@ -11,8 +11,9 @@ type Data = QueueInputs[QueueNames.ADD_BLOCK_RANGE];
 export class AddBlockRange {
   async execute(data: Data, blockProducer: string | null) {
     const { from, to } = data;
-    const size = to - from;
-    const after = to - size;
+    let size = Math.max(to - from, 1);
+    size = from === 0 ? size + 1 : size;
+    const after = Math.max(to - size, 0);
     const res = await BlockRepository.blocksFromNode(size, after);
     const { blocks } = res;
     if (blocks.length === 0) {

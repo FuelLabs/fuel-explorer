@@ -11,6 +11,7 @@ type WorkerEvents = {
     from: string;
     to: string;
   };
+  SYNC_LOST_BLOCKS: null;
 };
 
 export const worker = Workery.build<WorkerEvents>({
@@ -26,6 +27,10 @@ worker.on('ADD_BLOCK_RANGE', async (payloads) => {
     }),
   );
   worker.postMessage('BLOCK_RANGE_ADDED', { from, to });
+});
+
+worker.on('SYNC_LOST_BLOCKS', async () => {
+  mq.send('block', QueueNames.SYNC_LOST_BLOCKS);
 });
 
 worker.on('GET_ACTIVE_JOBS', async () => {
