@@ -545,13 +545,13 @@ importers:
     devDependencies:
       '@fuels/playwright-utils':
         specifier: 0.20.0
-        version: 0.20.0(@playwright/test@1.41.2)(fuels@0.86.0)
+        version: 0.20.0(@playwright/test@1.41.2)(fuels@0.92.1)
       '@synthetixio/synpress':
         specifier: https://github.com/LuizAsFight/synpress
         version: github.com/LuizAsFight/synpress/edb6468a237b341a0014d2944cb43a33f22d2ff1(@babel/core@7.23.9)(typescript@5.4.5)
       fuels:
-        specifier: 0.86.0
-        version: 0.86.0
+        specifier: 0.92.1
+        version: 0.92.1
       viem:
         specifier: 2.10.2
         version: 2.10.2(typescript@5.4.5)
@@ -4544,7 +4544,7 @@ packages:
     resolution: {integrity: sha512-/5kj3ww+AETRqtDM4IYZ0L525dd0ZXrSIVBVEuHQU16112EBZYBYnrGAq2fgJAE7MzLowEhBx2aa8iWvq+m/0g==}
     dev: false
 
-  /@fuels/playwright-utils@0.20.0(@playwright/test@1.41.2)(fuels@0.86.0):
+  /@fuels/playwright-utils@0.20.0(@playwright/test@1.41.2)(fuels@0.92.1):
     resolution: {integrity: sha512-26vikCWdvyrVM/tME9zpd0K61MD9kYxVPQWlwX4FSZXHV3WPgueaESMfzTUos0ehrJv552q7nnJ/iwF96gZkMA==}
     peerDependencies:
       '@playwright/test': ^1.39.0
@@ -4552,7 +4552,7 @@ packages:
     dependencies:
       '@playwright/test': 1.41.2
       adm-zip: 0.5.12
-      fuels: 0.86.0
+      fuels: 0.92.1
     dev: true
 
   /@fuels/react-xstore@0.23.0(@types/react@18.2.54)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.3):
