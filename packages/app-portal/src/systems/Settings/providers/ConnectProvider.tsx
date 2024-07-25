@@ -20,7 +20,7 @@ export function ConnectProvider({ children }: ProvidersProps) {
   const { theme } = useTheme();
 
   return (
-    <WagmiProvider config={DEFAULT_WAGMI_CONFIG} reconnectOnMount={false}>
+    <WagmiProvider config={DEFAULT_WAGMI_CONFIG}>
       <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
     </WagmiProvider>
   );
