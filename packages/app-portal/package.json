@@ -26,7 +26,7 @@
     "@fuel-bridge/fungible-token": "0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed",
     "@fuel-bridge/message-predicates": "0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed",
     "@fuel-bridge/solidity-contracts": "0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed",
-    "@fuels/connectors": "0.9.1-pr-164-a4363d2dbbae60aae611439a852a019c75a82c96",
+    "@fuels/connectors": "0.9.1-pr-164-416c423870f3c56a0e8cfa73e23fabd7d3ce57c5",
     "@fuels/react": "0.23.0",
     "@fuels/react-xstore": "0.23.0",
     "@hookform/resolvers": "^3.1.1",
