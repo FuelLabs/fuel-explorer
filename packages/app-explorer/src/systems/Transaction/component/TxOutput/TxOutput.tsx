@@ -216,7 +216,6 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
 });
 
 export function TxOutput({ tx, output, ...props }: TxOutputProps) {
-  tx.outputs;
   if (isCoinOutputs(output.outputs)) {
     return <TxOutputCoins tx={tx} outputs={output.outputs} />;
   }
