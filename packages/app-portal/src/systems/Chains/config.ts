@@ -5,7 +5,7 @@ import {
   IS_ETH_DEV_CHAIN,
 } from 'app-commons';
 import { type Chain, fallback } from 'viem';
-import { http } from 'wagmi';
+import { http, cookieStorage, createStorage } from 'wagmi';
 import { createConfig } from 'wagmi';
 import { generateETHConnectors } from '~portal/systems/Core/utils/connectors';
 import { ETH_CHAINS } from './eth/chains';
@@ -41,5 +41,8 @@ export const DEFAULT_WAGMI_CONFIG = createConfig({
   chains: CHAINS_TO_CONNECT,
   connectors: generateETHConnectors(APP.name),
   transports: TRANSPORTS,
+  storage: createStorage({
+    storage: cookieStorage,
+  }),
   ssr: true,
 });

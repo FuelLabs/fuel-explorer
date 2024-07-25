@@ -3,7 +3,7 @@ import type { Mode } from 'connectkit/build/types';
 import { useTheme } from 'next-themes';
 import type { ReactNode } from 'react';
 
-import { WagmiProvider } from 'wagmi';
+import { type State, WagmiProvider } from 'wagmi';
 import { DEFAULT_WAGMI_CONFIG } from '~portal/systems/Chains';
 
 declare module 'wagmi' {
@@ -14,13 +14,20 @@ declare module 'wagmi' {
 
 type ProvidersProps = {
   children: ReactNode;
+  wagmiInitialState?: State;
 };
 
-export function ConnectProvider({ children }: ProvidersProps) {
+export function ConnectProvider({
+  children,
+  wagmiInitialState,
+}: ProvidersProps) {
   const { theme } = useTheme();
 
   return (
-    <WagmiProvider config={DEFAULT_WAGMI_CONFIG}>
+    <WagmiProvider
+      config={DEFAULT_WAGMI_CONFIG}
+      initialState={wagmiInitialState}
+    >
       <ConnectKitProvider mode={theme as Mode}>{children}</ConnectKitProvider>
     </WagmiProvider>
   );
