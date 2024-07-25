@@ -39,24 +39,20 @@ export const AccountConnectionInput = ({
         <Flex align="center" justify="between" gap="1">
           <VStack gap="1">
             <Text className={classes.textLabel()}>{label}</Text>
-            {isLoading ? (
-              <LoadingBox className="w-[100px] h-[20px]" />
-            ) : (
-              <Flex gap="2" align="center">
-                {typeof networkImage === 'string' ? (
-                  <Flex className="max-w-[20px] max-h-[20px]">
-                    <img
-                      className="w-full h-full"
-                      src={networkImage}
-                      alt={networkName}
-                    />
-                  </Flex>
-                ) : (
-                  networkImage
-                )}
-                <Text className={classes.textNetwork()}>{networkName}</Text>
-              </Flex>
-            )}
+            <Flex gap="2" align="center">
+              {typeof networkImage === 'string' ? (
+                <Flex className="max-w-[20px] max-h-[20px]">
+                  <img
+                    className="w-full h-full"
+                    src={networkImage}
+                    alt={networkName}
+                  />
+                </Flex>
+              ) : (
+                networkImage
+              )}
+              <Text className={classes.textNetwork()}>{networkName}</Text>
+            </Flex>
           </VStack>
 
           <VStack align="end" gap="0">
