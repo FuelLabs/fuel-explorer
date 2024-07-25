@@ -423,7 +423,7 @@ importers:
         specifier: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
         version: 0.6.0-next-26cfeacb87bf2572f8452a4538026a58744c35ed
       '@fuels/connectors':
-        specifier: 0.9.1-pr-164-4591a26dacd3cdaf5564207692118547ca791f8a
+        specifier: pr-164
         version: 0.9.1-pr-164-4591a26dacd3cdaf5564207692118547ca791f8a(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
       '@fuels/react':
         specifier: 0.23.0
