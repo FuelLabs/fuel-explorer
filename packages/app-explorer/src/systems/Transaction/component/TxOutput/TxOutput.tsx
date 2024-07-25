@@ -1,5 +1,6 @@
 import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type {
+  CoinOutput,
   GroupedOutput,
   TransactionItemFragment,
 } from '@fuel-explorer/graphql';
@@ -23,34 +24,42 @@ import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 
+import React, { useMemo } from 'react';
 import { TxIcon } from '../TxIcon/TxIcon';
-
-function getTooltipText(tx: TransactionItemFragment, output: GroupedOutput) {
-  if (tx.isMint) {
-    return 'This is the amount minted in the transaction';
-  }
-  if (output.type === GroupedOutputType.ChangeOutput) {
-    return 'This is the amount remaining after transaction';
-  }
-  return 'This is the amount spent in the transaction';
-}
+import { getTooltipText, isCoinOutput } from './TxOutput.utils';
 
 export type TxOutputProps = CardProps & {
   tx: TransactionItemFragment;
   output: GroupedOutput;
 };
 
-const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
+type TxOutputCoinsProps = {
+  tx: TransactionItemFragment;
+  outputs: CoinOutput[];
+};
+
+type TxOutputCoinProps = CardProps & {
+  tx: TransactionItemFragment;
+  output: CoinOutput;
+};
+
+const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
   id: 'TxOutputCoin',
   render: (_, { tx, output, ...props }) => {
     const classes = styles();
     if (!output.assetId) return null;
     const assetId = output.assetId;
-    const amount = output.totalAmount;
-    const isReceiving =
-      output.type === GroupedOutputType.ChangeOutput ||
-      (output.outputs?.length === 1 &&
-        output.outputs[0]?.__typename === 'CoinOutput');
+    const amount = output.amount;
+
+    const isReceiving = useMemo<boolean>(() => {
+      const changes = tx.groupedOutputs?.filter((output) => {
+        return output?.type === GroupedOutputType.ChangeOutput;
+      });
+      const change = changes?.find((change) => {
+        return change && 'assetId' in change && change.assetId === assetId;
+      });
+      return change?.to === output.to;
+    }, []);
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -82,10 +91,26 @@ const TxOutputCoin = createComponent<TxOutputProps, typeof Card>({
                 value={bn(amount)}
               />
             )}
-            <HelperIcon message={getTooltipText(tx, output)} />
+            <HelperIcon message={getTooltipText(tx, isReceiving)} />
           </HStack>
         </Card.Header>
       </Card>
+    );
+  },
+});
+
+const TxOutputCoins = createComponent<
+  TxOutputCoinsProps,
+  typeof React.Fragment
+>({
+  id: 'TxOutputCoins',
+  render: (_, { outputs, tx }) => {
+    return (
+      <React.Fragment>
+        {outputs.map((output) => {
+          return <TxOutputCoin key={output.to} tx={tx} output={output} />;
+        })}
+      </React.Fragment>
     );
   },
 });
@@ -179,21 +204,18 @@ const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
   },
 });
 
-export function TxOutput({ output, ...props }: TxOutputProps) {
-  if (
-    output.type === GroupedOutputType.CoinOutput ||
-    output.type === GroupedOutputType.ChangeOutput
-  ) {
-    return <TxOutputCoin output={output} {...props} />;
+export function TxOutput({ tx, output, ...props }: TxOutputProps) {
+  if (isCoinOutput(output.outputs)) {
+    return <TxOutputCoins tx={tx} outputs={output.outputs} />;
   }
   if (output.type === GroupedOutputType.ContractOutput) {
-    return <TxOutputContract output={output} {...props} />;
+    return <TxOutputContract tx={tx} output={output} {...props} />;
   }
   if (output.type === GroupedOutputType.ContractCreated) {
-    return <TxOutputContractCreated output={output} {...props} />;
+    return <TxOutputContractCreated tx={tx} output={output} {...props} />;
   }
   if (output.type === GroupedOutputType.MessageOutput) {
-    return <TxOutputMessage output={output} {...props} />;
+    return <TxOutputMessage tx={tx} output={output} {...props} />;
   }
 }
 
