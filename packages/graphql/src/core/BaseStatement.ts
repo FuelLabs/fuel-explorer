@@ -61,13 +61,16 @@ export abstract class BaseStatements<Source extends PgTableWithColumns<any>> {
     return methods.findManyByLastAndAfter;
   }
 
-  public buildMethods<S extends SQL<unknown>>(where?: S) {
-    const findManyByFirst = this.findManyByFirst(where);
-    const findManyByFirstAndAfter = this.findManyByFirstAndAfter(where);
-    const findManyByFirstAndBefore = this.findManyByFirstAndBefore(where);
-    const findManyByLast = this.findManyByLast(where);
-    const findManyByLastAndBefore = this.findManyByLastAndBefore(where);
-    const findManyByLastAndAfter = this.findManyByLastAndAfter(where);
+  public buildMethods<S extends SQL<unknown>>(where?: S, prefix?: string) {
+    const findManyByFirst = this.findManyByFirst(where, prefix);
+    const findManyByFirstAndAfter = this.findManyByFirstAndAfter(where, prefix);
+    const findManyByFirstAndBefore = this.findManyByFirstAndBefore(
+      where,
+      prefix,
+    );
+    const findManyByLast = this.findManyByLast(where, prefix);
+    const findManyByLastAndBefore = this.findManyByLastAndBefore(where, prefix);
+    const findManyByLastAndAfter = this.findManyByLastAndAfter(where, prefix);
     return {
       findManyByFirst,
       findManyByFirstAndBefore,
@@ -78,54 +81,80 @@ export abstract class BaseStatements<Source extends PgTableWithColumns<any>> {
     };
   }
 
-  public findManyByFirst<S extends SQL<unknown>>(customWhere?: S) {
+  public findManyByFirst<S extends SQL<unknown>>(
+    customWhere?: S,
+    prefix?: string,
+  ) {
     return this.buildQuery({
       method: 'findManyByFirst',
       customWhere,
+      prefix,
     });
   }
 
-  public findManyByFirstAndAfter<S extends SQL<unknown>>(customWhere?: S) {
+  public findManyByFirstAndAfter<S extends SQL<unknown>>(
+    customWhere?: S,
+    prefix?: string,
+  ) {
     return this.buildQuery({
       method: 'findManyByFirstAndAfter',
       customWhere,
+      prefix,
     });
   }
 
-  public findManyByFirstAndBefore<S extends SQL<unknown>>(customWhere?: S) {
+  public findManyByFirstAndBefore<S extends SQL<unknown>>(
+    customWhere?: S,
+    prefix?: string,
+  ) {
     return this.buildQuery({
       method: 'findManyByFirstAndBefore',
       customWhere,
+      prefix,
     });
   }
 
-  public findManyByLast<S extends SQL<unknown>>(customWhere?: S) {
+  public findManyByLast<S extends SQL<unknown>>(
+    customWhere?: S,
+    prefix?: string,
+  ) {
     return this.buildQuery({
       method: 'findManyByLast',
       customWhere,
+      prefix,
     });
   }
 
-  public findManyByLastAndBefore<S extends SQL<unknown>>(customWhere?: S) {
+  public findManyByLastAndBefore<S extends SQL<unknown>>(
+    customWhere?: S,
+    prefix?: string,
+  ) {
     return this.buildQuery({
       method: 'findManyByLastAndBefore',
       customWhere,
+      prefix,
     });
   }
 
-  public findManyByLastAndAfter<S extends SQL<unknown>>(customWhere?: S) {
+  public findManyByLastAndAfter<S extends SQL<unknown>>(
+    customWhere?: S,
+    prefix?: string,
+  ) {
     return this.buildQuery({
       method: 'findManyByLastAndAfter',
       customWhere,
+      prefix,
     });
   }
 
   private buildQuery({
     method,
     customWhere,
+    prefix,
   }: {
     method: string;
     customWhere?: SQL<unknown> | null;
+    prefix?: string;
   }) {
     let query = this.conn.select().from(this.table).$dynamic();
     const placeholder = sql.placeholder;
@@ -168,7 +197,7 @@ export abstract class BaseStatements<Source extends PgTableWithColumns<any>> {
       query = query.where(customWhere);
     }
 
-    const preparedQuery = query.prepare(`${this.tableName}.${method}`);
+    const preparedQuery = query.prepare(`${prefix}${this.tableName}.${method}`);
     return preparedQuery;
   }
 

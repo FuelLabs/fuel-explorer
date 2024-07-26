@@ -32,7 +32,7 @@ export class TransactionStatements extends BaseStatements<typeof TABLE> {
 
   findManyByOwner() {
     const where = like(TABLE.accountIndex, sql.placeholder('owner'));
-    const methods = this.buildMethods(where);
+    const methods = this.buildMethods(where, 'byOwner');
     return (paginator: Paginator<typeof TABLE>) => {
       const exec = this.selectExec(methods, paginator.params);
       return {

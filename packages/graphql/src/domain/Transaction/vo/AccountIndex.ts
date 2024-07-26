@@ -54,6 +54,10 @@ export class AccountIndex extends ValueObject<Props> {
                   return acc.concat([i.to]);
                 case 'CoinOutput':
                   return acc.concat([i.to]);
+                case 'ContractCreated':
+                  return acc.concat([i.contract]);
+                case 'VariableOutput':
+                  return acc.concat([i.to]);
                 default:
                   return acc;
               }

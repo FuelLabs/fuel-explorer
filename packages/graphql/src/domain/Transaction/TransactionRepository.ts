@@ -74,7 +74,13 @@ export class TransactionRepository {
         item.index,
       ),
     );
-    await conn.insert(TransactionsTable).values(values).onConflictDoNothing();
+    const items = await conn
+      .insert(TransactionsTable)
+      .values(values)
+      .onConflictDoNothing()
+      .returning();
+    // retornar somente os values com id e data, evitando o returning e pesando a query
+    return items.map((item) => TransactionEntity.createFromDB(item));
   }
 
   private addBlockToTx(
