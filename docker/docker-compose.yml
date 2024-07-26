@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   l1_chain:
-    image: ghcr.io/fuellabs/fuel-bridge:01b0624
+    image: ghcr.io/fuellabs/fuel-bridge:d0f7dd5
     platform: linux/amd64
     env_file:
       - ./envs/l1_chain.env
