@@ -282,7 +282,7 @@ const machineLostBlocks = setup({
     },
     wait: {
       after: {
-        60000: {
+        600000: {
           target: 'syncingLostBlocks',
         },
       },
