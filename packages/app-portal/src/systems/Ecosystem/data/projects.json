@@ -134,7 +134,7 @@
   {
     "isLive": true,
     "name": "Envio",
-    "url": "https://docs.envio.dev/docs/hyperfuel",
+    "url": "https://docs.envio.dev/docs/HyperIndex/fuel",
     "tags": ["Indexer"],
     "description": "Envio is a modern, multi-chain EVM blockchain indexing framework speed-optimized for querying real-time and historical data.",
     "github": "https://github.com/enviodev",
