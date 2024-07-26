@@ -139,7 +139,7 @@ export class TxFuelToEthService {
       const ethAddressInFuel = parseEthAddressToFuel(ethAddress);
       const fungibleToken = new Contract(
         fuelAsset.contractId,
-        fungibleTokenABI,
+        fungibleTokenABI as any,
         fuelWallet,
       );
 
