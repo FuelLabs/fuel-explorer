@@ -1,4 +1,5 @@
 'use client';
+import { GqlPageInfo } from '@fuel-ts/account/dist/providers/__generated__/operations';
 import type { BaseProps } from '@fuels/ui';
 import { Button, HStack, cx } from '@fuels/ui';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
@@ -6,13 +7,15 @@ import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 type PaginationProps = BaseProps<{
   nextCursor?: string | null;
   prevCursor?: string | null;
-  onChange?: (cursor: string, dir: 'next' | 'prev') => void;
+  onChange?: (cursor: string, dir: 'after' | 'before') => void;
+  pageInfo?: GqlPageInfo;
 }>;
 
 export function Pagination({
   onChange,
   prevCursor,
   nextCursor,
+  pageInfo,
   ...props
 }: PaginationProps) {
   return (
@@ -24,22 +27,26 @@ export function Pagination({
         props.className,
       )}
     >
-      <Button
-        size="2"
-        variant="ghost"
-        color="gray"
-        onClick={() => onChange?.(prevCursor ?? '', 'prev')}
-      >
-        <IconArrowLeft size={14} />
-      </Button>
-      <Button
-        size="2"
-        variant="ghost"
-        color="gray"
-        onClick={() => onChange?.(nextCursor ?? '', 'next')}
-      >
-        <IconArrowRight size={14} />
-      </Button>
+      {pageInfo?.hasNextPage && (
+        <Button
+          size="2"
+          variant="ghost"
+          color="gray"
+          onClick={() => onChange?.(prevCursor ?? '', 'after')}
+        >
+          <IconArrowLeft size={14} />
+        </Button>
+      )}
+      {pageInfo?.hasPreviousPage && (
+        <Button
+          size="2"
+          variant="ghost"
+          color="gray"
+          onClick={() => onChange?.(nextCursor ?? '', 'before')}
+        >
+          <IconArrowRight size={14} />
+        </Button>
+      )}
     </HStack>
   );
 }

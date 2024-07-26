@@ -1,7 +1,7 @@
 import { route } from 'app-commons';
 
 export const Routes = {
-  home: route<[cursor: string, dir: 'next' | 'prev']>(
+  home: route<[cursor: string, dir: 'after' | 'before']>(
     '/?cursor=:page&dir=:dir',
   ),
   txSimple: route<[id: string]>('/tx/:id/simple'),

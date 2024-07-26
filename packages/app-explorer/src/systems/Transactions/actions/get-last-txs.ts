@@ -8,23 +8,22 @@ const PER_PAGE = 10;
 
 const schema = z.object({
   cursor: z.string().optional().nullable(),
-  dir: z.enum(['next', 'prev']).optional(),
+  dir: z.enum(['after', 'before']).optional(),
 });
 
-export const getLastTxs = act(schema, async ({ cursor, dir = 'next' }) => {
+export const getLastTxs = act(schema, async ({ cursor, dir = 'after' }) => {
   const params = { last: PER_PAGE } as {
     first?: number;
     last?: number;
     before?: string;
     after?: string;
   };
-  if (cursor && dir === 'next') {
+  if (cursor && dir === 'after') {
     params.after = cursor;
   }
-  if (cursor && dir === 'prev') {
+  if (cursor && dir === 'before') {
     params.before = cursor;
   }
-  console.log(params);
   const { data } = await sdk.recentTransactions(params);
-  return data.transactions.nodes;
+  return data.transactions;
 });

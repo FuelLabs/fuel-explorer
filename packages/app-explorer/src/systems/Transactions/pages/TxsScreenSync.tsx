@@ -3,8 +3,8 @@ import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 
 export async function TxsScreenSync({
   cursor,
-  dir = 'next',
-}: { cursor?: string | null; dir?: 'next' | 'prev' }) {
+  dir = 'after',
+}: { cursor?: string | null; dir?: 'after' | 'before' }) {
   const txs = await getLastTxs({ cursor, dir });
-  return <TxList transactions={txs} />;
+  return <TxList transactions={txs.nodes} pageInfo={txs.pageInfo} />;
 }

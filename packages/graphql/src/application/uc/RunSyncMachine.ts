@@ -306,6 +306,7 @@ export default async function runSyncMachine(input: Input) {
 
   actor.start();
   actor.send({ type: 'START_SYNC' });
+
   const actorLostBlocks = createActor(machineLostBlocks, { input });
   actorLostBlocks.start();
   actorLostBlocks.send({ type: 'START_SYNC_LOST_BLOCKS' });

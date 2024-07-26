@@ -45,23 +45,22 @@ export class Paginator<
   async hasPreviousPage(startCursor: Cursor) {
     if (!startCursor) return false;
     const idField = this.source._id;
-    const operator = this.params.first ? lt : gt;
     const result = await this.conn
       .select({ count: sql<number>`count(*)` })
       .from(this.source)
-      .where(operator(idField, startCursor));
-
+      .where(lt(idField, startCursor))
+      .limit(1);
     return result[0].count > 0;
   }
 
   async hasNextPage(endCursor: Cursor | null) {
     if (!endCursor) return false;
     const idField = this.source._id;
-    const operator = this.params.first ? gt : lt;
     const result = await this.conn
       .select({ count: sql<number>`count(*)` })
       .from(this.source)
-      .where(operator(idField, endCursor));
+      .where(gt(idField, endCursor))
+      .limit(1);
     return result[0].count > 0;
   }
 
@@ -109,8 +108,8 @@ export class Paginator<
 
     const startCursor = this.getStartCursor(newNodes);
     const endCursor = this.getEndCursor(newNodes);
-    const hasPreviousPage = await this.hasPreviousPage(startCursor);
-    const hasNextPage = await this.hasNextPage(endCursor);
+    const hasPreviousPage = await this.hasPreviousPage(endCursor);
+    const hasNextPage = await this.hasNextPage(startCursor);
 
     return {
       nodes: newNodes,
