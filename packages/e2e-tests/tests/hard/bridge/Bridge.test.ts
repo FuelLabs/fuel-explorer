@@ -57,15 +57,15 @@ test.describe('Bridge', () => {
     await page.goto('/bridge');
   });
   test('e2e', async ({ page, context }) => {
-    await test.step('Connect to metamask', async () => {
-      await connectToMetamask(page);
-    });
-
     await test.step('Connect to Fuel', async () => {
       await connectToFuel(page, fuelWalletTestHelper, [
         'Account 2',
         'Account 4',
       ]);
+    });
+
+    await test.step('Connect to metamask', async () => {
+      await connectToMetamask(page);
     });
 
     const DEPOSIT_AMOUNT = '1.12345';
