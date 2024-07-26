@@ -139,6 +139,7 @@ export class TxFuelToEthService {
       const ethAddressInFuel = parseEthAddressToFuel(ethAddress);
       const fungibleToken = new Contract(
         fuelAsset.contractId,
+        // TODO: Remove this cast when @fuel-bridge gets a version compatible with sdk 0.92.1
         fungibleTokenABI as any,
         fuelWallet,
       );
