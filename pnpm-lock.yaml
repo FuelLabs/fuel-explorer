@@ -426,8 +426,8 @@ importers:
         specifier: pr-185
         version: 0.6.0-pr-185-1beb732ac135e5360ddaf2101c5c058e99769a27
       '@fuels/connectors':
-        specifier: 0.9.1-pr-164-1c478320dedde5bc235f7635ec0fd87986524242
-        version: 0.9.1-pr-164-1c478320dedde5bc235f7635ec0fd87986524242(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
+        specifier: 0.9.1
+        version: 0.9.1(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
       '@fuels/react':
         specifier: 0.23.0
         version: 0.23.0(@tanstack/react-query@5.0.5)(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)
@@ -4463,8 +4463,8 @@ packages:
   /@fuels/assets@0.20.0:
     resolution: {integrity: sha512-pIVzHCEXkIIKXlIvvrISrFyaRRjbxEMnypjV/UZOI9dr99woUgXV1MZnMsq44uhQ/T3VXiTu2cXo4/SSE5ny2g==}
 
-  /@fuels/connectors@0.9.1-pr-164-1c478320dedde5bc235f7635ec0fd87986524242(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
-    resolution: {integrity: sha512-nui1KuMbVsrc6ozmGlN8Qx9DoBj6auv0NmpHfPKjlstlPQrMOXyFaDY+/osNdVO0Pd0W817Ms1N6Us3gJ70TFQ==}
+  /@fuels/connectors@0.9.1(@types/react@18.2.54)(fuels@0.92.1)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
+    resolution: {integrity: sha512-qZrv2youjda1TTBfEA4+j7L4TlAE5GjjX9hHm5q96dPQSxRTDyxGxmBHm7jHKgrUKc4IT6Uw3hWDN5dD7dA+mw==}
     peerDependencies:
       fuels: '>=0.92.0'
     dependencies:
@@ -4512,6 +4512,11 @@ packages:
     resolution: {integrity: sha512-W44xiE0Y4WMDoJkfUO1tTYm4LdSz4953HCFaojKRRdFkcaDYhiipjUseFIOgZMt9MGe7AxtikQ8Yr6iqvPX2mg==}
     peerDependencies:
       jest: ^29.6.4
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
     dependencies:
       '@ariakit/test': 0.2.5(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
@@ -14861,6 +14866,9 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true
