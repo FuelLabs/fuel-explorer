@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build:prod": "next build",
     "build:storybook": "./scripts/build-storybook.sh",
-    "build:preview": "run-s build:storybook build",
+    "build:preview": "run-s build:storybook build:prod",
     "dev": "next dev -p 3001",
     "dev:storybook": "storybook dev -p 6007",
     "start": "next start",

@@ -22,6 +22,11 @@
       "dependsOn": ["^ts:check"],
       "cache": false
     },
+    "build:prod": {
+      "outputs": [".next/**"],
+      "dependsOn": ["^build:lib", "^ts:check"],
+      "cache": false
+    },
     "test": {
       "outputs": ["**/**/report.json", "coverage/**"],
       "dependsOn": [],
