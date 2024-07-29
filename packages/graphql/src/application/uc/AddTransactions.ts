@@ -75,20 +75,12 @@ class TransactionResources {
     this.log(`Syncing contracts on transaction ${hash}`);
     const repository = new ContractRepository(trx);
     const contracts = [];
-    // TODO: move to the right place and check if it already exists
     for (const contractId of contractIds) {
       const existingContract = await repository.findByHash(contractId);
       if (existingContract) continue;
-      const response = (await client.client.rawRequest(`
-			query {
-				contract (id: "${contractId}") {
-					id
-					bytecode
-				}
-			}
-		`)) as any;
-      const contract = response.data.contract;
-      contracts.push(contract);
+      const contract = (await client.sdk.contract({ id: contractId })).data
+        .contract;
+      if (contract) contracts.push({ ...contract, salt: '' });
     }
     await repository.insertMany(contracts);
   }
