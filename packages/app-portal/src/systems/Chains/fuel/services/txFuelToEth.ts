@@ -1,5 +1,5 @@
 import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
-import type { Fuel } from '@fuels/assets';
+import type { NetworkFuel } from '@fuel-ts/account';
 import dayjs from 'dayjs';
 import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
 import {
@@ -31,7 +31,7 @@ export type TxFuelToEthInputs = {
     ethAddress?: string;
   };
   startFungibleToken: {
-    fuelAsset?: Fuel;
+    fuelAsset?: NetworkFuel;
   } & TxFuelToEthInputs['startBase'];
   waitTxResult: {
     fuelTxId: string;
@@ -139,7 +139,8 @@ export class TxFuelToEthService {
       const ethAddressInFuel = parseEthAddressToFuel(ethAddress);
       const fungibleToken = new Contract(
         fuelAsset.contractId,
-        fungibleTokenABI,
+        // TODO: Remove this cast when @fuel-bridge gets a version compatible with sdk 0.92.1
+        fungibleTokenABI as any,
         fuelWallet,
       );
 
@@ -435,7 +436,12 @@ export class TxFuelToEthService {
 
     const { ethPublicClient, txHash } = input;
 
-    let txReceipts;
+    let txReceipts: Awaited<
+      ReturnType<
+        | typeof ethPublicClient.getTransactionReceipt
+        | typeof ethPublicClient.waitForTransactionReceipt
+      >
+    >;
     try {
       txReceipts = await ethPublicClient.getTransactionReceipt({
         hash: txHash,

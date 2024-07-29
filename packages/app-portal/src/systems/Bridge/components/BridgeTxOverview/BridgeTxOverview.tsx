@@ -1,6 +1,6 @@
 import { calculateDateDiff } from '~portal/systems/Core';
 
-import type { Asset as FuelsAsset } from '@fuels/assets';
+import type { Asset as FuelsAsset } from '@fuel-ts/account';
 import { Asset, Box, Flex, FuelLogo, Link, Text, VStack } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
 import type { BigNumberish } from 'ethers';
