@@ -6,7 +6,8 @@ import { useEthAccountConnection } from '../hooks';
 
 export const EthAccountConnection = ({ label }: { label?: string }) => {
   const { asset: ethAsset } = useAsset();
-  const { address, ens, handlers, isConnecting } = useEthAccountConnection();
+  const { address, ens, handlers, isConnecting, isConnected } =
+    useEthAccountConnection();
 
   return (
     <AccountConnectionInput
@@ -21,6 +22,7 @@ export const EthAccountConnection = ({ label }: { label?: string }) => {
       }}
       onConnect={handlers.connect}
       onDisconnect={handlers.disconnect}
+      isConnected={isConnected}
     />
   );
 };

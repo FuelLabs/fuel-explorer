@@ -21,6 +21,7 @@ export const Usage = () => {
         label="To"
         isConnecting={false}
         onConnect={() => {}}
+        isConnected
       />
     </Flex>
   );
@@ -37,6 +38,7 @@ export const Loading = () => {
         label="To"
         isConnecting={true}
         onConnect={() => {}}
+        isConnected
       />
     </Flex>
   );
@@ -57,6 +59,28 @@ export const ConnectedAccount = () => {
             '0xad85ee7a4169d664e54c5a2f4b9a46abade83e3601ef8faade87dd989017a43b',
         }}
         onConnect={() => {}}
+        isConnected
+      />
+    </Flex>
+  );
+};
+export const LoadingAccount = () => {
+  const classes = styles();
+
+  return (
+    <Flex align="center" justify="center" className={classes.storybook()}>
+      <AccountConnectionInput
+        networkName="Fuel"
+        networkImage={<FuelLogo size={18} />}
+        label="To"
+        isConnecting={false}
+        account={{
+          address:
+            '0xad85ee7a4169d664e54c5a2f4b9a46abade83e3601ef8faade87dd989017a43b',
+        }}
+        onConnect={() => {}}
+        isLoading
+        isConnected
       />
     </Flex>
   );
@@ -78,6 +102,7 @@ export const ConnectedENSAccount = () => {
           alias: 'luizasfight.eth',
         }}
         onConnect={() => {}}
+        isConnected
       />
     </Flex>
   );

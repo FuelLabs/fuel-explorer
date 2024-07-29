@@ -17,6 +17,7 @@ import {
 
 import { FUEL_CHAIN } from 'app-commons';
 import { useEthBalance } from '~portal/systems/Chains/eth/hooks/useEthBalance';
+import { useSyncEthWallets } from '~portal/systems/Chains/eth/hooks/useSyncEthWallets';
 import { BridgeStatus } from '../machines';
 import type { BridgeMachineState } from '../machines';
 import { getChainFromUrlParam } from '../utils';
@@ -39,16 +40,14 @@ const selectors = {
 
       if (!fromNetwork) return BridgeStatus.waitingNetworkFrom;
       if (!toNetwork) return BridgeStatus.waitingNetworkTo;
-      if (
-        (isEthChain(fromNetwork) && !ethAccount) ||
-        (isFuelChain(fromNetwork) && !fuelAccount)
-      )
-        return BridgeStatus.waitingConnectFrom;
-      if (
-        (isEthChain(toNetwork) && !ethAccount) ||
-        (isFuelChain(toNetwork) && !fuelAccount)
-      )
+      if (!fuelAccount) {
+        if (isFuelChain(fromNetwork)) return BridgeStatus.waitingConnectFrom;
         return BridgeStatus.waitingConnectTo;
+      }
+      if (!ethAccount) {
+        if (isEthChain(toNetwork)) return BridgeStatus.waitingConnectTo;
+        return BridgeStatus.waitingConnectFrom;
+      }
 
       if (!state.context?.assetAmount || state.context.assetAmount.isZero()) {
         return BridgeStatus.waitingAssetAmount;
@@ -76,6 +75,7 @@ export function useBridge() {
   const ethAssetAddress = asset ? getAssetEth(asset).address : undefined;
   const fuelAssetAddress = asset ? getAssetFuel(asset).assetId : undefined;
 
+  useSyncEthWallets();
   const {
     address: ethAddress,
     handlers: ethHandlers,
