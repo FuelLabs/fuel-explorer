@@ -1,6 +1,7 @@
 import c from 'chalk';
 import { Address } from '~/core/Address';
 import { logger } from '~/core/Logger';
+import { ContractRepository } from '~/domain/Contract/ContractRepository';
 import { InputRepository } from '~/domain/Input/InputRepository';
 import { InputPredicateData } from '~/domain/Input/vo/InputPredicateData';
 import { OperationRepository } from '~/domain/Operation/OperationRepository';
@@ -10,6 +11,7 @@ import type { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { TransactionRepository } from '~/domain/Transaction/TransactionRepository';
+import { client } from '~/graphql/GraphQLSDK';
 import type {
   GQLBlock,
   GQLInput,
@@ -65,16 +67,28 @@ class TransactionResources {
   }
 
   private async syncContracts() {
-    // const { trx, transaction } = this;
-    // const txAddr = new Address(transaction.txHash);
-    // const hash = txAddr.short();
-    // const contracts = transaction.getContractsCreated();
-    // if (!contracts.length) return;
-    // this.log(`Syncing contracts on transaction ${hash}`);
-    // const repository = new ContractRepository(trx);
-    // recuperar os dados do contrato fazendo uma call no node (graphql) passando
-    // consultar antes de obter
-    // await repository.insertMany(contracts);
+    const { trx, transaction } = this;
+    const txAddr = new Address(transaction.txHash);
+    const hash = txAddr.short();
+    const contractIds = transaction.getContractsCreated();
+    if (!contractIds.length) return;
+    this.log(`Syncing contracts on transaction ${hash}`);
+    const repository = new ContractRepository(trx);
+    const contracts = [];
+    // TODO: move to the right place and check if it already exists
+    for (const contractId of contractIds) {
+      const response = (await client.client.rawRequest(`
+			query {
+				contract (id: "${contractId}") {
+					id
+					bytecode
+				}
+			}
+		`)) as any;
+      const contract = response.data.contract;
+      contracts.push(contract);
+    }
+    await repository.insertMany(contracts);
   }
 
   private async syncOperations() {

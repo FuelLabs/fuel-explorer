@@ -1,6 +1,6 @@
 import { logger } from '~/core/Logger';
 import type { Paginator } from '~/core/Paginator';
-import type { GQLContract } from '~/graphql/generated/sdk-provider';
+import { GQLContract } from '~/graphql/generated/sdk-provider';
 import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { ContractEntity } from './ContractEntity';
 import { ContractsTable } from './ContractModel';
@@ -35,7 +35,9 @@ export class ContractRepository {
   }
 
   async insertMany(contracts: GQLContract[]) {
-    const values = contracts.map(ContractEntity.toDBItem);
+    const values = contracts.map((contract: GQLContract) =>
+      ContractEntity.toDBItem(contract),
+    );
     await this.conn.insert(ContractsTable).values(values).onConflictDoNothing();
   }
 }

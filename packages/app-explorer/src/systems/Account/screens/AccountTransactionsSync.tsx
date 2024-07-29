@@ -5,10 +5,11 @@ import { getAccountTransactions } from '../actions/get-account-transactions';
 
 export async function AccountTransactionsSync({ id }: { id: string }) {
   const txs = await getAccountTransactions({ owner: id });
-  const transactions = txs.nodes;
-  if (!transactions.length) {
+  if (!txs.nodes.length) {
     return <EmptyTransactions entity="account" />;
   }
 
-  return <TxList hidePagination transactions={transactions} />;
+  return (
+    <TxList hidePagination transactions={txs.nodes} pageInfo={txs.pageInfo} />
+  );
 }
