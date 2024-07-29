@@ -12,7 +12,7 @@ const schema = z.object({
 
 export const getAccountTransactions = act(schema, async (input) => {
   const owner = parseAddressParam(input.owner);
-  const { data } = await sdk.transactionsByOwner({ owner, last: 100 });
+  const { data } = await sdk.transactionsByOwner({ owner, last: 30 });
   // TODO: remove this after gets our own indexer working
   const nodes = data.transactionsByOwner.nodes.sort((a, b) => {
     const aTime = dayjs(a.time?.rawUnix);
