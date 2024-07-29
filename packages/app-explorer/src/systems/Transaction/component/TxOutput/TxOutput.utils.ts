@@ -29,11 +29,3 @@ export const isChangeOutputs = (
 
   return outputs[0]?.__typename === GroupedOutputType.ChangeOutput;
 };
-
-export const getTooltipText = (tx: TransactionItemFragment) => {
-  if (tx.isMint) {
-    return 'This is the amount minted in the transaction';
-  }
-
-  return 'This is the amount sent in this output';
-};

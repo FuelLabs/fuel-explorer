@@ -9,7 +9,6 @@ import {
   Address,
   Card,
   HStack,
-  HelperIcon,
   Icon,
   Text,
   VStack,
@@ -27,12 +26,7 @@ import { Amount } from '~/systems/Core/components/Amount/Amount';
 
 import React from 'react';
 import { TxIcon } from '../TxIcon/TxIcon';
-import {
-  getTooltipText,
-  hasCoins,
-  isChangeOutputs,
-  isCoinOutputs,
-} from './TxOutput.utils';
+import { hasCoins, isChangeOutputs, isCoinOutputs } from './TxOutput.utils';
 
 export type TxOutputProps = CardProps & {
   tx: TransactionItemFragment;
@@ -51,7 +45,7 @@ type TxOutputCoinProps = CardProps & {
 
 const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
   id: 'TxOutputCoin',
-  render: (_, { tx, output, ...props }) => {
+  render: (_, { output, ...props }) => {
     const classes = styles();
     if (!output.assetId) return null;
     const assetId = output.assetId;
@@ -84,7 +78,6 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
                 value={bn(amount)}
               />
             )}
-            <HelperIcon message={getTooltipText(tx)} />
           </HStack>
         </Card.Header>
       </Card>
