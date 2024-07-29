@@ -77,6 +77,8 @@ class TransactionResources {
     const contracts = [];
     // TODO: move to the right place and check if it already exists
     for (const contractId of contractIds) {
+      const existingContract = await repository.findByHash(contractId);
+      if (existingContract) continue;
       const response = (await client.client.rawRequest(`
 			query {
 				contract (id: "${contractId}") {
