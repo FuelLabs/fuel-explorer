@@ -1,5 +1,5 @@
 import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
-import type { Fuel } from '@fuels/assets';
+import type { NetworkFuel } from '@fuel-ts/account';
 import dayjs from 'dayjs';
 import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
 import {
@@ -31,7 +31,7 @@ export type TxFuelToEthInputs = {
     ethAddress?: string;
   };
   startFungibleToken: {
-    fuelAsset?: Fuel;
+    fuelAsset?: NetworkFuel;
   } & TxFuelToEthInputs['startBase'];
   waitTxResult: {
     fuelTxId: string;
