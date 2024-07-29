@@ -68,6 +68,7 @@ export class ContractResolver {
     params: Params['contractBalances'],
     { client }: GraphQLContext,
   ) {
+    params.first = 5;
     const res = await client.sdk.contractBalances(params);
     return res.data.contractBalances;
   }
