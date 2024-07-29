@@ -17,7 +17,7 @@ import {
   cx,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
-import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
+import { IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
 import { tv } from 'tailwind-variants';
@@ -25,12 +25,11 @@ import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { TxIcon } from '../TxIcon/TxIcon';
 import {
   getTooltipText,
   hasCoins,
-  isChangeOutput,
   isChangeOutputs,
   isCoinOutputs,
 } from './TxOutput.utils';
@@ -58,18 +57,6 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
     const assetId = output.assetId;
     const amount = output.amount;
 
-    const isReceiving = useMemo<boolean>(() => {
-      const changes = tx.groupedOutputs?.filter((output) => {
-        return output?.type === GroupedOutputType.ChangeOutput;
-      });
-      const change = changes?.find((change) => {
-        return change && 'assetId' in change && change.assetId === assetId;
-      });
-      return change?.to === output.to;
-    }, []);
-
-    const isChange = isChangeOutput(output);
-
     return (
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
@@ -88,10 +75,7 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
             https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
           */}
           <HStack className="hidden tablet:flex items-center gap-2">
-            <Icon
-              icon={isReceiving ? IconArrowUp : IconArrowDown}
-              className={isReceiving ? 'text-success' : 'text-error'}
-            />
+            <Icon icon={IconArrowUp} className="text-success" />
             {amount && (
               <Amount
                 hideSymbol
@@ -100,9 +84,7 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
                 value={bn(amount)}
               />
             )}
-            <HelperIcon
-              message={getTooltipText(tx, isChange || !isReceiving)}
-            />
+            <HelperIcon message={getTooltipText(tx)} />
           </HStack>
         </Card.Header>
       </Card>

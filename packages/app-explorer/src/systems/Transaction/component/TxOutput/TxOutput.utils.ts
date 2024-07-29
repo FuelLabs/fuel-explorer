@@ -3,7 +3,6 @@ import {
   CoinOutput,
   GroupedOutput,
   GroupedOutputType,
-  Output,
   TransactionItemFragment,
 } from '@fuel-explorer/graphql';
 
@@ -31,21 +30,10 @@ export const isChangeOutputs = (
   return outputs[0]?.__typename === GroupedOutputType.ChangeOutput;
 };
 
-export const isChangeOutput = (output: Output): output is ChangeOutput => {
-  return output.__typename === GroupedOutputType.ChangeOutput;
-};
-
-export const getTooltipText = (
-  tx: TransactionItemFragment,
-  isRemaining: boolean,
-) => {
+export const getTooltipText = (tx: TransactionItemFragment) => {
   if (tx.isMint) {
     return 'This is the amount minted in the transaction';
   }
 
-  if (isRemaining) {
-    return 'This is the amount remaining after transaction';
-  }
-
-  return 'This is the amount spent in the transaction';
+  return 'This is the amount sent in this output';
 };
