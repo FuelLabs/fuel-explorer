@@ -345,7 +345,7 @@ export class TxEthToFuelService {
     const { ethTxNonce, fuelProvider, fuelRecipient } = input;
 
     const { messages } = await fuelProvider.getMessages(fuelRecipient, {
-      first: 1000,
+      first: 500,
     });
     const fuelMessage = messages.find((message) => {
       return message.nonce.toString() === ethTxNonce.toHex(32).toString();
