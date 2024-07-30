@@ -240,7 +240,6 @@ function ContentMain({
                   <TxOutput
                     // here we use only index as key because this component will not change
                     key={i}
-                    tx={tx}
                     output={output}
                   />
                 ))}

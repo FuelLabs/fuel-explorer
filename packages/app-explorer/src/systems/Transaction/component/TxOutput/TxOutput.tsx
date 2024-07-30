@@ -3,7 +3,6 @@ import type {
   CoinOutput,
   ContractCreated,
   ContractOutput,
-  TransactionItemFragment,
   TransactionOutputFragment,
 } from '@fuel-explorer/graphql';
 import {
@@ -29,7 +28,6 @@ import { TxIcon } from '../TxIcon/TxIcon';
 import { isOutput } from './TxOutput.utils';
 
 type TxOutputProps<T = TransactionOutputFragment> = CardProps & {
-  tx: TransactionItemFragment;
   output: T;
 };
 
@@ -136,18 +134,18 @@ const TxOutputContractCreated = createComponent<
   },
 });
 
-export function TxOutput({ tx, output, ...props }: TxOutputProps) {
+export function TxOutput({ output, ...props }: TxOutputProps) {
   if (
     isOutput<ChangeOutput>(output, 'ChangeOutput') ||
     isOutput<CoinOutput>(output, 'CoinOutput')
   ) {
-    return <TxOutputCoin tx={tx} output={output} {...props} />;
+    return <TxOutputCoin output={output} {...props} />;
   }
   if (isOutput<ContractOutput>(output, 'ContractOutput')) {
-    return <TxOutputContract tx={tx} output={output} {...props} />;
+    return <TxOutputContract output={output} {...props} />;
   }
   if (isOutput<ContractCreated>(output, 'ContractCreated')) {
-    return <TxOutputContractCreated tx={tx} output={output} {...props} />;
+    return <TxOutputContractCreated output={output} {...props} />;
   }
 
   return null;
