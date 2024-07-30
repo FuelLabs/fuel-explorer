@@ -174,18 +174,6 @@ fragment TransactionItem on Transaction {
     data
     owner
   }
-  groupedOutputs {
-    to
-    type
-    totalAmount
-    outputs {
-      ...TransactionOutput
-    }
-    contractId
-    assetId
-    inputIndex
-    recipient
-  }
   accountsInvolved {
     id
     type
