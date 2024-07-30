@@ -1,4 +1,4 @@
-import assetList from '@fuels/assets';
+import { assets } from '@fuel-ts/account';
 import { bn } from 'fuels';
 
 import { Flex } from '@fuels/ui';
@@ -23,8 +23,8 @@ export const Usage = () => {
         date={new Date()}
         isDeposit={true}
         amount="1.500"
-        asset={assetList[0]}
-        ethAsset={assetList[0]}
+        asset={assets[0]}
+        ethAsset={assets[0]}
       />
     </Flex>
   );
@@ -37,9 +37,9 @@ export const Withdrawal = () => {
       <BridgeTxOverview
         transactionId={bn(1234567876543456).toHex()}
         date={new Date()}
-        asset={assetList[0]}
+        asset={assets[0]}
         amount="1.500"
-        ethAsset={assetList[0]}
+        ethAsset={assets[0]}
       />
     </Flex>
   );
@@ -55,8 +55,8 @@ export const Loading = () => {
         date={new Date()}
         isDeposit={true}
         amount="1.500"
-        asset={assetList[0]}
-        ethAsset={assetList[0]}
+        asset={assets[0]}
+        ethAsset={assets[0]}
       />
     </Flex>
   );

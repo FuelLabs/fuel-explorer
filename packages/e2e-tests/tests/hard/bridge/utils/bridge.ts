@@ -1,4 +1,8 @@
-import { getByAriaLabel, waitAriaLabel } from '@fuels/playwright-utils';
+import {
+  getByAriaLabel,
+  hasText,
+  waitAriaLabel,
+} from '@fuels/playwright-utils';
 import { expect } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
 
@@ -19,6 +23,7 @@ export const goToBridgePage = async (page: Page) => {
     .locator('a[data-active="true"]')
     .getByText('Bridge');
   await bridgeButton.click();
+  await hasText(page, 'Asset amount');
 };
 
 export const goToTransactionsPage = async (page: Page) => {
