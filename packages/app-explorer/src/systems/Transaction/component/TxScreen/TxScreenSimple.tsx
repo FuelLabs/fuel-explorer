@@ -174,7 +174,7 @@ function ContentMain({
   isLoading?: boolean;
 }) {
   const hasInputs = tx?.groupedInputs?.length ?? 0 > 0;
-  const hasOutputs = tx?.groupedOutputs?.length ?? 0 > 0;
+  const hasOutputs = tx?.outputs?.length ?? 0 > 0;
 
   return (
     <VStack>
