@@ -1,9 +1,10 @@
-import { GroupedOutputType } from '@fuel-explorer/graphql';
 import type {
   ChangeOutput,
   CoinOutput,
-  GroupedOutput,
+  ContractCreated,
+  ContractOutput,
   TransactionItemFragment,
+  TransactionOutputFragment,
 } from '@fuel-explorer/graphql';
 import {
   Address,
@@ -19,31 +20,23 @@ import type { CardProps } from '@fuels/ui';
 import { IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
+import React from 'react';
 import { tv } from 'tailwind-variants';
 import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
-
-import React from 'react';
 import { TxIcon } from '../TxIcon/TxIcon';
-import { hasCoins, isChangeOutputs, isCoinOutputs } from './TxOutput.utils';
+import { isOutput } from './TxOutput.utils';
 
-export type TxOutputProps = CardProps & {
+type TxOutputProps<T = TransactionOutputFragment> = CardProps & {
   tx: TransactionItemFragment;
-  output: GroupedOutput;
+  output: T;
 };
 
-type TxOutputCoinsProps = {
-  tx: TransactionItemFragment;
-  outputs: CoinOutput[];
-};
-
-type TxOutputCoinProps = CardProps & {
-  tx: TransactionItemFragment;
-  output: CoinOutput | ChangeOutput;
-};
-
-const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
+const TxOutputCoin = createComponent<
+  TxOutputProps<ChangeOutput | CoinOutput>,
+  typeof Card
+>({
   id: 'TxOutputCoin',
   render: (_, { output, ...props }) => {
     const classes = styles();
@@ -85,23 +78,10 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
   },
 });
 
-const TxOutputCoins = createComponent<
-  TxOutputCoinsProps,
-  typeof React.Fragment
+const TxOutputContract = createComponent<
+  TxOutputProps<ContractOutput>,
+  typeof Card
 >({
-  id: 'TxOutputCoins',
-  render: (_, { outputs, tx }) => {
-    return (
-      <React.Fragment>
-        {outputs.map((output) => {
-          return <TxOutputCoin key={output.to} tx={tx} output={output} />;
-        })}
-      </React.Fragment>
-    );
-  },
-});
-
-const TxOutputContract = createComponent<TxOutputProps, typeof Card>({
   id: 'TxOutputContract',
   render: (_, { output, ...props }) => {
     const classes = styles();
@@ -124,11 +104,14 @@ const TxOutputContract = createComponent<TxOutputProps, typeof Card>({
   },
 });
 
-const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
+const TxOutputContractCreated = createComponent<
+  TxOutputProps<ContractCreated>,
+  typeof Card
+>({
   id: 'TxOutputContractCreated',
   render: (_, { output, ...props }) => {
     const classes = styles();
-    const contractId = output.contractId as string;
+    const contractId = output.contract;
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -153,59 +136,21 @@ const TxOutputContractCreated = createComponent<TxOutputProps, typeof Card>({
   },
 });
 
-const TxOutputMessage = createComponent<TxOutputProps, typeof Card>({
-  id: 'TxOutputMessage',
-  render: (_, { output, ...props }) => {
-    const classes = styles();
-    const { recipient } = output;
-
-    return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header className={classes.header()}>
-          <TxIcon type="Message" status="Submitted" />
-          <HStack align="center" gap="1" className="flex-1 justify-between">
-            <Text>Message</Text>
-            <VStack gap="1" className="mr-2">
-              <Address
-                prefix="From: "
-                value={recipient || ''}
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.accountAssets(recipient!),
-                }}
-              />
-              <Address
-                prefix="To: "
-                value={output.to || ''}
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.accountAssets(output.to!),
-                }}
-              />
-            </VStack>
-          </HStack>
-        </Card.Header>
-      </Card>
-    );
-  },
-});
-
 export function TxOutput({ tx, output, ...props }: TxOutputProps) {
-  if (isCoinOutputs(output.outputs)) {
-    return <TxOutputCoins tx={tx} outputs={output.outputs} />;
+  if (
+    isOutput<ChangeOutput>(output, 'ChangeOutput') ||
+    isOutput<CoinOutput>(output, 'CoinOutput')
+  ) {
+    return <TxOutputCoin tx={tx} output={output} {...props} />;
   }
-  if (isChangeOutputs(output.outputs) && !hasCoins(tx)) {
-    return <TxOutputCoin tx={tx} output={output.outputs[0]} {...props} />;
-  }
-  if (output.type === GroupedOutputType.ContractOutput) {
+  if (isOutput<ContractOutput>(output, 'ContractOutput')) {
     return <TxOutputContract tx={tx} output={output} {...props} />;
   }
-  if (output.type === GroupedOutputType.ContractCreated) {
+  if (isOutput<ContractCreated>(output, 'ContractCreated')) {
     return <TxOutputContractCreated tx={tx} output={output} {...props} />;
   }
-  if (output.type === GroupedOutputType.MessageOutput) {
-    return <TxOutputMessage tx={tx} output={output} {...props} />;
-  }
+
+  return null;
 }
 
 const styles = tv({

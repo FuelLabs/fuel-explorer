@@ -1,6 +1,6 @@
 'use client';
 
-import type { GroupedInput, GroupedOutput } from '@fuel-explorer/graphql';
+import type { GroupedInput } from '@fuel-explorer/graphql';
 import {
   Address,
   Badge,
@@ -236,12 +236,12 @@ function ContentMain({
                 <Heading as="h2" size="5" className="leading-none">
                   Outputs
                 </Heading>
-                {tx?.groupedOutputs?.map((output, i) => (
+                {tx?.outputs?.map((output, i) => (
                   <TxOutput
                     // here we use only index as key because this component will not change
                     key={i}
                     tx={tx}
-                    output={output as GroupedOutput}
+                    output={output}
                   />
                 ))}
               </>
