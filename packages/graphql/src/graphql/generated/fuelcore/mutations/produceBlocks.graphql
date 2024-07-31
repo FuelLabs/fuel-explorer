@@ -1,0 +1,3 @@
+mutation produceBlocks($blocksToProduce: U32!, $startTimestamp: Tai64Timestamp){
+    produceBlocks(blocksToProduce: $blocksToProduce, startTimestamp: $startTimestamp)
+}

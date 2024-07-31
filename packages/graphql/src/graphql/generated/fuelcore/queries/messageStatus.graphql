@@ -1,0 +1,5 @@
+query messageStatus($nonce: Nonce!){
+    messageStatus(nonce: $nonce){
+        state
+    }
+}

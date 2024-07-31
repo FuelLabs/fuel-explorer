@@ -75,6 +75,7 @@
       "./packages/app-explorer/public/portal-storybook",
       "./packages/app-portal/public/**",
       "./packages/app-portal/src/types",
+      "./packages/graphql/src/graphql/generated",
       "pnpm-lock.yaml"
     ]
   }

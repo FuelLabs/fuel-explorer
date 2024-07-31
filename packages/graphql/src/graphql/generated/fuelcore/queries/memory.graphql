@@ -1,0 +1,3 @@
+query memory($id: ID!, $size: U32!, $start: U32!){
+    memory(id: $id, size: $size, start: $start)
+}

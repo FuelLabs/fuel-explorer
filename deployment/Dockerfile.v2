@@ -25,8 +25,6 @@ RUN corepack enable
 COPY . /app-explorer
 WORKDIR /app-explorer
 
-RUN mkdir -p ./packages/graphql/src/graphql/generated
-RUN chmod 755 ./packages/graphql/src/graphql/generated
 # Install dependencies for the entire monorepo
 RUN pnpm install
 RUN pnpm db:setup

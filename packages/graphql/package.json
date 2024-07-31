@@ -15,9 +15,7 @@
   },
   "typesVersions": {
     "*": {
-      "sdk": [
-        "./src/graphql/generated/sdk.ts"
-      ]
+      "sdk": ["./src/graphql/generated/sdk.ts"]
     }
   },
   "scripts": {
@@ -31,7 +29,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx ./src/cli.ts migrate",
     "db:push": "drizzle-kit push",
-    "db:setup": "run-s codegen db:generate",
+    "db:setup": "run-s db:generate",
     "db:clean": "tsx ./src/cli.ts clean-db",
     "db:sql": "tsx ./src/cli.ts sql",
     "dev:graphql": "APP=graphql pm2 start ecosystem-dev.config.cjs",
