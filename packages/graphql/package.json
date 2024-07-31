@@ -19,7 +19,7 @@
     }
   },
   "scripts": {
-    "build:lib": "run-s codegen build:sdk",
+    "build:lib": "run-s build:sdk",
     "build:sdk": "tsup",
     "ts:check": "tsc --noEmit",
     "codegen": "run-s codegen:*",
