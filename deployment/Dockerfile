@@ -29,5 +29,9 @@ RUN pnpm install --frozen-lockfile
 FROM base AS explorer
 COPY --from=build /app /app-explorer
 WORKDIR /app-explorer/packages/graphql
+
+RUN mkdir -p ./src/graphql/generated
+RUN chmod 755 ./src/graphql/generated
+
 EXPOSE ${SERVER_PORT}
 CMD ["sh", "./scripts/run.sh"]
