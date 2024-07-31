@@ -31,7 +31,12 @@ COPY --from=build /app /app-explorer
 WORKDIR /app-explorer/packages/graphql
 
 RUN mkdir -p ./src/graphql/generated
-RUN chmod 755 ./src/graphql/generated
+RUN mkdir -p ./src/graphql/generated/fuelcore
+RUN mkdir -p ./src/graphql/generated/fuelcore/mutations
+RUN mkdir -p ./src/graphql/generated/fuelcore/queries
+RUN mkdir -p ./src/graphql/generated/fuelcore/subscriptions
+
+RUN chmod -R 755 ./src/graphql/generated
 
 EXPOSE ${SERVER_PORT}
 CMD ["sh", "./scripts/run.sh"]
