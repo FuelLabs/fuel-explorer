@@ -31,6 +31,10 @@ FROM base AS explorer
 COPY --from=build /app /app-explorer
 WORKDIR /app-explorer/packages/graphql
 
+RUN pnpm build:lib
+RUN pnpm db:setup
+RUN pnpm db:migrate
+
 EXPOSE ${SERVER_PORT}
-USER node
+
 CMD ["sh", "./scripts/run.sh"]
