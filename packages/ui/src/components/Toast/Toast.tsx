@@ -65,7 +65,7 @@ export const ToastClose = createComponent<ToastCloseProps, typeof TP.Close>({
     );
   },
   defaultProps: {
-    className: 'rounded-full bg-white -top-2 rounded-full',
+    className: 'rounded-full bg-gray-12 -top-2 rounded-full',
     variant: 'solid',
   },
 });
