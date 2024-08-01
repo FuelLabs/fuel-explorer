@@ -33,7 +33,6 @@ WORKDIR /app-explorer/packages/graphql
 
 RUN pnpm build:lib
 RUN pnpm db:setup
-RUN pnpm db:migrate
 
 EXPOSE ${SERVER_PORT}
 
