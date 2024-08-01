@@ -1,6 +1,6 @@
 # This image contains the graphql server
 # built for the fuel-explorer
-FROM node:20-slim AS base
+FROM node:20 AS base
 
 
 # Expose the ENVs to the env of the container
