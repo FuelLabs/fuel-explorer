@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Text, VStack } from '@fuels/ui';
+import { Button, Card, Flex, LoadingBox, Text, VStack } from '@fuels/ui';
 import { IconX } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
@@ -16,6 +16,8 @@ type AccountConnectionInputProps = {
   };
   onConnect: () => void;
   onDisconnect?: () => void;
+  isLoading?: boolean;
+  isConnected: boolean;
 };
 
 export const AccountConnectionInput = ({
@@ -26,6 +28,8 @@ export const AccountConnectionInput = ({
   account,
   onConnect: _onConnect,
   onDisconnect,
+  isLoading,
+  isConnected,
 }: AccountConnectionInputProps) => {
   const classes = styles();
 
@@ -50,6 +54,7 @@ export const AccountConnectionInput = ({
               <Text className={classes.textNetwork()}>{networkName}</Text>
             </Flex>
           </VStack>
+
           <VStack align="end" gap="0">
             {account?.address && (
               <>
@@ -60,24 +65,29 @@ export const AccountConnectionInput = ({
                   iconSize={13}
                   onClick={onDisconnect}
                   color="gray"
+                  disabled={!isConnected}
                 >
                   <Text className={classes.textDisconnect()} size="1">
                     Disconnect
                   </Text>
                   <IconX size={13} />
                 </Button>
-                <Text
-                  className={classes.textAccountConnected()}
-                  aria-label={`${networkName}: Connected Wallet`}
-                >
-                  {shortAddress(account.alias, {
-                    minLength: 16,
-                  }) ||
-                    shortAddress(account.address, {
-                      start: 6,
-                      end: 6,
-                    })}
-                </Text>
+                {isLoading ? (
+                  <LoadingBox className="w-[100px] h-[20px]" />
+                ) : (
+                  <Text
+                    className={classes.textAccountConnected()}
+                    aria-label={`${networkName}: Connected Wallet`}
+                  >
+                    {shortAddress(account.alias, {
+                      minLength: 16,
+                    }) ||
+                      shortAddress(account.address, {
+                        start: 6,
+                        end: 6,
+                      })}
+                  </Text>
+                )}
               </>
             )}
           </VStack>

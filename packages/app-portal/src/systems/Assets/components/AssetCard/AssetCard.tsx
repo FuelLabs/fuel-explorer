@@ -1,4 +1,4 @@
-import type { Asset as FuelsAsset } from '@fuels/assets';
+import type { Asset as FuelsAsset } from '@fuel-ts/account';
 import { Asset, CardList, Flex, IconButton, Text } from '@fuels/ui';
 import { IconCoin, IconWallet } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';

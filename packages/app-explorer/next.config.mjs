@@ -58,6 +58,7 @@ const config = {
       },
       // https://github.com/WalletConnect/walletconnect-monorepo/issues/1908
       'pino-pretty',
+      'lokijs',
       'net',
       'tls',
     );

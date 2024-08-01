@@ -1,4 +1,4 @@
-import type { Asset } from '@fuels/assets';
+import type { Asset } from '@fuel-ts/account';
 import { useMemo } from 'react';
 import { isSameEthAddress } from '~portal/systems/Chains/eth/utils/address';
 

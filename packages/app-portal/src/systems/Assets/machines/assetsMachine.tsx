@@ -1,4 +1,4 @@
-import type { Asset } from '@fuels/assets';
+import type { Asset } from '@fuel-ts/account';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines/fetchMachine';
