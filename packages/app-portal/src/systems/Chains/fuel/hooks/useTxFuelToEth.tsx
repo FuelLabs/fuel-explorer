@@ -1,4 +1,4 @@
-import type { Asset } from '@fuels/assets';
+import type { Asset } from '@fuel-ts/account';
 import { DateTime, ReceiptType, getReceiptsMessageOut, hexlify } from 'fuels';
 import { useMemo } from 'react';
 import { Services, store } from '~portal/store';
