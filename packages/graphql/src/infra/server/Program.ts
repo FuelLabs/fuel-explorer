@@ -68,7 +68,8 @@ export class Program {
       .requiredOption('-s, --sql <string>', 'SQL to execute')
       .action(async (options) => {
         await db.conn();
-        await db.execSQL(options.sql);
+        const res = (await db.execSQL(options.sql)) as any;
+        console.log(res.rows);
         db.close();
       });
 

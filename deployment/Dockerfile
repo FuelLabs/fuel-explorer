@@ -27,9 +27,6 @@ COPY . /app
 WORKDIR /app
 RUN pnpm install --frozen-lockfile
 
-# Install psql client
-RUN apt-get update && apt-get install -y postgresql-client
-
 FROM base AS explorer
 COPY --from=build /app /app-explorer
 WORKDIR /app-explorer/packages/graphql
