@@ -1,7 +1,6 @@
 # This image contains the graphql server
 # built for the fuel-explorer
 FROM node:20 AS base
-USER node
 
 # Expose the ENVs to the env of the container
 ENV PNPM_HOME="/pnpm"
@@ -21,17 +20,13 @@ ENV RABBITMQ_PORT="${RABBITMQ_PORT}"
 ENV RABBITMQ_USER="${RABBITMQ_USER}"
 ENV RABBITMQ_PASS="${RABBITMQ_PASS}"
 
-USER root
 RUN corepack enable
-USER node
 
 FROM base AS build
-USER node
 COPY . /app
 WORKDIR /app
 RUN pnpm install --frozen-lockfile
 FROM base AS explorer
-USER node
 COPY --from=build /app /app-explorer
 WORKDIR /app-explorer/packages/graphql
 
@@ -39,5 +34,5 @@ RUN pnpm build:lib
 RUN pnpm db:setup
 
 EXPOSE ${SERVER_PORT}
-
+RUN chown -R node:node /app-explorer
 CMD ["sh", "./scripts/run.sh"]
