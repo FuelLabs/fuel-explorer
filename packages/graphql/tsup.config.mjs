@@ -15,6 +15,7 @@ export default defineConfig(() => [
       index: 'src/index.ts',
       app: 'src/app.ts',
       syncer: 'src/syncer.ts',
+      consumer: 'src/consumer.ts',
     },
     async onSuccess() {
       const cwd = process.cwd();
