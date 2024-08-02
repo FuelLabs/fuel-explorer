@@ -49,11 +49,7 @@ class Syncer {
     const events = Array.from({ length: numberOfBatches }).map((_, page) => {
       const from = idsRange.from + page * offset;
       let to = from + offset;
-      if (page === numberOfBatches - 1) {
-        to = lastHeight; // Ensure the last batch goes up to the last height
-      } else {
-        to = Math.min(to, lastHeight);
-      }
+      to = to > lastHeight ? lastHeight : to;
       return { from, to };
     });
     return events;
@@ -135,6 +131,7 @@ const machine = setup({
     },
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5SwJ4DsDGAhANgewwGtYA6ASwhzAGIBlAFQEEAlegfVoE0A5AYQG0ADAF1EoAA55YZAC5k8aMSAAeiACwAmAMwltARgCsBtYLVm9ANgsB2ADQgU6jRZIBOABwaNRg3teu9a1cAX2D7VExcAmISGBk5NCgAGQBDWBkoomoIBTByNAA3PEI8iOx8IlI4hOS0jIrCBDJCghS5BSFhTqVJaXbFJBVEAw17RwR3a0FdD3cLPTU9QXdBLQtQ8PRy6NIMAAswImaoAEUAVzALkn3DwmPqAGkAUSeABQ4eXgBJbgBxbsGvVk8gGoFUCAMWj0bhMzlcGmsams1jWY0QS0EBhIWlcgi8ekm2g0mg2IDKmRiNyOiXOlzyVLuiWoAHVGF96ACJFJgQolODIdDXLCLPDEcjUQ5EK4jCRNLj5lotBo8RZ3KTyQ1dgdqacLlcAO4pYFM5TpNp5FIAMxkYAATgAKZWCQQASmoGp2121jN1dJIhuNUE5ICB-T5w3cWLmGk8gnhmMVajRCFx7llqr0WgMrgsWkES2s6q2FK1t2OtKuluaZFge3uppk5pIVptDqdrvdxc1XrLNL1eSraBrdcSwdDIPDEws00EubjBlM7jl7mTGJc7lxiqFBiCFgMRci3bKxxL2Vy+SKJRIHsq162J81TRaGDaIM6Y+5YcG4L0o0lCF-A9tlvBl7g-PoJ2-dEbGxVUAkVeZs3zCxkx3aF3ECLNVU8TNJiAksex1ah+D0URAU-SCwXRSZYI3TM1kMXFLGTDRXGsEgViRbNFhxbQ93w7tQKZfgNDIrkIN5KCAORWj4IYpDmP-OVdChQRrG0SEML3dYwjJLtPWPRIAFka2kRICMMqAzzQPJmkvUp9NvSyTNgMyoAs+9EifIoX36d8RB6CjJKohAbFcNxpWjDwvA3Ox-1YnQc2WRFYUMbwBIMzyoBctyCNtOAwHiY5UnSClrNslorxvGJnNMh9PXy2BCpqEr6mibzWj8kRwJ5UEhgA39wpMGw1A8JVlT0FjXES6dJjMPE0v3Uk0DwCA4CUar4HIiS+vBABaCVxj26wsQJFEtGsKxjAMSMdM2Q9PQoKhAp2yctxICw1E+6x3DWNTZz-cZNHYjRLDURNPAzSMMtvapirqCkXt6ycFhRXRvCWG7WOlJVkxMHRJj3XxnECMwtDUGHKW9ct+yRr8Qo0j7MTmRZWOVTjkxw3QVncX6Tq+rQN0p0sdQrelqcSOnKP6mMdGnG7PsG9nTGTeFws8RUdzUwXIS0YXCJ9MX-SNGopeC-qpjTbj-CRXCkTi8YAixGNwbzMxvGlJb7uAqne19Stq1rY4zd2xBLZIa2hWsO3kVXZ0sQsYkcTGhdeb13TNrvTB6sqEPJ2ikgghGbDFhSyb-0jaYY2WPnjFzIWM8c32dTzqTNFXX8Ppu5DExti79dq1yc+IVuQsFtQSD8OMIcRfxvBY0wOIMKxf1By7tIHrKcuH0hLNH-rwY0SfcWm8m5rngwpqP0xBc+zRpwuinG4epyt7q8zuwDU3tuRqT6OhfMJMcTzBMK4ZMUIsSC0flYL6bE1Bqmfj7Xeb8h4fwagVIqiRWqIx-vTfquJnYmDxIiUGRMwHxXhCQG+LN76rEROnUIQA */
   id: 'syncBlocks',
   initial: 'idle',
   context: ({ input }) => ({
@@ -255,40 +252,40 @@ const machine = setup({
   },
 });
 
-const machineLostBlocks = setup({
-  actors: {
-    syncLostBlocks: fromPromise(async () => {
-      await syncer.syncLostBlocks();
-    }),
-  },
-}).createMachine({
-  id: 'lostBlocks',
-  initial: 'idle',
-  states: {
-    idle: {
-      on: {
-        START_SYNC_LOST_BLOCKS: {
-          target: 'syncingLostBlocks',
-        },
-      },
-    },
-    syncingLostBlocks: {
-      invoke: {
-        src: 'syncLostBlocks',
-        onDone: {
-          target: 'wait',
-        },
-      },
-    },
-    wait: {
-      after: {
-        600000: {
-          target: 'syncingLostBlocks',
-        },
-      },
-    },
-  },
-});
+// const machineLostBlocks = setup({
+//   actors: {
+//     syncLostBlocks: fromPromise(async () => {
+//       await syncer.syncLostBlocks();
+//     }),
+//   },
+// }).createMachine({
+//   id: 'lostBlocks',
+//   initial: 'idle',
+//   states: {
+//     idle: {
+//       on: {
+//         START_SYNC_LOST_BLOCKS: {
+//           target: 'syncingLostBlocks',
+//         },
+//       },
+//     },
+//     syncingLostBlocks: {
+//       invoke: {
+//         src: 'syncLostBlocks',
+//         onDone: {
+//           target: 'wait',
+//         },
+//       },
+//     },
+//     wait: {
+//       after: {
+//         600000: {
+//           target: 'syncingLostBlocks',
+//         },
+//       },
+//     },
+//   },
+// });
 
 export default async function runSyncMachine(input: Input) {
   const actor = createActor(machine, { input });
@@ -307,7 +304,6 @@ export default async function runSyncMachine(input: Input) {
   actor.start();
   actor.send({ type: 'START_SYNC' });
 
-  console.log(machineLostBlocks);
   //   const actorLostBlocks = createActor(machineLostBlocks, { input });
   //   actorLostBlocks.start();
   //   actorLostBlocks.send({ type: 'START_SYNC_LOST_BLOCKS' });
