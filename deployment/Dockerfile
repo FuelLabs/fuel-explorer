@@ -27,8 +27,6 @@ COPY . /app
 WORKDIR /app
 RUN pnpm install --frozen-lockfile
 
-RUN apk add --no-cache postgresql-client
-
 FROM base AS explorer
 COPY --from=build /app /app-explorer
 WORKDIR /app-explorer/packages/graphql
