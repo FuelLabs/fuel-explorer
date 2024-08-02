@@ -8,6 +8,12 @@ module.exports = {
     },
     {
       name: 'syncer',
+      script: './dist/consumer.js',
+      mode: 'cluster',
+      instances: '4',
+    },
+    {
+      name: 'syncer',
       script: './dist/syncer.js',
       mode: 'cluster',
       instances: '1',

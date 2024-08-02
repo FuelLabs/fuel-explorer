@@ -21,7 +21,7 @@ export class AddBlockRange {
       return;
     }
 
-    logger.syncer.info(c.green(`🔗 Adding blocks to sync: #${from} - #${to}`));
+    logger.syncer.info(c.green(`🔗 Syncing blocks: #${from} - #${to}`));
     const start = performance.now();
     const conn = await db.conn();
     await conn.transaction(async (trx) => {

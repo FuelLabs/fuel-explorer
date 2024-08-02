@@ -4,10 +4,6 @@ import client, {
   type ConsumeMessage,
 } from 'amqplib';
 import { createAddBlockRange } from '~/application/uc/AddBlockRange';
-import { syncBlocks } from '~/application/uc/SyncBlocks';
-import { syncLastBlocks } from '~/application/uc/SyncLastBlocks';
-import { syncLostBlocks } from '~/application/uc/SyncLostBlocks';
-import { syncMissingBlocks } from '~/application/uc/SyncMissingBlocks';
 import { env } from '~/config';
 import { logger } from '~/core/Logger';
 import { BlockProducer } from '~/domain/Block/vo/BlockProducer';
@@ -140,14 +136,14 @@ class RabbitMQConnection {
   }
 
   async setup() {
-    await this.connect();
     const blockProducer = await BlockProducer.fromSdk();
     const addBlockRange = createAddBlockRange(blockProducer);
-    await this.consume('main', QueueNames.SYNC_BLOCKS, syncBlocks);
-    await this.consume('main', QueueNames.SYNC_MISSING, syncMissingBlocks);
-    await this.consume('main', QueueNames.SYNC_LAST, syncLastBlocks);
     await this.consume('block', QueueNames.ADD_BLOCK_RANGE, addBlockRange);
-    await this.consume('block', QueueNames.SYNC_LOST_BLOCKS, syncLostBlocks);
+  }
+
+  async assert(queue: string) {
+    const channel = await this.connection.createChannel();
+    await channel.assertQueue(queue, { durable: true });
   }
 
   private parsePayload<P extends Payload>(msg: ConsumeMessage | null) {
@@ -158,11 +154,9 @@ class RabbitMQConnection {
 
   async getActive(queue: QueueNames) {
     logger.debug(`🔗 Getting active workers for ${queue}`);
-    const channels = Object.values(this.channels);
-    const counters = await Promise.all(
-      channels.map((c) => c.checkQueue(queue)),
-    );
-    return counters.reduce((acc, res) => acc + res.messageCount, 0);
+    const channel = await this.connection.createChannel();
+    const data = await channel.checkQueue(queue);
+    return data.messageCount;
   }
 
   private async createChannel(name: ChannelNames, workers: number) {
