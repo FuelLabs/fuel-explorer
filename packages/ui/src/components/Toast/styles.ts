@@ -59,7 +59,8 @@ export const styles = tv({
       'bg-[var(--radix-toast-bg)]',
       'border-[var(--radix-toast-border-color)]',
       'text-[var(--radix-toast-color)]',
-      'fuel-[Icon]:text-[var(--radix-toast-action-color)]',
+      'fuel-[Icon]:text-gray-1',
+      'overflow-visible',
     ],
     action: [
       'inline-flex h-7 shrink-0 items-center justify-center rounded-md border border-border',
