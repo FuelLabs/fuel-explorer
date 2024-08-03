@@ -40,15 +40,7 @@ const TxOutputCoin = createComponent<
     const classes = styles();
     if (!output.assetId) return null;
     const assetId = output.assetId;
-    <<<<<<< HEAD
-    const amount = output.totalAmount;
-    const isReceiving =
-      output.type === GQLGroupedOutputType.OutputContractCreated ||
-      (output.outputs?.length === 1 &&
-        output.outputs[0]?.__typename === 'CoinOutput');
-    =======
     const amount = output.amount;
-    >>>>>>> main
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -64,9 +56,9 @@ const TxOutputCoin = createComponent<
             />
           </AssetItem>
           {/*
-            I'm just hidding this until we get the output/input design merged 
-            https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
-          */}
+			  I'm just hidding this until we get the output/input design merged 
+			  https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
+			*/}
           <HStack className="hidden tablet:flex items-center gap-2">
             <Icon icon={IconArrowUp} className="text-success" />
             {amount && (
