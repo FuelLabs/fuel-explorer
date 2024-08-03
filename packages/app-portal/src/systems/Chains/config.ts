@@ -39,7 +39,7 @@ export const TRANSPORTS = {
 
 export const DEFAULT_WAGMI_CONFIG = createConfig({
   chains: CHAINS_TO_CONNECT,
-  connectors: generateETHConnectors(APP.name),
+  connectors: generateETHConnectors(APP.name, CHAINS_TO_CONNECT),
   transports: TRANSPORTS,
   storage: createStorage({
     storage: cookieStorage,
