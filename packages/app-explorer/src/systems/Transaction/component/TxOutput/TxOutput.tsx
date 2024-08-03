@@ -1,16 +1,14 @@
-import { GQLGroupedOutputType } from '@fuel-explorer/graphql';
 import type {
-  GQLGroupedOutput,
-  GQLGroupedOutputChanged,
-  GQLGroupedOutputCoin,
-  GQLGroupedOutputContractCreated,
-  GQLTransactionItemFragment,
+  ChangeOutput,
+  CoinOutput,
+  ContractCreated,
+  ContractOutput,
+  TransactionOutputFragment,
 } from '@fuel-explorer/graphql';
 import {
   Address,
   Card,
   HStack,
-  HelperIcon,
   Icon,
   Text,
   VStack,
@@ -18,55 +16,39 @@ import {
   cx,
 } from '@fuels/ui';
 import type { CardProps } from '@fuels/ui';
-import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
+import { IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
+import React from 'react';
 import { tv } from 'tailwind-variants';
 import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
-
 import { TxIcon } from '../TxIcon/TxIcon';
+import { isOutput } from './TxOutput.utils';
 
-function getTooltipText(
-  tx: GQLTransactionItemFragment,
-  output: GQLGroupedOutput,
-) {
-  if (tx.isMint) {
-    return 'This is the amount minted in the transaction';
-  }
-  if (output.__typename === 'GroupedOutputChanged') {
-    return 'This is the amount remaining after transaction';
-  }
-  return 'This is the amount spent in the transaction';
-}
-
-export type TxOutputProps = CardProps & {
-  tx: GQLTransactionItemFragment;
-  output: GQLGroupedOutput;
+type TxOutputProps<T = TransactionOutputFragment> = CardProps & {
+  output: T;
 };
 
-export type TxOutputCoinProps = TxOutputProps & {
-  tx: GQLTransactionItemFragment;
-  output: GQLGroupedOutputCoin | GQLGroupedOutputChanged;
-};
-
-export type TxOutputOutputContractCreatedProps = TxOutputProps & {
-  tx: GQLTransactionItemFragment;
-  output: GQLGroupedOutputContractCreated;
-};
-
-const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
+const TxOutputCoin = createComponent<
+  TxOutputProps<ChangeOutput | CoinOutput>,
+  typeof Card
+>({
   id: 'TxOutputCoin',
-  render: (_, { tx, output, ...props }) => {
+  render: (_, { output, ...props }) => {
     const classes = styles();
     if (!output.assetId) return null;
     const assetId = output.assetId;
+    <<<<<<< HEAD
     const amount = output.totalAmount;
     const isReceiving =
       output.type === GQLGroupedOutputType.OutputContractCreated ||
       (output.outputs?.length === 1 &&
         output.outputs[0]?.__typename === 'CoinOutput');
+    =======
+    const amount = output.amount;
+    >>>>>>> main
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -86,10 +68,7 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
             https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
           */}
           <HStack className="hidden tablet:flex items-center gap-2">
-            <Icon
-              icon={isReceiving ? IconArrowUp : IconArrowDown}
-              className={isReceiving ? 'text-success' : 'text-error'}
-            />
+            <Icon icon={IconArrowUp} className="text-success" />
             {amount && (
               <Amount
                 hideSymbol
@@ -98,7 +77,6 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
                 value={bn(amount)}
               />
             )}
-            <HelperIcon message={getTooltipText(tx, output)} />
           </HStack>
         </Card.Header>
       </Card>
@@ -106,14 +84,41 @@ const TxOutputCoin = createComponent<TxOutputCoinProps, typeof Card>({
   },
 });
 
-const TxOutputOutputContractCreated = createComponent<
-  TxOutputOutputContractCreatedProps,
+const TxOutputContract = createComponent<
+  TxOutputProps<ContractOutput>,
   typeof Card
 >({
-  id: 'TxOutputOutputContractCreated',
+  id: 'TxOutputContract',
   render: (_, { output, ...props }) => {
     const classes = styles();
-    const contractId = output.contractId ?? '';
+
+    return (
+      <Card {...props} className={cx('py-3', props.className)}>
+        <Card.Header className={classes.header()}>
+          <HStack align="center">
+            <TxIcon status="Submitted" type="Contract" />
+            <VStack gap="1">
+              <Text className="font-medium">Contract Output</Text>
+              <Text className="text-sm text-secondary">
+                Input Index: {output.inputIndex}
+              </Text>
+            </VStack>
+          </HStack>
+        </Card.Header>
+      </Card>
+    );
+  },
+});
+
+const TxOutputContractCreated = createComponent<
+  TxOutputProps<ContractCreated>,
+  typeof Card
+>({
+  id: 'TxOutputContractCreated',
+  render: (_, { output, ...props }) => {
+    const classes = styles();
+    const contractId = output.contract;
+
     return (
       <Card {...props} className={cx('py-3', props.className)}>
         <Card.Header className={classes.header()}>
@@ -139,24 +144,19 @@ const TxOutputOutputContractCreated = createComponent<
 
 export function TxOutput({ output, ...props }: TxOutputProps) {
   if (
-    output.type === GQLGroupedOutputType.OutputCoin ||
-    output.type === GQLGroupedOutputType.OutputChanged
+    isOutput<ChangeOutput>(output, 'ChangeOutput') ||
+    isOutput<CoinOutput>(output, 'CoinOutput')
   ) {
-    return (
-      <TxOutputCoin
-        output={output as GQLGroupedOutputChanged | GQLGroupedOutputCoin}
-        {...props}
-      />
-    );
+    return <TxOutputCoin output={output} {...props} />;
   }
-  if (output.type === GQLGroupedOutputType.OutputContractCreated) {
-    return (
-      <TxOutputOutputContractCreated
-        output={output as GQLGroupedOutputContractCreated}
-        {...props}
-      />
-    );
+  if (isOutput<ContractOutput>(output, 'ContractOutput')) {
+    return <TxOutputContract output={output} {...props} />;
   }
+  if (isOutput<ContractCreated>(output, 'ContractCreated')) {
+    return <TxOutputContractCreated output={output} {...props} />;
+  }
+
+  return null;
 }
 
 const styles = tv({

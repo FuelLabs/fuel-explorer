@@ -212,11 +212,9 @@ fragment TransactionItem on Transaction {
     ...TxDetailsGroupedInputCoin
     ...TxDetailsGroupedInputMessage
   }
-  groupedOutputs {
-    __typename
-    ...TxDetailsGroupedOutputCoin
-    ...TxDetailsGroupedOutputChanged
-    ...TxDetailsGroupedOutputContractCreated
+  accountsInvolved {
+    id
+    type
   }
   operations {
     ...OperationItem

@@ -1,8 +1,4 @@
-import {
-  type GQLCoinOutput,
-  type GQLInputCoin,
-  mocks,
-} from '@fuel-explorer/graphql';
+import { GroupedInputType, mocks } from '@fuel-explorer/graphql';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
 const date = dayjs().subtract(1, 'day');
@@ -42,35 +38,18 @@ export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInputMessage({
   ...ADDRS,
 });
 
-function output(typename: GQLCoinOutput['__typename']) {
-  return mocks.aCoinOutput({ __typename: typename });
-}
-
-export const GROUPED_OUTPUT_ASSET = mocks.aGroupedOutputCoin({
-  ...ADDRS,
-  outputs: [output('CoinOutput'), output('CoinOutput'), output('CoinOutput')],
+export const OUTPUT_ASSET = mocks.aCoinOutput({
+  to: ADDRS.to,
   assetId: '0x0000000000000000000000000000000000000000',
 });
 
-export const GROUPED_OUTPUT_ASSET_UNKNOWN = mocks.aGroupedOutputCoin({
-  ...ADDRS,
-  outputs: [output('CoinOutput'), output('CoinOutput'), output('CoinOutput')],
-});
-export const GROUPED_OUTPUT_CHANGE_OUTPUT = mocks.aGroupedOutputChanged({
-  ...ADDRS,
-  outputs: [output('CoinOutput'), output('CoinOutput'), output('CoinOutput')],
-  assetId: '0x0000000000000000000000000000000000000000',
+export const OUTPUT_ASSET_UNKNOWN = mocks.aCoinOutput({
+  to: ADDRS.to,
 });
 
-export const GROUPED_OUTPUT_CHANGE_OUTPUT_UNKNOWN = mocks.aGroupedOutputCoin({
-  ...ADDRS,
-  outputs: [output('CoinOutput'), output('CoinOutput'), output('CoinOutput')],
+export const OUTPUT_CONTRACT_CREATED = mocks.aContractCreated({
+  contract: ADDRS.contractId,
 });
-
-export const GROUPED_OUTPUT_CONTRACT_CREATED =
-  mocks.aGroupedOutputContractCreated({
-    ...ADDRS,
-  });
 
 export const TX_MOCK = mocks.aTransaction({
   title: 'ContractCall',
@@ -86,9 +65,5 @@ export const TX_MOCK = mocks.aTransaction({
     GROUPED_INPUT_ASSET,
     GROUPED_INPUT_MESSAGE,
   ],
-  groupedOutputs: [
-    GROUPED_OUTPUT_ASSET,
-    GROUPED_OUTPUT_ASSET_UNKNOWN,
-    GROUPED_OUTPUT_CONTRACT_CREATED,
-  ],
+  outputs: [OUTPUT_ASSET, OUTPUT_ASSET_UNKNOWN, OUTPUT_CONTRACT_CREATED],
 });
