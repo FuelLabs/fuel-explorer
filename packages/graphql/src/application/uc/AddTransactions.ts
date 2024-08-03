@@ -27,12 +27,10 @@ class TransactionResources {
   ) {}
 
   async syncResources() {
-    await Promise.all([
-      this.syncInputs(),
-      this.syncOutputs(),
-      this.syncContracts(),
-      this.syncOperations(),
-    ]);
+    await this.syncInputs();
+    await this.syncOutputs();
+    await this.syncContracts();
+    await this.syncOperations();
   }
 
   private log(msg: string) {
@@ -89,15 +87,16 @@ class TransactionResources {
     const { trx, transaction } = this;
     const txAddr = new Address(transaction.txHash);
     const hash = txAddr.short();
+    if (transaction.receipts.length > 10) return;
     const operations = OperationsFactory.create(
       transaction.toGQLNode(),
     ).value();
     if (!operations?.length) return;
 
     this.log(`Syncing operations on transaction ${hash}`);
-    const repository = new OperationRepository(trx);
     const transactionId = transaction._id.value();
     const transactionHash = transaction.txHash;
+    const repository = new OperationRepository(trx);
     await repository.insertMany(operations, transactionId, transactionHash);
   }
 
@@ -133,13 +132,11 @@ export class AddTransactions {
       console.log(c.dim('No transactions to sync'));
       return;
     }
-    await Promise.all(
-      transactions.map(async (item) => {
-        const height = String(item.blockHeight);
-        const txResources = new TransactionResources(this.trx, height, item);
-        return txResources.syncResources();
-      }),
-    );
+    for (const item of transactions) {
+      const height = String(item.blockHeight);
+      const txResources = new TransactionResources(this.trx, height, item);
+      await txResources.syncResources();
+    }
   }
 }
 
@@ -153,6 +150,7 @@ export const addTransactions = async (items: Data, trx: DbTransaction) => {
     await instance.execute(items);
   } catch (error) {
     logger.error('Failed to sync transactions', error);
+    console.log(error);
     throw new Error('Sync transactions', {
       cause: error,
     });

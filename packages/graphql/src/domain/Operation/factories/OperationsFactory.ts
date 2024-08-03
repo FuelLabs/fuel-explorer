@@ -8,6 +8,7 @@ import { OperationEntity } from '../OperationEntity';
 
 export class OperationsFactory {
   private operations!: GQLOperation[] | null;
+
   private constructor(receipts?: GQLReceipt[] | null) {
     this.operations = this.operationsFromTransaction(receipts ?? []);
   }
@@ -38,7 +39,7 @@ export class OperationsFactory {
   private createOperations(receipts: GQLReceipt[]) {
     if (!receipts.length) return null;
     const hasError = receipts.some(isError);
-    return receipts.reduce((acc, receipt, idx) => {
+    const output = receipts.reduce((acc, receipt, idx) => {
       const prev = receipts[idx - 1];
       const isPrevReturnData = isReturnData(prev);
       const isFirstCall = isCall(receipt) && idx === 0;
@@ -63,6 +64,7 @@ export class OperationsFactory {
       }
       return acc;
     }, [] as GQLOperation[]);
+    return output;
   }
 
   private createItems(receipts: GQLReceipt[]) {
