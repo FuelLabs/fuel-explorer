@@ -13,7 +13,6 @@ export const ButtonClose = createComponent<ButtonCloseProps, typeof IconButton>(
     defaultProps: {
       'aria-label': 'Close',
       icon: IconX,
-      variant: 'link',
     },
   },
 );
