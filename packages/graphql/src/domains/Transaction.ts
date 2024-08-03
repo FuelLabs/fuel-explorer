@@ -7,7 +7,6 @@ import { type Context, Domain } from '../utils/domain';
 import type { GqlTransaction } from 'fuels';
 import { InputDomain } from './Input';
 import { OperationDomain } from './Operation';
-import { OutputDomain } from './Output';
 
 export class TransactionDomain extends Domain<TransactionItemFragment> {
   static createResolvers() {
@@ -18,7 +17,6 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
       ...domain.createResolver('fee', 'getFee'),
       ...domain.createResolver('gasUsed', 'getGasUsed'),
       ...domain.createResolver('groupedInputs'),
-      ...domain.createResolver('groupedOutputs'),
       ...domain.createResolver('isPredicate'),
       ...domain.createResolver('operations', 'getOperations'),
       ...domain.createResolver('statusType'),
@@ -118,12 +116,6 @@ export class TransactionDomain extends Domain<TransactionItemFragment> {
     const { source: transaction } = this;
     const domain = new InputDomain(transaction.inputs ?? []);
     return domain.groupedInputs;
-  }
-
-  get groupedOutputs() {
-    const { source: transaction } = this;
-    const domain = new OutputDomain(transaction.outputs ?? []);
-    return domain.groupedOutputs;
   }
 
   get isPredicate() {

@@ -1,8 +1,4 @@
-import {
-  GroupedInputType,
-  GroupedOutputType,
-  mocks,
-} from '@fuel-explorer/graphql';
+import { GroupedInputType, mocks } from '@fuel-explorer/graphql';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
 const date = dayjs().subtract(1, 'day');
@@ -45,43 +41,17 @@ export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInput({
   type: GroupedInputType.InputMessage,
 });
 
-function output(typename: any) {
-  return mocks.aCoinOutput({ __typename: typename });
-}
-
-export const GROUPED_OUTPUT_ASSET = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.CoinOutput,
-  outputs: [output('OutputCoin'), output('OutputCoin'), output('OutputCoin')],
+export const OUTPUT_ASSET = mocks.aCoinOutput({
+  to: ADDRS.to,
   assetId: '0x0000000000000000000000000000000000000000',
 });
 
-export const GROUPED_OUTPUT_ASSET_UNKNOWN = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.CoinOutput,
-  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-});
-export const GROUPED_OUTPUT_CHANGE_OUTPUT = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.ChangeOutput,
-  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-  assetId: '0x0000000000000000000000000000000000000000',
+export const OUTPUT_ASSET_UNKNOWN = mocks.aCoinOutput({
+  to: ADDRS.to,
 });
 
-export const GROUPED_OUTPUT_CHANGE_OUTPUT_UNKNOWN = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.ChangeOutput,
-  outputs: [output('outputCoin'), output('outputCoin'), output('outputCoin')],
-});
-
-export const GROUPED_OUTPUT_CONTRACT_CREATED = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.ContractCreated,
-});
-
-export const GROUPED_OUTPUT_MESSAGE = mocks.aGroupedOutput({
-  ...ADDRS,
-  type: GroupedOutputType.MessageOutput,
+export const OUTPUT_CONTRACT_CREATED = mocks.aContractCreated({
+  contract: ADDRS.contractId,
 });
 
 export const TX_MOCK = mocks.aTransaction({
@@ -101,10 +71,5 @@ export const TX_MOCK = mocks.aTransaction({
     GROUPED_INPUT_ASSET,
     GROUPED_INPUT_MESSAGE,
   ],
-  groupedOutputs: [
-    GROUPED_OUTPUT_ASSET,
-    GROUPED_OUTPUT_ASSET_UNKNOWN,
-    GROUPED_OUTPUT_CONTRACT_CREATED,
-    GROUPED_OUTPUT_MESSAGE,
-  ],
+  outputs: [OUTPUT_ASSET, OUTPUT_ASSET_UNKNOWN, OUTPUT_CONTRACT_CREATED],
 });
