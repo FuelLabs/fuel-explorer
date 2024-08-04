@@ -1,6 +1,5 @@
-import { gt, lt, sql } from 'drizzle-orm';
 import type { PgTableWithColumns } from 'drizzle-orm/pg-core';
-import type { DbConnection, DbTransaction } from '~/infra/database/Db';
+import { type DbConnection, type DbTransaction, db } from '~/infra/database/Db';
 import type { Entity } from './Entity';
 import type { Identifier } from './Identifier';
 
@@ -44,24 +43,18 @@ export class Paginator<
 
   async hasPreviousPage(startCursor: Cursor) {
     if (!startCursor) return false;
-    const idField = this.source._id;
-    const result = await this.conn
-      .select({ count: sql<number>`count(*)` })
-      .from(this.source)
-      .where(lt(idField, startCursor))
-      .limit(1);
-    return result[0].count > 0;
+    const result = (await db.execSQL(
+      `select exists(select 1 from transactions where _id < '${startCursor}')`,
+    )) as any;
+    return result.rows[0].exists;
   }
 
   async hasNextPage(endCursor: Cursor | null) {
     if (!endCursor) return false;
-    const idField = this.source._id;
-    const result = await this.conn
-      .select({ count: sql<number>`count(*)` })
-      .from(this.source)
-      .where(gt(idField, endCursor))
-      .limit(1);
-    return result[0].count > 0;
+    const result = (await db.execSQL(
+      `select exists(select 1 from transactions where _id > '${endCursor}')`,
+    )) as any;
+    return result.rows[0].exists;
   }
 
   async validateParams() {
