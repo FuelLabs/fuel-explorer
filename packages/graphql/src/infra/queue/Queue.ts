@@ -142,7 +142,7 @@ class RabbitMQConnection {
   }
 
   async assert(queue: string) {
-    const channel = await this.connection.createChannel();
+    const channel = await this.getChannel(ChannelNames.block);
     await channel.assertQueue(queue, { durable: true });
   }
 
