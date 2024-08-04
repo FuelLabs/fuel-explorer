@@ -154,7 +154,7 @@ class RabbitMQConnection {
 
   async getActive(queue: QueueNames) {
     logger.debug(`🔗 Getting active workers for ${queue}`);
-    const channel = await this.connection.createChannel();
+    const channel = await this.getChannel(ChannelNames.block);
     const data = await channel.checkQueue(queue);
     return data.messageCount;
   }
