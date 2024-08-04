@@ -1,4 +1,4 @@
-import { GroupedInputType, mocks } from '@fuel-explorer/graphql';
+import { GQLInputCoin, mocks } from '@fuel-explorer/graphql';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
 const date = dayjs().subtract(1, 'day');

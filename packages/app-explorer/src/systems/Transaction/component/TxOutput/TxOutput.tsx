@@ -1,9 +1,9 @@
 import type {
-  ChangeOutput,
-  CoinOutput,
-  ContractCreated,
-  ContractOutput,
-  TransactionOutputFragment,
+  GQLChangeOutput,
+  GQLCoinOutput,
+  GQLContractCreated,
+  GQLContractOutput,
+  GQLTransactionOutputFragment,
 } from '@fuel-explorer/graphql';
 import {
   Address,
@@ -27,12 +27,12 @@ import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { TxIcon } from '../TxIcon/TxIcon';
 import { isOutput } from './TxOutput.utils';
 
-type TxOutputProps<T = TransactionOutputFragment> = CardProps & {
+type TxOutputProps<T = GQLTransactionOutputFragment> = CardProps & {
   output: T;
 };
 
 const TxOutputCoin = createComponent<
-  TxOutputProps<ChangeOutput | CoinOutput>,
+  TxOutputProps<GQLChangeOutput | GQLCoinOutput>,
   typeof Card
 >({
   id: 'TxOutputCoin',
@@ -77,7 +77,7 @@ const TxOutputCoin = createComponent<
 });
 
 const TxOutputContract = createComponent<
-  TxOutputProps<ContractOutput>,
+  TxOutputProps<GQLContractOutput>,
   typeof Card
 >({
   id: 'TxOutputContract',
@@ -103,7 +103,7 @@ const TxOutputContract = createComponent<
 });
 
 const TxOutputContractCreated = createComponent<
-  TxOutputProps<ContractCreated>,
+  TxOutputProps<GQLContractCreated>,
   typeof Card
 >({
   id: 'TxOutputContractCreated',
@@ -136,15 +136,15 @@ const TxOutputContractCreated = createComponent<
 
 export function TxOutput({ output, ...props }: TxOutputProps) {
   if (
-    isOutput<ChangeOutput>(output, 'ChangeOutput') ||
-    isOutput<CoinOutput>(output, 'CoinOutput')
+    isOutput<GQLChangeOutput>(output, 'ChangeOutput') ||
+    isOutput<GQLCoinOutput>(output, 'CoinOutput')
   ) {
     return <TxOutputCoin output={output} {...props} />;
   }
-  if (isOutput<ContractOutput>(output, 'ContractOutput')) {
+  if (isOutput<GQLContractOutput>(output, 'ContractOutput')) {
     return <TxOutputContract output={output} {...props} />;
   }
-  if (isOutput<ContractCreated>(output, 'ContractCreated')) {
+  if (isOutput<GQLContractCreated>(output, 'ContractCreated')) {
     return <TxOutputContractCreated output={output} {...props} />;
   }
 

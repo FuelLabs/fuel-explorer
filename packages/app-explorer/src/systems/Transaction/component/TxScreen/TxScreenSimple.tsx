@@ -1,6 +1,6 @@
 'use client';
 
-import type { GroupedInput } from '@fuel-explorer/graphql';
+import { GQLGroupedInput } from '@fuel-explorer/graphql';
 import {
   Address,
   Badge,
@@ -91,7 +91,9 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               loadingEl={<LoadingBox className="w-20 h-6" />}
               regularEl={
                 <Badge
-                  color={TX_INTENT_MAP[tx?.statusType as string]}
+                  color={
+                    TX_INTENT_MAP[tx?.statusType as keyof typeof TX_INTENT_MAP]
+                  }
                   variant="ghost"
                 >
                   {tx?.statusType}
