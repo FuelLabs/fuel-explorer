@@ -18,5 +18,11 @@ module.exports = {
       mode: 'cluster',
       instances: '1',
     },
+    {
+      name: 'recover',
+      script: './dist/recover.js',
+      mode: 'cluster',
+      instances: '1',
+    },
   ],
 };

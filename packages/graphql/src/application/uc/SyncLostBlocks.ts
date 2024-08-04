@@ -5,7 +5,6 @@ import { db } from '../../infra/database/Db';
 export class SyncLostBlocks {
   async execute() {
     logger.syncer.info('🔗 Syncing lost blocks');
-    // TODO: move to repository
     const res = (await db.execSQL(
       'select bs._id from (select generate_series(0, (select max(_id) from blocks)) as _id) as bs where bs._id not in (select _id from blocks)',
     )) as any;
@@ -13,7 +12,7 @@ export class SyncLostBlocks {
     if (rows.length === 0) {
       logger.syncer.info('🔗 Lost blocks not found');
     }
-    for (const row of rows) {
+    for (const row of rows.slice(0, 1000)) {
       await mq.send('block', QueueNames.ADD_BLOCK_RANGE, {
         from: row._id,
         to: row._id,

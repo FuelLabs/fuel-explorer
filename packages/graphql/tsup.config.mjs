@@ -16,6 +16,7 @@ export default defineConfig(() => [
       app: 'src/app.ts',
       syncer: 'src/syncer.ts',
       consumer: 'src/consumer.ts',
+      recover: 'src/recover.ts',
     },
     async onSuccess() {
       const cwd = process.cwd();
