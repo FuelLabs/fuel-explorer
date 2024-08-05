@@ -1,5 +1,6 @@
 import { setTimeout } from 'node:timers/promises';
 import { logger } from './core/Logger';
+import { client } from './graphql/GraphQLSDK';
 import { db } from './infra/database/Db';
 import { QueueNames, mq } from './infra/queue/Queue';
 
@@ -7,22 +8,38 @@ async function main() {
   await mq.connect();
   await mq.assert(QueueNames.ADD_BLOCK_RANGE);
   while (true) {
-    const res = (await db.execSQL(
-      'select bs._id from (select generate_series(0, (select max(_id) from blocks)) as _id) as bs where bs._id not in (select _id from blocks)',
-    )) as any;
-    const { rows } = res;
-    if (rows.length === 0) {
-      logger.syncer.info('🔗 No blocks to recover');
+    const { data } = await client.sdk.blocks({ last: 1 });
+    const lastBlock = data.blocks.nodes[0];
+    const height = Number(lastBlock?.header.height ?? '0');
+    const pages = height / 10000;
+    let cursor = 0;
+    for (let page = 1; page < pages; page++) {
+      const from = cursor;
+      const to = Math.min(cursor + 10000, height);
+      cursor = to;
+      const res = (await db.execSQL(
+        `select seq from generate_series(${from}, ${to}) as seq left join blocks b on (b._id = seq) where b._id is null`,
+      )) as any;
+      const { rows } = res;
+      if (rows.length === 0) {
+        logger.syncer.info(
+          `🔗 No blocks to recover between #${from} and #${to}`,
+        );
+      } else {
+        logger.syncer.info(
+          `🔗 Recovering ${rows.length} blocks between #${from} and #${to}`,
+        );
+      }
+      for (const row of rows) {
+        await mq.send('block', QueueNames.ADD_BLOCK_RANGE, {
+          from: row.seq,
+          to: row.seq,
+        });
+        console.log(`Recovering block #${row.seq}`);
+      }
+      await setTimeout(5000);
     }
-    rows.sort(() => Math.random() - 0.5);
-    for (const row of rows.slice(0, 1000)) {
-      await mq.send('block', QueueNames.ADD_BLOCK_RANGE, {
-        from: row._id,
-        to: row._id,
-      });
-      console.log(`Recovering block #${row._id}`);
-    }
-    await setTimeout(30000);
+    await setTimeout(60000);
   }
 }
 

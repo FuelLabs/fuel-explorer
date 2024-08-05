@@ -102,7 +102,7 @@ class RabbitMQConnection {
     data?: P['data'],
   ) {
     try {
-      logger.debug(`📤 Sending message to ${queue}`, data);
+      //   logger.debug(`📤 Sending message to ${queue}`, data);
       const channel = await this.getChannel(ChannelNames[channelName]);
       const payload = { type: queue, data } as P;
       const buffer = Buffer.from(JSON.stringify(payload));
@@ -169,7 +169,7 @@ class RabbitMQConnection {
   }
 
   private async getChannel(name: ChannelNames) {
-    logger.debug(`🔗 Getting channel ${name}`);
+    // logger.debug(`🔗 Getting channel ${name}`);
     if (!this.connection) {
       await this.connect();
     }
