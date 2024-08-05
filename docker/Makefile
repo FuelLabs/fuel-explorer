@@ -1,15 +1,23 @@
+PROFILE ?= all
+ENV_FILE ?= ./envs/global.env
+
 build:
-	docker compose --env-file ./envs/ports.env build
+	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) build
 
 start:
-	docker compose --env-file ./envs/ports.env up -d --build
+	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) up -d --build
 
 stop:
-	docker compose stop
+	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) stop
+
+restart:
+	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) restart
 
 clean:
-	docker compose down --rmi local -v
+	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) down --rmi local -v
 
 logs:
-	docker compose logs -f
+	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) logs -f
+
+reset: clean start
 

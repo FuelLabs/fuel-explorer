@@ -1,0 +1,225 @@
+schema {
+  query: Query
+}
+
+# --------------------------------
+# Balances
+# --------------------------------
+
+type UtxoItem {
+  amount: U64!
+  blockCreated: U32
+  txCreatedIdx: U64
+  utxoId: UtxoId!
+}
+
+type Balance {
+  utxos: [UtxoItem]
+}
+
+# --------------------------------
+# Blocks
+# --------------------------------
+
+type Block {
+  _id: Int
+  time: ParsedTime
+  totalGasUsed: U64
+  producer: Address
+}
+
+# --------------------------------
+# GroupedInputs
+# --------------------------------
+
+type GroupedInputCoin {
+  type: GroupedInputType
+  assetId: AssetId
+  inputs: [Input!]
+  owner: Address
+  totalAmount: U64
+}
+
+type GroupedInputContract {
+  type: GroupedInputType
+  contractId: ContractId
+  inputs: [Input!]
+}
+
+type GroupedInputMessage {
+  type: GroupedInputType
+  data: HexString
+  inputs: [Input!]
+  recipient: Address
+  sender: Address
+}
+
+enum GroupedInputType {
+  InputCoin
+  InputContract
+  InputMessage
+}
+
+union GroupedInput =
+  | GroupedInputCoin
+  | GroupedInputContract
+  | GroupedInputMessage
+
+# --------------------------------
+# GroupedOutputs
+# --------------------------------
+
+type GroupedOutputCoin {
+  type: GroupedOutputType
+  assetId: AssetId
+  outputs: [Output]
+  to: Address
+  totalAmount: U64
+}
+
+type GroupedOutputChanged {
+  type: GroupedOutputType
+  assetId: AssetId
+  outputs: [Output]
+  to: Address
+  totalAmount: U64
+}
+
+type GroupedOutputContractCreated {
+  type: GroupedOutputType
+  contractId: ContractId
+  outputs: [Output]
+}
+
+enum GroupedOutputType {
+  OutputCoin
+  OutputChanged
+  OutputContractCreated
+}
+
+union GroupedOutput =
+  | GroupedOutputCoin
+  | GroupedOutputChanged
+  | GroupedOutputContractCreated
+
+# --------------------------------
+# Operations
+# --------------------------------
+
+input OperationsFilterInput {
+  transactionHash: String!
+}
+
+enum OperationType {
+  FROM_CONTRACT
+  FROM_ACCOUNT
+  FINAL_RESULT
+}
+
+type OperationReceipt {
+  item: Receipt
+  receipts: [OperationReceipt!]
+}
+
+type Operation {
+  _id: String
+  type: OperationType
+  receipts: [OperationReceipt!]
+}
+
+# --------------------------------
+# Transaction
+# --------------------------------
+
+type ParsedTime {
+  fromNow: String
+  full: String
+  rawTai64: String
+  rawUnix: String
+}
+
+type TransactionGasCosts {
+  gasUsed: U64
+  fee: U64
+}
+
+extend type Transaction {
+  _id: String
+  blockHeight: U32
+  gasCosts: TransactionGasCosts
+  groupedInputs: [GroupedInput!]!
+  groupedOutputs: [GroupedOutput!]!
+  hasPredicate: Boolean
+  operations: [Operation!]
+  receipts: [Receipt!]
+  statusType: String
+  time: ParsedTime!
+  title: String!
+}
+
+# --------------------------------
+# Contract
+# --------------------------------
+
+type Contract {
+  _id: Int
+}
+
+type ContractConnection {
+  nodes: [Contract]
+  pageInfo: PageInfo!
+}
+
+# --------------------------------
+# Predicate
+# --------------------------------
+
+type PredicateItem {
+  address: Address
+  bytecode: String
+}
+
+# --------------------------------
+# Search
+# --------------------------------
+
+type SearchAccount {
+  address: Address
+  transactions: [SearchTransaction]
+}
+
+type SearchContract {
+  id: ContractId
+}
+
+type SearchBlock {
+  id: BlockId
+  height: String
+}
+
+type SearchTransaction {
+  id: TransactionId
+}
+
+type SearchResult {
+  account: SearchAccount
+  block: SearchBlock
+  contract: SearchContract
+  transaction: SearchTransaction
+}
+
+# --------------------------------
+# Query
+# --------------------------------
+
+type Query {
+  contracts(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ContractConnection!
+
+  search(query: String!): SearchResult
+  predicate(address: String!): PredicateItem
+}

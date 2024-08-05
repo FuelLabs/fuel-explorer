@@ -1,0 +1,10 @@
+query coin($utxoId: UtxoId!){
+    coin(utxoId: $utxoId){
+        amount
+        assetId
+        blockCreated
+        owner
+        txCreatedIdx
+        utxoId
+    }
+}

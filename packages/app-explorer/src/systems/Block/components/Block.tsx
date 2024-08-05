@@ -1,6 +1,6 @@
 'use client';
 
-import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
+import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql';
 import { ViewModes } from '~/systems/Core/components/ViewMode/constants';
 
 import { BlockHeader } from './BlockHeader';
@@ -10,7 +10,7 @@ import { BlockScreenSimple } from './BlockScreenSimple';
 type BlockScreenProps = {
   id: string;
   viewMode: ViewModes;
-  block?: Maybe<BlockItemFragment>;
+  block?: Maybe<GQLBlockFragment>;
   producer: Maybe<string>;
   isLoading?: boolean;
 };

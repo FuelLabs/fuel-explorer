@@ -1,0 +1,10 @@
+mutation startTx($id: ID!, $txJson: String!){
+    startTx(id: $id, txJson: $txJson){
+        breakpoint{
+            contract
+            pc
+        }
+        jsonReceipts
+        state
+    }
+}

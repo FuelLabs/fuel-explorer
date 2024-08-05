@@ -86,7 +86,6 @@ act-actions
 
 # XState typegen
 *.typegen.ts
-**/**/generated
 
 # playwright report
 **/**/playwright-report/*

@@ -1,0 +1,23 @@
+query contractBalances($after: String, $before: String, $filter: ContractBalanceFilterInput!, $first: Int, $last: Int){
+    contractBalances(after: $after, before: $before, filter: $filter, first: $first, last: $last){
+        edges{
+            cursor
+            node{
+                amount
+                assetId
+                contract
+            }
+        }
+        nodes{
+            amount
+            assetId
+            contract
+        }
+        pageInfo{
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+        }
+    }
+}

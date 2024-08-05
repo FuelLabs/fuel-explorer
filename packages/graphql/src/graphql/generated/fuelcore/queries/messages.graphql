@@ -1,0 +1,29 @@
+query messages($after: String, $before: String, $first: Int, $last: Int, $owner: Address){
+    messages(after: $after, before: $before, first: $first, last: $last, owner: $owner){
+        edges{
+            cursor
+            node{
+                amount
+                daHeight
+                data
+                nonce
+                recipient
+                sender
+            }
+        }
+        nodes{
+            amount
+            daHeight
+            data
+            nonce
+            recipient
+            sender
+        }
+        pageInfo{
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+        }
+    }
+}

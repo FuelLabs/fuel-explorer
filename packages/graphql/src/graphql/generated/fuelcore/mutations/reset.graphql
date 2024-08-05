@@ -1,0 +1,3 @@
+mutation reset($id: ID!){
+    reset(id: $id)
+}

@@ -1,8 +1,8 @@
-import type { SearchResult } from '@fuel-explorer/graphql';
 import { useContext } from 'react';
 import { useFormState } from 'react-dom';
 import { search } from '~/systems/Core/actions/search';
 
+import type { GQLSearchResult } from '@fuel-explorer/graphql';
 import { SearchInput } from './SearchInput';
 import { SearchContext } from './SearchWidget';
 import { styles } from './styles';
@@ -20,7 +20,7 @@ export function SearchForm({
 }: SearchFormProps) {
   const classes = styles();
   const [results, action] = useFormState(
-    (_: SearchResult | null, formData: FormData) => {
+    (_: GQLSearchResult | null, formData: FormData) => {
       return search({ query: formData.get('query')?.toString() || '' });
     },
     null,

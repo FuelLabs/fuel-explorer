@@ -62,6 +62,5 @@ export * from './components/Theme';
 export * from './components/Toast';
 export * from './components/ToggleGroup';
 export * from './components/Tooltip';
-export * from './components/Portal';
 export * from './utils/component';
 export * from './utils/radixUiThemesTailwindPlugin';

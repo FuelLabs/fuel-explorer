@@ -1,29 +1,27 @@
 'use client';
-
-import type { GetLastTransactionsQuery } from '@fuel-explorer/graphql';
+import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql/sdk';
+import { GqlPageInfo } from '@fuel-ts/account/dist/providers/__generated__/operations';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
 import { useRouter } from 'next/navigation';
 import { Routes } from '~/routes';
 import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
-
 import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
-  page?: string;
-  transactions: GetLastTransactionsQuery['transactions']['edges'];
+  transactions: GQLRecentTransactionsQuery['transactions']['nodes'];
   hidePagination?: boolean;
   isLoading?: boolean;
+  pageInfo?: GqlPageInfo;
 }>;
 
 export function TxList({
-  page: currentPage = '1',
   transactions = [],
   hidePagination,
   className,
   isLoading,
+  pageInfo,
 }: TxListProps) {
-  const page = Number(currentPage);
   const router = useRouter();
 
   return (
@@ -31,22 +29,24 @@ export function TxList({
       <Grid className={'flex flex-col gap-6'}>
         {transactions.map((transaction) => (
           <TxCard
-            key={transaction.node.id}
+            key={transaction.id}
             isLoading={isLoading}
-            transaction={transaction.node}
+            transaction={transaction}
           />
         ))}
       </Grid>
       {!hidePagination && (
         <Flex className="mobile:justify-end">
           <Pagination
-            page={page}
+            prevCursor={pageInfo?.startCursor}
+            nextCursor={pageInfo?.endCursor}
             className="mt-6 flex mobile:justify-end"
-            onChange={(page) =>
-              router.push(Routes.home(page.toString()), {
+            onChange={(cursor, dir) =>
+              router.push(Routes.home(cursor, dir), {
                 scroll: false,
               })
             }
+            pageInfo={pageInfo}
           />
         </Flex>
       )}

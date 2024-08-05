@@ -7,16 +7,23 @@ import { sdk } from '~/systems/Core/utils/sdk';
 const PER_PAGE = 10;
 
 const schema = z.object({
-  page: z.number().int().positive().optional(),
+  cursor: z.string().optional().nullable(),
+  dir: z.enum(['after', 'before']).optional(),
 });
 
-export const getLastTxs = act(schema, async ({ page = 1 }) => {
-  const currentPage = Number(page);
-  const toFetch = !page ? PER_PAGE : page * PER_PAGE;
-  const { data } = await sdk.getLastTransactions({ last: toFetch });
-  const list = data.transactions.edges;
-  if (!page) return list;
-  const startRange = (currentPage - 1) * PER_PAGE;
-  const endRange = currentPage * PER_PAGE;
-  return list.slice(startRange, endRange);
+export const getLastTxs = act(schema, async ({ cursor, dir = 'after' }) => {
+  const params = { last: PER_PAGE } as {
+    first?: number;
+    last?: number;
+    before?: string;
+    after?: string;
+  };
+  if (cursor && dir === 'after') {
+    params.after = cursor;
+  }
+  if (cursor && dir === 'before') {
+    params.before = cursor;
+  }
+  const { data } = await sdk.recentTransactions(params);
+  return data.transactions;
 });

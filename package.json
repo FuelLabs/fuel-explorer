@@ -36,9 +36,10 @@
     "format": "biome format --write .",
     "node:clean": "make -C ./docker clean",
     "node:logs": "make -C ./docker logs",
-    "node:reset": "run-s node:stop node:clean node:start",
+    "node:reset": "make -C ./docker reset",
     "node:start": "make -C ./docker start",
     "node:stop": "make -C ./docker stop",
+    "node:restart": "make -C ./docker restart",
     "prepare": "husky install",
     "start": "pnpm turbo:run start",
     "test": "pnpm turbo:run test",
@@ -68,6 +69,7 @@
     "@xstate/cli": "^0.5.17",
     "dotenv": "^16.4.4",
     "get-tsconfig": "4.7.2",
+    "graphql": ">=16.8.1",
     "hardhat-typechain": "^0.3.5",
     "husky": "^9.0.11",
     "jest": "29.7.0",
@@ -83,18 +85,13 @@
     "turbo": "^1.12.4",
     "typescript": "5.4.5",
     "updates": "^15.1.2",
-    "vitest": "1.2.2"
+    "vitest": "1.2.2",
+    "ws": "^8.17.1"
   },
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": [
-        "react",
-        "react-dom"
-      ],
-      "ignoreMissing": [
-        "react",
-        "react-dom"
-      ]
+      "allowAny": ["react", "react-dom"],
+      "ignoreMissing": ["react", "react-dom"]
     },
     "overrides": {
       "glob-parent@<5.1.2": ">=5.1.2",
@@ -102,8 +99,6 @@
       "graphql": ">=16.8.1",
       "trim-newlines@<3.0.1": ">=3.0.1",
       "terser@>=5.0.0 <5.14.2": ">=5.14.2",
-      "terser@<4.8.1": ">=4.8.1",
-      "loader-utils@<1.4.1": ">=1.4.1",
       "loader-utils@>=2.0.0 <2.0.3": ">=2.0.3",
       "json5": ">=2.2.2",
       "word-wrap": "npm:@aashutoshrathi/word-wrap",
@@ -113,7 +108,6 @@
       "semver@<7.5.2": ">=7.5.2",
       "http-cache-semantics@<4.1.1": ">=4.1.1",
       "lodash@<4.17.21": ">=4.17.21",
-      "lodash@>=3.7.0 <4.17.19": ">=4.17.19",
       "axios@>=1.0.0 <1.6.0": ">=1.6.0",
       "tough-cookie@<4.1.3": ">=4.1.3",
       "@cypress/request@<=2.88.12": ">=3.0.0",
@@ -123,7 +117,6 @@
       "vite@>=5.0.0 <=5.0.12": ">=5.0.13",
       "tar@<6.2.1": ">=6.2.1",
       "undici@>=6.0.0 <6.11.1": ">=6.11.1",
-      "undici@<5.28.4": ">=5.28.4",
       "lodash@<4.17.12": ">=4.17.12",
       "gh-pages@<5.0.0": ">=5.0.0",
       "ejs@<3.1.10": ">=3.1.10",

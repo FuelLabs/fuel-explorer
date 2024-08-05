@@ -1,0 +1,21 @@
+query coinsToSpend($excludedIds: ExcludeInput, $owner: Address!, $queryPerAsset: [SpendQueryElementInput!]!){
+    coinsToSpend(excludedIds: $excludedIds, owner: $owner, queryPerAsset: $queryPerAsset){
+        __typename
+        ... on Coin {
+            amount
+            assetId
+            blockCreated
+            owner
+            txCreatedIdx
+            utxoId
+        }
+        ... on MessageCoin {
+            amount
+            assetId
+            daHeight
+            nonce
+            recipient
+            sender
+        }
+    }
+}

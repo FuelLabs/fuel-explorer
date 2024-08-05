@@ -1,16 +1,23 @@
+'use client';
+import { GqlPageInfo } from '@fuel-ts/account/dist/providers/__generated__/operations';
 import type { BaseProps } from '@fuels/ui';
 import { Button, HStack, cx } from '@fuels/ui';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 
 type PaginationProps = BaseProps<{
-  page: number;
-  onChange?: (page: number) => void;
+  nextCursor?: string | null;
+  prevCursor?: string | null;
+  onChange?: (cursor: string, dir: 'after' | 'before') => void;
+  pageInfo?: GqlPageInfo;
 }>;
 
-export function Pagination({ page, onChange, ...props }: PaginationProps) {
-  const hasPrev = page > 1;
-  const hasNext = page < 10;
-
+export function Pagination({
+  onChange,
+  prevCursor,
+  nextCursor,
+  pageInfo,
+  ...props
+}: PaginationProps) {
   return (
     <HStack
       gap="1"
@@ -20,33 +27,26 @@ export function Pagination({ page, onChange, ...props }: PaginationProps) {
         props.className,
       )}
     >
-      <Button
-        size="2"
-        variant="ghost"
-        color="gray"
-        disabled={!hasPrev}
-        onClick={() => onChange?.(page - 1)}
-      >
-        <IconArrowLeft size={14} />
-      </Button>
-      <Button
-        aria-readonly
-        size="2"
-        variant="ghost"
-        color="gray"
-        className="bg-gray-3"
-      >
-        Page {page}
-      </Button>
-      <Button
-        size="2"
-        variant="ghost"
-        color="gray"
-        disabled={!hasNext}
-        onClick={() => onChange?.(page + 1)}
-      >
-        <IconArrowRight size={14} />
-      </Button>
+      {pageInfo?.hasNextPage && (
+        <Button
+          size="2"
+          variant="ghost"
+          color="gray"
+          onClick={() => onChange?.(prevCursor ?? '', 'after')}
+        >
+          <IconArrowLeft size={14} />
+        </Button>
+      )}
+      {pageInfo?.hasPreviousPage && (
+        <Button
+          size="2"
+          variant="ghost"
+          color="gray"
+          onClick={() => onChange?.(nextCursor ?? '', 'before')}
+        >
+          <IconArrowRight size={14} />
+        </Button>
+      )}
     </HStack>
   );
 }
