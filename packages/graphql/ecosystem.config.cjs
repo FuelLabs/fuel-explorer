@@ -4,7 +4,7 @@ module.exports = {
       name: 'graphql',
       script: './dist/app.js',
       mode: 'cluster',
-      instances: '1',
+      instances: '8',
     },
     {
       name: 'consumer',

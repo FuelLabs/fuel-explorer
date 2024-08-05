@@ -4,7 +4,7 @@ import type {
   GQLBlock,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
-import type { DbConnection, DbTransaction } from '~/infra/database/Db';
+import { type DbConnection, type DbTransaction } from '~/infra/database/Db';
 import { TransactionEntity } from './TransactionEntity';
 import { TransactionsTable } from './TransactionModel';
 import {

@@ -6,8 +6,8 @@ async function main() {
   await mq.connect();
   await mq.assert(QueueNames.ADD_BLOCK_RANGE);
   await mq.send('block', QueueNames.ADD_BLOCK_RANGE, {
-    from: 2921976,
-    to: 2921976,
+    from: 513367,
+    to: 513367,
   });
   await setTimeout(5000);
 }

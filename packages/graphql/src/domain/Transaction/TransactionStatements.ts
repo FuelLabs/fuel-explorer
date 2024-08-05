@@ -37,7 +37,7 @@ export class TransactionStatements extends BaseStatements<typeof TABLE> {
       const exec = this.selectExec(methods, paginator.params);
       return {
         execute: (owner: string) =>
-          exec?.execute({ ...paginator.params, owner }),
+          exec?.execute({ ...paginator.params, owner: `%${owner}%` }),
       };
     };
   }
