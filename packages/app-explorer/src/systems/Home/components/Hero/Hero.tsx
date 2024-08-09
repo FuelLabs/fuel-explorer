@@ -1,24 +1,20 @@
 'use client';
 
-import {
-  Box,
-  Container,
-  HStack,
-  Heading,
-  RoundedContainer,
-  Theme,
-  VStack,
-} from '@fuels/ui';
+import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
 import { tv } from 'tailwind-variants';
-import { TableTile } from '../TableCell/TableTile';
-import { ViewAllButton } from '../ViewAllButton/ViewAllButton';
+import { DailyTransaction } from '../DailyTransaction';
+import Epoch from '../Epoch/Epoch';
+import { LatestBlock } from '../LatestBlock/LatestBlock';
+// import { TableTile } from '../TableCell/TableTile';
+import { TPS } from '../TPS';
+import { TrendingCardCarousel } from '../TrendingCardCarousel';
 
 export function Hero() {
   const classes = styles();
-  const tiles = Array.from({ length: 4 }, (_, index) => (
-    <TableTile key={index} />
-  ));
+  // const tiles = Array.from({ length: 3 }, (_, index) => (
+  //   <TableTile key={index} />
+  // ));
 
   return (
     <Theme appearance="light">
@@ -31,15 +27,41 @@ export function Hero() {
             <Heading size="6" className={classes.title()}>
               Trending Items
             </Heading>
-            <HStack>{/* <TrendingCard /> */}</HStack>
+            <div className="pb-6">
+              <TrendingCardCarousel />
+            </div>
           </VStack>
+
           <Box className={classes.searchWrapper()}>
-            {/* <Epoch /> */}
-            {/* <LatestBlock /> */}
-            <RoundedContainer className="w-[33.3125rem]">
-              {tiles}
-              <ViewAllButton />
-            </RoundedContainer>
+            <div className="row-span-7 col-span-4">
+              <DailyTransaction />
+            </div>
+            <div className="row-span-4 col-span-3">
+              <Epoch />
+            </div>
+            <div className="row-span-4 col-span-5">
+              <LatestBlock />
+            </div>
+            <div
+              style={{
+                background: 'purple',
+              }}
+              className="row-span-3 col-span-3"
+            >
+              4
+            </div>
+            <div className="row-span-9 col-span-5 ">5</div>
+            <div className="row-span-6 col-span-4">
+              <TPS />
+            </div>
+            <div
+              style={{
+                background: 'red',
+              }}
+              className="row-span-6 col-span-3"
+            >
+              7
+            </div>
           </Box>
         </Container>
       </Box>
@@ -61,6 +83,6 @@ const styles = tv({
       'tablet:text-left tablet:text-4xl tablet:justify-start',
     ],
     subtitle: ['text-base mb-8 justify-center'],
-    searchWrapper: 'max-w-[400px]',
+    searchWrapper: 'grid grid-cols-12 grid-rows-12  gap-5',
   },
 });

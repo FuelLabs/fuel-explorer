@@ -5,7 +5,7 @@ export const TableTile = () => {
   const classes = styles();
 
   return (
-    <RoundedContainer className="w-[30.8125rem] ">
+    <RoundedContainer className="">
       <Flex className="justify-between">
         <VStack>
           <p className={classes.paragraphStrong()}>#4540916</p>

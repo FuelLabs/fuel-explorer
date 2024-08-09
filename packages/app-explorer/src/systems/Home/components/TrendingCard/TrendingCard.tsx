@@ -1,24 +1,31 @@
-import { HStack, RoundedContainer } from '@fuels/ui';
+import { RoundedContainer } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
-export const TrendingCard = () => {
+export interface TrendingCardProps {
+  title: string;
+  icon: string;
+}
+
+export const TrendingCard = ({ icon, title }: TrendingCardProps) => {
   const classes = styles();
   return (
-    <RoundedContainer className="w-[19.15625rem]">
-      <HStack>
+    <RoundedContainer className="px-4 py-3 w-full">
+      <div className="flex items-center gap-2">
         <img
+          width={24}
+          height={24}
           className="h-[24px] w-[24px]"
-          src="https://s3-alpha-sig.figma.com/img/5749/3ce7/292d2723de1ca424839b5b023c2aa32a?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ErIqnWTWbaxPj5AuflxmF-maSANAvESYDz~GS7U4C8fZwxqzOaBMWZvcMPMloF5b6EeNzRktU6-YsGzlCz31S3Ch9EhGzGCCuqb2U6JNoOMKfsO7i2VTvsGT2ScFn1tTyxVYegQTRIwyhnV7feQW7KU7biO4W0Ahs-Ncvytj0wohz2dNXjrHeYN7Yap5o5aU-No2ct54EaevLGiGFgeDWO9Ysbl1o4AcCAH4Eua9~S3IBV035RSXQNYdSqQjYOsuRcpBKfbbZoZOHw5yWCNEUOqnTjFpXbFC7bGqwPCaaYbSjElFObIpqI83GNbZ0UOEQb-eI9lPJEX-2lOvJFdm3g__"
-          alt=""
+          src={icon}
+          alt={title}
         />
-        <p className={classes.paragraphStrong()}>Bored Ape</p>
-      </HStack>
+        <p className={classes.paragraphStrong()}>{title}</p>
+      </div>
     </RoundedContainer>
   );
 };
 
 const styles = tv({
   slots: {
-    paragraphStrong: ['text-[14px] px-2'],
+    paragraphStrong: ['text-sm px-2 whitespace-nowrap'],
   },
 });
