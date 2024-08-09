@@ -83,6 +83,6 @@ const styles = tv({
       'tablet:text-left tablet:text-4xl tablet:justify-start',
     ],
     subtitle: ['text-base mb-8 justify-center'],
-    searchWrapper: 'grid grid-cols-12 grid-rows-12  gap-5',
+    searchWrapper: 'grid grid-cols-12 grid-rows-12  gap-2',
   },
 });
