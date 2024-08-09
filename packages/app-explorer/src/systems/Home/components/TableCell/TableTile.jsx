@@ -1,4 +1,4 @@
-import { Flex, HStack, RoundedContainer, VStack } from '@fuels/ui';
+import { Flex, HStack, RoundedContainer } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 export const TableTile = () => {
@@ -6,14 +6,21 @@ export const TableTile = () => {
 
   return (
     <RoundedContainer className="">
-      <Flex className="justify-between">
-        <VStack>
+      <Flex className="justify-between items-start">
+        <div className="space-y-[6px]">
           <p className={classes.paragraphStrong()}>#4540916</p>
           <p className={classes.paragraph()}>0.004878700 ETH</p>
-        </VStack>
-        <p className={classes.paragraph()}>fuel1a...3zxt</p>
+        </div>
+        <div className="flex items-center gap-[4px]">
+          <img
+            className="w-[16px] h-[16px] rounded-full overflow-hidden"
+            src="https://s3-alpha-sig.figma.com/img/404f/e544/a721b4897fea63c5007fea0819a062e4?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=HQ4U-6SV-6Neqns-0oAsAQiV26pnff609Srfd-PFdNQJvjOH7t7CfkNNoA90jzSdyELyRALWQfQAf5yrQAdKzz-yLKDg1A5Y7VpRN5ZRnR6~eHBGovRzDEdLtiHSRRY04fTUR~DN6RAXpPZBwnporoqKgk3ntoYvskkkEl56Hn1WUYhnfM3OtgqaZu327f39qdvO3VZudMUpVLxOWVk92ky4USKXEmu1AA9Y1luOexzTNyqQdabjaLQbr5zF-hPZtQV-pKHIKBCewNvhGiMp8hVU~XXnCcJvMvI9AaI~fZnq~6frNAAQEN9c22usX3kIwmTy9qoOXqzqFcOxoW4PGQ__"
+            alt=""
+          />
+          <p className={classes.paragraph()}>fuel1a...3zxt</p>
+        </div>
 
-        <VStack>
+        <div className="space-y-[6px]">
           <HStack className="items-center">
             <svg
               width="11"
@@ -33,7 +40,7 @@ export const TableTile = () => {
             <p className={classes.paragraphAccent()}>Settled</p>
           </HStack>
           <p className={classes.paragraph()}>1 Hour Ago</p>
-        </VStack>
+        </div>
       </Flex>
     </RoundedContainer>
   );

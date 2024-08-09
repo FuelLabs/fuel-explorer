@@ -4,17 +4,17 @@ import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
 import { tv } from 'tailwind-variants';
 import { DailyTransaction } from '../DailyTransaction';
-import Epoch from '../Epoch/Epoch';
-import { LatestBlock } from '../LatestBlock/LatestBlock';
 // import { TableTile } from '../TableCell/TableTile';
+import { DataTable } from '../DataTable';
+import Epoch from '../Epoch/Epoch';
+import { GasSaved } from '../GasSaved';
+import { GasTracker } from '../GasTracker';
+import { LatestBlock } from '../LatestBlock/LatestBlock';
 import { TPS } from '../TPS';
 import { TrendingCardCarousel } from '../TrendingCardCarousel';
 
 export function Hero() {
   const classes = styles();
-  // const tiles = Array.from({ length: 3 }, (_, index) => (
-  //   <TableTile key={index} />
-  // ));
 
   return (
     <Theme appearance="light">
@@ -33,34 +33,26 @@ export function Hero() {
           </VStack>
 
           <Box className={classes.searchWrapper()}>
-            <div className="row-span-7 col-span-4">
+            <div className="row-span-2 col-span-4">
               <DailyTransaction />
             </div>
-            <div className="row-span-4 col-span-3">
+            <div className="row-span-1 col-span-3">
               <Epoch />
             </div>
-            <div className="row-span-4 col-span-5">
+            <div className="row-span-1 col-span-5">
               <LatestBlock />
             </div>
-            <div
-              style={{
-                background: 'purple',
-              }}
-              className="row-span-3 col-span-3"
-            >
-              4
+            <div className="row-span-1 col-span-3">
+              <GasTracker />
             </div>
-            <div className="row-span-9 col-span-5 ">5</div>
-            <div className="row-span-6 col-span-4">
+            <div className="row-span-3 col-span-5 ">
+              <DataTable />
+            </div>
+            <div className="row-span-2 col-span-4">
               <TPS />
             </div>
-            <div
-              style={{
-                background: 'red',
-              }}
-              className="row-span-6 col-span-3"
-            >
-              7
+            <div className="row-span-2 col-span-3">
+              <GasSaved />
             </div>
           </Box>
         </Container>
@@ -83,6 +75,6 @@ const styles = tv({
       'tablet:text-left tablet:text-4xl tablet:justify-start',
     ],
     subtitle: ['text-base mb-8 justify-center'],
-    searchWrapper: 'grid grid-cols-12 grid-rows-12  gap-5',
+    searchWrapper: 'grid grid-cols-12 grid-rows-auto auto-rows-min gap-5',
   },
 });

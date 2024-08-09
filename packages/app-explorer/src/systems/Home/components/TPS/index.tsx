@@ -25,14 +25,14 @@ export const TPS = () => {
     <RoundedContainer className="py-4 px-5  space-y-8">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
-          <h3 className="text-[15px] leading-[24px] text-white font-semibold">
+          <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
             TPS
           </h3>
-          <span className="text-[13px] leading-[20px] text-white/45 block">
+          <span className="text-[13px] leading-[20px] text-muted block">
             28K
           </span>
         </div>
-        <h2 className="text-[32px] leading-[36px] text-white font-bold">
+        <h2 className="text-[32px] leading-[36px] text-heading font-bold">
           1.43M
         </h2>
 
@@ -48,10 +48,10 @@ export const TPS = () => {
             />
             <XAxis
               dataKey="time"
-              tick={{ fill: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}
+              tick={{ className: 'fill-heading', fontSize: '12px' }}
             />
             <YAxis
-              tick={{ fill: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}
+              tick={{ className: 'fill-heading', fontSize: '12px' }}
               domain={[0, 1900]}
               tickFormatter={(value) => {
                 return `${value / 1000}K`;
@@ -59,7 +59,7 @@ export const TPS = () => {
             />
             <Bar
               dataKey="value"
-              fill="#FFF"
+              className="dark:fill-white fill-[#eee]"
               radius={[10, 10, 0, 0]}
               barSize={20}
             />
