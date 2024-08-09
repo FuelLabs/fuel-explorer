@@ -2,6 +2,7 @@ import { gql } from 'graphql-request';
 
 import { parseAddressParam } from '../utils/address';
 import { Domain } from '../utils/domain';
+import { TPS } from './TPS';
 
 type Args = {
   query: string;
@@ -117,6 +118,20 @@ export class SearchDomain extends Domain<any, Args> {
     if (data.transaction) {
       result.transaction = { id: data.transaction.id };
     }
+
+    /*
+    Just for testing TPS:
+    
+    console.log('Calling TPS Data...');
+    // Call TPSDomain getTPS method
+    const tpsDomain = new TPS();
+    tpsDomain.context = this.context; // Set the context
+    tpsDomain.args = { first: 4, before: null }; // Set args directly
+    const tpsData = await tpsDomain.getTPS();
+
+    console.log('TPS Data:', JSON.stringify(tpsData, null, 2));
+    */
+
     return result;
   }
 }
