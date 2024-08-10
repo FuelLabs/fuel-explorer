@@ -1,4 +1,4 @@
-import type { Asset } from '@fuels/assets';
+import type { Asset } from '@fuel-ts/account';
 import type {
   BN,
   Message,
@@ -207,6 +207,7 @@ export class TxEthToFuelService {
         return depositTxHash;
       }
     } catch (e) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }
@@ -343,8 +344,8 @@ export class TxEthToFuelService {
 
     const { ethTxNonce, fuelProvider, fuelRecipient } = input;
 
-    const messages = await fuelProvider.getMessages(fuelRecipient, {
-      first: 1000,
+    const { messages } = await fuelProvider.getMessages(fuelRecipient, {
+      first: 500,
     });
     const fuelMessage = messages.find((message) => {
       return message.nonce.toString() === ethTxNonce.toHex(32).toString();
