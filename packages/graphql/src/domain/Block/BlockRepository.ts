@@ -68,12 +68,12 @@ export class BlockRepository {
   }
 
   static async blocksFromNode(first: number, after?: number) {
-    logger.debugRequest('BlockRepository.blocksFromNode', { first, after });
+    // logger.debugRequest('BlockRepository.blocksFromNode', { first, after });
     const { data } = await client.sdk.blocks({
       first: first < 0 ? -first : first,
       ...(after ? { after: String(after) } : null),
     });
-    logger.debugResponse('BlockRepository.blocksFromNode', { data });
+    // logger.debugResponse('BlockRepository.blocksFromNode', { data });
     const blocks = data.blocks.nodes as GQLBlock[];
     const hasNext = data.blocks.pageInfo.hasNextPage;
     const hasPrev = data.blocks.pageInfo.hasPreviousPage;
@@ -84,7 +84,7 @@ export class BlockRepository {
       hasPrev,
       endCursor: endCursor || undefined,
     };
-    logger.debugDone('BlockRepository.blocksFromNode', results);
+    // logger.debugDone('BlockRepository.blocksFromNode', results);
     return results;
   }
 }

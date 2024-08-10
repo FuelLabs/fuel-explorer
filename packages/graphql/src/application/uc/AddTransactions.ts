@@ -4,8 +4,7 @@ import { logger } from '~/core/Logger';
 import { ContractRepository } from '~/domain/Contract/ContractRepository';
 import { InputRepository } from '~/domain/Input/InputRepository';
 import { InputPredicateData } from '~/domain/Input/vo/InputPredicateData';
-import { OperationRepository } from '~/domain/Operation/OperationRepository';
-import { OperationsFactory } from '~/domain/Operation/factories/OperationsFactory';
+// import { OperationRepository } from '~/domain/Operation/OperationRepository';
 import { OutputRepository } from '~/domain/Output/OutputRepository';
 import type { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
@@ -84,20 +83,16 @@ class TransactionResources {
   }
 
   private async syncOperations() {
-    const { trx, transaction } = this;
-    const txAddr = new Address(transaction.txHash);
-    const hash = txAddr.short();
-    if (transaction.receipts.length > 10) return;
-    const operations = OperationsFactory.create(
-      transaction.toGQLNode(),
-    ).value();
-    if (!operations?.length) return;
-
-    this.log(`Syncing operations on transaction ${hash}`);
-    const transactionId = transaction._id.value();
-    const transactionHash = transaction.txHash;
-    const repository = new OperationRepository(trx);
-    await repository.insertMany(operations, transactionId, transactionHash);
+    // const { trx, transaction } = this;
+    // const txAddr = new Address(transaction.txHash);
+    // const hash = txAddr.short();
+    // const operations = []
+    // if (!operations?.length) return;
+    // this.log(`Syncing operations on transaction ${hash}`);
+    // const transactionId = transaction._id.value();
+    // const transactionHash = transaction.txHash;
+    // const repository = new OperationRepository(trx);
+    // await repository.insertMany(operations, transactionId, transactionHash);
   }
 
   private async syncPredicates(inputs: GQLInput[]) {

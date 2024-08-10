@@ -15,7 +15,9 @@
   },
   "typesVersions": {
     "*": {
-      "sdk": ["./src/graphql/generated/sdk.ts"]
+      "sdk": [
+        "./src/graphql/generated/sdk.ts"
+      ]
     }
   },
   "scripts": {
@@ -79,6 +81,7 @@
     "npm-run-all": "^4.1.5",
     "pg": "^8.12.0",
     "pg-boss": "9.0.3",
+    "pg-promise": "11.9.1",
     "pino": "9.2.0",
     "pino-pretty": "11.2.1",
     "pm2": "^5.4.1",

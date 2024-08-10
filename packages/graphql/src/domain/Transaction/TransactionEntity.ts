@@ -6,8 +6,9 @@ import { BlockRef } from '~/domain/Block/vo/BlockRef';
 import type { GQLTransaction } from '~/graphql/generated/sdk-provider';
 import { ContractEntity } from '../Contract/ContractEntity';
 import { InputEntity } from '../Input/InputEntity';
-import type { OperationEntity } from '../Operation/OperationEntity';
-import { OperationsFactory } from '../Operation/factories/OperationsFactory';
+import { OperationEntity } from '../Operation/OperationEntity';
+import ReceiptsParser from './ReceiptsParser';
+import ReceiptsParserAdapter from './ReceiptsParserAdapter';
 import type { TransactionItem } from './TransactionModel';
 import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
@@ -53,11 +54,16 @@ export class TransactionEntity extends Entity<
     const timestamp = TransactionTimestamp.create(item);
     const txHash = Hash256.create(item.id);
     // TODO: this should come from the database relations
-    const operations = OperationsFactory.create(item).entities(
-      id.value(),
-      txHash.value(),
-    );
-
+    let operations: any = [];
+    const parser = new ReceiptsParserAdapter(new ReceiptsParser());
+    if (item.status?.__typename === 'SuccessStatus') {
+      const receipts = item.status?.receipts || [];
+      console.log(item.id, receipts.entries);
+      operations = parser.parse(receipts) as any;
+      operations = operations.map((operation: any) =>
+        OperationEntity.create(operation, item._id || '', item.id),
+      );
+    }
     const props = {
       id,
       accountIndex,
