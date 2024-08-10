@@ -212,6 +212,18 @@ fragment TransactionItem on Transaction {
     ...TxDetailsGroupedInputCoin
     ...TxDetailsGroupedInputMessage
   }
+  groupedOutputs {
+    to
+    type
+    totalAmount
+    outputs {
+      ...TransactionOutput
+    }
+    contractId
+    assetId
+    inputIndex
+    recipient
+  }
   accountsInvolved {
     id
     type

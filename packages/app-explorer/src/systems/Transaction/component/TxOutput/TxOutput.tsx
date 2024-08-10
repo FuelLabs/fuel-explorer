@@ -2,7 +2,6 @@ import type {
   GQLChangeOutput,
   GQLCoinOutput,
   GQLContractCreated,
-  GQLContractOutput,
   GQLTransactionOutputFragment,
 } from '@fuel-explorer/graphql';
 import {
@@ -76,32 +75,6 @@ const TxOutputCoin = createComponent<
   },
 });
 
-const TxOutputContract = createComponent<
-  TxOutputProps<GQLContractOutput>,
-  typeof Card
->({
-  id: 'TxOutputContract',
-  render: (_, { output, ...props }) => {
-    const classes = styles();
-
-    return (
-      <Card {...props} className={cx('py-3', props.className)}>
-        <Card.Header className={classes.header()}>
-          <HStack align="center">
-            <TxIcon status="Submitted" type="Contract" />
-            <VStack gap="1">
-              <Text className="font-medium">Contract Output</Text>
-              <Text className="text-sm text-secondary">
-                Input Index: {output.inputIndex}
-              </Text>
-            </VStack>
-          </HStack>
-        </Card.Header>
-      </Card>
-    );
-  },
-});
-
 const TxOutputContractCreated = createComponent<
   TxOutputProps<GQLContractCreated>,
   typeof Card
@@ -140,9 +113,6 @@ export function TxOutput({ output, ...props }: TxOutputProps) {
     isOutput<GQLCoinOutput>(output, 'CoinOutput')
   ) {
     return <TxOutputCoin output={output} {...props} />;
-  }
-  if (isOutput<GQLContractOutput>(output, 'ContractOutput')) {
-    return <TxOutputContract output={output} {...props} />;
   }
   if (isOutput<GQLContractCreated>(output, 'ContractCreated')) {
     return <TxOutputContractCreated output={output} {...props} />;

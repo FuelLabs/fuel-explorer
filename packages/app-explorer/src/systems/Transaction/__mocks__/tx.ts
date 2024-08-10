@@ -65,5 +65,6 @@ export const TX_MOCK = mocks.aTransaction({
     GROUPED_INPUT_ASSET,
     GROUPED_INPUT_MESSAGE,
   ],
+  groupedOutputs: [],
   outputs: [OUTPUT_ASSET, OUTPUT_ASSET_UNKNOWN, OUTPUT_CONTRACT_CREATED],
 });
