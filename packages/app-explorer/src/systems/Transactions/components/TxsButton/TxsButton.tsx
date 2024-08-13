@@ -1,16 +1,17 @@
 import React from 'react';
 
 interface TxsButtonProps {
-  buttonName: string;
+  children: React.ReactNode; // Use children instead of buttonName
+  type?: 'button' | 'submit' | 'reset';
 }
 
-function TxsButton({ buttonName }: TxsButtonProps) {
+function TxsButton({ children, type = 'button' }: TxsButtonProps) {
   return (
     <button
-      type="button"
-      className="bg-[rgba(255,255,255,0.1)] px-3 py-1 rounded-sm text-sm mb-3 text-white"
+      type={type}
+      className="bg-[rgba(255,255,255,0.1)] px-3 py-1 rounded-sm text-sm mb-3 text-white flex justify-center items-center gap-2"
     >
-      {buttonName}
+      {children} {/* Render children here */}
     </button>
   );
 }

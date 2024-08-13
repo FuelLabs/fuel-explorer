@@ -22,7 +22,7 @@ export function Hero() {
         <Container className={classes.container()} size="4">
           <VStack>
             <Heading as="h1" className={classes.title()}>
-              Explore Fuel
+              Fuel Explorer
             </Heading>
             <Heading size="6" className={classes.title()}>
               Trending Items

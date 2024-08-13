@@ -35,22 +35,25 @@ function GridTable<T>({
       style: {
         backgroundColor: 'rgb(32, 32, 32)',
         borderBottom: '1px solid black',
-        color: 'whitesmoke',
+        color: '#9f9f9f',
+        fontWeight: '600',
       },
     },
     headCells: {
       style: {
         backgroundColor: 'rgb(32, 32, 32)',
-        color: 'whitesmoke',
+        color: '#9f9f9f',
         paddingLeft: '1rem',
         paddingRight: '1rem',
         paddingTop: '1.2rem',
         paddingBottom: '1.2rem',
+        fontWeight: '600',
       },
     },
     rows: {
       style: {
         backgroundColor: 'rgb(32, 32, 32)',
+        fontWeight: '400',
       },
     },
     cells: {
@@ -61,7 +64,8 @@ function GridTable<T>({
         paddingTop: '1.2rem',
         paddingBottom: '1.2rem',
         backgroundColor: 'rgb(32, 32, 32)',
-        borderBottom: '1px solid black', // Consistent border bottom color
+        borderBottom: '1px solid black',
+        fontWeight: '400',
       },
     },
     pagination: {
@@ -76,7 +80,7 @@ function GridTable<T>({
         borderRadius: '4px',
         backgroundColor: 'rgb(32, 32, 32)',
         '&.selected': {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)', // Lighten the selected page's background
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
           fontWeight: 'bold',
         },
         '&:hover': {

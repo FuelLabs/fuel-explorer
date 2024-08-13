@@ -19,9 +19,7 @@ export function TxsTab({ tabTitle, isActive, onClick }: TxsTabProps) {
   return (
     <p
       className={`text-sm cursor-pointer ${
-        isActive
-          ? 'text-brand border-b-2 border-brand pb-2'
-          : 'text-[whitesmoke]'
+        isActive ? 'text-brand border-b-2 border-brand pb-2' : 'text-[#9f9f9f]'
       }`}
       onClick={onClick}
       onKeyDown={handleKeyDown} // Add key down event handler

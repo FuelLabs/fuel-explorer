@@ -1,6 +1,6 @@
 'use client';
 import type { BaseProps } from '@fuels/ui';
-import { Badge, HStack, Heading } from '@fuels/ui';
+import { HStack, Heading } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 export type PageTitleProps = BaseProps<{
@@ -15,18 +15,12 @@ export function PageTitle({
   children,
   as = 'h2',
   size = '1',
-  icon,
   rightElement,
   className,
 }: PageTitleProps) {
   const classes = styles({ size });
   return (
     <Heading as={as} className={classes.root({ className })}>
-      {icon && (
-        <Badge color="gray" size="2" className={classes.icon()}>
-          {icon}
-        </Badge>
-      )}
       <HStack className={classes.title()}>{children}</HStack>
       <div className="flex items-center h-full tablet:self-center">
         {rightElement}
@@ -38,8 +32,7 @@ export function PageTitle({
 const styles = tv({
   slots: {
     root: [
-      'first:mb-8 flex items-center justify-between gap-2',
-      'border-border border-b',
+      'first:mb-4 flex items-center justify-between gap-2',
       'tablet:flex-nowrap tablet:gap-4',
     ],
     icon: ['h-full flex-shrink-0 px-2', 'tablet:self-start tablet:mt-1.5'],

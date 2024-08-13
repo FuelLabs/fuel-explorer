@@ -9,9 +9,7 @@ import { TxsTabList } from '../TxsTabList/TxsTabList';
 export function TxsTitle() {
   return (
     <>
-      <PageTitle icon={<Icon icon={IconListDetails} />}>
-        Recent Transactions
-      </PageTitle>
+      <PageTitle icon={<Icon icon={IconListDetails} />}>Top Tokens</PageTitle>
       <TxsTabList />
       <TxsButtonContainer />
       {/* <TxsExportCsvModal /> */}
