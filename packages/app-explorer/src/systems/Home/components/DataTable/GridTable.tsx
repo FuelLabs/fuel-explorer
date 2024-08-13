@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import DataTable, { TableProps, TableColumn } from 'react-data-table-component';
 import ReactPaginate from 'react-paginate';
+import './gridTable.css';
 
 export interface GridTableProps<T> extends TableProps<T> {
   columns: TableColumn<T>[];
   data: T[];
-  // totalRows: number;
-  // rowsPerPage: number;
   pageCount: number;
   onPageChanged: (selectedItem: number) => void;
 }
@@ -14,26 +13,92 @@ export interface GridTableProps<T> extends TableProps<T> {
 function GridTable<T>({
   columns,
   data,
-  // totalRows,
-  // rowsPerPage,
   pageCount,
   onPageChanged,
   ...props
 }: GridTableProps<T>): React.JSX.Element {
   const [_currentPage, setCurrentPage] = useState(0);
 
+  const customStyles = {
+    tableWrapper: {
+      style: {
+        borderRadius: '7px',
+        overflow: 'hidden',
+      },
+    },
+    table: {
+      style: {
+        backgroundColor: 'rgb(32, 32, 32)',
+      },
+    },
+    headRow: {
+      style: {
+        backgroundColor: 'rgb(32, 32, 32)',
+        borderBottom: '1px solid black',
+        color: 'whitesmoke',
+      },
+    },
+    headCells: {
+      style: {
+        backgroundColor: 'rgb(32, 32, 32)',
+        color: 'whitesmoke',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+        paddingTop: '1.2rem',
+        paddingBottom: '1.2rem',
+      },
+    },
+    rows: {
+      style: {
+        backgroundColor: 'rgb(32, 32, 32)',
+      },
+    },
+    cells: {
+      style: {
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+        color: '#e0e0f0',
+        paddingTop: '1.2rem',
+        paddingBottom: '1.2rem',
+        backgroundColor: 'rgb(32, 32, 32)',
+        borderBottom: '1px solid black', // Consistent border bottom color
+      },
+    },
+    pagination: {
+      style: {
+        backgroundColor: 'rgb(32, 32, 32)',
+        color: '#f0f0f0',
+      },
+      pageButtonsStyle: {
+        padding: '8px 16px',
+        margin: '0 4px',
+        color: '#f0f0f0',
+        borderRadius: '4px',
+        backgroundColor: 'rgb(32, 32, 32)',
+        '&.selected': {
+          backgroundColor: 'rgba(255, 255, 255, 0.1)', // Lighten the selected page's background
+          fontWeight: 'bold',
+        },
+        '&:hover': {
+          backgroundColor: 'rgba(255, 255, 255, 0.2)', // Slight hover effect
+        },
+      },
+    },
+  };
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={'Prev'}
-        nextLabel={'Next'}
+        previousLabel={<span>&#x2190; Previous</span>} // Left Arrow
+        nextLabel={<span>Next &#x2192;</span>} // Right Arrow
         breakLabel={'...'}
         pageCount={pageCount}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}
         containerClassName={'pagination'}
-        activeClassName={'active'}
+        activeClassName={'selected'}
+        disabledClassName={'disabled'} // Handles styling for disabled state
+        pageLinkClassName={'page-link'} // Ensures consistent page link styling
       />
     );
   };
@@ -44,14 +109,17 @@ function GridTable<T>({
   };
 
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      paginationComponent={Pagination}
-      pagination
-      dense
-      {...props}
-    />
+    <div style={customStyles.tableWrapper.style}>
+      <DataTable
+        customStyles={customStyles}
+        columns={columns}
+        data={data}
+        paginationComponent={Pagination}
+        pagination
+        dense
+        {...props}
+      />
+    </div>
   );
 }
 
