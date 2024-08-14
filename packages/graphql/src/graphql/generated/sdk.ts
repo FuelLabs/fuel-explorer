@@ -2802,6 +2802,40 @@ export type GQLTransactionDetailsQuery = {
                   __typename: 'OperationReceipt';
                   receipts?: Array<{
                     __typename: 'OperationReceipt';
+                    receipts?: Array<{
+                      __typename: 'OperationReceipt';
+                      item?: {
+                        __typename: 'Receipt';
+                        id?: string | null;
+                        to?: string | null;
+                        pc?: string | null;
+                        is?: string | null;
+                        toAddress?: string | null;
+                        amount?: string | null;
+                        assetId?: string | null;
+                        gas?: string | null;
+                        param1?: string | null;
+                        param2?: string | null;
+                        val?: string | null;
+                        ptr?: string | null;
+                        digest?: string | null;
+                        reason?: string | null;
+                        ra?: string | null;
+                        rb?: string | null;
+                        rc?: string | null;
+                        rd?: string | null;
+                        len?: string | null;
+                        receiptType: GQLReceiptType;
+                        result?: string | null;
+                        gasUsed?: string | null;
+                        data?: string | null;
+                        sender?: string | null;
+                        recipient?: string | null;
+                        nonce?: string | null;
+                        contractId?: string | null;
+                        subId?: string | null;
+                      } | null;
+                    }> | null;
                     item?: {
                       __typename: 'Receipt';
                       id?: string | null;
@@ -3530,6 +3564,40 @@ export type GQLOperationItemFragment = {
               __typename: 'OperationReceipt';
               receipts?: Array<{
                 __typename: 'OperationReceipt';
+                receipts?: Array<{
+                  __typename: 'OperationReceipt';
+                  item?: {
+                    __typename: 'Receipt';
+                    id?: string | null;
+                    to?: string | null;
+                    pc?: string | null;
+                    is?: string | null;
+                    toAddress?: string | null;
+                    amount?: string | null;
+                    assetId?: string | null;
+                    gas?: string | null;
+                    param1?: string | null;
+                    param2?: string | null;
+                    val?: string | null;
+                    ptr?: string | null;
+                    digest?: string | null;
+                    reason?: string | null;
+                    ra?: string | null;
+                    rb?: string | null;
+                    rc?: string | null;
+                    rd?: string | null;
+                    len?: string | null;
+                    receiptType: GQLReceiptType;
+                    result?: string | null;
+                    gasUsed?: string | null;
+                    data?: string | null;
+                    sender?: string | null;
+                    recipient?: string | null;
+                    nonce?: string | null;
+                    contractId?: string | null;
+                    subId?: string | null;
+                  } | null;
+                }> | null;
                 item?: {
                   __typename: 'Receipt';
                   id?: string | null;
@@ -3930,6 +3998,40 @@ export type GQLTransactionItemFragment = {
                 __typename: 'OperationReceipt';
                 receipts?: Array<{
                   __typename: 'OperationReceipt';
+                  receipts?: Array<{
+                    __typename: 'OperationReceipt';
+                    item?: {
+                      __typename: 'Receipt';
+                      id?: string | null;
+                      to?: string | null;
+                      pc?: string | null;
+                      is?: string | null;
+                      toAddress?: string | null;
+                      amount?: string | null;
+                      assetId?: string | null;
+                      gas?: string | null;
+                      param1?: string | null;
+                      param2?: string | null;
+                      val?: string | null;
+                      ptr?: string | null;
+                      digest?: string | null;
+                      reason?: string | null;
+                      ra?: string | null;
+                      rb?: string | null;
+                      rc?: string | null;
+                      rd?: string | null;
+                      len?: string | null;
+                      receiptType: GQLReceiptType;
+                      result?: string | null;
+                      gasUsed?: string | null;
+                      data?: string | null;
+                      sender?: string | null;
+                      recipient?: string | null;
+                      nonce?: string | null;
+                      contractId?: string | null;
+                      subId?: string | null;
+                    } | null;
+                  }> | null;
                   item?: {
                     __typename: 'Receipt';
                     id?: string | null;
@@ -4464,6 +4566,9 @@ export const OperationItemFragmentDoc = gql`
         ...OperationReceiptItem
         receipts {
           ...OperationReceiptItem
+          receipts {
+            ...OperationReceiptItem
+          }
         }
       }
     }

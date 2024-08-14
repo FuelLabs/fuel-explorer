@@ -148,6 +148,9 @@ fragment OperationItem on Operation {
         ...OperationReceiptItem
 		receipts {
           ...OperationReceiptItem
+		  receipts {
+            ...OperationReceiptItem
+          }
         }
       }
     }
