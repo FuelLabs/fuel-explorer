@@ -53,9 +53,10 @@ export class TransactionRepository {
     logger.debugResponse('TransactionRepository.findManyByOwner', {
       transactions,
     });
-    return transactions.map((transaction) =>
+    const output = transactions.map((transaction) =>
       TransactionEntity.createFromDB(transaction),
     );
+    return output;
   }
 
   async upsertMany(
