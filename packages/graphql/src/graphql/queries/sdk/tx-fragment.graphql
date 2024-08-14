@@ -144,6 +144,12 @@ fragment OperationItem on Operation {
     ...OperationReceiptItem
     receipts {
       ...OperationReceiptItem
+	  receipts {
+        ...OperationReceiptItem
+		receipts {
+          ...OperationReceiptItem
+        }
+      }
     }
   }
 }
@@ -212,22 +218,12 @@ fragment TransactionItem on Transaction {
     ...TxDetailsGroupedInputCoin
     ...TxDetailsGroupedInputMessage
   }
-  groupedOutputs {
-    to
-    type
-    totalAmount
-    outputs {
-      ...TransactionOutput
-    }
-    contractId
-    assetId
-    inputIndex
-    recipient
-  }
-  accountsInvolved {
-    id
-    type
-  }
+ groupedOutputs {
+   __typename
+   ...TxDetailsGroupedOutputCoin
+   ...TxDetailsGroupedOutputChanged
+   ...TxDetailsGroupedOutputContractCreated
+ }
   operations {
     ...OperationItem
   }

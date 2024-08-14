@@ -45,6 +45,7 @@ export type TxScriptsProps = BaseProps<{
 }>;
 
 export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
+  console.log('tx', tx);
   const [opened, setOpened] = useState(false);
   const hasOperations = tx?.operations?.length ?? 0 > 0;
   return (
@@ -200,13 +201,81 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
                 {receipt?.receipts?.map((sub, j) => (
                   <div
                     key={`${j}-${sub?.item?.receiptType ?? ''}`}
-                    className="ml-10"
+                    data-nested="true"
+                    className={classes.operationChild()}
                   >
                     <ReceiptItem
                       isIndented
                       receipt={sub as GQLOperationReceipt}
                       hasPanic={hasPanic}
                     />
+                    {sub?.receipts?.map((sub, j) => (
+                      <div
+                        key={`${j}-${sub?.item?.receiptType ?? ''}`}
+                        data-nested="true"
+                        className={classes.operationChild()}
+                      >
+                        <ReceiptItem
+                          isIndented
+                          receipt={sub as GQLOperationReceipt}
+                          hasPanic={hasPanic}
+                        />
+                        {sub?.receipts?.map((sub, j) => (
+                          <div
+                            key={`${j}-${sub?.item?.receiptType ?? ''}`}
+                            data-nested="true"
+                            className={classes.operationChild()}
+                          >
+                            <ReceiptItem
+                              isIndented
+                              receipt={sub as GQLOperationReceipt}
+                              hasPanic={hasPanic}
+                            />
+                            {sub?.receipts?.map((sub, j) => (
+                              <div
+                                key={`${j}-${sub?.item?.receiptType ?? ''}`}
+                                data-nested="true"
+                                className={classes.operationChild()}
+                              >
+                                <ReceiptItem
+                                  isIndented
+                                  receipt={sub as GQLOperationReceipt}
+                                  hasPanic={hasPanic}
+                                />
+                                {sub?.receipts?.map((sub, j) => (
+                                  <div
+                                    key={`${j}-${sub?.item?.receiptType ?? ''}`}
+                                    data-nested="true"
+                                    className={classes.operationChild()}
+                                  >
+                                    <ReceiptItem
+                                      isIndented
+                                      receipt={sub as GQLOperationReceipt}
+                                      hasPanic={hasPanic}
+                                    />
+                                    {sub?.receipts?.map((sub, j) => (
+                                      <div
+                                        key={`${j}-${
+                                          sub?.item?.receiptType ?? ''
+                                        }`}
+                                        data-nested="true"
+                                        className={classes.operationChild()}
+                                      >
+                                        <ReceiptItem
+                                          isIndented
+                                          receipt={sub as GQLOperationReceipt}
+                                          hasPanic={hasPanic}
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
@@ -576,6 +645,19 @@ const styles = tv({
     header: 'group min-h-[42px] gap-2 tablet:gap-4',
     operation: [
       'relative flex flex-col gap-3',
+      '[&[data-nested=true]]:before:absolute',
+      '[&[data-nested=true]]:before:content-[""]',
+      '[&[data-nested=true]]:before:block',
+      '[&[data-nested=true]]:before:border-l',
+      '[&[data-nested=true]]:before:border-border',
+      '[&[data-nested=true]]:before:border-dashed',
+      '[&[data-nested=true]]:before:top-[40px]',
+      '[&[data-nested=true]]:before:bottom-[20px]',
+      '[&[data-nested=true]]:before:left-0',
+      '[&[data-nested=true]]:before:right-0',
+    ],
+    operationChild: [
+      'relative flex flex-col gap-3 ml-10',
       '[&[data-nested=true]]:before:absolute',
       '[&[data-nested=true]]:before:content-[""]',
       '[&[data-nested=true]]:before:block',

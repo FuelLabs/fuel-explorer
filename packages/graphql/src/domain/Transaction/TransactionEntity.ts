@@ -56,9 +56,11 @@ export class TransactionEntity extends Entity<
     // TODO: this should come from the database relations
     let operations: any = [];
     const parser = new ReceiptsParserAdapter(new ReceiptsParser());
-    if (item.status?.__typename === 'SuccessStatus') {
+    // Should show for other status like FailureStatus?
+    // @ts-ignore
+    if (item.status?.receipts) {
+      // @ts-ignore
       const receipts = item.status?.receipts || [];
-      console.log(item.id, receipts.entries);
       operations = parser.parse(receipts) as any;
       operations = operations.map((operation: any) =>
         OperationEntity.create(operation, item._id || '', item.id),
@@ -79,7 +81,9 @@ export class TransactionEntity extends Entity<
       txHash,
     };
 
-    return new TransactionEntity(props, id);
+    const transactionEntity = new TransactionEntity(props, id);
+    // console.log(JSON.stringify(transactionEntity.operations));
+    return transactionEntity;
   }
 
   static createFromDB(item: TransactionItem) {
