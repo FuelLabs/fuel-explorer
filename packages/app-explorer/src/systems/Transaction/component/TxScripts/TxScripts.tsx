@@ -175,17 +175,6 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
       {operations.map((item, i) => (
         <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
           {item?.receipts?.map((receipt, idx) => {
-            const hasNested = Boolean(receipt?.receipts?.length);
-            if (!hasNested) {
-              return (
-                <ReceiptItem
-                  key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
-                  receipt={receipt as GQLOperationReceipt}
-                  isIndented={idx > 0}
-                  hasPanic={hasPanic}
-                />
-              );
-            }
             return (
               <div
                 key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
@@ -197,92 +186,43 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
                   isIndented={idx > 0}
                   hasPanic={hasPanic}
                 />
-                {receipt?.receipts?.map((sub, j) => (
-                  <div
-                    key={`${j}-${sub?.item?.receiptType ?? ''}`}
-                    data-nested="true"
-                    className={classes.operationChild()}
-                  >
-                    <ReceiptItem
-                      isIndented
-                      receipt={sub as GQLOperationReceipt}
-                      hasPanic={hasPanic}
-                    />
-                    {sub?.receipts?.map((sub, j) => (
-                      <div
-                        key={`${j}-${sub?.item?.receiptType ?? ''}`}
-                        data-nested="true"
-                        className={classes.operationChild()}
-                      >
-                        <ReceiptItem
-                          isIndented
-                          receipt={sub as GQLOperationReceipt}
-                          hasPanic={hasPanic}
-                        />
-                        {sub?.receipts?.map((sub, j) => (
-                          <div
-                            key={`${j}-${sub?.item?.receiptType ?? ''}`}
-                            data-nested="true"
-                            className={classes.operationChild()}
-                          >
-                            <ReceiptItem
-                              isIndented
-                              receipt={sub as GQLOperationReceipt}
-                              hasPanic={hasPanic}
-                            />
-                            {sub?.receipts?.map((sub, j) => (
-                              <div
-                                key={`${j}-${sub?.item?.receiptType ?? ''}`}
-                                data-nested="true"
-                                className={classes.operationChild()}
-                              >
-                                <ReceiptItem
-                                  isIndented
-                                  receipt={sub as GQLOperationReceipt}
-                                  hasPanic={hasPanic}
-                                />
-                                {sub?.receipts?.map((sub, j) => (
-                                  <div
-                                    key={`${j}-${sub?.item?.receiptType ?? ''}`}
-                                    data-nested="true"
-                                    className={classes.operationChild()}
-                                  >
-                                    <ReceiptItem
-                                      isIndented
-                                      receipt={sub as GQLOperationReceipt}
-                                      hasPanic={hasPanic}
-                                    />
-                                    {sub?.receipts?.map((sub, j) => (
-                                      <div
-                                        key={`${j}-${
-                                          sub?.item?.receiptType ?? ''
-                                        }`}
-                                        data-nested="true"
-                                        className={classes.operationChild()}
-                                      >
-                                        <ReceiptItem
-                                          isIndented
-                                          receipt={sub as GQLOperationReceipt}
-                                          hasPanic={hasPanic}
-                                        />
-                                      </div>
-                                    ))}
-                                  </div>
-                                ))}
-                              </div>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                ))}
+                <ReceiptItemR
+                  receipts={receipt?.receipts as GQLOperationReceipt[]}
+                  hasPanic={hasPanic}
+                />
               </div>
             );
           })}
         </div>
       ))}
     </div>
+  );
+}
+
+function ReceiptItemR(props: {
+  receipts?: GQLOperationReceipt[];
+  hasPanic: boolean;
+}) {
+  const classes = styles();
+  return (
+    <>
+      {props.receipts?.map((sub, j) => (
+        <div
+          key={`${j}-${sub?.item?.receiptType ?? ''}`}
+          data-nested="true"
+          className={classes.operationChild()}
+        >
+          <ReceiptItem
+            isIndented
+            receipt={sub as GQLOperationReceipt}
+            hasPanic={props.hasPanic}
+          />
+          {sub?.receipts && sub?.receipts?.length > 0 && (
+            <ReceiptItemR receipts={sub?.receipts} hasPanic={props.hasPanic} />
+          )}
+        </div>
+      ))}
+    </>
   );
 }
 
