@@ -1484,6 +1484,7 @@ export type GQLBlockFragment = {
     __typename: 'ParsedTime';
     full?: string | null;
     fromNow?: string | null;
+    rawUnix?: string | null;
   } | null;
   transactions: Array<{
     __typename: 'Transaction';
@@ -1522,6 +1523,7 @@ export type GQLBlockQuery = {
       __typename: 'ParsedTime';
       full?: string | null;
       fromNow?: string | null;
+      rawUnix?: string | null;
     } | null;
     transactions: Array<{
       __typename: 'Transaction';
@@ -4416,6 +4418,7 @@ export const BlockFragmentDoc = gql`
   time {
     full
     fromNow
+    rawUnix
   }
   transactions {
     ...RecentTransaction

@@ -13,6 +13,7 @@ fragment Block on Block {
   time {
     full
     fromNow
+	rawUnix
   }
   transactions {
     ...RecentTransaction

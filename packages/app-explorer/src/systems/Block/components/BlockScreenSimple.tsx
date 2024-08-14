@@ -14,6 +14,7 @@ import { PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { Routes } from '~/routes';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
+import { fromNowUnix } from '~/systems/Core/utils/dayjs';
 import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
@@ -53,7 +54,7 @@ export function BlockScreenSimple({
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-24 h-6" />}
-            regularEl={block?.time?.fromNow}
+            regularEl={fromNowUnix(block?.time?.rawUnix)}
           />
         </CardInfo>
         <CardInfo name="# of transactions" className="flex-1">
