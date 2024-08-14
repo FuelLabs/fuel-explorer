@@ -45,7 +45,6 @@ export type TxScriptsProps = BaseProps<{
 }>;
 
 export function TxScripts({ tx, isLoading, ...props }: TxScriptsProps) {
-  console.log('tx', tx);
   const [opened, setOpened] = useState(false);
   const hasOperations = tx?.operations?.length ?? 0 > 0;
   return (
