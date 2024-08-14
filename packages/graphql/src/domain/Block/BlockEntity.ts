@@ -8,6 +8,7 @@ import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
 import { BlockProducer } from './vo/BlockProducer';
 
+import { Signer } from 'fuels';
 import { TransactionEntity } from '../Transaction/TransactionEntity';
 
 type BlockInputProps = {
@@ -20,7 +21,7 @@ type BlockInputProps = {
 };
 
 export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
-  static create(block: BlockItem, producerId: string | null) {
+  static create(block: BlockItem, blockSignature: string | null) {
     const item = block.data;
     if (!item) {
       throw new Error('item is required');
@@ -32,7 +33,12 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     const timestamp = Timestamp.create(item.header.time);
     const time = ParsedTime.create(item.header.time);
     const totalGasUsed = BlockGasUsed.create(item);
-    const producer = BlockProducer.create(producerId);
+
+    const producerAddress = Signer.recoverAddress(
+      block.data.id,
+      blockSignature || '',
+    ).toB256();
+    const producer = BlockProducer.create(producerAddress);
 
     const props = {
       blockHash,
