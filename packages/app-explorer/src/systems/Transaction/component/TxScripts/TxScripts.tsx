@@ -657,7 +657,8 @@ const styles = tv({
       '[&[data-nested=true]]:before:right-0',
     ],
     operationChild: [
-      'relative flex flex-col gap-3 ml-10',
+      'relative flex flex-col gap-3 ml-5',
+      'tablet:ml-10',
       '[&[data-nested=true]]:before:absolute',
       '[&[data-nested=true]]:before:content-[""]',
       '[&[data-nested=true]]:before:block',
@@ -674,7 +675,8 @@ const styles = tv({
     indent: {
       true: {
         receiptRow: [
-          'ml-10 before:absolute before:top-[-35px] before:left-[-40px]',
+          'ml-5 before:absolute before:top-[-35px] before:left-[-20px]',
+          'tablet:ml-10 tablet:before:left-[-40px]',
           'before:bottom-[20px] before:right-[100%]',
           'before:content-[""] before:block before:border-l before:border-b',
           'before:border-border before:border-dashed before:rounded-bl',
