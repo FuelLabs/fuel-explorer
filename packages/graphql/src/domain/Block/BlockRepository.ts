@@ -6,7 +6,6 @@ import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { BlockEntity } from './BlockEntity';
 import { BlocksTable } from './BlockModel';
 import { BlockStatements, type BlockStatementsItem } from './BlockStatements';
-import { BlockProducer } from './vo/BlockProducer';
 
 export class BlockRepository {
   statements!: BlockStatementsItem;
@@ -20,10 +19,14 @@ export class BlockRepository {
     const block = await this.statements.findByHash.execute({ blockHash });
     logger.debugResponse('BlockRepository.findByHash', { first: block });
     if (!block) return null;
-    logger.debugRequest('Getting block producer from SDK', { block });
-    const producer = await BlockProducer.fromSdk();
-    logger.debugDone('BlockRepository.findByHash', { producer });
-    return BlockEntity.create(block, producer);
+    logger.debugDone('BlockRepository.findByHash', { block });
+    const output = BlockEntity.create(
+      block,
+      block.data.consensus.__typename === 'PoAConsensus'
+        ? block.data.consensus?.signature
+        : null,
+    );
+    return output;
   }
 
   async findByHeight(height: number) {
@@ -31,10 +34,14 @@ export class BlockRepository {
     const block = await this.statements.findByHeight.execute({ height });
     logger.debugResponse('BlockRepository.findByHeight', { first: block });
     if (!block) return null;
-    logger.debugRequest('Getting block producer from SDK', { block });
-    const producer = await BlockProducer.fromSdk();
-    logger.debugDone('BlockRepository.findByHeight', { producer });
-    return BlockEntity.create(block, producer);
+    logger.debugDone('BlockRepository.findByHeight', { block });
+    const output = BlockEntity.create(
+      block,
+      block.data.consensus.__typename === 'PoAConsensus'
+        ? block.data.consensus?.signature
+        : null,
+    );
+    return output;
   }
 
   async findLatestAdded() {
@@ -42,9 +49,14 @@ export class BlockRepository {
     const block = await this.statements.findLatestAdded.execute();
     logger.debugResponse('BlockRepository.findLatestAdded', { block });
     if (!block) return null;
-    const producer = await BlockProducer.fromSdk();
-    logger.debugDone('BlockRepository.findLatestAdded', { producer });
-    return BlockEntity.create(block, producer);
+    logger.debugDone('BlockRepository.findLatestAdded', { block });
+    const output = BlockEntity.create(
+      block,
+      block.data.consensus.__typename === 'PoAConsensus'
+        ? block.data.consensus?.signature
+        : null,
+    );
+    return output;
   }
 
   async findMany(paginator: Paginator<typeof BlocksTable>) {
@@ -52,9 +64,15 @@ export class BlockRepository {
     const statement = this.statements.findMany(paginator);
     const blocks = await statement.execute();
     logger.debugResponse('BlockRepository.findMany', { blocks });
-    const producer = await BlockProducer.fromSdk();
-    logger.debugDone('BlockRepository.findMany', { producer });
-    return blocks.map((block) => BlockEntity.create(block, producer));
+    logger.debugDone('BlockRepository.findMany', { blocks });
+    return blocks.map((block) =>
+      BlockEntity.create(
+        block,
+        block.data.consensus.__typename === 'PoAConsensus'
+          ? block.data.consensus?.signature
+          : null,
+      ),
+    );
   }
 
   async upsertMany(
