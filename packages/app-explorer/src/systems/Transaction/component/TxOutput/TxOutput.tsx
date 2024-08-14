@@ -54,10 +54,6 @@ const TxOutputCoin = createComponent<
               }}
             />
           </AssetItem>
-          {/*
-			  I'm just hidding this until we get the output/input design merged 
-			  https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
-			*/}
           <HStack className="hidden tablet:flex items-center gap-2">
             <Icon icon={IconArrowUp} className="text-success" />
             {amount && (
