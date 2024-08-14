@@ -129,7 +129,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           regularEl={
             <Link
               as={NextLink}
-              href={`/block/${tx?.blockHeight}/simples`}
+              href={`/block/${tx?.blockHeight}/simple`}
               className="text-link"
             >
               #{tx?.blockHeight}
