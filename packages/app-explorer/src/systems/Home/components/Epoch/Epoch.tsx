@@ -1,4 +1,4 @@
-import { RoundedContainer } from '@fuels/ui';
+import { HStack, RoundedContainer } from '@fuels/ui';
 
 const Epoch = () => {
   return (
@@ -9,9 +9,14 @@ const Epoch = () => {
             Current EPOCH
           </h3>
         </div>
-        <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-          657
-        </h2>
+        <HStack align={'baseline'} className="justify-between">
+          <h2 className="text-[32px] leading-[36px] text-heading font-bold">
+            657
+          </h2>
+          <p className="text-[12px] text-heading font-regular text-muted block]">
+            55%
+          </p>
+        </HStack>
       </div>
       <div className="mt-[8px]">
         <div className="w-full h-[8px] rounded-full bg-white/10">

@@ -1,4 +1,4 @@
-import { ChartConfig, RoundedContainer } from '@fuels/ui';
+import { ChartConfig, HStack, RoundedContainer } from '@fuels/ui';
 import {
   CartesianGrid,
   Line,
@@ -44,10 +44,14 @@ export const GasSaved = () => {
             24H
           </span>
         </div>
-        <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-          $1.14
-        </h2>
-
+        <HStack align={'baseline'}>
+          <h2 className="text-[32px] leading-[36px] text-heading font-bold">
+            $1.14
+          </h2>
+          <p className="text-[11px] text-heading font-regular text-muted tracking-tight] ">
+            Per Transaction v ETH
+          </p>
+        </HStack>
         <ResponsiveContainer width="100%" height={130}>
           <LineChart
             data={chartData}

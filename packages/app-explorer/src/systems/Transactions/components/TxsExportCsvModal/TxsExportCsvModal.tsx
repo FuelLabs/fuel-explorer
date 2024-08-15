@@ -1,4 +1,5 @@
 'use client';
+import { Select } from '@fuels/ui';
 import React, { useState } from 'react';
 
 type TxsExportCsvModalProps = {
@@ -8,7 +9,7 @@ type TxsExportCsvModalProps = {
 const TxsExportCsvModal: React.FC<TxsExportCsvModalProps> = ({
   closeModal,
 }) => {
-  const [transactionType, setTransactionType] =
+  const [_transactionType, _setTransactionType] =
     useState<string>('Transactions');
   const [address, setAddress] = useState<string>('');
   const [downloadOption, setDownloadOption] = useState<'date' | 'dataBlock'>(
@@ -39,20 +40,27 @@ const TxsExportCsvModal: React.FC<TxsExportCsvModalProps> = ({
           </svg>
         </button>
       </div>
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="block mb-1 text-sm text-gray-400">
           Transaction Type
         </label>
         <select
-          className="w-full p-2 py-3 text-sm bg-white text-black border border-gray-700 rounded-[7px]"
+          className="w-full p-2 py-3 text-sm bg-white text-black "
           value={transactionType}
           onChange={(e) => setTransactionType(e.target.value)}
         >
           <option value="Transactions">Transactions</option>
           <option value="Transfers">Transfers</option>
-          {/* Add other options as needed */}
         </select>
-      </div>
+      </div> */}
+      <Select className="border border-gray-700 rounded-[7px]">
+        <Select.Trigger className="w-full p-[10px] py-[12px]" />
+        <Select.Content style={{ zIndex: 1000 }}>
+          <Select.Item value="transactions">Transactions</Select.Item>
+          <Select.Item value="transfers">Transfers</Select.Item>
+        </Select.Content>
+      </Select>
+
       <div className="mb-4">
         <label className="block mb-1 text-sm text-gray-400">Address</label>
         <input

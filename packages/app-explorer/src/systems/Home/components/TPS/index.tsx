@@ -29,7 +29,7 @@ export const TPS = () => {
             TPS
           </h3>
           <span className="text-[13px] leading-[20px] text-muted block">
-            28K
+            24h
           </span>
         </div>
         <h2 className="text-[32px] leading-[36px] text-heading font-bold">

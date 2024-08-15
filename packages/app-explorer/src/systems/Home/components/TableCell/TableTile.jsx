@@ -5,7 +5,7 @@ export const TableTile = () => {
   const classes = styles();
 
   return (
-    <RoundedContainer className="">
+    <RoundedContainer className="bg-white hover:bg-gray-1">
       <Flex className="justify-between items-start">
         <div className="space-y-[6px]">
           <p className={classes.paragraphStrong()}>#4540916</p>
@@ -21,7 +21,7 @@ export const TableTile = () => {
         </div>
 
         <div className="space-y-[6px]">
-          <HStack className="items-center">
+          <HStack gap="4px" className="items-center">
             <svg
               width="11"
               height="8"

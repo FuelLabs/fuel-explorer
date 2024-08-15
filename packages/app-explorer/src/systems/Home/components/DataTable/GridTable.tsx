@@ -28,20 +28,19 @@ function GridTable<T>({
     },
     table: {
       style: {
-        backgroundColor: 'rgb(32, 32, 32)',
+        backgroundColor: 'var(--gray-2)',
       },
     },
     headRow: {
       style: {
-        backgroundColor: 'rgb(32, 32, 32)',
-        borderBottom: '1px solid black',
+        backgroundColor: 'var(--gray-2)',
         color: '#9f9f9f',
         fontWeight: '600',
       },
     },
     headCells: {
       style: {
-        backgroundColor: 'rgb(32, 32, 32)',
+        backgroundColor: 'var(--gray-2)',
         color: '#9f9f9f',
         paddingLeft: '1rem',
         paddingRight: '1rem',
@@ -52,7 +51,7 @@ function GridTable<T>({
     },
     rows: {
       style: {
-        backgroundColor: 'rgb(32, 32, 32)',
+        backgroundColor: 'var(--gray-2)',
         fontWeight: '400',
       },
     },
@@ -60,17 +59,16 @@ function GridTable<T>({
       style: {
         paddingLeft: '1rem',
         paddingRight: '1rem',
-        color: '#ffffff',
+        color: 'var(--gray-table-text)',
         paddingTop: '1.2rem',
         paddingBottom: '1.2rem',
-        backgroundColor: 'rgb(32, 32, 32)',
-        borderBottom: '1px solid black',
+        backgroundColor: 'var(--gray-2)',
         fontWeight: '400',
       },
     },
     pagination: {
       style: {
-        backgroundColor: 'rgb(32, 32, 32)',
+        backgroundColor: 'var(--gray-2)',
         color: '#f0f0f0',
       },
       pageButtonsStyle: {
@@ -78,7 +76,7 @@ function GridTable<T>({
         margin: '0 4px',
         color: '#f0f0f0',
         borderRadius: '4px',
-        backgroundColor: 'rgb(32, 32, 32)',
+        backgroundColor: 'var(--gray-2)',
         '&.selected': {
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
           fontWeight: 'bold',

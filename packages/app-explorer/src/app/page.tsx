@@ -20,4 +20,4 @@ export default function Home({ searchParams: { page = '1' } }: TxsRouteProps) {
       </Suspense>
     </>
   );
-}
+
