@@ -499,7 +499,7 @@
     "name": "Tan Theta",
     "url": "https://tantheta.io/",
     "tags": ["Prediction Market", "DeFi"],
-    "description": "Tan Theta provides sophisticated predicates-based order matching engine for seamless and efficient trading experiences in prediction markets, sports books, spot exchanges, and derivatives exchanges. Ensure precise, high-speed transactions with near zero latency and extremely high throughput. We provide Order Matching Engine, Liquidity Aggregation, Oracles, Wallet, Dev Tools and Decentralized Events(Polls)",
+    "description": "Tan Theta provides sophisticated predicates-based order matching engine for seamless and efficient trading experiences in prediction markets, sports books, spot exchanges, and derivatives exchanges.",
     "github": "https://github.com/Tan-Theta-Protocol/",
     "twitter": "https://twitter.com/tanthetamarkets",
     "discord": "",
