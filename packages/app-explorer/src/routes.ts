@@ -9,7 +9,9 @@ export const Routes = {
   blockSimple: route<[id: string]>('/block/:id/simple'),
   blockAdvanced: route<[id: string]>('/block/:id/advanced'),
   account: route<[id: string, tab: string]>('/account/:id/:tab'),
-  accountTxs: route<[id: string]>('/account/:id/transactions'),
+  accountTxs: route<[id: string, cursor: string, dir: 'after' | 'before']>(
+    '/account/:id/transactions/?cursor=:page&dir=:dir',
+  ),
   accountAssets: route<[id: string]>('/account/:id/assets'),
   accountPredicate: route<[id: string]>('/account/:id/predicate'),
   contract: route<[id: string, tab: string]>('/contract/:id/:tab'),

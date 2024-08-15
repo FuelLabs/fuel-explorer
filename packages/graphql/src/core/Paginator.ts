@@ -36,9 +36,9 @@ export class Paginator<
   Source extends PgTableWithColumns<any> = PgTableWithColumns<any>,
 > {
   constructor(
-    private source: Source,
+    private source: Source | undefined,
     readonly params: PaginatorParams,
-    private conn: DbConnection | DbTransaction,
+    private conn: DbConnection | DbTransaction | undefined,
   ) {}
 
   async hasPreviousPage(startCursor: Cursor) {
@@ -59,6 +59,7 @@ export class Paginator<
 
   async validateParams() {
     const { first, last, before, after } = this.params;
+    console.log(first, last, before, after);
     if (!first && !last) {
       throw new Error('Must use either first or last');
     }
@@ -98,7 +99,6 @@ export class Paginator<
       node,
       cursor: this.getCursor(node),
     })) as Edge<R>[];
-
     const startCursor = this.getStartCursor(newNodes);
     const endCursor = this.getEndCursor(newNodes);
     const hasPreviousPage = await this.hasPreviousPage(endCursor);

@@ -91,6 +91,13 @@ export class TransactionEntity extends Entity<
     const blockId = BlockRef.create(item.blockId);
     return TransactionEntity.create(item.data, blockId, id);
   }
+
+  static createFromDAO(item: any) {
+    const id = TransactionModelID.create(item);
+    const blockId = BlockRef.create(item.block_id);
+    return TransactionEntity.create(item.data, blockId, id);
+  }
+
   static createFromGQL(
     item: GQLTransaction,
     blockHeight: number,

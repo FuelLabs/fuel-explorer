@@ -6,5 +6,7 @@ export async function TxsScreenSync({
   dir = 'after',
 }: { cursor?: string | null; dir?: 'after' | 'before' }) {
   const txs = await getLastTxs({ cursor, dir });
-  return <TxList transactions={txs.nodes} pageInfo={txs.pageInfo} />;
+  return (
+    <TxList transactions={txs.nodes} pageInfo={txs.pageInfo} route="home" />
+  );
 }

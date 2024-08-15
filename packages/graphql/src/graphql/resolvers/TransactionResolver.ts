@@ -1,13 +1,11 @@
-import { logger } from '~/core/Logger';
-import { Paginator } from '~/core/Paginator';
-import { TransactionsTable } from '~/domain/Transaction/TransactionModel';
 import type {
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
-import type { GraphQLContext } from '../GraphQLContext';
+import TransactionDAO from '~/infra/dao/TransactionDAO';
+import PaginatedParams from '~/infra/paginator/PaginatedParams';
 
 type Source = GQLTransaction;
 type Params = {
@@ -28,48 +26,27 @@ export class TransactionResolver {
     };
   }
 
-  async transaction(
-    _: Source,
-    params: Params['transaction'],
-    { repositories }: GraphQLContext,
-  ) {
-    logger.debugRequest('TransactionResolver.transaction', { params });
-    const item = await repositories.transaction.findByHash(params.id);
-    const response = item?.toGQLNode();
-    logger.debugDone('TransactionResolver.transaction', { response });
-    return response;
+  async transaction(_: Source, params: Params['transaction']) {
+    const transactionDAO = new TransactionDAO();
+    const transaction = await transactionDAO.getByHash(params.id);
+    return transaction.toGQLNode();
   }
 
-  async transactions(
-    _: Source,
-    params: Params['transactions'],
-    { conn, repositories }: GraphQLContext,
-  ) {
-    logger.debugRequest('TransactionResolver.transactions', { params });
-    const paginator = new Paginator(TransactionsTable, params, conn);
-    const transactions = await repositories.transaction.findMany(paginator);
-    logger.debugResponse('TransactionResolver.transactions', { transactions });
-    const results = await paginator.createPaginatedResult(transactions);
-    logger.debugDone('TransactionResolver.transactions', { results });
-    return results;
+  async transactions(_: Source, params: Params['transactions']) {
+    const transactionDAO = new TransactionDAO();
+    const paginatedParams = new PaginatedParams(params);
+    const transactions =
+      await transactionDAO.getPaginatedTransactions(paginatedParams);
+    return transactions;
   }
 
-  async transactionsByOwner(
-    _: Source,
-    params: Params['transactionByOwner'],
-    { conn, repositories }: GraphQLContext,
-  ) {
-    logger.debugRequest('TransactionResolver.transactionsByOwner', { params });
-    const paginator = new Paginator(TransactionsTable, params, conn);
-    const transactions = await repositories.transaction.findManyByOwner(
-      paginator,
+  async transactionsByOwner(_: Source, params: Params['transactionByOwner']) {
+    const transactionDAO = new TransactionDAO();
+    const paginatedParams = new PaginatedParams(params);
+    const transactions = await transactionDAO.getPaginatedTransactionsByOwner(
       params.owner,
+      paginatedParams,
     );
-    logger.debugResponse('TransactionResolver.transactionsByOwner', {
-      transactions,
-    });
-    const results = await paginator.createPaginatedResult(transactions);
-    logger.debugDone('TransactionResolver.transactionsByOwner', { results });
-    return results;
+    return transactions;
   }
 }

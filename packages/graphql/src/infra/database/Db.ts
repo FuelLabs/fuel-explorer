@@ -62,7 +62,7 @@ export class Db {
     if (!this.client) {
       await this.connect();
     }
-    this.connection = drizzle(this.pool, { schema: DbSchema, logger: false });
+    this.connection = drizzle(this.pool, { schema: DbSchema, logger: true });
     return this.connection;
   }
 

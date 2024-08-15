@@ -14,5 +14,5 @@ export const TxListLoader = ({ numberOfTxs = 4 }: TxListLoaderProps) => {
     id: `${v}`,
   })) as GQLRecentTransactionsQuery['transactions']['nodes'];
 
-  return <TxList isLoading transactions={txs} />;
+  return <TxList isLoading transactions={txs} route="home" />;
 };

@@ -13,6 +13,8 @@ export type TxListProps = BaseProps<{
   hidePagination?: boolean;
   isLoading?: boolean;
   pageInfo?: GqlPageInfo;
+  owner?: string;
+  route: 'home' | 'accountTxs';
 }>;
 
 export function TxList({
@@ -21,8 +23,28 @@ export function TxList({
   className,
   isLoading,
   pageInfo,
+  owner,
+  route,
 }: TxListProps) {
   const router = useRouter();
+
+  function buildRoute(
+    route: string,
+    owner: string,
+    cursor: string,
+    dir: 'after' | 'before',
+  ) {
+    if (route === 'home') {
+      router.push(Routes.home(cursor, dir), {
+        scroll: false,
+      });
+    }
+    if (route === 'accountTxs') {
+      router.push(Routes.accountTxs(owner, cursor, dir), {
+        scroll: false,
+      });
+    }
+  }
 
   return (
     <div className={cx('py-4 tablet:py-8 desktop:py-0', className)}>
@@ -41,11 +63,7 @@ export function TxList({
             prevCursor={pageInfo?.startCursor}
             nextCursor={pageInfo?.endCursor}
             className="mt-6 flex mobile:justify-end"
-            onChange={(cursor, dir) =>
-              router.push(Routes.home(cursor, dir), {
-                scroll: false,
-              })
-            }
+            onChange={(cursor, dir) => buildRoute(route, owner!, cursor, dir)}
             pageInfo={pageInfo}
           />
         </Flex>
