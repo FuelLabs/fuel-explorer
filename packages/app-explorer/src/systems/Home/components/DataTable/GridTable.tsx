@@ -60,7 +60,7 @@ function GridTable<T>({
       style: {
         paddingLeft: '1rem',
         paddingRight: '1rem',
-        color: '#e0e0f0',
+        color: '#ffffff',
         paddingTop: '1.2rem',
         paddingBottom: '1.2rem',
         backgroundColor: 'rgb(32, 32, 32)',

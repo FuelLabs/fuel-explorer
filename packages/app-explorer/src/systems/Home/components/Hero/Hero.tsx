@@ -19,7 +19,7 @@ export function Hero() {
   return (
     <Theme appearance="light">
       <Box className={classes.root()}>
-        <Container className={classes.container()} size="4">
+        <Container className={classes.container()}>
           <VStack>
             <Heading as="h1" className={classes.title()}>
               Fuel Explorer
@@ -63,9 +63,9 @@ export function Hero() {
 
 const styles = tv({
   slots: {
-    root: 'overflow-clip relative w-full border-b border-border bg-gray-3 dark:bg-black',
+    root: 'overflow-clip relative w-full border-border bg-gray-3 dark:bg-gray-1',
     container: [
-      'z-20 relative py-8 pt-6 px-8 tablet:py-28 tablet:pt-24 tablet:px-10',
+      'z-20 relative py-8 pt-6 px-8 tablet:pt-18 tablet:px-10',
       'tablet:max-laptop:max-w-[500px] [&_.rt-ContainerInner]:p-2',
       ' [&_.rt-ContainerInner]:tablet:max-laptop:bg-opacity-60 [&_.rt-ContainerInner]:tablet:max-laptop:rounded-lg [&_.rt-ContainerInner]:tablet:max-laptop:shadow-2xl',
     ],

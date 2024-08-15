@@ -83,27 +83,27 @@ export const data: RowData[] = [
 
 export const columns: TableColumn<RowData>[] = [
   {
-    name: 'ID',
+    name: 'Rank',
     selector: (row) => row.id,
     sortable: true,
   },
   {
-    name: 'Name',
+    name: 'Token',
     selector: (row) => row.name,
     sortable: true,
   },
   {
-    name: 'Age',
+    name: 'Price',
     selector: (row) => row.age,
     sortable: true,
   },
   {
-    name: 'Email',
+    name: '24H Change (%)',
     selector: (row) => row.email,
     sortable: false,
   },
   {
-    name: 'Status',
+    name: 'Volume (24H)',
     selector: (row) => row.status,
     sortable: true,
   },

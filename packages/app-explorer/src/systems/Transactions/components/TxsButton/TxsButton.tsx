@@ -9,7 +9,7 @@ function TxsButton({ children, type = 'button' }: TxsButtonProps) {
   return (
     <button
       type={type}
-      className="bg-[rgba(255,255,255,0.1)] px-3 py-1 rounded-sm text-sm mb-3 text-white flex justify-center items-center gap-2"
+      className="dark:bg-[rgba(255,255,255,0.1)] bg-[rgba(0,0,0,0.1)] px-3 py-1 rounded-sm text-sm mb-3 flex justify-center items-center gap-2"
     >
       {children} {/* Render children here */}
     </button>
