@@ -1,7 +1,13 @@
 'use client';
 import React, { useState } from 'react';
 
-const TxsExportCsvModal: React.FC = ({ closeModal }: any) => {
+type TxsExportCsvModalProps = {
+  closeModal: () => void;
+};
+
+const TxsExportCsvModal: React.FC<TxsExportCsvModalProps> = ({
+  closeModal,
+}) => {
   const [transactionType, setTransactionType] =
     useState<string>('Transactions');
   const [address, setAddress] = useState<string>('');

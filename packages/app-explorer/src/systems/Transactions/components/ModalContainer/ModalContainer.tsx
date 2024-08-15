@@ -3,7 +3,15 @@ import React from 'react';
 import Modal from 'react-modal';
 // Bind modal to your appElement (for accessibility)
 
-const ModalContainer = ({ isOpen, onRequestClose, children }: any) => {
+const ModalContainer = ({
+  isOpen,
+  onRequestClose,
+  children,
+}: {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  children: React.ReactNode;
+}) => {
   return (
     <Modal
       isOpen={isOpen}
