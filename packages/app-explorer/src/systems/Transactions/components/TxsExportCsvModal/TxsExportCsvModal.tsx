@@ -17,10 +17,7 @@ const TxsExportCsvModal: React.FC<TxsExportCsvModalProps> = ({
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
-  const handleExportData = (): void => {
-    // Handle data export logic here
-    console.log('Exporting data...');
-  };
+  const handleExportData = (): void => {};
 
   return (
     <div className="w-[500px] p-[20px] dark:bg-[#1a1a1a] bg-[#ffffff] rounded-[8px] dark:text-white text-black font-sans">
@@ -102,7 +99,7 @@ const TxsExportCsvModal: React.FC<TxsExportCsvModalProps> = ({
             className="w-full p-2 py-3 text-sm bg-white text-black border border-gray-700 rounded-[7px]"
             type="text"
             value={startDate}
-            placeholder="Start Date"
+            placeholder="DD/MM/YYYY"
             onChange={(e) => setStartDate(e.target.value)}
           />
         </div>
@@ -112,7 +109,7 @@ const TxsExportCsvModal: React.FC<TxsExportCsvModalProps> = ({
             className="w-full p-2 py-3 text-sm bg-white text-black border border-gray-700 rounded-[7px]"
             type="text"
             value={endDate}
-            placeholder="End Date"
+            placeholder="DD/MM/YYYY"
             onChange={(e) => setEndDate(e.target.value)}
           />
         </div>
@@ -124,7 +121,7 @@ const TxsExportCsvModal: React.FC<TxsExportCsvModalProps> = ({
       >
         Export Data
       </button>
-      <p className="mt-2 text-xs text-[#afafaf] w-4/7">
+      <p className="mt-2 text-[14px] font-normal text-[#afafaf] w-[75%]">
         The earliest 5,000 records within the selected range will be exported
       </p>
     </div>
