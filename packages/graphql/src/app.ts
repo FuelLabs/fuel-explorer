@@ -1,6 +1,7 @@
 import { env } from './config';
 import { logger } from './core/Logger';
 import { GraphQLServer } from './graphql/GraphQLServer';
+import { DatabaseConnection } from './infra/database/DatabaseConnection';
 import { db } from './infra/database/Db';
 import { Server } from './infra/server/App';
 
@@ -11,6 +12,7 @@ import { Server } from './infra/server/App';
   const yoga = graphQLServer.setup(schema);
   const httpServer = new Server();
   const app = httpServer.setup();
+  DatabaseConnection.getInstance();
 
   app.use(yoga.graphqlEndpoint, yoga);
   httpServer.listen(app, port).then(async () => {
