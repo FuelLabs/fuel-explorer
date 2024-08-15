@@ -11,7 +11,7 @@ const connection = DatabaseConnection.getInstance();
     const to = index + page;
     await migrate(from, to);
     index += page;
-    setTimeout(1000);
+    await setTimeout(1000);
   }
 })();
 
