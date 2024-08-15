@@ -5,7 +5,7 @@ const connection = DatabaseConnection.getInstance();
 
 (async () => {
   let index = 0;
-  const page = 1000;
+  const page = 10000;
   while (index < 8000000) {
     const from = index === 0 ? 0 : index + 1;
     const to = index + page;
