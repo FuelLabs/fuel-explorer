@@ -1,8 +1,8 @@
 :root {
   --hero-bg: #000;
+  --font-geist-mono: 'GeistMono', 'SF Mono', 'Segoe UI Mono', 'Roboto Mono', Menlo, Courier, monospace;
 }
 
-h1,
 h2,
 h3,
 h4,
@@ -10,6 +10,11 @@ h5,
 h6 {
   font-weight: 600;
   letter-spacing: -0.025em;
+}
+
+h1,
+h2{
+  font-family: var(--font-geist-mono);
 }
 kbd {
   font-size: 0.875rem;
