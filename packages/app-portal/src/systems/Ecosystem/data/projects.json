@@ -1,17 +1,6 @@
 [
   {
     "isLive": false,
-    "name": "Acumen",
-    "url": "https://acumen.network/",
-    "tags": ["DeFi", "Real World Assets"],
-    "description": "Acumen is bridging DeFi and Real-world assets.",
-    "github": "https://github.com/AcumenProtocol",
-    "twitter": "https://twitter.com/acumenofficial",
-    "discord": "https://discord.gg/vnUPngfB5D",
-    "image": "acumen"
-  },
-  {
-    "isLive": false,
     "name": "Aori",
     "url": "https://www.aori.io/",
     "tags": ["DeFi"],
@@ -56,6 +45,17 @@
   },
   {
     "isLive": false,
+    "name": "Banxa",
+    "url": "https://banxa.com/",
+    "tags": ["Onramp"],
+    "description": "Banxa is a fiat-to-crypto on & off ramp solutions enabling users to conveniently and securely convert traditional fiat currencies into cryptocurrencies.",
+    "github": "",
+    "twitter": "https://twitter.com/BanxaOfficial",
+    "discord": "",
+    "image": "banxa"
+  },
+  {
+    "isLive": false,
     "name": "Bubblemaps",
     "url": "https://bubblemaps.io/",
     "tags": ["Analytics"],
@@ -67,14 +67,47 @@
   },
   {
     "isLive": false,
-    "name": "CoChilli",
-    "url": "https://cochilli.io/",
-    "tags": ["Prediction Market"],
-    "description": "CoChilli is bringing betting onchain, utilizing groundbreaking Virtual Engine technology to eliminate latency and gas fees, allowing for a frictionless UX.",
-    "github": "https://github.com/cochilli",
-    "twitter": "https://twitter.com/CoChilli_io",
-    "discord": "https://discord.gg/Un7tT2Tmkn",
-    "image": "cochilli"
+    "name": "Capsule",
+    "url": "https://usecapsule.com/",
+    "tags": ["Wallet"],
+    "description": "Capsule is the cross-app embedded wallet infrastructure",
+    "github": "https://github.com/capsule-org",
+    "twitter": "https://twitter.com/usecapsule",
+    "discord": "",
+    "image": "capsule"
+  },
+  {
+    "isLive": false,
+    "name": "Catalyst",
+    "url": "https://medium.com/@fuel_catalyst/introducing-catalyst-the-launchpad-of-the-fuel-ecosystem-08a81d947182",
+    "tags": ["Fuel", "Launchpad"],
+    "description": "The Launchpad for the Fuel Ecosystem",
+    "github": "",
+    "twitter": "https://twitter.com/fuel_catalyst",
+    "discord": "",
+    "image": "catalyst"
+  },
+  {
+    "isLive": false,
+    "name": "Chainrisk",
+    "url": "https://chainrisk.xyz",
+    "tags": ["DeFi"],
+    "description": "Chainrisk automates Economic risk management for DeFi Applications",
+    "github": "",
+    "twitter": "https://twitter.com/chain_risk",
+    "discord": "",
+    "image": "chainrisk"
+  },
+  {
+    "isLive": true,
+    "name": "Charcoal Transpiler",
+    "url": "https://www.sway-playground.org/",
+    "tags": ["Tooling"],
+    "description": "Solidity to Sway transpiler",
+    "github": "https://github.com/ourovoros-io",
+    "twitter": "",
+    "discord": "",
+    "image": "charcoal"
   },
   {
     "isLive": true,
@@ -309,6 +342,17 @@
   },
   {
     "isLive": true,
+    "name": "Mira",
+    "url": "https://mira.ly/",
+    "tags": ["DeFi"],
+    "description": "The Liquidity Hub on Fuel",
+    "github": "https://github.com/0xmetaschool",
+    "twitter": "https://twitter.com/MiraProtocol",
+    "discord": "",
+    "image": "mira"
+  },
+  {
+    "isLive": true,
     "name": "ORAO",
     "url": "https://orao.network/",
     "tags": ["Oracle"],
@@ -495,7 +539,7 @@
     "image": "swayplayground"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Swaylend",
     "url": "https://swaylend.com/",
     "tags": ["DeFi"],
