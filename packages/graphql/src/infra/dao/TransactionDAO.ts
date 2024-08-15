@@ -125,6 +125,18 @@ export default class TransactionDAO {
     for (const transactionData of transactionsData) {
       transactions.push(TransactionEntity.createFromDAO(transactionData));
     }
+    if (transactions.length === 0) {
+      return {
+        nodes: [],
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          endCursor: '',
+          startCursor: '',
+        },
+      };
+    }
     const startCursor = transactionsData[0]._id;
     const endCursor = transactionsData[transactionsData.length - 1]._id;
     const hasPreviousPage = (
