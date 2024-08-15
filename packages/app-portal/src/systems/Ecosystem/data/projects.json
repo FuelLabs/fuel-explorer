@@ -176,17 +176,6 @@
     "image": "fluid"
   },
   {
-    "isLive": false,
-    "name": "Frank",
-    "url": "https://fuelstat.xyz/frank/",
-    "tags": ["Tooling"],
-    "description": "Frank (Fuel Rank) is a tool to track and analyze your interactions with the Fuel blockchain.",
-    "github": "https://github.com/fuelet",
-    "twitter": "https://twitter.com/FueletWallet",
-    "discord": "https://discord.gg/fueletwallet",
-    "image": "frank"
-  },
-  {
     "isLive": true,
     "name": "Fuel Name Service",
     "url": "https://fuelname.com/",
@@ -242,17 +231,6 @@
     "image": "fuelet"
   },
   {
-    "isLive": false,
-    "name": "Fuelstat",
-    "url": "https://fuelstat.xyz/",
-    "tags": ["Tooling"],
-    "description": "FuelStat is an analytics platform for tracking the latest data on Fuel accounts, transactions, and volume.",
-    "github": "https://github.com/fuelet",
-    "twitter": "https://twitter.com/FueletWallet",
-    "discord": "https://discord.gg/fueletwallet",
-    "image": "fuelstat"
-  },
-  {
     "isLive": true,
     "name": "FuelSwap",
     "url": "https://fuelswap.xyz/",
@@ -284,17 +262,6 @@
     "twitter": "https://twitter.com/guildxyz",
     "discord": "https://discord.gg/guildxyz",
     "image": "guildxyz"
-  },
-  {
-    "isLive": false,
-    "name": "Helixa TCG",
-    "url": "https://helixatcg.com/",
-    "tags": ["Gaming", "Marketplace", "NFT"],
-    "description": "A trading card game that blends enthralling gameplay, rich lore, and unique mechanics for an engaging, interactive experience.",
-    "github": "",
-    "twitter": "https://twitter.com/HelixaTCG",
-    "discord": "",
-    "image": "helixa"
   },
   {
     "isLive": false,
@@ -375,28 +342,6 @@
   },
   {
     "isLive": false,
-    "name": "Pantheon of Olympus",
-    "url": "https://side.xyz/the-olympians",
-    "tags": ["NFT"],
-    "description": "Witness the captivating pixelized realm of mythical deities and embark on a GameFi adventure.",
-    "github": "",
-    "twitter": "https://twitter.com/pantheonsnft",
-    "discord": "",
-    "image": "pantheonolympus"
-  },
-  {
-    "isLive": false,
-    "name": "PlayEstates",
-    "url": "https://www.playestates.com/",
-    "tags": ["Real World Assets", "Gaming", "NFT"],
-    "description": "PlayEstates brings real estate on-chain and makes RWA ownership easy and affordable.",
-    "github": "",
-    "twitter": "https://twitter.com/playestates",
-    "discord": "https://discord.gg/playestates",
-    "image": "playestates"
-  },
-  {
-    "isLive": false,
     "name": "PoolShark Protocol",
     "url": "https://www.poolshark.fi/",
     "tags": ["DeFi"],
@@ -460,17 +405,6 @@
     "twitter": "https://twitter.com/_sailexchange",
     "discord": "",
     "image": "sail"
-  },
-  {
-    "isLive": false,
-    "name": "Seda Protocol",
-    "url": "https://www.seda.xyz/",
-    "tags": ["Infrastructure"],
-    "description": "SEDA is a permissionless modular data layer building the new standard for data transport and querying. Natively serving 230+ blockchains SEDA allows protocols to transport, query and configure any data available from any source.",
-    "github": "",
-    "twitter": "https://twitter.com/sedaprotocol",
-    "discord": "https://discord.com/invite/seda",
-    "image": "seda"
   },
   {
     "isLive": true,
