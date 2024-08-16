@@ -71,7 +71,7 @@ export function BlockScreenSimple({
       {isLoading ? (
         <TxListLoader numberOfTxs={4} />
       ) : (
-        <TxList hidePagination transactions={txList} />
+        <TxList hidePagination transactions={txList} route="home" />
       )}
     </VStack>
   );
