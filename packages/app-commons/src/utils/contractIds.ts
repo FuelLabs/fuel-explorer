@@ -74,7 +74,7 @@ export async function getBridgeSolidityContracts() {
   if (ETH_CHAIN_NAME === 'sepolia') {
     if (FUEL_CHAIN_NAME === 'fuelTestnet') {
       bridgeSolidityContracts = {
-        FuelChainState: '0x404F391F96798B14C5e99BBB4a9C858da9Cf63b5',
+        FuelChainState: '0xf38F1e65adc58fc74BaaA132f645Aa5307F2d304',
         FuelMessagePortal: '0x01855B78C1f8868DE70e84507ec735983bf262dA',
         FuelERC20Gateway: '0xa97200022c7aDb1b15f0f61f374E3A0c90e2Efa0',
         FuelERC721Gateway: '0x',
