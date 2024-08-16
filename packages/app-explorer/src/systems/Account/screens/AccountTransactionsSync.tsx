@@ -7,7 +7,11 @@ export async function AccountTransactionsSync({
   id,
   cursor,
   dir,
-}: { id: string; cursor?: string; dir?: string }) {
+}: {
+  id: string;
+  cursor?: string | null | undefined;
+  dir?: 'after' | 'before';
+}) {
   const txs = await getAccountTransactions({ owner: id, cursor, dir });
   if (!txs.nodes.length) {
     return <EmptyTransactions entity="account" />;
