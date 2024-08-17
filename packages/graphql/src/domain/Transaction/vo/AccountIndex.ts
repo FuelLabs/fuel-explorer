@@ -56,7 +56,7 @@ export class AccountIndex extends ValueObject<Props> {
                   return acc.concat([i.to]);
                 case 'ContractCreated':
                   return acc.concat([i.contract]);
-                case 'VariableOutput':
+                case 'VariableOutput': // remove if to = 0x0000...
                   return acc.concat([i.to]);
                 default:
                   return acc;

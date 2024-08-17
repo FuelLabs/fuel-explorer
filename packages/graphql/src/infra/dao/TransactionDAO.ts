@@ -30,6 +30,7 @@ export default class TransactionDAO {
     accountHash: string,
     paginatedParams: PaginatedParams,
   ) {
+    console.log(accountHash, paginatedParams);
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const transactionsData = await this.databaseConnection.query(
@@ -38,14 +39,20 @@ export default class TransactionDAO {
 			t.*
 		from
 			transactions t
-			join transactions_accounts ta using (tx_hash)
 		where
-			ta.account_hash = $1 and
-			($2::text is null or t._id ${direction} $2)
-		order by
-			t._id ${order}
-		limit
-			10
+			t.tx_hash in (
+				select
+					ta.tx_hash
+				from
+					transactions_accounts ta
+				where
+					ta.account_hash = $1 and
+					($2::text is null or ta._id ${direction} $2)
+				order by
+					ta._id ${order}
+				limit
+					10
+			)
 		`,
       [accountHash, paginatedParams.cursor],
     );
@@ -72,13 +79,13 @@ export default class TransactionDAO {
     const endCursor = transactionsData[transactionsData.length - 1]._id;
     const hasPreviousPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from transactions t join transactions_accounts ta using (tx_hash) where t._id < $1 and ta.account_hash = $2)',
+        'select exists(select 1 from transactions_accounts ta where ta._id < $1 and ta.account_hash = $2)',
         [endCursor, accountHash],
       )
     )[0].exists;
     const hasNextPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from transactions t join transactions_accounts ta using (tx_hash) where t._id > $1 and ta.account_hash = $2)',
+        'select exists(select 1 from transactions_accounts ta where ta._id > $1 and ta.account_hash = $2)',
         [startCursor, accountHash],
       )
     )[0].exists;
