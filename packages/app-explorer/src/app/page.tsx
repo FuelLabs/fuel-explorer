@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 import { TxsTitle } from '~/systems/Transactions/components/TxsTitle/TxsTitle';
-import { TxsScreenSync } from '~/systems/Transactions/pages/TxsScreenSync';
+// import { TxsScreenSync } from '~/systems/Transactions/pages/TxsScreenSync';
 import type { TxsRouteProps } from '~/systems/Transactions/types';
 
 export default async function Home({
@@ -14,7 +14,7 @@ export default async function Home({
         key={page}
         fallback={<TxListLoader page={page} numberOfTxs={10} />}
       >
-        <TxsScreenSync page={page} />
+        {/* <GridTable data={data} columns={columns} pageCount={1} /> */}
       </Suspense>
     </>
   );

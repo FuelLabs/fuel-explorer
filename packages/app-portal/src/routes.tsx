@@ -5,4 +5,5 @@ export const Routes = {
   bridgeFromTo: route<[from: string, to: string]>('/bridge?from=:from&to=:to'),
   bridgeHistory: route('/bridge/history'),
   ecosystem: route('/ecosystem'),
+  statistics: route('/statitics'),
 };

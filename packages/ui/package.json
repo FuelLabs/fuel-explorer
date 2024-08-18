@@ -11,7 +11,9 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -36,7 +38,9 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build:lib": "tsup --dts",
@@ -55,8 +59,8 @@
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.1.0",
-    "@radix-ui/react-portal": "1.1.1",
     "@radix-ui/react-dialog": "1.1.1",
+    "@radix-ui/react-portal": "1.1.1",
     "@radix-ui/react-slot": "1.0.2",
     "@radix-ui/react-toast": "1.2.1",
     "@radix-ui/themes": "3.1.1",
@@ -74,6 +78,7 @@
     "react-dom": "18.2.0",
     "react-stately": "3.29.1",
     "react-use": "17.5.0",
+    "recharts": "2.12.7",
     "tailwind-variants": "0.1.20",
     "tailwindcss-animate": "1.0.7",
     "tailwindcss-radix": "3.0.3",
