@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import chokidar from 'chokidar';
 import { execa } from 'execa';
 
+import { Server } from 'socket.io';
 import app from '../server';
 import { requireEnv } from '../utils/requireEnv';
 
@@ -10,6 +11,27 @@ const { SERVER_PORT } = requireEnv([['SERVER_PORT', '4444']]);
 const { WATCH = 'false' } = process.env;
 
 const server = createServer(app);
+
+// Set up Socket.IO on the same HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('A client connected');
+  // Handle WebSocket events here
+  socket.on('example_event', (data) => {
+    console.log('Received example_event:', data);
+    // Broadcast the event to all connected clients
+    io.emit('example_event_response', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A client disconnected');
+  });
+});
 
 export async function runServer() {
   return new Promise((resolve) => {
