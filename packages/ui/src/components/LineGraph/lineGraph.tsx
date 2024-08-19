@@ -88,17 +88,14 @@ export const LineGraph: React.FC<LineGraphProps> = ({
 
   return (
     <RoundedContainer ref={containerRef} className="py-4 pr-2 pl-5 pb-7">
-      <div
-        className="mt-1 font-mono flex items-center"
-        style={{ fontSize: '0.9rem' }}
-      >
+      <div className="mt-1 flex items-center" style={{ fontSize: '0.8rem' }}>
         <div className="text-heading">{titleProp} &nbsp;</div>
         <Select
           onValueChange={(value) => setSelectedDays(Number(value))}
           value={selectedDays.toString()}
         >
           <SelectTrigger
-            className="bg-neutral-500 px-4 py-0 rounded"
+            className="px-4 py-0 rounded"
             style={{ fontSize: '0.8rem' }}
           >
             <div className="text-heading">{selectedDays}D</div>
@@ -125,7 +122,11 @@ export const LineGraph: React.FC<LineGraphProps> = ({
         )}
       </div>
 
-      <ResponsiveContainer width="100%" height={chartHeight}>
+      <ResponsiveContainer
+        width="100%"
+        height={chartHeight}
+        className="-ml-4 -mb-4"
+      >
         <AreaChart
           data={data}
           onClick={(e) => {
@@ -138,22 +139,16 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           <XAxis
             dataKey="day"
             tick={{
-              fill: 'rgba(255, 255, 255, 0.7)',
               fontSize: 10,
               className: 'fill-heading',
             }}
-            axisLine={{ stroke: 'rgba(255, 255, 255, 0.04)' }}
-            tickLine={{ stroke: 'rgba(255, 255, 255, 0.04)' }}
           />
           <YAxis
             tickFormatter={formatNumber}
             tick={{
-              fill: 'rgba(255, 255, 255, 0.7)',
               fontSize: 12,
               className: 'fill-heading ',
             }}
-            axisLine={{ stroke: 'rgba(255, 255, 255, 0.04)' }}
-            tickLine={{ stroke: 'rgba(255, 255, 255, 0.04)' }}
           />
           <defs>
             <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
@@ -168,7 +163,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
             stroke={chartConfig.desktop.color}
             strokeWidth={2}
             fill="url(#colorGradient)"
-            dot={{ fill: '#14b773', stroke: '#000', strokeWidth: 2, r: 5 }}
+            dot={{ fill: '#14b773', stroke: '#000', strokeWidth: 2, r: 0 }}
             activeDot={{ r: 5 }}
           />
         </AreaChart>

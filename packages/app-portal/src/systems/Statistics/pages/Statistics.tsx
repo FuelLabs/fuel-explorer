@@ -22,7 +22,7 @@ export const Statistics = () => {
             <h2 className="font-mono" style={{ fontSize: '1.5rem' }}>
               Blocks
             </h2>
-            <Grid className="grid grid-cols-2 gap-5">
+            <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph dataProp={dummyData} titleProp={'New Block'} />
               <LineGraph dataProp={dummyData} titleProp={'Avg. Block Reward'} />
             </Grid>
@@ -32,7 +32,7 @@ export const Statistics = () => {
             <h2 className="font-mono" style={{ fontSize: '1.5rem' }}>
               Transactions
             </h2>
-            <Grid className="grid grid-cols-2 gap-5">
+            <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph
                 dataProp={dummyData}
                 titleProp={'Total Transactions (Cumilative)'}
@@ -56,7 +56,7 @@ export const Statistics = () => {
             <h2 className="font-mono" style={{ fontSize: '1.5rem' }}>
               Accounts
             </h2>
-            <Grid className="grid grid-cols-2 gap-5">
+            <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph
                 dataProp={dummyData}
                 titleProp={'Total Active (Cumilative)'}
@@ -73,7 +73,7 @@ export const Statistics = () => {
             <h2 className="font-mono" style={{ fontSize: '1.5rem' }}>
               Tokens
             </h2>
-            <Grid className="grid grid-cols-2 gap-5">
+            <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph
                 dataProp={dummyData}
                 titleProp={'Total Tokens (Cumilative)'}
@@ -86,7 +86,7 @@ export const Statistics = () => {
             <h2 className="font-mono" style={{ fontSize: '1.5rem' }}>
               NFTs
             </h2>
-            <Grid className="grid grid-cols-2 gap-5">
+            <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph
                 dataProp={dummyData}
                 titleProp={'Total NFTs (Cumilative)'}
