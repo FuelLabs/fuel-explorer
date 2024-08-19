@@ -1,6 +1,7 @@
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 import { Grid, LineGraph } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
+import Hero from '../components/Hero/Hero';
 import { dummyData } from '../data/dummyData';
 
 export const Statistics = () => {
@@ -13,9 +14,9 @@ export const Statistics = () => {
             <Heading as="h1" className={classes.title()}>
               Statistics
             </Heading>
-            {/* <div className="pb-6">
-              <TrendingCardCarousel />
-            </div> */}
+            <div className="pb-6">
+              <Hero />
+            </div>
           </VStack>
 
           <div className="text-heading text-md font-mono my-20">
