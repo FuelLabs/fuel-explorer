@@ -88,12 +88,12 @@ export const data: RowData[] = [
 export const columns = [
   {
     name: 'Block',
-    selector: (_row: RowData) => <BlockItem />,
+    cell: () => <BlockItem />,
     sortable: true,
   },
   {
     name: 'BlockHash',
-    selector: (_row: RowData) => (
+    cell: () => (
       <BlockHashItem
         hashAddress="sdasjasasnajsnaksnajsnsjansjansasnjansa"
         width="100px"
@@ -103,21 +103,19 @@ export const columns = [
   },
   {
     name: 'Transactions',
-    selector: (row: RowData) => (
-      <div className=" font-mono text-sm text-gray-9">{row.age}</div>
+    cell: (row: RowData) => (
+      <div className="font-mono text-sm text-gray-9">{row.age}</div>
     ),
     sortable: true,
   },
   {
     name: 'Rewards',
-    selector: (_row: RowData) => (
-      <div className=" font-mono text-sm text-gray-9">12</div>
-    ),
+    cell: () => <div className="font-mono text-sm text-gray-9">12</div>,
     sortable: false,
   },
   {
     name: 'Validator',
-    selector: (_row: RowData) => (
+    cell: () => (
       <div className="flex items-center justify-center w-full">
         <BlockValidatorItem hashAddress="asansjasnajsnajsnajsnajsnajsnajsnajsna" />
       </div>
@@ -126,9 +124,7 @@ export const columns = [
   },
   {
     name: 'Efficiency',
-    selector: (_row: RowData) => (
-      <BlockEfficiencyItem current={10} progress={44} total={100} />
-    ),
+    cell: () => <BlockEfficiencyItem current={10} progress={44} total={100} />,
     sortable: true,
   },
   {
