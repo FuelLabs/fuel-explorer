@@ -19,6 +19,7 @@ export class TransactionRepository {
     this.statements = statements.build();
   }
 
+  // ok
   async findByHash(id: string) {
     logger.debugRequest('TransactionRepository.findByHash', { id });
     const transaction = await this.statements.findByHash.execute({
@@ -30,6 +31,7 @@ export class TransactionRepository {
     return TransactionEntity.createFromDB(transaction);
   }
 
+  // ok
   async findMany(paginator: Paginator<typeof TransactionsTable>) {
     logger.debugRequest('TransactionRepository.findMany', { paginator });
     const statement = this.statements.findMany(paginator);
@@ -40,6 +42,7 @@ export class TransactionRepository {
     );
   }
 
+  // ok
   async findManyByOwner(
     paginator: Paginator<typeof TransactionsTable>,
     owner: string,

@@ -14,6 +14,7 @@ export class BlockRepository {
     this.statements = statements.build();
   }
 
+  // ok
   async findByHash(blockHash: string) {
     logger.debugRequest('BlockRepository.findByHash', { blockHash });
     const block = await this.statements.findByHash.execute({ blockHash });
@@ -29,6 +30,7 @@ export class BlockRepository {
     return output;
   }
 
+  // ok
   async findByHeight(height: number) {
     logger.debugRequest('BlockRepository.findByHeight', { height });
     const block = await this.statements.findByHeight.execute({ height });
@@ -59,6 +61,7 @@ export class BlockRepository {
     return output;
   }
 
+  // ok
   async findMany(paginator: Paginator<typeof BlocksTable>) {
     logger.debugRequest('BlockRepository.findMany');
     const statement = this.statements.findMany(paginator);

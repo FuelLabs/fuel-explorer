@@ -33,6 +33,7 @@ export class TransactionResolver {
   }
 
   async transactions(_: Source, params: Params['transactions']) {
+    console.log('X');
     const transactionDAO = new TransactionDAO();
     const paginatedParams = new PaginatedParams(params);
     const transactions =

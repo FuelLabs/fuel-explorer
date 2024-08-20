@@ -36,4 +36,20 @@ export class DatabaseConnection {
     connection.release();
     return result.rows;
   }
+
+  async executeTransaction(queries: { statement: string; params: any }[]) {
+    const connection = await this.pool.connect();
+    try {
+      await connection.query('begin');
+      for (const query of queries) {
+        await connection.query(query.statement, query.params);
+      }
+      await connection.query('commit');
+    } catch (e: any) {
+      await connection.query('rollback');
+      throw e;
+    } finally {
+      connection.release();
+    }
+  }
 }

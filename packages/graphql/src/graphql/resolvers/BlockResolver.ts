@@ -1,13 +1,12 @@
 import { GraphQLError } from 'graphql';
 import { logger } from '~/core/Logger';
-import { Paginator } from '~/core/Paginator';
-import { BlocksTable } from '~/domain/Block/BlockModel';
 import type {
   GQLBlock,
   GQLQueryBlockArgs,
   GQLQueryBlocksArgs,
 } from '~/graphql/generated/sdk-provider';
-import type { GraphQLContext } from '../GraphQLContext';
+import BlockDAO from '~/infra/dao/BlockDAO';
+import PaginatedParams from '~/infra/paginator/PaginatedParams';
 
 type Source = GQLBlock;
 type Params = {
@@ -26,11 +25,7 @@ export class BlockResolver {
     };
   }
 
-  async block(
-    _: Source,
-    { id, height }: Params['block'],
-    { repositories }: GraphQLContext,
-  ) {
+  async block(_: Source, { id, height }: Params['block']) {
     logger.debugRequest('BlockResolver.block', { id, height });
     if (!id && !height) {
       throw new Error('Either id or height must be provided');
@@ -38,33 +33,32 @@ export class BlockResolver {
 
     if (id) {
       logger.debug('Finding block by hash');
-      const item = await repositories.block.findByHash(id);
-      const response = item?.toGQLNode() ?? null;
+      const blockDAO = new BlockDAO();
+      const block = await blockDAO.getByHash(id);
+      const response = block?.toGQLNode() ?? null;
       logger.debugDone('BlockResolver.block', { response });
       return response;
     }
 
     logger.debug('Finding block by height');
-    const item = await repositories.block.findByHeight(Number(height));
-    const response = item?.toGQLNode() ?? null;
+    if (!height) throw new Error();
+    const blockDAO = new BlockDAO();
+    const block = await blockDAO.getByHeight(parseInt(height));
+    const response = block.toGQLNode() ?? null;
     logger.debugDone('BlockResolver.block', { response });
     return response;
   }
 
-  async blocks(
-    _: Source,
-    params: Params['blocks'],
-    { repositories, conn }: GraphQLContext,
-  ) {
+  async blocks(_: Source, params: Params['blocks']) {
     logger.debugRequest('BlockResolver.blocks', { params });
     if (!params.first && !params.last) {
       throw new GraphQLError('Either first or last must be provided');
     }
-    const paginator = new Paginator(BlocksTable, params, conn);
-    const blocks = await repositories.block.findMany(paginator);
-    logger.debugResponse('BlockResolver.blocks', { blocks });
-    const result = await paginator.createPaginatedResult(blocks);
-    logger.debugDone('BlockResolver.blocks', { result });
-    return result;
+    const blockDAO = new BlockDAO();
+    const blocks = await blockDAO.getPaginatedBlocks(
+      new PaginatedParams(params),
+    );
+    logger.debugDone('BlockResolver.blocks', { blocks });
+    return blocks;
   }
 }

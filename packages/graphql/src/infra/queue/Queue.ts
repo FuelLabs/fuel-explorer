@@ -3,10 +3,9 @@ import client, {
   type Connection,
   type ConsumeMessage,
 } from 'amqplib';
-import { createAddBlockRange } from '~/application/uc/AddBlockRange';
+import NewAddBlockRange from '~/application/uc/NewAddBlockRange';
 import { env } from '~/config';
 import { logger } from '~/core/Logger';
-import { BlockProducer } from '~/domain/Block/vo/BlockProducer';
 
 const HOST = env.get('RABBITMQ_HOST');
 const PORT = env.get('RABBITMQ_PORT');
@@ -102,7 +101,6 @@ class RabbitMQConnection {
     data?: P['data'],
   ) {
     try {
-      //   logger.debug(`📤 Sending message to ${queue}`, data);
       const channel = await this.getChannel(ChannelNames[channelName]);
       const payload = { type: queue, data } as P;
       const buffer = Buffer.from(JSON.stringify(payload));
@@ -136,9 +134,18 @@ class RabbitMQConnection {
   }
 
   async setup() {
-    const blockProducer = await BlockProducer.fromSdk();
-    const addBlockRange = createAddBlockRange(blockProducer);
-    await this.consume('block', QueueNames.ADD_BLOCK_RANGE, addBlockRange);
+    const addBlockRange = new NewAddBlockRange();
+    await this.consume(
+      'block',
+      QueueNames.ADD_BLOCK_RANGE,
+      async (data: { from: number; to: number }) => {
+        try {
+          await addBlockRange.execute(data);
+        } catch (error) {
+          throw new Error('Add block range failed', { cause: error });
+        }
+      },
+    );
   }
 
   async assert(queue: string) {
@@ -169,7 +176,6 @@ class RabbitMQConnection {
   }
 
   private async getChannel(name: ChannelNames) {
-    // logger.debug(`🔗 Getting channel ${name}`);
     if (!this.connection) {
       await this.connect();
     }

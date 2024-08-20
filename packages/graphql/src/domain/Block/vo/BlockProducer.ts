@@ -20,6 +20,7 @@ export class BlockProducer extends ValueObject<Props> {
   }
 
   static async fromSdk() {
+    // TODO: get from database
     const blocks = await client.sdk.blocks({ first: 2 });
     const block = blocks.data.blocks.nodes[0];
     if (block.consensus.__typename === 'Genesis') {
