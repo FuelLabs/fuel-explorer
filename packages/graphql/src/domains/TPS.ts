@@ -1,6 +1,7 @@
 import { gql } from 'graphql-request';
-import { Domain } from '../utils/domain';
+import { Cache } from '../utils/cache';
 import { tai64toDate } from '../utils/dayjs';
+import { Domain } from '../utils/domain';
 
 type Args = {
   first: number;
@@ -20,6 +21,8 @@ export type TPSData = {
 };
 
 export class TPS extends Domain<any, Args> {
+  private static cache = new Cache();
+
   static createResolvers() {
     const domain = new TPS();
     return {
@@ -30,6 +33,13 @@ export class TPS extends Domain<any, Args> {
   }
 
   async getTPS() {
+    const cacheKey = `tps_data_${new Date().toISOString().split('T')[0]}`; // Cache key based on today's date
+    let tpsData = TPS.cache.get<TPSData[]>(cacheKey);
+
+    if (tpsData) {
+      console.log('Serving TPS data from cache');
+      return tpsData;
+    }
     const { first, before } = this.args || { first: 4, before: null };
 
     console.log('Fetching TPS data with args:', { first, before });
@@ -99,7 +109,8 @@ export class TPS extends Domain<any, Args> {
       JSON.stringify(blocks, null, 2),
     );
 
-    const tpsData = this.calculateTPS(blocks);
+    tpsData = this.calculateTPS(blocks);
+    TPS.cache.put(cacheKey, tpsData, 24 * 60 * 60 * 1000); // Cache for 24 hours
     console.log('Calculated TPS data:', JSON.stringify(tpsData, null, 5));
 
     return tpsData;

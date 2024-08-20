@@ -4,6 +4,7 @@ import chokidar from 'chokidar';
 import { execa } from 'execa';
 
 import { Server } from 'socket.io';
+import { TPS } from '../domains/TPS';
 import app from '../server';
 import { requireEnv } from '../utils/requireEnv';
 
@@ -21,14 +22,18 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   console.log('A client connected');
-  // Handle WebSocket events here
-  socket.on('example_event', (data) => {
-    console.log('Received example_event:', data);
-    // Broadcast the event to all connected clients
-    io.emit('example_event_response', data);
-  });
+
+  const sendTPSData = async () => {
+    const tpsDomain = new TPS();
+    const tpsData = await tpsDomain.getTPS();
+    socket.emit('tps_data', tpsData);
+  };
+
+  // Send TPS data every minute
+  const intervalId = setInterval(sendTPSData, 60 * 1000);
 
   socket.on('disconnect', () => {
+    clearInterval(intervalId);
     console.log('A client disconnected');
   });
 });
