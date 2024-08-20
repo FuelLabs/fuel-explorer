@@ -10,17 +10,11 @@ module.exports = {
       name: 'consumer',
       script: './dist/consumer.js',
       mode: 'cluster',
-      instances: '4',
+      instances: '6',
     },
     {
       name: 'syncer',
       script: './dist/syncer.js',
-      mode: 'cluster',
-      instances: '1',
-    },
-    {
-      name: 'recover',
-      script: './dist/recover.js',
       mode: 'cluster',
       instances: '1',
     },
