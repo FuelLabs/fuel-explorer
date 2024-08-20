@@ -29,6 +29,7 @@ function GridTable<T>({
     table: {
       style: {
         backgroundColor: 'var(--gray-2)',
+        tableLayout: 'auto',
       },
     },
     headRow: {
@@ -47,6 +48,7 @@ function GridTable<T>({
         paddingTop: '1.2rem',
         paddingBottom: '1.2rem',
         fontWeight: '600',
+        whiteSpace: 'nowrap',
       },
     },
     rows: {
@@ -64,6 +66,7 @@ function GridTable<T>({
         paddingBottom: '1.2rem',
         backgroundColor: 'var(--gray-2)',
         fontWeight: '400',
+        whiteSpace: 'nowrap',
       },
     },
     pagination: {
@@ -82,7 +85,7 @@ function GridTable<T>({
           fontWeight: 'bold',
         },
         '&:hover': {
-          backgroundColor: 'rgba(255, 255, 255, 0.2)', // Slight hover effect
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
         },
       },
     },

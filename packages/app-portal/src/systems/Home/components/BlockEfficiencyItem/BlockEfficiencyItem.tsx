@@ -12,16 +12,16 @@ export default function BlockEfficiencyItem({
   progress,
 }: BlockEfficiencyItemProps) {
   return (
-    <Box width={'160px'}>
+    <Box>
       <VStack gap="2">
         <HStack className="justify-between">
-          <Text className="font-inter text-gray-10">
+          <Text className="font-inter text-gray-10 text-xs">
             {current}M/{total}M
           </Text>
-          <Text className="font-inter text-gray-10">({progress})%</Text>
+          <Text className="font-inter text-gray-10 text-xs">({progress})%</Text>
         </HStack>
-        <div className="mt-[8px]">
-          <div className="w-full h-[8px] rounded-full bg-white/10">
+        <div className="mt-[4px]">
+          <div className="w-full h-[4px] rounded-full bg-gray-5">
             <div
               className="h-full bg-brand rounded-full"
               style={{ width: `${progress}%` }}

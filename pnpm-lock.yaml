@@ -290,18 +290,15 @@ importers:
       react:
         specifier: 18.2.0
         version: 18.2.0
-      react-data-table-component:
-        specifier: 7.6.2
-        version: 7.6.2(react@18.2.0)(styled-components@6.1.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       react-json-view-lite:
         specifier: 1.4.0
         version: 1.4.0(react@18.2.0)
-      react-paginate:
-        specifier: 8.2.0
-        version: 8.2.0(react@18.2.0)
+      react-modal:
+        specifier: 3.16.1
+        version: 3.16.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-use:
         specifier: 17.5.0
         version: 17.5.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -381,6 +378,9 @@ importers:
       '@types/react-dom':
         specifier: 18.2.22
         version: 18.2.22
+      '@types/react-modal':
+        specifier: 3.16.3
+        version: 3.16.3
       '@types/react-window':
         specifier: 1.8.8
         version: 1.8.8
@@ -813,9 +813,15 @@ importers:
       react-aria:
         specifier: 3.32.1
         version: 3.32.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-data-table-component:
+        specifier: 7.6.2
+        version: 7.6.2(react@18.2.0)(styled-components@6.1.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-paginate:
+        specifier: 8.2.0
+        version: 8.2.0(react@18.2.0)
       react-stately:
         specifier: 3.29.1
         version: 3.29.1(react@18.2.0)
@@ -6029,6 +6035,9 @@ packages:
   '@types/react-dom@18.2.22':
     resolution: {integrity: sha512-fHkBXPeNtfvri6gdsMYyW+dW7RXFo6Ad09nLFK0VQWR7yGLai/Cyvyj696gbwYvBnhGtevUG9cET0pmUbMtoPQ==}
 
+  '@types/react-modal@3.16.3':
+    resolution: {integrity: sha512-xXuGavyEGaFQDgBv4UVm8/ZsG+qxeQ7f77yNrW3n+1J6XAstUy5rYHeIHPh1KzsGc6IkCIdu6lQ2xWzu1jBTLg==}
+
   '@types/react-window@1.8.8':
     resolution: {integrity: sha512-8Ls660bHR1AUA2kuRvVG9D/4XpRC6wjAaPT9dil7Ckc76eP9TKWZwwmgfq8Q1LANX3QNDnoU4Zp48A3w+zK69Q==}
 
@@ -8418,6 +8427,9 @@ packages:
   executable@4.1.1:
     resolution: {integrity: sha512-8iA79xD3uAch729dUG8xaaBBFGaEa0wdD2VkYLFHwlqosEj/jT66AzcreRDSgV7ehnNLBW2WR5jIXwGKjVdTLg==}
     engines: {node: '>=4'}
+
+  exenv@1.2.2:
+    resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
 
   exit@0.1.2:
     resolution: {integrity: sha512-Zk/eNKV2zbjpKzrsQ+n1G6poVbErQxJ0LBOJXaKZ1EViLzH+hrLu9cdXI4zw9dBQJslwBEpbQ2P1oS7nDxs6jQ==}
@@ -11682,6 +11694,16 @@ packages:
     peerDependencies:
       react: ^16.13.1 || ^17.0.0 || ^18.0.0
 
+  react-lifecycles-compat@3.0.4:
+    resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
+
+  react-modal@3.16.1:
+    resolution: {integrity: sha512-VStHgI3BVcGo7OXczvnJN7yT2TWHJPDXZWyI/a0ssFNhGZWsPmB8cF0z33ewDXq4VfYMO1vXgiv/g8Nj9NDyWg==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      react: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
+      react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
+
   react-native-webview@11.26.1:
     resolution: {integrity: sha512-hC7BkxOpf+z0UKhxFSFTPAM4shQzYmZHoELa6/8a/MspcjEP7ukYKpuSUTLDywQditT8yI9idfcKvfZDKQExGw==}
     peerDependencies:
@@ -13616,6 +13638,9 @@ packages:
 
   walker@1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
+
+  warning@4.0.3:
+    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
   watchpack@2.4.0:
     resolution: {integrity: sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg==}
@@ -21345,6 +21370,10 @@ snapshots:
     dependencies:
       '@types/react': 18.2.54
 
+  '@types/react-modal@3.16.3':
+    dependencies:
+      '@types/react': 18.2.54
+
   '@types/react-window@1.8.8':
     dependencies:
       '@types/react': 18.2.54
@@ -24792,6 +24821,8 @@ snapshots:
   executable@4.1.1:
     dependencies:
       pify: 2.3.0
+
+  exenv@1.2.2: {}
 
   exit@0.1.2: {}
 
@@ -28753,6 +28784,17 @@ snapshots:
     dependencies:
       react: 18.2.0
 
+  react-lifecycles-compat@3.0.4: {}
+
+  react-modal@3.16.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      exenv: 1.2.2
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-lifecycles-compat: 3.0.4
+      warning: 4.0.3
+
   react-native-webview@11.26.1(react@18.2.0):
     dependencies:
       escape-string-regexp: 2.0.0
@@ -31236,6 +31278,10 @@ snapshots:
   walker@1.0.8:
     dependencies:
       makeerror: 1.0.12
+
+  warning@4.0.3:
+    dependencies:
+      loose-envify: 1.4.0
 
   watchpack@2.4.0:
     dependencies:
