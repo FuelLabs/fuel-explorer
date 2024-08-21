@@ -1,6 +1,0 @@
-query getPredicate($address: Address!) {
-  predicate(address: $address) {
-    id
-    bytecode
-  }
-}

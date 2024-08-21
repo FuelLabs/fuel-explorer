@@ -1,4 +1,4 @@
-import type { UtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
+import type { GQLUtxoItem as TUtxoItem } from '@fuel-explorer/graphql';
 import { Address, Box, Collapsible, useBreakpoints } from '@fuels/ui';
 import type { BoxProps } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';

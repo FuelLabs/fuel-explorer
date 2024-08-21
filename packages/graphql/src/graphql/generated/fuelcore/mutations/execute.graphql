@@ -1,0 +1,3 @@
+mutation execute($id: ID!, $op: String!){
+    execute(id: $id, op: $op)
+}

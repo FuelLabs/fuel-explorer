@@ -1,4 +1,4 @@
-import { GroupedInputType, mocks } from '@fuel-explorer/graphql';
+import { GQLInputCoin, mocks } from '@fuel-explorer/graphql';
 import { dayjs } from '~/systems/Core/utils/dayjs';
 
 const date = dayjs().subtract(1, 'day');
@@ -9,7 +9,7 @@ const status = mocks.aSuccessStatus({
   }),
 });
 
-function input(typename: any) {
+function input(typename: GQLInputCoin['__typename']) {
   return mocks.anInputCoin({ __typename: typename });
 }
 
@@ -23,22 +23,19 @@ const ADDRS = {
     '0x4c6be4ed66b783f55e44a6d36290a73970a616ba33256636cf15ad5cded228d9',
 };
 
-export const GROUPED_INPUT_ASSET = mocks.aGroupedInput({
+export const GROUPED_INPUT_ASSET = mocks.aGroupedInputCoin({
   ...ADDRS,
-  type: GroupedInputType.InputCoin,
   assetId: '0x0000000000000000000000000000000000000000',
   inputs: [input('InputCoin'), input('InputCoin'), input('InputCoin')],
 });
 
-export const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInput({
+export const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInputCoin({
   ...ADDRS,
-  type: GroupedInputType.InputCoin,
   inputs: [input('InputCoin'), input('InputCoin'), input('InputCoin')],
 });
 
-export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInput({
+export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInputMessage({
   ...ADDRS,
-  type: GroupedInputType.InputMessage,
 });
 
 export const OUTPUT_ASSET = mocks.aCoinOutput({
@@ -61,9 +58,6 @@ export const TX_MOCK = mocks.aTransaction({
     fromNow: date.fromNow(),
     full: dayjs().format('DD MMM YYYY - HH:mm:ss A'),
   },
-  totalAccounts: 2,
-  totalAssets: 3,
-  totalOperations: 4,
   status,
   groupedInputs: [
     GROUPED_INPUT_ASSET,

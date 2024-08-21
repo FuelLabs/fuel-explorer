@@ -1,10 +1,10 @@
-import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
+import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 import { EmptyAssets } from '~/systems/Core/components/EmptyBlocks/EmptyAsset';
 
 export type AccountAssetsProps = {
-  balances: AccountBalanceFragment[];
+  balances: GQLBalanceItemFragment[];
   id: string;
   isLoading?: boolean;
 };

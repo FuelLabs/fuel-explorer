@@ -1,11 +1,11 @@
 'use client';
 
-import type { Predicate } from '@fuel-explorer/graphql';
+import type { GQLPredicateItem } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 
 export type AccountPredicateProps = {
-  predicate?: Predicate;
+  predicate?: GQLPredicateItem;
   id: string;
   isLoading?: boolean;
 };

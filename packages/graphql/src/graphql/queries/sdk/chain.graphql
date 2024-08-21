@@ -1,0 +1,1257 @@
+query chain {
+  chain {
+    consensusParameters {
+      baseAssetId
+      blockGasLimit
+      chainId
+      contractParams {
+        contractMaxSize
+        maxStorageSlots
+      }
+      feeParams {
+        gasPerByte
+        gasPriceFactor
+      }
+      gasCosts {
+        add
+        addi
+        aloc
+        and
+        andi
+        bal
+        bhei
+        bhsh
+        burn
+        call {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        cb
+        ccp {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        cfei
+        cfsi
+        contractRoot {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        croo {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        csiz {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        div
+        divi
+        eck1
+        ecr1
+        ed19
+        eq
+        exp
+        expi
+        flag
+        gm
+        gt
+        gtf
+        ji
+        jmp
+        jmpb
+        jmpf
+        jne
+        jneb
+        jnef
+        jnei
+        jnzb
+        jnzf
+        jnzi
+        k256 {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        lb
+        ldc {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        log
+        logd {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        lt
+        lw
+        mcl {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        mcli {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        mcp {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        mcpi {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        meq {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        mint
+        mldv
+        mlog
+        modOp
+        modi
+        moveOp
+        movi
+        mroo
+        mul
+        muli
+        newStoragePerByte
+        noop
+        not
+        or
+        ori
+        poph
+        popl
+        pshh
+        pshl
+        ret
+        retd {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        rvrt
+        s256 {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        sb
+        scwq {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        sll
+        slli
+        smo {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        srl
+        srli
+        srw
+        srwq {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        stateRoot {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        sub
+        subi
+        sw
+        sww
+        swwq {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        time
+        tr
+        tro
+        vmInitialization {
+          __typename
+          ... on HeavyOperation {
+            base
+            gasPerUnit
+          }
+          ... on LightOperation {
+            base
+            unitsPerGas
+          }
+        }
+        wdam
+        wdcm
+        wddv
+        wdmd
+        wdml
+        wdmm
+        wdop
+        wqam
+        wqcm
+        wqdv
+        wqmd
+        wqml
+        wqmm
+        wqop
+        xor
+        xori
+      }
+      predicateParams {
+        maxGasPerPredicate
+        maxMessageDataLength
+        maxPredicateDataLength
+        maxPredicateLength
+      }
+      privilegedAddress
+      scriptParams {
+        maxScriptDataLength
+        maxScriptLength
+      }
+      txParams {
+        maxBytecodeSubsections
+        maxGasPerTx
+        maxInputs
+        maxOutputs
+        maxSize
+        maxWitnesses
+      }
+    }
+    daHeight
+    gasCosts {
+      add
+      addi
+      aloc
+      and
+      andi
+      bal
+      bhei
+      bhsh
+      burn
+      call {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      cb
+      ccp {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      cfei
+      cfsi
+      contractRoot {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      croo {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      csiz {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      div
+      divi
+      eck1
+      ecr1
+      ed19
+      eq
+      exp
+      expi
+      flag
+      gm
+      gt
+      gtf
+      ji
+      jmp
+      jmpb
+      jmpf
+      jne
+      jneb
+      jnef
+      jnei
+      jnzb
+      jnzf
+      jnzi
+      k256 {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      lb
+      ldc {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      log
+      logd {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      lt
+      lw
+      mcl {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      mcli {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      mcp {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      mcpi {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      meq {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      mint
+      mldv
+      mlog
+      modOp
+      modi
+      moveOp
+      movi
+      mroo
+      mul
+      muli
+      newStoragePerByte
+      noop
+      not
+      or
+      ori
+      poph
+      popl
+      pshh
+      pshl
+      ret
+      retd {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      rvrt
+      s256 {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      sb
+      scwq {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      sll
+      slli
+      smo {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      srl
+      srli
+      srw
+      srwq {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      stateRoot {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      sub
+      subi
+      sw
+      sww
+      swwq {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      time
+      tr
+      tro
+      vmInitialization {
+        __typename
+        ... on HeavyOperation {
+          base
+          gasPerUnit
+        }
+        ... on LightOperation {
+          base
+          unitsPerGas
+        }
+      }
+      wdam
+      wdcm
+      wddv
+      wdmd
+      wdml
+      wdmm
+      wdop
+      wqam
+      wqcm
+      wqdv
+      wqmd
+      wqml
+      wqmm
+      wqop
+      xor
+      xori
+    }
+    latestBlock {
+      consensus {
+        __typename
+        ... on Genesis {
+          chainConfigHash
+          coinsRoot
+          contractsRoot
+          messagesRoot
+          transactionsRoot
+        }
+        ... on PoAConsensus {
+          signature
+        }
+      }
+      header {
+        applicationHash
+        consensusParametersVersion
+        daHeight
+        eventInboxRoot
+        height
+        id
+        messageOutboxRoot
+        messageReceiptCount
+        prevRoot
+        stateTransitionBytecodeVersion
+        time
+        transactionsCount
+        transactionsRoot
+      }
+      height
+      id
+      transactions {
+        bytecodeRoot
+        bytecodeWitnessIndex
+        id
+        inputAssetIds
+        inputContract {
+          balanceRoot
+          contractId
+          stateRoot
+          txPointer
+          utxoId
+        }
+        inputContracts
+        inputs {
+          __typename
+          ... on InputCoin {
+            amount
+            assetId
+            owner
+            predicate
+            predicateData
+            predicateGasUsed
+            txPointer
+            utxoId
+            witnessIndex
+          }
+          ... on InputContract {
+            balanceRoot
+            contractId
+            stateRoot
+            txPointer
+            utxoId
+          }
+          ... on InputMessage {
+            amount
+            data
+            nonce
+            predicate
+            predicateData
+            predicateGasUsed
+            recipient
+            sender
+            witnessIndex
+          }
+        }
+        isCreate
+        isMint
+        isScript
+        isUpgrade
+        isUpload
+        maturity
+        mintAmount
+        mintAssetId
+        mintGasPrice
+        outputContract {
+          balanceRoot
+          inputIndex
+          stateRoot
+        }
+        outputs {
+          __typename
+          ... on ChangeOutput {
+            amount
+            assetId
+            to
+          }
+          ... on CoinOutput {
+            amount
+            assetId
+            to
+          }
+          ... on ContractCreated {
+            contract
+            stateRoot
+          }
+          ... on ContractOutput {
+            balanceRoot
+            inputIndex
+            stateRoot
+          }
+          ... on VariableOutput {
+            amount
+            assetId
+            to
+          }
+        }
+        policies {
+          maturity
+          maxFee
+          tip
+          witnessLimit
+        }
+        proofSet
+        rawPayload
+        receiptsRoot
+        salt
+        script
+        scriptData
+        scriptGasLimit
+        status {
+          __typename
+          ... on FailureStatus {
+            block {
+              consensus {
+                __typename
+                ... on Genesis {
+                  chainConfigHash
+                  coinsRoot
+                  contractsRoot
+                  messagesRoot
+                  transactionsRoot
+                }
+                ... on PoAConsensus {
+                  signature
+                }
+              }
+              header {
+                applicationHash
+                consensusParametersVersion
+                daHeight
+                eventInboxRoot
+                height
+                id
+                messageOutboxRoot
+                messageReceiptCount
+                prevRoot
+                stateTransitionBytecodeVersion
+                time
+                transactionsCount
+                transactionsRoot
+              }
+              height
+              id
+              transactions {
+                bytecodeRoot
+                bytecodeWitnessIndex
+                id
+                inputAssetIds
+                inputContract {
+                  balanceRoot
+                  contractId
+                  stateRoot
+                  txPointer
+                  utxoId
+                }
+                inputContracts
+                inputs {
+                  __typename
+                  ... on InputCoin {
+                    amount
+                    assetId
+                    owner
+                    predicate
+                    predicateData
+                    predicateGasUsed
+                    txPointer
+                    utxoId
+                    witnessIndex
+                  }
+                  ... on InputContract {
+                    balanceRoot
+                    contractId
+                    stateRoot
+                    txPointer
+                    utxoId
+                  }
+                  ... on InputMessage {
+                    amount
+                    data
+                    nonce
+                    predicate
+                    predicateData
+                    predicateGasUsed
+                    recipient
+                    sender
+                    witnessIndex
+                  }
+                }
+                isCreate
+                isMint
+                isScript
+                isUpgrade
+                isUpload
+                maturity
+                mintAmount
+                mintAssetId
+                mintGasPrice
+                outputContract {
+                  balanceRoot
+                  inputIndex
+                  stateRoot
+                }
+                outputs {
+                  __typename
+                  ... on ChangeOutput {
+                    amount
+                    assetId
+                    to
+                  }
+                  ... on CoinOutput {
+                    amount
+                    assetId
+                    to
+                  }
+                  ... on ContractCreated {
+                    contract
+                    stateRoot
+                  }
+                  ... on ContractOutput {
+                    balanceRoot
+                    inputIndex
+                    stateRoot
+                  }
+                  ... on VariableOutput {
+                    amount
+                    assetId
+                    to
+                  }
+                }
+                policies {
+                  maturity
+                  maxFee
+                  tip
+                  witnessLimit
+                }
+                proofSet
+                rawPayload
+                receiptsRoot
+                salt
+                script
+                scriptData
+                scriptGasLimit
+                status {
+                  __typename
+                  ... on FailureStatus {
+                    reason
+                    time
+                    totalFee
+                    totalGas
+                    transactionId
+                  }
+                  ... on SqueezedOutStatus {
+                    reason
+                  }
+                  ... on SubmittedStatus {
+                    time
+                  }
+                  ... on SuccessStatus {
+                    time
+                    totalFee
+                    totalGas
+                    transactionId
+                  }
+                }
+                storageSlots
+                subsectionIndex
+                subsectionsNumber
+                txPointer
+                upgradePurpose {
+                  __typename
+                  ... on ConsensusParametersPurpose {
+                    checksum
+                    witnessIndex
+                  }
+                  ... on StateTransitionPurpose {
+                    root
+                  }
+                }
+                witnesses
+              }
+            }
+            programState {
+              data
+              returnType
+            }
+            reason
+            receipts {
+              amount
+              assetId
+              contractId
+              data
+              digest
+              gas
+              gasUsed
+              id
+              is
+              len
+              nonce
+              param1
+              param2
+              pc
+              ptr
+              ra
+              rb
+              rc
+              rd
+              reason
+              receiptType
+              recipient
+              result
+              sender
+              subId
+              to
+              toAddress
+              val
+            }
+            time
+            totalFee
+            totalGas
+            transactionId
+          }
+          ... on SqueezedOutStatus {
+            reason
+          }
+          ... on SubmittedStatus {
+            time
+          }
+          ... on SuccessStatus {
+            block {
+              consensus {
+                __typename
+                ... on Genesis {
+                  chainConfigHash
+                  coinsRoot
+                  contractsRoot
+                  messagesRoot
+                  transactionsRoot
+                }
+                ... on PoAConsensus {
+                  signature
+                }
+              }
+              header {
+                applicationHash
+                consensusParametersVersion
+                daHeight
+                eventInboxRoot
+                height
+                id
+                messageOutboxRoot
+                messageReceiptCount
+                prevRoot
+                stateTransitionBytecodeVersion
+                time
+                transactionsCount
+                transactionsRoot
+              }
+              height
+              id
+              transactions {
+                bytecodeRoot
+                bytecodeWitnessIndex
+                id
+                inputAssetIds
+                inputContract {
+                  balanceRoot
+                  contractId
+                  stateRoot
+                  txPointer
+                  utxoId
+                }
+                inputContracts
+                inputs {
+                  __typename
+                  ... on InputCoin {
+                    amount
+                    assetId
+                    owner
+                    predicate
+                    predicateData
+                    predicateGasUsed
+                    txPointer
+                    utxoId
+                    witnessIndex
+                  }
+                  ... on InputContract {
+                    balanceRoot
+                    contractId
+                    stateRoot
+                    txPointer
+                    utxoId
+                  }
+                  ... on InputMessage {
+                    amount
+                    data
+                    nonce
+                    predicate
+                    predicateData
+                    predicateGasUsed
+                    recipient
+                    sender
+                    witnessIndex
+                  }
+                }
+                isCreate
+                isMint
+                isScript
+                isUpgrade
+                isUpload
+                maturity
+                mintAmount
+                mintAssetId
+                mintGasPrice
+                outputContract {
+                  balanceRoot
+                  inputIndex
+                  stateRoot
+                }
+                outputs {
+                  __typename
+                  ... on ChangeOutput {
+                    amount
+                    assetId
+                    to
+                  }
+                  ... on CoinOutput {
+                    amount
+                    assetId
+                    to
+                  }
+                  ... on ContractCreated {
+                    contract
+                    stateRoot
+                  }
+                  ... on ContractOutput {
+                    balanceRoot
+                    inputIndex
+                    stateRoot
+                  }
+                  ... on VariableOutput {
+                    amount
+                    assetId
+                    to
+                  }
+                }
+                policies {
+                  maturity
+                  maxFee
+                  tip
+                  witnessLimit
+                }
+                proofSet
+                rawPayload
+                receiptsRoot
+                salt
+                script
+                scriptData
+                scriptGasLimit
+                status {
+                  __typename
+                  ... on FailureStatus {
+                    reason
+                    time
+                    totalFee
+                    totalGas
+                    transactionId
+                  }
+                  ... on SqueezedOutStatus {
+                    reason
+                  }
+                  ... on SubmittedStatus {
+                    time
+                  }
+                  ... on SuccessStatus {
+                    time
+                    totalFee
+                    totalGas
+                    transactionId
+                  }
+                }
+                storageSlots
+                subsectionIndex
+                subsectionsNumber
+                txPointer
+                upgradePurpose {
+                  __typename
+                  ... on ConsensusParametersPurpose {
+                    checksum
+                    witnessIndex
+                  }
+                  ... on StateTransitionPurpose {
+                    root
+                  }
+                }
+                witnesses
+              }
+            }
+            programState {
+              data
+              returnType
+            }
+            receipts {
+              amount
+              assetId
+              contractId
+              data
+              digest
+              gas
+              gasUsed
+              id
+              is
+              len
+              nonce
+              param1
+              param2
+              pc
+              ptr
+              ra
+              rb
+              rc
+              rd
+              reason
+              receiptType
+              recipient
+              result
+              sender
+              subId
+              to
+              toAddress
+              val
+            }
+            time
+            totalFee
+            totalGas
+            transactionId
+          }
+        }
+        storageSlots
+        subsectionIndex
+        subsectionsNumber
+        txPointer
+        upgradePurpose {
+          __typename
+          ... on ConsensusParametersPurpose {
+            checksum
+            witnessIndex
+          }
+          ... on StateTransitionPurpose {
+            root
+          }
+        }
+        witnesses
+      }
+    }
+    name
+  }
+}

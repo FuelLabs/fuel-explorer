@@ -1,0 +1,7 @@
+# import TransactionItem from "./tx-fragments.graphql"
+
+query transactionDetails($id: TransactionId!) {
+  transaction(id: $id) {
+    ...TransactionItem
+  }
+}

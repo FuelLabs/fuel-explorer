@@ -1,0 +1,6 @@
+query contract($id: ContractId!) {
+  contract(id: $id) {
+	id
+    bytecode
+  }
+}

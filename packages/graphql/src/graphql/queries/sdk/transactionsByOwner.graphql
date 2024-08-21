@@ -1,0 +1,25 @@
+query transactionsByOwner(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $owner: Address!
+) {
+  transactionsByOwner(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    owner: $owner
+  ) {
+    nodes {
+      ...RecentTransaction
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

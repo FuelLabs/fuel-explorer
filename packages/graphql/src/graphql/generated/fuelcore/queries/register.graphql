@@ -1,0 +1,3 @@
+query register($id: ID!, $register: U32!){
+    register(id: $id, register: $register)
+}

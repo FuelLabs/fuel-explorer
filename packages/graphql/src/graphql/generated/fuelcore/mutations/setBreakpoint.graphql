@@ -1,0 +1,3 @@
+mutation setBreakpoint($breakpoint: Breakpoint!, $id: ID!){
+    setBreakpoint(breakpoint: $breakpoint, id: $id)
+}

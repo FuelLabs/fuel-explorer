@@ -6,10 +6,12 @@ import { AccountAssetsSync } from '~/systems/Account/screens/AccountAssetsSync';
 import { AccountTransactionsSync } from '~/systems/Account/screens/AccountTransactionsSync';
 import type { AccountRouteProps } from '~/systems/Account/types';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
+import { TxsRouteProps } from '~/systems/Transactions/types';
 
 export default async function Account({
   params: { id, tab },
-}: AccountRouteProps) {
+  searchParams: { cursor, dir },
+}: AccountRouteProps & TxsRouteProps) {
   switch (tab) {
     case 'assets':
       return (
@@ -20,7 +22,7 @@ export default async function Account({
     case 'transactions':
       return (
         <Suspense fallback={<TxListLoader />}>
-          <AccountTransactionsSync id={id} />
+          <AccountTransactionsSync id={id} cursor={cursor} dir={dir} />
         </Suspense>
       );
     default:

@@ -9,8 +9,6 @@ const schema = z.object({
 });
 
 export const search = act(schema, async ({ query }) => {
-  const { data } = await sdk.searchQuery({ search: query }).catch((_) => {
-    return { data: { search: null } };
-  });
+  const { data } = await sdk.search({ query });
   return data?.search ?? null;
 });
