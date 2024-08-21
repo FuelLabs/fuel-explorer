@@ -1,0 +1,279 @@
+fragment TransactionStatus on TransactionStatus {
+  __typename
+  ... on SqueezedOutStatus {
+    reason
+  }
+  ... on SuccessStatus {
+    time
+    block {
+      id
+      header {
+        id
+        height
+        daHeight
+        applicationHash
+        messageReceiptCount
+        time
+      }
+    }
+    programState {
+      data
+    }
+  }
+  ... on FailureStatus {
+    time
+    programState {
+      data
+    }
+  }
+  ... on SubmittedStatus {
+    time
+  }
+}
+
+fragment TransactionInput on Input {
+  __typename
+  ... on InputCoin {
+    amount
+    assetId
+    owner
+    predicate
+    predicateData
+    txPointer
+    utxoId
+    witnessIndex
+  }
+  ... on InputContract {
+    utxoId
+    balanceRoot
+    txPointer
+    contractId
+  }
+  ... on InputMessage {
+    sender
+    recipient
+    amount
+    nonce
+    data
+    predicate
+    predicateData
+  }
+}
+
+fragment TransactionOutput on Output {
+  __typename
+  ... on CoinOutput {
+    to
+    amount
+    assetId
+  }
+  ... on ContractOutput {
+    inputIndex
+    balanceRoot
+  }
+  ... on ChangeOutput {
+    to
+    amount
+    assetId
+  }
+  ... on VariableOutput {
+    to
+    amount
+    assetId
+  }
+  ... on ContractCreated {
+    contract
+  }
+}
+
+fragment TransactionReceipt on Receipt {
+  __typename
+  id
+  to
+  pc
+  is
+  toAddress
+  amount
+  assetId
+  gas
+  param1
+  param2
+  val
+  ptr
+  digest
+  reason
+  ra
+  rb
+  rc
+  rd
+  len
+  receiptType
+  result
+  gasUsed
+  data
+  sender
+  recipient
+  nonce
+  contractId
+  subId
+}
+
+fragment InnerReceiptItem on OperationReceipt {
+  item {
+    ...TransactionReceipt
+  }
+}
+
+fragment OperationReceiptItem on OperationReceipt {
+  ...InnerReceiptItem
+  receipts {
+    ...InnerReceiptItem
+    receipts {
+      ...InnerReceiptItem
+      receipts {
+        ...InnerReceiptItem
+      }
+    }
+  }
+}
+
+fragment OperationItem on Operation {
+  __typename
+  type
+  receipts {
+    ...OperationReceiptItem
+    receipts {
+      ...OperationReceiptItem
+	  receipts {
+        ...OperationReceiptItem
+		receipts {
+          ...OperationReceiptItem
+		  receipts {
+            ...OperationReceiptItem
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment TxDetailsGroupedInputCoin on GroupedInputCoin {
+  type
+  totalAmount
+  owner
+  assetId
+  inputs {
+    ... on InputCoin {
+      amount
+      utxoId
+    }
+  }
+}
+
+fragment TxDetailsGroupedInputMessage on GroupedInputMessage {
+  type
+  sender
+  data
+  recipient
+}
+
+fragment TxDetailsGroupedInputContract on GroupedInputContract {
+  type
+  contractId
+}
+
+fragment TxDetailsGroupedOutputCoin on GroupedOutputCoin {
+  type
+  assetId
+  totalAmount
+  to
+  outputs {
+    __typename
+  }
+}
+
+fragment TxDetailsGroupedOutputChanged on GroupedOutputChanged {
+  type
+  assetId
+  totalAmount
+  to
+  outputs {
+    __typename
+  }
+}
+
+fragment TxDetailsGroupedOutputContractCreated on GroupedOutputContractCreated {
+  type
+  contractId
+}
+
+fragment TransactionItem on Transaction {
+  # Custom resolvers
+  id
+  blockHeight
+  gasCosts {
+    fee
+    gasUsed
+  }
+  groupedInputs {
+    __typename
+    ...TxDetailsGroupedInputContract
+    ...TxDetailsGroupedInputCoin
+    ...TxDetailsGroupedInputMessage
+  }
+ groupedOutputs {
+   __typename
+   ...TxDetailsGroupedOutputCoin
+   ...TxDetailsGroupedOutputChanged
+   ...TxDetailsGroupedOutputContractCreated
+ }
+  operations {
+    ...OperationItem
+  }
+  receipts {
+    ...TransactionReceipt
+  }
+  hasPredicate
+  statusType
+  title
+  time {
+    fromNow
+    full
+    rawUnix
+  }
+
+  # Transaction Data
+  __typename
+  maturity
+  txPointer
+  isScript
+  isCreate
+  isMint
+  witnesses
+  receiptsRoot
+  script
+  scriptData
+  bytecodeWitnessIndex
+  salt
+  storageSlots
+  rawPayload
+  mintAmount
+  mintAssetId
+  inputContract {
+    contractId
+  }
+  outputContract {
+    inputIndex
+  }
+  status {
+    ...TransactionStatus
+  }
+  inputAssetIds
+  inputContracts
+  inputs {
+    ...TransactionInput
+  }
+  outputs {
+    ...TransactionOutput
+  }
+}

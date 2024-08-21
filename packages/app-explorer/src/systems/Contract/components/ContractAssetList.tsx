@@ -1,6 +1,6 @@
 'use client';
 import type {
-  ContractBalanceConnectionItemFragment,
+  GQLContractBalanceConnectionNodeFragment,
   Maybe,
 } from '@fuel-explorer/graphql';
 import { VStack } from '@fuels/ui';
@@ -10,11 +10,11 @@ import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { ContractBalanceItem } from './ContractBalanceItem';
 
 type TabAssetsProps = {
-  balances?: Maybe<ContractBalanceConnectionItemFragment>;
+  balances?: Maybe<GQLContractBalanceConnectionNodeFragment['edges']>;
 };
 
 export function ContractAssetList({ balances }: TabAssetsProps) {
-  const nonZeroBalances = balances?.edges.filter(
+  const nonZeroBalances = balances?.filter(
     (contractBalance) => !bn(contractBalance.node.amount).isZero(),
   );
 

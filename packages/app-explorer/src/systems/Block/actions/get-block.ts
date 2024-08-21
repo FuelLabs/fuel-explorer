@@ -1,7 +1,5 @@
 'use server';
 
-import type { GetBlockByHeightQuery } from '@fuel-explorer/graphql';
-import { Signer } from 'fuels';
 import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';
 import { isValidAddress } from '~/systems/Core/utils/address';
@@ -19,30 +17,7 @@ export const getBlock = act(schema, async (input) => {
     throw new Error('Invalid block number or block id');
   }
 
-  if (isAddressValid) {
-    const { data } = await sdk.getBlockById({ id });
-    const producer = getProducer(data);
-    return { block: data.block, producer };
-  }
-
-  const { data } = await sdk.getBlockByHeight({ height: id });
-  const producer = getProducer(data);
-  return { block: data.block, producer };
+  const params = isAddressValid ? { id } : { height: id };
+  const { data } = await sdk.block(params);
+  return { block: data.block, producer: data.block?.producer };
 });
-
-const getProducer = (
-  data:
-    | GetBlockByHeightQuery
-    | {
-        block: null;
-      },
-) => {
-  // TODO use custom resolver once a fix is found
-  let producer: string | null = null;
-  if (data.block && data.block.consensus.__typename === 'PoAConsensus') {
-    const signature = data?.block?.consensus.signature;
-    producer = Signer.recoverAddress(data.block.id, signature).toAddress();
-  }
-
-  return producer;
-};

@@ -1,15 +1,28 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "../../tsconfig.base.json",
+  "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "types": ["node", "jest"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
     "isolatedModules": true,
     "outDir": "./dist",
     "plugins": [
       {
         "name": "ts-gql-plugin"
       }
-    ]
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["src/*"]
+    },
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "generated"],
   "include": ["src", "scripts", "*.config.*", "codegen.*"]
 }

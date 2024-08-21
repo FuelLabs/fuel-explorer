@@ -1,8 +1,8 @@
 import type {
-  ChangeOutput,
-  CoinOutput,
-  ContractCreated,
-  TransactionOutputFragment,
+  GQLChangeOutput,
+  GQLCoinOutput,
+  GQLContractCreated,
+  GQLTransactionOutputFragment,
 } from '@fuel-explorer/graphql';
 import {
   Address,
@@ -26,12 +26,12 @@ import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { TxIcon } from '../TxIcon/TxIcon';
 import { isOutput } from './TxOutput.utils';
 
-type TxOutputProps<T = TransactionOutputFragment> = CardProps & {
+type TxOutputProps<T = GQLTransactionOutputFragment> = CardProps & {
   output: T;
 };
 
 const TxOutputCoin = createComponent<
-  TxOutputProps<ChangeOutput | CoinOutput>,
+  TxOutputProps<GQLChangeOutput | GQLCoinOutput>,
   typeof Card
 >({
   id: 'TxOutputCoin',
@@ -54,10 +54,6 @@ const TxOutputCoin = createComponent<
               }}
             />
           </AssetItem>
-          {/*
-            I'm just hidding this until we get the output/input design merged 
-            https://linear.app/fuel-network/issue/FE-18/change-inputs-and-outputs-component-for-better-relevance
-          */}
           <HStack className="hidden tablet:flex items-center gap-2">
             <Icon icon={IconArrowUp} className="text-success" />
             {amount && (
@@ -76,7 +72,7 @@ const TxOutputCoin = createComponent<
 });
 
 const TxOutputContractCreated = createComponent<
-  TxOutputProps<ContractCreated>,
+  TxOutputProps<GQLContractCreated>,
   typeof Card
 >({
   id: 'TxOutputContractCreated',
@@ -109,12 +105,12 @@ const TxOutputContractCreated = createComponent<
 
 export function TxOutput({ output, ...props }: TxOutputProps) {
   if (
-    isOutput<ChangeOutput>(output, 'ChangeOutput') ||
-    isOutput<CoinOutput>(output, 'CoinOutput')
+    isOutput<GQLChangeOutput>(output, 'ChangeOutput') ||
+    isOutput<GQLCoinOutput>(output, 'CoinOutput')
   ) {
     return <TxOutputCoin output={output} {...props} />;
   }
-  if (isOutput<ContractCreated>(output, 'ContractCreated')) {
+  if (isOutput<GQLContractCreated>(output, 'ContractCreated')) {
     return <TxOutputContractCreated output={output} {...props} />;
   }
 

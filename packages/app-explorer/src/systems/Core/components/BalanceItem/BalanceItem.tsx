@@ -1,5 +1,4 @@
 'use client';
-import type { AccountBalanceFragment } from '@fuel-explorer/graphql';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
@@ -12,12 +11,13 @@ import {
 import { bn } from 'fuels';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 
+import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
 import { Amount } from '../Amount/Amount';
 import type { UtxoItem } from '../Utxos/Utxos';
 import { Utxos } from '../Utxos/Utxos';
 
 type BalanceItemProps = BaseProps<{
-  item: Omit<AccountBalanceFragment, 'owner' | '__typename'>;
+  item: Omit<GQLBalanceItemFragment, 'owner' | '__typename'>;
   isLoading?: boolean;
 }>;
 

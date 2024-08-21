@@ -1,0 +1,23 @@
+query balances($after: String, $before: String, $filter: BalanceFilterInput!, $first: Int, $last: Int){
+    balances(after: $after, before: $before, filter: $filter, first: $first, last: $last){
+        edges{
+            cursor
+            node{
+                amount
+                assetId
+                owner
+            }
+        }
+        nodes{
+            amount
+            assetId
+            owner
+        }
+        pageInfo{
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+        }
+    }
+}

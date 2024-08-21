@@ -1,0 +1,9 @@
+query relayedTransactionStatus($id: RelayedTransactionId!){
+    relayedTransactionStatus(id: $id){
+        __typename
+        ... on RelayedTransactionFailed {
+            blockHeight
+            failure
+        }
+    }
+}

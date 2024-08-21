@@ -1,9 +1,9 @@
-import { ReceiptType } from '@fuel-explorer/graphql/src/sdk';
+import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import type {
+  GQLOperationReceipt,
+  GQLTransactionReceiptFragment,
   Maybe,
-  OperationReceipt,
-  TransactionReceiptFragment,
-} from '@fuel-explorer/graphql/src/sdk';
+} from '@fuel-explorer/graphql/sdk';
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
@@ -117,22 +117,25 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
     );
   }
 
-  const txReceipts = getReceipts(tx);
+  const txReceipts = tx?.receipts ?? [];
   const receipts = operations.flatMap((i) => i?.receipts ?? []);
   const first = receipts?.[0];
   const last = receipts?.[receipts.length - 1];
   const hasPanic = operations?.some((o) =>
     o?.receipts?.some(
       (r) =>
-        r?.item?.receiptType === ReceiptType.Panic ||
-        r?.item?.receiptType === ReceiptType.Revert,
+        r?.item?.receiptType === GQLReceiptType.Panic ||
+        r?.item?.receiptType === GQLReceiptType.Revert,
     ),
   );
 
   if (!opened && receipts.length > 3) {
     return (
       <>
-        <ReceiptItem receipt={first as OperationReceipt} hasPanic={hasPanic} />
+        <ReceiptItem
+          receipt={first as GQLOperationReceipt}
+          hasPanic={hasPanic}
+        />
         <HStack>
           <Box className={classes.lines()} />
           <HoverCard openDelay={100}>
@@ -159,7 +162,10 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
           </HoverCard>
           <Box className={classes.lines()} />
         </HStack>
-        <ReceiptItem receipt={last as OperationReceipt} hasPanic={hasPanic} />
+        <ReceiptItem
+          receipt={last as GQLOperationReceipt}
+          hasPanic={hasPanic}
+        />
       </>
     );
   }
@@ -169,17 +175,6 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
       {operations.map((item, i) => (
         <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
           {item?.receipts?.map((receipt, idx) => {
-            const hasNested = Boolean(receipt?.receipts?.length);
-            if (!hasNested) {
-              return (
-                <ReceiptItem
-                  key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
-                  receipt={receipt as OperationReceipt}
-                  isIndented={idx > 0}
-                  hasPanic={hasPanic}
-                />
-              );
-            }
             return (
               <div
                 key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
@@ -187,28 +182,47 @@ function ScriptsContent({ tx, opened, setOpened }: ScriptsContent) {
                 className={classes.operation()}
               >
                 <ReceiptItem
-                  receipt={receipt as OperationReceipt}
+                  receipt={receipt as GQLOperationReceipt}
                   isIndented={idx > 0}
                   hasPanic={hasPanic}
                 />
-                {receipt?.receipts?.map((sub, j) => (
-                  <div
-                    key={`${j}-${sub?.item?.receiptType ?? ''}`}
-                    className="ml-10"
-                  >
-                    <ReceiptItem
-                      isIndented
-                      receipt={sub as OperationReceipt}
-                      hasPanic={hasPanic}
-                    />
-                  </div>
-                ))}
+                <ReceiptItemR
+                  receipts={receipt?.receipts as GQLOperationReceipt[]}
+                  hasPanic={hasPanic}
+                />
               </div>
             );
           })}
         </div>
       ))}
     </div>
+  );
+}
+
+function ReceiptItemR(props: {
+  receipts?: GQLOperationReceipt[];
+  hasPanic: boolean;
+}) {
+  const classes = styles();
+  return (
+    <>
+      {props.receipts?.map((sub, j) => (
+        <div
+          key={`${j}-${sub?.item?.receiptType ?? ''}`}
+          data-nested="true"
+          className={classes.operationChild()}
+        >
+          <ReceiptItem
+            isIndented
+            receipt={sub as GQLOperationReceipt}
+            hasPanic={props.hasPanic}
+          />
+          {sub?.receipts && sub?.receipts?.length > 0 && (
+            <ReceiptItemR receipts={sub?.receipts} hasPanic={props.hasPanic} />
+          )}
+        </div>
+      ))}
+    </>
   );
 }
 
@@ -231,37 +245,37 @@ function CountReceipt({ num, op }: { num: number; op: string }) {
 function TypesCounter({
   receipts: items = [],
 }: {
-  receipts?: Maybe<TransactionReceiptFragment[]>;
+  receipts?: Maybe<GQLTransactionReceiptFragment[]>;
 }) {
   const receipts = items ?? [];
-  const calls = receipts.filter((i) => i?.receiptType === ReceiptType.Call);
+  const calls = receipts.filter((i) => i?.receiptType === GQLReceiptType.Call);
   const transfers = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Transfer ||
-      i?.receiptType === ReceiptType.TransferOut,
+      i?.receiptType === GQLReceiptType.Transfer ||
+      i?.receiptType === GQLReceiptType.TransferOut,
   );
-  const mints = receipts.filter((i) => i?.receiptType === ReceiptType.Mint);
-  const burns = receipts.filter((i) => i?.receiptType === ReceiptType.Burn);
+  const mints = receipts.filter((i) => i?.receiptType === GQLReceiptType.Mint);
+  const burns = receipts.filter((i) => i?.receiptType === GQLReceiptType.Burn);
   const messages = receipts.filter(
-    (i) => i?.receiptType === ReceiptType.MessageOut,
+    (i) => i?.receiptType === GQLReceiptType.MessageOut,
   );
   const returns = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Return ||
-      i?.receiptType === ReceiptType.ReturnData,
+      i?.receiptType === GQLReceiptType.Return ||
+      i?.receiptType === GQLReceiptType.ReturnData,
   );
   const results = receipts.filter(
-    (i) => i?.receiptType === ReceiptType.ScriptResult,
+    (i) => i?.receiptType === GQLReceiptType.ScriptResult,
   );
   const errors = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Panic ||
-      i?.receiptType === ReceiptType.Revert,
+      i?.receiptType === GQLReceiptType.Panic ||
+      i?.receiptType === GQLReceiptType.Revert,
   );
   const logs = receipts.filter(
     (i) =>
-      i?.receiptType === ReceiptType.Log ||
-      i?.receiptType === ReceiptType.LogData,
+      i?.receiptType === GQLReceiptType.Log ||
+      i?.receiptType === GQLReceiptType.LogData,
   );
   return (
     <div className="flex flex-col gap-0 text-sm font-mono w-full">
@@ -289,19 +303,14 @@ function TypesCounter({
 }
 
 const ctx = createContext<ReceiptItemProps>({} as ReceiptItemProps);
-const RETURN_TYPES = [ReceiptType.Return, ReceiptType.ReturnData];
-
-function getReceipts(tx: TransactionNode | undefined) {
-  if (tx?.status?.__typename !== 'SuccessStatus') return [];
-  return tx.status.receipts ?? [];
-}
+const RETURN_TYPES = [GQLReceiptType.Return, GQLReceiptType.ReturnData];
 
 function getBadgeColor(
   hasError: boolean,
-  receipt?: Maybe<TransactionReceiptFragment>,
+  receipt?: Maybe<GQLTransactionReceiptFragment>,
 ) {
   const type = receipt?.receiptType ?? 'UNKNOWN';
-  if (type === ReceiptType.Revert || type === ReceiptType.Panic) {
+  if (type === GQLReceiptType.Revert || type === GQLReceiptType.Panic) {
     return 'red';
   }
   if (
@@ -315,7 +324,7 @@ function getBadgeColor(
 }
 
 export type ReceiptItemProps = BaseProps<{
-  receipt?: Maybe<OperationReceipt>;
+  receipt?: Maybe<GQLOperationReceipt>;
   isIndented?: boolean;
   hasPanic?: boolean;
 }>;
@@ -351,7 +360,7 @@ function ReceiptItem({
 }
 
 function parseJson(
-  item?: Maybe<TransactionReceiptFragment>,
+  item?: Maybe<GQLTransactionReceiptFragment>,
 ): Record<string, any> {
   if (!item) return {};
   return Object.entries(item).reduce((acc, [key, value]) => {
@@ -586,12 +595,27 @@ const styles = tv({
       '[&[data-nested=true]]:before:left-0',
       '[&[data-nested=true]]:before:right-0',
     ],
+    operationChild: [
+      'relative flex flex-col gap-3 ml-5',
+      'tablet:ml-10',
+      '[&[data-nested=true]]:before:absolute',
+      '[&[data-nested=true]]:before:content-[""]',
+      '[&[data-nested=true]]:before:block',
+      '[&[data-nested=true]]:before:border-l',
+      '[&[data-nested=true]]:before:border-border',
+      '[&[data-nested=true]]:before:border-dashed',
+      '[&[data-nested=true]]:before:top-[40px]',
+      '[&[data-nested=true]]:before:bottom-[20px]',
+      '[&[data-nested=true]]:before:left-0',
+      '[&[data-nested=true]]:before:right-0',
+    ],
   },
   variants: {
     indent: {
       true: {
         receiptRow: [
-          'ml-10 before:absolute before:top-[-35px] before:left-[-40px]',
+          'ml-5 before:absolute before:top-[-35px] before:left-[-20px]',
+          'tablet:ml-10 tablet:before:left-[-40px]',
           'before:bottom-[20px] before:right-[100%]',
           'before:content-[""] before:block before:border-l before:border-b',
           'before:border-border before:border-dashed before:rounded-bl',
