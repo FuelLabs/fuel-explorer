@@ -1,9 +1,7 @@
 import { Hash256, type SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 import type { GQLOperation } from '~/graphql/generated/sdk-provider';
-import type { TransactionItem } from '../Transaction/TransactionModel';
 import { TransactionRef } from '../Transaction/vo/TransactionRef';
-import type { OperationItem } from './OperationModel';
 import { OperationData } from './vo/OperationData';
 
 type OperationProps = {
@@ -23,18 +21,6 @@ export class OperationEntity extends Entity<OperationProps, SerialID> {
       transactionHash,
     };
     return new OperationEntity(props);
-  }
-
-  static toDBItem(
-    operation: GQLOperation,
-    transactionId: TransactionItem['_id'],
-    transactionHash: TransactionItem['txHash'],
-  ): Omit<OperationItem, '_id'> {
-    return {
-      data: operation,
-      transactionId,
-      transactionHash,
-    };
   }
 
   get cursor() {

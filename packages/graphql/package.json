@@ -15,9 +15,7 @@
   },
   "typesVersions": {
     "*": {
-      "sdk": [
-        "./src/graphql/generated/sdk.ts"
-      ]
+      "sdk": ["./src/graphql/generated/sdk.ts"]
     }
   },
   "scripts": {
@@ -27,13 +25,6 @@
     "codegen": "run-s codegen:*",
     "codegen:gql-fuelcore": "gqlg --schemaFilePath ./src/graphql/schemas/fuelcore.graphql --destDirPath ./src/graphql/generated/fuelcore --ext graphql --includeCrossReferences --depthLimit 6",
     "codegen:sdk": "gql-gen -r dotenv/config --config codegen.sdk.ts",
-    "db:studio": "drizzle-kit studio",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx ./src/cli.ts migrate",
-    "db:push": "drizzle-kit push",
-    "db:setup": "run-s db:generate",
-    "db:clean": "tsx ./src/cli.ts clean-db",
-    "db:sql": "tsx ./src/cli.ts sql",
     "dev:graphql": "APP=graphql pm2 start ecosystem-dev.config.cjs",
     "dev:syncer": "APP=syncer pm2 start ecosystem-dev.config.cjs",
     "pm2:start": "pm2 start ecosystem.config.cjs --update-env",
@@ -42,11 +33,7 @@
     "pm2:stop": "pm2 stop ecosystem.config.cjs",
     "pm2:delete": "pm2 delete ecosystem.config.cjs",
     "server:start": "pm2-runtime ecosystem.config.cjs",
-    "sync:all": "tsx ./src/cli.ts sync --all",
-    "sync:missing": "tsx ./src/cli.ts sync --missing",
-    "sync:from-block": "tsx ./src/cli.ts sync --from",
     "sync:clean": "tsx ./src/cli.ts sync --clean",
-    "sync:last": "tsx ./src/cli.ts sync --last",
     "test": "jest --config jest.config.ts",
     "test:watch": "jest --config jest.config.ts --watch"
   },

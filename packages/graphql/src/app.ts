@@ -2,12 +2,11 @@ import { env } from './config';
 import { logger } from './core/Logger';
 import { GraphQLServer } from './graphql/GraphQLServer';
 import { DatabaseConnection } from './infra/database/DatabaseConnection';
-import { db } from './infra/database/Db';
 import { Server } from './infra/server/App';
 
 (async () => {
   const port = Number(env.get('SERVER_PORT'));
-  const graphQLServer = new GraphQLServer(await db.conn());
+  const graphQLServer = new GraphQLServer();
   const schema = graphQLServer.schema();
   const yoga = graphQLServer.setup(schema);
   const httpServer = new Server();
@@ -25,7 +24,6 @@ import { Server } from './infra/server/App';
     //biome-ignore lint/complexity/noForEach: <explanation>
     others.forEach((eventType) => {
       process.on(eventType, async (err) => {
-        db.close();
         logger.error('❌ GraphQL shutdown error', err);
         process.exit(1);
       });

@@ -2,7 +2,6 @@ import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 import type { GQLOutput } from '~/graphql/generated/sdk-provider';
 import type { TxID } from '../Transaction/vo/TransactionModelID';
-import type { OutputItem, OutputPayload } from './OutputModel';
 import { OutputData } from './vo/OutputData';
 
 type OutputProps = {
@@ -14,7 +13,7 @@ export class OutputEntity extends Entity<
   OutputProps,
   SerialID | null | undefined
 > {
-  static create(output: OutputPayload, outputId?: number) {
+  static create(output: any, outputId?: number) {
     if (!output?.data) {
       throw new Error('Output data is required');
     }
@@ -24,10 +23,7 @@ export class OutputEntity extends Entity<
     return new OutputEntity({ id, data }, id);
   }
 
-  static toDBItem(
-    output: GQLOutput,
-    transactionId: TxID,
-  ): Omit<OutputItem, '_id'> {
+  static toDBItem(output: GQLOutput, transactionId: TxID): any {
     return {
       data: output,
       transactionId,

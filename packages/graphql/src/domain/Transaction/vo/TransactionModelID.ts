@@ -1,6 +1,5 @@
 import { varchar } from 'drizzle-orm/pg-core';
 import { Identifier } from '~/core/Identifier';
-import type { TransactionItem } from '../TransactionModel';
 
 export type TxID = string;
 export class TransactionModelID extends Identifier<TxID> {
@@ -12,7 +11,7 @@ export class TransactionModelID extends Identifier<TxID> {
     return varchar('_id', { length: 66 }).notNull().primaryKey();
   }
 
-  static create(transaction: TransactionItem) {
+  static create(transaction: any) {
     return new TransactionModelID(transaction._id);
   }
 

@@ -6,7 +6,6 @@ import type { GraphQLSchema } from 'graphql';
 import { createYoga, useLogger } from 'graphql-yoga';
 import { env } from '~/config';
 import { logger } from '~/core/Logger';
-import type { DbConnection, DbTransaction } from '~/infra/database/Db';
 import { GraphQLContextFactory } from './GraphQLContext';
 import { resolvers } from './resolvers';
 
@@ -15,8 +14,6 @@ const typesArray = loadFilesSync(join(__dirname, './schemas'));
 const typeDefs = mergeTypeDefs(typesArray);
 
 export class GraphQLServer {
-  constructor(private conn: DbConnection | DbTransaction) {}
-
   schema() {
     return makeExecutableSchema({
       typeDefs,
@@ -25,14 +22,13 @@ export class GraphQLServer {
   }
 
   setup(schema: GraphQLSchema) {
-    const repositories = GraphQLContextFactory.getRepositories(this.conn);
     return createYoga({
       schema,
       batching: true,
       logging: !!DEBUG,
       maskedErrors: !!DEBUG,
       context: async ({ request }) => {
-        return GraphQLContextFactory.create(request, this.conn, repositories);
+        return GraphQLContextFactory.create(request);
       },
       plugins: [
         useLogger({

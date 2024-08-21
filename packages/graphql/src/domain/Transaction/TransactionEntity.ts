@@ -9,8 +9,6 @@ import { InputEntity } from '../Input/InputEntity';
 import { OperationEntity } from '../Operation/OperationEntity';
 import ReceiptsParser from './ReceiptsParser';
 import ReceiptsParserAdapter from './ReceiptsParserAdapter';
-import type { TransactionItem } from './TransactionModel';
-import { AccountIndex } from './vo/AccountIndex';
 import { TransactionData } from './vo/TransactionData';
 import { TransactionGroupedInputs } from './vo/TransactionGroupedInputs';
 import { TransactionGroupedOutputs } from './vo/TransactionGroupedOutputs';
@@ -20,7 +18,6 @@ import { TransactionTimestamp } from './vo/TransactionTimestamp';
 
 type TransactionInputProps = {
   id: TransactionModelID;
-  accountIndex: AccountIndex;
   blockId: BlockRef;
   data: TransactionData;
   gasCosts: GasCosts;
@@ -44,7 +41,6 @@ export class TransactionEntity extends Entity<
   ) {
     if (!item) throw new Error('Transaction data is required');
 
-    const accountIndex = AccountIndex.create(item);
     const data = TransactionData.create(item);
     const gasCosts = GasCosts.create(item);
     const groupedInputs = TransactionGroupedInputs.create(item);
@@ -68,7 +64,6 @@ export class TransactionEntity extends Entity<
     }
     const props = {
       id,
-      accountIndex,
       blockId: blockRef,
       data,
       gasCosts,
@@ -86,7 +81,7 @@ export class TransactionEntity extends Entity<
     return transactionEntity;
   }
 
-  static createFromDB(item: TransactionItem) {
+  static createFromDB(item: any) {
     const id = TransactionModelID.create(item);
     const blockId = BlockRef.create(item.blockId);
     return TransactionEntity.create(item.data, blockId, id);
@@ -112,13 +107,12 @@ export class TransactionEntity extends Entity<
     blockHeight: number,
     transaction: GQLTransaction,
     index: number,
-  ): TransactionItem {
+  ): any {
     return {
       _id: TransactionModelID.createSerial(blockHeight, index).value(),
       txHash: transaction.id,
       data: transaction,
       timestamp: TransactionTimestamp.create(transaction).value(),
-      accountIndex: AccountIndex.create(transaction).value(),
       blockId: blockHeight,
     };
   }
@@ -169,10 +163,6 @@ export class TransactionEntity extends Entity<
 
   get parsedTime() {
     return this.props.time.value();
-  }
-
-  get accountIndex() {
-    return this.props.accountIndex.value();
   }
 
   get blockHeight() {

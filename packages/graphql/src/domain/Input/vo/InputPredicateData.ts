@@ -1,5 +1,4 @@
 import { ValueObject } from '~/core/ValueObject';
-import type { PredicatePayload } from '~/domain/Predicate/PredicateModel';
 import type {
   GQLInput,
   GQLInputCoin,
@@ -8,7 +7,7 @@ import type {
 import { InputType } from './InputType';
 
 interface Props {
-  value: PredicatePayload | undefined;
+  value: any;
 }
 
 export class InputPredicateData extends ValueObject<Props> {

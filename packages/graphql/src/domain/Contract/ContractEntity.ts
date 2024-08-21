@@ -5,7 +5,6 @@ import type {
   GQLContractCreated,
   GQLOutput,
 } from '~/graphql/generated/sdk-provider';
-import type { ContractItem } from './ContractModel';
 import { ContractData } from './vo/ContractData';
 
 type ContractProps = {
@@ -15,7 +14,7 @@ type ContractProps = {
 };
 
 export class ContractEntity extends Entity<ContractProps, SerialID> {
-  static create(contract: ContractItem) {
+  static create(contract: any) {
     if (!contract?.data) {
       throw new Error('Contract data is required');
     }
@@ -26,7 +25,7 @@ export class ContractEntity extends Entity<ContractProps, SerialID> {
     return new ContractEntity({ id, data, contractHash }, id);
   }
 
-  static toDBItem(contract: GQLContract): Omit<ContractItem, '_id'> {
+  static toDBItem(contract: GQLContract): any {
     return {
       data: contract,
       contractHash: contract.id,

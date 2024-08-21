@@ -32,7 +32,6 @@ COPY --from=build /app /app-explorer
 WORKDIR /app-explorer/packages/graphql
 
 RUN pnpm build:lib
-RUN pnpm db:setup
 
 EXPOSE ${SERVER_PORT}
 RUN chown -R node:node /app-explorer

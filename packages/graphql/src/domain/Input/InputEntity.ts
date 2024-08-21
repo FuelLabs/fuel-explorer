@@ -2,7 +2,6 @@ import { SerialID } from '~/application/vo';
 import { Entity } from '~/core/Entity';
 import type { GQLInput } from '~/graphql/generated/sdk-provider';
 import type { TxID } from '../Transaction/vo/TransactionModelID';
-import type { InputItem, InputPayload } from './InputModel';
 import { InputData } from './vo/InputData';
 import { InputPredicateData } from './vo/InputPredicateData';
 import { InputType } from './vo/InputType';
@@ -18,7 +17,7 @@ export class InputEntity extends Entity<
   InputProps,
   SerialID | null | undefined
 > {
-  static create(input: InputPayload, inputId?: number) {
+  static create(input: any, inputId?: number) {
     if (!input?.data) {
       throw new Error('Input data is required');
     }
@@ -30,10 +29,7 @@ export class InputEntity extends Entity<
     return new InputEntity({ id, data, type, predicateData }, id);
   }
 
-  static toDBItem(
-    input: GQLInput,
-    transactionId: TxID,
-  ): Omit<InputItem, '_id'> {
+  static toDBItem(input: GQLInput, transactionId: TxID): any {
     return {
       data: input,
       transactionId,

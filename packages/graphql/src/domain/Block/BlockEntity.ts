@@ -2,7 +2,6 @@ import { Hash256, Timestamp } from '~/application/vo';
 import { ParsedTime } from '~/application/vo/ParsedTime';
 import { Entity } from '~/core/Entity';
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
-import type { BlockItem } from './BlockModel';
 import { BlockData } from './vo/BlockData';
 import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
@@ -21,7 +20,7 @@ type BlockInputProps = {
 };
 
 export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
-  static create(block: BlockItem, blockSignature: string | null) {
+  static create(block: any, blockSignature: string | null) {
     const item = block.data;
     if (!item) {
       throw new Error('item is required');
@@ -47,7 +46,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       time,
       timestamp,
       producer,
-      transactions: item.transactions.map((t, i) =>
+      transactions: item.transactions.map((t: any, i: any) =>
         TransactionEntity.createFromGQL(t, id.value(), i),
       ),
     };
@@ -55,7 +54,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     return new BlockEntity(props, id);
   }
 
-  static toDBItem(block: GQLBlock, producerId: string | null): BlockItem {
+  static toDBItem(block: GQLBlock, producerId: string | null): any {
     return {
       _id: Number(block.header.height),
       blockHash: block.id,

@@ -1,12 +1,13 @@
 import { setTimeout } from 'node:timers/promises';
 import { logger } from './core/Logger';
 import { client } from './graphql/GraphQLSDK';
-import { db } from './infra/database/Db';
+import { DatabaseConnection } from './infra/database/DatabaseConnection';
 import { QueueNames, mq } from './infra/queue/Queue';
 
 async function main() {
   await mq.connect();
   await mq.assert(QueueNames.ADD_BLOCK_RANGE);
+  const databaseConnection = DatabaseConnection.getInstance();
   while (true) {
     const { data } = await client.sdk.blocks({ last: 1 });
     const lastBlock = data.blocks.nodes[0];
@@ -17,8 +18,9 @@ async function main() {
       const from = cursor;
       const to = Math.min(cursor + 10000, height);
       cursor = to;
-      const res = (await db.execSQL(
+      const res = (await databaseConnection.query(
         `select seq from generate_series(${from}, ${to}) as seq left join blocks b on (b._id = seq) where b._id is null`,
+        [],
       )) as any;
       const { rows } = res;
       if (rows.length === 0) {
