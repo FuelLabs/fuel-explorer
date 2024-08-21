@@ -2,6 +2,7 @@ import { GridTable } from '@fuels/ui';
 import BlockEfficiencyItem from '../BlockEfficiencyItem/BlockEfficiencyItem';
 import BlockHashItem from '../BlockHashItem/BlockHashItem';
 import BlockItem from '../BlockItem/BlockItem';
+import BlockTimeItem from '../BlockTimeItem/BlockTimeItem';
 import BlockValidatorItem from '../BlockValidatorItem/BlockValidatorItem';
 
 export interface RowData {
@@ -129,13 +130,21 @@ export const columns = [
   },
   {
     name: 'Time',
-    selector: (row: RowData) => row.status,
+    cell: () => <BlockTimeItem time={new Date()} />,
     sortable: true,
   },
   {
     name: '',
-    selector: (row: RowData) => row.status,
-    sortable: true,
+    cell: (row: RowData) => (
+      <button
+        type="button"
+        onClick={() => console.log('Button clicked for:', row.name)}
+        className="px-4 py-[0.4rem] bg-brand text-white dark:text-black rounded font-semibold font-mono"
+      >
+        View
+      </button>
+    ),
+    sortable: false,
   },
 ];
 

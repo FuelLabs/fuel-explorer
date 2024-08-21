@@ -14,6 +14,6 @@ export function BlocksPage() {
 }
 const styles = tv({
   slots: {
-    content: 'w-full max-w-[95%]',
+    content: 'w-full max-w-[100%]',
   },
 });

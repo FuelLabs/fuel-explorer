@@ -28,31 +28,31 @@ export const GridTable = <T,>({
     },
     table: {
       style: {
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'transparent',
       },
     },
     headRow: {
       style: {
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'transparent',
         color: '#9f9f9f',
         fontWeight: '600',
       },
     },
     headCells: {
       style: {
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'transparent',
         color: '#9f9f9f',
-        paddingLeft: '1rem',
-        paddingRight: '1rem',
-        paddingTop: '1.2rem',
-        paddingBottom: '1.2rem',
         fontWeight: '600',
       },
     },
     rows: {
       style: {
-        backgroundColor: 'var(--gray-2)',
+        cursor: 'pointer',
+        backgroundColor: 'transparent',
         fontWeight: '400',
+        '&:hover': {
+          backgroundColor: 'var(--gray-2)', // Change background color on hover
+        },
       },
     },
     cells: {
@@ -63,9 +63,9 @@ export const GridTable = <T,>({
         paddingLeft: '0.5rem',
         paddingRight: '0.5rem',
         color: 'var(--gray-table-text)',
-        paddingTop: '1.2rem',
-        paddingBottom: '1.2rem',
-        backgroundColor: 'var(--gray-2)',
+        paddingTop: '0.9rem',
+        paddingBottom: '0.9rem',
+        backgroundColor: 'transparent',
         fontWeight: '400',
       },
     },

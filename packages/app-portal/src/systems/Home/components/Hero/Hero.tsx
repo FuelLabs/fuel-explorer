@@ -5,11 +5,13 @@ import { HStack, Heading, Theme, VStack } from '@fuels/ui';
 export function Hero() {
   return (
     <Theme appearance="dark">
-      <VStack>
-        <Heading as="h1">Blocks</Heading>
+      <VStack className="gap-1">
+        <Heading as="h1" className="m-0 p-0 font-mono">
+          Blocks
+        </Heading>
         <HStack>
-          <p>Home</p>
-          <p>-</p>
+          <p className="text-[#9f9f9f]">Home</p>
+          <p>{'>'}</p>
           <p>View All Blocks</p>
         </HStack>
       </VStack>
