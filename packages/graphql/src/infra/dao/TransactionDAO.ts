@@ -16,13 +16,14 @@ export default class TransactionDAO {
 		  select
 			  t.*
 		  from
-			  transactions t
+			  indexer.transactions t
 		  where
 			  t.tx_hash = $1
 		  `,
         [txHash],
       )
     )[0];
+    if (!transactionData) return;
     return TransactionEntity.createFromDAO(transactionData);
   }
 
@@ -38,13 +39,13 @@ export default class TransactionDAO {
 		select
 			t.*
 		from
-			transactions t
+			indexer.transactions t
 		where
 			t.tx_hash in (
 				select
 					ta.tx_hash
 				from
-					transactions_accounts ta
+					indexer.transactions_accounts ta
 				where
 					ta.account_hash = $1 and
 					($2::text is null or ta._id ${direction} $2)
@@ -79,13 +80,13 @@ export default class TransactionDAO {
     const endCursor = transactionsData[transactionsData.length - 1]._id;
     const hasPreviousPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from transactions_accounts ta where ta._id < $1 and ta.account_hash = $2)',
+        'select exists(select 1 from indexer.transactions_accounts ta where ta._id < $1 and ta.account_hash = $2)',
         [endCursor, accountHash],
       )
     )[0].exists;
     const hasNextPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from transactions_accounts ta where ta._id > $1 and ta.account_hash = $2)',
+        'select exists(select 1 from indexer.transactions_accounts ta where ta._id > $1 and ta.account_hash = $2)',
         [startCursor, accountHash],
       )
     )[0].exists;
@@ -116,7 +117,7 @@ export default class TransactionDAO {
 		select 
 			*
 		from 
-			transactions t
+			indexer.transactions t
 		where
 			$1::text is null or t._id ${direction} $1
 		order by
@@ -148,13 +149,13 @@ export default class TransactionDAO {
     const endCursor = transactionsData[transactionsData.length - 1]._id;
     const hasPreviousPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from transactions where _id < $1)',
+        'select exists(select 1 from indexer.transactions where _id < $1)',
         [endCursor],
       )
     )[0].exists;
     const hasNextPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from transactions where _id > $1)',
+        'select exists(select 1 from indexer.transactions where _id > $1)',
         [startCursor],
       )
     )[0].exists;

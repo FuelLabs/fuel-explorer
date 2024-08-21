@@ -1,6 +1,5 @@
 import type { PredicateItem } from '~/domain/Predicate/PredicateModel';
-import { PredicateRepository } from '~/domain/Predicate/PredicateRepository';
-import type { GraphQLContext } from '../GraphQLContext';
+import PredicateDAO from '~/infra/dao/PredicateDAO';
 
 type Source = PredicateItem;
 type Params = {
@@ -18,13 +17,9 @@ export class PredicateResolver {
   }
 
   // TODO: index data to Postgres instead of fetch from SDK
-  async predicate(
-    _: Source,
-    params: Params['predicate'],
-    { conn }: GraphQLContext,
-  ) {
-    const predicateRepository = new PredicateRepository(conn);
-    const item = await predicateRepository.findByAddress(params.address);
-    return item?.toGQLNode();
+  async predicate(_: Source, params: Params['predicate']) {
+    const predicateDAO = new PredicateDAO();
+    const predicate = await predicateDAO.getByAddress(params.address);
+    return predicate?.toGQLNode();
   }
 }

@@ -140,6 +140,7 @@ export default class NewAddBlockRange {
   getPredicate(input: GQLInput) {
     if (!['InputCoin', 'InputMessage'].includes(input.__typename)) return;
     const bytecode = (input as GQLInputCoin | GQLInputMessage).predicate;
+    // if bytecode === 0x return;
     let address = '';
     if (input.__typename === 'InputCoin') address = input.owner;
     if (input.__typename === 'InputMessage') address = input.sender;

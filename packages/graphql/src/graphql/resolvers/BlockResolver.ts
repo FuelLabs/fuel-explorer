@@ -35,22 +35,17 @@ export class BlockResolver {
       logger.debug('Finding block by hash');
       const blockDAO = new BlockDAO();
       const block = await blockDAO.getByHash(id);
-      const response = block?.toGQLNode() ?? null;
-      logger.debugDone('BlockResolver.block', { response });
-      return response;
+      return block?.toGQLNode();
     }
 
     logger.debug('Finding block by height');
     if (!height) throw new Error();
     const blockDAO = new BlockDAO();
     const block = await blockDAO.getByHeight(parseInt(height));
-    const response = block.toGQLNode() ?? null;
-    logger.debugDone('BlockResolver.block', { response });
-    return response;
+    return block?.toGQLNode();
   }
 
   async blocks(_: Source, params: Params['blocks']) {
-    logger.debugRequest('BlockResolver.blocks', { params });
     if (!params.first && !params.last) {
       throw new GraphQLError('Either first or last must be provided');
     }
@@ -58,7 +53,6 @@ export class BlockResolver {
     const blocks = await blockDAO.getPaginatedBlocks(
       new PaginatedParams(params),
     );
-    logger.debugDone('BlockResolver.blocks', { blocks });
     return blocks;
   }
 }

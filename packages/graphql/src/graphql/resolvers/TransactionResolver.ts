@@ -29,11 +29,10 @@ export class TransactionResolver {
   async transaction(_: Source, params: Params['transaction']) {
     const transactionDAO = new TransactionDAO();
     const transaction = await transactionDAO.getByHash(params.id);
-    return transaction.toGQLNode();
+    return transaction?.toGQLNode();
   }
 
   async transactions(_: Source, params: Params['transactions']) {
-    console.log('X');
     const transactionDAO = new TransactionDAO();
     const paginatedParams = new PaginatedParams(params);
     const transactions =

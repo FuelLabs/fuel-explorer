@@ -1,16 +1,16 @@
-import { Paginator, type PaginatorParams } from '~/core/Paginator';
-import { ContractsTable } from '~/domain/Contract/ContractModel';
 import type {
   GQLContract,
   GQLQueryContractArgs,
   GQLQueryContractBalanceArgs,
   GQLQueryContractBalancesArgs,
 } from '~/graphql/generated/sdk-provider';
+import ContractDAO from '~/infra/dao/ContractDAO';
+import PaginatedParams from '~/infra/paginator/PaginatedParams';
 import type { GraphQLContext } from '../GraphQLContext';
 
 type Source = GQLContract;
 type Params = {
-  contracts: PaginatorParams;
+  contracts: any;
   contract: GQLQueryContractArgs;
   contractBalance: GQLQueryContractBalanceArgs;
   contractBalances: GQLQueryContractBalancesArgs;
@@ -29,27 +29,21 @@ export class ContractResolver {
     };
   }
 
-  async contract(
-    _: Source,
-    { id }: Params['contract'],
-    { repositories }: GraphQLContext,
-  ) {
+  async contract(_: Source, { id }: Params['contract']) {
     if (!id) {
       throw new Error('Contract ID is required');
     }
-
-    const item = await repositories.contract.findByHash(id);
-    return item?.toGQLNode();
+    const contractDAO = new ContractDAO();
+    const contract = await contractDAO.getByHash(id);
+    return contract?.toGQLNode();
   }
 
-  async contracts(
-    _: Source,
-    params: Params['contracts'],
-    { conn, repositories }: GraphQLContext,
-  ) {
-    const paginator = new Paginator(ContractsTable, params, conn);
-    const contracts = await repositories.contract.findMany(paginator);
-    return paginator.createPaginatedResult(contracts);
+  async contracts(_: Source, params: Params['contracts']) {
+    const contractDAO = new ContractDAO();
+    const contracts = await contractDAO.getPaginatedContracts(
+      new PaginatedParams(params),
+    );
+    return contracts;
   }
 
   // TODO: need to check how to implement this using Postgres

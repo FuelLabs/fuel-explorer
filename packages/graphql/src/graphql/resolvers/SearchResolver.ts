@@ -1,5 +1,7 @@
 import { Hash256 } from '~/application/vo';
-import type { GraphQLContext } from '../GraphQLContext';
+import BlockDAO from '~/infra/dao/BlockDAO';
+import ContractDAO from '~/infra/dao/ContractDAO';
+import TransactionDAO from '~/infra/dao/TransactionDAO';
 
 type Params = {
   search: { query: string };
@@ -19,24 +21,26 @@ export class SearchResolver {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     _null: any,
     params: Params['search'],
-    { repositories }: GraphQLContext,
   ) {
     const address = Hash256.create(params.query).value();
-    const block = await repositories.block.findByHash(address);
+    const blockDAO = new BlockDAO();
+    const block = await blockDAO.getByHash(address);
     if (block) {
       return {
         block: block.toGQLNode(),
       };
     }
 
-    const contract = await repositories.contract.findByHash(address);
+    const contractDAO = new ContractDAO();
+    const contract = await contractDAO.getByHash(address);
     if (contract) {
       return {
         contract: contract.toGQLNode(),
       };
     }
 
-    const transaction = await repositories.transaction.findByHash(address);
+    const transactionDAO = new TransactionDAO();
+    const transaction = await transactionDAO.getByHash(address);
     if (transaction) {
       return {
         transaction: transaction.toGQLNode(),

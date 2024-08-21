@@ -1,76 +1,59 @@
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
-import Block from './Block';
+import Contract from './Contract';
 
-export default class BlockDAO {
+export default class ContractDAO {
   databaseConnection: DatabaseConnection;
 
   constructor() {
     this.databaseConnection = DatabaseConnection.getInstance();
   }
 
-  async getByHeight(height: number) {
-    const blockData = (
-      await this.databaseConnection.query(
-        `
-		  select
-			  b.*
-		  from
-			  indexer.blocks b
-		  where
-			  b._id = $1
-		  `,
-        [height],
-      )
-    )[0];
-    if (!blockData) return;
-    return new Block(blockData);
-  }
-
   async getByHash(hash: string) {
-    const blockData = (
+    const contractData = (
       await this.databaseConnection.query(
         `
 		  select
-			  b.*
+			  c.*
 		  from
-			  indexer.blocks b
+			  indexer.contracts c
 		  where
-			  b.id = $1
+			  c.contract_hash = $1
 		  `,
         [hash],
       )
     )[0];
-    if (!blockData) return;
-    return new Block(blockData);
+    if (!contractData) return;
+    const contract = new Contract(contractData);
+    return contract;
   }
 
-  async getPaginatedBlocks(paginatedParams: PaginatedParams) {
+  async getPaginatedContracts(paginatedParams: PaginatedParams) {
     console.log(paginatedParams);
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
-    const blocksData = await this.databaseConnection.query(
+    const contractsData = await this.databaseConnection.query(
       `
 		select 
 			*
 		from 
-			indexer.blocks b
+			indexer.contracts c
 		where
-			$1::integer is null or b._id ${direction} $1
+			$1::integer is null or c._id ${direction} $1
 		order by
-			b._id ${order} 
+			c._id ${order} 
 		limit 10
 	`,
       [paginatedParams.cursor],
     );
-    blocksData.sort((a: any, b: any) => {
+    contractsData.sort((a: any, b: any) => {
       return (a._id - b._id) * -1;
     });
-    const blocks = [];
-    for (const blockData of blocksData) {
-      blocks.push(new Block(blockData));
+    const contracts: Contract[] = [];
+    for (const contractData of contractsData) {
+      contracts.push(new Contract(contractData));
     }
-    if (blocks.length === 0) {
+    if (contracts.length === 0) {
       return {
         nodes: [],
         edges: [],
@@ -82,21 +65,21 @@ export default class BlockDAO {
         },
       };
     }
-    const startCursor = blocksData[0]._id;
-    const endCursor = blocksData[blocksData.length - 1]._id;
+    const startCursor = contractsData[0]._id;
+    const endCursor = contractsData[contractsData.length - 1]._id;
     const hasPreviousPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from indexer.blocks where _id < $1)',
+        'select exists(select 1 from indexer.contracts where _id < $1)',
         [endCursor],
       )
     )[0].exists;
     const hasNextPage = (
       await this.databaseConnection.query(
-        'select exists(select 1 from indexer.blocks where _id > $1)',
+        'select exists(select 1 from indexer.contracts where _id > $1)',
         [startCursor],
       )
     )[0].exists;
-    const newNodes = blocks.map((n) => n.toGQLNode());
+    const newNodes = contracts.map((n) => n.toGQLNode());
     const edges = newNodes.map((node) => ({
       node,
       cursor: paginatedParams.cursor,
@@ -112,14 +95,5 @@ export default class BlockDAO {
       },
     };
     return paginatedResults;
-  }
-
-  async findLatestBlockAdded() {
-    const [blockData] = await this.databaseConnection.query(
-      'select * from indexer.blocks order by _id desc limit 1',
-      [],
-    );
-    if (!blockData) return;
-    return new Block(blockData);
   }
 }
