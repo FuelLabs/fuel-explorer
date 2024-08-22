@@ -4,11 +4,15 @@ import chokidar from 'chokidar';
 import { execa } from 'execa';
 
 import { Server } from 'socket.io';
+import { ContextDomain } from '../domains/Context';
 import { TPS } from '../domains/TPS';
 import app from '../server';
 import { requireEnv } from '../utils/requireEnv';
 
 const { SERVER_PORT } = requireEnv([['SERVER_PORT', '4444']]);
+const { FUEL_PROVIDER } = requireEnv([
+  ['FUEL_PROVIDER', 'https://testnet.fuel.network/v1/graphql'],
+]);
 const { WATCH = 'false' } = process.env;
 
 const server = createServer(app);
@@ -24,10 +28,25 @@ io.on('connection', (socket) => {
   console.log('A client connected');
 
   const sendTPSData = async () => {
-    const tpsDomain = new TPS();
-    const tpsData = await tpsDomain.getTPS();
-    socket.emit('tps_data', tpsData);
+    try {
+      // Create the context
+      const context = await ContextDomain.createContext(FUEL_PROVIDER);
+
+      // Instantiate the TPS domain with the context
+      const tpsDomain = new TPS();
+      tpsDomain.context = context; // Set the context
+      tpsDomain.args = { first: 4, before: null }; // Set the args
+
+      const tpsData = await tpsDomain.getTPS();
+      console.log('TPS data:', tpsData);
+      socket.emit('tps_data', tpsData);
+    } catch (error) {
+      console.error('Error sending TPS data:', error);
+    }
   };
+
+  // Emit TPS data immediately after the client connects
+  sendTPSData();
 
   // Send TPS data every minute
   const intervalId = setInterval(sendTPSData, 60 * 1000);
