@@ -1,7 +1,8 @@
 'use client';
 
+import { GridTable } from '@fuels/ui';
 import { Suspense } from 'react';
-import GridTable from '~/systems/Home/components/DataTable/GridTable';
+
 import { columns, data } from '~/systems/Home/components/DataTable/data';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 import { TxsTitle } from '~/systems/Transactions/components/TxsTitle/TxsTitle';
@@ -16,7 +17,12 @@ export default function Home({ searchParams: { page = '1' } }: TxsRouteProps) {
         key={page}
         fallback={<TxListLoader page={page} numberOfTxs={10} />}
       >
-        <GridTable data={data} columns={columns} pageCount={1} />
+        <GridTable
+          onPageChanged={() => {}}
+          data={data}
+          columns={columns}
+          pageCount={1}
+        />
       </Suspense>
     </>
   );
