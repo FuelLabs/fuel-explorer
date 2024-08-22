@@ -1,3 +1,5 @@
+import { ETH_CHAIN_NAME, FUEL_CHAIN_NAME } from '../config';
+
 export type TrackEvent = {
   eventType: string;
   eventName: string;
@@ -14,6 +16,13 @@ export function trackEvent(event: TrackEvent) {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       trackFn = (window as any).safary?.track || trackFn;
     }
-    trackFn(event);
+    trackFn({
+      ...event,
+      parameters: {
+        chain: ETH_CHAIN_NAME,
+        fuelChain: FUEL_CHAIN_NAME,
+        ...event.parameters,
+      },
+    });
   } catch {}
 }
