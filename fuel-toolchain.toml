@@ -1,6 +1,6 @@
 [toolchain]
-channel = "latest-2023-11-30"
+channel = "testnet"
 
 [components]
-fuel-core = "0.24.3"
-forc = "0.54.0"
+fuel-core = "0.33.0"
+forc = "0.61.1"

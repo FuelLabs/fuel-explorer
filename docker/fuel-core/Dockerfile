@@ -1,8 +1,8 @@
-FROM ghcr.io/fuellabs/fuel-core:v0.26.0
+FROM ghcr.io/fuellabs/fuel-core:v0.33.0
 
 ARG FUEL_IP=0.0.0.0
 ARG FUEL_PORT=4001
-ARG CONSENSUS_KEY_SECRET=""
+ARG CONSENSUS_KEY_SECRET="0xc8e615a4089466174459ef19cfd257d2e17adfabff3b8f219dbb5fb4eca87c50"
 
 # dependencies
 ENV DEBIAN_FRONTEND=noninteractive
@@ -14,7 +14,7 @@ COPY ./chain_config.json .
 COPY ./metadata.json .
 COPY ./state_config.json .
 RUN curl \
-  https://github.com/FuelLabs/fuel-core/raw/v0.26.0/bin/fuel-core/chainspec/testnet/ \
+	https://github.com/FuelLabs/fuel-core/tree/v0.34.0/bin/fuel-core/chainspec/local-testnet \
   -o ./state_transition_bytecode.wasm
 
 # expose fuel node port

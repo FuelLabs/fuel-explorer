@@ -6,7 +6,7 @@
   "dependencies": {
     "@fuel-bridge/test-utils": "pr-185",
     "ethers": "6.11.0",
-    "fuels": "0.86.0"
+    "fuels": "0.94.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.2"
