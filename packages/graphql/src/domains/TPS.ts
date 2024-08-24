@@ -13,11 +13,15 @@ export type Block = {
     time: string;
     transactionsCount: string;
   };
+  transactions: {
+    id: string;
+  }[];
 };
 
 export type TPSData = {
   timestamp: number;
   tps: number;
+  gasUsed: string;
 };
 
 export class TPS extends Domain<any, Args> {
@@ -54,6 +58,9 @@ export class TPS extends Domain<any, Args> {
                 time
                 transactionsCount
               }
+              transactions {
+                id
+              }
             }
           }
           pageInfo {
@@ -83,7 +90,6 @@ export class TPS extends Domain<any, Args> {
           JSON.stringify(response, null, 2),
         );
 
-        // Ensure response has data before attempting to access it
         if (!response || !response.blocks) {
           throw new Error('Invalid response structure');
         }
@@ -94,7 +100,6 @@ export class TPS extends Domain<any, Args> {
         blocks = blocks.concat(fetchedBlocks);
         endCursor = response.blocks.pageInfo.startCursor;
 
-        // Log each fetched block
         fetchedBlocks.forEach((block: Block, index: number) => {
           console.log(`Block ${index + 1}:`, JSON.stringify(block, null, 2));
         });
@@ -103,42 +108,58 @@ export class TPS extends Domain<any, Args> {
       console.error('Error fetching blocks:', error);
     }
 
-    // Log the entire blocks array before starting TPS calculation
     console.log(
       'Starting TPS calculation with blocks:',
       JSON.stringify(blocks, null, 2),
     );
 
-    tpsData = this.calculateTPS(blocks);
+    tpsData = await this.calculateTPS(blocks);
     TPS.cache.put(cacheKey, tpsData, 24 * 60 * 60 * 1000); // Cache for 24 hours
     console.log('Calculated TPS data:', JSON.stringify(tpsData, null, 5));
 
     return tpsData;
   }
 
-  calculateTPS(blocks: Block[]) {
+  async calculateTPS(blocks: Block[]) {
     const tpsData: TPSData[] = [];
-    const transactionsPerSecond = new Map<number, number>();
+    const transactionsPerSecond = new Map<
+      number,
+      { tps: number; gasUsed: string }
+    >();
 
     console.log('Starting TPS calculation...');
-    blocks.forEach((block) => {
+    for (const block of blocks) {
       const timestamp = tai64toDate(block.header.time).unix();
       const transactions = parseInt(block.header.transactionsCount, 10);
+      let totalGasUsed = BigInt(0);
+
+      for (const transaction of block.transactions) {
+        // Calculate gas used for each transaction using the provider
+        const { provider } = this.context;
+        const tx = await provider.getTransactionResponse(transaction.id);
+        const summ = await tx.getTransactionSummary();
+        totalGasUsed += BigInt(summ.gasUsed.toString());
+      }
 
       if (transactionsPerSecond.has(timestamp)) {
-        transactionsPerSecond.set(
-          timestamp,
-          transactionsPerSecond.get(timestamp)! + transactions,
-        );
+        const data = transactionsPerSecond.get(timestamp)!;
+        transactionsPerSecond.set(timestamp, {
+          tps: data.tps + transactions,
+          gasUsed: (BigInt(data.gasUsed) + totalGasUsed).toString(),
+        });
       } else {
-        transactionsPerSecond.set(timestamp, transactions);
+        transactionsPerSecond.set(timestamp, {
+          tps: transactions,
+          gasUsed: totalGasUsed.toString(),
+        });
       }
-    });
+    }
 
-    transactionsPerSecond.forEach((transactions, second) => {
+    transactionsPerSecond.forEach((data, second) => {
       tpsData.push({
         timestamp: second * 1000,
-        tps: transactions,
+        tps: data.tps,
+        gasUsed: data.gasUsed,
       });
     });
 
