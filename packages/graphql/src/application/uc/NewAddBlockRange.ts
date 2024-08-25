@@ -13,8 +13,11 @@ import {
 import Block from '~/infra/dao/Block';
 import Transaction from '~/infra/dao/Transaction';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
+import { AccountEntity } from '../../domain/Account/AccountEntity';
+import { AccountDAO } from '../../infra/dao/AccountDAO';
 
 export default class NewAddBlockRange {
+  private accountDAO = new AccountDAO(); // New code: Initialize AccountDAO for database operations
   async execute(input: Input) {
     const { from, to } = input;
     logger.syncer.info(c.green(`🔗 Syncing blocks: #${from} - #${to}`));
@@ -105,6 +108,31 @@ export default class NewAddBlockRange {
           }
         }
       }
+
+      // New code starts here: Fetch and save account data
+      const owners = this.extractUniqueOwners(blockData.transactions);
+      for (const owner of owners) {
+        const balance = await this.fetchBalance(owner); // Fetch balance for each owner
+
+        // Safely check tx.inputs before accessing them
+        const transactionCount = blockData.transactions.filter((tx) =>
+          tx.inputs?.some(
+            (input) =>
+              input.__typename === 'InputCoin' && input.owner === owner,
+          ),
+        ).length;
+
+        const account = AccountEntity.create({
+          address: owner,
+          balance: balance,
+          transactionCount: transactionCount,
+          data: {}, // Provide actual data structure if needed
+        });
+
+        await this.accountDAO.save(account); // Save account data using AccountDAO
+      }
+      // New code ends heres
+
       await connection.executeTransaction(queries);
     }
     const end = performance.now();
@@ -180,6 +208,32 @@ export default class NewAddBlockRange {
       }
     }
     return accounts;
+  }
+
+  // New method to extract unique owners
+  extractUniqueOwners(transactions: GQLTransaction[]): string[] {
+    const owners = new Set<string>();
+    for (const tx of transactions) {
+      if (tx.inputs) {
+        for (const input of tx.inputs) {
+          if (input.__typename === 'InputCoin' && input.owner) {
+            owners.add(input.owner);
+          }
+        }
+      }
+    }
+    return Array.from(owners);
+  }
+
+  // Updated method to fetch balance
+  private async fetchBalance(owner: string): Promise<bigint> {
+    // Directly use the query in the request without assigning it to a variable
+    const response = await client.sdk.balance({
+      owner,
+      assetId:
+        '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+    });
+    return BigInt(response.data.balance.amount);
   }
 }
 

@@ -223,3 +223,26 @@ type Query {
   search(query: String!): SearchResult
   predicate(address: String!): PredicateItem
 }
+
+extend type Query {
+  accounts(first: Int, after: String): AccountConnection!
+  account(id: ID!): Account
+}
+
+type Account {
+  id: ID!
+  address: String!
+  balance: String!
+  transactionCount: Int!
+  data: JSON!  # If you want to expose additional account data
+}
+
+type AccountConnection {
+  edges: [AccountEdge]
+  pageInfo: PageInfo
+}
+
+type AccountEdge {
+  node: Account
+  cursor: String!
+}
