@@ -502,6 +502,9 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: 5.0.5
         version: 5.0.5(@tanstack/react-query@5.0.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@types/bn.js':
+        specifier: 5.1.5
+        version: 5.1.5
       '@types/node':
         specifier: ^18.13.0
         version: 18.19.14
