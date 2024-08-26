@@ -1,5 +1,7 @@
 'use client';
 
+export { StatisticsPage } from './systems/Statistics/page';
+
 export { BridgeTxItemsLoading } from './systems/Bridge/components';
 export { BridgePage } from './systems/Bridge/page-root';
 export { BridgeHistoryPage } from './systems/Bridge/page-history';

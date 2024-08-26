@@ -6,4 +6,5 @@ export const Routes = {
   bridgeHistory: route('/bridge/history'),
   ecosystem: route('/ecosystem'),
   blocks: route('/home/blocks'),
+  statistics: route('/statistics'),
 };

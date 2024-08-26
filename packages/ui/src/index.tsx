@@ -5,6 +5,7 @@ export { shortAddress } from './utils/helpers';
 export { useBreakpoints } from './hooks/useBreakpoints';
 export type * from './utils/types';
 
+export * from './components/LineGraph';
 export * from './components/Accordion';
 export * from './components/Address';
 export * from './components/Alert';
@@ -26,6 +27,7 @@ export * from './components/Checkbox';
 export * from './components/ContextMenu';
 export * from './components/Carousel';
 export * from './components/Collapsible';
+export * from './components/Charts';
 export * from './components/Copyable';
 export * from './components/Dialog';
 export * from './components/Drawer';
