@@ -29,7 +29,8 @@ export class TransactionResolver {
   async transaction(_: Source, params: Params['transaction']) {
     const transactionDAO = new TransactionDAO();
     const transaction = await transactionDAO.getByHash(params.id);
-    return transaction?.toGQLNode();
+    const output = transaction?.toGQLNode();
+    return output;
   }
 
   async transactions(_: Source, params: Params['transactions']) {
