@@ -556,6 +556,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-json-view-lite:
+        specifier: 1.4.0
+        version: 1.4.0(react@18.2.0)
       tailwind-variants:
         specifier: 0.1.20
         version: 0.1.20(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.4.1(@swc/helpers@0.5.6))(@types/node@18.19.14)(typescript@5.4.5)))
