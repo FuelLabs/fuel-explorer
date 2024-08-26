@@ -29,7 +29,6 @@ export default class ContractDAO {
   }
 
   async getPaginatedContracts(paginatedParams: PaginatedParams) {
-    console.log(paginatedParams);
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const contractsData = await this.databaseConnection.query(

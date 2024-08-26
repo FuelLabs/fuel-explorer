@@ -1,4 +1,5 @@
 import { Hash256 } from '~/application/vo';
+import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import ContractDAO from '~/infra/dao/ContractDAO';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
@@ -44,6 +45,17 @@ export class SearchResolver {
     if (transaction) {
       return {
         transaction: transaction.toGQLNode(),
+      };
+    }
+    const transactions = await transactionDAO.getTransactionsByOwner(address);
+    if (transactions.length > 0) {
+      return {
+        account: {
+          address,
+          transactions: transactions.map((transaction: TransactionEntity) =>
+            transaction.toGQLNode(),
+          ),
+        },
       };
     }
   }

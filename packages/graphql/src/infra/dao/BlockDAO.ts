@@ -46,7 +46,6 @@ export default class BlockDAO {
   }
 
   async getPaginatedBlocks(paginatedParams: PaginatedParams) {
-    console.log(paginatedParams);
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const blocksData = await this.databaseConnection.query(
