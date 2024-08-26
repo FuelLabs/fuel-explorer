@@ -1,5 +1,5 @@
-import assetList from '@fuels/assets';
-import type { Asset } from '@fuels/assets';
+import { assets } from '@fuel-ts/account';
+import type { Asset } from '@fuel-ts/account';
 import { BridgeTokenContracts } from 'app-commons';
 import { Provider, bn } from 'fuels';
 import { isAddress } from 'viem';
@@ -19,7 +19,7 @@ export type AssetServiceInputs = {
   };
 };
 
-const defaultAssets: Asset[] = [...assetList];
+const defaultAssets: Asset[] = [...assets];
 
 export class AssetService {
   static async faucetErc20(input: AssetServiceInputs['faucetErc20']) {
@@ -61,7 +61,7 @@ export class AssetService {
 
     // @TODO: Remove when SDK provide correct asset id for the network
     const legacyFuelBaseAssetId =
-      '0x0000000000000000000000000000000000000000000000000000000000000000';
+      '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
     const networkBaseAssetId = provider.getBaseAssetId();
     const chainId = provider.getChainId();
 

@@ -1,0 +1,27 @@
+fragment Block on Block {
+  id
+  producer
+  consensus {
+    __typename
+    ... on PoAConsensus {
+      signature
+    }
+  }
+  header {
+    transactionsCount
+  }
+  time {
+    full
+    fromNow
+	rawUnix
+  }
+  transactions {
+    ...RecentTransaction
+  }
+}
+
+query block($height: U32, $id: BlockId) {
+  block(height: $height, id: $id) {
+    ...Block
+  }
+}

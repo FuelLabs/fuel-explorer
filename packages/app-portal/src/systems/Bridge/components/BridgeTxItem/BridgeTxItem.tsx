@@ -1,4 +1,4 @@
-import type { Asset as FuelsAsset } from '@fuels/assets';
+import type { Asset as FuelsAsset } from '@fuel-ts/account';
 import { Asset, Box, CardList, Flex, Text } from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
 import type { ReactNode } from 'react';

@@ -1,6 +1,6 @@
 'use client';
 
-import type { GroupedInput, GroupedOutput } from '@fuel-explorer/graphql';
+import { GQLGroupedInput } from '@fuel-explorer/graphql';
 import {
   Address,
   Badge,
@@ -62,7 +62,9 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               <TxIcon
                 type={title}
                 size="lg"
-                status={tx?.isPredicate ? 'Info' : (tx?.statusType as TxStatus)}
+                status={
+                  tx?.hasPredicate ? 'Info' : (tx?.statusType as TxStatus)
+                }
               />
             }
           />
@@ -79,7 +81,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           }
         >
           <HStack gap="1">
-            {tx?.isPredicate && (
+            {tx?.hasPredicate && (
               <Badge color="blue" variant="ghost">
                 Predicate
               </Badge>
@@ -89,7 +91,9 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
               loadingEl={<LoadingBox className="w-20 h-6" />}
               regularEl={
                 <Badge
-                  color={TX_INTENT_MAP[tx?.statusType as string]}
+                  color={
+                    TX_INTENT_MAP[tx?.statusType as keyof typeof TX_INTENT_MAP]
+                  }
                   variant="ghost"
                 >
                   {tx?.statusType}
@@ -125,7 +129,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
           regularEl={
             <Link
               as={NextLink}
-              href={Routes.blockSimple(tx?.blockHeight || '')}
+              href={`/block/${tx?.blockHeight}/simple`}
               className="text-link"
             >
               #{tx?.blockHeight}
@@ -140,7 +144,9 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       description={
         <LoadingWrapper
           isLoading={isLoading}
-          regularEl={<>Gas used: {formatZeroUnits(tx?.gasUsed || '')}</>}
+          regularEl={
+            <>Gas used: {formatZeroUnits(tx?.gasCosts?.gasUsed || '')}</>
+          }
           loadingEl={
             <>
               <LoadingBox className="w-28 h-5 mt-2" />
@@ -153,7 +159,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
       <LoadingWrapper
         isLoading={isLoading}
         loadingEl={<LoadingBox className="w-36 h-6" />}
-        regularEl={`${bn(tx?.fee).format()} ETH`}
+        regularEl={`${bn(tx?.gasCosts?.fee ?? 0).format()} ETH`}
       />
     </CardInfo>,
   ];
@@ -174,7 +180,7 @@ function ContentMain({
   isLoading?: boolean;
 }) {
   const hasInputs = tx?.groupedInputs?.length ?? 0 > 0;
-  const hasOutputs = tx?.groupedOutputs?.length ?? 0 > 0;
+  const hasOutputs = tx?.outputs?.length ?? 0 > 0;
 
   return (
     <VStack>
@@ -196,7 +202,7 @@ function ContentMain({
               </Heading>
               {tx?.groupedInputs?.map((input, i) => (
                 // here we use only index as key because this component will not change
-                <TxInput key={i} input={input as GroupedInput} />
+                <TxInput key={i} input={input as GQLGroupedInput} />
               ))}
             </>
           }
@@ -236,12 +242,11 @@ function ContentMain({
                 <Heading as="h2" size="5" className="leading-none">
                   Outputs
                 </Heading>
-                {tx?.groupedOutputs?.map((output, i) => (
+                {tx?.outputs?.map((output, i) => (
                   <TxOutput
                     // here we use only index as key because this component will not change
                     key={i}
-                    tx={tx}
-                    output={output as GroupedOutput}
+                    output={output}
                   />
                 ))}
               </>

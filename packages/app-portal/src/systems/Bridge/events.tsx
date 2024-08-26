@@ -1,4 +1,4 @@
-import type { Asset } from '@fuels/assets';
+import type { Asset } from '@fuel-ts/account';
 import type { Account as FuelWallet, BN } from 'fuels';
 import type { WalletClient } from 'viem';
 

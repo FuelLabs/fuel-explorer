@@ -75,6 +75,8 @@
       "./packages/app-explorer/public/portal-storybook",
       "./packages/app-portal/public/**",
       "./packages/app-portal/src/types",
+      "./packages/graphql/src/graphql/generated",
+      "./packages/app-explorer/public/thirdparty/safary.js",
       "pnpm-lock.yaml"
     ]
   }

@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
 import { store } from '~portal/store';

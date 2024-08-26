@@ -1,4 +1,4 @@
-import type { Asset } from '@fuels/assets';
+import type { Asset } from '@fuel-ts/account';
 import { toast } from '@fuels/ui';
 import type { BN } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
@@ -6,6 +6,7 @@ import { assign, createMachine } from 'xstate';
 import { type FromToNetworks, isFuelChain } from '~portal/systems/Chains';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
+import { trackEvent } from 'app-commons';
 import { BridgeService } from '../services';
 import type { BridgeInputs, PossibleBridgeInputs } from '../services';
 
@@ -148,8 +149,18 @@ export const bridgeMachine = createMachine(
           if (!input) {
             throw new Error('No input to bridge');
           }
-
           await BridgeService.bridge(input);
+
+          const isWithdraw = isFuelChain(input.fromNetwork);
+          trackEvent({
+            eventType: 'bridge',
+            eventName: `bridge-${isWithdraw ? 'withdraw' : 'deposit'}`,
+            parameters: {
+              asset: input.asset?.symbol,
+              addressFrom: input.ethAddress,
+              addressTo: input.fuelAddress?.toB256(),
+            },
+          });
         },
       }),
     },

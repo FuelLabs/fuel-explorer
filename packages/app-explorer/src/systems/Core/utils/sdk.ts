@@ -1,26 +1,23 @@
-import { resolve } from 'node:url';
-import { getSdk } from '@fuel-explorer/graphql/src/sdk';
+import { getSdk } from '@fuel-explorer/graphql/sdk';
 import { GraphQLClient } from 'graphql-request';
 
-const { FUEL_EXPLORER_API, FUEL_EXPLORER_API_KEY } = process.env;
-const VERCEL_URL = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
-const VERCEL_ENV =
-  process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV || 'development';
+const FUEL_INDEXER_API_KEY = process.env.FUEL_INDEXER_API_KEY;
+const FUEL_INDEXER_API = process.env.FUEL_INDEXER_API;
 
-const getBaseUrl = () => {
-  if (FUEL_EXPLORER_API && FUEL_EXPLORER_API_KEY) return FUEL_EXPLORER_API;
-  if (VERCEL_ENV !== 'development')
-    return resolve(`https://${VERCEL_URL}`, '/api/graphql');
-  return 'http://localhost:3001/api/graphql';
-};
+if (!FUEL_INDEXER_API) {
+  throw new Error(
+    'Needs to inform env variable<FUEL_INDEXER_API> to Fuel Indexer API.',
+  );
+}
+
 const getHeaders = () => {
-  if (FUEL_EXPLORER_API_KEY) {
-    return { Authorization: `Bearer ${FUEL_EXPLORER_API_KEY}` };
+  if (FUEL_INDEXER_API_KEY) {
+    return { Authorization: `Bearer ${FUEL_INDEXER_API_KEY}` };
   }
   return undefined;
 };
 
-const client = new GraphQLClient(getBaseUrl(), {
+const client = new GraphQLClient(FUEL_INDEXER_API, {
   fetch,
   headers: getHeaders(),
 });

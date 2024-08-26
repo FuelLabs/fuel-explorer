@@ -1,4 +1,4 @@
-import type { Asset } from '@fuels/assets';
+import type { Asset } from '@fuel-ts/account';
 import { DECIMAL_FUEL, DateTime, bn } from 'fuels';
 import type {
   Account as FuelAccount,

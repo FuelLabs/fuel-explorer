@@ -1,4 +1,4 @@
-import assetList from '@fuels/assets';
+import { assets } from '@fuel-ts/account';
 
 import { CardList } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
@@ -17,7 +17,7 @@ export const Usage = () => {
 
   return (
     <CardList className={classes.storybook()}>
-      <AssetCard asset={assetList[0]} />
+      <AssetCard asset={assets[0]} />
     </CardList>
   );
 };
@@ -27,7 +27,7 @@ export const AvatarUsage = () => {
 
   return (
     <CardList className={classes.storybook()}>
-      <AssetCard asset={assetList[0]} />
+      <AssetCard asset={assets[0]} />
     </CardList>
   );
 };
@@ -38,7 +38,7 @@ export const OnPress = () => {
   return (
     <CardList className={classes.storybook()}>
       <AssetCard
-        asset={assetList[0]}
+        asset={assets[0]}
         onClick={() => {
           const _classes = styles();
 
@@ -55,7 +55,7 @@ export const OnAdd = () => {
   return (
     <CardList className={classes.storybook()}>
       <AssetCard
-        asset={assetList[0]}
+        asset={assets[0]}
         onAdd={() => {
           const _classes = styles();
 
@@ -72,7 +72,7 @@ export const OnRemove = () => {
   return (
     <CardList className={classes.storybook()}>
       <AssetCard
-        asset={assetList[0]}
+        asset={assets[0]}
         onRemove={() => {
           const _classes = styles();
 
@@ -89,7 +89,7 @@ export const OnFaucet = () => {
   return (
     <CardList className={classes.storybook()}>
       <AssetCard
-        asset={assetList[0]}
+        asset={assets[0]}
         onFaucet={() => {
           const _classes = styles();
 
@@ -107,7 +107,7 @@ export const OnRemoveDisabled = () => {
     <CardList className={classes.storybook()}>
       <AssetCard
         isRemoveDisabled
-        asset={assetList[0]}
+        asset={assets[0]}
         onRemove={() => {
           console.log('remove');
         }}

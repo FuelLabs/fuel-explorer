@@ -1,6 +1,6 @@
 'use client';
 
-import type { BlockItemFragment, Maybe } from '@fuel-explorer/graphql';
+import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql';
 import {
   Address,
   Grid,
@@ -14,11 +14,12 @@ import { PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { Routes } from '~/routes';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
+import { fromNowUnix } from '~/systems/Core/utils/dayjs';
 import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
 type BlockScreenSimpleProps = {
-  block?: Maybe<BlockItemFragment>;
+  block?: Maybe<GQLBlockFragment>;
   producer?: Maybe<string>;
   isLoading?: boolean;
 };
@@ -28,7 +29,7 @@ export function BlockScreenSimple({
   producer,
   isLoading,
 }: BlockScreenSimpleProps) {
-  const txList = (block?.transactions.map((v) => ({ node: v })) as any) || [];
+  const txList = block?.transactions ?? [];
   return (
     <VStack>
       <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">
@@ -53,7 +54,7 @@ export function BlockScreenSimple({
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-24 h-6" />}
-            regularEl={block?.time?.fromNow}
+            regularEl={fromNowUnix(block?.time?.rawUnix)}
           />
         </CardInfo>
         <CardInfo name="# of transactions" className="flex-1">
@@ -70,7 +71,7 @@ export function BlockScreenSimple({
       {isLoading ? (
         <TxListLoader numberOfTxs={4} />
       ) : (
-        <TxList hidePagination transactions={txList} />
+        <TxList hidePagination transactions={txList} route="home" />
       )}
     </VStack>
   );

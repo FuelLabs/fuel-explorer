@@ -1,3 +1,4 @@
+'use client';
 import { useModal } from 'connectkit';
 import { useEffect } from 'react';
 import type { PublicClient } from 'viem';
