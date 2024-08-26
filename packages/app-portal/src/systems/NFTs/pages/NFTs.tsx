@@ -14,7 +14,7 @@ export function NFTs() {
   return (
     <VStack>
       <Hero />
-      <div>
+      <div className="my-5">
         <PageTitle icon={<Icon icon={IconListDetails} />}>Activity</PageTitle>
         <TxsTabList activeTab={activeTab} setActiveTab={setActiveTab} />
         <TxsButtonContainer />

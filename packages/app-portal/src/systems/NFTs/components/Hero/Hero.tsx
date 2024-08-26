@@ -1,6 +1,8 @@
 'use client';
 
 import { HStack, Heading, Theme, VStack } from '@fuels/ui';
+import { Grid, LineGraph } from '@fuels/ui';
+import { dummyData } from '../../data/dummyData';
 import NFTHashItem from '../NFTHashItem/NFTHashItem';
 import { NFTsHeader } from '../NFTsHeader/NFTsHeader';
 
@@ -52,6 +54,11 @@ export function Hero() {
             timeProp=""
           />
         </div>
+
+        <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5 my-5">
+          <LineGraph dataProp={dummyData} titleProp={'New Block'} />
+          <LineGraph dataProp={dummyData} titleProp={'Avg. Block Reward'} />
+        </Grid>
       </VStack>
     </Theme>
   );
