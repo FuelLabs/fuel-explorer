@@ -396,9 +396,9 @@
     "image": "redstone"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Ruscet Exchange",
-    "url": "https://ruscet.xyz",
+    "url": "https://twitter.com/RuscetFi",
     "tags": ["DeFi"],
     "description": "High-performance derivatives exchange on Fuel",
     "github": "https://github.com/burralabs/ruscet-contracts",
