@@ -7,15 +7,35 @@ ARG CONSENSUS_KEY_SECRET="0xc8e615a4089466174459ef19cfd257d2e17adfabff3b8f219dbb
 # dependencies
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y curl jq && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y git curl jq && rm -rf /var/lib/apt/lists/*
 
 # copy chain config
 WORKDIR /fuel
-COPY ./chain_config.json .
-COPY ./metadata.json .
-COPY ./state_config.json .
-RUN curl \
-	https://github.com/FuelLabs/fuel-core/tree/v0.34.0/bin/fuel-core/chainspec/local-testnet \
-  -o ./state_transition_bytecode.wasm
+
+COPY ./genesis_coins.json .
+
+RUN git clone \
+    https://github.com/FuelLabs/chain-configuration.git \
+    /chain-configuration
+
+# Copy the base local configuration
+RUN cp -R /chain-configuration/local/* ./
+
+# Copy the testnet consensus parameters and state transition bytecode
+RUN cp /chain-configuration/upgradelog/ignition-dev/consensus_parameters/6.json \
+    ./latest_consensus_parameters.json
+RUN cp /chain-configuration/upgradelog/ignition-dev/state_transition_function/8.wasm \
+    ./state_transition_bytecode.wasm
+
+# update local state_config with custom genesis coins config
+RUN jq '.coins = input' \
+    state_config.json genesis_coins.json > tmp.json \
+    && mv tmp.json state_config.json
+
+# update local state_config with testnet consensus parameters
+RUN jq '.consensus_parameters = input' \
+    state_config.json latest_consensus_parameters.json > tmp.json \
+    && mv tmp.json state_config.json
 
 # expose fuel node port
 ENV FUEL_IP="${FUEL_IP}"

@@ -162,8 +162,8 @@ importers:
   docker/erc20-deployer/deployer:
     dependencies:
       '@fuel-bridge/test-utils':
-        specifier: pr-185
-        version: 0.6.0-pr-185-1beb732ac135e5360ddaf2101c5c058e99769a27(ethers@6.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fuels@0.94.0)
+        specifier: 1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f
+        version: 1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f(ethers@6.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fuels@0.94.0)
       ethers:
         specifier: 6.11.0
         version: 6.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -2573,11 +2573,11 @@ packages:
   '@fuel-bridge/solidity-contracts@0.6.0-pr-185-1beb732ac135e5360ddaf2101c5c058e99769a27':
     resolution: {integrity: sha512-XOL5KeBQ7mYs2jQadc+4DlndrukF9Ea6/8VHb19XHmOaaxMtiCgxnizX/t8HXNjKVoWqnklcfQVHrP/MwFnang==}
 
-  '@fuel-bridge/test-utils@0.6.0-pr-185-1beb732ac135e5360ddaf2101c5c058e99769a27':
-    resolution: {integrity: sha512-ACHAbwZkF1e3YKFh5lN1OF+MFHf2nAzltbgWtdZMvDUb4cBKAED/F89Io3HVs/fFPAYTqv4wiE0guRmoZFhvww==}
+  '@fuel-bridge/test-utils@1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f':
+    resolution: {integrity: sha512-gh1EGIz4kRAF985JEVCU+qY8eOp7VPYThbtDsts+JUVUPl/BoBtQ0vYTSfOWiTFx/wCMT6XV1YjvmlRb9si/hg==}
     peerDependencies:
-      ethers: 6.11.0
-      fuels: 0.85.0
+      ethers: 6.13.1
+      fuels: 0.94.0
 
   '@fuel-ts/abi-coder@0.90.0':
     resolution: {integrity: sha512-3/tg+xgiAEOfO3c8FGN0ql9rpcPNf8SX0XkhJFNQslkYh0hW0W+sWlas0dwTdfk/foRFCktDv3p1F/7qNSZCHQ==}
@@ -3803,16 +3803,12 @@ packages:
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
-      react: '*'
-      react-dom: '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
       '@types/react-dom':
-        optional: true
-      react:
-        optional: true
-      react-dom:
         optional: true
 
   '@radix-ui/react-alert-dialog@1.1.1':
@@ -4109,16 +4105,12 @@ packages:
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
-      react: '*'
-      react-dom: '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
         optional: true
       '@types/react-dom':
-        optional: true
-      react:
-        optional: true
-      react-dom:
         optional: true
 
   '@radix-ui/react-navigation-menu@1.2.0':
@@ -4466,11 +4458,9 @@ packages:
     resolution: {integrity: sha512-Z/e78qg2YFnnXcW88A4JmTtm4ADckLno6F7OXotmkQfeuCVaKuYzqAATPhVzl3delXE7CxIV8shofPn3jPc5Og==}
     peerDependencies:
       '@types/react': '*'
-      react: '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
-        optional: true
-      react:
         optional: true
 
   '@radix-ui/react-use-rect@1.1.0':
@@ -4486,11 +4476,9 @@ packages:
     resolution: {integrity: sha512-XW3/vWuIXHa+2Uwcc2ABSfcCledmXhhQPlGbfcRXbiUQI5Icjcg19BGCZVKKInYbvUCut/ufbbLLPFC5cbb1hw==}
     peerDependencies:
       '@types/react': '*'
-      react: '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
-        optional: true
-      react:
         optional: true
 
   '@radix-ui/react-visually-hidden@1.1.0':
@@ -5744,10 +5732,7 @@ packages:
   '@tabler/icons-react@2.46.0':
     resolution: {integrity: sha512-X8MRxuslIOFqMjAo+GvUZDpjlOwNYNJTuOsHXf/NBvVI6ygqUf0FUNsDLLA5fQ6k6KtRwxMlgGB+eR8ZG1UP0g==}
     peerDependencies:
-      react: '*'
-    peerDependenciesMeta:
-      react:
-        optional: true
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
 
   '@tabler/icons-react@2.47.0':
     resolution: {integrity: sha512-iqly2FvCF/qUbgmvS8E40rVeYY7laltc5GUjRxQj59DuX0x/6CpKHTXt86YlI2whg4czvd/c8Ce8YR08uEku0g==}
@@ -16073,7 +16058,7 @@ snapshots:
 
   '@fuel-bridge/solidity-contracts@0.6.0-pr-185-1beb732ac135e5360ddaf2101c5c058e99769a27': {}
 
-  '@fuel-bridge/test-utils@0.6.0-pr-185-1beb732ac135e5360ddaf2101c5c058e99769a27(ethers@6.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fuels@0.94.0)':
+  '@fuel-bridge/test-utils@1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f(ethers@6.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fuels@0.94.0)':
     dependencies:
       ethers: 6.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       fuels: 0.94.0
@@ -18110,11 +18095,11 @@ snapshots:
       '@radix-ui/react-id': 1.0.1(@types/react@18.2.54)(react@18.2.0)
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.22)(@types/react@18.2.54)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.2.54)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     optionalDependencies:
       '@types/react': 18.2.54
       '@types/react-dom': 18.2.22
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
 
   '@radix-ui/react-alert-dialog@1.1.1(@types/react-dom@18.2.22)(@types/react@18.2.54)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -18412,12 +18397,12 @@ snapshots:
       '@radix-ui/react-slot': 1.1.0(@types/react@18.2.54)(react@18.2.0)
       '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.54)(react@18.2.0)
       aria-hidden: 1.2.4
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
       react-remove-scroll: 2.5.7(@types/react@18.2.54)(react@18.2.0)
     optionalDependencies:
       '@types/react': 18.2.54
       '@types/react-dom': 18.2.22
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
 
   '@radix-ui/react-navigation-menu@1.2.0(@types/react-dom@18.2.22)(@types/react@18.2.54)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -18803,9 +18788,10 @@ snapshots:
       '@types/react': 18.2.54
 
   '@radix-ui/react-use-previous@1.1.0(@types/react@18.2.54)(react@18.2.0)':
+    dependencies:
+      react: 18.2.0
     optionalDependencies:
       '@types/react': 18.2.54
-      react: 18.2.0
 
   '@radix-ui/react-use-rect@1.1.0(@types/react@18.2.54)(react@18.2.0)':
     dependencies:
@@ -18817,9 +18803,9 @@ snapshots:
   '@radix-ui/react-use-size@1.1.0(@types/react@18.2.54)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.54)(react@18.2.0)
+      react: 18.2.0
     optionalDependencies:
       '@types/react': 18.2.54
-      react: 18.2.0
 
   '@radix-ui/react-visually-hidden@1.1.0(@types/react-dom@18.2.22)(@types/react@18.2.54)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -20987,7 +20973,6 @@ snapshots:
     dependencies:
       '@tabler/icons': 2.46.0
       prop-types: 15.8.1
-    optionalDependencies:
       react: 18.2.0
 
   '@tabler/icons-react@2.47.0(react@18.2.0)':
@@ -25558,7 +25543,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 3.6.2
+      readable-stream: 4.5.2
       webextension-polyfill: 0.10.0
 
   external-editor@3.1.0:

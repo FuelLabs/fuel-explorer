@@ -474,7 +474,7 @@ export class TxFuelToEthService {
       provider: fuelProvider,
       filters: {
         owner: fuelAddress?.toB256(),
-        first: 500,
+        first: 100,
       },
     });
 
