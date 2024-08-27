@@ -1,3 +1,4 @@
+import { Signer } from 'fuels';
 import { gql } from 'graphql-request';
 import { Cache } from '../utils/cache';
 import { tai64toDate } from '../utils/dayjs';
@@ -10,18 +11,25 @@ type Args = {
 
 export type Block = {
   header: {
+    id: string;
     time: string;
     transactionsCount: string;
   };
   transactions: {
     id: string;
   }[];
+  consensus: {
+    __typename: string;
+    signature?: string;
+  };
 };
 
 export type TPSData = {
   timestamp: number;
   tps: number;
   gasUsed: string;
+  blockNo: string;
+  producer: string | null;
 };
 
 export class TPS extends Domain<any, Args> {
@@ -60,6 +68,12 @@ export class TPS extends Domain<any, Args> {
               }
               transactions {
                 id
+              }
+              consensus {
+                __typename
+                ... on PoAConsensus {
+                  signature
+                }
               }
             }
           }
@@ -124,7 +138,7 @@ export class TPS extends Domain<any, Args> {
     const tpsData: TPSData[] = [];
     const transactionsPerSecond = new Map<
       number,
-      { tps: number; gasUsed: string }
+      { tps: number; gasUsed: string; blockNo: string; producer: string | null }
     >();
 
     console.log('Starting TPS calculation...');
@@ -141,16 +155,33 @@ export class TPS extends Domain<any, Args> {
         totalGasUsed += BigInt(summ.gasUsed.toString());
       }
 
+      // Calculate producer as done in BlockDomain
+      let producer: string | null = null;
+      if (
+        block.consensus.__typename !== 'Genesis' &&
+        block.consensus.signature
+      ) {
+        const recoveredProducer = Signer.recoverAddress(
+          block.header.id,
+          block.consensus.signature,
+        );
+        producer = recoveredProducer.toString(); // Convert Address to string
+      }
+
       if (transactionsPerSecond.has(timestamp)) {
         const data = transactionsPerSecond.get(timestamp)!;
         transactionsPerSecond.set(timestamp, {
           tps: data.tps + transactions,
           gasUsed: (BigInt(data.gasUsed) + totalGasUsed).toString(),
+          blockNo: block.header.id,
+          producer: producer || data.producer,
         });
       } else {
         transactionsPerSecond.set(timestamp, {
           tps: transactions,
           gasUsed: totalGasUsed.toString(),
+          blockNo: block.header.id,
+          producer: producer,
         });
       }
     }
@@ -160,6 +191,8 @@ export class TPS extends Domain<any, Args> {
         timestamp: second * 1000,
         tps: data.tps,
         gasUsed: data.gasUsed,
+        blockNo: data.blockNo,
+        producer: data.producer,
       });
     });
 

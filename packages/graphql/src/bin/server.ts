@@ -39,7 +39,10 @@ io.on('connection', (socket) => {
 
       const tpsData = await tpsDomain.getTPS();
       console.log('TPS data:', tpsData);
+      //* sending tps data
       socket.emit('tps_data', tpsData);
+      //* sending block details
+      socket.emit('block_details', tpsData);
     } catch (error) {
       console.error('Error sending TPS data:', error);
     }
