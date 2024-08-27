@@ -25,8 +25,13 @@ export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
   // using this solution we force the state to change
   // and rerender the component
   useEffect(() => {
-    setStyle(theme === 'dark' ? darkStyles : defaultStyles);
+    const newStyle = theme === 'dark' ? darkStyles : defaultStyles;
+    setStyle({
+      ...newStyle,
+      value: { color: 'green' },
+    });
   }, [theme]);
+
   return (
     <JsonView
       data={data}
@@ -44,6 +49,6 @@ export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
 
 const styles = tv({
   slots: {
-    json: 'bg-gray-1 text-sm py-2 px-1 break-all',
+    json: 'dark:bg-black bg-gray-2 text-sm py-2 px-1 break-all rounded-lg',
   },
 });

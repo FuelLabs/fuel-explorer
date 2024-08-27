@@ -86,7 +86,9 @@ export function NFTs() {
       <div className="my-5">
         <PageTitle icon={<Icon icon={IconListDetails} />}>Activity</PageTitle>
         <TxsTabList activeTab={activeTab} setActiveTab={setActiveTab} />
-        <TxsButtonContainer />
+        <TxsButtonContainer
+          isContract={activeTab === 'Contract' ? true : false}
+        />
         {activeTab === 'Activity' ? (
           <NFTsTable />
         ) : activeTab === 'Holders' ? (

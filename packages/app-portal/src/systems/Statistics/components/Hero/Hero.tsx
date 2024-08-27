@@ -1,4 +1,3 @@
-import React from 'react';
 import { StatsHeader } from '../StatsHeader/StatsHeader';
 
 const Hero = () => {

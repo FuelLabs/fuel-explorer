@@ -1,16 +1,13 @@
 'use client';
 import {
   Box,
-  Button,
   Card,
   LoadingBox,
   LoadingWrapper,
   ScrollArea,
   Text,
 } from '@fuels/ui';
-import { IconChevronUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 import { tv } from 'tailwind-variants';
 
 import CopyButton from '../CopyButton/CopyButton';
@@ -29,8 +26,6 @@ export function CodeBlock({
   title,
   isLoading,
 }: CodeBlockProps) {
-  const [compact, setCompact] = useState<boolean>(true);
-
   const classes = styles();
   if (!value && !isLoading) return null;
 
@@ -48,14 +43,14 @@ export function CodeBlock({
   }
 
   return (
-    <Card className={classes.root()} data-compact={compact}>
+    <Card className={classes.root()}>
       <Card.Header className={classes.cardHeader()}>
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-24 h-5" />}
           regularEl={
             <>
-              <Text size="1" weight="bold">
+              <Text size="3" weight="bold">
                 {getTitle()}
               </Text>
               <CopyButton size="1" value={getCopyValue()} />
@@ -87,23 +82,6 @@ export function CodeBlock({
           }
         />
       </ScrollArea>
-      <LoadingWrapper
-        isLoading={isLoading}
-        loadingEl={null}
-        regularEl={
-          <Card.Footer className={classes.cardFooter()}>
-            <Button
-              variant="link"
-              size="1"
-              color="gray"
-              rightIcon={IconChevronUp}
-              onClick={() => setCompact(!compact)}
-            >
-              Show {compact ? 'more' : 'less'}
-            </Button>
-          </Card.Footer>
-        }
-      />
     </Card>
   );
 }
@@ -111,21 +89,15 @@ export function CodeBlock({
 const styles = tv({
   slots: {
     root: [
-      'group p-0 gap-0',
-      'transition-[max-height] max-h-[65vh]',
-      'data-[compact=true]:max-h-[210px]',
+      'group pt-3 px-5 pb-5 gap-0',
+      'transition-[max-height] max-h-[85vh]',
     ],
     cardHeader:
       'border-b border-card-border py-3 flex-row items-center justify-between',
     cardMiddle: [
-      'flex-1 font-mono',
-      '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON
+      'flex-1 font-mono dark:bg-black bg-gray-2 rounded',
+      '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]',
     ],
     codeText: 'text-sm text-gray-500 p-4 max-w-full break-all block',
-    cardFooter: [
-      'border-t border-card-border',
-      'py-3 self-stretch flex-none justify-center',
-      'group-data-[compact=true]:[&_svg]:-rotate-180 [&_svg]:transition-transform',
-    ],
   },
 });
