@@ -3,18 +3,26 @@ import ModalContainer from '../ModalContainer/ModalContainer';
 import TxsButton from '../TxsButton/TxsButton';
 import TxsExportCsvModal from '../TxsExportCsvModal/TxsExportCsvModal';
 
-function TxsButtonContainer({ isContract }: { isContract: boolean }) {
+export type TxsButtonContainerProps = {
+  isContract?: boolean;
+};
+
+function TxsButtonContainer({
+  isContract = false,
+}: TxsButtonContainerProps): JSX.Element {
+  // default value for isContract is false
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = (): void => setIsModalOpen(true);
+  const closeModal = (): void => setIsModalOpen(false);
 
   if (isContract) {
     return <div className="my-3" />;
   }
+
   return (
     <>
-      <div className="flex justify-end gap-4 ">
+      <div className="flex justify-end gap-4">
         <TxsButton>
           <p className="dark:text-white text-black">Download Page Data</p>
           <svg

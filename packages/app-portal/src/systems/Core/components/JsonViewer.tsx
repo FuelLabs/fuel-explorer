@@ -26,10 +26,7 @@ export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
   // and rerender the component
   useEffect(() => {
     const newStyle = theme === 'dark' ? darkStyles : defaultStyles;
-    setStyle({
-      ...newStyle,
-      value: { color: 'green' },
-    });
+    setStyle(newStyle);
   }, [theme]);
 
   return (
