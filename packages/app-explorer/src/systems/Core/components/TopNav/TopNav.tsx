@@ -22,7 +22,6 @@ export function TopNav() {
     PortalRoutes.bridgeHistory,
   ]);
   const isEcosystemBridge = isRoute(pathname, [PortalRoutes.ecosystem]);
-  const isHomePage = pathname === '/';
   const isExplorer = !isBridge && !isEcosystemBridge;
 
   useEffect(() => {
@@ -94,12 +93,10 @@ export function TopNav() {
             {externalLinks}
           </Nav.Menu>
           <Nav.Menu>
-            {!isHomePage && (
-              <SearchWidget
-                setIsSearchOpen={setIsDesktopSearchOpen}
-                isSearchOpen={isDesktopSearchOpen}
-              />
-            )}
+            <SearchWidget
+              setIsSearchOpen={setIsDesktopSearchOpen}
+              isSearchOpen={isDesktopSearchOpen}
+            />
           </Nav.Menu>
           <Nav.Menu>
             {tooling}
@@ -109,13 +106,11 @@ export function TopNav() {
         <Nav.Mobile>
           <Nav.MobileContent>
             {logo}
-            {!isHomePage && (
-              <SearchWidget
-                setIsSearchOpen={setIsMobileSearchOpen}
-                isSearchOpen={isMobileSearchOpen}
-                expandOnFocus={isMobile || isLaptop}
-              />
-            )}
+            <SearchWidget
+              setIsSearchOpen={setIsMobileSearchOpen}
+              isSearchOpen={isMobileSearchOpen}
+              expandOnFocus={isMobile || isLaptop}
+            />
             {themeToggle}
           </Nav.MobileContent>
           <Nav.Menu>

@@ -1,9 +1,13 @@
 'use client';
-import React, { useState } from 'react';
 import { TxsTab } from '../TxsTab/TsxTab';
 
-export function TxsTabList() {
-  const [activeTab, setActiveTab] = useState('Top Tokens'); // Default active tab
+export type TxsTabListProps = {
+  activeTab: string;
+  setActiveTab: (tabName: string) => void;
+};
+
+export function TxsTabList({ activeTab, setActiveTab }: TxsTabListProps) {
+  // Default active tab
 
   const tabList = [
     { name: 'Top Tokens' },
