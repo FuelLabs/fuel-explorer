@@ -7,6 +7,7 @@ export type BridgeTokenContracts = {
   ETH_ERC20: string;
   FUEL_TokenContract: string;
   FUEL_TokenAsset: string;
+  FUEL_TokenContractImplementation: string;
 };
 export type BridgeSolidityContracts = {
   FuelChainState: `0x${string}`;
@@ -49,6 +50,7 @@ export async function getBridgeTokenContracts() {
         ETH_ERC20,
         FUEL_TokenContract,
         FUEL_TokenAsset,
+        FUEL_TokenContractImplementation: '0x', // @TODO: include correct implementation ID from testnet
       };
 
       return bridgeTokenContract;

@@ -3,6 +3,7 @@ import {
   contractMessageScript,
 } from '@fuel-bridge/message-predicates';
 import type {
+  BytesLike,
   Message,
   Provider,
   TransactionResponse,
@@ -23,12 +24,19 @@ import {
 
 import { resourcesToInputs } from './transaction';
 
+type RelayMessageOptions = TxParamsType & {
+  contractIds?: BytesLike[];
+};
+
+// Details for relaying common messages with certain predicate roots
 function getCommonRelayableMessages(provider: Provider) {
   // Create a predicate for common messages
   const predicate = new Predicate({
     bytecode: contractMessagePredicate,
     provider,
   });
+
+  const assetId = provider.getBaseAssetId();
 
   // Details for relaying common messages with certain predicate roots
   const relayableMessages: CommonMessageDetails[] = [
@@ -41,15 +49,15 @@ function getCommonRelayableMessages(provider: Provider) {
         relayer: FuelWallet,
         message: Message,
         details: CommonMessageDetails,
+        opts?: RelayMessageOptions,
       ): Promise<ScriptTransactionRequest> => {
         const script = arrayify(details.script);
         const predicateBytecode = arrayify(details.predicate);
-        const baseAssetId = relayer.provider.getBaseAssetId();
         // get resources to fund the transaction
         const resources = await relayer.getResourcesToSpend([
           {
             amount: bn(100),
-            assetId: baseAssetId,
+            assetId,
           },
         ]);
         // convert resources to inputs
@@ -80,16 +88,33 @@ function getCommonRelayableMessages(provider: Provider) {
           txPointer: ZeroBytes32,
           contractId,
         });
+
+        for (const additionalContractId of opts?.contractIds || []) {
+          transaction.inputs.push({
+            type: InputType.Contract,
+            txPointer: ZeroBytes32,
+            contractId: additionalContractId,
+          });
+        }
+
         transaction.inputs.push(...spendableInputs);
 
         transaction.outputs.push({
           type: OutputType.Contract,
           inputIndex: 1,
         });
+
+        for (const [index] of (opts?.contractIds || []).entries()) {
+          transaction.outputs.push({
+            type: OutputType.Contract,
+            inputIndex: 2 + index,
+          });
+        }
+
         transaction.outputs.push({
           type: OutputType.Change,
           to: relayer.address.toB256(),
-          assetId: baseAssetId,
+          assetId,
         });
         transaction.outputs.push({
           type: OutputType.Variable,
@@ -132,7 +157,7 @@ export async function relayCommonMessage({
 }: {
   relayer: FuelWallet;
   message: Message;
-  txParams?: TxParamsType;
+  txParams?: RelayMessageOptions;
 }): Promise<TransactionResponse> {
   // find the relay details for the specified message
   let messageRelayDetails: CommonMessageDetails | undefined;

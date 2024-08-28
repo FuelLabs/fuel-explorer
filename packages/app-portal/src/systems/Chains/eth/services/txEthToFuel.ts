@@ -6,7 +6,7 @@ import type {
   TransactionResponse,
   WalletUnlocked as FuelWallet,
 } from 'fuels';
-import { Address as FuelAddress, bn } from 'fuels';
+import { Address as FuelAddress, InputMessageCoder, bn } from 'fuels';
 import type {
   PublicClient,
   ReadContractReturnType,
@@ -26,7 +26,10 @@ import {
 } from '../contracts/FuelMessagePortal';
 import { getBlockDate, isErc20Address } from '../utils';
 
-import { getBridgeSolidityContracts } from 'app-commons';
+import {
+  getBridgeSolidityContracts,
+  getBridgeTokenContracts,
+} from 'app-commons';
 import { EthConnectorService } from './connectors';
 
 export type TxEthToFuelInputs = {
@@ -338,20 +341,39 @@ export class TxEthToFuelService {
     if (!input?.fuelProvider) {
       throw new Error('No Fuel provider found');
     }
+    // @TODO: can we remove the fuelRecipient? dont need to get from receipts
     if (!input?.fuelRecipient) {
       throw new Error('No Fuel recipient');
     }
 
-    const { ethTxNonce, fuelProvider, fuelRecipient } = input;
+    const { ethTxNonce, fuelProvider, fuelRecipient: _fuelRecipient } = input;
+    const gqlMessage = await fuelProvider.getMessageByNonce(
+      ethTxNonce.toHex(32),
+    );
 
-    const { messages } = await fuelProvider.getMessages(fuelRecipient, {
-      first: 500,
-    });
-    const fuelMessage = messages.find((message) => {
-      return message.nonce.toString() === ethTxNonce.toHex(32).toString();
-    });
+    if (!gqlMessage) {
+      throw new Error('Message not found');
+    }
 
-    return fuelMessage;
+    // @TODO: create issue on sdk to return message with correct decoding (same of provider.getMessages)
+    // @TODO: remove workaround to decode manually the message
+    const fuelMessage = {
+      messageId: InputMessageCoder.getMessageId({
+        sender: gqlMessage.sender,
+        recipient: gqlMessage.recipient,
+        nonce: gqlMessage.nonce,
+        amount: bn(gqlMessage.amount),
+        data: gqlMessage.data,
+      }),
+      sender: FuelAddress.fromAddressOrString(gqlMessage.sender),
+      recipient: FuelAddress.fromAddressOrString(gqlMessage.recipient),
+      nonce: gqlMessage.nonce,
+      amount: bn(gqlMessage.amount),
+      data: InputMessageCoder.decodeData(gqlMessage.data),
+      daHeight: bn(gqlMessage.daHeight),
+    };
+
+    return fuelMessage || undefined;
   }
 
   static async relayMessageOnFuel(
@@ -367,11 +389,14 @@ export class TxEthToFuelService {
 
     let txMessageRelayed: TransactionResponse | undefined;
     try {
+      const { FUEL_TokenContractImplementation } =
+        (await getBridgeTokenContracts()) || {};
       txMessageRelayed = await relayCommonMessage({
         relayer: fuelWallet,
         message: fuelMessage,
         txParams: {
           maturity: undefined,
+          contractIds: [FUEL_TokenContractImplementation || ''],
         },
       });
     } catch (err) {
