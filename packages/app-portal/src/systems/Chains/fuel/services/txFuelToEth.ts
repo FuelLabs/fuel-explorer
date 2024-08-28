@@ -1,4 +1,4 @@
-import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
+import fungibleTokenABI from '@fuel-bridge/fungible-token/bridge-fungible-token/implementation/out/release/bridge_fungible_token-abi.json';
 import type { NetworkFuel } from '@fuel-ts/account';
 import dayjs from 'dayjs';
 import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
