@@ -22,9 +22,9 @@
     "tailwind-variants": "0.1.20"
   },
   "dependencies": {
-    "@fuel-bridge/fungible-token": "pr-185",
-    "@fuel-bridge/message-predicates": "pr-185",
-    "@fuel-bridge/solidity-contracts": "pr-185",
+    "@fuel-bridge/fungible-token": "pr-237",
+    "@fuel-bridge/message-predicates": "pr-237",
+    "@fuel-bridge/solidity-contracts": "pr-237",
     "@fuel-ts/account": "0.90.0",
     "@fuels/connectors": "0.9.1",
     "@fuels/react": "0.23.0",
