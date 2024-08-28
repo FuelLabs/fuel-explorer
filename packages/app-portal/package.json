@@ -24,7 +24,7 @@
   "dependencies": {
     "@fuel-bridge/fungible-token": "1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f",
     "@fuel-bridge/message-predicates": "1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f",
-    "@fuel-bridge/solidity-contracts": "1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f",
+    "@fuel-bridge/solidity-contracts": "pr-185",
     "@fuel-ts/account": "0.90.0",
     "@fuels/connectors": "0.9.1",
     "@fuels/react": "0.23.0",
