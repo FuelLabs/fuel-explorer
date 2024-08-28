@@ -1,4 +1,5 @@
 import { RoundedContainer } from '@fuels/ui';
+import React from 'react';
 
 interface LineGraphProps {
   titleProp: string;
@@ -6,13 +7,13 @@ interface LineGraphProps {
   timeProp: string;
 }
 
-export const StatsHeader: React.FC<LineGraphProps> = ({
+export const NFTsHeader: React.FC<LineGraphProps> = ({
   titleProp,
   valuesProp,
   timeProp,
 }) => {
   return (
-    <RoundedContainer className="w-[17rem]">
+    <RoundedContainer className="w-[17.18rem]">
       <p className="text-heading" style={{ fontSize: '1rem' }}>
         {titleProp}
       </p>
