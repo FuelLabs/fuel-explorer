@@ -1,27 +1,38 @@
 # This image contains the graphql server
 # built for the fuel-explorer
-FROM node:20-slim AS base
+FROM node:20 AS base
 
 # Expose the ENVs to the env of the container
-ENV PORT="${PORT}"
-ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://testnet.fuel.network/v1/graphql}"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV SERVER_PORT="${SERVER_PORT:-3000}"
+ENV SYNCER_PORT="${SYNCER_PORT:-3001}"
+ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://testnet.fuel.network/v1/graphql}"
 ENV SERVER_BUILD=true
+ENV SYNC_MISSING=true
+ENV DB_HOST="${DB_HOST}"
+ENV DB_PORT="${DB_PORT}"
+ENV DB_NAME="${DB_NAME}"
+ENV DB_USER="${DB_USER}"
+ENV DB_PASS="${DB_PASS}"
+ENV RABBITMQ_HOST="${RABBITMQ_HOST}"
+ENV RABBITMQ_PORT="${RABBITMQ_PORT}"
+ENV RABBITMQ_USER="${RABBITMQ_USER}"
+ENV RABBITMQ_PASS="${RABBITMQ_PASS}"
 
-# Enable pnpm using corepack form node.js
 RUN corepack enable
 
-# Install dependencies for the entire monorepo
-COPY . /app-explorer
-WORKDIR /app-explorer
+FROM base AS build
+COPY . /app
+WORKDIR /app
+RUN pnpm install --frozen-lockfile
 
-# Install dependencies for the entire monorepo
-RUN pnpm install
+FROM base AS explorer
+COPY --from=build /app /app-explorer
+WORKDIR /app-explorer/packages/graphql
 
-# Expose the specified port
-EXPOSE ${PORT}
+RUN pnpm build:lib
 
-# Start GraphQL server
-WORKDIR /app-explorer
-CMD ["pnpm", "server:start"]
+EXPOSE ${SERVER_PORT}
+RUN chown -R node:node /app-explorer
+CMD ["sh", "./scripts/run.sh"]

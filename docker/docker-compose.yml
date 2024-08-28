@@ -1,7 +1,10 @@
-version: "3.4"
+name: fuel-explorer
 
 services:
   l1_chain:
+    profiles:
+      - all
+      - bridge
     image: ghcr.io/fuellabs/fuel-bridge:01b0624
     platform: linux/amd64
     env_file:
@@ -10,22 +13,23 @@ services:
       # expose the service to the host for integration testing
       - 8545:9545
       - ${DEPLOYMENTS_PORT:-8080}:8081
+    networks:
+      - app-network
 
   fuel_core:
-    depends_on:
-      - l1_chain
-      - fuel-explorer-pgsql
+    profiles:
+      - all
+      - bridge
     image: fueldev/fuelcore:${DOCKER_TAG_FUEL_CORE:-latest}
     platform: linux/amd64
+    depends_on:
+      l1_chain:
+        condition: service_started
     build:
       context: ./fuel-core/
-    env_file:
-      - ./envs/fuel_core.env
     environment:
       L1_CHAIN_HTTP: http://l1_chain:9545/
       DEPLOYMENTS_HTTP: http://l1_chain:8081/deployments.local.json
-      RUST_LOG: debug
-      DEBUG: true
     ports:
       # expose the service to the host for integration testing
       - ${FUEL_CORE_HTTP_PORT:-4000}:4001
@@ -34,8 +38,13 @@ services:
       interval: 10s
       timeout: 10s
       retries: 100
+    networks:
+      - app-network
 
   fuel_block_commiter:
+    profiles:
+      - all
+      - bridge
     depends_on:
       fuel_core:
         condition: service_healthy
@@ -54,8 +63,13 @@ services:
     ports:
       # expose the service to the host for integration testing
       - ${COMMITTER_HTTP_PORT:-8888}:8888
+    networks:
+      - app-network
 
   erc20_deployer:
+    profiles:
+      - all
+      - bridge
     depends_on:
       fuel_core:
         condition: service_healthy
@@ -72,23 +86,76 @@ services:
     ports:
       # expose the service to the host for integration testing
       - ${ERC20_HTTP_PORT:-8082}:9090
+    networks:
+      - app-network
 
-  fuel-explorer-pgsql:
+  fuel_explorer_pgsql:
+    profiles:
+      - all
+      - indexer
+      - indexer-local
     image: postgres:latest
     platform: linux/amd64
-    container_name: fuel-explorer-pgsql
+    container_name: fuel_explorer_pgsql
     ports:
       - "5435:5432"
     volumes:
-      - fuel-explorer-pgsql-db:/usr/local/postgres
+      - fuel_explorer_pgsql-db:/usr/local/postgres
+    env_file:
+      - ./envs/indexer.env
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - PGUSER=postgres
+      - POSTGRES_DB={DB_NAME:-postgres}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASS:-postgres}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "postgres"]
+      test: ["CMD-SHELL", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
+
+  fuel_rabbitmq:
+    profiles:
+      - all
+      - indexer
+      - indexer-local
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # Management UI port
+    env_file:
+      - ./envs/indexer.env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest} 
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    networks:
+      - app-network
+
+  fuel_indexer_graphql:
+    profiles:
+      - all
+      - indexer
+    platform: linux/amd64
+    depends_on:
+      fuel_explorer_pgsql:
+        condition: service_healthy
+      fuel_rabbitmq:
+        condition: service_started
+    build:
+      context: ../
+      dockerfile: ./deployment/Dockerfile
+    env_file:
+      - ./envs/global.env
+      - ./envs/indexer.env
+    ports:
+      - "${INDEXER_GRAPHQL_PORT:-3004}:${SERVER_PORT:-3004}"
+      - "${INDEXER_SYNCER_PORT:-3005}:${SYNCER_PORT:-3005}"
+    networks:
+      - app-network
 
 volumes:
-  fuel-explorer-pgsql-db:
+  fuel_explorer_pgsql-db:
+
+networks:
+  app-network:

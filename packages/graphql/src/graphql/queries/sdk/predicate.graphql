@@ -1,0 +1,6 @@
+query predicate($address: String!) {
+  predicate(address: $address) {
+    address
+    bytecode
+  }
+}

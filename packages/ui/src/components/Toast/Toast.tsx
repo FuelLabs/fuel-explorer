@@ -59,13 +59,14 @@ export const ToastClose = createComponent<ToastCloseProps, typeof TP.Close>({
   className: ({ className }) => styles().close({ className }),
   render: (Comp, props) => {
     return (
-      <Comp>
+      <Comp asChild>
         <ButtonClose {...(props as IconButtonProps)} />
       </Comp>
     );
   },
   defaultProps: {
-    variant: 'link',
+    className: 'rounded-full bg-gray-12 -top-2 rounded-full',
+    variant: 'solid',
   },
 });
 

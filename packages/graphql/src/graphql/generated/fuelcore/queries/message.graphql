@@ -1,0 +1,10 @@
+query message($nonce: Nonce!){
+    message(nonce: $nonce){
+        amount
+        daHeight
+        data
+        nonce
+        recipient
+        sender
+    }
+}

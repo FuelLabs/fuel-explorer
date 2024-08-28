@@ -11,6 +11,8 @@ export const FuelAccountConnection = ({ label }: { label?: string }) => {
     isConnecting,
     handlers,
     account: address,
+    isLoadingConnection,
+    isConnected,
   } = useFuelAccountConnection();
 
   const fuelAddress = useMemo(() => {
@@ -26,6 +28,8 @@ export const FuelAccountConnection = ({ label }: { label?: string }) => {
       account={{ address: fuelAddress }}
       onConnect={handlers.connect}
       onDisconnect={handlers.disconnect}
+      isLoading={isLoadingConnection}
+      isConnected={isConnected}
     />
   );
 };

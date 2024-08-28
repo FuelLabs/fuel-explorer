@@ -1,0 +1,17 @@
+query nodeInfo{
+    nodeInfo{
+        maxDepth
+        maxTx
+        nodeVersion
+        peers{
+            addresses
+            appScore
+            blockHeight
+            clientVersion
+            id
+            lastHeartbeatMs
+        }
+        utxoValidation
+        vmBacktrace
+    }
+}

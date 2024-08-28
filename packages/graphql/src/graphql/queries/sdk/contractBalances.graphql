@@ -1,0 +1,37 @@
+fragment ContractBalanceNode on ContractBalance {
+  amount
+  assetId
+}
+
+fragment ContractBalanceConnectionNode on ContractBalanceConnection {
+  edges {
+    cursor
+    node {
+      ...ContractBalanceNode
+    }
+  }
+  pageInfo {
+    hasNextPage
+    hasPreviousPage
+    endCursor
+    startCursor
+  }
+}
+
+query contractBalances(
+  $after: String
+  $before: String
+  $filter: ContractBalanceFilterInput!
+  $first: Int
+  $last: Int
+) {
+  contractBalances(
+    after: $after
+    before: $before
+    filter: $filter
+    first: $first
+    last: $last
+  ) {
+    ...ContractBalanceConnectionNode
+  }
+}
