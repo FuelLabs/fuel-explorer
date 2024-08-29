@@ -552,9 +552,6 @@ test.describe('Bridge', () => {
       await page.goto('/bridge');
       await goToTransactionsPage(page);
 
-      const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-      await loading.innerText();
-
       await checkTxItemDone(page, depositEthTxId);
       await checkTxItemDone(page, depositERC20TxId);
       await checkTxItemDone(page, withdrawEthTxId);

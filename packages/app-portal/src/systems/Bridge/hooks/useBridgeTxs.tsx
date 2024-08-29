@@ -25,6 +25,7 @@ export const useBridgeTxs = () => {
     isLoadingConnection,
     provider: fuelProvider,
     address: fuelAddress,
+    account,
   } = useFuelAccountConnection();
 
   const { publicClient: ethPublicClient } = useEthAccountConnection();
@@ -62,7 +63,7 @@ export const useBridgeTxs = () => {
     isLoading,
     hasMorePages: hasNextPage,
     bridgeTxs: paginatedTxs,
-    shouldShowNotConnected: !isLoading && !isConnected,
+    shouldShowNotConnected: !isLoading && !account,
     shouldShowEmpty: !isLoading && isConnected && !length,
     handlers: {
       showMore: store.fetchNextPage,
