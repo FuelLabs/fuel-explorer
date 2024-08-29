@@ -1,17 +1,6 @@
 [
   {
     "isLive": false,
-    "name": "Acumen",
-    "url": "https://acumen.network/",
-    "tags": ["DeFi", "Real World Assets"],
-    "description": "Acumen is bridging DeFi and Real-world assets.",
-    "github": "https://github.com/AcumenProtocol",
-    "twitter": "https://twitter.com/acumenofficial",
-    "discord": "https://discord.gg/vnUPngfB5D",
-    "image": "acumen"
-  },
-  {
-    "isLive": false,
     "name": "Aori",
     "url": "https://www.aori.io/",
     "tags": ["DeFi"],
@@ -56,6 +45,17 @@
   },
   {
     "isLive": false,
+    "name": "Banxa",
+    "url": "https://banxa.com/",
+    "tags": ["Onramp"],
+    "description": "Banxa is a fiat-to-crypto on & off ramp solutions enabling users to conveniently and securely convert traditional fiat currencies into cryptocurrencies.",
+    "github": "",
+    "twitter": "https://twitter.com/BanxaOfficial",
+    "discord": "",
+    "image": "banxa"
+  },
+  {
+    "isLive": false,
     "name": "Bubblemaps",
     "url": "https://bubblemaps.io/",
     "tags": ["Analytics"],
@@ -67,14 +67,47 @@
   },
   {
     "isLive": false,
-    "name": "CoChilli",
-    "url": "https://cochilli.io/",
-    "tags": ["Prediction Market"],
-    "description": "CoChilli is bringing betting onchain, utilizing groundbreaking Virtual Engine technology to eliminate latency and gas fees, allowing for a frictionless UX.",
-    "github": "https://github.com/cochilli",
-    "twitter": "https://twitter.com/CoChilli_io",
-    "discord": "https://discord.gg/Un7tT2Tmkn",
-    "image": "cochilli"
+    "name": "Capsule",
+    "url": "https://usecapsule.com/",
+    "tags": ["Wallet"],
+    "description": "Capsule is the cross-app embedded wallet infrastructure",
+    "github": "https://github.com/capsule-org",
+    "twitter": "https://twitter.com/usecapsule",
+    "discord": "",
+    "image": "capsule"
+  },
+  {
+    "isLive": false,
+    "name": "Catalyst",
+    "url": "https://medium.com/@fuel_catalyst/introducing-catalyst-the-launchpad-of-the-fuel-ecosystem-08a81d947182",
+    "tags": ["Fuel", "Launchpad"],
+    "description": "The Launchpad for the Fuel Ecosystem",
+    "github": "",
+    "twitter": "https://twitter.com/fuel_catalyst",
+    "discord": "",
+    "image": "catalyst"
+  },
+  {
+    "isLive": false,
+    "name": "Chainrisk",
+    "url": "https://chainrisk.xyz",
+    "tags": ["DeFi"],
+    "description": "Chainrisk automates Economic risk management for DeFi Applications",
+    "github": "",
+    "twitter": "https://twitter.com/chain_risk",
+    "discord": "",
+    "image": "chainrisk"
+  },
+  {
+    "isLive": true,
+    "name": "Charcoal Transpiler",
+    "url": "https://www.sway-playground.org/",
+    "tags": ["Tooling"],
+    "description": "Solidity to Sway transpiler",
+    "github": "https://github.com/ourovoros-io",
+    "twitter": "",
+    "discord": "",
+    "image": "charcoal"
   },
   {
     "isLive": true,
@@ -143,17 +176,6 @@
     "image": "fluid"
   },
   {
-    "isLive": false,
-    "name": "Frank",
-    "url": "https://fuelstat.xyz/frank/",
-    "tags": ["Tooling"],
-    "description": "Frank (Fuel Rank) is a tool to track and analyze your interactions with the Fuel blockchain.",
-    "github": "https://github.com/fuelet",
-    "twitter": "https://twitter.com/FueletWallet",
-    "discord": "https://discord.gg/fueletwallet",
-    "image": "frank"
-  },
-  {
     "isLive": true,
     "name": "Fuel Name Service",
     "url": "https://fuelname.com/",
@@ -209,26 +231,15 @@
     "image": "fuelet"
   },
   {
-    "isLive": false,
-    "name": "Fuelstat",
-    "url": "https://fuelstat.xyz/",
-    "tags": ["Tooling"],
-    "description": "FuelStat is an analytics platform for tracking the latest data on Fuel accounts, transactions, and volume.",
-    "github": "https://github.com/fuelet",
-    "twitter": "https://twitter.com/FueletWallet",
-    "discord": "https://discord.gg/fueletwallet",
-    "image": "fuelstat"
-  },
-  {
     "isLive": true,
-    "name": "FuelSwap",
-    "url": "https://fuelswap.xyz/",
+    "name": "OxiSwap",
+    "url": "https://oxiswap.com",
     "tags": ["DeFi"],
     "description": "Lightning-Fast Decentralized Exchange Built On The Fuel Network",
-    "github": "https://github.com/SwapOnFuel",
-    "twitter": "https://twitter.com/fuelswapHQ",
+    "github": "https://github.com/oxiswap",
+    "twitter": "https://x.com/oxiswap",
     "discord": "",
-    "image": "fuelswap"
+    "image": "oxiswap"
   },
   {
     "isLive": false,
@@ -251,17 +262,6 @@
     "twitter": "https://twitter.com/guildxyz",
     "discord": "https://discord.gg/guildxyz",
     "image": "guildxyz"
-  },
-  {
-    "isLive": false,
-    "name": "Helixa TCG",
-    "url": "https://helixatcg.com/",
-    "tags": ["Gaming", "Marketplace", "NFT"],
-    "description": "A trading card game that blends enthralling gameplay, rich lore, and unique mechanics for an engaging, interactive experience.",
-    "github": "",
-    "twitter": "https://twitter.com/HelixaTCG",
-    "discord": "",
-    "image": "helixa"
   },
   {
     "isLive": false,
@@ -309,6 +309,17 @@
   },
   {
     "isLive": true,
+    "name": "Mira",
+    "url": "https://mira.ly/",
+    "tags": ["DeFi"],
+    "description": "The Liquidity Hub on Fuel",
+    "github": "https://github.com/0xmetaschool",
+    "twitter": "https://twitter.com/MiraProtocol",
+    "discord": "",
+    "image": "mira"
+  },
+  {
+    "isLive": true,
     "name": "ORAO",
     "url": "https://orao.network/",
     "tags": ["Oracle"],
@@ -328,17 +339,6 @@
     "twitter": "https://twitter.com/Orbiter_Finance",
     "discord": "",
     "image": "orbiter"
-  },
-  {
-    "isLive": false,
-    "name": "Pantheon of Olympus",
-    "url": "https://side.xyz/the-olympians",
-    "tags": ["NFT"],
-    "description": "Witness the captivating pixelized realm of mythical deities and embark on a GameFi adventure.",
-    "github": "",
-    "twitter": "https://twitter.com/pantheonsnft",
-    "discord": "",
-    "image": "pantheonolympus"
   },
   {
     "isLive": false,
@@ -396,9 +396,9 @@
     "image": "redstone"
   },
   {
-    "isLive": true,
+    "isLive": false,
     "name": "Ruscet Exchange",
-    "url": "https://ruscet.xyz",
+    "url": "https://twitter.com/RuscetFi",
     "tags": ["DeFi"],
     "description": "High-performance derivatives exchange on Fuel",
     "github": "https://github.com/burralabs/ruscet-contracts",
@@ -416,17 +416,6 @@
     "twitter": "https://twitter.com/_sailexchange",
     "discord": "",
     "image": "sail"
-  },
-  {
-    "isLive": false,
-    "name": "Seda Protocol",
-    "url": "https://www.seda.xyz/",
-    "tags": ["Infrastructure"],
-    "description": "SEDA is a permissionless modular data layer building the new standard for data transport and querying. Natively serving 230+ blockchains SEDA allows protocols to transport, query and configure any data available from any source.",
-    "github": "",
-    "twitter": "https://twitter.com/sedaprotocol",
-    "discord": "https://discord.com/invite/seda",
-    "image": "seda"
   },
   {
     "isLive": true,
@@ -495,7 +484,7 @@
     "image": "swayplayground"
   },
   {
-    "isLive": false,
+    "isLive": true,
     "name": "Swaylend",
     "url": "https://swaylend.com/",
     "tags": ["DeFi"],
@@ -510,7 +499,7 @@
     "name": "Tan Theta",
     "url": "https://tantheta.io/",
     "tags": ["Prediction Market", "DeFi"],
-    "description": "Tan Theta provides sophisticated predicates-based order matching engine for seamless and efficient trading experiences in prediction markets, sports books, spot exchanges, and derivatives exchanges. Ensure precise, high-speed transactions with near zero latency and extremely high throughput. We provide Order Matching Engine, Liquidity Aggregation, Oracles, Wallet, Dev Tools and Decentralized Events(Polls)",
+    "description": "Tan Theta provides sophisticated predicates-based order matching engine for seamless and efficient trading experiences in prediction markets, sports books, spot exchanges, and derivatives exchanges.",
     "github": "https://github.com/Tan-Theta-Protocol/",
     "twitter": "https://twitter.com/tanthetamarkets",
     "discord": "",

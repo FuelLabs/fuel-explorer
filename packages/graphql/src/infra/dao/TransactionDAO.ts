@@ -31,7 +31,6 @@ export default class TransactionDAO {
     accountHash: string,
     paginatedParams: PaginatedParams,
   ) {
-    console.log(accountHash, paginatedParams);
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const transactionsData = await this.databaseConnection.query(
@@ -109,7 +108,6 @@ export default class TransactionDAO {
   }
 
   async getPaginatedTransactions(paginatedParams: PaginatedParams) {
-    console.log(paginatedParams);
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const transactionsData = await this.databaseConnection.query(
@@ -175,5 +173,35 @@ export default class TransactionDAO {
       },
     };
     return paginatedResults;
+  }
+
+  async getTransactionsByOwner(accountHash: string) {
+    const transactionsData = await this.databaseConnection.query(
+      `
+		select
+			t.*
+		from
+			indexer.transactions t
+		where
+			t.tx_hash in (
+				select
+					ta.tx_hash
+				from
+					indexer.transactions_accounts ta
+				where
+					ta.account_hash = $1
+				order by
+					ta._id desc
+				limit
+					5
+			)
+		`,
+      [accountHash],
+    );
+    const transactions = [];
+    for (const transactionData of transactionsData) {
+      transactions.push(TransactionEntity.createFromDAO(transactionData));
+    }
+    return transactions;
   }
 }

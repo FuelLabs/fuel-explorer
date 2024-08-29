@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import { Layout } from '~/systems/Core/components/Layout/Layout';
 import { Provider } from '~/systems/Core/components/Provider';
 import { cx } from '~/systems/Core/utils/cx';
+import { SafaryScript } from '~/systems/Safary/Safary';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.fuel.network'),
@@ -45,6 +46,7 @@ export default function RootLayout({
           <Analytics />
         </Provider>
       </body>
+      <SafaryScript />
     </html>
   );
 }
