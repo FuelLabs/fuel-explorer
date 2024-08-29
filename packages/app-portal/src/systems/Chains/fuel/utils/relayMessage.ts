@@ -49,7 +49,7 @@ function getCommonRelayableMessages(provider: Provider) {
         relayer: FuelWallet,
         message: Message,
         details: CommonMessageDetails,
-        opts?: RelayMessageOptions,
+        _opts?: RelayMessageOptions,
       ): Promise<ScriptTransactionRequest> => {
         const script = arrayify(details.script);
         const predicateBytecode = arrayify(details.predicate);
@@ -89,13 +89,13 @@ function getCommonRelayableMessages(provider: Provider) {
           contractId,
         });
 
-        for (const additionalContractId of opts?.contractIds || []) {
-          transaction.inputs.push({
-            type: InputType.Contract,
-            txPointer: ZeroBytes32,
-            contractId: additionalContractId,
-          });
-        }
+        // for (const additionalContractId of opts?.contractIds || []) {
+        //   transaction.inputs.push({
+        //     type: InputType.Contract,
+        //     txPointer: ZeroBytes32,
+        //     contractId: additionalContractId,
+        //   });
+        // }
 
         transaction.inputs.push(...spendableInputs);
 
@@ -104,12 +104,12 @@ function getCommonRelayableMessages(provider: Provider) {
           inputIndex: 1,
         });
 
-        for (const [index] of (opts?.contractIds || []).entries()) {
-          transaction.outputs.push({
-            type: OutputType.Contract,
-            inputIndex: 2 + index,
-          });
-        }
+        // for (const [index] of (opts?.contractIds || []).entries()) {
+        //   transaction.outputs.push({
+        //     type: OutputType.Contract,
+        //     inputIndex: 2 + index,
+        //   });
+        // }
 
         transaction.outputs.push({
           type: OutputType.Change,
