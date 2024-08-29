@@ -78,7 +78,8 @@ const styles = tv({
     searchWrapper: [
       'grid gap-5',
       'grid-cols-1 grid-rows-auto auto-rows-min',
-      'md:grid-cols-12 md:grid-rows-[auto,auto]',
+      'md:grid-cols-1 md:grid-rows-[auto,auto]',
+      'lg:grid-cols-12 lg:grid-rows-[auto,auto]',
       'gap-y-5 gap-x-4',
     ],
   },

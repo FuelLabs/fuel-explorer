@@ -4,7 +4,7 @@ import { HStack, Heading, Theme, VStack } from '@fuels/ui';
 
 export function Hero() {
   return (
-    <Theme appearance="dark">
+    <Theme>
       <VStack className="gap-1">
         <Heading as="h1" className="m-0 p-0 font-mono">
           Blocks
