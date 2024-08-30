@@ -7,7 +7,7 @@ export type BridgeTokenContracts = {
   ETH_ERC20: string;
   FUEL_TokenContract: string;
   FUEL_TokenAsset: string;
-  FUEL_TokenContractImplementation: string;
+  FUEL_TokenContractImplementation?: string;
 };
 export type BridgeSolidityContracts = {
   FuelChainState: `0x${string}`;

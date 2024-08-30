@@ -394,6 +394,7 @@ export class TxEthToFuelService {
       const bridgeSolidityContracts = await getBridgeSolidityContracts();
       const bridgeTokenContracts = await getBridgeTokenContracts();
 
+      // if the contractImplementation is not provided, we get from erc20 contract
       const implementationContract =
         bridgeTokenContracts?.FUEL_TokenContractImplementation ||
         (await getTokenContractImplementation({
