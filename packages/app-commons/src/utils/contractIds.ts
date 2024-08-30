@@ -50,7 +50,7 @@ export async function getBridgeTokenContracts() {
         ETH_ERC20,
         FUEL_TokenContract,
         FUEL_TokenAsset,
-        FUEL_TokenContractImplementation: '0x', // @TODO: include correct implementation ID from testnet
+        FUEL_TokenContractImplementation: undefined, // it will get in the application if it's not provided from configs.
       };
 
       return bridgeTokenContract;

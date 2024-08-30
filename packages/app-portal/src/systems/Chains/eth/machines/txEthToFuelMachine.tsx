@@ -247,6 +247,7 @@ export const txEthToFuelMachine = createMachine(
                     ) => ({
                       fuelWallet: ev.input.fuelWallet,
                       fuelMessage: ctx.fuelMessage,
+                      ethPublicClient: ctx.ethPublicClient,
                     }),
                   },
                   onDone: [

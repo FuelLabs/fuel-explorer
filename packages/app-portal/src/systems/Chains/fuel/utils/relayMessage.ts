@@ -49,7 +49,7 @@ function getCommonRelayableMessages(provider: Provider) {
         relayer: FuelWallet,
         message: Message,
         details: CommonMessageDetails,
-        _opts?: RelayMessageOptions,
+        opts?: RelayMessageOptions,
       ): Promise<ScriptTransactionRequest> => {
         const script = arrayify(details.script);
         const predicateBytecode = arrayify(details.predicate);
@@ -89,13 +89,15 @@ function getCommonRelayableMessages(provider: Provider) {
           contractId,
         });
 
-        // for (const additionalContractId of opts?.contractIds || []) {
-        //   transaction.inputs.push({
-        //     type: InputType.Contract,
-        //     txPointer: ZeroBytes32,
-        //     contractId: additionalContractId,
-        //   });
-        // }
+        for (const additionalContractId of opts?.contractIds || []) {
+          if (additionalContractId) {
+            transaction.inputs.push({
+              type: InputType.Contract,
+              txPointer: ZeroBytes32,
+              contractId: additionalContractId,
+            });
+          }
+        }
 
         transaction.inputs.push(...spendableInputs);
 
@@ -104,12 +106,16 @@ function getCommonRelayableMessages(provider: Provider) {
           inputIndex: 1,
         });
 
-        // for (const [index] of (opts?.contractIds || []).entries()) {
-        //   transaction.outputs.push({
-        //     type: OutputType.Contract,
-        //     inputIndex: 2 + index,
-        //   });
-        // }
+        for (const [index, additionalContractId] of (
+          opts?.contractIds || []
+        ).entries()) {
+          if (additionalContractId) {
+            transaction.outputs.push({
+              type: OutputType.Contract,
+              inputIndex: 2 + index,
+            });
+          }
+        }
 
         transaction.outputs.push({
           type: OutputType.Change,
@@ -180,7 +186,8 @@ export async function relayCommonMessage({
     txParams || {},
   );
   const estimatedTx = await relayer.provider.estimatePredicates(transaction);
-  estimatedTx.maxFee = estimatedTx.maxFee.add(bn(50_000));
+  // @TODO: should remove this when sdk fixes estimation
+  estimatedTx.maxFee = estimatedTx.maxFee.add(bn(100_000));
 
   return relayer.sendTransaction(estimatedTx);
 }

@@ -30,6 +30,7 @@ import {
   getBridgeSolidityContracts,
   getBridgeTokenContracts,
 } from 'app-commons';
+import { getTokenContractImplementation } from '../utils/bridgeContract';
 import { EthConnectorService } from './connectors';
 
 export type TxEthToFuelInputs = {
@@ -61,6 +62,7 @@ export type TxEthToFuelInputs = {
     ethTxNonce?: BN;
   };
   relayMessageOnFuel: {
+    ethPublicClient?: PublicClient;
     fuelWallet?: FuelWallet;
     fuelMessage?: Message;
   };
@@ -389,14 +391,25 @@ export class TxEthToFuelService {
 
     let txMessageRelayed: TransactionResponse | undefined;
     try {
-      const { FUEL_TokenContractImplementation } =
-        (await getBridgeTokenContracts()) || {};
+      const bridgeSolidityContracts = await getBridgeSolidityContracts();
+      const bridgeTokenContracts = await getBridgeTokenContracts();
+
+      const implementationContract =
+        bridgeTokenContracts?.FUEL_TokenContractImplementation ||
+        (await getTokenContractImplementation({
+          bridgeSolidityContracts,
+          ethPublicClient: input.ethPublicClient,
+          fuelWallet,
+        }));
+
       txMessageRelayed = await relayCommonMessage({
         relayer: fuelWallet,
         message: fuelMessage,
         txParams: {
           maturity: undefined,
-          contractIds: [FUEL_TokenContractImplementation || ''],
+          contractIds: implementationContract
+            ? [implementationContract]
+            : undefined,
         },
       });
     } catch (err) {
