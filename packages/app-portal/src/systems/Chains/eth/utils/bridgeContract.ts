@@ -43,7 +43,7 @@ export async function getTokenContractImplementation({
         })
         .dryRun();
       console.log('asd using proxy contract');
-      return implementationContract as unknown as string;
+      return implementationContract.bits as unknown as string;
     }
   } catch (_) {
     console.log('asd ERROR getting proxy contract');
