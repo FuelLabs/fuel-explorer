@@ -1,6 +1,5 @@
 import { bigint as DrizzleBigint } from 'drizzle-orm/pg-core';
 import { ValueObject } from '../../../core/ValueObject';
-
 interface Props {
   value: bigint;
 }

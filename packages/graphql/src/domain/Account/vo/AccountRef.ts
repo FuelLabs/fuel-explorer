@@ -1,5 +1,4 @@
 import { ValueObject } from '../../../core/ValueObject';
-
 interface Props {
   value: number;
 }

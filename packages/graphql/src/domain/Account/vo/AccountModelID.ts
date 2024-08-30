@@ -10,7 +10,11 @@ export class AccountModelID extends Identifier<number> {
     return integer('_id').primaryKey();
   }
 
-  static create(account: any) {
-    return new AccountModelID(Number(account._id));
+  static create(id: number): AccountModelID {
+    if (typeof id !== 'number' || Number.isNaN(id)) {
+      throw new Error('Invalid ID: ID must be a valid number.');
+    }
+
+    return new AccountModelID(id);
   }
 }
