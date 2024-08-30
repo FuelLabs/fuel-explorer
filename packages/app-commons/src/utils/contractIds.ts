@@ -55,6 +55,20 @@ export async function getBridgeTokenContracts() {
 
       return bridgeTokenContract;
     }
+
+    if (FUEL_CHAIN_NAME === 'fuelDevnet') {
+      const FUEL_TokenContract =
+        '0xa10f53918370e471393e4936940eddb05fb189ed62ad662cc4025e2bf638da86';
+      const FUEL_TokenAsset = getContractTokenId(FUEL_TokenContract, ETH_ERC20);
+      const bridgeTokenContract = {
+        ETH_ERC20,
+        FUEL_TokenContract,
+        FUEL_TokenAsset,
+        FUEL_TokenContractImplementation: undefined, // it will get in the application if it's not provided from configs.
+      };
+
+      return bridgeTokenContract;
+    }
   }
 }
 
@@ -79,6 +93,17 @@ export async function getBridgeSolidityContracts() {
         FuelChainState: '0xf38F1e65adc58fc74BaaA132f645Aa5307F2d304',
         FuelMessagePortal: '0x01855B78C1f8868DE70e84507ec735983bf262dA',
         FuelERC20Gateway: '0xa97200022c7aDb1b15f0f61f374E3A0c90e2Efa0',
+        FuelERC721Gateway: '0x',
+      };
+
+      return bridgeSolidityContracts;
+    }
+
+    if (FUEL_CHAIN_NAME === 'fuelDevnet') {
+      bridgeSolidityContracts = {
+        FuelChainState: '0x2e87c41C9B3d932b6DA3C805baEfB7bbe863fCc6',
+        FuelMessagePortal: '0x768f9459E3339A1F7d59CcF24C80Eb4A711a01FB',
+        FuelERC20Gateway: '0x84C9ef458e85bA74F4DBF3a0B14075bE5341747B',
         FuelERC721Gateway: '0x',
       };
 
