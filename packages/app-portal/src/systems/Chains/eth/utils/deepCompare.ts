@@ -2,7 +2,13 @@ import { Fuel } from 'fuels';
 
 export function deepCompare<T>(a: T, b: T) {
   if (typeof a === 'object') {
-    return JSON.stringify(a, stringify) === JSON.stringify(b, stringify);
+    try {
+      return JSON.stringify(a, stringify) === JSON.stringify(b, stringify);
+      // biome-ignore lint/correctness/noUnusedVariables: <explanation>
+    } catch (e) {
+      // if it fails at least won't break, just continue the flow
+      return false;
+    }
   }
 
   return a === b;

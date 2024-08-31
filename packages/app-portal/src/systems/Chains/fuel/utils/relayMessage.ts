@@ -128,8 +128,7 @@ function getCommonRelayableMessages(provider: Provider) {
 
         transaction.witnesses.push(concat([ZeroBytes32, ZeroBytes32]));
 
-        const transactionCost =
-          await relayer.provider.getTransactionCost(transaction);
+        const transactionCost = await relayer.getTransactionCost(transaction);
 
         transaction.gasLimit = transactionCost.gasUsed.mul(1.2);
         transaction.maxFee = transactionCost.maxFee;
