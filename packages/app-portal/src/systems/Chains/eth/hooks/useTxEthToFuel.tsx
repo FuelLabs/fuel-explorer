@@ -174,7 +174,8 @@ export function useTxEthToFuel({ id }: { id: string }) {
 
     store.relayMessageEthToFuel({
       input: {
-        fuelWallet,
+        // @TODO: remove any when fuel-connectors gets updated to same fuels-ts of fuel-explorer
+        fuelWallet: fuelWallet as any,
       },
       ethTxId,
     });

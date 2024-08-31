@@ -146,11 +146,6 @@ export class TxFuelToEthService {
 
       const transactionRequest = await fungibleToken.functions
         .withdraw(ethAddressInFuel)
-        .txParams({
-          tip: bn(0),
-          gasLimit: bn(1_000_000),
-          maxFee: bn(100_000),
-        })
         .callParams({
           forward: {
             amount: bn.parseUnits(amount.format(), fuelAsset.decimals),
@@ -159,6 +154,9 @@ export class TxFuelToEthService {
         })
         .fundWithRequiredCoins();
 
+      const txCost = await fuelWallet.getTransactionCost(transactionRequest);
+      transactionRequest.gasLimit = txCost.gasUsed;
+      transactionRequest.maxFee = txCost.maxFee;
       const tx = await fuelWallet.sendTransaction(transactionRequest);
       const fWithdrawTxResult = await tx.waitForResult();
       if (fWithdrawTxResult.status !== TransactionStatus.success) {
