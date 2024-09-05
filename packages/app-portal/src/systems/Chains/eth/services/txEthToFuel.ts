@@ -6,7 +6,7 @@ import type {
   TransactionResponse,
   WalletUnlocked as FuelWallet,
 } from 'fuels';
-import { Address as FuelAddress, InputMessageCoder, bn } from 'fuels';
+import { Address as FuelAddress, bn } from 'fuels';
 import type {
   PublicClient,
   ReadContractReturnType,
@@ -178,7 +178,7 @@ export class TxEthToFuelService {
 
         const bridgeSolidityContracts = await getBridgeSolidityContracts();
         const approveTxHash = await erc20Token.write.approve([
-          bridgeSolidityContracts.FuelERC20Gateway,
+          bridgeSolidityContracts.FuelERC20GatewayV4,
           amount,
         ]);
 
@@ -349,31 +349,13 @@ export class TxEthToFuelService {
     }
 
     const { ethTxNonce, fuelProvider, fuelRecipient: _fuelRecipient } = input;
-    const gqlMessage = await fuelProvider.getMessageByNonce(
+    const fuelMessage = await fuelProvider.getMessageByNonce(
       ethTxNonce.toHex(32),
     );
 
-    if (!gqlMessage) {
+    if (!fuelMessage) {
       throw new Error('Message not found');
     }
-
-    // @TODO: create issue on sdk to return message with correct decoding (same of provider.getMessages)
-    // @TODO: remove workaround to decode manually the message
-    const fuelMessage = {
-      messageId: InputMessageCoder.getMessageId({
-        sender: gqlMessage.sender,
-        recipient: gqlMessage.recipient,
-        nonce: gqlMessage.nonce,
-        amount: bn(gqlMessage.amount),
-        data: gqlMessage.data,
-      }),
-      sender: FuelAddress.fromAddressOrString(gqlMessage.sender),
-      recipient: FuelAddress.fromAddressOrString(gqlMessage.recipient),
-      nonce: gqlMessage.nonce,
-      amount: bn(gqlMessage.amount),
-      data: InputMessageCoder.decodeData(gqlMessage.data),
-      daHeight: bn(gqlMessage.daHeight),
-    };
 
     return fuelMessage || undefined;
   }

@@ -4,7 +4,7 @@
   "devDependencies": {
     "@fuels/playwright-utils": "0.20.0",
     "@synthetixio/synpress": "https://github.com/LuizAsFight/synpress",
-    "fuels": "pr-3068",
+    "fuels": "0.94.4",
     "viem": "2.10.2",
     "wagmi": "2.11.2"
   }
