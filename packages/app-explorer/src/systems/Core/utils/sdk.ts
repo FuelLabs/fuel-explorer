@@ -12,7 +12,10 @@ if (!FUEL_INDEXER_API) {
 
 const getHeaders = () => {
   if (FUEL_INDEXER_API_KEY) {
-    return { 'x-api-key': `Bearer ${FUEL_INDEXER_API_KEY}` };
+    return {
+      'x-api-key': `Bearer ${FUEL_INDEXER_API_KEY}`,
+      Authorization: 'Basic ZnVlbGRldjE6MXBkZGtpWGhMYlZESW1DZG1UNUhhdw==',
+    };
   }
   return undefined;
 };
