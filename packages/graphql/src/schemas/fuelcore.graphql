@@ -706,6 +706,7 @@ type Query {
     id: BlockId
   ): Block
   blocks(after: String, before: String, first: Int, last: Int): BlockConnection!
+  blockRewardStatistics(timeFilter: String): BlockRewardConnection!
   chain: ChainInfo!
   """Gets the coin by `utxo_id`."""
   coin(
@@ -1033,4 +1034,15 @@ type TransactionFee {
 type TransactionFeeConnection {
   """A list of nodes."""
   nodes: [TransactionFee!]
+}
+
+type BlockReward {
+  id: BlockId!
+  reward: U64!
+  timestamp: String!
+}
+
+type BlockRewardConnection {
+  """A list of nodes."""
+  nodes: [BlockReward!]
 }
