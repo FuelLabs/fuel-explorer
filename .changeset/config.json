@@ -1,0 +1,29 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@2.0.0/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "FuelLabs/fuel-explorer" }
+  ],
+  "privatePackages": {
+    "version": true,
+    "tag": true
+  },
+  "commit": false,
+  "fixed": [["@fuels/ui"]],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@fuel-explorer/graphql",
+    "e2e-tests",
+    "app-portal",
+    "app-explorer",
+    "app-commons",
+    "predicate"
+  ],
+  "snapshot": {
+    "useCalculatedVersion": true,
+    "prereleaseTemplate": "{tag}-{commit}"
+  }
+}

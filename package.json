@@ -24,6 +24,11 @@
   "scripts": {
     "build:preview": "pnpm turbo:run build:preview",
     "build:lib": "pnpm turbo:run build:lib",
+    "changeset": "changeset",
+    "changeset:empty": "changeset --empty",
+    "changeset:release": "changeset publish --no-git-tag",
+    "changeset:version": "changeset version",
+    "changeset:check": "changeset status --since=main",
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
     "dev": "./scripts/dev.sh",
     "dev:explorer": "pnpm --filter=app-explorer dev",
@@ -56,6 +61,8 @@
   "devDependencies": {
     "@babel/core": "^7.23.9",
     "@biomejs/biome": "1.5.3",
+    "@changesets/changelog-github": "0.5.0",
+    "@changesets/cli": "2.27.8",
     "@fuels/jest": "0.20.0",
     "@fuels/ts-config": "0.20.0",
     "@fuels/tsup-config": "0.20.0",
@@ -90,8 +97,14 @@
   },
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": ["react", "react-dom"],
-      "ignoreMissing": ["react", "react-dom"]
+      "allowAny": [
+        "react",
+        "react-dom"
+      ],
+      "ignoreMissing": [
+        "react",
+        "react-dom"
+      ]
     },
     "overrides": {
       "glob-parent@<5.1.2": ">=5.1.2",
