@@ -12,7 +12,7 @@ if (!FUEL_INDEXER_API) {
 
 const getHeaders = () => {
   if (FUEL_INDEXER_API_KEY) {
-    return { Authorization: `Bearer ${FUEL_INDEXER_API_KEY}` };
+    return { 'x-api-key': `Bearer ${FUEL_INDEXER_API_KEY}` };
   }
   return undefined;
 };
