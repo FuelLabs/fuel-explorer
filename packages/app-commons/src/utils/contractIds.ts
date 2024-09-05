@@ -103,7 +103,7 @@ export async function getBridgeSolidityContracts() {
       bridgeSolidityContracts = {
         FuelChainState: '0x2e87c41C9B3d932b6DA3C805baEfB7bbe863fCc6',
         FuelMessagePortal: '0x768f9459E3339A1F7d59CcF24C80Eb4A711a01FB',
-        FuelERC20Gateway: '0x84C9ef458e85bA74F4DBF3a0B14075bE5341747B',
+        FuelERC20GatewayV4: '0x84C9ef458e85bA74F4DBF3a0B14075bE5341747B',
         FuelERC721Gateway: '0x',
       };
 
