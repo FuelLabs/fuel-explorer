@@ -3,6 +3,7 @@ import type {
   GQLQueryTransactionsArgs,
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
+  // GQLQueryTransactionFeesArgs,
 } from '~/graphql/generated/sdk-provider';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 import PaginatedParams from '~/infra/paginator/PaginatedParams';
@@ -12,6 +13,7 @@ type Params = {
   transaction: GQLQueryTransactionArgs;
   transactions: GQLQueryTransactionsArgs;
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
+  // transactionFees: GQLQueryTransactionFeesArgs;
 };
 
 export class TransactionResolver {
@@ -22,6 +24,7 @@ export class TransactionResolver {
         transaction: resolvers.transaction,
         transactions: resolvers.transactions,
         transactionsByOwner: resolvers.transactionsByOwner,
+        getTransactionsFeeStatistics: resolvers.getTransactionsFeeStatistics,
       },
     };
   }
@@ -48,6 +51,15 @@ export class TransactionResolver {
       params.owner,
       paginatedParams,
     );
+    return transactions;
+  }
+
+  async getTransactionsFeeStatistics(_: Source, params: string) {
+    // : Params['transactionFees']
+    const transactionDAO = new TransactionDAO();
+    // const transactions = await transactionDAO.getTransactionsFeeStatistics(params.timeFilter ? params.timeFilter: '');
+    const transactions =
+      await transactionDAO.getTransactionsFeeStatistics(params);
     return transactions;
   }
 }

@@ -204,4 +204,49 @@ export default class TransactionDAO {
     }
     return transactions;
   }
+
+  async getTransactionsFeeStatistics(timeFilter: string) {
+    // Define time intervals based on the filter
+    let interval = '';
+    switch (timeFilter) {
+      case '1hr':
+        interval = '1 hour';
+        break;
+      case '12hr':
+        interval = '12 hours';
+        break;
+      case '1day':
+        interval = '1 day';
+        break;
+      case '7days':
+        interval = '7 days';
+        break;
+      case '14days':
+        interval = '14 days';
+        break;
+      case '30days':
+        interval = '30 days';
+        break;
+      case '90days':
+        interval = '90 days';
+        break;
+      default:
+        throw new Error('Invalid time filter');
+    }
+
+    const transactionsData = await this.databaseConnection.query(
+      `
+        SELECT 
+            (data->'status'->>'totalFee')::numeric AS fee,
+            timestamp
+        FROM 
+            indexer.transactions t
+        WHERE 
+            timestamp >= NOW() - INTERVAL $1
+      `,
+      [interval],
+    );
+
+    return transactionsData;
+  }
 }
