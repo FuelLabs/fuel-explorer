@@ -1,10 +1,10 @@
 import type {
+  GQLQueryGetTransactionsFeeStatisticsArgs,
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
   GQLQueryTransactionsByOwnerArgs,
   GQLQueryTransactionsByBlockIdArgs,
   GQLTransaction,
-  // GQLQueryTransactionFeesArgs,
 } from '~/graphql/generated/sdk-provider';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 import PaginatedParams from '~/infra/paginator/PaginatedParams';
@@ -15,7 +15,7 @@ type Params = {
   transactions: GQLQueryTransactionsArgs;
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
   transactionByBlockId: GQLQueryTransactionsByBlockIdArgs;
-  // transactionFees: GQLQueryTransactionFeesArgs;
+  transactionFees: GQLQueryGetTransactionsFeeStatisticsArgs;
 };
 
 export class TransactionResolver {
@@ -69,11 +69,14 @@ export class TransactionResolver {
     );
   }
 
-  async getTransactionsFeeStatistics(_: Source, params: string) {
-    // : Params['transactionFees']
+  async getTransactionsFeeStatistics(
+    _: Source,
+    params: Params['transactionFees'],
+  ) {
     const transactionDAO = new TransactionDAO();
-    // const transactions = await transactionDAO.getTransactionsFeeStatistics(params.timeFilter ? params.timeFilter: '');
-    const transactions = await transactionDAO.getTransactionsFeeStatistics(params);
+    const transactions = await transactionDAO.getTransactionsFeeStatistics(
+      params.timeFilter ? params.timeFilter : '',
+    );
     return transactions;
   }
 }
