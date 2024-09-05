@@ -28,7 +28,7 @@
     "dayjs": "1.11.10",
     "ethers": "6.11.0",
     "framer-motion": "11.0.3",
-    "fuels": "pr-3068",
+    "fuels": "0.94.4",
     "geist": "1.2.1",
     "graphql": ">=16.8.1",
     "graphql-request": ">=6.1.0",

@@ -4,9 +4,9 @@
     "start": "ts-node ./src/index.ts"
   },
   "dependencies": {
-    "@fuel-bridge/test-utils": "1.0.0-next-fe545dfaddca05e6433d42854e6ae659ca55be1f",
+    "@fuel-bridge/test-utils": "1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed",
     "ethers": "6.11.0",
-    "fuels": "pr-3068"
+    "fuels": "0.94.4"
   },
   "devDependencies": {
     "ts-node": "^10.9.2"

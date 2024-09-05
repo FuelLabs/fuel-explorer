@@ -1,4 +1,4 @@
-FROM ghcr.io/fuellabs/fuel-core:v0.33.0
+FROM ghcr.io/fuellabs/fuel-core:v0.35.0
 
 ARG FUEL_IP=0.0.0.0
 ARG FUEL_PORT=4001
@@ -22,9 +22,9 @@ RUN git clone \
 RUN cp -R /chain-configuration/local/* ./
 
 # Copy the testnet consensus parameters and state transition bytecode
-RUN cp /chain-configuration/upgradelog/ignition-dev/consensus_parameters/6.json \
+RUN cp /chain-configuration/upgradelog/ignition-devnet/consensus_parameters/6.json \
     ./latest_consensus_parameters.json
-RUN cp /chain-configuration/upgradelog/ignition-dev/state_transition_function/8.wasm \
+RUN cp /chain-configuration/upgradelog/ignition-devnet/state_transition_function/9.wasm \
     ./state_transition_bytecode.wasm
 
 # update local state_config with custom genesis coins config

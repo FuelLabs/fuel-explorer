@@ -10,7 +10,7 @@ export type BridgeTokenContracts = {
 export type BridgeSolidityContracts = {
   FuelChainState: `0x${string}`;
   FuelMessagePortal: `0x${string}`;
-  FuelERC20Gateway: `0x${string}`;
+  FuelERC20GatewayV4: `0x${string}`;
   FuelERC721Gateway: `0x${string}`;
 };
 
