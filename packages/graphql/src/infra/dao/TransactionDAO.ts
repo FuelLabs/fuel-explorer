@@ -206,8 +206,8 @@ export default class TransactionDAO {
   }
 
   async getTransactionsFeeStatistics(timeFilter: string) {
-    // Define time intervals based on the filter
-    let interval = '';
+    let interval;
+
     switch (timeFilter) {
       case '1hr':
         interval = '1 hour';
@@ -231,22 +231,30 @@ export default class TransactionDAO {
         interval = '90 days';
         break;
       default:
-        throw new Error('Invalid time filter');
+        interval = null;
     }
 
-    const transactionsData = await this.databaseConnection.query(
-      `
+    let query = `
         SELECT 
-            (data->'status'->>'totalFee')::numeric AS fee,
-            timestamp
+        (data->'status'->>'totalFee')::numeric AS fee,
+          timestamp
         FROM 
             indexer.transactions t
-        WHERE 
-            timestamp >= NOW() - INTERVAL $1
-      `,
-      [interval],
-    );
+    `;
 
-    return transactionsData;
+    // Add the time filtering condition only if an interval is defined
+    if (interval) {
+      query += `
+            WHERE 
+                timestamp >= NOW() - INTERVAL '${interval}'
+        `;
+    }
+    // Execute the query
+    const transactionsData = await this.databaseConnection.query(query, []);
+
+    const results = {
+      nodes: transactionsData,
+    };
+    return results;
   }
 }

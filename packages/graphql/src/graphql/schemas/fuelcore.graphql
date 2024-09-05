@@ -780,6 +780,7 @@ type Query {
   ): Transaction
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
+  getTransactionsFeeStatistics(timeFilter: String): TransactionFeeConnection
 }
 
 type Receipt {
@@ -976,6 +977,16 @@ type TransactionConnection {
   nodes: [Transaction!]!
   """Information to aid in pagination."""
   pageInfo: PageInfo!
+}
+
+type TransactionFee {
+  fee: U64!
+  timestamp: String!
+}
+
+type TransactionFeeConnection {
+  """A list of nodes."""
+  nodes: [TransactionFee!]
 }
 
 """An edge in a connection."""
