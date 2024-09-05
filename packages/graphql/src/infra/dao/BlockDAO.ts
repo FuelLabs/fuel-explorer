@@ -50,18 +50,25 @@ export default class BlockDAO {
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const blocksData = await this.databaseConnection.query(
       `
-		select 
-			*
-		from 
-			indexer.blocks b
-		where
-			$1::integer is null or b._id ${direction} $1
-		order by
-			b._id ${order} 
-		limit 10
-	`,
+      SELECT 
+      jsonb_build_object(
+          'isMint', elem->>'isMint',
+          'mintAmount', elem->>'mintAmount'
+      ) AS transactions
+      timestamp
+      FROM 
+          indexer.blocks b,
+          jsonb_array_elements(b.data->'transactions') AS elem
+      WHERE
+          $1::integer IS NULL OR b._id ${direction} $1
+      ORDER BY
+          b._id ${order}
+      LIMIT 10;
+      `,
       [paginatedParams.cursor],
     );
+    console.log('////////////////');
+    console.log(blocksData);
     blocksData.sort((a: any, b: any) => {
       return (a._id - b._id) * -1;
     });
@@ -120,5 +127,64 @@ export default class BlockDAO {
     );
     if (!blockData) return;
     return new Block(blockData);
+  }
+
+  async getBlockRewards(timeFilter: string) {
+    let interval;
+
+    switch (timeFilter) {
+      case '1hr':
+        interval = '1 hour';
+        break;
+      case '12hr':
+        interval = '12 hours';
+        break;
+      case '1day':
+        interval = '1 day';
+        break;
+      case '7days':
+        interval = '7 days';
+        break;
+      case '14days':
+        interval = '14 days';
+        break;
+      case '30days':
+        interval = '30 days';
+        break;
+      case '90days':
+        interval = '90 days';
+        break;
+      default:
+        interval = null;
+    }
+
+    let query = `
+        SELECT 
+            b._id AS id,
+            elem->>'mintAmount' AS reward,
+            b.timestamp
+        FROM 
+            indexer.blocks b,
+            jsonb_array_elements(b.data->'transactions') AS elem
+        WHERE 
+            elem->>'isMint' = 'true'
+    `;
+
+    // Add the time filtering condition only if an interval is defined
+    if (interval) {
+      query += `
+            AND 
+                b.timestamp >= NOW() - INTERVAL '${interval}'
+        `;
+    }
+
+    query += ' ORDER BY id desc';
+    // Execute the query
+    const blocksData = await this.databaseConnection.query(query, []);
+
+    const results = {
+      nodes: blocksData,
+    };
+    return results;
   }
 }
