@@ -1,4 +1,4 @@
-import { FuelMessagePortal } from '@fuel-bridge/solidity-contracts';
+import FuelMessagePortal from '@fuel-bridge/solidity-contracts/artifacts/contracts/fuelchain/FuelMessagePortal/v3/FuelMessagePortalV3.sol/FuelMessagePortalV3.json';
 
 export type FuelMessagePortalArgs = {
   MessageSent: {
