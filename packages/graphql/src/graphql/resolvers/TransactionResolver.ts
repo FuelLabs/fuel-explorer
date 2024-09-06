@@ -1,9 +1,9 @@
 import type {
-  GQLQueryGetTransactionsFeeStatisticsArgs,
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
   GQLQueryTransactionsByOwnerArgs,
   GQLQueryTransactionsByBlockIdArgs,
+  GQLQueryTransactionsFeeStatisticsArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
@@ -15,7 +15,7 @@ type Params = {
   transactions: GQLQueryTransactionsArgs;
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
   transactionByBlockId: GQLQueryTransactionsByBlockIdArgs;
-  transactionFees: GQLQueryGetTransactionsFeeStatisticsArgs;
+  transactionFees: GQLQueryTransactionsFeeStatisticsArgs;
 };
 
 export class TransactionResolver {
@@ -27,7 +27,7 @@ export class TransactionResolver {
         transactions: resolvers.transactions,
         transactionsByOwner: resolvers.transactionsByOwner,
         transactionsByBlockId: resolvers.transactionsByBlockId,
-        getTransactionsFeeStatistics: resolvers.getTransactionsFeeStatistics,
+        transactionsFeeStatistics: resolvers.transactionsFeeStatistics,
       },
     };
   }
@@ -69,12 +69,12 @@ export class TransactionResolver {
     );
   }
 
-  async getTransactionsFeeStatistics(
+  async transactionsFeeStatistics(
     _: Source,
     params: Params['transactionFees'],
   ) {
     const transactionDAO = new TransactionDAO();
-    const transactions = await transactionDAO.getTransactionsFeeStatistics(
+    const transactions = await transactionDAO.transactionsFeeStatistics(
       params.timeFilter ? params.timeFilter : '',
     );
     return transactions;
