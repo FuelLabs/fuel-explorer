@@ -1,3 +1,4 @@
+import { DateHelper } from '~/core/Date';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
 import Block from './Block';
@@ -130,28 +131,28 @@ export default class BlockDAO {
 
   async getBlockRewards(timeFilter: string) {
     let _interval;
-
+    const msPerHour = 60 * 60 * 24 * 100;
     switch (timeFilter) {
       case '1hr':
-        _interval = '1 hour';
+        _interval = msPerHour;
         break;
       case '12hr':
-        _interval = '12 hours';
+        _interval = msPerHour * 12;
         break;
       case '1day':
-        _interval = '1 day';
+        _interval = msPerHour * 24;
         break;
       case '7days':
-        _interval = '7 days';
+        _interval = msPerHour * 24 * 7;
         break;
       case '14days':
-        _interval = '14 days';
+        _interval = msPerHour * 24 * 14;
         break;
       case '30days':
-        _interval = '30 days';
+        _interval = msPerHour * 24 * 30;
         break;
       case '90days':
-        _interval = '90 days';
+        _interval = msPerHour * 24 * 90;
         break;
       default:
         _interval = null;
@@ -170,12 +171,16 @@ export default class BlockDAO {
     `;
 
     // Add the time filtering condition only if an interval is defined
-    // if (interval) {
-    //   query += `
-    //         AND
-    //             b.timestamp >= NOW() - INTERVAL '${interval}'
-    //     `;
-    // }
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - _interval;
+      const intervalStartTimeDate = new Date(intervalStartTimeInMilliseconds);
+      const intervalStartTimeTai64 = DateHelper.dateToTai64(
+        intervalStartTimeDate,
+      );
+      query += `AND
+                (b.data->'header'->>'time')::bigint >= ${intervalStartTimeTai64}
+        `;
+    }
 
     query += ' ORDER BY id asc';
     // Execute the query
