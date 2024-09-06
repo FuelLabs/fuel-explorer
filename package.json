@@ -27,7 +27,7 @@
     "deps:update": "updates -gu && pnpm -r exec updates -gu",
     "dev": "./scripts/dev.sh",
     "dev:explorer": "pnpm --filter=app-explorer dev",
-    "dev:graphql": "pnpm --filter=graphql dev",
+    "dev:graphql": "pnpm --filter=graphql dev:graphql",
     "dev:storybook": "pnpm turbo:run dev:storybook",
     "dev:storybook:explorer": "pnpm turbo:run dev:storybook --filter=app-explorer",
     "dev:storybook:ui": "pnpm turbo:run dev:storybook --filter=@fuels/ui",
