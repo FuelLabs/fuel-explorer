@@ -1,0 +1,47 @@
+.pagination {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  
+  .pagination li {
+    margin: 0 8px; /* Adjusts space between the pagination items */
+  }
+  
+  .pagination li a {
+    padding: 8px 16px; /* Adjusts padding inside each pagination item */
+    color: #f0f0f0;
+    background-color: rgb(32, 32, 32);
+    border-radius: 7px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .pagination li.selected a {
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly lighter background */
+    font-weight: bold;
+  }
+  
+  .pagination li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Remove background color for Previous and Next buttons */
+  .pagination li.previous a,
+  .pagination li.next a {
+    background-color: transparent;
+    padding: 0;
+  }
+  
+  .pagination li.disabled a {
+    color: #888; /* Disabled color for previous/next buttons */
+    cursor: not-allowed;
+  }
+  
+  .pagination li.disabled a:hover {
+    background-color: transparent; /* Keeps background same on hover */
+  }
+  
