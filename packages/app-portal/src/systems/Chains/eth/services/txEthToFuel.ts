@@ -6,7 +6,7 @@ import type {
   TransactionResponse,
   WalletUnlocked as FuelWallet,
 } from 'fuels';
-import { Address as FuelAddress, bn } from 'fuels';
+import { Address as FuelAddress, ErrorCode, FuelError, bn } from 'fuels';
 import type {
   PublicClient,
   ReadContractReturnType,
@@ -396,12 +396,9 @@ export class TxEthToFuelService {
         },
       });
     } catch (err) {
-      if (
-        err instanceof Error &&
-        err.message.includes('not enough coins to fit the target')
-      ) {
+      if (err instanceof FuelError && err.code === ErrorCode.NOT_ENOUGH_FUNDS) {
         throw new Error(
-          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.',
+          'This transaction requires ETH on Fuel side to pay for gas. Please faucet your wallet or bridge ETH.',
         );
       }
 

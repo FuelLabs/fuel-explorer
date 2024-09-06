@@ -676,7 +676,7 @@ test.describe('Bridge', () => {
 
         await hasText(
           page,
-          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.',
+          'This transaction requires ETH on Fuel side to pay for gas. Please faucet your wallet or bridge ETH.',
         );
       });
       await closeTransactionPopup(page);
