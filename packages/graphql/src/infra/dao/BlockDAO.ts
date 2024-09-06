@@ -2,6 +2,7 @@ import { DateHelper } from '~/core/Date';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
 import Block from './Block';
+import { getTimeInterval } from './utils';
 
 export default class BlockDAO {
   databaseConnection: DatabaseConnection;
@@ -51,24 +52,18 @@ export default class BlockDAO {
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const blocksData = await this.databaseConnection.query(
       `
-      SELECT 
-      jsonb_build_object(
-          'isMint', elem->>'isMint',
-          'mintAmount', elem->>'mintAmount'
-      ) AS transactions
-      timestamp
-      FROM 
-          indexer.blocks b,
-          jsonb_array_elements(b.data->'transactions') AS elem
-      WHERE
-          $1::integer IS NULL OR b._id ${direction} $1
-      ORDER BY
-          b._id ${order}
-      LIMIT 10;
+      select 
+        *
+      from 
+        indexer.blocks b
+      where
+        $1::integer is null or b._id ${direction} $1
+      order by
+        b._id ${order} 
+      limit 10
       `,
       [paginatedParams.cursor],
     );
-
     blocksData.sort((a: any, b: any) => {
       return (a._id - b._id) * -1;
     });
@@ -130,33 +125,7 @@ export default class BlockDAO {
   }
 
   async getBlockRewards(timeFilter: string) {
-    let _interval;
-    const msPerHour = 60 * 60 * 24 * 100;
-    switch (timeFilter) {
-      case '1hr':
-        _interval = msPerHour;
-        break;
-      case '12hr':
-        _interval = msPerHour * 12;
-        break;
-      case '1day':
-        _interval = msPerHour * 24;
-        break;
-      case '7days':
-        _interval = msPerHour * 24 * 7;
-        break;
-      case '14days':
-        _interval = msPerHour * 24 * 14;
-        break;
-      case '30days':
-        _interval = msPerHour * 24 * 30;
-        break;
-      case '90days':
-        _interval = msPerHour * 24 * 90;
-        break;
-      default:
-        _interval = null;
-    }
+    const _interval = getTimeInterval(timeFilter);
 
     let query = `
         SELECT 
