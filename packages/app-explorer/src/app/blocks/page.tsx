@@ -6,7 +6,7 @@ import { BlocksScreen } from '~/systems/Block/screens/BlockScreen';
 const Blocks = () => {
   const classes = styles();
   return (
-    <Flex justify="center">
+    <Flex>
       <Box className={classes.content()}>
         <BlocksScreen />
       </Box>
