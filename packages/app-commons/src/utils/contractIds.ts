@@ -58,7 +58,7 @@ export async function getBridgeTokenContracts() {
 
     if (FUEL_CHAIN_NAME === 'fuelDevnet') {
       const FUEL_TokenContract =
-        '0xa10f53918370e471393e4936940eddb05fb189ed62ad662cc4025e2bf638da86';
+        '0x12f300d6d2b286dd5d290b709e0d3d73acc23c87ec10d349d4386b9524d740a1';
       const FUEL_TokenAsset = getContractTokenId(FUEL_TokenContract, ETH_ERC20);
       const bridgeTokenContract = {
         ETH_ERC20,
@@ -103,7 +103,7 @@ export async function getBridgeSolidityContracts() {
       bridgeSolidityContracts = {
         FuelChainState: '0x2e87c41C9B3d932b6DA3C805baEfB7bbe863fCc6',
         FuelMessagePortal: '0x768f9459E3339A1F7d59CcF24C80Eb4A711a01FB',
-        FuelERC20GatewayV4: '0x84C9ef458e85bA74F4DBF3a0B14075bE5341747B',
+        FuelERC20GatewayV4: '0x8B96Ed4aA36041B91a8510A1c644fC72177B5eA0',
         FuelERC721Gateway: '0x',
       };
 
