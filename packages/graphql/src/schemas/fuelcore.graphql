@@ -782,6 +782,7 @@ type Query {
   ): Transaction
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
+  tps(before: String, last: Int): TPSConnection!
 }
 
 type Receipt {
@@ -1022,4 +1023,17 @@ type VariableOutput {
   amount: U64!
   assetId: AssetId!
   to: Address!
+}
+
+type TPS {
+  timestamp: U64!
+  tps: U64!
+  gasUsed: U64!
+  blockNo: BlockId!
+  producer: String
+}
+
+type TPSConnection {
+  nodes: [TPS!]!
+  pageInfo: PageInfo!
 }

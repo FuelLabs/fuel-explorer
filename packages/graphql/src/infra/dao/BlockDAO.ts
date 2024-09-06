@@ -121,4 +121,63 @@ export default class BlockDAO {
     if (!blockData) return;
     return new Block(blockData);
   }
+
+  async tps(paginatedParams: PaginatedParams, last: Number) {
+    const direction = '<';
+    const blocksData = await this.databaseConnection.query(
+      `
+		select 
+			*
+		from 
+			indexer.blocks b
+		where
+			$1::integer is null or b._id ${direction} $1
+		order by
+			b._id 
+		limit ${last}
+	`,
+      [paginatedParams.cursor],
+    );
+    const blocks = [];
+    for (const blockData of blocksData) {
+      blocks.push(new Block(blockData));
+    }
+    if (blocks.length === 0) {
+      return {
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          endCursor: '',
+          startCursor: '',
+        },
+      };
+    }
+    const startCursor = blocksData[0]._id;
+    const endCursor = blocksData[blocksData.length - 1]._id;
+    const hasPreviousPage = (
+      await this.databaseConnection.query(
+        'select exists(select 1 from indexer.blocks where _id < $1)',
+        [endCursor],
+      )
+    )[0].exists;
+    const hasNextPage = (
+      await this.databaseConnection.query(
+        'select exists(select 1 from indexer.blocks where _id > $1)',
+        [startCursor],
+      )
+    )[0].exists;
+    const newNodes = blocks.map((n) => n.toTPSNode());
+
+    const paginatedResults = {
+      nodes: newNodes,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        endCursor,
+        startCursor,
+      },
+    };
+    return paginatedResults;
+  }
 }

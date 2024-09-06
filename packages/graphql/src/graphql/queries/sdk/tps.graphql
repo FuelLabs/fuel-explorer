@@ -1,0 +1,17 @@
+query tps($before: String, $last: Int) {
+  tps(before: $before, last: $last) {
+    nodes {
+      timestamp
+      tps
+      gasUsed
+      blockNo
+      producer
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

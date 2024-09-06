@@ -4,6 +4,7 @@ import type {
   GQLBlock,
   GQLQueryBlockArgs,
   GQLQueryBlocksArgs,
+  GQLQueryTpsArgs,
 } from '~/graphql/generated/sdk-provider';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import PaginatedParams from '~/infra/paginator/PaginatedParams';
@@ -12,6 +13,7 @@ type Source = GQLBlock;
 type Params = {
   blocks: GQLQueryBlocksArgs;
   block: GQLQueryBlockArgs;
+  tps: GQLQueryTpsArgs;
 };
 
 export class BlockResolver {
@@ -21,6 +23,7 @@ export class BlockResolver {
       Query: {
         block: resolvers.block,
         blocks: resolvers.blocks,
+        tps: resolvers.tps,
       },
     };
   }
@@ -54,5 +57,14 @@ export class BlockResolver {
       new PaginatedParams(params),
     );
     return blocks;
+  }
+
+  async tps(_: Source, params: Params['tps']) {
+    if (!params.last) {
+      throw new GraphQLError('Last must be provided');
+    }
+    const blockDAO = new BlockDAO();
+    const tps = await blockDAO.tps(new PaginatedParams(params), params.last);
+    return tps;
   }
 }

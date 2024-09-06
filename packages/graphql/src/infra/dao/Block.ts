@@ -62,4 +62,15 @@ export default class Block {
       transactions: this.transactions.map((t) => t.toGQLNode()),
     };
   }
+
+  toTPSNode() {
+    const _data = this.data;
+    return {
+      blockNo: String(this.id),
+      producer: this.producer,
+      timestamp: this.time.rawUnix,
+      gasUsed: `${this.totalGasUsed}`,
+      tps: String(this.transactions.length),
+    };
+  }
 }
