@@ -67,8 +67,7 @@ export default class BlockDAO {
       `,
       [paginatedParams.cursor],
     );
-    console.log('////////////////');
-    console.log(blocksData);
+
     blocksData.sort((a: any, b: any) => {
       return (a._id - b._id) * -1;
     });
@@ -130,39 +129,39 @@ export default class BlockDAO {
   }
 
   async getBlockRewards(timeFilter: string) {
-    let interval;
+    let _interval;
 
     switch (timeFilter) {
       case '1hr':
-        interval = '1 hour';
+        _interval = '1 hour';
         break;
       case '12hr':
-        interval = '12 hours';
+        _interval = '12 hours';
         break;
       case '1day':
-        interval = '1 day';
+        _interval = '1 day';
         break;
       case '7days':
-        interval = '7 days';
+        _interval = '7 days';
         break;
       case '14days':
-        interval = '14 days';
+        _interval = '14 days';
         break;
       case '30days':
-        interval = '30 days';
+        _interval = '30 days';
         break;
       case '90days':
-        interval = '90 days';
+        _interval = '90 days';
         break;
       default:
-        interval = null;
+        _interval = null;
     }
 
     let query = `
         SELECT 
             b._id AS id,
             elem->>'mintAmount' AS reward,
-            b.timestamp
+            (b.data->'header'->>'time')::bigint AS timestamp
         FROM 
             indexer.blocks b,
             jsonb_array_elements(b.data->'transactions') AS elem
@@ -171,14 +170,14 @@ export default class BlockDAO {
     `;
 
     // Add the time filtering condition only if an interval is defined
-    if (interval) {
-      query += `
-            AND 
-                b.timestamp >= NOW() - INTERVAL '${interval}'
-        `;
-    }
+    // if (interval) {
+    //   query += `
+    //         AND
+    //             b.timestamp >= NOW() - INTERVAL '${interval}'
+    //     `;
+    // }
 
-    query += ' ORDER BY id desc';
+    query += ' ORDER BY id asc';
     // Execute the query
     const blocksData = await this.databaseConnection.query(query, []);
 
