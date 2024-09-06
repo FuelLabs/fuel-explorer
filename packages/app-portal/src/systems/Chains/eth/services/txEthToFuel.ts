@@ -27,6 +27,7 @@ import {
 import { getBlockDate, isErc20Address } from '../utils';
 
 import {
+  type HexAddress,
   getBridgeSolidityContracts,
   getBridgeTokenContracts,
 } from 'app-commons';
@@ -49,7 +50,7 @@ export type TxEthToFuelInputs = {
     asset?: Asset;
   };
   getReceiptsInfo: {
-    ethTxId?: `0x${string}`;
+    ethTxId?: HexAddress;
     ethPublicClient?: PublicClient;
   };
   getFuelMessage: {
@@ -73,7 +74,7 @@ export type TxEthToFuelInputs = {
 
 export type GetReceiptsInfoReturn = {
   erc20Token?: {
-    address: `0x${string}`;
+    address: HexAddress;
     decimals: number;
   };
   amount?: BN;
@@ -132,7 +133,7 @@ export class TxEthToFuelService {
         });
 
         const txHash = await fuelPortal.write.depositETH(
-          [fuelAddress.toB256() as `0x${string}`],
+          [fuelAddress.toB256() as HexAddress],
           {
             value: BigInt(amount),
             account: ethWalletClient.account,
@@ -172,7 +173,7 @@ export class TxEthToFuelService {
         ethPublicClient
       ) {
         const erc20Token = EthConnectorService.connectToErc20({
-          address: ethAssetAddress as `0x${string}`,
+          address: ethAssetAddress as HexAddress,
           walletClient: ethWalletClient,
         });
 
@@ -205,7 +206,7 @@ export class TxEthToFuelService {
           bridgeSolidityContracts,
         });
         const depositTxHash = await fuelErc20Gateway.write.deposit([
-          fuelAddress.toB256() as `0x${string}`,
+          fuelAddress.toB256() as HexAddress,
           ethAssetAddress,
           amount,
         ]);
@@ -431,7 +432,7 @@ export class TxEthToFuelService {
         inputs: abiMessageSent?.inputs || [],
       },
       args: {
-        recipient: fuelAddress?.toHexString() as `0x${string}`,
+        recipient: fuelAddress?.toHexString() as HexAddress,
       },
       fromBlock: 'earliest' as const,
     });
