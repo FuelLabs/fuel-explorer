@@ -22,9 +22,9 @@
     "tailwind-variants": "0.1.20"
   },
   "dependencies": {
-    "@fuel-bridge/fungible-token": "1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed",
-    "@fuel-bridge/message-predicates": "1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed",
-    "@fuel-bridge/solidity-contracts": "1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed",
+    "@fuel-bridge/fungible-token": "0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7",
+    "@fuel-bridge/message-predicates": "0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7",
+    "@fuel-bridge/solidity-contracts": "0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7",
     "@fuel-ts/account": "0.90.0",
     "@fuels/connectors": "0.9.1",
     "@fuels/react": "0.23.0",

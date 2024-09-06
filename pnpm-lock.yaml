@@ -162,8 +162,8 @@ importers:
   docker/erc20-deployer/deployer:
     dependencies:
       '@fuel-bridge/test-utils':
-        specifier: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed
-        version: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed(ethers@6.11.0)(fuels@0.94.4)
+        specifier: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7
+        version: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7(ethers@6.11.0)(fuels@0.94.4)
       ethers:
         specifier: 6.11.0
         version: 6.11.0
@@ -419,14 +419,14 @@ importers:
   packages/app-portal:
     dependencies:
       '@fuel-bridge/fungible-token':
-        specifier: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed
-        version: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed
+        specifier: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7
+        version: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7
       '@fuel-bridge/message-predicates':
-        specifier: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed
-        version: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed
+        specifier: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7
+        version: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7
       '@fuel-bridge/solidity-contracts':
-        specifier: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed
-        version: 1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed
+        specifier: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7
+        version: 0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7
       '@fuel-ts/account':
         specifier: 0.90.0
         version: 0.90.0
@@ -1098,7 +1098,7 @@ packages:
   /@aws-sdk/util-utf8-browser@3.259.0:
     resolution: {integrity: sha512-UvFa/vR+e19XookZF8RzFZBrw2EUkQWxiBW0yYQAhvk3C+QVGl0H3ouca8LDBlBfQKXwmW3huo/59H8rwb1wJw==}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.6.3
     dev: true
 
   /@babel/code-frame@7.23.5:
@@ -4512,13 +4512,13 @@ packages:
     resolution: {integrity: sha512-QWLAYvM0n8hv7Nq5BEs4LKIjevpVpbGLAJgOaYzg9wABEoX1j0JO1q2/jVkO6CVlq0dbsxZCngS5aXbysYueqA==}
     dependencies:
       '@formatjs/ecma402-abstract': 1.18.2
-      tslib: 2.6.2
+      tslib: 2.6.3
     dev: false
 
   /@formatjs/intl-localematcher@0.5.4:
     resolution: {integrity: sha512-zTwEpWOzZ2CiKcB93BLngUX59hQkuZjT2+SAQEscSm52peDW/getsawMcWF1rGRpMCX6D7nSJA3CzJ8gn13N/g==}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.6.3
     dev: false
 
   /@foundry-rs/easy-foundryup@0.1.3:
@@ -4528,23 +4528,23 @@ packages:
       ts-interface-checker: 0.1.13
     dev: true
 
-  /@fuel-bridge/fungible-token@1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed:
-    resolution: {integrity: sha512-Vmo2su80SEscgviOxTjchnT7MyUZZvR2SGp7dCAoypr4LENCp5/HS0nfI/WwoEr4bx5jJz0pjst6iVpzUjX8yw==}
+  /@fuel-bridge/fungible-token@0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7:
+    resolution: {integrity: sha512-BzisbAyDMhPIbTi9JUjtaYvV7lrPiCqHVySSGbrdRn/NxkpVzgbmjlLFIP1mU116bNylNH0h7KFteBN6viqJ6w==}
     dev: false
 
-  /@fuel-bridge/message-predicates@1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed:
-    resolution: {integrity: sha512-oSApQ7+9YJXnXur8ywSLSRX3EyTAYMHAx3QV9wfFEJZ7tE/S4Hp2Zd6DdBaB4Uz84sK+f+RdTIH57T63Zxp+Iw==}
+  /@fuel-bridge/message-predicates@0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7:
+    resolution: {integrity: sha512-DY7H07J7VK73K0FllwxJvknOfixSKQpXmKJda4aNPxkvYdHDloXltdOwKKLyo67mTrbMLCyc9JWMbC3q2aZfTg==}
     dev: false
 
-  /@fuel-bridge/solidity-contracts@1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed:
-    resolution: {integrity: sha512-X9mAFvjGyltCUgu1uvtawLnbdRFzo3Ne7nbd9a2FMxlSXc4nih3/ylH5HO+6oSfHdrpCG1IISXM8beVGyfOWxw==}
+  /@fuel-bridge/solidity-contracts@0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7:
+    resolution: {integrity: sha512-Xx2ROGP5Ay9COYm22ui7fuGd59C0FM5HQQqhdv0BS0Vng7bN7g+pCL9XcgAHpoRrw06NkGuTij4f5Yl/VY+j2A==}
     dev: false
 
-  /@fuel-bridge/test-utils@1.0.0-next-9d965d4421befefcc25cc175cc9a258052d2f7ed(ethers@6.11.0)(fuels@0.94.4):
-    resolution: {integrity: sha512-RA4Dmv2x+g8YrzEuPyduWgoAzvg+GKWJhewX5R0KRmMQzXGrcLyhsfjHyrJ4nk+b46hyISi4IuLlVAdWJ6GrTA==}
+  /@fuel-bridge/test-utils@0.6.0-next-e929bbca1f91148c217e4bdca855b2b9fa5969a7(ethers@6.11.0)(fuels@0.94.4):
+    resolution: {integrity: sha512-G8PGe+QqhXpYSbuIOIcH35mUK59+gPpJC6iHc/479uHOtDJCFlpb9WsYF2RJ5y19Kvz2wGpHVA6bf4P2rnduMA==}
     peerDependencies:
       ethers: 6.13.1
-      fuels: 0.94.3
+      fuels: 0.94.4
     dependencies:
       ethers: 6.11.0
       fuels: 0.94.4
@@ -6870,7 +6870,7 @@ packages:
       '@motionone/types': 10.17.0
       '@motionone/utils': 10.17.0
       hey-listen: 1.0.8
-      tslib: 2.6.2
+      tslib: 2.6.3
 
   /@motionone/easing@10.17.0:
     resolution: {integrity: sha512-Bxe2wSuLu/qxqW4rBFS5m9tMLOw+QBh8v5A7Z5k4Ul4sTj5jAOfZG5R0bn5ywmk+Fs92Ij1feZ5pmC4TeXA8Tg==}
@@ -6889,7 +6889,7 @@ packages:
     resolution: {integrity: sha512-zRVqk20lD1xqe+yEDZhMYgftsuHc25+9JSo+r0a0OWUJFocjSV9D/+UGhX4xgJsuwB9acPzXLr20w40VnY2PQA==}
     dependencies:
       '@motionone/dom': 10.17.0
-      tslib: 2.6.2
+      tslib: 2.6.3
 
   /@motionone/types@10.17.0:
     resolution: {integrity: sha512-EgeeqOZVdRUTEHq95Z3t8Rsirc7chN5xFAPMYFobx8TPubkEfRSm5xihmMUkbaR2ErKJTUw3347QDPTHIW12IA==}
@@ -6906,7 +6906,7 @@ packages:
     deprecated: Motion One for Vue is deprecated. Use Oku Motion instead https://oku-ui.com/motion
     dependencies:
       '@motionone/dom': 10.17.0
-      tslib: 2.6.2
+      tslib: 2.6.3
 
   /@ndelangen/get-tarball@3.0.9:
     resolution: {integrity: sha512-9JKTEik4vq+yGosHYhZ1tiH/3WpUS0Nh0kej4Agndhox8pAdWhEx5knFVRcb/ya9knCRCs1rPxNrSXTDdfVqpA==}
@@ -11472,7 +11472,7 @@ packages:
     resolution: {integrity: sha512-vjXlKNXyprDYDuJ7UW5iobdmyDm6g8dDG+BFUncAg/3XJaN45Gy5RWWWUVgrzIK7S4R1KWgIX5LeJcfvSI24bw==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.6.3
     dev: true
 
   /@socket.io/component-emitter@3.1.0:
@@ -16259,7 +16259,7 @@ packages:
     resolution: {integrity: sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.6.3
     dev: false
 
   /ast-types@0.16.1:
