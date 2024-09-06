@@ -37,7 +37,7 @@ export async function getTokenContractImplementation({
       );
       // @TODO: remove forced fee when sdk fixes
       const { value: implementationContract } = await assetIssuer.functions
-        ._proxy_target()
+        .proxy_target()
         .txParams({
           maxFee: bn(1_000_000),
         })
