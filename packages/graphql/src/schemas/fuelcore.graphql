@@ -783,7 +783,7 @@ type Query {
   ): Transaction
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
-  getTransactionsFeeStatistics(timeFilter: String): TransactionFeeConnection
+  transactionsFeeStatistics(timeFilter: String): TransactionFeeConnection!
 }
 
 type Receipt {

@@ -1,3 +1,4 @@
+import { DateHelper } from '~/core/Date';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
@@ -205,50 +206,59 @@ export default class TransactionDAO {
     return transactions;
   }
 
-  async getTransactionsFeeStatistics(timeFilter: string) {
-    let interval;
+  async transactionsFeeStatistics(timeFilter: string) {
+    let _interval;
+    const msPerHour = 60 * 60 * 24 * 100;
 
     switch (timeFilter) {
       case '1hr':
-        interval = '1 hour';
+        _interval = msPerHour;
         break;
       case '12hr':
-        interval = '12 hours';
+        _interval = msPerHour * 12;
         break;
       case '1day':
-        interval = '1 day';
+        _interval = msPerHour * 24;
         break;
       case '7days':
-        interval = '7 days';
+        _interval = msPerHour * 24 * 7;
         break;
       case '14days':
-        interval = '14 days';
+        _interval = msPerHour * 24 * 14;
         break;
       case '30days':
-        interval = '30 days';
+        _interval = msPerHour * 24 * 30;
         break;
       case '90days':
-        interval = '90 days';
+        _interval = msPerHour * 24 * 90;
         break;
       default:
-        interval = null;
+        _interval = null;
     }
 
     let query = `
         SELECT 
-        (data->'status'->>'totalFee')::numeric AS fee,
-          timestamp
+          (data->'status'->>'totalFee')::numeric AS fee,
+          (t.data->'status'->>'time')::bigint AS timestamp
         FROM 
             indexer.transactions t
     `;
 
     // Add the time filtering condition only if an interval is defined
-    if (interval) {
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - _interval;
+      const intervalStartTimeDate = new Date(intervalStartTimeInMilliseconds);
+      const intervalStartTimeTai64 = DateHelper.dateToTai64(
+        intervalStartTimeDate,
+      );
       query += `
             WHERE 
-                timestamp >= NOW() - INTERVAL '${interval}'
+              (t.data->'status'->>'time')::bigint >= ${intervalStartTimeTai64}
         `;
     }
+
+    query += ' ORDER BY timestamp asc';
+
     // Execute the query
     const transactionsData = await this.databaseConnection.query(query, []);
 

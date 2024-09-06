@@ -1,0 +1,8 @@
+query transactionsFeeStatistics($timeFilter: String){
+    transactionsFeeStatistics(timeFilter: $timeFilter){
+        nodes {
+            fee
+            timestamp
+        }
+    }
+}
