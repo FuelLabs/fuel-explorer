@@ -1544,6 +1544,87 @@ export type GQLBlockQuery = {
   } | null;
 };
 
+export type GQLBlockItemFragment = {
+  __typename: 'Block';
+  totalGasUsed?: string | null;
+  producer?: string | null;
+  id: string;
+  time?: {
+    __typename: 'ParsedTime';
+    fromNow?: string | null;
+    full?: string | null;
+    rawTai64?: string | null;
+    rawUnix?: string | null;
+  } | null;
+  consensus:
+    | { __typename: 'Genesis' }
+    | { __typename: 'PoAConsensus'; signature: string };
+  header: {
+    __typename: 'Header';
+    id: string;
+    height: string;
+    time: string;
+    transactionsCount: string;
+  };
+  transactions: Array<{
+    __typename: 'Transaction';
+    isMint: boolean;
+    mintAmount?: string | null;
+  }>;
+};
+
+export type GQLBlocksQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type GQLBlocksQuery = {
+  __typename: 'Query';
+  blocks: {
+    __typename: 'BlockConnection';
+    pageInfo: {
+      __typename: 'PageInfo';
+      startCursor?: string | null;
+      endCursor?: string | null;
+      hasPreviousPage: boolean;
+      hasNextPage: boolean;
+    };
+    edges: Array<{
+      __typename: 'BlockEdge';
+      node: {
+        __typename: 'Block';
+        totalGasUsed?: string | null;
+        producer?: string | null;
+        id: string;
+        time?: {
+          __typename: 'ParsedTime';
+          fromNow?: string | null;
+          full?: string | null;
+          rawTai64?: string | null;
+          rawUnix?: string | null;
+        } | null;
+        consensus:
+          | { __typename: 'Genesis' }
+          | { __typename: 'PoAConsensus'; signature: string };
+        header: {
+          __typename: 'Header';
+          id: string;
+          height: string;
+          time: string;
+          transactionsCount: string;
+        };
+        transactions: Array<{
+          __typename: 'Transaction';
+          isMint: boolean;
+          mintAmount?: string | null;
+        }>;
+      };
+    }>;
+  };
+};
+
 export type GQLChainQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GQLChainQuery = {
@@ -4425,6 +4506,35 @@ export const BlockFragmentDoc = gql`
   }
 }
     ${RecentTransactionFragmentDoc}`;
+export const BlockItemFragmentDoc = gql`
+    fragment BlockItem on Block {
+  time {
+    fromNow
+    full
+    rawTai64
+    rawUnix
+  }
+  totalGasUsed
+  producer
+  id
+  consensus {
+    __typename
+    ... on PoAConsensus {
+      signature
+    }
+  }
+  header {
+    id
+    height
+    time
+    transactionsCount
+  }
+  transactions {
+    isMint
+    mintAmount
+  }
+}
+    `;
 export const ContractBalanceNodeFragmentDoc = gql`
     fragment ContractBalanceNode on ContractBalance {
   amount
@@ -4776,6 +4886,23 @@ export const BlockDocument = gql`
   }
 }
     ${BlockFragmentDoc}`;
+export const BlocksDocument = gql`
+    query blocks($after: String, $before: String, $first: Int, $last: Int) {
+  blocks(after: $after, before: $before, first: $first, last: $last) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasPreviousPage
+      hasNextPage
+    }
+    edges {
+      node {
+        ...BlockItem
+      }
+    }
+  }
+}
+    ${BlockItemFragmentDoc}`;
 export const ChainDocument = gql`
     query chain {
   chain {
@@ -6181,6 +6308,7 @@ const defaultWrapper: SdkFunctionWrapper = (
 ) => action();
 const BalancesDocumentString = print(BalancesDocument);
 const BlockDocumentString = print(BlockDocument);
+const BlocksDocumentString = print(BlocksDocument);
 const ChainDocumentString = print(ChainDocument);
 const CoinsDocumentString = print(CoinsDocument);
 const ContractDocumentString = print(ContractDocument);
@@ -6234,6 +6362,27 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'block',
+        'query',
+        variables,
+      );
+    },
+    blocks(
+      variables?: GQLBlocksQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLBlocksQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLBlocksQuery>(BlocksDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'blocks',
         'query',
         variables,
       );

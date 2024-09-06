@@ -99,7 +99,11 @@ type BlocksTableProps = {
   pageCount: number;
 };
 
-function BlocksTable({ blocks, onPageChanged, pageCount }: BlocksTableProps) {
+export function BlocksTable({
+  blocks,
+  onPageChanged,
+  pageCount,
+}: BlocksTableProps) {
   const handlePageChanged = (pageNumber: number) => {
     onPageChanged(pageNumber);
   };
