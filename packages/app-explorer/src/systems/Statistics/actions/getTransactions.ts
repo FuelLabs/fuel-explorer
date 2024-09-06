@@ -45,7 +45,7 @@ export const getTransactionStats = act(schema, async (timeFilter) => {
     const transactionTimestamp = Number(
       DateHelper.tai64toDate(transaction.timestamp),
     );
-    const transactionReward = Number(transaction.fee);
+    const transactionFee = Number(transaction.fee);
 
     // Find the correct interval for the current transaction
     for (const interval of intervalMap) {
@@ -56,9 +56,9 @@ export const getTransactionStats = act(schema, async (timeFilter) => {
         transactionTimestamp >= intervalStart &&
         transactionTimestamp < intervalEnd
       ) {
-        // Increment count and add the reward to totalRewards
+        // Increment count and add the transaction fee to totalFee
         interval.count += 1;
-        interval.totalFee += transactionReward;
+        interval.totalFee += transactionFee;
         break; // transaction has been assigned to the correct interval, no need to check further
       }
     }
