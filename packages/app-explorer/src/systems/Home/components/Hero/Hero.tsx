@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, Heading, Theme } from '@fuels/ui';
+import { Box, Container, Heading } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 import { SearchWidget } from '~/systems/Core/components/Search/SearchWidget';
 
@@ -8,18 +8,16 @@ export function Hero() {
   const classes = styles();
 
   return (
-    <Theme appearance="dark">
-      <Box className={classes.root()}>
-        <Container className={classes.container()} size="4">
-          <Heading as="h1" className={classes.title()}>
-            Explore Fuel
-          </Heading>
-          <Box className={classes.searchWrapper()}>
-            <SearchWidget autoFocus={true} />
-          </Box>
-        </Container>
-      </Box>
-    </Theme>
+    <Box className={classes.root()}>
+      <Container className={classes.container()} size="4">
+        <Heading as="h1" className={classes.title()}>
+          Explore Fuel
+        </Heading>
+        <Box className={classes.searchWrapper()}>
+          <SearchWidget autoFocus={true} />
+        </Box>
+      </Container>
+    </Box>
   );
 }
 
