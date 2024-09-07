@@ -42,11 +42,10 @@ export async function getTokenContractImplementation({
           maxFee: bn(1_000_000),
         })
         .dryRun();
-      console.log('asd using proxy contract');
       return implementationContract.bits as unknown as string;
     }
-  } catch (_) {
-    console.log('asd ERROR getting proxy contract');
+  } catch (e) {
+    console.log('asd ERROR getting proxy contract', e);
   }
 
   return '';
