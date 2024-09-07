@@ -12,6 +12,7 @@
 @import "./components/card.css";
 @import "./components/dialog.css";
 @import "./components/separator.css";
+@import "./components/tabs.css";
 @import "./components/textfield.css";
 
 /* Tailwind */
