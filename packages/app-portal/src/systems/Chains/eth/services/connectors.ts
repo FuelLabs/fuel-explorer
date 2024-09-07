@@ -17,7 +17,7 @@ export class EthConnectorService {
 
     const contract = getContract({
       abi: FUEL_ERC_20_GATEWAY.abi,
-      address: bridgeSolidityContracts.FuelERC20Gateway,
+      address: bridgeSolidityContracts.FuelERC20GatewayV4,
       client: {
         public: publicClient!,
         wallet: walletClient,

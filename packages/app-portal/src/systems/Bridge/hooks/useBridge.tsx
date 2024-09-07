@@ -204,7 +204,8 @@ export function useBridge() {
         store.startBridging({
           fuelAddress,
           ethWalletClient,
-          fuelWallet,
+          // @TODO: remove any when fuel-connectors gets updated to same fuels-ts of fuel-explorer
+          fuelWallet: fuelWallet as any,
           fuelProvider,
           ethAddress,
           asset,

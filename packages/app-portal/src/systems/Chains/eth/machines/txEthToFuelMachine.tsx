@@ -27,9 +27,9 @@ type MachineContext = {
   fuelMessage?: FuelMessage;
   ethPublicClient?: PublicClient;
   ethDepositBlockHeight?: string;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   erc20Token?: any;
   amount?: BN;
-  fuelRecipient?: FuelAddress;
   blockDate?: Date;
   fuelRelayedTx?: TransactionResult;
 };
@@ -195,7 +195,6 @@ export const txEthToFuelMachine = createMachine(
                 input: (ctx: MachineContext) => ({
                   ethTxNonce: ctx.ethTxNonce,
                   fuelProvider: ctx.fuelProvider,
-                  fuelRecipient: ctx.fuelRecipient,
                 }),
               },
               onDone: [
@@ -247,6 +246,7 @@ export const txEthToFuelMachine = createMachine(
                     ) => ({
                       fuelWallet: ev.input.fuelWallet,
                       fuelMessage: ctx.fuelMessage,
+                      ethPublicClient: ctx.ethPublicClient,
                     }),
                   },
                   onDone: [
@@ -337,7 +337,6 @@ export const txEthToFuelMachine = createMachine(
           erc20Token: ev.data?.erc20Token,
           ethTxNonce: ev.data?.nonce,
           amount: ev.data?.amount,
-          fuelRecipient: ev.data?.recipient,
           ethDepositBlockHeight: ev.data?.ethDepositBlockHeight,
           blockDate: ev.data?.blockDate,
         };
@@ -362,7 +361,6 @@ export const txEthToFuelMachine = createMachine(
         if (
           ctx.ethTxId &&
           ctx.ethTxNonce &&
-          ctx.fuelRecipient &&
           ctx.amount &&
           ctx.ethDepositBlockHeight &&
           ctx.blockDate
@@ -371,7 +369,6 @@ export const txEthToFuelMachine = createMachine(
             erc20Token: ctx.erc20Token,
             nonce: ctx.ethTxNonce,
             amount: ctx.amount,
-            recipient: ctx.fuelRecipient,
             ethDepositBlockHeight: ctx.ethDepositBlockHeight,
             blockDate: ctx.blockDate,
           });
@@ -387,7 +384,6 @@ export const txEthToFuelMachine = createMachine(
           erc20Token: receiptInfo.erc20Token,
           ethTxNonce: receiptInfo.nonce,
           amount: receiptInfo.amount,
-          fuelRecipient: receiptInfo.recipient,
           ethDepositBlockHeight: receiptInfo.ethDepositBlockHeight,
           blockDate: receiptInfo.blockDate,
         };

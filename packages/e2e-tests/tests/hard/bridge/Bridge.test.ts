@@ -552,9 +552,6 @@ test.describe('Bridge', () => {
       await page.goto('/bridge');
       await goToTransactionsPage(page);
 
-      const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-      await loading.innerText();
-
       await checkTxItemDone(page, depositEthTxId);
       await checkTxItemDone(page, depositERC20TxId);
       await checkTxItemDone(page, withdrawEthTxId);
@@ -679,7 +676,7 @@ test.describe('Bridge', () => {
 
         await hasText(
           page,
-          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.',
+          'This transaction requires ETH on Fuel side to pay for gas. Please faucet your wallet or bridge ETH.',
         );
       });
       await closeTransactionPopup(page);
