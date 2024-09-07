@@ -2,8 +2,7 @@ import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
 import { shortAddress } from '~portal/systems/Core';
 import { useOverlay } from '~portal/systems/Overlay';
 
-import { Button, Dialog, HStack, VStack } from '@fuels/ui';
-import { IconTransferIn } from '@tabler/icons-react';
+import { Button, Dialog, VStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 import {
   BridgeSteps,
@@ -31,12 +30,7 @@ export function TxEthToFuelDialog() {
 
   return (
     <VStack className="max-w-sm">
-      <Dialog.Title className="mb-0 justify-between">
-        <HStack className="items-center gap-2">
-          <IconTransferIn size={20} stroke={1.5} />
-          Deposit
-        </HStack>
-      </Dialog.Title>
+      <Dialog.Title className="mb-0 justify-between">Deposit</Dialog.Title>
       <BridgeSteps steps={steps} />
       <BridgeTxOverview
         transactionId={shortAddress(metadata.txId)}
