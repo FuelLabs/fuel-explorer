@@ -5,7 +5,7 @@ services:
     profiles:
       - all
       - bridge
-    image: ghcr.io/fuellabs/fuel-bridge:7f78023
+    image: ghcr.io/fuellabs/fuel-bridge:87bd407
     platform: linux/amd64
     env_file:
       - ./envs/l1_chain.env
