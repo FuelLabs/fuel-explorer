@@ -1,4 +1,4 @@
-import { Button, Flex, Input } from '@fuels/ui';
+import { Button, Flex, Input, Separator } from '@fuels/ui';
 import { IconSearch } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
 import { tv } from 'tailwind-variants';
@@ -19,7 +19,10 @@ export function EcosystemHeader({
       <PageTitle
         title="Explore Fuel DApps"
         subtitle="Here&apos;s a list of DApps built on Fuel"
+        mb="0"
       />
+
+      <Separator size="4" />
 
       <Flex gap="4" className={classes.searchBar()}>
         <Input
@@ -55,7 +58,7 @@ export function EcosystemHeader({
 
 const styles = tv({
   slots: {
-    searchBar: 'flex-col tablet:justify-between tablet:flex-row',
-    searchBarInput: 'w-full tablet:w-[350px]',
+    searchBar: 'flex-col sm:justify-between sm:flex-row',
+    searchBarInput: 'w-full sm:w-[350px] h-[44px]',
   },
 });
