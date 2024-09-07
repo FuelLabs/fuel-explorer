@@ -54,7 +54,6 @@ export type TxEthToFuelInputs = {
   };
   getFuelMessage: {
     ethTxNonce?: BN;
-    fuelRecipient?: FuelAddress;
     fuelProvider?: FuelProvider;
   };
   getFuelMessageStatus: {
@@ -143,6 +142,7 @@ export class TxEthToFuelService {
         return txHash;
       }
     } catch (e) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }
@@ -344,12 +344,8 @@ export class TxEthToFuelService {
     if (!input?.fuelProvider) {
       throw new Error('No Fuel provider found');
     }
-    // @TODO: can we remove the fuelRecipient? dont need to get from receipts
-    if (!input?.fuelRecipient) {
-      throw new Error('No Fuel recipient');
-    }
 
-    const { ethTxNonce, fuelProvider, fuelRecipient: _fuelRecipient } = input;
+    const { ethTxNonce, fuelProvider } = input;
     const fuelMessage = await fuelProvider.getMessageByNonce(
       ethTxNonce.toHex(32),
     );
