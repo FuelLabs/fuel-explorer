@@ -1,12 +1,10 @@
 'use client';
 
 import { Box, Container, Heading, Theme } from '@fuels/ui';
-import { useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { SearchWidget } from '~/systems/Core/components/Search/SearchWidget';
 
 export function Hero() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const classes = styles();
 
   return (
@@ -17,11 +15,7 @@ export function Hero() {
             Explore Fuel
           </Heading>
           <Box className={classes.searchWrapper()}>
-            <SearchWidget
-              autoFocus={true}
-              setIsSearchOpen={setIsSearchOpen}
-              isSearchOpen={isSearchOpen}
-            />
+            <SearchWidget autoFocus={true} />
           </Box>
         </Container>
       </Box>

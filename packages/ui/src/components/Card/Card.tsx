@@ -4,17 +4,16 @@ import {
   createPolymorphicComponent,
   withNamespace,
 } from '../../utils/component';
+import type { PropsOf, WithAsProps } from '../../utils/types';
 import type { BoxProps } from '../Box';
 import { Box } from '../Box';
-import type { HeadingProps } from '../Heading';
-import { Heading } from '../Heading';
 import { Text } from '../Text';
 import type { TextProps } from '../Text';
 import { styles } from './styles';
 
-export type CardProps = BoxProps;
+export type CardProps = WithAsProps & PropsOf<typeof RCard>;
 export type CardHeaderProps = BoxProps;
-export type CardTitleProps = HeadingProps;
+export type CardTitleProps = TextProps;
 export type CardBodyProps = BoxProps;
 export type CardDescriptionProps = TextProps;
 export type CardFooterProps = BoxProps;
@@ -22,12 +21,19 @@ export type CardFooterProps = BoxProps;
 export const CardRoot = createPolymorphicComponent<CardProps, typeof Box>({
   id: 'Card',
   className: ({ className }) => styles().root({ className }),
+  baseElement: Box,
+  render: (Comp, props) => {
+    const { className, as, children, ...rest } = props;
+    return (
+      <RCard asChild {...rest}>
+        <Comp as={as} className={className}>
+          {children}
+        </Comp>
+      </RCard>
+    );
+  },
   defaultProps: {
     as: 'article',
-  },
-  render: (_, props) => {
-    const { className, ...rest } = props;
-    return <RCard {...rest} className={className} />;
   },
 });
 
@@ -43,12 +49,13 @@ export const CardHeader = createPolymorphicComponent<
   },
 });
 
-export const CardTitle = createComponent<CardTitleProps, typeof Heading>({
+export const CardTitle = createComponent<CardTitleProps, typeof Text>({
   id: 'CardTitle',
-  baseElement: Heading,
+  baseElement: Text,
   className: ({ className }) => styles().title({ className }),
   defaultProps: {
-    size: '6',
+    size: '1',
+    weight: 'medium',
   },
 });
 

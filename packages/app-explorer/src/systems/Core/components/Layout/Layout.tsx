@@ -1,17 +1,16 @@
 'use client';
+
 import { Container, VStack } from '@fuels/ui';
-import type { BaseProps } from '@fuels/ui';
 import { usePathname } from 'next/navigation';
 import { Hero } from '~/systems/Home/components/Hero/Hero';
-
 import { cx } from '../../utils/cx';
 import { Footer } from '../Footer/Footer';
 import { TopNav } from '../TopNav/TopNav';
 
-export type LayoutProps = BaseProps<{
-  hero?: boolean;
+export type LayoutProps = {
+  children: React.ReactNode;
   contentClassName?: string;
-}>;
+};
 
 export function Layout({ children, contentClassName }: LayoutProps) {
   const pathname = usePathname();

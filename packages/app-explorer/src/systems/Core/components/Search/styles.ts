@@ -13,7 +13,7 @@ export const styles = tv({
       '[&_.rt-TextFieldChrome]:[&[data-opened=true]]:rounded-b-none',
       'group-[&[data-expanded=true]]:[&_.rt-TextFieldChrome]:shadow-none group-[&[data-expanded=true]]:[&_.rt-TextFieldInput]:h-[60px]',
     ],
-    searchSize: 'w-full tablet:w-[400px] group-[&[data-expanded=true]]:w-full',
+    searchSize: 'w-full sm:w-[400px] group-[&[data-expanded=true]]:w-full',
     dropdownContent: [
       'mt-[-4px] rounded-t-none shadow-none border border-t-0 border-border',
       '[&[data-expanded=true]]:ml-[-10px] [&[data-expanded=true]]:border-t-0 [&[data-expanded=true]]:border-x-0',

@@ -1,0 +1,25 @@
+.rt-TextFieldRoot:where(.rt-variant-surface) {
+  box-shadow: inset 0 0 0 var(--text-field-border-width) var(--gray-a7), 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 0.5px 1px 0px rgba(0, 0, 0, 0.10);
+}
+
+/**
+ * Breakpoints reference:
+ * https://www.radix-ui.com/themes/docs/theme/breakpoints
+ *
+ * Size: initial
+ * Description: Phones (portrait)
+ */
+@media all {
+  .rt-TextFieldRoot:where(.rt-r-size-1) {
+    --text-field-border-radius: 8px;
+  }
+  .rt-TextFieldRoot:where(.rt-r-size-2) {
+    --text-field-border-radius: 8px;
+  }
+  .rt-TextFieldRoot:where(.rt-r-size-3) {
+    --text-field-border-radius: 8px;
+  }
+  .rt-TextFieldRoot:where(.rt-r-size-4) {
+    --text-field-border-radius: 8px;
+  }
+}

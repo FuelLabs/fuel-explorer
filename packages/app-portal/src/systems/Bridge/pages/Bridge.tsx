@@ -74,29 +74,33 @@ export const Bridge = () => {
       <Card>
         <Card.Body as={VStack} className="gap-2">
           <Text className={classes.textNetwork()}>Asset amount</Text>
-          <InputAmount
-            disabled={!ethAddress && !fuelAddress}
-            balance={assetBalance}
-            value={assetAmount}
-            color="green"
-            onChange={(val) =>
-              handlers.changeAssetAmount({ assetAmount: val || undefined })
-            }
-            placeholder="0.00"
-          >
-            <InputAmount.Slot className="flex flex-row flex-1 basis-1/2 justify-end">
-              <InputAmount.ButtonMaxBalance />
-              <InputAmount.CoinSelector
-                asset={{
-                  name: asset?.symbol,
-                  imageUrl: asset?.icon || '',
-                  address: ethAssetAddress,
-                }}
-                onClick={handlers.openAssetsDialog}
-              />
-            </InputAmount.Slot>
-            <InputAmount.Balance className="w-full order-1" />
+
+          <InputAmount balance={assetBalance}>
+            <InputAmount.Field
+              disabled={!ethAddress && !fuelAddress}
+              value={assetAmount}
+              color="green"
+              onChange={(val) =>
+                handlers.changeAssetAmount({ assetAmount: val || undefined })
+              }
+              placeholder="0.00"
+            >
+              <InputAmount.Slot className="flex flex-row flex-1 basis-1/2 justify-end">
+                <InputAmount.ButtonMaxBalance />
+                <InputAmount.CoinSelector
+                  asset={{
+                    name: asset?.symbol,
+                    imageUrl: asset?.icon || '',
+                    address: ethAssetAddress,
+                  }}
+                  onClick={handlers.openAssetsDialog}
+                />
+              </InputAmount.Slot>
+            </InputAmount.Field>
+
+            <InputAmount.Balance />
           </InputAmount>
+
           {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
             <Alert color="orange">
               <Alert.Icon>

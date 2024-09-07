@@ -14,7 +14,13 @@ export function Toaster() {
   const { toasts } = useToast();
 
   return (
-    <Portal>
+    <Portal
+      className="radix-themes"
+      data-accent-color="grass"
+      data-gray-color="slate"
+      data-radius="medium"
+      data-scaling="100%"
+    >
       <ToastProvider>
         {toasts.map(
           ({ id, title, description, action, icon, width = 350, ...props }) => (

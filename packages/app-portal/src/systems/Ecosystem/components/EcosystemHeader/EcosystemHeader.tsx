@@ -1,5 +1,5 @@
-import { Button, Flex, Input, Text, VStack } from '@fuels/ui';
-import { IconApps, IconSearch } from '@tabler/icons-react';
+import { Button, Flex, Input } from '@fuels/ui';
+import { IconSearch } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
 import { tv } from 'tailwind-variants';
 
@@ -13,16 +13,14 @@ export function EcosystemHeader({
   onSearchChange?: (value: string) => void;
 }) {
   const classes = styles();
+
   return (
     <>
-      <PageTitle icon={<IconApps size={22} />} className="first:mb-0">
-        <VStack gap="2" wrap="wrap">
-          Explore Fuel DApps
-          <Text className="text-secondary">
-            Here&apos;s a list of DApps built on Fuel
-          </Text>
-        </VStack>
-      </PageTitle>
+      <PageTitle
+        title="Explore Fuel DApps"
+        subtitle="Here&apos;s a list of DApps built on Fuel"
+      />
+
       <Flex gap="4" className={classes.searchBar()}>
         <Input
           className={classes.searchBarInput()}
