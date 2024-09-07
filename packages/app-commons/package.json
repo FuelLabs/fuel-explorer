@@ -16,7 +16,7 @@
   "peerDependencies": {
     "@fuels/ui": "workspace:*",
     "ethers": "6.11.0",
-    "fuels": "0.92.1",
+    "fuels": "0.94.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-variants": "0.1.20",
@@ -27,7 +27,7 @@
     "@types/react": "18.2.54",
     "@types/react-dom": "18.2.22",
     "ethers": "6.11.0",
-    "fuels": "0.92.1",
+    "fuels": "0.94.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-variants": "0.1.20",

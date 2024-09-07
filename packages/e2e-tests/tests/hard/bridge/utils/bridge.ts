@@ -31,6 +31,7 @@ export const goToTransactionsPage = async (page: Page) => {
   await transactionList.click();
 
   await waitAriaLabel(page, 'Back to home');
+  await hasText(page, 'Back');
 };
 
 export const clickDepositTab = async (page: Page) => {

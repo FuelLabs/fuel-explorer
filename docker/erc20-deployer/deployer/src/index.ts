@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 import {
   getOrDeployECR20Contract,
-  getOrDeployFuelTokenContract,
+  getOrDeployL2Bridge,
   getTokenId,
   setupEnvironment,
 } from '@fuel-bridge/test-utils';
@@ -23,24 +23,21 @@ async function main() {
     pk_eth_signer2: PK_ETH_WALLET,
   });
   const ETHToken = await getOrDeployECR20Contract(env);
-  const FuelToken = await getOrDeployFuelTokenContract(
+  const { contract, implementation } = await getOrDeployL2Bridge(
     env,
     env.eth.fuelERC20Gateway,
-    {
-      gasLimit: 500000000,
-      maxFee: 50_000,
-    },
   );
 
-  const fuelTokenId = FuelToken.id.toHexString();
-  await env.eth.fuelERC20Gateway.setAssetIssuerId(fuelTokenId);
+  const fuelContractId = contract.id.toHexString();
+  await env.eth.fuelERC20Gateway.setAssetIssuerId(fuelContractId);
 
-  const erc20Address = await ETHToken.getAddress();
-  const tokenId = getTokenId(FuelToken, erc20Address);
+  const erc20Address = (await ETHToken.getAddress()).toLowerCase();
+  const tokenId = getTokenId(contract, erc20Address);
 
   await startServer({
     ETH_ERC20: erc20Address,
-    FUEL_TokenContract: FuelToken.id.toB256(),
+    FUEL_TokenContract: fuelContractId,
+    FUEL_TokenContractImplementation: implementation.id.toHexString(),
     FUEL_TokenAsset: tokenId,
   });
 }

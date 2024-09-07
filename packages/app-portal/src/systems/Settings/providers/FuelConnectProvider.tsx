@@ -14,6 +14,7 @@ const fuelConfig = {
   connectors: defaultConnectors({
     wcProjectId: WALLETCONNECT_ID,
     ethWagmiConfig: DEFAULT_WAGMI_CONFIG,
+    devMode: true,
   }),
 };
 

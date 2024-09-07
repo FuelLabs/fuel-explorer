@@ -15,8 +15,8 @@
   "dependencies": {
     "@faker-js/faker": "8.4.0",
     "@fuel-explorer/graphql": "workspace:*",
-    "@fuel-ts/account": "0.92.1",
-    "@fuel-ts/math": "0.76.0",
+    "@fuel-ts/account": "0.94.0",
+    "@fuel-ts/math": "0.94.0",
     "@fuels/assets": "0.20.0",
     "@fuels/ui": "workspace:*",
     "@tabler/icons-react": "2.46.0",
@@ -28,7 +28,7 @@
     "dayjs": "1.11.10",
     "ethers": "6.11.0",
     "framer-motion": "11.0.3",
-    "fuels": "0.92.1",
+    "fuels": "0.94.4",
     "geist": "1.2.1",
     "graphql": ">=16.8.1",
     "graphql-request": ">=6.1.0",
@@ -44,7 +44,7 @@
     "react-window": "1.8.10",
     "tai64": "1.0.0",
     "tailwind-variants": "0.1.20",
-    "wagmi": "2.12.1",
+    "wagmi": "2.12.7",
     "zod": "3.22.4",
     "zod-validation-error": "3.0.0"
   },
