@@ -9,6 +9,7 @@ export const styles = tv({
     ],
     dropdownItem: 'hover:bg-border focus:bg-border',
     inputWrapper: [
+      'bg-white h-[40px]',
       '[&_.rt-TextFieldChrome]:bg-gray-1 [&_.rt-TextFieldChrome]:outline-none',
       '[&_.rt-TextFieldChrome]:[&[data-opened=true]]:rounded-b-none',
       'group-[&[data-expanded=true]]:[&_.rt-TextFieldChrome]:shadow-none group-[&[data-expanded=true]]:[&_.rt-TextFieldInput]:h-[60px]',

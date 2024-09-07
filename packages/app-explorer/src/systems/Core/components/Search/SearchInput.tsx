@@ -69,7 +69,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
-          style={{ width: width - 0.5 }}
+          style={{ width }}
           data-expanded={isExpanded}
           className={cx(
             classes.dropdownContent(isExpanded),
