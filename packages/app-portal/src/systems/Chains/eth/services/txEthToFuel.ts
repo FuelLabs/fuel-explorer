@@ -192,6 +192,7 @@ export class TxEthToFuelService {
           approveTxHashReceipt =
             await ethPublicClient.waitForTransactionReceipt({
               hash: approveTxHash,
+              confirmations: 2,
             });
         }
 
