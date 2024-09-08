@@ -40,11 +40,9 @@ export const BlocksScreen = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('Fetching data with cursor:', cursor, 'and direction:', dir);
       const result = await getBlocks({ cursor, dir });
       const blockData = result.blocks;
       setData(blockData);
-      console.log(blockData);
     } catch (err) {
       console.error('Error fetching block data:', err);
       setError('Failed to fetch block data. Please try again later.');
@@ -55,25 +53,41 @@ export const BlocksScreen = () => {
 
   const handlePageChanged = (newPageNumber: number) => {
     if (data) {
-      const newDir = newPageNumber > currentPage ? 'after' : 'before';
+      const newDir = newPageNumber > currentPage ? 'before' : 'after';
+      let newCursor: string | null = null;
       setDir(newDir);
 
-      let newCursor: string | null = null;
-      if (newDir === 'after' && data.pageInfo.endCursor) {
-        newCursor = (+data.pageInfo.endCursor + (limit - 1)).toString();
-      } else if (newDir === 'before' && data.pageInfo.startCursor) {
-        newCursor = (+data.pageInfo.startCursor - (limit - 1)).toString();
+      if (
+        newPageNumber === currentPage + 1 ||
+        newPageNumber === currentPage - 1
+      ) {
+        if (newDir === 'before' && data.pageInfo.endCursor) {
+          newCursor = data.pageInfo.endCursor;
+        } else if (newDir === 'after' && data.pageInfo.startCursor) {
+          newCursor = data.pageInfo.startCursor;
+        }
+      } else {
+        if (newDir === 'before' && data.pageInfo.endCursor) {
+          newCursor = (
+            +data.pageInfo.endCursor -
+            (newPageNumber - currentPage) * limit
+          ).toString();
+        } else if (newDir === 'after' && data.pageInfo.startCursor) {
+          newCursor = (
+            +data.pageInfo.startCursor +
+            (currentPage - newPageNumber) * limit
+          ).toString();
+        }
       }
 
       setCurrentPage(newPageNumber);
       setCurrentCursor(newCursor);
-      fetchBlockData(newCursor, newDir);
     }
   };
 
   useEffect(() => {
     fetchBlockData(currentCursor, dir);
-  }, []);
+  }, [currentCursor, dir]);
 
   return (
     <VStack>
@@ -87,6 +101,8 @@ export const BlocksScreen = () => {
             blocks={data}
             onPageChanged={handlePageChanged}
             pageCount={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
           />
         )
       )}

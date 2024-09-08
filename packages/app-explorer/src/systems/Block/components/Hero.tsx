@@ -10,7 +10,9 @@ export function Hero() {
           Blocks
         </Heading>
         <HStack>
-          <p className="text-[#9f9f9f]">Home</p>
+          <a href="/" className="text-[#9f9f9f]">
+            <p>Home</p>
+          </a>
           <p>{'>'}</p>
           <p>View All Blocks</p>
         </HStack>

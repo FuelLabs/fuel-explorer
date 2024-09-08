@@ -18,14 +18,14 @@ const columns = [
         <BlockItem blockId={row.node.header.height} ethValue={totalGasUsed} />
       );
     },
-    sortable: true,
+    sortable: false,
   },
   {
-    name: 'BlockHash',
+    name: 'Blockhash',
     cell: (row: any) => (
       <BlockHashItem hashAddress={row.node.id} width="100px" />
     ),
-    sortable: true,
+    sortable: false,
   },
   {
     name: 'Transactions',
@@ -34,7 +34,7 @@ const columns = [
         {row.node.header.transactionsCount}
       </div>
     ),
-    sortable: true,
+    sortable: false,
   },
   {
     name: 'Rewards',
@@ -44,7 +44,7 @@ const columns = [
       );
       return (
         <div className="font-mono text-sm text-gray-9">
-          {mintTransaction ? mintTransaction.mintAmount : 'No mint amount'}
+          {mintTransaction ? mintTransaction.mintAmount : 'No mint amount'}{' '}
         </div>
       );
     },
@@ -57,7 +57,7 @@ const columns = [
         <BlockValidatorItem hashAddress={row.node.producer} />
       </div>
     ),
-    sortable: true,
+    sortable: false,
   },
   {
     name: 'Efficiency',
@@ -66,7 +66,7 @@ const columns = [
         <BlockEfficiencyItem current={row.node.totalGasUsed} total={30000000} />
       </div>
     ),
-    sortable: true,
+    sortable: false,
   },
   {
     name: 'Time',
@@ -76,7 +76,7 @@ const columns = [
 
       return <BlockTimeItem timeAgo={row.node.time.fromNow} time={date} />;
     },
-    sortable: true,
+    sortable: false,
   },
   {
     name: '',
@@ -84,7 +84,7 @@ const columns = [
       <button
         type="button"
         onClick={() => console.log('Button clicked for:', row.name)}
-        className="px-4 py-[0.4rem] bg-gray-3 hover:text-black hover:bg-brand text-black dark:text-white rounded font-semibold font-mono"
+        className="px-4 py-[0.4rem] bg-gray-3 hover:bg-black hover:text-white dark:hover:bg-brand text-black dark:text-white rounded font-semibold font-mono"
       >
         View
       </button>
@@ -97,12 +97,16 @@ type BlocksTableProps = {
   blocks: GQLBlocksQuery['blocks'];
   onPageChanged: (pageNumber: number) => void;
   pageCount: number;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
 };
 
-export function BlocksTable({
+function BlocksTable({
   blocks,
   onPageChanged,
   pageCount,
+  currentPage,
+  setCurrentPage,
 }: BlocksTableProps) {
   const handlePageChanged = (pageNumber: number) => {
     onPageChanged(pageNumber);
@@ -115,6 +119,8 @@ export function BlocksTable({
         data={blocks.edges}
         onPageChanged={handlePageChanged}
         pageCount={pageCount}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
       />
     </div>
   );
