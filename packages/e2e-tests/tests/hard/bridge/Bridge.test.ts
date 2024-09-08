@@ -88,6 +88,32 @@ test.describe('Bridge', () => {
     });
     const baseAssetId = fuelWallet.provider.getBaseAssetId();
 
+    await test.step('Fuel wallet should be connected after refresh', async () => {
+      await goToBridgePage(page);
+
+      const connectedWallet = getByAriaLabel(
+        page,
+        'Fuel Local: Connected Wallet',
+      );
+      const address = await connectedWallet.innerText();
+      const balance = getByAriaLabel(page, 'Balance');
+      const balanceText = await balance.innerText();
+
+      // refresh the page
+      await page.goto('/bridge');
+
+      const connectedWalletAferRefresh = getByAriaLabel(
+        page,
+        'Fuel Local: Connected Wallet',
+      );
+      const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
+      const balanceAfterRefresh = getByAriaLabel(page, 'Balance');
+      const balanceTextAfterRefresh = await balanceAfterRefresh.innerText();
+
+      expect(addressAfterRefresh).toEqual(address);
+      expect(balanceTextAfterRefresh).toEqual(balanceText);
+    });
+
     await test.step('Deposit ETH to Fuel', async () => {
       const preDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevDepositBalanceEth = await client.getBalance({
@@ -556,32 +582,6 @@ test.describe('Bridge', () => {
       await checkTxItemDone(page, depositERC20TxId);
       await checkTxItemDone(page, withdrawEthTxId);
       await checkTxItemDone(page, withdrawERC20TxId);
-    });
-
-    await test.step('Fuel wallet should be connected after refresh', async () => {
-      await goToBridgePage(page);
-
-      const connectedWallet = getByAriaLabel(
-        page,
-        'Fuel Local: Connected Wallet',
-      );
-      const address = await connectedWallet.innerText();
-      const balance = getByAriaLabel(page, 'Balance');
-      const balanceText = await balance.innerText();
-
-      // refresh the page
-      await page.goto('/bridge');
-
-      const connectedWalletAferRefresh = getByAriaLabel(
-        page,
-        'Fuel Local: Connected Wallet',
-      );
-      const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
-      const balanceAfterRefresh = getByAriaLabel(page, 'Balance: ');
-      const balanceTextAfterRefresh = await balanceAfterRefresh.innerText();
-
-      expect(addressAfterRefresh).toEqual(address);
-      expect(balanceTextAfterRefresh).toEqual(balanceText);
     });
 
     await test.step('Check if transaction list reacts correctly to fuel wallet changes', async () => {
