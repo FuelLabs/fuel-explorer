@@ -376,7 +376,7 @@
   {
     "isLive": true,
     "name": "Pyth",
-    "url": "https://pyth.network/",
+    "url": "https://www.pyth.network/",
     "tags": ["Oracle"],
     "description": "Build apps with high-fidelity oracle feeds designed for mission-critical systems.",
     "github": "https://github.com/pyth-network",
