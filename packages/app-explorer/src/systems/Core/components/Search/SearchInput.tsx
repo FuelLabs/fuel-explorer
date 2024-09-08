@@ -69,7 +69,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
-          style={{ width: width - 0.5 }}
+          style={{ width }}
           data-expanded={isExpanded}
           className={cx(
             classes.dropdownContent(isExpanded),
@@ -115,7 +115,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       >
                         <Link
                           as={NextLink}
-                          href={Routes.txSimple(transaction!.id!)}
+                          href={Routes.txSimple(transaction?.id!)}
                           onClick={onSelectItem}
                         >
                           {shortAddress(transaction?.id || '', trimL, trimR)}
@@ -201,7 +201,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
 
 type SearchInputProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
-  onClear?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
   expandOnFocus?: boolean;
@@ -210,7 +209,6 @@ type SearchInputProps = BaseProps<InputProps> & {
 export function SearchInput({
   value: initialValue = '',
   className,
-  onClear,
   autoFocus,
   placeholder = 'Search here...',
   searchResult,
@@ -244,7 +242,6 @@ export function SearchInput({
   function handleClear() {
     setValue('');
     setHasSubmitted(false);
-    onClear?.(value);
     if (isExpanded) {
       setIsExpanded(false);
     } else {

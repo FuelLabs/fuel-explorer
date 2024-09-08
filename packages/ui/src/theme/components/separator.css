@@ -1,0 +1,37 @@
+.rt-Separator:where(.rt-r-orientation-vertical) {
+  width: 0px;
+  background-color: unset;
+  border-style: dashed;
+  border-color: var(--accent-a6);
+  border-right-width: 1px;
+}
+
+.rt-Separator:where(.rt-r-orientation-horizontal) {
+  height: 0px;
+  background-color: unset;
+  border-style: dashed;
+  border-color: var(--accent-a6);
+  border-bottom-width: 1px;
+}
+
+
+/**
+* Size: md
+* Description: Tablets (landscape)
+*/
+@media (min-width: 1024px) {
+  .rt-Separator:where(.md\:rt-r-orientation-vertical) {
+    width: 0px;
+    background-color: unset;
+    border-style: dashed;
+    border-color: var(--accent-a6);
+    border-right-width: 1px;
+  }
+  .rt-Separator:where(.md\:rt-r-orientation-horizontal) {
+    height: 0px;
+    background-color: unset;
+    border-style: dashed;
+    border-color: var(--accent-a6);
+    border-bottom-width: 1px;
+  }
+}

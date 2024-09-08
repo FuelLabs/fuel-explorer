@@ -27,7 +27,7 @@ export function AccountTabs({
   return (
     <NavigationTab
       {...props}
-      className="-mt-8 mb-8"
+      className="mb-8"
       defaultValue={defaultValue}
       value={defaultValue}
       renderTab={(children, item) => (

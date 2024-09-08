@@ -1,0 +1,56 @@
+.light .rt-BaseDialogContent {
+  background-color: #FFFFFF;
+}
+
+.dark .rt-BaseDialogContent {
+  background-color: var(--gray-2);
+}
+
+/**
+ * Breakpoints reference:
+ * https://www.radix-ui.com/themes/docs/theme/breakpoints
+ *
+ * Size: initial
+ * Description: Phones (portrait)
+ */
+@media all {
+  .rt-BaseDialogContent:where(.rt-r-size-1) {
+    --dialog-content-padding: var(--space-5);
+    border-radius: 28px;
+  }
+  .rt-BaseDialogContent:where(.rt-r-size-2) {
+    --dialog-content-padding: var(--space-5);
+    border-radius: 28px;
+  }
+  .rt-BaseDialogContent:where(.rt-r-size-3) {
+    --dialog-content-padding: var(--space-5);
+    border-radius: 28px;
+  }
+  .rt-BaseDialogContent:where(.rt-r-size-4) {
+    --dialog-content-padding: var(--space-5);
+    border-radius: 28px;
+  }
+}
+
+/**
+* Size: md
+* Description: Tablets (landscape)
+*/
+@media (min-width: 1024px) {
+  .rt-BaseDialogContent:where(.rt-r-size-1) {
+    --dialog-content-padding: var(--space-6);
+    border-radius: 28px;
+  }
+  .rt-BaseDialogContent:where(.rt-r-size-2) {
+    --dialog-content-padding: var(--space-6);
+    border-radius: 28px;
+  }
+  .rt-BaseDialogContent:where(.rt-r-size-3) {
+    --dialog-content-padding: var(--space-6);
+    border-radius: 28px;
+  }
+  .rt-BaseDialogContent:where(.rt-r-size-4) {
+    --dialog-content-padding: var(--space-6);
+    border-radius: 28px;
+  }
+}

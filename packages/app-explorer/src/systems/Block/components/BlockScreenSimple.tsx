@@ -1,15 +1,7 @@
 'use client';
 
 import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql';
-import {
-  Address,
-  Grid,
-  Icon,
-  LoadingBox,
-  LoadingWrapper,
-  VStack,
-} from '@fuels/ui';
-import { IconListDetails } from '@tabler/icons-react';
+import { Address, Grid, LoadingBox, LoadingWrapper, VStack } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { Routes } from '~/routes';
@@ -65,9 +57,7 @@ export function BlockScreenSimple({
           />
         </CardInfo>
       </Grid>
-      <PageTitle size="3" icon={<Icon icon={IconListDetails} />}>
-        Transactions
-      </PageTitle>
+      <PageTitle title="Transactions" />
       {isLoading ? (
         <TxListLoader numberOfTxs={4} />
       ) : (
