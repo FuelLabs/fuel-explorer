@@ -566,7 +566,7 @@ test.describe('Bridge', () => {
         'Fuel Local: Connected Wallet',
       );
       const address = await connectedWallet.innerText();
-      const balance = getByAriaLabel(page, 'Balance: ');
+      const balance = getByAriaLabel(page, 'Balance');
       const balanceText = await balance.innerText();
 
       // refresh the page

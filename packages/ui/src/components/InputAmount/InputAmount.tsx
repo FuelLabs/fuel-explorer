@@ -220,6 +220,7 @@ export const InputAmountBalance = createComponent<
           size="1"
           radius="full"
           className={clsx('self-start', className)}
+          aria-label="Balance"
           {...props}
         >
           {label}: {preview}
