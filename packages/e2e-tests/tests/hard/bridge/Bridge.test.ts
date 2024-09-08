@@ -96,7 +96,7 @@ test.describe('Bridge', () => {
 
       await test.step('Fill data and click on deposit', async () => {
         await hasDropdownSymbol(page, 'ETH');
-        const depositInput = page.locator('.fuel-InputAmount input');
+        const depositInput = page.locator('.fuel-InputAmountField input');
         await depositInput.fill(DEPOSIT_AMOUNT);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
@@ -174,7 +174,7 @@ test.describe('Bridge', () => {
         await clickWithdrawTab(page);
         await hasDropdownSymbol(page, 'ETH');
 
-        const withdrawInput = page.locator('.fuel-InputAmount input');
+        const withdrawInput = page.locator('.fuel-InputAmountField input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
         const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
@@ -334,7 +334,7 @@ test.describe('Bridge', () => {
         await hasDropdownSymbol(page, 'TKN');
 
         // Deposit asset
-        const depositInput = page.locator('.fuel-InputAmount input');
+        const depositInput = page.locator('.fuel-InputAmountField input');
         await depositInput.fill(DEPOSIT_AMOUNT);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
@@ -446,7 +446,7 @@ test.describe('Bridge', () => {
         await selectToken(page, 'TKN');
         await hasDropdownSymbol(page, 'TKN');
 
-        const withdrawInput = page.locator('.fuel-InputAmount input');
+        const withdrawInput = page.locator('.fuel-InputAmountField input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
         const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
@@ -630,7 +630,7 @@ test.describe('Bridge', () => {
 
       // Deposit asset
       const depositAmount = '1.12345';
-      const depositInput = page.locator('.fuel-InputAmount input');
+      const depositInput = page.locator('.fuel-InputAmountField input');
       await depositInput.fill(depositAmount);
 
       await test.step('Test deposit alert', async () => {
