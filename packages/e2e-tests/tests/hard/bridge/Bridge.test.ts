@@ -88,6 +88,32 @@ test.describe('Bridge', () => {
     });
     const baseAssetId = fuelWallet.provider.getBaseAssetId();
 
+    await test.step('Fuel wallet should be connected after refresh', async () => {
+      await goToBridgePage(page);
+
+      const connectedWallet = getByAriaLabel(
+        page,
+        'Fuel Local: Connected Wallet',
+      );
+      const address = await connectedWallet.innerText();
+      const balance = getByAriaLabel(page, 'Balance');
+      const balanceText = await balance.innerText();
+
+      // refresh the page
+      await page.goto('/bridge');
+
+      const connectedWalletAferRefresh = getByAriaLabel(
+        page,
+        'Fuel Local: Connected Wallet',
+      );
+      const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
+      const balanceAfterRefresh = getByAriaLabel(page, 'Balance');
+      const balanceTextAfterRefresh = await balanceAfterRefresh.innerText();
+
+      expect(addressAfterRefresh).toEqual(address);
+      expect(balanceTextAfterRefresh).toEqual(balanceText);
+    });
+
     await test.step('Deposit ETH to Fuel', async () => {
       const preDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevDepositBalanceEth = await client.getBalance({
@@ -96,7 +122,7 @@ test.describe('Bridge', () => {
 
       await test.step('Fill data and click on deposit', async () => {
         await hasDropdownSymbol(page, 'ETH');
-        const depositInput = page.locator('.fuel-InputAmount input');
+        const depositInput = page.locator('.fuel-InputAmountField input');
         await depositInput.fill(DEPOSIT_AMOUNT);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
@@ -174,7 +200,7 @@ test.describe('Bridge', () => {
         await clickWithdrawTab(page);
         await hasDropdownSymbol(page, 'ETH');
 
-        const withdrawInput = page.locator('.fuel-InputAmount input');
+        const withdrawInput = page.locator('.fuel-InputAmountField input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
         const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
@@ -334,7 +360,7 @@ test.describe('Bridge', () => {
         await hasDropdownSymbol(page, 'TKN');
 
         // Deposit asset
-        const depositInput = page.locator('.fuel-InputAmount input');
+        const depositInput = page.locator('.fuel-InputAmountField input');
         await depositInput.fill(DEPOSIT_AMOUNT);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
@@ -446,7 +472,7 @@ test.describe('Bridge', () => {
         await selectToken(page, 'TKN');
         await hasDropdownSymbol(page, 'TKN');
 
-        const withdrawInput = page.locator('.fuel-InputAmount input');
+        const withdrawInput = page.locator('.fuel-InputAmountField input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
         const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
@@ -558,32 +584,6 @@ test.describe('Bridge', () => {
       await checkTxItemDone(page, withdrawERC20TxId);
     });
 
-    await test.step('Fuel wallet should be connected after refresh', async () => {
-      await goToBridgePage(page);
-
-      const connectedWallet = getByAriaLabel(
-        page,
-        'Fuel Local: Connected Wallet',
-      );
-      const address = await connectedWallet.innerText();
-      const balance = getByAriaLabel(page, 'Balance: ');
-      const balanceText = await balance.innerText();
-
-      // refresh the page
-      await page.goto('/bridge');
-
-      const connectedWalletAferRefresh = getByAriaLabel(
-        page,
-        'Fuel Local: Connected Wallet',
-      );
-      const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
-      const balanceAfterRefresh = getByAriaLabel(page, 'Balance: ');
-      const balanceTextAfterRefresh = await balanceAfterRefresh.innerText();
-
-      expect(addressAfterRefresh).toEqual(address);
-      expect(balanceTextAfterRefresh).toEqual(balanceText);
-    });
-
     await test.step('Check if transaction list reacts correctly to fuel wallet changes', async () => {
       await goToTransactionsPage(page);
 
@@ -630,7 +630,7 @@ test.describe('Bridge', () => {
 
       // Deposit asset
       const depositAmount = '1.12345';
-      const depositInput = page.locator('.fuel-InputAmount input');
+      const depositInput = page.locator('.fuel-InputAmountField input');
       await depositInput.fill(depositAmount);
 
       await test.step('Test deposit alert', async () => {

@@ -1,0 +1,30 @@
+:root {
+  --single-notch-polygon: polygon(1.5px 19.1818px, 1.5px 19.1818px, 1.70443871px 16.29866355px, 2.29578208px 13.5691904px, 3.24107097px 11.02866985px, 4.50734624px 8.7123912px, 6.06164875px 6.65564375px, 7.87101936px 4.8937168px, 9.90249893px 3.46189965px, 12.12312832px 2.3954816px, 14.49994839px 1.72975195px, 17px 1.5px, calc(100% - 13px) 1.5px, calc(100% - 13px) 1.5px, calc(100% - 11.148801px) 1.67025966px, calc(100% - 9.3874879999998px) 2.16375168px, calc(100% - 7.7407870000002px) 2.95454562px, calc(100% - 6.233424px) 4.01671104px, calc(100% - 4.890125px) 5.3243175px, calc(100% - 3.7356159999999px) 6.85143456px, calc(100% - 2.794623px) 8.57213178px, calc(100% - 2.091872px) 10.46047872px, calc(100% - 1.6520889999999px) 12.49054494px, calc(100% - 1.5000000000001px) 14.6364px, calc(100% - 1.5px) calc(100% - 54.9857px), calc(100% - 1.5px) calc(100% - 54.9857px), calc(100% - 1.5490309999998px) calc(100% - 53.5801903px), calc(100% - 1.6946079999998px) calc(100% - 52.1928384px), calc(100% - 1.934457px) calc(100% - 50.8295801px), calc(100% - 2.266304px) calc(100% - 49.4963512px), calc(100% - 2.6878750000001px) calc(100% - 48.1990875px), calc(100% - 3.1968960000002px) calc(100% - 46.9437248px), calc(100% - 3.791093px) calc(100% - 45.7361989px), calc(100% - 4.468192px) calc(100% - 44.5824456px), calc(100% - 5.225919px) calc(100% - 43.4884007px), calc(100% - 6.0620000000001px) calc(100% - 42.46px), calc(100% - 36.689px) calc(100% - 7.656px), calc(100% - 36.689px) calc(100% - 7.656px), calc(100% - 37.592747px) calc(100% - 6.707059px), calc(100% - 38.552696px) calc(100% - 5.8483519999999px), calc(100% - 39.563609px) calc(100% - 5.082153px), calc(100% - 40.620248px) calc(100% - 4.410736px), calc(100% - 41.717375px) calc(100% - 3.836375px), calc(100% - 42.849752px) calc(100% - 3.361344px), calc(100% - 44.012141px) calc(100% - 2.987917px), calc(100% - 45.199304px) calc(100% - 2.718368px), calc(100% - 46.406003px) calc(100% - 2.554971px), calc(100% - 47.627px) calc(100% - 2.5px), 13px calc(100% - 2.5px), 13px calc(100% - 2.5px), 11.14876212px calc(100% - 2.670249px), 9.38742656px calc(100% - 3.163712px), 7.74071644px calc(100% - 3.954463px), 6.23335488px calc(100% - 5.016576px), 4.890065px calc(100% - 6.324125px), 3.73556992px calc(100% - 7.851184px), 2.79459276px calc(100% - 9.571827px), 2.09185664px calc(100% - 11.460128px), 1.65208468px calc(100% - 13.490161px), 1.5px calc(100% - 15.636px), 1.5px 19.1818px)
+}
+
+@media all {
+  .rt-Card:where(.rt-r-size-1) {
+    --card-padding: var(--space-0);
+    --card-border-radius: 14px;
+  }
+  .rt-Card:where(.rt-r-size-2) {
+    --card-padding: var(--space-0);
+    --card-border-radius: 14px;
+  }
+  .rt-Card:where(.rt-r-size-3) {
+    --card-padding: var(--space-0);
+    --card-border-radius: 14px;
+  }
+  .rt-Card:where(.rt-r-size-4) {
+    --card-padding: var(--space-0);
+    --card-border-radius: 14px;
+  }
+}
+
+.border-single-clip-polygon {
+  clip-path: var(--single-notch-polygon);
+}
+.filter-single-clip-polygon {
+  filter: drop-shadow(1px 0 0 var(--gray-6)) drop-shadow(-1px 0 0 var(--gray-6))
+            drop-shadow(0 1px 0 var(--gray-6)) drop-shadow(0 -1px 0 var(--gray-6));
+}

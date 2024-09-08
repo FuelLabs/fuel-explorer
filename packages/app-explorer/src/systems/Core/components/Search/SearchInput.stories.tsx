@@ -22,7 +22,6 @@ export const Clearable: Story = {
     className: 'w-sm',
     value: 'Some value',
     onSubmit: action('onSubmit'),
-    onClear: action('onClear'),
     autoFocus: true,
   },
 };

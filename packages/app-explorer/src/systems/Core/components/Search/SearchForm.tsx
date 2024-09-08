@@ -1,10 +1,8 @@
-import { useContext } from 'react';
 import { useFormState } from 'react-dom';
 import { search } from '~/systems/Core/actions/search';
 
 import type { GQLSearchResult } from '@fuel-explorer/graphql';
 import { SearchInput } from './SearchInput';
-import { SearchContext } from './SearchWidget';
 import { styles } from './styles';
 
 type SearchFormProps = {
@@ -25,7 +23,6 @@ export function SearchForm({
     },
     null,
   );
-  const { onClear } = useContext(SearchContext);
 
   return (
     <form action={action} className={classes.searchSize()}>
@@ -34,7 +31,6 @@ export function SearchForm({
         searchResult={results}
         autoFocus={autoFocus}
         expandOnFocus={expandOnFocus}
-        onClear={onClear}
       />
     </form>
   );
