@@ -442,7 +442,7 @@
   {
     "isLive": true,
     "name": "SQD",
-    "url": "https://docs.subsquid.io/fuel-indexing/",
+    "url": "https://docs.sqd.dev/fuel-indexing/",
     "tags": ["Indexer"],
     "description": "SQD enables permissionless, cost-efficient access to petabytes of high-value Web3 data.",
     "github": "https://github.com/subsquid/squid-sdk/tree/master/fuel",
