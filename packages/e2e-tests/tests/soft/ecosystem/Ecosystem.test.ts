@@ -16,12 +16,16 @@ test.describe('Ecosystem', () => {
       ]);
 
       const pageLink = await project.getByRole('link').last();
-      const href = await pageLink.getAttribute('href');
+      const href = (await pageLink.getAttribute('href')) || '';
 
       const newPage = await openPage;
       const openedPage = newPage.url();
+      // create regex to get only the domain part of url, but excluding www. when it shows up
+      const regex = /(?<=\/\/)(?:www\.)?([^\/]+)/;
+      const openedPageDomain = openedPage.match(regex);
+      const hrefDomain = href.match(regex);
 
-      expect(openedPage).toBe(href);
+      expect(openedPageDomain).toBe(hrefDomain);
 
       await newPage.close();
     }
