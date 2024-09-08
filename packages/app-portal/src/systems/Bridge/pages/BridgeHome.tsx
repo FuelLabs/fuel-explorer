@@ -1,10 +1,6 @@
 import { useNodeInfo } from '@fuels/react';
 import { Box, Button } from '@fuels/ui';
-import {
-  IconArrowBack,
-  IconArrowsShuffle,
-  IconHistory,
-} from '@tabler/icons-react';
+import { IconArrowBack, IconHistory } from '@tabler/icons-react';
 import { FUEL_VERSION, PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -25,43 +21,36 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
   return (
     <Box className={classes.content()}>
-      <PageTitle
-        size="2"
-        icon={<IconArrowsShuffle size={18} stroke={1.5} />}
-        className="border-b-0 first:mb-0"
-        rightElement={
-          isBridgeHistory ? (
-            <Button
-              as={NextLink}
-              prefetch
-              href={Routes.bridge()}
-              size="1"
-              color="gray"
-              variant="ghost"
-              leftIcon={IconArrowBack}
-              className="rounded-md"
-              aria-label="Back to home"
-            >
-              Back
-            </Button>
-          ) : (
-            <Button
-              as={NextLink}
-              prefetch
-              href={Routes.bridgeHistory()}
-              size="1"
-              color="gray"
-              variant="ghost"
-              leftIcon={IconHistory}
-              className="rounded-md"
-              aria-label="Transaction History"
-            >
-              History
-            </Button>
-          )
-        }
-      >
-        Fuel Bridge
+      <PageTitle title="Fuel Bridge">
+        {isBridgeHistory ? (
+          <Button
+            as={NextLink}
+            prefetch
+            href={Routes.bridge()}
+            size="1"
+            color="gray"
+            variant="ghost"
+            leftIcon={IconArrowBack}
+            className="rounded-md"
+            aria-label="Back to home"
+          >
+            Back
+          </Button>
+        ) : (
+          <Button
+            as={NextLink}
+            prefetch
+            href={Routes.bridgeHistory()}
+            size="1"
+            color="gray"
+            variant="ghost"
+            leftIcon={IconHistory}
+            className="rounded-md"
+            aria-label="Transaction History"
+          >
+            History
+          </Button>
+        )}
       </PageTitle>
       <FuelVersionDialog isOpen={!(isCompatible ?? true)} />
       {children}

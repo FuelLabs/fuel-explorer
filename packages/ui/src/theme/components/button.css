@@ -1,0 +1,139 @@
+.rt-BaseButton {
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.rt-BaseButton:where(.rt-variant-solid) {
+  background-color: var(--brand-9);
+  color: #000000;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 0.5px 1px 0px rgba(0, 0, 0, 0.10);
+}
+
+[data-accent-color="gray"].rt-BaseButton:where(.rt-variant-solid) {
+  background-color: var(--gray-contrast);
+  color: #202020;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 0.5px 1px 0px rgba(0, 0, 0, 0.10);
+}
+
+[data-accent-color="gray"].rt-BaseButton:where(.rt-variant-outline) {
+  background-color: var(--color-surface);
+  color: var(--gray-12);
+  box-shadow: inset 0 0 0 1px var(--gray-5);
+}
+
+.rt-BaseButton:where([data-disabled]) {
+  cursor: var(--cursor-disabled);
+  color: var(--gray-a8);
+  background-color: var(--gray-a3);
+}
+
+@media (hover: hover) {
+  .rt-BaseButton:where(.rt-variant-solid):where(:hover):where(:not([data-disabled])) {
+    background-color: var(--brand-10);
+  }
+  [data-accent-color="gray"].rt-BaseButton:where(.rt-variant-solid):where(:hover):where(:not([data-disabled])) {
+    background-color: #E8E8E8;
+  }
+  [data-accent-color="gray"].rt-BaseButton:where(.rt-variant-outline):where(:hover):where(:not([data-disabled])) {
+    background-color: var(--gray-2);
+  }
+}
+
+/**
+ * Breakpoints reference:
+ * https://www.radix-ui.com/themes/docs/theme/breakpoints
+ *
+ * Size: initial
+ * Description: Phones (portrait)
+ */
+@media all {
+  .rt-BaseButton:where(.rt-r-size-1) {
+    --base-button-height: 28px;
+    border-radius: max(var(--radius-3), var(--radius-full));
+  }
+  .rt-BaseButton:where(.rt-r-size-2) {
+    --base-button-height: 36px;
+    border-radius: max(var(--radius-4), var(--radius-full));
+  }
+  .rt-BaseButton:where(.rt-r-size-3) {
+    --base-button-height: 44px;
+    border-radius: max(var(--radius-5), var(--radius-full));
+  }
+  .rt-BaseButton:where(.rt-r-size-4) {
+    --base-button-height: 44px;
+    border-radius: max(var(--radius-5), var(--radius-full));
+  }
+  
+  .rt-Button:where(.rt-r-size-1) {
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+  }
+  .rt-Button:where(.rt-r-size-2) {
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+  }
+  .rt-Button:where(.rt-r-size-3) {
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-medium);
+  }
+  .rt-Button:where(.rt-r-size-4) {
+    font-size: var(--font-size-4);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .rt-Button:where(.rt-r-size-1):where(:not(.rt-variant-ghost)) {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .rt-Button:where(.rt-r-size-2):where(:not(.rt-variant-ghost)) {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .rt-Button:where(.rt-r-size-3):where(:not(.rt-variant-ghost)) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .rt-Button:where(.rt-r-size-4):where(:not(.rt-variant-ghost)) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/**
+ * Size: xs
+ * Description: Phones (landscape)
+ */
+@media (min-width: 520px) {
+  /* ... */
+}
+
+/**
+* Size: sm
+* Description: Tablets (portrait)
+*/
+@media (min-width: 768px) {
+  /* ... */
+}
+
+/**
+* Size: md
+* Description: Tablets (landscape)
+*/
+@media (min-width: 1024px) {
+  /* ... */
+}
+
+/**
+* Size: lg
+* Description: Laptops
+*/
+@media (min-width: 1280px) {
+  /* ... */
+}
+
+/**
+* Size: xl
+* Description: Desktops
+*/
+@media (min-width: 1640px) {
+  /* ... */
+}

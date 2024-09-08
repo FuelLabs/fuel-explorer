@@ -1,6 +1,6 @@
 'use client';
 
-import { Theme } from '@fuels/ui';
+import { Theme, Toaster } from '@fuels/ui';
 import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import { ThemeDefault } from './ThemeDefault';
 
@@ -9,6 +9,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     <NextThemeProvider attribute="class" storageKey="fuel-ui-theme">
       <ThemeDefault />
       <Theme hasBackground={false}>{children}</Theme>
+      <Toaster />
     </NextThemeProvider>
   );
 }

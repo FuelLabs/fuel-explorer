@@ -18,7 +18,6 @@ import type { CardProps } from '@fuels/ui';
 import { IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
-import React from 'react';
 import { tv } from 'tailwind-variants';
 import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
