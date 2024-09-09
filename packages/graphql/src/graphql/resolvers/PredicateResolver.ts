@@ -18,6 +18,7 @@ export class PredicateResolver {
   async predicate(_: any, params: Params['predicate']) {
     const predicateDAO = new PredicateDAO();
     const predicate = await predicateDAO.getByAddress(params.address);
-    return predicate?.toGQLNode();
+    if (!predicate || predicate.bytecode === '0x') return;
+    return predicate.toGQLNode();
   }
 }
