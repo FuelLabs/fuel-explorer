@@ -6,8 +6,8 @@ test.describe('Ecosystem', () => {
   });
 
   test('Open projects in a new tab', async ({ page, context }) => {
-    await page.waitForSelector('[as="article"]');
-    const projects = await page.locator('[as="article"]').all();
+    await page.waitForSelector('article');
+    const projects = await page.locator('article').all();
 
     for (const project of projects) {
       // regex to get only the domain part of url, but excluding "www." when it shows up
