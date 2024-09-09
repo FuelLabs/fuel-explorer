@@ -100,6 +100,19 @@ export type GQLBlockEdge = {
   node: GQLBlock;
 };
 
+export type GQLBlockReward = {
+  __typename: 'BlockReward';
+  id: Scalars['BlockId']['output'];
+  reward: Scalars['U64']['output'];
+  timestamp: Scalars['String']['output'];
+};
+
+export type GQLBlockRewardConnection = {
+  __typename: 'BlockRewardConnection';
+  /** A list of nodes. */
+  nodes?: Maybe<Array<GQLBlockReward>>;
+};
+
 export enum GQLBlockVersion {
   V1 = 'V1'
 }
@@ -925,6 +938,7 @@ export type GQLQuery = {
   balance: GQLBalance;
   balances: GQLBalanceConnection;
   block?: Maybe<GQLBlock>;
+  blockRewardStatistics: GQLBlockRewardConnection;
   blocks: GQLBlockConnection;
   chain: GQLChainInfo;
   /** Gets the coin by `utxo_id`. */
@@ -970,6 +984,7 @@ export type GQLQuery = {
   transactions: GQLTransactionConnection;
   transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
+  transactionsFeeStatistics: GQLTransactionFeeConnection;
 };
 
 
@@ -1144,6 +1159,10 @@ export type GQLQueryTransactionsByOwnerArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
+};
+
+export type GQLQueryTransactionsFeeStatisticsArgs = {
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GQLReceipt = {
@@ -1396,6 +1415,18 @@ export type GQLTransactionEdge = {
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge */
   node: GQLTransaction;
+};
+
+export type GQLTransactionFee = {
+  __typename: 'TransactionFee';
+  fee: Scalars['U64']['output'];
+  timestamp: Scalars['String']['output'];
+};
+
+export type GQLTransactionFeeConnection = {
+  __typename: 'TransactionFeeConnection';
+  /** A list of nodes. */
+  nodes?: Maybe<Array<GQLTransactionFee>>;
 };
 
 export type GQLTransactionGasCosts = {
@@ -2008,6 +2039,17 @@ export const BlockDocument = gql`
   }
 }
     ${BlockFragmentDoc}`;
+export const BlockRewardStatisticsDocument = gql`
+    query blockRewardStatistics($timeFilter: String) {
+  blockRewardStatistics(timeFilter: $timeFilter) {
+    nodes {
+      id
+      reward
+      timestamp
+    }
+  }
+}
+    `;
 export const ChainDocument = gql`
     query chain {
   chain {
@@ -3418,6 +3460,16 @@ export const TransactionsByOwnerDocument = gql`
   }
 }
     ${RecentTransactionFragmentDoc}`;
+export const TransactionsFeeStatisticsDocument = gql`
+    query transactionsFeeStatistics($timeFilter: String) {
+  transactionsFeeStatistics(timeFilter: $timeFilter) {
+    nodes {
+      fee
+      timestamp
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -3425,6 +3477,9 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
 const BalancesDocumentString = print(BalancesDocument);
 const BlockDocumentString = print(BlockDocument);
+const BlockRewardStatisticsDocumentString = print(
+  BlockRewardStatisticsDocument,
+);
 const ChainDocumentString = print(ChainDocument);
 const CoinsDocumentString = print(CoinsDocument);
 const ContractDocumentString = print(ContractDocument);
@@ -3435,7 +3490,13 @@ const SearchDocumentString = print(SearchDocument);
 const TransactionDetailsDocumentString = print(TransactionDetailsDocument);
 const TransactionsByBlockIdDocumentString = print(TransactionsByBlockIdDocument);
 const TransactionsByOwnerDocumentString = print(TransactionsByOwnerDocument);
-export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+const TransactionsFeeStatisticsDocumentString = print(
+  TransactionsFeeStatisticsDocument,
+);
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper,
+) {
   return {
     balances(variables: GQLBalancesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLBalancesQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLBalancesQuery>(BalancesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'balances', 'query', variables);

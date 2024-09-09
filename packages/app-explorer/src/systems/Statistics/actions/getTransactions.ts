@@ -45,7 +45,6 @@ async function fetchTransactionStatistics(
       ? { transactions: [], offset: 0 }
       : { transactions: [] };
   }
-
   const firstTimestamp = Number(DateHelper.tai64toDate(nodes[0].timestamp));
   const lastTimestamp = Number(
     DateHelper.tai64toDate(nodes[nodes.length - 1].timestamp),

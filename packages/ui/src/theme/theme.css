@@ -832,8 +832,8 @@
   --gray-a10: #ffffff72;
   --gray-a11: #ffffffaf;
   --gray-a12: #ffffffed;
-
   --gray-contrast: #FFFFFF;
+  --gray-table-text: #FFFFFF;
   --gray-surface: rgba(0, 0, 0, 0.05);
   --gray-indicator: var(--gray-9);
 }
@@ -871,6 +871,7 @@
   --gray-a12: #000000df;
 
   --gray-contrast: #FFFFFF;
+  --gray-table-text: #000000;
   --gray-surface: #ffffffcc;
   --gray-indicator: var(--gray-9);
 }
