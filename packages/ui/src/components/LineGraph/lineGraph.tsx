@@ -25,8 +25,10 @@ export interface DataPoint {
 }
 
 interface LineGraphProps {
-  dataProp: Record<number, DataPoint[]>;
+  dataProp: any;
   titleProp: string;
+  selectedDays: string;
+  setSelectedDays: (p: string) => void;
 }
 
 const chartConfig = {
@@ -39,8 +41,9 @@ const chartConfig = {
 export const LineGraph: React.FC<LineGraphProps> = ({
   dataProp,
   titleProp,
+  selectedDays,
+  setSelectedDays,
 }) => {
-  const [selectedDays, setSelectedDays] = useState<number>(1);
   const [selectedPoint, setSelectedPoint] = useState<DataPoint | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
@@ -64,21 +67,14 @@ export const LineGraph: React.FC<LineGraphProps> = ({
     };
   }, []);
 
-  const data: DataPoint[] = dataProp[selectedDays] || [];
+  const data = dataProp;
 
   useEffect(() => {
-    const initialData = dataProp[selectedDays] || [];
+    const initialData = dataProp;
     if (initialData.length > 0) {
       setSelectedPoint(initialData[0]);
     }
   }, [selectedDays]);
-
-  const formatNumber = (num: number) => {
-    const tempNum = Math.round(num);
-    if (tempNum >= 1000000) return `${tempNum / 1000000}M`;
-    if (tempNum >= 1000) return `${tempNum / 1000}k`;
-    return num.toString();
-  };
 
   const handleClick = (data: any) => {
     setSelectedPoint(data);
@@ -91,22 +87,25 @@ export const LineGraph: React.FC<LineGraphProps> = ({
       <div className="mt-1 flex items-center" style={{ fontSize: '0.8rem' }}>
         <div className="text-heading">{titleProp} &nbsp;</div>
         <Select
-          onValueChange={(value) => setSelectedDays(Number(value))}
-          value={selectedDays.toString()}
+          onValueChange={(value) => setSelectedDays(value)}
+          value={selectedDays}
         >
           <SelectTrigger
             className="px-4 py-0 rounded"
             style={{ fontSize: '0.8rem' }}
           >
-            <div className="text-heading">{selectedDays}D</div>
+            <div className="text-heading">{selectedDays}</div>
           </SelectTrigger>
           <SelectContent className="bg-gray-2">
             <SelectGroup>
-              {Object.keys(dataProp).map((_, index) => (
-                <SelectItem key={index + 1} value={(index + 1).toString()}>
-                  {index + 1}d
-                </SelectItem>
-              ))}
+              <SelectItem value="null">All time</SelectItem>
+              <SelectItem value="1hr">1 Hr</SelectItem>
+              <SelectItem value="12hr">12 Hr</SelectItem>
+              <SelectItem value="1day">1 Day</SelectItem>
+              <SelectItem value="7days">7 Day</SelectItem>
+              <SelectItem value="14days">14 Day</SelectItem>
+              <SelectItem value="30days">30 Day</SelectItem>
+              <SelectItem value="90days">90 Day</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -122,11 +121,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
         )}
       </div>
 
-      <ResponsiveContainer
-        width="100%"
-        height={chartHeight}
-        className="-ml-4 -mb-4"
-      >
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <AreaChart
           data={data}
           onClick={(e) => {
@@ -136,20 +131,25 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           }}
         >
           <CartesianGrid stroke="rgba(255, 255, 255, 0.04)" />
+
+          {/* X Axis - using 'start' and formatting the date */}
           <XAxis
-            dataKey="day"
+            dataKey="start"
+            tickFormatter={(tick) => new Date(tick).toLocaleDateString()} // Converts timestamp to readable date
             tick={{
               fontSize: 10,
               className: 'fill-heading',
             }}
           />
+
+          {/* Y Axis - using 'count' to display the number */}
           <YAxis
-            tickFormatter={formatNumber}
             tick={{
               fontSize: 12,
-              className: 'fill-heading ',
+              className: 'fill-heading',
             }}
           />
+
           <defs>
             <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#14b773" stopOpacity={1} />
@@ -157,9 +157,10 @@ export const LineGraph: React.FC<LineGraphProps> = ({
               <stop offset="100%" stopColor="#14b773" stopOpacity={0.2} />
             </linearGradient>
           </defs>
+
           <Area
             type="monotone"
-            dataKey="value"
+            dataKey="count"
             stroke={chartConfig.desktop.color}
             strokeWidth={2}
             fill="url(#colorGradient)"
