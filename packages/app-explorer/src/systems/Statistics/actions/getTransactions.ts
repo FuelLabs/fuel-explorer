@@ -10,7 +10,7 @@ const schema = z.object({
   timeFilter: z.string().optional().nullable(),
 });
 
-export const getTransactionStats = act(schema, async (timeFilter) => {
+export const getTransactionStats = act(schema, async ({ timeFilter }) => {
   const params = { timeFilter: timeFilter } as {
     timeFilter?: string;
   };

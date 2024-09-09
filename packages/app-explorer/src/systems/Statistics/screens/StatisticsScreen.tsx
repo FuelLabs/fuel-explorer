@@ -1,27 +1,70 @@
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 import { Grid, LineGraph } from '@fuels/ui';
+import { useState } from 'react';
 import { useEffect } from 'react';
 import { tv } from 'tailwind-variants';
 import { getBlockStats } from '../actions/getBlocks';
 import { getTransactionStats } from '../actions/getTransactions';
 import Hero from '../components/Hero/Hero';
-import { dummyData } from '../data/dummyData';
+// import { dummyData } from '../data/dummyData';
 
 export const StatisticsScreen = () => {
   const classes = styles();
-  const _getBlockStatistics = async () => {
-    const data = await getBlockStats({ timeFilter: null });
-    console.log(data);
+
+  const [allBlocksTimeStamp, setAllBlocksTimeStamp] = useState('null');
+  const [newBlocksData, setNewBlocksData] = useState<any[]>([]);
+
+  const [dailyTransactionsTimeStamp, setDailyTransactionsTimeStamp] =
+    useState('null');
+  const [dailyTransactionsData, setDailyTransactionsData] = useState<any[]>([]);
+
+  const getBlockStatistics = async () => {
+    const data: any = await getBlockStats({
+      timeFilter: allBlocksTimeStamp === 'null' ? null : allBlocksTimeStamp,
+    });
+    const transformedData = data
+      .map((item: any) => ({
+        start: item.start,
+        count: item.count,
+      }))
+      .reverse();
+    console.log(transformedData);
+    setNewBlocksData(transformedData);
   };
 
-  const getTransactionStatistics = async () => {
-    const data = await getTransactionStats({});
-    console.log(data);
-  };
   useEffect(() => {
-    // getBlockStatistics()
+    getBlockStatistics();
+  }, [allBlocksTimeStamp]);
+
+  useEffect(() => {
+    console.log(newBlocksData);
+  }, [newBlocksData]);
+
+  const getTransactionStatistics = async () => {
+    const data: any = await getTransactionStats({
+      timeFilter:
+        dailyTransactionsTimeStamp === 'null'
+          ? null
+          : dailyTransactionsTimeStamp,
+    });
+    const transformedData = data
+      .map((item: any) => ({
+        start: item.start,
+        count: item.count,
+      }))
+      .reverse();
+    console.log(transformedData);
+    setDailyTransactionsData(transformedData);
+  };
+
+  useEffect(() => {
     getTransactionStatistics();
-  }, []);
+  }, [dailyTransactionsTimeStamp]);
+
+  useEffect(() => {
+    console.log(dailyTransactionsData);
+  }, [dailyTransactionsData]);
+
   return (
     <Theme appearance="light">
       <Box className={classes.root()}>
@@ -40,8 +83,13 @@ export const StatisticsScreen = () => {
               Blocks
             </h2>
             <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <LineGraph dataProp={dummyData} titleProp={'New Block'} />
-              <LineGraph dataProp={dummyData} titleProp={'Avg. Block Reward'} />
+              <LineGraph
+                dataProp={newBlocksData}
+                titleProp={'New Block'}
+                selectedDays={allBlocksTimeStamp}
+                setSelectedDays={setAllBlocksTimeStamp}
+              />
+              {/* <LineGraph dataProp={dummyData} titleProp={'Avg. Block Reward'} /> */}
             </Grid>
           </div>
 
@@ -50,26 +98,28 @@ export const StatisticsScreen = () => {
               Transactions
             </h2>
             <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <LineGraph
+              {/* <LineGraph
                 dataProp={dummyData}
                 titleProp={'Total Transactions (Cumilative)'}
-              />
+              /> */}
               <LineGraph
-                dataProp={dummyData}
+                dataProp={dailyTransactionsData}
                 titleProp={'Daily Transactions'}
+                selectedDays={dailyTransactionsTimeStamp}
+                setSelectedDays={setDailyTransactionsTimeStamp}
               />
-              <LineGraph
+              {/* <LineGraph
                 dataProp={dummyData}
                 titleProp={'Transaction Fee Spent (Cumilative)'}
               />
               <LineGraph
                 dataProp={dummyData}
                 titleProp={'Avg. Tansaction Fee'}
-              />
+              /> */}
             </Grid>
           </div>
 
-          <div className="text-heading text-md font-mono my-20">
+          {/*<div className="text-heading text-md font-mono my-20">
             <h2 className="font-mono" style={{ fontSize: '1.5rem' }}>
               Accounts
             </h2>
@@ -110,7 +160,7 @@ export const StatisticsScreen = () => {
               />
               <LineGraph dataProp={dummyData} titleProp={'New NFTs'} />
             </Grid>
-          </div>
+          </div> */}
         </Container>
       </Box>
     </Theme>
