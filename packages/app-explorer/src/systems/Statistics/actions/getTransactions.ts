@@ -14,12 +14,15 @@ export const getTransactionStats = act(schema, async (timeFilter) => {
   const params = { timeFilter: timeFilter } as {
     timeFilter?: string;
   };
+  console.log(params);
   const data = await sdk.transactionsFeeStatistics(params);
+  console.log(data);
 
   if (!data.data.transactionsFeeStatistics.nodes) {
     return {};
   }
   const { unit, intervalSize } = getUnitAndInterval(params.timeFilter || '');
+  console.log(unit, intervalSize);
   const nodes = data.data.transactionsFeeStatistics.nodes;
   const firstTimestamp = Number(DateHelper.tai64toDate(nodes[0].timestamp));
   const lastTimestamp = Number(
