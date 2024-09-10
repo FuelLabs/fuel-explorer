@@ -241,4 +241,35 @@ export default class TransactionDAO {
     };
     return results;
   }
+
+  async transactionsOffset(timeFilter: string) {
+    const _interval = getTimeInterval(timeFilter);
+
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - 60 * 60 * 1000 * 24;
+      const intervalStartTimeDate = new Date(intervalStartTimeInMilliseconds);
+      const intervalStartTimeTai64 = DateHelper.dateToTai64(
+        intervalStartTimeDate,
+      );
+
+      const query = `
+        SELECT
+          COUNT(*)
+        FROM indexer.transactions as t
+        WHERE 
+            (t.data->'status'->>'time')::bigint < ${intervalStartTimeTai64}
+      `;
+
+      const transactionOffsetCount = await this.databaseConnection.query(
+        query,
+        [],
+      );
+      return {
+        transactionOffset: transactionOffsetCount[0].count,
+      };
+    }
+    return {
+      transactionOffset: 0,
+    };
+  }
 }

@@ -25,6 +25,8 @@ export class TransactionResolver {
         transactions: resolvers.transactions,
         transactionsByOwner: resolvers.transactionsByOwner,
         transactionsFeeStatistics: resolvers.transactionsFeeStatistics,
+        cumulativeTransactionsFeeStatistics:
+          resolvers.cumulativeTransactionsFeeStatistics,
       },
     };
   }
@@ -63,5 +65,23 @@ export class TransactionResolver {
       params.timeFilter ? params.timeFilter : '',
     );
     return transactions;
+  }
+
+  async cumulativeTransactionsFeeStatistics(
+    _: Source,
+    params: Params['transactionFees'],
+  ) {
+    const transactionDAO = new TransactionDAO();
+    const transactions = await transactionDAO.transactionsFeeStatistics(
+      params.timeFilter ? params.timeFilter : '',
+    );
+    const transactionOffset = await transactionDAO.transactionsOffset(
+      params.timeFilter ? params.timeFilter : '',
+    );
+    const results = {
+      nodes: transactions.nodes,
+      transactionOffset: transactionOffset.transactionOffset,
+    };
+    return results;
   }
 }
