@@ -14,9 +14,18 @@ export const StatisticsScreen = () => {
   const [allBlocksTimeStamp, setAllBlocksTimeStamp] = useState('null');
   const [newBlocksData, setNewBlocksData] = useState<any[]>([]);
 
+  const [averageBlocksTimeStamp, setAverageBlocksTimeStamp] = useState('null');
+  const [averageBlocksData, setAverageBlocksData] = useState<any[]>([]);
+
   const [dailyTransactionsTimeStamp, setDailyTransactionsTimeStamp] =
     useState('null');
   const [dailyTransactionsData, setDailyTransactionsData] = useState<any[]>([]);
+
+  const [averageTransactionsTimeStamp, setAverageTransactionsTimeStamp] =
+    useState('null');
+  const [averageTransactionsData, setAverageTransactionsData] = useState<any[]>(
+    [],
+  );
 
   const getBlockStatistics = async () => {
     const data: any = await getBlockStats({
@@ -36,9 +45,27 @@ export const StatisticsScreen = () => {
     getBlockStatistics();
   }, [allBlocksTimeStamp]);
 
+  const getAverageBlockStatistics = async () => {
+    const data: any = await getBlockStats({
+      timeFilter:
+        averageBlocksTimeStamp === 'null' ? null : averageBlocksTimeStamp,
+    });
+    console.log(data);
+    const transformedData = data
+      .map((item: any) => ({
+        start: item.start,
+        count: Number.isNaN(item.totalRewards / item.count)
+          ? 0
+          : item.totalRewards / item.count,
+      }))
+      .reverse();
+    console.log(transformedData);
+    setAverageBlocksData(transformedData);
+  };
+
   useEffect(() => {
-    console.log(newBlocksData);
-  }, [newBlocksData]);
+    getAverageBlockStatistics();
+  }, [averageBlocksTimeStamp]);
 
   const getTransactionStatistics = async () => {
     const data: any = await getTransactionStats({
@@ -61,9 +88,29 @@ export const StatisticsScreen = () => {
     getTransactionStatistics();
   }, [dailyTransactionsTimeStamp]);
 
+  const getAverageTransactionStatistics = async () => {
+    const data: any = await getTransactionStats({
+      timeFilter:
+        averageTransactionsTimeStamp === 'null'
+          ? null
+          : averageTransactionsTimeStamp,
+    });
+    console.log(data);
+    const transformedData = data
+      .map((item: any) => ({
+        start: item.start,
+        count: Number.isNaN(item.totalFee / item.count)
+          ? 0
+          : item.totalFee / item.count,
+      }))
+      .reverse();
+    console.log(transformedData);
+    setAverageTransactionsData(transformedData);
+  };
+
   useEffect(() => {
-    console.log(dailyTransactionsData);
-  }, [dailyTransactionsData]);
+    getAverageTransactionStatistics();
+  }, [averageTransactionsTimeStamp]);
 
   return (
     <Theme appearance="light">
@@ -89,7 +136,12 @@ export const StatisticsScreen = () => {
                 selectedDays={allBlocksTimeStamp}
                 setSelectedDays={setAllBlocksTimeStamp}
               />
-              {/* <LineGraph dataProp={dummyData} titleProp={'Avg. Block Reward'} /> */}
+              <LineGraph
+                dataProp={averageBlocksData}
+                titleProp={'Avg. Block Reward'}
+                selectedDays={averageBlocksTimeStamp}
+                setSelectedDays={setAverageBlocksTimeStamp}
+              />
             </Grid>
           </div>
 
@@ -111,11 +163,13 @@ export const StatisticsScreen = () => {
               {/* <LineGraph
                 dataProp={dummyData}
                 titleProp={'Transaction Fee Spent (Cumilative)'}
-              />
+              />*/}
               <LineGraph
-                dataProp={dummyData}
-                titleProp={'Avg. Tansaction Fee'}
-              /> */}
+                dataProp={averageTransactionsData}
+                titleProp={'Avg. Transactions Fee'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
+              />
             </Grid>
           </div>
 
