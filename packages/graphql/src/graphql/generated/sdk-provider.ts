@@ -968,6 +968,7 @@ export type GQLQuery = {
   search?: Maybe<GQLSearchResult>;
   transaction?: Maybe<GQLTransaction>;
   transactions: GQLTransactionConnection;
+  transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
 };
 
@@ -1123,6 +1124,15 @@ export type GQLQueryTransactionArgs = {
 export type GQLQueryTransactionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type GQLQueryTransactionsByBlockIdArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  blockId: Scalars['String']['input'];
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };

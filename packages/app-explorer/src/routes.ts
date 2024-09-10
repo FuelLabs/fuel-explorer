@@ -6,7 +6,9 @@ export const Routes = {
   ),
   txSimple: route<[id: string]>('/tx/:id/simple'),
   txAdvanced: route<[id: string]>('/tx/:id/advanced'),
-  blockSimple: route<[id: string]>('/block/:id/simple'),
+  blockSimple: route<[id: string, cursor: string, dir: 'after' | 'before']>(
+    '/block/:id/simple/?cursor=:page&dir=:dir',
+  ),
   blockAdvanced: route<[id: string]>('/block/:id/advanced'),
   account: route<[id: string, tab: string]>('/account/:id/:tab'),
   accountTxs: route<[id: string, cursor: string, dir: 'after' | 'before']>(

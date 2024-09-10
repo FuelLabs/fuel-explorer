@@ -968,6 +968,7 @@ export type GQLQuery = {
   search?: Maybe<GQLSearchResult>;
   transaction?: Maybe<GQLTransaction>;
   transactions: GQLTransactionConnection;
+  transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
 };
 
@@ -1123,6 +1124,15 @@ export type GQLQueryTransactionArgs = {
 export type GQLQueryTransactionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type GQLQueryTransactionsByBlockIdArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  blockId: Scalars['String']['input'];
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -1521,6 +1531,17 @@ export type GQLTransactionDetailsQueryVariables = Exact<{
 
 
 export type GQLTransactionDetailsQuery = { __typename: 'Query', transaction?: { __typename: 'Transaction', id: string, blockHeight?: string | null, hasPredicate?: boolean | null, statusType?: string | null, title: string, maturity?: string | null, txPointer?: string | null, isScript: boolean, isCreate: boolean, isMint: boolean, witnesses?: Array<string> | null, receiptsRoot?: string | null, script?: string | null, scriptData?: string | null, bytecodeWitnessIndex?: string | null, salt?: string | null, storageSlots?: Array<string> | null, rawPayload: string, mintAmount?: string | null, mintAssetId?: string | null, inputAssetIds?: Array<string> | null, inputContracts?: Array<string> | null, gasCosts?: { __typename: 'TransactionGasCosts', fee?: string | null, gasUsed?: string | null } | null, groupedInputs: Array<{ __typename: 'GroupedInputCoin', type?: GQLGroupedInputType | null, totalAmount?: string | null, owner?: string | null, assetId?: string | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, utxoId: string } | { __typename: 'InputContract' } | { __typename: 'InputMessage' }> | null } | { __typename: 'GroupedInputContract', type?: GQLGroupedInputType | null, contractId?: string | null } | { __typename: 'GroupedInputMessage', type?: GQLGroupedInputType | null, sender?: string | null, data?: string | null, recipient?: string | null }>, groupedOutputs: Array<{ __typename: 'GroupedOutputChanged', type?: GQLGroupedOutputType | null, assetId?: string | null, totalAmount?: string | null, to?: string | null, outputs?: Array<{ __typename: 'ChangeOutput' } | { __typename: 'CoinOutput' } | { __typename: 'ContractCreated' } | { __typename: 'ContractOutput' } | { __typename: 'VariableOutput' } | null> | null } | { __typename: 'GroupedOutputCoin', type?: GQLGroupedOutputType | null, assetId?: string | null, totalAmount?: string | null, to?: string | null, outputs?: Array<{ __typename: 'ChangeOutput' } | { __typename: 'CoinOutput' } | { __typename: 'ContractCreated' } | { __typename: 'ContractOutput' } | { __typename: 'VariableOutput' } | null> | null } | { __typename: 'GroupedOutputContractCreated', type?: GQLGroupedOutputType | null, contractId?: string | null }>, operations?: Array<{ __typename: 'Operation', type?: GQLOperationType | null, receipts?: Array<{ __typename: 'OperationReceipt', receipts?: Array<{ __typename: 'OperationReceipt', receipts?: Array<{ __typename: 'OperationReceipt', receipts?: Array<{ __typename: 'OperationReceipt', receipts?: Array<{ __typename: 'OperationReceipt', receipts?: Array<{ __typename: 'OperationReceipt', receipts?: Array<{ __typename: 'OperationReceipt', receipts?: Array<{ __typename: 'OperationReceipt', item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null, item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null, item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null, item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null, item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null, item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null, item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null, item?: { __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null } | null }> | null }> | null, receipts?: Array<{ __typename: 'Receipt', id?: string | null, to?: string | null, pc?: string | null, is?: string | null, toAddress?: string | null, amount?: string | null, assetId?: string | null, gas?: string | null, param1?: string | null, param2?: string | null, val?: string | null, ptr?: string | null, digest?: string | null, reason?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, len?: string | null, receiptType: GQLReceiptType, result?: string | null, gasUsed?: string | null, data?: string | null, sender?: string | null, recipient?: string | null, nonce?: string | null, contractId?: string | null, subId?: string | null }> | null, time: { __typename: 'ParsedTime', fromNow?: string | null, full?: string | null, rawUnix?: string | null }, inputContract?: { __typename: 'InputContract', contractId: string } | null, outputContract?: { __typename: 'ContractOutput', inputIndex: string } | null, status?: { __typename: 'FailureStatus', time: string, programState?: { __typename: 'ProgramState', data: string } | null } | { __typename: 'SqueezedOutStatus', reason: string } | { __typename: 'SubmittedStatus', time: string } | { __typename: 'SuccessStatus', time: string, block: { __typename: 'Block', id: string, header: { __typename: 'Header', id: string, height: string, daHeight: string, applicationHash: string, messageReceiptCount: string, time: string } }, programState?: { __typename: 'ProgramState', data: string } | null } | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, assetId: string, owner: string, predicate: string, predicateData: string, txPointer: string, utxoId: string, witnessIndex: string } | { __typename: 'InputContract', utxoId: string, balanceRoot: string, txPointer: string, contractId: string } | { __typename: 'InputMessage', sender: string, recipient: string, amount: string, nonce: string, data: string, predicate: string, predicateData: string }> | null, outputs: Array<{ __typename: 'ChangeOutput', to: string, amount: string, assetId: string } | { __typename: 'CoinOutput', to: string, amount: string, assetId: string } | { __typename: 'ContractCreated', contract: string } | { __typename: 'ContractOutput', inputIndex: string, balanceRoot: string } | { __typename: 'VariableOutput', to: string, amount: string, assetId: string }> } | null };
+
+export type GQLTransactionsByBlockIdQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  blockId: Scalars['String']['input'];
+}>;
+
+
+export type GQLTransactionsByBlockIdQuery = { __typename: 'Query', transactionsByBlockId: { __typename: 'TransactionConnection', nodes: Array<{ __typename: 'Transaction', _id?: string | null, id: string, title: string, statusType?: string | null, time: { __typename: 'ParsedTime', fromNow?: string | null, rawUnix?: string | null }, gasCosts?: { __typename: 'TransactionGasCosts', fee?: string | null } | null }>, pageInfo: { __typename: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
 
 export type GQLTransactionsByOwnerQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -3355,6 +3376,27 @@ export const TransactionDetailsDocument = gql`
   }
 }
     ${TransactionItemFragmentDoc}`;
+export const TransactionsByBlockIdDocument = gql`
+    query transactionsByBlockId($after: String, $before: String, $first: Int, $last: Int, $blockId: String!) {
+  transactionsByBlockId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    blockId: $blockId
+  ) {
+    nodes {
+      ...RecentTransaction
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}
+    ${RecentTransactionFragmentDoc}`;
 export const TransactionsByOwnerDocument = gql`
     query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!) {
   transactionsByOwner(
@@ -3391,6 +3433,7 @@ const PredicateDocumentString = print(PredicateDocument);
 const RecentTransactionsDocumentString = print(RecentTransactionsDocument);
 const SearchDocumentString = print(SearchDocument);
 const TransactionDetailsDocumentString = print(TransactionDetailsDocument);
+const TransactionsByBlockIdDocumentString = print(TransactionsByBlockIdDocument);
 const TransactionsByOwnerDocumentString = print(TransactionsByOwnerDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
@@ -3423,6 +3466,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     transactionDetails(variables: GQLTransactionDetailsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLTransactionDetailsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLTransactionDetailsQuery>(TransactionDetailsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'transactionDetails', 'query', variables);
+    },
+    transactionsByBlockId(variables: GQLTransactionsByBlockIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLTransactionsByBlockIdQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLTransactionsByBlockIdQuery>(TransactionsByBlockIdDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'transactionsByBlockId', 'query', variables);
     },
     transactionsByOwner(variables: GQLTransactionsByOwnerQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLTransactionsByOwnerQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLTransactionsByOwnerQuery>(TransactionsByOwnerDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'transactionsByOwner', 'query', variables);
