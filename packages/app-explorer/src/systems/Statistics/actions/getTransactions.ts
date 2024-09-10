@@ -18,18 +18,34 @@ interface TransactionParams {
   timeFilter?: string;
 }
 
-async function getTransactionFeeStats(
+interface TransactionNode {
+  __typename: 'TransactionFee';
+  fee: string;
+  timestamp: string;
+}
+
+// Common function to process transaction statistics
+async function fetchTransactionStatistics(
   params: TransactionParams,
+  fieldName:
+    | 'transactionsFeeStatistics'
+    | 'cumulativeTransactionsFeeStatistics',
   unit: 'minute' | 'hour' | 'day' | 'month',
   intervalSize: number,
+  isCumulative = false,
 ) {
-  const data = await sdk.transactionsFeeStatistics(params);
+  const data = await (isCumulative
+    ? sdk.cumulativeTransactionsFeeStatistics(params)
+    : sdk.transactionsFeeStatistics(params));
 
-  if (!data.data.transactionsFeeStatistics.nodes) {
-    return {};
+  const { nodes, offset } = extractTransactionData(data, fieldName);
+
+  if (!nodes.length) {
+    return isCumulative
+      ? { transactions: [], offset: 0 }
+      : { transactions: [] };
   }
 
-  const nodes = data.data.transactionsFeeStatistics.nodes;
   const firstTimestamp = Number(DateHelper.tai64toDate(nodes[0].timestamp));
   const lastTimestamp = Number(
     DateHelper.tai64toDate(nodes[nodes.length - 1].timestamp),
@@ -41,10 +57,52 @@ async function getTransactionFeeStats(
     unit,
     intervalSize,
   );
-  return processTransactions(nodes, intervalMap);
+  const transactions = processTransactions(nodes, intervalMap);
+
+  if (isCumulative) {
+    return { transactions, offset };
+  }
+
+  return transactions;
 }
 
-// Exported functions using the common helper
+// Helper to extract nodes and timestamps from the response
+function extractTransactionData(
+  data: any,
+  fieldName: string,
+): { nodes: TransactionNode[]; offset?: number } {
+  const nodes = data.data[fieldName]?.nodes || [];
+  const offset = data.data[fieldName]?.transactionOffset;
+  return { nodes, offset };
+}
+
+async function getCumulativeTransactionFeeStats(
+  params: TransactionParams,
+  unit: 'minute' | 'hour' | 'day' | 'month',
+  intervalSize: number,
+) {
+  return fetchTransactionStatistics(
+    params,
+    'cumulativeTransactionsFeeStatistics',
+    unit,
+    intervalSize,
+    true,
+  );
+}
+
+export async function getTransactionFeeStats(
+  params: TransactionParams,
+  unit: 'minute' | 'hour' | 'day' | 'month',
+  intervalSize: number,
+) {
+  return fetchTransactionStatistics(
+    params,
+    'transactionsFeeStatistics',
+    unit,
+    intervalSize,
+  );
+}
+
 export const getTransactionStats = act(schema, async ({ timeFilter }) => {
   const params = { timeFilter: timeFilter } as { timeFilter?: string };
   const { unit, intervalSize } = getUnitAndInterval(params.timeFilter || '');
@@ -59,5 +117,15 @@ export const getDailyTransactionFeeStats = act(
 
     // Use 'day' as the unit and 1 as the interval size
     return getTransactionFeeStats(params, 'day', 1);
+  },
+);
+
+export const getCumulativeTransactionStats = act(
+  schema,
+  async ({ timeFilter }) => {
+    const params = { timeFilter: timeFilter } as { timeFilter?: string };
+    const { unit, intervalSize } = getUnitAndInterval(params.timeFilter || '');
+
+    return getCumulativeTransactionFeeStats(params, unit, intervalSize);
   },
 );
