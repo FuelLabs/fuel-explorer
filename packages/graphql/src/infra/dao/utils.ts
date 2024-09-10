@@ -1,6 +1,6 @@
 export function getTimeInterval(timeFilter: string): number | null {
   let _interval;
-  const msPerHour = 60 * 60 * 24 * 100;
+  const msPerHour = 60 * 60 * 1000;
   switch (timeFilter) {
     case '1hr':
       _interval = msPerHour;
