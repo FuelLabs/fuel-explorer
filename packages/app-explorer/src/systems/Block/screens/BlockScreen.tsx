@@ -15,7 +15,6 @@ export const BlocksScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const limit = 10;
 
   const calculateTotalPages = () => {
@@ -38,14 +37,12 @@ export const BlocksScreen = () => {
     dir: 'after' | 'before' = 'after',
   ) => {
     setLoading(true);
-    setError(null);
     try {
       const result = await getBlocks({ cursor, dir });
       const blockData = result.blocks;
       setData(blockData);
     } catch (err) {
       console.error('Error fetching block data:', err);
-      setError('Failed to fetch block data. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -92,7 +89,6 @@ export const BlocksScreen = () => {
   return (
     <VStack>
       <Hero />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
       {loading ? (
         <p>Loading blocks...</p>
       ) : (

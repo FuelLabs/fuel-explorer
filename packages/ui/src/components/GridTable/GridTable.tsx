@@ -2,7 +2,6 @@
 import React from 'react';
 import DataTable, { TableProps, TableColumn } from 'react-data-table-component';
 import ReactPaginate from 'react-paginate';
-import './gridTable.css';
 
 export interface GridTableProps<T> extends TableProps<T> {
   columns: TableColumn<T>[];
@@ -114,13 +113,59 @@ export const GridTable = <T,>({
   };
 
   const handlePagination = (page: any) => {
-    console.log('Page updated to ', page.selected);
     setCurrentPage(page.selected + 1);
     onPageChanged(page.selected + 1);
   };
 
   return (
     <div style={customStyles.tableWrapper.style}>
+      <style>{`
+        .pagination {
+          display: flex;
+          justify-content: end;
+          align-items: center;
+          list-style: none;
+          padding: 0;
+          margin: 1rem 0;
+        }
+
+        .pagination li {
+          margin: 0 8px;
+        }
+
+        .pagination li a {
+          padding: 8px 16px;
+          color: var(--white-2);
+          background-color: var(--gray-2);
+          border-radius: 7px;
+          cursor: pointer;
+          text-decoration: none;
+        }
+
+        .pagination li.selected a {
+          background-color: var(--gray-7);
+          font-weight: bold;
+        }
+
+        .pagination li a:hover {
+          background-color: var(--gray-5);
+        }
+
+        .pagination li.previous a,
+        .pagination li.next a {
+          background-color: transparent;
+          padding: 0;
+        }
+
+        .pagination li.disabled a {
+          color: #888;
+          cursor: not-allowed;
+        }
+
+        .pagination li.disabled a:hover {
+          background-color: transparent;
+        }
+      `}</style>
       <DataTable
         customStyles={customStyles}
         columns={columns}

@@ -1,5 +1,3 @@
-'use client';
-
 import { HStack, Heading, Theme, VStack } from '@fuels/ui';
 
 export function Hero() {
