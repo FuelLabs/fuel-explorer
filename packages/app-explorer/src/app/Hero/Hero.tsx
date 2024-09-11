@@ -3,9 +3,13 @@
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
 import { tv } from 'tailwind-variants';
-import Epoch from '../Epoch';
+import { DailyTransaction } from '../DailyTransaction';
+// import { TableTile } from '../TableCell/TableTile';
+import { DataTable } from '../DataTable';
+import Epoch from '../Epoch/Epoch';
+import { GasSaved } from '../GasSaved';
 import { GasTracker } from '../GasTracker';
-import { LatestBlock } from '../LatestBlock';
+import { LatestBlock } from '../LatestBlock/LatestBlock';
 import { TPS } from '../TPS';
 import { TrendingCardCarousel } from '../TrendingCardCarousel';
 
