@@ -5,8 +5,6 @@ export { shortAddress } from './utils/helpers';
 export { useBreakpoints } from './hooks/useBreakpoints';
 export type * from './utils/types';
 
-export * from './components/LineGraph';
-export * from './components/Charts';
 export * from './components/Accordion';
 export * from './components/Address';
 export * from './components/Alert';
