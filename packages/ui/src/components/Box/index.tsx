@@ -15,6 +15,3 @@ export type { VStackProps } from './VStack';
 
 export { HStack } from './HStack';
 export type { HStackProps } from './HStack';
-
-export { RoundedContainer } from './RoundedContainer';
-export type { RoundedContainerProps } from './RoundedContainer';
