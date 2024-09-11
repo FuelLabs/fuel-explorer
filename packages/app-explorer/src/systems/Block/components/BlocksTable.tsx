@@ -1,6 +1,7 @@
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { GridTable } from '@fuels/ui';
 import { Link } from '@fuels/ui';
+import NextLink from 'next/link';
 import BlockEfficiencyItem from './BlockEfficiencyItem';
 import BlockHashItem from './BlockHashItem';
 import BlockItem from './BlockItem';
@@ -12,7 +13,7 @@ const columns = [
     name: 'Block',
     cell: (row: any) => {
       const totalGasUsed = (
-        parseFloat(row.node.totalGasUsed) *
+        parseFloat(row.node.totalGasUsed) /
         10 ** 9
       ).toString();
       return (
@@ -83,7 +84,9 @@ const columns = [
     name: '',
     cell: (row: any) => (
       <Link
-        href={`https://app.fuel.network/block/${row.node.header.height}/simple`}
+        as={NextLink}
+        isExternal={false}
+        href={`/block/${row.node.header.height}/simple`}
         className="px-4 py-[0.4rem] bg-gray-3 hover:bg-black hover:text-white dark:hover:bg-brand text-black dark:text-white rounded font-semibold font-mono"
       >
         View
