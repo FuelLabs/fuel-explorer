@@ -20,11 +20,7 @@ type Payload<D = unknown> = {
 };
 
 export enum QueueNames {
-  SYNC_BLOCKS = 'indexer/sync-blocks',
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
-  SYNC_MISSING = 'indexer/sync-missing',
-  SYNC_LAST = 'indexer/sync-last',
-  SYNC_LOST_BLOCKS = 'indexer/sync-lost-blocks',
 }
 export enum ChannelNames {
   main = 'main',
@@ -33,21 +29,10 @@ export enum ChannelNames {
 }
 
 export type QueueInputs = {
-  [QueueNames.SYNC_MISSING]: null;
-  [QueueNames.SYNC_BLOCKS]: {
-    cursor?: number;
-    offset?: number;
-    watch?: boolean;
-  };
-  [QueueNames.SYNC_LAST]: {
-    last: number;
-    watch?: boolean;
-  };
   [QueueNames.ADD_BLOCK_RANGE]: {
     from: number;
     to: number;
   };
-  [QueueNames.SYNC_LOST_BLOCKS]: {};
 };
 
 class RabbitMQConnection {
@@ -62,9 +47,7 @@ class RabbitMQConnection {
       const url = `${PROTOCOL}://${USER}:${PASS}@${HOST}:${PORT}`;
       this.connection = await client.connect(url);
       logger.debug('✅ Rabbit MQ Connection is ready');
-      await this.createChannel(ChannelNames.main, 5);
       await this.createChannel(ChannelNames.block, MAX_WORKERS);
-      await this.createChannel(ChannelNames.tx, 100);
       logger.info('🚀 RabbitMQ Connection is ready');
     } catch (error) {
       logger.error('Not connected to MQ Server', error);
@@ -102,7 +85,7 @@ class RabbitMQConnection {
   ) {
     try {
       const channel = await this.getChannel(ChannelNames[channelName]);
-      const payload = { type: queue, data } as P;
+      const payload = { type: queue, data };
       const buffer = Buffer.from(JSON.stringify(payload));
       channel.sendToQueue(queue, buffer, { persistent: true });
     } catch (error) {

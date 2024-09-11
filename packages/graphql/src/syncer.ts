@@ -22,36 +22,28 @@ async function main() {
   while (true) {
     const total = await mq.getActive(QueueNames.ADD_BLOCK_RANGE);
     if (total > 0) {
-      console.log('messages', total);
+      logger.info(`⌛️ Waiting messages to be consume: ${total} messages left`);
       await setTimeout(5000);
       continue;
     }
-    const { data } = await client.sdk.blocks({ last: 1 });
-    const lastBlock = data.blocks.nodes[0];
-    const height = Number(lastBlock?.header.height ?? '0');
-    const blockDAO = new BlockDAO();
-    const latestBlock = await blockDAO.findLatestBlockAdded();
-    const from = latestBlock ? latestBlock.id : 0;
-    const to = from + 10000;
-    const range = { from, to: Math.min(to, height) };
-    const events = createBatchEvents(range);
-    for (const event of events) {
-      await mq.send('block', QueueNames.ADD_BLOCK_RANGE, event);
+    try {
+      const { data } = await client.sdk.blocks({ last: 1 });
+      const lastBlock = data.blocks.nodes[0];
+      const height = Number(lastBlock?.header.height ?? '0');
+      const blockDAO = new BlockDAO();
+      const latestBlock = await blockDAO.findLatestBlockAdded();
+      const from = latestBlock ? latestBlock.id : 0;
+      const to = from + 10000;
+      const range = { from, to: Math.min(to, height) };
+      const events = createBatchEvents(range);
+      for (const event of events) {
+        await mq.send('block', QueueNames.ADD_BLOCK_RANGE, event);
+      }
+    } catch (e: any) {
+      logger.error(e);
     }
     await setTimeout(5000);
   }
 }
 
-(async () => {
-  await main();
-
-  const others = ['SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM'];
-  //biome-ignore lint/complexity/noForEach: <explanation>
-  others.forEach((eventType) => {
-    process.on(eventType, async (err) => {
-      await mq.disconnect();
-      logger.error('❌ GraphQL shutdown error', err);
-      process.exit(1);
-    });
-  });
-})();
+main();
