@@ -131,7 +131,11 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   <Dropdown.Item className={classes.dropdownItem()}>
                     <Link
                       as={NextLink}
-                      href={Routes.blockSimple(searchResult.block.id!)}
+                      href={Routes.blockSimple(
+                        searchResult.block.id!,
+                        '',
+                        'after',
+                      )}
                       onClick={onSelectItem}
                     >
                       {shortAddress(searchResult.block.id || '', trimL, trimR)}
@@ -140,7 +144,11 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   <Dropdown.Item className={classes.dropdownItem()}>
                     <Link
                       as={NextLink}
-                      href={Routes.blockSimple(searchResult.block.height!)}
+                      href={Routes.blockSimple(
+                        searchResult.block.height!,
+                        '',
+                        'after',
+                      )}
                       onClick={onSelectItem}
                     >
                       {searchResult.block.height}

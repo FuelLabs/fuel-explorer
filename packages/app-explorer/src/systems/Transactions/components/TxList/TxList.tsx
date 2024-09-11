@@ -9,7 +9,7 @@ import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
-  transactions: GQLTransactionsByBlockIdQuery['transactionsByBlockId']['nodes'];
+  transactions?: GQLTransactionsByBlockIdQuery['transactionsByBlockId']['nodes'];
   hidePagination?: boolean;
   isLoading?: boolean;
   pageInfo?: GqlPageInfo;

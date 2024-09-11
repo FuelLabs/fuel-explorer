@@ -69,8 +69,8 @@ export function BlockScreenSimple({
         <TxListLoader numberOfTxs={4} />
       ) : (
         <TxList
-          transactions={txs.nodes}
-          pageInfo={txs.pageInfo}
+          transactions={txs?.nodes}
+          pageInfo={txs?.pageInfo}
           owner={id}
           route="blockSimple"
         />
