@@ -150,20 +150,24 @@ export const StatisticsScreen = () => {
               Transactions
             </h2>
             <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              {/* <LineGraph
-                dataProp={dummyData}
+              <LineGraph
+                dataProp={dailyTransactionsData}
                 titleProp={'Total Transactions (Cumilative)'}
-              /> */}
+                selectedDays={dailyTransactionsTimeStamp}
+                setSelectedDays={setDailyTransactionsTimeStamp}
+              />
               <LineGraph
                 dataProp={dailyTransactionsData}
                 titleProp={'Daily Transactions'}
                 selectedDays={dailyTransactionsTimeStamp}
                 setSelectedDays={setDailyTransactionsTimeStamp}
               />
-              {/* <LineGraph
-                dataProp={dummyData}
+              <LineGraph
+                dataProp={averageTransactionsData}
                 titleProp={'Transaction Fee Spent (Cumilative)'}
-              />*/}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
+              />
               <LineGraph
                 dataProp={averageTransactionsData}
                 titleProp={'Avg. Transactions Fee'}
@@ -173,20 +177,29 @@ export const StatisticsScreen = () => {
             </Grid>
           </div>
 
-          {/*<div className="text-heading text-md font-mono my-20">
+          <div className="text-heading text-md font-mono my-20">
             <h2 className="font-mono" style={{ fontSize: '1.5rem' }}>
               Accounts
             </h2>
             <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph
-                dataProp={dummyData}
+                dataProp={averageTransactionsData}
                 titleProp={'Total Active (Cumilative)'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
               />
               <LineGraph
-                dataProp={dummyData}
+                dataProp={averageTransactionsData}
                 titleProp={'Daily Active Accounts'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
               />
-              <LineGraph dataProp={dummyData} titleProp={'New Accounts'} />
+              <LineGraph
+                dataProp={averageTransactionsData}
+                titleProp={'New Accounts'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
+              />
             </Grid>
           </div>
 
@@ -196,10 +209,17 @@ export const StatisticsScreen = () => {
             </h2>
             <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph
-                dataProp={dummyData}
+                dataProp={averageTransactionsData}
                 titleProp={'Total Tokens (Cumilative)'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
               />
-              <LineGraph dataProp={dummyData} titleProp={'New Tokens'} />
+              <LineGraph
+                dataProp={averageTransactionsData}
+                titleProp={'New Tokens'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
+              />
             </Grid>
           </div>
 
@@ -209,12 +229,19 @@ export const StatisticsScreen = () => {
             </h2>
             <Grid className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <LineGraph
-                dataProp={dummyData}
+                dataProp={averageTransactionsData}
                 titleProp={'Total NFTs (Cumilative)'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
               />
-              <LineGraph dataProp={dummyData} titleProp={'New NFTs'} />
+              <LineGraph
+                dataProp={averageTransactionsData}
+                titleProp={'New NFTs'}
+                selectedDays={averageTransactionsTimeStamp}
+                setSelectedDays={setAverageTransactionsTimeStamp}
+              />
             </Grid>
-          </div> */}
+          </div>
         </Container>
       </Box>
     </Theme>
