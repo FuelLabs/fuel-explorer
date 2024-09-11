@@ -44,7 +44,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   selectedDays,
   setSelectedDays,
 }) => {
-  const [selectedPoint, setSelectedPoint] = useState<DataPoint | null>(null);
+  const [selectedPoint, setSelectedPoint] = useState<any>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -114,7 +114,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
       <div className="flex-grow my-3 mt-2">
         {selectedPoint ? (
           <h1 className="text-xl font-mono text-heading">
-            {selectedPoint.value}
+            {selectedPoint.count}
           </h1>
         ) : (
           <h1 className="text-heading text-xl"> &nbsp; </h1>
