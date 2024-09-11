@@ -342,17 +342,6 @@
   },
   {
     "isLive": false,
-    "name": "PlayEstates",
-    "url": "https://www.playestates.com/",
-    "tags": ["Real World Assets", "Gaming", "NFT"],
-    "description": "PlayEstates brings real estate on-chain and makes RWA ownership easy and affordable.",
-    "github": "",
-    "twitter": "https://twitter.com/playestates",
-    "discord": "https://discord.gg/playestates",
-    "image": "playestates"
-  },
-  {
-    "isLive": false,
     "name": "PoolShark Protocol",
     "url": "https://www.poolshark.fi/",
     "tags": ["DeFi"],
