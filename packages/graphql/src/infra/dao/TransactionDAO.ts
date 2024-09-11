@@ -291,6 +291,7 @@ export default class TransactionDAO {
         startCursor,
       },
     };
+
     return paginatedResults;
   }
 }
