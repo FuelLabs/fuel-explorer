@@ -342,6 +342,17 @@
   },
   {
     "isLive": false,
+    "name": "Pipeline Finance",
+    "url": "https://www.pipeline.finance/",
+    "tags": ["DeFi", "Token Streaming"],
+    "description": "Pipeline Finance is the go-to solution for affordable and secure token streaming on the Fuel network. Experience seamless, real-time payments with ease.",
+    "github": "https://github.com/wt-xyz/pipeline",
+    "twitter": "https://x.com/pipeline_fi",
+    "discord": "",
+    "image": "pipeline"
+  },
+  {
+    "isLive": false,
     "name": "PoolShark Protocol",
     "url": "https://www.poolshark.fi/",
     "tags": ["DeFi"],
