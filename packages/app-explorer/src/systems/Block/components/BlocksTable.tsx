@@ -1,5 +1,6 @@
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { GridTable } from '@fuels/ui';
+import { Link } from '@fuels/ui';
 import BlockEfficiencyItem from './BlockEfficiencyItem';
 import BlockHashItem from './BlockHashItem';
 import BlockItem from './BlockItem';
@@ -81,13 +82,12 @@ const columns = [
   {
     name: '',
     cell: (row: any) => (
-      <button
-        type="button"
-        onClick={() => console.log('Button clicked for:', row.name)}
+      <Link
+        href={`https://app.fuel.network/block/${row.node.header.height}/simple`}
         className="px-4 py-[0.4rem] bg-gray-3 hover:bg-black hover:text-white dark:hover:bg-brand text-black dark:text-white rounded font-semibold font-mono"
       >
         View
-      </button>
+      </Link>
     ),
     sortable: false,
   },

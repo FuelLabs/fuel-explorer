@@ -41,8 +41,6 @@ export const BlocksScreen = () => {
       const result = await getBlocks({ cursor, dir });
       const blockData = result.blocks;
       setData(blockData);
-    } catch (err) {
-      console.error('Error fetching block data:', err);
     } finally {
       setLoading(false);
     }
