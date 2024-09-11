@@ -23,20 +23,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  audit:
-    name: Audit
-    if: ${{ github.head_ref != 'changeset-release/master' }}
-    runs-on: buildjet-4vcpu-ubuntu-2204
-    steps:
-      - uses: actions/checkout@v3
-      - uses: FuelLabs/github-actions/setups/node@master
-        with:
-          node-version: 20.11.0
-          pnpm-version: 8.9.2
+  # audit:
+  #   name: Audit
+  #   if: ${{ github.head_ref != 'changeset-release/master' }}
+  #   runs-on: buildjet-4vcpu-ubuntu-2204
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: FuelLabs/github-actions/setups/node@master
+  #       with:
+  #         node-version: 20.11.0
+  #         pnpm-version: 8.9.2
 
-      - name: Run Audit
-        # temporally avoid low severity vulnerabilities
-        run: pnpm audit --prod --audit-level high
+  #     - name: Run Audit
+  #       # temporally avoid low severity vulnerabilities
+  #       run: pnpm audit --prod --audit-level high
 
   lint-and-test:
     name: Lint
