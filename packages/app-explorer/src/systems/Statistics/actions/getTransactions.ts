@@ -14,9 +14,11 @@ const schema = z.object({
   timeFilter: z.string().optional().nullable(),
 });
 
+
 interface TransactionParams {
   timeFilter?: string;
 }
+
 
 interface TransactionNode {
   __typename: 'TransactionFee';
@@ -45,6 +47,8 @@ async function fetchTransactionStatistics(
       ? { transactions: [], offset: 0 }
       : { transactions: [] };
   }
+
+
 
   const firstTimestamp = Number(DateHelper.tai64toDate(nodes[0].timestamp));
   const lastTimestamp = Number(
