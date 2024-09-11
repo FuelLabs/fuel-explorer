@@ -1,6 +1,0 @@
-query latestGasPrice{
-    latestGasPrice{
-        blockHeight
-        gasPrice
-    }
-}

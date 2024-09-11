@@ -1,5 +1,0 @@
-query estimateGasPrice($blockHorizon: U32){
-    estimateGasPrice(blockHorizon: $blockHorizon){
-        gasPrice
-    }
-}

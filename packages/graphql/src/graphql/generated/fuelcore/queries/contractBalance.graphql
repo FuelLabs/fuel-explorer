@@ -1,7 +1,0 @@
-query contractBalance($asset: AssetId!, $contract: ContractId!){
-    contractBalance(asset: $asset, contract: $contract){
-        amount
-        assetId
-        contract
-    }
-}
