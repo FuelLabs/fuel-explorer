@@ -26,9 +26,8 @@ export const getTransactionsByBlockId = act(schema, async (input) => {
   if (cursor && dir === 'before') {
     params.before = cursor;
   }
-  //   const isAddressValid = isValidAddress(id);
   const isValidBlockHeight = !Number.isNaN(Number(id));
-  if (!id || (!isValidBlockHeight && !isValidAddress)) {
+  if (!id || (!isValidBlockHeight && !isValidAddress(id))) {
     throw new Error('Invalid block number or block id');
   }
   const { data } = await sdk.transactionsByBlockId({ blockId: id, ...params });

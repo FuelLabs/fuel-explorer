@@ -1,3 +1,4 @@
+import { isB256, isBech32 } from 'fuels';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
@@ -209,7 +210,21 @@ export default class TransactionDAO {
     blockId: string,
     paginatedParams: PaginatedParams,
   ) {
-    console.log(blockId, paginatedParams);
+    let height = blockId;
+    if (isB256(blockId) || isBech32(blockId)) {
+      const [block] = await this.databaseConnection.query(
+        `
+			  select
+				  b._id
+			  from
+				  indexer.blocks b
+			  where
+				  b.id = $1
+			  `,
+        [blockId],
+      );
+      height = block._id;
+    }
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const transactionsData = await this.databaseConnection.query(
@@ -226,7 +241,7 @@ export default class TransactionDAO {
 		limit
 			10
 		`,
-      [blockId, paginatedParams.cursor],
+      [height, paginatedParams.cursor],
     );
     transactionsData.sort((a: any, b: any) => {
       return a._id.localeCompare(b._id) * -1;
@@ -252,13 +267,13 @@ export default class TransactionDAO {
     const hasPreviousPage = (
       await this.databaseConnection.query(
         'select exists(select 1 from indexer.transactions t where t._id < $1 and t.block_id = $2)',
-        [endCursor, blockId],
+        [endCursor, height],
       )
     )[0].exists;
     const hasNextPage = (
       await this.databaseConnection.query(
         'select exists(select 1 from indexer.transactions t where t._id > $1 and t.block_id = $2)',
-        [startCursor, blockId],
+        [startCursor, height],
       )
     )[0].exists;
     const newNodes = transactions.map((n) => n.toGQLNode());
