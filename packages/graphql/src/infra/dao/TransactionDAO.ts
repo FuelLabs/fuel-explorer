@@ -214,13 +214,13 @@ export default class TransactionDAO {
     if (isB256(blockId) || isBech32(blockId)) {
       const [block] = await this.databaseConnection.query(
         `
-			  select
-				  b._id
-			  from
-				  indexer.blocks b
-			  where
-				  b.id = $1
-			  `,
+			select
+				b._id
+			from
+				indexer.blocks b
+			where
+				b.id = $1
+		`,
         [blockId],
       );
       height = block._id;
