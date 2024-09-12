@@ -3,7 +3,7 @@
 import { Button, Carousel, CarouselContent, CarouselItem } from '@fuels/ui';
 import { CarouselApi } from '@fuels/ui/src/components/Carousel/Carousel';
 import React from 'react';
-import { TrendingCard } from '../TrendingCard/TrendingCard';
+import { TrendingCard } from '../components/TrendingCard/TrendingCard';
 
 export const TRENDING_DATA = [
   {

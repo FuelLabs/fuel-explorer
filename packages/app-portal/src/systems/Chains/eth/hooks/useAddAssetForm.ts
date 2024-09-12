@@ -17,7 +17,7 @@ type UseAddAssetOpts = {
 };
 
 export const useAddAssetForm = (opts: UseAddAssetOpts = {}) => {
-  const schema = yup.object({
+  const schema: any = yup.object({
     symbol: yup.string().required('Symbol is required'),
     decimals: yup
       .string()

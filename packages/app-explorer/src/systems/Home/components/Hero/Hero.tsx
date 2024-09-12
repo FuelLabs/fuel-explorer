@@ -3,6 +3,9 @@
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
 import { tv } from 'tailwind-variants';
+import { DataTable } from '../../components/DataTable';
+import { GasSaved } from '../../components/GasSaved';
+import { DailyTransaction } from '../DailyTransaction';
 import Epoch from '../Epoch';
 import { GasTracker } from '../GasTracker';
 import { LatestBlock } from '../LatestBlock';

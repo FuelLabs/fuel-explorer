@@ -11,7 +11,9 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -36,7 +38,9 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": ["dist"]
+    "files": [
+      "dist"
+    ]
   },
   "scripts": {
     "build:lib": "tsup --dts",
@@ -55,25 +59,26 @@
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
     "@radix-ui/react-aspect-ratio": "1.1.0",
-    "@radix-ui/react-portal": "1.1.1",
     "@radix-ui/react-dialog": "1.1.1",
+    "@radix-ui/react-portal": "1.1.1",
     "@radix-ui/react-slot": "1.0.2",
     "@radix-ui/react-toast": "1.2.1",
     "@radix-ui/themes": "3.1.1",
     "@react-aria/focus": "3.16.2",
     "@tabler/icons-react": "2.47.0",
     "@tailwindcss/typography": "0.5.10",
-    "react-paginate": "8.2.0",
-    "react-data-table-component": "7.6.2",
     "clsx": "2.1.0",
     "csstype": "3.1.3",
+    "embla-carousel-react": "8.2.1",
     "framer-motion": "11.0.5",
     "geist": "1.2.2",
     "modern-normalize": "2.0.0",
     "next": "14.1.0",
     "react": "18.2.0",
     "react-aria": "3.32.1",
+    "react-data-table-component": "7.6.2",
     "react-dom": "18.2.0",
+    "react-paginate": "8.2.0",
     "react-stately": "3.29.1",
     "react-use": "17.5.0",
     "tailwind-variants": "0.1.20",

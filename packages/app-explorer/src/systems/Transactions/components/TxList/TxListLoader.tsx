@@ -3,9 +3,11 @@ import { TxList } from './TxList';
 
 type TxListLoaderProps = {
   numberOfTxs?: number;
+  page: string;
 };
 
-export const TxListLoader = ({ numberOfTxs = 4 }: TxListLoaderProps) => {
+export const TxListLoader = ({ numberOfTxs = 4, page }: TxListLoaderProps) => {
+  console.log(page);
   const baseArray = Array.from(
     { length: numberOfTxs },
     (_, index) => index + 1,

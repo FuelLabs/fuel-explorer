@@ -15,7 +15,9 @@
   },
   "typesVersions": {
     "*": {
-      "sdk": ["./src/graphql/generated/sdk.ts"]
+      "sdk": [
+        "./src/graphql/generated/sdk.ts"
+      ]
     }
   },
   "scripts": {
@@ -72,6 +74,7 @@
     "pino": "9.2.0",
     "pino-pretty": "11.2.1",
     "pm2": "^5.4.1",
+    "recharts": "2.12.7",
     "shallow-equal-object": "1.1.1",
     "tai64": "^1.0.0",
     "winston": "3.13.0",
