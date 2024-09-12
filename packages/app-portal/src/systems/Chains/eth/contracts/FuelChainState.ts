@@ -1,5 +1,5 @@
 import { FuelChainState } from '@fuel-bridge/solidity-contracts';
-import { getBridgeSolidityContracts } from 'app-commons';
+import { type HexAddress, getBridgeSolidityContracts } from 'app-commons';
 import type { PublicClient } from 'viem';
 
 export const FUEL_CHAIN_STATE = {
@@ -33,7 +33,7 @@ export const FUEL_CHAIN_STATE = {
     const logs = await FUEL_CHAIN_STATE.getCommitSubmitted({ ethPublicClient });
     const lastCommitBlockHash = logs[logs.length - 1]?.blockHash;
     const lastBlockCommited = await ethPublicClient.getBlock({
-      blockHash: lastCommitBlockHash as `0x${string}`,
+      blockHash: lastCommitBlockHash as HexAddress,
     });
 
     return lastBlockCommited;
@@ -46,12 +46,12 @@ export const FUEL_CHAIN_STATE = {
     fuelBlockHashCommited: string;
   }) => {
     const logs = await FUEL_CHAIN_STATE.getCommitSubmitted({ ethPublicClient });
-    let ethBlockHash: `0x${string}` | undefined = undefined;
+    let ethBlockHash: HexAddress | undefined = undefined;
     for (let i = logs.length - 1; i >= 0; i--) {
       const log = logs[i];
       const args = log.args as unknown as { blockHash: string };
       if (args.blockHash === fuelBlockHashCommited) {
-        ethBlockHash = log.blockHash as `0x${string}`;
+        ethBlockHash = log.blockHash as HexAddress;
         break;
       }
     }

@@ -6,8 +6,7 @@ import {
 import { shortAddress } from '~portal/systems/Core';
 import { useOverlay } from '~portal/systems/Overlay';
 
-import { Button, Dialog, HStack, VStack } from '@fuels/ui';
-import { IconTransferOut } from '@tabler/icons-react';
+import { Button, Dialog, VStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 import { useEthAccountConnection } from '../../eth';
 import { useTxFuelToEth } from '../hooks';
@@ -36,11 +35,7 @@ export function TxFuelToEthDialog() {
 
   return (
     <VStack className="max-w-sm">
-      <Dialog.Title className="mb-0">
-        <HStack gap="2" className="items-center">
-          <IconTransferOut size={20} stroke={1.5} /> Withdraw
-        </HStack>
-      </Dialog.Title>
+      <Dialog.Title className="mb-0">Withdraw</Dialog.Title>
       <BridgeSteps steps={steps} />
       <BridgeTxOverview
         explorerLink={explorerLink}

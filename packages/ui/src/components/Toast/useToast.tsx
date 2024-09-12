@@ -1,14 +1,7 @@
 'use client';
 
-import {
-  IconAlertCircle,
-  IconAlertTriangle,
-  IconCheck,
-  IconHelpCircle,
-} from '@tabler/icons-react';
+import {} from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-
-import { Icon } from '../Icon/Icon';
 
 import type { ToastActionElement, ToastIconElement, ToastProps } from './Toast';
 
@@ -212,7 +205,6 @@ toast = Object.assign(toast, {
       ...props,
       title: msg,
       variant: 'success',
-      icon: props?.icon || <Icon icon={IconCheck} />,
     });
   },
   base: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
@@ -220,7 +212,6 @@ toast = Object.assign(toast, {
       ...props,
       title: msg,
       variant: 'base',
-      icon: props?.icon || <Icon icon={IconHelpCircle} />,
     });
   },
   info: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
@@ -228,7 +219,6 @@ toast = Object.assign(toast, {
       ...props,
       title: msg,
       variant: 'info',
-      icon: props?.icon || <Icon icon={IconHelpCircle} />,
     });
   },
   warning: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
@@ -236,7 +226,6 @@ toast = Object.assign(toast, {
       ...props,
       title: msg,
       variant: 'warning',
-      icon: props?.icon || <Icon icon={IconAlertCircle} />,
     });
   },
   error: (msg: string, props?: Omit<ToasterToast, 'variant'>) => {
@@ -244,7 +233,6 @@ toast = Object.assign(toast, {
       ...props,
       title: msg,
       variant: 'error',
-      icon: props?.icon || <Icon icon={IconAlertTriangle} />,
     });
   },
 });

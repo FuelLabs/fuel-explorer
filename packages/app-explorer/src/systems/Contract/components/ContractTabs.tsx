@@ -20,6 +20,7 @@ export function ContractTabs({ contractId }: ContractTabsProps) {
 
   return (
     <NavigationTab
+      className="mb-8"
       defaultValue={defaultValue}
       value={defaultValue}
       renderTab={(children, item) => (

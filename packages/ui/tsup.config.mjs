@@ -23,7 +23,7 @@ export default [
   {
     ...defConfig,
     entry: {
-      index: 'src/index.tsx',
+      index: 'src/index.ts',
     },
     publicDir: 'public',
   },

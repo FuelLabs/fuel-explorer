@@ -1,5 +1,5 @@
 'use client';
-import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql/sdk';
+import type { GQLTransactionsByBlockIdQuery } from '@fuel-explorer/graphql/sdk';
 import { GqlPageInfo } from '@fuel-ts/account/dist/providers/__generated__/operations';
 import type { BaseProps } from '@fuels/ui';
 import { Flex, Grid, cx } from '@fuels/ui';
@@ -9,12 +9,12 @@ import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
 
 export type TxListProps = BaseProps<{
-  transactions: GQLRecentTransactionsQuery['transactions']['nodes'];
+  transactions?: GQLTransactionsByBlockIdQuery['transactionsByBlockId']['nodes'];
   hidePagination?: boolean;
   isLoading?: boolean;
   pageInfo?: GqlPageInfo;
   owner?: string;
-  route: 'home' | 'accountTxs';
+  route: 'home' | 'accountTxs' | 'blockSimple';
 }>;
 
 export function TxList({
@@ -41,6 +41,11 @@ export function TxList({
     }
     if (route === 'accountTxs') {
       router.push(Routes.accountTxs(owner, cursor, dir), {
+        scroll: false,
+      });
+    }
+    if (route === 'blockSimple') {
+      router.push(Routes.blockSimple(owner, cursor, dir), {
         scroll: false,
       });
     }

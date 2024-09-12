@@ -130,42 +130,42 @@ const styles = tv({
       variant: 'surface',
       size: '1',
       class: {
-        trigger: ['h-8 px-3 text-sm'],
+        trigger: ['text-sm'],
       },
     },
     {
       variant: 'surface',
       size: '2',
       class: {
-        trigger: ['h-10 px-4 text-md'],
+        trigger: ['text-md'],
       },
     },
     {
       variant: 'surface',
       size: '3',
       class: {
-        trigger: ['h-12 px-5 text-lg'],
+        trigger: ['text-lg'],
       },
     },
     {
       variant: 'line',
       size: '1',
       class: {
-        trigger: ['py-2 px-3 text-sm'],
+        trigger: ['text-sm'],
       },
     },
     {
       variant: 'line',
       size: '2',
       class: {
-        trigger: ['py-3 px-4 text-md'],
+        trigger: ['text-md'],
       },
     },
     {
       variant: 'line',
       size: '3',
       class: {
-        trigger: ['py-4 px-5 text-lg'],
+        trigger: ['text-lg'],
       },
     },
   ],

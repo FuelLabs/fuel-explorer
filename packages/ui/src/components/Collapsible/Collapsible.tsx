@@ -183,6 +183,7 @@ const styles = tv({
         content: 'p-3 rounded-sm',
         body: 'pt-2',
       },
+      classic: {},
     },
   },
   defaultVariants: {

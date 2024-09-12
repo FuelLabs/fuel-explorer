@@ -135,7 +135,7 @@ const styles = tv({
     socialIcon: ['text-white hover:text-brand transition-colors duration-200 '],
     navs: ['flex flex-wrap justify-between gap-y-10 w-full max-w-screen-md'],
     nav: ['w-full tablet:w-1/2 desktop:w-auto'],
-    navHeading: ['font-mono justify-start text-gray-400'],
+    navHeading: ['font-mono justify-start text-white'],
     navList: ['flex flex-col gap-0'],
     navLink: [
       'font-mono text-white hover:text-brand hover:no-underline transition-colors duration-200',

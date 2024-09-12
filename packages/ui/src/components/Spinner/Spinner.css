@@ -38,7 +38,6 @@
   stroke-linecap: round;
   stroke-dasharray: var(--circumference);
 }
-.dark .fuel-Spinner__circle-bg,
-.dark-theme .fuel-Spinner__circle-bg {
+.dark .fuel-Spinner__circle-bg {
   stroke: var(--black-a8);
 }

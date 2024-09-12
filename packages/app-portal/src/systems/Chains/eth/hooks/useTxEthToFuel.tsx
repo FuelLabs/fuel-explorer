@@ -9,10 +9,11 @@ import { useFuelAccountConnection } from '../../fuel';
 import type { TxEthToFuelMachineState } from '../machines';
 import { isErc20Address } from '../utils';
 
+import type { HexAddress } from 'app-commons';
 import { deepCompare } from '../utils/deepCompare';
 
 const bridgeTxsSelectors = {
-  txEthToFuel: (txId?: `0x${string}`) => (state: BridgeTxsMachineState) => {
+  txEthToFuel: (txId?: HexAddress) => (state: BridgeTxsMachineState) => {
     if (!txId) return undefined;
 
     const machine = state.context?.ethToFuelTxRefs?.[txId]?.getSnapshot();
@@ -114,7 +115,7 @@ const txEthToFuelSelectors = {
 
 export function useTxEthToFuel({ id }: { id: string }) {
   const { wallet: fuelWallet } = useFuelAccountConnection();
-  const txId = id.startsWith('0x') ? (id as `0x${string}`) : undefined;
+  const txId = id.startsWith('0x') ? (id as HexAddress) : undefined;
   const { href: explorerLink } = useExplorerLink({
     network: 'ethereum',
     id,

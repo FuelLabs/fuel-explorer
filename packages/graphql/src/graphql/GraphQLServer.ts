@@ -3,9 +3,8 @@ import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeTypeDefs } from '@graphql-tools/merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import type { GraphQLSchema } from 'graphql';
-import { createYoga, useLogger } from 'graphql-yoga';
+import { createYoga } from 'graphql-yoga';
 import { env } from '~/config';
-import { logger } from '~/core/Logger';
 import { GraphQLContextFactory } from './GraphQLContext';
 import { resolvers } from './resolvers';
 
@@ -30,11 +29,6 @@ export class GraphQLServer {
       context: async ({ request }) => {
         return GraphQLContextFactory.create(request);
       },
-      plugins: [
-        useLogger({
-          logFn: (eventName, args) => logger.yogaLogFn(eventName, args),
-        }),
-      ],
     });
   }
 }

@@ -17,5 +17,4 @@ export default function BlockLayout({
   );
 }
 
-export const dynamic = 'force-static';
-export const invalidate = Infinity;
+export const revalidate = 10;

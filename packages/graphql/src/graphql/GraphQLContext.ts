@@ -12,10 +12,11 @@ export type GraphQLContext = {
 
 export class GraphQLContextFactory {
   static async create(req: Request): Promise<GraphQLContext> {
-    logger.debugRequest('GraphQLContextFactory.create');
+    logger.info('GraphQLContextFactory.create');
     const secret = env.get('SERVER_API_KEY');
     const bearer = `Bearer ${secret}`;
-    const token = req.headers.get('Authorization');
+    const token =
+      req.headers.get('x-api-key') || req.headers.get('Authorization');
     if (!token || token !== bearer) {
       logger.error('Authorization header is required');
       throw new GraphQLError('Authorization header is required');
