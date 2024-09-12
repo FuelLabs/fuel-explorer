@@ -2,6 +2,7 @@ import { toUtf8Bytes, zeroPadValue } from 'ethers';
 import { ZeroBytes32, concat, sha256 } from 'fuels';
 
 import { ETH_CHAIN_NAME, FUEL_CHAIN_NAME } from '../config';
+import type { HexAddress } from '../types/address';
 
 export type BridgeTokenContracts = {
   ETH_ERC20: string;
@@ -10,10 +11,10 @@ export type BridgeTokenContracts = {
   FUEL_TokenContractImplementation?: string;
 };
 export type BridgeSolidityContracts = {
-  FuelChainState: `0x${string}`;
-  FuelMessagePortal: `0x${string}`;
-  FuelERC20GatewayV4: `0x${string}`;
-  FuelERC721Gateway: `0x${string}`;
+  FuelChainState: HexAddress;
+  FuelMessagePortal: HexAddress;
+  FuelERC20GatewayV4: HexAddress;
+  FuelERC721Gateway: HexAddress;
 };
 
 let bridgeTokenContract: BridgeTokenContracts;
@@ -115,8 +116,8 @@ export async function getBridgeSolidityContracts() {
 }
 
 export function getContractTokenId(
-  contractId: `0x${string}`,
-  erc20Address: `0x${string}`,
+  contractId: HexAddress,
+  erc20Address: HexAddress,
   tokenId = ZeroBytes32,
   chainId = '1',
 ) {
