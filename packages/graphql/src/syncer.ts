@@ -22,28 +22,42 @@ async function main() {
   while (true) {
     const total = await mq.getActive(QueueNames.ADD_BLOCK_RANGE);
     if (total > 0) {
-      logger.info(`⌛️ Waiting messages to be consume: ${total} messages left`);
+      logger.info(
+        `⌛️ Waiting messages to be consume: ${total} messages left logger`,
+      );
       await setTimeout(5000);
       continue;
     }
+    let blocks: any;
     try {
       const { data } = await client.sdk.blocks({ last: 1 });
-      const lastBlock = data.blocks.nodes[0];
-      const height = Number(lastBlock?.header.height ?? '0');
-      const blockDAO = new BlockDAO();
-      const latestBlock = await blockDAO.findLatestBlockAdded();
-      const from = latestBlock ? latestBlock.id : 0;
-      const to = from + 10000;
-      const range = { from, to: Math.min(to, height) };
-      const events = createBatchEvents(range);
-      for (const event of events) {
-        await mq.send('block', QueueNames.ADD_BLOCK_RANGE, event);
-      }
+      blocks = data.blocks;
     } catch (e: any) {
-      logger.error(e);
+      logger.error('❌ Error fetching blocks from fuel core', e);
+      await setTimeout(5000);
+      continue;
+    }
+    const lastBlock = blocks.nodes[0];
+    const height = Number(lastBlock?.header.height ?? '0');
+    const blockDAO = new BlockDAO();
+    const latestBlock = await blockDAO.findLatestBlockAdded();
+    const from = latestBlock ? latestBlock.id : 0;
+    const to = from + 10000;
+    const range = { from, to: Math.min(to, height) };
+    const events = createBatchEvents(range);
+    for (const event of events) {
+      await mq.send('block', QueueNames.ADD_BLOCK_RANGE, event);
     }
     await setTimeout(5000);
   }
 }
 
-main();
+main().catch(async (error: any) => {
+  logger.error('❌ Uncaught error', error);
+  try {
+    await mq.disconnect();
+  } catch (_error: any) {
+    logger.error('❌ Could not disconnect from RabbitMQ');
+  }
+  process.exit(1);
+});
