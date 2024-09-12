@@ -1,5 +1,4 @@
 import cors from 'cors';
-import type { Express } from 'express';
 import express from 'express';
 
 export class Server {
@@ -10,7 +9,7 @@ export class Server {
     return app;
   }
 
-  async listen(app: Express, port: number) {
+  async listen(app: any, port: number) {
     return new Promise((resolve) => {
       app.listen(port, async () => {
         resolve(null);

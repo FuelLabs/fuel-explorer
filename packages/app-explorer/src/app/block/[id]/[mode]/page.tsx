@@ -6,13 +6,17 @@ import { BlockScreenAdvancedSync } from '~/systems/Block/screens/BlockScreenAdva
 import { BlockScreenSimpleSync } from '~/systems/Block/screens/BlockScreenSimpleSync';
 import type { BlockRouteProps } from '~/systems/Block/types';
 import { ViewModes } from '~/systems/Core/components/ViewMode/constants';
+import { TxsRouteProps } from '~/systems/Transactions/types';
 
-export default async function Block({ params: { id, mode } }: BlockRouteProps) {
+export default async function Block({
+  params: { id, mode },
+  searchParams,
+}: BlockRouteProps & TxsRouteProps) {
   switch (mode) {
     case ViewModes.Simple:
       return (
         <Suspense fallback={<BlockScreenSimple isLoading={true} />}>
-          <BlockScreenSimpleSync id={id} />
+          <BlockScreenSimpleSync id={id} searchParams={searchParams} />
         </Suspense>
       );
     case ViewModes.Advanced:
@@ -22,9 +26,9 @@ export default async function Block({ params: { id, mode } }: BlockRouteProps) {
         </Suspense>
       );
     default:
-      redirect(Routes.blockSimple(id));
+      redirect(Routes.blockSimple(id, searchParams.cursor!, searchParams.dir!));
   }
 }
 
-export const dynamic = 'force-static';
-export const invalidate = Infinity;
+// Revalidate every 10 seconds
+export const revalidate = 10;

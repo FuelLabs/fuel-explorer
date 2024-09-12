@@ -2,6 +2,7 @@ import type {
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
   GQLQueryTransactionsByOwnerArgs,
+  GQLQueryTransactionsByBlockIdArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
@@ -12,6 +13,7 @@ type Params = {
   transaction: GQLQueryTransactionArgs;
   transactions: GQLQueryTransactionsArgs;
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
+  transactionByBlockId: GQLQueryTransactionsByBlockIdArgs;
 };
 
 export class TransactionResolver {
@@ -22,6 +24,7 @@ export class TransactionResolver {
         transaction: resolvers.transaction,
         transactions: resolvers.transactions,
         transactionsByOwner: resolvers.transactionsByOwner,
+        transactionsByBlockId: resolvers.transactionsByBlockId,
       },
     };
   }
@@ -46,6 +49,19 @@ export class TransactionResolver {
     const paginatedParams = new PaginatedParams(params);
     const transactions = await transactionDAO.getPaginatedTransactionsByOwner(
       params.owner,
+      paginatedParams,
+    );
+    return transactions;
+  }
+
+  async transactionsByBlockId(
+    _: Source,
+    params: Params['transactionByBlockId'],
+  ) {
+    const transactionDAO = new TransactionDAO();
+    const paginatedParams = new PaginatedParams(params);
+    const transactions = await transactionDAO.getPaginatedTransactionsByBlockId(
+      params.blockId,
       paginatedParams,
     );
     return transactions;
