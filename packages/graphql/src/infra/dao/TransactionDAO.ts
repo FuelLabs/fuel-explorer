@@ -1,7 +1,9 @@
 import { isB256, isBech32 } from 'fuels';
+import { DateHelper } from '~/core/Date';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
+import { getTimeInterval } from './utils';
 
 export default class TransactionDAO {
   databaseConnection: DatabaseConnection;
@@ -293,5 +295,71 @@ export default class TransactionDAO {
     };
 
     return paginatedResults;
+  }
+
+  async transactionsFeeStatistics(timeFilter: string) {
+    const _interval = getTimeInterval(timeFilter);
+
+    let query = `
+        SELECT 
+          (data->'status'->>'totalFee')::numeric AS fee,
+          (t.data->'status'->>'time')::bigint AS timestamp
+        FROM 
+            indexer.transactions t
+    `;
+
+    // Add the time filtering condition only if an interval is defined
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - _interval;
+      const intervalStartTimeDate = new Date(intervalStartTimeInMilliseconds);
+      const intervalStartTimeTai64 = DateHelper.dateToTai64(
+        intervalStartTimeDate,
+      );
+      query += `
+            WHERE 
+              (t.data->'status'->>'time')::bigint >= ${intervalStartTimeTai64}
+        `;
+    }
+
+    query += ' ORDER BY timestamp asc';
+
+    // Execute the query
+    const transactionsData = await this.databaseConnection.query(query, []);
+
+    const results = {
+      nodes: transactionsData,
+    };
+    return results;
+  }
+
+  async transactionsOffset(timeFilter: string) {
+    const _interval = getTimeInterval(timeFilter);
+
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - 60 * 60 * 1000 * 24;
+      const intervalStartTimeDate = new Date(intervalStartTimeInMilliseconds);
+      const intervalStartTimeTai64 = DateHelper.dateToTai64(
+        intervalStartTimeDate,
+      );
+
+      const query = `
+        SELECT
+          COUNT(*)
+        FROM indexer.transactions as t
+        WHERE 
+            (t.data->'status'->>'time')::bigint < ${intervalStartTimeTai64}
+      `;
+
+      const transactionOffsetCount = await this.databaseConnection.query(
+        query,
+        [],
+      );
+      return {
+        transactionOffset: transactionOffsetCount[0].count,
+      };
+    }
+    return {
+      transactionOffset: 0,
+    };
   }
 }
