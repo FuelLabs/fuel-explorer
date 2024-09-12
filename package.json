@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "engines": {
     "node": ">=20.11.0",
-    "pnpm": ">=9.5.0"
+    "pnpm": "9.x"
   },
   "homepage": "https://github.com/FuelLabs/fuel-explorer",
   "repository": {
