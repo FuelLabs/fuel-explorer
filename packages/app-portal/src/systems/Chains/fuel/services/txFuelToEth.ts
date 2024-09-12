@@ -15,7 +15,7 @@ import {
 import type { WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'viem';
 
-import { getBridgeSolidityContracts } from 'app-commons';
+import { type HexAddress, getBridgeSolidityContracts } from 'app-commons';
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
 import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
 import { EthConnectorService } from '../../eth/services';
@@ -67,7 +67,7 @@ export type TxFuelToEthInputs = {
     ethWalletClient: WalletClient;
   };
   waitTxMessageRelayed: {
-    txHash: `0x${string}`;
+    txHash: HexAddress;
     ethPublicClient: EthPublicClient;
   };
   fetchTxs: {
@@ -242,7 +242,7 @@ export class TxFuelToEthService {
 
     if (isCommited) {
       return {
-        blockHashCommited: commitHashAtL1 as `0x${string}`,
+        blockHashCommited: commitHashAtL1 as HexAddress,
       };
     }
 
@@ -383,7 +383,7 @@ export class TxFuelToEthService {
         inputs: abiMessageRelayed?.inputs || [],
       },
       args: {
-        messageId: input.messageId as `0x${string}`,
+        messageId: input.messageId as HexAddress,
       },
       fromBlock: 'earliest',
     });

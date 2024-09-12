@@ -5,6 +5,7 @@ import {
   hasText,
 } from '@fuels/playwright-utils';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
+import type { HexAddress } from 'app-commons';
 import type { BigNumberish, WalletUnlocked } from 'fuels';
 import { bn, format } from 'fuels';
 import type { HDAccount, PublicClient } from 'viem';
@@ -81,7 +82,7 @@ test.describe('Bridge', () => {
 
     erc20Contract = getContract({
       abi: ERC_20.abi,
-      address: ETH_ERC20 as `0x${string}`,
+      address: ETH_ERC20 as HexAddress,
       client: {
         public: client,
       },
