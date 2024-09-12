@@ -11,6 +11,7 @@ import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
+import type { HexAddress } from 'app-commons';
 import type { PublicClient } from 'viem';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
@@ -19,7 +20,7 @@ import { EthTxCache } from '../utils';
 const FUEL_MESSAGE_GET_INTERVAL = 10000;
 
 type MachineContext = {
-  ethTxId?: `0x${string}`;
+  ethTxId?: HexAddress;
   ethTxNonce?: BN;
   fuelAddress?: FuelAddress;
   fuelProvider?: FuelProvider;

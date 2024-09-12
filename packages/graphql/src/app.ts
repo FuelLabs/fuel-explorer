@@ -18,7 +18,6 @@ import { Server } from './infra/server/App';
     logger.info(
       `📟 GraphQL server is running on http://localhost:${port}${yoga.graphqlEndpoint}`,
     );
-    logger.info('📝 GraphQLYoga event logs are available at logs/graphql.log');
 
     const others = ['SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM'];
     //biome-ignore lint/complexity/noForEach: <explanation>

@@ -24,11 +24,9 @@ async function main() {
       )) as any;
       const { rows } = res;
       if (rows.length === 0) {
-        logger.syncer.info(
-          `🔗 No blocks to recover between #${from} and #${to}`,
-        );
+        logger.info(`🔗 No blocks to recover between #${from} and #${to}`);
       } else {
-        logger.syncer.info(
+        logger.info(
           `🔗 Recovering ${rows.length} blocks between #${from} and #${to}`,
         );
       }

@@ -10,6 +10,7 @@ import { txEthToFuelMachine } from '~portal/systems/Chains/eth/machines';
 import { FetchMachine } from '~portal/systems/Core/machines';
 import { delay } from '~portal/systems/Core/utils';
 
+import type { HexAddress } from 'app-commons';
 import type { PublicClient } from 'viem';
 import { BridgeService } from '../services';
 import type { BridgeInputs } from '../services';
@@ -48,7 +49,7 @@ export type BridgeTxsMachineEvents =
   | {
       type: 'ADD_TX_ETH_TO_FUEL';
       input: {
-        ethTxId?: `0x${string}`;
+        ethTxId?: HexAddress;
       } & BridgeInputs['fetchTxs'];
     }
   | {
@@ -153,7 +154,7 @@ export const bridgeTxsMachine = createMachine(
               ...prev,
               [tx.txHash]: spawn(
                 txEthToFuelMachine.withContext({
-                  ethTxId: tx.txHash as `0x${string}`,
+                  ethTxId: tx.txHash as HexAddress,
                   fuelAddress: ctx.fuelAddress,
                   fuelProvider: ctx.fuelProvider,
                   ethPublicClient: ctx.ethPublicClient,
@@ -207,7 +208,7 @@ export const bridgeTxsMachine = createMachine(
           const newRef = {
             [ethTxId]: spawn(
               txEthToFuelMachine.withContext({
-                ethTxId: ethTxId as `0x${string}`,
+                ethTxId: ethTxId as HexAddress,
                 fuelAddress: fuelAddress,
                 fuelProvider: fuelProvider,
                 ethPublicClient: ethPublicClient,
@@ -233,7 +234,7 @@ export const bridgeTxsMachine = createMachine(
           const newRef = {
             [fuelTxId]: spawn(
               txFuelToEthMachine.withContext({
-                fuelTxId: fuelTxId as `0x${string}`,
+                fuelTxId: fuelTxId as HexAddress,
                 fuelProvider: fuelProvider,
                 ethPublicClient: ethPublicClient,
               }),
