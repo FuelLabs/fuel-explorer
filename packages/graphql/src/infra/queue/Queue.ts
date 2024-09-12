@@ -46,11 +46,20 @@ class RabbitMQConnection {
       logger.debug('⌛️ Connecting to Rabbit-MQ Server');
       const url = `${PROTOCOL}://${USER}:${PASS}@${HOST}:${PORT}`;
       this.connection = await client.connect(url);
+      this.connection.on('close', () => {
+        logger.error('❌ Connection closed');
+        process.exit(1);
+      });
+      this.connection.on('error', () => {
+        logger.error('❌ Connection error');
+        process.exit(1);
+      });
       logger.debug('✅ Rabbit MQ Connection is ready');
       await this.createChannel(ChannelNames.block, MAX_WORKERS);
       logger.info('🚀 RabbitMQ Connection is ready');
     } catch (error) {
       logger.error('Not connected to MQ Server', error);
+      throw error;
     }
     return this.connection;
   }
@@ -106,7 +115,7 @@ class RabbitMQConnection {
       async (msg) => {
         if (!msg) return;
         const payload = this.parsePayload<P>(msg);
-        logger.debug(`📥 Received message from ${queue}`, payload);
+        logger.debug(`📥 Received message from ${queue}`);
         if (payload?.type === queue) {
           await handler(payload.data);
           channel.ack(msg);
@@ -154,6 +163,14 @@ class RabbitMQConnection {
     logger.debug(`🔗 Creating channel ${name}`);
     const channel = await this.connection.createChannel();
     await channel.prefetch(workers);
+    channel.on('close', () => {
+      logger.error('❌ Channel closed');
+      process.exit(1);
+    });
+    channel.on('error', () => {
+      logger.error('❌ Channel error');
+      process.exit(1);
+    });
     this.channels[name] = channel;
     logger.debug(`✅ Channel ${name} is ready`);
   }
