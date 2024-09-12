@@ -2683,22 +2683,10 @@ export const anUtxoItem = (
   };
 };
 
-export const aVariableOutput = (
-  overrides?: Partial<GQLVariableOutput>,
-): { __typename: 'VariableOutput' } & GQLVariableOutput => {
-  return {
-    __typename: 'VariableOutput',
-    amount:
-      overrides && overrides.hasOwnProperty('amount')
-        ? overrides.amount!
-        : '0xc',
-    assetId:
-      overrides && overrides.hasOwnProperty('assetId')
-        ? overrides.assetId!
-        : 'hq38k3ap8ok8krpquh789zkbfdd74ab6',
-    to:
-      overrides && overrides.hasOwnProperty('to')
-        ? overrides.to!
-        : '4gs9ppn7jqumdt8t0gd7u4mra5dblqlbgjy1w5bv',
-  };
-};
+export const aVariableOutput = (overrides?: Partial<GQLVariableOutput>): { __typename: 'VariableOutput' } & GQLVariableOutput => {
+    return {
+        __typename: 'VariableOutput',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xc',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'hq38k3ap8ok8krpquh789zkbfdd74ab6',
+        to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : '4gs9ppn7jqumdt8t0gd7u4mra5dblqlbgjy1w5bv',
+    };
