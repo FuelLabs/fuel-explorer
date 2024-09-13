@@ -11,6 +11,7 @@ import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
+import type { HexAddress } from 'app-commons';
 import type { PublicClient } from 'viem';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
@@ -19,7 +20,7 @@ import { EthTxCache } from '../utils';
 const FUEL_MESSAGE_GET_INTERVAL = 10000;
 
 type MachineContext = {
-  ethTxId?: `0x${string}`;
+  ethTxId?: HexAddress;
   ethTxNonce?: BN;
   fuelAddress?: FuelAddress;
   fuelProvider?: FuelProvider;
@@ -27,9 +28,9 @@ type MachineContext = {
   fuelMessage?: FuelMessage;
   ethPublicClient?: PublicClient;
   ethDepositBlockHeight?: string;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   erc20Token?: any;
   amount?: BN;
-  fuelRecipient?: FuelAddress;
   blockDate?: Date;
   fuelRelayedTx?: TransactionResult;
 };
@@ -195,7 +196,6 @@ export const txEthToFuelMachine = createMachine(
                 input: (ctx: MachineContext) => ({
                   ethTxNonce: ctx.ethTxNonce,
                   fuelProvider: ctx.fuelProvider,
-                  fuelRecipient: ctx.fuelRecipient,
                 }),
               },
               onDone: [
@@ -247,6 +247,7 @@ export const txEthToFuelMachine = createMachine(
                     ) => ({
                       fuelWallet: ev.input.fuelWallet,
                       fuelMessage: ctx.fuelMessage,
+                      ethPublicClient: ctx.ethPublicClient,
                     }),
                   },
                   onDone: [
@@ -337,7 +338,6 @@ export const txEthToFuelMachine = createMachine(
           erc20Token: ev.data?.erc20Token,
           ethTxNonce: ev.data?.nonce,
           amount: ev.data?.amount,
-          fuelRecipient: ev.data?.recipient,
           ethDepositBlockHeight: ev.data?.ethDepositBlockHeight,
           blockDate: ev.data?.blockDate,
         };
@@ -362,7 +362,6 @@ export const txEthToFuelMachine = createMachine(
         if (
           ctx.ethTxId &&
           ctx.ethTxNonce &&
-          ctx.fuelRecipient &&
           ctx.amount &&
           ctx.ethDepositBlockHeight &&
           ctx.blockDate
@@ -371,7 +370,6 @@ export const txEthToFuelMachine = createMachine(
             erc20Token: ctx.erc20Token,
             nonce: ctx.ethTxNonce,
             amount: ctx.amount,
-            recipient: ctx.fuelRecipient,
             ethDepositBlockHeight: ctx.ethDepositBlockHeight,
             blockDate: ctx.blockDate,
           });
@@ -387,7 +385,6 @@ export const txEthToFuelMachine = createMachine(
           erc20Token: receiptInfo.erc20Token,
           ethTxNonce: receiptInfo.nonce,
           amount: receiptInfo.amount,
-          fuelRecipient: receiptInfo.recipient,
           ethDepositBlockHeight: receiptInfo.ethDepositBlockHeight,
           blockDate: receiptInfo.blockDate,
         };

@@ -1,9 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconHelpCircle } from '@tabler/icons-react';
 
 import { HStack } from '../Box';
 import { Button } from '../Button/Button';
-import { Icon } from '../Icon/Icon';
 
 import { Toast } from './Toast';
 import { toast, useToast } from './useToast';
@@ -40,7 +38,6 @@ export const Usage: Story = {
 const toastProps = {
   title: 'Some title',
   description: 'Some description',
-  icon: <Icon icon={IconHelpCircle} size={24} />,
   action: <Toast.Action altText="Try again">Action</Toast.Action>,
 };
 

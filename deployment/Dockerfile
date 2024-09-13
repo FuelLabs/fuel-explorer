@@ -2,6 +2,9 @@
 # built for the fuel-explorer
 FROM node:20 AS base
 
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y postgresql-client
+
 # Expose the ENVs to the env of the container
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"

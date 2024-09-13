@@ -1,0 +1,25 @@
+query transactionsByBlockId(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $blockId: String!
+) {
+  transactionsByBlockId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    blockId: $blockId
+  ) {
+    nodes {
+      ...RecentTransaction
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

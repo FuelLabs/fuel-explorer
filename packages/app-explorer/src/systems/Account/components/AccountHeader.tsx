@@ -1,5 +1,4 @@
 import { Address } from '@fuels/ui';
-import { IconHash } from '@tabler/icons-react';
 import { Suspense } from 'react';
 
 import { PageTitle } from 'app-commons';
@@ -10,12 +9,9 @@ export function AccountHeader({ id }: { id: string }) {
   return (
     <>
       <PageTitle
-        icon={<IconHash size={20} stroke={1.2} />}
-        className="border-b-gray-3"
-      >
-        Account
-        <Address full={true} value={id} />
-      </PageTitle>
+        title="Account"
+        subtitle={<Address full={true} value={id} />}
+      />
       <Suspense fallback={<AccountTabs address={id} />}>
         <AccountsTabsSync id={id} />
       </Suspense>

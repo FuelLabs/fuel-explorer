@@ -27,10 +27,14 @@ export const goToBridgePage = async (page: Page) => {
 };
 
 export const goToTransactionsPage = async (page: Page) => {
+  const currentUrl = page.url();
+  if (currentUrl.includes('/bridge/history')) return;
+
   const transactionList = getByAriaLabel(page, 'Transaction History');
   await transactionList.click();
 
   await waitAriaLabel(page, 'Back to home');
+  await hasText(page, 'Back');
 };
 
 export const clickDepositTab = async (page: Page) => {

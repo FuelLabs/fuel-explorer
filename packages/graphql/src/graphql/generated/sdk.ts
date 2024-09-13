@@ -984,6 +984,7 @@ export type GQLQuery = {
   search?: Maybe<GQLSearchResult>;
   transaction?: Maybe<GQLTransaction>;
   transactions: GQLTransactionConnection;
+  transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
 };
 
@@ -1115,6 +1116,14 @@ export type GQLQueryTransactionArgs = {
 export type GQLQueryTransactionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type GQLQueryTransactionsByBlockIdArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  blockId: Scalars['String']['input'];
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -3189,6 +3198,44 @@ export type GQLTransactionDetailsQuery = {
         }
     >;
   } | null;
+};
+
+export type GQLTransactionsByBlockIdQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  blockId: Scalars['String']['input'];
+}>;
+
+export type GQLTransactionsByBlockIdQuery = {
+  __typename: 'Query';
+  transactionsByBlockId: {
+    __typename: 'TransactionConnection';
+    nodes: Array<{
+      __typename: 'Transaction';
+      _id?: string | null;
+      id: string;
+      title: string;
+      statusType?: string | null;
+      time: {
+        __typename: 'ParsedTime';
+        fromNow?: string | null;
+        rawUnix?: string | null;
+      };
+      gasCosts?: {
+        __typename: 'TransactionGasCosts';
+        fee?: string | null;
+      } | null;
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
 };
 
 export type GQLTransactionsByOwnerQueryVariables = Exact<{
@@ -6144,6 +6191,27 @@ export const TransactionDetailsDocument = gql`
   }
 }
     ${TransactionItemFragmentDoc}`;
+export const TransactionsByBlockIdDocument = gql`
+    query transactionsByBlockId($after: String, $before: String, $first: Int, $last: Int, $blockId: String!) {
+  transactionsByBlockId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    blockId: $blockId
+  ) {
+    nodes {
+      ...RecentTransaction
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}
+    ${RecentTransactionFragmentDoc}`;
 export const TransactionsByOwnerDocument = gql`
     query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!) {
   transactionsByOwner(
@@ -6189,6 +6257,9 @@ const PredicateDocumentString = print(PredicateDocument);
 const RecentTransactionsDocumentString = print(RecentTransactionsDocument);
 const SearchDocumentString = print(SearchDocument);
 const TransactionDetailsDocumentString = print(TransactionDetailsDocument);
+const TransactionsByBlockIdDocumentString = print(
+  TransactionsByBlockIdDocument,
+);
 const TransactionsByOwnerDocumentString = print(TransactionsByOwnerDocument);
 export function getSdk(
   client: GraphQLClient,
@@ -6407,6 +6478,28 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'transactionDetails',
+        'query',
+        variables,
+      );
+    },
+    transactionsByBlockId(
+      variables: GQLTransactionsByBlockIdQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLTransactionsByBlockIdQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLTransactionsByBlockIdQuery>(
+            TransactionsByBlockIdDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'transactionsByBlockId',
         'query',
         variables,
       );

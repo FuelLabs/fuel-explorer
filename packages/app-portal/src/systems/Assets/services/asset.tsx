@@ -1,7 +1,7 @@
 import { assets } from '@fuel-ts/account';
 import type { Asset } from '@fuel-ts/account';
-import { BridgeTokenContracts } from 'app-commons';
-import { Provider, bn } from 'fuels';
+import type { BridgeTokenContracts, HexAddress } from 'app-commons';
+import { type Provider, bn } from 'fuels';
 import { isAddress } from 'viem';
 import type { PublicClient, WalletClient } from 'viem';
 import { ETH_CHAIN } from '~portal/systems/Chains';
@@ -37,7 +37,7 @@ export class AssetService {
 
     const erc20 = EthConnectorService.connectToErc20({
       walletClient,
-      address: address as `0x${string}`,
+      address: address as HexAddress,
     });
 
     const erc20MintHash = await erc20.write.mint(

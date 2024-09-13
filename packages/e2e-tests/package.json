@@ -4,8 +4,9 @@
   "devDependencies": {
     "@fuels/playwright-utils": "0.20.0",
     "@synthetixio/synpress": "https://github.com/LuizAsFight/synpress",
-    "fuels": "0.92.1",
-    "viem": "2.10.2",
-    "wagmi": "2.11.2"
+    "fuels": "0.94.4",
+    "app-commons": "workspace:*",
+    "viem": "2.20.1",
+    "wagmi": "2.12.7"
   }
 }

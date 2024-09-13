@@ -1,5 +1,5 @@
 'use client';
-import { Box, Link, Nav, useBreakpoints } from '@fuels/ui';
+import { Nav, useBreakpoints } from '@fuels/ui';
 import { isRoute } from 'app-commons';
 import { useTheme } from 'next-themes';
 import NextLink from 'next/link';
@@ -31,7 +31,7 @@ export function TopNav() {
     } else if (!isLaptop && isDesktopSearchOpen) {
       setIsMobileSearchOpen(true);
     }
-  }, [isLaptop]);
+  }, [isLaptop, isDesktopSearchOpen, isMobileSearchOpen]);
 
   const logo = (
     <NextLink href="/" className="flex items-center">
@@ -76,54 +76,29 @@ export function TopNav() {
   );
 
   return (
-    <>
-      <Box className="bg-brand py-2 px-4 text-center text-gray-2 text-xs tablet:text-sm">
-        Points Program: Earn rewards and contribute to the Fuel Network.
-        <Link
-          href="https://app.fuel.network/earn-points"
-          className="ml-1 text-blue-6 gap-1 text-xs tablet:text-sm"
-          isExternal={false}
-        >
-          Learn more →
-        </Link>
-      </Box>
-      <Nav>
-        <Nav.Desktop className={'px-10 justify-between'}>
-          <Nav.Menu>
-            {logo}
-            {externalLinks}
-          </Nav.Menu>
-          <Nav.Menu>
-            {!isHomePage && (
-              <SearchWidget
-                setIsSearchOpen={setIsDesktopSearchOpen}
-                isSearchOpen={isDesktopSearchOpen}
-              />
-            )}
-          </Nav.Menu>
-          <Nav.Menu>
-            {tooling}
-            {themeToggle}
-          </Nav.Menu>
-        </Nav.Desktop>
-        <Nav.Mobile>
-          <Nav.MobileContent>
-            {logo}
-            {!isHomePage && (
-              <SearchWidget
-                setIsSearchOpen={setIsMobileSearchOpen}
-                isSearchOpen={isMobileSearchOpen}
-                expandOnFocus={isMobile || isLaptop}
-              />
-            )}
-            {themeToggle}
-          </Nav.MobileContent>
-          <Nav.Menu>
-            {externalLinks}
-            {tooling}
-          </Nav.Menu>
-        </Nav.Mobile>
-      </Nav>
-    </>
+    <Nav>
+      <Nav.Desktop className={'px-10 justify-between'}>
+        <Nav.Menu>
+          {logo}
+          {externalLinks}
+        </Nav.Menu>
+        <Nav.Menu>{!isHomePage && <SearchWidget />}</Nav.Menu>
+        <Nav.Menu>
+          {tooling}
+          {themeToggle}
+        </Nav.Menu>
+      </Nav.Desktop>
+      <Nav.Mobile>
+        <Nav.MobileContent>
+          {logo}
+          {!isHomePage && <SearchWidget expandOnFocus={isMobile || isLaptop} />}
+          {themeToggle}
+        </Nav.MobileContent>
+        <Nav.Menu>
+          {externalLinks}
+          {tooling}
+        </Nav.Menu>
+      </Nav.Mobile>
+    </Nav>
   );
 }

@@ -26,7 +26,7 @@ export class BlockResolver {
   }
 
   async block(_: Source, { id, height }: Params['block']) {
-    logger.debugRequest('BlockResolver.block', { id, height });
+    logger.debug(`BlockResolver.block ${id} ${height}`);
     if (!id && !height) {
       throw new Error('Either id or height must be provided');
     }
@@ -46,6 +46,7 @@ export class BlockResolver {
   }
 
   async blocks(_: Source, params: Params['blocks']) {
+    logger.debug('BlockResolver.blocks', params);
     if (!params.first && !params.last) {
       throw new GraphQLError('Either first or last must be provided');
     }

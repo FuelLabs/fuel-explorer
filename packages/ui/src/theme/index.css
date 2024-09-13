@@ -1,25 +1,41 @@
+/* Base */
 @import "tailwindcss/base";
 @import "@radix-ui/themes/styles.css";
+
+/* Components */
 @import "../components/Spinner/Spinner.css";
+
+/* Radix overrides */
 @import "./theme.css";
+@import "./components/badge.css";
+@import "./components/button.css";
+@import "./components/card.css";
+@import "./components/dialog.css";
+@import "./components/separator.css";
+@import "./components/tabs.css";
+@import "./components/textfield.css";
+
+/* Tailwind */
 @tailwind components;
 @tailwind utilities;
 
 :root,
 .radix-themes {
+  /* Font */
+  --font-size-1: calc(12px * var(--scaling));
+  --font-size-2: calc(13px * var(--scaling));
+  --font-size-3: calc(15px * var(--scaling));
+  --font-size-4: calc(17px * var(--scaling));
+  --font-size-5: calc(20px * var(--scaling));
+
+  /* Default */
   --default-font-size: var(--font-size-3);
-  --default-font-family: var(--font-geist-sans);
+  --default-font-family: var(--font-inter);
+
   /* Radix Adjustments */
   --green-contrast: #111111;
-}
 
-:root {
-
-  --screen-mobile: 300px;
-  --screen-tablet: 640px;
-  --screen-laptop: 960px;
-  --screen-desktop: 1280px;
-
+  /* Space */
   --space-0: 0px;
   --space-1: calc(4px * var(--scaling));
   --space-2: calc(8px * var(--scaling));
@@ -50,7 +66,9 @@
   --space-72: calc(288px * var(--scaling));
   --space-80: calc(320px * var(--scaling));
   --space-96: calc(384px * var(--scaling));
+}
 
+:root {
   /* general colors */
   --color-border: var(--gray-6);
   --color-border-hover: var(--gray-8);
@@ -91,5 +109,8 @@
   --color-error-muted: var(--red-8);
   --color-error-contrast: var(--red-9-contrast);
   --color-error-border: var(--red-8);
+}
 
+.rt-DialogContent {
+  box-shadow: none;
 }

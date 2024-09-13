@@ -1,76 +1,101 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { type BN, FormatConfig, bn, format } from '@fuel-ts/math';
+import { type BN, type FormatConfig, bn } from '@fuel-ts/math';
 import { DECIMAL_UNITS, DEFAULT_MIN_PRECISION } from '@fuel-ts/math/configs';
 
 import { IconChevronDown } from '@tabler/icons-react';
 
-import { Button, ButtonProps } from '../Button';
+import { Button, type ButtonProps } from '../Button';
 import type { InputProps, InputSlotProps } from '../Input/Input';
 import { Input } from '../Input/Input';
-import { Text } from '../Text';
+import { Text, type TextProps } from '../Text';
 import { Tooltip } from '../Tooltip';
 
+import clsx from 'clsx';
 import { mergeProps } from 'react-aria';
 import { tv } from 'tailwind-variants';
 import { createComponent, withNamespace } from '../../utils/component';
 import { Avatar } from '../Avatar';
+import { Badge, type BadgeProps } from '../Badge';
+import { VStack, type VStackProps } from '../Box';
+import { InputAmountFieldCtx, InputAmountRootCtx } from './InputAmount.context';
+import type { AmountChangeParameters } from './InputAmount.types';
 import { createAmount } from './utils';
 
-export type InputAmountProps = Omit<
+export type InputAmountFieldProps = Omit<
   InputProps,
   'size' | 'onChange' | 'value'
 > & {
   disabled?: boolean;
-  balance?: BN;
   value?: BN | null;
   onChange?: (val: BN | null) => void;
 };
 
-export type InputAmountBalanceProps = InputSlotProps;
+export type InputAmountProps = VStackProps & {
+  balance?: BN;
+  formatOpts?: FormatConfig;
+};
+export type InputAmountBalanceProps = BadgeProps & {
+  label?: string;
+  balance?: BN;
+};
 export type InputAmountButtonMaxBalanceProps = ButtonProps;
 export type InputAmountCoinSelectorProps = ButtonProps & {
   asset?: { name?: string; imageUrl?: string; address?: string };
   onClick?: () => void;
 };
 
-type AmountChangeParameters =
-  | { text: string; incomingAmount?: never }
-  | { text?: never; incomingAmount: BN | null | undefined };
-type Context = {
-  disabled?: boolean;
-  balance: BN;
-  assetAmount: string;
-  handleAmountChange: (props: AmountChangeParameters) => void;
-};
-
-const ctx = createContext<Context>({} as Context);
-
-const formatOpts: FormatConfig = {
+const DEFAULT_FORMAT: FormatConfig = {
   units: DECIMAL_UNITS,
   precision: DECIMAL_UNITS,
 };
 
-export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
-  id: 'InputAmount',
-  render: (
-    _,
-    {
-      className,
-      value,
-      balance: initialBalance,
-      onChange,
-      disabled,
-      children,
-      ...props
+export const InputAmountRoot = createComponent<InputAmountProps, typeof VStack>(
+  {
+    id: 'InputAmountRoot',
+    baseElement: VStack,
+    defaultProps: {
+      gap: '2',
     },
-  ) => {
+    render: (
+      Root,
+      {
+        balance: initialBalance,
+        formatOpts: initialFormatOpts,
+        children,
+        ...props
+      },
+    ) => {
+      const balance = initialBalance ?? bn(initialBalance);
+      const formatOpts = initialFormatOpts ?? DEFAULT_FORMAT;
+
+      return (
+        <InputAmountRootCtx.Provider
+          value={{
+            balance,
+            formatOpts,
+          }}
+        >
+          <Root {...props}>{children}</Root>
+        </InputAmountRootCtx.Provider>
+      );
+    },
+  },
+);
+
+export const InputAmountField = createComponent<
+  InputAmountFieldProps,
+  typeof Input
+>({
+  id: 'InputAmountField',
+  render: (_, { className, value, onChange, disabled, children, ...props }) => {
     const classes = styles();
-    const [assetAmount, setAssetAmount] = useState<string>(() =>
+
+    const { formatOpts } = useContext(InputAmountRootCtx);
+
+    const [assetAmount, setAssetAmount] = useState<string>(
       !value || value.eq(0) ? '' : value.format(formatOpts),
     );
-
-    const balance = initialBalance ?? bn(initialBalance);
 
     function handleAmountChange({
       text,
@@ -81,7 +106,7 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
       const shouldRemoveLastCharacter =
         lastCharacter &&
         lastCharacter !== '.' &&
-        Number.isNaN(parseFloat(lastCharacter));
+        Number.isNaN(Number.parseFloat(lastCharacter));
       if (shouldRemoveLastCharacter) {
         amountText = amountText.slice(0, amountText.length - 1);
       }
@@ -111,16 +136,15 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
     }, [value?.toString()]);
 
     return (
-      <ctx.Provider
+      <InputAmountFieldCtx.Provider
         value={{
-          balance,
           disabled,
           assetAmount,
           handleAmountChange,
         }}
       >
         <Input
-          className={classes.root({ className })}
+          className={classes.field({ className })}
           size="3"
           {...props}
           inputMode="decimal"
@@ -132,7 +156,7 @@ export const InputAmountRoot = createComponent<InputAmountProps, typeof Input>({
         >
           {children}
         </Input>
-      </ctx.Provider>
+      </InputAmountFieldCtx.Provider>
     );
   },
 });
@@ -150,34 +174,58 @@ export const InputAmountSlot = createComponent<
   },
 });
 
+export const InputAmountLabel = createComponent<TextProps, typeof Text>({
+  id: 'InputAmountLabel',
+  baseElement: Text,
+  defaultProps: {
+    size: '2',
+    weight: 'medium',
+    as: 'label',
+  },
+});
+
 export const InputAmountBalance = createComponent<
   InputAmountBalanceProps,
-  typeof Input.Slot
+  typeof Badge
 >({
   id: 'InputAmountBalance',
-  render: (_, { className, ...props }) => {
-    const { balance } = useContext(ctx);
-    const classes = styles();
+  render: (
+    _,
+    { className, label = 'Balance', balance: customBalance, ...props },
+  ) => {
+    const { balance: originalBalance, formatOpts } =
+      useContext(InputAmountRootCtx);
+    const balance = customBalance ?? originalBalance;
 
-    const formattedBalance = useMemo<string>(() => {
+    const preview = useMemo<string>(() => {
       return balance.format({
-        ...formatOpts,
-        precision: balance.eq(0) ? 1 : DEFAULT_MIN_PRECISION,
+        units: formatOpts.units,
+        minPrecision: formatOpts.minPrecision,
+        precision: balance.isZero() ? 1 : DEFAULT_MIN_PRECISION,
       });
-    }, [balance]);
+    }, [balance, formatOpts]);
+
+    const complete = useMemo<string>(() => {
+      return balance.format({
+        units: formatOpts.units,
+        precision: formatOpts.precision,
+      });
+    }, [balance, formatOpts]);
 
     return (
-      <Input.Slot {...props} className={classes.balance({ className })}>
-        <Tooltip content={format(balance, formatOpts)} sideOffset={-5}>
-          <Text
-            size="1"
-            className="self-start"
-            aria-label={`Balance: ${formattedBalance}`}
-          >
-            Balance: {formattedBalance}
-          </Text>
-        </Tooltip>
-      </Input.Slot>
+      <Tooltip content={complete} delayDuration={0}>
+        <Badge
+          variant="ghost"
+          color="green"
+          size="1"
+          radius="full"
+          className={clsx('self-start', className)}
+          aria-label="Balance"
+          {...props}
+        >
+          {label}: {preview}
+        </Badge>
+      </Tooltip>
     );
   },
 });
@@ -188,19 +236,22 @@ export const InputAmountButtonMaxBalance = createComponent<
 >({
   id: 'InputAmountButtonMaxBalance',
   defaultProps: {
-    variant: 'link',
+    variant: 'ghost',
     size: '1',
     color: 'green',
     children: 'MAX',
   },
   render: (_, { className, children, ...props }) => {
     const classes = styles();
-    const { disabled, balance, handleAmountChange } = useContext(ctx);
+    const { balance, formatOpts } = useContext(InputAmountRootCtx);
+    const { disabled, handleAmountChange } = useContext(InputAmountFieldCtx);
 
     const mergedProps = mergeProps(props, {
       onClick: () => {
         if (balance) {
-          handleAmountChange({ text: balance.format(formatOpts) });
+          handleAmountChange({
+            text: balance.format(formatOpts ?? DEFAULT_FORMAT),
+          });
         }
       },
     });
@@ -208,9 +259,10 @@ export const InputAmountButtonMaxBalance = createComponent<
     return (
       <Button
         aria-label="MAX"
+        type="button"
         {...mergedProps}
         className={classes.maxBalance({ className })}
-        disabled={disabled}
+        disabled={disabled || balance.isZero()}
       >
         {children}
       </Button>
@@ -225,7 +277,7 @@ export const InputAmountCoinSelector = createComponent<
   id: 'InputAmountCoinSelector',
   render: (_, { className, asset, onClick, ...props }) => {
     const classes = styles();
-    const { disabled } = useContext(ctx);
+    const { disabled } = useContext(InputAmountFieldCtx);
 
     if (!asset) {
       return null;
@@ -257,6 +309,8 @@ export const InputAmountCoinSelector = createComponent<
 });
 
 export const InputAmount = withNamespace(InputAmountRoot, {
+  Label: InputAmountLabel,
+  Field: InputAmountField,
   Slot: InputAmountSlot,
   Balance: InputAmountBalance,
   ButtonMaxBalance: InputAmountButtonMaxBalance,
@@ -265,12 +319,11 @@ export const InputAmount = withNamespace(InputAmountRoot, {
 
 const styles = tv({
   slots: {
-    root: [
+    field: [
       'flex-row flex-wrap bg-clip-border w-auto h-auto py-3',
       'first-child:flex-1 first-child:basis-1/2 first-child:indent-[var(--space-3)]',
     ],
-    balance: 'pt-3 mb-auto',
-    maxBalance: 'font-mono self-center item-center items-center',
+    maxBalance: ['font-medium text-sm', 'h-6 px-2', 'mr-2', 'rounded-md'],
     coinSelector: 'gap-1.5 text-xs py-1',
   },
 });
