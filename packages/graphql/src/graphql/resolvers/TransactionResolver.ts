@@ -1,8 +1,8 @@
 import type {
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
-  GQLQueryTransactionsByOwnerArgs,
   GQLQueryTransactionsByBlockIdArgs,
+  GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
