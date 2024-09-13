@@ -79,7 +79,7 @@
   {
     "isLive": false,
     "name": "Catalyst",
-    "url": "https://medium.com/@fuel_catalyst/introducing-catalyst-the-launchpad-of-the-fuel-ecosystem-08a81d947182",
+    "url": "https://fuelcatalyst.io",
     "tags": ["Fuel", "Launchpad"],
     "description": "The Launchpad for the Fuel Ecosystem",
     "github": "",
@@ -309,13 +309,13 @@
   },
   {
     "isLive": true,
-    "name": "Mira",
+    "name": "Mira Exchange",
     "url": "https://mira.ly/",
     "tags": ["DeFi"],
-    "description": "The Liquidity Hub on Fuel",
-    "github": "https://github.com/0xmetaschool",
+    "description": "The liquidity hub on Fuel. Trade, earn and get rewards using the most efficient AMM on Fuel.",
+    "github": "",
     "twitter": "https://twitter.com/MiraProtocol",
-    "discord": "",
+    "discord": "https://discord.gg/9HzukDUKSq",
     "image": "mira"
   },
   {
@@ -342,14 +342,25 @@
   },
   {
     "isLive": false,
-    "name": "PlayEstates",
-    "url": "https://www.playestates.com/",
-    "tags": ["Real World Assets", "Gaming", "NFT"],
-    "description": "PlayEstates brings real estate on-chain and makes RWA ownership easy and affordable.",
+    "name": "Pangea",
+    "url": "https://www.pangea.foundation/",
+    "tags": ["Indexer"],
+    "description": "A trustless data network from which to explore and interact with blockchains, enabling the best crypto experience.",
     "github": "",
-    "twitter": "https://twitter.com/playestates",
-    "discord": "https://discord.gg/playestates",
-    "image": "playestates"
+    "twitter": "https://x.com/in_pangea",
+    "discord": "",
+    "image": "superchain"
+  },
+  {
+    "isLive": false,
+    "name": "Pipeline Finance",
+    "url": "https://www.pipeline.finance/",
+    "tags": ["DeFi", "Token Streaming"],
+    "description": "Pipeline Finance is the go-to solution for affordable and secure token streaming on the Fuel network. Experience seamless, real-time payments with ease.",
+    "github": "https://github.com/wt-xyz/pipeline",
+    "twitter": "https://x.com/pipeline_fi",
+    "discord": "",
+    "image": "pipeline"
   },
   {
     "isLive": false,
@@ -449,17 +460,6 @@
     "twitter": "https://twitter.com/subsquid",
     "discord": "https://discord.com/invite/subsquid",
     "image": "subsquid"
-  },
-  {
-    "isLive": false,
-    "name": "Superchain",
-    "url": "https://www.superchain.network/",
-    "tags": ["Indexer"],
-    "description": "A trustless data network from which to explore and interact with blockchains, enabling the best crypto experience.",
-    "github": "https://github.com/SuperChainNetwork",
-    "twitter": "https://twitter.com/OpenSuperchain",
-    "discord": "",
-    "image": "superchain"
   },
   {
     "isLive": true,
