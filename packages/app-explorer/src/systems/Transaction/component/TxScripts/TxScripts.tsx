@@ -1,6 +1,7 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import type {
   GQLOperationReceipt,
+  GQLReceipt,
   GQLTransactionReceiptFragment,
   Maybe,
 } from '@fuel-explorer/graphql/sdk';
@@ -36,8 +37,12 @@ import { tv } from 'tailwind-variants';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { JsonViewer } from '~/systems/Core/components/JsonViewer/JsonViewer';
-
 import type { TransactionNode } from '../../types';
+import { RECEIPT_FIELDS_MAP } from './constants';
+import {
+  type ReceiptHeaderOperation,
+  ReceiptHeaderOperationDataType,
+} from './types';
 
 export type TxScriptsProps = BaseProps<{
   tx: TransactionNode | undefined;
@@ -431,304 +436,95 @@ function ReceiptAmount() {
   );
 }
 
+function OperationHeader({
+  field,
+  index,
+  receipt,
+}: {
+  field: ReceiptHeaderOperation;
+  index: number;
+  receipt: Maybe<GQLReceipt> | undefined;
+}) {
+  if (
+    field == null ||
+    (field.requiredField && !receipt?.[field.requiredField])
+  ) {
+    return null;
+  }
+
+  const key = `${field.label}-${index}`;
+  const value =
+    (field.field && receipt?.[field.field]) ||
+    (field.fieldFallback && receipt?.[field.fieldFallback]);
+  const formattedValue =
+    field.type === ReceiptHeaderOperationDataType.HEX_ADDRESS &&
+    value &&
+    !String(value)?.startsWith('0x')
+      ? bn(value).toHex()
+      : value;
+
+  if (formattedValue == null) {
+    return null;
+  }
+
+  if (field.type === ReceiptHeaderOperationDataType.AMOUNT) {
+    return (
+      <Amount
+        iconSize={16}
+        assetId={receipt?.assetId}
+        value={bn(value)}
+        className="text-xs tablet:text-sm"
+      />
+    );
+  }
+
+  return String(formattedValue)?.startsWith('0x') ? (
+    <Address
+      value={formattedValue}
+      className="text-xs tablet:text-sm font-mono"
+      prefix={field.label}
+      linkProps={{
+        as: NextLink,
+        href:
+          field?.hrefFactory?.(formattedValue) ??
+          `/contract/${formattedValue}/assets`,
+      }}
+    />
+  ) : (
+    <Code
+      key={key}
+      className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+      color="gray"
+    >
+      {`${field.label} ${value}`}
+    </Code>
+  );
+}
+
 function ReceiptHeader() {
   const { receipt: item } = useContext(ctx);
   const receipt = item?.item;
   const classes = styles();
-  const type = receipt?.receiptType ?? 'UNKNOWN';
-  const param1 = receipt?.param1;
-  const contract = receipt?.to ?? receipt?.contractId ?? null;
-  const assetId = receipt?.assetId ?? '';
-  const amount = bn(receipt?.amount);
-
-  if (type === GQLReceiptType.Call && Boolean(contract)) {
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        <VStack className="flex-1 gap-[2px]">
-          {param1 && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              Method: {bn(param1).toHex()}
-            </Code>
-          )}
-          {contract && (
-            <Address
-              iconSize={14}
-              value={contract}
-              className="text-xs tablet:text-sm font-mono"
-              prefix="Contract:"
-              linkProps={{
-                as: NextLink,
-                href: `/contract/${contract}/assets`,
-              }}
-            />
-          )}
-        </VStack>
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  if (type === GQLReceiptType.Mint || type === GQLReceiptType.Burn) {
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        {receipt?.subId && (
-          <VStack className="flex-1 gap-[2px]">
-            {receipt.val && (
-              <Amount
-                iconSize={16}
-                assetId={receipt.contractId}
-                value={bn(receipt.val)}
-                className="text-xs tablet:text-sm"
-              />
-            )}
-            {receipt.contractId && (
-              <Address
-                value={receipt.contractId}
-                className="text-xs tablet:text-sm font-mono"
-                prefix="Asset:"
-                linkProps={{
-                  as: NextLink,
-                  href: `/contract/${receipt.contractId}/assets`,
-                }}
-              />
-            )}
-          </VStack>
-        )}
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  if (type === GQLReceiptType.TransferOut || type === GQLReceiptType.Transfer) {
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        {receipt?.toAddress && (
-          <VStack className="flex-1 gap-[2px]">
-            <Amount
-              iconSize={16}
-              assetId={assetId}
-              value={amount}
-              className="text-xs tablet:text-sm"
-            />
-            <Address
-              value={receipt.toAddress}
-              className="text-xs tablet:text-sm font-mono"
-              prefix="To:"
-              linkProps={{
-                as: NextLink,
-                href: `/account/${receipt.toAddress}/assets`,
-              }}
-            />
-          </VStack>
-        )}
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  if (type === GQLReceiptType.MessageOut) {
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        {receipt?.sender && receipt?.recipient && (
-          <VStack className="flex-1 gap-[2px]">
-            <Address
-              value={receipt.sender}
-              className="text-xs tablet:text-sm font-mono"
-              prefix="To:"
-              linkProps={{
-                as: NextLink,
-                href: `/account/${receipt.sender}/assets`,
-              }}
-            />
-            <Address
-              value={receipt.recipient}
-              className="text-xs tablet:text-sm font-mono"
-              prefix="From:"
-              linkProps={{
-                as: NextLink,
-                href: `/account/${receipt.recipient}/assets`,
-              }}
-            />
-          </VStack>
-        )}
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  // New cases for additional receipt types
-  if (type === GQLReceiptType.Log || type === GQLReceiptType.LogData) {
-    const pc = receipt?.pc;
-    const data = receipt?.data;
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        <VStack className="flex-1 gap-[2px]">
-          {!!pc && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              PC: {pc}
-            </Code>
-          )}
-          {!!data && !data?.startsWith('0x') && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              Data: {data}
-            </Code>
-          )}
-          {!!data && data?.startsWith('0x') && (
-            <Address
-              iconSize={14}
-              value={data}
-              className="text-xs tablet:text-sm font-mono"
-              prefix="Data:"
-              linkProps={{
-                as: NextLink,
-                href: `/contract/${data}/assets`,
-              }}
-            />
-          )}
-        </VStack>
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  if (type === GQLReceiptType.Panic || type === GQLReceiptType.Revert) {
-    const reason = receipt?.reason;
-    const contractId = receipt?.contractId;
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        <VStack className="flex-1 gap-[2px]">
-          {!!reason && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              Reason: {reason}
-            </Code>
-          )}
-          {!!contractId && (
-            <Address
-              value={contractId}
-              className="text-xs tablet:text-sm font-mono"
-              prefix="Contract ID:"
-              linkProps={{
-                as: NextLink,
-                href: `/contract/${contractId}/assets`,
-              }}
-            />
-          )}
-        </VStack>
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  if (type === GQLReceiptType.ReturnData) {
-    const pc = receipt?.pc;
-    const data = receipt?.data;
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        <VStack className="flex-1 gap-[2px]">
-          {!!pc && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              PC: {pc}
-            </Code>
-          )}
-          {data != null && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              Data: {data}
-            </Code>
-          )}
-        </VStack>
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  if (type === GQLReceiptType.Return) {
-    const val = receipt?.val;
-    const pc = receipt?.pc;
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        <VStack className="flex-1 gap-[2px]">
-          {!!val && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              Value: {val}
-            </Code>
-          )}
-          {pc != null && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              PC: {pc}
-            </Code>
-          )}
-        </VStack>
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
-
-  if (type === GQLReceiptType.ScriptResult) {
-    const gasUsed = receipt?.gasUsed;
-    const result = receipt?.result;
-    return (
-      <Collapsible.Header className={classes.header()}>
-        <ReceiptBadge />
-        <VStack className="flex-1 gap-[2px]">
-          {!!gasUsed && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              Gas Used: {gasUsed}
-            </Code>
-          )}
-          {result != null && (
-            <Code
-              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-              color="gray"
-            >
-              Result: {result}
-            </Code>
-          )}
-        </VStack>
-        <ReceiptAmount />
-      </Collapsible.Header>
-    );
-  }
+  const type = (receipt?.receiptType ?? 'UNKNOWN') as GQLReceiptType;
+  const fields = RECEIPT_FIELDS_MAP[type] || [];
 
   return (
     <Collapsible.Header className={classes.header()}>
-      <div>
-        <ReceiptBadge />
-      </div>
+      <ReceiptBadge />
+      <VStack className="flex-1 gap-[2px]">
+        {!fields?.length && <ReceiptBadge />}
+
+        {fields?.map((field, index) => (
+          <OperationHeader
+            key={`operation-header-${field.type}-${field.requiredField ?? ''}-${
+              field.field
+            }-${field.fieldFallback}`}
+            field={field}
+            index={index}
+            receipt={receipt}
+          />
+        ))}
+      </VStack>
       <ReceiptAmount />
     </Collapsible.Header>
   );
