@@ -1,12 +1,12 @@
 import { Collapsible, cx } from '@fuels/ui';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { TxReceiptBlock } from '~/systems/Transaction/component/TxScripts/TxReceiptBlock/TxReceiptBlock';
 import { TxReceiptHeader } from '~/systems/Transaction/component/TxScripts/TxReceiptHeader/TxReceiptHeader';
 import { TxScriptsContext } from './constants';
 import { styles } from './styles';
 import { ReceiptItemProps } from './types';
 
-export function ReceiptItem({
+function _ReceiptItem({
   receipt,
   isIndented,
   hasPanic,
@@ -37,3 +37,5 @@ export function ReceiptItem({
     </TxScriptsContext.Provider>
   );
 }
+
+export const ReceiptItem = memo(_ReceiptItem);

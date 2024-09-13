@@ -2,6 +2,7 @@ import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import type { GQLOperationReceipt } from '@fuel-explorer/graphql/sdk';
 import { Box, Button, HStack, HoverCard } from '@fuels/ui';
 import { IconArrowsMoveVertical } from '@tabler/icons-react';
+import { memo } from 'react';
 import { useMeasure } from 'react-use';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { ReceiptItem } from '~/systems/Transaction/component/TxScripts/ReceiptItem/ReceiptItem';
@@ -10,11 +11,7 @@ import { TypesCounter } from '~/systems/Transaction/component/TxScripts/TypesCou
 import { styles } from './constants';
 import type { ScriptsContentProps } from './types';
 
-export function TxScriptsContent({
-  tx,
-  opened,
-  setOpened,
-}: ScriptsContentProps) {
+function _TxScriptsContent({ tx, opened, setOpened }: ScriptsContentProps) {
   const operations = tx?.operations ?? [];
   const classes = styles();
   const [ref, { width }] = useMeasure();
@@ -111,3 +108,5 @@ export function TxScriptsContent({
     </div>
   );
 }
+
+export const TxScriptsContent = memo(_TxScriptsContent);

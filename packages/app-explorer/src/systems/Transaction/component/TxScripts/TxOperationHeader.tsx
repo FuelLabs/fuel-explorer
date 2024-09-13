@@ -2,13 +2,14 @@ import { GQLReceipt, Maybe } from '@fuel-explorer/graphql/sdk';
 import { Address, Code } from '@fuels/ui';
 import { bn } from 'fuels';
 import NextLink from 'next/link';
+import { memo } from 'react';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import {
   ReceiptHeaderOperation,
   ReceiptHeaderOperationDataType,
 } from '~/systems/Transaction/component/TxScripts/TxReceiptHeader/types';
 
-export function TxOperationHeader({
+function _TxOperationHeader({
   field,
   index,
   receipt,
@@ -72,3 +73,5 @@ export function TxOperationHeader({
     </Code>
   );
 }
+
+export const TxOperationHeader = memo(_TxOperationHeader);

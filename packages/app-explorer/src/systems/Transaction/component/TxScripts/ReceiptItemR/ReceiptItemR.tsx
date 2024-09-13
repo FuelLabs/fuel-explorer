@@ -1,9 +1,10 @@
 import { GQLOperationReceipt } from '@fuel-explorer/graphql';
+import { memo } from 'react';
 import { ReceiptItem } from '~/systems/Transaction/component/TxScripts/ReceiptItem/ReceiptItem';
 import { styles } from './styles';
 import { ReceiptItemRProps } from './types';
 
-export function ReceiptItemR(props: ReceiptItemRProps) {
+function _ReceiptItemR(props: ReceiptItemRProps) {
   const classes = styles();
   return (
     <>
@@ -26,3 +27,5 @@ export function ReceiptItemR(props: ReceiptItemRProps) {
     </>
   );
 }
+
+export const ReceiptItemR = memo(_ReceiptItemR);
