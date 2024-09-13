@@ -6,7 +6,8 @@ import { TxReceiptAmount } from '~/systems/Transaction/component/TxScripts/TxRec
 import { TxReceiptBadge } from '~/systems/Transaction/component/TxScripts/TxReceiptBadge/TxReceiptBadge';
 import { ReceiptContext } from '~/systems/Transaction/component/TxScripts/context';
 
-import { RECEIPT_FIELDS_MAP, styles } from './constants';
+import { RECEIPT_FIELDS_MAP } from './constants';
+import { styles } from './styles';
 
 export function TxReceiptHeader() {
   const { receipt: item } = useContext(ReceiptContext);

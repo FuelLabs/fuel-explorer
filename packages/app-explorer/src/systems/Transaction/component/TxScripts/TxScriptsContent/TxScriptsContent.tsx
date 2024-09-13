@@ -8,7 +8,7 @@ import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { ReceiptItem } from '~/systems/Transaction/component/TxScripts/ReceiptItem/ReceiptItem';
 import { ReceiptItemR } from '~/systems/Transaction/component/TxScripts/ReceiptItemR/ReceiptItemR';
 import { TypesCounter } from '~/systems/Transaction/component/TxScripts/TypesCounter/TypesCounter';
-import { styles } from './constants';
+import { styles } from './styles';
 import type { ScriptsContentProps } from './types';
 
 function _TxScriptsContent({ tx, opened, setOpened }: ScriptsContentProps) {

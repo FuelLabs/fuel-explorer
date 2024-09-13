@@ -1,5 +1,4 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
-import { tv } from 'tailwind-variants';
 import {
   ReceiptHeaderOperation,
   ReceiptHeaderOperationDataType,
@@ -115,9 +114,3 @@ export const RECEIPT_FIELDS_MAP: Record<
     { label: 'Result:', field: 'result' },
   ],
 };
-
-export const styles = tv({
-  slots: {
-    header: 'group min-h-[42px] gap-2 tablet:gap-4',
-  },
-});
