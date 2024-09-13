@@ -1,14 +1,15 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import { Collapsible, VStack } from '@fuels/ui';
 import { useContext } from 'react';
-import { TxScriptsContext } from '~/systems/Transaction/component/TxScripts/ReceiptItem/constants';
 import { TxOperationHeader } from '~/systems/Transaction/component/TxScripts/TxOperationHeader';
 import { TxReceiptAmount } from '~/systems/Transaction/component/TxScripts/TxReceiptAmount';
 import { TxReceiptBadge } from '~/systems/Transaction/component/TxScripts/TxReceiptBadge/TxReceiptBadge';
+import { ReceiptContext } from '~/systems/Transaction/component/TxScripts/context';
+
 import { RECEIPT_FIELDS_MAP, styles } from './constants';
 
 export function TxReceiptHeader() {
-  const { receipt: item } = useContext(TxScriptsContext);
+  const { receipt: item } = useContext(ReceiptContext);
   const receipt = item?.item;
   const classes = styles();
   const type = (receipt?.receiptType ?? 'UNKNOWN') as GQLReceiptType;

@@ -2,9 +2,11 @@ import { Collapsible, cx } from '@fuels/ui';
 import { memo, useState } from 'react';
 import { TxReceiptBlock } from '~/systems/Transaction/component/TxScripts/TxReceiptBlock/TxReceiptBlock';
 import { TxReceiptHeader } from '~/systems/Transaction/component/TxScripts/TxReceiptHeader/TxReceiptHeader';
-import { TxScriptsContext } from './constants';
+import {
+  ReceiptContext,
+  type ReceiptItemContext,
+} from '~/systems/Transaction/component/TxScripts/context';
 import { styles } from './styles';
-import { ReceiptItemProps } from './types';
 
 function _ReceiptItem({
   receipt,
@@ -12,14 +14,12 @@ function _ReceiptItem({
   hasPanic,
   className,
   ...props
-}: ReceiptItemProps) {
+}: ReceiptItemContext) {
   const classes = styles({ indent: isIndented });
   const [opened, setOpened] = useState(false);
 
   return (
-    <TxScriptsContext.Provider
-      value={{ receipt: receipt, isIndented, hasPanic }}
-    >
+    <ReceiptContext.Provider value={{ receipt: receipt, isIndented, hasPanic }}>
       <div
         className={cx(classes.receiptRow({ className }), 'group')}
         data-opened={opened}
@@ -34,7 +34,7 @@ function _ReceiptItem({
           <TxReceiptBlock />
         </Collapsible>
       </div>
-    </TxScriptsContext.Provider>
+    </ReceiptContext.Provider>
   );
 }
 

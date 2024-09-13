@@ -1,14 +1,14 @@
+import { Collapsible, ScrollArea } from '@fuels/ui';
 import { useContext } from 'react';
 import { useMeasure } from 'react-use';
-
-import { Collapsible, ScrollArea } from '@fuels/ui';
 import { JsonViewer } from '~/systems/Core/components/JsonViewer/JsonViewer';
-import { TxScriptsContext } from '~/systems/Transaction/component/TxScripts/ReceiptItem/constants';
+import { ReceiptContext } from '~/systems/Transaction/component/TxScripts/context';
 import { parseTXScriptJson } from '~/systems/Transaction/component/TxScripts/utils';
+
 import { styles } from './styles';
 
 export function TxReceiptBlock() {
-  const { receipt } = useContext(TxScriptsContext);
+  const { receipt } = useContext(ReceiptContext);
   const classes = styles();
   const [ref, { width }] = useMeasure();
   return (

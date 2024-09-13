@@ -1,13 +1,12 @@
 import { Address, VStack } from '@fuels/ui';
 import { bn } from 'fuels';
-import { useContext } from 'react';
-
 import NextLink from 'next/link';
+import { useContext } from 'react';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
-import { TxScriptsContext } from '~/systems/Transaction/component/TxScripts/ReceiptItem/constants';
+import { ReceiptContext } from '~/systems/Transaction/component/TxScripts/context';
 
 export function TxReceiptAmount() {
-  const { receipt: item } = useContext(TxScriptsContext);
+  const { receipt: item } = useContext(ReceiptContext);
   const receipt = item?.item;
   const assetId = receipt?.assetId ?? '';
   const amount = bn(receipt?.amount);

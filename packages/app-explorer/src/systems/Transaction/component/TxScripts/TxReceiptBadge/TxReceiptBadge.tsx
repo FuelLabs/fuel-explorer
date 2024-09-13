@@ -1,11 +1,11 @@
-import { useContext } from 'react';
-
 import { Badge } from '@fuels/ui';
-import { TxScriptsContext } from '~/systems/Transaction/component/TxScripts/ReceiptItem/constants';
+import { useContext } from 'react';
+import { ReceiptContext } from '~/systems/Transaction/component/TxScripts/context';
+
 import { getBadgeColor } from './utils';
 
 export function TxReceiptBadge() {
-  const { receipt, hasPanic } = useContext(TxScriptsContext);
+  const { receipt, hasPanic } = useContext(ReceiptContext);
   const type = receipt?.item?.receiptType ?? 'UNKNOWN';
   const color = getBadgeColor(Boolean(hasPanic), receipt?.item);
   return (
