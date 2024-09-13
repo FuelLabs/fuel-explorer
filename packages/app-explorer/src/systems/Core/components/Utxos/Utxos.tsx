@@ -100,7 +100,7 @@ function VirtualList({ items, assetId }: UtxosProps) {
 
 export function Utxos({ items, assetId, ...props }: UtxosProps) {
   return (
-    <Collapsible.Content {...props}>
+    <Collapsible.Content className="bg-gray-2 dark:bg-gray-1" {...props}>
       <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">
         UTXOs ({items?.length ?? 0})
       </Collapsible.Title>

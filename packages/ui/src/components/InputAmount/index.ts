@@ -2,4 +2,4 @@
 
 export { InputAmount } from './InputAmount';
 
-export type { InputAmountProps } from './InputAmount';
+export type { InputAmountProps, InputAmountFieldProps } from './InputAmount';

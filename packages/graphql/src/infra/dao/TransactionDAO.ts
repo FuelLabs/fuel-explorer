@@ -1,3 +1,4 @@
+import { isB256, isBech32 } from 'fuels';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
@@ -203,5 +204,94 @@ export default class TransactionDAO {
       transactions.push(TransactionEntity.createFromDAO(transactionData));
     }
     return transactions;
+  }
+
+  async getPaginatedTransactionsByBlockId(
+    blockId: string,
+    paginatedParams: PaginatedParams,
+  ) {
+    let height = blockId;
+    if (isB256(blockId) || isBech32(blockId)) {
+      const [block] = await this.databaseConnection.query(
+        `
+			select
+				b._id
+			from
+				indexer.blocks b
+			where
+				b.id = $1
+		`,
+        [blockId],
+      );
+      height = block._id;
+    }
+    const direction = paginatedParams.direction === 'before' ? '<' : '>';
+    const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
+    const transactionsData = await this.databaseConnection.query(
+      `
+		select
+			t.*
+		from
+			indexer.transactions t
+		where
+			t.block_id = $1 and
+			($2::text is null or t._id ${direction} $2)
+		order by
+			t._id ${order}
+		limit
+			10
+		`,
+      [height, paginatedParams.cursor],
+    );
+    transactionsData.sort((a: any, b: any) => {
+      return a._id.localeCompare(b._id) * -1;
+    });
+    const transactions = [];
+    for (const transactionData of transactionsData) {
+      transactions.push(TransactionEntity.createFromDAO(transactionData));
+    }
+    if (transactions.length === 0) {
+      return {
+        nodes: [],
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          endCursor: '',
+          startCursor: '',
+        },
+      };
+    }
+    const startCursor = transactionsData[0]._id;
+    const endCursor = transactionsData[transactionsData.length - 1]._id;
+    const hasPreviousPage = (
+      await this.databaseConnection.query(
+        'select exists(select 1 from indexer.transactions t where t._id < $1 and t.block_id = $2)',
+        [endCursor, height],
+      )
+    )[0].exists;
+    const hasNextPage = (
+      await this.databaseConnection.query(
+        'select exists(select 1 from indexer.transactions t where t._id > $1 and t.block_id = $2)',
+        [startCursor, height],
+      )
+    )[0].exists;
+    const newNodes = transactions.map((n) => n.toGQLNode());
+    const edges = newNodes.map((node) => ({
+      node,
+      cursor: paginatedParams.cursor,
+    }));
+    const paginatedResults = {
+      nodes: newNodes,
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        endCursor,
+        startCursor,
+      },
+    };
+
+    return paginatedResults;
   }
 }

@@ -4,14 +4,13 @@ import './fonts.css';
 
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import type { Preview } from '@storybook/react';
-import React from 'react';
 import { withThemeDecorator } from 'storybook-addon-theme';
 
 import type { ReactNode } from 'react';
-import { Provider } from '../src/systems/Core/components/Provider';
+import { ThemeProvider } from '../src/systems/Core/components/Theme';
 
 function ThemeWrapper({ children }: { children: ReactNode }) {
-  return <Provider>{children}</Provider>;
+  return <ThemeProvider>{children}</ThemeProvider>;
 }
 
 const preview: Preview = {

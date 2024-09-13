@@ -22,12 +22,22 @@ async function main() {
   while (true) {
     const total = await mq.getActive(QueueNames.ADD_BLOCK_RANGE);
     if (total > 0) {
-      console.log('messages', total);
+      logger.info(
+        `⌛️ Waiting messages to be consume: ${total} messages left logger`,
+      );
       await setTimeout(5000);
       continue;
     }
-    const { data } = await client.sdk.blocks({ last: 1 });
-    const lastBlock = data.blocks.nodes[0];
+    let blocks: any;
+    try {
+      const { data } = await client.sdk.blocks({ last: 1 });
+      blocks = data.blocks;
+    } catch (e: any) {
+      logger.error('❌ Error fetching blocks from fuel core', e);
+      await setTimeout(5000);
+      continue;
+    }
+    const lastBlock = blocks.nodes[0];
     const height = Number(lastBlock?.header.height ?? '0');
     const blockDAO = new BlockDAO();
     const latestBlock = await blockDAO.findLatestBlockAdded();
@@ -42,16 +52,12 @@ async function main() {
   }
 }
 
-(async () => {
-  await main();
-
-  const others = ['SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM'];
-  //biome-ignore lint/complexity/noForEach: <explanation>
-  others.forEach((eventType) => {
-    process.on(eventType, async (err) => {
-      await mq.disconnect();
-      logger.error('❌ GraphQL shutdown error', err);
-      process.exit(1);
-    });
-  });
-})();
+main().catch(async (error: any) => {
+  logger.error('❌ Uncaught error', error);
+  try {
+    await mq.disconnect();
+  } catch (_error: any) {
+    logger.error('❌ Could not disconnect from RabbitMQ');
+  }
+  process.exit(1);
+});

@@ -5,6 +5,7 @@ import {
   hasText,
 } from '@fuels/playwright-utils';
 import * as metamask from '@synthetixio/synpress/commands/metamask';
+import type { HexAddress } from 'app-commons';
 import type { BigNumberish, WalletUnlocked } from 'fuels';
 import { bn, format } from 'fuels';
 import type { HDAccount, PublicClient } from 'viem';
@@ -81,12 +82,38 @@ test.describe('Bridge', () => {
 
     erc20Contract = getContract({
       abi: ERC_20.abi,
-      address: ETH_ERC20 as `0x${string}`,
+      address: ETH_ERC20 as HexAddress,
       client: {
         public: client,
       },
     });
     const baseAssetId = fuelWallet.provider.getBaseAssetId();
+
+    await test.step('Fuel wallet should be connected after refresh', async () => {
+      await goToBridgePage(page);
+
+      const connectedWallet = getByAriaLabel(
+        page,
+        'Fuel Local: Connected Wallet',
+      );
+      const address = await connectedWallet.innerText();
+      const balance = getByAriaLabel(page, 'Balance');
+      const balanceText = await balance.innerText();
+
+      // refresh the page
+      await page.goto('/bridge');
+
+      const connectedWalletAferRefresh = getByAriaLabel(
+        page,
+        'Fuel Local: Connected Wallet',
+      );
+      const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
+      const balanceAfterRefresh = getByAriaLabel(page, 'Balance');
+      const balanceTextAfterRefresh = await balanceAfterRefresh.innerText();
+
+      expect(addressAfterRefresh).toEqual(address);
+      expect(balanceTextAfterRefresh).toEqual(balanceText);
+    });
 
     await test.step('Deposit ETH to Fuel', async () => {
       const preDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
@@ -96,7 +123,7 @@ test.describe('Bridge', () => {
 
       await test.step('Fill data and click on deposit', async () => {
         await hasDropdownSymbol(page, 'ETH');
-        const depositInput = page.locator('.fuel-InputAmount input');
+        const depositInput = page.locator('.fuel-InputAmountField input');
         await depositInput.fill(DEPOSIT_AMOUNT);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
@@ -174,7 +201,7 @@ test.describe('Bridge', () => {
         await clickWithdrawTab(page);
         await hasDropdownSymbol(page, 'ETH');
 
-        const withdrawInput = page.locator('.fuel-InputAmount input');
+        const withdrawInput = page.locator('.fuel-InputAmountField input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
         const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
@@ -334,7 +361,7 @@ test.describe('Bridge', () => {
         await hasDropdownSymbol(page, 'TKN');
 
         // Deposit asset
-        const depositInput = page.locator('.fuel-InputAmount input');
+        const depositInput = page.locator('.fuel-InputAmountField input');
         await depositInput.fill(DEPOSIT_AMOUNT);
         const depositButton = getByAriaLabel(page, 'Deposit', true);
         await depositButton.click();
@@ -446,7 +473,7 @@ test.describe('Bridge', () => {
         await selectToken(page, 'TKN');
         await hasDropdownSymbol(page, 'TKN');
 
-        const withdrawInput = page.locator('.fuel-InputAmount input');
+        const withdrawInput = page.locator('.fuel-InputAmountField input');
         await withdrawInput.fill(WITHDRAW_AMOUNT);
         const withdrawButton = getByAriaLabel(page, 'Withdraw', true);
         await withdrawButton.click();
@@ -552,39 +579,10 @@ test.describe('Bridge', () => {
       await page.goto('/bridge');
       await goToTransactionsPage(page);
 
-      const loading = getByAriaLabel(page, 'Loading Bridge Transactions');
-      await loading.innerText();
-
       await checkTxItemDone(page, depositEthTxId);
       await checkTxItemDone(page, depositERC20TxId);
       await checkTxItemDone(page, withdrawEthTxId);
       await checkTxItemDone(page, withdrawERC20TxId);
-    });
-
-    await test.step('Fuel wallet should be connected after refresh', async () => {
-      await goToBridgePage(page);
-
-      const connectedWallet = getByAriaLabel(
-        page,
-        'Fuel Local: Connected Wallet',
-      );
-      const address = await connectedWallet.innerText();
-      const balance = getByAriaLabel(page, 'Balance: ');
-      const balanceText = await balance.innerText();
-
-      // refresh the page
-      await page.goto('/bridge');
-
-      const connectedWalletAferRefresh = getByAriaLabel(
-        page,
-        'Fuel Local: Connected Wallet',
-      );
-      const addressAfterRefresh = await connectedWalletAferRefresh.innerText();
-      const balanceAfterRefresh = getByAriaLabel(page, 'Balance: ');
-      const balanceTextAfterRefresh = await balanceAfterRefresh.innerText();
-
-      expect(addressAfterRefresh).toEqual(address);
-      expect(balanceTextAfterRefresh).toEqual(balanceText);
     });
 
     await test.step('Check if transaction list reacts correctly to fuel wallet changes', async () => {
@@ -633,7 +631,7 @@ test.describe('Bridge', () => {
 
       // Deposit asset
       const depositAmount = '1.12345';
-      const depositInput = page.locator('.fuel-InputAmount input');
+      const depositInput = page.locator('.fuel-InputAmountField input');
       await depositInput.fill(depositAmount);
 
       await test.step('Test deposit alert', async () => {
@@ -679,7 +677,7 @@ test.describe('Bridge', () => {
 
         await hasText(
           page,
-          'This transaction requires ETH on Fuel to pay for gas. Please faucet your wallet or bridge ETH.',
+          'This transaction requires ETH on Fuel side to pay for gas. Please faucet your wallet or bridge ETH.',
         );
       });
       await closeTransactionPopup(page);

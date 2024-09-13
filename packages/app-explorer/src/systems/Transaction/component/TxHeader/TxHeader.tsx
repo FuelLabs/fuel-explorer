@@ -1,6 +1,5 @@
 'use client';
 import { Address, useBreakpoints } from '@fuels/ui';
-import { IconChecklist } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
 import { useParams } from 'next/navigation';
 import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
@@ -18,11 +17,10 @@ export function TxHeader({
 
   return (
     <PageTitle
-      icon={<IconChecklist size={24} stroke={1.2} />}
-      rightElement={!isLoading && <ViewMode mode={mode} />}
+      title="Transaction"
+      subtitle={<Address full={isLaptop} value={id} fixed="b256" />}
     >
-      Transaction
-      <Address full={isLaptop} value={id} fixed="b256" />
+      {!isLoading && <ViewMode mode={mode} />}
     </PageTitle>
   );
 }

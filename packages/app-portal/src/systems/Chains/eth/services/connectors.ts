@@ -1,7 +1,7 @@
 import type { GetContractReturnType, PublicClient, WalletClient } from 'viem';
 import { getContract } from 'viem';
 
-import type { BridgeSolidityContracts } from 'app-commons';
+import type { BridgeSolidityContracts, HexAddress } from 'app-commons';
 import { ERC_20 } from '../contracts/Erc20';
 import { FUEL_CHAIN_STATE } from '../contracts/FuelChainState';
 import { FUEL_ERC_20_GATEWAY } from '../contracts/FuelErc20Gateway';
@@ -17,7 +17,7 @@ export class EthConnectorService {
 
     const contract = getContract({
       abi: FUEL_ERC_20_GATEWAY.abi,
-      address: bridgeSolidityContracts.FuelERC20Gateway,
+      address: bridgeSolidityContracts.FuelERC20GatewayV4,
       client: {
         public: publicClient!,
         wallet: walletClient,
@@ -49,7 +49,7 @@ export class EthConnectorService {
   static connectToErc20(options: {
     walletClient?: WalletClient;
     publicClient?: PublicClient;
-    address: `0x${string}`;
+    address: HexAddress;
   }) {
     const { walletClient, publicClient, address } = options;
 

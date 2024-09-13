@@ -1,3 +1,5 @@
+import type { HexAddress } from 'app-commons';
+
 /**
  * due to error on importing `app-commons` to test environment,
  * we get the contracts id here inntead of from there
@@ -8,10 +10,10 @@ export type BridgeTokenContracts = {
   FUEL_TokenAsset?: string;
 };
 export type BridgeSolidityContracts = {
-  FuelChainState: `0x${string}`;
-  FuelMessagePortal: `0x${string}`;
-  FuelERC20Gateway: `0x${string}`;
-  FuelERC721Gateway: `0x${string}`;
+  FuelChainState: HexAddress;
+  FuelMessagePortal: HexAddress;
+  FuelERC20GatewayV4: HexAddress;
+  FuelERC721Gateway: HexAddress;
 };
 
 export async function getBridgeTokenContracts() {

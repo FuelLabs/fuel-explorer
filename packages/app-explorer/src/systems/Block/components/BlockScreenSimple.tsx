@@ -1,15 +1,11 @@
 'use client';
 
-import type { GQLBlockFragment, Maybe } from '@fuel-explorer/graphql';
-import {
-  Address,
-  Grid,
-  Icon,
-  LoadingBox,
-  LoadingWrapper,
-  VStack,
-} from '@fuels/ui';
-import { IconListDetails } from '@tabler/icons-react';
+import type {
+  GQLBlockFragment,
+  GQLTransactionsByBlockIdQuery,
+  Maybe,
+} from '@fuel-explorer/graphql';
+import { Address, Grid, LoadingBox, LoadingWrapper, VStack } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
 import NextLink from 'next/link';
 import { Routes } from '~/routes';
@@ -19,17 +15,20 @@ import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
 type BlockScreenSimpleProps = {
+  id?: string;
   block?: Maybe<GQLBlockFragment>;
+  txs?: GQLTransactionsByBlockIdQuery['transactionsByBlockId'];
   producer?: Maybe<string>;
   isLoading?: boolean;
 };
 
 export function BlockScreenSimple({
+  id,
   block,
+  txs,
   producer,
   isLoading,
 }: BlockScreenSimpleProps) {
-  const txList = block?.transactions ?? [];
   return (
     <VStack>
       <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">
@@ -65,13 +64,16 @@ export function BlockScreenSimple({
           />
         </CardInfo>
       </Grid>
-      <PageTitle size="3" icon={<Icon icon={IconListDetails} />}>
-        Transactions
-      </PageTitle>
+      <PageTitle title="Transactions" />
       {isLoading ? (
         <TxListLoader numberOfTxs={4} />
       ) : (
-        <TxList hidePagination transactions={txList} route="home" />
+        <TxList
+          transactions={txs?.nodes}
+          pageInfo={txs?.pageInfo}
+          owner={id}
+          route="blockSimple"
+        />
       )}
     </VStack>
   );

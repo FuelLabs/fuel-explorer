@@ -1,4 +1,4 @@
-import { NetworkFuel, assets } from '@fuel-ts/account';
+import { type NetworkFuel, assets } from '@fuel-ts/account';
 
 export const ASSET_LIST = assets;
 
