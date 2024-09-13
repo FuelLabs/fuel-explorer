@@ -1,7 +1,8 @@
 import type { BaseProps } from '@fuels/ui';
 import { TransactionNode } from '~/systems/Transaction/types';
 
-export type TxScriptsProps = BaseProps<{
+export type ScriptsContentProps = BaseProps<{
   tx: TransactionNode | undefined;
-  isLoading?: boolean;
+  opened: boolean;
+  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }>;
