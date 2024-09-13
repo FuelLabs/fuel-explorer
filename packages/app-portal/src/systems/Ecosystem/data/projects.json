@@ -309,13 +309,13 @@
   },
   {
     "isLive": true,
-    "name": "Mira",
+    "name": "Mira Exchange",
     "url": "https://mira.ly/",
     "tags": ["DeFi"],
-    "description": "The Liquidity Hub on Fuel",
-    "github": "https://github.com/0xmetaschool",
+    "description": "The liquidity hub on Fuel. Trade, earn and get rewards using the most efficient AMM on Fuel.",
+    "github": "",
     "twitter": "https://twitter.com/MiraProtocol",
-    "discord": "",
+    "discord": "https://discord.gg/9HzukDUKSq",
     "image": "mira"
   },
   {
@@ -342,14 +342,14 @@
   },
   {
     "isLive": false,
-    "name": "PlayEstates",
-    "url": "https://www.playestates.com/",
-    "tags": ["Real World Assets", "Gaming", "NFT"],
-    "description": "PlayEstates brings real estate on-chain and makes RWA ownership easy and affordable.",
-    "github": "",
-    "twitter": "https://twitter.com/playestates",
-    "discord": "https://discord.gg/playestates",
-    "image": "playestates"
+    "name": "Pipeline Finance",
+    "url": "https://www.pipeline.finance/",
+    "tags": ["DeFi", "Token Streaming"],
+    "description": "Pipeline Finance is the go-to solution for affordable and secure token streaming on the Fuel network. Experience seamless, real-time payments with ease.",
+    "github": "https://github.com/wt-xyz/pipeline",
+    "twitter": "https://x.com/pipeline_fi",
+    "discord": "",
+    "image": "pipeline"
   },
   {
     "isLive": false,
