@@ -35,7 +35,7 @@ const ADDRS = {
     '0x4c6be4ed66b783f55e44a6d36290a73970a616ba33256636cf15ad5cded228d9',
 };
 
-export const GROUPED_INPUT_ASSET = mocks.aGroupedInputCoin({
+const GROUPED_INPUT_ASSET = mocks.aGroupedInputCoin({
   ...ADDRS,
   assetId: '0x0000000000000000000000000000000000000000',
   inputs: [
@@ -45,7 +45,7 @@ export const GROUPED_INPUT_ASSET = mocks.aGroupedInputCoin({
   ],
 });
 
-export const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInputCoin({
+const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInputCoin({
   ...ADDRS,
   inputs: [
     mockedInputCoinFactory(),
@@ -54,7 +54,7 @@ export const GROUPED_INPUT_ASSET_UNKNOWN = mocks.aGroupedInputCoin({
   ],
 });
 
-export const GROUPED_INPUT_MESSAGE = mocks.aGroupedInputMessage({
+const GROUPED_INPUT_MESSAGE = mocks.aGroupedInputMessage({
   ...ADDRS,
 });
 
