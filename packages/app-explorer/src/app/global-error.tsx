@@ -6,7 +6,7 @@ import './globals.css';
 import Cookies from 'js-cookie';
 import type { Metadata } from 'next';
 import { ErrorPageComponent } from '~/systems/Core/components/ErrorPage/ErrorPage';
-import { Provider } from '~/systems/Core/components/Provider';
+import { ThemeProvider } from '~/systems/Core/components/Theme';
 import { cx } from '~/systems/Core/utils/cx';
 
 export const metadata: Metadata = {
@@ -35,9 +35,9 @@ export default function Page() {
         <link rel="icon" href="/favicon.svg" />
       </head>
       <body>
-        <Provider>
+        <ThemeProvider>
           <ErrorPageComponent />
-        </Provider>
+        </ThemeProvider>
       </body>
     </html>
   );

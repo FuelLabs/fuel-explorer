@@ -820,6 +820,7 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
         search: overrides && overrides.hasOwnProperty('search') ? overrides.search! : aSearchResult(),
         transaction: overrides && overrides.hasOwnProperty('transaction') ? overrides.transaction! : aTransaction(),
         transactions: overrides && overrides.hasOwnProperty('transactions') ? overrides.transactions! : aTransactionConnection(),
+        transactionsByBlockId: overrides && overrides.hasOwnProperty('transactionsByBlockId') ? overrides.transactionsByBlockId! : aTransactionConnection(),
         transactionsByOwner: overrides && overrides.hasOwnProperty('transactionsByOwner') ? overrides.transactionsByOwner! : aTransactionConnection(),
     };
 };

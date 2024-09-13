@@ -18,7 +18,7 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { assetId } = props || {};
   const { fuel } = useFuel();
   const { fuelProvider, isLoading: isLoadingProvider } = useFuelNetwork();
-  const { account, isLoading: _isLoadingAccount } = useAccount();
+  const { account, isLoading: isLoadingAccount } = useAccount();
   const { balance, isLoading: isLoadingBalance } = useBalance({
     assetId,
     address: account || undefined,
@@ -28,7 +28,6 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { disconnect, isPending: isLoadingDisconnecting } = useDisconnect();
   const { wallet, isLoading: isLoadingWallet } = useWallet(account);
 
-  const isLoadingAccount = _isLoadingAccount || (isConnected && !account);
   const {
     connect,
     error,

@@ -15,7 +15,7 @@ import {
   useFuelAccountConnection,
 } from '~portal/systems/Chains';
 
-import { FUEL_CHAIN } from 'app-commons';
+import { FUEL_CHAIN, type HexAddress } from 'app-commons';
 import { useEthBalance } from '~portal/systems/Chains/eth/hooks/useEthBalance';
 import { useSyncEthWallets } from '~portal/systems/Chains/eth/hooks/useSyncEthWallets';
 import { BridgeStatus } from '../machines';
@@ -85,7 +85,7 @@ export function useBridge() {
   } = useEthAccountConnection();
   const { ethBalance } = useEthBalance(
     ethAssetAddress?.startsWith('0x')
-      ? (ethAssetAddress as `0x${string}`)
+      ? (ethAssetAddress as HexAddress)
       : undefined,
   );
 
@@ -99,7 +99,7 @@ export function useBridge() {
     provider: fuelProvider,
   } = useFuelAccountConnection({
     assetId: fuelAssetAddress?.startsWith('0x')
-      ? (fuelAssetAddress as `0x${string}`)
+      ? (fuelAssetAddress as HexAddress)
       : undefined,
   });
 
@@ -204,7 +204,8 @@ export function useBridge() {
         store.startBridging({
           fuelAddress,
           ethWalletClient,
-          fuelWallet,
+          // @TODO: remove any when fuel-connectors gets updated to same fuels-ts of fuel-explorer
+          fuelWallet: fuelWallet as any,
           fuelProvider,
           ethAddress,
           asset,

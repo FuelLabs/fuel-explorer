@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { globbySync } from 'globby';
 import _ from 'lodash';
 import type { Config } from 'tailwindcss';
@@ -74,7 +74,7 @@ const preset: Config = {
     spacing: tailwindDefaultTheme.spacing,
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
+        sans: ['var(--font-inter)'],
         mono: ['var(--font-geist-mono)'],
       },
       keyframes,
@@ -96,6 +96,11 @@ const preset: Config = {
         tablet: `${breakpoints.tablet}px`,
         laptop: `${breakpoints.laptop}px`,
         desktop: `${breakpoints.desktop}px`,
+        xs: `${breakpoints.xs}px`,
+        sm: `${breakpoints.sm}px`,
+        md: `${breakpoints.md}px`,
+        lg: `${breakpoints.lg}px`,
+        xl: `${breakpoints.xl}px`,
       },
     },
   },
@@ -117,8 +122,6 @@ const preset: Config = {
       addVariant('first-child', '& > :first-child');
       addVariant('first-type', '&:first-of-type');
       addVariant('last-type', '&:last-of-type');
-      addVariant('dark-theme', ['.dark &', '.dark-theme &']);
-      addVariant('light-theme', ['.light &', '.light-theme &']);
 
       const components = getComponents();
       const componentsMap = _.fromPairs(components.map((c) => [c, c]));

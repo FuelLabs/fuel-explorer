@@ -5,7 +5,7 @@ services:
     profiles:
       - all
       - bridge
-    image: ghcr.io/fuellabs/fuel-bridge:01b0624
+    image: ghcr.io/fuellabs/fuel-bridge:87bd407
     platform: linux/amd64
     env_file:
       - ./envs/l1_chain.env
@@ -115,44 +115,44 @@ services:
     networks:
       - app-network
 
-  fuel_rabbitmq:
-    profiles:
-      - all
-      - indexer
-      - indexer-local
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672" # AMQP protocol port
-      - "15672:15672" # Management UI port
-    env_file:
-      - ./envs/indexer.env
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest} 
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
-    networks:
-      - app-network
+  # fuel_rabbitmq:
+  #   profiles:
+  #     - all
+  #     - indexer
+  #     - indexer-local
+  #   image: rabbitmq:3-management
+  #   ports:
+  #     - "5672:5672" # AMQP protocol port
+  #     - "15672:15672" # Management UI port
+  #   env_file:
+  #     - ./envs/indexer.env
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest} 
+  #     RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+  #   networks:
+  #     - app-network
 
-  fuel_indexer_graphql:
-    profiles:
-      - all
-      - indexer
-    platform: linux/amd64
-    depends_on:
-      fuel_explorer_pgsql:
-        condition: service_healthy
-      fuel_rabbitmq:
-        condition: service_started
-    build:
-      context: ../
-      dockerfile: ./deployment/Dockerfile
-    env_file:
-      - ./envs/global.env
-      - ./envs/indexer.env
-    ports:
-      - "${INDEXER_GRAPHQL_PORT:-3004}:${SERVER_PORT:-3004}"
-      - "${INDEXER_SYNCER_PORT:-3005}:${SYNCER_PORT:-3005}"
-    networks:
-      - app-network
+  # fuel_indexer_graphql:
+  #   profiles:
+  #     - all
+  #     - indexer
+  #   platform: linux/amd64
+  #   depends_on:
+  #     fuel_explorer_pgsql:
+  #       condition: service_healthy
+  #     fuel_rabbitmq:
+  #       condition: service_started
+  #   build:
+  #     context: ../
+  #     dockerfile: ./deployment/Dockerfile
+  #   env_file:
+  #     - ./envs/global.env
+  #     - ./envs/indexer.env
+  #   ports:
+  #     - "${INDEXER_GRAPHQL_PORT:-3004}:${SERVER_PORT:-3004}"
+  #     - "${INDEXER_SYNCER_PORT:-3005}:${SYNCER_PORT:-3005}"
+  #   networks:
+  #     - app-network
 
 volumes:
   fuel_explorer_pgsql-db:

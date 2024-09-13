@@ -27,3 +27,4 @@ module.exports.relayedTransactionStatus = fs.readFileSync(path.join(__dirname, '
 module.exports.transaction = fs.readFileSync(path.join(__dirname, 'transaction.graphql'), 'utf8');
 module.exports.transactions = fs.readFileSync(path.join(__dirname, 'transactions.graphql'), 'utf8');
 module.exports.transactionsByOwner = fs.readFileSync(path.join(__dirname, 'transactionsByOwner.graphql'), 'utf8');
+module.exports.transactionsByBlockId = fs.readFileSync(path.join(__dirname, 'transactionsByBlockId.graphql'), 'utf8');

@@ -1,0 +1,12 @@
+[data-accent-color="gray"].rt-Badge:where(.rt-variant-solid) {
+  background-color: var(--gray-4);
+  color: var(--gray-12);
+}
+
+@media all {
+  .rt-Badge:where(.rt-r-size-3) {
+      font-size: var(--font-size-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: max(var(--radius-4), var(--radius-full));
+  }
+}

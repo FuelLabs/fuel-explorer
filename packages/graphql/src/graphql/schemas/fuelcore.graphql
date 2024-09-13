@@ -780,6 +780,7 @@ type Query {
   ): Transaction
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
+  transactionsByBlockId(after: String, before: String, first: Int, last: Int, blockId: String!): TransactionConnection!
 }
 
 type Receipt {

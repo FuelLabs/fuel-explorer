@@ -1,5 +1,5 @@
-/* Brand (just a link for the green vars) */
 :root {
+  /* Brand (just a link for the green vars) */
   --brand-1: var(--green-1);
   --brand-2: var(--green-2);
   --brand-3: var(--green-3);
@@ -12,6 +12,16 @@
   --brand-10: var(--green-10);
   --brand-11: var(--green-11);
   --brand-12: var(--green-12);
+}
+
+:root:is(.light) {
+  --color-panel-solid: #FFF;
+  --color-surface: #FFF;
+}
+
+:root:is(.dark) {
+  --color-panel-solid: #191919;
+  --color-surface: #222;
 }
 
 [data-accent-color='brand'] {
@@ -826,7 +836,6 @@
   --gray-contrast: #FFFFFF;
   --gray-surface: rgba(0, 0, 0, 0.05);
   --gray-indicator: var(--gray-9);
-  --color-surface: #222;
 }
 
 /* Gray Light Mode L1 */
@@ -864,7 +873,6 @@
   --gray-contrast: #FFFFFF;
   --gray-surface: #ffffffcc;
   --gray-indicator: var(--gray-9);
-  --color-surface: #FFF;
 }
 
 @supports (color: color(display-p3 1 1 1)) {

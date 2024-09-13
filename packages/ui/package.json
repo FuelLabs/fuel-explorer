@@ -2,9 +2,9 @@
   "name": "@fuels/ui",
   "version": "0.0.1",
   "access": "public",
-  "main": "./src/index.tsx",
+  "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.tsx",
+    ".": "./src/index.ts",
     "./tailwind-preset": "./src/theme/tailwind-preset.ts",
     "./styles.css": "./src/theme/index.css"
   },

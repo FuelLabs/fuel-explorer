@@ -6,6 +6,7 @@ import type { FromToNetworks } from '../Chains';
 import type { Store } from '../Store';
 import { Services } from '../Store';
 
+import type { HexAddress } from 'app-commons';
 import type { BridgeInputs, PossibleBridgeInputs } from './services';
 
 export function bridgeEvents(store: Store) {
@@ -31,7 +32,7 @@ export function bridgeEvents(store: Store) {
       store.send(Services.bridgeTxs, { type: 'FETCH_NEXT_PAGE' });
     },
     addTxEthToFuel(
-      input?: { ethTxId?: `0x${string}` } & BridgeInputs['fetchTxs'],
+      input?: { ethTxId?: HexAddress } & BridgeInputs['fetchTxs'],
     ) {
       if (!input) return;
 
@@ -70,7 +71,7 @@ export function bridgeEvents(store: Store) {
       input?: {
         fuelWallet: FuelWallet;
       };
-      ethTxId: `0x${string}`;
+      ethTxId: HexAddress;
     }) {
       if (!input) return;
 
