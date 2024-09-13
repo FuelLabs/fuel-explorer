@@ -79,7 +79,7 @@
   {
     "isLive": false,
     "name": "Catalyst",
-    "url": "https://medium.com/@fuel_catalyst/introducing-catalyst-the-launchpad-of-the-fuel-ecosystem-08a81d947182",
+    "url": "https://fuelcatalyst.io",
     "tags": ["Fuel", "Launchpad"],
     "description": "The Launchpad for the Fuel Ecosystem",
     "github": "",
@@ -342,6 +342,17 @@
   },
   {
     "isLive": false,
+    "name": "Pangea",
+    "url": "https://www.pangea.foundation/",
+    "tags": ["Indexer"],
+    "description": "A trustless data network from which to explore and interact with blockchains, enabling the best crypto experience.",
+    "github": "",
+    "twitter": "https://x.com/in_pangea",
+    "discord": "",
+    "image": "superchain"
+  },
+  {
+    "isLive": false,
     "name": "Pipeline Finance",
     "url": "https://www.pipeline.finance/",
     "tags": ["DeFi", "Token Streaming"],
@@ -449,17 +460,6 @@
     "twitter": "https://twitter.com/subsquid",
     "discord": "https://discord.com/invite/subsquid",
     "image": "subsquid"
-  },
-  {
-    "isLive": false,
-    "name": "Superchain",
-    "url": "https://www.superchain.network/",
-    "tags": ["Indexer"],
-    "description": "A trustless data network from which to explore and interact with blockchains, enabling the best crypto experience.",
-    "github": "https://github.com/SuperChainNetwork",
-    "twitter": "https://twitter.com/OpenSuperchain",
-    "discord": "",
-    "image": "superchain"
   },
   {
     "isLive": true,
