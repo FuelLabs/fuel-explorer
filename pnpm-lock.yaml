@@ -863,6 +863,9 @@ importers:
       react-aria:
         specifier: 3.32.1
         version: 3.32.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-data-table-component:
+        specifier: 7.6.2
+        version: 7.6.2(react@18.2.0)(styled-components@5.3.11(@babel/core@7.23.9)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
@@ -3889,9 +3892,11 @@ packages:
 
   '@openzeppelin/defender-admin-client@1.54.1':
     resolution: {integrity: sha512-kRpSUdTsnSqntp4FOXIm95t+6VKHc8CUY2Si71VDuxs0q7HSPZkdpRPSntcolwEzWy9L4a8NS/QMwDF5NJ4X1g==}
+    deprecated: This package has been deprecated and will no longer be maintained, please use @openzeppelin/defender-sdk package instead.
 
   '@openzeppelin/defender-base-client@1.54.1':
     resolution: {integrity: sha512-DRGz/7KN3ZQwu28YWMOaojrC7jjPkz/uCwkC8/C8B11qwZhA5qIVvyhYHhhFOCl0J84+E3TNdvkPD2q3p2WaJw==}
+    deprecated: This package has been deprecated and will no longer be maintained, please use @openzeppelin/defender-sdk package instead.
 
   '@openzeppelin/defender-sdk-base-client@1.11.0':
     resolution: {integrity: sha512-HNcbRhbcMZZM5Ri5IfUwJaiJZGIrc0yboRZRlXJfG2aFS/EMfUFnQHC0tyyXtCOAoAZcn+iMlsSj5h8CoUeCfw==}
@@ -6077,6 +6082,7 @@ packages:
 
   '@storybook/testing-library@0.2.2':
     resolution: {integrity: sha512-L8sXFJUHmrlyU2BsWWZGuAjv39Jl1uAqUHdxmN42JY15M4+XCMjGlArdCCjDe1wpTSW6USYISA9axjZojgtvnw==}
+    deprecated: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
 
   '@storybook/theming@7.6.17':
     resolution: {integrity: sha512-ZbaBt3KAbmBtfjNqgMY7wPMBshhSJlhodyMNQypv+95xLD/R+Az6aBYbpVAOygLaUQaQk4ar7H/Ww6lFIoiFbA==}
@@ -9955,6 +9961,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   global-dirs@3.0.1:
     resolution: {integrity: sha512-NBcGGFbBA9s1VzD41QXDG+3++t9Mn5t1FpLdhESY6oKY4gYTFpX4wO3sqGUa0Srjtbfj3szX0RnemmrVRUdULA==}
@@ -10364,6 +10371,7 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.3:
     resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
@@ -12755,6 +12763,12 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  react-data-table-component@7.6.2:
+    resolution: {integrity: sha512-nHe7040fmtrJyQr/ieGrTfV0jBflYGK4sLokC6/AFOv3ThjmA9WzKz8Z8/2wMxzRqLU+Rn0CVFg+8+frKLepWQ==}
+    peerDependencies:
+      react: '>= 16.8.3'
+      styled-components: '>= 5.0.0'
+
   react-docgen-typescript@2.2.2:
     resolution: {integrity: sha512-tvg2ZtOpOi6QDwsb3GZhOjDkkX0h8Z2gipvTg6OVMUyoYoURhEiRNePT8NZItTVCDh39JJHnLdfCOkzoLbFnTg==}
     peerDependencies:
@@ -12804,6 +12818,11 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
+
+  react-paginate@8.2.0:
+    resolution: {integrity: sha512-sJCz1PW+9PNIjUSn919nlcRVuleN2YPoFBOvL+6TPgrH/3lwphqiSOgdrLafLdyLDxsgK+oSgviqacF4hxsDIw==}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
 
   react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
@@ -13098,6 +13117,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@5.0.9:
@@ -31659,6 +31679,12 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
+  react-data-table-component@7.6.2(react@18.2.0)(styled-components@5.3.11(@babel/core@7.23.9)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)):
+    dependencies:
+      deepmerge: 4.3.1
+      react: 18.2.0
+      styled-components: 5.3.11(@babel/core@7.23.9)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
+
   react-docgen-typescript@2.2.2(typescript@5.4.5):
     dependencies:
       typescript: 5.4.5
@@ -31712,6 +31738,11 @@ snapshots:
     dependencies:
       escape-string-regexp: 2.0.0
       invariant: 2.2.4
+      react: 18.2.0
+
+  react-paginate@8.2.0(react@18.2.0):
+    dependencies:
+      prop-types: 15.8.1
       react: 18.2.0
 
   react-refresh@0.14.0: {}
