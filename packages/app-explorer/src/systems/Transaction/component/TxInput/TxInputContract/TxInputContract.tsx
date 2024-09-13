@@ -1,5 +1,6 @@
 import {
   Address,
+  Badge,
   Collapsible,
   Flex,
   HStack,
@@ -13,6 +14,7 @@ import NextLink from 'next/link';
 import { IconCode } from '@tabler/icons-react';
 import { Routes } from '~/routes';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
+import { BADGE_WIDTH } from '../constants';
 import { styles } from './styles';
 import type { TxInputContractProps } from './types';
 
@@ -31,9 +33,18 @@ export const TxInputContract = createComponent<
       <Collapsible {...props}>
         <Collapsible.Header className="gap-2 tablet:gap-4">
           <HStack align="center">
-            <Flex className="w-10 h-10 items-center justify-center overflow-clip rounded-full">
-              <TxIcon type="ContractCall" status="Submitted" />
-            </Flex>
+            <HStack className="items-center justify-center">
+              <Flex
+                className={`w-[${BADGE_WIDTH}] max-w-[${BADGE_WIDTH}] items-center justify-center`}
+              >
+                <Badge color="gray" className="font-mono" size="1">
+                  CONTRACT
+                </Badge>
+              </Flex>
+              <Flex className="w-10 h-10 items-center justify-center overflow-clip rounded-full">
+                <TxIcon type="ContractCall" status="Submitted" />
+              </Flex>
+            </HStack>
             <VStack className="flex-1" gap="0">
               <Text className="flex items-center gap-2 text-md">Contract</Text>
               <Address
