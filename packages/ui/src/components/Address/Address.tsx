@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 import { createComponent } from '../../utils/component';
@@ -11,6 +11,7 @@ import { Link } from '../Link';
 import { LoadingBox } from '../LoadingBox';
 import { LoadingWrapper } from '../LoadingWrapper';
 
+import { Tooltip } from '@radix-ui/themes';
 import type { UseFuelAddressOpts } from './useFuelAddress';
 import { useFuelAddress } from './useFuelAddress';
 
@@ -23,6 +24,7 @@ export type AddressBaseProps = {
   linkProps?: AddressLinkProps;
   isLoading?: boolean;
   iconSize?: number;
+  tooltip?: boolean;
 };
 
 export type AddressLinkProps = Omit<LinkProps, 'children'>;
@@ -33,22 +35,25 @@ const AddressSpan = ({
   short,
   full,
   className,
+  tooltip,
 }: {
   full?: boolean;
   address: string;
   short: string;
   className?: string;
+  tooltip?: boolean;
 }) => {
   const baseClass = cx(['text-[1em]', className]);
+  const Wrapper = tooltip ? Tooltip : Fragment;
   return (
-    <>
+    <Wrapper content={address} aria-label={`Address: ${address}`}>
       {full && (
         <span className={cx(baseClass, 'mobile:max-laptop:hidden')}>
           {address}
         </span>
       )}
       <span className={cx(baseClass, full && 'laptop:hidden')}>{short}</span>
-    </>
+    </Wrapper>
   );
 };
 
@@ -66,6 +71,7 @@ export const Address = createComponent<AddressProps, 'div'>({
       addressOpts,
       linkProps,
       isLoading,
+      tooltip,
       ...props
     },
   ) => {
@@ -106,6 +112,7 @@ export const Address = createComponent<AddressProps, 'div'>({
                       address={address}
                       short={short}
                       className="text-link"
+                      tooltip={tooltip}
                     />
                   </Link>
                 ) : (
@@ -114,6 +121,7 @@ export const Address = createComponent<AddressProps, 'div'>({
                     address={address}
                     short={short}
                     className="text-muted"
+                    tooltip={tooltip}
                   />
                 )}
               </Copyable>
