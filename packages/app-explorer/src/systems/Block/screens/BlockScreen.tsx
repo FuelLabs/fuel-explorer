@@ -1,4 +1,5 @@
 import { VStack } from '@fuels/ui';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
@@ -7,6 +8,9 @@ import BlocksTable from '../components/BlocksTable';
 import { Hero } from '../components/Hero';
 
 export const BlocksScreen = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [data, setData] = useState<GQLBlocksQuery['blocks'] | undefined>(
     undefined,
   );
@@ -77,12 +81,33 @@ export const BlocksScreen = () => {
 
       setCurrentPage(newPageNumber);
       setCurrentCursor(newCursor);
+      if (newPageNumber === 1) {
+        router.push('/blocks');
+        return;
+      }
+      router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`);
     }
   };
 
   useEffect(() => {
+    const page = parseInt(searchParams.get('page') || '1');
+    const cursor = searchParams.get('cursor') || null;
+
+    setCurrentPage(page);
+    setCurrentCursor(cursor);
+    setDir(page > currentPage ? 'after' : 'before');
+  }, [searchParams]);
+
+  useEffect(() => {
     fetchBlockData(currentCursor, dir);
   }, [currentCursor, dir]);
+
+  useEffect(() => {
+    if (data) {
+      const totalPageCount = calculateTotalPages();
+      setTotalPages(totalPageCount);
+    }
+  }, [data]);
 
   return (
     <VStack>
