@@ -23,7 +23,7 @@ type UtxoItemProps = {
 const UTXO_ID_SIZE = 34;
 const TX_ID_SIZE = 32;
 
-function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
+export function UtxoItem({ item, style, assetId, index }: UtxoItemProps) {
   const { isMobile } = useBreakpoints();
 
   const txId = useMemo<string | null>(() => {
