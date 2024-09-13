@@ -72,10 +72,6 @@ export const TxInputContract = createComponent<
                 value={utxoId}
                 className={classes.contractAddress()}
                 addressOpts={{ trimLeft: trim, trimRight: trim }}
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.txSimple(utxoId),
-                }}
               />
               <Address
                 prefix="Balance Root:"
