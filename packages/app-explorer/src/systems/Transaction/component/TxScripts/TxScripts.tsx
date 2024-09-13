@@ -441,7 +441,7 @@ function ReceiptHeader() {
   const assetId = receipt?.assetId ?? '';
   const amount = bn(receipt?.amount);
 
-  if (type === 'CALL' && Boolean(contract)) {
+  if (type === GQLReceiptType.Call && Boolean(contract)) {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -472,7 +472,7 @@ function ReceiptHeader() {
     );
   }
 
-  if (type === 'MINT' || type === 'BURN') {
+  if (type === GQLReceiptType.Mint || type === GQLReceiptType.Burn) {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -504,7 +504,7 @@ function ReceiptHeader() {
     );
   }
 
-  if (type === 'TRANSFER_OUT' || type === 'TRANSFER') {
+  if (type === GQLReceiptType.TransferOut || type === GQLReceiptType.Transfer) {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -527,11 +527,12 @@ function ReceiptHeader() {
             />
           </VStack>
         )}
+        <ReceiptAmount />
       </Collapsible.Header>
     );
   }
 
-  if (type === 'MESSAGE_OUT') {
+  if (type === GQLReceiptType.MessageOut) {
     return (
       <Collapsible.Header className={classes.header()}>
         <ReceiptBadge />
@@ -557,6 +558,168 @@ function ReceiptHeader() {
             />
           </VStack>
         )}
+        <ReceiptAmount />
+      </Collapsible.Header>
+    );
+  }
+
+  // New cases for additional receipt types
+  if (type === GQLReceiptType.Log || type === GQLReceiptType.LogData) {
+    const pc = receipt?.pc;
+    const data = receipt?.data;
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        <VStack className="flex-1 gap-[2px]">
+          {!!pc && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              PC: {pc}
+            </Code>
+          )}
+          {!!data && !data?.startsWith('0x') && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              Data: {data}
+            </Code>
+          )}
+          {!!data && data?.startsWith('0x') && (
+            <Address
+              iconSize={14}
+              value={data}
+              className="text-xs tablet:text-sm font-mono"
+              prefix="Data:"
+              linkProps={{
+                as: NextLink,
+                href: `/contract/${data}/assets`,
+              }}
+            />
+          )}
+        </VStack>
+        <ReceiptAmount />
+      </Collapsible.Header>
+    );
+  }
+
+  if (type === GQLReceiptType.Panic || type === GQLReceiptType.Revert) {
+    const reason = receipt?.reason;
+    const contractId = receipt?.contractId;
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        <VStack className="flex-1 gap-[2px]">
+          {!!reason && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              Reason: {reason}
+            </Code>
+          )}
+          {!!contractId && (
+            <Address
+              value={contractId}
+              className="text-xs tablet:text-sm font-mono"
+              prefix="Contract ID:"
+              linkProps={{
+                as: NextLink,
+                href: `/contract/${contractId}/assets`,
+              }}
+            />
+          )}
+        </VStack>
+        <ReceiptAmount />
+      </Collapsible.Header>
+    );
+  }
+
+  if (type === GQLReceiptType.ReturnData) {
+    const pc = receipt?.pc;
+    const data = receipt?.data;
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        <VStack className="flex-1 gap-[2px]">
+          {!!pc && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              PC: {pc}
+            </Code>
+          )}
+          {data != null && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              Data: {data}
+            </Code>
+          )}
+        </VStack>
+        <ReceiptAmount />
+      </Collapsible.Header>
+    );
+  }
+
+  if (type === GQLReceiptType.Return) {
+    const val = receipt?.val;
+    const pc = receipt?.pc;
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        <VStack className="flex-1 gap-[2px]">
+          {!!val && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              Value: {val}
+            </Code>
+          )}
+          {pc != null && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              PC: {pc}
+            </Code>
+          )}
+        </VStack>
+        <ReceiptAmount />
+      </Collapsible.Header>
+    );
+  }
+
+  if (type === GQLReceiptType.ScriptResult) {
+    const gasUsed = receipt?.gasUsed;
+    const result = receipt?.result;
+    return (
+      <Collapsible.Header className={classes.header()}>
+        <ReceiptBadge />
+        <VStack className="flex-1 gap-[2px]">
+          {!!gasUsed && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              Gas Used: {gasUsed}
+            </Code>
+          )}
+          {result != null && (
+            <Code
+              className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+              color="gray"
+            >
+              Result: {result}
+            </Code>
+          )}
+        </VStack>
+        <ReceiptAmount />
       </Collapsible.Header>
     );
   }
