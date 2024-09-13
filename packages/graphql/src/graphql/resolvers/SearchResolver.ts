@@ -23,8 +23,17 @@ export class SearchResolver {
     _null: any,
     params: Params['search'],
   ) {
-    const address = Hash256.create(params.query).value();
     const blockDAO = new BlockDAO();
+    if (!params.query.startsWith('0x') && !Number.isNaN(Number(params.query))) {
+      const block = await blockDAO.getByHeight(Number(params.query));
+      if (block) {
+        return {
+          block: block.toGQLNode(),
+        };
+      }
+    }
+
+    const address = Hash256.create(params.query).value();
     const block = await blockDAO.getByHash(address);
     if (block) {
       return {
