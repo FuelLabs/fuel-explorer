@@ -56,12 +56,15 @@ function _TxOperationHeader({
       value={formattedValue}
       className="text-xs tablet:text-sm font-mono"
       prefix={field.label}
-      linkProps={{
-        as: NextLink,
-        href:
-          field?.hrefFactory?.(formattedValue) ??
-          `/contract/${formattedValue}/assets`,
-      }}
+      linkProps={
+        field.type === ReceiptHeaderOperationDataType.HEX_ADDRESS &&
+        field?.hrefFactory
+          ? {
+              as: NextLink,
+              href: field.hrefFactory(formattedValue),
+            }
+          : undefined
+      }
     />
   ) : (
     <Code
