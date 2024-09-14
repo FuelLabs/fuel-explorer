@@ -4,7 +4,6 @@ import {
   Box,
   Collapsible,
   Flex,
-  HStack,
   createComponent,
   useBreakpoints,
 } from '@fuels/ui';
@@ -16,7 +15,6 @@ import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { UtxoItem } from '~/systems/Core/components/UtxoItem/UtxoItem';
-import { BADGE_WIDTH } from '../constants';
 import { TxInputCoinProps } from './types';
 
 export const TxInputCoin = createComponent<
@@ -33,40 +31,40 @@ export const TxInputCoin = createComponent<
 
     return (
       <Collapsible {...props}>
-        <Collapsible.Header className="gap-2 tablet:gap-4">
-          <HStack className="items-center justify-center">
-            <Flex
-              className={`w-[${BADGE_WIDTH}] max-w-[${BADGE_WIDTH}] items-center justify-center`}
-            >
+        <Collapsible.Header className="w-full">
+          <Flex className="flex flex-col tablet:flex-row gap-2 w-full">
+            <Flex className="justify-start tablet:justify-center w-full tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center">
               <Badge color="gray" className="font-mono" size="1">
                 COIN
               </Badge>
             </Flex>
-            <AssetItem assetId={assetId} className="flex-1">
-              <Address
-                prefix="From:"
-                value={input.owner || ''}
-                className="text-white"
-                addressOpts={
-                  isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
-                }
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.accountAssets(input.owner!),
-                }}
-              />
-            </AssetItem>
-          </HStack>
-          {amount && (
-            <Box className="ml-14 tablet:ml-0">
-              <Amount
-                hideIcon
-                hideSymbol
-                assetId={assetId}
-                value={bn(amount)}
-              />
-            </Box>
-          )}
+            <Flex className="w-full items-start tablet:items-end flex flex-col tablet:flex-row gap-4">
+              <AssetItem assetId={assetId} className="flex-1">
+                <Address
+                  prefix="From:"
+                  value={input.owner || ''}
+                  className="text-white"
+                  addressOpts={
+                    isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
+                  }
+                  linkProps={{
+                    as: NextLink,
+                    href: Routes.accountAssets(input.owner!),
+                  }}
+                />
+              </AssetItem>
+              {amount && (
+                <Box className="ml-14 tablet:ml-0">
+                  <Amount
+                    hideIcon
+                    hideSymbol
+                    assetId={assetId}
+                    value={bn(amount)}
+                  />
+                </Box>
+              )}
+            </Flex>
+          </Flex>
         </Collapsible.Header>
         <Collapsible.Content>
           <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">

@@ -14,7 +14,6 @@ import NextLink from 'next/link';
 import { IconCode } from '@tabler/icons-react';
 import { Routes } from '~/routes';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
-import { BADGE_WIDTH } from '../constants';
 import { styles } from './styles';
 import type { TxInputContractProps } from './types';
 
@@ -31,36 +30,34 @@ export const TxInputContract = createComponent<
 
     return (
       <Collapsible {...props}>
-        <Collapsible.Header className="gap-2 tablet:gap-4">
-          <HStack align="center">
-            <HStack className="items-center justify-center">
-              <Flex
-                className={`w-[${BADGE_WIDTH}] max-w-[${BADGE_WIDTH}] items-center justify-center`}
-              >
-                <Badge color="gray" className="font-mono" size="1">
-                  CONTRACT
-                </Badge>
-              </Flex>
-              <Flex className="w-10 h-10 items-center justify-center overflow-clip rounded-full">
-                <TxIcon type="ContractCall" status="Submitted" />
-              </Flex>
+        <Collapsible.Header className="w-full">
+          <Flex className="flex flex-col tablet:flex-row gap-2 w-full">
+            <Flex className="justify-start tablet:justify-center w-full tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center">
+              <Badge color="gray" className="font-mono" size="1">
+                CONTRACT
+              </Badge>
+            </Flex>
+            <HStack className="items-center justify-center gap-4">
+              <TxIcon type="ContractCall" status="Submitted" />
+              <VStack className="flex-1" gap="0">
+                <Text className="flex items-center gap-2 text-md">
+                  Contract
+                </Text>
+                <Address
+                  prefix="Address: "
+                  value={contractId}
+                  className="text-white"
+                  addressOpts={
+                    isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
+                  }
+                  linkProps={{
+                    as: NextLink,
+                    href: Routes.contractAssets(contractId),
+                  }}
+                />
+              </VStack>
             </HStack>
-            <VStack className="flex-1" gap="0">
-              <Text className="flex items-center gap-2 text-md">Contract</Text>
-              <Address
-                prefix="Address: "
-                value={contractId}
-                className="text-white"
-                addressOpts={
-                  isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
-                }
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.contractAssets(contractId),
-                }}
-              />
-            </VStack>
-          </HStack>
+          </Flex>
         </Collapsible.Header>
         <Collapsible.Content>
           <Collapsible.Title leftIcon={IconCode} iconColor="text-icon">
