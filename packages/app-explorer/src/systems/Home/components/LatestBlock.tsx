@@ -1,6 +1,7 @@
 import { RoundedContainer } from '@fuels/ui';
+import { Block } from '../interface/blocks.interface';
 
-export const LatestBlock = () => {
+export const LatestBlock = (block: Block) => {
   return (
     <RoundedContainer className="py-4 px-5 space-y-[24px] bg-light-gradient dark:bg-dark-gradient">
       <div className="space-y-[16px]">
@@ -13,7 +14,7 @@ export const LatestBlock = () => {
           </span>
         </div>
         <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-          1,960,152
+          {block.blockNo}
         </h2>
       </div>
 
@@ -26,11 +27,11 @@ export const LatestBlock = () => {
           />
 
           <p className="w-full max-w-[144px] line-clamp-1 text-[13px] leading-[20px] text-muted">
-            DUND26mEDfFeaPsVof3YvbXDRvpuQX7HMUJrLgEWzYw4
+            {block.producer}
           </p>
         </div>
         <p className=" line-clamp-1 text-[13px] leading-[20px] text-muted">
-          0.008293100 ETH
+          {block.gasUsed} ETH
         </p>
       </div>
     </RoundedContainer>

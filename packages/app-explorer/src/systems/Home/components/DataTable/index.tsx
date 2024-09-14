@@ -1,18 +1,22 @@
-import { Button, RoundedContainer } from '@fuels/ui';
+import { Button, RoundedContainer, VStack } from '@fuels/ui';
 import Link from 'next/link';
 import React from 'react';
-import { TableTile } from '../TableCell/TableTile';
+import { Block } from '../../interface/blocks.interface';
+import { BlockTableTile } from '../BlockTableTile';
+interface DataTableProps {
+  blocks: Block[];
+}
 
-export const DataTable = () => {
+export const DataTable = (props: DataTableProps) => {
   return (
     <RoundedContainer className="flex flex-col justify-between h-full">
-      <div className="space-y-[4px] h-full">
-        {Array.from({ length: 4 }, (_, index) => (
-          <TableTile key={index} />
+      <VStack gap={'0.1'}>
+        {Array.from({ length: props.blocks.length }, (_, index) => (
+          <BlockTableTile block={props.blocks[index]} />
         ))}
-      </div>
+      </VStack>
       <Link href="/blocks" passHref>
-        <Button className="w-full bg-green-9 text-black py-1">
+        <Button className="w-full bg-green-9 text-black py-0.5">
           View All Blocks
         </Button>
       </Link>
