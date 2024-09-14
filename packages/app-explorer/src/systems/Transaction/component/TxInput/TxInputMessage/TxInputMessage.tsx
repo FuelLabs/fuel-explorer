@@ -40,23 +40,32 @@ export const TxInputMessage = createComponent<
               <HStack className="gap-4 tablet:items-center tablet:flex-1">
                 <TxIcon type="Message" status="Submitted" />
                 <Text className="hidden tablet:block">Message</Text>
-                <VStack className="gap-1 tablet:flex-1 tablet:items-end">
-                  <Address
-                    value={sender}
-                    prefix="Sender:"
-                    linkProps={{
-                      as: NextLink,
-                      href: Routes.accountAssets(sender),
-                    }}
-                  />
-                  <Address
-                    value={recipient}
-                    prefix="Recipient:"
-                    linkProps={{
-                      as: NextLink,
-                      href: Routes.accountAssets(recipient),
-                    }}
-                  />
+                <VStack className="gap-2 tablet:flex-1">
+                  <VStack className="gap-1 tablet:flex-1 tablet:items-end">
+                    <Address
+                      value={sender}
+                      prefix="Sender:"
+                      linkProps={{
+                        as: NextLink,
+                        href: Routes.accountAssets(sender),
+                      }}
+                    />
+                    <Address
+                      value={recipient}
+                      prefix="Recipient:"
+                      linkProps={{
+                        as: NextLink,
+                        href: Routes.accountAssets(recipient),
+                      }}
+                    />
+                  </VStack>
+                  <Badge
+                    color="gray"
+                    className="font-mono tablet:hidden min-w-[70px] w-[70px] max-w-[70px] items-center justify-center"
+                    size="1"
+                  >
+                    MESSAGE
+                  </Badge>
                 </VStack>
               </HStack>
             </Flex>
