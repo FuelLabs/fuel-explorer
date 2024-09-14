@@ -48,20 +48,30 @@ export const RECEIPT_FIELDS_MAP: Record<
     },
   ],
   [GQLReceiptType.TransferOut]: [
-    { type: ReceiptHeaderOperationDataType.AMOUNT, field: 'amount' },
+    {
+      label: 'ID:',
+      type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
+      field: 'id',
+    },
     {
       label: 'To:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'toAddress',
+      fieldFallback: 'to',
       hrefFactory: Routes.accountAssets,
     },
   ],
   [GQLReceiptType.Transfer]: [
-    { type: ReceiptHeaderOperationDataType.AMOUNT, field: 'amount' },
+    {
+      label: 'ID:',
+      type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
+      field: 'id',
+    },
     {
       label: 'To:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'toAddress',
+      fieldFallback: 'to',
       hrefFactory: Routes.accountAssets,
     },
   ],
