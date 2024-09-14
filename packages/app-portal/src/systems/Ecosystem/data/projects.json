@@ -36,7 +36,7 @@
     "isLive": true,
     "name": "Bako Safe",
     "url": "https://www.bako.global/",
-    "tags": ["DeFi", "Wallet", "Multi-sig"],
+    "tags": ["Wallet", "Multi-sig", "Tooling"],
     "description": "Bako Safe is the Native Multisig of Rollup OS.",
     "github": "",
     "twitter": "https://twitter.com/bakosafe",
