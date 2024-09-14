@@ -27,12 +27,14 @@ export const TxInputMessage = createComponent<
     return (
       <Collapsible {...props}>
         <Collapsible.Header>
-          <Flex className="flex flex-col tablet:flex-row gap-2 w-full">
-            <Flex className="justify-start tablet:justify-center w-full tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center">
-              <Badge color="gray" className="font-mono" size="1">
-                MESSAGE
-              </Badge>
-            </Flex>
+          <Flex className="flex flex-col items-center tablet:flex-row gap-2 w-full">
+            <Badge
+              color="gray"
+              className="font-mono justify-start tablet:justify-center hidden tablet:flex tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center"
+              size="1"
+            >
+              MESSAGE
+            </Badge>
 
             <Flex className="w-full items-start tablet:items-end flex flex-col tablet:flex-row">
               <HStack className="gap-4 tablet:items-center tablet:flex-1">

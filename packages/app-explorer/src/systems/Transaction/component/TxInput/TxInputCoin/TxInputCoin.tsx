@@ -32,13 +32,16 @@ export const TxInputCoin = createComponent<
     return (
       <Collapsible {...props}>
         <Collapsible.Header className="w-full">
-          <Flex className="flex flex-col tablet:flex-row gap-2 w-full">
-            <Flex className="justify-start tablet:justify-center w-full tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center">
-              <Badge color="gray" className="font-mono" size="1">
-                COIN
-              </Badge>
-            </Flex>
-            <Flex className="w-full items-start tablet:items-end flex flex-col tablet:flex-row gap-4">
+          <Flex className="flex flex-col items-center tablet:flex-row gap-2 w-full">
+            <Badge
+              color="gray"
+              className="font-mono justify-start tablet:justify-center hidden tablet:flex tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center"
+              size="1"
+            >
+              COIN
+            </Badge>
+
+            <Flex className="w-full items-start tablet:items-center flex flex-col tablet:flex-row gap-4">
               <AssetItem assetId={assetId} className="flex-1">
                 <Address
                   prefix="From:"
