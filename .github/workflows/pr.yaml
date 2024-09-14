@@ -24,31 +24,32 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   audit:
-    name: Audit
+    name: Audit Dependencies for Critical Vulnerabilities
     if: ${{ github.head_ref != 'changeset-release/master' }}
     runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - uses: actions/checkout@v3
-      - uses: FuelLabs/github-actions/setups/node@master
+      - uses: FuelLabs/github-actions/setups/node@v1 # master yerine sürüm sabitlendi
         with:
           node-version: 20.15.1
           pnpm-version: 9.5.0
 
-      - name: Run Audit
-        # temporally avoid low severity vulnerabilities
-        run: pnpm audit --prod --audit-level critical
+      - name: Run Audit (Critical Vulnerabilities Only)
+        run: |
+          # Only checking for critical severity vulnerabilities
+          pnpm audit --prod --audit-level critical
 
   lint-and-test:
-    name: Lint
+    name: Lint and TypeScript Check
     if: ${{ github.head_ref != 'changeset-release/master' }}
     runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - uses: actions/checkout@v3
-      - uses: FuelLabs/github-actions/setups/node@master
+      - uses: FuelLabs/github-actions/setups/node@v1 # master yerine sürüm sabitlendi
         with:
           node-version: 20.15.1
           pnpm-version: 9.5.0
 
-      - name: Run lint & ts:check
+      - name: Run Linter and TypeScript Check
         run: |
           pnpm lint:ci
