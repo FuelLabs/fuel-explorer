@@ -9,6 +9,8 @@ import {
 import type { Project } from '../types';
 
 const sortProjects = (a: Project, b: Project) => {
+  if (a.isFeatured && !b.isFeatured) return -1;
+  if (!a.isFeatured && b.isFeatured) return 1;
   if (a.isLive && !b.isLive) return -1;
   if (!a.isLive && b.isLive) return 1;
 
@@ -17,7 +19,16 @@ const sortProjects = (a: Project, b: Project) => {
 
 const selectors = {
   filteredProjects: (state: EcosystemMachineState) => {
-    const { projects = [], search, filter } = state.context;
+    const {
+      projects: _projects = [],
+      search,
+      filter,
+      isBuildingHidden,
+    } = state.context;
+
+    const projects = isBuildingHidden
+      ? _projects
+      : _projects.filter((project) => project.isLive);
 
     if (search) {
       const filtered = projects.filter((project) => {
@@ -38,6 +49,8 @@ const selectors = {
   tags: (state: EcosystemMachineState) => state.context?.tags,
   filter: (state: EcosystemMachineState) => state.context?.filter,
   search: (state: EcosystemMachineState) => state.context?.search,
+  isBuildingHidden: (state: EcosystemMachineState) =>
+    state.context?.isBuildingHidden,
   isLoading: (state: EcosystemMachineState) => state.hasTag('isLoading'),
 };
 
@@ -50,6 +63,10 @@ export function useEcosystem() {
   const filter = store.useSelector(Services.ecosystem, selectors.filter);
   const search = store.useSelector(Services.ecosystem, selectors.search);
   const isLoading = store.useSelector(Services.ecosystem, selectors.isLoading);
+  const isBuildingHidden = store.useSelector(
+    Services.ecosystem,
+    selectors.isBuildingHidden,
+  );
 
   useEffect(() => {
     store.send(Services.ecosystem, {
@@ -70,16 +87,25 @@ export function useEcosystem() {
     store.send(Services.ecosystem, { type: 'CLEAR_FILTER', input: null });
   };
 
+  const toggleIsBuildingHidden = () => {
+    store.send(Services.ecosystem, {
+      type: 'TOGGLE_IS_BUILDING_HIDDEN',
+      input: null,
+    });
+  };
+
   return {
     filteredProjects,
     tags,
     filter,
     search,
     isLoading,
+    isBuildingHidden,
     handlers: {
       filterProjects,
       searchProjects,
       clearFilters,
+      toggleIsBuildingHidden,
     },
   };
 }

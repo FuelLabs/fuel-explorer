@@ -9,4 +9,5 @@ export type Project = {
   discord?: string;
   status?: string[];
   isLive?: boolean;
+  isFeatured?: boolean;
 };

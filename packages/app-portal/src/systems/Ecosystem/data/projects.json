@@ -36,7 +36,7 @@
     "isLive": true,
     "name": "Bako Safe",
     "url": "https://www.bako.global/",
-    "tags": ["DeFi", "Wallet", "Multi-sig"],
+    "tags": ["Wallet", "Multi-sig", "Tooling"],
     "description": "Bako Safe is the Native Multisig of Rollup OS.",
     "github": "",
     "twitter": "https://twitter.com/bakosafe",
@@ -166,6 +166,7 @@
   },
   {
     "isLive": false,
+    "isFeatured": true,
     "name": "Fluid Protocol",
     "url": "https://fluidprotocol.xyz/",
     "tags": ["DeFi"],
@@ -243,6 +244,7 @@
   },
   {
     "isLive": false,
+    "isFeatured": true,
     "name": "Griffy",
     "url": "https://griffy.app/",
     "tags": ["Prediction Market"],
@@ -309,6 +311,7 @@
   },
   {
     "isLive": true,
+    "isFeatured": true,
     "name": "Mira Exchange",
     "url": "https://mira.ly/",
     "tags": ["DeFi"],
@@ -441,6 +444,7 @@
   },
   {
     "isLive": true,
+    "isFeatured": true,
     "name": "Spark",
     "url": "https://sprk.fi/",
     "tags": ["DeFi"],
@@ -485,6 +489,7 @@
   },
   {
     "isLive": true,
+    "isFeatured": true,
     "name": "Swaylend",
     "url": "https://swaylend.com/",
     "tags": ["DeFi"],
@@ -507,6 +512,7 @@
   },
   {
     "isLive": false,
+    "isFeatured": true,
     "name": "Thunder",
     "url": "https://beta.thundernft.market/",
     "tags": ["Marketplace", "NFT"],
