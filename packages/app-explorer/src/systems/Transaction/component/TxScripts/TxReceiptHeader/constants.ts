@@ -1,4 +1,5 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
+import { Routes } from '~/routes';
 import {
   ReceiptHeaderOperation,
   ReceiptHeaderOperationDataType,
@@ -15,6 +16,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'to',
       fieldFallback: 'contractId',
+      hrefFactory: Routes.contractAssets,
     },
   ],
   [GQLReceiptType.Mint]: [
@@ -28,6 +30,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       label: 'Asset:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'contractId',
+      hrefFactory: Routes.contractAssets,
     },
   ],
   [GQLReceiptType.Burn]: [
@@ -41,6 +44,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       label: 'Asset:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'contractId',
+      hrefFactory: Routes.contractAssets,
     },
   ],
   [GQLReceiptType.TransferOut]: [
@@ -49,7 +53,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       label: 'To:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'toAddress',
-      hrefFactory: (value: string) => `/account/${value}/assets`,
+      hrefFactory: Routes.accountAssets,
     },
   ],
   [GQLReceiptType.Transfer]: [
@@ -58,7 +62,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       label: 'To:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'toAddress',
-      hrefFactory: (value: string) => `/account/${value}/assets`,
+      hrefFactory: Routes.accountAssets,
     },
   ],
   [GQLReceiptType.MessageOut]: [
@@ -67,14 +71,14 @@ export const RECEIPT_FIELDS_MAP: Record<
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'sender',
       requiredField: 'recipient',
-      hrefFactory: (value: string) => `/account/${value}/assets`,
+      hrefFactory: Routes.accountAssets,
     },
     {
       label: 'From:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'recipient',
       requiredField: 'sender',
-      hrefFactory: (value: string) => `/account/${value}/assets`,
+      hrefFactory: Routes.accountAssets,
     },
   ],
   [GQLReceiptType.Log]: [
@@ -91,6 +95,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       label: 'Contract ID:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'contractId',
+      hrefFactory: Routes.contractAssets,
     },
   ],
   [GQLReceiptType.Revert]: [
@@ -99,6 +104,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       label: 'Contract ID:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'contractId',
+      hrefFactory: Routes.contractAssets,
     },
   ],
   [GQLReceiptType.ReturnData]: [
