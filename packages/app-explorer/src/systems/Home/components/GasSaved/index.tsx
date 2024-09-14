@@ -38,7 +38,7 @@ export const GasSaved = () => {
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
-            Gas Saved
+            Gas Used
           </h3>
           <span className="text-[13px] leading-[20px] text-muted block">
             24H

@@ -2,19 +2,43 @@
 
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
+import { GQLTpsQuery } from '@fuel-explorer/graphql';
+import { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { DataTable } from '../../components/DataTable';
 import { GasSaved } from '../../components/GasSaved';
+import { Block } from '../../interface/blocks.interface';
 import { DailyTransaction } from '../DailyTransaction';
 import Epoch from '../Epoch';
 import { GasTracker } from '../GasTracker';
 import { LatestBlock } from '../LatestBlock';
 import { TPS } from '../TPS';
-import { TrendingCardCarousel } from '../TrendingCardCarousel';
+import { getTPS } from './actions/get-tps';
 
 export function Hero() {
   const classes = styles();
+  const [tpsData, setTPSData] = useState<GQLTpsQuery['tps'] | null>(null);
+  const getTPSData = async () => {
+    try {
+      const result: GQLTpsQuery = await getTPS({});
+      setTPSData(result.tps);
+      console.log(result);
+    } catch (e) {
+      console.error('The error while fetching TPS is', e);
+    }
+  };
+  useEffect(() => {
+    getTPSData();
+  }, []);
 
+  const blocks: Block[] =
+    tpsData?.nodes.map((node) => ({
+      blockNo: node.blockNo ?? '',
+      producer: node.producer ?? '',
+      timeStamp: node.timestamp,
+      gasUsed: node.gasUsed,
+      tps: node.tps,
+    })) || [];
   return (
     <Theme appearance="light">
       <Box className={classes.root()}>
@@ -23,37 +47,49 @@ export function Hero() {
             <Heading as="h1" className={classes.title()}>
               Fuel Explorer
             </Heading>
-            <Heading size="6" className={classes.title()}>
+            {/* <Heading size="6" className={classes.title()}>
               Trending Items
             </Heading>
             <div className="pb-6">
               <TrendingCardCarousel />
-            </div>
-          </VStack>
+            </div> */}
 
-          <Box className={classes.searchWrapper()}>
-            <div className="row-span-2 col-span-4">
-              <DailyTransaction />
-            </div>
-            <div className="row-span-1 col-span-3">
-              <Epoch />
-            </div>
-            <div className="row-span-1 col-span-5">
-              <LatestBlock />
-            </div>
-            <div className="row-span-1 col-span-3">
-              <GasTracker />
-            </div>
-            <div className="row-span-3 col-span-5 ">
-              <DataTable />
-            </div>
-            <div className="row-span-2 col-span-4">
-              <TPS />
-            </div>
-            <div className="row-span-2 col-span-3">
-              <GasSaved />
-            </div>
-          </Box>
+            <Box className={classes.searchWrapper()}>
+              <div className="row-span-2 col-span-4">
+                <DailyTransaction />
+              </div>
+              <div className="row-span-1 col-span-3">
+                <Epoch />
+              </div>
+              <div className="row-span-1 col-span-5">
+                <LatestBlock
+                  blockNo={
+                    tpsData?.nodes[0].blockNo?.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ',',
+                    ) ?? ''
+                  }
+                  gasUsed={tpsData?.nodes[0].gasUsed!}
+                  producer={tpsData?.nodes[0].producer!}
+                  timeStamp={tpsData?.nodes[0].timestamp!}
+                  tps={tpsData?.nodes[0].tps!}
+                />
+              </div>
+              <div className="row-span-1 col-span-3">
+                <GasTracker />
+              </div>
+              <div className="row-span-3 col-span-5 ">
+                <DataTable blocks={blocks.slice(0, 5)} />
+              </div>
+              <div className="row-span-2 col-span-4">
+                <TPS blocks={blocks} />
+                {/* <TPSChart /> */}
+              </div>
+              <div className="row-span-2 col-span-3">
+                <GasSaved />
+              </div>
+            </Box>
+          </VStack>
         </Container>
       </Box>
     </Theme>
