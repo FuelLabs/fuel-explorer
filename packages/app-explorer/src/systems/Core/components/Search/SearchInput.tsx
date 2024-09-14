@@ -127,33 +127,38 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               )}
               {searchResult?.block && (
                 <>
-                  <Dropdown.Label>Block</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
-                    <Link
-                      as={NextLink}
-                      href={Routes.blockSimple(
-                        searchResult.block.id!,
-                        '',
-                        'after',
-                      )}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(searchResult.block.id || '', trimL, trimR)}
-                    </Link>
-                  </Dropdown.Item>
-                  <Dropdown.Item className={classes.dropdownItem()}>
-                    <Link
-                      as={NextLink}
-                      href={Routes.blockSimple(
-                        searchResult.block.height!,
-                        '',
-                        'after',
-                      )}
-                      onClick={onSelectItem}
-                    >
-                      {searchResult.block.height}
-                    </Link>
-                  </Dropdown.Item>
+                  {searchResult.block.id && (
+                    <>
+                      <Dropdown.Label>Block Hash</Dropdown.Label>
+                      <Dropdown.Item className={classes.dropdownItem()}>
+                        <Link
+                          as={NextLink}
+                          href={`/block/${searchResult.block.id}/simple`}
+                          onClick={onSelectItem}
+                        >
+                          {shortAddress(
+                            searchResult.block.id || '',
+                            trimL,
+                            trimR,
+                          )}
+                        </Link>
+                      </Dropdown.Item>
+                    </>
+                  )}
+                  {searchResult.block.height && (
+                    <>
+                      <Dropdown.Label>Block Height</Dropdown.Label>
+                      <Dropdown.Item className={classes.dropdownItem()}>
+                        <Link
+                          as={NextLink}
+                          href={`/block/${searchResult.block.height}/simple`}
+                          onClick={onSelectItem}
+                        >
+                          {searchResult.block.height}
+                        </Link>
+                      </Dropdown.Item>
+                    </>
+                  )}
                 </>
               )}
               {searchResult?.contract && (
