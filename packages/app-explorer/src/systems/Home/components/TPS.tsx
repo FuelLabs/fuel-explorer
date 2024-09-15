@@ -16,7 +16,7 @@ export interface TPSProps {
 export const TPS = (props: TPSProps) => {
   const blocks = props.blocks;
   const chartData = blocks?.map((block: Block) => ({
-    time: block.timeStamp,
+    time: dayjs(block.timeStamp).format('HH:mm'),
     value: block.tps,
   }));
   const averageTPS =
@@ -63,6 +63,10 @@ export const TPS = (props: TPSProps) => {
                 Math.min(...chartData.map((a) => Number(a.value))),
                 Math.max(...chartData.map((a) => Number(a.value))),
               ]}
+              ticks={[
+                Math.min(...chartData.map((a) => Number(a.value))),
+                Math.max(...chartData.map((a) => Number(a.value))),
+              ]}
               tickFormatter={(value) => `${value / 1000}K`}
             />
             <Bar
@@ -78,6 +82,7 @@ export const TPS = (props: TPSProps) => {
   );
 };
 
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { Tooltip } from 'recharts';
 

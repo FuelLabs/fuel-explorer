@@ -6,10 +6,10 @@ import { GQLTpsQuery } from '@fuel-explorer/graphql';
 import { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { DataTable } from '../../components/DataTable';
-import { GasSaved } from '../../components/GasSaved';
 import { Block } from '../../interface/blocks.interface';
 import { DailyTransaction } from '../DailyTransaction';
 import Epoch from '../Epoch';
+import { GasSpentChart } from '../GasSpentChart';
 import { GasTracker } from '../GasTracker';
 import { LatestBlock } from '../LatestBlock';
 import { TPS } from '../TPS';
@@ -56,7 +56,7 @@ export function Hero() {
 
             <Box className={classes.searchWrapper()}>
               <div className="row-span-2 col-span-4">
-                <DailyTransaction />
+                <DailyTransaction blocks={blocks} />
               </div>
               <div className="row-span-1 col-span-3">
                 <Epoch />
@@ -72,7 +72,7 @@ export function Hero() {
                   gasUsed={tpsData?.nodes[0].gasUsed!}
                   producer={tpsData?.nodes[0].producer!}
                   timeStamp={tpsData?.nodes[0].timestamp!}
-                  tps={tpsData?.nodes[0].tps!}
+                  // tps={tpsData?.nodes[0].tps!}
                 />
               </div>
               <div className="row-span-1 col-span-3">
@@ -86,7 +86,7 @@ export function Hero() {
                 {/* <TPSChart /> */}
               </div>
               <div className="row-span-2 col-span-3">
-                <GasSaved />
+                <GasSpentChart blocks={blocks} />
               </div>
             </Box>
           </VStack>

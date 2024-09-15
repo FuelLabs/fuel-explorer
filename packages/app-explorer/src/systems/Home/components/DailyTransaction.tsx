@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { Block } from '../interface/blocks.interface';
 
 const chartData = [
   { time: '01:00', value: 100000 },
@@ -22,7 +23,10 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export const DailyTransaction = () => {
+interface DailyTransactionProps {
+  blocks: Block[];
+}
+export const DailyTransaction = (_blocks: DailyTransactionProps) => {
   const numberFormatter = new Intl.NumberFormat('en-US', {
     maximumFractionDigits: 2,
     style: 'decimal',
