@@ -1,6 +1,6 @@
 'use client';
 
-import { GQLGroupedInput } from '@fuel-explorer/graphql';
+import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql';
 import {
   Address,
   Badge,
@@ -200,9 +200,18 @@ function ContentMain({
               <Heading as="h2" size="5" className="leading-none">
                 Inputs
               </Heading>
-              {tx?.groupedInputs?.map((input, i) => (
-                // here we use only index as key because this component will not change
-                <TxInput key={i} input={input as GQLGroupedInput} />
+              {tx?.inputs?.map((input, i) => (
+                // here we use index as key because this component will not change
+                <TxInput
+                  key={`${i}-${input?.__typename}`}
+                  input={
+                    input as
+                      | NonNullable<
+                          GQLTransactionItemFragment['inputs']
+                        >[number]
+                      | undefined
+                  }
+                />
               ))}
             </>
           }

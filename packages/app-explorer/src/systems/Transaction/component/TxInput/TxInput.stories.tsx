@@ -2,9 +2,9 @@ import { VStack } from '@fuels/ui';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import {
-  GROUPED_INPUT_ASSET,
-  GROUPED_INPUT_ASSET_UNKNOWN,
-  GROUPED_INPUT_MESSAGE,
+  MOCKED_COIN,
+  MOCKED_CONTRACT,
+  MOCKED_MESSAGE,
 } from '../../__mocks__/tx';
 
 import { TxInput } from './TxInput';
@@ -17,15 +17,30 @@ const meta: Meta<typeof TxInput> = {
 export default meta;
 type Story = StoryObj<typeof TxInput>;
 
-export const Asset: Story = {
+function Wrapper({ children }: { children: React.ReactNode }) {
+  return <VStack className="w-[600px]">{children}</VStack>;
+}
+
+export const Coin: Story = {
   render: () => (
-    <VStack className="w-[600px]">
-      <TxInput input={GROUPED_INPUT_ASSET} />
-      <TxInput input={GROUPED_INPUT_ASSET_UNKNOWN} />
-    </VStack>
+    <Wrapper>
+      <TxInput input={MOCKED_COIN} />
+    </Wrapper>
   ),
 };
 
 export const Message: Story = {
-  render: () => <TxInput className="w-[600px]" input={GROUPED_INPUT_MESSAGE} />,
+  render: () => (
+    <Wrapper>
+      <TxInput input={MOCKED_MESSAGE} />
+    </Wrapper>
+  ),
+};
+
+export const Contract: Story = {
+  render: () => (
+    <Wrapper>
+      <TxInput input={MOCKED_CONTRACT} />
+    </Wrapper>
+  ),
 };
