@@ -1,4 +1,5 @@
 fragment Block on Block {
+  _id
   id
   producer
   consensus {
