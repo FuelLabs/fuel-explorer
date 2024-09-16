@@ -8,6 +8,7 @@
     "./tailwind-preset": "./src/theme/tailwind-preset.ts",
     "./styles.css": "./src/theme/index.css"
   },
+  "files": ["dist"],
   "typesVersions": {
     "*": {
       "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
