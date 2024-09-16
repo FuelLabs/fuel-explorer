@@ -3,10 +3,10 @@ import { tv } from 'tailwind-variants';
 export const styles = tv({
   slots: {
     searchBox: [
-      'transition-[width] duration-200 [&[data-expanded=false]]:ease-in [&[data-expanded=true]]:ease-out',
+      'transition-all duration-200 [&[data-expanded=false]]:ease-in [&[data-expanded=true]]:ease-out',
       'group justify-center items-center',
-      '[&[data-expanded=true]]:absolute [&[data-expanded=true]]:top-[-1px] [&[data-expanded=true]]:left-0 [&[data-expanded=true]]:right-0',
-      'w-full [&[data-expanded=true]]:w-[calc(100%+48px+0.5rem)] tablet:[&[data-expanded=true]]:w-full',
+      'w-full [&[data-expanded=true]]:w-[calc(100vw-0.5rem-0.5rem)] [&[data-expanded=true]]:left-[calc((40px_+_1rem)_*_-1)] tablet:[&[data-expanded=true]]:w-full',
+      '[&[data-expanded=true]]:absolute [&[data-expanded=true]]:top-[-1px] tablet:[&[data-expanded=true]]:left-0 [&[data-expanded=true]]:right-0',
       '[&[data-expanded=true]]:z-50',
     ],
     dropdownItem: 'hover:bg-border focus:bg-border cursor-pointer',
