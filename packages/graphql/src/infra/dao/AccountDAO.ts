@@ -15,18 +15,20 @@ export class AccountDAO {
     );
   }
 
-  async save(account: AccountEntity) {
+  async save(account: AccountEntity, blockTransactionTime: Date) {
     const accountData = AccountEntity.toDBItem(account);
 
+    const balance = accountData.balance.toString();
     const data = this.stringifyBigInt(accountData.data);
 
     // Use raw SQL query to insert or update the account record
     await this.databaseConnection.query(
       `
-      INSERT INTO indexer.accounts (account_id, transaction_count, data, first_transaction_timestamp, recent_transaction_timestamp)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO indexer.accounts (account_id, balance, transaction_count, data, first_transaction_timestamp, recent_transaction_timestamp)
+      VALUES ($1, $2, $3, $4, $5, $6)
       ON CONFLICT (account_id)
       DO UPDATE SET
+        balance = EXCLUDED.balance,
         transaction_count = EXCLUDED.transaction_count,
         data = EXCLUDED.data,
         recent_transaction_timestamp = CASE
@@ -36,10 +38,11 @@ export class AccountDAO {
       `,
       [
         accountData.account_id,
+        balance,
         accountData.transaction_count,
         data,
-        accountData.first_transaction_timestamp || new Date().toISOString(),
-        new Date().toISOString(),
+        blockTransactionTime.toISOString(),
+        blockTransactionTime.toISOString(),
       ],
     );
   }
@@ -55,7 +58,11 @@ export class AccountDAO {
     return result.length ? AccountEntity.create(result[0]) : null;
   }
 
-  async incrementTransactionCount(account_id: string, incrementBy = 1) {
+  async incrementTransactionCount(
+    account_id: string,
+    blockTransactionTime: Date,
+    incrementBy = 1,
+  ) {
     await this.databaseConnection.query(
       `
     UPDATE indexer.accounts
@@ -63,12 +70,16 @@ export class AccountDAO {
         recent_transaction_timestamp = $2
     WHERE account_id = $3
     `,
-      [incrementBy, new Date().toISOString(), account_id],
+      [incrementBy, blockTransactionTime.toISOString(), account_id],
     );
   }
 
   // Updated method to update account data with BigInt handling
-  async updateAccountData(account_id: string, newData: any) {
+  async updateAccountData(
+    account_id: string,
+    newData: any,
+    blockTransactionTime: Date,
+  ) {
     const data = this.stringifyBigInt(newData); // Use custom function for BigInt serialization
 
     await this.databaseConnection.query(
@@ -78,13 +89,14 @@ export class AccountDAO {
           recent_transaction_timestamp = $2
       WHERE account_id = $3
       `,
-      [data, new Date().toISOString(), account_id],
+      [data, blockTransactionTime.toISOString(), account_id],
     );
   }
 
   async updateAccountTransactionCount(
     account_id: string,
     newTransactionCount: number,
+    blockTransactionTime: Date,
   ) {
     await this.databaseConnection.query(
       `
@@ -93,7 +105,16 @@ export class AccountDAO {
           recent_transaction_timestamp = $2
       WHERE account_id = $3
       `,
-      [newTransactionCount, new Date().toISOString(), account_id],
+      [newTransactionCount, blockTransactionTime.toISOString(), account_id],
+    );
+  }
+
+  async updateAccountBalance(account_id: string, newBalance: bigint) {
+    await this.databaseConnection.query(
+      `
+      UPDATE indexer.accounts SET balance = $1 WHERE account_id = $2
+      `,
+      [newBalance.toString(), account_id], // Convert BigInt to string
     );
   }
 

@@ -30,6 +30,7 @@ export default class NewAddBlockRange {
     for (const blockData of blocksData) {
       const queries: { statement: string; params: any }[] = [];
       const block = new Block({ data: blockData });
+      const blockTransactionTime = block.timestamp;
       queries.push({
         statement:
           'insert into indexer.blocks (_id, id, timestamp, data, gas_used, producer) values ($1, $2, $3, $4, $5, $6) on conflict do nothing',
@@ -120,26 +121,37 @@ export default class NewAddBlockRange {
         ).length;
 
         let newData: any;
+        let newBalance: bigint;
 
         if (existingAccount) {
           // Increment transaction count by the number of transactions found in the current range
           await this.accountDAO.incrementTransactionCount(
             owner,
+            blockTransactionTime,
             transactionCountIncrement,
           );
 
           newData = await this.fetchAccountDataFromGraphQL(owner);
+          newBalance = await this.fetchBalance(owner);
 
-          await this.accountDAO.updateAccountData(owner, newData);
+          await this.accountDAO.updateAccountBalance(owner, newBalance);
+          await this.accountDAO.updateAccountData(
+            owner,
+            newData,
+            blockTransactionTime,
+          );
         } else {
+          newBalance = await this.fetchBalance(owner);
           newData = await this.fetchAccountDataFromGraphQL(owner);
 
           const newAccount = AccountEntity.create({
             account_id: owner,
+            balance: newBalance,
             transactionCount: transactionCountIncrement,
             data: newData,
+            first_transaction_timestamp: blockTransactionTime,
           });
-          await this.accountDAO.save(newAccount);
+          await this.accountDAO.save(newAccount, blockTransactionTime);
         }
       }
       await connection.executeTransaction(queries);
@@ -215,6 +227,15 @@ export default class NewAddBlockRange {
       }
     }
     return accounts;
+  }
+
+  private async fetchBalance(owner: string): Promise<bigint> {
+    const response = await client.sdk.balance({
+      owner,
+      assetId:
+        '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+    });
+    return BigInt(response.data.balance.amount);
   }
 
   // New method to extract unique owners

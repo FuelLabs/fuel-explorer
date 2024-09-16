@@ -1,6 +1,7 @@
 CREATE TABLE indexer.accounts (
     _id SERIAL PRIMARY KEY,
     account_id character varying(66) NOT NULL UNIQUE,
+    balance BIGINT NOT NULL DEFAULT 0,
     transaction_count INTEGER NOT NULL DEFAULT 0,
     data jsonb NOT NULL DEFAULT '{}',
     first_transaction_timestamp timestamp without time zone NOT NULL,
