@@ -9,7 +9,9 @@
     "tag": true
   },
   "commit": false,
-  "fixed": [["@fuels/ui"]],
+  "fixed": [
+    ["@fuels/ui"]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
