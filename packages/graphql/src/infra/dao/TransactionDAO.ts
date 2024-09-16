@@ -365,11 +365,27 @@ export default class TransactionDAO {
 
   // Fetch transactions by a specific date (daily filter)
   async getDailyActiveAccounts(timeFilter: string): Promise<any[]> {
-    const interval = getTimeInterval(timeFilter);
+    let interval = getTimeInterval(timeFilter);
 
-    // If no interval is specified or invalid, default to 1 day
+    // If no interval get the first transaction timestamp
     if (!interval) {
-      throw new Error(`Invalid time filter: ${timeFilter}`);
+      // Fetch the first transaction
+      const firstTransactionQuery = `
+        SELECT timestamp
+        FROM indexer.transactions
+        ORDER BY timestamp ASC
+        LIMIT 1
+      `;
+      const firstTransactionData = await this.databaseConnection.query(
+        firstTransactionQuery,
+        [],
+      );
+
+      if (firstTransactionData.length === 0) {
+        throw new Error('Failed to fetch first transaction');
+      }
+      const txDate = new Date(firstTransactionData[0].timestamp);
+      interval = Date.now() - txDate.getTime();
     }
 
     // Calculate start and end date
@@ -412,9 +428,10 @@ export default class TransactionDAO {
       ]);
       const uniqueAccounts = accountsData.map((acc: any) => acc.account_hash);
 
+      const timestamp = new Date(startDateTime);
       // Add the daily active accounts count
       dailyActiveAccounts.push({
-        date,
+        timestamp: timestamp,
         count: uniqueAccounts.length,
       });
     }

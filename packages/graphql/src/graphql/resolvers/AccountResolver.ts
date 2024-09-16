@@ -11,18 +11,20 @@ export class AccountResolver {
     const resolvers = new AccountResolver();
     return {
       Query: {
-        accountCreationStatistics: resolvers.accountCreationStatistics,
+        cumulativeAccountCreationStatistics:
+          resolvers.cumulativeAccountCreationStatistics,
         newAccountStatistics: resolvers.newAccountStatistics,
+        dailyActiveAccounts: resolvers.dailyActiveAccounts,
       },
     };
   }
 
-  async accountCreationStatistics(
+  async cumulativeAccountCreationStatistics(
     _: any,
     params: GQLQueryAccountCreationStatisticsArgs,
   ) {
     const accountDAO = new AccountDAO();
-    const accounts = await accountDAO.accountCreationStatistics(
+    const accounts = await accountDAO.cumulativeAccountCreationStatistics(
       params.timeFilter || '',
     );
     return accounts;
@@ -40,7 +42,7 @@ export class AccountResolver {
     const transactionDAO = new TransactionDAO();
 
     // Get the time filter passed from the query (e.g., '1day', '7days')
-    const timeFilter = params.timeFilter || '1day';
+    const timeFilter = params.timeFilter || '';
 
     // Fetch transactions and unique accounts based on the time filter
     const dailyActiveAccounts =
@@ -48,7 +50,7 @@ export class AccountResolver {
 
     return {
       nodes: dailyActiveAccounts.map((day) => ({
-        timestamp: day.date,
+        timestamp: day.timestamp,
         count: day.count,
       })),
     };

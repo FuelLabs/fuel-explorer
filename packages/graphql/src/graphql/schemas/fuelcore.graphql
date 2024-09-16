@@ -784,7 +784,6 @@ type Query {
   transactionsByBlockId(after: String, before: String, first: Int, last: Int, blockId: String!): TransactionConnection!
   transactionsFeeStatistics(timeFilter: String): TransactionFeeConnection!
   cumulativeTransactionsFeeStatistics(timeFilter: String): CumulativeTransactionFeeConnection!
-  accountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
   newAccountStatistics(timeFilter: String): NewAccountStatisticsConnection!
   cumulativeAccountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
   dailyActiveAccounts(timeFilter: String): DailyActiveAccountsConnection!

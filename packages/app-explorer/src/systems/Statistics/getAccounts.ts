@@ -26,7 +26,7 @@ interface AccountNode {
 async function fetchAccountStatistics(
   params: AccountParams,
   fieldName:
-    | 'accountCreationStatistics'
+    | 'newAccountStatistics'
     | 'cumulativeAccountCreationStatistics'
     | 'dailyActiveAccounts',
   unit: 'minute' | 'hour' | 'day' | 'month',
@@ -34,13 +34,12 @@ async function fetchAccountStatistics(
   isCumulative = false,
 ) {
   const data = await (fieldName === 'dailyActiveAccounts'
-    ? sdk.dailyActiveAccounts(params) // Add the dailyActiveAccounts GraphQL call here
+    ? sdk.dailyActiveAccounts(params)
     : isCumulative
       ? sdk.cumulativeAccountCreationStatistics(params)
-      : sdk.accountCreationStatistics(params));
+      : sdk.newAccountStatistics(params));
 
   const { nodes, offset } = extractAccountData(data, fieldName);
-
   if (!nodes.length) {
     return isCumulative ? { accounts: [], offset: 0 } : { accounts: [] };
   }
@@ -54,7 +53,7 @@ async function fetchAccountStatistics(
     unit,
     intervalSize,
   );
-  const accounts = processAccounts(nodes, intervalMap); // Use this function for account-specific logic
+  const accounts = processAccounts(nodes, intervalMap);
 
   if (isCumulative) {
     return { accounts, offset };
@@ -73,7 +72,7 @@ function extractAccountData(
   return { nodes, offset };
 }
 
-export async function getDailyActiveAccountStats(
+async function getDailyActiveAccountStats(
   params: AccountParams,
   unit: 'minute' | 'hour' | 'day' | 'month',
   intervalSize: number,
@@ -100,14 +99,14 @@ async function getCumulativeAccountCreationStats(
   );
 }
 
-export async function getAccountCreationStats(
+async function getNewAccountCreationStats(
   params: AccountParams,
   unit: 'minute' | 'hour' | 'day' | 'month',
   intervalSize: number,
 ) {
   return fetchAccountStatistics(
     params,
-    'accountCreationStatistics',
+    'newAccountStatistics',
     unit,
     intervalSize,
   );
@@ -123,22 +122,12 @@ export const getDailyActiveAccountStatsAction = act(
   },
 );
 
-export const getAccountStats = act(schema, async ({ timeFilter }) => {
+export const getNewAccountStats = act(schema, async ({ timeFilter }) => {
   const params = { timeFilter: timeFilter } as { timeFilter?: string };
   const { unit, intervalSize } = getUnitAndInterval(params.timeFilter || '');
 
-  return getAccountCreationStats(params, unit, intervalSize);
+  return getNewAccountCreationStats(params, unit, intervalSize);
 });
-
-export const getDailyAccountCreationStats = act(
-  schema,
-  async ({ timeFilter }) => {
-    const params = { timeFilter: timeFilter } as { timeFilter?: string };
-
-    // Use 'day' as the unit and 1 as the interval size
-    return getAccountCreationStats(params, 'day', 1);
-  },
-);
 
 export const getCumulativeAccountStats = act(schema, async ({ timeFilter }) => {
   const params = { timeFilter: timeFilter } as { timeFilter?: string };

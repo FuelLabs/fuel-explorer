@@ -785,7 +785,6 @@ type Query {
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
   transactionsFeeStatistics(timeFilter: String): TransactionFeeConnection!
   cumulativeTransactionsFeeStatistics(timeFilter: String): CumulativeTransactionFeeConnection!
-  accountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
   newAccountStatistics(timeFilter: String): NewAccountStatisticsConnection!
   cumulativeAccountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
   dailyActiveAccounts(timeFilter: String): DailyActiveAccountsConnection!

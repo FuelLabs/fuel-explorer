@@ -131,7 +131,7 @@ export default class AccountDAO {
     return result.length ? result[0].data : null;
   }
 
-  async accountCreationStatistics(timeFilter: string) {
+  async cumulativeAccountCreationStatistics(timeFilter: string) {
     const _interval = getTimeInterval(timeFilter);
 
     let query = `
@@ -203,7 +203,6 @@ export default class AccountDAO {
     const accountsData = await this.databaseConnection.query(query, [
       intervalStartTimeDate,
     ]);
-
     return {
       nodes: accountsData,
       count: accountsData.length,

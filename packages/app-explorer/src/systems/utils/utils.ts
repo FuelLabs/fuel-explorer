@@ -8,6 +8,7 @@ interface TransactionNode {
 
 interface AccountNode {
   timestamp: string;
+  count?: number;
 }
 
 interface Interval {
@@ -190,7 +191,11 @@ export function processAccounts(nodes: AccountNode[], intervalMap: Interval[]) {
 
       if (accountTimestamp >= intervalStart && accountTimestamp < intervalEnd) {
         // Increment count for the number of accounts created
-        interval.count += 1;
+        if (account.count) {
+          interval.count += account.count;
+        } else {
+          interval.count += 1;
+        }
         break; // Account assigned, no need to check further
       }
     }
