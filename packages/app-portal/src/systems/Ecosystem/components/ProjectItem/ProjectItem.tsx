@@ -43,8 +43,9 @@ export const ProjectItem: ProjectItemComponent = ({
   status,
   github,
   isLive,
+  isFeatured,
 }: ProjectItemProps) => {
-  const classes = styles();
+  const classes = styles({ isFeatured });
 
   const onCardPress = () => {
     window.open(url, '_blank');
@@ -57,6 +58,7 @@ export const ProjectItem: ProjectItemComponent = ({
       })}
       className={classes.card()}
       onClick={onCardPress}
+      variant={isFeatured || isLive ? 'classic' : 'ghost'}
     >
       <Card.Body className={classes.body()}>
         <ProjecImage name={name} image={image} />
@@ -137,7 +139,7 @@ export const ProjectItem: ProjectItemComponent = ({
           </HStack>
         </VStack>
       </Card.Body>
-      <Card.Footer>
+      <Card.Footer className={classes.footer()}>
         {status?.map((s, index) => (
           <Badge
             key={index}
@@ -149,6 +151,16 @@ export const ProjectItem: ProjectItemComponent = ({
             {s}
           </Badge>
         ))}
+        {isFeatured ? (
+          <Badge
+            color="yellow"
+            size="1"
+            className={classes.tag()}
+            variant="surface"
+          >
+            Featured
+          </Badge>
+        ) : null}
         {isLive ? (
           <Badge
             color="green"
@@ -178,7 +190,8 @@ const styles = tv({
     card: [
       'cursor-pointer gap-2',
       'transition-all duration-200 ease-in-out',
-      'hover:border-1 hover:border-brand hover:scale-105',
+      'border-none border-brand',
+      'hover:border hover:border-solid hover:scale-105',
     ],
     details: 'flex flex-col justify-between flex-1',
     link: 'underline p-0 pointer-events-none text-sm',
@@ -194,6 +207,14 @@ const styles = tv({
     textProjectName: 'text-heading',
     textDescription: 'text-sm',
     socialButton: 'bg-transparent',
+    footer: 'items-end',
+  },
+  variants: {
+    isFeatured: {
+      true: {
+        card: 'border border-solid border-yellow-7 hover:border-yellow-8 hover:border-2',
+      },
+    },
   },
 });
 
