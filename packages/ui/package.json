@@ -1,6 +1,6 @@
 {
   "name": "@fuels/ui",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "access": "public",
   "main": "./src/index.ts",
   "exports": {
