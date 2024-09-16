@@ -63,6 +63,13 @@ export function BlockScreenSimple({
             regularEl={block?.header.transactionsCount}
           />
         </CardInfo>
+        <CardInfo name="Height" className="flex-1">
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={<LoadingBox className="w-12 h-6" />}
+            regularEl={block?._id}
+          />
+        </CardInfo>
       </Grid>
       <PageTitle title="Transactions" />
       {isLoading ? (
