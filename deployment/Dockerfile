@@ -1,11 +1,11 @@
-# This image contains the graphql server
+# This image contains the GraphQL server
 # built for the fuel-explorer
 FROM node:20 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y postgresql-client
+RUN apt-get update && apt-get install -y postgresql-client
 
-# Expose the ENVs to the env of the container
+# Expose the ENVs to the container environment
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV SERVER_PORT="${SERVER_PORT:-3000}"
@@ -38,4 +38,5 @@ RUN pnpm build:lib
 
 EXPOSE ${SERVER_PORT}
 RUN chown -R node:node /app-explorer
+USER node  # Ensuring the container runs as the 'node' user for better security
 CMD ["sh", "./scripts/run.sh"]
