@@ -5,7 +5,8 @@ export const styles = tv({
     searchBox: [
       'transition-all duration-200 [&[data-expanded=false]]:ease-in [&[data-expanded=true]]:ease-out',
       'group justify-center items-center',
-      'w-full [&[data-expanded=true]]:w-[calc(100vw-0.5rem-0.5rem)] [&[data-expanded=true]]:left-[calc((40px_+_1rem)_*_-1)] tablet:[&[data-expanded=true]]:w-full',
+      'block left-0 w-full', // needed for properly execution of transitions
+      '[&[data-expanded=true]]:w-[calc(100vw)] [&[data-expanded=true]]:left-[-65px] tablet:[&[data-expanded=true]]:w-full',
       '[&[data-expanded=true]]:absolute [&[data-expanded=true]]:top-[-1px] tablet:[&[data-expanded=true]]:left-0 [&[data-expanded=true]]:right-0',
       '[&[data-expanded=true]]:z-50',
     ],
