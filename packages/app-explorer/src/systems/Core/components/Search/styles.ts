@@ -13,6 +13,7 @@ export const styles = tv({
     dropdownItem: 'hover:bg-border focus:bg-border cursor-pointer',
     inputWrapper: [
       'h-[40px] outline-none',
+      'group-[&[data-expanded=true]]:rounded-none tablet:group-[&[data-expanded=true]]:rounded-[var(--text-field-border-radius)]',
       'border-[var(--color-border)] border-x-[1px] border-y-[1px] shadow-none',
       'bg-white dark:bg-[var(--color-surface)] group-[&[data-expanded=true]]:bg-[var(--color-panel-solid)] bg-none',
       '[&_.rt-TextFieldChrome]:bg-gray-1 [&_.rt-TextFieldChrome]:outline-none',
