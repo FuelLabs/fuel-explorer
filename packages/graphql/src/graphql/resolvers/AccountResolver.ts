@@ -1,5 +1,5 @@
 import type {
-  GQLQueryAccountCreationStatisticsArgs,
+  GQLQueryCumulativeAccountCreationStatisticsArgs,
   GQLQueryDailyActiveAccountsArgs,
   GQLQueryNewAccountStatisticsArgs,
 } from '../../graphql/generated/sdk-provider';
@@ -21,7 +21,7 @@ export class AccountResolver {
 
   async cumulativeAccountCreationStatistics(
     _: any,
-    params: GQLQueryAccountCreationStatisticsArgs,
+    params: GQLQueryCumulativeAccountCreationStatisticsArgs,
   ) {
     const accountDAO = new AccountDAO();
     const accounts = await accountDAO.cumulativeAccountCreationStatistics(
