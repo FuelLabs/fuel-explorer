@@ -1,6 +1,8 @@
+import { DateHelper } from '~/core/Date';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
 import Block from './Block';
+import { getTimeInterval } from './utils';
 
 export default class BlockDAO {
   databaseConnection: DatabaseConnection;
@@ -120,5 +122,42 @@ export default class BlockDAO {
     );
     if (!blockData) return;
     return new Block(blockData);
+  }
+
+  async getBlockRewards(timeFilter: string) {
+    const _interval = getTimeInterval(timeFilter);
+
+    let query = `
+        SELECT 
+            b._id AS id,
+            elem->>'mintAmount' AS reward,
+            (b.data->'header'->>'time')::bigint AS timestamp
+        FROM 
+            indexer.blocks b,
+            jsonb_array_elements(b.data->'transactions') AS elem
+        WHERE 
+            elem->>'isMint' = 'true'
+    `;
+
+    // Add the time filtering condition only if an interval is defined
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - _interval;
+      const intervalStartTimeDate = new Date(intervalStartTimeInMilliseconds);
+      const intervalStartTimeTai64 = DateHelper.dateToTai64(
+        intervalStartTimeDate,
+      );
+      query += `AND
+                (b.data->'header'->>'time')::bigint >= ${intervalStartTimeTai64}
+        `;
+    }
+
+    query += ' ORDER BY id asc';
+    // Execute the query
+    const blocksData = await this.databaseConnection.query(query, []);
+
+    const results = {
+      nodes: blocksData,
+    };
+    return results;
   }
 }

@@ -704,6 +704,7 @@ type Query {
     id: BlockId
   ): Block
   blocks(after: String, before: String, first: Int, last: Int): BlockConnection!
+  blockRewardStatistics(timeFilter: String): BlockRewardConnection!
   chain: ChainInfo!
   """Gets the coin by `utxo_id`."""
   coin(
@@ -781,6 +782,8 @@ type Query {
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
   transactionsByBlockId(after: String, before: String, first: Int, last: Int, blockId: String!): TransactionConnection!
+  transactionsFeeStatistics(timeFilter: String): TransactionFeeConnection!
+  cumulativeTransactionsFeeStatistics(timeFilter: String): CumulativeTransactionFeeConnection!
 }
 
 type Receipt {
@@ -1021,4 +1024,31 @@ type VariableOutput {
   amount: U64!
   assetId: AssetId!
   to: Address!
+}
+
+type TransactionFee {
+  fee: U64!
+  timestamp: String!
+}
+
+type TransactionFeeConnection {
+  """A list of nodes."""
+  nodes: [TransactionFee!]
+}
+
+type CumulativeTransactionFeeConnection {
+  """A list of nodes."""
+  nodes: [TransactionFee!]
+  transactionOffset: U64!
+}
+
+type BlockReward {
+  id: BlockId!
+  reward: U64!
+  timestamp: String!
+}
+
+type BlockRewardConnection {
+  """A list of nodes."""
+  nodes: [BlockReward!]
 }
