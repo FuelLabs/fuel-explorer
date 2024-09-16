@@ -10,9 +10,7 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": [
-        "./src/theme/tailwind-preset.ts"
-      ]
+      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
     }
   },
   "publishConfig": {
@@ -38,9 +36,7 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build:lib": "tsup --dts",
@@ -85,18 +81,18 @@
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "0.18.0",
-    "@storybook/addon-a11y": "^8.0.8",
-    "@storybook/addon-actions": "^8.0.8",
-    "@storybook/addon-essentials": "^8.0.8",
-    "@storybook/addon-interactions": "^8.0.8",
-    "@storybook/addon-links": "^8.0.8",
-    "@storybook/addon-storysource": "^8.0.8",
-    "@storybook/addon-viewport": "^8.0.8",
+    "@storybook/addon-a11y": "^8.3.0",
+    "@storybook/addon-actions": "^8.3.0",
+    "@storybook/addon-essentials": "^8.3.0",
+    "@storybook/addon-interactions": "^8.3.0",
+    "@storybook/addon-links": "^8.3.0",
+    "@storybook/addon-storysource": "^8.3.0",
+    "@storybook/addon-viewport": "^8.3.0",
     "@storybook/addons": "7.6.17",
-    "@storybook/react": "^8.0.8",
-    "@storybook/react-vite": "^8.0.8",
+    "@storybook/react": "^8.3.0",
+    "@storybook/react-vite": "^8.3.0",
     "@storybook/testing-library": "^0.2.2",
-    "@storybook/types": "^8.0.8",
+    "@storybook/types": "^8.3.0",
     "@types/lodash": "4.14.202",
     "@types/react": "18.2.54",
     "@types/react-dom": "18.2.22",
@@ -105,7 +101,7 @@
     "lodash": "^4.17.21",
     "postcss": "8.4.34",
     "postcss-import": "16.0.0",
-    "storybook": "^8.0.8",
+    "storybook": "8.3.0",
     "storybook-addon-theme": "workspace:*",
     "tailwindcss": "3.4.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
