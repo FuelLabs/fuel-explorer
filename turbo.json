@@ -33,7 +33,7 @@
     },
     "dev:storybook": {
       "dependsOn": [],
-      "cache": false
+      "cache": true
     },
     "lint": {
       "dependsOn": [],
