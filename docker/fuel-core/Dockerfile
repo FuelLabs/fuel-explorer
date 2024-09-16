@@ -6,17 +6,14 @@ ARG CONSENSUS_KEY_SECRET="0xc8e615a4089466174459ef19cfd257d2e17adfabff3b8f219dbb
 
 # dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y curl jq && rm -rf /var/lib/apt/lists/*
-RUN apt update && apt install -y git curl jq && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y curl jq git && rm -rf /var/lib/apt/lists/*
 
 # copy chain config
 WORKDIR /fuel
 
 COPY ./genesis_coins.json .
 
-RUN git clone \
-    https://github.com/FuelLabs/chain-configuration.git \
-    /chain-configuration
+RUN git clone https://github.com/FuelLabs/chain-configuration.git /chain-configuration
 
 # Copy the base local configuration
 RUN cp -R /chain-configuration/local/* ./
@@ -38,11 +35,11 @@ RUN jq '.consensus_parameters = input' \
     && mv tmp.json state_config.json
 
 # expose fuel node port
-ENV FUEL_IP="${FUEL_IP}"
-ENV FUEL_PORT="${FUEL_PORT}"
-ENV CONSENSUS_KEY_SECRET="${CONSENSUS_KEY_SECRET}"
+ENV FUEL_IP=${FUEL_IP}
+ENV FUEL_PORT=${FUEL_PORT}
+ENV CONSENSUS_KEY_SECRET=${CONSENSUS_KEY_SECRET}
 EXPOSE ${FUEL_PORT}
 
 # copy over script and run
 COPY ./fuel_core.sh .
-CMD ["sh", "./fuel_core.sh"]
+CMD ["sh", "-c", "./fuel_core.sh && tail -f /dev/null"]
