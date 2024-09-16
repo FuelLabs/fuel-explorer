@@ -3,7 +3,7 @@ import { DateHelper } from '~/core/Date';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
-import { getTimeInterval } from './utils';
+import { generateDateIntervals, getTimeInterval } from './utils';
 
 export default class TransactionDAO {
   databaseConnection: DatabaseConnection;
@@ -361,5 +361,64 @@ export default class TransactionDAO {
     return {
       transactionOffset: 0,
     };
+  }
+
+  // Fetch transactions by a specific date (daily filter)
+  async getDailyActiveAccounts(timeFilter: string): Promise<any[]> {
+    const interval = getTimeInterval(timeFilter);
+
+    // If no interval is specified or invalid, default to 1 day
+    if (!interval) {
+      throw new Error(`Invalid time filter: ${timeFilter}`);
+    }
+
+    // Calculate start and end date
+    const endDate = new Date();
+    const startDate = new Date(endDate.getTime() - interval);
+
+    // Generate daily intervals between the start and end dates
+    const dates = generateDateIntervals(startDate, endDate);
+
+    const dailyActiveAccounts = [];
+
+    // Iterate through each day and fetch transactions and unique accounts
+    for (const date of dates) {
+      const startDateTime = `${date} 00:00:00`;
+      const endDateTime = `${date} 23:59:59`;
+
+      // Fetch transactions for the day
+      const transactionsQuery = `
+        SELECT tx_hash
+        FROM indexer.transactions
+        WHERE timestamp >= '${startDateTime}' AND timestamp <= '${endDateTime}'
+      `;
+      const transactionsData = await this.databaseConnection.query(
+        transactionsQuery,
+        [],
+      );
+      const txHashes = transactionsData.map((tx: any) => tx.tx_hash);
+
+      // If no transactions for the day, continue to next date
+      if (txHashes.length === 0) continue;
+
+      // Fetch unique accounts involved in those transactions
+      const accountsQuery = `
+        SELECT DISTINCT account_hash
+        FROM indexer.transactions_accounts
+        WHERE tx_hash = ANY($1)
+      `;
+      const accountsData = await this.databaseConnection.query(accountsQuery, [
+        txHashes,
+      ]);
+      const uniqueAccounts = accountsData.map((acc: any) => acc.account_hash);
+
+      // Add the daily active accounts count
+      dailyActiveAccounts.push({
+        date,
+        count: uniqueAccounts.length,
+      });
+    }
+
+    return dailyActiveAccounts;
   }
 }

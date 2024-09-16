@@ -1,8 +1,10 @@
 import type {
   GQLQueryAccountCreationStatisticsArgs,
+  GQLQueryDailyActiveAccountsArgs,
   GQLQueryNewAccountStatisticsArgs,
 } from '../../graphql/generated/sdk-provider';
 import AccountDAO from '../../infra/dao/AccountDAO';
+import TransactionDAO from '../../infra/dao/TransactionDAO';
 
 export class AccountResolver {
   static create() {
@@ -32,5 +34,23 @@ export class AccountResolver {
       params.timeFilter || '',
     );
     return accounts;
+  }
+
+  async dailyActiveAccounts(_: any, params: GQLQueryDailyActiveAccountsArgs) {
+    const transactionDAO = new TransactionDAO();
+
+    // Get the time filter passed from the query (e.g., '1day', '7days')
+    const timeFilter = params.timeFilter || '1day';
+
+    // Fetch transactions and unique accounts based on the time filter
+    const dailyActiveAccounts =
+      await transactionDAO.getDailyActiveAccounts(timeFilter);
+
+    return {
+      nodes: dailyActiveAccounts.map((day) => ({
+        timestamp: day.date,
+        count: day.count,
+      })),
+    };
   }
 }

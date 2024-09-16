@@ -27,14 +27,17 @@ async function fetchAccountStatistics(
   params: AccountParams,
   fieldName:
     | 'accountCreationStatistics'
-    | 'cumulativeAccountCreationStatistics',
+    | 'cumulativeAccountCreationStatistics'
+    | 'dailyActiveAccounts',
   unit: 'minute' | 'hour' | 'day' | 'month',
   intervalSize: number,
   isCumulative = false,
 ) {
-  const data = await (isCumulative
-    ? sdk.cumulativeAccountCreationStatistics(params)
-    : sdk.accountCreationStatistics(params));
+  const data = await (fieldName === 'dailyActiveAccounts'
+    ? sdk.dailyActiveAccounts(params) // Add the dailyActiveAccounts GraphQL call here
+    : isCumulative
+      ? sdk.cumulativeAccountCreationStatistics(params)
+      : sdk.accountCreationStatistics(params));
 
   const { nodes, offset } = extractAccountData(data, fieldName);
 
@@ -70,6 +73,19 @@ function extractAccountData(
   return { nodes, offset };
 }
 
+export async function getDailyActiveAccountStats(
+  params: AccountParams,
+  unit: 'minute' | 'hour' | 'day' | 'month',
+  intervalSize: number,
+) {
+  return fetchAccountStatistics(
+    params,
+    'dailyActiveAccounts', // Specify the new field for daily active accounts
+    unit,
+    intervalSize,
+  );
+}
+
 async function getCumulativeAccountCreationStats(
   params: AccountParams,
   unit: 'minute' | 'hour' | 'day' | 'month',
@@ -96,6 +112,16 @@ export async function getAccountCreationStats(
     intervalSize,
   );
 }
+
+export const getDailyActiveAccountStatsAction = act(
+  schema,
+  async ({ timeFilter }) => {
+    const params = { timeFilter: timeFilter } as { timeFilter?: string };
+    const { unit, intervalSize } = getUnitAndInterval(params.timeFilter || '');
+
+    return getDailyActiveAccountStats(params, unit, intervalSize);
+  },
+);
 
 export const getAccountStats = act(schema, async ({ timeFilter }) => {
   const params = { timeFilter: timeFilter } as { timeFilter?: string };

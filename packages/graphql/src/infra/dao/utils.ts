@@ -28,3 +28,18 @@ export function getTimeInterval(timeFilter: string): number | null {
   }
   return _interval;
 }
+
+export function generateDateIntervals(
+  startDate: Date,
+  endDate: Date,
+): string[] {
+  const dates = [];
+  const currentDate = new Date(startDate);
+
+  while (currentDate <= endDate) {
+    dates.push(new Date(currentDate).toISOString().split('T')[0]); // Push the date in YYYY-MM-DD format
+    currentDate.setDate(currentDate.getDate() + 1); // Increment day by day
+  }
+
+  return dates;
+}

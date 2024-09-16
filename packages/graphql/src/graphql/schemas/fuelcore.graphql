@@ -787,6 +787,7 @@ type Query {
   accountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
   newAccountStatistics(timeFilter: String): NewAccountStatisticsConnection!
   cumulativeAccountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
+  dailyActiveAccounts(timeFilter: String): DailyActiveAccountsConnection!
 }
 
 type Receipt {
@@ -1072,4 +1073,13 @@ type AccountCreationNode {
 
 type NewAccountNode {
   timestamp: String!
+}
+
+type DailyActiveAccountsConnection {
+  nodes: [DailyActiveAccountsNode!]!
+}
+
+type DailyActiveAccountsNode {
+  timestamp: String!
+  count: Int!
 }
