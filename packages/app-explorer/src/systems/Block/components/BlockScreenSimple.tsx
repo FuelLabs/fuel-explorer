@@ -67,7 +67,7 @@ export function BlockScreenSimple({
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-12 h-6" />}
-            regularEl={block?._id}
+            regularEl={block?.height}
           />
         </CardInfo>
       </Grid>

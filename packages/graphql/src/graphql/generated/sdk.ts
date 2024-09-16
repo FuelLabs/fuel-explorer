@@ -1483,8 +1483,8 @@ export type GQLBalancesQuery = {
 
 export type GQLBlockFragment = {
   __typename: 'Block';
-  _id?: number | null;
   id: string;
+  height: string;
   producer?: string | null;
   consensus:
     | { __typename: 'Genesis' }
@@ -1523,8 +1523,8 @@ export type GQLBlockQuery = {
   __typename: 'Query';
   block?: {
     __typename: 'Block';
-    _id?: number | null;
     id: string;
+    height: string;
     producer?: string | null;
     consensus:
       | { __typename: 'Genesis' }
@@ -4534,8 +4534,8 @@ export const RecentTransactionFragmentDoc = gql`
     `;
 export const BlockFragmentDoc = gql`
     fragment Block on Block {
-  _id
   id
+  height
   producer
   consensus {
     __typename
