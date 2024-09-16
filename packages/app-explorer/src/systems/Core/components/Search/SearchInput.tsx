@@ -127,7 +127,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               )}
               {searchResult?.block && (
                 <>
-                  {searchResult.block.id && (
+                  {searchResult.block.id === searchValue && (
                     <>
                       <Dropdown.Label>Block Hash</Dropdown.Label>
                       <Dropdown.Item className={classes.dropdownItem()}>
@@ -145,7 +145,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       </Dropdown.Item>
                     </>
                   )}
-                  {searchResult.block.height && (
+                  {searchResult.block.height === searchValue && (
                     <>
                       <Dropdown.Label>Block Height</Dropdown.Label>
                       <Dropdown.Item className={classes.dropdownItem()}>
