@@ -1,4 +1,4 @@
-name: Build and publish Helm Chart
+name: Build and Publish Helm Chart
 
 on:
   push:
@@ -9,11 +9,12 @@ on:
 
 permissions:
   contents: read
+  packages: write  # `packages: write` burada belirtilmeli, çünkü paketlerin yazma izni gerekli.
 
 jobs:
   helm-release:
     name: Build Helm Chart
-    runs-on: buildjet-4vcpu-ubuntu-2204
+    runs-on: ubuntu-22.04  # GitHub'un resmi bir runner'ını tercih ediyorum. Kendi runner'ınızı kullanıyorsanız bu kısmı değiştirebilirsiniz.
     if: |
       (github.event_name == 'release' && github.event.action == 'published') ||
       github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
@@ -25,7 +26,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Package and Push Charts
+      - name: Package and Push Helm Chart
         uses: bsord/helm-push@v4.1.0
         with:
           useOCIRegistry: true
