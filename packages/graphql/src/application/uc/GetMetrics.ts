@@ -22,7 +22,7 @@ export default class GetMetrics {
     const indexerLastBlockHeight = await this.getIndexerLastBlockHeight();
     const indexerBlockHeightDelay =
       fuelCoreLastBlockHeight - indexerLastBlockHeight;
-    const indexerHealth = indexerBlockHeightDelay < 50 ? 1 : 0;
+    const indexerHealth = indexerBlockHeightDelay < 100 ? 1 : 0;
     return {
       explorer_indexer_fuel_core_last_block_height: fuelCoreLastBlockHeight,
       explorer_indexer_last_block_height_synced: indexerLastBlockHeight,
