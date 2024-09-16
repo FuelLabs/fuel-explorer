@@ -25,6 +25,6 @@
   "snapshot": {
     "useCalculatedVersion": true,
     "prereleaseTemplate": "{tag}-{commit}"
-    "prereleaseTemplate": "{tag}-{privete}
+    "prereleaseTemplate": "{tag}-{priveta}
   }
 }
