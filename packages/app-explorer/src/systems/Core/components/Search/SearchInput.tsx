@@ -339,7 +339,6 @@ export function SearchInput({
               radius="large"
               size="3"
               data-opened={openDropdown}
-              onBlur={close}
               className={cx(className, classes.inputWrapper())}
               onFocus={expandOnFocusHandler}
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
