@@ -10,9 +10,7 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": [
-        "./src/theme/tailwind-preset.ts"
-      ]
+      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
     }
   },
   "publishConfig": {
@@ -24,7 +22,7 @@
     "exports": {
       ".": {
         "import": "./dist/index.esm.js",
-        "require": "./dist/index.cjs.jg",
+        "require": "./dist/index.cjs.js",
         "default": "./dist/index.cjs.js",
         "types": "./dist/index.d.ts",
         "typings": "./dist/index.d.ts"
@@ -38,9 +36,7 @@
       },
       "./styles.css": "./dist/styles.css"
     },
-    "files": [
-      "dist"
-    ]
+    "files": ["dist"]
   },
   "scripts": {
     "build:lib": "tsup --dts",
