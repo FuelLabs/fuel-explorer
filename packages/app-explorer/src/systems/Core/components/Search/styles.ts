@@ -16,7 +16,7 @@ export const styles = tv({
     ],
     searchSize: 'w-full sm:w-[400px] group-[&[data-expanded=true]]:w-full',
     dropdownContent: [
-      'mt-[-4px] rounded-t-none shadow-none border border-t-0 border-border',
+      'mt-[-10px] rounded-t-none shadow-none border border-t-0 border-border',
       '[&[data-expanded=true]]:ml-[-10px] [&[data-expanded=true]]:border-t-0 [&[data-expanded=true]]:border-x-0',
     ],
   },
