@@ -317,85 +317,91 @@ export function SearchInput({
   console.log('fsk width', inputRef.current?.offsetWidth);
 
   return (
-    <VStack gap="0" className={classes.searchBox()} data-expanded={isExpanded}>
-      <Focus.ArrowNavigator autoFocus={autoFocus}>
-        <div ref={containerRef}>
-          <Input
-            {...props}
-            ref={inputRef}
-            name="query"
-            placeholder={placeholder}
-            value={value}
-            onChange={handleChange}
-            variant="surface"
-            radius="large"
-            size="3"
-            data-opened={openDropdown}
-            className={cx(className, classes.inputWrapper())}
-            onFocus={expandOnFocusHandler}
-            onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                (e.target as HTMLFormElement).form?.dispatchEvent(
-                  new Event('submit', { cancelable: true, bubbles: true }),
-                );
-                handleSubmit();
-              }
-            }}
-          >
-            {isExpanded || value?.length ? (
-              <>
-                <Input.Slot className="" side="right">
-                  {!!value?.length && (
-                    <Tooltip content="Submit">
-                      <IconButton
-                        type="submit"
-                        aria-label="Submit"
-                        icon={IconCheck}
-                        iconColor="text-brand"
-                        variant="link"
-                        className="!ml-0 tablet:ml-2"
-                        isLoading={pending}
-                        onClick={handleSubmit}
-                      />
-                    </Tooltip>
-                  )}
-                  <IconButton
-                    aria-label="Clear"
-                    icon={IconX}
-                    iconColor="text-gray-11"
-                    variant="link"
-                    className="m-0"
-                    onClick={handleClear}
-                  />
+    <div className="relative">
+      <VStack
+        gap="0"
+        className={classes.searchBox()}
+        data-expanded={isExpanded}
+      >
+        <Focus.ArrowNavigator autoFocus={autoFocus}>
+          <div ref={containerRef} className="w-full">
+            <Input
+              {...props}
+              ref={inputRef}
+              name="query"
+              placeholder={placeholder}
+              value={value}
+              onChange={handleChange}
+              variant="surface"
+              radius="large"
+              size="3"
+              data-opened={openDropdown}
+              className={cx(className, classes.inputWrapper())}
+              onFocus={expandOnFocusHandler}
+              onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  (e.target as HTMLFormElement).form?.dispatchEvent(
+                    new Event('submit', { cancelable: true, bubbles: true }),
+                  );
+                  handleSubmit();
+                }
+              }}
+            >
+              {isExpanded || value?.length ? (
+                <>
+                  <Input.Slot className="" side="right">
+                    {!!value?.length && (
+                      <Tooltip content="Submit">
+                        <IconButton
+                          type="submit"
+                          aria-label="Submit"
+                          icon={IconCheck}
+                          iconColor="text-brand"
+                          variant="link"
+                          className="!ml-0 tablet:ml-2"
+                          isLoading={pending}
+                          onClick={handleSubmit}
+                        />
+                      </Tooltip>
+                    )}
+                    <IconButton
+                      aria-label="Clear"
+                      icon={IconX}
+                      iconColor="text-gray-11"
+                      variant="link"
+                      className="m-0"
+                      onClick={handleClear}
+                    />
+                  </Input.Slot>
+                </>
+              ) : (
+                <Input.Slot side="right">
+                  <Icon icon={IconSearch} size={16} />
                 </Input.Slot>
-              </>
-            ) : (
-              <Input.Slot side="right">
-                <Icon icon={IconSearch} size={16} />
-              </Input.Slot>
-            )}
-          </Input>
-        </div>
-      </Focus.ArrowNavigator>
-      <SearchResultDropdown
-        ref={dropdownRef}
-        width={containerRef.current?.offsetWidth || DEFAULT_WIDTH}
-        searchResult={searchResult}
-        searchValue={value}
-        openDropdown={openDropdown}
-        isExpanded={isExpanded}
-        onSelectItem={() => {
-          setOpenDropdown(false);
-          handleClear();
-        }}
-        onOpenChange={() => {
-          if (openDropdown) {
-            setHasSubmitted(false);
-          }
-          setOpenDropdown(!openDropdown);
-        }}
-      />
-    </VStack>
+              )}
+            </Input>
+          </div>
+        </Focus.ArrowNavigator>
+        <SearchResultDropdown
+          ref={dropdownRef}
+          width={containerRef.current?.offsetWidth || DEFAULT_WIDTH}
+          searchResult={searchResult}
+          searchValue={value}
+          openDropdown={openDropdown}
+          isExpanded={isExpanded}
+          onSelectItem={() => {
+            setOpenDropdown(false);
+            handleClear();
+          }}
+          onOpenChange={() => {
+            if (openDropdown) {
+              setHasSubmitted(false);
+            }
+            setOpenDropdown(!openDropdown);
+          }}
+        />
+      </VStack>
+    </div>
   );
 }
