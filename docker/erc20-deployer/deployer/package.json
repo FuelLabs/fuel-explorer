@@ -1,5 +1,6 @@
 {
   "name": "erc20-deployer",
+  "private": true,
   "scripts": {
     "start": "ts-node ./src/index.ts"
   },
