@@ -101,7 +101,7 @@
   {
     "isLive": true,
     "name": "Charcoal Transpiler",
-    "url": "https://www.sway-playground.org/",
+    "url": "https://github.com/ourovoros-io/charcoal",
     "tags": ["Tooling"],
     "description": "Solidity to Sway transpiler",
     "github": "https://github.com/ourovoros-io",
