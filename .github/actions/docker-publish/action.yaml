@@ -1,12 +1,12 @@
-name: 'Build & Plush Docker'
+name: 'Build & Push Docker'
 
 inputs:
   compose-version:
-    description: 'Docker Dompose version'
-    default: 2.6.0
+    description: 'Docker Compose version'  # `Docker Dompose` yerine `Docker Compose` olarak düzeltildi.
+    default: '2.6.0'  # Varsayılan değeri tırnak içine alındı.
   registry:
     description: 'Docker registry service'
-    default: ghcr.io
+    default: 'ghcr.io'  # Varsayılan değeri tırnak içine alındı.
   username:
     description: 'Username for https://ghcr.io'
     required: true
@@ -14,14 +14,14 @@ inputs:
     description: 'Password for https://ghcr.io'
     required: true
   image:
-    description: 'Image name with provider url'
+    description: 'Image name with provider URL'  # `provider url` yerine `provider URL` olarak düzeltildi.
     required: true
   dockerfile:
     description: 'Path to the Dockerfile'
     required: true
   context:
-    description: 'Path to the Context'
-    default: .
+    description: 'Path to the build context'  # `Context` yerine `build context` olarak düzeltildi.
+    default: '.'  # Varsayılan değeri tırnak içine alındı.
     required: true
   build-args:
     description: 'List of build-time variables'
@@ -29,8 +29,8 @@ inputs:
 
 outputs:
   image:
-    description: 'Image url'
-    value: ${{ steps.imageOuput.outputs.imageUrl }}
+    description: 'Image URL'  # `Image url` yerine `Image URL` olarak düzeltildi.
+    value: ${{ steps.imageOutput.outputs.imageUrl }}  # `imageOuput` yerine `imageOutput` olarak düzeltildi.
   imageid:
     description: 'Image ID'
     value: ${{ steps.publish.outputs.imageId }}
@@ -77,7 +77,8 @@ runs:
         build-args: ${{ inputs.build-args }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - id: imageOuput
+
+    - id: imageOutput  # `imageOuput` yerine `imageOutput` olarak düzeltildi.
       shell: bash
       run: |
         echo "imageUrl=${{ fromJSON(steps.publish.outputs.metadata)['image.name'] }}" >> $GITHUB_OUTPUT
