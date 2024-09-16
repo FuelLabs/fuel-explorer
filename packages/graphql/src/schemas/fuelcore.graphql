@@ -785,6 +785,9 @@ type Query {
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
   transactionsFeeStatistics(timeFilter: String): TransactionFeeConnection!
   cumulativeTransactionsFeeStatistics(timeFilter: String): CumulativeTransactionFeeConnection!
+  accountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
+  newAccountStatistics(timeFilter: String): NewAccountStatisticsConnection!
+  cumulativeAccountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
 }
 
 type Receipt {
@@ -1052,4 +1055,22 @@ type BlockReward {
 type BlockRewardConnection {
   """A list of nodes."""
   nodes: [BlockReward!]
+}
+
+type CumulativeAccountCreationConnection {
+  nodes: [AccountCreationNode!]
+  accountOffset: Int!
+}
+
+type NewAccountStatisticsConnection {
+  nodes: [NewAccountNode!]
+  count: Int!
+}
+
+type AccountCreationNode {
+  timestamp: String!
+}
+
+type NewAccountNode {
+  timestamp: String!
 }

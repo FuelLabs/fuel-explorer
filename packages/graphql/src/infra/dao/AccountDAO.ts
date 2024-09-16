@@ -1,7 +1,8 @@
 import { AccountEntity } from '../../domain/Account/AccountEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
+import { getTimeInterval } from './utils';
 
-export class AccountDAO {
+export default class AccountDAO {
   private databaseConnection: DatabaseConnection;
 
   constructor() {
@@ -128,5 +129,84 @@ export class AccountDAO {
     );
 
     return result.length ? result[0].data : null;
+  }
+
+  async accountCreationStatistics(timeFilter: string) {
+    const _interval = getTimeInterval(timeFilter);
+
+    let query = `
+      SELECT 
+        first_transaction_timestamp AS timestamp
+      FROM indexer.accounts
+    `;
+
+    let intervalStartTimeDate = '';
+
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - _interval;
+      intervalStartTimeDate = new Date(
+        intervalStartTimeInMilliseconds,
+      ).toISOString();
+
+      // Add the WHERE clause, parameterizing the date value to ensure proper handling
+      query += 'WHERE first_transaction_timestamp >= $1';
+    }
+
+    query += ' ORDER BY timestamp ASC';
+
+    // Execute the main query with the interval start date as a parameter
+    const accountsData = await this.databaseConnection.query(query, [
+      intervalStartTimeDate,
+    ]);
+
+    // Calculate accountOffset: Accounts created before the first timestamp in the interval
+    const offsetQuery = `
+      SELECT COUNT(*) as "accountOffset"
+      FROM indexer.accounts
+      WHERE first_transaction_timestamp < $1
+    `;
+
+    const offsetResult = await this.databaseConnection.query(offsetQuery, [
+      intervalStartTimeDate,
+    ]);
+
+    return {
+      nodes: accountsData,
+      accountOffset: offsetResult[0].accountOffset || 0,
+    };
+  }
+
+  async newAccountStatistics(timeFilter: string) {
+    const _interval = getTimeInterval(timeFilter);
+
+    let query = `
+      SELECT 
+        first_transaction_timestamp AS timestamp
+      FROM indexer.accounts
+    `;
+    // Prepare interval start time as a valid ISO string
+    let intervalStartTimeDate = '';
+
+    if (_interval) {
+      const intervalStartTimeInMilliseconds = Date.now() - _interval;
+      intervalStartTimeDate = new Date(
+        intervalStartTimeInMilliseconds,
+      ).toISOString();
+
+      // Add the WHERE clause, parameterizing the date value to ensure proper handling
+      query += 'WHERE first_transaction_timestamp >= $1';
+    }
+
+    query += ' ORDER BY timestamp ASC';
+
+    // Execute the main query with the interval start date as a parameter
+    const accountsData = await this.databaseConnection.query(query, [
+      intervalStartTimeDate,
+    ]);
+
+    return {
+      nodes: accountsData,
+      count: accountsData.length,
+    };
   }
 }

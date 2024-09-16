@@ -13,7 +13,7 @@ import Block from '~/infra/dao/Block';
 import Transaction from '~/infra/dao/Transaction';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 import { AccountEntity } from '../../domain/Account/AccountEntity';
-import { AccountDAO } from '../../infra/dao/AccountDAO';
+import AccountDAO from '../../infra/dao/AccountDAO';
 
 export default class NewAddBlockRange {
   private accountDAO = new AccountDAO();
