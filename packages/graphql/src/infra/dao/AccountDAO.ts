@@ -1,5 +1,6 @@
 import { AccountEntity } from '../../domain/Account/AccountEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
+import PaginatedParams from '../paginator/PaginatedParams';
 import { getTimeInterval } from './utils';
 
 export default class AccountDAO {
@@ -206,6 +207,62 @@ export default class AccountDAO {
     return {
       nodes: accountsData,
       count: accountsData.length,
+    };
+  }
+
+  // Fetch paginated accounts with optional cursor for pagination, sortBy, sortOrder, and first as separate arguments
+  async getPaginatedAccounts(
+    paginatedParams: PaginatedParams,
+    sortBy = 'transaction_count', // Default to transaction_count
+    sortOrder: 'asc' | 'desc' = 'desc', // Default to descending
+    first = 10, // Default to 10 records
+  ) {
+    // If cursor is null, skip the cursor condition in the SQL query
+    const cursorCondition = paginatedParams.cursor
+      ? `_id ${
+          paginatedParams.direction === 'before' ? '<' : '>'
+        } CAST($1 AS INTEGER)`
+      : 'TRUE'; // Use TRUE to bypass the cursor condition if it's null
+
+    // Adjust query parameters depending on whether cursor is provided
+    const queryParams = paginatedParams.cursor
+      ? [paginatedParams.cursor, first]
+      : [first];
+
+    const accountsData = await this.databaseConnection.query(
+      `
+        SELECT *
+        FROM indexer.accounts
+        WHERE ${cursorCondition}
+        ORDER BY ${sortBy} ${sortOrder}
+        LIMIT $2
+      `,
+      queryParams,
+    );
+
+    const startCursor = accountsData[0]?._id;
+    const endCursor = accountsData[accountsData.length - 1]?._id;
+    const hasPreviousPage = (
+      await this.databaseConnection.query(
+        'SELECT EXISTS(SELECT 1 FROM indexer.accounts WHERE _id < $1)',
+        [endCursor],
+      )
+    )[0].exists;
+    const hasNextPage = (
+      await this.databaseConnection.query(
+        'SELECT EXISTS(SELECT 1 FROM indexer.accounts WHERE _id > $1)',
+        [startCursor],
+      )
+    )[0].exists;
+
+    return {
+      nodes: accountsData,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        endCursor,
+        startCursor,
+      },
     };
   }
 }

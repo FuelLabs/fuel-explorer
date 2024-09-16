@@ -2,6 +2,7 @@ import type {
   GQLQueryCumulativeAccountCreationStatisticsArgs,
   GQLQueryDailyActiveAccountsArgs,
   GQLQueryNewAccountStatisticsArgs,
+  GQLQueryPaginatedAccountsArgs,
 } from '../../graphql/generated/sdk-provider';
 import AccountDAO from '../../infra/dao/AccountDAO';
 import TransactionDAO from '../../infra/dao/TransactionDAO';
@@ -15,6 +16,7 @@ export class AccountResolver {
           resolvers.cumulativeAccountCreationStatistics,
         newAccountStatistics: resolvers.newAccountStatistics,
         dailyActiveAccounts: resolvers.dailyActiveAccounts,
+        paginatedAccounts: resolvers.paginatedAccounts,
       },
     };
   }
@@ -54,5 +56,28 @@ export class AccountResolver {
         count: day.count,
       })),
     };
+  }
+
+  async paginatedAccounts(_: any, params: GQLQueryPaginatedAccountsArgs) {
+    const accountDAO = new AccountDAO();
+    const paginatedParams = {
+      cursor: params.cursor || null,
+      direction: params.direction || 'after',
+    };
+
+    // Set the default sorting by transaction_count, change to balance if needed
+    const sortBy =
+      params.sortBy === 'balance' ? 'balance' : 'transaction_count';
+    const sortOrder = (params.sortOrder || 'desc') as 'desc' | 'asc';
+    const first = params.first || 10; // Limit to 10 by default
+
+    const accounts = await accountDAO.getPaginatedAccounts(
+      paginatedParams,
+      sortBy, // Sort by either transaction_count or balance
+      sortOrder, // Ascending or descending
+      first, // Limit to specified number of records
+    );
+
+    return accounts;
   }
 }

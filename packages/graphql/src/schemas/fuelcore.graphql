@@ -788,6 +788,7 @@ type Query {
   newAccountStatistics(timeFilter: String): NewAccountStatisticsConnection!
   cumulativeAccountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
   dailyActiveAccounts(timeFilter: String): DailyActiveAccountsConnection!
+  paginatedAccounts(cursor: String, direction: String, first: Int, sortBy: String, sortOrder: String): PaginatedAccountConnection!
 }
 
 type Receipt {
@@ -1082,4 +1083,16 @@ type DailyActiveAccountsConnection {
 type DailyActiveAccountsNode {
   timestamp: String!
   count: Int!
+}
+
+type PaginatedAccountConnection {
+  nodes: [AccountNode!]!
+  pageInfo: PageInfo!
+}
+
+type AccountNode {
+  id: ID!
+  account_id: String!
+  balance: String!
+  transaction_count: Int!
 }
