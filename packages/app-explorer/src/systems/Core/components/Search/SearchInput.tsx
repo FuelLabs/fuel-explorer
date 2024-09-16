@@ -299,12 +299,16 @@ export function SearchInput({
     setHasSubmitted(true);
   }
 
+  function close() {
+    setOpenDropdown(false);
+    setHasSubmitted(false);
+    setIsExpanded(false);
+  }
+
   function handleClear() {
     setValue('');
-    setHasSubmitted(false);
-    if (isExpanded) {
-      setIsExpanded(false);
-    } else {
+    close();
+    if (!isExpanded) {
       inputRef.current?.focus();
     }
   }
@@ -335,6 +339,7 @@ export function SearchInput({
               radius="large"
               size="3"
               data-opened={openDropdown}
+              onBlur={close}
               className={cx(className, classes.inputWrapper())}
               onFocus={expandOnFocusHandler}
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
@@ -395,9 +400,10 @@ export function SearchInput({
           }}
           onOpenChange={() => {
             if (openDropdown) {
-              setHasSubmitted(false);
+              close();
+              return;
             }
-            setOpenDropdown(!openDropdown);
+            setOpenDropdown(true);
           }}
         />
       </VStack>
