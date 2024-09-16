@@ -7,7 +7,7 @@ export const styles = tv({
       '[&[data-expanded=true]]:absolute [&[data-expanded=true]]:top-0 [&[data-expanded=true]]:left-0 [&[data-expanded=true]]:right-0',
       '[&[data-expanded=true]]:bg-gray-1 [&[data-expanded=true]]:z-50',
     ],
-    dropdownItem: 'hover:bg-border focus:bg-border',
+    dropdownItem: 'hover:bg-border focus:bg-border cursor-pointer',
     inputWrapper: [
       'bg-white dark:bg-[var(--color-surface)] h-[40px]',
       '[&_.rt-TextFieldChrome]:bg-gray-1 [&_.rt-TextFieldChrome]:outline-none',

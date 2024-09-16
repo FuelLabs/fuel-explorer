@@ -1,5 +1,4 @@
 'use client';
-
 import type { GQLSearchResult, Maybe } from '@fuel-explorer/graphql';
 import type { BaseProps, InputProps } from '@fuels/ui';
 import {
@@ -25,6 +24,7 @@ import { Routes } from '~/routes';
 
 import { cx } from '../../utils/cx';
 
+import { useRouter } from 'next/navigation';
 import { SearchContext } from './SearchWidget';
 import { styles } from './styles';
 
@@ -51,6 +51,14 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
     },
     ref,
   ) => {
+    const router = useRouter();
+
+    function onClick(href: string | undefined) {
+      onSelectItem?.();
+      if (href) {
+        router.push(href);
+      }
+    }
     const classes = styles();
     const { isMobile } = useBreakpoints();
     const trimL = isMobile ? 15 : 20;
@@ -92,7 +100,15 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               {searchResult?.account && (
                 <>
                   <Dropdown.Label>Account</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
+                  <Dropdown.Item
+                    className={classes.dropdownItem()}
+                    onClick={() =>
+                      searchResult.account?.address &&
+                      onClick(
+                        Routes.accountAssets(searchResult.account.address!),
+                      )
+                    }
+                  >
                     <Link
                       as={NextLink}
                       href={Routes.accountAssets(searchResult.account.address!)}
@@ -112,6 +128,10 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       <Dropdown.Item
                         key={transaction?.id}
                         className={classes.dropdownItem()}
+                        onClick={() =>
+                          transaction?.id &&
+                          onClick(Routes.txSimple(transaction?.id))
+                        }
                       >
                         <Link
                           as={NextLink}
@@ -130,7 +150,13 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   {searchResult.block.id === searchValue && (
                     <>
                       <Dropdown.Label>Block Hash</Dropdown.Label>
-                      <Dropdown.Item className={classes.dropdownItem()}>
+                      <Dropdown.Item
+                        className={classes.dropdownItem()}
+                        onClick={() =>
+                          searchResult.block?.id &&
+                          onClick(`/block/${searchResult.block.id}/simple`)
+                        }
+                      >
                         <Link
                           as={NextLink}
                           href={`/block/${searchResult.block.id}/simple`}
@@ -148,7 +174,13 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                   {searchResult.block.height === searchValue && (
                     <>
                       <Dropdown.Label>Block Height</Dropdown.Label>
-                      <Dropdown.Item className={classes.dropdownItem()}>
+                      <Dropdown.Item
+                        className={classes.dropdownItem()}
+                        onClick={() =>
+                          searchResult.block?.height &&
+                          onClick(`/block/${searchResult.block?.height}/simple`)
+                        }
+                      >
                         <Link
                           as={NextLink}
                           href={`/block/${searchResult.block.height}/simple`}
@@ -164,7 +196,13 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               {searchResult?.contract && (
                 <>
                   <Dropdown.Label>Contract</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
+                  <Dropdown.Item
+                    className={classes.dropdownItem()}
+                    onClick={() =>
+                      searchResult.contract?.id &&
+                      onClick(Routes.contractAssets(searchResult.contract.id))
+                    }
+                  >
                     <Link
                       as={NextLink}
                       href={Routes.contractAssets(searchResult.contract.id!)}
@@ -182,7 +220,13 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               {searchResult?.transaction && (
                 <>
                   <Dropdown.Label>Transaction</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
+                  <Dropdown.Item
+                    className={classes.dropdownItem()}
+                    onClick={() =>
+                      searchResult.transaction?.id &&
+                      onClick(Routes.txSimple(searchResult.transaction?.id))
+                    }
+                  >
                     <Link
                       as={NextLink}
                       href={Routes.txSimple(searchResult.transaction.id!)}
