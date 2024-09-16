@@ -1,6 +1,5 @@
 import { AccountEntity } from '../../domain/Account/AccountEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
-import PaginatedParams from '../paginator/PaginatedParams';
 import { getTimeInterval } from './utils';
 
 export default class AccountDAO {
@@ -212,36 +211,24 @@ export default class AccountDAO {
 
   // Fetch paginated accounts with optional cursor for pagination, sortBy, sortOrder, and first as separate arguments
   async getPaginatedAccounts(
-    paginatedParams: PaginatedParams,
     sortBy = 'transaction_count', // Default to transaction_count
     sortOrder: 'asc' | 'desc' = 'desc', // Default to descending
     first = 10, // Default to 10 records
   ) {
-    // If cursor is null, skip the cursor condition in the SQL query
-    const cursorCondition = paginatedParams.cursor
-      ? `_id ${
-          paginatedParams.direction === 'before' ? '<' : '>'
-        } CAST($1 AS INTEGER)`
-      : 'TRUE'; // Use TRUE to bypass the cursor condition if it's null
-
-    // Adjust query parameters depending on whether cursor is provided
-    const queryParams = paginatedParams.cursor
-      ? [paginatedParams.cursor, first]
-      : [first];
-
+    // Use LIMIT and OFFSET for pagination
     const accountsData = await this.databaseConnection.query(
       `
-        SELECT *
+        SELECT _id as id, account_id, balance, transaction_count, data, first_transaction_timestamp, recent_transaction_timestamp
         FROM indexer.accounts
-        WHERE ${cursorCondition}
         ORDER BY ${sortBy} ${sortOrder}
-        LIMIT $2
+        LIMIT $1
       `,
-      queryParams,
+      [first], // Pass the limit as a parameter
     );
 
-    const startCursor = accountsData[0]?._id;
-    const endCursor = accountsData[accountsData.length - 1]?._id;
+    const startCursor = accountsData[0]?.id; // Use 'id' instead of '_id'
+    const endCursor = accountsData[accountsData.length - 1]?.id;
+
     const hasPreviousPage = (
       await this.databaseConnection.query(
         'SELECT EXISTS(SELECT 1 FROM indexer.accounts WHERE _id < $1)',
@@ -256,7 +243,10 @@ export default class AccountDAO {
     )[0].exists;
 
     return {
-      nodes: accountsData,
+      nodes: accountsData.map((account) => ({
+        ...account,
+        id: account.id || null, // Ensure 'id' is either present or set to null
+      })),
       pageInfo: {
         hasNextPage,
         hasPreviousPage,
