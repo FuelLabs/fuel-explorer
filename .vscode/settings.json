@@ -2,24 +2,24 @@
   "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit"
+    "quickfix.biome": "explicit"  // Ensure explicit fixes from Biome formatter on save
   },
   "editor.quickSuggestions": {
-    "strings": "on"
+    "strings": "on"  // Enable quick suggestions in strings
   },
   "tailwindCSS.experimental.classRegex": [
     ["tv\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
   "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome"  // Use Biome as default formatter for JSON files
   },
   "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome"  // Use Biome as default formatter for TypeScript files
   },
   "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome"  // Use Biome as default formatter for JavaScript files
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome"  // Use Biome as default formatter for TypeScript React files
   }
 }
