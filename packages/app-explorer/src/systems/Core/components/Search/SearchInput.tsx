@@ -314,7 +314,6 @@ export function SearchInput({
       setIsExpanded(true);
     }
   }
-  console.log('fsk width', inputRef.current?.offsetWidth);
 
   return (
     <div className="relative">
