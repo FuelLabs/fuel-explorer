@@ -2,319 +2,19 @@
 
 import type { GQLSearchResult, Maybe } from '@fuel-explorer/graphql';
 import type { BaseProps, InputProps } from '@fuels/ui';
-import {
-  Box,
-  Dropdown,
-  Focus,
-  Icon,
-  IconButton,
-  Input,
-  Link,
-  Portal,
-  Text,
-  Tooltip,
-  VStack,
-  shortAddress,
-  useBreakpoints,
-} from '@fuels/ui';
+import { Focus, Icon, IconButton, Input, Tooltip, VStack } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
-import NextLink from 'next/link';
-import type { KeyboardEvent, RefObject } from 'react';
-import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
+import type { KeyboardEvent } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Routes } from '~/routes';
 
-import { cx } from '../../utils/cx';
+import { cx } from '../../../utils/cx';
 
-import { useRouter } from 'next/navigation';
-import { SearchContext } from './SearchWidget';
+import { SearchResultDropdown } from '../SearchResultDropdown';
+import { SearchContext } from '../SearchWidget';
+import { usePropagateInputMouseClick } from '../hooks/usePropagateInputMouseClick';
+import { DEFAULT_SEARCH_INPUT_WIDTH } from './constants';
 import { styles } from './styles';
-
-const DEFAULT_WIDTH = 400;
-
-type SearchDropdownProps = {
-  searchResult?: Maybe<GQLSearchResult>;
-  openDropdown: boolean;
-  isFocused: boolean;
-  onOpenChange: (open: boolean) => void;
-  searchValue: string;
-  width: number;
-  onSelectItem: () => void;
-};
-
-// Radix's Dropdown component uses a Portal to render the dropdown content,
-// That causes Input to not capture click events, forcing the user to double click the input when the dropdown is open.
-// To fix that we need to render a separate Portal to render the overlay and capture the click to make it work.
-function InputDropdownOverlay({
-  containerRef,
-  inputRef,
-}: {
-  containerRef: RefObject<HTMLDivElement>;
-  inputRef: RefObject<HTMLInputElement>;
-}) {
-  const boundingData = containerRef.current?.getBoundingClientRect();
-
-  useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      if (boundingData) {
-        const { clientX, clientY } = e;
-        if (
-          clientX >= boundingData.x &&
-          clientX <= boundingData.x + boundingData.width &&
-          clientY >= boundingData.y &&
-          clientY <= boundingData.y + boundingData.height
-        ) {
-          inputRef.current?.focus();
-        }
-      }
-    };
-    document.addEventListener('click', onClick);
-
-    return () => {
-      setTimeout(() => {
-        document.removeEventListener('click', onClick);
-      }, 500);
-    };
-  }, []);
-
-  if (!boundingData) {
-    return null;
-  }
-  const { x, y, width, height } = boundingData;
-
-  return (
-    <Portal>
-      <div
-        style={{
-          top: y,
-          left: x,
-          width: width,
-          height: height,
-        }}
-        aria-hidden
-        className="fixed cursor-text"
-      />
-    </Portal>
-  );
-}
-
-const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
-  (
-    {
-      searchResult,
-      searchValue,
-      openDropdown,
-      onOpenChange,
-      width,
-      onSelectItem,
-      isFocused,
-    },
-    ref,
-  ) => {
-    const router = useRouter();
-
-    function onClick(href: string | undefined) {
-      onSelectItem?.();
-      if (href) {
-        router.push(href);
-      }
-    }
-    const classes = styles();
-    const { isMobile } = useBreakpoints();
-    const trimL = isMobile ? 15 : 20;
-    const trimR = isMobile ? 13 : 18;
-
-    const hasResult =
-      searchResult?.account ||
-      searchResult?.block ||
-      searchResult?.contract ||
-      searchResult?.transaction;
-
-    return (
-      <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
-        <Dropdown.Trigger>
-          <Box className="w-full" />
-        </Dropdown.Trigger>
-        <Dropdown.Content
-          ref={ref}
-          style={{ width }}
-          data-active={isFocused || openDropdown}
-          className={cx(
-            classes.dropdownContent(openDropdown),
-            classes.searchSize(),
-          )}
-        >
-          {!searchResult && (
-            <>
-              <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-                {`"${shortAddress(
-                  searchValue,
-                  trimL,
-                  trimR,
-                )}" is not a valid address.`}
-              </Dropdown.Item>
-            </>
-          )}
-          {hasResult ? (
-            <>
-              {searchResult?.account && (
-                <>
-                  <Dropdown.Label>Account</Dropdown.Label>
-                  <Dropdown.Item
-                    className={classes.dropdownItem()}
-                    onClick={() =>
-                      searchResult.account?.address &&
-                      onClick(
-                        Routes.accountAssets(searchResult.account.address!),
-                      )
-                    }
-                  >
-                    <Link
-                      as={NextLink}
-                      href={Routes.accountAssets(searchResult.account.address!)}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(
-                        searchResult.account.address || '',
-                        trimL,
-                        trimR,
-                      )}
-                    </Link>
-                  </Dropdown.Item>
-                  <Dropdown.Separator />
-                  <Dropdown.Label>Recent Transactions</Dropdown.Label>
-                  {searchResult.account.transactions?.map((transaction) => {
-                    return (
-                      <Dropdown.Item
-                        key={transaction?.id}
-                        className={classes.dropdownItem()}
-                        onClick={() =>
-                          transaction?.id &&
-                          onClick(Routes.txSimple(transaction?.id))
-                        }
-                      >
-                        <Link
-                          as={NextLink}
-                          href={Routes.txSimple(transaction?.id!)}
-                          onClick={onSelectItem}
-                        >
-                          {shortAddress(transaction?.id || '', trimL, trimR)}
-                        </Link>
-                      </Dropdown.Item>
-                    );
-                  })}
-                </>
-              )}
-              {searchResult?.block && (
-                <>
-                  {searchResult.block.id === searchValue && (
-                    <>
-                      <Dropdown.Label>Block Hash</Dropdown.Label>
-                      <Dropdown.Item
-                        className={classes.dropdownItem()}
-                        onClick={() =>
-                          searchResult.block?.id &&
-                          onClick(`/block/${searchResult.block.id}/simple`)
-                        }
-                      >
-                        <Link
-                          as={NextLink}
-                          href={`/block/${searchResult.block.id}/simple`}
-                          onClick={onSelectItem}
-                        >
-                          {shortAddress(
-                            searchResult.block.id || '',
-                            trimL,
-                            trimR,
-                          )}
-                        </Link>
-                      </Dropdown.Item>
-                    </>
-                  )}
-                  {searchResult.block.height === searchValue && (
-                    <>
-                      <Dropdown.Label>Block Height</Dropdown.Label>
-                      <Dropdown.Item
-                        className={classes.dropdownItem()}
-                        onClick={() =>
-                          searchResult.block?.height &&
-                          onClick(`/block/${searchResult.block?.height}/simple`)
-                        }
-                      >
-                        <Link
-                          as={NextLink}
-                          href={`/block/${searchResult.block.height}/simple`}
-                          onClick={onSelectItem}
-                        >
-                          {searchResult.block.height}
-                        </Link>
-                      </Dropdown.Item>
-                    </>
-                  )}
-                </>
-              )}
-              {searchResult?.contract && (
-                <>
-                  <Dropdown.Label>Contract</Dropdown.Label>
-                  <Dropdown.Item
-                    className={classes.dropdownItem()}
-                    onClick={() =>
-                      searchResult.contract?.id &&
-                      onClick(Routes.contractAssets(searchResult.contract.id))
-                    }
-                  >
-                    <Link
-                      as={NextLink}
-                      href={Routes.contractAssets(searchResult.contract.id!)}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(
-                        searchResult.contract.id || '',
-                        trimL,
-                        trimR,
-                      )}
-                    </Link>
-                  </Dropdown.Item>
-                </>
-              )}
-              {searchResult?.transaction && (
-                <>
-                  <Dropdown.Label>Transaction</Dropdown.Label>
-                  <Dropdown.Item
-                    className={classes.dropdownItem()}
-                    onClick={() =>
-                      searchResult.transaction?.id &&
-                      onClick(Routes.txSimple(searchResult.transaction?.id))
-                    }
-                  >
-                    <Link
-                      as={NextLink}
-                      href={Routes.txSimple(searchResult.transaction.id!)}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(
-                        searchResult.transaction.id || '',
-                        trimL,
-                        trimR,
-                      )}
-                    </Link>
-                  </Dropdown.Item>
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              <Dropdown.Label>No instances found for:</Dropdown.Label>
-              <Text className="px-3 text-sm pb-1">
-                &quot;{shortAddress(searchValue, trimL, trimR)}&quot;
-              </Text>
-            </>
-          )}
-        </Dropdown.Content>
-      </Dropdown>
-    );
-  },
-);
 
 type SearchInputProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
@@ -342,6 +42,12 @@ export function SearchInput({
   const openDropdown = hasSubmitted
     ? !pending
     : isOpen && !pending && !!searchResult;
+
+  usePropagateInputMouseClick({
+    containerRef,
+    inputRef,
+    enabled: openDropdown,
+  });
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
@@ -406,12 +112,6 @@ export function SearchInput({
               onBlur={handleBlur}
               onKeyDown={onKeyDown}
             >
-              {openDropdown && (
-                <InputDropdownOverlay
-                  containerRef={containerRef}
-                  inputRef={inputRef}
-                />
-              )}
               <div
                 data-show={isFocused}
                 className={classes.inputActionsContainer()}
@@ -452,7 +152,9 @@ export function SearchInput({
         </Focus.ArrowNavigator>
         <SearchResultDropdown
           ref={dropdownRef}
-          width={containerRef.current?.offsetWidth || DEFAULT_WIDTH}
+          width={
+            containerRef.current?.offsetWidth || DEFAULT_SEARCH_INPUT_WIDTH
+          }
           searchResult={searchResult}
           searchValue={value}
           openDropdown={openDropdown}
