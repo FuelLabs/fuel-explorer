@@ -83,3 +83,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+app:
+  serviceMonitor:
+    enabled: true
+    prometheusRelease: kube-prometheus
