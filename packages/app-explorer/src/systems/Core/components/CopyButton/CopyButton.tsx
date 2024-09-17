@@ -7,16 +7,29 @@ type CopyButtonProps = ButtonProps & {
   text?: string;
 };
 
-const COPY_ICON_SIZES = {
+const COPY_ICON_SIZES: Record<string, number> = {
   '1': 15,
   '2': 19,
   '3': 24,
   '4': 29,
 };
 
-const CopyButton = ({ value, text = 'Copy', ...props }: CopyButtonProps) => {
-  const size = props.size || '1';
-  const variant = props.variant || 'soft';
+const CopyButton = ({
+  value,
+  text = 'Copy',
+  size = '1',
+  variant = 'soft',
+  ...props
+}: CopyButtonProps) => {
+  const iconSize = COPY_ICON_SIZES[size];
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
 
   return (
     <Button
@@ -25,12 +38,10 @@ const CopyButton = ({ value, text = 'Copy', ...props }: CopyButtonProps) => {
       variant={variant}
       size={size}
       color="gray"
-      iconSize={COPY_ICON_SIZES[size as string]}
       rightIcon={IconCopy}
+      iconSize={iconSize}
       iconColor="text-muted"
-      onClick={async () => {
-        await navigator.clipboard.writeText(value);
-      }}
+      onClick={handleCopy}
     >
       {text}
     </Button>
