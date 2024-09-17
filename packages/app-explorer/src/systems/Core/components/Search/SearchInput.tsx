@@ -1,4 +1,5 @@
 'use client';
+
 import type { GQLSearchResult, Maybe } from '@fuel-explorer/graphql';
 import type { BaseProps, InputProps } from '@fuels/ui';
 import {
@@ -18,7 +19,7 @@ import {
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import type { KeyboardEvent } from 'react';
-import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
+import { forwardRef, useContext, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Routes } from '~/routes';
 
@@ -33,11 +34,11 @@ const DEFAULT_WIDTH = 400;
 type SearchDropdownProps = {
   searchResult?: Maybe<GQLSearchResult>;
   openDropdown: boolean;
-  onOpenChange: () => void;
+  isFocused: boolean;
+  onOpenChange: (open: boolean) => void;
   searchValue: string;
   width: number;
   onSelectItem: () => void;
-  isExpanded?: boolean;
 };
 
 const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
@@ -49,7 +50,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
       onOpenChange,
       width,
       onSelectItem,
-      isExpanded,
+      isFocused,
     },
     ref,
   ) => {
@@ -80,9 +81,9 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         <Dropdown.Content
           ref={ref}
           style={{ width }}
-          data-expanded={isExpanded}
+          data-active={isFocused || openDropdown}
           className={cx(
-            classes.dropdownContent(isExpanded),
+            classes.dropdownContent(openDropdown),
             classes.searchSize(),
           )}
         >
@@ -262,7 +263,6 @@ type SearchInputProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
-  expandOnFocus?: boolean;
 };
 
 export function SearchInput({
@@ -271,52 +271,41 @@ export function SearchInput({
   autoFocus,
   placeholder = 'Search here...',
   searchResult,
-  expandOnFocus,
   ...props
 }: SearchInputProps) {
   const classes = styles();
   const [value, setValue] = useState<string>(initialValue as string);
-  const [openDropdown, setOpenDropdown] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { pending } = useFormStatus();
   const { dropdownRef } = useContext(SearchContext);
-
-  useEffect(() => {
-    if (!pending && hasSubmitted) {
-      setOpenDropdown(true);
-      setHasSubmitted(false);
-    }
-  }, [pending]);
+  const openDropdown = isOpen && !pending && !!searchResult;
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
   }
 
   function handleSubmit() {
-    setHasSubmitted(true);
+    setIsOpen(true);
   }
 
   function close() {
-    setOpenDropdown(false);
-    setHasSubmitted(false);
-    setIsExpanded(false);
+    setIsOpen(false);
   }
 
   function handleClear() {
     setValue('');
     close();
-    if (!isExpanded) {
-      inputRef.current?.focus();
-    }
   }
 
-  function expandOnFocusHandler() {
-    if (expandOnFocus) {
-      setIsExpanded(true);
-    }
+  function handleFocus() {
+    setIsFocused(true);
+  }
+
+  function handleBlur() {
+    setIsFocused(false);
   }
 
   return (
@@ -324,7 +313,7 @@ export function SearchInput({
       <VStack
         gap="0"
         className={classes.searchBox()}
-        data-expanded={isExpanded}
+        data-active={isFocused || openDropdown}
       >
         <Focus.ArrowNavigator autoFocus={autoFocus}>
           <div ref={containerRef} className="w-full">
@@ -338,9 +327,11 @@ export function SearchInput({
               variant="surface"
               radius="large"
               size="3"
-              data-opened={openDropdown}
+              data-active={isFocused || openDropdown}
               className={cx(className, classes.inputWrapper())}
-              onFocus={expandOnFocusHandler}
+              type="search"
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
@@ -351,9 +342,9 @@ export function SearchInput({
                 }
               }}
             >
-              {isExpanded || value?.length ? (
+              {isFocused && value?.length ? (
                 <>
-                  <Input.Slot className="" side="right">
+                  <Input.Slot side="right">
                     {!!value?.length && (
                       <Tooltip content="Submit">
                         <IconButton
@@ -392,17 +383,15 @@ export function SearchInput({
           searchResult={searchResult}
           searchValue={value}
           openDropdown={openDropdown}
-          isExpanded={isExpanded}
+          isFocused={isFocused}
           onSelectItem={() => {
-            setOpenDropdown(false);
             handleClear();
           }}
-          onOpenChange={() => {
-            if (openDropdown) {
+          onOpenChange={(open) => {
+            setIsOpen(open);
+            if (!open) {
               close();
-              return;
             }
-            setOpenDropdown(true);
           }}
         />
       </VStack>

@@ -15,7 +15,7 @@ export function TopNav() {
   // nav elements are in the DOM and respond to click events.
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const { isMobile, isLaptop } = useBreakpoints();
+  const { isLaptop } = useBreakpoints();
   const pathname = usePathname();
   const isBridge = isRoute(pathname, [
     PortalRoutes.bridge,
@@ -91,7 +91,7 @@ export function TopNav() {
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
-          {!isHomePage && <SearchWidget expandOnFocus={isMobile || isLaptop} />}
+          {!isHomePage && <SearchWidget />}
           {themeToggle}
         </Nav.MobileContent>
         <Nav.Menu>
