@@ -27,6 +27,7 @@ export const styles = tv({
     inputActionsContainer:
       '[&[data-show=false]]:hidden absolute flex items-center h-full right-0 top-0 transform',
     dropdownContent: [
+      'ml-[-10px] tablet:ml-0',
       'mt-[-10px] rounded-t-none shadow-none border border-t-0 border-border',
       '[&[data-active=true]]:border-t-0',
     ],
