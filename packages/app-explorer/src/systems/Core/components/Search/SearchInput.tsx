@@ -342,23 +342,21 @@ export function SearchInput({
                 }
               }}
             >
-              {isFocused && value?.length ? (
+              {(isFocused || !openDropdown) && !!value?.length ? (
                 <>
                   <Input.Slot side="right">
-                    {!!value?.length && (
-                      <Tooltip content="Submit">
-                        <IconButton
-                          type="submit"
-                          aria-label="Submit"
-                          icon={IconCheck}
-                          iconColor="text-brand"
-                          variant="link"
-                          className="!ml-0 tablet:ml-2"
-                          isLoading={pending}
-                          onClick={handleSubmit}
-                        />
-                      </Tooltip>
-                    )}
+                    <Tooltip content="Submit">
+                      <IconButton
+                        type="submit"
+                        aria-label="Submit"
+                        icon={IconCheck}
+                        iconColor="text-brand"
+                        variant="link"
+                        className="!ml-0 tablet:ml-2"
+                        isLoading={pending}
+                        onClick={handleSubmit}
+                      />
+                    </Tooltip>
                     <IconButton
                       aria-label="Clear"
                       icon={IconX}
