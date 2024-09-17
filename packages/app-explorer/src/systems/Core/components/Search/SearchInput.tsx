@@ -277,11 +277,14 @@ export function SearchInput({
   const [value, setValue] = useState<string>(initialValue as string);
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { pending } = useFormStatus();
   const { dropdownRef } = useContext(SearchContext);
-  const openDropdown = isOpen && !pending && !!searchResult;
+  const openDropdown = hasSubmitted
+    ? !pending
+    : isOpen && !pending && !!searchResult;
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
@@ -289,10 +292,12 @@ export function SearchInput({
 
   function handleSubmit() {
     setIsOpen(true);
+    setHasSubmitted(true);
   }
 
   function close() {
     setIsOpen(false);
+    setHasSubmitted(false);
   }
 
   function handleClear() {
@@ -308,6 +313,16 @@ export function SearchInput({
     setIsFocused(false);
   }
 
+  function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      (e.target as HTMLFormElement).form?.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true }),
+      );
+      handleSubmit();
+    }
+  }
+
   return (
     <div className="relative">
       <VStack
@@ -316,7 +331,7 @@ export function SearchInput({
         data-active={isFocused || openDropdown}
       >
         <Focus.ArrowNavigator autoFocus={autoFocus}>
-          <div ref={containerRef} className="w-full">
+          <div ref={containerRef} className={classes.inputContainer()}>
             <Input
               {...props}
               ref={inputRef}
@@ -332,46 +347,43 @@ export function SearchInput({
               type="search"
               onFocus={handleFocus}
               onBlur={handleBlur}
-              onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  (e.target as HTMLFormElement).form?.dispatchEvent(
-                    new Event('submit', { cancelable: true, bubbles: true }),
-                  );
-                  handleSubmit();
-                }
-              }}
+              onKeyDown={onKeyDown}
             >
-              {(isFocused || !openDropdown) && !!value?.length ? (
-                <>
-                  <Input.Slot side="right">
-                    <Tooltip content="Submit">
-                      <IconButton
-                        type="submit"
-                        aria-label="Submit"
-                        icon={IconCheck}
-                        iconColor="text-brand"
-                        variant="link"
-                        className="!ml-0 tablet:ml-2"
-                        isLoading={pending}
-                        onClick={handleSubmit}
-                      />
-                    </Tooltip>
-                    <IconButton
-                      aria-label="Clear"
-                      icon={IconX}
-                      iconColor="text-gray-11"
-                      variant="link"
-                      className="m-0"
-                      onClick={handleClear}
-                    />
-                  </Input.Slot>
-                </>
-              ) : (
+              <div
+                data-show={isFocused}
+                className={classes.inputActionsContainer()}
+              >
                 <Input.Slot side="right">
-                  <Icon icon={IconSearch} size={16} />
+                  <Tooltip content="Submit">
+                    <IconButton
+                      type="submit"
+                      aria-label="Submit"
+                      icon={IconCheck}
+                      iconColor="text-brand"
+                      variant="link"
+                      className="!ml-0 tablet:ml-2"
+                      isLoading={pending}
+                      onClick={handleSubmit}
+                    />
+                  </Tooltip>
+                  <IconButton
+                    aria-label="Clear"
+                    icon={IconX}
+                    iconColor="text-gray-11"
+                    variant="link"
+                    className="m-0"
+                    onClick={handleClear}
+                  />
                 </Input.Slot>
-              )}
+              </div>
+
+              <Input.Slot
+                data-show={!isFocused}
+                side="right"
+                className="[&[data-show=false]]:hidden"
+              >
+                <Icon icon={IconSearch} size={16} />
+              </Input.Slot>
             </Input>
           </div>
         </Focus.ArrowNavigator>

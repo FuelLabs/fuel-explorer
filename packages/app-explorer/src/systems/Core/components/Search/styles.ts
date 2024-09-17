@@ -12,6 +12,7 @@ export const styles = tv({
       '[&[data-active=true]]:z-50',
     ],
     dropdownItem: 'hover:bg-border focus:bg-border cursor-pointer',
+    inputContainer: 'w-full',
     inputWrapper: [
       'outline-none h-[40px] group-[&[data-active=true]]:h-[60px] tablet:group-[&[data-active=true]]:h-[40px]',
       'group-[&[data-active=true]]:rounded-none tablet:group-[&[data-active=true]]:rounded-[var(--text-field-border-radius)] ',
@@ -23,6 +24,8 @@ export const styles = tv({
       'group-[&[data-active=true]]:[&_.rt-TextFieldChrome]:shadow-none',
     ],
     searchSize: 'w-full sm:w-[400px] group-[&[data-active=true]]:w-full',
+    inputActionsContainer:
+      '[&[data-show=false]]:hidden absolute flex items-center h-full right-0 top-0 transform',
     dropdownContent: [
       'mt-[-10px] rounded-t-none shadow-none border border-t-0 border-border',
       '[&[data-active=true]]:border-t-0',
