@@ -10,6 +10,7 @@ import {
   IconButton,
   Input,
   Link,
+  Portal,
   Text,
   Tooltip,
   VStack,
@@ -18,8 +19,8 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
-import type { KeyboardEvent } from 'react';
-import { forwardRef, useContext, useRef, useState } from 'react';
+import type { KeyboardEvent, RefObject } from 'react';
+import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Routes } from '~/routes';
 
@@ -40,6 +41,62 @@ type SearchDropdownProps = {
   width: number;
   onSelectItem: () => void;
 };
+
+// Radix's Dropdown component uses a Portal to render the dropdown content,
+// That causes Input to not capture click events, forcing the user to double click the input when the dropdown is open.
+// To fix that we need to render a separate Portal to render the overlay and capture the click to make it work.
+function InputDropdownOverlay({
+  containerRef,
+  inputRef,
+}: {
+  containerRef: RefObject<HTMLDivElement>;
+  inputRef: RefObject<HTMLInputElement>;
+}) {
+  const boundingData = containerRef.current?.getBoundingClientRect();
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (boundingData) {
+        const { clientX, clientY } = e;
+        if (
+          clientX >= boundingData.x &&
+          clientX <= boundingData.x + boundingData.width &&
+          clientY >= boundingData.y &&
+          clientY <= boundingData.y + boundingData.height
+        ) {
+          inputRef.current?.focus();
+        }
+      }
+    };
+    document.addEventListener('click', onClick);
+
+    return () => {
+      setTimeout(() => {
+        document.removeEventListener('click', onClick);
+      }, 500);
+    };
+  }, []);
+
+  if (!boundingData) {
+    return null;
+  }
+  const { x, y, width, height } = boundingData;
+
+  return (
+    <Portal>
+      <div
+        style={{
+          top: y,
+          left: x,
+          width: width,
+          height: height,
+        }}
+        aria-hidden
+        className="fixed cursor-text"
+      />
+    </Portal>
+  );
+}
 
 const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
   (
@@ -349,6 +406,12 @@ export function SearchInput({
               onBlur={handleBlur}
               onKeyDown={onKeyDown}
             >
+              {openDropdown && (
+                <InputDropdownOverlay
+                  containerRef={containerRef}
+                  inputRef={inputRef}
+                />
+              )}
               <div
                 data-show={isFocused}
                 className={classes.inputActionsContainer()}
