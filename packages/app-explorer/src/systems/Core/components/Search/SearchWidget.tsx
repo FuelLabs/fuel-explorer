@@ -12,24 +12,16 @@ export const SearchContext = createContext<{
 
 type SearchWidgetProps = {
   autoFocus?: boolean;
-  expandOnFocus?: boolean;
 };
 
-export const SearchWidget = ({
-  autoFocus,
-  expandOnFocus,
-}: SearchWidgetProps) => {
+export const SearchWidget = ({ autoFocus }: SearchWidgetProps) => {
   const classes = styles();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   return (
     <SearchContext.Provider value={{ dropdownRef }}>
       <Flex className="items-center gap-0 laptop:gap-4 justify-center flex-1 self-start">
-        <SearchForm
-          className={classes.searchSize()}
-          autoFocus={autoFocus}
-          expandOnFocus={expandOnFocus}
-        />
+        <SearchForm className={classes.searchSize()} autoFocus={autoFocus} />
       </Flex>
     </SearchContext.Provider>
   );
