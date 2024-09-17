@@ -65,12 +65,14 @@ export class AccountResolver {
     const sortBy =
       params.sortBy === 'balance' ? 'balance' : 'transaction_count';
     const sortOrder = (params.sortOrder || 'desc') as 'desc' | 'asc';
-    const first = params.first || 10; // Limit to 10 by default
+    const first = params.first;
+    const cursor = params.cursor || undefined;
 
     const accounts = await accountDAO.getPaginatedAccounts(
-      sortBy, // Sort by either transaction_count or balance
-      sortOrder, // Ascending or descending
-      first, // Limit to specified number of records
+      sortBy,
+      sortOrder,
+      first,
+      cursor,
     );
 
     return accounts;

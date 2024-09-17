@@ -209,38 +209,80 @@ export default class AccountDAO {
     };
   }
 
-  // Fetch paginated accounts with optional cursor for pagination, sortBy, sortOrder, and first as separate arguments
   async getPaginatedAccounts(
-    sortBy = 'transaction_count', // Default to transaction_count
-    sortOrder: 'asc' | 'desc' = 'desc', // Default to descending
-    first = 10, // Default to 10 records
+    sortBy = 'transaction_count',
+    sortOrder: 'asc' | 'desc' = 'desc',
+    first?: number | null,
+    cursor?: string,
   ) {
-    // Use LIMIT and OFFSET for pagination
+    let cursorCondition = '';
+    const queryParams: (number | string)[] = [];
+
+    if (cursor !== undefined && cursor !== null) {
+      cursorCondition = `AND row_num ${sortOrder === 'asc' ? '<' : '>'} $${
+        queryParams.length + 1
+      }`;
+      queryParams.push(cursor);
+    }
+
+    console.log(first);
+    const limitClause =
+      first !== undefined && first !== null
+        ? `LIMIT $${queryParams.length + 1}`
+        : '';
+
+    console.log(limitClause);
+
+    if (first !== undefined && first !== null) {
+      queryParams.push(first);
+    }
+
     const accountsData = await this.databaseConnection.query(
       `
-        SELECT _id as id, account_id, balance, transaction_count, data, first_transaction_timestamp, recent_transaction_timestamp
-        FROM indexer.accounts
+        WITH ranked_accounts AS (
+          SELECT 
+            ROW_NUMBER() OVER (ORDER BY ${sortBy} ${sortOrder}) AS row_num,
+            _id as id, 
+            account_id, 
+            balance, 
+            transaction_count, 
+            data, 
+            first_transaction_timestamp, 
+            recent_transaction_timestamp
+          FROM 
+            indexer.accounts
+        )
+        SELECT *
+        FROM ranked_accounts
+        WHERE TRUE ${cursorCondition}
         ORDER BY ${sortBy} ${sortOrder}
-        LIMIT $1
+        ${limitClause}
       `,
-      [first], // Pass the limit as a parameter
+      queryParams,
     );
 
-    const startCursor = accountsData[0]?.id; // Use 'id' instead of '_id'
-    const endCursor = accountsData[accountsData.length - 1]?.id;
+    // Handle case where no data is returned
+    if (!accountsData.length) {
+      return {
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          endCursor: null,
+          startCursor: null,
+        },
+      };
+    }
 
-    const hasPreviousPage = (
-      await this.databaseConnection.query(
-        'SELECT EXISTS(SELECT 1 FROM indexer.accounts WHERE _id < $1)',
-        [endCursor],
-      )
-    )[0].exists;
-    const hasNextPage = (
-      await this.databaseConnection.query(
-        'SELECT EXISTS(SELECT 1 FROM indexer.accounts WHERE _id > $1)',
-        [startCursor],
-      )
-    )[0].exists;
+    const startCursor = accountsData[0]?.row_num;
+    const endCursor = accountsData[accountsData.length - 1]?.row_num;
+
+    // hasPreviousPage: If the first record's row_num is greater than 1, there is a previous page
+    const hasPreviousPage = startCursor > 1;
+
+    // hasNextPage: If the number of fetched records is equal to the limit, there is a next page
+    const hasNextPage =
+      first !== undefined && first !== null && accountsData.length === first;
 
     return {
       nodes: accountsData.map((account) => ({
