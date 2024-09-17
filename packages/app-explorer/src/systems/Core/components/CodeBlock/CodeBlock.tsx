@@ -29,23 +29,23 @@ export function CodeBlock({
   title,
   isLoading,
 }: CodeBlockProps) {
-  const [compact, setCompact] = useState<boolean>(true);
+  const [compact, setCompact] = useState(true);
 
   const classes = styles();
   if (!value && !isLoading) return null;
 
-  function getCopyValue() {
-    if (typeof value === 'object') {
-      return JSON.stringify(value, null, 2);
-    }
-    return value;
-  }
+  const copyValue = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
 
-  function getTitle() {
-    if (title !== undefined) return title;
-    if (type === 'json') return 'JSON';
-    return 'Code';
-  }
+  const content = () => {
+    if (type === 'json') {
+      try {
+        return <JsonViewer data={typeof value === 'object' ? value : JSON.parse(value)} />;
+      } catch (e) {
+        return <Text className="text-red-500">Error parsing JSON</Text>;
+      }
+    }
+    return <Text className={classes.codeText()}>{value?.toString() || ''}</Text>;
+  };
 
   return (
     <Card className={classes.root()} data-compact={compact}>
@@ -56,9 +56,9 @@ export function CodeBlock({
           regularEl={
             <>
               <Text size="1" weight="bold">
-                {getTitle()}
+                {title || (type === 'json' ? 'JSON' : 'Code')}
               </Text>
-              <CopyButton size="1" value={getCopyValue()} />
+              <CopyButton size="1" value={copyValue} />
             </>
           }
         />
@@ -71,39 +71,20 @@ export function CodeBlock({
               <LoadingBox className="w-full h-24" />
             </Box>
           }
-          regularEl={
-            <>
-              {type === 'json' && (
-                <JsonViewer
-                  data={typeof value === 'object' ? value : JSON.parse(value)}
-                />
-              )}
-              {type === 'raw' && (
-                <Text className={classes.codeText()}>
-                  {typeof value === 'object' ? value.toString() : value}
-                </Text>
-              )}
-            </>
-          }
+          regularEl={content()}
         />
       </ScrollArea>
-      <LoadingWrapper
-        isLoading={isLoading}
-        loadingEl={null}
-        regularEl={
-          <Card.Footer className={classes.cardFooter()}>
-            <Button
-              variant="link"
-              size="1"
-              color="gray"
-              rightIcon={IconChevronUp}
-              onClick={() => setCompact(!compact)}
-            >
-              Show {compact ? 'more' : 'less'}
-            </Button>
-          </Card.Footer>
-        }
-      />
+      <Card.Footer className={classes.cardFooter()}>
+        <Button
+          variant="link"
+          size="1"
+          color="gray"
+          rightIcon={IconChevronUp}
+          onClick={() => setCompact(!compact)}
+        >
+          Show {compact ? 'more' : 'less'}
+        </Button>
+      </Card.Footer>
     </Card>
   );
 }
@@ -119,7 +100,7 @@ const styles = tv({
       'border-b border-card-border py-3 flex-row items-center justify-between',
     cardMiddle: [
       'flex-1 font-mono',
-      '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON
+      '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal scroll for JSON
     ],
     codeText: 'text-sm text-gray-500 p-4 max-w-full break-all block',
     cardFooter: [
