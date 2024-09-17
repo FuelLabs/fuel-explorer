@@ -1,3 +1,4 @@
+import { useBreakpoints } from '@fuels/ui';
 import { type RefObject, useEffect } from 'react';
 
 // Radix's Dropdown component uses a Portal to render the dropdown content,
@@ -13,13 +14,15 @@ export function usePropagateInputMouseClick({
   inputRef: RefObject<HTMLInputElement>;
   enabled: boolean | undefined;
 }) {
-  const boundingData = containerRef.current?.getBoundingClientRect();
+  const { isMobile } = useBreakpoints();
 
   useEffect(() => {
     if (!enabled) {
       return;
     }
     const onClick = (e: MouseEvent) => {
+      const boundingData = containerRef.current?.getBoundingClientRect();
+
       if (boundingData) {
         const { clientX, clientY } = e;
         if (
@@ -28,10 +31,15 @@ export function usePropagateInputMouseClick({
           clientY >= boundingData.y &&
           clientY <= boundingData.y + boundingData.height
         ) {
-          inputRef.current?.focus();
+          if (isMobile) {
+            setTimeout(() => inputRef.current?.focus(), 200);
+          } else {
+            inputRef.current?.focus();
+          }
         }
       }
     };
+
     document.addEventListener('click', onClick);
 
     return () => {
@@ -39,5 +47,5 @@ export function usePropagateInputMouseClick({
         document.removeEventListener('click', onClick);
       }, 500);
     };
-  }, [enabled]);
+  }, [enabled, isMobile]);
 }
