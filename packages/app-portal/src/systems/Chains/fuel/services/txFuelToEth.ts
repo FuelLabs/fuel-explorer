@@ -1,7 +1,12 @@
 import fungibleTokenABI from '@fuel-bridge/fungible-token/bridge-fungible-token/implementation/out/release/bridge_fungible_token-abi.json';
 import type { NetworkFuel } from '@fuel-ts/account';
 import dayjs from 'dayjs';
-import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
+import type {
+  Account as FuelWallet,
+  BN,
+  MessageProof,
+  TransactionResult,
+} from 'fuels';
 import {
   Address as FuelAddress,
   Contract,
@@ -468,17 +473,29 @@ export class TxFuelToEthService {
 
     const { fuelAddress, fuelProvider } = input;
 
-    const txSummaries = await getTransactionsSummaries({
-      provider: fuelProvider,
-      filters: {
-        owner: fuelAddress?.toB256(),
-        first: 100,
-      },
-    });
+    const bridgeTxs: TransactionResult[] = [];
 
-    const bridgeTxs = txSummaries.transactions.filter(
-      (txSummary) => !!getReceiptsMessageOut(txSummary.receipts)?.[0],
-    );
+    let hasNextPage = true;
+    let endCursor = undefined;
+    // go until last page
+    while (hasNextPage) {
+      const { transactions, pageInfo } = await getTransactionsSummaries({
+        provider: fuelProvider,
+        filters: {
+          owner: fuelAddress?.toB256(),
+          first: 100,
+          after: endCursor,
+        },
+      });
+
+      const withdrawTxs = transactions.filter(
+        (txSummary) => !!getReceiptsMessageOut(txSummary.receipts)?.[0],
+      );
+      bridgeTxs.push(...withdrawTxs);
+
+      hasNextPage = pageInfo.hasNextPage;
+      endCursor = pageInfo.endCursor;
+    }
 
     return bridgeTxs;
   }
