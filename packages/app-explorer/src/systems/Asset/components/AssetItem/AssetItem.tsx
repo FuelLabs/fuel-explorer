@@ -22,6 +22,7 @@ type AssetItemProps = HStackProps & {
   assetId: string;
   prefix?: string;
   isLoading?: boolean;
+  reversed?: boolean;
   txIconTypeFallback?: TxIconType;
 };
 
@@ -31,6 +32,7 @@ export function AssetItem({
   children,
   isLoading,
   txIconTypeFallback,
+  reversed,
   ...props
 }: AssetItemProps) {
   const asset = useAsset(assetId);
@@ -55,7 +57,7 @@ export function AssetItem({
         }
       />
       <Box
-        data-reversed={!asset?.symbol}
+        data-reversed={reversed || !asset?.symbol}
         className="flex flex-col [&[data-reversed=true]]:flex-col-reverse"
       >
         <LoadingWrapper
