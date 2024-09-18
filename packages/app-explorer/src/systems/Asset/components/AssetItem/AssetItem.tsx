@@ -1,5 +1,6 @@
 import type { HStackProps } from '@fuels/ui';
 import {
+  Address,
   Box,
   Copyable,
   Flex,
@@ -8,7 +9,7 @@ import {
   LoadingWrapper,
   Text,
   Tooltip,
-  shortAddress,
+  useBreakpoints,
 } from '@fuels/ui';
 import Image from 'next/image';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
@@ -36,6 +37,7 @@ export function AssetItem({
   ...props
 }: AssetItemProps) {
   const asset = useAsset(assetId);
+  const { isMobile } = useBreakpoints();
   return (
     <HStack {...props} align="center">
       <LoadingWrapper
@@ -77,9 +79,14 @@ export function AssetItem({
                 </Tooltip>
               ) : (
                 <Tooltip content={assetId}>
-                  <Copyable value={assetId} className="text-gray-11 font-mono">
-                    {shortAddress(assetId)}
-                  </Copyable>
+                  <Address
+                    value={assetId}
+                    prefix="Asset:"
+                    className="text-gray-11 font-mono"
+                    addressOpts={
+                      isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
+                    }
+                  />
                 </Tooltip>
               )}
             </HStack>
