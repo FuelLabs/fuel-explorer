@@ -1,4 +1,4 @@
-import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql';
+import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql/sdk';
 import type { ViewModes } from '../Core/components/ViewMode/constants';
 
 export type TxRouteParams = {
