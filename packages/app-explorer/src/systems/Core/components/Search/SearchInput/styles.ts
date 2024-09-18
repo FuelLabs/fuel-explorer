@@ -8,7 +8,7 @@ export const styles = tv({
       'block left-0 w-full', // needed for properly execution of transitions
       '[&[data-active=true]]:w-[calc(100vw+1px)] [&[data-active=true]]:left-[-64px] tablet:[&[data-active=true]]:w-full',
       '[&[data-active=true]]:absolute tablet:[&[data-active=true]]:left-0 [&[data-active=true]]:right-0',
-      '[&[data-active=true]]:top-[-14px] tablet:[&[data-active=true]]:top-[-4px] desktop:[&[data-active=true]]:top-[-20px]',
+      '[&[data-variable-position=true]]:[&[data-active=true]]:top-[-14px] [&[data-variable-position=true]]:tablet:[&[data-active=true]]:top-[-4px] [&[data-variable-position=true]]:desktop:[&[data-active=true]]:top-[-20px]',
       '[&[data-active=true]]:z-50',
     ],
     inputContainer: 'w-full',

@@ -82,7 +82,7 @@ export function TopNav() {
           {logo}
           {externalLinks}
         </Nav.Menu>
-        <Nav.Menu>{!isHomePage && <SearchWidget />}</Nav.Menu>
+        <Nav.Menu>{!isHomePage && <SearchWidget variablePosition />}</Nav.Menu>
         <Nav.Menu>
           {tooling}
           {themeToggle}
@@ -91,7 +91,7 @@ export function TopNav() {
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
-          {!isHomePage && <SearchWidget />}
+          {!isHomePage && <SearchWidget variablePosition />}
           {themeToggle}
         </Nav.MobileContent>
         <Nav.Menu>

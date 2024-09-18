@@ -8,9 +8,14 @@ import { styles } from './styles';
 type SearchFormProps = {
   className: string;
   autoFocus?: boolean;
+  variablePosition?: boolean;
 };
 
-export function SearchForm({ className, autoFocus }: SearchFormProps) {
+export function SearchForm({
+  className,
+  autoFocus,
+  variablePosition,
+}: SearchFormProps) {
   const classes = styles();
   const [results, action] = useFormState(
     (_: GQLSearchResult | null, formData: FormData) => {
@@ -22,6 +27,7 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
   return (
     <form action={action} className={classes.searchSize()}>
       <SearchInput
+        variablePosition={variablePosition}
         className={className}
         searchResult={results}
         autoFocus={autoFocus}
