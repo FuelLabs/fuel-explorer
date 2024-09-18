@@ -27,10 +27,14 @@ export const RECEIPT_FIELDS_MAP: Record<
       requiredField: 'subId',
     },
     {
-      label: 'Asset:',
+      label: 'Id:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
-      field: 'contractId',
-      hrefFactory: Routes.contractAssets,
+      field: 'id',
+    },
+    {
+      label: 'SubId:',
+      type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
+      field: 'subId',
     },
   ],
   [GQLReceiptType.Burn]: [
@@ -49,7 +53,7 @@ export const RECEIPT_FIELDS_MAP: Record<
   ],
   [GQLReceiptType.TransferOut]: [
     {
-      label: 'ID:',
+      label: 'Id:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'id',
     },
@@ -63,7 +67,7 @@ export const RECEIPT_FIELDS_MAP: Record<
   ],
   [GQLReceiptType.Transfer]: [
     {
-      label: 'ID:',
+      label: 'Id:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'id',
     },
@@ -102,7 +106,7 @@ export const RECEIPT_FIELDS_MAP: Record<
   [GQLReceiptType.Panic]: [
     { label: 'Reason:', field: 'reason' },
     {
-      label: 'Contract ID:',
+      label: 'Contract Id:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'contractId',
       hrefFactory: Routes.contractAssets,
@@ -111,7 +115,7 @@ export const RECEIPT_FIELDS_MAP: Record<
   [GQLReceiptType.Revert]: [
     { label: 'Reason:', field: 'reason' },
     {
-      label: 'Contract ID:',
+      label: 'Contract Id:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
       field: 'contractId',
       hrefFactory: Routes.contractAssets,

@@ -1,3 +1,4 @@
+import type { GQLReceipt } from '@fuel-explorer/graphql/sdk';
 import { Address, VStack } from '@fuels/ui';
 import clsx from 'clsx';
 import { bn } from 'fuels';
@@ -9,11 +10,17 @@ import { ReceiptContext } from '~/systems/Transaction/component/TxScripts/contex
 export function TxReceiptAmount({
   className,
   singleMode,
-}: { className?: string; singleMode?: boolean }) {
+  valueField,
+}: {
+  className?: string;
+  singleMode?: boolean;
+  valueField?: keyof GQLReceipt;
+}) {
   const { receipt: item } = useContext(ReceiptContext);
   const receipt = item?.item;
   const assetId = receipt?.assetId ?? '';
-  const amount = bn(receipt?.amount);
+  const amountField = (valueField && receipt?.[valueField]) || receipt?.amount;
+  const amount = bn(amountField);
   const contract = receipt?.to ?? receipt?.contractId ?? null;
 
   if (!amount?.gt?.(0)) {
