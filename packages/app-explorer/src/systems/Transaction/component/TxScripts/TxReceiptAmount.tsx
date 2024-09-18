@@ -21,11 +21,11 @@ export function TxReceiptAmount() {
           value={amount}
           className="text-xs tablet:text-sm"
         />
-        {!!contract && (
+        {!!contract && !!assetId && (
           <Address
             iconSize={14}
             value={assetId}
-            className="text-xs tablet:text-sm font-mono"
+            className="text-xs tablet:text-sm font-mono hidden tablet:block"
             linkProps={{
               as: NextLink,
               href: `/contract/${contract}/assets`,
