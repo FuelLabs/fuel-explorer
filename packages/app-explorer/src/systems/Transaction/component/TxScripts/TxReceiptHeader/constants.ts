@@ -10,7 +10,6 @@ export const RECEIPT_FIELDS_MAP: Record<
   Array<ReceiptHeaderOperation>
 > = {
   [GQLReceiptType.Call]: [
-    { label: 'Method', field: 'param1' },
     {
       label: 'Contract:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
@@ -18,6 +17,7 @@ export const RECEIPT_FIELDS_MAP: Record<
       fieldFallback: 'contractId',
       hrefFactory: Routes.contractAssets,
     },
+    { label: 'Method', field: 'param1' },
   ],
   [GQLReceiptType.Mint]: [
     {
@@ -125,10 +125,7 @@ export const RECEIPT_FIELDS_MAP: Record<
     { label: 'PC', field: 'pc' },
     { label: 'Data:', field: 'data' },
   ],
-  [GQLReceiptType.Return]: [
-    { label: 'Value:', field: 'val' },
-    { label: 'PC', field: 'pc' },
-  ],
+  [GQLReceiptType.Return]: [{ label: 'Value:', field: 'val' }],
   [GQLReceiptType.ScriptResult]: [
     { label: 'Gas Used:', field: 'gasUsed' },
     { label: 'Result:', field: 'result' },
