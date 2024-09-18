@@ -13,6 +13,7 @@ import {
 import Image from 'next/image';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
+import type { TxIconType } from '~/systems/Transaction/types';
 import { useAsset } from '../../hooks/useAsset';
 
 const ICON_SIZE = 38;
@@ -21,6 +22,7 @@ type AssetItemProps = HStackProps & {
   assetId: string;
   prefix?: string;
   isLoading?: boolean;
+  txIconTypeFallback?: TxIconType;
 };
 
 export function AssetItem({
@@ -28,6 +30,7 @@ export function AssetItem({
   assetId,
   children,
   isLoading,
+  txIconTypeFallback,
   ...props
 }: AssetItemProps) {
   const asset = useAsset(assetId);
@@ -47,7 +50,7 @@ export function AssetItem({
               />
             </Flex>
           ) : (
-            <TxIcon type="Mint" status="Submitted" />
+            <TxIcon type={txIconTypeFallback || 'Mint'} status="Submitted" />
           )
         }
       />
