@@ -438,4 +438,66 @@ export default class TransactionDAO {
 
     return dailyActiveAccounts;
   }
+
+  // Fetch all transactions for a given account in a given date range
+  async getTransactionsByAccountAndDate(
+    account: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const query = `
+      SELECT t.tx_hash, t.timestamp, t.data
+      FROM indexer.transactions t
+      JOIN indexer.transactions_accounts ta ON t.tx_hash = ta.tx_hash
+      WHERE ta.account_hash = $1 AND t.timestamp BETWEEN $2 AND $3
+    `;
+    const result = await this.databaseConnection.query(query, [
+      account,
+      startDate,
+      endDate,
+    ]);
+
+    // Process and filter the data to extract specific fields
+    return result.map((tx: any) => {
+      const inputs = tx.data.inputs || [];
+      const outputs = tx.data.outputs || [];
+
+      // Extracting required input fields
+      const extractedInputs = inputs.map((input: any) => ({
+        owner: input.__typename === 'InputCoin' ? input.owner : null,
+        amount: input.__typename === 'InputCoin' ? input.amount : null,
+        assetId: input.__typename === 'InputCoin' ? input.assetId : null,
+      }));
+
+      // Extracting required output fields (for both VariableOutput and ChangeOutput)
+      const extractedOutputs = outputs.map((output: any) => ({
+        to:
+          output.__typename === 'VariableOutput' ||
+          output.__typename === 'ChangeOutput'
+            ? output.to
+            : null,
+        amount:
+          output.__typename === 'VariableOutput' ||
+          output.__typename === 'ChangeOutput'
+            ? output.amount
+            : null,
+        assetId:
+          output.__typename === 'VariableOutput' ||
+          output.__typename === 'ChangeOutput'
+            ? output.assetId
+            : null,
+        type: output.__typename, // Include output type (VariableOutput or ChangeOutput)
+      }));
+
+      return {
+        tx_hash: tx.tx_hash,
+        timestamp: tx.timestamp,
+        totalGas: tx.data.totalGas || null,
+        totalFee: tx.data.totalFee || null,
+        isMint: tx.data.isMint || null,
+        inputs: extractedInputs,
+        outputs: extractedOutputs,
+      };
+    });
+  }
 }

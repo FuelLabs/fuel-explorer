@@ -789,6 +789,7 @@ type Query {
   cumulativeAccountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
   dailyActiveAccounts(timeFilter: String): DailyActiveAccountsConnection!
   paginatedAccounts(cursor: String, direction: String, first: Int, sortBy: String, sortOrder: String): PaginatedAccountConnection!
+  transactionsByAccountAndDate(account: String!, startDate: String!, endDate: String!): [TransactionSummary!]!
 }
 
 type Receipt {
@@ -1095,4 +1096,27 @@ type AccountNode {
   account_id: String!
   balance: String!
   transaction_count: Int!
+}
+
+type TransactionInput {
+  owner: String
+  amount: String
+  assetId: String
+}
+
+type TransactionOutput { 
+  to: String
+  amount: String
+  assetId: String
+  type: String # Output type, can be "VariableOutput" or "ChangeOutput"
+}
+
+type TransactionSummary {
+  tx_hash: String!
+  timestamp: String!
+  totalGas: String
+  totalFee: String
+  isMint: Boolean
+  inputs: [TransactionInput!]!
+  outputs: [TransactionOutput!]!
 }

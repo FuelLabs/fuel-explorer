@@ -3,9 +3,33 @@ import type {
   GQLQueryDailyActiveAccountsArgs,
   GQLQueryNewAccountStatisticsArgs,
   GQLQueryPaginatedAccountsArgs,
+  GQLQueryTransactionsByAccountAndDateArgs,
 } from '../../graphql/generated/sdk-provider';
 import AccountDAO from '../../infra/dao/AccountDAO';
 import TransactionDAO from '../../infra/dao/TransactionDAO';
+
+interface Input {
+  owner?: string;
+  amount?: string;
+  assetId?: string;
+}
+
+interface Output {
+  to?: string;
+  amount?: string;
+  assetId?: string;
+  __typename?: string;
+}
+
+interface Transaction {
+  tx_hash?: string;
+  timestamp?: string;
+  totalGas?: string;
+  totalFee?: string;
+  isMint?: boolean;
+  inputs: Input[];
+  outputs: Output[];
+}
 
 export class AccountResolver {
   static create() {
@@ -17,6 +41,7 @@ export class AccountResolver {
         newAccountStatistics: resolvers.newAccountStatistics,
         dailyActiveAccounts: resolvers.dailyActiveAccounts,
         paginatedAccounts: resolvers.paginatedAccounts,
+        transactionsByAccountAndDate: resolvers.transactionsByAccountAndDate,
       },
     };
   }
@@ -43,10 +68,8 @@ export class AccountResolver {
   async dailyActiveAccounts(_: any, params: GQLQueryDailyActiveAccountsArgs) {
     const transactionDAO = new TransactionDAO();
 
-    // Get the time filter passed from the query (e.g., '1day', '7days')
     const timeFilter = params.timeFilter || '';
 
-    // Fetch transactions and unique accounts based on the time filter
     const dailyActiveAccounts =
       await transactionDAO.getDailyActiveAccounts(timeFilter);
 
@@ -61,7 +84,6 @@ export class AccountResolver {
   async paginatedAccounts(_: any, params: GQLQueryPaginatedAccountsArgs) {
     const accountDAO = new AccountDAO();
 
-    // Set the default sorting by transaction_count, change to balance if needed
     const sortBy =
       params.sortBy === 'balance' ? 'balance' : 'transaction_count';
     const sortOrder = (params.sortOrder || 'desc') as 'desc' | 'asc';
@@ -76,5 +98,45 @@ export class AccountResolver {
     );
 
     return accounts;
+  }
+
+  // New resolver for fetching transactions by account and date range
+  async transactionsByAccountAndDate(
+    _: any,
+    params: GQLQueryTransactionsByAccountAndDateArgs,
+  ) {
+    const transactionDAO = new TransactionDAO();
+
+    const transactions: Transaction[] =
+      await transactionDAO.getTransactionsByAccountAndDate(
+        params.account,
+        params.startDate,
+        params.endDate,
+      );
+
+    if (!transactions || transactions.length === 0) {
+      return [];
+    }
+
+    return {
+      nodes: transactions.map((tx) => ({
+        tx_hash: tx.tx_hash || null,
+        timestamp: tx.timestamp || null,
+        totalGas: tx.totalGas || null,
+        totalFee: tx.totalFee || null,
+        isMint: tx.isMint || null,
+        inputs: tx.inputs.map((input: Input) => ({
+          owner: input.owner || null,
+          amount: input.amount || null,
+          assetId: input.assetId || null,
+        })),
+        outputs: tx.outputs.map((output: Output) => ({
+          to: output.to || null,
+          amount: output.amount || null,
+          assetId: output.assetId || null,
+          type: output.__typename || null, // Type can be VariableOutput or ChangeOutput
+        })),
+      })),
+    };
   }
 }

@@ -1,0 +1,20 @@
+query getTransactionsByAccountAndDate($account: String!, $startDate: String!, $endDate: String!) {
+  transactionsByAccountAndDate(account: $account, startDate: $startDate, endDate: $endDate) {
+    tx_hash
+    timestamp
+    totalGas
+    totalFee
+    isMint
+    inputs {
+      owner
+      amount
+      assetId
+    }
+    outputs {
+      to
+      amount
+      assetId
+      type
+    }
+  }
+}
