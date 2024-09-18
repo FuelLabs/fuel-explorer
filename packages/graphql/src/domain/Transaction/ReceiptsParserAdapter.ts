@@ -45,16 +45,19 @@ export default class ReceiptsParserAdapter {
         top.receipts.push({ item: group.item });
         top.receipts.push(...group.receipts);
         groups.push(top);
+      } else if (group.type === 'SCRIPT_RESULT') {
+        const top = {
+          type: 'FINAL_RESULT',
+          receipts: [] as any,
+        };
+        top.receipts.push({ item: group.item });
+        if (group.receipts) top.receipts.push(...group.receipts);
+        groups.push(top);
       } else {
-        if (group.type === 'SCRIPT_RESULT') {
-          const top = {
-            type: 'FINAL_RESULT',
-            receipts: [] as any,
-          };
-          top.receipts.push({ item: group.item });
-          if (group.receipts) top.receipts.push(...group.receipts);
-          groups.push(top);
-        }
+        groups.push({
+          type: group.receiptType,
+          receipts: [group.item],
+        });
       }
     }
     return groups;
