@@ -55,7 +55,7 @@ export default class ReceiptsParserAdapter {
         groups.push(top);
       } else {
         groups.push({
-          type: group.receiptType,
+          type: group.item.receiptType,
           receipts: [group.item],
         });
       }
