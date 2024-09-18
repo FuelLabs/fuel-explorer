@@ -57,8 +57,12 @@ export function TxReceiptHeader() {
               />
             ))}
           </VStack>
-          <TxReceiptAmount />
+          <TxReceiptAmount className="hidden tablet:block" />
         </HStack>
+        <TxReceiptAmount
+          className="block tablet:hidden self-start mr-auto ml-14"
+          singleMode
+        />
       </Flex>
     </Collapsible.Header>
   );
