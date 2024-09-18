@@ -55,7 +55,7 @@ const TxOutputCoin = createComponent<
           </AssetItem>
           <HStack className="hidden tablet:flex items-center gap-2">
             <Icon icon={IconArrowUp} className="text-success" />
-            {amount && (
+            {!!amount && (
               <Amount
                 hideSymbol
                 hideIcon
