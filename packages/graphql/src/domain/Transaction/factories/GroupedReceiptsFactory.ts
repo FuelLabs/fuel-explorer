@@ -1,6 +1,12 @@
-import { GQLOperationType } from '~/graphql/generated/sdk-provider';
+import {
+  GQLOperationType,
+  GQLReceiptType,
+} from '~/graphql/generated/sdk-provider';
 
-const GroupTypeMap = {
+const GroupTypeMap: Record<
+  GQLReceiptType.Call | GQLReceiptType.Return | GQLReceiptType.ScriptResult,
+  Omit<GQLOperationType, 'ROOTLESS'>
+> = {
   CALL: 'FROM_CONTRACT',
   RETURN: 'FINAL_RESULT',
   SCRIPT_RESULT: 'FINAL_RESULT',
