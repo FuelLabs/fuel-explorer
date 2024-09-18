@@ -54,13 +54,16 @@ export function AssetItem({
           )
         }
       />
-      <Box>
+      <Box
+        data-reversed={!asset?.symbol}
+        className="flex flex-col [&[data-reversed=true]]:flex-col-reverse"
+      >
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-40 h-6" />}
           regularEl={
             <HStack gap="2">
-              {prefix && <Text className="font-medium">{prefix}</Text>}
+              {prefix && <Text className="font-medium">{prefix} s</Text>}
               {asset?.symbol ? (
                 <Tooltip content={assetId}>
                   <Copyable value={assetId}>
