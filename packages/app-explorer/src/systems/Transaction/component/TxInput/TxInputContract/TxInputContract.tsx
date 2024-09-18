@@ -31,7 +31,7 @@ export const TxInputContract = createComponent<
     return (
       <Collapsible {...props}>
         <Collapsible.Header>
-          <Flex className="flex flex-col-reverse items-start  tablet:items-center tablet:flex-row gap-2 w-full">
+          <Flex className="flex flex-col items-start  tablet:items-center tablet:flex-row gap-2 w-full">
             <Badge
               color="gray"
               className="font-mono justify-center ml-14 tablet:ml-0 tablet:flex min-w-[70px] w-[70px] max-w-[70px] items-center"
