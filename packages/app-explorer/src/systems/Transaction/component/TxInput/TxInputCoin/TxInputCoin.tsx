@@ -35,7 +35,7 @@ export const TxInputCoin = createComponent<
           <Flex className="flex flex-col items-center tablet:flex-row gap-2 w-full">
             <Badge
               color="gray"
-              className="font-mono justify-start tablet:justify-center hidden tablet:flex tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center"
+              className="font-mono ml-14 tablet:ml-0 self-start tablet:self-center justify-center flex min-w-[70px] w-[70px] max-w-[70px] items-center"
               size="1"
             >
               COIN
@@ -58,13 +58,6 @@ export const TxInputCoin = createComponent<
               </AssetItem>
               {amount && (
                 <Box className="w-full tablet:w-auto tablet:ml-0 justify-between flex flex-row tablet:block pl-14">
-                  <Badge
-                    color="gray"
-                    className="font-mono tablet:hidden min-w-[70px] w-[70px] max-w-[70px] items-center justify-center"
-                    size="1"
-                  >
-                    COIN
-                  </Badge>
                   <Amount
                     hideIcon
                     hideSymbol
