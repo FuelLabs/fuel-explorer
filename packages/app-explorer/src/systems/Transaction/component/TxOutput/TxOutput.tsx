@@ -3,6 +3,7 @@ import type {
   GQLCoinOutput,
   GQLContractCreated,
   GQLTransactionOutputFragment,
+  GQLVariableOutput,
 } from '@fuel-explorer/graphql';
 import {
   Address,
@@ -30,7 +31,7 @@ type TxOutputProps<T = GQLTransactionOutputFragment> = CardProps & {
 };
 
 const TxOutputCoin = createComponent<
-  TxOutputProps<GQLChangeOutput | GQLCoinOutput>,
+  TxOutputProps<GQLChangeOutput | GQLCoinOutput | GQLVariableOutput>,
   typeof Card
 >({
   id: 'TxOutputCoin',
@@ -104,6 +105,7 @@ const TxOutputContractCreated = createComponent<
 
 export function TxOutput({ output, ...props }: TxOutputProps) {
   if (
+    isOutput<GQLVariableOutput>(output, 'VariableOutput') ||
     isOutput<GQLChangeOutput>(output, 'ChangeOutput') ||
     isOutput<GQLCoinOutput>(output, 'CoinOutput')
   ) {
