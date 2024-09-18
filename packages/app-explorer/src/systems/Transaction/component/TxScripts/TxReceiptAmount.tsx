@@ -14,22 +14,24 @@ export function TxReceiptAmount() {
 
   return (
     amount.gt(0) && (
-      <VStack className="gap-1 items-end mobile:max-tablet:hidden">
+      <VStack className="gap-1 items-end self-end">
         <Amount
           iconSize={16}
           assetId={assetId}
           value={amount}
           className="text-xs tablet:text-sm"
         />
-        <Address
-          iconSize={14}
-          value={assetId}
-          className="text-xs tablet:text-sm font-mono"
-          linkProps={{
-            as: NextLink,
-            href: `/contract/${contract}/assets`,
-          }}
-        />
+        {!!contract && (
+          <Address
+            iconSize={14}
+            value={assetId}
+            className="text-xs tablet:text-sm font-mono"
+            linkProps={{
+              as: NextLink,
+              href: `/contract/${contract}/assets`,
+            }}
+          />
+        )}
       </VStack>
     )
   );
