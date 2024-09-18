@@ -1,3 +1,5 @@
+import { GQLOperationType } from '~/graphql/generated/sdk-provider';
+
 const GroupTypeMap = {
   CALL: 'FROM_CONTRACT',
   RETURN: 'FINAL_RESULT',
@@ -5,8 +7,7 @@ const GroupTypeMap = {
 };
 
 export function GroupedReceiptsFactory(group: any) {
-  const type =
-    GroupTypeMap[group.type] ?? group?.item?.receiptType ?? 'UNKNOWN';
+  const type = GroupTypeMap[group.type] ?? GQLOperationType.Rootless;
   const top = {
     type,
     receipts: [] as any,
