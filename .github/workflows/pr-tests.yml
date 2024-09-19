@@ -16,6 +16,7 @@ jobs:
   tests-e2e:
     name: E2E Tests
     runs-on: buildjet-4vcpu-ubuntu-2204
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,6 +40,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start Test Node
+        timeout-minutes: 3
         run: pnpm node:start
 
       # E2E tests running with Playwright
@@ -60,6 +62,7 @@ jobs:
   tests-e2e-soft:
     name: E2E Tests Soft
     runs-on: buildjet-4vcpu-ubuntu-2204
+    timeout-minutes: 7
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -83,6 +86,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start Test Node
+        timeout-minutes: 3
         run: pnpm node:start
 
       # E2E tests running with Playwright
