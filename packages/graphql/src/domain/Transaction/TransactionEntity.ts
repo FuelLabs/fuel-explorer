@@ -55,12 +55,12 @@ export class TransactionEntity extends Entity<
     // Should show for other status like FailureStatus?
     // @ts-ignore
     if (item.status?.receipts) {
-      // @ts-ignore
-      const receipts = item.status?.receipts || [];
-      operations = parser.parse(receipts) as any;
-      operations = operations.map((operation: any) =>
-        OperationEntity.create(operation, item._id || '', item.id),
-      );
+      operations = parser
+        // @ts-ignore
+        .parse(item.status?.receipts ?? [])
+        .map((operation: any) =>
+          OperationEntity.create(operation, item._id || '', item.id),
+        );
     }
     const props = {
       id,

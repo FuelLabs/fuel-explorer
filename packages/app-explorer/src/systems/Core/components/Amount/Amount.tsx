@@ -10,13 +10,21 @@ import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 import { cx } from '../../utils/cx';
 import { formatZeroUnits } from '../../utils/format';
 
-type AmountProps = BaseProps<{
-  value?: BN | null;
-  assetId?: string | null;
-  hideIcon?: boolean;
-  hideSymbol?: boolean;
-  iconSize?: number;
-}>;
+type AmountProps =
+  | BaseProps<{
+      value?: BN | null;
+      assetId?: string | null;
+      hideIcon?: boolean;
+      hideSymbol?: boolean;
+      iconSize?: number;
+    }>
+  | BaseProps<{
+      value?: BN | null;
+      assetId?: never | null;
+      hideIcon?: never | true;
+      hideSymbol?: never | true;
+      iconSize?: never;
+    }>;
 
 export function Amount({
   value,

@@ -31,7 +31,7 @@ export const TxInputContract = createComponent<
     return (
       <Collapsible {...props}>
         <Collapsible.Header>
-          <Flex className="flex flex-col-reverse items-start  tablet:items-center tablet:flex-row gap-2 w-full">
+          <Flex className="flex flex-col items-start  tablet:items-center tablet:flex-row gap-2 w-full">
             <Badge
               color="gray"
               className="font-mono justify-center ml-14 tablet:ml-0 tablet:flex min-w-[70px] w-[70px] max-w-[70px] items-center"
@@ -42,9 +42,6 @@ export const TxInputContract = createComponent<
             <HStack className="items-center justify-center gap-4">
               <TxIcon type="ContractCall" status="Submitted" />
               <VStack className="flex-1" gap="0">
-                <Text className="flex items-center gap-2 text-md">
-                  Contract
-                </Text>
                 <Address
                   prefix="Address:"
                   value={contractId}
@@ -55,6 +52,18 @@ export const TxInputContract = createComponent<
                   linkProps={{
                     as: NextLink,
                     href: Routes.contractAssets(contractId),
+                  }}
+                />
+                <Address
+                  prefix="Utxo Id:"
+                  value={utxoId}
+                  className="text-white"
+                  addressOpts={
+                    isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
+                  }
+                  linkProps={{
+                    as: NextLink,
+                    href: Routes.txSimple(utxoId?.slice(0, -4)),
                   }}
                 />
               </VStack>
