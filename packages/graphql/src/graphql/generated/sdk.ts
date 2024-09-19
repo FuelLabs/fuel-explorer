@@ -837,6 +837,7 @@ export enum GQLOperationType {
   FinalResult = 'FINAL_RESULT',
   FromAccount = 'FROM_ACCOUNT',
   FromContract = 'FROM_CONTRACT',
+  Rootless = 'ROOTLESS',
 }
 
 export type GQLOperationsFilterInput = {

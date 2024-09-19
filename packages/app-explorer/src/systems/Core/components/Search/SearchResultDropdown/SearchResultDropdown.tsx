@@ -104,28 +104,36 @@ export const SearchResultDropdown = forwardRef<
                       )}
                     </Link>
                   </Dropdown.Item>
-                  <Dropdown.Separator />
-                  <Dropdown.Label>Recent Transactions</Dropdown.Label>
-                  {searchResult.account.transactions?.map((transaction) => {
-                    return (
-                      <Dropdown.Item
-                        key={transaction?.id}
-                        className={classes.dropdownItem()}
-                        onClick={() =>
-                          transaction?.id &&
-                          onClick(Routes.txSimple(transaction?.id))
-                        }
-                      >
-                        <Link
-                          as={NextLink}
-                          href={Routes.txSimple(transaction?.id!)}
-                          onClick={onSelectItem}
-                        >
-                          {shortAddress(transaction?.id || '', trimL, trimR)}
-                        </Link>
-                      </Dropdown.Item>
-                    );
-                  })}
+                  {!!searchResult.account.transactions?.length && (
+                    <>
+                      <Dropdown.Separator />
+                      <Dropdown.Label>Recent Transactions</Dropdown.Label>
+                      {searchResult.account.transactions?.map((transaction) => {
+                        return (
+                          <Dropdown.Item
+                            key={transaction?.id}
+                            className={classes.dropdownItem()}
+                            onClick={() =>
+                              transaction?.id &&
+                              onClick(Routes.txSimple(transaction?.id))
+                            }
+                          >
+                            <Link
+                              as={NextLink}
+                              href={Routes.txSimple(transaction?.id!)}
+                              onClick={onSelectItem}
+                            >
+                              {shortAddress(
+                                transaction?.id || '',
+                                trimL,
+                                trimR,
+                              )}
+                            </Link>
+                          </Dropdown.Item>
+                        );
+                      })}
+                    </>
+                  )}
                 </>
               )}
               {searchResult?.block && (

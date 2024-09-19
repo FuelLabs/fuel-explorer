@@ -9,10 +9,13 @@ export function TxReceiptBadge() {
   const type = receipt?.item?.receiptType ?? 'UNKNOWN';
   const color = getBadgeColor(Boolean(hasPanic), receipt?.item);
   return (
-    <div>
-      <Badge size="1" className="font-mono" variant="ghost" color={color}>
-        {type}
-      </Badge>
-    </div>
+    <Badge
+      size="1"
+      className="font-mono ml-14 tablet:ml-0 self-start tablet:self-center justify-center"
+      variant="ghost"
+      color={color}
+    >
+      {type}
+    </Badge>
   );
 }
