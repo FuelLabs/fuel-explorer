@@ -114,6 +114,7 @@ enum OperationType {
   FROM_CONTRACT
   FROM_ACCOUNT
   FINAL_RESULT
+  ROOTLESS
 }
 
 type OperationReceipt {

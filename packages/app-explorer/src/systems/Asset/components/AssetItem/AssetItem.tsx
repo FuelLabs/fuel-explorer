@@ -1,5 +1,6 @@
 import type { HStackProps } from '@fuels/ui';
 import {
+  Address,
   Box,
   Copyable,
   Flex,
@@ -8,11 +9,12 @@ import {
   LoadingWrapper,
   Text,
   Tooltip,
-  shortAddress,
+  useBreakpoints,
 } from '@fuels/ui';
 import Image from 'next/image';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 
+import type { TxIconType } from '~/systems/Transaction/types';
 import { useAsset } from '../../hooks/useAsset';
 
 const ICON_SIZE = 38;
@@ -21,6 +23,7 @@ type AssetItemProps = HStackProps & {
   assetId: string;
   prefix?: string;
   isLoading?: boolean;
+  txIconTypeFallback?: TxIconType;
 };
 
 export function AssetItem({
@@ -28,9 +31,11 @@ export function AssetItem({
   assetId,
   children,
   isLoading,
+  txIconTypeFallback,
   ...props
 }: AssetItemProps) {
   const asset = useAsset(assetId);
+  const { isMobile } = useBreakpoints();
   return (
     <HStack {...props} align="center">
       <LoadingWrapper
@@ -47,17 +52,21 @@ export function AssetItem({
               />
             </Flex>
           ) : (
-            <TxIcon type="Mint" status="Submitted" />
+            <TxIcon type={txIconTypeFallback || 'Mint'} status="Submitted" />
           )
         }
       />
-      <Box>
+      <Box className="flex flex-col">
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-40 h-6" />}
           regularEl={
-            <HStack gap="2">
-              {prefix && <Text className="font-medium">{prefix}</Text>}
+            <HStack gap="1" className="items-center">
+              {prefix && (
+                <Text className="font-normal text-sm text-secondary font-mono">
+                  {prefix}
+                </Text>
+              )}
               {asset?.symbol ? (
                 <Tooltip content={assetId}>
                   <Copyable value={assetId}>
@@ -69,9 +78,13 @@ export function AssetItem({
                 </Tooltip>
               ) : (
                 <Tooltip content={assetId}>
-                  <Copyable value={assetId} className="text-gray-11 font-mono">
-                    {shortAddress(assetId)}
-                  </Copyable>
+                  <Address
+                    value={assetId}
+                    className="text-gray-11 font-mono"
+                    addressOpts={
+                      isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
+                    }
+                  />
                 </Tooltip>
               )}
             </HStack>
