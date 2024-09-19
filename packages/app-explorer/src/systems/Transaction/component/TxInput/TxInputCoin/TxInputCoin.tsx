@@ -42,7 +42,11 @@ export const TxInputCoin = createComponent<
             </Badge>
 
             <Flex className="w-full items-start tablet:items-center flex flex-col tablet:flex-row gap-2 tablet:gap-4">
-              <AssetItem assetId={assetId} className="flex-1" prefix="Asset:">
+              <AssetItem
+                assetId={assetId}
+                className="flex-1 text-sm"
+                prefix="Asset:"
+              >
                 <Address
                   prefix="From:"
                   value={input.owner || ''}
