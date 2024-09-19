@@ -26,7 +26,7 @@ const styles = tv({
     root: 'hero-bg overflow-clip relative w-full border-b border-border',
     container: [
       'z-20 relative py-8 pt-6 px-8 tablet:py-28 tablet:pt-24 tablet:px-10',
-      'tablet:max-laptop:max-w-[500px] [&_.rt-ContainerInner]:p-2',
+      'tablet:max-laptop:max-w-[500px] [&_.rt-ContainerInner]:p-2 [&_.rt-ContainerInner]:min-h-[120px]',
       '[&_.rt-ContainerInner]:tablet:max-laptop:bg-black [&_.rt-ContainerInner]:tablet:max-laptop:bg-opacity-60 [&_.rt-ContainerInner]:tablet:max-laptop:rounded-lg [&_.rt-ContainerInner]:tablet:max-laptop:shadow-2xl',
     ],
     input: 'w-full tablet:w-[400px]',
