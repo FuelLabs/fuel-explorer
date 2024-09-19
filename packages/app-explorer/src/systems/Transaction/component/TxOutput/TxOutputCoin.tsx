@@ -34,7 +34,7 @@ export const TxOutputCoin = createComponent<
     const assetId = output.assetId;
     const amount = output.amount;
     const badgeLabel = typeNameMap?.[output?.__typename] ?? 'UNKNOWN';
-    const txIconTypeFallback = txIconTypeMap?.[output?.__typename] ?? 'Mint';
+    const txIconType = txIconTypeMap?.[output?.__typename] ?? 'Mint';
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -47,10 +47,7 @@ export const TxOutputCoin = createComponent<
             {badgeLabel}
           </Badge>
           <Flex className={classes.content()}>
-            <AssetItem
-              assetId={assetId}
-              txIconTypeFallback={txIconTypeFallback}
-            >
+            <AssetItem assetId={assetId} txIconTypeFallback={txIconType}>
               <Address
                 prefix="To:"
                 value={output.to || ''}

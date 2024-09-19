@@ -15,7 +15,7 @@ import NextLink from 'next/link';
 import { Routes } from '~/routes';
 
 import { TxIcon } from '../TxIcon/TxIcon';
-import { typeNameMap } from './constants';
+import { txIconTypeMap, typeNameMap } from './constants';
 import { styles } from './styles';
 import type { TxOutputProps } from './types';
 
@@ -28,6 +28,7 @@ export const TxOutputContractCreated = createComponent<
     const classes = styles();
     const contractId = output.contract;
     const badgeLabel = typeNameMap?.[output?.__typename] ?? 'UNKNOWN';
+    const txIconType = txIconTypeMap?.[output?.__typename] ?? 'Unknown';
 
     return (
       <Card {...props} className={cx('py-3', props.className)}>
@@ -41,7 +42,7 @@ export const TxOutputContractCreated = createComponent<
               {badgeLabel}
             </Badge>
             <HStack align="center">
-              <TxIcon status="Success" type="Contract" />
+              <TxIcon status="Success" type={txIconType} />
               <VStack gap="1">
                 <Text className="font-medium">Contract Created</Text>
                 <Address
