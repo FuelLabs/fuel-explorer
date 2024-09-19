@@ -23,7 +23,6 @@ type AssetItemProps = HStackProps & {
   assetId: string;
   prefix?: string;
   isLoading?: boolean;
-  reversed?: boolean;
   txIconTypeFallback?: TxIconType;
 };
 
@@ -33,7 +32,6 @@ export function AssetItem({
   children,
   isLoading,
   txIconTypeFallback,
-  reversed,
   ...props
 }: AssetItemProps) {
   const asset = useAsset(assetId);
@@ -58,16 +56,13 @@ export function AssetItem({
           )
         }
       />
-      <Box
-        data-reversed={reversed || !asset?.symbol}
-        className="flex flex-col [&[data-reversed=true]]:flex-col-reverse"
-      >
+      <Box className="flex flex-col">
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-40 h-6" />}
           regularEl={
             <HStack gap="2">
-              {prefix && <Text className="font-medium">{prefix} s</Text>}
+              {prefix && <Text className="font-medium">{prefix}</Text>}
               {asset?.symbol ? (
                 <Tooltip content={assetId}>
                   <Copyable value={assetId}>
