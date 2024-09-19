@@ -16,7 +16,7 @@ fi
 
 # wait for the base layer to be up
 echo "Waiting for l1 chain."
-until curl \
+curl \
     --fail \
     --show-error \
     --silent \
@@ -24,11 +24,8 @@ until curl \
     --retry-connrefused \
     --retry $RETRIES \
     --retry-delay 1 \
-    -d "$JSON" \
-    "$L1_CHAIN_HTTP" > /dev/null; do
-    echo "Waiting for l1 chain..."
-    sleep 5
-done
+    -d $JSON \
+    $L1_CHAIN_HTTP > /dev/null
 echo "Connected to l1 chain."
 
 # get the deployments file from the deployer
