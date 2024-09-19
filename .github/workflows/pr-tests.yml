@@ -40,7 +40,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start Test Node
-        timeout-minutes: 3
+        timeout-minutes: 7
         run: pnpm node:start
 
       # E2E tests running with Playwright
@@ -62,7 +62,7 @@ jobs:
   tests-e2e-soft:
     name: E2E Tests Soft
     runs-on: buildjet-4vcpu-ubuntu-2204
-    timeout-minutes: 7
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -86,7 +86,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start Test Node
-        timeout-minutes: 3
+        timeout-minutes: 7
         run: pnpm node:start
 
       # E2E tests running with Playwright
