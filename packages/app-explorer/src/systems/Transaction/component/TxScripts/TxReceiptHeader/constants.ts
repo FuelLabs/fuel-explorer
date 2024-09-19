@@ -45,10 +45,14 @@ export const RECEIPT_FIELDS_MAP: Record<
       requiredField: 'subId',
     },
     {
-      label: 'Asset:',
+      label: 'Id:',
       type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
-      field: 'contractId',
-      hrefFactory: Routes.contractAssets,
+      field: 'id',
+    },
+    {
+      label: 'Sub Id:',
+      type: ReceiptHeaderOperationDataType.HEX_ADDRESS,
+      field: 'subId',
     },
   ],
   [GQLReceiptType.TransferOut]: [
