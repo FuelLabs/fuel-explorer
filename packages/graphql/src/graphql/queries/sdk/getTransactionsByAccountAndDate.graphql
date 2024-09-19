@@ -1,4 +1,4 @@
-query getTransactionsByAccountAndDate($account: String!, $startDate: String!, $endDate: String!) {
+query getTransactionsByAccountAndDate($account: String!, $startDate: String!, $endDate: String!){
   transactionsByAccountAndDate(account: $account, startDate: $startDate, endDate: $endDate) {
     tx_hash
     timestamp
@@ -6,15 +6,37 @@ query getTransactionsByAccountAndDate($account: String!, $startDate: String!, $e
     totalFee
     isMint
     inputs {
-      owner
-      amount
-      assetId
+      ... on InputCoin {
+        owner
+        amount
+        assetId
+      }
+      ... on InputContract {
+        contractId
+        balanceRoot
+        stateRoot
+      }
+      ... on InputMessage {
+        sender
+        recipient
+        amount
+      }
     }
     outputs {
-      to
-      amount
-      assetId
-      type
+      ... on VariableOutput {
+        to
+        amount
+        assetId
+      }
+      ... on ChangeOutput {
+        to
+        amount
+        assetId
+      }
+      ... on ContractOutput {
+        inputIndex
+        balanceRoot
+      }
     }
   }
 }

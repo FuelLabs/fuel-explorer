@@ -1116,6 +1116,6 @@ type TransactionSummary {
   totalGas: String
   totalFee: String
   isMint: Boolean
-  inputs: [TransactionInput!]!
-  outputs: [TransactionOutput!]!
+  inputs: [Input!]!    # Using Input union directly
+  outputs: [Output!]!
 }
