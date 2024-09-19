@@ -14,9 +14,12 @@ WORKDIR /fuel
 
 COPY ./genesis_coins.json .
 
+#  Fuel Core 0.35.0, needs to be changed when core version is updated
 RUN git clone \
     https://github.com/FuelLabs/chain-configuration.git \
-    /chain-configuration
+    /chain-configuration && \
+    cd /chain-configuration && \
+    git checkout 6cea45da59bb105a02fb0b115c7ef03f3a690ba1
 
 # Copy the base local configuration
 RUN cp -R /chain-configuration/local/* ./
