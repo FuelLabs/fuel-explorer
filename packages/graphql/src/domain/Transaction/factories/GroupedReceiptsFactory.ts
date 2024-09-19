@@ -1,10 +1,16 @@
 import {
+  GQLOperationReceipt,
   GQLOperationType,
   GQLReceiptType,
 } from '~/graphql/generated/sdk-provider';
 
+type AcceptedReceiptType =
+  | GQLReceiptType.Call
+  | GQLReceiptType.Return
+  | GQLReceiptType.ScriptResult;
+
 const GroupTypeMap: Record<
-  GQLReceiptType.Call | GQLReceiptType.Return | GQLReceiptType.ScriptResult,
+  AcceptedReceiptType,
   Omit<GQLOperationType, 'ROOTLESS'>
 > = {
   CALL: 'FROM_CONTRACT',
@@ -12,13 +18,18 @@ const GroupTypeMap: Record<
   SCRIPT_RESULT: 'FINAL_RESULT',
 };
 
-export function GroupedReceiptsFactory(group: any) {
-  const type = GroupTypeMap[group.type] ?? GQLOperationType.Rootless;
+interface Group extends GQLOperationReceipt {
+  type: AcceptedReceiptType;
+}
+
+export function GroupedReceiptsFactory(group: Group) {
+  const type =
+    (group.type && GroupTypeMap?.[group.type]) || GQLOperationType.Rootless;
   const top = {
     type,
-    receipts: [] as any,
+    receipts: [] as Array<GQLOperationReceipt>,
   };
-  top.receipts.push({ item: group.item });
+  top.receipts.push({ item: group.item } as GQLOperationReceipt);
   group.receipts && top.receipts.push(...group.receipts);
   return top;
 }
