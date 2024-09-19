@@ -295,7 +295,7 @@ function MintOutputs({
       <Card className="pb-3">
         <Card.Header className={classes.header()}>
           {tx.mintAssetId && (
-            <AssetItem assetId={tx.mintAssetId}>
+            <AssetItem assetId={tx.mintAssetId} prefix="Asset:">
               <Address
                 prefix="Id:"
                 value={tx.mintAssetId}

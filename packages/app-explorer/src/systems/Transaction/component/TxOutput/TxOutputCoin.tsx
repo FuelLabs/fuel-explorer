@@ -47,7 +47,11 @@ export const TxOutputCoin = createComponent<
             {badgeLabel}
           </Badge>
           <Flex className={classes.content()}>
-            <AssetItem assetId={assetId} txIconTypeFallback={txIconType}>
+            <AssetItem
+              assetId={assetId}
+              txIconTypeFallback={txIconType}
+              prefix="Asset:"
+            >
               <Address
                 prefix="To:"
                 value={output.to || ''}

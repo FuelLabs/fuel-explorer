@@ -61,8 +61,12 @@ export function AssetItem({
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-40 h-6" />}
           regularEl={
-            <HStack gap="2">
-              {prefix && <Text className="font-medium">{prefix}</Text>}
+            <HStack gap="1" className="items-center">
+              {prefix && (
+                <Text className="font-normal text-sm text-secondary font-mono">
+                  {prefix}
+                </Text>
+              )}
               {asset?.symbol ? (
                 <Tooltip content={assetId}>
                   <Copyable value={assetId}>
@@ -76,7 +80,6 @@ export function AssetItem({
                 <Tooltip content={assetId}>
                   <Address
                     value={assetId}
-                    prefix="Asset:"
                     className="text-gray-11 font-mono"
                     addressOpts={
                       isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
