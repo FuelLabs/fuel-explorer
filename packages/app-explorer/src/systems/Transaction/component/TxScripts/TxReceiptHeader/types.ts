@@ -1,4 +1,4 @@
-import type { GQLReceipt } from '@fuel-explorer/graphql';
+import type { GQLReceipt } from '@fuel-explorer/graphql/sdk';
 
 export enum ReceiptHeaderOperationDataType {
   DEFAULT = 'DEFAULT',
@@ -17,7 +17,8 @@ interface ReceiptHeaderOperationBase {
   hrefFactory?: (value: string) => string;
 }
 
-interface ReceiptHeaderOperationAmount extends ReceiptHeaderOperationBase {
+export interface ReceiptHeaderOperationAmount
+  extends ReceiptHeaderOperationBase {
   label?: never;
   type: ReceiptHeaderOperationDataType.AMOUNT;
   field?: keyof GQLReceipt;

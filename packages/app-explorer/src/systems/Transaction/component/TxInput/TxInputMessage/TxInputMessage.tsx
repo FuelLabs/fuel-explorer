@@ -1,16 +1,18 @@
 import {
   Address,
   Badge,
+  Box,
   Collapsible,
   Flex,
   HStack,
-  Text,
   VStack,
   createComponent,
 } from '@fuels/ui';
 import NextLink from 'next/link';
 
+import { bn } from 'fuels';
 import { Routes } from '~/routes';
+import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 import type { TxInputMessageProps } from './types';
 
@@ -22,6 +24,7 @@ export const TxInputMessage = createComponent<
   render: (_, { input, ...props }) => {
     const { sender, recipient, data } = input;
 
+    const amount = input.amount;
     if (!sender || !recipient) return null;
 
     return (
@@ -30,18 +33,17 @@ export const TxInputMessage = createComponent<
           <Flex className="flex flex-col items-center tablet:flex-row gap-2 w-full">
             <Badge
               color="gray"
-              className="font-mono justify-start tablet:justify-center hidden tablet:flex tablet:min-w-[70px] tablet:w-[70px] tablet:max-w-[70px] items-center"
+              className="font-mono ml-14 tablet:ml-0 self-start tablet:self-center justify-center flex min-w-[70px] w-[70px] max-w-[70px] items-center"
               size="1"
             >
               MESSAGE
             </Badge>
 
             <Flex className="w-full items-start tablet:items-end flex flex-col tablet:flex-row">
-              <HStack className="gap-4 tablet:items-center tablet:flex-1">
+              <HStack className="gap-4 tablet:items-center tablet:flex-1 ">
                 <TxIcon type="Message" status="Submitted" />
-                <Text className="hidden tablet:block">Message</Text>
-                <VStack className="gap-2 tablet:flex-1">
-                  <VStack className="gap-1 tablet:flex-1 tablet:items-end">
+                <Flex className="gap-1 flex-col tablet:flex-row items-center flex-1">
+                  <VStack className="gap-1 items-start flex-1">
                     <Address
                       value={sender}
                       prefix="Sender:"
@@ -59,14 +61,12 @@ export const TxInputMessage = createComponent<
                       }}
                     />
                   </VStack>
-                  <Badge
-                    color="gray"
-                    className="font-mono tablet:hidden min-w-[70px] w-[70px] max-w-[70px] items-center justify-center"
-                    size="1"
-                  >
-                    MESSAGE
-                  </Badge>
-                </VStack>
+                  {!!amount && (
+                    <Box className="w-full tablet:w-auto tablet:ml-0 justify-start flex flex-row tablet:block">
+                      <Amount hideIcon hideSymbol value={bn(amount)} />
+                    </Box>
+                  )}
+                </Flex>
               </HStack>
             </Flex>
           </Flex>

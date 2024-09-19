@@ -1,3 +1,4 @@
+import { isB256 } from 'fuels';
 import { Hash256 } from '~/application/vo';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import BlockDAO from '~/infra/dao/BlockDAO';
@@ -64,6 +65,14 @@ export class SearchResolver {
           transactions: transactions.map((transaction: TransactionEntity) =>
             transaction.toGQLNode(),
           ),
+        },
+      };
+    }
+    if (isB256(address)) {
+      return {
+        account: {
+          address,
+          transactions: [],
         },
       };
     }

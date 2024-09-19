@@ -13,6 +13,11 @@ services:
       # expose the service to the host for integration testing
       - 8545:9545
       - ${DEPLOYMENTS_PORT:-8080}:8081
+    healthcheck:
+      test: "curl -f -H \"Content-Type: application/json\" -d '{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"net_version\",\"params\":[]}' http://localhost:9545 || exit 1"
+      interval: 5s
+      timeout: 2s
+      retries: 10000
     networks:
       - app-network
 
@@ -24,7 +29,7 @@ services:
     platform: linux/amd64
     depends_on:
       l1_chain:
-        condition: service_started
+        condition: service_healthy
     build:
       context: ./fuel-core/
     environment:
@@ -35,9 +40,9 @@ services:
       - ${FUEL_CORE_HTTP_PORT:-4000}:4001
     healthcheck:
       test: curl --fail http://localhost:4001/v1/health || exit 1
-      interval: 10s
-      timeout: 10s
-      retries: 100
+      interval: 4s
+      timeout: 3s
+      retries: 200
     networks:
       - app-network
 

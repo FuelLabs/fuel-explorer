@@ -32,7 +32,7 @@ import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
-import type { TransactionNode, TxStatus } from '../../types';
+import type { TransactionNode, TxIconType, TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 import { TxScripts } from '../TxScripts/TxScripts';
 
@@ -60,7 +60,7 @@ export function TxScreenSimple({ transaction: tx, isLoading }: TxScreenProps) {
             loadingEl={<LoadingBox className="w-11 h-11 rounded-full" />}
             regularEl={
               <TxIcon
-                type={title}
+                type={title as TxIconType}
                 size="lg"
                 status={
                   tx?.hasPredicate ? 'Info' : (tx?.statusType as TxStatus)
@@ -295,7 +295,7 @@ function MintOutputs({
       <Card className="pb-3">
         <Card.Header className={classes.header()}>
           {tx.mintAssetId && (
-            <AssetItem assetId={tx.mintAssetId}>
+            <AssetItem assetId={tx.mintAssetId} prefix="Asset:">
               <Address
                 prefix="Id:"
                 value={tx.mintAssetId}
