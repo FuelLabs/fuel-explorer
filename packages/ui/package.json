@@ -35,9 +35,9 @@
         "typings": "./dist/theme/tailwind-preset.d.ts"
       },
       "./styles.css": "./dist/styles.css"
-    },
-    "files": ["dist"]
+    }
   },
+  "files": ["dist"],
   "scripts": {
     "build:lib": "tsup --dts",
     "build:preview": "storybook build -o ../app-explorer/public/ui",
@@ -77,7 +77,8 @@
     "tailwind-variants": "0.1.20",
     "tailwindcss-animate": "1.0.7",
     "tailwindcss-radix": "3.0.3",
-    "tailwindcss-themer": "4.0.0"
+    "tailwindcss-themer": "4.0.0",
+    "tailwindcss": "3.4.4"
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "0.18.0",
@@ -103,7 +104,6 @@
     "postcss-import": "16.0.0",
     "storybook": "8.3.0",
     "storybook-addon-theme": "workspace:*",
-    "tailwindcss": "3.4.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "5.4.5",
     "vite": "^5.1.3",

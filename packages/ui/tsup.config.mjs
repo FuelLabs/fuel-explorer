@@ -16,6 +16,9 @@ const defConfig = {
     options.banner = {
       js: "'use client'",
     };
+
+    /* This is needed to not get any errors from dynamic requiring */
+    options.external = ['react', 'react-dom', 'tailwindcss'];
   },
 };
 
