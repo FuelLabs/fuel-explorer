@@ -50,7 +50,7 @@ jobs:
         id: changesets
         uses: FuelLabs/changesets-action@main
         with:
-          publish: pnpm changeset publish --tag next
+          publish: pnpm release
           commit: "ci(changesets): versioning packages"
           title: "ci(changesets): versioning packages"
           createGithubReleases: aggregate
