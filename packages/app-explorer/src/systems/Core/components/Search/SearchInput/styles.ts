@@ -6,8 +6,8 @@ export const styles = tv({
       'transition-all duration-200 [&[data-active=false]]:ease-in [&[data-active=true]]:ease-out',
       'group justify-center items-center',
       'block left-0 w-full', // needed for properly execution of transitions
-      '[&[data-variable-position=true]]:[&[data-active=true]]:w-[calc(100vw+1px)] [&[data-variable-position=true]]:[&[data-active=true]]:left-[-64px] tablet:[&[data-active=true]]:w-full',
-      '[&[data-active=true]]:absolute tablet:[&[data-active=true]]:left-0 [&[data-active=true]]:right-0',
+      '[&[data-variable-position=true]]:[&[data-active=true]]:w-[calc(100vw+1px)] [&[data-variable-position=true]]:[&[data-active=true]]:left-[-64px] tablet:[&[data-variable-position=true]]:[&[data-active=true]]:w-full',
+      '[&[data-active=true]]:absolute tablet:[&[data-variable-position=true]]:[&[data-active=true]]:left-0 [&[data-active=true]]:right-0',
       '[&[data-variable-position=true]]:[&[data-active=true]]:top-[-14px] [&[data-variable-position=true]]:tablet:[&[data-active=true]]:top-[-4px] [&[data-variable-position=true]]:desktop:[&[data-active=true]]:top-[-20px]',
       '[&[data-active=true]]:z-50',
     ],
