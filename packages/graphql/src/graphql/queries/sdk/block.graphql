@@ -1,5 +1,6 @@
 fragment Block on Block {
   id
+  height
   producer
   consensus {
     __typename

@@ -8,13 +8,13 @@ import { styles } from './styles';
 type SearchFormProps = {
   className: string;
   autoFocus?: boolean;
-  expandOnFocus?: boolean;
+  variablePosition?: boolean;
 };
 
 export function SearchForm({
   className,
   autoFocus,
-  expandOnFocus,
+  variablePosition,
 }: SearchFormProps) {
   const classes = styles();
   const [results, action] = useFormState(
@@ -27,10 +27,10 @@ export function SearchForm({
   return (
     <form action={action} className={classes.searchSize()}>
       <SearchInput
+        variablePosition={variablePosition}
         className={className}
         searchResult={results}
         autoFocus={autoFocus}
-        expandOnFocus={expandOnFocus}
       />
     </form>
   );

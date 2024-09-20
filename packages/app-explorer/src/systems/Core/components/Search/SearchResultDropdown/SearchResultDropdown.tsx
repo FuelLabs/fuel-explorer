@@ -1,44 +1,26 @@
-'use client';
-
-import type { GQLSearchResult, Maybe } from '@fuel-explorer/graphql';
-import type { BaseProps, InputProps } from '@fuels/ui';
 import {
   Box,
   Dropdown,
-  Focus,
-  Icon,
-  IconButton,
-  Input,
   Link,
   Text,
-  Tooltip,
-  VStack,
   shortAddress,
   useBreakpoints,
 } from '@fuels/ui';
-import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import NextLink from 'next/link';
-import type { KeyboardEvent } from 'react';
-import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { forwardRef } from 'react';
 import { Routes } from '~/routes';
 
-import { cx } from '../../utils/cx';
+import { cx } from '../../../utils/cx';
 
-import { SearchContext } from './SearchWidget';
+import { useRouter } from 'next/navigation';
+import { styles as searchStyles } from '../styles';
 import { styles } from './styles';
+import type { SearchDropdownProps } from './types';
 
-type SearchDropdownProps = {
-  searchResult?: Maybe<GQLSearchResult>;
-  openDropdown: boolean;
-  onOpenChange: () => void;
-  searchValue: string;
-  width: number;
-  onSelectItem: () => void;
-  isExpanded?: boolean;
-};
-
-const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
+export const SearchResultDropdown = forwardRef<
+  HTMLDivElement,
+  SearchDropdownProps
+>(
   (
     {
       searchResult,
@@ -47,11 +29,20 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
       onOpenChange,
       width,
       onSelectItem,
-      isExpanded,
+      isFocused,
     },
     ref,
   ) => {
+    const router = useRouter();
+
+    function onClick(href: string | undefined) {
+      onSelectItem?.();
+      if (href) {
+        router.push(href);
+      }
+    }
     const classes = styles();
+    const searchClasses = searchStyles();
     const { isMobile } = useBreakpoints();
     const trimL = isMobile ? 15 : 20;
     const trimR = isMobile ? 13 : 18;
@@ -70,10 +61,10 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         <Dropdown.Content
           ref={ref}
           style={{ width }}
-          data-expanded={isExpanded}
+          data-active={isFocused || openDropdown}
           className={cx(
-            classes.dropdownContent(isExpanded),
-            classes.searchSize(),
+            classes.dropdownContent(openDropdown),
+            searchClasses.searchSize(),
           )}
         >
           {!searchResult && (
@@ -92,7 +83,15 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               {searchResult?.account && (
                 <>
                   <Dropdown.Label>Account</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
+                  <Dropdown.Item
+                    className={classes.dropdownItem()}
+                    onClick={() =>
+                      searchResult.account?.address &&
+                      onClick(
+                        Routes.accountAssets(searchResult.account.address!),
+                      )
+                    }
+                  >
                     <Link
                       as={NextLink}
                       href={Routes.accountAssets(searchResult.account.address!)}
@@ -114,6 +113,10 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                           <Dropdown.Item
                             key={transaction?.id}
                             className={classes.dropdownItem()}
+                            onClick={() =>
+                              transaction?.id &&
+                              onClick(Routes.txSimple(transaction?.id))
+                            }
                           >
                             <Link
                               as={NextLink}
@@ -135,10 +138,16 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               )}
               {searchResult?.block && (
                 <>
-                  {searchResult.block.id && (
+                  {searchResult.block.id === searchValue && (
                     <>
                       <Dropdown.Label>Block Hash</Dropdown.Label>
-                      <Dropdown.Item className={classes.dropdownItem()}>
+                      <Dropdown.Item
+                        className={classes.dropdownItem()}
+                        onClick={() =>
+                          searchResult.block?.id &&
+                          onClick(`/block/${searchResult.block.id}/simple`)
+                        }
+                      >
                         <Link
                           as={NextLink}
                           href={`/block/${searchResult.block.id}/simple`}
@@ -153,10 +162,16 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       </Dropdown.Item>
                     </>
                   )}
-                  {searchResult.block.height && (
+                  {searchResult.block.height === searchValue && (
                     <>
                       <Dropdown.Label>Block Height</Dropdown.Label>
-                      <Dropdown.Item className={classes.dropdownItem()}>
+                      <Dropdown.Item
+                        className={classes.dropdownItem()}
+                        onClick={() =>
+                          searchResult.block?.height &&
+                          onClick(`/block/${searchResult.block?.height}/simple`)
+                        }
+                      >
                         <Link
                           as={NextLink}
                           href={`/block/${searchResult.block.height}/simple`}
@@ -172,7 +187,13 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               {searchResult?.contract && (
                 <>
                   <Dropdown.Label>Contract</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
+                  <Dropdown.Item
+                    className={classes.dropdownItem()}
+                    onClick={() =>
+                      searchResult.contract?.id &&
+                      onClick(Routes.contractAssets(searchResult.contract.id))
+                    }
+                  >
                     <Link
                       as={NextLink}
                       href={Routes.contractAssets(searchResult.contract.id!)}
@@ -190,7 +211,13 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
               {searchResult?.transaction && (
                 <>
                   <Dropdown.Label>Transaction</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
+                  <Dropdown.Item
+                    className={classes.dropdownItem()}
+                    onClick={() =>
+                      searchResult.transaction?.id &&
+                      onClick(Routes.txSimple(searchResult.transaction?.id))
+                    }
+                  >
                     <Link
                       as={NextLink}
                       href={Routes.txSimple(searchResult.transaction.id!)}
@@ -219,141 +246,3 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
     );
   },
 );
-
-type SearchInputProps = BaseProps<InputProps> & {
-  onSubmit?: (value: string) => void;
-  searchResult?: Maybe<GQLSearchResult>;
-  alwaysDisplayActionButtons?: boolean;
-  expandOnFocus?: boolean;
-};
-
-export function SearchInput({
-  value: initialValue = '',
-  className,
-  autoFocus,
-  placeholder = 'Search here...',
-  searchResult,
-  expandOnFocus,
-  ...props
-}: SearchInputProps) {
-  const classes = styles();
-  const [value, setValue] = useState<string>(initialValue as string);
-  const [openDropdown, setOpenDropdown] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { pending } = useFormStatus();
-  const { dropdownRef } = useContext(SearchContext);
-
-  useEffect(() => {
-    if (!pending && hasSubmitted) {
-      setOpenDropdown(true);
-      setHasSubmitted(false);
-    }
-  }, [pending]);
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setValue(event.target.value);
-  }
-
-  function handleSubmit() {
-    setHasSubmitted(true);
-  }
-
-  function handleClear() {
-    setValue('');
-    setHasSubmitted(false);
-    if (isExpanded) {
-      setIsExpanded(false);
-    } else {
-      inputRef.current?.focus();
-    }
-  }
-
-  function expandOnFocusHandler() {
-    if (expandOnFocus) {
-      setIsExpanded(true);
-    }
-  }
-
-  return (
-    <VStack gap="0" className={classes.searchBox()} data-expanded={isExpanded}>
-      <Focus.ArrowNavigator autoFocus={autoFocus}>
-        <Input
-          {...props}
-          ref={inputRef}
-          name="query"
-          placeholder={placeholder}
-          value={value}
-          onChange={handleChange}
-          variant="surface"
-          radius="large"
-          size="3"
-          data-opened={openDropdown}
-          className={cx(className, classes.inputWrapper())}
-          onFocus={expandOnFocusHandler}
-          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              (e.target as HTMLFormElement).form?.dispatchEvent(
-                new Event('submit', { cancelable: true, bubbles: true }),
-              );
-              handleSubmit();
-            }
-          }}
-        >
-          {isExpanded || value?.length ? (
-            <>
-              <Input.Slot className="" side="right">
-                {!!value?.length && (
-                  <Tooltip content="Submit">
-                    <IconButton
-                      type="submit"
-                      aria-label="Submit"
-                      icon={IconCheck}
-                      iconColor="text-brand"
-                      variant="link"
-                      className="!ml-0 tablet:ml-2"
-                      isLoading={pending}
-                      onClick={handleSubmit}
-                    />
-                  </Tooltip>
-                )}
-                <IconButton
-                  aria-label="Clear"
-                  icon={IconX}
-                  iconColor="text-gray-11"
-                  variant="link"
-                  className="m-0"
-                  onClick={handleClear}
-                />
-              </Input.Slot>
-            </>
-          ) : (
-            <Input.Slot side="right">
-              <Icon icon={IconSearch} size={16} />
-            </Input.Slot>
-          )}
-        </Input>
-      </Focus.ArrowNavigator>
-      <SearchResultDropdown
-        ref={dropdownRef}
-        width={inputRef.current?.offsetWidth || 0}
-        searchResult={searchResult}
-        searchValue={value}
-        openDropdown={openDropdown}
-        isExpanded={isExpanded}
-        onSelectItem={() => {
-          setOpenDropdown(false);
-          handleClear();
-        }}
-        onOpenChange={() => {
-          if (openDropdown) {
-            setHasSubmitted(false);
-          }
-          setOpenDropdown(!openDropdown);
-        }}
-      />
-    </VStack>
-  );
-}

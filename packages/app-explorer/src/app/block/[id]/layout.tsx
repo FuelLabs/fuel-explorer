@@ -1,17 +1,19 @@
 import type { ReactNode } from 'react';
+import { getBlock } from '~/systems/Block/actions/get-block';
 import { BlockHeader } from '~/systems/Block/components/BlockHeader';
 import type { BlockRouteParams } from '~/systems/Block/types';
 
-export default function BlockLayout({
+export default async function BlockLayout({
   children,
   params: { id },
 }: {
   children: ReactNode;
   params: BlockRouteParams;
 }) {
+  const { producer } = await getBlock({ id });
   return (
     <>
-      <BlockHeader id={id} />
+      <BlockHeader producer={producer} />
       {children}
     </>
   );

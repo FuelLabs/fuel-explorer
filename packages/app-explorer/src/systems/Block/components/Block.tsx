@@ -24,7 +24,7 @@ export async function Block({
 }: BlockScreenProps) {
   return (
     <>
-      <BlockHeader isLoading={isLoading} id={id} />
+      <BlockHeader isLoading={isLoading} producer={id} />
       {viewMode === ViewModes.Simple && (
         <BlockScreenSimple
           block={block}

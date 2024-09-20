@@ -1,6 +1,6 @@
 'use client';
 
-import { HStack } from '@fuels/ui';
+import { Flex } from '@fuels/ui';
 import type { MutableRefObject } from 'react';
 import { createContext, useRef } from 'react';
 import { SearchForm } from './SearchForm';
@@ -12,29 +12,25 @@ export const SearchContext = createContext<{
 
 type SearchWidgetProps = {
   autoFocus?: boolean;
-  expandOnFocus?: boolean;
+  variablePosition?: boolean;
 };
 
 export const SearchWidget = ({
   autoFocus,
-  expandOnFocus,
+  variablePosition,
 }: SearchWidgetProps) => {
   const classes = styles();
-  const widgetRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   return (
     <SearchContext.Provider value={{ dropdownRef }}>
-      <HStack
-        ref={widgetRef}
-        className="items-center gap-0 laptop:gap-4 justify-center flex-1"
-      >
+      <Flex className="items-center gap-0 laptop:gap-4 justify-center flex-1 self-start">
         <SearchForm
           className={classes.searchSize()}
           autoFocus={autoFocus}
-          expandOnFocus={expandOnFocus}
+          variablePosition={variablePosition}
         />
-      </HStack>
+      </Flex>
     </SearchContext.Provider>
   );
 };

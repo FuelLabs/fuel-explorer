@@ -35,6 +35,13 @@ const config: StorybookConfig = {
     },
   }),
   async viteFinal(config: UserConfig) {
+    if (config.resolve) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'next/link': require.resolve('../__mocks__/next/link.tsx'),
+        'next/navigation': require.resolve('../__mocks__/next/navigation.tsx'),
+      };
+    }
     return mergeConfig(config, {
       plugins: [tsconfigpath()],
       define: {

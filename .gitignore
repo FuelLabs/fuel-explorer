@@ -90,3 +90,4 @@ act-actions
 # playwright report
 **/**/playwright-report/*
 **/**/playwright-html/*
+*storybook.log

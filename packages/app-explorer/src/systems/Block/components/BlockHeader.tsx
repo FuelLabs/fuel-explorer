@@ -8,10 +8,10 @@ import type { ViewModes } from '~/systems/Core/components/ViewMode/constants';
 import { isValidAddress } from '~/systems/Core/utils/address';
 
 export function BlockHeader({
-  id,
+  producer,
   isLoading,
 }: {
-  id: string;
+  producer: string | null | undefined;
   isLoading?: boolean;
 }) {
   const { mode } = useParams<{ mode: ViewModes }>();
@@ -23,10 +23,11 @@ export function BlockHeader({
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-20 h-5 mt-1" />}
           regularEl={
-            isValidAddress(id) ? (
-              <Address full value={id || ''} fixed="b256" />
+            //
+            isValidAddress(producer) ? (
+              <Address full value={producer || ''} fixed="b256" />
             ) : (
-              <>#{id}</>
+              <>#{producer}</>
             )
           }
         />
