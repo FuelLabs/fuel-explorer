@@ -46,7 +46,6 @@
     "node:stop": "make -C ./docker stop",
     "node:restart": "make -C ./docker restart",
     "prepare": "husky install",
-    "release": "pnpm build:lib && pnpm changeset publish --tag next",
     "start": "pnpm turbo:run start",
     "test": "pnpm turbo:run test",
     "test:all": "run-p test test:e2e",

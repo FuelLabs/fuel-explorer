@@ -46,11 +46,14 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
+      - name: Build packages
+        run: pnpm build:lib
+
       - name: Create Release Pull Request or Publish to NPM
         id: changesets
         uses: FuelLabs/changesets-action@main
         with:
-          publish: pnpm release
+          publish: pnpm changeset publish --tag next
           commit: "ci(changesets): versioning packages"
           title: "ci(changesets): versioning packages"
           createGithubReleases: aggregate
