@@ -1,5 +1,11 @@
 # @fuels/ui
 
+## 0.1.1
+
+### Patch Changes
+
+- [#566](https://github.com/FuelLabs/fuel-explorer/pull/566) [`3f0588a`](https://github.com/FuelLabs/fuel-explorer/commit/3f0588a9108d4a0ebdc26fad357cdef8028eaea6) Thanks [@LeoCourbassier](https://github.com/LeoCourbassier)! - - Adds some packages as external in esbuild options to correctly distribute the UI
+
 ## 0.1.0
 
 ### Minor Changes

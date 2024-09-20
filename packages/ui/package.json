@@ -1,6 +1,6 @@
 {
   "name": "@fuels/ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "access": "public",
   "main": "./src/index.ts",
   "exports": {
@@ -10,7 +10,9 @@
   },
   "typesVersions": {
     "*": {
-      "tailwind-preset": ["./src/theme/tailwind-preset.ts"]
+      "tailwind-preset": [
+        "./src/theme/tailwind-preset.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -37,7 +39,9 @@
       "./styles.css": "./dist/styles.css"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build:lib": "tsup --dts",
     "build:preview": "storybook build -o ../app-explorer/public/ui",
