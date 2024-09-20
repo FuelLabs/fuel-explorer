@@ -5,7 +5,7 @@ build:
 	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) build
 
 start:
-	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) up --build
+	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) up -d --build
 
 stop:
 	docker compose --profile $(PROFILE) --env-file $(ENV_FILE) stop
