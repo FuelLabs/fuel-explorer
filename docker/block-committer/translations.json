@@ -1,0 +1,93 @@
+{
+    "en": {
+        "must_specify_ethereum_rpc": "Must specify $ETHEREUM_RPC.",
+        "must_specify_fuel_graphql_endpoint": "Must specify $FUEL_GRAPHQL_ENDPOINT.",
+        "must_specify_deployments_http": "Must specify $DEPLOYMENTS_HTTP.",
+        "waiting_for_fuel_core_chain": "Waiting for Fuel Core chain.",
+        "connected_to_fuel_core_chain": "Connected to Fuel Core chain.",
+        "waiting_for_l1_chain_deployment_data": "Waiting for l1 chain deployment data.",
+        "got_l1_chain_deployment_data": "Got l1 chain deployment data.",
+        "state_contract_address": "STATE_CONTRACT_ADDRESS:",
+        "ethereum_rpc": "ETHEREUM_RPC:",
+        "fuel_graphql_endpoint": "FUEL_GRAPHQL_ENDPOINT:",
+        "starting_block_commiter": "Starting block commiter"
+    },
+    "tr": {
+        "must_specify_ethereum_rpc": "$ETHEREUM_RPC belirtilmelidir.",
+        "must_specify_fuel_graphql_endpoint": "$FUEL_GRAPHQL_ENDPOINT belirtilmelidir.",
+        "must_specify_deployments_http": "$DEPLOYMENTS_HTTP belirtilmelidir.",
+        "waiting_for_fuel_core_chain": "Fuel Core zinciri bekleniyor.",
+        "connected_to_fuel_core_chain": "Fuel Core zincirine bağlandı.",
+        "waiting_for_l1_chain_deployment_data": "l1 zincir dağıtım verileri bekleniyor.",
+        "got_l1_chain_deployment_data": "l1 zincir dağıtım verileri alındı.",
+        "state_contract_address": "STATE_CONTRACT_ADDRESS:",
+        "ethereum_rpc": "ETHEREUM_RPC:",
+        "fuel_graphql_endpoint": "FUEL_GRAPHQL_ENDPOINT:",
+        "starting_block_commiter": "Blok komitörü başlatılıyor"
+    },
+    "zh": {
+        "must_specify_ethereum_rpc": "必须指定 $ETHEREUM_RPC。",
+        "must_specify_fuel_graphql_endpoint": "必须指定 $FUEL_GRAPHQL_ENDPOINT。",
+        "must_specify_deployments_http": "必须指定 $DEPLOYMENTS_HTTP。",
+        "waiting_for_fuel_core_chain": "等待 Fuel Core 链。",
+        "connected_to_fuel_core_chain": "已连接到 Fuel Core 链。",
+        "waiting_for_l1_chain_deployment_data": "等待 l1 链部署数据。",
+        "got_l1_chain_deployment_data": "已获取 l1 链部署数据。",
+        "state_contract_address": "STATE_CONTRACT_ADDRESS:",
+        "ethereum_rpc": "ETHEREUM_RPC:",
+        "fuel_graphql_endpoint": "FUEL_GRAPHQL_ENDPOINT:",
+        "starting_block_commiter": "启动区块提交器"
+    },
+    "ja": {
+        "must_specify_ethereum_rpc": "$ETHEREUM_RPC を指定する必要があります。",
+        "must_specify_fuel_graphql_endpoint": "$FUEL_GRAPHQL_ENDPOINT を指定する必要があります。",
+        "must_specify_deployments_http": "$DEPLOYMENTS_HTTP を指定する必要があります。",
+        "waiting_for_fuel_core_chain": "Fuel Core チェーンを待っています。",
+        "connected_to_fuel_core_chain": "Fuel Core チェーンに接続されました。",
+        "waiting_for_l1_chain_deployment_data": "l1 チェーンのデプロイメントデータを待っています。",
+        "got_l1_chain_deployment_data": "l1 チェーンのデプロイメントデータを取得しました。",
+        "state_contract_address": "STATE_CONTRACT_ADDRESS:",
+        "ethereum_rpc": "ETHEREUM_RPC:",
+        "fuel_graphql_endpoint": "FUEL_GRAPHQL_ENDPOINT:",
+        "starting_block_commiter": "ブロックコミッターを開始しています"
+    },
+    "es": {
+        "must_specify_ethereum_rpc": "Debe especificar $ETHEREUM_RPC.",
+        "must_specify_fuel_graphql_endpoint": "Debe especificar $FUEL_GRAPHQL_ENDPOINT.",
+        "must_specify_deployments_http": "Debe especificar $DEPLOYMENTS_HTTP.",
+        "waiting_for_fuel_core_chain": "Esperando la cadena de Fuel Core.",
+        "connected_to_fuel_core_chain": "Conectado a la cadena de Fuel Core.",
+        "waiting_for_l1_chain_deployment_data": "Esperando los datos de implementación de la cadena l1.",
+        "got_l1_chain_deployment_data": "Datos de implementación de la cadena l1 obtenidos.",
+        "state_contract_address": "STATE_CONTRACT_ADDRESS:",
+        "ethereum_rpc": "ETHEREUM_RPC:",
+        "fuel_graphql_endpoint": "FUEL_GRAPHQL_ENDPOINT:",
+        "starting_block_commiter": "Iniciando el commit de bloques"
+    },
+    "de": {
+        "must_specify_ethereum_rpc": "$ETHEREUM_RPC muss angegeben werden.",
+        "must_specify_fuel_graphql_endpoint": "$FUEL_GRAPHQL_ENDPOINT muss angegeben werden.",
+        "must_specify_deployments_http": "$DEPLOYMENTS_HTTP muss angegeben werden.",
+        "waiting_for_fuel_core_chain": "Warten auf die Fuel Core-Kette.",
+        "connected_to_fuel_core_chain": "Mit der Fuel Core-Kette verbunden.",
+        "waiting_for_l1_chain_deployment_data": "Warten auf l1-Kettenbereitstellungsdaten.",
+        "got_l1_chain_deployment_data": "l1-Kettenbereitstellungsdaten erhalten.",
+        "state_contract_address": "STATE_CONTRACT_ADDRESS:",
+        "ethereum_rpc": "ETHEREUM_RPC:",
+        "fuel_graphql_endpoint": "FUEL_GRAPHQL_ENDPOINT:",
+        "starting_block_commiter": "Block-Committer wird gestartet"
+    },
+    "fr": {
+        "must_specify_ethereum_rpc": "Doit spécifier $ETHEREUM_RPC.",
+        "must_specify_fuel_graphql_endpoint": "Doit spécifier $FUEL_GRAPHQL_ENDPOINT.",
+        "must_specify_deployments_http": "Doit spécifier $DEPLOYMENTS_HTTP.",
+        "waiting_for_fuel_core_chain": "En attente de la chaîne Fuel Core.",
+        "connected_to_fuel_core_chain": "Connecté à la chaîne Fuel Core.",
+        "waiting_for_l1_chain_deployment_data": "En attente des données de déploiement de la chaîne l1.",
+        "got_l1_chain_deployment_data": "Données de déploiement de la chaîne l1 obtenues.",
+        "state_contract_address": "STATE_CONTRACT_ADDRESS:",
+        "ethereum_rpc": "ETHEREUM_RPC:",
+        "fuel_graphql_endpoint": "FUEL_GRAPHQL_ENDPOINT:",
+        "starting_block_commiter": "Démarrage du commiteur de blocs"
+    }
+}
