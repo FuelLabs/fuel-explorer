@@ -155,7 +155,7 @@ export default class BlockDAO {
   async tps() {
     const currentTime = new Date();
     const timeMinusOneDay = new Date(
-      currentTime.getTime() - 5 * 24 * 60 * 60 * 1000,
+      currentTime.getTime() - 24 * 60 * 60 * 1000,
     );
     const timeMinusOneDayRoundDown = new Date(
       roundToNearest(timeMinusOneDay.getTime()),
