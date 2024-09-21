@@ -15,6 +15,8 @@ if [ -n "${LANG:-}" ]; then
     SYSTEM_LANG=${LANG%%.*}
 elif [ -n "${LC_ALL:-}" ]; then
     SYSTEM_LANG=${LC_ALL%%.*}
+elif command -v locale > /dev/null 2>&1; then
+    SYSTEM_LANG=$(locale | grep LANG | cut -d= -f2 | cut -d_ -f1)
 elif command -v chcp > /dev/null 2>&1; then
     SYSTEM_LANG=$(chcp | awk '{print $NF}')
     case $SYSTEM_LANG in
