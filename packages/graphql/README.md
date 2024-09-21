@@ -12,6 +12,7 @@ pnpm dev
 
 ```
 docker run \
+  -e HOST=localhost \ # Default is localhost, can be changed if needed
   -e FUEL_PROVIDER=http://testnet.fuel.network/v1/graphql \
   -e SERVER_PORT=3000 \
   -e SYNC_MISSING=true \
@@ -23,3 +24,4 @@ docker run \
   -p 3333:3000 \
   ghcr.io/fuellabs/fuel-explorer:main
 ```
+
