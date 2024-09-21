@@ -6,7 +6,6 @@ import { BlockData } from './vo/BlockData';
 import { BlockGasUsed } from './vo/BlockGasUsed';
 import { BlockModelID } from './vo/BlockModelID';
 import { BlockProducer } from './vo/BlockProducer';
-
 import { Signer } from 'fuels';
 import { TransactionEntity } from '../Transaction/TransactionEntity';
 
@@ -39,6 +38,10 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     ).toB256();
     const producer = BlockProducer.create(producerAddress);
 
+    const transactions = item.transactions.map((t: any, i: any) =>
+      TransactionEntity.createFromGQL(t, id.value(), i),
+    );
+
     const props = {
       blockHash,
       data,
@@ -46,9 +49,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       time,
       timestamp,
       producer,
-      transactions: item.transactions.map((t: any, i: any) =>
-        TransactionEntity.createFromGQL(t, id.value(), i),
-      ),
+      transactions,
     };
 
     return new BlockEntity(props, id);
