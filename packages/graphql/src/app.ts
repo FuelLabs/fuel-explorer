@@ -6,6 +6,7 @@ import { Server } from './infra/server/App';
 
 (async () => {
   const port = Number(env.get('SERVER_PORT'));
+  const host = env.get('HOST') || 'localhost';
   const graphQLServer = new GraphQLServer();
   const schema = graphQLServer.schema();
   const yoga = graphQLServer.setup(schema);
@@ -16,7 +17,7 @@ import { Server } from './infra/server/App';
   app.use(yoga.graphqlEndpoint, yoga);
   httpServer.listen(app, port).then(async () => {
     logger.info(
-      `📟 GraphQL server is running on http://localhost:${port}${yoga.graphqlEndpoint}`,
+      `📟 GraphQL server is running on http://${host}:${port}${yoga.graphqlEndpoint}`,
     );
 
     const others = ['SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM'];
