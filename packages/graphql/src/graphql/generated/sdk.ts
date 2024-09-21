@@ -117,6 +117,19 @@ export enum GQLBlockVersion {
   V1 = 'V1',
 }
 
+export type GQLBlocksDashboard = {
+  __typename: 'BlocksDashboard';
+  blockNo: Scalars['U64']['output'];
+  gasUsed: Scalars['U64']['output'];
+  producer?: Maybe<Scalars['String']['output']>;
+  timestamp: Scalars['U64']['output'];
+};
+
+export type GQLBlocksDashboardConnection = {
+  __typename: 'BlocksDashboardConnection';
+  nodes: Array<GQLBlocksDashboard>;
+};
+
 /** Breakpoint, defined as a tuple of contract ID and relative PC offset inside it */
 export type GQLBreakpoint = {
   contract: Scalars['ContractId']['input'];
@@ -968,6 +981,7 @@ export type GQLQuery = {
   estimateGasPrice: GQLEstimateGasPrice;
   /** Estimate the predicate gas for the provided transaction */
   estimatePredicates: GQLTransaction;
+  getBlocksDashboard: GQLBlocksDashboardConnection;
   /** Returns true when the GraphQL API is serving requests. */
   health: Scalars['Boolean']['output'];
   latestGasPrice: GQLLatestGasPrice;
@@ -983,6 +997,7 @@ export type GQLQuery = {
   register: Scalars['U64']['output'];
   relayedTransactionStatus?: Maybe<GQLRelayedTransactionStatus>;
   search?: Maybe<GQLSearchResult>;
+  tps: GQLTpsConnection;
   transaction?: Maybe<GQLTransaction>;
   transactions: GQLTransactionConnection;
   transactionsByBlockId: GQLTransactionConnection;
@@ -1317,6 +1332,19 @@ export type GQLSuccessStatus = {
   totalFee: Scalars['U64']['output'];
   totalGas: Scalars['U64']['output'];
   transactionId: Scalars['TransactionId']['output'];
+};
+
+export type GQLTps = {
+  __typename: 'TPS';
+  end?: Maybe<Scalars['String']['output']>;
+  start?: Maybe<Scalars['String']['output']>;
+  totalGas: Scalars['U64']['output'];
+  txCount: Scalars['U64']['output'];
+};
+
+export type GQLTpsConnection = {
+  __typename: 'TPSConnection';
+  nodes: Array<GQLTps>;
 };
 
 export type GQLTransaction = {
@@ -2689,6 +2717,24 @@ export type GQLContractBalancesQuery = {
   };
 };
 
+export type GQLGetBlocksDashboardQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GQLGetBlocksDashboardQuery = {
+  __typename: 'Query';
+  getBlocksDashboard: {
+    __typename: 'BlocksDashboardConnection';
+    nodes: Array<{
+      __typename: 'BlocksDashboard';
+      timestamp: string;
+      gasUsed: string;
+      blockNo: string;
+      producer?: string | null;
+    }>;
+  };
+};
+
 export type GQLPredicateQueryVariables = Exact<{
   address: Scalars['String']['input'];
 }>;
@@ -2780,6 +2826,22 @@ export type GQLSearchQuery = {
       id?: string | null;
     } | null;
   } | null;
+};
+
+export type GQLTpsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GQLTpsQuery = {
+  __typename: 'Query';
+  tps: {
+    __typename: 'TPSConnection';
+    nodes: Array<{
+      __typename: 'TPS';
+      start?: string | null;
+      end?: string | null;
+      txCount: string;
+      totalGas: string;
+    }>;
+  };
 };
 
 export type GQLTransactionDetailsQueryVariables = Exact<{
@@ -6270,6 +6332,18 @@ export const ContractBalancesDocument = gql`
   }
 }
     ${ContractBalanceConnectionNodeFragmentDoc}`;
+export const GetBlocksDashboardDocument = gql`
+    query getBlocksDashboard {
+  getBlocksDashboard {
+    nodes {
+      timestamp
+      gasUsed
+      blockNo
+      producer
+    }
+  }
+}
+    `;
 export const PredicateDocument = gql`
     query predicate($address: String!) {
   predicate(address: $address) {
@@ -6311,6 +6385,18 @@ export const SearchDocument = gql`
     }
     transaction {
       id
+    }
+  }
+}
+    `;
+export const TpsDocument = gql`
+    query tps {
+  tps {
+    nodes {
+      start
+      end
+      txCount
+      totalGas
     }
   }
 }
@@ -6385,9 +6471,11 @@ const ChainDocumentString = print(ChainDocument);
 const CoinsDocumentString = print(CoinsDocument);
 const ContractDocumentString = print(ContractDocument);
 const ContractBalancesDocumentString = print(ContractBalancesDocument);
+const GetBlocksDashboardDocumentString = print(GetBlocksDashboardDocument);
 const PredicateDocumentString = print(PredicateDocument);
 const RecentTransactionsDocumentString = print(RecentTransactionsDocument);
 const SearchDocumentString = print(SearchDocument);
+const TpsDocumentString = print(TpsDocument);
 const TransactionDetailsDocumentString = print(TransactionDetailsDocument);
 const TransactionsByBlockIdDocumentString = print(
   TransactionsByBlockIdDocument,
@@ -6548,6 +6636,28 @@ export function getSdk(
         variables,
       );
     },
+    getBlocksDashboard(
+      variables?: GQLGetBlocksDashboardQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLGetBlocksDashboardQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLGetBlocksDashboardQuery>(
+            GetBlocksDashboardDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'getBlocksDashboard',
+        'query',
+        variables,
+      );
+    },
     predicate(
       variables: GQLPredicateQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -6609,6 +6719,27 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'search',
+        'query',
+        variables,
+      );
+    },
+    tps(
+      variables?: GQLTpsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLTpsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLTpsQuery>(TpsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'tps',
         'query',
         variables,
       );
