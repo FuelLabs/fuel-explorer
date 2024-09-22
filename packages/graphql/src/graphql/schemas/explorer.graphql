@@ -224,7 +224,7 @@ type Query {
   search(query: String!): SearchResult
   predicate(address: String!): PredicateItem
   tps: TPSConnection!
-  getBlocksDashboard : BlocksDashboardConnection!
+  getBlocksDashboard: BlocksDashboardConnection!
 }
 
 type TPS {
