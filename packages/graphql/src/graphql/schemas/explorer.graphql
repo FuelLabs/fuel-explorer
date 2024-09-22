@@ -223,4 +223,28 @@ type Query {
 
   search(query: String!): SearchResult
   predicate(address: String!): PredicateItem
+  tps: TPSConnection!
+  getBlocksDashboard: BlocksDashboardConnection!
+}
+
+type TPS {
+  start: String
+  end: String
+  txCount: U64!
+  totalGas: U64!
+}
+
+type TPSConnection {
+  nodes: [TPS!]!
+}
+
+type BlocksDashboard {
+  timestamp: U64!
+  gasUsed: U64!
+  blockNo: U64!
+  producer: String
+}
+
+type BlocksDashboardConnection {
+  nodes: [BlocksDashboard!]!
 }
