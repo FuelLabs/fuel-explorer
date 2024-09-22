@@ -177,7 +177,7 @@ export default class BlockDAO {
       [timeMinusOneDayRoundDownISO],
     );
 
-    if (!blocksData) {
+    if (blocksData.length === 0) {
       return { nodes: [] };
     }
 
