@@ -18,25 +18,21 @@ export type JsonViewerProps = BaseProps<{
 
 export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
   const classes = styles();
-  const [style, setStyle] = useState(defaultStyles);
   const { theme } = useTheme();
+  const [style, setStyle] = useState(defaultStyles);
 
-  // TODO: theme is loaded as dark but doesn't render in JsonView correctly
-  // using this solution we force the state to change
-  // and rerender the component
   useEffect(() => {
     setStyle(theme === 'dark' ? darkStyles : defaultStyles);
   }, [theme]);
+
   return (
     <JsonView
       data={data}
       shouldExpandNode={collapseAllNested}
-      style={
-        {
-          ...style,
-          container: cx(classes.json(), className),
-        } as any
-      }
+      style={{
+        ...style,
+        container: cx(classes.json(), className),
+      }}
       {...props}
     />
   );
