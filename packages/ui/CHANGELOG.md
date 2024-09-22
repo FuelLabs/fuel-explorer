@@ -1,5 +1,11 @@
 # @fuels/ui
 
+## 0.1.2
+
+### Patch Changes
+
+- [#569](https://github.com/FuelLabs/fuel-explorer/pull/569) [`376a5b5`](https://github.com/FuelLabs/fuel-explorer/commit/376a5b56a96ce63a3255ff41905e6d01575edeaf) Thanks [@LeoCourbassier](https://github.com/LeoCourbassier)! - - Added pnpm build to the publish action, ensuring "dist" folder will be published
+
 ## 0.1.1
 
 ### Patch Changes
