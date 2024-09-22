@@ -1,1 +1,0 @@
-export { Provider } from './Provider';

@@ -1,4 +1,4 @@
-import { GQLTransactionOutputFragment } from '@fuel-explorer/graphql';
+import type { GQLTransactionOutputFragment } from '@fuel-explorer/graphql';
 
 export const isOutput = <T extends GQLTransactionOutputFragment>(
   output: GQLTransactionOutputFragment,

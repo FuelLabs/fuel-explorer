@@ -1,5 +1,6 @@
 {
   "name": "predicate",
+  "private": true,
   "version": "0.0.1",
   "description": "Predicate app using Sway",
   "scripts": {
@@ -16,7 +17,7 @@
   },
   "devDependencies": {
     "dotenv": "16.4.1",
-    "fuels": "0.86.0",
+    "fuels": "0.94.4",
     "vitest": "1.2.2",
     "tsx": "4.7.1"
   }

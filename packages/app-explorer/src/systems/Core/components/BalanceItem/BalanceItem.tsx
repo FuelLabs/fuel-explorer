@@ -13,7 +13,8 @@ import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 
 import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
 import { Amount } from '../Amount/Amount';
-import type { UtxoItem } from '../Utxos/Utxos';
+
+import { UtxoItemType } from '~/systems/Core/components/Utxos/types';
 import { Utxos } from '../Utxos/Utxos';
 
 type BalanceItemProps = BaseProps<{
@@ -56,7 +57,9 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
           </Box>
         </Flex>
       </Collapsible.Header>
-      {hasUTXOs && <Utxos items={item.utxos as UtxoItem[]} assetId={assetId} />}
+      {hasUTXOs && (
+        <Utxos items={item.utxos as Array<UtxoItemType>} assetId={assetId} />
+      )}
     </Collapsible>
   );
 }

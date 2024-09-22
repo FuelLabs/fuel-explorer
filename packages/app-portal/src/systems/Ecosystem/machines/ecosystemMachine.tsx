@@ -22,6 +22,7 @@ type MachineContext = {
   search: string;
   tags: string[];
   filter: string;
+  isBuildingHidden: boolean;
 };
 
 type MachineServices = {
@@ -55,6 +56,10 @@ type EcosystemMachineEvents =
   | {
       type: 'CLEAR_FILTER';
       input: null;
+    }
+  | {
+      type: 'TOGGLE_IS_BUILDING_HIDDEN';
+      input: null;
     };
 
 const initialState: MachineContext = {
@@ -63,6 +68,7 @@ const initialState: MachineContext = {
   search: '',
   tags: [],
   filter: '',
+  isBuildingHidden: true,
 };
 
 export function sortAtoZ(a: string, b: string) {
@@ -102,6 +108,9 @@ export const ecosystemMachine = createMachine(
           },
           CLEAR_FILTER: {
             actions: ['clearFilter'],
+          },
+          TOGGLE_IS_BUILDING_HIDDEN: {
+            actions: ['toggleIsBuildingHidden'],
           },
         },
       },
@@ -164,6 +173,10 @@ export const ecosystemMachine = createMachine(
         ...ctx,
         search: '',
         filter: '',
+      })),
+      toggleIsBuildingHidden: assign((ctx) => ({
+        ...ctx,
+        isBuildingHidden: !ctx.isBuildingHidden,
       })),
     },
   },

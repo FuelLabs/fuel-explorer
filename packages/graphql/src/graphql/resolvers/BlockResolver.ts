@@ -3,6 +3,7 @@ import { logger } from '~/core/Logger';
 import type {
   GQLBlock,
   GQLQueryBlockArgs,
+  GQLQueryBlockRewardStatisticsArgs,
   GQLQueryBlocksArgs,
   GQLQueryTpsArgs,
 } from '~/graphql/generated/sdk-provider';
@@ -14,6 +15,7 @@ type Params = {
   blocks: GQLQueryBlocksArgs;
   block: GQLQueryBlockArgs;
   tps: GQLQueryTpsArgs;
+  blockReward: GQLQueryBlockRewardStatisticsArgs;
 };
 
 export class BlockResolver {
@@ -24,12 +26,13 @@ export class BlockResolver {
         block: resolvers.block,
         blocks: resolvers.blocks,
         tps: resolvers.tps,
+        blockRewardStatistics: resolvers.blockRewardStatistics,
       },
     };
   }
 
   async block(_: Source, { id, height }: Params['block']) {
-    logger.debugRequest('BlockResolver.block', { id, height });
+    logger.debug(`BlockResolver.block ${id} ${height}`);
     if (!id && !height) {
       throw new Error('Either id or height must be provided');
     }
@@ -49,6 +52,7 @@ export class BlockResolver {
   }
 
   async blocks(_: Source, params: Params['blocks']) {
+    logger.debug('BlockResolver.blocks', params);
     if (!params.first && !params.last) {
       throw new GraphQLError('Either first or last must be provided');
     }
@@ -66,5 +70,12 @@ export class BlockResolver {
     const blockDAO = new BlockDAO();
     const tps = await blockDAO.tps(new PaginatedParams(params), params.last);
     return tps;
+  }
+  async blockRewardStatistics(_: Source, params: Params['blockReward']) {
+    const blockDAO = new BlockDAO();
+    const blocks = await blockDAO.getBlockRewards(
+      params.timeFilter ? params.timeFilter : '',
+    );
+    return blocks;
   }
 }

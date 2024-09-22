@@ -1,0 +1,27 @@
+.rt-TabsTrigger {
+  padding: 0px;
+}
+
+/**
+ * Breakpoints reference:
+ * https://www.radix-ui.com/themes/docs/theme/breakpoints
+ *
+ * Size: initial
+ * Description: Phones (portrait)
+ */
+@media all {
+  .rt-BaseTabList:where(.rt-r-size-1) {
+    --tab-padding-x: var(--space-0);
+    --tab-inner-padding-x: var(--space-3);
+    --tab-inner-padding-y: var(--space-1);
+    --tab-inner-border-radius: var(--radius-3) var(--radius-3) 0 0;
+    --tab-height: auto;
+  }
+  .rt-BaseTabList:where(.rt-r-size-2) {
+    --tab-padding-x: var(--space-0);
+    --tab-inner-padding-x: var(--space-4);
+    --tab-inner-padding-y: var(--space-2);
+    --tab-inner-border-radius: var(--radius-4) var(--radius-4) 0 0;
+    --tab-height: auto;
+  }
+}

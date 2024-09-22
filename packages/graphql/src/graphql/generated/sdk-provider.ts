@@ -1,38 +1,64 @@
+import { GraphQLError, print } from 'graphql';
 import type { GraphQLClient, RequestOptions } from 'graphql-request';
-import { GraphQLError, print } from 'graphql'
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
+    };
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  Address: { input: string; output: string; }
-  AssetId: { input: string; output: string; }
-  BlockId: { input: string; output: string; }
-  Bytes32: { input: string; output: string; }
-  ContractId: { input: string; output: string; }
-  HexString: { input: string; output: string; }
-  Nonce: { input: string; output: string; }
-  RelayedTransactionId: { input: string; output: string; }
-  Salt: { input: string; output: string; }
-  Signature: { input: string; output: string; }
-  Tai64Timestamp: { input: string; output: string; }
-  TransactionId: { input: string; output: string; }
-  TxPointer: { input: string; output: string; }
-  U16: { input: string; output: string; }
-  U32: { input: string; output: string; }
-  U64: { input: string; output: string; }
-  UtxoId: { input: string; output: string; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  Address: { input: string; output: string };
+  AssetId: { input: string; output: string };
+  BlockId: { input: string; output: string };
+  Bytes32: { input: string; output: string };
+  ContractId: { input: string; output: string };
+  HexString: { input: string; output: string };
+  Nonce: { input: string; output: string };
+  RelayedTransactionId: { input: string; output: string };
+  Salt: { input: string; output: string };
+  Signature: { input: string; output: string };
+  Tai64Timestamp: { input: string; output: string };
+  TransactionId: { input: string; output: string };
+  TxPointer: { input: string; output: string };
+  U16: { input: string; output: string };
+  U32: { input: string; output: string };
+  U64: { input: string; output: string };
+  UtxoId: { input: string; output: string };
+};
+
+export type GQLAccountCreationNode = {
+  __typename: 'AccountCreationNode';
+  timestamp: Scalars['String']['output'];
+};
+
+export type GQLAccountNode = {
+  __typename: 'AccountNode';
+  account_id: Scalars['String']['output'];
+  balance: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  transaction_count: Scalars['Int']['output'];
 };
 
 export type GQLBalance = {
@@ -100,8 +126,21 @@ export type GQLBlockEdge = {
   node: GQLBlock;
 };
 
+export type GQLBlockReward = {
+  __typename: 'BlockReward';
+  id: Scalars['BlockId']['output'];
+  reward: Scalars['U64']['output'];
+  timestamp: Scalars['String']['output'];
+};
+
+export type GQLBlockRewardConnection = {
+  __typename: 'BlockRewardConnection';
+  /** A list of nodes. */
+  nodes?: Maybe<Array<GQLBlockReward>>;
+};
+
 export enum GQLBlockVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
 /** Breakpoint, defined as a tuple of contract ID and relative PC offset inside it */
@@ -198,7 +237,7 @@ export type GQLConsensusParametersPurpose = {
 };
 
 export enum GQLConsensusParametersVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
 export type GQLContract = {
@@ -267,8 +306,32 @@ export type GQLContractParameters = {
 };
 
 export enum GQLContractParametersVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
+
+export type GQLCumulativeAccountCreationConnection = {
+  __typename: 'CumulativeAccountCreationConnection';
+  accountOffset: Scalars['Int']['output'];
+  nodes?: Maybe<Array<GQLAccountCreationNode>>;
+};
+
+export type GQLCumulativeTransactionFeeConnection = {
+  __typename: 'CumulativeTransactionFeeConnection';
+  /** A list of nodes. */
+  nodes?: Maybe<Array<GQLTransactionFee>>;
+  transactionOffset: Scalars['U64']['output'];
+};
+
+export type GQLDailyActiveAccountsConnection = {
+  __typename: 'DailyActiveAccountsConnection';
+  nodes: Array<GQLDailyActiveAccountsNode>;
+};
+
+export type GQLDailyActiveAccountsNode = {
+  __typename: 'DailyActiveAccountsNode';
+  count: Scalars['Int']['output'];
+  timestamp: Scalars['String']['output'];
+};
 
 export type GQLDependentCost = GQLHeavyOperation | GQLLightOperation;
 
@@ -296,7 +359,9 @@ export type GQLDryRunTransactionExecutionStatus = {
   status: GQLDryRunTransactionStatus;
 };
 
-export type GQLDryRunTransactionStatus = GQLDryRunFailureStatus | GQLDryRunSuccessStatus;
+export type GQLDryRunTransactionStatus =
+  | GQLDryRunFailureStatus
+  | GQLDryRunSuccessStatus;
 
 export type GQLEstimateGasPrice = {
   __typename: 'EstimateGasPrice';
@@ -330,7 +395,7 @@ export type GQLFeeParameters = {
 };
 
 export enum GQLFeeParametersVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
 export type GQLGasCosts = {
@@ -450,7 +515,7 @@ export type GQLGasCosts = {
 };
 
 export enum GQLGasCostsVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
 export type GQLGenesis = {
@@ -470,7 +535,10 @@ export type GQLGenesis = {
   transactionsRoot: Scalars['Bytes32']['output'];
 };
 
-export type GQLGroupedInput = GQLGroupedInputCoin | GQLGroupedInputContract | GQLGroupedInputMessage;
+export type GQLGroupedInput =
+  | GQLGroupedInputCoin
+  | GQLGroupedInputContract
+  | GQLGroupedInputMessage;
 
 export type GQLGroupedInputCoin = {
   __typename: 'GroupedInputCoin';
@@ -500,10 +568,13 @@ export type GQLGroupedInputMessage = {
 export enum GQLGroupedInputType {
   InputCoin = 'InputCoin',
   InputContract = 'InputContract',
-  InputMessage = 'InputMessage'
+  InputMessage = 'InputMessage',
 }
 
-export type GQLGroupedOutput = GQLGroupedOutputChanged | GQLGroupedOutputCoin | GQLGroupedOutputContractCreated;
+export type GQLGroupedOutput =
+  | GQLGroupedOutputChanged
+  | GQLGroupedOutputCoin
+  | GQLGroupedOutputContractCreated;
 
 export type GQLGroupedOutputChanged = {
   __typename: 'GroupedOutputChanged';
@@ -533,7 +604,7 @@ export type GQLGroupedOutputContractCreated = {
 export enum GQLGroupedOutputType {
   OutputChanged = 'OutputChanged',
   OutputCoin = 'OutputCoin',
-  OutputContractCreated = 'OutputContractCreated'
+  OutputContractCreated = 'OutputContractCreated',
 }
 
 export type GQLHeader = {
@@ -569,7 +640,7 @@ export type GQLHeader = {
 };
 
 export enum GQLHeaderVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
 export type GQLHeavyOperation = {
@@ -688,7 +759,7 @@ export type GQLMessageProof = {
 export enum GQLMessageState {
   NotFound = 'NOT_FOUND',
   Spent = 'SPENT',
-  Unspent = 'UNSPENT'
+  Unspent = 'UNSPENT',
 }
 
 export type GQLMessageStatus = {
@@ -742,11 +813,9 @@ export type GQLMutation = {
   submit: GQLTransaction;
 };
 
-
 export type GQLMutationContinueTxArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type GQLMutationDryRunArgs = {
   gasPrice?: InputMaybe<Scalars['U64']['input']>;
@@ -754,49 +823,52 @@ export type GQLMutationDryRunArgs = {
   utxoValidation?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-
 export type GQLMutationEndSessionArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type GQLMutationExecuteArgs = {
   id: Scalars['ID']['input'];
   op: Scalars['String']['input'];
 };
 
-
 export type GQLMutationProduceBlocksArgs = {
   blocksToProduce: Scalars['U32']['input'];
   startTimestamp?: InputMaybe<Scalars['Tai64Timestamp']['input']>;
 };
 
-
 export type GQLMutationResetArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type GQLMutationSetBreakpointArgs = {
   breakpoint: GQLBreakpoint;
   id: Scalars['ID']['input'];
 };
 
-
 export type GQLMutationSetSingleSteppingArgs = {
   enable: Scalars['Boolean']['input'];
   id: Scalars['ID']['input'];
 };
-
 
 export type GQLMutationStartTxArgs = {
   id: Scalars['ID']['input'];
   txJson: Scalars['String']['input'];
 };
 
-
 export type GQLMutationSubmitArgs = {
   tx: Scalars['HexString']['input'];
+};
+
+export type GQLNewAccountNode = {
+  __typename: 'NewAccountNode';
+  timestamp: Scalars['String']['output'];
+};
+
+export type GQLNewAccountStatisticsConnection = {
+  __typename: 'NewAccountStatisticsConnection';
+  count: Scalars['Int']['output'];
+  nodes?: Maybe<Array<GQLNewAccountNode>>;
 };
 
 export type GQLNodeInfo = {
@@ -825,14 +897,20 @@ export type GQLOperationReceipt = {
 export enum GQLOperationType {
   FinalResult = 'FINAL_RESULT',
   FromAccount = 'FROM_ACCOUNT',
-  FromContract = 'FROM_CONTRACT'
+  FromContract = 'FROM_CONTRACT',
+  Rootless = 'ROOTLESS',
 }
 
 export type GQLOperationsFilterInput = {
   transactionHash: Scalars['String']['input'];
 };
 
-export type GQLOutput = GQLChangeOutput | GQLCoinOutput | GQLContractCreated | GQLContractOutput | GQLVariableOutput;
+export type GQLOutput =
+  | GQLChangeOutput
+  | GQLCoinOutput
+  | GQLContractCreated
+  | GQLContractOutput
+  | GQLVariableOutput;
 
 /**
  * A separate `Breakpoint` type to be used as an output, as a single
@@ -855,6 +933,12 @@ export type GQLPageInfo = {
   hasPreviousPage: Scalars['Boolean']['output'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export type GQLPaginatedAccountConnection = {
+  __typename: 'PaginatedAccountConnection';
+  nodes: Array<GQLAccountNode>;
+  pageInfo: GQLPageInfo;
 };
 
 export type GQLParsedTime = {
@@ -911,7 +995,7 @@ export type GQLPredicateParameters = {
 };
 
 export enum GQLPredicateParametersVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
 export type GQLProgramState = {
@@ -925,6 +1009,7 @@ export type GQLQuery = {
   balance: GQLBalance;
   balances: GQLBalanceConnection;
   block?: Maybe<GQLBlock>;
+  blockRewardStatistics: GQLBlockRewardConnection;
   blocks: GQLBlockConnection;
   chain: GQLChainInfo;
   /** Gets the coin by `utxo_id`. */
@@ -948,6 +1033,9 @@ export type GQLQuery = {
   contractBalance: GQLContractBalance;
   contractBalances: GQLContractBalanceConnection;
   contracts: GQLContractConnection;
+  cumulativeAccountCreationStatistics: GQLCumulativeAccountCreationConnection;
+  cumulativeTransactionsFeeStatistics: GQLCumulativeTransactionFeeConnection;
+  dailyActiveAccounts: GQLDailyActiveAccountsConnection;
   estimateGasPrice: GQLEstimateGasPrice;
   /** Estimate the predicate gas for the provided transaction */
   estimatePredicates: GQLTransaction;
@@ -960,23 +1048,27 @@ export type GQLQuery = {
   messageProof?: Maybe<GQLMessageProof>;
   messageStatus: GQLMessageStatus;
   messages: GQLMessageConnection;
+  newAccountStatistics: GQLNewAccountStatisticsConnection;
   nodeInfo: GQLNodeInfo;
+  paginatedAccounts: GQLPaginatedAccountConnection;
   predicate?: Maybe<GQLPredicateItem>;
   /** Read register value by index. */
   register: Scalars['U64']['output'];
   relayedTransactionStatus?: Maybe<GQLRelayedTransactionStatus>;
   search?: Maybe<GQLSearchResult>;
+  tps: GQLTpsConnection;
   transaction?: Maybe<GQLTransaction>;
   transactions: GQLTransactionConnection;
+  transactionsByAccountAndDate: Array<GQLTransactionSummary>;
+  transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
+  transactionsFeeStatistics: GQLTransactionFeeConnection;
 };
-
 
 export type GQLQueryBalanceArgs = {
   assetId: Scalars['AssetId']['input'];
   owner: Scalars['Address']['input'];
 };
-
 
 export type GQLQueryBalancesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -986,12 +1078,14 @@ export type GQLQueryBalancesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type GQLQueryBlockArgs = {
   height?: InputMaybe<Scalars['U32']['input']>;
   id?: InputMaybe<Scalars['BlockId']['input']>;
 };
 
+export type GQLQueryBlockRewardStatisticsArgs = {
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+};
 
 export type GQLQueryBlocksArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1000,11 +1094,9 @@ export type GQLQueryBlocksArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type GQLQueryCoinArgs = {
   utxoId: Scalars['UtxoId']['input'];
 };
-
 
 export type GQLQueryCoinsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1014,24 +1106,20 @@ export type GQLQueryCoinsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type GQLQueryCoinsToSpendArgs = {
   excludedIds?: InputMaybe<GQLExcludeInput>;
   owner: Scalars['Address']['input'];
   queryPerAsset: Array<GQLSpendQueryElementInput>;
 };
 
-
 export type GQLQueryContractArgs = {
   id: Scalars['ContractId']['input'];
 };
-
 
 export type GQLQueryContractBalanceArgs = {
   asset: Scalars['AssetId']['input'];
   contract: Scalars['ContractId']['input'];
 };
-
 
 export type GQLQueryContractBalancesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1041,7 +1129,6 @@ export type GQLQueryContractBalancesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type GQLQueryContractsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -1049,16 +1136,25 @@ export type GQLQueryContractsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type GQLQueryCumulativeAccountCreationStatisticsArgs = {
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GQLQueryCumulativeTransactionsFeeStatisticsArgs = {
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GQLQueryDailyActiveAccountsArgs = {
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+};
 
 export type GQLQueryEstimateGasPriceArgs = {
   blockHorizon?: InputMaybe<Scalars['U32']['input']>;
 };
 
-
 export type GQLQueryEstimatePredicatesArgs = {
   tx: Scalars['HexString']['input'];
 };
-
 
 export type GQLQueryMemoryArgs = {
   id: Scalars['ID']['input'];
@@ -1066,11 +1162,9 @@ export type GQLQueryMemoryArgs = {
   start: Scalars['U32']['input'];
 };
 
-
 export type GQLQueryMessageArgs = {
   nonce: Scalars['Nonce']['input'];
 };
-
 
 export type GQLQueryMessageProofArgs = {
   commitBlockHeight?: InputMaybe<Scalars['U32']['input']>;
@@ -1079,11 +1173,9 @@ export type GQLQueryMessageProofArgs = {
   transactionId: Scalars['TransactionId']['input'];
 };
 
-
 export type GQLQueryMessageStatusArgs = {
   nonce: Scalars['Nonce']['input'];
 };
-
 
 export type GQLQueryMessagesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1093,32 +1185,43 @@ export type GQLQueryMessagesArgs = {
   owner?: InputMaybe<Scalars['Address']['input']>;
 };
 
+export type GQLQueryNewAccountStatisticsArgs = {
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GQLQueryPaginatedAccountsArgs = {
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  direction?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+};
 
 export type GQLQueryPredicateArgs = {
   address: Scalars['String']['input'];
 };
-
 
 export type GQLQueryRegisterArgs = {
   id: Scalars['ID']['input'];
   register: Scalars['U32']['input'];
 };
 
-
 export type GQLQueryRelayedTransactionStatusArgs = {
   id: Scalars['RelayedTransactionId']['input'];
 };
-
 
 export type GQLQuerySearchArgs = {
   query: Scalars['String']['input'];
 };
 
+export type GQLQueryTpsArgs = {
+  before?: InputMaybe<Scalars['String']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
 
 export type GQLQueryTransactionArgs = {
   id: Scalars['TransactionId']['input'];
 };
-
 
 export type GQLQueryTransactionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1127,6 +1230,19 @@ export type GQLQueryTransactionsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type GQLQueryTransactionsByAccountAndDateArgs = {
+  account: Scalars['String']['input'];
+  endDate: Scalars['String']['input'];
+  startDate: Scalars['String']['input'];
+};
+
+export type GQLQueryTransactionsByBlockIdArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  blockId: Scalars['String']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
 
 export type GQLQueryTransactionsByOwnerArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1134,6 +1250,10 @@ export type GQLQueryTransactionsByOwnerArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
+};
+
+export type GQLQueryTransactionsFeeStatisticsArgs = {
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GQLReceipt = {
@@ -1182,7 +1302,7 @@ export enum GQLReceiptType {
   Revert = 'REVERT',
   ScriptResult = 'SCRIPT_RESULT',
   Transfer = 'TRANSFER',
-  TransferOut = 'TRANSFER_OUT'
+  TransferOut = 'TRANSFER_OUT',
 }
 
 export type GQLRelayedTransactionFailed = {
@@ -1196,7 +1316,7 @@ export type GQLRelayedTransactionStatus = GQLRelayedTransactionFailed;
 export enum GQLReturnType {
   Return = 'RETURN',
   ReturnData = 'RETURN_DATA',
-  Revert = 'REVERT'
+  Revert = 'REVERT',
 }
 
 export type GQLRunResult = {
@@ -1210,7 +1330,7 @@ export enum GQLRunState {
   /** Stopped on a breakpoint */
   Breakpoint = 'BREAKPOINT',
   /** All breakpoints have been processed, and the program has terminated */
-  Completed = 'COMPLETED'
+  Completed = 'COMPLETED',
 }
 
 export type GQLScriptParameters = {
@@ -1221,7 +1341,7 @@ export type GQLScriptParameters = {
 };
 
 export enum GQLScriptParametersVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
 export type GQLSearchAccount = {
@@ -1299,11 +1419,9 @@ export type GQLSubscription = {
   submitAndAwait: GQLTransactionStatus;
 };
 
-
 export type GQLSubscriptionStatusChangeArgs = {
   id: Scalars['TransactionId']['input'];
 };
-
 
 export type GQLSubscriptionSubmitAndAwaitArgs = {
   tx: Scalars['HexString']['input'];
@@ -1318,6 +1436,21 @@ export type GQLSuccessStatus = {
   totalFee: Scalars['U64']['output'];
   totalGas: Scalars['U64']['output'];
   transactionId: Scalars['TransactionId']['output'];
+};
+
+export type GQLTps = {
+  __typename: 'TPS';
+  blockNo: Scalars['BlockId']['output'];
+  gasUsed: Scalars['U64']['output'];
+  producer?: Maybe<Scalars['String']['output']>;
+  timestamp: Scalars['U64']['output'];
+  tps: Scalars['U64']['output'];
+};
+
+export type GQLTpsConnection = {
+  __typename: 'TPSConnection';
+  nodes: Array<GQLTps>;
+  pageInfo: GQLPageInfo;
 };
 
 export type GQLTransaction = {
@@ -1388,13 +1521,55 @@ export type GQLTransactionEdge = {
   node: GQLTransaction;
 };
 
+export type GQLTransactionFee = {
+  __typename: 'TransactionFee';
+  fee: Scalars['U64']['output'];
+  timestamp: Scalars['String']['output'];
+};
+
+export type GQLTransactionFeeConnection = {
+  __typename: 'TransactionFeeConnection';
+  /** A list of nodes. */
+  nodes?: Maybe<Array<GQLTransactionFee>>;
+};
+
 export type GQLTransactionGasCosts = {
   __typename: 'TransactionGasCosts';
   fee?: Maybe<Scalars['U64']['output']>;
   gasUsed?: Maybe<Scalars['U64']['output']>;
 };
 
-export type GQLTransactionStatus = GQLFailureStatus | GQLSqueezedOutStatus | GQLSubmittedStatus | GQLSuccessStatus;
+export type GQLTransactionInput = {
+  __typename: 'TransactionInput';
+  amount?: Maybe<Scalars['String']['output']>;
+  assetId?: Maybe<Scalars['String']['output']>;
+  owner?: Maybe<Scalars['String']['output']>;
+};
+
+export type GQLTransactionOutput = {
+  __typename: 'TransactionOutput';
+  amount?: Maybe<Scalars['String']['output']>;
+  assetId?: Maybe<Scalars['String']['output']>;
+  to?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type GQLTransactionStatus =
+  | GQLFailureStatus
+  | GQLSqueezedOutStatus
+  | GQLSubmittedStatus
+  | GQLSuccessStatus;
+
+export type GQLTransactionSummary = {
+  __typename: 'TransactionSummary';
+  inputs: Array<GQLInput>;
+  isMint?: Maybe<Scalars['Boolean']['output']>;
+  outputs: Array<GQLOutput>;
+  timestamp: Scalars['String']['output'];
+  totalFee?: Maybe<Scalars['String']['output']>;
+  totalGas?: Maybe<Scalars['String']['output']>;
+  tx_hash: Scalars['String']['output'];
+};
 
 export type GQLTxParameters = {
   __typename: 'TxParameters';
@@ -1408,10 +1583,12 @@ export type GQLTxParameters = {
 };
 
 export enum GQLTxParametersVersion {
-  V1 = 'V1'
+  V1 = 'V1',
 }
 
-export type GQLUpgradePurpose = GQLConsensusParametersPurpose | GQLStateTransitionPurpose;
+export type GQLUpgradePurpose =
+  | GQLConsensusParametersPurpose
+  | GQLStateTransitionPurpose;
 
 export type GQLUtxoItem = {
   __typename: 'UtxoItem';
@@ -1433,10 +1610,22 @@ export type GQLBalanceQueryVariables = Exact<{
   owner: Scalars['Address']['input'];
 }>;
 
+export type GQLBalanceQuery = {
+  __typename: 'Query';
+  balance: {
+    __typename: 'Balance';
+    amount: string;
+    assetId: string;
+    owner: string;
+  };
+};
 
-export type GQLBalanceQuery = { __typename: 'Query', balance: { __typename: 'Balance', amount: string, assetId: string, owner: string } };
-
-export type GQLBalanceItemFragment = { __typename: 'Balance', amount: string, assetId: string, owner: string };
+export type GQLBalanceItemFragment = {
+  __typename: 'Balance';
+  amount: string;
+  assetId: string;
+  owner: string;
+};
 
 export type GQLBalancesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1446,10 +1635,346 @@ export type GQLBalancesQueryVariables = Exact<{
   last?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
+export type GQLBalancesQuery = {
+  __typename: 'Query';
+  balances: {
+    __typename: 'BalanceConnection';
+    nodes: Array<{
+      __typename: 'Balance';
+      amount: string;
+      assetId: string;
+      owner: string;
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
 
-export type GQLBalancesQuery = { __typename: 'Query', balances: { __typename: 'BalanceConnection', nodes: Array<{ __typename: 'Balance', amount: string, assetId: string, owner: string }>, pageInfo: { __typename: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+export type GQLBlockRewardStatisticsQueryVariables = Exact<{
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+}>;
 
-export type GQLBlockItemFragment = { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string }, transactions: Array<{ __typename: 'Transaction', bytecodeRoot?: string | null, bytecodeWitnessIndex?: string | null, id: string, inputAssetIds?: Array<string> | null, inputContracts?: Array<string> | null, isCreate: boolean, isMint: boolean, isScript: boolean, isUpgrade: boolean, isUpload: boolean, maturity?: string | null, mintAmount?: string | null, mintAssetId?: string | null, mintGasPrice?: string | null, proofSet?: Array<string> | null, rawPayload: string, receiptsRoot?: string | null, salt?: string | null, script?: string | null, scriptData?: string | null, scriptGasLimit?: string | null, storageSlots?: Array<string> | null, subsectionIndex?: string | null, subsectionsNumber?: string | null, txPointer?: string | null, witnesses?: Array<string> | null, inputContract?: { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, assetId: string, owner: string, predicate: string, predicateData: string, predicateGasUsed: string, txPointer: string, utxoId: string, witnessIndex: string } | { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | { __typename: 'InputMessage', amount: string, data: string, nonce: string, predicate: string, predicateData: string, predicateGasUsed: string, recipient: string, sender: string, witnessIndex: string }> | null, outputContract?: { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | null, outputs: Array<{ __typename: 'ChangeOutput', amount: string, assetId: string, to: string } | { __typename: 'CoinOutput', amount: string, assetId: string, to: string } | { __typename: 'ContractCreated', contract: string, stateRoot: string } | { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | { __typename: 'VariableOutput', amount: string, assetId: string, to: string }>, policies?: { __typename: 'Policies', maturity?: string | null, maxFee?: string | null, tip?: string | null, witnessLimit?: string | null } | null, status?: { __typename: 'FailureStatus', reason: string, time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string } }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | { __typename: 'SqueezedOutStatus', reason: string } | { __typename: 'SubmittedStatus', time: string } | { __typename: 'SuccessStatus', time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string } }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | null, upgradePurpose?: { __typename: 'ConsensusParametersPurpose', checksum: string, witnessIndex: string } | { __typename: 'StateTransitionPurpose', root: string } | null }> };
+export type GQLBlockRewardStatisticsQuery = {
+  __typename: 'Query';
+  blockRewardStatistics: {
+    __typename: 'BlockRewardConnection';
+    nodes?: Array<{
+      __typename: 'BlockReward';
+      id: string;
+      reward: string;
+      timestamp: string;
+    }> | null;
+  };
+};
+
+export type GQLBlockItemFragment = {
+  __typename: 'Block';
+  height: string;
+  id: string;
+  consensus:
+    | {
+        __typename: 'Genesis';
+        chainConfigHash: string;
+        coinsRoot: string;
+        contractsRoot: string;
+        messagesRoot: string;
+        transactionsRoot: string;
+      }
+    | { __typename: 'PoAConsensus'; signature: string };
+  header: {
+    __typename: 'Header';
+    applicationHash: string;
+    consensusParametersVersion: string;
+    daHeight: string;
+    eventInboxRoot: string;
+    height: string;
+    id: string;
+    messageOutboxRoot: string;
+    messageReceiptCount: string;
+    prevRoot: string;
+    stateTransitionBytecodeVersion: string;
+    time: string;
+    transactionsCount: string;
+    transactionsRoot: string;
+  };
+  transactions: Array<{
+    __typename: 'Transaction';
+    bytecodeRoot?: string | null;
+    bytecodeWitnessIndex?: string | null;
+    id: string;
+    inputAssetIds?: Array<string> | null;
+    inputContracts?: Array<string> | null;
+    isCreate: boolean;
+    isMint: boolean;
+    isScript: boolean;
+    isUpgrade: boolean;
+    isUpload: boolean;
+    maturity?: string | null;
+    mintAmount?: string | null;
+    mintAssetId?: string | null;
+    mintGasPrice?: string | null;
+    proofSet?: Array<string> | null;
+    rawPayload: string;
+    receiptsRoot?: string | null;
+    salt?: string | null;
+    script?: string | null;
+    scriptData?: string | null;
+    scriptGasLimit?: string | null;
+    storageSlots?: Array<string> | null;
+    subsectionIndex?: string | null;
+    subsectionsNumber?: string | null;
+    txPointer?: string | null;
+    witnesses?: Array<string> | null;
+    inputContract?: {
+      __typename: 'InputContract';
+      balanceRoot: string;
+      contractId: string;
+      stateRoot: string;
+      txPointer: string;
+      utxoId: string;
+    } | null;
+    inputs?: Array<
+      | {
+          __typename: 'InputCoin';
+          amount: string;
+          assetId: string;
+          owner: string;
+          predicate: string;
+          predicateData: string;
+          predicateGasUsed: string;
+          txPointer: string;
+          utxoId: string;
+          witnessIndex: string;
+        }
+      | {
+          __typename: 'InputContract';
+          balanceRoot: string;
+          contractId: string;
+          stateRoot: string;
+          txPointer: string;
+          utxoId: string;
+        }
+      | {
+          __typename: 'InputMessage';
+          amount: string;
+          data: string;
+          nonce: string;
+          predicate: string;
+          predicateData: string;
+          predicateGasUsed: string;
+          recipient: string;
+          sender: string;
+          witnessIndex: string;
+        }
+    > | null;
+    outputContract?: {
+      __typename: 'ContractOutput';
+      balanceRoot: string;
+      inputIndex: string;
+      stateRoot: string;
+    } | null;
+    outputs: Array<
+      | {
+          __typename: 'ChangeOutput';
+          amount: string;
+          assetId: string;
+          to: string;
+        }
+      | {
+          __typename: 'CoinOutput';
+          amount: string;
+          assetId: string;
+          to: string;
+        }
+      | { __typename: 'ContractCreated'; contract: string; stateRoot: string }
+      | {
+          __typename: 'ContractOutput';
+          balanceRoot: string;
+          inputIndex: string;
+          stateRoot: string;
+        }
+      | {
+          __typename: 'VariableOutput';
+          amount: string;
+          assetId: string;
+          to: string;
+        }
+    >;
+    policies?: {
+      __typename: 'Policies';
+      maturity?: string | null;
+      maxFee?: string | null;
+      tip?: string | null;
+      witnessLimit?: string | null;
+    } | null;
+    status?:
+      | {
+          __typename: 'FailureStatus';
+          reason: string;
+          time: string;
+          totalFee: string;
+          totalGas: string;
+          transactionId: string;
+          block: {
+            __typename: 'Block';
+            height: string;
+            id: string;
+            consensus:
+              | {
+                  __typename: 'Genesis';
+                  chainConfigHash: string;
+                  coinsRoot: string;
+                  contractsRoot: string;
+                  messagesRoot: string;
+                  transactionsRoot: string;
+                }
+              | { __typename: 'PoAConsensus'; signature: string };
+            header: {
+              __typename: 'Header';
+              applicationHash: string;
+              consensusParametersVersion: string;
+              daHeight: string;
+              eventInboxRoot: string;
+              height: string;
+              id: string;
+              messageOutboxRoot: string;
+              messageReceiptCount: string;
+              prevRoot: string;
+              stateTransitionBytecodeVersion: string;
+              time: string;
+              transactionsCount: string;
+              transactionsRoot: string;
+            };
+          };
+          programState?: {
+            __typename: 'ProgramState';
+            data: string;
+            returnType: GQLReturnType;
+          } | null;
+          receipts: Array<{
+            __typename: 'Receipt';
+            amount?: string | null;
+            assetId?: string | null;
+            contractId?: string | null;
+            data?: string | null;
+            digest?: string | null;
+            gas?: string | null;
+            gasUsed?: string | null;
+            id?: string | null;
+            is?: string | null;
+            len?: string | null;
+            nonce?: string | null;
+            param1?: string | null;
+            param2?: string | null;
+            pc?: string | null;
+            ptr?: string | null;
+            ra?: string | null;
+            rb?: string | null;
+            rc?: string | null;
+            rd?: string | null;
+            reason?: string | null;
+            receiptType: GQLReceiptType;
+            recipient?: string | null;
+            result?: string | null;
+            sender?: string | null;
+            subId?: string | null;
+            to?: string | null;
+            toAddress?: string | null;
+            val?: string | null;
+          }>;
+        }
+      | { __typename: 'SqueezedOutStatus'; reason: string }
+      | { __typename: 'SubmittedStatus'; time: string }
+      | {
+          __typename: 'SuccessStatus';
+          time: string;
+          totalFee: string;
+          totalGas: string;
+          transactionId: string;
+          block: {
+            __typename: 'Block';
+            height: string;
+            id: string;
+            consensus:
+              | {
+                  __typename: 'Genesis';
+                  chainConfigHash: string;
+                  coinsRoot: string;
+                  contractsRoot: string;
+                  messagesRoot: string;
+                  transactionsRoot: string;
+                }
+              | { __typename: 'PoAConsensus'; signature: string };
+            header: {
+              __typename: 'Header';
+              applicationHash: string;
+              consensusParametersVersion: string;
+              daHeight: string;
+              eventInboxRoot: string;
+              height: string;
+              id: string;
+              messageOutboxRoot: string;
+              messageReceiptCount: string;
+              prevRoot: string;
+              stateTransitionBytecodeVersion: string;
+              time: string;
+              transactionsCount: string;
+              transactionsRoot: string;
+            };
+          };
+          programState?: {
+            __typename: 'ProgramState';
+            data: string;
+            returnType: GQLReturnType;
+          } | null;
+          receipts: Array<{
+            __typename: 'Receipt';
+            amount?: string | null;
+            assetId?: string | null;
+            contractId?: string | null;
+            data?: string | null;
+            digest?: string | null;
+            gas?: string | null;
+            gasUsed?: string | null;
+            id?: string | null;
+            is?: string | null;
+            len?: string | null;
+            nonce?: string | null;
+            param1?: string | null;
+            param2?: string | null;
+            pc?: string | null;
+            ptr?: string | null;
+            ra?: string | null;
+            rb?: string | null;
+            rc?: string | null;
+            rd?: string | null;
+            reason?: string | null;
+            receiptType: GQLReceiptType;
+            recipient?: string | null;
+            result?: string | null;
+            sender?: string | null;
+            subId?: string | null;
+            to?: string | null;
+            toAddress?: string | null;
+            val?: string | null;
+          }>;
+        }
+      | null;
+    upgradePurpose?:
+      | {
+          __typename: 'ConsensusParametersPurpose';
+          checksum: string;
+          witnessIndex: string;
+        }
+      | { __typename: 'StateTransitionPurpose'; root: string }
+      | null;
+  }>;
+};
 
 export type GQLBlocksQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1458,13 +1983,1587 @@ export type GQLBlocksQueryVariables = Exact<{
   last?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
+export type GQLBlocksQuery = {
+  __typename: 'Query';
+  blocks: {
+    __typename: 'BlockConnection';
+    edges: Array<{
+      __typename: 'BlockEdge';
+      cursor: string;
+      node: {
+        __typename: 'Block';
+        height: string;
+        id: string;
+        consensus:
+          | {
+              __typename: 'Genesis';
+              chainConfigHash: string;
+              coinsRoot: string;
+              contractsRoot: string;
+              messagesRoot: string;
+              transactionsRoot: string;
+            }
+          | { __typename: 'PoAConsensus'; signature: string };
+        header: {
+          __typename: 'Header';
+          applicationHash: string;
+          consensusParametersVersion: string;
+          daHeight: string;
+          eventInboxRoot: string;
+          height: string;
+          id: string;
+          messageOutboxRoot: string;
+          messageReceiptCount: string;
+          prevRoot: string;
+          stateTransitionBytecodeVersion: string;
+          time: string;
+          transactionsCount: string;
+          transactionsRoot: string;
+        };
+        transactions: Array<{
+          __typename: 'Transaction';
+          bytecodeRoot?: string | null;
+          bytecodeWitnessIndex?: string | null;
+          id: string;
+          inputAssetIds?: Array<string> | null;
+          inputContracts?: Array<string> | null;
+          isCreate: boolean;
+          isMint: boolean;
+          isScript: boolean;
+          isUpgrade: boolean;
+          isUpload: boolean;
+          maturity?: string | null;
+          mintAmount?: string | null;
+          mintAssetId?: string | null;
+          mintGasPrice?: string | null;
+          proofSet?: Array<string> | null;
+          rawPayload: string;
+          receiptsRoot?: string | null;
+          salt?: string | null;
+          script?: string | null;
+          scriptData?: string | null;
+          scriptGasLimit?: string | null;
+          storageSlots?: Array<string> | null;
+          subsectionIndex?: string | null;
+          subsectionsNumber?: string | null;
+          txPointer?: string | null;
+          witnesses?: Array<string> | null;
+          inputContract?: {
+            __typename: 'InputContract';
+            balanceRoot: string;
+            contractId: string;
+            stateRoot: string;
+            txPointer: string;
+            utxoId: string;
+          } | null;
+          inputs?: Array<
+            | {
+                __typename: 'InputCoin';
+                amount: string;
+                assetId: string;
+                owner: string;
+                predicate: string;
+                predicateData: string;
+                predicateGasUsed: string;
+                txPointer: string;
+                utxoId: string;
+                witnessIndex: string;
+              }
+            | {
+                __typename: 'InputContract';
+                balanceRoot: string;
+                contractId: string;
+                stateRoot: string;
+                txPointer: string;
+                utxoId: string;
+              }
+            | {
+                __typename: 'InputMessage';
+                amount: string;
+                data: string;
+                nonce: string;
+                predicate: string;
+                predicateData: string;
+                predicateGasUsed: string;
+                recipient: string;
+                sender: string;
+                witnessIndex: string;
+              }
+          > | null;
+          outputContract?: {
+            __typename: 'ContractOutput';
+            balanceRoot: string;
+            inputIndex: string;
+            stateRoot: string;
+          } | null;
+          outputs: Array<
+            | {
+                __typename: 'ChangeOutput';
+                amount: string;
+                assetId: string;
+                to: string;
+              }
+            | {
+                __typename: 'CoinOutput';
+                amount: string;
+                assetId: string;
+                to: string;
+              }
+            | {
+                __typename: 'ContractCreated';
+                contract: string;
+                stateRoot: string;
+              }
+            | {
+                __typename: 'ContractOutput';
+                balanceRoot: string;
+                inputIndex: string;
+                stateRoot: string;
+              }
+            | {
+                __typename: 'VariableOutput';
+                amount: string;
+                assetId: string;
+                to: string;
+              }
+          >;
+          policies?: {
+            __typename: 'Policies';
+            maturity?: string | null;
+            maxFee?: string | null;
+            tip?: string | null;
+            witnessLimit?: string | null;
+          } | null;
+          status?:
+            | {
+                __typename: 'FailureStatus';
+                reason: string;
+                time: string;
+                totalFee: string;
+                totalGas: string;
+                transactionId: string;
+                block: {
+                  __typename: 'Block';
+                  height: string;
+                  id: string;
+                  consensus:
+                    | {
+                        __typename: 'Genesis';
+                        chainConfigHash: string;
+                        coinsRoot: string;
+                        contractsRoot: string;
+                        messagesRoot: string;
+                        transactionsRoot: string;
+                      }
+                    | { __typename: 'PoAConsensus'; signature: string };
+                  header: {
+                    __typename: 'Header';
+                    applicationHash: string;
+                    consensusParametersVersion: string;
+                    daHeight: string;
+                    eventInboxRoot: string;
+                    height: string;
+                    id: string;
+                    messageOutboxRoot: string;
+                    messageReceiptCount: string;
+                    prevRoot: string;
+                    stateTransitionBytecodeVersion: string;
+                    time: string;
+                    transactionsCount: string;
+                    transactionsRoot: string;
+                  };
+                };
+                programState?: {
+                  __typename: 'ProgramState';
+                  data: string;
+                  returnType: GQLReturnType;
+                } | null;
+                receipts: Array<{
+                  __typename: 'Receipt';
+                  amount?: string | null;
+                  assetId?: string | null;
+                  contractId?: string | null;
+                  data?: string | null;
+                  digest?: string | null;
+                  gas?: string | null;
+                  gasUsed?: string | null;
+                  id?: string | null;
+                  is?: string | null;
+                  len?: string | null;
+                  nonce?: string | null;
+                  param1?: string | null;
+                  param2?: string | null;
+                  pc?: string | null;
+                  ptr?: string | null;
+                  ra?: string | null;
+                  rb?: string | null;
+                  rc?: string | null;
+                  rd?: string | null;
+                  reason?: string | null;
+                  receiptType: GQLReceiptType;
+                  recipient?: string | null;
+                  result?: string | null;
+                  sender?: string | null;
+                  subId?: string | null;
+                  to?: string | null;
+                  toAddress?: string | null;
+                  val?: string | null;
+                }>;
+              }
+            | { __typename: 'SqueezedOutStatus'; reason: string }
+            | { __typename: 'SubmittedStatus'; time: string }
+            | {
+                __typename: 'SuccessStatus';
+                time: string;
+                totalFee: string;
+                totalGas: string;
+                transactionId: string;
+                block: {
+                  __typename: 'Block';
+                  height: string;
+                  id: string;
+                  consensus:
+                    | {
+                        __typename: 'Genesis';
+                        chainConfigHash: string;
+                        coinsRoot: string;
+                        contractsRoot: string;
+                        messagesRoot: string;
+                        transactionsRoot: string;
+                      }
+                    | { __typename: 'PoAConsensus'; signature: string };
+                  header: {
+                    __typename: 'Header';
+                    applicationHash: string;
+                    consensusParametersVersion: string;
+                    daHeight: string;
+                    eventInboxRoot: string;
+                    height: string;
+                    id: string;
+                    messageOutboxRoot: string;
+                    messageReceiptCount: string;
+                    prevRoot: string;
+                    stateTransitionBytecodeVersion: string;
+                    time: string;
+                    transactionsCount: string;
+                    transactionsRoot: string;
+                  };
+                };
+                programState?: {
+                  __typename: 'ProgramState';
+                  data: string;
+                  returnType: GQLReturnType;
+                } | null;
+                receipts: Array<{
+                  __typename: 'Receipt';
+                  amount?: string | null;
+                  assetId?: string | null;
+                  contractId?: string | null;
+                  data?: string | null;
+                  digest?: string | null;
+                  gas?: string | null;
+                  gasUsed?: string | null;
+                  id?: string | null;
+                  is?: string | null;
+                  len?: string | null;
+                  nonce?: string | null;
+                  param1?: string | null;
+                  param2?: string | null;
+                  pc?: string | null;
+                  ptr?: string | null;
+                  ra?: string | null;
+                  rb?: string | null;
+                  rc?: string | null;
+                  rd?: string | null;
+                  reason?: string | null;
+                  receiptType: GQLReceiptType;
+                  recipient?: string | null;
+                  result?: string | null;
+                  sender?: string | null;
+                  subId?: string | null;
+                  to?: string | null;
+                  toAddress?: string | null;
+                  val?: string | null;
+                }>;
+              }
+            | null;
+          upgradePurpose?:
+            | {
+                __typename: 'ConsensusParametersPurpose';
+                checksum: string;
+                witnessIndex: string;
+              }
+            | { __typename: 'StateTransitionPurpose'; root: string }
+            | null;
+        }>;
+      };
+    }>;
+    nodes: Array<{
+      __typename: 'Block';
+      height: string;
+      id: string;
+      consensus:
+        | {
+            __typename: 'Genesis';
+            chainConfigHash: string;
+            coinsRoot: string;
+            contractsRoot: string;
+            messagesRoot: string;
+            transactionsRoot: string;
+          }
+        | { __typename: 'PoAConsensus'; signature: string };
+      header: {
+        __typename: 'Header';
+        applicationHash: string;
+        consensusParametersVersion: string;
+        daHeight: string;
+        eventInboxRoot: string;
+        height: string;
+        id: string;
+        messageOutboxRoot: string;
+        messageReceiptCount: string;
+        prevRoot: string;
+        stateTransitionBytecodeVersion: string;
+        time: string;
+        transactionsCount: string;
+        transactionsRoot: string;
+      };
+      transactions: Array<{
+        __typename: 'Transaction';
+        bytecodeRoot?: string | null;
+        bytecodeWitnessIndex?: string | null;
+        id: string;
+        inputAssetIds?: Array<string> | null;
+        inputContracts?: Array<string> | null;
+        isCreate: boolean;
+        isMint: boolean;
+        isScript: boolean;
+        isUpgrade: boolean;
+        isUpload: boolean;
+        maturity?: string | null;
+        mintAmount?: string | null;
+        mintAssetId?: string | null;
+        mintGasPrice?: string | null;
+        proofSet?: Array<string> | null;
+        rawPayload: string;
+        receiptsRoot?: string | null;
+        salt?: string | null;
+        script?: string | null;
+        scriptData?: string | null;
+        scriptGasLimit?: string | null;
+        storageSlots?: Array<string> | null;
+        subsectionIndex?: string | null;
+        subsectionsNumber?: string | null;
+        txPointer?: string | null;
+        witnesses?: Array<string> | null;
+        inputContract?: {
+          __typename: 'InputContract';
+          balanceRoot: string;
+          contractId: string;
+          stateRoot: string;
+          txPointer: string;
+          utxoId: string;
+        } | null;
+        inputs?: Array<
+          | {
+              __typename: 'InputCoin';
+              amount: string;
+              assetId: string;
+              owner: string;
+              predicate: string;
+              predicateData: string;
+              predicateGasUsed: string;
+              txPointer: string;
+              utxoId: string;
+              witnessIndex: string;
+            }
+          | {
+              __typename: 'InputContract';
+              balanceRoot: string;
+              contractId: string;
+              stateRoot: string;
+              txPointer: string;
+              utxoId: string;
+            }
+          | {
+              __typename: 'InputMessage';
+              amount: string;
+              data: string;
+              nonce: string;
+              predicate: string;
+              predicateData: string;
+              predicateGasUsed: string;
+              recipient: string;
+              sender: string;
+              witnessIndex: string;
+            }
+        > | null;
+        outputContract?: {
+          __typename: 'ContractOutput';
+          balanceRoot: string;
+          inputIndex: string;
+          stateRoot: string;
+        } | null;
+        outputs: Array<
+          | {
+              __typename: 'ChangeOutput';
+              amount: string;
+              assetId: string;
+              to: string;
+            }
+          | {
+              __typename: 'CoinOutput';
+              amount: string;
+              assetId: string;
+              to: string;
+            }
+          | {
+              __typename: 'ContractCreated';
+              contract: string;
+              stateRoot: string;
+            }
+          | {
+              __typename: 'ContractOutput';
+              balanceRoot: string;
+              inputIndex: string;
+              stateRoot: string;
+            }
+          | {
+              __typename: 'VariableOutput';
+              amount: string;
+              assetId: string;
+              to: string;
+            }
+        >;
+        policies?: {
+          __typename: 'Policies';
+          maturity?: string | null;
+          maxFee?: string | null;
+          tip?: string | null;
+          witnessLimit?: string | null;
+        } | null;
+        status?:
+          | {
+              __typename: 'FailureStatus';
+              reason: string;
+              time: string;
+              totalFee: string;
+              totalGas: string;
+              transactionId: string;
+              block: {
+                __typename: 'Block';
+                height: string;
+                id: string;
+                consensus:
+                  | {
+                      __typename: 'Genesis';
+                      chainConfigHash: string;
+                      coinsRoot: string;
+                      contractsRoot: string;
+                      messagesRoot: string;
+                      transactionsRoot: string;
+                    }
+                  | { __typename: 'PoAConsensus'; signature: string };
+                header: {
+                  __typename: 'Header';
+                  applicationHash: string;
+                  consensusParametersVersion: string;
+                  daHeight: string;
+                  eventInboxRoot: string;
+                  height: string;
+                  id: string;
+                  messageOutboxRoot: string;
+                  messageReceiptCount: string;
+                  prevRoot: string;
+                  stateTransitionBytecodeVersion: string;
+                  time: string;
+                  transactionsCount: string;
+                  transactionsRoot: string;
+                };
+              };
+              programState?: {
+                __typename: 'ProgramState';
+                data: string;
+                returnType: GQLReturnType;
+              } | null;
+              receipts: Array<{
+                __typename: 'Receipt';
+                amount?: string | null;
+                assetId?: string | null;
+                contractId?: string | null;
+                data?: string | null;
+                digest?: string | null;
+                gas?: string | null;
+                gasUsed?: string | null;
+                id?: string | null;
+                is?: string | null;
+                len?: string | null;
+                nonce?: string | null;
+                param1?: string | null;
+                param2?: string | null;
+                pc?: string | null;
+                ptr?: string | null;
+                ra?: string | null;
+                rb?: string | null;
+                rc?: string | null;
+                rd?: string | null;
+                reason?: string | null;
+                receiptType: GQLReceiptType;
+                recipient?: string | null;
+                result?: string | null;
+                sender?: string | null;
+                subId?: string | null;
+                to?: string | null;
+                toAddress?: string | null;
+                val?: string | null;
+              }>;
+            }
+          | { __typename: 'SqueezedOutStatus'; reason: string }
+          | { __typename: 'SubmittedStatus'; time: string }
+          | {
+              __typename: 'SuccessStatus';
+              time: string;
+              totalFee: string;
+              totalGas: string;
+              transactionId: string;
+              block: {
+                __typename: 'Block';
+                height: string;
+                id: string;
+                consensus:
+                  | {
+                      __typename: 'Genesis';
+                      chainConfigHash: string;
+                      coinsRoot: string;
+                      contractsRoot: string;
+                      messagesRoot: string;
+                      transactionsRoot: string;
+                    }
+                  | { __typename: 'PoAConsensus'; signature: string };
+                header: {
+                  __typename: 'Header';
+                  applicationHash: string;
+                  consensusParametersVersion: string;
+                  daHeight: string;
+                  eventInboxRoot: string;
+                  height: string;
+                  id: string;
+                  messageOutboxRoot: string;
+                  messageReceiptCount: string;
+                  prevRoot: string;
+                  stateTransitionBytecodeVersion: string;
+                  time: string;
+                  transactionsCount: string;
+                  transactionsRoot: string;
+                };
+              };
+              programState?: {
+                __typename: 'ProgramState';
+                data: string;
+                returnType: GQLReturnType;
+              } | null;
+              receipts: Array<{
+                __typename: 'Receipt';
+                amount?: string | null;
+                assetId?: string | null;
+                contractId?: string | null;
+                data?: string | null;
+                digest?: string | null;
+                gas?: string | null;
+                gasUsed?: string | null;
+                id?: string | null;
+                is?: string | null;
+                len?: string | null;
+                nonce?: string | null;
+                param1?: string | null;
+                param2?: string | null;
+                pc?: string | null;
+                ptr?: string | null;
+                ra?: string | null;
+                rb?: string | null;
+                rc?: string | null;
+                rd?: string | null;
+                reason?: string | null;
+                receiptType: GQLReceiptType;
+                recipient?: string | null;
+                result?: string | null;
+                sender?: string | null;
+                subId?: string | null;
+                to?: string | null;
+                toAddress?: string | null;
+                val?: string | null;
+              }>;
+            }
+          | null;
+        upgradePurpose?:
+          | {
+              __typename: 'ConsensusParametersPurpose';
+              checksum: string;
+              witnessIndex: string;
+            }
+          | { __typename: 'StateTransitionPurpose'; root: string }
+          | null;
+      }>;
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
 
-export type GQLBlocksQuery = { __typename: 'Query', blocks: { __typename: 'BlockConnection', edges: Array<{ __typename: 'BlockEdge', cursor: string, node: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string }, transactions: Array<{ __typename: 'Transaction', bytecodeRoot?: string | null, bytecodeWitnessIndex?: string | null, id: string, inputAssetIds?: Array<string> | null, inputContracts?: Array<string> | null, isCreate: boolean, isMint: boolean, isScript: boolean, isUpgrade: boolean, isUpload: boolean, maturity?: string | null, mintAmount?: string | null, mintAssetId?: string | null, mintGasPrice?: string | null, proofSet?: Array<string> | null, rawPayload: string, receiptsRoot?: string | null, salt?: string | null, script?: string | null, scriptData?: string | null, scriptGasLimit?: string | null, storageSlots?: Array<string> | null, subsectionIndex?: string | null, subsectionsNumber?: string | null, txPointer?: string | null, witnesses?: Array<string> | null, inputContract?: { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, assetId: string, owner: string, predicate: string, predicateData: string, predicateGasUsed: string, txPointer: string, utxoId: string, witnessIndex: string } | { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | { __typename: 'InputMessage', amount: string, data: string, nonce: string, predicate: string, predicateData: string, predicateGasUsed: string, recipient: string, sender: string, witnessIndex: string }> | null, outputContract?: { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | null, outputs: Array<{ __typename: 'ChangeOutput', amount: string, assetId: string, to: string } | { __typename: 'CoinOutput', amount: string, assetId: string, to: string } | { __typename: 'ContractCreated', contract: string, stateRoot: string } | { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | { __typename: 'VariableOutput', amount: string, assetId: string, to: string }>, policies?: { __typename: 'Policies', maturity?: string | null, maxFee?: string | null, tip?: string | null, witnessLimit?: string | null } | null, status?: { __typename: 'FailureStatus', reason: string, time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string } }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | { __typename: 'SqueezedOutStatus', reason: string } | { __typename: 'SubmittedStatus', time: string } | { __typename: 'SuccessStatus', time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string } }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | null, upgradePurpose?: { __typename: 'ConsensusParametersPurpose', checksum: string, witnessIndex: string } | { __typename: 'StateTransitionPurpose', root: string } | null }> } }>, nodes: Array<{ __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string }, transactions: Array<{ __typename: 'Transaction', bytecodeRoot?: string | null, bytecodeWitnessIndex?: string | null, id: string, inputAssetIds?: Array<string> | null, inputContracts?: Array<string> | null, isCreate: boolean, isMint: boolean, isScript: boolean, isUpgrade: boolean, isUpload: boolean, maturity?: string | null, mintAmount?: string | null, mintAssetId?: string | null, mintGasPrice?: string | null, proofSet?: Array<string> | null, rawPayload: string, receiptsRoot?: string | null, salt?: string | null, script?: string | null, scriptData?: string | null, scriptGasLimit?: string | null, storageSlots?: Array<string> | null, subsectionIndex?: string | null, subsectionsNumber?: string | null, txPointer?: string | null, witnesses?: Array<string> | null, inputContract?: { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, assetId: string, owner: string, predicate: string, predicateData: string, predicateGasUsed: string, txPointer: string, utxoId: string, witnessIndex: string } | { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | { __typename: 'InputMessage', amount: string, data: string, nonce: string, predicate: string, predicateData: string, predicateGasUsed: string, recipient: string, sender: string, witnessIndex: string }> | null, outputContract?: { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | null, outputs: Array<{ __typename: 'ChangeOutput', amount: string, assetId: string, to: string } | { __typename: 'CoinOutput', amount: string, assetId: string, to: string } | { __typename: 'ContractCreated', contract: string, stateRoot: string } | { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | { __typename: 'VariableOutput', amount: string, assetId: string, to: string }>, policies?: { __typename: 'Policies', maturity?: string | null, maxFee?: string | null, tip?: string | null, witnessLimit?: string | null } | null, status?: { __typename: 'FailureStatus', reason: string, time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string } }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | { __typename: 'SqueezedOutStatus', reason: string } | { __typename: 'SubmittedStatus', time: string } | { __typename: 'SuccessStatus', time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string } }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | null, upgradePurpose?: { __typename: 'ConsensusParametersPurpose', checksum: string, witnessIndex: string } | { __typename: 'StateTransitionPurpose', root: string } | null }> }>, pageInfo: { __typename: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+export type GQLChainQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GQLChainQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GQLChainQuery = { __typename: 'Query', chain: { __typename: 'ChainInfo', daHeight: string, name: string, consensusParameters: { __typename: 'ConsensusParameters', baseAssetId: string, blockGasLimit: string, chainId: string, privilegedAddress: string, contractParams: { __typename: 'ContractParameters', contractMaxSize: string, maxStorageSlots: string }, feeParams: { __typename: 'FeeParameters', gasPerByte: string, gasPriceFactor: string }, gasCosts: { __typename: 'GasCosts', add: string, addi: string, aloc: string, and: string, andi: string, bal: string, bhei: string, bhsh: string, burn: string, cb: string, cfei: string, cfsi: string, div: string, divi: string, eck1: string, ecr1: string, ed19: string, eq: string, exp: string, expi: string, flag: string, gm: string, gt: string, gtf: string, ji: string, jmp: string, jmpb: string, jmpf: string, jne: string, jneb: string, jnef: string, jnei: string, jnzb: string, jnzf: string, jnzi: string, lb: string, log: string, lt: string, lw: string, mint: string, mldv: string, mlog: string, modOp: string, modi: string, moveOp: string, movi: string, mroo: string, mul: string, muli: string, newStoragePerByte: string, noop: string, not: string, or: string, ori: string, poph: string, popl: string, pshh: string, pshl: string, ret: string, rvrt: string, sb: string, sll: string, slli: string, srl: string, srli: string, srw: string, sub: string, subi: string, sw: string, sww: string, time: string, tr: string, tro: string, wdam: string, wdcm: string, wddv: string, wdmd: string, wdml: string, wdmm: string, wdop: string, wqam: string, wqcm: string, wqdv: string, wqmd: string, wqml: string, wqmm: string, wqop: string, xor: string, xori: string, call: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, ccp: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, contractRoot: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, croo: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, csiz: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, k256: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, ldc: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, logd: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcl: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcli: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcp: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcpi: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, meq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, retd: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, s256: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, scwq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, smo: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, srwq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, stateRoot: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, swwq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, vmInitialization: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string } }, predicateParams: { __typename: 'PredicateParameters', maxGasPerPredicate: string, maxMessageDataLength: string, maxPredicateDataLength: string, maxPredicateLength: string }, scriptParams: { __typename: 'ScriptParameters', maxScriptDataLength: string, maxScriptLength: string }, txParams: { __typename: 'TxParameters', maxBytecodeSubsections: string, maxGasPerTx: string, maxInputs: string, maxOutputs: string, maxSize: string, maxWitnesses: string } }, gasCosts: { __typename: 'GasCosts', add: string, addi: string, aloc: string, and: string, andi: string, bal: string, bhei: string, bhsh: string, burn: string, cb: string, cfei: string, cfsi: string, div: string, divi: string, eck1: string, ecr1: string, ed19: string, eq: string, exp: string, expi: string, flag: string, gm: string, gt: string, gtf: string, ji: string, jmp: string, jmpb: string, jmpf: string, jne: string, jneb: string, jnef: string, jnei: string, jnzb: string, jnzf: string, jnzi: string, lb: string, log: string, lt: string, lw: string, mint: string, mldv: string, mlog: string, modOp: string, modi: string, moveOp: string, movi: string, mroo: string, mul: string, muli: string, newStoragePerByte: string, noop: string, not: string, or: string, ori: string, poph: string, popl: string, pshh: string, pshl: string, ret: string, rvrt: string, sb: string, sll: string, slli: string, srl: string, srli: string, srw: string, sub: string, subi: string, sw: string, sww: string, time: string, tr: string, tro: string, wdam: string, wdcm: string, wddv: string, wdmd: string, wdml: string, wdmm: string, wdop: string, wqam: string, wqcm: string, wqdv: string, wqmd: string, wqml: string, wqmm: string, wqop: string, xor: string, xori: string, call: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, ccp: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, contractRoot: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, croo: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, csiz: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, k256: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, ldc: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, logd: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcl: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcli: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcp: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, mcpi: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, meq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, retd: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, s256: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, scwq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, smo: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, srwq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, stateRoot: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, swwq: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string }, vmInitialization: { __typename: 'HeavyOperation', base: string, gasPerUnit: string } | { __typename: 'LightOperation', base: string, unitsPerGas: string } }, latestBlock: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string }, transactions: Array<{ __typename: 'Transaction', bytecodeRoot?: string | null, bytecodeWitnessIndex?: string | null, id: string, inputAssetIds?: Array<string> | null, inputContracts?: Array<string> | null, isCreate: boolean, isMint: boolean, isScript: boolean, isUpgrade: boolean, isUpload: boolean, maturity?: string | null, mintAmount?: string | null, mintAssetId?: string | null, mintGasPrice?: string | null, proofSet?: Array<string> | null, rawPayload: string, receiptsRoot?: string | null, salt?: string | null, script?: string | null, scriptData?: string | null, scriptGasLimit?: string | null, storageSlots?: Array<string> | null, subsectionIndex?: string | null, subsectionsNumber?: string | null, txPointer?: string | null, witnesses?: Array<string> | null, inputContract?: { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, assetId: string, owner: string, predicate: string, predicateData: string, predicateGasUsed: string, txPointer: string, utxoId: string, witnessIndex: string } | { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | { __typename: 'InputMessage', amount: string, data: string, nonce: string, predicate: string, predicateData: string, predicateGasUsed: string, recipient: string, sender: string, witnessIndex: string }> | null, outputContract?: { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | null, outputs: Array<{ __typename: 'ChangeOutput', amount: string, assetId: string, to: string } | { __typename: 'CoinOutput', amount: string, assetId: string, to: string } | { __typename: 'ContractCreated', contract: string, stateRoot: string } | { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | { __typename: 'VariableOutput', amount: string, assetId: string, to: string }>, policies?: { __typename: 'Policies', maturity?: string | null, maxFee?: string | null, tip?: string | null, witnessLimit?: string | null } | null, status?: { __typename: 'FailureStatus', reason: string, time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string }, transactions: Array<{ __typename: 'Transaction', bytecodeRoot?: string | null, bytecodeWitnessIndex?: string | null, id: string, inputAssetIds?: Array<string> | null, inputContracts?: Array<string> | null, isCreate: boolean, isMint: boolean, isScript: boolean, isUpgrade: boolean, isUpload: boolean, maturity?: string | null, mintAmount?: string | null, mintAssetId?: string | null, mintGasPrice?: string | null, proofSet?: Array<string> | null, rawPayload: string, receiptsRoot?: string | null, salt?: string | null, script?: string | null, scriptData?: string | null, scriptGasLimit?: string | null, storageSlots?: Array<string> | null, subsectionIndex?: string | null, subsectionsNumber?: string | null, txPointer?: string | null, witnesses?: Array<string> | null, inputContract?: { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, assetId: string, owner: string, predicate: string, predicateData: string, predicateGasUsed: string, txPointer: string, utxoId: string, witnessIndex: string } | { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | { __typename: 'InputMessage', amount: string, data: string, nonce: string, predicate: string, predicateData: string, predicateGasUsed: string, recipient: string, sender: string, witnessIndex: string }> | null, outputContract?: { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | null, outputs: Array<{ __typename: 'ChangeOutput', amount: string, assetId: string, to: string } | { __typename: 'CoinOutput', amount: string, assetId: string, to: string } | { __typename: 'ContractCreated', contract: string, stateRoot: string } | { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | { __typename: 'VariableOutput', amount: string, assetId: string, to: string }>, policies?: { __typename: 'Policies', maturity?: string | null, maxFee?: string | null, tip?: string | null, witnessLimit?: string | null } | null, status?: { __typename: 'FailureStatus', reason: string, time: string, totalFee: string, totalGas: string, transactionId: string } | { __typename: 'SqueezedOutStatus', reason: string } | { __typename: 'SubmittedStatus', time: string } | { __typename: 'SuccessStatus', time: string, totalFee: string, totalGas: string, transactionId: string } | null, upgradePurpose?: { __typename: 'ConsensusParametersPurpose', checksum: string, witnessIndex: string } | { __typename: 'StateTransitionPurpose', root: string } | null }> }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | { __typename: 'SqueezedOutStatus', reason: string } | { __typename: 'SubmittedStatus', time: string } | { __typename: 'SuccessStatus', time: string, totalFee: string, totalGas: string, transactionId: string, block: { __typename: 'Block', height: string, id: string, consensus: { __typename: 'Genesis', chainConfigHash: string, coinsRoot: string, contractsRoot: string, messagesRoot: string, transactionsRoot: string } | { __typename: 'PoAConsensus', signature: string }, header: { __typename: 'Header', applicationHash: string, consensusParametersVersion: string, daHeight: string, eventInboxRoot: string, height: string, id: string, messageOutboxRoot: string, messageReceiptCount: string, prevRoot: string, stateTransitionBytecodeVersion: string, time: string, transactionsCount: string, transactionsRoot: string }, transactions: Array<{ __typename: 'Transaction', bytecodeRoot?: string | null, bytecodeWitnessIndex?: string | null, id: string, inputAssetIds?: Array<string> | null, inputContracts?: Array<string> | null, isCreate: boolean, isMint: boolean, isScript: boolean, isUpgrade: boolean, isUpload: boolean, maturity?: string | null, mintAmount?: string | null, mintAssetId?: string | null, mintGasPrice?: string | null, proofSet?: Array<string> | null, rawPayload: string, receiptsRoot?: string | null, salt?: string | null, script?: string | null, scriptData?: string | null, scriptGasLimit?: string | null, storageSlots?: Array<string> | null, subsectionIndex?: string | null, subsectionsNumber?: string | null, txPointer?: string | null, witnesses?: Array<string> | null, inputContract?: { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | null, inputs?: Array<{ __typename: 'InputCoin', amount: string, assetId: string, owner: string, predicate: string, predicateData: string, predicateGasUsed: string, txPointer: string, utxoId: string, witnessIndex: string } | { __typename: 'InputContract', balanceRoot: string, contractId: string, stateRoot: string, txPointer: string, utxoId: string } | { __typename: 'InputMessage', amount: string, data: string, nonce: string, predicate: string, predicateData: string, predicateGasUsed: string, recipient: string, sender: string, witnessIndex: string }> | null, outputContract?: { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | null, outputs: Array<{ __typename: 'ChangeOutput', amount: string, assetId: string, to: string } | { __typename: 'CoinOutput', amount: string, assetId: string, to: string } | { __typename: 'ContractCreated', contract: string, stateRoot: string } | { __typename: 'ContractOutput', balanceRoot: string, inputIndex: string, stateRoot: string } | { __typename: 'VariableOutput', amount: string, assetId: string, to: string }>, policies?: { __typename: 'Policies', maturity?: string | null, maxFee?: string | null, tip?: string | null, witnessLimit?: string | null } | null, status?: { __typename: 'FailureStatus', reason: string, time: string, totalFee: string, totalGas: string, transactionId: string } | { __typename: 'SqueezedOutStatus', reason: string } | { __typename: 'SubmittedStatus', time: string } | { __typename: 'SuccessStatus', time: string, totalFee: string, totalGas: string, transactionId: string } | null, upgradePurpose?: { __typename: 'ConsensusParametersPurpose', checksum: string, witnessIndex: string } | { __typename: 'StateTransitionPurpose', root: string } | null }> }, programState?: { __typename: 'ProgramState', data: string, returnType: GQLReturnType } | null, receipts: Array<{ __typename: 'Receipt', amount?: string | null, assetId?: string | null, contractId?: string | null, data?: string | null, digest?: string | null, gas?: string | null, gasUsed?: string | null, id?: string | null, is?: string | null, len?: string | null, nonce?: string | null, param1?: string | null, param2?: string | null, pc?: string | null, ptr?: string | null, ra?: string | null, rb?: string | null, rc?: string | null, rd?: string | null, reason?: string | null, receiptType: GQLReceiptType, recipient?: string | null, result?: string | null, sender?: string | null, subId?: string | null, to?: string | null, toAddress?: string | null, val?: string | null }> } | null, upgradePurpose?: { __typename: 'ConsensusParametersPurpose', checksum: string, witnessIndex: string } | { __typename: 'StateTransitionPurpose', root: string } | null }> } } };
+export type GQLChainQuery = {
+  __typename: 'Query';
+  chain: {
+    __typename: 'ChainInfo';
+    daHeight: string;
+    name: string;
+    consensusParameters: {
+      __typename: 'ConsensusParameters';
+      baseAssetId: string;
+      blockGasLimit: string;
+      chainId: string;
+      privilegedAddress: string;
+      contractParams: {
+        __typename: 'ContractParameters';
+        contractMaxSize: string;
+        maxStorageSlots: string;
+      };
+      feeParams: {
+        __typename: 'FeeParameters';
+        gasPerByte: string;
+        gasPriceFactor: string;
+      };
+      gasCosts: {
+        __typename: 'GasCosts';
+        add: string;
+        addi: string;
+        aloc: string;
+        and: string;
+        andi: string;
+        bal: string;
+        bhei: string;
+        bhsh: string;
+        burn: string;
+        cb: string;
+        cfei: string;
+        cfsi: string;
+        div: string;
+        divi: string;
+        eck1: string;
+        ecr1: string;
+        ed19: string;
+        eq: string;
+        exp: string;
+        expi: string;
+        flag: string;
+        gm: string;
+        gt: string;
+        gtf: string;
+        ji: string;
+        jmp: string;
+        jmpb: string;
+        jmpf: string;
+        jne: string;
+        jneb: string;
+        jnef: string;
+        jnei: string;
+        jnzb: string;
+        jnzf: string;
+        jnzi: string;
+        lb: string;
+        log: string;
+        lt: string;
+        lw: string;
+        mint: string;
+        mldv: string;
+        mlog: string;
+        modOp: string;
+        modi: string;
+        moveOp: string;
+        movi: string;
+        mroo: string;
+        mul: string;
+        muli: string;
+        newStoragePerByte: string;
+        noop: string;
+        not: string;
+        or: string;
+        ori: string;
+        poph: string;
+        popl: string;
+        pshh: string;
+        pshl: string;
+        ret: string;
+        rvrt: string;
+        sb: string;
+        sll: string;
+        slli: string;
+        srl: string;
+        srli: string;
+        srw: string;
+        sub: string;
+        subi: string;
+        sw: string;
+        sww: string;
+        time: string;
+        tr: string;
+        tro: string;
+        wdam: string;
+        wdcm: string;
+        wddv: string;
+        wdmd: string;
+        wdml: string;
+        wdmm: string;
+        wdop: string;
+        wqam: string;
+        wqcm: string;
+        wqdv: string;
+        wqmd: string;
+        wqml: string;
+        wqmm: string;
+        wqop: string;
+        xor: string;
+        xori: string;
+        call:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        ccp:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        contractRoot:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        croo:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        csiz:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        k256:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        ldc:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        logd:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        mcl:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        mcli:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        mcp:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        mcpi:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        meq:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        retd:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        s256:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        scwq:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        smo:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        srwq:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        stateRoot:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        swwq:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+        vmInitialization:
+          | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+          | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      };
+      predicateParams: {
+        __typename: 'PredicateParameters';
+        maxGasPerPredicate: string;
+        maxMessageDataLength: string;
+        maxPredicateDataLength: string;
+        maxPredicateLength: string;
+      };
+      scriptParams: {
+        __typename: 'ScriptParameters';
+        maxScriptDataLength: string;
+        maxScriptLength: string;
+      };
+      txParams: {
+        __typename: 'TxParameters';
+        maxBytecodeSubsections: string;
+        maxGasPerTx: string;
+        maxInputs: string;
+        maxOutputs: string;
+        maxSize: string;
+        maxWitnesses: string;
+      };
+    };
+    gasCosts: {
+      __typename: 'GasCosts';
+      add: string;
+      addi: string;
+      aloc: string;
+      and: string;
+      andi: string;
+      bal: string;
+      bhei: string;
+      bhsh: string;
+      burn: string;
+      cb: string;
+      cfei: string;
+      cfsi: string;
+      div: string;
+      divi: string;
+      eck1: string;
+      ecr1: string;
+      ed19: string;
+      eq: string;
+      exp: string;
+      expi: string;
+      flag: string;
+      gm: string;
+      gt: string;
+      gtf: string;
+      ji: string;
+      jmp: string;
+      jmpb: string;
+      jmpf: string;
+      jne: string;
+      jneb: string;
+      jnef: string;
+      jnei: string;
+      jnzb: string;
+      jnzf: string;
+      jnzi: string;
+      lb: string;
+      log: string;
+      lt: string;
+      lw: string;
+      mint: string;
+      mldv: string;
+      mlog: string;
+      modOp: string;
+      modi: string;
+      moveOp: string;
+      movi: string;
+      mroo: string;
+      mul: string;
+      muli: string;
+      newStoragePerByte: string;
+      noop: string;
+      not: string;
+      or: string;
+      ori: string;
+      poph: string;
+      popl: string;
+      pshh: string;
+      pshl: string;
+      ret: string;
+      rvrt: string;
+      sb: string;
+      sll: string;
+      slli: string;
+      srl: string;
+      srli: string;
+      srw: string;
+      sub: string;
+      subi: string;
+      sw: string;
+      sww: string;
+      time: string;
+      tr: string;
+      tro: string;
+      wdam: string;
+      wdcm: string;
+      wddv: string;
+      wdmd: string;
+      wdml: string;
+      wdmm: string;
+      wdop: string;
+      wqam: string;
+      wqcm: string;
+      wqdv: string;
+      wqmd: string;
+      wqml: string;
+      wqmm: string;
+      wqop: string;
+      xor: string;
+      xori: string;
+      call:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      ccp:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      contractRoot:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      croo:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      csiz:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      k256:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      ldc:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      logd:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      mcl:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      mcli:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      mcp:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      mcpi:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      meq:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      retd:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      s256:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      scwq:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      smo:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      srwq:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      stateRoot:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      swwq:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+      vmInitialization:
+        | { __typename: 'HeavyOperation'; base: string; gasPerUnit: string }
+        | { __typename: 'LightOperation'; base: string; unitsPerGas: string };
+    };
+    latestBlock: {
+      __typename: 'Block';
+      height: string;
+      id: string;
+      consensus:
+        | {
+            __typename: 'Genesis';
+            chainConfigHash: string;
+            coinsRoot: string;
+            contractsRoot: string;
+            messagesRoot: string;
+            transactionsRoot: string;
+          }
+        | { __typename: 'PoAConsensus'; signature: string };
+      header: {
+        __typename: 'Header';
+        applicationHash: string;
+        consensusParametersVersion: string;
+        daHeight: string;
+        eventInboxRoot: string;
+        height: string;
+        id: string;
+        messageOutboxRoot: string;
+        messageReceiptCount: string;
+        prevRoot: string;
+        stateTransitionBytecodeVersion: string;
+        time: string;
+        transactionsCount: string;
+        transactionsRoot: string;
+      };
+      transactions: Array<{
+        __typename: 'Transaction';
+        bytecodeRoot?: string | null;
+        bytecodeWitnessIndex?: string | null;
+        id: string;
+        inputAssetIds?: Array<string> | null;
+        inputContracts?: Array<string> | null;
+        isCreate: boolean;
+        isMint: boolean;
+        isScript: boolean;
+        isUpgrade: boolean;
+        isUpload: boolean;
+        maturity?: string | null;
+        mintAmount?: string | null;
+        mintAssetId?: string | null;
+        mintGasPrice?: string | null;
+        proofSet?: Array<string> | null;
+        rawPayload: string;
+        receiptsRoot?: string | null;
+        salt?: string | null;
+        script?: string | null;
+        scriptData?: string | null;
+        scriptGasLimit?: string | null;
+        storageSlots?: Array<string> | null;
+        subsectionIndex?: string | null;
+        subsectionsNumber?: string | null;
+        txPointer?: string | null;
+        witnesses?: Array<string> | null;
+        inputContract?: {
+          __typename: 'InputContract';
+          balanceRoot: string;
+          contractId: string;
+          stateRoot: string;
+          txPointer: string;
+          utxoId: string;
+        } | null;
+        inputs?: Array<
+          | {
+              __typename: 'InputCoin';
+              amount: string;
+              assetId: string;
+              owner: string;
+              predicate: string;
+              predicateData: string;
+              predicateGasUsed: string;
+              txPointer: string;
+              utxoId: string;
+              witnessIndex: string;
+            }
+          | {
+              __typename: 'InputContract';
+              balanceRoot: string;
+              contractId: string;
+              stateRoot: string;
+              txPointer: string;
+              utxoId: string;
+            }
+          | {
+              __typename: 'InputMessage';
+              amount: string;
+              data: string;
+              nonce: string;
+              predicate: string;
+              predicateData: string;
+              predicateGasUsed: string;
+              recipient: string;
+              sender: string;
+              witnessIndex: string;
+            }
+        > | null;
+        outputContract?: {
+          __typename: 'ContractOutput';
+          balanceRoot: string;
+          inputIndex: string;
+          stateRoot: string;
+        } | null;
+        outputs: Array<
+          | {
+              __typename: 'ChangeOutput';
+              amount: string;
+              assetId: string;
+              to: string;
+            }
+          | {
+              __typename: 'CoinOutput';
+              amount: string;
+              assetId: string;
+              to: string;
+            }
+          | {
+              __typename: 'ContractCreated';
+              contract: string;
+              stateRoot: string;
+            }
+          | {
+              __typename: 'ContractOutput';
+              balanceRoot: string;
+              inputIndex: string;
+              stateRoot: string;
+            }
+          | {
+              __typename: 'VariableOutput';
+              amount: string;
+              assetId: string;
+              to: string;
+            }
+        >;
+        policies?: {
+          __typename: 'Policies';
+          maturity?: string | null;
+          maxFee?: string | null;
+          tip?: string | null;
+          witnessLimit?: string | null;
+        } | null;
+        status?:
+          | {
+              __typename: 'FailureStatus';
+              reason: string;
+              time: string;
+              totalFee: string;
+              totalGas: string;
+              transactionId: string;
+              block: {
+                __typename: 'Block';
+                height: string;
+                id: string;
+                consensus:
+                  | {
+                      __typename: 'Genesis';
+                      chainConfigHash: string;
+                      coinsRoot: string;
+                      contractsRoot: string;
+                      messagesRoot: string;
+                      transactionsRoot: string;
+                    }
+                  | { __typename: 'PoAConsensus'; signature: string };
+                header: {
+                  __typename: 'Header';
+                  applicationHash: string;
+                  consensusParametersVersion: string;
+                  daHeight: string;
+                  eventInboxRoot: string;
+                  height: string;
+                  id: string;
+                  messageOutboxRoot: string;
+                  messageReceiptCount: string;
+                  prevRoot: string;
+                  stateTransitionBytecodeVersion: string;
+                  time: string;
+                  transactionsCount: string;
+                  transactionsRoot: string;
+                };
+                transactions: Array<{
+                  __typename: 'Transaction';
+                  bytecodeRoot?: string | null;
+                  bytecodeWitnessIndex?: string | null;
+                  id: string;
+                  inputAssetIds?: Array<string> | null;
+                  inputContracts?: Array<string> | null;
+                  isCreate: boolean;
+                  isMint: boolean;
+                  isScript: boolean;
+                  isUpgrade: boolean;
+                  isUpload: boolean;
+                  maturity?: string | null;
+                  mintAmount?: string | null;
+                  mintAssetId?: string | null;
+                  mintGasPrice?: string | null;
+                  proofSet?: Array<string> | null;
+                  rawPayload: string;
+                  receiptsRoot?: string | null;
+                  salt?: string | null;
+                  script?: string | null;
+                  scriptData?: string | null;
+                  scriptGasLimit?: string | null;
+                  storageSlots?: Array<string> | null;
+                  subsectionIndex?: string | null;
+                  subsectionsNumber?: string | null;
+                  txPointer?: string | null;
+                  witnesses?: Array<string> | null;
+                  inputContract?: {
+                    __typename: 'InputContract';
+                    balanceRoot: string;
+                    contractId: string;
+                    stateRoot: string;
+                    txPointer: string;
+                    utxoId: string;
+                  } | null;
+                  inputs?: Array<
+                    | {
+                        __typename: 'InputCoin';
+                        amount: string;
+                        assetId: string;
+                        owner: string;
+                        predicate: string;
+                        predicateData: string;
+                        predicateGasUsed: string;
+                        txPointer: string;
+                        utxoId: string;
+                        witnessIndex: string;
+                      }
+                    | {
+                        __typename: 'InputContract';
+                        balanceRoot: string;
+                        contractId: string;
+                        stateRoot: string;
+                        txPointer: string;
+                        utxoId: string;
+                      }
+                    | {
+                        __typename: 'InputMessage';
+                        amount: string;
+                        data: string;
+                        nonce: string;
+                        predicate: string;
+                        predicateData: string;
+                        predicateGasUsed: string;
+                        recipient: string;
+                        sender: string;
+                        witnessIndex: string;
+                      }
+                  > | null;
+                  outputContract?: {
+                    __typename: 'ContractOutput';
+                    balanceRoot: string;
+                    inputIndex: string;
+                    stateRoot: string;
+                  } | null;
+                  outputs: Array<
+                    | {
+                        __typename: 'ChangeOutput';
+                        amount: string;
+                        assetId: string;
+                        to: string;
+                      }
+                    | {
+                        __typename: 'CoinOutput';
+                        amount: string;
+                        assetId: string;
+                        to: string;
+                      }
+                    | {
+                        __typename: 'ContractCreated';
+                        contract: string;
+                        stateRoot: string;
+                      }
+                    | {
+                        __typename: 'ContractOutput';
+                        balanceRoot: string;
+                        inputIndex: string;
+                        stateRoot: string;
+                      }
+                    | {
+                        __typename: 'VariableOutput';
+                        amount: string;
+                        assetId: string;
+                        to: string;
+                      }
+                  >;
+                  policies?: {
+                    __typename: 'Policies';
+                    maturity?: string | null;
+                    maxFee?: string | null;
+                    tip?: string | null;
+                    witnessLimit?: string | null;
+                  } | null;
+                  status?:
+                    | {
+                        __typename: 'FailureStatus';
+                        reason: string;
+                        time: string;
+                        totalFee: string;
+                        totalGas: string;
+                        transactionId: string;
+                      }
+                    | { __typename: 'SqueezedOutStatus'; reason: string }
+                    | { __typename: 'SubmittedStatus'; time: string }
+                    | {
+                        __typename: 'SuccessStatus';
+                        time: string;
+                        totalFee: string;
+                        totalGas: string;
+                        transactionId: string;
+                      }
+                    | null;
+                  upgradePurpose?:
+                    | {
+                        __typename: 'ConsensusParametersPurpose';
+                        checksum: string;
+                        witnessIndex: string;
+                      }
+                    | { __typename: 'StateTransitionPurpose'; root: string }
+                    | null;
+                }>;
+              };
+              programState?: {
+                __typename: 'ProgramState';
+                data: string;
+                returnType: GQLReturnType;
+              } | null;
+              receipts: Array<{
+                __typename: 'Receipt';
+                amount?: string | null;
+                assetId?: string | null;
+                contractId?: string | null;
+                data?: string | null;
+                digest?: string | null;
+                gas?: string | null;
+                gasUsed?: string | null;
+                id?: string | null;
+                is?: string | null;
+                len?: string | null;
+                nonce?: string | null;
+                param1?: string | null;
+                param2?: string | null;
+                pc?: string | null;
+                ptr?: string | null;
+                ra?: string | null;
+                rb?: string | null;
+                rc?: string | null;
+                rd?: string | null;
+                reason?: string | null;
+                receiptType: GQLReceiptType;
+                recipient?: string | null;
+                result?: string | null;
+                sender?: string | null;
+                subId?: string | null;
+                to?: string | null;
+                toAddress?: string | null;
+                val?: string | null;
+              }>;
+            }
+          | { __typename: 'SqueezedOutStatus'; reason: string }
+          | { __typename: 'SubmittedStatus'; time: string }
+          | {
+              __typename: 'SuccessStatus';
+              time: string;
+              totalFee: string;
+              totalGas: string;
+              transactionId: string;
+              block: {
+                __typename: 'Block';
+                height: string;
+                id: string;
+                consensus:
+                  | {
+                      __typename: 'Genesis';
+                      chainConfigHash: string;
+                      coinsRoot: string;
+                      contractsRoot: string;
+                      messagesRoot: string;
+                      transactionsRoot: string;
+                    }
+                  | { __typename: 'PoAConsensus'; signature: string };
+                header: {
+                  __typename: 'Header';
+                  applicationHash: string;
+                  consensusParametersVersion: string;
+                  daHeight: string;
+                  eventInboxRoot: string;
+                  height: string;
+                  id: string;
+                  messageOutboxRoot: string;
+                  messageReceiptCount: string;
+                  prevRoot: string;
+                  stateTransitionBytecodeVersion: string;
+                  time: string;
+                  transactionsCount: string;
+                  transactionsRoot: string;
+                };
+                transactions: Array<{
+                  __typename: 'Transaction';
+                  bytecodeRoot?: string | null;
+                  bytecodeWitnessIndex?: string | null;
+                  id: string;
+                  inputAssetIds?: Array<string> | null;
+                  inputContracts?: Array<string> | null;
+                  isCreate: boolean;
+                  isMint: boolean;
+                  isScript: boolean;
+                  isUpgrade: boolean;
+                  isUpload: boolean;
+                  maturity?: string | null;
+                  mintAmount?: string | null;
+                  mintAssetId?: string | null;
+                  mintGasPrice?: string | null;
+                  proofSet?: Array<string> | null;
+                  rawPayload: string;
+                  receiptsRoot?: string | null;
+                  salt?: string | null;
+                  script?: string | null;
+                  scriptData?: string | null;
+                  scriptGasLimit?: string | null;
+                  storageSlots?: Array<string> | null;
+                  subsectionIndex?: string | null;
+                  subsectionsNumber?: string | null;
+                  txPointer?: string | null;
+                  witnesses?: Array<string> | null;
+                  inputContract?: {
+                    __typename: 'InputContract';
+                    balanceRoot: string;
+                    contractId: string;
+                    stateRoot: string;
+                    txPointer: string;
+                    utxoId: string;
+                  } | null;
+                  inputs?: Array<
+                    | {
+                        __typename: 'InputCoin';
+                        amount: string;
+                        assetId: string;
+                        owner: string;
+                        predicate: string;
+                        predicateData: string;
+                        predicateGasUsed: string;
+                        txPointer: string;
+                        utxoId: string;
+                        witnessIndex: string;
+                      }
+                    | {
+                        __typename: 'InputContract';
+                        balanceRoot: string;
+                        contractId: string;
+                        stateRoot: string;
+                        txPointer: string;
+                        utxoId: string;
+                      }
+                    | {
+                        __typename: 'InputMessage';
+                        amount: string;
+                        data: string;
+                        nonce: string;
+                        predicate: string;
+                        predicateData: string;
+                        predicateGasUsed: string;
+                        recipient: string;
+                        sender: string;
+                        witnessIndex: string;
+                      }
+                  > | null;
+                  outputContract?: {
+                    __typename: 'ContractOutput';
+                    balanceRoot: string;
+                    inputIndex: string;
+                    stateRoot: string;
+                  } | null;
+                  outputs: Array<
+                    | {
+                        __typename: 'ChangeOutput';
+                        amount: string;
+                        assetId: string;
+                        to: string;
+                      }
+                    | {
+                        __typename: 'CoinOutput';
+                        amount: string;
+                        assetId: string;
+                        to: string;
+                      }
+                    | {
+                        __typename: 'ContractCreated';
+                        contract: string;
+                        stateRoot: string;
+                      }
+                    | {
+                        __typename: 'ContractOutput';
+                        balanceRoot: string;
+                        inputIndex: string;
+                        stateRoot: string;
+                      }
+                    | {
+                        __typename: 'VariableOutput';
+                        amount: string;
+                        assetId: string;
+                        to: string;
+                      }
+                  >;
+                  policies?: {
+                    __typename: 'Policies';
+                    maturity?: string | null;
+                    maxFee?: string | null;
+                    tip?: string | null;
+                    witnessLimit?: string | null;
+                  } | null;
+                  status?:
+                    | {
+                        __typename: 'FailureStatus';
+                        reason: string;
+                        time: string;
+                        totalFee: string;
+                        totalGas: string;
+                        transactionId: string;
+                      }
+                    | { __typename: 'SqueezedOutStatus'; reason: string }
+                    | { __typename: 'SubmittedStatus'; time: string }
+                    | {
+                        __typename: 'SuccessStatus';
+                        time: string;
+                        totalFee: string;
+                        totalGas: string;
+                        transactionId: string;
+                      }
+                    | null;
+                  upgradePurpose?:
+                    | {
+                        __typename: 'ConsensusParametersPurpose';
+                        checksum: string;
+                        witnessIndex: string;
+                      }
+                    | { __typename: 'StateTransitionPurpose'; root: string }
+                    | null;
+                }>;
+              };
+              programState?: {
+                __typename: 'ProgramState';
+                data: string;
+                returnType: GQLReturnType;
+              } | null;
+              receipts: Array<{
+                __typename: 'Receipt';
+                amount?: string | null;
+                assetId?: string | null;
+                contractId?: string | null;
+                data?: string | null;
+                digest?: string | null;
+                gas?: string | null;
+                gasUsed?: string | null;
+                id?: string | null;
+                is?: string | null;
+                len?: string | null;
+                nonce?: string | null;
+                param1?: string | null;
+                param2?: string | null;
+                pc?: string | null;
+                ptr?: string | null;
+                ra?: string | null;
+                rb?: string | null;
+                rc?: string | null;
+                rd?: string | null;
+                reason?: string | null;
+                receiptType: GQLReceiptType;
+                recipient?: string | null;
+                result?: string | null;
+                sender?: string | null;
+                subId?: string | null;
+                to?: string | null;
+                toAddress?: string | null;
+                val?: string | null;
+              }>;
+            }
+          | null;
+        upgradePurpose?:
+          | {
+              __typename: 'ConsensusParametersPurpose';
+              checksum: string;
+              witnessIndex: string;
+            }
+          | { __typename: 'StateTransitionPurpose'; root: string }
+          | null;
+      }>;
+    };
+  };
+};
 
 export type GQLCoinsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1474,27 +3573,87 @@ export type GQLCoinsQueryVariables = Exact<{
   last?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
-
-export type GQLCoinsQuery = { __typename: 'Query', coins: { __typename: 'CoinConnection', edges: Array<{ __typename: 'CoinEdge', cursor: string, node: { __typename: 'Coin', amount: string, assetId: string, blockCreated: string, owner: string, txCreatedIdx: string, utxoId: string } }>, nodes: Array<{ __typename: 'Coin', amount: string, assetId: string, blockCreated: string, owner: string, txCreatedIdx: string, utxoId: string }>, pageInfo: { __typename: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+export type GQLCoinsQuery = {
+  __typename: 'Query';
+  coins: {
+    __typename: 'CoinConnection';
+    edges: Array<{
+      __typename: 'CoinEdge';
+      cursor: string;
+      node: {
+        __typename: 'Coin';
+        amount: string;
+        assetId: string;
+        blockCreated: string;
+        owner: string;
+        txCreatedIdx: string;
+        utxoId: string;
+      };
+    }>;
+    nodes: Array<{
+      __typename: 'Coin';
+      amount: string;
+      assetId: string;
+      blockCreated: string;
+      owner: string;
+      txCreatedIdx: string;
+      utxoId: string;
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
 
 export type GQLContractQueryVariables = Exact<{
   id: Scalars['ContractId']['input'];
 }>;
 
-
-export type GQLContractQuery = { __typename: 'Query', contract?: { __typename: 'Contract', id: string, bytecode: string } | null };
+export type GQLContractQuery = {
+  __typename: 'Query';
+  contract?: { __typename: 'Contract'; id: string; bytecode: string } | null;
+};
 
 export type GQLContractBalanceQueryVariables = Exact<{
   asset: Scalars['AssetId']['input'];
   contract: Scalars['ContractId']['input'];
 }>;
 
+export type GQLContractBalanceQuery = {
+  __typename: 'Query';
+  contractBalance: {
+    __typename: 'ContractBalance';
+    amount: string;
+    assetId: string;
+    contract: string;
+  };
+};
 
-export type GQLContractBalanceQuery = { __typename: 'Query', contractBalance: { __typename: 'ContractBalance', amount: string, assetId: string, contract: string } };
+export type GQLContractBalanceNodeFragment = {
+  __typename: 'ContractBalance';
+  amount: string;
+  assetId: string;
+};
 
-export type GQLContractBalanceNodeFragment = { __typename: 'ContractBalance', amount: string, assetId: string };
-
-export type GQLContractBalanceConnectionNodeFragment = { __typename: 'ContractBalanceConnection', edges: Array<{ __typename: 'ContractBalanceEdge', cursor: string, node: { __typename: 'ContractBalance', amount: string, assetId: string } }>, pageInfo: { __typename: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, endCursor?: string | null, startCursor?: string | null } };
+export type GQLContractBalanceConnectionNodeFragment = {
+  __typename: 'ContractBalanceConnection';
+  edges: Array<{
+    __typename: 'ContractBalanceEdge';
+    cursor: string;
+    node: { __typename: 'ContractBalance'; amount: string; assetId: string };
+  }>;
+  pageInfo: {
+    __typename: 'PageInfo';
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    endCursor?: string | null;
+    startCursor?: string | null;
+  };
+};
 
 export type GQLContractBalancesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1504,13 +3663,239 @@ export type GQLContractBalancesQueryVariables = Exact<{
   last?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
+export type GQLContractBalancesQuery = {
+  __typename: 'Query';
+  contractBalances: {
+    __typename: 'ContractBalanceConnection';
+    edges: Array<{
+      __typename: 'ContractBalanceEdge';
+      cursor: string;
+      node: { __typename: 'ContractBalance'; amount: string; assetId: string };
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      endCursor?: string | null;
+      startCursor?: string | null;
+    };
+  };
+};
 
-export type GQLContractBalancesQuery = { __typename: 'Query', contractBalances: { __typename: 'ContractBalanceConnection', edges: Array<{ __typename: 'ContractBalanceEdge', cursor: string, node: { __typename: 'ContractBalance', amount: string, assetId: string } }>, pageInfo: { __typename: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, endCursor?: string | null, startCursor?: string | null } } };
+export type GQLCumulativeAccountCreationStatisticsQueryVariables = Exact<{
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+}>;
 
-export type GQLNodeInfoQueryVariables = Exact<{ [key: string]: never; }>;
+export type GQLCumulativeAccountCreationStatisticsQuery = {
+  __typename: 'Query';
+  cumulativeAccountCreationStatistics: {
+    __typename: 'CumulativeAccountCreationConnection';
+    accountOffset: number;
+    nodes?: Array<{
+      __typename: 'AccountCreationNode';
+      timestamp: string;
+    }> | null;
+  };
+};
 
+export type GQLCumulativeTransactionsFeeStatisticsQueryVariables = Exact<{
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+}>;
 
-export type GQLNodeInfoQuery = { __typename: 'Query', nodeInfo: { __typename: 'NodeInfo', maxDepth: string, maxTx: string, nodeVersion: string, utxoValidation: boolean, vmBacktrace: boolean, peers: Array<{ __typename: 'PeerInfo', addresses: Array<string>, appScore: number, blockHeight?: string | null, clientVersion?: string | null, id: string, lastHeartbeatMs: string }> } };
+export type GQLCumulativeTransactionsFeeStatisticsQuery = {
+  __typename: 'Query';
+  cumulativeTransactionsFeeStatistics: {
+    __typename: 'CumulativeTransactionFeeConnection';
+    transactionOffset: string;
+    nodes?: Array<{
+      __typename: 'TransactionFee';
+      fee: string;
+      timestamp: string;
+    }> | null;
+  };
+};
+
+export type GQLDailyActiveAccountsQueryVariables = Exact<{
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type GQLDailyActiveAccountsQuery = {
+  __typename: 'Query';
+  dailyActiveAccounts: {
+    __typename: 'DailyActiveAccountsConnection';
+    nodes: Array<{
+      __typename: 'DailyActiveAccountsNode';
+      timestamp: string;
+      count: number;
+    }>;
+  };
+};
+
+export type GQLGetTransactionsByAccountAndDateQueryVariables = Exact<{
+  account: Scalars['String']['input'];
+  startDate: Scalars['String']['input'];
+  endDate: Scalars['String']['input'];
+}>;
+
+export type GQLGetTransactionsByAccountAndDateQuery = {
+  __typename: 'Query';
+  transactionsByAccountAndDate: Array<{
+    __typename: 'TransactionSummary';
+    tx_hash: string;
+    timestamp: string;
+    totalGas?: string | null;
+    totalFee?: string | null;
+    isMint?: boolean | null;
+    inputs: Array<
+      | {
+          __typename: 'InputCoin';
+          owner: string;
+          amount: string;
+          assetId: string;
+        }
+      | {
+          __typename: 'InputContract';
+          contractId: string;
+          balanceRoot: string;
+          stateRoot: string;
+        }
+      | {
+          __typename: 'InputMessage';
+          sender: string;
+          recipient: string;
+          amount: string;
+        }
+    >;
+    outputs: Array<
+      | {
+          __typename: 'ChangeOutput';
+          to: string;
+          amount: string;
+          assetId: string;
+        }
+      | { __typename: 'CoinOutput' }
+      | { __typename: 'ContractCreated' }
+      | {
+          __typename: 'ContractOutput';
+          inputIndex: string;
+          balanceRoot: string;
+        }
+      | {
+          __typename: 'VariableOutput';
+          to: string;
+          amount: string;
+          assetId: string;
+        }
+    >;
+  }>;
+};
+
+export type GQLNewAccountStatisticsQueryVariables = Exact<{
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type GQLNewAccountStatisticsQuery = {
+  __typename: 'Query';
+  newAccountStatistics: {
+    __typename: 'NewAccountStatisticsConnection';
+    nodes?: Array<{ __typename: 'NewAccountNode'; timestamp: string }> | null;
+  };
+};
+
+export type GQLNodeInfoQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GQLNodeInfoQuery = {
+  __typename: 'Query';
+  nodeInfo: {
+    __typename: 'NodeInfo';
+    maxDepth: string;
+    maxTx: string;
+    nodeVersion: string;
+    utxoValidation: boolean;
+    vmBacktrace: boolean;
+    peers: Array<{
+      __typename: 'PeerInfo';
+      addresses: Array<string>;
+      appScore: number;
+      blockHeight?: string | null;
+      clientVersion?: string | null;
+      id: string;
+      lastHeartbeatMs: string;
+    }>;
+  };
+};
+
+export type GQLPaginatedAccountsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  direction?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type GQLPaginatedAccountsQuery = {
+  __typename: 'Query';
+  paginatedAccounts: {
+    __typename: 'PaginatedAccountConnection';
+    nodes: Array<{
+      __typename: 'AccountNode';
+      id: string;
+      account_id: string;
+      balance: string;
+      transaction_count: number;
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+      endCursor?: string | null;
+    };
+  };
+};
+
+export type GQLTpsQueryVariables = Exact<{
+  before?: InputMaybe<Scalars['String']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type GQLTpsQuery = {
+  __typename: 'Query';
+  tps: {
+    __typename: 'TPSConnection';
+    nodes: Array<{
+      __typename: 'TPS';
+      timestamp: string;
+      tps: string;
+      gasUsed: string;
+      blockNo: string;
+      producer?: string | null;
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type GQLTransactionsFeeStatisticsQueryVariables = Exact<{
+  timeFilter?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type GQLTransactionsFeeStatisticsQuery = {
+  __typename: 'Query';
+  transactionsFeeStatistics: {
+    __typename: 'TransactionFeeConnection';
+    nodes?: Array<{
+      __typename: 'TransactionFee';
+      fee: string;
+      timestamp: string;
+    }> | null;
+  };
+};
 
 export const BalanceItemFragmentDoc = gql`
     fragment BalanceItem on Balance {
@@ -1874,6 +4259,17 @@ export const BalancesDocument = gql`
   }
 }
     ${BalanceItemFragmentDoc}`;
+export const BlockRewardStatisticsDocument = gql`
+    query blockRewardStatistics($timeFilter: String) {
+  blockRewardStatistics(timeFilter: $timeFilter) {
+    nodes {
+      id
+      reward
+      timestamp
+    }
+  }
+}
+    `;
 export const BlocksDocument = gql`
     query blocks($after: String, $before: String, $first: Int, $last: Int) {
   blocks(after: $after, before: $before, first: $first, last: $last) {
@@ -3221,6 +5617,94 @@ export const ContractBalancesDocument = gql`
   }
 }
     ${ContractBalanceConnectionNodeFragmentDoc}`;
+export const CumulativeAccountCreationStatisticsDocument = gql`
+    query cumulativeAccountCreationStatistics($timeFilter: String) {
+  cumulativeAccountCreationStatistics(timeFilter: $timeFilter) {
+    nodes {
+      timestamp
+    }
+    accountOffset
+  }
+}
+    `;
+export const CumulativeTransactionsFeeStatisticsDocument = gql`
+    query cumulativeTransactionsFeeStatistics($timeFilter: String) {
+  cumulativeTransactionsFeeStatistics(timeFilter: $timeFilter) {
+    nodes {
+      fee
+      timestamp
+    }
+    transactionOffset
+  }
+}
+    `;
+export const DailyActiveAccountsDocument = gql`
+    query dailyActiveAccounts($timeFilter: String) {
+  dailyActiveAccounts(timeFilter: $timeFilter) {
+    nodes {
+      timestamp
+      count
+    }
+  }
+}
+    `;
+export const GetTransactionsByAccountAndDateDocument = gql`
+    query getTransactionsByAccountAndDate($account: String!, $startDate: String!, $endDate: String!) {
+  transactionsByAccountAndDate(
+    account: $account
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    tx_hash
+    timestamp
+    totalGas
+    totalFee
+    isMint
+    inputs {
+      ... on InputCoin {
+        owner
+        amount
+        assetId
+      }
+      ... on InputContract {
+        contractId
+        balanceRoot
+        stateRoot
+      }
+      ... on InputMessage {
+        sender
+        recipient
+        amount
+      }
+    }
+    outputs {
+      ... on VariableOutput {
+        to
+        amount
+        assetId
+      }
+      ... on ChangeOutput {
+        to
+        amount
+        assetId
+      }
+      ... on ContractOutput {
+        inputIndex
+        balanceRoot
+      }
+    }
+  }
+}
+    `;
+export const NewAccountStatisticsDocument = gql`
+    query newAccountStatistics($timeFilter: String) {
+  newAccountStatistics(timeFilter: $timeFilter) {
+    nodes {
+      timestamp
+    }
+  }
+}
+    `;
 export const NodeInfoDocument = gql`
     query nodeInfo {
   nodeInfo {
@@ -3240,49 +5724,497 @@ export const NodeInfoDocument = gql`
   }
 }
     `;
+export const PaginatedAccountsDocument = gql`
+    query paginatedAccounts($cursor: String, $direction: String, $sortBy: String, $sortOrder: String, $first: Int) {
+  paginatedAccounts(
+    cursor: $cursor
+    direction: $direction
+    sortBy: $sortBy
+    sortOrder: $sortOrder
+    first: $first
+  ) {
+    nodes {
+      id
+      account_id
+      balance
+      transaction_count
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+    `;
+export const TpsDocument = gql`
+    query tps($before: String, $last: Int) {
+  tps(before: $before, last: $last) {
+    nodes {
+      timestamp
+      tps
+      gasUsed
+      blockNo
+      producer
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}
+    `;
+export const TransactionsFeeStatisticsDocument = gql`
+    query transactionsFeeStatistics($timeFilter: String) {
+  transactionsFeeStatistics(timeFilter: $timeFilter) {
+    nodes {
+      fee
+      timestamp
+    }
+  }
+}
+    `;
 
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string,
+  operationType?: string,
+  variables?: any,
+) => Promise<T>;
 
-
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
+const defaultWrapper: SdkFunctionWrapper = (
+  action,
+  _operationName,
+  _operationType,
+  _variables,
+) => action();
 const BalanceDocumentString = print(BalanceDocument);
 const BalancesDocumentString = print(BalancesDocument);
+const BlockRewardStatisticsDocumentString = print(
+  BlockRewardStatisticsDocument,
+);
 const BlocksDocumentString = print(BlocksDocument);
 const ChainDocumentString = print(ChainDocument);
 const CoinsDocumentString = print(CoinsDocument);
 const ContractDocumentString = print(ContractDocument);
 const ContractBalanceDocumentString = print(ContractBalanceDocument);
 const ContractBalancesDocumentString = print(ContractBalancesDocument);
+const CumulativeAccountCreationStatisticsDocumentString = print(
+  CumulativeAccountCreationStatisticsDocument,
+);
+const CumulativeTransactionsFeeStatisticsDocumentString = print(
+  CumulativeTransactionsFeeStatisticsDocument,
+);
+const DailyActiveAccountsDocumentString = print(DailyActiveAccountsDocument);
+const GetTransactionsByAccountAndDateDocumentString = print(
+  GetTransactionsByAccountAndDateDocument,
+);
+const NewAccountStatisticsDocumentString = print(NewAccountStatisticsDocument);
 const NodeInfoDocumentString = print(NodeInfoDocument);
-export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+const PaginatedAccountsDocumentString = print(PaginatedAccountsDocument);
+const TpsDocumentString = print(TpsDocument);
+const TransactionsFeeStatisticsDocumentString = print(
+  TransactionsFeeStatisticsDocument,
+);
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper,
+) {
   return {
-    balance(variables: GQLBalanceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLBalanceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLBalanceQuery>(BalanceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'balance', 'query', variables);
+    balance(
+      variables: GQLBalanceQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLBalanceQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLBalanceQuery>(BalanceDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'balance',
+        'query',
+        variables,
+      );
     },
-    balances(variables: GQLBalancesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLBalancesQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLBalancesQuery>(BalancesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'balances', 'query', variables);
+    balances(
+      variables: GQLBalancesQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLBalancesQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLBalancesQuery>(
+            BalancesDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'balances',
+        'query',
+        variables,
+      );
     },
-    blocks(variables?: GQLBlocksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLBlocksQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLBlocksQuery>(BlocksDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'blocks', 'query', variables);
+    blockRewardStatistics(
+      variables?: GQLBlockRewardStatisticsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLBlockRewardStatisticsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLBlockRewardStatisticsQuery>(
+            BlockRewardStatisticsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'blockRewardStatistics',
+        'query',
+        variables,
+      );
     },
-    chain(variables?: GQLChainQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLChainQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLChainQuery>(ChainDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'chain', 'query', variables);
+    blocks(
+      variables?: GQLBlocksQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLBlocksQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLBlocksQuery>(BlocksDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'blocks',
+        'query',
+        variables,
+      );
     },
-    coins(variables: GQLCoinsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLCoinsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLCoinsQuery>(CoinsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'coins', 'query', variables);
+    chain(
+      variables?: GQLChainQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLChainQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLChainQuery>(ChainDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'chain',
+        'query',
+        variables,
+      );
     },
-    contract(variables: GQLContractQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLContractQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLContractQuery>(ContractDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'contract', 'query', variables);
+    coins(
+      variables: GQLCoinsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLCoinsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLCoinsQuery>(CoinsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'coins',
+        'query',
+        variables,
+      );
     },
-    contractBalance(variables: GQLContractBalanceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLContractBalanceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLContractBalanceQuery>(ContractBalanceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'contractBalance', 'query', variables);
+    contract(
+      variables: GQLContractQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLContractQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLContractQuery>(
+            ContractDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'contract',
+        'query',
+        variables,
+      );
     },
-    contractBalances(variables: GQLContractBalancesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLContractBalancesQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLContractBalancesQuery>(ContractBalancesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'contractBalances', 'query', variables);
+    contractBalance(
+      variables: GQLContractBalanceQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLContractBalanceQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLContractBalanceQuery>(
+            ContractBalanceDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'contractBalance',
+        'query',
+        variables,
+      );
     },
-    nodeInfo(variables?: GQLNodeInfoQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLNodeInfoQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLNodeInfoQuery>(NodeInfoDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'nodeInfo', 'query', variables);
-    }
+    contractBalances(
+      variables: GQLContractBalancesQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLContractBalancesQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLContractBalancesQuery>(
+            ContractBalancesDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'contractBalances',
+        'query',
+        variables,
+      );
+    },
+    cumulativeAccountCreationStatistics(
+      variables?: GQLCumulativeAccountCreationStatisticsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLCumulativeAccountCreationStatisticsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLCumulativeAccountCreationStatisticsQuery>(
+            CumulativeAccountCreationStatisticsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'cumulativeAccountCreationStatistics',
+        'query',
+        variables,
+      );
+    },
+    cumulativeTransactionsFeeStatistics(
+      variables?: GQLCumulativeTransactionsFeeStatisticsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLCumulativeTransactionsFeeStatisticsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLCumulativeTransactionsFeeStatisticsQuery>(
+            CumulativeTransactionsFeeStatisticsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'cumulativeTransactionsFeeStatistics',
+        'query',
+        variables,
+      );
+    },
+    dailyActiveAccounts(
+      variables?: GQLDailyActiveAccountsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLDailyActiveAccountsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLDailyActiveAccountsQuery>(
+            DailyActiveAccountsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'dailyActiveAccounts',
+        'query',
+        variables,
+      );
+    },
+    getTransactionsByAccountAndDate(
+      variables: GQLGetTransactionsByAccountAndDateQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLGetTransactionsByAccountAndDateQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLGetTransactionsByAccountAndDateQuery>(
+            GetTransactionsByAccountAndDateDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'getTransactionsByAccountAndDate',
+        'query',
+        variables,
+      );
+    },
+    newAccountStatistics(
+      variables?: GQLNewAccountStatisticsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLNewAccountStatisticsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLNewAccountStatisticsQuery>(
+            NewAccountStatisticsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'newAccountStatistics',
+        'query',
+        variables,
+      );
+    },
+    nodeInfo(
+      variables?: GQLNodeInfoQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLNodeInfoQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLNodeInfoQuery>(
+            NodeInfoDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'nodeInfo',
+        'query',
+        variables,
+      );
+    },
+    paginatedAccounts(
+      variables?: GQLPaginatedAccountsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLPaginatedAccountsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLPaginatedAccountsQuery>(
+            PaginatedAccountsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'paginatedAccounts',
+        'query',
+        variables,
+      );
+    },
+    tps(
+      variables?: GQLTpsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLTpsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLTpsQuery>(TpsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'tps',
+        'query',
+        variables,
+      );
+    },
+    transactionsFeeStatistics(
+      variables?: GQLTransactionsFeeStatisticsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLTransactionsFeeStatisticsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLTransactionsFeeStatisticsQuery>(
+            TransactionsFeeStatisticsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'transactionsFeeStatistics',
+        'query',
+        variables,
+      );
+    },
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;

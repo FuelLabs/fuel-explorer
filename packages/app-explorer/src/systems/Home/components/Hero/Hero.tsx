@@ -22,6 +22,7 @@ export function Hero() {
     try {
       const result: GQLTpsQuery = await getTPS({});
       setTPSData(result.tps);
+      console.log('Here is the tps data', result.tps);
       console.log(result);
     } catch (e) {
       console.error('The error while fetching TPS is', e);

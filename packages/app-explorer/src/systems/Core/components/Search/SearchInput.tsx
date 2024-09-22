@@ -69,7 +69,7 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
-          style={{ width: width - 0.5 }}
+          style={{ width }}
           data-expanded={isExpanded}
           className={cx(
             classes.dropdownContent(isExpanded),
@@ -105,47 +105,68 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
                       )}
                     </Link>
                   </Dropdown.Item>
-                  <Dropdown.Separator />
-                  <Dropdown.Label>Recent Transactions</Dropdown.Label>
-                  {searchResult.account.transactions?.map((transaction) => {
-                    return (
-                      <Dropdown.Item
-                        key={transaction?.id}
-                        className={classes.dropdownItem()}
-                      >
-                        <Link
-                          as={NextLink}
-                          href={Routes.txSimple(transaction!.id!)}
-                          onClick={onSelectItem}
-                        >
-                          {shortAddress(transaction?.id || '', trimL, trimR)}
-                        </Link>
-                      </Dropdown.Item>
-                    );
-                  })}
+                  {!!searchResult.account.transactions?.length && (
+                    <>
+                      <Dropdown.Separator />
+                      <Dropdown.Label>Recent Transactions</Dropdown.Label>
+                      {searchResult.account.transactions?.map((transaction) => {
+                        return (
+                          <Dropdown.Item
+                            key={transaction?.id}
+                            className={classes.dropdownItem()}
+                          >
+                            <Link
+                              as={NextLink}
+                              href={Routes.txSimple(transaction?.id!)}
+                              onClick={onSelectItem}
+                            >
+                              {shortAddress(
+                                transaction?.id || '',
+                                trimL,
+                                trimR,
+                              )}
+                            </Link>
+                          </Dropdown.Item>
+                        );
+                      })}
+                    </>
+                  )}
                 </>
               )}
               {searchResult?.block && (
                 <>
-                  <Dropdown.Label>Block</Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
-                    <Link
-                      as={NextLink}
-                      href={Routes.blockSimple(searchResult.block.id!)}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(searchResult.block.id || '', trimL, trimR)}
-                    </Link>
-                  </Dropdown.Item>
-                  <Dropdown.Item className={classes.dropdownItem()}>
-                    <Link
-                      as={NextLink}
-                      href={Routes.blockSimple(searchResult.block.height!)}
-                      onClick={onSelectItem}
-                    >
-                      {searchResult.block.height}
-                    </Link>
-                  </Dropdown.Item>
+                  {searchResult.block.id && (
+                    <>
+                      <Dropdown.Label>Block Hash</Dropdown.Label>
+                      <Dropdown.Item className={classes.dropdownItem()}>
+                        <Link
+                          as={NextLink}
+                          href={`/block/${searchResult.block.id}/simple`}
+                          onClick={onSelectItem}
+                        >
+                          {shortAddress(
+                            searchResult.block.id || '',
+                            trimL,
+                            trimR,
+                          )}
+                        </Link>
+                      </Dropdown.Item>
+                    </>
+                  )}
+                  {searchResult.block.height && (
+                    <>
+                      <Dropdown.Label>Block Height</Dropdown.Label>
+                      <Dropdown.Item className={classes.dropdownItem()}>
+                        <Link
+                          as={NextLink}
+                          href={`/block/${searchResult.block.height}/simple`}
+                          onClick={onSelectItem}
+                        >
+                          {searchResult.block.height}
+                        </Link>
+                      </Dropdown.Item>
+                    </>
+                  )}
                 </>
               )}
               {searchResult?.contract && (
@@ -201,7 +222,6 @@ const SearchResultDropdown = forwardRef<HTMLDivElement, SearchDropdownProps>(
 
 type SearchInputProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
-  onClear?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
   expandOnFocus?: boolean;
@@ -210,7 +230,6 @@ type SearchInputProps = BaseProps<InputProps> & {
 export function SearchInput({
   value: initialValue = '',
   className,
-  onClear,
   autoFocus,
   placeholder = 'Search here...',
   searchResult,
@@ -244,7 +263,6 @@ export function SearchInput({
   function handleClear() {
     setValue('');
     setHasSubmitted(false);
-    onClear?.(value);
     if (isExpanded) {
       setIsExpanded(false);
     } else {

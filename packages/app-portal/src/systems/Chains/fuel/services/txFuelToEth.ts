@@ -1,7 +1,12 @@
-import { fungibleTokenABI } from '@fuel-bridge/fungible-token';
+import fungibleTokenABI from '@fuel-bridge/fungible-token/bridge-fungible-token/implementation/out/release/bridge_fungible_token-abi.json';
 import type { NetworkFuel } from '@fuel-ts/account';
 import dayjs from 'dayjs';
-import type { Account as FuelWallet, BN, MessageProof } from 'fuels';
+import type {
+  Account as FuelWallet,
+  BN,
+  MessageProof,
+  TransactionResult,
+} from 'fuels';
 import {
   Address as FuelAddress,
   Contract,
@@ -15,7 +20,7 @@ import {
 import type { WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'viem';
 
-import { getBridgeSolidityContracts } from 'app-commons';
+import { type HexAddress, getBridgeSolidityContracts } from 'app-commons';
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
 import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
 import { EthConnectorService } from '../../eth/services';
@@ -67,7 +72,7 @@ export type TxFuelToEthInputs = {
     ethWalletClient: WalletClient;
   };
   waitTxMessageRelayed: {
-    txHash: `0x${string}`;
+    txHash: HexAddress;
     ethPublicClient: EthPublicClient;
   };
   fetchTxs: {
@@ -146,11 +151,6 @@ export class TxFuelToEthService {
 
       const transactionRequest = await fungibleToken.functions
         .withdraw(ethAddressInFuel)
-        .txParams({
-          tip: bn(0),
-          gasLimit: bn(1_000_000),
-          maxFee: bn(100_000),
-        })
         .callParams({
           forward: {
             amount: bn.parseUnits(amount.format(), fuelAsset.decimals),
@@ -159,6 +159,9 @@ export class TxFuelToEthService {
         })
         .fundWithRequiredCoins();
 
+      const txCost = await fuelWallet.getTransactionCost(transactionRequest);
+      transactionRequest.gasLimit = txCost.gasUsed;
+      transactionRequest.maxFee = txCost.maxFee;
       const tx = await fuelWallet.sendTransaction(transactionRequest);
       const fWithdrawTxResult = await tx.waitForResult();
       if (fWithdrawTxResult.status !== TransactionStatus.success) {
@@ -244,7 +247,7 @@ export class TxFuelToEthService {
 
     if (isCommited) {
       return {
-        blockHashCommited: commitHashAtL1 as `0x${string}`,
+        blockHashCommited: commitHashAtL1 as HexAddress,
       };
     }
 
@@ -385,7 +388,7 @@ export class TxFuelToEthService {
         inputs: abiMessageRelayed?.inputs || [],
       },
       args: {
-        messageId: input.messageId as `0x${string}`,
+        messageId: input.messageId as HexAddress,
       },
       fromBlock: 'earliest',
     });
@@ -470,17 +473,29 @@ export class TxFuelToEthService {
 
     const { fuelAddress, fuelProvider } = input;
 
-    const txSummaries = await getTransactionsSummaries({
-      provider: fuelProvider,
-      filters: {
-        owner: fuelAddress?.toB256(),
-        first: 500,
-      },
-    });
+    const bridgeTxs: TransactionResult[] = [];
 
-    const bridgeTxs = txSummaries.transactions.filter(
-      (txSummary) => !!getReceiptsMessageOut(txSummary.receipts)?.[0],
-    );
+    let hasNextPage = true;
+    let endCursor = undefined;
+    // go until last page
+    while (hasNextPage) {
+      const { transactions, pageInfo } = await getTransactionsSummaries({
+        provider: fuelProvider,
+        filters: {
+          owner: fuelAddress?.toB256(),
+          first: 100,
+          after: endCursor,
+        },
+      });
+
+      const withdrawTxs = transactions.filter(
+        (txSummary) => !!getReceiptsMessageOut(txSummary.receipts)?.[0],
+      );
+      bridgeTxs.push(...withdrawTxs);
+
+      hasNextPage = pageInfo.hasNextPage;
+      endCursor = pageInfo.endCursor;
+    }
 
     return bridgeTxs;
   }

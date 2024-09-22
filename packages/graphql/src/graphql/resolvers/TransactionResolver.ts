@@ -1,7 +1,9 @@
 import type {
   GQLQueryTransactionArgs,
   GQLQueryTransactionsArgs,
+  GQLQueryTransactionsByBlockIdArgs,
   GQLQueryTransactionsByOwnerArgs,
+  GQLQueryTransactionsFeeStatisticsArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
@@ -12,6 +14,8 @@ type Params = {
   transaction: GQLQueryTransactionArgs;
   transactions: GQLQueryTransactionsArgs;
   transactionByOwner: GQLQueryTransactionsByOwnerArgs;
+  transactionByBlockId: GQLQueryTransactionsByBlockIdArgs;
+  transactionFees: GQLQueryTransactionsFeeStatisticsArgs;
 };
 
 export class TransactionResolver {
@@ -22,6 +26,10 @@ export class TransactionResolver {
         transaction: resolvers.transaction,
         transactions: resolvers.transactions,
         transactionsByOwner: resolvers.transactionsByOwner,
+        transactionsByBlockId: resolvers.transactionsByBlockId,
+        transactionsFeeStatistics: resolvers.transactionsFeeStatistics,
+        cumulativeTransactionsFeeStatistics:
+          resolvers.cumulativeTransactionsFeeStatistics,
       },
     };
   }
@@ -49,5 +57,47 @@ export class TransactionResolver {
       paginatedParams,
     );
     return transactions;
+  }
+
+  async transactionsByBlockId(
+    _: Source,
+    params: Params['transactionByBlockId'],
+  ) {
+    const transactionDAO = new TransactionDAO();
+    const paginatedParams = new PaginatedParams(params);
+    const transactions = await transactionDAO.getPaginatedTransactionsByBlockId(
+      params.blockId,
+      paginatedParams,
+    );
+    return transactions;
+  }
+
+  async transactionsFeeStatistics(
+    _: Source,
+    params: Params['transactionFees'],
+  ) {
+    const transactionDAO = new TransactionDAO();
+    const transactions = await transactionDAO.transactionsFeeStatistics(
+      params.timeFilter ? params.timeFilter : '',
+    );
+    return transactions;
+  }
+
+  async cumulativeTransactionsFeeStatistics(
+    _: Source,
+    params: Params['transactionFees'],
+  ) {
+    const transactionDAO = new TransactionDAO();
+    const transactions = await transactionDAO.transactionsFeeStatistics(
+      params.timeFilter ? params.timeFilter : '',
+    );
+    const transactionOffset = await transactionDAO.transactionsOffset(
+      params.timeFilter ? params.timeFilter : '',
+    );
+    const results = {
+      nodes: transactions.nodes,
+      transactionOffset: transactionOffset.transactionOffset,
+    };
+    return results;
   }
 }

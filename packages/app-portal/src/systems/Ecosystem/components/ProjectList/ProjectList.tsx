@@ -30,7 +30,7 @@ export const ProjectList = ({
   return (
     <Grid className={classes.grid()}>
       {projects.map((project) => (
-        <ProjectItem {...project} key={project.url} />
+        <ProjectItem {...project} key={project.name + project.url} />
       ))}
     </Grid>
   );

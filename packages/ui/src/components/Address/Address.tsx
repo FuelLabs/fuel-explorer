@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 import { createComponent } from '../../utils/component';
@@ -39,7 +39,7 @@ const AddressSpan = ({
   short: string;
   className?: string;
 }) => {
-  const baseClass = cx(['text-[1em]', className]);
+  const baseClass = cx(['text-sm', className]);
   return (
     <>
       {full && (
@@ -96,7 +96,7 @@ export const Address = createComponent<AddressProps, 'div'>({
                 {linkProps ? (
                   <Link
                     {...linkProps}
-                    className={cx('text-xs text-[1em]')}
+                    className={cx('text-xs text-sm')}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -128,7 +128,7 @@ export const Address = createComponent<AddressProps, 'div'>({
 const styles = tv({
   slots: {
     root: 'flex gap-1 text-sm font-mono',
-    prefix: 'mr-px text-[1em] text-secondary',
-    address: 'text-[1em] text-muted mt-px gap-3',
+    prefix: 'mr-px text-sm text-secondary',
+    address: 'text-sm text-muted mt-px gap-3',
   },
 });

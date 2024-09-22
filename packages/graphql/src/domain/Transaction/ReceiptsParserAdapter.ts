@@ -1,3 +1,4 @@
+import { GroupedReceiptsFactory } from '~/domain/Transaction/factories/GroupedReceiptsFactory';
 import ReceiptsParser from './ReceiptsParser';
 
 export default class ReceiptsParserAdapter {
@@ -26,36 +27,12 @@ export default class ReceiptsParserAdapter {
         pointer = lastPointer[next.indent];
       }
     }
+
     const groups = [];
+
     for (const group of data) {
-      if (group.type === 'CALL') {
-        const top = {
-          type: 'FROM_CONTRACT',
-          receipts: [] as any,
-        };
-        top.receipts.push({ item: group.item });
-        top.receipts.push(...group.receipts);
-        groups.push(top);
-      }
-      if (group.type === 'RETURN') {
-        const top = {
-          type: 'FINAL_RESULT',
-          receipts: [] as any,
-        };
-        top.receipts.push({ item: group.item });
-        top.receipts.push(...group.receipts);
-        groups.push(top);
-      } else {
-        if (group.type === 'SCRIPT_RESULT') {
-          const top = {
-            type: 'FINAL_RESULT',
-            receipts: [] as any,
-          };
-          top.receipts.push({ item: group.item });
-          if (group.receipts) top.receipts.push(...group.receipts);
-          groups.push(top);
-        }
-      }
+      const groupedData = GroupedReceiptsFactory(group);
+      groupedData && groups.push(groupedData);
     }
     return groups;
   }

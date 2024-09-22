@@ -1,4 +1,5 @@
 import { ToggleGroup } from '@fuels/ui';
+import { useMemo } from 'react';
 import { tv } from 'tailwind-variants';
 import { isEthChain, isFuelChain } from '~portal/systems/Chains';
 import { useBridge } from '../hooks';
@@ -15,16 +16,18 @@ export const BridgeTabs = () => {
     handlers.goToWithdraw();
   };
 
-  function getDefaultValue() {
+  const value = useMemo(() => {
     if (isEthChain(fromNetwork)) return 'deposit';
     if (isFuelChain(fromNetwork)) return 'withdraw';
-  }
+    return 'deposit';
+  }, [fromNetwork]);
 
   return (
     <ToggleGroup
-      defaultValue={getDefaultValue()}
-      value={getDefaultValue()}
+      defaultValue={value}
+      value={value}
       className={classes.toggle()}
+      size="2"
     >
       <ToggleGroup.Item
         value="deposit"
@@ -46,9 +49,6 @@ export const BridgeTabs = () => {
 
 const styles = tv({
   slots: {
-    toggle: [
-      'w-full rounded-md fuel-[ToggleGroupItem]:h-9',
-      'fuel-[ToggleGroupItem]:text-md',
-    ],
+    toggle: ['w-full rounded-md h-9', 'fuel-[ToggleGroupItem]:text-md'],
   },
 });

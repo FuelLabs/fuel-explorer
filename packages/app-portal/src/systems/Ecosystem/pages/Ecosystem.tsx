@@ -7,8 +7,15 @@ import { useEcosystem } from '../hooks/useEcosystem';
 
 export function Ecosystem() {
   const classes = styles();
-  const { tags, isLoading, filter, search, handlers, filteredProjects } =
-    useEcosystem();
+  const {
+    tags,
+    isLoading,
+    filter,
+    search,
+    handlers,
+    filteredProjects,
+    isBuildingHidden,
+  } = useEcosystem();
 
   const handleSearch = (query: string) => {
     handlers.searchProjects({ query });
@@ -24,7 +31,12 @@ export function Ecosystem() {
 
   return (
     <VStack gap="6" flexGrow="1" className={classes.content()}>
-      <EcosystemHeader search={search} onSearchChange={handleSearch} />
+      <EcosystemHeader
+        search={search}
+        onSearchChange={handleSearch}
+        onBuildingHiddenChange={handlers.toggleIsBuildingHidden}
+        isBuildingHidden={isBuildingHidden}
+      />
       <EcosystemTags
         tags={tags}
         activeTag={filter}
