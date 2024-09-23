@@ -33,7 +33,7 @@ const columns = [
       </div>
     ),
     cell: (row: any) => (
-      <BlockHashItem hashAddress={row.node.id} width="100px" />
+      <BlockHashItem hashAddress={row.node.id} width="120px" />
     ),
     sortable: false,
   },
@@ -62,7 +62,7 @@ const columns = [
         (trans: any) => trans.mintAmount != null,
       );
       return (
-        <div className="font-mono text-sm text-gray-contrast">
+        <div className="font-mono text-sm text-gray-contrast w-full flex justify-start pl-6 px-1">
           {mintTransaction ? mintTransaction.mintAmount : 'No mint amount'}{' '}
         </div>
       );
@@ -73,7 +73,7 @@ const columns = [
   {
     name: 'Validator',
     cell: (row: any) => (
-      <div className="flex items-center justify-center w-full">
+      <div className="flex items-center justify-center w-130">
         <BlockValidatorItem hashAddress={row.node.producer} />
       </div>
     ),
