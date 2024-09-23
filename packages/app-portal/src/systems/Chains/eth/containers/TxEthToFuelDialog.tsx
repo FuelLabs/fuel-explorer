@@ -2,7 +2,8 @@ import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
 import { shortAddress } from '~portal/systems/Core';
 import { useOverlay } from '~portal/systems/Overlay';
 
-import { Button, Dialog, VStack } from '@fuels/ui';
+import { Alert, Button, Dialog, VStack } from '@fuels/ui';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import {
   BridgeSteps,
@@ -15,6 +16,7 @@ export function TxEthToFuelDialog() {
   const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
   const {
+    autoClose,
     steps,
     date,
     asset,
@@ -51,6 +53,17 @@ export function TxEthToFuelDialog() {
           Confirm Transaction
         </Button>
       )}
+      {autoClose ? (
+        <Alert color="orange">
+          <Alert.Icon>
+            <IconAlertCircle size="md" />
+          </Alert.Icon>
+          <Alert.Text>
+            This page will automatically close once the <b>Deposit</b> is
+            complete.
+          </Alert.Text>
+        </Alert>
+      ) : null}
     </VStack>
   );
 }
