@@ -917,6 +917,7 @@
       --gray-contrast: #FFFFFF;
       --gray-surface: color(display-p3 0 0 0 / 5%);
       --gray-indicator: var(--gray-9);
+      --gray-table:#161616;
     }
 
     /* Gray Light Mode L2 */
@@ -955,6 +956,7 @@
       --gray-contrast: #FFFFFF;
       --gray-surface: color(display-p3 1 1 1 / 80%);
       --gray-indicator: var(--gray-9);
+      --gray-table:#FFFFFF;
     }
 
   }

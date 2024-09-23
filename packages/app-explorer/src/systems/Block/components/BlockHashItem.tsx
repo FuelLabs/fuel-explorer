@@ -15,7 +15,7 @@ export default function BlockHashItem({
         <HStack width={width} maxWidth={'1'}>
           <Copyable
             value={hashAddress}
-            className="font-mono text-gray-10 w-full"
+            className="font-mono text-gray-contrast w-full"
           >
             <p className="overflow-hidden text-ellipsis whitespace-nowrap">
               {hashAddress}

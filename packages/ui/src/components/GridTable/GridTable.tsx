@@ -50,10 +50,12 @@ export const GridTable = <T,>({
     rows: {
       style: {
         cursor: 'pointer',
-        backgroundColor: 'transparent',
+        backgroundColor: 'var(--gray-2)',
         fontWeight: '400',
+        borderRadius: '12px',
+        marginBottom: '4px',
         '&:hover': {
-          backgroundColor: 'var(--gray-2)', // Change background color on hover
+          backgroundColor: 'var(--gray-a1)',
         },
       },
     },

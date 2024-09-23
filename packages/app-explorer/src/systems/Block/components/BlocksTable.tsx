@@ -32,7 +32,7 @@ const columns = [
   {
     name: 'Transactions',
     cell: (row: any) => (
-      <div className="font-mono text-sm text-gray-9">
+      <div className="font-mono text-sm text-gray-contrast">
         {row.node.header.transactionsCount}
       </div>
     ),
@@ -45,7 +45,7 @@ const columns = [
         (trans: any) => trans.mintAmount != null,
       );
       return (
-        <div className="font-mono text-sm text-gray-9">
+        <div className="font-mono text-sm text-gray-contrast">
           {mintTransaction ? mintTransaction.mintAmount : 'No mint amount'}{' '}
         </div>
       );
