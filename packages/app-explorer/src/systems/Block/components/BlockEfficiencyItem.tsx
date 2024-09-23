@@ -19,9 +19,9 @@ export default function BlockEfficiencyItem({
   return (
     <Box>
       <VStack gap="2">
-        <HStack className="justify-between">
+        <HStack className="justify-between items-center">
           {/* Format current and total as M (millions) */}
-          <Text className="font-inter text-gray-10 text-[0.7rem]">
+          <Text className="font-inter text-gray-10 text-[0.7rem] whitespace-nowrap">
             {currentInMillions % 1 === 0
               ? currentInMillions.toFixed(0)
               : currentInMillions.toFixed(1)}
@@ -31,7 +31,7 @@ export default function BlockEfficiencyItem({
               : totalInMillions.toFixed(1)}
             M
           </Text>
-          <Text className="font-inter text-gray-10 text-[0.7rem]">
+          <Text className="font-inter text-gray-10 text-[0.7rem] whitespace-nowrap">
             ({progress.toFixed(2)}%)
           </Text>
         </HStack>

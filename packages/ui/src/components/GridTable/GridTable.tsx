@@ -38,6 +38,7 @@ export const GridTable = <T,>({
         backgroundColor: 'transparent',
         color: '#9f9f9f',
         fontWeight: '600',
+        textAlign: 'left',
       },
     },
     headCells: {
@@ -45,6 +46,8 @@ export const GridTable = <T,>({
         backgroundColor: 'transparent',
         color: '#9f9f9f',
         fontWeight: '600',
+        fontSize: '16px',
+        textAlign: 'left',
       },
     },
     rows: {
@@ -53,7 +56,7 @@ export const GridTable = <T,>({
         backgroundColor: 'var(--gray-2)',
         fontWeight: '400',
         borderRadius: '12px',
-        marginBottom: '4px',
+        marginBottom: '8px',
         '&:hover': {
           backgroundColor: 'var(--gray-a1)',
         },
@@ -62,13 +65,12 @@ export const GridTable = <T,>({
     cells: {
       style: {
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
         paddingLeft: '0.5rem',
         paddingRight: '0.5rem',
         color: 'var(--gray-table-text)',
-        paddingTop: '0.9rem',
-        paddingBottom: '0.9rem',
+        paddingTop: '0.4rem',
+        paddingBottom: '0.4rem',
         backgroundColor: 'transparent',
         fontWeight: '400',
       },

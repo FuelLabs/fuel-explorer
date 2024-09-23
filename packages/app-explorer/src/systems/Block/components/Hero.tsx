@@ -10,7 +10,7 @@ export function Hero() {
         </Heading>
         <HStack align={'center'}>
           <a href="/" className="text-[#9f9f9f]  r">
-            <p className="m-0">Home</p>
+            <p className="m-0 text-[14px]">Home</p>
           </a>
           <IconChevronRight color="#9f9f9f" size={20} />
           <p className="m-0">View All Blocks</p>

@@ -10,7 +10,7 @@ export default function BlockHashItem({
   width,
 }: BlockHashItemProps) {
   return (
-    <VStack gap="1">
+    <VStack>
       <Box>
         <HStack width={width} maxWidth={'1'}>
           <Copyable
