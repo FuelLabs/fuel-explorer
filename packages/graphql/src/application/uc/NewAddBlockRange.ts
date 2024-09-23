@@ -67,7 +67,11 @@ export default class NewAddBlockRange {
         }
         if (transaction.data?.status?.receipts) {
           for (const receipt of transaction.data.status.receipts) {
-            if (receipt.receiptType === 'TRANSFER_OUT') {
+            if (
+              receipt.receiptType === 'TRANSFER_OUT' &&
+              receipt.assetId &&
+              receipt.id
+            ) {
               queries.push({
                 statement:
                   'insert into indexer.assets_contracts (asset_id, contract_id) values ($1, $2) on conflict do nothing',

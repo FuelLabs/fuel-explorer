@@ -23,7 +23,11 @@ async function migrate(from: number, to: number) {
   );
   for (const transaction of transactions) {
     for (const receipt of transaction.data.status.receipts) {
-      if (receipt.receiptType === 'TRANSFER_OUT') {
+      if (
+        receipt.receiptType === 'TRANSFER_OUT' &&
+        receipt.assetId &&
+        receipt.id
+      ) {
         await connection.query(
           'insert into indexer.assets_contracts (asset_id, contract_id) values ($1, $2) on conflict do nothing',
           [receipt.assetId, receipt.id],
