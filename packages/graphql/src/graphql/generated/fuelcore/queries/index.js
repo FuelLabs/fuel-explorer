@@ -28,3 +28,5 @@ module.exports.transaction = fs.readFileSync(path.join(__dirname, 'transaction.g
 module.exports.transactions = fs.readFileSync(path.join(__dirname, 'transactions.graphql'), 'utf8');
 module.exports.transactionsByOwner = fs.readFileSync(path.join(__dirname, 'transactionsByOwner.graphql'), 'utf8');
 module.exports.transactionsByBlockId = fs.readFileSync(path.join(__dirname, 'transactionsByBlockId.graphql'), 'utf8');
+module.exports.tps = fs.readFileSync(path.join(__dirname, 'tps.graphql'), 'utf8');
+module.exports.getBlocksDashboard = fs.readFileSync(path.join(__dirname, 'getBlocksDashboard.graphql'), 'utf8');
