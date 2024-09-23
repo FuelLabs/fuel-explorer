@@ -71,7 +71,7 @@ const columns = [
   },
 
   {
-    name: 'Validator',
+    name: 'Producer',
     cell: (row: any) => (
       <div className="flex items-center justify-center w-130">
         <BlockValidatorItem hashAddress={row.node.producer} />
