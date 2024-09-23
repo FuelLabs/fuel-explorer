@@ -1,10 +1,11 @@
 import { setTimeout } from 'node:timers/promises';
+import { concat, hash } from 'fuels';
 import { DatabaseConnection } from './infra/database/DatabaseConnection';
 
 const connection = DatabaseConnection.getInstance();
 
 (async () => {
-  let index = 0;
+  let index = 10798000;
   const page = 10000;
   while (index < 11000000) {
     const from = index === 0 ? 0 : index + 1;
@@ -23,14 +24,11 @@ async function migrate(from: number, to: number) {
   );
   for (const transaction of transactions) {
     for (const receipt of transaction.data.status.receipts) {
-      if (
-        receipt.receiptType === 'TRANSFER_OUT' &&
-        receipt.assetId &&
-        receipt.id
-      ) {
+      if (receipt.receiptType === 'MINT' && receipt.id && receipt.subId) {
+        const assetId = hash(concat([receipt.id, receipt.subId]));
         await connection.query(
           'insert into indexer.assets_contracts (asset_id, contract_id) values ($1, $2) on conflict do nothing',
-          [receipt.assetId, receipt.id],
+          [assetId, receipt.id],
         );
       }
     }

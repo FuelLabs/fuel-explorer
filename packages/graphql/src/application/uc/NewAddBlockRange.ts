@@ -1,3 +1,4 @@
+import { concat, hash } from 'fuels';
 import { logger } from '~/core/Logger';
 import { client } from '~/graphql/GraphQLSDK';
 import {
@@ -67,15 +68,12 @@ export default class NewAddBlockRange {
         }
         if (transaction.data?.status?.receipts) {
           for (const receipt of transaction.data.status.receipts) {
-            if (
-              receipt.receiptType === 'TRANSFER_OUT' &&
-              receipt.assetId &&
-              receipt.id
-            ) {
+            if (receipt.receiptType === 'MINT' && receipt.id && receipt.subId) {
+              const assetId = hash(concat([receipt.id, receipt.subId]));
               queries.push({
                 statement:
                   'insert into indexer.assets_contracts (asset_id, contract_id) values ($1, $2) on conflict do nothing',
-                params: [receipt.assetId, receipt.id],
+                params: [assetId, receipt.id],
               });
             }
           }
