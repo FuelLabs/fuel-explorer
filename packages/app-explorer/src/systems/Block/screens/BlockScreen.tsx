@@ -15,26 +15,11 @@ export const BlocksScreen = () => {
     undefined,
   );
   const [dir, setDir] = useState<'after' | 'before'>('after');
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const limit = 10;
-
-  const calculateTotalPages = () => {
-    if (data?.pageInfo.endCursor) {
-      const endCursor = Number(data.pageInfo.endCursor);
-      return Math.ceil(endCursor / limit);
-    }
-    return 1;
-  };
-
-  useEffect(() => {
-    if (data) {
-      const totalPageCount = calculateTotalPages();
-      setTotalPages(totalPageCount);
-    }
-  }, [data]);
 
   const fetchBlockData = async (
     cursor: string | null = null,
@@ -45,6 +30,11 @@ export const BlocksScreen = () => {
       const result = await getBlocks({ cursor, dir });
       const blockData = result.blocks;
       setData(blockData);
+
+      if (totalPages === null && blockData?.pageInfo.endCursor) {
+        const endCursor = Number(blockData.pageInfo.endCursor);
+        setTotalPages(Math.ceil(endCursor / limit));
+      }
     } finally {
       setLoading(false);
     }
@@ -56,35 +46,14 @@ export const BlocksScreen = () => {
       let newCursor: string | null = null;
       setDir(newDir);
 
-      if (
-        newPageNumber === currentPage + 1 ||
-        newPageNumber === currentPage - 1
-      ) {
-        if (newDir === 'before' && data.pageInfo.endCursor) {
-          newCursor = data.pageInfo.endCursor;
-        } else if (newDir === 'after' && data.pageInfo.startCursor) {
-          newCursor = data.pageInfo.startCursor;
-        }
-      } else {
-        if (newDir === 'before' && data.pageInfo.endCursor) {
-          newCursor = (
-            +data.pageInfo.endCursor -
-            (newPageNumber - currentPage) * limit
-          ).toString();
-        } else if (newDir === 'after' && data.pageInfo.startCursor) {
-          newCursor = (
-            +data.pageInfo.startCursor +
-            (currentPage - newPageNumber) * limit
-          ).toString();
-        }
+      if (newDir === 'before' && data.pageInfo.endCursor) {
+        newCursor = data.pageInfo.endCursor;
+      } else if (newDir === 'after' && data.pageInfo.startCursor) {
+        newCursor = data.pageInfo.startCursor;
       }
 
       setCurrentPage(newPageNumber);
       setCurrentCursor(newCursor);
-      if (newPageNumber === 1) {
-        router.push('/blocks');
-        return;
-      }
       router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`);
     }
   };
@@ -102,13 +71,6 @@ export const BlocksScreen = () => {
     fetchBlockData(currentCursor, dir);
   }, [currentCursor, dir]);
 
-  useEffect(() => {
-    if (data) {
-      const totalPageCount = calculateTotalPages();
-      setTotalPages(totalPageCount);
-    }
-  }, [data]);
-
   return (
     <VStack>
       <Hero />
@@ -119,7 +81,7 @@ export const BlocksScreen = () => {
           <BlocksTable
             blocks={data}
             onPageChanged={handlePageChanged}
-            pageCount={totalPages}
+            pageCount={totalPages || 1}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />
