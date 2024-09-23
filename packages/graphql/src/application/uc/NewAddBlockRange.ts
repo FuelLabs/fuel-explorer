@@ -65,6 +65,17 @@ export default class NewAddBlockRange {
             ],
           });
         }
+        if (transaction.data?.status?.receipts) {
+          for (const receipt of transaction.data.status.receipts) {
+            if (receipt.receiptType === 'TRANSFER_OUT') {
+              queries.push({
+                statement:
+                  'insert into indexer.assets_contracts (asset_id, contract_id) values ($1, $2) on conflict do nothing',
+                params: [receipt.assetId, receipt.id],
+              });
+            }
+          }
+        }
         if (transactionData.inputs) {
           for (const inputData of transactionData.inputs) {
             queries.push({
