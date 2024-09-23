@@ -8,11 +8,12 @@ import { tv } from 'tailwind-variants';
 import { DataTable } from '../../components/DataTable';
 import { Block } from '../../interface/blocks.interface';
 import { DailyTransaction } from '../DailyTransaction';
-import Epoch from '../Epoch';
+// import Epoch from '../Epoch';
 import { GasSpentChart } from '../GasSpentChart';
 import { GasTracker } from '../GasTracker';
 import { LatestBlock } from '../LatestBlock';
 import { TPS } from '../TPS';
+import TotalDapps from '../TotalDapps/totalDapps';
 import { getTPS } from './actions/get-tps';
 
 export function Hero() {
@@ -60,7 +61,7 @@ export function Hero() {
                 <DailyTransaction blocks={blocks} />
               </div>
               <div className="row-span-1 col-span-3">
-                <Epoch />
+                <TotalDapps active={21} total={48} />
               </div>
               <div className="row-span-1 col-span-5">
                 <LatestBlock
