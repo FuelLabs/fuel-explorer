@@ -26,6 +26,7 @@ import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
 import { EthConnectorService } from '../../eth/services';
 import { parseEthAddressToFuel } from '../../eth/utils/address';
 import { createRelayMessageParams } from '../../eth/utils/relayMessage';
+import { getTransactionReceipt } from '../../eth/utils/transaction';
 import { getBlock } from '../utils';
 
 export type TxFuelToEthInputs = {
@@ -439,28 +440,16 @@ export class TxFuelToEthService {
 
     const { ethPublicClient, txHash } = input;
 
-    let txReceipts: Awaited<
-      ReturnType<
-        | typeof ethPublicClient.getTransactionReceipt
-        | typeof ethPublicClient.waitForTransactionReceipt
-      >
-    >;
-    try {
-      txReceipts = await ethPublicClient.getTransactionReceipt({
-        hash: txHash,
-      });
-    } catch (_err: unknown) {
-      // workaround in place because waitForTransactionReceipt stop working after first time using it
-      txReceipts = await ethPublicClient.waitForTransactionReceipt({
-        hash: txHash,
-      });
-    }
+    const txReceipt = await getTransactionReceipt({
+      ethPublicClient,
+      txHash,
+    });
 
-    if (txReceipts.status !== 'success') {
+    if (txReceipt.status !== 'success') {
       throw new Error('Failed to relay message (transaction reverted)');
     }
 
-    return !!txReceipts;
+    return !!txReceipt;
   }
 
   static async fetchTxs(input: TxFuelToEthInputs['fetchTxs']) {

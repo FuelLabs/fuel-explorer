@@ -24,7 +24,7 @@ import {
   FUEL_MESSAGE_PORTAL,
   decodeMessageSentData,
 } from '../contracts/FuelMessagePortal';
-import { getBlockDate, isErc20Address } from '../utils';
+import { getBlockDate, getTransactionReceipt, isErc20Address } from '../utils';
 
 import {
   type HexAddress,
@@ -126,8 +126,8 @@ export class TxEthToFuelService {
     TxEthToFuelService.assertStartEth(input);
 
     try {
-      const { ethWalletClient, fuelAddress, amount } = input;
-      if (fuelAddress && ethWalletClient) {
+      const { ethWalletClient, fuelAddress, amount, ethPublicClient } = input;
+      if (fuelAddress && ethWalletClient && ethPublicClient) {
         const bridgeSolidityContracts = await getBridgeSolidityContracts();
         const fuelPortal = EthConnectorService.connectToFuelMessagePortal({
           walletClient: ethWalletClient,
@@ -142,7 +142,34 @@ export class TxEthToFuelService {
           },
         );
 
-        return txHash;
+        const receipt = await getTransactionReceipt({
+          ethPublicClient,
+          txHash,
+        });
+
+        if (receipt.status !== 'success') {
+          throw new Error('Failed to deposit ETH');
+        }
+
+        const nonce = receipt.logs.map((log) => {
+          try {
+            const messageSentEvent = decodeEventLog({
+              abi: FUEL_MESSAGE_PORTAL.abi,
+              data: log.data,
+              topics: log.topics,
+            }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
+
+            return messageSentEvent?.args?.nonce;
+          } catch (_) {
+            /* empty */
+          }
+        })[0];
+
+        if (nonce == null) {
+          throw new Error('Failed to get nonce of ETH deposit');
+        }
+
+        return { txHash, nonce };
       }
     } catch (e) {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -185,19 +212,11 @@ export class TxEthToFuelService {
           amount,
         ]);
 
-        let approveTxHashReceipt: TransactionReceipt;
-        try {
-          approveTxHashReceipt = await ethPublicClient.getTransactionReceipt({
-            hash: approveTxHash,
-          });
-        } catch (_err: unknown) {
-          // workaround in place because waitForTransactionReceipt stop working after first time using it
-          approveTxHashReceipt =
-            await ethPublicClient.waitForTransactionReceipt({
-              hash: approveTxHash,
-              confirmations: 2,
-            });
-        }
+        const approveTxHashReceipt = await getTransactionReceipt({
+          ethPublicClient,
+          txHash: approveTxHash,
+          waitOptions: { confirmations: 2 },
+        });
 
         if (approveTxHashReceipt.status !== 'success') {
           throw new Error('Failed to approve Token for transfer');
@@ -213,7 +232,34 @@ export class TxEthToFuelService {
           amount,
         ]);
 
-        return depositTxHash;
+        const receipt = await getTransactionReceipt({
+          ethPublicClient,
+          txHash: depositTxHash,
+        });
+
+        if (receipt.status !== 'success') {
+          throw new Error('Failed to deposit ETH');
+        }
+
+        const nonce = receipt.logs.map((log) => {
+          try {
+            const messageSentEvent = decodeEventLog({
+              abi: FUEL_MESSAGE_PORTAL.abi,
+              data: log.data,
+              topics: log.topics,
+            }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
+
+            return messageSentEvent?.args?.nonce;
+          } catch (_) {
+            /* empty */
+          }
+        })[0];
+
+        if (!nonce) {
+          throw new Error('Failed to get nonce of ETH deposit');
+        }
+
+        return { txHash: depositTxHash, nonce };
       }
     } catch (e) {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>

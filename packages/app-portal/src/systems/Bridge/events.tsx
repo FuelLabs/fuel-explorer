@@ -32,7 +32,10 @@ export function bridgeEvents(store: Store) {
       store.send(Services.bridgeTxs, { type: 'FETCH_NEXT_PAGE' });
     },
     addTxEthToFuel(
-      input?: { ethTxId?: HexAddress } & BridgeInputs['fetchTxs'],
+      input?: {
+        ethTxId?: HexAddress;
+        inputEthTxNonce?: BigInt;
+      } & BridgeInputs['fetchTxs'],
     ) {
       if (!input) return;
 

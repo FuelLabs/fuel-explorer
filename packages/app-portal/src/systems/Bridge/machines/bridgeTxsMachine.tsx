@@ -50,6 +50,7 @@ export type BridgeTxsMachineEvents =
       type: 'ADD_TX_ETH_TO_FUEL';
       input: {
         ethTxId?: HexAddress;
+        inputEthTxNonce?: BigInt;
       } & BridgeInputs['fetchTxs'];
     }
   | {
@@ -203,16 +204,25 @@ export const bridgeTxsMachine = createMachine(
       }),
       assignTxEthToFuel: assign({
         ethToFuelTxRefs: (ctx, ev) => {
-          const { ethTxId, fuelAddress, fuelProvider, ethPublicClient } =
-            ev.input || {};
+          const {
+            ethTxId,
+            fuelAddress,
+            fuelProvider,
+            ethPublicClient,
+            inputEthTxNonce,
+          } = ev.input || {};
           if (!ethTxId || ctx.ethToFuelTxRefs?.[ethTxId])
             return ctx.ethToFuelTxRefs;
 
+          const key = `${ethTxId}-${inputEthTxNonce}`;
+
           console.log(`NEW: creating machine Fuel To Eth: ${ethTxId}`);
           const newRef = {
-            [ethTxId]: spawn(
+            [key]: spawn(
               txEthToFuelMachine.withContext({
                 ethTxId: ethTxId as HexAddress,
+                inputEthTxNonce: inputEthTxNonce,
+                machineId: key,
                 fuelAddress: fuelAddress,
                 fuelProvider: fuelProvider,
                 ethPublicClient: ethPublicClient,

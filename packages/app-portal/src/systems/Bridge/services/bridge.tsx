@@ -79,7 +79,7 @@ export class BridgeService {
 
       const assetEth = getAssetEth(asset);
       const amountEthUnits = bn.parseUnits(amountFormatted, assetEth.decimals);
-      const txId = await TxEthToFuelService.start({
+      const startedTxEthToFuel = await TxEthToFuelService.start({
         amount: amountEthUnits.toHex(),
         ethWalletClient,
         fuelAddress,
@@ -87,18 +87,22 @@ export class BridgeService {
         ethPublicClient,
       });
 
-      if (txId) {
+      const { txHash, nonce } = startedTxEthToFuel || {};
+
+      if (txHash && nonce) {
         if (fuelWallet) {
           store.addTxEthToFuel({
-            ethTxId: txId,
+            ethTxId: txHash,
+            inputEthTxNonce: nonce,
             fuelProvider,
             ethPublicClient,
             fuelAddress,
           });
           store.openTxEthToFuel({
-            txId,
+            txId: txHash,
+            messageSentEventNonce: nonce,
           });
-          EthTxCache.setTxIsCreated(txId);
+          EthTxCache.setTxIsCreated(txHash);
         }
       }
 

@@ -359,8 +359,8 @@ export const txEthToFuelMachine = createMachine(
         fuelMessageStatus: (_, ev) => ev.data,
       }),
       clearTxCreated: (ctx) => {
-        if (ctx.machineId && EthTxCache.getTxIsCreated(ctx.machineId)) {
-          EthTxCache.removeTxCreated(ctx.machineId);
+        if (ctx.ethTxId && EthTxCache.getTxIsCreated(ctx.ethTxId)) {
+          EthTxCache.removeTxCreated(ctx.ethTxId);
         }
       },
       setEthToFuelTxReceiptCached: (ctx) => {
@@ -400,7 +400,8 @@ export const txEthToFuelMachine = createMachine(
       hasEthTxNonce: (ctx, ev) => !!ctx.ethTxNonce || !!ev?.data?.nonce,
       hasAnalyzeTxInput: (ctx) =>
         !!ctx.ethTxId &&
-        !!ctx.inputEthTxNonce &&
+        // inputEthTxNonce can be zero
+        ctx.inputEthTxNonce != null &&
         !!ctx.machineId &&
         !!ctx.fuelAddress &&
         !!ctx.fuelProvider &&
