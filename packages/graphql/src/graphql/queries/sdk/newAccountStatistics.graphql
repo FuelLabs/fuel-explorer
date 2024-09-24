@@ -1,7 +1,0 @@
-query newAccountStatistics($timeFilter: String) {
-  newAccountStatistics(timeFilter: $timeFilter) {
-    nodes {
-      timestamp
-    }
-  }
-}

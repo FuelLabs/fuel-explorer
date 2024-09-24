@@ -1,0 +1,1 @@
+export const DEFAULT_SEARCH_INPUT_WIDTH = 400;

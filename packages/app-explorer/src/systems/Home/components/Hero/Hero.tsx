@@ -14,16 +14,19 @@ import { GasTracker } from '../GasTracker';
 import { LatestBlock } from '../LatestBlock';
 import { TPS } from '../TPS';
 import TotalDapps from '../TotalDapps/totalDapps';
+import { getBlocksDashboard } from './actions/get-blocks-dashboard';
 import { getTPS } from './actions/get-tps';
 
 export function Hero() {
   const classes = styles();
-  const [tpsData, setTPSData] = useState<GQLTpsQuery['tps'] | null>(null);
+  const [tpsData, _setTPSData] = useState<GQLTpsQuery['tps'] | null>(null);
   const getTPSData = async () => {
     try {
-      const result: GQLTpsQuery = await getTPS({});
-      setTPSData(result.tps);
-      console.log('Here is the tps data', result.tps);
+      const result = await getTPS();
+      const dashboard = await getBlocksDashboard();
+      // setTPSData(result.tps);
+      console.log('Here is the tps data', result);
+      console.log('Here is the dashboard data', dashboard);
       console.log(result);
     } catch (e) {
       console.error('The error while fetching TPS is', e);

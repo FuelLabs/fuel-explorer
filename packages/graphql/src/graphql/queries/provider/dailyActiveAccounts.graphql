@@ -1,8 +1,0 @@
-query dailyActiveAccounts($timeFilter: String) {
-  dailyActiveAccounts(timeFilter: $timeFilter) {
-    nodes {
-      timestamp
-      count
-    }
-  }
-}

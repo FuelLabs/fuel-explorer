@@ -31,7 +31,14 @@ export function BlockScreenSimple({
 }: BlockScreenSimpleProps) {
   return (
     <VStack>
-      <Grid className="grid-rows-3 tablet:grid-rows-1 tablet:grid-cols-3 gap-6 mb-8">
+      <Grid className="grid-rows-3 tablet:grid-rows-2 tablet:grid-cols-2 desktop:grid-cols-4 gap-6 mb-8">
+        <CardInfo name="Height" className="flex-1">
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={<LoadingBox className="w-12 h-6" />}
+            regularEl={block?.height}
+          />
+        </CardInfo>
         <CardInfo name="Producer" className="flex-1">
           <Address
             value={producer || ''}

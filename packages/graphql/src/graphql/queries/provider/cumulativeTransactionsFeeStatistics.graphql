@@ -1,9 +1,0 @@
-query cumulativeTransactionsFeeStatistics($timeFilter: String){
-    cumulativeTransactionsFeeStatistics(timeFilter: $timeFilter){
-        nodes{
-            fee
-            timestamp
-        }
-        transactionOffset
-    }
-}

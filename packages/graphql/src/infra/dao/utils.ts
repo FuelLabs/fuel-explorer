@@ -1,45 +1,49 @@
-export function getTimeInterval(timeFilter: string): number | null {
-  let _interval;
-  const msPerHour = 60 * 60 * 1000;
-  switch (timeFilter) {
-    case '1hr':
-      _interval = msPerHour;
-      break;
-    case '12hr':
-      _interval = msPerHour * 12;
-      break;
-    case '1day':
-      _interval = msPerHour * 24;
-      break;
-    case '7days':
-      _interval = msPerHour * 24 * 7;
-      break;
-    case '14days':
-      _interval = msPerHour * 24 * 14;
-      break;
-    case '30days':
-      _interval = msPerHour * 24 * 30;
-      break;
-    case '90days':
-      _interval = msPerHour * 24 * 90;
-      break;
-    default:
-      _interval = null;
-  }
-  return _interval;
+export function roundToNearest(time: number, roundUp = false): number {
+  const msInHour = 60 * 60 * 1000;
+  return roundUp
+    ? Math.ceil(time / msInHour) * msInHour
+    : Math.floor(time / msInHour) * msInHour;
 }
 
-export function generateDateIntervals(
-  startDate: Date,
-  endDate: Date,
-): string[] {
-  const dates = [];
-  const currentDate = new Date(startDate);
+// General interval creation function
+export function createIntervals(
+  startTime: number,
+  endTime: number,
+  unit: 'minute' | 'hour' | 'day',
+  intervalSize: number,
+): Array<{ start: Date; end: Date; txCount: number; totalGas: number }> {
+  const roundedStartTime = roundToNearest(startTime);
+  const roundedEndTime = roundToNearest(endTime, true);
 
-  while (currentDate <= endDate) {
-    dates.push(new Date(currentDate).toISOString().split('T')[0]); // Push the date in YYYY-MM-DD format
-    currentDate.setDate(currentDate.getDate() + 1); // Increment day by day
+  const intervals: Array<{
+    start: Date;
+    end: Date;
+    txCount: number;
+    totalGas: number;
+  }> = [];
+
+  let currentTime = roundedStartTime;
+
+  // Handle minute, hour, and day intervals
+  const msInUnit = {
+    minute: 60 * 1000,
+    hour: 60 * 60 * 1000,
+    day: 24 * 60 * 60 * 1000,
+  };
+
+  const intervalDuration = intervalSize * msInUnit[unit];
+
+  while (currentTime < roundedEndTime) {
+    const startInterval = new Date(currentTime);
+    const endInterval = new Date(currentTime + intervalDuration);
+    intervals.push({
+      start: startInterval,
+      end: endInterval,
+      txCount: 0,
+      totalGas: 0,
+    });
+    currentTime += intervalDuration;
   }
 
-  return dates;
+  return intervals;
 }

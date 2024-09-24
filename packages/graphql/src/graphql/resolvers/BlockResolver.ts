@@ -3,9 +3,7 @@ import { logger } from '~/core/Logger';
 import type {
   GQLBlock,
   GQLQueryBlockArgs,
-  GQLQueryBlockRewardStatisticsArgs,
   GQLQueryBlocksArgs,
-  GQLQueryTpsArgs,
 } from '~/graphql/generated/sdk-provider';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import PaginatedParams from '~/infra/paginator/PaginatedParams';
@@ -14,8 +12,8 @@ type Source = GQLBlock;
 type Params = {
   blocks: GQLQueryBlocksArgs;
   block: GQLQueryBlockArgs;
-  tps: GQLQueryTpsArgs;
-  blockReward: GQLQueryBlockRewardStatisticsArgs;
+  tps: null;
+  getBlocksDashboard: null;
 };
 
 export class BlockResolver {
@@ -26,7 +24,7 @@ export class BlockResolver {
         block: resolvers.block,
         blocks: resolvers.blocks,
         tps: resolvers.tps,
-        blockRewardStatistics: resolvers.blockRewardStatistics,
+        getBlocksDashboard: resolvers.getBlocksDashboard,
       },
     };
   }
@@ -63,19 +61,17 @@ export class BlockResolver {
     return blocks;
   }
 
-  async tps(_: Source, params: Params['tps']) {
-    if (!params.last) {
-      throw new GraphQLError('Last must be provided');
-    }
+  async getBlocksDashboard(_: Source, _params: Params['getBlocksDashboard']) {
     const blockDAO = new BlockDAO();
-    const tps = await blockDAO.tps(new PaginatedParams(params), params.last);
-    return tps;
-  }
-  async blockRewardStatistics(_: Source, params: Params['blockReward']) {
-    const blockDAO = new BlockDAO();
-    const blocks = await blockDAO.getBlockRewards(
-      params.timeFilter ? params.timeFilter : '',
-    );
+    const blocks = await blockDAO.getBlocksDashboard();
+
     return blocks;
+  }
+
+  async tps(_: Source, _params: Params['tps']) {
+    const blockDAO = new BlockDAO();
+    const tps = await blockDAO.tps();
+
+    return tps;
   }
 }

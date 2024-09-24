@@ -1,8 +1,0 @@
-query cumulativeAccountCreationStatistics($timeFilter: String) {
-  cumulativeAccountCreationStatistics(timeFilter: $timeFilter) {
-    nodes {
-      timestamp
-    }
-    accountOffset
-  }
-}

@@ -1,9 +1,0 @@
-query blockRewardStatistics($timeFilter: String){
-    blockRewardStatistics(timeFilter: $timeFilter){
-        nodes {
-            id
-            reward
-            timestamp
-        }
-    }
-}

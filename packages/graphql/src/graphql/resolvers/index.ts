@@ -1,4 +1,3 @@
-import { AccountResolver } from './AccountResolver';
 import { BalanceResolver } from './BalanceResolver';
 import { BlockResolver } from './BlockResolver';
 import { ChainResolver } from './ChainResolver';
@@ -16,7 +15,6 @@ const nodeResolver = NodeResolver.create();
 const predicateResolver = PredicateResolver.create();
 const searchResolver = SearchResolver.create();
 const transactionResolver = TransactionResolver.create();
-const accountResolver = AccountResolver.create();
 
 export const resolvers = {
   Query: {
@@ -28,7 +26,6 @@ export const resolvers = {
     ...predicateResolver.Query,
     ...searchResolver.Query,
     ...transactionResolver.Query,
-    ...accountResolver.Query,
   },
   Balance: balanceResolver.Balance,
 };

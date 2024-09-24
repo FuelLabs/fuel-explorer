@@ -48,19 +48,6 @@ export type Scalars = {
   UtxoId: { input: string; output: string };
 };
 
-export type GQLAccountCreationNode = {
-  __typename: 'AccountCreationNode';
-  timestamp: Scalars['String']['output'];
-};
-
-export type GQLAccountNode = {
-  __typename: 'AccountNode';
-  account_id: Scalars['String']['output'];
-  balance: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  transaction_count: Scalars['Int']['output'];
-};
-
 export type GQLBalance = {
   __typename: 'Balance';
   amount: Scalars['U64']['output'];
@@ -126,22 +113,22 @@ export type GQLBlockEdge = {
   node: GQLBlock;
 };
 
-export type GQLBlockReward = {
-  __typename: 'BlockReward';
-  id: Scalars['BlockId']['output'];
-  reward: Scalars['U64']['output'];
-  timestamp: Scalars['String']['output'];
-};
-
-export type GQLBlockRewardConnection = {
-  __typename: 'BlockRewardConnection';
-  /** A list of nodes. */
-  nodes?: Maybe<Array<GQLBlockReward>>;
-};
-
 export enum GQLBlockVersion {
   V1 = 'V1',
 }
+
+export type GQLBlocksDashboard = {
+  __typename: 'BlocksDashboard';
+  blockNo: Scalars['U64']['output'];
+  gasUsed: Scalars['U64']['output'];
+  producer?: Maybe<Scalars['String']['output']>;
+  timestamp: Scalars['U64']['output'];
+};
+
+export type GQLBlocksDashboardConnection = {
+  __typename: 'BlocksDashboardConnection';
+  nodes: Array<GQLBlocksDashboard>;
+};
 
 /** Breakpoint, defined as a tuple of contract ID and relative PC offset inside it */
 export type GQLBreakpoint = {
@@ -308,30 +295,6 @@ export type GQLContractParameters = {
 export enum GQLContractParametersVersion {
   V1 = 'V1',
 }
-
-export type GQLCumulativeAccountCreationConnection = {
-  __typename: 'CumulativeAccountCreationConnection';
-  accountOffset: Scalars['Int']['output'];
-  nodes?: Maybe<Array<GQLAccountCreationNode>>;
-};
-
-export type GQLCumulativeTransactionFeeConnection = {
-  __typename: 'CumulativeTransactionFeeConnection';
-  /** A list of nodes. */
-  nodes?: Maybe<Array<GQLTransactionFee>>;
-  transactionOffset: Scalars['U64']['output'];
-};
-
-export type GQLDailyActiveAccountsConnection = {
-  __typename: 'DailyActiveAccountsConnection';
-  nodes: Array<GQLDailyActiveAccountsNode>;
-};
-
-export type GQLDailyActiveAccountsNode = {
-  __typename: 'DailyActiveAccountsNode';
-  count: Scalars['Int']['output'];
-  timestamp: Scalars['String']['output'];
-};
 
 export type GQLDependentCost = GQLHeavyOperation | GQLLightOperation;
 
@@ -860,17 +823,6 @@ export type GQLMutationSubmitArgs = {
   tx: Scalars['HexString']['input'];
 };
 
-export type GQLNewAccountNode = {
-  __typename: 'NewAccountNode';
-  timestamp: Scalars['String']['output'];
-};
-
-export type GQLNewAccountStatisticsConnection = {
-  __typename: 'NewAccountStatisticsConnection';
-  count: Scalars['Int']['output'];
-  nodes?: Maybe<Array<GQLNewAccountNode>>;
-};
-
 export type GQLNodeInfo = {
   __typename: 'NodeInfo';
   maxDepth: Scalars['U64']['output'];
@@ -933,12 +885,6 @@ export type GQLPageInfo = {
   hasPreviousPage: Scalars['Boolean']['output'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']['output']>;
-};
-
-export type GQLPaginatedAccountConnection = {
-  __typename: 'PaginatedAccountConnection';
-  nodes: Array<GQLAccountNode>;
-  pageInfo: GQLPageInfo;
 };
 
 export type GQLParsedTime = {
@@ -1009,7 +955,6 @@ export type GQLQuery = {
   balance: GQLBalance;
   balances: GQLBalanceConnection;
   block?: Maybe<GQLBlock>;
-  blockRewardStatistics: GQLBlockRewardConnection;
   blocks: GQLBlockConnection;
   chain: GQLChainInfo;
   /** Gets the coin by `utxo_id`. */
@@ -1033,12 +978,10 @@ export type GQLQuery = {
   contractBalance: GQLContractBalance;
   contractBalances: GQLContractBalanceConnection;
   contracts: GQLContractConnection;
-  cumulativeAccountCreationStatistics: GQLCumulativeAccountCreationConnection;
-  cumulativeTransactionsFeeStatistics: GQLCumulativeTransactionFeeConnection;
-  dailyActiveAccounts: GQLDailyActiveAccountsConnection;
   estimateGasPrice: GQLEstimateGasPrice;
   /** Estimate the predicate gas for the provided transaction */
   estimatePredicates: GQLTransaction;
+  getBlocksDashboard: GQLBlocksDashboardConnection;
   /** Returns true when the GraphQL API is serving requests. */
   health: Scalars['Boolean']['output'];
   latestGasPrice: GQLLatestGasPrice;
@@ -1048,9 +991,7 @@ export type GQLQuery = {
   messageProof?: Maybe<GQLMessageProof>;
   messageStatus: GQLMessageStatus;
   messages: GQLMessageConnection;
-  newAccountStatistics: GQLNewAccountStatisticsConnection;
   nodeInfo: GQLNodeInfo;
-  paginatedAccounts: GQLPaginatedAccountConnection;
   predicate?: Maybe<GQLPredicateItem>;
   /** Read register value by index. */
   register: Scalars['U64']['output'];
@@ -1059,10 +1000,8 @@ export type GQLQuery = {
   tps: GQLTpsConnection;
   transaction?: Maybe<GQLTransaction>;
   transactions: GQLTransactionConnection;
-  transactionsByAccountAndDate: Array<GQLTransactionSummary>;
   transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
-  transactionsFeeStatistics: GQLTransactionFeeConnection;
 };
 
 export type GQLQueryBalanceArgs = {
@@ -1081,10 +1020,6 @@ export type GQLQueryBalancesArgs = {
 export type GQLQueryBlockArgs = {
   height?: InputMaybe<Scalars['U32']['input']>;
   id?: InputMaybe<Scalars['BlockId']['input']>;
-};
-
-export type GQLQueryBlockRewardStatisticsArgs = {
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GQLQueryBlocksArgs = {
@@ -1136,18 +1071,6 @@ export type GQLQueryContractsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type GQLQueryCumulativeAccountCreationStatisticsArgs = {
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type GQLQueryCumulativeTransactionsFeeStatisticsArgs = {
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type GQLQueryDailyActiveAccountsArgs = {
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-};
-
 export type GQLQueryEstimateGasPriceArgs = {
   blockHorizon?: InputMaybe<Scalars['U32']['input']>;
 };
@@ -1185,18 +1108,6 @@ export type GQLQueryMessagesArgs = {
   owner?: InputMaybe<Scalars['Address']['input']>;
 };
 
-export type GQLQueryNewAccountStatisticsArgs = {
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type GQLQueryPaginatedAccountsArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  direction?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  sortBy?: InputMaybe<Scalars['String']['input']>;
-  sortOrder?: InputMaybe<Scalars['String']['input']>;
-};
-
 export type GQLQueryPredicateArgs = {
   address: Scalars['String']['input'];
 };
@@ -1214,11 +1125,6 @@ export type GQLQuerySearchArgs = {
   query: Scalars['String']['input'];
 };
 
-export type GQLQueryTpsArgs = {
-  before?: InputMaybe<Scalars['String']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-};
-
 export type GQLQueryTransactionArgs = {
   id: Scalars['TransactionId']['input'];
 };
@@ -1228,12 +1134,6 @@ export type GQLQueryTransactionsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type GQLQueryTransactionsByAccountAndDateArgs = {
-  account: Scalars['String']['input'];
-  endDate: Scalars['String']['input'];
-  startDate: Scalars['String']['input'];
 };
 
 export type GQLQueryTransactionsByBlockIdArgs = {
@@ -1250,10 +1150,6 @@ export type GQLQueryTransactionsByOwnerArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
-};
-
-export type GQLQueryTransactionsFeeStatisticsArgs = {
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GQLReceipt = {
@@ -1440,17 +1336,15 @@ export type GQLSuccessStatus = {
 
 export type GQLTps = {
   __typename: 'TPS';
-  blockNo: Scalars['BlockId']['output'];
-  gasUsed: Scalars['U64']['output'];
-  producer?: Maybe<Scalars['String']['output']>;
-  timestamp: Scalars['U64']['output'];
-  tps: Scalars['U64']['output'];
+  end?: Maybe<Scalars['String']['output']>;
+  start?: Maybe<Scalars['String']['output']>;
+  totalGas: Scalars['U64']['output'];
+  txCount: Scalars['U64']['output'];
 };
 
 export type GQLTpsConnection = {
   __typename: 'TPSConnection';
   nodes: Array<GQLTps>;
-  pageInfo: GQLPageInfo;
 };
 
 export type GQLTransaction = {
@@ -1521,37 +1415,10 @@ export type GQLTransactionEdge = {
   node: GQLTransaction;
 };
 
-export type GQLTransactionFee = {
-  __typename: 'TransactionFee';
-  fee: Scalars['U64']['output'];
-  timestamp: Scalars['String']['output'];
-};
-
-export type GQLTransactionFeeConnection = {
-  __typename: 'TransactionFeeConnection';
-  /** A list of nodes. */
-  nodes?: Maybe<Array<GQLTransactionFee>>;
-};
-
 export type GQLTransactionGasCosts = {
   __typename: 'TransactionGasCosts';
   fee?: Maybe<Scalars['U64']['output']>;
   gasUsed?: Maybe<Scalars['U64']['output']>;
-};
-
-export type GQLTransactionInput = {
-  __typename: 'TransactionInput';
-  amount?: Maybe<Scalars['String']['output']>;
-  assetId?: Maybe<Scalars['String']['output']>;
-  owner?: Maybe<Scalars['String']['output']>;
-};
-
-export type GQLTransactionOutput = {
-  __typename: 'TransactionOutput';
-  amount?: Maybe<Scalars['String']['output']>;
-  assetId?: Maybe<Scalars['String']['output']>;
-  to?: Maybe<Scalars['String']['output']>;
-  type?: Maybe<Scalars['String']['output']>;
 };
 
 export type GQLTransactionStatus =
@@ -1559,17 +1426,6 @@ export type GQLTransactionStatus =
   | GQLSqueezedOutStatus
   | GQLSubmittedStatus
   | GQLSuccessStatus;
-
-export type GQLTransactionSummary = {
-  __typename: 'TransactionSummary';
-  inputs: Array<GQLInput>;
-  isMint?: Maybe<Scalars['Boolean']['output']>;
-  outputs: Array<GQLOutput>;
-  timestamp: Scalars['String']['output'];
-  totalFee?: Maybe<Scalars['String']['output']>;
-  totalGas?: Maybe<Scalars['String']['output']>;
-  tx_hash: Scalars['String']['output'];
-};
 
 export type GQLTxParameters = {
   __typename: 'TxParameters';
@@ -1652,23 +1508,6 @@ export type GQLBalancesQuery = {
       hasPreviousPage: boolean;
       startCursor?: string | null;
     };
-  };
-};
-
-export type GQLBlockRewardStatisticsQueryVariables = Exact<{
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GQLBlockRewardStatisticsQuery = {
-  __typename: 'Query';
-  blockRewardStatistics: {
-    __typename: 'BlockRewardConnection';
-    nodes?: Array<{
-      __typename: 'BlockReward';
-      id: string;
-      reward: string;
-      timestamp: string;
-    }> | null;
   };
 };
 
@@ -3682,126 +3521,6 @@ export type GQLContractBalancesQuery = {
   };
 };
 
-export type GQLCumulativeAccountCreationStatisticsQueryVariables = Exact<{
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GQLCumulativeAccountCreationStatisticsQuery = {
-  __typename: 'Query';
-  cumulativeAccountCreationStatistics: {
-    __typename: 'CumulativeAccountCreationConnection';
-    accountOffset: number;
-    nodes?: Array<{
-      __typename: 'AccountCreationNode';
-      timestamp: string;
-    }> | null;
-  };
-};
-
-export type GQLCumulativeTransactionsFeeStatisticsQueryVariables = Exact<{
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GQLCumulativeTransactionsFeeStatisticsQuery = {
-  __typename: 'Query';
-  cumulativeTransactionsFeeStatistics: {
-    __typename: 'CumulativeTransactionFeeConnection';
-    transactionOffset: string;
-    nodes?: Array<{
-      __typename: 'TransactionFee';
-      fee: string;
-      timestamp: string;
-    }> | null;
-  };
-};
-
-export type GQLDailyActiveAccountsQueryVariables = Exact<{
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GQLDailyActiveAccountsQuery = {
-  __typename: 'Query';
-  dailyActiveAccounts: {
-    __typename: 'DailyActiveAccountsConnection';
-    nodes: Array<{
-      __typename: 'DailyActiveAccountsNode';
-      timestamp: string;
-      count: number;
-    }>;
-  };
-};
-
-export type GQLGetTransactionsByAccountAndDateQueryVariables = Exact<{
-  account: Scalars['String']['input'];
-  startDate: Scalars['String']['input'];
-  endDate: Scalars['String']['input'];
-}>;
-
-export type GQLGetTransactionsByAccountAndDateQuery = {
-  __typename: 'Query';
-  transactionsByAccountAndDate: Array<{
-    __typename: 'TransactionSummary';
-    tx_hash: string;
-    timestamp: string;
-    totalGas?: string | null;
-    totalFee?: string | null;
-    isMint?: boolean | null;
-    inputs: Array<
-      | {
-          __typename: 'InputCoin';
-          owner: string;
-          amount: string;
-          assetId: string;
-        }
-      | {
-          __typename: 'InputContract';
-          contractId: string;
-          balanceRoot: string;
-          stateRoot: string;
-        }
-      | {
-          __typename: 'InputMessage';
-          sender: string;
-          recipient: string;
-          amount: string;
-        }
-    >;
-    outputs: Array<
-      | {
-          __typename: 'ChangeOutput';
-          to: string;
-          amount: string;
-          assetId: string;
-        }
-      | { __typename: 'CoinOutput' }
-      | { __typename: 'ContractCreated' }
-      | {
-          __typename: 'ContractOutput';
-          inputIndex: string;
-          balanceRoot: string;
-        }
-      | {
-          __typename: 'VariableOutput';
-          to: string;
-          amount: string;
-          assetId: string;
-        }
-    >;
-  }>;
-};
-
-export type GQLNewAccountStatisticsQueryVariables = Exact<{
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GQLNewAccountStatisticsQuery = {
-  __typename: 'Query';
-  newAccountStatistics: {
-    __typename: 'NewAccountStatisticsConnection';
-    nodes?: Array<{ __typename: 'NewAccountNode'; timestamp: string }> | null;
-  };
-};
-
 export type GQLNodeInfoQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GQLNodeInfoQuery = {
@@ -3825,39 +3544,7 @@ export type GQLNodeInfoQuery = {
   };
 };
 
-export type GQLPaginatedAccountsQueryVariables = Exact<{
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  direction?: InputMaybe<Scalars['String']['input']>;
-  sortBy?: InputMaybe<Scalars['String']['input']>;
-  sortOrder?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-export type GQLPaginatedAccountsQuery = {
-  __typename: 'Query';
-  paginatedAccounts: {
-    __typename: 'PaginatedAccountConnection';
-    nodes: Array<{
-      __typename: 'AccountNode';
-      id: string;
-      account_id: string;
-      balance: string;
-      transaction_count: number;
-    }>;
-    pageInfo: {
-      __typename: 'PageInfo';
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-      endCursor?: string | null;
-    };
-  };
-};
-
-export type GQLTpsQueryVariables = Exact<{
-  before?: InputMaybe<Scalars['String']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-}>;
+export type GQLTpsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GQLTpsQuery = {
   __typename: 'Query';
@@ -3865,35 +3552,11 @@ export type GQLTpsQuery = {
     __typename: 'TPSConnection';
     nodes: Array<{
       __typename: 'TPS';
-      timestamp: string;
-      tps: string;
-      gasUsed: string;
-      blockNo: string;
-      producer?: string | null;
+      start?: string | null;
+      end?: string | null;
+      txCount: string;
+      totalGas: string;
     }>;
-    pageInfo: {
-      __typename: 'PageInfo';
-      endCursor?: string | null;
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-    };
-  };
-};
-
-export type GQLTransactionsFeeStatisticsQueryVariables = Exact<{
-  timeFilter?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GQLTransactionsFeeStatisticsQuery = {
-  __typename: 'Query';
-  transactionsFeeStatistics: {
-    __typename: 'TransactionFeeConnection';
-    nodes?: Array<{
-      __typename: 'TransactionFee';
-      fee: string;
-      timestamp: string;
-    }> | null;
   };
 };
 
@@ -4259,17 +3922,6 @@ export const BalancesDocument = gql`
   }
 }
     ${BalanceItemFragmentDoc}`;
-export const BlockRewardStatisticsDocument = gql`
-    query blockRewardStatistics($timeFilter: String) {
-  blockRewardStatistics(timeFilter: $timeFilter) {
-    nodes {
-      id
-      reward
-      timestamp
-    }
-  }
-}
-    `;
 export const BlocksDocument = gql`
     query blocks($after: String, $before: String, $first: Int, $last: Int) {
   blocks(after: $after, before: $before, first: $first, last: $last) {
@@ -5617,94 +5269,6 @@ export const ContractBalancesDocument = gql`
   }
 }
     ${ContractBalanceConnectionNodeFragmentDoc}`;
-export const CumulativeAccountCreationStatisticsDocument = gql`
-    query cumulativeAccountCreationStatistics($timeFilter: String) {
-  cumulativeAccountCreationStatistics(timeFilter: $timeFilter) {
-    nodes {
-      timestamp
-    }
-    accountOffset
-  }
-}
-    `;
-export const CumulativeTransactionsFeeStatisticsDocument = gql`
-    query cumulativeTransactionsFeeStatistics($timeFilter: String) {
-  cumulativeTransactionsFeeStatistics(timeFilter: $timeFilter) {
-    nodes {
-      fee
-      timestamp
-    }
-    transactionOffset
-  }
-}
-    `;
-export const DailyActiveAccountsDocument = gql`
-    query dailyActiveAccounts($timeFilter: String) {
-  dailyActiveAccounts(timeFilter: $timeFilter) {
-    nodes {
-      timestamp
-      count
-    }
-  }
-}
-    `;
-export const GetTransactionsByAccountAndDateDocument = gql`
-    query getTransactionsByAccountAndDate($account: String!, $startDate: String!, $endDate: String!) {
-  transactionsByAccountAndDate(
-    account: $account
-    startDate: $startDate
-    endDate: $endDate
-  ) {
-    tx_hash
-    timestamp
-    totalGas
-    totalFee
-    isMint
-    inputs {
-      ... on InputCoin {
-        owner
-        amount
-        assetId
-      }
-      ... on InputContract {
-        contractId
-        balanceRoot
-        stateRoot
-      }
-      ... on InputMessage {
-        sender
-        recipient
-        amount
-      }
-    }
-    outputs {
-      ... on VariableOutput {
-        to
-        amount
-        assetId
-      }
-      ... on ChangeOutput {
-        to
-        amount
-        assetId
-      }
-      ... on ContractOutput {
-        inputIndex
-        balanceRoot
-      }
-    }
-  }
-}
-    `;
-export const NewAccountStatisticsDocument = gql`
-    query newAccountStatistics($timeFilter: String) {
-  newAccountStatistics(timeFilter: $timeFilter) {
-    nodes {
-      timestamp
-    }
-  }
-}
-    `;
 export const NodeInfoDocument = gql`
     query nodeInfo {
   nodeInfo {
@@ -5724,55 +5288,14 @@ export const NodeInfoDocument = gql`
   }
 }
     `;
-export const PaginatedAccountsDocument = gql`
-    query paginatedAccounts($cursor: String, $direction: String, $sortBy: String, $sortOrder: String, $first: Int) {
-  paginatedAccounts(
-    cursor: $cursor
-    direction: $direction
-    sortBy: $sortBy
-    sortOrder: $sortOrder
-    first: $first
-  ) {
-    nodes {
-      id
-      account_id
-      balance
-      transaction_count
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-    }
-  }
-}
-    `;
 export const TpsDocument = gql`
-    query tps($before: String, $last: Int) {
-  tps(before: $before, last: $last) {
+    query tps {
+  tps {
     nodes {
-      timestamp
-      tps
-      gasUsed
-      blockNo
-      producer
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-      hasPreviousPage
-      startCursor
-    }
-  }
-}
-    `;
-export const TransactionsFeeStatisticsDocument = gql`
-    query transactionsFeeStatistics($timeFilter: String) {
-  transactionsFeeStatistics(timeFilter: $timeFilter) {
-    nodes {
-      fee
-      timestamp
+      start
+      end
+      txCount
+      totalGas
     }
   }
 }
@@ -5793,32 +5316,14 @@ const defaultWrapper: SdkFunctionWrapper = (
 ) => action();
 const BalanceDocumentString = print(BalanceDocument);
 const BalancesDocumentString = print(BalancesDocument);
-const BlockRewardStatisticsDocumentString = print(
-  BlockRewardStatisticsDocument,
-);
 const BlocksDocumentString = print(BlocksDocument);
 const ChainDocumentString = print(ChainDocument);
 const CoinsDocumentString = print(CoinsDocument);
 const ContractDocumentString = print(ContractDocument);
 const ContractBalanceDocumentString = print(ContractBalanceDocument);
 const ContractBalancesDocumentString = print(ContractBalancesDocument);
-const CumulativeAccountCreationStatisticsDocumentString = print(
-  CumulativeAccountCreationStatisticsDocument,
-);
-const CumulativeTransactionsFeeStatisticsDocumentString = print(
-  CumulativeTransactionsFeeStatisticsDocument,
-);
-const DailyActiveAccountsDocumentString = print(DailyActiveAccountsDocument);
-const GetTransactionsByAccountAndDateDocumentString = print(
-  GetTransactionsByAccountAndDateDocument,
-);
-const NewAccountStatisticsDocumentString = print(NewAccountStatisticsDocument);
 const NodeInfoDocumentString = print(NodeInfoDocument);
-const PaginatedAccountsDocumentString = print(PaginatedAccountsDocument);
 const TpsDocumentString = print(TpsDocument);
-const TransactionsFeeStatisticsDocumentString = print(
-  TransactionsFeeStatisticsDocument,
-);
 export function getSdk(
   client: GraphQLClient,
   withWrapper: SdkFunctionWrapper = defaultWrapper,
@@ -5863,28 +5368,6 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'balances',
-        'query',
-        variables,
-      );
-    },
-    blockRewardStatistics(
-      variables?: GQLBlockRewardStatisticsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLBlockRewardStatisticsQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLBlockRewardStatisticsQuery>(
-            BlockRewardStatisticsDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'blockRewardStatistics',
         'query',
         variables,
       );
@@ -6018,116 +5501,6 @@ export function getSdk(
         variables,
       );
     },
-    cumulativeAccountCreationStatistics(
-      variables?: GQLCumulativeAccountCreationStatisticsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLCumulativeAccountCreationStatisticsQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLCumulativeAccountCreationStatisticsQuery>(
-            CumulativeAccountCreationStatisticsDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'cumulativeAccountCreationStatistics',
-        'query',
-        variables,
-      );
-    },
-    cumulativeTransactionsFeeStatistics(
-      variables?: GQLCumulativeTransactionsFeeStatisticsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLCumulativeTransactionsFeeStatisticsQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLCumulativeTransactionsFeeStatisticsQuery>(
-            CumulativeTransactionsFeeStatisticsDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'cumulativeTransactionsFeeStatistics',
-        'query',
-        variables,
-      );
-    },
-    dailyActiveAccounts(
-      variables?: GQLDailyActiveAccountsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLDailyActiveAccountsQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLDailyActiveAccountsQuery>(
-            DailyActiveAccountsDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'dailyActiveAccounts',
-        'query',
-        variables,
-      );
-    },
-    getTransactionsByAccountAndDate(
-      variables: GQLGetTransactionsByAccountAndDateQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLGetTransactionsByAccountAndDateQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLGetTransactionsByAccountAndDateQuery>(
-            GetTransactionsByAccountAndDateDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'getTransactionsByAccountAndDate',
-        'query',
-        variables,
-      );
-    },
-    newAccountStatistics(
-      variables?: GQLNewAccountStatisticsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLNewAccountStatisticsQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLNewAccountStatisticsQuery>(
-            NewAccountStatisticsDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'newAccountStatistics',
-        'query',
-        variables,
-      );
-    },
     nodeInfo(
       variables?: GQLNodeInfoQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -6150,28 +5523,6 @@ export function getSdk(
         variables,
       );
     },
-    paginatedAccounts(
-      variables?: GQLPaginatedAccountsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLPaginatedAccountsQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLPaginatedAccountsQuery>(
-            PaginatedAccountsDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'paginatedAccounts',
-        'query',
-        variables,
-      );
-    },
     tps(
       variables?: GQLTpsQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -6189,28 +5540,6 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'tps',
-        'query',
-        variables,
-      );
-    },
-    transactionsFeeStatistics(
-      variables?: GQLTransactionsFeeStatisticsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: GQLTransactionsFeeStatisticsQuery;
-      errors?: GraphQLError[];
-      extensions?: any;
-      headers: Headers;
-      status: number;
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<GQLTransactionsFeeStatisticsQuery>(
-            TransactionsFeeStatisticsDocumentString,
-            variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
-        'transactionsFeeStatistics',
         'query',
         variables,
       );

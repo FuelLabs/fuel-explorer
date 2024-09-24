@@ -704,7 +704,6 @@ type Query {
     id: BlockId
   ): Block
   blocks(after: String, before: String, first: Int, last: Int): BlockConnection!
-  blockRewardStatistics(timeFilter: String): BlockRewardConnection!
   chain: ChainInfo!
   """Gets the coin by `utxo_id`."""
   coin(
@@ -781,15 +780,9 @@ type Query {
   ): Transaction
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
-  tps(before: String, last: Int): TPSConnection!
   transactionsByBlockId(after: String, before: String, first: Int, last: Int, blockId: String!): TransactionConnection!
-  transactionsFeeStatistics(timeFilter: String): TransactionFeeConnection!
-  cumulativeTransactionsFeeStatistics(timeFilter: String): CumulativeTransactionFeeConnection!
-  newAccountStatistics(timeFilter: String): NewAccountStatisticsConnection!
-  cumulativeAccountCreationStatistics(timeFilter: String): CumulativeAccountCreationConnection!
-  dailyActiveAccounts(timeFilter: String): DailyActiveAccountsConnection!
-  paginatedAccounts(cursor: String, direction: String, first: Int, sortBy: String, sortOrder: String): PaginatedAccountConnection!
-  transactionsByAccountAndDate(account: String!, startDate: String!, endDate: String!): [TransactionSummary!]!
+  tps: TPSConnection!
+  getBlocksDashboard : BlocksDashboardConnection!
 }
 
 type Receipt {
@@ -1033,102 +1026,23 @@ type VariableOutput {
 }
 
 type TPS {
-  timestamp: U64!
-  tps: U64!
-  gasUsed: U64!
-  blockNo: BlockId!
-  producer: String
+  start: String
+  end: String
+  txCount: U64!
+  totalGas: U64!
 }
 
 type TPSConnection {
   nodes: [TPS!]!
-  pageInfo: PageInfo!
-}
-type TransactionFee {
-  fee: U64!
-  timestamp: String!
 }
 
-type TransactionFeeConnection {
-  """A list of nodes."""
-  nodes: [TransactionFee!]
+type BlocksDashboard {
+  timestamp: U64!
+  gasUsed: U64!
+  blockNo: U64!
+  producer: String
 }
 
-type CumulativeTransactionFeeConnection {
-  """A list of nodes."""
-  nodes: [TransactionFee!]
-  transactionOffset: U64!
-}
-
-type BlockReward {
-  id: BlockId!
-  reward: U64!
-  timestamp: String!
-}
-
-type BlockRewardConnection {
-  """A list of nodes."""
-  nodes: [BlockReward!]
-}
-
-type CumulativeAccountCreationConnection {
-  nodes: [AccountCreationNode!]
-  accountOffset: Int!
-}
-
-type NewAccountStatisticsConnection {
-  nodes: [NewAccountNode!]
-  count: Int!
-}
-
-type AccountCreationNode {
-  timestamp: String!
-}
-
-type NewAccountNode {
-  timestamp: String!
-}
-
-type DailyActiveAccountsConnection {
-  nodes: [DailyActiveAccountsNode!]!
-}
-
-type DailyActiveAccountsNode {
-  timestamp: String!
-  count: Int!
-}
-
-type PaginatedAccountConnection {
-  nodes: [AccountNode!]!
-  pageInfo: PageInfo!
-}
-
-type AccountNode {
-  id: ID!
-  account_id: String!
-  balance: String!
-  transaction_count: Int!
-}
-
-type TransactionInput {
-  owner: String
-  amount: String
-  assetId: String
-}
-
-type TransactionOutput { 
-  to: String
-  amount: String
-  assetId: String
-  type: String
-}
-
-type TransactionSummary {
-  tx_hash: String!
-  timestamp: String!
-  totalGas: String
-  totalFee: String
-  isMint: Boolean
-  inputs: [Input!]!    # Using Input union directly
-  outputs: [Output!]!
+type BlocksDashboardConnection {
+  nodes: [BlocksDashboard!]!
 }

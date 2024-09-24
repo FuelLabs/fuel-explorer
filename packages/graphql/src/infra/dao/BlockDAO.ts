@@ -1,8 +1,7 @@
-import { DateHelper } from '~/core/Date';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 import PaginatedParams from '../paginator/PaginatedParams';
 import Block from './Block';
-import { getTimeInterval } from './utils';
+import { createIntervals, roundToNearest } from './utils';
 
 export default class BlockDAO {
   databaseConnection: DatabaseConnection;
@@ -124,98 +123,92 @@ export default class BlockDAO {
     return new Block(blockData);
   }
 
-  async tps(paginatedParams: PaginatedParams, last: Number) {
-    const direction = '<';
+  async getBlocksDashboard() {
     const blocksData = await this.databaseConnection.query(
       `
-		select 
-			*
-		from 
-			indexer.blocks b
-		where
-			$1::integer is null or b._id ${direction} $1
-		order by
-			b._id 
-		limit ${last}
-	`,
-      [paginatedParams.cursor],
+      select 
+          b._id AS blockno,
+          b.gas_used AS gasused,
+          b.producer,
+          b.timestamp AS timestamp
+      from 
+        indexer.blocks b
+      order by
+        b._id  desc
+      limit 6
+    `,
+      [],
     );
-    const blocks = [];
-    for (const blockData of blocksData) {
-      blocks.push(new Block(blockData));
-    }
-    if (blocks.length === 0) {
-      return {
-        nodes: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          endCursor: '',
-          startCursor: '',
-        },
-      };
-    }
-    const startCursor = blocksData[0]._id;
-    const endCursor = blocksData[blocksData.length - 1]._id;
-    const hasPreviousPage = (
-      await this.databaseConnection.query(
-        'select exists(select 1 from indexer.blocks where _id < $1)',
-        [endCursor],
-      )
-    )[0].exists;
-    const hasNextPage = (
-      await this.databaseConnection.query(
-        'select exists(select 1 from indexer.blocks where _id > $1)',
-        [startCursor],
-      )
-    )[0].exists;
-    const newNodes = blocks.map((n) => n.toTPSNode());
 
-    const paginatedResults = {
-      nodes: newNodes,
-      pageInfo: {
-        hasNextPage,
-        hasPreviousPage,
-        endCursor,
-        startCursor,
-      },
+    const formattedBlocksData = blocksData.map((block) => ({
+      timestamp: new Date(Number(block.timestamp)).getTime(),
+      gasUsed: Number(block.gasused),
+      blockNo: block.blockno,
+      producer: block.producer,
+    }));
+
+    return {
+      nodes: formattedBlocksData,
     };
-    return paginatedResults;
   }
-  async getBlockRewards(timeFilter: string) {
-    const _interval = getTimeInterval(timeFilter);
 
-    let query = `
-        SELECT 
-            b._id AS id,
-            elem->>'mintAmount' AS reward,
-            (b.data->'header'->>'time')::bigint AS timestamp
-        FROM 
-            indexer.blocks b,
-            jsonb_array_elements(b.data->'transactions') AS elem
-        WHERE 
-            elem->>'isMint' = 'true'
-    `;
+  async tps() {
+    const currentTime = new Date();
+    const timeMinusOneDay = new Date(
+      currentTime.getTime() - 24 * 60 * 60 * 1000,
+    );
+    const timeMinusOneDayRoundDown = new Date(
+      roundToNearest(timeMinusOneDay.getTime()),
+    );
+    const timeMinusOneDayRoundDownISO = timeMinusOneDayRoundDown.toISOString();
 
-    // Add the time filtering condition only if an interval is defined
-    if (_interval) {
-      const intervalStartTimeInMilliseconds = Date.now() - _interval;
-      const intervalStartTimeDate = new Date(intervalStartTimeInMilliseconds);
-      const intervalStartTimeTai64 = DateHelper.dateToTai64(
-        intervalStartTimeDate,
-      );
-      query += `AND
-                (b.data->'header'->>'time')::bigint >= ${intervalStartTimeTai64}
-        `;
+    const blocksData = await this.databaseConnection.query(
+      `
+      SELECT 
+          b.timestamp AS timestamp,
+          b.data->'header'->>'transactionsCount' AS tps,
+          b.gas_used AS gasused
+      FROM 
+          indexer.blocks b
+      WHERE 
+          b.timestamp >= $1
+      ORDER BY _id asc;
+      `,
+      [timeMinusOneDayRoundDownISO],
+    );
+
+    if (blocksData.length === 0) {
+      return { nodes: [] };
     }
 
-    query += ' ORDER BY id asc';
-    // Execute the query
-    const blocksData = await this.databaseConnection.query(query, []);
+    const lastTimestamp = new Date(
+      Number(blocksData[blocksData.length - 1].timestamp),
+    ).getTime();
+    const firstTimestamp = new Date(Number(blocksData[0].timestamp)).getTime();
 
-    const results = {
-      nodes: blocksData,
+    const intervals = createIntervals(firstTimestamp, lastTimestamp, 'hour', 1);
+
+    // Process blocks and put them into the correct interval
+    blocksData.forEach((block) => {
+      const blockTimestamp = new Date(Number(block.timestamp)).getTime();
+      const txCount = Number(block.tps);
+      const gasUsed = Number(block.gasused);
+
+      // Find the correct interval for the current block
+      for (const interval of intervals) {
+        const intervalStart = new Date(interval.start).getTime();
+        const intervalEnd = new Date(interval.end).getTime();
+
+        if (blockTimestamp >= intervalStart && blockTimestamp < intervalEnd) {
+          interval.txCount += txCount;
+          interval.totalGas += gasUsed;
+          break;
+        }
+      }
+    });
+
+    return {
+      nodes: intervals,
     };
-    return results;
   }
 }
