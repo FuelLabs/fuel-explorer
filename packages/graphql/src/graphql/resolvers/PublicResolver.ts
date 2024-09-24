@@ -1,9 +1,7 @@
 import { Provider } from 'fuels';
 import { env } from '~/config';
-import type { GQLAsset } from '~/graphql/generated/sdk-provider';
 import AssetDAO from '~/infra/dao/AssetDAO';
 
-type Source = GQLAsset;
 type Params = {
   asset: { assetId: string };
 };
@@ -18,7 +16,7 @@ export class PublicResolver {
     };
   }
 
-  async asset(_: Source, _params: Params['asset']) {
+  async asset(_: any, _params: Params['asset']) {
     const assetDAO = new AssetDAO();
     const provider = await Provider.create(env.get('FUEL_PROVIDER'));
     const chainId = provider.getChainId();
@@ -42,7 +40,6 @@ export class PublicResolver {
           network.chainId === chainId &&
           network.assetId === _params.assetId
         ) {
-          console.log(verifiedAsset);
           const asset = Object.assign(verifiedAsset, {
             assetId: _params.assetId,
             contractId: network.contractId,
