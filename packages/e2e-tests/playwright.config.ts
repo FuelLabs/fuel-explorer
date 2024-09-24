@@ -24,6 +24,7 @@ const config: PlaywrightTestConfig = defineConfig({
     port: Number(PORT),
     reuseExistingServer: true,
     cwd: join(__dirname, '../../'),
+    stdout: 'pipe',
   },
   use: {
     baseURL: `http://localhost:${PORT}/`,

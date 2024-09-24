@@ -21,9 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Create .env file graphql
-        run: cp packages/graphql/.env.example packages/graphql/.env
-
       - name: Create .env file explorer
         run: cp packages/app-explorer/.env.example packages/app-explorer/.env
 
