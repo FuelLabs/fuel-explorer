@@ -1,4 +1,3 @@
-import { concat, hash } from 'fuels';
 import { logger } from '~/core/Logger';
 import { client } from '~/graphql/GraphQLSDK';
 import {
@@ -13,9 +12,11 @@ import {
 import Block from '~/infra/dao/Block';
 import Transaction from '~/infra/dao/Transaction';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
+import IndexAsset from './IndexAsset';
 
 export default class NewAddBlockRange {
   async execute(input: Input) {
+    const indexAsset = new IndexAsset();
     const { from, to } = input;
     logger.info(`🔗 Syncing blocks: #${from} - #${to}`);
     const blocksData = await this.getBlocks(from, to);
@@ -67,15 +68,10 @@ export default class NewAddBlockRange {
           });
         }
         if (transaction.data?.status?.receipts) {
-          for (const receipt of transaction.data.status.receipts) {
-            if (receipt.receiptType === 'MINT' && receipt.id && receipt.subId) {
-              const assetId = hash(concat([receipt.id, receipt.subId]));
-              queries.push({
-                statement:
-                  'insert into indexer.assets_contracts (asset_id, contract_id) values ($1, $2) on conflict do nothing',
-                params: [assetId, receipt.id],
-              });
-            }
+          try {
+            await indexAsset.execute(transaction.data);
+          } catch (e: any) {
+            logger.error('Error fetching assets', e);
           }
         }
         if (transactionData.inputs) {
