@@ -5,5 +5,7 @@ query asset($assetId: String!){
 		name
 		symbol
 		decimals
+		icon
+		verified
     }
 }

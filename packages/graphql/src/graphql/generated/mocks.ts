@@ -1,4 +1,4 @@
-import type { GQLAsset, GQLBalance, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLChainInfo, GQLChangeOutput, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLGasCosts, GQLGenesis, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStateTransitionPurpose, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTxParameters, GQLUtxoItem, GQLVariableOutput, GQLBlockVersion, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion } from './sdk';
+import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLBalance, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLChainInfo, GQLChangeOutput, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLGasCosts, GQLGenesis, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStateTransitionPurpose, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTxParameters, GQLUtxoItem, GQLVariableOutput, GQLBlockVersion, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion } from './sdk';
 
 export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } & GQLAsset => {
     return {
@@ -6,8 +6,31 @@ export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } 
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'laboriosam',
         contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : 'corrupti',
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0x4',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'explicabo',
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'dolorem',
+        networks: overrides && overrides.hasOwnProperty('networks') ? overrides.networks! : [anAssetNetworkEthereum()],
         symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'quaerat',
+        verified: overrides && overrides.hasOwnProperty('verified') ? overrides.verified! : false,
+    };
+};
+
+export const anAssetNetworkEthereum = (overrides?: Partial<GQLAssetNetworkEthereum>): { __typename: 'AssetNetworkEthereum' } & GQLAssetNetworkEthereum => {
+    return {
+        __typename: 'AssetNetworkEthereum',
+        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'porro',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0xf',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : 'commodi',
+    };
+};
+
+export const anAssetNetworkFuel = (overrides?: Partial<GQLAssetNetworkFuel>): { __typename: 'AssetNetworkFuel' } & GQLAssetNetworkFuel => {
+    return {
+        __typename: 'AssetNetworkFuel',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'placeat',
+        chainId: overrides && overrides.hasOwnProperty('chainId') ? overrides.chainId! : '0x8',
+        contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : 'maiores',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0x2',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : 'minima',
     };
 };
 
