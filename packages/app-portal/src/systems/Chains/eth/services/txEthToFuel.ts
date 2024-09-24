@@ -13,7 +13,7 @@ import type {
   TransactionReceipt,
   WalletClient,
 } from 'viem';
-import { decodeEventLog } from 'viem';
+import { decodeEventLog, isAddressEqual } from 'viem';
 import { erc20Abi } from 'viem';
 
 import { relayCommonMessage } from '../../fuel/utils/relayMessage';
@@ -51,6 +51,7 @@ export type TxEthToFuelInputs = {
   };
   getReceiptsInfo: {
     ethTxId?: HexAddress;
+    inputEthTxNonce?: BigInt;
     ethPublicClient?: PublicClient;
   };
   getFuelMessage: {
@@ -77,6 +78,7 @@ export type GetReceiptsInfoReturn = {
     address: HexAddress;
     decimals: number;
   };
+  receiptErc20Address?: HexAddress;
   amount?: BN;
   sender?: string;
   recipient?: FuelAddress;
@@ -235,7 +237,7 @@ export class TxEthToFuelService {
       throw new Error('No eth Provider');
     }
 
-    const { ethTxId, ethPublicClient } = input;
+    const { ethTxId, ethPublicClient, inputEthTxNonce } = input;
 
     let receipt: TransactionReceipt;
     try {
@@ -272,15 +274,21 @@ export class TxEthToFuelService {
           topics: receipt.logs[i].topics,
         }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
 
-        const { amount, sender, nonce, recipient } = messageSentEvent.args;
+        const { amount, sender, nonce, recipient, data } =
+          messageSentEvent.args;
 
-        receiptsInfo = {
-          ...receiptsInfo,
-          nonce: bn(nonce.toString()),
-          amount: bn(amount.toString()),
-          sender,
-          recipient: FuelAddress.fromB256(recipient),
-        };
+        if (inputEthTxNonce === nonce) {
+          const { tokenAddress } = decodeMessageSentData.erc20Deposit(data);
+
+          receiptsInfo = {
+            ...receiptsInfo,
+            nonce: bn(nonce.toString()),
+            amount: bn(amount.toString()),
+            sender,
+            recipient: FuelAddress.fromB256(recipient),
+            receiptErc20Address: tokenAddress as HexAddress,
+          };
+        }
       } catch (_) {
         /* empty */
       }
@@ -296,7 +304,15 @@ export class TxEthToFuelService {
           topics: receipt.logs[i].topics,
         }) as unknown as { args: FuelERC20GatewayArgs['Deposit'] };
 
-        if (isErc20Address(depositEvent.args.tokenAddress)) {
+        // search for a deposit log that matches the ERC-20 token address of the messageSent event
+        if (
+          isErc20Address(depositEvent.args.tokenAddress) &&
+          isAddressEqual(
+            depositEvent.args.tokenAddress,
+            // we can convert "as HexAddress" safely because we validated if it's not undefined before
+            receiptsInfo.receiptErc20Address as HexAddress,
+          )
+        ) {
           const { amount, tokenAddress } = depositEvent.args;
           const decimals = (await input.ethPublicClient.readContract({
             address: tokenAddress,

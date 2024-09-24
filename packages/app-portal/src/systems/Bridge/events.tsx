@@ -66,19 +66,19 @@ export function bridgeEvents(store: Store) {
     },
     relayMessageEthToFuel({
       input,
-      ethTxId,
+      machineId,
     }: {
       input?: {
         fuelWallet: FuelWallet;
       };
-      ethTxId: HexAddress;
+      machineId: string;
     }) {
       if (!input) return;
 
       // TODO: make store.send function support this last object prop
       const service = store.services[Services.bridgeTxs];
       const snapshot = service.getSnapshot();
-      const txEthToFuelMachine = snapshot?.context.ethToFuelTxRefs?.[ethTxId];
+      const txEthToFuelMachine = snapshot?.context.ethToFuelTxRefs?.[machineId];
 
       txEthToFuelMachine.send({ type: 'RELAY_MESSAGE_ON_FUEL', input });
     },

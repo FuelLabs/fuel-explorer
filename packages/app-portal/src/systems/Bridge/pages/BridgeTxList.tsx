@@ -57,6 +57,7 @@ export const BridgeTxList = () => {
               <TxListItemEthToFuel
                 key={`${index}-${txDatum.txHash}`}
                 txHash={txDatum.txHash || ''}
+                messageSentEventNonce={txDatum.nonce || 0n}
               />
             );
           }

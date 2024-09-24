@@ -178,6 +178,7 @@ export class BridgeService {
 
         return {
           txHash: log?.transactionHash || '0x',
+          nonce: (log?.args as any)?.nonce,
           fromNetwork: ETH_CHAIN,
           toNetwork: FUEL_CHAIN,
           date,

@@ -13,10 +13,10 @@ import type { HexAddress } from 'app-commons';
 import { deepCompare } from '../utils/deepCompare';
 
 const bridgeTxsSelectors = {
-  txEthToFuel: (txId?: HexAddress) => (state: BridgeTxsMachineState) => {
-    if (!txId) return undefined;
+  txEthToFuel: (machineId?: string) => (state: BridgeTxsMachineState) => {
+    if (!machineId) return undefined;
 
-    const machine = state.context?.ethToFuelTxRefs?.[txId]?.getSnapshot();
+    const machine = state.context?.ethToFuelTxRefs?.[machineId]?.getSnapshot();
 
     return machine;
   },
@@ -113,17 +113,21 @@ const txEthToFuelSelectors = {
   },
 };
 
-export function useTxEthToFuel({ id }: { id: string }) {
+export function useTxEthToFuel({
+  id,
+  messageSentEventNonce,
+}: { id: string; messageSentEventNonce: BigInt }) {
   const { wallet: fuelWallet } = useFuelAccountConnection();
   const txId = id.startsWith('0x') ? (id as HexAddress) : undefined;
   const { href: explorerLink } = useExplorerLink({
     network: 'ethereum',
     id,
   });
+  const machineId = `${txId}-${messageSentEventNonce}`;
 
   const txEthToFuelState = store.useSelector(
     Services.bridgeTxs,
-    bridgeTxsSelectors.txEthToFuel(txId),
+    bridgeTxsSelectors.txEthToFuel(machineId),
     deepCompare,
   );
 
@@ -177,7 +181,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
       input: {
         fuelWallet,
       },
-      ethTxId,
+      machineId,
     });
   }
 

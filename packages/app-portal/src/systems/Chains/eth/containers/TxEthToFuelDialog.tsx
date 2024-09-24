@@ -13,7 +13,10 @@ import { useTxEthToFuel } from '../hooks';
 export function TxEthToFuelDialog() {
   const classes = styles();
   const { asset: ethAsset } = useAsset();
-  const { metadata } = useOverlay<{ txId: string }>();
+  const { metadata } = useOverlay<{
+    txId: string;
+    messageSentEventNonce: BigInt;
+  }>();
   const {
     steps,
     date,
@@ -26,6 +29,7 @@ export function TxEthToFuelDialog() {
     explorerLink,
   } = useTxEthToFuel({
     id: metadata.txId,
+    messageSentEventNonce: metadata.messageSentEventNonce,
   });
 
   return (

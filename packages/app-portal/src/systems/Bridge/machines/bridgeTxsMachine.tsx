@@ -150,16 +150,20 @@ export const bridgeTxsMachine = createMachine(
             // safely avoid overriding instance
             if (ctx.ethToFuelTxRefs?.[tx.txHash]) return prev;
 
+            const key = `${tx.txHash}-${tx.nonce}`;
+
             return {
               ...prev,
-              [tx.txHash]: spawn(
+              [key]: spawn(
                 txEthToFuelMachine.withContext({
                   ethTxId: tx.txHash as HexAddress,
+                  inputEthTxNonce: tx.nonce,
+                  machineId: key,
                   fuelAddress: ctx.fuelAddress,
                   fuelProvider: ctx.fuelProvider,
                   ethPublicClient: ctx.ethPublicClient,
                 }),
-                { name: tx.txHash, sync: true },
+                { name: key, sync: true },
               ),
             };
           }, {});

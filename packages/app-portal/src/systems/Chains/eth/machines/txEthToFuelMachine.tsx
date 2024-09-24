@@ -21,6 +21,8 @@ const FUEL_MESSAGE_GET_INTERVAL = 10000;
 
 type MachineContext = {
   ethTxId?: HexAddress;
+  inputEthTxNonce?: BigInt;
+  machineId?: string;
   ethTxNonce?: BN;
   fuelAddress?: FuelAddress;
   fuelProvider?: FuelProvider;
@@ -55,7 +57,7 @@ type AnalyzeInputs = TxEthToFuelInputs['getReceiptsInfo'] &
 export type TxEthToFuelMachineEvents =
   | {
       type: 'START_ANALYZE_TX';
-      input: Omit<AnalyzeInputs, 'ethTxNonce'>;
+      input: AnalyzeInputs;
     }
   | {
       type: 'RELAY_MESSAGE_ON_FUEL';
@@ -113,6 +115,7 @@ export const txEthToFuelMachine = createMachine(
               data: {
                 input: (ctx: MachineContext) => ({
                   ethTxId: ctx.ethTxId,
+                  inputEthTxNonce: ctx.inputEthTxNonce,
                   ethPublicClient: ctx.ethPublicClient,
                 }),
               },
@@ -330,6 +333,8 @@ export const txEthToFuelMachine = createMachine(
     actions: {
       assignAnalyzeTxInput: assign((_, ev) => ({
         ethTxId: ev.input.ethTxId,
+        inputEthTxNonce: ev.input.inputEthTxNonce,
+        machineId: `${ev.input.ethTxId}-${ev.input.inputEthTxNonce}`,
         fuelProvider: ev.input.fuelProvider,
         ethPublicClient: ev.input.ethPublicClient,
       })),
@@ -346,27 +351,27 @@ export const txEthToFuelMachine = createMachine(
         fuelMessage: (_, ev) => ev.data,
       }),
       setEthToFuelTxDone: (ctx) => {
-        if (ctx.ethTxId) {
-          EthTxCache.setTxIsDone(ctx.ethTxId);
+        if (ctx.machineId) {
+          EthTxCache.setTxIsDone(ctx.machineId);
         }
       },
       assignFuelMessageStatus: assign({
         fuelMessageStatus: (_, ev) => ev.data,
       }),
       clearTxCreated: (ctx) => {
-        if (ctx.ethTxId && EthTxCache.getTxIsCreated(ctx.ethTxId)) {
-          EthTxCache.removeTxCreated(ctx.ethTxId);
+        if (ctx.machineId && EthTxCache.getTxIsCreated(ctx.machineId)) {
+          EthTxCache.removeTxCreated(ctx.machineId);
         }
       },
       setEthToFuelTxReceiptCached: (ctx) => {
         if (
-          ctx.ethTxId &&
+          ctx.machineId &&
           ctx.ethTxNonce &&
           ctx.amount &&
           ctx.ethDepositBlockHeight &&
           ctx.blockDate
         ) {
-          EthTxCache.setTxReceipt(ctx.ethTxId, {
+          EthTxCache.setTxReceipt(ctx.machineId, {
             erc20Token: ctx.erc20Token,
             nonce: ctx.ethTxNonce,
             amount: ctx.amount,
@@ -376,7 +381,7 @@ export const txEthToFuelMachine = createMachine(
         }
       },
       assignReceiptsInfoFromCache: assign((ctx) => {
-        const receiptInfo = EthTxCache.getTxReceipt(ctx.ethTxId || '');
+        const receiptInfo = EthTxCache.getTxReceipt(ctx.machineId || '');
         if (!receiptInfo) {
           throw new Error('No receipt');
         }
@@ -395,13 +400,15 @@ export const txEthToFuelMachine = createMachine(
       hasEthTxNonce: (ctx, ev) => !!ctx.ethTxNonce || !!ev?.data?.nonce,
       hasAnalyzeTxInput: (ctx) =>
         !!ctx.ethTxId &&
+        !!ctx.inputEthTxNonce &&
+        !!ctx.machineId &&
         !!ctx.fuelAddress &&
         !!ctx.fuelProvider &&
         !!ctx.ethPublicClient,
       isTxEthToFuelDone: (ctx) => {
         return (
-          EthTxCache.getTxIsDone(ctx.ethTxId || '') &&
-          !!EthTxCache.getTxReceipt(ctx.ethTxId || '')
+          EthTxCache.getTxIsDone(ctx.machineId || '') &&
+          !!EthTxCache.getTxReceipt(ctx.machineId || '')
         );
       },
       isMessageSpent: (ctx) => ctx.fuelMessageStatus?.state === 'SPENT',
