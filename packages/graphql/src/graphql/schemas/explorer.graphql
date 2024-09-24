@@ -225,6 +225,7 @@ type Query {
   predicate(address: String!): PredicateItem
   tps: TPSConnection!
   getBlocksDashboard: BlocksDashboardConnection!
+  asset (assetId: String!): Asset
 }
 
 type TPS {
@@ -247,4 +248,12 @@ type BlocksDashboard {
 
 type BlocksDashboardConnection {
   nodes: [BlocksDashboard!]!
+}
+
+type Asset {
+	assetId: String
+	contractId: String
+	name: String
+	symbol: String
+	decimals: U64
 }

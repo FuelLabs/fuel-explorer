@@ -1,0 +1,9 @@
+query asset($assetId: String!){
+    asset (assetId: $assetId) {
+		assetId
+		contractId
+		name
+		symbol
+		decimals
+    }
+}
