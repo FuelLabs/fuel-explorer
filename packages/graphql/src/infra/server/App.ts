@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import GetMetrics from '~/application/uc/GetMetrics';
+import { PublicResolver } from '~/graphql/resolvers/PublicResolver';
 
 export class Server {
   setup() {
@@ -18,6 +19,14 @@ export class Server {
       res.setHeader('content-type', 'text/plain');
       res.send(lines.join('\n'));
     });
+
+    app.get('/assets/:assetId', async (_req: Request, res: Response) => {
+      const output = await PublicResolver.create().Query.asset(null, {
+        assetId: _req.params.assetId,
+      });
+      res.json(output);
+    });
+
     return app;
   }
 

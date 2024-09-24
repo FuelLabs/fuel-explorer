@@ -35,6 +35,36 @@ export type Scalars = {
   UtxoId: { input: string; output: string; }
 };
 
+export type GQLAsset = {
+  __typename: 'Asset';
+  assetId?: Maybe<Scalars['String']['output']>;
+  contractId?: Maybe<Scalars['String']['output']>;
+  decimals?: Maybe<Scalars['U64']['output']>;
+  icon?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  networks?: Maybe<Array<Maybe<GQLAssetNetwork>>>;
+  symbol?: Maybe<Scalars['String']['output']>;
+  verified?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type GQLAssetNetwork = GQLAssetNetworkEthereum | GQLAssetNetworkFuel;
+
+export type GQLAssetNetworkEthereum = {
+  __typename: 'AssetNetworkEthereum';
+  address?: Maybe<Scalars['String']['output']>;
+  decimals?: Maybe<Scalars['U64']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type GQLAssetNetworkFuel = {
+  __typename: 'AssetNetworkFuel';
+  assetId?: Maybe<Scalars['String']['output']>;
+  chainId?: Maybe<Scalars['U64']['output']>;
+  contractId?: Maybe<Scalars['String']['output']>;
+  decimals?: Maybe<Scalars['U64']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
 export type GQLBalance = {
   __typename: 'Balance';
   amount: Scalars['U64']['output'];
@@ -936,6 +966,7 @@ export type GQLProgramState = {
 
 export type GQLQuery = {
   __typename: 'Query';
+  asset?: Maybe<GQLAsset>;
   balance: GQLBalance;
   balances: GQLBalanceConnection;
   block?: Maybe<GQLBlock>;
@@ -986,6 +1017,11 @@ export type GQLQuery = {
   transactions: GQLTransactionConnection;
   transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
+};
+
+
+export type GQLQueryAssetArgs = {
+  assetId: Scalars['String']['input'];
 };
 
 
