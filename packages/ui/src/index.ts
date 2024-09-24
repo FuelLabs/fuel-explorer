@@ -32,6 +32,7 @@ export * from './components/Dropdown';
 export * from './components/EntityItem';
 export * from './components/Focus';
 export * from './components/FuelLogo';
+export * from './components/GridTable';
 export * from './components/Heading';
 export * from './components/HelperIcon';
 export * from './components/HoverCard';

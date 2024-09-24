@@ -869,9 +869,15 @@ importers:
       react-aria:
         specifier: 3.32.1
         version: 3.32.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-data-table-component:
+        specifier: 7.6.2
+        version: 7.6.2(react@18.2.0)(styled-components@5.3.11(@babel/core@7.23.9)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-paginate:
+        specifier: 8.2.0
+        version: 8.2.0(react@18.2.0)
       react-stately:
         specifier: 3.29.1
         version: 3.29.1(react@18.2.0)
@@ -3827,10 +3833,6 @@ packages:
   '@metamask/utils@5.0.2':
     resolution: {integrity: sha512-yfmE79bRQtnMzarnKfX7AEJBwFTxvTyw3nBQlu/5rmGXrjAeAMltoGxO62TFurxrQAFMNa/fEjIHNvungZp0+g==}
     engines: {node: '>=14.0.0'}
-
-  '@metamask/utils@8.4.0':
-    resolution: {integrity: sha512-dbIc3C7alOe0agCuBHM1h71UaEaEqOk2W8rAtEn8QGz4haH2Qq7MoK6i7v2guzvkJVVh79c+QCzIqphC3KvrJg==}
-    engines: {node: '>=16.0.0'}
 
   '@metamask/utils@8.5.0':
     resolution: {integrity: sha512-I6bkduevXb72TIM9q2LRO63JSsF9EXduh3sBr9oybNX2hNNpr/j1tEjXrsG0Uabm4MJ1xkGAQEMwifvKZIkyxQ==}
@@ -13028,6 +13030,12 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  react-data-table-component@7.6.2:
+    resolution: {integrity: sha512-nHe7040fmtrJyQr/ieGrTfV0jBflYGK4sLokC6/AFOv3ThjmA9WzKz8Z8/2wMxzRqLU+Rn0CVFg+8+frKLepWQ==}
+    peerDependencies:
+      react: '>= 16.8.3'
+      styled-components: '>= 5.0.0'
+
   react-docgen-typescript@2.2.2:
     resolution: {integrity: sha512-tvg2ZtOpOi6QDwsb3GZhOjDkkX0h8Z2gipvTg6OVMUyoYoURhEiRNePT8NZItTVCDh39JJHnLdfCOkzoLbFnTg==}
     peerDependencies:
@@ -13077,6 +13085,11 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
+
+  react-paginate@8.2.0:
+    resolution: {integrity: sha512-sJCz1PW+9PNIjUSn919nlcRVuleN2YPoFBOvL+6TPgrH/3lwphqiSOgdrLafLdyLDxsgK+oSgviqacF4hxsDIw==}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
 
   react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
@@ -18299,7 +18312,7 @@ snapshots:
       '@graphql-tools/utils': 10.5.4(graphql@16.8.1)
       dataloader: 2.2.2
       graphql: 16.8.1
-      tslib: 2.6.3
+      tslib: 2.7.0
       value-or-promise: 1.0.12
 
   '@graphql-tools/batch-execute@9.0.4(graphql@16.8.1)':
@@ -18970,7 +18983,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 18.19.14
+      '@types/node': 20.14.15
       '@types/yargs': 15.0.19
       chalk: 4.1.2
 
@@ -19039,8 +19052,8 @@ snapshots:
 
   '@jridgewell/source-map@0.3.5':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/trace-mapping': 0.3.25
 
   '@jridgewell/source-map@0.3.6':
     dependencies:
@@ -19122,7 +19135,7 @@ snapshots:
     dependencies:
       '@metamask/rpc-errors': 6.2.1
       '@metamask/safe-event-emitter': 3.1.1
-      '@metamask/utils': 8.4.0
+      '@metamask/utils': 8.5.0
     transitivePeerDependencies:
       - supports-color
 
@@ -19130,7 +19143,7 @@ snapshots:
     dependencies:
       '@metamask/json-rpc-engine': 8.0.2
       '@metamask/safe-event-emitter': 3.1.1
-      '@metamask/utils': 8.4.0
+      '@metamask/utils': 8.5.0
       readable-stream: 3.6.2
     transitivePeerDependencies:
       - supports-color
@@ -19151,7 +19164,7 @@ snapshots:
       '@metamask/object-multiplex': 2.0.0
       '@metamask/rpc-errors': 6.2.1
       '@metamask/safe-event-emitter': 3.1.1
-      '@metamask/utils': 8.4.0
+      '@metamask/utils': 8.5.0
       detect-browser: 5.3.0
       extension-port-stream: 3.0.0
       fast-deep-equal: 3.1.3
@@ -19163,7 +19176,7 @@ snapshots:
 
   '@metamask/rpc-errors@6.2.1':
     dependencies:
-      '@metamask/utils': 8.4.0
+      '@metamask/utils': 8.5.0
       fast-safe-stringify: 2.1.1
     transitivePeerDependencies:
       - supports-color
@@ -19249,29 +19262,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@metamask/utils@8.4.0':
+  '@metamask/utils@8.5.0':
     dependencies:
       '@ethereumjs/tx': 4.2.0
+      '@metamask/superstruct': 3.1.0
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.8
       '@types/debug': 4.1.12
       debug: 4.3.7(supports-color@8.1.1)
       pony-cause: 2.1.10
-      semver: 7.6.3
-      superstruct: 1.0.4
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@metamask/utils@8.5.0':
-    dependencies:
-      '@ethereumjs/tx': 4.2.0
-      '@metamask/superstruct': 3.1.0
-      '@noble/hashes': 1.5.0
-      '@scure/base': 1.1.8
-      '@types/debug': 4.1.12
-      debug: 4.3.7(supports-color@8.1.1)
-      pony-cause: 2.1.11
       semver: 7.6.3
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -19296,7 +19295,7 @@ snapshots:
       '@motionone/easing': 10.17.0
       '@motionone/types': 10.17.0
       '@motionone/utils': 10.17.0
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   '@motionone/dom@10.12.0':
     dependencies:
@@ -19325,7 +19324,7 @@ snapshots:
     dependencies:
       '@motionone/types': 10.17.0
       '@motionone/utils': 10.17.0
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   '@motionone/svelte@10.16.4':
     dependencies:
@@ -19338,7 +19337,7 @@ snapshots:
     dependencies:
       '@motionone/types': 10.17.0
       hey-listen: 1.0.8
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   '@motionone/vue@10.16.4':
     dependencies:
@@ -19576,11 +19575,11 @@ snapshots:
     dependencies:
       asn1js: 3.0.5
       pvtsutils: 1.3.5
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   '@peculiar/json-schema@1.1.12':
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   '@peculiar/webcrypto@1.4.5':
     dependencies:
@@ -23265,11 +23264,11 @@ snapshots:
   '@swc/helpers@0.4.36':
     dependencies:
       legacy-swc-helpers: '@swc/helpers@0.4.14'
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   '@swc/helpers@0.5.12':
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   '@swc/helpers@0.5.5':
     dependencies:
@@ -23646,7 +23645,7 @@ snapshots:
 
   '@types/http-proxy@1.17.14':
     dependencies:
-      '@types/node': 18.19.14
+      '@types/node': 20.14.15
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -23707,7 +23706,7 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 18.19.14
+      '@types/node': 20.14.15
 
   '@types/node@10.12.18': {}
 
@@ -23737,7 +23736,7 @@ snapshots:
 
   '@types/pbkdf2@3.1.2':
     dependencies:
-      '@types/node': 18.19.14
+      '@types/node': 20.14.15
 
   '@types/pg@8.11.6':
     dependencies:
@@ -23777,7 +23776,7 @@ snapshots:
 
   '@types/secp256k1@4.0.6':
     dependencies:
-      '@types/node': 18.19.14
+      '@types/node': 20.14.15
 
   '@types/semver@7.5.6': {}
 
@@ -26241,7 +26240,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.7.0
       upper-case-first: 2.0.2
 
   case-sensitive-paths-webpack-plugin@2.4.0: {}
@@ -26610,7 +26609,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.7.0
       upper-case: 2.0.2
 
   constants-browserify@1.0.0: {}
@@ -29042,7 +29041,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   help-me@5.0.0: {}
 
@@ -29365,7 +29364,7 @@ snapshots:
       '@formatjs/ecma402-abstract': 1.18.2
       '@formatjs/fast-memoize': 2.2.0
       '@formatjs/icu-messageformat-parser': 2.7.6
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   into-stream@3.1.0:
     dependencies:
@@ -29672,7 +29671,7 @@ snapshots:
       '@babel/core': 7.23.9
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.0
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
 
@@ -29692,7 +29691,7 @@ snapshots:
       '@babel/parser': 7.23.9
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.0
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
 
@@ -30787,7 +30786,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.3
 
   make-error@1.3.6: {}
 
@@ -31468,7 +31467,7 @@ snapshots:
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   path-exists@3.0.0: {}
 
@@ -32151,7 +32150,7 @@ snapshots:
 
   pvtsutils@1.3.5:
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   pvutils@1.1.3: {}
 
@@ -32308,6 +32307,12 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
+  react-data-table-component@7.6.2(react@18.2.0)(styled-components@5.3.11(@babel/core@7.23.9)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)):
+    dependencies:
+      deepmerge: 4.3.1
+      react: 18.2.0
+      styled-components: 5.3.11(@babel/core@7.23.9)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
+
   react-docgen-typescript@2.2.2(typescript@5.4.5):
     dependencies:
       typescript: 5.4.5
@@ -32361,6 +32366,11 @@ snapshots:
     dependencies:
       escape-string-regexp: 2.0.0
       invariant: 2.2.4
+      react: 18.2.0
+
+  react-paginate@8.2.0(react@18.2.0):
+    dependencies:
+      prop-types: 15.8.1
       react: 18.2.0
 
   react-refresh@0.14.0: {}
@@ -35055,7 +35065,7 @@ snapshots:
       '@peculiar/json-schema': 1.1.12
       asn1js: 3.0.5
       pvtsutils: 1.3.5
-      tslib: 2.6.3
+      tslib: 2.7.0
 
   webextension-polyfill@0.10.0: {}
 
