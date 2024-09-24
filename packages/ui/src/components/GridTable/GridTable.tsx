@@ -25,7 +25,7 @@ export const GridTable = <T,>({
   const customStyles = {
     tableWrapper: {
       style: {
-        borderRadius: '7px',
+        borderRadius: '0',
       },
     },
     table: {
