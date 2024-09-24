@@ -7,14 +7,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Block } from '../interface/blocks.interface';
+// import { Block } from '../interface/blocks.interface';
 
-const chartData = [
-  { time: '01:00', value: 100000 },
-  { time: '09:00', value: 500000 },
-  { time: '17:00', value: 1000000 },
-  { time: '23:00', value: 1500000 },
-];
+// const chartData = [
+//   { time: '01:00', value: 100000 },
+//   { time: '09:00', value: 500000 },
+//   { time: '17:00', value: 1000000 },
+//   { time: '23:00', value: 1500000 },
+// ];
 
 const chartConfig = {
   desktop: {
@@ -24,14 +24,10 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 interface DailyTransactionProps {
-  blocks: Block[];
+  blocks: any;
 }
-export const DailyTransaction = (_blocks: DailyTransactionProps) => {
-  const numberFormatter = new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: 2,
-    style: 'decimal',
-    notation: 'compact',
-  });
+const DailyTransaction = (blocks: DailyTransactionProps) => {
+  console.log(blocks.blocks);
   return (
     <RoundedContainer className="py-4 px-5 space-y-8 ">
       <div className="space-y-[16px]">
@@ -49,7 +45,7 @@ export const DailyTransaction = (_blocks: DailyTransactionProps) => {
 
         <ResponsiveContainer width="100%" height={160}>
           <LineChart
-            data={chartData}
+            data={blocks.blocks}
             margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
           >
             <CartesianGrid
@@ -59,13 +55,15 @@ export const DailyTransaction = (_blocks: DailyTransactionProps) => {
             />
             <XAxis
               dataKey="time"
-              tick={{ className: 'fill-heading', fontSize: '12px' }}
+              tick={{
+                fontSize: 10,
+                className: 'fill-heading',
+              }}
             />
             <YAxis
-              tick={{ className: 'fill-heading', fontSize: '12px' }}
-              domain={[0, 1500000]}
-              tickFormatter={(value) => {
-                return numberFormatter.format(value);
+              tick={{
+                fontSize: 12,
+                className: 'fill-heading',
               }}
             />
             <Line
@@ -82,3 +80,5 @@ export const DailyTransaction = (_blocks: DailyTransactionProps) => {
     </RoundedContainer>
   );
 };
+
+export default DailyTransaction;

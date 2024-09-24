@@ -2,48 +2,78 @@
 
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
-import { GQLTpsQuery } from '@fuel-explorer/graphql';
 import { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import { DataTable } from '../../components/DataTable';
 import { Block } from '../../interface/blocks.interface';
-import { DailyTransaction } from '../DailyTransaction';
+import DailyTransaction from '../DailyTransaction';
 // import Epoch from '../Epoch';
 import { GasSpentChart } from '../GasSpentChart';
 import { GasTracker } from '../GasTracker';
 import { LatestBlock } from '../LatestBlock';
 import { TPS } from '../TPS';
-import TotalDapps from '../TotalDapps/totalDapps';
+import TotalDapps from '../TotalDapps/TotalDapps';
 import { getBlocksDashboard } from './actions/get-blocks-dashboard';
 import { getTPS } from './actions/get-tps';
 
 export function Hero() {
   const classes = styles();
-  const [tpsData, _setTPSData] = useState<GQLTpsQuery['tps'] | null>(null);
+  const [tpsData, setTpsData] = useState<any>(null);
+  const [blocksData, setBlocksData] = useState<any>(null);
   const getTPSData = async () => {
     try {
       const result = await getTPS();
       const dashboard = await getBlocksDashboard();
       // setTPSData(result.tps);
       console.log('Here is the tps data', result);
+      setTpsData(result);
+
       console.log('Here is the dashboard data', dashboard);
-      console.log(result);
+      setBlocksData(dashboard);
     } catch (e) {
       console.error('The error while fetching TPS is', e);
     }
   };
   useEffect(() => {
-    getTPSData();
+    // Function to call getTPSData every 10 seconds
+    const interval = setInterval(() => {
+      getTPSData(); // Call the function
+    }, 10000); // 10000 ms = 10 seconds
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   const blocks: Block[] =
-    tpsData?.nodes.map((node) => ({
+    blocksData?.getBlocksDashboard.nodes.map((node: any) => ({
       blockNo: node.blockNo ?? '',
       producer: node.producer ?? '',
       timeStamp: node.timestamp,
       gasUsed: node.gasUsed,
       tps: node.tps,
     })) || [];
+
+  const tps: any =
+    tpsData?.tps.nodes.map((node: any) => ({
+      start: node.start ?? '',
+      end: node.end ?? '',
+      totalGas: node.totalGas,
+      txCount: node.txCount,
+    })) || [];
+
+  const dailyTsxData = tps?.map((t: any) => ({
+    time: t.start ?? '',
+    value: t.txCount,
+  }));
+
+  console.log('the dailyTsx is ', dailyTsxData);
+
+  const tpsTsxData = tps?.map((t: any) => ({
+    time: t.end - t.start ?? '',
+    value: t.txCount / 3600,
+  }));
+  console.log('the tps6Tsx is ', tpsTsxData);
+
   return (
     <Theme appearance="light">
       <Box className={classes.root()}>
@@ -61,7 +91,7 @@ export function Hero() {
 
             <Box className={classes.searchWrapper()}>
               <div className="row-span-2 col-span-4">
-                <DailyTransaction blocks={blocks} />
+                <DailyTransaction blocks={dailyTsxData} />
               </div>
               <div className="row-span-1 col-span-3">
                 <TotalDapps active={21} total={48} />
@@ -69,15 +99,22 @@ export function Hero() {
               <div className="row-span-1 col-span-5">
                 <LatestBlock
                   blockNo={
-                    tpsData?.nodes[0].blockNo?.replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ',',
-                    ) ?? ''
+                    blocksData?.getBlocksDashboard.nodes[0].blockNo
+                      ? blocksData.getBlocksDashboard.nodes[0].blockNo
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      : ''
                   }
-                  gasUsed={tpsData?.nodes[0].gasUsed!}
-                  producer={tpsData?.nodes[0].producer!}
-                  timeStamp={tpsData?.nodes[0].timestamp!}
-                  // tps={tpsData?.nodes[0].tps!}
+                  gasUsed={
+                    blocksData?.getBlocksDashboard.nodes[0].gasUsed ?? ''
+                  }
+                  producer={
+                    blocksData?.getBlocksDashboard.nodes[0].producer ?? ''
+                  }
+                  timeStamp={
+                    blocksData?.getBlocksDashboard.nodes[0].timestamp ?? ''
+                  }
+                  // tps={tpsData?.nodes[0].tps ?? ''}
                 />
               </div>
               <div className="row-span-1 col-span-3">
@@ -87,7 +124,7 @@ export function Hero() {
                 <DataTable blocks={blocks.slice(0, 5)} />
               </div>
               <div className="row-span-2 col-span-4">
-                <TPS blocks={blocks} />
+                <TPS blocks={tpsTsxData} />
                 {/* <TPSChart /> */}
               </div>
               <div className="row-span-2 col-span-3">
