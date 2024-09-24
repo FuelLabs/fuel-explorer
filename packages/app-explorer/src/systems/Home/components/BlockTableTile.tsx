@@ -1,5 +1,6 @@
 import { HStack, RoundedContainer } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
+import { fromNow } from '~/systems/Core/utils/dayjs';
 import { Block } from '../interface/blocks.interface';
 
 interface BlockTableProps {
@@ -51,7 +52,7 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
           <p
             className={`${classes.paragraph()} overflow-hidden text-ellipsis whitespace-nowrap`}
           >
-            {block.timeStamp}
+            {fromNow(block.timeStamp)}
           </p>
         </div>
       </HStack>

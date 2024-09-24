@@ -1,6 +1,8 @@
-import { RoundedContainer } from '@fuels/ui';
-// components/ValidatorsChart.tsx
+import { RoundedContainer, Text, VStack } from '@fuels/ui';
+
 import React from 'react';
+
+import DAppTile from './DAppTile';
 
 interface ValidatorStatusProps {
   active: number;
@@ -26,6 +28,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({ active, total }) => {
     borderRadius: '4px', // Smoother edges
     transition: 'width 0.4s ease-in-out', // Smooth transition when values change
   };
+  const _image = 'zap';
 
   return (
     <RoundedContainer className="validators-chart">
@@ -56,6 +59,16 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({ active, total }) => {
             Building. {total - active}
           </span>
         </div>
+        <div className="divide-solid" />
+        <VStack>
+          <Text className="font-mono w-[500px] text-xs text-gray-10">
+            Featured apps
+          </Text>
+          <DAppTile
+            image="https://app.fuel.network/ecosystem/images/zap.jpeg"
+            name="Mira Exchange"
+          />
+        </VStack>
       </div>
     </RoundedContainer>
   );
