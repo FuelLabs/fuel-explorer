@@ -70,7 +70,7 @@ export function Hero() {
 
   const tpsTsxData = tps?.map((t: any) => ({
     time: t.end - t.start ?? '',
-    value: t.txCount / 3600,
+    value: t.txCount,
   }));
   console.log('the tps6Tsx is ', tpsTsxData);
 

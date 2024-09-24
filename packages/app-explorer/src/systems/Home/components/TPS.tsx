@@ -7,20 +7,20 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Block } from '../interface/blocks.interface';
 
 export interface TPSProps {
-  blocks: Block[];
+  blocks: any;
 }
 
 export const TPS = (props: TPSProps) => {
   const blocks = props.blocks;
-  const chartData = blocks?.map((block: Block) => ({
-    time: dayjs(block.timeStamp).format('HH:mm'),
-    value: block.tps,
+  const chartData = blocks?.map((block: any) => ({
+    time: dayjs(block.time).format('HH:mm'),
+    value: block.value / 3600,
   }));
   const averageTPS =
-    blocks.reduce((sum, block) => sum + Number(block.tps), 0) / blocks.length;
+    blocks.reduce((sum: any, block: any) => sum + Number(block.value), 0) /
+    blocks.length;
 
   //   const numberFormatter = new Intl.NumberFormat('en-US', {
   //     maximumFractionDigits: 2,
@@ -57,18 +57,7 @@ export const TPS = (props: TPSProps) => {
               dataKey="time"
               tick={{ className: 'fill-heading', fontSize: '12px' }}
             />
-            <YAxis
-              tick={{ className: 'fill-heading', fontSize: '12px' }}
-              domain={[
-                Math.min(...chartData.map((a) => Number(a.value))),
-                Math.max(...chartData.map((a) => Number(a.value))),
-              ]}
-              ticks={[
-                Math.min(...chartData.map((a) => Number(a.value))),
-                Math.max(...chartData.map((a) => Number(a.value))),
-              ]}
-              tickFormatter={(value) => `${value / 1000}K`}
-            />
+            <YAxis tick={{ className: 'fill-heading', fontSize: '12px' }} />
             <Bar
               dataKey="value"
               className="dark:fill-white fill-[#eee]"
