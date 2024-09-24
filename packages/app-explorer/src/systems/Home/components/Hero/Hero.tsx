@@ -4,12 +4,13 @@ import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
 import { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
+import projectJson from '../../../../../../app-portal/src/systems/Ecosystem/data/projects.json';
 import { DataTable } from '../../components/DataTable';
 import { Block } from '../../interface/blocks.interface';
 import DailyTransaction from '../DailyTransaction';
 // import Epoch from '../Epoch';
 import { GasSpentChart } from '../GasSpentChart';
-import { GasTracker } from '../GasTracker';
+// import { GasTracker } from '../GasTracker';
 import { LatestBlock } from '../LatestBlock';
 import { TPS } from '../TPS';
 import TotalDapps from '../TotalDapps/TotalDapps';
@@ -74,6 +75,15 @@ export function Hero() {
   }));
   console.log('the tps6Tsx is ', tpsTsxData);
 
+  const totalProjects = projectJson.length;
+  const activeProjects = projectJson.filter(
+    (item) => item.isLive === true,
+  ).length;
+
+  const elementsWithImage = projectJson.filter((item) => item.image);
+
+  const top3Projects = elementsWithImage.slice(0, 3);
+
   return (
     <Theme appearance="light">
       <Box className={classes.root()}>
@@ -94,7 +104,11 @@ export function Hero() {
                 <DailyTransaction blocks={dailyTsxData} />
               </div>
               <div className="row-span-1 col-span-3">
-                <TotalDapps active={21} total={48} />
+                <TotalDapps
+                  active={activeProjects}
+                  total={totalProjects}
+                  featured={top3Projects}
+                />
               </div>
               <div className="row-span-1 col-span-5">
                 <LatestBlock
@@ -118,7 +132,7 @@ export function Hero() {
                 />
               </div>
               <div className="row-span-1 col-span-3">
-                <GasTracker />
+                <GasSpentChart blocks={blocks} />
               </div>
               <div className="row-span-3 col-span-5 ">
                 <DataTable blocks={blocks.slice(0, 5)} />
@@ -126,9 +140,6 @@ export function Hero() {
               <div className="row-span-2 col-span-4">
                 <TPS blocks={tpsTsxData} />
                 {/* <TPSChart /> */}
-              </div>
-              <div className="row-span-2 col-span-3">
-                <GasSpentChart blocks={blocks} />
               </div>
             </Box>
           </VStack>

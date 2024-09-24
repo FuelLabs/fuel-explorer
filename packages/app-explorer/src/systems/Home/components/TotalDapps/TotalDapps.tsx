@@ -1,20 +1,24 @@
 import { RoundedContainer } from '@fuels/ui';
-// components/ValidatorsChart.tsx
 import React from 'react';
 
 interface ValidatorStatusProps {
   active: number;
   total: number;
+  featured: any;
 }
 
-const TotalDapps: React.FC<ValidatorStatusProps> = ({ active, total }) => {
+const TotalDapps: React.FC<ValidatorStatusProps> = ({
+  active,
+  total,
+  featured,
+}) => {
   const activePercentage = (active / total) * 100;
   const buildingPercentage = ((total - active) / total) * 100;
 
   const activeBarStyle = {
     width: `${activePercentage}%`,
     backgroundColor: 'green',
-    height: '8px', // Slightly increased height for better visibility
+    height: '4px', // Slightly increased height for better visibility
     borderRadius: '4px', // Smoother edges
     transition: 'width 0.4s ease-in-out', // Smooth transition when values change
   };
@@ -22,7 +26,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({ active, total }) => {
   const buildingBarStyle = {
     width: `${buildingPercentage}%`,
     backgroundColor: 'whitesmoke',
-    height: '8px', // Slightly increased height for better visibility
+    height: '4px', // Slightly increased height for better visibility
     borderRadius: '4px', // Smoother edges
     transition: 'width 0.4s ease-in-out', // Smooth transition when values change
   };
@@ -31,7 +35,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({ active, total }) => {
     <RoundedContainer className="validators-chart">
       <div className="flex items-center justify-between">
         <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
-          Total Dapps
+          Fuel Dapps
         </h3>
         <span className="text-[13px] leading-[20px] text-muted block">
           View All
@@ -49,13 +53,32 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({ active, total }) => {
           </div>
         </div>
         <div className="flex items-center justify-between mt-3">
-          <span className="text-[13px] leading-[20px] text-muted block">
+          <span className="text-[11px] leading-[20px] text-muted block">
             Active. {active}
           </span>
-          <span className="text-[13px] leading-[20px] text-muted block">
+          <span className="text-[11px] leading-[20px] text-muted block">
             Building. {total - active}
           </span>
         </div>
+
+        <hr className="my-3 bg-muted" />
+
+        <span className="text-[11px] leading-[20px] text-muted block">
+          Featured Dapps
+        </span>
+
+        {featured.map((feature: any) => {
+          return (
+            <div className="flex items-center gap-5 my-3">
+              <img
+                src={`https://app.fuel.network/ecosystem/images/${feature.image}.jpeg`}
+                alt=""
+                className="w-8"
+              />
+              <p className="text-[13px] leading-[20px] block">{feature.name}</p>
+            </div>
+          );
+        })}
       </div>
     </RoundedContainer>
   );
