@@ -20,7 +20,7 @@ export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
   return (
     <VStack gap="0px">
       <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">{timeAgo}</Text>
-      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">
+      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f] whitespace-nowrap">
         {formattedTime}
       </Text>
     </VStack>
