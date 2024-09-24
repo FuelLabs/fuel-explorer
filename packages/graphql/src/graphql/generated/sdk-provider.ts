@@ -35,6 +35,15 @@ export type Scalars = {
   UtxoId: { input: string; output: string; }
 };
 
+export type GQLAsset = {
+  __typename: 'Asset';
+  assetId?: Maybe<Scalars['String']['output']>;
+  contractId?: Maybe<Scalars['String']['output']>;
+  decimals?: Maybe<Scalars['U64']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  symbol?: Maybe<Scalars['String']['output']>;
+};
+
 export type GQLBalance = {
   __typename: 'Balance';
   amount: Scalars['U64']['output'];
@@ -936,6 +945,7 @@ export type GQLProgramState = {
 
 export type GQLQuery = {
   __typename: 'Query';
+  asset?: Maybe<GQLAsset>;
   balance: GQLBalance;
   balances: GQLBalanceConnection;
   block?: Maybe<GQLBlock>;
@@ -986,6 +996,11 @@ export type GQLQuery = {
   transactions: GQLTransactionConnection;
   transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
+};
+
+
+export type GQLQueryAssetArgs = {
+  assetId: Scalars['String']['input'];
 };
 
 
