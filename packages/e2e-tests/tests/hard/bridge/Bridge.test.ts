@@ -55,6 +55,7 @@ test.describe('Bridge', () => {
       transport: http(),
     });
 
+    await page.bringToFront();
     await page.goto('/bridge');
   });
   test('e2e', async ({ page, context }) => {

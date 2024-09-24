@@ -20,13 +20,13 @@ const config: PlaywrightTestConfig = defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 0,
   webServer: {
-    command: 'pnpm dev',
+    command: 'pnpm dev:explorer',
     port: Number(PORT),
     reuseExistingServer: true,
     cwd: join(__dirname, '../../'),
   },
   use: {
-    baseURL: `http://127.0.0.1:${PORT}/`,
+    baseURL: `http://localhost:${PORT}/`,
     permissions: ['clipboard-read', 'clipboard-write'],
     headless: false,
     trace: 'on-first-retry',
