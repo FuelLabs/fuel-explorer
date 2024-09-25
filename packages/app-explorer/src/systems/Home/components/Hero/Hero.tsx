@@ -31,6 +31,7 @@ export function Hero() {
       const dashboard = await getBlocksDashboard();
 
       setTpsData(result);
+
       setBlocksData(dashboard);
 
       if (isFirstFetch) {
@@ -85,7 +86,9 @@ export function Hero() {
 
   const elementsWithImage = projectJson.filter((item) => item.image);
 
-  const top3Projects = elementsWithImage.slice(1, 4);
+  const top3Projects = elementsWithImage
+    .filter((element) => element.isFeatured)
+    .slice(0, 3);
 
   return (
     <Theme appearance="light">

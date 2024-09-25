@@ -18,7 +18,6 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 
   const activeBarStyle = {
     width: `${activePercentage}%`,
-    backgroundColor: '#00F58C',
     height: '5px',
     borderRadius: '4px',
     transition: 'width 0.4s ease-in-out',
@@ -26,7 +25,6 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 
   const buildingBarStyle = {
     width: `${buildingPercentage}%`,
-    backgroundColor: 'rgb(87, 87, 87)',
     height: '5px',
     borderRadius: '4px',
     transition: 'width 0.4s ease-in-out',
@@ -53,8 +51,14 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
       <div className="py-4">
         <div className="progress-bar-background">
           <div className="w-full flex">
-            <div style={activeBarStyle} className="bg-brand" />
-            <div style={buildingBarStyle} className="bg-gray-1" />
+            <div
+              style={activeBarStyle}
+              className="dark:bg-[rgb(73,211,112)] bg-[rgb(82,238,135)]"
+            />
+            <div
+              style={buildingBarStyle}
+              className="dark:bg-[rgb(87, 87, 87)] bg-[rgb(234,234,234)]"
+            />
           </div>
         </div>
         <div className="flex items-center justify-between mt-1">
@@ -74,11 +78,11 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 
         {featured.map((feature: any) => {
           return (
-            <Link className="flex items-center gap-5 mt-3" href={feature.url}>
+            <Link className="flex items-center gap-3 mt-3" href={feature.url}>
               <img
                 src={`https://app.fuel.network/ecosystem/images/${feature.image}.jpeg`}
                 alt=""
-                className="w-5"
+                className="w-5 rounded"
               />
               <p className="text-[13px] leading-[20px] block">{feature.name}</p>
             </Link>
