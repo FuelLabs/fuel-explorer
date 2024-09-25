@@ -17,19 +17,20 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 
   const activeBarStyle = {
     width: `${activePercentage}%`,
-    backgroundColor: 'green',
-    height: '4px', // Slightly increased height for better visibility
+    backgroundColor: '#00F58C',
+    height: '5px', // Slightly increased height for better visibility
     borderRadius: '4px', // Smoother edges
     transition: 'width 0.4s ease-in-out', // Smooth transition when values change
   };
 
   const buildingBarStyle = {
     width: `${buildingPercentage}%`,
-    backgroundColor: 'whitesmoke',
-    height: '4px', // Slightly increased height for better visibility
+    backgroundColor: 'rgb(87, 87, 87)',
+    height: '5px', // Slightly increased height for better visibility
     borderRadius: '4px', // Smoother edges
     transition: 'width 0.4s ease-in-out', // Smooth transition when values change
   };
+  const _image = 'zap';
 
   return (
     <RoundedContainer className="validators-chart">
@@ -52,28 +53,28 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
             <div style={buildingBarStyle} className="bg-gray-1" />
           </div>
         </div>
-        <div className="flex items-center justify-between mt-3">
-          <span className="text-[11px] leading-[20px] text-muted block">
+        <div className="flex items-center justify-between mt-1">
+          <span className="text-[12px] leading-[20px] text-muted block font-bold">
             Active. {active}
           </span>
-          <span className="text-[11px] leading-[20px] text-muted block">
+          <span className="text-[12px] leading-[20px] text-muted block font-bold">
             Building. {total - active}
           </span>
         </div>
 
-        <hr className="my-3 bg-muted" />
+        <hr className="my-2 bg-[rgb(87,87,87)]" />
 
-        <span className="text-[11px] leading-[20px] text-muted block">
+        <span className="text-[12px] leading-[20px] text-muted block font-bold">
           Featured Dapps
         </span>
 
         {featured.map((feature: any) => {
           return (
-            <div className="flex items-center gap-5 my-3">
+            <div className="flex items-center gap-5 mt-3">
               <img
                 src={`https://app.fuel.network/ecosystem/images/${feature.image}.jpeg`}
                 alt=""
-                className="w-8"
+                className="w-5"
               />
               <p className="text-[13px] leading-[20px] block">{feature.name}</p>
             </div>

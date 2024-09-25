@@ -1,5 +1,6 @@
 import { RoundedContainer } from '@fuels/ui';
-import { fromNowUnix } from '~/systems/Core/utils/dayjs';
+
+import { fromNow } from '~/systems/Core/utils/dayjs';
 import { Block } from '../interface/blocks.interface';
 
 export const LatestBlock = (block: Block) => {
@@ -33,7 +34,7 @@ export const LatestBlock = (block: Block) => {
             </div>
           </div>
           <span className="text-[13px] leading-[20px] text-muted block">
-            {fromNowUnix(block?.timeStamp)}
+            {fromNow(block?.timeStamp)}
           </span>
         </div>
         <h2 className="text-[32px] leading-[36px] text-heading font-bold">

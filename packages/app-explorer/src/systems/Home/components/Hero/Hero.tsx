@@ -39,7 +39,7 @@ export function Hero() {
     // Function to call getTPSData every 10 seconds
     const interval = setInterval(() => {
       getTPSData(); // Call the function
-    }, 10000); // 10000 ms = 10 seconds
+    }, 1000); // 10000 ms = 10 seconds
 
     // Cleanup the interval on component unmount
     return () => clearInterval(interval);
@@ -70,7 +70,7 @@ export function Hero() {
   console.log('the dailyTsx is ', dailyTsxData);
 
   const tpsTsxData = tps?.map((t: any) => ({
-    time: t.end - t.start ?? '',
+    time: t.start ?? '',
     value: t.txCount,
   }));
   console.log('the tps6Tsx is ', tpsTsxData);
@@ -82,7 +82,7 @@ export function Hero() {
 
   const elementsWithImage = projectJson.filter((item) => item.image);
 
-  const top3Projects = elementsWithImage.slice(0, 3);
+  const top3Projects = elementsWithImage.slice(1, 4);
 
   return (
     <Theme appearance="light">
@@ -100,7 +100,7 @@ export function Hero() {
             </div> */}
 
             <Box className={classes.searchWrapper()}>
-              <div className="row-span-2 col-span-4">
+              <div className="row-span-1 col-span-4">
                 <DailyTransaction blocks={dailyTsxData} />
               </div>
               <div className="row-span-1 col-span-3">
@@ -131,15 +131,16 @@ export function Hero() {
                   // tps={tpsData?.nodes[0].tps ?? ''}
                 />
               </div>
-              <div className="row-span-1 col-span-3">
-                <GasSpentChart blocks={blocks} />
-              </div>
-              <div className="row-span-3 col-span-5 ">
-                <DataTable blocks={blocks.slice(0, 5)} />
-              </div>
-              <div className="row-span-2 col-span-4">
+
+              <div className="row-span-1 col-span-4">
                 <TPS blocks={tpsTsxData} />
                 {/* <TPSChart /> */}
+              </div>
+              <div className="row-span-1 col-span-3">
+                <GasSpentChart blocks={dailyTsxData} />
+              </div>
+              <div className="row-span-1 col-span-5 ">
+                <DataTable blocks={blocks.slice(0, 5)} />
               </div>
             </Box>
           </VStack>

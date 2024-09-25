@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Block } from '../../interface/blocks.interface';
 
 const chartConfig = {
   // eth: {
@@ -22,20 +21,21 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 interface GasSpentProps {
-  blocks: Block[];
+  blocks: any;
 }
 export const GasSpentChart = (gasSpent: GasSpentProps) => {
+  console.log(gasSpent.blocks);
   const totalGasSpent = gasSpent.blocks
-    .map((block) => +block.gasUsed)
-    .reduce((acc, gasUsed) => acc + gasUsed, 0);
-  const chartData = gasSpent.blocks.map((e) => {
+    .map((block: any) => +block.value)
+    .reduce((acc: any, value: any) => acc + value, 0);
+  const chartData = gasSpent.blocks.map((e: any) => {
     return {
-      time: dayjs(e.timeStamp).format('HH:mm'),
-      ETH: +e.gasUsed,
+      time: dayjs(e.start).format('HH:mm'),
+      ETH: +e.value,
     };
   });
-  const minGasUsed = Math.min(...chartData.map((e) => e.ETH)) / 10 ** 9;
-  const maxGasUsed = Math.max(...chartData.map((e) => e.ETH)) / 10 ** 9;
+  const minGasUsed = Math.min(...chartData.map((e: any) => e.ETH)) / 10 ** 9;
+  const maxGasUsed = Math.max(...chartData.map((e: any) => e.ETH)) / 10 ** 9;
 
   const numberFormatter = new Intl.NumberFormat('en-US', {
     maximumFractionDigits: 1,
@@ -116,7 +116,7 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
             /> */}
             <Line
               type="monotone"
-              dataKey="FUEL"
+              dataKey="ETH"
               stroke={chartConfig.fuel.color}
               strokeWidth={2}
               dot={false}
