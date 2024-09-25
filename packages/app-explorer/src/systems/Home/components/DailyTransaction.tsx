@@ -28,9 +28,8 @@ interface DailyTransactionProps {
   blocks: any;
 }
 const DailyTransaction = (blocks: DailyTransactionProps) => {
-  console.log(blocks.blocks);
   const chartData = blocks.blocks?.map((block: any) => ({
-    time: dayjs(block.timeStamp).format('HH:mm'),
+    time: dayjs(Number(block.time)).format('HH:mm'),
     value: block.value,
   }));
 
@@ -39,7 +38,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
     0,
   );
   return (
-    <RoundedContainer className="py-4 px-5 space-y-8 ">
+    <RoundedContainer className="py-4 px-5 h-full space-y-8 ">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
@@ -50,7 +49,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
           </span>
         </div>
         <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-          {cumilativeTsx}
+          {cumilativeTsx.toLocaleString()}
         </h2>
 
         <ResponsiveContainer width="100%" height={160}>

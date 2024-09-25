@@ -24,27 +24,26 @@ interface GasSpentProps {
   blocks: any;
 }
 export const GasSpentChart = (gasSpent: GasSpentProps) => {
-  console.log(gasSpent.blocks);
   const totalGasSpent = gasSpent.blocks
     .map((block: any) => +block.value)
     .reduce((acc: any, value: any) => acc + value, 0);
   const chartData = gasSpent.blocks.map((e: any) => {
     return {
-      time: dayjs(e.start).format('HH:mm'),
+      time: dayjs(Number(e.time)).format('HH:mm'),
       ETH: +e.value,
     };
   });
   const minGasUsed = Math.min(...chartData.map((e: any) => e.ETH)) / 10 ** 9;
   const maxGasUsed = Math.max(...chartData.map((e: any) => e.ETH)) / 10 ** 9;
 
-  const numberFormatter = new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: 1,
-    style: 'currency',
-    currency: 'USD',
-  });
+  // const numberFormatter = new Intl.NumberFormat('en-US', {
+  //   maximumFractionDigits: 1,
+  //   style: 'currency',
+  //   currency: 'USD',
+  // });
 
   return (
-    <RoundedContainer className="py-4 px-5 space-y-3 ">
+    <RoundedContainer className="py-4 h-full px-5 space-y-3 ">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <div className="text-[15px] leading-[24px] text-heading font-semibold group">
@@ -77,18 +76,15 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
           </span>
         </div>
         <HStack align={'baseline'}>
-          <h2 className="text-[32px] leading-[34px] text-heading font-bold">
-            {(totalGasSpent / 10 ** 9).toFixed(3)}
+          <h2 className="text-[32px] leading-[34px] text-heading font-bold whitespace-no-wrap">
+            {(totalGasSpent / 10 ** 9).toString()}
           </h2>
           <p className="text-[11px] text-heading font-regular text-muted tracking-tight] ">
-            ETH Per Transaction
+            ETH
           </p>
         </HStack>
         <ResponsiveContainer width="100%" height={130}>
-          <LineChart
-            data={chartData}
-            margin={{ top: 10, right: 0, left: -30, bottom: 0 }}
-          >
+          <LineChart data={chartData} margin={{ top: 10, right: 0, bottom: 0 }}>
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="#333"
@@ -99,10 +95,13 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
               tick={{ className: 'fill-heading', fontSize: '12px' }}
             />
             <YAxis
-              tick={{ className: 'fill-heading', fontSize: '12px' }}
+              tick={{
+                className: 'fill-heading whitespace-no-wrap',
+                fontSize: '12px',
+              }}
               domain={[minGasUsed, maxGasUsed]}
               tickFormatter={(value) => {
-                return numberFormatter.format(value);
+                return (value / 10 ** 9).toString();
               }}
             />
 

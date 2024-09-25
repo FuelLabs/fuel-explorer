@@ -15,16 +15,17 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
       <HStack align={'center'} className="justify-between">
         <div className="space-y-[4px]">
           <p className={classes.paragraphStrong()}>#{block.blockNo}</p>
-          <p className={classes.paragraph()}>{block.gasUsed / 10 ** 9} ETH</p>
+          <p className={classes.paragraph()}>{+block.gasUsed / 10 ** 9} ETH</p>
         </div>
         <div className="flex items-center gap-[4px] overflow-hidden">
+          {/* Uncomment the image if needed */}
           {/* <img
-            className="w-[16px] h-[14px] rounded-full overflow-hidden"
-            src="https://s3-alpha-sig.figma.com/img/404f/e544/a721b4897fea63c5007fea0819a062e4?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=HQ4U-6SV-6Neqns-0oAsAQiV26pnff609Srfd-PFdNQJvjOH7t7CfkNNoA90jzSdyELyRALWQfQAf5yrQAdKzz-yLKDg1A5Y7VpRN5ZRnR6~eHBGovRzDEdLtiHSRRY04fTUR~DN6RAXpPZBwnporoqKgk3ntoYvskkkEl56Hn1WUYhnfM3OtgqaZu327f39qdvO3VZudMUpVLxOWVk92ky4USKXEmu1AA9Y1luOexzTNyqQdabjaLQbr5zF-hPZtQV-pKHIKBCewNvhGiMp8hVU~XXnCcJvMvI9AaI~fZnq~6frNAAQEN9c22usX3kIwmTy9qoOXqzqFcOxoW4PGQ__"
-            alt=""
-          /> */}
+      className="w-[16px] h-[14px] rounded-full overflow-hidden"
+      src="https://s3-alpha-sig.figma.com/img/404f/e544/a721b4897fea63c5007fea0819a062e4?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=HQ4U-6SV-6Neqns-0oAsAQiV26pnff609Srfd-PFdNQJvjOH7t7CfkNNoA90jzSdyELyRALWQfQAf5yrQAdKzz-yLKDg1A5Y7VpRN5ZRnR6~eHBGovRzDEdLtiHSRRY04fTUR~DN6RAXpPZBwnporoqKgk3ntoYvskkkEl56Hn1WUYhnfM3OtgqaZu327f39qdvO3VZudMUpVLxOWVk92ky4USKXEmu1AA9Y1luOexzTNyqQdabjaLQbr5zF-hPZtQV-pKHIKBCewNvhGiMp8hVU~XXnCcJvMvI9AaI~fZnq~6frNAAQEN9c22usX3kIwmTy9qoOXqzqFcOxoW4PGQ__"
+      alt=""
+    /> */}
           <p
-            className={`${classes.paragraph()} overflow-hidden text-ellipsis whitespace-nowrap w-[100px] `}
+            className={`${classes.paragraph()} overflow-hidden text-ellipsis whitespace-nowrap w-[100px]`}
           >
             {block.producer}
           </p>
@@ -66,6 +67,7 @@ const styles = tv({
       'text-[12px]',
       'text-[color:var(--gray-12)]',
       'font-bold',
+      ' w-[110px]',
     ],
     paragraph: [
       'text-muted',

@@ -26,22 +26,15 @@ export function Hero() {
       const result = await getTPS();
       const dashboard = await getBlocksDashboard();
       // setTPSData(result.tps);
-      console.log('Here is the tps data', result);
       setTpsData(result);
-
-      console.log('Here is the dashboard data', dashboard);
       setBlocksData(dashboard);
-    } catch (e) {
-      console.error('The error while fetching TPS is', e);
-    }
+    } catch (_e) {}
   };
   useEffect(() => {
-    // Function to call getTPSData every 10 seconds
     const interval = setInterval(() => {
-      getTPSData(); // Call the function
-    }, 1000); // 10000 ms = 10 seconds
+      getTPSData();
+    }, 10000);
 
-    // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
@@ -100,10 +93,10 @@ export function Hero() {
             </div> */}
 
             <Box className={classes.searchWrapper()}>
-              <div className="row-span-1 col-span-4">
+              <div className="row-span-2 col-span-4">
                 <DailyTransaction blocks={dailyTsxData} />
               </div>
-              <div className="row-span-1 col-span-3">
+              <div className="row-span-2 col-span-3">
                 <TotalDapps
                   active={activeProjects}
                   total={totalProjects}
@@ -131,16 +124,16 @@ export function Hero() {
                   // tps={tpsData?.nodes[0].tps ?? ''}
                 />
               </div>
+              <div className="row-span-3 col-span-5 ">
+                <DataTable blocks={blocks.slice(0, 5)} />
+              </div>
 
-              <div className="row-span-1 col-span-4">
+              <div className="row-span-2 col-span-4">
                 <TPS blocks={tpsTsxData} />
                 {/* <TPSChart /> */}
               </div>
-              <div className="row-span-1 col-span-3">
+              <div className="row-span-2 col-span-3">
                 <GasSpentChart blocks={dailyTsxData} />
-              </div>
-              <div className="row-span-1 col-span-5 ">
-                <DataTable blocks={blocks.slice(0, 5)} />
               </div>
             </Box>
           </VStack>
@@ -168,7 +161,7 @@ const styles = tv({
       'grid gap-5',
       'grid-cols-1 grid-rows-auto auto-rows-min',
       'md:grid-cols-1 md:grid-rows-[auto,auto]',
-      'lg:grid-cols-12 lg:grid-rows-[auto,auto]',
+      'lg:grid-cols-12 lg:grid-rows-[repeat(4,auto)]',
       'gap-y-5 gap-x-4',
     ],
   },

@@ -19,22 +19,22 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
   const activeBarStyle = {
     width: `${activePercentage}%`,
     backgroundColor: '#00F58C',
-    height: '5px', // Slightly increased height for better visibility
-    borderRadius: '4px', // Smoother edges
-    transition: 'width 0.4s ease-in-out', // Smooth transition when values change
+    height: '5px',
+    borderRadius: '4px',
+    transition: 'width 0.4s ease-in-out',
   };
 
   const buildingBarStyle = {
     width: `${buildingPercentage}%`,
     backgroundColor: 'rgb(87, 87, 87)',
-    height: '5px', // Slightly increased height for better visibility
-    borderRadius: '4px', // Smoother edges
-    transition: 'width 0.4s ease-in-out', // Smooth transition when values change
+    height: '5px',
+    borderRadius: '4px',
+    transition: 'width 0.4s ease-in-out',
   };
   const _image = 'zap';
 
   return (
-    <RoundedContainer className="validators-chart">
+    <RoundedContainer className="validators-chart h-full">
       <div className="flex items-center justify-between">
         <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
           Fuel Dapps
@@ -66,7 +66,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
           </span>
         </div>
 
-        <div className="my-2 h-[1px] bg-[rgb(87,87,87)]" />
+        <div className="my-2 h-[1px] bg-[rgba(255,255,255,0.04)]" />
 
         <span className="text-[12px] leading-[20px] text-muted block font-bold">
           Featured Dapps
