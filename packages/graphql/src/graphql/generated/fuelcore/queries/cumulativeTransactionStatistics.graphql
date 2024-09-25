@@ -1,0 +1,8 @@
+query cumulativeTransactionStatistics($timeFilter: String){
+    cumulativeTransactionStatistics(timeFilter: $timeFilter){
+        nodes{
+            time
+            transaction_count_cumulative
+        }
+    }
+}

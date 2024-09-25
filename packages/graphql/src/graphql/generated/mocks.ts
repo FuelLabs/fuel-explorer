@@ -1,4 +1,4 @@
-import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLBalance, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlockRewardStatistics, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLChainInfo, GQLChangeOutput, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLGasCosts, GQLGenesis, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNewBlockStatistic, GQLNewBlockStatisticsConnection, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStateTransitionPurpose, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTxParameters, GQLUtxoItem, GQLVariableOutput, GQLBlockRewardStatisticsConnection, GQLBlockVersion, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion } from './sdk';
+import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLBalance, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlockRewardStatistics, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLChainInfo, GQLChangeOutput, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLCumulativeFeeStatistics, GQLCumulativeFeeStatisticsConnection, GQLCumulativeTransactionStatistics, GQLCumulativeTransactionStatisticsConnection, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLGasCosts, GQLGenesis, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNewBlockStatistic, GQLNewBlockStatisticsConnection, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStateTransitionPurpose, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionFeeStatistics, GQLTransactionFeeStatisticsConnection, GQLTransactionGasCosts, GQLTransactionStatistics, GQLTransactionStatisticsConnection, GQLTxParameters, GQLUtxoItem, GQLVariableOutput, GQLBlockRewardStatisticsConnection, GQLBlockVersion, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion } from './sdk';
 
 export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } & GQLAsset => {
     return {
@@ -296,6 +296,36 @@ export const aContractParameters = (overrides?: Partial<GQLContractParameters>):
         contractMaxSize: overrides && overrides.hasOwnProperty('contractMaxSize') ? overrides.contractMaxSize! : '0xA',
         maxStorageSlots: overrides && overrides.hasOwnProperty('maxStorageSlots') ? overrides.maxStorageSlots! : '0x0',
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : ('V1' as GQLContractParametersVersion),
+    };
+};
+
+export const aCumulativeFeeStatistics = (overrides?: Partial<GQLCumulativeFeeStatistics>): { __typename: 'CumulativeFeeStatistics' } & GQLCumulativeFeeStatistics => {
+    return {
+        __typename: 'CumulativeFeeStatistics',
+        fee_spent_cumulative: overrides && overrides.hasOwnProperty('fee_spent_cumulative') ? overrides.fee_spent_cumulative! : '0xe',
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 'incidunt',
+    };
+};
+
+export const aCumulativeFeeStatisticsConnection = (overrides?: Partial<GQLCumulativeFeeStatisticsConnection>): { __typename: 'CumulativeFeeStatisticsConnection' } & GQLCumulativeFeeStatisticsConnection => {
+    return {
+        __typename: 'CumulativeFeeStatisticsConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aCumulativeFeeStatistics()],
+    };
+};
+
+export const aCumulativeTransactionStatistics = (overrides?: Partial<GQLCumulativeTransactionStatistics>): { __typename: 'CumulativeTransactionStatistics' } & GQLCumulativeTransactionStatistics => {
+    return {
+        __typename: 'CumulativeTransactionStatistics',
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 'omnis',
+        transaction_count_cumulative: overrides && overrides.hasOwnProperty('transaction_count_cumulative') ? overrides.transaction_count_cumulative! : '0xE',
+    };
+};
+
+export const aCumulativeTransactionStatisticsConnection = (overrides?: Partial<GQLCumulativeTransactionStatisticsConnection>): { __typename: 'CumulativeTransactionStatisticsConnection' } & GQLCumulativeTransactionStatisticsConnection => {
+    return {
+        __typename: 'CumulativeTransactionStatisticsConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aCumulativeTransactionStatistics()],
     };
 };
 
@@ -881,6 +911,8 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
         contractBalance: overrides && overrides.hasOwnProperty('contractBalance') ? overrides.contractBalance! : aContractBalance(),
         contractBalances: overrides && overrides.hasOwnProperty('contractBalances') ? overrides.contractBalances! : aContractBalanceConnection(),
         contracts: overrides && overrides.hasOwnProperty('contracts') ? overrides.contracts! : aContractConnection(),
+        cumulativeFeeStatistics: overrides && overrides.hasOwnProperty('cumulativeFeeStatistics') ? overrides.cumulativeFeeStatistics! : aCumulativeFeeStatisticsConnection(),
+        cumulativeTransactionStatistics: overrides && overrides.hasOwnProperty('cumulativeTransactionStatistics') ? overrides.cumulativeTransactionStatistics! : aCumulativeTransactionStatisticsConnection(),
         estimateGasPrice: overrides && overrides.hasOwnProperty('estimateGasPrice') ? overrides.estimateGasPrice! : anEstimateGasPrice(),
         estimatePredicates: overrides && overrides.hasOwnProperty('estimatePredicates') ? overrides.estimatePredicates! : aTransaction(),
         getBlocksDashboard: overrides && overrides.hasOwnProperty('getBlocksDashboard') ? overrides.getBlocksDashboard! : aBlocksDashboardConnection(),
@@ -899,9 +931,11 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
         search: overrides && overrides.hasOwnProperty('search') ? overrides.search! : aSearchResult(),
         tps: overrides && overrides.hasOwnProperty('tps') ? overrides.tps! : aTpsConnection(),
         transaction: overrides && overrides.hasOwnProperty('transaction') ? overrides.transaction! : aTransaction(),
+        transactionFeeStatistics: overrides && overrides.hasOwnProperty('transactionFeeStatistics') ? overrides.transactionFeeStatistics! : aTransactionFeeStatisticsConnection(),
         transactions: overrides && overrides.hasOwnProperty('transactions') ? overrides.transactions! : aTransactionConnection(),
         transactionsByBlockId: overrides && overrides.hasOwnProperty('transactionsByBlockId') ? overrides.transactionsByBlockId! : aTransactionConnection(),
         transactionsByOwner: overrides && overrides.hasOwnProperty('transactionsByOwner') ? overrides.transactionsByOwner! : aTransactionConnection(),
+        transactionsStatistics: overrides && overrides.hasOwnProperty('transactionsStatistics') ? overrides.transactionsStatistics! : aTransactionStatisticsConnection(),
     };
 };
 
@@ -1139,11 +1173,42 @@ export const aTransactionEdge = (overrides?: Partial<GQLTransactionEdge>): { __t
     };
 };
 
+export const aTransactionFeeStatistics = (overrides?: Partial<GQLTransactionFeeStatistics>): { __typename: 'TransactionFeeStatistics' } & GQLTransactionFeeStatistics => {
+    return {
+        __typename: 'TransactionFeeStatistics',
+        fee_spent: overrides && overrides.hasOwnProperty('fee_spent') ? overrides.fee_spent! : '0x8',
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 'optio',
+        tx_count: overrides && overrides.hasOwnProperty('tx_count') ? overrides.tx_count! : '0x8',
+    };
+};
+
+export const aTransactionFeeStatisticsConnection = (overrides?: Partial<GQLTransactionFeeStatisticsConnection>): { __typename: 'TransactionFeeStatisticsConnection' } & GQLTransactionFeeStatisticsConnection => {
+    return {
+        __typename: 'TransactionFeeStatisticsConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aTransactionFeeStatistics()],
+    };
+};
+
 export const aTransactionGasCosts = (overrides?: Partial<GQLTransactionGasCosts>): { __typename: 'TransactionGasCosts' } & GQLTransactionGasCosts => {
     return {
         __typename: 'TransactionGasCosts',
         fee: overrides && overrides.hasOwnProperty('fee') ? overrides.fee! : '0x8',
         gasUsed: overrides && overrides.hasOwnProperty('gasUsed') ? overrides.gasUsed! : '0xf',
+    };
+};
+
+export const aTransactionStatistics = (overrides?: Partial<GQLTransactionStatistics>): { __typename: 'TransactionStatistics' } & GQLTransactionStatistics => {
+    return {
+        __typename: 'TransactionStatistics',
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 'sit',
+        tx_count: overrides && overrides.hasOwnProperty('tx_count') ? overrides.tx_count! : '0xB',
+    };
+};
+
+export const aTransactionStatisticsConnection = (overrides?: Partial<GQLTransactionStatisticsConnection>): { __typename: 'TransactionStatisticsConnection' } & GQLTransactionStatisticsConnection => {
+    return {
+        __typename: 'TransactionStatisticsConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aTransactionStatistics()],
     };
 };
 

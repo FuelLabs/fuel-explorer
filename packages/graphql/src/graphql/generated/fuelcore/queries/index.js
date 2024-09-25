@@ -125,3 +125,19 @@ module.exports.blockRewardStatistics = fs.readFileSync(
   path.join(__dirname, 'blockRewardStatistics.graphql'),
   'utf8',
 );
+module.exports.transactionFeeStatistics = fs.readFileSync(
+  path.join(__dirname, 'transactionFeeStatistics.graphql'),
+  'utf8',
+);
+module.exports.transactionsStatistics = fs.readFileSync(
+  path.join(__dirname, 'transactionsStatistics.graphql'),
+  'utf8',
+);
+module.exports.cumulativeFeeStatistics = fs.readFileSync(
+  path.join(__dirname, 'cumulativeFeeStatistics.graphql'),
+  'utf8',
+);
+module.exports.cumulativeTransactionStatistics = fs.readFileSync(
+  path.join(__dirname, 'cumulativeTransactionStatistics.graphql'),
+  'utf8',
+);
