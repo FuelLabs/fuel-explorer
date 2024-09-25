@@ -4,6 +4,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -15,13 +16,27 @@ export interface TPSProps {
 
 export const TPS = (props: TPSProps) => {
   const blocks = props.blocks;
+
   const chartData = blocks?.map((block: any) => ({
     time: dayjs(Number(block.time)).format('HH:mm'),
     value: block.value / 3600,
   }));
+
   const averageTPS =
     blocks.reduce((sum: any, block: any) => sum + Number(block.value), 0) /
     blocks.length;
+
+  const highestValue = Math.max(
+    ...chartData.map((data: any) => Number(data.value)),
+  );
+
+  const getTicks = () => {
+    const ticks: string[] = [];
+    for (let i = 0; i < chartData.length; i += 6) {
+      ticks.push(chartData[i].time);
+    }
+    return ticks;
+  };
 
   return (
     <RoundedContainer className="py-4 px-5 h-full space-y-8">
@@ -31,7 +46,7 @@ export const TPS = (props: TPSProps) => {
             TPS
           </h3>
           <span className="text-[13px] leading-[20px] text-muted block">
-            24h
+            24
           </span>
         </div>
         <HStack className="items-baseline" gap={'0'}>
@@ -54,15 +69,20 @@ export const TPS = (props: TPSProps) => {
             />
             <XAxis
               dataKey="time"
+              ticks={getTicks()}
               tick={{ className: 'fill-heading', fontSize: '12px' }}
+              interval={0}
+              tickFormatter={(value) => value}
             />
             <YAxis tick={{ className: 'fill-heading', fontSize: '12px' }} />
-            <Bar
-              dataKey="value"
-              className="dark:fill-white fill-[#eee]"
-              radius={[10, 10, 0, 0]}
-              barSize={5}
-            />
+            <Bar dataKey="value" radius={[10, 10, 10, 10]} barSize={5}>
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={entry.value === highestValue ? '#00F58C' : '#eee'}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

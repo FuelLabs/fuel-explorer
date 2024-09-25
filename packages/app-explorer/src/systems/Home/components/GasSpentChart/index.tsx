@@ -83,8 +83,11 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
             ETH
           </p>
         </HStack>
-        <ResponsiveContainer width="100%" height={130}>
-          <LineChart data={chartData} margin={{ top: 10, right: 0, bottom: 0 }}>
+        <ResponsiveContainer width="100%" height={170}>
+          <LineChart
+            data={chartData}
+            margin={{ top: 10, left: -34, right: 0, bottom: 0 }}
+          >
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="#333"
@@ -129,10 +132,10 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
           <div className="w-[6px] h-[6px] bg-[#0090FFE0]/85 rounded-full gap-[8px]" />
           <div className="text-[12px] leading-[16px] text-heading">ETH</div>
         </div> */}
-        <div className="flex items-center gap-[8px]">
+        {/* <div className="flex items-center gap-[8px]">
           <div className="w-[6px] h-[6px] bg-brand rounded-full gap-[8px]" />
           <div className="text-[12px] leading-[16px] text-heading">FUEL</div>
-        </div>
+        </div> */}
       </div>
     </RoundedContainer>
   );

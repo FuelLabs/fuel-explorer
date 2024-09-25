@@ -1,4 +1,4 @@
-import { HStack, RoundedContainer } from '@fuels/ui';
+import { HStack, RoundedContainer, VStack } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 import { Block } from '../interface/blocks.interface';
@@ -32,29 +32,31 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
         </div>
 
         <div className="space-y-[4px]">
-          <HStack gap="px" className="items-center">
-            <svg
-              width="11"
-              height="8"
-              viewBox="0 0 11 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          <VStack gap={'0'}>
+            <HStack gap={'1'} className="items-center">
+              <svg
+                width="11"
+                height="8"
+                viewBox="0 0 11 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0.875 4.25L3.5 6.875L9.5 0.875"
+                  stroke="#00F58C"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p className={classes.paragraphAccent()}>Settled</p>
+            </HStack>
+            <p
+              className={`${classes.paragraph()} overflow-hidden text-ellipsis whitespace-nowrap`}
             >
-              <path
-                d="M0.875 4.25L3.5 6.875L9.5 0.875"
-                stroke="#00F58C"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <p className={classes.paragraphAccent()}>Settled</p>
-          </HStack>
-          <p
-            className={`${classes.paragraph()} overflow-hidden text-ellipsis whitespace-nowrap`}
-          >
-            {fromNow(block.timeStamp)}
-          </p>
+              {fromNow(block.timeStamp)}
+            </p>
+          </VStack>
         </div>
       </HStack>
     </RoundedContainer>
@@ -73,7 +75,6 @@ const styles = tv({
       'text-muted',
       'text-[12px]',
       'p-0',
-      'overflow-auto',
       'whitespace-nowrap',
       'text-ellipsis',
     ],

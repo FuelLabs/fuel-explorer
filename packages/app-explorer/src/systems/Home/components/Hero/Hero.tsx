@@ -26,9 +26,13 @@ export function Hero() {
       const result = await getTPS();
       const dashboard = await getBlocksDashboard();
       // setTPSData(result.tps);
+
       setTpsData(result);
+
       setBlocksData(dashboard);
-    } catch (_e) {}
+    } catch (e) {
+      console.error('The error while fetching TPS is', e);
+    }
   };
   useEffect(() => {
     const interval = setInterval(() => {
@@ -75,7 +79,9 @@ export function Hero() {
 
   const elementsWithImage = projectJson.filter((item) => item.image);
 
-  const top3Projects = elementsWithImage.slice(1, 4);
+  const top3Projects = elementsWithImage
+    .filter((element) => element.isFeatured)
+    .slice(0, 3);
 
   return (
     <Theme appearance="light">
