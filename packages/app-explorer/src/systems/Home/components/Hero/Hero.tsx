@@ -2,6 +2,7 @@
 
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 
+import { LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import projectJson from '../../../../../../app-portal/src/systems/Ecosystem/data/projects.json';
@@ -19,17 +20,26 @@ import { getTPS } from './actions/get-tps';
 
 export function Hero() {
   const classes = styles();
+  const [isLoading, setIsLoading] = useState(true);
   const [tpsData, setTpsData] = useState<any>(null);
   const [blocksData, setBlocksData] = useState<any>(null);
+  const [isFirstFetch, setIsFirstFetch] = useState(true);
+
   const getTPSData = async () => {
     try {
       const result = await getTPS();
       const dashboard = await getBlocksDashboard();
-      // setTPSData(result.tps);
+
       setTpsData(result);
       setBlocksData(dashboard);
+
+      if (isFirstFetch) {
+        setIsLoading(false); // Set loading to false only after first fetch
+        setIsFirstFetch(false); // Mark that the first fetch is done
+      }
     } catch (_e) {}
   };
+
   useEffect(() => {
     const interval = setInterval(() => {
       getTPSData();
@@ -94,46 +104,74 @@ export function Hero() {
 
             <Box className={classes.searchWrapper()}>
               <div className="row-span-2 col-span-4">
-                <DailyTransaction blocks={dailyTsxData} />
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  regularEl={<DailyTransaction blocks={dailyTsxData} />}
+                />
               </div>
               <div className="row-span-2 col-span-3">
-                <TotalDapps
-                  active={activeProjects}
-                  total={totalProjects}
-                  featured={top3Projects}
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  regularEl={
+                    <TotalDapps
+                      active={activeProjects}
+                      total={totalProjects}
+                      featured={top3Projects}
+                    />
+                  }
                 />
               </div>
               <div className="row-span-1 col-span-5">
-                <LatestBlock
-                  blockNo={
-                    blocksData?.getBlocksDashboard.nodes[0].blockNo
-                      ? blocksData.getBlocksDashboard.nodes[0].blockNo
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                      : ''
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  regularEl={
+                    <LatestBlock
+                      blockNo={
+                        blocksData?.getBlocksDashboard.nodes[0].blockNo
+                          ? blocksData.getBlocksDashboard.nodes[0].blockNo
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                          : ''
+                      }
+                      gasUsed={
+                        blocksData?.getBlocksDashboard.nodes[0].gasUsed ?? ''
+                      }
+                      producer={
+                        blocksData?.getBlocksDashboard.nodes[0].producer ?? ''
+                      }
+                      timeStamp={
+                        blocksData?.getBlocksDashboard.nodes[0].timestamp ?? ''
+                      }
+                      // tps={tpsData?.nodes[0].tps ?? ''}
+                    />
                   }
-                  gasUsed={
-                    blocksData?.getBlocksDashboard.nodes[0].gasUsed ?? ''
-                  }
-                  producer={
-                    blocksData?.getBlocksDashboard.nodes[0].producer ?? ''
-                  }
-                  timeStamp={
-                    blocksData?.getBlocksDashboard.nodes[0].timestamp ?? ''
-                  }
-                  // tps={tpsData?.nodes[0].tps ?? ''}
                 />
               </div>
               <div className="row-span-3 col-span-5 ">
-                <DataTable blocks={blocks.slice(0, 5)} />
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  regularEl={<DataTable blocks={blocks.slice(0, 5)} />}
+                />
               </div>
 
               <div className="row-span-2 col-span-4">
-                <TPS blocks={tpsTsxData} />
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  regularEl={<TPS blocks={tpsTsxData} />}
+                />
                 {/* <TPSChart /> */}
               </div>
               <div className="row-span-2 col-span-3">
-                <GasSpentChart blocks={dailyTsxData} />
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  regularEl={<GasSpentChart blocks={dailyTsxData} />}
+                />
               </div>
             </Box>
           </VStack>
