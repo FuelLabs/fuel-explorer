@@ -61,6 +61,11 @@ test.describe('Bridge', () => {
     await page.reload();
   });
   test('e2e', async ({ page, context }) => {
+    function log(message: string) {
+      test.info().annotations.push({ type: 'info', description: message });
+    }
+
+    log('Starting the test');
     await test.step('Connect to Fuel', async () => {
       await connectToFuel(page, fuelWalletTestHelper, [
         'Account 2',
@@ -68,6 +73,7 @@ test.describe('Bridge', () => {
       ]);
     });
 
+    log('Connect to metamask');
     await test.step('Connect to metamask', async () => {
       await connectToMetamask(page);
     });
@@ -92,6 +98,7 @@ test.describe('Bridge', () => {
     });
     const baseAssetId = fuelWallet.provider.getBaseAssetId();
 
+    log('Fuel wallet should be connected after refresh');
     await test.step('Fuel wallet should be connected after refresh', async () => {
       console.log('asd 1');
       await goToBridgePage(page);
@@ -126,6 +133,7 @@ test.describe('Bridge', () => {
       console.log('asd 6');
     });
 
+    log('Deposit ETH to Fuel');
     await test.step('Deposit ETH to Fuel', async () => {
       const preDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevDepositBalanceEth = await client.getBalance({
@@ -201,6 +209,7 @@ test.describe('Bridge', () => {
       });
     });
 
+    log('Withdraw ETH from Fuel');
     await test.step('Withdraw ETH from Fuel', async () => {
       const preWithdrawBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevWithdrawBalanceEth = await client.getBalance({
@@ -312,6 +321,7 @@ test.describe('Bridge', () => {
       });
     });
 
+    log('Faucet TKN');
     await test.step('Faucet TKN', async () => {
       const preFaucetBalance = (await erc20Contract.read.balanceOf([
         account.address,
@@ -359,6 +369,7 @@ test.describe('Bridge', () => {
       );
     });
 
+    log('Deposit TKN to Fuel');
     await test.step('Deposit TKN to Fuel', async () => {
       await clickDepositTab(page);
       const preDepositBalanceFuel =
@@ -470,6 +481,7 @@ test.describe('Bridge', () => {
       });
     });
 
+    log('Withdraw TKN from Fuel to ETH');
     await test.step('Withdraw TKN from Fuel to ETH', async () => {
       const preWithdrawBalanceFuel =
         await fuelWallet.getBalance(FUEL_TokenAsset);
@@ -586,6 +598,7 @@ test.describe('Bridge', () => {
       });
     });
 
+    log('Transaction list should show correct after refresh the page');
     await test.step('Transaction list should show correct after refresh the page', async () => {
       await page.goto('/bridge');
       await goToTransactionsPage(page);
