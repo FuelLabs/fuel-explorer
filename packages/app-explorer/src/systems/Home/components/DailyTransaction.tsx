@@ -28,9 +28,8 @@ interface DailyTransactionProps {
   blocks: any;
 }
 const DailyTransaction = (blocks: DailyTransactionProps) => {
-  console.log(blocks.blocks);
   const chartData = blocks.blocks?.map((block: any) => ({
-    time: dayjs(block.timeStamp).format('HH:mm'),
+    time: dayjs(Number(block.time)).format('HH:mm'),
     value: block.value,
   }));
 

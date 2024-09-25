@@ -15,7 +15,7 @@ export interface TPSProps {
 export const TPS = (props: TPSProps) => {
   const blocks = props.blocks;
   const chartData = blocks?.map((block: any) => ({
-    time: dayjs(block.time).format('HH:mm'),
+    time: dayjs(Number(block.time)).format('HH:mm'),
     value: block.value / 3600,
   }));
   const averageTPS =
