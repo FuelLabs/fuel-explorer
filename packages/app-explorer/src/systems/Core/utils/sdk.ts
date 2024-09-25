@@ -1,9 +1,8 @@
 import { getSdk } from '@fuel-explorer/graphql/sdk';
 import { GraphQLClient } from 'graphql-request';
 
-const FUEL_INDEXER_API_KEY = 'nZ9GZayrd8';
-const FUEL_INDEXER_API =
-  'https://explorer-indexer-testnet.fuel.network/graphql';
+const FUEL_INDEXER_API_KEY = process.env.FUEL_INDEXER_API_KEY;
+const FUEL_INDEXER_API = process.env.FUEL_INDEXER_API;
 const FUEL_INDEXER_MAINNET_KEY = process.env.FUEL_INDEXER_MAINNET_KEY;
 
 if (!FUEL_INDEXER_API) {
