@@ -9,6 +9,7 @@ export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } 
         icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'explicabo',
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'dolorem',
         networks: overrides && overrides.hasOwnProperty('networks') ? overrides.networks! : [anAssetNetworkEthereum()],
+        subId: overrides && overrides.hasOwnProperty('subId') ? overrides.subId! : 'omnis',
         symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'quaerat',
         verified: overrides && overrides.hasOwnProperty('verified') ? overrides.verified! : false,
     };

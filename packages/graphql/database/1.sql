@@ -2,6 +2,7 @@ create table indexer.assets_contracts (
 	asset_id text not null,
 	contract_id text not null,
 	transaction_id text not null,
+	sub_id text,
 	name text,
 	symbol text,
 	decimals integer,
