@@ -41,6 +41,7 @@ test.describe('Bridge', () => {
   let fuelWalletTestHelper: FuelWalletTestHelper;
 
   test.beforeEach(async ({ context, extensionId, page }) => {
+    console.log('asd 1');
     const walletSettedUp = await setupFuelWallet({
       context,
       extensionId,
@@ -49,6 +50,7 @@ test.describe('Bridge', () => {
     fuelWallet = walletSettedUp.fuelWallet;
     fuelWalletTestHelper = walletSettedUp.fuelWalletTestHelper;
     account = walletSettedUp.account;
+    console.log('asd 2');
 
     client = createPublicClient({
       chain: foundry,
@@ -56,17 +58,25 @@ test.describe('Bridge', () => {
     });
 
     await page.bringToFront();
+    console.log('asd 3');
     await page.goto('/bridge');
+    await page.waitForTimeout(3000);
+    console.log('asd 4');
+    await page.reload();
   });
   test('e2e', async ({ page, context }) => {
+    console.log('asd 5');
     await test.step('Connect to Fuel', async () => {
+      console.log('asd 6');
       await connectToFuel(page, fuelWalletTestHelper, [
         'Account 2',
         'Account 4',
       ]);
+      console.log('asd 7');
     });
 
     await test.step('Connect to metamask', async () => {
+      console.log('asd 8');
       await connectToMetamask(page);
     });
 
