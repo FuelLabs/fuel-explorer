@@ -226,6 +226,8 @@ type Query {
   tps: TPSConnection!
   getBlocksDashboard: BlocksDashboardConnection!
   asset (assetId: String!): Asset
+  newBlockStatistics(timeFilter: String): NewBlockStatisticsConnection!
+  blockRewardStatistics(timeFilter: String): blockRewardStatisticsConnection!
 }
 
 type TPS {
@@ -278,4 +280,22 @@ type AssetNetworkEthereum {
 	type: String
 	decimals: U64
 	address: String
+}
+
+type NewBlockStatistic {
+  new_blocks: U64!
+  time: String!
+}
+
+type NewBlockStatisticsConnection {
+  nodes: [NewBlockStatistic!]!
+}
+
+type BlockRewardStatistics {
+  block_reward: U64!
+  time: String!
+}
+
+type blockRewardStatisticsConnection {
+  nodes: [BlockRewardStatistics!]!
 }

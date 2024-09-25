@@ -1,0 +1,8 @@
+query blockRewardStatistics($timeFilter: String){
+    blockRewardStatistics(timeFilter: $timeFilter){
+        nodes{
+            block_reward
+            time
+        }
+    }
+}

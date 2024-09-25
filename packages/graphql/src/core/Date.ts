@@ -13,4 +13,16 @@ export class DateHelper {
   static dateToTai64(date: Date) {
     return TAI64.fromUnix(Math.floor(date.getTime() / 1000)).toString(10);
   }
+
+  static addHours(date: string | Date, hours: number): string {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const newDate = new Date(dateObj.getTime() + hours * 60 * 60 * 1000);
+    return newDate.toISOString();
+  }
+
+  static floorToHour(date: string | Date): string {
+    const flooredDate = typeof date === 'string' ? new Date(date) : date;
+    flooredDate.setMinutes(0, 0, 0); // Set minutes, seconds, and milliseconds to 0
+    return flooredDate.toISOString();
+  }
 }

@@ -47,3 +47,33 @@ export function createIntervals(
 
   return intervals;
 }
+
+export function getTimeInterval(timeFilter: string): number | null {
+  let _interval;
+  switch (timeFilter) {
+    case '1hr':
+      _interval = 1;
+      break;
+    case '12hr':
+      _interval = 12;
+      break;
+    case '1day':
+      _interval = 24;
+      break;
+    case '7days':
+      _interval = 24 * 7;
+      break;
+    case '14days':
+      _interval = 24 * 14;
+      break;
+    case '30days':
+      _interval = 24 * 30;
+      break;
+    case '90days':
+      _interval = 24 * 90;
+      break;
+    default:
+      _interval = null;
+  }
+  return _interval;
+}
