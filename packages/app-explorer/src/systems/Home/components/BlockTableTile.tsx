@@ -15,7 +15,7 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
       <HStack align={'center'} className="justify-between">
         <div className="space-y-[4px]">
           <p className={classes.paragraphStrong()}>#{block.blockNo}</p>
-          <p className={classes.paragraph()}>{block.gasUsed / 10 ** 9} ETH</p>
+          <p className={classes.paragraph()}>{+block.gasUsed / 10 ** 9} ETH</p>
         </div>
         <div className="flex items-center gap-[4px] overflow-hidden">
           {/* <img

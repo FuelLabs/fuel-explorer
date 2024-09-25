@@ -26,14 +26,9 @@ export function Hero() {
       const result = await getTPS();
       const dashboard = await getBlocksDashboard();
       // setTPSData(result.tps);
-      console.log('Here is the tps data', result);
       setTpsData(result);
-
-      console.log('Here is the dashboard data', dashboard);
       setBlocksData(dashboard);
-    } catch (e) {
-      console.error('The error while fetching TPS is', e);
-    }
+    } catch (_e) {}
   };
   useEffect(() => {
     const interval = setInterval(() => {
