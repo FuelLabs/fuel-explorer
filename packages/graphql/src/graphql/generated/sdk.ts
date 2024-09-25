@@ -48,6 +48,37 @@ export type Scalars = {
   UtxoId: { input: string; output: string };
 };
 
+export type GQLAsset = {
+  __typename: 'Asset';
+  assetId?: Maybe<Scalars['String']['output']>;
+  contractId?: Maybe<Scalars['String']['output']>;
+  decimals?: Maybe<Scalars['U64']['output']>;
+  icon?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  networks?: Maybe<Array<Maybe<GQLAssetNetwork>>>;
+  subId?: Maybe<Scalars['String']['output']>;
+  symbol?: Maybe<Scalars['String']['output']>;
+  verified?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type GQLAssetNetwork = GQLAssetNetworkEthereum | GQLAssetNetworkFuel;
+
+export type GQLAssetNetworkEthereum = {
+  __typename: 'AssetNetworkEthereum';
+  address?: Maybe<Scalars['String']['output']>;
+  decimals?: Maybe<Scalars['U64']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type GQLAssetNetworkFuel = {
+  __typename: 'AssetNetworkFuel';
+  assetId?: Maybe<Scalars['String']['output']>;
+  chainId?: Maybe<Scalars['U64']['output']>;
+  contractId?: Maybe<Scalars['String']['output']>;
+  decimals?: Maybe<Scalars['U64']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
 export type GQLBalance = {
   __typename: 'Balance';
   amount: Scalars['U64']['output'];
@@ -952,6 +983,7 @@ export type GQLProgramState = {
 
 export type GQLQuery = {
   __typename: 'Query';
+  asset?: Maybe<GQLAsset>;
   balance: GQLBalance;
   balances: GQLBalanceConnection;
   block?: Maybe<GQLBlock>;
@@ -1002,6 +1034,10 @@ export type GQLQuery = {
   transactions: GQLTransactionConnection;
   transactionsByBlockId: GQLTransactionConnection;
   transactionsByOwner: GQLTransactionConnection;
+};
+
+export type GQLQueryAssetArgs = {
+  assetId: Scalars['String']['input'];
 };
 
 export type GQLQueryBalanceArgs = {
@@ -1459,6 +1495,25 @@ export type GQLVariableOutput = {
   amount: Scalars['U64']['output'];
   assetId: Scalars['AssetId']['output'];
   to: Scalars['Address']['output'];
+};
+
+export type GQLAssetQueryVariables = Exact<{
+  assetId: Scalars['String']['input'];
+}>;
+
+export type GQLAssetQuery = {
+  __typename: 'Query';
+  asset?: {
+    __typename: 'Asset';
+    assetId?: string | null;
+    contractId?: string | null;
+    subId?: string | null;
+    name?: string | null;
+    symbol?: string | null;
+    decimals?: string | null;
+    icon?: string | null;
+    verified?: boolean | null;
+  } | null;
 };
 
 export type GQLBalanceItemFragment = {
@@ -4971,6 +5026,20 @@ ${TransactionReceiptFragmentDoc}
 ${TransactionStatusFragmentDoc}
 ${TransactionInputFragmentDoc}
 ${TransactionOutputFragmentDoc}`;
+export const AssetDocument = gql`
+    query asset($assetId: String!) {
+  asset(assetId: $assetId) {
+    assetId
+    contractId
+    subId
+    name
+    symbol
+    decimals
+    icon
+    verified
+  }
+}
+    `;
 export const BalancesDocument = gql`
     query balances($after: String, $before: String, $filter: BalanceFilterInput!, $first: Int, $last: Int) {
   balances(
@@ -6464,6 +6533,7 @@ const defaultWrapper: SdkFunctionWrapper = (
   _operationType,
   _variables,
 ) => action();
+const AssetDocumentString = print(AssetDocument);
 const BalancesDocumentString = print(BalancesDocument);
 const BlockDocumentString = print(BlockDocument);
 const BlocksDocumentString = print(BlocksDocument);
@@ -6486,6 +6556,27 @@ export function getSdk(
   withWrapper: SdkFunctionWrapper = defaultWrapper,
 ) {
   return {
+    asset(
+      variables: GQLAssetQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLAssetQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLAssetQuery>(AssetDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'asset',
+        'query',
+        variables,
+      );
+    },
     balances(
       variables: GQLBalancesQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
