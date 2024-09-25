@@ -135,6 +135,7 @@ test.describe('Bridge', () => {
 
     log('Deposit ETH to Fuel');
     await test.step('Deposit ETH to Fuel', async () => {
+      console.log('asd 7');
       const preDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevDepositBalanceEth = await client.getBalance({
         address: account.address,
@@ -211,6 +212,7 @@ test.describe('Bridge', () => {
 
     log('Withdraw ETH from Fuel');
     await test.step('Withdraw ETH from Fuel', async () => {
+      console.log('asd 8');
       const preWithdrawBalanceFuel = await fuelWallet.getBalance(baseAssetId);
       const prevWithdrawBalanceEth = await client.getBalance({
         address: account.address,
@@ -323,6 +325,7 @@ test.describe('Bridge', () => {
 
     log('Faucet TKN');
     await test.step('Faucet TKN', async () => {
+      console.log('asd 9');
       const preFaucetBalance = (await erc20Contract.read.balanceOf([
         account.address,
       ])) as BigNumberish;
@@ -371,6 +374,7 @@ test.describe('Bridge', () => {
 
     log('Deposit TKN to Fuel');
     await test.step('Deposit TKN to Fuel', async () => {
+      console.log('asd 10');
       await clickDepositTab(page);
       const preDepositBalanceFuel =
         await fuelWallet.getBalance(FUEL_TokenAsset);
@@ -483,6 +487,7 @@ test.describe('Bridge', () => {
 
     log('Withdraw TKN from Fuel to ETH');
     await test.step('Withdraw TKN from Fuel to ETH', async () => {
+      console.log('asd 11');
       const preWithdrawBalanceFuel =
         await fuelWallet.getBalance(FUEL_TokenAsset);
       const preWithdrawBalanceEth = await erc20Contract.read.balanceOf([
@@ -600,6 +605,7 @@ test.describe('Bridge', () => {
 
     log('Transaction list should show correct after refresh the page');
     await test.step('Transaction list should show correct after refresh the page', async () => {
+      console.log('asd 12');
       await page.goto('/bridge');
       await goToTransactionsPage(page);
 
@@ -610,6 +616,7 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Check if transaction list reacts correctly to fuel wallet changes', async () => {
+      console.log('asd 13');
       await goToTransactionsPage(page);
 
       await test.step('Change to account 2 should show empty feedback', async () => {
@@ -645,6 +652,7 @@ test.describe('Bridge', () => {
     });
 
     await test.step('Deposit TKN before Fuel wallet has ETH', async () => {
+      console.log('asd 14');
       await fuelWalletTestHelper.switchAccount('Account 4');
       await goToBridgePage(page);
       await clickDepositTab(page);
