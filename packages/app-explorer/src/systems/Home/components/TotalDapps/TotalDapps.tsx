@@ -1,4 +1,5 @@
 import { RoundedContainer } from '@fuels/ui';
+import Link from 'next/link';
 import React from 'react';
 
 interface ValidatorStatusProps {
@@ -38,9 +39,12 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
         <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
           Fuel Dapps
         </h3>
-        <span className="text-[13px] leading-[20px] text-muted block">
+        <Link
+          className="text-[13px] leading-[20px] text-muted block"
+          href="https://app.fuel.network/ecosystem"
+        >
           View All
-        </span>
+        </Link>
       </div>
       <h2 className="text-[32px] leading-[36px] text-heading font-bold">
         {total}
@@ -62,7 +66,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
           </span>
         </div>
 
-        <hr className="my-2 bg-[rgb(87,87,87)]" />
+        <div className="my-2 h-[1px] bg-[rgb(87,87,87)]" />
 
         <span className="text-[12px] leading-[20px] text-muted block font-bold">
           Featured Dapps
@@ -70,14 +74,14 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 
         {featured.map((feature: any) => {
           return (
-            <div className="flex items-center gap-5 mt-3">
+            <Link className="flex items-center gap-5 mt-3" href={feature.url}>
               <img
                 src={`https://app.fuel.network/ecosystem/images/${feature.image}.jpeg`}
                 alt=""
                 className="w-5"
               />
               <p className="text-[13px] leading-[20px] block">{feature.name}</p>
-            </div>
+            </Link>
           );
         })}
       </div>
