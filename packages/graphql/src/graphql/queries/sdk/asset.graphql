@@ -2,6 +2,7 @@ query asset($assetId: String!){
     asset (assetId: $assetId) {
 		assetId
 		contractId
+		subId
 		name
 		symbol
 		decimals
