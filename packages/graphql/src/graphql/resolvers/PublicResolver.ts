@@ -1,5 +1,6 @@
 import { Provider } from 'fuels';
 import { env } from '~/config';
+import VerifiedAssets from '~/infra/cache/VerifiedAssets';
 import AssetDAO from '~/infra/dao/AssetDAO';
 
 type Params = {
@@ -20,10 +21,8 @@ export class PublicResolver {
     const assetDAO = new AssetDAO();
     const provider = await Provider.create(env.get('FUEL_PROVIDER'));
     const chainId = provider.getChainId();
-    const response = await fetch(
-      'https://verified-assets.fuel.network/assets.json',
-    );
-    const verifiedAssets = await response.json();
+    const nonVerifiedAsset = await assetDAO.getByAssetId(_params.assetId);
+    const verifiedAssets = await VerifiedAssets.getInstance().fetch();
     for (const verifiedAsset of verifiedAssets) {
       for (const network of verifiedAsset.networks) {
         if (network.type === 'fuel') {
@@ -43,6 +42,7 @@ export class PublicResolver {
           const asset = Object.assign(verifiedAsset, {
             assetId: _params.assetId,
             contractId: network.contractId,
+            subId: nonVerifiedAsset?.subId,
             decimals: network.decimals,
             verified: true,
           });
@@ -50,9 +50,8 @@ export class PublicResolver {
         }
       }
     }
-    const asset = await assetDAO.getByAssetId(_params.assetId);
-    if (!asset) return;
-    return Object.assign(asset, {
+    if (!nonVerifiedAsset) return;
+    return Object.assign(nonVerifiedAsset, {
       verified: false,
     });
   }
