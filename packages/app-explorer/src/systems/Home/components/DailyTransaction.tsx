@@ -49,7 +49,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
           </span>
         </div>
         <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-          {cumilativeTsx}
+          {cumilativeTsx.toLocaleString()}
         </h2>
 
         <ResponsiveContainer width="100%" height={160}>
