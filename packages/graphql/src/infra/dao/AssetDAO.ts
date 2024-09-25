@@ -20,6 +20,7 @@ export default class BlockDAO {
     return {
       assetId: assetData.asset_id,
       contractId: assetData.contract_id,
+      subId: assetData.sub_id,
       name: assetData.name,
       symbol: assetData.symbol,
       decimals: assetData.decimals,

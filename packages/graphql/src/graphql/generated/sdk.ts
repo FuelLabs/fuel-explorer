@@ -43,6 +43,7 @@ export type GQLAsset = {
   icon?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   networks?: Maybe<Array<Maybe<GQLAssetNetwork>>>;
+  subId?: Maybe<Scalars['String']['output']>;
   symbol?: Maybe<Scalars['String']['output']>;
   verified?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -1508,7 +1509,7 @@ export type GQLAssetQueryVariables = Exact<{
 }>;
 
 
-export type GQLAssetQuery = { __typename: 'Query', asset?: { __typename: 'Asset', assetId?: string | null, contractId?: string | null, name?: string | null, symbol?: string | null, decimals?: string | null, icon?: string | null, verified?: boolean | null } | null };
+export type GQLAssetQuery = { __typename: 'Query', asset?: { __typename: 'Asset', assetId?: string | null, contractId?: string | null, subId?: string | null, name?: string | null, symbol?: string | null, decimals?: string | null, icon?: string | null, verified?: boolean | null } | null };
 
 export type GQLBalanceItemFragment = { __typename: 'Balance', amount: string, assetId: string, owner: string, utxos?: Array<{ __typename: 'UtxoItem', amount: string, blockCreated?: string | null, txCreatedIdx?: string | null, utxoId: string } | null> | null };
 
@@ -2109,6 +2110,7 @@ export const AssetDocument = gql`
   asset(assetId: $assetId) {
     assetId
     contractId
+    subId
     name
     symbol
     decimals

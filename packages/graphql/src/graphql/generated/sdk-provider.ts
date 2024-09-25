@@ -43,6 +43,7 @@ export type GQLAsset = {
   icon?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   networks?: Maybe<Array<Maybe<GQLAssetNetwork>>>;
+  subId?: Maybe<Scalars['String']['output']>;
   symbol?: Maybe<Scalars['String']['output']>;
   verified?: Maybe<Scalars['Boolean']['output']>;
 };

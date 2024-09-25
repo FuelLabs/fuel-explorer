@@ -253,6 +253,7 @@ type BlocksDashboardConnection {
 type Asset {
 	assetId: String
 	contractId: String
+	subId: String
 	name: String
 	symbol: String
 	decimals: U64
