@@ -1,4 +1,4 @@
-import { RoundedContainer } from '@fuels/ui';
+import { HStack, RoundedContainer } from '@fuels/ui';
 import {
   Bar,
   BarChart,
@@ -38,9 +38,12 @@ export const TPS = (props: TPSProps) => {
             24h
           </span>
         </div>
-        <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-          {`${averageTPS.toFixed(0)}K`}
-        </h2>
+        <HStack className="items-baseline" gap={'0'}>
+          <h2 className="text-[32px] leading-[36px] text-heading font-bold">
+            {`${(averageTPS / 1000).toFixed(0)}K`}
+          </h2>
+          <div className="text-[12px] leading-[12px] text-heading ">TXs</div>
+        </HStack>
 
         <ResponsiveContainer width="100%" height={160}>
           <BarChart

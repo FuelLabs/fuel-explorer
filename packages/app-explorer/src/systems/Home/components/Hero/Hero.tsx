@@ -36,12 +36,10 @@ export function Hero() {
     }
   };
   useEffect(() => {
-    // Function to call getTPSData every 10 seconds
     const interval = setInterval(() => {
-      getTPSData(); // Call the function
-    }, 1000); // 10000 ms = 10 seconds
+      getTPSData();
+    }, 1000);
 
-    // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
