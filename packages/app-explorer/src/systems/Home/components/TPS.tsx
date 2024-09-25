@@ -3,6 +3,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -106,7 +107,7 @@ const TPSChart = () => {
     return () => clearInterval(interval);
   }, [data]);
 
-  const maxTps = Math.max(...data.map((item) => item.tps)); // Find the max TPS value
+  const _maxTps = Math.max(...data.map((item) => item.tps)); // Find the max TPS value
 
   return (
     <div
@@ -146,11 +147,14 @@ const TPSChart = () => {
             formatter={(value: number) => [`${value} TXs`, 'TPS']}
           />
           {/* Bars: Highlight the highest bar with green, rest with grey */}
-          <Bar
-            dataKey="tps"
-            fill={(entry) => (entry.tps === maxTps ? '#21BF96' : '#666')}
-            radius={[4, 4, 0, 0]}
-          />
+          <Bar dataKey="tps" radius={[4, 4, 0, 0]}>
+            {data.map((_entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={index === 0 ? '#21BF96' : '#666'} // First bar is green, others grey
+              />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
