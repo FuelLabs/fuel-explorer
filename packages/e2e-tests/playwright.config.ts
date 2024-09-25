@@ -12,11 +12,13 @@ const config: PlaywrightTestConfig = defineConfig({
   expect: {
     timeout: 5000,
   },
-  reporter: [
-    ['list', { printSteps: true }],
-    ['html', { outputFolder: join(__dirname, './playwright-html/hard/') }],
-    ['github'],
-  ],
+  reporter: process.env.CI
+    ? [['list', { printSteps: true }]]
+    : [
+        ['list', { printSteps: true }],
+        ['html', { outputFolder: join(__dirname, './playwright-html/hard/') }],
+        ['github'],
+      ],
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,
   retries: 0,

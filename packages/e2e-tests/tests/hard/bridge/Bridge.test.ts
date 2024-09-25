@@ -142,6 +142,7 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Fill data and click on deposit', async () => {
+        console.log('asd 71');
         await hasDropdownSymbol(page, 'ETH');
         const depositInput = page.locator('.fuel-InputAmountField input');
         await depositInput.fill(DEPOSIT_AMOUNT);
@@ -150,12 +151,14 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Approve transaction on Metamask', async () => {
+        console.log('asd 72');
         // Timeout needed until https://github.com/Synthetixio/synpress/issues/795 is fixed
         await page.waitForTimeout(2000);
         await metamask.confirmTransaction();
       });
 
       await test.step('Check if deposit is completed', async () => {
+        console.log('asd 73');
         await page.locator(':nth-match(:text("Done"), 1)').waitFor();
         await page.locator(':nth-match(:text("Done"), 3)').waitFor();
 
@@ -180,6 +183,7 @@ test.describe('Bridge', () => {
       });
 
       await test.step('Check deposit tx in the Tx list', async () => {
+        console.log('asd 74');
         await closeTransactionPopup(page);
 
         const postDepositBalanceFuel = await fuelWallet.getBalance(baseAssetId);
