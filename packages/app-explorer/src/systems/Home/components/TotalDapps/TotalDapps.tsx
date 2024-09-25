@@ -33,7 +33,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
   const _image = 'zap';
 
   return (
-    <RoundedContainer className="validators-chart">
+    <RoundedContainer className="validators-chart h-full">
       <div className="flex items-center justify-between">
         <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
           Fuel Dapps

@@ -39,7 +39,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
     0,
   );
   return (
-    <RoundedContainer className="py-4 px-5 space-y-8 ">
+    <RoundedContainer className="py-4 px-5 h-full space-y-8 ">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <h3 className="text-[15px] leading-[24px] text-heading font-semibold">

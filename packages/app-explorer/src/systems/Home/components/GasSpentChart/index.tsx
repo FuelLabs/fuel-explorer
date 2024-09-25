@@ -44,7 +44,7 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
   });
 
   return (
-    <RoundedContainer className="py-4 px-5 space-y-3 ">
+    <RoundedContainer className="py-4 h-full px-5 space-y-3 ">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <div className="text-[15px] leading-[24px] text-heading font-semibold group">

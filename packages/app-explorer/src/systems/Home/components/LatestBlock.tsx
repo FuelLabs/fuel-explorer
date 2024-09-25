@@ -5,7 +5,7 @@ import { Block } from '../interface/blocks.interface';
 
 export const LatestBlock = (block: Block) => {
   return (
-    <RoundedContainer className="py-4 px-5 space-y-[24px] bg-light-gradient dark:bg-dark-gradient">
+    <RoundedContainer className="py-4 px-5 space-y-[24px] h-full bg-light-gradient dark:bg-dark-gradient">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <div className="text-[15px] leading-[24px] text-heading font-semibold group relative">
