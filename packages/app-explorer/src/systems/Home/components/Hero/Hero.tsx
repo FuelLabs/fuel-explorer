@@ -38,7 +38,7 @@ export function Hero() {
   useEffect(() => {
     const interval = setInterval(() => {
       getTPSData();
-    }, 1000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);

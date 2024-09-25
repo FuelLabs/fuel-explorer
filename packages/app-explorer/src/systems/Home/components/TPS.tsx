@@ -65,7 +65,7 @@ export const TPS = (props: TPSProps) => {
               dataKey="value"
               className="dark:fill-white fill-[#eee]"
               radius={[10, 10, 0, 0]}
-              barSize={20}
+              barSize={5}
             />
           </BarChart>
         </ResponsiveContainer>
