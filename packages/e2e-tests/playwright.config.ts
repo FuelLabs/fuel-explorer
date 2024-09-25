@@ -15,6 +15,7 @@ const config: PlaywrightTestConfig = defineConfig({
   reporter: [
     ['list', { printSteps: true }],
     ['html', { outputFolder: join(__dirname, './playwright-html/hard/') }],
+    ['github'],
   ],
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,

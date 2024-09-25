@@ -92,6 +92,8 @@ jobs:
 
       - name: Run E2E Tests
         run: xvfb-run --auto-servernum -- pnpm test:e2e-soft
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
 
       - uses: actions/upload-artifact@v4
         if: always()
