@@ -27,7 +27,7 @@ const config: PlaywrightTestConfig = defineConfig({
     stdout: 'pipe',
   },
   use: {
-    baseURL: `http://localhost:${PORT}/`,
+    baseURL: `http://127.0.0.1:${PORT}/`,
     permissions: ['clipboard-read', 'clipboard-write'],
     headless: false,
     trace: 'on-first-retry',
