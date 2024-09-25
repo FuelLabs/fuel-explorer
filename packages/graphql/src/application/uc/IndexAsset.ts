@@ -19,6 +19,7 @@ export default class IndexAsset {
             assetId,
             contractId: receipt.id,
             transactionId: transaction.id,
+            subId: receipt.subId,
             name: null,
             symbol: null,
             decimals: null,
@@ -50,11 +51,12 @@ export default class IndexAsset {
           }
           try {
             connection.query(
-              'insert into indexer.assets_contracts (asset_id, contract_id, transaction_id, name, symbol, decimals, error) values ($1, $2, $3, $4, $5, $6, $7) on conflict do nothing',
+              'insert into indexer.assets_contracts (asset_id, contract_id, transaction_id, sub_id, name, symbol, decimals, error) values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict do nothing',
               [
                 asset.assetId,
                 asset.contractId,
                 asset.transactionId,
+                asset.subId,
                 asset.name,
                 asset.symbol,
                 asset.decimals,
