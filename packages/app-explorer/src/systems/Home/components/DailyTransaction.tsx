@@ -9,14 +9,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-// import { Block } from '../interface/blocks.interface';
-
-// const chartData = [
-//   { time: '01:00', value: 100000 },
-//   { time: '09:00', value: 500000 },
-//   { time: '17:00', value: 1000000 },
-//   { time: '23:00', value: 1500000 },
-// ];
 
 const chartConfig = {
   desktop: {

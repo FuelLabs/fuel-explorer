@@ -16,10 +16,6 @@ const chartData = [
 ];
 
 const chartConfig = {
-  eth: {
-    label: 'ETH',
-    color: '#00E8FC', // Light blue for ETH
-  },
   fuel: {
     label: 'FUEL',
     color: '#00F58C', // Light green for FUEL

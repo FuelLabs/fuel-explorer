@@ -15,7 +15,7 @@ type UseSetAddressOpts = {
 };
 
 export const useSetAddressForm = (opts: UseSetAddressOpts = {}) => {
-  const schema: any = yup.object({
+  const schema = yup.object({
     address: yup.string().required('Address is required'),
   });
 

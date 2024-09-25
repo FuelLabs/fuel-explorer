@@ -93,8 +93,8 @@ export const GridTable = <T,>({
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={<span>&#x2190; Previous</span>} // Left Arrow
-        nextLabel={<span>Next &#x2192;</span>} // Right Arrow
+        previousLabel={<span>&#x2190; Previous</span>}
+        nextLabel={<span>Next &#x2192;</span>}
         breakLabel={'...'}
         pageCount={pageCount}
         marginPagesDisplayed={2}
@@ -102,8 +102,8 @@ export const GridTable = <T,>({
         onPageChange={handlePageClick}
         containerClassName={'pagination'}
         activeClassName={'selected'}
-        disabledClassName={'disabled'} // Handles styling for disabled state
-        pageLinkClassName={'page-link'} // Ensures consistent page link styling
+        disabledClassName={'disabled'}
+        pageLinkClassName={'page-link'}
       />
     );
   };
