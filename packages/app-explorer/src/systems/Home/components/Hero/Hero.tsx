@@ -87,7 +87,7 @@ export function Hero() {
   const elementsWithImage = projectJson.filter((item) => item.image);
 
   const top3Projects = elementsWithImage
-    .filter((element) => element.isFeatured)
+    .filter((element) => element.isFeatured && element.isLive)
     .slice(0, 3);
 
   return (
@@ -153,10 +153,10 @@ export function Hero() {
                   }
                 />
               </div>
-              <div className="row-span-3 col-span-5 ">
+              <div className={`${'col-span-5 row-span-3'} `}>
                 <LoadingWrapper
                   isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  loadingEl={<LoadingBox className="w-full h-full" />}
                   regularEl={<DataTable blocks={blocks.slice(0, 5)} />}
                 />
               </div>

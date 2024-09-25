@@ -63,10 +63,10 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
         </div>
         <div className="flex items-center justify-between mt-1">
           <span className="text-[12px] leading-[20px] text-muted block font-bold">
-            Active. {active}
+            Active: {active}
           </span>
           <span className="text-[12px] leading-[20px] text-muted block font-bold">
-            Building. {total - active}
+            Building: {total - active}
           </span>
         </div>
 

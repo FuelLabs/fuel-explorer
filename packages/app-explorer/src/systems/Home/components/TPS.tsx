@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   Cell,
   ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
@@ -68,7 +69,7 @@ export const TPS = (props: TPSProps) => {
             </div>
           </div>
           <span className="text-[13px] leading-[20px] text-muted block">
-            24
+            24h
           </span>
         </div>
         <HStack className="items-baseline" gap={'0'}>
@@ -97,6 +98,27 @@ export const TPS = (props: TPSProps) => {
               tickFormatter={(value) => value}
             />
             <YAxis tick={{ className: 'fill-heading', fontSize: '12px' }} />
+            <Tooltip
+              formatter={(value) => [
+                `${Number(value).toFixed(2)}`,
+                'Avg TPS per hour',
+              ]}
+              labelFormatter={(label) => label.toLocaleString()}
+              contentStyle={{
+                backgroundColor: 'var(--gray-1)',
+                borderColor: 'var(--gray-2)',
+                borderRadius: '8px',
+                color: 'var(--gray-1)',
+              }}
+              labelStyle={{
+                color: 'var(--gray-12)',
+                fontWeight: 'bold',
+              }}
+              itemStyle={{
+                color: '#00F58C',
+              }}
+              cursor={{ strokeWidth: 0.1, radius: 10 }}
+            />
             <Bar dataKey="value" radius={[10, 10, 10, 10]} barSize={5}>
               {chartData.map((entry, index) => (
                 <Cell

@@ -5,6 +5,7 @@ import {
   Line,
   LineChart,
   ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
@@ -72,12 +73,12 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
             </div>
           </div>
           <span className="text-[13px] leading-[20px] text-muted block">
-            24H
+            24h
           </span>
         </div>
         <HStack align={'baseline'}>
           <h2 className="text-[32px] leading-[34px] text-heading font-bold whitespace-no-wrap">
-            {(totalGasSpent / 10 ** 9).toString()}
+            {(totalGasSpent / 10 ** 9).toFixed(8)}
           </h2>
           <p className="text-[11px] text-heading font-regular text-muted tracking-tight] ">
             ETH
@@ -86,7 +87,7 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
         <ResponsiveContainer width="100%" height={170}>
           <LineChart
             data={chartData}
-            margin={{ top: 10, left: -34, right: 0, bottom: 0 }}
+            margin={{ top: 10, left: -25, right: 0, bottom: 0 }}
           >
             <CartesianGrid
               strokeDasharray="3 3"
@@ -97,6 +98,24 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
               dataKey="time"
               tick={{ className: 'fill-heading', fontSize: '12px' }}
             />
+            <Tooltip
+              formatter={(value) => [`${Number(value) / 10 ** 9} ETH`]}
+              labelFormatter={(label) => label.toLocaleString()}
+              contentStyle={{
+                backgroundColor: 'var(--gray-1)',
+                borderColor: 'var(--gray-2)',
+                borderRadius: '8px',
+                color: 'var(--gray-1)',
+              }}
+              labelStyle={{
+                color: 'var(--gray-12)',
+                fontWeight: 'bold',
+              }}
+              itemStyle={{
+                color: '#00F58C',
+              }}
+              cursor={{ strokeWidth: 0.1, radius: 10 }}
+            />
             <YAxis
               tick={{
                 className: 'fill-heading whitespace-no-wrap',
@@ -104,7 +123,7 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
               }}
               domain={[minGasUsed, maxGasUsed]}
               tickFormatter={(value) => {
-                return (value / 10 ** 9).toString();
+                return Number((value / 10 ** 9).toFixed(6)).toExponential();
               }}
             />
 

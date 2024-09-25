@@ -11,7 +11,7 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
   const classes = styles();
 
   return (
-    <RoundedContainer className="bg-white hover:bg-gray-1 py-3">
+    <RoundedContainer className="bg-white hover:bg-gray-5 py-3">
       <HStack align={'center'} className="justify-between">
         <div className="space-y-[4px]">
           <p className={classes.paragraphStrong()}>#{block.blockNo}</p>

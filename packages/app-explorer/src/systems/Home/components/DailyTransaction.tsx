@@ -5,6 +5,7 @@ import {
   Line,
   LineChart,
   ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
@@ -32,7 +33,6 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
     time: dayjs(Number(block.time)).format('HH:mm'),
     value: block.value,
   }));
-
   const cumilativeTsx = blocks.blocks.reduce(
     (sum: any, block: any) => sum + Number(block.value),
     0,
@@ -68,7 +68,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
             </div>
           </div>
           <span className="text-[13px] leading-[20px] text-muted block">
-            24H
+            24h
           </span>
         </div>
         <h2 className="text-[32px] leading-[36px] text-heading font-bold">
@@ -91,6 +91,24 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
                 fontSize: 10,
                 className: 'fill-heading',
               }}
+            />
+            <Tooltip
+              formatter={(value) => [`${Number(value)}`]}
+              labelFormatter={(label) => label.toLocaleString()}
+              contentStyle={{
+                backgroundColor: 'var(--gray-1)',
+                borderColor: 'var(--gray-2)',
+                borderRadius: '8px',
+                color: 'var(--gray-1)',
+              }}
+              labelStyle={{
+                color: 'var(--gray-12)',
+                fontWeight: 'bold',
+              }}
+              itemStyle={{
+                color: '#00F58C',
+              }}
+              cursor={{ strokeWidth: 0.1, radius: 10 }}
             />
             <YAxis
               tick={{

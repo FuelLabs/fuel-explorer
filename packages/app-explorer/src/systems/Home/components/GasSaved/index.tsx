@@ -41,7 +41,7 @@ export const GasSaved = () => {
             Gas Used
           </h3>
           <span className="text-[13px] leading-[20px] text-muted block">
-            24H
+            24h
           </span>
         </div>
         <HStack align={'baseline'}>
