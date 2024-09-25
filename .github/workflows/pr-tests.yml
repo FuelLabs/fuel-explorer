@@ -94,6 +94,8 @@ jobs:
         run: xvfb-run --auto-servernum -- pnpm test:e2e-soft
         env:
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
+          PLAYWRIGHT_FORCE_TTY: true
+          PLAYWRIGHT_FORCE_COLOR: true
 
       - uses: actions/upload-artifact@v4
         if: always()
