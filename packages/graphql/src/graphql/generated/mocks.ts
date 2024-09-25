@@ -1,4 +1,4 @@
-import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLBalance, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLChainInfo, GQLChangeOutput, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLGasCosts, GQLGenesis, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStateTransitionPurpose, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTxParameters, GQLUtxoItem, GQLVariableOutput, GQLBlockVersion, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion } from './sdk';
+import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLBalance, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlockRewardStatistics, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLChainInfo, GQLChangeOutput, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLGasCosts, GQLGenesis, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNewBlockStatistic, GQLNewBlockStatisticsConnection, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStateTransitionPurpose, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTxParameters, GQLUtxoItem, GQLVariableOutput, GQLBlockRewardStatisticsConnection, GQLBlockVersion, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion } from './sdk';
 
 export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } & GQLAsset => {
     return {
@@ -98,6 +98,14 @@ export const aBlockEdge = (overrides?: Partial<GQLBlockEdge>): { __typename: 'Bl
         __typename: 'BlockEdge',
         cursor: overrides && overrides.hasOwnProperty('cursor') ? overrides.cursor! : 'id',
         node: overrides && overrides.hasOwnProperty('node') ? overrides.node! : aBlock(),
+    };
+};
+
+export const aBlockRewardStatistics = (overrides?: Partial<GQLBlockRewardStatistics>): { __typename: 'BlockRewardStatistics' } & GQLBlockRewardStatistics => {
+    return {
+        __typename: 'BlockRewardStatistics',
+        block_reward: overrides && overrides.hasOwnProperty('block_reward') ? overrides.block_reward! : '0xB',
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 'nobis',
     };
 };
 
@@ -722,6 +730,21 @@ export const aMutation = (overrides?: Partial<GQLMutation>): { __typename: 'Muta
     };
 };
 
+export const aNewBlockStatistic = (overrides?: Partial<GQLNewBlockStatistic>): { __typename: 'NewBlockStatistic' } & GQLNewBlockStatistic => {
+    return {
+        __typename: 'NewBlockStatistic',
+        new_blocks: overrides && overrides.hasOwnProperty('new_blocks') ? overrides.new_blocks! : '0xC',
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 'vel',
+    };
+};
+
+export const aNewBlockStatisticsConnection = (overrides?: Partial<GQLNewBlockStatisticsConnection>): { __typename: 'NewBlockStatisticsConnection' } & GQLNewBlockStatisticsConnection => {
+    return {
+        __typename: 'NewBlockStatisticsConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aNewBlockStatistic()],
+    };
+};
+
 export const aNodeInfo = (overrides?: Partial<GQLNodeInfo>): { __typename: 'NodeInfo' } & GQLNodeInfo => {
     return {
         __typename: 'NodeInfo',
@@ -848,6 +871,7 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
         balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : aBalance(),
         balances: overrides && overrides.hasOwnProperty('balances') ? overrides.balances! : aBalanceConnection(),
         block: overrides && overrides.hasOwnProperty('block') ? overrides.block! : aBlock(),
+        blockRewardStatistics: overrides && overrides.hasOwnProperty('blockRewardStatistics') ? overrides.blockRewardStatistics! : aBlockRewardStatisticsConnection(),
         blocks: overrides && overrides.hasOwnProperty('blocks') ? overrides.blocks! : aBlockConnection(),
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : aChainInfo(),
         coin: overrides && overrides.hasOwnProperty('coin') ? overrides.coin! : aCoin(),
@@ -867,6 +891,7 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
         messageProof: overrides && overrides.hasOwnProperty('messageProof') ? overrides.messageProof! : aMessageProof(),
         messageStatus: overrides && overrides.hasOwnProperty('messageStatus') ? overrides.messageStatus! : aMessageStatus(),
         messages: overrides && overrides.hasOwnProperty('messages') ? overrides.messages! : aMessageConnection(),
+        newBlockStatistics: overrides && overrides.hasOwnProperty('newBlockStatistics') ? overrides.newBlockStatistics! : aNewBlockStatisticsConnection(),
         nodeInfo: overrides && overrides.hasOwnProperty('nodeInfo') ? overrides.nodeInfo! : aNodeInfo(),
         predicate: overrides && overrides.hasOwnProperty('predicate') ? overrides.predicate! : aPredicateItem(),
         register: overrides && overrides.hasOwnProperty('register') ? overrides.register! : '0x3',
@@ -1151,5 +1176,12 @@ export const aVariableOutput = (overrides?: Partial<GQLVariableOutput>): { __typ
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xc',
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'hq38k3ap8ok8krpquh789zkbfdd74ab6',
         to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : '4gs9ppn7jqumdt8t0gd7u4mra5dblqlbgjy1w5bv',
+    };
+};
+
+export const aBlockRewardStatisticsConnection = (overrides?: Partial<GQLBlockRewardStatisticsConnection>): { __typename: 'blockRewardStatisticsConnection' } & GQLBlockRewardStatisticsConnection => {
+    return {
+        __typename: 'blockRewardStatisticsConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aBlockRewardStatistics()],
     };
 };
