@@ -138,6 +138,8 @@
     }
   },
   "dependencies": {
+    "react-data-table-component": "7.6.2",
+    "react-paginate": "8.2.0",
     "recharts": "2.12.7"
   }
 }

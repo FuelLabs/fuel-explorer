@@ -38,6 +38,12 @@ importers:
 
   .:
     dependencies:
+      react-data-table-component:
+        specifier: 7.6.2
+        version: 7.6.2(react@18.2.0)(styled-components@5.3.11(@babel/core@7.23.9)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
+      react-paginate:
+        specifier: 8.2.0
+        version: 8.2.0(react@18.2.0)
       recharts:
         specifier: 2.12.7
         version: 2.12.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -19279,7 +19285,7 @@ snapshots:
     dependencies:
       '@metamask/rpc-errors': 6.2.1
       '@metamask/safe-event-emitter': 3.1.1
-      '@metamask/utils': 8.4.0
+      '@metamask/utils': 8.5.0
     transitivePeerDependencies:
       - supports-color
 
@@ -19287,7 +19293,7 @@ snapshots:
     dependencies:
       '@metamask/json-rpc-engine': 8.0.2
       '@metamask/safe-event-emitter': 3.1.1
-      '@metamask/utils': 8.4.0
+      '@metamask/utils': 8.5.0
       readable-stream: 3.6.2
     transitivePeerDependencies:
       - supports-color
@@ -19320,7 +19326,7 @@ snapshots:
 
   '@metamask/rpc-errors@6.2.1':
     dependencies:
-      '@metamask/utils': 8.4.0
+      '@metamask/utils': 8.5.0
       fast-safe-stringify: 2.1.1
     transitivePeerDependencies:
       - supports-color
@@ -19424,11 +19430,11 @@ snapshots:
     dependencies:
       '@ethereumjs/tx': 4.2.0
       '@metamask/superstruct': 3.1.0
-      '@noble/hashes': 1.5.0
+      '@noble/hashes': 1.4.0
       '@scure/base': 1.1.8
       '@types/debug': 4.1.12
       debug: 4.3.7(supports-color@8.1.1)
-      pony-cause: 2.1.11
+      pony-cause: 2.1.10
       semver: 7.6.3
       uuid: 9.0.1
     transitivePeerDependencies:
