@@ -1,4 +1,3 @@
-import { logger } from '~/core/Logger';
 import { AccountEntity } from '../../domain/Account/AccountEntity';
 import { DatabaseConnection } from '../database/DatabaseConnection';
 
@@ -56,7 +55,6 @@ export default class AccountDAO {
       queryParams.push(cursor);
     }
 
-    console.log(first);
     const limitClause =
       first !== undefined && first !== null
         ? `LIMIT $${queryParams.length + 1}`
@@ -65,8 +63,6 @@ export default class AccountDAO {
     if (first !== undefined && first !== null) {
       queryParams.push(first);
     }
-
-    logger.info(`Logs: #${queryParams}`);
 
     const accountsData = await this.databaseConnection.query(
       `
@@ -90,8 +86,6 @@ export default class AccountDAO {
       `,
       queryParams,
     );
-
-    console.log(accountsData);
 
     // Handle case where no data is returned
     if (!accountsData.length) {
