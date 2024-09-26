@@ -38,16 +38,6 @@ export function TopNav() {
     </NextLink>
   );
 
-  const externalLinks = (
-    <>
-      <Nav.MenuItem href="https://docs.fuel.network/">Developers</Nav.MenuItem>
-      <Nav.MenuItem href="https://forum.fuel.network">Community</Nav.MenuItem>
-      <Nav.MenuItem isExternal href="https://fuel.network">
-        Labs
-      </Nav.MenuItem>
-    </>
-  );
-
   const tooling = (
     <>
       <Nav.MenuItem
@@ -79,7 +69,6 @@ export function TopNav() {
       <Nav.Desktop className={'px-10 justify-between'}>
         <Nav.Menu>
           {logo}
-          {externalLinks}
         </Nav.Menu>
         <Nav.Menu>
           <SearchWidget />
@@ -95,10 +84,7 @@ export function TopNav() {
           <SearchWidget />
           {themeToggle}
         </Nav.MobileContent>
-        <Nav.Menu>
-          {externalLinks}
-          {tooling}
-        </Nav.Menu>
+        <Nav.Menu>{tooling}</Nav.Menu>
       </Nav.Mobile>
     </Nav>
   );
