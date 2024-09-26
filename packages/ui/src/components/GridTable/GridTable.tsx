@@ -1,29 +1,31 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import DataTable, { TableProps, TableColumn } from 'react-data-table-component';
 import ReactPaginate from 'react-paginate';
-import './GridTable.css';
 
 export interface GridTableProps<T> extends TableProps<T> {
   columns: TableColumn<T>[];
   data: T[];
   pageCount: number;
   onPageChanged: (selectedItem: number) => void;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
 }
 export type GridTableColumn<T> = TableColumn<T>;
+
 export const GridTable = <T,>({
   columns,
   data,
   pageCount,
   onPageChanged,
+  setCurrentPage,
+  currentPage,
   ...props
 }: GridTableProps<T>): React.JSX.Element => {
-  const [_currentPage, setCurrentPage] = useState(0);
-
   const customStyles = {
     tableWrapper: {
       style: {
-        borderRadius: '7px',
+        borderRadius: '0',
       },
     },
     table: {
@@ -36,6 +38,7 @@ export const GridTable = <T,>({
         backgroundColor: 'transparent',
         color: '#9f9f9f',
         fontWeight: '600',
+        textAlign: 'left',
       },
     },
     headCells: {
@@ -43,28 +46,31 @@ export const GridTable = <T,>({
         backgroundColor: 'transparent',
         color: '#9f9f9f',
         fontWeight: '600',
+        fontSize: '16px',
+        textAlign: 'left',
       },
     },
     rows: {
       style: {
         cursor: 'pointer',
-        backgroundColor: 'transparent',
+        backgroundColor: 'var(--gray-2)',
         fontWeight: '400',
+        borderRadius: '12px',
+        marginBottom: '8px',
         '&:hover': {
-          backgroundColor: 'var(--gray-2)', // Change background color on hover
+          backgroundColor: 'var(--gray-a1)',
         },
       },
     },
     cells: {
       style: {
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
         paddingLeft: '0.5rem',
         paddingRight: '0.5rem',
         color: 'var(--gray-table-text)',
-        paddingTop: '0.9rem',
-        paddingBottom: '0.9rem',
+        paddingTop: '0.4rem',
+        paddingBottom: '0.4rem',
         backgroundColor: 'transparent',
         fontWeight: '400',
       },
@@ -90,31 +96,73 @@ export const GridTable = <T,>({
       },
     },
   };
+
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={<span>&#x2190; Previous</span>}
-        nextLabel={<span>Next &#x2192;</span>}
+        previousLabel={<span>&#x2190; Previous</span>} // Left Arrow
+        nextLabel={<span>Next &#x2192;</span>} // Right Arrow
         breakLabel={'...'}
         pageCount={pageCount}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
-        onPageChange={handlePageClick}
+        onPageChange={(page) => handlePagination(page)}
         containerClassName={'pagination'}
         activeClassName={'selected'}
         disabledClassName={'disabled'}
         pageLinkClassName={'page-link'}
+        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
       />
     );
   };
 
-  const handlePageClick = (data: { selected: number }) => {
-    setCurrentPage(data.selected);
-    onPageChanged(data.selected);
+  const handlePagination = (page: any) => {
+    setCurrentPage(page.selected + 1);
+    onPageChanged(page.selected + 1);
   };
 
   return (
     <div style={customStyles.tableWrapper.style}>
+      <style>{`
+        .pagination {
+          display: flex;
+          justify-content: end;
+          align-items: center;
+          list-style: none;
+          padding: 0;
+          margin: 1rem 0;
+        }
+        .pagination li {
+          margin: 0 8px;
+        }
+        .pagination li a {
+          padding: 8px 16px;
+          color: var(--white-2);
+          background-color: var(--gray-2);
+          border-radius: 7px;
+          cursor: pointer;
+          text-decoration: none;
+        }
+        .pagination li.selected a {
+          background-color: var(--gray-7);
+          font-weight: bold;
+        }
+        .pagination li a:hover {
+          background-color: var(--gray-5);
+        }
+        .pagination li.previous a,
+        .pagination li.next a {
+          background-color: transparent;
+          padding: 0;
+        }
+        .pagination li.disabled a {
+          color: #888;
+          cursor: not-allowed;
+        }
+        .pagination li.disabled a:hover {
+          background-color: transparent;
+        }
+      `}</style>
       <DataTable
         customStyles={customStyles}
         columns={columns}

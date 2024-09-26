@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { getBlocks } from '../actions/get-blocks';
-import { BlocksTable } from '../components/BlocksTable';
+import BlocksTable from '../components/BlocksTable';
 import { Hero } from '../components/Hero';
 
 export const BlocksScreen = () => {
@@ -46,14 +46,35 @@ export const BlocksScreen = () => {
       let newCursor: string | null = null;
       setDir(newDir);
 
-      if (newDir === 'before' && data.pageInfo.endCursor) {
-        newCursor = data.pageInfo.endCursor;
-      } else if (newDir === 'after' && data.pageInfo.startCursor) {
-        newCursor = data.pageInfo.startCursor;
+      if (
+        newPageNumber === currentPage + 1 ||
+        newPageNumber === currentPage - 1
+      ) {
+        if (newDir === 'before' && data.pageInfo.endCursor) {
+          newCursor = data.pageInfo.endCursor;
+        } else if (newDir === 'after' && data.pageInfo.startCursor) {
+          newCursor = data.pageInfo.startCursor;
+        }
+      } else {
+        if (newDir === 'before' && data.pageInfo.endCursor) {
+          newCursor = (
+            +data.pageInfo.endCursor -
+            (newPageNumber - currentPage) * limit
+          ).toString();
+        } else if (newDir === 'after' && data.pageInfo.startCursor) {
+          newCursor = (
+            +data.pageInfo.startCursor +
+            (currentPage - newPageNumber) * limit
+          ).toString();
+        }
       }
 
       setCurrentPage(newPageNumber);
       setCurrentCursor(newCursor);
+      if (newPageNumber === 1) {
+        router.push('/blocks');
+        return;
+      }
       router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`);
     }
   };

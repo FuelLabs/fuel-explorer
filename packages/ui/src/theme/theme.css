@@ -807,7 +807,6 @@
 :root.dark .radix-themes:where([data-gray-color]),
 :root.dark-theme .radix-themes:where([data-gray-color]),
 :root:is(.dark, .dark-theme) {
-  --gray-0: #111;
   --gray-1: #111;
   --gray-2: #191919;
   --gray-3: #222;
@@ -846,8 +845,7 @@
 :root.light .radix-themes:where([data-gray-color]),
 :root.light-theme .radix-themes:where([data-gray-color]),
 :root:is(.light, .light-theme) {
-  --gray-0:#FCFCFC;
-  --gray-1: #EEEEEE;
+  --gray-1: #FCFCFC;
   --gray-2: #F9F9F9;
   --gray-3: #F0F0F0;
   --gray-4: #e8e8e8;
@@ -890,7 +888,6 @@
     :root:is(.dark, .dark-theme).dark .radix-themes:where([data-gray-color]),
     :root:is(.dark, .dark-theme).dark-theme .radix-themes:where([data-gray-color]),
     :root:is(.dark, .dark-theme) .dark-theme {
-      --gray-0:#EEEEEE;
       --gray-1: oklch(17.76% 0 none);
       --gray-2: oklch(21.34% 0 none);
       --gray-3: oklch(25.2% 0 none);
@@ -930,7 +927,6 @@
     :root:is(.light, .light-theme).light-theme .radix-themes:where([data-gray-color]),
     :root:is(.light, .light-theme) .light,
     :root:is(.light, .light-theme) .light-theme {
-      --gray-0:#EEEEEE;
       --gray-1: oklch(99.11% 0 none);
       --gray-2: oklch(98.21% 0 none);
       --gray-3: oklch(95.51% 0 none);

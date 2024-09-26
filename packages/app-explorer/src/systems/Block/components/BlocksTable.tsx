@@ -198,7 +198,7 @@ type BlocksTableProps = {
   setCurrentPage: (currentPage: number) => void;
 };
 
-export function BlocksTable({
+function BlocksTable({
   blocks,
   onPageChanged,
   pageCount,
@@ -222,3 +222,5 @@ export function BlocksTable({
     </div>
   );
 }
+
+export default BlocksTable;

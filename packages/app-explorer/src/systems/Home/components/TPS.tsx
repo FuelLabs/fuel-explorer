@@ -85,7 +85,7 @@ export const TPS = (props: TPSProps) => {
         </div>
         <HStack className="items-baseline" gap={'0'}>
           <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-            {`${Math.ceil(averageTPS / 3600)}`}
+            {`${(averageTPS / 3600).toFixed(2)}`}
           </h2>
           <div className="text-[12px] leading-[12px] text-heading ">TX/s</div>
         </HStack>
