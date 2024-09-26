@@ -78,7 +78,11 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 
         {featured.map((feature: any) => {
           return (
-            <Link className="flex items-center gap-3 mt-3" href={feature.url}>
+            <Link
+              className="flex items-center gap-3 mt-3"
+              href={feature.url}
+              key={feature.name}
+            >
               <img
                 src={`https://app.fuel.network/ecosystem/images/${feature.image}.jpeg`}
                 alt=""

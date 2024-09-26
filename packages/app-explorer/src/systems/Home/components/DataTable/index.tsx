@@ -15,6 +15,7 @@ export const DataTable = (props: DataTableProps) => {
         {Array.from({ length: props.blocks.length }, (_, index) => (
           <Link
             as={NextLink}
+            key={index}
             isExternal={false}
             href={`/block/${props.blocks[index].blockNo}/simple`}
           >

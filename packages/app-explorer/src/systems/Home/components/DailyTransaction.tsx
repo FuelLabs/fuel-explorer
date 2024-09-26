@@ -1,5 +1,6 @@
 import { ChartConfig, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
+import { DateTime } from 'fuels';
 import {
   CartesianGrid,
   Line,
@@ -20,6 +21,7 @@ const chartConfig = {
 interface DailyTransactionProps {
   blocks: any;
 }
+
 const DailyTransaction = (blocks: DailyTransactionProps) => {
   const chartData = blocks.blocks?.map((block: any) => ({
     time: dayjs(Number(block.time)).format('HH:mm'),
@@ -81,6 +83,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
               dataKey="time"
               tick={{
                 fontSize: 10,
+
                 className: 'fill-heading',
               }}
             />
@@ -106,6 +109,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
               tick={{
                 fontSize: 12,
                 className: 'fill-heading',
+                key: DateTime.now(),
               }}
             />
             <Line
