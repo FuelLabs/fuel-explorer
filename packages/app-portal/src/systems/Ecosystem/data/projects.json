@@ -45,6 +45,7 @@
   },
   {
     "isLive": true,
+    "isFeatured": true,
     "name": "Bako Safe",
     "url": "https://www.bako.global/",
     "tags": ["Wallet", "Multi-sig", "Tooling"],
