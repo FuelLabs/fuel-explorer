@@ -297,8 +297,8 @@ export default class NewAddBlockRange {
     while (hasNextPage) {
       const response = await client.sdk.balances({
         filter: { owner },
-        first: 1000, // Fetch 1000 records at a time
-        after, // Use the 'after' cursor for pagination
+        first: 1000,
+        after,
       });
 
       if (response.data?.balances?.nodes) {

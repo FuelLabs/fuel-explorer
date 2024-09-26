@@ -1,5 +1,5 @@
-query paginatedAccounts($cursor: String, $direction: String, $sortBy: String, $sortOrder: String, $first: Int) {
-  paginatedAccounts(cursor: $cursor, direction: $direction, sortBy: $sortBy, sortOrder: $sortOrder, first: $first) {
+query paginatedAccounts($cursor: String, $sortBy: String, $sortOrder: String, $first: Int) {
+  paginatedAccounts(cursor: $cursor, sortBy: $sortBy, sortOrder: $sortOrder, first: $first) {
     nodes {
       id
       account_id

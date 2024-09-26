@@ -782,7 +782,7 @@ type Query {
   ): Transaction
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
-  paginatedAccounts(cursor: String, direction: String, first: Int, sortBy: String, sortOrder: String): PaginatedAccountConnection!
+  paginatedAccounts(cursor: String, sortBy: String, sortOrder: String, first: Int): PaginatedAccountConnection!
 }
 
 type Receipt {

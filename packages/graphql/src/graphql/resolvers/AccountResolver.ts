@@ -1,3 +1,4 @@
+import { logger } from '~/core/Logger';
 import type { GQLQueryPaginatedAccountsArgs } from '../../graphql/generated/sdk-provider';
 import AccountDAO from '../../infra/dao/AccountDAO';
 
@@ -21,7 +22,7 @@ export class AccountResolver {
     const first = params.first;
     const cursor = params.cursor || undefined;
 
-    console.log(sortBy, sortOrder, first, cursor);
+    logger.info(`Logs: #${first}, #${cursor}, ${sortOrder}, ${sortBy}`);
 
     const accounts = await accountDAO.getPaginatedAccounts(
       sortBy,
