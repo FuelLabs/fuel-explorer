@@ -783,6 +783,7 @@ type Query {
   transactionsByBlockId(after: String, before: String, first: Int, last: Int, blockId: String!): TransactionConnection!
   tps: TPSConnection!
   getBlocksDashboard : BlocksDashboardConnection!
+  paginatedAccounts(cursor: String, direction: String, first: Int, sortBy: String, sortOrder: String): PaginatedAccountConnection!
 }
 
 type Receipt {
@@ -1045,4 +1046,16 @@ type BlocksDashboard {
 
 type BlocksDashboardConnection {
   nodes: [BlocksDashboard!]!
+}
+
+type PaginatedAccountConnection {
+  nodes: [AccountNode!]!
+  pageInfo: PageInfo!
+}
+
+type AccountNode {
+  id: ID!
+  account_id: String!
+  balance: String!
+  transaction_count: Int!
 }
