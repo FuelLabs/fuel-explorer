@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import DataTable, { TableProps, TableColumn } from 'react-data-table-component';
 import ReactPaginate from 'react-paginate';
-import './gridTable.css';
+import './GridTable.css';
 
 export interface GridTableProps<T> extends TableProps<T> {
   columns: TableColumn<T>[];
