@@ -2,7 +2,6 @@
 
 import { Box, Container, Heading } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
-import { SearchWidget } from '~/systems/Core/components/Search/SearchWidget';
 
 export function Hero() {
   const classes = styles();
@@ -13,9 +12,6 @@ export function Hero() {
         <Heading as="h1" className={classes.title()}>
           Explore Fuel
         </Heading>
-        <Box className={classes.searchWrapper()}>
-          <SearchWidget autoFocus={true} />
-        </Box>
       </Container>
     </Box>
   );
