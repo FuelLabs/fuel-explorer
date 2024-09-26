@@ -1,4 +1,5 @@
 import GraphQLAuth from '~/infra/auth/GraphQLAuth';
+import { AccountResolver } from './AccountResolver';
 import { BalanceResolver } from './BalanceResolver';
 import { BlockResolver } from './BlockResolver';
 import { ChainResolver } from './ChainResolver';
@@ -17,6 +18,7 @@ const nodeResolver = NodeResolver.create();
 const predicateResolver = PredicateResolver.create();
 const searchResolver = SearchResolver.create();
 const transactionResolver = TransactionResolver.create();
+const accountResolver = AccountResolver.create();
 
 const publicResolver = PublicResolver.create();
 
@@ -31,6 +33,7 @@ export const resolvers = {
       ...predicateResolver.Query,
       ...searchResolver.Query,
       ...transactionResolver.Query,
+      ...accountResolver.Query,
     }),
     ...publicResolver.Query,
   },
