@@ -36,8 +36,7 @@ export const TPS = (props: TPSProps) => {
     : [];
 
   const averageTPS =
-    blocks.reduce((sum: any, block: any) => sum + Number(block.value), 0) /
-    blocks.length;
+    blocks.reduce((sum: any, block: any) => sum + Number(block.value), 0) / 24;
 
   const highestValue = Math.max(
     ...chartDataArray.map((data: any) => Number(data.value)),

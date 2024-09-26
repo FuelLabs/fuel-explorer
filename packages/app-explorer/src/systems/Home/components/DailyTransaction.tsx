@@ -26,8 +26,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
   const chartData = blocks.blocks?.reduce(
     (acc: { [key: string]: number }, block: any) => {
       const time = dayjs(Number(block.time)).format('HH:mm');
-      const value = +block.value / 3600;
-
+      const value = +block.value;
       acc[time] = (acc[time] || 0) + value;
       return acc;
     },
@@ -96,7 +95,6 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
               dataKey="time"
               tick={{
                 fontSize: 10,
-
                 className: 'fill-heading',
               }}
             />
