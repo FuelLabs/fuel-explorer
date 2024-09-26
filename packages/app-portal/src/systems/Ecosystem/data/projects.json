@@ -38,9 +38,9 @@
     "url": "https://www.bako.id/",
     "tags": ["Social"],
     "description": "Bako ID is a comprehensive Identity System for Rollups.",
-    "github": "",
+    "github": "https://github.com/Bako-Labs",
     "twitter": "https://x.com/bakoidentity",
-    "discord": "",
+    "discord": "https://discord.com/invite/E5kYKSKncj",
     "image": "bakoid"
   },
   {
@@ -49,9 +49,9 @@
     "url": "https://www.bako.global/",
     "tags": ["Wallet", "Multi-sig", "Tooling"],
     "description": "Bako Safe is the Native Multisig of Rollup OS.",
-    "github": "",
+    "github": "https://github.com/Bako-Labs",
     "twitter": "https://x.com/bakosafe",
-    "discord": "",
+    "discord": "https://discord.com/invite/E5kYKSKncj",
     "image": "bakosafe"
   },
   {
@@ -155,17 +155,6 @@
   },
   {
     "isLive": false,
-    "name": "Everclear",
-    "url": "https://www.everclear.org/",
-    "tags": ["Bridge"],
-    "description": "Everclear coordinates the global settlement of liquidity between chains, solving fragmentation for modular blockchains.",
-    "github": "https://github.com/everclearorg",
-    "twitter": "https://x.com/everclearorg",
-    "discord": "https://discord.gg/everclear",
-    "image": "everclear"
-  },
-  {
-    "isLive": false,
     "name": "CryptoSage",
     "url": "https://cryptosage.jump.trade/coming-soon",
     "tags": ["Social", "Prediction Market"],
@@ -185,6 +174,28 @@
     "twitter": "https://x.com/envio_indexer",
     "discord": "https://discord.gg/amcY528zbZ",
     "image": "envio"
+  },
+  {
+    "isLive": false,
+    "name": "Everclear",
+    "url": "https://www.everclear.org/",
+    "tags": ["Bridge"],
+    "description": "Everclear coordinates the global settlement of liquidity between chains, solving fragmentation for modular blockchains.",
+    "github": "https://github.com/everclearorg",
+    "twitter": "https://x.com/everclearorg",
+    "discord": "https://discord.gg/everclear",
+    "image": "everclear"
+  },
+  {
+    "isLive": false,
+    "name": "Executoors",
+    "url": "https://executoors.com",
+    "tags": ["NFT"],
+    "description": "A series of Executoors in search of the most flawless execution environment",
+    "github": "",
+    "twitter": "https://x.com/executoors",
+    "discord": "",
+    "image": "executoors"
   },
   {
     "isLive": false,
