@@ -23,10 +23,23 @@ interface DailyTransactionProps {
 }
 
 const DailyTransaction = (blocks: DailyTransactionProps) => {
-  const chartData = blocks.blocks?.map((block: any) => ({
-    time: dayjs(Number(block.time)).format('HH:mm'),
-    value: block.value,
-  }));
+  const chartData = blocks.blocks?.reduce(
+    (acc: { [key: string]: number }, block: any) => {
+      const time = dayjs(Number(block.time)).format('HH:mm');
+      const value = +block.value / 3600;
+
+      acc[time] = (acc[time] || 0) + value;
+      return acc;
+    },
+    {},
+  );
+
+  const chartDataArray = chartData
+    ? Object.entries(chartData).map(([time, value]) => ({
+        time,
+        value,
+      }))
+    : [];
   const cumilativeTsx = blocks.blocks.reduce(
     (sum: any, block: any) => sum + Number(block.value),
     0,
@@ -71,7 +84,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
 
         <ResponsiveContainer width="100%" height={160}>
           <LineChart
-            data={chartData}
+            data={chartDataArray}
             margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
           >
             <CartesianGrid

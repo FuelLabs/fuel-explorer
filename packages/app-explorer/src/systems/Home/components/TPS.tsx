@@ -18,23 +18,35 @@ export interface TPSProps {
 export const TPS = (props: TPSProps) => {
   const blocks = props.blocks;
 
-  const chartData = blocks?.map((block: any) => ({
-    time: dayjs(Number(block.time)).format('HH:mm'),
-    value: block.value / 3600,
-  }));
+  const chartData = blocks.reduce(
+    (acc: { [key: string]: number }, block: any) => {
+      const time = dayjs(Number(block.time)).format('HH:mm');
+      const value = +block.value / 3600;
+      acc[time] = (acc[time] || 0) + value;
+      return acc;
+    },
+    {},
+  );
+
+  const chartDataArray = chartData
+    ? Object.entries(chartData).map(([time, value]) => ({
+        time,
+        value,
+      }))
+    : [];
 
   const averageTPS =
     blocks.reduce((sum: any, block: any) => sum + Number(block.value), 0) /
     blocks.length;
 
   const highestValue = Math.max(
-    ...chartData.map((data: any) => Number(data.value)),
+    ...chartDataArray.map((data: any) => Number(data.value)),
   );
 
   const getTicks = () => {
     const ticks: string[] = [];
-    for (let i = 0; i < chartData.length; i += 6) {
-      ticks.push(chartData[i].time);
+    for (let i = 0; i < chartDataArray.length; i += 6) {
+      ticks.push(chartDataArray[i].time);
     }
     return ticks;
   };
@@ -81,7 +93,7 @@ export const TPS = (props: TPSProps) => {
 
         <ResponsiveContainer width="100%" height={160}>
           <BarChart
-            data={chartData}
+            data={chartDataArray}
             margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
           >
             <CartesianGrid
@@ -120,7 +132,7 @@ export const TPS = (props: TPSProps) => {
               cursor={{ strokeWidth: 0.1, radius: 10 }}
             />
             <Bar dataKey="value" radius={[10, 10, 10, 10]} barSize={5}>
-              {chartData.map((entry, index) => (
+              {chartDataArray.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   className={`${
