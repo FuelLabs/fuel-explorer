@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { getBlocks } from '../actions/get-blocks';
-import BlocksTable from '../components/BlocksTable';
+import { BlocksTable } from '../components/BlocksTable';
 import { Hero } from '../components/Hero';
 
 export const BlocksScreen = () => {
