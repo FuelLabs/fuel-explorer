@@ -20,7 +20,6 @@ type SearchInputProps = BaseProps<InputProps> & {
   onSubmit?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
-  variablePosition?: boolean;
 };
 
 export function SearchInput({
@@ -29,7 +28,6 @@ export function SearchInput({
   autoFocus,
   placeholder = 'Search here...',
   searchResult,
-  variablePosition,
   ...props
 }: SearchInputProps) {
   const classes = styles();
@@ -92,7 +90,6 @@ export function SearchInput({
     <div className="relative">
       <VStack
         gap="0"
-        data-variable-position={variablePosition}
         className={classes.searchBox()}
         data-active={isFocused || openDropdown}
       >

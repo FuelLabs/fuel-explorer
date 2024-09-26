@@ -22,7 +22,6 @@ export function TopNav() {
     PortalRoutes.bridgeHistory,
   ]);
   const isEcosystemBridge = isRoute(pathname, [PortalRoutes.ecosystem]);
-  const isHomePage = pathname === '/';
   const isExplorer = !isBridge && !isEcosystemBridge;
 
   useEffect(() => {
@@ -68,8 +67,12 @@ export function TopNav() {
   return (
     <Nav>
       <Nav.Desktop className={'px-10 justify-between'}>
-        <Nav.Menu>{logo}</Nav.Menu>
-        <Nav.Menu>{!isHomePage && <SearchWidget variablePosition />}</Nav.Menu>
+        <Nav.Menu>
+          {logo}
+        </Nav.Menu>
+        <Nav.Menu>
+          <SearchWidget />
+        </Nav.Menu>
         <Nav.Menu>
           {tooling}
           {themeToggle}
@@ -78,7 +81,7 @@ export function TopNav() {
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
-          {!isHomePage && <SearchWidget variablePosition />}
+          <SearchWidget />
           {themeToggle}
         </Nav.MobileContent>
         <Nav.Menu>{tooling}</Nav.Menu>
