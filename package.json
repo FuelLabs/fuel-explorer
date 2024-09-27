@@ -136,5 +136,10 @@
       "ws@<8.17.1": ">=8.17.1",
       "fast-loops@<1.1.4": ">=1.1.4"
     }
+  },
+  "dependencies": {
+    "react-data-table-component": "7.6.2",
+    "react-paginate": "8.2.0",
+    "recharts": "2.12.7"
   }
 }

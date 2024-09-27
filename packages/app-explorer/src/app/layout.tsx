@@ -43,7 +43,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <PointsProgramEyebrow />
-          <Layout contentClassName="[&_.rt-ContainerInner]:flex-col [&_.rt-ContainerInner]:gap-10">
+          <Layout contentClassName="[&_.rt-ContainerInner]:flex-col [&_.rt-ContainerInner]:gap-10 bg-gray-3 dark:bg-gray-1">
             {children}
           </Layout>
           <Analytics />
