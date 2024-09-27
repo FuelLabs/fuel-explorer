@@ -35,6 +35,14 @@ export type Scalars = {
   UtxoId: { input: string; output: string; }
 };
 
+export type GQLAccountNode = {
+  __typename: 'AccountNode';
+  account_id: Scalars['String']['output'];
+  balance: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  transaction_count: Scalars['Int']['output'];
+};
+
 export type GQLAsset = {
   __typename: 'Asset';
   assetId?: Maybe<Scalars['String']['output']>;
@@ -902,6 +910,12 @@ export type GQLPageInfo = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
+export type GQLPaginatedAccountConnection = {
+  __typename: 'PaginatedAccountConnection';
+  nodes: Array<GQLAccountNode>;
+  pageInfo: GQLPageInfo;
+};
+
 export type GQLParsedTime = {
   __typename: 'ParsedTime';
   fromNow?: Maybe<Scalars['String']['output']>;
@@ -1008,6 +1022,7 @@ export type GQLQuery = {
   messageStatus: GQLMessageStatus;
   messages: GQLMessageConnection;
   nodeInfo: GQLNodeInfo;
+  paginatedAccounts: GQLPaginatedAccountConnection;
   predicate?: Maybe<GQLPredicateItem>;
   /** Read register value by index. */
   register: Scalars['U64']['output'];
@@ -1145,6 +1160,14 @@ export type GQLQueryMessagesArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner?: InputMaybe<Scalars['Address']['input']>;
+};
+
+
+export type GQLQueryPaginatedAccountsArgs = {
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1588,6 +1611,16 @@ export type GQLGetBlocksDashboardQueryVariables = Exact<{ [key: string]: never; 
 
 
 export type GQLGetBlocksDashboardQuery = { __typename: 'Query', getBlocksDashboard: { __typename: 'BlocksDashboardConnection', nodes: Array<{ __typename: 'BlocksDashboard', timestamp: string, gasUsed: string, blockNo: string, producer?: string | null }> } };
+
+export type GQLPaginatedAccountsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GQLPaginatedAccountsQuery = { __typename: 'Query', paginatedAccounts: { __typename: 'PaginatedAccountConnection', nodes: Array<{ __typename: 'AccountNode', id: string, account_id: string, balance: string, transaction_count: number }>, pageInfo: { __typename: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } };
 
 export type GQLPredicateQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -3492,6 +3525,29 @@ export const GetBlocksDashboardDocument = gql`
   }
 }
     `;
+export const PaginatedAccountsDocument = gql`
+    query paginatedAccounts($cursor: String, $sortBy: String, $sortOrder: String, $first: Int) {
+  paginatedAccounts(
+    cursor: $cursor
+    sortBy: $sortBy
+    sortOrder: $sortOrder
+    first: $first
+  ) {
+    nodes {
+      id
+      account_id
+      balance
+      transaction_count
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+    `;
 export const PredicateDocument = gql`
     query predicate($address: String!) {
   predicate(address: $address) {
@@ -3612,6 +3668,7 @@ const CoinsDocumentString = print(CoinsDocument);
 const ContractDocumentString = print(ContractDocument);
 const ContractBalancesDocumentString = print(ContractBalancesDocument);
 const GetBlocksDashboardDocumentString = print(GetBlocksDashboardDocument);
+const PaginatedAccountsDocumentString = print(PaginatedAccountsDocument);
 const PredicateDocumentString = print(PredicateDocument);
 const RecentTransactionsDocumentString = print(RecentTransactionsDocument);
 const SearchDocumentString = print(SearchDocument);
@@ -3647,6 +3704,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getBlocksDashboard(variables?: GQLGetBlocksDashboardQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLGetBlocksDashboardQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLGetBlocksDashboardQuery>(GetBlocksDashboardDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getBlocksDashboard', 'query', variables);
+    },
+    paginatedAccounts(variables?: GQLPaginatedAccountsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLPaginatedAccountsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLPaginatedAccountsQuery>(PaginatedAccountsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'paginatedAccounts', 'query', variables);
     },
     predicate(variables: GQLPredicateQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLPredicateQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLPredicateQuery>(PredicateDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'predicate', 'query', variables);

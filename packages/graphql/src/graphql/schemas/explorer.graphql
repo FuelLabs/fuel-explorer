@@ -226,6 +226,7 @@ type Query {
   tps: TPSConnection!
   getBlocksDashboard: BlocksDashboardConnection!
   asset (assetId: String!): Asset
+  paginatedAccounts(cursor: String, sortBy: String, sortOrder: String, first: Int): PaginatedAccountConnection!
 }
 
 type TPS {
@@ -278,4 +279,16 @@ type AssetNetworkEthereum {
 	type: String
 	decimals: U64
 	address: String
+}
+
+type PaginatedAccountConnection {
+  nodes: [AccountNode!]!
+  pageInfo: PageInfo!
+}
+
+type AccountNode {
+  id: ID!
+  account_id: String!
+  balance: String!
+  transaction_count: Int!
 }
