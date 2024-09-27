@@ -31,3 +31,4 @@ export const DataTable = (props: DataTableProps) => {
     </RoundedContainer>
   );
 };
+export default DataTable;

@@ -20,7 +20,7 @@ const chartConfig = {
 interface GasSpentProps {
   blocks: any;
 }
-export const GasSpentChart = (gasSpent: GasSpentProps) => {
+const GasSpentChart = (gasSpent: GasSpentProps) => {
   const totalGasSpent = gasSpent.blocks
     .map((block: any) => +block.value)
     .reduce((acc: any, value: any) => acc + value, 0);
@@ -141,3 +141,4 @@ export const GasSpentChart = (gasSpent: GasSpentProps) => {
     </RoundedContainer>
   );
 };
+export default GasSpentChart;

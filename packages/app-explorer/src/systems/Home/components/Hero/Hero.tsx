@@ -1,22 +1,19 @@
-'use client';
-
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
-
 import { LoadingBox, LoadingWrapper } from '@fuels/ui';
-import { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import projectJson from '../../../../../../app-portal/src/systems/Ecosystem/data/projects.json';
-import { DataTable } from '../../components/DataTable';
-import { Block } from '../../interface/blocks.interface';
-import DailyTransaction from '../DailyTransaction';
-import { GasSpentChart } from '../GasSpentChart';
-import { LatestBlock } from '../LatestBlock';
-import { TPS } from '../TPS';
-import TotalDapps from '../TotalDapps/TotalDapps';
 import { getBlocksDashboard } from './actions/get-blocks-dashboard';
 import { getTPS } from './actions/get-tps';
 
-export function Hero() {
+const DailyTransaction = React.lazy(() => import('../DailyTransaction'));
+const GasSpentChart = React.lazy(() => import('../GasSpentChart/index'));
+const LatestBlock = React.lazy(() => import('../LatestBlock'));
+const TPS = React.lazy(() => import('../TPS'));
+const TotalDapps = React.lazy(() => import('../TotalDapps/TotalDapps'));
+const DataTable = React.lazy(() => import('../../components/DataTable'));
+
+function Hero() {
   const classes = styles();
   const [isLoading, setIsLoading] = useState(true);
   const [tpsData, setTpsData] = useState<any>(null);
@@ -25,25 +22,27 @@ export function Hero() {
 
   const getTPSData = async () => {
     try {
-      const result = await getTPS();
-      const dashboard = await getBlocksDashboard();
+      const [result, dashboard] = await Promise.all([
+        getTPS(),
+        getBlocksDashboard(),
+      ]);
+      setIsLoading(false);
 
       setTpsData(result);
-
       setBlocksData(dashboard);
 
       if (isFirstFetch) {
-        setIsLoading(false); // Set loading to false only after first fetch
-        setIsFirstFetch(false); // Mark that the first fetch is done
+        setIsLoading(false);
+        setIsFirstFetch(false);
       }
     } catch (_e) {}
   };
 
   useEffect(() => {
+    getTPSData();
     const interval = setInterval(() => {
       getTPSData();
     }, 10000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -93,19 +92,19 @@ export function Hero() {
             <Heading as="h1" className={classes.title()}>
               Fuel Explorer
             </Heading>
-            {/* <Heading size="6" className={classes.title()}>
-              Trending Items
-            </Heading>
-            <div className="pb-6">
-              <TrendingCardCarousel />
-            </div> */}
 
             <Box className={classes.searchWrapper()}>
               <div className="row-span-2 col-span-6 sm:col-span-4">
                 <LoadingWrapper
                   isLoading={isLoading}
                   loadingEl={<LoadingBox className="w-full h-[12rem]" />}
-                  regularEl={<DailyTransaction blocks={dailyTsxData} />}
+                  regularEl={
+                    <Suspense
+                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                    >
+                      <DailyTransaction blocks={dailyTsxData} />
+                    </Suspense>
+                  }
                 />
               </div>
               <div className="row-span-2 col-span-6 sm:col-span-3">
@@ -113,11 +112,15 @@ export function Hero() {
                   isLoading={isLoading}
                   loadingEl={<LoadingBox className="w-full h-[12rem]" />}
                   regularEl={
-                    <TotalDapps
-                      active={activeProjects}
-                      total={totalProjects}
-                      featured={top3Projects}
-                    />
+                    <Suspense
+                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                    >
+                      <TotalDapps
+                        active={activeProjects}
+                        total={totalProjects}
+                        featured={top3Projects}
+                      />
+                    </Suspense>
                   }
                 />
               </div>
@@ -126,33 +129,43 @@ export function Hero() {
                   isLoading={isLoading}
                   loadingEl={<LoadingBox className="w-full h-[12rem]" />}
                   regularEl={
-                    <LatestBlock
-                      blockNo={
-                        blocksData?.getBlocksDashboard.nodes[0].blockNo
-                          ? blocksData.getBlocksDashboard.nodes[0].blockNo
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          : ''
-                      }
-                      gasUsed={
-                        blocksData?.getBlocksDashboard.nodes[0].gasUsed ?? ''
-                      }
-                      producer={
-                        blocksData?.getBlocksDashboard.nodes[0].producer ?? ''
-                      }
-                      timeStamp={
-                        blocksData?.getBlocksDashboard.nodes[0].timestamp ?? ''
-                      }
-                      // tps={tpsData?.nodes[0].tps ?? ''}
-                    />
+                    <Suspense
+                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                    >
+                      <LatestBlock
+                        blockNo={
+                          blocksData?.getBlocksDashboard.nodes[0].blockNo
+                            ? blocksData.getBlocksDashboard.nodes[0].blockNo
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                            : ''
+                        }
+                        gasUsed={
+                          blocksData?.getBlocksDashboard.nodes[0].gasUsed ?? ''
+                        }
+                        producer={
+                          blocksData?.getBlocksDashboard.nodes[0].producer ?? ''
+                        }
+                        timeStamp={
+                          blocksData?.getBlocksDashboard.nodes[0].timestamp ??
+                          ''
+                        }
+                      />
+                    </Suspense>
                   }
                 />
               </div>
-              <div className={`${'col-span-6 row-span-3 sm:col-span-5'} `}>
+              <div className="col-span-6 row-span-3 sm:col-span-5">
                 <LoadingWrapper
                   isLoading={isLoading}
                   loadingEl={<LoadingBox className="w-full h-full" />}
-                  regularEl={<DataTable blocks={blocks.slice(0, 5)} />}
+                  regularEl={
+                    <Suspense
+                      fallback={<LoadingBox className="w-full h-full" />}
+                    >
+                      <DataTable blocks={blocks.slice(0, 5)} />
+                    </Suspense>
+                  }
                 />
               </div>
 
@@ -160,16 +173,25 @@ export function Hero() {
                 <LoadingWrapper
                   isLoading={isLoading}
                   loadingEl={<LoadingBox className="w-full h-[12rem]" />}
-                  regularEl={<TPS blocks={tpsTsxData} />}
+                  regularEl={
+                    <Suspense
+                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                    >
+                      <TPS blocks={tpsTsxData} />
+                    </Suspense>
+                  }
                 />
-                {/* <TPSChart /> */}
               </div>
               <div className="row-span-2 col-span-6 sm:col-span-3">
-                <LoadingWrapper
-                  isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
-                  regularEl={<GasSpentChart blocks={dailyTsxData} />}
-                />
+                <Suspense
+                  fallback={<LoadingBox className="w-full h-[12rem]" />}
+                >
+                  <LoadingWrapper
+                    isLoading={isLoading}
+                    loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                    regularEl={<GasSpentChart blocks={dailyTsxData} />}
+                  />
+                </Suspense>
               </div>
             </Box>
           </VStack>
@@ -203,3 +225,4 @@ const styles = tv({
     ],
   },
 });
+export default Hero;

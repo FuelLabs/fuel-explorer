@@ -148,3 +148,4 @@ export const TPS = (props: TPSProps) => {
     </RoundedContainer>
   );
 };
+export default TPS;

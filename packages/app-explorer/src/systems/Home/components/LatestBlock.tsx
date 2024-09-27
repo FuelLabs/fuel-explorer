@@ -3,7 +3,7 @@ import { HStack, RoundedContainer, VStack } from '@fuels/ui';
 import { fromNow } from '~/systems/Core/utils/dayjs';
 import { Block } from '../interface/blocks.interface';
 
-export const LatestBlock = (block: Block) => {
+const LatestBlock = (block: Block) => {
   return (
     <RoundedContainer className="py-4 px-5 space-y-[24px] h-full bg-light-gradient dark:bg-dark-gradient">
       <div className="space-y-[16px]">
@@ -61,3 +61,4 @@ export const LatestBlock = (block: Block) => {
     </RoundedContainer>
   );
 };
+export default LatestBlock;
