@@ -1,4 +1,3 @@
-'use client';
 import { PageTitle } from 'app-commons';
 
 export function TxsTitle() {
