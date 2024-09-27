@@ -3,6 +3,7 @@ import { LoadingBox, LoadingWrapper } from '@fuels/ui';
 import React, { Suspense, useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import projectJson from '../../../../../../app-portal/src/systems/Ecosystem/data/projects.json';
+import { Block } from '../../interface/blocks.interface';
 import { getBlocksDashboard } from './actions/get-blocks-dashboard';
 import { getTPS } from './actions/get-tps';
 
