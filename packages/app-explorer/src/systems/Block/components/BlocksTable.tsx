@@ -1,12 +1,10 @@
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { GridTable } from '@fuels/ui';
-import { Link } from '@fuels/ui';
-import NextLink from 'next/link';
 import BlockEfficiencyItem from './BlockEfficiencyItem';
-import BlockHashItem from './BlockHashItem';
+// import BlockHashItem from './BlockHashItem';
 import BlockItem from './BlockItem';
 import BlockTimeItem from './BlockTimeItem';
-import BlockValidatorItem from './BlockValidatorItem';
+// import BlockValidatorItem from './BlockValidatorItem';
 
 const columns = [
   {
@@ -30,7 +28,7 @@ const columns = [
     name: (
       <div className="group">
         <div className="flex items-center ">
-          <span className="">Blockhash</span>
+          <span className="">daHeight</span>
           <span className="ml-2 cursor-pointer group">
             <svg
               width="14"
@@ -52,9 +50,7 @@ const columns = [
         </div>
       </div>
     ),
-    cell: (row: any) => (
-      <BlockHashItem hashAddress={row.node.id} width="108px" />
-    ),
+    cell: (_row: any) => 'daHeight data',
     sortable: false,
   },
   {
@@ -103,26 +99,28 @@ const columns = [
       );
       return (
         <div className="font-mono text-sm text-gray-contrast w-full flex justify-start pl-6 px-1">
-          {mintTransaction ? mintTransaction.mintAmount : 'No mint amount'}{' '}
+          {mintTransaction
+            ? mintTransaction.mintAmount / 10 ** 9
+            : 'No mint amount'}{' '}
         </div>
       );
     },
     sortable: false,
   },
 
-  {
-    name: (
-      <div className="flex group">
-        <span className="">Producer</span>
-      </div>
-    ),
-    cell: (row: any) => (
-      <div className="flex items-center justify-center w-130">
-        <BlockValidatorItem hashAddress={row.node.producer} />
-      </div>
-    ),
-    sortable: false,
-  },
+  // {
+  //   name: (
+  //     <div className="flex group">
+  //       <span className="">Producer</span>
+  //     </div>
+  //   ),
+  //   cell: (row: any) => (
+  //     <div className="flex items-center justify-center w-130">
+  //       <BlockValidatorItem hashAddress={row.node.producer} />
+  //     </div>
+  //   ),
+  //   sortable: false,
+  // },
   {
     name: (
       <div className=" group">
@@ -151,7 +149,7 @@ const columns = [
     ),
     cell: (row: any) => (
       <div className="w-[6.8rem]">
-        <BlockEfficiencyItem current={row.node.totalGasUsed} total={30000000} />
+        <BlockEfficiencyItem current={row.node.totalGasUsed} total={1280000} />
       </div>
     ),
     sortable: false,
@@ -163,31 +161,29 @@ const columns = [
       </div>
     ),
     cell: (row: any) => {
-      const unixTimestamp = row.node.time.rawUnix;
-      const date = new Date(unixTimestamp * 1000);
-
       return (
         <div className="w-[6.5rem]">
-          <BlockTimeItem timeAgo={row.node.time.fromNow} time={date} />
+          <BlockTimeItem timeAgo={row.node.time.fromNow} />
         </div>
       );
     },
     sortable: false,
   },
-  {
-    name: '',
-    cell: (row: any) => (
-      <Link
-        as={NextLink}
-        isExternal={false}
-        href={`/block/${row.node.header.height}/simple`}
-        className="px-4 py-[0.4rem] bg-gray-3 hover:bg-black hover:text-white dark:hover:bg-brand text-black dark:text-white rounded font-semibold font-mono"
-      >
-        View
-      </Link>
-    ),
-    sortable: false,
-  },
+  // {
+  //   name: '',
+  //   cell: (row: any) => (
+  //     // <Link
+  //     //   as={NextLink}
+  //     //   isExternal={false}
+  //     //   href={`/block/${row.node.header.height}/simple`}
+  //     //   className="px-4 py-[0.4rem] bg-gray-3 hover:bg-black hover:text-white dark:hover:bg-brand text-black dark:text-white rounded font-semibold font-mono"
+  //     // >
+  //     //   View
+  //     // </Link>
+  //     ""
+  //   ),
+  //   sortable: false,
+  // },
 ];
 
 type BlocksTableProps = {
