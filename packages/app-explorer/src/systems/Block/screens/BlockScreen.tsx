@@ -100,16 +100,16 @@ export const BlocksScreen = () => {
         isLoading={loading}
         loadingEl={
           <>
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto mt-10 mb-1 rounded-lg" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto mt-10 mb-1 rounded-lg" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
           </>
         }
         regularEl={
