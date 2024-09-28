@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+'use client';
+import { useEffect, useMemo } from 'react';
 import { Services, store } from '~portal/store';
 import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
@@ -10,6 +11,7 @@ import type { TxEthToFuelMachineState } from '../machines';
 import { isErc20Address } from '../utils';
 
 import type { HexAddress } from 'app-commons';
+import { useSearchParams } from 'next/navigation';
 import { deepCompare } from '../utils/deepCompare';
 
 const bridgeTxsSelectors = {
@@ -114,6 +116,8 @@ const txEthToFuelSelectors = {
 };
 
 export function useTxEthToFuel({ id }: { id: string }) {
+  const searchParams = useSearchParams();
+  const autoClose = searchParams.get('auto_close') === 'true';
   const { wallet: fuelWallet } = useFuelAccountConnection();
   const txId = id.startsWith('0x') ? (id as HexAddress) : undefined;
   const { href: explorerLink } = useExplorerLink({
@@ -137,7 +141,6 @@ export function useTxEthToFuel({ id }: { id: string }) {
     isLoadingReceipts,
   } = useMemo(() => {
     if (!txEthToFuelState) return {};
-
     const steps = txEthToFuelSelectors.steps(txEthToFuelState);
     const status = txEthToFuelSelectors.status(txEthToFuelState);
     const amount = txEthToFuelSelectors.amount(txEthToFuelState);
@@ -157,6 +160,13 @@ export function useTxEthToFuel({ id }: { id: string }) {
       isLoadingReceipts,
     };
   }, [txEthToFuelState]);
+
+  // If auto_close is set, close the page once deposit is settled
+  useEffect(() => {
+    if (status?.isSettlementDone && autoClose) {
+      window.close();
+    }
+  }, [status?.isSettlementDone, autoClose]);
 
   const { asset } = useAsset({
     ethTokenId: erc20Token?.address,
@@ -192,6 +202,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
       openTxEthToFuel: store.openTxEthToFuel,
       relayMessageToFuel,
     },
+    autoClose,
     date,
     steps,
     status,
