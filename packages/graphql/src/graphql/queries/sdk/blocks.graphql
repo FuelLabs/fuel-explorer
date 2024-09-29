@@ -24,6 +24,7 @@ fragment BlockItem on Block {
     height
     time
     transactionsCount
+    daHeight
   }
 
   transactions {
