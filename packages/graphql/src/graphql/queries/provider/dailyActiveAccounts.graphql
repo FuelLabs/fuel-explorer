@@ -1,0 +1,8 @@
+query dailyActiveAccountStatistics($timeFilter: String!) {
+    dailyActiveAccountStatistics(timeFilter: $timeFilter) {
+        nodes {
+            activeAccounts
+            timestamp
+        }
+    }
+}

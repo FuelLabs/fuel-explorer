@@ -1,0 +1,8 @@
+query cumulativeAccountStatistics($timeFilter: String!) {
+    cumulativeAccountStatistics(timeFilter: $timeFilter) {
+        nodes {
+            cumulativeAccounts
+            timestamp
+        }
+    }
+}

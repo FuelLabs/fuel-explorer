@@ -783,6 +783,9 @@ type Query {
   transactionsByBlockId(after: String, before: String, first: Int, last: Int, blockId: String!): TransactionConnection!
   tps: TPSConnection!
   getBlocksDashboard : BlocksDashboardConnection!
+  newAccountStatistics(timeFilter: String!): NewAccountStatisticsResponse!
+  dailyActiveAccountStatistics(timeFilter: String!): DailyActiveAccountStatisticsResponse!
+  cumulativeAccountStatistics(timeFilter: String!): CumulativeAccountStatisticsResponse!
 }
 
 type Receipt {
@@ -1045,4 +1048,31 @@ type BlocksDashboard {
 
 type BlocksDashboardConnection {
   nodes: [BlocksDashboard!]!
+}
+
+type NewAccountStatistics {
+    timestamp: String!
+    newAccounts: Int!
+}
+
+type DailyActiveAccountStatistics {
+    timestamp: String!
+    activeAccounts: Int!
+}
+
+type CumulativeAccountStatistics {
+    timestamp: String!
+    cumulativeAccounts: Int!
+}
+
+type NewAccountStatisticsResponse {
+    nodes: [NewAccountStatistics!]!
+}
+
+type DailyActiveAccountStatisticsResponse {
+    nodes: [DailyActiveAccountStatistics!]!
+}
+
+type CumulativeAccountStatisticsResponse {
+    nodes: [CumulativeAccountStatistics!]!
 }

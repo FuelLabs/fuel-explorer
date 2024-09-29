@@ -227,6 +227,9 @@ type Query {
   getBlocksDashboard: BlocksDashboardConnection!
   asset (assetId: String!): Asset
   paginatedAccounts(cursor: String, sortBy: String, sortOrder: String, first: Int): PaginatedAccountConnection!
+  newAccountStatistics(timeFilter: String!): NewAccountStatisticsResponse!
+  dailyActiveAccountStatistics(timeFilter: String!): DailyActiveAccountStatisticsResponse!
+  cumulativeAccountStatistics(timeFilter: String!): CumulativeAccountStatisticsResponse!
 }
 
 type TPS {
@@ -291,4 +294,31 @@ type AccountNode {
   account_id: String!
   balance: String!
   transaction_count: Int!
+}
+
+type NewAccountStatistics {
+    timestamp: String!
+    newAccounts: Int!
+}
+
+type DailyActiveAccountStatistics {
+    timestamp: String!
+    activeAccounts: Int!
+}
+
+type CumulativeAccountStatistics {
+    timestamp: String!
+    cumulativeAccounts: Int!
+}
+
+type NewAccountStatisticsResponse {
+    nodes: [NewAccountStatistics!]!
+}
+
+type DailyActiveAccountStatisticsResponse {
+    nodes: [DailyActiveAccountStatistics!]!
+}
+
+type CumulativeAccountStatisticsResponse {
+    nodes: [CumulativeAccountStatistics!]!
 }
