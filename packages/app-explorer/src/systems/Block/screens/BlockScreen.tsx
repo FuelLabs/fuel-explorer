@@ -100,16 +100,12 @@ export const BlocksScreen = () => {
         isLoading={loading}
         loadingEl={
           <>
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto mt-10 mb-1 rounded-lg" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
-            <LoadingBox className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1" />
+            {[...Array(10)].map((_, index) => (
+              <LoadingBox
+                key={index}
+                className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1"
+              />
+            ))}
           </>
         }
         regularEl={
