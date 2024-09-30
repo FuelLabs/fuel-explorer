@@ -89,7 +89,7 @@ const styles = tv({
         icon: 'w-4 h-4',
       },
       md: {
-        root: 'w-10 h-10',
+        root: 'w-[38px] h-[38px]',
         icon: 'w-5 h-5',
       },
       lg: {
