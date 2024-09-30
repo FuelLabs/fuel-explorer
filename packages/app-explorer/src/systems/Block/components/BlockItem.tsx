@@ -1,4 +1,4 @@
-import { Box, Copyable, HStack, Text, VStack } from '@fuels/ui';
+import { Box, Copyable, HStack, VStack } from '@fuels/ui';
 
 export interface BlockItemProps {
   blockId: string;
@@ -41,9 +41,9 @@ export default function BlockItem({ blockId, ethValue }: BlockItemProps) {
         ) : (
           ''
         )}
-        <Text className="text-gray-10 text-xs text-ellipsis w-[7rem]">
+        {/* <Text className="text-gray-10 text-xs text-ellipsis w-[7rem]">
           {ethValue} ETH
-        </Text>
+        </Text> */}
       </div>
     </VStack>
   );
