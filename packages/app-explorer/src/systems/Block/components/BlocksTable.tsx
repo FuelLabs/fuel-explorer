@@ -169,8 +169,8 @@ const columns = [
       <Link className="w-full" href={`/block/${row.node.header.height}/simple`}>
         <div className="w-[6.8rem]">
           <BlockEfficiencyItem
-            current={row.node.totalGasUsed}
-            total={1280000}
+            current={row.node.totalGasUsed / 128000}
+            total={30000000}
           />
         </div>
       </Link>
