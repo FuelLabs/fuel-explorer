@@ -56,8 +56,8 @@ export const GridTable = <T,>({
         backgroundColor: 'var(--gray-3)',
         fontWeight: '400',
         borderRadius: '12px',
-        marginBottom: '8px',
-        margin: '0.7rem 0',
+        // border: '0.1px solid #ccc',
+        marginTop: '12px',
       },
     },
     cells: {
@@ -69,7 +69,7 @@ export const GridTable = <T,>({
         color: 'var(--gray-table-text)',
         paddingTop: '0.6rem',
         paddingBottom: '0.6rem',
-        backgroundColor: 'transparent',
+        // backgroundColor: 'transparent',
         fontWeight: '400',
       },
     },
@@ -83,6 +83,7 @@ export const GridTable = <T,>({
         margin: '0 4px',
         color: '#f0f0f0',
         borderRadius: '4px',
+
         backgroundColor: 'var(--gray-2)',
         '&.selected': {
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -197,6 +198,7 @@ export const GridTable = <T,>({
         }
       `}</style>
       <DataTable
+        responsive={true}
         customStyles={customStyles}
         columns={columns}
         data={data}
