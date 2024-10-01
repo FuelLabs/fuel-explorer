@@ -1773,6 +1773,7 @@ export type GQLBlockItemFragment = {
     height: string;
     time: string;
     transactionsCount: string;
+    daHeight: string;
   };
   transactions: Array<{
     __typename: 'Transaction';
@@ -1822,6 +1823,7 @@ export type GQLBlocksQuery = {
           height: string;
           time: string;
           transactionsCount: string;
+          daHeight: string;
         };
         transactions: Array<{
           __typename: 'Transaction';
@@ -4890,6 +4892,7 @@ export const BlockItemFragmentDoc = gql`
     height
     time
     transactionsCount
+    daHeight
   }
   transactions {
     isMint
