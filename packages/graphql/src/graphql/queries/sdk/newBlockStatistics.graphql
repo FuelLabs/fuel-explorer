@@ -1,0 +1,8 @@
+query newBlockStatistics($timeFilter: String) {
+  newBlockStatistics(timeFilter: $timeFilter) {
+    nodes {
+      time
+      new_blocks
+    }
+  }
+}

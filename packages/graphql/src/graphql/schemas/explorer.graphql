@@ -226,6 +226,12 @@ type Query {
   tps: TPSConnection!
   getBlocksDashboard: BlocksDashboardConnection!
   asset (assetId: String!): Asset
+  newBlockStatistics(timeFilter: String): NewBlockStatisticsConnection!
+  blockRewardStatistics(timeFilter: String): blockRewardStatisticsConnection!
+  transactionFeeStatistics(timeFilter: String): TransactionFeeStatisticsConnection!
+  transactionsStatistics(timeFilter: String): TransactionStatisticsConnection!
+  cumulativeFeeStatistics(timeFilter: String): CumulativeFeeStatisticsConnection!
+  cumulativeTransactionStatistics(timeFilter: String): CumulativeTransactionStatisticsConnection!
 }
 
 type TPS {
@@ -278,4 +284,59 @@ type AssetNetworkEthereum {
 	type: String
 	decimals: U64
 	address: String
+}
+
+type NewBlockStatistic {
+  new_blocks: U64!
+  time: String!
+}
+
+type NewBlockStatisticsConnection {
+  nodes: [NewBlockStatistic!]!
+}
+
+type BlockRewardStatistics {
+  block_reward: U64!
+  time: String!
+}
+
+type blockRewardStatisticsConnection {
+  nodes: [BlockRewardStatistics!]!
+}
+
+type TransactionStatistics {
+  tx_count: U64!
+  time: String!
+}
+
+type TransactionStatisticsConnection {
+  nodes: [TransactionStatistics!]!
+}
+
+type TransactionFeeStatistics {
+  tx_count: U64!
+  fee_spent: U64!
+  time: String!
+}
+
+type TransactionFeeStatisticsConnection {
+  nodes: [TransactionFeeStatistics!]!
+}
+
+type CumulativeFeeStatistics {
+  time: String!
+  fee_spent_cumulative: U64!
+}
+
+type CumulativeFeeStatisticsConnection {
+  nodes: [CumulativeFeeStatistics!]!
+}
+
+type CumulativeTransactionStatistics {
+  time: String!
+  transaction_count_cumulative: U64!
+}
+
+type CumulativeTransactionStatisticsConnection {
+  nodes: [CumulativeTransactionStatistics!]!
 }

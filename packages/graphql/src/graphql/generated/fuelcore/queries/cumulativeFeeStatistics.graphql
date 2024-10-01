@@ -1,0 +1,8 @@
+query cumulativeFeeStatistics($timeFilter: String){
+    cumulativeFeeStatistics(timeFilter: $timeFilter){
+        nodes{
+            time
+            fee_spent_cumulative
+        }
+    }
+}

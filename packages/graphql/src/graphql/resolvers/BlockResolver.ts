@@ -3,7 +3,9 @@ import { logger } from '~/core/Logger';
 import type {
   GQLBlock,
   GQLQueryBlockArgs,
+  GQLQueryBlockRewardStatisticsArgs,
   GQLQueryBlocksArgs,
+  GQLQueryNewBlockStatisticsArgs,
 } from '~/graphql/generated/sdk-provider';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import PaginatedParams from '~/infra/paginator/PaginatedParams';
@@ -14,6 +16,8 @@ type Params = {
   block: GQLQueryBlockArgs;
   tps: null;
   getBlocksDashboard: null;
+  newBlockStats: GQLQueryNewBlockStatisticsArgs;
+  blockRewardStats: GQLQueryBlockRewardStatisticsArgs;
 };
 
 export class BlockResolver {
@@ -25,6 +29,8 @@ export class BlockResolver {
         blocks: resolvers.blocks,
         tps: resolvers.tps,
         getBlocksDashboard: resolvers.getBlocksDashboard,
+        newBlockStatistics: resolvers.getNewBlockStatistics,
+        blockRewardStatistics: resolvers.getBlockRewardStatistics,
       },
     };
   }
@@ -73,5 +79,26 @@ export class BlockResolver {
     const tps = await blockDAO.tps();
 
     return tps;
+  }
+
+  async getNewBlockStatistics(_: Source, _params: Params['newBlockStats']) {
+    const blockDAO = new BlockDAO();
+    const newBlockStats = await blockDAO.getNewBlockStatistics(
+      _params.timeFilter ? _params.timeFilter : '',
+    );
+
+    return newBlockStats;
+  }
+
+  async getBlockRewardStatistics(
+    _: Source,
+    _params: Params['blockRewardStats'],
+  ) {
+    const blockDAO = new BlockDAO();
+    const blockRewardStats = await blockDAO.getBlockRewardStatistics(
+      _params.timeFilter ? _params.timeFilter : '',
+    );
+
+    return blockRewardStats;
   }
 }

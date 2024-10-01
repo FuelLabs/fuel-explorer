@@ -1,0 +1,8 @@
+query transactionsStatistics($timeFilter: String){
+    transactionsStatistics(timeFilter: $timeFilter){
+        nodes{
+            tx_count
+            time
+        }
+    }
+}
