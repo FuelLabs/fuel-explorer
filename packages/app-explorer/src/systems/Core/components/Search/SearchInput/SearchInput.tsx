@@ -39,6 +39,8 @@ export function SearchInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const { pending } = useFormStatus();
   const { dropdownRef } = useContext(SearchContext);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const openDropdown = hasSubmitted
     ? !pending
     : isOpen && !pending && !!searchResult;
@@ -66,14 +68,20 @@ export function SearchInput({
   function handleClear() {
     setValue('');
     close();
+    inputRef.current?.focus();
   }
 
   function handleFocus() {
     setIsFocused(true);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   }
 
   function handleBlur() {
-    setIsFocused(false);
+    timeoutRef.current = setTimeout(() => {
+      setIsFocused(false);
+    }, 100);
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -112,36 +120,36 @@ export function SearchInput({
               onBlur={handleBlur}
               onKeyDown={onKeyDown}
             >
-              <div
-                data-show={isFocused}
+              <Input.Slot
+                side="right"
+                data-show={isFocused || !!inputRef.current?.value}
                 className={classes.inputActionsContainer()}
               >
-                <Input.Slot side="right">
-                  <Tooltip content="Submit">
-                    <IconButton
-                      type="submit"
-                      aria-label="Submit"
-                      icon={IconCheck}
-                      iconColor="text-brand"
-                      variant="link"
-                      className="!ml-0 tablet:ml-2"
-                      isLoading={pending}
-                      onClick={handleSubmit}
-                    />
-                  </Tooltip>
+                <Tooltip content="Submit">
                   <IconButton
-                    aria-label="Clear"
-                    icon={IconX}
-                    iconColor="text-gray-11"
+                    type="submit"
+                    aria-label="Submit"
+                    disabled={!value}
+                    icon={IconCheck}
+                    iconColor="text-brand"
                     variant="link"
-                    className="m-0"
-                    onClick={handleClear}
+                    className="!ml-0 tablet:ml-2"
+                    isLoading={pending}
+                    onClick={handleSubmit}
                   />
-                </Input.Slot>
-              </div>
+                </Tooltip>
+                <IconButton
+                  aria-label="Clear"
+                  icon={IconX}
+                  iconColor="text-gray-11"
+                  variant="link"
+                  className="m-0"
+                  onClick={handleClear}
+                />
+              </Input.Slot>
 
               <Input.Slot
-                data-show={!isFocused}
+                data-show={!isFocused && !inputRef.current?.value}
                 side="right"
                 className="[&[data-show=false]]:hidden"
               >

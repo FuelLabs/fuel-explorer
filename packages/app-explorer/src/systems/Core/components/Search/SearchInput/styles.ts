@@ -22,7 +22,6 @@ export const styles = tv({
       '[&_.rt-TextFieldChrome]:[&[data-opened=true]]:rounded-b-none',
       'group-[&[data-active=true]]:[&_.rt-TextFieldChrome]:shadow-none',
     ],
-    inputActionsContainer:
-      '[&[data-show=false]]:hidden absolute flex items-center h-full right-0 top-0 transform',
+    inputActionsContainer: '[&[data-show=false]]:hidden',
   },
 });
