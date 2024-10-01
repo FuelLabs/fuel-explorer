@@ -53,13 +53,11 @@ export const GridTable = <T,>({
     rows: {
       style: {
         cursor: 'pointer',
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'var(--gray-3)',
         fontWeight: '400',
         borderRadius: '12px',
-        marginBottom: '8px',
-        '&:hover': {
-          backgroundColor: 'var(--gray-a1)',
-        },
+        // border: '0.1px solid #ccc',
+        marginTop: '12px',
       },
     },
     cells: {
@@ -69,9 +67,9 @@ export const GridTable = <T,>({
         paddingLeft: '0.5rem',
         paddingRight: '0.5rem',
         color: 'var(--gray-table-text)',
-        paddingTop: '0.4rem',
-        paddingBottom: '0.4rem',
-        backgroundColor: 'transparent',
+        paddingTop: '0.6rem',
+        paddingBottom: '0.6rem',
+        // backgroundColor: 'transparent',
         fontWeight: '400',
       },
     },
@@ -85,6 +83,7 @@ export const GridTable = <T,>({
         margin: '0 4px',
         color: '#f0f0f0',
         borderRadius: '4px',
+
         backgroundColor: 'var(--gray-2)',
         '&.selected': {
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -97,20 +96,40 @@ export const GridTable = <T,>({
     },
   };
 
+  // const Pagination: React.FC = () => {
+  //   return (
+  //     <ReactPaginate
+  //       previousLabel={<span>&#x2190; Previous</span>} // Left Arrow
+  //       nextLabel={<span>Next &#x2192;</span>} // Right Arrow
+  //       breakLabel={'...'}
+  //       pageCount={pageCount}
+  //       marginPagesDisplayed={2}
+  //       pageRangeDisplayed={5}
+  //       onPageChange={(page) => handlePagination(page)}
+  //       containerClassName={'pagination'}
+  //       activeClassName={'selected'}
+  //       disabledClassName={'disabled'}
+  //       pageLinkClassName={'page-link'}
+  //       forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+  //     />
+  //   );
+  // };
+
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={<span>&#x2190; Previous</span>} // Left Arrow
-        nextLabel={<span>Next &#x2192;</span>} // Right Arrow
-        breakLabel={'...'}
+        previousLabel={<span>&#x2190;</span>}
+        nextLabel={<span> &#x2192;</span>}
+        breakLabel={''} // No break label
         pageCount={pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
+        marginPagesDisplayed={0} // No margin pages
+        pageRangeDisplayed={0} // No range of pages
         onPageChange={(page) => handlePagination(page)}
         containerClassName={'pagination'}
         activeClassName={'selected'}
         disabledClassName={'disabled'}
-        pageLinkClassName={'page-link'}
+        previousLinkClassName={'previous-link'}
+        nextLinkClassName={'next-link'}
         forcePage={currentPage !== 0 ? currentPage - 1 : 0}
       />
     );
@@ -124,6 +143,21 @@ export const GridTable = <T,>({
   return (
     <div style={customStyles.tableWrapper.style}>
       <style>{`
+        .pagination span{
+          padding: 8px 16px;
+          color: var(--white-2);
+          background-color: var(--gray-7);
+          font-weight: bold;
+          border-radius: 7px;
+          cursor: pointer;
+          text-decoration: none;
+        }
+
+        .pagination .selected,
+        .pagination .page-link {
+          display: none !important;
+        }
+
         .pagination {
           display: flex;
           justify-content: end;
@@ -164,6 +198,7 @@ export const GridTable = <T,>({
         }
       `}</style>
       <DataTable
+        responsive={true}
         customStyles={customStyles}
         columns={columns}
         data={data}

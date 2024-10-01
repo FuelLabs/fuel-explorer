@@ -98,10 +98,10 @@ function Hero() {
               <div className="row-span-2 col-span-6 sm:col-span-4">
                 <LoadingWrapper
                   isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  loadingEl={<LoadingBox className="w-full h-[18rem]" />}
                   regularEl={
                     <Suspense
-                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                      fallback={<LoadingBox className="w-full h-[18rem]" />}
                     >
                       <DailyTransaction blocks={dailyTsxData} />
                     </Suspense>
@@ -111,10 +111,10 @@ function Hero() {
               <div className="row-span-2 col-span-6 sm:col-span-3">
                 <LoadingWrapper
                   isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  loadingEl={<LoadingBox className="w-full h-[18rem]" />}
                   regularEl={
                     <Suspense
-                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                      fallback={<LoadingBox className="w-full h-[18rem]" />}
                     >
                       <TotalDapps
                         active={activeProjects}
@@ -128,10 +128,10 @@ function Hero() {
               <div className="row-span-1 col-span-6 sm:col-span-5">
                 <LoadingWrapper
                   isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  loadingEl={<LoadingBox className="w-full h-[11rem]" />}
                   regularEl={
                     <Suspense
-                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                      fallback={<LoadingBox className="w-full h-[11rem]" />}
                     >
                       <LatestBlock
                         blockNo={
@@ -173,10 +173,10 @@ function Hero() {
               <div className="row-span-2 col-span-6 sm:col-span-4">
                 <LoadingWrapper
                   isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[12rem]" />}
+                  loadingEl={<LoadingBox className="w-full h-[18rem]" />}
                   regularEl={
                     <Suspense
-                      fallback={<LoadingBox className="w-full h-[12rem]" />}
+                      fallback={<LoadingBox className="w-full h-[18rem]" />}
                     >
                       <TPS blocks={tpsTsxData} />
                     </Suspense>
@@ -185,12 +185,14 @@ function Hero() {
               </div>
               <div className="row-span-2 col-span-6 sm:col-span-3">
                 <Suspense
-                  fallback={<LoadingBox className="w-full h-[12rem]" />}
+                  fallback={<LoadingBox className="w-full h-[18rem]" />}
                 >
                   <LoadingWrapper
                     isLoading={isLoading}
-                    loadingEl={<LoadingBox className="w-full h-[12rem]" />}
-                    regularEl={<GasSpentChart blocks={dailyTsxData} />}
+                    loadingEl={<LoadingBox className="w-full h-[18rem]" />}
+                    regularEl={
+                      <GasSpentChart blocks={dailyTsxData.slice(0, -1)} />
+                    }
                   />
                 </Suspense>
               </div>

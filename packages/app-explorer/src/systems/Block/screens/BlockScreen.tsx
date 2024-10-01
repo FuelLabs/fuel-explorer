@@ -3,6 +3,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
+import { LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { getBlocks } from '../actions/get-blocks';
 import BlocksTable from '../components/BlocksTable';
 import { Hero } from '../components/Hero';
@@ -95,19 +96,32 @@ export const BlocksScreen = () => {
   return (
     <VStack>
       <Hero />
-      {loading ? (
-        <p>Loading blocks...</p>
-      ) : (
-        data && (
-          <BlocksTable
-            blocks={data}
-            onPageChanged={handlePageChanged}
-            pageCount={totalPages || 1}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        )
-      )}
+      <LoadingWrapper
+        isLoading={loading}
+        loadingEl={
+          <>
+            {[...Array(10)].map((_, index) => (
+              <LoadingBox
+                key={index}
+                className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1"
+              />
+            ))}
+          </>
+        }
+        regularEl={
+          data && (
+            <>
+              <BlocksTable
+                blocks={data}
+                onPageChanged={handlePageChanged}
+                pageCount={totalPages || 1}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </>
+          )
+        }
+      />
     </VStack>
   );
 };
