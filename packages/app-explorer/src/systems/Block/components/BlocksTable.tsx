@@ -117,7 +117,7 @@ const columns = [
         >
           <div className="font-mono text-sm text-gray-contrast w-full flex justify-start pl-6 px-1">
             {mintTransaction
-              ? mintTransaction.mintAmount / 10 ** 9
+              ? `${mintTransaction.mintAmount / 10 ** 9} ETH`
               : 'No mint amount'}{' '}
           </div>
         </Link>
