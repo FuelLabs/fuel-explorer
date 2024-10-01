@@ -48,6 +48,14 @@ export type Scalars = {
   UtxoId: { input: string; output: string };
 };
 
+export type GQLAccountNode = {
+  __typename: 'AccountNode';
+  account_id: Scalars['String']['output'];
+  balance: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  transaction_count: Scalars['Int']['output'];
+};
+
 export type GQLAsset = {
   __typename: 'Asset';
   assetId?: Maybe<Scalars['String']['output']>;
@@ -1149,6 +1157,13 @@ export type GQLQueryMessagesArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner?: InputMaybe<Scalars['Address']['input']>;
+};
+
+export type GQLQueryPaginatedAccountsArgs = {
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GQLQueryPredicateArgs = {
@@ -2796,6 +2811,34 @@ export type GQLGetBlocksDashboardQuery = {
       blockNo: string;
       producer?: string | null;
     }>;
+  };
+};
+
+export type GQLPaginatedAccountsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type GQLPaginatedAccountsQuery = {
+  __typename: 'Query';
+  paginatedAccounts: {
+    __typename: 'PaginatedAccountConnection';
+    nodes: Array<{
+      __typename: 'AccountNode';
+      id: string;
+      account_id: string;
+      balance: string;
+      transaction_count: number;
+    }>;
+    pageInfo: {
+      __typename: 'PageInfo';
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+      endCursor?: string | null;
+    };
   };
 };
 
@@ -6779,6 +6822,28 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders },
           ),
         'getBlocksDashboard',
+        'query',
+        variables,
+      );
+    },
+    paginatedAccounts(
+      variables?: GQLPaginatedAccountsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: GQLPaginatedAccountsQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GQLPaginatedAccountsQuery>(
+            PaginatedAccountsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'paginatedAccounts',
         'query',
         variables,
       );
