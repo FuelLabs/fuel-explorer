@@ -67,9 +67,7 @@ export function TopNav() {
   return (
     <Nav>
       <Nav.Desktop className={'px-10 justify-between'}>
-        <Nav.Menu>
-          {logo}
-        </Nav.Menu>
+        <Nav.Menu>{logo}</Nav.Menu>
         <Nav.Menu>
           <SearchWidget />
         </Nav.Menu>

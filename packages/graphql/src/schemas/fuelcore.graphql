@@ -782,6 +782,7 @@ type Query {
   ): Transaction
   transactions(after: String, before: String, first: Int, last: Int): TransactionConnection!
   transactionsByOwner(after: String, before: String, first: Int, last: Int, owner: Address!): TransactionConnection!
+  paginatedAccounts(cursor: String, sortBy: String, sortOrder: String, first: Int): PaginatedAccountConnection!
 }
 
 type Receipt {
@@ -1022,4 +1023,16 @@ type VariableOutput {
   amount: U64!
   assetId: AssetId!
   to: Address!
+}
+
+type PaginatedAccountConnection {
+  nodes: [AccountNode!]!
+  pageInfo: PageInfo!
+}
+
+type AccountNode {
+  id: ID!
+  account_id: String!
+  balance: String!
+  transaction_count: Int!
 }
