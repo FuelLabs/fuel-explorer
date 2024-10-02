@@ -24,7 +24,6 @@ export const GridTable = <T,>({
 }: GridTableProps<T>): React.JSX.Element => {
   const customStyles = {
     tableWrapper: {
-      overflow: 'visible',
       style: {
         borderRadius: '0',
         padding: '2px',
@@ -60,7 +59,6 @@ export const GridTable = <T,>({
         borderRadius: '12px',
         border: '1px solid var(--gray-5)',
         margin: '0.7rem 0',
-        overflow: 'visible',
         '&:not(:last-of-type)': {
           borderBottomColor: 'tranparent',
         },
@@ -181,6 +179,11 @@ export const GridTable = <T,>({
         }
         .pagination li.disabled a:hover {
           background-color: transparent;
+        }
+           @media (max-width: 640px) { 
+          .rdt_TableHead {
+            display: none; 
+          }
         }
       `}</style>
       <DataTable
