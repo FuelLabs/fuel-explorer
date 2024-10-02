@@ -40,6 +40,8 @@ export const GridTable = <T,>({
         color: '#9f9f9f',
         fontWeight: '600',
         textAlign: 'left',
+        justifyContent: 'left',
+        borderBottom: 'none',
       },
     },
     headCells: {
@@ -49,12 +51,13 @@ export const GridTable = <T,>({
         fontWeight: '600',
         fontSize: '16px',
         textAlign: 'left',
+        justifyContent: 'left',
       },
     },
     rows: {
       style: {
         cursor: 'pointer',
-        backgroundColor: 'var(--gray-3)',
+        backgroundColor: 'var(--gray-13)',
         fontWeight: '400',
         borderRadius: '12px',
         border: '1px solid var(--gray-5)',
@@ -79,21 +82,21 @@ export const GridTable = <T,>({
     },
     pagination: {
       style: {
-        backgroundColor: 'var(--gray-2)',
-        color: '#f0f0f0',
+        backgroundColor: 'var(--gray-3)',
+        color: 'var(--gray-2)',
       },
       pageButtonsStyle: {
         padding: '8px 16px',
         margin: '0 4px',
-        color: '#f0f0f0',
+        color: 'var(--gray-2)',
         borderRadius: '4px',
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'var(--gray-4)',
         '&.selected': {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backgroundColor: 'var(--gray-4)',
           fontWeight: 'bold',
         },
         '&:hover': {
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          backgroundColor: 'var(--gray-4)',
         },
       },
     },
@@ -102,12 +105,12 @@ export const GridTable = <T,>({
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={<span>&#x2190;</span>}
+        previousLabel={currentPage > 1 ? <span>&#x2190;</span> : null}
         nextLabel={<span> &#x2192;</span>}
-        breakLabel={''} // No break label
+        breakLabel={''}
         pageCount={pageCount}
-        marginPagesDisplayed={0} // No margin pages
-        pageRangeDisplayed={0} // No range of pages
+        marginPagesDisplayed={0}
+        pageRangeDisplayed={0}
         onPageChange={(page) => handlePagination(page)}
         containerClassName={'pagination'}
         activeClassName={'selected'}
@@ -130,7 +133,7 @@ export const GridTable = <T,>({
         .pagination span{
           padding: 8px 16px;
           color: var(--white-2);
-          background-color: var(--gray-7);
+          background-color: var(--gray-2);
           font-weight: bold;
           border-radius: 7px;
           cursor: pointer;

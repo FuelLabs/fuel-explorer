@@ -12,7 +12,7 @@ export default function BlockItem({ blockId, ethValue }: BlockItemProps) {
         <Box>
           <Copyable
             value={blockId}
-            className="font-mono font-semibold text-sm "
+            className="font-mono font-semibold text-sm whitespace-nowrap"
           >
             #{blockId}
           </Copyable>
