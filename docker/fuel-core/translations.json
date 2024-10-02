@@ -1,0 +1,79 @@
+{
+    "en": {
+        "must_specify_l1_chain_http": "Must specify $L1_CHAIN_HTTP.",
+        "must_specify_deployments_http": "Must specify $DEPLOYMENTS_HTTP.",
+        "waiting_for_l1_chain": "Waiting for L1 chain.",
+        "connected_to_l1_chain": "Connected to L1 chain.",
+        "waiting_for_deployment_data": "Waiting for L1 chain deployment data.",
+        "got_deployment_data": "Got L1 chain deployment data.",
+        "starting_fuel_node": "Starting Fuel node.",
+        "fuel_message_portal_address": "FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS: ",
+        "l1_chain_http": "L1_CHAIN_HTTP: "
+    },
+    "tr": {
+        "must_specify_l1_chain_http": "Lütfen $L1_CHAIN_HTTP belirtin.",
+        "must_specify_deployments_http": "Lütfen $DEPLOYMENTS_HTTP belirtin.",
+        "waiting_for_l1_chain": "L1 zincirinin başlamasını bekliyor.",
+        "connected_to_l1_chain": "L1 zincirine bağlandı.",
+        "waiting_for_deployment_data": "L1 zincir dağıtım verilerini bekliyor.",
+        "got_deployment_data": "L1 zincir dağıtım verilerini aldı.",
+        "starting_fuel_node": "Fuel düğümü başlatılıyor.",
+        "fuel_message_portal_address": "FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS: ",
+        "l1_chain_http": "L1_CHAIN_HTTP: "
+    },
+    "es": {
+        "must_specify_l1_chain_http": "Debe especificar $L1_CHAIN_HTTP.",
+        "must_specify_deployments_http": "Debe especificar $DEPLOYMENTS_HTTP.",
+        "waiting_for_l1_chain": "Esperando la cadena L1.",
+        "connected_to_l1_chain": "Conectado a la cadena L1.",
+        "waiting_for_deployment_data": "Esperando datos de implementación de la cadena L1.",
+        "got_deployment_data": "Datos de implementación de la cadena L1 obtenidos.",
+        "starting_fuel_node": "Iniciando nodo Fuel.",
+        "fuel_message_portal_address": "FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS: ",
+        "l1_chain_http": "L1_CHAIN_HTTP: "
+    },
+    "fr": {
+        "must_specify_l1_chain_http": "Doit spécifier $L1_CHAIN_HTTP.",
+        "must_specify_deployments_http": "Doit spécifier $DEPLOYMENTS_HTTP.",
+        "waiting_for_l1_chain": "En attente de la chaîne L1.",
+        "connected_to_l1_chain": "Connecté à la chaîne L1.",
+        "waiting_for_deployment_data": "En attente des données de déploiement de la chaîne L1.",
+        "got_deployment_data": "Données de déploiement de la chaîne L1 obtenues.",
+        "starting_fuel_node": "Démarrage du nœud Fuel.",
+        "fuel_message_portal_address": "FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS: ",
+        "l1_chain_http": "L1_CHAIN_HTTP: "
+    },
+    "de": {
+        "must_specify_l1_chain_http": "Muss $L1_CHAIN_HTTP angeben.",
+        "must_specify_deployments_http": "Muss $DEPLOYMENTS_HTTP angeben.",
+        "waiting_for_l1_chain": "Warten auf L1-Kette.",
+        "connected_to_l1_chain": "Mit L1-Kette verbunden.",
+        "waiting_for_deployment_data": "Warten auf Bereitstellungsdaten der L1-Kette.",
+        "got_deployment_data": "Bereitstellungsdaten der L1-Kette erhalten.",
+        "starting_fuel_node": "Fuel-Knoten wird gestartet.",
+        "fuel_message_portal_address": "FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS: ",
+        "l1_chain_http": "L1_CHAIN_HTTP: "
+    },
+    "zh": {
+        "must_specify_l1_chain_http": "必须指定 $L1_CHAIN_HTTP.",
+        "must_specify_deployments_http": "必须指定 $DEPLOYMENTS_HTTP.",
+        "waiting_for_l1_chain": "等待 L1 链.",
+        "connected_to_l1_chain": "已连接到 L1 链.",
+        "waiting_for_deployment_data": "等待 L1 链部署数据.",
+        "got_deployment_data": "已获取 L1 链部署数据.",
+        "starting_fuel_node": "启动 Fuel 节点.",
+        "fuel_message_portal_address": "FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS: ",
+        "l1_chain_http": "L1_CHAIN_HTTP: "
+    },
+    "ja": {
+        "must_specify_l1_chain_http": "$L1_CHAIN_HTTP を指定する必要があります。",
+        "must_specify_deployments_http": "$DEPLOYMENTS_HTTP を指定する必要があります。",
+        "waiting_for_l1_chain": "L1 チェーンを待っています。",
+        "connected_to_l1_chain": "L1 チェーンに接続されました。",
+        "waiting_for_deployment_data": "L1 チェーンのデプロイメントデータを待っています。",
+        "got_deployment_data": "L1 チェーンのデプロイメントデータを取得しました。",
+        "starting_fuel_node": "Fuel ノードを起動しています。",
+        "fuel_message_portal_address": "FUEL_MESSAGE_PORTAL_CONTRACT_ADDRESS: ",
+        "l1_chain_http": "L1_CHAIN_HTTP: "
+    }
+}

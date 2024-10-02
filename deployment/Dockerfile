@@ -8,6 +8,7 @@ RUN apt update && apt install -y postgresql-client
 # Expose the ENVs to the env of the container
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV HOST="localhost"
 ENV SERVER_PORT="${SERVER_PORT:-3000}"
 ENV SYNCER_PORT="${SYNCER_PORT:-3001}"
 ENV FUEL_PROVIDER="${FUEL_PROVIDER:-https://testnet.fuel.network/v1/graphql}"
