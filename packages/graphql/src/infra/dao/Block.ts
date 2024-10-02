@@ -13,10 +13,12 @@ export default class Block {
   totalGasUsed: number;
   transactions: TransactionEntity[];
   timestamp: Date;
+  daHeight: number;
 
   constructor(block: any) {
     this.id = parseInt(block.data.header.height);
     this.blockHash = block.data.id;
+    this.daHeight = block.data.daHeight;
     this.data = block.data;
     const date = DateHelper.tai64toDate(block.data.header.time);
     this.timestamp = date.toDate();
