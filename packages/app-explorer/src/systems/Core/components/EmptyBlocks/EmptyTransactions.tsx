@@ -6,7 +6,7 @@ export function EmptyTransactions({ entity }: { entity: string }) {
     <EmptyCard>
       <EmptyCard.Title>No Transaction</EmptyCard.Title>
       <EmptyCard.Description>
-        This {entity} does not have any transaction.
+        This {entity} does not have any transactions.
       </EmptyCard.Description>
     </EmptyCard>
   );
