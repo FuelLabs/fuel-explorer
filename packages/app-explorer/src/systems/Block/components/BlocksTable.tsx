@@ -62,8 +62,8 @@ function BlocksTable({
     {
       name: (
         <div className="group">
-          <div className="relative flex items-center group ">
-            <span className="group ">Transactions</span>
+          <div className="flex items-center ">
+            <span className="">Transactions</span>
             <span className="ml-2 cursor-pointer group">
               <svg
                 width="14"
@@ -78,10 +78,10 @@ function BlocksTable({
                 />
               </svg>
             </span>
-            <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white bg-gray-3 rounded-lg shadow-sm">
-              The height of the base chain via relayer (i.e. Ethereum or DA)
-              <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
-            </div>
+          </div>
+          <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white bg-gray-3 rounded-lg shadow-sm">
+            The height of the base chain via relayer (i.e. Ethereum or DA)
+            <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
           </div>
         </div>
       ),

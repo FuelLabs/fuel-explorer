@@ -87,7 +87,7 @@ export const GridTable = <T,>({
       },
       pageButtonsStyle: {
         padding: '8px 16px',
-        margin: '0 4px',
+        margin: '0 2px',
         color: 'var(--gray-2)',
         borderRadius: '4px',
         backgroundColor: 'var(--gray-4)',
@@ -105,8 +105,66 @@ export const GridTable = <T,>({
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={currentPage > 1 ? <span>&#x2190;</span> : null}
-        nextLabel={<span> &#x2192;</span>}
+        previousLabel={
+          currentPage > 1 ? (
+            <>
+              <button
+                type="button"
+                data-accent-color="gray"
+                className="rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button fuel-Button fuel-Button cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="tabler-icon tabler-icon-arrow-left"
+                >
+                  <path d="M5 12l14 0" />
+                  <path d="M5 12l6 6" />
+                  <path d="M5 12l6 -6" />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                data-accent-color="gray"
+                className=" ml-1 rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button fuel-Button fuel-Button cursor-pointer"
+              >
+                {currentPage} page of {pageCount}
+              </button>
+            </>
+          ) : null
+        }
+        nextLabel={
+          <button
+            type="button"
+            data-accent-color="gray"
+            className="rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button fuel-Button fuel-Button cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              className="tabler-icon tabler-icon-arrow-right"
+            >
+              <path d="M5 12l14 0" />
+              <path d="M13 18l6 -6" />
+              <path d="M13 6l6 6" />
+            </svg>
+          </button>
+        }
         breakLabel={''}
         pageCount={pageCount}
         marginPagesDisplayed={0}
@@ -154,12 +212,12 @@ export const GridTable = <T,>({
           margin: 1rem 0;
         }
         .pagination li {
-          margin: 0 8px;
+          margin: 0 2px;
         }
         .pagination li a {
           padding: 8px 16px;
           color: var(--white-2);
-          background-color: var(--gray-2);
+          background-color: var(--gray-3);
           border-radius: 7px;
           cursor: pointer;
           text-decoration: none;
