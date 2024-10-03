@@ -136,7 +136,7 @@ export const GridTable = <T,>({
                 data-accent-color="gray"
                 className=" ml-1 rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button fuel-Button fuel-Button cursor-pointer"
               >
-                {currentPage} page of {pageCount}
+                Page {currentPage} of {pageCount}
               </button>
             </>
           ) : null
