@@ -19,7 +19,7 @@ export const BlocksScreen = () => {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const limit = 10;
 
   const fetchBlockData = async (
