@@ -8,7 +8,7 @@ export interface BlockItemProps {
 
 export default function BlockItem({ blockId, ethValue }: BlockItemProps) {
   return (
-    <VStack>
+    <VStack gap="">
       <HStack gap={'0'}>
         <Box>
           <Copyable
