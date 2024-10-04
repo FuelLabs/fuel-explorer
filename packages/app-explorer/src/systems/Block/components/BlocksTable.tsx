@@ -238,9 +238,9 @@ function BlocksTable({
             {!isMobile ? (
               <BlockTimeItem timeAgo={row.node.time.fromNow} />
             ) : (
-              <VStack gap={'0'} align={'end'} px={'16px'}>
+              <VStack gap={'0'} align={'end'} px={'12px'}>
                 <BlockTimeItem timeAgo={row.node.time.fromNow} />
-                <HStack className="items-center" gap={'0.2'}>
+                <HStack className="items-center" gap={'0.1'}>
                   <Text className="font-mono font-normal text-xs text-gray-9 ">
                     Txn Count
                   </Text>
