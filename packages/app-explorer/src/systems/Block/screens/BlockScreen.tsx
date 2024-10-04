@@ -94,7 +94,7 @@ export const BlocksScreen = () => {
   }, [currentCursor, dir]);
 
   return (
-    <VStack>
+    <VStack p={'1'}>
       <Hero />
       <LoadingWrapper
         isLoading={loading}
@@ -103,7 +103,7 @@ export const BlocksScreen = () => {
             {[...Array(10)].map((_, index) => (
               <LoadingBox
                 key={index}
-                className="w-full md:w-[50rem] lg:w-[71rem] h-[3.5rem] mx-auto rounded-lg my-1"
+                className="w-full h-[3.5rem]  rounded-lg"
               />
             ))}
           </>

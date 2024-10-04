@@ -39,7 +39,14 @@ function BlocksTable({
           10 ** 9
         ).toString();
         return (
-          <BlockItem blockId={row.node.header.height} ethValue={totalGasUsed} />
+          <>
+            <div className="w-full flex justify-start px-[16px] items-center">
+              <BlockItem
+                blockId={row.node.header.height}
+                ethValue={totalGasUsed}
+              />
+            </div>
+          </>
         );
       },
       sortable: false,

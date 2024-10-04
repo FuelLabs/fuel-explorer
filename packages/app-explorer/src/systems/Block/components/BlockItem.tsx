@@ -8,7 +8,7 @@ export interface BlockItemProps {
 
 export default function BlockItem({ blockId, ethValue }: BlockItemProps) {
   return (
-    <VStack gap="1">
+    <VStack>
       <HStack gap={'0'}>
         <Box>
           <Copyable
@@ -19,8 +19,8 @@ export default function BlockItem({ blockId, ethValue }: BlockItemProps) {
           </Copyable>
         </Box>
       </HStack>
-      <Link className="w-full justify-center" href={`/block/${blockId}/simple`}>
-        <div className="flex sm:hidden items-center gap-2">
+      <Link href={`/block/${blockId}/simple`}>
+        <div className="flex sm:hidden items-center gap-0">
           {
             <svg
               xmlns="http://www.w3.org/2000/svg"
