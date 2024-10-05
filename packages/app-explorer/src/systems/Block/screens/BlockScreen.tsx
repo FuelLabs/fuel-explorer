@@ -10,7 +10,7 @@ import { Hero } from '../components/Hero';
 
 export const BlocksScreen = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const _searchParams = useSearchParams();
 
   const [data, setData] = useState<GQLBlocksQuery['blocks'] | undefined>(
     undefined,
@@ -76,18 +76,11 @@ export const BlocksScreen = () => {
         router.push('/blocks');
         return;
       }
-      router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`);
+      router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`, {
+        scroll: false,
+      });
     }
   };
-
-  useEffect(() => {
-    const page = parseInt(searchParams.get('page') || '1');
-    const cursor = searchParams.get('cursor') || null;
-
-    setCurrentPage(page);
-    setCurrentCursor(cursor);
-    setDir(page > currentPage ? 'after' : 'before');
-  }, [searchParams]);
 
   useEffect(() => {
     fetchBlockData(currentCursor, dir);
