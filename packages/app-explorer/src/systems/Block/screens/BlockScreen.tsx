@@ -73,7 +73,7 @@ export const BlocksScreen = () => {
       setCurrentPage(newPageNumber);
       setCurrentCursor(newCursor);
       if (newPageNumber === 1) {
-        router.push('/blocks');
+        router.push('/blocks', { scroll: false });
         return;
       }
       router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`, {
@@ -92,14 +92,15 @@ export const BlocksScreen = () => {
       <LoadingWrapper
         isLoading={loading}
         loadingEl={
-          <>
-            {[...Array(10)].map((_, index) => (
+          <VStack gap={'22px'}>
+            {[...Array(11)].map((_, index) => (
               <LoadingBox
                 key={index}
-                className="w-full h-[3.5rem]  rounded-lg"
+                className="w-full  h-[3.5rem]  rounded-lg"
               />
             ))}
-          </>
+            <LoadingBox className="w-[250px]  h-[2.9rem]  rounded-lg ml-auto" />
+          </VStack>
         }
         regularEl={
           data && (
