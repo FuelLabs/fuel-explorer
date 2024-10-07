@@ -92,8 +92,8 @@ export const BlocksScreen = () => {
       <LoadingWrapper
         isLoading={loading}
         loadingEl={
-          <VStack gap={'22px'}>
-            {[...Array(11)].map((_, index) => (
+          <VStack gap={'20px'}>
+            {[...Array(10)].map((_, index) => (
               <LoadingBox
                 key={index}
                 className="w-full  h-[3.5rem]  rounded-lg"
