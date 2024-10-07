@@ -187,9 +187,13 @@ function BlocksTable({
             className="w-full"
             href={`/block/${row.node.header.height}/simple`}
           >
-            <div className="sm:flex font-mono text-sm text-gray-contrast w-[1] flex justify-start pl-4 whitespace-nowrap">
+            <div className="sm:flex font-mono text-sm text-gray-contrast flex justify-start pl-4 whitespace-nowrap">
               {mintTransaction
-                ? `${mintTransaction.mintAmount / 10 ** 9} ETH`
+                ? `${
+                    mintTransaction.mintAmount > 0
+                      ? (mintTransaction.mintAmount / 10 ** 9).toFixed(9)
+                      : 0
+                  } ETH`
                 : 'No mint amount'}{' '}
             </div>
           </Link>
