@@ -819,6 +819,7 @@
   --gray-10: #7b7b7b;
   --gray-11: #b4b4b4;
   --gray-12: #eee;
+  --gray-13:#212121;
 
   --gray-a1: #00000000;
   --gray-a2: #ffffff09;
@@ -832,6 +833,7 @@
   --gray-a10: #ffffff72;
   --gray-a11: #ffffffaf;
   --gray-a12: #ffffffed;
+  --gray-a13:  #222;
 
   --gray-contrast: #FFFFFF;
   --gray-table-text: #FFFFFF;
@@ -857,6 +859,7 @@
   --gray-10: #838383;
   --gray-11: #646464;
   --gray-12: #202020;
+  --gray-13: #F9F9F9;
 
   --gray-a1: #00000000;
   --gray-a2: #00000003;
@@ -900,6 +903,7 @@
       --gray-10: oklch(58.29% 0 none);
       --gray-11: oklch(76.99% 0 none);
       --gray-12: oklch(94.91% 0 none);
+      --gray-13:#212121;
 
       --gray-a1: color(display-p3 0 0 0 / 0);
       --gray-a2: color(display-p3 1 1 1 / 0.0336);
@@ -939,6 +943,7 @@
       --gray-10: oklch(61% 0 none);
       --gray-11: oklch(50.32% 0 none);
       --gray-12: oklch(24.35% 0 none);
+      --gray-13: #FFFFFF;
 
       --gray-a1: color(display-p3 0 0 0 / 0);
       --gray-a2: color(display-p3 0 0 0 / 0.0119);

@@ -9,16 +9,14 @@ export default function BlockEfficiencyItem({
   current,
   total,
 }: BlockEfficiencyItemProps) {
-  // Convert current and total to millions
   const currentInMillions = current / 1_000_000;
   const totalInMillions = total / 1_000_000;
 
-  // Calculate progress percentage
   const progress = (current / total) * 100;
 
   return (
     <Box>
-      <VStack gap="2">
+      <VStack gap="0.5" p={'1'}>
         <HStack className="justify-between items-center">
           {/* Format current and total as M (millions) */}
           <Text className="font-inter text-gray-10 text-[0.7rem] whitespace-nowrap">
@@ -39,7 +37,7 @@ export default function BlockEfficiencyItem({
           <div className="w-full h-[4px] rounded-full bg-gray-5">
             <div
               className="h-full bg-brand rounded-full"
-              style={{ width: `${progress}%` }}
+              style={{ width: `${progress > 100 ? 100 : progress}%` }}
             />
           </div>
         </div>

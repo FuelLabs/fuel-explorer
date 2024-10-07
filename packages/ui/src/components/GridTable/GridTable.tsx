@@ -26,6 +26,7 @@ export const GridTable = <T,>({
     tableWrapper: {
       style: {
         borderRadius: '0',
+        padding: '2px',
       },
     },
     table: {
@@ -39,6 +40,8 @@ export const GridTable = <T,>({
         color: '#9f9f9f',
         fontWeight: '600',
         textAlign: 'left',
+        justifyContent: 'left',
+        borderBottom: 'none',
       },
     },
     headCells: {
@@ -48,17 +51,19 @@ export const GridTable = <T,>({
         fontWeight: '600',
         fontSize: '16px',
         textAlign: 'left',
+        justifyContent: 'left',
       },
     },
     rows: {
       style: {
         cursor: 'pointer',
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'var(--gray-13)',
         fontWeight: '400',
         borderRadius: '12px',
-        marginBottom: '8px',
-        '&:hover': {
-          backgroundColor: 'var(--gray-a1)',
+        border: '1px solid var(--gray-5)',
+        margin: '0.7rem 0',
+        '&:not(:last-of-type)': {
+          borderBottomColor: 'tranparent',
         },
       },
     },
@@ -69,29 +74,29 @@ export const GridTable = <T,>({
         paddingLeft: '0.5rem',
         paddingRight: '0.5rem',
         color: 'var(--gray-table-text)',
-        paddingTop: '0.4rem',
-        paddingBottom: '0.4rem',
+        paddingTop: '0.6rem',
+        paddingBottom: '0.6rem',
         backgroundColor: 'transparent',
         fontWeight: '400',
       },
     },
     pagination: {
       style: {
-        backgroundColor: 'var(--gray-2)',
-        color: '#f0f0f0',
+        backgroundColor: 'var(--gray-3)',
+        color: 'var(--gray-2)',
       },
       pageButtonsStyle: {
         padding: '8px 16px',
-        margin: '0 4px',
-        color: '#f0f0f0',
+        margin: '0 2px',
+        color: 'var(--gray-2)',
         borderRadius: '4px',
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'var(--gray-4)',
         '&.selected': {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backgroundColor: 'var(--gray-4)',
           fontWeight: 'bold',
         },
         '&:hover': {
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          backgroundColor: 'var(--gray-4)',
         },
       },
     },
@@ -100,17 +105,75 @@ export const GridTable = <T,>({
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={<span>&#x2190; Previous</span>} // Left Arrow
-        nextLabel={<span>Next &#x2192;</span>} // Right Arrow
-        breakLabel={'...'}
+        previousLabel={
+          <>
+            {currentPage > 1 && (
+              <button
+                type="button"
+                data-accent-color="gray"
+                className="rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button fuel-Button fuel-Button cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="tabler-icon tabler-icon-arrow-left"
+                >
+                  <path d="M5 12l14 0" />
+                  <path d="M5 12l6 6" />
+                  <path d="M5 12l6 -6" />
+                </svg>
+              </button>
+            )}
+            <button
+              type="button"
+              data-accent-color="gray"
+              className=" ml-1 rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button fuel-Button fuel-Button cursor-pointer"
+            >
+              Page {currentPage} of {pageCount}
+            </button>
+          </>
+        }
+        nextLabel={
+          <button
+            type="button"
+            data-accent-color="gray"
+            className="rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button fuel-Button fuel-Button cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              className="tabler-icon tabler-icon-arrow-right"
+            >
+              <path d="M5 12l14 0" />
+              <path d="M13 18l6 -6" />
+              <path d="M13 6l6 6" />
+            </svg>
+          </button>
+        }
+        breakLabel={''}
         pageCount={pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
+        marginPagesDisplayed={0}
+        pageRangeDisplayed={0}
         onPageChange={(page) => handlePagination(page)}
         containerClassName={'pagination'}
         activeClassName={'selected'}
         disabledClassName={'disabled'}
-        pageLinkClassName={'page-link'}
+        previousLinkClassName={'previous-link'}
+        nextLinkClassName={'next-link'}
         forcePage={currentPage !== 0 ? currentPage - 1 : 0}
       />
     );
@@ -124,6 +187,21 @@ export const GridTable = <T,>({
   return (
     <div style={customStyles.tableWrapper.style}>
       <style>{`
+        .pagination span{
+          padding: 8px 16px;
+          color: var(--white-2);
+          background-color: var(--gray-2);
+          font-weight: bold;
+          border-radius: 7px;
+          cursor: pointer;
+          text-decoration: none;
+        }
+
+        .pagination .selected,
+        .pagination .page-link {
+          display: none !important;
+        }
+
         .pagination {
           display: flex;
           justify-content: end;
@@ -133,12 +211,12 @@ export const GridTable = <T,>({
           margin: 1rem 0;
         }
         .pagination li {
-          margin: 0 8px;
+          margin: 0 2px;
         }
         .pagination li a {
           padding: 8px 16px;
           color: var(--white-2);
-          background-color: var(--gray-2);
+          background-color: var(--gray-3);
           border-radius: 7px;
           cursor: pointer;
           text-decoration: none;
@@ -161,6 +239,11 @@ export const GridTable = <T,>({
         }
         .pagination li.disabled a:hover {
           background-color: transparent;
+        }
+           @media (max-width: 640px) { 
+          .rdt_TableHead {
+            display: none; 
+          }
         }
       `}</style>
       <DataTable

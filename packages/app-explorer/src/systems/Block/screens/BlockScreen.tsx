@@ -3,13 +3,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { GQLBlocksQuery } from '@fuel-explorer/graphql';
+import { LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { getBlocks } from '../actions/get-blocks';
 import BlocksTable from '../components/BlocksTable';
 import { Hero } from '../components/Hero';
 
 export const BlocksScreen = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const _searchParams = useSearchParams();
 
   const [data, setData] = useState<GQLBlocksQuery['blocks'] | undefined>(
     undefined,
@@ -18,7 +19,7 @@ export const BlocksScreen = () => {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const limit = 10;
 
   const fetchBlockData = async (
@@ -72,42 +73,49 @@ export const BlocksScreen = () => {
       setCurrentPage(newPageNumber);
       setCurrentCursor(newCursor);
       if (newPageNumber === 1) {
-        router.push('/blocks');
+        router.push('/blocks', { scroll: false });
         return;
       }
-      router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`);
+      router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`, {
+        scroll: false,
+      });
     }
   };
-
-  useEffect(() => {
-    const page = parseInt(searchParams.get('page') || '1');
-    const cursor = searchParams.get('cursor') || null;
-
-    setCurrentPage(page);
-    setCurrentCursor(cursor);
-    setDir(page > currentPage ? 'after' : 'before');
-  }, [searchParams]);
 
   useEffect(() => {
     fetchBlockData(currentCursor, dir);
   }, [currentCursor, dir]);
 
   return (
-    <VStack>
+    <VStack p={'1'}>
       <Hero />
-      {loading ? (
-        <p>Loading blocks...</p>
-      ) : (
-        data && (
-          <BlocksTable
-            blocks={data}
-            onPageChanged={handlePageChanged}
-            pageCount={totalPages || 1}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        )
-      )}
+      <LoadingWrapper
+        isLoading={loading}
+        loadingEl={
+          <VStack gap={'20px'}>
+            {[...Array(10)].map((_, index) => (
+              <LoadingBox
+                key={index}
+                className="w-full  h-[3.5rem]  rounded-lg"
+              />
+            ))}
+            <LoadingBox className="w-[250px]  h-[2.9rem]  rounded-lg ml-auto" />
+          </VStack>
+        }
+        regularEl={
+          data && (
+            <>
+              <BlocksTable
+                blocks={data}
+                onPageChanged={handlePageChanged}
+                pageCount={totalPages || 1}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </>
+          )
+        }
+      />
     </VStack>
   );
 };
