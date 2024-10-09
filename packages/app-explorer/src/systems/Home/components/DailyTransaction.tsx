@@ -84,13 +84,12 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
         <ResponsiveContainer width="100%" height={160}>
           <LineChart
             data={chartDataArray}
-            margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+            margin={{ top: 10, right: 0, left: -15, bottom: 0 }}
           >
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="#333"
               vertical={false}
-              overflow="visible"
             />
             <XAxis
               dataKey="time"
