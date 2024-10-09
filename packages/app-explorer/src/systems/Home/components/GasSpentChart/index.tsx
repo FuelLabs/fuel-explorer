@@ -46,7 +46,6 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
                     width="14"
                     height="14"
                     viewBox="0 0 14 14"
-                    overflow="visible"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
@@ -78,7 +77,7 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
         <ResponsiveContainer width="100%" height={170}>
           <LineChart
             data={chartData}
-            margin={{ top: 10, left: -25, right: 0, bottom: 0 }}
+            margin={{ top: 10, left: 0, right: 0, bottom: 0 }}
           >
             <CartesianGrid
               strokeDasharray="3 3"
