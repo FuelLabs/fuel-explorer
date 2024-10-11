@@ -1,5 +1,5 @@
 import { bn } from '@fuel-ts/math';
-import { DECIMAL_UNITS } from '@fuel-ts/math/configs';
+import { DEFAULT_DECIMAL_UNITS } from '@fuel-ts/math/configs';
 
 export function formatAmountLeadingZeros(text: string): string {
   const valueWithoutLeadingZeros = text
@@ -16,7 +16,10 @@ export function formatAmountLeadingZeros(text: string): string {
   return text;
 }
 
-export function createAmount(text: string, units: number = DECIMAL_UNITS) {
+export function createAmount(
+  text: string,
+  units: number = DEFAULT_DECIMAL_UNITS,
+) {
   const textAmountFixed = formatAmountLeadingZeros(text);
   return {
     text: textAmountFixed,

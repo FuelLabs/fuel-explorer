@@ -1,7 +1,11 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 
 import { type BN, type FormatConfig, bn } from '@fuel-ts/math';
-import { DECIMAL_UNITS, DEFAULT_MIN_PRECISION } from '@fuel-ts/math/configs';
+import {
+  DEFAULT_DECIMAL_UNITS,
+  DEFAULT_MIN_PRECISION,
+  DEFAULT_PRECISION,
+} from '@fuel-ts/math/configs';
 
 import { IconChevronDown } from '@tabler/icons-react';
 
@@ -46,8 +50,8 @@ export type InputAmountCoinSelectorProps = ButtonProps & {
 };
 
 const DEFAULT_FORMAT: FormatConfig = {
-  units: DECIMAL_UNITS,
-  precision: DECIMAL_UNITS,
+  units: DEFAULT_DECIMAL_UNITS,
+  precision: DEFAULT_PRECISION,
 };
 
 export const InputAmountRoot = createComponent<InputAmountProps, typeof VStack>(
