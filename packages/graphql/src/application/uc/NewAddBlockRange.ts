@@ -12,9 +12,11 @@ import {
 import Block from '~/infra/dao/Block';
 import Transaction from '~/infra/dao/Transaction';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
+import IndexAsset from './IndexAsset';
 
 export default class NewAddBlockRange {
   async execute(input: Input) {
+    const indexAsset = new IndexAsset();
     const { from, to } = input;
     logger.info(`🔗 Syncing blocks: #${from} - #${to}`);
     const blocksData = await this.getBlocks(from, to);
@@ -64,6 +66,13 @@ export default class NewAddBlockRange {
               accountHash,
             ],
           });
+        }
+        if (transaction.data?.status?.receipts) {
+          try {
+            await indexAsset.execute(transaction.data);
+          } catch (e: any) {
+            logger.error('Error fetching assets', e);
+          }
         }
         if (transactionData.inputs) {
           for (const inputData of transactionData.inputs) {

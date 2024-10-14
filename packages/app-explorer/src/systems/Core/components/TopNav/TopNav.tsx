@@ -22,7 +22,6 @@ export function TopNav() {
     PortalRoutes.bridgeHistory,
   ]);
   const isEcosystemBridge = isRoute(pathname, [PortalRoutes.ecosystem]);
-  const isHomePage = pathname === '/';
   const isExplorer = !isBridge && !isEcosystemBridge;
 
   useEffect(() => {
@@ -37,16 +36,6 @@ export function TopNav() {
     <NextLink href="/" className="flex items-center">
       <Nav.Logo />
     </NextLink>
-  );
-
-  const externalLinks = (
-    <>
-      <Nav.MenuItem href="https://docs.fuel.network/">Developers</Nav.MenuItem>
-      <Nav.MenuItem href="https://forum.fuel.network">Community</Nav.MenuItem>
-      <Nav.MenuItem isExternal href="https://fuel.network">
-        Labs
-      </Nav.MenuItem>
-    </>
   );
 
   const tooling = (
@@ -80,9 +69,10 @@ export function TopNav() {
       <Nav.Desktop className={'px-10 justify-between'}>
         <Nav.Menu>
           {logo}
-          {externalLinks}
         </Nav.Menu>
-        <Nav.Menu>{!isHomePage && <SearchWidget variablePosition />}</Nav.Menu>
+        <Nav.Menu>
+          <SearchWidget />
+        </Nav.Menu>
         <Nav.Menu>
           {tooling}
           {themeToggle}
@@ -91,13 +81,10 @@ export function TopNav() {
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
-          {!isHomePage && <SearchWidget variablePosition />}
+          <SearchWidget />
           {themeToggle}
         </Nav.MobileContent>
-        <Nav.Menu>
-          {externalLinks}
-          {tooling}
-        </Nav.Menu>
+        <Nav.Menu>{tooling}</Nav.Menu>
       </Nav.Mobile>
     </Nav>
   );
