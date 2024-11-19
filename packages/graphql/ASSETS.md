@@ -5,13 +5,13 @@ API endpoint:
 `/assets/<assetId>`  - get information about any asset (including NFTs)
 
 URLs to consume:
-- Mainnet: https://explorer-indexer-mainnet.fuel.network
+- Mainnet: https://mainnet-explorer.fuel.network
 - Testnet: https://explorer-indexer-testnet.fuel.network
 
 
 `curl` example of usage
 ```
-curl 'https://explorer-indexer-mainnet.fuel.network/assets/0x44b09d7143aa7b1aac7844ee9cfc38893b12d20c3822ecb18dbf2c6846ea63f0'
+curl 'https://mainnet-explorer.fuel.network/assets/0x44b09d7143aa7b1aac7844ee9cfc38893b12d20c3822ecb18dbf2c6846ea63f0'
 ```
 
 
