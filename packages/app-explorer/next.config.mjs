@@ -19,8 +19,9 @@ const config = {
     ignoreDuringBuilds: true,
   },
   async headers() {
-    const headers = [
-      {
+    const headers = [];
+    if (process.env.SEO_DISABLED === 'true') {
+      headers.push({
         headers: [
           {
             key: 'X-Robots-Tag',
@@ -28,8 +29,8 @@ const config = {
           },
         ],
         source: '/:path*',
-      },
-    ];
+      });
+    }
 
     return headers;
   },
