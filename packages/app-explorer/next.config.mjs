@@ -18,6 +18,22 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async headers() {
+    const headers = [];
+    if (process.env.SEO_DISABLED === 'true') {
+      headers.push({
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex',
+          },
+        ],
+        source: '/:path*',
+      });
+    }
+
+    return headers;
+  },
   redirects: async () => {
     return [
       {
