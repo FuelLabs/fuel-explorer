@@ -1,4 +1,4 @@
-import { Address as FuelAddr, isB256, isBech32 } from 'fuels';
+import { Address as FuelAddr, isB256 } from 'fuels';
 
 type ShortAddressOptions = {
   minLength?: number;
@@ -11,7 +11,7 @@ export class Address {
 
   parse() {
     const value = this.value;
-    const isValue = value && (isB256(value) || isBech32(value));
+    const isValue = value && isB256(value);
     if (!value || !isValue) {
       throw new Error('Invalid value address');
     }

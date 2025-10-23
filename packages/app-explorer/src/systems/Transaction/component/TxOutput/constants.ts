@@ -5,7 +5,7 @@ export const typeNameMap: Record<
   GQLTransactionOutputFragment['__typename'],
   string
 > = {
-  ContractOutput: 'OUTPUT',
+  ContractOutput: 'CONTRACT',
   ContractCreated: 'CREATED',
   VariableOutput: 'VARIABLE',
   ChangeOutput: 'CHANGE',

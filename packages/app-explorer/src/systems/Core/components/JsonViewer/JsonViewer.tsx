@@ -1,7 +1,5 @@
-'use client';
 import type { BaseProps } from '@fuels/ui';
 import { cx } from '@fuels/ui';
-import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import {
   JsonView,
@@ -11,6 +9,7 @@ import {
 } from 'react-json-view-lite';
 import 'react-json-view-lite/dist/index.css';
 import { tv } from 'tailwind-variants';
+import { useTheme } from '../Theme/ThemeProvider';
 
 export type JsonViewerProps = BaseProps<{
   data: object | unknown[];
@@ -19,14 +18,13 @@ export type JsonViewerProps = BaseProps<{
 export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
   const classes = styles();
   const [style, setStyle] = useState(defaultStyles);
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
-  // TODO: theme is loaded as dark but doesn't render in JsonView correctly
-  // using this solution we force the state to change
-  // and rerender the component
+  // Update styles when theme changes
   useEffect(() => {
-    setStyle(theme === 'dark' ? darkStyles : defaultStyles);
-  }, [theme]);
+    setStyle(resolvedTheme === 'dark' ? darkStyles : defaultStyles);
+  }, [resolvedTheme]);
+
   return (
     <JsonView
       data={data}

@@ -1,4 +1,4 @@
-import type { TextProps } from '@radix-ui/themes/dist/cjs/components/text';
+import type { TextProps } from '@radix-ui/themes';
 import { IconChevronDown } from '@tabler/icons-react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { VariantProps } from 'tailwind-variants';
@@ -13,7 +13,7 @@ import type { CardBodyProps, CardHeaderProps, CardProps } from '../Card';
 import { IconButton } from '../IconButton';
 import { Text } from '../Text';
 
-import { WithIconProps } from '../../hooks/useIconProps';
+import type { WithIconProps } from '../../hooks/useIconProps';
 
 type CollapsibleBaseProps = VariantProps<typeof styles> & {
   defaultOpened?: boolean;
@@ -175,7 +175,7 @@ const styles = tv({
   variants: {
     variant: {
       surface: {
-        content: 'p-0 light-theme:bg-gray-2 dark-theme:bg-gray-1 rounded-sm',
+        content: 'p-0 bg-gray-2 dark:bg-gray-1 rounded-sm',
         body: 'px-3 py-3',
         title: 'py-3 px-3 border-b border-gray-7',
       },

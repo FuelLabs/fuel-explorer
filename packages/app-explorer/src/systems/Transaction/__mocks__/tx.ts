@@ -88,7 +88,7 @@ export const TX_MOCK = mocks.aTransaction({
   // @TODO: Fix maximum call stack size exceeded and remove override below
   operations: [
     mocks.anOperation({
-      receipts: [mocks.anOperationReceipt({ receipts: [] })] ?? [],
+      receipts: [mocks.anOperationReceipt({ receipts: [] })],
     }),
   ],
   groupedOutputs: [],

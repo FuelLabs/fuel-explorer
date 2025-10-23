@@ -1,11 +1,17 @@
-import { Box, Copyable, HStack, Text, VStack } from '@fuels/ui';
+import { Box, Copyable, HStack, Text, Tooltip, VStack } from '@fuels/ui';
+import { DECIMAL_FUEL } from 'fuels';
+import { useFormatBalance } from '~staking/systems/Core/hooks/useFormatBalance';
 
 export interface BlockItemProps {
   blockId: string;
-  ethValue: string;
+  totalFee: number;
 }
 
-export default function BlockItem({ blockId, ethValue }: BlockItemProps) {
+export default function BlockItem({ blockId, totalFee }: BlockItemProps) {
+  const { formatted, original } = useFormatBalance(
+    BigInt(totalFee),
+    DECIMAL_FUEL,
+  );
   return (
     <VStack gap="1">
       <HStack>
@@ -18,9 +24,14 @@ export default function BlockItem({ blockId, ethValue }: BlockItemProps) {
           </Copyable>
         </Box>
       </HStack>
-      <Text className="text-gray-10 text-xs text-ellipsis w-[7rem]">
-        {ethValue} ETH
-      </Text>
+      <Tooltip content={`${original.display} ETH `}>
+        <Text
+          className="text-gray-10 text-xs text-ellipsis w-[7rem]"
+          aria-label="Total fee"
+        >
+          {formatted.display} ETH
+        </Text>
+      </Tooltip>
     </VStack>
   );
 }

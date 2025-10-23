@@ -1,12 +1,12 @@
-import { DatabaseConnection } from '../database/DatabaseConnection';
-import PaginatedParams from '../paginator/PaginatedParams';
+import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
+import type PaginatedParams from '../paginator/PaginatedParams';
 import Contract from './Contract';
 
 export default class ContractDAO {
-  databaseConnection: DatabaseConnection;
+  databaseConnection: DatabaseConnectionReplica;
 
   constructor() {
-    this.databaseConnection = DatabaseConnection.getInstance();
+    this.databaseConnection = DatabaseConnectionReplica.getInstance();
   }
 
   async getByHash(hash: string) {
@@ -20,7 +20,7 @@ export default class ContractDAO {
 		  where
 			  c.contract_hash = $1
 		  `,
-        [hash],
+        [hash.toLowerCase()],
       )
     )[0];
     if (!contractData) return;

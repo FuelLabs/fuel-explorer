@@ -16,6 +16,9 @@ query transactionsByOwner(
       ...RecentTransaction
     }
     pageInfo {
+      startCount
+      endCount
+      totalCount
       endCursor
       hasNextPage
       hasPreviousPage

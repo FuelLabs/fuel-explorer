@@ -1,10 +1,10 @@
-query tps{
-    tps{
-        nodes {
-            start
-            end
-            txCount
-            totalGas
-        }
+query tps {
+  tps {
+    nodes {
+      start
+      end
+      txCount
+      totalGas
     }
+  }
 }

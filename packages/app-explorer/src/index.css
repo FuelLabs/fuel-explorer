@@ -1,0 +1,82 @@
+@import "@fuels/ui/styles.css";
+
+@import "../src/styles/globals.css";
+
+/* Tailwind components and utilities (base is included in UI styles) */
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --hero-bg: #000;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+kbd {
+  font-size: 0.875rem;
+  font-family: var(--default-font-family);
+}
+
+.rt-DialogOverlay {
+  backdrop-filter: blur(12px);
+}
+
+/* Custom responsive breakpoints matching original design */
+@media (min-width: 768px) {
+  .tablet\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tablet\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+  .tablet\:py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .laptop\:py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  .laptop\:pb-18 {
+    padding-bottom: 4.5rem;
+  }
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  background-color: var(--color-panel-solid);
+  color: var(--gray-12);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Text pretty utility for better text wrapping */
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Override default focus styles for better accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--brand-9);
+  outline-offset: 2px;
+}

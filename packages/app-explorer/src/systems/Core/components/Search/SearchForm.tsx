@@ -1,7 +1,7 @@
-import { useFormState } from 'react-dom';
 import { search } from '~/systems/Core/actions/search';
 
 import type { GQLSearchResult } from '@fuel-explorer/graphql';
+import { useState } from 'react';
 import { SearchInput } from './SearchInput';
 import { styles } from './styles';
 
@@ -12,19 +12,44 @@ type SearchFormProps = {
 
 export function SearchForm({ className, autoFocus }: SearchFormProps) {
   const classes = styles();
-  const [results, action] = useFormState(
-    (_: GQLSearchResult | null, formData: FormData) => {
-      return search({ query: formData.get('query')?.toString() || '' });
-    },
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<boolean>(false);
+  const [results, setResults] = useState<GQLSearchResult | null | undefined>(
     null,
   );
 
+  const handleSearch = async (formData: FormData) => {
+    try {
+      const response = await search({
+        query: formData.get('query')?.toString() || '',
+      });
+      setResults(response || undefined);
+      return response;
+    } catch (_) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (loading) return;
+    setResults(null);
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    handleSearch(formData);
+  };
+
   return (
-    <form action={action} className={classes.searchSize()}>
+    <form onSubmit={handleSubmit} className={classes.searchSize()}>
       <SearchInput
         className={className}
         searchResult={results}
         autoFocus={autoFocus}
+        loading={loading}
+        error={error}
       />
     </form>
   );

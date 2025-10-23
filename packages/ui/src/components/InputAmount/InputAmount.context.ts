@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import type { AmountChangeParameters } from './InputAmount.types';
 
 type InputAmountRootContext = {
-  balance: BN;
+  balance?: BN;
   formatOpts: FormatConfig;
 };
 

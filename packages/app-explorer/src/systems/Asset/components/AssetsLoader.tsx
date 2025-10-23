@@ -1,4 +1,3 @@
-'use client';
 import { VStack } from '@fuels/ui';
 import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 

@@ -1,4 +1,4 @@
-import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLBalance, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLChainInfo, GQLChangeOutput, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLGasCosts, GQLGenesis, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStateTransitionPurpose, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTxParameters, GQLUtxoItem, GQLVariableOutput, GQLBlockVersion, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion } from './sdk';
+import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLAssetsContractConnection, GQLBalance, GQLBalanceByBlockHeight, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBaseStatusInfo, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLBridgeCommitQueryItem, GQLBridgeDepositEvent, GQLBridgeDepositResponse, GQLBridgeDepositStatusInfo, GQLBridgeDepositTransactionSentStatus, GQLBridgeEthTransaction, GQLBridgeEventRow, GQLBridgeFinalizedStatus, GQLBridgeFuelTransaction, GQLBridgeMessageDecoded, GQLBridgePageInfo, GQLBridgeReadyToProcessDepositStatus, GQLBridgeReadyToProcessWithdrawStatus, GQLBridgeWaitingCommittingToL1Status, GQLBridgeWaitingFinalizationStatus, GQLBridgeWaitingSyncStatus, GQLBridgeWithdrawEvent, GQLBridgeWithdrawResponse, GQLBridgeWithdrawStatusInfo, GQLBridgeWithdrawTransactionSentStatus, GQLChainInfo, GQLChangeOutput, GQLClaimRewardsResponse, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalance2, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDelegateResponse, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLEthTx, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLFinalizedInfo, GQLGasCosts, GQLGenesis, GQLGraphQlBridgeResponse, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReDelegateResponse, GQLReadyToProcessWithdrawInfo, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSequencerTx, GQLSkippedInfo, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStakingApy, GQLStakingEventsResult, GQLStateTransitionPurpose, GQLStatistics, GQLStatisticsConnection, GQLStatisticsDetails, GQLStatisticsTotalFeeDetails, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTransactionSentInfo, GQLTxParameters, GQLUndelegateResponse, GQLUndelegateStatusInfo, GQLUtxoItem, GQLVariableOutput, GQLWaitingCommittingToL1gInfo, GQLWaitingFinalizationInfo, GQLWaitingSyncInfo, GQLWithdrawResponse, GQLWithdrawStatusInfo, GQLBlockVersion, GQLBridgeDepositQueryType, GQLBridgeDepositStatusType, GQLBridgeResponseType, GQLBridgeWithdrawStatusType, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGenericStatusType, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLResponseType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion, GQLUndelegateStatusType, GQLWithdrawStatusType } from './sdk';
 
 export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } & GQLAsset => {
     return {
@@ -9,7 +9,9 @@ export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } 
         icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'explicabo',
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'dolorem',
         networks: overrides && overrides.hasOwnProperty('networks') ? overrides.networks! : [anAssetNetworkEthereum()],
+        rate: overrides && overrides.hasOwnProperty('rate') ? overrides.rate! : '0xD',
         subId: overrides && overrides.hasOwnProperty('subId') ? overrides.subId! : 'omnis',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : true,
         symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'quaerat',
         verified: overrides && overrides.hasOwnProperty('verified') ? overrides.verified! : false,
     };
@@ -35,13 +37,43 @@ export const anAssetNetworkFuel = (overrides?: Partial<GQLAssetNetworkFuel>): { 
     };
 };
 
+export const anAssetsContractConnection = (overrides?: Partial<GQLAssetsContractConnection>): { __typename: 'AssetsContractConnection' } & GQLAssetsContractConnection => {
+    return {
+        __typename: 'AssetsContractConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [anAsset()],
+        pageInfo: overrides && overrides.hasOwnProperty('pageInfo') ? overrides.pageInfo! : aPageInfo(),
+    };
+};
+
 export const aBalance = (overrides?: Partial<GQLBalance>): { __typename: 'Balance' } & GQLBalance => {
     return {
         __typename: 'Balance',
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0x0',
+        amountInUsd: overrides && overrides.hasOwnProperty('amountInUsd') ? overrides.amountInUsd! : 'saepe',
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'a0f8od7pvhhubad7x3hz9o0zn7xp5j23',
+        collection: overrides && overrides.hasOwnProperty('collection') ? overrides.collection! : 'unde',
+        contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : '5lr2hgrkue50c7bu997q2cpjkpfis1sp',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0x5',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'quasi',
+        metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : 'ullam',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'debitis',
         owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'tx4go3g6en5w03qjzwnt6ugwv26qrm5q9mwtq5lp',
+        rate: overrides && overrides.hasOwnProperty('rate') ? overrides.rate! : '0x7',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : false,
+        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'error',
+        totalSupply: overrides && overrides.hasOwnProperty('totalSupply') ? overrides.totalSupply! : 'modi',
         utxos: overrides && overrides.hasOwnProperty('utxos') ? overrides.utxos! : [anUtxoItem()],
+    };
+};
+
+export const aBalanceByBlockHeight = (overrides?: Partial<GQLBalanceByBlockHeight>): { __typename: 'BalanceByBlockHeight' } & GQLBalanceByBlockHeight => {
+    return {
+        __typename: 'BalanceByBlockHeight',
+        accountHash: overrides && overrides.hasOwnProperty('accountHash') ? overrides.accountHash! : 'jmf2m3daopx0lzp01126ybmy2go0cxbq8ynm1rrw',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'rx2jhon62pkza07mdutjj1pehxdz3k2b',
+        balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : 'sit',
+        balanceInUsd: overrides && overrides.hasOwnProperty('balanceInUsd') ? overrides.balanceInUsd! : 'illum',
+        blockHeight: overrides && overrides.hasOwnProperty('blockHeight') ? overrides.blockHeight! : 1326,
     };
 };
 
@@ -68,6 +100,16 @@ export const aBalanceFilterInput = (overrides?: Partial<GQLBalanceFilterInput>):
     };
 };
 
+export const aBaseStatusInfo = (overrides?: Partial<GQLBaseStatusInfo>): { __typename: 'BaseStatusInfo' } & GQLBaseStatusInfo => {
+    return {
+        __typename: 'BaseStatusInfo',
+        Finalized: overrides && overrides.hasOwnProperty('Finalized') ? overrides.Finalized! : aFinalizedInfo(),
+        Skipped: overrides && overrides.hasOwnProperty('Skipped') ? overrides.Skipped! : aSkippedInfo(),
+        TransactionSent: overrides && overrides.hasOwnProperty('TransactionSent') ? overrides.TransactionSent! : aTransactionSentInfo(),
+        WaitingSync: overrides && overrides.hasOwnProperty('WaitingSync') ? overrides.WaitingSync! : aWaitingSyncInfo(),
+    };
+};
+
 export const aBlock = (overrides?: Partial<GQLBlock>): { __typename: 'Block' } & GQLBlock => {
     return {
         __typename: 'Block',
@@ -78,6 +120,7 @@ export const aBlock = (overrides?: Partial<GQLBlock>): { __typename: 'Block' } &
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'fuga',
         producer: overrides && overrides.hasOwnProperty('producer') ? overrides.producer! : 'tf26peb03uo1z0i4l6d7yfnvuzumd2fiukebb742',
         time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : aParsedTime(),
+        totalFee: overrides && overrides.hasOwnProperty('totalFee') ? overrides.totalFee! : '0xC',
         totalGasUsed: overrides && overrides.hasOwnProperty('totalGasUsed') ? overrides.totalGasUsed! : '0x1',
         transactions: overrides && overrides.hasOwnProperty('transactions') ? overrides.transactions! : [aTransaction()],
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : ('V1' as GQLBlockVersion),
@@ -104,10 +147,14 @@ export const aBlockEdge = (overrides?: Partial<GQLBlockEdge>): { __typename: 'Bl
 export const aBlocksDashboard = (overrides?: Partial<GQLBlocksDashboard>): { __typename: 'BlocksDashboard' } & GQLBlocksDashboard => {
     return {
         __typename: 'BlocksDashboard',
+        blockHash: overrides && overrides.hasOwnProperty('blockHash') ? overrides.blockHash! : 'cupiditate',
         blockNo: overrides && overrides.hasOwnProperty('blockNo') ? overrides.blockNo! : '0xc',
         gasUsed: overrides && overrides.hasOwnProperty('gasUsed') ? overrides.gasUsed! : '0x5',
+        gasUsedInUsd: overrides && overrides.hasOwnProperty('gasUsedInUsd') ? overrides.gasUsedInUsd! : 'voluptas',
         producer: overrides && overrides.hasOwnProperty('producer') ? overrides.producer! : 'error',
         timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : '0x8',
+        totalFee: overrides && overrides.hasOwnProperty('totalFee') ? overrides.totalFee! : '0x7',
+        totalFeeInUsd: overrides && overrides.hasOwnProperty('totalFeeInUsd') ? overrides.totalFeeInUsd! : 'ipsum',
     };
 };
 
@@ -122,6 +169,216 @@ export const aBreakpoint = (overrides?: Partial<GQLBreakpoint>): GQLBreakpoint =
     return {
         contract: overrides && overrides.hasOwnProperty('contract') ? overrides.contract! : 'spxsyh8uujdpzc8kg4t7lkz0r7qmcdsb',
         pc: overrides && overrides.hasOwnProperty('pc') ? overrides.pc! : '0xa',
+    };
+};
+
+export const aBridgeCommitQueryItem = (overrides?: Partial<GQLBridgeCommitQueryItem>): { __typename: 'BridgeCommitQueryItem' } & GQLBridgeCommitQueryItem => {
+    return {
+        __typename: 'BridgeCommitQueryItem',
+        eth_block_height: overrides && overrides.hasOwnProperty('eth_block_height') ? overrides.eth_block_height! : 'sunt',
+        fuel_block_hash: overrides && overrides.hasOwnProperty('fuel_block_hash') ? overrides.fuel_block_hash! : 'autem',
+        fuel_block_height: overrides && overrides.hasOwnProperty('fuel_block_height') ? overrides.fuel_block_height! : 'dolores',
+        is_finalized: overrides && overrides.hasOwnProperty('is_finalized') ? overrides.is_finalized! : true,
+        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : '2021-01-31T21:45:15.374Z',
+        tx_hash: overrides && overrides.hasOwnProperty('tx_hash') ? overrides.tx_hash! : 'sint',
+    };
+};
+
+export const aBridgeDepositEvent = (overrides?: Partial<GQLBridgeDepositEvent>): { __typename: 'BridgeDepositEvent' } & GQLBridgeDepositEvent => {
+    return {
+        __typename: 'BridgeDepositEvent',
+        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'magni',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'voluptas',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'ex',
+        block_height: overrides && overrides.hasOwnProperty('block_height') ? overrides.block_height! : 'culpa',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 6357,
+        event_id: overrides && overrides.hasOwnProperty('event_id') ? overrides.event_id! : 'rem',
+        event_type: overrides && overrides.hasOwnProperty('event_type') ? overrides.event_type! : 'repudiandae',
+        nonce: overrides && overrides.hasOwnProperty('nonce') ? overrides.nonce! : 'hic',
+        recipient: overrides && overrides.hasOwnProperty('recipient') ? overrides.recipient! : 'inventore',
+        sender: overrides && overrides.hasOwnProperty('sender') ? overrides.sender! : 'cum',
+        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : '2021-04-27T05:46:06.530Z',
+        tx_hash: overrides && overrides.hasOwnProperty('tx_hash') ? overrides.tx_hash! : 'blanditiis',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('ERC_20' as GQLBridgeDepositQueryType),
+    };
+};
+
+export const aBridgeDepositResponse = (overrides?: Partial<GQLBridgeDepositResponse>): { __typename: 'BridgeDepositResponse' } & GQLBridgeDepositResponse => {
+    return {
+        __typename: 'BridgeDepositResponse',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'architecto',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'illo',
+        ethAssetId: overrides && overrides.hasOwnProperty('ethAssetId') ? overrides.ethAssetId! : 'occaecati',
+        event_id: overrides && overrides.hasOwnProperty('event_id') ? overrides.event_id! : 'consequatur',
+        event_type: overrides && overrides.hasOwnProperty('event_type') ? overrides.event_type! : 'corrupti',
+        from: overrides && overrides.hasOwnProperty('from') ? overrides.from! : 'error',
+        status: overrides && overrides.hasOwnProperty('status') ? overrides.status! : ('Finalized' as GQLBridgeDepositStatusType),
+        statusInfo: overrides && overrides.hasOwnProperty('statusInfo') ? overrides.statusInfo! : aBridgeDepositStatusInfo(),
+        to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : 'labore',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('Deposit' as GQLBridgeResponseType),
+    };
+};
+
+export const aBridgeDepositStatusInfo = (overrides?: Partial<GQLBridgeDepositStatusInfo>): { __typename: 'BridgeDepositStatusInfo' } & GQLBridgeDepositStatusInfo => {
+    return {
+        __typename: 'BridgeDepositStatusInfo',
+        Finalized: overrides && overrides.hasOwnProperty('Finalized') ? overrides.Finalized! : aBridgeFinalizedStatus(),
+        ReadyToProcessDeposit: overrides && overrides.hasOwnProperty('ReadyToProcessDeposit') ? overrides.ReadyToProcessDeposit! : aBridgeReadyToProcessDepositStatus(),
+        TransactionSent: overrides && overrides.hasOwnProperty('TransactionSent') ? overrides.TransactionSent! : aBridgeDepositTransactionSentStatus(),
+        WaitingSync: overrides && overrides.hasOwnProperty('WaitingSync') ? overrides.WaitingSync! : aBridgeWaitingSyncStatus(),
+    };
+};
+
+export const aBridgeDepositTransactionSentStatus = (overrides?: Partial<GQLBridgeDepositTransactionSentStatus>): { __typename: 'BridgeDepositTransactionSentStatus' } & GQLBridgeDepositTransactionSentStatus => {
+    return {
+        __typename: 'BridgeDepositTransactionSentStatus',
+        ethTx: overrides && overrides.hasOwnProperty('ethTx') ? overrides.ethTx! : aBridgeFuelTransaction(),
+    };
+};
+
+export const aBridgeEthTransaction = (overrides?: Partial<GQLBridgeEthTransaction>): { __typename: 'BridgeEthTransaction' } & GQLBridgeEthTransaction => {
+    return {
+        __typename: 'BridgeEthTransaction',
+        height: overrides && overrides.hasOwnProperty('height') ? overrides.height! : 'nemo',
+        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : '2021-03-06T09:04:15.415Z',
+        txHash: overrides && overrides.hasOwnProperty('txHash') ? overrides.txHash! : 'veniam',
+    };
+};
+
+export const aBridgeEventRow = (overrides?: Partial<GQLBridgeEventRow>): { __typename: 'BridgeEventRow' } & GQLBridgeEventRow => {
+    return {
+        __typename: 'BridgeEventRow',
+        event_id: overrides && overrides.hasOwnProperty('event_id') ? overrides.event_id! : 'a',
+        event_type: overrides && overrides.hasOwnProperty('event_type') ? overrides.event_type! : 'aspernatur',
+    };
+};
+
+export const aBridgeFinalizedStatus = (overrides?: Partial<GQLBridgeFinalizedStatus>): { __typename: 'BridgeFinalizedStatus' } & GQLBridgeFinalizedStatus => {
+    return {
+        __typename: 'BridgeFinalizedStatus',
+        ethTx: overrides && overrides.hasOwnProperty('ethTx') ? overrides.ethTx! : aBridgeEthTransaction(),
+    };
+};
+
+export const aBridgeFuelTransaction = (overrides?: Partial<GQLBridgeFuelTransaction>): { __typename: 'BridgeFuelTransaction' } & GQLBridgeFuelTransaction => {
+    return {
+        __typename: 'BridgeFuelTransaction',
+        height: overrides && overrides.hasOwnProperty('height') ? overrides.height! : 'numquam',
+        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : '2021-10-14T17:37:07.578Z',
+        txHash: overrides && overrides.hasOwnProperty('txHash') ? overrides.txHash! : 'iusto',
+    };
+};
+
+export const aBridgeMessageDecoded = (overrides?: Partial<GQLBridgeMessageDecoded>): { __typename: 'BridgeMessageDecoded' } & GQLBridgeMessageDecoded => {
+    return {
+        __typename: 'BridgeMessageDecoded',
+        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'cupiditate',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'blanditiis',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'quasi',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 9157,
+        recipient: overrides && overrides.hasOwnProperty('recipient') ? overrides.recipient! : 'ad',
+        sender: overrides && overrides.hasOwnProperty('sender') ? overrides.sender! : 'delectus',
+    };
+};
+
+export const aBridgePageInfo = (overrides?: Partial<GQLBridgePageInfo>): { __typename: 'BridgePageInfo' } & GQLBridgePageInfo => {
+    return {
+        __typename: 'BridgePageInfo',
+        hasNextPage: overrides && overrides.hasOwnProperty('hasNextPage') ? overrides.hasNextPage! : true,
+        hasPreviousPage: overrides && overrides.hasOwnProperty('hasPreviousPage') ? overrides.hasPreviousPage! : true,
+        limit: overrides && overrides.hasOwnProperty('limit') ? overrides.limit! : 1916,
+        offset: overrides && overrides.hasOwnProperty('offset') ? overrides.offset! : 1216,
+    };
+};
+
+export const aBridgeReadyToProcessDepositStatus = (overrides?: Partial<GQLBridgeReadyToProcessDepositStatus>): { __typename: 'BridgeReadyToProcessDepositStatus' } & GQLBridgeReadyToProcessDepositStatus => {
+    return {
+        __typename: 'BridgeReadyToProcessDepositStatus',
+        nonce: overrides && overrides.hasOwnProperty('nonce') ? overrides.nonce! : 'non',
+    };
+};
+
+export const aBridgeReadyToProcessWithdrawStatus = (overrides?: Partial<GQLBridgeReadyToProcessWithdrawStatus>): { __typename: 'BridgeReadyToProcessWithdrawStatus' } & GQLBridgeReadyToProcessWithdrawStatus => {
+    return {
+        __typename: 'BridgeReadyToProcessWithdrawStatus',
+        commitBlockHeight: overrides && overrides.hasOwnProperty('commitBlockHeight') ? overrides.commitBlockHeight! : 'harum',
+        commitBlockId: overrides && overrides.hasOwnProperty('commitBlockId') ? overrides.commitBlockId! : 'debitis',
+        nonce: overrides && overrides.hasOwnProperty('nonce') ? overrides.nonce! : 'mollitia',
+        transactionId: overrides && overrides.hasOwnProperty('transactionId') ? overrides.transactionId! : 'voluptatum',
+    };
+};
+
+export const aBridgeWaitingCommittingToL1Status = (overrides?: Partial<GQLBridgeWaitingCommittingToL1Status>): { __typename: 'BridgeWaitingCommittingToL1Status' } & GQLBridgeWaitingCommittingToL1Status => {
+    return {
+        __typename: 'BridgeWaitingCommittingToL1Status',
+        dateExpectedToComplete: overrides && overrides.hasOwnProperty('dateExpectedToComplete') ? overrides.dateExpectedToComplete! : '2021-07-31T18:50:52.274Z',
+    };
+};
+
+export const aBridgeWaitingFinalizationStatus = (overrides?: Partial<GQLBridgeWaitingFinalizationStatus>): { __typename: 'BridgeWaitingFinalizationStatus' } & GQLBridgeWaitingFinalizationStatus => {
+    return {
+        __typename: 'BridgeWaitingFinalizationStatus',
+        dateExpectedToComplete: overrides && overrides.hasOwnProperty('dateExpectedToComplete') ? overrides.dateExpectedToComplete! : '2021-03-23T03:13:24.824Z',
+        ethTx: overrides && overrides.hasOwnProperty('ethTx') ? overrides.ethTx! : aBridgeEthTransaction(),
+    };
+};
+
+export const aBridgeWaitingSyncStatus = (overrides?: Partial<GQLBridgeWaitingSyncStatus>): { __typename: 'BridgeWaitingSyncStatus' } & GQLBridgeWaitingSyncStatus => {
+    return {
+        __typename: 'BridgeWaitingSyncStatus',
+        dateExpectedToComplete: overrides && overrides.hasOwnProperty('dateExpectedToComplete') ? overrides.dateExpectedToComplete! : '2021-12-15T02:35:20.594Z',
+    };
+};
+
+export const aBridgeWithdrawEvent = (overrides?: Partial<GQLBridgeWithdrawEvent>): { __typename: 'BridgeWithdrawEvent' } & GQLBridgeWithdrawEvent => {
+    return {
+        __typename: 'BridgeWithdrawEvent',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'voluptate',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'consectetur',
+        block_height: overrides && overrides.hasOwnProperty('block_height') ? overrides.block_height! : 'occaecati',
+        data: overrides && overrides.hasOwnProperty('data') ? overrides.data! : 'rerum',
+        ethAssetId: overrides && overrides.hasOwnProperty('ethAssetId') ? overrides.ethAssetId! : 'nihil',
+        event_id: overrides && overrides.hasOwnProperty('event_id') ? overrides.event_id! : 'inventore',
+        event_type: overrides && overrides.hasOwnProperty('event_type') ? overrides.event_type! : 'nemo',
+        messageId: overrides && overrides.hasOwnProperty('messageId') ? overrides.messageId! : 'a',
+        recipient: overrides && overrides.hasOwnProperty('recipient') ? overrides.recipient! : 'fuga',
+        sender: overrides && overrides.hasOwnProperty('sender') ? overrides.sender! : 'voluptate',
+        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : '2021-06-16T14:21:09.401Z',
+        tx_hash: overrides && overrides.hasOwnProperty('tx_hash') ? overrides.tx_hash! : 'ipsum',
+    };
+};
+
+export const aBridgeWithdrawResponse = (overrides?: Partial<GQLBridgeWithdrawResponse>): { __typename: 'BridgeWithdrawResponse' } & GQLBridgeWithdrawResponse => {
+    return {
+        __typename: 'BridgeWithdrawResponse',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'alias',
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'quae',
+        ethAssetId: overrides && overrides.hasOwnProperty('ethAssetId') ? overrides.ethAssetId! : 'sint',
+        event_id: overrides && overrides.hasOwnProperty('event_id') ? overrides.event_id! : 'maiores',
+        event_type: overrides && overrides.hasOwnProperty('event_type') ? overrides.event_type! : 'beatae',
+        from: overrides && overrides.hasOwnProperty('from') ? overrides.from! : 'beatae',
+        status: overrides && overrides.hasOwnProperty('status') ? overrides.status! : ('Finalized' as GQLBridgeWithdrawStatusType),
+        statusInfo: overrides && overrides.hasOwnProperty('statusInfo') ? overrides.statusInfo! : aBridgeWithdrawStatusInfo(),
+        to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : 'nostrum',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('Deposit' as GQLBridgeResponseType),
+    };
+};
+
+export const aBridgeWithdrawStatusInfo = (overrides?: Partial<GQLBridgeWithdrawStatusInfo>): { __typename: 'BridgeWithdrawStatusInfo' } & GQLBridgeWithdrawStatusInfo => {
+    return {
+        __typename: 'BridgeWithdrawStatusInfo',
+        Finalized: overrides && overrides.hasOwnProperty('Finalized') ? overrides.Finalized! : aBridgeFinalizedStatus(),
+        ReadyToProcessWithdraw: overrides && overrides.hasOwnProperty('ReadyToProcessWithdraw') ? overrides.ReadyToProcessWithdraw! : aBridgeReadyToProcessWithdrawStatus(),
+        TransactionSent: overrides && overrides.hasOwnProperty('TransactionSent') ? overrides.TransactionSent! : aBridgeWithdrawTransactionSentStatus(),
+        WaitingCommittingToL1: overrides && overrides.hasOwnProperty('WaitingCommittingToL1') ? overrides.WaitingCommittingToL1! : aBridgeWaitingCommittingToL1Status(),
+        WaitingFinalization: overrides && overrides.hasOwnProperty('WaitingFinalization') ? overrides.WaitingFinalization! : aBridgeWaitingFinalizationStatus(),
+    };
+};
+
+export const aBridgeWithdrawTransactionSentStatus = (overrides?: Partial<GQLBridgeWithdrawTransactionSentStatus>): { __typename: 'BridgeWithdrawTransactionSentStatus' } & GQLBridgeWithdrawTransactionSentStatus => {
+    return {
+        __typename: 'BridgeWithdrawTransactionSentStatus',
+        fuelTx: overrides && overrides.hasOwnProperty('fuelTx') ? overrides.fuelTx! : aBridgeFuelTransaction(),
     };
 };
 
@@ -140,8 +397,28 @@ export const aChangeOutput = (overrides?: Partial<GQLChangeOutput>): { __typenam
     return {
         __typename: 'ChangeOutput',
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xD',
+        amountInUsd: overrides && overrides.hasOwnProperty('amountInUsd') ? overrides.amountInUsd! : 'optio',
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'e0jf4dwzgypv3lmvt8yed3ebs8sco6xm',
+        contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : 'ike3i9ss6co3g00m0r4bq025kkyxr608',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0xd',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'facilis',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'voluptates',
+        rate: overrides && overrides.hasOwnProperty('rate') ? overrides.rate! : '0xC',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : true,
+        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'architecto',
         to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : 'dhi4r4fhri7jpmudxj1zxawwhmvmg15ehun33smn',
+    };
+};
+
+export const aClaimRewardsResponse = (overrides?: Partial<GQLClaimRewardsResponse>): { __typename: 'ClaimRewardsResponse' } & GQLClaimRewardsResponse => {
+    return {
+        __typename: 'ClaimRewardsResponse',
+        from: overrides && overrides.hasOwnProperty('from') ? overrides.from! : 'cumque',
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 6548,
+        status: overrides && overrides.hasOwnProperty('status') ? overrides.status! : 'ab',
+        statusInfo: overrides && overrides.hasOwnProperty('statusInfo') ? overrides.statusInfo! : aBaseStatusInfo(),
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('ClaimRewards' as GQLResponseType),
+        validator: overrides && overrides.hasOwnProperty('validator') ? overrides.validator! : 'porro',
     };
 };
 
@@ -185,7 +462,15 @@ export const aCoinOutput = (overrides?: Partial<GQLCoinOutput>): { __typename: '
     return {
         __typename: 'CoinOutput',
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xD',
+        amountInUsd: overrides && overrides.hasOwnProperty('amountInUsd') ? overrides.amountInUsd! : 'aperiam',
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 't153mt7lkdbnhho3wb4ukkb48qhhudy7',
+        contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : 'gb8uo73v44fnm0g8qd9zkzg6qodpo7yx',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0xB',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'hic',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'aspernatur',
+        rate: overrides && overrides.hasOwnProperty('rate') ? overrides.rate! : '0xb',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : true,
+        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'dignissimos',
         to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : '9olpk2xb6cjl4kyy3he3py3yu0bkm85chtuggo6i',
     };
 };
@@ -229,8 +514,23 @@ export const aContractBalance = (overrides?: Partial<GQLContractBalance>): { __t
     return {
         __typename: 'ContractBalance',
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xc',
+        amountInUsd: overrides && overrides.hasOwnProperty('amountInUsd') ? overrides.amountInUsd! : 'sint',
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'm1on4nvj5caxtv0dkued0ncku5ydtsxu',
         contract: overrides && overrides.hasOwnProperty('contract') ? overrides.contract! : '7bdxyt98z950w2en4wp4kh5fxekvlzqv',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0x0',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'tempora',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'consequatur',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : true,
+        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'reiciendis',
+    };
+};
+
+export const aContractBalance2 = (overrides?: Partial<GQLContractBalance2>): { __typename: 'ContractBalance2' } & GQLContractBalance2 => {
+    return {
+        __typename: 'ContractBalance2',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0x0',
+        asset: overrides && overrides.hasOwnProperty('asset') ? overrides.asset! : anAsset(),
+        assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'deleniti',
     };
 };
 
@@ -291,6 +591,19 @@ export const aContractParameters = (overrides?: Partial<GQLContractParameters>):
     };
 };
 
+export const aDelegateResponse = (overrides?: Partial<GQLDelegateResponse>): { __typename: 'DelegateResponse' } & GQLDelegateResponse => {
+    return {
+        __typename: 'DelegateResponse',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'placeat',
+        from: overrides && overrides.hasOwnProperty('from') ? overrides.from! : 'sapiente',
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 4042,
+        status: overrides && overrides.hasOwnProperty('status') ? overrides.status! : 'soluta',
+        statusInfo: overrides && overrides.hasOwnProperty('statusInfo') ? overrides.statusInfo! : aBaseStatusInfo(),
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('ClaimRewards' as GQLResponseType),
+        validator: overrides && overrides.hasOwnProperty('validator') ? overrides.validator! : 'harum',
+    };
+};
+
 export const aDryRunFailureStatus = (overrides?: Partial<GQLDryRunFailureStatus>): { __typename: 'DryRunFailureStatus' } & GQLDryRunFailureStatus => {
     return {
         __typename: 'DryRunFailureStatus',
@@ -328,6 +641,15 @@ export const anEstimateGasPrice = (overrides?: Partial<GQLEstimateGasPrice>): { 
     };
 };
 
+export const anEthTx = (overrides?: Partial<GQLEthTx>): { __typename: 'EthTx' } & GQLEthTx => {
+    return {
+        __typename: 'EthTx',
+        height: overrides && overrides.hasOwnProperty('height') ? overrides.height! : 'magnam',
+        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : 'dicta',
+        txHash: overrides && overrides.hasOwnProperty('txHash') ? overrides.txHash! : 'asperiores',
+    };
+};
+
 export const anExcludeInput = (overrides?: Partial<GQLExcludeInput>): GQLExcludeInput => {
     return {
         messages: overrides && overrides.hasOwnProperty('messages') ? overrides.messages! : ['facilis'],
@@ -355,6 +677,14 @@ export const aFeeParameters = (overrides?: Partial<GQLFeeParameters>): { __typen
         gasPerByte: overrides && overrides.hasOwnProperty('gasPerByte') ? overrides.gasPerByte! : '0xA',
         gasPriceFactor: overrides && overrides.hasOwnProperty('gasPriceFactor') ? overrides.gasPriceFactor! : '0xb',
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : ('V1' as GQLFeeParametersVersion),
+    };
+};
+
+export const aFinalizedInfo = (overrides?: Partial<GQLFinalizedInfo>): { __typename: 'FinalizedInfo' } & GQLFinalizedInfo => {
+    return {
+        __typename: 'FinalizedInfo',
+        ethTx: overrides && overrides.hasOwnProperty('ethTx') ? overrides.ethTx! : anEthTx(),
+        sequencerTx: overrides && overrides.hasOwnProperty('sequencerTx') ? overrides.sequencerTx! : aSequencerTx(),
     };
 };
 
@@ -487,6 +817,14 @@ export const aGenesis = (overrides?: Partial<GQLGenesis>): { __typename: 'Genesi
     };
 };
 
+export const aGraphQlBridgeResponse = (overrides?: Partial<GQLGraphQlBridgeResponse>): { __typename: 'GraphQLBridgeResponse' } & GQLGraphQlBridgeResponse => {
+    return {
+        __typename: 'GraphQLBridgeResponse',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aBridgeDepositResponse()],
+        pageInfo: overrides && overrides.hasOwnProperty('pageInfo') ? overrides.pageInfo! : aBridgePageInfo(),
+    };
+};
+
 export const aGroupedInputCoin = (overrides?: Partial<GQLGroupedInputCoin>): { __typename: 'GroupedInputCoin' } & GQLGroupedInputCoin => {
     return {
         __typename: 'GroupedInputCoin',
@@ -581,11 +919,19 @@ export const anInputCoin = (overrides?: Partial<GQLInputCoin>): { __typename: 'I
     return {
         __typename: 'InputCoin',
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xA',
+        amountInUsd: overrides && overrides.hasOwnProperty('amountInUsd') ? overrides.amountInUsd! : 'aperiam',
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'y27xk4sns2byxqyzgpcy513i3crqms8m',
+        contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : 'i2ww0zpium6io4uw4db9iioy3at1eyq1',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0xe',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'ut',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'eligendi',
         owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'vamcamah4e8u1v6tw4ldf49gn6i4nhcxuhztvd8f',
         predicate: overrides && overrides.hasOwnProperty('predicate') ? overrides.predicate! : '0xa67Faa70dBB8BFe84AeA310BFCb62991Ad08F6635BBeFeafAe7abac62E8BdeeB4cefB8E74f0dB67569E5f42cCdc9EBfA64c4326ED6Df8B3583E50A790F441b29BDD613D18e7D9eF2d42fE1F8C7dd4ee3',
         predicateData: overrides && overrides.hasOwnProperty('predicateData') ? overrides.predicateData! : '0x63CCab6C200Cade6C4B7d1689bB2964b3BD8CaAb96C1AcBba1CED702F09b342f40d10F36824275eDba5BD55B657b71CF409Aeee963C126Bb2dEb80bDEeB57DF6c1dEdDC65389f3FAc6c72910319aBF2B',
         predicateGasUsed: overrides && overrides.hasOwnProperty('predicateGasUsed') ? overrides.predicateGasUsed! : '0xd',
+        rate: overrides && overrides.hasOwnProperty('rate') ? overrides.rate! : '0xf',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : true,
+        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'vero',
         txPointer: overrides && overrides.hasOwnProperty('txPointer') ? overrides.txPointer! : 'officia',
         utxoId: overrides && overrides.hasOwnProperty('utxoId') ? overrides.utxoId! : '37d3ah19hr1fh00b5j2qsz0tjfhyjk5f',
         witnessIndex: overrides && overrides.hasOwnProperty('witnessIndex') ? overrides.witnessIndex! : '0xC',
@@ -768,10 +1114,13 @@ export const anOutputBreakpoint = (overrides?: Partial<GQLOutputBreakpoint>): { 
 export const aPageInfo = (overrides?: Partial<GQLPageInfo>): { __typename: 'PageInfo' } & GQLPageInfo => {
     return {
         __typename: 'PageInfo',
+        endCount: overrides && overrides.hasOwnProperty('endCount') ? overrides.endCount! : 2123,
         endCursor: overrides && overrides.hasOwnProperty('endCursor') ? overrides.endCursor! : 'cum',
         hasNextPage: overrides && overrides.hasOwnProperty('hasNextPage') ? overrides.hasNextPage! : false,
         hasPreviousPage: overrides && overrides.hasOwnProperty('hasPreviousPage') ? overrides.hasPreviousPage! : true,
+        startCount: overrides && overrides.hasOwnProperty('startCount') ? overrides.startCount! : 5210,
         startCursor: overrides && overrides.hasOwnProperty('startCursor') ? overrides.startCursor! : 'repellendus',
+        totalCount: overrides && overrides.hasOwnProperty('totalCount') ? overrides.totalCount! : 9042,
     };
 };
 
@@ -845,10 +1194,14 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
     return {
         __typename: 'Query',
         asset: overrides && overrides.hasOwnProperty('asset') ? overrides.asset! : anAsset(),
+        assetsByContract: overrides && overrides.hasOwnProperty('assetsByContract') ? overrides.assetsByContract! : anAssetsContractConnection(),
         balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : aBalance(),
+        balanceByBlockHeight: overrides && overrides.hasOwnProperty('balanceByBlockHeight') ? overrides.balanceByBlockHeight! : aBalanceByBlockHeight(),
         balances: overrides && overrides.hasOwnProperty('balances') ? overrides.balances! : aBalanceConnection(),
         block: overrides && overrides.hasOwnProperty('block') ? overrides.block! : aBlock(),
         blocks: overrides && overrides.hasOwnProperty('blocks') ? overrides.blocks! : aBlockConnection(),
+        bridgeEvent: overrides && overrides.hasOwnProperty('bridgeEvent') ? overrides.bridgeEvent! : aBridgeDepositResponse(),
+        bridgeEvents: overrides && overrides.hasOwnProperty('bridgeEvents') ? overrides.bridgeEvents! : aGraphQlBridgeResponse(),
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : aChainInfo(),
         coin: overrides && overrides.hasOwnProperty('coin') ? overrides.coin! : aCoin(),
         coins: overrides && overrides.hasOwnProperty('coins') ? overrides.coins! : aCoinConnection(),
@@ -872,11 +1225,36 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
         register: overrides && overrides.hasOwnProperty('register') ? overrides.register! : '0x3',
         relayedTransactionStatus: overrides && overrides.hasOwnProperty('relayedTransactionStatus') ? overrides.relayedTransactionStatus! : aRelayedTransactionFailed(),
         search: overrides && overrides.hasOwnProperty('search') ? overrides.search! : aSearchResult(),
+        stakingAPY: overrides && overrides.hasOwnProperty('stakingAPY') ? overrides.stakingAPY! : aStakingApy(),
+        stakingEvent: overrides && overrides.hasOwnProperty('stakingEvent') ? overrides.stakingEvent! : aClaimRewardsResponse(),
+        stakingEvents: overrides && overrides.hasOwnProperty('stakingEvents') ? overrides.stakingEvents! : aStakingEventsResult(),
+        statistics: overrides && overrides.hasOwnProperty('statistics') ? overrides.statistics! : aStatisticsConnection(),
         tps: overrides && overrides.hasOwnProperty('tps') ? overrides.tps! : aTpsConnection(),
         transaction: overrides && overrides.hasOwnProperty('transaction') ? overrides.transaction! : aTransaction(),
         transactions: overrides && overrides.hasOwnProperty('transactions') ? overrides.transactions! : aTransactionConnection(),
         transactionsByBlockId: overrides && overrides.hasOwnProperty('transactionsByBlockId') ? overrides.transactionsByBlockId! : aTransactionConnection(),
         transactionsByOwner: overrides && overrides.hasOwnProperty('transactionsByOwner') ? overrides.transactionsByOwner! : aTransactionConnection(),
+    };
+};
+
+export const aReDelegateResponse = (overrides?: Partial<GQLReDelegateResponse>): { __typename: 'ReDelegateResponse' } & GQLReDelegateResponse => {
+    return {
+        __typename: 'ReDelegateResponse',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'perferendis',
+        from: overrides && overrides.hasOwnProperty('from') ? overrides.from! : 'aperiam',
+        fromValidator: overrides && overrides.hasOwnProperty('fromValidator') ? overrides.fromValidator! : 'ratione',
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 1095,
+        status: overrides && overrides.hasOwnProperty('status') ? overrides.status! : 'facere',
+        statusInfo: overrides && overrides.hasOwnProperty('statusInfo') ? overrides.statusInfo! : aBaseStatusInfo(),
+        toValidator: overrides && overrides.hasOwnProperty('toValidator') ? overrides.toValidator! : 'ea',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('ClaimRewards' as GQLResponseType),
+    };
+};
+
+export const aReadyToProcessWithdrawInfo = (overrides?: Partial<GQLReadyToProcessWithdrawInfo>): { __typename: 'ReadyToProcessWithdrawInfo' } & GQLReadyToProcessWithdrawInfo => {
+    return {
+        __typename: 'ReadyToProcessWithdrawInfo',
+        proof: overrides && overrides.hasOwnProperty('proof') ? overrides.proof! : 'officiis',
     };
 };
 
@@ -887,12 +1265,15 @@ export const aReceipt = (overrides?: Partial<GQLReceipt>): { __typename: 'Receip
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'z58vuwpyp5fwi1yhwzlqj9ka232t9a8r',
         contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : '9d382ivp4mteisohn79svut91p9msibm',
         data: overrides && overrides.hasOwnProperty('data') ? overrides.data! : '0xe2b353aAEa5e7E1Ff6fc4Da5bf9c0af8c0DcEe5ECD206ba852cDf1C7285F1fbd9eCbE4ba1AFCb6f9f4ef2Ce96c1a8f1DFE4AcD2FaD74D82eB1DFBFeFE3fc2F8EADBeeCDEE0ebF41E3ba0682aaa8Fa59A',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0x3',
         digest: overrides && overrides.hasOwnProperty('digest') ? overrides.digest! : 'architecto',
         gas: overrides && overrides.hasOwnProperty('gas') ? overrides.gas! : '0x4',
         gasUsed: overrides && overrides.hasOwnProperty('gasUsed') ? overrides.gasUsed! : '0x2',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'eveniet',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'reo93p7ao7a7vbjgwe4zokw7iw1tt5p9',
         is: overrides && overrides.hasOwnProperty('is') ? overrides.is! : '0xb',
         len: overrides && overrides.hasOwnProperty('len') ? overrides.len! : '0xf',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'nihil',
         nonce: overrides && overrides.hasOwnProperty('nonce') ? overrides.nonce! : 'mollitia',
         param1: overrides && overrides.hasOwnProperty('param1') ? overrides.param1! : '0xf',
         param2: overrides && overrides.hasOwnProperty('param2') ? overrides.param2! : '0xe',
@@ -908,6 +1289,8 @@ export const aReceipt = (overrides?: Partial<GQLReceipt>): { __typename: 'Receip
         result: overrides && overrides.hasOwnProperty('result') ? overrides.result! : '0x0',
         sender: overrides && overrides.hasOwnProperty('sender') ? overrides.sender! : 'ysjl9jycalt7pupoecumgfg3l76d5g22g2yy181x',
         subId: overrides && overrides.hasOwnProperty('subId') ? overrides.subId! : 'quam',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : false,
+        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'expedita',
         to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : 'qlna7hjcuqu3yun5jqzky8dn9wag39kd',
         toAddress: overrides && overrides.hasOwnProperty('toAddress') ? overrides.toAddress! : '40v7wkyreg1nryfbtnbhw09swv0ciohkdcfloi6w',
         val: overrides && overrides.hasOwnProperty('val') ? overrides.val! : '0xf',
@@ -980,6 +1363,22 @@ export const aSearchTransaction = (overrides?: Partial<GQLSearchTransaction>): {
     };
 };
 
+export const aSequencerTx = (overrides?: Partial<GQLSequencerTx>): { __typename: 'SequencerTx' } & GQLSequencerTx => {
+    return {
+        __typename: 'SequencerTx',
+        height: overrides && overrides.hasOwnProperty('height') ? overrides.height! : 'in',
+        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : 'laudantium',
+        txHash: overrides && overrides.hasOwnProperty('txHash') ? overrides.txHash! : 'aspernatur',
+    };
+};
+
+export const aSkippedInfo = (overrides?: Partial<GQLSkippedInfo>): { __typename: 'SkippedInfo' } & GQLSkippedInfo => {
+    return {
+        __typename: 'SkippedInfo',
+        message: overrides && overrides.hasOwnProperty('message') ? overrides.message! : 'pariatur',
+    };
+};
+
 export const aSpendQueryElementInput = (overrides?: Partial<GQLSpendQueryElementInput>): GQLSpendQueryElementInput => {
     return {
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xd',
@@ -995,10 +1394,63 @@ export const aSqueezedOutStatus = (overrides?: Partial<GQLSqueezedOutStatus>): {
     };
 };
 
+export const aStakingApy = (overrides?: Partial<GQLStakingApy>): { __typename: 'StakingAPY' } & GQLStakingApy => {
+    return {
+        __typename: 'StakingAPY',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'eligendi',
+    };
+};
+
+export const aStakingEventsResult = (overrides?: Partial<GQLStakingEventsResult>): { __typename: 'StakingEventsResult' } & GQLStakingEventsResult => {
+    return {
+        __typename: 'StakingEventsResult',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : [aClaimRewardsResponse()],
+        pageInfo: overrides && overrides.hasOwnProperty('pageInfo') ? overrides.pageInfo! : aPageInfo(),
+    };
+};
+
 export const aStateTransitionPurpose = (overrides?: Partial<GQLStateTransitionPurpose>): { __typename: 'StateTransitionPurpose' } & GQLStateTransitionPurpose => {
     return {
         __typename: 'StateTransitionPurpose',
         root: overrides && overrides.hasOwnProperty('root') ? overrides.root! : 'quibusdam',
+    };
+};
+
+export const aStatistics = (overrides?: Partial<GQLStatistics>): { __typename: 'Statistics' } & GQLStatistics => {
+    return {
+        __typename: 'Statistics',
+        averageGasUsed: overrides && overrides.hasOwnProperty('averageGasUsed') ? overrides.averageGasUsed! : [aStatisticsDetails()],
+        averageTps: overrides && overrides.hasOwnProperty('averageTps') ? overrides.averageTps! : [aStatisticsDetails()],
+        maxGasUsed: overrides && overrides.hasOwnProperty('maxGasUsed') ? overrides.maxGasUsed! : [aStatisticsDetails()],
+        maxTps: overrides && overrides.hasOwnProperty('maxTps') ? overrides.maxTps! : [aStatisticsDetails()],
+        totalFee: overrides && overrides.hasOwnProperty('totalFee') ? overrides.totalFee! : [aStatisticsTotalFeeDetails()],
+        totalFee24hrs: overrides && overrides.hasOwnProperty('totalFee24hrs') ? overrides.totalFee24hrs! : 'consectetur',
+        totalGasUsed: overrides && overrides.hasOwnProperty('totalGasUsed') ? overrides.totalGasUsed! : [aStatisticsDetails()],
+        totalTps: overrides && overrides.hasOwnProperty('totalTps') ? overrides.totalTps! : [aStatisticsDetails()],
+    };
+};
+
+export const aStatisticsConnection = (overrides?: Partial<GQLStatisticsConnection>): { __typename: 'StatisticsConnection' } & GQLStatisticsConnection => {
+    return {
+        __typename: 'StatisticsConnection',
+        nodes: overrides && overrides.hasOwnProperty('nodes') ? overrides.nodes! : aStatistics(),
+    };
+};
+
+export const aStatisticsDetails = (overrides?: Partial<GQLStatisticsDetails>): { __typename: 'StatisticsDetails' } & GQLStatisticsDetails => {
+    return {
+        __typename: 'StatisticsDetails',
+        date: overrides && overrides.hasOwnProperty('date') ? overrides.date! : 'laudantium',
+        value: overrides && overrides.hasOwnProperty('value') ? overrides.value! : '0xB',
+    };
+};
+
+export const aStatisticsTotalFeeDetails = (overrides?: Partial<GQLStatisticsTotalFeeDetails>): { __typename: 'StatisticsTotalFeeDetails' } & GQLStatisticsTotalFeeDetails => {
+    return {
+        __typename: 'StatisticsTotalFeeDetails',
+        date: overrides && overrides.hasOwnProperty('date') ? overrides.date! : 'qui',
+        value: overrides && overrides.hasOwnProperty('value') ? overrides.value! : '0xa',
+        valueInUsd: overrides && overrides.hasOwnProperty('valueInUsd') ? overrides.valueInUsd! : 'illum',
     };
 };
 
@@ -1070,8 +1522,10 @@ export const aTransaction = (overrides?: Partial<GQLTransaction>): { __typename:
         isUpload: overrides && overrides.hasOwnProperty('isUpload') ? overrides.isUpload! : false,
         maturity: overrides && overrides.hasOwnProperty('maturity') ? overrides.maturity! : 'distinctio',
         mintAmount: overrides && overrides.hasOwnProperty('mintAmount') ? overrides.mintAmount! : '0x4',
+        mintAmountUsd: overrides && overrides.hasOwnProperty('mintAmountUsd') ? overrides.mintAmountUsd! : 'ullam',
         mintAssetId: overrides && overrides.hasOwnProperty('mintAssetId') ? overrides.mintAssetId! : 'ear74yjd6jnrhxyo9jp8jbbywtajy2y7',
         mintGasPrice: overrides && overrides.hasOwnProperty('mintGasPrice') ? overrides.mintGasPrice! : '0xd',
+        mintedAsset: overrides && overrides.hasOwnProperty('mintedAsset') ? overrides.mintedAsset! : anAsset(),
         operations: overrides && overrides.hasOwnProperty('operations') ? overrides.operations! : [anOperation()],
         outputContract: overrides && overrides.hasOwnProperty('outputContract') ? overrides.outputContract! : aContractOutput(),
         outputs: overrides && overrides.hasOwnProperty('outputs') ? overrides.outputs! : [aChangeOutput()],
@@ -1118,7 +1572,15 @@ export const aTransactionGasCosts = (overrides?: Partial<GQLTransactionGasCosts>
     return {
         __typename: 'TransactionGasCosts',
         fee: overrides && overrides.hasOwnProperty('fee') ? overrides.fee! : '0x8',
+        feeInUsd: overrides && overrides.hasOwnProperty('feeInUsd') ? overrides.feeInUsd! : 'assumenda',
         gasUsed: overrides && overrides.hasOwnProperty('gasUsed') ? overrides.gasUsed! : '0xf',
+    };
+};
+
+export const aTransactionSentInfo = (overrides?: Partial<GQLTransactionSentInfo>): { __typename: 'TransactionSentInfo' } & GQLTransactionSentInfo => {
+    return {
+        __typename: 'TransactionSentInfo',
+        ethTx: overrides && overrides.hasOwnProperty('ethTx') ? overrides.ethTx! : anEthTx(),
     };
 };
 
@@ -1132,6 +1594,30 @@ export const aTxParameters = (overrides?: Partial<GQLTxParameters>): { __typenam
         maxSize: overrides && overrides.hasOwnProperty('maxSize') ? overrides.maxSize! : '0x4',
         maxWitnesses: overrides && overrides.hasOwnProperty('maxWitnesses') ? overrides.maxWitnesses! : 'modi',
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : ('V1' as GQLTxParametersVersion),
+    };
+};
+
+export const anUndelegateResponse = (overrides?: Partial<GQLUndelegateResponse>): { __typename: 'UndelegateResponse' } & GQLUndelegateResponse => {
+    return {
+        __typename: 'UndelegateResponse',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'voluptatem',
+        from: overrides && overrides.hasOwnProperty('from') ? overrides.from! : 'reprehenderit',
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 7098,
+        status: overrides && overrides.hasOwnProperty('status') ? overrides.status! : 'in',
+        statusInfo: overrides && overrides.hasOwnProperty('statusInfo') ? overrides.statusInfo! : anUndelegateStatusInfo(),
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('ClaimRewards' as GQLResponseType),
+        validator: overrides && overrides.hasOwnProperty('validator') ? overrides.validator! : 'ea',
+    };
+};
+
+export const anUndelegateStatusInfo = (overrides?: Partial<GQLUndelegateStatusInfo>): { __typename: 'UndelegateStatusInfo' } & GQLUndelegateStatusInfo => {
+    return {
+        __typename: 'UndelegateStatusInfo',
+        Finalized: overrides && overrides.hasOwnProperty('Finalized') ? overrides.Finalized! : aFinalizedInfo(),
+        Skipped: overrides && overrides.hasOwnProperty('Skipped') ? overrides.Skipped! : aSkippedInfo(),
+        TransactionSent: overrides && overrides.hasOwnProperty('TransactionSent') ? overrides.TransactionSent! : aTransactionSentInfo(),
+        WaitingSync: overrides && overrides.hasOwnProperty('WaitingSync') ? overrides.WaitingSync! : aWaitingSyncInfo(),
+        WaitingUnbonding: overrides && overrides.hasOwnProperty('WaitingUnbonding') ? overrides.WaitingUnbonding! : aWaitingSyncInfo(),
     };
 };
 
@@ -1149,7 +1635,65 @@ export const aVariableOutput = (overrides?: Partial<GQLVariableOutput>): { __typ
     return {
         __typename: 'VariableOutput',
         amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : '0xc',
+        amountInUsd: overrides && overrides.hasOwnProperty('amountInUsd') ? overrides.amountInUsd! : 'sed',
         assetId: overrides && overrides.hasOwnProperty('assetId') ? overrides.assetId! : 'hq38k3ap8ok8krpquh789zkbfdd74ab6',
+        contractId: overrides && overrides.hasOwnProperty('contractId') ? overrides.contractId! : '2t8ao7ge7oju21cn4dmn7chf20xkypkh',
+        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : '0x0',
+        icon: overrides && overrides.hasOwnProperty('icon') ? overrides.icon! : 'deserunt',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'molestias',
+        rate: overrides && overrides.hasOwnProperty('rate') ? overrides.rate! : '0x8',
+        suspicious: overrides && overrides.hasOwnProperty('suspicious') ? overrides.suspicious! : true,
+        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'aliquam',
         to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : '4gs9ppn7jqumdt8t0gd7u4mra5dblqlbgjy1w5bv',
+    };
+};
+
+export const aWaitingCommittingToL1gInfo = (overrides?: Partial<GQLWaitingCommittingToL1gInfo>): { __typename: 'WaitingCommittingToL1gInfo' } & GQLWaitingCommittingToL1gInfo => {
+    return {
+        __typename: 'WaitingCommittingToL1gInfo',
+        dateExpectedToComplete: overrides && overrides.hasOwnProperty('dateExpectedToComplete') ? overrides.dateExpectedToComplete! : 'quam',
+        sequencerTx: overrides && overrides.hasOwnProperty('sequencerTx') ? overrides.sequencerTx! : aSequencerTx(),
+    };
+};
+
+export const aWaitingFinalizationInfo = (overrides?: Partial<GQLWaitingFinalizationInfo>): { __typename: 'WaitingFinalizationInfo' } & GQLWaitingFinalizationInfo => {
+    return {
+        __typename: 'WaitingFinalizationInfo',
+        dateExpectedToComplete: overrides && overrides.hasOwnProperty('dateExpectedToComplete') ? overrides.dateExpectedToComplete! : 'harum',
+        ethTx: overrides && overrides.hasOwnProperty('ethTx') ? overrides.ethTx! : anEthTx(),
+    };
+};
+
+export const aWaitingSyncInfo = (overrides?: Partial<GQLWaitingSyncInfo>): { __typename: 'WaitingSyncInfo' } & GQLWaitingSyncInfo => {
+    return {
+        __typename: 'WaitingSyncInfo',
+        dateExpectedToComplete: overrides && overrides.hasOwnProperty('dateExpectedToComplete') ? overrides.dateExpectedToComplete! : 'aut',
+    };
+};
+
+export const aWithdrawResponse = (overrides?: Partial<GQLWithdrawResponse>): { __typename: 'WithdrawResponse' } & GQLWithdrawResponse => {
+    return {
+        __typename: 'WithdrawResponse',
+        amount: overrides && overrides.hasOwnProperty('amount') ? overrides.amount! : 'id',
+        from: overrides && overrides.hasOwnProperty('from') ? overrides.from! : 'sequi',
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 4932,
+        nonce: overrides && overrides.hasOwnProperty('nonce') ? overrides.nonce! : 'fugiat',
+        status: overrides && overrides.hasOwnProperty('status') ? overrides.status! : 'consectetur',
+        statusInfo: overrides && overrides.hasOwnProperty('statusInfo') ? overrides.statusInfo! : aWithdrawStatusInfo(),
+        to: overrides && overrides.hasOwnProperty('to') ? overrides.to! : 'quia',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : ('ClaimRewards' as GQLResponseType),
+    };
+};
+
+export const aWithdrawStatusInfo = (overrides?: Partial<GQLWithdrawStatusInfo>): { __typename: 'WithdrawStatusInfo' } & GQLWithdrawStatusInfo => {
+    return {
+        __typename: 'WithdrawStatusInfo',
+        Finalized: overrides && overrides.hasOwnProperty('Finalized') ? overrides.Finalized! : aFinalizedInfo(),
+        ReadyToProcessWithdraw: overrides && overrides.hasOwnProperty('ReadyToProcessWithdraw') ? overrides.ReadyToProcessWithdraw! : aReadyToProcessWithdrawInfo(),
+        Skipped: overrides && overrides.hasOwnProperty('Skipped') ? overrides.Skipped! : aSkippedInfo(),
+        TransactionSent: overrides && overrides.hasOwnProperty('TransactionSent') ? overrides.TransactionSent! : aTransactionSentInfo(),
+        WaitingCommittingToL1: overrides && overrides.hasOwnProperty('WaitingCommittingToL1') ? overrides.WaitingCommittingToL1! : aWaitingCommittingToL1gInfo(),
+        WaitingFinalization: overrides && overrides.hasOwnProperty('WaitingFinalization') ? overrides.WaitingFinalization! : aWaitingFinalizationInfo(),
+        WaitingSync: overrides && overrides.hasOwnProperty('WaitingSync') ? overrides.WaitingSync! : aWaitingSyncInfo(),
     };
 };

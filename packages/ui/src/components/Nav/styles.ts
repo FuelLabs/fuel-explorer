@@ -35,14 +35,14 @@ export const styles = tv({
       'dark:aria-[label=Sun]:-translate-x-full',
     ],
     desktop: [
-      'mobile:max-desktop:hidden gap-8 flex-row items-center',
-      'desktop:px-8 desktop:flex min-h-[var(--nav-height)]',
+      'hidden md:flex justify-between flex-row items-center',
+      'md:px-8 min-h-[var(--nav-height)]',
     ],
     desktopWrapper: ['border-b border-border min-h-[var(--nav-height)]'],
     mobileWrapper: [
       'pl-3 pr-2 border-b border-border min-h-[var(--nav-height)]',
     ],
-    mobile: ['desktop:hidden flex-col fuel-[NavLogo]:flex-1'],
+    mobile: ['md:hidden flex-col fuel-[NavLogo]:flex-1'],
     mobileContent: [
       'max-w-screen flex items-center py-2 px-4 justify-between tablet:justify-start',
       'transition-colors duration-200 ease-in-out',

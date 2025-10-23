@@ -1,5 +1,6 @@
 import { HStack, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
+import { useMemo } from 'react';
 import {
   Bar,
   BarChart,
@@ -8,47 +9,60 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis,
 } from 'recharts';
 
 export interface TPSProps {
-  blocks: any;
+  tps: any;
 }
 
-export const TPS = (props: TPSProps) => {
-  const blocks = props.blocks;
+export const TPS = ({ tps }: TPSProps) => {
+  const { ticks, maxTps, highestValue, chartDataArray } = useMemo(() => {
+    if (!Array.isArray(tps) || tps.length === 0) {
+      return {
+        ticks: [],
+        maxTps: 0,
+        highestValue: 0,
+        chartDataArray: [],
+        chartData: {},
+      };
+    }
 
-  const chartData = blocks.reduce(
-    (acc: { [key: string]: number }, block: any) => {
-      const time = dayjs(Number(block.time)).format('HH:mm');
-      const value = +block.value / 3600;
-      acc[time] = (acc[time] || 0) + value;
-      return acc;
-    },
-    {},
-  );
+    const chartData = tps.reduce(
+      (acc: { [key: string]: number }, element: any) => {
+        const time = dayjs(Number(element.time)).format('HH:mm');
+        const value = element.value;
+        acc[time] = value;
+        return acc;
+      },
+      {},
+    );
+    const chartDataArray = chartData
+      ? Object.entries(chartData).map(([time, value]) => ({
+          time,
+          value,
+        }))
+      : [];
+    const [maxTps] = tps
+      .map((tps: any) => tps.value)
+      .sort((a: number, b: number) => b - a);
 
-  const chartDataArray = chartData
-    ? Object.entries(chartData).map(([time, value]) => ({
-        time,
-        value,
-      }))
-    : [];
-
-  const averageTPS =
-    blocks.reduce((sum: any, block: any) => sum + Number(block.value), 0) / 24;
-
-  const highestValue = Math.max(
-    ...chartDataArray.map((data: any) => Number(data.value)),
-  );
-
-  const getTicks = () => {
+    const highestValue = Math.max(
+      ...chartDataArray.map((data: any) => Number(data.value)),
+    );
     const ticks: string[] = [];
+
     for (let i = 0; i < chartDataArray.length; i += 6) {
       ticks.push(chartDataArray[i].time);
     }
-    return ticks;
-  };
+
+    return {
+      ticks,
+      maxTps,
+      highestValue,
+      chartDataArray,
+      chartData,
+    };
+  }, [tps]);
 
   return (
     <RoundedContainer className="py-4 px-5 h-full space-y-8">
@@ -57,7 +71,7 @@ export const TPS = (props: TPSProps) => {
           <div className="text-[15px] leading-[24px] text-heading font-semibold group relative">
             <div className=" relative group">
               <div className="flex items-center group">
-                <span className="">TPS</span>
+                <span className="">Max TPS</span>
                 <span className="ml-2 group cursor-pointer">
                   <svg
                     width="14"
@@ -74,7 +88,7 @@ export const TPS = (props: TPSProps) => {
                 </span>
               </div>
               <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white  bg-gray-3 rounded-lg shadow-sm">
-                Transactions Per Second processed by the Fuel network.
+                Max Transactions Per Second (TPS) Processed by the Fuel Network
                 <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
               </div>
             </div>
@@ -84,8 +98,8 @@ export const TPS = (props: TPSProps) => {
           </span>
         </div>
         <HStack className="items-baseline" gap={'0'}>
-          <h2 className="text-[32px] leading-[36px] text-heading font-bold">
-            {`${(averageTPS / 3600).toFixed(2)}`}
+          <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
+            {`${maxTps}`}
           </h2>
           <div className="text-[12px] leading-[12px] text-heading ">TX/s</div>
         </HStack>
@@ -93,7 +107,7 @@ export const TPS = (props: TPSProps) => {
         <ResponsiveContainer width="100%" height={160}>
           <BarChart
             data={chartDataArray}
-            margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
           >
             <CartesianGrid
               strokeDasharray="3 0"
@@ -103,18 +117,17 @@ export const TPS = (props: TPSProps) => {
             />
             <XAxis
               dataKey="time"
-              ticks={getTicks()}
+              ticks={ticks}
               tick={{ className: 'fill-heading', fontSize: '12px' }}
               interval={0}
               tickFormatter={(value) => value}
             />
-            <YAxis tick={{ className: 'fill-heading', fontSize: '12px' }} />
             <Tooltip
-              formatter={(value) => [
-                `${Number(value).toFixed(2)}`,
-                'Avg TPS per hour',
+              formatter={(value: any) => [
+                `${Number(value).toFixed(0)}`,
+                'Max TPS per hour',
               ]}
-              labelFormatter={(label) => label.toLocaleString()}
+              labelFormatter={(label: any) => label.toLocaleString()}
               contentStyle={{
                 backgroundColor: 'var(--gray-1)',
                 borderColor: 'var(--gray-2)',

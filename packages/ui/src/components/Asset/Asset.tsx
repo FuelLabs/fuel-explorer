@@ -1,7 +1,7 @@
 import { bn } from '@fuel-ts/math';
 import type { BNInput } from '@fuel-ts/math';
-import type { Asset as FuelsAsset } from '@fuels/assets';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
+import type { Asset as FuelsAsset } from 'fuels';
 import type { ReactNode } from 'react';
 
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
@@ -75,14 +75,15 @@ export const AssetRoot = createComponent<AssetProps, 'div'>({
     },
   ) => {
     {
+      // @TODO: this component needs to receive the chainId to get the correct asset
       const fuelAsset = useFuelAsset(asset);
       const ethAsset = useEthAsset(asset);
       const assetNetwork = fuelAsset || ethAsset;
 
-      const assetName = assetNetwork?.name || name || 'Unknown';
-      const assetSymbol = assetNetwork?.symbol || symbol || 'TKN';
+      const assetName = asset?.name || name || 'Unknown';
+      const assetSymbol = asset?.symbol || symbol || 'UNK';
       const assetDecimals = assetNetwork?.decimals || decimals || 0;
-      const assetImageUrl = assetNetwork?.icon || imageUrl;
+      const assetImageUrl = asset?.icon || imageUrl;
 
       const newChildren = useStrictedChildren('Asset', CHILD_ITEMS, children);
       const amountStr = bn(amount).format({ units: assetDecimals, precision });

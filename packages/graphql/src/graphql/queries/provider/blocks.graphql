@@ -1,4 +1,4 @@
-fragment BlockItem on Block {
+fragment BlockItems on Block {
   consensus {
     __typename
     ... on Genesis {
@@ -131,38 +131,6 @@ fragment BlockItem on Block {
     status {
       __typename
       ... on FailureStatus {
-        block {
-          consensus {
-            __typename
-            ... on Genesis {
-              chainConfigHash
-              coinsRoot
-              contractsRoot
-              messagesRoot
-              transactionsRoot
-            }
-            ... on PoAConsensus {
-              signature
-            }
-          }
-          header {
-            applicationHash
-            consensusParametersVersion
-            daHeight
-            eventInboxRoot
-            height
-            id
-            messageOutboxRoot
-            messageReceiptCount
-            prevRoot
-            stateTransitionBytecodeVersion
-            time
-            transactionsCount
-            transactionsRoot
-          }
-          height
-          id
-        }
         programState {
           data
           returnType
@@ -210,38 +178,6 @@ fragment BlockItem on Block {
         time
       }
       ... on SuccessStatus {
-        block {
-          consensus {
-            __typename
-            ... on Genesis {
-              chainConfigHash
-              coinsRoot
-              contractsRoot
-              messagesRoot
-              transactionsRoot
-            }
-            ... on PoAConsensus {
-              signature
-            }
-          }
-          header {
-            applicationHash
-            consensusParametersVersion
-            daHeight
-            eventInboxRoot
-            height
-            id
-            messageOutboxRoot
-            messageReceiptCount
-            prevRoot
-            stateTransitionBytecodeVersion
-            time
-            transactionsCount
-            transactionsRoot
-          }
-          height
-          id
-        }
         programState {
           data
           returnType
@@ -304,12 +240,9 @@ query blocks($after: String, $before: String, $first: Int, $last: Int) {
   blocks(after: $after, before: $before, first: $first, last: $last) {
     edges {
       cursor
-      node {
-        ...BlockItem
-      }
     }
     nodes {
-      ...BlockItem
+      ...BlockItems
     }
     pageInfo {
       endCursor

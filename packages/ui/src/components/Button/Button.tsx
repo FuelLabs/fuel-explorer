@@ -30,7 +30,7 @@ export const Button = createPolymorphicComponent<ButtonProps, 'button'>({
           itemProps.className,
           !itemProps.disabled && !itemProps['aria-readonly']
             ? 'cursor-pointer'
-            : '',
+            : 'cursor-not-allowed',
         )}
       >
         {innerChildren}

@@ -5,7 +5,7 @@ import { TxInputContract } from '~/systems/Transaction/component/TxInput/TxInput
 import type { InputContract } from '~/systems/Transaction/component/TxInput/TxInputContract/types';
 import { TxInputMessage } from '~/systems/Transaction/component/TxInput/TxInputMessage/TxInputMessage';
 import type { InputMessage } from '~/systems/Transaction/component/TxInput/TxInputMessage/types';
-import { TxInputProps } from './types';
+import type { TxInputProps } from './types';
 
 function _TxInput({ input, ...props }: TxInputProps) {
   switch (input?.__typename) {

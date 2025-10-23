@@ -1,7 +1,7 @@
 import {
-  GQLOperationReceipt,
+  type GQLOperationReceipt,
   GQLOperationType,
-  GQLReceiptType,
+  type GQLReceiptType,
 } from '~/graphql/generated/sdk-provider';
 
 type AcceptedReceiptType =

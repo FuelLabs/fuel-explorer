@@ -1,4 +1,3 @@
-'use client';
 import { useModal } from 'connectkit';
 import { useEffect } from 'react';
 import type { PublicClient } from 'viem';
@@ -11,7 +10,8 @@ import {
   useWalletClient,
 } from 'wagmi';
 
-import type { AssetEth } from '~portal/systems/Assets/utils';
+import type { Asset } from 'fuels';
+import { getAssetEthCurrentChain } from '~portal/systems/Assets/utils';
 import { useOverlay } from '~portal/systems/Overlay';
 import { parseEthAddressToFuel } from '../utils';
 
@@ -31,14 +31,15 @@ export function useEthAccountConnection() {
     overlay.settings.closeOnBlur = !isConnecting;
   }, [isConnecting]);
 
-  async function addAsset(asset: AssetEth) {
-    if (asset.address && walletClient) {
+  async function addAsset(asset: Asset) {
+    const ethAsset = getAssetEthCurrentChain(asset);
+    if (ethAsset.address && walletClient) {
       await walletClient?.watchAsset({
         type: 'ERC20',
         options: {
-          address: asset.address,
-          decimals: asset.decimals,
-          symbol: asset.symbol,
+          address: ethAsset.address,
+          decimals: ethAsset.decimals,
+          symbol: ethAsset.symbol,
         },
       });
     }

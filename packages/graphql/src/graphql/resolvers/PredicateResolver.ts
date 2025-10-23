@@ -1,3 +1,4 @@
+import { logger } from '~/core/Logger';
 import PredicateDAO from '~/infra/dao/PredicateDAO';
 
 type Params = {
@@ -14,8 +15,8 @@ export class PredicateResolver {
     };
   }
 
-  // TODO: index data to Postgres instead of fetch from SDK
   async predicate(_: any, params: Params['predicate']) {
+    logger.debug('GraphQL', 'PredicateResolver.predicate');
     const predicateDAO = new PredicateDAO();
     const predicate = await predicateDAO.getByAddress(params.address);
     if (!predicate || predicate.bytecode === '0x') return;

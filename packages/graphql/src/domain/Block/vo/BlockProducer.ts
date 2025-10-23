@@ -27,7 +27,7 @@ export class BlockProducer extends ValueObject<Props> {
       return null;
     }
     const signature = block.consensus.signature;
-    const producer = Signer.recoverAddress(block.id, signature).toB256();
+    const producer = Signer.recoverAddress(block.id, signature).toString();
     return producer;
   }
 

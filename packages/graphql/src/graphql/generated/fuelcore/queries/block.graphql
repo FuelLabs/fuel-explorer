@@ -56,6 +56,14 @@ query block($height: U32, $id: BlockId){
                     txPointer
                     utxoId
                     witnessIndex
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    contractId
+                    decimals
+                    rate
+                    amountInUsd
                 }
                 ... on InputContract {
                     balanceRoot
@@ -83,6 +91,7 @@ query block($height: U32, $id: BlockId){
             isUpload
             maturity
             mintAmount
+            mintAmountUsd
             mintAssetId
             mintGasPrice
             outputContract{
@@ -96,11 +105,27 @@ query block($height: U32, $id: BlockId){
                     amount
                     assetId
                     to
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    contractId
+                    decimals
+                    rate
+                    amountInUsd
                 }
                 ... on CoinOutput {
                     amount
                     assetId
                     to
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    contractId
+                    decimals
+                    rate
+                    amountInUsd
                 }
                 ... on ContractCreated {
                     contract
@@ -115,6 +140,14 @@ query block($height: U32, $id: BlockId){
                     amount
                     assetId
                     to
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    contractId
+                    decimals
+                    rate
+                    amountInUsd
                 }
             }
             policies{
@@ -190,6 +223,14 @@ query block($height: U32, $id: BlockId){
                                     txPointer
                                     utxoId
                                     witnessIndex
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                                 ... on InputContract {
                                     balanceRoot
@@ -217,6 +258,7 @@ query block($height: U32, $id: BlockId){
                             isUpload
                             maturity
                             mintAmount
+                            mintAmountUsd
                             mintAssetId
                             mintGasPrice
                             outputContract{
@@ -230,11 +272,27 @@ query block($height: U32, $id: BlockId){
                                     amount
                                     assetId
                                     to
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                                 ... on CoinOutput {
                                     amount
                                     assetId
                                     to
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                                 ... on ContractCreated {
                                     contract
@@ -249,6 +307,14 @@ query block($height: U32, $id: BlockId){
                                     amount
                                     assetId
                                     to
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                             }
                             policies{
@@ -338,6 +404,11 @@ query block($height: U32, $id: BlockId){
                         to
                         toAddress
                         val
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        decimals
                     }
                     time
                     totalFee
@@ -408,6 +479,14 @@ query block($height: U32, $id: BlockId){
                                     txPointer
                                     utxoId
                                     witnessIndex
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                                 ... on InputContract {
                                     balanceRoot
@@ -435,6 +514,7 @@ query block($height: U32, $id: BlockId){
                             isUpload
                             maturity
                             mintAmount
+                            mintAmountUsd
                             mintAssetId
                             mintGasPrice
                             outputContract{
@@ -448,11 +528,27 @@ query block($height: U32, $id: BlockId){
                                     amount
                                     assetId
                                     to
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                                 ... on CoinOutput {
                                     amount
                                     assetId
                                     to
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                                 ... on ContractCreated {
                                     contract
@@ -467,6 +563,14 @@ query block($height: U32, $id: BlockId){
                                     amount
                                     assetId
                                     to
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    contractId
+                                    decimals
+                                    rate
+                                    amountInUsd
                                 }
                             }
                             policies{
@@ -555,6 +659,11 @@ query block($height: U32, $id: BlockId){
                         to
                         toAddress
                         val
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        decimals
                     }
                     time
                     totalFee

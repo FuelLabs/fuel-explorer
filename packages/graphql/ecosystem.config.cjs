@@ -18,5 +18,11 @@ module.exports = {
       mode: 'cluster',
       instances: '1',
     },
+    {
+      name: 'timer',
+      script: './dist/timer.js',
+      mode: 'cluster',
+      instances: '1',
+    },
   ],
 };

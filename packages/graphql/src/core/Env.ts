@@ -3,9 +3,8 @@ import * as zod from 'zod';
 
 dotenv.config();
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export class Env<T extends zod.ZodObject<any>> {
-  private parsedEnv: zod.infer<T> | undefined;
+  private parsedEnv: zod.infer<T> = {} as zod.infer<T>;
 
   constructor(
     readonly schema: T = zod.object({}) as T,
@@ -57,11 +56,11 @@ export class Env<T extends zod.ZodObject<any>> {
     );
   }
 
-  get<K extends keyof zod.infer<T>>(key: K): zod.infer<T>[K] {
-    return this.parsedEnv![key];
+  get<K extends keyof zod.infer<T>>(key: K): zod.infer<T>[K] | undefined {
+    return this.parsedEnv?.[key];
   }
 
   set<K extends keyof zod.infer<T>>(key: K, value: zod.infer<T>[K]) {
-    this.parsedEnv![key] = value;
+    this.parsedEnv[key] = value;
   }
 }

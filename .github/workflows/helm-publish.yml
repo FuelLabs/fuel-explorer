@@ -1,11 +1,16 @@
 name: Build and publish Helm Chart
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      - 'helm/fuel-explorer/Chart.yaml'
+      - "helm/fuel-explorer/Chart.yaml"
+  pull_request:
+    types: [ opened, synchronize ]
+  release:
+    types: [ published ]
 
 permissions:
   contents: read
@@ -13,10 +18,11 @@ permissions:
 jobs:
   helm-release:
     name: Build Helm Chart
-    runs-on: buildjet-4vcpu-ubuntu-2204
+    runs-on: warp-ubuntu-latest-x64-4x
     if: |
       (github.event_name == 'release' && github.event.action == 'published') ||
-      github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+      github.ref == 'refs/heads/main' || github.event_name == 'pull_request' ||
+      github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       packages: write

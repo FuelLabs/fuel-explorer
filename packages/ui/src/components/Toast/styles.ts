@@ -51,7 +51,7 @@ const vars = {
 export const styles = tv({
   slots: {
     viewport: [
-      'fixed top-0 z-50 flex flex-col-reverse p-4 tablet:bottom-0 tablet:right-0',
+      'fixed top-0 z-50 max-w-full flex flex-col-reverse p-4 tablet:bottom-0 tablet:right-0',
       'tablet:top-auto tablet:flex-col',
     ],
     toast: [
@@ -88,8 +88,12 @@ export const styles = tv({
       'bg-gray-8 fuel-[Icon]:text-gray-1',
       'hover:fuel-[Icon]:text-gray-4',
     ],
-    title: ['text-md font-medium', 'text-[var(--radix-toast-title-color)]'],
-    description: 'text-sm text-[var(--radix-toast-description-color)]',
+    title: [
+      'text-md font-medium whitespace-pre',
+      'text-[var(--radix-toast-title-color)]',
+    ],
+    description:
+      'text-sm whitespace-pre text-[var(--radix-toast-description-color)]',
   },
   variants: {
     variant: {

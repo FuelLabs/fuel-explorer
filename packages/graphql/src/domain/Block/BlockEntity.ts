@@ -9,13 +9,14 @@ import { BlockProducer } from './vo/BlockProducer';
 
 import { Signer } from 'fuels';
 import { TransactionEntity } from '../Transaction/TransactionEntity';
+import { BlockTotalFee } from './vo/BlockTotalFee';
 
 type BlockInputProps = {
   blockHash: Hash256;
   data: BlockData;
   producer: BlockProducer;
   time: ParsedTime;
-  totalGasUsed: BlockGasUsed;
+  totalFee: BlockTotalFee;
   transactions: TransactionEntity[];
 };
 
@@ -31,18 +32,18 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     const data = BlockData.create(item);
     const timestamp = Timestamp.create(item.header.time);
     const time = ParsedTime.create(item.header.time);
-    const totalGasUsed = BlockGasUsed.create(item);
+    const totalFee = BlockTotalFee.create(item);
 
     const producerAddress = Signer.recoverAddress(
       block.data.id,
       blockSignature || '',
-    ).toB256();
+    ).toString();
     const producer = BlockProducer.create(producerAddress);
 
     const props = {
       blockHash,
       data,
-      totalGasUsed,
+      totalFee,
       time,
       timestamp,
       producer,
@@ -62,6 +63,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       producer: producerId,
       timestamp: Timestamp.create(block.header.time).value(),
       totalGasUsed: BlockGasUsed.create(block).value(),
+      totalFee: BlockTotalFee.create(block).value(),
     };
   }
 
@@ -89,8 +91,8 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
     return this.props.time.value();
   }
 
-  get totalGasUsed() {
-    return this.props.totalGasUsed.value();
+  get totalFee() {
+    return this.props.totalFee.value();
   }
 
   get transactions() {
@@ -104,7 +106,7 @@ export class BlockEntity extends Entity<BlockInputProps, BlockModelID> {
       _id: this.id,
       producer: this.producer,
       time: this.time,
-      totalGasUsed: this.totalGasUsed,
+      totalFee: this.totalFee,
       transactions: this.transactions,
     };
   }

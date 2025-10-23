@@ -1,6 +1,5 @@
 import type { Identifier } from './Identifier';
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const isEntity = (v: any): v is Entity<any, any> => {
   return v instanceof Entity;
 };
@@ -11,7 +10,7 @@ export abstract class Entity<
 > {
   readonly _id!: ID;
   public readonly props: T;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+
   abstract get cursor(): any;
 
   constructor(props: T, id?: ID) {

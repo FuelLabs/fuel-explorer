@@ -1,6 +1,7 @@
 import { RoundedContainer } from '@fuels/ui';
-import Link from 'next/link';
-import React from 'react';
+import { getProjectImage } from 'app-commons';
+
+import type React from 'react';
 
 interface ValidatorStatusProps {
   active: number;
@@ -15,21 +16,18 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 }) => {
   const activePercentage = (active / total) * 100;
   const buildingPercentage = ((total - active) / total) * 100;
-
   const activeBarStyle = {
     width: `${activePercentage}%`,
     height: '5px',
     borderRadius: '4px',
     transition: 'width 0.4s ease-in-out',
   };
-
   const buildingBarStyle = {
     width: `${buildingPercentage}%`,
     height: '5px',
     borderRadius: '4px',
     transition: 'width 0.4s ease-in-out',
   };
-  const _image = 'zap';
 
   return (
     <RoundedContainer className="validators-chart h-full">
@@ -37,14 +35,14 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
         <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
           Fuel Dapps
         </h3>
-        <Link
+        <a
           className="text-[13px] leading-[20px] text-muted block"
           href="https://app.fuel.network/ecosystem"
         >
           View All
-        </Link>
+        </a>
       </div>
-      <h2 className="text-[32px] leading-[36px] text-heading font-bold">
+      <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
         {total}
       </h2>
 
@@ -78,63 +76,25 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
 
         {featured.map((feature: any) => {
           return (
-            <Link
+            <a
               className="flex items-center gap-3 mt-3"
               href={feature.url}
               key={feature.name}
             >
               <img
-                src={`https://app.fuel.network/ecosystem/images/${feature.image}.jpeg`}
-                alt=""
+                src={getProjectImage(feature.image)}
+                alt={feature.name}
                 className="w-5 rounded"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
               />
               <p className="text-[13px] leading-[20px] block">{feature.name}</p>
-            </Link>
+            </a>
           );
         })}
       </div>
     </RoundedContainer>
   );
 };
-<style jsx>{`
-  .validators-chart {
-    width: 100%;
-    max-width: 350px;
-    padding: 20px;
-    background-color: #1e1e1e;
-    border-radius: 12px;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  h3 {
-    margin-bottom: 16px;
-    font-size: 18px;
-    font-weight: 500;
-  }
-  .status-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .status-label {
-    font-size: 14px;
-    color: #ccc;
-  }
-  .status-number {
-    font-size: 14px;
-    font-weight: bold;
-  }
-  .progress-bar-background {
-    width: 100%;
-    background-color: #333;
-    border-radius: 4px;
-  }
-  .percentage-label {
-    margin-top: 8px;
-    text-align: right;
-    font-size: 14px;
-    color: #fff;
-  }
-`}</style>;
 export default TotalDapps;

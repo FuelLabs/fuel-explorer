@@ -3,12 +3,14 @@ import { Icon, Text, useBreakpoints } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
 import type { BN } from 'fuels';
 import { bn } from 'fuels';
-import Image from 'next/image';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
 
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
+
+import type { GQLAsset } from '@fuel-explorer/graphql';
+import { formatZeroUnits, useFuelAsset } from 'app-commons';
+import { useMemo } from 'react';
 import { cx } from '../../utils/cx';
-import { formatZeroUnits } from '../../utils/format';
+import { AssetSymbol } from '../AssetSymbol/AssetSymbol';
 
 type AmountProps =
   | BaseProps<{
@@ -17,6 +19,8 @@ type AmountProps =
       hideIcon?: boolean;
       hideSymbol?: boolean;
       iconSize?: number;
+      decimals?: string;
+      asset?: Omit<GQLAsset, '__typename'> | null;
     }>
   | BaseProps<{
       value?: BN | null;
@@ -24,6 +28,8 @@ type AmountProps =
       hideIcon?: never | true;
       hideSymbol?: never | true;
       iconSize?: never;
+      decimals?: string;
+      asset?: Omit<GQLAsset, '__typename'> | null;
     }>;
 
 export function Amount({
@@ -33,11 +39,24 @@ export function Amount({
   hideIcon,
   className,
   iconSize = 18,
+  decimals: decimalsProp,
+  asset: assetMetadata,
 }: AmountProps) {
   const asset = useAsset(assetId ?? '');
   const fuelAsset = useFuelAsset(asset);
   const amount = bn(value);
   const { isMobile } = useBreakpoints();
+  const { icon, name, decimals, symbol } = useMemo(() => {
+    const icon = asset?.icon || assetMetadata?.icon;
+    const name = asset?.name || assetMetadata?.name;
+    const decimals = Number(
+      decimalsProp || fuelAsset?.decimals || assetMetadata?.decimals,
+    );
+    const symbol = asset?.symbol || assetMetadata?.symbol;
+
+    return { icon, name, decimals, symbol };
+  }, [asset, assetMetadata, decimalsProp, fuelAsset?.decimals]);
+
   return (
     <Text
       as="div"
@@ -46,27 +65,33 @@ export function Amount({
         className,
       )}
     >
-      {asset?.icon && !hideIcon ? (
-        <Image
-          src={asset.icon as string}
+      {icon && !hideIcon ? (
+        <img
+          src={icon as string}
           width={iconSize}
           height={iconSize}
-          alt={asset.name}
+          alt={name || ''}
         />
       ) : (
-        amount && <Icon icon={IconCoins} size={iconSize} color="text-muted" />
+        amount && (
+          <Icon icon={IconCoins} size={iconSize} className={className} />
+        )
       )}
-      {fuelAsset?.decimals ? (
+      {decimals ? (
         <>
           {bn(amount).format({
             precision: isMobile ? 3 : undefined,
-            units: fuelAsset.decimals,
+            units: decimals,
           })}{' '}
         </>
       ) : (
         formatZeroUnits(amount)
       )}
-      {!hideSymbol && asset?.symbol}
+      {assetMetadata && !hideSymbol ? (
+        <AssetSymbol asset={assetMetadata} assetId={assetId || ''} />
+      ) : !hideSymbol ? (
+        symbol
+      ) : null}
     </Text>
   );
 }

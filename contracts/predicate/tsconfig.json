@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/predicate.tsbuildInfo",
     "outDir": "./dist"
   },
   "include": ["scripts"]

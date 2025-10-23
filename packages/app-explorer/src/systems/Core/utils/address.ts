@@ -1,4 +1,4 @@
-import { Address, isB256, isBech32 } from 'fuels';
+import { Address, isB256 } from 'fuels';
 
 export function parseAddressParam(id?: string | null) {
   const isValid = isValidAddress(id);
@@ -11,5 +11,5 @@ export function parseAddressParam(id?: string | null) {
 }
 
 export function isValidAddress(id?: string | null) {
-  return !!id && (isB256(id) || isBech32(id));
+  return !!id && isB256(id);
 }

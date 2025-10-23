@@ -1,5 +1,14 @@
-import type { Asset, NetworkEthereum, NetworkFuel } from '@fuel-ts/account';
-import { ETH_CHAIN } from '~portal/systems/Chains';
+import { ETH_CHAIN, FUEL_CHAIN } from 'app-commons';
+import {
+  type Asset,
+  type AssetEth,
+  type AssetFuel,
+  type NetworkEthereum,
+  type NetworkFuel,
+  getAssetEth,
+  getAssetFuel,
+} from 'fuels';
+import type { WalletClient } from 'viem';
 
 type Network = NetworkEthereum | NetworkFuel; // Assuming Ethereum and Fuel are your types
 export type NetworkTypes = NetworkEthereum['type'] | NetworkFuel['type'];
@@ -27,16 +36,15 @@ export const getAssetNetwork = <T extends NetworkTypes | undefined>({
   return network;
 };
 
-export type AssetEth = Omit<Asset, 'networks'> & NetworkEthereum;
-export type AssetFuel = Omit<Asset, 'networks'> & NetworkFuel;
-
-export const getAssetEth = (asset: Asset): AssetEth => {
+export const getAssetEthCurrentChain = (asset: Asset): AssetEth => {
   const { networks: _, ...assetRest } = asset;
-  const assetNetwork = getAssetNetwork({
-    asset,
+  const UNKNOWN_ETH_NETWORK_ASSET: NetworkEthereum = {
+    type: 'ethereum',
     chainId: ETH_CHAIN.id,
-    networkType: 'ethereum',
-  });
+    decimals: 18,
+  };
+  const assetNetwork: NetworkEthereum =
+    getAssetEth(asset, ETH_CHAIN.id) || UNKNOWN_ETH_NETWORK_ASSET;
 
   return {
     ...assetRest,
@@ -44,13 +52,30 @@ export const getAssetEth = (asset: Asset): AssetEth => {
   };
 };
 
-export const getAssetFuel = (asset: Asset, chainId = 0): AssetFuel => {
+export const switchEthAssetNetworkIfNeeded = async (
+  asset: Asset | undefined,
+  walletClient: WalletClient | undefined,
+) => {
+  if (!asset) throw new Error('Asset required to check network');
+  if (!walletClient) throw new Error('WalletClient required to check network');
+
+  const expectedChainId = getAssetEthCurrentChain(asset).chainId;
+  const walletChainId = await walletClient.getChainId();
+  if (expectedChainId !== walletChainId) {
+    await walletClient.switchChain({ id: expectedChainId });
+  }
+};
+
+export const getAssetFuelCurrentChain = (asset: Asset): AssetFuel => {
   const { networks: _, ...assetRest } = asset;
-  const assetNetwork = getAssetNetwork({
-    asset,
-    chainId,
-    networkType: 'fuel',
-  });
+  const UNKNOWN_FUEL_NETWORK_ASSET: NetworkFuel = {
+    type: 'fuel',
+    chainId: FUEL_CHAIN.id,
+    decimals: 0,
+    assetId: '',
+  };
+  const assetNetwork =
+    getAssetFuel(asset, FUEL_CHAIN.id) || UNKNOWN_FUEL_NETWORK_ASSET;
 
   return {
     ...assetRest,

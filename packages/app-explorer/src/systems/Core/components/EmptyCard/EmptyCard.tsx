@@ -1,9 +1,8 @@
-'use client';
 import type { CardProps, HeadingProps, TextProps } from '@fuels/ui';
 import { Card, Heading, Text, createComponent, withNamespace } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
-import { ReactComponent as EmptySvg } from './empty.svg';
+import EmptySvg from './empty.svg?react';
 
 export type EmptyCardProps = CardProps & { hideImage?: boolean };
 export type EmptyCardTitleProps = HeadingProps;

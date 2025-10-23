@@ -17,7 +17,8 @@ export function useWithdrawDelay() {
         bridgeSolidityContracts,
       });
     },
-    staleTime: Infinity,
+    staleTime: Number.POSITIVE_INFINITY,
+    placeholderData: undefined,
     enabled: !!publicClient,
   });
 
@@ -36,7 +37,8 @@ export function useWithdrawDelay() {
 
       return distanceToNow(futureDate.toDate());
     },
-    staleTime: Infinity,
+    staleTime: Number.POSITIVE_INFINITY,
+    placeholderData: undefined,
     enabled: !!fuelChainState,
   });
 }

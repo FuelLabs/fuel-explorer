@@ -8,4 +8,6 @@ export type SearchDropdownProps = {
   searchValue: string;
   width: number;
   onSelectItem: () => void;
+  loading: boolean;
+  error?: boolean;
 };

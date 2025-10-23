@@ -1,0 +1,37 @@
+query assetsByContract(
+  $contractId: String!
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  assetsByContract(
+    contractId: $contractId
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
+    nodes {
+      assetId
+      contractId
+      subId
+      name
+      decimals
+      suspicious
+      rate
+      symbol
+      icon
+      verified
+    }
+    pageInfo {
+      startCount
+      endCount
+      totalCount
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}

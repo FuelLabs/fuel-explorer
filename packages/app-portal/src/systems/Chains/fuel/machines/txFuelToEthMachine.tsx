@@ -1,6 +1,6 @@
 import type {
-  MessageProof,
   Provider as FuelProvider,
+  MessageProof,
   TransactionResult,
 } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
@@ -25,6 +25,9 @@ type MachineContext = {
   txHashMessageRelayed?: string;
   estimatedFinishDate?: Date;
   estimatedNextCommitDate?: Date;
+  recipient?: string;
+  sender?: string;
+  error?: Error;
 };
 
 type MachineServices = {
@@ -33,6 +36,8 @@ type MachineServices = {
       txResult: TransactionResult;
       messageId: string;
       nonce: string;
+      sender: string;
+      recipient: string;
     };
   };
   getMessageProof: {
@@ -72,8 +77,11 @@ export type TxFuelToEthMachineEvents =
   | {
       type: 'RELAY_TO_ETH';
       input: Omit<
-        TxFuelToEthInputs['relayMessageFromFuelBlock'],
-        'messageProof'
+        Omit<
+          Omit<TxFuelToEthInputs['relayMessageFromFuelBlock'], 'messageProof'>,
+          'ethPublicClient'
+        >,
+        'fuelTxResult'
       >;
     };
 
@@ -123,6 +131,7 @@ export const txFuelToEthMachine = createMachine(
                     'assignFuelTxResult',
                     'assignMessageId',
                     'assignNonce',
+                    'assignSenderRecipient',
                     'clearTxCreated',
                   ],
                   cond: 'hasTxResultInfo',
@@ -308,14 +317,20 @@ export const txFuelToEthMachine = createMachine(
                             TxFuelToEthMachineEvents,
                             { type: 'RELAY_TO_ETH' }
                           >,
-                        ) => ({
-                          messageProof: ctx.messageProof,
-                          ethWalletClient: ev.input.ethWalletClient,
-                        }),
+                        ) => {
+                          return {
+                            ethWalletClient: ev.input.ethWalletClient,
+                            assets: ev.input.assets,
+                            ethPublicClient: ctx.ethPublicClient,
+                            messageProof: ctx.messageProof,
+                            fuelTxResult: ctx.fuelTxResult,
+                          };
+                        },
                       },
                       onDone: [
                         {
                           cond: FetchMachine.hasError,
+                          actions: ['assignError'],
                           target: 'waitingEthWalletApproval',
                         },
                         {
@@ -391,6 +406,10 @@ export const txFuelToEthMachine = createMachine(
       assignNonce: assign({
         nonce: (_, ev) => ev.data.nonce,
       }),
+      assignSenderRecipient: assign({
+        sender: (_, ev) => ev.data.sender,
+        recipient: (_, ev) => ev.data.recipient,
+      }),
       assignMessageProof: assign({
         messageProof: (_, ev) => ev.data,
       }),
@@ -432,6 +451,12 @@ export const txFuelToEthMachine = createMachine(
           FuelTxCache.removeTxCreated(ctx.fuelTxId);
         }
       },
+      assignError: assign({
+        error: (_, ev) => {
+          const error = (ev.data as any).error;
+          return error;
+        },
+      }),
     },
     guards: {
       hasTxResultInfo: (ctx, ev) =>
@@ -553,7 +578,7 @@ export const txFuelToEthMachine = createMachine(
         TxFuelToEthInputs['relayMessageFromFuelBlock'],
         MachineServices['relayMessageFromFuelBlock']['data']
       >({
-        showError: true,
+        showError: false,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {

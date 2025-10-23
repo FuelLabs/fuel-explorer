@@ -1,19 +1,19 @@
 import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
 
 type ContractBalanceItemProps = {
-  amount: string;
-  assetId: string;
+  balanceItem?: any;
+  isLoading?: boolean;
 };
 
 export function ContractBalanceItem({
-  amount,
-  assetId,
+  balanceItem,
+  isLoading,
 }: ContractBalanceItemProps) {
-  const balanceItem = { assetId, amount };
   return (
     <BalanceItem
       key={balanceItem.assetId + balanceItem.amount}
       item={balanceItem}
+      isLoading={isLoading}
     />
   );
 }

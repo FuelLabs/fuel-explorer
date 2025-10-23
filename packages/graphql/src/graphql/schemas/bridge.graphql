@@ -1,0 +1,188 @@
+scalar Date
+
+enum BridgeResponseType {
+  Withdraw
+  Deposit
+}
+
+enum BridgeDepositQueryType {
+  ERC_20
+  ETH
+}
+
+enum BridgeWithdrawStatusType {
+  TransactionSent
+  WaitingCommittingToL1
+  WaitingFinalization
+  ReadyToProcessWithdraw
+  Finalized
+}
+
+enum BridgeDepositStatusType {
+  TransactionSent
+  WaitingSync
+  ReadyToProcessDeposit
+  Finalized
+}
+
+interface BridgeEventRow {
+  event_id: String
+  event_type: String
+}
+
+interface BridgeMessageDecoded {
+  address: String
+  assetId: String
+  sender: String
+  recipient: String
+  amount: String
+  decimals: Int
+}
+
+type BridgeDepositEvent implements BridgeEventRow & BridgeMessageDecoded {
+  event_id: String
+  event_type: String
+  address: String
+  assetId: String
+  sender: String
+  recipient: String
+  amount: String
+  decimals: Int
+  tx_hash: String
+  block_height: String
+  timestamp: Date
+  nonce: String
+  type: BridgeDepositQueryType
+}
+
+type BridgeWithdrawEvent implements BridgeEventRow {
+  event_id: String
+  event_type: String
+  tx_hash: String
+  block_height: String
+  timestamp: Date
+  data: String
+  messageId: String
+  sender: String
+  recipient: String
+  amount: String
+  assetId: String
+  ethAssetId: String
+}
+
+type BridgeWithdrawStatusInfo {
+  TransactionSent: BridgeWithdrawTransactionSentStatus
+  WaitingCommittingToL1: BridgeWaitingCommittingToL1Status
+  WaitingFinalization: BridgeWaitingFinalizationStatus
+  ReadyToProcessWithdraw: BridgeReadyToProcessWithdrawStatus
+  Finalized: BridgeFinalizedStatus
+}
+
+type BridgeDepositTransactionSentStatus {
+  ethTx: BridgeFuelTransaction
+}
+
+type BridgeWithdrawTransactionSentStatus {
+  fuelTx: BridgeFuelTransaction
+}
+
+type BridgeFuelTransaction {
+  height: String
+  txHash: String
+  timestamp: Date
+}
+
+type BridgeWaitingCommittingToL1Status {
+  dateExpectedToComplete: Date
+}
+
+type BridgeWaitingFinalizationStatus {
+  dateExpectedToComplete: Date
+  ethTx: BridgeEthTransaction
+}
+
+type BridgeEthTransaction {
+  height: String
+  txHash: String
+  timestamp: Date
+}
+
+type BridgeReadyToProcessWithdrawStatus {
+  transactionId: String
+  nonce: String
+  commitBlockId: String
+  commitBlockHeight: String
+}
+
+type BridgeFinalizedStatus {
+  ethTx: BridgeEthTransaction
+}
+
+type BridgeDepositStatusInfo {
+  TransactionSent: BridgeDepositTransactionSentStatus
+  WaitingSync: BridgeWaitingSyncStatus
+  ReadyToProcessDeposit: BridgeReadyToProcessDepositStatus
+  Finalized: BridgeFinalizedStatus
+}
+
+type BridgeWaitingSyncStatus {
+  dateExpectedToComplete: Date
+}
+
+type BridgeReadyToProcessDepositStatus {
+  nonce: String
+}
+
+type BridgeCommitQueryItem {
+  timestamp: Date
+  tx_hash: String
+  eth_block_height: String
+  fuel_block_height: String
+  fuel_block_hash: String
+  is_finalized: Boolean
+}
+
+type BridgeDepositResponse implements BridgeEventRow {
+  event_id: String
+  event_type: String
+  type: BridgeResponseType
+  from: String
+  to: String
+  amount: String
+  assetId: String
+  ethAssetId: String
+  status: BridgeDepositStatusType
+  statusInfo: BridgeDepositStatusInfo
+}
+
+type BridgeWithdrawResponse implements BridgeEventRow {
+  event_id: String
+  event_type: String
+  type: BridgeResponseType
+  from: String
+  to: String
+  amount: String
+  assetId: String
+  ethAssetId: String
+  status: BridgeWithdrawStatusType
+  statusInfo: BridgeWithdrawStatusInfo
+}
+
+union BridgeResponse = BridgeDepositResponse | BridgeWithdrawResponse
+
+type GraphQLBridgeResponse {
+  nodes: [BridgeResponse]
+  pageInfo: BridgePageInfo
+}
+
+type BridgePageInfo {
+  limit: Int
+  offset: Int
+  hasPreviousPage: Boolean
+  hasNextPage: Boolean
+}
+
+type Query {
+  bridgeEvents(address: String!, limit: Int, offset: Int): GraphQLBridgeResponse
+  bridgeEvent(eventId: Int!, eventType: String!): BridgeResponse
+}

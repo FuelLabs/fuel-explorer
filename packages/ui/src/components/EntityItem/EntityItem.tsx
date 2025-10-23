@@ -14,7 +14,7 @@ export type EntityItemProps = Omit<HStackProps, 'size'> &
   EntityItemVariantProps;
 
 export type EntityItemSlotProps = BoxProps;
-export type EntityItemInfo = BoxProps & {
+export type EntityItemInfo = Omit<BoxProps, 'title'> & {
   title: ReactNode;
   id?: string;
   shortId?: boolean;
@@ -47,7 +47,7 @@ export const EntityItemInfo = createComponent<EntityItemInfo, typeof Box>({
     const classes = styles();
     return (
       <Comp {...props} className={classes.info({ className })}>
-        <Text as="p" className={classes.name()}>
+        <Text as="div" className={classes.name()}>
           {title}
         </Text>
         {id && (

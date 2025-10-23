@@ -48,6 +48,7 @@ type TxIconProps = VariantProps<typeof styles> &
   BaseProps<{
     type: TxIconType;
     status?: TxStatus;
+    radius?: BadgeProps['radius'];
     color?: BadgeProps['color'];
     label?: string;
   }>;
@@ -57,6 +58,7 @@ export function TxIcon({
   status,
   size = 'md',
   className,
+  radius = 'full',
   color,
   label: initLabel,
   ...props
@@ -69,7 +71,7 @@ export function TxIcon({
       aria-label={label}
       className={classes.root({ className })}
       color={color || TX_INTENT_MAP[status || 'Submitted']}
-      radius="full"
+      radius={radius}
       variant="ghost"
     >
       <Icon className={classes.icon()} icon={TX_ICON_MAP[type]} />
@@ -89,7 +91,7 @@ const styles = tv({
         icon: 'w-4 h-4',
       },
       md: {
-        root: 'w-10 h-10',
+        root: 'w-[38px] h-[38px]',
         icon: 'w-5 h-5',
       },
       lg: {

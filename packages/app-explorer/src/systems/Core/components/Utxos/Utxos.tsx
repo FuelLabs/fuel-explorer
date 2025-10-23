@@ -3,9 +3,9 @@ import { IconCoins } from '@tabler/icons-react';
 import { FixedSizeList as List } from 'react-window';
 
 import { UtxoItem } from '~/systems/Core/components/UtxoItem/UtxoItem';
-import { UtxosProps } from './types';
+import type { UtxosProps } from './types';
 
-function VirtualList({ items, assetId }: UtxosProps) {
+function VirtualList({ items, assetId, decimals }: UtxosProps) {
   const { isMobile } = useBreakpoints();
 
   const itemSize = isMobile ? 60 : 35;
@@ -27,6 +27,7 @@ function VirtualList({ items, assetId }: UtxosProps) {
               item={item}
               assetId={assetId}
               index={idx}
+              decimals={decimals}
             />
           )
         );
@@ -35,14 +36,14 @@ function VirtualList({ items, assetId }: UtxosProps) {
   );
 }
 
-export function Utxos({ items, assetId, ...props }: UtxosProps) {
+export function Utxos({ items, assetId, decimals, ...props }: UtxosProps) {
   return (
     <Collapsible.Content className="bg-gray-2 dark:bg-gray-1" {...props}>
       <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">
         UTXOs ({items?.length ?? 0})
       </Collapsible.Title>
       <Collapsible.Body className="p-0">
-        <VirtualList items={items} assetId={assetId} />
+        <VirtualList items={items} assetId={assetId} decimals={decimals} />
       </Collapsible.Body>
     </Collapsible.Content>
   );

@@ -8,14 +8,19 @@ import { useTxEthToFuel } from '../hooks';
 
 type TxListItemEthToFuelProps = {
   txHash: string;
+  messageSentEventNonce: BigInt;
 };
 
-export const TxListItemEthToFuel = ({ txHash }: TxListItemEthToFuelProps) => {
+export const TxListItemEthToFuel = ({
+  txHash,
+  messageSentEventNonce,
+}: TxListItemEthToFuelProps) => {
   const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { steps, date, handlers, asset, status, amount, isLoadingReceipts } =
     useTxEthToFuel({
       id: txHash,
+      messageSentEventNonce,
     });
 
   const bridgeTxStatus = steps?.find(({ isSelected }) => !!isSelected);
@@ -51,7 +56,9 @@ export const TxListItemEthToFuel = ({ txHash }: TxListItemEthToFuelProps) => {
           <Asset.Icon />
         </Asset>
       }
-      onClick={() => handlers.openTxEthToFuel({ txId: txHash })}
+      onClick={() =>
+        handlers.openTxEthToFuel({ txId: txHash, messageSentEventNonce })
+      }
     />
   );
 };

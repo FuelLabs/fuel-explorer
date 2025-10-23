@@ -8,7 +8,7 @@ export function fromNow(timestamp: string) {
 
 export function fromNowUnix(unixTime: any) {
   if (!unixTime) return;
-  return dayjs.unix(parseInt(unixTime)).fromNow();
+  return dayjs.unix(Number.parseInt(unixTime)).fromNow();
 }
 
 export { dayjs };

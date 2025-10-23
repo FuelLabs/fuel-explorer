@@ -1,5 +1,6 @@
 import FuelMessagePortal from '@fuel-bridge/solidity-contracts/artifacts/contracts/fuelchain/FuelMessagePortal/v3/FuelMessagePortalV3.sol/FuelMessagePortalV3.json';
 import type { HexAddress } from 'app-commons';
+import { bn } from 'fuels';
 
 export type FuelMessagePortalArgs = {
   MessageSent: {
@@ -17,12 +18,17 @@ export const decodeMessageSentData = {
       /^0x([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})([A-f0-9]{64})$/;
     const match = data.match(pattern);
     const [, fuelTokenId, , tokenAddress, , sender, to, amount] = match || [];
+
+    const decodedTokenAddress = tokenAddress
+      ? bn(tokenAddress, 'hex').toHex(20)
+      : undefined;
+
     const parsed = {
-      fuelTokenId: `0x${fuelTokenId}`,
-      tokenAddress: `0x${tokenAddress}`,
-      sender: `0x${sender}`,
-      to: `0x${to}`,
-      amount,
+      fuelTokenId: fuelTokenId ? `0x${fuelTokenId}` : undefined,
+      tokenAddress: decodedTokenAddress,
+      sender: sender ? `0x${sender}` : undefined,
+      to: to ? `0x${to}` : undefined,
+      amount: amount,
     };
 
     return parsed;

@@ -1,12 +1,17 @@
-'use client';
-
 import type { GQLSearchResult, Maybe } from '@fuel-explorer/graphql';
 import type { BaseProps, InputProps } from '@fuels/ui';
-import { Focus, Icon, IconButton, Input, Tooltip, VStack } from '@fuels/ui';
+import {
+  Focus,
+  Icon,
+  IconButton,
+  Input,
+  Tooltip,
+  VStack,
+  useBreakpoints,
+} from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import type { KeyboardEvent } from 'react';
-import { useContext, useRef, useState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import { cx } from '../../../utils/cx';
 
@@ -17,55 +22,116 @@ import { DEFAULT_SEARCH_INPUT_WIDTH } from './constants';
 import { styles } from './styles';
 
 type SearchInputProps = BaseProps<InputProps> & {
+  loading: boolean;
   onSubmit?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
+  error?: boolean;
 };
 
 export function SearchInput({
   value: initialValue = '',
   className,
   autoFocus,
-  placeholder = 'Search here...',
+  placeholder:
+    _placeholder = 'Search by block, transaction, contract, address...',
   searchResult,
+  loading,
+  error,
   ...props
 }: SearchInputProps) {
   const classes = styles();
   const [value, setValue] = useState<string>(initialValue as string);
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const lastSearchTerm = useRef<string | null>(null);
+  const [dropdownWidth, setDropdownWidth] = useState<number>(
+    DEFAULT_SEARCH_INPUT_WIDTH,
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { pending } = useFormStatus();
   const { dropdownRef } = useContext(SearchContext);
-  const openDropdown = hasSubmitted
-    ? !pending
-    : isOpen && !pending && !!searchResult;
+  const { isMobile } = useBreakpoints();
+  const placeholder = !isMobile ? _placeholder : 'Search here...';
+  const shouldOpen = !!error || !!value || searchResult !== null;
+  const openDropdown = isOpen;
+  const isPressingFloatingIcon = useRef<boolean>(false);
+  const hasClickedFieldArea = useRef(false);
 
   usePropagateInputMouseClick({
     containerRef,
     inputRef,
     enabled: openDropdown,
+    hasClickedFieldArea,
+    isPressingFloatingIcon,
   });
+  useEffect(() => {
+    if (error) {
+      setIsOpen(true);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (searchResult !== null) {
+      setValue((prev) => {
+        lastSearchTerm.current = prev;
+        return prev;
+      });
+      setIsOpen(true);
+    }
+  }, [searchResult]);
+
+  // Creating another useEffect to keep behavior consistent
+  useEffect(() => {
+    if (isOpen) {
+      setIsFocused(true);
+      inputRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    let animationFrameId: number;
+
+    const handleResize = (entries: ResizeObserverEntry[]) => {
+      if (entries[0]) {
+        const newWidth = entries[0].contentRect.width;
+        // Batch state updates to avoid unnecessary re-renders and layout trashing
+        animationFrameId = window.requestAnimationFrame(() => {
+          setDropdownWidth((prevWidth) => {
+            if (prevWidth !== newWidth) {
+              return newWidth;
+            }
+            return prevWidth;
+          });
+        });
+      }
+    };
+
+    const observer = new ResizeObserver(handleResize);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
   }
 
-  function handleSubmit() {
-    setIsOpen(true);
-    setHasSubmitted(true);
-  }
-
   function close() {
+    lastSearchTerm.current = null;
     setIsOpen(false);
-    setHasSubmitted(false);
   }
 
   function handleClear() {
+    if (loading) return;
     setValue('');
     close();
+    inputRef.current?.focus();
   }
 
   function handleFocus() {
@@ -73,7 +139,20 @@ export function SearchInput({
   }
 
   function handleBlur() {
-    setIsFocused(false);
+    // Fixes onBlur triggering before the button is clicked
+    if (!isPressingFloatingIcon.current && !hasClickedFieldArea.current) {
+      setIsFocused(false);
+    }
+  }
+
+  function handleButtonMouseDown() {
+    // Fixes onBlur triggering before the button is clicked
+    isPressingFloatingIcon.current = true;
+  }
+
+  function handleButtonMouseUp() {
+    // Fixes onBlur triggering before the button is clicked
+    isPressingFloatingIcon.current = false;
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -82,7 +161,6 @@ export function SearchInput({
       (e.target as HTMLFormElement).form?.dispatchEvent(
         new Event('submit', { cancelable: true, bubbles: true }),
       );
-      handleSubmit();
     }
   }
 
@@ -101,7 +179,7 @@ export function SearchInput({
               name="query"
               placeholder={placeholder}
               value={value}
-              onChange={handleChange}
+              onInput={handleChange}
               variant="surface"
               radius="large"
               size="3"
@@ -112,36 +190,46 @@ export function SearchInput({
               onBlur={handleBlur}
               onKeyDown={onKeyDown}
             >
-              <div
-                data-show={isFocused}
+              <Input.Slot
+                side="right"
+                data-show={(isFocused && !!value) || !!value}
                 className={classes.inputActionsContainer()}
               >
-                <Input.Slot side="right">
-                  <Tooltip content="Submit">
-                    <IconButton
-                      type="submit"
-                      aria-label="Submit"
-                      icon={IconCheck}
-                      iconColor="text-brand"
-                      variant="link"
-                      className="!ml-0 tablet:ml-2"
-                      isLoading={pending}
-                      onClick={handleSubmit}
-                    />
-                  </Tooltip>
+                <Tooltip content="Submit">
+                  <IconButton
+                    type="submit"
+                    aria-label="Submit"
+                    icon={IconCheck}
+                    className={classes.iconCheck()}
+                    iconColor="text-brand"
+                    variant="link"
+                    data-should-hide={
+                      !value || value !== lastSearchTerm.current
+                    }
+                    isLoading={loading}
+                    onMouseDown={handleButtonMouseDown}
+                    onMouseUp={handleButtonMouseUp}
+                  />
+                </Tooltip>
+                <Tooltip content="Clear">
                   <IconButton
                     aria-label="Clear"
                     icon={IconX}
                     iconColor="text-gray-11"
+                    className={classes.iconClear()}
                     variant="link"
-                    className="m-0"
+                    disabled={loading}
+                    aria-disabled={loading}
                     onClick={handleClear}
+                    onPointerDown={handleClear}
+                    onMouseDown={handleButtonMouseDown}
+                    onMouseUp={handleButtonMouseUp}
                   />
-                </Input.Slot>
-              </div>
+                </Tooltip>
+              </Input.Slot>
 
               <Input.Slot
-                data-show={!isFocused}
+                data-show={!isFocused && !inputRef.current?.value}
                 side="right"
                 className="[&[data-show=false]]:hidden"
               >
@@ -152,21 +240,22 @@ export function SearchInput({
         </Focus.ArrowNavigator>
         <SearchResultDropdown
           ref={dropdownRef}
-          width={
-            containerRef.current?.offsetWidth || DEFAULT_SEARCH_INPUT_WIDTH
-          }
+          width={dropdownWidth}
           searchResult={searchResult}
           searchValue={value}
           openDropdown={openDropdown}
           isFocused={isFocused}
+          error={error}
+          loading={loading}
           onSelectItem={() => {
             handleClear();
           }}
           onOpenChange={(open) => {
-            setIsOpen(open);
             if (!open) {
               close();
+              return;
             }
+            shouldOpen && setIsOpen(true);
           }}
         />
       </VStack>

@@ -1,1 +1,1 @@
-export { Ecosystem as EcosystemPage } from './pages';
+export { EcosystemPage } from './pages/Ecosystem';

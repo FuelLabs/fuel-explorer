@@ -1,6 +1,6 @@
-import { ChartConfig, RoundedContainer } from '@fuels/ui';
+import { type ChartConfig, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
-import { DateTime } from 'fuels';
+import { useMemo } from 'react';
 import {
   CartesianGrid,
   Line,
@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis,
 } from 'recharts';
 
 const chartConfig = {
@@ -23,26 +22,36 @@ interface DailyTransactionProps {
 }
 
 const DailyTransaction = (blocks: DailyTransactionProps) => {
-  const chartData = blocks.blocks?.reduce(
-    (acc: { [key: string]: number }, block: any) => {
-      const time = dayjs(Number(block.time)).format('HH:mm');
-      const value = +block.value;
-      acc[time] = (acc[time] || 0) + value;
-      return acc;
-    },
-    {},
-  );
+  const { chartDataArray, cumilativeTsx } = useMemo(() => {
+    const chartData = blocks.blocks?.reduce(
+      (acc: { [key: string]: number }, block: any) => {
+        const time = dayjs(Number(block.time)).format('HH:mm');
+        const value = +block.value;
+        acc[time] = (acc[time] || 0) + value;
+        return acc;
+      },
+      {},
+    );
+    const chartDataArray = chartData
+      ? Object.entries(chartData).map(([time, value]) => ({
+          time,
+          value,
+        }))
+      : [];
+    const cumilativeTsx = Array.isArray(blocks.blocks)
+      ? blocks.blocks.reduce(
+          (sum: number, block: any) => sum + Number(block?.value || 0),
+          0,
+        )
+      : 0;
 
-  const chartDataArray = chartData
-    ? Object.entries(chartData).map(([time, value]) => ({
-        time,
-        value,
-      }))
-    : [];
-  const cumilativeTsx = blocks.blocks.reduce(
-    (sum: any, block: any) => sum + Number(block.value),
-    0,
-  );
+    return {
+      chartData,
+      chartDataArray,
+      cumilativeTsx,
+    };
+  }, [blocks]);
+
   return (
     <RoundedContainer className="py-4 px-5 h-full space-y-8 ">
       <div className="space-y-[16px]">
@@ -67,8 +76,8 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
                 </span>
               </div>
               <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white  bg-gray-3 rounded-lg shadow-sm">
-                The total number of transactions completed on Fuel Network
-                within a 24-hour period.
+                The total number of transactions completed on the Fuel Network
+                in the last 24 hours
                 <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
               </div>
             </div>
@@ -77,14 +86,14 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
             24h
           </span>
         </div>
-        <h2 className="text-[32px] leading-[36px] text-heading font-bold">
+        <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
           {cumilativeTsx.toLocaleString()}
         </h2>
 
         <ResponsiveContainer width="100%" height={160}>
           <LineChart
             data={chartDataArray}
-            margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
           >
             <CartesianGrid
               strokeDasharray="3 3"
@@ -99,8 +108,8 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
               }}
             />
             <Tooltip
-              formatter={(value) => [`${Number(value)}`]}
-              labelFormatter={(label) => label.toLocaleString()}
+              formatter={(value: any) => [`${Number(value)}`]}
+              labelFormatter={(label: any) => label.toLocaleString()}
               contentStyle={{
                 backgroundColor: 'var(--gray-1)',
                 borderColor: 'var(--gray-2)',
@@ -115,13 +124,6 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
                 color: '#00F58C',
               }}
               cursor={{ strokeWidth: 0.1, radius: 10 }}
-            />
-            <YAxis
-              tick={{
-                fontSize: 12,
-                className: 'fill-heading',
-                key: DateTime.now(),
-              }}
             />
             <Line
               type="monotone"

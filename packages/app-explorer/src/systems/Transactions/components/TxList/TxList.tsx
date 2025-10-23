@@ -1,58 +1,69 @@
-'use client';
-import type { GQLTransactionsByBlockIdQuery } from '@fuel-explorer/graphql/sdk';
-import { GqlPageInfo } from '@fuel-ts/account/dist/providers/__generated__/operations';
-import type { BaseProps } from '@fuels/ui';
-import { Flex, Grid, cx } from '@fuels/ui';
-import { useRouter } from 'next/navigation';
-import { Routes } from '~/routes';
+import { Alert, Button, Grid, cx } from '@fuels/ui';
+import { IconInfoCircle, IconLink } from '@tabler/icons-react';
+import { Routes as PortalRoutes } from 'app-commons';
+import { memo } from 'react';
 import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
 
-export type TxListProps = BaseProps<{
-  transactions?: GQLTransactionsByBlockIdQuery['transactionsByBlockId']['nodes'];
-  hidePagination?: boolean;
-  isLoading?: boolean;
-  pageInfo?: GqlPageInfo;
-  owner?: string;
-  route: 'home' | 'accountTxs' | 'blockSimple';
-}>;
+import type { GQLPageInfo } from '@fuel-explorer/graphql';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-export function TxList({
+export type TxListProps = {
+  transactions?: any[]; // Accept any transaction-like object for compatibility
+  hidePagination?: boolean;
+  pageInfoLoading?: boolean;
+  isLoading?: boolean;
+  pageInfo?: GQLPageInfo;
+  owner?: string;
+  route: 'home' | 'accountTxs' | 'blockSimple' | 'contractTxs';
+  showBridgeWarning?: boolean;
+  className?: string;
+};
+
+function _TxList({
   transactions = [],
   hidePagination,
+  pageInfoLoading,
   className,
   isLoading,
   pageInfo,
-  owner,
-  route,
+  showBridgeWarning = false,
 }: TxListProps) {
-  const router = useRouter();
-
-  function buildRoute(
-    route: string,
-    owner: string,
-    cursor: string,
-    dir: 'after' | 'before',
-  ) {
-    if (route === 'home') {
-      router.push(Routes.home(cursor, dir), {
-        scroll: false,
-      });
-    }
-    if (route === 'accountTxs') {
-      router.push(Routes.accountTxs(owner, cursor, dir), {
-        scroll: false,
-      });
-    }
-    if (route === 'blockSimple') {
-      router.push(Routes.blockSimple(owner, cursor, dir), {
-        scroll: false,
-      });
-    }
+  const navigate = useNavigate();
+  const [_, setSearchParams] = useSearchParams();
+  function setQueryParams(cursor: string, dir: 'after' | 'before') {
+    const searchParams = new URLSearchParams();
+    searchParams.set('cursor', cursor);
+    searchParams.set('dir', dir);
+    setSearchParams(searchParams);
   }
+  const enablePagination = !hidePagination && pageInfo && !pageInfoLoading;
+  const loadingPagination = !hidePagination && pageInfoLoading;
 
   return (
-    <div className={cx('py-4 tablet:py-8 desktop:py-0', className)}>
+    <div className={cx('py-4 laptop:py-0', className)}>
+      {showBridgeWarning && !!transactions.length && (
+        <Alert color="blue" className="mt-1 mb-6">
+          <Alert.Icon>
+            <IconInfoCircle size="md" />
+          </Alert.Icon>
+          <Alert.Text>
+            Bridge transactions will not appear here. You must connect your
+            wallet and go to{' '}
+            <Button
+              onClick={() => {
+                navigate(PortalRoutes.bridgeHistory());
+              }}
+              variant="link"
+              className="mx-0.5 mb-0 mt-[-1px] text-blue-12"
+            >
+              Bridge {'>'} History
+              <IconLink className="text-inherit" size={18} />
+            </Button>
+            to view your bridge transactions.
+          </Alert.Text>
+        </Alert>
+      )}
       <Grid className={'flex flex-col gap-6'}>
         {transactions.map((transaction) => (
           <TxCard
@@ -62,17 +73,33 @@ export function TxList({
           />
         ))}
       </Grid>
-      {!hidePagination && (
-        <Flex className="mobile:justify-end">
-          <Pagination
-            prevCursor={pageInfo?.startCursor}
-            nextCursor={pageInfo?.endCursor}
-            className="mt-6 flex mobile:justify-end"
-            onChange={(cursor, dir) => buildRoute(route, owner!, cursor, dir)}
-            pageInfo={pageInfo}
-          />
-        </Flex>
+
+      {enablePagination && (
+        <Pagination
+          prevCursor={pageInfo?.startCursor}
+          nextCursor={pageInfo?.endCursor}
+          className="mt-6 flex justify-end"
+          onChange={(cursor: string, dir: 'after' | 'before') =>
+            setQueryParams(cursor, dir)
+          }
+          pageInfo={pageInfo}
+        />
+      )}
+      {loadingPagination && (
+        <Pagination
+          prevCursor={'0x0'}
+          nextCursor={'0x0'}
+          className="mt-6 flex justify-end"
+          pageInfo={{
+            hasNextPage: true,
+            hasPreviousPage: true,
+            endCursor: 'x',
+            startCursor: 'x',
+          }}
+        />
       )}
     </div>
   );
 }
+
+export const TxList = memo(_TxList);

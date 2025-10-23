@@ -71,9 +71,9 @@ export function withNamespace<
   N extends ComponentNamespace,
 >(Comp: C, namespace: N) {
   for (const [key, SubComp] of Object.entries(namespace)) {
-    Comp[key] = SubComp;
+    (Comp as any)[key] = SubComp;
   }
-  return Comp as C & N;
+  return Comp as typeof Comp & N;
 }
 
 function polymorphicRender<

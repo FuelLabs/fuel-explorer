@@ -1,24 +1,46 @@
 {
   "links": {
-    "learn": [
+    "FUEL": [
       {
-        "href": "https://fuel.network/about-fuel",
-        "label": "What's Fuel?"
+        "href": "https://docs.fuel.network/docs/fuel-book/",
+        "label": "About Fuel"
       },
       {
-        "href": "https://fuel.network/learn-execution",
-        "label": "Learn about Execution"
+        "href": "https://jobs.lever.co/fuellabs",
+        "label": "Jobs"
       },
       {
         "href": "https://fuel.mirror.xyz/",
         "label": "Blog"
+      },
+      {
+        "href": "https://fuellabs.notion.site/Fuel-Media-Kit-External-8dd982980d9842b181997f5b81595940",
+        "label": "Media Kit"
       }
     ],
-    "build": [
+    "GetStarted": [
       {
-        "href": "https://docs.fuel.network/",
+        "href": "https://docs.fuel.network/guides/counter-dapp/",
+        "label": "Build an app"
+      },
+      {
+        "href": "https://docs.fuel.network/guides/contract-quickstart/",
+        "label": "Create a Smart Contract"
+      },
+      {
+        "href": "https://docs.fuel.network/docs/intro/what-is-fuel/",
         "label": "Docs"
       },
+      {
+        "href": "https://docs.fuel.network/docs/fuel-book/the-architecture/the-fuelvm/",
+        "label": "FuelVM"
+      },
+      {
+        "href": "https://airtable.com/appEO4t5bVydYgzCk/pag7Jhp6zbEwjkTQt/form",
+        "label": "Grant Program"
+      }
+    ],
+    "Build": [
       {
         "href": "https://github.com/FuelLabs",
         "label": "Github"
@@ -26,38 +48,32 @@
       {
         "href": "https://forum.fuel.network/",
         "label": "Forum"
+      },
+      {
+        "href": "https://discord.com/invite/xfpK4Pe",
+        "label": "Discord"
+      },
+      {
+        "href": "https://docs.fuel.network/docs/migrations-and-disclosures/migrations/",
+        "label": "Changelog"
       }
     ],
-    "use": [
+    "Environment": [
       {
         "href": "https://app.fuel.network/",
-        "label": "Block explorer"
+        "label": "Block Explorer"
       },
       {
         "href": "https://app.fuel.network/ecosystem",
         "label": "Ecosystem"
       },
       {
-        "href": "https://wallet.fuel.network/",
+        "href": "https://wallet.fuel.network/docs/install/",
         "label": "Wallet"
       },
       {
-        "href": "https://app.fuel.network/bridge",
+        "href": "https://app.fuel.network/bridge?from=eth&to=fuel",
         "label": "Bridge"
-      }
-    ],
-    "community": [
-      {
-        "href": "https://jobs.lever.co/fuellabs",
-        "label": "Become a contributor"
-      },
-      {
-        "href": "https://airtable.com/appEO4t5bVydYgzCk/pag7Jhp6zbEwjkTQt/form",
-        "label": "Apply for a grant"
-      },
-      {
-        "href": "https://www.notion.so/native/fuellabs/Fuel-Media-Kit-External-8dd982980d9842b181997f5b81595940",
-        "label": "Media kit"
       }
     ]
   }

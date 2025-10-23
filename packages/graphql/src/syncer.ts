@@ -22,42 +22,57 @@ async function main() {
   while (true) {
     const total = await mq.getActive(QueueNames.ADD_BLOCK_RANGE);
     if (total > 0) {
-      logger.info(
-        `⌛️ Waiting messages to be consume: ${total} messages left logger`,
+      logger.debug(
+        'Syncer',
+        `Waiting messages to be consume: ${total} messages left`,
       );
-      await setTimeout(5000);
+      await setTimeout(2000);
       continue;
     }
     let blocks: any;
     try {
-      const { data } = await client.sdk.blocks({ last: 1 });
-      blocks = data.blocks;
+      logger.debug('Syncer', 'Fetching the latest block');
+      const response = await Promise.race([
+        client.sdk.blocks({ last: 1 }),
+        setTimeout(2000),
+      ]);
+      if (!response || !response.data) {
+        throw new Error('Fuel core is not responding');
+      }
+      blocks = response.data.blocks;
     } catch (e: any) {
-      logger.error('❌ Error fetching blocks from fuel core', e);
-      await setTimeout(5000);
+      logger.error('Syncer', 'Could not fetch blocks from fuel core', e);
+      await setTimeout(2000);
       continue;
     }
     const lastBlock = blocks.nodes[0];
     const height = Number(lastBlock?.header.height ?? '0');
+    logger.debug('Syncer', `Fuel core height: ${height}`);
     const blockDAO = new BlockDAO();
     const latestBlock = await blockDAO.findLatestBlockAdded();
     const from = latestBlock ? latestBlock.id : 0;
-    const to = from + 10000;
+    logger.debug('Syncer', `Indexer height: ${from}`);
+    const to = from + 1000;
     const range = { from, to: Math.min(to, height) };
     const events = createBatchEvents(range);
     for (const event of events) {
+      logger.debug(
+        'Syncer',
+        `Sending message to indexer/add-block-range #${event.from} - #${event.to}`,
+      );
       await mq.send('block', QueueNames.ADD_BLOCK_RANGE, event);
     }
-    await setTimeout(5000);
+    await setTimeout(2000);
   }
 }
 
 main().catch(async (error: any) => {
-  logger.error('❌ Uncaught error', error);
+  logger.error('Syncer', 'Uncaught error', error);
   try {
     await mq.disconnect();
   } catch (_error: any) {
-    logger.error('❌ Could not disconnect from RabbitMQ');
+    logger.error('Syncer', 'Could not disconnect from RabbitMQ');
   }
+  logger.error('Syncer', 'Process exit');
   process.exit(1);
 });

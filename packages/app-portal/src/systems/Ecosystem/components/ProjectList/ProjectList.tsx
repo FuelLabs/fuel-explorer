@@ -8,20 +8,11 @@ import { ProjectListLoading } from './ProjectListLoading';
 
 type ProjectListProps = {
   projects: Project[];
-  isLoading?: boolean;
   emptyText?: string;
 };
 
-export const ProjectList = ({
-  projects,
-  isLoading,
-  emptyText,
-}: ProjectListProps) => {
+export const ProjectList = ({ projects, emptyText }: ProjectListProps) => {
   const classes = styles();
-
-  if (isLoading) {
-    return <ProjectList.Loading />;
-  }
 
   if (!projects.length) {
     return <ProjectList.Empty text={emptyText} />;

@@ -1,5 +1,3 @@
-'use client';
-
 export { CardList, CardListItem, CardListRoot } from './CardList';
 
 export type { CardListItemProps, CardListProps } from './CardList';

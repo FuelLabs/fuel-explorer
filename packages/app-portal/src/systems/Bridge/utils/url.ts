@@ -1,5 +1,4 @@
-import { FUEL_CHAIN } from 'app-commons';
-import { ETH_CHAIN } from '~portal/systems/Chains';
+import { ETH_CHAIN, FUEL_CHAIN } from 'app-commons';
 
 type ChainUrlParams = 'eth' | 'fuel' | string | undefined | null;
 

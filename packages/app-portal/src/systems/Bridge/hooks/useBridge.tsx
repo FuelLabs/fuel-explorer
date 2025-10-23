@@ -1,14 +1,16 @@
+import { ETH_CHAIN, Routes } from 'app-commons';
 import type { BN } from 'fuels';
-import { DECIMAL_FUEL, bn } from 'fuels';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { DEFAULT_PRECISION, bn } from 'fuels';
 import { useEffect, useMemo } from 'react';
-import { Routes } from '~portal/routes';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Services, store } from '~portal/store';
 import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
-import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
+import {
+  getAssetEthCurrentChain,
+  getAssetFuelCurrentChain,
+} from '~portal/systems/Assets/utils';
 import type { SupportedChain } from '~portal/systems/Chains';
 import {
-  ETH_CHAIN,
   isEthChain,
   isFuelChain,
   useEthAccountConnection,
@@ -16,13 +18,13 @@ import {
 } from '~portal/systems/Chains';
 
 import { FUEL_CHAIN, type HexAddress } from 'app-commons';
+import { useBridgeAllowance } from '~portal/systems/Bridge/hooks/useBridgeAllowance';
 import { useEthBalance } from '~portal/systems/Chains/eth/hooks/useEthBalance';
-import { useSyncEthWallets } from '~portal/systems/Chains/eth/hooks/useSyncEthWallets';
 import { BridgeStatus } from '../machines';
 import type { BridgeMachineState } from '../machines';
 import { getChainFromUrlParam } from '../utils';
 
-const selectors = {
+export const bridgeSelectors = {
   fromNetwork: (state: BridgeMachineState) => state.context?.fromNetwork,
   toNetwork: (state: BridgeMachineState) => state.context?.toNetwork,
   status:
@@ -40,13 +42,15 @@ const selectors = {
 
       if (!fromNetwork) return BridgeStatus.waitingNetworkFrom;
       if (!toNetwork) return BridgeStatus.waitingNetworkTo;
-      if (!fuelAccount) {
-        if (isFuelChain(fromNetwork)) return BridgeStatus.waitingConnectFrom;
-        return BridgeStatus.waitingConnectTo;
+
+      const isWithdraw = isFuelChain(fromNetwork);
+      if (isWithdraw) {
+        if (!fuelAccount) return BridgeStatus.waitingConnectFrom;
+        if (!ethAccount) return BridgeStatus.waitingConnectTo;
       }
-      if (!ethAccount) {
-        if (isEthChain(toNetwork)) return BridgeStatus.waitingConnectTo;
-        return BridgeStatus.waitingConnectFrom;
+      if (!isWithdraw) {
+        if (!ethAccount) return BridgeStatus.waitingConnectFrom;
+        if (!fuelAccount) return BridgeStatus.waitingConnectTo;
       }
 
       if (!state.context?.assetAmount || state.context.assetAmount.isZero()) {
@@ -59,23 +63,42 @@ const selectors = {
 
       return BridgeStatus.ready;
     },
-  isLoading: (state: BridgeMachineState) => state.matches('bridging'),
+  isLoading: (state: BridgeMachineState) => !state.matches('idle'),
+
   assetAmount: (state: BridgeMachineState) => state.context?.assetAmount,
   asset: (state: BridgeMachineState) => state.context?.asset,
 };
 
 export function useBridge() {
-  const { asset: ethAsset } = useAsset();
-  const fromNetwork = store.useSelector(Services.bridge, selectors.fromNetwork);
-  const toNetwork = store.useSelector(Services.bridge, selectors.toNetwork);
-  const isLoading = store.useSelector(Services.bridge, selectors.isLoading);
-  const assetAmount = store.useSelector(Services.bridge, selectors.assetAmount);
-  const asset = store.useSelector(Services.bridge, selectors.asset);
+  const { asset: baseAsset } = useAsset();
 
-  const ethAssetAddress = asset ? getAssetEth(asset).address : undefined;
-  const fuelAssetAddress = asset ? getAssetFuel(asset).assetId : undefined;
-
-  useSyncEthWallets();
+  const fromNetwork = store.useSelector(
+    Services.bridge,
+    bridgeSelectors.fromNetwork,
+  );
+  const toNetwork = store.useSelector(
+    Services.bridge,
+    bridgeSelectors.toNetwork,
+  );
+  const isLoading = store.useSelector(
+    Services.bridge,
+    bridgeSelectors.isLoading,
+  );
+  const assetAmount = store.useSelector(
+    Services.bridge,
+    bridgeSelectors.assetAmount,
+  );
+  const asset = store.useSelector(Services.bridge, bridgeSelectors.asset);
+  const ethAsset = useMemo(
+    () => (asset ? getAssetEthCurrentChain(asset) : undefined),
+    [asset],
+  );
+  const fuelAsset = useMemo(
+    () => (asset ? getAssetFuelCurrentChain(asset) : undefined),
+    [asset],
+  );
+  const ethAssetAddress = ethAsset?.address;
+  const fuelAssetAddress = fuelAsset?.assetId;
   const {
     address: ethAddress,
     handlers: ethHandlers,
@@ -105,15 +128,39 @@ export function useBridge() {
 
   const isDeposit = isFuelChain(toNetwork);
   const isWithdraw = isFuelChain(fromNetwork);
-  const assetBalance = useMemo(() => {
-    if (isEthChain(fromNetwork)) {
-      if (ethBalance) {
-        const [intPart, decimalPart] = ethBalance?.formatted?.split('.') || [];
-        const formattedUnits = `${intPart}.${
-          decimalPart?.slice(0, DECIMAL_FUEL) || '0'
-        }`;
-        return bn.parseUnits(formattedUnits);
+
+  const assetFormat = useMemo(() => {
+    if (!asset) return undefined;
+
+    if (isDeposit) {
+      if (ethAsset?.decimals != null) {
+        return {
+          precision:
+            // make sure we're not using more decimals than fuel supports
+            ethAsset.decimals > DEFAULT_PRECISION
+              ? DEFAULT_PRECISION
+              : ethAsset.decimals,
+          units: ethAsset.decimals,
+        };
       }
+    }
+
+    if (isWithdraw) {
+      return {
+        units: fuelAsset?.decimals || 0,
+        precision: fuelAsset?.decimals || 0,
+      };
+    }
+
+    return {
+      units: 0,
+      precision: 0,
+    };
+  }, [asset, isDeposit, isWithdraw, ethAsset, fuelAsset]);
+
+  const assetBalance = useMemo(() => {
+    if (isEthChain(fromNetwork) && ethBalance) {
+      return bn(ethBalance.value.toString());
     }
 
     if (isFuelChain(fromNetwork)) {
@@ -125,11 +172,27 @@ export function useBridge() {
 
   const status = store.useSelector(
     Services.bridge,
-    selectors.status({ ethAccount: ethAddress, fuelAccount, assetBalance }),
+    bridgeSelectors.status({
+      ethAccount: ethAddress,
+      fuelAccount,
+      assetBalance,
+    }),
   );
 
-  const router = useRouter();
-  const params = useSearchParams();
+  const {
+    isLoadingAllowance,
+    isInvalidAllowance,
+    requiresAllowance,
+    tokensAllowance,
+  } = useBridgeAllowance({
+    ethAsset,
+    ethAddress: ethAddress as HexAddress,
+    isDeposit,
+    assetAmount,
+  });
+
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
 
   // console.log(params);
   // const location = useLocation();
@@ -161,17 +224,17 @@ export function useBridge() {
 
   // this effect is responsible for setting the initial asset
   useEffect(() => {
-    if (!asset && ethAsset) {
-      store.changeAsset({ asset: ethAsset });
+    if (!asset && baseAsset) {
+      store.changeAsset({ asset: baseAsset });
     }
-  }, [asset, ethAsset]);
+  }, [asset, baseAsset]);
 
   function goToDeposit() {
-    router.replace(Routes.bridgeFromTo('eth', 'fuel'));
+    navigate(Routes.bridgeFromTo('eth', 'fuel'), { replace: true });
   }
 
   function goToWithdraw() {
-    router.replace(Routes.bridgeFromTo('fuel', 'eth'));
+    navigate(Routes.bridgeFromTo('fuel', 'eth'), { replace: true });
   }
 
   function connectNetwork(network?: SupportedChain) {
@@ -196,26 +259,41 @@ export function useBridge() {
     return false;
   }
 
+  const toCustomAddress = store.useSelector(
+    Services.bridge,
+    (state: any) => state.context.toCustomAddress,
+  );
+
+  function startBridging() {
+    store.startBridging({
+      fuelAddress,
+      ethWalletClient,
+      fuelWallet,
+      fuelProvider,
+      ethAddress,
+      asset,
+      ethPublicClient,
+      toCustomAddress,
+    });
+  }
+
   return {
     handlers: {
       goToDeposit,
       goToWithdraw,
-      startBridging: () =>
-        store.startBridging({
-          fuelAddress,
-          ethWalletClient,
-          // @TODO: remove any when fuel-connectors gets updated to same fuels-ts of fuel-explorer
-          fuelWallet: fuelWallet as any,
-          fuelProvider,
-          ethAddress,
-          asset,
-          ethPublicClient,
-        }),
+      startBridging,
       connectFrom: () => connectNetwork(fromNetwork),
       connectTo: () => connectNetwork(toNetwork),
       changeAssetAmount: store.changeAssetAmount,
       changeAsset: store.changeAsset,
+      changeToAddress: store.changeToAddress,
       openAssetsDialog: store.openAssetsDialog,
+    },
+    allowance: {
+      isLoadingAllowance,
+      isInvalidAllowance,
+      requiresAllowance,
+      tokensAllowance,
     },
     fuelAddress,
     ethAddress,
@@ -230,5 +308,8 @@ export function useBridge() {
     assetAmount,
     assetBalance,
     asset,
+    assetFormat,
+    ethAssetAddress,
+    toCustomAddress,
   };
 }

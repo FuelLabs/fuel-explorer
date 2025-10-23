@@ -1,3 +1,4 @@
+import { logger } from '~/core/Logger';
 import type { GQLNodeInfo } from '~/graphql/generated/sdk-provider';
 import type { GraphQLContext } from '../GraphQLContext';
 
@@ -21,7 +22,7 @@ export class NodeResolver {
     _params: Params['nodeInfo'],
     { client }: GraphQLContext,
   ) {
-    // TODO: need to check with @luizstacio about the nodeInfo resolver
+    logger.debug('GraphQL', 'NodeResolver.nodeInfo');
     const res = await client.sdk.nodeInfo();
     return res.data.nodeInfo;
   }

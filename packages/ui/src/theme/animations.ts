@@ -34,6 +34,24 @@ export const keyframes = {
       transform: 'translateX(100%)',
     },
   },
+  fadeIn: {
+    '0%': {
+      opacity: '0',
+      transform: 'translateY(-8px)',
+    },
+    '100%': {
+      opacity: '1',
+      transform: 'translateY(0)',
+    },
+  },
+  scaleIn: {
+    '0%': {
+      transform: 'scale(0.95)',
+    },
+    '100%': {
+      transform: 'scale(1)',
+    },
+  },
 };
 
 export const animation = {

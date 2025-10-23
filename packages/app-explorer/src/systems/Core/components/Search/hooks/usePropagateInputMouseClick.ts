@@ -1,5 +1,5 @@
 import { useBreakpoints } from '@fuels/ui';
-import { type RefObject, useEffect } from 'react';
+import { type MutableRefObject, type RefObject, useEffect } from 'react';
 
 // Radix's Dropdown component uses a Portal to render the dropdown content,
 // That causes Input to not capture click events, forcing the user to double click the input when the dropdown is open.
@@ -9,10 +9,14 @@ export function usePropagateInputMouseClick({
   containerRef,
   inputRef,
   enabled,
+  hasClickedFieldArea,
+  isPressingFloatingIcon,
 }: {
   containerRef: RefObject<HTMLDivElement>;
   inputRef: RefObject<HTMLInputElement>;
   enabled: boolean | undefined;
+  hasClickedFieldArea: MutableRefObject<boolean>;
+  isPressingFloatingIcon: MutableRefObject<boolean>;
 }) {
   const { isMobile } = useBreakpoints();
 
@@ -21,6 +25,9 @@ export function usePropagateInputMouseClick({
       return;
     }
     const onClick = (e: MouseEvent) => {
+      if (isPressingFloatingIcon.current) {
+        return;
+      }
       const boundingData = containerRef.current?.getBoundingClientRect();
 
       if (boundingData) {
@@ -32,7 +39,12 @@ export function usePropagateInputMouseClick({
           clientY <= boundingData.y + boundingData.height
         ) {
           if (isMobile) {
-            setTimeout(() => inputRef.current?.focus(), 200);
+            hasClickedFieldArea.current = true;
+            inputRef.current?.focus();
+            setTimeout(() => {
+              hasClickedFieldArea.current = false;
+              inputRef.current?.focus();
+            }, 200);
           } else {
             inputRef.current?.focus();
           }

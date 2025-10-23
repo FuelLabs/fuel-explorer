@@ -1,9 +1,11 @@
 import {
-  accentColors,
+  type accentColors,
   grayColors,
 } from '@radix-ui/themes/dist/esm/props/color.prop.js';
+import type { Config } from 'tailwindcss';
 import * as colors from 'tailwindcss/colors';
 import { withOptions } from 'tailwindcss/plugin';
+import type { PluginCreator } from 'tailwindcss/types/config';
 /* 
   Exposes internal Radix tokens to Tailwind 
   Based on the deprecated radix-ui-themes-with-tailwind@1.2.6, which was made for Radix Themes V2, here refactored for V3.
@@ -153,7 +155,17 @@ export type RadixThemePluginOptions = {
   mapMissingTailwindColors?: boolean | Partial<typeof tailwindColorsToRadixMap>;
 };
 
-export const radixThemeTailwindPlugin = withOptions(
+type RadixThemePlugin = {
+  (
+    options: RadixThemePluginOptions,
+  ): {
+    handler: PluginCreator;
+    config?: Partial<Config> | undefined;
+  };
+  __isOptionsFunction: true;
+};
+
+export const radixThemeTailwindPlugin: RadixThemePlugin = withOptions(
   () => {
     return ({ addBase }) => {
       addBase({

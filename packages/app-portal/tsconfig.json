@@ -1,14 +1,21 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/app-portal.tsbuildInfo",
     "allowJs": true,
     "outDir": "./dist",
     "baseUrl": ".",
-    "rootDir": ".",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "types": ["vite/client", "@types/react", "@types/react-dom", "jest"],
     "paths": {
+      "app-commons": ["../app-commons/src"],
+      "app-commons/*": ["../app-commons/src/*"],
+      "~portal/*": ["./src/*"],
       "~public-portal/*": ["./public/*"],
-      "~portal/*": ["./src/*"]
+      "@fuels/ui": ["../ui/src"],
+      "@fuels/ui/*": ["../ui/src/*"]
     }
   },
-  "include": ["./src", "../app-commons/src/process.env.d.ts"]
+  "include": ["./src", "../app-commons/src/vite-env.d.ts"]
 }

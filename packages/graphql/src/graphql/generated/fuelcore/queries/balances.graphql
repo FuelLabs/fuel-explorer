@@ -6,18 +6,43 @@ query balances($after: String, $before: String, $filter: BalanceFilterInput!, $f
                 amount
                 assetId
                 owner
+                name
+                symbol
+                suspicious
+                icon
+                contractId
+                decimals
+                metadata
+                totalSupply
+                collection
+                rate
+                amountInUsd
             }
         }
         nodes{
             amount
             assetId
             owner
+            name
+            symbol
+            suspicious
+            icon
+            contractId
+            decimals
+            metadata
+            totalSupply
+            collection
+            rate
+            amountInUsd
         }
         pageInfo{
             endCursor
             hasNextPage
             hasPreviousPage
             startCursor
+            startCount
+            endCount
+            totalCount
         }
     }
 }

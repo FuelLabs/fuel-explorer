@@ -1,15 +1,23 @@
-'use client';
-
-import { Address, useBreakpoints } from '@fuels/ui';
+import { useIsConnected, useWallet } from '@fuels/react';
+import { Address } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
 
-export function AccountTitle({ id }: { id: string }) {
-  const { isLaptop } = useBreakpoints();
+type AccountTitleProps = {
+  id: string;
+};
+
+export function AccountTitle({ id }: AccountTitleProps) {
+  const { isConnected } = useIsConnected();
+  const { wallet } = useWallet();
+
+  const isCurrentAccountEqualConnectedAccount =
+    wallet?.address.toString() === id && isConnected;
 
   return (
     <PageTitle
-      title="Account"
-      subtitle={<Address full={isLaptop} value={id} />}
+      title={isCurrentAccountEqualConnectedAccount ? 'My Account' : 'Account'}
+      subtitle={<Address full={true} value={id} isAccount />}
+      mb="0"
     />
   );
 }

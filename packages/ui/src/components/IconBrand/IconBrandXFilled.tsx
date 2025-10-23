@@ -1,4 +1,4 @@
-import { TablerIconsProps } from '@tabler/icons-react';
+import type { TablerIconsProps } from '@tabler/icons-react';
 
 export const IconBrandXFilled = ({
   fill = 'currentColor',

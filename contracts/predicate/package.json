@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "dotenv": "16.4.1",
-    "fuels": "0.94.4",
-    "vitest": "1.2.2",
+    "fuels": "0.101.3",
+    "vitest": "1.6.1",
     "tsx": "4.7.1"
   }
 }

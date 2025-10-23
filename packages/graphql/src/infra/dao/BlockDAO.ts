@@ -1,13 +1,15 @@
-import { DatabaseConnection } from '../database/DatabaseConnection';
-import PaginatedParams from '../paginator/PaginatedParams';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
+import type PaginatedParams from '../paginator/PaginatedParams';
 import Block from './Block';
-import { createIntervals, roundToNearest } from './utils';
+dayjs.extend(utc);
 
 export default class BlockDAO {
-  databaseConnection: DatabaseConnection;
+  databaseConnection: DatabaseConnectionReplica;
 
   constructor() {
-    this.databaseConnection = DatabaseConnection.getInstance();
+    this.databaseConnection = DatabaseConnectionReplica.getInstance();
   }
 
   async getByHeight(height: number) {
@@ -39,7 +41,7 @@ export default class BlockDAO {
 		  where
 			  b.id = $1
 		  `,
-        [hash],
+        [hash.toLowerCase()],
       )
     )[0];
     if (!blockData) return;
@@ -51,14 +53,14 @@ export default class BlockDAO {
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
     const blocksData = await this.databaseConnection.query(
       `
-		select 
+		select
 			*
-		from 
+		from
 			indexer.blocks b
 		where
 			$1::integer is null or b._id ${direction} $1
 		order by
-			b._id ${order} 
+			b._id ${order}
 		limit 10
 	`,
       [paginatedParams.cursor],
@@ -126,89 +128,211 @@ export default class BlockDAO {
   async getBlocksDashboard() {
     const blocksData = await this.databaseConnection.query(
       `
-      select 
-          b._id AS blockno,
-          b.gas_used AS gasused,
+        select
+          b._id as blockno,
+          b.id as hash,
+          b.gas_used as gasused,
+          b.total_fee as totalfee,
           b.producer,
-          b.timestamp AS timestamp
-      from 
-        indexer.blocks b
-      order by
-        b._id  desc
-      limit 6
-    `,
+          b.timestamp as timestamp
+        from
+          indexer.blocks b
+        order by
+          b._id  desc
+        limit 6
+      `,
       [],
     );
-
     const formattedBlocksData = blocksData.map((block) => ({
       timestamp: new Date(Number(block.timestamp)).getTime(),
-      gasUsed: Number(block.gasused),
+      gasUsed: Number(block.gasused) || 0,
+      gasUsedInUsd: '',
+      totalFee: Number(block.totalfee) || 0,
+      totalFeeInUsd: '',
       blockNo: block.blockno,
+      blockHash: block.hash,
       producer: block.producer,
     }));
-
     return {
       nodes: formattedBlocksData,
     };
   }
 
   async tps() {
-    const currentTime = new Date();
-    const timeMinusOneDay = new Date(
-      currentTime.getTime() - 24 * 60 * 60 * 1000,
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        SUM(transactions_count) AS total_tps,
+        SUM(gas_used::int) AS total_gas_used
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          transactions_count,
+          gas_used
+        FROM indexer.blocks
+        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+        AND "timestamp" < date_trunc('hour', now())
+      ) t
+      GROUP BY hour
+      ORDER BY hour ASC`,
+      [],
     );
-    const timeMinusOneDayRoundDown = new Date(
-      roundToNearest(timeMinusOneDay.getTime()),
-    );
-    const timeMinusOneDayRoundDownISO = timeMinusOneDayRoundDown.toISOString();
-
-    const blocksData = await this.databaseConnection.query(
-      `
-      SELECT 
-          b.timestamp AS timestamp,
-          b.data->'header'->>'transactionsCount' AS tps,
-          b.gas_used AS gasused
-      FROM 
-          indexer.blocks b
-      WHERE 
-          b.timestamp >= $1
-      ORDER BY _id asc;
-      `,
-      [timeMinusOneDayRoundDownISO],
-    );
-
-    if (blocksData.length === 0) {
-      return { nodes: [] };
+    const intervals = [];
+    for (const row of data) {
+      const interval: any = {};
+      interval.start = dayjs(row.date)
+        .startOf('hour')
+        .utcOffset(0, true)
+        .toDate();
+      interval.end = dayjs(row.date)
+        .startOf('hour')
+        .add(1, 'hour')
+        .utcOffset(0, true)
+        .toDate();
+      interval.txCount = Number(row.total_tps);
+      interval.totalGas = Number(row.total_gas_used);
+      intervals.push(interval);
     }
-
-    const lastTimestamp = new Date(
-      Number(blocksData[blocksData.length - 1].timestamp),
-    ).getTime();
-    const firstTimestamp = new Date(Number(blocksData[0].timestamp)).getTime();
-
-    const intervals = createIntervals(firstTimestamp, lastTimestamp, 'hour', 1);
-
-    // Process blocks and put them into the correct interval
-    blocksData.forEach((block) => {
-      const blockTimestamp = new Date(Number(block.timestamp)).getTime();
-      const txCount = Number(block.tps);
-      const gasUsed = Number(block.gasused);
-
-      // Find the correct interval for the current block
-      for (const interval of intervals) {
-        const intervalStart = new Date(interval.start).getTime();
-        const intervalEnd = new Date(interval.end).getTime();
-
-        if (blockTimestamp >= intervalStart && blockTimestamp < intervalEnd) {
-          interval.txCount += txCount;
-          interval.totalGas += gasUsed;
-          break;
-        }
-      }
-    });
-
     return {
       nodes: intervals,
     };
+  }
+
+  async getAverageTps() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        avg(transactions_count) AS value
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          transactions_count
+        FROM indexer.blocks
+        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+      ) t
+      GROUP BY hour
+      ORDER BY hour`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
+      value: Number(row.value),
+    }));
+  }
+
+  async getTotalTps() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        SUM(transactions_count) AS value
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          transactions_count
+        FROM indexer.blocks
+        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+      ) t
+      GROUP BY hour
+      ORDER BY hour`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
+      value: Number(row.value),
+    }));
+  }
+
+  async getMaxTps() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        MAX(transactions_count) AS value
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          transactions_count
+        FROM indexer.blocks
+        WHERE "timestamp" > date_trunc('hour', now()) - interval '23 hours'
+      ) t
+      GROUP BY hour
+      ORDER BY hour`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
+      value: Number(row.value),
+    }));
+  }
+
+  async getAverageGasUsed() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        AVG(gas_used::numeric) AS value
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          gas_used
+          FROM indexer.blocks
+          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+      ) t
+      GROUP BY hour
+      ORDER BY hour`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
+      value: Number(row.value),
+    }));
+  }
+
+  async getTotalGasUsed() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        SUM(gas_used::numeric) AS value
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          gas_used
+          FROM indexer.blocks
+          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+      ) t
+      GROUP BY hour
+      ORDER BY hour`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
+      value: Number(row.value),
+    }));
+  }
+
+  async getMaxGasUsed() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        MAX(gas_used::numeric) AS value
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          gas_used
+          FROM indexer.blocks
+          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+      ) t
+      GROUP BY hour
+      ORDER BY hour`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
+      value: Number(row.value),
+    }));
+  }
+
+  async getTotalFee() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+        SUM(total_fee) AS value
+      FROM (
+        SELECT date_trunc('hour', "timestamp") AS hour,
+          (data->'status'->>'totalFee')::numeric AS total_fee
+        FROM indexer.transactions
+        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+      ) t
+      GROUP BY hour
+      ORDER BY hour`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
+      value: Number(row.value),
+    }));
   }
 }

@@ -9,6 +9,7 @@ fragment BlockItem on Block {
     rawUnix
   }
   totalGasUsed
+  totalFee
   producer
 
   # Block Data
@@ -24,7 +25,6 @@ fragment BlockItem on Block {
     height
     time
     transactionsCount
-    daHeight
   }
 
   transactions {
@@ -33,23 +33,18 @@ fragment BlockItem on Block {
   }
 }
 
-query blocks(
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
-) {
-    blocks(after: $after, before: $before, first: $first, last: $last) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasPreviousPage
-        hasNextPage
-      }
-      edges {
-        node {
-            ...BlockItem
-        }
+query blocks($after: String, $before: String, $first: Int, $last: Int) {
+  blocks(after: $after, before: $before, first: $first, last: $last) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasPreviousPage
+      hasNextPage
+    }
+    edges {
+      node {
+        ...BlockItem
       }
     }
+  }
 }

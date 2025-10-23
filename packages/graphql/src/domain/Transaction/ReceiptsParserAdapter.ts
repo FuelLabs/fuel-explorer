@@ -1,5 +1,5 @@
 import { GroupedReceiptsFactory } from '~/domain/Transaction/factories/GroupedReceiptsFactory';
-import ReceiptsParser from './ReceiptsParser';
+import type ReceiptsParser from './ReceiptsParser';
 
 export default class ReceiptsParserAdapter {
   constructor(readonly receiptsParser: ReceiptsParser) {}

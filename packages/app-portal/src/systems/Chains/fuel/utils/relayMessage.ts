@@ -4,13 +4,14 @@ import {
 } from '@fuel-bridge/message-predicates';
 import type {
   BytesLike,
+  WalletUnlocked as FuelWallet,
   Message,
   Provider,
   TransactionResponse,
   TxParamsType,
-  WalletUnlocked as FuelWallet,
 } from 'fuels';
 import {
+  Address,
   InputType,
   OutputType,
   Predicate,
@@ -21,7 +22,7 @@ import {
   concat,
   hexlify,
 } from 'fuels';
-
+import { abi } from './contract_message_test-abi';
 import { resourcesToInputs } from './transaction';
 
 type RelayMessageOptions = TxParamsType & {
@@ -29,14 +30,15 @@ type RelayMessageOptions = TxParamsType & {
 };
 
 // Details for relaying common messages with certain predicate roots
-function getCommonRelayableMessages(provider: Provider) {
+async function getCommonRelayableMessages(provider: Provider) {
   // Create a predicate for common messages
   const predicate = new Predicate({
     bytecode: contractMessagePredicate,
     provider,
+    abi: abi,
   });
 
-  const assetId = provider.getBaseAssetId();
+  const assetId = await provider.getBaseAssetId();
 
   // Details for relaying common messages with certain predicate roots
   const relayableMessages: CommonMessageDetails[] = [
@@ -56,7 +58,7 @@ function getCommonRelayableMessages(provider: Provider) {
         // get resources to fund the transaction
         const resources = await relayer.getResourcesToSpend([
           {
-            amount: bn(100),
+            amount: bn(10_000),
             assetId,
           },
         ]);
@@ -89,8 +91,17 @@ function getCommonRelayableMessages(provider: Provider) {
           contractId,
         });
 
-        for (const additionalContractId of opts?.contractIds || []) {
+        // Create additional contract inputs for additional contract IDs
+        const additionalContractIds = (opts?.contractIds || [])
+          .filter(
+            (id) =>
+              String(id).toLowerCase() !== String(contractId).toLowerCase(),
+          )
+          .filter((id) => !!id);
+        const contractsIndexAdded = [];
+        for (const additionalContractId of additionalContractIds || []) {
           if (additionalContractId) {
+            contractsIndexAdded.push(transaction.inputs.length);
             transaction.inputs.push({
               type: InputType.Contract,
               txPointer: ZeroBytes32,
@@ -106,20 +117,16 @@ function getCommonRelayableMessages(provider: Provider) {
           inputIndex: 1,
         });
 
-        for (const [index, additionalContractId] of (
-          opts?.contractIds || []
-        ).entries()) {
-          if (additionalContractId) {
-            transaction.outputs.push({
-              type: OutputType.Contract,
-              inputIndex: 2 + index,
-            });
-          }
+        for (const index of contractsIndexAdded) {
+          transaction.outputs.push({
+            type: OutputType.Contract,
+            inputIndex: index,
+          });
         }
 
         transaction.outputs.push({
           type: OutputType.Change,
-          to: relayer.address.toB256(),
+          to: relayer.address.toString(),
           assetId,
         });
         transaction.outputs.push({
@@ -127,11 +134,6 @@ function getCommonRelayableMessages(provider: Provider) {
         });
 
         transaction.witnesses.push(concat([ZeroBytes32, ZeroBytes32]));
-
-        const transactionCost = await relayer.getTransactionCost(transaction);
-
-        transaction.gasLimit = transactionCost.gasUsed.mul(1.2);
-        transaction.maxFee = transactionCost.maxFee;
 
         return transaction;
       },
@@ -168,7 +170,7 @@ export async function relayCommonMessage({
   let messageRelayDetails: CommonMessageDetails | undefined;
   const predicateRoot = message.recipient.toHexString();
 
-  for (const details of getCommonRelayableMessages(relayer.provider)) {
+  for (const details of await getCommonRelayableMessages(relayer.provider)) {
     if (details.predicateRoot.toLowerCase() === predicateRoot.toLowerCase()) {
       messageRelayDetails = details;
       break;
@@ -184,9 +186,36 @@ export async function relayCommonMessage({
     messageRelayDetails,
     txParams || {},
   );
+
+  const transactionCost = await relayer.getTransactionCost(transaction);
+
+  transaction.gasLimit = transactionCost.gasUsed.mul(1.2);
+  transaction.maxFee = transactionCost.maxFee;
+
+  // Add missing contract inputs in the case of upgradable contracts as example
+  for (const contractId of transactionCost.missingContractIds) {
+    transaction.addContractInputAndOutput(Address.fromB256(contractId));
+  }
+  if (transactionCost.outputVariables) {
+    transaction.addVariableOutputs(transactionCost.outputVariables);
+  }
   const estimatedTx = await relayer.provider.estimatePredicates(transaction);
   // @TODO: should remove this when sdk fixes estimation
-  estimatedTx.maxFee = estimatedTx.maxFee.add(bn(100_000));
+  estimatedTx.maxFee = estimatedTx.maxFee.add(bn(200_000));
+  estimatedTx.tip = bn(100_000);
 
-  return relayer.sendTransaction(estimatedTx);
+  // Ensure transaction simulation is successful
+  const result = await relayer.provider.dryRun(estimatedTx, {
+    estimateTxDependencies: false,
+  });
+
+  if (result.dryRunStatus?.type === 'DryRunFailureStatus') {
+    throw new Error(
+      `Transaction simulation failed for message ${message.nonce}`,
+    );
+  }
+
+  return relayer.sendTransaction(estimatedTx, {
+    estimateTxDependencies: false,
+  });
 }

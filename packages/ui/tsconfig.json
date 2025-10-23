@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/ui.tsbuildInfo",
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
@@ -11,5 +12,5 @@
       ]
     }
   },
-  "include": ["src", ".storybook", "*.config.*"]
+  "include": ["src", "*.config.*", "dist/**/*.d.ts"]
 }

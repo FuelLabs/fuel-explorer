@@ -6,7 +6,6 @@ import {
   Icon,
   IconBrandDiscordFilled,
   IconBrandTelegramFilled,
-  IconBrandWarpCastFilled,
   IconBrandXFilled,
   IconBrandYoutubeFilled,
   Link,
@@ -18,6 +17,7 @@ import {
 import dayjs from 'dayjs';
 import { tv } from 'tailwind-variants';
 
+import { APP_COMMIT_HASH } from 'app-commons';
 import data from './data.json';
 
 type FooterNavProps = {
@@ -64,10 +64,10 @@ export function Footer() {
           <FuelLogo showLettering size={32} />
 
           <Box className={classes.navs()}>
-            <FooterNav title="Learn" links={data.links.learn} />
-            <FooterNav title="Build" links={data.links.build} />
-            <FooterNav title="Use" links={data.links.use} />
-            <FooterNav title="Community" links={data.links.community} />
+            <FooterNav title="FUEL" links={data.links.FUEL} />
+            <FooterNav title="Get Started" links={data.links.GetStarted} />
+            <FooterNav title="Build" links={data.links.Build} />
+            <FooterNav title="Environment" links={data.links.Environment} />
           </Box>
         </Flex>
 
@@ -75,7 +75,7 @@ export function Footer() {
           <HStack gap="4">
             <Link
               className={classes.socialIcon()}
-              href="https://twitter.com/fuel_network"
+              href="https://x.com/fuel_network"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -88,14 +88,6 @@ export function Footer() {
               target="_blank"
             >
               <Icon icon={IconBrandDiscordFilled} size={24} />
-            </Link>
-            <Link
-              className={classes.socialIcon()}
-              href="https://warpcast.com/fuel-network"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <Icon icon={IconBrandWarpCastFilled} size={24} />
             </Link>
             <Link
               className={classes.socialIcon()}
@@ -114,9 +106,14 @@ export function Footer() {
               <Icon icon={IconBrandTelegramFilled} size={24} />
             </Link>
           </HStack>
-          <Text className="text-secondary" size="2">
-            © {dayjs().year()} Fuel Labs. All rights reserved
-          </Text>
+          <HStack justify={'between'}>
+            <Text className="text-secondary" size="2">
+              © {dayjs().year()} Fuel Labs. All rights reserved
+            </Text>
+            <Text className="text-secondary opacity-50" size="2">
+              version: {APP_COMMIT_HASH}
+            </Text>
+          </HStack>
         </VStack>
       </Box>
     </Theme>
@@ -133,7 +130,7 @@ const styles = tv({
     ],
     social: ['mt-12'],
     socialIcon: ['text-white hover:text-brand transition-colors duration-200 '],
-    navs: ['flex flex-wrap justify-between gap-y-10 w-full max-w-screen-md'],
+    navs: ['flex flex-wrap justify-around gap-y-10 w-full max-w-screen-md'],
     nav: ['w-full tablet:w-1/2 desktop:w-auto'],
     navHeading: ['font-mono justify-start text-white'],
     navList: ['flex flex-col gap-0'],

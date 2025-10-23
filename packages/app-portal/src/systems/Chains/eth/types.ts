@@ -1,3 +1,5 @@
+import type { Hex } from 'viem';
+
 // The BlockHeader structure.
 export type MessageBlockHeader = {
   prevRoot: string;
@@ -33,4 +35,15 @@ export type Message = {
 export type Proof = {
   key: string;
   proof: Array<string>;
+};
+
+export type EthLog = {
+  recipient: string;
+  args: {
+    nonce: bigint;
+  };
+  blockHash: string;
+  data: Hex;
+  topics: [signature: Hex, ...args: Hex[]] | [];
+  transactionHash: string;
 };

@@ -50,6 +50,7 @@ export type BridgeTxsMachineEvents =
       type: 'ADD_TX_ETH_TO_FUEL';
       input: {
         ethTxId?: HexAddress;
+        inputEthTxNonce?: BigInt;
       } & BridgeInputs['fetchTxs'];
     }
   | {
@@ -150,16 +151,20 @@ export const bridgeTxsMachine = createMachine(
             // safely avoid overriding instance
             if (ctx.ethToFuelTxRefs?.[tx.txHash]) return prev;
 
+            const key = `${tx.txHash}-${tx.nonce}`;
+
             return {
               ...prev,
-              [tx.txHash]: spawn(
+              [key]: spawn(
                 txEthToFuelMachine.withContext({
                   ethTxId: tx.txHash as HexAddress,
+                  inputEthTxNonce: tx.nonce,
+                  machineId: key,
                   fuelAddress: ctx.fuelAddress,
                   fuelProvider: ctx.fuelProvider,
                   ethPublicClient: ctx.ethPublicClient,
                 }),
-                { name: tx.txHash, sync: true },
+                { name: key, sync: true },
               ),
             };
           }, {});
@@ -199,16 +204,24 @@ export const bridgeTxsMachine = createMachine(
       }),
       assignTxEthToFuel: assign({
         ethToFuelTxRefs: (ctx, ev) => {
-          const { ethTxId, fuelAddress, fuelProvider, ethPublicClient } =
-            ev.input || {};
+          const {
+            ethTxId,
+            fuelAddress,
+            fuelProvider,
+            ethPublicClient,
+            inputEthTxNonce,
+          } = ev.input || {};
           if (!ethTxId || ctx.ethToFuelTxRefs?.[ethTxId])
             return ctx.ethToFuelTxRefs;
 
-          console.log(`NEW: creating machine Fuel To Eth: ${ethTxId}`);
+          const key = `${ethTxId}-${inputEthTxNonce}`;
+
           const newRef = {
-            [ethTxId]: spawn(
+            [key]: spawn(
               txEthToFuelMachine.withContext({
                 ethTxId: ethTxId as HexAddress,
+                inputEthTxNonce: inputEthTxNonce,
+                machineId: key,
                 fuelAddress: fuelAddress,
                 fuelProvider: fuelProvider,
                 ethPublicClient: ethPublicClient,
@@ -230,7 +243,6 @@ export const bridgeTxsMachine = createMachine(
           if (!fuelTxId || ctx.fuelToEthTxRefs?.[fuelTxId])
             return ctx.fuelToEthTxRefs;
 
-          console.log(`NEW: creating machine Fuel To Eth: ${fuelTxId}`);
           const newRef = {
             [fuelTxId]: spawn(
               txFuelToEthMachine.withContext({

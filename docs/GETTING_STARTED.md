@@ -56,7 +56,7 @@ cp packages/app-explorer/.env.example packages/app-explorer/.env
 2. Start the frontend with the following command:
 
 ```sh
-pnpm dev
+pnpm dev:explorer
 ``` 
 
 After running that command, you can open [http://localhost:3000](http://localhost:3000) in your browser to view the explorer working.

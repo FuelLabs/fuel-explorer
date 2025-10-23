@@ -1,4 +1,4 @@
-import { createServer } from 'http';
+import { createServer } from 'node:http';
 import {
   getOrDeployECR20Contract,
   getOrDeployL2Bridge,
@@ -32,13 +32,20 @@ async function main() {
   await env.eth.fuelERC20Gateway.setAssetIssuerId(fuelContractId);
 
   const erc20Address = (await ETHToken.getAddress()).toLowerCase();
-  const tokenId = getTokenId(contract, erc20Address);
+  const erc20USDCAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+  const tknFuelAssetId = getTokenId(contract.id.toHexString(), erc20Address);
+  const usdcFuelAssetId = getTokenId(
+    contract.id.toHexString(),
+    erc20USDCAddress,
+  );
 
   await startServer({
     ETH_ERC20: erc20Address,
     FUEL_TokenContract: fuelContractId,
     FUEL_TokenContractImplementation: implementation.id.toHexString(),
-    FUEL_TokenAsset: tokenId,
+    FUEL_TokenAsset: tknFuelAssetId,
+    USDC_ERC20: erc20USDCAddress,
+    USDC_FUEL_Asset: usdcFuelAssetId,
   });
 }
 

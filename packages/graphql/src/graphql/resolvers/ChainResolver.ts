@@ -1,3 +1,4 @@
+import { logger } from '~/core/Logger';
 import type { GQLChainInfo } from '~/graphql/generated/sdk-provider';
 import type { GraphQLContext } from '../GraphQLContext';
 
@@ -16,8 +17,8 @@ export class ChainResolver {
     };
   }
 
-  // TODO: index data to Postgres instead of fetch from SDK
   async chain(_: Source, _params: Params['chain'], { client }: GraphQLContext) {
+    logger.debug('GraphQL', 'ChainResolver.chain');
     const res = await client.sdk.chain();
     return res.data.chain;
   }

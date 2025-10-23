@@ -40,6 +40,7 @@ export interface Header {
   id: string;
 }
 
+// @TODO: this can be removed after we complete a withdraw in mainnet
 export async function getBlock({
   blockHash,
   providerUrl,

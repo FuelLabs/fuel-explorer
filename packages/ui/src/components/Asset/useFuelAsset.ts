@@ -1,10 +1,10 @@
-import { CHAIN_IDS, getAssetFuel } from '@fuels/assets';
-import type { Asset } from '@fuels/assets';
+import { getAssetFuel } from 'fuels';
+import type { Asset } from 'fuels';
 import { useMemo } from 'react';
 
-export const useFuelAsset = (asset?: Asset | null) => {
+export const useFuelAsset = (asset?: Asset | null, chainId?: number) => {
   const fuelAsset = useMemo(
-    () => (asset ? getAssetFuel(asset, CHAIN_IDS.fuel.beta4) : undefined),
+    () => (asset ? getAssetFuel(asset, chainId) : undefined),
     [asset?.symbol, asset?.name, asset?.networks.length],
   );
 

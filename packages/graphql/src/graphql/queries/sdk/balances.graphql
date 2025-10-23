@@ -2,6 +2,16 @@ fragment BalanceItem on Balance {
   amount
   assetId
   owner
+  name
+  symbol
+  icon
+  decimals
+  totalSupply
+  collection
+  suspicious
+  contractId
+  metadata
+  amountInUsd
   utxos {
     amount
     blockCreated

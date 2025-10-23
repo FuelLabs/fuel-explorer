@@ -1,12 +1,16 @@
-import { bn } from 'fuels';
+import { Address as FuelAddress, bn } from 'fuels';
 import type { Address } from 'viem';
 
 import type { GetReceiptsInfoReturn } from '../services';
 
-const BLOCK_DATE_KEY_SUBSTRING = 'ethBlockDate-';
-const HASH_DONE_KEY_SUBSTRING = 'ethToFuelTx';
-const TX_CREATED_KEY_SUBSTRING = 'ethTxCreated';
-const TX_RECEIPT_KEY_SUBSTRING = 'ethToFuelTxReceipt';
+// Version key is used to force transaction history to be fetched again
+// This is needed when the data stored in localStorage is not compatible
+// or doesn't have the same structure as the current version
+const VERSION_KEY = '1';
+const BLOCK_DATE_KEY_SUBSTRING = `${VERSION_KEY}-ethBlockDate-`;
+const HASH_DONE_KEY_SUBSTRING = `${VERSION_KEY}-ethToFuelTx-`;
+const TX_CREATED_KEY_SUBSTRING = `${VERSION_KEY}-ethTxCreated-`;
+const TX_RECEIPT_KEY_SUBSTRING = `${VERSION_KEY}-ethToFuelTxReceipt-`;
 
 export const EthTxCache = {
   getBlockDate: (blockHash: string) => {
@@ -49,6 +53,7 @@ export const EthTxCache = {
       erc20Token: receiptInfo.erc20Token,
       nonce: receiptInfo.nonce?.toString(),
       amount: receiptInfo.amount?.toString(),
+      recipient: receiptInfo.recipient?.toString(),
       blockdate: receiptInfo.blockDate?.toUTCString(), // This is necessary bc stringyfing a Date type loses info
     };
     const stringifiedReceipt = JSON.stringify(receiptInfoToStringify);
@@ -61,10 +66,12 @@ export const EthTxCache = {
     }
     const parsedReceipt = JSON.parse(stringifiedReceipt) as Omit<
       GetReceiptsInfoReturn,
-      'erc20Token' | 'nonce' | 'amount'
+      'erc20Token' | 'nonce' | 'amount' | 'recipient'
     > & {
       nonce: string;
       amount: string;
+      sender: string;
+      recipient: string;
       erc20Token?: {
         address: Address;
         decimals: number;
@@ -78,6 +85,7 @@ export const EthTxCache = {
       nonce: bn(parsedReceipt.nonce),
       amount: bn(parsedReceipt.amount),
       blockDate: new Date(parsedReceipt.blockDate!),
+      recipient: FuelAddress.fromString(parsedReceipt.recipient),
     };
     return typedReceipt;
   },

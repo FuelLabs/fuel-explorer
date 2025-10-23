@@ -15,6 +15,8 @@ interface ReceiptHeaderOperationBase {
   requiredField?: keyof GQLReceipt;
   fieldFallback?: keyof GQLReceipt;
   hrefFactory?: (value: string) => string;
+  copyableValue?: keyof GQLReceipt;
+  fieldsFallback?: string[];
 }
 
 export interface ReceiptHeaderOperationAmount

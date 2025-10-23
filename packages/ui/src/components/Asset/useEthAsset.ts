@@ -1,5 +1,5 @@
-import { CHAIN_IDS, getAssetEth } from '@fuels/assets';
-import type { Asset } from '@fuels/assets';
+import { CHAIN_IDS, getAssetEth } from 'fuels';
+import type { Asset } from 'fuels';
 import { useMemo } from 'react';
 
 export const useEthAsset = (asset?: Asset | null) => {
