@@ -1,0 +1,75 @@
+name: "PR Checks"
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COVERAGE_FILE: report.json
+  VITE_FUEL_CHAIN_NAME: fuelTestnet # For Vite apps
+  FUEL_PROVIDER: https://testnet.fuel.network/v1/graphql # For GraphQL apps
+
+jobs:
+  validate-title:
+    name: Validate PR Title
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    runs-on: warp-ubuntu-latest-x64-4x
+    steps:
+      - uses: amannn/action-semantic-pull-request@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  audit:
+    name: Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+      - name: Install jq
+        run: sudo apt-get install jq
+      - run: |
+          pnpm audit --prod --json | jq '
+            .advisories | to_entries | 
+            map(select(.value.patched_versions != "<0.0.0" and .value.severity == "critical") | {package: .value.module_name, vulnerable: .value.vulnerable_versions, fixed_in: .value.patched_versions}) 
+          ' > audit_fix_packages.json
+          if [ "$(jq 'length' audit_fix_packages.json)" -gt "0" ]; then
+            echo "Actionable vulnerabilities found in the following packages:"
+            jq -r '.[] | "\u001b[1m\(.package)\u001b[0m vulnerable in \u001b[31m\(.vulnerable)\u001b[0m fixed in \u001b[32m\(.fixed_in)\u001b[0m"' audit_fix_packages.json | while read -r line; do echo -e "$line"; done
+            echo "Please run \`pnpm --prod --fix\`"
+            exit 1
+          else
+            echo "No actionable vulnerabilities"
+            exit 0
+          fi
+  
+  strict-audit:
+    name: Strict Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+      - run: pnpm audit --prod --audit-level critical
+        
+
+  lint-and-test:
+    name: Lint
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    runs-on: warp-ubuntu-latest-x64-4x
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 1.9.4
+      # Add `--reporter=github` flag once on a version, where it works.
+      - run: biome ci .  --diagnostic-level=error

@@ -1,0 +1,7 @@
+query contract($id: ContractId!){
+    contract(id: $id){
+        bytecode
+        id
+        salt
+    }
+}

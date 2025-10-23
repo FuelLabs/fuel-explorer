@@ -1,0 +1,12 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.12.10
+- name: rabbitmq
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.16.2
+- name: fuel-explorer
+  repository: file://../../helm/fuel-explorer
+  version: 0.2.6
+digest: sha256:716fdd5b77743a2a312b2d87d51d02f4dada7341634f785f2ff9afc116137048
+generated: "2024-12-18T21:56:35.478468-03:00"

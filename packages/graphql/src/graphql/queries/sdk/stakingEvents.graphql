@@ -1,0 +1,27 @@
+query StakingEvents(
+  $address: String!
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  stakingEvents(
+    address: $address
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
+    nodes {
+      ...StakingResponseFragment
+    }
+    pageInfo {
+      endCount
+      startCursor
+      endCursor
+      startCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}

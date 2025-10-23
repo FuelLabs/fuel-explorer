@@ -1,0 +1,130 @@
+fragment BaseStatusInfoFragment on BaseStatusInfo {
+  TransactionSent {
+    ethTx {
+      txHash
+      timestamp
+      height
+    }
+  }
+  WaitingSync {
+    dateExpectedToComplete
+  }
+  Finalized {
+    sequencerTx {
+      txHash
+      timestamp
+    }
+    ethTx {
+      txHash
+      timestamp
+    }
+  }
+  Skipped {
+    message
+  }
+}
+
+fragment StakingResponseFragment on StakingEventResponse {
+  __typename
+  ... on WithdrawResponse {
+    id
+    type
+    from
+    to
+    amount
+    nonce
+    status
+    statusInfo {
+      TransactionSent {
+        ethTx {
+          txHash
+          timestamp
+          height
+        }
+      }
+      WaitingSync {
+        dateExpectedToComplete
+      }
+      WaitingCommittingToL1 {
+        sequencerTx {
+          txHash
+          timestamp
+        }
+        dateExpectedToComplete
+      }
+      ReadyToProcessWithdraw {
+        proof
+      }
+      Skipped {
+        message
+      }
+      Finalized {
+        sequencerTx {
+          txHash
+          timestamp
+        }
+        ethTx {
+          txHash
+          timestamp
+        }
+      }
+    }
+  }
+  ... on UndelegateResponse {
+    status
+    statusInfo {
+      TransactionSent {
+        ethTx {
+          txHash
+          timestamp
+          height
+        }
+      }
+      WaitingSync {
+        dateExpectedToComplete
+      }
+      WaitingUnbonding {
+        dateExpectedToComplete
+      }
+      Finalized {
+        sequencerTx {
+          timestamp
+          txHash
+        }
+      }
+    }
+  }
+  ... on DelegateResponse {
+    id
+    type
+    from
+    amount
+    validator
+    status
+    statusInfo {
+      ...BaseStatusInfoFragment
+    }
+  }
+  ... on ReDelegateResponse {
+    id
+    type
+    from
+    amount
+    toValidator
+    fromValidator
+    status
+    statusInfo {
+      ...BaseStatusInfoFragment
+    }
+  }
+  ... on ClaimRewardsResponse {
+    id
+    type
+    from
+    validator
+    status
+    statusInfo {
+      ...BaseStatusInfoFragment
+    }
+  }
+}

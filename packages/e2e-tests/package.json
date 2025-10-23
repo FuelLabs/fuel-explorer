@@ -1,0 +1,14 @@
+{
+  "name": "e2e-tests",
+  "private": true,
+  "devDependencies": {
+    "@fuels/playwright-utils": "0.57.1",
+    "@synthetixio/synpress": "4.1.0",
+    "app-commons": "workspace:*",
+    "fuels": "0.101.3",
+    "viem": "2.20.1"
+  },
+  "scripts": {
+    "setup:synpress": "synpress examples/synpress/metamask"
+  }
+}

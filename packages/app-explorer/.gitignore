@@ -1,0 +1,4 @@
+public/ui
+public/portal
+src/graphql/generated
+generated/

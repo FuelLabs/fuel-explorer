@@ -1,0 +1,1 @@
+export { IconRosetteDiscountCheck } from './IconRosetteDiscountCheck';

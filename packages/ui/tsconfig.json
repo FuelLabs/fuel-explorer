@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/ui.tsbuildInfo",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "fuels": ["../../node_modules/fuels"],
+      "tailwind-variants": ["../../node_modules/tailwind-variants"],
+      "@react-aria/interactions": [
+        "../../node_modules/@react-aria/interactions"
+      ]
+    }
+  },
+  "include": ["src", "*.config.*", "dist/**/*.d.ts"]
+}

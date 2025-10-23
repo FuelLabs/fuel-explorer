@@ -1,0 +1,17 @@
+query balanceByBlockHeight(
+  $assetId: AssetId!
+  $accountHash: Address!
+  $blockHeight: Int!
+) {
+  balanceByBlockHeight(
+    assetId: $assetId
+    accountHash: $accountHash
+    blockHeight: $blockHeight
+  ) {
+    balance
+    balanceInUsd
+    assetId
+    accountHash
+    blockHeight
+  }
+}

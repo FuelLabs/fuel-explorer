@@ -1,0 +1,4 @@
+packages:
+  - 'packages/*'
+  - 'contracts/*'
+  - 'docker/erc20-deployer/deployer'

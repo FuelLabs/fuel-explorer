@@ -1,0 +1,18 @@
+query balance($assetId: AssetId!, $owner: Address!){
+    balance(assetId: $assetId, owner: $owner){
+        amount
+        assetId
+        owner
+        name
+        symbol
+        suspicious
+        icon
+        contractId
+        decimals
+        metadata
+        totalSupply
+        collection
+        rate
+        amountInUsd
+    }
+}

@@ -1,0 +1,195 @@
+# ==============================================================================
+# Status Enums
+# ==============================================================================
+
+enum ResponseType {
+  Withdraw
+  Delegate
+  ReDelegate
+  Undelegate
+  ClaimRewards
+}
+
+enum WithdrawStatusType {
+  TransactionSent
+  WaitingSync
+  WaitingCommittingToL1
+  WaitingFinalization
+  ReadyToProcessWithdraw
+  Finalized
+  Skipped
+}
+
+enum UndelegateStatusType {
+  TransactionSent
+  WaitingSync
+  WaitingUnbonding
+  Finalized
+  Skipped
+}
+
+enum GenericStatusType {
+  TransactionSent
+  WaitingSync
+  Finalized
+  Skipped
+}
+
+# ==============================================================================
+# Response Types
+# ==============================================================================
+
+type SequencerTx {
+  height: String!
+  txHash: String!
+  timestamp: String!
+}
+
+type EthTx {
+  height: String!
+  txHash: String!
+  timestamp: String!
+}
+
+type SkippedInfo {
+  message: String!
+}
+
+type ReadyToProcessWithdrawInfo {
+  proof: String!
+}
+
+type WaitingCommittingToL1gInfo {
+  dateExpectedToComplete: String!
+  sequencerTx: SequencerTx!
+}
+
+type WaitingFinalizationInfo {
+  dateExpectedToComplete: String!
+  ethTx: EthTx
+}
+
+type TransactionSentInfo {
+  ethTx: EthTx!
+}
+
+type WaitingSyncInfo {
+  dateExpectedToComplete: String!
+}
+
+type FinalizedInfo {
+  ethTx: EthTx
+  sequencerTx: SequencerTx
+}
+
+type BaseStatusInfo {
+  TransactionSent: TransactionSentInfo
+  WaitingSync: WaitingSyncInfo
+  Finalized: FinalizedInfo
+  Skipped: SkippedInfo
+}
+
+type WithdrawStatusInfo {
+  TransactionSent: TransactionSentInfo
+  WaitingSync: WaitingSyncInfo
+  WaitingCommittingToL1: WaitingCommittingToL1gInfo
+  WaitingFinalization: WaitingFinalizationInfo
+  ReadyToProcessWithdraw: ReadyToProcessWithdrawInfo
+  Skipped: SkippedInfo
+  Finalized: FinalizedInfo
+}
+
+type UndelegateStatusInfo {
+  TransactionSent: TransactionSentInfo
+  WaitingSync: WaitingSyncInfo
+  WaitingUnbonding: WaitingSyncInfo
+  Finalized: FinalizedInfo
+  Skipped: SkippedInfo
+}
+
+# ==============================================================================
+# Withdraw Responses
+# ==============================================================================
+
+type DelegateResponse {
+  id: Int!
+  type: ResponseType!
+  from: String!
+  amount: String!
+  validator: String!
+  status: String!
+  statusInfo: BaseStatusInfo!
+}
+
+type ReDelegateResponse {
+  id: Int!
+  type: ResponseType!
+  from: String!
+  amount: String!
+  toValidator: String!
+  fromValidator: String!
+  status: String!
+  statusInfo: BaseStatusInfo!
+}
+
+type ClaimRewardsResponse {
+  id: Int!
+  type: ResponseType!
+  from: String!
+  validator: String!
+  status: String!
+  statusInfo: BaseStatusInfo!
+}
+
+type UndelegateResponse {
+  id: Int!
+  type: ResponseType!
+  from: String!
+  amount: String!
+  validator: String!
+  status: String!
+  statusInfo: UndelegateStatusInfo!
+}
+
+type WithdrawResponse {
+  id: Int!
+  type: ResponseType!
+  from: String!
+  to: String!
+  amount: String!
+  status: String!
+  statusInfo: WithdrawStatusInfo!
+  nonce: String
+}
+
+# ==============================================================================
+# Query
+# ==============================================================================
+
+union StakingEventResponse =
+  | WithdrawResponse
+  | DelegateResponse
+  | ReDelegateResponse
+  | UndelegateResponse
+  | ClaimRewardsResponse
+
+type StakingAPY {
+  amount: U32
+}
+
+type StakingEventsResult {
+  nodes: [StakingEventResponse]
+  pageInfo: PageInfo
+}
+
+type Query {
+  stakingAPY: StakingAPY
+  stakingEvents(
+    address: String!
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): StakingEventsResult
+  stakingEvent(eventId: Int!): StakingEventResponse
+}

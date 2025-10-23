@@ -1,0 +1,104 @@
+{{- $service := .Values.api -}}
+{{- if $service.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fuel-explorer.fullname" . }}-api
+  labels:
+    {{- include "fuel-explorer.labels" . | nindent 4 }}
+    app.kubernetes.io/service: {{ include "fuel-explorer.fullname" . }}-api
+spec:
+  {{- if not $service.autoscaling.enabled }}
+  replicas: {{ $service.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "fuel-explorer.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/service: {{ include "fuel-explorer.fullname" . }}-api
+  template:
+    metadata:
+      {{- with $service.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "fuel-explorer.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/service: {{ include "fuel-explorer.fullname" . }}-api
+    spec:
+      {{- if $service.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml $service.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      {{- if $service.podSecurityContext }}
+      securityContext:
+        {{- toYaml $service.podSecurityContext | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "fuel-explorer.serviceAccountName" . }}
+      containers:
+        - name: {{ include "fuel-explorer.fullname" . }}-api
+          {{- if $service.securityContext }}
+          securityContext:
+            {{- toYaml $service.securityContext | nindent 12 }}
+          {{- end }}
+          image: "{{ $service.image.repository }}:{{ $service.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ $service.image.pullPolicy }}
+          {{- if $service.image.args }}
+          args:
+            {{- toYaml $service.image.args | nindent 12 }}
+          {{- end }}
+
+          env:
+            - name: SERVICE
+              value: api
+
+          envFrom:
+            - configMapRef:
+                name: {{ include "fuel-explorer.fullname" . }}
+            - secretRef:
+                name: {{ include "fuel-explorer.fullname" . }}
+          ports:
+            - name: http
+              containerPort: {{ $service.service.port }}
+              protocol: TCP
+
+          {{- if .Values.healthcheck.enabled }}
+          {{- if $service.livenessProbe }}
+          livenessProbe:
+            {{- toYaml $service.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if $service.readinessProbe }}
+          readinessProbe:
+              {{- toYaml $service.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- end }}
+
+          volumeMounts:
+            - mountPath: /home/node/.cache
+              name: node-cache
+            - mountPath: /home/node/.pm2
+              name: pm2
+            - mountPath: /tmp
+              name: tmp
+          resources:
+            {{- toYaml $service.resources | nindent 12 }}
+      volumes:
+        - name: node-cache
+          emptyDir: {}
+        - name: pm2
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+
+      {{- if $service.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $service.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if $service.affinity }}
+      affinity:
+        {{- toYaml $service.affinity | nindent 8 }}
+      {{- end }}
+      {{- if $service.tolerations }}
+      tolerations:
+        {{- toYaml $service.tolerations | nindent 8 }}
+      {{- end }}
+{{- end }}

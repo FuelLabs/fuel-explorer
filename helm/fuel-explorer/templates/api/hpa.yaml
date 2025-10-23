@@ -1,0 +1,34 @@
+{{- $api := .Values.api -}}
+{{- if $api.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "fuel-explorer.fullname" . }}-api
+  labels:
+    {{- include "fuel-explorer.labels" . | nindent 4 }}
+    app.kubernetes.io/service: {{ include "fuel-explorer.fullname" . }}-api
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "fuel-explorer.fullname" . }}-api
+  minReplicas: {{ $api.autoscaling.minReplicas }}
+  maxReplicas: {{ $api.autoscaling.maxReplicas }}
+  metrics:
+    {{- if $api.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $api.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if $api.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ $api.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

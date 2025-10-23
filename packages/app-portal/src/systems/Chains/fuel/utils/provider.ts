@@ -1,0 +1,33 @@
+import { Provider } from 'fuels';
+
+let requestTimestamps: number[] = [];
+const maxRequestsPerSecond = 20;
+const waitTime = 1000; // 1 second in milliseconds
+
+export const rateLimitedFetch = async (
+  url: string,
+  options?: RequestInit,
+): Promise<Response> => {
+  const now = Date.now();
+  requestTimestamps = requestTimestamps.filter(
+    (timestamp) => now - timestamp < waitTime,
+  );
+
+  if (requestTimestamps.length >= maxRequestsPerSecond) {
+    await new Promise((resolve) => setTimeout(resolve, waitTime));
+    // Do not clear the request timestamps. Rely on the filter to remove old ones.
+    // Call the function recursively to recheck the limit
+    return rateLimitedFetch(url, options);
+  }
+
+  // Add a new timestamp for the current request
+  requestTimestamps.push(Date.now());
+
+  // Finally, perform the fetch operation
+  return fetch(url, options);
+};
+
+export async function createProvider(url: string) {
+  const provider = new Provider(url, { fetch: rateLimitedFetch });
+  return provider;
+}

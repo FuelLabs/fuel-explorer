@@ -1,0 +1,199 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main, master, release]
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - release
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests-e2e:
+    name: E2E Tests
+    runs-on: warp-ubuntu-latest-x64-8x
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4, 5]
+        shardTotal: [5]
+    timeout-minutes: 20
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with: 
+          path: .turbo
+          # Distinguish between a normal build and a E2E build, which disables code splitting for faster builds
+          key: ${{ runner.os }}-e2e-turbo-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-e2e-turbo-
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+
+      - name: Create .env file explorer
+        run: cp packages/app-explorer/.env.example packages/app-explorer/.env
+
+      - name: Build production version of explorer
+        env:
+          NODE_ENV: test
+        run: pnpm build:prod
+
+      - name: Setup Docker
+        uses: FuelLabs/github-actions/setups/docker@master
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start Test Node
+        timeout-minutes: 7
+        run: pnpm node:start
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Setup Synpress (MetaMask)
+        run: xvfb-run --auto-servernum -- pnpm --filter=e2e-tests setup:synpress
+
+      - name: Run Playwright Tests Shard
+        run: xvfb-run --auto-servernum -- pnpm test:e2e --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: packages/e2e-tests/blob-report/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Stop Test Node
+        run: pnpm node:stop
+  merge-reports:
+    name: Merge Playwright Reports
+    runs-on: warp-ubuntu-latest-x64-4x
+    needs: tests-e2e
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Download all playwright reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: 'blob-report-*'
+          path: all-blob-reports
+          merge-multiple: true
+
+      - name: Merge Reports
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload Merged HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 1
+
+  tests-e2e-soft:
+    name: E2E Tests Soft
+    runs-on: warp-ubuntu-latest-x64-4x
+    timeout-minutes: 14
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with: 
+          path: .turbo
+          # Distinguish between a normal build and a E2E build, which disables code splitting for faster builds
+          key: ${{ runner.os }}-e2e-turbo-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-e2e-turbo-
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+                
+      - name: Create .env file graphql
+        run: cp packages/graphql/.env.example packages/graphql/.env
+
+      - name: Create .env file explorer
+        run: cp packages/app-explorer/.env.example packages/app-explorer/.env
+
+      - name: Next.js Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            packages/**/.next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-next-
+
+      - name: Build production version of explorer
+        env:
+          NODE_ENV: test
+        run: pnpm build:prod
+
+      - name: Setup Docker
+        uses: FuelLabs/github-actions/setups/docker@master
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start Test Node
+        timeout-minutes: 7
+        run: pnpm node:start
+
+      # E2E tests running with Playwright
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run E2E Tests
+        run: xvfb-run --auto-servernum -- pnpm test:e2e-soft
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
+          PLAYWRIGHT_FORCE_TTY: true
+          PLAYWRIGHT_FORCE_COLOR: true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: packages/e2e-tests/playwright-report/soft/
+          retention-days: 30
+
+      - name: Stop Test Node
+        run: pnpm node:stop

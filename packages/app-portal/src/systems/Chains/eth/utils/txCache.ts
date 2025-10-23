@@ -1,0 +1,108 @@
+import { Address as FuelAddress, bn } from 'fuels';
+import type { Address } from 'viem';
+
+import type { GetReceiptsInfoReturn } from '../services';
+
+// Version key is used to force transaction history to be fetched again
+// This is needed when the data stored in localStorage is not compatible
+// or doesn't have the same structure as the current version
+const VERSION_KEY = '1';
+const BLOCK_DATE_KEY_SUBSTRING = `${VERSION_KEY}-ethBlockDate-`;
+const HASH_DONE_KEY_SUBSTRING = `${VERSION_KEY}-ethToFuelTx-`;
+const TX_CREATED_KEY_SUBSTRING = `${VERSION_KEY}-ethTxCreated-`;
+const TX_RECEIPT_KEY_SUBSTRING = `${VERSION_KEY}-ethToFuelTxReceipt-`;
+
+export const EthTxCache = {
+  getBlockDate: (blockHash: string) => {
+    return !!blockHash && localStorage.getItem(generateBlockDateKey(blockHash));
+  },
+  setBlockDate: (blockHash: string, blockDate: string) => {
+    return localStorage.setItem(generateBlockDateKey(blockHash), blockDate);
+  },
+  getTxIsDone: (blockHash: string) => {
+    return (
+      !!blockHash &&
+      localStorage.getItem(generateHashDoneKey(blockHash)) === 'true'
+    );
+  },
+  setTxIsDone: (blockHash: string) => {
+    return localStorage.setItem(generateHashDoneKey(blockHash), 'true');
+  },
+  clean: () => {
+    Object.keys(localStorage).forEach((key) => {
+      if (
+        key.includes(BLOCK_DATE_KEY_SUBSTRING) ||
+        key.includes(HASH_DONE_KEY_SUBSTRING)
+      ) {
+        localStorage.removeItem(key);
+      }
+    });
+  },
+  setTxIsCreated: (txId: string) => {
+    localStorage.setItem(generateTxCreatedKey(txId), 'true');
+  },
+  removeTxCreated: (txId: string) => {
+    localStorage.removeItem(generateTxCreatedKey(txId));
+  },
+  getTxIsCreated: (txId: string) => {
+    return localStorage.getItem(generateTxCreatedKey(txId)) === 'true';
+  },
+  setTxReceipt: (txId: string, receiptInfo: GetReceiptsInfoReturn) => {
+    const receiptInfoToStringify = {
+      ...receiptInfo,
+      erc20Token: receiptInfo.erc20Token,
+      nonce: receiptInfo.nonce?.toString(),
+      amount: receiptInfo.amount?.toString(),
+      recipient: receiptInfo.recipient?.toString(),
+      blockdate: receiptInfo.blockDate?.toUTCString(), // This is necessary bc stringyfing a Date type loses info
+    };
+    const stringifiedReceipt = JSON.stringify(receiptInfoToStringify);
+    localStorage.setItem(generateTxReceiptKey(txId), stringifiedReceipt);
+  },
+  getTxReceipt: (txId: string): GetReceiptsInfoReturn | null => {
+    const stringifiedReceipt = localStorage.getItem(generateTxReceiptKey(txId));
+    if (!stringifiedReceipt) {
+      return null;
+    }
+    const parsedReceipt = JSON.parse(stringifiedReceipt) as Omit<
+      GetReceiptsInfoReturn,
+      'erc20Token' | 'nonce' | 'amount' | 'recipient'
+    > & {
+      nonce: string;
+      amount: string;
+      sender: string;
+      recipient: string;
+      erc20Token?: {
+        address: Address;
+        decimals: number;
+        name: string;
+        symbol: string;
+      };
+    };
+    const typedReceipt = {
+      ...parsedReceipt,
+      erc20Token: parsedReceipt.erc20Token,
+      nonce: bn(parsedReceipt.nonce),
+      amount: bn(parsedReceipt.amount),
+      blockDate: new Date(parsedReceipt.blockDate!),
+      recipient: FuelAddress.fromString(parsedReceipt.recipient),
+    };
+    return typedReceipt;
+  },
+};
+
+const generateBlockDateKey = (blockHash: string) => {
+  return `${BLOCK_DATE_KEY_SUBSTRING}${blockHash}`;
+};
+
+const generateHashDoneKey = (blockhash: string) => {
+  return `${HASH_DONE_KEY_SUBSTRING}${blockhash}-done`;
+};
+
+const generateTxCreatedKey = (txId: string) => {
+  return `${TX_CREATED_KEY_SUBSTRING}-${txId}`;
+};
+
+const generateTxReceiptKey = (txId: string) => {
+  return `${TX_RECEIPT_KEY_SUBSTRING}-${txId}`;
+};

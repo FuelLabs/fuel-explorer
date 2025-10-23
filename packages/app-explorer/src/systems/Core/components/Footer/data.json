@@ -1,0 +1,80 @@
+{
+  "links": {
+    "FUEL": [
+      {
+        "href": "https://docs.fuel.network/docs/fuel-book/",
+        "label": "About Fuel"
+      },
+      {
+        "href": "https://jobs.lever.co/fuellabs",
+        "label": "Jobs"
+      },
+      {
+        "href": "https://fuel.mirror.xyz/",
+        "label": "Blog"
+      },
+      {
+        "href": "https://fuellabs.notion.site/Fuel-Media-Kit-External-8dd982980d9842b181997f5b81595940",
+        "label": "Media Kit"
+      }
+    ],
+    "GetStarted": [
+      {
+        "href": "https://docs.fuel.network/guides/counter-dapp/",
+        "label": "Build an app"
+      },
+      {
+        "href": "https://docs.fuel.network/guides/contract-quickstart/",
+        "label": "Create a Smart Contract"
+      },
+      {
+        "href": "https://docs.fuel.network/docs/intro/what-is-fuel/",
+        "label": "Docs"
+      },
+      {
+        "href": "https://docs.fuel.network/docs/fuel-book/the-architecture/the-fuelvm/",
+        "label": "FuelVM"
+      },
+      {
+        "href": "https://airtable.com/appEO4t5bVydYgzCk/pag7Jhp6zbEwjkTQt/form",
+        "label": "Grant Program"
+      }
+    ],
+    "Build": [
+      {
+        "href": "https://github.com/FuelLabs",
+        "label": "Github"
+      },
+      {
+        "href": "https://forum.fuel.network/",
+        "label": "Forum"
+      },
+      {
+        "href": "https://discord.com/invite/xfpK4Pe",
+        "label": "Discord"
+      },
+      {
+        "href": "https://docs.fuel.network/docs/migrations-and-disclosures/migrations/",
+        "label": "Changelog"
+      }
+    ],
+    "Environment": [
+      {
+        "href": "https://app.fuel.network/",
+        "label": "Block Explorer"
+      },
+      {
+        "href": "https://app.fuel.network/ecosystem",
+        "label": "Ecosystem"
+      },
+      {
+        "href": "https://wallet.fuel.network/docs/install/",
+        "label": "Wallet"
+      },
+      {
+        "href": "https://app.fuel.network/bridge?from=eth&to=fuel",
+        "label": "Bridge"
+      }
+    ]
+  }
+}

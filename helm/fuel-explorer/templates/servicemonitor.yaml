@@ -1,0 +1,15 @@
+{{- if .Values.app.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "fuel-explorer.fullname" . }}
+  labels:
+    release: {{ .Values.app.serviceMonitor.prometheusRelease }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "fuel-explorer.labels" . | nindent 4 }}
+  endpoints:
+    - path: /metrics
+      port: http
+{{- end }}

@@ -1,0 +1,47 @@
+fragment BalanceItem on Balance {
+  amount
+  assetId
+  owner
+  name
+  symbol
+  icon
+  decimals
+  totalSupply
+  collection
+  suspicious
+  contractId
+  metadata
+  amountInUsd
+  utxos {
+    amount
+    blockCreated
+    txCreatedIdx
+    utxoId
+  }
+}
+
+query balances(
+  $after: String
+  $before: String
+  $filter: BalanceFilterInput!
+  $first: Int
+  $last: Int
+) {
+  balances(
+    after: $after
+    before: $before
+    filter: $filter
+    first: $first
+    last: $last
+  ) {
+    nodes {
+      ...BalanceItem
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
+}

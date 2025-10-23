@@ -1,0 +1,102 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "warn",
+        "useImportType": "warn",
+        "useNumberNamespace": "warn",
+        "useNodejsImportProtocol": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off",
+        "noImplicitAnyLet": "warn",
+        "noConfusingVoidType": "warn",
+        "noSelfCompare": "warn"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "warn",
+        "noUnusedVariables": "error",
+        "useJsxKeyInIterable": "warn",
+        "noUnusedImports": "error"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off",
+        "noForEach": "warn",
+        "noBannedTypes": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "warn"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useSemanticElements": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "json": {
+    "parser": {
+      "allowTrailingCommas": true
+    }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignore": [
+      "**/node_modules",
+      "**/.turbo",
+      "**/.next",
+      "**/.vercel",
+      "**/dist",
+      "**/build",
+      "**/fuel-v2-contracts",
+      "**/coverage",
+      "**/generated",
+      "*.typegen.ts",
+      "**/vite-env.d.ts",
+      "./packages/app-explorer/public/ui",
+      "./packages/app-explorer/public/portal",
+      "./packages/app-portal/public/**",
+      "./packages/app-portal/src/types",
+      "./packages/graphql/src/graphql/generated/**",
+      "./packages/app-explorer/public/thirdparty/safary.js",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "overrides": [
+    {
+      "include": ["**/*Skeleton*.ts*"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off"
+          },
+          "a11y": {
+            "useFocusableInteractive": "off"
+          }
+        }
+      }
+    }
+  ]
+}

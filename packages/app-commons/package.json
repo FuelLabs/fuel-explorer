@@ -1,0 +1,96 @@
+{
+  "name": "app-commons",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./PausedContractAlert": "./src/components/PausedContractAlert/PausedContractAlert.tsx",
+    "./PausedContractDialogContent": "./src/components/PausedContractDialogContent/PausedContractDialogContent.tsx",
+    "./src/chains/fuel": "./src/chains/fuel.ts",
+    "./src/utils/dayjs": "./src/utils/dayjs.ts",
+    "./src/utils/getStakingEnvironmentName": "./src/utils/getStakingEnvironmentName.ts",
+    "./WarningToast": "./src/errors/WarningToast.ts",
+    "./getPausedContracts": "./src/hooks/usePausedContract/getPausedContracts.ts",
+    "./usePausedContract": "./src/hooks/usePausedContract/usePausedContract.ts",
+    "./safeWriteContract": "./src/hooks/useSafeWriteContract/safeWriteContract.ts",
+    "./useSafeWriteContract": "./src/hooks/useSafeWriteContract/useSafeWriteContract.ts",
+    "./src/chains/ethWagmi": "./src/chains/ethWagmi.ts",
+    "./stakingAddresses": {
+      "import": "./dist/stakingAddresses.mjs",
+      "require": "./dist/stakingAddresses.js",
+      "default": "./dist/stakingAddresses.js",
+      "types": "./dist/stakingAddresses.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "PausedContractAlert": [
+        "./src/components/PausedContractAlert/PausedContractAlert.tsx"
+      ],
+      "PausedContractDialogContent": [
+        "./src/components/PausedContractDialogContent/PausedContractDialogContent.tsx"
+      ],
+      "WarningToast": ["./src/errors/WarningToast.ts"],
+      "getPausedContracts": [
+        "./src/hooks/usePausedContract/getPausedContracts.ts"
+      ],
+      "usePausedContract": [
+        "./src/hooks/usePausedContract/usePausedContract.ts"
+      ],
+      "safeWriteContract": [
+        "./src/hooks/useSafeWriteContract/safeWriteContract.ts"
+      ],
+      "useSafeWriteContract": [
+        "./src/hooks/useSafeWriteContract/useSafeWriteContract.ts"
+      ],
+      "stakingAddresses": ["./src/utils/stakingAddresses.ts"]
+    }
+  },
+  "scripts": {
+    "ts:check": "tsc --noEmit",
+    "build:lib": "run-s build:sdk",
+    "build:sdk": "tsup"
+  },
+  "peerDependencies": {
+    "@fuels/ui": "workspace:*",
+    "@tabler/icons-react": "2.46.0",
+    "@tanstack/react-query": "5.56.2",
+    "dayjs": "1.11.10",
+    "ethers": "6.11.0",
+    "graphql": "16.10.0",
+    "graphql-request": "6.1.0",
+    "graphql-tag": "2.12.6",
+    "graphql-yoga": "5.1.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwind-variants": "0.1.20",
+    "viem": "2.20.1",
+    "wagmi": "2.12.7"
+  },
+  "devDependencies": {
+    "@fuels/ui": "workspace:*",
+    "@tabler/icons-react": "2.46.0",
+    "@tanstack/react-query": "5.56.2",
+    "@types/react": "18.2.54",
+    "@types/react-dom": "18.2.22",
+    "dayjs": "1.11.10",
+    "ethers": "6.11.0",
+    "graphql": "16.10.0",
+    "graphql-request": "6.1.0",
+    "graphql-tag": "2.12.6",
+    "graphql-yoga": "5.1.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwind-variants": "0.1.20",
+    "tsup": "^8.0.2",
+    "typescript": "5.4.5",
+    "viem": "2.20.1",
+    "wagmi": "2.12.7"
+  },
+  "dependencies": {
+    "bech32": "2.0.0"
+  }
+}

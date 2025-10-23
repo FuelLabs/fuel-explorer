@@ -1,0 +1,119 @@
+/* Base */
+@import "tailwindcss/base";
+@import "@radix-ui/themes/styles.css";
+
+/* Components */
+@import "../components/Spinner/Spinner.css";
+
+/* Radix overrides */
+@import "./theme.css";
+@import "./components/badge.css";
+@import "./components/button.css";
+@import "./components/card.css";
+@import "./components/dialog.css";
+@import "./components/dialog2.css";
+@import "./components/dropdown.css";
+@import "./components/separator.css";
+@import "./components/tabs.css";
+@import "./components/textfield.css";
+@import "./components/segmentedControl.css";
+
+/* Tailwind */
+@tailwind components;
+@tailwind utilities;
+
+:root,
+.radix-themes {
+  /* Font */
+  --font-size-1: calc(12px * var(--scaling));
+  --font-size-2: calc(13px * var(--scaling));
+  --font-size-3: calc(15px * var(--scaling));
+  --font-size-4: calc(17px * var(--scaling));
+  --font-size-5: calc(20px * var(--scaling));
+
+  /* Default */
+  --default-font-size: var(--font-size-3);
+  --default-font-family: var(--font-inter);
+
+  /* Radix Adjustments */
+  --green-contrast: #111111;
+
+  /* Space */
+  --space-0: 0px;
+  --space-1: calc(4px * var(--scaling));
+  --space-2: calc(8px * var(--scaling));
+  --space-3: calc(12px * var(--scaling));
+  --space-4: calc(16px * var(--scaling));
+  --space-5: calc(20px * var(--scaling));
+  --space-6: calc(24px * var(--scaling));
+  --space-7: calc(28px * var(--scaling));
+  --space-8: calc(32px * var(--scaling));
+  --space-9: calc(36px * var(--scaling));
+  --space-10: calc(40px * var(--scaling));
+  --space-11: calc(44px * var(--scaling));
+  --space-12: calc(48px * var(--scaling));
+  --space-14: calc(56px * var(--scaling));
+  --space-16: calc(64px * var(--scaling));
+  --space-20: calc(80px * var(--scaling));
+  --space-24: calc(96px * var(--scaling));
+  --space-28: calc(112px * var(--scaling));
+  --space-32: calc(128px * var(--scaling));
+  --space-36: calc(144px * var(--scaling));
+  --space-40: calc(160px * var(--scaling));
+  --space-44: calc(176px * var(--scaling));
+  --space-48: calc(192px * var(--scaling));
+  --space-52: calc(208px * var(--scaling));
+  --space-56: calc(224px * var(--scaling));
+  --space-60: calc(240px * var(--scaling));
+  --space-64: calc(256px * var(--scaling));
+  --space-72: calc(288px * var(--scaling));
+  --space-80: calc(320px * var(--scaling));
+  --space-96: calc(384px * var(--scaling));
+}
+
+:root {
+  /* general colors */
+  --color-border: var(--gray-6);
+  --color-border-hover: var(--gray-8);
+  --color-transparent: transparent;
+  --color-accent: var(--color-brand);
+
+  /* card colors */
+  --color-card-border: var(--color-border);
+  --color-card-border-hover: var(--gray-8);
+  --color-card-title: var(--gray-1);
+  --color-card-bg: var(--color-panel-solid);
+
+  /* text colors */
+  --text-primary: var(--gray-12);
+  --text-secondary: var(--gray-10);
+  --color-brand: var(--green-11);
+  --color-heading: var(--gray-12);
+  --color-color: var(--gray-11);
+  --color-secondary: var(--gray-10);
+  --color-muted: var(--gray-10);
+  --color-icon: var(--gray-9);
+  --color-link: var(--color-brand);
+
+  /* semantic colors */
+  --color-success: var(--grass-9);
+  --color-success-muted: var(--grass-8);
+  --color-success-contrast: var(--grass-9-contrast);
+  --color-success-border: var(--grass-6);
+  --color-info: var(--sky-9);
+  --color-info-muted: var(--sky-8);
+  --color-info-contrast: var(--sky-9-contrast);
+  --color-info-border: var(--sky-6);
+  --color-warning: var(--yellow-9);
+  --color-warning-muted: var(--yellow-8);
+  --color-warning-contrast: var(--yellow-9-contrast);
+  --color-warning-border: var(--yellow-6);
+  --color-error: var(--red-9);
+  --color-error-muted: var(--red-8);
+  --color-error-contrast: var(--red-9-contrast);
+  --color-error-border: var(--red-8);
+}
+
+.rt-DialogContent {
+  box-shadow: none;
+}

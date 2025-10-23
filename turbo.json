@@ -1,0 +1,129 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "NODE_ENV",
+    "IS_PREVIEW",
+    "VITE_FUEL_INDEXER_API",
+    "FUEL_INDEXER_API_KEY",
+    "VITE_SAFARY_ID",
+    "VITE_COSMOS_API_MAINNET",
+    "VITE_COSMOS_API_SANDBOX",
+    "VITE_COSMOS_API_TESTNET",
+    "VITE_COSMOS_API_LOCAL",
+    "VITE_COSMOS_INDEXER_API_MAINNET",
+    "VITE_COSMOS_INDEXER_API_SANDBOX",
+    "VITE_COSMOS_INDEXER_API_TESTNET",
+    "VITE_COSMOS_INDEXER_API_LOCAL",
+    "VITE_COMET_SECURE_API_MAINNET",
+    "VITE_COMET_SECURE_API_SANDBOX",
+    "VITE_COMET_SECURE_API_TESTNET",
+    "VITE_COMET_SECURE_API_LOCAL",
+    "VITE_STAKING_ENV",
+    "VITE_FUEL_CHAIN_NAME",
+    "VITE_WALLETCONNECT_ID",
+    "VITE_INFURA_ID"
+  ],
+  "ui": "tui",
+  "tasks": {
+    "xstate:typegen": {
+      "inputs": ["src/**/*.ts", "src/**/*.tsx", "!src/**/*.typegen.ts"],
+      "outputs": ["src/**/*.typegen.ts"],
+      "dependsOn": ["@fuels/ui#build:lib", "app-commons#build:lib"]
+    },
+    "ts:check": {
+      "inputs": ["src/**/*.ts", "src/**/*.tsx", "*.ts", "package.json"],
+      "dependsOn": ["^xstate:typegen"]
+    },
+    "build:lib": {
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "*.ts",
+        "package.json",
+        "vite.config.ts"
+      ],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "app-portal#build:lib": {
+      "dependsOn": ["^build:lib"],
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "*.ts",
+        "package.json",
+        "vite.config.ts"
+      ],
+      "outputs": ["dist/**"]
+    },
+    "build": {
+      "dependsOn": ["^build:lib", "^xstate:typegen"],
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.js",
+        "src/**/*.tsx",
+        "*.ts",
+        "*.mjs",
+        "package.json",
+        ".env"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**",
+        "public/**",
+        "!public/thirdparty/**",
+        "!public/*.pdf",
+        "!public/fonts/**",
+        "!public/ecosystem/images/**",
+        "!public/ecosystem/assets/**"
+      ]
+    },
+    "build:prod": {
+      "dependsOn": ["^build:lib", "^xstate:typegen"],
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.js",
+        "src/**/*.tsx",
+        "*.ts",
+        "*.mjs",
+        "package.json",
+        ".env"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**",
+        "public/**",
+        "!public/thirdparty/**",
+        "!public/*.pdf",
+        "!public/fonts/**",
+        "!public/ecosystem/images/**",
+        "!public/ecosystem/assets/**"
+      ]
+    },
+    "test": {
+      "dependsOn": [],
+      "outputLogs": "full",
+      "cache": false
+    },
+    "app-explorer#dev": {
+      "dependsOn": ["@fuels/ui#build:lib"],
+      "cache": false,
+      "persistent": true
+    },
+    "app-explorer#build": {
+      "dependsOn": ["@fuels/ui#build:lib", "^xstate:typegen"]
+    },
+    "app-explorer#build:prod": {
+      "dependsOn": ["@fuels/ui#build:lib", "^xstate:typegen"]
+    },
+    "dev": {
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": [],
+      "cache": false
+    },
+    "start": {
+      "cache": false
+    }
+  }
+}
