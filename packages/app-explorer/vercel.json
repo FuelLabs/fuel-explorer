@@ -9,5 +9,6 @@
       "destination": "/"
     }
   ],
+  "regions": ["cle1", "gru1", "hnd1", "cdg1", "lhr1", "syd1"],
   "cleanUrls": true
 }
