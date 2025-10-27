@@ -1,0 +1,92 @@
+:root {
+  --animated-dialog-transform-closed: translateY(100%);
+  --animated-dialog-transform-open: translateY(0%);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --animated-dialog-transform-closed: scale(0.8);
+    --animated-dialog-transform-open: scale(1);
+  }
+}
+
+.fuel-AnimatedDialogOverlay {
+  background-color: var(--color-overlay);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  place-items: end center;
+  overflow-y: auto;
+}
+
+.fuel-AnimatedDialogContent {
+  overflow: clip;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.fuel-AnimatedDialogContent:focus {
+  outline: 0;
+}
+
+.fuel-AnimatedDialogContent
+  .rt-BaseButton.rt-IconButton:where(.rt-variant-soft) {
+  border-radius: 999px;
+}
+
+.dark
+  .fuel-AnimatedDialogContent
+  .rt-BaseButton.rt-IconButton:where(.rt-variant-soft) {
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.light .fuel-AnimatedDialogContent {
+  background-color: #ffffff;
+}
+
+.dark .fuel-AnimatedDialogContent {
+  background-color: var(--gray-1);
+}
+
+.fuel-AnimatedDialogContent {
+  box-shadow: none;
+}
+
+/**
+ * Breakpoints reference:
+ * https://www.radix-ui.com/themes/docs/theme/breakpoints
+ *
+ * Size: initial
+ * Description: Phones (portrait)
+ */
+@media all {
+  .fuel-AnimatedDialogContent {
+    padding: var(--space-5);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+  }
+}
+
+/**
+ * Size: md
+ * Description: Tablets (landscape)
+ */
+@media (min-width: 1024px) {
+  .fuel-AnimatedDialogOverlay {
+    place-items: center;
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+
+  .fuel-AnimatedDialogContent {
+    padding: var(--space-8);
+    border-bottom-left-radius: 28px;
+    border-bottom-right-radius: 28px;
+    max-width: 544px;
+  }
+}

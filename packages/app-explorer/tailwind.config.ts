@@ -6,16 +6,11 @@ export default {
   darkMode: 'selector',
   presets: [preset],
   content: [
-    '../app-commons/src/**/*.{js,jsx,ts,tsx}',
-    '../app-portal/src/**/*.{js,jsx,ts,tsx}',
-    '../app-portal/tailwind.config.ts',
-    '../ui/src/**/*.{js,jsx,ts,tsx}',
-    '../ui/tailwind.config.ts',
-    '../app-portal/src/**/*.{js,jsx,ts,tsx}',
-    '../app-commons/src/**/*.{js,jsx,ts,tsx}',
-    '../app-portal/tailwind.config.ts',
     './src/**/*.{js,jsx,ts,tsx}',
-    './src/**/**/*.stories.{js,jsx,ts,tsx}',
+    '../app-commons/src/**/*.{js,jsx,ts,tsx}',
+    '../app-portal/src/**/*.{js,jsx,ts,tsx}',
+    '../app-staking/src/**/*.{js,jsx,ts,tsx}',
+    '../ui/src/**/*.{js,jsx,ts,tsx}',
   ],
   plugins: [
     plugin(({ addComponents }) => {

@@ -1,5 +1,3 @@
-'use client';
-
 export {
   Asset,
   AssetAmount,

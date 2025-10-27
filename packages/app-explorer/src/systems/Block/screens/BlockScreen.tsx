@@ -1,15 +1,16 @@
 import { VStack } from '@fuels/ui';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { GQLBlocksQuery } from '@fuel-explorer/graphql';
+import type { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { getBlocks } from '../actions/get-blocks';
 import BlocksTable from '../components/BlocksTable';
+import { BlocksTableLoader } from '../components/BlocksTableLoader';
 import { Hero } from '../components/Hero';
 
 export const BlocksScreen = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [data, setData] = useState<GQLBlocksQuery['blocks'] | undefined>(
     undefined,
@@ -18,7 +19,7 @@ export const BlocksScreen = () => {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const limit = 10;
 
   const fetchBlockData = async (
@@ -72,15 +73,15 @@ export const BlocksScreen = () => {
       setCurrentPage(newPageNumber);
       setCurrentCursor(newCursor);
       if (newPageNumber === 1) {
-        router.push('/blocks');
+        navigate('/blocks');
         return;
       }
-      router.push(`/blocks?page=${newPageNumber}&cursor=${newCursor}`);
+      navigate(`/blocks?page=${newPageNumber}&cursor=${newCursor}`);
     }
   };
 
   useEffect(() => {
-    const page = parseInt(searchParams.get('page') || '1');
+    const page = Number.parseInt(searchParams.get('page') || '1');
     const cursor = searchParams.get('cursor') || null;
 
     setCurrentPage(page);
@@ -95,8 +96,8 @@ export const BlocksScreen = () => {
   return (
     <VStack>
       <Hero />
-      {loading ? (
-        <p>Loading blocks...</p>
+      {!data ? (
+        <BlocksTableLoader />
       ) : (
         data && (
           <BlocksTable

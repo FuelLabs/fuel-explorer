@@ -3,6 +3,7 @@ query getBlocksDashboard{
         nodes{
             timestamp
             gasUsed
+            gasUsedInUsd
             blockNo
             producer
         }

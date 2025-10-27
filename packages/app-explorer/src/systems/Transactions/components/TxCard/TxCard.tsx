@@ -4,6 +4,7 @@ import {
   Badge,
   Box,
   Card,
+  HStack,
   LoadingBox,
   LoadingWrapper,
   Text,
@@ -11,35 +12,46 @@ import {
   shortAddress,
 } from '@fuels/ui';
 import { IconGasStation } from '@tabler/icons-react';
-import Link from 'next/link';
-import { Routes } from '~/routes';
+import { Routes as CommonRoutes } from 'app-commons';
+import { Link } from 'react-router-dom';
 
 import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql';
+import { memo, useMemo } from 'react';
 import { isValidAddress } from '~/systems/Core/utils/address';
+import { TxFullDateTimestamp } from '~/systems/Transaction/component/TxFullDateTimestamp/TxFullDateTimestamp';
+import type { TxStatus } from '~/systems/Transaction/types';
 import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
 
 type TxCardProps = BaseProps<{
   transaction: GQLRecentTransactionsQuery['transactions']['nodes'][number];
   isLoading?: boolean;
+  onPrefetch?: () => void;
 }>;
 
-export function TxCard({
+function _TxCard({
   transaction: tx,
   className,
   isLoading,
+  onPrefetch,
   ...props
 }: TxCardProps) {
+  const isValid = useMemo(() => isValidAddress(tx.id), [tx.id]);
   const fee = bn(tx.gasCosts?.fee ?? 0);
-  const isValidTxID = isValidAddress(tx.id);
 
   return (
-    <Link scroll={true} href={Routes.txSimple(tx.id)} prefetch={isValidTxID}>
+    <Link
+      to={CommonRoutes.txSimple(tx.id)}
+      onClickCapture={(e) => {
+        // Avoid navigation to invalid address
+        if (!isValid) e.preventDefault();
+      }}
+    >
       <Card {...props} className={cx(className)}>
         <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
           <Box className="flex gap-3 h-[26px]">
             <LoadingWrapper
               isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-16 h-6" />}
+              loadingEl={<LoadingBox className="w-[50px] h-6" />}
               regularEl={
                 <Badge color="gray" variant="ghost">
                   {tx.title}
@@ -57,20 +69,39 @@ export function TxCard({
             </Text>
           </Box>
           <Box className="flex flex-wrap gap-3 items-center laptop:flex-nowrap">
-            {fee.gt(0) && (
-              <Text
-                className="text-sm order-3 laptop:order-none"
-                leftIcon={IconGasStation}
-              >
-                {bn(tx.gasCosts?.fee ?? 0).format()} ETH
-              </Text>
+            {(fee.gt(0) || isLoading) && (
+              <HStack align="center" className="order-3 laptop:order-none">
+                <LoadingWrapper
+                  isLoading={isLoading}
+                  loadingEl={
+                    <HStack align="center">
+                      <LoadingBox className="w-16 h-5" />
+                      <LoadingBox className="w-[111px] h-4" />
+                    </HStack>
+                  }
+                  regularEl={
+                    <HStack align="center">
+                      <Text
+                        className="text-primary text-sm"
+                        leftIcon={IconGasStation}
+                        iconColor="text-heading"
+                      >
+                        {tx.gasCosts?.feeInUsd}
+                      </Text>
+                      <Text className="text-secondary text-xs">
+                        ({bn(tx.gasCosts?.fee ?? 0).format()} ETH)
+                      </Text>
+                    </HStack>
+                  }
+                />
+              </HStack>
             )}
             <LoadingWrapper
               isLoading={isLoading}
               loadingEl={<LoadingBox className="w-16 h-6" />}
               regularEl={
                 <Badge
-                  color={TX_INTENT_MAP[tx.statusType as string]}
+                  color={TX_INTENT_MAP[tx.statusType as TxStatus]}
                   variant="ghost"
                 >
                   {tx.statusType}
@@ -80,8 +111,10 @@ export function TxCard({
             <Text className="text-sm">
               <LoadingWrapper
                 isLoading={isLoading}
-                loadingEl={<LoadingBox className="w-32 h-6" />}
-                regularEl={tx.time?.fromNow}
+                loadingEl={<LoadingBox className="w-[166px] h-6" />}
+                regularEl={
+                  <TxFullDateTimestamp timeStamp={tx?.time?.rawUnix as any} />
+                }
               />
             </Text>
           </Box>
@@ -90,3 +123,5 @@ export function TxCard({
     </Link>
   );
 }
+
+export const TxCard = memo(_TxCard);

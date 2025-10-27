@@ -1,17 +1,22 @@
 import type {
-  Account as FuelWallet,
-  Address as FuelAddress,
   BN,
+  Address as FuelAddress,
   Message as FuelMessage,
-  MessageStatus,
   Provider as FuelProvider,
+  Account as FuelWallet,
+  MessageStatus,
   TransactionResult,
 } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
-import type { HexAddress } from 'app-commons';
+import {
+  type HexAddress,
+  IS_DEVELOPMENT,
+  IS_FUEL_MAINNET_CHAIN,
+  IS_TEST,
+} from 'app-commons';
 import type { PublicClient } from 'viem';
 import type { GetReceiptsInfoReturn, TxEthToFuelInputs } from '../services';
 import { TxEthToFuelService } from '../services';
@@ -19,8 +24,14 @@ import { EthTxCache } from '../utils';
 
 const FUEL_MESSAGE_GET_INTERVAL = 10000;
 
+// wait for the bot for 2 minutes maximun. then let the user approve himself in case it's stuck
+const MAX_RETRIES_CHECKING_COUNT = 24;
+const RETRIES_CHECKING_INTERVAL = 5000;
+
 type MachineContext = {
   ethTxId?: HexAddress;
+  inputEthTxNonce?: BigInt;
+  machineId?: string;
   ethTxNonce?: BN;
   fuelAddress?: FuelAddress;
   fuelProvider?: FuelProvider;
@@ -28,11 +39,14 @@ type MachineContext = {
   fuelMessage?: FuelMessage;
   ethPublicClient?: PublicClient;
   ethDepositBlockHeight?: string;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  sender?: string;
+  recipient?: FuelAddress;
+
   erc20Token?: any;
   amount?: BN;
   blockDate?: Date;
   fuelRelayedTx?: TransactionResult;
+  retryCheckingRelayCount?: number;
 };
 
 type MachineServices = {
@@ -46,7 +60,7 @@ type MachineServices = {
     data: MessageStatus | undefined;
   };
   relayMessageOnFuel: {
-    data: void;
+    data: undefined;
   };
 };
 
@@ -55,7 +69,7 @@ type AnalyzeInputs = TxEthToFuelInputs['getReceiptsInfo'] &
 export type TxEthToFuelMachineEvents =
   | {
       type: 'START_ANALYZE_TX';
-      input: Omit<AnalyzeInputs, 'ethTxNonce'>;
+      input: AnalyzeInputs;
     }
   | {
       type: 'RELAY_MESSAGE_ON_FUEL';
@@ -113,6 +127,7 @@ export const txEthToFuelMachine = createMachine(
               data: {
                 input: (ctx: MachineContext) => ({
                   ethTxId: ctx.ethTxId,
+                  inputEthTxNonce: ctx.inputEthTxNonce,
                   ethPublicClient: ctx.ethPublicClient,
                 }),
               },
@@ -205,7 +220,9 @@ export const txEthToFuelMachine = createMachine(
                 {
                   actions: ['assignFuelMessage'],
                   cond: 'hasFuelMessage',
-                  target: 'checkingRelay',
+                  target: IS_FUEL_MAINNET_CHAIN
+                    ? 'waitingBotRelayMessage'
+                    : 'checkingRelay',
                 },
               ],
             },
@@ -213,6 +230,21 @@ export const txEthToFuelMachine = createMachine(
               10000: {
                 target: 'gettingFuelMessage',
               },
+            },
+          },
+          waitingBotRelayMessage: {
+            tags: ['isSettlementLoading', 'isSettlementSelected'],
+            after: {
+              [RETRIES_CHECKING_INTERVAL]: [
+                {
+                  actions: ['increaseRetryCheckingRelayCount'],
+                  cond: 'canRetryCheckingRelay',
+                  target: 'gettingFuelMessageStatus',
+                },
+                {
+                  target: 'checkingRelay',
+                },
+              ],
             },
           },
           checkingRelay: {
@@ -227,6 +259,13 @@ export const txEthToFuelMachine = createMachine(
                 on: {
                   RELAY_MESSAGE_ON_FUEL: {
                     target: 'relayingMessageOnFuel',
+                  },
+                },
+                after: {
+                  60000: {
+                    actions: ['clearRetryCheckingRelayCount'],
+                    target:
+                      '#(machine).checkingSettlement.gettingFuelMessageStatus',
                   },
                 },
               },
@@ -330,11 +369,14 @@ export const txEthToFuelMachine = createMachine(
     actions: {
       assignAnalyzeTxInput: assign((_, ev) => ({
         ethTxId: ev.input.ethTxId,
+        inputEthTxNonce: ev.input.inputEthTxNonce,
         fuelProvider: ev.input.fuelProvider,
         ethPublicClient: ev.input.ethPublicClient,
       })),
       assignReceiptsInfo: assign((_, ev) => {
         return {
+          sender: ev.data?.sender,
+          recipient: ev.data?.recipient,
           erc20Token: ev.data?.erc20Token,
           ethTxNonce: ev.data?.nonce,
           amount: ev.data?.amount,
@@ -346,8 +388,8 @@ export const txEthToFuelMachine = createMachine(
         fuelMessage: (_, ev) => ev.data,
       }),
       setEthToFuelTxDone: (ctx) => {
-        if (ctx.ethTxId) {
-          EthTxCache.setTxIsDone(ctx.ethTxId);
+        if (ctx.machineId) {
+          EthTxCache.setTxIsDone(ctx.machineId);
         }
       },
       assignFuelMessageStatus: assign({
@@ -360,23 +402,26 @@ export const txEthToFuelMachine = createMachine(
       },
       setEthToFuelTxReceiptCached: (ctx) => {
         if (
-          ctx.ethTxId &&
+          ctx.machineId &&
           ctx.ethTxNonce &&
           ctx.amount &&
           ctx.ethDepositBlockHeight &&
-          ctx.blockDate
+          ctx.blockDate &&
+          ctx.recipient
         ) {
-          EthTxCache.setTxReceipt(ctx.ethTxId, {
+          EthTxCache.setTxReceipt(ctx.machineId, {
             erc20Token: ctx.erc20Token,
             nonce: ctx.ethTxNonce,
             amount: ctx.amount,
             ethDepositBlockHeight: ctx.ethDepositBlockHeight,
             blockDate: ctx.blockDate,
+            recipient: ctx.recipient,
+            sender: ctx.sender,
           });
         }
       },
       assignReceiptsInfoFromCache: assign((ctx) => {
-        const receiptInfo = EthTxCache.getTxReceipt(ctx.ethTxId || '');
+        const receiptInfo = EthTxCache.getTxReceipt(ctx.machineId || '');
         if (!receiptInfo) {
           throw new Error('No receipt');
         }
@@ -387,6 +432,18 @@ export const txEthToFuelMachine = createMachine(
           amount: receiptInfo.amount,
           ethDepositBlockHeight: receiptInfo.ethDepositBlockHeight,
           blockDate: receiptInfo.blockDate,
+          recipient: receiptInfo.recipient,
+          sender: receiptInfo.sender,
+        };
+      }),
+      increaseRetryCheckingRelayCount: assign((ctx) => {
+        return {
+          retryCheckingRelayCount: (ctx.retryCheckingRelayCount || 0) + 1,
+        };
+      }),
+      clearRetryCheckingRelayCount: assign((_) => {
+        return {
+          retryCheckingRelayCount: 0,
         };
       }),
     },
@@ -395,13 +452,16 @@ export const txEthToFuelMachine = createMachine(
       hasEthTxNonce: (ctx, ev) => !!ctx.ethTxNonce || !!ev?.data?.nonce,
       hasAnalyzeTxInput: (ctx) =>
         !!ctx.ethTxId &&
+        // inputEthTxNonce can be zero
+        ctx.inputEthTxNonce != null &&
+        !!ctx.machineId &&
         !!ctx.fuelAddress &&
         !!ctx.fuelProvider &&
         !!ctx.ethPublicClient,
       isTxEthToFuelDone: (ctx) => {
         return (
-          EthTxCache.getTxIsDone(ctx.ethTxId || '') &&
-          !!EthTxCache.getTxReceipt(ctx.ethTxId || '')
+          EthTxCache.getTxIsDone(ctx.machineId || '') &&
+          !!EthTxCache.getTxReceipt(ctx.machineId || '')
         );
       },
       isMessageSpent: (ctx) => ctx.fuelMessageStatus?.state === 'SPENT',
@@ -409,6 +469,10 @@ export const txEthToFuelMachine = createMachine(
         ctx.fuelMessageStatus?.state === 'UNSPENT' && !ctx.erc20Token,
       isMessageUnspentErc20: (ctx) =>
         ctx.fuelMessageStatus?.state === 'UNSPENT' && !!ctx.erc20Token,
+      canRetryCheckingRelay: (ctx) =>
+        !IS_DEVELOPMENT &&
+        !IS_TEST &&
+        (ctx.retryCheckingRelayCount || 0) < MAX_RETRIES_CHECKING_COUNT,
     },
     services: {
       getReceiptsInfo: FetchMachine.create<
@@ -443,7 +507,7 @@ export const txEthToFuelMachine = createMachine(
         TxEthToFuelInputs['getFuelMessage'],
         MachineServices['getFuelMessage']['data']
       >({
-        showError: true,
+        showError: false,
         maxAttempts: 1,
         async fetch({ input }) {
           if (!input) {

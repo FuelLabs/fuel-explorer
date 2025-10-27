@@ -15,18 +15,23 @@
     "rules": {
       "recommended": true,
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "warn",
+        "useImportType": "warn",
+        "useNumberNamespace": "warn",
+        "useNodejsImportProtocol": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "warn",
-        "noImplicitAnyLet": "warn",
+        "noExplicitAny": "off",
         "noArrayIndexKey": "off",
-        "noConfusingVoidType": "off",
-        "noSelfCompare": "off"
+        "noImplicitAnyLet": "warn",
+        "noConfusingVoidType": "warn",
+        "noSelfCompare": "warn"
       },
       "correctness": {
-        "useExhaustiveDependencies": "off",
-        "noUnusedVariables": "error"
+        "useExhaustiveDependencies": "warn",
+        "noUnusedVariables": "error",
+        "useJsxKeyInIterable": "warn",
+        "noUnusedImports": "error"
       },
       "complexity": {
         "noStaticOnlyClass": "off",
@@ -34,10 +39,11 @@
         "noBannedTypes": "off"
       },
       "performance": {
-        "noAccumulatingSpread": "off"
+        "noAccumulatingSpread": "warn"
       },
       "a11y": {
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "useSemanticElements": "off"
       }
     }
   },
@@ -67,17 +73,30 @@
       "**/fuel-v2-contracts",
       "**/coverage",
       "**/generated",
-      "**/storybook-static",
       "*.typegen.ts",
-      "./packages/app-explorer/public/storybook",
+      "**/vite-env.d.ts",
       "./packages/app-explorer/public/ui",
       "./packages/app-explorer/public/portal",
-      "./packages/app-explorer/public/portal-storybook",
       "./packages/app-portal/public/**",
       "./packages/app-portal/src/types",
-      "./packages/graphql/src/graphql/generated",
+      "./packages/graphql/src/graphql/generated/**",
       "./packages/app-explorer/public/thirdparty/safary.js",
       "pnpm-lock.yaml"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "include": ["**/*Skeleton*.ts*"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off"
+          },
+          "a11y": {
+            "useFocusableInteractive": "off"
+          }
+        }
+      }
+    }
+  ]
 }

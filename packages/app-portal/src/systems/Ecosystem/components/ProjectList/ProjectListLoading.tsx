@@ -1,6 +1,6 @@
 import { Grid } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
-import { ProjectItem } from '../ProjectItem';
+import { ProjectItemLoader } from '~portal/systems/Ecosystem/components/ProjectItem/ProjectItemLoader';
 
 type ProjectListLoadingProps = {
   items?: number;
@@ -12,7 +12,7 @@ export const ProjectListLoading = ({ items = 8 }: ProjectListLoadingProps) => {
   return (
     <Grid className={classes.grid()}>
       {Array.from({ length: items }).map((_, idx) => (
-        <ProjectItem.Loader key={idx} />
+        <ProjectItemLoader key={idx} />
       ))}
     </Grid>
   );

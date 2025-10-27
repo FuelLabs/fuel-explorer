@@ -1,8 +1,8 @@
-import type { Asset } from '@fuel-ts/account';
+import type { Asset } from 'fuels';
 import { useMemo } from 'react';
 import { isSameEthAddress } from '~portal/systems/Chains/eth/utils/address';
 
-import { getAssetEth, getAssetFuel } from '../utils';
+import { getAssetEthCurrentChain, getAssetFuelCurrentChain } from '../utils';
 
 import { useAssets } from './useAssets';
 
@@ -20,8 +20,8 @@ export const useAsset = (params?: {
     }
 
     const appAsset = assets.find((asset) => {
-      const ethAsset = getAssetEth(asset);
-      const fuelAsset = getAssetFuel(asset);
+      const ethAsset = getAssetEthCurrentChain(asset);
+      const fuelAsset = getAssetFuelCurrentChain(asset);
 
       return (
         isSameEthAddress(ethAsset?.address, ethTokenId) ||

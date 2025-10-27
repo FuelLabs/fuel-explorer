@@ -1,11 +1,11 @@
-import { DatabaseConnection } from '../database/DatabaseConnection';
+import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
 import Predicate from './Predicate';
 
 export default class PredicateDAO {
-  databaseConnection: DatabaseConnection;
+  databaseConnection: DatabaseConnectionReplica;
 
   constructor() {
-    this.databaseConnection = DatabaseConnection.getInstance();
+    this.databaseConnection = DatabaseConnectionReplica.getInstance();
   }
 
   async getByAddress(address: string) {
@@ -19,7 +19,7 @@ export default class PredicateDAO {
 		  where
 			  p.address = $1
 		  `,
-        [address],
+        [address.toLowerCase()],
       )
     )[0];
     if (!predicateData) return;

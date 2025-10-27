@@ -1,4 +1,4 @@
-import {
+import type {
   GQLTransactionReceiptFragment,
   Maybe,
 } from '@fuel-explorer/graphql/sdk';
@@ -14,4 +14,8 @@ export function parseTXScriptJson(
     }
     return { ...acc, [key]: value };
   }, {});
+}
+
+export function notBoolean(value: any) {
+  return typeof value !== 'boolean' ? value : '';
 }

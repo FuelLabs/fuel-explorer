@@ -1,6 +1,5 @@
 import path from 'node:path';
 import { globbySync } from 'globby';
-import _ from 'lodash';
 import type { Config } from 'tailwindcss';
 import tailwindDefaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
@@ -83,6 +82,10 @@ const preset: Config = {
         'light-gradient':
           'linear-gradient(243.06deg, #00F58C -52.89%, #A7FFD4 10.83%, #FFFFFF 65.48%)',
       },
+      boxShadow: {
+        'ecosystem-card':
+          '0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 0.5px 1px 0px rgba(0, 0, 0, 0.10)',
+      },
       keyframes,
       animation,
       width: tailwindDefaultTheme.maxWidth,
@@ -119,6 +122,7 @@ const preset: Config = {
     plugin(({ addVariant, matchVariant }) => {
       // Add a `third` variant, ie. `third:pb-0`
       addVariant('not-first', '& ~ &');
+      addVariant('not-last', '&:not(:last-of-type)');
       addVariant('not-first-last', '&:not(:first-of-type,:last-of-type)');
       addVariant('not-disabled', '&:not([aria-disabled=true],:disabled)');
       addVariant(
@@ -130,7 +134,7 @@ const preset: Config = {
       addVariant('last-type', '&:last-of-type');
 
       const components = getComponents();
-      const componentsMap = _.fromPairs(components.map((c) => [c, c]));
+      const componentsMap = Object.fromEntries(components.map((c) => [c, c]));
       const values = { values: componentsMap };
       matchVariant('>fuel', (v) => `& > .fuel-${v}`, values);
       matchVariant('>group-fuel', (v) => `:merge(.group) > .fuel-${v}`, values);

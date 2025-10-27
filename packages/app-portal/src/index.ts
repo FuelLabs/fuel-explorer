@@ -1,5 +1,3 @@
-'use client';
-
 export { BridgeTxItemsLoading } from './systems/Bridge/components';
 export { BridgePage } from './systems/Bridge/page-root';
 export { BridgeHistoryPage } from './systems/Bridge/page-history';
@@ -9,5 +7,6 @@ export { EcosystemHeader } from './systems/Ecosystem/components/EcosystemHeader/
 export { OverlayDialog } from './systems/Overlay';
 
 export { Providers } from './providers';
-
-export { Routes } from './routes';
+export { ConnectProvider } from './systems/Settings/providers/ConnectProvider';
+export { ConnectWallet } from './systems/Core/components/ConnectWallet';
+export { useEcosystemProjects } from './systems/Core/hooks/useEcosystemProjects';

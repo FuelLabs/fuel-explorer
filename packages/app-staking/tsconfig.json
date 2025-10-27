@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.cache/app-staking.tsBuildInfo",
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "types": ["vite/client", "@types/react", "@types/react-dom"],
+    "paths": {
+      "app-commons": ["../app-commons/src"],
+      "app-commons/*": ["../app-commons/src/*"],
+      "~portal/*": ["../app-portal/src/*"],
+      "~public-portal/*": ["../app-portal/public/*"],
+      "~staking/*": ["./src/*"],
+      "connectkit/build/types": ["node_modules/connectkit/build/types"],
+      "@fuels/ui": ["../ui/src"],
+      "@fuels/ui/*": ["../ui/src/*"]
+    }
+  },
+  "include": ["./src", "../app-commons/src/vite-env.d.ts"]
+}

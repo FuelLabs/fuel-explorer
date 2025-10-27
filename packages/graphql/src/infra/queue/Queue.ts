@@ -1,3 +1,4 @@
+import { setTimeout } from 'node:timers/promises';
 import client, {
   type Channel,
   type Connection,
@@ -21,6 +22,7 @@ type Payload<D = unknown> = {
 
 export enum QueueNames {
   ADD_BLOCK_RANGE = 'indexer/add-block-range',
+  NEW_BLOCK = 'indexer/new-block',
 }
 export enum ChannelNames {
   main = 'main',
@@ -33,6 +35,10 @@ export type QueueInputs = {
     from: number;
     to: number;
   };
+  [QueueNames.NEW_BLOCK]: {
+    height: number;
+    hash: string;
+  };
 };
 
 class RabbitMQConnection {
@@ -41,42 +47,35 @@ class RabbitMQConnection {
 
   async connect() {
     if (this.connection) return this.connection;
-
     try {
-      logger.debug('⌛️ Connecting to Rabbit-MQ Server');
       const url = `${PROTOCOL}://${USER}:${PASS}@${HOST}:${PORT}`;
       this.connection = await client.connect(url);
       this.connection.on('close', () => {
-        logger.error('❌ Connection closed');
+        logger.error('RabbitMQ', 'Connection closed');
         process.exit(1);
       });
       this.connection.on('error', () => {
-        logger.error('❌ Connection error');
+        logger.error('RabbitMQ', 'Connection error');
         process.exit(1);
       });
-      logger.debug('✅ Rabbit MQ Connection is ready');
       await this.createChannel(ChannelNames.block, MAX_WORKERS);
-      logger.info('🚀 RabbitMQ Connection is ready');
     } catch (error) {
-      logger.error('Not connected to MQ Server', error);
+      logger.error('RabbitMQ', 'Not connected to MQ Server', error);
       throw error;
     }
     return this.connection;
   }
 
   async disconnect() {
-    logger.debug('🔌 Disconnecting from RabbitMQ');
     const channels = Object.entries(this.channels);
     for (const [_, channel] of channels) {
       await channel.close();
     }
     await this.connection.close();
-    logger.info('🔌 Disconnected from RabbitMQ');
     return this.connection;
   }
 
   async clean() {
-    logger.debug('🧹 Cleaning all queues');
     const channels = Object.entries(this.channels);
     const queues = Object.values(QueueNames);
     for (const [_, channel] of channels) {
@@ -84,7 +83,6 @@ class RabbitMQConnection {
         await channel.deleteQueue(queue);
       }
     }
-    logger.info('🧹 Cleaned all queues');
   }
 
   async send<Q extends QueueNames, P extends Payload<QueueInputs[Q]>>(
@@ -98,7 +96,7 @@ class RabbitMQConnection {
       const buffer = Buffer.from(JSON.stringify(payload));
       channel.sendToQueue(queue, buffer, { persistent: true });
     } catch (error) {
-      logger.error('Failed to send message to queue', error);
+      logger.error('RabbitMQ', 'Failed to send message to queue', error);
       throw error;
     }
   }
@@ -113,12 +111,22 @@ class RabbitMQConnection {
     await channel.consume(
       queue,
       async (msg) => {
+        logger.debug('Consumer', `Consuming message from: ${queue}`);
         if (!msg) return;
         const payload = this.parsePayload<P>(msg);
-        logger.debug(`📥 Received message from ${queue}`);
         if (payload?.type === queue) {
-          await handler(payload.data);
-          channel.ack(msg);
+          try {
+            await handler(payload.data);
+            channel.ack(msg);
+          } catch (err: any) {
+            logger.debug(
+              'Consumer',
+              `Failed to consume message from: ${queue}`,
+              err.message,
+            );
+            await setTimeout(5000);
+            channel.nack(msg, false, true);
+          }
         }
       },
       { noAck: false },
@@ -152,7 +160,6 @@ class RabbitMQConnection {
   }
 
   async getActive(queue: QueueNames) {
-    logger.debug(`🔗 Getting active workers for ${queue}`);
     const channel = await this.getChannel(ChannelNames.block);
     const data = await channel.checkQueue(queue);
     return data.messageCount;
@@ -160,19 +167,17 @@ class RabbitMQConnection {
 
   private async createChannel(name: ChannelNames, workers: number) {
     if (this.channels[name]) return;
-    logger.debug(`🔗 Creating channel ${name}`);
     const channel = await this.connection.createChannel();
     await channel.prefetch(workers);
     channel.on('close', () => {
-      logger.error('❌ Channel closed');
+      logger.error('RabbitMQ', 'Channel closed');
       process.exit(1);
     });
     channel.on('error', () => {
-      logger.error('❌ Channel error');
+      logger.error('RabbitMQ', 'Channel error');
       process.exit(1);
     });
     this.channels[name] = channel;
-    logger.debug(`✅ Channel ${name} is ready`);
   }
 
   private async getChannel(name: ChannelNames) {
@@ -181,7 +186,7 @@ class RabbitMQConnection {
     }
     const channel = this.channels[name];
     if (!channel) {
-      logger.error(`Channel ${name} not found`);
+      logger.error('RabbitMQ', `Channel ${name} not found`);
       throw new Error(`Channel ${name} not found`);
     }
     return channel;

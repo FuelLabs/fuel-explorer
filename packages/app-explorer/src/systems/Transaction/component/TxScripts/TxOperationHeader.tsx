@@ -1,13 +1,14 @@
-import { GQLReceipt, Maybe } from '@fuel-explorer/graphql/sdk';
-import { Address, Code } from '@fuels/ui';
+import type { GQLReceipt, Maybe } from '@fuel-explorer/graphql/sdk';
+import { Address, Code, Copyable, HStack } from '@fuels/ui';
 import { bn } from 'fuels';
-import NextLink from 'next/link';
+
 import { memo } from 'react';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import {
-  ReceiptHeaderOperation,
+  type ReceiptHeaderOperation,
   ReceiptHeaderOperationDataType,
 } from '~/systems/Transaction/component/TxScripts/TxReceiptHeader/types';
+import { notBoolean } from './utils';
 
 function _TxOperationHeader({
   field,
@@ -26,9 +27,23 @@ function _TxOperationHeader({
   }
 
   const key = `${field.label}-${index}`;
-  const value =
+  let value = notBoolean(
     (field.field && receipt?.[field.field]) ||
-    (field.fieldFallback && receipt?.[field.fieldFallback]);
+      (field.fieldFallback && receipt?.[field.fieldFallback]),
+  );
+  const copyableValue = notBoolean(
+    field.copyableValue && receipt?.[field.copyableValue],
+  );
+  if (!value && field && field.fieldsFallback) {
+    for (const fieldFallback of field.fieldsFallback) {
+      const receiptFallback = receipt as { [key: string]: any };
+      if (receipt && fieldFallback) {
+        value = receiptFallback[fieldFallback];
+        if (value) break;
+      }
+    }
+  }
+
   const formattedValue =
     field.type === ReceiptHeaderOperationDataType.HEX_ADDRESS &&
     value &&
@@ -46,7 +61,7 @@ function _TxOperationHeader({
         iconSize={16}
         assetId={receipt?.assetId}
         value={bn(value)}
-        className="text-xs tablet:text-sm"
+        className="text-primary text-base"
       />
     );
   }
@@ -60,20 +75,24 @@ function _TxOperationHeader({
         field.type === ReceiptHeaderOperationDataType.HEX_ADDRESS &&
         field?.hrefFactory
           ? {
-              as: NextLink,
               href: field.hrefFactory(formattedValue),
             }
           : undefined
       }
     />
   ) : (
-    <Code
-      key={key}
-      className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
-      color="gray"
-    >
-      {`${field.label} ${value}`}
-    </Code>
+    <HStack gap="1" className="items-center">
+      <Code
+        key={key}
+        className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+        color="gray"
+      >
+        {`${field.label} ${value}`}
+      </Code>
+      {receipt && field.copyableValue && (
+        <Copyable value={copyableValue || ''} iconSize={16} />
+      )}
+    </HStack>
   );
 }
 

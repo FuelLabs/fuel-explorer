@@ -11,16 +11,16 @@ import {
   cx,
 } from '@fuels/ui';
 
-import NextLink from 'next/link';
 import { Routes } from '~/routes';
 
+import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 import { TxIcon } from '../TxIcon/TxIcon';
 import { txIconTypeMap, typeNameMap } from './constants';
 import { styles } from './styles';
 import type { TxOutputProps } from './types';
 
 export const TxOutputContractCreated = createComponent<
-  TxOutputProps<GQLContractCreated>,
+  Omit<TxOutputProps<GQLContractCreated>, 'getContractByIndex'>,
   typeof Card
 >({
   id: 'TxOutputContractCreated',
@@ -42,15 +42,16 @@ export const TxOutputContractCreated = createComponent<
               {badgeLabel}
             </Badge>
             <HStack align="center">
-              <TxIcon status="Success" type={txIconType} />
+              <TxContractIcon contractId={contractId}>
+                <TxIcon status="Success" type={txIconType} />
+              </TxContractIcon>
               <VStack gap="1">
                 <Text className="font-medium">Contract Created</Text>
                 <Address
                   prefix="Id:"
                   value={contractId}
                   linkProps={{
-                    as: NextLink,
-                    href: Routes.contractAssets(contractId),
+                    href: Routes.contractMintedAssets(contractId),
                   }}
                 />
               </VStack>

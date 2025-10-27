@@ -8,14 +8,14 @@ import { ReceiptContext } from '~/systems/Transaction/component/TxScripts/contex
 
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 import {
-  ReceiptHeaderOperation,
-  ReceiptHeaderOperationAmount,
+  type ReceiptHeaderOperation,
+  type ReceiptHeaderOperationAmount,
   ReceiptHeaderOperationDataType,
 } from '~/systems/Transaction/component/TxScripts/TxReceiptHeader/types';
-import { TxIconType } from '~/systems/Transaction/types';
+import type { TxIconType } from '~/systems/Transaction/types';
+import { TxContractIcon } from '../../TxContractIcon/TxContractIcon';
 import { RECEIPT_FIELDS_MAP } from './constants';
 import { styles } from './styles';
-
 const TX_ICON_MAP: Record<GQLReceiptType, TxIconType> = {
   TRANSFER_OUT: 'Transfer',
   TRANSFER: 'Transfer',
@@ -68,11 +68,12 @@ export function TxReceiptHeader() {
       <Flex className="gap-2 flex-col tablet:flex-row w-full">
         <TxReceiptBadge />
         <HStack className="flex-1 gap-4 items-center w-full">
-          <TxIcon
-            type={txIcon}
-            status={type === GQLReceiptType.Panic ? 'Failure' : 'Submitted'}
-          />
-
+          <TxContractIcon contractId={item?.item?.to}>
+            <TxIcon
+              type={txIcon}
+              status={type === GQLReceiptType.Panic ? 'Failure' : 'Submitted'}
+            />
+          </TxContractIcon>
           <VStack className="flex-1 gap-[2px]">
             {filteredFields?.rest?.map((field, index) => (
               <TxOperationHeader

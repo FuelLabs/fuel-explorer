@@ -30,6 +30,11 @@ mutation dryRun($gasPrice: U64, $txs: [HexString!]!, $utxoValidation: Boolean){
             to
             toAddress
             val
+            name
+            symbol
+            suspicious
+            icon
+            decimals
         }
         status{
             __typename
@@ -68,6 +73,11 @@ mutation dryRun($gasPrice: U64, $txs: [HexString!]!, $utxoValidation: Boolean){
                     to
                     toAddress
                     val
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    decimals
                 }
                 totalFee
                 totalGas
@@ -106,6 +116,11 @@ mutation dryRun($gasPrice: U64, $txs: [HexString!]!, $utxoValidation: Boolean){
                     to
                     toAddress
                     val
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    decimals
                 }
                 totalFee
                 totalGas

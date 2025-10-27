@@ -1,26 +1,7 @@
-import tsconfig from './tsconfig.json';
+import postcss from '@chialab/esbuild-plugin-postcss';
+import { defConfig } from './tsup.config.namedExports.mjs';
 
-const defConfig = {
-  outDir: 'dist',
-  splitting: true,
-  format: ['esm', 'cjs'],
-  outExtension({ format }) {
-    return {
-      js: `.${format}.js`,
-    };
-  },
-  sourcemap: true,
-  clean: false,
-  target: tsconfig.compilerOptions.target,
-  esbuildOptions(options) {
-    options.banner = {
-      js: "'use client'",
-    };
-
-    /* This is needed to not get any errors from dynamic requiring */
-    options.external = ['react', 'react-dom', 'tailwindcss'];
-  },
-};
+/* This is needed to not get any errors from dynamic requiring */
 
 export default [
   {
@@ -35,15 +16,13 @@ export default [
     entry: {
       index: 'src/theme/tailwind-preset.ts',
     },
-    format: ['cjs'],
+    format: ['cjs', 'esm'],
     outDir: 'dist/theme',
   },
   {
-    entry: {
-      styles: 'src/theme/index.css',
-    },
-    loader: {
-      '.css': 'css',
-    },
+    ...defConfig,
+    entry: { styles: 'src/theme/index.css' },
+    outDir: 'dist',
+    esbuildPlugins: [postcss()],
   },
 ];

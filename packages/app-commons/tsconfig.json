@@ -1,11 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/app-commons.tsbuildInfo",
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
       "tailwind-variants": ["../../node_modules/tailwind-variants"]
     }
   },
-  "include": ["src", ".storybook", "*.config.*"]
+  "include": ["src", "*.config.*"]
 }

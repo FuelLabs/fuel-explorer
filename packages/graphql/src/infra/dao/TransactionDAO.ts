@@ -1,13 +1,13 @@
-import { isB256, isBech32 } from 'fuels';
+import { isB256 } from 'fuels';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
-import { DatabaseConnection } from '../database/DatabaseConnection';
-import PaginatedParams from '../paginator/PaginatedParams';
+import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
+import type PaginatedParams from '../paginator/PaginatedParams';
 
 export default class TransactionDAO {
-  databaseConnection: DatabaseConnection;
+  databaseConnection: DatabaseConnectionReplica;
 
   constructor() {
-    this.databaseConnection = DatabaseConnection.getInstance();
+    this.databaseConnection = DatabaseConnectionReplica.getInstance();
   }
 
   async getByHash(txHash: string) {
@@ -21,7 +21,7 @@ export default class TransactionDAO {
 		  where
 			  t.tx_hash = $1
 		  `,
-        [txHash],
+        [txHash.toLowerCase()],
       )
     )[0];
     if (!transactionData) return;
@@ -34,29 +34,33 @@ export default class TransactionDAO {
   ) {
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
-    const transactionsData = await this.databaseConnection.query(
-      `
-		select
-			t.*
-		from
-			indexer.transactions t
-		where
-			t.tx_hash in (
-				select
-					ta.tx_hash
-				from
-					indexer.transactions_accounts ta
-				where
-					ta.account_hash = $1 and
-					($2::text is null or ta._id ${direction} $2)
-				order by
-					ta._id ${order}
-				limit
-					10
-			)
-		`,
-      [accountHash, paginatedParams.cursor],
-    );
+
+    const [transactionsData, totalCount] =
+      await this.databaseConnection.batchQueryWithSettings(
+        [
+          { name: 'enable_indexscan', value: 'off' },
+          { name: 'enable_bitmapscan', value: 'on' },
+        ],
+        [
+          {
+            statement: `
+              select t.*, ta._id as ta_id
+              from indexer.transactions_accounts ta
+              inner join indexer.transactions t on t.tx_hash = ta.tx_hash
+              where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
+              order by ta._id ${order}
+              limit 10
+            `,
+            params: [accountHash.toLowerCase(), paginatedParams.cursor],
+          },
+          {
+            statement:
+              'select count(*)::integer as count from indexer.transactions_accounts where account_hash = $1',
+            params: [accountHash.toLowerCase()],
+          },
+        ],
+      );
+
     transactionsData.sort((a: any, b: any) => {
       return a._id.localeCompare(b._id) * -1;
     });
@@ -76,21 +80,24 @@ export default class TransactionDAO {
         },
       };
     }
+
     const startCursor = transactionsData[0]._id;
     const endCursor = transactionsData[transactionsData.length - 1]._id;
-    const hasPreviousPage = (
-      await this.databaseConnection.query(
-        'select exists(select 1 from indexer.transactions_accounts ta where ta._id < $1 and ta.account_hash = $2)',
-        [endCursor, accountHash],
-      )
-    )[0].exists;
-    const hasNextPage = (
-      await this.databaseConnection.query(
-        'select exists(select 1 from indexer.transactions_accounts ta where ta._id > $1 and ta.account_hash = $2)',
-        [startCursor, accountHash],
-      )
-    )[0].exists;
-    const newNodes = transactions.map((n) => n.toGQLNode());
+
+    const [paginationInfo] = await this.databaseConnection.query(
+      `
+        select
+          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
+          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next,
+          (select count(*)::integer from indexer.transactions_accounts where account_hash = $1 and _id > $3) as count
+        `,
+      [accountHash.toLowerCase(), endCursor, startCursor],
+    );
+
+    const hasPreviousPage = paginationInfo?.has_prev || false;
+    const hasNextPage = paginationInfo?.has_next || false;
+    const newNodes = transactions.map((n) => n.toGQLListNode());
+
     const edges = newNodes.map((node) => ({
       node,
       cursor: paginatedParams.cursor,
@@ -99,6 +106,9 @@ export default class TransactionDAO {
       nodes: newNodes,
       edges,
       pageInfo: {
+        startCount: (paginationInfo?.count || 0) + 1,
+        endCount: (paginationInfo?.count || 0) + paginatedParams.last,
+        totalCount: totalCount[0]?.count || 0,
         hasNextPage,
         hasPreviousPage,
         endCursor,
@@ -121,9 +131,9 @@ export default class TransactionDAO {
 			$1::text is null or t._id ${direction} $1
 		order by
 			t._id ${order} 
-		limit 10
+		limit $2
 	`,
-      [paginatedParams.cursor],
+      [paginatedParams.cursor, paginatedParams.last],
     );
     transactionsData.sort((a: any, b: any) => {
       return a._id.localeCompare(b._id) * -1;
@@ -158,7 +168,8 @@ export default class TransactionDAO {
         [startCursor],
       )
     )[0].exists;
-    const newNodes = transactions.map((n) => n.toGQLNode());
+    const newNodes = transactions.map((n) => n.toGQLListNode());
+
     const edges = newNodes.map((node) => ({
       node,
       cursor: paginatedParams.cursor,
@@ -183,21 +194,21 @@ export default class TransactionDAO {
 			t.*
 		from
 			indexer.transactions t
-		where
-			t.tx_hash in (
-				select
-					ta.tx_hash
-				from
-					indexer.transactions_accounts ta
-				where
-					ta.account_hash = $1
-				order by
-					ta._id desc
-				limit
-					5
-			)
+		inner join (
+			select distinct on (tx_hash)
+				tx_hash, _id as account_id
+			from
+				indexer.transactions_accounts
+			where
+				account_hash = $1
+			order by
+				tx_hash, _id desc
+		) ta on t.tx_hash = ta.tx_hash
+		order by
+			ta.account_id desc
+		limit 5
 		`,
-      [accountHash],
+      [accountHash.toLowerCase()],
     );
     const transactions = [];
     for (const transactionData of transactionsData) {
@@ -211,7 +222,7 @@ export default class TransactionDAO {
     paginatedParams: PaginatedParams,
   ) {
     let height = blockId;
-    if (isB256(blockId) || isBech32(blockId)) {
+    if (isB256(blockId)) {
       const [block] = await this.databaseConnection.query(
         `
 			select
@@ -276,7 +287,16 @@ export default class TransactionDAO {
         [startCursor, height],
       )
     )[0].exists;
-    const newNodes = transactions.map((n) => n.toGQLNode());
+    const [previousRows] = await this.databaseConnection.query(
+      'select count(*)::integer as count from indexer.transactions where _id > $1 and block_id = $2',
+      [startCursor, height],
+    );
+    const [totalCount] = await this.databaseConnection.query(
+      'select count(*)::integer as count from indexer.transactions where block_id = $1',
+      [height],
+    );
+    const newNodes = transactions.map((n) => n.toGQLListNode());
+
     const edges = newNodes.map((node) => ({
       node,
       cursor: paginatedParams.cursor,
@@ -285,6 +305,9 @@ export default class TransactionDAO {
       nodes: newNodes,
       edges,
       pageInfo: {
+        startCount: previousRows.count + 1,
+        endCount: previousRows.count + paginatedParams.last,
+        totalCount: totalCount.count,
         hasNextPage,
         hasPreviousPage,
         endCursor,

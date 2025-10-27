@@ -32,7 +32,7 @@ export const useBridgeTxs = () => {
   const paginatedTxs = store.useSelector(
     Services.bridgeTxs,
     selectors.paginatedTxs,
-  );
+  ) as any[];
   const hasNextPage = store.useSelector(
     Services.bridgeTxs,
     selectors.hasNextPage,
@@ -56,7 +56,7 @@ export const useBridgeTxs = () => {
     isLoadingConnection,
     fuelProvider?.url,
     ethPublicClient?.chain?.id,
-    fuelAddress?.toAddress(),
+    fuelAddress?.toString(),
   ]);
 
   return {

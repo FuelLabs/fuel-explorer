@@ -6,4 +6,5 @@ export type UtxoItemProps = {
   assetId?: string;
   style?: CSSProperties;
   index: number;
+  decimals?: string | null;
 };

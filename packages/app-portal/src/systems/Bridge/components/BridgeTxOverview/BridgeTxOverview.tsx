@@ -1,10 +1,22 @@
 import { calculateDateDiff } from '~portal/systems/Core';
 
-import type { Asset as FuelsAsset } from '@fuel-ts/account';
-import { Asset, Box, Flex, FuelLogo, Link, Text, VStack } from '@fuels/ui';
+import {
+  Asset,
+  Box,
+  Button,
+  Flex,
+  FuelLogo,
+  Link,
+  Text,
+  VStack,
+  shortAddress,
+} from '@fuels/ui';
 import { IconArrowRight } from '@tabler/icons-react';
+import { Routes } from 'app-commons';
 import type { BigNumberish } from 'ethers';
+import type { ChecksumAddress, Asset as FuelsAsset } from 'fuels';
 import { tv } from 'tailwind-variants';
+import { createETHExplorerLink } from '../../hooks/useExplorerLink';
 import { InfoTextLoader } from './InfoTextLoader';
 
 type BridgeTxOverviewProps = {
@@ -16,6 +28,10 @@ type BridgeTxOverviewProps = {
   isLoading?: boolean;
   amount?: string;
   explorerLink?: string;
+  addresses?: { from: ChecksumAddress; to: ChecksumAddress };
+  from?: string;
+  to?: string;
+  onAddAssetToWallet?: () => void;
 };
 
 export const BridgeTxOverview = ({
@@ -27,8 +43,21 @@ export const BridgeTxOverview = ({
   isLoading,
   amount,
   explorerLink,
+  from,
+  to,
+  onAddAssetToWallet,
 }: BridgeTxOverviewProps) => {
+  const hasAddresses = from && to;
   const classes = styles();
+
+  function handleAddAssetToWallet(e: React.MouseEvent<HTMLButtonElement>) {
+    // blocks the default link behavior from button variant="link"
+    e.stopPropagation();
+    e.preventDefault();
+
+    // call actual onAddAssetToWallet method
+    onAddAssetToWallet?.();
+  }
 
   return (
     <VStack className={classes.stack()} gap="2">
@@ -45,6 +74,64 @@ export const BridgeTxOverview = ({
           <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
         </Link>
       </Flex>
+      {hasAddresses &&
+        (isDeposit ? (
+          <>
+            <Flex className={classes.txItem()}>
+              <Text className={classes.labelText()}>From</Text>
+              <Link
+                isExternal
+                href={createETHExplorerLink('address', from)}
+                className={classes.linkText()}
+                color="green"
+                target="_blank"
+              >
+                <Box>{shortAddress(from)}</Box>
+              </Link>
+            </Flex>
+            <Flex className={classes.txItem()}>
+              <Text className={classes.labelText()}>To</Text>
+              <Link
+                isExternal
+                href={Routes.account(to, 'assets')}
+                className={classes.infoText()}
+                color="green"
+                externalIcon={null}
+                target="_blank"
+              >
+                <Box>{shortAddress(to)}</Box>
+              </Link>
+            </Flex>
+          </>
+        ) : (
+          <>
+            <Flex className={classes.txItem()}>
+              <Text className={classes.labelText()}>From</Text>
+              <Link
+                isExternal
+                href={Routes.account(from, 'assets')}
+                className={classes.infoText()}
+                color="green"
+                externalIcon={null}
+                target="_blank"
+              >
+                <Box>{shortAddress(from)}</Box>
+              </Link>
+            </Flex>
+            <Flex className={classes.txItem()}>
+              <Text className={classes.labelText()}>To</Text>
+              <Link
+                isExternal
+                href={createETHExplorerLink('address', to)}
+                className={classes.linkText()}
+                color="green"
+                target="_blank"
+              >
+                <Box>{shortAddress(to)}</Box>
+              </Link>
+            </Flex>
+          </>
+        ))}
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>Age</Text>
 
@@ -82,7 +169,24 @@ export const BridgeTxOverview = ({
         )}
       </Flex>
       <Flex className={classes.txItem()}>
-        <Text className={classes.labelText()}>Asset</Text>
+        <Text className={classes.labelText()}>
+          Asset
+          {onAddAssetToWallet ? (
+            <Text className={classes.subtleText()}>
+              {' '}
+              (
+              <Button
+                onClick={handleAddAssetToWallet}
+                className={`${classes.linkText()} ${classes.addToWalletBtn()}`}
+                color="green"
+                variant="link"
+              >
+                Add to wallet
+              </Button>
+              )
+            </Text>
+          ) : null}
+        </Text>
         {isLoading ? (
           <InfoTextLoader />
         ) : (
@@ -110,5 +214,6 @@ const styles = tv({
     infoText: 'text-xs text-heading',
     linkText: 'text-xs',
     directionInfo: 'gap-1 items-center',
+    addToWalletBtn: 'pt-0 pb-0 m-0',
   },
 });

@@ -11,9 +11,12 @@
 @import "./components/button.css";
 @import "./components/card.css";
 @import "./components/dialog.css";
+@import "./components/dialog2.css";
+@import "./components/dropdown.css";
 @import "./components/separator.css";
 @import "./components/tabs.css";
 @import "./components/textfield.css";
+@import "./components/segmentedControl.css";
 
 /* Tailwind */
 @tailwind components;

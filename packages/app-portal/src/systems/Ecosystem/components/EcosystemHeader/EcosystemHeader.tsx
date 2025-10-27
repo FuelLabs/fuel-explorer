@@ -1,20 +1,19 @@
-import { Button, Flex, Input, Separator, Switch, Text } from '@fuels/ui';
-import { IconSearch } from '@tabler/icons-react';
+import { Button, HStack, Separator, Text } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
 import { tv } from 'tailwind-variants';
+import { HeaderSwitch } from '~portal/systems/Ecosystem/components/EcosystemHeader/HeaderSwitch';
+import { EcosystemInput } from './EcosystemInput';
 
 export function EcosystemHeader({
-  disabled,
   search,
+  liveOnly,
+  disabled,
   onSearchChange,
-  onBuildingHiddenChange,
-  isBuildingHidden,
 }: {
-  disabled?: boolean;
   search?: string;
-  isBuildingHidden?: boolean;
-  onSearchChange?: (value: string) => void;
-  onBuildingHiddenChange?: (value: boolean) => void;
+  liveOnly?: boolean;
+  disabled?: boolean;
+  onSearchChange?: (search: string) => void;
 }) {
   const classes = styles();
 
@@ -22,58 +21,66 @@ export function EcosystemHeader({
     <>
       <PageTitle
         title="Explore Fuel DApps"
-        subtitle="Here&apos;s a list of DApps built on Fuel"
+        subtitle="Here's a list of DApps built on Fuel"
         mb="0"
       />
 
       <Separator size="4" />
 
-      <Flex gap="4" className={classes.searchBar()}>
-        <Input
-          className={classes.searchBarInput()}
-          size="3"
-          name="search"
-          type="text"
-          placeholder="Search"
-          value={search || ''}
+      <div className={classes.searchBar()}>
+        <EcosystemInput
+          search={search}
           disabled={disabled}
-          onChange={(e) => onSearchChange?.(e.target.value)}
+          onSearchChange={onSearchChange}
+        />
+        <HStack
+          justify="between"
+          align={{
+            initial: 'start',
+            md: 'center',
+          }}
+          flexBasis="100%"
+          gap="4"
         >
-          <Input.Slot side="right">
-            <IconSearch size={16} />
-          </Input.Slot>
-        </Input>
-        <Flex justify="between" flexBasis={'100%'}>
-          <label className={classes.switchLiveOnlyWrapper()}>
-            <Switch
-              defaultChecked={!isBuildingHidden}
-              mr="2"
-              onCheckedChange={onBuildingHiddenChange}
-            />
-            {/* Show "Live" only */}
-            <Text color="gray">Show "Live" only</Text>
+          <label
+            className={classes.switchLiveOnlyWrapper()}
+            htmlFor="ecosystem-switch-live-only"
+          >
+            <HeaderSwitch liveOnly={liveOnly || false} disabled={!!disabled} />
+            <Text
+              color="gray"
+              size={{
+                initial: '2',
+                md: '3',
+              }}
+            >
+              Show "Live" only
+            </Text>
           </label>
           <Button
             as="a"
+            id="ecosystem-switch-live-only"
             href="https://airtable.com/appEO4t5bVydYgzCk/pagiUOEi5aqbtQK0T/form"
             target="_blank"
-            size="3"
+            size={{
+              initial: '2',
+              md: '3',
+            }}
             color="green"
             disabled={disabled}
           >
             List your project
           </Button>
-        </Flex>
-      </Flex>
+        </HStack>
+      </div>
     </>
   );
 }
 
 const styles = tv({
   slots: {
-    searchBar: 'flex-col sm:justify-between sm:flex-row',
-    searchBarInput: 'w-full sm:w-[350px] h-[44px]',
-    switchLiveOnlyWrapper:
-      'flex flex-row items-center justify-between mr-2 ml-1',
+    searchBar:
+      'flex flex-col gap-3 md:gap-4 md:justify-between md:flex-row w-full',
+    switchLiveOnlyWrapper: 'flex flex-row items-center justify-between',
   },
 });

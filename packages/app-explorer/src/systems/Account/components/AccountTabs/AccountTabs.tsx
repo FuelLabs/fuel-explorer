@@ -1,10 +1,12 @@
-'use client';
 import type { BaseProps } from '@fuels/ui';
-import { IconChecklist, IconCodeAsterix, IconCoins } from '@tabler/icons-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import {
+  IconChecklist,
+  IconCodeAsterix,
+  IconCoins,
+  IconPhoto,
+} from '@tabler/icons-react';
 import { useMemo } from 'react';
-import { Routes } from '~/routes';
+import { Link, useLocation } from 'react-router-dom';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
 type AccountTabsProps = BaseProps<{
@@ -17,29 +19,32 @@ export function AccountTabs({
   isPredicate,
   ...props
 }: AccountTabsProps) {
-  const pathname = usePathname();
+  const location = useLocation();
   const defaultValue = useMemo(() => {
-    if (pathname.includes('transactions')) return 'transactions';
-    if (pathname.includes('predicate')) return 'predicate';
+    if (location.pathname.includes('transactions')) return 'transactions';
+    if (location.pathname.includes('predicate')) return 'predicate';
+    if (location.pathname.includes('nfts')) return 'nfts';
     return 'assets';
-  }, [pathname]);
+  }, [location.pathname]);
 
   return (
     <NavigationTab
       {...props}
-      className="mb-8"
       defaultValue={defaultValue}
       value={defaultValue}
       renderTab={(children, item) => (
-        <Link prefetch={true} href={Routes.account(address, item.value)}>
-          {children}
-        </Link>
+        <Link to={`/account/${address}/${item.value}`}>{children}</Link>
       )}
       items={[
         {
           icon: IconCoins,
           value: 'assets',
           label: 'Assets',
+        },
+        {
+          icon: IconPhoto,
+          value: 'nfts',
+          label: 'NFTs',
         },
         {
           icon: IconChecklist,

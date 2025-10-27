@@ -59,7 +59,7 @@ export function route<P extends Array<string> = []>(
  * searchStringify({ foo: 'bar', baz: 'qux' });
  * // returns '?foo=bar&baz=qux'
  */
-export function searchStringify(query?: Record<any, any>) {
+export function searchStringify(query?: Record<string, string>) {
   const qs = new URLSearchParams(query).toString();
   return qs.length ? `?${qs}` : '';
 }
@@ -75,11 +75,11 @@ export function searchStringify(query?: Record<any, any>) {
  * stringifyUrl('https://example.com', { foo: 'bar', baz: 'qux' });
  * // returns 'https://example.com/?foo=bar&baz=qux'
  */
-export function stringifyUrl(url: string, query?: Record<any, any>) {
+export function stringifyUrl(url: string, query?: Record<string, string>) {
   const { href } = new URL(url, 'https://fuel.network/');
   return `${href}${searchStringify(query)}`;
 }
 
-export function isRoute(path: string, routes: Array<PathRender<any>>) {
+export function isRoute(path: string, routes: Array<PathRender<string[]>>) {
   return !!routes.find((r) => r.pathname === path);
 }

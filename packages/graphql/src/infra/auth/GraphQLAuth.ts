@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { GraphQLContext } from '~/graphql/GraphQLContext';
+import type { GraphQLContext } from '~/graphql/GraphQLContext';
 
 export default class GraphQLAuth {
   static apply(resolvers: any) {

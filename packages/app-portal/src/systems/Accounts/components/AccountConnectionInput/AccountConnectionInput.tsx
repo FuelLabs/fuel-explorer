@@ -8,6 +8,8 @@ type AccountConnectionInputProps = {
   networkName?: string;
   networkImage: ReactNode | string;
   label?: string;
+  disconnectLabel?: string;
+  disconnectIcon?: ReactNode;
   isConnecting?: boolean;
   account?: {
     address?: string;
@@ -24,6 +26,8 @@ export const AccountConnectionInput = ({
   networkName,
   networkImage,
   label,
+  disconnectLabel = 'Disconnect',
+  disconnectIcon = <IconX size={13} />,
   isConnecting: _isConnecting,
   account,
   onConnect: _onConnect,
@@ -32,6 +36,8 @@ export const AccountConnectionInput = ({
   isConnected,
 }: AccountConnectionInputProps) => {
   const classes = styles();
+
+  const connected = !!account?.address && isConnected;
 
   return (
     <Card className={classes.root()}>
@@ -56,7 +62,7 @@ export const AccountConnectionInput = ({
           </VStack>
 
           <VStack align="end" gap="0">
-            {account?.address && (
+            {connected && (
               <>
                 <Button
                   size="1"
@@ -68,13 +74,11 @@ export const AccountConnectionInput = ({
                   disabled={!isConnected}
                 >
                   <Text className={classes.textDisconnect()} size="1">
-                    Disconnect
+                    {disconnectLabel}
                   </Text>
-                  <IconX size={13} />
+                  {disconnectIcon}
                 </Button>
-                {isLoading ? (
-                  <LoadingBox className="w-[100px] h-[20px]" />
-                ) : (
+                {account.address ? (
                   <Text
                     className={classes.textAccountConnected()}
                     aria-label={`${networkName}: Connected Wallet`}
@@ -87,7 +91,9 @@ export const AccountConnectionInput = ({
                         end: 6,
                       })}
                   </Text>
-                )}
+                ) : isLoading ? (
+                  <LoadingBox className="w-[100px] h-[20px]" />
+                ) : null}
               </>
             )}
           </VStack>

@@ -1,6 +1,12 @@
 fragment ContractBalanceNode on ContractBalance {
   amount
+  amountInUsd
   assetId
+  name
+  symbol
+  decimals
+  suspicious
+  icon
 }
 
 fragment ContractBalanceConnectionNode on ContractBalanceConnection {

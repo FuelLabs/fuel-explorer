@@ -59,6 +59,14 @@ subscription statusChange($id: TransactionId!){
                             txPointer
                             utxoId
                             witnessIndex
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on InputContract {
                             balanceRoot
@@ -86,6 +94,7 @@ subscription statusChange($id: TransactionId!){
                     isUpload
                     maturity
                     mintAmount
+                    mintAmountUsd
                     mintAssetId
                     mintGasPrice
                     outputContract{
@@ -99,11 +108,27 @@ subscription statusChange($id: TransactionId!){
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on CoinOutput {
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on ContractCreated {
                             contract
@@ -118,6 +143,14 @@ subscription statusChange($id: TransactionId!){
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                     }
                     policies{
@@ -186,6 +219,14 @@ subscription statusChange($id: TransactionId!){
                                             txPointer
                                             utxoId
                                             witnessIndex
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on InputContract {
                                             balanceRoot
@@ -213,6 +254,7 @@ subscription statusChange($id: TransactionId!){
                                     isUpload
                                     maturity
                                     mintAmount
+                                    mintAmountUsd
                                     mintAssetId
                                     mintGasPrice
                                     outputs{
@@ -221,11 +263,27 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on CoinOutput {
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on ContractCreated {
                                             contract
@@ -240,6 +298,14 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                     }
                                     proofSet
@@ -323,6 +389,11 @@ subscription statusChange($id: TransactionId!){
                                 to
                                 toAddress
                                 val
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                decimals
                             }
                             time
                             totalFee
@@ -386,6 +457,14 @@ subscription statusChange($id: TransactionId!){
                                             txPointer
                                             utxoId
                                             witnessIndex
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on InputContract {
                                             balanceRoot
@@ -413,6 +492,7 @@ subscription statusChange($id: TransactionId!){
                                     isUpload
                                     maturity
                                     mintAmount
+                                    mintAmountUsd
                                     mintAssetId
                                     mintGasPrice
                                     outputs{
@@ -421,11 +501,27 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on CoinOutput {
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on ContractCreated {
                                             contract
@@ -440,6 +536,14 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                     }
                                     proofSet
@@ -522,6 +626,11 @@ subscription statusChange($id: TransactionId!){
                                 to
                                 toAddress
                                 val
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                decimals
                             }
                             time
                             totalFee
@@ -581,6 +690,11 @@ subscription statusChange($id: TransactionId!){
                 to
                 toAddress
                 val
+                name
+                symbol
+                suspicious
+                icon
+                decimals
             }
             time
             totalFee
@@ -651,6 +765,14 @@ subscription statusChange($id: TransactionId!){
                             txPointer
                             utxoId
                             witnessIndex
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on InputContract {
                             balanceRoot
@@ -678,6 +800,7 @@ subscription statusChange($id: TransactionId!){
                     isUpload
                     maturity
                     mintAmount
+                    mintAmountUsd
                     mintAssetId
                     mintGasPrice
                     outputContract{
@@ -691,11 +814,27 @@ subscription statusChange($id: TransactionId!){
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on CoinOutput {
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on ContractCreated {
                             contract
@@ -710,6 +849,14 @@ subscription statusChange($id: TransactionId!){
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                     }
                     policies{
@@ -778,6 +925,14 @@ subscription statusChange($id: TransactionId!){
                                             txPointer
                                             utxoId
                                             witnessIndex
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on InputContract {
                                             balanceRoot
@@ -805,6 +960,7 @@ subscription statusChange($id: TransactionId!){
                                     isUpload
                                     maturity
                                     mintAmount
+                                    mintAmountUsd
                                     mintAssetId
                                     mintGasPrice
                                     outputs{
@@ -813,11 +969,27 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on CoinOutput {
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on ContractCreated {
                                             contract
@@ -832,6 +1004,14 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                     }
                                     proofSet
@@ -915,6 +1095,11 @@ subscription statusChange($id: TransactionId!){
                                 to
                                 toAddress
                                 val
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                decimals
                             }
                             time
                             totalFee
@@ -978,6 +1163,14 @@ subscription statusChange($id: TransactionId!){
                                             txPointer
                                             utxoId
                                             witnessIndex
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on InputContract {
                                             balanceRoot
@@ -1005,6 +1198,7 @@ subscription statusChange($id: TransactionId!){
                                     isUpload
                                     maturity
                                     mintAmount
+                                    mintAmountUsd
                                     mintAssetId
                                     mintGasPrice
                                     outputs{
@@ -1013,11 +1207,27 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on CoinOutput {
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on ContractCreated {
                                             contract
@@ -1032,6 +1242,14 @@ subscription statusChange($id: TransactionId!){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                     }
                                     proofSet
@@ -1114,6 +1332,11 @@ subscription statusChange($id: TransactionId!){
                                 to
                                 toAddress
                                 val
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                decimals
                             }
                             time
                             totalFee
@@ -1172,6 +1395,11 @@ subscription statusChange($id: TransactionId!){
                 to
                 toAddress
                 val
+                name
+                symbol
+                suspicious
+                icon
+                decimals
             }
             time
             totalFee

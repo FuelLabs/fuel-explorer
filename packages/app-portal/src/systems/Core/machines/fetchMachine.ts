@@ -1,4 +1,5 @@
 import { toast } from '@fuels/ui';
+import { WarningToast } from 'app-commons';
 import type { TransitionConfig } from 'xstate';
 import { assign, createMachine } from 'xstate';
 
@@ -101,7 +102,12 @@ export const FetchMachine = {
         actions: {
           showError: (_, ev) => {
             if (!opts.showError) return;
-            const error = ev.data as any;
+            const error = ev.data as Error;
+            if (error instanceof WarningToast) {
+              toast.warning(error.message);
+              return;
+            }
+
             toast.error(error.message);
           },
           assignError: assign({

@@ -12,19 +12,24 @@ import { TxOutputContractCreated } from './TxOutputContractCreated';
 import { TxOutputContractOutput } from './TxOutputContractOutput';
 import type { TxOutputProps } from './types';
 
-function _TxOutput({ output, ...props }: TxOutputProps) {
+function _TxOutput({ output, getContractByIndex, txStatus }: TxOutputProps) {
   if (
     isOutput<GQLVariableOutput>(output, 'VariableOutput') ||
     isOutput<GQLChangeOutput>(output, 'ChangeOutput') ||
     isOutput<GQLCoinOutput>(output, 'CoinOutput')
   ) {
-    return <TxOutputCoin output={output} {...props} />;
+    return <TxOutputCoin output={output} txStatus={txStatus} />;
   }
   if (isOutput<GQLContractCreated>(output, 'ContractCreated')) {
-    return <TxOutputContractCreated output={output} {...props} />;
+    return <TxOutputContractCreated output={output} />;
   }
   if (isOutput<GQLContractOutput>(output, 'ContractOutput')) {
-    return <TxOutputContractOutput output={output} {...props} />;
+    return (
+      <TxOutputContractOutput
+        output={output}
+        getContractByIndex={getContractByIndex}
+      />
+    );
   }
 
   return null;

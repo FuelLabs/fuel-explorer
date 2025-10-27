@@ -1,6 +1,4 @@
-'use client';
-
-import type { ButtonProps } from '@radix-ui/themes/dist/cjs/components/button';
+import type { ButtonProps } from '@radix-ui/themes';
 
 import { Icon } from '../components/Icon/Icon';
 import type { IconComponent } from '../components/Icon/useIconContext';

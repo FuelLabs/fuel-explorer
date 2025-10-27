@@ -1,0 +1,15 @@
+.rt-SegmentedControlItem {
+  cursor: pointer;
+}
+
+.rt-SegmentedControlItem[data-state="off"] {
+  background-color: var(--gray-a4);
+}
+
+:root:is(.dark, .dark-theme) .rt-SegmentedControlItem[data-state="off"] {
+  background-color: var(--gray-a1);
+}
+
+.rt-SegmentedControlItem[data-state="on"]:hover {
+  background-color: var(--gray-a2);
+}

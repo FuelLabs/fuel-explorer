@@ -4,7 +4,6 @@ import {
   bridgeMachine,
   bridgeTxsMachine,
 } from '~portal/systems/Bridge/machines';
-import { ecosystemMachine } from '~portal/systems/Ecosystem/machines';
 import { overlayEvents } from '~portal/systems/Overlay/events';
 import { overlayMachine } from '~portal/systems/Overlay/machines';
 
@@ -24,7 +23,6 @@ export const store = store$
   .addMachine(Services.overlay, () => overlayMachine)
   .addMachine(Services.bridge, () => bridgeMachine)
   .addMachine(Services.bridgeTxs, () => bridgeTxsMachine)
-  .addMachine(Services.ecosystem, () => ecosystemMachine)
   .addMachine(Services.assets, () => assetsMachine)
   .addHandlers(overlayEvents)
   .addHandlers(bridgeEvents)

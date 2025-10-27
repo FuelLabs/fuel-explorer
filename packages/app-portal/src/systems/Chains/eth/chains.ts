@@ -1,9 +1,10 @@
-import { foundry, sepolia } from 'wagmi/chains';
+import { foundry, mainnet, sepolia } from 'wagmi/chains';
 
-type ChainName = typeof process.env.NEXT_PUBLIC_ETH_CHAIN_NAME;
-type Chains = typeof foundry | typeof sepolia;
+export type ChainName = 'foundry' | 'sepolia' | 'mainnet';
+type Chains = typeof foundry | typeof sepolia | typeof mainnet;
 
 export const ETH_CHAINS: Record<ChainName, Chains> = {
   foundry,
   sepolia,
+  mainnet,
 };

@@ -1,7 +1,6 @@
 import type { IResolvers } from '@graphql-tools/utils';
 import type { GraphQLContext } from '~/graphql/GraphQLContext';
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type Resolvers<Source> = IResolvers<Source, GraphQLContext, any, any>;
 
 export class ResolverAdapter<S> {

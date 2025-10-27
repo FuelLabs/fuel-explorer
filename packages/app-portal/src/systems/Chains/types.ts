@@ -1,5 +1,4 @@
-import type { FUEL_CHAIN } from 'app-commons';
-import type { ETH_CHAIN } from './config';
+import type { ETH_CHAIN, FUEL_CHAIN } from 'app-commons';
 
 export type SupportedChain = typeof ETH_CHAIN | typeof FUEL_CHAIN;
 

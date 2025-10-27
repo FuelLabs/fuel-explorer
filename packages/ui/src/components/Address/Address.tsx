@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 import { createComponent } from '../../utils/component';
@@ -11,6 +11,7 @@ import { Link } from '../Link';
 import { LoadingBox } from '../LoadingBox';
 import { LoadingWrapper } from '../LoadingWrapper';
 
+import { Tooltip } from '@radix-ui/themes';
 import type { UseFuelAddressOpts } from './useFuelAddress';
 import { useFuelAddress } from './useFuelAddress';
 
@@ -19,10 +20,11 @@ export type AddressBaseProps = {
   prefix?: ReactNode;
   full?: boolean;
   addressOpts?: UseFuelAddressOpts;
-  fixed?: UseFuelAddressOpts['fixed'];
+  isAccount?: boolean;
   linkProps?: AddressLinkProps;
   isLoading?: boolean;
   iconSize?: number;
+  hideCopyable?: boolean;
 };
 
 export type AddressLinkProps = Omit<LinkProps, 'children'>;
@@ -60,43 +62,41 @@ export const Address = createComponent<AddressProps, 'div'>({
       value,
       full,
       iconSize = 16,
-      fixed,
+      isAccount,
       prefix,
       className,
       addressOpts,
       linkProps,
       isLoading,
+      hideCopyable,
+      children,
       ...props
     },
   ) => {
     const classes = styles();
     const { address, short } = useFuelAddress(value || '', {
       ...addressOpts,
-      fixed,
+      isAccount,
     });
 
     return (
-      <HStack
-        gap="3"
-        align="center"
-        {...props}
-        className={classes.root({ className })}
-      >
-        <LoadingWrapper
-          isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-32 h-5 mt-1" />}
-          regularEl={
-            <HStack align="center" gap="1">
-              {prefix && <span className={classes.prefix()}>{prefix}</span>}
-              <Copyable
-                value={address}
-                className={classes.address()}
-                iconSize={iconSize}
-              >
+      <LoadingWrapper
+        isLoading={isLoading}
+        loadingEl={<LoadingBox className="w-32 h-4 mt-1" />}
+        regularEl={
+          <HStack
+            align="center"
+            gap="3"
+            {...props}
+            className={classes.root({ className })}
+          >
+            {prefix && <span className={classes.prefix()}>{prefix}</span>}
+            <Tooltip content={value} open={full ? false : undefined}>
+              <div>
                 {linkProps ? (
                   <Link
                     {...linkProps}
-                    className={cx('text-xs text-sm')}
+                    className={cx('text-sm text-link', linkProps.className)}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -105,7 +105,7 @@ export const Address = createComponent<AddressProps, 'div'>({
                       full={full}
                       address={address}
                       short={short}
-                      className="text-link"
+                      className="text-link underline"
                     />
                   </Link>
                 ) : (
@@ -116,11 +116,19 @@ export const Address = createComponent<AddressProps, 'div'>({
                     className="text-muted"
                   />
                 )}
-              </Copyable>
-            </HStack>
-          }
-        />
-      </HStack>
+              </div>
+            </Tooltip>
+            {children}
+            {!hideCopyable && (
+              <Copyable
+                value={address}
+                className={classes.address()}
+                iconSize={iconSize}
+              />
+            )}
+          </HStack>
+        }
+      />
     );
   },
 });

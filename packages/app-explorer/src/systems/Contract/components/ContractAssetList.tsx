@@ -1,4 +1,3 @@
-'use client';
 import type {
   GQLContractBalanceConnectionNodeFragment,
   Maybe,
@@ -11,15 +10,15 @@ import { ContractBalanceItem } from './ContractBalanceItem';
 
 type TabAssetsProps = {
   balances?: Maybe<GQLContractBalanceConnectionNodeFragment['edges']>;
+  isLoading?: boolean;
 };
 
-export function ContractAssetList({ balances }: TabAssetsProps) {
+export function ContractAssetList({ balances, isLoading }: TabAssetsProps) {
   const nonZeroBalances = balances?.filter(
     (contractBalance) => !bn(contractBalance.node.amount).isZero(),
   );
-
   return (
-    <VStack gap="4" className="mt-1">
+    <VStack gap="4" className="mt-0 tablet:mt-6">
       {!nonZeroBalances?.length && (
         <EmptyCard>
           <EmptyCard.Title>No Assets</EmptyCard.Title>
@@ -34,7 +33,8 @@ export function ContractAssetList({ balances }: TabAssetsProps) {
         return (
           <ContractBalanceItem
             key={contractBalance.cursor + JSON.stringify(contractBalance.node)}
-            {...contractBalance.node}
+            balanceItem={contractBalance.node}
+            isLoading={isLoading}
           />
         );
       })}

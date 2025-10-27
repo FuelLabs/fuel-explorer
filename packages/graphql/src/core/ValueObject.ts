@@ -1,7 +1,6 @@
 import { shallowEqual } from 'shallow-equal-object';
 
 interface ValueObjectProps {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   [index: string]: any;
 }
 

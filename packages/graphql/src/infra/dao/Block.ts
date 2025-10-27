@@ -11,14 +11,13 @@ export default class Block {
   producer: string | null;
   time: any;
   totalGasUsed: number;
+  totalFee: number;
   transactions: TransactionEntity[];
   timestamp: Date;
-  daHeight: number;
 
   constructor(block: any) {
-    this.id = parseInt(block.data.header.height);
+    this.id = Number.parseInt(block.data.header.height);
     this.blockHash = block.data.id;
-    this.daHeight = block.data.daHeight;
     this.data = block.data;
     const date = DateHelper.tai64toDate(block.data.header.time);
     this.timestamp = date.toDate();
@@ -29,8 +28,20 @@ export default class Block {
       rawUnix: date.unix().toString(),
     };
     this.totalGasUsed = 0;
-    for (const transaction of block.data.transactions) {
-      this.totalGasUsed += parseInt(transaction.status.totalGas);
+
+    const incomingFeeData = !!block.total_fee;
+    const incomingBlockData = !!block.gas_used;
+    this.totalFee = Number.parseInt(block.total_fee ?? 0);
+    this.totalGasUsed = Number.parseInt(block.gas_used ?? 0);
+    if (!incomingFeeData || !incomingBlockData) {
+      for (const transaction of block.data.transactions) {
+        if (!incomingFeeData)
+          this.totalFee += Number.parseInt(transaction.status?.totalFee ?? '0');
+        if (!incomingBlockData)
+          this.totalGasUsed += Number.parseInt(
+            transaction.status?.totalGas ?? '0',
+          );
+      }
     }
     const blockSignature =
       block.data.consensus.__typename === 'PoAConsensus'
@@ -41,7 +52,7 @@ export default class Block {
       const producerAddress = Signer.recoverAddress(
         block.data.id,
         blockSignature || '',
-      ).toB256();
+      ).toString();
       this.producer = new Address(producerAddress).raw() || null;
     }
     this.transactions = block.data.transactions.map((t: any, i: any) =>
@@ -61,6 +72,7 @@ export default class Block {
       producer: this.producer,
       time: this.time,
       totalGasUsed: `${this.totalGasUsed}`,
+      totalFee: `${this.totalFee}`,
       transactions: this.transactions.map((t) => t.toGQLNode()),
     };
   }

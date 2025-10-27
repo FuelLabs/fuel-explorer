@@ -77,7 +77,6 @@ export class TransactionEntity extends Entity<
     };
 
     const transactionEntity = new TransactionEntity(props, id);
-    // console.log(JSON.stringify(transactionEntity.operations));
     return transactionEntity;
   }
 
@@ -135,6 +134,22 @@ export class TransactionEntity extends Entity<
     };
   }
 
+  /**
+   * Lightweight representation for list views.
+   * Returns only the fields needed by the RecentTransaction GraphQL fragment.
+   * Use toGQLNode() for transaction detail pages that need full data.
+   */
+  toGQLListNode(): Partial<GQLTransaction> {
+    return {
+      _id: this._id.value(),
+      id: this.txHash,
+      title: this.title,
+      statusType: this.status.value(),
+      time: this.parsedTime,
+      gasCosts: this.gasCosts,
+    };
+  }
+
   get cursor() {
     return this._id.value();
   }
@@ -153,7 +168,11 @@ export class TransactionEntity extends Entity<
 
   get receipts() {
     const status = this.props.status.data();
-    if (status?.__typename !== 'SuccessStatus') return [];
+    if (
+      status?.__typename !== 'SuccessStatus' &&
+      status?.__typename !== 'FailureStatus'
+    )
+      return [];
     return status?.receipts ?? [];
   }
 

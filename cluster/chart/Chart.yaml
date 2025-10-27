@@ -1,0 +1,19 @@
+apiVersion: v2
+name: fuel-explorer-local
+type: application
+version: 0.2.5
+appVersion: "0.1.0"
+
+dependencies:
+  - name: postgresql
+    version: "12.x.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: rabbitmq
+    version: "11.x.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: rabbitmq.enabled
+  - name: fuel-explorer
+    version: "0.2.6"
+    repository: "file://../../helm/fuel-explorer"
+    condition: fuel-explorer.enabled

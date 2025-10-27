@@ -21,6 +21,8 @@ fragment TransactionStatus on TransactionStatus {
     }
   }
   ... on FailureStatus {
+    totalFee
+    totalGas
     time
     programState {
       data
@@ -35,6 +37,7 @@ fragment TransactionInput on Input {
   __typename
   ... on InputCoin {
     amount
+    amountInUsd
     assetId
     owner
     predicate
@@ -42,6 +45,12 @@ fragment TransactionInput on Input {
     txPointer
     utxoId
     witnessIndex
+    name
+    symbol
+    icon
+    contractId
+    decimals
+    suspicious
   }
   ... on InputContract {
     utxoId
@@ -65,7 +74,14 @@ fragment TransactionOutput on Output {
   ... on CoinOutput {
     to
     amount
+    amountInUsd
     assetId
+    name
+    symbol
+    icon
+    contractId
+    decimals
+    suspicious
   }
   ... on ContractOutput {
     inputIndex
@@ -74,12 +90,26 @@ fragment TransactionOutput on Output {
   ... on ChangeOutput {
     to
     amount
+    amountInUsd
     assetId
+    name
+    symbol
+    icon
+    contractId
+    decimals
+    suspicious
   }
   ... on VariableOutput {
     to
     amount
+    amountInUsd
     assetId
+    name
+    symbol
+    icon
+    contractId
+    decimals
+    suspicious
   }
   ... on ContractCreated {
     contract
@@ -116,6 +146,11 @@ fragment TransactionReceipt on Receipt {
   nonce
   contractId
   subId
+  name
+  symbol
+  icon
+  decimals
+  suspicious
 }
 
 fragment InnerReceiptItem on OperationReceipt {
@@ -144,11 +179,11 @@ fragment OperationItem on Operation {
     ...OperationReceiptItem
     receipts {
       ...OperationReceiptItem
-	  receipts {
+      receipts {
         ...OperationReceiptItem
-		receipts {
+        receipts {
           ...OperationReceiptItem
-		  receipts {
+          receipts {
             ...OperationReceiptItem
           }
         }
@@ -213,6 +248,7 @@ fragment TransactionItem on Transaction {
   blockHeight
   gasCosts {
     fee
+    feeInUsd
     gasUsed
   }
   groupedInputs {
@@ -221,12 +257,12 @@ fragment TransactionItem on Transaction {
     ...TxDetailsGroupedInputCoin
     ...TxDetailsGroupedInputMessage
   }
- groupedOutputs {
-   __typename
-   ...TxDetailsGroupedOutputCoin
-   ...TxDetailsGroupedOutputChanged
-   ...TxDetailsGroupedOutputContractCreated
- }
+  groupedOutputs {
+    __typename
+    ...TxDetailsGroupedOutputCoin
+    ...TxDetailsGroupedOutputChanged
+    ...TxDetailsGroupedOutputContractCreated
+  }
   operations {
     ...OperationItem
   }
@@ -249,6 +285,14 @@ fragment TransactionItem on Transaction {
   isScript
   isCreate
   isMint
+  mintedAsset {
+    assetId
+    name
+    symbol
+    icon
+    contractId
+    subId
+  }
   witnesses
   receiptsRoot
   script
@@ -258,6 +302,7 @@ fragment TransactionItem on Transaction {
   storageSlots
   rawPayload
   mintAmount
+  mintAmountUsd
   mintAssetId
   inputContract {
     contractId

@@ -7,7 +7,9 @@ import type { HexAddress } from 'app-commons';
 export type BridgeTokenContracts = {
   ETH_ERC20: string;
   FUEL_TokenContract: string;
-  FUEL_TokenAsset?: string;
+  FUEL_TokenAsset: string;
+  USDC_ERC20: string;
+  USDC_FUEL_Asset: string;
 };
 export type BridgeSolidityContracts = {
   FuelChainState: HexAddress;
@@ -25,7 +27,7 @@ export async function getBridgeTokenContracts() {
     },
   });
   const body = await res.json();
-  return body;
+  return body as BridgeTokenContracts;
 }
 
 export async function getBridgeSolidityContracts() {

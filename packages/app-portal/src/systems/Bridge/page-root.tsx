@@ -3,7 +3,7 @@ import { Bridge, BridgeHome } from './pages';
 
 export function BridgePage() {
   return (
-    <Flex justify="center">
+    <Flex align="center" direction="column">
       <BridgeHome>
         <Bridge />
       </BridgeHome>

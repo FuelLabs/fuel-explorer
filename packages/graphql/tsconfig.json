@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@fuels/ts-config/base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "strictNullChecks": true,
     "skipLibCheck": true,
@@ -21,7 +21,7 @@
     "baseUrl": "./",
     "paths": {
       "~/*": ["src/*"]
-    },
+    }
   },
   "exclude": ["node_modules", "generated"],
   "include": ["src", "scripts", "*.config.*", "codegen.*"]

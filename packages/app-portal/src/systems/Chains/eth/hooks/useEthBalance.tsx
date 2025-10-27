@@ -8,6 +8,9 @@ export function useEthBalance(token?: HexAddress) {
     token,
     query: {
       refetchInterval: 5000,
+      meta: {
+        persist: false,
+      },
     },
   });
 

@@ -7,13 +7,13 @@ import {
   Text,
   VStack,
   createComponent,
-  useBreakpoints,
 } from '@fuels/ui';
-import NextLink from 'next/link';
 
 import { IconCode } from '@tabler/icons-react';
+import { Routes as CommonRoutes } from 'app-commons';
 import { Routes } from '~/routes';
-import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
+import { TxContractIcon } from '../../TxContractIcon/TxContractIcon';
+import { TxIcon } from '../../TxIcon/TxIcon';
 import { styles } from './styles';
 import type { TxInputContractProps } from './types';
 
@@ -23,9 +23,7 @@ export const TxInputContract = createComponent<
 >({
   id: 'TxInputContract',
   render: (_, { input, ...props }) => {
-    const { utxoId, balanceRoot, txPointer, contractId } = input;
-    const { isMobile } = useBreakpoints();
-    const trim = isMobile ? 8 : 16;
+    const { utxoId, balanceRoot, txPointer, contractId = '' } = input;
     const classes = styles();
 
     return (
@@ -40,30 +38,24 @@ export const TxInputContract = createComponent<
               CONTRACT
             </Badge>
             <HStack className="items-center justify-center gap-4">
-              <TxIcon type="ContractCall" status="Submitted" />
+              <TxContractIcon contractId={contractId}>
+                <TxIcon type="ContractCall" status="Submitted" />
+              </TxContractIcon>
               <VStack className="flex-1" gap="0">
-                <Address
-                  prefix="Address:"
-                  value={contractId}
-                  className="text-white"
-                  addressOpts={
-                    isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
-                  }
-                  linkProps={{
-                    as: NextLink,
-                    href: Routes.contractAssets(contractId),
-                  }}
-                />
+                {!!contractId && (
+                  <Address
+                    prefix="Address:"
+                    value={contractId}
+                    linkProps={{
+                      href: Routes.contractMintedAssets(contractId),
+                    }}
+                  />
+                )}
                 <Address
                   prefix="Utxo Id:"
                   value={utxoId}
-                  className="text-white"
-                  addressOpts={
-                    isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
-                  }
                   linkProps={{
-                    as: NextLink,
-                    href: Routes.txSimple(utxoId?.slice(0, -4)),
+                    href: CommonRoutes.txSimple(utxoId?.slice(0, -4)),
                   }}
                 />
               </VStack>
@@ -76,32 +68,31 @@ export const TxInputContract = createComponent<
           </Collapsible.Title>
           <Collapsible.Body className="p-0">
             <VStack className="p-2 px-4">
-              <Address
-                prefix="ID:"
-                value={contractId}
-                className={classes.contractAddress()}
-                addressOpts={{ trimLeft: trim, trimRight: trim }}
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.contractCode(contractId),
-                }}
-              />
+              {!!contractId && (
+                <Address
+                  prefix="ID:"
+                  value={contractId}
+                  className={classes.contractAddress()}
+                  linkProps={{
+                    href: Routes.contractCode(contractId),
+                  }}
+                />
+              )}
               <Address
                 prefix="UTXO ID:"
                 value={utxoId}
                 className={classes.contractAddress()}
-                addressOpts={{ trimLeft: trim, trimRight: trim }}
               />
-              <Address
-                prefix="Balance Root:"
-                value={balanceRoot}
-                className={classes.contractAddress()}
-                addressOpts={{ trimLeft: trim, trimRight: trim }}
-                linkProps={{
-                  as: NextLink,
-                  href: Routes.contractAssets(contractId),
-                }}
-              />
+              {!!contractId && (
+                <Address
+                  prefix="Balance Root:"
+                  value={balanceRoot}
+                  className={classes.contractAddress()}
+                  linkProps={{
+                    href: Routes.contractMintedAssets(contractId),
+                  }}
+                />
+              )}
               <HStack gap="1">
                 <Text className="text-xs text-secondary font-mono mr-px">
                   Tx Pointer:

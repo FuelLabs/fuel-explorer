@@ -1,7 +1,6 @@
-// biome-ignore lint/correctness/noUnusedVariables: <explanation>
-import { promises as fs } from 'fs';
-import path from 'path';
-import * as url from 'url';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import * as url from 'node:url';
 import { globby } from 'globby';
 import _ from 'lodash';
 import prettier from 'prettier';
@@ -86,6 +85,7 @@ async function getAllComponents() {
       '**/use**.ts',
       '!**/*.stories.tsx',
       '!**/*.test.{tsx,ts}',
+      '!tests/**/*.{tsx,ts}',
       '!**/styles.ts',
     ],
     {

@@ -1,0 +1,5 @@
+query transactionExists($id: TransactionId!) {
+  transaction(id: $id) {
+    id
+  }
+}

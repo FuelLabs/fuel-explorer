@@ -7,7 +7,7 @@ type CopyButtonProps = ButtonProps & {
   text?: string;
 };
 
-const COPY_ICON_SIZES = {
+const COPY_ICON_SIZES: Record<string, number> = {
   '1': 15,
   '2': 19,
   '3': 24,

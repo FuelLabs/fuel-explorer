@@ -28,6 +28,7 @@ export const BridgeTxListNotConnected = ({
               color="green"
               className={classes.connectButton()}
               onClick={onClick}
+              aria-label="Connect Fuel Wallet"
             >
               Connect Fuel Wallet
             </Button>

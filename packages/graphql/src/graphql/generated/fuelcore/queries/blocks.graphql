@@ -59,6 +59,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                             txPointer
                             utxoId
                             witnessIndex
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on InputContract {
                             balanceRoot
@@ -86,6 +94,7 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                     isUpload
                     maturity
                     mintAmount
+                    mintAmountUsd
                     mintAssetId
                     mintGasPrice
                     outputContract{
@@ -99,11 +108,27 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on CoinOutput {
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                         ... on ContractCreated {
                             contract
@@ -118,6 +143,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                             amount
                             assetId
                             to
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            contractId
+                            decimals
+                            rate
+                            amountInUsd
                         }
                     }
                     policies{
@@ -186,6 +219,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                             txPointer
                                             utxoId
                                             witnessIndex
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on InputContract {
                                             balanceRoot
@@ -213,6 +254,7 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                     isUpload
                                     maturity
                                     mintAmount
+                                    mintAmountUsd
                                     mintAssetId
                                     mintGasPrice
                                     outputs{
@@ -221,11 +263,27 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on CoinOutput {
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on ContractCreated {
                                             contract
@@ -240,6 +298,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                     }
                                     proofSet
@@ -323,6 +389,11 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                 to
                                 toAddress
                                 val
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                decimals
                             }
                             time
                             totalFee
@@ -386,6 +457,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                             txPointer
                                             utxoId
                                             witnessIndex
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on InputContract {
                                             balanceRoot
@@ -413,6 +492,7 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                     isUpload
                                     maturity
                                     mintAmount
+                                    mintAmountUsd
                                     mintAssetId
                                     mintGasPrice
                                     outputs{
@@ -421,11 +501,27 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on CoinOutput {
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                         ... on ContractCreated {
                                             contract
@@ -440,6 +536,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                             amount
                                             assetId
                                             to
+                                            name
+                                            symbol
+                                            suspicious
+                                            icon
+                                            contractId
+                                            decimals
+                                            rate
+                                            amountInUsd
                                         }
                                     }
                                     proofSet
@@ -522,6 +626,11 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                 to
                                 toAddress
                                 val
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                decimals
                             }
                             time
                             totalFee
@@ -605,6 +714,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                         txPointer
                         utxoId
                         witnessIndex
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                     ... on InputContract {
                         balanceRoot
@@ -632,6 +749,7 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                 isUpload
                 maturity
                 mintAmount
+                mintAmountUsd
                 mintAssetId
                 mintGasPrice
                 outputContract{
@@ -645,11 +763,27 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                         amount
                         assetId
                         to
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                     ... on CoinOutput {
                         amount
                         assetId
                         to
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                     ... on ContractCreated {
                         contract
@@ -664,6 +798,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                         amount
                         assetId
                         to
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                 }
                 policies{
@@ -739,6 +881,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                         txPointer
                                         utxoId
                                         witnessIndex
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on InputContract {
                                         balanceRoot
@@ -766,6 +916,7 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                 isUpload
                                 maturity
                                 mintAmount
+                                mintAmountUsd
                                 mintAssetId
                                 mintGasPrice
                                 outputContract{
@@ -779,11 +930,27 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on CoinOutput {
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on ContractCreated {
                                         contract
@@ -798,6 +965,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                 }
                                 policies{
@@ -887,6 +1062,11 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                             to
                             toAddress
                             val
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            decimals
                         }
                         time
                         totalFee
@@ -957,6 +1137,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                         txPointer
                                         utxoId
                                         witnessIndex
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on InputContract {
                                         balanceRoot
@@ -984,6 +1172,7 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                 isUpload
                                 maturity
                                 mintAmount
+                                mintAmountUsd
                                 mintAssetId
                                 mintGasPrice
                                 outputContract{
@@ -997,11 +1186,27 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on CoinOutput {
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on ContractCreated {
                                         contract
@@ -1016,6 +1221,14 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                 }
                                 policies{
@@ -1104,6 +1317,11 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
                             to
                             toAddress
                             val
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            decimals
                         }
                         time
                         totalFee
@@ -1134,6 +1352,9 @@ query blocks($after: String, $before: String, $first: Int, $last: Int){
             hasNextPage
             hasPreviousPage
             startCursor
+            startCount
+            endCount
+            totalCount
         }
     }
 }

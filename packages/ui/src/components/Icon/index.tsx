@@ -1,5 +1,3 @@
-'use client';
-
 export { Icon } from './Icon';
 
 export type { IconBaseProps, IconProps } from './Icon';

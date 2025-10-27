@@ -1,11 +1,14 @@
-'use client';
+import { findAssetById } from 'app-commons';
+import type { Asset } from 'fuels';
 import { useMemo } from 'react';
-import { findAssetById } from '~/systems/Core/utils/asset';
+import { useVerifiedAssets } from './useVerifiedAssets';
 
-export function useAsset(assetId?: string) {
-  return useMemo(() => {
+export function useAsset(assetId?: string): Asset | null {
+  const { data: verifiedAssets } = useVerifiedAssets();
+
+  return useMemo<Asset | null>(() => {
     if (!assetId) return null;
-    const found = findAssetById(assetId);
+    const found = findAssetById({ assetId, assets: verifiedAssets });
     return {
       assetId,
       name: found?.name ?? 'Unknown Asset',
@@ -13,5 +16,5 @@ export function useAsset(assetId?: string) {
       icon: found?.icon || '',
       networks: found?.networks ?? [],
     };
-  }, [assetId]);
+  }, [assetId, verifiedAssets]);
 }

@@ -20,7 +20,7 @@ export function act<InputType extends z.ZodTypeAny, ResponseType>(
     const result = validator.safeParse(input);
 
     if (!result.success) {
-      const validatedError = fromZodError(result.error);
+      const validatedError = fromZodError((result as any).error);
       throw validatedError;
     }
     return await action(input);

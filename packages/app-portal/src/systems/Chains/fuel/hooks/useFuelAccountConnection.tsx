@@ -1,17 +1,18 @@
-'use client';
 import {
   useAccount,
+  useAssets,
   useBalance,
   useConnectUI,
+  useCurrentConnector,
   useDisconnect,
   useFuel,
-  useIsConnected,
   useWallet,
 } from '@fuels/react';
-import { Address } from 'fuels';
+import { findAssetById } from 'app-commons';
+import { Address, type Asset } from 'fuels';
 import { useMemo } from 'react';
 import { store } from '~portal/store';
-import type { AssetFuel } from '~portal/systems/Assets/utils';
+import { useIsNonNativeConnector } from '~portal/systems/Bridge/hooks/useIsNonNativeConnector';
 import { useFuelNetwork } from '~portal/systems/Settings/providers/FuelNetworkProvider';
 
 export const useFuelAccountConnection = (props?: { assetId?: string }) => {
@@ -22,16 +23,26 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
   const { balance, isLoading: isLoadingBalance } = useBalance({
     assetId,
     address: account || undefined,
+    query: {
+      refetchInterval: 3000,
+      meta: {
+        persist: false,
+      },
+    },
   });
 
-  const { isLoading: isLoadingConnected, isConnected } = useIsConnected();
   const { disconnect, isPending: isLoadingDisconnecting } = useDisconnect();
-  const { wallet, isLoading: isLoadingWallet } = useWallet(account);
+  const { wallet, isLoading: isLoadingWallet } = useWallet({ account });
+  const { currentConnector } = useCurrentConnector();
+  const { assets, refetch } = useAssets();
+
+  const { isNonNative } = useIsNonNativeConnector();
 
   const {
     connect,
     error,
     isConnecting,
+    isConnected,
     isLoading: isLoadingConnectUI,
   } = useConnectUI();
 
@@ -39,7 +50,6 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     isLoadingProvider ||
     isLoadingAccount ||
     isLoadingBalance ||
-    isLoadingConnected ||
     isLoadingDisconnecting ||
     isLoadingWallet ||
     isLoadingConnectUI;
@@ -49,33 +59,47 @@ export const useFuelAccountConnection = (props?: { assetId?: string }) => {
     [account],
   );
 
-  function addAsset(asset: AssetFuel) {
-    const { decimals, assetId, icon, symbol, name, chainId, contractId } =
-      asset;
+  async function addAsset(asset: Asset) {
+    if (!asset || currentConnector?.external) {
+      return;
+    }
+    const hasAdded = await fuel?.addAsset(asset);
+    if (hasAdded) {
+      refetch();
+    }
+  }
 
-    fuel?.addAsset({
-      icon: icon ?? '',
-      name,
-      symbol,
-      networks: [{ type: 'fuel', assetId, chainId, decimals, contractId }],
-    });
+  function hasAsset(assetId: string) {
+    return findAssetById({ assetId, assets });
+  }
+
+  function handleDisconnect() {
+    if (isNonNative) {
+      connect();
+      return;
+    }
+
+    disconnect();
   }
 
   return {
     handlers: {
       connect,
-      disconnect,
+      disconnect: handleDisconnect,
       closeDialog: store.closeOverlay,
       addAsset,
     },
     account: account || undefined,
     address,
     isConnected,
+    isNonNative,
     error,
     isLoadingConnection,
     isConnecting,
     provider: fuelProvider,
     balance,
     wallet: wallet || undefined,
+    hasAsset,
+    external: currentConnector?.external,
   };
 };

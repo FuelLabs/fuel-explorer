@@ -1,8 +1,12 @@
-import { getPredicate } from '../../actions/get-predicate';
+import type { GQLPredicateItem, Maybe } from '@fuel-explorer/graphql';
 
 import { AccountTabs } from './AccountTabs';
 
-export async function AccountsTabsSync({ id }: { id: string }) {
-  const predicate = await getPredicate({ owner: id });
+type AccountTabsSyncProps = {
+  id: string;
+  predicate: Maybe<GQLPredicateItem> | undefined;
+};
+
+export function AccountsTabsSync({ id, predicate }: AccountTabsSyncProps) {
   return <AccountTabs address={id} isPredicate={!!predicate?.bytecode} />;
 }

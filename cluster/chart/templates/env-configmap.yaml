@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fuel-explorer-local
+data:
+  NODE_TLS_REJECT_UNAUTHORIZED: "0"
+  LOG_DIR: "/tmp"
+  SERVER_PORT: "3000"
+  SERVER_API_KEY: "nZ9GZayrd8"
+  SYNCER_PORT: "3001"
+  SYNC_MISSING: "true"
+  SERVER_BUILD: "true"
+  SYNC_OFFSET: "10"
+  SYNC_LIMIT: "100"
+  QUEUE_CONCURRENCY: "5"
+  WATCH_INTERVAL: "5000"
+  FUEL_PROVIDER: "http://testnet.fuel.network/v1/graphql"
+  DB_HOST: "fuel-explorer-local-postgres"
+  DB_PORT: "5432"
+  DB_USER: "postgres"
+  DB_NAME: "fuel_explorer"
+  DB_HOST_REPLICA: "fuel-explorer-local-postgres"
+  DB_PORT_REPLICA: "5432"
+  DB_USER_REPLICA: "postgres"
+  DB_NAME_REPLICA: "fuel_explorer"
+  RABBITMQ_HOST: "fuel-explorer-local-rabbitmq"
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_USER: "rabbitmq"
+  SSL: "false"
+  DEBUG: "true"

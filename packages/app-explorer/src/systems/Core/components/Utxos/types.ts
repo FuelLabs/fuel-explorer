@@ -5,4 +5,5 @@ export type UtxoItemType = Partial<Omit<TUtxoItem, '__typename'>>;
 export type UtxosProps = BoxProps & {
   assetId?: string;
   items?: UtxoItemType[] | null;
+  decimals?: string | null;
 };

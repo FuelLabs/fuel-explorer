@@ -53,7 +53,7 @@ export const Link = createPolymorphicComponent<LinkProps, typeof RadixLink>({
           {children}
           {isExternal && ExternalIcon && (
             <Icon
-              className="text-inherit"
+              className="!text-inherit"
               icon={ExternalIcon}
               size={iconSize}
             />

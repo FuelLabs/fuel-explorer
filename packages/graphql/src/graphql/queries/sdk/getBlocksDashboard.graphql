@@ -1,10 +1,14 @@
-query getBlocksDashboard{
-    getBlocksDashboard{
-        nodes {
-            timestamp
-            gasUsed
-            blockNo
-            producer
-        }
+query getBlocksDashboard {
+  getBlocksDashboard {
+    nodes {
+      timestamp
+      gasUsed
+      gasUsedInUsd
+      totalFee
+      totalFeeInUsd
+      blockNo
+      producer
+      blockHash
     }
+  }
 }

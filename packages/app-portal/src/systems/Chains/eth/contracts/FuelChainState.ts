@@ -1,5 +1,10 @@
 import { FuelChainState } from '@fuel-bridge/solidity-contracts';
-import { type HexAddress, getBridgeSolidityContracts } from 'app-commons';
+import {
+  FUEL_INDEXER_API,
+  type HexAddress,
+  IS_FUEL_DEV_CHAIN,
+  getBridgeSolidityContracts,
+} from 'app-commons';
 import type { PublicClient } from 'viem';
 
 export const FUEL_CHAIN_STATE = {
@@ -8,8 +13,31 @@ export const FUEL_CHAIN_STATE = {
     ethPublicClient,
   }: {
     ethPublicClient: PublicClient;
-  }) => {
+  }): Promise<{ ethBlockHash: string; fuelBlockHash: string }[]> => {
+    // AVG block time in Ethereum is 13 seconds, so we use 10 seconds for safety
+    // THIS CALCULATION CAN CHANGE, IF ETH STARTS TO PRODUCE BLOCKS FASTER
+    // Get only the last ~8 days worth of logs
+    // Seconds in a day = 86400
+    // Number of blocks in a 7 days = (86400 * 7) / 13
+    const blockHeight = (86400 * 7) / 10;
+    const currentBlockHeight = await ethPublicClient.getBlockNumber();
+    const fromBlock = currentBlockHeight - BigInt(blockHeight);
     const bridgeSolidityContracts = await getBridgeSolidityContracts();
+
+    if (!IS_FUEL_DEV_CHAIN && FUEL_INDEXER_API) {
+      const url = new URL(`${FUEL_INDEXER_API}/bridge/block/hashes`);
+      url.searchParams.set('address', bridgeSolidityContracts.FuelChainState);
+      url.searchParams.set('from_block', fromBlock.toString());
+
+      const response = await fetch(url.toString());
+      const data = await response.json();
+      const committedBlockHashes = data.map((item: any) => ({
+        ethBlockHash: item.ethBlockHash,
+        fuelBlockHash: item.fuelBlockHash,
+      }));
+      return committedBlockHashes;
+    }
+
     const abiCommitSubmitted = FUEL_CHAIN_STATE.abi.find(
       ({ name, type }) => name === 'CommitSubmitted' && type === 'event',
     );
@@ -20,23 +48,43 @@ export const FUEL_CHAIN_STATE = {
         name: 'CommitSubmitted',
         inputs: abiCommitSubmitted?.inputs || [],
       },
-      fromBlock: 'earliest',
+      fromBlock: fromBlock > 0n ? fromBlock : 0n,
+      toBlock: 'latest',
     });
 
-    return logs;
+    const committedBlockHashes = logs.map(({ blockHash, args }) => ({
+      ethBlockHash: blockHash,
+      fuelBlockHash: (args as { blockHash: string }).blockHash,
+    }));
+
+    return committedBlockHashes;
   },
   getLastBlockCommited: async ({
     ethPublicClient,
   }: {
     ethPublicClient: PublicClient;
   }) => {
-    const logs = await FUEL_CHAIN_STATE.getCommitSubmitted({ ethPublicClient });
-    const lastCommitBlockHash = logs[logs.length - 1]?.blockHash;
-    const lastBlockCommited = await ethPublicClient.getBlock({
-      blockHash: lastCommitBlockHash as HexAddress,
+    const committedBlockHashes = await FUEL_CHAIN_STATE.getCommitSubmitted({
+      ethPublicClient,
+    });
+    const lastCommitBlockHash =
+      committedBlockHashes[committedBlockHashes.length - 1];
+    const lastBlockCommitted = await ethPublicClient.getBlock({
+      blockHash: lastCommitBlockHash.ethBlockHash as HexAddress,
     });
 
-    return lastBlockCommited;
+    return lastBlockCommitted;
+  },
+  getLastBlockFinalized: async ({
+    ethPublicClient,
+  }: {
+    ethPublicClient: PublicClient;
+  }) => {
+    const [latestFinalizedBlockHash] =
+      await FUEL_CHAIN_STATE.getCommitSubmitted({
+        ethPublicClient,
+      });
+    return latestFinalizedBlockHash;
   },
   getBlockCommited: async ({
     ethPublicClient,
@@ -45,13 +93,14 @@ export const FUEL_CHAIN_STATE = {
     ethPublicClient: PublicClient;
     fuelBlockHashCommited: string;
   }) => {
-    const logs = await FUEL_CHAIN_STATE.getCommitSubmitted({ ethPublicClient });
+    const committedBlockHashes = await FUEL_CHAIN_STATE.getCommitSubmitted({
+      ethPublicClient,
+    });
     let ethBlockHash: HexAddress | undefined = undefined;
-    for (let i = logs.length - 1; i >= 0; i--) {
-      const log = logs[i];
-      const args = log.args as unknown as { blockHash: string };
-      if (args.blockHash === fuelBlockHashCommited) {
-        ethBlockHash = log.blockHash as HexAddress;
+    for (let i = committedBlockHashes.length - 1; i >= 0; i--) {
+      const blockHash = committedBlockHashes[i];
+      if (blockHash.fuelBlockHash === fuelBlockHashCommited) {
+        ethBlockHash = blockHash.ethBlockHash as HexAddress;
         break;
       }
     }
