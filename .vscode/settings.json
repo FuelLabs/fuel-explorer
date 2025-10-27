@@ -7,6 +7,12 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.next/**": true,
+    "**/.turbo/**": true
+  },
   "tailwindCSS.experimental.classRegex": [
     ["tv\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
@@ -21,5 +27,7 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+  "jest.jestCommandLine": "pnpm test",
+  "npm.packageManager": "pnpm"
 }
