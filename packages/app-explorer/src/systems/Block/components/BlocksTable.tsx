@@ -1,7 +1,6 @@
-import { GQLBlocksQuery } from '@fuel-explorer/graphql';
+import type { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { GridTable } from '@fuels/ui';
 import { Link } from '@fuels/ui';
-import NextLink from 'next/link';
 import BlockEfficiencyItem from './BlockEfficiencyItem';
 import BlockHashItem from './BlockHashItem';
 import BlockItem from './BlockItem';
@@ -16,12 +15,11 @@ const columns = [
       </div>
     ),
     cell: (row: any) => {
-      const totalGasUsed = (
-        parseFloat(row.node.totalGasUsed) /
-        10 ** 9
-      ).toString();
       return (
-        <BlockItem blockId={row.node.header.height} ethValue={totalGasUsed} />
+        <BlockItem
+          blockId={row.node.header.height}
+          totalFee={Number(row.node.totalFee || 0)}
+        />
       );
     },
     sortable: false,
@@ -151,7 +149,7 @@ const columns = [
     ),
     cell: (row: any) => (
       <div className="w-[6.8rem]">
-        <BlockEfficiencyItem current={row.node.totalGasUsed} total={30000000} />
+        <BlockEfficiencyItem current={row.node.totalFee} total={30000000} />
       </div>
     ),
     sortable: false,
@@ -178,7 +176,6 @@ const columns = [
     name: '',
     cell: (row: any) => (
       <Link
-        as={NextLink}
         isExternal={false}
         href={`/block/${row.node.header.height}/simple`}
         className="px-4 py-[0.4rem] bg-gray-3 hover:bg-black hover:text-white dark:hover:bg-brand text-black dark:text-white rounded font-semibold font-mono"

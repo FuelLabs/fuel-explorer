@@ -9,7 +9,11 @@ export class GraphQLSDK {
   sdk: ReturnType<typeof getSdk>;
 
   constructor() {
-    this.client = new GraphQLClient(env.get('FUEL_PROVIDER'));
+    const provider = env.get('FUEL_PROVIDER');
+    if (!provider) {
+      throw new Error('Missing FUEL_PROVIDER');
+    }
+    this.client = new GraphQLClient(provider);
     this.sdk = getSdk(this.client);
   }
 }

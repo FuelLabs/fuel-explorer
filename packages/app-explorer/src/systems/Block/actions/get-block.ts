@@ -1,5 +1,3 @@
-'use server';
-
 import { z } from 'zod';
 import { act } from '~/systems/Core/utils/act-server';
 import { isValidAddress } from '~/systems/Core/utils/address';

@@ -12,11 +12,11 @@ import { useWindowSize } from 'react-use';
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
-import {
-  type AsChildProp,
+import type {
+  AsChildProp,
   BaseProps,
-  type PropsOf,
-  type WithAsProps,
+  PropsOf,
+  WithAsProps,
 } from '../../utils/types';
 import { Badge } from '../Badge/Badge';
 import { Box, HStack } from '../Box';

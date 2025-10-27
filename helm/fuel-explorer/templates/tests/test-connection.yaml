@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "fuel-explorer.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "fuel-explorer.fullname" . }}:{{ .Values.api.service.port }}']
   restartPolicy: Never

@@ -1,6 +1,6 @@
 import { logger } from '~/core/Logger';
 import { client } from '~/graphql/GraphQLSDK';
-import {
+import type {
   GQLBlock,
   GQLContractCreated,
   GQLInput,
@@ -12,16 +12,18 @@ import {
 import Block from '~/infra/dao/Block';
 import Transaction from '~/infra/dao/Transaction';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
-import IndexAsset from './IndexAsset';
+import IndexAsset from './IndexAsset/IndexAsset';
+import IndexReceipts from './IndexReceipt';
 
 export default class NewAddBlockRange {
   async execute(input: Input) {
     const indexAsset = new IndexAsset();
+    const indexReceipts = new IndexReceipts();
     const { from, to } = input;
-    logger.info(`🔗 Syncing blocks: #${from} - #${to}`);
+    logger.debug('Consumer', `Syncing blocks: #${from} - #${to}`);
     const blocksData = await this.getBlocks(from, to);
     if (blocksData.length === 0) {
-      logger.info(`🔗 No blocks to sync: #${from} - #${to}`);
+      logger.debug('Consumer', `No blocks to sync: #${from} - #${to}`);
       return;
     }
     const start = performance.now();
@@ -31,14 +33,17 @@ export default class NewAddBlockRange {
       const block = new Block({ data: blockData });
       queries.push({
         statement:
-          'insert into indexer.blocks (_id, id, timestamp, data, gas_used, producer) values ($1, $2, $3, $4, $5, $6) on conflict do nothing',
+          'insert into indexer.blocks (_id, id, timestamp, data, gas_used, total_fee, producer, transactions_count, da_height) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict do nothing',
         params: [
           block.id,
           block.blockHash,
           block.timestamp,
           block.data,
           block.totalGasUsed,
+          block.totalFee,
           block.producer,
+          block.transactions.length,
+          block.data.header.daHeight,
         ],
       });
       for (const [index, transactionData] of blockData.transactions.entries()) {
@@ -54,6 +59,11 @@ export default class NewAddBlockRange {
             transaction.blockId,
           ],
         });
+        try {
+          await indexReceipts.execute(transaction);
+        } catch (e: any) {
+          logger.error('Consumer', 'Error indexing receipts', e);
+        }
         const accounts = this.getAccounts(transactionData);
         for (const accountHash of accounts) {
           queries.push({
@@ -69,9 +79,9 @@ export default class NewAddBlockRange {
         }
         if (transaction.data?.status?.receipts) {
           try {
-            await indexAsset.execute(transaction.data);
+            await indexAsset.execute(transaction);
           } catch (e: any) {
-            logger.error('Error fetching assets', e);
+            logger.error('Consumer', 'Error fetching assets', e);
           }
         }
         if (transactionData.inputs) {
@@ -98,6 +108,19 @@ export default class NewAddBlockRange {
                 'insert into indexer.outputs (transaction_id, data) values ($1, $2) on conflict do nothing',
               params: [transaction.id, outputData],
             });
+            if (
+              (outputData.__typename === 'CoinOutput' ||
+                outputData.__typename === 'ChangeOutput' ||
+                outputData.__typename === 'VariableOutput') &&
+              outputData.assetId &&
+              outputData.to &&
+              outputData.amount === '1'
+            ) {
+              queries.push({
+                statement: `update indexer.assets_contracts set owner = $1 where asset_id = $2 and decimals = 0 and total_supply = '1'`,
+                params: [outputData.to, outputData.assetId],
+              });
+            }
           }
           const contractIds = this.getContractIds(transactionData.outputs);
           for (const contractId of contractIds) {
@@ -113,11 +136,13 @@ export default class NewAddBlockRange {
           }
         }
       }
+      logger.debug('Consumer', `Persisting block: ${block.id}`);
       await connection.executeTransaction(queries);
+      logger.debug('Consumer', `Persisted block: ${block.id}`);
     }
     const end = performance.now();
     const secs = Number.parseInt(`${(end - start) / 1000}`);
-    logger.info(`✅ Synced blocks: #${from} - #${to} (${secs}s)`);
+    logger.debug('Consumer', `Synced blocks: #${from} - #${to} (${secs}s)`);
   }
 
   async getBlocks(from: number, to: number): Promise<GQLBlock[]> {
@@ -129,8 +154,34 @@ export default class NewAddBlockRange {
       first: first < 0 ? -first : first,
       ...(after ? { after: String(after) } : null),
     };
+    logger.debug('Consumer', `Fetching blocks: #${from} - #${to}`);
     const { data } = await client.sdk.blocks(params);
-    logger.info(`🔗 Fetching blocks: #${from} - #${to}`);
+    // checking transactions integrity
+    for (const block of data.blocks.nodes) {
+      for (const transaction of block.transactions) {
+        if (!transaction.status) {
+          logger.debug('Consumer', `Error fetching blocks: #${from} - #${to}`);
+          throw new Error(`Error fetching blocks: #${from} - #${to}`);
+        }
+        // Hydrate block on tx so transaction on database keeps blocks in the database
+        if (
+          ['FailureStatus', 'SuccessStatus'].includes(
+            transaction.status.__typename,
+          )
+        ) {
+          (transaction.status as any).block = {
+            ...block,
+            transactions: [],
+            transactionIds: [],
+          };
+        }
+      }
+      // Hydrate block on transaction so transaction on database keeps blocks in the database
+      (block as any).transactionIds = block.transactions.map(
+        (transaction) => transaction.id,
+      );
+    }
+    logger.debug('Consumer', `Blocks fetched: #${from} - #${to}`);
     return data.blocks.nodes as GQLBlock[];
   }
 

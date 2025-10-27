@@ -19,6 +19,9 @@ export const FocusArrowNavigator = createComponent<
   render: (_, { children, ...props }) => {
     const { onKeyDown } = useFocusNavigator();
 
+    // Ensure no error happens when children is null
+    if (children == null) return null;
+
     if (isRightChildrenType(children)) {
       const child = Children.map(
         children as ReactElement[],

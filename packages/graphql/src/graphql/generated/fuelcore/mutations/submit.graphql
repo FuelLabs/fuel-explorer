@@ -24,6 +24,14 @@ mutation submit($tx: HexString!){
                 txPointer
                 utxoId
                 witnessIndex
+                name
+                symbol
+                suspicious
+                icon
+                contractId
+                decimals
+                rate
+                amountInUsd
             }
             ... on InputContract {
                 balanceRoot
@@ -51,6 +59,7 @@ mutation submit($tx: HexString!){
         isUpload
         maturity
         mintAmount
+        mintAmountUsd
         mintAssetId
         mintGasPrice
         outputContract{
@@ -64,11 +73,27 @@ mutation submit($tx: HexString!){
                 amount
                 assetId
                 to
+                name
+                symbol
+                suspicious
+                icon
+                contractId
+                decimals
+                rate
+                amountInUsd
             }
             ... on CoinOutput {
                 amount
                 assetId
                 to
+                name
+                symbol
+                suspicious
+                icon
+                contractId
+                decimals
+                rate
+                amountInUsd
             }
             ... on ContractCreated {
                 contract
@@ -83,6 +108,14 @@ mutation submit($tx: HexString!){
                 amount
                 assetId
                 to
+                name
+                symbol
+                suspicious
+                icon
+                contractId
+                decimals
+                rate
+                amountInUsd
             }
         }
         policies{
@@ -158,6 +191,14 @@ mutation submit($tx: HexString!){
                                 txPointer
                                 utxoId
                                 witnessIndex
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                             ... on InputContract {
                                 balanceRoot
@@ -185,6 +226,7 @@ mutation submit($tx: HexString!){
                         isUpload
                         maturity
                         mintAmount
+                        mintAmountUsd
                         mintAssetId
                         mintGasPrice
                         outputContract{
@@ -198,11 +240,27 @@ mutation submit($tx: HexString!){
                                 amount
                                 assetId
                                 to
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                             ... on CoinOutput {
                                 amount
                                 assetId
                                 to
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                             ... on ContractCreated {
                                 contract
@@ -217,6 +275,14 @@ mutation submit($tx: HexString!){
                                 amount
                                 assetId
                                 to
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                         }
                         policies{
@@ -287,6 +353,11 @@ mutation submit($tx: HexString!){
                                     to
                                     toAddress
                                     val
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    decimals
                                 }
                                 time
                                 totalFee
@@ -351,6 +422,11 @@ mutation submit($tx: HexString!){
                                     to
                                     toAddress
                                     val
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    decimals
                                 }
                                 time
                                 totalFee
@@ -410,6 +486,11 @@ mutation submit($tx: HexString!){
                     to
                     toAddress
                     val
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    decimals
                 }
                 time
                 totalFee
@@ -480,6 +561,14 @@ mutation submit($tx: HexString!){
                                 txPointer
                                 utxoId
                                 witnessIndex
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                             ... on InputContract {
                                 balanceRoot
@@ -507,6 +596,7 @@ mutation submit($tx: HexString!){
                         isUpload
                         maturity
                         mintAmount
+                        mintAmountUsd
                         mintAssetId
                         mintGasPrice
                         outputContract{
@@ -520,11 +610,27 @@ mutation submit($tx: HexString!){
                                 amount
                                 assetId
                                 to
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                             ... on CoinOutput {
                                 amount
                                 assetId
                                 to
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                             ... on ContractCreated {
                                 contract
@@ -539,6 +645,14 @@ mutation submit($tx: HexString!){
                                 amount
                                 assetId
                                 to
+                                name
+                                symbol
+                                suspicious
+                                icon
+                                contractId
+                                decimals
+                                rate
+                                amountInUsd
                             }
                         }
                         policies{
@@ -609,6 +723,11 @@ mutation submit($tx: HexString!){
                                     to
                                     toAddress
                                     val
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    decimals
                                 }
                                 time
                                 totalFee
@@ -673,6 +792,11 @@ mutation submit($tx: HexString!){
                                     to
                                     toAddress
                                     val
+                                    name
+                                    symbol
+                                    suspicious
+                                    icon
+                                    decimals
                                 }
                                 time
                                 totalFee
@@ -731,6 +855,11 @@ mutation submit($tx: HexString!){
                     to
                     toAddress
                     val
+                    name
+                    symbol
+                    suspicious
+                    icon
+                    decimals
                 }
                 time
                 totalFee

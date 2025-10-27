@@ -9,6 +9,7 @@
 import type { BrowserContext } from '@playwright/test';
 
 export async function getExtensionsData(context: BrowserContext) {
+  console.log('getExtensionsData called');
   const extensionsData = {};
   const page = await context.newPage();
 
@@ -28,24 +29,35 @@ export async function getExtensionsData(context: BrowserContext) {
         .locator('#name-and-version')
         .locator('#name')
         .textContent()
-    ).toLowerCase();
+    )
+      .toLowerCase()
+      .trim();
 
     const extensionVersion = (
       await extensionData
         .locator('#name-and-version')
         .locator('#version')
         .textContent()
-    ).replace(/(\n| )/g, '');
+    )
+      .replace(/(\n| )/g, '')
+      .trim();
 
+    console.log('extensionData', extensionData);
     const extensionId = (
       await extensionData.locator('#extension-id').textContent()
-    ).replace('ID: ', '');
+    )
+      .replace('ID: ', '')
+      .trim();
 
     extensionsData[extensionName] = {
       version: extensionVersion,
       id: extensionId,
     };
   }
+
+  await devModeButton.waitFor();
+  await devModeButton.focus();
+  await devModeButton.click();
   await page.close();
 
   return extensionsData;

@@ -20,14 +20,16 @@ export function LoadingWrapper({
 }: LoadingBoxProps): ReactElement | null {
   if (!isLoading && noItems) return noItemsEl ? <>{noItemsEl}</> : null;
 
-  return isLoading && loadingEl ? (
+  return isLoading ? (
     <>
       {Array.from({ length: repeatLoader }).map((_, i) =>
-        loadingEl ? cloneElement(loadingEl as any, { key: i }) : null,
+        // biome-ignore lint/suspicious/noDoubleEquals: <explanation>
+        loadingEl != undefined
+          ? cloneElement(loadingEl as any, { key: i })
+          : null,
       )}
     </>
   ) : (
-    // biome-ignore lint: we need to "unnecessary Fragment" to make sure it's a ReactElement output
-    <>{regularEl}</> ?? null
+    <>{regularEl}</>
   );
 }

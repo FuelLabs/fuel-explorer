@@ -24,6 +24,9 @@ query coins($after: String, $before: String, $filter: CoinFilterInput!, $first: 
             hasNextPage
             hasPreviousPage
             startCursor
+            startCount
+            endCount
+            totalCount
         }
     }
 }

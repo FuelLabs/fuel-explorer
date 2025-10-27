@@ -1,23 +1,26 @@
-'use client';
-import { Flex, HStack, HStackProps, Text } from '@fuels/ui';
+import { Flex, HStack, type HStackProps, Text } from '@fuels/ui';
 
 export type PageTitleProps = {
-  title: string;
+  title: React.ReactNode;
   children?: React.ReactNode;
   subtitle?: React.ReactNode;
   inverse?: boolean;
   mb?: HStackProps['mb'];
+  className?: string;
 };
+
+export const DEFAULT_PAGETITLE_MB: HStackProps['mb'] = '7';
 
 export function PageTitle({
   title,
   children,
   subtitle,
+  className,
   inverse = false,
-  mb = '7',
+  mb = DEFAULT_PAGETITLE_MB,
 }: PageTitleProps) {
   return (
-    <HStack justify="between" mb={mb}>
+    <HStack justify="between" mb={mb} className={className}>
       <Flex gap="2" direction={inverse ? 'column-reverse' : 'column'}>
         <Text as="h1" className="font-mono" size="5">
           {title}

@@ -5,8 +5,7 @@ services:
     profiles:
       - all
       - bridge
-    image: ghcr.io/fuellabs/fuel-bridge:87bd407
-    platform: linux/amd64
+    image: ghcr.io/fuellabs/fuel-bridge:cf3065d
     env_file:
       - ./envs/l1_chain.env
     ports:
@@ -26,7 +25,6 @@ services:
       - all
       - bridge
     image: fueldev/fuelcore:${DOCKER_TAG_FUEL_CORE:-latest}
-    platform: linux/amd64
     depends_on:
       l1_chain:
         condition: service_healthy
@@ -56,7 +54,6 @@ services:
       l1_chain:
         condition: service_started
     image: fueldev/block-committer:${DOCKER_TAG_FUEL_CORE:-latest}
-    platform: linux/amd64
     build:
       context: ./block-committer/
     env_file:
@@ -67,7 +64,7 @@ services:
       DEPLOYMENTS_HTTP: http://l1_chain:8081/deployments.local.json
     ports:
       # expose the service to the host for integration testing
-      - ${COMMITTER_HTTP_PORT:-8888}:8888
+      - ${COMMITTER_HTTP_PORT:-8899}:8888
     networks:
       - app-network
 
@@ -80,7 +77,6 @@ services:
         condition: service_healthy
       l1_chain:
         condition: service_started
-    platform: linux/amd64
     build:
       context: ./erc20-deployer/
     environment:
@@ -120,28 +116,27 @@ services:
     networks:
       - app-network
 
-  # fuel_rabbitmq:
-  #   profiles:
-  #     - all
-  #     - indexer
-  #     - indexer-local
-  #   image: rabbitmq:3-management
-  #   ports:
-  #     - "5672:5672" # AMQP protocol port
-  #     - "15672:15672" # Management UI port
-  #   env_file:
-  #     - ./envs/indexer.env
-  #   environment:
-  #     RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest} 
-  #     RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
-  #   networks:
-  #     - app-network
+  fuel_rabbitmq:
+    profiles:
+      - all
+      - indexer
+      - indexer-local
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # Management UI port
+    env_file:
+      - ./envs/indexer.env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest} 
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    networks:
+      - app-network
 
   # fuel_indexer_graphql:
   #   profiles:
   #     - all
   #     - indexer
-  #   platform: linux/amd64
   #   depends_on:
   #     fuel_explorer_pgsql:
   #       condition: service_healthy

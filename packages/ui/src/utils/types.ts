@@ -5,8 +5,6 @@ import type {
   ReactNode,
 } from 'react';
 
-import type { ColorVariables } from '../theme/tailwind-preset';
-
 export type RadixColors =
   | 'gray'
   | 'tomato'
@@ -103,8 +101,17 @@ export type Sizes =
 
 export type Colors =
   | 'text-current'
-  | `text-${ColorVariables}`
-  | `text-${RadixColors}-${RadixColorScale}`;
+  | `text-${RadixColors}-${RadixColorScale}`
+  | 'text-brand'
+  | 'text-icon'
+  | 'text-muted'
+  | 'text-secondary'
+  | 'text-heading'
+  | 'text-link'
+  | 'text-success'
+  | 'text-warning'
+  | 'text-error'
+  | 'text-info';
 
 /**
  * React Types

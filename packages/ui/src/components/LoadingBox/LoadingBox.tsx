@@ -3,10 +3,12 @@ import { tv } from 'tailwind-variants';
 import type { BoxProps } from '../Box';
 import { Box } from '../Box';
 
-type LoadingBoxProps = BoxProps;
+type LoadingBoxProps = BoxProps & { brighter?: boolean };
 
-export function LoadingBox({ className, ...props }: LoadingBoxProps) {
-  return <Box {...props} className={loader({ className })} />;
+export function LoadingBox({ className, brighter, ...props }: LoadingBoxProps) {
+  return (
+    <Box {...props} className={loader({ className, color: 'brighter' })} />
+  );
 }
 
 const loader = tv({
@@ -19,4 +21,9 @@ const loader = tv({
     'before:bg-gradient-to-r',
     'before:from-transparent before:via-gray-4 before:to-transparent',
   ],
+  variants: {
+    color: {
+      brighter: 'bg-gray-5 before:via-gray-6',
+    },
+  },
 });

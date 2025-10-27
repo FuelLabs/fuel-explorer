@@ -1,0 +1,36 @@
+query statistics {
+  statistics {
+    nodes {
+      totalTps {
+        date
+        value
+      }
+      averageTps {
+        date
+        value
+      }
+      maxTps {
+        date
+        value
+      }
+      totalGasUsed {
+        date
+        value
+      }
+      averageGasUsed {
+        date
+        value
+      }
+      maxGasUsed {
+        date
+        value
+      }
+      totalFee {
+        date
+        value
+        valueInUsd
+      }
+      totalFee24hrs
+    }
+  }
+}

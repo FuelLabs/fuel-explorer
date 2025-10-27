@@ -14,7 +14,7 @@ fragment Block on Block {
   time {
     full
     fromNow
-	rawUnix
+    rawUnix
   }
   transactions {
     ...RecentTransaction

@@ -3,7 +3,7 @@
 target
 out
 packages/docs/.vscode
-storybook
+cluster/chart/charts/
 
 # Remove Cargo.lock from gitignore if creating an executable, leave it for libraries
 # More information here https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html
@@ -27,6 +27,7 @@ lerna-debug.log*
 
 # Editor directories and files
 .vscode/*
+.cursor/*
 !.vscode/extensions.json
 !.vscode/settings.json
 !.vscode/launch.json
@@ -55,6 +56,9 @@ build
 dist
 dist-ssr
 
+# design system
+packages/ui-tokens/generated
+
 # misc
 .DS_Store
 *.pem
@@ -74,9 +78,6 @@ docker/db
 .turbo
 tsconfig.tsbuildinfo
 
-# storybook
-storybook-static
-
 # general
 contracts/token_contract/.rustc_info.json
 .vercel
@@ -90,4 +91,10 @@ act-actions
 # playwright report
 **/**/playwright-report/*
 **/**/playwright-html/*
-*storybook.log
+**/**/.playwright-artifacts-*/*
+**/**/e2e-tests/test-results/*
+**/.last-run.json
+/packages/e2e-tests/test-results
+.qodo
+/packages/e2e-tests/test-results
+/packages/e2e-tests/.cache-synpress

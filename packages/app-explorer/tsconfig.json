@@ -1,34 +1,35 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "plugins": [{ "name": "next" }],
-    "allowJs": true,
-    "noEmit": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "incremental": true,
+    "target": "es2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": false,
+
+    /* Path mapping */
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
       "~portal/*": ["../app-portal/src/*"],
-      "~public-portal/*": ["../app-portal/public/*"],
-      "fuels": ["../../node_modules/fuels"],
-      "tailwind-variants": ["../../node_modules/tailwind-variants"],
-      "@react-aria/interactions": [
-        "../../node_modules/@react-aria/interactions"
-      ]
-    },
-    "strictNullChecks": true
+      "@fuel-explorer/graphql": ["../graphql/src"],
+      "@fuel-explorer/graphql/*": ["../graphql/src/*"],
+      "tailwind-variants": ["../../node_modules/tailwind-variants"]
+    }
   },
-  "include": [
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "./src/generated",
-    "src",
-    ".storybook",
-    "*.config.*",
-    "jest.setup.ts",
-    "../app-commons/src/process.env.d.ts"
-  ]
+  "include": ["src", "vite.config.ts", "src/types/global.d.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

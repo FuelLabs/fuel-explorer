@@ -1,18 +1,15 @@
 import {
   Box,
   Dropdown,
-  Link,
-  Text,
+  Spinner,
   shortAddress,
   useBreakpoints,
 } from '@fuels/ui';
-import NextLink from 'next/link';
 import { forwardRef } from 'react';
-import { Routes } from '~/routes';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { cx } from '../../../utils/cx';
 
-import { useRouter } from 'next/navigation';
 import { styles as searchStyles } from '../styles';
 import { styles } from './styles';
 import type { SearchDropdownProps } from './types';
@@ -30,15 +27,17 @@ export const SearchResultDropdown = forwardRef<
       width,
       onSelectItem,
       isFocused,
+      loading,
+      error,
     },
     ref,
   ) => {
-    const router = useRouter();
+    const navigate = useNavigate();
 
     function onClick(href: string | undefined) {
       onSelectItem?.();
       if (href) {
-        router.push(href);
+        navigate(href);
       }
     }
     const classes = styles();
@@ -67,34 +66,34 @@ export const SearchResultDropdown = forwardRef<
             searchClasses.searchSize(),
           )}
         >
-          {!searchResult && (
-            <>
-              <Dropdown.Item className="hover:bg-transparent focus:bg-transparent text-error hover:text-error focus:text-error">
-                {`"${shortAddress(
-                  searchValue,
-                  trimL,
-                  trimR,
-                )}" is not a valid address.`}
-              </Dropdown.Item>
-            </>
-          )}
-          {hasResult ? (
+          {error ? (
+            <div className={classes.errorContainer()}>
+              <p className={classes.errorTitle()}>
+                Something went wrong while fetching the results.
+              </p>
+            </div>
+          ) : loading ? (
+            <div className={classes.loadingContainer()}>
+              <Spinner size={20} color="brand" aria-label="loading" />
+            </div>
+          ) : hasResult ? (
             <>
               {searchResult?.account && (
                 <>
-                  <Dropdown.Label>Account</Dropdown.Label>
+                  <Dropdown.Separator className={classes.dropdownSeparator()} />
+                  <Dropdown.Label className={classes.dropdownLabel()}>
+                    Account
+                  </Dropdown.Label>
                   <Dropdown.Item
                     className={classes.dropdownItem()}
                     onClick={() =>
                       searchResult.account?.address &&
-                      onClick(
-                        Routes.accountAssets(searchResult.account.address!),
-                      )
+                      onClick(`/account/${searchResult.account.address}/assets`)
                     }
                   >
                     <Link
-                      as={NextLink}
-                      href={Routes.accountAssets(searchResult.account.address!)}
+                      className={classes.resultLink()}
+                      to={`/account/${searchResult.account.address}/assets`}
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -106,8 +105,12 @@ export const SearchResultDropdown = forwardRef<
                   </Dropdown.Item>
                   {!!searchResult.account.transactions?.length && (
                     <>
-                      <Dropdown.Separator />
-                      <Dropdown.Label>Recent Transactions</Dropdown.Label>
+                      <Dropdown.Separator
+                        className={classes.dropdownSeparator()}
+                      />
+                      <Dropdown.Label className={classes.dropdownLabel()}>
+                        Recent Transactions
+                      </Dropdown.Label>
                       {searchResult.account.transactions?.map((transaction) => {
                         return (
                           <Dropdown.Item
@@ -115,12 +118,12 @@ export const SearchResultDropdown = forwardRef<
                             className={classes.dropdownItem()}
                             onClick={() =>
                               transaction?.id &&
-                              onClick(Routes.txSimple(transaction?.id))
+                              onClick(`/tx/${transaction?.id}`)
                             }
                           >
                             <Link
-                              as={NextLink}
-                              href={Routes.txSimple(transaction?.id!)}
+                              className={classes.resultLink()}
+                              to={`/tx/${transaction?.id}`}
                               onClick={onSelectItem}
                             >
                               {shortAddress(
@@ -140,7 +143,9 @@ export const SearchResultDropdown = forwardRef<
                 <>
                   {searchResult.block.id === searchValue && (
                     <>
-                      <Dropdown.Label>Block Hash</Dropdown.Label>
+                      <Dropdown.Label className={classes.dropdownLabel()}>
+                        Block Hash
+                      </Dropdown.Label>
                       <Dropdown.Item
                         className={classes.dropdownItem()}
                         onClick={() =>
@@ -149,8 +154,8 @@ export const SearchResultDropdown = forwardRef<
                         }
                       >
                         <Link
-                          as={NextLink}
-                          href={`/block/${searchResult.block.id}/simple`}
+                          className={classes.resultLink()}
+                          to={`/block/${searchResult.block.id}/simple`}
                           onClick={onSelectItem}
                         >
                           {shortAddress(
@@ -164,7 +169,9 @@ export const SearchResultDropdown = forwardRef<
                   )}
                   {searchResult.block.height === searchValue && (
                     <>
-                      <Dropdown.Label>Block Height</Dropdown.Label>
+                      <Dropdown.Label className={classes.dropdownLabel()}>
+                        Block Height
+                      </Dropdown.Label>
                       <Dropdown.Item
                         className={classes.dropdownItem()}
                         onClick={() =>
@@ -173,11 +180,15 @@ export const SearchResultDropdown = forwardRef<
                         }
                       >
                         <Link
-                          as={NextLink}
-                          href={`/block/${searchResult.block.height}/simple`}
+                          className={classes.resultLink()}
+                          to={`/block/${searchResult.block?.height}/simple`}
                           onClick={onSelectItem}
                         >
-                          {searchResult.block.height}
+                          {shortAddress(
+                            searchResult.block.height || '',
+                            trimL,
+                            trimR,
+                          )}
                         </Link>
                       </Dropdown.Item>
                     </>
@@ -186,17 +197,20 @@ export const SearchResultDropdown = forwardRef<
               )}
               {searchResult?.contract && (
                 <>
-                  <Dropdown.Label>Contract</Dropdown.Label>
+                  <Dropdown.Separator className={classes.dropdownSeparator()} />
+                  <Dropdown.Label className={classes.dropdownLabel()}>
+                    Contract
+                  </Dropdown.Label>
                   <Dropdown.Item
                     className={classes.dropdownItem()}
                     onClick={() =>
                       searchResult.contract?.id &&
-                      onClick(Routes.contractAssets(searchResult.contract.id))
+                      onClick(`/contract/${searchResult.contract.id}`)
                     }
                   >
                     <Link
-                      as={NextLink}
-                      href={Routes.contractAssets(searchResult.contract.id!)}
+                      className={classes.resultLink()}
+                      to={`/contract/${searchResult.contract.id}`}
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -210,17 +224,20 @@ export const SearchResultDropdown = forwardRef<
               )}
               {searchResult?.transaction && (
                 <>
-                  <Dropdown.Label>Transaction</Dropdown.Label>
+                  <Dropdown.Separator className={classes.dropdownSeparator()} />
+                  <Dropdown.Label className={classes.dropdownLabel()}>
+                    Transaction
+                  </Dropdown.Label>
                   <Dropdown.Item
                     className={classes.dropdownItem()}
                     onClick={() =>
                       searchResult.transaction?.id &&
-                      onClick(Routes.txSimple(searchResult.transaction?.id))
+                      onClick(`/tx/${searchResult.transaction.id}`)
                     }
                   >
                     <Link
-                      as={NextLink}
-                      href={Routes.txSimple(searchResult.transaction.id!)}
+                      className={classes.resultLink()}
+                      to={`/tx/${searchResult.transaction.id}`}
                       onClick={onSelectItem}
                     >
                       {shortAddress(
@@ -234,12 +251,9 @@ export const SearchResultDropdown = forwardRef<
               )}
             </>
           ) : (
-            <>
-              <Dropdown.Label>No instances found for:</Dropdown.Label>
-              <Text className="px-3 text-sm pb-1">
-                &quot;{shortAddress(searchValue, trimL, trimR)}&quot;
-              </Text>
-            </>
+            <Dropdown.Label className={classes.dropdownLabel()}>
+              No results found.
+            </Dropdown.Label>
           )}
         </Dropdown.Content>
       </Dropdown>

@@ -1,6 +1,8 @@
-'use client';
-import React from 'react';
-import DataTable, { TableProps, TableColumn } from 'react-data-table-component';
+import type React from 'react';
+import DataTable, {
+  type TableProps,
+  type TableColumn,
+} from 'react-data-table-component';
 import ReactPaginate from 'react-paginate';
 
 export interface GridTableProps<T> extends TableProps<T> {
@@ -164,7 +166,7 @@ export const GridTable = <T,>({
         }
       `}</style>
       <DataTable
-        customStyles={customStyles}
+        customStyles={customStyles as any}
         columns={columns}
         data={data}
         paginationComponent={Pagination}

@@ -1,5 +1,3 @@
-'use client';
-
 import { Flex } from '@fuels/ui';
 import type { MutableRefObject } from 'react';
 import { createContext, useRef } from 'react';

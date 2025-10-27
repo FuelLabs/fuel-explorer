@@ -1,15 +1,18 @@
-'use client';
-
 import { Theme, Toaster } from '@fuels/ui';
-import { ThemeProvider as NextThemeProvider } from 'next-themes';
-import { ThemeDefault } from './ThemeDefault';
+import { ThemeProvider as SharedThemeProvider, useTheme } from 'app-commons';
+import type { ResolvedTheme, ThemeValue } from 'app-commons';
+import type React from 'react';
+
+export { useTheme };
+export type { ThemeValue, ResolvedTheme };
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
-    <NextThemeProvider attribute="class" storageKey="fuel-ui-theme">
-      <ThemeDefault />
-      <Theme hasBackground={false}>{children}</Theme>
+    <SharedThemeProvider>
+      <Theme scaling="100%" hasBackground={false}>
+        {children}
+      </Theme>
       <Toaster />
-    </NextThemeProvider>
+    </SharedThemeProvider>
   );
 }

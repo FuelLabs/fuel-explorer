@@ -1,19 +1,18 @@
-import type { Asset } from '@fuel-ts/account';
 import type {
-  BN,
-  Message,
+  Asset,
   Provider as FuelProvider,
-  TransactionResponse,
   WalletUnlocked as FuelWallet,
+  Message,
+  TransactionResponse,
 } from 'fuels';
-import { Address as FuelAddress, ErrorCode, FuelError, bn } from 'fuels';
+import { BN, ErrorCode, Address as FuelAddress, FuelError, bn } from 'fuels';
 import type {
   PublicClient,
   ReadContractReturnType,
   TransactionReceipt,
   WalletClient,
 } from 'viem';
-import { decodeEventLog } from 'viem';
+import { decodeEventLog, isAddressEqual } from 'viem';
 import { erc20Abi } from 'viem';
 
 import { relayCommonMessage } from '../../fuel/utils/relayMessage';
@@ -24,14 +23,20 @@ import {
   FUEL_MESSAGE_PORTAL,
   decodeMessageSentData,
 } from '../contracts/FuelMessagePortal';
-import { getBlockDate, isErc20Address } from '../utils';
+import { getBlockDate, getTransactionReceipt, isErc20Address } from '../utils';
 
 import {
+  FUEL_INDEXER_API,
   type HexAddress,
+  IS_FUEL_DEV_CHAIN,
   getBridgeSolidityContracts,
   getBridgeTokenContracts,
 } from 'app-commons';
+import { safeWriteContract } from 'app-commons/safeWriteContract';
+import { forceRetryWithTimeout } from '~portal/systems/Core/utils/forceRetryWithTimeout';
+import type { EthLog } from '../types';
 import { getTokenContractImplementation } from '../utils/bridgeContract';
+import { parseQueriedDataToEthDepositLogs } from '../utils/ethLogs';
 import { EthConnectorService } from './connectors';
 
 export type TxEthToFuelInputs = {
@@ -44,6 +49,18 @@ export type TxEthToFuelInputs = {
   startErc20: {
     ethAssetAddress?: string;
   } & TxEthToFuelInputs['startEth'];
+  checkRequiresApproval: {
+    ethAssetAddress: HexAddress;
+    ethWalletClient: WalletClient;
+    ethPublicClient: PublicClient;
+    amount: BN;
+  };
+  approveERC20Amount: {
+    ethAssetAddress: HexAddress;
+    ethWalletClient: WalletClient;
+    amount: BN;
+    ethPublicClient: PublicClient;
+  };
   createErc20Contract: {
     ethWalletClient?: WalletClient;
     ethPublicClient?: PublicClient;
@@ -51,6 +68,7 @@ export type TxEthToFuelInputs = {
   };
   getReceiptsInfo: {
     ethTxId?: HexAddress;
+    inputEthTxNonce?: BigInt;
     ethPublicClient?: PublicClient;
   };
   getFuelMessage: {
@@ -77,6 +95,7 @@ export type GetReceiptsInfoReturn = {
     address: HexAddress;
     decimals: number;
   };
+  receiptErc20Address?: HexAddress;
   amount?: BN;
   sender?: string;
   recipient?: FuelAddress;
@@ -124,26 +143,54 @@ export class TxEthToFuelService {
     TxEthToFuelService.assertStartEth(input);
 
     try {
-      const { ethWalletClient, fuelAddress, amount } = input;
-      if (fuelAddress && ethWalletClient) {
+      const { ethWalletClient, fuelAddress, amount, ethPublicClient } = input;
+      if (fuelAddress && ethWalletClient && ethPublicClient) {
         const bridgeSolidityContracts = await getBridgeSolidityContracts();
-        const fuelPortal = EthConnectorService.connectToFuelMessagePortal({
-          walletClient: ethWalletClient,
-          bridgeSolidityContracts,
+
+        const txHash = await safeWriteContract({
+          client: {
+            public: ethPublicClient,
+            wallet: ethWalletClient,
+          },
+          write: {
+            address: bridgeSolidityContracts.FuelMessagePortal,
+            abi: FUEL_MESSAGE_PORTAL.abi,
+            functionName: 'depositETH',
+            value: BigInt(amount),
+            args: [fuelAddress.toString() as HexAddress],
+          },
         });
 
-        const txHash = await fuelPortal.write.depositETH(
-          [fuelAddress.toB256() as HexAddress],
-          {
-            value: BigInt(amount),
-            account: ethWalletClient.account,
-          },
-        );
+        const receipt = await getTransactionReceipt({
+          ethPublicClient,
+          txHash,
+        });
 
-        return txHash;
+        if (receipt.status !== 'success') {
+          throw new Error('Failed to deposit ETH');
+        }
+
+        const nonce = receipt.logs.map((log) => {
+          try {
+            const messageSentEvent = decodeEventLog({
+              abi: FUEL_MESSAGE_PORTAL.abi,
+              data: log.data,
+              topics: log.topics,
+            }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
+
+            return messageSentEvent?.args?.nonce;
+          } catch (_) {
+            /* empty */
+          }
+        })[0];
+
+        if (nonce == null) {
+          throw new Error('Failed to get nonce of ETH deposit');
+        }
+
+        return { txHash, nonce };
       }
     } catch (e) {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }
@@ -152,6 +199,65 @@ export class TxEthToFuelService {
     }
 
     return undefined;
+  }
+
+  static async approveERC20Amount(
+    input: TxEthToFuelInputs['approveERC20Amount'],
+  ) {
+    const { ethAssetAddress, ethWalletClient, amount, ethPublicClient } = input;
+
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
+    const approveTxHash = await safeWriteContract({
+      client: {
+        public: ethPublicClient,
+        wallet: ethWalletClient,
+      },
+      conditions: {
+        pauser: [
+          bridgeSolidityContracts.FuelMessagePortal,
+          bridgeSolidityContracts.FuelERC20GatewayV4,
+        ],
+      },
+      write: {
+        address: ethAssetAddress,
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [
+          bridgeSolidityContracts.FuelERC20GatewayV4,
+          BigInt(amount.toHex()),
+        ],
+      },
+    });
+    const approveTxHashReceipt = await getTransactionReceipt({
+      ethPublicClient,
+      txHash: approveTxHash,
+      waitOptions: { confirmations: 2 },
+    });
+    if (approveTxHashReceipt.status !== 'success') {
+      throw new Error('Failed to approve Token for transfer');
+    }
+  }
+  static async ERC20RequiresAllowance(
+    input: TxEthToFuelInputs['checkRequiresApproval'],
+  ) {
+    const { ethAssetAddress, ethWalletClient, amount, ethPublicClient } = input;
+
+    const erc20Token = EthConnectorService.connectToErc20({
+      address: ethAssetAddress as HexAddress,
+      walletClient: ethWalletClient,
+      publicClient: ethPublicClient,
+    });
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
+    const allowance = (await erc20Token.read.allowance([
+      ethWalletClient.account?.address,
+      bridgeSolidityContracts.FuelERC20GatewayV4,
+    ])) as bigint;
+
+    if (allowance == null) {
+      throw new Error('Failed to get allowance of Token');
+    }
+
+    return new BN(allowance.toString()).lt(amount);
   }
 
   static async startErc20(input: TxEthToFuelInputs['startErc20']) {
@@ -172,49 +278,58 @@ export class TxEthToFuelService {
         fuelAddress &&
         ethPublicClient
       ) {
-        const erc20Token = EthConnectorService.connectToErc20({
-          address: ethAssetAddress as HexAddress,
-          walletClient: ethWalletClient,
-        });
-
         const bridgeSolidityContracts = await getBridgeSolidityContracts();
-        const approveTxHash = await erc20Token.write.approve([
-          bridgeSolidityContracts.FuelERC20GatewayV4,
-          amount,
-        ]);
 
-        let approveTxHashReceipt: TransactionReceipt;
-        try {
-          approveTxHashReceipt = await ethPublicClient.getTransactionReceipt({
-            hash: approveTxHash,
-          });
-        } catch (_err: unknown) {
-          // workaround in place because waitForTransactionReceipt stop working after first time using it
-          approveTxHashReceipt =
-            await ethPublicClient.waitForTransactionReceipt({
-              hash: approveTxHash,
-              confirmations: 2,
-            });
-        }
-
-        if (approveTxHashReceipt.status !== 'success') {
-          throw new Error('Failed to approve Token for transfer');
-        }
-
-        const fuelErc20Gateway = EthConnectorService.connectToFuelErc20Gateway({
-          walletClient: ethWalletClient,
-          bridgeSolidityContracts,
+        const depositTxHash = await safeWriteContract({
+          client: {
+            public: ethPublicClient,
+            wallet: ethWalletClient,
+          },
+          conditions: {
+            pauser: [bridgeSolidityContracts.FuelMessagePortal],
+          },
+          write: {
+            address: bridgeSolidityContracts.FuelERC20GatewayV4,
+            abi: FUEL_ERC_20_GATEWAY.abi,
+            functionName: 'deposit',
+            args: [
+              fuelAddress.toString() as HexAddress,
+              ethAssetAddress,
+              amount,
+            ],
+          },
         });
-        const depositTxHash = await fuelErc20Gateway.write.deposit([
-          fuelAddress.toB256() as HexAddress,
-          ethAssetAddress,
-          amount,
-        ]);
 
-        return depositTxHash;
+        const receipt = await getTransactionReceipt({
+          ethPublicClient,
+          txHash: depositTxHash,
+        });
+
+        if (receipt.status !== 'success') {
+          throw new Error('Failed to deposit ETH');
+        }
+
+        const nonce = receipt.logs.map((log) => {
+          try {
+            const messageSentEvent = decodeEventLog({
+              abi: FUEL_MESSAGE_PORTAL.abi,
+              data: log.data,
+              topics: log.topics,
+            }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
+
+            return messageSentEvent?.args?.nonce;
+          } catch (_) {
+            /* empty */
+          }
+        })[0];
+
+        if (nonce == null) {
+          throw new Error('Failed to get nonce of ETH deposit');
+        }
+
+        return { txHash: depositTxHash, nonce };
       }
     } catch (e) {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       if ((e as any)?.code === 'ACTION_REJECTED') {
         throw new Error('Wallet owner rejected this transaction.');
       }
@@ -235,18 +350,21 @@ export class TxEthToFuelService {
       throw new Error('No eth Provider');
     }
 
-    const { ethTxId, ethPublicClient } = input;
+    const { ethTxId, ethPublicClient, inputEthTxNonce } = input;
 
     let receipt: TransactionReceipt;
     try {
-      receipt = await ethPublicClient.getTransactionReceipt({
-        hash: ethTxId,
-      });
+      receipt = await forceRetryWithTimeout(() =>
+        ethPublicClient.getTransactionReceipt({
+          hash: ethTxId,
+        }),
+      );
     } catch (_err: unknown) {
-      // workaround in place because waitForTransactionReceipt stop working after first time using it
-      receipt = await ethPublicClient.waitForTransactionReceipt({
-        hash: ethTxId,
-      });
+      throw new Error(
+        `Failed to get transaction receipt: ${
+          (_err as Error)?.message ?? _err
+        }`,
+      );
     }
 
     if (receipt.status !== 'success') {
@@ -272,15 +390,27 @@ export class TxEthToFuelService {
           topics: receipt.logs[i].topics,
         }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
 
-        const { amount, sender, nonce, recipient } = messageSentEvent.args;
+        const { amount, sender, nonce, recipient, data } =
+          messageSentEvent.args;
 
-        receiptsInfo = {
-          ...receiptsInfo,
-          nonce: bn(nonce.toString()),
-          amount: bn(amount.toString()),
-          sender,
-          recipient: FuelAddress.fromB256(recipient),
-        };
+        if (inputEthTxNonce === nonce) {
+          const {
+            tokenAddress,
+            to,
+            sender: senderERC20,
+          } = decodeMessageSentData.erc20Deposit(data);
+          const tokenSender = senderERC20 || sender;
+          const tokenRecipient = to || recipient;
+
+          receiptsInfo = {
+            ...receiptsInfo,
+            nonce: bn(nonce.toString()),
+            amount: bn(amount.toString()),
+            sender: tokenSender,
+            recipient: FuelAddress.fromString(tokenRecipient),
+            receiptErc20Address: tokenAddress as HexAddress,
+          };
+        }
       } catch (_) {
         /* empty */
       }
@@ -296,7 +426,15 @@ export class TxEthToFuelService {
           topics: receipt.logs[i].topics,
         }) as unknown as { args: FuelERC20GatewayArgs['Deposit'] };
 
-        if (isErc20Address(depositEvent.args.tokenAddress)) {
+        // search for a deposit log that matches the ERC-20 token address of the messageSent event
+        if (
+          isErc20Address(depositEvent.args.tokenAddress) &&
+          isAddressEqual(
+            depositEvent.args.tokenAddress,
+            // we can convert "as HexAddress" safely because we validated if it's not undefined before
+            receiptsInfo.receiptErc20Address as HexAddress,
+          )
+        ) {
           const { amount, tokenAddress } = depositEvent.args;
           const decimals = (await input.ethPublicClient.readContract({
             address: tokenAddress,
@@ -317,7 +455,6 @@ export class TxEthToFuelService {
         /* empty */
       }
     }
-
     return receiptsInfo;
   }
 
@@ -394,7 +531,12 @@ export class TxEthToFuelService {
         },
       });
     } catch (err) {
-      if (err instanceof FuelError && err.code === ErrorCode.NOT_ENOUGH_FUNDS) {
+      if (
+        err instanceof FuelError &&
+        (err.code === ErrorCode.INSUFFICIENT_FUNDS_OR_MAX_COINS ||
+          err.code === ErrorCode.INSUFFICIENT_FUNDS ||
+          err.message.includes('not enough coins to fit the target'))
+      ) {
         throw new Error(
           'This transaction requires ETH on Fuel side to pay for gas. Please faucet your wallet or bridge ETH.',
         );
@@ -417,14 +559,57 @@ export class TxEthToFuelService {
       throw new Error('Need fuel address');
     }
 
-    const { ethPublicClient, fuelAddress } = input;
+    const { fuelAddress, ethPublicClient } = input;
+    // @TODO: get predicate root contract address from FuelMessagePortal contract
+    const PREDICATE_ADDRESS =
+      '0xe821b978bcce9abbf40c3e50ea30143e68c65fa95b9da8907fef59c02d954cec';
+
+    if (!IS_FUEL_DEV_CHAIN && FUEL_INDEXER_API) {
+      const bridgeSolidityContracts = await getBridgeSolidityContracts();
+
+      const url = new URL(`${FUEL_INDEXER_API}/bridge/deposit/logs`);
+      url.searchParams.set(
+        'address',
+        bridgeSolidityContracts.FuelMessagePortal,
+      );
+      url.searchParams.set('recipient', fuelAddress?.toHexString());
+      url.searchParams.set('predicate', PREDICATE_ADDRESS);
+
+      const response = await fetch(url.toString());
+      const allLogs = parseQueriedDataToEthDepositLogs(await response.json());
+
+      const ethAndErc20Logs = allLogs.reduce((acc, log) => {
+        if (log.recipient === fuelAddress?.toHexString()) {
+          acc.push(log);
+        } else {
+          const messageSentEvent = decodeEventLog({
+            abi: FUEL_MESSAGE_PORTAL.abi,
+            data: log.data,
+            topics: log.topics,
+          }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
+
+          const { to } = decodeMessageSentData.erc20Deposit(
+            messageSentEvent.args.data,
+          );
+
+          if (to === fuelAddress?.toHexString()) {
+            acc.push(log);
+          }
+        }
+
+        return acc;
+      }, [] as EthLog[]);
+
+      return ethAndErc20Logs;
+    }
+
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
 
     const abiMessageSent = FUEL_MESSAGE_PORTAL.abi.find(
       ({ name, type }) => name === 'MessageSent' && type === 'event',
     );
 
-    const bridgeSolidityContracts = await getBridgeSolidityContracts();
-    const ethLogs = await ethPublicClient!.getLogs({
+    const ethLogs = await ethPublicClient?.getLogs({
       address: bridgeSolidityContracts.FuelMessagePortal,
       event: {
         type: 'event',
@@ -437,7 +622,7 @@ export class TxEthToFuelService {
       fromBlock: 'earliest' as const,
     });
 
-    const erc20AllLogs = await ethPublicClient!.getLogs({
+    const erc20AllLogs = await ethPublicClient?.getLogs({
       address: bridgeSolidityContracts.FuelMessagePortal,
       event: {
         type: 'event',
@@ -445,9 +630,7 @@ export class TxEthToFuelService {
         inputs: abiMessageSent?.inputs || [],
       },
       args: {
-        recipient:
-          // TODO: get predicate root contract address from FuelMessagePortal contract
-          '0xe821b978bcce9abbf40c3e50ea30143e68c65fa95b9da8907fef59c02d954cec',
+        recipient: PREDICATE_ADDRESS,
       },
       fromBlock: 'earliest' as const,
     });
@@ -458,7 +641,6 @@ export class TxEthToFuelService {
         data: log.data,
         topics: log.topics,
       }) as unknown as { args: FuelMessagePortalArgs['MessageSent'] };
-
       const { to } = decodeMessageSentData.erc20Deposit(
         messageSentEvent.args.data,
       );

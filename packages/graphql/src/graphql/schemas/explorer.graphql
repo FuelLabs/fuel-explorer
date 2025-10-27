@@ -25,6 +25,7 @@ type Block {
   _id: Int
   time: ParsedTime
   totalGasUsed: U64
+  totalFee: U64
   producer: Address
 }
 
@@ -142,6 +143,7 @@ type ParsedTime {
 type TransactionGasCosts {
   gasUsed: U64
   fee: U64
+  feeInUsd: String
 }
 
 extend type Transaction {
@@ -156,6 +158,7 @@ extend type Transaction {
   statusType: String
   time: ParsedTime!
   title: String!
+  mintedAsset: Asset
 }
 
 # --------------------------------
@@ -211,7 +214,7 @@ type SearchResult {
 
 # --------------------------------
 # Query
-# --------------------------------
+# -------------------------------
 
 type Query {
   contracts(
@@ -220,12 +223,37 @@ type Query {
     first: Int
     last: Int
   ): ContractConnection!
-
   search(query: String!): SearchResult
   predicate(address: String!): PredicateItem
   tps: TPSConnection!
+  statistics: StatisticsConnection!
   getBlocksDashboard: BlocksDashboardConnection!
-  asset (assetId: String!): Asset
+  asset(assetId: String!): Asset
+  assetsByContract(
+    contractId: String!
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): AssetsContractConnection!
+  balanceByBlockHeight(
+    assetId: AssetId!
+    accountHash: Address!
+    blockHeight: Int
+  ): BalanceByBlockHeight
+}
+
+type BalanceByBlockHeight {
+  assetId: AssetId
+  accountHash: Address
+  blockHeight: Int
+  balance: String
+  balanceInUsd: String
+}
+
+type AssetsContractConnection {
+  nodes: [Asset!]!
+  pageInfo: PageInfo!
 }
 
 type TPS {
@@ -239,11 +267,41 @@ type TPSConnection {
   nodes: [TPS!]!
 }
 
+type Statistics {
+  totalTps: [StatisticsDetails]
+  averageTps: [StatisticsDetails]
+  maxTps: [StatisticsDetails]
+  totalGasUsed: [StatisticsDetails]
+  averageGasUsed: [StatisticsDetails]
+  maxGasUsed: [StatisticsDetails]
+  totalFee: [StatisticsTotalFeeDetails]
+  totalFee24hrs: String
+}
+
+type StatisticsDetails {
+  date: String
+  value: U64
+}
+
+type StatisticsTotalFeeDetails {
+  date: String
+  value: U64
+  valueInUsd: String
+}
+
+type StatisticsConnection {
+  nodes: Statistics
+}
+
 type BlocksDashboard {
   timestamp: U64!
   gasUsed: U64!
+  gasUsedInUsd: String
+  totalFee: U64!
+  totalFeeInUsd: String
   blockNo: U64!
   producer: String
+  blockHash: String
 }
 
 type BlocksDashboardConnection {
@@ -251,31 +309,37 @@ type BlocksDashboardConnection {
 }
 
 type Asset {
-	assetId: String
-	contractId: String
-	subId: String
-	name: String
-	symbol: String
-	decimals: U64
-	icon: String
-	verified: Boolean
-	networks: [AssetNetwork]
+  assetId: String
+  contractId: String
+  subId: String
+  name: String
+  symbol: String
+  decimals: U64
+  icon: String
+  verified: Boolean
+  suspicious: Boolean
+  networks: [AssetNetwork]
+  rate: U64
 }
 
-union AssetNetwork =
-  | AssetNetworkFuel
-  | AssetNetworkEthereum
+union AssetNetwork = AssetNetworkFuel | AssetNetworkEthereum
 
 type AssetNetworkFuel {
-	type: String
-	decimals: U64
-	assetId: String
-	contractId: String
-	chainId: U64
+  type: String
+  decimals: U64
+  assetId: String
+  contractId: String
+  chainId: U64
 }
 
 type AssetNetworkEthereum {
-	type: String
-	decimals: U64
-	address: String
+  type: String
+  decimals: U64
+  address: String
+}
+
+type ContractBalance2 {
+  assetId: String
+  amount: U64
+  asset: Asset
 }

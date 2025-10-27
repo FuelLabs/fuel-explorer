@@ -1,9 +1,12 @@
-'use client';
 import type { BaseProps } from '@fuels/ui';
-import { IconCodeAsterix, IconCoins } from '@tabler/icons-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import {
+  IconChecklist,
+  IconCodeAsterix,
+  IconCoins,
+  IconDatabase,
+} from '@tabler/icons-react';
 import { useMemo } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Routes } from '~/routes';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
@@ -12,27 +15,37 @@ type ContractTabsProps = BaseProps<{
 }>;
 
 export function ContractTabs({ contractId }: ContractTabsProps) {
-  const pathname = usePathname();
+  const { pathname } = useLocation();
   const defaultValue = useMemo(() => {
     if (pathname.includes('code')) return 'code';
+    if (pathname.includes('minted-assets')) return 'minted-assets';
+    if (pathname.includes('transactions')) return 'transactions';
     return 'assets';
   }, [pathname]);
 
   return (
     <NavigationTab
-      className="mb-8"
+      className="mb-2"
       defaultValue={defaultValue}
       value={defaultValue}
       renderTab={(children, item) => (
-        <Link prefetch={true} href={Routes.contract(contractId, item.value)}>
-          {children}
-        </Link>
+        <Link to={Routes.contract(contractId, item.value)}>{children}</Link>
       )}
       items={[
+        {
+          value: 'minted-assets',
+          label: 'Minted Assets',
+          icon: IconDatabase,
+        },
         {
           value: 'assets',
           label: 'Assets',
           icon: IconCoins,
+        },
+        {
+          value: 'transactions',
+          label: 'Transactions',
+          icon: IconChecklist,
         },
         {
           value: 'code',

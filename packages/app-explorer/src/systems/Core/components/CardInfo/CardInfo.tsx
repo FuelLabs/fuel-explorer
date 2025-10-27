@@ -1,5 +1,3 @@
-'use client';
-
 import { Box, Card, Text } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
 import type { ReactNode } from 'react';
@@ -36,7 +34,7 @@ export function CardInfo({
 
 const styles = tv({
   slots: {
-    root: 'py-2 gap-0',
+    root: 'py-2 gap-0 h-full',
     name: 'mb-2 text-sm text-muted leading-1',
     body: 'py-2',
   },

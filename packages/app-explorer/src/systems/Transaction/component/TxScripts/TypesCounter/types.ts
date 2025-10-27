@@ -1,4 +1,4 @@
-import {
+import type {
   GQLTransactionReceiptFragment,
   Maybe,
 } from '@fuel-explorer/graphql/sdk';

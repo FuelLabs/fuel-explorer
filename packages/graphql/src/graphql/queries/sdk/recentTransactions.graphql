@@ -6,9 +6,11 @@ fragment RecentTransaction on Transaction {
   time {
     fromNow
     rawUnix
+    full
   }
   gasCosts {
     fee
+    feeInUsd
   }
 }
 

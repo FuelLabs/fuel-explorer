@@ -1,7 +1,6 @@
-import { Provider } from 'fuels';
-import { env } from '~/config';
-import VerifiedAssets from '~/infra/cache/VerifiedAssets';
-import AssetDAO from '~/infra/dao/AssetDAO';
+import { logger } from '~/core/Logger';
+import AssetGateway from '~/infra/gateway/AssetGateway';
+import type { GraphQLContext } from '../GraphQLContext';
 
 type Params = {
   asset: { assetId: string };
@@ -17,42 +16,11 @@ export class PublicResolver {
     };
   }
 
-  async asset(_: any, _params: Params['asset']) {
-    const assetDAO = new AssetDAO();
-    const provider = await Provider.create(env.get('FUEL_PROVIDER'));
-    const chainId = provider.getChainId();
-    const nonVerifiedAsset = await assetDAO.getByAssetId(_params.assetId);
-    const verifiedAssets = await VerifiedAssets.getInstance().fetch();
-    for (const verifiedAsset of verifiedAssets) {
-      for (const network of verifiedAsset.networks) {
-        if (network.type === 'fuel') {
-          network.__typename = 'AssetNetworkFuel';
-        }
-        if (network.type === 'ethereum') {
-          network.__typename = 'AssetNetworkEthereum';
-        }
-      }
-    }
-    for (const verifiedAsset of verifiedAssets) {
-      for (const network of verifiedAsset.networks) {
-        if (
-          network.chainId === chainId &&
-          network.assetId === _params.assetId
-        ) {
-          const asset = Object.assign(verifiedAsset, {
-            assetId: _params.assetId,
-            contractId: network.contractId,
-            subId: nonVerifiedAsset?.subId,
-            decimals: network.decimals,
-            verified: true,
-          });
-          return asset;
-        }
-      }
-    }
-    if (!nonVerifiedAsset) return;
-    return Object.assign(nonVerifiedAsset, {
-      verified: false,
-    });
+  async asset(_: any, _params: Params['asset'], { chain }: GraphQLContext) {
+    logger.debug('GraphQL', 'PublicResolver.asset');
+    const assetId = _params.assetId;
+    const assetGateway = new AssetGateway();
+    const chainId = chain ? Number.parseInt(chain.chainId) : undefined;
+    return assetGateway.getAsset(assetId, chainId);
   }
 }

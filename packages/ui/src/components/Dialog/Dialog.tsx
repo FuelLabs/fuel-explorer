@@ -65,7 +65,7 @@ export const DialogCloseButton = createComponent<
   },
 });
 
-export const DialogTitle = createComponent<DialogCloseProps, typeof RD.Title>({
+export const DialogTitle = createComponent<DialogTitleProps, typeof RD.Title>({
   id: 'DialogTitle',
   baseElement: RD.Title,
   className: () => 'font-mono text-2xl',

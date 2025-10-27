@@ -1,5 +1,5 @@
 .light .rt-BaseDialogContent {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .dark .rt-BaseDialogContent {
@@ -18,14 +18,17 @@
     --dialog-content-padding: var(--space-5);
     border-radius: 28px;
   }
+
   .rt-BaseDialogContent:where(.rt-r-size-2) {
     --dialog-content-padding: var(--space-5);
     border-radius: 28px;
   }
+
   .rt-BaseDialogContent:where(.rt-r-size-3) {
     --dialog-content-padding: var(--space-5);
     border-radius: 28px;
   }
+
   .rt-BaseDialogContent:where(.rt-r-size-4) {
     --dialog-content-padding: var(--space-5);
     border-radius: 28px;
@@ -33,24 +36,39 @@
 }
 
 /**
-* Size: md
-* Description: Tablets (landscape)
-*/
+ * Size: md
+ * Description: Tablets (landscape)
+ */
 @media (min-width: 1024px) {
   .rt-BaseDialogContent:where(.rt-r-size-1) {
     --dialog-content-padding: var(--space-6);
     border-radius: 28px;
   }
+
   .rt-BaseDialogContent:where(.rt-r-size-2) {
     --dialog-content-padding: var(--space-6);
     border-radius: 28px;
   }
+
   .rt-BaseDialogContent:where(.rt-r-size-3) {
     --dialog-content-padding: var(--space-6);
     border-radius: 28px;
   }
+
   .rt-BaseDialogContent:where(.rt-r-size-4) {
     --dialog-content-padding: var(--space-6);
     border-radius: 28px;
+  }
+}
+
+/* @TODO: Remove this after whatever is overriding the dialog styles from connectors gets addressed */
+div[role="dialog"][data-connector] {
+  @media (max-width: 430px) {
+    width: 100%;
+    border-radius: 36px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
   }
 }

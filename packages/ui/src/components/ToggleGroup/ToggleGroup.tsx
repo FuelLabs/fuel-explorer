@@ -1,6 +1,4 @@
 import { SegmentedControl as SC } from '@radix-ui/themes';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 import { styles } from './styles';
@@ -9,6 +7,7 @@ export type ToggleGroupProps = PropsOf<typeof SC.Root>;
 export type ToggleGroupItemProps = PropsOf<typeof SC.Item> & {
   asChild?: boolean;
   href?: string;
+  disabled?: boolean;
 };
 
 export const ToggleGroupRoot = createComponent<
@@ -27,24 +26,35 @@ export const ToggleGroupItem = createComponent<
   baseElement: SC.Item,
   className: ({ className }) => styles().item({ className }),
   render: (Item, { children, href, ...props }) => {
-    const router = useRouter();
-    if (!href) return <Item {...props}>{children}</Item>;
-    const { onClick: _onClick, ...rest } = props;
+    const {
+      onClick: _onClick,
+      disabled,
+      className: inputClassName,
+      ...rest
+    } = props;
+    const className = disabled
+      ? `${disabledClassNames} ${inputClassName}`
+      : inputClassName;
+
+    if (!href)
+      return (
+        <Item {...props} className={className}>
+          {children}
+        </Item>
+      );
 
     function onClick(e: React.MouseEvent<HTMLButtonElement>) {
       _onClick?.(e);
-      !!href && router.push(href);
     }
 
     return (
-      <Item onClick={onClick} {...rest}>
+      <Item
+        onClick={onClick}
+        aria-disabled={disabled}
+        {...rest}
+        className={className}
+      >
         {children}
-        <Link
-          href={href}
-          prefetch
-          aria-hidden
-          className="absolute z-[-1] invisible"
-        />
       </Item>
     );
   },
@@ -53,3 +63,5 @@ export const ToggleGroupItem = createComponent<
 export const ToggleGroup = withNamespace(ToggleGroupRoot, {
   Item: ToggleGroupItem,
 });
+
+const disabledClassNames = 'opacity-50 cursor-not-allowed';

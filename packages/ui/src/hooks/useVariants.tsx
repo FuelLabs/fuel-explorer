@@ -1,5 +1,3 @@
-'use client';
-
 import { cx } from '../utils/css';
 
 export type Variant =

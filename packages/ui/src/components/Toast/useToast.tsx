@@ -1,6 +1,3 @@
-'use client';
-
-import {} from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
 import type { ToastActionElement, ToastIconElement, ToastProps } from './Toast';

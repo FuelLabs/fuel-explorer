@@ -16,6 +16,9 @@ query transactionsByBlockId(
       ...RecentTransaction
     }
     pageInfo {
+      startCount
+      endCount
+      totalCount
       endCursor
       hasNextPage
       hasPreviousPage

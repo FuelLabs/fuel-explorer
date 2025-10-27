@@ -1,14 +1,21 @@
-'use server';
-
 import { z } from 'zod';
-import { act } from '~/systems/Core/utils/act-server';
-import { sdk } from '~/systems/Core/utils/sdk';
+import { ApiService } from '../../../services/api';
 
 const schema = z.object({
   query: z.string(),
 });
 
-export const search = act(schema, async ({ query }) => {
-  const { data } = await sdk.search({ query });
-  return data?.search ?? null;
-});
+export const search = async ({ query }: { query: string }) => {
+  try {
+    // Validate input using the same schema as Next.js
+    const result = schema.safeParse({ query });
+    if (!result.success) {
+      throw new Error('Invalid search input');
+    }
+
+    return await ApiService.search(query);
+  } catch (error) {
+    console.error('Error searching:', error);
+    return null;
+  }
+};

@@ -3,11 +3,10 @@ import { Card, EntityItem, HStack, Text, cx, useBreakpoints } from '@fuels/ui';
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import { bn } from 'fuels';
 import type { BN } from 'fuels';
-import Image from 'next/image';
-import { useAsset } from '~/systems/Asset/hooks/useAsset';
-import { useFuelAsset } from '~/systems/Asset/hooks/useFuelAsset';
-import { formatZeroUnits } from '~/systems/Core/utils/format';
 
+import { useAsset } from '~/systems/Asset/hooks/useAsset';
+
+import { formatZeroUnits, useFuelAsset } from 'app-commons';
 import { TxIcon } from '../TxIcon/TxIcon';
 
 export type TxAssetItemProps = CardProps & {
@@ -35,7 +34,7 @@ export function TxAssetItem({
       <EntityItem className="px-4 pb-4 border-b border-border">
         <EntityItem.Slot>
           {asset?.icon ? (
-            <Image
+            <img
               src={asset.icon as string}
               width={ICON_SIZE}
               height={ICON_SIZE}

@@ -1,8 +1,8 @@
-import { GQLOperationReceipt } from '@fuel-explorer/graphql';
+import type { GQLOperationReceipt } from '@fuel-explorer/graphql';
 import { memo } from 'react';
 import { ReceiptItem } from '~/systems/Transaction/component/TxScripts/ReceiptItem/ReceiptItem';
 import { styles } from './styles';
-import { ReceiptItemRProps } from './types';
+import type { ReceiptItemRProps } from './types';
 
 function _ReceiptItemR(props: ReceiptItemRProps) {
   const classes = styles();

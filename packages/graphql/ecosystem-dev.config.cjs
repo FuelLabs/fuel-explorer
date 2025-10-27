@@ -28,5 +28,50 @@ module.exports = {
           },
         ]
       : []),
+    ...(APP === 'assets'
+      ? [
+          {
+            ...commonOptions,
+            name: 'assets',
+            script: './src/assets.ts',
+          },
+        ]
+      : []),
+    ...(APP === 'balance'
+      ? [
+          {
+            ...commonOptions,
+            name: 'balance',
+            script: './src/balance.ts',
+          },
+        ]
+      : []),
+    ...(APP === 'l1'
+      ? [
+          {
+            ...commonOptions,
+            name: 'l1',
+            script: './src/l1.ts',
+          },
+        ]
+      : []),
+    ...(APP === 'cosmos'
+      ? [
+          {
+            ...commonOptions,
+            name: 'cosmos',
+            script: './src/cosmos.ts',
+          },
+        ]
+      : []),
+    ...(APP === 'jobs'
+      ? [
+          {
+            ...commonOptions,
+            name: 'jobs',
+            script: './src/jobs.ts',
+          },
+        ]
+      : []),
   ],
 };

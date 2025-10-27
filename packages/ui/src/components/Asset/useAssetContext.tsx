@@ -1,6 +1,4 @@
-'use client';
-
-import type { AssetEth, AssetFuel } from '@fuels/assets';
+import type { AssetEth, AssetFuel } from 'fuels';
 import { createContext, useContext } from 'react';
 
 import type { AssetProps } from './Asset';

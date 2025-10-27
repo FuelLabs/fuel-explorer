@@ -1,6 +1,7 @@
 import { isB256 } from 'fuels';
 import { Hash256 } from '~/application/vo';
-import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
+import { logger } from '~/core/Logger';
+import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import ContractDAO from '~/infra/dao/ContractDAO';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
@@ -19,13 +20,11 @@ export class SearchResolver {
     };
   }
 
-  async search(
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    _null: any,
-    params: Params['search'],
-  ) {
-    const blockDAO = new BlockDAO();
+  async search(_null: any, params: Params['search']) {
+    logger.debug('GraphQL', 'SearchResolver.search');
+
     if (!params.query.startsWith('0x') && !Number.isNaN(Number(params.query))) {
+      const blockDAO = new BlockDAO();
       const block = await blockDAO.getByHeight(Number(params.query));
       if (block) {
         return {
@@ -35,39 +34,53 @@ export class SearchResolver {
     }
 
     const address = Hash256.create(params.query).value();
-    const block = await blockDAO.getByHash(address);
-    if (block) {
-      return {
-        block: block.toGQLNode(),
-      };
-    }
-
+    const blockDAO = new BlockDAO();
     const contractDAO = new ContractDAO();
-    const contract = await contractDAO.getByHash(address);
-    if (contract) {
+    const transactionDAO = new TransactionDAO();
+
+    const results = await Promise.allSettled([
+      blockDAO.getByHash(address),
+      contractDAO.getByHash(address),
+      transactionDAO.getByHash(address),
+      transactionDAO.getTransactionsByOwner(address),
+    ]);
+
+    const [blockResult, contractResult, transactionResult, transactionsResult] =
+      results;
+
+    if (blockResult.status === 'fulfilled' && blockResult.value) {
       return {
-        contract: contract.toGQLNode(),
+        block: blockResult.value.toGQLNode(),
       };
     }
 
-    const transactionDAO = new TransactionDAO();
-    const transaction = await transactionDAO.getByHash(address);
-    if (transaction) {
+    if (contractResult.status === 'fulfilled' && contractResult.value) {
       return {
-        transaction: transaction.toGQLNode(),
+        contract: contractResult.value.toGQLNode(),
       };
     }
-    const transactions = await transactionDAO.getTransactionsByOwner(address);
-    if (transactions.length > 0) {
+
+    if (transactionResult.status === 'fulfilled' && transactionResult.value) {
+      return {
+        transaction: transactionResult.value.toGQLNode(),
+      };
+    }
+
+    if (
+      transactionsResult.status === 'fulfilled' &&
+      transactionsResult.value &&
+      transactionsResult.value.length > 0
+    ) {
       return {
         account: {
           address,
-          transactions: transactions.map((transaction: TransactionEntity) =>
-            transaction.toGQLNode(),
+          transactions: transactionsResult.value.map(
+            (transaction: TransactionEntity) => transaction.toGQLNode(),
           ),
         },
       };
     }
+
     if (isB256(address)) {
       return {
         account: {

@@ -1,15 +1,21 @@
-import type { Asset } from '@fuel-ts/account';
+import type { Asset } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { FetchMachine } from '~portal/systems/Core/machines/fetchMachine';
 
 import { toast } from '@fuels/ui';
 import { getBridgeTokenContracts } from 'app-commons';
+import type { PublicClient, WalletClient } from 'viem';
+import { switchEthAssetNetworkIfNeeded } from '~portal/systems/Assets/utils';
 import type { AssetServiceInputs } from '../services/asset';
 import { AssetService } from '../services/asset';
 
 export type MachineContext = {
   assets?: Asset[];
+  asset?: Asset;
+  address?: string;
+  walletClient?: WalletClient;
+  publicClient?: PublicClient;
 };
 
 type MachineServices = {
@@ -65,11 +71,34 @@ export const assetsMachine = createMachine(
       idle: {
         on: {
           FAUCET_ERC20: {
-            target: 'fauceting',
+            target: 'checkingNetwork',
+            actions: ['assignFaucetData'],
           },
           GET_DEFAULT_ASSETS: {
             target: 'fetching',
           },
+        },
+      },
+      checkingNetwork: {
+        tags: ['loadingFaucet'],
+        invoke: {
+          src: 'checkNetwork',
+          data: {
+            input: (_: MachineContext) => ({
+              asset: _.asset,
+              walletClient: _.walletClient,
+            }),
+          },
+          onDone: [
+            {
+              target: 'idle',
+              cond: FetchMachine.hasError,
+              actions: ['clearFaucetData'],
+            },
+            {
+              target: 'fauceting',
+            },
+          ],
         },
       },
       fauceting: {
@@ -77,15 +106,20 @@ export const assetsMachine = createMachine(
         invoke: {
           src: 'faucetErc20',
           data: {
-            input: (_: MachineContext, ev: MachineEvents) => ev.input,
+            input: (_: MachineContext) => ({
+              walletClient: _.walletClient,
+              publicClient: _.publicClient,
+              address: _.address,
+            }),
           },
           onDone: [
             {
               target: 'idle',
               cond: FetchMachine.hasError,
+              actions: ['clearFaucetData'],
             },
             {
-              actions: ['notifyFaucetSuccess'],
+              actions: ['clearFaucetData', 'notifyFaucetSuccess'],
               target: 'idle',
             },
           ],
@@ -97,6 +131,18 @@ export const assetsMachine = createMachine(
     actions: {
       assignAssets: assign({
         assets: (_, ev) => ev.data,
+      }),
+      assignFaucetData: assign({
+        asset: (_, ev) => ev.input.asset,
+        address: (_, ev) => ev.input.address,
+        walletClient: (_, ev) => ev.input.walletClient,
+        publicClient: (_, ev) => ev.input.publicClient,
+      }),
+      clearFaucetData: assign({
+        asset: () => undefined,
+        address: () => undefined,
+        walletClient: () => undefined,
+        publicClient: () => undefined,
       }),
       notifyFaucetSuccess: () => {
         toast.success('Added tokens to your wallet');
@@ -113,7 +159,7 @@ export const assetsMachine = createMachine(
           const hasBridgeTokenContracts =
             bridgeTokenContracts?.FUEL_TokenContract &&
             bridgeTokenContracts?.FUEL_TokenContract !== '0x';
-          const defaultAssets = AssetService.getDefaultAssets({
+          const defaultAssets = await AssetService.getDefaultAssets({
             provider: input?.provider,
             bridgeTokenContracts: hasBridgeTokenContracts
               ? bridgeTokenContracts
@@ -136,6 +182,20 @@ export const assetsMachine = createMachine(
 
           await AssetService.faucetErc20(input);
           return true;
+        },
+      }),
+      checkNetwork: FetchMachine.create<
+        AssetServiceInputs['checkAssetNetwork'],
+        void
+      >({
+        showError: true,
+        maxAttempts: 1,
+        async fetch({ input }) {
+          if (!input) {
+            throw new Error('Missing data');
+          }
+
+          await switchEthAssetNetworkIfNeeded(input.asset, input.walletClient);
         },
       }),
     },

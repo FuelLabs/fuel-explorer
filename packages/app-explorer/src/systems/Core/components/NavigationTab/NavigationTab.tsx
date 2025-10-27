@@ -52,7 +52,7 @@ export function NavigationTab({
 const styles = tv({
   slots: {
     root: [
-      'mobile:max-tablet:pb-4',
+      'pb-5',
       'grid gap-2',
       'flex justify-start max-w-full overflow-x-auto',
     ],

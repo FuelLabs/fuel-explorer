@@ -1,13 +1,17 @@
 import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql/sdk';
+import type {
+  OperationCoin,
+  OperationFunctionCall,
+  OperationName,
+  OperationTransactionAddress,
+} from 'fuels';
 import type { ViewModes } from '../Core/components/ViewMode/constants';
 
-export type TxRouteParams = {
-  id: string;
-  mode?: ViewModes;
-};
-
-export type TxRouteProps = {
-  params: TxRouteParams;
+export type TxRouteRouterParams = {
+  params: {
+    id: string;
+    mode?: ViewModes;
+  };
 };
 
 export enum TxTypeEnum {
@@ -43,4 +47,37 @@ export const TX_TYPES = Object.keys({ ...TxTypeEnum, ...TxAccountTypeEnum });
 export const TX_STATUS = Object.keys(TxStatusEnum);
 export const TX_ICON_TYPES = TX_TYPES.concat(['Message']);
 
-export type TransactionNode = GQLTransactionItemFragment;
+export type TransactionNode = GQLTransactionItemFragment & {
+  summary?: Array<OperationExtended>;
+};
+export type PendingTransaction = { id: string; status: 'indexing' };
+export type IndexedTransaction = { id: string; status: 'synced' };
+export type PendingTransactionState = 'indexing' | 'submitted' | undefined;
+
+export type AssetInfo = Partial<{
+  assetId: string;
+  symbol: string;
+  name: string;
+  decimals: string;
+  icon: string;
+  contractId: string;
+  suspicious: boolean;
+  verified: boolean;
+  amountInUsd: string;
+}>;
+
+export type OperationExtended = {
+  name?: OperationName;
+  from?: OperationTransactionAddress;
+  to?: OperationTransactionAddress;
+  calls?: Array<
+    OperationFunctionCall & {
+      asset?: AssetInfo;
+    }
+  >;
+  assetsSent?: Array<
+    OperationCoin & {
+      asset?: AssetInfo;
+    }
+  >;
+};

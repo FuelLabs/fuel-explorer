@@ -1,11 +1,30 @@
-import { getContractBalances } from '../actions/get-contract';
+import { useContractBalances } from '~/hooks/useApi';
 import { ContractAssetList } from '../components/ContractAssetList';
+import { ContractAssetsLoader } from '../components/ContractAssetsLoader';
 
-type ContractAssetsProps = {
+type ContractAssetProps = {
   id: string;
 };
 
-export async function ContractAssets({ id }: ContractAssetsProps) {
-  const balances = await getContractBalances({ id });
-  return <ContractAssetList balances={balances.edges} />;
+export function ContractAsset({ id }: ContractAssetProps) {
+  const {
+    data: balances,
+    isLoading,
+    isFetching,
+    error,
+  } = useContractBalances(id);
+
+  if (isLoading || isFetching) {
+    return <ContractAssetsLoader />;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600">Failed to load contract assets</p>
+      </div>
+    );
+  }
+
+  return <ContractAssetList balances={balances || []} />;
 }

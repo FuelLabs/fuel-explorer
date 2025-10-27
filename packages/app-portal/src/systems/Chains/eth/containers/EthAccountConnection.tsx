@@ -1,13 +1,27 @@
 import { AccountConnectionInput } from '~portal/systems/Accounts';
 import { useAsset } from '~portal/systems/Assets';
 
-import { ETH_CHAIN } from '../../config';
+import { WalletConnectConnector } from '@fuels/connectors';
+import { useCurrentConnector } from '@fuels/react';
+import { ETH_CHAIN } from 'app-commons';
 import { useEthAccountConnection } from '../hooks';
 
-export const EthAccountConnection = ({ label }: { label?: string }) => {
+export const EthAccountConnection = ({ label }: { label?: 'From' | 'To' }) => {
   const { asset: ethAsset } = useAsset();
+  const { currentConnector } = useCurrentConnector();
   const { address, ens, handlers, isConnecting, isConnected } =
     useEthAccountConnection();
+
+  const handleDisconnect = () => {
+    if (
+      label === 'From' &&
+      currentConnector instanceof WalletConnectConnector
+    ) {
+      // Connector doesn't see that EVMs disconnected and will auto-reconnect if not for this.
+      currentConnector.disconnect();
+    }
+    handlers.disconnect();
+  };
 
   return (
     <AccountConnectionInput
@@ -21,7 +35,7 @@ export const EthAccountConnection = ({ label }: { label?: string }) => {
         avatar: ens?.avatar,
       }}
       onConnect={handlers.connect}
-      onDisconnect={handlers.disconnect}
+      onDisconnect={handleDisconnect}
       isConnected={isConnected}
     />
   );

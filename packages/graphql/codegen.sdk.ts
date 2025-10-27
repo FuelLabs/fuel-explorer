@@ -10,6 +10,8 @@ const config: CodegenConfig = {
       schema: [
         './src/graphql/schemas/fuelcore.graphql',
         './src/graphql/schemas/explorer.graphql',
+        './src/graphql/schemas/staking.graphql',
+        './src/graphql/schemas/bridge.graphql',
       ],
       plugins: [
         'typescript',
@@ -32,6 +34,8 @@ const config: CodegenConfig = {
       schema: [
         './src/graphql/schemas/fuelcore.graphql',
         './src/graphql/schemas/explorer.graphql',
+        './src/graphql/schemas/staking.graphql',
+        './src/graphql/schemas/bridge.graphql',
       ],
       plugins: [
         'typescript',
@@ -55,6 +59,8 @@ const config: CodegenConfig = {
       schema: [
         './src/graphql/schemas/fuelcore.graphql',
         './src/graphql/schemas/explorer.graphql',
+        './src/graphql/schemas/staking.graphql',
+        './src/graphql/schemas/bridge.graphql',
       ],
       plugins: [
         {

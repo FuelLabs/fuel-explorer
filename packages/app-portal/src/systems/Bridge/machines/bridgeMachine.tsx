@@ -1,18 +1,31 @@
-import type { Asset } from '@fuel-ts/account';
 import { toast } from '@fuels/ui';
+import type { Account, Address, Asset, NetworkFuel, Provider } from 'fuels';
 import type { BN } from 'fuels';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { type FromToNetworks, isFuelChain } from '~portal/systems/Chains';
 import { FetchMachine } from '~portal/systems/Core/machines';
 
-import { trackEvent } from 'app-commons';
+import { type HexAddress, trackEvent } from 'app-commons';
+import { WarningToast } from 'app-commons';
+import { readContractQueryKey } from 'wagmi/query';
+import { getAssetEthCurrentChain } from '~portal/systems/Assets/utils';
+import { getQueryClient } from '~portal/systems/Settings/providers/ReactQueryProvider';
 import { BridgeService } from '../services';
 import type { BridgeInputs, PossibleBridgeInputs } from '../services';
+import { truncateMaxSizeString } from '../utils/string';
 
 type MachineContext = {
   assetAmount?: BN;
   asset?: Asset;
+  ethAddress?: HexAddress;
+  fuelAsset?: NetworkFuel;
+  fuelProvider?: Provider;
+  fuelAddress?: Address;
+  fuelWallet?: Account;
+  ethWalletClient?: any;
+  ethPublicClient?: any;
+  toCustomAddress?: string;
 } & Partial<FromToNetworks>;
 
 type MachineServices = {
@@ -48,7 +61,17 @@ export type BridgeMachineEvents =
   | {
       type: 'START_BRIDGING';
       input: PossibleBridgeInputs;
+    }
+  | {
+      type: 'START_ALLOWANCE';
+      input: PossibleBridgeInputs;
+    }
+  | {
+      type: 'CHANGE_TO_ADDRESS';
+      input: { toCustomAddress?: string };
     };
+
+export const BRIDGE_ACCEPT_TOS_STORAGE_KEY = 'fuel.bridge.agree';
 
 export const bridgeMachine = createMachine(
   {
@@ -74,13 +97,22 @@ export const bridgeMachine = createMachine(
             actions: ['assignAsset'],
           },
           START_BRIDGING: {
-            target: 'bridging',
+            target: 'checkRequiresAllowance',
+            actions: ['assignBridgingInputs'],
+          },
+          START_ALLOWANCE: {
+            target: 'allowing',
+          },
+          CHANGE_TO_ADDRESS: {
+            actions: assign({
+              toCustomAddress: (_, event) => event.input.toCustomAddress,
+            }),
           },
         },
       },
-      bridging: {
+      checkRequiresAllowance: {
         invoke: {
-          src: 'bridge',
+          src: 'checkRequiresAllowance',
           data: {
             input: (
               ctx: MachineContext,
@@ -101,17 +133,83 @@ export const bridgeMachine = createMachine(
           },
           onDone: [
             {
-              cond: FetchMachine.hasError,
-              target: 'idle',
+              cond: (_, event) => !!event.data.requiresAllowance,
+              target: 'allowing',
             },
             {
-              actions: ['clearAssetAmmount', 'notifyTxStarted'],
+              cond: (_, event) => event.data.requiresAllowance != null,
+              target: 'bridging',
+            },
+            {
+              target: 'idle',
+              actions: ['clearBridgingInputs'],
+            },
+          ],
+        },
+      },
+      bridging: {
+        invoke: {
+          src: 'bridge',
+          data: {
+            input: (ctx: MachineContext) => {
+              return {
+                fromNetwork: ctx.fromNetwork,
+                toNetwork: ctx.toNetwork,
+                assetAmount: ctx.assetAmount,
+                fuelAddress: ctx.fuelAddress,
+                toCustomAddress: ctx.toCustomAddress,
+                asset: ctx.asset,
+                ethWalletClient: ctx.ethWalletClient,
+                ethPublicClient: ctx.ethPublicClient,
+                fuelWallet: ctx.fuelWallet,
+                ethAddress: ctx.ethAddress,
+                fuelAsset: ctx.fuelAsset,
+                fuelProvider: ctx.fuelProvider,
+              };
+            },
+          },
+          onDone: [
+            {
+              cond: FetchMachine.hasError,
+              target: 'idle',
+              actions: ['clearBridgingInputs', 'clearAllowance'],
+            },
+            {
+              actions: [
+                'clearBridgingInputs',
+                'clearAllowance',
+                'clearAssetAmmount',
+                'notifyTxStarted',
+                'acceptTermsOfService',
+              ],
               target: 'idle',
             },
           ],
         },
       },
-      failed: {},
+      allowing: {
+        invoke: {
+          src: 'askForAllowance',
+          data: {
+            input: (ctx: MachineContext) => ({
+              assetAmount: ctx.assetAmount,
+              asset: ctx.asset,
+              ethWalletClient: ctx.ethWalletClient,
+              ethPublicClient: ctx.ethPublicClient,
+            }),
+          },
+          onDone: [
+            {
+              cond: FetchMachine.hasError,
+              target: 'idle',
+            },
+            {
+              target: 'bridging',
+              actions: ['clearAllowance'],
+            },
+          ],
+        },
+      },
     },
   },
   {
@@ -126,8 +224,41 @@ export const bridgeMachine = createMachine(
       assignAsset: assign({
         asset: (_, ev) => ev.input.asset,
       }),
+      assignBridgingInputs: assign((ctx, ev) => ({
+        ethAddress: ev.input.ethAddress,
+        fuelAsset: ev.input.fuelAsset,
+        fuelProvider: ev.input.fuelProvider,
+        fuelAddress: ev.input.fuelAddress,
+        fuelWallet: ev.input.fuelWallet,
+        ethWalletClient: ev.input.ethWalletClient,
+        ethPublicClient: ev.input.ethPublicClient,
+        toCustomAddress: ev.input.toCustomAddress,
+        asset: ev.input.asset || ctx.asset,
+      })),
+      clearBridgingInputs: assign({
+        ethAddress: undefined,
+        fuelAsset: undefined,
+        fuelProvider: undefined,
+        fuelAddress: undefined,
+        fuelWallet: undefined,
+        ethWalletClient: undefined,
+        ethPublicClient: undefined,
+      }),
       clearAssetAmmount: assign({
         assetAmount: undefined,
+      }),
+      clearAllowance: assign((ctx) => {
+        const address = ctx.asset && getAssetEthCurrentChain(ctx.asset).address;
+        const queryClient = getQueryClient();
+        if (address && queryClient) {
+          queryClient.invalidateQueries({
+            queryKey: readContractQueryKey({
+              functionName: 'allowance',
+              address: address as HexAddress,
+            }),
+          });
+        }
+        return {};
       }),
       notifyTxStarted: (ctx) => {
         const isDeposit = isFuelChain(ctx.toNetwork);
@@ -140,6 +271,20 @@ export const bridgeMachine = createMachine(
           },
         );
       },
+      acceptTermsOfService: () => {
+        const tosTimestamp = localStorage.getItem(
+          BRIDGE_ACCEPT_TOS_STORAGE_KEY,
+        );
+
+        if (tosTimestamp) {
+          return;
+        }
+
+        localStorage.setItem(
+          BRIDGE_ACCEPT_TOS_STORAGE_KEY,
+          Date.now().toString(),
+        );
+      },
     },
     services: {
       bridge: FetchMachine.create<BridgeInputs['bridge'], void>({
@@ -149,7 +294,22 @@ export const bridgeMachine = createMachine(
           if (!input) {
             throw new Error('No input to bridge');
           }
-          await BridgeService.bridge(input);
+          try {
+            await BridgeService.bridge(input);
+          } catch (error: any) {
+            if (error.details) {
+              if (error.details.includes('User denied transaction')) {
+                throw new Error('User rejected the transaction');
+              }
+            }
+            if (error instanceof WarningToast) {
+              throw error;
+            }
+            if (error.message) {
+              throw new Error(truncateMaxSizeString(error.message, 100));
+            }
+            throw truncateMaxSizeString(error.message, 100);
+          }
 
           const isWithdraw = isFuelChain(input.fromNetwork);
           trackEvent({
@@ -158,9 +318,40 @@ export const bridgeMachine = createMachine(
             parameters: {
               asset: input.asset?.symbol,
               addressFrom: input.ethAddress,
-              addressTo: input.fuelAddress?.toB256(),
+              addressTo: input.toCustomAddress || input.fuelAddress?.toString(),
             },
           });
+        },
+      }),
+      askForAllowance: FetchMachine.create<
+        BridgeInputs['askForAllowance'],
+        void
+      >({
+        showError: true,
+        maxAttempts: 1,
+        async fetch({ input }) {
+          console.log('askForAllowance');
+          if (!input) {
+            throw new Error('No input to ask for allowance');
+          }
+          await BridgeService.askForAllowance(input);
+        },
+      }),
+      checkRequiresAllowance: FetchMachine.create<
+        BridgeInputs['bridge'],
+        BridgeInputs['requiresAllowance']
+      >({
+        showError: true,
+        maxAttempts: 1,
+        async fetch({ input }) {
+          console.log('checkRequiresAllowance');
+          if (!input) {
+            throw new Error('No input to check requires for allowance');
+          }
+          return {
+            ...input,
+            requiresAllowance: await BridgeService.requiresAllowance(input),
+          } as BridgeInputs['requiresAllowance'];
         },
       }),
     },

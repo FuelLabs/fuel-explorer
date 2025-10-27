@@ -1,39 +1,51 @@
 import fungibleTokenABI from '@fuel-bridge/fungible-token/bridge-fungible-token/implementation/out/release/bridge_fungible_token-abi.json';
-import type { NetworkFuel } from '@fuel-ts/account';
 import dayjs from 'dayjs';
 import type {
-  Account as FuelWallet,
+  Asset,
   BN,
+  Account as FuelWallet,
   MessageProof,
+  NetworkFuel,
   TransactionResult,
 } from 'fuels';
 import {
-  Address as FuelAddress,
   Contract,
+  DateTime,
+  Address as FuelAddress,
   Provider as FuelProvider,
+  OperationName,
   TransactionResponse,
   TransactionStatus,
   bn,
+  getDecodedLogs,
   getReceiptsMessageOut,
-  getTransactionsSummaries,
 } from 'fuels';
 import type { WalletClient } from 'viem';
 import type { PublicClient as EthPublicClient } from 'viem';
 
-import { type HexAddress, getBridgeSolidityContracts } from 'app-commons';
+import {
+  FUEL_INDEXER_API,
+  type HexAddress,
+  IS_FUEL_DEV_CHAIN,
+  getBridgeSolidityContracts,
+} from 'app-commons';
+import { safeWriteContract } from 'app-commons/safeWriteContract';
+import { toBigInt } from 'ethers';
+import { getAssetEthCurrentChain } from '~portal/systems/Assets/utils';
 import { FUEL_CHAIN_STATE } from '../../eth/contracts/FuelChainState';
 import { FUEL_MESSAGE_PORTAL } from '../../eth/contracts/FuelMessagePortal';
 import { EthConnectorService } from '../../eth/services';
 import { parseEthAddressToFuel } from '../../eth/utils/address';
 import { createRelayMessageParams } from '../../eth/utils/relayMessage';
-import { getBlock } from '../utils';
+import { getTransactionReceipt } from '../../eth/utils/transaction';
+import { getAssetAmountWithdrawed } from '../utils/transaction';
 
 export type TxFuelToEthInputs = {
   startBase: {
     amount?: BN;
     fuelWallet?: FuelWallet;
     fuelProvider?: FuelProvider;
-    ethAddress?: string;
+    ethAddress?: HexAddress;
   };
   startFungibleToken: {
     fuelAsset?: NetworkFuel;
@@ -70,6 +82,9 @@ export type TxFuelToEthInputs = {
   relayMessageFromFuelBlock: {
     messageProof: MessageProof;
     ethWalletClient: WalletClient;
+    ethPublicClient: EthPublicClient;
+    fuelTxResult: TransactionResult;
+    assets: Asset[];
   };
   waitTxMessageRelayed: {
     txHash: HexAddress;
@@ -120,13 +135,21 @@ export class TxFuelToEthService {
     const { amount, fuelWallet, ethAddress, fuelProvider } = input;
 
     if (fuelWallet && ethAddress && amount && fuelProvider) {
+      const baseAssetId = await fuelProvider.getBaseAssetId();
+      const currentBalance = await fuelWallet.getBalance(baseAssetId);
+      const MAX_FEE_RESERVE = bn(50_000);
+      const remainingBalance = currentBalance.sub(amount);
+      const needsAdjustment = remainingBalance.lt(MAX_FEE_RESERVE);
+      let adjustedAmount = amount;
+
+      if (needsAdjustment) {
+        const shortfall = MAX_FEE_RESERVE.sub(remainingBalance);
+        adjustedAmount = amount.sub(shortfall);
+      }
+
       const txFuel = await fuelWallet.withdrawToBaseLayer(
         FuelAddress.fromString(parseEthAddressToFuel(ethAddress)),
-        amount,
-        {
-          gasLimit: bn(100_000),
-          maxFee: bn(50_000),
-        },
+        adjustedAmount,
       );
 
       return txFuel.id;
@@ -153,7 +176,13 @@ export class TxFuelToEthService {
         .withdraw(ethAddressInFuel)
         .callParams({
           forward: {
-            amount: bn.parseUnits(amount.format(), fuelAsset.decimals),
+            amount: bn.parseUnits(
+              amount.format({
+                precision: fuelAsset.decimals,
+                units: fuelAsset.decimals,
+              }),
+              fuelAsset.decimals,
+            ),
             assetId: fuelAsset.assetId,
           },
         })
@@ -165,7 +194,6 @@ export class TxFuelToEthService {
       const tx = await fuelWallet.sendTransaction(transactionRequest);
       const fWithdrawTxResult = await tx.waitForResult();
       if (fWithdrawTxResult.status !== TransactionStatus.success) {
-        console.log(fWithdrawTxResult);
         throw new Error('Failed to withdraw tokens to Ethereum');
       }
 
@@ -180,16 +208,39 @@ export class TxFuelToEthService {
     if (!input?.fuelTxId) {
       throw new Error('Need transaction Id');
     }
-
+    const chainId = await input.fuelProvider.getChainId();
     const { fuelTxId, fuelProvider } = input;
 
-    const response = new TransactionResponse(fuelTxId || '', fuelProvider);
+    const response = new TransactionResponse(
+      fuelTxId || '',
+      fuelProvider,
+      chainId,
+    );
     const txResult = await response.waitForResult();
     const message = getReceiptsMessageOut(txResult.receipts)[0];
+    let recipient: string | undefined = undefined;
+    try {
+      // for ERC20 the recipient is in the "to" field of the log
+      const messageSentLog = getDecodedLogs<{ to?: string }>(
+        txResult.receipts,
+        fungibleTokenABI,
+      )[1];
+      recipient = messageSentLog?.to || undefined;
+    } catch (_) {}
+
+    if (!recipient) {
+      recipient = message?.recipient;
+    }
+
+    const sender =
+      txResult.operations.find((o) => o.name === OperationName.withdrawFromFuel)
+        ?.from?.address || message?.sender;
 
     return {
       txResult,
       messageId: message?.messageId,
+      recipient,
+      sender,
       nonce: message?.nonce,
     };
   }
@@ -207,11 +258,12 @@ export class TxFuelToEthService {
 
     const { fuelWithdrawBlockId, ethPublicClient, fuelProvider } = input;
 
-    const withdrawBlock = await getBlock({
-      blockHash: fuelWithdrawBlockId,
-      providerUrl: fuelProvider.url,
-    });
-    const withdrawBlockHeight = withdrawBlock.header.height;
+    const withdrawBlock = await fuelProvider.getBlock(fuelWithdrawBlockId);
+
+    if (!withdrawBlock) {
+      throw new Error('Withdraw block not found');
+    }
+    const withdrawBlockHeight = withdrawBlock.height;
 
     const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const fuelChainState = EthConnectorService.connectToFuelChainState({
@@ -223,6 +275,20 @@ export class TxFuelToEthService {
       fuelChainState.read.BLOCKS_PER_COMMIT_INTERVAL(),
       fuelChainState.read.TIME_TO_FINALIZE(),
     ]);
+
+    const lastFinalizedBlock = await FUEL_CHAIN_STATE.getLastBlockFinalized({
+      ethPublicClient,
+    });
+    const lastFinalizedFuelBlock = await fuelProvider.getBlock(
+      lastFinalizedBlock.fuelBlockHash,
+    );
+
+    // If the last finalized block is greater than the withdraw block, we can return the last finalized block as committed
+    if (lastFinalizedFuelBlock?.height.gte(withdrawBlockHeight)) {
+      return {
+        blockHashCommited: lastFinalizedBlock.fuelBlockHash as HexAddress,
+      };
+    }
 
     // Add + 1 to the block height to wait the next block
     // that enable to proof the message
@@ -239,11 +305,8 @@ export class TxFuelToEthService {
       commitHeight.toString(),
     ]);
 
-    const block = await getBlock({
-      providerUrl: fuelProvider.url,
-      blockHash: commitHashAtL1 as string,
-    });
-    const isCommited = bn(block?.header.height).gte(nextBlockHeight);
+    const block = await fuelProvider.getBlock(commitHashAtL1 as string);
+    const isCommited = bn(block?.height).gte(nextBlockHeight);
 
     if (isCommited) {
       return {
@@ -285,7 +348,8 @@ export class TxFuelToEthService {
     const TIME_1_HOUR = 3600000;
     const TIME_10_MINUTES = 600000;
     const TIME_1_MINUTE = 60000;
-    const remainingTime = parseInt(input.timeRemaining) - CURRENT_TIMESTAMP;
+    const remainingTime =
+      Number.parseInt(input.timeRemaining) - CURRENT_TIMESTAMP;
     if (remainingTime > TIME_24_HOURS) return TIME_24_HOURS;
     if (remainingTime > TIME_1_HOUR) return TIME_1_HOUR;
     if (remainingTime > TIME_10_MINUTES) return TIME_10_MINUTES;
@@ -308,7 +372,7 @@ export class TxFuelToEthService {
     }
 
     const { fuelTxId, fuelProvider, nonce, fuelBlockHashCommited } = input;
-    const provider = await FuelProvider.create(fuelProvider.url);
+    const provider = new FuelProvider(fuelProvider.url);
     const withdrawMessageProof = await provider.getMessageProof(
       fuelTxId,
       nonce,
@@ -373,13 +437,27 @@ export class TxFuelToEthService {
       throw new Error('Need message ID');
     }
 
-    const { ethPublicClient } = input;
+    const { messageId, ethPublicClient } = input;
+
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
+
+    if (!IS_FUEL_DEV_CHAIN && FUEL_INDEXER_API) {
+      const url = new URL(`${FUEL_INDEXER_API}/bridge/message/relayed/hash`);
+      url.searchParams.set(
+        'address',
+        bridgeSolidityContracts.FuelMessagePortal,
+      );
+      url.searchParams.set('message_id', messageId);
+
+      const response = await fetch(url.toString());
+      const data = await response.json();
+
+      return data?.[0]?.transactionHash || undefined;
+    }
 
     const abiMessageRelayed = FUEL_MESSAGE_PORTAL.abi.find(
       ({ name, type }) => name === 'MessageRelayed' && type === 'event',
     );
-
-    const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const logs = await ethPublicClient.getLogs({
       address: bridgeSolidityContracts.FuelMessagePortal,
       event: {
@@ -402,27 +480,144 @@ export class TxFuelToEthService {
     if (!input?.ethWalletClient) {
       throw new Error('Need to connect ETH Wallet');
     }
+    if (!input?.ethPublicClient) {
+      throw new Error('Need a ETH public client');
+    }
     if (!input?.messageProof) {
       throw new Error('Need message proof to relay on ETH side');
     }
+    if (!input?.fuelTxResult) {
+      throw new Error('Need fuel tx result');
+    }
+    if (!input?.assets) {
+      throw new Error('Need assets');
+    }
 
-    const { messageProof, ethWalletClient } = input;
+    const {
+      messageProof,
+      ethWalletClient,
+      ethPublicClient,
+      fuelTxResult,
+      assets,
+    } = input;
 
     const relayMessageParams = await createRelayMessageParams(messageProof);
 
     const bridgeSolidityContracts = await getBridgeSolidityContracts();
     const fuelPortal = EthConnectorService.connectToFuelMessagePortal({
       walletClient: ethWalletClient,
+      publicClient: ethPublicClient,
       bridgeSolidityContracts,
     });
 
-    const txHash = await fuelPortal.write.relayMessage([
-      relayMessageParams.message,
-      relayMessageParams.rootBlockHeader,
-      relayMessageParams.blockHeader,
-      relayMessageParams.blockInHistoryProof,
-      relayMessageParams.messageInBlockProof,
-    ]);
+    if (!IS_FUEL_DEV_CHAIN) {
+      const assetAmount = getAssetAmountWithdrawed({
+        txResult: fuelTxResult,
+        assets,
+      });
+      if (!assetAmount?.asset) {
+        throw new Error('Need asset');
+      }
+      const ethNetworkAsset = getAssetEthCurrentChain(assetAmount?.asset);
+      const tokenAddress = ethNetworkAsset?.address;
+      const bigIntAmount = toBigInt(
+        bn
+          .parseUnits(assetAmount?.amount || '', ethNetworkAsset?.decimals)
+          .toHex(),
+      );
+
+      let limitAmount = 0n;
+      let currentPeriodAmount = 0n;
+      let currentPeriodEnd = 0n;
+      if (!tokenAddress) {
+        // validate limit for ETH withdraw
+        const isRateLimitEnabled = await fuelPortal.read.rateLimitEnabled();
+
+        if (isRateLimitEnabled) {
+          limitAmount = (await fuelPortal.read.limitAmount()) as bigint;
+          currentPeriodAmount =
+            (await fuelPortal.read.currentPeriodAmount()) as bigint;
+          currentPeriodEnd =
+            (await fuelPortal.read.currentPeriodEnd()) as bigint;
+
+          if (currentPeriodAmount + bigIntAmount >= limitAmount) {
+            const formattedLimitAmount = bn
+              .parseUnits(limitAmount.toString(), 0)
+              .format({
+                precision: ethNetworkAsset?.decimals || 18,
+                units: ethNetworkAsset?.decimals || 18,
+              });
+            throw new Error(
+              `Your withdrawal will exceed the contract's withdrawal limit of ${formattedLimitAmount} ${assetAmount.asset.symbol} for each period.
+              The current period ends on ${dayjs(Number(currentPeriodEnd) * 1000).format('DD/MM/YYYY [at] HH:mm:ss')}, after which the limit will be reset.
+
+              Please try again after that time if your withdrawal amount is within the limit. If your withdrawal exceeds the total limit, please contact support via the Fuel Forum or Discord.`,
+            );
+          }
+        }
+      } else if (assetAmount?.asset) {
+        // validate limit for erc20 withdraw
+        const fuelErc20Gateway = EthConnectorService.connectToFuelErc20Gateway({
+          walletClient: ethWalletClient,
+          publicClient: ethPublicClient,
+          bridgeSolidityContracts,
+        });
+
+        // First check if rate limiting is enabled for this token
+        const isRateLimitEnabled = await fuelErc20Gateway.read.rateLimitStatus([
+          tokenAddress,
+        ]);
+
+        if (isRateLimitEnabled) {
+          limitAmount = (await fuelErc20Gateway.read.limitAmount([
+            tokenAddress,
+          ])) as bigint;
+          currentPeriodAmount =
+            (await fuelErc20Gateway.read.currentPeriodAmount([
+              tokenAddress,
+            ])) as bigint;
+          currentPeriodEnd = (await fuelErc20Gateway.read.currentPeriodEnd([
+            tokenAddress,
+          ])) as bigint;
+
+          // Only check limits if rate limiting is enabled and limits are set
+          const formattedLimitAmount = bn
+            .parseUnits(limitAmount.toString(), 0)
+            .format({
+              precision: ethNetworkAsset?.decimals || 18,
+              units: ethNetworkAsset?.decimals || 18,
+            });
+
+          if (currentPeriodAmount + bigIntAmount >= limitAmount) {
+            throw new Error(
+              `Your withdrawal will exceed the contract's withdrawal limit of ${formattedLimitAmount} ${assetAmount.asset.symbol} for each period. 
+                The current period ends on ${dayjs(Number(currentPeriodEnd) * 1000).format('YYYY-MM-DD [at] HH:mm:ss')}, after which the limit will be reset.
+                
+                Please try again after that time if your withdrawal amount is within the limit. If your withdrawal exceeds the total limit, please contact support via the Fuel Forum or Discord.`,
+            );
+          }
+        }
+      }
+    }
+
+    const txHash = await safeWriteContract({
+      client: {
+        public: ethPublicClient,
+        wallet: ethWalletClient,
+      },
+      write: {
+        address: bridgeSolidityContracts.FuelMessagePortal,
+        abi: FUEL_MESSAGE_PORTAL.abi,
+        functionName: 'relayMessage',
+        args: [
+          relayMessageParams.message,
+          relayMessageParams.rootBlockHeader,
+          relayMessageParams.blockHeader,
+          relayMessageParams.blockInHistoryProof,
+          relayMessageParams.messageInBlockProof,
+        ],
+      },
+    });
 
     return txHash;
   }
@@ -439,28 +634,16 @@ export class TxFuelToEthService {
 
     const { ethPublicClient, txHash } = input;
 
-    let txReceipts: Awaited<
-      ReturnType<
-        | typeof ethPublicClient.getTransactionReceipt
-        | typeof ethPublicClient.waitForTransactionReceipt
-      >
-    >;
-    try {
-      txReceipts = await ethPublicClient.getTransactionReceipt({
-        hash: txHash,
-      });
-    } catch (_err: unknown) {
-      // workaround in place because waitForTransactionReceipt stop working after first time using it
-      txReceipts = await ethPublicClient.waitForTransactionReceipt({
-        hash: txHash,
-      });
-    }
+    const txReceipt = await getTransactionReceipt({
+      ethPublicClient,
+      txHash,
+    });
 
-    if (txReceipts.status !== 'success') {
+    if (txReceipt.status !== 'success') {
       throw new Error('Failed to relay message (transaction reverted)');
     }
 
-    return !!txReceipts;
+    return !!txReceipt;
   }
 
   static async fetchTxs(input: TxFuelToEthInputs['fetchTxs']) {
@@ -473,25 +656,58 @@ export class TxFuelToEthService {
 
     const { fuelAddress, fuelProvider } = input;
 
-    const bridgeTxs: TransactionResult[] = [];
+    const bridgeTxs: { id: string; time: Date }[] = [];
 
     let hasNextPage = true;
     let endCursor = undefined;
     // go until last page
     while (hasNextPage) {
-      const { transactions, pageInfo } = await getTransactionsSummaries({
-        provider: fuelProvider,
-        filters: {
-          owner: fuelAddress?.toB256(),
-          first: 100,
-          after: endCursor,
-        },
-      });
+      const query = `
+        query {
+          transactionsByOwner(first: 600, owner: "${fuelAddress}"${endCursor ? `, after: "${endCursor}"` : ''}) {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+            nodes {
+              id
+              status {
+                __typename
+                ... on SuccessStatus {
+                  time
+                  receipts {
+                    receiptType
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
 
-      const withdrawTxs = transactions.filter(
-        (txSummary) => !!getReceiptsMessageOut(txSummary.receipts)?.[0],
-      );
-      bridgeTxs.push(...withdrawTxs);
+      const response: Response = await fetch(fuelProvider.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      const { data } = await response.json();
+      const { transactionsByOwner } = data;
+      const { nodes, pageInfo } = transactionsByOwner;
+
+      for (const node of nodes) {
+        const receipts = node.status.receipts || [];
+        const messageOutReceipt = receipts.find(
+          (receipt: any) => receipt?.receiptType === 'MESSAGE_OUT',
+        );
+        if (messageOutReceipt) {
+          bridgeTxs.push({
+            id: node.id,
+            time: new Date(
+              DateTime.fromTai64(node.status.time).toUnixMilliseconds(),
+            ),
+          });
+        }
+      }
 
       hasNextPage = pageInfo.hasNextPage;
       endCursor = pageInfo.endCursor;

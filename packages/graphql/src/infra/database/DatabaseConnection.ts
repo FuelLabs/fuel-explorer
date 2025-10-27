@@ -18,7 +18,11 @@ export class DatabaseConnection {
       user: DB_USER as string,
       password: DB_PASS as string,
       database: DB_NAME as string,
-      ssl: Boolean(env.get('SSL')) as boolean,
+      // Disable SSL for local development
+      ssl:
+        process.env.NODE_ENV === 'production'
+          ? { rejectUnauthorized: false }
+          : false,
     };
     this.pool = new Pool(config);
   }

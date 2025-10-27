@@ -764,6 +764,14 @@ query chain{
                         txPointer
                         utxoId
                         witnessIndex
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                     ... on InputContract {
                         balanceRoot
@@ -791,6 +799,7 @@ query chain{
                 isUpload
                 maturity
                 mintAmount
+                mintAmountUsd
                 mintAssetId
                 mintGasPrice
                 outputContract{
@@ -804,11 +813,27 @@ query chain{
                         amount
                         assetId
                         to
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                     ... on CoinOutput {
                         amount
                         assetId
                         to
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                     ... on ContractCreated {
                         contract
@@ -823,6 +848,14 @@ query chain{
                         amount
                         assetId
                         to
+                        name
+                        symbol
+                        suspicious
+                        icon
+                        contractId
+                        decimals
+                        rate
+                        amountInUsd
                     }
                 }
                 policies{
@@ -898,6 +931,14 @@ query chain{
                                         txPointer
                                         utxoId
                                         witnessIndex
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on InputContract {
                                         balanceRoot
@@ -925,6 +966,7 @@ query chain{
                                 isUpload
                                 maturity
                                 mintAmount
+                                mintAmountUsd
                                 mintAssetId
                                 mintGasPrice
                                 outputContract{
@@ -938,11 +980,27 @@ query chain{
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on CoinOutput {
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on ContractCreated {
                                         contract
@@ -957,6 +1015,14 @@ query chain{
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                 }
                                 policies{
@@ -1046,6 +1112,11 @@ query chain{
                             to
                             toAddress
                             val
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            decimals
                         }
                         time
                         totalFee
@@ -1116,6 +1187,14 @@ query chain{
                                         txPointer
                                         utxoId
                                         witnessIndex
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on InputContract {
                                         balanceRoot
@@ -1143,6 +1222,7 @@ query chain{
                                 isUpload
                                 maturity
                                 mintAmount
+                                mintAmountUsd
                                 mintAssetId
                                 mintGasPrice
                                 outputContract{
@@ -1156,11 +1236,27 @@ query chain{
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on CoinOutput {
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                     ... on ContractCreated {
                                         contract
@@ -1175,6 +1271,14 @@ query chain{
                                         amount
                                         assetId
                                         to
+                                        name
+                                        symbol
+                                        suspicious
+                                        icon
+                                        contractId
+                                        decimals
+                                        rate
+                                        amountInUsd
                                     }
                                 }
                                 policies{
@@ -1263,6 +1367,11 @@ query chain{
                             to
                             toAddress
                             val
+                            name
+                            symbol
+                            suspicious
+                            icon
+                            decimals
                         }
                         time
                         totalFee

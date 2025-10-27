@@ -1,7 +1,7 @@
 import bridgeProxyABI from '@fuel-bridge/fungible-token/bridge-fungible-token/proxy/out/release/proxy-abi.json';
-import { BridgeSolidityContracts } from 'app-commons';
+import type { BridgeSolidityContracts } from 'app-commons';
 import { Contract } from 'fuels';
-import { WalletUnlocked as FuelWallet, bn } from 'fuels';
+import { type WalletUnlocked as FuelWallet, bn } from 'fuels';
 import type { PublicClient } from 'viem';
 
 import { EthConnectorService } from '../services';
@@ -45,7 +45,7 @@ export async function getTokenContractImplementation({
       return implementationContract.bits as unknown as string;
     }
   } catch (e) {
-    console.log('asd ERROR getting proxy contract', e);
+    console.error('ERROR getting proxy contract', e);
   }
 
   return '';

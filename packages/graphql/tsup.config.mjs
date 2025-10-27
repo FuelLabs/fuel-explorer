@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsup';
 import { join } from 'node:path';
 import fs from 'fs-extra';
+import { defineConfig } from 'tsup';
 
 export default defineConfig(() => [
   {
@@ -13,10 +13,16 @@ export default defineConfig(() => [
     minify: false,
     entry: {
       index: 'src/index.ts',
+      sdk: 'src/graphql/generated/sdk.ts',
+      'sdk-provider': 'src/graphql/generated/sdk-provider.ts',
       app: 'src/app.ts',
       syncer: 'src/syncer.ts',
       consumer: 'src/consumer.ts',
-      recover: 'src/recover.ts',
+      assets: 'src/assets.ts',
+      balance: 'src/balance.ts',
+      l1: 'src/l1.ts',
+      cosmos: 'src/cosmos.ts',
+      jobs: 'src/jobs.ts',
     },
     async onSuccess() {
       const cwd = process.cwd();

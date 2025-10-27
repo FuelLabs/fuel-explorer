@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
@@ -13,7 +14,7 @@ type ListBoxBaseProps = {
 
 type ListBoxItemVariant = 'idle' | 'selected' | 'focused';
 
-export interface ListBoxProps<T> {
+export interface ListBoxProps<T> extends ListBoxBaseProps {
   filter?: boolean;
   options: T[];
   selected: string;
@@ -29,11 +30,19 @@ interface ListBoxInputProps<T> {
   getValue: ListBoxProps<T>['getValue'];
 }
 
-type ListBoxBaseContextType = {
+type ListBoxContentProps = {
+  className?: string;
+};
+
+type ListBoxBaseContextType<T> = {
   total: number;
   focused: number;
   setFocused: React.Dispatch<React.SetStateAction<number>>;
   onSelect: (value: string) => void;
+  render: (option: T) => React.ReactNode;
+  options: ListBoxProps<T>['options'];
+  selected: ListBoxProps<T>['selected'];
+  getValue: (option: T, index: number) => string;
 };
 
 type ListBoxItemContextType = {
@@ -47,9 +56,9 @@ type ListBoxItemIconContextType = {
   index: number;
 };
 
-const ListBoxBaseContext = createContext<ListBoxBaseContextType | undefined>(
-  undefined,
-);
+const ListBoxBaseContext = createContext<
+  ListBoxBaseContextType<unknown> | undefined
+>(undefined);
 
 const ListBoxItemContext = createContext<ListBoxItemContextType | undefined>(
   undefined,
@@ -64,18 +73,32 @@ const ListBoxRoot = <T,>({
   options,
   selected,
   getValue,
-  render,
   onChange,
   onSelect,
+  children,
+  render,
+  className,
 }: ListBoxProps<T>) => {
   const [focused, setFocused] = useState(-1);
   const total = options.length;
 
+  const TypedBaseListContext = ListBoxBaseContext as React.Context<
+    ListBoxBaseContextType<T>
+  >;
   return (
-    <ListBoxBaseContext.Provider
-      value={{ focused, setFocused, total, onSelect }}
+    <TypedBaseListContext.Provider
+      value={{
+        options,
+        focused,
+        setFocused,
+        total,
+        onSelect,
+        selected,
+        render,
+        getValue,
+      }}
     >
-      <div>
+      <div className={className}>
         {filter && (
           <ListBoxInput
             options={options}
@@ -84,46 +107,9 @@ const ListBoxRoot = <T,>({
           />
         )}
 
-        <ul
-          // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: this component is a listbox
-          role="listbox"
-          tabIndex={-1}
-          aria-multiselectable="false"
-        >
-          <AnimatePresence initial={false}>
-            {options.map((option, index) => {
-              const key = getValue(option, index);
-
-              return (
-                <motion.div
-                  key={key}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{
-                    opacity: 0,
-                    height: 0,
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ListBoxItemContext.Provider
-                    value={{ index, selected, value: key }}
-                  >
-                    {render(option)}
-                  </ListBoxItemContext.Provider>
-                </motion.div>
-              );
-            })}
-            {total === 0 && (
-              <div className="flex flex-col items-center justify-center p-4">
-                <Text size="2" weight="medium" color="gray">
-                  No results found
-                </Text>
-              </div>
-            )}
-          </AnimatePresence>
-        </ul>
+        {children}
       </div>
-    </ListBoxBaseContext.Provider>
+    </TypedBaseListContext.Provider>
   );
 };
 
@@ -171,6 +157,63 @@ const ListBoxInput = <T,>({
     </div>
   );
 };
+
+const ListBoxContent = createComponent<ListBoxContentProps, 'ol'>({
+  id: 'ListBoxContent',
+  render: (_, { className }) => {
+    const baseCtx = useContext(ListBoxBaseContext);
+    if (!baseCtx) {
+      throw new Error("ListBoxContent must be used within ListBox's Root");
+    }
+
+    const { options, selected, render, total, getValue } = baseCtx;
+
+    return (
+      <ul
+        // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: this component is a listbox
+        role="listbox"
+        tabIndex={-1}
+        aria-multiselectable="false"
+        className={clsx(
+          'overflow-y-auto flex flex-col gap-2 px-[2px]',
+          className,
+        )}
+      >
+        <AnimatePresence initial={false}>
+          {options.map((option, index) => {
+            const key = getValue(option, index);
+
+            return (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{
+                  opacity: 0,
+                  height: 0,
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                <ListBoxItemContext.Provider
+                  value={{ index, selected, value: key }}
+                >
+                  {render(option)}
+                </ListBoxItemContext.Provider>
+              </motion.div>
+            );
+          })}
+          {total === 0 && (
+            <div className="flex flex-1 items-center justify-center">
+              <Text size="2" weight="medium" color="gray">
+                No results found
+              </Text>
+            </div>
+          )}
+        </AnimatePresence>
+      </ul>
+    );
+  },
+});
 
 const ListBoxItem = createComponent<ListBoxBaseProps, 'li'>({
   id: 'ListBoxItem',
@@ -242,6 +285,7 @@ const ListBoxItemIcon = createComponent<{}, 'div'>({
 });
 
 export const ListBox = withNamespace(ListBoxRoot, {
+  Content: ListBoxContent,
   Item: ListBoxItem,
   ItemIcon: ListBoxItemIcon,
 });

@@ -11,7 +11,10 @@ export function overlayEvents(store: Store) {
     closeOverlay() {
       store.send(Services.overlay, { type: 'CLOSE' });
     },
-    openTxEthToFuel({ txId }: { txId?: string }) {
+    openTxEthToFuel({
+      txId,
+      messageSentEventNonce,
+    }: { txId?: string; messageSentEventNonce?: BigInt }) {
       if (txId) {
         store.send(Services.overlay, {
           type: 'OPEN',
@@ -19,6 +22,7 @@ export function overlayEvents(store: Store) {
             modal: 'tx.fromEth.toFuel',
             params: {
               txId,
+              messageSentEventNonce,
             },
           },
         });

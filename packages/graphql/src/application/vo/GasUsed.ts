@@ -13,12 +13,12 @@ export class GasUsed extends ValueObject<Props> {
 
   static create(transaction: GQLTransaction) {
     const { status } = transaction;
-    if (status?.__typename !== 'SuccessStatus') {
-      return new GasUsed({ value: bn(0) });
+    if (status && 'totalGas' in status) {
+      const value = bn(status.totalGas);
+      return new GasUsed({ value });
     }
 
-    const value = bn(status.totalGas);
-    return new GasUsed({ value });
+    return new GasUsed({ value: bn(0) });
   }
 
   value() {

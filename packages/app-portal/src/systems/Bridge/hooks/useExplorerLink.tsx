@@ -1,4 +1,4 @@
-import { FUEL_CHAIN } from 'app-commons';
+import { ETH_CHAIN, FUEL_CHAIN, urlJoin } from 'app-commons';
 import { buildBlockExplorerUrl } from 'fuels';
 import { useMemo } from 'react';
 
@@ -8,6 +8,10 @@ export type ExplorerLinkProps = {
   id: string;
 };
 
+export const createETHExplorerLink = (...path: string[]) => {
+  return urlJoin(ETH_CHAIN.blockExplorers?.default.url || '', ...path);
+};
+
 export function useExplorerLink({
   network,
   providerUrl,
@@ -15,7 +19,7 @@ export function useExplorerLink({
 }: ExplorerLinkProps) {
   const href = useMemo<string>(() => {
     if (network === 'ethereum') {
-      return `https://sepolia.etherscan.io/tx/${id}`;
+      return `${ETH_CHAIN.blockExplorers?.default.url}/tx/${id}`;
     }
 
     if (network === 'fuel') {
@@ -26,6 +30,7 @@ export function useExplorerLink({
       return buildBlockExplorerUrl({
         path: `transaction/${id}`,
         providerUrl,
+        blockExplorerUrl: FUEL_CHAIN.blockExplorerUrl,
       });
     }
 

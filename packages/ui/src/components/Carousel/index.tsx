@@ -1,5 +1,3 @@
-'use client';
-
 export { Carousel, CarouselContent, CarouselItem } from './Carousel';
 
 export type {

@@ -1,5 +1,4 @@
-import type { Asset } from '@fuel-ts/account';
-import type { Account as FuelWallet, BN } from 'fuels';
+import type { Asset, BN, Account as FuelWallet } from 'fuels';
 import type { WalletClient } from 'viem';
 
 import type { FromToNetworks } from '../Chains';
@@ -11,6 +10,9 @@ import type { BridgeInputs, PossibleBridgeInputs } from './services';
 
 export function bridgeEvents(store: Store) {
   return {
+    changeToAddress(input: { toCustomAddress?: string }) {
+      store.send(Services.bridge, { type: 'CHANGE_TO_ADDRESS', input });
+    },
     changeNetworks(input: FromToNetworks) {
       store.send(Services.bridge, { type: 'CHANGE_NETWORKS', input });
     },
@@ -32,7 +34,10 @@ export function bridgeEvents(store: Store) {
       store.send(Services.bridgeTxs, { type: 'FETCH_NEXT_PAGE' });
     },
     addTxEthToFuel(
-      input?: { ethTxId?: HexAddress } & BridgeInputs['fetchTxs'],
+      input?: {
+        ethTxId?: HexAddress;
+        inputEthTxNonce?: BigInt;
+      } & BridgeInputs['fetchTxs'],
     ) {
       if (!input) return;
 
@@ -52,7 +57,7 @@ export function bridgeEvents(store: Store) {
       input,
       fuelTxId,
     }: {
-      input?: { ethWalletClient: WalletClient };
+      input?: { ethWalletClient: WalletClient; assets: Asset[] };
       fuelTxId: string;
     }) {
       if (!input) return;
@@ -66,19 +71,19 @@ export function bridgeEvents(store: Store) {
     },
     relayMessageEthToFuel({
       input,
-      ethTxId,
+      machineId,
     }: {
       input?: {
         fuelWallet: FuelWallet;
       };
-      ethTxId: HexAddress;
+      machineId: string;
     }) {
       if (!input) return;
 
       // TODO: make store.send function support this last object prop
       const service = store.services[Services.bridgeTxs];
       const snapshot = service.getSnapshot();
-      const txEthToFuelMachine = snapshot?.context.ethToFuelTxRefs?.[ethTxId];
+      const txEthToFuelMachine = snapshot?.context.ethToFuelTxRefs?.[machineId];
 
       txEthToFuelMachine.send({ type: 'RELAY_MESSAGE_ON_FUEL', input });
     },

@@ -159,7 +159,10 @@ const ComboBoxRoot = createComponent<ComboBoxProps, typeof Input>({
               return true;
             }
 
-            const selectedValue = strict ? suggestionFilter?.[0] : value;
+            const selectedValue =
+              strict && suggestionFilter
+                ? suggestions.filter(suggestionFilter)?.[0]
+                : value;
             selectedValue && handleSuggestionClick(selectedValue);
             return false;
           });

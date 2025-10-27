@@ -1,38 +1,41 @@
-'use client';
 import {
   Box,
-  Button,
   Card,
+  HStack,
   LoadingBox,
   LoadingWrapper,
   ScrollArea,
   Text,
 } from '@fuels/ui';
-import { IconChevronUp } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 import { tv } from 'tailwind-variants';
 
 import CopyButton from '../CopyButton/CopyButton';
 import { JsonViewer } from '../JsonViewer/JsonViewer';
 
 export type CodeBlockProps = {
-  value: string | object;
-  type?: 'json' | 'raw' | string;
   title?: ReactNode;
   isLoading?: boolean;
+  value?: string | object;
+  children?: ReactNode;
+  rightEl?: ReactNode;
+  height?: number | 'auto';
+  type?: 'json' | 'raw' | string;
+  copy?: boolean;
 };
 
 export function CodeBlock({
-  value,
+  value = '',
   type = 'raw',
   title,
+  children,
+  rightEl,
+  height = 'auto',
   isLoading,
+  copy = true,
 }: CodeBlockProps) {
-  const [compact, setCompact] = useState<boolean>(true);
-
   const classes = styles();
-  if (!value && !isLoading) return null;
+  if (!value && !children && !isLoading) return null;
 
   function getCopyValue() {
     if (typeof value === 'object') {
@@ -48,7 +51,7 @@ export function CodeBlock({
   }
 
   return (
-    <Card className={classes.root()} data-compact={compact}>
+    <Card className={classes.root()}>
       <Card.Header className={classes.cardHeader()}>
         <LoadingWrapper
           isLoading={isLoading}
@@ -58,12 +61,17 @@ export function CodeBlock({
               <Text size="1" weight="bold">
                 {getTitle()}
               </Text>
-              <CopyButton size="1" value={getCopyValue()} />
+              {Boolean(rightEl || copy) && (
+                <HStack align="center">
+                  {rightEl}
+                  {copy && <CopyButton size="1" value={getCopyValue()} />}
+                </HStack>
+              )}
             </>
           }
         />
       </Card.Header>
-      <ScrollArea className={classes.cardMiddle()}>
+      <ScrollArea className={classes.cardMiddle()} style={{ height }}>
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={
@@ -83,27 +91,11 @@ export function CodeBlock({
                   {typeof value === 'object' ? value.toString() : value}
                 </Text>
               )}
+              {children && <div className={classes.codeText()}>{children}</div>}
             </>
           }
         />
       </ScrollArea>
-      <LoadingWrapper
-        isLoading={isLoading}
-        loadingEl={null}
-        regularEl={
-          <Card.Footer className={classes.cardFooter()}>
-            <Button
-              variant="link"
-              size="1"
-              color="gray"
-              rightIcon={IconChevronUp}
-              onClick={() => setCompact(!compact)}
-            >
-              Show {compact ? 'more' : 'less'}
-            </Button>
-          </Card.Footer>
-        }
-      />
     </Card>
   );
 }
@@ -111,21 +103,17 @@ export function CodeBlock({
 const styles = tv({
   slots: {
     root: [
-      'group p-0 gap-0',
-      'transition-[max-height] max-h-[65vh]',
+      'block',
+      'group p-0',
+      'transition-[max-height]',
       'data-[compact=true]:max-h-[210px]',
     ],
     cardHeader:
-      'border-b border-card-border py-3 flex-row items-center justify-between',
+      'border-b border-card-border py-3 flex-row items-center justify-between min-h-[53px]',
     cardMiddle: [
       'flex-1 font-mono',
       '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON
     ],
     codeText: 'text-sm text-gray-500 p-4 max-w-full break-all block',
-    cardFooter: [
-      'border-t border-card-border',
-      'py-3 self-stretch flex-none justify-center',
-      'group-data-[compact=true]:[&_svg]:-rotate-180 [&_svg]:transition-transform',
-    ],
   },
 });

@@ -1,22 +1,28 @@
 import { useMemo } from 'react';
 import { Services, store } from '~portal/store';
-import { getAssetEth, getAssetFuel } from '~portal/systems/Assets/utils';
+import {
+  getAssetEthCurrentChain,
+  getAssetFuelCurrentChain,
+} from '~portal/systems/Assets/utils';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
 import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
 
 import { useAsset } from '../../../Assets/hooks/useAsset';
-import { useFuelAccountConnection } from '../../fuel';
+import { distanceToNow, useFuelAccountConnection } from '../../fuel';
 import type { TxEthToFuelMachineState } from '../machines';
-import { isErc20Address } from '../utils';
+import { isErc20Address, parseFuelAddressToEth } from '../utils';
 
 import type { HexAddress } from 'app-commons';
+import dayjs from 'dayjs';
 import { deepCompare } from '../utils/deepCompare';
 
-const bridgeTxsSelectors = {
-  txEthToFuel: (txId?: HexAddress) => (state: BridgeTxsMachineState) => {
-    if (!txId) return undefined;
+export const DEPOSIT_DURATION_MINUTES = 30;
 
-    const machine = state.context?.ethToFuelTxRefs?.[txId]?.getSnapshot();
+const bridgeTxsSelectors = {
+  txEthToFuel: (machineId?: string) => (state: BridgeTxsMachineState) => {
+    if (!machineId) return undefined;
+
+    const machine = state.context?.ethToFuelTxRefs?.[machineId]?.getSnapshot();
 
     return machine;
   },
@@ -50,6 +56,7 @@ const txEthToFuelSelectors = {
   },
   steps: (state: TxEthToFuelMachineState) => {
     const status = txEthToFuelSelectors.status(state);
+    const date = txEthToFuelSelectors.blockDate(state);
     const { ethTxId, erc20Token } = state.context;
 
     if (!ethTxId) return undefined;
@@ -57,6 +64,17 @@ const txEthToFuelSelectors = {
     const confirmTransactionText = isErc20Address(erc20Token?.address)
       ? 'Action'
       : 'Automatic';
+
+    function getSettlementStatusText() {
+      if (status.isSettlementDone) return 'Done!';
+      if (date) {
+        const target = dayjs(date)
+          .add(DEPOSIT_DURATION_MINUTES, 'minutes')
+          .toDate();
+        return `~${distanceToNow(target)} left`;
+      }
+      return 'Waiting';
+    }
 
     const steps = [
       {
@@ -66,8 +84,7 @@ const txEthToFuelSelectors = {
       },
       {
         name: 'Settlement',
-        // TODO: put correct time left '~XX minutes left', how?
-        status: status.isSettlementDone ? 'Done!' : 'Waiting',
+        status: getSettlementStatusText(),
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
@@ -111,19 +128,29 @@ const txEthToFuelSelectors = {
   isLoadingReceipts: (state: TxEthToFuelMachineState) => {
     return state.matches('checkingSettlement.gettingReceiptsInfo');
   },
+  selectFromToAddresses: (state: TxEthToFuelMachineState) => {
+    return {
+      sender: parseFuelAddressToEth(state.context.sender),
+      recipient: state.context.recipient?.toString(),
+    };
+  },
 };
 
-export function useTxEthToFuel({ id }: { id: string }) {
+export function useTxEthToFuel({
+  id,
+  messageSentEventNonce,
+}: { id: string; messageSentEventNonce: BigInt }) {
   const { wallet: fuelWallet } = useFuelAccountConnection();
   const txId = id.startsWith('0x') ? (id as HexAddress) : undefined;
   const { href: explorerLink } = useExplorerLink({
     network: 'ethereum',
     id,
   });
+  const machineId = `${txId}-${messageSentEventNonce}`;
 
   const txEthToFuelState = store.useSelector(
     Services.bridgeTxs,
-    bridgeTxsSelectors.txEthToFuel(txId),
+    bridgeTxsSelectors.txEthToFuel(machineId),
     deepCompare,
   );
 
@@ -135,6 +162,8 @@ export function useTxEthToFuel({ id }: { id: string }) {
     erc20Token,
     ethTxId,
     isLoadingReceipts,
+    fromAddress,
+    toAddress,
   } = useMemo(() => {
     if (!txEthToFuelState) return {};
 
@@ -146,6 +175,8 @@ export function useTxEthToFuel({ id }: { id: string }) {
     const ethTxId = txEthToFuelSelectors.ethTxId(txEthToFuelState);
     const isLoadingReceipts =
       txEthToFuelSelectors.isLoadingReceipts(txEthToFuelState);
+    const fromToAddresses =
+      txEthToFuelSelectors.selectFromToAddresses(txEthToFuelState);
 
     return {
       steps,
@@ -155,14 +186,16 @@ export function useTxEthToFuel({ id }: { id: string }) {
       erc20Token,
       ethTxId,
       isLoadingReceipts,
+      fromAddress: fromToAddresses.sender,
+      toAddress: fromToAddresses.recipient,
     };
   }, [txEthToFuelState]);
 
   const { asset } = useAsset({
     ethTokenId: erc20Token?.address,
   });
-  const assetEthNetwork = asset ? getAssetEth(asset) : undefined;
-  const assetFuelNetwork = asset ? getAssetFuel(asset) : undefined;
+  const assetEthNetwork = asset ? getAssetEthCurrentChain(asset) : undefined;
+  const assetFuelNetwork = asset ? getAssetFuelCurrentChain(asset) : undefined;
   const formattedAmount = amount?.format({
     // if it's erc20 token, the value is bigger and we should use ETH decimals of the token
     units: erc20Token ? assetEthNetwork?.decimals : undefined,
@@ -177,7 +210,7 @@ export function useTxEthToFuel({ id }: { id: string }) {
       input: {
         fuelWallet,
       },
-      ethTxId,
+      machineId,
     });
   }
 
@@ -192,6 +225,8 @@ export function useTxEthToFuel({ id }: { id: string }) {
       openTxEthToFuel: store.openTxEthToFuel,
       relayMessageToFuel,
     },
+    fromAddress,
+    toAddress,
     date,
     steps,
     status,

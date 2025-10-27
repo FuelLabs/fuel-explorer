@@ -1,29 +1,29 @@
 import { AccountConnectionInput } from '~portal/systems/Accounts';
 
 import { FuelLogo } from '@fuels/ui';
+import { IconSwitchHorizontal } from '@tabler/icons-react';
 import { FUEL_CHAIN } from 'app-commons';
-import { Address } from 'fuels';
-import { useMemo } from 'react';
 import { useFuelAccountConnection } from '../hooks';
 
 export const FuelAccountConnection = ({ label }: { label?: string }) => {
   const {
     isConnecting,
     handlers,
-    account: address,
+    account: fuelAddress,
     isLoadingConnection,
     isConnected,
+    isNonNative,
   } = useFuelAccountConnection();
 
-  const fuelAddress = useMemo(() => {
-    if (!address) return address;
-    return Address.fromDynamicInput(address).toB256();
-  }, [address]);
   return (
     <AccountConnectionInput
       networkName={FUEL_CHAIN.name}
       networkImage={<FuelLogo size={18} />}
       label={label}
+      disconnectLabel={isNonNative ? 'Change Wallet' : undefined}
+      disconnectIcon={
+        isNonNative ? <IconSwitchHorizontal size={13} /> : undefined
+      }
       isConnecting={isConnecting}
       account={{ address: fuelAddress }}
       onConnect={handlers.connect}

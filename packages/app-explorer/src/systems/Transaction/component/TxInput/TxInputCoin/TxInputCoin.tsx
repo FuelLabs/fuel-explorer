@@ -4,18 +4,18 @@ import {
   Box,
   Collapsible,
   Flex,
+  HStack,
+  Text,
   createComponent,
-  useBreakpoints,
 } from '@fuels/ui';
 import { IconCoins } from '@tabler/icons-react';
 import { bn } from 'fuels';
-import NextLink from 'next/link';
 
 import { Routes } from '~/routes';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import { UtxoItem } from '~/systems/Core/components/UtxoItem/UtxoItem';
-import { TxInputCoinProps } from './types';
+import type { TxInputCoinProps } from './types';
 
 export const TxInputCoin = createComponent<
   TxInputCoinProps,
@@ -27,7 +27,6 @@ export const TxInputCoin = createComponent<
 
     const assetId = input.assetId;
     const amount = input.amount;
-    const { isMobile } = useBreakpoints();
 
     return (
       <Collapsible {...props}>
@@ -46,28 +45,34 @@ export const TxInputCoin = createComponent<
                 assetId={assetId}
                 className="flex-1 text-sm"
                 prefix="Asset:"
+                asset={input}
               >
                 <Address
                   prefix="From:"
                   value={input.owner || ''}
-                  className="text-white"
-                  addressOpts={
-                    isMobile ? { trimLeft: 4, trimRight: 2 } : undefined
-                  }
                   linkProps={{
-                    as: NextLink,
                     href: Routes.accountAssets(input.owner!),
                   }}
+                  isAccount
                 />
               </AssetItem>
               {amount && (
                 <Box className="w-full tablet:w-auto tablet:ml-0 justify-between flex flex-row tablet:block pl-14">
-                  <Amount
-                    hideIcon
-                    hideSymbol
-                    assetId={assetId}
-                    value={bn(amount)}
-                  />
+                  <HStack align="center">
+                    <Amount
+                      className="text-primary text-base"
+                      hideIcon
+                      hideSymbol
+                      assetId={assetId}
+                      value={bn(amount)}
+                      decimals={input.decimals || undefined}
+                    />
+                    {input.amountInUsd && (
+                      <Text className="text-secondary" as="div" size="2">
+                        ({input.amountInUsd})
+                      </Text>
+                    )}
+                  </HStack>
                 </Box>
               )}
             </Flex>
@@ -83,6 +88,7 @@ export const TxInputCoin = createComponent<
               item={input}
               assetId={assetId}
               index={0}
+              decimals={input.decimals || undefined}
             />
           </Collapsible.Body>
         </Collapsible.Content>

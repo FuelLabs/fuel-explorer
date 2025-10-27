@@ -1,12 +1,11 @@
+import { expect } from '@playwright/test';
+import type { BrowserContext, Page } from '@playwright/test';
+import { shortAddress } from '../../../../../app-portal/src/systems/Core/utils';
 import {
   getByAriaLabel,
   hasText,
   waitAriaLabel,
-} from '@fuels/playwright-utils';
-import { expect } from '@playwright/test';
-import type { BrowserContext, Page } from '@playwright/test';
-
-import { shortAddress } from '../../../../../app-portal/src/systems/Core/utils';
+} from '../../../../src/helpers/fuel-utils.js';
 
 export async function closeTransactionPopup(page: Page) {
   // click anywhere outside of popup
@@ -14,41 +13,46 @@ export async function closeTransactionPopup(page: Page) {
 }
 
 export const hasDropdownSymbol = async (page: Page, symbol: string) => {
-  const assetDropdown = getByAriaLabel(page, 'Coin Selector').getByText(symbol);
-  expect(await assetDropdown.innerText()).toBe(symbol);
+  const assetDropdown = await getByAriaLabel(page, 'Coin Selector');
+  const symbolElement = assetDropdown.getByText(symbol);
+  expect(await symbolElement.innerText()).toBe(symbol);
 };
 
 export const goToBridgePage = async (page: Page) => {
-  const bridgeButton = page
-    .locator('a[data-active="true"]')
-    .getByText('Bridge');
-  await bridgeButton.click();
-  await hasText(page, 'Asset amount');
+  const isBridge = await isBridgePage(page);
+  if (isBridge) return;
+  await page.goto('/bridge', {
+    timeout: 20000,
+    waitUntil: 'domcontentloaded',
+  });
+  await waitAriaLabel(page, 'Balance');
 };
 
 export const goToTransactionsPage = async (page: Page) => {
-  const currentUrl = page.url();
-  if (currentUrl.includes('/bridge/history')) return;
+  if (await isTransactionHistoryPage(page)) return;
 
-  const transactionList = getByAriaLabel(page, 'Transaction History');
+  const transactionList = await getByAriaLabel(page, 'Transaction History');
   await transactionList.click();
 
   await waitAriaLabel(page, 'Back to home');
   await hasText(page, 'Back');
+  await page.waitForTimeout(2500);
 };
 
 export const clickDepositTab = async (page: Page) => {
-  const tab = getByAriaLabel(page, 'Deposit Tab');
+  const tab = await getByAriaLabel(page, 'Deposit Tab');
   await tab.click();
+  await page.waitForTimeout(2500);
 };
 
 export const clickWithdrawTab = async (page: Page) => {
-  const tab = getByAriaLabel(page, 'Withdraw Tab');
+  const tab = await getByAriaLabel(page, 'Withdraw Tab');
   await tab.click();
+  await page.waitForTimeout(2500);
 };
 
 export const checkTxItemDone = async (page: Page, txHash: string) => {
-  const listItem = getByAriaLabel(
+  const listItem = await getByAriaLabel(
     page,
     `Transaction ID: ${shortAddress(txHash)}`,
   );
@@ -78,8 +82,36 @@ export const proceedAnyways = async (context: BrowserContext) => {
 };
 
 export const selectToken = async (page: Page, token: string) => {
-  const assetDropdown = getByAriaLabel(page, 'Coin Selector');
+  const assetDropdown = await getByAriaLabel(page, 'Coin Selector');
   await assetDropdown.click();
-  const tokenAsset = getByAriaLabel(page, `${token} symbol`);
+  const tokenAsset = await getByAriaLabel(page, `${token} symbol`);
   await tokenAsset.click();
+};
+
+export const isTransactionHistoryPage = async (page: Page) => {
+  const currentUrl = page.url();
+  return currentUrl.includes('/bridge/history');
+};
+
+export const isBridgePage = async (page: Page) => {
+  const currentUrl = page.url();
+  return currentUrl.includes('/bridge') && !currentUrl.includes('/history');
+};
+
+export const acceptTermsOfService = async (page: Page) => {
+  console.log('Accepting Terms of Service');
+  const tosButton = page.locator('[aria-label="Terms of Service"]');
+  try {
+    // Wait for the button to appear, with a short timeout
+    await tosButton.waitFor({ timeout: 5000 }); // Adjust timeout as needed
+    console.log('Terms of Service button found');
+    const isChecked = await tosButton.getAttribute('data-state');
+    if (isChecked !== 'unchecked') {
+      console.log('Terms of Service already accepted');
+      return;
+    }
+    await tosButton.click();
+  } catch (_error) {
+    console.log('Terms of Service button not found, proceeding...');
+  }
 };

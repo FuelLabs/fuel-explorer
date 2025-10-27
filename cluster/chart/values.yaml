@@ -1,0 +1,51 @@
+fuel-explorer:
+  healthcheck:
+    enabled: false
+
+  app:
+    serviceMonitor:
+      enabled: false
+
+  api:
+    enabled: true
+    ingress:
+      enabled: false
+    service:
+      type: ClusterIP
+      port: 3000
+    image:
+      repository: fuel-explorer
+      tag: local
+      pullPolicy: IfNotPresent
+    livenessProbe: {}
+    readinessProbe: {}
+
+  syncer:
+    enabled: true
+    service:
+      type: ClusterIP
+      port: 3001
+    image:
+      repository: fuel-explorer
+      tag: local
+      pullPolicy: IfNotPresent
+
+postgresql:
+  enabled: true
+  auth:
+    username: fuel-explorer
+    password: fuel-explorer
+    database: fuel-explorer
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+rabbitmq:
+  enabled: true
+  auth:
+    username: fuel-explorer
+    password: fuel-explorer
+  persistence:
+    enabled: true
+    size: 1Gi

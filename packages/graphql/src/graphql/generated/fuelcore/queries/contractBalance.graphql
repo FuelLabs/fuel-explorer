@@ -3,5 +3,11 @@ query contractBalance($asset: AssetId!, $contract: ContractId!){
         amount
         assetId
         contract
+        name
+        symbol
+        suspicious
+        decimals
+        icon
+        amountInUsd
     }
 }

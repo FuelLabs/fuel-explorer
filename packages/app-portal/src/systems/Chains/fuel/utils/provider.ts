@@ -14,11 +14,7 @@ export const rateLimitedFetch = async (
   );
 
   if (requestTimestamps.length >= maxRequestsPerSecond) {
-    console.log(
-      `Reached the rate limit of ${maxRequestsPerSecond} requests per second. Waiting for 1 second...`,
-    );
     await new Promise((resolve) => setTimeout(resolve, waitTime));
-    console.log('Done waiting. Resuming requests...');
     // Do not clear the request timestamps. Rely on the filter to remove old ones.
     // Call the function recursively to recheck the limit
     return rateLimitedFetch(url, options);
@@ -32,6 +28,6 @@ export const rateLimitedFetch = async (
 };
 
 export async function createProvider(url: string) {
-  const provider = await Provider.create(url, { fetch: rateLimitedFetch });
+  const provider = new Provider(url, { fetch: rateLimitedFetch });
   return provider;
 }

@@ -1,5 +1,6 @@
-import { ChartConfig, HStack, RoundedContainer } from '@fuels/ui';
+import { type ChartConfig, HStack, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
+import { useMemo } from 'react';
 import {
   CartesianGrid,
   Line,
@@ -7,7 +8,6 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis,
 } from 'recharts';
 
 const chartConfig = {
@@ -20,18 +20,47 @@ const chartConfig = {
 interface GasSpentProps {
   blocks: any;
 }
-const GasSpentChart = (gasSpent: GasSpentProps) => {
-  const totalGasSpent = gasSpent.blocks
-    .map((block: any) => +block.value)
-    .reduce((acc: any, value: any) => acc + value, 0);
-  const chartData = gasSpent.blocks.map((e: any) => {
+const GasSpentChart = ({ blocks }: GasSpentProps) => {
+  const { totalGasSpent, chartData, index } = useMemo(() => {
+    if (!blocks || typeof blocks !== 'object') {
+      return {
+        totalGasSpent: '0',
+        chartData: [],
+        index: {},
+      };
+    }
+
+    const totalGasSpent = blocks.total || '0';
+
+    if (!Array.isArray(blocks.data) || blocks.data.length === 0) {
+      return {
+        totalGasSpent,
+        chartData: [],
+        index: {},
+      };
+    }
+
+    const chartData = blocks.data
+      .map((e: any) => {
+        return {
+          time: dayjs(Number(e?.date || 0)).format('HH:mm'),
+          ETH: +(e?.value || 0),
+        };
+      })
+      .slice(0, blocks.data.length - 1);
+
+    const index: any = {};
+    for (const e of blocks.data) {
+      if (e && e.value !== undefined) {
+        index[e.value] = e.valueInUsd || '0';
+      }
+    }
     return {
-      time: dayjs(Number(e.time)).format('HH:mm'),
-      ETH: +e.value,
+      totalGasSpent,
+      chartData,
+      index,
     };
-  });
-  const minGasUsed = Math.min(...chartData.map((e: any) => e.ETH)) / 10 ** 9;
-  const maxGasUsed = Math.max(...chartData.map((e: any) => e.ETH)) / 10 ** 9;
+  }, [blocks]);
 
   return (
     <RoundedContainer className="py-4 h-full px-5 space-y-3 ">
@@ -40,7 +69,7 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
           <div className="text-[15px] leading-[24px] text-heading font-semibold group">
             <div className="relative group">
               <div className="flex items-center group">
-                <span className="">Gas Spent</span>
+                <span className="">Fee Spent</span>
                 <span className="ml-2 group cursor-pointer">
                   <svg
                     width="14"
@@ -57,7 +86,7 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
                 </span>
               </div>
               <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white  bg-gray-3 rounded-lg shadow-sm">
-                The percentage of block resources utilized by transactions.
+                Fee Spent on Fuel Network
                 <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
               </div>
             </div>
@@ -67,17 +96,17 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
           </span>
         </div>
         <HStack align={'baseline'}>
-          <h2 className="text-[32px] leading-[34px] text-heading font-bold whitespace-no-wrap">
-            {(totalGasSpent / 10 ** 9).toFixed(8)}
+          <h2 className="text-[27px] lg:text-[32px] leading-[34px] text-heading font-bold whitespace-no-wrap">
+            {totalGasSpent}
           </h2>
-          <p className="text-[11px] text-heading font-regular text-muted tracking-tight] ">
-            ETH
+          <p className="text-[11px] text-heading font-regular text-muted">
+            USD
           </p>
         </HStack>
         <ResponsiveContainer width="100%" height={170}>
           <LineChart
             data={chartData}
-            margin={{ top: 10, left: -25, right: 0, bottom: 0 }}
+            margin={{ top: 10, left: 0, right: 0, bottom: 0 }}
           >
             <CartesianGrid
               strokeDasharray="3 3"
@@ -89,8 +118,8 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
               tick={{ className: 'fill-heading', fontSize: '12px' }}
             />
             <Tooltip
-              formatter={(value) => [`${Number(value) / 10 ** 9} ETH`]}
-              labelFormatter={(label) => label.toLocaleString()}
+              formatter={(value: any) => [`${index[String(value)] || '0'}`]}
+              labelFormatter={(label: any) => label.toLocaleString()}
               contentStyle={{
                 backgroundColor: 'var(--gray-1)',
                 borderColor: 'var(--gray-2)',
@@ -106,16 +135,6 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
               }}
               cursor={{ strokeWidth: 0.1, radius: 10 }}
             />
-            <YAxis
-              tick={{
-                className: 'fill-heading whitespace-no-wrap',
-                fontSize: '12px',
-              }}
-              domain={[minGasUsed, maxGasUsed]}
-              tickFormatter={(value) => {
-                return Number((value / 10 ** 9).toFixed(6)).toExponential();
-              }}
-            />
 
             <Line
               type="monotone"
@@ -127,16 +146,6 @@ const GasSpentChart = (gasSpent: GasSpentProps) => {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
-      <div className="flex items-center gap-[24px]">
-        {/* <div className="flex items-center gap-[8px]">
-          <div className="w-[6px] h-[6px] bg-[#0090FFE0]/85 rounded-full gap-[8px]" />
-          <div className="text-[12px] leading-[16px] text-heading">ETH</div>
-        </div> */}
-        {/* <div className="flex items-center gap-[8px]">
-          <div className="w-[6px] h-[6px] bg-brand rounded-full gap-[8px]" />
-          <div className="text-[12px] leading-[16px] text-heading">FUEL</div>
-        </div> */}
       </div>
     </RoundedContainer>
   );
