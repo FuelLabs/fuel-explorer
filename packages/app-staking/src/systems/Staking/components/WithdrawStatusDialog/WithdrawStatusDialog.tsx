@@ -157,7 +157,12 @@ export const WithdrawStatusDialog = ({
             />
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">
-            {WITHDRAW_STEPS.map((step) => {
+            {WITHDRAW_STEPS.filter((step) => {
+              if (step.status === GQLWithdrawStatusType.Skipped) {
+                return stakingEvent?.status === GQLWithdrawStatusType.Skipped;
+              }
+              return true;
+            }).map((step) => {
               const isCompleted =
                 !!statusFlags[step.status as keyof typeof statusFlags];
               const isCurrent = step.status === stakingEvent?.status;

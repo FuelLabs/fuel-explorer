@@ -146,7 +146,12 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
             />
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">
-            {STAKE_STEPS.map((step) => {
+            {STAKE_STEPS.filter((step) => {
+              if (step.status === 'Skipped') {
+                return stakeEvent?.status === 'Skipped';
+              }
+              return true;
+            }).map((step) => {
               const isCompleted =
                 !!statusFlags[step.status as keyof typeof statusFlags];
 

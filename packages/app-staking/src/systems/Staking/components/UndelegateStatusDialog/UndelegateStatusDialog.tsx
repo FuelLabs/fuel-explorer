@@ -148,7 +148,12 @@ export const UndelegateStatusDialog = ({
             />
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">
-            {UNDELEGATE_STEPS.map((step) => {
+            {UNDELEGATE_STEPS.filter((step) => {
+              if (step.status === 'Skipped') {
+                return undelegateEvent?.status === 'Skipped';
+              }
+              return true;
+            }).map((step) => {
               const isCompleted =
                 !!statusFlags[step.status as keyof typeof statusFlags];
 
