@@ -148,7 +148,12 @@ export const ClaimRewardStatusDialog = ({
             />
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">
-            {CLAIM_STEPS.map((step) => {
+            {CLAIM_STEPS.filter((step) => {
+              if (step.status === 'Skipped') {
+                return claimEvent?.status === 'Skipped';
+              }
+              return true;
+            }).map((step) => {
               const isCompleted =
                 !!statusFlags[step.status as keyof typeof statusFlags];
 
