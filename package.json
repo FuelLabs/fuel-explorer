@@ -111,17 +111,17 @@
   "dependencies": {
     "@fuel-ts/account": "0.100.0",
     "@fuel-ts/math": "0.100.0",
-    "@fuels/connectors": "0.44.1",
+    "@fuels/connectors": "0.45.0",
     "@fuels/react": "0.44.1",
     "@fuels/react-xstore": "0.23.0",
-    "fuels": "0.101.3",
+    "fuels": "0.102.0",
     "lodash": "^4.17.21",
     "react-data-table-component": "7.6.2",
     "react-paginate": "8.2.0",
     "recharts": "2.12.7"
   },
   "peerDependencies": {
-    "@fuels/connectors": "0.44.1",
+    "@fuels/connectors": "0.45.0",
     "@fuels/react": "0.44.1",
     "fuels": ">=0.101.3"
   },
