@@ -111,7 +111,7 @@
   "dependencies": {
     "@fuel-ts/account": "0.100.0",
     "@fuel-ts/math": "0.100.0",
-    "@fuels/connectors": "0.43.2",
+    "@fuels/connectors": "0.45.0",
     "@fuels/react": "0.44.1",
     "@fuels/react-xstore": "0.23.0",
     "fuels": "0.102.0",
@@ -121,7 +121,7 @@
     "recharts": "2.12.7"
   },
   "peerDependencies": {
-    "@fuels/connectors": "0.43.2",
+    "@fuels/connectors": "0.45.0",
     "@fuels/react": "0.44.1",
     "fuels": ">=0.101.3"
   },
