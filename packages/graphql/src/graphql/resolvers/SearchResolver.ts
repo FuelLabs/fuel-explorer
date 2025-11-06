@@ -2,8 +2,10 @@ import { isB256 } from 'fuels';
 import { Hash256 } from '~/application/vo';
 import { logger } from '~/core/Logger';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
+import AssetDAO from '~/infra/dao/AssetDAO';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import ContractDAO from '~/infra/dao/ContractDAO';
+import PredicateDAO from '~/infra/dao/PredicateDAO';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 
 type Params = {
@@ -42,16 +44,26 @@ export class SearchResolver {
     const blockDAO = new BlockDAO();
     const contractDAO = new ContractDAO();
     const transactionDAO = new TransactionDAO();
+    const assetDAO = new AssetDAO();
+    const predicateDAO = new PredicateDAO();
 
     const results = await Promise.allSettled([
       blockDAO.getByHash(address),
       contractDAO.getByHash(address),
       transactionDAO.getByHash(address),
+      assetDAO.getByAssetId(address),
+      predicateDAO.getByAddress(address),
       transactionDAO.getTransactionsByOwner(address),
     ]);
 
-    const [blockResult, contractResult, transactionResult, transactionsResult] =
-      results;
+    const [
+      blockResult,
+      contractResult,
+      transactionResult,
+      assetResult,
+      predicateResult,
+      transactionsResult,
+    ] = results;
 
     // Priority order: Block > Contract > Transaction > Asset > Predicate > Account
 
@@ -73,6 +85,20 @@ export class SearchResolver {
       logger.debug('GraphQL', 'SearchResolver.search - found transaction');
       return {
         transaction: transactionResult.value.toGQLNode(),
+      };
+    }
+
+    if (assetResult.status === 'fulfilled' && assetResult.value) {
+      logger.debug('GraphQL', 'SearchResolver.search - found asset');
+      return {
+        asset: assetResult.value,
+      };
+    }
+
+    if (predicateResult.status === 'fulfilled' && predicateResult.value) {
+      logger.debug('GraphQL', 'SearchResolver.search - found predicate');
+      return {
+        predicate: predicateResult.value.toGQLNode(),
       };
     }
 
