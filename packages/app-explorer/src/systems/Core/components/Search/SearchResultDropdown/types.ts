@@ -10,4 +10,5 @@ export type SearchDropdownProps = {
   onSelectItem: () => void;
   loading: boolean;
   error?: boolean;
+  loadingMore?: boolean;
 };

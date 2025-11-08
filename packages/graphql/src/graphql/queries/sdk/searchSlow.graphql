@@ -1,0 +1,22 @@
+query searchSlow($query: String!) {
+  searchSlow(query: $query) {
+    account {
+      address
+      transactions {
+        id
+      }
+    }
+    asset {
+      assetId
+      contractId
+      subId
+      name
+      symbol
+      decimals
+      icon
+      verified
+      suspicious
+      rate
+    }
+  }
+}

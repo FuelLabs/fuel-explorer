@@ -112,7 +112,57 @@ export class ApiService {
     }
   }
 
-  // Replicate search server action
+  // Replicate searchFast - returns immediately with fast results
+  static async searchFast(query: string): Promise<any> {
+    try {
+      const result = searchSchema.safeParse({ query });
+      if (!result.success) {
+        throw new Error('Invalid search input');
+      }
+
+      const input = result.data;
+
+      const fastResponse = await sdk
+        .searchFast({ query: input.query })
+        .catch((err) => {
+          console.error('Error in searchFast:', err);
+          return { data: null };
+        });
+
+      const fastResult = fastResponse?.data?.searchFast ?? null;
+      return fastResult;
+    } catch (error) {
+      console.error('Error in searchFast:', error);
+      throw error;
+    }
+  }
+
+  // Replicate searchSlow - returns slow results
+  static async searchSlow(query: string): Promise<any> {
+    try {
+      const result = searchSchema.safeParse({ query });
+      if (!result.success) {
+        throw new Error('Invalid search input');
+      }
+
+      const input = result.data;
+
+      const slowResponse = await sdk
+        .searchSlow({ query: input.query })
+        .catch((err) => {
+          console.error('Error in searchSlow:', err);
+          return { data: null };
+        });
+
+      const slowResult = slowResponse?.data?.searchSlow ?? null;
+      return slowResult;
+    } catch (error) {
+      console.error('Error in searchSlow:', error);
+      throw error;
+    }
+  }
+
+  // Replicate search server action with 2-tier approach
   static async search(query: string): Promise<any> {
     try {
       // Validate input using the same schema as Next.js
@@ -122,9 +172,56 @@ export class ApiService {
       }
 
       const input = result.data;
-      const { data } = await sdk.search({ query: input.query });
 
-      return data?.search ?? null;
+      console.log('[API] Starting 2-tier search for:', input.query);
+      const searchStartTime = Date.now();
+
+      // Execute fast and slow queries in parallel
+      console.log('[API] Calling searchFast and searchSlow in parallel...');
+      const fastPromise = sdk
+        .searchFast({ query: input.query })
+        .catch((err) => {
+          console.error('[API] searchFast error:', err);
+          return { data: null };
+        });
+      const slowPromise = sdk
+        .searchSlow({ query: input.query })
+        .catch((err) => {
+          console.error('[API] searchSlow error:', err);
+          return { data: null };
+        });
+
+      const [fastResponse, slowResponse] = await Promise.all([
+        fastPromise,
+        slowPromise,
+      ]);
+
+      console.log(
+        '[API] searchFast response:',
+        fastResponse?.data?.searchFast ? 'HAS DATA' : 'NULL',
+      );
+      console.log(
+        '[API] searchSlow response:',
+        slowResponse?.data?.searchSlow ? 'HAS DATA' : 'NULL',
+      );
+
+      const fastResult = fastResponse?.data?.searchFast ?? null;
+      const slowResult = slowResponse?.data?.searchSlow ?? null;
+
+      // Merge results with fast results taking priority
+      const merged = {
+        ...fastResult,
+        ...slowResult,
+      };
+
+      const totalTime = Date.now() - searchStartTime;
+      console.log('[API] Search completed in', totalTime, 'ms');
+      console.log(
+        '[API] Merged result keys:',
+        Object.keys(merged).filter((k) => merged[k]),
+      );
+
+      return Object.keys(merged).some((key) => merged[key]) ? merged : null;
     } catch (error) {
       console.error('Error searching:', error);
       throw error;

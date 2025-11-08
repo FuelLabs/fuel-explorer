@@ -1341,6 +1341,8 @@ export type GQLQuery = {
   register: Scalars['U64']['output'];
   relayedTransactionStatus?: Maybe<GQLRelayedTransactionStatus>;
   search?: Maybe<GQLSearchResult>;
+  searchFast?: Maybe<GQLSearchFastResult>;
+  searchSlow?: Maybe<GQLSearchSlowResult>;
   stakingAPY?: Maybe<GQLStakingApy>;
   stakingEvent?: Maybe<GQLStakingEventResponse>;
   stakingEvents?: Maybe<GQLStakingEventsResult>;
@@ -1530,6 +1532,16 @@ export type GQLQuerySearchArgs = {
 };
 
 
+export type GQLQuerySearchFastArgs = {
+  query: Scalars['String']['input'];
+};
+
+
+export type GQLQuerySearchSlowArgs = {
+  query: Scalars['String']['input'];
+};
+
+
 export type GQLQueryStakingEventArgs = {
   eventId: Scalars['Int']['input'];
 };
@@ -1709,12 +1721,26 @@ export type GQLSearchContract = {
   id?: Maybe<Scalars['ContractId']['output']>;
 };
 
+export type GQLSearchFastResult = {
+  __typename: 'SearchFastResult';
+  block?: Maybe<GQLSearchBlock>;
+  contract?: Maybe<GQLSearchContract>;
+  predicate?: Maybe<GQLPredicateItem>;
+  transaction?: Maybe<GQLSearchTransaction>;
+};
+
 export type GQLSearchResult = {
   __typename: 'SearchResult';
   account?: Maybe<GQLSearchAccount>;
   block?: Maybe<GQLSearchBlock>;
   contract?: Maybe<GQLSearchContract>;
   transaction?: Maybe<GQLSearchTransaction>;
+};
+
+export type GQLSearchSlowResult = {
+  __typename: 'SearchSlowResult';
+  account?: Maybe<GQLSearchAccount>;
+  asset?: Maybe<GQLAsset>;
 };
 
 export type GQLSearchTransaction = {
@@ -2188,6 +2214,20 @@ export type GQLSearchQueryVariables = Exact<{
 
 
 export type GQLSearchQuery = { __typename: 'Query', search?: { __typename: 'SearchResult', account?: { __typename: 'SearchAccount', address?: string | null, transactions?: Array<{ __typename: 'SearchTransaction', id?: string | null } | null> | null } | null, block?: { __typename: 'SearchBlock', height?: string | null, id?: string | null } | null, contract?: { __typename: 'SearchContract', id?: string | null } | null, transaction?: { __typename: 'SearchTransaction', id?: string | null } | null } | null };
+
+export type GQLSearchFastQueryVariables = Exact<{
+  query: Scalars['String']['input'];
+}>;
+
+
+export type GQLSearchFastQuery = { __typename: 'Query', searchFast?: { __typename: 'SearchFastResult', block?: { __typename: 'SearchBlock', height?: string | null, id?: string | null } | null, contract?: { __typename: 'SearchContract', id?: string | null } | null, transaction?: { __typename: 'SearchTransaction', id?: string | null } | null, predicate?: { __typename: 'PredicateItem', address?: string | null, bytecode?: string | null } | null } | null };
+
+export type GQLSearchSlowQueryVariables = Exact<{
+  query: Scalars['String']['input'];
+}>;
+
+
+export type GQLSearchSlowQuery = { __typename: 'Query', searchSlow?: { __typename: 'SearchSlowResult', account?: { __typename: 'SearchAccount', address?: string | null, transactions?: Array<{ __typename: 'SearchTransaction', id?: string | null } | null> | null } | null, asset?: { __typename: 'Asset', assetId?: string | null, contractId?: string | null, subId?: string | null, name?: string | null, symbol?: string | null, decimals?: string | null, icon?: string | null, verified?: boolean | null, suspicious?: boolean | null, rate?: string | null } | null } | null };
 
 export type GQLStakingApyQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3835,6 +3875,50 @@ export const SearchDocument = gql`
   }
 }
     `;
+export const SearchFastDocument = gql`
+    query searchFast($query: String!) {
+  searchFast(query: $query) {
+    block {
+      height
+      id
+    }
+    contract {
+      id
+    }
+    transaction {
+      id
+    }
+    predicate {
+      address
+      bytecode
+    }
+  }
+}
+    `;
+export const SearchSlowDocument = gql`
+    query searchSlow($query: String!) {
+  searchSlow(query: $query) {
+    account {
+      address
+      transactions {
+        id
+      }
+    }
+    asset {
+      assetId
+      contractId
+      subId
+      name
+      symbol
+      decimals
+      icon
+      verified
+      suspicious
+      rate
+    }
+  }
+}
+    `;
 export const StakingApyDocument = gql`
     query stakingAPY {
   stakingAPY {
@@ -4003,6 +4087,8 @@ const GetBlocksDashboardDocumentString = print(GetBlocksDashboardDocument);
 const PredicateDocumentString = print(PredicateDocument);
 const RecentTransactionsDocumentString = print(RecentTransactionsDocument);
 const SearchDocumentString = print(SearchDocument);
+const SearchFastDocumentString = print(SearchFastDocument);
+const SearchSlowDocumentString = print(SearchSlowDocument);
 const StakingApyDocumentString = print(StakingApyDocument);
 const StakingEventDocumentString = print(StakingEventDocument);
 const StakingEventsDocumentString = print(StakingEventsDocument);
@@ -4055,6 +4141,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     search(variables: GQLSearchQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLSearchQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLSearchQuery>(SearchDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'search', 'query', variables);
+    },
+    searchFast(variables: GQLSearchFastQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLSearchFastQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLSearchFastQuery>(SearchFastDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchFast', 'query', variables);
+    },
+    searchSlow(variables: GQLSearchSlowQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLSearchSlowQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLSearchSlowQuery>(SearchSlowDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchSlow', 'query', variables);
     },
     stakingAPY(variables?: GQLStakingApyQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLStakingApyQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLStakingApyQuery>(StakingApyDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'stakingAPY', 'query', variables);

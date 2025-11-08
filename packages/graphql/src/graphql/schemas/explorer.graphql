@@ -212,6 +212,18 @@ type SearchResult {
   transaction: SearchTransaction
 }
 
+type SearchFastResult {
+  block: SearchBlock
+  contract: SearchContract
+  transaction: SearchTransaction
+  predicate: PredicateItem
+}
+
+type SearchSlowResult {
+  account: SearchAccount
+  asset: Asset
+}
+
 # --------------------------------
 # Query
 # -------------------------------
@@ -224,6 +236,8 @@ type Query {
     last: Int
   ): ContractConnection!
   search(query: String!): SearchResult
+  searchFast(query: String!): SearchFastResult
+  searchSlow(query: String!): SearchSlowResult
   predicate(address: String!): PredicateItem
   tps: TPSConnection!
   statistics: StatisticsConnection!
