@@ -2,6 +2,7 @@ import { isB256 } from 'fuels';
 import { Hash256 } from '~/application/vo';
 import { logger } from '~/core/Logger';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
+import DataCache from '~/infra/cache/DataCache';
 import AssetDAO from '~/infra/dao/AssetDAO';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import ContractDAO from '~/infra/dao/ContractDAO';
@@ -25,6 +26,16 @@ export class SearchResolver {
   async search(_null: any, params: Params['search']) {
     logger.debug('GraphQL', 'SearchResolver.search', { query: params.query });
 
+    // Check cache first (5-minute TTL)
+    const cacheKey = `search:${params.query.toLowerCase()}`;
+    const cachedResult = DataCache.getInstance().get(cacheKey);
+    if (cachedResult) {
+      logger.debug('GraphQL', 'SearchResolver.search - cache hit', {
+        query: params.query,
+      });
+      return cachedResult;
+    }
+
     // Check if query is a block height (numeric, not starting with 0x)
     if (!params.query.startsWith('0x') && !Number.isNaN(Number(params.query))) {
       const blockDAO = new BlockDAO();
@@ -34,9 +45,11 @@ export class SearchResolver {
           'GraphQL',
           'SearchResolver.search - found block by height',
         );
-        return {
+        const result = {
           block: block.toGQLNode(),
         };
+        DataCache.getInstance().save(cacheKey, 300000, result); // 5 min TTL
+        return result;
       }
     }
 
@@ -53,7 +66,7 @@ export class SearchResolver {
       transactionDAO.getByHash(address),
       assetDAO.getByAssetId(address),
       predicateDAO.getByAddress(address),
-      transactionDAO.getTransactionsByOwner(address),
+      transactionDAO.getRecentTransactionsByOwner(address),
     ]);
 
     const [
@@ -69,37 +82,47 @@ export class SearchResolver {
 
     if (blockResult.status === 'fulfilled' && blockResult.value) {
       logger.debug('GraphQL', 'SearchResolver.search - found block by hash');
-      return {
+      const result = {
         block: blockResult.value.toGQLNode(),
       };
+      DataCache.getInstance().save(cacheKey, 300000, result);
+      return result;
     }
 
     if (contractResult.status === 'fulfilled' && contractResult.value) {
       logger.debug('GraphQL', 'SearchResolver.search - found contract');
-      return {
+      const result = {
         contract: contractResult.value.toGQLNode(),
       };
+      DataCache.getInstance().save(cacheKey, 300000, result);
+      return result;
     }
 
     if (transactionResult.status === 'fulfilled' && transactionResult.value) {
       logger.debug('GraphQL', 'SearchResolver.search - found transaction');
-      return {
+      const result = {
         transaction: transactionResult.value.toGQLNode(),
       };
+      DataCache.getInstance().save(cacheKey, 300000, result);
+      return result;
     }
 
     if (assetResult.status === 'fulfilled' && assetResult.value) {
       logger.debug('GraphQL', 'SearchResolver.search - found asset');
-      return {
+      const result = {
         asset: assetResult.value,
       };
+      DataCache.getInstance().save(cacheKey, 300000, result);
+      return result;
     }
 
     if (predicateResult.status === 'fulfilled' && predicateResult.value) {
       logger.debug('GraphQL', 'SearchResolver.search - found predicate');
-      return {
+      const result = {
         predicate: predicateResult.value.toGQLNode(),
       };
+      DataCache.getInstance().save(cacheKey, 300000, result);
+      return result;
     }
 
     if (
@@ -111,7 +134,7 @@ export class SearchResolver {
         'GraphQL',
         'SearchResolver.search - found account with transactions',
       );
-      return {
+      const result = {
         account: {
           address,
           transactions: transactionsResult.value.map(
@@ -119,6 +142,8 @@ export class SearchResolver {
           ),
         },
       };
+      DataCache.getInstance().save(cacheKey, 300000, result);
+      return result;
     }
 
     // Return empty account if valid B256 but no results
@@ -127,15 +152,19 @@ export class SearchResolver {
         'GraphQL',
         'SearchResolver.search - valid B256 but no results',
       );
-      return {
+      const result = {
         account: {
           address,
           transactions: [],
         },
       };
+      DataCache.getInstance().save(cacheKey, 300000, result);
+      return result;
     }
 
     logger.debug('GraphQL', 'SearchResolver.search - no results found');
+    // Cache null result for non-B256 addresses (shorter TTL: 1 minute)
+    DataCache.getInstance().save(cacheKey, 60000, null);
     return null;
   }
 }

@@ -590,6 +590,15 @@ export enum GQLContractParametersVersion {
   V1 = 'V1'
 }
 
+export type GQLContractSyncStatus = {
+  __typename: 'ContractSyncStatus';
+  errorMessage?: Maybe<Scalars['String']['output']>;
+  fetchAttempts?: Maybe<Scalars['Int']['output']>;
+  firstSeen?: Maybe<Scalars['String']['output']>;
+  lastUpdated?: Maybe<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
+};
+
 export type GQLDelegateResponse = {
   __typename: 'DelegateResponse';
   amount: Scalars['String']['output'];
@@ -1719,6 +1728,7 @@ export type GQLSearchBlock = {
 export type GQLSearchContract = {
   __typename: 'SearchContract';
   id?: Maybe<Scalars['ContractId']['output']>;
+  syncStatus?: Maybe<GQLContractSyncStatus>;
 };
 
 export type GQLSearchFastResult = {
