@@ -203,10 +203,10 @@ export default class TransactionDAO {
 				account_hash = $1
 			order by
 				tx_hash, _id desc
+			limit 5
 		) ta on t.tx_hash = ta.tx_hash
 		order by
 			ta.account_id desc
-		limit 5
 		`,
       [accountHash.toLowerCase()],
     );
@@ -215,6 +215,47 @@ export default class TransactionDAO {
       transactions.push(TransactionEntity.createFromDAO(transactionData));
     }
     return transactions;
+  }
+
+  async getRecentTransactionsByOwner(accountHash: string) {
+    // Optimized query for accounts with many transactions
+    // Uses materialized view of recent transactions (last 7 days)
+    // Falls back to regular query if view doesn't exist or has no results
+    try {
+      const transactionsData = await this.databaseConnection.query(
+        `
+        select
+          t.*
+        from
+          indexer.transactions t
+        inner join (
+          select distinct on (tx_hash)
+            tx_hash, _id as account_id
+          from
+            indexer.recent_account_transactions_mv
+          where
+            account_hash = $1
+          order by
+            tx_hash, _id desc
+          limit 5
+        ) ta on t.tx_hash = ta.tx_hash
+        order by
+          ta.account_id desc
+        `,
+        [accountHash.toLowerCase()],
+      );
+      if (transactionsData.length > 0) {
+        const transactions = [];
+        for (const transactionData of transactionsData) {
+          transactions.push(TransactionEntity.createFromDAO(transactionData));
+        }
+        return transactions;
+      }
+    } catch (_error) {
+      // If materialized view doesn't exist or is empty, fall back to regular query
+    }
+    // Fallback to regular method
+    return this.getTransactionsByOwner(accountHash);
   }
 
   async getPaginatedTransactionsByBlockId(
