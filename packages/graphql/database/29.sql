@@ -1,18 +1,19 @@
 -- Create materialized view for recent account transactions (last 7 days)
 -- This optimizes searches for accounts with many transactions by avoiding full table scans
--- The view includes a unique index for concurrent refresh capability
+-- Joins with transactions table to filter by timestamp
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS indexer.recent_account_transactions_mv AS
 SELECT
-  account_hash,
-  tx_hash,
-  _id,
-  block_id,
-  created_at
+  ta.account_hash,
+  ta.tx_hash,
+  ta._id,
+  ta.block_id,
+  t.timestamp
 FROM
-  indexer.transactions_accounts
+  indexer.transactions_accounts ta
+  INNER JOIN indexer.transactions t ON ta.tx_hash = t.tx_hash
 WHERE
-  created_at > NOW() - INTERVAL '7 days'
+  t.timestamp > NOW() - INTERVAL '7 days'
 WITH DATA;
 
 -- Create unique index for concurrent refresh (required for CONCURRENTLY keyword)
