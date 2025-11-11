@@ -259,6 +259,11 @@ export const SearchResultDropdown = forwardRef<
                 </div>
               )}
             </>
+          ) : loadingMore ? (
+            <div className={classes.loadingContainer()}>
+              <Spinner size={16} color="brand" aria-label="searching" />
+              <p className={classes.loadingText()}>Searching...</p>
+            </div>
           ) : (
             <Dropdown.Label className={classes.dropdownLabel()}>
               No results found.
