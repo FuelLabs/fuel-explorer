@@ -1,6 +1,5 @@
 import { isB256 } from 'fuels';
 import { Hash256 } from '~/application/vo';
-import { logger } from '~/core/Logger';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import DataCache from '~/infra/cache/DataCache';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
@@ -20,17 +19,10 @@ export class SearchResolverSlow {
   }
 
   async searchSlow(_null: any, params: Params['search']) {
-    logger.debug('GraphQL', 'SearchResolverSlow.searchSlow', {
-      query: params.query,
-    });
-
     // Check cache first (10-minute TTL for slow queries - they're expensive)
     const cacheKey = `searchSlow:${params.query.toLowerCase()}`;
     const cachedResult = DataCache.getInstance().get(cacheKey);
     if (cachedResult !== undefined) {
-      logger.debug('GraphQL', 'SearchResolverSlow.searchSlow - cache hit', {
-        query: params.query,
-      });
       return cachedResult;
     }
 
@@ -49,10 +41,6 @@ export class SearchResolverSlow {
       Array.isArray(transactionsResult) &&
       transactionsResult.length > 0
     ) {
-      logger.debug(
-        'GraphQL',
-        'SearchResolverSlow.searchSlow - found account with transactions',
-      );
       const result = {
         account: {
           address,
@@ -67,10 +55,6 @@ export class SearchResolverSlow {
 
     // Return empty account if valid B256 but no results
     if (isB256(address)) {
-      logger.debug(
-        'GraphQL',
-        'SearchResolverSlow.searchSlow - valid B256 but no results',
-      );
       const result = {
         account: {
           address,
@@ -81,7 +65,6 @@ export class SearchResolverSlow {
       return result;
     }
 
-    logger.debug('GraphQL', 'SearchResolverSlow.searchSlow - no results found');
     // Cache null result with shorter TTL (2 minutes) for non-B256 addresses
     DataCache.getInstance().save(cacheKey, 120000, null);
     return null;
