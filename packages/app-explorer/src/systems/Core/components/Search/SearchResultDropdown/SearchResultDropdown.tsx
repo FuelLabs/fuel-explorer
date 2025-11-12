@@ -48,10 +48,10 @@ export const SearchResultDropdown = forwardRef<
     const trimR = isMobile ? 13 : 18;
 
     const hasResult =
-      searchResult?.account ||
-      searchResult?.block ||
-      searchResult?.contract ||
-      searchResult?.transaction;
+      !!searchResult?.account ||
+      !!searchResult?.block ||
+      !!searchResult?.contract ||
+      !!searchResult?.transaction;
 
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
