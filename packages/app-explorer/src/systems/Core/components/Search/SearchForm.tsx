@@ -23,9 +23,18 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
   const handleSearch = async (formData: FormData) => {
     try {
       const query = formData.get('query')?.toString() || '';
-      const fastPromise = ApiService.searchFast(query).catch(() => null);
-      const slowPromise = ApiService.searchSlow(query).catch(() => null);
-      const fastResponse = await fastPromise;
+      const fastPromise = ApiService.searchFast(query);
+      const slowPromise = ApiService.searchSlow(query);
+
+      let fastResponse: any;
+      try {
+        fastResponse = await fastPromise;
+      } catch (_error) {
+        setError(true);
+        setLoading(false);
+        setLoadingMore(false);
+        return;
+      }
 
       let initialResult: GQLSearchResult | undefined;
 
@@ -45,7 +54,7 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
       setLoading(false);
       setLoadingMore(true);
 
-      const slowResponse = await slowPromise;
+      const slowResponse = await slowPromise.catch(() => null);
 
       if (slowResponse) {
         const hasSpecificResult =
@@ -79,9 +88,11 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (loading) return;
+    if (loading || loadingMore) return;
     setResults(null);
     setLoading(true);
+    setLoadingMore(false);
+    setError(false);
 
     const formData = new FormData(e.currentTarget);
     handleSearch(formData);
