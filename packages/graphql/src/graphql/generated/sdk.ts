@@ -590,15 +590,6 @@ export enum GQLContractParametersVersion {
   V1 = 'V1'
 }
 
-export type GQLContractSyncStatus = {
-  __typename: 'ContractSyncStatus';
-  errorMessage?: Maybe<Scalars['String']['output']>;
-  fetchAttempts?: Maybe<Scalars['Int']['output']>;
-  firstSeen?: Maybe<Scalars['String']['output']>;
-  lastUpdated?: Maybe<Scalars['String']['output']>;
-  status: Scalars['String']['output'];
-};
-
 export type GQLDelegateResponse = {
   __typename: 'DelegateResponse';
   amount: Scalars['String']['output'];
@@ -1728,7 +1719,6 @@ export type GQLSearchBlock = {
 export type GQLSearchContract = {
   __typename: 'SearchContract';
   id?: Maybe<Scalars['ContractId']['output']>;
-  syncStatus?: Maybe<GQLContractSyncStatus>;
 };
 
 export type GQLSearchFastResult = {
@@ -2237,7 +2227,7 @@ export type GQLSearchSlowQueryVariables = Exact<{
 }>;
 
 
-export type GQLSearchSlowQuery = { __typename: 'Query', searchSlow?: { __typename: 'SearchSlowResult', account?: { __typename: 'SearchAccount', address?: string | null, transactions?: Array<{ __typename: 'SearchTransaction', id?: string | null } | null> | null } | null, asset?: { __typename: 'Asset', assetId?: string | null, contractId?: string | null, subId?: string | null, name?: string | null, symbol?: string | null, decimals?: string | null, icon?: string | null, verified?: boolean | null, suspicious?: boolean | null, rate?: string | null } | null } | null };
+export type GQLSearchSlowQuery = { __typename: 'Query', searchSlow?: { __typename: 'SearchSlowResult', account?: { __typename: 'SearchAccount', address?: string | null, transactions?: Array<{ __typename: 'SearchTransaction', id?: string | null } | null> | null } | null } | null };
 
 export type GQLStakingApyQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3913,18 +3903,6 @@ export const SearchSlowDocument = gql`
       transactions {
         id
       }
-    }
-    asset {
-      assetId
-      contractId
-      subId
-      name
-      symbol
-      decimals
-      icon
-      verified
-      suspicious
-      rate
     }
   }
 }

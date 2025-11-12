@@ -6,17 +6,5 @@ query searchSlow($query: String!) {
         id
       }
     }
-    asset {
-      assetId
-      contractId
-      subId
-      name
-      symbol
-      decimals
-      icon
-      verified
-      suspicious
-      rate
-    }
   }
 }
