@@ -3,7 +3,6 @@ import { Hash256 } from '~/application/vo';
 import { logger } from '~/core/Logger';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import DataCache from '~/infra/cache/DataCache';
-import AssetDAO from '~/infra/dao/AssetDAO';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 
 type Params = {
@@ -38,32 +37,17 @@ export class SearchResolverSlow {
     // Skip block height check (already handled by fast resolver)
     const address = Hash256.create(params.query).value();
     const transactionDAO = new TransactionDAO();
-    const assetDAO = new AssetDAO();
 
-    // Slow queries: account transactions and assets
+    // Slow queries: account transactions only
+    // Assets are rarely searched and not critical for the initial result
     // Use recent transactions view for better performance on high-volume accounts
-    const results = await Promise.allSettled([
-      assetDAO.getByAssetId(address),
-      transactionDAO.getRecentTransactionsByOwner(address),
-    ]);
-
-    const [assetResult, transactionsResult] = results;
-
-    // Priority order: Asset > Account
-
-    if (assetResult.status === 'fulfilled' && assetResult.value) {
-      logger.debug('GraphQL', 'SearchResolverSlow.searchSlow - found asset');
-      const result = {
-        asset: assetResult.value,
-      };
-      DataCache.getInstance().save(cacheKey, 600000, result); // 10 min TTL
-      return result;
-    }
+    const transactionsResult =
+      await transactionDAO.getRecentTransactionsByOwner(address);
 
     if (
-      transactionsResult.status === 'fulfilled' &&
-      transactionsResult.value &&
-      transactionsResult.value.length > 0
+      transactionsResult &&
+      Array.isArray(transactionsResult) &&
+      transactionsResult.length > 0
     ) {
       logger.debug(
         'GraphQL',
@@ -72,8 +56,8 @@ export class SearchResolverSlow {
       const result = {
         account: {
           address,
-          transactions: transactionsResult.value.map(
-            (transaction: TransactionEntity) => transaction.toGQLNode(),
+          transactions: transactionsResult.map(
+            (transaction: TransactionEntity) => transaction.toGQLListNode(),
           ),
         },
       };

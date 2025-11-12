@@ -1,3 +1,4 @@
+import { isB256 } from 'fuels';
 import { ApiService } from '~/services/api';
 
 import type { GQLSearchResult } from '@fuel-explorer/graphql';
@@ -23,16 +24,33 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
     try {
       const query = formData.get('query')?.toString() || '';
 
-      // Call fast search first, update UI immediately
+      // Call fast search first
       const fastResponse = await ApiService.searchFast(query).catch(() => null);
 
-      // Update UI with fast results immediately
-      setResults(fastResponse || undefined);
+      // Determine what to show immediately - evaluate all logic before setting state
+      let initialResult: GQLSearchResult | undefined;
 
-      // Stop initial loading spinner - fast results are showing
+      if (fastResponse) {
+        // If we got fast results, show them immediately
+        initialResult = fastResponse;
+      } else if (isB256(query)) {
+        // If no fast result but valid B256, show empty account immediately
+        // This gives instant feedback that it's a valid account address
+        initialResult = {
+          account: {
+            address: query,
+            transactions: [],
+            __typename: 'SearchAccount',
+          },
+        } as GQLSearchResult;
+      } else {
+        // No fast results and not a valid B256 hash
+        initialResult = undefined;
+      }
+
+      // Update UI with immediate results - single setResults call to avoid race conditions
+      setResults(initialResult);
       setLoading(false);
-
-      // Show "loading more results" indicator
       setLoadingMore(true);
 
       // Now fetch slow results in background and merge
@@ -40,10 +58,27 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
 
       if (slowResponse) {
         // Merge fast and slow results
-        const merged = {
-          ...fastResponse,
-          ...slowResponse,
-        };
+        let merged: GQLSearchResult | null = null;
+
+        if (fastResponse) {
+          // If we had fast results, merge with slow
+          merged = {
+            ...fastResponse,
+            ...slowResponse,
+          };
+        } else if (slowResponse.account) {
+          // If slow found account transactions, update the account with transactions
+          merged = {
+            account: {
+              ...slowResponse.account,
+              __typename: 'SearchAccount',
+            },
+          } as GQLSearchResult;
+        } else {
+          // Keep the empty account we showed earlier, or merge slow results
+          merged = slowResponse;
+        }
+
         setResults(merged || undefined);
       }
 

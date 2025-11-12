@@ -138,7 +138,7 @@ export class SearchResolver {
         account: {
           address,
           transactions: transactionsResult.value.map(
-            (transaction: TransactionEntity) => transaction.toGQLNode(),
+            (transaction: TransactionEntity) => transaction.toGQLListNode(),
           ),
         },
       };

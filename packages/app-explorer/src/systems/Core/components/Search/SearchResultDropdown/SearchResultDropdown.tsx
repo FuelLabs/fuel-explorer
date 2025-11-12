@@ -252,9 +252,13 @@ export const SearchResultDropdown = forwardRef<
               )}
               {loadingMore && (
                 <div className={classes.loadingContainer()}>
-                  <Spinner size={16} color="brand" aria-label="loading more" />
+                  <Spinner
+                    size={16}
+                    color="brand"
+                    aria-label="loading recent transactions"
+                  />
                   <p className={classes.loadingText()}>
-                    Loading more results...
+                    Loading recent transactions...
                   </p>
                 </div>
               )}
