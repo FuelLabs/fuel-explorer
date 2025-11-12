@@ -220,7 +220,7 @@ export default class TransactionDAO {
   async getRecentTransactionsByOwner(accountHash: string) {
     // Optimized query for accounts with many transactions
     // Uses materialized view of recent transactions (last 7 days)
-    // Falls back to regular query if view doesn't exist or has no results
+    // Falls back to regular query only if view doesn't exist
     try {
       const transactionsData = await this.databaseConnection.query(
         `
@@ -244,18 +244,16 @@ export default class TransactionDAO {
         `,
         [accountHash.toLowerCase()],
       );
-      if (transactionsData.length > 0) {
-        const transactions = [];
-        for (const transactionData of transactionsData) {
-          transactions.push(TransactionEntity.createFromDAO(transactionData));
-        }
-        return transactions;
+      // Return results (empty array is valid - account has no recent transactions)
+      const transactions = [];
+      for (const transactionData of transactionsData) {
+        transactions.push(TransactionEntity.createFromDAO(transactionData));
       }
+      return transactions;
     } catch (_error) {
-      // If materialized view doesn't exist or is empty, fall back to regular query
+      // If materialized view doesn't exist, fall back to regular query
+      return this.getTransactionsByOwner(accountHash);
     }
-    // Fallback to regular method
-    return this.getTransactionsByOwner(accountHash);
   }
 
   async getPaginatedTransactionsByBlockId(
