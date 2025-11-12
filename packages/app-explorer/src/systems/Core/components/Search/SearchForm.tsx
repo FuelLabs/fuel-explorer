@@ -23,8 +23,10 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
   const handleSearch = async (formData: FormData) => {
     try {
       const query = formData.get('query')?.toString() || '';
-      const fastPromise = ApiService.searchFast(query);
-      const slowPromise = ApiService.searchSlow(query);
+      const fastPromise = ApiService.searchFast(query).catch((_error) => {
+        throw _error;
+      });
+      const slowPromise = ApiService.searchSlow(query).catch(() => null);
 
       let fastResponse: any;
       try {
@@ -54,7 +56,7 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
       setLoading(false);
       setLoadingMore(true);
 
-      const slowResponse = await slowPromise.catch(() => null);
+      const slowResponse = await slowPromise;
 
       if (slowResponse) {
         const hasSpecificResult =
