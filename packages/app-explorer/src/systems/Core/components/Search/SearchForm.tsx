@@ -52,7 +52,6 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
           fastResponse?.block ||
           fastResponse?.contract ||
           fastResponse?.transaction ||
-          fastResponse?.asset ||
           fastResponse?.predicate;
 
         if (hasSpecificResult) {
