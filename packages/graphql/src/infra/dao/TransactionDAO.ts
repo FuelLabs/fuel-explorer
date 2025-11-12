@@ -237,10 +237,10 @@ export default class TransactionDAO {
             account_hash = $1
           order by
             tx_hash, _id desc
-          limit 5
         ) ta on t.tx_hash = ta.tx_hash
         order by
           ta.account_id desc
+        limit 5
         `,
         [accountHash.toLowerCase()],
       );
