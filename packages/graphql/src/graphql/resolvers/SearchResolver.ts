@@ -29,7 +29,7 @@ export class SearchResolver {
     // Check cache first (5-minute TTL)
     const cacheKey = `search:${params.query.toLowerCase()}`;
     const cachedResult = DataCache.getInstance().get(cacheKey);
-    if (cachedResult) {
+    if (cachedResult !== undefined) {
       logger.debug('GraphQL', 'SearchResolver.search - cache hit', {
         query: params.query,
       });
