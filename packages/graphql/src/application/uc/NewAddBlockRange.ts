@@ -22,7 +22,6 @@ export default class NewAddBlockRange {
     const { from, to } = input;
     logger.debug('Consumer', `Syncing blocks: #${from} - #${to}`);
     const blocksData = await this.getBlocks(from, to);
-    console.log('blocksData', blocksData);
     if (blocksData.length === 0) {
       logger.debug('Consumer', `No blocks to sync: #${from} - #${to}`);
       return;
