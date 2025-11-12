@@ -57,17 +57,22 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
       const slowResponse = await ApiService.searchSlow(query).catch(() => null);
 
       if (slowResponse) {
-        // Merge fast and slow results
+        // Only add account from slow if fast didn't find a specific entity
+        // Account is a fallback result, not a primary result
+        const hasSpecificResult =
+          fastResponse?.block ||
+          fastResponse?.contract ||
+          fastResponse?.transaction ||
+          fastResponse?.asset ||
+          fastResponse?.predicate;
+
         let merged: GQLSearchResult | null = null;
 
-        if (fastResponse) {
-          // If we had fast results, merge with slow
-          merged = {
-            ...fastResponse,
-            ...slowResponse,
-          };
+        if (hasSpecificResult) {
+          // Keep fast results as-is, don't add account
+          merged = fastResponse;
         } else if (slowResponse.account) {
-          // If slow found account transactions, update the account with transactions
+          // Only show account from slow if fast found nothing specific
           merged = {
             account: {
               ...slowResponse.account,
@@ -75,8 +80,8 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
             },
           } as GQLSearchResult;
         } else {
-          // Keep the empty account we showed earlier, or merge slow results
-          merged = slowResponse;
+          // No specific results and no account with transactions
+          merged = fastResponse; // Could be null or undefined
         }
 
         setResults(merged || undefined);

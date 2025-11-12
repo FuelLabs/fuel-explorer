@@ -142,7 +142,8 @@ export const SearchResultDropdown = forwardRef<
               )}
               {searchResult?.block && (
                 <>
-                  {searchResult.block.id === searchValue && (
+                  {searchResult.block.id?.toLowerCase() ===
+                    searchValue?.toLowerCase() && (
                     <>
                       <Dropdown.Label className={classes.dropdownLabel()}>
                         Block Hash
@@ -250,7 +251,7 @@ export const SearchResultDropdown = forwardRef<
                   </Dropdown.Item>
                 </>
               )}
-              {loadingMore && (
+              {loadingMore && searchResult?.account && (
                 <div className={classes.loadingContainer()}>
                   <Spinner
                     size={16}
