@@ -162,10 +162,8 @@ export class ApiService {
     }
   }
 
-  // Replicate search server action with 2-tier approach
   static async search(query: string): Promise<any> {
     try {
-      // Validate input using the same schema as Next.js
       const result = searchSchema.safeParse({ query });
       if (!result.success) {
         throw new Error('Invalid search input');
@@ -173,53 +171,24 @@ export class ApiService {
 
       const input = result.data;
 
-      console.log('[API] Starting 2-tier search for:', input.query);
-      const searchStartTime = Date.now();
-
-      // Execute fast and slow queries in parallel
-      console.log('[API] Calling searchFast and searchSlow in parallel...');
-      const fastPromise = sdk
-        .searchFast({ query: input.query })
-        .catch((err) => {
-          console.error('[API] searchFast error:', err);
-          return { data: null };
-        });
-      const slowPromise = sdk
-        .searchSlow({ query: input.query })
-        .catch((err) => {
-          console.error('[API] searchSlow error:', err);
-          return { data: null };
-        });
-
-      const [fastResponse, slowResponse] = await Promise.all([
-        fastPromise,
-        slowPromise,
+      const [fastResponse, slowResponse] = await Promise.allSettled([
+        sdk.searchFast({ query: input.query }).catch(() => ({ data: null })),
+        sdk.searchSlow({ query: input.query }).catch(() => ({ data: null })),
       ]);
 
-      console.log(
-        '[API] searchFast response:',
-        fastResponse?.data?.searchFast ? 'HAS DATA' : 'NULL',
-      );
-      console.log(
-        '[API] searchSlow response:',
-        slowResponse?.data?.searchSlow ? 'HAS DATA' : 'NULL',
-      );
+      const fastResult =
+        fastResponse.status === 'fulfilled'
+          ? (fastResponse.value?.data?.searchFast ?? null)
+          : null;
+      const slowResult =
+        slowResponse.status === 'fulfilled'
+          ? (slowResponse.value?.data?.searchSlow ?? null)
+          : null;
 
-      const fastResult = fastResponse?.data?.searchFast ?? null;
-      const slowResult = slowResponse?.data?.searchSlow ?? null;
-
-      // Merge results with fast results taking priority
       const merged = {
         ...fastResult,
         ...slowResult,
       };
-
-      const totalTime = Date.now() - searchStartTime;
-      console.log('[API] Search completed in', totalTime, 'ms');
-      console.log(
-        '[API] Merged result keys:',
-        Object.keys(merged).filter((k) => merged[k]),
-      );
 
       return Object.keys(merged).some((key) => merged[key]) ? merged : null;
     } catch (error) {
