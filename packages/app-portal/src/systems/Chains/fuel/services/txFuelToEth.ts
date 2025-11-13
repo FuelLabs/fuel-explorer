@@ -718,7 +718,7 @@ export class TxFuelToEthService {
         const messageOutReceipt = receipts.find(
           (receipt: any) => receipt?.receiptType === 'MESSAGE_OUT',
         );
-        if (messageOutReceipt) {
+        if (messageOutReceipt && node.status?.time) {
           bridgeTxs.push({
             id: node.id,
             time: new Date(
