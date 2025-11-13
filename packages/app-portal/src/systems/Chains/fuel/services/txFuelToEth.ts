@@ -664,7 +664,7 @@ export class TxFuelToEthService {
     while (hasNextPage) {
       const query = `
         query {
-          transactionsByOwner(first: 600, owner: "${fuelAddress}"${endCursor ? `, after: "${endCursor}"` : ''}) {
+          transactionsByOwner(first: 100, owner: "${fuelAddress}"${endCursor ? `, after: "${endCursor}"` : ''}) {
             pageInfo {
               hasNextPage
               endCursor
@@ -690,12 +690,31 @@ export class TxFuelToEthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
       });
-      const { data } = await response.json();
-      const { transactionsByOwner } = data;
+      const responseJson = await response.json();
+      const { data, errors } = responseJson;
+
+      if (errors && errors.length > 0) {
+        if (data?.transactionsByOwner) {
+          // Continue processing if data exists despite errors
+        } else {
+          break;
+        }
+      }
+
+      const { transactionsByOwner } = data || {};
+
+      if (!transactionsByOwner) {
+        break;
+      }
+
       const { nodes, pageInfo } = transactionsByOwner;
 
+      if (!nodes || !pageInfo) {
+        break;
+      }
+
       for (const node of nodes) {
-        const receipts = node.status.receipts || [];
+        const receipts = node.status?.receipts || [];
         const messageOutReceipt = receipts.find(
           (receipt: any) => receipt?.receiptType === 'MESSAGE_OUT',
         );
@@ -709,7 +728,7 @@ export class TxFuelToEthService {
         }
       }
 
-      hasNextPage = pageInfo.hasNextPage;
+      hasNextPage = pageInfo.hasNextPage ?? false;
       endCursor = pageInfo.endCursor;
     }
 
