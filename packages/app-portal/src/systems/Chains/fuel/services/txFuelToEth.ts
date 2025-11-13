@@ -664,7 +664,7 @@ export class TxFuelToEthService {
     while (hasNextPage) {
       const query = `
         query {
-          transactionsByOwner(first: 100, owner: "${fuelAddress}"${endCursor ? `, after: "${endCursor}"` : ''}) {
+          transactionsByOwner(first: 500, owner: "${fuelAddress}"${endCursor ? `, after: "${endCursor}"` : ''}) {
             pageInfo {
               hasNextPage
               endCursor
