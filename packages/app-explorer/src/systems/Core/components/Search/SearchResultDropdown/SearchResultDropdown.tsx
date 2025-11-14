@@ -29,6 +29,7 @@ export const SearchResultDropdown = forwardRef<
       isFocused,
       loading,
       error,
+      loadingMore,
     },
     ref,
   ) => {
@@ -47,10 +48,10 @@ export const SearchResultDropdown = forwardRef<
     const trimR = isMobile ? 13 : 18;
 
     const hasResult =
-      searchResult?.account ||
-      searchResult?.block ||
-      searchResult?.contract ||
-      searchResult?.transaction;
+      !!searchResult?.account ||
+      !!searchResult?.block ||
+      !!searchResult?.contract ||
+      !!searchResult?.transaction;
 
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
@@ -141,7 +142,8 @@ export const SearchResultDropdown = forwardRef<
               )}
               {searchResult?.block && (
                 <>
-                  {searchResult.block.id === searchValue && (
+                  {searchResult.block.id?.toLowerCase() ===
+                    searchValue?.toLowerCase() && (
                     <>
                       <Dropdown.Label className={classes.dropdownLabel()}>
                         Block Hash
@@ -249,7 +251,24 @@ export const SearchResultDropdown = forwardRef<
                   </Dropdown.Item>
                 </>
               )}
+              {loadingMore && searchResult?.account && (
+                <div className={classes.loadingContainer()}>
+                  <Spinner
+                    size={16}
+                    color="brand"
+                    aria-label="loading recent transactions"
+                  />
+                  <p className={classes.loadingText()}>
+                    Loading recent transactions...
+                  </p>
+                </div>
+              )}
             </>
+          ) : loadingMore ? (
+            <div className={classes.loadingContainer()}>
+              <Spinner size={16} color="brand" aria-label="searching" />
+              <p className={classes.loadingText()}>Searching...</p>
+            </div>
           ) : (
             <Dropdown.Label className={classes.dropdownLabel()}>
               No results found.

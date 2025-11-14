@@ -112,19 +112,85 @@ export class ApiService {
     }
   }
 
-  // Replicate search server action
-  static async search(query: string): Promise<any> {
+  // Replicate searchFast - returns immediately with fast results
+  static async searchFast(query: string): Promise<any> {
     try {
-      // Validate input using the same schema as Next.js
       const result = searchSchema.safeParse({ query });
       if (!result.success) {
         throw new Error('Invalid search input');
       }
 
       const input = result.data;
-      const { data } = await sdk.search({ query: input.query });
 
-      return data?.search ?? null;
+      const fastResponse = await sdk
+        .searchFast({ query: input.query })
+        .catch((err) => {
+          console.error('Error in searchFast:', err);
+          return { data: null };
+        });
+
+      const fastResult = fastResponse?.data?.searchFast ?? null;
+      return fastResult;
+    } catch (error) {
+      console.error('Error in searchFast:', error);
+      throw error;
+    }
+  }
+
+  // Replicate searchSlow - returns slow results
+  static async searchSlow(query: string): Promise<any> {
+    try {
+      const result = searchSchema.safeParse({ query });
+      if (!result.success) {
+        throw new Error('Invalid search input');
+      }
+
+      const input = result.data;
+
+      const slowResponse = await sdk
+        .searchSlow({ query: input.query })
+        .catch((err) => {
+          console.error('Error in searchSlow:', err);
+          return { data: null };
+        });
+
+      const slowResult = slowResponse?.data?.searchSlow ?? null;
+      return slowResult;
+    } catch (error) {
+      console.error('Error in searchSlow:', error);
+      throw error;
+    }
+  }
+
+  static async search(query: string): Promise<any> {
+    try {
+      const result = searchSchema.safeParse({ query });
+      if (!result.success) {
+        throw new Error('Invalid search input');
+      }
+
+      const input = result.data;
+
+      const [fastResponse, slowResponse] = await Promise.allSettled([
+        sdk.searchFast({ query: input.query }).catch(() => ({ data: null })),
+        sdk.searchSlow({ query: input.query }).catch(() => ({ data: null })),
+      ]);
+
+      const fastResult =
+        fastResponse.status === 'fulfilled'
+          ? (fastResponse.value?.data?.searchFast ?? null)
+          : null;
+      const slowResult =
+        slowResponse.status === 'fulfilled'
+          ? (slowResponse.value?.data?.searchSlow ?? null)
+          : null;
+
+      const merged = {
+        ...fastResult,
+        ...slowResult,
+      };
+
+      return Object.keys(merged).some((key) => merged[key]) ? merged : null;
     } catch (error) {
       console.error('Error searching:', error);
       throw error;

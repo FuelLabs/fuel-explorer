@@ -1341,6 +1341,8 @@ export type GQLQuery = {
   register: Scalars['U64']['output'];
   relayedTransactionStatus?: Maybe<GQLRelayedTransactionStatus>;
   search?: Maybe<GQLSearchResult>;
+  searchFast?: Maybe<GQLSearchFastResult>;
+  searchSlow?: Maybe<GQLSearchSlowResult>;
   stakingAPY?: Maybe<GQLStakingApy>;
   stakingEvent?: Maybe<GQLStakingEventResponse>;
   stakingEvents?: Maybe<GQLStakingEventsResult>;
@@ -1530,6 +1532,16 @@ export type GQLQuerySearchArgs = {
 };
 
 
+export type GQLQuerySearchFastArgs = {
+  query: Scalars['String']['input'];
+};
+
+
+export type GQLQuerySearchSlowArgs = {
+  query: Scalars['String']['input'];
+};
+
+
 export type GQLQueryStakingEventArgs = {
   eventId: Scalars['Int']['input'];
 };
@@ -1709,12 +1721,26 @@ export type GQLSearchContract = {
   id?: Maybe<Scalars['ContractId']['output']>;
 };
 
+export type GQLSearchFastResult = {
+  __typename: 'SearchFastResult';
+  block?: Maybe<GQLSearchBlock>;
+  contract?: Maybe<GQLSearchContract>;
+  predicate?: Maybe<GQLPredicateItem>;
+  transaction?: Maybe<GQLSearchTransaction>;
+};
+
 export type GQLSearchResult = {
   __typename: 'SearchResult';
   account?: Maybe<GQLSearchAccount>;
   block?: Maybe<GQLSearchBlock>;
   contract?: Maybe<GQLSearchContract>;
   transaction?: Maybe<GQLSearchTransaction>;
+};
+
+export type GQLSearchSlowResult = {
+  __typename: 'SearchSlowResult';
+  account?: Maybe<GQLSearchAccount>;
+  asset?: Maybe<GQLAsset>;
 };
 
 export type GQLSearchTransaction = {

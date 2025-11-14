@@ -1,0 +1,10 @@
+query searchSlow($query: String!) {
+  searchSlow(query: $query) {
+    account {
+      address
+      transactions {
+        id
+      }
+    }
+  }
+}
