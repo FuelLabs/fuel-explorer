@@ -19,7 +19,7 @@ export class SearchResolverSlow {
   }
 
   async searchSlow(_null: any, params: Params['search']) {
-    // Check cache first (10-minute TTL for slow queries - they're expensive)
+    // Check cache first (1-minute TTL for slow queries - they're expensive)
     const cacheKey = `searchSlow:${params.query.toLowerCase()}`;
     const cachedResult = DataCache.getInstance().get(cacheKey);
     if (cachedResult !== undefined) {
@@ -49,7 +49,7 @@ export class SearchResolverSlow {
           ),
         },
       };
-      DataCache.getInstance().save(cacheKey, 600000, result); // 10 min TTL
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result); // 1 min TTL
       return result;
     }
 
@@ -61,12 +61,12 @@ export class SearchResolverSlow {
           transactions: [],
         },
       };
-      DataCache.getInstance().save(cacheKey, 600000, result); // 10 min TTL
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result); // 1 min TTL
       return result;
     }
 
     // Cache null result with shorter TTL (2 minutes) for non-B256 addresses
-    DataCache.getInstance().save(cacheKey, 120000, null);
+    DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, null);
     return null;
   }
 }
