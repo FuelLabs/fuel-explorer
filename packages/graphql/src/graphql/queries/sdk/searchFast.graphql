@@ -1,0 +1,18 @@
+query searchFast($query: String!) {
+  searchFast(query: $query) {
+    block {
+      height
+      id
+    }
+    contract {
+      id
+    }
+    transaction {
+      id
+    }
+    predicate {
+      address
+      bytecode
+    }
+  }
+}
