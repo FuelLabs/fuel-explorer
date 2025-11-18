@@ -14,6 +14,7 @@ export const styles = tv({
     dropdownSeparator: 'opacity-50 my-4',
     resultLink: 'hover:no-underline font-mono',
     loadingContainer: 'flex justify-center items-center h-[50px]',
+    loadingText: 'text-sm text-gray-11 ml-2',
     errorContainer: 'p-[16px] align-center flex text-pretty',
     errorTitle: 'text-center text-pretty text-error',
   },
