@@ -23,7 +23,7 @@ export class SearchResolver {
   }
 
   async search(_null: any, params: Params['search']) {
-    // Check cache first (5-minute TTL)
+    // Check cache first (1-minute TTL)
     const cacheKey = `search:${params.query.toLowerCase()}`;
     const cachedResult = DataCache.getInstance().get(cacheKey);
     if (cachedResult !== undefined) {
@@ -90,7 +90,7 @@ export class SearchResolver {
       const result = {
         transaction: transactionResult.value.toGQLNode(),
       };
-      DataCache.getInstance().save(cacheKey, 300000, result);
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
     }
 
@@ -106,7 +106,7 @@ export class SearchResolver {
       const result = {
         predicate: predicateResult.value.toGQLNode(),
       };
-      DataCache.getInstance().save(cacheKey, 300000, result);
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
     }
 
@@ -123,7 +123,7 @@ export class SearchResolver {
           ),
         },
       };
-      DataCache.getInstance().save(cacheKey, 300000, result);
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
     }
 
