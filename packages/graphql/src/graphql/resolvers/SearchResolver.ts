@@ -38,7 +38,7 @@ export class SearchResolver {
         const result = {
           block: block.toGQLNode(),
         };
-        DataCache.getInstance().save(cacheKey, 300000, result); // 5 min TTL
+        DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result); // 1 min TTL
         return result;
       }
     }
@@ -74,7 +74,7 @@ export class SearchResolver {
       const result = {
         block: blockResult.value.toGQLNode(),
       };
-      DataCache.getInstance().save(cacheKey, 300000, result);
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
     }
 
@@ -82,7 +82,7 @@ export class SearchResolver {
       const result = {
         contract: contractResult.value.toGQLNode(),
       };
-      DataCache.getInstance().save(cacheKey, 300000, result);
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
     }
 
@@ -98,7 +98,7 @@ export class SearchResolver {
       const result = {
         asset: assetResult.value,
       };
-      DataCache.getInstance().save(cacheKey, 300000, result);
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
     }
 
@@ -135,12 +135,11 @@ export class SearchResolver {
           transactions: [],
         },
       };
-      DataCache.getInstance().save(cacheKey, 300000, result);
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
     }
 
-    // Cache null result for non-B256 addresses (shorter TTL: 1 minute)
-    DataCache.getInstance().save(cacheKey, 60000, null);
+    DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, null);
     return null;
   }
 }
