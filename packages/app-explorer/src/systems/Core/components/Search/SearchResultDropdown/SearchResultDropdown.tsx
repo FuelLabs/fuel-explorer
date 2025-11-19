@@ -51,7 +51,8 @@ export const SearchResultDropdown = forwardRef<
       (!!searchResult.account ||
         !!searchResult.block ||
         !!searchResult.contract ||
-        !!searchResult.transaction);
+        !!searchResult.transaction ||
+        !!searchResult.predicate);
 
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
@@ -217,6 +218,23 @@ export const SearchResultDropdown = forwardRef<
                   </Dropdown.Item>
                 </>
               )}
+              {searchResult?.predicate && (
+                <>
+                  <Dropdown.Separator className={classes.dropdownSeparator()} />
+                  <Dropdown.Label className={classes.dropdownLabel()}>
+                    Predicate
+                  </Dropdown.Label>
+                  <Dropdown.Item className={classes.dropdownItem()}>
+                    <div className={classes.resultLink()}>
+                      {shortAddress(
+                        searchResult.predicate.address || '',
+                        trimL,
+                        trimR,
+                      )}
+                    </div>
+                  </Dropdown.Item>
+                </>
+              )}
             </>
           ) : (
             <div style={{ padding: '1rem', textAlign: 'center' }}>
@@ -238,7 +256,7 @@ export const SearchResultDropdown = forwardRef<
                 }}
               >
                 Try searching for a block hash, transaction ID, contract
-                address, or account address
+                address, account address, or predicate address
               </p>
             </div>
           )}

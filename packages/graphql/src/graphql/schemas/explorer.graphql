@@ -210,6 +210,7 @@ type SearchResult {
   block: SearchBlock
   contract: SearchContract
   transaction: SearchTransaction
+  predicate: PredicateItem
 }
 
 type SearchFastResult {

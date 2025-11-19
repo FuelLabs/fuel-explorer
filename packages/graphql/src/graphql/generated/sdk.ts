@@ -1734,6 +1734,7 @@ export type GQLSearchResult = {
   account?: Maybe<GQLSearchAccount>;
   block?: Maybe<GQLSearchBlock>;
   contract?: Maybe<GQLSearchContract>;
+  predicate?: Maybe<GQLPredicateItem>;
   transaction?: Maybe<GQLSearchTransaction>;
 };
 
@@ -2213,7 +2214,7 @@ export type GQLSearchQueryVariables = Exact<{
 }>;
 
 
-export type GQLSearchQuery = { __typename: 'Query', search?: { __typename: 'SearchResult', account?: { __typename: 'SearchAccount', address?: string | null, transactions?: Array<{ __typename: 'SearchTransaction', id?: string | null } | null> | null } | null, block?: { __typename: 'SearchBlock', height?: string | null, id?: string | null } | null, contract?: { __typename: 'SearchContract', id?: string | null } | null, transaction?: { __typename: 'SearchTransaction', id?: string | null } | null } | null };
+export type GQLSearchQuery = { __typename: 'Query', search?: { __typename: 'SearchResult', account?: { __typename: 'SearchAccount', address?: string | null, transactions?: Array<{ __typename: 'SearchTransaction', id?: string | null } | null> | null } | null, block?: { __typename: 'SearchBlock', height?: string | null, id?: string | null } | null, contract?: { __typename: 'SearchContract', id?: string | null } | null, transaction?: { __typename: 'SearchTransaction', id?: string | null } | null, predicate?: { __typename: 'PredicateItem', address?: string | null, bytecode?: string | null } | null } | null };
 
 export type GQLSearchFastQueryVariables = Exact<{
   query: Scalars['String']['input'];
@@ -3871,6 +3872,10 @@ export const SearchDocument = gql`
     }
     transaction {
       id
+    }
+    predicate {
+      address
+      bytecode
     }
   }
 }

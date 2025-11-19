@@ -3,6 +3,7 @@ import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import DataCache from '~/infra/cache/DataCache';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import ContractDAO from '~/infra/dao/ContractDAO';
+import PredicateDAO from '~/infra/dao/PredicateDAO';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 
 type Params = {
@@ -42,20 +43,27 @@ export class SearchResolver {
     const address = Hash256.create(params.query).value();
     const blockDAO = new BlockDAO();
     const contractDAO = new ContractDAO();
+    const predicateDAO = new PredicateDAO();
     const transactionDAO = new TransactionDAO();
 
-    // Search queries: block, contract, transaction, account
+    // Search queries: block, contract, transaction, account, predicate
     const results = await Promise.allSettled([
       blockDAO.getByHash(address),
       contractDAO.getByHash(address),
       transactionDAO.getByHash(address),
       transactionDAO.getRecentTransactionsByOwner(address),
+      predicateDAO.getByAddress(address),
     ]);
 
-    const [blockResult, contractResult, transactionResult, transactionsResult] =
-      results;
+    const [
+      blockResult,
+      contractResult,
+      transactionResult,
+      transactionsResult,
+      predicateResult,
+    ] = results;
 
-    // Priority order: Block > Contract > Transaction > Account (only if has transactions)
+    // Priority order: Block > Contract > Transaction > Account (only if has transactions) > Predicate
 
     if (blockResult.status === 'fulfilled' && blockResult.value) {
       const result = {
@@ -94,6 +102,19 @@ export class SearchResolver {
             (transaction: TransactionEntity) => transaction.toGQLListNode(),
           ),
         },
+      };
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
+      return result;
+    }
+
+    // Only return predicate if it has bytecode (validate it exists)
+    if (
+      predicateResult.status === 'fulfilled' &&
+      predicateResult.value &&
+      predicateResult.value.bytecode !== '0x'
+    ) {
+      const result = {
+        predicate: predicateResult.value.toGQLNode(),
       };
       DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
       return result;
