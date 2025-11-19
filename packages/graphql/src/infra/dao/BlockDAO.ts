@@ -317,16 +317,14 @@ export default class BlockDAO {
   }
 
   async getTotalFee() {
+    // Optimized query using materialized view for pre-computed hourly statistics
+    // View refreshes every 10 minutes and eliminates expensive JSON extraction
     const data = await this.databaseConnection.query(
       `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
-        SUM(total_fee) AS value
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          (data->'status'->>'totalFee')::numeric AS total_fee
-        FROM indexer.transactions
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-      ) t
-      GROUP BY hour
+        total_fee AS value
+      FROM indexer.hourly_statistics
+      WHERE hour > NOW() - INTERVAL '24 hours'
+        AND hour <= date_trunc('hour', NOW())
       ORDER BY hour`,
       [],
     );
