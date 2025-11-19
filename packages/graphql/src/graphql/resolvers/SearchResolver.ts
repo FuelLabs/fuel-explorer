@@ -1,11 +1,8 @@
-import { isB256 } from 'fuels';
 import { Hash256 } from '~/application/vo';
 import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import DataCache from '~/infra/cache/DataCache';
-import AssetDAO from '~/infra/dao/AssetDAO';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import ContractDAO from '~/infra/dao/ContractDAO';
-import PredicateDAO from '~/infra/dao/PredicateDAO';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 
 type Params = {
@@ -23,7 +20,6 @@ export class SearchResolver {
   }
 
   async search(_null: any, params: Params['search']) {
-    // Check cache first (1-minute TTL)
     const cacheKey = `search:${params.query.toLowerCase()}`;
     const cachedResult = DataCache.getInstance().get(cacheKey);
     if (cachedResult !== undefined) {
@@ -38,7 +34,7 @@ export class SearchResolver {
         const result = {
           block: block.toGQLNode(),
         };
-        DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result); // 1 min TTL
+        DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
         return result;
       }
     }
@@ -47,28 +43,19 @@ export class SearchResolver {
     const blockDAO = new BlockDAO();
     const contractDAO = new ContractDAO();
     const transactionDAO = new TransactionDAO();
-    const assetDAO = new AssetDAO();
-    const predicateDAO = new PredicateDAO();
 
+    // Search queries: block, contract, transaction, account
     const results = await Promise.allSettled([
       blockDAO.getByHash(address),
       contractDAO.getByHash(address),
       transactionDAO.getByHash(address),
-      assetDAO.getByAssetId(address),
-      predicateDAO.getByAddress(address),
       transactionDAO.getRecentTransactionsByOwner(address),
     ]);
 
-    const [
-      blockResult,
-      contractResult,
-      transactionResult,
-      assetResult,
-      predicateResult,
-      transactionsResult,
-    ] = results;
+    const [blockResult, contractResult, transactionResult, transactionsResult] =
+      results;
 
-    // Priority order: Block > Contract > Transaction > Asset > Predicate > Account
+    // Priority order: Block > Contract > Transaction > Account (only if has transactions)
 
     if (blockResult.status === 'fulfilled' && blockResult.value) {
       const result = {
@@ -94,22 +81,7 @@ export class SearchResolver {
       return result;
     }
 
-    if (assetResult.status === 'fulfilled' && assetResult.value) {
-      const result = {
-        asset: assetResult.value,
-      };
-      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
-      return result;
-    }
-
-    if (predicateResult.status === 'fulfilled' && predicateResult.value) {
-      const result = {
-        predicate: predicateResult.value.toGQLNode(),
-      };
-      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
-      return result;
-    }
-
+    // Only return account if it has transactions (validate it exists)
     if (
       transactionsResult.status === 'fulfilled' &&
       transactionsResult.value &&
@@ -121,18 +93,6 @@ export class SearchResolver {
           transactions: transactionsResult.value.map(
             (transaction: TransactionEntity) => transaction.toGQLListNode(),
           ),
-        },
-      };
-      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
-      return result;
-    }
-
-    // Return empty account if valid B256 but no results
-    if (isB256(address)) {
-      const result = {
-        account: {
-          address,
-          transactions: [],
         },
       };
       DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
