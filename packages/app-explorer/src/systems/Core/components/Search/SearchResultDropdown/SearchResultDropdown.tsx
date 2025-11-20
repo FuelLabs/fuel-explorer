@@ -222,7 +222,7 @@ export const SearchResultDropdown = forwardRef<
                 <>
                   <Dropdown.Separator className={classes.dropdownSeparator()} />
                   <Dropdown.Label className={classes.dropdownLabel()}>
-                    Predicate
+                    Account
                   </Dropdown.Label>
                   <Dropdown.Item className={classes.dropdownItem()}>
                     <div className={classes.resultLink()}>
