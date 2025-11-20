@@ -1364,6 +1364,7 @@ export const aSearchResult = (overrides?: Partial<GQLSearchResult>): { __typenam
         account: overrides && overrides.hasOwnProperty('account') ? overrides.account! : aSearchAccount(),
         block: overrides && overrides.hasOwnProperty('block') ? overrides.block! : aSearchBlock(),
         contract: overrides && overrides.hasOwnProperty('contract') ? overrides.contract! : aSearchContract(),
+        predicate: overrides && overrides.hasOwnProperty('predicate') ? overrides.predicate! : aPredicateItem(),
         transaction: overrides && overrides.hasOwnProperty('transaction') ? overrides.transaction! : aSearchTransaction(),
     };
 };

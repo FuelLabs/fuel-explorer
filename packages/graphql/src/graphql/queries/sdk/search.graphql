@@ -16,5 +16,9 @@ query search($query: String!) {
     transaction {
       id
     }
+    predicate {
+      address
+      bytecode
+    }
   }
 }

@@ -29,7 +29,6 @@ export const SearchResultDropdown = forwardRef<
       isFocused,
       loading,
       error,
-      loadingMore,
     },
     ref,
   ) => {
@@ -48,10 +47,12 @@ export const SearchResultDropdown = forwardRef<
     const trimR = isMobile ? 13 : 18;
 
     const hasResult =
-      !!searchResult?.account ||
-      !!searchResult?.block ||
-      !!searchResult?.contract ||
-      !!searchResult?.transaction;
+      !!searchResult &&
+      (!!searchResult.account ||
+        !!searchResult.block ||
+        !!searchResult.contract ||
+        !!searchResult.transaction ||
+        !!searchResult.predicate);
 
     return (
       <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
@@ -104,40 +105,6 @@ export const SearchResultDropdown = forwardRef<
                       )}
                     </Link>
                   </Dropdown.Item>
-                  {!!searchResult.account.transactions?.length && (
-                    <>
-                      <Dropdown.Separator
-                        className={classes.dropdownSeparator()}
-                      />
-                      <Dropdown.Label className={classes.dropdownLabel()}>
-                        Recent Transactions
-                      </Dropdown.Label>
-                      {searchResult.account.transactions?.map((transaction) => {
-                        return (
-                          <Dropdown.Item
-                            key={transaction?.id}
-                            className={classes.dropdownItem()}
-                            onClick={() =>
-                              transaction?.id &&
-                              onClick(`/tx/${transaction?.id}`)
-                            }
-                          >
-                            <Link
-                              className={classes.resultLink()}
-                              to={`/tx/${transaction?.id}`}
-                              onClick={onSelectItem}
-                            >
-                              {shortAddress(
-                                transaction?.id || '',
-                                trimL,
-                                trimR,
-                              )}
-                            </Link>
-                          </Dropdown.Item>
-                        );
-                      })}
-                    </>
-                  )}
                 </>
               )}
               {searchResult?.block && (
@@ -251,28 +218,47 @@ export const SearchResultDropdown = forwardRef<
                   </Dropdown.Item>
                 </>
               )}
-              {loadingMore && searchResult?.account && (
-                <div className={classes.loadingContainer()}>
-                  <Spinner
-                    size={16}
-                    color="brand"
-                    aria-label="loading recent transactions"
-                  />
-                  <p className={classes.loadingText()}>
-                    Loading recent transactions...
-                  </p>
-                </div>
+              {searchResult?.predicate && (
+                <>
+                  <Dropdown.Separator className={classes.dropdownSeparator()} />
+                  <Dropdown.Label className={classes.dropdownLabel()}>
+                    Account
+                  </Dropdown.Label>
+                  <Dropdown.Item className={classes.dropdownItem()}>
+                    <div className={classes.resultLink()}>
+                      {shortAddress(
+                        searchResult.predicate.address || '',
+                        trimL,
+                        trimR,
+                      )}
+                    </div>
+                  </Dropdown.Item>
+                </>
               )}
             </>
-          ) : loadingMore ? (
-            <div className={classes.loadingContainer()}>
-              <Spinner size={16} color="brand" aria-label="searching" />
-              <p className={classes.loadingText()}>Searching...</p>
-            </div>
           ) : (
-            <Dropdown.Label className={classes.dropdownLabel()}>
-              No results found.
-            </Dropdown.Label>
+            <div style={{ padding: '1rem', textAlign: 'center' }}>
+              <p
+                style={{
+                  margin: '0 0 0.5rem 0',
+                  fontWeight: '500',
+                  color: '#666',
+                }}
+              >
+                No results found
+              </p>
+              <p
+                style={{
+                  margin: '0',
+                  fontSize: '0.85rem',
+                  color: '#999',
+                  lineHeight: '1.4',
+                }}
+              >
+                Try searching for a block hash, transaction ID, contract
+                address, account address, or predicate address
+              </p>
+            </div>
           )}
         </Dropdown.Content>
       </Dropdown>
