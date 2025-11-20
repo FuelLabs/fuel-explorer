@@ -43,24 +43,23 @@ export class SearchResolver {
     const address = Hash256.create(params.query).value();
     const blockDAO = new BlockDAO();
     const contractDAO = new ContractDAO();
-    const predicateDAO = new PredicateDAO();
     const transactionDAO = new TransactionDAO();
+    const predicateDAO = new PredicateDAO();
 
-    // Search queries: block, contract, transaction, account, predicate
     const results = await Promise.allSettled([
       blockDAO.getByHash(address),
       contractDAO.getByHash(address),
       transactionDAO.getByHash(address),
-      transactionDAO.getRecentTransactionsByOwner(address),
       predicateDAO.getByAddress(address),
+      transactionDAO.getRecentTransactionsByOwner(address),
     ]);
 
     const [
       blockResult,
       contractResult,
       transactionResult,
-      transactionsResult,
       predicateResult,
+      transactionsResult,
     ] = results;
 
     // Priority order: Block > Contract > Transaction > Account (only if has transactions) > Predicate
