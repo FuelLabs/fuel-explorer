@@ -74,7 +74,7 @@ export function SearchInput({
   }, [error]);
 
   useEffect(() => {
-    if (searchResult !== null) {
+    if (searchResult !== undefined) {
       setValue((prev) => {
         lastSearchTerm.current = prev;
         return prev;

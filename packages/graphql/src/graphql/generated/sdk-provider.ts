@@ -1734,6 +1734,7 @@ export type GQLSearchResult = {
   account?: Maybe<GQLSearchAccount>;
   block?: Maybe<GQLSearchBlock>;
   contract?: Maybe<GQLSearchContract>;
+  predicate?: Maybe<GQLPredicateItem>;
   transaction?: Maybe<GQLSearchTransaction>;
 };
 

@@ -1,4 +1,3 @@
-import { isB256 } from 'fuels';
 import { ApiService } from '~/services/api';
 
 import type { GQLSearchResult } from '@fuel-explorer/graphql';
@@ -14,86 +13,33 @@ type SearchFormProps = {
 export function SearchForm({ className, autoFocus }: SearchFormProps) {
   const classes = styles();
   const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const [results, setResults] = useState<GQLSearchResult | null | undefined>(
-    null,
+    undefined,
   );
 
   const handleSearch = async (formData: FormData) => {
     try {
       const query = formData.get('query')?.toString() || '';
-      const fastPromise = ApiService.searchFast(query).catch((_error) => {
-        throw _error;
-      });
-      const slowPromise = ApiService.searchSlow(query).catch(() => null);
+      const searchResponse = await ApiService.search(query);
 
-      let fastResponse: any;
-      try {
-        fastResponse = await fastPromise;
-      } catch (_error) {
-        setError(true);
-        setLoading(false);
-        setLoadingMore(false);
-        return;
-      }
-
-      let initialResult: GQLSearchResult | undefined;
-
-      if (fastResponse) {
-        initialResult = fastResponse;
-      } else if (isB256(query)) {
-        initialResult = {
-          account: {
-            address: query,
-            transactions: [],
-            __typename: 'SearchAccount',
-          },
-        } as GQLSearchResult;
-      }
-
-      setResults(initialResult);
+      setResults(searchResponse);
       setLoading(false);
-      setLoadingMore(true);
+      setError(false);
 
-      const slowResponse = await slowPromise;
-
-      if (slowResponse) {
-        const hasSpecificResult =
-          fastResponse?.block ||
-          fastResponse?.contract ||
-          fastResponse?.transaction ||
-          fastResponse?.predicate;
-
-        if (hasSpecificResult) {
-          setResults(fastResponse);
-        } else if (slowResponse.account) {
-          setResults({
-            account: {
-              ...slowResponse.account,
-              __typename: 'SearchAccount',
-            },
-          } as GQLSearchResult);
-        }
-      }
-
-      setLoadingMore(false);
-
-      return fastResponse;
+      return searchResponse;
     } catch (error) {
       console.error('Error searching:', error);
       setError(true);
       setLoading(false);
-      setLoadingMore(false);
     }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (loading || loadingMore) return;
+    if (loading) return;
     setResults(null);
     setLoading(true);
-    setLoadingMore(false);
     setError(false);
 
     const formData = new FormData(e.currentTarget);
@@ -107,7 +53,6 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
         searchResult={results}
         autoFocus={autoFocus}
         loading={loading}
-        loadingMore={loadingMore}
         error={error}
       />
     </form>

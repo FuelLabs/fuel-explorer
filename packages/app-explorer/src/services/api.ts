@@ -112,56 +112,7 @@ export class ApiService {
     }
   }
 
-  // Replicate searchFast - returns immediately with fast results
-  static async searchFast(query: string): Promise<any> {
-    try {
-      const result = searchSchema.safeParse({ query });
-      if (!result.success) {
-        throw new Error('Invalid search input');
-      }
-
-      const input = result.data;
-
-      const fastResponse = await sdk
-        .searchFast({ query: input.query })
-        .catch((err) => {
-          console.error('Error in searchFast:', err);
-          return { data: null };
-        });
-
-      const fastResult = fastResponse?.data?.searchFast ?? null;
-      return fastResult;
-    } catch (error) {
-      console.error('Error in searchFast:', error);
-      throw error;
-    }
-  }
-
-  // Replicate searchSlow - returns slow results
-  static async searchSlow(query: string): Promise<any> {
-    try {
-      const result = searchSchema.safeParse({ query });
-      if (!result.success) {
-        throw new Error('Invalid search input');
-      }
-
-      const input = result.data;
-
-      const slowResponse = await sdk
-        .searchSlow({ query: input.query })
-        .catch((err) => {
-          console.error('Error in searchSlow:', err);
-          return { data: null };
-        });
-
-      const slowResult = slowResponse?.data?.searchSlow ?? null;
-      return slowResult;
-    } catch (error) {
-      console.error('Error in searchSlow:', error);
-      throw error;
-    }
-  }
-
+  // Replicate search - searches for blocks, contracts, transactions, and accounts (if they have transactions)
   static async search(query: string): Promise<any> {
     try {
       const result = searchSchema.safeParse({ query });
@@ -171,28 +122,15 @@ export class ApiService {
 
       const input = result.data;
 
-      const [fastResponse, slowResponse] = await Promise.allSettled([
-        sdk.searchFast({ query: input.query }).catch(() => ({ data: null })),
-        sdk.searchSlow({ query: input.query }).catch(() => ({ data: null })),
-      ]);
+      const response = await sdk.search({ query: input.query }).catch((err) => {
+        console.error('Error in search:', err);
+        return { data: null };
+      });
 
-      const fastResult =
-        fastResponse.status === 'fulfilled'
-          ? (fastResponse.value?.data?.searchFast ?? null)
-          : null;
-      const slowResult =
-        slowResponse.status === 'fulfilled'
-          ? (slowResponse.value?.data?.searchSlow ?? null)
-          : null;
-
-      const merged = {
-        ...fastResult,
-        ...slowResult,
-      };
-
-      return Object.keys(merged).some((key) => merged[key]) ? merged : null;
+      const searchResult = response?.data?.search ?? null;
+      return searchResult;
     } catch (error) {
-      console.error('Error searching:', error);
+      console.error('Error in search:', error);
       throw error;
     }
   }
@@ -570,9 +508,5 @@ export const queryKeys = {
       ] as const,
     balances: (contractId: string) =>
       [...queryKeys.contracts.detail(contractId), 'balances'] as const,
-  },
-  search: {
-    all: ['search'] as const,
-    query: (q: string) => [...queryKeys.search.all, q] as const,
   },
 };
