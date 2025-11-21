@@ -112,21 +112,25 @@ export class ApiService {
     }
   }
 
-  // Replicate search server action
+  // Replicate search - searches for blocks, contracts, transactions, and accounts (if they have transactions)
   static async search(query: string): Promise<any> {
     try {
-      // Validate input using the same schema as Next.js
       const result = searchSchema.safeParse({ query });
       if (!result.success) {
         throw new Error('Invalid search input');
       }
 
       const input = result.data;
-      const { data } = await sdk.search({ query: input.query });
 
-      return data?.search ?? null;
+      const response = await sdk.search({ query: input.query }).catch((err) => {
+        console.error('Error in search:', err);
+        return { data: null };
+      });
+
+      const searchResult = response?.data?.search ?? null;
+      return searchResult;
     } catch (error) {
-      console.error('Error searching:', error);
+      console.error('Error in search:', error);
       throw error;
     }
   }
@@ -504,9 +508,5 @@ export const queryKeys = {
       ] as const,
     balances: (contractId: string) =>
       [...queryKeys.contracts.detail(contractId), 'balances'] as const,
-  },
-  search: {
-    all: ['search'] as const,
-    query: (q: string) => [...queryKeys.search.all, q] as const,
   },
 };
