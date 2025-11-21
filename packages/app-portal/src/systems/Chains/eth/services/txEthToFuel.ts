@@ -34,7 +34,6 @@ import {
 } from 'app-commons';
 import { safeWriteContract } from 'app-commons/safeWriteContract';
 import { forceRetryWithTimeout } from '~portal/systems/Core/utils/forceRetryWithTimeout';
-import type { EthLog } from '../types';
 import { getTokenContractImplementation } from '../utils/bridgeContract';
 import { parseQueriedDataToEthDepositLogs } from '../utils/ethLogs';
 import { EthConnectorService } from './connectors';
@@ -578,10 +577,11 @@ export class TxEthToFuelService {
       const response = await fetch(url.toString());
       const allLogs = parseQueriedDataToEthDepositLogs(await response.json());
 
-      const ethAndErc20Logs = allLogs.reduce((acc, log) => {
+      const ethAndErc20Logs = allLogs.filter((log) => {
         if (log.recipient === fuelAddress?.toHexString()) {
-          acc.push(log);
-        } else {
+          return true;
+        }
+        try {
           const messageSentEvent = decodeEventLog({
             abi: FUEL_MESSAGE_PORTAL.abi,
             data: log.data,
@@ -592,13 +592,11 @@ export class TxEthToFuelService {
             messageSentEvent.args.data,
           );
 
-          if (to === fuelAddress?.toHexString()) {
-            acc.push(log);
-          }
+          return to === fuelAddress?.toHexString();
+        } catch {
+          return false;
         }
-
-        return acc;
-      }, [] as EthLog[]);
+      });
 
       return ethAndErc20Logs;
     }
