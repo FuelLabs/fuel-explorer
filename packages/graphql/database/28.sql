@@ -3,7 +3,7 @@
 
 -- Composite index for getRecentTransactionsByOwner query (account_hash, _id DESC)
 -- This allows the query to use index-only scan when fetching recent transactions for an account
-CREATE INDEX ON indexer.transactions_accounts (account_hash, _id DESC);
+CREATE INDEX CONCURRENTLY ON indexer.transactions_accounts (account_hash, _id DESC);
 
 -- Index on asset_id for fast asset lookups
-CREATE INDEX ON indexer.assets_contracts (asset_id);
+CREATE INDEX CONCURRENTLY ON indexer.assets_contracts (asset_id);
