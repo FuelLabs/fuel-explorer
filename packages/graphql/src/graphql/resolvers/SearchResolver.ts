@@ -1,5 +1,4 @@
 import { Hash256 } from '~/application/vo';
-import type { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import DataCache from '~/infra/cache/DataCache';
 import BlockDAO from '~/infra/dao/BlockDAO';
 import ContractDAO from '~/infra/dao/ContractDAO';
@@ -40,7 +39,14 @@ export class SearchResolver {
       }
     }
 
-    const address = Hash256.create(params.query).value();
+    let address: string;
+    try {
+      address = Hash256.create(params.query).value();
+    } catch {
+      DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, null);
+      return null;
+    }
+
     const blockDAO = new BlockDAO();
     const contractDAO = new ContractDAO();
     const transactionDAO = new TransactionDAO();
@@ -51,7 +57,7 @@ export class SearchResolver {
       contractDAO.getByHash(address),
       transactionDAO.getByHash(address),
       predicateDAO.getByAddress(address),
-      transactionDAO.getRecentTransactionsByOwner(address),
+      transactionDAO.accountExists(address),
     ]);
 
     const [
@@ -59,7 +65,7 @@ export class SearchResolver {
       contractResult,
       transactionResult,
       predicateResult,
-      transactionsResult,
+      accountExistsResult,
     ] = results;
 
     // Priority order: Block > Contract > Transaction > Account (only if has transactions) > Predicate
@@ -89,17 +95,12 @@ export class SearchResolver {
     }
 
     // Only return account if it has transactions (validate it exists)
-    if (
-      transactionsResult.status === 'fulfilled' &&
-      transactionsResult.value &&
-      transactionsResult.value.length > 0
-    ) {
+    const accountExists =
+      accountExistsResult.status === 'fulfilled' && accountExistsResult.value;
+    if (accountExists) {
       const result = {
         account: {
           address,
-          transactions: transactionsResult.value.map(
-            (transaction: TransactionEntity) => transaction.toGQLListNode(),
-          ),
         },
       };
       DataCache.getInstance().save(cacheKey, 1 * 60 * 1000, result);
