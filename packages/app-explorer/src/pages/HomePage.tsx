@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
+import { SyncStatusMonitor } from '~/systems/Core/components/SyncStatusMonitor/SyncStatusMonitor';
 import { fetchTxsData } from '~/systems/Transactions/actions/fetchTxsData';
 import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
@@ -35,6 +36,7 @@ export function HomePage({
           content="Explore the Fuel blockchain - blocks, transactions, and network statistics"
         />
       </Helmet>
+      <SyncStatusMonitor />
       <TxsTitle />
       {isLoading || isFetching || txs.nodes.length === 0 ? (
         <div>

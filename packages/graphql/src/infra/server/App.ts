@@ -25,6 +25,11 @@ import AssetGateway from '../gateway/AssetGateway';
 import PaginatedParams from '../paginator/PaginatedParams';
 
 export class Server {
+  // Metrics cache with 3-second TTL
+  private cachedMetrics: string | null = null;
+  private lastMetricsTime = 0;
+  private readonly METRICS_CACHE_TTL = 3000; // 3 seconds
+
   async setup() {
     const app = express();
     app.use(cors<cors.CorsRequest>());
@@ -141,14 +146,33 @@ export class Server {
 
     app.get('/metrics', async (_req: Request, res: Response) => {
       logger.debug('API', 'Metrics');
+      const now = Date.now();
+
+      // Return cached metrics if still valid (within TTL)
+      if (
+        this.cachedMetrics &&
+        now - this.lastMetricsTime < this.METRICS_CACHE_TTL
+      ) {
+        res.setHeader('content-type', 'text/plain');
+        res.send(this.cachedMetrics);
+        return;
+      }
+
+      // Fetch fresh metrics if cache expired
       const getMetrics = new GetMetrics();
       const output = await getMetrics.execute();
       const lines: any = [];
       for (const element in output) {
         lines.push(`${element} ${output[element]}`);
       }
+
+      // Cache the result
+      const metricsText = lines.join('\n');
+      this.cachedMetrics = metricsText;
+      this.lastMetricsTime = now;
+
       res.setHeader('content-type', 'text/plain');
-      res.send(lines.join('\n'));
+      res.send(metricsText);
     });
 
     app.get('/blocks/:height', async (_req: Request, res: Response) => {
