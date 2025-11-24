@@ -187,6 +187,17 @@ export default class TransactionDAO {
     return paginatedResults;
   }
 
+  async accountExists(accountHash: string): Promise<boolean> {
+    // Fast check: does this account have any transactions?
+    // Used for search validation only
+    const result = await this.databaseConnection.query(
+      'SELECT EXISTS(SELECT 1 FROM indexer.transactions_accounts WHERE account_hash = $1) as exists',
+      [accountHash.toLowerCase()],
+    );
+
+    return result[0]?.exists || false;
+  }
+
   async getTransactionsByOwner(accountHash: string) {
     const transactionsData = await this.databaseConnection.query(
       `
@@ -194,19 +205,20 @@ export default class TransactionDAO {
 			t.*
 		from
 			indexer.transactions t
-		inner join (
-			select distinct on (tx_hash)
-				tx_hash, _id as account_id
-			from
-				indexer.transactions_accounts
-			where
-				account_hash = $1
-			order by
-				tx_hash, _id desc
-			limit 5
-		) ta on t.tx_hash = ta.tx_hash
+		where
+			t.tx_hash in (
+				select distinct on (tx_hash)
+					tx_hash
+				from
+					indexer.transactions_accounts
+				where
+					account_hash = $1
+				order by
+					tx_hash, _id desc
+				limit 5
+			)
 		order by
-			ta.account_id desc
+			t._id desc
 		`,
       [accountHash.toLowerCase()],
     );
@@ -215,45 +227,6 @@ export default class TransactionDAO {
       transactions.push(TransactionEntity.createFromDAO(transactionData));
     }
     return transactions;
-  }
-
-  async getRecentTransactionsByOwner(accountHash: string) {
-    // Optimized query for accounts with many transactions
-    // Uses materialized view of recent transactions (last 7 days)
-    // Falls back to regular query only if view doesn't exist
-    try {
-      const transactionsData = await this.databaseConnection.query(
-        `
-        select
-          t.*
-        from
-          indexer.transactions t
-        inner join (
-          select distinct on (tx_hash)
-            tx_hash, _id as account_id
-          from
-            indexer.recent_account_transactions_mv
-          where
-            account_hash = $1
-          order by
-            tx_hash, _id desc
-        ) ta on t.tx_hash = ta.tx_hash
-        order by
-          ta.account_id desc
-        limit 5
-        `,
-        [accountHash.toLowerCase()],
-      );
-      // Return results (empty array is valid - account has no recent transactions)
-      const transactions = [];
-      for (const transactionData of transactionsData) {
-        transactions.push(TransactionEntity.createFromDAO(transactionData));
-      }
-      return transactions;
-    } catch (_error) {
-      // If materialized view doesn't exist, fall back to regular query
-      return this.getTransactionsByOwner(accountHash);
-    }
   }
 
   async getPaginatedTransactionsByBlockId(

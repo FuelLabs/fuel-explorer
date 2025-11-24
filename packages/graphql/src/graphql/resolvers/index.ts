@@ -10,8 +10,6 @@ import { NodeResolver } from './NodeResolver';
 import { PredicateResolver } from './PredicateResolver';
 import { PublicResolver } from './PublicResolver';
 import { SearchResolver } from './SearchResolver';
-import { SearchResolverFast } from './SearchResolverFast';
-import { SearchResolverSlow } from './SearchResolverSlow';
 import { StakingResolver } from './StakingResolver';
 import { TransactionResolver } from './TransactionResolver';
 
@@ -22,8 +20,6 @@ const contractResolver = ContractResolver.create();
 const nodeResolver = NodeResolver.create();
 const predicateResolver = PredicateResolver.create();
 const searchResolver = SearchResolver.create();
-const searchResolverFast = SearchResolverFast.create();
-const searchResolverSlow = SearchResolverSlow.create();
 const transactionResolver = TransactionResolver.create();
 const assetResolver = AssetResolver.create();
 const stakingResolver = StakingResolver.create();
@@ -43,8 +39,6 @@ export const resolvers = {
       ...nodeResolver.Query,
       ...predicateResolver.Query,
       ...searchResolver.Query,
-      ...searchResolverFast.Query,
-      ...searchResolverSlow.Query,
       ...transactionResolver.Query,
       ...assetResolver.Query,
       ...stakingResolver.Query,
