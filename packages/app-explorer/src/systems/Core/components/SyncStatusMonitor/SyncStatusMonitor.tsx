@@ -2,7 +2,7 @@ import { Alert } from '@fuels/ui';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { type SyncMetrics, useSyncMetrics } from '../../hooks/useSyncMetrics';
 
-const SYNC_DELAY_THRESHOLD = 60;
+const SYNC_DELAY_THRESHOLD = 300;
 
 export function SyncStatusMonitor() {
   const { data: metrics, isLoading, isError } = useSyncMetrics();
