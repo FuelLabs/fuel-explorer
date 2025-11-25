@@ -26,8 +26,7 @@ export function SyncStatusMonitor() {
       </Alert.Icon>
       <Alert.Text>
         Indexer is experiencing issues. Fuel team is currently working on a fix.
-        Some data may be outdated or unavailable. (
-        {typedMetrics.blockHeightSyncDelay} blocks behind)
+        Some data may be outdated or unavailable.
       </Alert.Text>
     </Alert>
   );
