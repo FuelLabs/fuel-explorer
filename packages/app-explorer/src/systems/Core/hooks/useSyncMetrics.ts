@@ -1,4 +1,5 @@
 import { useQuery } from 'wagmi/query';
+import { fuelCoreSdk, sdk } from '../utils/sdk';
 
 export interface SyncMetrics {
   fuelCoreLastBlockHeight: number;
@@ -8,36 +9,55 @@ export interface SyncMetrics {
   fuelCoreHealthy: boolean;
 }
 
-export const useSyncMetrics = () => {
-  const indexerApi = import.meta.env.VITE_FUEL_INDEXER_API;
+const FUEL_CORE_TIMEOUT_MS = 2000;
 
+export const useSyncMetrics = () => {
   return useQuery({
     queryKey: ['syncMetrics'],
     queryFn: async (): Promise<SyncMetrics> => {
-      if (!indexerApi) {
-        throw new Error(
-          'VITE_FUEL_INDEXER_API environment variable is not set',
+      const indexerResponse = await sdk.blocks({ last: 1 });
+      const blocks = indexerResponse.data?.blocks;
+      const lastBlock = blocks?.edges?.[0]?.node;
+      const lastBlockHeightSynced = lastBlock
+        ? Number(lastBlock.header?.height ?? '0')
+        : 0;
+
+      let fuelCoreLastBlockHeight = lastBlockHeightSynced;
+      let fuelCoreHealthy = true;
+
+      try {
+        const fuelCorePromise = fuelCoreSdk.blocks({ last: 1 });
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout')), FUEL_CORE_TIMEOUT_MS),
         );
+
+        const fuelCoreResponse = await Promise.race([
+          fuelCorePromise,
+          timeoutPromise,
+        ]);
+
+        const fuelCoreBlocks = fuelCoreResponse.data?.blocks?.nodes;
+        if (fuelCoreBlocks && fuelCoreBlocks.length > 0) {
+          fuelCoreLastBlockHeight = Number(
+            fuelCoreBlocks[0]?.header?.height ?? '0',
+          );
+        } else {
+          fuelCoreHealthy = false;
+        }
+      } catch {
+        fuelCoreHealthy = false;
       }
 
-      const response = await fetch(`${indexerApi}/metrics`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch metrics: ${response.statusText}`);
-      }
-
-      const metricsText = await response.text();
-
-      const metrics = parsePrometheusMetrics(metricsText);
+      const blockHeightSyncDelay =
+        fuelCoreLastBlockHeight - lastBlockHeightSynced;
+      const isHealthy = blockHeightSyncDelay < 100;
 
       return {
-        fuelCoreLastBlockHeight:
-          metrics.explorer_indexer_fuel_core_last_block_height || 0,
-        lastBlockHeightSynced:
-          metrics.explorer_indexer_last_block_height_synced || 0,
-        blockHeightSyncDelay:
-          metrics.explorer_indexer_block_height_sync_delay || 0,
-        isHealthy: metrics.explorer_indexer_health === 1,
-        fuelCoreHealthy: metrics.explorer_indexer_fuel_core_health === 1,
+        fuelCoreLastBlockHeight,
+        lastBlockHeightSynced,
+        blockHeightSyncDelay,
+        isHealthy,
+        fuelCoreHealthy,
       };
     },
     refetchInterval: 10000, // Poll every 10 seconds
@@ -45,27 +65,3 @@ export const useSyncMetrics = () => {
     staleTime: 8000, // Consider data stale after 8 seconds
   });
 };
-
-function parsePrometheusMetrics(metricsText: string): Record<string, number> {
-  const metrics: Record<string, number> = {};
-
-  const lines = metricsText.split('\n');
-  for (const line of lines) {
-    // Skip comments and empty lines
-    if (!line || line.startsWith('#')) {
-      continue;
-    }
-
-    // Parse "metric_name value" format
-    const parts = line.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      const metricName = parts[0];
-      const value = Number.parseFloat(parts[1]);
-      if (!Number.isNaN(value)) {
-        metrics[metricName] = value;
-      }
-    }
-  }
-
-  return metrics;
-}
