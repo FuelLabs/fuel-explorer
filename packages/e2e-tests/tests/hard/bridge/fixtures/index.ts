@@ -91,7 +91,15 @@ export const test = base.extend<{
     ];
 
     if (process.env.CI) {
-      browserArgs.push('--disable-gpu');
+      browserArgs.push(
+        '--disable-gpu',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding',
+      );
     }
     // launch browser
     const context = await chromium.launchPersistentContext('', {
@@ -99,7 +107,10 @@ export const test = base.extend<{
       args: browserArgs,
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    // Wait longer in CI for extensions to fully initialize
+    await new Promise((resolve) =>
+      setTimeout(resolve, process.env.CI ? 10000 : 5000),
+    );
 
     // Get extensions data
     const extensions = await getExtensionsData(context);
@@ -115,6 +126,10 @@ export const test = base.extend<{
         ?.id;
     const metamaskPage = await context.newPage();
     await metamaskPage.goto(`chrome-extension://${metamaskId}/home.html`);
+    // Wait for MetaMask page to be ready
+    await metamaskPage.waitForLoadState('domcontentloaded');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     const MetaMaskCtor =
       synpressPW?.MetaMask || synpressPW?.default || synpressPW;
     const metamask = new MetaMaskCtor(
@@ -124,10 +139,37 @@ export const test = base.extend<{
       metamaskId,
     );
     setMetaMask(metamask);
-    await metamask.importWallet(ETH_MNEMONIC);
+
+    // Import wallet with retry for CI stability
+    let importRetries = 3;
+    while (importRetries > 0) {
+      try {
+        await metamask.importWallet(ETH_MNEMONIC);
+        break;
+      } catch (e) {
+        importRetries--;
+        if (importRetries === 0) throw e;
+        console.log(
+          `MetaMask import failed, retrying... (${importRetries} left)`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    }
     const targetNetwork = process.env.ETH_NETWORK || 'localhost';
     try {
-      await metamask.switchNetwork(targetNetwork);
+      if (targetNetwork === 'sepolia') {
+        // Sepolia needs to be added explicitly for testnet runs
+        await metamask.addNetwork({
+          name: 'Sepolia',
+          rpcUrl:
+            'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+          chainId: 11155111,
+          symbol: 'ETH',
+          blockExplorerUrl: 'https://sepolia.etherscan.io',
+        });
+      } else {
+        await metamask.switchNetwork(targetNetwork);
+      }
     } catch (_) {
       // ignore if network already set or not required
     }
