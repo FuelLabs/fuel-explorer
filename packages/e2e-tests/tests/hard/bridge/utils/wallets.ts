@@ -88,7 +88,9 @@ export const setupFuelWallet = async ({
   context,
   extensionId,
 }: { page: Page; context: BrowserContext; extensionId: string }) => {
+  console.log('setupFuelWallet: Getting FuelWalletTestHelper...');
   const FuelWalletTestHelper = await getFuelWalletTestHelper();
+  console.log('setupFuelWallet: Getting FUEL_MNEMONIC...');
   const FUEL_MNEMONIC = await getFuelMnemonic();
 
   console.log('Creating Fuel Provider with URL:', PROVIDER_URL);
@@ -98,6 +100,14 @@ export const setupFuelWallet = async ({
   const chainId = (await fuelProvider.fetchChain()).consensusParameters.chainId;
   console.log('Chain name:', chainName);
   console.log('Chain ID:', Number(chainId));
+
+  // Wait before wallet setup in CI
+  if (process.env.CI) {
+    console.log('setupFuelWallet: Pre-setup wait (5s)...');
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+
+  console.log('setupFuelWallet: Starting walletSetup...');
   // Use the correct object parameter structure for walletSetup
   const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
     context,
@@ -109,10 +119,18 @@ export const setupFuelWallet = async ({
     chainName,
     mnemonic: FUEL_MNEMONIC,
   });
+  console.log('setupFuelWallet: walletSetup complete');
+
+  console.log('setupFuelWallet: Adding accounts...');
   await fuelWalletTestHelper.addAccount();
+  console.log('setupFuelWallet: Account 2 added');
   await fuelWalletTestHelper.addAccount();
+  console.log('setupFuelWallet: Account 3 added');
   await fuelWalletTestHelper.addAccount();
+  console.log('setupFuelWallet: Account 4 added');
   await fuelWalletTestHelper.switchAccount('Account 1');
+  console.log('setupFuelWallet: Switched to Account 1');
+
   const account = mnemonicToAccount(ETH_MNEMONIC);
   const fuelWallet = Wallet.fromMnemonic(
     FUEL_MNEMONIC,
@@ -121,6 +139,7 @@ export const setupFuelWallet = async ({
     fuelProvider,
   );
 
+  console.log('setupFuelWallet: Complete');
   return { fuelWallet, fuelWalletTestHelper, account };
 };
 
