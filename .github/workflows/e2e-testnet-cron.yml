@@ -57,12 +57,15 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Setup Synpress (MetaMask)
-        run: xvfb-run --auto-servernum -- pnpm --filter=e2e-tests setup:synpress
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" -- pnpm --filter=e2e-tests setup:synpress
+        env:
+          DISPLAY: ':99'
 
       - name: Run E2E Hard Tests (Testnet)
-        run: xvfb-run --auto-servernum -- pnpm test:e2e
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" -- pnpm test:e2e
         env:
           CI: true
+          DISPLAY: ':99'
           E2E_BASE_URL: ${{ env.E2E_BASE_URL }}
           FUEL_CHAIN_NAME: ${{ env.FUEL_CHAIN_NAME }}
           FUEL_PROVIDER_URL: ${{ env.FUEL_PROVIDER_URL }}

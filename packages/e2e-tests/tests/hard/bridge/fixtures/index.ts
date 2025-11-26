@@ -155,24 +155,19 @@ export const test = base.extend<{
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }
+
     const targetNetwork = process.env.ETH_NETWORK || 'localhost';
-    try {
-      if (targetNetwork === 'sepolia') {
-        // Sepolia needs to be added explicitly for testnet runs
-        await metamask.addNetwork({
-          name: 'Sepolia',
-          rpcUrl:
-            'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-          chainId: 11155111,
-          symbol: 'ETH',
-          blockExplorerUrl: 'https://sepolia.etherscan.io',
-        });
-      } else {
+    // Only switch network for localhost (local dev environment)
+    // For testnet (sepolia), skip network switching - it will be handled by the dApp
+    if (targetNetwork === 'localhost') {
+      try {
         await metamask.switchNetwork(targetNetwork);
+      } catch (_) {
+        // ignore if network already set
       }
-    } catch (_) {
-      // ignore if network already set or not required
     }
+    // For sepolia/testnet, the dApp will request the network switch
+    // and MetaMask will prompt the user (handled by approveNewNetwork in test)
     // Set context to playwright
     await use(context);
   },
