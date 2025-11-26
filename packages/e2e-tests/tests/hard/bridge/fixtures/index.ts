@@ -125,8 +125,9 @@ export const test = base.extend<{
     );
     setMetaMask(metamask);
     await metamask.importWallet(ETH_MNEMONIC);
+    const targetNetwork = process.env.ETH_NETWORK || 'localhost';
     try {
-      await metamask.switchNetwork('localhost');
+      await metamask.switchNetwork(targetNetwork);
     } catch (_) {
       // ignore if network already set or not required
     }
