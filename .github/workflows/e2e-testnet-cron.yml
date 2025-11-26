@@ -16,40 +16,26 @@ on:
     branches:
       - nj/feat/cron-e2e
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
+  # Target the deployed testnet explorer
+  E2E_BASE_URL: https://app-testnet.fuel.network
+
   # Chain configuration for testnet
-  VITE_FUEL_CHAIN_NAME: fuelTestnet
-  VITE_FUEL_PROVIDER: https://testnet.fuel.network/v1/graphql
   FUEL_CHAIN_NAME: fuelTestnet
   FUEL_PROVIDER_URL: https://testnet.fuel.network/v1/graphql
   ETH_NETWORK: sepolia
-
-  # Turbo cache
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  TURBO_REMOTE_ONLY: true
-
-  # API configuration (from secrets)
-  VITE_FUEL_INDEXER_API: ${{ secrets.E2E_TESTNET_INDEXER_API }}
-  VITE_FUEL_INDEXER_API_KEY: ${{ secrets.E2E_TESTNET_INDEXER_API_KEY }}
 
   # Wallet mnemonics (from secrets - must have testnet funds)
   E2E_ETH_MNEMONIC: ${{ secrets.E2E_TESTNET_ETH_MNEMONIC }}
   E2E_FUEL_MNEMONIC: ${{ secrets.E2E_TESTNET_FUEL_MNEMONIC }}
   E2E_ETH_WALLET_PASSWORD: ${{ secrets.E2E_TESTNET_ETH_WALLET_PASSWORD }}
-
-  # Optional: Additional env vars for testnet
-  VITE_WALLETCONNECT_ID: ${{ secrets.E2E_TESTNET_WALLETCONNECT_ID }}
-  VITE_INFURA_ID: ${{ secrets.E2E_TESTNET_INFURA_ID }}
-  VITE_ALCHEMY_ID: ${{ secrets.E2E_TESTNET_ALCHEMY_ID }}
-  VITE_COSMOS_API_TESTNET: ${{ secrets.E2E_TESTNET_COSMOS_API }}
-  VITE_COSMOS_INDEXER_API_TESTNET: ${{ secrets.E2E_TESTNET_COSMOS_INDEXER_API }}
-  VITE_COMET_SECURE_API_TESTNET: ${{ secrets.E2E_TESTNET_COMET_SECURE_API }}
-  VITE_STAKING_ENV: testnet
 
 jobs:
   e2e-testnet:
@@ -60,49 +46,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Cache turbo build setup
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-e2e-testnet-turbo-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-e2e-testnet-turbo-
 
       - name: Setup Node
         uses: FuelLabs/github-actions/setups/node@master
         with:
           node-version: 20.15.1
           pnpm-version: 9.10.0
-
-      - name: Create .env file for explorer
-        run: |
-          cat > packages/app-explorer/.env << EOF
-          VITE_FUEL_CHAIN_NAME=${VITE_FUEL_CHAIN_NAME}
-          VITE_FUEL_PROVIDER=${VITE_FUEL_PROVIDER}
-          VITE_FUEL_INDEXER_API=${VITE_FUEL_INDEXER_API}
-          VITE_FUEL_INDEXER_API_KEY=${VITE_FUEL_INDEXER_API_KEY}
-          VITE_WALLETCONNECT_ID=${VITE_WALLETCONNECT_ID}
-          VITE_INFURA_ID=${VITE_INFURA_ID}
-          VITE_ALCHEMY_ID=${VITE_ALCHEMY_ID}
-          VITE_COSMOS_API_TESTNET=${VITE_COSMOS_API_TESTNET}
-          VITE_COSMOS_INDEXER_API_TESTNET=${VITE_COSMOS_INDEXER_API_TESTNET}
-          VITE_COMET_SECURE_API_TESTNET=${VITE_COMET_SECURE_API_TESTNET}
-          VITE_STAKING_ENV=${VITE_STAKING_ENV}
-          EOF
-
-      - name: Create .env file for graphql
-        run: |
-          cat > packages/graphql/.env << EOF
-          FUEL_PROVIDER=${VITE_FUEL_PROVIDER}
-          EOF
-
-      - name: Build production version of explorer
-        env:
-          NODE_ENV: test
-        run: pnpm build:prod
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps chromium
@@ -114,6 +63,7 @@ jobs:
         run: xvfb-run --auto-servernum -- pnpm test:e2e
         env:
           CI: true
+          E2E_BASE_URL: ${{ env.E2E_BASE_URL }}
           FUEL_CHAIN_NAME: ${{ env.FUEL_CHAIN_NAME }}
           FUEL_PROVIDER_URL: ${{ env.FUEL_PROVIDER_URL }}
           ETH_NETWORK: ${{ env.ETH_NETWORK }}
@@ -142,6 +92,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: e2e-testnet
     if: failure()
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Create issue on failure
         uses: actions/github-script@v7
