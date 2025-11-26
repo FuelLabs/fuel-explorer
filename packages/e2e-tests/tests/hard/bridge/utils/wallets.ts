@@ -16,35 +16,71 @@ const PROVIDER_URL =
   process.env.FUEL_PROVIDER_URL || 'http://localhost:4000/v1/graphql';
 
 export const acceptMetaMaskAccessWithNetworkSwitch = async () => {
-  await metamask.connectToDapp();
+  console.log('Connecting to dApp...');
+  // Retry connectToDapp with longer waits
+  let connectRetries = 3;
+  while (connectRetries > 0) {
+    try {
+      await metamask.connectToDapp();
+      console.log('Connected to dApp');
+      break;
+    } catch (e) {
+      connectRetries--;
+      if (connectRetries === 0) throw e;
+      console.log(`connectToDapp failed, retrying... (${connectRetries} left)`);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+  }
+
   // Approve network addition/switch if prompted
   // For localhost: pre-configured, may prompt for switch
   // For testnet: dApp will request Sepolia, need to approve
   try {
+    console.log('Checking for network approval...');
     await metamask.approveNewNetwork();
+    console.log('Network approved');
   } catch (_) {
-    // No new network prompt - continue
+    console.log('No new network prompt');
   }
   try {
+    console.log('Checking for network switch...');
     await metamask.approveSwitchNetwork();
+    console.log('Network switch approved');
   } catch (_) {
-    // No switch prompt - continue
+    console.log('No network switch prompt');
   }
 };
 
 export const connectToMetamask = async (page: Page) => {
+  console.log('Starting MetaMask connection...');
   await page.bringToFront();
-  await page.waitForTimeout(1000); // Wait for page to be ready
+
+  // Wait longer in CI for page stability
+  const waitTime = process.env.CI ? 3000 : 1000;
+  await page.waitForTimeout(waitTime);
+
+  console.log('Looking for Connect Ethereum Wallet button...');
   const connectKitButton = await getByAriaLabel(
     page,
     'Connect Ethereum Wallet',
   );
   await connectKitButton.click();
-  await page.waitForTimeout(500);
+  console.log('Clicked Connect Ethereum Wallet');
+
+  await page.waitForTimeout(process.env.CI ? 2000 : 500);
+
+  console.log('Looking for Metamask button...');
   const metamaskConnect = await getButtonByText(page, 'Metamask');
   await metamaskConnect.click();
-  await page.waitForTimeout(2000); // Wait for MetaMask popup
+  console.log('Clicked Metamask button');
+
+  // Wait longer for MetaMask popup to fully appear
+  const popupWait = process.env.CI ? 5000 : 2000;
+  console.log(`Waiting ${popupWait}ms for MetaMask popup...`);
+  await page.waitForTimeout(popupWait);
+
   await acceptMetaMaskAccessWithNetworkSwitch();
+  console.log('MetaMask connection complete');
 };
 
 export const setupFuelWallet = async ({

@@ -107,15 +107,25 @@ export const test = base.extend<{
       args: browserArgs,
     });
 
-    // Wait longer in CI for extensions to fully initialize
-    await new Promise((resolve) =>
-      setTimeout(resolve, process.env.CI ? 10000 : 5000),
-    );
+    // Wait for browser and extensions to fully initialize
+    // In CI, wait longer (30s) to match the time taken by node:start in pr-tests
+    const initialWait = process.env.CI ? 30000 : 5000;
+    console.log(`Waiting ${initialWait}ms for extensions to initialize...`);
+    await new Promise((resolve) => setTimeout(resolve, initialWait));
 
     // Get extensions data
+    console.log('Getting extensions data...');
     const extensions = await getExtensionsData(context);
     // Wait for Fuel Wallet to load
+    console.log('Waiting for extensions to be ready...');
     await waitForExtensions(context, extensions);
+
+    // Additional wait after extensions are ready
+    if (process.env.CI) {
+      console.log('Additional CI wait (10s)...');
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+    }
+
     // Setup MetaMask using Synpress v4 MetaMask class
     const { setMetaMask } = await import('../utils/metamask');
     const synpressPW: any = await import('@synthetixio/synpress/playwright');
@@ -124,11 +134,17 @@ export const test = base.extend<{
       extensionsData.metamask?.id ||
       Object.values(extensionsData).find((e: any) => e?.id && e?.version && e)
         ?.id;
+
+    console.log(`Opening MetaMask page (id: ${metamaskId})...`);
     const metamaskPage = await context.newPage();
     await metamaskPage.goto(`chrome-extension://${metamaskId}/home.html`);
     // Wait for MetaMask page to be ready
     await metamaskPage.waitForLoadState('domcontentloaded');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await metamaskPage.waitForLoadState('networkidle');
+    console.log('MetaMask page loaded, waiting for stability...');
+    await new Promise((resolve) =>
+      setTimeout(resolve, process.env.CI ? 5000 : 2000),
+    );
 
     const MetaMaskCtor =
       synpressPW?.MetaMask || synpressPW?.default || synpressPW;
@@ -141,10 +157,12 @@ export const test = base.extend<{
     setMetaMask(metamask);
 
     // Import wallet with retry for CI stability
+    console.log('Importing wallet...');
     let importRetries = 3;
     while (importRetries > 0) {
       try {
         await metamask.importWallet(ETH_MNEMONIC);
+        console.log('Wallet imported successfully');
         break;
       } catch (e) {
         importRetries--;
@@ -152,11 +170,18 @@ export const test = base.extend<{
         console.log(
           `MetaMask import failed, retrying... (${importRetries} left)`,
         );
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
       }
     }
 
+    // Wait after wallet import for MetaMask to stabilize
+    if (process.env.CI) {
+      console.log('Post-import stabilization wait (5s)...');
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+
     const targetNetwork = process.env.ETH_NETWORK || 'localhost';
+    console.log(`Target network: ${targetNetwork}`);
     // Only switch network for localhost (local dev environment)
     // For testnet (sepolia), skip network switching - it will be handled by the dApp
     if (targetNetwork === 'localhost') {
@@ -168,6 +193,7 @@ export const test = base.extend<{
     }
     // For sepolia/testnet, the dApp will request the network switch
     // and MetaMask will prompt the user (handled by approveNewNetwork in test)
+    console.log('Fixture setup complete');
     // Set context to playwright
     await use(context);
   },

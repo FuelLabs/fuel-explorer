@@ -61,6 +61,10 @@ jobs:
         env:
           DISPLAY: ':99'
 
+      # Add delay to allow extensions to fully initialize (similar to node:start time in pr-tests)
+      - name: Wait for extensions to stabilize
+        run: sleep 30
+
       - name: Run E2E Hard Tests (Testnet)
         run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" -- pnpm test:e2e
         env:
