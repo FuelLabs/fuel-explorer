@@ -11,6 +11,10 @@ on:
         required: false
         default: 'false'
         type: boolean
+  # TODO: Remove after testing
+  push:
+    branches:
+      - nj/feat/cron-e2e
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
