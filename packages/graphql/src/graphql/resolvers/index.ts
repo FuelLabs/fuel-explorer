@@ -48,4 +48,5 @@ export const resolvers = {
     ...publicResolver.Query,
   },
   Balance: balanceResolver.Balance,
+  Transaction: transactionResolver.Transaction,
 };

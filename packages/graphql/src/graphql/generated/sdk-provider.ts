@@ -1912,6 +1912,7 @@ export type GQLTransaction = {
   operations?: Maybe<Array<GQLOperation>>;
   outputContract?: Maybe<GQLContractOutput>;
   outputs: Array<GQLOutput>;
+  ownerInputIndex?: Maybe<Scalars['U16']['output']>;
   policies?: Maybe<GQLPolicies>;
   proofSet?: Maybe<Array<Scalars['Bytes32']['output']>>;
   /** Return the transaction bytes using canonical encoding */

@@ -293,6 +293,13 @@ fragment TransactionItem on Transaction {
     contractId
     subId
   }
+  policies {
+    tip
+    witnessLimit
+    maturity
+    maxFee
+  }
+  ownerInputIndex
   witnesses
   receiptsRoot
   script
