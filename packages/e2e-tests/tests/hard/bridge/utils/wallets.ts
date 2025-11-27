@@ -96,30 +96,58 @@ export const setupFuelWallet = async ({
   console.log('Creating Fuel Provider with URL:', PROVIDER_URL);
   const fuelProvider = new Provider(PROVIDER_URL);
   console.log('Fuel Provider created successfully');
-  const chainName = (await fuelProvider.fetchChain()).name;
-  const chainId = (await fuelProvider.fetchChain()).consensusParameters.chainId;
+
+  // Fetch chain data once and reuse
+  const chainData = await fuelProvider.fetchChain();
+  const chainName = chainData.name;
+  const chainId = chainData.consensusParameters.chainId;
   console.log('Chain name:', chainName);
   console.log('Chain ID:', Number(chainId));
 
-  // Wait before wallet setup in CI
+  // CRITICAL: Longer wait in CI to prevent browser context freeze
+  // This mirrors the ~7 min delay from node:start in pr-tests workflow
   if (process.env.CI) {
-    console.log('setupFuelWallet: Pre-setup wait (5s)...');
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log(
+      'setupFuelWallet: Extended pre-setup wait (60s) to stabilize browser context...',
+    );
+    await new Promise((resolve) => setTimeout(resolve, 60000));
+    console.log('setupFuelWallet: Pre-setup wait complete');
   }
 
   console.log('setupFuelWallet: Starting walletSetup...');
-  // Use the correct object parameter structure for walletSetup
-  const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
-    context,
+  console.log('setupFuelWallet: Parameters:', {
     fuelExtensionId: extensionId,
-    fuelProvider: {
-      url: PROVIDER_URL,
-      chainId: Number(chainId),
-    },
+    providerUrl: PROVIDER_URL,
+    chainId: Number(chainId),
     chainName,
-    mnemonic: FUEL_MNEMONIC,
   });
-  console.log('setupFuelWallet: walletSetup complete');
+
+  // Use the correct object parameter structure for walletSetup
+  let fuelWalletTestHelper: any;
+  try {
+    fuelWalletTestHelper = await Promise.race([
+      FuelWalletTestHelper.walletSetup({
+        context,
+        fuelExtensionId: extensionId,
+        fuelProvider: {
+          url: PROVIDER_URL,
+          chainId: Number(chainId),
+        },
+        chainName,
+        mnemonic: FUEL_MNEMONIC,
+      }),
+      new Promise((_, reject) =>
+        setTimeout(
+          () => reject(new Error('walletSetup timeout after 120s')),
+          120000,
+        ),
+      ),
+    ]);
+    console.log('setupFuelWallet: walletSetup complete');
+  } catch (error) {
+    console.error('setupFuelWallet: walletSetup FAILED:', error);
+    throw error;
+  }
 
   console.log('setupFuelWallet: Adding accounts...');
   await fuelWalletTestHelper.addAccount();
