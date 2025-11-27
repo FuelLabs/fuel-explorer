@@ -67,6 +67,7 @@ jobs:
 
       - name: Run E2E Hard Tests (Testnet)
         run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" -- pnpm test:e2e
+        timeout-minutes: 5
         env:
           CI: true
           DISPLAY: ':99'
@@ -93,6 +94,43 @@ jobs:
           name: blob-report-testnet-${{ github.run_id }}
           path: packages/e2e-tests/blob-report/
           retention-days: 14
+
+      # Upload videos, screenshots, and traces for debugging
+      - name: Upload videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: videos-testnet-${{ github.run_id }}
+          path: packages/e2e-tests/test-results/**/video.webm
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots-testnet-${{ github.run_id }}
+          path: packages/e2e-tests/test-results/**/*.png
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload traces
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: traces-testnet-${{ github.run_id }}
+          path: packages/e2e-tests/test-results/**/trace.zip
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload all test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-testnet-${{ github.run_id }}
+          path: packages/e2e-tests/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
 
   notify-on-failure:
     name: Notify on Failure

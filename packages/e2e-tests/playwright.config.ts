@@ -46,6 +46,7 @@ const config: PlaywrightTestConfig = defineConfig({
     headless: false,
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
   },
   projects: [
     {
