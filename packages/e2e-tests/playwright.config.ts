@@ -10,8 +10,8 @@ const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
   testMatch: join(__dirname, './tests/hard/**/*.test.ts'),
   testDir: join(__dirname, './tests/'),
-  // Reduced timeout for faster feedback during debugging (1 minute per test in CI)
-  timeout: process.env.CI ? 60_000 : 60_000 * 12,
+  // Reduced timeout for testnet (5 minutes per test in CI)
+  timeout: process.env.CI ? 60_000 * 5 : 60_000 * 12,
   expect: {
     timeout: 10_000,
   },

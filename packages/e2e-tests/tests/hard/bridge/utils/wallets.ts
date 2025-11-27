@@ -1,6 +1,8 @@
 import type { BrowserContext, Page } from '@playwright/test';
 import { Provider, Wallet } from 'fuels';
+import { http, createPublicClient } from 'viem';
 import { mnemonicToAccount } from 'viem/accounts';
+import { sepolia } from 'viem/chains';
 import {
   getButtonByText,
   getByAriaLabel,
@@ -16,13 +18,11 @@ const PROVIDER_URL =
   process.env.FUEL_PROVIDER_URL || 'http://localhost:4000/v1/graphql';
 
 export const acceptMetaMaskAccessWithNetworkSwitch = async () => {
-  console.log('Connecting to dApp...');
-  // Retry connectToDapp with longer waits
+  // Retry connectToDapp with longer waits for stability
   let connectRetries = 3;
   while (connectRetries > 0) {
     try {
       await metamask.connectToDapp();
-      console.log('Connected to dApp');
       break;
     } catch (e) {
       connectRetries--;
@@ -33,54 +33,36 @@ export const acceptMetaMaskAccessWithNetworkSwitch = async () => {
   }
 
   // Approve network addition/switch if prompted
-  // For localhost: pre-configured, may prompt for switch
-  // For testnet: dApp will request Sepolia, need to approve
   try {
-    console.log('Checking for network approval...');
     await metamask.approveNewNetwork();
-    console.log('Network approved');
   } catch (_) {
-    console.log('No new network prompt');
+    // No new network prompt - this is expected for localhost
   }
   try {
-    console.log('Checking for network switch...');
     await metamask.approveSwitchNetwork();
-    console.log('Network switch approved');
   } catch (_) {
-    console.log('No network switch prompt');
+    // No network switch prompt - already on correct network
   }
 };
 
 export const connectToMetamask = async (page: Page) => {
-  console.log('Starting MetaMask connection...');
   await page.bringToFront();
+  await page.waitForTimeout(process.env.CI ? 3000 : 1000);
 
-  // Wait longer in CI for page stability
-  const waitTime = process.env.CI ? 3000 : 1000;
-  await page.waitForTimeout(waitTime);
-
-  console.log('Looking for Connect Ethereum Wallet button...');
   const connectKitButton = await getByAriaLabel(
     page,
     'Connect Ethereum Wallet',
   );
   await connectKitButton.click();
-  console.log('Clicked Connect Ethereum Wallet');
-
   await page.waitForTimeout(process.env.CI ? 2000 : 500);
 
-  console.log('Looking for Metamask button...');
   const metamaskConnect = await getButtonByText(page, 'Metamask');
   await metamaskConnect.click();
-  console.log('Clicked Metamask button');
 
-  // Wait longer for MetaMask popup to fully appear
-  const popupWait = process.env.CI ? 5000 : 2000;
-  console.log(`Waiting ${popupWait}ms for MetaMask popup...`);
-  await page.waitForTimeout(popupWait);
+  // Wait for MetaMask popup to fully appear
+  await page.waitForTimeout(process.env.CI ? 5000 : 2000);
 
   await acceptMetaMaskAccessWithNetworkSwitch();
-  console.log('MetaMask connection complete');
 };
 
 export const setupFuelWallet = async ({
@@ -88,76 +70,43 @@ export const setupFuelWallet = async ({
   context,
   extensionId,
 }: { page: Page; context: BrowserContext; extensionId: string }) => {
-  console.log('setupFuelWallet: Getting FuelWalletTestHelper...');
   const FuelWalletTestHelper = await getFuelWalletTestHelper();
-  console.log('setupFuelWallet: Getting FUEL_MNEMONIC...');
   const FUEL_MNEMONIC = await getFuelMnemonic();
 
   console.log('Creating Fuel Provider with URL:', PROVIDER_URL);
   const fuelProvider = new Provider(PROVIDER_URL);
-  console.log('Fuel Provider created successfully');
 
   // Fetch chain data once and reuse
   const chainData = await fuelProvider.fetchChain();
   const chainName = chainData.name;
   const chainId = chainData.consensusParameters.chainId;
-  console.log('Chain name:', chainName);
-  console.log('Chain ID:', Number(chainId));
+  console.log(`Chain: ${chainName} (ID: ${Number(chainId)})`);
 
-  // CRITICAL: Longer wait in CI to prevent browser context freeze
-  // This mirrors the ~7 min delay from node:start in pr-tests workflow
+  // Wait in CI to ensure browser context is stable
   if (process.env.CI) {
-    console.log(
-      'setupFuelWallet: Extended pre-setup wait (60s) to stabilize browser context...',
-    );
-    await new Promise((resolve) => setTimeout(resolve, 60000));
-    console.log('setupFuelWallet: Pre-setup wait complete');
+    console.log('Stabilization wait (30s)...');
+    await new Promise((resolve) => setTimeout(resolve, 30000));
   }
 
-  console.log('setupFuelWallet: Starting walletSetup...');
-  console.log('setupFuelWallet: Parameters:', {
+  console.log('Starting Fuel Wallet setup...');
+
+  // Setup Fuel Wallet with extension
+  const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
+    context,
     fuelExtensionId: extensionId,
-    providerUrl: PROVIDER_URL,
-    chainId: Number(chainId),
+    fuelProvider: {
+      url: PROVIDER_URL,
+      chainId: Number(chainId),
+    },
     chainName,
+    mnemonic: FUEL_MNEMONIC,
   });
 
-  // Use the correct object parameter structure for walletSetup
-  let fuelWalletTestHelper: any;
-  try {
-    fuelWalletTestHelper = await Promise.race([
-      FuelWalletTestHelper.walletSetup({
-        context,
-        fuelExtensionId: extensionId,
-        fuelProvider: {
-          url: PROVIDER_URL,
-          chainId: Number(chainId),
-        },
-        chainName,
-        mnemonic: FUEL_MNEMONIC,
-      }),
-      new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error('walletSetup timeout after 120s')),
-          120000,
-        ),
-      ),
-    ]);
-    console.log('setupFuelWallet: walletSetup complete');
-  } catch (error) {
-    console.error('setupFuelWallet: walletSetup FAILED:', error);
-    throw error;
-  }
-
-  console.log('setupFuelWallet: Adding accounts...');
+  // Add additional accounts for testing
   await fuelWalletTestHelper.addAccount();
-  console.log('setupFuelWallet: Account 2 added');
   await fuelWalletTestHelper.addAccount();
-  console.log('setupFuelWallet: Account 3 added');
   await fuelWalletTestHelper.addAccount();
-  console.log('setupFuelWallet: Account 4 added');
   await fuelWalletTestHelper.switchAccount('Account 1');
-  console.log('setupFuelWallet: Switched to Account 1');
 
   const account = mnemonicToAccount(ETH_MNEMONIC);
   const fuelWallet = Wallet.fromMnemonic(
@@ -167,7 +116,38 @@ export const setupFuelWallet = async ({
     fuelProvider,
   );
 
-  console.log('setupFuelWallet: Complete');
+  // Log wallet balances for debugging funding issues
+  console.log('=== Wallet Balances ===');
+
+  // Fuel wallet balance
+  try {
+    const fuelBalance = await fuelWallet.getBalance();
+    console.log('Fuel Wallet Address:', fuelWallet.address.toString());
+    console.log('Fuel Wallet Balance:', fuelBalance.toString(), 'base units');
+  } catch (error) {
+    console.error('Failed to fetch Fuel wallet balance:', error);
+  }
+
+  // ETH wallet balance
+  console.log('ETH Account Address:', account.address);
+  try {
+    const ethNetwork = process.env.ETH_NETWORK || 'localhost';
+    if (ethNetwork === 'sepolia') {
+      const client = createPublicClient({
+        chain: sepolia,
+        transport: http(),
+      });
+      const ethBalance = await client.getBalance({ address: account.address });
+      console.log('ETH Balance (Sepolia):', ethBalance.toString(), 'wei');
+    } else {
+      console.log('ETH Balance: Not checked (localhost network)');
+    }
+  } catch (error) {
+    console.error('Failed to fetch ETH balance:', error);
+  }
+
+  console.log('=======================');
+
   return { fuelWallet, fuelWalletTestHelper, account };
 };
 
