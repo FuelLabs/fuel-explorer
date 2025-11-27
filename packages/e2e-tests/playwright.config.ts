@@ -10,7 +10,8 @@ const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
   testMatch: join(__dirname, './tests/hard/**/*.test.ts'),
   testDir: join(__dirname, './tests/'),
-  timeout: 60_000 * 12,
+  // Reduced timeout for faster feedback during debugging (1 minute per test in CI)
+  timeout: process.env.CI ? 60_000 : 60_000 * 12,
   expect: {
     timeout: 10_000,
   },
@@ -28,6 +29,7 @@ const config: PlaywrightTestConfig = defineConfig({
       ],
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,
+  // No retries for faster debugging feedback
   retries: 0,
   // Skip webServer when using external URL (e.g., testnet)
   webServer: USE_EXTERNAL_URL
