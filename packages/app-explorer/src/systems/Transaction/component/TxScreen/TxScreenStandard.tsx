@@ -39,6 +39,7 @@ import { TxOutput } from '../../component/TxOutput/TxOutput';
 import type { TransactionNode, TxIconType, TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 import { TxItemLoader } from '../TxItemLoader';
+import { TxPolicies } from '../TxPolicies/TxPolicies';
 import { TxScripts } from '../TxScripts/TxScripts';
 
 type TxScreenProps =
@@ -240,6 +241,15 @@ function ContentMain({
         <Icon icon={IconArrowDown} size={30} color="text-muted" />
       </Flex>
       <TxScripts tx={tx} isLoading={isLoading} />
+      <Flex justify="center">
+        <Icon icon={IconArrowDown} size={30} color="text-muted" />
+      </Flex>
+      <VStack>
+        <Heading as="h2" size="5" className="leading-none">
+          Policies
+        </Heading>
+        <TxPolicies transaction={tx} isLoading={isLoading} />
+      </VStack>
       <Flex justify="center">
         <Icon icon={IconArrowDown} size={30} color="text-muted" />
       </Flex>
