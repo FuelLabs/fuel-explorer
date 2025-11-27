@@ -3,12 +3,15 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.E2E_BASE_URL || `http://127.0.0.1:${PORT}/`;
+const USE_EXTERNAL_URL = !!process.env.E2E_BASE_URL;
 
 const config: PlaywrightTestConfig = defineConfig({
   workers: 1,
   testMatch: join(__dirname, './tests/hard/**/*.test.ts'),
   testDir: join(__dirname, './tests/'),
-  timeout: 60_000 * 12,
+  // Reduced timeout for testnet (5 minutes per test in CI)
+  timeout: process.env.CI ? 60_000 * 5 : 60_000 * 12,
   expect: {
     timeout: 10_000,
   },
@@ -26,21 +29,26 @@ const config: PlaywrightTestConfig = defineConfig({
       ],
   // Fail the build on CI if left test.only in the source code
   forbidOnly: !!process.env.CI,
+  // No retries for faster debugging feedback
   retries: 0,
-  webServer: {
-    command: 'pnpm --filter=app-explorer start',
-    port: Number(PORT),
-    reuseExistingServer: true,
-    cwd: join(__dirname, '../../'),
-    stdout: 'pipe',
-    timeout: 60_000 * 10,
-  },
+  // Skip webServer when using external URL (e.g., testnet)
+  webServer: USE_EXTERNAL_URL
+    ? undefined
+    : {
+        command: 'pnpm --filter=app-explorer start',
+        port: Number(PORT),
+        reuseExistingServer: true,
+        cwd: join(__dirname, '../../'),
+        stdout: 'pipe',
+        timeout: 60_000 * 10,
+      },
   use: {
-    baseURL: `http://127.0.0.1:${PORT}/`,
+    baseURL: BASE_URL,
     permissions: ['clipboard-read', 'clipboard-write'],
     headless: false,
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
   },
   projects: [
     {
