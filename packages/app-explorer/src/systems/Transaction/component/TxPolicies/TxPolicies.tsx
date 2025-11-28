@@ -1,17 +1,16 @@
 import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql';
 import {
-  Badge,
-  Card,
   Flex,
   HStack,
   HelperIcon,
   LoadingBox,
+  LoadingWrapper,
   Text,
   Tooltip,
   VStack,
 } from '@fuels/ui';
 import { formatZeroUnits } from 'app-commons';
-import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
+import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 
 type TxPoliciesProps = {
   transaction: GQLTransactionItemFragment | undefined;
@@ -46,66 +45,53 @@ export function TxPolicies({ transaction, isLoading }: TxPoliciesProps) {
   const policies = transaction?.policies;
   const ownerInputIndex = transaction?.ownerInputIndex;
 
-  // Combine policies and ownerInputIndex into a single object
   const allPolicies = {
     ...(policies || {}),
     ...(ownerInputIndex != null && { ownerInputIndex }),
   };
 
-  // Check if we have any non-null policies
-  const hasPolicies = Object.entries(allPolicies).some(
+  const policyEntries = Object.entries(allPolicies).filter(
     ([key, value]) => key !== '__typename' && value != null,
   );
 
-  if (isLoading) {
-    return (
-      <Card>
-        <Card.Body>
-          <VStack gap="2">
-            <LoadingBox className="w-full h-6" />
-            <LoadingBox className="w-full h-6" />
-            <LoadingBox className="w-full h-6" />
-          </VStack>
-        </Card.Body>
-      </Card>
-    );
-  }
+  const hasPolicies = policyEntries.length > 0;
 
-  if (!hasPolicies) {
-    return (
-      <EmptyCard hideImage>
-        <EmptyCard.Title>No Policies</EmptyCard.Title>
-        <EmptyCard.Description>
-          This transaction does not have any policies set.
-        </EmptyCard.Description>
-      </EmptyCard>
-    );
+  // Don't render if no policies and not loading
+  if (!hasPolicies && !isLoading) {
+    return null;
   }
 
   return (
-    <Card>
-      <Card.Body>
-        <VStack gap="3">
-          {Object.entries(allPolicies).map(([key, value]) => {
-            if (key === '__typename' || value == null) return null;
+    <CardInfo name="Policies">
+      <LoadingWrapper
+        isLoading={isLoading}
+        loadingEl={
+          <VStack gap="2">
+            <LoadingBox className="w-full h-4" />
+            <LoadingBox className="w-3/4 h-4" />
+          </VStack>
+        }
+        regularEl={
+          <VStack gap="2">
+            {policyEntries.map(([key, value]) => {
+              const policyInfo = POLICY_NAMES[key];
+              if (!policyInfo) return null;
 
-            const policyInfo = POLICY_NAMES[key];
-            if (!policyInfo) return null;
-
-            return (
-              <PolicyItem
-                key={key}
-                name={policyInfo.name}
-                description={policyInfo.description}
-                value={value}
-                policyKey={key}
-                transaction={transaction}
-              />
-            );
-          })}
-        </VStack>
-      </Card.Body>
-    </Card>
+              return (
+                <PolicyItem
+                  key={key}
+                  name={policyInfo.name}
+                  description={policyInfo.description}
+                  value={value}
+                  policyKey={key}
+                  transaction={transaction}
+                />
+              );
+            })}
+          </VStack>
+        }
+      />
+    </CardInfo>
   );
 }
 
@@ -123,21 +109,15 @@ function PolicyItem({
   transaction: GQLTransactionItemFragment | undefined;
 }) {
   const formattedValue = formatPolicyValue(policyKey, value, transaction);
-  const isOwner = policyKey === 'ownerInputIndex';
 
   return (
-    <Flex justify="between" align="center">
-      <HStack gap="1" align="center">
-        <Text className="text-sm font-medium">{name}</Text>
-        <HelperIcon message={description} />
-        {isOwner && (
-          <Badge color="blue" variant="ghost" size="1">
-            NEW
-          </Badge>
-        )}
+    <Flex justify="between" align="center" className="gap-2">
+      <HStack gap="1" align="center" className="flex-shrink-0">
+        <Text className="text-xs">{name}</Text>
+        <HelperIcon message={description} iconSize={12} />
       </HStack>
       <Tooltip content={description}>
-        <Text className="text-sm text-muted">{formattedValue}</Text>
+        <Text className="text-xs text-primary truncate">{formattedValue}</Text>
       </Tooltip>
     </Flex>
   );
@@ -163,7 +143,6 @@ function formatPolicyValue(
       return numValue === 0 ? 'None' : `Block #${numValue}`;
 
     case 'ownerInputIndex': {
-      // Show the input index and type
       const inputs = transaction?.inputs || [];
       const ownerInput = inputs[numValue];
 

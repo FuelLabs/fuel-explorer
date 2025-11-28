@@ -179,6 +179,7 @@ export function TxScreenStandard({
         }
       />
     </CardInfo>,
+    <TxPolicies key="policies" transaction={tx} isLoading={isLoading} />,
   ];
 
   return (
@@ -241,15 +242,6 @@ function ContentMain({
         <Icon icon={IconArrowDown} size={30} color="text-muted" />
       </Flex>
       <TxScripts tx={tx} isLoading={isLoading} />
-      <Flex justify="center">
-        <Icon icon={IconArrowDown} size={30} color="text-muted" />
-      </Flex>
-      <VStack>
-        <Heading as="h2" size="5" className="leading-none">
-          Policies
-        </Heading>
-        <TxPolicies transaction={tx} isLoading={isLoading} />
-      </VStack>
       <Flex justify="center">
         <Icon icon={IconArrowDown} size={30} color="text-muted" />
       </Flex>
