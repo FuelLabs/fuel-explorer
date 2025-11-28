@@ -214,11 +214,14 @@ function parseOwnerPolicyFromPayload(
       return null;
     }
 
+    // Count preceding policies (all bits lower than Owner's bit 5)
+    // Bits: Tip(0), WitnessLimit(1), Maturity(2), MaxFee(3), Reserved(4)
     let precedingPolicies = 0;
-    if ((policyTypes & 1) !== 0) precedingPolicies++;
-    if ((policyTypes & 2) !== 0) precedingPolicies++;
-    if ((policyTypes & 4) !== 0) precedingPolicies++;
-    if ((policyTypes & 8) !== 0) precedingPolicies++;
+    if ((policyTypes & 1) !== 0) precedingPolicies++; // Tip
+    if ((policyTypes & 2) !== 0) precedingPolicies++; // WitnessLimit
+    if ((policyTypes & 4) !== 0) precedingPolicies++; // Maturity
+    if ((policyTypes & 8) !== 0) precedingPolicies++; // MaxFee
+    if ((policyTypes & 16) !== 0) precedingPolicies++; // Reserved (bit 4, currently unused)
 
     const skipHexChars = precedingPolicies * 16;
 
