@@ -9,7 +9,7 @@ import {
   Tooltip,
   VStack,
 } from '@fuels/ui';
-import { formatZeroUnits } from 'app-commons';
+import { bn } from 'fuels';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
 
 type TxPoliciesProps = {
@@ -134,7 +134,8 @@ function formatPolicyValue(
   switch (key) {
     case 'tip':
     case 'maxFee':
-      return `${formatZeroUnits(numValue.toString())} ETH`;
+      // Format like Network Fee card: bn(value).format() gives proper ETH decimals
+      return `${bn(numValue).format()} ETH`;
 
     case 'witnessLimit':
       return `${numValue.toLocaleString()} bytes`;
