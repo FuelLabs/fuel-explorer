@@ -1,3 +1,4 @@
+import { TransactionCoder, arrayify } from 'fuels';
 import GetTransaction from '~/application/uc/GetTransaction';
 import { logger } from '~/core/Logger';
 import type {
@@ -37,49 +38,34 @@ export class TransactionResolver {
     };
   }
 
+  /**
+   * Resolves the Owner policy (PolicyType 32) using fuels-ts SDK decoder.
+   * The Owner policy designates which input index is the transaction owner.
+   */
   static resolveOwnerInputIndex(transaction: GQLTransaction): number | null {
     try {
-      if (!transaction.isScript) {
-        return null;
-      }
-
       const rawPayload = transaction.rawPayload;
-      if (!rawPayload || typeof rawPayload !== 'string') {
-        logger.debug('TransactionResolver.ownerInputIndex', 'No rawPayload');
+      if (!rawPayload) {
         return null;
       }
 
-      const payload = rawPayload.startsWith('0x')
-        ? rawPayload.slice(2)
-        : rawPayload;
+      // Use fuels-ts SDK to decode the transaction
+      const bytes = arrayify(rawPayload);
+      const [decoded] = new TransactionCoder().decode(bytes, 0);
 
-      const POLICY_TYPES_OFFSET = 128;
+      // Access ownerInputIndex from decoded policies
+      const ownerInputIndex = decoded.policies?.find(
+        (p: { type: number; data: unknown }) => p.type === 32,
+      )?.data;
 
-      const policyTypesHex = payload.slice(
-        POLICY_TYPES_OFFSET,
-        POLICY_TYPES_OFFSET + 16,
-      );
-      const policyTypes = Number.parseInt(policyTypesHex, 16);
-
-      logger.debug(
-        'TransactionResolver.ownerInputIndex',
-        `rawPayload length: ${payload.length}, policyTypesHex: ${policyTypesHex}, policyTypes: ${policyTypes}`,
-      );
-
-      const OWNER_POLICY_BIT = 32;
-      if ((policyTypes & OWNER_POLICY_BIT) === OWNER_POLICY_BIT) {
-        const ownerIndex = parseOwnerPolicyFromPayload(payload, policyTypes);
+      if (ownerInputIndex !== undefined) {
         logger.debug(
           'TransactionResolver.ownerInputIndex',
-          `Owner policy found! ownerIndex: ${ownerIndex}`,
+          `Owner policy found: ${ownerInputIndex}`,
         );
-        return ownerIndex;
+        return Number(ownerInputIndex);
       }
 
-      logger.debug(
-        'TransactionResolver.ownerInputIndex',
-        `No Owner policy (policyTypes=${policyTypes}, bit 32 not set)`,
-      );
       return null;
     } catch (error) {
       logger.error('TransactionResolver.ownerInputIndex', error);
@@ -202,47 +188,5 @@ export class TransactionResolver {
       }
     }
     return transactions;
-  }
-}
-
-function parseOwnerPolicyFromPayload(
-  payload: string,
-  policyTypes: number,
-): number | null {
-  try {
-    if ((policyTypes & 32) === 0) {
-      return null;
-    }
-
-    // Count preceding policies (all bits lower than Owner's bit 5)
-    // Bits: Tip(0), WitnessLimit(1), Maturity(2), MaxFee(3), Reserved(4)
-    let precedingPolicies = 0;
-    if ((policyTypes & 1) !== 0) precedingPolicies++; // Tip
-    if ((policyTypes & 2) !== 0) precedingPolicies++; // WitnessLimit
-    if ((policyTypes & 4) !== 0) precedingPolicies++; // Maturity
-    if ((policyTypes & 8) !== 0) precedingPolicies++; // MaxFee
-    if ((policyTypes & 16) !== 0) precedingPolicies++; // Reserved (bit 4, currently unused)
-
-    const skipHexChars = precedingPolicies * 16;
-
-    const scriptLength = Number.parseInt(payload.slice(96, 112), 16);
-    const scriptDataLength = Number.parseInt(payload.slice(112, 128), 16);
-
-    const variableDataEnd = 192 + scriptLength * 2 + scriptDataLength * 2;
-    const policiesStart = Math.ceil(variableDataEnd / 16) * 16;
-
-    const ownerOffset = policiesStart + skipHexChars;
-    const ownerHex = payload.slice(ownerOffset, ownerOffset + 16);
-    const ownerValue = Number.parseInt(ownerHex, 16);
-
-    logger.debug(
-      'parseOwnerPolicyFromPayload',
-      `precedingPolicies: ${precedingPolicies}, ownerOffset: ${ownerOffset}, ownerValue: ${ownerValue}`,
-    );
-
-    return ownerValue;
-  } catch (error) {
-    logger.error('parseOwnerPolicyFromPayload', error);
-    return null;
   }
 }
