@@ -1912,6 +1912,10 @@ export type GQLTransaction = {
   operations?: Maybe<Array<GQLOperation>>;
   outputContract?: Maybe<GQLContractOutput>;
   outputs: Array<GQLOutput>;
+  /**
+   * The Owner policy (PolicyType 32) designates which input index is the transaction owner.
+   * This field will be null if the Owner policy is not set.
+   */
   ownerInputIndex?: Maybe<Scalars['U16']['output']>;
   policies?: Maybe<GQLPolicies>;
   proofSet?: Maybe<Array<Scalars['Bytes32']['output']>>;

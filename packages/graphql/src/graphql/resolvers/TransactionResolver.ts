@@ -39,6 +39,10 @@ export class TransactionResolver {
 
   static resolveOwnerInputIndex(transaction: GQLTransaction): number | null {
     try {
+      if (!transaction.isScript) {
+        return null;
+      }
+
       const rawPayload = transaction.rawPayload;
       if (!rawPayload || typeof rawPayload !== 'string') {
         logger.debug('TransactionResolver.ownerInputIndex', 'No rawPayload');
