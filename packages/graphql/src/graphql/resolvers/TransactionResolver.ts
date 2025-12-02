@@ -58,7 +58,7 @@ export class TransactionResolver {
         (p: { type: number; data: unknown }) => p.type === 32,
       )?.data;
 
-      if (ownerInputIndex !== undefined) {
+      if (ownerInputIndex != null) {
         logger.debug(
           'TransactionResolver.ownerInputIndex',
           `Owner policy found: ${ownerInputIndex}`,
