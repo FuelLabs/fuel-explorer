@@ -24,7 +24,8 @@ const POLICY_NAMES: Record<string, { name: string; description: string }> = {
   },
   witnessLimit: {
     name: 'Witness Limit',
-    description: 'Maximum number of witness bytes allowed',
+    description:
+      'The maximum amount of witness data allowed for the transaction',
   },
   maturity: {
     name: 'Maturity',
@@ -36,8 +37,7 @@ const POLICY_NAMES: Record<string, { name: string; description: string }> = {
   },
   ownerInputIndex: {
     name: 'Owner',
-    description:
-      'Input index designated as the transaction owner (PolicyType 32)',
+    description: 'Input index designated as the transaction owner',
   },
 };
 
