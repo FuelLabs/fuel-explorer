@@ -9,7 +9,6 @@ type PoliciesWithRawPayload = GQLPolicies & { rawPayload?: string };
 
 export class PoliciesResolver {
   static create() {
-    const _resolvers = new PoliciesResolver();
     return {
       Transaction: {
         policies: PoliciesResolver.resolvePolicies,
@@ -41,10 +40,11 @@ export class PoliciesResolver {
   /**
    * Resolves the Owner policy (PolicyType 32) using fuels-ts SDK decoder.
    * The Owner policy designates which input index is the transaction owner.
+   * Returns a string to match U16 GraphQL type.
    */
   static resolveOwnerInputIndex(
     policies: PoliciesWithRawPayload,
-  ): number | null {
+  ): string | null {
     try {
       const rawPayload = policies.rawPayload;
       if (!rawPayload) {
@@ -65,7 +65,7 @@ export class PoliciesResolver {
           'PoliciesResolver.ownerInputIndex',
           `Owner policy found: ${ownerInputIndex}`,
         );
-        return Number(ownerInputIndex);
+        return String(ownerInputIndex);
       }
 
       return null;
