@@ -31,7 +31,6 @@ export class TransactionResolver {
         transactionsByOwner: resolvers.transactionsByOwner,
         transactionsByBlockId: resolvers.transactionsByBlockId,
       },
-      Transaction: {},
     };
   }
 
