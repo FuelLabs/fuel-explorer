@@ -126,22 +126,23 @@ function formatPolicyValue(
   value: string | number,
   transaction: GQLTransactionItemFragment | undefined,
 ): string {
-  const numValue =
-    typeof value === 'string' ? Number.parseInt(value, 10) : value;
-
   switch (key) {
     case 'tip':
     case 'maxFee':
-      // Format like Network Fee card: bn(value).format() gives proper ETH decimals
-      return `${bn(numValue).format()} ETH`;
+      return `${bn(value).format()} ETH`;
 
-    case 'witnessLimit':
+    case 'witnessLimit': {
+      const numValue = bn(value).toNumber();
       return `${numValue.toLocaleString()} bytes`;
+    }
 
-    case 'maturity':
+    case 'maturity': {
+      const numValue = bn(value).toNumber();
       return numValue === 0 ? 'None' : `Block #${numValue}`;
+    }
 
     case 'ownerInputIndex': {
+      const numValue = bn(value).toNumber();
       const inputs = transaction?.inputs || [];
       const ownerInput = inputs[numValue];
 
@@ -155,6 +156,6 @@ function formatPolicyValue(
     }
 
     default:
-      return numValue.toString();
+      return bn(value).toString();
   }
 }
