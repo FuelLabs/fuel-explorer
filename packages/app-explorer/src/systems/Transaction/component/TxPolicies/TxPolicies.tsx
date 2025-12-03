@@ -43,11 +43,9 @@ const POLICY_NAMES: Record<string, { name: string; description: string }> = {
 
 export function TxPolicies({ transaction, isLoading }: TxPoliciesProps) {
   const policies = transaction?.policies;
-  const ownerInputIndex = transaction?.ownerInputIndex;
 
   const allPolicies = {
     ...(policies || {}),
-    ...(ownerInputIndex != null && { ownerInputIndex }),
   };
 
   const policyEntries = Object.entries(allPolicies).filter(
