@@ -1,4 +1,3 @@
-import { TransactionCoder, arrayify } from 'fuels';
 import GetTransaction from '~/application/uc/GetTransaction';
 import { logger } from '~/core/Logger';
 import type {
@@ -32,45 +31,8 @@ export class TransactionResolver {
         transactionsByOwner: resolvers.transactionsByOwner,
         transactionsByBlockId: resolvers.transactionsByBlockId,
       },
-      Transaction: {
-        ownerInputIndex: TransactionResolver.resolveOwnerInputIndex,
-      },
+      Transaction: {},
     };
-  }
-
-  /**
-   * Resolves the Owner policy (PolicyType 32) using fuels-ts SDK decoder.
-   * The Owner policy designates which input index is the transaction owner.
-   */
-  static resolveOwnerInputIndex(transaction: GQLTransaction): number | null {
-    try {
-      const rawPayload = transaction.rawPayload;
-      if (!rawPayload) {
-        return null;
-      }
-
-      // Use fuels-ts SDK to decode the transaction
-      const bytes = arrayify(rawPayload);
-      const [decoded] = new TransactionCoder().decode(bytes, 0);
-
-      // Access ownerInputIndex from decoded policies
-      const ownerInputIndex = decoded.policies?.find(
-        (p: { type: number; data: unknown }) => p.type === 32,
-      )?.data;
-
-      if (ownerInputIndex != null) {
-        logger.debug(
-          'TransactionResolver.ownerInputIndex',
-          `Owner policy found: ${ownerInputIndex}`,
-        );
-        return Number(ownerInputIndex);
-      }
-
-      return null;
-    } catch (error) {
-      logger.error('TransactionResolver.ownerInputIndex', error);
-      return null;
-    }
   }
 
   async transaction(

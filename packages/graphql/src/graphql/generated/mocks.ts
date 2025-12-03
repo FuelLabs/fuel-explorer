@@ -1158,6 +1158,7 @@ export const aPolicies = (overrides?: Partial<GQLPolicies>): { __typename: 'Poli
         __typename: 'Policies',
         maturity: overrides && overrides.hasOwnProperty('maturity') ? overrides.maturity! : 'ex',
         maxFee: overrides && overrides.hasOwnProperty('maxFee') ? overrides.maxFee! : '0x8',
+        ownerInputIndex: overrides && overrides.hasOwnProperty('ownerInputIndex') ? overrides.ownerInputIndex! : '0x7',
         tip: overrides && overrides.hasOwnProperty('tip') ? overrides.tip! : '0xF',
         witnessLimit: overrides && overrides.hasOwnProperty('witnessLimit') ? overrides.witnessLimit! : '0xb',
     };
@@ -1550,7 +1551,6 @@ export const aTransaction = (overrides?: Partial<GQLTransaction>): { __typename:
         operations: overrides && overrides.hasOwnProperty('operations') ? overrides.operations! : [anOperation()],
         outputContract: overrides && overrides.hasOwnProperty('outputContract') ? overrides.outputContract! : aContractOutput(),
         outputs: overrides && overrides.hasOwnProperty('outputs') ? overrides.outputs! : [aChangeOutput()],
-        ownerInputIndex: overrides && overrides.hasOwnProperty('ownerInputIndex') ? overrides.ownerInputIndex! : '0xD',
         policies: overrides && overrides.hasOwnProperty('policies') ? overrides.policies! : aPolicies(),
         proofSet: overrides && overrides.hasOwnProperty('proofSet') ? overrides.proofSet! : ['sint'],
         rawPayload: overrides && overrides.hasOwnProperty('rawPayload') ? overrides.rawPayload! : '0xCafBd5Ce4b560Aca24ffa36ce3BdFbAdbeDef78a2f072846FBE99a5FC46eFaAb7CBdFCdd25acC24Ead593EBAE0eA8Ce6CDE3fAa6FD794c53eBb332A25EdD6F86e1BD0CF857DA0DdD7bC49E162cFdE61C',

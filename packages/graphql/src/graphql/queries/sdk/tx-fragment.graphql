@@ -298,8 +298,8 @@ fragment TransactionItem on Transaction {
     witnessLimit
     maturity
     maxFee
+    ownerInputIndex
   }
-  ownerInputIndex
   witnesses
   receiptsRoot
   script

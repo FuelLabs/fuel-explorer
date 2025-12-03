@@ -7,6 +7,7 @@ import { BridgeResolver } from './BridgeResolver';
 import { ChainResolver } from './ChainResolver';
 import { ContractResolver } from './ContractResolver';
 import { NodeResolver } from './NodeResolver';
+import { PoliciesResolver } from './PoliciesResolver';
 import { PredicateResolver } from './PredicateResolver';
 import { PublicResolver } from './PublicResolver';
 import { SearchResolver } from './SearchResolver';
@@ -18,6 +19,7 @@ const balanceResolver = BalanceResolver.create();
 const chainResolver = ChainResolver.create();
 const contractResolver = ContractResolver.create();
 const nodeResolver = NodeResolver.create();
+const policiesResolver = PoliciesResolver.create();
 const predicateResolver = PredicateResolver.create();
 const searchResolver = SearchResolver.create();
 const transactionResolver = TransactionResolver.create();
@@ -48,5 +50,9 @@ export const resolvers = {
     ...publicResolver.Query,
   },
   Balance: balanceResolver.Balance,
-  Transaction: transactionResolver.Transaction,
+  Transaction: {
+    ...transactionResolver.Transaction,
+    ...policiesResolver.Transaction,
+  },
+  Policies: policiesResolver.Policies,
 };

@@ -1260,6 +1260,11 @@ export type GQLPolicies = {
   __typename: 'Policies';
   maturity?: Maybe<Scalars['U32']['output']>;
   maxFee?: Maybe<Scalars['U64']['output']>;
+  /**
+   * The Owner policy (PolicyType 32) designates which input index is the transaction owner.
+   * This field will be null if the Owner policy is not set.
+   */
+  ownerInputIndex?: Maybe<Scalars['U16']['output']>;
   tip?: Maybe<Scalars['U64']['output']>;
   witnessLimit?: Maybe<Scalars['U64']['output']>;
 };
@@ -1912,11 +1917,6 @@ export type GQLTransaction = {
   operations?: Maybe<Array<GQLOperation>>;
   outputContract?: Maybe<GQLContractOutput>;
   outputs: Array<GQLOutput>;
-  /**
-   * The Owner policy (PolicyType 32) designates which input index is the transaction owner.
-   * This field will be null if the Owner policy is not set.
-   */
-  ownerInputIndex?: Maybe<Scalars['U16']['output']>;
   policies?: Maybe<GQLPolicies>;
   proofSet?: Maybe<Array<Scalars['Bytes32']['output']>>;
   /** Return the transaction bytes using canonical encoding */
