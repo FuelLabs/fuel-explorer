@@ -7,6 +7,7 @@ import type {
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
+import DataCache from '~/infra/cache/DataCache';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 import { convertToUsd } from '~/infra/dao/utils';
 import AssetGateway from '~/infra/gateway/AssetGateway';
@@ -97,8 +98,15 @@ export class TransactionResolver {
     { chain }: GraphQLContext,
   ) {
     logger.debug('GraphQL', 'TransactionResolver.transactionsByOwner');
-    const transactionDAO = new TransactionDAO();
     const paginatedParams = new PaginatedParams(params);
+    const cacheKey = `txByOwner:${params.owner}:${paginatedParams.cursor || 'init'}:${paginatedParams.direction}`;
+
+    const cached = DataCache.getInstance().get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    const transactionDAO = new TransactionDAO();
     const baseAssetId = chain?.data.consensusParameters.baseAssetId || '';
     const chainId = chain ? Number.parseInt(chain.chainId) : undefined;
     const assetGateway = new AssetGateway();
@@ -118,6 +126,8 @@ export class TransactionResolver {
           : null;
       }
     }
+
+    DataCache.getInstance().save(cacheKey, 30000, transactions);
     return transactions;
   }
 
