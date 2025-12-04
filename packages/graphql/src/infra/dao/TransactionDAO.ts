@@ -35,40 +35,23 @@ export default class TransactionDAO {
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
 
-    const [transactionsData, totalCount] =
-      await this.databaseConnection.batchQueryWithSettings(
-        [
-          { name: 'enable_indexscan', value: 'off' },
-          { name: 'enable_bitmapscan', value: 'on' },
-        ],
-        [
-          {
-            statement: `
-              select t.*, ta._id as ta_id
-              from indexer.transactions_accounts ta
-              inner join indexer.transactions t on t.tx_hash = ta.tx_hash
-              where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
-              order by ta._id ${order}
-              limit 10
-            `,
-            params: [accountHash.toLowerCase(), paginatedParams.cursor],
-          },
-          {
-            statement:
-              'select count(*)::integer as count from indexer.transactions_accounts where account_hash = $1',
-            params: [accountHash.toLowerCase()],
-          },
-        ],
-      );
+    const transactionsData = await this.databaseConnection.query(
+      `
+      select t.*, ta._id as ta_id
+      from indexer.transactions_accounts ta
+      inner join indexer.transactions t on t.tx_hash = ta.tx_hash
+      where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
+      order by ta._id ${order}
+      limit 10
+      `,
+      [accountHash.toLowerCase(), paginatedParams.cursor],
+    );
 
     transactionsData.sort((a: any, b: any) => {
       return a._id.localeCompare(b._id) * -1;
     });
-    const transactions = [];
-    for (const transactionData of transactionsData) {
-      transactions.push(TransactionEntity.createFromDAO(transactionData));
-    }
-    if (transactions.length === 0) {
+
+    if (transactionsData.length === 0) {
       return {
         nodes: [],
         edges: [],
@@ -81,16 +64,21 @@ export default class TransactionDAO {
       };
     }
 
+    const transactions = [];
+    for (const transactionData of transactionsData) {
+      transactions.push(TransactionEntity.createFromDAO(transactionData));
+    }
+
     const startCursor = transactionsData[0]._id;
     const endCursor = transactionsData[transactionsData.length - 1]._id;
 
+    // Check both directions with EXISTS (O(1) with index)
     const [paginationInfo] = await this.databaseConnection.query(
       `
-        select
-          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
-          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next,
-          (select count(*)::integer from indexer.transactions_accounts where account_hash = $1 and _id > $3) as count
-        `,
+      select
+        exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
+        exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next
+      `,
       [accountHash.toLowerCase(), endCursor, startCursor],
     );
 
@@ -102,20 +90,17 @@ export default class TransactionDAO {
       node,
       cursor: paginatedParams.cursor,
     }));
-    const paginatedResults = {
+
+    return {
       nodes: newNodes,
       edges,
       pageInfo: {
-        startCount: (paginationInfo?.count || 0) + 1,
-        endCount: (paginationInfo?.count || 0) + paginatedParams.last,
-        totalCount: totalCount[0]?.count || 0,
         hasNextPage,
         hasPreviousPage,
         endCursor,
         startCursor,
       },
     };
-    return paginatedResults;
   }
 
   async getPaginatedTransactions(paginatedParams: PaginatedParams) {
