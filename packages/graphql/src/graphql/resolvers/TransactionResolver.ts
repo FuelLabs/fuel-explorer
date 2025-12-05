@@ -105,6 +105,7 @@ export class TransactionResolver {
     if (cached) {
       return cached;
     }
+    console.log('asd a');
 
     const transactionDAO = new TransactionDAO();
     const baseAssetId = chain?.data.consensusParameters.baseAssetId || '';
