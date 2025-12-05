@@ -48,7 +48,7 @@ export default class TransactionDAO {
     );
 
     transactionsData.sort((a: any, b: any) => {
-      return a._id.localeCompare(b._id) * -1;
+      return a.ta_id.localeCompare(b.ta_id) * -1;
     });
 
     if (transactionsData.length === 0) {
@@ -69,8 +69,9 @@ export default class TransactionDAO {
       transactions.push(TransactionEntity.createFromDAO(transactionData));
     }
 
-    const startCursor = transactionsData[0]._id;
-    const endCursor = transactionsData[transactionsData.length - 1]._id;
+    // Use ta_id (transactions_accounts._id) for cursors, not t._id
+    const startCursor = transactionsData[0].ta_id;
+    const endCursor = transactionsData[transactionsData.length - 1].ta_id;
 
     // Check pagination + bounded counts (stops at 1001 to avoid full scan)
     const [paginationInfo] = await this.databaseConnection.query(
