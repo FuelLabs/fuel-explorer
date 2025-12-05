@@ -7,5 +7,5 @@ values ('0xa9d7987a3f2c2fb02b287c3a2ef619046e930848c6050d31efef48ad6d3bdee8', 'M
 on conflict (symbol) do update set asset_id = excluded.asset_id, value = excluded.value, provider = excluded.provider;
 
 -- Update migration version
-UPDATE indexer.migration SET version = 33;
+UPDATE indexer.migration SET version = 32;
 
