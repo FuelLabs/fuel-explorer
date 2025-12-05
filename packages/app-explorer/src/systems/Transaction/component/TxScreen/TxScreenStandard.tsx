@@ -39,6 +39,7 @@ import { TxOutput } from '../../component/TxOutput/TxOutput';
 import type { TransactionNode, TxIconType, TxStatus } from '../../types';
 import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
 import { TxItemLoader } from '../TxItemLoader';
+import { TxPolicies } from '../TxPolicies/TxPolicies';
 import { TxScripts } from '../TxScripts/TxScripts';
 
 type TxScreenProps =
@@ -178,6 +179,7 @@ export function TxScreenStandard({
         }
       />
     </CardInfo>,
+    <TxPolicies key="policies" transaction={tx} isLoading={isLoading} />,
   ];
 
   return (

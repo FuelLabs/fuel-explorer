@@ -1158,6 +1158,7 @@ export const aPolicies = (overrides?: Partial<GQLPolicies>): { __typename: 'Poli
         __typename: 'Policies',
         maturity: overrides && overrides.hasOwnProperty('maturity') ? overrides.maturity! : 'ex',
         maxFee: overrides && overrides.hasOwnProperty('maxFee') ? overrides.maxFee! : '0x8',
+        ownerInputIndex: overrides && overrides.hasOwnProperty('ownerInputIndex') ? overrides.ownerInputIndex! : '0x7',
         tip: overrides && overrides.hasOwnProperty('tip') ? overrides.tip! : '0xF',
         witnessLimit: overrides && overrides.hasOwnProperty('witnessLimit') ? overrides.witnessLimit! : '0xb',
     };

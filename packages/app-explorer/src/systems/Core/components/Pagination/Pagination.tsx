@@ -61,7 +61,9 @@ export function Pagination({
               <Button disabled>
                 {pageInfo.startCount} -{' '}
                 {Math.min(pageInfo.endCount, pageInfo.totalCount)} of{' '}
-                {format(pageInfo.totalCount, 1)}
+                {pageInfo.totalCount >= 1000
+                  ? '1000+'
+                  : format(pageInfo.totalCount, 1)}
               </Button>
             )}
           <Button
