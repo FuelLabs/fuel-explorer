@@ -87,7 +87,6 @@ export default class TransactionDAO {
     const hasPreviousPage = paginationInfo?.has_prev || false;
     const hasNextPage = paginationInfo?.has_next || false;
     // Capped at 1000 to avoid slow full counts; frontend shows "1000+" when totalCount === 1000
-    const totalCount = Math.min(Number(paginationInfo?.total_count) || 0, 1000);
     const itemsBefore = Math.min(
       Number(paginationInfo?.items_before) || 0,
       1000,
@@ -104,13 +103,13 @@ export default class TransactionDAO {
       nodes: newNodes,
       edges,
       pageInfo: {
+        startCount: itemsBefore + 1,
+        endCount: itemsBefore + pageSize,
+        totalCount: Math.min(Number(paginationInfo?.total_count) || 0, 1000),
         hasNextPage,
         hasPreviousPage,
         endCursor,
         startCursor,
-        startCount: itemsBefore + 1,
-        endCount: itemsBefore + pageSize,
-        totalCount,
       },
     };
   }
