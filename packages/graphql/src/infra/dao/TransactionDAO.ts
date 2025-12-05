@@ -35,40 +35,23 @@ export default class TransactionDAO {
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
 
-    const [transactionsData, totalCount] =
-      await this.databaseConnection.batchQueryWithSettings(
-        [
-          { name: 'enable_indexscan', value: 'off' },
-          { name: 'enable_bitmapscan', value: 'on' },
-        ],
-        [
-          {
-            statement: `
-              select t.*, ta._id as ta_id
-              from indexer.transactions_accounts ta
-              inner join indexer.transactions t on t.tx_hash = ta.tx_hash
-              where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
-              order by ta._id ${order}
-              limit 10
-            `,
-            params: [accountHash.toLowerCase(), paginatedParams.cursor],
-          },
-          {
-            statement:
-              'select count(*)::integer as count from indexer.transactions_accounts where account_hash = $1',
-            params: [accountHash.toLowerCase()],
-          },
-        ],
-      );
+    const transactionsData = await this.databaseConnection.query(
+      `
+      select t.*, ta._id as ta_id
+      from indexer.transactions_accounts ta
+      inner join indexer.transactions t on t.tx_hash = ta.tx_hash
+      where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
+      order by ta._id ${order}
+      limit 10
+      `,
+      [accountHash.toLowerCase(), paginatedParams.cursor],
+    );
 
     transactionsData.sort((a: any, b: any) => {
-      return a._id.localeCompare(b._id) * -1;
+      return a.ta_id.localeCompare(b.ta_id) * -1;
     });
-    const transactions = [];
-    for (const transactionData of transactionsData) {
-      transactions.push(TransactionEntity.createFromDAO(transactionData));
-    }
-    if (transactions.length === 0) {
+
+    if (transactionsData.length === 0) {
       return {
         nodes: [],
         edges: [],
@@ -81,41 +64,55 @@ export default class TransactionDAO {
       };
     }
 
-    const startCursor = transactionsData[0]._id;
-    const endCursor = transactionsData[transactionsData.length - 1]._id;
+    const transactions = [];
+    for (const transactionData of transactionsData) {
+      transactions.push(TransactionEntity.createFromDAO(transactionData));
+    }
 
+    // Use ta_id (transactions_accounts._id) for cursors, not t._id
+    const startCursor = transactionsData[0].ta_id;
+    const endCursor = transactionsData[transactionsData.length - 1].ta_id;
+
+    // Check pagination + bounded counts (stops at 1001 to avoid full scan)
     const [paginationInfo] = await this.databaseConnection.query(
       `
-        select
-          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
-          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next,
-          (select count(*)::integer from indexer.transactions_accounts where account_hash = $1 and _id > $3) as count
-        `,
+      select
+        exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
+        exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next,
+        (select count(*) from (select 1 from indexer.transactions_accounts where account_hash = $1 limit 1001) sub) as total_count,
+        (select count(*) from (select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1001) sub) as items_before
+      `,
       [accountHash.toLowerCase(), endCursor, startCursor],
     );
 
     const hasPreviousPage = paginationInfo?.has_prev || false;
     const hasNextPage = paginationInfo?.has_next || false;
+    // Capped at 1000 to avoid slow full counts; frontend shows "1000+" when totalCount === 1000
+    const itemsBefore = Math.min(
+      Number(paginationInfo?.items_before) || 0,
+      1000,
+    );
+    const pageSize = transactionsData.length;
     const newNodes = transactions.map((n) => n.toGQLListNode());
 
     const edges = newNodes.map((node) => ({
       node,
       cursor: paginatedParams.cursor,
     }));
-    const paginatedResults = {
+
+    return {
       nodes: newNodes,
       edges,
       pageInfo: {
-        startCount: (paginationInfo?.count || 0) + 1,
-        endCount: (paginationInfo?.count || 0) + paginatedParams.last,
-        totalCount: totalCount[0]?.count || 0,
+        startCount: itemsBefore + 1,
+        endCount: itemsBefore + pageSize,
+        totalCount: Math.min(Number(paginationInfo?.total_count) || 0, 1000),
         hasNextPage,
         hasPreviousPage,
         endCursor,
         startCursor,
       },
     };
-    return paginatedResults;
   }
 
   async getPaginatedTransactions(paginatedParams: PaginatedParams) {
