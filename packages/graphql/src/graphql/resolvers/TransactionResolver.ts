@@ -99,7 +99,7 @@ export class TransactionResolver {
   ) {
     logger.debug('GraphQL', 'TransactionResolver.transactionsByOwner');
     const paginatedParams = new PaginatedParams(params);
-    const cacheKey = `txByOwner:${params.owner}:${paginatedParams.cursor || 'init'}:${paginatedParams.direction}`;
+    const cacheKey = `txByOwner:${params.owner}:${paginatedParams.cursor || 'init'}:${paginatedParams.direction}:${paginatedParams.last}`;
 
     const cached = DataCache.getInstance().get(cacheKey);
     if (cached) {
