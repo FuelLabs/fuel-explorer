@@ -73,14 +73,14 @@ export default class TransactionDAO {
     const startCursor = transactionsData[0].ta_id;
     const endCursor = transactionsData[transactionsData.length - 1].ta_id;
 
-    // Check pagination + bounded counts (stops at 1001 to avoid full scan)
+    // Check pagination + position count (uses endCursor for accurate positioning)
     const [paginationInfo] = await this.databaseConnection.query(
       `
       select
         exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
         exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next,
         (select count(*) from (select 1 from indexer.transactions_accounts where account_hash = $1 limit 1001) sub) as total_count,
-        (select count(*) from (select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1001) sub) as items_before
+        (select count(*) from (select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $2 limit 1001) sub) as items_before_end
       `,
       [accountHash.toLowerCase(), endCursor, startCursor],
     );
@@ -88,11 +88,14 @@ export default class TransactionDAO {
     const hasPreviousPage = paginationInfo?.has_prev || false;
     const hasNextPage = paginationInfo?.has_next || false;
     // Capped at 1000 to avoid slow full counts; frontend shows "1000+" when totalCount === 1000
-    const itemsBefore = Math.min(
-      Number(paginationInfo?.items_before) || 0,
-      1000,
-    );
+    const totalCount = Math.min(Number(paginationInfo?.total_count) || 0, 1000);
+    // Position of last item on page = items newer than endCursor + 1
+    const endPosition =
+      Math.min(Number(paginationInfo?.items_before_end) || 0, 1000) + 1;
     const pageSize = transactionsData.length;
+    // startCount = endPosition - pageSize + 1
+    const startPosition = endPosition - pageSize + 1;
+
     const newNodes = transactions.map((n) => n.toGQLListNode());
 
     const edges = newNodes.map((node) => ({
@@ -104,9 +107,9 @@ export default class TransactionDAO {
       nodes: newNodes,
       edges,
       pageInfo: {
-        startCount: itemsBefore + 1,
-        endCount: itemsBefore + pageSize,
-        totalCount: Math.min(Number(paginationInfo?.total_count) || 0, 1000),
+        startCount: startPosition,
+        endCount: startPosition + pageSize - 1,
+        totalCount,
         hasNextPage,
         hasPreviousPage,
         endCursor,
