@@ -89,11 +89,9 @@ export default class TransactionDAO {
     const hasNextPage = paginationInfo?.has_next || false;
     // Capped at 1000 to avoid slow full counts; frontend shows "1000+" when totalCount === 1000
     const totalCount = Math.min(Number(paginationInfo?.total_count) || 0, 1000);
-    // Position of last item on page = items newer than endCursor + 1
     const endPosition =
       Math.min(Number(paginationInfo?.items_before_end) || 0, 1000) + 1;
     const pageSize = transactionsData.length;
-    // startCount = endPosition - pageSize + 1
     const startPosition = endPosition - pageSize + 1;
 
     const newNodes = transactions.map((n) => n.toGQLListNode());
