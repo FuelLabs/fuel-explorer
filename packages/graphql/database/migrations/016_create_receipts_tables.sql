@@ -1,4 +1,4 @@
-create table indexer.receipts (
+create table if not exists indexer.receipts (
     _id serial primary key,
     block_id integer,
     transaction_id text, 
@@ -34,17 +34,17 @@ create table indexer.receipts (
     receipt_val text
 );
 
-create index on indexer.receipts (tx_hash);
-create index on indexer.receipts (transaction_id);
-create index on indexer.receipts (block_id);
-create index on indexer.receipts (receipt_type);
+create index if not exists receipts_tx_hash_idx on indexer.receipts (tx_hash);
+create index if not exists receipts_transaction_id_idx on indexer.receipts (transaction_id);
+create index if not exists receipts_block_id_idx on indexer.receipts (block_id);
+create index if not exists receipts_receipt_type_idx on indexer.receipts (receipt_type);
 
-create table indexer.receipts_data (
+create table if not exists indexer.receipts_data (
     _id serial primary key,
     receipt_id int,
     key text,
     value text
 );
 
-create index on indexer.receipts_data (key);
-create index on indexer.receipts_data (value);
+create index if not exists receipts_data_key_idx on indexer.receipts_data (key);
+create index if not exists receipts_data_value_idx on indexer.receipts_data (value);
