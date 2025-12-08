@@ -1,9 +1,27 @@
 import { BN, Interface } from 'fuels';
 import { logger } from '~/core/Logger';
 import ReceiptsParser from '~/domain/Transaction/ReceiptsParser';
+import type { GQLReceipt } from '~/graphql/generated/sdk';
 import { bridgeAbi } from '~/infra/abi/BridgeAbi';
 import type Transaction from '~/infra/dao/Transaction';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
+
+/** Parsed receipt from ReceiptsParser with indent metadata */
+interface ParsedReceipt {
+  indent: number;
+  arrow: string;
+  type: string;
+  data: GQLReceipt;
+}
+
+/** Row returned from INSERT...RETURNING */
+interface InsertedReceiptRow {
+  _id: string;
+  receipt_rb?: string | null;
+  receipt_data?: string | null;
+  receipt_id?: string | null;
+  receipt_type?: string | null;
+}
 
 // PostgreSQL parameter limits
 // Each receipt has 32 params, limit ~65k params → ~2000 receipts per batch
@@ -39,7 +57,7 @@ export default class IndexReceipts {
     );
 
     // Process receipts in batches to avoid PostgreSQL parameter limits
-    const allInsertedRows: any[] = [];
+    const allInsertedRows: InsertedReceiptRow[] = [];
     const batchCount = Math.ceil(receipts.length / MAX_RECEIPTS_PER_BATCH);
 
     for (let i = 0; i < receipts.length; i += MAX_RECEIPTS_PER_BATCH) {
@@ -73,8 +91,8 @@ export default class IndexReceipts {
   private async insertReceiptsBatch(
     connection: DatabaseConnection,
     transaction: Transaction,
-    receipts: any[],
-  ) {
+    receipts: ParsedReceipt[],
+  ): Promise<InsertedReceiptRow[]> {
     // Build placeholders using base offset pattern
     const placeholders = receipts
       .map((_, idx) => {
@@ -88,7 +106,7 @@ export default class IndexReceipts {
       .join(', ');
 
     // Flatten all values
-    const values: any[] = [];
+    const values: (string | number | null | undefined)[] = [];
     for (const receipt of receipts) {
       values.push(
         transaction.blockId,
@@ -146,8 +164,8 @@ export default class IndexReceipts {
   private async processBridgeLogs(
     connection: DatabaseConnection,
     contract: Interface,
-    insertedRows: any[],
-  ) {
+    insertedRows: InsertedReceiptRow[],
+  ): Promise<void> {
     // Collect all receipts_data entries
     const dataEntries: { receiptId: string; key: string; value: string }[] = [];
 
@@ -155,6 +173,7 @@ export default class IndexReceipts {
       if (
         row.receipt_data &&
         row.receipt_rb &&
+        row.receipt_id &&
         (row.receipt_type === 'LOG' || row.receipt_type === 'LOG_DATA') &&
         BRIDGE_CONTRACTS.includes(row.receipt_id)
       ) {
@@ -200,7 +219,7 @@ export default class IndexReceipts {
         })
         .join(', ');
 
-      const values: any[] = [];
+      const values: string[] = [];
       for (const entry of batch) {
         values.push(entry.receiptId, entry.key, entry.value);
       }
