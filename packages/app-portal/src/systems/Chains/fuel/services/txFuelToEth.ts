@@ -702,6 +702,12 @@ export class TxFuelToEthService {
       const { data, errors } = responseJson;
 
       if (errors && errors.length > 0) {
+        console.error('GraphQL errors in transactionsByOwner query:', {
+          errors,
+          hasData: !!data,
+          providerUrl: fuelProvider.url,
+          owner: fuelAddress.toString(),
+        });
         if (data?.transactionsByOwner) {
           // Continue processing if data exists despite errors
         } else {
@@ -709,7 +715,16 @@ export class TxFuelToEthService {
         }
       }
 
-      const { transactionsByOwner } = data || {};
+      if (!data) {
+        console.error('Received null data from transactionsByOwner query', {
+          responseJson,
+          providerUrl: fuelProvider.url,
+          owner: fuelAddress.toString(),
+        });
+        break;
+      }
+
+      const { transactionsByOwner } = data;
 
       if (!transactionsByOwner) {
         break;
