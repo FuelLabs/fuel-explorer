@@ -231,7 +231,8 @@ export default class IndexReceipts {
 
       await connection.query(
         `INSERT INTO indexer.receipts_data (receipt_id, key, value) 
-         VALUES ${placeholders}`,
+         VALUES ${placeholders}
+         ON CONFLICT DO NOTHING`,
         values,
       );
     }
