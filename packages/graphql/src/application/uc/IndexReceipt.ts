@@ -181,10 +181,15 @@ export default class IndexReceipts {
           const [log] = contract.decodeLog(row.receipt_data, row.receipt_rb);
           const data = this.flattenObject(log);
           for (const key in data) {
+            const val = data[key];
+            if (val == null) continue;
+            const value = Array.isArray(val)
+              ? JSON.stringify(val)
+              : String(val);
             dataEntries.push({
               receiptId: row._id,
               key,
-              value: String(data[key]),
+              value,
             });
           }
         } catch (error: any) {
