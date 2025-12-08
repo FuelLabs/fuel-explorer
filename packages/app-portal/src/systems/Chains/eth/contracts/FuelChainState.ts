@@ -5,6 +5,7 @@ import {
   IS_FUEL_DEV_CHAIN,
   getBridgeSolidityContracts,
 } from 'app-commons';
+import type { Provider } from 'fuels';
 import type { PublicClient } from 'viem';
 
 export const FUEL_CHAIN_STATE = {
@@ -61,30 +62,57 @@ export const FUEL_CHAIN_STATE = {
   },
   getLastBlockCommited: async ({
     ethPublicClient,
+    fuelProvider,
   }: {
     ethPublicClient: PublicClient;
+    fuelProvider: Provider;
   }) => {
     const committedBlockHashes = await FUEL_CHAIN_STATE.getCommitSubmitted({
       ethPublicClient,
     });
     const lastCommitBlockHash =
       committedBlockHashes[committedBlockHashes.length - 1];
-    const lastBlockCommitted = await ethPublicClient.getBlock({
+    const lastEthBlockCommitted = await ethPublicClient.getBlock({
       blockHash: lastCommitBlockHash.ethBlockHash as HexAddress,
     });
+    const lastFuelBlockCommited = await fuelProvider.getBlock(
+      lastCommitBlockHash.fuelBlockHash as string,
+    );
 
-    return lastBlockCommitted;
+    return { lastEthBlockCommitted, lastFuelBlockCommited };
   },
   getLastBlockFinalized: async ({
     ethPublicClient,
+    timeToFinalize,
   }: {
     ethPublicClient: PublicClient;
+    timeToFinalize: bigint;
   }) => {
-    const [latestFinalizedBlockHash] =
-      await FUEL_CHAIN_STATE.getCommitSubmitted({
-        ethPublicClient,
+    const committedBlockHashes = await FUEL_CHAIN_STATE.getCommitSubmitted({
+      ethPublicClient,
+    });
+
+    if (committedBlockHashes.length === 0) {
+      return undefined;
+    }
+
+    const currentTimestamp = BigInt(Math.floor(Date.now() / 1000));
+
+    for (let i = committedBlockHashes.length - 1; i >= 0; i--) {
+      const committedBlock = committedBlockHashes[i];
+
+      const ethBlock = await ethPublicClient.getBlock({
+        blockHash: committedBlock.ethBlockHash as HexAddress,
       });
-    return latestFinalizedBlockHash;
+
+      const finalizedAt = ethBlock.timestamp + timeToFinalize;
+
+      if (currentTimestamp >= finalizedAt) {
+        return committedBlock;
+      }
+    }
+
+    return undefined;
   },
   getBlockCommited: async ({
     ethPublicClient,
