@@ -3,8 +3,8 @@
  * Seed _migrations table for production deployment
  *
  * This script populates the _migrations table with existing migration filenames
- * WITHOUT re-running them. Use this when deploying the new migration system
- * to a database that already has all migrations applied.
+ * WITHOUT re-running them. It reads the current version from the old migration
+ * system (indexer.migration.version) and only seeds migrations up to that version.
  *
  * Usage:
  *   pnpm db:migrate:seed
@@ -41,6 +41,23 @@ async function seedMigrations(): Promise<void> {
     process.exit(1);
   }
 
+  // Get current version from old migration system
+  let currentVersion = -1;
+  try {
+    const versionResult = await db.query(
+      `SELECT version FROM ${DB_SCHEMA}.migration LIMIT 1`,
+      [],
+    );
+    if (versionResult.length > 0) {
+      currentVersion = versionResult[0].version;
+      console.log(
+        `📊 Current migration version (old system): ${currentVersion}`,
+      );
+    }
+  } catch {
+    console.log('📊 No old migration table found, will seed all migrations');
+  }
+
   // Ensure _migrations table exists
   await db.query(
     `
@@ -70,11 +87,29 @@ async function seedMigrations(): Promise<void> {
 
   let seeded = 0;
   let skipped = 0;
+  let pending = 0;
 
   for (const file of files) {
+    // Extract migration number from filename (e.g., "001" from "001_create_schema.sql")
+    const match = file.match(/^(\d+)_/);
+    if (!match) {
+      console.log(`⚠️  Skipping ${file} (invalid filename format)`);
+      continue;
+    }
+
+    const migrationNum = Number.parseInt(match[1], 10);
+    // Old version N corresponds to new migration N+1
+    // e.g., version 31 = migrations 001-032 have been run
+    const maxMigrationToSeed = currentVersion + 1;
+
     if (existingSet.has(file)) {
       console.log(`⏭️  Skipping ${file} (already seeded)`);
       skipped++;
+    } else if (currentVersion >= 0 && migrationNum > maxMigrationToSeed) {
+      console.log(
+        `⏸️  Pending ${file} (not yet applied, version ${currentVersion})`,
+      );
+      pending++;
     } else {
       await db.query(
         `INSERT INTO ${DB_SCHEMA}._migrations (filename) VALUES ($1)`,
@@ -85,7 +120,15 @@ async function seedMigrations(): Promise<void> {
     }
   }
 
-  console.log(`\n✅ Done! Seeded ${seeded} migrations, skipped ${skipped}\n`);
+  console.log(
+    `\n✅ Done! Seeded ${seeded}, skipped ${skipped}, pending ${pending}\n`,
+  );
+
+  if (pending > 0) {
+    console.log(
+      `Run 'pnpm db:migrate' to apply the ${pending} pending migration(s).\n`,
+    );
+  }
 
   process.exit(0);
 }
