@@ -31,7 +31,7 @@ export const LayerSwapBanner = () => {
           </Flex>
           <VStack className="ml-4" justify="center" gap="2">
             <Text className="text-gray-11 leading-3">
-              Enjoy <b>Fast Bridging</b> to Fuel Ignition by using{' '}
+              Enjoy <b>Fast Bridging </b>to Fuel Ignition by using{' '}
               <b>LayerSwap</b>
             </Text>
           </VStack>
