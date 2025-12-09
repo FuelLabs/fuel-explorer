@@ -8,4 +8,3 @@ on conflict (symbol) do update set asset_id = excluded.asset_id, value = exclude
 
 -- Update migration version
 UPDATE indexer.migration SET version = 32;
-
