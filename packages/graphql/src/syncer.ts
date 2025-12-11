@@ -37,7 +37,7 @@ async function main() {
       logger.debug('Syncer', 'Fetching the latest block');
       const response = await Promise.race([
         client.sdk.blocks({ last: 1 }),
-        setTimeout(FUEL_CORE_TIMEOUT_MS),
+        setTimeout(FUEL_CORE_TIMEOUT_MS).then(() => null),
       ]);
       const latencyMs = Date.now() - startTime;
       if (!response || !response.data) {

@@ -39,7 +39,7 @@ export default class GetMetrics {
     try {
       const response = await Promise.race([
         this.getFuelCoreLastBlockHeight(),
-        setTimeout(FUEL_CORE_TIMEOUT_MS),
+        setTimeout(FUEL_CORE_TIMEOUT_MS).then(() => null),
       ]);
       fuelCoreLatencyMs = Date.now() - startTime;
       if (!response) {
