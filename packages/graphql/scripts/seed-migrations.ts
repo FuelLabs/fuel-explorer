@@ -14,14 +14,12 @@
  */
 
 import fs from 'node:fs';
-import path from 'node:path';
 import { DatabaseConnection } from '../src/infra/database/DatabaseConnection';
-
-const DB_SCHEMA = process.env.DB_SCHEMA || 'indexer';
-const MIGRATIONS_DIR = path.join(__dirname, '../database/migrations');
+import { DB_SCHEMA, MIGRATIONS_DIR, MigrationRunner } from './migrate';
 
 async function seedMigrations(): Promise<void> {
   const db = DatabaseConnection.getInstance();
+  const runner = new MigrationRunner();
 
   console.log('🌱 Seeding _migrations table...\n');
   console.log(`Schema: ${DB_SCHEMA}`);
@@ -59,16 +57,7 @@ async function seedMigrations(): Promise<void> {
   }
 
   // Ensure _migrations table exists
-  await db.query(
-    `
-    CREATE TABLE IF NOT EXISTS ${DB_SCHEMA}._migrations (
-      id SERIAL PRIMARY KEY,
-      filename VARCHAR(255) NOT NULL UNIQUE,
-      executed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-    )
-    `,
-    [],
-  );
+  await runner.ensureMigrationsTable();
 
   // Get all migration files
   const files = fs

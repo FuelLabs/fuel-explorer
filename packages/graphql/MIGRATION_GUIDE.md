@@ -38,14 +38,6 @@ pnpm db:migrate:dry       # Preview
 pnpm db:migrate           # Execute
 ```
 
-## Schema Replacement
-
-For parallel re-indexing:
-
-```bash
-DB_SCHEMA=reindexing pnpm db:migrate
-```
-
 ## Environment Variables
 
 | Variable | Default |

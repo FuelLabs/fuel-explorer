@@ -17,10 +17,10 @@ interface MigrationRecord {
   executed_at: Date;
 }
 
-const DB_SCHEMA = process.env.DB_SCHEMA || 'indexer';
-const MIGRATIONS_DIR = path.join(__dirname, '../database/migrations');
+export const DB_SCHEMA = process.env.DB_SCHEMA || 'indexer';
+export const MIGRATIONS_DIR = path.join(__dirname, '../database/migrations');
 
-class MigrationRunner {
+export class MigrationRunner {
   private db: DatabaseConnection;
 
   constructor() {
@@ -173,14 +173,7 @@ class MigrationRunner {
     }
 
     // Ensure _migrations table exists (schema should exist now after first migration)
-    await this.db.query(
-      `CREATE TABLE IF NOT EXISTS ${DB_SCHEMA}._migrations (
-        id SERIAL PRIMARY KEY,
-        filename VARCHAR(255) NOT NULL UNIQUE,
-        executed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      )`,
-      [],
-    );
+    await this.ensureMigrationsTable();
 
     // Record successful migration
     await this.db.query(
@@ -307,7 +300,6 @@ Examples:
   tsx scripts/migrate.ts              Run pending migrations
   tsx scripts/migrate.ts --dry-run    Preview pending migrations
   tsx scripts/migrate.ts --status     Show migration status
-  DB_SCHEMA=reindexing tsx scripts/migrate.ts   Run on different schema
 `);
     process.exit(0);
   }
