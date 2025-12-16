@@ -6,7 +6,7 @@
 pnpm db:migrate           # Run pending migrations
 pnpm db:migrate:dry       # Preview without executing
 pnpm db:migrate:status    # Show migration status
-pnpm db:migrate:sync      # Sync _migrations table (production upgrade only)
+pnpm db:migrate:setup     # Setup _migrations table (production upgrade only)
 ```
 
 ## Creating Migrations
@@ -26,8 +26,8 @@ kubectl port-forward -n fuel-explorer svc/postgresql 5432:5432
 # Set env vars
 export DB_HOST=localhost DB_PORT=5432 DB_USER=explorer DB_PASS=<pwd> DB_NAME=explorer
 
-# Sync _migrations table (marks existing as applied without re-running)
-cd packages/graphql && pnpm db:migrate:sync
+# Setup _migrations table (marks existing as applied without re-running)
+cd packages/graphql && pnpm db:migrate:setup
 ```
 
 ### Standard Deployment

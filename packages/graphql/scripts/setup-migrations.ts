@@ -1,13 +1,13 @@
 #!/usr/bin/env tsx
 /**
- * Sync _migrations table for production deployment
+ * Setup _migrations table for production deployment
  *
  * This script populates the _migrations table with existing migration filenames
  * WITHOUT re-running them. It reads the current version from the old migration
  * system (indexer.migration.version) and marks migrations up to that version as applied.
  *
  * Usage:
- *   pnpm db:migrate:sync
+ *   pnpm db:migrate:setup
  *
  * This should be run ONCE during the migration system upgrade, before
  * running any new migrations with `pnpm db:migrate`.
@@ -17,11 +17,11 @@ import fs from 'node:fs';
 import { DatabaseConnection } from '../src/infra/database/DatabaseConnection';
 import { DB_SCHEMA, MIGRATIONS_DIR, MigrationRunner } from './migrate';
 
-async function syncMigrations(): Promise<void> {
+async function setupMigrations(): Promise<void> {
   const db = DatabaseConnection.getInstance();
   const runner = new MigrationRunner();
 
-  console.log('🔄 Syncing _migrations table...\n');
+  console.log('🔧 Setting up _migrations table...\n');
   console.log(`Schema: ${DB_SCHEMA}`);
   console.log(`Migrations directory: ${MIGRATIONS_DIR}\n`);
 
@@ -53,7 +53,7 @@ async function syncMigrations(): Promise<void> {
       );
     }
   } catch {
-    console.log('📊 No old migration table found, will seed all migrations');
+    console.log('📊 No old migration table found, will mark all as applied');
   }
 
   // Ensure _migrations table exists
@@ -67,14 +67,14 @@ async function syncMigrations(): Promise<void> {
 
   console.log(`Found ${files.length} migration files\n`);
 
-  // Check which are already synced
+  // Check which are already set up
   const existing = await db.query(
     `SELECT filename FROM ${DB_SCHEMA}._migrations`,
     [],
   );
   const existingSet = new Set(existing.map((r: any) => r.filename));
 
-  let synced = 0;
+  let added = 0;
   let skipped = 0;
   let pending = 0;
 
@@ -89,12 +89,12 @@ async function syncMigrations(): Promise<void> {
     const migrationNum = Number.parseInt(match[1], 10);
     // Old version N corresponds to new migration N+1
     // e.g., version 31 = migrations 001-032 have been run
-    const maxMigrationToSync = currentVersion + 1;
+    const maxMigrationToSetup = currentVersion + 1;
 
     if (existingSet.has(file)) {
-      console.log(`⏭️  Skipping ${file} (already synced)`);
+      console.log(`⏭️  Skipping ${file} (already exists)`);
       skipped++;
-    } else if (currentVersion >= 0 && migrationNum > maxMigrationToSync) {
+    } else if (currentVersion >= 0 && migrationNum > maxMigrationToSetup) {
       console.log(
         `⏸️  Pending ${file} (not yet applied, version ${currentVersion})`,
       );
@@ -104,13 +104,13 @@ async function syncMigrations(): Promise<void> {
         `INSERT INTO ${DB_SCHEMA}._migrations (filename) VALUES ($1)`,
         [file],
       );
-      console.log(`✅ Synced ${file}`);
-      synced++;
+      console.log(`✅ Added ${file}`);
+      added++;
     }
   }
 
   console.log(
-    `\n✅ Done! Synced ${synced}, skipped ${skipped}, pending ${pending}\n`,
+    `\n✅ Done! Added ${added}, skipped ${skipped}, pending ${pending}\n`,
   );
 
   if (pending > 0) {
@@ -122,7 +122,7 @@ async function syncMigrations(): Promise<void> {
   process.exit(0);
 }
 
-syncMigrations().catch((error) => {
-  console.error(`\n❌ Sync failed: ${error.message}\n`);
+setupMigrations().catch((error) => {
+  console.error(`\n❌ Setup failed: ${error.message}\n`);
   process.exit(1);
 });
