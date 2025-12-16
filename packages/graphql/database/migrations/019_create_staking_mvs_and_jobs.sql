@@ -178,7 +178,7 @@ GRANT SELECT ON indexer.outflows_mv TO explorer_ro;
 -- database_jobs table
 create table if not exists indexer.database_jobs (
     _id serial,
-    query text,
+    query text UNIQUE,
     recurrent boolean not null default FALSE,
     interval_seconds integer,
     status text,
@@ -186,9 +186,9 @@ create table if not exists indexer.database_jobs (
     error_message text
 );
 
-insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.daily_staked_mv', true, 86400, 'pending') on conflict do nothing;
-insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.daily_unbond_mv', true, 86400, 'pending') on conflict do nothing;
-insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.total_staking_mv', true, 86400, 'pending') on conflict do nothing;
-insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.daily_claims_mv', true, 86400, 'pending') on conflict do nothing;
-insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.inflows_mv', true, 86400, 'pending') on conflict do nothing;
-insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.outflows_mv', true, 86400, 'pending') on conflict do nothing;
+insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.daily_staked_mv', true, 86400, 'pending') on conflict (query) do nothing;
+insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.daily_unbond_mv', true, 86400, 'pending') on conflict (query) do nothing;
+insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.total_staking_mv', true, 86400, 'pending') on conflict (query) do nothing;
+insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.daily_claims_mv', true, 86400, 'pending') on conflict (query) do nothing;
+insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.inflows_mv', true, 86400, 'pending') on conflict (query) do nothing;
+insert into indexer.database_jobs (query, recurrent, interval_seconds, status) values ('REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.outflows_mv', true, 86400, 'pending') on conflict (query) do nothing;

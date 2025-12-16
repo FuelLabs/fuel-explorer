@@ -12,7 +12,7 @@
 -- This is more frequent than other tables due to high INSERT volume (~195/sec)
 INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
 VALUES ('VACUUM ANALYZE indexer.receipts', true, 43200, 'pending')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (query) DO NOTHING;
 
 -- Update migration version
 UPDATE indexer.migration SET version = 34;
