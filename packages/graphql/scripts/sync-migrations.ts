@@ -1,13 +1,13 @@
 #!/usr/bin/env tsx
 /**
- * Seed _migrations table for production deployment
+ * Sync _migrations table for production deployment
  *
  * This script populates the _migrations table with existing migration filenames
  * WITHOUT re-running them. It reads the current version from the old migration
- * system (indexer.migration.version) and only seeds migrations up to that version.
+ * system (indexer.migration.version) and marks migrations up to that version as applied.
  *
  * Usage:
- *   pnpm db:migrate:seed
+ *   pnpm db:migrate:sync
  *
  * This should be run ONCE during the migration system upgrade, before
  * running any new migrations with `pnpm db:migrate`.
@@ -17,11 +17,11 @@ import fs from 'node:fs';
 import { DatabaseConnection } from '../src/infra/database/DatabaseConnection';
 import { DB_SCHEMA, MIGRATIONS_DIR, MigrationRunner } from './migrate';
 
-async function seedMigrations(): Promise<void> {
+async function syncMigrations(): Promise<void> {
   const db = DatabaseConnection.getInstance();
   const runner = new MigrationRunner();
 
-  console.log('🌱 Seeding _migrations table...\n');
+  console.log('🔄 Syncing _migrations table...\n');
   console.log(`Schema: ${DB_SCHEMA}`);
   console.log(`Migrations directory: ${MIGRATIONS_DIR}\n`);
 
@@ -67,14 +67,14 @@ async function seedMigrations(): Promise<void> {
 
   console.log(`Found ${files.length} migration files\n`);
 
-  // Check which are already seeded
+  // Check which are already synced
   const existing = await db.query(
     `SELECT filename FROM ${DB_SCHEMA}._migrations`,
     [],
   );
   const existingSet = new Set(existing.map((r: any) => r.filename));
 
-  let seeded = 0;
+  let synced = 0;
   let skipped = 0;
   let pending = 0;
 
@@ -89,12 +89,12 @@ async function seedMigrations(): Promise<void> {
     const migrationNum = Number.parseInt(match[1], 10);
     // Old version N corresponds to new migration N+1
     // e.g., version 31 = migrations 001-032 have been run
-    const maxMigrationToSeed = currentVersion + 1;
+    const maxMigrationToSync = currentVersion + 1;
 
     if (existingSet.has(file)) {
-      console.log(`⏭️  Skipping ${file} (already seeded)`);
+      console.log(`⏭️  Skipping ${file} (already synced)`);
       skipped++;
-    } else if (currentVersion >= 0 && migrationNum > maxMigrationToSeed) {
+    } else if (currentVersion >= 0 && migrationNum > maxMigrationToSync) {
       console.log(
         `⏸️  Pending ${file} (not yet applied, version ${currentVersion})`,
       );
@@ -104,13 +104,13 @@ async function seedMigrations(): Promise<void> {
         `INSERT INTO ${DB_SCHEMA}._migrations (filename) VALUES ($1)`,
         [file],
       );
-      console.log(`✅ Seeded ${file}`);
-      seeded++;
+      console.log(`✅ Synced ${file}`);
+      synced++;
     }
   }
 
   console.log(
-    `\n✅ Done! Seeded ${seeded}, skipped ${skipped}, pending ${pending}\n`,
+    `\n✅ Done! Synced ${synced}, skipped ${skipped}, pending ${pending}\n`,
   );
 
   if (pending > 0) {
@@ -122,7 +122,7 @@ async function seedMigrations(): Promise<void> {
   process.exit(0);
 }
 
-seedMigrations().catch((error) => {
-  console.error(`\n❌ Seed failed: ${error.message}\n`);
+syncMigrations().catch((error) => {
+  console.error(`\n❌ Sync failed: ${error.message}\n`);
   process.exit(1);
 });
