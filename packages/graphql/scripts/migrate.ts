@@ -4,7 +4,7 @@
  *
  * Reads all .sql files from database/migrations/ and executes pending ones.
  * Tracks executed migrations in {schema}._migrations table.
- * Each migration runs in a transaction.
+ * Statements execute individually (like psql -f), with graceful error handling.
  */
 
 import fs from 'node:fs';
