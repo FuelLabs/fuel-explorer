@@ -33,7 +33,7 @@ export function UtxoItem({
       <Address
         prefix="ID:"
         value={item.utxoId}
-        className="flex-col items-start gap-1 flex-1 tablet:flex-row tablet:items-center tablet:gap-4"
+        className="flex-1 gap-1 tablet:gap-4"
         linkProps={{
           href: CommonRoutes.txSimple(txId),
         }}
