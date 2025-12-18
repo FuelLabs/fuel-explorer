@@ -20,7 +20,7 @@ WHERE
     ta.account_hash = '0x095faac82412324c60fdf6934405b5df9de49982284779536218d16d5ee3dc4c'
 GROUP BY
     day
-WITH NO DATA;
+WITH DATA;
 
 CREATE UNIQUE INDEX IF NOT EXISTS daily_staked_mv_day_idx ON indexer.daily_staked_mv(day);
 GRANT SELECT ON indexer.daily_staked_mv TO explorer_ro;
@@ -47,7 +47,7 @@ WHERE
     ta.account_hash = '0x095faac82412324c60fdf6934405b5df9de49982284779536218d16d5ee3dc4c'
 GROUP BY
     day
-WITH NO DATA;
+WITH DATA;
 
 CREATE UNIQUE INDEX IF NOT EXISTS daily_unbond_mv_day_idx ON indexer.daily_unbond_mv(day);
 GRANT SELECT ON indexer.daily_unbond_mv TO explorer_ro;
@@ -103,7 +103,7 @@ JOIN (
         day
 ) l2
 ON l2.day = l1.day
-WITH NO DATA;
+WITH DATA;
 
 CREATE UNIQUE INDEX IF NOT EXISTS total_staking_mv_day_idx ON indexer.total_staking_mv(day);
 GRANT SELECT ON indexer.total_staking_mv TO explorer_ro;
@@ -130,7 +130,7 @@ WHERE
 	ta.account_hash = '0x095faac82412324c60fdf6934405b5df9de49982284779536218d16d5ee3dc4c'
 GROUP BY
     day
-WITH NO DATA;
+WITH DATA;
 
 CREATE UNIQUE INDEX IF NOT EXISTS daily_claims_mv_day_idx ON indexer.daily_claims_mv(day);
 GRANT SELECT ON indexer.daily_claims_mv TO explorer_ro;
@@ -150,7 +150,7 @@ where
 	and i.data->>'to' not in ('0xdb491b442f68ebaa785f077805158ebfddeede7063f16d5a26e1073ff6987601', '0xafdda1cd084ed0f56d35f570b2e9d34e7c7380191058e2a2fb16e0c58cbbc7c2')
 	and i.data->>'__typename' = 'CoinOutput'
 group by day
-WITH NO DATA;
+WITH DATA;
 
 CREATE UNIQUE INDEX IF NOT EXISTS inflows_mv_day_idx ON indexer.inflows_mv(day);
 GRANT SELECT ON indexer.inflows_mv TO explorer_ro;
@@ -170,7 +170,7 @@ where
 	and i.data->>'to' in ('0xdb491b442f68ebaa785f077805158ebfddeede7063f16d5a26e1073ff6987601', '0xafdda1cd084ed0f56d35f570b2e9d34e7c7380191058e2a2fb16e0c58cbbc7c2')
 	and i.data->>'__typename' = 'CoinOutput'
 group by day
-WITH NO DATA;
+WITH DATA;
 
 CREATE UNIQUE INDEX IF NOT EXISTS outflows_mv_day_idx ON indexer.outflows_mv(day);
 GRANT SELECT ON indexer.outflows_mv TO explorer_ro;
