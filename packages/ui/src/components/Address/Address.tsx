@@ -4,7 +4,6 @@ import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';
 import { cx } from '../../utils/css';
 import type { BaseProps, WithAsProps } from '../../utils/types';
-import { HStack } from '../Box';
 import { Copyable } from '../Copyable';
 import type { LinkProps } from '../Link';
 import { Link } from '../Link';
@@ -84,12 +83,7 @@ export const Address = createComponent<AddressProps, 'div'>({
         isLoading={isLoading}
         loadingEl={<LoadingBox className="w-32 h-4 mt-1" />}
         regularEl={
-          <HStack
-            align="center"
-            gap="3"
-            {...props}
-            className={classes.root({ className })}
-          >
+          <div {...props} className={classes.root({ className })}>
             {prefix && <span className={classes.prefix()}>{prefix}</span>}
             <Tooltip content={value} open={full ? false : undefined}>
               <div>
@@ -126,7 +120,7 @@ export const Address = createComponent<AddressProps, 'div'>({
                 iconSize={iconSize}
               />
             )}
-          </HStack>
+          </div>
         }
       />
     );
@@ -135,8 +129,8 @@ export const Address = createComponent<AddressProps, 'div'>({
 
 const styles = tv({
   slots: {
-    root: 'flex gap-1 text-sm font-mono',
-    prefix: 'mr-px text-sm text-secondary',
-    address: 'text-sm text-muted mt-px gap-3',
+    root: 'inline-flex flex-nowrap items-center gap-3 text-sm font-mono',
+    prefix: 'mr-px text-sm text-secondary whitespace-nowrap',
+    address: 'text-sm text-muted mt-px gap-3 shrink-0',
   },
 });
