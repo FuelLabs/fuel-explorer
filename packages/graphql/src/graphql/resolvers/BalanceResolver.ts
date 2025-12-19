@@ -143,7 +143,7 @@ export class BalanceResolver {
         }
       : params;
 
-    const res = await client.sdk.coins({ first: 2500, filter });
+    const res = await client.sdk.coins({ first: 10000, filter });
     return res.data.coins.nodes;
   }
 }
