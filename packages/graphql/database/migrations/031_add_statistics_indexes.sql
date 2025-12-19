@@ -12,7 +12,9 @@ CREATE INDEX ON indexer.blocks ("timestamp" DESC);
 
 -- Add to maintenance jobs for periodic ANALYZE to update index statistics
 INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
-VALUES
-  ('ANALYZE indexer.transactions', true, 86400, 'pending'),
-  ('ANALYZE indexer.blocks', true, 86400, 'pending')
-ON CONFLICT DO NOTHING;
+VALUES ('ANALYZE indexer.transactions', true, 86400, 'pending')
+ON CONFLICT (query) DO NOTHING;
+
+INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
+VALUES ('ANALYZE indexer.blocks', true, 86400, 'pending')
+ON CONFLICT (query) DO NOTHING;

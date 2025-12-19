@@ -36,9 +36,17 @@ export class DatabaseConnection {
 
   async query(statement: string, params: any) {
     const connection = await this.pool.connect();
-    const result = await connection.query(statement, params);
-    connection.release();
-    return result.rows;
+    try {
+      const result = await connection.query(statement, params);
+      return result.rows;
+    } catch (error) {
+      try {
+        await connection.query('ROLLBACK');
+      } catch {}
+      throw error;
+    } finally {
+      connection.release();
+    }
   }
 
   async executeTransaction(queries: { statement: string; params: any }[]) {

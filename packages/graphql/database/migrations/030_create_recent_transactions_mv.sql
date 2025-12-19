@@ -31,4 +31,4 @@ VALUES (
   14400,
   'pending'
 )
-ON CONFLICT DO NOTHING;
+ON CONFLICT (query) DO NOTHING;
