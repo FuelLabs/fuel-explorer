@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -18,10 +19,12 @@ import { memo, useMemo } from 'react';
 import { ErrorInline } from '~staking/systems/Core/components/ErrorInline/ErrorInline';
 import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfoSection/RegularInfoSection';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
+import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
+import { useCheckSequencerOperationBlocking } from '../../hooks/useCheckSequencerOperationBlocking';
 
-import { IconCheck, IconInfoCircle } from '@tabler/icons-react';
+import { IconCheck, IconClock, IconInfoCircle } from '@tabler/icons-react';
 import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
 import { LogoEth } from '~staking/systems/Core/components/LogoEth/LogoEth';
 import type { Validator } from '~staking/systems/Staking/types/validators';
@@ -66,6 +69,12 @@ function _ReviewStake({
   isApprovalCompleted,
   isReadyToConfirm,
 }: Props) {
+  // Check if sequencer operations are blocking staking
+  const sequencerBlocking = useCheckSequencerOperationBlocking(
+    PendingTransactionTypeL1.Delegate,
+    validatorData?.operator_address,
+  );
+
   const {
     formattedAmount,
     originalAmount,
@@ -214,6 +223,19 @@ function _ReviewStake({
         )}
       </div>
       <div>
+        {sequencerBlocking.isBlocked && (
+          <Alert color="orange" variant="surface" className="mb-4">
+            <Alert.Icon>
+              <IconClock size={18} className="text-orange-11" />
+            </Alert.Icon>
+            <Alert.Text className="text-orange-12">
+              <Text size="2" weight="medium" className="block mb-1">
+                Stake Currently Unavailable
+              </Text>
+              <Text size="1">{sequencerBlocking.blockingMessage}</Text>
+            </Alert.Text>
+          </Alert>
+        )}
         <ErrorInline error={errorMsg} className="mb-1" />
         <HStack gap="3" className="w-full">
           <Button
@@ -223,7 +245,7 @@ function _ReviewStake({
             className="rounded-md flex-1"
             size="3"
             onClick={onBack}
-            disabled={isSubmitting}
+            disabled={isSubmitting || sequencerBlocking.isBlocked}
           >
             ← Back
           </Button>
@@ -232,7 +254,10 @@ function _ReviewStake({
             className="rounded-md flex-1"
             size="3"
             onClick={needsApproval ? onGoToApproval : onConfirm}
-            disabled={!isReadyToConfirm && !needsApproval}
+            disabled={
+              (!isReadyToConfirm && !needsApproval) ||
+              sequencerBlocking.isBlocked
+            }
             isLoading={isSubmitting}
             loadingText="Submitting..."
           >

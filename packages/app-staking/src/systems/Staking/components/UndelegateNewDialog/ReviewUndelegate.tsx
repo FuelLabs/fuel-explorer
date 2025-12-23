@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Button,
   HStack,
@@ -10,6 +11,7 @@ import {
   Tooltip,
   convertToUsd,
 } from '@fuels/ui';
+import { IconClock } from '@tabler/icons-react';
 import { BN } from 'fuels';
 import { DECIMAL_WEI } from 'fuels';
 import { memo, useMemo } from 'react';
@@ -17,8 +19,10 @@ import { ErrorInline } from '~staking/systems/Core/components/ErrorInline/ErrorI
 import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
 import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfoSection/RegularInfoSection';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
+import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
+import { useCheckSequencerOperationBlocking } from '../../hooks/useCheckSequencerOperationBlocking';
 import type { Validator } from '../../types/validators';
 import { getValidatorImage } from '../../utils/validatorImages';
 
@@ -51,6 +55,12 @@ function _ReviewUndelegate({
   onBack,
   validator,
 }: Props) {
+  // Check if sequencer operations are blocking undelegation
+  const sequencerBlocking = useCheckSequencerOperationBlocking(
+    PendingTransactionTypeL1.Undelegate,
+    validator?.operator_address,
+  );
+
   const {
     formattedAmount,
     originalAmount,
@@ -136,6 +146,19 @@ function _ReviewUndelegate({
         />
       </div>
       <div>
+        {sequencerBlocking.isBlocked && (
+          <Alert color="orange" variant="surface" className="mb-4">
+            <Alert.Icon>
+              <IconClock size={18} className="text-orange-11" />
+            </Alert.Icon>
+            <Alert.Text className="text-orange-12">
+              <Text size="2" weight="medium" className="block mb-1">
+                Undelegate Currently Unavailable
+              </Text>
+              <Text size="1">{sequencerBlocking.blockingMessage}</Text>
+            </Alert.Text>
+          </Alert>
+        )}
         <ErrorInline error={errorMsg} className="mb-1" />
         <HStack gap="3" className="w-full">
           <Button
@@ -145,7 +168,7 @@ function _ReviewUndelegate({
             className="rounded-md flex-1"
             size="3"
             onClick={onBack}
-            disabled={isSubmitting}
+            disabled={isSubmitting || sequencerBlocking.isBlocked}
           >
             ← Back
           </Button>
@@ -154,7 +177,7 @@ function _ReviewUndelegate({
             className="rounded-md flex-1"
             size="3"
             onClick={onConfirm}
-            disabled={!isReady}
+            disabled={!isReady || sequencerBlocking.isBlocked}
             isLoading={isSubmitting}
             loadingText="Submitting..."
           >

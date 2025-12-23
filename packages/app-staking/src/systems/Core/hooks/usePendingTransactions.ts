@@ -21,6 +21,13 @@ export enum PendingTransactionTypeL1 {
   WithdrawFinalize = 'WITHDRAW_FINALIZE',
 }
 
+export enum PendingSequencerOperationType {
+  WithdrawDelegatorReward = 'WITHDRAW_DELEGATOR_REWARD',
+  WithdrawCommission = 'WITHDRAW_COMMISSION',
+  BeginRedelegate = 'BEGIN_REDELEGATE',
+  Undelegate = 'UNDELEGATE',
+}
+
 type PendingTransactionBase = {
   hash: Address;
   token: Address;
@@ -40,12 +47,27 @@ export interface PendingTransactionL1 extends PendingTransactionBase {
   eta?: string;
 }
 
-export type PendingTransaction = PendingTransactionL1;
+export interface PendingSequencerOperation extends PendingTransactionBase {
+  type: PendingSequencerOperationType;
+  layer: 'sequencer';
+  sequencerHash: string;
+  eta?: string;
+}
+
+export type PendingTransaction =
+  | PendingTransactionL1
+  | PendingSequencerOperation;
 
 export const isPendingTransactionL1 = (
   pendingTransaction: PendingTransaction,
 ): pendingTransaction is PendingTransactionL1 => {
   return pendingTransaction.layer === 'l1';
+};
+
+export const isPendingSequencerOperation = (
+  pendingTransaction: PendingTransaction,
+): pendingTransaction is PendingSequencerOperation => {
+  return pendingTransaction.layer === 'sequencer';
 };
 
 // Static reference object to avoid creating a new one on each render
@@ -76,11 +98,15 @@ export const usePendingTransactions = () => {
 
   return {
     ...query,
-    data: query.data?.filter(
-      (tx) =>
-        tx.type !== PendingTransactionTypeL1.WithdrawStart &&
-        tx.type !== PendingTransactionTypeL1.WithdrawFinalize &&
-        tx.type !== PendingTransactionTypeL1.PendingWithdraw,
-    ),
+    data: query.data?.filter((tx) => {
+      if (isPendingTransactionL1(tx)) {
+        return (
+          tx.type !== PendingTransactionTypeL1.WithdrawStart &&
+          tx.type !== PendingTransactionTypeL1.WithdrawFinalize &&
+          tx.type !== PendingTransactionTypeL1.PendingWithdraw
+        );
+      }
+      return true;
+    }),
   };
 };

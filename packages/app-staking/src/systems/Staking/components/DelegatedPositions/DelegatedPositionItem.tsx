@@ -51,7 +51,7 @@ const _DelegatedPositionItem = ({
       stakingTxDialogEvents.open('TxClaimRewardNew', validator),
     );
   };
-  const disabledActions = useDisabledL1Actions(validator);
+  const { disabledActions } = useDisabledL1Actions(validator);
 
   const { address } = useAccount();
   const { data: totalDelegated, isLoading: isLoadingDelegations } =

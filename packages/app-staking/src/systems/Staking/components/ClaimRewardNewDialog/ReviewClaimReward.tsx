@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Button,
   LoadingBox,
@@ -9,6 +10,7 @@ import {
   Tooltip,
   convertToUsd,
 } from '@fuels/ui';
+import { IconClock } from '@tabler/icons-react';
 import { BN } from 'fuels';
 import { DECIMAL_WEI } from 'fuels';
 import { memo, useMemo } from 'react';
@@ -16,9 +18,11 @@ import { useAccount } from 'wagmi';
 import { ErrorInline } from '~staking/systems/Core/components/ErrorInline/ErrorInline';
 import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
 import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfoSection/RegularInfoSection';
+import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
+import { useCheckSequencerOperationBlocking } from '../../hooks/useCheckSequencerOperationBlocking';
 import { useValidator } from '../../services/useValidator';
 import { useValidatorRewards } from '../../services/useValidatorRewards/useValidatorRewards';
 import { getValidatorImage } from '../../utils/validatorImages';
@@ -54,6 +58,11 @@ function _ReviewClaimReward({
   const { data: rewardsData } = useValidatorRewards(validator, address, {
     select: ({ rewards }) => rewards,
   });
+
+  const sequencerBlocking = useCheckSequencerOperationBlocking(
+    PendingTransactionTypeL1.ClaimReward,
+    validator,
+  );
   const rewardBN = useMemo(() => {
     return rewardsData?.reduce((acc, curr) => {
       return acc.add(new BN(curr.amount.split('.')[0] ?? 0));
@@ -166,15 +175,31 @@ function _ReviewClaimReward({
         />
       </div>
       <div>
+        {sequencerBlocking.isBlocked && (
+          <Alert color="orange" variant="surface" className="mb-4">
+            <Alert.Icon>
+              <IconClock size={18} className="text-orange-11" />
+            </Alert.Icon>
+            <Alert.Text className="text-orange-12">
+              <Text size="2" weight="medium" className="block mb-1">
+                Claim Rewards Currently Unavailable
+              </Text>
+              <Text size="1">{sequencerBlocking.blockingMessage}</Text>
+            </Alert.Text>
+          </Alert>
+        )}
         <ErrorInline error={errorMsg} className="mb-1" />
         <Button
           type="button"
           className="rounded-md w-full"
           size="3"
           onClick={onConfirm}
-          disabled={!isReady}
+          disabled={!isReady || sequencerBlocking.isBlocked}
           isLoading={isSubmitting}
           loadingText="Submitting..."
+          title={
+            sequencerBlocking.isBlocked ? sequencerBlocking.blockingMessage : ''
+          }
         >
           {errorMsg ? 'Retry' : 'Claim Rewards'}
         </Button>
