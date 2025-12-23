@@ -4,6 +4,8 @@ import { client } from './graphql/GraphQLSDK';
 import BlockDAO from './infra/dao/BlockDAO';
 import { QueueNames, mq } from './infra/queue/Queue';
 
+const FUEL_CORE_TIMEOUT_MS = 5000;
+
 function createBatchEvents(idsRange: { from: number; to: number }) {
   const offset = 10;
   const diff = idsRange.to - idsRange.from;
@@ -30,18 +32,31 @@ async function main() {
       continue;
     }
     let blocks: any;
+    const startTime = Date.now();
     try {
       logger.debug('Syncer', 'Fetching the latest block');
       const response = await Promise.race([
         client.sdk.blocks({ last: 1 }),
-        setTimeout(2000),
+        setTimeout(FUEL_CORE_TIMEOUT_MS).then(() => null),
       ]);
+      const latencyMs = Date.now() - startTime;
       if (!response || !response.data) {
-        throw new Error('Fuel core is not responding');
+        logger.warn(
+          'Syncer',
+          `Fuel core timeout after ${FUEL_CORE_TIMEOUT_MS}ms`,
+        );
+        await setTimeout(2000);
+        continue;
       }
+      logger.debug('Syncer', `Fuel core response time: ${latencyMs}ms`);
       blocks = response.data.blocks;
     } catch (e: any) {
-      logger.error('Syncer', 'Could not fetch blocks from fuel core', e);
+      const latencyMs = Date.now() - startTime;
+      logger.error(
+        'Syncer',
+        `Could not fetch blocks from fuel core after ${latencyMs}ms`,
+        e,
+      );
       await setTimeout(2000);
       continue;
     }

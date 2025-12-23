@@ -27,6 +27,7 @@ type SearchInputProps = BaseProps<InputProps> & {
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
   error?: boolean;
+  loadingMore?: boolean;
 };
 
 export function SearchInput({
@@ -38,6 +39,7 @@ export function SearchInput({
   searchResult,
   loading,
   error,
+  loadingMore,
   ...props
 }: SearchInputProps) {
   const classes = styles();
@@ -72,7 +74,7 @@ export function SearchInput({
   }, [error]);
 
   useEffect(() => {
-    if (searchResult !== null) {
+    if (searchResult !== undefined) {
       setValue((prev) => {
         lastSearchTerm.current = prev;
         return prev;
@@ -247,6 +249,7 @@ export function SearchInput({
           isFocused={isFocused}
           error={error}
           loading={loading}
+          loadingMore={loadingMore}
           onSelectItem={() => {
             handleClear();
           }}

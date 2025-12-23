@@ -1,4 +1,4 @@
-import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLAssetsContractConnection, GQLBalance, GQLBalanceByBlockHeight, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBaseStatusInfo, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLBridgeCommitQueryItem, GQLBridgeDepositEvent, GQLBridgeDepositResponse, GQLBridgeDepositStatusInfo, GQLBridgeDepositTransactionSentStatus, GQLBridgeEthTransaction, GQLBridgeEventRow, GQLBridgeFinalizedStatus, GQLBridgeFuelTransaction, GQLBridgeMessageDecoded, GQLBridgePageInfo, GQLBridgeReadyToProcessDepositStatus, GQLBridgeReadyToProcessWithdrawStatus, GQLBridgeWaitingCommittingToL1Status, GQLBridgeWaitingFinalizationStatus, GQLBridgeWaitingSyncStatus, GQLBridgeWithdrawEvent, GQLBridgeWithdrawResponse, GQLBridgeWithdrawStatusInfo, GQLBridgeWithdrawTransactionSentStatus, GQLChainInfo, GQLChangeOutput, GQLClaimRewardsResponse, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalance2, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDelegateResponse, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLEthTx, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLFinalizedInfo, GQLGasCosts, GQLGenesis, GQLGraphQlBridgeResponse, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReDelegateResponse, GQLReadyToProcessWithdrawInfo, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchResult, GQLSearchTransaction, GQLSequencerTx, GQLSkippedInfo, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStakingApy, GQLStakingEventsResult, GQLStateTransitionPurpose, GQLStatistics, GQLStatisticsConnection, GQLStatisticsDetails, GQLStatisticsTotalFeeDetails, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTransactionSentInfo, GQLTxParameters, GQLUndelegateResponse, GQLUndelegateStatusInfo, GQLUtxoItem, GQLVariableOutput, GQLWaitingCommittingToL1gInfo, GQLWaitingFinalizationInfo, GQLWaitingSyncInfo, GQLWithdrawResponse, GQLWithdrawStatusInfo, GQLBlockVersion, GQLBridgeDepositQueryType, GQLBridgeDepositStatusType, GQLBridgeResponseType, GQLBridgeWithdrawStatusType, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGenericStatusType, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLResponseType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion, GQLUndelegateStatusType, GQLWithdrawStatusType } from './sdk';
+import type { GQLAsset, GQLAssetNetworkEthereum, GQLAssetNetworkFuel, GQLAssetsContractConnection, GQLBalance, GQLBalanceByBlockHeight, GQLBalanceConnection, GQLBalanceEdge, GQLBalanceFilterInput, GQLBaseStatusInfo, GQLBlock, GQLBlockConnection, GQLBlockEdge, GQLBlocksDashboard, GQLBlocksDashboardConnection, GQLBreakpoint, GQLBridgeCommitQueryItem, GQLBridgeDepositEvent, GQLBridgeDepositResponse, GQLBridgeDepositStatusInfo, GQLBridgeDepositTransactionSentStatus, GQLBridgeEthTransaction, GQLBridgeEventRow, GQLBridgeFinalizedStatus, GQLBridgeFuelTransaction, GQLBridgeMessageDecoded, GQLBridgePageInfo, GQLBridgeReadyToProcessDepositStatus, GQLBridgeReadyToProcessWithdrawStatus, GQLBridgeWaitingCommittingToL1Status, GQLBridgeWaitingFinalizationStatus, GQLBridgeWaitingSyncStatus, GQLBridgeWithdrawEvent, GQLBridgeWithdrawResponse, GQLBridgeWithdrawStatusInfo, GQLBridgeWithdrawTransactionSentStatus, GQLChainInfo, GQLChangeOutput, GQLClaimRewardsResponse, GQLCoin, GQLCoinConnection, GQLCoinEdge, GQLCoinFilterInput, GQLCoinOutput, GQLConsensusParameters, GQLConsensusParametersPurpose, GQLContract, GQLContractBalance, GQLContractBalance2, GQLContractBalanceConnection, GQLContractBalanceEdge, GQLContractBalanceFilterInput, GQLContractConnection, GQLContractCreated, GQLContractOutput, GQLContractParameters, GQLDelegateResponse, GQLDryRunFailureStatus, GQLDryRunSuccessStatus, GQLDryRunTransactionExecutionStatus, GQLEstimateGasPrice, GQLEthTx, GQLExcludeInput, GQLFailureStatus, GQLFeeParameters, GQLFinalizedInfo, GQLGasCosts, GQLGenesis, GQLGraphQlBridgeResponse, GQLGroupedInputCoin, GQLGroupedInputContract, GQLGroupedInputMessage, GQLGroupedOutputChanged, GQLGroupedOutputCoin, GQLGroupedOutputContractCreated, GQLHeader, GQLHeavyOperation, GQLInputCoin, GQLInputContract, GQLInputMessage, GQLLatestGasPrice, GQLLightOperation, GQLMerkleProof, GQLMessage, GQLMessageCoin, GQLMessageConnection, GQLMessageEdge, GQLMessageProof, GQLMessageStatus, GQLMutation, GQLNodeInfo, GQLOperation, GQLOperationReceipt, GQLOperationsFilterInput, GQLOutputBreakpoint, GQLPageInfo, GQLParsedTime, GQLPeerInfo, GQLPoAConsensus, GQLPolicies, GQLPredicateItem, GQLPredicateParameters, GQLProgramState, GQLQuery, GQLReDelegateResponse, GQLReadyToProcessWithdrawInfo, GQLReceipt, GQLRelayedTransactionFailed, GQLRunResult, GQLScriptParameters, GQLSearchAccount, GQLSearchBlock, GQLSearchContract, GQLSearchFastResult, GQLSearchResult, GQLSearchSlowResult, GQLSearchTransaction, GQLSequencerTx, GQLSkippedInfo, GQLSpendQueryElementInput, GQLSqueezedOutStatus, GQLStakingApy, GQLStakingEventsResult, GQLStateTransitionPurpose, GQLStatistics, GQLStatisticsConnection, GQLStatisticsDetails, GQLStatisticsTotalFeeDetails, GQLSubmittedStatus, GQLSubscription, GQLSuccessStatus, GQLTps, GQLTpsConnection, GQLTransaction, GQLTransactionConnection, GQLTransactionEdge, GQLTransactionGasCosts, GQLTransactionSentInfo, GQLTxParameters, GQLUndelegateResponse, GQLUndelegateStatusInfo, GQLUtxoItem, GQLVariableOutput, GQLWaitingCommittingToL1gInfo, GQLWaitingFinalizationInfo, GQLWaitingSyncInfo, GQLWithdrawResponse, GQLWithdrawStatusInfo, GQLBlockVersion, GQLBridgeDepositQueryType, GQLBridgeDepositStatusType, GQLBridgeResponseType, GQLBridgeWithdrawStatusType, GQLConsensusParametersVersion, GQLContractParametersVersion, GQLFeeParametersVersion, GQLGasCostsVersion, GQLGenericStatusType, GQLGroupedInputType, GQLGroupedOutputType, GQLHeaderVersion, GQLMessageState, GQLOperationType, GQLPredicateParametersVersion, GQLReceiptType, GQLResponseType, GQLReturnType, GQLRunState, GQLScriptParametersVersion, GQLTxParametersVersion, GQLUndelegateStatusType, GQLWithdrawStatusType } from './sdk';
 
 export const anAsset = (overrides?: Partial<GQLAsset>): { __typename: 'Asset' } & GQLAsset => {
     return {
@@ -1158,6 +1158,7 @@ export const aPolicies = (overrides?: Partial<GQLPolicies>): { __typename: 'Poli
         __typename: 'Policies',
         maturity: overrides && overrides.hasOwnProperty('maturity') ? overrides.maturity! : 'ex',
         maxFee: overrides && overrides.hasOwnProperty('maxFee') ? overrides.maxFee! : '0x8',
+        ownerInputIndex: overrides && overrides.hasOwnProperty('ownerInputIndex') ? overrides.ownerInputIndex! : '0x7',
         tip: overrides && overrides.hasOwnProperty('tip') ? overrides.tip! : '0xF',
         witnessLimit: overrides && overrides.hasOwnProperty('witnessLimit') ? overrides.witnessLimit! : '0xb',
     };
@@ -1225,6 +1226,8 @@ export const aQuery = (overrides?: Partial<GQLQuery>): { __typename: 'Query' } &
         register: overrides && overrides.hasOwnProperty('register') ? overrides.register! : '0x3',
         relayedTransactionStatus: overrides && overrides.hasOwnProperty('relayedTransactionStatus') ? overrides.relayedTransactionStatus! : aRelayedTransactionFailed(),
         search: overrides && overrides.hasOwnProperty('search') ? overrides.search! : aSearchResult(),
+        searchFast: overrides && overrides.hasOwnProperty('searchFast') ? overrides.searchFast! : aSearchFastResult(),
+        searchSlow: overrides && overrides.hasOwnProperty('searchSlow') ? overrides.searchSlow! : aSearchSlowResult(),
         stakingAPY: overrides && overrides.hasOwnProperty('stakingAPY') ? overrides.stakingAPY! : aStakingApy(),
         stakingEvent: overrides && overrides.hasOwnProperty('stakingEvent') ? overrides.stakingEvent! : aClaimRewardsResponse(),
         stakingEvents: overrides && overrides.hasOwnProperty('stakingEvents') ? overrides.stakingEvents! : aStakingEventsResult(),
@@ -1346,13 +1349,32 @@ export const aSearchContract = (overrides?: Partial<GQLSearchContract>): { __typ
     };
 };
 
+export const aSearchFastResult = (overrides?: Partial<GQLSearchFastResult>): { __typename: 'SearchFastResult' } & GQLSearchFastResult => {
+    return {
+        __typename: 'SearchFastResult',
+        block: overrides && overrides.hasOwnProperty('block') ? overrides.block! : aSearchBlock(),
+        contract: overrides && overrides.hasOwnProperty('contract') ? overrides.contract! : aSearchContract(),
+        predicate: overrides && overrides.hasOwnProperty('predicate') ? overrides.predicate! : aPredicateItem(),
+        transaction: overrides && overrides.hasOwnProperty('transaction') ? overrides.transaction! : aSearchTransaction(),
+    };
+};
+
 export const aSearchResult = (overrides?: Partial<GQLSearchResult>): { __typename: 'SearchResult' } & GQLSearchResult => {
     return {
         __typename: 'SearchResult',
         account: overrides && overrides.hasOwnProperty('account') ? overrides.account! : aSearchAccount(),
         block: overrides && overrides.hasOwnProperty('block') ? overrides.block! : aSearchBlock(),
         contract: overrides && overrides.hasOwnProperty('contract') ? overrides.contract! : aSearchContract(),
+        predicate: overrides && overrides.hasOwnProperty('predicate') ? overrides.predicate! : aPredicateItem(),
         transaction: overrides && overrides.hasOwnProperty('transaction') ? overrides.transaction! : aSearchTransaction(),
+    };
+};
+
+export const aSearchSlowResult = (overrides?: Partial<GQLSearchSlowResult>): { __typename: 'SearchSlowResult' } & GQLSearchSlowResult => {
+    return {
+        __typename: 'SearchSlowResult',
+        account: overrides && overrides.hasOwnProperty('account') ? overrides.account! : aSearchAccount(),
+        asset: overrides && overrides.hasOwnProperty('asset') ? overrides.asset! : anAsset(),
     };
 };
 

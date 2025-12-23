@@ -8,7 +8,6 @@ export const styles = tv({
       'last:rounded-b-sm',
       'fuel-[Address]:text-[0.8rem] fuel-[Address]:leading-none',
     ],
-    contractAddress:
-      'flex-col items-start gap-1 flex-1 tablet:flex-row tablet:items-center tablet:gap-4',
+    contractAddress: 'flex-1 gap-1 tablet:gap-4',
   },
 });

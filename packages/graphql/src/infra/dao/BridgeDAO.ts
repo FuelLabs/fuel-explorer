@@ -536,6 +536,9 @@ export default class BridgeDAO {
     recipient: string,
     predicate: string,
   ) {
+    // Remove 0x prefix and convert to lowercase for comparison
+    const recipientHex = recipient.toLowerCase().replace('0x', '');
+
     const events: Array<EventRow & DepositEvent & WithdrawEvent> =
       await this.databaseConnection.query(
         `SELECT
@@ -551,14 +554,25 @@ export default class BridgeDAO {
         indexer.contract_l1_args ca
         ON ca.contract_l1_log_id = cl._id
         AND ca."key" = 'recipient'
-        AND (
-          LOWER(ca."value") = LOWER($2)
-          OR LOWER(ca."value") = LOWER($3)
-        )
       WHERE cl.contract_hash = $1
+        AND (
+          -- Direct recipient match (ETH deposits)
+          LOWER(ca."value") = LOWER($2)
+          OR (
+            -- ERC20 deposits: recipient is predicate, but check if data contains actual recipient
+            LOWER(ca."value") = LOWER($3)
+            AND EXISTS (
+              SELECT 1
+              FROM indexer.contract_l1_args ca_data
+              WHERE ca_data.contract_l1_log_id = cl._id
+                AND ca_data."key" = 'data'
+                AND LOWER(ca_data."value") LIKE '%' || $4 || '%'
+            )
+          )
+        )
       ORDER BY cl."timestamp" DESC
       `,
-        [address, recipient, predicate],
+        [address, recipient, predicate, recipientHex],
       );
     return events;
   }

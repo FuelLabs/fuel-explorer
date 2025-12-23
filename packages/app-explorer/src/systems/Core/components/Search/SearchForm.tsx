@@ -1,4 +1,4 @@
-import { search } from '~/systems/Core/actions/search';
+import { ApiService } from '~/services/api';
 
 import type { GQLSearchResult } from '@fuel-explorer/graphql';
 import { useState } from 'react';
@@ -15,19 +15,22 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const [results, setResults] = useState<GQLSearchResult | null | undefined>(
-    null,
+    undefined,
   );
 
   const handleSearch = async (formData: FormData) => {
     try {
-      const response = await search({
-        query: formData.get('query')?.toString() || '',
-      });
-      setResults(response || undefined);
-      return response;
-    } catch (_) {
+      const query = formData.get('query')?.toString() || '';
+      const searchResponse = await ApiService.search(query);
+
+      setResults(searchResponse);
+      setLoading(false);
+      setError(false);
+
+      return searchResponse;
+    } catch (error) {
+      console.error('Error searching:', error);
       setError(true);
-    } finally {
       setLoading(false);
     }
   };
@@ -37,6 +40,7 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
     if (loading) return;
     setResults(null);
     setLoading(true);
+    setError(false);
 
     const formData = new FormData(e.currentTarget);
     handleSearch(formData);

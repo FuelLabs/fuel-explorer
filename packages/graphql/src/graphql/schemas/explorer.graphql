@@ -162,6 +162,18 @@ extend type Transaction {
 }
 
 # --------------------------------
+# Policies
+# --------------------------------
+
+extend type Policies {
+  """
+  The Owner policy (PolicyType 32) designates which input index is the transaction owner.
+  This field will be null if the Owner policy is not set.
+  """
+  ownerInputIndex: U16
+}
+
+# --------------------------------
 # Contract
 # --------------------------------
 
@@ -210,6 +222,19 @@ type SearchResult {
   block: SearchBlock
   contract: SearchContract
   transaction: SearchTransaction
+  predicate: PredicateItem
+}
+
+type SearchFastResult {
+  block: SearchBlock
+  contract: SearchContract
+  transaction: SearchTransaction
+  predicate: PredicateItem
+}
+
+type SearchSlowResult {
+  account: SearchAccount
+  asset: Asset
 }
 
 # --------------------------------
@@ -224,6 +249,8 @@ type Query {
     last: Int
   ): ContractConnection!
   search(query: String!): SearchResult
+  searchFast(query: String!): SearchFastResult
+  searchSlow(query: String!): SearchSlowResult
   predicate(address: String!): PredicateItem
   tps: TPSConnection!
   statistics: StatisticsConnection!

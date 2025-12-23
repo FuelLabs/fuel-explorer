@@ -124,14 +124,29 @@ export default class NewAddBlockRange {
           }
           const contractIds = this.getContractIds(transactionData.outputs);
           for (const contractId of contractIds) {
-            const contract = (await client.sdk.contract({ id: contractId }))
-              .data.contract;
-            if (contract) {
-              queries.push({
-                statement:
-                  'insert into indexer.contracts (contract_hash, data) values ($1, $2) on conflict do nothing',
-                params: [contract.id, contract],
-              });
+            try {
+              logger.debug('Consumer', `Fetching contract: ${contractId}`);
+              const contract = (await client.sdk.contract({ id: contractId }))
+                .data.contract;
+              if (contract) {
+                logger.debug(
+                  'Consumer',
+                  `Contract fetched successfully: ${contractId}`,
+                );
+                queries.push({
+                  statement:
+                    'insert into indexer.contracts (contract_hash, data) values ($1, $2) on conflict (contract_hash) do update set data = excluded.data',
+                  params: [contract.id, contract],
+                });
+              } else {
+                logger.error('Consumer', `Contract not found: ${contractId}`);
+              }
+            } catch (e: any) {
+              logger.error(
+                'Consumer',
+                `Error fetching contract ${contractId}: ${e.message}`,
+              );
+              // Continue processing other contracts even if one fails
             }
           }
         }
