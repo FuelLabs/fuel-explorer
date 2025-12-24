@@ -1,14 +1,16 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { HexAddress } from 'app-commons';
+import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
 import { BN, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
+import { PendingSequencerOperationType } from '~staking/systems/Core/hooks/usePendingTransactions';
 import {
   type AssetRate,
   AssetsRateService,
 } from '~staking/systems/Core/services/AssetsRateService';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
+import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
 import { WithdrawNewService } from '~staking/systems/Staking/services/withdrawNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
@@ -26,6 +28,8 @@ export interface WithdrawNewDialogContext {
   // Errors
   formError?: string | null;
   withdrawError?: string | null;
+  // Transaction tracking
+  transactionHash?: HexAddress;
 }
 
 type WithdrawNewMachineServices = {
@@ -210,16 +214,46 @@ export const withdrawNewDialogMachine = createMachine(
           src: 'submitWithdraw',
           onDone: {
             target: 'finalized',
-            actions: (ctx, event) => {
-              if (!ctx.queryClient) return;
-              // TempStakingTransactions.addTransaction(ctx.queryClient, {
-              //   hash: 'test',
-              // });
-              // Safe type checking for XState's "done" events
-              if (!event.type.startsWith('done.invoke')) return;
+            actions: assign((ctx, event) => {
+              const txHash = event.data;
 
-              WithdrawNewService.showSuccessToast(event.data);
-            },
+              // Add pending sequencer operation to track
+              if (ctx.queryClient && ctx.walletClient?.account?.address) {
+                const queryData =
+                  ctx.queryClient.getQueryData<any[]>(
+                    QUERY_KEYS.pendingTransactions(
+                      ctx.walletClient.account.address,
+                    ),
+                  ) ?? [];
+
+                ctx.queryClient.setQueryData(
+                  QUERY_KEYS.pendingTransactions(
+                    ctx.walletClient.account.address,
+                  ),
+                  [
+                    ...queryData,
+                    {
+                      type: PendingSequencerOperationType.Withdraw,
+                      layer: 'sequencer',
+                      hash: txHash, // Use the actual tx hash for unique identification
+                      token: TOKENS[FuelToken.V2].token,
+                      symbol: 'FUEL',
+                      sequencerHash: txHash,
+                      formatted: ctx.amount?.format() ?? '0',
+                      displayed: false,
+                      completed: false,
+                      startedAt: Date.now(),
+                    },
+                  ],
+                );
+              }
+
+              WithdrawNewService.showSuccessToast(txHash);
+
+              return {
+                transactionHash: txHash,
+              };
+            }),
           },
           onError: {
             target: 'reviewing',
