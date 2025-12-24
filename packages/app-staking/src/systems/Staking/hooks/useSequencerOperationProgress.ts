@@ -2,10 +2,11 @@ import { useMemo } from 'react';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import {
   PendingSequencerOperationType,
-  PendingTransactionTypeL1,
+  type PendingTransactionTypeL1,
   isPendingSequencerOperation,
   usePendingTransactions,
 } from '~staking/systems/Core/hooks/usePendingTransactions';
+import { GLOBAL_DISABLED_ACTIONS } from './useDisabledL1Actions/constants';
 import { useSequencerOperationStatus } from './useSequencerOperationStatus';
 
 export interface ProgressInfo {
@@ -80,46 +81,14 @@ export const useSequencerOperationProgress = (
 };
 
 /**
- * Check if an operation blocks a specific L1 action
+ * Check if an operation blocks a specific L1 action.
+ * Uses the same blocking rules as constants.ts to ensure consistency.
  */
 function doesOperationBlockAction(
   operation: PendingSequencerOperationType,
   action: PendingTransactionTypeL1,
 ): boolean {
-  const blockingMap: Record<
-    PendingSequencerOperationType,
-    PendingTransactionTypeL1[]
-  > = {
-    [PendingSequencerOperationType.WithdrawDelegatorReward]: [
-      PendingTransactionTypeL1.WithdrawStart,
-      PendingTransactionTypeL1.Delegate,
-      PendingTransactionTypeL1.Undelegate,
-      PendingTransactionTypeL1.Redelegate,
-      PendingTransactionTypeL1.ClaimReward,
-    ],
-    [PendingSequencerOperationType.WithdrawCommission]: [
-      PendingTransactionTypeL1.ClaimReward,
-    ],
-    [PendingSequencerOperationType.BeginRedelegate]: [
-      PendingTransactionTypeL1.Delegate,
-      PendingTransactionTypeL1.Undelegate,
-      PendingTransactionTypeL1.Redelegate,
-    ],
-    [PendingSequencerOperationType.Undelegate]: [
-      PendingTransactionTypeL1.Delegate,
-      PendingTransactionTypeL1.Undelegate,
-      PendingTransactionTypeL1.Redelegate,
-    ],
-    [PendingSequencerOperationType.Withdraw]: [
-      PendingTransactionTypeL1.WithdrawStart,
-      PendingTransactionTypeL1.Delegate,
-      PendingTransactionTypeL1.Undelegate,
-      PendingTransactionTypeL1.Redelegate,
-      PendingTransactionTypeL1.ClaimReward,
-    ],
-  };
-
-  return blockingMap[operation]?.includes(action) ?? false;
+  return GLOBAL_DISABLED_ACTIONS[operation]?.[action] ?? false;
 }
 
 /**
