@@ -34,10 +34,8 @@ export const useSequencerOperationCompletion = () => {
     (tx) => isPendingSequencerOperation(tx) && !tx.completed,
   ) as PendingSequencerOperation | undefined;
 
-  // Get the startedAt timestamp from the operation (fallback to current time)
-  const startedAt = incompleteSequencerOp?.hash
-    ? Date.now() - 1000 // Default to just started if no timestamp
-    : undefined;
+  // Get the startedAt timestamp from the operation (use the stored value, fallback to just started)
+  const startedAt = incompleteSequencerOp?.startedAt ?? Date.now();
 
   // Monitor the status of the pending operation
   const { data: operationStatus, hasExceededTimeout } =

@@ -80,13 +80,15 @@ function getBlockingMessage(
 ): string {
   switch (operation) {
     case PendingSequencerOperationType.WithdrawDelegatorReward:
-      return `Your claim rewards transaction is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to withdraw.${validator ? ` (Validator: ${validator})` : ''}`;
+      return `Your claim rewards transaction is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.${validator ? ` (Validator: ${validator})` : ''}`;
     case PendingSequencerOperationType.WithdrawCommission:
       return `Your commission withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to claim rewards.${validator ? ` (Validator: ${validator})` : ''}`;
     case PendingSequencerOperationType.BeginRedelegate:
       return `Your redelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to make other delegation changes.${validator ? ` (Validator: ${validator})` : ''}`;
     case PendingSequencerOperationType.Undelegate:
       return `Your undelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to delegate or undelegate again.${validator ? ` (Validator: ${validator})` : ''}`;
+    case PendingSequencerOperationType.Withdraw:
+      return `Your withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.`;
     default:
       return `A pending sequencer operation is being processed. Once confirmed (usually 1-3 minutes), you'll be able to proceed.`;
   }

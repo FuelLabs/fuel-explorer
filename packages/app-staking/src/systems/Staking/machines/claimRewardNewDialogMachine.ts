@@ -187,7 +187,7 @@ export const claimRewardNewMachine = createMachine(
                     {
                       type: PendingSequencerOperationType.WithdrawDelegatorReward,
                       layer: 'sequencer',
-                      hash: ctx.walletClient.account.address,
+                      hash: txHash, // Use the actual tx hash for unique identification
                       token: ctx.walletClient.account.address,
                       symbol: 'FUEL',
                       sequencerHash: txHash,
@@ -195,6 +195,7 @@ export const claimRewardNewMachine = createMachine(
                       validator: ctx.validator,
                       displayed: false,
                       completed: false,
+                      startedAt: Date.now(),
                     },
                   ],
                 );

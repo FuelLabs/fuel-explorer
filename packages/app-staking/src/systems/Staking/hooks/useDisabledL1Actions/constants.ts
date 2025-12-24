@@ -37,9 +37,13 @@ export const GLOBAL_DISABLED_ACTIONS: Partial<
   },
   // Sequencer operation blocking rules
   [PendingSequencerOperationType.WithdrawDelegatorReward]: {
-    // Block WithdrawStart and Delegate while rewards are being withdrawn on sequencer
+    // Block all staking operations while rewards are being claimed on sequencer
+    // This prevents users from making changes before their rewards are credited
     [PendingTransactionTypeL1.WithdrawStart]: true,
     [PendingTransactionTypeL1.Delegate]: true,
+    [PendingTransactionTypeL1.Undelegate]: true,
+    [PendingTransactionTypeL1.Redelegate]: true,
+    [PendingTransactionTypeL1.ClaimReward]: true,
   },
   [PendingSequencerOperationType.BeginRedelegate]: {
     [PendingTransactionTypeL1.Delegate]: true,
@@ -50,6 +54,14 @@ export const GLOBAL_DISABLED_ACTIONS: Partial<
     [PendingTransactionTypeL1.Delegate]: true,
     [PendingTransactionTypeL1.Undelegate]: true,
     [PendingTransactionTypeL1.Redelegate]: true,
+  },
+  [PendingSequencerOperationType.Withdraw]: {
+    // Block staking operations while withdrawal is being processed on sequencer
+    [PendingTransactionTypeL1.WithdrawStart]: true,
+    [PendingTransactionTypeL1.Delegate]: true,
+    [PendingTransactionTypeL1.Undelegate]: true,
+    [PendingTransactionTypeL1.Redelegate]: true,
+    [PendingTransactionTypeL1.ClaimReward]: true,
   },
 };
 
@@ -89,6 +101,7 @@ const sequencerOperationLabel: Record<PendingSequencerOperationType, string> = {
   [PendingSequencerOperationType.WithdrawCommission]: 'Withdraw Commission',
   [PendingSequencerOperationType.BeginRedelegate]: 'Redelegate',
   [PendingSequencerOperationType.Undelegate]: 'Undelegate',
+  [PendingSequencerOperationType.Withdraw]: 'Withdraw',
 };
 
 /**

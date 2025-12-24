@@ -245,7 +245,7 @@ function _ReviewStake({
             className="rounded-md flex-1"
             size="3"
             onClick={onBack}
-            disabled={isSubmitting || sequencerBlocking.isBlocked}
+            disabled={isSubmitting}
           >
             ← Back
           </Button>

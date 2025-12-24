@@ -233,15 +233,16 @@ export const withdrawNewDialogMachine = createMachine(
                   [
                     ...queryData,
                     {
-                      type: PendingSequencerOperationType.WithdrawDelegatorReward,
+                      type: PendingSequencerOperationType.Withdraw,
                       layer: 'sequencer',
-                      hash: ctx.walletClient.account.address,
+                      hash: txHash, // Use the actual tx hash for unique identification
                       token: ctx.walletClient.account.address,
                       symbol: 'FUEL',
                       sequencerHash: txHash,
                       formatted: ctx.amount?.format() ?? '0',
                       displayed: false,
                       completed: false,
+                      startedAt: Date.now(),
                     },
                   ],
                 );

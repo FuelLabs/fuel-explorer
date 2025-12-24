@@ -107,6 +107,13 @@ function doesOperationBlockAction(
       PendingTransactionTypeL1.Undelegate,
       PendingTransactionTypeL1.Redelegate,
     ],
+    [PendingSequencerOperationType.Withdraw]: [
+      PendingTransactionTypeL1.WithdrawStart,
+      PendingTransactionTypeL1.Delegate,
+      PendingTransactionTypeL1.Undelegate,
+      PendingTransactionTypeL1.Redelegate,
+      PendingTransactionTypeL1.ClaimReward,
+    ],
   };
 
   return blockingMap[operation]?.includes(action) ?? false;
@@ -158,6 +165,8 @@ function getOperationName(operation: PendingSequencerOperationType): string {
       return 'redelegation';
     case PendingSequencerOperationType.Undelegate:
       return 'undelegation';
+    case PendingSequencerOperationType.Withdraw:
+      return 'withdrawal';
     default:
       return 'operation';
   }

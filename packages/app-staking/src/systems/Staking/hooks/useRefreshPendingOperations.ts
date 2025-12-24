@@ -1,12 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 import {
   isPendingSequencerOperation,
   usePendingTransactions,
 } from '~staking/systems/Core/hooks/usePendingTransactions';
+import { cosmosApi } from '~staking/systems/Core/utils/api';
 import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
-import { useSequencerOperationStatus } from './useSequencerOperationStatus';
 
 /**
  * Hook that provides a manual way to check and update the status of pending sequencer operations.
@@ -25,6 +25,7 @@ export const useRefreshPendingOperations = () => {
   const queryClient = useQueryClient();
   const account = useAccount();
   const { data: pendingTransactions } = usePendingTransactions();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Collect all pending sequencer operation hashes
   const pendingHashes =
@@ -32,46 +33,51 @@ export const useRefreshPendingOperations = () => {
       ?.filter((tx) => isPendingSequencerOperation(tx) && !tx.completed)
       .map((tx) => tx.sequencerHash) ?? [];
 
-  // Check status of all pending operations
-  const statusChecks = pendingHashes.map((hash) =>
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useSequencerOperationStatus(hash),
-  );
-
-  const isRefreshing = statusChecks.some((check) => check.isLoading);
-
   const refreshPendingOperations = useCallback(async () => {
-    if (!account?.address || !pendingTransactions) return;
+    if (!account?.address || !pendingTransactions || pendingHashes.length === 0)
+      return;
 
-    // Update all completed operations in the cache
-    queryClient.setQueryData(
-      QUERY_KEYS.pendingTransactions(account.address),
-      (data: any[] = []) => {
-        return data.map((tx) => {
-          if (!isPendingSequencerOperation(tx) || tx.completed) {
-            return tx;
+    setIsRefreshing(true);
+
+    try {
+      // Check status of all pending operations in parallel
+      const statusResults = await Promise.all(
+        pendingHashes.map(async (hash) => {
+          try {
+            const response = await cosmosApi.get(
+              `/cosmos/tx/v1beta1/txs/${hash}`,
+            );
+            return { hash, isCompleted: response.status === 200 };
+          } catch {
+            return { hash, isCompleted: false };
           }
+        }),
+      );
 
-          // Check if this operation's status query has completed
-          const statusQuery = statusChecks.find(
-            (check) => check.data?.isCompleted,
-          );
+      // Build a map of completed hashes
+      const completedHashes = new Set(
+        statusResults.filter((r) => r.isCompleted).map((r) => r.hash),
+      );
 
-          return statusQuery?.data?.isCompleted
-            ? { ...tx, completed: true }
-            : tx;
-        });
-      },
-    );
+      // Update all completed operations in the cache
+      queryClient.setQueryData(
+        QUERY_KEYS.pendingTransactions(account.address),
+        (data: any[] = []) => {
+          return data.map((tx) => {
+            if (!isPendingSequencerOperation(tx) || tx.completed) {
+              return tx;
+            }
 
-    // Refetch all pending operation statuses
-    statusChecks.forEach((check) => {
-      if (check.refetch) {
-        // @ts-ignore
-        check.refetch();
-      }
-    });
-  }, [account?.address, queryClient, pendingTransactions, statusChecks]);
+            return completedHashes.has(tx.sequencerHash)
+              ? { ...tx, completed: true }
+              : tx;
+          });
+        },
+      );
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [account?.address, queryClient, pendingTransactions, pendingHashes]);
 
   return {
     refreshPendingOperations,

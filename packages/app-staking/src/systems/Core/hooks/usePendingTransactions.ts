@@ -26,6 +26,7 @@ export enum PendingSequencerOperationType {
   WithdrawCommission = 'WITHDRAW_COMMISSION',
   BeginRedelegate = 'BEGIN_REDELEGATE',
   Undelegate = 'UNDELEGATE',
+  Withdraw = 'WITHDRAW', // Sequencer withdraw operation (not claim rewards)
 }
 
 type PendingTransactionBase = {
@@ -52,6 +53,7 @@ export interface PendingSequencerOperation extends PendingTransactionBase {
   layer: 'sequencer';
   sequencerHash: string;
   eta?: string;
+  startedAt?: number; // Timestamp when the operation was initiated
 }
 
 export type PendingTransaction =
