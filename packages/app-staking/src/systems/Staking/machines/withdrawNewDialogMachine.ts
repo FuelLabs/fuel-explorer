@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { HexAddress } from 'app-commons';
+import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
 import { BN, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
@@ -236,7 +236,7 @@ export const withdrawNewDialogMachine = createMachine(
                       type: PendingSequencerOperationType.Withdraw,
                       layer: 'sequencer',
                       hash: txHash, // Use the actual tx hash for unique identification
-                      token: ctx.walletClient.account.address,
+                      token: TOKENS[FuelToken.V2].token,
                       symbol: 'FUEL',
                       sequencerHash: txHash,
                       formatted: ctx.amount?.format() ?? '0',

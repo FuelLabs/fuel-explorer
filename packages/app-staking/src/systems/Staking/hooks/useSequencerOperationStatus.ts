@@ -182,8 +182,9 @@ export const useSequencerOperationStatus = (
     },
     enabled: !!txHash,
     // Poll every 5 seconds until the operation completes
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Stop polling once completed, failed, or timed out
+      const data = query.state.data;
       if (data?.isCompleted || data?.isFailed || data?.hasExceededTimeout)
         return false;
       return 5000;

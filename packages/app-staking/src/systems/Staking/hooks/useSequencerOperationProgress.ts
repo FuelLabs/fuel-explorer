@@ -93,6 +93,9 @@ function doesOperationBlockAction(
     [PendingSequencerOperationType.WithdrawDelegatorReward]: [
       PendingTransactionTypeL1.WithdrawStart,
       PendingTransactionTypeL1.Delegate,
+      PendingTransactionTypeL1.Undelegate,
+      PendingTransactionTypeL1.Redelegate,
+      PendingTransactionTypeL1.ClaimReward,
     ],
     [PendingSequencerOperationType.WithdrawCommission]: [
       PendingTransactionTypeL1.ClaimReward,
