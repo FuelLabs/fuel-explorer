@@ -30,6 +30,10 @@ export async function getFuelWalletTestHelper() {
 }
 
 export async function getFuelMnemonic() {
+  // Allow override via environment variable for testnet
+  if (process.env.E2E_FUEL_MNEMONIC) {
+    return process.env.E2E_FUEL_MNEMONIC;
+  }
   const utils = await ensureInitialized();
   return utils.FUEL_MNEMONIC;
 }
