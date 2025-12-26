@@ -1,0 +1,219 @@
+name: Testnet E2E Tests (Scheduled)
+
+on:
+  schedule:
+    # Every 6 hours: 0:00, 6:00, 12:00, 18:00 UTC
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allow manual testing
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'soft'
+        type: choice
+        options:
+          - soft
+          - hard
+          - all
+
+concurrency:
+  group: testnet-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testnet-e2e-soft:
+    name: Testnet E2E (Soft Tests)
+    runs-on: warp-ubuntu-latest-x64-4x
+    timeout-minutes: 30
+    env:
+      # Testnet configuration
+      VITE_FUEL_CHAIN_NAME: fuelTestnet
+      VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+      VITE_STAKING_ENV: TESTNET
+      FUEL_PROVIDER_URL: https://testnet.fuel.network/v1/graphql
+      E2E_TARGET_ENV: testnet
+      # Turbo cache
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+
+      - name: Create testnet .env file
+        run: |
+          cat > packages/app-explorer/.env << EOF
+          VITE_FUEL_CHAIN_NAME=fuelTestnet
+          VITE_FUEL_INDEXER_API=https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV=TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL=https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
+          EOF
+
+          cat > packages/graphql/.env << EOF
+          FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql
+          FUEL_CHAIN=testnet
+          EOF
+
+      - name: Build production for testnet
+        env:
+          NODE_ENV: production
+        run: pnpm build:prod
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run soft E2E tests
+        run: pnpm test:e2e-soft
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testnet-soft-report-${{ github.run_number }}
+          path: |
+            packages/e2e-tests/playwright-report/
+            packages/e2e-tests/test-results/
+          retention-days: 7
+
+  testnet-e2e-hard:
+    name: Testnet E2E (Hard Tests)
+    runs-on: warp-ubuntu-latest-x64-8x
+    timeout-minutes: 90
+    # Only run on manual trigger for now (until wallets are funded)
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.test_suite == 'hard' || github.event.inputs.test_suite == 'all')
+    env:
+      VITE_FUEL_CHAIN_NAME: fuelTestnet
+      VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+      VITE_STAKING_ENV: TESTNET
+      FUEL_PROVIDER_URL: https://testnet.fuel.network/v1/graphql
+      ETH_CHAIN: sepolia
+      ETH_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+      E2E_TARGET_ENV: testnet
+      # Testnet wallet credentials (to be added as secrets)
+      E2E_ETH_MNEMONIC: ${{ secrets.E2E_TESTNET_ETH_MNEMONIC }}
+      E2E_FUEL_MNEMONIC: ${{ secrets.E2E_TESTNET_FUEL_MNEMONIC }}
+      E2E_ETH_PASSWORD: ${{ secrets.E2E_TESTNET_ETH_PASSWORD }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+
+      - name: Create testnet .env files
+        run: |
+          cat > packages/app-explorer/.env << EOF
+          VITE_FUEL_CHAIN_NAME=fuelTestnet
+          VITE_FUEL_INDEXER_API=https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV=TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL=https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
+          EOF
+
+          cat > packages/graphql/.env << EOF
+          FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql
+          FUEL_CHAIN=testnet
+          EOF
+
+      - name: Build production for testnet
+        env:
+          NODE_ENV: production
+        run: pnpm build:prod
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Setup Synpress (MetaMask)
+        run: xvfb-run --auto-servernum -- pnpm --filter=e2e-tests setup:synpress
+
+      - name: Run hard E2E tests
+        run: xvfb-run --auto-servernum -- pnpm --filter=e2e-tests exec playwright test --config=playwright.config.testnet.ts
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testnet-hard-report-${{ github.run_number }}
+          path: |
+            packages/e2e-tests/playwright-report/
+            packages/e2e-tests/test-results/
+            packages/e2e-tests/blob-report/
+          retention-days: 7
+
+  create-issue-on-failure:
+    name: Create Issue on Failure
+    runs-on: ubuntu-latest
+    needs: [testnet-e2e-soft]
+    if: always() && needs.testnet-e2e-soft.result == 'failure'
+    permissions:
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: testnet-*-report-*
+          path: test-reports
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Create failure issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: '🚨 Testnet E2E Tests Failed - Run #${{ github.run_number }}'
+          body: |
+            ## Testnet E2E Test Failure Report
+
+            **Workflow Run:** [${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            **Triggered:** ${{ github.event_name == 'schedule' && 'Scheduled (cron)' || 'Manual' }}
+            **Time:** ${{ github.event.head_commit.timestamp || github.event.created_at }}
+            **Commit:** ${{ github.sha }}
+            **Branch:** ${{ github.ref_name }}
+
+            ### Failed Job(s)
+
+            - ❌ Testnet E2E Tests (Soft)
+
+            ### Possible Causes
+
+            1. **Testnet Infrastructure Issue** - Fuel testnet or Sepolia may be experiencing downtime
+            2. **fuel-core Upgrade** - Recent testnet upgrade may have introduced breaking changes
+            3. **Explorer Bug** - Real bug in the explorer code that wasn't caught by PR tests
+            4. **Test Flakiness** - Timeout or network issues causing false positive
+
+            ### Next Steps
+
+            1. **Check Testnet Status**: Verify Fuel testnet is operational at https://testnet.fuel.network
+            2. **Review Logs**: Check the [workflow run logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            3. **Download Artifacts**: Get Playwright HTML report with screenshots/videos from artifacts
+            4. **Investigate**: Determine if this is infrastructure or a real bug
+            5. **Manual Test**: Run workflow manually again to check if issue persists
+
+            ### Artifacts
+
+            Download from the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}):
+            - Playwright HTML reports
+            - Screenshots and videos of failures
+            - Test traces for debugging
+
+            ---
+            *🤖 Auto-created by testnet-e2e-cron workflow. Close this issue once resolved.*
+          labels: |
+            e2e-failure
+            testnet
+            automated
+            needs-investigation
