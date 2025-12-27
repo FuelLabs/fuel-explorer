@@ -29,3 +29,15 @@ export const getNetworkTimeouts = () => {
     ? { transaction: 360000, polling: 60000 } // 6min tx, 1min poll
     : { transaction: 120000, polling: 10000 }; // 2min tx, 10s poll
 };
+
+export const getMetaMaskNetwork = () => {
+  if (isTestnetEnvironment()) {
+    return 'sepolia';
+  }
+  return 'localhost';
+};
+
+export const shouldSkipNetworkSwitch = () => {
+  // Skip network switching for testnet environments
+  return isTestnetEnvironment();
+};
