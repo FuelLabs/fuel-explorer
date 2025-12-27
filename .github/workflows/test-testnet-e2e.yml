@@ -1,0 +1,87 @@
+name: TEST - Testnet E2E (Delete After Testing)
+
+on:
+  push:
+    branches:
+      - '**'  # Run on all branches
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'soft'
+        type: choice
+        options:
+          - soft
+
+permissions:
+  contents: read
+
+jobs:
+  test-e2e-soft:
+    name: TEST Testnet E2E (Soft Tests)
+    runs-on: warp-ubuntu-latest-x64-4x
+    timeout-minutes: 30
+    env:
+      # Testnet configuration
+      VITE_FUEL_CHAIN_NAME: fuelTestnet
+      VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+      VITE_STAKING_ENV: TESTNET
+      FUEL_PROVIDER_URL: https://testnet.fuel.network/v1/graphql
+      E2E_TARGET_ENV: testnet
+      # Turbo cache
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+
+      - name: Create testnet .env file
+        run: |
+          cat > packages/app-explorer/.env << EOF
+          VITE_FUEL_CHAIN_NAME=fuelTestnet
+          VITE_FUEL_INDEXER_API=https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV=TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL=https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
+          EOF
+
+          cat > packages/graphql/.env << EOF
+          FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql
+          FUEL_CHAIN=testnet
+          EOF
+
+      - name: Verify environment variables
+        run: |
+          echo "VITE_FUEL_CHAIN_NAME=$VITE_FUEL_CHAIN_NAME"
+          echo "FUEL_PROVIDER_URL=$FUEL_PROVIDER_URL"
+          echo "E2E_TARGET_ENV=$E2E_TARGET_ENV"
+          cat packages/app-explorer/.env
+          cat packages/graphql/.env
+
+      - name: Build production for testnet
+        env:
+          NODE_ENV: production
+        run: pnpm build:prod
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run soft E2E tests
+        run: pnpm test:e2e-soft
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-soft-report-${{ github.run_number }}
+          path: |
+            packages/e2e-tests/playwright-report/
+            packages/e2e-tests/test-results/
+          retention-days: 3
