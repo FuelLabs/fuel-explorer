@@ -90,8 +90,13 @@ export const test = base.extend<{
       '--remote-debugging-port=9222',
     ];
 
+    // Add CI-specific browser args for stability
     if (process.env.CI) {
-      browserArgs.push('--disable-gpu');
+      browserArgs.push(
+        '--disable-gpu',
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+      );
     }
     // launch browser
     const context = await chromium.launchPersistentContext('', {
@@ -99,7 +104,9 @@ export const test = base.extend<{
       args: browserArgs,
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    // Dynamic initial wait: longer in CI for stability
+    const initialWaitMs = process.env.CI ? 30000 : 5000;
+    await new Promise((resolve) => setTimeout(resolve, initialWaitMs));
 
     // Get extensions data
     const extensions = await getExtensionsData(context);
@@ -124,11 +131,46 @@ export const test = base.extend<{
       metamaskId,
     );
     setMetaMask(metamask);
-    await metamask.importWallet(ETH_MNEMONIC);
-    try {
-      await metamask.switchNetwork('localhost');
-    } catch (_) {
-      // ignore if network already set or not required
+
+    // Import wallet with retry logic for CI stability
+    const maxRetries = 3;
+    let importSuccess = false;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        await metamask.importWallet(ETH_MNEMONIC);
+        importSuccess = true;
+        break;
+      } catch (error) {
+        if (attempt === maxRetries) {
+          throw new Error(
+            `Failed to import MetaMask wallet after ${maxRetries} attempts: ${error}`,
+          );
+        }
+        console.log(`MetaMask import attempt ${attempt} failed, retrying...`);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+    }
+
+    if (!importSuccess) {
+      throw new Error('Failed to import MetaMask wallet');
+    }
+
+    // Only switch network for localhost (skip for testnet/sepolia)
+    const isTestnet =
+      process.env.VITE_FUEL_CHAIN_NAME === 'fuelTestnet' ||
+      process.env.E2E_TARGET_ENV === 'testnet';
+
+    if (!isTestnet) {
+      try {
+        await metamask.switchNetwork('localhost');
+      } catch (_) {
+        // ignore if network already set or not required
+      }
+    }
+
+    // Additional stabilization wait in CI after MetaMask setup
+    if (process.env.CI) {
+      await new Promise((resolve) => setTimeout(resolve, 10000));
     }
     // Set context to playwright
     await use(context);
