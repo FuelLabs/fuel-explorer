@@ -20,6 +20,9 @@ concurrency:
   group: testnet-e2e-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   testnet-e2e-soft:
     name: Testnet E2E (Soft Tests)
