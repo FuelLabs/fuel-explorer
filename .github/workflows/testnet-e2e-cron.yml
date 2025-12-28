@@ -66,6 +66,10 @@ jobs:
       - name: Build production for testnet
         env:
           NODE_ENV: production
+          VITE_FUEL_CHAIN_NAME: fuelTestnet
+          VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV: TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL: https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
         run: pnpm build:prod
 
       - name: Install Playwright browsers
@@ -132,6 +136,10 @@ jobs:
       - name: Build production for testnet
         env:
           NODE_ENV: production
+          VITE_FUEL_CHAIN_NAME: fuelTestnet
+          VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV: TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL: https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
         run: pnpm build:prod
 
       - name: Install Playwright browsers
