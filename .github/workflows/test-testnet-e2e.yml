@@ -78,7 +78,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run soft E2E tests
-        run: xvfb-run --auto-servernum -- pnpm test:e2e-soft
+        run: xvfb-run --auto-servernum -- pnpm exec playwright test --config=packages/e2e-tests/playwright-soft-testnet.config.ts
 
       - name: Upload test artifacts
         uses: actions/upload-artifact@v4
