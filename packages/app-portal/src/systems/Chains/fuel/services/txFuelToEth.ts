@@ -278,16 +278,19 @@ export class TxFuelToEthService {
 
     const lastFinalizedBlock = await FUEL_CHAIN_STATE.getLastBlockFinalized({
       ethPublicClient,
+      timeToFinalize: timeToFinalize as bigint,
     });
-    const lastFinalizedFuelBlock = await fuelProvider.getBlock(
-      lastFinalizedBlock.fuelBlockHash,
-    );
+    if (lastFinalizedBlock) {
+      const lastFinalizedFuelBlock = await fuelProvider.getBlock(
+        lastFinalizedBlock.fuelBlockHash,
+      );
 
-    // If the last finalized block is greater than the withdraw block, we can return the last finalized block as committed
-    if (lastFinalizedFuelBlock?.height.gte(withdrawBlockHeight)) {
-      return {
-        blockHashCommited: lastFinalizedBlock.fuelBlockHash as HexAddress,
-      };
+      // If the last finalized block is greater than the withdraw block, we can return the last finalized block as committed
+      if (lastFinalizedFuelBlock?.height.gte(withdrawBlockHeight)) {
+        return {
+          blockHashCommited: lastFinalizedBlock.fuelBlockHash as HexAddress,
+        };
+      }
     }
 
     // Add + 1 to the block height to wait the next block
@@ -314,10 +317,15 @@ export class TxFuelToEthService {
       };
     }
 
-    const lastBlockCommited = await FUEL_CHAIN_STATE.getLastBlockCommited({
-      ethPublicClient,
-    });
-    const dateLastCommit = new Date(Number(lastBlockCommited.timestamp) * 1000);
+    const { lastEthBlockCommitted } =
+      await FUEL_CHAIN_STATE.getLastBlockCommited({
+        ethPublicClient,
+        fuelProvider,
+      });
+
+    const dateLastCommit = new Date(
+      Number(lastEthBlockCommitted.timestamp) * 1000,
+    );
     // It's safe to convert bigint to number in this case as the values of
     // blockPerCommitInterval and timeToFinalize are not too big.
     const nextCommitTime = Number(blocksPerCommitInterval);

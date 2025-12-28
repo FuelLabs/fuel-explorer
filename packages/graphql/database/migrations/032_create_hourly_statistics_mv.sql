@@ -31,7 +31,7 @@ VALUES (
   1800,
   'pending'
 )
-ON CONFLICT DO NOTHING;
+ON CONFLICT (query) DO NOTHING;
 
 -- Add ANALYZE job for this view (daily)
 INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
@@ -41,4 +41,4 @@ VALUES (
   86400,
   'pending'
 )
-ON CONFLICT DO NOTHING;
+ON CONFLICT (query) DO NOTHING;

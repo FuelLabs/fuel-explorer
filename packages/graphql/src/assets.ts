@@ -5,7 +5,7 @@ import Timer from './infra/timer/Timer';
 async function main() {
   logger.debug('Timer', 'Starting timer services');
   const indexAssetsRate = new IndexAssetsRate();
-  Timer.register(300000, indexAssetsRate.execute);
+  Timer.register(300000, () => indexAssetsRate.execute());
 }
 
 main().catch(async (error: any) => {
