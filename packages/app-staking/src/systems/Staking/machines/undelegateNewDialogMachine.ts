@@ -11,7 +11,7 @@ import {
 } from '~staking/systems/Core/services/AssetsRateService';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
-import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
+import { addPendingL1Transaction } from '~staking/systems/Core/utils/query';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 import { UndelegateNewService } from '../services/undelegateNewService/undelegateNewService';
 
@@ -213,15 +213,10 @@ export const undelegateNewDialogMachine = createMachine(
 
               const txHash = event.data;
 
-              if (ctx.walletClient?.account?.address) {
-                const queryKey = QUERY_KEYS.pendingTransactions(
+              if (ctx.queryClient && ctx.walletClient?.account?.address) {
+                addPendingL1Transaction(
+                  ctx.queryClient,
                   ctx.walletClient.account.address,
-                );
-                const queryData =
-                  ctx.queryClient.getQueryData<any[]>(queryKey) ?? [];
-
-                ctx.queryClient.setQueryData(queryKey, [
-                  ...queryData,
                   {
                     type: PendingTransactionTypeL1.Undelegate,
                     layer: 'l1',
@@ -230,12 +225,8 @@ export const undelegateNewDialogMachine = createMachine(
                     symbol: 'FUEL',
                     formatted: ctx.amount?.toString() ?? '0',
                     validator: ctx.validator,
-                    displayed: false,
-                    completed: false,
                   },
-                ]);
-
-                ctx.queryClient.invalidateQueries({ queryKey });
+                );
               }
 
               UndelegateNewService.showSuccessToast(txHash);

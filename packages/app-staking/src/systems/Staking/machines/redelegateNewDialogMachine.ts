@@ -11,7 +11,7 @@ import {
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
-import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
+import { addPendingL1Transaction } from '~staking/systems/Core/utils/query';
 import { RedelegateNewService } from '~staking/systems/Staking/services/redelegateNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
@@ -241,27 +241,16 @@ export const redelegateNewDialogMachine = createMachine(
 
               const txHash = event.data;
 
-              if (ctx.ethAccount) {
-                const queryKey = QUERY_KEYS.pendingTransactions(ctx.ethAccount);
-                const queryData =
-                  ctx.queryClient.getQueryData<any[]>(queryKey) ?? [];
-
-                ctx.queryClient.setQueryData(queryKey, [
-                  ...queryData,
-                  {
-                    type: PendingTransactionTypeL1.Redelegate,
-                    layer: 'l1',
-                    hash: txHash,
-                    token: TOKENS[FuelToken.V2].token,
-                    symbol: 'FUEL',
-                    formatted: ctx.amount?.toString() ?? '0',
-                    validator: ctx.fromValidator,
-                    displayed: false,
-                    completed: false,
-                  },
-                ]);
-
-                ctx.queryClient.invalidateQueries({ queryKey });
+              if (ctx.queryClient && ctx.ethAccount) {
+                addPendingL1Transaction(ctx.queryClient, ctx.ethAccount, {
+                  type: PendingTransactionTypeL1.Redelegate,
+                  layer: 'l1',
+                  hash: txHash,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amount?.toString() ?? '0',
+                  validator: ctx.fromValidator,
+                });
               }
 
               RedelegateNewService.showSuccessToast(txHash);

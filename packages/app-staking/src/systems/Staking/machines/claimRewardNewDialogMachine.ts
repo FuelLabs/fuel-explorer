@@ -11,7 +11,7 @@ import {
 } from '~staking/systems/Core/services/AssetsRateService';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
-import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
+import { addPendingL1Transaction } from '~staking/systems/Core/utils/query';
 import { ClaimRewardNewService } from '~staking/systems/Staking/services/claimRewardNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
@@ -170,14 +170,9 @@ export const claimRewardNewMachine = createMachine(
               const txHash = event.data;
 
               if (ctx.queryClient && ctx.walletClient?.account?.address) {
-                const queryKey = QUERY_KEYS.pendingTransactions(
+                addPendingL1Transaction(
+                  ctx.queryClient,
                   ctx.walletClient.account.address,
-                );
-                const queryData =
-                  ctx.queryClient.getQueryData<any[]>(queryKey) ?? [];
-
-                ctx.queryClient.setQueryData(queryKey, [
-                  ...queryData,
                   {
                     type: PendingTransactionTypeL1.ClaimReward,
                     layer: 'l1',
@@ -186,12 +181,8 @@ export const claimRewardNewMachine = createMachine(
                     symbol: 'FUEL',
                     formatted: '0',
                     validator: ctx.validator,
-                    displayed: false,
-                    completed: false,
                   },
-                ]);
-
-                ctx.queryClient.invalidateQueries({ queryKey });
+                );
               }
 
               ClaimRewardNewService.showSuccessToast(txHash);

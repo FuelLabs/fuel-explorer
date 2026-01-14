@@ -10,7 +10,7 @@ import {
 } from '~staking/systems/Core/services/AssetsRateService';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
-import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
+import { addPendingL1Transaction } from '~staking/systems/Core/utils/query';
 import { WithdrawNewService } from '~staking/systems/Staking/services/withdrawNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
@@ -218,14 +218,9 @@ export const withdrawNewDialogMachine = createMachine(
               const txHash = event.data;
 
               if (ctx.queryClient && ctx.walletClient?.account?.address) {
-                const queryKey = QUERY_KEYS.pendingTransactions(
+                addPendingL1Transaction(
+                  ctx.queryClient,
                   ctx.walletClient.account.address,
-                );
-                const queryData =
-                  ctx.queryClient.getQueryData<any[]>(queryKey) ?? [];
-
-                ctx.queryClient.setQueryData(queryKey, [
-                  ...queryData,
                   {
                     type: PendingTransactionTypeL1.WithdrawStart,
                     layer: 'l1',
@@ -233,12 +228,8 @@ export const withdrawNewDialogMachine = createMachine(
                     token: TOKENS[FuelToken.V2].token,
                     symbol: 'FUEL',
                     formatted: ctx.amount?.format() ?? '0',
-                    displayed: false,
-                    completed: false,
                   },
-                ]);
-
-                ctx.queryClient.invalidateQueries({ queryKey });
+                );
               }
 
               WithdrawNewService.showSuccessToast(txHash);
