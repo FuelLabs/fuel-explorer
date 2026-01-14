@@ -223,7 +223,7 @@ export const undelegateNewDialogMachine = createMachine(
                     hash: txHash,
                     token: TOKENS[FuelToken.V2].token,
                     symbol: 'FUEL',
-                    formatted: ctx.amount?.toString() ?? '0',
+                    formatted: ctx.amount?.format() ?? '0',
                     validator: ctx.validator,
                   },
                 );
