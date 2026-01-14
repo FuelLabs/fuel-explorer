@@ -169,8 +169,6 @@ export const claimRewardNewMachine = createMachine(
             actions: assign((ctx, event) => {
               const txHash = event.data;
 
-              // Add pending L1 transaction to track
-              // ClaimReward is an L1 operation that triggers sequencer actions automatically
               if (ctx.queryClient && ctx.walletClient?.account?.address) {
                 const queryKey = QUERY_KEYS.pendingTransactions(
                   ctx.walletClient.account.address,
@@ -193,7 +191,6 @@ export const claimRewardNewMachine = createMachine(
                   },
                 ]);
 
-                // Invalidate to ensure subscribers re-render
                 ctx.queryClient.invalidateQueries({ queryKey });
               }
 

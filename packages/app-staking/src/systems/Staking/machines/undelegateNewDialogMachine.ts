@@ -213,7 +213,6 @@ export const undelegateNewDialogMachine = createMachine(
 
               const txHash = event.data;
 
-              // Add pending L1 transaction to track
               if (ctx.walletClient?.account?.address) {
                 const queryKey = QUERY_KEYS.pendingTransactions(
                   ctx.walletClient.account.address,
@@ -236,7 +235,6 @@ export const undelegateNewDialogMachine = createMachine(
                   },
                 ]);
 
-                // Invalidate to ensure subscribers re-render
                 ctx.queryClient.invalidateQueries({ queryKey });
               }
 

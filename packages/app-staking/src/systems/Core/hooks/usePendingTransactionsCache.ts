@@ -79,7 +79,6 @@ export const usePendingTransactionsCache = () => {
         );
       });
 
-      // Force subscribers to re-render by invalidating the query
       queryClient.invalidateQueries({ queryKey });
     },
     [queryClient, account?.address],

@@ -217,7 +217,6 @@ export const withdrawNewDialogMachine = createMachine(
             actions: assign((ctx, event) => {
               const txHash = event.data;
 
-              // Add pending L1 transaction to track
               if (ctx.queryClient && ctx.walletClient?.account?.address) {
                 const queryKey = QUERY_KEYS.pendingTransactions(
                   ctx.walletClient.account.address,
@@ -239,7 +238,6 @@ export const withdrawNewDialogMachine = createMachine(
                   },
                 ]);
 
-                // Invalidate to ensure subscribers re-render
                 ctx.queryClient.invalidateQueries({ queryKey });
               }
 

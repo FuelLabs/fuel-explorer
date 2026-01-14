@@ -17,19 +17,6 @@ export interface OperationBlockingInfo {
   validator?: SequencerValidatorAddress;
 }
 
-/**
- * Hook to check if pending operations (both sequencer and L1) are blocking a specific action.
- * Returns blocking information and a user-friendly message.
- *
- * This is used in the review step of dialogs to prevent users from submitting
- * conflicting transactions while another operation is in progress.
- *
- * Example:
- * const { isBlocked, blockingMessage } = useCheckSequencerOperationBlocking(
- *   PendingTransactionTypeL1.Redelegate,
- *   validator
- * );
- */
 export const useCheckSequencerOperationBlocking = (
   action: PendingTransactionTypeL1,
   validatorAddress?: SequencerValidatorAddress,
@@ -46,7 +33,6 @@ export const useCheckSequencerOperationBlocking = (
         continue;
       }
 
-      // Check global blocking rules (applies to both L1 and sequencer operations)
       const globalRules = GLOBAL_DISABLED_ACTIONS[tx.type];
       if (globalRules?.[action]) {
         return {
@@ -74,9 +60,6 @@ export const useCheckSequencerOperationBlocking = (
   }, [pendingTransactions, action, validatorAddress]);
 };
 
-/**
- * Get a user-friendly message for why an action is blocked
- */
 function getBlockingMessage(
   operation: PendingSequencerOperationType | PendingTransactionTypeL1,
   validator?: SequencerValidatorAddress,
@@ -84,7 +67,6 @@ function getBlockingMessage(
   const validatorSuffix = validator ? ` (Validator: ${validator})` : '';
 
   switch (operation) {
-    // Sequencer operations
     case PendingSequencerOperationType.WithdrawDelegatorReward:
       return `Your claim rewards transaction is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.${validatorSuffix}`;
     case PendingSequencerOperationType.WithdrawCommission:
@@ -96,7 +78,6 @@ function getBlockingMessage(
     case PendingSequencerOperationType.Withdraw:
       return `Your withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.`;
 
-    // L1 operations
     case PendingTransactionTypeL1.Delegate:
       return `Your delegation transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
     case PendingTransactionTypeL1.Undelegate:

@@ -241,7 +241,6 @@ export const redelegateNewDialogMachine = createMachine(
 
               const txHash = event.data;
 
-              // Add pending L1 transaction to track
               if (ctx.ethAccount) {
                 const queryKey = QUERY_KEYS.pendingTransactions(ctx.ethAccount);
                 const queryData =
@@ -262,7 +261,6 @@ export const redelegateNewDialogMachine = createMachine(
                   },
                 ]);
 
-                // Invalidate to ensure subscribers re-render
                 ctx.queryClient.invalidateQueries({ queryKey });
               }
 
