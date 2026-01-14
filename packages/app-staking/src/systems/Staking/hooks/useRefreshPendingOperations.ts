@@ -44,10 +44,12 @@ export const useRefreshPendingOperations = () => {
       const statusResults = await Promise.all(
         pendingHashes.map(async (hash) => {
           try {
-            const response = await cosmosApi.get(
+            const response = await cosmosApi.get<{ tx_response?: unknown }>(
               `/cosmos/tx/v1beta1/txs/${hash}`,
             );
-            return { hash, isCompleted: response.status === 200 };
+            // cosmosApi.get returns parsed JSON data, not HTTP response
+            // If tx_response exists, the transaction is on chain
+            return { hash, isCompleted: !!response?.tx_response };
           } catch {
             return { hash, isCompleted: false };
           }
@@ -59,10 +61,11 @@ export const useRefreshPendingOperations = () => {
         statusResults.filter((r) => r.isCompleted).map((r) => r.hash),
       );
 
-      // Update all completed operations in the cache
-      queryClient.setQueryData(
-        QUERY_KEYS.pendingTransactions(account.address),
-        (data: any[] = []) => {
+      if (completedHashes.size > 0) {
+        const queryKey = QUERY_KEYS.pendingTransactions(account.address);
+
+        // Update all completed operations in the cache
+        queryClient.setQueryData(queryKey, (data: any[] = []) => {
           return data.map((tx) => {
             if (!isPendingSequencerOperation(tx) || tx.completed) {
               return tx;
@@ -72,8 +75,11 @@ export const useRefreshPendingOperations = () => {
               ? { ...tx, completed: true }
               : tx;
           });
-        },
-      );
+        });
+
+        // Force subscribers to re-render by invalidating the query
+        queryClient.invalidateQueries({ queryKey });
+      }
     } finally {
       setIsRefreshing(false);
     }

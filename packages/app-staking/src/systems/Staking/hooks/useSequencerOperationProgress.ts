@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import {
+  type PendingSequencerOperation,
   PendingSequencerOperationType,
   type PendingTransactionTypeL1,
   isPendingSequencerOperation,
@@ -10,11 +11,28 @@ import { GLOBAL_DISABLED_ACTIONS } from './useDisabledL1Actions/constants';
 import { useSequencerOperationStatus } from './useSequencerOperationStatus';
 
 export interface ProgressInfo {
-  stage: 'pending' | 'included' | 'confirmed' | 'completed' | 'failed';
+  stage:
+    | 'pending'
+    | 'included'
+    | 'confirmed'
+    | 'completed'
+    | 'failed'
+    | 'timeout';
   progressPercentage: number;
   message: string;
   blocksSinceInclusion?: number;
   blockHeight?: string;
+}
+
+/**
+ * Check if an operation blocks a specific L1 action.
+ * Uses the same blocking rules as constants.ts to ensure consistency.
+ */
+function doesOperationBlockAction(
+  operation: PendingSequencerOperationType,
+  action: PendingTransactionTypeL1,
+): boolean {
+  return GLOBAL_DISABLED_ACTIONS[operation]?.[action] ?? false;
 }
 
 /**
@@ -33,10 +51,15 @@ export const useSequencerOperationProgress = (
 ): ProgressInfo | null => {
   const { data: pendingTransactions } = usePendingTransactions();
 
-  // Find the first incomplete sequencer operation that blocks this action
-  const blockingOperation = pendingTransactions?.find(
-    (tx) => isPendingSequencerOperation(tx) && !tx.completed,
-  );
+  // Find the first incomplete sequencer operation that actually blocks this action
+  const blockingOperation = useMemo(() => {
+    return pendingTransactions?.find(
+      (tx): tx is PendingSequencerOperation =>
+        isPendingSequencerOperation(tx) &&
+        !tx.completed &&
+        doesOperationBlockAction(tx.type, action),
+    );
+  }, [pendingTransactions, action]);
 
   // Query the status of the blocking operation
   const { data: operationStatus } = useSequencerOperationStatus(
@@ -54,15 +77,6 @@ export const useSequencerOperationProgress = (
       blocksSinceInclusion,
     } = operationStatus;
 
-    // Determine if this operation blocks the requested action
-    const blocksAction = doesOperationBlockAction(
-      blockingOperation.type,
-      action,
-    );
-    if (!blocksAction) {
-      return null;
-    }
-
     const message = getProgressMessage(
       blockingOperation.type,
       progressStage,
@@ -77,19 +91,8 @@ export const useSequencerOperationProgress = (
       blocksSinceInclusion,
       blockHeight: operationStatus.height,
     };
-  }, [blockingOperation, operationStatus, action, validatorAddress]);
+  }, [blockingOperation, operationStatus, validatorAddress]);
 };
-
-/**
- * Check if an operation blocks a specific L1 action.
- * Uses the same blocking rules as constants.ts to ensure consistency.
- */
-function doesOperationBlockAction(
-  operation: PendingSequencerOperationType,
-  action: PendingTransactionTypeL1,
-): boolean {
-  return GLOBAL_DISABLED_ACTIONS[operation]?.[action] ?? false;
-}
 
 /**
  * Get a progress-aware message for the user

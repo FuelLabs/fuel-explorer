@@ -69,14 +69,18 @@ export const usePendingTransactionsCache = () => {
 
   const markPendingTransactionAsCompleted = useCallback(
     (hash: string) => {
-      queryClient.setQueryData<PendingTransaction[]>(
-        QUERY_KEYS.pendingTransactions(account?.address),
-        (data = []) => {
-          return data.map((tx) =>
-            tx.hash === hash ? { ...tx, completed: true } : tx,
-          );
-        },
-      );
+      const queryKey = QUERY_KEYS.pendingTransactions(account?.address);
+
+      queryClient.setQueryData<PendingTransaction[]>(queryKey, (data = []) => {
+        return data.map((tx) =>
+          tx.hash === hash || tx.sequencerHash === hash
+            ? { ...tx, completed: true }
+            : tx,
+        );
+      });
+
+      // Force subscribers to re-render by invalidating the query
+      queryClient.invalidateQueries({ queryKey });
     },
     [queryClient, account?.address],
   );

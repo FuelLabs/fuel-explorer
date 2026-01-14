@@ -1,6 +1,6 @@
 import { useToast } from '@fuels/ui';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { invalidateQueries } from '~staking/systems/Core/utils/invalidateQueries';
 import { useWaitForEthBlockSync } from '~staking/systems/Staking/services/useWaitForEthBlockSync';
@@ -22,6 +22,10 @@ export function TransactionReceiptWatcher({
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { address } = useAccount();
+
+  // Track if we've already processed this transaction to prevent double toasts
+  const hasProcessedRef = useRef(false);
+  const hasShownErrorToastRef = useRef(false);
 
   const {
     removePendingTransaction,
@@ -48,7 +52,15 @@ export function TransactionReceiptWatcher({
     isConfirmed && (!waitForBlock || (targetReached && waitForBlock));
 
   useEffect(() => {
+    // Skip if we've already processed this confirmation
+    if (hasProcessedRef.current) {
+      return;
+    }
+
     if (isConfirmed) {
+      // Mark as processed immediately to prevent double processing
+      hasProcessedRef.current = true;
+
       const queries = transactionTypeInvalidations?.[transaction.type];
       const SequencerInvalidations = cosmosInvalidations[transaction.type]?.({
         address,
@@ -56,8 +68,14 @@ export function TransactionReceiptWatcher({
       if (SequencerInvalidations)
         invalidateQueries(queryClient, SequencerInvalidations);
       if (queries) invalidateQueries(queryClient, queries);
+
+      // Mark transaction as completed when confirmed on L1
+      // This unblocks UI actions immediately after L1 confirmation
+      markPendingTransactionAsCompleted(transaction?.hash);
+
       if (isCompleted) {
-        markPendingTransactionAsCompleted(transaction?.hash);
+        // Remove transaction from pending list only after full completion
+        // (including block sync for cosmos invalidations)
         if (transactionsToRemoveImmediately[transaction.type])
           removePendingTransaction(transaction.hash);
       }
@@ -70,8 +88,6 @@ export function TransactionReceiptWatcher({
         toast({
           title: `${transactionTypeLabel[transaction.type]} has been confirmed`,
           description: `${transaction.formatted} ${transaction.symbol}`,
-          // Just notify but don't remove failed pending transactions
-
           variant: 'success',
         });
       }
@@ -90,7 +106,12 @@ export function TransactionReceiptWatcher({
   ]);
 
   useEffect(() => {
+    // Skip if we've already shown the error toast
+    if (hasShownErrorToastRef.current) return;
+
     if (isError && !transaction?.displayed) {
+      hasShownErrorToastRef.current = true;
+
       updatePendingTransactionDisplayed(
         transaction.hash,
         true,

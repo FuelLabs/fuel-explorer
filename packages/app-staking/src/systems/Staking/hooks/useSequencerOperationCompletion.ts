@@ -1,6 +1,6 @@
 import { useToast } from '@fuels/ui';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 import {
   type PendingSequencerOperation,
@@ -30,12 +30,31 @@ export const useSequencerOperationCompletion = () => {
   const { data: pendingTransactions } = usePendingTransactions();
 
   // Get the first incomplete sequencer operation
-  const incompleteSequencerOp = pendingTransactions?.find(
-    (tx) => isPendingSequencerOperation(tx) && !tx.completed,
-  ) as PendingSequencerOperation | undefined;
+  const incompleteSequencerOp = useMemo(() => {
+    return pendingTransactions?.find(
+      (tx) => isPendingSequencerOperation(tx) && !tx.completed,
+    ) as PendingSequencerOperation | undefined;
+  }, [pendingTransactions]);
 
-  // Get the startedAt timestamp from the operation (use the stored value, fallback to just started)
-  const startedAt = incompleteSequencerOp?.startedAt ?? Date.now();
+  // Track the startedAt timestamp - use a ref to persist across renders
+  // This ensures we don't reset the timeout on every render
+  const fallbackStartedAtRef = useRef<number | null>(null);
+
+  const startedAt = useMemo(() => {
+    // If the operation has a stored startedAt, use it
+    if (incompleteSequencerOp?.startedAt) {
+      return incompleteSequencerOp.startedAt;
+    }
+    // Otherwise, use a stable fallback that doesn't change on re-renders
+    if (incompleteSequencerOp && !fallbackStartedAtRef.current) {
+      fallbackStartedAtRef.current = Date.now();
+    }
+    // Reset the ref if there's no incomplete operation
+    if (!incompleteSequencerOp) {
+      fallbackStartedAtRef.current = null;
+    }
+    return fallbackStartedAtRef.current ?? Date.now();
+  }, [incompleteSequencerOp]);
 
   // Monitor the status of the pending operation
   const { data: operationStatus, hasExceededTimeout } =
@@ -53,17 +72,19 @@ export const useSequencerOperationCompletion = () => {
     const shouldComplete = operationStatus?.isCompleted || hasExceededTimeout;
     if (!shouldComplete) return;
 
+    const queryKey = QUERY_KEYS.pendingTransactions(account.address);
+
     // Mark the operation as completed in the query cache
-    queryClient.setQueryData(
-      QUERY_KEYS.pendingTransactions(account.address),
-      (data: any[] = []) => {
-        return data.map((tx) =>
-          tx.sequencerHash === incompleteSequencerOp.sequencerHash
-            ? { ...tx, completed: true }
-            : tx,
-        );
-      },
-    );
+    queryClient.setQueryData(queryKey, (data: any[] = []) => {
+      return data.map((tx) =>
+        tx.sequencerHash === incompleteSequencerOp.sequencerHash
+          ? { ...tx, completed: true }
+          : tx,
+      );
+    });
+
+    // Force subscribers to re-render by invalidating the query
+    queryClient.invalidateQueries({ queryKey });
 
     // Show appropriate toast
     if (hasExceededTimeout) {
@@ -99,17 +120,19 @@ export const useSequencerOperationCompletion = () => {
       return;
     }
 
+    const queryKey = QUERY_KEYS.pendingTransactions(account.address);
+
     // Mark as completed to unblock actions
-    queryClient.setQueryData(
-      QUERY_KEYS.pendingTransactions(account.address),
-      (data: any[] = []) => {
-        return data.map((tx) =>
-          tx.sequencerHash === incompleteSequencerOp.sequencerHash
-            ? { ...tx, completed: true }
-            : tx,
-        );
-      },
-    );
+    queryClient.setQueryData(queryKey, (data: any[] = []) => {
+      return data.map((tx) =>
+        tx.sequencerHash === incompleteSequencerOp.sequencerHash
+          ? { ...tx, completed: true }
+          : tx,
+      );
+    });
+
+    // Force subscribers to re-render by invalidating the query
+    queryClient.invalidateQueries({ queryKey });
 
     toast({
       title: 'Sequencer operation failed',

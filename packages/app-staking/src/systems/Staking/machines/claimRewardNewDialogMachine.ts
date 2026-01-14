@@ -4,7 +4,7 @@ import type { BN } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
-import { PendingSequencerOperationType } from '~staking/systems/Core/hooks/usePendingTransactions';
+import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import {
   type AssetRate,
   AssetsRateService,
@@ -169,36 +169,32 @@ export const claimRewardNewMachine = createMachine(
             actions: assign((ctx, event) => {
               const txHash = event.data;
 
-              // Add pending sequencer operation to track
+              // Add pending L1 transaction to track
+              // ClaimReward is an L1 operation that triggers sequencer actions automatically
               if (ctx.queryClient && ctx.walletClient?.account?.address) {
-                const queryData =
-                  ctx.queryClient.getQueryData<any[]>(
-                    QUERY_KEYS.pendingTransactions(
-                      ctx.walletClient.account.address,
-                    ),
-                  ) ?? [];
-
-                ctx.queryClient.setQueryData(
-                  QUERY_KEYS.pendingTransactions(
-                    ctx.walletClient.account.address,
-                  ),
-                  [
-                    ...queryData,
-                    {
-                      type: PendingSequencerOperationType.WithdrawDelegatorReward,
-                      layer: 'sequencer',
-                      hash: txHash, // Use the actual tx hash for unique identification
-                      token: TOKENS[FuelToken.V2].token,
-                      symbol: 'FUEL',
-                      sequencerHash: txHash,
-                      formatted: '0',
-                      validator: ctx.validator,
-                      displayed: false,
-                      completed: false,
-                      startedAt: Date.now(),
-                    },
-                  ],
+                const queryKey = QUERY_KEYS.pendingTransactions(
+                  ctx.walletClient.account.address,
                 );
+                const queryData =
+                  ctx.queryClient.getQueryData<any[]>(queryKey) ?? [];
+
+                ctx.queryClient.setQueryData(queryKey, [
+                  ...queryData,
+                  {
+                    type: PendingTransactionTypeL1.ClaimReward,
+                    layer: 'l1',
+                    hash: txHash,
+                    token: TOKENS[FuelToken.V2].token,
+                    symbol: 'FUEL',
+                    formatted: '0',
+                    validator: ctx.validator,
+                    displayed: false,
+                    completed: false,
+                  },
+                ]);
+
+                // Invalidate to ensure subscribers re-render
+                ctx.queryClient.invalidateQueries({ queryKey });
               }
 
               ClaimRewardNewService.showSuccessToast(txHash);

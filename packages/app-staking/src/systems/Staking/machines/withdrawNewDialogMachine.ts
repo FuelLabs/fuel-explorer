@@ -3,7 +3,7 @@ import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
 import { BN, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
-import { PendingSequencerOperationType } from '~staking/systems/Core/hooks/usePendingTransactions';
+import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import {
   type AssetRate,
   AssetsRateService,
@@ -217,35 +217,30 @@ export const withdrawNewDialogMachine = createMachine(
             actions: assign((ctx, event) => {
               const txHash = event.data;
 
-              // Add pending sequencer operation to track
+              // Add pending L1 transaction to track
               if (ctx.queryClient && ctx.walletClient?.account?.address) {
-                const queryData =
-                  ctx.queryClient.getQueryData<any[]>(
-                    QUERY_KEYS.pendingTransactions(
-                      ctx.walletClient.account.address,
-                    ),
-                  ) ?? [];
-
-                ctx.queryClient.setQueryData(
-                  QUERY_KEYS.pendingTransactions(
-                    ctx.walletClient.account.address,
-                  ),
-                  [
-                    ...queryData,
-                    {
-                      type: PendingSequencerOperationType.Withdraw,
-                      layer: 'sequencer',
-                      hash: txHash, // Use the actual tx hash for unique identification
-                      token: TOKENS[FuelToken.V2].token,
-                      symbol: 'FUEL',
-                      sequencerHash: txHash,
-                      formatted: ctx.amount?.format() ?? '0',
-                      displayed: false,
-                      completed: false,
-                      startedAt: Date.now(),
-                    },
-                  ],
+                const queryKey = QUERY_KEYS.pendingTransactions(
+                  ctx.walletClient.account.address,
                 );
+                const queryData =
+                  ctx.queryClient.getQueryData<any[]>(queryKey) ?? [];
+
+                ctx.queryClient.setQueryData(queryKey, [
+                  ...queryData,
+                  {
+                    type: PendingTransactionTypeL1.WithdrawStart,
+                    layer: 'l1',
+                    hash: txHash,
+                    token: TOKENS[FuelToken.V2].token,
+                    symbol: 'FUEL',
+                    formatted: ctx.amount?.format() ?? '0',
+                    displayed: false,
+                    completed: false,
+                  },
+                ]);
+
+                // Invalidate to ensure subscribers re-render
+                ctx.queryClient.invalidateQueries({ queryKey });
               }
 
               WithdrawNewService.showSuccessToast(txHash);

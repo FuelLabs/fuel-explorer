@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import {
   PendingSequencerOperationType,
-  type PendingTransactionTypeL1,
-  isPendingSequencerOperation,
+  PendingTransactionTypeL1,
   usePendingTransactions,
 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import {
@@ -11,27 +10,30 @@ import {
   VALIDATOR_SPECIFIC_DISABLED_ACTIONS,
 } from './useDisabledL1Actions/constants';
 
-export interface SequencerOperationBlockingInfo {
+export interface OperationBlockingInfo {
   isBlocked: boolean;
-  blockingOperation?: PendingSequencerOperationType;
+  blockingOperation?: PendingSequencerOperationType | PendingTransactionTypeL1;
   blockingMessage?: string;
   validator?: SequencerValidatorAddress;
 }
 
 /**
- * Hook to check if sequencer operations are blocking a specific L1 action.
+ * Hook to check if pending operations (both sequencer and L1) are blocking a specific action.
  * Returns blocking information and a user-friendly message.
+ *
+ * This is used in the review step of dialogs to prevent users from submitting
+ * conflicting transactions while another operation is in progress.
  *
  * Example:
  * const { isBlocked, blockingMessage } = useCheckSequencerOperationBlocking(
- *   PendingTransactionTypeL1.ClaimReward,
+ *   PendingTransactionTypeL1.Redelegate,
  *   validator
  * );
  */
 export const useCheckSequencerOperationBlocking = (
   action: PendingTransactionTypeL1,
   validatorAddress?: SequencerValidatorAddress,
-): SequencerOperationBlockingInfo => {
+): OperationBlockingInfo => {
   const { data: pendingTransactions } = usePendingTransactions();
 
   return useMemo(() => {
@@ -40,10 +42,11 @@ export const useCheckSequencerOperationBlocking = (
     }
 
     for (const tx of pendingTransactions) {
-      if (tx.completed) continue;
-      if (!isPendingSequencerOperation(tx)) continue;
+      if (tx.completed) {
+        continue;
+      }
 
-      // Check global blocking rules
+      // Check global blocking rules (applies to both L1 and sequencer operations)
       const globalRules = GLOBAL_DISABLED_ACTIONS[tx.type];
       if (globalRules?.[action]) {
         return {
@@ -72,24 +75,44 @@ export const useCheckSequencerOperationBlocking = (
 };
 
 /**
- * Get a user-friendly message for why an action is blocked by a sequencer operation
+ * Get a user-friendly message for why an action is blocked
  */
 function getBlockingMessage(
-  operation: PendingSequencerOperationType,
+  operation: PendingSequencerOperationType | PendingTransactionTypeL1,
   validator?: SequencerValidatorAddress,
 ): string {
+  const validatorSuffix = validator ? ` (Validator: ${validator})` : '';
+
   switch (operation) {
+    // Sequencer operations
     case PendingSequencerOperationType.WithdrawDelegatorReward:
-      return `Your claim rewards transaction is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.${validator ? ` (Validator: ${validator})` : ''}`;
+      return `Your claim rewards transaction is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.${validatorSuffix}`;
     case PendingSequencerOperationType.WithdrawCommission:
-      return `Your commission withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to claim rewards.${validator ? ` (Validator: ${validator})` : ''}`;
+      return `Your commission withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to claim rewards.${validatorSuffix}`;
     case PendingSequencerOperationType.BeginRedelegate:
-      return `Your redelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to make other delegation changes.${validator ? ` (Validator: ${validator})` : ''}`;
+      return `Your redelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to make other delegation changes.${validatorSuffix}`;
     case PendingSequencerOperationType.Undelegate:
-      return `Your undelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to delegate or undelegate again.${validator ? ` (Validator: ${validator})` : ''}`;
+      return `Your undelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to delegate or undelegate again.${validatorSuffix}`;
     case PendingSequencerOperationType.Withdraw:
       return `Your withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.`;
+
+    // L1 operations
+    case PendingTransactionTypeL1.Delegate:
+      return `Your delegation transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
+    case PendingTransactionTypeL1.Undelegate:
+      return `Your undelegation transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
+    case PendingTransactionTypeL1.Redelegate:
+      return `Your redelegation transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
+    case PendingTransactionTypeL1.ClaimReward:
+      return `Your claim rewards transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
+    case PendingTransactionTypeL1.WithdrawStart:
+    case PendingTransactionTypeL1.WithdrawFinalize:
+    case PendingTransactionTypeL1.PendingWithdraw:
+      return 'Your withdrawal transaction is pending. Please wait for it to be confirmed.';
+    case PendingTransactionTypeL1.Migrate:
+      return 'Your migration transaction is pending. Please wait for it to be confirmed.';
+
     default:
-      return `A pending sequencer operation is being processed. Once confirmed (usually 1-3 minutes), you'll be able to proceed.`;
+      return `A pending operation is being processed. Once confirmed, you'll be able to proceed.`;
   }
 }

@@ -35,7 +35,27 @@ export const GLOBAL_DISABLED_ACTIONS: Partial<
     [PendingTransactionTypeL1.Delegate]: true,
     [PendingTransactionTypeL1.WithdrawStart]: true,
   },
-  // Sequencer operation blocking rules
+  // L1 ClaimReward blocks staking operations until confirmed
+  [PendingTransactionTypeL1.ClaimReward]: {
+    [PendingTransactionTypeL1.WithdrawStart]: true,
+    [PendingTransactionTypeL1.Delegate]: true,
+    [PendingTransactionTypeL1.Undelegate]: true,
+    [PendingTransactionTypeL1.Redelegate]: true,
+    [PendingTransactionTypeL1.ClaimReward]: true,
+  },
+  // L1 Redelegate blocks delegation changes until confirmed
+  [PendingTransactionTypeL1.Redelegate]: {
+    [PendingTransactionTypeL1.Delegate]: true,
+    [PendingTransactionTypeL1.Undelegate]: true,
+    [PendingTransactionTypeL1.Redelegate]: true,
+  },
+  // L1 Undelegate blocks delegation changes until confirmed
+  [PendingTransactionTypeL1.Undelegate]: {
+    [PendingTransactionTypeL1.Delegate]: true,
+    [PendingTransactionTypeL1.Undelegate]: true,
+    [PendingTransactionTypeL1.Redelegate]: true,
+  },
+  // Sequencer operation blocking rules (kept for backwards compatibility with existing data)
   [PendingSequencerOperationType.WithdrawDelegatorReward]: {
     // Block all staking operations while rewards are being claimed on sequencer
     // This prevents users from making changes before their rewards are credited
