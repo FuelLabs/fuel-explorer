@@ -70,12 +70,7 @@ const _DelegatedPositionItem = ({
     () => new BN(totalDelegated || '0'),
     [totalDelegated],
   );
-  // Only disable redelegate if there's only 1 validator (nowhere to redelegate to)
-  // or if there's no delegated balance. Sequencer blocking is handled in the review step.
   const isRedelegateDisabled = size === 1 || delegatedBN.isZero();
-
-  // Only disable undelegate if there's no delegated balance.
-  // Sequencer blocking is handled in the review step.
   const isUndelegateDisabled = delegatedBN.isZero();
 
   const rewardBN = useMemo(() => {
