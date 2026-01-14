@@ -60,40 +60,41 @@ export const useCheckSequencerOperationBlocking = (
   }, [pendingTransactions, action, validatorAddress]);
 };
 
+const BLOCKING_MESSAGES: Record<string, string> = {
+  [PendingSequencerOperationType.WithdrawDelegatorReward]:
+    "Your claim rewards transaction is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.",
+  [PendingSequencerOperationType.WithdrawCommission]:
+    "Your commission withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to claim rewards.",
+  [PendingSequencerOperationType.BeginRedelegate]:
+    "Your redelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to make other delegation changes.",
+  [PendingSequencerOperationType.Undelegate]:
+    "Your undelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to delegate or undelegate again.",
+  [PendingSequencerOperationType.Withdraw]:
+    "Your withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.",
+  [PendingTransactionTypeL1.Delegate]:
+    'Your delegation transaction is pending. Please wait for it to be confirmed.',
+  [PendingTransactionTypeL1.Undelegate]:
+    'Your undelegation transaction is pending. Please wait for it to be confirmed.',
+  [PendingTransactionTypeL1.Redelegate]:
+    'Your redelegation transaction is pending. Please wait for it to be confirmed.',
+  [PendingTransactionTypeL1.ClaimReward]:
+    'Your claim rewards transaction is pending. Please wait for it to be confirmed.',
+  [PendingTransactionTypeL1.WithdrawStart]:
+    'Your withdrawal transaction is pending. Please wait for it to be confirmed.',
+  [PendingTransactionTypeL1.WithdrawFinalize]:
+    'Your withdrawal transaction is pending. Please wait for it to be confirmed.',
+  [PendingTransactionTypeL1.PendingWithdraw]:
+    'Your withdrawal transaction is pending. Please wait for it to be confirmed.',
+  [PendingTransactionTypeL1.Migrate]:
+    'Your migration transaction is pending. Please wait for it to be confirmed.',
+};
+
 function getBlockingMessage(
   operation: PendingSequencerOperationType | PendingTransactionTypeL1,
   validator?: SequencerValidatorAddress,
 ): string {
-  const validatorSuffix = validator ? ` (Validator: ${validator})` : '';
-
-  switch (operation) {
-    case PendingSequencerOperationType.WithdrawDelegatorReward:
-      return `Your claim rewards transaction is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.${validatorSuffix}`;
-    case PendingSequencerOperationType.WithdrawCommission:
-      return `Your commission withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to claim rewards.${validatorSuffix}`;
-    case PendingSequencerOperationType.BeginRedelegate:
-      return `Your redelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to make other delegation changes.${validatorSuffix}`;
-    case PendingSequencerOperationType.Undelegate:
-      return `Your undelegation is being finalized. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to delegate or undelegate again.${validatorSuffix}`;
-    case PendingSequencerOperationType.Withdraw:
-      return `Your withdrawal is being processed. Once confirmed on the sequencer (usually 1-3 minutes), you'll be able to proceed.`;
-
-    case PendingTransactionTypeL1.Delegate:
-      return `Your delegation transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
-    case PendingTransactionTypeL1.Undelegate:
-      return `Your undelegation transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
-    case PendingTransactionTypeL1.Redelegate:
-      return `Your redelegation transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
-    case PendingTransactionTypeL1.ClaimReward:
-      return `Your claim rewards transaction is pending. Please wait for it to be confirmed.${validatorSuffix}`;
-    case PendingTransactionTypeL1.WithdrawStart:
-    case PendingTransactionTypeL1.WithdrawFinalize:
-    case PendingTransactionTypeL1.PendingWithdraw:
-      return 'Your withdrawal transaction is pending. Please wait for it to be confirmed.';
-    case PendingTransactionTypeL1.Migrate:
-      return 'Your migration transaction is pending. Please wait for it to be confirmed.';
-
-    default:
-      return `A pending operation is being processed. Once confirmed, you'll be able to proceed.`;
-  }
+  const message =
+    BLOCKING_MESSAGES[operation] ??
+    "A pending operation is being processed. Once confirmed, you'll be able to proceed.";
+  return validator ? `${message} (Validator: ${validator})` : message;
 }
