@@ -24,6 +24,8 @@ export interface ClaimRewardNewDialogContext {
   // Fee and rates
   fee: BN;
   rates: AssetRate[];
+  // Amount to claim
+  amount: BN | null;
   // Errors
   claimRewardError?: string | null;
   // Transaction tracking
@@ -50,6 +52,7 @@ export type ClaimRewardNewDialogEvent =
       walletClient: WalletClient;
       queryClient: QueryClient;
     }
+  | { type: 'SET_AMOUNT'; amount: BN | null }
   | { type: 'CONFIRM' }
   | { type: 'CLOSE' };
 
@@ -93,6 +96,11 @@ export const claimRewardNewMachine = createMachine(
             actions: assign({
               validator: (_, event) =>
                 event.validator as SequencerValidatorAddress,
+            }),
+          },
+          SET_AMOUNT: {
+            actions: assign({
+              amount: (_, event) => event.amount,
             }),
           },
         },
@@ -179,7 +187,7 @@ export const claimRewardNewMachine = createMachine(
                     hash: txHash,
                     token: TOKENS[FuelToken.V2].token,
                     symbol: 'FUEL',
-                    formatted: '0',
+                    formatted: ctx.amount?.format() ?? '0',
                     validator: ctx.validator,
                   },
                 );

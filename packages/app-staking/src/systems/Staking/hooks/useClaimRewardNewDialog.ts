@@ -1,12 +1,14 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useInterpret, useSelector } from '@xstate/react';
-import { useCallback, useEffect } from 'react';
-import { usePublicClient, useWalletClient } from 'wagmi';
+import { BN } from 'fuels';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
 import {
   claimRewardNewMachine,
   claimRewardNewMachineSelectors,
 } from '../machines/claimRewardNewDialogMachine';
+import { useValidatorRewards } from '../services/useValidatorRewards/useValidatorRewards';
 
 export function useClaimRewardNewDialog({
   validator,
@@ -14,10 +16,23 @@ export function useClaimRewardNewDialog({
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const queryClient = useQueryClient();
+  const { address } = useAccount();
 
   const isReady = !!walletClient;
 
   const service = useInterpret(claimRewardNewMachine);
+
+  const { data: rewardsData } = useValidatorRewards(validator, address, {
+    select: ({ rewards }) => rewards,
+  });
+
+  const rewardAmount = useMemo(() => {
+    return (
+      rewardsData?.reduce((acc, curr) => {
+        return acc.add(new BN(curr.amount.split('.')[0] ?? 0));
+      }, new BN(0)) ?? null
+    );
+  }, [rewardsData]);
 
   useEffect(() => {
     if (validator) {
@@ -27,6 +42,13 @@ export function useClaimRewardNewDialog({
       });
     }
   }, [validator, service]);
+
+  useEffect(() => {
+    service.send({
+      type: 'SET_AMOUNT',
+      amount: rewardAmount,
+    });
+  }, [rewardAmount, service]);
 
   useEffect(() => {
     if (publicClient && walletClient && queryClient) {
