@@ -466,11 +466,127 @@ https://explorer-indexer-mainnet.fuel.network/metrics
 
 ### Bash
 
-At times, you’ll need to inspect running processes or run local tests (for example, with curl). To get a shell inside the pod, run:
+At times, you'll need to inspect running processes or run local tests (for example, with curl). To get a shell inside the pod, run:
 
 ```
 kubectl exec -it pod -n namespace -- /bin/bash
 ```
+
+### RabbitMQ Admin Access
+
+This section documents how to access the RabbitMQ admin interface for the Fuel indexer infrastructure, particularly useful for debugging sync issues or inspecting message queues.
+
+#### Prerequisites
+
+- Access to the Kubernetes cluster via `kubectl` or Lens
+- AWS Secrets Manager access for credentials
+
+#### Credentials
+
+RabbitMQ credentials are stored in AWS Secrets Manager:
+
+**Secret Location:** [AWS Secrets Manager - indexer-mq-user-password](https://us-east-1.console.aws.amazon.com/secretsmanager/secret?name=indexer-mq-user-password&region=us-east-1)
+
+#### AMQPS Endpoint
+
+```
+amqps://b-02e7b94c-4870-40d6-83f9-33e3edf20a13.mq.us-east-1.amazonaws.com:5671
+```
+
+#### Access Steps
+
+##### 1. Create an Ubuntu Debug Pod
+
+Create a simple Ubuntu pod in your target namespace. Reference: [Ubuntu Sleep Pod YAML](https://downey.io/notes/dev/ubuntu-sleep-pod-yaml/)
+
+Example pod manifest:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-debug
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu:latest
+    command: ["sleep", "604800"]  # Sleep for 1 week
+```
+
+Apply to your namespace:
+
+```bash
+kubectl apply -f ubuntu-pod.yaml -n <namespace>
+```
+
+##### 2. Exec into the Pod
+
+```bash
+kubectl exec -ti <pod-name> /bin/bash -n <namespace>
+```
+
+##### 3. Install rabbitmqadmin
+
+Inside the pod, download and set up rabbitmqadmin:
+
+```bash
+apt-get update && apt-get install -y curl python3
+curl -O https://raw.githubusercontent.com/rabbitmq/rabbitmq-server/main/deps/rabbitmq_management/bin/rabbitmqadmin
+chmod +x rabbitmqadmin
+mv rabbitmqadmin /usr/local/bin/
+```
+
+##### 4. Set Environment Variables
+
+Configure connection details (replace placeholders with actual values from Secrets Manager):
+
+```bash
+export RABBITMQ_URL="https://b-[broker-id].mq.[region].amazonaws.com:443"
+export RABBITMQ_USER="your_username"
+export RABBITMQ_PASS="your_password"
+```
+
+##### 5. Connect and Query
+
+Once configured, you can use `rabbitmqadmin` to interact with the broker.
+
+**List all queues:**
+
+```bash
+rabbitmqadmin list queues
+```
+
+**List exchanges:**
+
+```bash
+rabbitmqadmin list exchanges
+```
+
+**Get queue details:**
+
+```bash
+rabbitmqadmin list queues name messages consumers
+```
+
+#### Common Use Cases
+
+##### Debugging Indexer Sync Issues
+
+When the indexer is out of sync with the chain (e.g., PagerDuty alerts), check:
+
+1. **Queue depth** - Are messages piling up?
+2. **Consumer count** - Are consumers connected?
+3. **Message rates** - Is throughput normal?
+
+#### Notes
+
+- This process is for **mainnet** environment
+- Credentials should never be committed to version control
+- The debug pod can be deleted after troubleshooting is complete
+
+#### Related Alerts
+
+- PagerDuty: Indexer out of sync with chain
 
 ## Deployment
 
