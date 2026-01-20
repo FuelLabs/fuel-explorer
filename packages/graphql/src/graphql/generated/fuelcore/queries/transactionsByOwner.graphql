@@ -1,4 +1,4 @@
-query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!, $ownerType: String){
+query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!, $ownerType: OwnerType){
     transactionsByOwner(after: $after, before: $before, first: $first, last: $last, owner: $owner, ownerType: $ownerType){
         edges{
             cursor

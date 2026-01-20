@@ -3,6 +3,43 @@ import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
 import type PaginatedParams from '../paginator/PaginatedParams';
 
+const VALID_OWNER_TYPES = ['ACCOUNT', 'CONTRACT'] as const;
+type OwnerType = (typeof VALID_OWNER_TYPES)[number];
+
+/**
+ * Builds the SQL clause for filtering transactions by owner type.
+ * This is a static string mapping to prevent SQL injection.
+ *
+ * @param ownerType - The type of owner to filter by ('ACCOUNT' or 'CONTRACT')
+ * @returns SQL clause string or empty string if no filtering needed
+ */
+function buildOwnerTypeClause(ownerType?: string): string {
+  if (ownerType === 'ACCOUNT') {
+    return 'and not exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+  }
+  if (ownerType === 'CONTRACT') {
+    return 'and exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+  }
+  return '';
+}
+
+/**
+ * @param ownerType - The owner type value to validate
+ * @returns The validated ownerType (uppercase) or undefined
+ */
+function validateOwnerType(ownerType?: string): OwnerType | undefined {
+  if (ownerType === undefined || ownerType === null) {
+    return undefined;
+  }
+  const normalized = ownerType.toUpperCase() as OwnerType;
+  if (!VALID_OWNER_TYPES.includes(normalized)) {
+    throw new Error(
+      `Invalid ownerType value: ${ownerType}. Expected 'ACCOUNT', 'CONTRACT', or undefined.`,
+    );
+  }
+  return normalized;
+}
+
 export default class TransactionDAO {
   databaseConnection: DatabaseConnectionReplica;
 
@@ -33,20 +70,11 @@ export default class TransactionDAO {
     paginatedParams: PaginatedParams,
     ownerType?: string,
   ) {
+    const validatedOwnerType = validateOwnerType(ownerType);
+    const ownerTypeClause = buildOwnerTypeClause(validatedOwnerType);
+
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
-
-    // Build the owner type filter clause
-    // ownerType: 'account' = exclude transactions where the address is a contract
-    // ownerType: 'contract' = only include transactions where the address is a contract
-    let ownerTypeClause = '';
-    if (ownerType === 'account') {
-      ownerTypeClause =
-        'and not exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
-    } else if (ownerType === 'contract') {
-      ownerTypeClause =
-        'and exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
-    }
 
     const transactionsData = await this.databaseConnection.query(
       `
@@ -88,23 +116,13 @@ export default class TransactionDAO {
     const endCursor = transactionsData[transactionsData.length - 1].ta_id;
 
     // Check pagination + position count (uses endCursor for accurate positioning)
-    // Build the owner type filter for pagination queries
-    let paginationOwnerTypeClause = '';
-    if (ownerType === 'account') {
-      paginationOwnerTypeClause =
-        'and not exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
-    } else if (ownerType === 'contract') {
-      paginationOwnerTypeClause =
-        'and exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
-    }
-
     const [paginationInfo] = await this.databaseConnection.query(
       `
       select
-        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id < $2 ${paginationOwnerTypeClause} limit 1) as has_prev,
-        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $3 ${paginationOwnerTypeClause} limit 1) as has_next,
-        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 ${paginationOwnerTypeClause} limit 1001) sub) as total_count,
-        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $2 ${paginationOwnerTypeClause} limit 1001) sub) as items_before_end
+        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id < $2 ${ownerTypeClause} limit 1) as has_prev,
+        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $3 ${ownerTypeClause} limit 1) as has_next,
+        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 ${ownerTypeClause} limit 1001) sub) as total_count,
+        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $2 ${ownerTypeClause} limit 1001) sub) as items_before_end
       `,
       [accountHash.toLowerCase(), endCursor, startCursor],
     );

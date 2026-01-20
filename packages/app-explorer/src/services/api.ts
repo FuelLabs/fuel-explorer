@@ -265,7 +265,7 @@ export class ApiService {
       const accountOwner = parseAddressParam(input.owner);
       const { data } = await sdk.transactionsByOwner({
         owner: accountOwner,
-        ownerType: 'account',
+        ownerType: 'ACCOUNT',
         ...queryParams,
       });
 
@@ -398,7 +398,7 @@ export class ApiService {
 
       const queryParams: any = {
         owner: contractIdParam,
-        ownerType: 'contract',
+        ownerType: 'CONTRACT',
         first: 10,
       };
       if (cursor && direction === 'after') {

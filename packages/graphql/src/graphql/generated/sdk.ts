@@ -1210,6 +1210,16 @@ export type GQLOutputBreakpoint = {
   pc: Scalars['U64']['output'];
 };
 
+/**
+ * Specifies the type of owner for filtering transactions.
+ * ACCOUNT filters to only externally owned accounts (EOAs).
+ * CONTRACT filters to only contract accounts.
+ */
+export enum GQLOwnerType {
+  Account = 'ACCOUNT',
+  Contract = 'CONTRACT'
+}
+
 /** Information about pagination in a connection */
 export type GQLPageInfo = {
   __typename: 'PageInfo';
@@ -1589,7 +1599,7 @@ export type GQLQueryTransactionsByOwnerArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
-  ownerType?: InputMaybe<Scalars['String']['input']>;
+  ownerType?: InputMaybe<GQLOwnerType>;
 };
 
 export type GQLReDelegateResponse = {
@@ -2300,7 +2310,7 @@ export type GQLTransactionsByOwnerQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
-  ownerType?: InputMaybe<Scalars['String']['input']>;
+  ownerType?: InputMaybe<GQLOwnerType>;
 }>;
 
 
@@ -4006,7 +4016,7 @@ export const TransactionsByBlockIdDocument = gql`
 }
     ${RecentTransactionFragmentDoc}`;
 export const TransactionsByOwnerDocument = gql`
-    query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!, $ownerType: String) {
+    query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!, $ownerType: OwnerType) {
   transactionsByOwner(
     after: $after
     before: $before

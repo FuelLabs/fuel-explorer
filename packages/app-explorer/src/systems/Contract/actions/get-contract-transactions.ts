@@ -30,7 +30,7 @@ export const getContractTransactions = act(schema, async (input) => {
   const owner = parseAddressParam(input.owner);
   const { data } = await sdk.transactionsByOwner({
     owner,
-    ownerType: 'contract',
+    ownerType: 'CONTRACT',
     ...params,
   });
   return data.transactionsByOwner;

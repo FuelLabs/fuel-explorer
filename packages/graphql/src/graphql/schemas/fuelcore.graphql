@@ -493,6 +493,16 @@ enum GasCostsVersion {
   V1
 }
 
+"""
+Specifies the type of owner for filtering transactions.
+ACCOUNT filters to only externally owned accounts (EOAs).
+CONTRACT filters to only contract accounts.
+"""
+enum OwnerType {
+  ACCOUNT
+  CONTRACT
+}
+
 type Genesis {
   """
   The chain configs define what consensus type to use, what settlement layer to use,
@@ -1044,7 +1054,7 @@ type Query {
     first: Int
     last: Int
     owner: Address!
-    ownerType: String
+    ownerType: OwnerType
   ): TransactionConnection!
   transactionsByBlockId(
     after: String

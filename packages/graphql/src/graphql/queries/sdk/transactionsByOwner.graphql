@@ -4,7 +4,7 @@ query transactionsByOwner(
   $first: Int
   $last: Int
   $owner: Address!
-  $ownerType: String
+  $ownerType: OwnerType
 ) {
   transactionsByOwner(
     after: $after
