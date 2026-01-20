@@ -1589,6 +1589,7 @@ export type GQLQueryTransactionsByOwnerArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
+  ownerType?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GQLReDelegateResponse = {

@@ -1589,6 +1589,7 @@ export type GQLQueryTransactionsByOwnerArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
+  ownerType?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GQLReDelegateResponse = {
@@ -2299,6 +2300,7 @@ export type GQLTransactionsByOwnerQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
+  ownerType?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -4004,13 +4006,14 @@ export const TransactionsByBlockIdDocument = gql`
 }
     ${RecentTransactionFragmentDoc}`;
 export const TransactionsByOwnerDocument = gql`
-    query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!) {
+    query transactionsByOwner($after: String, $before: String, $first: Int, $last: Int, $owner: Address!, $ownerType: String) {
   transactionsByOwner(
     after: $after
     before: $before
     first: $first
     last: $last
     owner: $owner
+    ownerType: $ownerType
   ) {
     nodes {
       ...RecentTransaction

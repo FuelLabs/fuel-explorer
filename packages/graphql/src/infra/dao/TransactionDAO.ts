@@ -31,9 +31,22 @@ export default class TransactionDAO {
   async getPaginatedTransactionsByOwner(
     accountHash: string,
     paginatedParams: PaginatedParams,
+    ownerType?: string,
   ) {
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
+
+    // Build the owner type filter clause
+    // ownerType: 'account' = exclude transactions where the address is a contract
+    // ownerType: 'contract' = only include transactions where the address is a contract
+    let ownerTypeClause = '';
+    if (ownerType === 'account') {
+      ownerTypeClause =
+        'and not exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+    } else if (ownerType === 'contract') {
+      ownerTypeClause =
+        'and exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+    }
 
     const transactionsData = await this.databaseConnection.query(
       `
@@ -41,6 +54,7 @@ export default class TransactionDAO {
       from indexer.transactions_accounts ta
       inner join indexer.transactions t on t.tx_hash = ta.tx_hash
       where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
+      ${ownerTypeClause}
       order by ta._id ${order}
       limit 10
       `,
@@ -74,13 +88,23 @@ export default class TransactionDAO {
     const endCursor = transactionsData[transactionsData.length - 1].ta_id;
 
     // Check pagination + position count (uses endCursor for accurate positioning)
+    // Build the owner type filter for pagination queries
+    let paginationOwnerTypeClause = '';
+    if (ownerType === 'account') {
+      paginationOwnerTypeClause =
+        'and not exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+    } else if (ownerType === 'contract') {
+      paginationOwnerTypeClause =
+        'and exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+    }
+
     const [paginationInfo] = await this.databaseConnection.query(
       `
       select
-        exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
-        exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next,
-        (select count(*) from (select 1 from indexer.transactions_accounts where account_hash = $1 limit 1001) sub) as total_count,
-        (select count(*) from (select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $2 limit 1001) sub) as items_before_end
+        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id < $2 ${paginationOwnerTypeClause} limit 1) as has_prev,
+        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $3 ${paginationOwnerTypeClause} limit 1) as has_next,
+        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 ${paginationOwnerTypeClause} limit 1001) sub) as total_count,
+        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $2 ${paginationOwnerTypeClause} limit 1001) sub) as items_before_end
       `,
       [accountHash.toLowerCase(), endCursor, startCursor],
     );

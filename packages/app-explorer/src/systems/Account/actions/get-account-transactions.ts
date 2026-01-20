@@ -26,6 +26,10 @@ export const getAccountTransactions = act(schema, async (input) => {
     params.before = cursor;
   }
   const owner = parseAddressParam(input.owner);
-  const { data } = await sdk.transactionsByOwner({ owner, ...params });
+  const { data } = await sdk.transactionsByOwner({
+    owner,
+    ownerType: 'account',
+    ...params,
+  });
   return data.transactionsByOwner;
 });

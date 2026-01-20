@@ -1044,6 +1044,7 @@ type Query {
     first: Int
     last: Int
     owner: Address!
+    ownerType: String
   ): TransactionConnection!
   transactionsByBlockId(
     after: String
