@@ -4,12 +4,21 @@ import { BN, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
 import {
+  type PendingTransaction,
+  PendingTransactionTypeL1,
+} from '~staking/systems/Core/hooks/usePendingTransactions';
+import {
   type AssetRate,
   AssetsRateService,
 } from '~staking/systems/Core/services/AssetsRateService';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
+import {
+  type OperationBlockingInfo,
+  checkOperationBlocking,
+} from '~staking/systems/Core/utils/blocking';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
+import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
 import { StakeNewService } from '~staking/systems/Staking/services/stakeNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
@@ -35,6 +44,9 @@ export interface StakeNewDialogContext {
   // Token approval info
   amountFromL1Approved?: any;
   navigationDirection?: string;
+  // Blocking state
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 type StakeNewMachineServices = {
@@ -43,6 +55,9 @@ type StakeNewMachineServices = {
   };
   getAssetsRate: {
     data: AssetRate[];
+  };
+  checkBlocking: {
+    data: OperationBlockingInfo;
   };
   submitStake: {
     data: { l1?: HexAddress; sequencer?: HexAddress };
@@ -298,7 +313,27 @@ export const stakeNewDialogMachine = createMachine(
           },
         },
         onDone: {
-          target: 'reviewing',
+          target: 'checkingBlocking',
+        },
+      },
+      checkingBlocking: {
+        tags: ['reviewPage'],
+        invoke: {
+          src: 'checkBlocking',
+          onDone: {
+            target: 'reviewing',
+            actions: assign((_, event) => ({
+              isBlocked: event.data.isBlocked,
+              blockingMessage: event.data.blockingMessage,
+            })),
+          },
+          onError: {
+            target: 'reviewing',
+            actions: assign(() => ({
+              isBlocked: false,
+              blockingMessage: undefined,
+            })),
+          },
         },
       },
       reviewing: {
@@ -313,9 +348,12 @@ export const stakeNewDialogMachine = createMachine(
           CONFIRM: {
             target: 'submitting',
             cond: (ctx) => {
-              return !!(
-                ctx.amountFromL1?.eq(0) ||
-                ctx.amountFromL1?.lte(ctx.amountFromL1Approved)
+              return (
+                !ctx.isBlocked &&
+                !!(
+                  ctx.amountFromL1?.eq(0) ||
+                  ctx.amountFromL1?.lte(ctx.amountFromL1Approved)
+                )
               );
             },
           },
@@ -474,6 +512,21 @@ export const stakeNewDialogMachine = createMachine(
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
       },
+      checkBlocking: (context) => {
+        const address = context.walletClient?.account?.address;
+        const pendingTransactions = address
+          ? context.queryClient?.getQueryData<PendingTransaction[]>(
+              QUERY_KEYS.pendingTransactions(address),
+            )
+          : undefined;
+        return Promise.resolve(
+          checkOperationBlocking(
+            pendingTransactions,
+            PendingTransactionTypeL1.Delegate,
+            context.validator,
+          ),
+        );
+      },
       submitStake: async (context) => {
         const result = await StakeNewService.submitStake(context);
         return result;
@@ -590,4 +643,8 @@ export const stakeNewDialogMachineSelectors = {
   },
   navigationDirection: (context: StakeNewDialogContext) =>
     context.navigationDirection,
+  // Blocking selectors
+  isBlocked: (context: StakeNewDialogContext) => context.isBlocked,
+  getBlockingMessage: (context: StakeNewDialogContext) =>
+    context.blockingMessage,
 };

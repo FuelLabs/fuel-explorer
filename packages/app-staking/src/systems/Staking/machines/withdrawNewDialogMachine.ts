@@ -3,14 +3,24 @@ import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
 import { BN, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
-import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
+import {
+  type PendingTransaction,
+  PendingTransactionTypeL1,
+} from '~staking/systems/Core/hooks/usePendingTransactions';
 import {
   type AssetRate,
   AssetsRateService,
 } from '~staking/systems/Core/services/AssetsRateService';
+import {
+  type OperationBlockingInfo,
+  checkOperationBlocking,
+} from '~staking/systems/Core/utils/blocking';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
-import { addPendingL1Transaction } from '~staking/systems/Core/utils/query';
+import {
+  QUERY_KEYS,
+  addPendingL1Transaction,
+} from '~staking/systems/Core/utils/query';
 import { WithdrawNewService } from '~staking/systems/Staking/services/withdrawNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
@@ -30,6 +40,9 @@ export interface WithdrawNewDialogContext {
   withdrawError?: string | null;
   // Transaction tracking
   transactionHash?: HexAddress;
+  // Blocking state
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 type WithdrawNewMachineServices = {
@@ -38,6 +51,9 @@ type WithdrawNewMachineServices = {
   };
   getAssetsRate: {
     data: AssetRate[];
+  };
+  checkBlocking: {
+    data: OperationBlockingInfo;
   };
   submitWithdraw: {
     data: HexAddress;
@@ -188,17 +204,40 @@ export const withdrawNewDialogMachine = createMachine(
           src: 'getFee',
           onDone: {
             // cond: (_, event) => !!event.data.fee?.gt(0),
-            target: 'reviewing',
+            target: 'checkingBlocking',
             actions: assign({
               fee: (_, event) => event.data,
             }),
           },
         },
       },
+      checkingBlocking: {
+        tags: ['reviewPage'],
+        invoke: {
+          src: 'checkBlocking',
+          onDone: {
+            target: 'reviewing',
+            actions: assign((_, event) => ({
+              isBlocked: event.data.isBlocked,
+              blockingMessage: event.data.blockingMessage,
+            })),
+          },
+          onError: {
+            target: 'reviewing',
+            actions: assign(() => ({
+              isBlocked: false,
+              blockingMessage: undefined,
+            })),
+          },
+        },
+      },
       reviewing: {
         tags: ['reviewPage'],
         on: {
-          CONFIRM: 'submitting',
+          CONFIRM: {
+            target: 'submitting',
+            cond: (ctx) => !ctx.isBlocked,
+          },
           BACK_TO_AMOUNT: 'waitingForAmount',
         },
       },
@@ -284,6 +323,20 @@ export const withdrawNewDialogMachine = createMachine(
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
       },
+      checkBlocking: (context) => {
+        const address = context.walletClient?.account?.address;
+        const pendingTransactions = address
+          ? context.queryClient?.getQueryData<PendingTransaction[]>(
+              QUERY_KEYS.pendingTransactions(address),
+            )
+          : undefined;
+        return Promise.resolve(
+          checkOperationBlocking(
+            pendingTransactions,
+            PendingTransactionTypeL1.WithdrawStart,
+          ),
+        );
+      },
       submitWithdraw: async (context) => {
         const result = await WithdrawNewService.submitWithdraw(context);
         return result;
@@ -337,4 +390,8 @@ export const withdrawNewDialogMachineSelectors = {
       (state as any).matches('gettingReviewDetails')
     );
   },
+  // Blocking selectors
+  isBlocked: (context: WithdrawNewDialogContext) => context.isBlocked,
+  getBlockingMessage: (context: WithdrawNewDialogContext) =>
+    context.blockingMessage,
 };

@@ -19,10 +19,8 @@ import { ErrorInline } from '~staking/systems/Core/components/ErrorInline/ErrorI
 import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
 import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfoSection/RegularInfoSection';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
-import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
-import { useCheckSequencerOperationBlocking } from '../../hooks/useCheckSequencerOperationBlocking';
 import type { Validator } from '../../types/validators';
 import { getValidatorImage } from '../../utils/validatorImages';
 
@@ -39,6 +37,8 @@ interface Props {
   onConfirm: () => void;
   onBack: () => void;
   validator?: Validator;
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 function _ReviewUndelegate({
@@ -54,13 +54,9 @@ function _ReviewUndelegate({
   isGettingReviewDetails,
   onBack,
   validator,
+  isBlocked = false,
+  blockingMessage,
 }: Props) {
-  // Check if sequencer operations are blocking undelegation
-  const sequencerBlocking = useCheckSequencerOperationBlocking(
-    PendingTransactionTypeL1.Undelegate,
-    validator?.operator_address,
-  );
-
   const {
     formattedAmount,
     originalAmount,
@@ -146,7 +142,7 @@ function _ReviewUndelegate({
         />
       </div>
       <div>
-        {sequencerBlocking.isBlocked && (
+        {isBlocked && (
           <Alert color="orange" variant="surface" className="mb-4">
             <Alert.Icon>
               <IconClock size={18} className="text-orange-11" />
@@ -155,7 +151,7 @@ function _ReviewUndelegate({
               <Text size="2" weight="medium" className="block mb-1">
                 Undelegate Currently Unavailable
               </Text>
-              <Text size="1">{sequencerBlocking.blockingMessage}</Text>
+              <Text size="1">{blockingMessage}</Text>
             </Alert.Text>
           </Alert>
         )}
@@ -177,7 +173,7 @@ function _ReviewUndelegate({
             className="rounded-md flex-1"
             size="3"
             onClick={onConfirm}
-            disabled={!isReady || sequencerBlocking.isBlocked}
+            disabled={!isReady || isBlocked}
             isLoading={isSubmitting}
             loadingText="Submitting..."
           >

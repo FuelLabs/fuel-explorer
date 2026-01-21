@@ -1,4 +1,3 @@
-import { useToast } from '@fuels/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
@@ -8,12 +7,13 @@ import {
   usePendingTransactions,
 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
-import { useSequencerOperationStatus } from './useSequencerOperationStatus';
+
+// Maximum wait before unblocking (sequencer operations typically take 20-30 minutes)
+const MAX_COMPLETION_DELAY_MS = 35 * 60 * 1000;
 
 export const useSequencerOperationCompletion = () => {
   const queryClient = useQueryClient();
   const account = useAccount();
-  const { toast } = useToast();
   const { data: pendingTransactions } = usePendingTransactions();
 
   const incompleteSequencerOp = useMemo(() => {
@@ -37,12 +37,6 @@ export const useSequencerOperationCompletion = () => {
     return fallbackStartedAtRef.current ?? Date.now();
   }, [incompleteSequencerOp]);
 
-  const { data: operationStatus, hasExceededTimeout } =
-    useSequencerOperationStatus(
-      incompleteSequencerOp?.sequencerHash,
-      startedAt,
-    );
-
   const markCompleted = useCallback(
     (sequencerHash: string) => {
       if (!account?.address) return;
@@ -60,42 +54,18 @@ export const useSequencerOperationCompletion = () => {
   useEffect(() => {
     if (!incompleteSequencerOp) return;
 
-    const shouldComplete = operationStatus?.isCompleted || hasExceededTimeout;
-    if (!shouldComplete) return;
+    const elapsed = Date.now() - startedAt;
+    const remaining = MAX_COMPLETION_DELAY_MS - elapsed;
 
-    markCompleted(incompleteSequencerOp.sequencerHash);
-
-    if (hasExceededTimeout) {
-      toast({
-        title: 'Operation status uncertain',
-        description:
-          'The sequencer operation is taking longer than expected. Actions have been unblocked.',
-        variant: 'warning',
-      });
-    } else {
-      toast({
-        title: 'Sequencer operation complete',
-        description: 'Your operation has been processed successfully.',
-        variant: 'success',
-      });
+    if (remaining <= 0) {
+      markCompleted(incompleteSequencerOp.sequencerHash);
+      return;
     }
-  }, [
-    operationStatus?.isCompleted,
-    hasExceededTimeout,
-    incompleteSequencerOp,
-    markCompleted,
-    toast,
-  ]);
 
-  useEffect(() => {
-    if (!operationStatus?.isFailed || !incompleteSequencerOp) return;
+    const timeoutId = setTimeout(() => {
+      markCompleted(incompleteSequencerOp.sequencerHash);
+    }, remaining);
 
-    markCompleted(incompleteSequencerOp.sequencerHash);
-    toast({
-      title: 'Sequencer operation failed',
-      description:
-        'The operation failed. Your funds are safe. Please try again.',
-      variant: 'error',
-    });
-  }, [operationStatus?.isFailed, incompleteSequencerOp, markCompleted, toast]);
+    return () => clearTimeout(timeoutId);
+  }, [incompleteSequencerOp, startedAt, markCompleted]);
 };

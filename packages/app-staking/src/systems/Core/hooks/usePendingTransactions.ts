@@ -25,9 +25,29 @@ export enum PendingSequencerOperationType {
   WithdrawDelegatorReward = 'WITHDRAW_DELEGATOR_REWARD',
   WithdrawCommission = 'WITHDRAW_COMMISSION',
   BeginRedelegate = 'BEGIN_REDELEGATE',
+  Delegate = 'DELEGATE',
   Undelegate = 'UNDELEGATE',
   Withdraw = 'WITHDRAW', // Sequencer withdraw operation (not claim rewards)
 }
+
+/**
+ * Maps L1 transaction types to their corresponding sequencer operation types.
+ * Used to create sequencer operation tracking when L1 transactions are confirmed.
+ * Some L1 types don't have a corresponding sequencer operation (e.g., Allowance).
+ */
+export const L1_TO_SEQUENCER_TYPE_MAP: Partial<
+  Record<PendingTransactionTypeL1, PendingSequencerOperationType>
+> = {
+  [PendingTransactionTypeL1.Delegate]: PendingSequencerOperationType.Delegate,
+  [PendingTransactionTypeL1.Undelegate]:
+    PendingSequencerOperationType.Undelegate,
+  [PendingTransactionTypeL1.Redelegate]:
+    PendingSequencerOperationType.BeginRedelegate,
+  [PendingTransactionTypeL1.ClaimReward]:
+    PendingSequencerOperationType.WithdrawDelegatorReward,
+  [PendingTransactionTypeL1.WithdrawStart]:
+    PendingSequencerOperationType.Withdraw,
+};
 
 type PendingTransactionBase = {
   hash: Address;

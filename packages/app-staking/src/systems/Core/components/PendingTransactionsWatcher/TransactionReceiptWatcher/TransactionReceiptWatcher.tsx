@@ -1,15 +1,13 @@
-import { useToast } from '@fuels/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
+import { L1_TO_SEQUENCER_TYPE_MAP } from '~staking/systems/Core/hooks/usePendingTransactions';
 import { invalidateQueries } from '~staking/systems/Core/utils/invalidateQueries';
 import { useWaitForEthBlockSync } from '~staking/systems/Staking/services/useWaitForEthBlockSync';
 import { usePendingTransactionsCache } from '../../../hooks/usePendingTransactionsCache';
-import { ViewInExplorer } from '../../ViewInExplorer/ViewInExplorer';
 import {
   cosmosInvalidations,
   transactionTypeInvalidations,
-  transactionTypeLabel,
   transactionsToRemoveImmediately,
 } from './constants';
 import type { TransactionReceiptWatcherProps } from './types';
@@ -20,7 +18,6 @@ export function TransactionReceiptWatcher({
   const isSequencerHash =
     transaction?.hash && !transaction.hash?.startsWith('0x');
   const queryClient = useQueryClient();
-  const { toast } = useToast();
   const { address } = useAccount();
 
   const hasProcessedRef = useRef(false);
@@ -30,6 +27,7 @@ export function TransactionReceiptWatcher({
     removePendingTransaction,
     updatePendingTransactionDisplayed,
     markPendingTransactionAsCompleted,
+    convertL1ToSequencerOperation,
   } = usePendingTransactionsCache();
 
   const { isSuccess: isConfirmed, isError } = useWaitForTransactionReceipt({
@@ -42,7 +40,7 @@ export function TransactionReceiptWatcher({
   const waitForBlock = !!cosmosInvalidations?.[transaction.type];
 
   const { targetReached } = useWaitForEthBlockSync(
-    waitForBlock && isConfirmed && !isSequencerHash && !isSequencerHash
+    waitForBlock && isConfirmed && !isSequencerHash
       ? transaction.hash
       : undefined,
   );
@@ -66,23 +64,25 @@ export function TransactionReceiptWatcher({
         invalidateQueries(queryClient, SequencerInvalidations);
       if (queries) invalidateQueries(queryClient, queries);
 
-      markPendingTransactionAsCompleted(transaction?.hash);
+      // Check if this transaction type requires sequencer tracking
+      const sequencerType = L1_TO_SEQUENCER_TYPE_MAP[transaction.type];
+      const requiresSequencerTracking = !!sequencerType;
+
+      if (requiresSequencerTracking) {
+        // Convert to sequencer operation for long-term tracking
+        // useSequencerOperationCompletion will handle the completion tracking
+        convertL1ToSequencerOperation(transaction.hash, transaction.hash);
+      } else {
+        // For operations that don't need sequencer tracking, mark as completed immediately
+        markPendingTransactionAsCompleted(transaction?.hash);
+      }
 
       if (isCompleted) {
         if (transactionsToRemoveImmediately[transaction.type])
           removePendingTransaction(transaction.hash);
       }
       if (!transaction.displayed) {
-        updatePendingTransactionDisplayed(
-          transaction.hash,
-          true,
-          transaction.layer || 'l1',
-        );
-        toast({
-          title: `${transactionTypeLabel[transaction.type]} has been confirmed`,
-          description: `${transaction.formatted} ${transaction.symbol}`,
-          variant: 'success',
-        });
+        updatePendingTransactionDisplayed(transaction.hash, true);
       }
     }
   }, [
@@ -90,12 +90,12 @@ export function TransactionReceiptWatcher({
     address,
     transaction,
     isConfirmed,
-    toast,
     updatePendingTransactionDisplayed,
     queryClient,
     removePendingTransaction,
     transaction?.hash,
     markPendingTransactionAsCompleted,
+    convertL1ToSequencerOperation,
   ]);
 
   useEffect(() => {
@@ -104,19 +104,9 @@ export function TransactionReceiptWatcher({
     if (isError && !transaction?.displayed) {
       hasShownErrorToastRef.current = true;
 
-      updatePendingTransactionDisplayed(
-        transaction.hash,
-        true,
-        transaction.layer || 'l1',
-      );
-      toast({
-        title: `${transactionTypeLabel[transaction.type]} has failed`,
-        description: `${transaction.formatted} ${transaction.symbol}`,
-        action: <ViewInExplorer hash={transaction.hash} />,
-        variant: 'error',
-      });
+      updatePendingTransactionDisplayed(transaction.hash, true);
     }
-  }, [isError, toast, transaction, updatePendingTransactionDisplayed]);
+  }, [isError, transaction, updatePendingTransactionDisplayed]);
 
   return null;
 }

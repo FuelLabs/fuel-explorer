@@ -172,6 +172,13 @@ export function useRedelegateNewDialog({
     service.send({ type: 'BACK_TO_AMOUNT' });
   }, [service]);
 
+  const isBlocked = useSelector(service, (state) =>
+    redelegateNewDialogMachineSelectors.isBlocked(state.context),
+  );
+  const blockingMessage = useSelector(service, (state) =>
+    redelegateNewDialogMachineSelectors.getBlockingMessage(state.context),
+  );
+
   return {
     state: useSelector(service, (state) => state),
     send: service.send,
@@ -197,5 +204,7 @@ export function useRedelegateNewDialog({
     toValidator,
     validators: filteredValidators,
     toValidatorController,
+    isBlocked,
+    blockingMessage,
   };
 }

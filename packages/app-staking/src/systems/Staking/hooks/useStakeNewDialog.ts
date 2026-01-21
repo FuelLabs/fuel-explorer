@@ -231,6 +231,13 @@ export function useStakeNewDialog({
     stakeNewDialogMachineSelectors.navigationDirection(state.context),
   );
 
+  const isBlocked = useSelector(service, (state) =>
+    stakeNewDialogMachineSelectors.isBlocked(state.context),
+  );
+  const blockingMessage = useSelector(service, (state) =>
+    stakeNewDialogMachineSelectors.getBlockingMessage(state.context),
+  );
+
   return {
     state: useSelector(service, (state) => state),
     send: service.send,
@@ -268,5 +275,7 @@ export function useStakeNewDialog({
     approvalError,
     isReadyToConfirm,
     navigationDirection,
+    isBlocked,
+    blockingMessage,
   };
 }

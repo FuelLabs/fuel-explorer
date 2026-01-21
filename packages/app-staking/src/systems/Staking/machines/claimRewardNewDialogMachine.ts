@@ -4,14 +4,24 @@ import type { BN } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
-import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
+import {
+  type PendingTransaction,
+  PendingTransactionTypeL1,
+} from '~staking/systems/Core/hooks/usePendingTransactions';
 import {
   type AssetRate,
   AssetsRateService,
 } from '~staking/systems/Core/services/AssetsRateService';
+import {
+  type OperationBlockingInfo,
+  checkOperationBlocking,
+} from '~staking/systems/Core/utils/blocking';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
-import { addPendingL1Transaction } from '~staking/systems/Core/utils/query';
+import {
+  QUERY_KEYS,
+  addPendingL1Transaction,
+} from '~staking/systems/Core/utils/query';
 import { ClaimRewardNewService } from '~staking/systems/Staking/services/claimRewardNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
@@ -30,6 +40,9 @@ export interface ClaimRewardNewDialogContext {
   claimRewardError?: string | null;
   // Transaction tracking
   transactionHash?: HexAddress;
+  // Blocking state
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 type ClaimRewardNewDialogMachineServices = {
@@ -38,6 +51,9 @@ type ClaimRewardNewDialogMachineServices = {
   };
   getAssetsRate: {
     data: AssetRate[];
+  };
+  checkBlocking: {
+    data: OperationBlockingInfo;
   };
   submitClaimReward: {
     data: HexAddress;
@@ -156,12 +172,34 @@ export const claimRewardNewMachine = createMachine(
           },
         },
         onDone: {
-          target: 'reviewing',
+          target: 'checkingBlocking',
+        },
+      },
+      checkingBlocking: {
+        invoke: {
+          src: 'checkBlocking',
+          onDone: {
+            target: 'reviewing',
+            actions: assign((_, event) => ({
+              isBlocked: event.data.isBlocked,
+              blockingMessage: event.data.blockingMessage,
+            })),
+          },
+          onError: {
+            target: 'reviewing',
+            actions: assign(() => ({
+              isBlocked: false,
+              blockingMessage: undefined,
+            })),
+          },
         },
       },
       reviewing: {
         on: {
-          CONFIRM: 'submitting',
+          CONFIRM: {
+            target: 'submitting',
+            cond: (ctx) => !ctx.isBlocked,
+          },
         },
       },
       submitting: {
@@ -246,6 +284,21 @@ export const claimRewardNewMachine = createMachine(
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
       },
+      checkBlocking: (context) => {
+        const address = context.walletClient?.account?.address;
+        const pendingTransactions = address
+          ? context.queryClient?.getQueryData<PendingTransaction[]>(
+              QUERY_KEYS.pendingTransactions(address),
+            )
+          : undefined;
+        return Promise.resolve(
+          checkOperationBlocking(
+            pendingTransactions,
+            PendingTransactionTypeL1.ClaimReward,
+            context.validator,
+          ),
+        );
+      },
       submitClaimReward: async (context) => {
         const result = await ClaimRewardNewService.submitClaimReward(context);
         return result;
@@ -282,4 +335,8 @@ export const claimRewardNewMachineSelectors = {
       (state as any).matches('gettingReviewDetails')
     );
   },
+  // Blocking selectors
+  isBlocked: (context: ClaimRewardNewDialogContext) => context.isBlocked,
+  getBlockingMessage: (context: ClaimRewardNewDialogContext) =>
+    context.blockingMessage,
 };

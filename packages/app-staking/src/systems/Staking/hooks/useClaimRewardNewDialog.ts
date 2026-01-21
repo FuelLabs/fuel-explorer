@@ -85,6 +85,13 @@ export function useClaimRewardNewDialog({
   const fee = useSelector(service, (state) => state.context.fee);
   const rates = useSelector(service, (state) => state.context.rates);
 
+  const isBlocked = useSelector(service, (state) =>
+    claimRewardNewMachineSelectors.isBlocked(state.context),
+  );
+  const blockingMessage = useSelector(service, (state) =>
+    claimRewardNewMachineSelectors.getBlockingMessage(state.context),
+  );
+
   return {
     state: useSelector(service, (state) => state),
     send: service.send,
@@ -97,5 +104,7 @@ export function useClaimRewardNewDialog({
     rates,
     onClose: () => service.send({ type: 'CLOSE' }),
     claimRewardError,
+    isBlocked,
+    blockingMessage,
   };
 }

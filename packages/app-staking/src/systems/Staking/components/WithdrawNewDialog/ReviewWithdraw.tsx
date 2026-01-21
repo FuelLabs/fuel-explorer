@@ -19,10 +19,8 @@ import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosm
 import { LogoEth } from '~staking/systems/Core/components/LogoEth/LogoEth';
 import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfoSection/RegularInfoSection';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
-import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
-import { useCheckSequencerOperationBlocking } from '../../hooks/useCheckSequencerOperationBlocking';
 
 interface Props {
   amount: BN | null;
@@ -36,6 +34,8 @@ interface Props {
   isGettingReviewDetails: boolean;
   onConfirm: () => void;
   onBack: () => void;
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 function _ReviewWithdraw({
@@ -50,12 +50,9 @@ function _ReviewWithdraw({
   onConfirm,
   isGettingReviewDetails,
   onBack,
+  isBlocked = false,
+  blockingMessage,
 }: Props) {
-  // Check if sequencer operations are blocking withdrawals
-  const sequencerBlocking = useCheckSequencerOperationBlocking(
-    PendingTransactionTypeL1.WithdrawStart,
-  );
-
   const {
     formattedAmount,
     originalAmount,
@@ -136,7 +133,7 @@ function _ReviewWithdraw({
         />
       </div>
       <div>
-        {sequencerBlocking.isBlocked && (
+        {isBlocked && (
           <Alert color="orange" variant="surface" className="mb-4">
             <Alert.Icon>
               <IconClock size={18} className="text-orange-11" />
@@ -145,7 +142,7 @@ function _ReviewWithdraw({
               <Text size="2" weight="medium" className="block mb-1">
                 Withdrawal Currently Unavailable
               </Text>
-              <Text size="1">{sequencerBlocking.blockingMessage}</Text>
+              <Text size="1">{blockingMessage}</Text>
             </Alert.Text>
           </Alert>
         )}
@@ -167,14 +164,10 @@ function _ReviewWithdraw({
             className="rounded-md flex-1"
             size="3"
             onClick={onConfirm}
-            disabled={!isReady || sequencerBlocking.isBlocked}
+            disabled={!isReady || isBlocked}
             isLoading={isSubmitting}
             loadingText="Submitting..."
-            title={
-              sequencerBlocking.isBlocked
-                ? sequencerBlocking.blockingMessage
-                : ''
-            }
+            title={isBlocked ? blockingMessage : ''}
           >
             {errorMsg ? 'Retry' : 'Submit Withdraw'}
           </Button>

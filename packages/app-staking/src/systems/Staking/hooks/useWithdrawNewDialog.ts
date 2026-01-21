@@ -119,6 +119,13 @@ export function useWithdrawNewDialog() {
     service.send({ type: 'BACK_TO_AMOUNT' });
   }, [service]);
 
+  const isBlocked = useSelector(service, (state) =>
+    withdrawNewDialogMachineSelectors.isBlocked(state.context),
+  );
+  const blockingMessage = useSelector(service, (state) =>
+    withdrawNewDialogMachineSelectors.getBlockingMessage(state.context),
+  );
+
   return {
     state: useSelector(service, (state) => state),
     send: service.send,
@@ -140,5 +147,7 @@ export function useWithdrawNewDialog() {
     withdrawError,
     formError,
     goBackToAmount,
+    isBlocked,
+    blockingMessage,
   };
 }
