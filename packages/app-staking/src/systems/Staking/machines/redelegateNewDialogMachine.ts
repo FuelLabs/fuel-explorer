@@ -280,16 +280,20 @@ export const redelegateNewDialogMachine = createMachine(
 
               const txHash = event.data;
 
-              if (ctx.queryClient && ctx.ethAccount) {
-                addPendingL1Transaction(ctx.queryClient, ctx.ethAccount, {
-                  type: PendingTransactionTypeL1.Redelegate,
-                  layer: 'l1',
-                  hash: txHash,
-                  token: TOKENS[FuelToken.V2].token,
-                  symbol: 'FUEL',
-                  formatted: ctx.amount?.format() ?? '0',
-                  validator: ctx.fromValidator,
-                });
+              if (ctx.queryClient && ctx.walletClient?.account?.address) {
+                addPendingL1Transaction(
+                  ctx.queryClient,
+                  ctx.walletClient.account.address,
+                  {
+                    type: PendingTransactionTypeL1.Redelegate,
+                    layer: 'l1',
+                    hash: txHash,
+                    token: TOKENS[FuelToken.V2].token,
+                    symbol: 'FUEL',
+                    formatted: ctx.amount?.format() ?? '0',
+                    validator: ctx.fromValidator,
+                  },
+                );
               }
 
               RedelegateNewService.showSuccessToast(txHash);
