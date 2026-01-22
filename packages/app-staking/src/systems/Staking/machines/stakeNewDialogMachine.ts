@@ -20,6 +20,7 @@ import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
 import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
 import { StakeNewService } from '~staking/systems/Staking/services/stakeNewService';
+import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
 export interface StakeNewDialogContext {
@@ -91,6 +92,7 @@ export type StakeNewDialogEvent =
   | { type: 'REVIEW' }
   | { type: 'CONFIRM' }
   | { type: 'CLOSE' }
+  | { type: 'RECHECK_BLOCKING' }
   | { type: 'GO_TO_APPROVAL' }
   | { type: 'APPROVE' }
   | { type: 'BACK_TO_AMOUNT' }
@@ -116,6 +118,10 @@ export const stakeNewDialogMachine = createMachine(
     },
     on: {
       CLOSE: 'closed',
+      RECHECK_BLOCKING: {
+        target: 'checkingBlocking',
+        cond: (ctx) => !!ctx.queryClient,
+      },
     },
     states: {
       waitingInitialData: {
@@ -339,6 +345,12 @@ export const stakeNewDialogMachine = createMachine(
       reviewing: {
         tags: ['reviewPage'],
         on: {
+          SET_ETH_ACCOUNT: {
+            actions: assign({
+              ethAccount: (_, event) => event.ethAccount,
+            }),
+            target: 'checkingBlocking',
+          },
           BACK_TO_AMOUNT: {
             target: 'waitingForAmount',
             actions: assign({
@@ -512,19 +524,70 @@ export const stakeNewDialogMachine = createMachine(
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
       },
-      checkBlocking: (context) => {
-        const address = context.walletClient?.account?.address;
-        const pendingTransactions = address
-          ? context.queryClient?.getQueryData<PendingTransaction[]>(
-              QUERY_KEYS.pendingTransactions(address),
-            )
+      checkBlocking: async (context) => {
+        const address =
+          context.ethAccount ?? context.walletClient?.account?.address;
+        // Normalize address to lowercase for consistency
+        const normalizedAddress = address?.toLowerCase();
+        const queryKey = normalizedAddress
+          ? QUERY_KEYS.pendingTransactions(normalizedAddress)
           : undefined;
-        return Promise.resolve(
-          checkOperationBlocking(
-            pendingTransactions,
+
+        let pendingTransactions: PendingTransaction[] | undefined = undefined;
+
+        if (context.queryClient && queryKey) {
+          // First try to get from query cache
+          pendingTransactions =
+            context.queryClient.getQueryData<PendingTransaction[]>(queryKey);
+
+          // Check if query is hydrated
+          const queryState = context.queryClient.getQueryState(queryKey);
+          const isHydrated = queryState?.status === 'success';
+
+          // If not hydrated or empty, try to get from all queries (case-insensitive)
+          if (
+            !isHydrated ||
+            !pendingTransactions ||
+            pendingTransactions.length === 0
+          ) {
+            const allEntries = context.queryClient.getQueriesData<
+              PendingTransaction[]
+            >({
+              queryKey: QUERY_KEYS.pendingTransactions(),
+            });
+
+            // Filter by normalized address
+            const merged = allEntries
+              .filter(([key]) => {
+                const keyParts = Array.isArray(key) ? key : [];
+                const keyAddress =
+                  typeof keyParts[keyParts.length - 1] === 'string'
+                    ? (keyParts[keyParts.length - 1] as string)
+                    : '';
+                return (
+                  keyAddress && keyAddress.toLowerCase() === normalizedAddress
+                );
+              })
+              .flatMap(([, data]) => data ?? []);
+
+            if (merged.length > 0) {
+              pendingTransactions = merged;
+            }
+          }
+        }
+
+        if (!pendingTransactions || pendingTransactions.length === 0) {
+          return getBlockingInfoFromStakingEvents(
+            normalizedAddress,
             PendingTransactionTypeL1.Delegate,
             context.validator,
-          ),
+          );
+        }
+
+        return checkOperationBlocking(
+          pendingTransactions,
+          PendingTransactionTypeL1.Delegate,
+          context.validator,
         );
       },
       submitStake: async (context) => {

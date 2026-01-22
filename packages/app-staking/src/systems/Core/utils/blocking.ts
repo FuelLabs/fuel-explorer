@@ -81,6 +81,8 @@ export function checkOperationBlocking(
     return { isBlocked: false };
   }
 
+  const normalizedValidator = validatorAddress?.toLowerCase();
+
   for (const tx of pendingTransactions) {
     if (tx.completed) {
       continue;
@@ -101,7 +103,12 @@ export function checkOperationBlocking(
     }
 
     // Check validator-specific blocking rules
-    if (validatorAddress === tx.validator) {
+    const txValidator = tx.validator?.toLowerCase();
+    if (
+      normalizedValidator &&
+      txValidator &&
+      normalizedValidator === txValidator
+    ) {
       const validatorRules = (
         VALIDATOR_SPECIFIC_DISABLED_ACTIONS as Record<
           string,

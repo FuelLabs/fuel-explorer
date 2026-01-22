@@ -23,6 +23,7 @@ import {
   addPendingL1Transaction,
 } from '~staking/systems/Core/utils/query';
 import { RedelegateNewService } from '~staking/systems/Staking/services/redelegateNewService';
+import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
 export interface RedelegateNewDialogContext {
@@ -82,6 +83,7 @@ export type RedelegateNewDialogEvent =
   | { type: 'REVIEW' }
   | { type: 'CONFIRM' }
   | { type: 'CLOSE' }
+  | { type: 'RECHECK_BLOCKING' }
   | { type: 'BACK_TO_AMOUNT' };
 
 export const redelegateNewDialogMachine = createMachine(
@@ -105,6 +107,10 @@ export const redelegateNewDialogMachine = createMachine(
     },
     on: {
       CLOSE: 'closed',
+      RECHECK_BLOCKING: {
+        target: 'checkingBlocking',
+        cond: (ctx) => !!ctx.queryClient,
+      },
     },
     states: {
       waitingInitialData: {
@@ -254,6 +260,12 @@ export const redelegateNewDialogMachine = createMachine(
       reviewing: {
         tags: ['reviewPage'],
         on: {
+          SET_ETH_ACCOUNT: {
+            actions: assign({
+              ethAccount: (_, event) => event.ethAccount,
+            }),
+            target: 'checkingBlocking',
+          },
           CONFIRM: {
             target: 'submitting',
             cond: (ctx) => !ctx.isBlocked,
@@ -280,20 +292,18 @@ export const redelegateNewDialogMachine = createMachine(
 
               const txHash = event.data;
 
-              if (ctx.queryClient && ctx.walletClient?.account?.address) {
-                addPendingL1Transaction(
-                  ctx.queryClient,
-                  ctx.walletClient.account.address,
-                  {
-                    type: PendingTransactionTypeL1.Redelegate,
-                    layer: 'l1',
-                    hash: txHash,
-                    token: TOKENS[FuelToken.V2].token,
-                    symbol: 'FUEL',
-                    formatted: ctx.amount?.format() ?? '0',
-                    validator: ctx.fromValidator,
-                  },
-                );
+              const accountAddress =
+                ctx.ethAccount ?? ctx.walletClient?.account?.address;
+              if (ctx.queryClient && accountAddress) {
+                addPendingL1Transaction(ctx.queryClient, accountAddress, {
+                  type: PendingTransactionTypeL1.Redelegate,
+                  layer: 'l1',
+                  hash: txHash,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amount?.format() ?? '0',
+                  validator: ctx.fromValidator,
+                });
               }
 
               RedelegateNewService.showSuccessToast(txHash);
@@ -345,19 +355,70 @@ export const redelegateNewDialogMachine = createMachine(
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
       },
-      checkBlocking: (context) => {
-        const address = context.walletClient?.account?.address;
-        const pendingTransactions = address
-          ? context.queryClient?.getQueryData<PendingTransaction[]>(
-              QUERY_KEYS.pendingTransactions(address),
-            )
+      checkBlocking: async (context) => {
+        const address =
+          context.ethAccount ?? context.walletClient?.account?.address;
+        // Normalize address to lowercase for consistency
+        const normalizedAddress = address?.toLowerCase();
+        const queryKey = normalizedAddress
+          ? QUERY_KEYS.pendingTransactions(normalizedAddress)
           : undefined;
-        return Promise.resolve(
-          checkOperationBlocking(
-            pendingTransactions,
+
+        let pendingTransactions: PendingTransaction[] | undefined = undefined;
+
+        if (context.queryClient && queryKey) {
+          // First try to get from query cache
+          pendingTransactions =
+            context.queryClient.getQueryData<PendingTransaction[]>(queryKey);
+
+          // Check if query is hydrated
+          const queryState = context.queryClient.getQueryState(queryKey);
+          const isHydrated = queryState?.status === 'success';
+
+          // If not hydrated or empty, try to get from all queries (case-insensitive)
+          if (
+            !isHydrated ||
+            !pendingTransactions ||
+            pendingTransactions.length === 0
+          ) {
+            const allEntries = context.queryClient.getQueriesData<
+              PendingTransaction[]
+            >({
+              queryKey: QUERY_KEYS.pendingTransactions(),
+            });
+
+            // Filter by normalized address
+            const merged = allEntries
+              .filter(([key]) => {
+                const keyParts = Array.isArray(key) ? key : [];
+                const keyAddress =
+                  typeof keyParts[keyParts.length - 1] === 'string'
+                    ? (keyParts[keyParts.length - 1] as string)
+                    : '';
+                return (
+                  keyAddress && keyAddress.toLowerCase() === normalizedAddress
+                );
+              })
+              .flatMap(([, data]) => data ?? []);
+
+            if (merged.length > 0) {
+              pendingTransactions = merged;
+            }
+          }
+        }
+
+        if (!pendingTransactions || pendingTransactions.length === 0) {
+          return getBlockingInfoFromStakingEvents(
+            normalizedAddress,
             PendingTransactionTypeL1.Redelegate,
             context.fromValidator,
-          ),
+          );
+        }
+
+        return checkOperationBlocking(
+          pendingTransactions,
+          PendingTransactionTypeL1.Redelegate,
+          context.fromValidator,
         );
       },
       submitRedelegate: async (context) => {

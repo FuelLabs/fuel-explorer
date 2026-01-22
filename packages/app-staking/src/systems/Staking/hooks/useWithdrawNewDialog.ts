@@ -17,7 +17,6 @@ export function useWithdrawNewDialog() {
   const { data: walletClient } = useWalletClient();
   const { data: sequencerBalance } = useSharedSequencerBalance(account);
   const queryClient = useQueryClient();
-
   const isReady = !!walletClient;
 
   const service = useInterpret(withdrawNewDialogMachine);
@@ -82,10 +81,6 @@ export function useWithdrawNewDialog() {
 
   const isSubmitting = useSelector(service, (state) =>
     withdrawNewDialogMachineSelectors.isSubmitting(state),
-  );
-
-  const isReviewing = useSelector(service, (state) =>
-    withdrawNewDialogMachineSelectors.isReviewing(state),
   );
 
   const isWaitingForAmount = useSelector(service, (state) =>

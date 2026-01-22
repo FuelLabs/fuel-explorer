@@ -40,12 +40,15 @@ export const useSequencerOperationCompletion = () => {
   const markCompleted = useCallback(
     (sequencerHash: string) => {
       if (!account?.address) return;
+      // Address normalization is handled by QUERY_KEYS.pendingTransactions
       const queryKey = QUERY_KEYS.pendingTransactions(account.address);
-      queryClient.setQueryData(queryKey, (data: any[] = []) =>
-        data.map((tx) =>
+      queryClient.setQueryData(queryKey, (data: any[] = []) => {
+        const updated = data.map((tx) =>
           tx.sequencerHash === sequencerHash ? { ...tx, completed: true } : tx,
-        ),
-      );
+        );
+        // Remove completed transactions to keep cache clean
+        return updated.filter((tx) => !tx.completed);
+      });
       queryClient.invalidateQueries({ queryKey });
     },
     [account?.address, queryClient],

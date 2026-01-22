@@ -106,7 +106,11 @@ export const QUERY_KEYS = {
   },
 
   pendingTransactions: (address?: string) =>
-    createAccountQueryKey(['pending', 'transactions'], [], address),
+    createAccountQueryKey(
+      ['pending', 'transactions'],
+      [],
+      address?.toLowerCase(),
+    ),
   withdrawals: (address?: string) =>
     createAccountQueryKey(['withdrawals'], [], address),
 } as const;
@@ -119,11 +123,16 @@ export const addPendingL1Transaction = (
   address: string,
   transaction: Record<string, unknown>,
 ) => {
-  const queryKey = QUERY_KEYS.pendingTransactions(address);
-  const queryData = queryClient.getQueryData<any[]>(queryKey) ?? [];
+  // Normalize address to lowercase for consistency
+  const normalizedAddress = address?.toLowerCase();
+  if (!normalizedAddress) return;
+
+  const queryKey = QUERY_KEYS.pendingTransactions(normalizedAddress);
+  const queryData = (queryClient.getQueryData(queryKey) as any[]) ?? [];
   queryClient.setQueryData(queryKey, [
     ...queryData,
     { ...transaction, displayed: false, completed: false },
   ]);
   queryClient.invalidateQueries({ queryKey });
+  // TanStack Query persistence handles storage automatically via meta.persist
 };

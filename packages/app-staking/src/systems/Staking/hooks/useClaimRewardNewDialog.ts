@@ -44,6 +44,12 @@ export function useClaimRewardNewDialog({
   }, [validator, service]);
 
   useEffect(() => {
+    if (address) {
+      service.send({ type: 'SET_ETH_ACCOUNT', ethAccount: address });
+    }
+  }, [address, service]);
+
+  useEffect(() => {
     service.send({
       type: 'SET_AMOUNT',
       amount: rewardAmount,

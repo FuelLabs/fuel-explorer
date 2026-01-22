@@ -27,7 +27,6 @@ export function useStakeNewDialog({
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const queryClient = useQueryClient();
-
   const { data: tokens } = useTokenBalance(token, account);
   const { data: sequencerBalance } = useSharedSequencerBalance(account);
   const tokenBalance = useFormatBalance(tokens, decimals);
@@ -147,10 +146,6 @@ export function useStakeNewDialog({
 
   const isSubmitting = useSelector(service, (state) =>
     stakeNewDialogMachineSelectors.isSubmitting(state),
-  );
-
-  const isReviewing = useSelector(service, (state) =>
-    stakeNewDialogMachineSelectors.isReviewing(state),
   );
 
   const isWaitingForAmount = useSelector(service, (state) =>

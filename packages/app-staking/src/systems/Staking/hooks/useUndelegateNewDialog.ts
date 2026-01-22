@@ -21,7 +21,6 @@ export function useUndelegateNewDialog({
   const { data: walletClient } = useWalletClient();
   // const { data: sequencerBalance } = useSharedSequencerBalance(account);
   const queryClient = useQueryClient();
-
   const { data: totalDelegated, isLoading: isLoadingStakedAmount } =
     useAccountValidatorDelegations({
       address,

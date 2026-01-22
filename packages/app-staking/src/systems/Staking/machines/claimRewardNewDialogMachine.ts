@@ -23,10 +23,12 @@ import {
   addPendingL1Transaction,
 } from '~staking/systems/Core/utils/query';
 import { ClaimRewardNewService } from '~staking/systems/Staking/services/claimRewardNewService';
+import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
 export interface ClaimRewardNewDialogContext {
   validator: SequencerValidatorAddress;
+  ethAccount?: HexAddress | undefined;
   // Clients for contract interaction
   publicClient?: PublicClient | null;
   walletClient?: WalletClient | null;
@@ -62,6 +64,7 @@ type ClaimRewardNewDialogMachineServices = {
 
 export type ClaimRewardNewDialogEvent =
   | { type: 'SET_VALIDATOR'; validator: string | undefined }
+  | { type: 'SET_ETH_ACCOUNT'; ethAccount: HexAddress | undefined }
   | {
       type: 'SET_CLIENTS';
       publicClient: PublicClient;
@@ -70,6 +73,7 @@ export type ClaimRewardNewDialogEvent =
     }
   | { type: 'SET_AMOUNT'; amount: BN | null }
   | { type: 'CONFIRM' }
+  | { type: 'RECHECK_BLOCKING' }
   | { type: 'CLOSE' };
 
 export const claimRewardNewMachine = createMachine(
@@ -86,6 +90,10 @@ export const claimRewardNewMachine = createMachine(
     initial: 'waitingInitialData',
     on: {
       CLOSE: 'closed',
+      RECHECK_BLOCKING: {
+        target: 'checkingBlocking',
+        cond: (ctx) => !!ctx.queryClient,
+      },
     },
     states: {
       waitingInitialData: {
@@ -101,6 +109,11 @@ export const claimRewardNewMachine = createMachine(
           },
         },
         on: {
+          SET_ETH_ACCOUNT: {
+            actions: assign({
+              ethAccount: (_, event) => event.ethAccount,
+            }),
+          },
           SET_CLIENTS: {
             actions: assign((_, event) => ({
               publicClient: event.publicClient,
@@ -196,6 +209,12 @@ export const claimRewardNewMachine = createMachine(
       },
       reviewing: {
         on: {
+          SET_ETH_ACCOUNT: {
+            actions: assign({
+              ethAccount: (_, event) => event.ethAccount,
+            }),
+            target: 'checkingBlocking',
+          },
           CONFIRM: {
             target: 'submitting',
             cond: (ctx) => !ctx.isBlocked,
@@ -215,20 +234,18 @@ export const claimRewardNewMachine = createMachine(
             actions: assign((ctx, event) => {
               const txHash = event.data;
 
-              if (ctx.queryClient && ctx.walletClient?.account?.address) {
-                addPendingL1Transaction(
-                  ctx.queryClient,
-                  ctx.walletClient.account.address,
-                  {
-                    type: PendingTransactionTypeL1.ClaimReward,
-                    layer: 'l1',
-                    hash: txHash,
-                    token: TOKENS[FuelToken.V2].token,
-                    symbol: 'FUEL',
-                    formatted: ctx.amount?.format() ?? '0',
-                    validator: ctx.validator,
-                  },
-                );
+              const accountAddress =
+                ctx.ethAccount ?? ctx.walletClient?.account?.address;
+              if (ctx.queryClient && accountAddress) {
+                addPendingL1Transaction(ctx.queryClient, accountAddress, {
+                  type: PendingTransactionTypeL1.ClaimReward,
+                  layer: 'l1',
+                  hash: txHash,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amount?.format() ?? '0',
+                  validator: ctx.validator,
+                });
               }
 
               ClaimRewardNewService.showSuccessToast(txHash);
@@ -284,19 +301,33 @@ export const claimRewardNewMachine = createMachine(
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
       },
-      checkBlocking: (context) => {
-        const address = context.walletClient?.account?.address;
-        const pendingTransactions = address
-          ? context.queryClient?.getQueryData<PendingTransaction[]>(
-              QUERY_KEYS.pendingTransactions(address),
-            )
+      checkBlocking: async (context) => {
+        const address =
+          context.ethAccount ?? context.walletClient?.account?.address;
+        const normalizedAddress = address?.toLowerCase();
+        const queryKey = normalizedAddress
+          ? QUERY_KEYS.pendingTransactions(normalizedAddress)
           : undefined;
-        return Promise.resolve(
-          checkOperationBlocking(
-            pendingTransactions,
+
+        let pendingTransactions: PendingTransaction[] | undefined = undefined;
+
+        if (context.queryClient && queryKey) {
+          pendingTransactions =
+            context.queryClient.getQueryData<PendingTransaction[]>(queryKey);
+        }
+
+        if (!pendingTransactions || pendingTransactions.length === 0) {
+          return getBlockingInfoFromStakingEvents(
+            normalizedAddress,
             PendingTransactionTypeL1.ClaimReward,
             context.validator,
-          ),
+          );
+        }
+
+        return checkOperationBlocking(
+          pendingTransactions,
+          PendingTransactionTypeL1.ClaimReward,
+          context.validator,
         );
       },
       submitClaimReward: async (context) => {

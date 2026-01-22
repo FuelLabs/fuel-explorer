@@ -20,7 +20,6 @@ export function useRedelegateNewDialog({
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const queryClient = useQueryClient();
-
   const { data: totalDelegated } = useAccountValidatorDelegations({
     address: account,
     validator: validatorInput,
@@ -29,7 +28,6 @@ export function useRedelegateNewDialog({
     },
   });
   const { validators } = useValidatorsList();
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const filteredValidators = useMemo(() => {
     return validators?.filter((validator) => {
       return validator.operator_address !== validatorInput;
