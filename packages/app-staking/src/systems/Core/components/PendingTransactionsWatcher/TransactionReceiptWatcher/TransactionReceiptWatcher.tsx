@@ -71,7 +71,11 @@ export function TransactionReceiptWatcher({
       if (requiresSequencerTracking) {
         // Convert to sequencer operation for long-term tracking
         // useSequencerOperationCompletion will handle the completion tracking
-        convertL1ToSequencerOperation(transaction.hash, transaction.hash);
+        // Note: We use a derived sequencer hash since the actual sequencer tx hash
+        // is not available at this point. The L1 tx has completed but we don't have
+        // a way to retrieve the corresponding sequencer transaction hash.
+        const derivedSequencerHash = `${transaction.hash}-sequencer`;
+        convertL1ToSequencerOperation(transaction.hash, derivedSequencerHash);
       } else {
         // For operations that don't need sequencer tracking, mark as completed immediately
         markPendingTransactionAsCompleted(transaction?.hash);

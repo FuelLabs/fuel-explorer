@@ -75,7 +75,9 @@ const _DelegatedPositionItem = ({
 
   const rewardBN = useMemo(() => {
     return rewardsData.reduce((acc, curr) => {
-      return acc.add(new BN(curr.amount.split('.')[0] ?? 0));
+      // Cosmos API returns decimal strings - truncate to integer for BN
+      const integerAmount = Math.floor(Number(curr.amount ?? 0)).toString();
+      return acc.add(new BN(integerAmount));
     }, new BN(0));
   }, [rewardsData]);
 

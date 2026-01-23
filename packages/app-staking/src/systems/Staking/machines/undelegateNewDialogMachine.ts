@@ -30,6 +30,7 @@ export interface UndelegateNewDialogContext {
   amount: BN | null;
   stakedAmount: BN;
   validator: SequencerValidatorAddress;
+  ethAccount?: HexAddress;
   // Clients for contract interaction
   publicClient?: PublicClient | null;
   walletClient?: WalletClient | null;
@@ -40,6 +41,8 @@ export interface UndelegateNewDialogContext {
   // Errors
   formError?: string | null;
   undelegateError?: string | null;
+  // Transaction tracking
+  transactionHash?: HexAddress;
   // Blocking state
   isBlocked?: boolean;
   blockingMessage?: string;
@@ -64,6 +67,7 @@ type UndelegateNewDialogEvents =
   | { type: 'SET_AMOUNT'; amount: BN | null }
   | { type: 'SET_VALIDATOR'; validator: string | undefined }
   | { type: 'SET_STAKED_AMOUNT'; stakedAmount: BN }
+  | { type: 'SET_ETH_ACCOUNT'; ethAccount: HexAddress | undefined }
   | {
       type: 'SET_CLIENTS';
       publicClient: PublicClient;
@@ -257,11 +261,7 @@ export const undelegateNewDialogMachine = createMachine(
           src: 'submitUndelegate',
           onDone: {
             target: 'finalized',
-            actions: (ctx, event) => {
-              if (!ctx.queryClient) return;
-              // Safe type checking for XState's "done" events
-              if (!event.type.startsWith('done.invoke')) return;
-
+            actions: assign((ctx, event) => {
               const txHash = event.data;
 
               const accountAddress =
@@ -279,10 +279,15 @@ export const undelegateNewDialogMachine = createMachine(
               }
 
               UndelegateNewService.showSuccessToast(txHash);
-            },
+
+              return {
+                transactionHash: txHash,
+              };
+            }),
           },
           onError: {
-            target: 'reviewing',
+            // Return to checkingBlocking to recheck blocking state after error
+            target: 'checkingBlocking',
             actions: assign({
               undelegateError: (_, event) => {
                 if (event.data instanceof Error && event.data?.message) {
@@ -435,7 +440,10 @@ export const undelegateNewDialogMachineSelectors = {
   isWaitingForAmount: (state: UndelegateNewDialogMachineState) =>
     state.matches('waitingForAmount'),
   isGettingReviewDetails: (state: UndelegateNewDialogMachineState) => {
-    return (state as any).matches('gettingReviewDetails');
+    return (
+      (state as any).matches('gettingReviewDetails') ||
+      state.matches('checkingBlocking')
+    );
   },
   // New selector to check if in any review-related state
   isReviewPage: (state: UndelegateNewDialogMachineState) =>

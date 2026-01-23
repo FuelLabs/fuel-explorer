@@ -152,6 +152,10 @@ export function useStakeNewDialog({
     stakeNewDialogMachineSelectors.isWaitingForAmount(state),
   );
 
+  const isReviewing = useSelector(service, (state) =>
+    stakeNewDialogMachineSelectors.isReviewing(state),
+  );
+
   const isReviewPage = useSelector(service, (state) =>
     stakeNewDialogMachineSelectors.isReviewPage(state),
   );

@@ -138,11 +138,12 @@ export const VALIDATOR_SPECIFIC_DISABLED_ACTIONS: Partial<
     [PendingTransactionTypeL1.ClaimReward]: true,
   },
 
-  // When Undelegate is pending on a validator (L1 or Sequencer - same enum value)
+  // When Undelegate is pending on a validator (L1 or Sequencer)
   // Can't: redelegate on same validator
   // Can: redelegate on other validators
   // Note: Undelegate on any validator is already blocked globally
-  // Note: PendingSequencerOperationType.Undelegate has same value, so this covers both
+  // Note: Both PendingTransactionTypeL1.Undelegate and PendingSequencerOperationType.Undelegate
+  // have the same string value ('UNDELEGATE'), so this rule applies to both L1 and sequencer operations.
   [PendingTransactionTypeL1.Undelegate]: {
     [PendingTransactionTypeL1.Redelegate]: true,
   },

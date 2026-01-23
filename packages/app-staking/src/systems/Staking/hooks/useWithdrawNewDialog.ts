@@ -87,6 +87,10 @@ export function useWithdrawNewDialog() {
     withdrawNewDialogMachineSelectors.isWaitingForAmount(state),
   );
 
+  const isReviewing = useSelector(service, (state) =>
+    withdrawNewDialogMachineSelectors.isReviewing(state),
+  );
+
   const isReviewPage = useSelector(service, (state) =>
     withdrawNewDialogMachineSelectors.isReviewPage(state),
   );

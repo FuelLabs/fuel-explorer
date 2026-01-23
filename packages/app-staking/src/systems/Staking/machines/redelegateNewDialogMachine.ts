@@ -42,6 +42,8 @@ export interface RedelegateNewDialogContext {
   // Errors
   formError?: string | null;
   redelegateError?: string | null;
+  // Transaction tracking
+  transactionHash?: HexAddress;
   // Blocking state
   isBlocked?: boolean;
   blockingMessage?: string;
@@ -285,11 +287,7 @@ export const redelegateNewDialogMachine = createMachine(
           src: 'submitRedelegate',
           onDone: {
             target: 'finalized',
-            actions: (ctx, event) => {
-              if (!ctx.queryClient) return;
-              // Safe type checking for XState's "done" events
-              if (!event.type.startsWith('done.invoke')) return;
-
+            actions: assign((ctx, event) => {
               const txHash = event.data;
 
               const accountAddress =
@@ -307,10 +305,15 @@ export const redelegateNewDialogMachine = createMachine(
               }
 
               RedelegateNewService.showSuccessToast(txHash);
-            },
+
+              return {
+                transactionHash: txHash,
+              };
+            }),
           },
           onError: {
-            target: 'reviewing',
+            // Return to checkingBlocking to recheck blocking state after error
+            target: 'checkingBlocking',
             actions: assign({
               redelegateError: (_, event) => {
                 if (event.data instanceof Error && event.data?.message) {
@@ -466,7 +469,10 @@ export const redelegateNewDialogMachineSelectors = {
   isWaitingForAmount: (state: RedelegateNewDialogMachineState) =>
     state.matches('waitingForAmount'),
   isGettingReviewDetails: (state: RedelegateNewDialogMachineState) => {
-    return (state as any).matches('gettingReviewDetails');
+    return (
+      (state as any).matches('gettingReviewDetails') ||
+      state.matches('checkingBlocking')
+    );
   },
   // New selector to check if in any review-related state
   isReviewPage: (state: RedelegateNewDialogMachineState) =>

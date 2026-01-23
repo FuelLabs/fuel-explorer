@@ -250,9 +250,15 @@ function _ReviewStake({
             className="rounded-md flex-1"
             size="3"
             onClick={needsApproval ? onGoToApproval : onConfirm}
-            disabled={(!isReadyToConfirm && !needsApproval) || isBlocked}
-            isLoading={isSubmitting}
-            loadingText="Submitting..."
+            disabled={
+              (!isReadyToConfirm && !needsApproval) ||
+              isBlocked ||
+              isGettingReviewDetails
+            }
+            isLoading={isSubmitting || isGettingReviewDetails}
+            loadingText={
+              isGettingReviewDetails ? 'Checking...' : 'Submitting...'
+            }
           >
             {errorMsg ? 'Retry' : needsApproval ? 'Approve' : 'Submit Stake'}
           </Button>

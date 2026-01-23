@@ -56,7 +56,12 @@ export const Balance = () => {
   }, [vestingTotalBalance.amount, vestingStart, vestingEnd]);
 
   const rewardBalance = useMemo(
-    () => formatAmount(bn(reward?.amount.split('.')[0]), decimals),
+    // Cosmos API returns decimal strings - truncate to integer for bn
+    () =>
+      formatAmount(
+        bn(Math.floor(Number(reward?.amount ?? 0)).toString()),
+        decimals,
+      ),
     [reward],
   );
 

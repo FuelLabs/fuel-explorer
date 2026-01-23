@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { HexAddress } from 'app-commons';
+import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
 import { BN, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
@@ -18,7 +18,10 @@ import {
 } from '~staking/systems/Core/utils/blocking';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
-import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
+import {
+  QUERY_KEYS,
+  addPendingL1Transaction,
+} from '~staking/systems/Core/utils/query';
 import { StakeNewService } from '~staking/systems/Staking/services/stakeNewService';
 import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
@@ -463,16 +466,45 @@ export const stakeNewDialogMachine = createMachine(
           onDone: {
             target: 'finalized',
             actions: (ctx, event) => {
-              if (!ctx.queryClient) return;
-              // TempStakingTransactions.addTransaction(ctx.queryClient, {
-              //   hash: 'test',
-              // });
+              const accountAddress =
+                ctx.ethAccount ?? ctx.walletClient?.account?.address;
+
+              // Add L1 pending transaction if there's an L1 hash
+              if (ctx.queryClient && accountAddress && event.data.l1) {
+                addPendingL1Transaction(ctx.queryClient, accountAddress, {
+                  type: PendingTransactionTypeL1.Delegate,
+                  layer: 'l1',
+                  hash: event.data.l1,
+                  amount: ctx.amountFromL1?.toNumber(),
+                  decimals: TOKENS[FuelToken.V2].decimals,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amountFromL1?.format() ?? '0',
+                  validator: ctx.validator,
+                });
+              }
+
+              // Add sequencer pending transaction if there's a sequencer hash
+              if (ctx.queryClient && accountAddress && event.data.sequencer) {
+                addPendingL1Transaction(ctx.queryClient, accountAddress, {
+                  type: PendingTransactionTypeL1.Delegate,
+                  layer: 'l1',
+                  hash: event.data.sequencer,
+                  amount: ctx.amountFromSequencer?.toNumber(),
+                  decimals: TOKENS[FuelToken.V2].decimals,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amountFromSequencer?.format() ?? '0',
+                  validator: ctx.validator,
+                });
+              }
 
               StakeNewService.showSuccessToast(event.data);
             },
           },
           onError: {
-            target: 'reviewing',
+            // Return to checkingBlocking to recheck blocking state after error
+            target: 'checkingBlocking',
             actions: assign({
               stakeError: (_, event) => {
                 if (event.data instanceof Error && event.data?.message) {
@@ -662,7 +694,10 @@ export const stakeNewDialogMachineSelectors = {
   isWaitingForAmount: (state: StakeNewDialogMachineState) =>
     state.matches('waitingForAmount'),
   isGettingReviewDetails: (state: StakeNewDialogMachineState) => {
-    return (state as any).matches('gettingReviewDetails');
+    return (
+      (state as any).matches('gettingReviewDetails') ||
+      state.matches('checkingBlocking')
+    );
   },
   // New selector to check if in any review-related state
   isReviewPage: (state: StakeNewDialogMachineState) =>

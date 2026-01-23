@@ -62,7 +62,9 @@ function _ReviewClaimReward({
   });
   const rewardBN = useMemo(() => {
     return rewardsData?.reduce((acc, curr) => {
-      return acc.add(new BN(curr.amount.split('.')[0] ?? 0));
+      // Cosmos API returns decimal strings - truncate to integer for BN
+      const integerAmount = Math.floor(Number(curr.amount ?? 0)).toString();
+      return acc.add(new BN(integerAmount));
     }, new BN(0));
   }, [rewardsData]);
   const ratesData = useMemo(() => {
@@ -191,9 +193,9 @@ function _ReviewClaimReward({
           className="rounded-md w-full"
           size="3"
           onClick={onConfirm}
-          disabled={!isReady || isBlocked}
-          isLoading={isSubmitting}
-          loadingText="Submitting..."
+          disabled={!isReady || isBlocked || isGettingReviewDetails}
+          isLoading={isSubmitting || isGettingReviewDetails}
+          loadingText={isGettingReviewDetails ? 'Checking...' : 'Submitting...'}
           title={isBlocked ? blockingMessage : ''}
         >
           {errorMsg ? 'Retry' : 'Claim Rewards'}

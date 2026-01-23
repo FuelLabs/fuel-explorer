@@ -289,7 +289,8 @@ export const withdrawNewDialogMachine = createMachine(
             }),
           },
           onError: {
-            target: 'reviewing',
+            // Return to checkingBlocking to recheck blocking state after error
+            target: 'checkingBlocking',
             actions: assign({
               withdrawError: (_, event) => {
                 if (event.data instanceof Error && event.data?.message) {
@@ -438,7 +439,10 @@ export const withdrawNewDialogMachineSelectors = {
   isWaitingForAmount: (state: WithdrawNewDialogMachineState) =>
     state.matches('waitingForAmount'),
   isGettingReviewDetails: (state: WithdrawNewDialogMachineState) => {
-    return (state as any).matches('gettingReviewDetails');
+    return (
+      (state as any).matches('gettingReviewDetails') ||
+      state.matches('checkingBlocking')
+    );
   },
   // New selector to check if in any review-related state
   isReviewPage: (state: WithdrawNewDialogMachineState) =>

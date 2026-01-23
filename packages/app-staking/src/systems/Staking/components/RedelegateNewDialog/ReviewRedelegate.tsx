@@ -180,9 +180,11 @@ function _ReviewRedelegate({
             className="rounded-md flex-1"
             size="3"
             onClick={onConfirm}
-            disabled={!isReady || isBlocked}
-            isLoading={isSubmitting}
-            loadingText="Submitting..."
+            disabled={!isReady || isBlocked || isGettingReviewDetails}
+            isLoading={isSubmitting || isGettingReviewDetails}
+            loadingText={
+              isGettingReviewDetails ? 'Checking...' : 'Submitting...'
+            }
           >
             {errorMsg ? 'Retry' : 'Submit Redelegate'}
           </Button>

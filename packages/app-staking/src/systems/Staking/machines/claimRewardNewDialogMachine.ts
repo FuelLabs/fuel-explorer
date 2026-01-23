@@ -256,7 +256,8 @@ export const claimRewardNewMachine = createMachine(
             }),
           },
           onError: {
-            target: 'reviewing',
+            // Return to checkingBlocking to recheck blocking state after error
+            target: 'checkingBlocking',
             actions: assign({
               claimRewardError: (_, event) => {
                 if (event.data instanceof Error && event.data?.message) {
@@ -269,7 +270,7 @@ export const claimRewardNewMachine = createMachine(
                   return event.data?.message;
                 }
 
-                return 'Error submitting withdraw';
+                return 'Error submitting claim reward';
               },
             }),
           },
@@ -358,7 +359,7 @@ export const claimRewardNewMachineSelectors = {
   isReviewing: (state: ClaimRewardNewDialogMachineState) =>
     state.matches('reviewing'),
   isGettingReviewDetails: (state: ClaimRewardNewDialogMachineState) =>
-    state.matches('gettingReviewDetails'),
+    state.matches('gettingReviewDetails') || state.matches('checkingBlocking'),
   // Composite states
   isLoading: (state: ClaimRewardNewDialogMachineState) => {
     return (

@@ -16,26 +16,30 @@ export const useSequencerOperationCompletion = () => {
   const account = useAccount();
   const { data: pendingTransactions } = usePendingTransactions();
 
-  const incompleteSequencerOp = useMemo(() => {
-    return pendingTransactions?.find(
+  // Get ALL incomplete sequencer operations, not just the first one
+  const incompleteSequencerOps = useMemo(() => {
+    return (pendingTransactions?.filter(
       (tx) => isPendingSequencerOperation(tx) && !tx.completed,
-    ) as PendingSequencerOperation | undefined;
+    ) ?? []) as PendingSequencerOperation[];
   }, [pendingTransactions]);
 
-  const fallbackStartedAtRef = useRef<number | null>(null);
+  // Track fallback startedAt times for each operation by sequencerHash
+  const fallbackStartedAtMapRef = useRef<Map<string, number>>(new Map());
 
-  const startedAt = useMemo(() => {
-    if (incompleteSequencerOp?.startedAt) {
-      return incompleteSequencerOp.startedAt;
+  // Clean up old entries when operations are removed
+  useEffect(() => {
+    const currentHashes = new Set(
+      incompleteSequencerOps.map((op) => op.sequencerHash),
+    );
+    const mapRef = fallbackStartedAtMapRef.current;
+
+    // Remove entries for operations that are no longer tracked
+    for (const hash of mapRef.keys()) {
+      if (!currentHashes.has(hash)) {
+        mapRef.delete(hash);
+      }
     }
-    if (incompleteSequencerOp && !fallbackStartedAtRef.current) {
-      fallbackStartedAtRef.current = Date.now();
-    }
-    if (!incompleteSequencerOp) {
-      fallbackStartedAtRef.current = null;
-    }
-    return fallbackStartedAtRef.current ?? Date.now();
-  }, [incompleteSequencerOp]);
+  }, [incompleteSequencerOps]);
 
   const markCompleted = useCallback(
     (sequencerHash: string) => {
@@ -54,21 +58,46 @@ export const useSequencerOperationCompletion = () => {
     [account?.address, queryClient],
   );
 
+  // Set up timeouts for each incomplete operation
   useEffect(() => {
-    if (!incompleteSequencerOp) return;
+    if (incompleteSequencerOps.length === 0) return;
 
-    const elapsed = Date.now() - startedAt;
-    const remaining = MAX_COMPLETION_DELAY_MS - elapsed;
+    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
-    if (remaining <= 0) {
-      markCompleted(incompleteSequencerOp.sequencerHash);
-      return;
+    for (const op of incompleteSequencerOps) {
+      // Get or create startedAt time for this operation
+      let startedAt = op.startedAt;
+      if (!startedAt) {
+        const existingFallback = fallbackStartedAtMapRef.current.get(
+          op.sequencerHash,
+        );
+        if (existingFallback) {
+          startedAt = existingFallback;
+        } else {
+          startedAt = Date.now();
+          fallbackStartedAtMapRef.current.set(op.sequencerHash, startedAt);
+        }
+      }
+
+      const elapsed = Date.now() - startedAt;
+      const remaining = MAX_COMPLETION_DELAY_MS - elapsed;
+
+      if (remaining <= 0) {
+        // Already expired, mark as completed immediately
+        markCompleted(op.sequencerHash);
+      } else {
+        // Set up timeout for this operation
+        const timeoutId = setTimeout(() => {
+          markCompleted(op.sequencerHash);
+        }, remaining);
+        timeoutIds.push(timeoutId);
+      }
     }
 
-    const timeoutId = setTimeout(() => {
-      markCompleted(incompleteSequencerOp.sequencerHash);
-    }, remaining);
-
-    return () => clearTimeout(timeoutId);
-  }, [incompleteSequencerOp, startedAt, markCompleted]);
+    return () => {
+      for (const timeoutId of timeoutIds) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [incompleteSequencerOps, markCompleted]);
 };
