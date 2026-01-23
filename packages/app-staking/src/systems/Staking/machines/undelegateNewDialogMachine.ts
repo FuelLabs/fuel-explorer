@@ -30,7 +30,6 @@ export interface UndelegateNewDialogContext {
   amount: BN | null;
   stakedAmount: BN;
   validator: SequencerValidatorAddress;
-  ethAccount?: HexAddress;
   // Clients for contract interaction
   publicClient?: PublicClient | null;
   walletClient?: WalletClient | null;
@@ -67,7 +66,6 @@ type UndelegateNewDialogEvents =
   | { type: 'SET_AMOUNT'; amount: BN | null }
   | { type: 'SET_VALIDATOR'; validator: string | undefined }
   | { type: 'SET_STAKED_AMOUNT'; stakedAmount: BN }
-  | { type: 'SET_ETH_ACCOUNT'; ethAccount: HexAddress | undefined }
   | {
       type: 'SET_CLIENTS';
       publicClient: PublicClient;
@@ -236,12 +234,6 @@ export const undelegateNewDialogMachine = createMachine(
       reviewing: {
         tags: ['reviewPage'],
         on: {
-          SET_ETH_ACCOUNT: {
-            actions: assign({
-              ethAccount: (_, event) => event.ethAccount,
-            }),
-            target: 'checkingBlocking',
-          },
           CONFIRM: {
             target: 'submitting',
             cond: (ctx) => !ctx.isBlocked,
@@ -264,8 +256,7 @@ export const undelegateNewDialogMachine = createMachine(
             actions: assign((ctx, event) => {
               const txHash = event.data;
 
-              const accountAddress =
-                ctx.ethAccount ?? ctx.walletClient?.account?.address;
+              const accountAddress = ctx.walletClient?.account?.address;
               if (ctx.queryClient && accountAddress) {
                 addPendingL1Transaction(ctx.queryClient, accountAddress, {
                   type: PendingTransactionTypeL1.Undelegate,
@@ -333,8 +324,7 @@ export const undelegateNewDialogMachine = createMachine(
         return rates;
       },
       checkBlocking: async (context) => {
-        const address =
-          context.ethAccount ?? context.walletClient?.account?.address;
+        const address = context.walletClient?.account?.address;
         // Normalize address to lowercase for consistency
         const normalizedAddress = address?.toLowerCase();
         const queryKey = normalizedAddress
