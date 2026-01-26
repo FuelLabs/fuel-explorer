@@ -15,6 +15,9 @@ export function useETA({ startDate, endDate }: UseETAParams) {
   const dateFinishRef = useRef(new Date(endDate || ''));
 
   const [eta, setEta] = useState<string | undefined>(undefined);
+  const [totalDuration, setTotalDuration] = useState<string | undefined>(
+    undefined,
+  );
   const [progress, setProgress] = useState<number | undefined>(undefined);
 
   const hasEtaProgressBar = useMemo<boolean>(() => {
@@ -26,6 +29,7 @@ export function useETA({ startDate, endDate }: UseETAParams) {
       dateStartRef.current,
       dateFinishRef.current,
     );
+    setTotalDuration(formatSecondsToETA(durationInSeconds));
 
     const updateEta = (): string | undefined => {
       const secondsLeftToFinalize = getDiffSecondsToNow(dateFinishRef.current);
@@ -59,5 +63,5 @@ export function useETA({ startDate, endDate }: UseETAParams) {
     return () => clearInterval(interval);
   }, []);
 
-  return { eta, progress, hasEtaProgressBar };
+  return { eta, totalDuration, progress, hasEtaProgressBar };
 }

@@ -19,8 +19,10 @@ import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import { formatETA } from '~staking/systems/Core/utils/eta';
+import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useUndelegateStatusDialog } from '~staking/systems/Staking/hooks/useUndelegateStatusDialog';
+import { getSecondsBetweenDates } from '~staking/systems/Staking/utils/dateDiff';
 import { useUndelegateStatusFlags } from '../../hooks/useUndelegateStatusFlags';
 import { StatusItem } from '../StatusItem/StatusItem';
 import { UNDELEGATE_STEPS } from './constants';
@@ -63,6 +65,13 @@ export const UndelegateStatusDialog = ({
   const currentTime = new Date();
   const eta = undelegateEvent?.timestampToFinish;
   const formattedEta = formatETA(eta);
+
+  const startDate =
+    undelegateEvent?.statusInfo?.['TransactionSent' as any]?.ethTx?.timestamp;
+  const totalSeconds =
+    startDate && eta ? getSecondsBetweenDates(startDate, eta) : 0;
+  const totalDuration =
+    totalSeconds > 0 ? formatSecondsToETA(totalSeconds, '~') : undefined;
 
   const responsiveDialogStyle = responsiveDialogStyles();
 
@@ -146,6 +155,14 @@ export const UndelegateStatusDialog = ({
                 </Badge>
               }
             />
+          </HStack>
+          <HStack gap="3" align="center">
+            <Text className="font-medium text-gray-12 text-sm">
+              Total time to complete
+            </Text>
+            <Text className="font-medium text-gray-10 text-sm">
+              {totalDuration || '~7 days'}
+            </Text>
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">
             {UNDELEGATE_STEPS.filter((step) => {

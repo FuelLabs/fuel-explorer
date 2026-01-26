@@ -193,6 +193,14 @@ function _ReviewStake({
             isGettingReviewDetails ? undefined : `(${formattedFee.display} ETH)`
           }
         />
+        <Separator size="4" />
+        <RegularInfoSection
+          header="Time to complete"
+          text={hasAmountFromL1 ? '~15 minutes' : '~1 minute'}
+          textSupport={
+            hasAmountFromL1 ? '(L1 to L2 deposit)' : '(Sequencer transaction)'
+          }
+        />
         {hasAmountFromL1 && hasAmountFromSequencer && (
           <>
             <Separator size="4" />

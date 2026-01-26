@@ -23,7 +23,7 @@ export const TransactionHistoryItemStatus = ({
     event.status === GQLWithdrawStatusType.ReadyToProcessWithdraw;
   const isSkipped = event.status === GQLWithdrawStatusType.Skipped;
 
-  const { eta, progress } = useETA({
+  const { eta, totalDuration, progress } = useETA({
     startDate,
     endDate,
   });
@@ -54,7 +54,9 @@ export const TransactionHistoryItemStatus = ({
         )}
         <Text className="text-sm">{label}</Text>
         {isInProgress && eta && (
-          <Text className="text-sm text-muted">(~{eta} left)</Text>
+          <Text className="text-sm text-muted">
+            (~{eta} remaining of {totalDuration})
+          </Text>
         )}
       </HStack>
       {isInProgress && (

@@ -125,6 +125,12 @@ function _ReviewWithdraw({
             isGettingReviewDetails ? undefined : `(${formattedFee.display} ETH)`
           }
         />
+        <Separator size="4" />
+        <RegularInfoSection
+          header="Time to complete"
+          text="~7 days"
+          textSupport="(Security period)"
+        />
       </div>
       <div>
         <ErrorInline error={errorMsg} className="mb-1" />
