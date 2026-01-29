@@ -1,0 +1,42 @@
+name: fuel-explorer-test
+
+services:
+  l1_chain:
+    image: ghcr.io/fuellabs/fuel-bridge:cf3065d
+    env_file:
+      - ./envs/l1_chain.env
+    ports:
+      - 8545:9545
+      - 8080:8081
+    healthcheck:
+      test: "curl -f -H \"Content-Type: application/json\" -d '{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"net_version\",\"params\":[]}' http://localhost:9545 || exit 1"
+      interval: 5s
+      timeout: 2s
+      retries: 100
+    networks:
+      - test-network
+
+  fuel_core:
+    depends_on:
+      l1_chain:
+        condition: service_healthy
+    build:
+      context: ./fuel-core/
+      dockerfile: Dockerfile.test
+      args:
+        CHAIN_ID: ${TEST_CHAIN_ID:-0}  # ⭐ Configurable chainId
+    environment:
+      L1_CHAIN_HTTP: http://l1_chain:9545/
+      DEPLOYMENTS_HTTP: http://l1_chain:8081/deployments.local.json
+    ports:
+      - 4000:4001
+    healthcheck:
+      test: curl --fail http://localhost:4001/v1/health || exit 1
+      interval: 4s
+      timeout: 3s
+      retries: 50
+    networks:
+      - test-network
+
+networks:
+  test-network:

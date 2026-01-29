@@ -1,0 +1,52 @@
+FROM ghcr.io/fuellabs/fuel-core:v0.45.1
+
+ARG FUEL_IP=0.0.0.0
+ARG FUEL_PORT=4001
+ARG CONSENSUS_KEY_SECRET="0xc8e615a4089466174459ef19cfd257d2e17adfabff3b8f219dbb5fb4eca87c50"
+
+# dependencies
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y curl jq git && rm -rf /var/lib/apt/lists/*
+
+# copy chain config
+WORKDIR /fuel
+
+# Copy genesis coins and modified chain config
+COPY ./genesis_coins.json .
+COPY ./chain_config_devnet.json ./chain_config.json
+
+# Clone chain configuration for state transition bytecode
+RUN git clone \
+    https://github.com/FuelLabs/chain-configuration.git \
+    /chain-configuration && \
+    cd /chain-configuration && \
+    git checkout f3e89dabff27341b4a78cbca7254761104afcebc
+
+# Copy the base local configuration
+RUN cp -R /chain-configuration/local/* ./
+
+# Override with our custom chain_config (with chainId 1119889111)
+COPY ./chain_config_devnet.json ./chain_config.json
+
+# Copy the state transition bytecode
+RUN cp /chain-configuration/upgradelog/ignition-devnet/state_transition_function/30.wasm \
+    ./state_transition_bytecode.wasm
+
+# update local state_config with custom genesis coins config
+RUN jq '.coins = input' \
+    state_config.json genesis_coins.json > tmp.json \
+    && mv tmp.json state_config.json
+
+# Verify chainId is set correctly
+RUN echo "=== CHAIN CONFIG CHAIN_ID ===" && \
+    jq '.consensus_parameters.V1.chain_id' chain_config.json
+
+# expose fuel node port
+ENV FUEL_IP="${FUEL_IP}"
+ENV FUEL_PORT="${FUEL_PORT}"
+ENV CONSENSUS_KEY_SECRET="${CONSENSUS_KEY_SECRET}"
+EXPOSE ${FUEL_PORT}
+
+# copy over script and run
+COPY ./fuel_core.sh .
+CMD ["sh", "./fuel_core.sh"]

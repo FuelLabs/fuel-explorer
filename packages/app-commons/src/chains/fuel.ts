@@ -13,7 +13,7 @@ export type FuelChain = {
 };
 
 const fuelLocal: FuelChain = {
-  id: 0,
+  id: 1119889111,
   network: 'fuel_local',
   name: 'Fuel Local',
   testnet: true,

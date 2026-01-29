@@ -64,6 +64,8 @@ export async function getBridgeTokenContracts() {
   }
 
   if (IS_FUEL_DEVNET_CHAIN) {
+    // TODO: Verify these contracts are still valid after devnet chainId change (0 -> 1119889111)
+    // If devnet chain was reset or contracts redeployed, these addresses need updating
     const ETH_ERC20 = '0xC6387efAD0F184a90B34f397C3d6Fd63135ef790';
     const FUEL_TokenContract =
       '0x12f300d6d2b286dd5d290b709e0d3d73acc23c87ec10d349d4386b9524d740a1';
@@ -118,6 +120,8 @@ export async function getBridgeSolidityContracts() {
   }
 
   if (IS_FUEL_DEVNET_CHAIN) {
+    // TODO: Verify these L1 bridge contracts are still valid after devnet chainId change (0 -> 1119889111)
+    // If devnet chain was reset or contracts redeployed, these addresses need updating
     bridgeSolidityContracts = {
       FuelChainState: '0x2e87c41C9B3d932b6DA3C805baEfB7bbe863fCc6',
       FuelMessagePortal: '0x768f9459E3339A1F7d59CcF24C80Eb4A711a01FB',

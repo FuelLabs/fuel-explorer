@@ -5,6 +5,26 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  fuels: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
+  '@fuel-ts/abi-coder': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder
+  '@fuel-ts/abi-typegen': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-typegen
+  '@fuel-ts/account': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/account
+  '@fuel-ts/address': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/address
+  '@fuel-ts/contract': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/contract
+  '@fuel-ts/create-fuels': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/create-fuels
+  '@fuel-ts/crypto': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto
+  '@fuel-ts/errors': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+  '@fuel-ts/fuel-gauge': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuel-gauge
+  '@fuel-ts/hasher': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher
+  '@fuel-ts/logger': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/logger
+  '@fuel-ts/math': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+  '@fuel-ts/merkle': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/merkle
+  '@fuel-ts/program': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/program
+  '@fuel-ts/recipes': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/recipes
+  '@fuel-ts/script': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/script
+  '@fuel-ts/transactions': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions
+  '@fuel-ts/utils': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/utils
+  '@fuel-ts/versions': file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/versions
   axios@>=1.0.0 <1.8.2: '>=1.8.2'
   ws@<8.17.1: '>=8.17.1'
   form-data@>=3.0.0 <3.0.4: '>=3.0.4'
@@ -20,23 +40,23 @@ importers:
   .:
     dependencies:
       '@fuel-ts/account':
-        specifier: 0.100.0
-        version: 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+        specifier: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/account
+        version: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       '@fuel-ts/math':
-        specifier: 0.100.0
-        version: 0.100.0
+        specifier: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+        version: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
       '@fuels/connectors':
         specifier: 0.45.0
-        version: 0.45.0(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(@wagmi/connectors@5.1.7(@types/react@18.2.54)(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(react@18.2.0)(typescript@5.4.5)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.46.2)(typescript@5.4.5)(utf-8-validate@5.0.10)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))(bufferutil@4.0.9)(fuels@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)
+        version: 0.45.0(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(@wagmi/connectors@5.1.7(@types/react@18.2.54)(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(react@18.2.0)(typescript@5.4.5)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.46.2)(typescript@5.4.5)(utf-8-validate@5.0.10)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))(bufferutil@4.0.9)(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@fuels/react':
         specifier: 0.44.1
-        version: 0.44.1(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 0.44.1(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@fuels/react-xstore':
         specifier: 0.23.0
         version: 0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@5.20.2))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@5.20.2)
       fuels:
-        specifier: 0.102.0
-        version: 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+        specifier: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
+        version: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -169,8 +189,8 @@ importers:
         specifier: 16.4.1
         version: 16.4.1
       fuels:
-        specifier: 0.102.0
-        version: 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+        specifier: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
+        version: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       tsx:
         specifier: 4.7.1
         version: 4.7.1
@@ -182,13 +202,13 @@ importers:
     dependencies:
       '@fuel-bridge/test-utils':
         specifier: 1.0.0
-        version: 1.0.0(ethers@6.11.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(fuels@0.96.1)
+        version: 1.0.0(ethers@6.11.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))
       ethers:
         specifier: 6.11.0
         version: 6.11.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       fuels:
-        specifier: 0.96.1
-        version: 0.96.1
+        specifier: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
+        version: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
     devDependencies:
       ts-node:
         specifier: ^10.9.2
@@ -685,7 +705,7 @@ importers:
     devDependencies:
       '@fuels/playwright-utils':
         specifier: 0.57.1
-        version: 0.57.1(@playwright/test@1.48.2)(fuels@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))
+        version: 0.57.1(@playwright/test@1.48.2)(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))
       '@synthetixio/synpress':
         specifier: 4.1.0
         version: 4.1.0(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.6)(@playwright/test@1.48.2)(@swc/core@1.13.3(@swc/helpers@0.5.17))(bufferutil@4.0.9)(ethers@6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.4.1(@swc/helpers@0.5.17))(@types/node@22.7.5)(typescript@5.4.5))(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.23.8)
@@ -693,8 +713,8 @@ importers:
         specifier: workspace:*
         version: link:../app-commons
       fuels:
-        specifier: 0.102.0
-        version: 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+        specifier: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
+        version: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       viem:
         specifier: 2.23.2
         version: 2.23.2(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.23.8)
@@ -2337,198 +2357,87 @@ packages:
 
   '@fuel-bridge/test-utils@1.0.0':
     resolution: {integrity: sha512-hI6HQcYgzzQCiqbWZVBUO/p/vuzpFrgxLO5NhfnFadK0ri0EQB7OXWYdwyCjPjYbQDVPZt/EUGtQdBJuroAgJg==}
+    version: 1.0.0
     peerDependencies:
       ethers: 6.13.1
-      fuels: 0.94.4
+      fuels: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
 
   '@fuel-infrastructure/fuelsequencerjs@0.0.14':
     resolution: {integrity: sha512-hxMNtIStDX8SbXblkIAe3+Y+f1Zj6lm8l46cbb6uFcxyiR7fr4Uj9OR5aO4ZKZR/86vB4UXP23vAcfwCO8CbKw==}
 
-  '@fuel-ts/abi-coder@0.100.0':
-    resolution: {integrity: sha512-Fp4nGs7VvYJY/logk5Q8bbidA2bBPADvi4s9ylO1Lb9D1VgCl37yd3qqFN2NixIZtZIrsyJzpwGQKOQoJQpxGQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/abi-coder@0.102.0':
-    resolution: {integrity: sha512-eVbLGnDsGQXCwT4mA4xvasI6Jh+xEiSRbskAu8cUwSoVnaDBCUYH9EXFEOFBdM45hzXwh1+buhnigkF1cOZ5ZA==}
+  '@fuel-ts/abi-coder@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/abi-coder@0.96.1':
-    resolution: {integrity: sha512-czJxFPirhSO6ayshu9Cr5AmED/IprQ8h1igwlcSHFr5jR+l46bLdlsXsWiUwe7vyvZCpOnxkN/XZYkmQyNxKNg==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/abi-typegen@0.102.0':
-    resolution: {integrity: sha512-PkTsOluacxSLh4I/7+G0lia+hKYHvqe6eXx59Cvd3/91i16a/U8+owtqj2m5YUZtgb36tU1ewvTarVuFvZxbSA==}
+  '@fuel-ts/abi-typegen@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-typegen':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-typegen, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
     hasBin: true
 
-  '@fuel-ts/abi-typegen@0.96.1':
-    resolution: {integrity: sha512-vRJnAQ9sxkKuUQ2fkxntPm/679grxgwSf54O7vgDeXuXqQx/4XeylpExjH0/nZzEM5al+muw4rg9WwmKulkcZA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-    hasBin: true
-
-  '@fuel-ts/account@0.100.0':
-    resolution: {integrity: sha512-MBBzy/c3h9ISOoDlPT0TIgjrbzvo7EDtbgqcesAeLri506FHZ5rDi1f1T4sIvs0/qPDGezSgvbYWDdb3+RoUIw==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/account@0.102.0':
-    resolution: {integrity: sha512-VvoHV/5AsFAu+SZbR1d/+aE7dtSQ+qQuzHOexm3kk4dtTQA9v7RRl+2gA1GDJo01Zc5529mkXcZnb346+0odcw==}
+  '@fuel-ts/account@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/account@0.96.1':
-    resolution: {integrity: sha512-i9InTebg3/buKXNJZpKBhxGMBC3MKpk905Uiv2CvTmldyPVgnZV/jY/b63jlfdEWyP5yVkr5/tzo7QaPKpfnMA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/address@0.100.0':
-    resolution: {integrity: sha512-Ifl1xcsQRvYeZaM2GIqTgC6TrCB49WXBxlYKX4uF+MEac2N9ZJ9bUmWgdFsiwU6NlxgWY99L30RC/hejwVjc7A==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/address@0.102.0':
-    resolution: {integrity: sha512-//u/BpJSCLppnRv73c7fbJn7+m6cxOmq7BKyLyNrO66Fuq9NnKmgDrDtY4nErSBrYBdjPepvpLp5wzs9jVytEg==}
+  '@fuel-ts/address@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/address@0.96.1':
-    resolution: {integrity: sha512-PCuC8oojoWLhh0+boitaP90/Z3iSfEXZR8v1JCEfoLZIkvCq6EGKtiY0KvcNkPozHOHmmT34w/1CS6qHOoCBNA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/contract@0.102.0':
-    resolution: {integrity: sha512-PUUiySGKb9usznxY99zl8S9X3L0XIlQKu1NzVVT9f0YXhwIqAkDvoCvCGgsPpF4RQAK7Q4KiJI0N/EGPL6PIXA==}
+  '@fuel-ts/contract@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/contract':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/contract, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/contract@0.96.1':
-    resolution: {integrity: sha512-shwNMHFZ7vr5QJsfVQ6aLd1ms88f3ZagrsNLqNz1Txhz/5KVgYyJaxfp7tUc4WZFpR67+W1zeIqx8ZNHVhck3g==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/crypto@0.100.0':
-    resolution: {integrity: sha512-awAEmtZ8V8D9s87w8NIaZLy2xlmCT9ahXERvv93SkYLjEvmOe6pybAk5lgFIphRDkbfYBsPpBDxqjfRv6QrIVg==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/crypto@0.102.0':
-    resolution: {integrity: sha512-RFrca2bxG56j5WA9EwJYIeEzCfDH2nAU/g9rgEJr/wmMvSOH97QW3Nxym/o/bssdkEln++s51govXeBv8o+ztA==}
+  '@fuel-ts/crypto@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/crypto@0.96.1':
-    resolution: {integrity: sha512-OrAZPZtm8HQouzip621/ci47PeTS06QegGdz7MeN6wK4yeCbJmlRQ1WE9S3iclb3p+VLF0RtbecEbHQfsNgsnA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/errors@0.100.0':
-    resolution: {integrity: sha512-U/75ihXsoWg+9Mg4lXuNxdDD+jEABf2dYvf/T7pTcrqVx8BMZOZ8czp9tLJoZDfLaYAyvSKE6lP7iqqFYve1kg==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/errors@0.102.0':
-    resolution: {integrity: sha512-h/UXMnyY19G6UBOjiF2dXqv/pxPQW/EDbcGe9ELdOe8cXCItmnO8oTLtAvPHH4Z4IEK87CUpTW4+wD+MTj2Rqw==}
+  '@fuel-ts/errors@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/errors@0.96.1':
-    resolution: {integrity: sha512-Xtso5v4a3UUvnMaOSDhMRlkb9LxLyCyC/1/RY7fZZ035ttscy6dNMuiD/iSptJ5pHklJ5R4rCPdOL5EKpgOaMA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/hasher@0.100.0':
-    resolution: {integrity: sha512-Tkoln8shIisJH1/p/fWQYtex/L4IYKmE3RemUMlR4K8QQ2LIYOebRON5UA090wLY4DitSkThFgwWNaWh21nYNw==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/hasher@0.102.0':
-    resolution: {integrity: sha512-KkcdfSyzorNvKJKfrXBQjmJFuYVk1ABEwo3I0VtnWgNnDlHNmkmN8RzkPBnGmmPUWz+Nncf4PhlqjOhyamFa8Q==}
+  '@fuel-ts/hasher@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/hasher@0.96.1':
-    resolution: {integrity: sha512-7z4cah+5TOcCBA2Wgvje1L7wVTahiFLb9IUpRXRMVGXwaqsbV/wUNcyuc1mhPh/JKLgcOe+OqsrpcYD2dg2rpg==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/interfaces@0.96.1':
-    resolution: {integrity: sha512-mZ3sDHJml5AtLRSmGWo5rbU9//3oKDhAeiFealajcPaVztAAnaKnA5a19dd4ITbjZb2q3e2lQ7zX8iAXgHUwYA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/math@0.100.0':
-    resolution: {integrity: sha512-G3d0ufv6Ifragyq2Wbtz9sR8M8qKCsArQOsCGQ6Gwa0eXmYIqP/UgjLbkGK2rOvaRFsv9dd0xXq4H61Bh/O7tQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/math@0.102.0':
-    resolution: {integrity: sha512-jo63N1b9+KHYUxWRS3ZPHkaxFmiiAyRUT6Xo8mVQ0LbtDxx0ulqexCBw1ITN5BYfarTOigF0I1GFgBLIVY6xSA==}
+  '@fuel-ts/math@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/math@0.96.1':
-    resolution: {integrity: sha512-AZUChguQmE1ILYbcc6SOTjFJIUkGzD3Z6yHgvO4tszn2QS/jVTSAZKVx653J5u9m/Xn/WthwR35l1GbwXMwB4g==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/merkle@0.100.0':
-    resolution: {integrity: sha512-hs3X3DQ4LS6h4eQoenNMEwk6ep8DGFlow2shqGchieMefl/d+GNRXAOYbovmh3Y0xwNWBrC94a3/NxiShNiGiQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/merkle@0.102.0':
-    resolution: {integrity: sha512-pnNzU25GxE/3mUdTh0UC/KwrDp/paGAOwOaheTTGPftx7gHSgzrFfEnEzJf/i+y+eNK9fFOkav1gQ5dMkshqQg==}
+  '@fuel-ts/merkle@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/merkle':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/merkle, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/merkle@0.96.1':
-    resolution: {integrity: sha512-7cLbxYG5berKSK+wPKrkbB9dZ6akOm7C1Ij4iwYXOxQWlmXY62mjSY5Tl1PPyDBSdRqBtqxW0xYUGIzZl2A/3g==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/program@0.102.0':
-    resolution: {integrity: sha512-oR+Hj0kx8Z3TZoStRhik+q4+pNYHatTuasd50H1TAR/7H7Zs6ZNfs7cARVuqDhqvDNaV1ChYrjnkdDB65RHG8g==}
+  '@fuel-ts/program@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/program':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/program, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/program@0.96.1':
-    resolution: {integrity: sha512-tA2YvcIdlDQLKeOOfoTyfI3LRQZiqsHi5rFaGbOsjEQvyNQBdXa92vMMFW0dFNWXqOPLjTmYNWqp0xsMuikbsA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/recipes@0.102.0':
-    resolution: {integrity: sha512-cq0ljg6QtByyCv7ntC56wc+x6GcKmwGAClEQRLRcj69WyZsy1uOlfZhLzWY3c4wa/TXgyyjijBN/XvMrCEavOg==}
+  '@fuel-ts/recipes@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/recipes':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/recipes, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/script@0.102.0':
-    resolution: {integrity: sha512-WkDHcgEbrcsZk/1z+q+31Sx7JKuNtjVL09L4Rx7dLJMHoM1X5rlQdVvg6PZRFq3DUmHcZXjvG1p+/3nIu16UNA==}
+  '@fuel-ts/script@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/script':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/script, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/script@0.96.1':
-    resolution: {integrity: sha512-N/N3I3xjDI1+9XcCrYTWapF0iBbdvtBxUUUZxn5S5GuIXuTCK6UfQLrRciuCHK5QiHVwFmQjlki+ozJfI+4UbQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/transactions@0.100.0':
-    resolution: {integrity: sha512-DBWMwVnTT/jrBgyya7RDUcJMzpOFTPTJlFtwTcQvSzRaC/KXdAo5G+ihnXtNs48Ttkww8IcZw+OuEXaGOHBVAQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/transactions@0.102.0':
-    resolution: {integrity: sha512-UtWZPD6WvZud4Otmh9f7CwcAyvMARMprzUco8Qz7WT1dPXT6zflAqLtGx47BQG0nCt1LlrqpCUvDrRNq6WDadA==}
+  '@fuel-ts/transactions@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@fuel-ts/transactions@0.96.1':
-    resolution: {integrity: sha512-yPQBzMeFIzNBLUZigaf4q0hETO8AH8Evt6ZvpWrYhjYz2WfEpfNDpuhIHRwsMfJRbxz2vhQ51AzkRqpH0b2GMQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/utils@0.100.0':
-    resolution: {integrity: sha512-5Sypnp2bguyFfx57M8aXAKG506Xx5b9sONjaLl0aXU+MuFTG7rsBOwfymBev6P+3uwAlVqe2aerbl0kLLmqVXQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-    peerDependencies:
-      vitest: 3.0.5
-
-  '@fuel-ts/utils@0.102.0':
-    resolution: {integrity: sha512-u6IJfo+SCEGZycnHxjHZFQpBKnO3xqyP6kMpVSl/uHa2IxKJl68QZmMXqjU8+JkXZ2uP+Ui56gZGoFeje0sPng==}
+  '@fuel-ts/utils@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
     peerDependencies:
       vitest: 3.0.9
 
-  '@fuel-ts/utils@0.96.1':
-    resolution: {integrity: sha512-XXZNEUPf7qtKpVO3ak2CSroBYEKh1Gne1zlmVSNUoVPqQvglcu0I2pu/QmVnZBN4m3yVSyHUoWR2Kbo8/Dh7sA==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-
-  '@fuel-ts/versions@0.100.0':
-    resolution: {integrity: sha512-Bqac28BrA0U1Ha06IiNFVnIbLYiJrfvqbBLHK4lCpshcaXhuRd3VE2Urwxy+kbvVVP/8stCFE9+ihJGtX1tTlw==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
-    hasBin: true
-
-  '@fuel-ts/versions@0.102.0':
-    resolution: {integrity: sha512-r71sNrg69uvnVyVsdivPQzlon3Aoa21tmPp8lFZ3PeVFpzh1NQ5H2tkUgFjvjX4WmbnSGeBvMjEd0WWWkY/Isw==}
+  '@fuel-ts/versions@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions':
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
-    hasBin: true
-
-  '@fuel-ts/versions@0.96.1':
-    resolution: {integrity: sha512-C//ZT7U68Gksz9PzUJVzdzUARK7mfXf3MsF5ZqZaMegkE2tCy+twjy8PBdeVserY0uX6mEHRJyZJwcspk34ixg==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
     hasBin: true
 
   '@fuels/connectors@0.45.0':
     resolution: {integrity: sha512-+uPMS8p8ZneQ1+YRP2AB+NLe2eGJdIRaqCjcOSv6kCwS/sdGyWEnK69DAbCd1jiLXUQQ/QfkQhI5vSNwVJW/cA==}
+    version: 0.45.0
     peerDependencies:
-      fuels: 0.102.0
+      fuels: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
 
   '@fuels/jest@0.20.0':
     resolution: {integrity: sha512-W44xiE0Y4WMDoJkfUO1tTYm4LdSz4953HCFaojKRRdFkcaDYhiipjUseFIOgZMt9MGe7AxtikQ8Yr6iqvPX2mg==}
@@ -2540,9 +2449,10 @@ packages:
 
   '@fuels/playwright-utils@0.57.1':
     resolution: {integrity: sha512-x182m0K4Cj4QB513G5ys2DSIRw5qqTb6/aU/47UF1fZEKQr2WSRHCpJ+MoAeXWjhM9kYlBlP5W7K8BbBVNt5qA==}
+    version: 0.57.1
     peerDependencies:
       '@playwright/test': '>=1.46.1'
-      fuels: '>=0.100.6'
+      fuels: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
 
   '@fuels/react-xstore@0.23.0':
     resolution: {integrity: sha512-MJdHDiGL1/X9mjSUhRWpO1IvHK+0K1DATEBtmKyY0zW75zZx5v2t46uYlbG4DwqCJsFHuwMkswe2M/2NaMwrcg==}
@@ -2554,9 +2464,10 @@ packages:
 
   '@fuels/react@0.44.1':
     resolution: {integrity: sha512-cc2cYzIAB66yYGl5ENoZCWyvcrEfVAyjSqTBtX95411BNXzd2uvfAEh3Yrh/DS3G7/1hiORZeRMXSdEWDQUAaA==}
+    version: 0.44.1
     peerDependencies:
       '@tanstack/react-query': '>=5.0.0'
-      fuels: 0.101.3
+      fuels: file:/Users/nelitojr/AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels
       react: '>=18.0.0'
 
   '@fuels/ts-config@0.26.0':
@@ -2568,12 +2479,6 @@ packages:
     resolution: {integrity: sha512-i28BOWB2W+i4bH35OuX1oQe7GvDEjGWyt/7ntezAYHESaPDiuLwqs/jDjBaT4zoFOKX/5ooxPWOsAQGqUyGZ6A==}
     peerDependencies:
       tsup: ^7.2.0
-
-  '@fuels/vm-asm@0.58.0':
-    resolution: {integrity: sha512-tfarairW3IAtyoAIL3I5EJiUQzKAsY4J+eLgZg58B7+itDxqF+CUEpKanmiUnt1mBgry5GwtZsPIrUJ7OgTcDA==}
-
-  '@fuels/vm-asm@0.59.1':
-    resolution: {integrity: sha512-2KWwrjvZdj1DHlfkyGZPDOULBlUSj/2oZgn4RO+JO7uDPw7pNiHjsgKjmhDHWN5RPEGLhyUre14ObtLd3MA+Ag==}
 
   '@fuels/vm-asm@0.62.0':
     resolution: {integrity: sha512-W2XoFIzHtHmWaTKzGKhDzkuQHCJO3j/wU3x1ngyleucsjCv3nUUqkRoSPhEo6wTGRqwiq6cmoqOk+FEi4vmxww==}
@@ -7931,10 +7836,6 @@ packages:
     resolution: {integrity: sha512-an2S5quJMiy5bnZKEf6AkfH/7r8CzHvhchU40gxN+OM6HPhe7Z9T1FUychcf2M9PpPOO0Hf7BAEfJkw2TDIBDw==}
     engines: {node: '>=12.0.0'}
 
-  extract-files@9.0.0:
-    resolution: {integrity: sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==}
-    engines: {node: ^10.17.0 || ^12.0.0 || >= 13.7.0}
-
   extrareqp2@1.0.0:
     resolution: {integrity: sha512-Gum0g1QYb6wpPJCVypWP3bbIuaibcFiJcpuPM10YSXp/tzqi84x9PJageob+eN4xVRIOto4wjSGNLyMD54D2xA==}
 
@@ -8082,10 +7983,6 @@ packages:
     resolution: {integrity: sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==}
     engines: {node: '>=14'}
 
-  form-data@3.0.4:
-    resolution: {integrity: sha512-f0cRzm6dkyVYV3nPoooP8XlccPQukegwhAnpoLcXy+X+A8KfpGOoXwDr9FLZd3wzgLaBGQBE3lY93Zm/i1JvIQ==}
-    engines: {node: '>= 6'}
-
   form-data@4.0.4:
     resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
     engines: {node: '>= 6'}
@@ -8165,14 +8062,9 @@ packages:
     engines: {node: '>=0.6'}
     deprecated: This package is no longer supported.
 
-  fuels@0.102.0:
-    resolution: {integrity: sha512-zDcSSnyPkxAqed8liHhRO7aQabQ4RY06hpSIbNl9A7F1go01Airn4FE47jc1zNGGO3nWQpf5G1pzOXNjnvVsKw==}
+  fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels:
+    resolution: {directory: ../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels, type: directory}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
-    hasBin: true
-
-  fuels@0.96.1:
-    resolution: {integrity: sha512-BquRIJ0qHNKwhqBTNa6X4aghqhCj1Qz0jM+P0bziXAEk7gVJJZWRz10jCcAgZVeEb4AMdZLDsnNzKJ51GH8IvQ==}
-    engines: {node: ^18.20.3 || ^20.0.0 || ^22.0.0}
     hasBin: true
 
   function-bind@1.1.2:
@@ -8347,11 +8239,6 @@ packages:
     peerDependenciesMeta:
       cosmiconfig-toml-loader:
         optional: true
-
-  graphql-request@5.0.0:
-    resolution: {integrity: sha512-SpVEnIo2J5k2+Zf76cUkdvIRaq5FMZvGQYnA4lUWYbc99m+fHh4CZYRRO/Ff4tCLQ613fzCm3SiDT64ubW5Gyw==}
-    peerDependencies:
-      graphql: 14 - 16
 
   graphql-request@6.1.0:
     resolution: {integrity: sha512-p+XPfS4q7aIpKVcgmnZKhMNqhltk20hfXtkaIkTfjjmiKMJ5xrt5c743cL03y/K7y1rg3WrIC49xGiEQ4mxdNw==}
@@ -10205,10 +10092,6 @@ packages:
   portfinder@1.0.32:
     resolution: {integrity: sha512-on2ZJVVDXRADWE6jnQaX0ioEylzgBpQk8r55NE4wjXW1ZxO+BgDlY6DXwj20i0V8eB4SenDQ00WEaxfiIQPcxg==}
     engines: {node: '>= 0.12.0'}
-
-  portfinder@1.0.37:
-    resolution: {integrity: sha512-yuGIEjDAYnnOex9ddMnKZEMFE0CcGo6zbfzDklkmT1m5z734ss6JMzN9rNB3+RR7iS+F10D4/BVIaXOyh8PQKw==}
-    engines: {node: '>= 10.12'}
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -12653,9 +12536,6 @@ packages:
   yup@1.6.1:
     resolution: {integrity: sha512-JED8pB50qbA4FOkDol0bYF/p60qSEDQqBD0/qeIrUCG1KbPBIQ776fCUNb9ldbPcSTxA69g/47XTo4TqWiuXOA==}
 
-  yup@1.7.0:
-    resolution: {integrity: sha512-VJce62dBd+JQvoc+fCVq+KZfPHr+hXaxCcVgotfwWvlR0Ja3ffYKaJBT8rptPOSKOGJDCUnW2C2JWpud7aRP6Q==}
-
   zip-stream@4.1.1:
     resolution: {integrity: sha512-9qv4rlDiopXg4E69k+vMHjNN63YFMe9sZMrdlvKnCjlCRWeCBswPPMPUfx+ipsAWq1LXHe70RcbaHdJJpS6hyQ==}
     engines: {node: '>= 10'}
@@ -14481,10 +14361,10 @@ snapshots:
 
   '@fuel-bridge/solidity-contracts@1.0.0': {}
 
-  '@fuel-bridge/test-utils@1.0.0(ethers@6.11.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(fuels@0.96.1)':
+  '@fuel-bridge/test-utils@1.0.0(ethers@6.11.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))':
     dependencies:
       ethers: 6.11.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      fuels: 0.96.1
+      fuels: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
 
   '@fuel-infrastructure/fuelsequencerjs@0.0.14(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
     dependencies:
@@ -14498,43 +14378,22 @@ snapshots:
       - debug
       - utf-8-validate
 
-  '@fuel-ts/abi-coder@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+  '@fuel-ts/abi-coder@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/crypto': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.100.0
-      '@fuel-ts/hasher': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.100.0
-      '@fuel-ts/utils': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/crypto': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/hasher': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       type-fest: 4.34.1
     transitivePeerDependencies:
       - vitest
 
-  '@fuel-ts/abi-coder@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+  '@fuel-ts/abi-typegen@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-typegen(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/crypto': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/hasher': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      type-fest: 4.34.1
-    transitivePeerDependencies:
-      - vitest
-
-  '@fuel-ts/abi-coder@0.96.1':
-    dependencies:
-      '@fuel-ts/crypto': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/hasher': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      type-fest: 4.41.0
-
-  '@fuel-ts/abi-typegen@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/versions': 0.102.0
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/versions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions
       commander: 13.1.0
       glob: 10.4.5
       handlebars: 4.7.8
@@ -14544,54 +14403,18 @@ snapshots:
     transitivePeerDependencies:
       - vitest
 
-  '@fuel-ts/abi-typegen@0.96.1':
+  '@fuel-ts/account@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@fuel-ts/versions': 0.96.1
-      commander: 12.1.0
-      glob: 10.4.5
-      handlebars: 4.7.8
-      mkdirp: 3.0.1
-      ramda: 0.30.1
-      rimraf: 5.0.10
-
-  '@fuel-ts/account@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/abi-coder': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/address': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/crypto': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.100.0
-      '@fuel-ts/hasher': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.100.0
-      '@fuel-ts/merkle': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/transactions': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/versions': 0.100.0
-      '@fuels/vm-asm': 0.59.1
-      '@noble/curves': 1.8.1
-      events: 3.3.0
-      graphql: 16.10.0
-      graphql-request: 6.1.0(graphql@16.10.0)
-      graphql-tag: 2.12.6(graphql@16.10.0)
-      ramda: 0.30.1
-    transitivePeerDependencies:
-      - encoding
-      - vitest
-
-  '@fuel-ts/account@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/abi-coder': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/address': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/crypto': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/hasher': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/merkle': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/transactions': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/versions': 0.102.0
+      '@fuel-ts/abi-coder': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/address': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/crypto': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/hasher': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/merkle': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/merkle(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/transactions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/versions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions
       '@fuels/vm-asm': 0.62.0
       '@noble/curves': 1.8.1
       events: 3.3.0
@@ -14603,334 +14426,133 @@ snapshots:
       - encoding
       - vitest
 
-  '@fuel-ts/account@0.96.1':
+  '@fuel-ts/address@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/abi-coder': 0.96.1
-      '@fuel-ts/address': 0.96.1
-      '@fuel-ts/crypto': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/hasher': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/merkle': 0.96.1
-      '@fuel-ts/transactions': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@fuel-ts/versions': 0.96.1
-      '@fuels/vm-asm': 0.58.0
-      '@noble/curves': 1.9.6
-      events: 3.3.0
-      graphql: 16.10.0
-      graphql-request: 5.0.0(graphql@16.10.0)
-      graphql-tag: 2.12.6(graphql@16.10.0)
-      ramda: 0.30.1
-    transitivePeerDependencies:
-      - encoding
-
-  '@fuel-ts/address@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/crypto': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.100.0
-      '@fuel-ts/utils': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/crypto': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       '@noble/hashes': 1.7.1
     transitivePeerDependencies:
       - vitest
 
-  '@fuel-ts/address@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+  '@fuel-ts/contract@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/contract(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/crypto': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@noble/hashes': 1.7.1
-    transitivePeerDependencies:
-      - vitest
-
-  '@fuel-ts/address@0.96.1':
-    dependencies:
-      '@fuel-ts/crypto': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@noble/hashes': 1.8.0
-      bech32: 2.0.0
-
-  '@fuel-ts/contract@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/abi-coder': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/account': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/crypto': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/hasher': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/merkle': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/program': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/transactions': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/abi-coder': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/account': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/crypto': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/hasher': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/merkle': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/merkle(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/program': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/program(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/transactions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       '@fuels/vm-asm': 0.62.0
       ramda: 0.30.1
     transitivePeerDependencies:
       - encoding
       - vitest
 
-  '@fuel-ts/contract@0.96.1':
+  '@fuel-ts/crypto@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/abi-coder': 0.96.1
-      '@fuel-ts/account': 0.96.1
-      '@fuel-ts/crypto': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/hasher': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/merkle': 0.96.1
-      '@fuel-ts/program': 0.96.1
-      '@fuel-ts/transactions': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@fuel-ts/versions': 0.96.1
-      '@fuels/vm-asm': 0.58.0
-      ramda: 0.30.1
-    transitivePeerDependencies:
-      - encoding
-
-  '@fuel-ts/crypto@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/errors': 0.100.0
-      '@fuel-ts/utils': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       '@noble/hashes': 1.7.1
     transitivePeerDependencies:
       - vitest
 
-  '@fuel-ts/crypto@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+  '@fuel-ts/errors@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors':
     dependencies:
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/versions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions
+
+  '@fuel-ts/hasher@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+    dependencies:
+      '@fuel-ts/crypto': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       '@noble/hashes': 1.7.1
     transitivePeerDependencies:
       - vitest
 
-  '@fuel-ts/crypto@0.96.1':
+  '@fuel-ts/math@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math':
     dependencies:
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@noble/hashes': 1.8.0
-
-  '@fuel-ts/errors@0.100.0':
-    dependencies:
-      '@fuel-ts/versions': 0.100.0
-
-  '@fuel-ts/errors@0.102.0':
-    dependencies:
-      '@fuel-ts/versions': 0.102.0
-
-  '@fuel-ts/errors@0.96.1':
-    dependencies:
-      '@fuel-ts/versions': 0.96.1
-
-  '@fuel-ts/hasher@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/crypto': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@noble/hashes': 1.7.1
-    transitivePeerDependencies:
-      - vitest
-
-  '@fuel-ts/hasher@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/crypto': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@noble/hashes': 1.7.1
-    transitivePeerDependencies:
-      - vitest
-
-  '@fuel-ts/hasher@0.96.1':
-    dependencies:
-      '@fuel-ts/crypto': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@noble/hashes': 1.8.0
-
-  '@fuel-ts/interfaces@0.96.1': {}
-
-  '@fuel-ts/math@0.100.0':
-    dependencies:
-      '@fuel-ts/errors': 0.100.0
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
       '@types/bn.js': 5.1.6
       bn.js: 5.2.1
 
-  '@fuel-ts/math@0.102.0':
+  '@fuel-ts/merkle@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/merkle(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/errors': 0.102.0
-      '@types/bn.js': 5.1.6
-      bn.js: 5.2.1
-
-  '@fuel-ts/math@0.96.1':
-    dependencies:
-      '@fuel-ts/errors': 0.96.1
-      '@types/bn.js': 5.2.0
-      bn.js: 5.2.2
-
-  '@fuel-ts/merkle@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/hasher': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.100.0
+      '@fuel-ts/hasher': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
     transitivePeerDependencies:
       - vitest
 
-  '@fuel-ts/merkle@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+  '@fuel-ts/program@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/program(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/hasher': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.102.0
-    transitivePeerDependencies:
-      - vitest
-
-  '@fuel-ts/merkle@0.96.1':
-    dependencies:
-      '@fuel-ts/hasher': 0.96.1
-      '@fuel-ts/math': 0.96.1
-
-  '@fuel-ts/program@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/abi-coder': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/account': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/address': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/transactions': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/abi-coder': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/account': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/address': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/transactions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       '@fuels/vm-asm': 0.62.0
       ramda: 0.30.1
     transitivePeerDependencies:
       - encoding
       - vitest
 
-  '@fuel-ts/program@0.96.1':
+  '@fuel-ts/recipes@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/recipes(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/abi-coder': 0.96.1
-      '@fuel-ts/account': 0.96.1
-      '@fuel-ts/address': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/transactions': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@fuels/vm-asm': 0.58.0
-      ramda: 0.30.1
-    transitivePeerDependencies:
-      - encoding
-
-  '@fuel-ts/recipes@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/abi-coder': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/abi-typegen': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/account': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/address': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/contract': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/program': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/transactions': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/abi-coder': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/abi-typegen': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-typegen(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/account': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/address': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/contract': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/contract(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/program': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/program(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/transactions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
     transitivePeerDependencies:
       - encoding
       - vitest
 
-  '@fuel-ts/script@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+  '@fuel-ts/script@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/script(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/abi-coder': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/account': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/program': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/transactions': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/abi-coder': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/account': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/program': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/program(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/transactions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
     transitivePeerDependencies:
       - encoding
       - vitest
 
-  '@fuel-ts/script@0.96.1':
+  '@fuel-ts/transactions@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/abi-coder': 0.96.1
-      '@fuel-ts/account': 0.96.1
-      '@fuel-ts/address': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/program': 0.96.1
-      '@fuel-ts/transactions': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-    transitivePeerDependencies:
-      - encoding
-
-  '@fuel-ts/transactions@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/abi-coder': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/address': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.100.0
-      '@fuel-ts/hasher': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.100.0
-      '@fuel-ts/utils': 0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/abi-coder': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/address': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/hasher': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
     transitivePeerDependencies:
       - vitest
 
-  '@fuel-ts/transactions@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
+  '@fuel-ts/utils@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
     dependencies:
-      '@fuel-ts/abi-coder': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/address': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/hasher': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-    transitivePeerDependencies:
-      - vitest
-
-  '@fuel-ts/transactions@0.96.1':
-    dependencies:
-      '@fuel-ts/abi-coder': 0.96.1
-      '@fuel-ts/address': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/hasher': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-
-  '@fuel-ts/utils@0.100.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/errors': 0.100.0
-      '@fuel-ts/math': 0.100.0
-      '@fuel-ts/versions': 0.100.0
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/versions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions
       fflate: 0.8.2
       vitest: 1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)
 
-  '@fuel-ts/utils@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))':
-    dependencies:
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/versions': 0.102.0
-      fflate: 0.8.2
-      vitest: 1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)
-
-  '@fuel-ts/utils@0.96.1':
-    dependencies:
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/versions': 0.96.1
-      fflate: 0.8.2
-
-  '@fuel-ts/versions@0.100.0':
+  '@fuel-ts/versions@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions':
     dependencies:
       chalk: 4.1.2
       cli-table: 0.3.11
 
-  '@fuel-ts/versions@0.102.0':
-    dependencies:
-      chalk: 4.1.2
-      cli-table: 0.3.11
-
-  '@fuel-ts/versions@0.96.1':
-    dependencies:
-      chalk: 4.1.2
-      cli-table: 0.3.11
-
-  '@fuels/connectors@0.45.0(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(@wagmi/connectors@5.1.7(@types/react@18.2.54)(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(react@18.2.0)(typescript@5.4.5)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.46.2)(typescript@5.4.5)(utf-8-validate@5.0.10)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))(bufferutil@4.0.9)(fuels@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)':
+  '@fuels/connectors@0.45.0(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(@wagmi/connectors@5.1.7(@types/react@18.2.54)(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(react@18.2.0)(typescript@5.4.5)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.46.2)(typescript@5.4.5)(utf-8-validate@5.0.10)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))(bufferutil@4.0.9)(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
       '@ethereumjs/util': 9.0.3
       '@ethersproject/bytes': 5.7.0
@@ -14940,7 +14562,7 @@ snapshots:
       '@web3modal/scaffold': 5.0.0(@types/react@18.2.54)(react@18.2.0)
       '@web3modal/solana': 5.0.0(@types/react@18.2.54)(bufferutil@4.0.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@web3modal/wagmi': 5.0.0(@types/react@18.2.54)(@wagmi/connectors@5.1.7(@types/react@18.2.54)(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(react@18.2.0)(typescript@5.4.5)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.46.2)(typescript@5.4.5)(utf-8-validate@5.0.10)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.54)(react@18.2.0)(typescript@5.4.5)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8))
-      fuels: 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      fuels: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       rpc-websockets: 7.11.0
       socket.io-client: 4.7.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       viem: 2.23.2(bufferutil@4.0.9)(typescript@5.4.5)(utf-8-validate@5.0.10)(zod@3.23.8)
@@ -15010,11 +14632,11 @@ snapshots:
 
   '@fuels/local-storage@0.23.0': {}
 
-  '@fuels/playwright-utils@0.57.1(@playwright/test@1.48.2)(fuels@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))':
+  '@fuels/playwright-utils@0.57.1(@playwright/test@1.48.2)(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))':
     dependencies:
       '@playwright/test': 1.48.2
       adm-zip: 0.5.16
-      fuels: 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      fuels: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
 
   '@fuels/react-xstore@0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@4.38.3)':
     dependencies:
@@ -15052,12 +14674,12 @@ snapshots:
       - '@types/ws'
       - ws
 
-  '@fuels/react@0.44.1(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@fuels/react@0.44.1(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@radix-ui/react-dialog': 1.1.1(@types/react-dom@18.2.22)(@types/react@18.2.54)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tanstack/react-query': 5.56.2(react@18.2.0)
       events: 3.3.0
-      fuels: 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      fuels: file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
       react: 18.2.0
     transitivePeerDependencies:
       - '@types/react'
@@ -15078,10 +14700,6 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       tsup: 8.0.2(@swc/core@1.4.1(@swc/helpers@0.5.17))(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.4.1(@swc/helpers@0.5.17))(@types/node@22.7.5)(typescript@5.4.5))(typescript@5.4.5)
-
-  '@fuels/vm-asm@0.58.0': {}
-
-  '@fuels/vm-asm@0.59.1': {}
 
   '@fuels/vm-asm@0.62.0': {}
 
@@ -23230,8 +22848,6 @@ snapshots:
       readable-stream: 4.7.0
       webextension-polyfill: 0.10.0
 
-  extract-files@9.0.0: {}
-
   extrareqp2@1.0.0(debug@4.3.7):
     dependencies:
       follow-redirects: 1.15.11(debug@4.3.7)
@@ -23377,14 +22993,6 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  form-data@3.0.4:
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      es-set-tostringtag: 2.1.0
-      hasown: 2.0.2
-      mime-types: 2.1.35
-
   form-data@4.0.4:
     dependencies:
       asynckit: 0.4.0
@@ -23465,23 +23073,23 @@ snapshots:
       mkdirp: 0.5.6
       rimraf: 2.7.1
 
-  fuels@0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)):
+  fuels@file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/fuels(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)):
     dependencies:
-      '@fuel-ts/abi-coder': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/abi-typegen': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/account': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/address': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/contract': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/crypto': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/errors': 0.102.0
-      '@fuel-ts/hasher': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/math': 0.102.0
-      '@fuel-ts/program': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/recipes': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/script': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/transactions': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/utils': 0.102.0(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
-      '@fuel-ts/versions': 0.102.0
+      '@fuel-ts/abi-coder': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-coder(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/abi-typegen': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/abi-typegen(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/account': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/account(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/address': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/address(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/contract': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/contract(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/crypto': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/crypto(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/errors': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/errors
+      '@fuel-ts/hasher': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/hasher(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/math': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/math
+      '@fuel-ts/program': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/program(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/recipes': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/recipes(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/script': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/script(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/transactions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/transactions(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/utils': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/utils(vitest@1.6.1(@types/node@22.7.5)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1))
+      '@fuel-ts/versions': file:../../../AndroidStudioProjects/MyApplication/fuels-ts/packages/versions
       '@fuels/vm-asm': 0.62.0
       bundle-require: 5.1.0(esbuild@0.25.3)
       chalk: 4.1.2
@@ -23500,41 +23108,6 @@ snapshots:
       - encoding
       - supports-color
       - vitest
-
-  fuels@0.96.1:
-    dependencies:
-      '@fuel-ts/abi-coder': 0.96.1
-      '@fuel-ts/abi-typegen': 0.96.1
-      '@fuel-ts/account': 0.96.1
-      '@fuel-ts/address': 0.96.1
-      '@fuel-ts/contract': 0.96.1
-      '@fuel-ts/crypto': 0.96.1
-      '@fuel-ts/errors': 0.96.1
-      '@fuel-ts/hasher': 0.96.1
-      '@fuel-ts/interfaces': 0.96.1
-      '@fuel-ts/math': 0.96.1
-      '@fuel-ts/merkle': 0.96.1
-      '@fuel-ts/program': 0.96.1
-      '@fuel-ts/script': 0.96.1
-      '@fuel-ts/transactions': 0.96.1
-      '@fuel-ts/utils': 0.96.1
-      '@fuel-ts/versions': 0.96.1
-      bundle-require: 5.1.0(esbuild@0.25.3)
-      chalk: 4.1.2
-      chokidar: 3.6.0
-      commander: 12.1.0
-      esbuild: 0.25.3
-      glob: 10.4.5
-      handlebars: 4.7.8
-      joycon: 3.1.1
-      lodash.camelcase: 4.3.0
-      portfinder: 1.0.37
-      toml: 3.0.0
-      uglify-js: 3.19.3
-      yup: 1.7.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   function-bind@1.1.2: {}
 
@@ -23753,16 +23326,6 @@ snapshots:
       - typescript
       - uWebSockets.js
       - utf-8-validate
-
-  graphql-request@5.0.0(graphql@16.10.0):
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.10.0)
-      cross-fetch: 3.2.0
-      extract-files: 9.0.0
-      form-data: 3.0.4
-      graphql: 16.10.0
-    transitivePeerDependencies:
-      - encoding
 
   graphql-request@6.1.0(graphql@16.10.0):
     dependencies:
@@ -26087,13 +25650,6 @@ snapshots:
       async: 2.6.4
       debug: 3.2.7
       mkdirp: 0.5.6
-    transitivePeerDependencies:
-      - supports-color
-
-  portfinder@1.0.37:
-    dependencies:
-      async: 3.2.6
-      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -29154,13 +28710,6 @@ snapshots:
       type-fest: 2.19.0
 
   yup@1.6.1:
-    dependencies:
-      property-expr: 2.0.6
-      tiny-case: 1.0.3
-      toposort: 2.0.2
-      type-fest: 2.19.0
-
-  yup@1.7.0:
     dependencies:
       property-expr: 2.0.6
       tiny-case: 1.0.3

@@ -3,6 +3,11 @@ import DataCache from '../cache/DataCache';
 import VerifiedAssets from '../cache/VerifiedAssets';
 import AssetDAO from '../dao/AssetDAO';
 
+// Temporary constants for devnet chainId transition period
+// TODO: Remove after 2-4 week transition period once verified-assets service is updated
+const OLD_DEVNET_CHAIN_ID = 0;
+const NEW_DEVNET_CHAIN_ID = 1119889111;
+
 export default class AssetGateway {
   async getAsset(assetId: string, chainId?: number, _provider?: Provider) {
     const assetDAO = new AssetDAO();
@@ -25,7 +30,28 @@ export default class AssetGateway {
     }
     for (const verifiedAsset of verifiedAssets) {
       for (const network of verifiedAsset.networks) {
-        if (network.chainId === chainId && network.assetId === assetId) {
+        // Exact match - always preferred
+        const isExactMatch =
+          network.chainId === chainId && network.assetId === assetId;
+
+        // During devnet transition period, support both old and new chainIds
+        // This handles cases where:
+        // - Indexer has new chainId but verified-assets service still has old
+        // - Indexer has old chainId but verified-assets service was updated
+        const isDevnetTransition =
+          network.assetId === assetId &&
+          ((chainId === OLD_DEVNET_CHAIN_ID &&
+            network.chainId === NEW_DEVNET_CHAIN_ID) ||
+            (chainId === NEW_DEVNET_CHAIN_ID &&
+              network.chainId === OLD_DEVNET_CHAIN_ID));
+
+        if (isExactMatch || isDevnetTransition) {
+          if (isDevnetTransition) {
+            console.warn(
+              `[AssetGateway] Devnet chainId mismatch detected for asset ${assetId}. Indexer chainId: ${chainId}, verified-assets chainId: ${network.chainId}. This is expected during the transition period. Support for legacy chainId will be removed in a future release.`,
+            );
+          }
+
           let assetRate = DataCache.getInstance().get(`${assetId}-rate`);
           if (!assetRate) {
             assetRate = await assetDAO.getAssetsRateByAssetId(assetId);
