@@ -603,8 +603,8 @@ export class ApiService {
   // Account transactions
   async getAccountTransactions(address: string, first = 10, after?: string) {
     const graphqlQuery = `
-      query AccountTransactions($address: String!, $first: Int!, $after: String) {
-        transactionsByOwner(owner: $address, first: $first, after: $after) {
+      query AccountTransactions($address: String!, $first: Int!, $after: String, $ownerType: OwnerType) {
+        transactionsByOwner(owner: $address, first: $first, after: $after, ownerType: $ownerType) {
           pageInfo {
             hasNextPage
             hasPreviousPage
@@ -629,7 +629,7 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: graphqlQuery,
-        variables: { address, first, after },
+        variables: { address, first, after, ownerType: 'ACCOUNT' },
       }),
     });
 
@@ -669,8 +669,8 @@ export class ApiService {
     after?: string,
   ) {
     const graphqlQuery = `
-      query ContractTransactions($contractId: String!, $first: Int!, $after: String) {
-        transactions(filter: { contractId: $contractId }, first: $first, after: $after) {
+      query ContractTransactions($contractId: String!, $first: Int!, $after: String, $ownerType: OwnerType) {
+        transactionsByOwner(owner: $contractId, first: $first, after: $after, ownerType: $ownerType) {
           pageInfo {
             hasNextPage
             hasPreviousPage
@@ -695,12 +695,12 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: graphqlQuery,
-        variables: { contractId, first, after },
+        variables: { contractId, first, after, ownerType: 'CONTRACT' },
       }),
     });
 
     const { data } = await response.json();
-    return data?.transactions;
+    return data?.transactionsByOwner;
   }
 
   // Predicate information
