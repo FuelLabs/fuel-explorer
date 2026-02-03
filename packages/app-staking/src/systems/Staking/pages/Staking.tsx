@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { AccountButton } from '~staking/systems/Core/components/AccountButton/AccountButton';
+import { PendingTransactionsWatcher } from '~staking/systems/Core/components/PendingTransactionsWatcher/PendingTransactionsWatcher';
 import { useFormatBalance } from '~staking/systems/Core/hooks/useFormatBalance';
 import { ClaimV2Button } from '~staking/systems/Faucet/ClaimV2';
 import { StakingDialogs } from '../components/StakingDialogs';
@@ -74,6 +75,7 @@ export const StakingPage = () => {
         {activeTab === 'transactions' && <TransactionHistory />}
       </VStack>
       <StakingDialogs />
+      <PendingTransactionsWatcher />
     </Box>
   );
 };

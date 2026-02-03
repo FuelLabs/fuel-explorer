@@ -19,6 +19,8 @@ export const ClaimRewardNewDialog = ({
     fee,
     rates,
     claimRewardError,
+    isBlocked,
+    blockingMessage,
   } = useClaimRewardNewDialog({ validator });
   const isPaused = useIsStakingContractPaused({
     conditions: {
@@ -57,6 +59,8 @@ export const ClaimRewardNewDialog = ({
               fee={fee}
               rates={rates}
               onConfirm={onConfirm}
+              isBlocked={isBlocked}
+              blockingMessage={blockingMessage}
             />
           </VStack>
         </AnimatedDialog.Content>

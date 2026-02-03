@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -21,7 +22,7 @@ import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormatte
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
 
-import { IconCheck, IconInfoCircle } from '@tabler/icons-react';
+import { IconCheck, IconClock, IconInfoCircle } from '@tabler/icons-react';
 import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
 import { LogoEth } from '~staking/systems/Core/components/LogoEth/LogoEth';
 import type { Validator } from '~staking/systems/Staking/types/validators';
@@ -45,6 +46,8 @@ interface Props {
   onGoToApproval?: () => void;
   isApprovalCompleted?: boolean;
   isReadyToConfirm?: boolean;
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 function _ReviewStake({
@@ -65,6 +68,8 @@ function _ReviewStake({
   onGoToApproval,
   isApprovalCompleted,
   isReadyToConfirm,
+  isBlocked = false,
+  blockingMessage,
 }: Props) {
   const {
     formattedAmount,
@@ -214,6 +219,19 @@ function _ReviewStake({
         )}
       </div>
       <div>
+        {isBlocked && (
+          <Alert color="orange" variant="surface" className="mb-4">
+            <Alert.Icon>
+              <IconClock size={18} className="text-orange-11" />
+            </Alert.Icon>
+            <Alert.Text className="text-orange-12">
+              <Text size="2" weight="medium" className="block mb-1">
+                Stake Currently Unavailable
+              </Text>
+              <Text size="1">{blockingMessage}</Text>
+            </Alert.Text>
+          </Alert>
+        )}
         <ErrorInline error={errorMsg} className="mb-1" />
         <HStack gap="3" className="w-full">
           <Button
@@ -232,9 +250,15 @@ function _ReviewStake({
             className="rounded-md flex-1"
             size="3"
             onClick={needsApproval ? onGoToApproval : onConfirm}
-            disabled={!isReadyToConfirm && !needsApproval}
-            isLoading={isSubmitting}
-            loadingText="Submitting..."
+            disabled={
+              (!isReadyToConfirm && !needsApproval) ||
+              isBlocked ||
+              isGettingReviewDetails
+            }
+            isLoading={isSubmitting || isGettingReviewDetails}
+            loadingText={
+              isGettingReviewDetails ? 'Checking...' : 'Submitting...'
+            }
           >
             {errorMsg ? 'Retry' : needsApproval ? 'Approve' : 'Submit Stake'}
           </Button>
