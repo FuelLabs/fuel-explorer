@@ -4,6 +4,7 @@ query transactionsByOwner(
   $first: Int
   $last: Int
   $owner: Address!
+  $ownerType: OwnerType
 ) {
   transactionsByOwner(
     after: $after
@@ -11,6 +12,7 @@ query transactionsByOwner(
     first: $first
     last: $last
     owner: $owner
+    ownerType: $ownerType
   ) {
     nodes {
       ...RecentTransaction
