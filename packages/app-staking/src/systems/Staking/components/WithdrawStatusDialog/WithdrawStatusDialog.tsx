@@ -73,7 +73,7 @@ export const WithdrawStatusDialog = ({
 
   const startDate =
     stakingEvent?.statusInfo?.[GQLWithdrawStatusType.TransactionSent]?.ethTx
-      .timestamp;
+      ?.timestamp;
   const totalSeconds =
     startDate && eta ? getSecondsBetweenDates(startDate, eta) : 0;
   const totalDuration =
