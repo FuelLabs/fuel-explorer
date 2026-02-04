@@ -18,12 +18,9 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
-import { formatETA } from '~staking/systems/Core/utils/eta';
-import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useStakeStatusDialog } from '~staking/systems/Staking/hooks/useStakeStatusDialog';
 import { useStakeStatusFlags } from '~staking/systems/Staking/hooks/useStakeStatusFlags';
-import { getSecondsBetweenDates } from '~staking/systems/Staking/utils/dateDiff';
 import { StatusItem } from '../StatusItem/StatusItem';
 import { STAKE_STEPS } from './constants';
 
@@ -62,14 +59,6 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
 
   const currentTime = new Date();
   const eta = stakeEvent?.timestampToFinish;
-  const formattedEta = formatETA(eta);
-
-  const startDate =
-    stakeEvent?.statusInfo?.['TransactionSent' as any]?.ethTx?.timestamp;
-  const totalSeconds =
-    startDate && eta ? getSecondsBetweenDates(startDate, eta) : 0;
-  const totalDuration =
-    totalSeconds > 0 ? formatSecondsToETA(totalSeconds, '~') : undefined;
 
   const responsiveDialogStyle = responsiveDialogStyles();
 
@@ -154,14 +143,6 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
               }
             />
           </HStack>
-          <HStack gap="3" align="center">
-            <Text className="font-medium text-gray-12 text-sm">
-              Total time to complete
-            </Text>
-            <Text className="font-medium text-gray-10 text-sm">
-              {totalDuration || '~1 minute'}
-            </Text>
-          </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">
             {STAKE_STEPS.filter((step) => {
               if (step.status === 'Skipped') {
@@ -225,35 +206,21 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
                 </>
               }
               regularEl={
-                <>
-                  {!!formattedEta && (
-                    <>
-                      <Separator size="4" />
-                      <HStack gap="2">
-                        <Text className="font-medium text-sm text-gray-10">
-                          Estimated completion time:
-                        </Text>
-                        <Text className="font-medium text-sm text-heading">
-                          {formattedEta}
-                        </Text>
-                      </HStack>
-                    </>
-                  )}
-                  {!!isFinalized && dateFinalized && (
-                    <>
-                      <Separator size="4" />
-                      <HStack gap="2">
-                        <Text className="font-medium text-sm text-gray-10">
-                          Funds staked on{' '}
-                        </Text>
-                        <Text className="font-medium text-sm text-heading">
-                          {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
-                          {dayjs(dateFinalized).format('h:mm A')}
-                        </Text>
-                      </HStack>
-                    </>
-                  )}
-                </>
+                !!isFinalized &&
+                dateFinalized && (
+                  <>
+                    <Separator size="4" />
+                    <HStack gap="2">
+                      <Text className="font-medium text-sm text-gray-10">
+                        Funds staked on{' '}
+                      </Text>
+                      <Text className="font-medium text-sm text-heading">
+                        {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
+                        {dayjs(dateFinalized).format('h:mm A')}
+                      </Text>
+                    </HStack>
+                  </>
+                )
               }
             />
           </VStack>
