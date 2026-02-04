@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { calculatePercentageProgress } from '~staking/systems/Core/utils/eta';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
 import { getDiffSecondsToNow, getSecondsBetweenDates } from '../utils/dateDiff';
@@ -11,9 +11,6 @@ interface UseETAParams {
 const INTERVAL_ETA_REFRESH = 10_000; // 10s
 
 export function useETA({ startDate, endDate }: UseETAParams) {
-  const dateStartRef = useRef(new Date(startDate || ''));
-  const dateFinishRef = useRef(new Date(endDate || ''));
-
   const [eta, setEta] = useState<string | undefined>(undefined);
   const [totalDuration, setTotalDuration] = useState<string | undefined>(
     undefined,
@@ -25,14 +22,14 @@ export function useETA({ startDate, endDate }: UseETAParams) {
   }, [eta, progress]);
 
   useEffect(() => {
-    const durationInSeconds = getSecondsBetweenDates(
-      dateStartRef.current,
-      dateFinishRef.current,
-    );
+    const dateStart = new Date(startDate || '');
+    const dateFinish = new Date(endDate || '');
+
+    const durationInSeconds = getSecondsBetweenDates(dateStart, dateFinish);
     setTotalDuration(formatSecondsToETA(durationInSeconds));
 
     const updateEta = (): string | undefined => {
-      const secondsLeftToFinalize = getDiffSecondsToNow(dateFinishRef.current);
+      const secondsLeftToFinalize = getDiffSecondsToNow(dateFinish);
       const newEta = formatSecondsToETA(secondsLeftToFinalize);
       setEta(newEta);
       return newEta;
@@ -41,7 +38,7 @@ export function useETA({ startDate, endDate }: UseETAParams) {
     const updateProgress = () => {
       const current = calculatePercentageProgress({
         start: 0,
-        current: getSecondsBetweenDates(dateStartRef.current, new Date()),
+        current: getSecondsBetweenDates(dateStart, new Date()),
         target: durationInSeconds,
       });
 
@@ -61,7 +58,7 @@ export function useETA({ startDate, endDate }: UseETAParams) {
     }, INTERVAL_ETA_REFRESH);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [startDate, endDate]);
 
   return { eta, totalDuration, progress, hasEtaProgressBar };
 }
