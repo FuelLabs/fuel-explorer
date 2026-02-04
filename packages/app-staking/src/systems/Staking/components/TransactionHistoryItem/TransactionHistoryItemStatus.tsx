@@ -55,7 +55,7 @@ export const TransactionHistoryItemStatus = ({
         <Text className="text-sm">{label}</Text>
         {isInProgress && eta && (
           <Text className="text-sm text-muted">
-            (~{eta} remaining of {totalDuration})
+            (~{eta} remaining of {totalDuration || '~7 days'})
           </Text>
         )}
       </HStack>
