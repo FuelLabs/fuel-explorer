@@ -18,6 +18,7 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
+import { formatETA } from '~staking/systems/Core/utils/eta';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useRedelegateStatusDialog } from '../../hooks/useRedelegateStatusDialog';
 import { useRedelegateStatusFlags } from '../../hooks/useRedelegateStatusFlags';
@@ -61,6 +62,7 @@ export const RedelegateStatusDialog = ({
 
   const currentTime = new Date();
   const eta = redelegateEvent?.timestampToFinish;
+  const formattedEta = formatETA(eta);
 
   const responsiveDialogStyle = responsiveDialogStyles();
 
@@ -208,21 +210,35 @@ export const RedelegateStatusDialog = ({
                 </>
               }
               regularEl={
-                !!isFinalized &&
-                dateFinalized && (
-                  <>
-                    <Separator size="4" />
-                    <HStack gap="2">
-                      <Text className="font-medium text-sm text-gray-10">
-                        Rewards redelegateed on{' '}
-                      </Text>
-                      <Text className="font-medium text-sm text-heading">
-                        {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
-                        {dayjs(dateFinalized).format('h:mm A')}
-                      </Text>
-                    </HStack>
-                  </>
-                )
+                <>
+                  {!!formattedEta && (
+                    <>
+                      <Separator size="4" />
+                      <HStack gap="2">
+                        <Text className="font-medium text-sm text-gray-10">
+                          Estimated completion time:
+                        </Text>
+                        <Text className="font-medium text-sm text-heading">
+                          {formattedEta}
+                        </Text>
+                      </HStack>
+                    </>
+                  )}
+                  {!!isFinalized && dateFinalized && (
+                    <>
+                      <Separator size="4" />
+                      <HStack gap="2">
+                        <Text className="font-medium text-sm text-gray-10">
+                          Rewards redelegateed on{' '}
+                        </Text>
+                        <Text className="font-medium text-sm text-heading">
+                          {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
+                          {dayjs(dateFinalized).format('h:mm A')}
+                        </Text>
+                      </HStack>
+                    </>
+                  )}
+                </>
               }
             />
           </VStack>

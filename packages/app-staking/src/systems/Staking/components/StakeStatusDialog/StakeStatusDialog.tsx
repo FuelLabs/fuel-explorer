@@ -18,6 +18,7 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
+import { formatETA } from '~staking/systems/Core/utils/eta';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useStakeStatusDialog } from '~staking/systems/Staking/hooks/useStakeStatusDialog';
 import { useStakeStatusFlags } from '~staking/systems/Staking/hooks/useStakeStatusFlags';
@@ -59,6 +60,7 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
 
   const currentTime = new Date();
   const eta = stakeEvent?.timestampToFinish;
+  const formattedEta = formatETA(eta);
 
   const responsiveDialogStyle = responsiveDialogStyles();
 
@@ -206,21 +208,35 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
                 </>
               }
               regularEl={
-                !!isFinalized &&
-                dateFinalized && (
-                  <>
-                    <Separator size="4" />
-                    <HStack gap="2">
-                      <Text className="font-medium text-sm text-gray-10">
-                        Funds staked on{' '}
-                      </Text>
-                      <Text className="font-medium text-sm text-heading">
-                        {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
-                        {dayjs(dateFinalized).format('h:mm A')}
-                      </Text>
-                    </HStack>
-                  </>
-                )
+                <>
+                  {!!formattedEta && (
+                    <>
+                      <Separator size="4" />
+                      <HStack gap="2">
+                        <Text className="font-medium text-sm text-gray-10">
+                          Estimated completion time:
+                        </Text>
+                        <Text className="font-medium text-sm text-heading">
+                          {formattedEta}
+                        </Text>
+                      </HStack>
+                    </>
+                  )}
+                  {!!isFinalized && dateFinalized && (
+                    <>
+                      <Separator size="4" />
+                      <HStack gap="2">
+                        <Text className="font-medium text-sm text-gray-10">
+                          Funds staked on{' '}
+                        </Text>
+                        <Text className="font-medium text-sm text-heading">
+                          {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
+                          {dayjs(dateFinalized).format('h:mm A')}
+                        </Text>
+                      </HStack>
+                    </>
+                  )}
+                </>
               }
             />
           </VStack>

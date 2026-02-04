@@ -18,6 +18,7 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
+import { formatETA } from '~staking/systems/Core/utils/eta';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useClaimRewardStatusDialog } from '~staking/systems/Staking/hooks/useClaimRewardStatusDialog';
 import { useClaimRewardStatusFlags } from '~staking/systems/Staking/hooks/useClaimRewardStatusFlags';
@@ -61,6 +62,7 @@ export const ClaimRewardStatusDialog = ({
 
   const currentTime = new Date();
   const eta = claimEvent?.timestampToFinish;
+  const formattedEta = formatETA(eta);
 
   const responsiveDialogStyle = responsiveDialogStyles();
 
@@ -208,21 +210,35 @@ export const ClaimRewardStatusDialog = ({
                 </>
               }
               regularEl={
-                !!isFinalized &&
-                dateFinalized && (
-                  <>
-                    <Separator size="4" />
-                    <HStack gap="2">
-                      <Text className="font-medium text-sm text-gray-10">
-                        Rewards claimed on{' '}
-                      </Text>
-                      <Text className="font-medium text-sm text-heading">
-                        {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
-                        {dayjs(dateFinalized).format('h:mm A')}
-                      </Text>
-                    </HStack>
-                  </>
-                )
+                <>
+                  {!!formattedEta && (
+                    <>
+                      <Separator size="4" />
+                      <HStack gap="2">
+                        <Text className="font-medium text-sm text-gray-10">
+                          Estimated completion time:
+                        </Text>
+                        <Text className="font-medium text-sm text-heading">
+                          {formattedEta}
+                        </Text>
+                      </HStack>
+                    </>
+                  )}
+                  {!!isFinalized && dateFinalized && (
+                    <>
+                      <Separator size="4" />
+                      <HStack gap="2">
+                        <Text className="font-medium text-sm text-gray-10">
+                          Rewards claimed on{' '}
+                        </Text>
+                        <Text className="font-medium text-sm text-heading">
+                          {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
+                          {dayjs(dateFinalized).format('h:mm A')}
+                        </Text>
+                      </HStack>
+                    </>
+                  )}
+                </>
               }
             />
           </VStack>
