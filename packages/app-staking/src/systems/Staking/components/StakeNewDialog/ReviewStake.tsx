@@ -22,6 +22,7 @@ import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormatte
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
 import {
+  DEFAULT_COMBINED_TX_ETA,
   DEFAULT_L1_DEPOSIT_ETA,
   DEFAULT_SEQUENCER_TX_ETA,
 } from '~staking/systems/Staking/constants/eta';
@@ -206,10 +207,18 @@ function _ReviewStake({
         <RegularInfoSection
           header="Time to complete"
           text={
-            hasAmountFromL1 ? DEFAULT_L1_DEPOSIT_ETA : DEFAULT_SEQUENCER_TX_ETA
+            hasAmountFromL1 && hasAmountFromSequencer
+              ? DEFAULT_COMBINED_TX_ETA
+              : hasAmountFromL1
+                ? DEFAULT_L1_DEPOSIT_ETA
+                : DEFAULT_SEQUENCER_TX_ETA
           }
           textSupport={
-            hasAmountFromL1 ? '(L1 to L2 deposit)' : '(Sequencer transaction)'
+            hasAmountFromL1 && hasAmountFromSequencer
+              ? '(L1 to L2 deposit + Sequencer transaction)'
+              : hasAmountFromL1
+                ? '(L1 to L2 deposit)'
+                : '(Sequencer transaction)'
           }
         />
         {hasAmountFromL1 && hasAmountFromSequencer && (

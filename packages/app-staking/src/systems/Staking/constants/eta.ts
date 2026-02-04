@@ -16,3 +16,8 @@ export const DEFAULT_L1_DEPOSIT_ETA = '~15 minutes';
  * Default ETA for sequencer transactions
  */
 export const DEFAULT_SEQUENCER_TX_ETA = '~1 minute';
+
+/**
+ * Default ETA for combined L1 deposit + sequencer transaction
+ */
+export const DEFAULT_COMBINED_TX_ETA = '~16 minutes';
