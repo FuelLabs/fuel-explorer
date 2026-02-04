@@ -23,6 +23,7 @@ import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormatte
 import { formatETA } from '~staking/systems/Core/utils/eta';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
 import { PausedContractAlertStaking } from '~staking/systems/Staking/components/PausedContractAlertStaking/PausedContractAlertStaking';
+import { DEFAULT_SECURITY_PERIOD_ETA } from '~staking/systems/Staking/constants/eta';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useWithdrawStatusDialog } from '~staking/systems/Staking/hooks/useWithdrawStatusDialog';
 import { useWithdrawStatusFlags } from '~staking/systems/Staking/hooks/useWithdrawStatusFlags';
@@ -171,7 +172,7 @@ export const WithdrawStatusDialog = ({
               Total time to complete
             </Text>
             <Text className="font-medium text-gray-10 text-sm">
-              {totalDuration || '~7 days'}
+              {totalDuration || DEFAULT_SECURITY_PERIOD_ETA}
             </Text>
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">

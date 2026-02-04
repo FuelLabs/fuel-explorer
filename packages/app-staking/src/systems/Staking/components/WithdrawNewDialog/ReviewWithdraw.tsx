@@ -21,6 +21,7 @@ import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfo
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
+import { DEFAULT_SECURITY_PERIOD_ETA } from '~staking/systems/Staking/constants/eta';
 
 interface Props {
   amount: BN | null;
@@ -134,7 +135,7 @@ function _ReviewWithdraw({
         <Separator size="4" />
         <RegularInfoSection
           header="Time to complete"
-          text="~7 days"
+          text={DEFAULT_SECURITY_PERIOD_ETA}
           textSupport="(Security period)"
         />
       </div>

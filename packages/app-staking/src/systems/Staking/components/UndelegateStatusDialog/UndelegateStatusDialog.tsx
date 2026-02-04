@@ -20,6 +20,7 @@ import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import { formatETA } from '~staking/systems/Core/utils/eta';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
+import { DEFAULT_SECURITY_PERIOD_ETA } from '~staking/systems/Staking/constants/eta';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useUndelegateStatusDialog } from '~staking/systems/Staking/hooks/useUndelegateStatusDialog';
 import { getSecondsBetweenDates } from '~staking/systems/Staking/utils/dateDiff';
@@ -67,7 +68,7 @@ export const UndelegateStatusDialog = ({
   const formattedEta = formatETA(eta);
 
   const startDate =
-    undelegateEvent?.statusInfo?.['TransactionSent' as any]?.ethTx?.timestamp;
+    undelegateEvent?.statusInfo?.TransactionSent?.ethTx?.timestamp;
   const totalSeconds =
     startDate && eta ? getSecondsBetweenDates(startDate, eta) : 0;
   const totalDuration =
@@ -161,7 +162,7 @@ export const UndelegateStatusDialog = ({
               Total time to complete
             </Text>
             <Text className="font-medium text-gray-10 text-sm">
-              {totalDuration || '~7 days'}
+              {totalDuration || DEFAULT_SECURITY_PERIOD_ETA}
             </Text>
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">

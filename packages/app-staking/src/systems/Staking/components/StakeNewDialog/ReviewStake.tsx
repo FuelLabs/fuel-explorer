@@ -21,6 +21,10 @@ import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfo
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
+import {
+  DEFAULT_L1_DEPOSIT_ETA,
+  DEFAULT_SEQUENCER_TX_ETA,
+} from '~staking/systems/Staking/constants/eta';
 
 import { IconCheck, IconClock, IconInfoCircle } from '@tabler/icons-react';
 import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
@@ -201,7 +205,9 @@ function _ReviewStake({
         <Separator size="4" />
         <RegularInfoSection
           header="Time to complete"
-          text={hasAmountFromL1 ? '~15 minutes' : '~1 minute'}
+          text={
+            hasAmountFromL1 ? DEFAULT_L1_DEPOSIT_ETA : DEFAULT_SEQUENCER_TX_ETA
+          }
           textSupport={
             hasAmountFromL1 ? '(L1 to L2 deposit)' : '(Sequencer transaction)'
           }

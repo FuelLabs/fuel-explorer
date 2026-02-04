@@ -6,6 +6,7 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import { useMemo } from 'react';
+import { DEFAULT_SECURITY_PERIOD_ETA } from '~staking/systems/Staking/constants/eta';
 import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import type { StakingEvent } from '../../types/l1/events';
 
@@ -55,7 +56,7 @@ export const TransactionHistoryItemStatus = ({
         <Text className="text-sm">{label}</Text>
         {isInProgress && eta && (
           <Text className="text-sm text-muted">
-            (~{eta} remaining of {totalDuration || '~7 days'})
+            (~{eta} remaining of {totalDuration || DEFAULT_SECURITY_PERIOD_ETA})
           </Text>
         )}
       </HStack>
