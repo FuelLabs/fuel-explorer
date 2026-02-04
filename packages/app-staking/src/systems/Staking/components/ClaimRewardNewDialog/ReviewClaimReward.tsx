@@ -172,12 +172,6 @@ function _ReviewClaimReward({
           // }
           isLoading={isGettingReviewDetails}
         />
-        <Separator size="4" />
-        <RegularInfoSection
-          header="Time to complete"
-          text="~1 minute"
-          textSupport="(Sequencer transaction)"
-        />
       </div>
       <div>
         {isBlocked && (
