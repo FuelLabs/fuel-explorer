@@ -106,7 +106,33 @@ export const QUERY_KEYS = {
   },
 
   pendingTransactions: (address?: string) =>
-    createAccountQueryKey(['pending', 'transactions'], [], address),
+    createAccountQueryKey(
+      ['pending', 'transactions'],
+      [],
+      address?.toLowerCase(),
+    ),
   withdrawals: (address?: string) =>
     createAccountQueryKey(['withdrawals'], [], address),
 } as const;
+
+/**
+ * Helper to add a pending L1 transaction from XState machines (non-hook context)
+ */
+export const addPendingL1Transaction = (
+  queryClient: { getQueryData: any; setQueryData: any; invalidateQueries: any },
+  address: string,
+  transaction: Record<string, unknown>,
+) => {
+  // Normalize address to lowercase for consistency
+  const normalizedAddress = address?.toLowerCase();
+  if (!normalizedAddress) return;
+
+  const queryKey = QUERY_KEYS.pendingTransactions(normalizedAddress);
+  const queryData = (queryClient.getQueryData(queryKey) as any[]) ?? [];
+  queryClient.setQueryData(queryKey, [
+    ...queryData,
+    { ...transaction, displayed: false, completed: false },
+  ]);
+  queryClient.invalidateQueries({ queryKey });
+  // TanStack Query persistence handles storage automatically via meta.persist
+};

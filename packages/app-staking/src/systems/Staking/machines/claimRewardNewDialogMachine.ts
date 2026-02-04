@@ -1,20 +1,34 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { HexAddress } from 'app-commons';
+import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
 import type { BN } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import {
+  type PendingTransaction,
+  PendingTransactionTypeL1,
+} from '~staking/systems/Core/hooks/usePendingTransactions';
+import {
   type AssetRate,
   AssetsRateService,
 } from '~staking/systems/Core/services/AssetsRateService';
+import {
+  type OperationBlockingInfo,
+  checkOperationBlocking,
+} from '~staking/systems/Core/utils/blocking';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
+import {
+  QUERY_KEYS,
+  addPendingL1Transaction,
+} from '~staking/systems/Core/utils/query';
 import { ClaimRewardNewService } from '~staking/systems/Staking/services/claimRewardNewService';
+import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
 export interface ClaimRewardNewDialogContext {
   validator: SequencerValidatorAddress;
+  ethAccount?: HexAddress | undefined;
   // Clients for contract interaction
   publicClient?: PublicClient | null;
   walletClient?: WalletClient | null;
@@ -22,8 +36,15 @@ export interface ClaimRewardNewDialogContext {
   // Fee and rates
   fee: BN;
   rates: AssetRate[];
+  // Amount to claim
+  amount: BN | null;
   // Errors
   claimRewardError?: string | null;
+  // Transaction tracking
+  transactionHash?: HexAddress;
+  // Blocking state
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 type ClaimRewardNewDialogMachineServices = {
@@ -33,6 +54,9 @@ type ClaimRewardNewDialogMachineServices = {
   getAssetsRate: {
     data: AssetRate[];
   };
+  checkBlocking: {
+    data: OperationBlockingInfo;
+  };
   submitClaimReward: {
     data: HexAddress;
   };
@@ -40,13 +64,16 @@ type ClaimRewardNewDialogMachineServices = {
 
 export type ClaimRewardNewDialogEvent =
   | { type: 'SET_VALIDATOR'; validator: string | undefined }
+  | { type: 'SET_ETH_ACCOUNT'; ethAccount: HexAddress | undefined }
   | {
       type: 'SET_CLIENTS';
       publicClient: PublicClient;
       walletClient: WalletClient;
       queryClient: QueryClient;
     }
+  | { type: 'SET_AMOUNT'; amount: BN | null }
   | { type: 'CONFIRM' }
+  | { type: 'RECHECK_BLOCKING' }
   | { type: 'CLOSE' };
 
 export const claimRewardNewMachine = createMachine(
@@ -63,6 +90,10 @@ export const claimRewardNewMachine = createMachine(
     initial: 'waitingInitialData',
     on: {
       CLOSE: 'closed',
+      RECHECK_BLOCKING: {
+        target: 'checkingBlocking',
+        cond: (ctx) => !!ctx.queryClient,
+      },
     },
     states: {
       waitingInitialData: {
@@ -78,6 +109,11 @@ export const claimRewardNewMachine = createMachine(
           },
         },
         on: {
+          SET_ETH_ACCOUNT: {
+            actions: assign({
+              ethAccount: (_, event) => event.ethAccount,
+            }),
+          },
           SET_CLIENTS: {
             actions: assign((_, event) => ({
               publicClient: event.publicClient,
@@ -89,6 +125,11 @@ export const claimRewardNewMachine = createMachine(
             actions: assign({
               validator: (_, event) =>
                 event.validator as SequencerValidatorAddress,
+            }),
+          },
+          SET_AMOUNT: {
+            actions: assign({
+              amount: (_, event) => event.amount,
             }),
           },
         },
@@ -144,12 +185,40 @@ export const claimRewardNewMachine = createMachine(
           },
         },
         onDone: {
-          target: 'reviewing',
+          target: 'checkingBlocking',
+        },
+      },
+      checkingBlocking: {
+        invoke: {
+          src: 'checkBlocking',
+          onDone: {
+            target: 'reviewing',
+            actions: assign((_, event) => ({
+              isBlocked: event.data.isBlocked,
+              blockingMessage: event.data.blockingMessage,
+            })),
+          },
+          onError: {
+            target: 'reviewing',
+            actions: assign(() => ({
+              isBlocked: false,
+              blockingMessage: undefined,
+            })),
+          },
         },
       },
       reviewing: {
         on: {
-          CONFIRM: 'submitting',
+          SET_ETH_ACCOUNT: {
+            actions: assign({
+              ethAccount: (_, event) => event.ethAccount,
+            }),
+            target: 'checkingBlocking',
+          },
+          CONFIRM: {
+            target: 'submitting',
+            cond: (ctx) => !ctx.isBlocked,
+          },
         },
       },
       submitting: {
@@ -162,17 +231,33 @@ export const claimRewardNewMachine = createMachine(
           src: 'submitClaimReward',
           onDone: {
             target: 'finalized',
-            actions: (ctx, event) => {
-              if (!ctx.queryClient) return;
-              // TempStakingTransactions.addTransaction(ctx.queryClient, {
-              //   hash: 'test',
-              // });
+            actions: assign((ctx, event) => {
+              const txHash = event.data;
 
-              ClaimRewardNewService.showSuccessToast(event.data);
-            },
+              const accountAddress =
+                ctx.ethAccount ?? ctx.walletClient?.account?.address;
+              if (ctx.queryClient && accountAddress) {
+                addPendingL1Transaction(ctx.queryClient, accountAddress, {
+                  type: PendingTransactionTypeL1.ClaimReward,
+                  layer: 'l1',
+                  hash: txHash,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amount?.format() ?? '0',
+                  validator: ctx.validator,
+                });
+              }
+
+              ClaimRewardNewService.showSuccessToast(txHash);
+
+              return {
+                transactionHash: txHash,
+              };
+            }),
           },
           onError: {
-            target: 'reviewing',
+            // Return to checkingBlocking to recheck blocking state after error
+            target: 'checkingBlocking',
             actions: assign({
               claimRewardError: (_, event) => {
                 if (event.data instanceof Error && event.data?.message) {
@@ -185,7 +270,7 @@ export const claimRewardNewMachine = createMachine(
                   return event.data?.message;
                 }
 
-                return 'Error submitting withdraw';
+                return 'Error submitting claim reward';
               },
             }),
           },
@@ -217,6 +302,35 @@ export const claimRewardNewMachine = createMachine(
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
       },
+      checkBlocking: async (context) => {
+        const address =
+          context.ethAccount ?? context.walletClient?.account?.address;
+        const normalizedAddress = address?.toLowerCase();
+        const queryKey = normalizedAddress
+          ? QUERY_KEYS.pendingTransactions(normalizedAddress)
+          : undefined;
+
+        let pendingTransactions: PendingTransaction[] | undefined = undefined;
+
+        if (context.queryClient && queryKey) {
+          pendingTransactions =
+            context.queryClient.getQueryData<PendingTransaction[]>(queryKey);
+        }
+
+        if (!pendingTransactions || pendingTransactions.length === 0) {
+          return getBlockingInfoFromStakingEvents(
+            normalizedAddress,
+            PendingTransactionTypeL1.ClaimReward,
+            context.validator,
+          );
+        }
+
+        return checkOperationBlocking(
+          pendingTransactions,
+          PendingTransactionTypeL1.ClaimReward,
+          context.validator,
+        );
+      },
       submitClaimReward: async (context) => {
         const result = await ClaimRewardNewService.submitClaimReward(context);
         return result;
@@ -245,7 +359,7 @@ export const claimRewardNewMachineSelectors = {
   isReviewing: (state: ClaimRewardNewDialogMachineState) =>
     state.matches('reviewing'),
   isGettingReviewDetails: (state: ClaimRewardNewDialogMachineState) =>
-    state.matches('gettingReviewDetails'),
+    state.matches('gettingReviewDetails') || state.matches('checkingBlocking'),
   // Composite states
   isLoading: (state: ClaimRewardNewDialogMachineState) => {
     return (
@@ -253,4 +367,8 @@ export const claimRewardNewMachineSelectors = {
       (state as any).matches('gettingReviewDetails')
     );
   },
+  // Blocking selectors
+  isBlocked: (context: ClaimRewardNewDialogContext) => context.isBlocked,
+  getBlockingMessage: (context: ClaimRewardNewDialogContext) =>
+    context.blockingMessage,
 };

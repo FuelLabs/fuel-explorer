@@ -34,15 +34,19 @@ const _ValidatorListItem = ({
   isLast,
   isLoading,
 }: ValidatorListItemProps) => {
-  const disabledActions = useDisabledL1Actions(validator?.operator_address);
+  const { disabledActions, disabledReasons } = useDisabledL1Actions(
+    validator?.operator_address,
+  );
   const delegated = useMemo(() => {
     return formatAmount(validator?.tokens, decimals);
   }, [validator]);
   const { isConnected } = useAccount();
   const disabled = disabledActions[PendingTransactionTypeL1.Delegate];
-  const tooltipLabel = disabled
-    ? 'Stake is disabled while other staking operations are pending.'
-    : undefined;
+  const tooltipLabel =
+    disabledReasons[PendingTransactionTypeL1.Delegate] ||
+    (disabled
+      ? 'Stake is disabled while other staking operations are pending.'
+      : undefined);
 
   return (
     <div

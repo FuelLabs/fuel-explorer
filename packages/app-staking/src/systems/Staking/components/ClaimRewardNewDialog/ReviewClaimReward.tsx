@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Button,
   LoadingBox,
@@ -9,6 +10,7 @@ import {
   Tooltip,
   convertToUsd,
 } from '@fuels/ui';
+import { IconClock } from '@tabler/icons-react';
 import { BN } from 'fuels';
 import { DECIMAL_WEI } from 'fuels';
 import { memo, useMemo } from 'react';
@@ -34,6 +36,8 @@ interface Props {
   isGettingReviewDetails: boolean;
   onConfirm: () => void;
   validator: SequencerValidatorAddress;
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 function _ReviewClaimReward({
@@ -47,6 +51,8 @@ function _ReviewClaimReward({
   onConfirm,
   isGettingReviewDetails,
   validator,
+  isBlocked = false,
+  blockingMessage,
 }: Props) {
   const { validator: validatorData, isLoading: isLoadingValidatorData } =
     useValidator(validator);
@@ -56,7 +62,9 @@ function _ReviewClaimReward({
   });
   const rewardBN = useMemo(() => {
     return rewardsData?.reduce((acc, curr) => {
-      return acc.add(new BN(curr.amount.split('.')[0] ?? 0));
+      // Cosmos API returns decimal strings - truncate to integer for BN
+      const integerAmount = Math.floor(Number(curr.amount ?? 0)).toString();
+      return acc.add(new BN(integerAmount));
     }, new BN(0));
   }, [rewardsData]);
   const ratesData = useMemo(() => {
@@ -172,15 +180,29 @@ function _ReviewClaimReward({
         />
       </div>
       <div>
+        {isBlocked && (
+          <Alert color="orange" variant="surface" className="mb-4">
+            <Alert.Icon>
+              <IconClock size={18} className="text-orange-11" />
+            </Alert.Icon>
+            <Alert.Text className="text-orange-12">
+              <Text size="2" weight="medium" className="block mb-1">
+                Claim rewards pending
+              </Text>
+              <Text size="1">{blockingMessage}</Text>
+            </Alert.Text>
+          </Alert>
+        )}
         <ErrorInline error={errorMsg} className="mb-1" />
         <Button
           type="button"
           className="rounded-md w-full"
           size="3"
           onClick={onConfirm}
-          disabled={!isReady}
-          isLoading={isSubmitting}
-          loadingText="Submitting..."
+          disabled={!isReady || isBlocked || isGettingReviewDetails}
+          isLoading={isSubmitting || isGettingReviewDetails}
+          loadingText={isGettingReviewDetails ? 'Checking...' : 'Submitting...'}
+          title={isBlocked ? blockingMessage : ''}
         >
           {errorMsg ? 'Retry' : 'Claim Rewards'}
         </Button>

@@ -17,7 +17,6 @@ export function useWithdrawNewDialog() {
   const { data: walletClient } = useWalletClient();
   const { data: sequencerBalance } = useSharedSequencerBalance(account);
   const queryClient = useQueryClient();
-
   const isReady = !!walletClient;
 
   const service = useInterpret(withdrawNewDialogMachine);
@@ -84,12 +83,12 @@ export function useWithdrawNewDialog() {
     withdrawNewDialogMachineSelectors.isSubmitting(state),
   );
 
-  const isReviewing = useSelector(service, (state) =>
-    withdrawNewDialogMachineSelectors.isReviewing(state),
-  );
-
   const isWaitingForAmount = useSelector(service, (state) =>
     withdrawNewDialogMachineSelectors.isWaitingForAmount(state),
+  );
+
+  const isReviewing = useSelector(service, (state) =>
+    withdrawNewDialogMachineSelectors.isReviewing(state),
   );
 
   const isReviewPage = useSelector(service, (state) =>
@@ -119,6 +118,13 @@ export function useWithdrawNewDialog() {
     service.send({ type: 'BACK_TO_AMOUNT' });
   }, [service]);
 
+  const isBlocked = useSelector(service, (state) =>
+    withdrawNewDialogMachineSelectors.isBlocked(state.context),
+  );
+  const blockingMessage = useSelector(service, (state) =>
+    withdrawNewDialogMachineSelectors.getBlockingMessage(state.context),
+  );
+
   return {
     state: useSelector(service, (state) => state),
     send: service.send,
@@ -140,5 +146,7 @@ export function useWithdrawNewDialog() {
     withdrawError,
     formError,
     goBackToAmount,
+    isBlocked,
+    blockingMessage,
   };
 }
