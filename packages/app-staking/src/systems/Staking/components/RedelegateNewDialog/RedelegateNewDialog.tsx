@@ -32,6 +32,8 @@ export const RedelegateNewDialog = ({
     goBackToAmount,
     validators,
     toValidatorController,
+    isBlocked,
+    blockingMessage,
   } = useRedelegateNewDialog({ validator });
   const isPaused = useIsStakingContractPaused({
     conditions: {
@@ -127,6 +129,8 @@ export const RedelegateNewDialog = ({
                     onBack={goBackToAmount}
                     fromValidatorData={fromValidatorData}
                     toValidatorData={toValidatorData}
+                    isBlocked={isBlocked}
+                    blockingMessage={blockingMessage}
                   />
                 </LastPageWrapper>
               )}

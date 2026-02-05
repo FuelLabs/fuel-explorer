@@ -20,6 +20,10 @@ class Logger {
     this.log(process, 'debug', message, data);
   }
 
+  warn(process: string, message: any, data?: any) {
+    this.log(process, 'warn', message, data);
+  }
+
   error(process: string, message: any, error?: any) {
     this.log(process, 'error', message, error);
   }

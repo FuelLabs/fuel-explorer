@@ -27,7 +27,6 @@ export function useStakeNewDialog({
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const queryClient = useQueryClient();
-
   const { data: tokens } = useTokenBalance(token, account);
   const { data: sequencerBalance } = useSharedSequencerBalance(account);
   const tokenBalance = useFormatBalance(tokens, decimals);
@@ -149,12 +148,12 @@ export function useStakeNewDialog({
     stakeNewDialogMachineSelectors.isSubmitting(state),
   );
 
-  const isReviewing = useSelector(service, (state) =>
-    stakeNewDialogMachineSelectors.isReviewing(state),
-  );
-
   const isWaitingForAmount = useSelector(service, (state) =>
     stakeNewDialogMachineSelectors.isWaitingForAmount(state),
+  );
+
+  const isReviewing = useSelector(service, (state) =>
+    stakeNewDialogMachineSelectors.isReviewing(state),
   );
 
   const isReviewPage = useSelector(service, (state) =>
@@ -231,6 +230,13 @@ export function useStakeNewDialog({
     stakeNewDialogMachineSelectors.navigationDirection(state.context),
   );
 
+  const isBlocked = useSelector(service, (state) =>
+    stakeNewDialogMachineSelectors.isBlocked(state.context),
+  );
+  const blockingMessage = useSelector(service, (state) =>
+    stakeNewDialogMachineSelectors.getBlockingMessage(state.context),
+  );
+
   return {
     state: useSelector(service, (state) => state),
     send: service.send,
@@ -268,5 +274,7 @@ export function useStakeNewDialog({
     approvalError,
     isReadyToConfirm,
     navigationDirection,
+    isBlocked,
+    blockingMessage,
   };
 }

@@ -13,7 +13,7 @@ SELECT
   SUM((t.data->'status'->>'totalFee')::numeric) AS total_fee,
   SUM((t.data->'status'->>'gasUsed')::bigint) AS total_gas_used
 FROM indexer.transactions t
-WHERE t."timestamp" > NOW() - INTERVAL '30 days'
+WHERE t."timestamp" > NOW() - INTERVAL '7 days'
 GROUP BY date_trunc('hour', t."timestamp");
 
 -- Create unique index for concurrent refresh (required for CONCURRENTLY keyword)
@@ -28,10 +28,10 @@ INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
 VALUES (
   'REFRESH MATERIALIZED VIEW CONCURRENTLY indexer.hourly_statistics',
   true,
-  600,
+  1800,
   'pending'
 )
-ON CONFLICT DO NOTHING;
+ON CONFLICT (query) DO NOTHING;
 
 -- Add ANALYZE job for this view (daily)
 INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
@@ -41,4 +41,4 @@ VALUES (
   86400,
   'pending'
 )
-ON CONFLICT DO NOTHING;
+ON CONFLICT (query) DO NOTHING;

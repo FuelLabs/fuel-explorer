@@ -1210,6 +1210,16 @@ export type GQLOutputBreakpoint = {
   pc: Scalars['U64']['output'];
 };
 
+/**
+ * Specifies the type of owner for filtering transactions.
+ * ACCOUNT filters to only externally owned accounts (EOAs).
+ * CONTRACT filters to only contract accounts.
+ */
+export enum GQLOwnerType {
+  Account = 'ACCOUNT',
+  Contract = 'CONTRACT'
+}
+
 /** Information about pagination in a connection */
 export type GQLPageInfo = {
   __typename: 'PageInfo';
@@ -1260,6 +1270,11 @@ export type GQLPolicies = {
   __typename: 'Policies';
   maturity?: Maybe<Scalars['U32']['output']>;
   maxFee?: Maybe<Scalars['U64']['output']>;
+  /**
+   * The Owner policy (PolicyType 32) designates which input index is the transaction owner.
+   * This field will be null if the Owner policy is not set.
+   */
+  ownerInputIndex?: Maybe<Scalars['U16']['output']>;
   tip?: Maybe<Scalars['U64']['output']>;
   witnessLimit?: Maybe<Scalars['U64']['output']>;
 };
@@ -1584,6 +1599,7 @@ export type GQLQueryTransactionsByOwnerArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   owner: Scalars['Address']['input'];
+  ownerType?: InputMaybe<GQLOwnerType>;
 };
 
 export type GQLReDelegateResponse = {

@@ -7,6 +7,7 @@ import type {
   GQLQueryTransactionsByOwnerArgs,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
+import DataCache from '~/infra/cache/DataCache';
 import TransactionDAO from '~/infra/dao/TransactionDAO';
 import { convertToUsd } from '~/infra/dao/utils';
 import AssetGateway from '~/infra/gateway/AssetGateway';
@@ -93,12 +94,20 @@ export class TransactionResolver {
 
   async transactionsByOwner(
     _: Source,
-    params: Params['transactionByOwner'],
+    params: Params['transactionByOwner'] & { ownerType?: string },
     { chain }: GraphQLContext,
   ) {
     logger.debug('GraphQL', 'TransactionResolver.transactionsByOwner');
-    const transactionDAO = new TransactionDAO();
     const paginatedParams = new PaginatedParams(params);
+    const ownerType = params.ownerType;
+    const cacheKey = `txByOwner:${params.owner}:${paginatedParams.cursor || 'init'}:${paginatedParams.direction}:${paginatedParams.last}:${ownerType || 'all'}`;
+
+    const cached = DataCache.getInstance().get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    const transactionDAO = new TransactionDAO();
     const baseAssetId = chain?.data.consensusParameters.baseAssetId || '';
     const chainId = chain ? Number.parseInt(chain.chainId) : undefined;
     const assetGateway = new AssetGateway();
@@ -106,6 +115,7 @@ export class TransactionResolver {
     const transactions = await transactionDAO.getPaginatedTransactionsByOwner(
       params.owner,
       paginatedParams,
+      ownerType,
     );
     for (const transaction of transactions.nodes) {
       if (transaction.gasCosts?.fee) {
@@ -118,6 +128,8 @@ export class TransactionResolver {
           : null;
       }
     }
+
+    DataCache.getInstance().save(cacheKey, 30000, transactions);
     return transactions;
   }
 

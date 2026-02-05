@@ -21,7 +21,6 @@ export function useUndelegateNewDialog({
   const { data: walletClient } = useWalletClient();
   // const { data: sequencerBalance } = useSharedSequencerBalance(account);
   const queryClient = useQueryClient();
-
   const { data: totalDelegated, isLoading: isLoadingStakedAmount } =
     useAccountValidatorDelegations({
       address,
@@ -132,6 +131,13 @@ export function useUndelegateNewDialog({
     service.send({ type: 'BACK_TO_AMOUNT' });
   }, [service]);
 
+  const isBlocked = useSelector(service, (state) =>
+    undelegateNewDialogMachineSelectors.isBlocked(state.context),
+  );
+  const blockingMessage = useSelector(service, (state) =>
+    undelegateNewDialogMachineSelectors.getBlockingMessage(state.context),
+  );
+
   return {
     state: useSelector(service, (state) => state),
     send: service.send,
@@ -153,5 +159,7 @@ export function useUndelegateNewDialog({
     formError,
     goBackToAmount,
     isLoadingStakedAmount,
+    isBlocked,
+    blockingMessage,
   };
 }

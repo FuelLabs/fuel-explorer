@@ -3,6 +3,43 @@ import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
 import type PaginatedParams from '../paginator/PaginatedParams';
 
+const VALID_OWNER_TYPES = ['ACCOUNT', 'CONTRACT'] as const;
+type OwnerType = (typeof VALID_OWNER_TYPES)[number];
+
+/**
+ * Builds the SQL clause for filtering transactions by owner type.
+ * This is a static string mapping to prevent SQL injection.
+ *
+ * @param ownerType - The type of owner to filter by ('ACCOUNT' or 'CONTRACT')
+ * @returns SQL clause string or empty string if no filtering needed
+ */
+function buildOwnerTypeClause(ownerType?: string): string {
+  if (ownerType === 'ACCOUNT') {
+    return 'and not exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+  }
+  if (ownerType === 'CONTRACT') {
+    return 'and exists (select 1 from indexer.contracts c where c.contract_hash = ta.account_hash)';
+  }
+  return '';
+}
+
+/**
+ * @param ownerType - The owner type value to validate
+ * @returns The validated ownerType (uppercase) or undefined
+ */
+function validateOwnerType(ownerType?: string): OwnerType | undefined {
+  if (ownerType === undefined || ownerType === null) {
+    return undefined;
+  }
+  const normalized = ownerType.toUpperCase() as OwnerType;
+  if (!VALID_OWNER_TYPES.includes(normalized)) {
+    throw new Error(
+      `Invalid ownerType value: ${ownerType}. Expected 'ACCOUNT', 'CONTRACT', or undefined.`,
+    );
+  }
+  return normalized;
+}
+
 export default class TransactionDAO {
   databaseConnection: DatabaseConnectionReplica;
 
@@ -31,44 +68,32 @@ export default class TransactionDAO {
   async getPaginatedTransactionsByOwner(
     accountHash: string,
     paginatedParams: PaginatedParams,
+    ownerType?: string,
   ) {
+    const validatedOwnerType = validateOwnerType(ownerType);
+    const ownerTypeClause = buildOwnerTypeClause(validatedOwnerType);
+
     const direction = paginatedParams.direction === 'before' ? '<' : '>';
     const order = paginatedParams.direction === 'before' ? 'desc' : 'asc';
 
-    const [transactionsData, totalCount] =
-      await this.databaseConnection.batchQueryWithSettings(
-        [
-          { name: 'enable_indexscan', value: 'off' },
-          { name: 'enable_bitmapscan', value: 'on' },
-        ],
-        [
-          {
-            statement: `
-              select t.*, ta._id as ta_id
-              from indexer.transactions_accounts ta
-              inner join indexer.transactions t on t.tx_hash = ta.tx_hash
-              where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
-              order by ta._id ${order}
-              limit 10
-            `,
-            params: [accountHash.toLowerCase(), paginatedParams.cursor],
-          },
-          {
-            statement:
-              'select count(*)::integer as count from indexer.transactions_accounts where account_hash = $1',
-            params: [accountHash.toLowerCase()],
-          },
-        ],
-      );
+    const transactionsData = await this.databaseConnection.query(
+      `
+      select t.*, ta._id as ta_id
+      from indexer.transactions_accounts ta
+      inner join indexer.transactions t on t.tx_hash = ta.tx_hash
+      where ta.account_hash = $1 and ($2::text is null or ta._id ${direction} $2)
+      ${ownerTypeClause}
+      order by ta._id ${order}
+      limit 10
+      `,
+      [accountHash.toLowerCase(), paginatedParams.cursor],
+    );
 
     transactionsData.sort((a: any, b: any) => {
-      return a._id.localeCompare(b._id) * -1;
+      return a.ta_id.localeCompare(b.ta_id) * -1;
     });
-    const transactions = [];
-    for (const transactionData of transactionsData) {
-      transactions.push(TransactionEntity.createFromDAO(transactionData));
-    }
-    if (transactions.length === 0) {
+
+    if (transactionsData.length === 0) {
       return {
         nodes: [],
         edges: [],
@@ -81,41 +106,56 @@ export default class TransactionDAO {
       };
     }
 
-    const startCursor = transactionsData[0]._id;
-    const endCursor = transactionsData[transactionsData.length - 1]._id;
+    const transactions = [];
+    for (const transactionData of transactionsData) {
+      transactions.push(TransactionEntity.createFromDAO(transactionData));
+    }
 
+    // Use ta_id (transactions_accounts._id) for cursors, not t._id
+    const startCursor = transactionsData[0].ta_id;
+    const endCursor = transactionsData[transactionsData.length - 1].ta_id;
+
+    // Check pagination + position count (uses endCursor for accurate positioning)
     const [paginationInfo] = await this.databaseConnection.query(
       `
-        select
-          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id < $2 limit 1) as has_prev,
-          exists(select 1 from indexer.transactions_accounts where account_hash = $1 and _id > $3 limit 1) as has_next,
-          (select count(*)::integer from indexer.transactions_accounts where account_hash = $1 and _id > $3) as count
-        `,
+      select
+        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id < $2 ${ownerTypeClause} limit 1) as has_prev,
+        exists(select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $3 ${ownerTypeClause} limit 1) as has_next,
+        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 ${ownerTypeClause} limit 1001) sub) as total_count,
+        (select count(*) from (select 1 from indexer.transactions_accounts ta where ta.account_hash = $1 and ta._id > $2 ${ownerTypeClause} limit 1001) sub) as items_before_end
+      `,
       [accountHash.toLowerCase(), endCursor, startCursor],
     );
 
     const hasPreviousPage = paginationInfo?.has_prev || false;
     const hasNextPage = paginationInfo?.has_next || false;
+    // Capped at 1000 to avoid slow full counts; frontend shows "1000+" when totalCount === 1000
+    const totalCount = Math.min(Number(paginationInfo?.total_count) || 0, 1000);
+    const endPosition =
+      Math.min(Number(paginationInfo?.items_before_end) || 0, 1000) + 1;
+    const pageSize = transactionsData.length;
+    const startPosition = endPosition - pageSize + 1;
+
     const newNodes = transactions.map((n) => n.toGQLListNode());
 
     const edges = newNodes.map((node) => ({
       node,
       cursor: paginatedParams.cursor,
     }));
-    const paginatedResults = {
+
+    return {
       nodes: newNodes,
       edges,
       pageInfo: {
-        startCount: (paginationInfo?.count || 0) + 1,
-        endCount: (paginationInfo?.count || 0) + paginatedParams.last,
-        totalCount: totalCount[0]?.count || 0,
+        startCount: startPosition,
+        endCount: startPosition + pageSize - 1,
+        totalCount,
         hasNextPage,
         hasPreviousPage,
         endCursor,
         startCursor,
       },
     };
-    return paginatedResults;
   }
 
   async getPaginatedTransactions(paginatedParams: PaginatedParams) {
@@ -187,6 +227,17 @@ export default class TransactionDAO {
     return paginatedResults;
   }
 
+  async accountExists(accountHash: string): Promise<boolean> {
+    // Fast check: does this account have any transactions?
+    // Used for search validation only
+    const result = await this.databaseConnection.query(
+      'SELECT EXISTS(SELECT 1 FROM indexer.transactions_accounts WHERE account_hash = $1) as exists',
+      [accountHash.toLowerCase()],
+    );
+
+    return result[0]?.exists || false;
+  }
+
   async getTransactionsByOwner(accountHash: string) {
     const transactionsData = await this.databaseConnection.query(
       `
@@ -194,19 +245,20 @@ export default class TransactionDAO {
 			t.*
 		from
 			indexer.transactions t
-		inner join (
-			select distinct on (tx_hash)
-				tx_hash, _id as account_id
-			from
-				indexer.transactions_accounts
-			where
-				account_hash = $1
-			order by
-				tx_hash, _id desc
-			limit 5
-		) ta on t.tx_hash = ta.tx_hash
+		where
+			t.tx_hash in (
+				select distinct on (tx_hash)
+					tx_hash
+				from
+					indexer.transactions_accounts
+				where
+					account_hash = $1
+				order by
+					tx_hash, _id desc
+				limit 5
+			)
 		order by
-			ta.account_id desc
+			t._id desc
 		`,
       [accountHash.toLowerCase()],
     );
@@ -215,45 +267,6 @@ export default class TransactionDAO {
       transactions.push(TransactionEntity.createFromDAO(transactionData));
     }
     return transactions;
-  }
-
-  async getRecentTransactionsByOwner(accountHash: string) {
-    // Optimized query for accounts with many transactions
-    // Uses materialized view of recent transactions (last 7 days)
-    // Falls back to regular query only if view doesn't exist
-    try {
-      const transactionsData = await this.databaseConnection.query(
-        `
-        select
-          t.*
-        from
-          indexer.transactions t
-        inner join (
-          select distinct on (tx_hash)
-            tx_hash, _id as account_id
-          from
-            indexer.recent_account_transactions_mv
-          where
-            account_hash = $1
-          order by
-            tx_hash, _id desc
-        ) ta on t.tx_hash = ta.tx_hash
-        order by
-          ta.account_id desc
-        limit 5
-        `,
-        [accountHash.toLowerCase()],
-      );
-      // Return results (empty array is valid - account has no recent transactions)
-      const transactions = [];
-      for (const transactionData of transactionsData) {
-        transactions.push(TransactionEntity.createFromDAO(transactionData));
-      }
-      return transactions;
-    } catch (_error) {
-      // If materialized view doesn't exist, fall back to regular query
-      return this.getTransactionsByOwner(accountHash);
-    }
   }
 
   async getPaginatedTransactionsByBlockId(
