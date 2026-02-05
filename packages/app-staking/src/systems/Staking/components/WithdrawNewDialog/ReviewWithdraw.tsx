@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   HStack,
   LoadingBox,
@@ -9,6 +10,7 @@ import {
   Tooltip,
   convertToUsd,
 } from '@fuels/ui';
+import { IconClock } from '@tabler/icons-react';
 import { BN } from 'fuels';
 import { DECIMAL_WEI } from 'fuels';
 import { memo, useMemo } from 'react';
@@ -32,6 +34,8 @@ interface Props {
   isGettingReviewDetails: boolean;
   onConfirm: () => void;
   onBack: () => void;
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 function _ReviewWithdraw({
@@ -46,6 +50,8 @@ function _ReviewWithdraw({
   onConfirm,
   isGettingReviewDetails,
   onBack,
+  isBlocked = false,
+  blockingMessage,
 }: Props) {
   const {
     formattedAmount,
@@ -127,6 +133,19 @@ function _ReviewWithdraw({
         />
       </div>
       <div>
+        {isBlocked && (
+          <Alert color="orange" variant="surface" className="mb-4">
+            <Alert.Icon>
+              <IconClock size={18} className="text-orange-11" />
+            </Alert.Icon>
+            <Alert.Text className="text-orange-12">
+              <Text size="2" weight="medium" className="block mb-1">
+                Withdrawal Currently Unavailable
+              </Text>
+              <Text size="1">{blockingMessage}</Text>
+            </Alert.Text>
+          </Alert>
+        )}
         <ErrorInline error={errorMsg} className="mb-1" />
         <HStack gap="3" className="w-full">
           <Button
@@ -145,9 +164,12 @@ function _ReviewWithdraw({
             className="rounded-md flex-1"
             size="3"
             onClick={onConfirm}
-            disabled={!isReady}
-            isLoading={isSubmitting}
-            loadingText="Submitting..."
+            disabled={!isReady || isBlocked || isGettingReviewDetails}
+            isLoading={isSubmitting || isGettingReviewDetails}
+            loadingText={
+              isGettingReviewDetails ? 'Checking...' : 'Submitting...'
+            }
+            title={isBlocked ? blockingMessage : ''}
           >
             {errorMsg ? 'Retry' : 'Submit Withdraw'}
           </Button>

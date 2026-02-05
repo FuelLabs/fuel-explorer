@@ -40,6 +40,10 @@
     "start:api": "pm2-runtime ecosystem-prod-api.config.cjs",
     "start:syncer": "pm2-runtime ecosystem-prod-syncer.config.cjs",
     "sync:clean": "tsx ./src/cli.ts sync --clean",
+    "db:migrate": "tsx ./scripts/migrate.ts",
+    "db:migrate:dry": "tsx ./scripts/migrate.ts --dry-run",
+    "db:migrate:status": "tsx ./scripts/migrate.ts --status",
+    "db:migrate:setup": "tsx ./scripts/setup-migrations.ts",
     "test": "jest --config jest.config.ts",
     "test:watch": "jest --config jest.config.ts --watch"
   },
