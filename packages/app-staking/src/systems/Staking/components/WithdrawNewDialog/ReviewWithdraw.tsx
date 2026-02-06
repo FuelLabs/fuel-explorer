@@ -21,7 +21,10 @@ import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfo
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
-import { useFinalizationPeriod } from '~staking/systems/Staking/hooks/useFinalizationPeriod';
+import {
+  type WithdrawNewDialogMachineState,
+  withdrawNewDialogMachineSelectors,
+} from '~staking/systems/Staking/machines/withdrawNewDialogMachine';
 
 interface Props {
   amount: BN | null;
@@ -37,6 +40,7 @@ interface Props {
   onBack: () => void;
   isBlocked?: boolean;
   blockingMessage?: string;
+  state: WithdrawNewDialogMachineState;
 }
 
 function _ReviewWithdraw({
@@ -53,6 +57,7 @@ function _ReviewWithdraw({
   onBack,
   isBlocked = false,
   blockingMessage,
+  state,
 }: Props) {
   const {
     formattedAmount,
@@ -67,8 +72,6 @@ function _ReviewWithdraw({
     rates,
   });
 
-  const finalizationPeriod = useFinalizationPeriod();
-
   const { formatted: formattedFee } = useMemo(() => {
     return formatAmount(fee, DECIMAL_WEI);
   }, [fee]);
@@ -79,6 +82,9 @@ function _ReviewWithdraw({
     }
     return convertToUsd(fee, DECIMAL_WEI, ratesData.eth);
   }, [fee, ratesData.eth, isGettingReviewDetails]);
+
+  const finalizationPeriod =
+    withdrawNewDialogMachineSelectors.getFinalizationPeriod(state.context);
 
   return (
     <div className="flex flex-col gap-8">
