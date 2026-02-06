@@ -29,7 +29,7 @@ export const WithdrawNewDialog = () => {
     goBackToAmount,
     isBlocked,
     blockingMessage,
-    state,
+    finalizationPeriod,
   } = useWithdrawNewDialog();
 
   const isPaused = useIsStakingContractPaused({
@@ -103,7 +103,6 @@ export const WithdrawNewDialog = () => {
               ) : (
                 <LastPageWrapper>
                   <ReviewWithdraw
-                    state={state}
                     amount={amount}
                     decimals={decimals}
                     symbol={symbol}
@@ -117,6 +116,7 @@ export const WithdrawNewDialog = () => {
                     onBack={goBackToAmount}
                     isBlocked={isBlocked}
                     blockingMessage={blockingMessage}
+                    finalizationPeriod={finalizationPeriod || ''}
                   />
                 </LastPageWrapper>
               )}

@@ -21,10 +21,6 @@ import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfo
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
-import {
-  type UndelegateNewDialogMachineState,
-  undelegateNewDialogMachineSelectors,
-} from '~staking/systems/Staking/machines/undelegateNewDialogMachine';
 import type { Validator } from '../../types/validators';
 import { getValidatorImage } from '../../utils/validatorImages';
 
@@ -43,7 +39,7 @@ interface Props {
   validator?: Validator;
   isBlocked?: boolean;
   blockingMessage?: string;
-  state: UndelegateNewDialogMachineState;
+  finalizationPeriod: string;
 }
 
 function _ReviewUndelegate({
@@ -61,7 +57,7 @@ function _ReviewUndelegate({
   validator,
   isBlocked = false,
   blockingMessage,
-  state,
+  finalizationPeriod,
 }: Props) {
   const {
     formattedAmount,
@@ -86,9 +82,6 @@ function _ReviewUndelegate({
     }
     return convertToUsd(fee, DECIMAL_WEI, ratesData.eth);
   }, [fee, ratesData.eth, isGettingReviewDetails]);
-
-  const finalizationPeriod =
-    undelegateNewDialogMachineSelectors.getFinalizationPeriod(state.context);
 
   return (
     <div className="flex flex-col gap-8">

@@ -37,7 +37,7 @@ export const UndelegateNewDialog = ({
     goBackToAmount,
     isBlocked,
     blockingMessage,
-    state,
+    finalizationPeriod,
   } = useUndelegateNewDialog({ validator });
   const isPaused = useIsStakingContractPaused({
     conditions: {
@@ -111,7 +111,6 @@ export const UndelegateNewDialog = ({
               ) : (
                 <LastPageWrapper>
                   <ReviewUndelegate
-                    state={state}
                     validator={validatorData}
                     amount={amount}
                     decimals={decimals}
@@ -126,6 +125,7 @@ export const UndelegateNewDialog = ({
                     onBack={goBackToAmount}
                     isBlocked={isBlocked}
                     blockingMessage={blockingMessage}
+                    finalizationPeriod={finalizationPeriod || ''}
                   />
                 </LastPageWrapper>
               )}
