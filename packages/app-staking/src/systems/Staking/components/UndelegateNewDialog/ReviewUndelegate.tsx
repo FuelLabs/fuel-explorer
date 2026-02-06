@@ -145,7 +145,6 @@ function _ReviewUndelegate({
         <RegularInfoSection
           header="Time to complete"
           text={DEFAULT_SECURITY_PERIOD_ETA}
-          textSupport="(Security period)"
         />
       </div>
       <div>

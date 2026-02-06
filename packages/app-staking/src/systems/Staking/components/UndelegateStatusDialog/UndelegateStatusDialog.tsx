@@ -20,8 +20,8 @@ import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import { formatETA } from '~staking/systems/Core/utils/eta';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
-import { DEFAULT_SECURITY_PERIOD_ETA } from '~staking/systems/Staking/constants/eta';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
+import { useFinalizationPeriod } from '~staking/systems/Staking/hooks/useFinalizationPeriod';
 import { useUndelegateStatusDialog } from '~staking/systems/Staking/hooks/useUndelegateStatusDialog';
 import { getSecondsBetweenDates } from '~staking/systems/Staking/utils/dateDiff';
 import { useUndelegateStatusFlags } from '../../hooks/useUndelegateStatusFlags';
@@ -91,6 +91,8 @@ export const UndelegateStatusDialog = ({
     if (isFinalized) return 'Completed';
     return 'In Progress';
   };
+
+  const finalizationPeriod = useFinalizationPeriod();
 
   return (
     <AnimatedDialog.Content
@@ -162,7 +164,7 @@ export const UndelegateStatusDialog = ({
               Total time to complete
             </Text>
             <Text className="font-medium text-gray-10 text-sm">
-              {totalDuration || DEFAULT_SECURITY_PERIOD_ETA}
+              {totalDuration || finalizationPeriod}
             </Text>
           </HStack>
           <VStack gap="0" className="overflow-y-auto max-h-[200px]">

@@ -21,7 +21,7 @@ import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfo
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
-import { DEFAULT_SECURITY_PERIOD_ETA } from '~staking/systems/Staking/constants/eta';
+import { useFinalizationPeriod } from '~staking/systems/Staking/hooks/useFinalizationPeriod';
 
 interface Props {
   amount: BN | null;
@@ -66,6 +66,8 @@ function _ReviewWithdraw({
     symbol,
     rates,
   });
+
+  const finalizationPeriod = useFinalizationPeriod();
 
   const { formatted: formattedFee } = useMemo(() => {
     return formatAmount(fee, DECIMAL_WEI);
@@ -135,8 +137,7 @@ function _ReviewWithdraw({
         <Separator size="4" />
         <RegularInfoSection
           header="Time to complete"
-          text={DEFAULT_SECURITY_PERIOD_ETA}
-          textSupport="(Security period)"
+          text={finalizationPeriod}
         />
       </div>
       <div>
