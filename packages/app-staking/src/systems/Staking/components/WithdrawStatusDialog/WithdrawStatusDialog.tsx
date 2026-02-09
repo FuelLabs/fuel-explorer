@@ -23,6 +23,7 @@ import { useMemo } from 'react';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import { PausedContractAlertStaking } from '~staking/systems/Staking/components/PausedContractAlertStaking/PausedContractAlertStaking';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
+import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import { useWithdrawStatusDialog } from '~staking/systems/Staking/hooks/useWithdrawStatusDialog';
 import { useWithdrawStatusFlags } from '~staking/systems/Staking/hooks/useWithdrawStatusFlags';
 import { getWithdrawStepTiming } from '../../utils/withdrawTiming';
