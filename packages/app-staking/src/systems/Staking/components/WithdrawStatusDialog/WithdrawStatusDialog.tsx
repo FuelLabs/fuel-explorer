@@ -19,6 +19,7 @@ import { FuelToken, L1_DISABLE_WITHDRAW, TOKENS } from 'app-commons';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
+import { useMemo } from 'react';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import { PausedContractAlertStaking } from '~staking/systems/Staking/components/PausedContractAlertStaking/PausedContractAlertStaking';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
