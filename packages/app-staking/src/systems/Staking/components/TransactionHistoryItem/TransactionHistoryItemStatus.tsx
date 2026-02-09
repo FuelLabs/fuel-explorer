@@ -16,17 +16,39 @@ interface TransactionHistoryItemStatusProps {
 export const TransactionHistoryItemStatus = ({
   event,
 }: TransactionHistoryItemStatusProps) => {
-  const startDate = event.statusInfo?.TransactionSent?.ethTx.timestamp;
-  const endDate: string | undefined = event.timestampToFinish;
   const isCompleted = event.status === GQLWithdrawStatusType.Finalized;
   const isWaitingForAction =
     event.status === GQLWithdrawStatusType.ReadyToProcessWithdraw;
   const isSkipped = event.status === GQLWithdrawStatusType.Skipped;
 
-  const { eta, progress } = useETA({
-    startDate,
-    endDate,
-  });
+  // Determine timing parameters for the current step
+  const timing = useMemo(() => {
+    const status = event.status;
+    const info = event.statusInfo;
+    const sentDate = info?.TransactionSent?.ethTx.timestamp;
+
+    if (status === GQLWithdrawStatusType.WaitingSync) {
+      return {
+        startDate: sentDate,
+        fallbackDuration: 120, // ~2 mins for sync
+      };
+    }
+
+    if (status === GQLWithdrawStatusType.WaitingCommittingToL1) {
+      return {
+        startDate:
+          info?.WaitingCommittingToL1?.dateExpectedToComplete || sentDate,
+        fallbackDuration: 600, // ~10 mins for committing
+      };
+    }
+
+    return {
+      startDate: sentDate,
+      endDate: event.timestampToFinish,
+    };
+  }, [event.status, event.statusInfo, event.timestampToFinish]);
+
+  const { eta, progress } = useETA(timing);
 
   const label = useMemo<string>(() => {
     if (isCompleted) return 'Completed';

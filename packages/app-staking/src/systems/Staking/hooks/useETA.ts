@@ -1,19 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { calculatePercentageProgress } from '~staking/systems/Core/utils/eta';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
 import { getDiffSecondsToNow, getSecondsBetweenDates } from '../utils/dateDiff';
 
 interface UseETAParams {
-  startDate: string | undefined;
-  endDate: string | undefined;
+  startDate: string | number | Date | undefined;
+  endDate?: string | number | Date | undefined;
+  fallbackDuration?: number; // in seconds
 }
 
 const INTERVAL_ETA_REFRESH = 10_000; // 10s
 
-export function useETA({ startDate, endDate }: UseETAParams) {
-  const dateStartRef = useRef(new Date(startDate || ''));
-  const dateFinishRef = useRef(new Date(endDate || ''));
-
+export function useETA({ startDate, endDate, fallbackDuration }: UseETAParams) {
   const [eta, setEta] = useState<string | undefined>(undefined);
   const [progress, setProgress] = useState<number | undefined>(undefined);
 
@@ -22,13 +20,23 @@ export function useETA({ startDate, endDate }: UseETAParams) {
   }, [eta, progress]);
 
   useEffect(() => {
-    const durationInSeconds = getSecondsBetweenDates(
-      dateStartRef.current,
-      dateFinishRef.current,
-    );
+    if (!startDate) return;
+
+    const dateStart = new Date(startDate);
+    let dateFinish: Date | undefined;
+
+    if (endDate) {
+      dateFinish = new Date(endDate);
+    } else if (fallbackDuration) {
+      dateFinish = new Date(dateStart.getTime() + fallbackDuration * 1000);
+    }
+
+    if (!dateFinish) return;
+
+    const durationInSeconds = getSecondsBetweenDates(dateStart, dateFinish);
 
     const updateEta = (): string | undefined => {
-      const secondsLeftToFinalize = getDiffSecondsToNow(dateFinishRef.current);
+      const secondsLeftToFinalize = getDiffSecondsToNow(dateFinish!);
       const newEta = formatSecondsToETA(secondsLeftToFinalize);
       setEta(newEta);
       return newEta;
@@ -37,7 +45,7 @@ export function useETA({ startDate, endDate }: UseETAParams) {
     const updateProgress = () => {
       const current = calculatePercentageProgress({
         start: 0,
-        current: getSecondsBetweenDates(dateStartRef.current, new Date()),
+        current: getSecondsBetweenDates(dateStart, new Date()),
         target: durationInSeconds,
       });
 
@@ -57,7 +65,7 @@ export function useETA({ startDate, endDate }: UseETAParams) {
     }, INTERVAL_ETA_REFRESH);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [startDate, endDate, fallbackDuration]);
 
   return { eta, progress, hasEtaProgressBar };
 }

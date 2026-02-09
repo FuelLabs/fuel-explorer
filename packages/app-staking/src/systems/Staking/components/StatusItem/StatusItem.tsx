@@ -9,10 +9,11 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconCircleMinus, IconX } from '@tabler/icons-react';
 
-import { memo } from 'react';
+import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
+import { memo, useMemo } from 'react';
 import { tv } from 'tailwind-variants';
-import { formatETA } from '~staking/systems/Core/utils/eta';
 import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
+import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import type { StakingStatusDialogStepProps } from './types';
 
 const completedIcon = <IconCheck size={18} className="text-gray-9" />;
@@ -25,14 +26,39 @@ export const StatusItem = memo(function StatusItem({
   isCompleted,
   isCurrent,
   statusInfo,
-  eta,
+  eta: targetEta,
   isContractPaused,
   isLoading,
   txHash,
   isActionNeeded,
   isProcessing,
 }: StakingStatusDialogStepProps) {
-  const formattedEta = formatETA(eta);
+  const timing = useMemo(() => {
+    if (!isCurrent) return { startDate: undefined };
+
+    const sentDate = statusInfo?.TransactionSent?.ethTx.timestamp;
+    if (step.status === GQLWithdrawStatusType.WaitingSync) {
+      return {
+        startDate: sentDate,
+        fallbackDuration: 120, // ~2 mins for sync
+      };
+    }
+
+    if (step.status === GQLWithdrawStatusType.WaitingCommittingToL1) {
+      return {
+        startDate:
+          statusInfo?.WaitingCommittingToL1?.dateExpectedToComplete || sentDate,
+        fallbackDuration: 600, // ~10 mins for committing
+      };
+    }
+
+    return {
+      startDate: sentDate,
+      endDate: targetEta,
+    };
+  }, [isCurrent, step.status, statusInfo, targetEta]);
+
+  const { eta } = useETA(timing);
   const styles = responsiveDialogStyles({ active: isCurrent });
 
   const isError = !!statusInfo?.Error?.error;
@@ -78,9 +104,9 @@ export const StatusItem = memo(function StatusItem({
         loadingEl={null}
         regularEl={
           <HStack gap="2" align="center" justify="end">
-            {isCurrent && formattedEta && (
+            {isCurrent && eta && (
               <Text size="1" className={styles.labelAction()}>
-                {formattedEta}
+                {eta}
               </Text>
             )}
             {txHash && (

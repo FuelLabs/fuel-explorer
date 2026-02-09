@@ -20,7 +20,6 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
-import { formatETA } from '~staking/systems/Core/utils/eta';
 import { PausedContractAlertStaking } from '~staking/systems/Staking/components/PausedContractAlertStaking/PausedContractAlertStaking';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useWithdrawStatusDialog } from '~staking/systems/Staking/hooks/useWithdrawStatusDialog';
@@ -66,8 +65,38 @@ export const WithdrawStatusDialog = ({
 
   const { statusFlags } = useWithdrawStatusFlags(stakingEvent);
   const currentTime = new Date();
-  const eta = stakingEvent?.timestampToFinish;
-  const formattedEta = formatETA(eta);
+
+  const timing = useMemo(() => {
+    const status = stakingEvent?.status;
+    const info = stakingEvent?.statusInfo;
+    const sentDate = info?.TransactionSent?.ethTx.timestamp;
+
+    if (status === GQLWithdrawStatusType.WaitingSync) {
+      return {
+        startDate: sentDate,
+        fallbackDuration: 120, // ~2 mins for sync
+      };
+    }
+
+    if (status === GQLWithdrawStatusType.WaitingCommittingToL1) {
+      return {
+        startDate:
+          info?.WaitingCommittingToL1?.dateExpectedToComplete || sentDate,
+        fallbackDuration: 600, // ~10 mins for committing
+      };
+    }
+
+    return {
+      startDate: sentDate,
+      endDate: stakingEvent?.timestampToFinish,
+    };
+  }, [
+    stakingEvent?.status,
+    stakingEvent?.statusInfo,
+    stakingEvent?.timestampToFinish,
+  ]);
+
+  const { eta: formattedEta } = useETA(timing);
 
   const responsiveDialogStyle = responsiveDialogStyles();
 
