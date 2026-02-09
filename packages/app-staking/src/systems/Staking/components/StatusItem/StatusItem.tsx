@@ -9,11 +9,11 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconCircleMinus, IconX } from '@tabler/icons-react';
 
-import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
 import { memo, useMemo } from 'react';
 import { tv } from 'tailwind-variants';
 import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
 import { useETA } from '~staking/systems/Staking/hooks/useETA';
+import { getWithdrawStepTiming } from '../../utils/withdrawTiming';
 import type { StakingStatusDialogStepProps } from './types';
 
 const completedIcon = <IconCheck size={18} className="text-gray-9" />;
@@ -33,30 +33,13 @@ export const StatusItem = memo(function StatusItem({
   isActionNeeded,
   isProcessing,
 }: StakingStatusDialogStepProps) {
-  const timing = useMemo(() => {
-    if (!isCurrent) return { startDate: undefined };
-
-    const sentDate = statusInfo?.TransactionSent?.ethTx.timestamp;
-    if (step.status === GQLWithdrawStatusType.WaitingSync) {
-      return {
-        startDate: sentDate,
-        fallbackDuration: 120, // ~2 mins for sync
-      };
-    }
-
-    if (step.status === GQLWithdrawStatusType.WaitingCommittingToL1) {
-      return {
-        startDate:
-          statusInfo?.WaitingCommittingToL1?.dateExpectedToComplete || sentDate,
-        fallbackDuration: 600, // ~10 mins for committing
-      };
-    }
-
-    return {
-      startDate: sentDate,
-      endDate: targetEta,
-    };
-  }, [isCurrent, step.status, statusInfo, targetEta]);
+  const timing = useMemo(
+    () =>
+      isCurrent
+        ? getWithdrawStepTiming(step.status, statusInfo, targetEta)
+        : { startDate: undefined },
+    [isCurrent, step.status, statusInfo, targetEta],
+  );
 
   const { eta } = useETA(timing);
   const styles = responsiveDialogStyles({ active: isCurrent });

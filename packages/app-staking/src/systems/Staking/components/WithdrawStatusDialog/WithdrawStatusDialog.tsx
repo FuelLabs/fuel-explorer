@@ -24,6 +24,7 @@ import { PausedContractAlertStaking } from '~staking/systems/Staking/components/
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useWithdrawStatusDialog } from '~staking/systems/Staking/hooks/useWithdrawStatusDialog';
 import { useWithdrawStatusFlags } from '~staking/systems/Staking/hooks/useWithdrawStatusFlags';
+import { getWithdrawStepTiming } from '../../utils/withdrawTiming';
 import { StatusItem } from '../StatusItem/StatusItem';
 import { WITHDRAW_STEPS } from './constants';
 
@@ -66,35 +67,19 @@ export const WithdrawStatusDialog = ({
   const { statusFlags } = useWithdrawStatusFlags(stakingEvent);
   const currentTime = new Date();
 
-  const timing = useMemo(() => {
-    const status = stakingEvent?.status;
-    const info = stakingEvent?.statusInfo;
-    const sentDate = info?.TransactionSent?.ethTx.timestamp;
-
-    if (status === GQLWithdrawStatusType.WaitingSync) {
-      return {
-        startDate: sentDate,
-        fallbackDuration: 120, // ~2 mins for sync
-      };
-    }
-
-    if (status === GQLWithdrawStatusType.WaitingCommittingToL1) {
-      return {
-        startDate:
-          info?.WaitingCommittingToL1?.dateExpectedToComplete || sentDate,
-        fallbackDuration: 600, // ~10 mins for committing
-      };
-    }
-
-    return {
-      startDate: sentDate,
-      endDate: stakingEvent?.timestampToFinish,
-    };
-  }, [
-    stakingEvent?.status,
-    stakingEvent?.statusInfo,
-    stakingEvent?.timestampToFinish,
-  ]);
+  const timing = useMemo(
+    () =>
+      getWithdrawStepTiming(
+        stakingEvent?.status,
+        stakingEvent?.statusInfo,
+        stakingEvent?.timestampToFinish,
+      ),
+    [
+      stakingEvent?.status,
+      stakingEvent?.statusInfo,
+      stakingEvent?.timestampToFinish,
+    ],
+  );
 
   const { eta: formattedEta } = useETA(timing);
 

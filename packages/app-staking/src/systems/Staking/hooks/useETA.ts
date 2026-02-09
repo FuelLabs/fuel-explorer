@@ -20,7 +20,11 @@ export function useETA({ startDate, endDate, fallbackDuration }: UseETAParams) {
   }, [eta, progress]);
 
   useEffect(() => {
-    if (!startDate) return;
+    if (!startDate) {
+      setEta(undefined);
+      setProgress(undefined);
+      return;
+    }
 
     const dateStart = new Date(startDate);
     let dateFinish: Date | undefined;
@@ -31,7 +35,11 @@ export function useETA({ startDate, endDate, fallbackDuration }: UseETAParams) {
       dateFinish = new Date(dateStart.getTime() + fallbackDuration * 1000);
     }
 
-    if (!dateFinish) return;
+    if (!dateFinish) {
+      setEta(undefined);
+      setProgress(undefined);
+      return;
+    }
 
     const durationInSeconds = getSecondsBetweenDates(dateStart, dateFinish);
 
