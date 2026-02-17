@@ -47,7 +47,12 @@ export default class NewAddBlockRange {
         ],
       });
       for (const [index, transactionData] of blockData.transactions.entries()) {
-        const transaction = new Transaction(transactionData, index, block.id);
+        const transaction = new Transaction(
+          transactionData,
+          index,
+          block.id,
+          block.timestamp,
+        );
         queries.push({
           statement:
             'insert into indexer.transactions (_id, tx_hash, timestamp, data, block_id) values ($1, $2, $3, $4, $5) on conflict do nothing',
@@ -176,7 +181,7 @@ export default class NewAddBlockRange {
       for (const transaction of block.transactions) {
         // Hydrate block on tx so transaction on database keeps blocks in the database
         if (!transaction.status) {
-          logger.debug(
+          logger.warn(
             'Consumer',
             `Transaction without status: ${transaction.id} in block #${block.header.height}`,
           );
