@@ -64,10 +64,12 @@ export default class NewAddBlockRange {
             transaction.blockId,
           ],
         });
-        try {
-          await indexReceipts.execute(transaction);
-        } catch (e: any) {
-          logger.error('Consumer', 'Error indexing receipts', e);
+        if (transaction.data?.status) {
+          try {
+            await indexReceipts.execute(transaction);
+          } catch (e: any) {
+            logger.error('Consumer', 'Error indexing receipts', e);
+          }
         }
         const accounts = this.getAccounts(transactionData);
         for (const accountHash of accounts) {
