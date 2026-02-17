@@ -142,6 +142,7 @@ class RabbitMQConnection {
         try {
           await addBlockRange.execute(data);
         } catch (error) {
+          console.error('Add block range failed - actual cause:', error);
           throw new Error('Add block range failed', { cause: error });
         }
       },

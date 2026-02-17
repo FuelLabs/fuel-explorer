@@ -173,11 +173,18 @@ export default class NewAddBlockRange {
     const { data } = await client.sdk.blocks(params);
     // checking transactions integrity
     for (const block of data.blocks.nodes) {
-      for (const transaction of block.transactions) {
+      // Filter out transactions without status (node may return pending/incomplete txs)
+      block.transactions = block.transactions.filter((transaction) => {
         if (!transaction.status) {
-          logger.debug('Consumer', `Error fetching blocks: #${from} - #${to}`);
-          throw new Error(`Error fetching blocks: #${from} - #${to}`);
+          logger.debug(
+            'Consumer',
+            `Skipping transaction without status: ${transaction.id} in block #${block.header.height}`,
+          );
+          return false;
         }
+        return true;
+      });
+      for (const transaction of block.transactions) {
         // Hydrate block on tx so transaction on database keeps blocks in the database
         if (
           ['FailureStatus', 'SuccessStatus'].includes(
