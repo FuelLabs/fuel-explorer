@@ -14,10 +14,30 @@ import { ETH_MNEMONIC } from '../mocks';
 
 const PROVIDER_URL = 'http://localhost:4000/v1/graphql';
 
+const APPROVE_SWITCH_RETRIES = 3;
+const APPROVE_SWITCH_DELAY_MS = 2000;
+
 export const acceptMetaMaskAccessWithNetworkSwitch = async () => {
   await metamask.connectToDapp();
   await metamask.approveNewNetwork();
-  await metamask.approveSwitchNetwork();
+  // Allow the "switch network" notification to open; the previous popup may have closed.
+  await new Promise((r) => setTimeout(r, APPROVE_SWITCH_DELAY_MS));
+  for (let attempt = 1; attempt <= APPROVE_SWITCH_RETRIES; attempt++) {
+    try {
+      await metamask.approveSwitchNetwork();
+      return;
+    } catch (e: any) {
+      const isClosed =
+        e?.message?.includes(
+          'Target page, context or browser has been closed',
+        ) || e?.message?.includes('has been closed');
+      if (isClosed && attempt < APPROVE_SWITCH_RETRIES) {
+        await new Promise((r) => setTimeout(r, 1500));
+        continue;
+      }
+      throw e;
+    }
+  }
 };
 
 export const connectToMetamask = async (page: Page) => {
