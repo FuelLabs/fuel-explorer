@@ -1,27 +1,19 @@
 import { Text, VStack } from '@fuels/ui';
+import { TxFullDateTimestamp } from '~/systems/Transaction/component/TxFullDateTimestamp/TxFullDateTimestamp';
+import { TxTimeAgoTimestamp } from '~/systems/Transaction/component/TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 
 type BlockTimeItemProps = {
-  time: Date;
-  timeAgo: string;
+  unixTimestamp: number;
 };
 
-export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
-  const timeDate = new Date(time);
-
-  const formattedTime = timeDate.toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  });
-
+export default function BlockTimeItem({ unixTimestamp }: BlockTimeItemProps) {
   return (
     <VStack gap="0px">
-      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">{timeAgo}</Text>
+      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">
+        <TxTimeAgoTimestamp timeStamp={unixTimestamp} loading={null} />
+      </Text>
       <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f] whitespace-nowrap">
-        {formattedTime}
+        <TxFullDateTimestamp timeStamp={unixTimestamp} />
       </Text>
     </VStack>
   );

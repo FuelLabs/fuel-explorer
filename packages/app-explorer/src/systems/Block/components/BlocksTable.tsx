@@ -161,12 +161,11 @@ const columns = [
       </div>
     ),
     cell: (row: any) => {
-      const unixTimestamp = row.node.time.rawUnix;
-      const date = new Date(unixTimestamp * 1000);
+      const unixTimestamp = Number(row.node.time.rawUnix);
 
       return (
         <div className="w-[6.5rem]">
-          <BlockTimeItem timeAgo={row.node.time.fromNow} time={date} />
+          <BlockTimeItem unixTimestamp={unixTimestamp} />
         </div>
       );
     },

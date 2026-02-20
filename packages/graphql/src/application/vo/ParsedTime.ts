@@ -28,8 +28,8 @@ export class ParsedTime extends ValueObject<Props> {
     const date = DateHelper.tai64toDate(timestamp);
     const value = {
       __typename: 'ParsedTime' as Typename,
-      fromNow: date.fromNow(),
-      full: date.format('DD MMM YYYY - HH:mm:ss A'),
+      fromNow: null,
+      full: null,
       rawTai64: timestamp.toString(),
       rawUnix: date.unix().toString(),
     };

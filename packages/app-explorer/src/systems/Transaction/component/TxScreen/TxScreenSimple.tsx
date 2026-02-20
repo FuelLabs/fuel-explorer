@@ -24,6 +24,8 @@ import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { TransactionNode } from '../../types';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
+import { TxFullDateTimestamp } from '../TxFullDateTimestamp/TxFullDateTimestamp';
+import { TxTimeAgoTimestamp } from '../TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 
 type TxScreenProps =
   | {
@@ -95,13 +97,24 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-16 h-5" />}
-            regularEl={<Text>{transaction?.time.fromNow}</Text>}
+            regularEl={
+              <Text>
+                <TxTimeAgoTimestamp
+                  timeStamp={Number(transaction?.time?.rawUnix)}
+                  loading={null}
+                />
+              </Text>
+            }
           />
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-32 h-5" />}
             regularEl={
-              <Text className="text-muted">{transaction?.time.full}</Text>
+              <Text className="text-muted">
+                <TxFullDateTimestamp
+                  timeStamp={Number(transaction?.time?.rawUnix)}
+                />
+              </Text>
             }
           />
         </HStack>
