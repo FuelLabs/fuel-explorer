@@ -8,7 +8,7 @@ import { TxFullDateTimestamp } from '~/systems/Transaction/component/TxFullDateT
 
 type BlockTimeItemProps = {
   unixTimestamp: number;
-  /** When set (e.g. from BlocksTable), relative time is derived from this so one shared timer drives all rows. */
+  /** When set (e.g. from BlocksTable), relative time uses this so one shared timer drives all rows. */
   nowUnix?: number;
 };
 
