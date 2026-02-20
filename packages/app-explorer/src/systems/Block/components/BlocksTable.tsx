@@ -161,11 +161,17 @@ const columns = [
       </div>
     ),
     cell: (row: any) => {
-      const unixTimestamp = Number(row.node.time.rawUnix);
+      const raw = row.node.time?.rawUnix;
+      const unixTimestamp = raw != null ? Number(raw) : Number.NaN;
+      const isValid = Number.isFinite(unixTimestamp);
 
       return (
         <div className="w-[6.5rem]">
-          <BlockTimeItem unixTimestamp={unixTimestamp} />
+          {isValid ? (
+            <BlockTimeItem unixTimestamp={unixTimestamp} />
+          ) : (
+            <span className="text-[0.7rem] text-[#9f9f9f]">—</span>
+          )}
         </div>
       );
     },
