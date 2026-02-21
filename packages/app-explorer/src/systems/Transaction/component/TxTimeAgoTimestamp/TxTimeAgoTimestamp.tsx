@@ -4,26 +4,22 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { type ReactNode, memo, useEffect, useState } from 'react';
 
+const dayjs = createDayjs();
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(relativeTime);
+
 function _TxTimeAgoTimestamp({
   timeStamp,
   loading,
 }: { timeStamp: number | null | undefined; loading: ReactNode }) {
   const [timeAgo, setTimeAgo] = useState<string>(() => {
-    if (typeof window === 'undefined' || !timeStamp) return '';
-    const dayjs = createDayjs();
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
-    dayjs.extend(relativeTime);
+    if (typeof window === 'undefined' || timeStamp == null) return '';
     return dayjs.unix(timeStamp).fromNow(true);
   });
 
   useEffect(() => {
-    if (!timeStamp || typeof window === 'undefined') return;
-
-    const dayjs = createDayjs();
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
-    dayjs.extend(relativeTime);
+    if (timeStamp == null || typeof window === 'undefined') return;
 
     const updateTimeAgo = () => {
       setTimeAgo(dayjs.unix(timeStamp).fromNow(true));
@@ -35,7 +31,7 @@ function _TxTimeAgoTimestamp({
     return () => clearInterval(interval);
   }, [timeStamp]);
 
-  if (!timeStamp || !timeAgo) return loading;
+  if (timeStamp == null || !timeAgo) return loading;
 
   return `${timeAgo} ago`;
 }

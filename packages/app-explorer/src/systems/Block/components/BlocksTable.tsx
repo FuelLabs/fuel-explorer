@@ -8,7 +8,7 @@ import BlockItem from './BlockItem';
 import BlockTimeItem from './BlockTimeItem';
 import BlockValidatorItem from './BlockValidatorItem';
 
-const TICK_MS = 1000;
+const TICK_MS = 15_000;
 
 function buildColumns(nowUnix: number) {
   return [

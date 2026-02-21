@@ -6,6 +6,11 @@ import utc from 'dayjs/plugin/utc';
 import { memo } from 'react';
 import { TxFullDateTimestamp } from '~/systems/Transaction/component/TxFullDateTimestamp/TxFullDateTimestamp';
 
+const dayjs = createDayjs();
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(relativeTime);
+
 type BlockTimeItemProps = {
   unixTimestamp: number;
   /** When set (e.g. from BlocksTable), relative time uses this so one shared timer drives all rows. */
@@ -13,10 +18,6 @@ type BlockTimeItemProps = {
 };
 
 function _BlockTimeItem({ unixTimestamp, nowUnix }: BlockTimeItemProps) {
-  const dayjs = createDayjs();
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
-  dayjs.extend(relativeTime);
   const timeAgo =
     nowUnix !== undefined
       ? dayjs.unix(unixTimestamp).from(dayjs.unix(nowUnix))

@@ -101,7 +101,8 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
               <Text>
                 <TxTimeAgoTimestamp
                   timeStamp={
-                    transaction?.time?.rawUnix != null
+                    transaction?.time?.rawUnix != null &&
+                    Number.isFinite(Number(transaction.time.rawUnix))
                       ? Number(transaction.time.rawUnix)
                       : null
                   }
@@ -117,7 +118,8 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
               <Text className="text-muted">
                 <TxFullDateTimestamp
                   timeStamp={
-                    transaction?.time?.rawUnix != null
+                    transaction?.time?.rawUnix != null &&
+                    Number.isFinite(Number(transaction.time.rawUnix))
                       ? Number(transaction.time.rawUnix)
                       : null
                   }
