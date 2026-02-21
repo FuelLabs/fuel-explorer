@@ -14,12 +14,14 @@ function _TxTimeAgoTimestamp({
   loading,
 }: { timeStamp: number | null | undefined; loading: ReactNode }) {
   const [timeAgo, setTimeAgo] = useState<string>(() => {
-    if (typeof window === 'undefined' || timeStamp == null) return '';
+    if (typeof window === 'undefined' || timeStamp == null || timeStamp <= 0)
+      return '';
     return dayjs.unix(timeStamp).fromNow(true);
   });
 
   useEffect(() => {
-    if (timeStamp == null || typeof window === 'undefined') return;
+    if (timeStamp == null || timeStamp <= 0 || typeof window === 'undefined')
+      return;
 
     const updateTimeAgo = () => {
       setTimeAgo(dayjs.unix(timeStamp).fromNow(true));
@@ -31,7 +33,7 @@ function _TxTimeAgoTimestamp({
     return () => clearInterval(interval);
   }, [timeStamp]);
 
-  if (timeStamp == null || !timeAgo) return loading;
+  if (timeStamp == null || timeStamp <= 0 || !timeAgo) return loading;
 
   return `${timeAgo} ago`;
 }

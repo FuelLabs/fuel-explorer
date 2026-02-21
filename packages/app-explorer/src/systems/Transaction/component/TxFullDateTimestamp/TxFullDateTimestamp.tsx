@@ -10,7 +10,7 @@ dayjs.extend(timezone);
 function _TxFullDateTimestamp({
   timeStamp, // Unix epoch
 }: { timeStamp: number | null | undefined }) {
-  if (timeStamp == null) return null;
+  if (timeStamp == null || timeStamp <= 0) return null;
 
   const formattedDate = dayjs
     .unix(timeStamp)
