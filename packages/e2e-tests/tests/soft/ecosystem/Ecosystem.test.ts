@@ -26,10 +26,10 @@ test.describe('Ecosystem', () => {
         const openedPageDomain = openedPage.match(regex)?.[1];
 
         // verify the domain matches (allowing subdomain redirects like o2.app -> trade.o2.app)
-        const escapedDomain = hrefDomain.replace(/\./g, '\\.');
-        expect(openedPageDomain).toMatch(
-          new RegExp(`(^|\\.)${escapedDomain}$`),
-        );
+        expect(
+          openedPageDomain === hrefDomain ||
+            openedPageDomain?.endsWith(`.${hrefDomain}`),
+        ).toBe(true);
 
         await newPage.close();
       }
