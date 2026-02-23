@@ -3,7 +3,7 @@
   "private": true,
   "devDependencies": {
     "@fuels/playwright-utils": "0.57.1",
-    "@synthetixio/synpress": "4.1.2",
+    "@synthetixio/synpress": "4.1.0",
     "app-commons": "workspace:*",
     "fuels": "0.103.0",
     "viem": "2.20.1"
