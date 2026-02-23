@@ -15,43 +15,32 @@ import { ETH_MNEMONIC } from '../mocks';
 const PROVIDER_URL = 'http://localhost:4000/v1/graphql';
 
 export const acceptMetaMaskAccessWithNetworkSwitch = async () => {
-  console.log('[E2E] connectToDapp starting...');
   await metamask.connectToDapp();
-  console.log('[E2E] connectToDapp done');
   try {
-    console.log('[E2E] approveNewNetwork starting...');
     await metamask.approveNewNetwork();
-    console.log('[E2E] approveNewNetwork done');
-  } catch (e) {
-    console.log('[E2E] approveNewNetwork skipped:', (e as Error).message);
+  } catch (_) {
+    // No new network prompt - continue
   }
   try {
-    console.log('[E2E] approveSwitchNetwork starting...');
     await metamask.approveSwitchNetwork();
-    console.log('[E2E] approveSwitchNetwork done');
-  } catch (e) {
-    console.log('[E2E] approveSwitchNetwork skipped:', (e as Error).message);
+  } catch (_) {
+    // No switch prompt - continue
   }
-  console.log('[E2E] acceptMetaMaskAccessWithNetworkSwitch complete');
 };
 
 export const connectToMetamask = async (page: Page) => {
-  console.log('[E2E] connectToMetamask starting...');
   await page.bringToFront();
   await page.waitForTimeout(1000);
   const connectKitButton = await getByAriaLabel(
     page,
     'Connect Ethereum Wallet',
   );
-  console.log('[E2E] clicking Connect Ethereum Wallet');
   await connectKitButton.click();
   await page.waitForTimeout(500);
   const metamaskConnect = await getButtonByText(page, 'Metamask');
-  console.log('[E2E] clicking Metamask button');
   await metamaskConnect.click();
   await page.waitForTimeout(2000);
   await acceptMetaMaskAccessWithNetworkSwitch();
-  console.log('[E2E] connectToMetamask complete');
 };
 
 export const setupFuelWallet = async ({

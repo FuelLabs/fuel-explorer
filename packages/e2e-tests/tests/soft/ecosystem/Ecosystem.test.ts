@@ -25,8 +25,11 @@ test.describe('Ecosystem', () => {
         const openedPage = newPage.url();
         const openedPageDomain = openedPage.match(regex)?.[1];
 
-        // verify if the domain opened in new page is the same of the link that user has clicked
-        expect(openedPageDomain).toBe(hrefDomain);
+        // verify the domain matches (allowing subdomain redirects like o2.app -> trade.o2.app)
+        const escapedDomain = hrefDomain.replace(/\./g, '\\.');
+        expect(openedPageDomain).toMatch(
+          new RegExp(`(^|\\.)${escapedDomain}$`),
+        );
 
         await newPage.close();
       }
