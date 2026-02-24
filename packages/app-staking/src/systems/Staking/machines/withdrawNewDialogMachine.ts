@@ -24,6 +24,7 @@ import {
 import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { WithdrawNewService } from '~staking/systems/Staking/services/withdrawNewService';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
+import { FinalizationPeriodService } from '../services/finalizationPeriodService';
 
 export interface WithdrawNewDialogContext {
   amount: BN | null;
@@ -44,6 +45,7 @@ export interface WithdrawNewDialogContext {
   // Blocking state
   isBlocked?: boolean;
   blockingMessage?: string;
+  finalizationPeriod?: string;
 }
 
 type WithdrawNewMachineServices = {
@@ -58,6 +60,9 @@ type WithdrawNewMachineServices = {
   };
   submitWithdraw: {
     data: HexAddress;
+  };
+  getFinalizationPeriod: {
+    data: string;
   };
 };
 
@@ -189,6 +194,28 @@ export const withdrawNewDialogMachine = createMachine(
                       }),
                     },
                   ],
+                  onError: {
+                    target: 'success',
+                  },
+                },
+              },
+              success: {
+                type: 'final',
+              },
+            },
+          },
+          finalizationPeriod: {
+            initial: 'fetching',
+            states: {
+              fetching: {
+                invoke: {
+                  src: 'getFinalizationPeriod',
+                  onDone: {
+                    target: 'success',
+                    actions: assign({
+                      finalizationPeriod: (_, event) => event.data,
+                    }),
+                  },
                   onError: {
                     target: 'success',
                   },
@@ -398,6 +425,11 @@ export const withdrawNewDialogMachine = createMachine(
           PendingTransactionTypeL1.WithdrawStart,
         );
       },
+      getFinalizationPeriod: async (ctx) => {
+        return FinalizationPeriodService.fetchFinalizationPeriod(
+          ctx.publicClient as any,
+        );
+      },
       submitWithdraw: async (context) => {
         const result = await WithdrawNewService.submitWithdraw(context);
         return result;
@@ -441,7 +473,7 @@ export const withdrawNewDialogMachineSelectors = {
   isGettingReviewDetails: (state: WithdrawNewDialogMachineState) => {
     return (
       (state as any).matches('gettingReviewDetails') ||
-      state.matches('checkingBlocking')
+      (state as any).matches('checkingBlocking')
     );
   },
   // New selector to check if in any review-related state
@@ -450,7 +482,7 @@ export const withdrawNewDialogMachineSelectors = {
   // Composite states
   isLoading: (state: WithdrawNewDialogMachineState) => {
     return (
-      state.matches('submitting') ||
+      (state as any).matches('submitting') ||
       (state as any).matches('gettingReviewDetails')
     );
   },
@@ -458,4 +490,6 @@ export const withdrawNewDialogMachineSelectors = {
   isBlocked: (context: WithdrawNewDialogContext) => context.isBlocked,
   getBlockingMessage: (context: WithdrawNewDialogContext) =>
     context.blockingMessage,
+  getFinalizationPeriod: (context: WithdrawNewDialogContext) =>
+    context.finalizationPeriod,
 };
