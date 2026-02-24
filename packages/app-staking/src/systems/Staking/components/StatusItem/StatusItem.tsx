@@ -9,10 +9,11 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconCircleMinus, IconX } from '@tabler/icons-react';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { tv } from 'tailwind-variants';
-import { formatETA } from '~staking/systems/Core/utils/eta';
 import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
+import { useETA } from '~staking/systems/Staking/hooks/useETA';
+import { getWithdrawStepTiming } from '../../utils/withdrawTiming';
 import type { StakingStatusDialogStepProps } from './types';
 
 const completedIcon = <IconCheck size={18} className="text-gray-9" />;
@@ -25,14 +26,22 @@ export const StatusItem = memo(function StatusItem({
   isCompleted,
   isCurrent,
   statusInfo,
-  eta,
+  eta: targetEta,
   isContractPaused,
   isLoading,
   txHash,
   isActionNeeded,
   isProcessing,
 }: StakingStatusDialogStepProps) {
-  const formattedEta = formatETA(eta);
+  const timing = useMemo(
+    () =>
+      isCurrent
+        ? getWithdrawStepTiming(step.status, statusInfo, targetEta)
+        : { startDate: undefined },
+    [isCurrent, step.status, statusInfo, targetEta],
+  );
+
+  const { eta } = useETA(timing);
   const styles = responsiveDialogStyles({ active: isCurrent });
 
   const isError = !!statusInfo?.Error?.error;
@@ -78,9 +87,9 @@ export const StatusItem = memo(function StatusItem({
         loadingEl={null}
         regularEl={
           <HStack gap="2" align="center" justify="end">
-            {isCurrent && formattedEta && (
+            {isCurrent && eta && (
               <Text size="1" className={styles.labelAction()}>
-                {formattedEta}
+                {eta}
               </Text>
             )}
             {txHash && (
