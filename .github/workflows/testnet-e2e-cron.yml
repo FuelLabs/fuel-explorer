@@ -28,6 +28,7 @@ jobs:
     name: Testnet E2E (Soft Tests)
     runs-on: warp-ubuntu-latest-x64-4x
     timeout-minutes: 30
+    if: github.event_name == 'schedule' || github.event.inputs.test_suite == 'soft' || github.event.inputs.test_suite == 'all'
     env:
       # Testnet configuration
       VITE_FUEL_CHAIN_NAME: fuelTestnet
@@ -84,7 +85,7 @@ jobs:
         with:
           name: testnet-soft-report-${{ github.run_number }}
           path: |
-            packages/e2e-tests/playwright-report/
+            packages/e2e-tests/playwright-html/soft-testnet/
             packages/e2e-tests/test-results/
           retention-days: 7
 

@@ -6,7 +6,7 @@ import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { getMetaMaskNetwork, isTestnetEnvironment } from '../utils/env';
+import { getMetaMaskNetwork } from '../utils/env';
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
 
@@ -91,13 +91,8 @@ export const test = base.extend<{
       '--remote-debugging-port=9222',
     ];
 
-    // Add CI-specific browser args for stability
     if (process.env.CI) {
-      browserArgs.push(
-        '--disable-gpu',
-        '--no-sandbox',
-        '--disable-dev-shm-usage',
-      );
+      browserArgs.push('--disable-gpu');
     }
     // launch browser
     const context = await chromium.launchPersistentContext('', {
@@ -105,9 +100,7 @@ export const test = base.extend<{
       args: browserArgs,
     });
 
-    // Dynamic initial wait: longer in CI for stability
-    const initialWaitMs = process.env.CI ? 30000 : 5000;
-    await new Promise((resolve) => setTimeout(resolve, initialWaitMs));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     // Get extensions data
     const extensions = await getExtensionsData(context);
@@ -132,41 +125,11 @@ export const test = base.extend<{
       metamaskId,
     );
     setMetaMask(metamask);
-
-    // Import wallet with retry logic for CI stability
-    const maxRetries = 3;
-    let importSuccess = false;
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        await metamask.importWallet(ETH_MNEMONIC);
-        importSuccess = true;
-        break;
-      } catch (error) {
-        if (attempt === maxRetries) {
-          throw new Error(
-            `Failed to import MetaMask wallet after ${maxRetries} attempts: ${error}`,
-          );
-        }
-        console.log(`MetaMask import attempt ${attempt} failed, retrying...`);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-      }
-    }
-
-    if (!importSuccess) {
-      throw new Error('Failed to import MetaMask wallet');
-    }
-
-    if (!isTestnetEnvironment()) {
-      try {
-        await metamask.switchNetwork(getMetaMaskNetwork());
-      } catch (_) {
-        // ignore if network already set or not required
-      }
-    }
-
-    // Additional stabilization wait in CI after MetaMask setup
-    if (process.env.CI) {
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+    await metamask.importWallet(ETH_MNEMONIC);
+    try {
+      await metamask.switchNetwork(getMetaMaskNetwork());
+    } catch (_) {
+      // ignore if network already set or not required
     }
     // Set context to playwright
     await use(context);

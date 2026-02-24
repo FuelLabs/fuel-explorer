@@ -5,35 +5,15 @@ export const isTestnetEnvironment = () => {
   );
 };
 
-export const isLocalEnvironment = () => {
-  return !isTestnetEnvironment();
-};
-
 export const getProviderUrl = () => {
-  if (isTestnetEnvironment()) {
-    return (
-      process.env.FUEL_PROVIDER_URL || 'https://testnet.fuel.network/v1/graphql'
-    );
+  if (process.env.FUEL_PROVIDER_URL) {
+    return process.env.FUEL_PROVIDER_URL;
   }
-  return process.env.FUEL_PROVIDER_URL || 'http://localhost:4000/v1/graphql';
-};
-
-export const getEthereumChain = () => {
-  if (isTestnetEnvironment()) {
-    return 'sepolia';
-  }
-  return 'foundry';
-};
-
-export const getNetworkTimeouts = () => {
   return isTestnetEnvironment()
-    ? { transaction: 360000, polling: 60000 } // 6min tx, 1min poll
-    : { transaction: 120000, polling: 10000 }; // 2min tx, 10s poll
+    ? 'https://testnet.fuel.network/v1/graphql'
+    : 'http://localhost:4000/v1/graphql';
 };
 
 export const getMetaMaskNetwork = () => {
-  if (isTestnetEnvironment()) {
-    return 'sepolia';
-  }
-  return 'localhost';
+  return isTestnetEnvironment() ? 'sepolia' : 'localhost';
 };
