@@ -1,36 +1,28 @@
 import { Text, VStack } from '@fuels/ui';
-import { createDayjs } from 'app-commons';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
-import { memo } from 'react';
-import { TxFullDateTimestamp } from '~/systems/Transaction/component/TxFullDateTimestamp/TxFullDateTimestamp';
-
-const dayjs = createDayjs();
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(relativeTime);
 
 type BlockTimeItemProps = {
-  unixTimestamp: number;
-  /** When set (e.g. from BlocksTable), relative time uses this so one shared timer drives all rows. */
-  nowUnix?: number;
+  time: Date;
+  timeAgo: string;
 };
 
-function _BlockTimeItem({ unixTimestamp, nowUnix }: BlockTimeItemProps) {
-  const timeAgo =
-    nowUnix !== undefined
-      ? dayjs.unix(unixTimestamp).from(dayjs.unix(nowUnix))
-      : dayjs.unix(unixTimestamp).fromNow();
+export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
+  const timeDate = new Date(time);
+
+  const formattedTime = timeDate.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
 
   return (
     <VStack gap="0px">
       <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">{timeAgo}</Text>
       <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f] whitespace-nowrap">
-        <TxFullDateTimestamp timeStamp={unixTimestamp} />
+        {formattedTime}
       </Text>
     </VStack>
   );
 }
-
-export default memo(_BlockTimeItem);
