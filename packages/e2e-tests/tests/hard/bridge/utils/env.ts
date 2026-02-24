@@ -6,13 +6,14 @@ export const isTestnetEnvironment = () => {
 };
 
 export const isLocalEnvironment = () => {
-  const chainName = process.env.VITE_FUEL_CHAIN_NAME;
-  return chainName === 'fuelLocal' || !process.env.E2E_TARGET_ENV;
+  return !isTestnetEnvironment();
 };
 
 export const getProviderUrl = () => {
   if (isTestnetEnvironment()) {
-    return 'https://testnet.fuel.network/v1/graphql';
+    return (
+      process.env.FUEL_PROVIDER_URL || 'https://testnet.fuel.network/v1/graphql'
+    );
   }
   return process.env.FUEL_PROVIDER_URL || 'http://localhost:4000/v1/graphql';
 };
@@ -35,9 +36,4 @@ export const getMetaMaskNetwork = () => {
     return 'sepolia';
   }
   return 'localhost';
-};
-
-export const shouldSkipNetworkSwitch = () => {
-  // Skip network switching for testnet environments
-  return isTestnetEnvironment();
 };

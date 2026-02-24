@@ -51,14 +51,14 @@ jobs:
 
       - name: Create testnet .env file
         run: |
-          cat > packages/app-explorer/.env << EOF
+          cat > packages/app-explorer/.env << 'EOF'
           VITE_FUEL_CHAIN_NAME=fuelTestnet
           VITE_FUEL_INDEXER_API=https://explorer-indexer-testnet.fuel.network
           VITE_STAKING_ENV=TESTNET
           VITE_ECOSYSTEM_PROJECTS_URL=https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
           EOF
 
-          cat > packages/graphql/.env << EOF
+          cat > packages/graphql/.env << 'EOF'
           FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql
           FUEL_CHAIN=testnet
           EOF
@@ -121,14 +121,14 @@ jobs:
 
       - name: Create testnet .env files
         run: |
-          cat > packages/app-explorer/.env << EOF
+          cat > packages/app-explorer/.env << 'EOF'
           VITE_FUEL_CHAIN_NAME=fuelTestnet
           VITE_FUEL_INDEXER_API=https://explorer-indexer-testnet.fuel.network
           VITE_STAKING_ENV=TESTNET
           VITE_ECOSYSTEM_PROJECTS_URL=https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
           EOF
 
-          cat > packages/graphql/.env << EOF
+          cat > packages/graphql/.env << 'EOF'
           FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql
           FUEL_CHAIN=testnet
           EOF
@@ -161,70 +161,3 @@ jobs:
             packages/e2e-tests/test-results/
             packages/e2e-tests/blob-report/
           retention-days: 7
-
-  create-issue-on-failure:
-    name: Create Issue on Failure
-    runs-on: ubuntu-latest
-    needs: [testnet-e2e-soft]
-    if: always() && needs.testnet-e2e-soft.result == 'failure'
-    permissions:
-      issues: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Download test artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: testnet-*-report-*
-          path: test-reports
-          merge-multiple: true
-        continue-on-error: true
-
-      - name: Create failure issue
-        uses: dacbd/create-issue-action@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: '🚨 Testnet E2E Tests Failed - Run #${{ github.run_number }}'
-          body: |
-            ## Testnet E2E Test Failure Report
-
-            **Workflow Run:** [${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            **Triggered:** ${{ github.event_name == 'schedule' && 'Scheduled (cron)' || 'Manual' }}
-            **Time:** ${{ github.event.head_commit.timestamp || github.event.created_at }}
-            **Commit:** ${{ github.sha }}
-            **Branch:** ${{ github.ref_name }}
-
-            ### Failed Job(s)
-
-            - ❌ Testnet E2E Tests (Soft)
-
-            ### Possible Causes
-
-            1. **Testnet Infrastructure Issue** - Fuel testnet or Sepolia may be experiencing downtime
-            2. **fuel-core Upgrade** - Recent testnet upgrade may have introduced breaking changes
-            3. **Explorer Bug** - Real bug in the explorer code that wasn't caught by PR tests
-            4. **Test Flakiness** - Timeout or network issues causing false positive
-
-            ### Next Steps
-
-            1. **Check Testnet Status**: Verify Fuel testnet is operational at https://testnet.fuel.network
-            2. **Review Logs**: Check the [workflow run logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            3. **Download Artifacts**: Get Playwright HTML report with screenshots/videos from artifacts
-            4. **Investigate**: Determine if this is infrastructure or a real bug
-            5. **Manual Test**: Run workflow manually again to check if issue persists
-
-            ### Artifacts
-
-            Download from the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}):
-            - Playwright HTML reports
-            - Screenshots and videos of failures
-            - Test traces for debugging
-
-            ---
-            *🤖 Auto-created by testnet-e2e-cron workflow. Close this issue once resolved.*
-          labels: |
-            e2e-failure
-            testnet
-            automated
-            needs-investigation

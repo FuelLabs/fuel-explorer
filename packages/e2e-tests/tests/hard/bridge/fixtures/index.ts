@@ -6,6 +6,7 @@ import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { getMetaMaskNetwork, isTestnetEnvironment } from '../utils/env';
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
 
@@ -155,14 +156,9 @@ export const test = base.extend<{
       throw new Error('Failed to import MetaMask wallet');
     }
 
-    // Only switch network for localhost (skip for testnet/sepolia)
-    const isTestnet =
-      process.env.VITE_FUEL_CHAIN_NAME === 'fuelTestnet' ||
-      process.env.E2E_TARGET_ENV === 'testnet';
-
-    if (!isTestnet) {
+    if (!isTestnetEnvironment()) {
       try {
-        await metamask.switchNetwork('localhost');
+        await metamask.switchNetwork(getMetaMaskNetwork());
       } catch (_) {
         // ignore if network already set or not required
       }
