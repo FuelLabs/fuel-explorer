@@ -100,13 +100,8 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
             regularEl={
               <Text>
                 <TxTimeAgoTimestamp
-                  timeStamp={
-                    transaction?.time?.rawUnix != null &&
-                    Number.isFinite(Number(transaction.time.rawUnix))
-                      ? Number(transaction.time.rawUnix)
-                      : null
-                  }
-                  loading={null}
+                  timeStamp={Number(transaction?.time?.rawUnix)}
+                  loading={<LoadingBox className="w-16 h-5" />}
                 />
               </Text>
             }
@@ -117,12 +112,7 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
             regularEl={
               <Text className="text-muted">
                 <TxFullDateTimestamp
-                  timeStamp={
-                    transaction?.time?.rawUnix != null &&
-                    Number.isFinite(Number(transaction.time.rawUnix))
-                      ? Number(transaction.time.rawUnix)
-                      : null
-                  }
+                  timeStamp={Number(transaction?.time?.rawUnix)}
                 />
               </Text>
             }
