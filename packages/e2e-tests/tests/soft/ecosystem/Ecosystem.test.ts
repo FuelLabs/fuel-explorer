@@ -10,23 +10,23 @@ test.describe('Ecosystem', () => {
     const projects = await page.locator('article').all();
 
     for (const project of projects) {
-      // regex to get only the domain part of url, but excluding "www." when it shows up
-      const regex = /(?<=\/\/)(?:www\.)?([^\/]+)/;
       const pageLink = await project.getByRole('link').last();
       const href = (await pageLink.getAttribute('href')) || '';
-      const hrefDomain = href.match(regex)?.[1] || '';
+      const hrefDomain = new URL(href).hostname.replace(/^www\./, '');
 
-      // skip domain that are not of project website
-      if (['twitter.com', 'github.com'].indexOf(hrefDomain) === -1) {
+      // skip domains that are not of project website
+      if (!['twitter.com', 'github.com'].includes(hrefDomain)) {
         // open project in a new tab
         console.log(`opening project ${hrefDomain}`);
         project.click();
         const newPage = await context.waitForEvent('page');
-        const openedPage = newPage.url();
-        const openedPageDomain = openedPage.match(regex)?.[1];
+        const openedDomain = new URL(newPage.url()).hostname;
 
-        // verify if the domain opened in new page is the same of the link that user has clicked
-        expect(openedPageDomain).toBe(hrefDomain);
+        // verify the domain matches (allowing subdomain redirects like o2.app -> trade.o2.app)
+        expect(
+          openedDomain === hrefDomain ||
+            openedDomain.endsWith(`.${hrefDomain}`),
+        ).toBe(true);
 
         await newPage.close();
       }
