@@ -36,7 +36,7 @@ export const FinalizationPeriodService = {
         functionName: 'TIME_TO_FINALIZE',
       })) as bigint;
 
-      if (!timeToFinalize) return undefined;
+      if (timeToFinalize == null) return undefined;
 
       return formatSecondsToETA(Number(timeToFinalize), '~');
     } catch (error) {
