@@ -125,7 +125,7 @@ export const UndelegateNewDialog = ({
                     onBack={goBackToAmount}
                     isBlocked={isBlocked}
                     blockingMessage={blockingMessage}
-                    finalizationPeriod={finalizationPeriod || ''}
+                    finalizationPeriod={finalizationPeriod}
                   />
                 </LastPageWrapper>
               )}

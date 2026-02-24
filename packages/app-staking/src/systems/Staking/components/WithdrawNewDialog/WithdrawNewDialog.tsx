@@ -116,7 +116,7 @@ export const WithdrawNewDialog = () => {
                     onBack={goBackToAmount}
                     isBlocked={isBlocked}
                     blockingMessage={blockingMessage}
-                    finalizationPeriod={finalizationPeriod || ''}
+                    finalizationPeriod={finalizationPeriod}
                   />
                 </LastPageWrapper>
               )}

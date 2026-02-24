@@ -36,7 +36,7 @@ interface Props {
   onBack: () => void;
   isBlocked?: boolean;
   blockingMessage?: string;
-  finalizationPeriod: string;
+  finalizationPeriod?: string;
 }
 
 function _ReviewWithdraw({
@@ -133,11 +133,15 @@ function _ReviewWithdraw({
             isGettingReviewDetails ? undefined : `(${formattedFee.display} ETH)`
           }
         />
-        <Separator size="4" />
-        <RegularInfoSection
-          header="Time to complete"
-          text={finalizationPeriod}
-        />
+        {finalizationPeriod && (
+          <>
+            <Separator size="4" />
+            <RegularInfoSection
+              header="Time to complete"
+              text={finalizationPeriod}
+            />
+          </>
+        )}
       </div>
       <div>
         {isBlocked && (

@@ -1,7 +1,6 @@
 import { getBridgeSolidityContracts } from 'app-commons';
 import type { PublicClient } from 'viem';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
-import { DEFAULT_SECURITY_PERIOD_ETA } from '../constants/eta';
 
 const FUEL_CHAIN_STATE_ABI = [
   {
@@ -21,7 +20,7 @@ const FUEL_CHAIN_STATE_ABI = [
 
 export const FinalizationPeriodService = {
   fetchFinalizationPeriod: async (publicClient?: PublicClient) => {
-    if (!publicClient) return DEFAULT_SECURITY_PERIOD_ETA;
+    if (!publicClient) return undefined;
 
     try {
       const contracts = await getBridgeSolidityContracts();
@@ -29,7 +28,7 @@ export const FinalizationPeriodService = {
         | `0x${string}`
         | undefined;
 
-      if (!fuelChainStateAddress) return DEFAULT_SECURITY_PERIOD_ETA;
+      if (!fuelChainStateAddress) return undefined;
 
       const timeToFinalize = (await publicClient.readContract({
         address: fuelChainStateAddress,
@@ -37,12 +36,12 @@ export const FinalizationPeriodService = {
         functionName: 'TIME_TO_FINALIZE',
       })) as bigint;
 
-      if (!timeToFinalize) return DEFAULT_SECURITY_PERIOD_ETA;
+      if (!timeToFinalize) return undefined;
 
       return formatSecondsToETA(Number(timeToFinalize), '~');
     } catch (error) {
       console.error('Error fetching finalization period:', error);
-      return DEFAULT_SECURITY_PERIOD_ETA;
+      return undefined;
     }
   },
 };
