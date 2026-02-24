@@ -94,12 +94,13 @@ export class TransactionResolver {
 
   async transactionsByOwner(
     _: Source,
-    params: Params['transactionByOwner'],
+    params: Params['transactionByOwner'] & { ownerType?: string },
     { chain }: GraphQLContext,
   ) {
     logger.debug('GraphQL', 'TransactionResolver.transactionsByOwner');
     const paginatedParams = new PaginatedParams(params);
-    const cacheKey = `txByOwner:${params.owner}:${paginatedParams.cursor || 'init'}:${paginatedParams.direction}:${paginatedParams.last}`;
+    const ownerType = params.ownerType;
+    const cacheKey = `txByOwner:${params.owner}:${paginatedParams.cursor || 'init'}:${paginatedParams.direction}:${paginatedParams.last}:${ownerType || 'all'}`;
 
     const cached = DataCache.getInstance().get(cacheKey);
     if (cached) {
@@ -114,6 +115,7 @@ export class TransactionResolver {
     const transactions = await transactionDAO.getPaginatedTransactionsByOwner(
       params.owner,
       paginatedParams,
+      ownerType,
     );
     for (const transaction of transactions.nodes) {
       if (transaction.gasCosts?.fee) {

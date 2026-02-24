@@ -15,13 +15,11 @@ import { memo, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import { LIST_SEPARATOR_BORDER } from '~staking/systems/Core/components/AnimatedTable/styles';
-import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
 import { useAccountValidatorDelegations } from '~staking/systems/Staking/services/useAccountValidatorDelegations';
 import { useValidatorRewards } from '~staking/systems/Staking/services/useValidatorRewards';
 import type { ValidatorReward } from '~staking/systems/Staking/services/useValidatorRewards/types';
 import { DELEGATED_POSITIONS_CELLS_OBJ } from '../../containers/DelegatedPositions';
-import { useDisabledL1Actions } from '../../hooks/useDisabledL1Actions';
 
 import {
   stakingTxDialogEvents,
@@ -51,7 +49,6 @@ const _DelegatedPositionItem = ({
       stakingTxDialogEvents.open('TxClaimRewardNew', validator),
     );
   };
-  const disabledActions = useDisabledL1Actions(validator);
 
   const { address } = useAccount();
   const { data: totalDelegated, isLoading: isLoadingDelegations } =
@@ -73,14 +70,14 @@ const _DelegatedPositionItem = ({
     () => new BN(totalDelegated || '0'),
     [totalDelegated],
   );
-  const isRedelegateDisabled =
-    size === 1 ||
-    disabledActions[PendingTransactionTypeL1.Redelegate] ||
-    delegatedBN.isZero();
+  const isRedelegateDisabled = size === 1 || delegatedBN.isZero();
+  const isUndelegateDisabled = delegatedBN.isZero();
 
   const rewardBN = useMemo(() => {
     return rewardsData.reduce((acc, curr) => {
-      return acc.add(new BN(curr.amount.split('.')[0] ?? 0));
+      // Cosmos API returns decimal strings - truncate to integer for BN
+      const integerAmount = Math.floor(Number(curr.amount ?? 0)).toString();
+      return acc.add(new BN(integerAmount));
     }, new BN(0));
   }, [rewardsData]);
 
@@ -186,16 +183,14 @@ const _DelegatedPositionItem = ({
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() =>
-                      !disabledActions[PendingTransactionTypeL1.Undelegate] &&
+                      !isUndelegateDisabled &&
                       stakingTxDialogStore.send({
                         type: 'open',
                         name: 'TxUndelegateNew',
                         data: validator,
                       })
                     }
-                    disabled={
-                      disabledActions[PendingTransactionTypeL1.Undelegate]
-                    }
+                    disabled={isUndelegateDisabled}
                     color="orange"
                   >
                     Undelegate

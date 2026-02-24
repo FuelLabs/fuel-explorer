@@ -51,6 +51,8 @@ export const StakeNewDialog = ({
     approvalError,
     isReadyToConfirm,
     navigationDirection,
+    isBlocked,
+    blockingMessage,
   } = useStakeNewDialog({ validator: validatorInput });
   const isPaused = useIsStakingContractPaused({
     conditions: {
@@ -131,6 +133,8 @@ export const StakeNewDialog = ({
                     onGoToApproval={goToApproval}
                     isApprovalCompleted={isApprovalCompleted}
                     isReadyToConfirm={isReadyToConfirm}
+                    isBlocked={isBlocked}
+                    blockingMessage={blockingMessage}
                   />
                 </MiddlePageWrapper>
               ) : isApprovalPage ? (

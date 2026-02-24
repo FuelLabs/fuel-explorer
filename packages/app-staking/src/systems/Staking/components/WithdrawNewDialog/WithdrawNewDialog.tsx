@@ -27,6 +27,8 @@ export const WithdrawNewDialog = () => {
     withdrawError,
     isReviewPage,
     goBackToAmount,
+    isBlocked,
+    blockingMessage,
   } = useWithdrawNewDialog();
 
   const isPaused = useIsStakingContractPaused({
@@ -111,6 +113,8 @@ export const WithdrawNewDialog = () => {
                     rates={rates}
                     onConfirm={onConfirm}
                     onBack={goBackToAmount}
+                    isBlocked={isBlocked}
+                    blockingMessage={blockingMessage}
                   />
                 </LastPageWrapper>
               )}

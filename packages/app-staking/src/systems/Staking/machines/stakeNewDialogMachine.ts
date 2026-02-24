@@ -1,16 +1,29 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { HexAddress } from 'app-commons';
+import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
 import { BN, bn } from 'fuels';
 import type { PublicClient, WalletClient } from 'viem';
 import { type StateFrom, assign, createMachine } from 'xstate';
+import {
+  type PendingTransaction,
+  PendingTransactionTypeL1,
+} from '~staking/systems/Core/hooks/usePendingTransactions';
 import {
   type AssetRate,
   AssetsRateService,
 } from '~staking/systems/Core/services/AssetsRateService';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
+import {
+  type OperationBlockingInfo,
+  checkOperationBlocking,
+} from '~staking/systems/Core/utils/blocking';
 import { bigIntToBn } from '~staking/systems/Core/utils/bn';
 import { getShortError } from '~staking/systems/Core/utils/getShortError';
+import {
+  QUERY_KEYS,
+  addPendingL1Transaction,
+} from '~staking/systems/Core/utils/query';
 import { StakeNewService } from '~staking/systems/Staking/services/stakeNewService';
+import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 
 export interface StakeNewDialogContext {
@@ -35,6 +48,9 @@ export interface StakeNewDialogContext {
   // Token approval info
   amountFromL1Approved?: any;
   navigationDirection?: string;
+  // Blocking state
+  isBlocked?: boolean;
+  blockingMessage?: string;
 }
 
 type StakeNewMachineServices = {
@@ -43,6 +59,9 @@ type StakeNewMachineServices = {
   };
   getAssetsRate: {
     data: AssetRate[];
+  };
+  checkBlocking: {
+    data: OperationBlockingInfo;
   };
   submitStake: {
     data: { l1?: HexAddress; sequencer?: HexAddress };
@@ -76,6 +95,7 @@ export type StakeNewDialogEvent =
   | { type: 'REVIEW' }
   | { type: 'CONFIRM' }
   | { type: 'CLOSE' }
+  | { type: 'RECHECK_BLOCKING' }
   | { type: 'GO_TO_APPROVAL' }
   | { type: 'APPROVE' }
   | { type: 'BACK_TO_AMOUNT' }
@@ -101,6 +121,10 @@ export const stakeNewDialogMachine = createMachine(
     },
     on: {
       CLOSE: 'closed',
+      RECHECK_BLOCKING: {
+        target: 'checkingBlocking',
+        cond: (ctx) => !!ctx.queryClient,
+      },
     },
     states: {
       waitingInitialData: {
@@ -298,12 +322,38 @@ export const stakeNewDialogMachine = createMachine(
           },
         },
         onDone: {
-          target: 'reviewing',
+          target: 'checkingBlocking',
+        },
+      },
+      checkingBlocking: {
+        tags: ['reviewPage'],
+        invoke: {
+          src: 'checkBlocking',
+          onDone: {
+            target: 'reviewing',
+            actions: assign((_, event) => ({
+              isBlocked: event.data.isBlocked,
+              blockingMessage: event.data.blockingMessage,
+            })),
+          },
+          onError: {
+            target: 'reviewing',
+            actions: assign(() => ({
+              isBlocked: false,
+              blockingMessage: undefined,
+            })),
+          },
         },
       },
       reviewing: {
         tags: ['reviewPage'],
         on: {
+          SET_ETH_ACCOUNT: {
+            actions: assign({
+              ethAccount: (_, event) => event.ethAccount,
+            }),
+            target: 'checkingBlocking',
+          },
           BACK_TO_AMOUNT: {
             target: 'waitingForAmount',
             actions: assign({
@@ -313,9 +363,12 @@ export const stakeNewDialogMachine = createMachine(
           CONFIRM: {
             target: 'submitting',
             cond: (ctx) => {
-              return !!(
-                ctx.amountFromL1?.eq(0) ||
-                ctx.amountFromL1?.lte(ctx.amountFromL1Approved)
+              return (
+                !ctx.isBlocked &&
+                !!(
+                  ctx.amountFromL1?.eq(0) ||
+                  ctx.amountFromL1?.lte(ctx.amountFromL1Approved)
+                )
               );
             },
           },
@@ -413,16 +466,45 @@ export const stakeNewDialogMachine = createMachine(
           onDone: {
             target: 'finalized',
             actions: (ctx, event) => {
-              if (!ctx.queryClient) return;
-              // TempStakingTransactions.addTransaction(ctx.queryClient, {
-              //   hash: 'test',
-              // });
+              const accountAddress =
+                ctx.ethAccount ?? ctx.walletClient?.account?.address;
+
+              // Add L1 pending transaction if there's an L1 hash
+              if (ctx.queryClient && accountAddress && event.data.l1) {
+                addPendingL1Transaction(ctx.queryClient, accountAddress, {
+                  type: PendingTransactionTypeL1.Delegate,
+                  layer: 'l1',
+                  hash: event.data.l1,
+                  amount: ctx.amountFromL1?.toNumber(),
+                  decimals: TOKENS[FuelToken.V2].decimals,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amountFromL1?.format() ?? '0',
+                  validator: ctx.validator,
+                });
+              }
+
+              // Add sequencer pending transaction if there's a sequencer hash
+              if (ctx.queryClient && accountAddress && event.data.sequencer) {
+                addPendingL1Transaction(ctx.queryClient, accountAddress, {
+                  type: PendingTransactionTypeL1.Delegate,
+                  layer: 'l1',
+                  hash: event.data.sequencer,
+                  amount: ctx.amountFromSequencer?.toNumber(),
+                  decimals: TOKENS[FuelToken.V2].decimals,
+                  token: TOKENS[FuelToken.V2].token,
+                  symbol: 'FUEL',
+                  formatted: ctx.amountFromSequencer?.format() ?? '0',
+                  validator: ctx.validator,
+                });
+              }
 
               StakeNewService.showSuccessToast(event.data);
             },
           },
           onError: {
-            target: 'reviewing',
+            // Return to checkingBlocking to recheck blocking state after error
+            target: 'checkingBlocking',
             actions: assign({
               stakeError: (_, event) => {
                 if (event.data instanceof Error && event.data?.message) {
@@ -473,6 +555,72 @@ export const stakeNewDialogMachine = createMachine(
       getAssetsRate: async () => {
         const rates = await AssetsRateService.getAssetsRate();
         return rates;
+      },
+      checkBlocking: async (context) => {
+        const address =
+          context.ethAccount ?? context.walletClient?.account?.address;
+        // Normalize address to lowercase for consistency
+        const normalizedAddress = address?.toLowerCase();
+        const queryKey = normalizedAddress
+          ? QUERY_KEYS.pendingTransactions(normalizedAddress)
+          : undefined;
+
+        let pendingTransactions: PendingTransaction[] | undefined = undefined;
+
+        if (context.queryClient && queryKey) {
+          // First try to get from query cache
+          pendingTransactions =
+            context.queryClient.getQueryData<PendingTransaction[]>(queryKey);
+
+          // Check if query is hydrated
+          const queryState = context.queryClient.getQueryState(queryKey);
+          const isHydrated = queryState?.status === 'success';
+
+          // If not hydrated or empty, try to get from all queries (case-insensitive)
+          if (
+            !isHydrated ||
+            !pendingTransactions ||
+            pendingTransactions.length === 0
+          ) {
+            const allEntries = context.queryClient.getQueriesData<
+              PendingTransaction[]
+            >({
+              queryKey: QUERY_KEYS.pendingTransactions(),
+            });
+
+            // Filter by normalized address
+            const merged = allEntries
+              .filter(([key]) => {
+                const keyParts = Array.isArray(key) ? key : [];
+                const keyAddress =
+                  typeof keyParts[keyParts.length - 1] === 'string'
+                    ? (keyParts[keyParts.length - 1] as string)
+                    : '';
+                return (
+                  keyAddress && keyAddress.toLowerCase() === normalizedAddress
+                );
+              })
+              .flatMap(([, data]) => data ?? []);
+
+            if (merged.length > 0) {
+              pendingTransactions = merged;
+            }
+          }
+        }
+
+        if (!pendingTransactions || pendingTransactions.length === 0) {
+          return getBlockingInfoFromStakingEvents(
+            normalizedAddress,
+            PendingTransactionTypeL1.Delegate,
+            context.validator,
+          );
+        }
+
+        return checkOperationBlocking(
+          pendingTransactions,
+          PendingTransactionTypeL1.Delegate,
+          context.validator,
+        );
       },
       submitStake: async (context) => {
         const result = await StakeNewService.submitStake(context);
@@ -546,7 +694,10 @@ export const stakeNewDialogMachineSelectors = {
   isWaitingForAmount: (state: StakeNewDialogMachineState) =>
     state.matches('waitingForAmount'),
   isGettingReviewDetails: (state: StakeNewDialogMachineState) => {
-    return (state as any).matches('gettingReviewDetails');
+    return (
+      (state as any).matches('gettingReviewDetails') ||
+      state.matches('checkingBlocking')
+    );
   },
   // New selector to check if in any review-related state
   isReviewPage: (state: StakeNewDialogMachineState) =>
@@ -590,4 +741,8 @@ export const stakeNewDialogMachineSelectors = {
   },
   navigationDirection: (context: StakeNewDialogContext) =>
     context.navigationDirection,
+  // Blocking selectors
+  isBlocked: (context: StakeNewDialogContext) => context.isBlocked,
+  getBlockingMessage: (context: StakeNewDialogContext) =>
+    context.blockingMessage,
 };
