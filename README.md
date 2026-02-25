@@ -1,5 +1,6 @@
 [![discord](https://img.shields.io/badge/chat%20on-discord-orange?&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/xfpK4Pe)
 ![twitter](https://img.shields.io/twitter/follow/SwayLang?style=social)
+[![Testnet E2E Tests](https://github.com/FuelLabs/fuel-explorer/actions/workflows/testnet-e2e-cron.yml/badge.svg)](https://github.com/FuelLabs/fuel-explorer/actions/workflows/testnet-e2e-cron.yml)
 
 ## 📗 Table of contents
 
