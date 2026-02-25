@@ -24,6 +24,7 @@ import {
 } from '~staking/systems/Core/utils/query';
 import { getBlockingInfoFromStakingEvents } from '~staking/systems/Staking/services/stakingEvents';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
+import { FinalizationPeriodService } from '../services/finalizationPeriodService';
 import { UndelegateNewService } from '../services/undelegateNewService/undelegateNewService';
 
 export interface UndelegateNewDialogContext {
@@ -45,6 +46,7 @@ export interface UndelegateNewDialogContext {
   // Blocking state
   isBlocked?: boolean;
   blockingMessage?: string;
+  finalizationPeriod?: string;
 }
 
 type UndelegateNewDialogServices = {
@@ -59,6 +61,9 @@ type UndelegateNewDialogServices = {
   };
   submitUndelegate: {
     data: HexAddress;
+  };
+  getFinalizationPeriod: {
+    data: string;
   };
 };
 
@@ -183,6 +188,28 @@ export const undelegateNewDialogMachine = createMachine(
                       }),
                     },
                   ],
+                  onError: {
+                    target: 'success',
+                  },
+                },
+              },
+              success: {
+                type: 'final',
+              },
+            },
+          },
+          finalizationPeriod: {
+            initial: 'fetching',
+            states: {
+              fetching: {
+                invoke: {
+                  src: 'getFinalizationPeriod',
+                  onDone: {
+                    target: 'success',
+                    actions: assign({
+                      finalizationPeriod: (_, event) => event.data,
+                    }),
+                  },
                   onError: {
                     target: 'success',
                   },
@@ -388,6 +415,11 @@ export const undelegateNewDialogMachine = createMachine(
           context.validator,
         );
       },
+      getFinalizationPeriod: async (ctx) => {
+        return FinalizationPeriodService.fetchFinalizationPeriod(
+          ctx.publicClient as any,
+        );
+      },
       submitUndelegate: async (context) => {
         const result = await UndelegateNewService.submitUndelegate(context);
         return result;
@@ -432,7 +464,7 @@ export const undelegateNewDialogMachineSelectors = {
   isGettingReviewDetails: (state: UndelegateNewDialogMachineState) => {
     return (
       (state as any).matches('gettingReviewDetails') ||
-      state.matches('checkingBlocking')
+      (state as any).matches('checkingBlocking')
     );
   },
   // New selector to check if in any review-related state
@@ -441,7 +473,7 @@ export const undelegateNewDialogMachineSelectors = {
   // Composite states
   isLoading: (state: UndelegateNewDialogMachineState) => {
     return (
-      state.matches('submitting') ||
+      (state as any).matches('submitting') ||
       (state as any).matches('gettingReviewDetails')
     );
   },
@@ -449,4 +481,6 @@ export const undelegateNewDialogMachineSelectors = {
   isBlocked: (context: UndelegateNewDialogContext) => context.isBlocked,
   getBlockingMessage: (context: UndelegateNewDialogContext) =>
     context.blockingMessage,
+  getFinalizationPeriod: (context: UndelegateNewDialogContext) =>
+    context.finalizationPeriod,
 };

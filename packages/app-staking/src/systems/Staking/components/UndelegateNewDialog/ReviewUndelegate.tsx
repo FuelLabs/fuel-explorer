@@ -39,6 +39,7 @@ interface Props {
   validator?: Validator;
   isBlocked?: boolean;
   blockingMessage?: string;
+  finalizationPeriod?: string;
 }
 
 function _ReviewUndelegate({
@@ -56,6 +57,7 @@ function _ReviewUndelegate({
   validator,
   isBlocked = false,
   blockingMessage,
+  finalizationPeriod,
 }: Props) {
   const {
     formattedAmount,
@@ -140,6 +142,15 @@ function _ReviewUndelegate({
             isGettingReviewDetails ? undefined : `(${formattedFee.display} ETH)`
           }
         />
+        {finalizationPeriod && (
+          <>
+            <Separator size="4" />
+            <RegularInfoSection
+              header="Time to complete"
+              text={finalizationPeriod}
+            />
+          </>
+        )}
       </div>
       <div>
         {isBlocked && (
