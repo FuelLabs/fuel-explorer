@@ -20,6 +20,18 @@ export const useFuelExplorerStatus = () => {
         time: t.date ?? '',
         value: t.value,
       }));
+      const averageTpsPerMinute = statistics?.averageTpsPerMinute?.map(
+        (t: any) => ({
+          time: t.date ?? '',
+          value: Number(t.value) || 0,
+        }),
+      );
+      const rollingAverageTps = Number(statistics?.rollingAverageTps) || 0;
+      const rollingStats60s = statistics?.rollingStats60s ?? {
+        tps: 0,
+        avgTxPerBlock: 0,
+        avgGasPerBlock: 0,
+      };
       const fee = {
         total: statistics?.totalFee24hrs,
         data: statistics?.totalFee,
@@ -36,6 +48,8 @@ export const useFuelExplorerStatus = () => {
               gasUsedInUsd: node.gasUsedInUsd,
               totalFee: node.totalFee,
               totalFeeInUsd: node.totalFeeInUsd,
+              transactionsCount: node.transactionsCount,
+              blockSize: node.blockSize,
               tps: node.tps,
             }) as any,
         ) || [];
@@ -44,6 +58,9 @@ export const useFuelExplorerStatus = () => {
         blocksData,
         tps,
         maxTps,
+        averageTpsPerMinute,
+        rollingAverageTps,
+        rollingStats60s,
         fee,
         blocks,
       } as any;

@@ -177,12 +177,14 @@ export type GQLBlocksDashboard = {
   __typename: 'BlocksDashboard';
   blockHash?: Maybe<Scalars['String']['output']>;
   blockNo: Scalars['U64']['output'];
+  blockSize?: Maybe<Scalars['U64']['output']>;
   gasUsed: Scalars['U64']['output'];
   gasUsedInUsd?: Maybe<Scalars['String']['output']>;
   producer?: Maybe<Scalars['String']['output']>;
   timestamp: Scalars['U64']['output'];
   totalFee: Scalars['U64']['output'];
   totalFeeInUsd?: Maybe<Scalars['String']['output']>;
+  transactionsCount: Scalars['U64']['output'];
 };
 
 export type GQLBlocksDashboardConnection = {
@@ -1695,6 +1697,15 @@ export enum GQLReturnType {
   Revert = 'REVERT'
 }
 
+export type GQLRollingStats60s = {
+  __typename: 'RollingStats60s';
+  avgBlockSize?: Maybe<Scalars['Float']['output']>;
+  avgGasPerBlock?: Maybe<Scalars['Float']['output']>;
+  avgTxPerBlock?: Maybe<Scalars['Float']['output']>;
+  peakTps?: Maybe<Scalars['Float']['output']>;
+  tps?: Maybe<Scalars['Float']['output']>;
+};
+
 export type GQLRunResult = {
   __typename: 'RunResult';
   breakpoint?: Maybe<GQLOutputBreakpoint>;
@@ -1813,8 +1824,11 @@ export type GQLStatistics = {
   __typename: 'Statistics';
   averageGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   averageTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
+  averageTpsPerMinute?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   maxGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   maxTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
+  rollingAverageTps?: Maybe<Scalars['Float']['output']>;
+  rollingStats60s?: Maybe<GQLRollingStats60s>;
   totalFee?: Maybe<Array<Maybe<GQLStatisticsTotalFeeDetails>>>;
   totalFee24hrs?: Maybe<Scalars['String']['output']>;
   totalGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
@@ -2204,7 +2218,7 @@ export type GQLContractBalancesQuery = { __typename: 'Query', contractBalances: 
 export type GQLGetBlocksDashboardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GQLGetBlocksDashboardQuery = { __typename: 'Query', getBlocksDashboard: { __typename: 'BlocksDashboardConnection', nodes: Array<{ __typename: 'BlocksDashboard', timestamp: string, gasUsed: string, gasUsedInUsd?: string | null, totalFee: string, totalFeeInUsd?: string | null, blockNo: string, producer?: string | null, blockHash?: string | null }> } };
+export type GQLGetBlocksDashboardQuery = { __typename: 'Query', getBlocksDashboard: { __typename: 'BlocksDashboardConnection', nodes: Array<{ __typename: 'BlocksDashboard', timestamp: string, gasUsed: string, gasUsedInUsd?: string | null, totalFee: string, totalFeeInUsd?: string | null, blockNo: string, producer?: string | null, blockHash?: string | null, transactionsCount: string, blockSize?: string | null }> } };
 
 export type GQLPredicateQueryVariables = Exact<{
   address: Scalars['String']['input'];
@@ -2272,7 +2286,7 @@ export type GQLStakingResponseFragmentFragment = GQLStakingResponseFragment_Clai
 export type GQLStatisticsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GQLStatisticsQuery = { __typename: 'Query', statistics: { __typename: 'StatisticsConnection', nodes?: { __typename: 'Statistics', totalFee24hrs?: string | null, totalTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, maxTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, totalGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, maxGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, totalFee?: Array<{ __typename: 'StatisticsTotalFeeDetails', date?: string | null, value?: string | null, valueInUsd?: string | null } | null> | null } | null } };
+export type GQLStatisticsQuery = { __typename: 'Query', statistics: { __typename: 'StatisticsConnection', nodes?: { __typename: 'Statistics', rollingAverageTps?: number | null, totalFee24hrs?: string | null, totalTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, maxTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageTpsPerMinute?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, rollingStats60s?: { __typename: 'RollingStats60s', tps?: number | null, avgTxPerBlock?: number | null, avgGasPerBlock?: number | null, avgBlockSize?: number | null, peakTps?: number | null } | null, totalGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, maxGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, totalFee?: Array<{ __typename: 'StatisticsTotalFeeDetails', date?: string | null, value?: string | null, valueInUsd?: string | null } | null> | null } | null } };
 
 export type GQLTpsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3837,6 +3851,8 @@ export const GetBlocksDashboardDocument = gql`
       blockNo
       producer
       blockHash
+      transactionsCount
+      blockSize
     }
   }
 }
@@ -3942,6 +3958,18 @@ export const StatisticsDocument = gql`
       maxTps {
         date
         value
+      }
+      averageTpsPerMinute {
+        date
+        value
+      }
+      rollingAverageTps
+      rollingStats60s {
+        tps
+        avgTxPerBlock
+        avgGasPerBlock
+        avgBlockSize
+        peakTps
       }
       totalGasUsed {
         date

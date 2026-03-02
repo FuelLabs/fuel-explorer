@@ -13,6 +13,18 @@ query statistics {
         date
         value
       }
+      averageTpsPerMinute {
+        date
+        value
+      }
+      rollingAverageTps
+      rollingStats60s {
+        tps
+        avgTxPerBlock
+        avgGasPerBlock
+        avgBlockSize
+        peakTps
+      }
       totalGasUsed {
         date
         value

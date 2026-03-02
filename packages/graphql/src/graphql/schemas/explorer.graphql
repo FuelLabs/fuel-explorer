@@ -294,10 +294,21 @@ type TPSConnection {
   nodes: [TPS!]!
 }
 
+type RollingStats60s {
+  tps: Float
+  avgTxPerBlock: Float
+  avgGasPerBlock: Float
+  avgBlockSize: Float
+  peakTps: Float
+}
+
 type Statistics {
   totalTps: [StatisticsDetails]
   averageTps: [StatisticsDetails]
   maxTps: [StatisticsDetails]
+  averageTpsPerMinute: [StatisticsDetails]
+  rollingAverageTps: Float
+  rollingStats60s: RollingStats60s
   totalGasUsed: [StatisticsDetails]
   averageGasUsed: [StatisticsDetails]
   maxGasUsed: [StatisticsDetails]
@@ -329,6 +340,8 @@ type BlocksDashboard {
   blockNo: U64!
   producer: String
   blockHash: String
+  transactionsCount: U64!
+  blockSize: U64
 }
 
 type BlocksDashboardConnection {

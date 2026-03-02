@@ -177,12 +177,14 @@ export type GQLBlocksDashboard = {
   __typename: 'BlocksDashboard';
   blockHash?: Maybe<Scalars['String']['output']>;
   blockNo: Scalars['U64']['output'];
+  blockSize?: Maybe<Scalars['U64']['output']>;
   gasUsed: Scalars['U64']['output'];
   gasUsedInUsd?: Maybe<Scalars['String']['output']>;
   producer?: Maybe<Scalars['String']['output']>;
   timestamp: Scalars['U64']['output'];
   totalFee: Scalars['U64']['output'];
   totalFeeInUsd?: Maybe<Scalars['String']['output']>;
+  transactionsCount: Scalars['U64']['output'];
 };
 
 export type GQLBlocksDashboardConnection = {
@@ -1695,6 +1697,15 @@ export enum GQLReturnType {
   Revert = 'REVERT'
 }
 
+export type GQLRollingStats60s = {
+  __typename: 'RollingStats60s';
+  avgBlockSize?: Maybe<Scalars['Float']['output']>;
+  avgGasPerBlock?: Maybe<Scalars['Float']['output']>;
+  avgTxPerBlock?: Maybe<Scalars['Float']['output']>;
+  peakTps?: Maybe<Scalars['Float']['output']>;
+  tps?: Maybe<Scalars['Float']['output']>;
+};
+
 export type GQLRunResult = {
   __typename: 'RunResult';
   breakpoint?: Maybe<GQLOutputBreakpoint>;
@@ -1813,8 +1824,11 @@ export type GQLStatistics = {
   __typename: 'Statistics';
   averageGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   averageTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
+  averageTpsPerMinute?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   maxGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   maxTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
+  rollingAverageTps?: Maybe<Scalars['Float']['output']>;
+  rollingStats60s?: Maybe<GQLRollingStats60s>;
   totalFee?: Maybe<Array<Maybe<GQLStatisticsTotalFeeDetails>>>;
   totalFee24hrs?: Maybe<Scalars['String']['output']>;
   totalGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;

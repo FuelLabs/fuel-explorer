@@ -2,76 +2,69 @@ import { HStack, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import {
-  Bar,
-  BarChart,
+  Area,
   CartesianGrid,
-  Cell,
+  ComposedChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
+  YAxis,
 } from 'recharts';
 
 export interface TPSProps {
-  tps: any;
+  tpsPerMinute: any;
+  rollingAverageTps: number;
+  peakTps?: number;
+  avgTxPerBlock?: number;
+  avgBlockSize?: number;
 }
 
-export const TPS = ({ tps }: TPSProps) => {
-  const { ticks, maxTps, highestValue, chartDataArray } = useMemo(() => {
-    if (!Array.isArray(tps) || tps.length === 0) {
+function formatBytes(bytes: number): string {
+  if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(1)} MB`;
+  if (bytes >= 1_000) return `${(bytes / 1_000).toFixed(1)} KB`;
+  return `${Math.round(bytes)} B`;
+}
+
+export const TPS = ({
+  tpsPerMinute,
+  rollingAverageTps,
+  peakTps = 0,
+  avgTxPerBlock = 0,
+  avgBlockSize = 0,
+}: TPSProps) => {
+  const { ticks, chartDataArray } = useMemo(() => {
+    if (!Array.isArray(tpsPerMinute) || tpsPerMinute.length === 0) {
       return {
         ticks: [],
-        maxTps: 0,
-        highestValue: 0,
         chartDataArray: [],
-        chartData: {},
       };
     }
 
-    const chartData = tps.reduce(
-      (acc: { [key: string]: number }, element: any) => {
-        const time = dayjs(Number(element.time)).format('HH:mm');
-        const value = element.value;
-        acc[time] = value;
-        return acc;
-      },
-      {},
-    );
-    const chartDataArray = chartData
-      ? Object.entries(chartData).map(([time, value]) => ({
-          time,
-          value,
-        }))
-      : [];
-    const [maxTps] = tps
-      .map((tps: any) => tps.value)
-      .sort((a: number, b: number) => b - a);
+    const chartDataArray = tpsPerMinute.map((element: any) => ({
+      time: dayjs(Number(element.time)).format('HH:mm'),
+      value: Number(element.value) || 0,
+    }));
 
-    const highestValue = Math.max(
-      ...chartDataArray.map((data: any) => Number(data.value)),
-    );
     const ticks: string[] = [];
-
-    for (let i = 0; i < chartDataArray.length; i += 6) {
+    for (let i = 0; i < chartDataArray.length; i += 240) {
       ticks.push(chartDataArray[i].time);
     }
 
     return {
       ticks,
-      maxTps,
-      highestValue,
       chartDataArray,
-      chartData,
     };
-  }, [tps]);
+  }, [tpsPerMinute]);
 
   return (
-    <RoundedContainer className="py-4 px-5 h-full space-y-8">
-      <div className="space-y-[16px]">
+    <RoundedContainer className="py-4 px-5 h-full flex flex-col overflow-hidden">
+      <div className="flex flex-col flex-1 min-h-0 space-y-[16px]">
         <div className="flex items-center justify-between">
           <div className="text-[15px] leading-[24px] text-heading font-semibold group relative">
             <div className=" relative group">
               <div className="flex items-center group">
-                <span className="">Max TPS</span>
+                <span className="">Avg TPS</span>
                 <span className="ml-2 group cursor-pointer">
                   <svg
                     width="14"
@@ -88,7 +81,8 @@ export const TPS = ({ tps }: TPSProps) => {
                 </span>
               </div>
               <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white  bg-gray-3 rounded-lg shadow-sm">
-                Max Transactions Per Second (TPS) Processed by the Fuel Network
+                Average Transactions Per Second (TPS) processed by the Fuel
+                Network (5-min rolling average)
                 <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
               </div>
             </div>
@@ -97,18 +91,47 @@ export const TPS = ({ tps }: TPSProps) => {
             24h
           </span>
         </div>
-        <HStack className="items-baseline" gap={'0'}>
-          <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
-            {`${maxTps}`}
-          </h2>
-          <div className="text-[12px] leading-[12px] text-heading ">TX/s</div>
+        <HStack className="items-baseline gap-3" gap={'0'}>
+          <HStack className="items-baseline" gap={'0'}>
+            <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
+              {`${rollingAverageTps.toFixed(2)}`}
+            </h2>
+            <div className="text-[12px] leading-[12px] text-heading">TX/s</div>
+          </HStack>
+          {avgTxPerBlock > 0 && (
+            <span className="text-[12px] text-muted">
+              <span className="font-semibold">{avgTxPerBlock.toFixed(1)}</span>{' '}
+              TX/block
+            </span>
+          )}
+          {avgBlockSize > 0 && (
+            <span className="text-[12px] text-muted">
+              <span className="font-semibold">{formatBytes(avgBlockSize)}</span>
+              /block
+            </span>
+          )}
+          {peakTps > 0 && (
+            <span className="text-[12px] text-muted">
+              Peak:{' '}
+              <span className="text-[#FF6B6B] font-semibold">
+                {peakTps.toFixed(2)}
+              </span>{' '}
+              TX/s
+            </span>
+          )}
         </HStack>
 
-        <ResponsiveContainer width="100%" height={160}>
-          <BarChart
+        <ResponsiveContainer width="100%" className="flex-1 min-h-0">
+          <ComposedChart
             data={chartDataArray}
             margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
           >
+            <defs>
+              <linearGradient id="tpsGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#00F58C" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="#00F58C" stopOpacity={0} />
+              </linearGradient>
+            </defs>
             <CartesianGrid
               strokeDasharray="3 0"
               stroke="#333"
@@ -122,40 +145,89 @@ export const TPS = ({ tps }: TPSProps) => {
               interval={0}
               tickFormatter={(value) => value}
             />
-            <Tooltip
-              formatter={(value: any) => [
-                `${Number(value).toFixed(0)}`,
-                'Max TPS per hour',
+            <YAxis
+              hide
+              domain={[
+                'dataMin',
+                (max: number) =>
+                  peakTps > 0 ? Math.max(max, peakTps * 1.1) : max,
               ]}
-              labelFormatter={(label: any) => label.toLocaleString()}
-              contentStyle={{
-                backgroundColor: 'var(--gray-1)',
-                borderColor: 'var(--gray-2)',
-                borderRadius: '8px',
-                color: 'var(--gray-1)',
-              }}
-              labelStyle={{
-                color: 'var(--gray-12)',
-                fontWeight: 'bold',
-              }}
-              itemStyle={{
-                color: '#00F58C',
-              }}
-              cursor={{ strokeWidth: 0.1, radius: 10 }}
             />
-            <Bar dataKey="value" radius={[10, 10, 10, 10]} barSize={5}>
-              {chartDataArray.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  className={`${
-                    entry.value === highestValue
-                      ? 'text-[#00F58C]'
-                      : 'text-[rgb(180,180,180)] dark:text-[rgb(223,223,223)]'
-                  } fill-current`}
-                />
-              ))}
-            </Bar>
-          </BarChart>
+            <Tooltip
+              content={({ active, payload, label }) => {
+                if (!active || !payload?.length) return null;
+                const value = Number(payload[0].value).toFixed(2);
+                return (
+                  <div
+                    style={{
+                      backgroundColor: 'var(--gray-1)',
+                      border: '1px solid var(--gray-2)',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '12px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: 'var(--gray-12)',
+                        fontWeight: 'bold',
+                        marginBottom: 4,
+                      }}
+                    >
+                      {label}
+                    </div>
+                    <div style={{ color: '#00F58C' }}>TPS: {value}</div>
+                    {rollingAverageTps > 0 && (
+                      <div style={{ color: '#FFFFFF' }}>
+                        Avg: {rollingAverageTps.toFixed(2)}
+                      </div>
+                    )}
+                    {peakTps > 0 && (
+                      <div style={{ color: '#FF6B6B' }}>
+                        Peak: {peakTps.toFixed(2)}
+                      </div>
+                    )}
+                  </div>
+                );
+              }}
+              cursor={{ strokeWidth: 0.5 }}
+            />
+            {rollingAverageTps > 0 && (
+              <ReferenceLine
+                y={rollingAverageTps}
+                stroke="#FFFFFF"
+                strokeDasharray="5 3"
+                label={{
+                  value: `Avg: ${rollingAverageTps.toFixed(2)}`,
+                  position: 'right',
+                  fill: '#FFFFFF',
+                  fontSize: 10,
+                }}
+              />
+            )}
+            {peakTps > 0 && (
+              <ReferenceLine
+                y={peakTps}
+                stroke="#FF6B6B"
+                strokeDasharray="5 3"
+                label={{
+                  value: `Peak: ${peakTps.toFixed(2)}`,
+                  position: 'right',
+                  fill: '#FF6B6B',
+                  fontSize: 10,
+                }}
+              />
+            )}
+            <Area
+              type="monotone"
+              dataKey="value"
+              stroke="#00F58C"
+              strokeWidth={2}
+              fill="url(#tpsGradient)"
+              dot={false}
+              activeDot={{ r: 3, fill: '#00F58C' }}
+            />
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
     </RoundedContainer>
