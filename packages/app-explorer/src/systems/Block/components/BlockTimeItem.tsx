@@ -1,17 +1,12 @@
 import { Text, VStack } from '@fuels/ui';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-
-dayjs.extend(relativeTime);
 
 type BlockTimeItemProps = {
   time: Date;
-  timeAgo?: string | null;
+  timeAgo: string;
 };
 
 export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
   const timeDate = new Date(time);
-  const computedTimeAgo = timeAgo || dayjs(timeDate).fromNow();
 
   const formattedTime = timeDate.toLocaleString('en-US', {
     year: 'numeric',
@@ -24,9 +19,7 @@ export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
 
   return (
     <VStack gap="0px">
-      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">
-        {computedTimeAgo}
-      </Text>
+      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">{timeAgo}</Text>
       <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f] whitespace-nowrap">
         {formattedTime}
       </Text>

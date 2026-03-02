@@ -22,8 +22,8 @@ export default class Block {
     const date = DateHelper.tai64toDate(block.data.header.time);
     this.timestamp = date.toDate();
     this.time = {
-      fromNow: null,
-      full: null,
+      fromNow: date.fromNow(),
+      full: date.format('DD MMM YYYY - HH:mm:ss A'),
       rawTai64: date.toString(),
       rawUnix: date.unix().toString(),
     };

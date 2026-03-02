@@ -75,9 +75,8 @@ export const TX_MOCK = mocks.aTransaction({
   title: 'ContractCall',
   time: {
     __typename: 'ParsedTime',
-    rawUnix: String(Math.floor(date.valueOf() / 1000)),
-    fromNow: null,
-    full: null,
+    fromNow: date.fromNow(),
+    full: dayjs().format('DD MMM YYYY - HH:mm:ss A'),
   },
   status,
   groupedInputs: [

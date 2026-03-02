@@ -280,16 +280,6 @@ export default class BlockDAO {
     }));
   }
 
-  async getRollingAverageTps() {
-    const data = await this.databaseConnection.query(
-      `SELECT COALESCE(SUM(transactions_count)::float / 300, 0) AS tps
-      FROM indexer.blocks
-      WHERE "timestamp" > NOW() - INTERVAL '5 minutes'`,
-      [],
-    );
-    return Number(data[0]?.tps) || 0;
-  }
-
   async getRollingStats60s() {
     const [stats, peak] = await Promise.all([
       this.databaseConnection.query(

@@ -26,8 +26,6 @@ function Hero() {
     activeProjects,
     totalProjects,
     top3Projects,
-    blockNo,
-    totalFeeInUsd,
   } = useMemo(() => {
     const totalTpsData = (data as any)?.tps;
     const averageTpsPerMinuteData = (data as any)?.averageTpsPerMinute;
@@ -40,17 +38,9 @@ function Hero() {
     };
     const totalFeeData = (data as any)?.fee;
     const blocks = (data as any)?.blocks || [];
-    const blocksData = (data as any)?.blocksData;
     const activeProjects = (ecosystemProjects as any)?.activeProjects || 0;
     const totalProjects = (ecosystemProjects as any)?.totalProjects || 0;
     const top3Projects = (ecosystemProjects as any)?.top3Projects || [];
-    const blockNo = blocksData?.getBlocksDashboard?.nodes?.[0]?.blockNo
-      ? blocksData.getBlocksDashboard.nodes[0].blockNo
-          .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-      : '';
-    const block = blocksData?.getBlocksDashboard.nodes[0];
-    const totalFeeInUsd = block?.totalFeeInUsd ?? '';
 
     return {
       totalTpsData,
@@ -58,12 +48,9 @@ function Hero() {
       rollingStats60sData,
       totalFeeData,
       blocks,
-      blocksData,
       activeProjects,
       totalProjects,
       top3Projects,
-      blockNo,
-      totalFeeInUsd,
     };
   }, [ecosystemProjects, data]);
 
@@ -119,8 +106,6 @@ function Hero() {
                       avgBlockSize={
                         Number(rollingStats60sData.avgBlockSize) || 0
                       }
-                      blockNo={blockNo}
-                      totalFeeInUsd={totalFeeInUsd}
                     />
                   }
                 />

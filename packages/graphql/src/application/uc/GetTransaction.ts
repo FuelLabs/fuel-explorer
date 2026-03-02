@@ -60,14 +60,12 @@ export default class GetTransaction {
     const output = transaction?.toGQLNode();
     if (baseAssetId && output.gasCosts?.fee) {
       const baseAsset = await this.assetGateway.getAsset(baseAssetId, chainId);
-      if (baseAsset) {
-        const feeInUsd = convertToUsd(
-          output.gasCosts.fee,
-          baseAsset.decimals,
-          baseAsset.rate,
-        );
-        output.gasCosts.feeInUsd = feeInUsd?.formatted;
-      }
+      const feeInUsd = convertToUsd(
+        output.gasCosts.fee,
+        baseAsset.decimals,
+        baseAsset.rate,
+      );
+      output.gasCosts.feeInUsd = feeInUsd?.formatted;
     }
     return output;
   }

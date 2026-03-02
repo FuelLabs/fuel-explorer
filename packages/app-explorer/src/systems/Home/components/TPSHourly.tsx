@@ -21,7 +21,7 @@ export interface TPSHourlyProps {
 export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
   const { chartData, currentHourAvg } = useMemo(() => {
     if (!Array.isArray(tpsPerMinute) || tpsPerMinute.length === 0) {
-      return { chartData: [], highestMax: 0, currentHourAvg: 0 };
+      return { chartData: [], currentHourAvg: 0 };
     }
 
     const hourBuckets = new Map<
@@ -52,11 +52,10 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
       }),
     );
 
-    const highestMax = Math.max(...chartData.map((d) => d.max), 0);
     const currentHourAvg =
       chartData.length > 0 ? chartData[chartData.length - 1].avg : 0;
 
-    return { chartData, highestMax, currentHourAvg };
+    return { chartData, currentHourAvg };
   }, [tpsPerMinute]);
 
   return (
