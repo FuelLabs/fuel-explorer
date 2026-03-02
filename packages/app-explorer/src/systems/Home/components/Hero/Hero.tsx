@@ -128,7 +128,7 @@ function Hero() {
                   <LoadingWrapper
                     isLoading={isLoading}
                     loadingEl={<LoadingBox className="w-full h-full" />}
-                    regularEl={<DataTable blocks={blocks.slice(0, 4)} />}
+                    regularEl={<DataTable blocks={blocks.slice(0, 5)} />}
                   />
                 </div>
               </div>
