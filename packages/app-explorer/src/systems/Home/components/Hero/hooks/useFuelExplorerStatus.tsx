@@ -16,17 +16,12 @@ export const useFuelExplorerStatus = () => {
         time: t.date ?? '',
         value: t.value,
       }));
-      const maxTps = statistics?.maxTps?.map((t: any) => ({
-        time: t.date ?? '',
-        value: t.value,
-      }));
       const averageTpsPerMinute = statistics?.averageTpsPerMinute?.map(
         (t: any) => ({
           time: t.date ?? '',
           value: Number(t.value) || 0,
         }),
       );
-      const rollingAverageTps = Number(statistics?.rollingAverageTps) || 0;
       const rollingStats60s = statistics?.rollingStats60s ?? {
         tps: 0,
         avgTxPerBlock: 0,
@@ -59,9 +54,7 @@ export const useFuelExplorerStatus = () => {
       return {
         blocksData,
         tps,
-        maxTps,
         averageTpsPerMinute,
-        rollingAverageTps,
         rollingStats60s,
         fee,
         blocks,
