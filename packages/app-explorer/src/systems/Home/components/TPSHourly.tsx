@@ -26,25 +26,27 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
 
     const hourBuckets = new Map<
       string,
-      { sum: number; count: number; max: number }
+      { displayHour: string; sum: number; count: number; max: number }
     >();
 
     for (const element of tpsPerMinute) {
-      const hour = dayjs(Number(element.time)).format('HH:00');
+      const ts = dayjs(Number(element.time));
+      const key = ts.format('YYYY-MM-DD HH:00');
+      const displayHour = ts.format('HH:00');
       const value = Number(element.value) || 0;
-      const bucket = hourBuckets.get(hour);
+      const bucket = hourBuckets.get(key);
       if (bucket) {
         bucket.sum += value;
         bucket.count += 1;
         bucket.max = Math.max(bucket.max, value);
       } else {
-        hourBuckets.set(hour, { sum: value, count: 1, max: value });
+        hourBuckets.set(key, { displayHour, sum: value, count: 1, max: value });
       }
     }
 
-    const chartData = Array.from(hourBuckets.entries()).map(
-      ([hour, { sum, count, max }]) => ({
-        time: hour,
+    const chartData = Array.from(hourBuckets.values()).map(
+      ({ displayHour, sum, count, max }) => ({
+        time: displayHour,
         avg: sum / count,
         max,
       }),

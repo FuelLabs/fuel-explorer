@@ -31,6 +31,8 @@ export const useFuelExplorerStatus = () => {
         tps: 0,
         avgTxPerBlock: 0,
         avgGasPerBlock: 0,
+        avgBlockSize: 0,
+        peakTps: 0,
       };
       const fee = {
         total: statistics?.totalFee24hrs,
@@ -43,7 +45,7 @@ export const useFuelExplorerStatus = () => {
               blockNo: node.blockNo ?? '',
               producer: node.producer ?? '',
               blockHash: node.blockHash ?? '',
-              timeStamp: node.timestamp,
+              timestamp: node.timestamp,
               gasUsed: node.gasUsed,
               gasUsedInUsd: node.gasUsedInUsd,
               totalFee: node.totalFee,
