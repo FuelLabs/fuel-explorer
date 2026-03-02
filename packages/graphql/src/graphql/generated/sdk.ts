@@ -1826,8 +1826,6 @@ export type GQLStatistics = {
   averageTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   averageTpsPerMinute?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   maxGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
-  maxTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
-  rollingAverageTps?: Maybe<Scalars['Float']['output']>;
   rollingStats60s?: Maybe<GQLRollingStats60s>;
   totalFee?: Maybe<Array<Maybe<GQLStatisticsTotalFeeDetails>>>;
   totalFee24hrs?: Maybe<Scalars['String']['output']>;
@@ -2286,7 +2284,7 @@ export type GQLStakingResponseFragmentFragment = GQLStakingResponseFragment_Clai
 export type GQLStatisticsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GQLStatisticsQuery = { __typename: 'Query', statistics: { __typename: 'StatisticsConnection', nodes?: { __typename: 'Statistics', rollingAverageTps?: number | null, totalFee24hrs?: string | null, totalTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, maxTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageTpsPerMinute?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, rollingStats60s?: { __typename: 'RollingStats60s', tps?: number | null, avgTxPerBlock?: number | null, avgGasPerBlock?: number | null, avgBlockSize?: number | null, peakTps?: number | null } | null, totalGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, maxGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, totalFee?: Array<{ __typename: 'StatisticsTotalFeeDetails', date?: string | null, value?: string | null, valueInUsd?: string | null } | null> | null } | null } };
+export type GQLStatisticsQuery = { __typename: 'Query', statistics: { __typename: 'StatisticsConnection', nodes?: { __typename: 'Statistics', totalFee24hrs?: string | null, totalTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageTps?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageTpsPerMinute?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, rollingStats60s?: { __typename: 'RollingStats60s', tps?: number | null, avgTxPerBlock?: number | null, avgGasPerBlock?: number | null, avgBlockSize?: number | null, peakTps?: number | null } | null, totalGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, averageGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, maxGasUsed?: Array<{ __typename: 'StatisticsDetails', date?: string | null, value?: string | null } | null> | null, totalFee?: Array<{ __typename: 'StatisticsTotalFeeDetails', date?: string | null, value?: string | null, valueInUsd?: string | null } | null> | null } | null } };
 
 export type GQLTpsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3955,15 +3953,10 @@ export const StatisticsDocument = gql`
         date
         value
       }
-      maxTps {
-        date
-        value
-      }
       averageTpsPerMinute {
         date
         value
       }
-      rollingAverageTps
       rollingStats60s {
         tps
         avgTxPerBlock
