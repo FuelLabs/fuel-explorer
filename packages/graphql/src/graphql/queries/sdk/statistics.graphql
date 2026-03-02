@@ -9,15 +9,10 @@ query statistics {
         date
         value
       }
-      maxTps {
-        date
-        value
-      }
       averageTpsPerMinute {
         date
         value
       }
-      rollingAverageTps
       rollingStats60s {
         tps
         avgTxPerBlock
