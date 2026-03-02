@@ -27,7 +27,6 @@ function Hero() {
     totalProjects,
     top3Projects,
     blockNo,
-    blockHash,
     totalFeeInUsd,
   } = useMemo(() => {
     const totalTpsData = (data as any)?.tps;
@@ -51,7 +50,6 @@ function Hero() {
           .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       : '';
     const block = blocksData?.getBlocksDashboard.nodes[0];
-    const blockHash = block?.blockHash ?? '';
     const totalFeeInUsd = block?.totalFeeInUsd ?? '';
 
     return {
@@ -65,7 +63,6 @@ function Hero() {
       totalProjects,
       top3Projects,
       blockNo,
-      blockHash,
       totalFeeInUsd,
     };
   }, [ecosystemProjects, data]);
@@ -80,7 +77,7 @@ function Hero() {
             </Heading>
 
             <Box className={classes.searchWrapper()}>
-              {/* Row 1-2, Col 1-4: Daily Transactions (untouched) */}
+              {/* Row 1-2, Col 1-4: Daily Transactions */}
               <div className="row-span-2 col-span-12 laptop:col-span-4">
                 <LoadingWrapper
                   isLoading={isLoading}
@@ -91,7 +88,7 @@ function Hero() {
                 />
               </div>
 
-              {/* Row 1-2, Col 5-7: Fuel Dapps (untouched) */}
+              {/* Row 1-2, Col 5-7: Fuel Dapps */}
               <div className="row-span-2 col-span-12 laptop:col-span-3">
                 <LoadingWrapper
                   isLoading={isLoading}
@@ -108,11 +105,11 @@ function Hero() {
                 />
               </div>
 
-              {/* Row 1-2, Col 8-12: Live Stats + Latest Block ref */}
-              <div className="row-span-2 col-span-12 laptop:col-span-5">
+              {/* Row 1-4, Col 8-12: Latest Block + Recent Blocks */}
+              <div className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-5">
                 <LoadingWrapper
                   isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[294px]" />}
+                  loadingEl={<LoadingBox className="w-full h-[200px]" />}
                   regularEl={
                     <RollingStats
                       tps={Number(rollingStats60sData.tps) || 0}
@@ -123,14 +120,20 @@ function Hero() {
                         Number(rollingStats60sData.avgBlockSize) || 0
                       }
                       blockNo={blockNo}
-                      blockHash={blockHash}
                       totalFeeInUsd={totalFeeInUsd}
                     />
                   }
                 />
+                <div className="flex-1 min-h-0">
+                  <LoadingWrapper
+                    isLoading={isLoading}
+                    loadingEl={<LoadingBox className="w-full h-full" />}
+                    regularEl={<DataTable blocks={blocks.slice(0, 4)} />}
+                  />
+                </div>
               </div>
 
-              {/* Row 3-4, Col 1-4: Hourly TPS (replaces Max TPS) */}
+              {/* Row 3-4, Col 1-4: Hourly TPS */}
               <div className="row-span-2 col-span-12 laptop:col-span-4">
                 <LoadingWrapper
                   isLoading={isLoading}
@@ -146,23 +149,12 @@ function Hero() {
                 />
               </div>
 
-              {/* Row 3-4, Col 5-7: Fee Spent (untouched) */}
+              {/* Row 3-4, Col 5-7: Fee Spent */}
               <div className="row-span-2 col-span-12 laptop:col-span-3">
                 <LoadingWrapper
                   isLoading={isLoading}
                   loadingEl={<LoadingBox className="w-full h-[309px]" />}
                   regularEl={<GasSpentChart blocks={totalFeeData} />}
-                />
-              </div>
-
-              {/* Row 3-4, Col 8-12: Recent Blocks (updated tiles, 3 blocks) */}
-              <div className="row-span-2 col-span-12 laptop:col-span-5">
-                <LoadingWrapper
-                  isLoading={isLoading}
-                  loadingEl={
-                    <LoadingBox className="w-full h-[432px] laptop:h-full" />
-                  }
-                  regularEl={<DataTable blocks={blocks.slice(0, 3)} />}
                 />
               </div>
             </Box>
