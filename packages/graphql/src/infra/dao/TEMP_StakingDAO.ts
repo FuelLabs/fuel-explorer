@@ -9,9 +9,9 @@ import { logger } from '~/core/Logger';
 import DataCache from '../cache/DataCache';
 
 // 10 Hours to commit
-const TIME_TO_COMMIT = 10 * 60 * 60;
+export const TIME_TO_COMMIT = 10 * 60 * 60;
 // 30 minutes to sequencer indexer sync the info
-const TIME_TO_SEQUENCER_INDEXER_SYNC = 1800;
+export const TIME_TO_SEQUENCER_INDEXER_SYNC = 1800;
 
 const network = env.get('FUEL_CHAIN')!;
 const currentNetworkContracts = getCurrentNetworkContracts(network);
@@ -261,6 +261,11 @@ async function queryContractEvents(
 }
 
 export async function getTimeToFinalize() {
+  const result = await getTimeToFinalizeStrict();
+  return result ?? 2880; // fallback to current mainnet value
+}
+
+export async function getTimeToFinalizeStrict(): Promise<number | null> {
   const cachedTimeToFinalizeWithdraw = DataCache.getInstance().get(
     'time-to-finalize-withdraw-minutes',
   );
@@ -284,7 +289,7 @@ export async function getTimeToFinalize() {
     return Number(valueInMinutes);
   } catch (error) {
     logger.error('Staking: getTimeToFinalize', error);
-    return 2880; // current mainnet
+    return null;
   }
 }
 

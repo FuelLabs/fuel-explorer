@@ -22,10 +22,10 @@ export function formatSecondsToETA(
   if (days > 0) {
     parts.push(`${days} day${days > 1 ? 's' : ''}`);
   }
-  if (hours > 0 && days === 0) {
+  if (hours > 0) {
     parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
   }
-  if (days === 0 && hours < 1 && minutes > 0) {
+  if (minutes > 0 && days === 0) {
     parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
   }
 
@@ -34,8 +34,5 @@ export function formatSecondsToETA(
   }
   if (parts.length === 2) {
     return `${prefix}${parts[0]} and ${parts[1]}`;
-  }
-  if (parts.length === 3) {
-    return `${prefix}${parts[0]}, ${parts[1]} and ${parts[2]}`;
   }
 }

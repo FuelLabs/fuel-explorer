@@ -140,6 +140,9 @@ export function useUndelegateNewDialog({
 
   return {
     state: useSelector(service, (state) => state),
+    finalizationPeriod: useSelector(service, (state) =>
+      undelegateNewDialogMachineSelectors.getFinalizationPeriod(state.context),
+    ),
     send: service.send,
     amount: amountValue,
     stakedAmount,
