@@ -20,6 +20,8 @@ import CosmosDAO from '../dao/CosmosDAO';
 import L1DAO from '../dao/L1DAO';
 import StakingDAO from '../dao/StakingDAO';
 import {
+  TIME_TO_COMMIT,
+  TIME_TO_SEQUENCER_INDEXER_SYNC,
   getStakingTransactions,
   getTimeToFinalize,
 } from '../dao/TEMP_StakingDAO';
@@ -134,13 +136,13 @@ export class Server {
       async (_req: Request, res: Response) => {
         logger.debug('API', 'Get staking finalization period');
         try {
-          // getTimeToFinalize() returns minutes; add L1 commit and sequencer sync buffer
+          // getTimeToFinalize() returns minutes; add L1 commit and sequencer sync buffer (in seconds)
           const timeToFinalizeMinutes = await getTimeToFinalize();
-          const commitMinutes = 10 * 60; // 10 hours
-          const syncMinutes = 30; // 30 minutes
-          const totalMinutes =
-            timeToFinalizeMinutes + commitMinutes + syncMinutes;
-          res.json({ seconds: totalMinutes * 60 });
+          const totalSeconds =
+            timeToFinalizeMinutes * 60 +
+            TIME_TO_COMMIT +
+            TIME_TO_SEQUENCER_INDEXER_SYNC;
+          res.json({ seconds: totalSeconds });
         } catch (error) {
           logger.error('API', 'Error fetching finalization period');
           res.status(500).json({ seconds: null });

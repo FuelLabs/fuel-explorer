@@ -9,9 +9,9 @@ import { logger } from '~/core/Logger';
 import DataCache from '../cache/DataCache';
 
 // 10 Hours to commit
-const TIME_TO_COMMIT = 10 * 60 * 60;
+export const TIME_TO_COMMIT = 10 * 60 * 60;
 // 30 minutes to sequencer indexer sync the info
-const TIME_TO_SEQUENCER_INDEXER_SYNC = 1800;
+export const TIME_TO_SEQUENCER_INDEXER_SYNC = 1800;
 
 const network = env.get('FUEL_CHAIN')!;
 const currentNetworkContracts = getCurrentNetworkContracts(network);

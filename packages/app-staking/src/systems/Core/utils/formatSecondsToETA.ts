@@ -35,7 +35,4 @@ export function formatSecondsToETA(
   if (parts.length === 2) {
     return `${prefix}${parts[0]} and ${parts[1]}`;
   }
-  if (parts.length === 3) {
-    return `${prefix}${parts[0]}, ${parts[1]} and ${parts[2]}`;
-  }
 }
