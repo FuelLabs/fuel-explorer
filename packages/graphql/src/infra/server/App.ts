@@ -143,7 +143,7 @@ export class Server {
             TIME_TO_COMMIT +
             TIME_TO_SEQUENCER_INDEXER_SYNC;
           res.json({ seconds: totalSeconds });
-        } catch (error) {
+        } catch (_error) {
           logger.error('API', 'Error fetching finalization period');
           res.status(500).json({ seconds: null });
         }
