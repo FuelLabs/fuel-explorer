@@ -22,10 +22,10 @@ export function formatSecondsToETA(
   if (days > 0) {
     parts.push(`${days} day${days > 1 ? 's' : ''}`);
   }
-  if (hours > 0 && days === 0) {
+  if (hours > 0) {
     parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
   }
-  if (days === 0 && hours < 1 && minutes > 0) {
+  if (minutes > 0 && days === 0) {
     parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
   }
 

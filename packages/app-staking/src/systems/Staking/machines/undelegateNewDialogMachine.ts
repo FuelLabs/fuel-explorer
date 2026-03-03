@@ -415,10 +415,8 @@ export const undelegateNewDialogMachine = createMachine(
           context.validator,
         );
       },
-      getFinalizationPeriod: async (ctx) => {
-        return FinalizationPeriodService.fetchFinalizationPeriod(
-          ctx.publicClient as any,
-        );
+      getFinalizationPeriod: async () => {
+        return FinalizationPeriodService.fetchFinalizationPeriod();
       },
       submitUndelegate: async (context) => {
         const result = await UndelegateNewService.submitUndelegate(context);
@@ -464,7 +462,7 @@ export const undelegateNewDialogMachineSelectors = {
   isGettingReviewDetails: (state: UndelegateNewDialogMachineState) => {
     return (
       (state as any).matches('gettingReviewDetails') ||
-      (state as any).matches('checkingBlocking')
+      state.matches('checkingBlocking')
     );
   },
   // New selector to check if in any review-related state
@@ -473,7 +471,7 @@ export const undelegateNewDialogMachineSelectors = {
   // Composite states
   isLoading: (state: UndelegateNewDialogMachineState) => {
     return (
-      (state as any).matches('submitting') ||
+      state.matches('submitting') ||
       (state as any).matches('gettingReviewDetails')
     );
   },

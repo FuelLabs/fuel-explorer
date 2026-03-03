@@ -19,7 +19,10 @@ import BridgeDAO from '../dao/BridgeDAO';
 import CosmosDAO from '../dao/CosmosDAO';
 import L1DAO from '../dao/L1DAO';
 import StakingDAO from '../dao/StakingDAO';
-import { getStakingTransactions } from '../dao/TEMP_StakingDAO';
+import {
+  getStakingTransactions,
+  getTimeToFinalize,
+} from '../dao/TEMP_StakingDAO';
 import { convertToUsd } from '../dao/utils';
 import AssetGateway from '../gateway/AssetGateway';
 import PaginatedParams from '../paginator/PaginatedParams';
@@ -123,6 +126,25 @@ export class Server {
         const bridgeDAO = new BridgeDAO();
         const output = await bridgeDAO.getEvent(eventType, eventId);
         res.json(output);
+      },
+    );
+
+    app.get(
+      '/staking/finalization-period',
+      async (_req: Request, res: Response) => {
+        logger.debug('API', 'Get staking finalization period');
+        try {
+          // getTimeToFinalize() returns minutes; add L1 commit and sequencer sync buffer
+          const timeToFinalizeMinutes = await getTimeToFinalize();
+          const commitMinutes = 10 * 60; // 10 hours
+          const syncMinutes = 30; // 30 minutes
+          const totalMinutes =
+            timeToFinalizeMinutes + commitMinutes + syncMinutes;
+          res.json({ seconds: totalMinutes * 60 });
+        } catch (error) {
+          logger.error('API', 'Error fetching finalization period');
+          res.status(500).json({ seconds: null });
+        }
       },
     );
 

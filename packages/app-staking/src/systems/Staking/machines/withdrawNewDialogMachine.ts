@@ -425,10 +425,8 @@ export const withdrawNewDialogMachine = createMachine(
           PendingTransactionTypeL1.WithdrawStart,
         );
       },
-      getFinalizationPeriod: async (ctx) => {
-        return FinalizationPeriodService.fetchFinalizationPeriod(
-          ctx.publicClient as any,
-        );
+      getFinalizationPeriod: async () => {
+        return FinalizationPeriodService.fetchFinalizationPeriod();
       },
       submitWithdraw: async (context) => {
         const result = await WithdrawNewService.submitWithdraw(context);
@@ -473,7 +471,7 @@ export const withdrawNewDialogMachineSelectors = {
   isGettingReviewDetails: (state: WithdrawNewDialogMachineState) => {
     return (
       (state as any).matches('gettingReviewDetails') ||
-      (state as any).matches('checkingBlocking')
+      state.matches('checkingBlocking')
     );
   },
   // New selector to check if in any review-related state
@@ -482,7 +480,7 @@ export const withdrawNewDialogMachineSelectors = {
   // Composite states
   isLoading: (state: WithdrawNewDialogMachineState) => {
     return (
-      (state as any).matches('submitting') ||
+      state.matches('submitting') ||
       (state as any).matches('gettingReviewDetails')
     );
   },
