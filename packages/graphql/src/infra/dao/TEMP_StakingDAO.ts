@@ -261,6 +261,11 @@ async function queryContractEvents(
 }
 
 export async function getTimeToFinalize() {
+  const result = await getTimeToFinalizeStrict();
+  return result ?? 2880; // fallback to current mainnet value
+}
+
+export async function getTimeToFinalizeStrict(): Promise<number | null> {
   const cachedTimeToFinalizeWithdraw = DataCache.getInstance().get(
     'time-to-finalize-withdraw-minutes',
   );
@@ -284,7 +289,7 @@ export async function getTimeToFinalize() {
     return Number(valueInMinutes);
   } catch (error) {
     logger.error('Staking: getTimeToFinalize', error);
-    return 2880; // current mainnet
+    return null;
   }
 }
 

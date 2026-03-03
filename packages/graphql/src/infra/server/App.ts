@@ -23,7 +23,7 @@ import {
   TIME_TO_COMMIT,
   TIME_TO_SEQUENCER_INDEXER_SYNC,
   getStakingTransactions,
-  getTimeToFinalize,
+  getTimeToFinalizeStrict,
 } from '../dao/TEMP_StakingDAO';
 import { convertToUsd } from '../dao/utils';
 import AssetGateway from '../gateway/AssetGateway';
@@ -136,8 +136,12 @@ export class Server {
       async (_req: Request, res: Response) => {
         logger.debug('API', 'Get staking finalization period');
         try {
-          // getTimeToFinalize() returns minutes; add L1 commit and sequencer sync buffer (in seconds)
-          const timeToFinalizeMinutes = await getTimeToFinalize();
+          // getTimeToFinalizeStrict() returns minutes or null (no fallback)
+          const timeToFinalizeMinutes = await getTimeToFinalizeStrict();
+          if (timeToFinalizeMinutes == null) {
+            res.json({ seconds: null });
+            return;
+          }
           const totalSeconds =
             timeToFinalizeMinutes * 60 +
             TIME_TO_COMMIT +
