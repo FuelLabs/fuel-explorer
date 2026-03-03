@@ -29,7 +29,7 @@ export class ParsedTime extends ValueObject<Props> {
     const value = {
       __typename: 'ParsedTime' as Typename,
       fromNow: date.fromNow(),
-      full: date.format('DD MMM YYYY - HH:mm:ss A'),
+      full: date.format('DD MMM YYYY - hh:mm:ss A'),
       rawTai64: timestamp.toString(),
       rawUnix: date.unix().toString(),
     };
