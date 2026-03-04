@@ -13,7 +13,7 @@ export const RollingStats = ({
   avgBlockSize,
 }: RollingStatsProps) => {
   return (
-    <RoundedContainer className="py-3 px-5 flex flex-col bg-light-gradient dark:bg-dark-gradient">
+    <RoundedContainer className="py-4 px-5 flex flex-col bg-light-gradient dark:bg-dark-gradient">
       <div className="flex items-center">
         <span className="text-[15px] leading-[24px] text-heading font-semibold">
           Live Stats

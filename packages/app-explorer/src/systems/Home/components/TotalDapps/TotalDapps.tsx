@@ -30,7 +30,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
   };
 
   return (
-    <RoundedContainer className="validators-chart h-full">
+    <RoundedContainer className="validators-chart h-full px-5">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
@@ -86,7 +86,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
               <img
                 src={getProjectImage(feature.image)}
                 alt={feature.name}
-                className="w-5 rounded"
+                className="w-5 h-5 rounded"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
