@@ -86,7 +86,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
               <img
                 src={getProjectImage(feature.image)}
                 alt={feature.name}
-                className="w-5 h-5 rounded"
+                className="w-5 h-5 shrink-0 rounded"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
