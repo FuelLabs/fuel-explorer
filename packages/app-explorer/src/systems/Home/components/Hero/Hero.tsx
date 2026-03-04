@@ -96,7 +96,7 @@ function Hero() {
               <div className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-5">
                 <LoadingWrapper
                   isLoading={isLoading}
-                  loadingEl={<LoadingBox className="w-full h-[200px]" />}
+                  loadingEl={<LoadingBox className="w-full h-[120px]" />}
                   regularEl={
                     <RollingStats
                       tps={Number(rollingStats60sData.tps) || 0}
@@ -112,7 +112,9 @@ function Hero() {
                 <div className="flex-1 min-h-0">
                   <LoadingWrapper
                     isLoading={isLoading}
-                    loadingEl={<LoadingBox className="w-full h-full" />}
+                    loadingEl={
+                      <LoadingBox className="w-full h-[480px] laptop:h-full" />
+                    }
                     regularEl={<DataTable blocks={blocks.slice(0, 5)} />}
                   />
                 </div>
