@@ -305,6 +305,7 @@ type RollingStats60s {
 type Statistics {
   totalTps: [StatisticsDetails]
   averageTps: [StatisticsDetails]
+  maxTps: [StatisticsDetails]
   averageTpsPerMinute: [StatisticsDetails]
   rollingStats60s: RollingStats60s
   totalGasUsed: [StatisticsDetails]

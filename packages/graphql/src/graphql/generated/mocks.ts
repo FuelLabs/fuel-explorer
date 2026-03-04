@@ -1458,6 +1458,7 @@ export const aStatistics = (overrides?: Partial<GQLStatistics>): { __typename: '
         averageTps: overrides && overrides.hasOwnProperty('averageTps') ? overrides.averageTps! : [aStatisticsDetails()],
         averageTpsPerMinute: overrides && overrides.hasOwnProperty('averageTpsPerMinute') ? overrides.averageTpsPerMinute! : [aStatisticsDetails()],
         maxGasUsed: overrides && overrides.hasOwnProperty('maxGasUsed') ? overrides.maxGasUsed! : [aStatisticsDetails()],
+        maxTps: overrides && overrides.hasOwnProperty('maxTps') ? overrides.maxTps! : [aStatisticsDetails()],
         rollingStats60s: overrides && overrides.hasOwnProperty('rollingStats60s') ? overrides.rollingStats60s! : aRollingStats60s(),
         totalFee: overrides && overrides.hasOwnProperty('totalFee') ? overrides.totalFee! : [aStatisticsTotalFeeDetails()],
         totalFee24hrs: overrides && overrides.hasOwnProperty('totalFee24hrs') ? overrides.totalFee24hrs! : 'consectetur',

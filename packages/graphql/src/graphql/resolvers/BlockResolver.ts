@@ -246,6 +246,7 @@ export class BlockResolver {
       nodes: {
         totalTps,
         averageTps,
+        maxTps: [],
         averageTpsPerMinute,
         rollingStats60s,
         totalGasUsed,

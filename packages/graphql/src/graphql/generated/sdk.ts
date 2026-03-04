@@ -1826,6 +1826,7 @@ export type GQLStatistics = {
   averageTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   averageTpsPerMinute?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   maxGasUsed?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
+  maxTps?: Maybe<Array<Maybe<GQLStatisticsDetails>>>;
   rollingStats60s?: Maybe<GQLRollingStats60s>;
   totalFee?: Maybe<Array<Maybe<GQLStatisticsTotalFeeDetails>>>;
   totalFee24hrs?: Maybe<Scalars['String']['output']>;
