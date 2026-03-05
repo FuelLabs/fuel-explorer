@@ -9,9 +9,16 @@ query statistics {
         date
         value
       }
-      maxTps {
+      averageTpsPerMinute {
         date
         value
+      }
+      rollingStats60s {
+        tps
+        avgTxPerBlock
+        avgGasPerBlock
+        avgBlockSize
+        peakTps
       }
       totalGasUsed {
         date
