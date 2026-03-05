@@ -211,6 +211,7 @@ export class BlockResolver {
     const [
       totalTps,
       averageTps,
+      maxTps,
       averageTpsPerMinute,
       rollingStats60s,
       totalGasUsed,
@@ -220,6 +221,7 @@ export class BlockResolver {
     ] = await Promise.all([
       blockDAO.getTotalTps(),
       blockDAO.getAverageTps(),
+      blockDAO.getMaxTps(),
       blockDAO.getAverageTpsPerMinute(),
       blockDAO.getRollingStats60s(),
       blockDAO.getTotalGasUsed(),
@@ -246,7 +248,7 @@ export class BlockResolver {
       nodes: {
         totalTps,
         averageTps,
-        maxTps: [],
+        maxTps,
         averageTpsPerMinute,
         rollingStats60s,
         totalGasUsed,

@@ -72,7 +72,9 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
             <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
               {currentHourAvg.toFixed(2)}
             </h2>
-            <div className="text-[12px] leading-[12px] text-heading">TX/s</div>
+            <div className="text-[12px] leading-[12px] text-heading ml-1">
+              TX/s
+            </div>
           </HStack>
           {peakTps > 0 && (
             <span className="text-[12px] text-muted">
