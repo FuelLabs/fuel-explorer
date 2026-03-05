@@ -1,71 +1,52 @@
 import type { GQLBlocksDashboard } from '@fuel-explorer/graphql';
-import { HStack, RoundedContainer, VStack } from '@fuels/ui';
-import { tv } from 'tailwind-variants';
+import dayjs from 'dayjs';
+import { formatBytes, formatGas } from './format';
 
 interface BlockTableProps {
   block: GQLBlocksDashboard;
 }
 
 export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
-  const classes = styles();
+  const blockTime = block.timestamp
+    ? dayjs(Number(block.timestamp)).format('HH:mm:ss')
+    : '';
+  const txCount = Number(block.transactionsCount) || 0;
 
   return (
-    <RoundedContainer className="bg-white hover:bg-gray-5 py-5">
-      <HStack align={'center'} className="justify-between">
-        <div className="space-y-[4px]">
-          <p className={classes.paragraphStrong()}>#{block.blockNo}</p>
-          <p className={classes.paragraph()}>{block.totalFeeInUsd}</p>
+    <div className="h-full py-3 px-5 hover:bg-gray-3 transition-colors duration-150 flex flex-col justify-center space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-[13px] leading-[20px] font-semibold text-heading">
+          #{block.blockNo}
+        </span>
+        <span className="text-[12px] leading-[18px] text-muted">
+          {blockTime}
+        </span>
+      </div>
+      <div className="flex items-center justify-between text-[12px] leading-[18px] text-muted">
+        <span className="font-medium bg-gray-4 dark:bg-gray-5 rounded px-1 py-px">
+          {txCount} TX
+        </span>
+        <div className="flex items-center gap-3">
+          <span>
+            <span className="text-muted">Size </span>
+            <span className="text-heading font-medium">
+              ~{formatBytes(block.blockSize)}
+            </span>
+          </span>
+          <span>
+            <span className="text-muted">Gas </span>
+            <span className="text-heading font-medium">
+              {formatGas(block.gasUsed)}
+            </span>
+          </span>
+          <span>
+            <span className="text-muted">Fee </span>
+            <span className="text-[color:#00F58C] font-medium">
+              {block.totalFeeInUsd || '$0'}
+            </span>
+          </span>
         </div>
-        <div className="flex items-center gap-[4px] overflow-hidden">
-          <p
-            className={`${classes.paragraph()} overflow-hidden text-ellipsis whitespace-nowrap w-[100px]`}
-          >
-            {block.blockHash}
-          </p>
-        </div>
-
-        <div className="space-y-[4px]">
-          <VStack gap={'0'}>
-            <HStack gap={'1'} className="items-center">
-              <svg
-                width="11"
-                height="8"
-                viewBox="0 0 11 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0.875 4.25L3.5 6.875L9.5 0.875"
-                  stroke="#00F58C"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <p className={classes.paragraphAccent()}>Confirmed</p>
-            </HStack>
-          </VStack>
-        </div>
-      </HStack>
-    </RoundedContainer>
+      </div>
+    </div>
   );
 };
-
-const styles = tv({
-  slots: {
-    paragraphStrong: [
-      'text-[12px]',
-      'text-[color:var(--gray-12)]',
-      'font-bold',
-      ' w-[110px]',
-    ],
-    paragraph: [
-      'text-muted',
-      'text-[12px]',
-      'p-0',
-      'whitespace-nowrap',
-      'text-ellipsis',
-    ],
-    paragraphAccent: ['text-accent text-[12px] p-0'],
-  },
-});

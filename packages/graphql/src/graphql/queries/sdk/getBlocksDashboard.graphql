@@ -9,6 +9,8 @@ query getBlocksDashboard {
       blockNo
       producer
       blockHash
+      transactionsCount
+      blockSize
     }
   }
 }

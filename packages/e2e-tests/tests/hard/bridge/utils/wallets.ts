@@ -16,19 +16,30 @@ const PROVIDER_URL = 'http://localhost:4000/v1/graphql';
 
 export const acceptMetaMaskAccessWithNetworkSwitch = async () => {
   await metamask.connectToDapp();
-  await metamask.approveNewNetwork();
-  await metamask.approveSwitchNetwork();
+  try {
+    await metamask.approveNewNetwork();
+  } catch (_) {
+    // No new network prompt - continue
+  }
+  try {
+    await metamask.approveSwitchNetwork();
+  } catch (_) {
+    // No switch prompt - continue
+  }
 };
 
 export const connectToMetamask = async (page: Page) => {
   await page.bringToFront();
+  await page.waitForTimeout(1000);
   const connectKitButton = await getByAriaLabel(
     page,
     'Connect Ethereum Wallet',
   );
   await connectKitButton.click();
+  await page.waitForTimeout(500);
   const metamaskConnect = await getButtonByText(page, 'Metamask');
   await metamaskConnect.click();
+  await page.waitForTimeout(2000);
   await acceptMetaMaskAccessWithNetworkSwitch();
 };
 

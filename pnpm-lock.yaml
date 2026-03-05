@@ -13,6 +13,7 @@ overrides:
   cookie@<0.7.0: '>=0.7.0'
   fast-loops@<1.1.4: '>=1.1.4'
   elliptic@<6.6.1: '>=6.6.1'
+  basic-ftp@<5.2.0: '>=5.2.0'
   viem: 2.23.2
 
 importers:
@@ -6720,8 +6721,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  basic-ftp@5.0.5:
-    resolution: {integrity: sha512-4Bcg1P8xhUuqcii/S0Z9wiHIrQVPMermM1any+MX5GeGD7faD3/msQUDGLol9wOcz4/jbg/WJnGqoJF6LiBdtg==}
+  basic-ftp@5.2.0:
+    resolution: {integrity: sha512-VoMINM2rqJwJgfdHq6RiUudKt2BV+FY5ZFezP/ypmwayk68+NzzAQy4XXLlqsGD4MCzq3DrmNFD/uUmBJuGoXw==}
     engines: {node: '>=10.0.0'}
 
   bcrypt-pbkdf@1.0.2:
@@ -21879,7 +21880,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  basic-ftp@5.0.5: {}
+  basic-ftp@5.2.0: {}
 
   bcrypt-pbkdf@1.0.2:
     dependencies:
@@ -23894,7 +23895,7 @@ snapshots:
 
   get-uri@6.0.5:
     dependencies:
-      basic-ftp: 5.0.5
+      basic-ftp: 5.2.0
       data-uri-to-buffer: 6.0.2
       debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:

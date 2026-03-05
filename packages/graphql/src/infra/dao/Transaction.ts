@@ -7,12 +7,19 @@ export default class Transaction {
   data: any;
   blockId: number;
 
-  constructor(data: any, index: number, blockId: number) {
+  constructor(
+    data: any,
+    index: number,
+    blockId: number,
+    blockTimestamp?: Date,
+  ) {
     const height = String(blockId).padStart(32, '0');
     const indexStr = (index + 1).toString().padStart(16, '0');
     this.id = `${height}-${indexStr}`;
     this.transactionHash = data.id;
-    this.timestamp = DateHelper.tai64toDate(data.status.time).toDate();
+    this.timestamp = data.status?.time
+      ? DateHelper.tai64toDate(data.status.time).toDate()
+      : (blockTimestamp ?? new Date());
     this.data = data;
     this.blockId = blockId;
   }
