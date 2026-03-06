@@ -119,12 +119,14 @@ class RabbitMQConnection {
             await handler(payload.data);
             channel.ack(msg);
           } catch (err: any) {
+            const is429 = err?.message?.includes('429');
+            const backoff = is429 ? 10000 : 2000;
             logger.debug(
               'Consumer',
-              `Failed to consume message from: ${queue}`,
+              `Failed to consume message from: ${queue}${is429 ? ' (rate limited)' : ''}`,
               err.message,
             );
-            await setTimeout(5000);
+            await setTimeout(backoff);
             channel.nack(msg, false, true);
           }
         }
