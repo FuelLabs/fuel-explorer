@@ -40,21 +40,38 @@ export default class IndexCosmos {
             'insert into indexer.cosmos_responses (block_height, tx_hash, data, timestamp) values ($1, $2, $3, $4) returning _id',
             [tx.height, tx.txhash, tx.data, tx.timestamp],
           );
+
+          const eventRows: any[][] = [];
           let index = 0;
           for (const event of tx.events) {
             for (const attribute of event.attributes) {
-              await connection.query(
-                'insert into indexer.cosmos_events (cosmos_response_id, type, key, value, index) values ($1, $2, $3, $4, $5)',
-                [
-                  cosmosResponse._id,
-                  event.type,
-                  attribute.key,
-                  attribute.value,
-                  index,
-                ],
-              );
+              eventRows.push([
+                cosmosResponse._id,
+                event.type,
+                attribute.key,
+                attribute.value,
+                index,
+              ]);
             }
             index++;
+          }
+
+          if (eventRows.length > 0) {
+            const batchSize = 500;
+            for (let i = 0; i < eventRows.length; i += batchSize) {
+              const batch = eventRows.slice(i, i + batchSize);
+              const placeholders = batch
+                .map(
+                  (_, idx) =>
+                    `($${idx * 5 + 1}, $${idx * 5 + 2}, $${idx * 5 + 3}, $${idx * 5 + 4}, $${idx * 5 + 5})`,
+                )
+                .join(', ');
+              const params = batch.flat();
+              await connection.query(
+                `INSERT INTO indexer.cosmos_events (cosmos_response_id, type, key, value, index) VALUES ${placeholders}`,
+                params,
+              );
+            }
           }
         }
         height++;
