@@ -9,9 +9,9 @@ import { logger } from '~/core/Logger';
 import DataCache from '../cache/DataCache';
 
 // 10 Hours to commit
-const TIME_TO_COMMIT = 10 * 60 * 60;
+export const TIME_TO_COMMIT = 10 * 60 * 60;
 // 30 minutes to sequencer indexer sync the info
-const TIME_TO_SEQUENCER_INDEXER_SYNC = 1800;
+export const TIME_TO_SEQUENCER_INDEXER_SYNC = 1800;
 
 const network = env.get('FUEL_CHAIN')!;
 const currentNetworkContracts = getCurrentNetworkContracts(network);
@@ -261,6 +261,11 @@ async function queryContractEvents(
 }
 
 export async function getTimeToFinalize() {
+  const result = await getTimeToFinalizeStrict();
+  return result ?? 2880; // fallback to current mainnet value
+}
+
+export async function getTimeToFinalizeStrict(): Promise<number | null> {
   const cachedTimeToFinalizeWithdraw = DataCache.getInstance().get(
     'time-to-finalize-withdraw-minutes',
   );
@@ -284,7 +289,40 @@ export async function getTimeToFinalize() {
     return Number(valueInMinutes);
   } catch (error) {
     logger.error('Staking: getTimeToFinalize', error);
-    return 2880; // current mainnet
+    return null;
+  }
+}
+
+export async function getUnbondingTimeSeconds(): Promise<number | null> {
+  const cached = DataCache.getInstance().get('unbonding-time-seconds');
+  if (cached) {
+    return Number(cached);
+  }
+
+  try {
+    const res = await fetch(
+      new URL('/cosmos/staking/v1beta1/params', COSMOS_URL_RPC),
+    );
+    const data = await res.json();
+    // Cosmos returns unbonding_time as a duration string like "1814400s"
+    const unbondingTimeStr: string = data?.params?.unbonding_time ?? '';
+    const seconds = Number.parseInt(unbondingTimeStr.replace('s', ''), 10);
+    if (Number.isNaN(seconds)) {
+      logger.error(
+        'Staking: getUnbondingTime',
+        'Invalid unbonding_time format',
+      );
+      return null;
+    }
+    DataCache.getInstance().save(
+      'unbonding-time-seconds',
+      CACHE_EXPIRATION,
+      seconds.toString(),
+    );
+    return seconds;
+  } catch (error) {
+    logger.error('Staking: getUnbondingTime', error);
+    return null;
   }
 }
 

@@ -127,6 +127,9 @@ export function useWithdrawNewDialog() {
 
   return {
     state: useSelector(service, (state) => state),
+    finalizationPeriod: useSelector(service, (state) =>
+      withdrawNewDialogMachineSelectors.getFinalizationPeriod(state.context),
+    ),
     send: service.send,
     amount: amountValue,
     balance,
