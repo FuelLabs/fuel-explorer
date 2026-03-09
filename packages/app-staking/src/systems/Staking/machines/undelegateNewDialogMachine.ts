@@ -416,7 +416,7 @@ export const undelegateNewDialogMachine = createMachine(
         );
       },
       getFinalizationPeriod: async () => {
-        return FinalizationPeriodService.fetchFinalizationPeriod();
+        return FinalizationPeriodService.fetchFinalizationPeriod('undelegate');
       },
       submitUndelegate: async (context) => {
         const result = await UndelegateNewService.submitUndelegate(context);

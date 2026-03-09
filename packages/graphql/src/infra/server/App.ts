@@ -24,6 +24,7 @@ import {
   TIME_TO_SEQUENCER_INDEXER_SYNC,
   getStakingTransactions,
   getTimeToFinalizeStrict,
+  getUnbondingTimeSeconds,
 } from '../dao/TEMP_StakingDAO';
 import { convertToUsd } from '../dao/utils';
 import AssetGateway from '../gateway/AssetGateway';
@@ -132,11 +133,10 @@ export class Server {
     );
 
     app.get(
-      '/staking/finalization-period',
+      '/staking/finalization-period/withdraw',
       async (_req: Request, res: Response) => {
-        logger.debug('API', 'Get staking finalization period');
+        logger.debug('API', 'Get withdraw finalization period');
         try {
-          // getTimeToFinalizeStrict() returns minutes or null (no fallback)
           const timeToFinalizeMinutes = await getTimeToFinalizeStrict();
           if (timeToFinalizeMinutes == null) {
             res.json({ seconds: null });
@@ -148,7 +148,27 @@ export class Server {
             TIME_TO_SEQUENCER_INDEXER_SYNC;
           res.json({ seconds: totalSeconds });
         } catch (_error) {
-          logger.error('API', 'Error fetching finalization period');
+          logger.error('API', 'Error fetching withdraw finalization period');
+          res.status(500).json({ seconds: null });
+        }
+      },
+    );
+
+    app.get(
+      '/staking/finalization-period/undelegate',
+      async (_req: Request, res: Response) => {
+        logger.debug('API', 'Get undelegate finalization period');
+        try {
+          const unbondingSeconds = await getUnbondingTimeSeconds();
+          if (unbondingSeconds == null) {
+            res.json({ seconds: null });
+            return;
+          }
+          const totalSeconds =
+            unbondingSeconds + TIME_TO_SEQUENCER_INDEXER_SYNC;
+          res.json({ seconds: totalSeconds });
+        } catch (_error) {
+          logger.error('API', 'Error fetching undelegate finalization period');
           res.status(500).json({ seconds: null });
         }
       },

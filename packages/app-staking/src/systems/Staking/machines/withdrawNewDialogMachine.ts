@@ -426,7 +426,7 @@ export const withdrawNewDialogMachine = createMachine(
         );
       },
       getFinalizationPeriod: async () => {
-        return FinalizationPeriodService.fetchFinalizationPeriod();
+        return FinalizationPeriodService.fetchFinalizationPeriod('withdraw');
       },
       submitWithdraw: async (context) => {
         const result = await WithdrawNewService.submitWithdraw(context);
