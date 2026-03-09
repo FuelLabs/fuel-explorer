@@ -134,7 +134,9 @@ export default class BlockDAO {
           b.gas_used as gasused,
           b.total_fee as totalfee,
           b.producer,
-          b.timestamp as timestamp
+          b.timestamp as timestamp,
+          b.transactions_count as transactionscount,
+          pg_column_size(b.data) as blocksize
         from
           indexer.blocks b
         order by
@@ -152,6 +154,8 @@ export default class BlockDAO {
       blockNo: block.blockno,
       blockHash: block.hash,
       producer: block.producer,
+      transactionsCount: Number(block.transactionscount) || 0,
+      blockSize: Number(block.blocksize) || 0,
     }));
     return {
       nodes: formattedBlocksData,
@@ -254,6 +258,58 @@ export default class BlockDAO {
       date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
       value: Number(row.value),
     }));
+  }
+
+  async getAverageTpsPerMinute() {
+    const data = await this.databaseConnection.query(
+      `SELECT to_char(minute, 'YYYY-MM-DD HH24:MI') AS date,
+        SUM(transactions_count)::float / 60 AS value
+      FROM (
+        SELECT date_trunc('minute', "timestamp") AS minute,
+          transactions_count
+        FROM indexer.blocks
+        WHERE "timestamp" > NOW() - INTERVAL '24 hours'
+      ) t
+      GROUP BY minute
+      ORDER BY minute ASC`,
+      [],
+    );
+    return data.map((row) => ({
+      date: dayjs(row.date).startOf('minute').utcOffset(0, true).toDate(),
+      value: Number(row.value) || 0,
+    }));
+  }
+
+  async getRollingStats60s() {
+    const [stats, peak] = await Promise.all([
+      this.databaseConnection.query(
+        `SELECT
+          COALESCE(SUM(transactions_count)::float / 60, 0) AS tps,
+          CASE WHEN COUNT(*) > 0 THEN SUM(transactions_count)::float / COUNT(*) ELSE 0 END AS avg_tx_per_block,
+          CASE WHEN COUNT(*) > 0 THEN AVG(gas_used::numeric) ELSE 0 END AS avg_gas_per_block,
+          CASE WHEN COUNT(*) > 0 THEN AVG(pg_column_size(data)) ELSE 0 END AS avg_block_size
+        FROM indexer.blocks
+        WHERE "timestamp" > NOW() - INTERVAL '60 seconds'`,
+        [],
+      ),
+      this.databaseConnection.query(
+        `SELECT COALESCE(MAX(minute_tps), 0) AS peak_tps
+        FROM (
+          SELECT SUM(transactions_count)::float / 60 AS minute_tps
+          FROM indexer.blocks
+          WHERE "timestamp" > NOW() - INTERVAL '24 hours'
+          GROUP BY date_trunc('minute', "timestamp")
+        ) t`,
+        [],
+      ),
+    ]);
+    return {
+      tps: Number(stats[0]?.tps) || 0,
+      avgTxPerBlock: Number(stats[0]?.avg_tx_per_block) || 0,
+      avgGasPerBlock: Number(stats[0]?.avg_gas_per_block) || 0,
+      avgBlockSize: Number(stats[0]?.avg_block_size) || 0,
+      peakTps: Number(peak[0]?.peak_tps) || 0,
+    };
   }
 
   async getAverageGasUsed() {
