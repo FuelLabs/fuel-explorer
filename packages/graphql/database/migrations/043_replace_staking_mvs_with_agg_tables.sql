@@ -93,7 +93,7 @@ ON CONFLICT (day) DO UPDATE SET daily_claims = EXCLUDED.daily_claims;
 
 -- Backfill total_staking_agg - L1 cosmos side
 INSERT INTO indexer.total_staking_agg (day, l1_staked, l2_staked)
-SELECT DATE_TRUNC('day', cr."timestamp")::date AS day, SUM(CAST(TRIM(BOTH '"' FROM ce_amount.value) AS BIGINT)), 0
+SELECT DATE_TRUNC('day', cr."timestamp")::date AS day, SUM(CAST(regexp_replace(ce_amount.value, '[^0-9]', '', 'g') AS NUMERIC)), 0
 FROM indexer.cosmos_responses cr
 JOIN indexer.cosmos_events ce_del ON ce_del.cosmos_response_id = cr._id AND ce_del."type" = 'delegate' AND ce_del."key" = 'delegator' AND ce_del."value" != '0x85308a35b3ad660213ea91a5d37bbf9620708ecc'
 JOIN indexer.cosmos_events ce_amount ON ce_amount.cosmos_response_id = cr._id AND ce_amount."type" = 'delegate' AND ce_amount."key" = 'amount' AND ce_amount."index" = ce_del."index"
