@@ -48,6 +48,21 @@ export default class IndexCosmos {
           );
           continue;
         }
+        // Skip if already indexed to prevent double-counting in aggregation tables
+        const alreadyIndexed = await connection.query(
+          'SELECT 1 FROM indexer.cosmos_responses WHERE block_height = $1 LIMIT 1',
+          [height],
+        );
+        if ((alreadyIndexed as any[]).length > 0) {
+          logger.debug('Cosmos', `Block #${height} already indexed, skipping`);
+          height++;
+          await connection.query(
+            'update indexer.cosmos_index set block_height = $1',
+            [height],
+          );
+          continue;
+        }
+
         for (const tx of tx_responses) {
           const [cosmosResponse] = await connection.query(
             'insert into indexer.cosmos_responses (block_height, tx_hash, data, timestamp) values ($1, $2, $3, $4) returning _id',
