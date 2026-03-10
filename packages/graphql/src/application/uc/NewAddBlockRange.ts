@@ -296,7 +296,7 @@ export default class NewAddBlockRange {
           r.assetId === FUEL_ASSET_ID &&
           BigInt(r.amount || '0') > 0n
         ) {
-          const amount = (BigInt(r.amount) / 1000000000n).toString();
+          const amount = r.amount.toString();
           queries.push({
             statement:
               'INSERT INTO indexer.daily_claims_agg (day, daily_claims) VALUES ($1, $2) ON CONFLICT (day) DO UPDATE SET daily_claims = indexer.daily_claims_agg.daily_claims + $2',

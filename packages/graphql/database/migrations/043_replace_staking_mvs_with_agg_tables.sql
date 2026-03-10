@@ -83,7 +83,7 @@ ON CONFLICT (day) DO UPDATE SET daily_unbond = EXCLUDED.daily_unbond;
 
 -- Backfill daily_claims_agg
 INSERT INTO indexer.daily_claims_agg (day, daily_claims)
-SELECT DATE_TRUNC('day', t."timestamp")::date AS day, (SUM(CAST(r.receipt_amount AS BIGINT)) / 1000000000)
+SELECT DATE_TRUNC('day', t."timestamp")::date AS day, SUM(CAST(r.receipt_amount AS BIGINT))
 FROM indexer.transactions_accounts ta
 JOIN indexer.transactions t ON ta.tx_hash = t.tx_hash AND t."data"->>'scriptData' LIKE '%d636c61696d5f72657761726473%'
 JOIN indexer.receipts r ON r.tx_hash = ta.tx_hash AND r.receipt_type = 'TRANSFER_OUT' AND r.receipt_asset_id = '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82' AND CAST(r.receipt_amount AS BIGINT) > 0
