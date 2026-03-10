@@ -7,9 +7,7 @@
 --
 -- Solution: Replace all MVs with regular aggregate tables that will be
 -- incrementally updated during indexing. This eliminates the expensive full-table
--- scans and lock contention. Migration 041 partially addressed this by decomposing
--- total_staking_mv into smaller MVs -- this migration supersedes that by
--- eliminating all MVs entirely.
+-- scans and lock contention.
 
 -- ============================================================================
 -- Step 1: Create aggregate tables
@@ -168,7 +166,7 @@ DELETE FROM indexer.database_jobs WHERE query LIKE '%fuel_daily_staked_mv%';
 
 INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
 VALUES (
-    'DELETE FROM indexer.daily_staked_agg WHERE day < NOW() - INTERVAL ''90 days''; DELETE FROM indexer.daily_unbond_agg WHERE day < NOW() - INTERVAL ''90 days''; DELETE FROM indexer.daily_claims_agg WHERE day < NOW() - INTERVAL ''90 days''; DELETE FROM indexer.total_staking_agg WHERE day < NOW() - INTERVAL ''90 days''; DELETE FROM indexer.daily_inflows_agg WHERE day < NOW() - INTERVAL ''90 days''; DELETE FROM indexer.daily_outflows_agg WHERE day < NOW() - INTERVAL ''90 days'';',
+    'DELETE FROM indexer.daily_staked_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_unbond_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_claims_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.total_staking_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_inflows_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_outflows_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59),
     true, 86400, 'pending'
 ) ON CONFLICT (query) DO NOTHING;
 
