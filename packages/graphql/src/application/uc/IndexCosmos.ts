@@ -1,5 +1,6 @@
 import { setTimeout } from 'node:timers/promises';
 import { env } from '~/config';
+import { COSMOS_EXCLUDED_DELEGATOR } from '~/constants/staking';
 import { logger } from '~/core/Logger';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 
@@ -35,6 +36,18 @@ export default class IndexCosmos {
         }
         logger.debug('Cosmos', `Indexing block #${height}`);
         const tx_responses = output.tx_responses;
+        if (!Array.isArray(tx_responses)) {
+          logger.debug(
+            'Cosmos',
+            `Invalid response for block #${height}, skipping`,
+          );
+          height++;
+          await connection.query(
+            'update indexer.cosmos_index set block_height = $1',
+            [height],
+          );
+          continue;
+        }
         for (const tx of tx_responses) {
           const [cosmosResponse] = await connection.query(
             'insert into indexer.cosmos_responses (block_height, tx_hash, data, timestamp) values ($1, $2, $3, $4) returning _id',
@@ -71,6 +84,34 @@ export default class IndexCosmos {
                 `INSERT INTO indexer.cosmos_events (cosmos_response_id, type, key, value, index) VALUES ${placeholders}`,
                 params,
               );
+            }
+          }
+
+          // Aggregate L1 delegation events into total_staking_agg
+          for (const event of tx.events) {
+            if (event.type === 'delegate') {
+              const delegatorAttr = event.attributes.find(
+                (a: any) => a.key === 'delegator',
+              );
+              const amountAttr = event.attributes.find(
+                (a: any) => a.key === 'amount',
+              );
+              if (
+                delegatorAttr &&
+                amountAttr &&
+                delegatorAttr.value !== COSMOS_EXCLUDED_DELEGATOR
+              ) {
+                const amount = amountAttr.value.replace(/[^0-9]/g, '');
+                if (amount && BigInt(amount) > 0n) {
+                  const day = new Date(tx.timestamp)
+                    .toISOString()
+                    .split('T')[0];
+                  await connection.query(
+                    'INSERT INTO indexer.total_staking_agg (day, l1_staked, l2_staked) VALUES ($1, $2, 0) ON CONFLICT (day) DO UPDATE SET l1_staked = indexer.total_staking_agg.l1_staked + $2',
+                    [day, amount],
+                  );
+                }
+              }
             }
           }
         }
