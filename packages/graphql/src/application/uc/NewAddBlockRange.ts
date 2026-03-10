@@ -251,7 +251,7 @@ export default class NewAddBlockRange {
     if (scriptData?.includes(SCRIPT_DATA_DEPOSIT)) {
       for (const r of receipts) {
         if (
-          r.__typename === 'CallReceipt' &&
+          r.receiptType === 'CALL' &&
           r.to === STAKING_CONTRACT &&
           BigInt(r.amount || '0') > 0n
         ) {
@@ -274,7 +274,7 @@ export default class NewAddBlockRange {
     if (scriptData?.includes(SCRIPT_DATA_WITHDRAW)) {
       for (const r of receipts) {
         if (
-          r.__typename === 'TransferOutReceipt' &&
+          r.receiptType === 'TRANSFER_OUT' &&
           r.assetId === FUEL_ASSET_ID &&
           BigInt(r.amount || '0') > 0n
         ) {
@@ -292,7 +292,7 @@ export default class NewAddBlockRange {
     if (scriptData?.includes(SCRIPT_DATA_CLAIM_REWARDS)) {
       for (const r of receipts) {
         if (
-          r.__typename === 'TransferOutReceipt' &&
+          r.receiptType === 'TRANSFER_OUT' &&
           r.assetId === FUEL_ASSET_ID &&
           BigInt(r.amount || '0') > 0n
         ) {
