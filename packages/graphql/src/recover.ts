@@ -1,10 +1,10 @@
 import { setTimeout } from 'node:timers/promises';
-import NewAddBlockRange from './application/uc/NewAddBlockRange';
 import { logger } from './core/Logger';
 import { DatabaseConnection } from './infra/database/DatabaseConnection';
+import { QueueNames, mq } from './infra/queue/Queue';
 
 async function main() {
-  const addBlockRange = new NewAddBlockRange();
+  await mq.connect();
   const databaseConnection = DatabaseConnection.getInstance();
   const from = 1;
   const to = 12875752;
@@ -22,12 +22,11 @@ async function main() {
   }
   let i = 0;
   for (const row of rows) {
-    try {
-      await addBlockRange.execute({ from: row.seq, to: row.seq });
-      console.log(`Recovering block #${row.seq} ${i++}`);
-    } catch (err: any) {
-      console.error(`Failed to recover block #${row.seq}: ${err.message}`);
-    }
+    await mq.send('block', QueueNames.ADD_BLOCK_RANGE, {
+      from: row.seq,
+      to: row.seq,
+    });
+    console.log(`Recovering block #${row.seq} ${i++}`);
     await setTimeout(100);
   }
 }

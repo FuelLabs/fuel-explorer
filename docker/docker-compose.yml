@@ -116,6 +116,23 @@ services:
     networks:
       - app-network
 
+  fuel_rabbitmq:
+    profiles:
+      - all
+      - indexer
+      - indexer-local
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # Management UI port
+    env_file:
+      - ./envs/indexer.env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest} 
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    networks:
+      - app-network
+
   # fuel_indexer_graphql:
   #   profiles:
   #     - all
@@ -123,6 +140,8 @@ services:
   #   depends_on:
   #     fuel_explorer_pgsql:
   #       condition: service_healthy
+  #     fuel_rabbitmq:
+  #       condition: service_started
   #   build:
   #     context: ../
   #     dockerfile: ./deployment/Dockerfile
