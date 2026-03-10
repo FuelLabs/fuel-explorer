@@ -1,0 +1,164 @@
+name: Testnet E2E Tests (Scheduled)
+
+on:
+  schedule:
+    # Every 6 hours: 0:00, 6:00, 12:00, 18:00 UTC
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allow manual testing
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'soft'
+        type: choice
+        options:
+          - soft
+          - hard
+          - all
+
+concurrency:
+  group: testnet-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  testnet-e2e-soft:
+    name: Testnet E2E (Soft Tests)
+    runs-on: warp-ubuntu-latest-x64-4x
+    timeout-minutes: 30
+    if: github.event_name == 'schedule' || github.event.inputs.test_suite == 'soft' || github.event.inputs.test_suite == 'all'
+    env:
+      # Testnet configuration
+      VITE_FUEL_CHAIN_NAME: fuelTestnet
+      VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+      VITE_STAKING_ENV: TESTNET
+      FUEL_PROVIDER_URL: https://testnet.fuel.network/v1/graphql
+      E2E_TARGET_ENV: testnet
+      # Turbo cache
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+
+      - name: Create testnet .env file
+        run: |
+          cat > packages/app-explorer/.env << 'EOF'
+          VITE_FUEL_CHAIN_NAME=fuelTestnet
+          VITE_FUEL_INDEXER_API=https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV=TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL=https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
+          EOF
+
+          cat > packages/graphql/.env << 'EOF'
+          FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql
+          FUEL_CHAIN=testnet
+          EOF
+
+      - name: Build production for testnet
+        env:
+          NODE_ENV: production
+          VITE_FUEL_CHAIN_NAME: fuelTestnet
+          VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV: TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL: https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
+        run: pnpm build:prod
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run soft E2E tests
+        run: xvfb-run --auto-servernum -- pnpm exec playwright test --config=packages/e2e-tests/playwright-soft-testnet.config.ts
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testnet-soft-report-${{ github.run_number }}
+          path: |
+            packages/e2e-tests/playwright-html/soft-testnet/
+            packages/e2e-tests/test-results/
+          retention-days: 7
+
+  testnet-e2e-hard:
+    name: Testnet E2E (Hard Tests)
+    runs-on: warp-ubuntu-latest-x64-8x
+    timeout-minutes: 90
+    # Only run on manual trigger for now (until wallets are funded)
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.test_suite == 'hard' || github.event.inputs.test_suite == 'all')
+    env:
+      VITE_FUEL_CHAIN_NAME: fuelTestnet
+      VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+      VITE_STAKING_ENV: TESTNET
+      FUEL_PROVIDER_URL: https://testnet.fuel.network/v1/graphql
+      ETH_CHAIN: sepolia
+      ETH_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+      E2E_TARGET_ENV: testnet
+      # Testnet wallet credentials (to be added as secrets)
+      E2E_ETH_MNEMONIC: ${{ secrets.E2E_TESTNET_ETH_MNEMONIC }}
+      E2E_FUEL_MNEMONIC: ${{ secrets.E2E_TESTNET_FUEL_MNEMONIC }}
+      E2E_ETH_PASSWORD: ${{ secrets.E2E_TESTNET_ETH_PASSWORD }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 20.15.1
+          pnpm-version: 9.10.0
+
+      - name: Create testnet .env files
+        run: |
+          cat > packages/app-explorer/.env << 'EOF'
+          VITE_FUEL_CHAIN_NAME=fuelTestnet
+          VITE_FUEL_INDEXER_API=https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV=TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL=https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
+          EOF
+
+          cat > packages/graphql/.env << 'EOF'
+          FUEL_PROVIDER=https://testnet.fuel.network/v1/graphql
+          FUEL_CHAIN=testnet
+          EOF
+
+      - name: Build production for testnet
+        env:
+          NODE_ENV: production
+          VITE_FUEL_CHAIN_NAME: fuelTestnet
+          VITE_FUEL_INDEXER_API: https://explorer-indexer-testnet.fuel.network
+          VITE_STAKING_ENV: TESTNET
+          VITE_ECOSYSTEM_PROJECTS_URL: https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/refs/heads/main/projects.json
+        run: pnpm build:prod
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Setup Synpress (MetaMask)
+        run: xvfb-run --auto-servernum -- pnpm --filter=e2e-tests setup:synpress
+
+      - name: Run hard E2E tests
+        run: xvfb-run --auto-servernum -- pnpm --filter=e2e-tests exec playwright test --config=playwright.config.testnet.ts
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testnet-hard-report-${{ github.run_number }}
+          path: |
+            packages/e2e-tests/playwright-report/
+            packages/e2e-tests/test-results/
+            packages/e2e-tests/blob-report/
+          retention-days: 7
