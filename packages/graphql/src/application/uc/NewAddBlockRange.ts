@@ -101,7 +101,7 @@ export default class NewAddBlockRange {
         }
         if (transactionData.inputs) {
           for (const inputData of transactionData.inputs) {
-            const nonce = (inputData as any).nonce || null;
+            const nonce = (inputData as any).nonce ?? null;
             queries.push({
               statement:
                 'insert into indexer.inputs (transaction_id, nonce) values ($1, $2) on conflict do nothing',
