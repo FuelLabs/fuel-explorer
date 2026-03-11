@@ -77,31 +77,33 @@ async function main() {
     const range = { from, to: Math.min(to, height) };
     const events = createBatchEvents(range);
 
+    // Process batches sequentially in chunks of CONCURRENCY.
+    // Each chunk processes contiguous ranges concurrently via Promise.all.
+    // If any batch in a chunk fails, the entire chunk is considered failed
+    // and the loop restarts — idempotency guards in NewAddBlockRange
+    // safely skip already-indexed blocks on retry.
     let failed = false;
     for (let i = 0; i < events.length && !failed; i += CONCURRENCY) {
       const chunk = events.slice(i, i + CONCURRENCY);
-      const results = await Promise.allSettled(
-        chunk.map(async (event) => {
-          logger.debug(
-            'Syncer',
-            `Processing blocks #${event.from} - #${event.to}`,
-          );
-          await addBlockRange.execute(event);
-        }),
-      );
-      for (const result of results) {
-        if (result.status === 'rejected') {
-          const err = result.reason;
-          const is429 = err?.message?.includes('429');
-          const errBackoff = is429 ? 10000 : 2000;
-          logger.error(
-            'Syncer',
-            `Failed to process batch${is429 ? ' (rate limited)' : ''}: ${err.message}`,
-          );
-          await setTimeout(errBackoff);
-          failed = true;
-          break;
-        }
+      try {
+        await Promise.all(
+          chunk.map(async (event) => {
+            logger.debug(
+              'Syncer',
+              `Processing blocks #${event.from} - #${event.to}`,
+            );
+            await addBlockRange.execute(event);
+          }),
+        );
+      } catch (err: any) {
+        const is429 = err?.status === 429 || /\b429\b/.test(err?.message);
+        const errBackoff = is429 ? 10000 : 2000;
+        logger.error(
+          'Syncer',
+          `Failed to process batch${is429 ? ' (rate limited)' : ''}: ${err.message}`,
+        );
+        await setTimeout(errBackoff);
+        failed = true;
       }
     }
   }
