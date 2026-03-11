@@ -9,6 +9,7 @@ const BACKOFF_INITIAL_MS = 1000;
 const BACKOFF_MAX_MS = 30000;
 const BATCH_SIZE = 10;
 const MAX_RANGE = 1000;
+const CONCURRENCY = 6;
 
 function createBatchEvents(idsRange: { from: number; to: number }) {
   const diff = idsRange.to - idsRange.from;
@@ -76,22 +77,31 @@ async function main() {
     const range = { from, to: Math.min(to, height) };
     const events = createBatchEvents(range);
 
-    for (const event of events) {
-      try {
-        logger.debug(
-          'Syncer',
-          `Processing blocks #${event.from} - #${event.to}`,
-        );
-        await addBlockRange.execute(event);
-      } catch (err: any) {
-        const is429 = err?.message?.includes('429');
-        const errBackoff = is429 ? 10000 : 2000;
-        logger.error(
-          'Syncer',
-          `Failed to process blocks #${event.from} - #${event.to}${is429 ? ' (rate limited)' : ''}: ${err.message}`,
-        );
-        await setTimeout(errBackoff);
-        break;
+    let failed = false;
+    for (let i = 0; i < events.length && !failed; i += CONCURRENCY) {
+      const chunk = events.slice(i, i + CONCURRENCY);
+      const results = await Promise.allSettled(
+        chunk.map(async (event) => {
+          logger.debug(
+            'Syncer',
+            `Processing blocks #${event.from} - #${event.to}`,
+          );
+          await addBlockRange.execute(event);
+        }),
+      );
+      for (const result of results) {
+        if (result.status === 'rejected') {
+          const err = result.reason;
+          const is429 = err?.message?.includes('429');
+          const errBackoff = is429 ? 10000 : 2000;
+          logger.error(
+            'Syncer',
+            `Failed to process batch${is429 ? ' (rate limited)' : ''}: ${err.message}`,
+          );
+          await setTimeout(errBackoff);
+          failed = true;
+          break;
+        }
       }
     }
   }
