@@ -1,3 +1,11 @@
+import {
+  FUEL_ASSET_ID,
+  SCRIPT_DATA_CLAIM_REWARDS,
+  SCRIPT_DATA_DEPOSIT,
+  SCRIPT_DATA_WITHDRAW,
+  STAKING_CONTRACT,
+  TREASURY_ADDRESSES,
+} from '~/constants/staking';
 import { logger } from '~/core/Logger';
 import { client } from '~/graphql/GraphQLSDK';
 import type {
@@ -31,6 +39,14 @@ export default class NewAddBlockRange {
     for (const blockData of blocksData) {
       const queries: { statement: string; params: any }[] = [];
       const block = new Block({ data: blockData });
+
+      // Skip already-indexed blocks to prevent double-counting in aggregation tables
+      const existing = await connection.query(
+        'SELECT 1 FROM indexer.blocks WHERE _id = $1 LIMIT 1',
+        [block.id],
+      );
+      if ((existing as any[]).length > 0) continue;
+
       queries.push({
         statement:
           'insert into indexer.blocks (_id, id, timestamp, data, gas_used, total_fee, producer, transactions_count, da_height) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict do nothing',
@@ -93,10 +109,11 @@ export default class NewAddBlockRange {
         }
         if (transactionData.inputs) {
           for (const inputData of transactionData.inputs) {
+            const nonce = (inputData as any).nonce ?? null;
             queries.push({
               statement:
-                'insert into indexer.inputs (transaction_id, data) values ($1, $2) on conflict do nothing',
-              params: [transaction.id, inputData],
+                'insert into indexer.inputs (transaction_id, nonce) values ($1, $2) on conflict do nothing',
+              params: [transaction.id, nonce],
             });
             const predicate = this.getPredicate(inputData);
             if (predicate) {
@@ -110,11 +127,6 @@ export default class NewAddBlockRange {
         }
         if (transactionData.outputs) {
           for (const outputData of transactionData.outputs) {
-            queries.push({
-              statement:
-                'insert into indexer.outputs (transaction_id, data) values ($1, $2) on conflict do nothing',
-              params: [transaction.id, outputData],
-            });
             if (
               (outputData.__typename === 'CoinOutput' ||
                 outputData.__typename === 'ChangeOutput' ||
@@ -157,6 +169,11 @@ export default class NewAddBlockRange {
             }
           }
         }
+        const stakingQueries = this.getStakingAggQueries(
+          transactionData,
+          block.timestamp,
+        );
+        queries.push(...stakingQueries);
       }
       logger.debug('Consumer', `Persisting block: ${block.id}`);
       await connection.executeTransaction(queries);
@@ -225,6 +242,113 @@ export default class NewAddBlockRange {
     if (input.__typename === 'InputCoin') address = input.owner;
     if (input.__typename === 'InputMessage') address = input.sender;
     return { bytecode, address };
+  }
+
+  getStakingAggQueries(
+    transactionData: GQLTransaction,
+    timestamp: string,
+  ): { statement: string; params: any }[] {
+    const queries: { statement: string; params: any }[] = [];
+    const day = new Date(timestamp).toISOString().split('T')[0];
+    const scriptData = (transactionData as any).scriptData as
+      | string
+      | undefined;
+    const receipts = ((transactionData as any).status?.receipts || []) as any[];
+
+    // Detect L2 staking deposits
+    if (scriptData?.includes(SCRIPT_DATA_DEPOSIT)) {
+      for (const r of receipts) {
+        if (
+          r.receiptType === 'CALL' &&
+          r.to === STAKING_CONTRACT &&
+          BigInt(r.amount || '0') > 0n
+        ) {
+          const amount = r.amount.toString();
+          queries.push({
+            statement:
+              'INSERT INTO indexer.daily_staked_agg (day, daily_staked) VALUES ($1, $2) ON CONFLICT (day) DO UPDATE SET daily_staked = indexer.daily_staked_agg.daily_staked + $2',
+            params: [day, amount],
+          });
+          queries.push({
+            statement:
+              'INSERT INTO indexer.total_staking_agg (day, l1_staked, l2_staked) VALUES ($1, 0, $2) ON CONFLICT (day) DO UPDATE SET l2_staked = indexer.total_staking_agg.l2_staked + $2',
+            params: [day, amount],
+          });
+        }
+      }
+    }
+
+    // Detect L2 unbonding
+    if (scriptData?.includes(SCRIPT_DATA_WITHDRAW)) {
+      for (const r of receipts) {
+        if (
+          r.receiptType === 'TRANSFER_OUT' &&
+          r.assetId === FUEL_ASSET_ID &&
+          BigInt(r.amount || '0') > 0n
+        ) {
+          const amount = r.amount.toString();
+          queries.push({
+            statement:
+              'INSERT INTO indexer.daily_unbond_agg (day, daily_unbond) VALUES ($1, $2) ON CONFLICT (day) DO UPDATE SET daily_unbond = indexer.daily_unbond_agg.daily_unbond + $2',
+            params: [day, amount],
+          });
+        }
+      }
+    }
+
+    // Detect L2 claim rewards
+    if (scriptData?.includes(SCRIPT_DATA_CLAIM_REWARDS)) {
+      for (const r of receipts) {
+        if (
+          r.receiptType === 'TRANSFER_OUT' &&
+          r.assetId === FUEL_ASSET_ID &&
+          BigInt(r.amount || '0') > 0n
+        ) {
+          const amount = r.amount.toString();
+          queries.push({
+            statement:
+              'INSERT INTO indexer.daily_claims_agg (day, daily_claims) VALUES ($1, $2) ON CONFLICT (day) DO UPDATE SET daily_claims = indexer.daily_claims_agg.daily_claims + $2',
+            params: [day, amount],
+          });
+        }
+      }
+    }
+
+    // Detect inflows/outflows — match original MV logic which checks
+    // transactions_accounts (includes both input owners and output recipients)
+    if (transactionData.outputs) {
+      const accounts = this.getAccounts(transactionData);
+      const hasTreasuryAccount = accounts.some((a) =>
+        TREASURY_ADDRESSES.includes(a),
+      );
+      if (hasTreasuryAccount) {
+        for (const output of transactionData.outputs) {
+          if (
+            output.__typename === 'CoinOutput' &&
+            (output as any).assetId === FUEL_ASSET_ID
+          ) {
+            const to = (output as any).to;
+            const amount = (output as any).amount?.toString();
+            if (!amount) continue;
+            if (!TREASURY_ADDRESSES.includes(to)) {
+              queries.push({
+                statement:
+                  'INSERT INTO indexer.daily_inflows_agg (day, amount) VALUES ($1, $2) ON CONFLICT (day) DO UPDATE SET amount = indexer.daily_inflows_agg.amount + $2',
+                params: [day, amount],
+              });
+            } else {
+              queries.push({
+                statement:
+                  'INSERT INTO indexer.daily_outflows_agg (day, amount) VALUES ($1, $2) ON CONFLICT (day) DO UPDATE SET amount = indexer.daily_outflows_agg.amount + $2',
+                params: [day, amount],
+              });
+            }
+          }
+        }
+      }
+    }
+
+    return queries;
   }
 
   getAccounts(transaction: GQLTransaction) {

@@ -218,19 +218,18 @@ export default class BridgeDAO {
         t.tx_hash,
         t.block_id,
         t."timestamp",
-        (i.data->>'nonce') as nonce
+        i.nonce
       from
         indexer.transactions_accounts t_a
       join
         indexer.inputs i
         on i.transaction_id = t_a._id
-        and (i.data->>'nonce') = $1
+        and i.nonce = $1
       join
         indexer.transactions t
         on t.tx_hash = t_a.tx_hash
       where
         t_a.account_hash = $2`,
-      // TODO move nonce outside jsonb
       [String(nonce), Address.fromString(address).toB256()],
     );
     return messageSpent
