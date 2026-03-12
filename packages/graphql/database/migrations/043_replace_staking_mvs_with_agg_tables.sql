@@ -168,7 +168,7 @@ INSERT INTO indexer.database_jobs (query, recurrent, interval_seconds, status)
 VALUES (
     'DELETE FROM indexer.daily_staked_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_unbond_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_claims_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.total_staking_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_inflows_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59) || ' DELETE FROM indexer.daily_outflows_agg WHERE day < NOW() - INTERVAL ''90 days''' || CHR(59),
     true, 86400, 'pending'
-) ON CONFLICT (query) DO NOTHING;
+);
 
 -- ============================================================================
 -- Step 7: Update migration version
