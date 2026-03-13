@@ -175,24 +175,22 @@ export default class NewAddBlockRange {
         );
         queries.push(...stakingQueries);
       }
-      // Recompute hourly_statistics_agg for this block's hour after all transactions
-      // are queued. Runs last so the SELECT sees the current block's transactions
-      // already inserted within the same transaction.
+      // Incrementally add this block's fee/gas to the hourly aggregate.
+      // Uses block.totalFee and block.totalGasUsed already computed in memory —
+      // no table scan needed.
       queries.push({
         statement: `
           INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
-          SELECT
-            date_trunc('hour', $1::timestamptz) AS hour,
-            COALESCE(SUM((data->'status'->>'totalFee')::numeric), 0) AS total_fee,
-            COALESCE(SUM((data->'status'->>'gasUsed')::bigint), 0) AS total_gas_used
-          FROM indexer.transactions
-          WHERE timestamp >= date_trunc('hour', $1::timestamptz)
-            AND timestamp < date_trunc('hour', $1::timestamptz) + INTERVAL '1 hour'
+          VALUES (date_trunc('hour', $1::timestamptz), $2, $3)
           ON CONFLICT (hour) DO UPDATE
-            SET total_fee = excluded.total_fee,
-                total_gas_used = excluded.total_gas_used
+            SET total_fee = hourly_statistics_agg.total_fee + excluded.total_fee,
+                total_gas_used = hourly_statistics_agg.total_gas_used + excluded.total_gas_used
         `,
-        params: [block.timestamp],
+        params: [
+          block.timestamp,
+          block.totalFee ?? '0',
+          block.totalGasUsed ?? 0,
+        ],
       });
       logger.debug('Consumer', `Persisting block: ${block.id}`);
       await connection.executeTransaction(queries);
