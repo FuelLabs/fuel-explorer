@@ -62,25 +62,6 @@ export default class NewAddBlockRange {
           block.data.header.daHeight,
         ],
       });
-      // Incrementally update hourly_statistics_agg for this block's hour.
-      // Using DELETE + INSERT pattern for idempotency: recomputes the entire
-      // hour from indexer.transactions so re-processing a block never double-counts.
-      queries.push({
-        statement: `
-          INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
-          SELECT
-            date_trunc('hour', $1::timestamptz) AS hour,
-            COALESCE(SUM((data->'status'->>'totalFee')::numeric), 0) AS total_fee,
-            COALESCE(SUM((data->'status'->>'gasUsed')::bigint), 0) AS total_gas_used
-          FROM indexer.transactions
-          WHERE timestamp >= date_trunc('hour', $1::timestamptz)
-            AND timestamp < date_trunc('hour', $1::timestamptz) + INTERVAL '1 hour'
-          ON CONFLICT (hour) DO UPDATE
-            SET total_fee = excluded.total_fee,
-                total_gas_used = excluded.total_gas_used
-        `,
-        params: [block.timestamp],
-      });
       for (const [index, transactionData] of blockData.transactions.entries()) {
         const transaction = new Transaction(
           transactionData,
@@ -194,6 +175,25 @@ export default class NewAddBlockRange {
         );
         queries.push(...stakingQueries);
       }
+      // Recompute hourly_statistics_agg for this block's hour after all transactions
+      // are queued. Runs last so the SELECT sees the current block's transactions
+      // already inserted within the same transaction.
+      queries.push({
+        statement: `
+          INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
+          SELECT
+            date_trunc('hour', $1::timestamptz) AS hour,
+            COALESCE(SUM((data->'status'->>'totalFee')::numeric), 0) AS total_fee,
+            COALESCE(SUM((data->'status'->>'gasUsed')::bigint), 0) AS total_gas_used
+          FROM indexer.transactions
+          WHERE timestamp >= date_trunc('hour', $1::timestamptz)
+            AND timestamp < date_trunc('hour', $1::timestamptz) + INTERVAL '1 hour'
+          ON CONFLICT (hour) DO UPDATE
+            SET total_fee = excluded.total_fee,
+                total_gas_used = excluded.total_gas_used
+        `,
+        params: [block.timestamp],
+      });
       logger.debug('Consumer', `Persisting block: ${block.id}`);
       await connection.executeTransaction(queries);
       logger.debug('Consumer', `Persisted block: ${block.id}`);
