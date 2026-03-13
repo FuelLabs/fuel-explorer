@@ -30,6 +30,7 @@
     "dev:explorer": "pnpm --filter=app-explorer run dev",
     "dev:portal": "pnpm --filter=app-portal dev",
     "dev:graphql": "pnpm --filter=graphql dev:graphql",
+    "dev:graphql:all": "pnpm --filter=graphql run-dev:all",
     "lint": "biome check --apply-unsafe .",
     "format": "biome format --write .",
     "node:clean": "make -C ./docker clean",
