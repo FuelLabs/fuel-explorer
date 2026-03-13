@@ -24,8 +24,8 @@ test.describe('Ecosystem', () => {
 
         // verify the domain matches (allowing subdomain redirects like o2.app -> trade.o2.app)
         expect(
-          openedDomain === hrefDomain ||
-            openedDomain.endsWith(`.${hrefDomain}`),
+          openedPageDomain === hrefDomain ||
+            openedPageDomain?.endsWith(`.${hrefDomain}`),
         ).toBe(true);
 
         await newPage.close();
