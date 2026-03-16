@@ -19,12 +19,14 @@ import { FuelToken, L1_DISABLE_WITHDRAW, TOKENS } from 'app-commons';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
+import { useMemo } from 'react';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
-import { formatETA } from '~staking/systems/Core/utils/eta';
 import { PausedContractAlertStaking } from '~staking/systems/Staking/components/PausedContractAlertStaking/PausedContractAlertStaking';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
+import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import { useWithdrawStatusDialog } from '~staking/systems/Staking/hooks/useWithdrawStatusDialog';
 import { useWithdrawStatusFlags } from '~staking/systems/Staking/hooks/useWithdrawStatusFlags';
+import { getWithdrawStepTiming } from '../../utils/withdrawTiming';
 import { StatusItem } from '../StatusItem/StatusItem';
 import { WITHDRAW_STEPS } from './constants';
 
@@ -66,8 +68,22 @@ export const WithdrawStatusDialog = ({
 
   const { statusFlags } = useWithdrawStatusFlags(stakingEvent);
   const currentTime = new Date();
-  const eta = stakingEvent?.timestampToFinish;
-  const formattedEta = formatETA(eta);
+
+  const timing = useMemo(
+    () =>
+      getWithdrawStepTiming(
+        stakingEvent?.status,
+        stakingEvent?.statusInfo,
+        stakingEvent?.timestampToFinish,
+      ),
+    [
+      stakingEvent?.status,
+      stakingEvent?.statusInfo,
+      stakingEvent?.timestampToFinish,
+    ],
+  );
+
+  const { eta: formattedEta } = useETA(timing);
 
   const responsiveDialogStyle = responsiveDialogStyles();
 
