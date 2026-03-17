@@ -22,10 +22,13 @@ CREATE TABLE IF NOT EXISTS indexer.hourly_statistics_agg (
 -- Grant read access
 GRANT SELECT ON indexer.hourly_statistics_agg TO explorer_ro;
 
--- Backfill from existing MV if it has data
+-- Backfill from blocks table (source of truth).
+-- Avoids using the MV which had incorrect total_gas_used and could be stale
+-- by up to 30 minutes (its refresh interval).
 INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
-SELECT hour, COALESCE(total_fee, 0), COALESCE(total_gas_used, 0)
-FROM indexer.hourly_statistics
+SELECT date_trunc('hour', timestamp), SUM(total_fee::numeric), SUM(gas_used::numeric)
+FROM indexer.blocks
+GROUP BY 1
 ON CONFLICT (hour) DO UPDATE
   SET total_fee = excluded.total_fee,
       total_gas_used = excluded.total_gas_used;
