@@ -24,7 +24,7 @@ GRANT SELECT ON indexer.hourly_statistics_agg TO explorer_ro;
 
 -- Backfill from existing MV if it has data
 INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
-SELECT hour, total_fee, total_gas_used
+SELECT hour, COALESCE(total_fee, 0), COALESCE(total_gas_used, 0)
 FROM indexer.hourly_statistics
 ON CONFLICT (hour) DO UPDATE
   SET total_fee = excluded.total_fee,
