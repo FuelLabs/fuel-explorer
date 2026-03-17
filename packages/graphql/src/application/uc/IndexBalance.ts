@@ -53,16 +53,17 @@ export default class IndexBalance {
             pairs.map((p) => [`${p.accountHash}:${p.assetId}`, p]),
           ).values(),
         ];
-        const placeholders = uniquePairs
-          .map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`)
-          .join(', ');
-        const params = uniquePairs.flatMap((p) => [p.accountHash, p.assetId]);
+        const accountHashes = uniquePairs.map((p) => p.accountHash);
+        const assetIds = uniquePairs.map((p) => p.assetId);
         const rows = await connection.query(
-          `SELECT DISTINCT ON (account_hash, asset_id) account_hash, asset_id, balance
-           FROM indexer.balance
-           WHERE (account_hash, asset_id) IN (${placeholders})
-           ORDER BY account_hash, asset_id, _id DESC`,
-          params,
+          `SELECT t.account_hash, t.asset_id, b.balance
+           FROM unnest($1::text[], $2::text[]) AS t(account_hash, asset_id)
+           JOIN LATERAL (
+             SELECT balance FROM indexer.balance
+             WHERE account_hash = t.account_hash AND asset_id = t.asset_id
+             ORDER BY _id DESC LIMIT 1
+           ) b ON true`,
+          [accountHashes, assetIds],
         );
         for (const row of rows) {
           balanceMap.set(
