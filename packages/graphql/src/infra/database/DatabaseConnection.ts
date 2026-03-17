@@ -54,9 +54,11 @@ export class DatabaseConnection {
 
   /**
    * Execute a query with per-session statement_timeout and lock_timeout.
-   * Timeouts are applied via SET LOCAL inside a transaction so they don't
-   * leak to other connections. If the query exceeds the timeout, PostgreSQL
-   * cancels it and the connection is returned cleanly to the pool.
+   *
+   * REFRESH MATERIALIZED VIEW CONCURRENTLY cannot run inside a transaction block.
+   * For those queries, timeouts are applied as session-level SET commands and
+   * reset afterward. For all other queries, SET LOCAL inside BEGIN/COMMIT is used
+   * so timeouts don't leak to other connections.
    */
   async queryWithTimeout(
     statement: string,
@@ -64,8 +66,21 @@ export class DatabaseConnection {
     statementTimeoutMs: number,
     lockTimeoutMs: number,
   ) {
+    // VACUUM and REFRESH MATERIALIZED VIEW CONCURRENTLY cannot run inside a transaction block
+    const requiresNoTransaction =
+      /REFRESH\s+MATERIALIZED\s+VIEW\s+CONCURRENTLY/i.test(statement) ||
+      /^\s*VACUUM\b/i.test(statement);
     const connection = await this.pool.connect();
     try {
+      if (requiresNoTransaction) {
+        // Cannot use BEGIN/COMMIT — apply timeouts at session level and reset after
+        await connection.query(`SET statement_timeout = ${statementTimeoutMs}`);
+        await connection.query(`SET lock_timeout = ${lockTimeoutMs}`);
+        const result = await connection.query(statement, params);
+        await connection.query('RESET statement_timeout');
+        await connection.query('RESET lock_timeout');
+        return result.rows;
+      }
       await connection.query('BEGIN');
       await connection.query(
         `SET LOCAL statement_timeout = ${statementTimeoutMs}`,
@@ -75,9 +90,16 @@ export class DatabaseConnection {
       await connection.query('COMMIT');
       return result.rows;
     } catch (error) {
-      try {
-        await connection.query('ROLLBACK');
-      } catch {}
+      if (!requiresNoTransaction) {
+        try {
+          await connection.query('ROLLBACK');
+        } catch {}
+      } else {
+        try {
+          await connection.query('RESET statement_timeout');
+          await connection.query('RESET lock_timeout');
+        } catch {}
+      }
       throw error;
     } finally {
       connection.release();

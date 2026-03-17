@@ -175,6 +175,23 @@ export default class NewAddBlockRange {
         );
         queries.push(...stakingQueries);
       }
+      // Incrementally add this block's fee/gas to the hourly aggregate.
+      // Uses block.totalFee and block.totalGasUsed already computed in memory —
+      // no table scan needed.
+      queries.push({
+        statement: `
+          INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
+          VALUES (date_trunc('hour', $1::timestamptz), $2, $3)
+          ON CONFLICT (hour) DO UPDATE
+            SET total_fee = hourly_statistics_agg.total_fee + excluded.total_fee,
+                total_gas_used = hourly_statistics_agg.total_gas_used + excluded.total_gas_used
+        `,
+        params: [
+          block.timestamp,
+          block.totalFee ?? '0',
+          block.totalGasUsed ?? 0,
+        ],
+      });
       logger.debug('Consumer', `Persisting block: ${block.id}`);
       await connection.executeTransaction(queries);
       logger.debug('Consumer', `Persisted block: ${block.id}`);
