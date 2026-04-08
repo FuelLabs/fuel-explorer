@@ -17,7 +17,6 @@ export default defineConfig(() => [
       'sdk-provider': 'src/graphql/generated/sdk-provider.ts',
       app: 'src/app.ts',
       syncer: 'src/syncer.ts',
-      consumer: 'src/consumer.ts',
       assets: 'src/assets.ts',
       balance: 'src/balance.ts',
       l1: 'src/l1.ts',
