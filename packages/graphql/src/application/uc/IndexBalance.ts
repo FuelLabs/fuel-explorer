@@ -55,6 +55,8 @@ export default class IndexBalance {
         ];
         const accountHashes = uniquePairs.map((p) => p.accountHash);
         const assetIds = uniquePairs.map((p) => p.assetId);
+        // JOIN (not LEFT JOIN): pairs with no balance history are absent from
+        // the result and correctly default to BigNumber(0) via ?? below.
         const rows = await connection.query(
           `SELECT t.account_hash, t.asset_id, b.balance
            FROM unnest($1::text[], $2::text[]) AS t(account_hash, asset_id)
@@ -74,8 +76,6 @@ export default class IndexBalance {
       }
 
       for (const transaction of block.transactions) {
-        transaction.inputs = transaction.inputs || [];
-        transaction.outputs = transaction.outputs || [];
         const index: any = {};
         for (const input of transaction.inputs) {
           if (input.__typename === 'InputCoin') {

@@ -25,6 +25,8 @@ GRANT SELECT ON indexer.hourly_statistics_agg TO explorer_ro;
 -- Backfill from blocks table (source of truth).
 -- Avoids using the MV which had incorrect total_gas_used and could be stale
 -- by up to 30 minutes (its refresh interval).
+-- NOTE: this is a full seq scan of indexer.blocks — expected to take several
+-- minutes on large databases. Migration runs offline so this is acceptable.
 INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
 SELECT date_trunc('hour', timestamp), SUM(total_fee::numeric), SUM(gas_used::numeric)
 FROM indexer.blocks

@@ -178,6 +178,10 @@ export default class NewAddBlockRange {
       // Incrementally add this block's fee/gas to the hourly aggregate.
       // Uses block.totalFee and block.totalGasUsed already computed in memory —
       // no table scan needed.
+      // WARNING: if a block is reprocessed (e.g. syncer restart with overlapping
+      // ranges), its fee/gas will be double-counted here. The blocks table is
+      // protected by ON CONFLICT DO NOTHING, but the agg accumulates blindly.
+      // Reprocessing is rare and the agg can be recomputed from blocks if needed.
       queries.push({
         statement: `
           INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
