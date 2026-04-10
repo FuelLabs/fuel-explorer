@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  axios@>=1.0.0 <1.8.2: '>=1.8.2'
+  axios@>=1.0.0 <1.15.0: '>=1.15.0'
   ws@<8.17.1: '>=8.17.1'
   form-data@>=3.0.0 <3.0.4: '>=3.0.4'
   form-data@>=4.0.0 <4.0.4: '>=4.0.4'
@@ -6616,8 +6616,8 @@ packages:
     resolution: {integrity: sha512-zIURGIS1E1Q4pcrMjp+nnEh+16G56eG/MUllJH8yEvw7asDo7Ac9uhC9KIH5jzpITueEZolfYglnCGIuSBz39g==}
     engines: {node: '>=4'}
 
-  axios@1.11.0:
-    resolution: {integrity: sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==}
+  axios@1.15.0:
+    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
 
   b4a@1.6.7:
     resolution: {integrity: sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==}
@@ -8240,6 +8240,10 @@ packages:
 
   form-data@4.0.4:
     resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
+    engines: {node: '>= 6'}
+
+  form-data@4.0.5:
+    resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
     engines: {node: '>= 6'}
 
   formdata-polyfill@4.0.10:
@@ -10680,6 +10684,10 @@ packages:
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+
+  proxy-from-env@2.1.0:
+    resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+    engines: {node: '>=10'}
 
   psl@1.15.0:
     resolution: {integrity: sha512-JZd3gMVBAVQkSs6HdNZo9Sdo0LNcQeMNP3CozBJb3JYC/QUYZTnKxP+f8oWRX4rHP5EurWxqAHTSwUCjlNKa1w==}
@@ -13859,7 +13867,7 @@ snapshots:
       '@cosmjs/socket': 0.32.4(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@cosmjs/stream': 0.32.4
       '@cosmjs/utils': 0.32.4
-      axios: 1.11.0(debug@4.4.1)
+      axios: 1.15.0(debug@4.4.1)
       readonly-date: 1.0.0
       xstream: 11.14.0
     transitivePeerDependencies:
@@ -13871,7 +13879,7 @@ snapshots:
 
   '@cosmology/lcd@0.13.4':
     dependencies:
-      axios: 1.11.0(debug@4.4.1)
+      axios: 1.15.0(debug@4.4.1)
     transitivePeerDependencies:
       - debug
 
@@ -16558,7 +16566,7 @@ snapshots:
   '@openzeppelin/defender-sdk-deploy-client@2.7.0(debug@4.4.1)':
     dependencies:
       '@openzeppelin/defender-sdk-base-client': 2.7.0
-      axios: 1.11.0(debug@4.4.1)
+      axios: 1.15.0(debug@4.4.1)
       lodash: 4.17.21
     transitivePeerDependencies:
       - aws-crt
@@ -16568,7 +16576,7 @@ snapshots:
   '@openzeppelin/defender-sdk-network-client@2.7.0(debug@4.4.1)':
     dependencies:
       '@openzeppelin/defender-sdk-base-client': 2.7.0
-      axios: 1.11.0(debug@4.4.1)
+      axios: 1.15.0(debug@4.4.1)
       lodash: 4.17.21
     transitivePeerDependencies:
       - aws-crt
@@ -19332,7 +19340,7 @@ snapshots:
 
   '@synthetixio/synpress-cache@0.0.12(@swc/core@1.13.3(@swc/helpers@0.5.17))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.4.1(@swc/helpers@0.5.17))(@types/node@22.7.5)(typescript@5.4.5))(typescript@5.9.2)':
     dependencies:
-      axios: 1.11.0(debug@4.4.1)
+      axios: 1.15.0(debug@4.4.1)
       chalk: 5.3.0
       commander: 12.0.0
       esbuild: 0.27.2
@@ -21682,11 +21690,11 @@ snapshots:
 
   axe-core@4.7.2: {}
 
-  axios@1.11.0(debug@4.4.1):
+  axios@1.15.0(debug@4.4.1):
     dependencies:
       follow-redirects: 1.15.11(debug@4.4.1)
-      form-data: 4.0.4
-      proxy-from-env: 1.1.0
+      form-data: 4.0.5
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
 
@@ -23621,6 +23629,14 @@ snapshots:
       signal-exit: 4.1.0
 
   form-data@4.0.4:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
+      mime-types: 2.1.35
+
+  form-data@4.0.5:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -26766,6 +26782,8 @@ snapshots:
   proxy-compare@2.5.1: {}
 
   proxy-from-env@1.1.0: {}
+
+  proxy-from-env@2.1.0: {}
 
   psl@1.15.0:
     dependencies:
