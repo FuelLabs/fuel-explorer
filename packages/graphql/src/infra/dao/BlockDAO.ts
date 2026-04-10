@@ -378,7 +378,7 @@ export default class BlockDAO {
     const data = await this.databaseConnection.query(
       `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
         total_fee AS value
-      FROM indexer.hourly_statistics
+      FROM indexer.hourly_statistics_agg
       WHERE hour > NOW() - INTERVAL '24 hours'
         AND hour <= date_trunc('hour', NOW())
       ORDER BY hour`,
