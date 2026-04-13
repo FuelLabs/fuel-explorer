@@ -16,7 +16,7 @@ export const MaintenanceBanner = () => {
       </Alert.Icon>
       <Text className="text-orange-12">
         The network is undergoing a scheduled migration today starting 17:30
-        UTC. We expect to be back up shortly.
+        UTC. We expect it to be up again shortly.
       </Text>
     </Alert>
   );
