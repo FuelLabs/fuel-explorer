@@ -1,44 +1,20 @@
-import { getBridgeSolidityContracts } from 'app-commons';
-import type { PublicClient } from 'viem';
+import { FUEL_INDEXER_API } from 'app-commons';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
 
-const FUEL_CHAIN_STATE_ABI = [
-  {
-    inputs: [],
-    name: 'TIME_TO_FINALIZE',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-] as const;
+export type FinalizationPeriodFlow = 'withdraw' | 'undelegate';
 
 export const FinalizationPeriodService = {
-  fetchFinalizationPeriod: async (publicClient?: PublicClient) => {
-    if (!publicClient) return undefined;
-
+  fetchFinalizationPeriod: async (
+    flow: FinalizationPeriodFlow,
+  ): Promise<string | undefined> => {
     try {
-      const contracts = await getBridgeSolidityContracts();
-      const fuelChainStateAddress = contracts?.FuelChainState as
-        | `0x${string}`
-        | undefined;
-
-      if (!fuelChainStateAddress) return undefined;
-
-      const timeToFinalize = (await publicClient.readContract({
-        address: fuelChainStateAddress,
-        abi: FUEL_CHAIN_STATE_ABI,
-        functionName: 'TIME_TO_FINALIZE',
-      })) as bigint;
-
-      if (timeToFinalize == null) return undefined;
-
-      return formatSecondsToETA(Number(timeToFinalize), '~');
+      const res = await fetch(
+        `${FUEL_INDEXER_API}/staking/finalization-period/${flow}`,
+      );
+      if (!res.ok) return undefined;
+      const data = await res.json();
+      if (data.seconds == null) return undefined;
+      return formatSecondsToETA(data.seconds, '~');
     } catch (error) {
       console.error('Error fetching finalization period:', error);
       return undefined;

@@ -135,10 +135,10 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                       {label}
                     </div>
                     <div style={{ color: '#00F58C' }}>
-                      Avg TPS: {data.avg.toFixed(2)} TX/s
+                      Peak TPS: {data.max.toFixed(2)} TX/s
                     </div>
                     <div style={{ color: 'var(--gray-12)' }}>
-                      Peak TPS: {data.max.toFixed(2)} TX/s
+                      Avg TPS: {data.avg.toFixed(2)} TX/s
                     </div>
                     {peakTps > 0 && (
                       <div

@@ -2,6 +2,7 @@ import { Container, VStack, cx } from '@fuels/ui';
 import { TopNav } from '~/systems/Core/components/TopNav/TopNav';
 import HeroSection from '~/systems/Home/components/Hero/HeroSection';
 import { Footer } from '../Footer/Footer';
+import { MaintenanceBanner } from '../MaintenanceBanner/MaintenanceBanner';
 
 export type LayoutProps = {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ export type LayoutProps = {
 export function Layout({ children, contentClassName }: LayoutProps) {
   return (
     <VStack className="min-w-screen" gap="0">
+      <MaintenanceBanner />
       <VStack className="min-h-screen" gap="0">
         <TopNav />
         <HeroSection />

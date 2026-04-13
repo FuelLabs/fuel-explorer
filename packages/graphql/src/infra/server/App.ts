@@ -19,7 +19,13 @@ import BridgeDAO from '../dao/BridgeDAO';
 import CosmosDAO from '../dao/CosmosDAO';
 import L1DAO from '../dao/L1DAO';
 import StakingDAO from '../dao/StakingDAO';
-import { getStakingTransactions } from '../dao/TEMP_StakingDAO';
+import {
+  TIME_TO_COMMIT,
+  TIME_TO_SEQUENCER_INDEXER_SYNC,
+  getStakingTransactions,
+  getTimeToFinalizeStrict,
+  getUnbondingTimeSeconds,
+} from '../dao/TEMP_StakingDAO';
 import { convertToUsd } from '../dao/utils';
 import AssetGateway from '../gateway/AssetGateway';
 import PaginatedParams from '../paginator/PaginatedParams';
@@ -123,6 +129,48 @@ export class Server {
         const bridgeDAO = new BridgeDAO();
         const output = await bridgeDAO.getEvent(eventType, eventId);
         res.json(output);
+      },
+    );
+
+    app.get(
+      '/staking/finalization-period/withdraw',
+      async (_req: Request, res: Response) => {
+        logger.debug('API', 'Get withdraw finalization period');
+        try {
+          const timeToFinalizeMinutes = await getTimeToFinalizeStrict();
+          if (timeToFinalizeMinutes == null) {
+            res.json({ seconds: null });
+            return;
+          }
+          const totalSeconds =
+            timeToFinalizeMinutes * 60 +
+            TIME_TO_COMMIT +
+            TIME_TO_SEQUENCER_INDEXER_SYNC;
+          res.json({ seconds: totalSeconds });
+        } catch (_error) {
+          logger.error('API', 'Error fetching withdraw finalization period');
+          res.status(500).json({ seconds: null });
+        }
+      },
+    );
+
+    app.get(
+      '/staking/finalization-period/undelegate',
+      async (_req: Request, res: Response) => {
+        logger.debug('API', 'Get undelegate finalization period');
+        try {
+          const unbondingSeconds = await getUnbondingTimeSeconds();
+          if (unbondingSeconds == null) {
+            res.json({ seconds: null });
+            return;
+          }
+          const totalSeconds =
+            unbondingSeconds + TIME_TO_SEQUENCER_INDEXER_SYNC;
+          res.json({ seconds: totalSeconds });
+        } catch (_error) {
+          logger.error('API', 'Error fetching undelegate finalization period');
+          res.status(500).json({ seconds: null });
+        }
       },
     );
 

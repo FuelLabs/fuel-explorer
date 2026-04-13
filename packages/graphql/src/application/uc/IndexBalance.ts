@@ -23,9 +23,59 @@ export default class IndexBalance {
         'delete from indexer.balance where block_height = $1',
         [block.height],
       );
+
+      // Collect all (account, asset) pairs across all transactions in this block
+      const pairs: { accountHash: string; assetId: string }[] = [];
       for (const transaction of block.transactions) {
         transaction.inputs = transaction.inputs || [];
         transaction.outputs = transaction.outputs || [];
+        for (const input of transaction.inputs) {
+          if (input.__typename === 'InputCoin') {
+            pairs.push({ accountHash: input.owner, assetId: input.assetId });
+          }
+        }
+        for (const output of transaction.outputs) {
+          if (
+            ['ChangeOutput', 'CoinOutput', 'VariableOutput'].includes(
+              output.__typename,
+            )
+          ) {
+            pairs.push({ accountHash: output.to, assetId: output.assetId });
+          }
+        }
+      }
+
+      // Batch fetch latest balance for all (account, asset) pairs in one query
+      const balanceMap = new Map<string, BigNumber>();
+      if (pairs.length > 0) {
+        const uniquePairs = [
+          ...new Map(
+            pairs.map((p) => [`${p.accountHash}:${p.assetId}`, p]),
+          ).values(),
+        ];
+        const accountHashes = uniquePairs.map((p) => p.accountHash);
+        const assetIds = uniquePairs.map((p) => p.assetId);
+        // JOIN (not LEFT JOIN): pairs with no balance history are absent from
+        // the result and correctly default to BigNumber(0) via ?? below.
+        const rows = await connection.query(
+          `SELECT t.account_hash, t.asset_id, b.balance
+           FROM unnest($1::text[], $2::text[]) AS t(account_hash, asset_id)
+           JOIN LATERAL (
+             SELECT balance FROM indexer.balance
+             WHERE account_hash = t.account_hash AND asset_id = t.asset_id
+             ORDER BY _id DESC LIMIT 1
+           ) b ON true`,
+          [accountHashes, assetIds],
+        );
+        for (const row of rows) {
+          balanceMap.set(
+            `${row.account_hash}:${row.asset_id}`,
+            BigNumber(row.balance),
+          );
+        }
+      }
+
+      for (const transaction of block.transactions) {
         const index: any = {};
         for (const input of transaction.inputs) {
           if (input.__typename === 'InputCoin') {
@@ -61,11 +111,8 @@ export default class IndexBalance {
         }
         for (const accountHash in index) {
           for (const assetId in index[accountHash]) {
-            const [balanceData] = await connection.query(
-              'select balance from indexer.balance where account_hash = $1 and asset_id = $2 order by _id desc limit 1',
-              [accountHash, assetId],
-            );
-            let balance = BigNumber(balanceData ? balanceData.balance : 0);
+            const key = `${accountHash}:${assetId}`;
+            let balance = balanceMap.get(key) ?? BigNumber(0);
             const events = index[accountHash][assetId];
             for (const event of events) {
               if (event.type === 'input') {
@@ -75,6 +122,8 @@ export default class IndexBalance {
                 balance = balance.plus(BigNumber(event.amount));
               }
             }
+            // Update map so subsequent transactions in same block see updated balance
+            balanceMap.set(key, balance);
             await connection.query(
               'insert into indexer.balance (block_height, tx_hash, account_hash, asset_id, balance) values ($1, $2, $3, $4, $5) on conflict do nothing',
               [
