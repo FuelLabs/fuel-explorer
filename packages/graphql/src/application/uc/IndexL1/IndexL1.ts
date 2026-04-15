@@ -50,9 +50,11 @@ export default class IndexL1 {
       logger.error('Timer', 'ABI not found', contract);
       return;
     }
+    // block_height stored in DB is the next block to process (first unprocessed).
+    // toBlock is inclusive in eth_getLogs, so a window [X, X+999] covers 1000 blocks.
     const options = {
       fromBlock: contract.block_height,
-      toBlock: Math.min(lastBlockNumber, contract.block_height + 1000),
+      toBlock: Math.min(lastBlockNumber, contract.block_height + 999),
     };
     logger.debug(
       'Timer',
@@ -164,9 +166,10 @@ export default class IndexL1 {
         );
       }
     }
+    // Advance cursor past the last processed block so the next cycle starts fresh.
     await connection.query(
       'update indexer.contract_l1_index set block_height = $1 where _id = $2',
-      [options.toBlock, contract._id],
+      [options.toBlock + 1, contract._id],
     );
   }
 
