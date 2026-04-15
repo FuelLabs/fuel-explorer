@@ -8,6 +8,14 @@ import { decodeMessage } from '~/infra/util/util';
 import AbiFactory from './abi/AbiFactory';
 
 export default class IndexL1 {
+  protected createProvider(): ethers.JsonRpcProvider {
+    const network = env.get('FUEL_CHAIN') || '';
+    const base = network === 'mainnet' ? 'mainnet' : 'sepolia';
+    return new ethers.JsonRpcProvider(
+      `https://eth-${base}.g.alchemy.com/v2/${env.get('ALCHEMY_API_KEY')}`,
+    );
+  }
+
   async syncContract(contract: {
     _id: number;
     block_height: number;
@@ -16,11 +24,25 @@ export default class IndexL1 {
   }) {
     const network = env.get('FUEL_CHAIN') || '';
     const connection = DatabaseConnection.getInstance();
-    const base = network === 'mainnet' ? 'mainnet' : 'sepolia';
-    const provider = new ethers.JsonRpcProvider(
-      `https://eth-${base}.g.alchemy.com/v2/${env.get('ALCHEMY_API_KEY')}`,
-    );
-    const lastBlockNumber = await provider.getBlockNumber();
+    const provider = this.createProvider();
+    let finalizedBlock: ethers.Block | null = null;
+    try {
+      finalizedBlock = await provider.getBlock('finalized');
+    } catch (error: any) {
+      logger.warn(
+        'Timer',
+        `Contract: ${contract.name} - Failed to fetch finalized block: ${error.message}`,
+      );
+    }
+    if (!finalizedBlock) {
+      logger.debug(
+        'Timer',
+        `Contract: ${contract.name} - Waiting for finalized block`,
+      );
+      await setTimeout(10000);
+      return;
+    }
+    const lastBlockNumber = finalizedBlock.number;
     if (contract.block_height > lastBlockNumber) {
       logger.debug('Timer', `Contract: ${contract.name} -  Waiting for block`);
       await setTimeout(10000);
