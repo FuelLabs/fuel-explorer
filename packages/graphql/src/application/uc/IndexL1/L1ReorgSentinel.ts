@@ -1,8 +1,8 @@
 import { setTimeout } from 'node:timers/promises';
-import { ethers } from 'ethers';
-import { env } from '~/config';
+import type { ethers } from 'ethers';
 import { logger } from '~/core/Logger';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
+import { createL1Provider } from './createL1Provider';
 
 type RecentLogRow = {
   block_height: number;
@@ -12,11 +12,7 @@ type RecentLogRow = {
 
 export default class L1ReorgSentinel {
   protected createProvider(): ethers.JsonRpcProvider {
-    const network = env.get('FUEL_CHAIN') || '';
-    const base = network === 'mainnet' ? 'mainnet' : 'sepolia';
-    return new ethers.JsonRpcProvider(
-      `https://eth-${base}.g.alchemy.com/v2/${env.get('ALCHEMY_API_KEY')}`,
-    );
+    return createL1Provider();
   }
 
   async checkOnce(): Promise<void> {

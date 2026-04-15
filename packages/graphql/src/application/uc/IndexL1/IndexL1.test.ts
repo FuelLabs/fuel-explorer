@@ -52,6 +52,38 @@ describe('IndexL1', () => {
     expect(getBlockNumber).not.toHaveBeenCalled();
   });
 
+  it('does not request logs past the finalized block (no +1 off-by-one)', async () => {
+    const finalizedNumber = 1000;
+    const getBlock = jest
+      .fn()
+      .mockImplementation(async (tag: string | number) => {
+        if (tag === 'finalized')
+          return { number: finalizedNumber, hash: '0xabc', timestamp: 1 };
+        return { number: tag as number, hash: '0xdef', timestamp: 2 };
+      });
+    const getLogs = jest.fn().mockResolvedValue([]);
+    const fakeProvider: any = { getBlock, getLogs, getBlockNumber: jest.fn() };
+
+    class TestIndexL1 extends IndexL1 {
+      protected createProvider() {
+        return fakeProvider;
+      }
+    }
+
+    // block_height is close to finalized so the window clamps against finalized (not the +1000 cap)
+    await new TestIndexL1().syncContract({
+      _id: 1,
+      block_height: finalizedNumber - 5,
+      contract_hash: '0x0000000000000000000000000000000000000000',
+      name: 'FuelMessagePortal',
+    });
+
+    if (getLogs.mock.calls.length > 0) {
+      const { toBlock } = getLogs.mock.calls[0][0];
+      expect(toBlock).toBeLessThanOrEqual(finalizedNumber);
+    }
+  });
+
   it('skips the cycle when the finalized block cannot be fetched', async () => {
     const getBlock = jest.fn().mockRejectedValue(new Error('rpc down'));
     const getLogs = jest.fn();

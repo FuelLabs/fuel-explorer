@@ -6,14 +6,11 @@ import { logger } from '~/core/Logger';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 import { decodeMessage } from '~/infra/util/util';
 import AbiFactory from './abi/AbiFactory';
+import { createL1Provider } from './createL1Provider';
 
 export default class IndexL1 {
   protected createProvider(): ethers.JsonRpcProvider {
-    const network = env.get('FUEL_CHAIN') || '';
-    const base = network === 'mainnet' ? 'mainnet' : 'sepolia';
-    return new ethers.JsonRpcProvider(
-      `https://eth-${base}.g.alchemy.com/v2/${env.get('ALCHEMY_API_KEY')}`,
-    );
+    return createL1Provider();
   }
 
   async syncContract(contract: {
@@ -55,7 +52,7 @@ export default class IndexL1 {
     }
     const options = {
       fromBlock: contract.block_height,
-      toBlock: Math.min(lastBlockNumber + 1, contract.block_height + 1000),
+      toBlock: Math.min(lastBlockNumber, contract.block_height + 1000),
     };
     logger.debug(
       'Timer',
