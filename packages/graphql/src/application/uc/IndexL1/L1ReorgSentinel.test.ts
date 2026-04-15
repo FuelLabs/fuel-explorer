@@ -26,6 +26,7 @@ jest.mock('node:timers/promises', () => ({
 beforeEach(() => {
   loggerMock.error.mockClear();
   loggerMock.debug.mockClear();
+  loggerMock.warn.mockClear();
   queryMock.mockReset();
 });
 
@@ -73,7 +74,8 @@ describe('L1ReorgSentinel', () => {
     expect(loggerMock.error).toHaveBeenCalledTimes(1);
     const [tag, message, payload] = loggerMock.error.mock.calls[0];
     expect(tag).toBe('L1ReorgSentinel');
-    expect(message).toBe('Reorg detected');
+    // Alert prefix must be present so log-routing tooling can key on it.
+    expect(message).toMatch(/\[L1_REORG_ALERT\]/);
     expect(payload).toEqual({
       block_height: 200,
       stored_hash: '0xstale',
@@ -92,5 +94,33 @@ describe('L1ReorgSentinel', () => {
 
     await expect(makeSentinel(provider).checkOnce()).resolves.not.toThrow();
     expect(loggerMock.debug).toHaveBeenCalled();
+  });
+
+  it('warns when the provider returns no canonical block for a height we have stored rows for', async () => {
+    queryMock.mockResolvedValue([
+      { block_height: 400, stored_hash: '0xsomething', contract_hash: '0xc1' },
+    ]);
+    const provider = {
+      getBlock: jest.fn().mockResolvedValue(null),
+    };
+
+    await makeSentinel(provider).checkOnce();
+
+    expect(loggerMock.warn).toHaveBeenCalledTimes(1);
+    const [tag, message] = loggerMock.warn.mock.calls[0];
+    expect(tag).toBe('L1ReorgSentinel');
+    expect(message).toMatch(/no block at finalized-depth height 400/);
+    expect(loggerMock.error).not.toHaveBeenCalled();
+  });
+
+  it('samples per contract (not just globally) so a busy contract cannot monopolize the window', async () => {
+    // Verify the SQL takes a per-contract partition approach (row_number() OVER partition).
+    queryMock.mockResolvedValue([]);
+    const provider = { getBlock: jest.fn() };
+    await makeSentinel(provider).checkOnce();
+    expect(queryMock).toHaveBeenCalledTimes(1);
+    const sql = queryMock.mock.calls[0][0] as string;
+    expect(sql).toMatch(/partition by contract_hash/i);
+    expect(sql).toMatch(/row_number\(\)/i);
   });
 });
