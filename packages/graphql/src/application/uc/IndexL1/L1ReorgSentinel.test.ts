@@ -120,7 +120,20 @@ describe('L1ReorgSentinel', () => {
     await makeSentinel(provider).checkOnce();
     expect(queryMock).toHaveBeenCalledTimes(1);
     const sql = queryMock.mock.calls[0][0] as string;
-    expect(sql).toMatch(/partition by contract_hash/i);
+    expect(sql).toMatch(/partition by [\w.]*contract_hash/i);
     expect(sql).toMatch(/row_number\(\)/i);
+  });
+
+  it('scopes the sample to active contracts for the current network', async () => {
+    queryMock.mockResolvedValue([]);
+    const provider = { getBlock: jest.fn() };
+    await makeSentinel(provider).checkOnce();
+    const sql = queryMock.mock.calls[0][0] as string;
+    const params = queryMock.mock.calls[0][1] as unknown[];
+    expect(sql).toMatch(/indexer\.contract_l1_index/);
+    expect(sql).toMatch(/status = 'active'/);
+    expect(sql).toMatch(/network = \$1/);
+    // First param must be the current FUEL_CHAIN — mocked to 'mainnet'.
+    expect(params[0]).toBe('mainnet');
   });
 });

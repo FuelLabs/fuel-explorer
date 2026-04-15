@@ -1,5 +1,6 @@
 import { setTimeout } from 'node:timers/promises';
 import type { ethers } from 'ethers';
+import { env } from '~/config';
 import { logger } from '~/core/Logger';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 import { createL1Provider } from './createL1Provider';
@@ -22,20 +23,24 @@ export default class L1ReorgSentinel {
 
   async checkOnce(): Promise<void> {
     const connection = DatabaseConnection.getInstance();
-    // Per-contract sample: take the N most recent rows for each contract_hash.
-    // Avoids the "one busy contract monopolizes the sample" blind spot from a
-    // global `order by _id desc limit 20`.
+    const network = env.get('FUEL_CHAIN') || '';
+    // Per-contract sample, scoped to active contracts for the current network.
+    // Prevents (a) one busy contract monopolizing a global LIMIT window and
+    // (b) false positives from stale/inactive/cross-network rows in the table.
     const rows = (await connection.query(
-      `select block_height, stored_hash, contract_hash
+      `select ranked.block_height, ranked.stored_hash, ranked.contract_hash
          from (
-           select block_height,
-                  raw_log->>'blockHash' as stored_hash,
-                  contract_hash,
-                  row_number() over (partition by contract_hash order by _id desc) as rn
-             from indexer.contract_l1_logs
+           select l.block_height,
+                  l.raw_log->>'blockHash' as stored_hash,
+                  l.contract_hash,
+                  row_number() over (partition by l.contract_hash order by l._id desc) as rn
+             from indexer.contract_l1_logs l
+             join indexer.contract_l1_index i
+               on i.contract_hash = l.contract_hash
+            where i.status = 'active' and i.network = $1
          ) ranked
-        where rn <= $1`,
-      [this.rowsPerContract],
+        where ranked.rn <= $2`,
+      [network, this.rowsPerContract],
     )) as RecentLogRow[];
 
     if (rows.length === 0) return;
