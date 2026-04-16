@@ -6,8 +6,13 @@ import { logger } from '~/core/Logger';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 import { decodeMessage } from '~/infra/util/util';
 import AbiFactory from './abi/AbiFactory';
+import { createL1Provider } from './createL1Provider';
 
 export default class IndexL1 {
+  protected createProvider(): ethers.JsonRpcProvider {
+    return createL1Provider();
+  }
+
   async syncContract(contract: {
     _id: number;
     block_height: number;
@@ -16,11 +21,25 @@ export default class IndexL1 {
   }) {
     const network = env.get('FUEL_CHAIN') || '';
     const connection = DatabaseConnection.getInstance();
-    const base = network === 'mainnet' ? 'mainnet' : 'sepolia';
-    const provider = new ethers.JsonRpcProvider(
-      `https://eth-${base}.g.alchemy.com/v2/${env.get('ALCHEMY_API_KEY')}`,
-    );
-    const lastBlockNumber = await provider.getBlockNumber();
+    const provider = this.createProvider();
+    let finalizedBlock: ethers.Block | null = null;
+    try {
+      finalizedBlock = await provider.getBlock('finalized');
+    } catch (error: any) {
+      logger.warn(
+        'Timer',
+        `Contract: ${contract.name} - Failed to fetch finalized block: ${error.message}`,
+      );
+    }
+    if (!finalizedBlock) {
+      logger.debug(
+        'Timer',
+        `Contract: ${contract.name} - Waiting for finalized block`,
+      );
+      await setTimeout(10000);
+      return;
+    }
+    const lastBlockNumber = finalizedBlock.number;
     if (contract.block_height > lastBlockNumber) {
       logger.debug('Timer', `Contract: ${contract.name} -  Waiting for block`);
       await setTimeout(10000);
@@ -31,9 +50,11 @@ export default class IndexL1 {
       logger.error('Timer', 'ABI not found', contract);
       return;
     }
+    // block_height stored in DB is the next block to process (first unprocessed).
+    // toBlock is inclusive in eth_getLogs, so a window [X, X+999] covers 1000 blocks.
     const options = {
       fromBlock: contract.block_height,
-      toBlock: Math.min(lastBlockNumber + 1, contract.block_height + 1000),
+      toBlock: Math.min(lastBlockNumber, contract.block_height + 999),
     };
     logger.debug(
       'Timer',
@@ -145,9 +166,10 @@ export default class IndexL1 {
         );
       }
     }
+    // Advance cursor past the last processed block so the next cycle starts fresh.
     await connection.query(
       'update indexer.contract_l1_index set block_height = $1 where _id = $2',
-      [options.toBlock, contract._id],
+      [options.toBlock + 1, contract._id],
     );
   }
 
