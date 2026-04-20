@@ -70,6 +70,7 @@ runs:
       id: publish
       with:
         context: ${{ inputs.context }}
+        platforms: linux/amd64,linux/arm64
         file: ${{ inputs.dockerfile }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
