@@ -172,8 +172,12 @@ export default class BlockDAO {
           transactions_count,
           gas_used
         FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-        AND "timestamp" < date_trunc('hour', now())
+        WHERE "timestamp" > date_trunc('hour', (
+          SELECT MAX("timestamp") FROM indexer.blocks
+        )) - interval '24 hours'
+        AND "timestamp" < date_trunc('hour', (
+          SELECT MAX("timestamp") FROM indexer.blocks
+        ))
       ) t
       GROUP BY hour
       ORDER BY hour ASC`,
@@ -208,7 +212,9 @@ export default class BlockDAO {
         SELECT date_trunc('hour', "timestamp") AS hour,
           transactions_count
         FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+        WHERE "timestamp" > date_trunc('hour', (
+          SELECT MAX("timestamp") FROM indexer.blocks
+        )) - interval '24 hours'
       ) t
       GROUP BY hour
       ORDER BY hour`,
@@ -228,7 +234,9 @@ export default class BlockDAO {
         SELECT date_trunc('hour', "timestamp") AS hour,
           transactions_count
         FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+        WHERE "timestamp" > date_trunc('hour', (
+          SELECT MAX("timestamp") FROM indexer.blocks
+        )) - interval '24 hours'
       ) t
       GROUP BY hour
       ORDER BY hour`,
@@ -248,7 +256,9 @@ export default class BlockDAO {
         SELECT date_trunc('hour', "timestamp") AS hour,
           transactions_count
         FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '23 hours'
+        WHERE "timestamp" > date_trunc('hour', (
+          SELECT MAX("timestamp") FROM indexer.blocks
+        )) - interval '23 hours'
       ) t
       GROUP BY hour
       ORDER BY hour`,
@@ -326,7 +336,9 @@ export default class BlockDAO {
         SELECT date_trunc('hour', "timestamp") AS hour,
           gas_used
           FROM indexer.blocks
-          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+          WHERE "timestamp" > date_trunc('hour', (
+            SELECT MAX("timestamp") FROM indexer.blocks
+          )) - interval '24 hours'
       ) t
       GROUP BY hour
       ORDER BY hour`,
@@ -346,7 +358,9 @@ export default class BlockDAO {
         SELECT date_trunc('hour', "timestamp") AS hour,
           gas_used
           FROM indexer.blocks
-          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+          WHERE "timestamp" > date_trunc('hour', (
+            SELECT MAX("timestamp") FROM indexer.blocks
+          )) - interval '24 hours'
       ) t
       GROUP BY hour
       ORDER BY hour`,
@@ -366,7 +380,9 @@ export default class BlockDAO {
         SELECT date_trunc('hour', "timestamp") AS hour,
           gas_used
           FROM indexer.blocks
-          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
+          WHERE "timestamp" > date_trunc('hour', (
+            SELECT MAX("timestamp") FROM indexer.blocks
+          )) - interval '24 hours'
       ) t
       GROUP BY hour
       ORDER BY hour`,
@@ -385,8 +401,8 @@ export default class BlockDAO {
       `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
         total_fee AS value
       FROM indexer.hourly_statistics_agg
-      WHERE hour > NOW() - INTERVAL '24 hours'
-        AND hour <= date_trunc('hour', NOW())
+      WHERE hour > (SELECT MAX(hour) FROM indexer.hourly_statistics_agg) - INTERVAL '24 hours'
+        AND hour <= (SELECT MAX(hour) FROM indexer.hourly_statistics_agg)
       ORDER BY hour`,
       [],
     );
