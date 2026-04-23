@@ -68,8 +68,8 @@ jobs:
           file: deployment/Dockerfile
           platforms: ${{ matrix.arch.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=fuel-explorer-${{ replace(matrix.arch.platform, '/', '-') }}
-          cache-to: type=gha,scope=fuel-explorer-${{ replace(matrix.arch.platform, '/', '-') }},mode=max
+          cache-from: type=gha,scope=fuel-explorer-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,scope=fuel-explorer-${{ env.PLATFORM_PAIR }},mode=max
           outputs: |
             type=image,name=${{ env.REGISTRY_URL }},push-by-digest=true,name-canonical=true,push=true
 
