@@ -36,56 +36,18 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Setup environment
-        run: |
-          echo "REGISTRY_URL=${REGISTRY@L}/${IMAGE_NAME@L}" >> "${GITHUB_ENV}"
-          platform=${{ matrix.arch.platform }}
-          echo "PLATFORM_PAIR=${platform//\//-}" >> "${GITHUB_ENV}"
-
       - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to the ghcr.io registry
-        uses: docker/login-action@v3
+      - uses: ./.github/actions/docker-publish
         with:
+          phase: build-arch
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY_URL }}
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v6
-        id: build
-        with:
+          image-repository: ${{ github.repository }}
+          repository-owner: ${{ github.repository_owner }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: deployment/Dockerfile
           context: .
-          file: deployment/Dockerfile
-          platforms: ${{ matrix.arch.platform }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=fuel-explorer-${{ env.PLATFORM_PAIR }}
-          cache-to: type=gha,scope=fuel-explorer-${{ env.PLATFORM_PAIR }},mode=max
-          outputs: |
-            type=image,name=${{ env.REGISTRY_URL }},push-by-digest=true,name-canonical=true,push=true
-
-      - name: Export digest
-        run: |
-          mkdir -p /tmp/digests
-          digest="${{ steps.build.outputs.digest }}"
-          touch "/tmp/digests/${digest#sha256:}"
-
-      - name: Upload digest
-        uses: actions/upload-artifact@v4
-        with:
-          name: digests-${{ env.PLATFORM_PAIR }}
-          path: /tmp/digests/*
-          if-no-files-found: error
-          retention-days: 1
+          platform: ${{ matrix.arch.platform }}
 
   publish-docker-images:
     needs: build-docker-images
@@ -100,45 +62,10 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Setup environment
-        run: |
-          echo "REGISTRY_URL=${REGISTRY@L}/${IMAGE_NAME@L}" >> "${GITHUB_ENV}"
-
-      - name: Download digests
-        uses: actions/download-artifact@v4
+      - uses: ./.github/actions/docker-publish
         with:
-          path: /tmp/digests
-          pattern: digests-*
-          merge-multiple: true
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to the ghcr.io registry
-        uses: docker/login-action@v3
-        with:
+          phase: publish-manifest
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY_URL }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix=
-            type=semver,pattern={{raw}}
-
-      - name: Create manifest list and push to ghcr.io
-        working-directory: /tmp/digests
-        env:
-          DOCKER_METADATA_OUTPUT_JSON: ${{ steps.meta.outputs.json }}
-        run: |
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY_URL }}@sha256:%s ' *)
-
-      - name: Inspect image
-        run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_URL }}:${{ steps.meta.outputs.version }}
+          image-repository: ${{ github.repository }}
+          repository-owner: ${{ github.repository_owner }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

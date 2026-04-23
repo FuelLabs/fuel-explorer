@@ -1,83 +1,152 @@
-name: 'Build & Plush Docker'
+name: Build & publish Docker
 
 inputs:
-  compose-version:
-    description: 'Docker Dompose version'
-    default: 2.6.0
+  phase:
+    description: 'build-arch (matrix leg) or publish-manifest (merge + tags)'
+    required: true
   registry:
-    description: 'Docker registry service'
-    default: ghcr.io
-  username:
-    description: 'Username for https://ghcr.io'
     required: true
-  password:
-    description: 'Password for https://ghcr.io'
+  image-repository:
+    description: e.g. FuelLabs/fuel-explorer
     required: true
-  image:
-    description: 'Image name with provider url'
+  repository-owner:
+    required: true
+  github-token:
     required: true
   dockerfile:
-    description: 'Path to the Dockerfile'
-    required: true
+    description: Required when phase is build-arch
+    required: false
   context:
-    description: 'Path to the Context'
-    default: .
-    required: true
-  build-args:
-    description: 'List of build-time variables'
+    default: '.'
+    required: false
+  platform:
+    description: Required when phase is build-arch (e.g. linux/amd64)
+    required: false
+  cache-scope-prefix:
+    description: Prefix for GHA BuildKit cache scope when phase is build-arch
+    default: fuel-explorer
+    required: false
+  digest-artifact-pattern:
+    description: Glob for download-artifact when phase is publish-manifest
+    default: 'digests-*'
     required: false
 
-outputs:
-  image:
-    description: 'Image url'
-    value: ${{ steps.imageOuput.outputs.imageUrl }}
-  imageid:
-    description: 'Image ID'
-    value: ${{ steps.publish.outputs.imageId }}
-  digest:
-    description: 'Image digest'
-    value: ${{ steps.publish.outputs.digest }}
-  metadata:
-    description: 'Build result metadata'
-    value: ${{ steps.publish.outputs.metadata }}
-
 runs:
-  using: 'composite'
+  using: composite
   steps:
-    - name: Log in to the ghcr.io registry
-      uses: docker/login-action@v2
+    - name: Setup environment (build)
+      if: inputs.phase == 'build-arch'
+      shell: bash
+      run: |
+        echo "REGISTRY_URL=${REGISTRY@L}/${IMAGE_REPOSITORY@L}" >> "${GITHUB_ENV}"
+        platform="${{ inputs.platform }}"
+        echo "PLATFORM_PAIR=${platform//\//-}" >> "${GITHUB_ENV}"
+      env:
+        REGISTRY: ${{ inputs.registry }}
+        IMAGE_REPOSITORY: ${{ inputs.image-repository }}
+
+    - name: Set up Docker Buildx (build)
+      if: inputs.phase == 'build-arch'
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to registry (build)
+      if: inputs.phase == 'build-arch'
+      uses: docker/login-action@v3
       with:
         registry: ${{ inputs.registry }}
-        username: ${{ inputs.username }}
-        password: ${{ inputs.password }}
+        username: ${{ inputs.repository-owner }}
+        password: ${{ inputs.github-token }}
 
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v3
+    - name: Docker metadata (build)
+      if: inputs.phase == 'build-arch'
+      id: meta-build
+      uses: docker/metadata-action@v5
       with:
-        images: |
-          ${{ inputs.image }}
+        images: ${{ env.REGISTRY_URL }}
+
+    - name: Build Docker image
+      if: inputs.phase == 'build-arch'
+      uses: docker/build-push-action@v6
+      id: build
+      with:
+        context: ${{ inputs.context }}
+        file: ${{ inputs.dockerfile }}
+        platforms: ${{ inputs.platform }}
+        labels: ${{ steps.meta-build.outputs.labels }}
+        cache-from: type=gha,scope=${{ inputs.cache-scope-prefix }}-${{ env.PLATFORM_PAIR }}
+        cache-to: type=gha,scope=${{ inputs.cache-scope-prefix }}-${{ env.PLATFORM_PAIR }},mode=max
+        outputs: |
+          type=image,name=${{ env.REGISTRY_URL }},push-by-digest=true,name-canonical=true,push=true
+
+    - name: Export digest
+      if: inputs.phase == 'build-arch'
+      shell: bash
+      run: |
+        mkdir -p /tmp/digests
+        digest="${{ steps.build.outputs.digest }}"
+        touch "/tmp/digests/${digest#sha256:}"
+
+    - name: Upload digest
+      if: inputs.phase == 'build-arch'
+      uses: actions/upload-artifact@v4
+      with:
+        name: digests-${{ env.PLATFORM_PAIR }}
+        path: /tmp/digests/*
+        if-no-files-found: error
+        retention-days: 1
+
+    - name: Setup environment (publish)
+      if: inputs.phase == 'publish-manifest'
+      shell: bash
+      run: |
+        echo "REGISTRY_URL=${REGISTRY@L}/${IMAGE_REPOSITORY@L}" >> "${GITHUB_ENV}"
+      env:
+        REGISTRY: ${{ inputs.registry }}
+        IMAGE_REPOSITORY: ${{ inputs.image-repository }}
+
+    - name: Download digests
+      if: inputs.phase == 'publish-manifest'
+      uses: actions/download-artifact@v4
+      with:
+        path: /tmp/digests
+        pattern: ${{ inputs.digest-artifact-pattern }}
+        merge-multiple: true
+
+    - name: Set up Docker Buildx (publish)
+      if: inputs.phase == 'publish-manifest'
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to registry (publish)
+      if: inputs.phase == 'publish-manifest'
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.repository-owner }}
+        password: ${{ inputs.github-token }}
+
+    - name: Docker metadata (publish)
+      if: inputs.phase == 'publish-manifest'
+      id: meta-publish
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY_URL }}
         tags: |
           type=ref,event=branch
           type=sha,prefix=
           type=semver,pattern={{raw}}
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+    - name: Create manifest list and push to ghcr.io
+      if: inputs.phase == 'publish-manifest'
+      shell: bash
+      working-directory: /tmp/digests
+      env:
+        DOCKER_METADATA_OUTPUT_JSON: ${{ steps.meta-publish.outputs.json }}
+      run: |
+        docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          $(printf '${{ env.REGISTRY_URL }}@sha256:%s ' *)
 
-    - name: Build and push the image to ghcr.io
-      uses: docker/build-push-action@v5
-      id: publish
-      with:
-        context: ${{ inputs.context }}
-        file: ${{ inputs.dockerfile }}
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        build-args: ${{ inputs.build-args }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-    - id: imageOuput
+    - name: Inspect image
+      if: inputs.phase == 'publish-manifest'
       shell: bash
       run: |
-        echo "imageUrl=${{ fromJSON(steps.publish.outputs.metadata)['image.name'] }}" >> $GITHUB_OUTPUT
+        docker buildx imagetools inspect ${{ env.REGISTRY_URL }}:${{ steps.meta-publish.outputs.version }}
