@@ -23,6 +23,7 @@ function createBatchEvents(idsRange: { from: number; to: number }) {
 
 async function main() {
   const addBlockRange = new NewAddBlockRange();
+  const blockDAO = new BlockDAO();
   let backoffMs = BACKOFF_INITIAL_MS;
 
   while (true) {
@@ -63,7 +64,6 @@ async function main() {
     const height = Number(lastBlock?.header.height ?? '0');
     logger.debug('Syncer', `Fuel core height: ${height}`);
 
-    const blockDAO = new BlockDAO();
     const latestBlock = await blockDAO.findLatestBlockAdded();
     const from = latestBlock ? latestBlock.id : 0;
     logger.debug('Syncer', `Indexer height: ${from}`);
