@@ -268,7 +268,9 @@ export default class BlockDAO {
         SELECT date_trunc('minute', "timestamp") AS minute,
           transactions_count
         FROM indexer.blocks
-        WHERE "timestamp" > NOW() - INTERVAL '24 hours'
+        WHERE "timestamp" > (
+          SELECT MAX("timestamp") FROM indexer.blocks
+        ) - INTERVAL '24 hours'
       ) t
       GROUP BY minute
       ORDER BY minute ASC`,
@@ -289,7 +291,9 @@ export default class BlockDAO {
           CASE WHEN COUNT(*) > 0 THEN AVG(gas_used::numeric) ELSE 0 END AS avg_gas_per_block,
           CASE WHEN COUNT(*) > 0 THEN AVG(pg_column_size(data)) ELSE 0 END AS avg_block_size
         FROM indexer.blocks
-        WHERE "timestamp" > NOW() - INTERVAL '60 seconds'`,
+        WHERE "timestamp" > (
+          SELECT MAX("timestamp") FROM indexer.blocks
+        ) - INTERVAL '60 seconds'`,
         [],
       ),
       this.databaseConnection.query(
@@ -297,7 +301,9 @@ export default class BlockDAO {
         FROM (
           SELECT SUM(transactions_count)::float / 60 AS minute_tps
           FROM indexer.blocks
-          WHERE "timestamp" > NOW() - INTERVAL '24 hours'
+          WHERE "timestamp" > (
+            SELECT MAX("timestamp") FROM indexer.blocks
+          ) - INTERVAL '24 hours'
           GROUP BY date_trunc('minute', "timestamp")
         ) t`,
         [],
