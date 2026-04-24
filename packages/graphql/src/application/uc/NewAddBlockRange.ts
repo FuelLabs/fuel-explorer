@@ -36,16 +36,19 @@ export default class NewAddBlockRange {
     }
     const start = performance.now();
     const connection = DatabaseConnection.getInstance();
+
+    const allBlockIds = blocksData.map((b) => Number(b.header.height));
+    const existingRows = await connection.query(
+      'SELECT _id FROM indexer.blocks WHERE _id = ANY($1)',
+      [allBlockIds],
+    );
+    const existingIds = new Set((existingRows as any[]).map((r) => r._id));
+
     for (const blockData of blocksData) {
       const queries: { statement: string; params: any }[] = [];
       const block = new Block({ data: blockData });
 
-      // Skip already-indexed blocks to prevent double-counting in aggregation tables
-      const existing = await connection.query(
-        'SELECT 1 FROM indexer.blocks WHERE _id = $1 LIMIT 1',
-        [block.id],
-      );
-      if ((existing as any[]).length > 0) continue;
+      if (existingIds.has(block.id)) continue;
 
       queries.push({
         statement:
