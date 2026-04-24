@@ -64,8 +64,7 @@ async function main() {
     const height = Number(lastBlock?.header.height ?? '0');
     logger.debug('Syncer', `Fuel core height: ${height}`);
 
-    const latestBlock = await blockDAO.findLatestBlockAdded();
-    const from = latestBlock ? latestBlock.id : 0;
+    const from = (await blockDAO.findLatestBlockHeight()) ?? 0;
     logger.debug('Syncer', `Indexer height: ${from}`);
 
     if (from >= height) {

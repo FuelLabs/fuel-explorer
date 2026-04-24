@@ -25,9 +25,7 @@ export default class GetMetrics {
 
   async getIndexerLastBlockHeight() {
     const blockDAO = new BlockDAO();
-    const latestBlock = await blockDAO.findLatestBlockAdded();
-    const blockId = latestBlock ? latestBlock.id : 0;
-    return blockId;
+    return (await blockDAO.findLatestBlockHeight()) ?? 0;
   }
 
   async execute(): Promise<any> {

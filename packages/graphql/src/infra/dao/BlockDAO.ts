@@ -116,6 +116,14 @@ export default class BlockDAO {
     return paginatedResults;
   }
 
+  async findLatestBlockHeight(): Promise<number | null> {
+    const [row] = await this.databaseConnection.query(
+      'select _id from indexer.blocks order by _id desc limit 1',
+      [],
+    );
+    return row ? row._id : null;
+  }
+
   async findLatestBlockAdded() {
     const [blockData] = await this.databaseConnection.query(
       'select * from indexer.blocks order by _id desc limit 1',
