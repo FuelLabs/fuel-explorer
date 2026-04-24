@@ -98,3 +98,7 @@ act-actions
 .qodo
 /packages/e2e-tests/test-results
 /packages/e2e-tests/.cache-synpress
+
+# AI tool memory
+CLAUDE.md
+.claude/

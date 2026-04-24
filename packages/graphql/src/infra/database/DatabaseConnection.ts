@@ -18,11 +18,14 @@ export class DatabaseConnection {
       user: DB_USER as string,
       password: DB_PASS as string,
       database: DB_NAME as string,
-      // Disable SSL for local development
       ssl:
         process.env.NODE_ENV === 'production'
           ? { rejectUnauthorized: false }
           : false,
+      max: 25,
+      min: 2,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
     };
     this.pool = new Pool(config);
   }
@@ -43,6 +46,60 @@ export class DatabaseConnection {
       try {
         await connection.query('ROLLBACK');
       } catch {}
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  /**
+   * Execute a query with per-session statement_timeout and lock_timeout.
+   *
+   * REFRESH MATERIALIZED VIEW CONCURRENTLY cannot run inside a transaction block.
+   * For those queries, timeouts are applied as session-level SET commands and
+   * reset afterward. For all other queries, SET LOCAL inside BEGIN/COMMIT is used
+   * so timeouts don't leak to other connections.
+   */
+  async queryWithTimeout(
+    statement: string,
+    params: any,
+    statementTimeoutMs: number,
+    lockTimeoutMs: number,
+  ) {
+    // VACUUM and REFRESH MATERIALIZED VIEW CONCURRENTLY cannot run inside a transaction block
+    const requiresNoTransaction =
+      /REFRESH\s+MATERIALIZED\s+VIEW\s+CONCURRENTLY/i.test(statement) ||
+      /^\s*VACUUM\b/i.test(statement);
+    const connection = await this.pool.connect();
+    try {
+      if (requiresNoTransaction) {
+        // Cannot use BEGIN/COMMIT — apply timeouts at session level and reset after
+        await connection.query(`SET statement_timeout = ${statementTimeoutMs}`);
+        await connection.query(`SET lock_timeout = ${lockTimeoutMs}`);
+        const result = await connection.query(statement, params);
+        await connection.query('RESET statement_timeout');
+        await connection.query('RESET lock_timeout');
+        return result.rows;
+      }
+      await connection.query('BEGIN');
+      await connection.query(
+        `SET LOCAL statement_timeout = ${statementTimeoutMs}`,
+      );
+      await connection.query(`SET LOCAL lock_timeout = ${lockTimeoutMs}`);
+      const result = await connection.query(statement, params);
+      await connection.query('COMMIT');
+      return result.rows;
+    } catch (error) {
+      if (!requiresNoTransaction) {
+        try {
+          await connection.query('ROLLBACK');
+        } catch {}
+      } else {
+        try {
+          await connection.query('RESET statement_timeout');
+          await connection.query('RESET lock_timeout');
+        } catch {}
+      }
       throw error;
     } finally {
       connection.release();
