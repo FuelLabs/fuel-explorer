@@ -16,7 +16,7 @@ function createBatchEvents(idsRange: { from: number; to: number }) {
   const numberOfBatches = Math.ceil(diff / BATCH_SIZE);
   return Array.from({ length: numberOfBatches }).map((_, page) => {
     const from = idsRange.from + page * BATCH_SIZE;
-    const to = from + BATCH_SIZE;
+    const to = Math.min(from + BATCH_SIZE, idsRange.to);
     return { from, to };
   });
 }
