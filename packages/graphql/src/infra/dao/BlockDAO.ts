@@ -124,15 +124,6 @@ export default class BlockDAO {
     return row ? row._id : null;
   }
 
-  async findLatestBlockAdded() {
-    const [blockData] = await this.databaseConnection.query(
-      'select * from indexer.blocks order by _id desc limit 1',
-      [],
-    );
-    if (!blockData) return;
-    return new Block(blockData);
-  }
-
   async getBlocksDashboard() {
     const blocksData = await this.databaseConnection.query(
       `
