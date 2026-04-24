@@ -22,7 +22,7 @@ export class DatabaseConnection {
         process.env.NODE_ENV === 'production'
           ? { rejectUnauthorized: false }
           : false,
-      max: 15,
+      max: 25,
       min: 2,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,

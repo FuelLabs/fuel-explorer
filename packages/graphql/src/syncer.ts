@@ -7,9 +7,9 @@ import BlockDAO from './infra/dao/BlockDAO';
 const FUEL_CORE_TIMEOUT_MS = 5000;
 const BACKOFF_INITIAL_MS = 1000;
 const BACKOFF_MAX_MS = 5000;
-const BATCH_SIZE = 25;
+const BATCH_SIZE = 10;
 const MAX_RANGE = 1000;
-const CONCURRENCY = 6;
+const CONCURRENCY = 10;
 
 function createBatchEvents(idsRange: { from: number; to: number }) {
   const diff = idsRange.to - idsRange.from;
@@ -25,6 +25,7 @@ async function main() {
   const addBlockRange = new NewAddBlockRange();
   const blockDAO = new BlockDAO();
   let backoffMs = BACKOFF_INITIAL_MS;
+  let cursor = (await blockDAO.findLatestBlockHeight()) ?? 0;
 
   while (true) {
     let blocks: any;
@@ -63,45 +64,54 @@ async function main() {
     const lastBlock = blocks.nodes[0];
     const height = Number(lastBlock?.header.height ?? '0');
     logger.debug('Syncer', `Fuel core height: ${height}`);
+    logger.debug('Syncer', `Indexer height: ${cursor}`);
 
-    const from = (await blockDAO.findLatestBlockHeight()) ?? 0;
-    logger.debug('Syncer', `Indexer height: ${from}`);
-
-    if (from >= height) {
-      await setTimeout(500);
+    if (cursor >= height) {
+      if (height < cursor) {
+        logger.warn(
+          'Syncer',
+          `Fuel core is behind indexer (${height} < ${cursor}), waiting for node to catch up`,
+        );
+        await setTimeout(5000);
+      } else {
+        await setTimeout(100);
+      }
       continue;
     }
 
-    const to = from + MAX_RANGE;
-    const range = { from, to: Math.min(to, height) };
+    const to = cursor + MAX_RANGE;
+    const range = { from: cursor, to: Math.min(to, height) };
     const events = createBatchEvents(range);
 
-    // Process batches sequentially in chunks of CONCURRENCY.
-    // Each chunk processes contiguous ranges concurrently via Promise.all.
-    // If any batch in a chunk fails, the entire chunk is considered failed
-    // and the loop restarts — idempotency guards in NewAddBlockRange
-    // safely skip already-indexed blocks on retry.
     let failed = false;
     for (let i = 0; i < events.length && !failed; i += CONCURRENCY) {
       const chunk = events.slice(i, i + CONCURRENCY);
-      try {
-        await Promise.all(
-          chunk.map(async (event) => {
-            logger.debug(
-              'Syncer',
-              `Processing blocks #${event.from} - #${event.to}`,
-            );
-            await addBlockRange.execute(event);
-          }),
-        );
-      } catch (err: any) {
-        const is429 = err?.status === 429 || /\b429\b/.test(err?.message);
-        const errBackoff = is429 ? 10000 : 2000;
-        logger.error(
-          'Syncer',
-          `Failed to process batch${is429 ? ' (rate limited)' : ''}: ${err.message}`,
-        );
-        await setTimeout(errBackoff);
+      const results = await Promise.allSettled(
+        chunk.map(async (event) => {
+          logger.debug(
+            'Syncer',
+            `Processing blocks #${event.from} - #${event.to}`,
+          );
+          await addBlockRange.execute(event);
+        }),
+      );
+
+      let hasFailure = false;
+      for (let j = 0; j < results.length; j++) {
+        if (results[j].status === 'fulfilled') {
+          if (!hasFailure) cursor = chunk[j].to;
+        } else {
+          hasFailure = true;
+          const err = (results[j] as PromiseRejectedResult).reason;
+          const is429 = err?.status === 429 || /\b429\b/.test(err?.message);
+          logger.error(
+            'Syncer',
+            `Failed batch #${chunk[j].from}-#${chunk[j].to}${is429 ? ' (rate limited)' : ''}: ${err?.message}`,
+          );
+        }
+      }
+      if (hasFailure) {
+        await setTimeout(2000);
         failed = true;
       }
     }
