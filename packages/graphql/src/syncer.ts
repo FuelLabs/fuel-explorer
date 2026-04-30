@@ -49,9 +49,14 @@ async function main() {
   let heightPromise: Promise<number | null> = fetchLatestHeight();
 
   function startPrefetch(from: number, to: number) {
-    const p = addBlockRange.getBlocks(from, to).then((blocks) => {
-      return { blocks, from, to };
-    });
+    const p = Promise.race([
+      addBlockRange.getBlocks(from, to).then((blocks) => {
+        return { blocks, from, to };
+      }),
+      setTimeout(FUEL_CORE_TIMEOUT_MS).then(() => {
+        throw new Error(`Block fetch timeout #${from}-#${to}`);
+      }),
+    ]);
     p.catch(() => {});
     return p;
   }
@@ -164,7 +169,7 @@ async function main() {
         if (results[j].status === 'fulfilled') {
           const highest = (results[j] as PromiseFulfilledResult<number | null>)
             .value;
-          if (!hasFailure && highest !== null) cursor = highest;
+          if (!hasFailure) cursor = highest ?? chunk[j].to;
         } else {
           hasFailure = true;
           const err = (results[j] as PromiseRejectedResult).reason;
