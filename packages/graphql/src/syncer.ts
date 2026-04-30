@@ -22,14 +22,17 @@ function createBatchEvents(idsRange: { from: number; to: number }) {
   });
 }
 
-async function fetchLatestHeight(): Promise<number | null> {
-  const response = await Promise.race([
+function fetchLatestHeight(): Promise<number | null> {
+  const p = Promise.race([
     client.sdk.blocks({ last: 1 }),
     setTimeout(FUEL_CORE_TIMEOUT_MS).then(() => null),
-  ]);
-  if (!response || !response.data) return null;
-  const lastBlock = response.data.blocks.nodes[0];
-  return Number(lastBlock?.header.height ?? '0');
+  ]).then((response) => {
+    if (!response || !response.data) return null;
+    const lastBlock = response.data.blocks.nodes[0];
+    return Number(lastBlock?.header.height ?? '0');
+  });
+  p.catch(() => {});
+  return p;
 }
 
 async function main() {
@@ -114,12 +117,15 @@ async function main() {
       const chunk = events.slice(i, i + CONCURRENCY);
 
       // Fetch all batches in this chunk concurrently
-      // Reuse prefetched data for the first batch if available
-      const fetchPromises = chunk.map((event, idx) => {
+      // Reuse prefetched data only if its range covers the event's range
+      const fetchPromises = chunk.map(async (event, idx) => {
         if (idx === 0 && prefetchedBlocks) {
           const p = prefetchedBlocks;
           prefetchedBlocks = null;
-          return p;
+          const prefetched = await p;
+          if (prefetched.from === event.from && prefetched.to >= event.to) {
+            return prefetched;
+          }
         }
         return startPrefetch(event.from, event.to);
       });
@@ -149,14 +155,16 @@ async function main() {
           if (fetchResult.status === 'rejected') throw fetchResult.reason;
           const { blocks, from: bFrom, to: bTo } = fetchResult.value;
           logger.debug('Syncer', `Processing blocks #${bFrom} - #${bTo}`);
-          await addBlockRange.processBlocks(blocks, bFrom, bTo);
+          return addBlockRange.processBlocks(blocks, bFrom, bTo);
         }),
       );
 
       let hasFailure = false;
       for (let j = 0; j < results.length; j++) {
         if (results[j].status === 'fulfilled') {
-          if (!hasFailure) cursor = chunk[j].to;
+          const highest = (results[j] as PromiseFulfilledResult<number | null>)
+            .value;
+          if (!hasFailure && highest !== null) cursor = highest;
         } else {
           hasFailure = true;
           const err = (results[j] as PromiseRejectedResult).reason;

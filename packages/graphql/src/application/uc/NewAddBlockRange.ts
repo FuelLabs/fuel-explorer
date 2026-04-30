@@ -62,12 +62,16 @@ export default class NewAddBlockRange {
     await this.processBlocks(blocksData, from, to);
   }
 
-  async processBlocks(blocksData: GQLBlock[], from: number, to: number) {
+  async processBlocks(
+    blocksData: GQLBlock[],
+    from: number,
+    to: number,
+  ): Promise<number | null> {
     const { indexAsset, indexReceipts } = this;
 
     if (blocksData.length === 0) {
       logger.debug('Consumer', `No blocks to sync: #${from} - #${to}`);
-      return;
+      return null;
     }
     const start = performance.now();
     const connection = DatabaseConnection.getInstance();
@@ -78,6 +82,8 @@ export default class NewAddBlockRange {
       [allBlockIds],
     );
     const existingIds = new Set((existingRows as any[]).map((r) => r._id));
+
+    let highestCommitted: number | null = null;
 
     for (const blockData of blocksData) {
       const block = new Block({ data: blockData });
@@ -246,11 +252,13 @@ export default class NewAddBlockRange {
       });
       logger.debug('Consumer', `Persisting block: ${block.id}`);
       await connection.executeTransaction(queries);
+      highestCommitted = block.id;
       logger.debug('Consumer', `Persisted block: ${block.id}`);
     }
     const end = performance.now();
     const secs = Number.parseInt(`${(end - start) / 1000}`);
     logger.debug('Consumer', `Synced blocks: #${from} - #${to} (${secs}s)`);
+    return highestCommitted;
   }
 
   async getBlocks(from: number, to: number): Promise<GQLBlock[]> {
