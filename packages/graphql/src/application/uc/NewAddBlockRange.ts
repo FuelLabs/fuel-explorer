@@ -23,13 +23,26 @@ import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 import IndexAsset from './IndexAsset/IndexAsset';
 import IndexReceipts from './IndexReceipt';
 
+function bulkPlaceholders(rows: number, cols: number): string {
+  return Array.from(
+    { length: rows },
+    (_, i) =>
+      `(${Array.from({ length: cols }, (_, j) => `$${i * cols + j + 1}`).join(', ')})`,
+  ).join(', ');
+}
+
 export default class NewAddBlockRange {
   async execute(input: Input) {
-    const indexAsset = new IndexAsset();
-    const indexReceipts = new IndexReceipts();
     const { from, to } = input;
     logger.debug('Consumer', `Syncing blocks: #${from} - #${to}`);
     const blocksData = await this.getBlocks(from, to);
+    await this.processBlocks(blocksData, from, to);
+  }
+
+  async processBlocks(blocksData: GQLBlock[], from: number, to: number) {
+    const indexAsset = new IndexAsset();
+    const indexReceipts = new IndexReceipts();
+
     if (blocksData.length === 0) {
       logger.debug('Consumer', `No blocks to sync: #${from} - #${to}`);
       return;
@@ -45,26 +58,16 @@ export default class NewAddBlockRange {
     const existingIds = new Set((existingRows as any[]).map((r) => r._id));
 
     for (const blockData of blocksData) {
-      const queries: { statement: string; params: any }[] = [];
       const block = new Block({ data: blockData });
 
       if (existingIds.has(block.id)) continue;
 
-      queries.push({
-        statement:
-          'insert into indexer.blocks (_id, id, timestamp, data, gas_used, total_fee, producer, transactions_count, da_height) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict do nothing',
-        params: [
-          block.id,
-          block.blockHash,
-          block.timestamp,
-          block.data,
-          block.totalGasUsed,
-          block.totalFee,
-          block.producer,
-          block.transactions.length,
-          block.data.header.daHeight,
-        ],
-      });
+      const txRows: any[][] = [];
+      const accountRows: any[][] = [];
+      const inputRows: any[][] = [];
+      const predicateRows: any[][] = [];
+      const otherQueries: { statement: string; params: any }[] = [];
+
       for (const [index, transactionData] of blockData.transactions.entries()) {
         const transaction = new Transaction(
           transactionData,
@@ -72,17 +75,13 @@ export default class NewAddBlockRange {
           block.id,
           block.timestamp,
         );
-        queries.push({
-          statement:
-            'insert into indexer.transactions (_id, tx_hash, timestamp, data, block_id) values ($1, $2, $3, $4, $5) on conflict do nothing',
-          params: [
-            transaction.id,
-            transaction.transactionHash,
-            transaction.timestamp,
-            transaction.data,
-            transaction.blockId,
-          ],
-        });
+        txRows.push([
+          transaction.id,
+          transaction.transactionHash,
+          transaction.timestamp,
+          transaction.data,
+          transaction.blockId,
+        ]);
         if (transaction.data?.status) {
           try {
             await indexReceipts.execute(transaction);
@@ -92,16 +91,12 @@ export default class NewAddBlockRange {
         }
         const accounts = this.getAccounts(transactionData);
         for (const accountHash of accounts) {
-          queries.push({
-            statement:
-              'insert into indexer.transactions_accounts (_id, block_id, tx_hash, account_hash) values ($1, $2, $3, $4) on conflict do nothing',
-            params: [
-              transaction.id,
-              transaction.blockId,
-              transaction.transactionHash,
-              accountHash,
-            ],
-          });
+          accountRows.push([
+            transaction.id,
+            transaction.blockId,
+            transaction.transactionHash,
+            accountHash,
+          ]);
         }
         if (transaction.data?.status?.receipts) {
           try {
@@ -113,18 +108,10 @@ export default class NewAddBlockRange {
         if (transactionData.inputs) {
           for (const inputData of transactionData.inputs) {
             const nonce = (inputData as any).nonce ?? null;
-            queries.push({
-              statement:
-                'insert into indexer.inputs (transaction_id, nonce) values ($1, $2) on conflict do nothing',
-              params: [transaction.id, nonce],
-            });
+            inputRows.push([transaction.id, nonce]);
             const predicate = this.getPredicate(inputData);
             if (predicate) {
-              queries.push({
-                statement:
-                  'insert into indexer.predicates (address, bytecode) values ($1, $2) on conflict do nothing',
-                params: [predicate.address, predicate.bytecode],
-              });
+              predicateRows.push([predicate.address, predicate.bytecode]);
             }
           }
         }
@@ -138,7 +125,7 @@ export default class NewAddBlockRange {
               outputData.to &&
               outputData.amount === '1'
             ) {
-              queries.push({
+              otherQueries.push({
                 statement: `update indexer.assets_contracts set owner = $1 where asset_id = $2 and decimals = 0 and total_supply = '1'`,
                 params: [outputData.to, outputData.assetId],
               });
@@ -155,7 +142,7 @@ export default class NewAddBlockRange {
                   'Consumer',
                   `Contract fetched successfully: ${contractId}`,
                 );
-                queries.push({
+                otherQueries.push({
                   statement:
                     'insert into indexer.contracts (contract_hash, data) values ($1, $2) on conflict (contract_hash) do update set data = excluded.data',
                   params: [contract.id, contract],
@@ -168,7 +155,6 @@ export default class NewAddBlockRange {
                 'Consumer',
                 `Error fetching contract ${contractId}: ${e.message}`,
               );
-              // Continue processing other contracts even if one fails
             }
           }
         }
@@ -176,15 +162,57 @@ export default class NewAddBlockRange {
           transactionData,
           block.timestamp,
         );
-        queries.push(...stakingQueries);
+        otherQueries.push(...stakingQueries);
       }
-      // Incrementally add this block's fee/gas to the hourly aggregate.
-      // Uses block.totalFee and block.totalGasUsed already computed in memory —
-      // no table scan needed.
-      // WARNING: if a block is reprocessed (e.g. syncer restart with overlapping
-      // ranges), its fee/gas will be double-counted here. The blocks table is
-      // protected by ON CONFLICT DO NOTHING, but the agg accumulates blindly.
-      // Reprocessing is rare and the agg can be recomputed from blocks if needed.
+
+      const queries: { statement: string; params: any }[] = [];
+
+      queries.push({
+        statement:
+          'insert into indexer.blocks (_id, id, timestamp, data, gas_used, total_fee, producer, transactions_count, da_height) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict do nothing',
+        params: [
+          block.id,
+          block.blockHash,
+          block.timestamp,
+          block.data,
+          block.totalGasUsed,
+          block.totalFee,
+          block.producer,
+          block.transactions.length,
+          block.data.header.daHeight,
+        ],
+      });
+
+      if (txRows.length > 0) {
+        queries.push({
+          statement: `insert into indexer.transactions (_id, tx_hash, timestamp, data, block_id) values ${bulkPlaceholders(txRows.length, 5)} on conflict do nothing`,
+          params: txRows.flat(),
+        });
+      }
+
+      if (accountRows.length > 0) {
+        queries.push({
+          statement: `insert into indexer.transactions_accounts (_id, block_id, tx_hash, account_hash) values ${bulkPlaceholders(accountRows.length, 4)} on conflict do nothing`,
+          params: accountRows.flat(),
+        });
+      }
+
+      if (inputRows.length > 0) {
+        queries.push({
+          statement: `insert into indexer.inputs (transaction_id, nonce) values ${bulkPlaceholders(inputRows.length, 2)} on conflict do nothing`,
+          params: inputRows.flat(),
+        });
+      }
+
+      if (predicateRows.length > 0) {
+        queries.push({
+          statement: `insert into indexer.predicates (address, bytecode) values ${bulkPlaceholders(predicateRows.length, 2)} on conflict do nothing`,
+          params: predicateRows.flat(),
+        });
+      }
+
+      queries.push(...otherQueries);
+
       queries.push({
         statement: `
           INSERT INTO indexer.hourly_statistics_agg (hour, total_fee, total_gas_used)
