@@ -23,6 +23,8 @@ import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 import IndexAsset from './IndexAsset/IndexAsset';
 import IndexReceipts from './IndexReceipt';
 
+const MAX_PG_PARAMS = 30000;
+
 function bulkPlaceholders(rows: number, cols: number): string {
   return Array.from(
     { length: rows },
@@ -31,7 +33,28 @@ function bulkPlaceholders(rows: number, cols: number): string {
   ).join(', ');
 }
 
+function buildBulkInserts(
+  statement: string,
+  rows: any[][],
+  cols: number,
+): { statement: string; params: any }[] {
+  if (rows.length === 0) return [];
+  const maxRowsPerBatch = Math.floor(MAX_PG_PARAMS / cols);
+  const queries: { statement: string; params: any }[] = [];
+  for (let i = 0; i < rows.length; i += maxRowsPerBatch) {
+    const batch = rows.slice(i, i + maxRowsPerBatch);
+    queries.push({
+      statement: `${statement} ${bulkPlaceholders(batch.length, cols)} on conflict do nothing`,
+      params: batch.flat(),
+    });
+  }
+  return queries;
+}
+
 export default class NewAddBlockRange {
+  private indexAsset = new IndexAsset();
+  private indexReceipts = new IndexReceipts();
+
   async execute(input: Input) {
     const { from, to } = input;
     logger.debug('Consumer', `Syncing blocks: #${from} - #${to}`);
@@ -40,8 +63,7 @@ export default class NewAddBlockRange {
   }
 
   async processBlocks(blocksData: GQLBlock[], from: number, to: number) {
-    const indexAsset = new IndexAsset();
-    const indexReceipts = new IndexReceipts();
+    const { indexAsset, indexReceipts } = this;
 
     if (blocksData.length === 0) {
       logger.debug('Consumer', `No blocks to sync: #${from} - #${to}`);
@@ -183,33 +205,28 @@ export default class NewAddBlockRange {
         ],
       });
 
-      if (txRows.length > 0) {
-        queries.push({
-          statement: `insert into indexer.transactions (_id, tx_hash, timestamp, data, block_id) values ${bulkPlaceholders(txRows.length, 5)} on conflict do nothing`,
-          params: txRows.flat(),
-        });
-      }
-
-      if (accountRows.length > 0) {
-        queries.push({
-          statement: `insert into indexer.transactions_accounts (_id, block_id, tx_hash, account_hash) values ${bulkPlaceholders(accountRows.length, 4)} on conflict do nothing`,
-          params: accountRows.flat(),
-        });
-      }
-
-      if (inputRows.length > 0) {
-        queries.push({
-          statement: `insert into indexer.inputs (transaction_id, nonce) values ${bulkPlaceholders(inputRows.length, 2)} on conflict do nothing`,
-          params: inputRows.flat(),
-        });
-      }
-
-      if (predicateRows.length > 0) {
-        queries.push({
-          statement: `insert into indexer.predicates (address, bytecode) values ${bulkPlaceholders(predicateRows.length, 2)} on conflict do nothing`,
-          params: predicateRows.flat(),
-        });
-      }
+      queries.push(
+        ...buildBulkInserts(
+          'insert into indexer.transactions (_id, tx_hash, timestamp, data, block_id) values',
+          txRows,
+          5,
+        ),
+        ...buildBulkInserts(
+          'insert into indexer.transactions_accounts (_id, block_id, tx_hash, account_hash) values',
+          accountRows,
+          4,
+        ),
+        ...buildBulkInserts(
+          'insert into indexer.inputs (transaction_id, nonce) values',
+          inputRows,
+          2,
+        ),
+        ...buildBulkInserts(
+          'insert into indexer.predicates (address, bytecode) values',
+          predicateRows,
+          2,
+        ),
+      );
 
       queries.push(...otherQueries);
 

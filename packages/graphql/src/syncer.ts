@@ -46,9 +46,11 @@ async function main() {
   let heightPromise: Promise<number | null> = fetchLatestHeight();
 
   function startPrefetch(from: number, to: number) {
-    return addBlockRange.getBlocks(from, to).then((blocks) => {
+    const p = addBlockRange.getBlocks(from, to).then((blocks) => {
       return { blocks, from, to };
     });
+    p.catch(() => {});
+    return p;
   }
 
   while (true) {
