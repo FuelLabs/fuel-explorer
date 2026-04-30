@@ -83,10 +83,11 @@ export default class NewAddBlockRange {
     );
     const existingIds = new Set((existingRows as any[]).map((r) => r._id));
 
-    let highestCommitted: number | null = null;
+    let highestSeen: number | null = null;
 
     for (const blockData of blocksData) {
       const block = new Block({ data: blockData });
+      highestSeen = block.id;
 
       if (existingIds.has(block.id)) continue;
 
@@ -252,13 +253,12 @@ export default class NewAddBlockRange {
       });
       logger.debug('Consumer', `Persisting block: ${block.id}`);
       await connection.executeTransaction(queries);
-      highestCommitted = block.id;
       logger.debug('Consumer', `Persisted block: ${block.id}`);
     }
     const end = performance.now();
     const secs = Number.parseInt(`${(end - start) / 1000}`);
     logger.debug('Consumer', `Synced blocks: #${from} - #${to} (${secs}s)`);
-    return highestCommitted;
+    return highestSeen;
   }
 
   async getBlocks(from: number, to: number): Promise<GQLBlock[]> {

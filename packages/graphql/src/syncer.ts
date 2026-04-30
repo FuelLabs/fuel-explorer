@@ -48,6 +48,10 @@ async function main() {
   }> | null = null;
   let heightPromise: Promise<number | null> = fetchLatestHeight();
 
+  let statsBlockCount = 0;
+  let statsStartTime = Date.now();
+  const STATS_INTERVAL_MS = 30_000;
+
   function startPrefetch(from: number, to: number) {
     const p = Promise.race([
       addBlockRange.getBlocks(from, to).then((blocks) => {
@@ -127,10 +131,12 @@ async function main() {
         if (idx === 0 && prefetchedBlocks) {
           const p = prefetchedBlocks;
           prefetchedBlocks = null;
-          const prefetched = await p;
-          if (prefetched.from === event.from && prefetched.to >= event.to) {
-            return prefetched;
-          }
+          try {
+            const prefetched = await p;
+            if (prefetched.from === event.from && prefetched.to >= event.to) {
+              return prefetched;
+            }
+          } catch {}
         }
         return startPrefetch(event.from, event.to);
       });
@@ -169,7 +175,9 @@ async function main() {
         if (results[j].status === 'fulfilled') {
           const highest = (results[j] as PromiseFulfilledResult<number | null>)
             .value;
+          const prevCursor = cursor;
           if (!hasFailure) cursor = highest ?? chunk[j].to;
+          statsBlockCount += cursor - prevCursor;
         } else {
           hasFailure = true;
           const err = (results[j] as PromiseRejectedResult).reason;
@@ -180,6 +188,19 @@ async function main() {
           );
         }
       }
+
+      const now = Date.now();
+      if (now - statsStartTime >= STATS_INTERVAL_MS) {
+        const elapsed = (now - statsStartTime) / 1000;
+        const bps = (statsBlockCount / elapsed).toFixed(1);
+        logger.info(
+          'Syncer',
+          `[stats] blocks=${statsBlockCount} elapsed=${elapsed.toFixed(0)}s throughput=${bps} blocks/sec cursor=${cursor} behind=${height - cursor}`,
+        );
+        statsBlockCount = 0;
+        statsStartTime = now;
+      }
+
       if (hasFailure) {
         await setTimeout(2000);
         failed = true;
