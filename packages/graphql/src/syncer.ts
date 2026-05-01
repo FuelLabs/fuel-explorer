@@ -50,7 +50,22 @@ async function main() {
 
   let statsBlockCount = 0;
   let statsStartTime = Date.now();
+  let lastKnownHeight = 0;
   const STATS_INTERVAL_MS = 30_000;
+
+  function emitStats() {
+    const now = Date.now();
+    if (now - statsStartTime < STATS_INTERVAL_MS) return;
+    const elapsed = (now - statsStartTime) / 1000;
+    const bps = (statsBlockCount / elapsed).toFixed(1);
+    const behind = lastKnownHeight > cursor ? lastKnownHeight - cursor : 0;
+    logger.info(
+      'Syncer',
+      `[stats] blocks=${statsBlockCount} elapsed=${elapsed.toFixed(0)}s throughput=${bps} blocks/sec cursor=${cursor} behind=${behind}`,
+    );
+    statsBlockCount = 0;
+    statsStartTime = now;
+  }
 
   function startPrefetch(from: number, to: number) {
     const p = addBlockRange.getBlocks(from, to).then((blocks) => {
@@ -61,6 +76,7 @@ async function main() {
   }
 
   while (true) {
+    emitStats();
     const startTime = Date.now();
     let height: number;
     try {
@@ -80,6 +96,7 @@ async function main() {
       logger.debug('Syncer', `Fuel core response time: ${latencyMs}ms`);
       backoffMs = BACKOFF_INITIAL_MS;
       height = result;
+      lastKnownHeight = height;
     } catch (e: any) {
       const latencyMs = Date.now() - startTime;
       logger.error(
@@ -182,18 +199,6 @@ async function main() {
             `Failed batch #${chunk[j].from}-#${chunk[j].to}${is429 ? ' (rate limited)' : ''}: ${err?.message}`,
           );
         }
-      }
-
-      const now = Date.now();
-      if (now - statsStartTime >= STATS_INTERVAL_MS) {
-        const elapsed = (now - statsStartTime) / 1000;
-        const bps = (statsBlockCount / elapsed).toFixed(1);
-        logger.info(
-          'Syncer',
-          `[stats] blocks=${statsBlockCount} elapsed=${elapsed.toFixed(0)}s throughput=${bps} blocks/sec cursor=${cursor} behind=${height - cursor}`,
-        );
-        statsBlockCount = 0;
-        statsStartTime = now;
       }
 
       if (hasFailure) {
