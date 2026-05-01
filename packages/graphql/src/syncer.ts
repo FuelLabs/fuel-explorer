@@ -53,14 +53,9 @@ async function main() {
   const STATS_INTERVAL_MS = 30_000;
 
   function startPrefetch(from: number, to: number) {
-    const p = Promise.race([
-      addBlockRange.getBlocks(from, to).then((blocks) => {
-        return { blocks, from, to };
-      }),
-      setTimeout(FUEL_CORE_TIMEOUT_MS).then(() => {
-        throw new Error(`Block fetch timeout #${from}-#${to}`);
-      }),
-    ]);
+    const p = addBlockRange.getBlocks(from, to).then((blocks) => {
+      return { blocks, from, to };
+    });
     p.catch(() => {});
     return p;
   }
