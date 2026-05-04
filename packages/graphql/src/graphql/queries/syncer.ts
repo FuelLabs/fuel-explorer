@@ -1,5 +1,10 @@
 import { gql } from 'graphql-request';
 
+// Slim versions of the auto-generated BlockItem fragment (block.graphql).
+// These only include fields the syncer reads or stores in the DB jsonb.
+// If a new field is needed by the syncer or frontend (via stored data),
+// add it here — the auto-generated SDK won't catch missing fields.
+
 export const LATEST_HEIGHT_QUERY = gql`
   query latestHeight {
     blocks(last: 1) {
