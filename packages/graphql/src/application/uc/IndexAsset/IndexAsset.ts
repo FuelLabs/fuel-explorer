@@ -66,27 +66,22 @@ export default class IndexAsset {
           }
           try {
             const contract = new Contract(receipt.id, abi, this.provider);
-            const outputName = await contract.functions
-              .name({ bits: assetId })
+            const assetBits = { bits: assetId };
+            const { value: results } = await contract
+              .multiCall([
+                contract.functions.name(assetBits),
+                contract.functions.symbol(assetBits),
+                contract.functions.decimals(assetBits),
+                contract.functions.total_supply(assetBits),
+                contract.functions.metadata(assetBits, 'uri'),
+              ])
               .dryRun();
-            asset.name = outputName.value;
-            const outputSymbol = await contract.functions
-              .symbol({ bits: assetId })
-              .dryRun();
-            asset.symbol = outputSymbol.value;
-            const outputDecimals = await contract.functions
-              .decimals({ bits: assetId })
-              .dryRun();
-            asset.decimals = outputDecimals.value;
-            const outputTotalSupply = await contract.functions
-              .total_supply({ bits: assetId })
-              .dryRun();
-            asset.totalSupply = bn(outputTotalSupply.value).toString() as any;
-            const { value } = await contract.functions
-              .metadata({ bits: assetId }, 'uri')
-              .dryRun();
-            if (value?.String) {
-              asset.metadata.uri = value.String;
+            asset.name = results[0];
+            asset.symbol = results[1];
+            asset.decimals = results[2];
+            asset.totalSupply = bn(results[3]).toString() as any;
+            if (results[4]?.String) {
+              asset.metadata.uri = results[4].String;
             }
           } catch (e: any) {
             asset.error = e.message;
