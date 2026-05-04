@@ -10,6 +10,13 @@ ARG FUEL_GRAPHQL_ENDPOINT=""
 
 # dependencies
 ENV DEBIAN_FRONTEND=noninteractive
+# Swap to apt's geo-routing mirror — picks the nearest healthy mirror per
+# request, dramatically faster than the default archive.ubuntu.com round-robin
+# (which has been throttling CI builds).
+RUN sed -i \
+    -e 's|http://archive\.ubuntu\.com/ubuntu|mirror+http://mirrors.ubuntu.com/mirrors.txt|g' \
+    -e 's|http://security\.ubuntu\.com/ubuntu|mirror+http://mirrors.ubuntu.com/mirrors.txt|g' \
+    /etc/apt/sources.list
 RUN apt update && apt install -y curl jq && rm -rf /var/lib/apt/lists/*
 
 # copy chain config
