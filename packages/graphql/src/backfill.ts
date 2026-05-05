@@ -102,7 +102,7 @@ async function main() {
 
   // Verify
   const remaining = await connection.query(
-    "SELECT count(*) as cnt FROM indexer.blocks WHERE _id BETWEEN $1 AND $2 AND NOT (data ? 'height')",
+    "SELECT count(*)::int as cnt FROM indexer.blocks WHERE _id BETWEEN $1 AND $2 AND NOT (data ? 'height')",
     [RANGE_START, RANGE_END],
   );
   const cnt = remaining[0]?.cnt ?? 0;
@@ -119,5 +119,5 @@ async function main() {
 
 main().catch((e) => {
   logger.error('Backfill', `Error: ${e.message} — will retry on next restart`);
-  process.exit(0);
+  process.exit(1);
 });
