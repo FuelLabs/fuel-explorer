@@ -9,7 +9,7 @@ import BlockDAO from './infra/dao/BlockDAO';
 const FUEL_CORE_TIMEOUT_MS = 5000;
 const BACKOFF_INITIAL_MS = 1000;
 const BACKOFF_MAX_MS = 5000;
-const BATCH_SIZE = 10;
+const BATCH_SIZE = 2;
 const MAX_RANGE = 1000;
 const CONCURRENCY = 10;
 
