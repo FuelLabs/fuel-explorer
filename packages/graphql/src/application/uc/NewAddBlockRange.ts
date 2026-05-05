@@ -17,7 +17,6 @@ import type {
   GQLOutput,
   GQLTransaction,
 } from '~/graphql/generated/sdk';
-import { SYNCER_BLOCKS_QUERY } from '~/graphql/queries/syncer';
 import Block from '~/infra/dao/Block';
 import Transaction from '~/infra/dao/Transaction';
 import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
@@ -272,9 +271,7 @@ export default class NewAddBlockRange {
       ...(after ? { after: String(after) } : null),
     };
     logger.debug('Consumer', `Fetching blocks: #${from} - #${to}`);
-    const data = await client.client.request<{
-      blocks: { nodes: GQLBlock[] };
-    }>(SYNCER_BLOCKS_QUERY, params);
+    const { data } = await client.sdk.blocks(params);
     // checking transactions integrity
     for (const block of data.blocks.nodes) {
       for (const transaction of block.transactions) {
