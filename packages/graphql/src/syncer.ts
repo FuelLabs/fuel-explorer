@@ -3,6 +3,7 @@ import NewAddBlockRange from './application/uc/NewAddBlockRange';
 import { logger } from './core/Logger';
 import { client } from './graphql/GraphQLSDK';
 import type { GQLBlock } from './graphql/generated/sdk';
+import { LATEST_HEIGHT_QUERY } from './graphql/queries/syncer';
 import BlockDAO from './infra/dao/BlockDAO';
 
 const FUEL_CORE_TIMEOUT_MS = 5000;
@@ -24,11 +25,13 @@ function createBatchEvents(idsRange: { from: number; to: number }) {
 
 function fetchLatestHeight(): Promise<number | null> {
   const p = Promise.race([
-    client.sdk.blocks({ last: 1 }),
+    client.client.request<{
+      blocks: { nodes: { header: { height: string } }[] };
+    }>(LATEST_HEIGHT_QUERY),
     setTimeout(FUEL_CORE_TIMEOUT_MS).then(() => null),
   ]).then((response) => {
-    if (!response || !response.data) return null;
-    const lastBlock = response.data.blocks.nodes[0];
+    if (!response) return null;
+    const lastBlock = response.blocks?.nodes[0];
     return Number(lastBlock?.header.height ?? '0');
   });
   p.catch(() => {});
