@@ -9,9 +9,9 @@ import BlockDAO from './infra/dao/BlockDAO';
 const FUEL_CORE_TIMEOUT_MS = 5000;
 const BACKOFF_INITIAL_MS = 1000;
 const BACKOFF_MAX_MS = 5000;
-const BATCH_SIZE = 10;
-const MAX_RANGE = 1000;
-const CONCURRENCY = 10;
+const BATCH_SIZE = Number(process.env.SYNCER_BATCH_SIZE) || 2;
+const MAX_RANGE = Number(process.env.SYNCER_MAX_RANGE) || 1000;
+const CONCURRENCY = Number(process.env.SYNCER_CONCURRENCY) || 10;
 
 function createBatchEvents(idsRange: { from: number; to: number }) {
   const diff = idsRange.to - idsRange.from;
