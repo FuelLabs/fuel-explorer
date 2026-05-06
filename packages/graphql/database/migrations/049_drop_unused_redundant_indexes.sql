@@ -21,5 +21,5 @@ DROP INDEX CONCURRENTLY IF EXISTS indexer.inputs__id_idx1;
 DROP INDEX CONCURRENTLY IF EXISTS indexer.balance_tx_hash_idx;
 
 -- Identical column definition to balance_account_asset_id_idx2
--- (account_hash, asset_id, _id DESC); the latter is the one in active use.
+-- on (account_hash, asset_id, _id DESC) — the latter is the one in active use.
 DROP INDEX CONCURRENTLY IF EXISTS indexer.balance_account_hash_asset_id__id_idx;
