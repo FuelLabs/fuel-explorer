@@ -9,22 +9,22 @@
 -- Per-table overrides below scale the trigger thresholds proportionally to
 -- table size so they fire on a more reasonable absolute change.
 
--- 1.92B rows; default analyze trigger ~96M rows of churn.
+-- 1.92B rows, default analyze trigger ~96M rows of churn.
 ALTER TABLE indexer.transactions_accounts
   SET (autovacuum_vacuum_scale_factor = 0.005,
        autovacuum_analyze_scale_factor = 0.001);
 
--- 5.01B rows; default analyze trigger ~250M rows of churn.
+-- 5.01B rows, default analyze trigger ~250M rows of churn.
 ALTER TABLE indexer.inputs
   SET (autovacuum_vacuum_scale_factor = 0.005,
        autovacuum_analyze_scale_factor = 0.001);
 
--- 548M rows; default analyze trigger ~27M rows of churn.
+-- 548M rows, default analyze trigger ~27M rows of churn.
 ALTER TABLE indexer.transactions
   SET (autovacuum_vacuum_scale_factor = 0.005,
        autovacuum_analyze_scale_factor = 0.001);
 
--- 462M rows with steady UPDATE churn (1%+ dead tuples observed); slightly
+-- 462M rows with steady UPDATE churn (1%+ dead tuples observed) — slightly
 -- looser than the insert-mostly tables above.
 ALTER TABLE indexer.balance
   SET (autovacuum_vacuum_scale_factor = 0.01,
