@@ -170,7 +170,8 @@ export class BlockResolver {
     const cachedTps = DataCache.getInstance().get('tps');
     if (cachedTps) return cachedTps;
     const blockDAO = new BlockDAO();
-    const tps = await blockDAO.tps();
+    const maxTs = await blockDAO.getMaxTimestamp();
+    const tps = await blockDAO.tps(maxTs);
     DataCache.getInstance().save('tps', 60000, tps);
     return tps;
   }
@@ -207,28 +208,20 @@ export class BlockResolver {
     if (cachedTps) return cachedTps;
     const blockDAO = new BlockDAO();
 
-    // Parallel execution of all database queries
-    const [
-      totalTps,
-      averageTps,
-      maxTps,
-      averageTpsPerMinute,
-      rollingStats60s,
-      totalGasUsed,
-      averageGasUsed,
-      maxGasUsed,
-      totalFee,
-    ] = await Promise.all([
-      blockDAO.getTotalTps(),
-      blockDAO.getAverageTps(),
-      blockDAO.getMaxTps(),
-      blockDAO.getAverageTpsPerMinute(),
-      blockDAO.getRollingStats60s(),
-      blockDAO.getTotalGasUsed(),
-      blockDAO.getAverageGasUsed(),
-      blockDAO.getMaxGasUsed(),
-      blockDAO.getTotalFee() as any,
-    ]);
+    // Pin the analytics window to a single MAX(timestamp) lookup so all
+    // downstream queries share the same anchor (consistent snapshot) AND so
+    // the value can be passed as a bound parameter — that's what lets the
+    // planner pick an Index Scan on blocks_timestamp_idx instead of a
+    // Parallel Seq Scan over the whole blocks table.
+    const maxTs = await blockDAO.getMaxTimestamp();
+
+    const [hourly, averageTpsPerMinute, rollingStats60s, totalFee] =
+      await Promise.all([
+        blockDAO.getHourlyStatistics(maxTs),
+        blockDAO.getAverageTpsPerMinute(maxTs),
+        blockDAO.getRollingStats60s(maxTs),
+        blockDAO.getTotalFee() as any,
+      ]);
 
     let totalFee24hrs = 0;
     for (const fee of totalFee) {
@@ -246,14 +239,14 @@ export class BlockResolver {
 
     const statistics = {
       nodes: {
-        totalTps,
-        averageTps,
-        maxTps,
+        totalTps: hourly.totalTps,
+        averageTps: hourly.averageTps,
+        maxTps: hourly.maxTps,
         averageTpsPerMinute,
         rollingStats60s,
-        totalGasUsed,
-        averageGasUsed,
-        maxGasUsed,
+        totalGasUsed: hourly.totalGasUsed,
+        averageGasUsed: hourly.averageGasUsed,
+        maxGasUsed: hourly.maxGasUsed,
         totalFee,
         totalFee24hrs: totalFee24hrsInUsd,
       },
