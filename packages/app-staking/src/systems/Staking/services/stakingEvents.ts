@@ -1,3 +1,4 @@
+import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
 import { FUEL_INDEXER_API } from 'app-commons';
 import type { Address } from 'viem';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
@@ -39,6 +40,13 @@ const buildStakingEventsUrl = (address: string) => {
 const isPendingEvent = (event: StakingEvent) => {
   // Use status field (same as Transactions page) to decide pending.
   // Pending = anything not Finalized or Skipped.
+  if (event.type === StakingEventType.Withdraw) {
+    // For Withdraw, only block if it's in the initial stages
+    return (
+      event.status === GQLWithdrawStatusType.TransactionSent ||
+      event.status === GQLWithdrawStatusType.WaitingSync
+    );
+  }
   return event.status !== 'Finalized' && event.status !== 'Skipped';
 };
 

@@ -8,6 +8,7 @@ import {
 import { useMemo } from 'react';
 import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import type { StakingEvent } from '../../types/l1/events';
+import { getWithdrawStepTiming } from '../../utils/withdrawTiming';
 
 interface TransactionHistoryItemStatusProps {
   event: StakingEvent;
@@ -16,17 +17,23 @@ interface TransactionHistoryItemStatusProps {
 export const TransactionHistoryItemStatus = ({
   event,
 }: TransactionHistoryItemStatusProps) => {
-  const startDate = event.statusInfo?.TransactionSent?.ethTx.timestamp;
-  const endDate: string | undefined = event.timestampToFinish;
   const isCompleted = event.status === GQLWithdrawStatusType.Finalized;
   const isWaitingForAction =
     event.status === GQLWithdrawStatusType.ReadyToProcessWithdraw;
   const isSkipped = event.status === GQLWithdrawStatusType.Skipped;
 
-  const { eta, progress } = useETA({
-    startDate,
-    endDate,
-  });
+  // Utilize the centralized timing logic
+  const timing = useMemo(
+    () =>
+      getWithdrawStepTiming(
+        event.status,
+        event.statusInfo,
+        event.timestampToFinish,
+      ),
+    [event.status, event.statusInfo, event.timestampToFinish],
+  );
+
+  const { eta, progress } = useETA(timing);
 
   const label = useMemo<string>(() => {
     if (isCompleted) return 'Completed';
