@@ -11,8 +11,9 @@ import metamask from './metamask';
 
 import { testExpect } from '../fixtures';
 import { ETH_MNEMONIC } from '../mocks';
+import { getProviderUrl } from './env';
 
-const PROVIDER_URL = 'http://localhost:4000/v1/graphql';
+const PROVIDER_URL = getProviderUrl();
 
 export const acceptMetaMaskAccessWithNetworkSwitch = async () => {
   await metamask.connectToDapp();

@@ -6,6 +6,7 @@ import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { getMetaMaskNetwork } from '../utils/env';
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
 
@@ -126,7 +127,7 @@ export const test = base.extend<{
     setMetaMask(metamask);
     await metamask.importWallet(ETH_MNEMONIC);
     try {
-      await metamask.switchNetwork('localhost');
+      await metamask.switchNetwork(getMetaMaskNetwork());
     } catch (_) {
       // ignore if network already set or not required
     }
