@@ -106,6 +106,7 @@ export const getCurrentNetworkContracts = (env: string) => {
   return STAKING_CONTRACTS[env.toUpperCase() as StakingEnv];
 };
 
+// TODO: replace with new sequencer block explorer URLs when available
 const SIMPLY_STAKING_EXPLORERS: Record<StakingEnv, string> = {
   MAINNET: 'https://fuel-seq.simplystaking.xyz/fuel-mainnet',
   SANDBOX: 'https://fuel-seq.simplystaking.xyz/fuel-sandbox',

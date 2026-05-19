@@ -27,9 +27,8 @@ export class APYResolver {
       };
 
     const network = env.get('FUEL_CHAIN');
-    const prfixUrl =
-      network === 'mainnet' ? 'rest-fuel-seq' : 'testnet-rest-fuel-seq';
-    const baseUrl = `https://${prfixUrl}.simplystaking.xyz`;
+    const envPrefix = network === 'mainnet' ? 'mainnet' : 'testnet';
+    const baseUrl = `https://rest.seq.${envPrefix}.fuel.network`;
     const poolResp = await fetch(
       new URL('/cosmos/staking/v1beta1/pool', baseUrl),
     ).then((resp) => resp.json());

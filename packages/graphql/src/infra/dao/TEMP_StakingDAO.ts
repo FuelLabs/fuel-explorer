@@ -15,13 +15,10 @@ export const TIME_TO_SEQUENCER_INDEXER_SYNC = 1800;
 
 const network = env.get('FUEL_CHAIN')!;
 const currentNetworkContracts = getCurrentNetworkContracts(network);
-const baseUrlIndexer =
-  network === 'mainnet' ? 'indexer-fuel-seq' : 'testnet-indexer-fuel-seq';
-const baseUrlRPC =
-  network === 'mainnet' ? 'rest-fuel-seq' : 'testnet-rest-fuel-seq';
+const envPrefix = network === 'mainnet' ? 'mainnet' : 'testnet';
 
-const COSMOS_URL_RPC = `https://${baseUrlRPC}.simplystaking.xyz`;
-const COSMOS_URL_INDEXER = `https://${baseUrlIndexer}.simplystaking.xyz`;
+const COSMOS_URL_RPC = `https://rest.seq.${envPrefix}.fuel.network`;
+const COSMOS_URL_INDEXER = `https://index-api.sequencer.${envPrefix}.fuel.network`;
 const base = network === 'mainnet' ? 'mainnet' : 'sepolia';
 const ETH_PROVIDER_URL = `https://eth-${base}.g.alchemy.com/v2/${env.get('ALCHEMY_API_KEY')}`;
 const ETH_PROVIDER = new ethers.JsonRpcProvider(ETH_PROVIDER_URL);
