@@ -97,10 +97,10 @@ export const COMET_SECURE_API = COMET_SECURE_API_MAP[STAKING_ENV];
 export const STAKING_MAINNET_FALLBACKS: Array<StakingEnvFallback> = [
   {
     COSMOS: {
-      REST: 'https://rest-fuel-seq.simplystaking.xyz',
+      REST: 'https://rest.seq.mainnet.fuel.network',
     },
     COMET: {
-      SECURE: 'https://rpc-fuel-seq.simplystaking.xyz',
+      SECURE: 'https://seq.mainnet.fuel.network',
     },
   },
   {
