@@ -14,24 +14,34 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 jobs:
   build-and-publish-image:
-    runs-on: warp-ubuntu-latest-x64-4x
+    uses: FuelLabs/github-actions/.github/workflows/docker-build-push.yml@7bce413db5867bcb2faf83108f6a75b199ccafe1
     if: |
       (github.event_name == 'release' && github.event.action == 'published') ||
       github.ref == 'refs/heads/main' ||
       (github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == github.repository) ||
       github.event_name == 'workflow_dispatch'
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Build and push Fuel Explorer Graphql image
-        uses: ./.github/actions/docker-publish
-        id: publish
-        with:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          image: ghcr.io/fuellabs/fuel-explorer
-          dockerfile: deployment/Dockerfile
-          context: .
+    secrets:
+      REGISTRY_USERNAME: ${{ github.repository_owner }}
+      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      auth-mode: registry-login
+      registry: ghcr.io
+      build-backend: native
+      platforms: linux/amd64,linux/arm64
+      runs-on-amd64: ubuntu-latest
+      runs-on-arm64: ubuntu-24.04-arm
+      dockerfile: deployment/Dockerfile
+      docker-context: .
+      image: ghcr.io/fuellabs/fuel-explorer
+      tags: |
+        type=ref,event=branch
+        type=sha,prefix=
+        type=semver,pattern={{raw}}
