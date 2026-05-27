@@ -23,10 +23,9 @@ export default class IndexCosmos {
     while (true) {
       try {
         const network = env.get('FUEL_CHAIN');
-        const baseUrl =
-          network === 'mainnet' ? 'rest-fuel-seq' : 'testnet-rest-fuel-seq';
+        const envPrefix = network === 'mainnet' ? 'mainnet' : 'testnet';
         const response = await fetch(
-          `https://${baseUrl}.simplystaking.xyz/cosmos/tx/v1beta1/txs?query=tx.height=${height}&limit=1000&offset=0`,
+          `https://rest.seq.${envPrefix}.fuel.network/cosmos/tx/v1beta1/txs?query=tx.height=${height}&limit=1000&offset=0`,
         );
         const output = await response.json();
         if (output.total === '0') {

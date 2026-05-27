@@ -6,7 +6,13 @@ ARG CONSENSUS_KEY_SECRET="0xc8e615a4089466174459ef19cfd257d2e17adfabff3b8f219dbb
 
 # dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y curl jq && rm -rf /var/lib/apt/lists/*
+# Swap to apt's geo-routing mirror — picks the nearest healthy mirror per
+# request, dramatically faster than the default archive.ubuntu.com round-robin
+# (which has been throttling CI builds).
+RUN sed -i \
+    -e 's|http://archive\.ubuntu\.com/ubuntu|mirror+http://mirrors.ubuntu.com/mirrors.txt|g' \
+    -e 's|http://security\.ubuntu\.com/ubuntu|mirror+http://mirrors.ubuntu.com/mirrors.txt|g' \
+    /etc/apt/sources.list
 RUN apt update && apt install -y git curl jq && rm -rf /var/lib/apt/lists/*
 
 # copy chain config

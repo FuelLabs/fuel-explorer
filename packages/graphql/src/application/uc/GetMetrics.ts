@@ -6,6 +6,8 @@ import BlockDAO from '~/infra/dao/BlockDAO';
 const FUEL_CORE_TIMEOUT_MS = 5000;
 
 export default class GetMetrics {
+  private blockDAO = new BlockDAO();
+
   async getFuelCoreLastBlockHeight() {
     const startTime = Date.now();
     try {
@@ -24,10 +26,7 @@ export default class GetMetrics {
   }
 
   async getIndexerLastBlockHeight() {
-    const blockDAO = new BlockDAO();
-    const latestBlock = await blockDAO.findLatestBlockAdded();
-    const blockId = latestBlock ? latestBlock.id : 0;
-    return blockId;
+    return (await this.blockDAO.findLatestBlockHeight()) ?? 0;
   }
 
   async execute(): Promise<any> {

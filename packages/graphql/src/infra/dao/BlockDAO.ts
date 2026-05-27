@@ -116,13 +116,12 @@ export default class BlockDAO {
     return paginatedResults;
   }
 
-  async findLatestBlockAdded() {
-    const [blockData] = await this.databaseConnection.query(
-      'select * from indexer.blocks order by _id desc limit 1',
+  async findLatestBlockHeight(): Promise<number | null> {
+    const [row] = await this.databaseConnection.query(
+      'select _id from indexer.blocks order by _id desc limit 1',
       [],
     );
-    if (!blockData) return;
-    return new Block(blockData);
+    return row ? row._id : null;
   }
 
   async getBlocksDashboard() {
@@ -162,22 +161,33 @@ export default class BlockDAO {
     };
   }
 
-  async tps() {
+  // The window-anchor `MAX("timestamp")` is computed once via getMaxTimestamp()
+  // and passed in as $1. Embedding the subquery turned the WHERE filter into a
+  // runtime parameter the planner can't size, which made it pick a Parallel Seq
+  // Scan over the whole 50M-row blocks table. With $1 bound to a literal, the
+  // planner uses the histogram on `timestamp` and picks an Index Scan on
+  // blocks_timestamp_idx that touches only the recent ~89K rows.
+
+  async getMaxTimestamp(): Promise<Date | null> {
+    const [row] = await this.databaseConnection.query(
+      'SELECT MAX("timestamp") AS max_ts FROM indexer.blocks',
+      [],
+    );
+    return row?.max_ts ?? null;
+  }
+
+  async tps(maxTs: Date | null) {
+    if (!maxTs) return { nodes: [] };
     const data = await this.databaseConnection.query(
-      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
+      `SELECT to_char(date_trunc('hour', "timestamp"), 'YYYY-MM-DD HH24') AS date,
         SUM(transactions_count) AS total_tps,
         SUM(gas_used::int) AS total_gas_used
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          transactions_count,
-          gas_used
-        FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-        AND "timestamp" < date_trunc('hour', now())
-      ) t
-      GROUP BY hour
-      ORDER BY hour ASC`,
-      [],
+      FROM indexer.blocks
+      WHERE "timestamp" >  date_trunc('hour', $1::timestamptz) - INTERVAL '24 hours'
+        AND "timestamp" <  date_trunc('hour', $1::timestamptz)
+      GROUP BY 1
+      ORDER BY 1 ASC`,
+      [maxTs],
     );
     const intervals = [];
     for (const row of data) {
@@ -200,79 +210,61 @@ export default class BlockDAO {
     };
   }
 
-  async getAverageTps() {
-    const data = await this.databaseConnection.query(
-      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
-        avg(transactions_count) AS value
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          transactions_count
-        FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-      ) t
-      GROUP BY hour
-      ORDER BY hour`,
-      [],
+  // Single scan that emits all six per-hour aggregates the dashboard needs.
+  // Replaces six individual queries (getTotalTps/getAverageTps/getMaxTps and
+  // their gas equivalents) which were each doing the same 24h scan.
+  async getHourlyStatistics(maxTs: Date | null) {
+    const empty = {
+      totalTps: [],
+      averageTps: [],
+      maxTps: [],
+      totalGasUsed: [],
+      averageGasUsed: [],
+      maxGasUsed: [],
+    };
+    if (!maxTs) return empty;
+    const rows = await this.databaseConnection.query(
+      `SELECT to_char(date_trunc('hour', "timestamp"), 'YYYY-MM-DD HH24') AS date,
+        SUM(transactions_count)::numeric AS sum_txs,
+        AVG(transactions_count)::numeric AS avg_txs,
+        MAX(transactions_count)::numeric AS max_txs,
+        SUM(gas_used::numeric) AS sum_gas,
+        AVG(gas_used::numeric) AS avg_gas,
+        MAX(gas_used::numeric) AS max_gas
+      FROM indexer.blocks
+      WHERE "timestamp" > date_trunc('hour', $1::timestamptz) - INTERVAL '24 hours'
+      GROUP BY 1
+      ORDER BY 1`,
+      [maxTs],
     );
-    return data.map((row) => ({
-      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
-      value: Number(row.value),
-    }));
+    const toBucket = (col: string) =>
+      rows.map((r: any) => ({
+        date: dayjs(r.date).startOf('hour').utcOffset(0, true).toDate(),
+        value: Number(r[col]),
+      }));
+    // The legacy getMaxTps used a 23-hour window (vs 24h here); preserve the
+    // historical entry count to keep any external SDK consumer's expectations
+    // intact.
+    return {
+      totalTps: toBucket('sum_txs'),
+      averageTps: toBucket('avg_txs'),
+      maxTps: toBucket('max_txs').slice(-24),
+      totalGasUsed: toBucket('sum_gas'),
+      averageGasUsed: toBucket('avg_gas'),
+      maxGasUsed: toBucket('max_gas'),
+    };
   }
 
-  async getTotalTps() {
+  async getAverageTpsPerMinute(maxTs: Date | null) {
+    if (!maxTs) return [];
     const data = await this.databaseConnection.query(
-      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
-        SUM(transactions_count) AS value
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          transactions_count
-        FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-      ) t
-      GROUP BY hour
-      ORDER BY hour`,
-      [],
-    );
-    return data.map((row) => ({
-      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
-      value: Number(row.value),
-    }));
-  }
-
-  async getMaxTps() {
-    const data = await this.databaseConnection.query(
-      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
-        MAX(transactions_count) AS value
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          transactions_count
-        FROM indexer.blocks
-        WHERE "timestamp" > date_trunc('hour', now()) - interval '23 hours'
-      ) t
-      GROUP BY hour
-      ORDER BY hour`,
-      [],
-    );
-    return data.map((row) => ({
-      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
-      value: Number(row.value),
-    }));
-  }
-
-  async getAverageTpsPerMinute() {
-    const data = await this.databaseConnection.query(
-      `SELECT to_char(minute, 'YYYY-MM-DD HH24:MI') AS date,
+      `SELECT to_char(date_trunc('minute', "timestamp"), 'YYYY-MM-DD HH24:MI') AS date,
         SUM(transactions_count)::float / 60 AS value
-      FROM (
-        SELECT date_trunc('minute', "timestamp") AS minute,
-          transactions_count
-        FROM indexer.blocks
-        WHERE "timestamp" > NOW() - INTERVAL '24 hours'
-      ) t
-      GROUP BY minute
-      ORDER BY minute ASC`,
-      [],
+      FROM indexer.blocks
+      WHERE "timestamp" > $1::timestamptz - INTERVAL '24 hours'
+      GROUP BY 1
+      ORDER BY 1 ASC`,
+      [maxTs],
     );
     return data.map((row) => ({
       date: dayjs(row.date).startOf('minute').utcOffset(0, true).toDate(),
@@ -280,7 +272,16 @@ export default class BlockDAO {
     }));
   }
 
-  async getRollingStats60s() {
+  async getRollingStats60s(maxTs: Date | null) {
+    if (!maxTs) {
+      return {
+        tps: 0,
+        avgTxPerBlock: 0,
+        avgGasPerBlock: 0,
+        avgBlockSize: 0,
+        peakTps: 0,
+      };
+    }
     const [stats, peak] = await Promise.all([
       this.databaseConnection.query(
         `SELECT
@@ -289,18 +290,18 @@ export default class BlockDAO {
           CASE WHEN COUNT(*) > 0 THEN AVG(gas_used::numeric) ELSE 0 END AS avg_gas_per_block,
           CASE WHEN COUNT(*) > 0 THEN AVG(pg_column_size(data)) ELSE 0 END AS avg_block_size
         FROM indexer.blocks
-        WHERE "timestamp" > NOW() - INTERVAL '60 seconds'`,
-        [],
+        WHERE "timestamp" > $1::timestamptz - INTERVAL '60 seconds'`,
+        [maxTs],
       ),
       this.databaseConnection.query(
         `SELECT COALESCE(MAX(minute_tps), 0) AS peak_tps
         FROM (
           SELECT SUM(transactions_count)::float / 60 AS minute_tps
           FROM indexer.blocks
-          WHERE "timestamp" > NOW() - INTERVAL '24 hours'
+          WHERE "timestamp" > $1::timestamptz - INTERVAL '24 hours'
           GROUP BY date_trunc('minute', "timestamp")
         ) t`,
-        [],
+        [maxTs],
       ),
     ]);
     return {
@@ -312,66 +313,6 @@ export default class BlockDAO {
     };
   }
 
-  async getAverageGasUsed() {
-    const data = await this.databaseConnection.query(
-      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
-        AVG(gas_used::numeric) AS value
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          gas_used
-          FROM indexer.blocks
-          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-      ) t
-      GROUP BY hour
-      ORDER BY hour`,
-      [],
-    );
-    return data.map((row) => ({
-      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
-      value: Number(row.value),
-    }));
-  }
-
-  async getTotalGasUsed() {
-    const data = await this.databaseConnection.query(
-      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
-        SUM(gas_used::numeric) AS value
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          gas_used
-          FROM indexer.blocks
-          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-      ) t
-      GROUP BY hour
-      ORDER BY hour`,
-      [],
-    );
-    return data.map((row) => ({
-      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
-      value: Number(row.value),
-    }));
-  }
-
-  async getMaxGasUsed() {
-    const data = await this.databaseConnection.query(
-      `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
-        MAX(gas_used::numeric) AS value
-      FROM (
-        SELECT date_trunc('hour', "timestamp") AS hour,
-          gas_used
-          FROM indexer.blocks
-          WHERE "timestamp" > date_trunc('hour', now()) - interval '24 hours'
-      ) t
-      GROUP BY hour
-      ORDER BY hour`,
-      [],
-    );
-    return data.map((row) => ({
-      date: dayjs(row.date).startOf('hour').utcOffset(0, true).toDate(),
-      value: Number(row.value),
-    }));
-  }
-
   async getTotalFee() {
     // Optimized query using materialized view for pre-computed hourly statistics
     // View refreshes every 10 minutes and eliminates expensive JSON extraction
@@ -379,8 +320,8 @@ export default class BlockDAO {
       `SELECT to_char(hour, 'YYYY-MM-DD HH24') AS date,
         total_fee AS value
       FROM indexer.hourly_statistics_agg
-      WHERE hour > NOW() - INTERVAL '24 hours'
-        AND hour <= date_trunc('hour', NOW())
+      WHERE hour > (SELECT MAX(hour) FROM indexer.hourly_statistics_agg) - INTERVAL '24 hours'
+        AND hour <= (SELECT MAX(hour) FROM indexer.hourly_statistics_agg)
       ORDER BY hour`,
       [],
     );
