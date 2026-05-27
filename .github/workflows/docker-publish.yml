@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   build-and-publish-image:
-    uses: FuelLabs/github-actions/.github/workflows/docker-build-push.yml@7bce413db5867bcb2faf83108f6a75b199ccafe1
+    uses: FuelLabs/github-actions/.github/workflows/docker-build-push.yml@master
     if: |
       (github.event_name == 'release' && github.event.action == 'published') ||
       github.ref == 'refs/heads/main' ||
