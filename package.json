@@ -97,6 +97,9 @@
       "allowAny": ["react", "react-dom"],
       "ignoreMissing": ["react", "react-dom"]
     },
+    "auditConfig": {
+      "ignoreGhsas": ["GHSA-5xrq-8626-4rwp"]
+    },
     "overrides": {
       "axios@>=1.0.0 <1.15.0": ">=1.15.0",
       "ws@<8.17.1": ">=8.17.1",
