@@ -6,9 +6,14 @@ import {
   MsgUndelegate,
 } from '@fuel-infrastructure/fuelsequencerjs/dist/codegen/cosmos/staking/v1beta1/tx';
 import { MsgWithdrawToEthereum } from '@fuel-infrastructure/fuelsequencerjs/dist/codegen/fuelsequencer/bridge/v1/tx';
+import { getCurrentNetworkContracts } from 'app-commons/stakingAddresses';
 import dayjs from 'dayjs';
 import { ethers } from 'ethers';
 import { arrayify } from 'fuels';
+import AbiFactory from '~/application/uc/IndexL1/abi/AbiFactory';
+import { createL1Provider } from '~/application/uc/IndexL1/createL1Provider';
+import { env } from '~/config';
+import { logger } from '~/core/Logger';
 import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
 import type PaginatedParams from '../paginator/PaginatedParams';
 import { convertEthAddressToSequencerUserAddress } from '../util/util';
@@ -860,7 +865,7 @@ export default class StakingDAO {
       };
     }
 
-    const [withdrawFinalized]: Array<ProccessedWithdrawQueryItem> =
+    let [withdrawFinalized]: Array<ProccessedWithdrawQueryItem> =
       await this.databaseConnection.query(
         `select
         cl.block_height as block_height,
@@ -877,6 +882,25 @@ export default class StakingDAO {
         event = 'WithdrawalProcessed'`,
         [data.nonce],
       );
+
+    // Fallback: the L1 indexer cursor is forward-only with no backfill, so a
+    // dropped/under-returned `getLogs` window can leave a WithdrawalProcessed
+    // log unindexed. The withdrawal is then stuck at ReadyToProcessWithdraw
+    // even though it was already claimed on-chain, which wrongly blocks the
+    // user from starting new withdrawals. When the DB has no record but the
+    // withdrawal is ready, verify directly on-chain before reporting pending.
+    if (
+      !withdrawFinalized &&
+      data.status === WithdrawStatusType.ReadyToProcessWithdraw &&
+      data.nonce
+    ) {
+      const onChainFinalized = await this.findWithdrawalProcessedOnChain(
+        data.nonce,
+      );
+      if (onChainFinalized) {
+        withdrawFinalized = onChainFinalized;
+      }
+    }
 
     if (withdrawFinalized) {
       // updates previous status with the tx that completed it
@@ -895,6 +919,49 @@ export default class StakingDAO {
     }
 
     return data;
+  }
+
+  /**
+   * Verifies on-chain whether a withdrawal nonce has already been processed by
+   * the FuelStreamX contract. Used as a fallback when the L1 indexer has not
+   * recorded the `WithdrawalProcessed` log (e.g. a missed getLogs window), so
+   * an already-claimed withdrawal is not reported as still pending. Filters by
+   * the indexed `nonce` topic, so it returns at most one log. Returns null on
+   * any RPC error to preserve the current (DB-only) behavior.
+   */
+  private async findWithdrawalProcessedOnChain(
+    nonce: string,
+  ): Promise<ProccessedWithdrawQueryItem | null> {
+    try {
+      const network = env.get('FUEL_CHAIN') || '';
+      const abi = AbiFactory.create(network, 'FuelStreamX');
+      if (!abi) return null;
+      const { FUEL_STREAM_X } = getCurrentNetworkContracts(network);
+      const provider = createL1Provider();
+      const contract = new ethers.Contract(
+        FUEL_STREAM_X,
+        abi as ethers.InterfaceAbi,
+        provider,
+      );
+      const filter = contract.filters.WithdrawalProcessed(BigInt(nonce));
+      const logs = await contract.queryFilter(filter, 0, 'finalized');
+      const log = logs[0];
+      if (!log) return null;
+      const block = await provider.getBlock(log.blockNumber);
+      return {
+        block_height: log.blockNumber.toString(),
+        tx_hash: log.transactionHash,
+        timestamp: new Date((block?.timestamp ?? 0) * 1000),
+      };
+    } catch (error) {
+      logger.warn(
+        'StakingDAO',
+        `On-chain WithdrawalProcessed fallback failed for nonce ${nonce}: ${
+          (error as Error).message
+        }`,
+      );
+      return null;
+    }
   }
 
   async createDelegateHistory(
