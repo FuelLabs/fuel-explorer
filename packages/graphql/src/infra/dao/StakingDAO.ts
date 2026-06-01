@@ -14,6 +14,7 @@ import AbiFactory from '~/application/uc/IndexL1/abi/AbiFactory';
 import { createL1Provider } from '~/application/uc/IndexL1/createL1Provider';
 import { env } from '~/config';
 import { logger } from '~/core/Logger';
+import DataCache from '../cache/DataCache';
 import { DatabaseConnectionReplica } from '../database/DatabaseConnectionReplica';
 import type PaginatedParams from '../paginator/PaginatedParams';
 import { convertEthAddressToSequencerUserAddress } from '../util/util';
@@ -42,6 +43,26 @@ const TIME_TO_SYNCHRONIZE_IN_SEQUENCER = 30;
 
 // Time to commit to L1 (hours)
 const TIME_TO_COMMIT_SEQUENCER_BLOCK_TO_L1 = 8;
+
+// Long-lived, module-level L1 resources reused across requests (mirrors the
+// pattern in TEMP_StakingDAO). Instantiating the provider/contract per call on
+// the synchronous /staking/events read path would be a hot-path cost.
+const L1_NETWORK = env.get('FUEL_CHAIN') || '';
+const FUEL_STREAM_X_ABI = AbiFactory.create(L1_NETWORK, 'FuelStreamX');
+const FUEL_STREAM_X_CONTRACT = FUEL_STREAM_X_ABI
+  ? new ethers.Contract(
+      getCurrentNetworkContracts(L1_NETWORK).FUEL_STREAM_X,
+      FUEL_STREAM_X_ABI as ethers.InterfaceAbi,
+      createL1Provider(),
+    )
+  : null;
+
+// Cache the on-chain finalization lookup. A read replica can't write the
+// finalized status back, so without this every request for a stuck withdrawal
+// would re-scan L1. Found = effectively permanent; miss = short TTL so a
+// genuinely-pending withdrawal still flips promptly once it's claimed.
+const WITHDRAWAL_PROCESSED_FOUND_TTL = 1000 * 60 * 60 * 24; // 24h
+const WITHDRAWAL_PROCESSED_MISS_TTL = 1000 * 60; // 1m
 
 enum DecodersTypes {
   MsgWithdrawToEthereum = '/fuelsequencer.bridge.v1.MsgWithdrawToEthereum',
@@ -894,8 +915,11 @@ export default class StakingDAO {
       data.status === WithdrawStatusType.ReadyToProcessWithdraw &&
       data.nonce
     ) {
+      // WithdrawalProcessed can only land after the L1 commit, so scan from the
+      // commit block instead of genesis.
       const onChainFinalized = await this.findWithdrawalProcessedOnChain(
         data.nonce,
+        Number(blockCommited.eth_block_height),
       );
       if (onChainFinalized) {
         withdrawFinalized = onChainFinalized;
@@ -926,33 +950,59 @@ export default class StakingDAO {
    * the FuelStreamX contract. Used as a fallback when the L1 indexer has not
    * recorded the `WithdrawalProcessed` log (e.g. a missed getLogs window), so
    * an already-claimed withdrawal is not reported as still pending. Filters by
-   * the indexed `nonce` topic, so it returns at most one log. Returns null on
-   * any RPC error to preserve the current (DB-only) behavior.
+   * the indexed `nonce` topic (returns at most one log) and scans only from the
+   * L1 commit block. Result is cached and the lookup reuses a module-level
+   * provider/contract. Returns null on any RPC error to preserve the current
+   * (DB-only) behavior.
    */
   private async findWithdrawalProcessedOnChain(
     nonce: string,
+    fromBlock: number,
   ): Promise<ProccessedWithdrawQueryItem | null> {
+    const cacheKey = `withdrawal-processed:${nonce}`;
+    const cached = DataCache.getInstance().get(cacheKey) as
+      | { item: ProccessedWithdrawQueryItem | null }
+      | undefined;
+    if (cached) {
+      return cached.item;
+    }
+
+    if (!FUEL_STREAM_X_CONTRACT) return null;
+
     try {
-      const network = env.get('FUEL_CHAIN') || '';
-      const abi = AbiFactory.create(network, 'FuelStreamX');
-      if (!abi) return null;
-      const { FUEL_STREAM_X } = getCurrentNetworkContracts(network);
-      const provider = createL1Provider();
-      const contract = new ethers.Contract(
-        FUEL_STREAM_X,
-        abi as ethers.InterfaceAbi,
-        provider,
+      const filter = FUEL_STREAM_X_CONTRACT.filters.WithdrawalProcessed(
+        BigInt(nonce),
       );
-      const filter = contract.filters.WithdrawalProcessed(BigInt(nonce));
-      const logs = await contract.queryFilter(filter, 0, 'finalized');
+      const logs = await FUEL_STREAM_X_CONTRACT.queryFilter(
+        filter,
+        Number.isFinite(fromBlock) && fromBlock > 0 ? fromBlock : 0,
+        'finalized',
+      );
       const log = logs[0];
-      if (!log) return null;
-      const block = await provider.getBlock(log.blockNumber);
-      return {
+      if (!log) {
+        DataCache.getInstance().save(cacheKey, WITHDRAWAL_PROCESSED_MISS_TTL, {
+          item: null,
+        });
+        return null;
+      }
+
+      const block = await log.getBlock();
+      const item: ProccessedWithdrawQueryItem = {
         block_height: log.blockNumber.toString(),
         tx_hash: log.transactionHash,
         timestamp: new Date((block?.timestamp ?? 0) * 1000),
       };
+      // Reaching here means the indexer is missing a WithdrawalProcessed log it
+      // should have captured — surface it so ops can repair the indexer rather
+      // than relying on this fallback indefinitely.
+      logger.warn(
+        'StakingDAO',
+        `Indexer missing WithdrawalProcessed for nonce ${nonce}; served from on-chain fallback (tx ${item.tx_hash})`,
+      );
+      DataCache.getInstance().save(cacheKey, WITHDRAWAL_PROCESSED_FOUND_TTL, {
+        item,
+      });
+      return item;
     } catch (error) {
       logger.warn(
         'StakingDAO',
