@@ -49,13 +49,15 @@ const TIME_TO_COMMIT_SEQUENCER_BLOCK_TO_L1 = 8;
 // the synchronous /staking/events read path would be a hot-path cost.
 const L1_NETWORK = env.get('FUEL_CHAIN') || '';
 const FUEL_STREAM_X_ABI = AbiFactory.create(L1_NETWORK, 'FuelStreamX');
-const FUEL_STREAM_X_CONTRACT = FUEL_STREAM_X_ABI
-  ? new ethers.Contract(
-      getCurrentNetworkContracts(L1_NETWORK).FUEL_STREAM_X,
-      FUEL_STREAM_X_ABI as ethers.InterfaceAbi,
-      createL1Provider(),
-    )
-  : null;
+const L1_PROVIDER = FUEL_STREAM_X_ABI ? createL1Provider() : null;
+const FUEL_STREAM_X_CONTRACT =
+  FUEL_STREAM_X_ABI && L1_PROVIDER
+    ? new ethers.Contract(
+        getCurrentNetworkContracts(L1_NETWORK).FUEL_STREAM_X,
+        FUEL_STREAM_X_ABI as ethers.InterfaceAbi,
+        L1_PROVIDER,
+      )
+    : null;
 
 // Cache the on-chain finalization lookup. A read replica can't write the
 // finalized status back, so without this every request for a stuck withdrawal
@@ -63,6 +65,12 @@ const FUEL_STREAM_X_CONTRACT = FUEL_STREAM_X_ABI
 // genuinely-pending withdrawal still flips promptly once it's claimed.
 const WITHDRAWAL_PROCESSED_FOUND_TTL = 1000 * 60 * 60 * 24; // 24h
 const WITHDRAWAL_PROCESSED_MISS_TTL = 1000 * 60; // 1m
+
+// eth_getLogs window for the on-chain finalization scan. The commit-to-claim
+// span can be tens of thousands of blocks (and grows over time), so we scan in
+// bounded chunks to stay within provider block-range caps, early-returning on
+// the first match.
+const WITHDRAWAL_PROCESSED_SCAN_CHUNK = 10_000;
 
 enum DecodersTypes {
   MsgWithdrawToEthereum = '/fuelsequencer.bridge.v1.MsgWithdrawToEthereum',
@@ -950,10 +958,11 @@ export default class StakingDAO {
    * the FuelStreamX contract. Used as a fallback when the L1 indexer has not
    * recorded the `WithdrawalProcessed` log (e.g. a missed getLogs window), so
    * an already-claimed withdrawal is not reported as still pending. Filters by
-   * the indexed `nonce` topic (returns at most one log) and scans only from the
-   * L1 commit block. Result is cached and the lookup reuses a module-level
-   * provider/contract. Returns null on any RPC error to preserve the current
-   * (DB-only) behavior.
+   * the indexed `nonce` topic (returns at most one log) and scans from the L1
+   * commit block in bounded chunks to stay within provider `eth_getLogs` caps.
+   * Result is cached and the lookup reuses a module-level provider/contract. A
+   * partial/failed scan throws and is caught (returns null without caching), so
+   * a truncated range can never be cached as a false "not processed".
    */
   private async findWithdrawalProcessedOnChain(
     nonce: string,
@@ -967,18 +976,32 @@ export default class StakingDAO {
       return cached.item;
     }
 
-    if (!FUEL_STREAM_X_CONTRACT) return null;
+    if (!FUEL_STREAM_X_CONTRACT || !L1_PROVIDER) return null;
 
     try {
       const filter = FUEL_STREAM_X_CONTRACT.filters.WithdrawalProcessed(
         BigInt(nonce),
       );
-      const logs = await FUEL_STREAM_X_CONTRACT.queryFilter(
-        filter,
-        Number.isFinite(fromBlock) && fromBlock > 0 ? fromBlock : 0,
-        'finalized',
-      );
-      const log = logs[0];
+      const finalizedBlock = await L1_PROVIDER.getBlock('finalized');
+      const toBlock =
+        finalizedBlock?.number ?? (await L1_PROVIDER.getBlockNumber());
+      const startBlock =
+        Number.isFinite(fromBlock) && fromBlock > 0 ? fromBlock : 0;
+
+      let log: ethers.Log | undefined;
+      for (
+        let from = startBlock;
+        from <= toBlock && !log;
+        from += WITHDRAWAL_PROCESSED_SCAN_CHUNK
+      ) {
+        const to = Math.min(
+          from + WITHDRAWAL_PROCESSED_SCAN_CHUNK - 1,
+          toBlock,
+        );
+        const logs = await FUEL_STREAM_X_CONTRACT.queryFilter(filter, from, to);
+        log = logs[0];
+      }
+
       if (!log) {
         DataCache.getInstance().save(cacheKey, WITHDRAWAL_PROCESSED_MISS_TTL, {
           item: null,
