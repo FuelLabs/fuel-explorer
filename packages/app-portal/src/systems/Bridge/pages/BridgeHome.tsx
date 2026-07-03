@@ -18,7 +18,7 @@ type BridgeHomeProps = {
 
 const MAINTENANCE_NOTICE = {
   message:
-    'The Canonical Bridge and O2 Fast Bridge are currently undergoing scheduled maintenance. Deposits and withdrawals may be temporarily unavailable. ',
+    'The Canonical Bridge is currently undergoing scheduled maintenance. Deposits and withdrawals may be temporarily unavailable. ',
   boldText: 'Our team is actively working on restoring full functionality.',
 };
 
