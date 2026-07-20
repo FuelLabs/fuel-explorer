@@ -1,9 +1,5 @@
-import { Alert, Box, Button } from '@fuels/ui';
-import {
-  IconArrowBack,
-  IconHistory,
-  IconInfoCircle,
-} from '@tabler/icons-react';
+import { Box, Button } from '@fuels/ui';
+import { IconArrowBack, IconHistory } from '@tabler/icons-react';
 import { PageTitle } from 'app-commons';
 import { Routes } from 'app-commons';
 
@@ -16,12 +12,6 @@ type BridgeHomeProps = {
   children: ReactNode;
 };
 
-const MAINTENANCE_NOTICE = {
-  message:
-    'The Canonical Bridge is currently undergoing scheduled maintenance. Deposits and withdrawals may be temporarily unavailable. ',
-  boldText: 'Our team is actively working on restoring full functionality.',
-};
-
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const classes = styles();
   const location = useLocation();
@@ -31,15 +21,6 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
   return (
     <Box className={classes.content()}>
-      <Alert color="orange" size="2" variant="surface" className="mb-4">
-        <Alert.Icon>
-          <IconInfoCircle size={20} />
-        </Alert.Icon>
-        <Alert.Text>
-          {MAINTENANCE_NOTICE.message}
-          <b>{MAINTENANCE_NOTICE.boldText}</b>
-        </Alert.Text>
-      </Alert>
       <LayerSwapBanner />
       <PageTitle title="Fuel Bridge">
         {isBridgeHistory ? (
