@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/domains/blocked",
-      "destination": "/blocked-page.html"
+      "destination": "/blocked-page"
     },
     {
       "source": "/earn-points/:path*",
