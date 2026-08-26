@@ -9,14 +9,6 @@
       "destination": "/blocked-page"
     },
     {
-      "source": "/earn-points/:path*",
-      "destination": "https://app-mainnet-fuel-deposits.vercel.app/earn-points/:path*"
-    },
-    {
-      "source": "/drop/:path*",
-      "destination": "https://app-mainnet-fuel-deposits.vercel.app/earn-points/drop/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/"
     }
