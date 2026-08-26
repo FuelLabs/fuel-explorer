@@ -65,6 +65,10 @@ jobs:
         timeout-minutes: 7
         run: pnpm node:start
 
+      - name: Wait for bridge contracts deployer
+        timeout-minutes: 5
+        run: until curl -sf http://localhost:8082/health; do sleep 5; done
+
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps chromium
 
@@ -81,6 +85,11 @@ jobs:
           path: packages/e2e-tests/blob-report/
           retention-days: 30
           if-no-files-found: warn
+
+      - name: Dump test node logs
+        if: failure()
+        working-directory: docker
+        run: docker compose --profile all --env-file ./envs/global.env logs --no-color --tail=200 erc20_deployer fuel_core l1_chain fuel_block_commiter
 
       - name: Stop Test Node
         run: pnpm node:stop
