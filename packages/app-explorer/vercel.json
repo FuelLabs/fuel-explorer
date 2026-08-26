@@ -13,16 +13,8 @@
       "destination": "https://app-mainnet-fuel-deposits.vercel.app/earn-points/:path*"
     },
     {
-      "source": "/earn-points(.*)",
-      "destination": "https://app-mainnet-fuel-deposits.vercel.app/earn-points$1"
-    },
-    {
       "source": "/drop/:path*",
       "destination": "https://app-mainnet-fuel-deposits.vercel.app/earn-points/drop/:path*"
-    },
-    {
-      "source": "/drop(.*)",
-      "destination": "https://app-mainnet-fuel-deposits.vercel.app/earn-points/drop$1"
     },
     {
       "source": "/(.*)",
