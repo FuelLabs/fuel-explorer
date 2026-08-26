@@ -29,6 +29,8 @@ test.describe('Ecosystem', () => {
     for (const project of projects) {
       const pageLink = project.getByRole('link').last();
       const href = (await pageLink.getAttribute('href')) || '';
+      // some projects have no website url
+      if (!href.startsWith('http')) continue;
       const hrefDomain = new URL(href).hostname.replace(/^www\./, '');
 
       // skip domains that are not of project website
