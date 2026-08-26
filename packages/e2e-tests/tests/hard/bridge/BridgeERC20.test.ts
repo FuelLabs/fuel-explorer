@@ -29,7 +29,7 @@ test.describe('Bridge TKN Token', () => {
       client = initData.client;
     });
     await test.step('Deposit ETH', async () => {
-      await setupBridge({
+      const bridgeSetup = await setupBridge({
         test,
         page,
         fuelWallet,
@@ -37,6 +37,7 @@ test.describe('Bridge TKN Token', () => {
         client,
         fuelWalletTestHelper,
       });
+      fuelWallet = bridgeSetup.fuelWallet;
       console.log('Bridge ETH');
     });
     const bridgeTokenContracts = await getBridgeTokenContracts();
