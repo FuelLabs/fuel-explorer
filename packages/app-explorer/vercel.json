@@ -5,6 +5,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/domains/blocked",
+      "destination": "/blocked-page"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }
