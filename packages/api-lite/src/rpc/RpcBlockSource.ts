@@ -15,7 +15,8 @@ export class RpcBlockSource {
 
   async load(height: number): Promise<GQLBlock | null> {
     await this.acquire();
-    return this.client.blockJson(height);
+    const block = await this.client.blockJson(height);
+    return block ? withStatusBlock(block) : null;
   }
 
   private async acquire(): Promise<void> {
@@ -32,4 +33,35 @@ export class RpcBlockSource {
       await new Promise((resolve) => setTimeout(resolve, Math.max(waitMs, 0)));
     }
   }
+}
+
+// fuel-core's block document does not select status.block, but the explorer
+// schema declares it non-null on SuccessStatus and FailureStatus.
+export function withStatusBlock(block: GQLBlock): GQLBlock {
+  const h = (block.header ?? {}) as Record<string, unknown>;
+  const ref = {
+    __typename: 'Block',
+    id: block.id,
+    height: block.height,
+    header: {
+      __typename: 'Header',
+      id: block.id,
+      height: block.height,
+      daHeight: h.daHeight,
+      applicationHash: h.applicationHash,
+      messageReceiptCount: h.messageReceiptCount,
+      time: h.time,
+    },
+  };
+  for (const tx of (block.transactions ?? []) as Array<
+    Record<string, unknown>
+  >) {
+    const status = tx.status as Record<string, unknown> | null | undefined;
+    if (!status) continue;
+    const t = status.__typename;
+    if (t !== 'SuccessStatus' && t !== 'FailureStatus') continue;
+    if (!status.block) status.block = ref;
+    if (!status.transactionId) status.transactionId = tx.id;
+  }
+  return block;
 }

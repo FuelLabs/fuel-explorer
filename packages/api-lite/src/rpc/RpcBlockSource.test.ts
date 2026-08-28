@@ -1,4 +1,4 @@
-import { RpcBlockSource } from './RpcBlockSource';
+import { RpcBlockSource, withStatusBlock } from './RpcBlockSource';
 
 function fakeBlock(height: number) {
   return {
@@ -44,5 +44,31 @@ describe('RpcBlockSource', () => {
 
       await Promise.all(results);
     });
+  });
+});
+
+describe('withStatusBlock', () => {
+  it('fills status.block and transactionId from the block header', () => {
+    const block = {
+      id: '0xb',
+      height: '7',
+      header: {
+        daHeight: '1',
+        applicationHash: '0xa',
+        messageReceiptCount: '0',
+        time: '4611686020140000000',
+      },
+      transactions: [
+        { id: '0x1', status: { __typename: 'SuccessStatus' } },
+        { id: '0x2', status: { __typename: 'SubmittedStatus' } },
+        { id: '0x3', status: null },
+      ],
+    } as any;
+    const out = withStatusBlock(block) as any;
+    expect(out.transactions[0].status.block.header.height).toBe('7');
+    expect(out.transactions[0].status.block.id).toBe('0xb');
+    expect(out.transactions[0].status.transactionId).toBe('0x1');
+    expect(out.transactions[1].status.block).toBeUndefined();
+    expect(out.transactions[2].status).toBeNull();
   });
 });

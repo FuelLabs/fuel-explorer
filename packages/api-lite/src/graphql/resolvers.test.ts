@@ -49,7 +49,7 @@ function fakeBlock(h: number) {
     mintAmount: kind === 'mint' ? '9' : null,
     mintAssetId: kind === 'mint' ? hex(0) : null,
     mintGasPrice: kind === 'mint' ? '1' : null,
-    mintAmountUsd: '',
+
     status: {
       __typename: 'SuccessStatus',
       time: (T0 + BigInt(h) * 60n).toString(),
@@ -281,6 +281,15 @@ describe('resolvers', () => {
     );
     expect(byBlock.transactionsByBlockId.nodes).toHaveLength(2);
     expect(byBlock.transactionsByBlockId.pageInfo.totalCount).toBe(2);
+  });
+
+  it('transaction returns an empty mintAmountUsd when the source omits it', async () => {
+    const { gql } = await setup();
+    const d = await gql(
+      'query($id: TransactionId!) { transaction(id: $id) { mintAmountUsd } }',
+      { id: hex(1001) },
+    );
+    expect(d.transaction.mintAmountUsd).toBe('');
   });
 
   it('transactions recent list walks down blocks', async () => {

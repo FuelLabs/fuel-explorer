@@ -307,3 +307,18 @@ describe('BlockStore', () => {
     ]);
   });
 });
+
+describe('BlockStore normalize', () => {
+  it('applies normalize to disk hits', async () => {
+    const { store } = makeStore();
+    await store.get(3);
+    const dir = (store as any).opts.dataDir;
+    const fresh = new BlockStore({
+      ...(store as any).opts,
+      dataDir: dir,
+      normalize: (b: any) => ({ ...b, normalized: true }),
+    });
+    const hit = (await fresh.get(3)) as any;
+    expect(hit.normalized).toBe(true);
+  });
+});

@@ -9,6 +9,7 @@ type Opts = {
   source?: { fetchRaw(height: number): Promise<Uint8Array> };
   decode?: (bytes: Uint8Array) => GQLBlock;
   loader?: (height: number) => Promise<GQLBlock | null>;
+  normalize?: (block: GQLBlock) => GQLBlock;
   dataDir: string;
   memoryBytes: number;
   diskBytes: number;
@@ -234,8 +235,9 @@ export class BlockStore {
   }
 
   private async load(height: number): Promise<GQLBlock | null> {
-    const fromDisk = await this.readDisk(height);
-    if (fromDisk) {
+    const raw = await this.readDisk(height);
+    if (raw) {
+      const fromDisk = this.opts.normalize ? this.opts.normalize(raw) : raw;
       this.memory.set(height, fromDisk);
       return fromDisk;
     }

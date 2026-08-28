@@ -7,7 +7,7 @@ import { PriceClient } from './fuelcore/PriceClient';
 import { Index } from './index/Index';
 import { Indexer } from './index/Indexer';
 import { TipTracker } from './index/TipTracker';
-import { RpcBlockSource } from './rpc/RpcBlockSource';
+import { RpcBlockSource, withStatusBlock } from './rpc/RpcBlockSource';
 import { S3BlockSource, createS3Fetcher } from './s3/S3BlockSource';
 import { createApp } from './server';
 import { BlockStore } from './store/BlockStore';
@@ -57,6 +57,7 @@ async function main() {
     rpcSource
       ? {
           loader: (height) => rpcSource.load(height),
+          normalize: withStatusBlock,
           dataDir: cfg.dataDir,
           memoryBytes: cfg.memoryCacheBytes,
           diskBytes: cfg.diskCacheBytes,

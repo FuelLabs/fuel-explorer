@@ -17,7 +17,8 @@ import { resolveHeight } from './blocks';
 const FIRST_PAGE_CACHE_TTL_MS = 5_000;
 
 export function toTxNode(tx: GQLTransaction, height: number, index: number) {
-  return TransactionEntity.createFromGQL(tx, height, index).toGQLNode();
+  const node = TransactionEntity.createFromGQL(tx, height, index).toGQLNode();
+  return { ...node, mintAmountUsd: node.mintAmountUsd ?? '' };
 }
 export function toTxListNode(
   tx: GQLTransaction,
