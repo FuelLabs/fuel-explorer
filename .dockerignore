@@ -4,3 +4,4 @@ node_modules
 .turbo
 dist
 .git
+docker/vps/.env

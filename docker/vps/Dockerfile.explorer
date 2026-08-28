@@ -1,0 +1,45 @@
+# Builds the explorer frontend (Vite SPA) and serves it with nginx.
+# Build context is the repo root: docker build -f docker/vps/Dockerfile.explorer .
+# The build stage is not resource limited; only the runtime stage runs inside the "VPS" budget.
+
+FROM node:20-bookworm-slim AS build
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+ENV NODE_OPTIONS=--max-old-space-size=4096
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates python3 make g++ && rm -rf /var/lib/apt/lists/*
+RUN npm install -g pnpm@9.10.0
+
+WORKDIR /app
+COPY . .
+RUN pnpm install --frozen-lockfile
+
+# NETWORK selects which committed env file seeds the build (mainnet endpoints, no
+# secrets, unless overridden). ENV_FILE is relative to the repo root; Docker resolves
+# the ARG reference inside another ARG's default at build time.
+ARG NETWORK=mainnet
+ARG ENV_FILE=packages/app-explorer/.env.${NETWORK}
+RUN [ "$ENV_FILE" = packages/app-explorer/.env ] || cp "$ENV_FILE" packages/app-explorer/.env
+ARG VITE_FUEL_INDEXER_API
+RUN if [ -n "$VITE_FUEL_INDEXER_API" ]; then \
+      grep -v '^VITE_FUEL_INDEXER_API=' packages/app-explorer/.env > /tmp/env && mv /tmp/env packages/app-explorer/.env && \
+      echo "VITE_FUEL_INDEXER_API=$VITE_FUEL_INDEXER_API" >> packages/app-explorer/.env; \
+    fi
+# Always strip the indexer API key from the baked env file: without this, a build
+# that omits VITE_FUEL_INDEXER_API skips the `if` above entirely and bakes whatever
+# key is sitting in the local .env.$NETWORK straight into the public JS bundle.
+RUN sed -i '/^VITE_FUEL_INDEXER_API_KEY=/d' packages/app-explorer/.env
+ENV NODE_ENV=production
+RUN pnpm build:prod
+
+FROM nginx:1.27-alpine AS runtime
+# The nginx image's entrypoint runs envsubst over /etc/nginx/templates/*.template
+# into /etc/nginx/conf.d/*.conf at container start. API_UPSTREAM/NGINX_RESOLVER
+# default to the local-compose values below; Railway overrides them with service
+# variables (api.railway.internal:3000 / the private-network IPv6 resolver) so
+# nginx resolves the api service's address at request time instead of baking
+# it in at build time.
+COPY docker/vps/nginx.conf.template /etc/nginx/templates/default.conf.template
+ENV API_UPSTREAM=api:3000 NGINX_RESOLVER=127.0.0.11 NGINX_ENVSUBST_FILTER='^(API_UPSTREAM|NGINX_RESOLVER)$'
+COPY --from=build /app/packages/app-explorer/dist /usr/share/nginx/html
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1

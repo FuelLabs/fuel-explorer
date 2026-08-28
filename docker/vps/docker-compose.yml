@@ -1,0 +1,47 @@
+# Simulates a $5/month VPS: 1 vCPU, 1 GB RAM, 25 GB disk (DigitalOcean basic droplet spec).
+# All runtime services share this budget. The blockchain node is out of scope.
+#
+#   cp docker/vps/.env.example docker/vps/.env   # then fill AWS keys
+#   docker compose -f docker/vps/docker-compose.yml up -d --build
+#   open http://localhost:8080
+
+services:
+  explorer:
+    build:
+      context: ../..
+      dockerfile: docker/vps/Dockerfile.explorer
+      args:
+        NETWORK: ${NETWORK:-mainnet}
+        VITE_FUEL_INDEXER_API: /api
+    image: fuel-explorer-vps/explorer:local
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 64m
+
+  api:
+    build:
+      context: ../..
+      dockerfile: docker/vps/Dockerfile.api-lite
+    image: fuel-explorer-vps/api-lite:local
+    env_file: .env
+    environment:
+      PORT: "3000"
+      DATA_DIR: /data
+    volumes:
+      - api-data:/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 960m
+
+volumes:
+  api-data:

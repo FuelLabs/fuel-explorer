@@ -1,7 +1,11 @@
 import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
 import { LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { useMemo } from 'react';
-import { useFuelExplorerStatus } from './hooks/useFuelExplorerStatus';
+import {
+  useDashboardBlocks,
+  useHomeCharts,
+  useRollingStats,
+} from './hooks/useFuelExplorerStatus';
 import { useTopEcosystem } from './hooks/useTopEcosystem';
 import { heroStyles } from './styles';
 
@@ -14,8 +18,11 @@ import TotalDapps from '../TotalDapps/TotalDapps';
 
 function Hero() {
   const classes = heroStyles();
-  const { isPending: isLoading, data } = useFuelExplorerStatus();
+  const { isPending: isChartsLoading, data: chartsData } = useHomeCharts();
+  const { isPending: isRollingLoading, data: rollingData } = useRollingStats();
+  const { isPending: isBlocksLoading, data: blocksData } = useDashboardBlocks();
   const ecosystemProjects = useTopEcosystem();
+  const isEcosystemLoading = ecosystemProjects.isPending;
 
   const {
     totalTpsData,
@@ -27,17 +34,17 @@ function Hero() {
     totalProjects,
     top3Projects,
   } = useMemo(() => {
-    const totalTpsData = (data as any)?.tps;
-    const averageTpsPerMinuteData = (data as any)?.averageTpsPerMinute;
-    const rollingStats60sData = (data as any)?.rollingStats60s ?? {
+    const totalTpsData = (chartsData as any)?.tps;
+    const averageTpsPerMinuteData = (chartsData as any)?.averageTpsPerMinute;
+    const rollingStats60sData = (rollingData as any)?.rollingStats60s ?? {
       tps: 0,
       avgTxPerBlock: 0,
       avgGasPerBlock: 0,
       avgBlockSize: 0,
       peakTps: 0,
     };
-    const totalFeeData = (data as any)?.fee;
-    const blocks = (data as any)?.blocks || [];
+    const totalFeeData = (chartsData as any)?.fee;
+    const blocks = (blocksData as any)?.blocks || [];
     const activeProjects = (ecosystemProjects as any)?.activeProjects || 0;
     const totalProjects = (ecosystemProjects as any)?.totalProjects || 0;
     const top3Projects = (ecosystemProjects as any)?.top3Projects || [];
@@ -52,7 +59,7 @@ function Hero() {
       totalProjects,
       top3Projects,
     };
-  }, [ecosystemProjects, data]);
+  }, [ecosystemProjects, chartsData, rollingData, blocksData]);
 
   return (
     <Theme appearance="light">
@@ -67,7 +74,7 @@ function Hero() {
               {/* Row 1-2, Col 1-4: Daily Transactions */}
               <div className="row-span-2 col-span-12 laptop:col-span-4">
                 <LoadingWrapper
-                  isLoading={isLoading}
+                  isLoading={isChartsLoading}
                   loadingEl={
                     <LoadingBox className="w-full h-[284px] laptop:h-[294px]" />
                   }
@@ -78,7 +85,7 @@ function Hero() {
               {/* Row 1-2, Col 5-7: Fuel Dapps */}
               <div className="row-span-2 col-span-12 laptop:col-span-3">
                 <LoadingWrapper
-                  isLoading={isLoading}
+                  isLoading={isEcosystemLoading}
                   loadingEl={
                     <LoadingBox className="w-full h-[286px] laptop:h-[294px]" />
                   }
@@ -95,7 +102,7 @@ function Hero() {
               {/* Row 1-4, Col 8-12: Latest Block + Recent Blocks */}
               <div className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-5">
                 <LoadingWrapper
-                  isLoading={isLoading}
+                  isLoading={isRollingLoading}
                   loadingEl={<LoadingBox className="w-full h-[120px]" />}
                   regularEl={
                     <RollingStats
@@ -111,7 +118,7 @@ function Hero() {
                 />
                 <div className="flex-1 min-h-0">
                   <LoadingWrapper
-                    isLoading={isLoading}
+                    isLoading={isBlocksLoading}
                     loadingEl={
                       <LoadingBox className="w-full h-[480px] laptop:h-full" />
                     }
@@ -123,7 +130,7 @@ function Hero() {
               {/* Row 3-4, Col 1-4: Hourly TPS */}
               <div className="row-span-2 col-span-12 laptop:col-span-4">
                 <LoadingWrapper
-                  isLoading={isLoading}
+                  isLoading={isChartsLoading}
                   loadingEl={
                     <LoadingBox className="w-full h-[284px] laptop:h-[309px]" />
                   }
@@ -139,7 +146,7 @@ function Hero() {
               {/* Row 3-4, Col 5-7: Fee Spent */}
               <div className="row-span-2 col-span-12 laptop:col-span-3">
                 <LoadingWrapper
-                  isLoading={isLoading}
+                  isLoading={isChartsLoading}
                   loadingEl={<LoadingBox className="w-full h-[309px]" />}
                   regularEl={<GasSpentChart blocks={totalFeeData} />}
                 />

@@ -1,0 +1,13 @@
+query rollingStats {
+  statistics {
+    nodes {
+      rollingStats60s {
+        tps
+        avgTxPerBlock
+        avgGasPerBlock
+        avgBlockSize
+        peakTps
+      }
+    }
+  }
+}

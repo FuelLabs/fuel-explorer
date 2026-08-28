@@ -2238,6 +2238,11 @@ export type GQLRecentTransactionsQueryVariables = Exact<{
 
 export type GQLRecentTransactionsQuery = { __typename: 'Query', transactions: { __typename: 'TransactionConnection', nodes: Array<{ __typename: 'Transaction', _id?: string | null, id: string, title: string, statusType?: string | null, time: { __typename: 'ParsedTime', fromNow?: string | null, rawUnix?: string | null, full?: string | null }, gasCosts?: { __typename: 'TransactionGasCosts', fee?: string | null, feeInUsd?: string | null } | null }>, pageInfo: { __typename: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
 
+export type GQLRollingStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GQLRollingStatsQuery = { __typename: 'Query', statistics: { __typename: 'StatisticsConnection', nodes?: { __typename: 'Statistics', rollingStats60s?: { __typename: 'RollingStats60s', tps?: number | null, avgTxPerBlock?: number | null, avgGasPerBlock?: number | null, avgBlockSize?: number | null, peakTps?: number | null } | null } | null } };
+
 export type GQLSearchQueryVariables = Exact<{
   query: Scalars['String']['input'];
 }>;
@@ -3879,6 +3884,21 @@ export const RecentTransactionsDocument = gql`
   }
 }
     ${RecentTransactionFragmentDoc}`;
+export const RollingStatsDocument = gql`
+    query rollingStats {
+  statistics {
+    nodes {
+      rollingStats60s {
+        tps
+        avgTxPerBlock
+        avgGasPerBlock
+        avgBlockSize
+        peakTps
+      }
+    }
+  }
+}
+    `;
 export const SearchDocument = gql`
     query search($query: String!) {
   search(query: $query) {
@@ -4080,6 +4100,7 @@ const ContractBalancesDocumentString = print(ContractBalancesDocument);
 const GetBlocksDashboardDocumentString = print(GetBlocksDashboardDocument);
 const PredicateDocumentString = print(PredicateDocument);
 const RecentTransactionsDocumentString = print(RecentTransactionsDocument);
+const RollingStatsDocumentString = print(RollingStatsDocument);
 const SearchDocumentString = print(SearchDocument);
 const StakingApyDocumentString = print(StakingApyDocument);
 const StakingEventDocumentString = print(StakingEventDocument);
@@ -4130,6 +4151,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     recentTransactions(variables?: GQLRecentTransactionsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLRecentTransactionsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLRecentTransactionsQuery>(RecentTransactionsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'recentTransactions', 'query', variables);
+    },
+    rollingStats(variables?: GQLRollingStatsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLRollingStatsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLRollingStatsQuery>(RollingStatsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'rollingStats', 'query', variables);
     },
     search(variables: GQLSearchQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GQLSearchQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GQLSearchQuery>(SearchDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'search', 'query', variables);

@@ -1,0 +1,40 @@
+# One zone, keyed by client IP, 10 MB (~160k tracked addresses) capping each at
+# 20 requests/sec; /api/ below allows a 40-request burst before it starts rejecting
+# (nodelay: burst requests are served immediately, not queued/delayed).
+limit_req_zone $binary_remote_addr zone=api:10m rate=20r/s;
+
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+    gzip_min_length 1024;
+
+    # Hashed Vite assets never change: cache for a year.
+    location /assets/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        try_files $uri =404;
+    }
+
+    location /api/ {
+        limit_req zone=api burst=40 nodelay;
+        # Resolved at request time (not at nginx startup) so Railway's private
+        # DNS for api.railway.internal keeps working across service restarts.
+        resolver ${NGINX_RESOLVER} valid=10s ipv6=on;
+        set $api_upstream http://${API_UPSTREAM};
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass $api_upstream;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_read_timeout 30s;
+    }
+
+    # SPA fallback, same as the Vercel rewrite in packages/app-explorer/vercel.json.
+    location / {
+        add_header Cache-Control "no-cache";
+        try_files $uri $uri/ /index.html;
+    }
+}

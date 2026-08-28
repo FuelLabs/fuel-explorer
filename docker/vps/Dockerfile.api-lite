@@ -1,0 +1,57 @@
+# Builds api-lite (Node 20, CommonJS, tsup bundle with better-sqlite3 external).
+# Build context is the repo root: docker build -f docker/vps/Dockerfile.api-lite .
+
+FROM node:20-bookworm-slim AS build
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates python3 make g++ && rm -rf /var/lib/apt/lists/*
+RUN npm install -g pnpm@9.10.0
+WORKDIR /app
+COPY . .
+RUN pnpm install --frozen-lockfile
+RUN pnpm --filter api-lite build
+
+# api-lite's tsup bundle externalizes every package.json "dependency" (only
+# better-sqlite3 is marked external explicitly, but tsup does not bundle
+# node_modules packages by default), so all of them must exist in
+# node_modules at runtime. `pnpm --filter api-lite --prod deploy` pulls the
+# whole hoisted workspace tree, including unrelated frontend deps of the
+# @fuel-explorer/graphql workspace package (recharts, react-data-table-component,
+# etc.) that the bundle never requires (@fuel-explorer/graphql itself does not
+# appear as a require() in dist/main.js - only its .graphql files are copied
+# in statically below). Building a fresh, minimal node_modules with plain npm
+# from api-lite's own declared dependencies keeps the runtime image small.
+RUN mkdir -p /out/dist \
+ && node -e "\
+const pkg = require('/app/packages/api-lite/package.json'); \
+const deps = { ...pkg.dependencies }; \
+delete deps['@fuel-explorer/graphql']; \
+require('fs').writeFileSync('/out/package.json', JSON.stringify({ name: 'api-lite', version: pkg.version, private: true, dependencies: deps }, null, 2)); \
+"
+WORKDIR /app
+RUN mkdir -p /out/dist/schemas /out/dist/provider \
+ && cp packages/graphql/src/graphql/schemas/*.graphql /out/dist/schemas/ \
+ && cp packages/graphql/src/graphql/queries/provider/*.graphql /out/dist/provider/ \
+ && cp packages/api-lite/dist/* /out/dist/ 2>/dev/null || true
+
+# Separate alpine stage for the runtime node_modules: better-sqlite3 is a
+# native module, so it must be compiled against the same libc (musl) as the
+# alpine runtime image below - compiling it in the glibc "build" stage above
+# would produce a binary that crashes on alpine. This stage only needs the
+# generated minimal package.json, not the rest of the monorepo.
+FROM node:20-alpine AS deps
+RUN apk add --no-cache python3 make g++
+WORKDIR /out
+COPY --from=build /out/package.json ./package.json
+RUN npm install --omit=dev
+
+FROM node:20-alpine AS runtime
+ENV NODE_ENV=production
+ENV NODE_OPTIONS=--max-old-space-size=384
+WORKDIR /app
+COPY --from=deps /out/package.json ./package.json
+COPY --from=deps /out/node_modules ./node_modules
+COPY --from=build /out/dist ./dist
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=3s CMD node -e "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+CMD ["node", "dist/main.js"]

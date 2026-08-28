@@ -1,0 +1,1978 @@
+{
+  "nested": {
+    "blockaggregator": {
+      "nested": {
+        "BlockHeightRequest": {
+          "fields": {}
+        },
+        "BlockHeightResponse": {
+          "oneofs": {
+            "_height": {
+              "oneof": ["height"]
+            }
+          },
+          "fields": {
+            "height": {
+              "type": "uint32",
+              "id": 1,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "BlockRangeRequest": {
+          "fields": {
+            "start": {
+              "type": "uint32",
+              "id": 1
+            },
+            "end": {
+              "type": "uint32",
+              "id": 2
+            }
+          }
+        },
+        "RemoteBlockResponse": {
+          "oneofs": {
+            "location": {
+              "oneof": ["http", "s3"]
+            }
+          },
+          "fields": {
+            "http": {
+              "type": "RemoteHTTPEndpoint",
+              "id": 1
+            },
+            "s3": {
+              "type": "RemoteS3Bucket",
+              "id": 2
+            }
+          }
+        },
+        "RemoteS3Bucket": {
+          "oneofs": {
+            "_endpoint": {
+              "oneof": ["endpoint"]
+            }
+          },
+          "fields": {
+            "bucket": {
+              "type": "string",
+              "id": 1
+            },
+            "key": {
+              "type": "string",
+              "id": 2
+            },
+            "requesterPays": {
+              "type": "bool",
+              "id": 3
+            },
+            "endpoint": {
+              "type": "string",
+              "id": 4,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "RemoteHTTPEndpoint": {
+          "fields": {
+            "endpoint": {
+              "type": "string",
+              "id": 1
+            },
+            "headers": {
+              "keyType": "string",
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "Block": {
+          "oneofs": {
+            "versionedBlock": {
+              "oneof": ["v1"]
+            }
+          },
+          "fields": {
+            "v1": {
+              "type": "V1Block",
+              "id": 1
+            }
+          }
+        },
+        "Receipts": {
+          "fields": {
+            "receipts": {
+              "rule": "repeated",
+              "type": "Receipt",
+              "id": 1
+            }
+          }
+        },
+        "V1Block": {
+          "fields": {
+            "header": {
+              "type": "Header",
+              "id": 1
+            },
+            "transactions": {
+              "rule": "repeated",
+              "type": "Transaction",
+              "id": 2
+            },
+            "receipts": {
+              "rule": "repeated",
+              "type": "Receipts",
+              "id": 3
+            }
+          }
+        },
+        "Header": {
+          "oneofs": {
+            "versionedHeader": {
+              "oneof": ["v1", "v2"]
+            }
+          },
+          "fields": {
+            "v1": {
+              "type": "V1Header",
+              "id": 1
+            },
+            "v2": {
+              "type": "V2Header",
+              "id": 2
+            }
+          }
+        },
+        "V1Header": {
+          "oneofs": {
+            "_blockId": {
+              "oneof": ["blockId"]
+            }
+          },
+          "fields": {
+            "daHeight": {
+              "type": "uint64",
+              "id": 1
+            },
+            "consensusParametersVersion": {
+              "type": "uint32",
+              "id": 2
+            },
+            "stateTransitionBytecodeVersion": {
+              "type": "uint32",
+              "id": 3
+            },
+            "transactionsCount": {
+              "type": "uint32",
+              "id": 4
+            },
+            "messageReceiptCount": {
+              "type": "uint32",
+              "id": 5
+            },
+            "transactionsRoot": {
+              "type": "bytes",
+              "id": 6
+            },
+            "messageOutboxRoot": {
+              "type": "bytes",
+              "id": 7
+            },
+            "eventInboxRoot": {
+              "type": "bytes",
+              "id": 8
+            },
+            "prevRoot": {
+              "type": "bytes",
+              "id": 9
+            },
+            "height": {
+              "type": "uint32",
+              "id": 10
+            },
+            "time": {
+              "type": "uint64",
+              "id": 11
+            },
+            "applicationHash": {
+              "type": "bytes",
+              "id": 12
+            },
+            "blockId": {
+              "type": "bytes",
+              "id": 13,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "V2Header": {
+          "oneofs": {
+            "_blockId": {
+              "oneof": ["blockId"]
+            }
+          },
+          "fields": {
+            "daHeight": {
+              "type": "uint64",
+              "id": 1
+            },
+            "consensusParametersVersion": {
+              "type": "uint32",
+              "id": 2
+            },
+            "stateTransitionBytecodeVersion": {
+              "type": "uint32",
+              "id": 3
+            },
+            "transactionsCount": {
+              "type": "uint32",
+              "id": 4
+            },
+            "messageReceiptCount": {
+              "type": "uint32",
+              "id": 5
+            },
+            "transactionsRoot": {
+              "type": "bytes",
+              "id": 6
+            },
+            "messageOutboxRoot": {
+              "type": "bytes",
+              "id": 7
+            },
+            "eventInboxRoot": {
+              "type": "bytes",
+              "id": 8
+            },
+            "txIdCommitment": {
+              "type": "bytes",
+              "id": 9
+            },
+            "prevRoot": {
+              "type": "bytes",
+              "id": 10
+            },
+            "height": {
+              "type": "uint32",
+              "id": 11
+            },
+            "time": {
+              "type": "uint64",
+              "id": 12
+            },
+            "applicationHash": {
+              "type": "bytes",
+              "id": 13
+            },
+            "blockId": {
+              "type": "bytes",
+              "id": 14,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "Transaction": {
+          "oneofs": {
+            "variant": {
+              "oneof": ["script", "create", "mint", "upgrade", "upload", "blob"]
+            }
+          },
+          "fields": {
+            "script": {
+              "type": "ScriptTransaction",
+              "id": 1
+            },
+            "create": {
+              "type": "CreateTransaction",
+              "id": 2
+            },
+            "mint": {
+              "type": "MintTransaction",
+              "id": 3
+            },
+            "upgrade": {
+              "type": "UpgradeTransaction",
+              "id": 4
+            },
+            "upload": {
+              "type": "UploadTransaction",
+              "id": 5
+            },
+            "blob": {
+              "type": "BlobTransaction",
+              "id": 6
+            }
+          }
+        },
+        "ScriptTransaction": {
+          "fields": {
+            "scriptGasLimit": {
+              "type": "uint64",
+              "id": 1
+            },
+            "receiptsRoot": {
+              "type": "bytes",
+              "id": 2
+            },
+            "script": {
+              "type": "bytes",
+              "id": 3
+            },
+            "scriptData": {
+              "type": "bytes",
+              "id": 4
+            },
+            "policies": {
+              "type": "Policies",
+              "id": 5
+            },
+            "inputs": {
+              "rule": "repeated",
+              "type": "Input",
+              "id": 6
+            },
+            "outputs": {
+              "rule": "repeated",
+              "type": "Output",
+              "id": 7
+            },
+            "witnesses": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 8
+            },
+            "metadata": {
+              "type": "ScriptMetadata",
+              "id": 9
+            }
+          }
+        },
+        "CreateTransaction": {
+          "fields": {
+            "bytecodeWitnessIndex": {
+              "type": "uint32",
+              "id": 1
+            },
+            "salt": {
+              "type": "bytes",
+              "id": 2
+            },
+            "storageSlots": {
+              "rule": "repeated",
+              "type": "StorageSlot",
+              "id": 3
+            },
+            "policies": {
+              "type": "Policies",
+              "id": 4
+            },
+            "inputs": {
+              "rule": "repeated",
+              "type": "Input",
+              "id": 5
+            },
+            "outputs": {
+              "rule": "repeated",
+              "type": "Output",
+              "id": 6
+            },
+            "witnesses": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 7
+            },
+            "metadata": {
+              "type": "CreateMetadata",
+              "id": 8
+            }
+          }
+        },
+        "MintTransaction": {
+          "fields": {
+            "txPointer": {
+              "type": "TxPointer",
+              "id": 1
+            },
+            "inputContract": {
+              "type": "ContractInput",
+              "id": 2
+            },
+            "outputContract": {
+              "type": "ContractOutput",
+              "id": 3
+            },
+            "mintAmount": {
+              "type": "uint64",
+              "id": 4
+            },
+            "mintAssetId": {
+              "type": "bytes",
+              "id": 5
+            },
+            "gasPrice": {
+              "type": "uint64",
+              "id": 6
+            },
+            "metadata": {
+              "type": "MintMetadata",
+              "id": 7
+            }
+          }
+        },
+        "UpgradeTransaction": {
+          "fields": {
+            "purpose": {
+              "type": "UpgradePurpose",
+              "id": 1
+            },
+            "policies": {
+              "type": "Policies",
+              "id": 2
+            },
+            "inputs": {
+              "rule": "repeated",
+              "type": "Input",
+              "id": 3
+            },
+            "outputs": {
+              "rule": "repeated",
+              "type": "Output",
+              "id": 4
+            },
+            "witnesses": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 5
+            },
+            "metadata": {
+              "type": "UpgradeMetadata",
+              "id": 6
+            }
+          }
+        },
+        "UploadTransaction": {
+          "fields": {
+            "root": {
+              "type": "bytes",
+              "id": 1
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 2
+            },
+            "subsectionIndex": {
+              "type": "uint32",
+              "id": 3
+            },
+            "subsectionsNumber": {
+              "type": "uint32",
+              "id": 4
+            },
+            "proofSet": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 5
+            },
+            "policies": {
+              "type": "Policies",
+              "id": 6
+            },
+            "inputs": {
+              "rule": "repeated",
+              "type": "Input",
+              "id": 7
+            },
+            "outputs": {
+              "rule": "repeated",
+              "type": "Output",
+              "id": 8
+            },
+            "witnesses": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 9
+            },
+            "metadata": {
+              "type": "UploadMetadata",
+              "id": 10
+            }
+          }
+        },
+        "BlobTransaction": {
+          "fields": {
+            "blobId": {
+              "type": "bytes",
+              "id": 1
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 2
+            },
+            "policies": {
+              "type": "Policies",
+              "id": 3
+            },
+            "inputs": {
+              "rule": "repeated",
+              "type": "Input",
+              "id": 4
+            },
+            "outputs": {
+              "rule": "repeated",
+              "type": "Output",
+              "id": 5
+            },
+            "witnesses": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 6
+            },
+            "metadata": {
+              "type": "BlobMetadata",
+              "id": 7
+            }
+          }
+        },
+        "Policies": {
+          "fields": {
+            "bits": {
+              "type": "uint32",
+              "id": 1
+            },
+            "values": {
+              "rule": "repeated",
+              "type": "uint64",
+              "id": 2
+            }
+          }
+        },
+        "Input": {
+          "oneofs": {
+            "variant": {
+              "oneof": [
+                "coinSigned",
+                "coinPredicate",
+                "contract",
+                "messageCoinSigned",
+                "messageCoinPredicate",
+                "messageDataSigned",
+                "messageDataPredicate"
+              ]
+            }
+          },
+          "fields": {
+            "coinSigned": {
+              "type": "CoinSignedInput",
+              "id": 1
+            },
+            "coinPredicate": {
+              "type": "CoinPredicateInput",
+              "id": 2
+            },
+            "contract": {
+              "type": "ContractInput",
+              "id": 3
+            },
+            "messageCoinSigned": {
+              "type": "MessageCoinSignedInput",
+              "id": 4
+            },
+            "messageCoinPredicate": {
+              "type": "MessageCoinPredicateInput",
+              "id": 5
+            },
+            "messageDataSigned": {
+              "type": "MessageDataSignedInput",
+              "id": 6
+            },
+            "messageDataPredicate": {
+              "type": "MessageDataPredicateInput",
+              "id": 7
+            }
+          }
+        },
+        "CoinSignedInput": {
+          "fields": {
+            "utxoId": {
+              "type": "UtxoId",
+              "id": 1
+            },
+            "owner": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 4
+            },
+            "txPointer": {
+              "type": "TxPointer",
+              "id": 5
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 6
+            },
+            "predicateGasUsed": {
+              "type": "uint64",
+              "id": 7
+            },
+            "predicate": {
+              "type": "bytes",
+              "id": 8
+            },
+            "predicateData": {
+              "type": "bytes",
+              "id": 9
+            }
+          }
+        },
+        "CoinPredicateInput": {
+          "fields": {
+            "utxoId": {
+              "type": "UtxoId",
+              "id": 1
+            },
+            "owner": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 4
+            },
+            "txPointer": {
+              "type": "TxPointer",
+              "id": 5
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 6
+            },
+            "predicateGasUsed": {
+              "type": "uint64",
+              "id": 7
+            },
+            "predicate": {
+              "type": "bytes",
+              "id": 8
+            },
+            "predicateData": {
+              "type": "bytes",
+              "id": 9
+            }
+          }
+        },
+        "ContractInput": {
+          "fields": {
+            "utxoId": {
+              "type": "UtxoId",
+              "id": 1
+            },
+            "balanceRoot": {
+              "type": "bytes",
+              "id": 2
+            },
+            "stateRoot": {
+              "type": "bytes",
+              "id": 3
+            },
+            "txPointer": {
+              "type": "TxPointer",
+              "id": 4
+            },
+            "contractId": {
+              "type": "bytes",
+              "id": 5
+            }
+          }
+        },
+        "MessageCoinSignedInput": {
+          "fields": {
+            "sender": {
+              "type": "bytes",
+              "id": 1
+            },
+            "recipient": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "nonce": {
+              "type": "bytes",
+              "id": 4
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 5
+            },
+            "predicateGasUsed": {
+              "type": "uint64",
+              "id": 6
+            },
+            "data": {
+              "type": "bytes",
+              "id": 7
+            },
+            "predicate": {
+              "type": "bytes",
+              "id": 8
+            },
+            "predicateData": {
+              "type": "bytes",
+              "id": 9
+            }
+          }
+        },
+        "MessageCoinPredicateInput": {
+          "fields": {
+            "sender": {
+              "type": "bytes",
+              "id": 1
+            },
+            "recipient": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "nonce": {
+              "type": "bytes",
+              "id": 4
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 5
+            },
+            "predicateGasUsed": {
+              "type": "uint64",
+              "id": 6
+            },
+            "data": {
+              "type": "bytes",
+              "id": 7
+            },
+            "predicate": {
+              "type": "bytes",
+              "id": 8
+            },
+            "predicateData": {
+              "type": "bytes",
+              "id": 9
+            }
+          }
+        },
+        "MessageDataSignedInput": {
+          "fields": {
+            "sender": {
+              "type": "bytes",
+              "id": 1
+            },
+            "recipient": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "nonce": {
+              "type": "bytes",
+              "id": 4
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 5
+            },
+            "predicateGasUsed": {
+              "type": "uint64",
+              "id": 6
+            },
+            "data": {
+              "type": "bytes",
+              "id": 7
+            },
+            "predicate": {
+              "type": "bytes",
+              "id": 8
+            },
+            "predicateData": {
+              "type": "bytes",
+              "id": 9
+            }
+          }
+        },
+        "MessageDataPredicateInput": {
+          "fields": {
+            "sender": {
+              "type": "bytes",
+              "id": 1
+            },
+            "recipient": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "nonce": {
+              "type": "bytes",
+              "id": 4
+            },
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 5
+            },
+            "predicateGasUsed": {
+              "type": "uint64",
+              "id": 6
+            },
+            "data": {
+              "type": "bytes",
+              "id": 7
+            },
+            "predicate": {
+              "type": "bytes",
+              "id": 8
+            },
+            "predicateData": {
+              "type": "bytes",
+              "id": 9
+            }
+          }
+        },
+        "Output": {
+          "oneofs": {
+            "variant": {
+              "oneof": [
+                "coin",
+                "contract",
+                "change",
+                "variable",
+                "contractCreated"
+              ]
+            }
+          },
+          "fields": {
+            "coin": {
+              "type": "CoinOutput",
+              "id": 1
+            },
+            "contract": {
+              "type": "ContractOutput",
+              "id": 2
+            },
+            "change": {
+              "type": "ChangeOutput",
+              "id": 3
+            },
+            "variable": {
+              "type": "VariableOutput",
+              "id": 4
+            },
+            "contractCreated": {
+              "type": "ContractCreatedOutput",
+              "id": 5
+            }
+          }
+        },
+        "CoinOutput": {
+          "fields": {
+            "to": {
+              "type": "bytes",
+              "id": 1
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 2
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "ContractOutput": {
+          "fields": {
+            "inputIndex": {
+              "type": "uint32",
+              "id": 1
+            },
+            "balanceRoot": {
+              "type": "bytes",
+              "id": 2
+            },
+            "stateRoot": {
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "ChangeOutput": {
+          "fields": {
+            "to": {
+              "type": "bytes",
+              "id": 1
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 2
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "VariableOutput": {
+          "fields": {
+            "to": {
+              "type": "bytes",
+              "id": 1
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 2
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "ContractCreatedOutput": {
+          "fields": {
+            "contractId": {
+              "type": "bytes",
+              "id": 1
+            },
+            "stateRoot": {
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "UtxoId": {
+          "fields": {
+            "txId": {
+              "type": "bytes",
+              "id": 1
+            },
+            "outputIndex": {
+              "type": "uint32",
+              "id": 2
+            }
+          }
+        },
+        "TxPointer": {
+          "fields": {
+            "blockHeight": {
+              "type": "uint32",
+              "id": 1
+            },
+            "txIndex": {
+              "type": "uint32",
+              "id": 2
+            }
+          }
+        },
+        "StorageSlot": {
+          "fields": {
+            "key": {
+              "type": "bytes",
+              "id": 1
+            },
+            "value": {
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "ScriptMetadata": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "inputsOffset": {
+              "type": "uint32",
+              "id": 2
+            },
+            "inputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 3
+            },
+            "inputsPredicateOffsetAt": {
+              "rule": "repeated",
+              "type": "PredicateOffset",
+              "id": 4
+            },
+            "outputsOffset": {
+              "type": "uint32",
+              "id": 5
+            },
+            "outputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 6
+            },
+            "witnessesOffset": {
+              "type": "uint32",
+              "id": 7
+            },
+            "witnessesOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 8
+            },
+            "scriptGasLimit": {
+              "type": "uint64",
+              "id": 9
+            },
+            "receiptsRoot": {
+              "type": "bytes",
+              "id": 10
+            },
+            "script": {
+              "type": "bytes",
+              "id": 11
+            },
+            "scriptData": {
+              "type": "bytes",
+              "id": 12
+            }
+          }
+        },
+        "CreateMetadata": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "inputsOffset": {
+              "type": "uint32",
+              "id": 2
+            },
+            "inputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 3
+            },
+            "inputsPredicateOffsetAt": {
+              "rule": "repeated",
+              "type": "PredicateOffset",
+              "id": 4
+            },
+            "outputsOffset": {
+              "type": "uint32",
+              "id": 5
+            },
+            "outputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 6
+            },
+            "witnessesOffset": {
+              "type": "uint32",
+              "id": 7
+            },
+            "witnessesOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 8
+            },
+            "contractId": {
+              "type": "bytes",
+              "id": 9
+            },
+            "contractRoot": {
+              "type": "bytes",
+              "id": 10
+            },
+            "stateRoot": {
+              "type": "bytes",
+              "id": 11
+            }
+          }
+        },
+        "MintMetadata": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "UpgradePurpose": {
+          "oneofs": {
+            "variant": {
+              "oneof": ["consensusParameters", "stateTransition"]
+            }
+          },
+          "fields": {
+            "consensusParameters": {
+              "type": "UpgradeConsensusParameters",
+              "id": 1
+            },
+            "stateTransition": {
+              "type": "UpgradeStateTransition",
+              "id": 2
+            }
+          }
+        },
+        "UpgradeConsensusParameters": {
+          "fields": {
+            "witnessIndex": {
+              "type": "uint32",
+              "id": 1
+            },
+            "checksum": {
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "UpgradeStateTransition": {
+          "fields": {
+            "root": {
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "UpgradeMetadata": {
+          "oneofs": {
+            "variant": {
+              "oneof": ["consensusParameters", "stateTransition"]
+            }
+          },
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "inputsOffset": {
+              "type": "uint32",
+              "id": 2
+            },
+            "inputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 3
+            },
+            "inputsPredicateOffsetAt": {
+              "rule": "repeated",
+              "type": "PredicateOffset",
+              "id": 4
+            },
+            "outputsOffset": {
+              "type": "uint32",
+              "id": 5
+            },
+            "outputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 6
+            },
+            "witnessesOffset": {
+              "type": "uint32",
+              "id": 7
+            },
+            "witnessesOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 8
+            },
+            "consensusParameters": {
+              "type": "UpgradeConsensusParametersMetadata",
+              "id": 9
+            },
+            "stateTransition": {
+              "type": "UpgradeStateTransitionMetadata",
+              "id": 10
+            }
+          }
+        },
+        "UpgradeConsensusParametersMetadata": {
+          "fields": {
+            "consensusParameters": {
+              "type": "bytes",
+              "id": 1
+            },
+            "calculatedChecksum": {
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "UpgradeStateTransitionMetadata": {
+          "fields": {}
+        },
+        "UploadMetadata": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "inputsOffset": {
+              "type": "uint32",
+              "id": 2
+            },
+            "inputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 3
+            },
+            "inputsPredicateOffsetAt": {
+              "rule": "repeated",
+              "type": "PredicateOffset",
+              "id": 4
+            },
+            "outputsOffset": {
+              "type": "uint32",
+              "id": 5
+            },
+            "outputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 6
+            },
+            "witnessesOffset": {
+              "type": "uint32",
+              "id": 7
+            },
+            "witnessesOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 8
+            }
+          }
+        },
+        "BlobMetadata": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "inputsOffset": {
+              "type": "uint32",
+              "id": 2
+            },
+            "inputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 3
+            },
+            "inputsPredicateOffsetAt": {
+              "rule": "repeated",
+              "type": "PredicateOffset",
+              "id": 4
+            },
+            "outputsOffset": {
+              "type": "uint32",
+              "id": 5
+            },
+            "outputsOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 6
+            },
+            "witnessesOffset": {
+              "type": "uint32",
+              "id": 7
+            },
+            "witnessesOffsetAt": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 8
+            }
+          }
+        },
+        "PredicateOffset": {
+          "oneofs": {
+            "_offset": {
+              "oneof": ["offset"]
+            }
+          },
+          "fields": {
+            "offset": {
+              "type": "InnerPredicateOffset",
+              "id": 1,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "InnerPredicateOffset": {
+          "fields": {
+            "offset": {
+              "type": "uint32",
+              "id": 1
+            },
+            "length": {
+              "type": "uint32",
+              "id": 2
+            }
+          }
+        },
+        "Receipt": {
+          "oneofs": {
+            "variant": {
+              "oneof": [
+                "call",
+                "returnReceipt",
+                "returnData",
+                "panic",
+                "revert",
+                "log",
+                "logData",
+                "transfer",
+                "transferOut",
+                "scriptResult",
+                "messageOut",
+                "mint",
+                "burn"
+              ]
+            }
+          },
+          "fields": {
+            "call": {
+              "type": "CallReceipt",
+              "id": 1
+            },
+            "returnReceipt": {
+              "type": "ReturnReceipt",
+              "id": 2
+            },
+            "returnData": {
+              "type": "ReturnDataReceipt",
+              "id": 3
+            },
+            "panic": {
+              "type": "PanicReceipt",
+              "id": 4
+            },
+            "revert": {
+              "type": "RevertReceipt",
+              "id": 5
+            },
+            "log": {
+              "type": "LogReceipt",
+              "id": 6
+            },
+            "logData": {
+              "type": "LogDataReceipt",
+              "id": 7
+            },
+            "transfer": {
+              "type": "TransferReceipt",
+              "id": 8
+            },
+            "transferOut": {
+              "type": "TransferOutReceipt",
+              "id": 9
+            },
+            "scriptResult": {
+              "type": "ScriptResultReceipt",
+              "id": 10
+            },
+            "messageOut": {
+              "type": "MessageOutReceipt",
+              "id": 11
+            },
+            "mint": {
+              "type": "MintReceipt",
+              "id": 12
+            },
+            "burn": {
+              "type": "BurnReceipt",
+              "id": 13
+            }
+          }
+        },
+        "CallReceipt": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "to": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 4
+            },
+            "gas": {
+              "type": "uint64",
+              "id": 5
+            },
+            "param1": {
+              "type": "uint64",
+              "id": 6
+            },
+            "param2": {
+              "type": "uint64",
+              "id": 7
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 8
+            },
+            "is": {
+              "type": "uint64",
+              "id": 9
+            }
+          }
+        },
+        "ReturnReceipt": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "val": {
+              "type": "uint64",
+              "id": 2
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 3
+            },
+            "is": {
+              "type": "uint64",
+              "id": 4
+            }
+          }
+        },
+        "ReturnDataReceipt": {
+          "oneofs": {
+            "_data": {
+              "oneof": ["data"]
+            }
+          },
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "ptr": {
+              "type": "uint64",
+              "id": 2
+            },
+            "len": {
+              "type": "uint64",
+              "id": 3
+            },
+            "digest": {
+              "type": "bytes",
+              "id": 4
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 5
+            },
+            "is": {
+              "type": "uint64",
+              "id": 6
+            },
+            "data": {
+              "type": "bytes",
+              "id": 7,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "PanicReceipt": {
+          "oneofs": {
+            "_contractId": {
+              "oneof": ["contractId"]
+            }
+          },
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "reason": {
+              "type": "PanicInstruction",
+              "id": 2
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 3
+            },
+            "is": {
+              "type": "uint64",
+              "id": 4
+            },
+            "contractId": {
+              "type": "bytes",
+              "id": 5,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "RevertReceipt": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "ra": {
+              "type": "uint64",
+              "id": 2
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 3
+            },
+            "is": {
+              "type": "uint64",
+              "id": 4
+            }
+          }
+        },
+        "LogReceipt": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "ra": {
+              "type": "uint64",
+              "id": 2
+            },
+            "rb": {
+              "type": "uint64",
+              "id": 3
+            },
+            "rc": {
+              "type": "uint64",
+              "id": 4
+            },
+            "rd": {
+              "type": "uint64",
+              "id": 5
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 6
+            },
+            "is": {
+              "type": "uint64",
+              "id": 7
+            }
+          }
+        },
+        "LogDataReceipt": {
+          "oneofs": {
+            "_data": {
+              "oneof": ["data"]
+            }
+          },
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "ra": {
+              "type": "uint64",
+              "id": 2
+            },
+            "rb": {
+              "type": "uint64",
+              "id": 3
+            },
+            "ptr": {
+              "type": "uint64",
+              "id": 4
+            },
+            "len": {
+              "type": "uint64",
+              "id": 5
+            },
+            "digest": {
+              "type": "bytes",
+              "id": 6
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 7
+            },
+            "is": {
+              "type": "uint64",
+              "id": 8
+            },
+            "data": {
+              "type": "bytes",
+              "id": 9,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "TransferReceipt": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "to": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 4
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 5
+            },
+            "is": {
+              "type": "uint64",
+              "id": 6
+            }
+          }
+        },
+        "TransferOutReceipt": {
+          "fields": {
+            "id": {
+              "type": "bytes",
+              "id": 1
+            },
+            "to": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "assetId": {
+              "type": "bytes",
+              "id": 4
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 5
+            },
+            "is": {
+              "type": "uint64",
+              "id": 6
+            }
+          }
+        },
+        "ScriptResultReceipt": {
+          "fields": {
+            "result": {
+              "type": "ScriptExecutionResult",
+              "id": 1
+            },
+            "gasUsed": {
+              "type": "uint64",
+              "id": 2
+            }
+          }
+        },
+        "MessageOutReceipt": {
+          "oneofs": {
+            "_data": {
+              "oneof": ["data"]
+            }
+          },
+          "fields": {
+            "sender": {
+              "type": "bytes",
+              "id": 1
+            },
+            "recipient": {
+              "type": "bytes",
+              "id": 2
+            },
+            "amount": {
+              "type": "uint64",
+              "id": 3
+            },
+            "nonce": {
+              "type": "bytes",
+              "id": 4
+            },
+            "len": {
+              "type": "uint64",
+              "id": 5
+            },
+            "digest": {
+              "type": "bytes",
+              "id": 6
+            },
+            "data": {
+              "type": "bytes",
+              "id": 7,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "MintReceipt": {
+          "fields": {
+            "subId": {
+              "type": "bytes",
+              "id": 1
+            },
+            "contractId": {
+              "type": "bytes",
+              "id": 2
+            },
+            "val": {
+              "type": "uint64",
+              "id": 3
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 4
+            },
+            "is": {
+              "type": "uint64",
+              "id": 5
+            }
+          }
+        },
+        "BurnReceipt": {
+          "fields": {
+            "subId": {
+              "type": "bytes",
+              "id": 1
+            },
+            "contractId": {
+              "type": "bytes",
+              "id": 2
+            },
+            "val": {
+              "type": "uint64",
+              "id": 3
+            },
+            "pc": {
+              "type": "uint64",
+              "id": 4
+            },
+            "is": {
+              "type": "uint64",
+              "id": 5
+            }
+          }
+        },
+        "PanicInstruction": {
+          "fields": {
+            "reason": {
+              "type": "PanicReason",
+              "id": 1
+            },
+            "instruction": {
+              "type": "uint32",
+              "id": 2
+            }
+          }
+        },
+        "PanicReason": {
+          "values": {
+            "PANIC_REASON_UNKNOWN": 0,
+            "PANIC_REASON_REVERT": 1,
+            "PANIC_REASON_OUT_OF_GAS": 2,
+            "PANIC_REASON_TRANSACTION_VALIDITY": 3,
+            "PANIC_REASON_MEMORY_OVERFLOW": 4,
+            "PANIC_REASON_ARITHMETIC_OVERFLOW": 5,
+            "PANIC_REASON_CONTRACT_NOT_FOUND": 6,
+            "PANIC_REASON_MEMORY_OWNERSHIP": 7,
+            "PANIC_REASON_NOT_ENOUGH_BALANCE": 8,
+            "PANIC_REASON_EXPECTED_INTERNAL_CONTEXT": 9,
+            "PANIC_REASON_ASSET_ID_NOT_FOUND": 10,
+            "PANIC_REASON_INPUT_NOT_FOUND": 11,
+            "PANIC_REASON_OUTPUT_NOT_FOUND": 12,
+            "PANIC_REASON_WITNESS_NOT_FOUND": 13,
+            "PANIC_REASON_TRANSACTION_MATURITY": 14,
+            "PANIC_REASON_INVALID_METADATA_IDENTIFIER": 15,
+            "PANIC_REASON_MALFORMED_CALL_STRUCTURE": 16,
+            "PANIC_REASON_RESERVED_REGISTER_NOT_WRITABLE": 17,
+            "PANIC_REASON_INVALID_FLAGS": 18,
+            "PANIC_REASON_INVALID_IMMEDIATE_VALUE": 19,
+            "PANIC_REASON_EXPECTED_COIN_INPUT": 20,
+            "PANIC_REASON_ECAL_ERROR": 21,
+            "PANIC_REASON_MEMORY_WRITE_OVERLAP": 22,
+            "PANIC_REASON_CONTRACT_NOT_IN_INPUTS": 23,
+            "PANIC_REASON_INTERNAL_BALANCE_OVERFLOW": 24,
+            "PANIC_REASON_CONTRACT_MAX_SIZE": 25,
+            "PANIC_REASON_EXPECTED_UNALLOCATED_STACK": 26,
+            "PANIC_REASON_MAX_STATIC_CONTRACTS_REACHED": 27,
+            "PANIC_REASON_TRANSFER_AMOUNT_CANNOT_BE_ZERO": 28,
+            "PANIC_REASON_EXPECTED_OUTPUT_VARIABLE": 29,
+            "PANIC_REASON_EXPECTED_PARENT_INTERNAL_CONTEXT": 30,
+            "PANIC_REASON_PREDICATE_RETURNED_NON_ONE": 31,
+            "PANIC_REASON_CONTRACT_ID_ALREADY_DEPLOYED": 32,
+            "PANIC_REASON_CONTRACT_MISMATCH": 33,
+            "PANIC_REASON_MESSAGE_DATA_TOO_LONG": 34,
+            "PANIC_REASON_ARITHMETIC_ERROR": 35,
+            "PANIC_REASON_CONTRACT_INSTRUCTION_NOT_ALLOWED": 36,
+            "PANIC_REASON_TRANSFER_ZERO_COINS": 37,
+            "PANIC_REASON_INVALID_INSTRUCTION": 38,
+            "PANIC_REASON_MEMORY_NOT_EXECUTABLE": 39,
+            "PANIC_REASON_POLICY_IS_NOT_SET": 40,
+            "PANIC_REASON_POLICY_NOT_FOUND": 41,
+            "PANIC_REASON_TOO_MANY_RECEIPTS": 42,
+            "PANIC_REASON_BALANCE_OVERFLOW": 43,
+            "PANIC_REASON_INVALID_BLOCK_HEIGHT": 44,
+            "PANIC_REASON_TOO_MANY_SLOTS": 45,
+            "PANIC_REASON_EXPECTED_NESTED_CALLER": 46,
+            "PANIC_REASON_MEMORY_GROWTH_OVERLAP": 47,
+            "PANIC_REASON_UNINITALIZED_MEMORY_ACCESS": 48,
+            "PANIC_REASON_OVERRIDING_CONSENSUS_PARAMETERS": 49,
+            "PANIC_REASON_UNKNOWN_STATE_TRANSACTION_BYTECODE_ROOT": 50,
+            "PANIC_REASON_OVERRIDING_STATE_TRANSACTION_BYTECODE": 51,
+            "PANIC_REASON_BYTECODE_ALREADY_UPLOADED": 52,
+            "PANIC_REASON_THE_PART_IS_NOT_SEQUENTIALLY_CONNECTED": 53,
+            "PANIC_REASON_BLOB_NOT_FOUND": 54,
+            "PANIC_REASON_BLOB_ID_ALREADY_UPLOADED": 55,
+            "PANIC_REASON_GAS_COST_NOT_DEFINED": 56,
+            "PANIC_REASON_UNSUPPORTED_CURVE_ID": 57,
+            "PANIC_REASON_UNSUPPORTED_OPERATION_TYPE": 58,
+            "PANIC_REASON_INVALID_ELLIPTIC_CURVE_POINT": 59,
+            "PANIC_REASON_INPUT_CONTRACT_DOES_NOT_EXIST": 60,
+            "PANIC_REASON_STORAGE_SLOTS_NOT_FOUND": 61,
+            "PANIC_REASON_PROOF_IN_UPLOAD_NOT_FOUND": 62,
+            "PANIC_REASON_INVALID_UPGRADE_PURPOSE_TYPE": 63,
+            "PANIC_REASON_CAN_NOT_GET_GAS_PRICE_IN_PREDICATE": 64
+          }
+        },
+        "ScriptExecutionResult": {
+          "oneofs": {
+            "variant": {
+              "oneof": ["success", "revert", "panic", "genericFailure"]
+            }
+          },
+          "fields": {
+            "success": {
+              "type": "ScriptExecutionResultSuccess",
+              "id": 1
+            },
+            "revert": {
+              "type": "ScriptExecutionResultRevert",
+              "id": 2
+            },
+            "panic": {
+              "type": "ScriptExecutionResultPanic",
+              "id": 3
+            },
+            "genericFailure": {
+              "type": "ScriptExecutionResultGenericFailure",
+              "id": 4
+            }
+          }
+        },
+        "ScriptExecutionResultSuccess": {
+          "fields": {}
+        },
+        "ScriptExecutionResultRevert": {
+          "fields": {}
+        },
+        "ScriptExecutionResultPanic": {
+          "fields": {}
+        },
+        "ScriptExecutionResultGenericFailure": {
+          "fields": {
+            "code": {
+              "type": "uint64",
+              "id": 1
+            }
+          }
+        },
+        "BlockResponse": {
+          "oneofs": {
+            "payload": {
+              "oneof": ["literal", "bytes", "remote"]
+            }
+          },
+          "fields": {
+            "height": {
+              "type": "uint32",
+              "id": 1
+            },
+            "literal": {
+              "type": "Block",
+              "id": 2
+            },
+            "bytes": {
+              "type": "bytes",
+              "id": 3
+            },
+            "remote": {
+              "type": "RemoteBlockResponse",
+              "id": 4
+            }
+          }
+        },
+        "NewBlockSubscriptionRequest": {
+          "fields": {}
+        },
+        "BlockAggregator": {
+          "methods": {
+            "GetSyncedBlockHeight": {
+              "requestType": "BlockHeightRequest",
+              "responseType": "BlockHeightResponse"
+            },
+            "GetBlockRange": {
+              "requestType": "BlockRangeRequest",
+              "responseType": "BlockResponse",
+              "responseStream": true
+            },
+            "NewBlockSubscription": {
+              "requestType": "NewBlockSubscriptionRequest",
+              "responseType": "BlockResponse",
+              "responseStream": true
+            }
+          }
+        }
+      }
+    }
+  }
+}
