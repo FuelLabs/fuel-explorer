@@ -348,17 +348,16 @@ export class Index {
     return run();
   }
 
-  deleteOutsideRange(): number {
+  deleteAboveRange(): number {
     const r = this.range();
-    if (r.from == null || r.to == null) return 0;
-    const from = r.from;
+    if (r.to == null) return 0;
     const to = r.to;
     const run = this.db.transaction(() => {
       let n = 0;
       for (const t of ['blocks', 'txs', 'tx_accounts', 'assets'])
         n += this.db
-          .prepare(`DELETE FROM ${t} WHERE height < ? OR height > ?`)
-          .run(from, to).changes;
+          .prepare(`DELETE FROM ${t} WHERE height > ?`)
+          .run(to).changes;
       return n;
     });
     return run();

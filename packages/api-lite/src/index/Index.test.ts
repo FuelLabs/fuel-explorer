@@ -171,20 +171,23 @@ describe('Index', () => {
     expect(idx.fileBytes()).toBeGreaterThanOrEqual(0);
   });
 
-  it('deleteOutsideRange removes a stray row below from', () => {
+  it('deleteAboveRange keeps a stray row below from and removes a row above to', () => {
     idx.writeBlock(block(0, [{ id: hex(1) }]));
     idx.writeBlock(block(10, [{ id: hex(2) }]));
     idx.writeBlock(block(11, [{ id: hex(3) }]));
     idx.setRange(10, 11);
-    expect(idx.deleteOutsideRange()).toBeGreaterThan(0);
-    expect(idx.heightForTx(hex(1))).toBeNull();
+    expect(idx.deleteAboveRange()).toBe(0);
+    idx.writeBlock(block(12, [{ id: hex(4) }]));
+    expect(idx.deleteAboveRange()).toBeGreaterThan(0);
+    expect(idx.heightForTx(hex(1))).toEqual({ height: 0, txIndex: 0 });
     expect(idx.heightForTx(hex(2))).toEqual({ height: 10, txIndex: 0 });
     expect(idx.heightForTx(hex(3))).toEqual({ height: 11, txIndex: 0 });
+    expect(idx.heightForTx(hex(4))).toBeNull();
   });
 
-  it('deleteOutsideRange is a no-op when range is unset', () => {
+  it('deleteAboveRange is a no-op when indexed_to is unset', () => {
     idx.writeBlock(block(0, [{ id: hex(1) }]));
-    expect(idx.deleteOutsideRange()).toBe(0);
+    expect(idx.deleteAboveRange()).toBe(0);
     expect(idx.heightForTx(hex(1))).not.toBeNull();
   });
 

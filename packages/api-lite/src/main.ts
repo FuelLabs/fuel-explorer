@@ -46,8 +46,8 @@ async function main() {
   console.log(`chainId=${params.chainId} baseAssetId=${params.baseAssetId}`);
 
   const index = new Index(join(cfg.dataDir, 'index.db'));
-  const repaired = index.deleteOutsideRange();
-  console.log(`index repair: deleted ${repaired} rows outside indexed range`);
+  const repaired = index.deleteAboveRange();
+  console.log(`index repair: deleted ${repaired} rows above indexed_to`);
   console.log(`block source: ${cfg.blockSource}`);
   const rpcSource =
     cfg.blockSource === 'rpc'

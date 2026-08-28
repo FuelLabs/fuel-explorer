@@ -1,6 +1,14 @@
-import { mkdtempSync, readdirSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { gunzipSync, gzipSync } from 'node:zlib';
 import { BlockNotFound } from '../s3/S3BlockSource';
 import { BlockStore } from './BlockStore';
 
@@ -60,7 +68,74 @@ describe('BlockStore', () => {
     expect(calls).toEqual([1, 2]);
     expect(
       readdirSync(join((store as any).opts.dataDir, 'blocks')).sort(),
-    ).toEqual(['1.json', '2.json']);
+    ).toEqual(['1.json.gz', '2.json.gz']);
+  });
+
+  it('writeDisk gzips to <height>.json.gz and readDisk gunzips it back', async () => {
+    const { store } = makeStore();
+    const decoded = await store.get(42);
+    expect(decoded?.height).toBe('42');
+    const dataDir = (store as any).opts.dataDir;
+    const blocksDir = join(dataDir, 'blocks');
+    expect(readdirSync(blocksDir)).toEqual(['42.json.gz']);
+    const raw = readFileSync(join(blocksDir, '42.json.gz'));
+    expect(() => JSON.parse(raw.toString('utf8'))).toThrow();
+    const gunzipped = JSON.parse(gunzipSync(raw).toString('utf8'));
+    expect(gunzipped.height).toBe('42');
+  });
+
+  it('reads a legacy plain .json file from disk without refetching', async () => {
+    const dataDir = mkdtempSync(join(tmpdir(), 'bs-legacy-'));
+    mkdirSync(join(dataDir, 'blocks'), { recursive: true });
+    writeFileSync(
+      join(dataDir, 'blocks', '55.json'),
+      JSON.stringify(fakeBlock(55)),
+    );
+    const { store } = makeStore({
+      dataDir,
+      source: {
+        fetchRaw: async () => {
+          throw new Error('should not refetch');
+        },
+      },
+    });
+    const block = await store.get(55);
+    expect(block?.height).toBe('55');
+  });
+
+  it('evicts oldest-first across mixed .json and .json.gz extensions', async () => {
+    const dataDir = mkdtempSync(join(tmpdir(), 'bs-mixed-'));
+    const blocksDir = join(dataDir, 'blocks');
+    mkdirSync(blocksDir, { recursive: true });
+    writeFileSync(join(blocksDir, '1.json'), JSON.stringify(fakeBlock(1)));
+    writeFileSync(
+      join(blocksDir, '2.json.gz'),
+      gzipSync(JSON.stringify(fakeBlock(2))),
+    );
+    const { store } = makeStore({ dataDir, diskBytes: 1 });
+    await store.get(100);
+    expect(readdirSync(blocksDir).sort()).toEqual(['100.json.gz']);
+  });
+
+  it('sums both files for a height that has both extensions on disk, and evicts them together', async () => {
+    const dataDir = mkdtempSync(join(tmpdir(), 'bs-dup-'));
+    const blocksDir = join(dataDir, 'blocks');
+    mkdirSync(blocksDir, { recursive: true });
+    writeFileSync(join(blocksDir, '5.json'), JSON.stringify(fakeBlock(5)));
+    writeFileSync(
+      join(blocksDir, '5.json.gz'),
+      gzipSync(JSON.stringify(fakeBlock(5))),
+    );
+    const sum5 =
+      statSync(join(blocksDir, '5.json')).size +
+      statSync(join(blocksDir, '5.json.gz')).size;
+    const { store } = makeStore({ dataDir, diskBytes: sum5 + 1 });
+    expect((store as any).diskBytesTotal).toBe(sum5);
+    await store.get(6); // pushes the total over cap, evicting height 5 (the only tracked entry)
+    const files = readdirSync(blocksDir).sort();
+    expect(files).not.toContain('5.json');
+    expect(files).not.toContain('5.json.gz');
+    expect(files).toEqual(['6.json.gz']);
   });
 
   it('getRange keeps order and fires onDecoded per decode', async () => {
@@ -137,7 +212,7 @@ describe('BlockStore', () => {
       expect((await store.get(7))?.height).toBe('7');
       expect(calls).toEqual([7]);
       expect(readdirSync(join((store as any).opts.dataDir, 'blocks'))).toEqual([
-        '7.json',
+        '7.json.gz',
       ]);
     });
 
@@ -160,9 +235,9 @@ describe('BlockStore', () => {
     // writeDisk evicts synchronously as it writes, so by the time an
     // interval/boot call to evictDisk() runs there is normally nothing left
     // to remove; this is exactly that steady-state case.
+    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
     const { store } = makeStore({
-      decode: (bytes) => fakeBlock(bytes[0], 3000),
-      diskBytes: 7000,
+      diskBytes: gzSize(2) + gzSize(3) + 10,
       memoryBytes: 1,
     });
     await store.get(1);
@@ -170,15 +245,15 @@ describe('BlockStore', () => {
     await store.get(3);
     expect(
       readdirSync(join((store as any).opts.dataDir, 'blocks')),
-    ).not.toContain('1.json');
+    ).not.toContain('1.json.gz');
     const removed = await store.evictDisk();
     expect(removed).toBe(0);
   });
 
   it('evictDisk cleans up files that landed on disk outside the tracked store (drift backstop)', async () => {
+    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
     const { store } = makeStore({
-      decode: (bytes) => fakeBlock(bytes[0], 3000),
-      diskBytes: 7000,
+      diskBytes: gzSize(1) + gzSize(2) + 5,
       memoryBytes: 1,
     });
     await store.get(1);
@@ -199,16 +274,18 @@ describe('BlockStore', () => {
 
   it('writeDisk evicts oldest-first synchronously so the disk total never overshoots diskBytes', async () => {
     const dataDir = mkdtempSync(join(tmpdir(), 'bs-overshoot-'));
-    // All heights share the same digit count (3) so every block serializes to
-    // the exact same byte length, making the cap-in-blocks math exact.
-    const probeSize = Buffer.byteLength(JSON.stringify(fakeBlock(100)));
-    const { store } = makeStore({ dataDir, diskBytes: probeSize * 3 });
+    // Gzip output length can vary by a byte or two between otherwise
+    // near-identical blocks, so the cap is sized from the actual gzip
+    // size of the 3 heights expected to survive rather than assumed equal.
+    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    const cap = gzSize(102) + gzSize(103) + gzSize(104);
+    const { store } = makeStore({ dataDir, diskBytes: cap });
     for (let h = 100; h < 105; h++) await store.get(h);
     const files = readdirSync(join(dataDir, 'blocks'));
     expect(files.length).toBeLessThanOrEqual(3);
     // The 3 most recently written blocks (102, 103, 104) survive; the 2 oldest
     // (100, 101) are evicted as soon as the cap is exceeded, not after the fact.
-    expect(files.sort()).toEqual(['102.json', '103.json', '104.json']);
+    expect(files.sort()).toEqual(['102.json.gz', '103.json.gz', '104.json.gz']);
   });
 
   it('getRange stores null at a failing height and keeps the rest of the range', async () => {

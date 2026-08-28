@@ -43,7 +43,8 @@ FROM node:20-alpine AS deps
 RUN apk add --no-cache python3 make g++
 WORKDIR /out
 COPY --from=build /out/package.json ./package.json
-RUN npm install --omit=dev
+RUN npm install --omit=dev --no-audit --no-fund \
+ && npm ls --omit=dev --depth=0
 
 FROM node:20-alpine AS runtime
 ENV NODE_ENV=production

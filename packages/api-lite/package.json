@@ -22,10 +22,10 @@
     "fuels": "0.103.0",
     "graphql": "16.10.0",
     "graphql-yoga": "5.6.0",
-    "lodash": "^4.17.21",
+    "lodash": "4.17.21",
     "lru-cache": "10.4.3",
     "protobufjs": "7.5.4",
-    "tai64": "^1.0.0",
+    "tai64": "1.0.0",
     "zod": "3.23.8"
   },
   "devDependencies": {
