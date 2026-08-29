@@ -134,6 +134,14 @@ describe('toTxNode', () => {
     expect(toTxNode(mintTx(), 1, 0, pricing).mintAmountUsd).toBe('$0.00001');
   });
 
+  it('list nodes carry mintAmountUsd too, since the schema field is non-nullable', () => {
+    expect(toTxListNode(mintTx(), 1, 0, pricing).mintAmountUsd).toBe(
+      '$0.00001',
+    );
+    expect(toTxListNode(scriptTx(), 1, 0, pricing).mintAmountUsd).toBe('$0');
+    expect(toTxListNode(scriptTx(), 1, 0, noPricing).mintAmountUsd).toBe('');
+  });
+
   it('mintAmountUsd is empty only when the price is unavailable', () => {
     expect(toTxNode(mintTx(), 1, 0, noPricing).mintAmountUsd).toBe('');
     expect(toTxNode(scriptTx(), 1, 0, noPricing).mintAmountUsd).toBe('');

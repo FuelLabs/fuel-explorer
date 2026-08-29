@@ -83,7 +83,7 @@ function withAmountInUsd(
 // be actively wrong rather than merely unavailable.
 function mintAmountUsdFor(
   node: {
-    isMint?: boolean;
+    isMint?: boolean | null;
     mintAssetId?: string | null;
     mintAmount?: string | null;
   },
@@ -133,6 +133,7 @@ export function toTxListNode(
       TransactionEntity.createFromGQL(tx, height, index).toGQLListNode(),
       pricing.usd,
     ),
+    mintAmountUsd: mintAmountUsdFor(tx, pricing),
     cursor: txCursor(height, index),
   };
 }
