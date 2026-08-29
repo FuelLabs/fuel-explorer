@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 
 /**
  * Home page's "Recent Blocks" tile links to `/block/:height/simple`. Reading
@@ -20,11 +20,24 @@ export async function getLatestBlockHeightFromHome(page: Page): Promise<{
   return { height: Number(match[1]), href };
 }
 
-/** Text of the CardInfo card whose label is `label` (e.g. "Height", "Producer"). */
-export async function cardInfoText(page: Page, label: string): Promise<string> {
+/**
+ * Text of the CardInfo card whose label is `label` (e.g. "Height", "Producer").
+ *
+ * CardInfo renders its label (name) unconditionally, but the value below it
+ * sits behind its own LoadingWrapper -- so right after navigation the label
+ * can be visible while the card's only text is still just the label itself
+ * (the value's LoadingWrapper hasn't swapped from its skeleton to the real
+ * value yet). Wait for the card's text to actually change before reading it.
+ */
+export async function cardInfoText(
+  page: Page,
+  label: string,
+  timeout = 15_000,
+): Promise<string> {
   const heading = page.getByText(label, { exact: true });
   await heading.waitFor({ state: 'visible' });
   const card = heading.locator('xpath=..');
+  await expect(card).not.toHaveText(label, { timeout });
   return (await card.textContent()) ?? '';
 }
 
