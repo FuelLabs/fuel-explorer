@@ -119,6 +119,44 @@ export const setupFuelWalletNetwork = async ({
   return { fuelWallet, fuelWalletTestHelper, account };
 };
 
+/**
+ * The wallet extension connects Account 1 (current) plus the accounts passed to
+ * `connectToFuel`, and the dapp picks one of them as the active account. Which
+ * one it picks is not stable between runs, so balance checks must target the
+ * account the UI reports, not a fixed derivation index.
+ *
+ * The UI shows either the account alias ("Account 2") or the address shortened
+ * to its first 6 and last 6 characters ("0xF13c...Ab4749").
+ */
+const WALLET_ACCOUNTS = 4;
+
+export const getConnectedFuelWallet = async (
+  page: Page,
+  provider: Provider,
+) => {
+  const FUEL_MNEMONIC = await getFuelMnemonic();
+  const connectedWallet = await getByAriaLabel(
+    page,
+    'Fuel Local: Connected Wallet',
+  );
+  const label = (await connectedWallet.innerText()).trim().toLowerCase();
+
+  for (let index = 0; index < WALLET_ACCOUNTS; index++) {
+    const wallet = Wallet.fromMnemonic(
+      FUEL_MNEMONIC,
+      `m/44'/1179993420'/${index}'/0/0`,
+      undefined,
+      provider,
+    );
+    const address = wallet.address.toB256().toLowerCase();
+    const shortAddress = `${address.slice(0, 6)}...${address.slice(-6)}`;
+    if (label === `account ${index + 1}` || label === shortAddress) {
+      return wallet;
+    }
+  }
+  throw new Error(`Unexpected connected wallet label: "${label}"`);
+};
+
 export const connectToFuel = async (
   page: Page,
   fuelWalletTestHelper: any,
