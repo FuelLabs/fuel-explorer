@@ -11,11 +11,13 @@ map $http_x_forwarded_for $xff_last {
 limit_req_zone ${RATE_LIMIT_KEY} zone=api:10m rate=20r/s;
 # 1 MB keys zone (~enough for the single /api/charts key), 10 MB max cached
 # response bodies, evicted after 5 min unused; backs the 60s edge cache below.
+log_format proxied '$remote_addr xff="$http_x_forwarded_for" [$time_local] "$request" $status $body_bytes_sent $request_time';
 proxy_cache_path /var/cache/nginx/charts levels=1 keys_zone=charts:1m max_size=10m inactive=5m;
 
 server {
     listen 80;
     listen [::]:80;
+    access_log /var/log/nginx/access.log proxied;
     server_name _;
     root /usr/share/nginx/html;
     index index.html;
