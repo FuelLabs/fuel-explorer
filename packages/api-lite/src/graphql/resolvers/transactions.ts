@@ -15,6 +15,8 @@ import {
 import { resolveHeight } from './blocks';
 
 const FIRST_PAGE_CACHE_TTL_MS = 5_000;
+const FC_PAGE_TTL_BASE_MS = 30_000;
+const FC_PAGE_TTL_CAP_MS = 3_600_000;
 
 export function toTxNode(tx: GQLTransaction, height: number, index: number) {
   const node = TransactionEntity.createFromGQL(tx, height, index).toGQLNode();
@@ -87,6 +89,51 @@ async function renderFcItem(ctx: AppContext, it: FcItem) {
   };
 }
 
+// One raw fuel-core page (before rendering/dedup) is cached per exact
+// (owner, direction, cursor, size) combination the caller can hit again --
+// e.g. a client re-polling the same page. `size` is part of the key because
+// a page fetched for a smaller page size may not carry enough items for a
+// larger one requested later.
+function fcRawPageCacheKey(owner: string, size: number, dir: FcDir): string {
+  const cursor = dir.kind === 'older' ? (dir.after ?? '') : (dir.before ?? '');
+  return `fcPage:${owner}:${dir.kind}:${size}:${cursor}`;
+}
+
+type FcRawPage = {
+  items: FcItem[];
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+};
+
+async function fetchFcRawPage(
+  ctx: AppContext,
+  owner: string,
+  size: number,
+  dir: FcDir,
+): Promise<FcRawPage> {
+  const cache = DataCache.getInstance();
+  const cacheKey = fcRawPageCacheKey(owner, size, dir);
+  const hit = cache.get(cacheKey) as FcRawPage | undefined;
+  if (hit) return hit;
+  const fc =
+    dir.kind === 'older'
+      ? await ctx.client.txsByOwner(owner, {
+          first: size + 1,
+          after: dir.after,
+        })
+      : await ctx.client.txsByOwner(owner, {
+          last: size + 1,
+          before: dir.before,
+        });
+  const hits = ctx.hot.hits('account', owner);
+  const ttl = Math.min(
+    FC_PAGE_TTL_CAP_MS,
+    FC_PAGE_TTL_BASE_MS * Math.max(1, hits),
+  );
+  cache.save(cacheKey, ttl, fc);
+  return fc;
+}
+
 // Fetches size+1 items from fuel-core in the given direction, renders and dedupes them
 // against `existing` (already-rendered index rows), and consumes at most `size` NEW
 // items. Per-item cursors (prefixed `fc:`) drive `connection()`'s own startCursor/
@@ -98,16 +145,7 @@ async function pageFromFuelCore(
   dir: FcDir,
   existing: ReturnType<typeof toTxListNode>[] = [],
 ) {
-  const fc =
-    dir.kind === 'older'
-      ? await ctx.client.txsByOwner(owner, {
-          first: size + 1,
-          after: dir.after,
-        })
-      : await ctx.client.txsByOwner(owner, {
-          last: size + 1,
-          before: dir.before,
-        });
+  const fc = await fetchFcRawPage(ctx, owner, size, dir);
 
   const items = [...existing];
   const seen = new Set(items.map((i) => (i.id ?? '').toLowerCase()));
@@ -134,8 +172,10 @@ async function pageFromFuelCore(
 export const transactionResolvers = {
   Query: {
     async transaction(_: unknown, args: { id: string }, ctx: AppContext) {
-      const found = await locateTx(ctx, args.id.toLowerCase());
+      const id = args.id.toLowerCase();
+      const found = await locateTx(ctx, id);
       if (!found) return null;
+      ctx.hot.hit('tx', id);
       return toTxNode(
         found.block.transactions[found.index],
         Number(found.block.height),
@@ -227,6 +267,7 @@ export const transactionResolvers = {
     ) {
       const size = pageSize(args);
       const owner = args.owner.toLowerCase();
+      ctx.hot.hit('account', owner);
 
       if (args.before?.startsWith('fc:')) {
         const page = await pageFromFuelCore(ctx, owner, size, {

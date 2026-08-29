@@ -44,6 +44,7 @@ export function createApp(ctx: AppDeps) {
     blockSource: ctx.blockSource ?? 's3',
     index: ctx.index.range(),
     indexBytes: ctx.index.fileBytes(),
+    hot: ctx.hot.counts(),
     rss: process.memoryUsage().rss,
     cosmos: ctx.cosmos
       ? { cursor: ctx.cosmos.cursor, tip: ctx.cosmos.tip }

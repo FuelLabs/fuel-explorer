@@ -138,6 +138,92 @@ describe('BlockStore', () => {
     expect(files).toEqual(['6.json.gz']);
   });
 
+  it('evictOverflow skips a pinned height, evicting the next oldest unpinned entry instead, and logs how many were skipped', async () => {
+    const dataDir = mkdtempSync(join(tmpdir(), 'bs-pinned-'));
+    const blocksDir = join(dataDir, 'blocks');
+    mkdirSync(blocksDir, { recursive: true });
+    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    writeFileSync(
+      join(blocksDir, '1.json.gz'),
+      gzipSync(JSON.stringify(fakeBlock(1))),
+    );
+    writeFileSync(
+      join(blocksDir, '2.json.gz'),
+      gzipSync(JSON.stringify(fakeBlock(2))),
+    );
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const { store } = makeStore({
+      dataDir,
+      diskBytes: gzSize(1) + gzSize(100) + 5,
+      pinned: () => new Set([1]),
+    });
+    await store.get(100);
+    const files = readdirSync(blocksDir).sort();
+    expect(files).toEqual(['1.json.gz', '100.json.gz']);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('skipped 1 pinned'),
+    );
+    logSpy.mockRestore();
+  });
+
+  it('evictDisk backstop also honors pinned heights', async () => {
+    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    const { store } = makeStore({
+      diskBytes: gzSize(1) + gzSize(3) + 5,
+      memoryBytes: 1,
+      pinned: () => new Set([1]),
+    });
+    await store.get(1);
+    await store.get(2);
+    await store.get(3);
+    await store.evictDisk();
+    const files = readdirSync(
+      join((store as any).opts.dataDir, 'blocks'),
+    ).sort();
+    expect(files).toContain('1.json.gz');
+  });
+
+  it('evictOverflow is a safe no-op when every cached height is pinned, even above diskBytes; unpinning one lets the next pass evict it', async () => {
+    const dataDir = mkdtempSync(join(tmpdir(), 'bs-allpinned-'));
+    const blocksDir = join(dataDir, 'blocks');
+    mkdirSync(blocksDir, { recursive: true });
+    writeFileSync(
+      join(blocksDir, '1.json.gz'),
+      gzipSync(JSON.stringify(fakeBlock(1))),
+    );
+    writeFileSync(
+      join(blocksDir, '2.json.gz'),
+      gzipSync(JSON.stringify(fakeBlock(2))),
+    );
+    writeFileSync(
+      join(blocksDir, '3.json.gz'),
+      gzipSync(JSON.stringify(fakeBlock(3))),
+    );
+    const pinnedSet = new Set([1, 2, 3]);
+    const { store } = makeStore({
+      dataDir,
+      diskBytes: 1, // every entry is pinned, so the cache can never shrink to this
+      pinned: () => pinnedSet,
+    });
+
+    const removed = await store.evictDisk();
+    expect(removed).toBe(0);
+    expect(readdirSync(blocksDir).sort()).toEqual([
+      '1.json.gz',
+      '2.json.gz',
+      '3.json.gz',
+    ]);
+    expect((store as any).diskBytesTotal).toBeGreaterThan(
+      (store as any).opts.diskBytes,
+    );
+
+    // Unpin height 1: the next eviction pass can now bring the cache down.
+    pinnedSet.delete(1);
+    await store.evictDisk();
+    const files = readdirSync(blocksDir).sort();
+    expect(files).not.toContain('1.json.gz');
+  });
+
   it('getRange keeps order and fires onDecoded per decode', async () => {
     const seen: number[] = [];
     const { store } = makeStore({

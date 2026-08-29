@@ -1,6 +1,7 @@
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { HotKeys } from '../hot/HotKeys';
 import { Index, txCursor } from '../index/Index';
 import { Indexer } from '../index/Indexer';
 import { TipTracker } from '../index/TipTracker';
@@ -186,6 +187,7 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
   await tip.tick();
   while (await indexer.backfillStep()) {}
   const price = { usd: async () => 2000 } as any;
+  const hot = new HotKeys(':memory:');
   const { yoga } = createApp({
     store,
     index,
@@ -193,6 +195,7 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
     client,
     chain: { chainId: 9889, baseAssetId: hex(0) },
     price,
+    hot,
   });
   const gql = async (query: string, variables: object = {}) => {
     const res = await yoga.fetch('http://x/graphql', {
@@ -204,7 +207,7 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
     if (json.errors) throw new Error(JSON.stringify(json.errors));
     return json.data;
   };
-  return { gql, index };
+  return { gql, index, hot };
 }
 
 describe('resolvers', () => {
@@ -403,6 +406,43 @@ describe('resolvers', () => {
       hex(900),
       hex(910),
     ]);
+  });
+
+  it('caches a transactionsByOwner fuel-core fallback page across two calls within the TTL', async () => {
+    const owner = hex(556);
+    let calls = 0;
+    const { gql } = await setup({
+      txsByOwner: async (o: string, opts: any) => {
+        calls += 1;
+        return fcFake(owner)(o, opts);
+      },
+    });
+    const query =
+      'query($o: Address!) { transactionsByOwner(owner: $o, first: 1) { nodes { id } } }';
+    const first = await gql(query, { o: owner });
+    const second = await gql(query, { o: owner });
+    expect(second).toEqual(first);
+    expect(calls).toBe(1);
+  });
+
+  it('records a hot hit for the account on every transactionsByOwner call', async () => {
+    const { gql, hot } = await setup();
+    expect(hot.hits('account', ACCOUNT.toLowerCase())).toBe(0);
+    await gql(
+      'query($o: Address!) { transactionsByOwner(owner: $o, first: 3) { nodes { id } } }',
+      { o: ACCOUNT },
+    );
+    hot.flush();
+    expect(hot.hits('account', ACCOUNT.toLowerCase())).toBe(1);
+  });
+
+  it('records a hot hit for the block height and the tx id', async () => {
+    const { gql, hot } = await setup();
+    await gql('{ block(height: "100") { id } }');
+    await gql(`{ transaction(id: "${hex(991)}") { id } }`);
+    hot.flush();
+    expect(hot.hits('block', '100')).toBe(1);
+    expect(hot.hits('tx', hex(991))).toBe(1);
   });
 
   it('search', async () => {

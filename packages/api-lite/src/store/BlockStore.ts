@@ -15,6 +15,12 @@ type Opts = {
   diskBytes: number;
   concurrency: number;
   onDecoded?: (block: GQLBlock) => void;
+  // Heights disk eviction must never remove even when they're the oldest
+  // tracked entries (e.g. blocks referenced by hot accounts/txs); recomputed
+  // by the caller on its own schedule, not cached here. A fully (or mostly)
+  // pinned cache can therefore sit above `diskBytes` by up to the pinned
+  // set's total size -- eviction skips those heights rather than deleting them.
+  pinned?: () => Set<number>;
 };
 
 export class BlockStore {
@@ -202,15 +208,23 @@ export class BlockStore {
   // Evicts the oldest tracked disk entries (insertion order in `diskSizes`)
   // until the running total is back under `diskBytes`. Never evicts down to
   // zero entries, so a single block larger than `diskBytes` is still kept.
+  // Heights in `opts.pinned()` are skipped in place (eviction moves on to the
+  // next-oldest unpinned entry) rather than being counted toward the floor.
   private async evictOverflow(): Promise<void> {
-    while (
-      this.diskBytesTotal > this.opts.diskBytes &&
-      this.diskSizes.size > 1
-    ) {
-      const oldest = this.diskSizes.keys().next();
-      if (oldest.done) break;
-      const height = oldest.value;
-      const size = this.diskSizes.get(height)!;
+    const pinned = this.opts.pinned?.();
+    let skipped = 0;
+    // Deleting the current key mid-iteration is safe: Map's iterator still
+    // visits every not-yet-seen key in insertion order.
+    for (const [height, size] of this.diskSizes) {
+      if (
+        this.diskBytesTotal <= this.opts.diskBytes ||
+        this.diskSizes.size <= 1
+      )
+        break;
+      if (pinned?.has(height)) {
+        skipped += 1;
+        continue;
+      }
       this.diskSizes.delete(height);
       this.diskBytesTotal -= size;
       try {
@@ -223,6 +237,11 @@ export class BlockStore {
       } catch {
         /* already gone */
       }
+    }
+    if (skipped > 0) {
+      console.log(
+        `BlockStore: eviction pass skipped ${skipped} pinned height(s)`,
+      );
     }
   }
 

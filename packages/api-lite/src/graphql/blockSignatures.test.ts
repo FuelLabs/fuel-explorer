@@ -1,6 +1,7 @@
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { HotKeys } from '../hot/HotKeys';
 import { Index } from '../index/Index';
 import { Indexer } from '../index/Indexer';
 import { TipTracker } from '../index/TipTracker';
@@ -100,6 +101,7 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
     client,
     chain: { chainId: 9889, baseAssetId: hex(0) },
     price,
+    hot: new HotKeys(':memory:'),
   });
   const gql = async (query: string, variables: object = {}) => {
     const res = await yoga.fetch('http://x/graphql', {

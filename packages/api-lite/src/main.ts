@@ -7,6 +7,7 @@ import { CosmosPoller, defaultCosmosRestUrl } from './cosmos/CosmosPoller';
 import { decodeBlock } from './decoder/block';
 import { FuelCoreClient } from './fuelcore/FuelCoreClient';
 import { PriceClient } from './fuelcore/PriceClient';
+import { HotKeys } from './hot/HotKeys';
 import { Index } from './index/Index';
 import { Indexer } from './index/Indexer';
 import { TipTracker } from './index/TipTracker';
@@ -30,6 +31,40 @@ const RESUMABLE_TIP_GAP_BLOCKS = 3600; // ~1h at 1s/block
 const DISK_EVICT_INTERVAL_MS = 10 * 60 * 1000;
 const RETENTION_SWEEP_INTERVAL_MS = 60 * 60 * 1000;
 const HEALTH_LOG_INTERVAL_MS = 60 * 1000;
+const HOT_DECAY_INTERVAL_MS = 60 * 60 * 1000;
+const PINNED_RECOMPUTE_INTERVAL_MS = 60 * 1000;
+const PINNED_TOP_ACCOUNTS = 50;
+const PINNED_TOP_TXS = 200;
+const PINNED_ACCOUNT_TX_LIMIT = 10;
+
+// Union of block heights worth protecting from disk eviction: the newest
+// PINNED_ACCOUNT_TX_LIMIT indexed txs for each of the top PINNED_TOP_ACCOUNTS
+// hottest accounts, plus the heights of the top PINNED_TOP_TXS hottest txs.
+// Recomputed at most every PINNED_RECOMPUTE_INTERVAL_MS since HotKeys.top()
+// and the index scans it drives aren't cheap enough to run on every eviction.
+function makePinnedHeights(hot: HotKeys, index: Index): () => Set<number> {
+  let cached = new Set<number>();
+  let computedAt = 0;
+  return () => {
+    const now = Date.now();
+    if (now - computedAt < PINNED_RECOMPUTE_INTERVAL_MS) return cached;
+    computedAt = now;
+    const heights = new Set<number>();
+    for (const { key: account } of hot.top('account', PINNED_TOP_ACCOUNTS)) {
+      for (const ref of index.txsForAccount(account, {
+        limit: PINNED_ACCOUNT_TX_LIMIT,
+      })) {
+        heights.add(ref.height);
+      }
+    }
+    for (const { key: txHash } of hot.top('tx', PINNED_TOP_TXS)) {
+      const found = index.heightForTx(txHash);
+      if (found) heights.add(found.height);
+    }
+    cached = heights;
+    return cached;
+  };
+}
 
 // Retries forever instead of exiting, so a fuel-core outage at boot doesn't
 // crash-loop the container; once up, cached blocks can still be served while
@@ -60,6 +95,8 @@ async function main() {
   const repaired = index.deleteAboveRange();
   console.log(`index repair: deleted ${repaired} rows above indexed_to`);
   console.log(`block source: ${cfg.blockSource}`);
+  const hot = new HotKeys(join(cfg.dataDir, 'index.db'));
+  const pinned = makePinnedHeights(hot, index);
   const rpcSource =
     cfg.blockSource === 'rpc'
       ? new RpcBlockSource(client, cfg.rpcMaxBlocksPerSecond)
@@ -73,6 +110,7 @@ async function main() {
           memoryBytes: cfg.memoryCacheBytes,
           diskBytes: cfg.diskCacheBytes,
           concurrency: cfg.s3Concurrency,
+          pinned,
         }
       : {
           source: new S3BlockSource(
@@ -88,6 +126,7 @@ async function main() {
           memoryBytes: cfg.memoryCacheBytes,
           diskBytes: cfg.diskCacheBytes,
           concurrency: cfg.s3Concurrency,
+          pinned,
         },
   );
   const indexer = new Indexer({
@@ -220,6 +259,7 @@ async function main() {
     client,
     chain: { chainId: params.chainId, baseAssetId: params.baseAssetId },
     price,
+    hot,
     indexer,
     blockSource: cfg.blockSource,
     cosmos: cosmosPoller,
@@ -253,6 +293,7 @@ async function main() {
     const n = indexer.retention(Math.floor(Date.now() / 1000));
     if (n) console.log(`retention: ${n} rows`);
   }, RETENTION_SWEEP_INTERVAL_MS);
+  setInterval(() => hot.decay(), HOT_DECAY_INTERVAL_MS);
   setInterval(
     () =>
       console.log(
@@ -268,6 +309,7 @@ async function main() {
     l1Poller?.stop();
     server.close();
     index.close();
+    hot.close();
     cosmosIndex.close();
     l1Index?.close();
     process.exit(0);

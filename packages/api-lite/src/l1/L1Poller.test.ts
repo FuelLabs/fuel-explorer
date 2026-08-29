@@ -59,6 +59,30 @@ function fakeClient(logs: L1Log[], finalized = 21039450n): L1Client {
   };
 }
 
+// A single-contract index double, so a tick's getLogs call count is exact
+// (a real seeded network would multiply every window by 7 contracts).
+function singleContractStub(startBlock: number) {
+  let height = startBlock;
+  return {
+    index: {
+      cursor: (_hash: string) => height,
+      advance: (_hash: string, h: number) => {
+        height = h;
+      },
+      insertLogs: (_rows: unknown[]) => {},
+      contracts: (_network?: 'mainnet' | 'testnet') => [
+        {
+          contract_hash: CONTRACT.contract_hash,
+          block_height: height,
+          name: CONTRACT.name,
+          network: CONTRACT.network,
+        },
+      ],
+    },
+    getHeight: () => height,
+  };
+}
+
 describe('L1Poller', () => {
   it('writes one row (with args and decoded message data) for the decodable log, skips the undecodable one, and advances the cursor', async () => {
     const index = new L1Index(':memory:');
@@ -103,7 +127,14 @@ describe('L1Poller', () => {
     const index = new L1Index(':memory:');
     index.seed('mainnet', CONTRACT.block_height);
     const client = fakeClient([], BigInt(CONTRACT.block_height) + 1_000_000n);
-    const poller = new L1Poller({ index, client, network: 'mainnet' });
+    // throttleMs: 0 - this contract now loops up to 120 windows in one call;
+    // the default 1s throttle between windows would blow past Jest's timeout.
+    const poller = new L1Poller({
+      index,
+      client,
+      network: 'mainnet',
+      throttleMs: 0,
+    });
 
     await poller.syncContract(CONTRACT);
 
@@ -112,6 +143,9 @@ describe('L1Poller', () => {
       fromBlock: BigInt(CONTRACT.block_height),
       toBlock: BigInt(CONTRACT.block_height + 999),
     });
+    for (const [args] of (client.getLogs as jest.Mock).mock.calls) {
+      expect(args.toBlock - args.fromBlock).toBeLessThanOrEqual(999n);
+    }
     index.close();
   });
 
@@ -167,6 +201,93 @@ describe('L1Poller', () => {
     expect(
       (client.getFinalizedBlockNumber as jest.Mock).mock.calls.length,
     ).toBe(7);
+    index.close();
+  });
+
+  it('processes consecutive windows within one tick until the cursor reaches the finalized tip', async () => {
+    const start = CONTRACT.block_height;
+    const tip = BigInt(start) + 3500n;
+    const stub = singleContractStub(start);
+    const client = fakeClient([], tip);
+    const poller = new L1Poller({
+      index: stub.index,
+      client,
+      network: 'mainnet',
+      throttleMs: 0,
+    });
+
+    await poller.tick();
+
+    const calls = (client.getLogs as jest.Mock).mock.calls;
+    expect(calls).toHaveLength(4);
+    let expectedFrom = BigInt(start);
+    for (const [args] of calls) {
+      expect(args.fromBlock).toBe(expectedFrom);
+      const expectedTo = expectedFrom + 999n <= tip ? expectedFrom + 999n : tip;
+      expect(args.toBlock).toBe(expectedTo);
+      expectedFrom = expectedTo + 1n;
+    }
+    expect(calls[calls.length - 1][0].toBlock).toBe(tip);
+    expect(stub.getHeight()).toBe(Number(tip) + 1);
+  });
+
+  it('caps a contract at 120 windows per tick when far behind the finalized tip, so the tick ends and the next one continues', async () => {
+    const start = CONTRACT.block_height;
+    const tip = BigInt(start) + 200_000n;
+    const stub = singleContractStub(start);
+    const client = fakeClient([], tip);
+    const poller = new L1Poller({
+      index: stub.index,
+      client,
+      network: 'mainnet',
+      throttleMs: 0,
+    });
+
+    await poller.tick();
+
+    expect((client.getLogs as jest.Mock).mock.calls).toHaveLength(120);
+    expect(stub.getHeight()).toBe(start + 120 * 1000);
+  });
+
+  it('stops one contract for the tick on a getLogs failure, leaving its cursor after the last successful window, while the tick continues to the next contract', async () => {
+    const start = 5_000_000;
+    const index = new L1Index(':memory:');
+    index.seed('testnet', start);
+    const contracts = index.contracts('testnet');
+    expect(contracts).toHaveLength(7);
+
+    const tip = BigInt(start) + 2500n; // 3 windows per contract if uninterrupted
+    let callCount = 0;
+    const client: L1Client = {
+      getFinalizedBlockNumber: jest.fn().mockResolvedValue(tip),
+      getLogs: jest.fn().mockImplementation(async () => {
+        callCount++;
+        if (callCount === 2) throw new Error('rpc down');
+        return [];
+      }),
+      getBlockTimestamp: jest.fn(),
+    };
+    const onLog = jest.fn();
+    const poller = new L1Poller({
+      index,
+      client,
+      network: 'testnet',
+      throttleMs: 0,
+      onLog,
+    });
+
+    await poller.tick();
+
+    // Contract 0's 2nd window (the tick's 2nd getLogs call overall) throws:
+    // its cursor stops after the 1st window, and the tick moves on.
+    expect(index.cursor(contracts[0].contract_hash)).toBe(start + 1000);
+    for (const c of contracts.slice(1)) {
+      expect(index.cursor(c.contract_hash)).toBe(Number(tip) + 1);
+    }
+    expect((client.getLogs as jest.Mock).mock.calls.length).toBe(
+      2 + 3 * (contracts.length - 1),
+    );
+    expect(onLog).toHaveBeenCalled();
     index.close();
   });
 });

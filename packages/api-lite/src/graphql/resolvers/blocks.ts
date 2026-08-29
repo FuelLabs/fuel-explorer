@@ -109,6 +109,7 @@ export const blockResolvers = {
       if (h == null) return null;
       const block = await ctx.store.get(h);
       if (!block) return null;
+      ctx.hot.hit('block', String(h));
       await withSignatures(ctx, [block]);
       return toRenderedBlockNode(block);
     },

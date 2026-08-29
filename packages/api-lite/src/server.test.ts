@@ -1,3 +1,4 @@
+import { HotKeys } from './hot/HotKeys';
 import { Index } from './index/Index';
 import { createApp } from './server';
 
@@ -10,6 +11,7 @@ function fakeCtx(overrides: Partial<Parameters<typeof createApp>[0]> = {}) {
     client: {} as any,
     chain: { chainId: 0, baseAssetId: '0x00' },
     price: {} as any,
+    hot: new HotKeys(':memory:'),
     ...overrides,
   };
 }
@@ -23,6 +25,16 @@ describe('createApp health()', () => {
   it('defaults blockSource to s3 when not provided', () => {
     const { health } = createApp(fakeCtx());
     expect(health().blockSource).toBe('s3');
+  });
+
+  it('reports hot key counts per kind', () => {
+    const hot = new HotKeys(':memory:');
+    hot.hit('account', '0x1');
+    hot.hit('tx', '0x1');
+    hot.hit('tx', '0x2');
+    hot.flush();
+    const { health } = createApp(fakeCtx({ hot }));
+    expect(health().hot).toEqual({ accounts: 1, txs: 2, blocks: 0 });
   });
 });
 

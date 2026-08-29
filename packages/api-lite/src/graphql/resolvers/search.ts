@@ -14,7 +14,9 @@ export const searchResolvers = {
         if (!Number.isFinite(n) || n < 0 || n > ctx.tip.fuelCoreTip)
           return null;
         const block = await ctx.store.get(n);
-        return block ? { block: toBlockNode(block) } : null;
+        if (!block) return null;
+        ctx.hot.hit('block', String(n));
+        return { block: toBlockNode(block) };
       }
       let hash: string;
       try {
@@ -27,7 +29,10 @@ export const searchResolvers = {
         (await ctx.client.heightForBlock(hash));
       if (bh != null) {
         const b = await ctx.store.get(bh);
-        if (b) return { block: toBlockNode(b) };
+        if (b) {
+          ctx.hot.hit('block', String(bh));
+          return { block: toBlockNode(b) };
+        }
       }
       if (ctx.index.contract(hash)) return { contract: { _id: 0, id: hash } };
       const th =
@@ -41,10 +46,15 @@ export const searchResolvers = {
           th.txIndex >= 0
             ? th.txIndex
             : (b?.transactions.findIndex((t) => t.id === hash) ?? -1);
-        if (b && i >= 0)
+        if (b && i >= 0) {
+          ctx.hot.hit('tx', hash);
           return { transaction: toTxNode(b.transactions[i], th.height, i) };
+        }
       }
-      if (ctx.index.accountExists(hash)) return { account: { address: hash } };
+      if (ctx.index.accountExists(hash)) {
+        ctx.hot.hit('account', hash);
+        return { account: { address: hash } };
+      }
       const bytecode = ctx.index.predicate(hash);
       if (bytecode && bytecode !== '0x')
         return { predicate: { address: hash, bytecode } };
