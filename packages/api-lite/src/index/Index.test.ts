@@ -117,6 +117,15 @@ describe('Index', () => {
     ).toBe(0);
   });
 
+  it('global tx count and newer-than-ref count for the transactions list', () => {
+    idx.writeBlock(block(10, [{ id: hex(1) }, { id: hex(2) }]));
+    idx.writeBlock(block(11, [{ id: hex(3) }]));
+    expect(idx.txCount()).toBe(3);
+    expect(idx.newerTxCount({ height: 11, txIndex: 0 })).toBe(0);
+    expect(idx.newerTxCount({ height: 10, txIndex: 1 })).toBe(1);
+    expect(idx.newerTxCount({ height: 10, txIndex: 0 })).toBe(2);
+  });
+
   it('writes the same block twice without error', () => {
     idx.writeBlock(block(10, [{ id: hex(1), accounts: [hex(5)] }]));
     idx.writeBlock(block(10, [{ id: hex(1), accounts: [hex(5)] }]));

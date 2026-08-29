@@ -1,4 +1,5 @@
-import { toTxListNode, toTxNode } from './transactions';
+import { txCursor } from '../../index/Index';
+import { toTxListNode, toTxNode, transactionResolvers } from './transactions';
 
 const hex = (n: number) => `0x${n.toString(16).padStart(64, '0')}`;
 const BASE_ASSET = hex(0);
@@ -196,5 +197,65 @@ describe('mutation safety', () => {
     toTxListNode(tx, 1, 0, pricing);
     expect(tx).toEqual(before);
     expect((tx as any).gasCosts?.feeInUsd).toBeUndefined();
+  });
+});
+
+describe('transactions (global list) pageInfo counts', () => {
+  // Three blocks, one tx each, tip at height 3: a small, fully-known
+  // "retention window" so txCount()/newerTxCount() can be asserted against
+  // real numbers instead of mocked ones -- this is the same bug shape as
+  // transactionsByOwner's 0/0, just for the global recentTransactions list.
+  const heights = [1, 2, 3];
+  const blocksByHeight: Record<number, { transactions: unknown[] }> = {};
+  for (const h of heights) {
+    blocksByHeight[h] = { transactions: [scriptTx({ id: hex(100 + h) })] };
+  }
+  function makeCtx() {
+    return {
+      store: { get: async (h: number) => blocksByHeight[h] ?? null },
+      tip: { servedTip: 3 },
+      price: { usd: async () => 2000 },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        txCount: () => heights.length,
+        newerTxCount: (ref: { height: number; txIndex: number }) =>
+          heights.filter((h) => h > ref.height).length,
+      },
+    } as any;
+  }
+
+  it('reports 1-based ascending counts (oldest = 1, newest = totalCount) on the default (no-cursor) page', async () => {
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 2 },
+      makeCtx(),
+    );
+    expect(result.nodes).toHaveLength(2);
+    expect(result.pageInfo.totalCount).toBe(3);
+    expect(result.pageInfo.endCount).toBe(3);
+    expect(result.pageInfo.startCount).toBe(2);
+  });
+
+  it('reports the same 1-based counts when paginating via an after cursor', async () => {
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 2, after: txCursor(1, 0) },
+      makeCtx(),
+    );
+    expect(result.nodes).toHaveLength(2);
+    expect(result.pageInfo.totalCount).toBe(3);
+    expect(result.pageInfo.endCount).toBe(3);
+    expect(result.pageInfo.startCount).toBe(2);
+  });
+
+  it('never reports 0 for a non-empty page', async () => {
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 1 },
+      makeCtx(),
+    );
+    expect(result.nodes).toHaveLength(1);
+    expect(result.pageInfo.startCount).toBeGreaterThan(0);
+    expect(result.pageInfo.endCount).toBeGreaterThan(0);
   });
 });

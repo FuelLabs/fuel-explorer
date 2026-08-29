@@ -338,7 +338,11 @@ export const transactionResolvers = {
         const up = await collectUp(ctx, c, size + 1, tip, pricing);
         const hasNextPage = up.length > size;
         const items = up.slice(0, size).reverse();
-        return connection(items, { hasNextPage, hasPreviousPage: true });
+        return connection(items, {
+          hasNextPage,
+          hasPreviousPage: true,
+          ...txListCounts(ctx, items),
+        });
       } else {
         start = { height: tip, txIndex: null as unknown as number };
       }
@@ -347,6 +351,7 @@ export const transactionResolvers = {
       const result = connection(items, {
         hasNextPage: !!args.before,
         hasPreviousPage: last ? parseTxCursor(last.cursor).height > 0 : false,
+        ...txListCounts(ctx, items),
       });
       if (isFirstPage) cache.save(cacheKey, FIRST_PAGE_CACHE_TTL_MS, result);
       return result;
@@ -534,6 +539,28 @@ function fuelCoreFallbackCounts(total: number, pageLength: number) {
   return {
     startCount: Math.max(1, effectiveTotal - pageLength + 1),
     endCount: effectiveTotal,
+  };
+}
+
+// Global list position for the `transactions` (recentTransactions) root
+// field: 1-based, ascending from the oldest transaction in the retention
+// window (index.txCount()), the same convention as
+// transactionsByOwner/rankAscending. `items` is newest-first (both
+// collectDown and collectUp's after-branch return it that way), so
+// items[0] is the page's endCount and the last item is its startCount.
+// Clamped to [1, total] so a non-empty page never reports 0 (Pagination.tsx
+// hides the count label on a falsy value).
+function txListCounts(ctx: AppContext, items: { cursor: string }[]) {
+  if (items.length === 0) return { startCount: 0, endCount: 0, totalCount: 0 };
+  const total = ctx.index.txCount();
+  const rankAscending = (cursor: string) => {
+    const ref = parseTxCursor(cursor);
+    return Math.max(1, Math.min(total, total - ctx.index.newerTxCount(ref)));
+  };
+  return {
+    totalCount: total,
+    endCount: rankAscending(items[0].cursor),
+    startCount: rankAscending(items[items.length - 1].cursor),
   };
 }
 

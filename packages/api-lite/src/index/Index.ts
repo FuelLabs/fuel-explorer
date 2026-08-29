@@ -131,6 +131,10 @@ export class Index {
       acctNewerCount: this.db.prepare(
         'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? AND (height > ? OR (height = ? AND tx_index > ?)) LIMIT ?)',
       ),
+      txCount: this.db.prepare('SELECT count(*) AS c FROM txs'),
+      txNewerCount: this.db.prepare(
+        'SELECT count(*) AS c FROM txs WHERE height > ? OR (height = ? AND tx_index > ?)',
+      ),
       predicate: this.db.prepare(
         'SELECT bytecode FROM predicates WHERE address = ?',
       ),
@@ -460,6 +464,27 @@ export class Index {
         ref.txIndex,
         cap,
       ) as { c: number }
+    ).c;
+  }
+
+  // Total number of transactions currently in the retention window (the
+  // same `txs` rows collectDown/collectUp walk via block heights), and how
+  // many of them are strictly newer than `ref`. Mirrors
+  // newerCountForAccount's math for the global `transactions` list: a page's
+  // 1-based ascending (oldest = 1) position is `txCount() -
+  // newerTxCount(ref)`. Global, so unlike the per-account counters this
+  // isn't capped -- a single COUNT(*) over the whole window, and the
+  // newer-than-ref count is a plain range scan on txs' own (height,
+  // tx_index) primary key (confirmed via EXPLAIN QUERY PLAN: SQLite's OR
+  // optimization uses it directly, no extra index needed).
+  txCount(): number {
+    return (this.stmts.txCount.get() as { c: number }).c;
+  }
+  newerTxCount(ref: { height: number; txIndex: number }): number {
+    return (
+      this.stmts.txNewerCount.get(ref.height, ref.height, ref.txIndex) as {
+        c: number;
+      }
     ).c;
   }
 
