@@ -111,4 +111,14 @@ describe('loadConfig', () => {
   it('throws for an unknown FUEL_CHAIN', () => {
     expect(() => loadConfig({ ...base, FUEL_CHAIN: 'other' })).toThrow();
   });
+
+  it('treats empty-string optional env vars as unset', () => {
+    const c = loadConfig({
+      ...base,
+      ETH_RPC_URL: '',
+      COSMOS_START_HEIGHT: '',
+    });
+    expect(c.ethRpcUrl).toBeUndefined();
+    expect(c.cosmosStartHeight).toBeUndefined();
+  });
 });

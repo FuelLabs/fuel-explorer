@@ -74,7 +74,13 @@ export type Config = {
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
-  const parsed = schema.safeParse(env);
+  const cleanedEnv: NodeJS.ProcessEnv = { ...env };
+  for (const key of Object.keys(cleanedEnv)) {
+    if (cleanedEnv[key]?.trim() === '') {
+      delete cleanedEnv[key];
+    }
+  }
+  const parsed = schema.safeParse(cleanedEnv);
   if (!parsed.success) {
     const issues = parsed.error.issues
       .map((i) => `${i.path.join('.')}: ${i.message}`)

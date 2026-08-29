@@ -88,7 +88,9 @@ railway variables --service explorer \
   --set "RAILWAY_DOCKERFILE_PATH=docker/vps/Dockerfile.explorer" \
   --set "VITE_FUEL_INDEXER_API=/api" \
   --set "API_UPSTREAM=api.railway.internal:3000" \
-  --set "NGINX_RESOLVER=[fd12::10]"
+  --set "NGINX_RESOLVER=[fd12::10]" \
+  --set 'RATE_LIMIT_KEY=$xff_last'
+# RATE_LIMIT_KEY=$xff_last only because Railway's edge terminates every connection and appends the real client IP; leave it unset when nginx is itself the public edge.
 
 # Deploy both services. `railway up` uploads the working tree directly
 # (no git push, no GitHub connection needed).

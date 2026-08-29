@@ -39,7 +39,7 @@ FROM nginx:1.27-alpine AS runtime
 # nginx resolves the api service's address at request time instead of baking
 # it in at build time.
 COPY docker/vps/nginx.conf.template /etc/nginx/templates/default.conf.template
-ENV API_UPSTREAM=api:3000 NGINX_RESOLVER=127.0.0.11 NGINX_ENVSUBST_FILTER='^(API_UPSTREAM|NGINX_RESOLVER)$'
+ENV API_UPSTREAM=api:3000 NGINX_RESOLVER=127.0.0.11 RATE_LIMIT_KEY='$binary_remote_addr' NGINX_ENVSUBST_FILTER='^(API_UPSTREAM|NGINX_RESOLVER|RATE_LIMIT_KEY)$'
 COPY --from=build /app/packages/app-explorer/dist /usr/share/nginx/html
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
