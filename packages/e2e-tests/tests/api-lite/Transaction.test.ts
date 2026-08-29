@@ -11,10 +11,10 @@ test.describe('Transaction page (api-lite)', () => {
 
     // Every Fuel block includes at least one transaction (the block's mint
     // transaction), so the block's tx list is never empty.
-    const txLink = page.locator('a[href^="/tx/"]').first();
+    const txLink = page.locator('a[href^="/tx/0x"]').first();
     await expect(txLink).toBeVisible();
     const href = await txLink.getAttribute('href');
-    const txId = href?.match(/^\/tx\/([^/]+)/)?.[1];
+    const txId = href?.match(/^\/tx\/(0x[0-9a-f]{64})/)?.[1];
     expect(txId).toBeTruthy();
 
     await txLink.click();
