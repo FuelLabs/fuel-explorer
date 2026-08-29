@@ -1,8 +1,8 @@
-# Default keys on the TCP peer address; $xff_last (the last, nearest-proxy
-# hop of X-Forwarded-For) is only safe behind a proxy that appends the client address.
-map $http_x_forwarded_for $xff_last {
+# Default keys on the TCP peer address. $xff_first (first X-Forwarded-For hop)
+# is only safe behind a proxy that rewrites the header itself, as Railway's edge does.
+map $http_x_forwarded_for $xff_first {
     default $binary_remote_addr;
-    "~^(?:.*,\s*)?([^,\s]+)\s*$" $1;
+    "~^([^,\s]+)" $1;
 }
 
 # One zone, keyed by client IP, 10 MB capping each at 20 requests/sec; /api/
