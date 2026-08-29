@@ -20,7 +20,7 @@ const FC_PAGE_TTL_BASE_MS = 30_000;
 const FC_PAGE_TTL_CAP_MS = 3_600_000;
 // Capped position/count for a single account, mirroring the cap
 // countForAccount and newerCountForAccount are already called with.
-const ACCOUNT_TX_COUNT_CAP = 1001;
+const TX_COUNT_CAP = 1001;
 // The base asset is always 9-decimal (ETH); every USD conversion below is fee
 // or coin amounts denominated in it.
 const BASE_ASSET_DECIMALS = 9;
@@ -254,32 +254,35 @@ async function pageFromFuelCore(
 ) {
   const fc = await fetchFcRawPage(ctx, owner, size, dir);
 
-  // Walk fc.items sequentially first to decide, cheaply and in memory, which
-  // ones are actually needed (deduped against `existing`, capped at `size`
-  // new items) and how many raw items that consumed (`i`, for `leftover`
-  // below). Only THOSE selected items are then rendered -- each a block
-  // lookup that can hit S3 -- and rendered concurrently instead of one at a
-  // time, so this fallback's latency is close to the slowest single lookup
-  // rather than their sum. Serial rendering here (one fuel-core round trip
-  // followed by up to `size` sequential block fetches) is what turned an
-  // unpinned transactionsByOwner page into a 504.
-  const seen = new Set(existing.map((i) => (i.id ?? '').toLowerCase()));
-  const toRender: FcItem[] = [];
-  let i = 0;
-  let needed = size - existing.length;
-  while (needed > 0 && i < fc.items.length) {
-    const it = fc.items[i];
-    i += 1;
-    if (seen.has(it.id.toLowerCase())) continue;
-    seen.add(it.id.toLowerCase());
-    toRender.push(it);
-    needed -= 1;
-  }
-  const rendered = await Promise.all(
-    toRender.map((it) => renderFcItem(ctx, it, pricing)),
-  );
+  // Walk fc.items in batches: pick just enough not-yet-seen candidates to
+  // fill what's still missing, render that batch concurrently (so the
+  // common all-succeed case pays for one round trip, not `size` of them --
+  // this is what turned an unpinned transactionsByOwner page into a 504),
+  // then check whether the page is actually full. A batch member that fails
+  // to render (renderFcItem returns null -- a transient S3/block lookup
+  // miss) does not shrink the page or get retried; instead the next batch
+  // draws additional candidates from the remaining fc.items to compensate,
+  // the same way the original serial loop kept trying further items until
+  // the page filled or fc.items ran out.
   const items = [...existing];
-  for (const r of rendered) if (r) items.push(r);
+  const seen = new Set(items.map((i) => (i.id ?? '').toLowerCase()));
+  let i = 0;
+  while (items.length < size && i < fc.items.length) {
+    const toRender: FcItem[] = [];
+    let needed = size - items.length;
+    while (needed > 0 && i < fc.items.length) {
+      const it = fc.items[i];
+      i += 1;
+      if (seen.has(it.id.toLowerCase())) continue;
+      seen.add(it.id.toLowerCase());
+      toRender.push(it);
+      needed -= 1;
+    }
+    const rendered = await Promise.all(
+      toRender.map((it) => renderFcItem(ctx, it, pricing)),
+    );
+    for (const r of rendered) if (r) items.push(r);
+  }
   const leftover = i < fc.items.length;
   return {
     items,
@@ -421,13 +424,13 @@ export const transactionResolvers = {
           pricing,
         );
         const total = page.hasNextPage
-          ? ACCOUNT_TX_COUNT_CAP
-          : ctx.index.countForAccount(owner, ACCOUNT_TX_COUNT_CAP);
+          ? TX_COUNT_CAP
+          : ctx.index.countForAccount(owner, TX_COUNT_CAP);
         return connection(page.items, {
           hasNextPage: page.hasNextPage,
           hasPreviousPage: page.hasPreviousPage,
           totalCount: total,
-          ...fuelCoreFallbackCounts(total, page.items.length),
+          ...fuelCoreFallbackCounts(page.items.length),
         });
       }
       if (args.after?.startsWith('fc:')) {
@@ -439,12 +442,12 @@ export const transactionResolvers = {
           [],
           pricing,
         );
-        const total = ctx.index.countForAccount(owner, ACCOUNT_TX_COUNT_CAP);
+        const total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
         return connection(page.items, {
           hasNextPage: page.hasNextPage,
           hasPreviousPage: page.hasPreviousPage,
           totalCount: total,
-          ...fuelCoreFallbackCounts(total, page.items.length),
+          ...fuelCoreFallbackCounts(page.items.length),
         });
       }
 
@@ -460,7 +463,7 @@ export const transactionResolvers = {
         const tx = block?.transactions[ref.txIndex];
         if (tx) items.push(toTxListNode(tx, ref.height, ref.txIndex, pricing));
       }
-      let total = ctx.index.countForAccount(owner, ACCOUNT_TX_COUNT_CAP);
+      let total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
 
       const oldest = refs[refs.length - 1];
       const range = ctx.index.range();
@@ -485,12 +488,12 @@ export const transactionResolvers = {
           items,
           pricing,
         );
-        if (page.hasNextPage) total = ACCOUNT_TX_COUNT_CAP;
+        if (page.hasNextPage) total = TX_COUNT_CAP;
         return connection(page.items, {
           hasNextPage: page.hasNextPage,
           hasPreviousPage: page.hasPreviousPage,
           totalCount: total,
-          ...fuelCoreFallbackCounts(total, page.items.length),
+          ...fuelCoreFallbackCounts(page.items.length),
         });
       }
 
@@ -500,15 +503,14 @@ export const transactionResolvers = {
       // production (e.g. a busy account's most recent page reporting
       // something like 992/1001, not 1/1001). Clamped to [1, total] so a cap
       // saturating both the total and the newer-than-ref count (an account
-      // with more than ACCOUNT_TX_COUNT_CAP transactions still in the 48h
+      // with more than TX_COUNT_CAP transactions still in the 48h
       // window) can't report a false zero on a non-empty page.
       const rankAscending = (ref: { height: number; txIndex: number }) =>
         Math.max(
           1,
           Math.min(
             total,
-            total -
-              ctx.index.newerCountForAccount(owner, ref, ACCOUNT_TX_COUNT_CAP),
+            total - ctx.index.newerCountForAccount(owner, ref, TX_COUNT_CAP),
           ),
         );
       const endCount = items.length ? rankAscending(indexPage[0]) : 0;
@@ -527,35 +529,49 @@ export const transactionResolvers = {
   },
 };
 
-// Fuel-core fallback pages sit at or beyond the edge of the 48h index
-// window, where tx_accounts can't give an exact 1-based position. Rather
-// than fabricate one, this pins the page to the oldest end of the known
-// total: never 0 for a non-empty page (Pagination.tsx hides the count label
-// on a falsy value), and consistent with the fallback always being reached
-// while paginating toward older transactions.
-function fuelCoreFallbackCounts(total: number, pageLength: number) {
+// Fuel-core fallback pages serve an account's history *older* than the 48h
+// index window can see, so they must never reuse the index's own
+// [total-pageLength+1, total] numbering -- that range is reserved for the
+// most-recent, index-backed page, and reusing it here relabeled every page
+// of ancient history "992-1001 of 1001" again. There's no reliable way to
+// learn a fallback page's true distance from the account's very first
+// transaction: fuel-core's own cursor is opaque (not a position we can
+// decode), and nothing here tracks cumulative fallback depth across
+// separate paginated requests. Rather than fabricate a number that *looks*
+// precise but isn't, every fuel-core-served page is instead numbered
+// independently, 1..pageLength from its own start -- always below and
+// distinct from the index-backed range for the pages that matter in
+// practice (an account has to be well past a single page's worth of history
+// before fallback triggers at all), never 0 for a non-empty page, and
+// honest about not claiming a precise absolute position. Known limitation:
+// two *different* fuel-core-served pages both show 1..pageLength, so they
+// aren't distinguishable from each other by this label alone -- only from
+// the index-backed page they followed.
+function fuelCoreFallbackCounts(pageLength: number) {
   if (pageLength === 0) return { startCount: 0, endCount: 0 };
-  const effectiveTotal = Math.max(total, pageLength);
-  return {
-    startCount: Math.max(1, effectiveTotal - pageLength + 1),
-    endCount: effectiveTotal,
-  };
+  return { startCount: 1, endCount: pageLength };
 }
 
 // Global list position for the `transactions` (recentTransactions) root
 // field: 1-based, ascending from the oldest transaction in the retention
 // window (index.txCount()), the same convention as
-// transactionsByOwner/rankAscending. `items` is newest-first (both
-// collectDown and collectUp's after-branch return it that way), so
-// items[0] is the page's endCount and the last item is its startCount.
-// Clamped to [1, total] so a non-empty page never reports 0 (Pagination.tsx
-// hides the count label on a falsy value).
+// transactionsByOwner/rankAscending, and capped at the same TX_COUNT_CAP so
+// the UI's "1000+" display convention (and the raw start/endCount numbers
+// alongside it) stay in the same range instead of a real count running into
+// the tens of thousands. `items` is newest-first (both collectDown and
+// collectUp's after-branch return it that way), so items[0] is the page's
+// endCount and the last item is its startCount. Clamped to [1, total] so a
+// non-empty page never reports 0 (Pagination.tsx hides the count label on a
+// falsy value).
 function txListCounts(ctx: AppContext, items: { cursor: string }[]) {
   if (items.length === 0) return { startCount: 0, endCount: 0, totalCount: 0 };
-  const total = ctx.index.txCount();
+  const total = ctx.index.txCount(TX_COUNT_CAP);
   const rankAscending = (cursor: string) => {
     const ref = parseTxCursor(cursor);
-    return Math.max(1, Math.min(total, total - ctx.index.newerTxCount(ref)));
+    return Math.max(
+      1,
+      Math.min(total, total - ctx.index.newerTxCount(ref, TX_COUNT_CAP)),
+    );
   };
   return {
     totalCount: total,

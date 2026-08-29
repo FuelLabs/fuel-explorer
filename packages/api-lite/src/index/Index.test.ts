@@ -120,10 +120,33 @@ describe('Index', () => {
   it('global tx count and newer-than-ref count for the transactions list', () => {
     idx.writeBlock(block(10, [{ id: hex(1) }, { id: hex(2) }]));
     idx.writeBlock(block(11, [{ id: hex(3) }]));
-    expect(idx.txCount()).toBe(3);
-    expect(idx.newerTxCount({ height: 11, txIndex: 0 })).toBe(0);
-    expect(idx.newerTxCount({ height: 10, txIndex: 1 })).toBe(1);
-    expect(idx.newerTxCount({ height: 10, txIndex: 0 })).toBe(2);
+    expect(idx.txCount(1001)).toBe(3);
+    expect(idx.newerTxCount({ height: 11, txIndex: 0 }, 1001)).toBe(0);
+    expect(idx.newerTxCount({ height: 10, txIndex: 1 }, 1001)).toBe(1);
+    expect(idx.newerTxCount({ height: 10, txIndex: 0 }, 1001)).toBe(2);
+  });
+
+  it('caps txCount/newerTxCount like countForAccount does', () => {
+    idx.writeBlock(block(10, [{ id: hex(1) }, { id: hex(2) }]));
+    idx.writeBlock(block(11, [{ id: hex(3) }]));
+    expect(idx.txCount(2)).toBe(2);
+    expect(idx.newerTxCount({ height: 10, txIndex: 0 }, 1)).toBe(1);
+  });
+
+  it('txCount/newerTxCount only count rows inside the indexed_from..indexed_to window, not stale rows left outside it', () => {
+    idx.writeBlock(block(10, [{ id: hex(1) }, { id: hex(2) }]));
+    idx.writeBlock(block(11, [{ id: hex(3) }]));
+    idx.writeBlock(block(12, [{ id: hex(4) }]));
+    // A stale row outside the window: height 10 is below indexed_from, as if
+    // a range reset/writeOnly() left it behind before the retention sweep
+    // removed it. collectDown/collectUp never serve it, so the counts must
+    // not either.
+    idx.setRange(11, 12);
+    expect(idx.txCount(1001)).toBe(2);
+    expect(idx.newerTxCount({ height: 10, txIndex: 1 }, 1001)).toBe(2);
+    expect(idx.newerTxCount({ height: 11, txIndex: 0 }, 1001)).toBe(1);
+    idx.clearRange();
+    expect(idx.txCount(1001)).toBe(4);
   });
 
   it('writes the same block twice without error', () => {

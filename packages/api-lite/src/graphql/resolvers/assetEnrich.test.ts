@@ -71,6 +71,28 @@ describe('findExactMatch', () => {
   it('returns null for an assetId not present anywhere in the registry', () => {
     expect(findExactMatch(REGISTRY, CHAIN_ID, hex(999))).toBeNull();
   });
+
+  it('matches regardless of hex casing on either side', () => {
+    const lowerAssetId = hex(0xabc123);
+    const withLetters = [
+      {
+        name: 'X',
+        symbol: 'X',
+        icon: null,
+        networks: [
+          {
+            type: 'fuel',
+            chainId: CHAIN_ID,
+            assetId: lowerAssetId,
+            decimals: 9,
+          },
+        ],
+      },
+    ];
+    const upper = `0x${lowerAssetId.slice(2).toUpperCase()}`;
+    const m = findExactMatch(withLetters, CHAIN_ID, upper);
+    expect(m?.asset.symbol).toBe('X');
+  });
 });
 
 describe('isImpersonating', () => {
@@ -86,6 +108,11 @@ describe('isImpersonating', () => {
 
   it('is false when subId is null', () => {
     expect(isImpersonating(REGISTRY, null)).toBe(false);
+  });
+
+  it('matches regardless of hex casing on either side', () => {
+    const upper = `0x${hex(200).slice(2).toUpperCase()}`;
+    expect(isImpersonating(REGISTRY, upper)).toBe(true);
   });
 });
 
@@ -245,5 +272,58 @@ describe('resolveAsset', () => {
       REGISTRY,
     );
     expect(found).toMatchObject({ verified: false, suspicious: false });
+  });
+
+  it('matches a registry-known asset even when the input assetId has mixed hex casing', async () => {
+    const lowerAssetId = hex(0xabc123);
+    const withLetters = [
+      {
+        name: 'X',
+        symbol: 'X',
+        icon: null,
+        networks: [
+          {
+            type: 'fuel',
+            chainId: CHAIN_ID,
+            assetId: lowerAssetId,
+            contractId: hex(10),
+            subId: hex(100),
+            decimals: 9,
+          },
+        ],
+      },
+    ];
+    const upper = `0x${lowerAssetId.slice(2).toUpperCase()}`;
+    const found = await resolveAsset(
+      upper,
+      ctx({
+        client: {
+          assetDetails: async () => ({
+            contractId: hex(10),
+            subId: hex(100),
+            totalSupply: '1',
+          }),
+        },
+      }),
+      withLetters,
+    );
+    expect(found).toMatchObject({ verified: true, suspicious: false });
+  });
+
+  it('still flags suspicious when the subId match only differs by hex casing', async () => {
+    const found = await resolveAsset(
+      hex(3),
+      ctx({
+        client: {
+          assetDetails: async () => ({
+            contractId: hex(99),
+            subId: `0x${hex(200).slice(2).toUpperCase()}`,
+            totalSupply: '1',
+          }),
+        },
+      }),
+      REGISTRY,
+    );
+    expect(found).toMatchObject({ verified: false, suspicious: true });
   });
 });

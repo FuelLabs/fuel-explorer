@@ -259,3 +259,117 @@ describe('transactions (global list) pageInfo counts', () => {
     expect(result.pageInfo.endCount).toBeGreaterThan(0);
   });
 });
+describe('global list totalCount/ranks are capped like the account list', () => {
+  it('passes TX_COUNT_CAP (1001) through to index.txCount/newerTxCount', async () => {
+    const txCount = jest.fn(() => 1001);
+    const newerTxCount = jest.fn(() => 0);
+    const ctx: any = {
+      store: {
+        get: async (h: number) => ({
+          transactions: [scriptTx({ id: hex(200 + h) })],
+        }),
+      },
+      tip: { servedTip: 1 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: { txCount, newerTxCount },
+    };
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 4 },
+      ctx,
+    );
+    expect(result.pageInfo.totalCount).toBe(1001);
+    expect(txCount).toHaveBeenCalledWith(1001);
+    expect(newerTxCount).toHaveBeenCalledWith(expect.anything(), 1001);
+  });
+});
+
+describe("fuel-core fallback pages never reuse the index page's numbers", () => {
+  function makeCtx(overrides: Record<string, unknown> = {}) {
+    return {
+      hot: { hit: () => {}, hits: () => 0 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        countForAccount: () => 3,
+        txsForAccount: () => [],
+        range: () => ({ from: null, to: null }),
+        newerCountForAccount: () => 0,
+      },
+      store: { get: async () => null },
+      client: {
+        txsByOwner: async () => ({
+          items: [{ id: hex(300), height: 5, cursor: 'c1' }],
+          hasNextPage: false,
+          hasPreviousPage: false,
+        }),
+      },
+      ...overrides,
+    } as any;
+  }
+
+  it('numbers a fuel-core-served page 1..pageLength instead of near the (unrelated) total', async () => {
+    const ctx = makeCtx({
+      store: {
+        get: async (h: number) =>
+          h === 5 ? { transactions: [scriptTx({ id: hex(300) })] } : null,
+      },
+    });
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(1), first: 1 },
+      ctx,
+    );
+    expect(result.nodes).toHaveLength(1);
+    expect(result.pageInfo.startCount).toBe(1);
+    expect(result.pageInfo.endCount).toBe(1);
+    expect(result.pageInfo.totalCount).not.toBe(result.pageInfo.endCount);
+  });
+});
+
+describe('pageFromFuelCore backfills a page when a fuel-core item fails to render', () => {
+  it('fills the page from remaining items instead of shrinking it when one block fetch fails', async () => {
+    const items = [
+      { id: hex(1), height: 10, cursor: 'c1' },
+      { id: hex(2), height: 11, cursor: 'c2' },
+      { id: hex(3), height: 12, cursor: 'c3' },
+      { id: hex(4), height: 13, cursor: 'c4' },
+    ];
+    const ctx: any = {
+      hot: { hit: () => {}, hits: () => 0 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        countForAccount: () => 3,
+        txsForAccount: () => [],
+        range: () => ({ from: null, to: null }),
+        newerCountForAccount: () => 0,
+      },
+      store: {
+        get: async (h: number) =>
+          h === 11
+            ? null // simulates a failed/missing block fetch for this one item
+            : { transactions: [scriptTx({ id: hex(h - 9) })] },
+      },
+      client: {
+        txsByOwner: async (_owner: string, opts: any) => ({
+          items: items.slice(0, opts.first ?? items.length),
+          hasNextPage: false,
+          hasPreviousPage: false,
+        }),
+      },
+    };
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(1), first: 3 },
+      ctx,
+    );
+    expect(result.nodes).toHaveLength(3);
+    expect(result.nodes.map((n: any) => n.id)).toEqual([
+      hex(1),
+      hex(3),
+      hex(4),
+    ]);
+  });
+});

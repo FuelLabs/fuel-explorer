@@ -31,10 +31,13 @@ export function findExactMatch(
   chainId: number,
   assetId: string,
 ): VerifiedMatch | null {
+  const target = assetId.toLowerCase();
   for (const asset of verified) {
     const network = (asset.networks ?? []).find(
       (n) =>
-        n.type === 'fuel' && n.chainId === chainId && n.assetId === assetId,
+        n.type === 'fuel' &&
+        n.chainId === chainId &&
+        n.assetId?.toLowerCase() === target,
     );
     if (network) return { asset, network };
   }
@@ -56,8 +59,11 @@ export function isImpersonating(
   subId: string | null,
 ): boolean {
   if (!subId) return false;
+  const target = subId.toLowerCase();
   return verified.some((asset) =>
-    (asset.networks ?? []).some((n) => n.type === 'fuel' && n.subId === subId),
+    (asset.networks ?? []).some(
+      (n) => n.type === 'fuel' && n.subId?.toLowerCase() === target,
+    ),
   );
 }
 
