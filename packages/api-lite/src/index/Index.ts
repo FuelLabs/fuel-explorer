@@ -74,6 +74,11 @@ export class Index {
       this.db.pragma('synchronous = NORMAL');
       this.db.pragma('auto_vacuum = INCREMENTAL');
     }
+    // Index writes to the same index.db file from up to three connections
+    // (Index, L1Index, and CosmosIndex); WAL allows one writer at a time, so
+    // a busy_timeout keeps a concurrent write waiting instead of failing
+    // immediately with SQLITE_BUSY.
+    this.db.pragma('busy_timeout = 5000');
     this.db.exec(SCHEMA);
     for (const stmt of [
       'ALTER TABLE blocks ADD COLUMN gas_used INTEGER NOT NULL DEFAULT 0',

@@ -19,6 +19,17 @@ const schema = z
     BACKFILL_BATCH: num(20),
     S3_CONCURRENCY: num(8),
     RPC_MAX_BLOCKS_PER_SECOND: num(5),
+    // No static default: it depends on FUEL_PROVIDER's chain, resolved at
+    // boot by cosmos/CosmosPoller.defaultCosmosRestUrl.
+    COSMOS_REST_URL: z.string().url().optional(),
+    COSMOS_START_HEIGHT: z.coerce.number().int().positive().optional(),
+    ETH_RPC_URL: z.string().url().optional(),
+    // No static default: it depends on FUEL_PROVIDER's host, resolved below.
+    FUEL_CHAIN: z.enum(['mainnet', 'testnet']).optional(),
+    L1_START_BLOCK: z.coerce.number().int().nonnegative().optional(),
+    // No static default: it depends on FUEL_CHAIN, resolved at boot by
+    // staking/proof.ts's defaultCosmosIndexerUrl.
+    COSMOS_INDEXER_URL: z.string().url().optional(),
   })
   .superRefine((e, ctx) => {
     if (e.BLOCK_SOURCE !== 's3') return;
@@ -54,6 +65,12 @@ export type Config = {
   backfillBatch: number;
   s3Concurrency: number;
   rpcMaxBlocksPerSecond: number;
+  cosmosRestUrl?: string;
+  cosmosStartHeight?: number;
+  ethRpcUrl?: string;
+  fuelChain: 'mainnet' | 'testnet';
+  l1StartBlock?: number;
+  cosmosIndexerUrl?: string;
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
@@ -81,5 +98,15 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     backfillBatch: e.BACKFILL_BATCH,
     s3Concurrency: e.S3_CONCURRENCY,
     rpcMaxBlocksPerSecond: e.RPC_MAX_BLOCKS_PER_SECOND,
+    cosmosRestUrl: e.COSMOS_REST_URL,
+    cosmosStartHeight: e.COSMOS_START_HEIGHT,
+    ethRpcUrl: e.ETH_RPC_URL,
+    fuelChain:
+      e.FUEL_CHAIN ??
+      (new URL(e.FUEL_PROVIDER).host.includes('testnet')
+        ? 'testnet'
+        : 'mainnet'),
+    l1StartBlock: e.L1_START_BLOCK,
+    cosmosIndexerUrl: e.COSMOS_INDEXER_URL,
   };
 }

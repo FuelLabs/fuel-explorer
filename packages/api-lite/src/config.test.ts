@@ -57,4 +57,58 @@ describe('loadConfig', () => {
   it('throws for an unknown BLOCK_SOURCE', () => {
     expect(() => loadConfig({ ...base, BLOCK_SOURCE: 'other' })).toThrow();
   });
+
+  it('leaves cosmosRestUrl and cosmosStartHeight undefined by default', () => {
+    const c = loadConfig(base);
+    expect(c.cosmosRestUrl).toBeUndefined();
+    expect(c.cosmosStartHeight).toBeUndefined();
+  });
+
+  it('parses COSMOS_REST_URL and COSMOS_START_HEIGHT when given', () => {
+    const c = loadConfig({
+      ...base,
+      COSMOS_REST_URL: 'https://rest.seq.testnet.fuel.network',
+      COSMOS_START_HEIGHT: '123456',
+    });
+    expect(c.cosmosRestUrl).toBe('https://rest.seq.testnet.fuel.network');
+    expect(c.cosmosStartHeight).toBe(123456);
+  });
+
+  it('leaves ethRpcUrl and l1StartBlock undefined by default, L1 poller disabled', () => {
+    const c = loadConfig(base);
+    expect(c.ethRpcUrl).toBeUndefined();
+    expect(c.l1StartBlock).toBeUndefined();
+  });
+
+  it('parses ETH_RPC_URL and L1_START_BLOCK when given', () => {
+    const c = loadConfig({
+      ...base,
+      ETH_RPC_URL: 'https://eth-mainnet.g.alchemy.com/v2/key',
+      L1_START_BLOCK: '21000000',
+    });
+    expect(c.ethRpcUrl).toBe('https://eth-mainnet.g.alchemy.com/v2/key');
+    expect(c.l1StartBlock).toBe(21000000);
+  });
+
+  it('derives fuelChain=mainnet from a FUEL_PROVIDER host without "testnet"', () => {
+    const c = loadConfig(base);
+    expect(c.fuelChain).toBe('mainnet');
+  });
+
+  it('derives fuelChain=testnet from a FUEL_PROVIDER host containing "testnet"', () => {
+    const c = loadConfig({
+      ...base,
+      FUEL_PROVIDER: 'https://testnet.fuel.network/v1/graphql',
+    });
+    expect(c.fuelChain).toBe('testnet');
+  });
+
+  it('FUEL_CHAIN overrides the host-derived default', () => {
+    const c = loadConfig({ ...base, FUEL_CHAIN: 'testnet' });
+    expect(c.fuelChain).toBe('testnet');
+  });
+
+  it('throws for an unknown FUEL_CHAIN', () => {
+    expect(() => loadConfig({ ...base, FUEL_CHAIN: 'other' })).toThrow();
+  });
 });

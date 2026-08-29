@@ -1,15 +1,26 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { BridgeStore } from './bridge/BridgeStore';
 import { loadConfig } from './config';
+import { CosmosIndex } from './cosmos/CosmosIndex';
+import { CosmosPoller, defaultCosmosRestUrl } from './cosmos/CosmosPoller';
 import { decodeBlock } from './decoder/block';
 import { FuelCoreClient } from './fuelcore/FuelCoreClient';
 import { PriceClient } from './fuelcore/PriceClient';
 import { Index } from './index/Index';
 import { Indexer } from './index/Indexer';
 import { TipTracker } from './index/TipTracker';
+import { L1Index } from './l1/L1Index';
+import { L1Poller } from './l1/L1Poller';
+import { createL1Client } from './l1/createL1Client';
+import type { BridgeRouteDeps, StakingRouteDeps } from './rest/router';
 import { RpcBlockSource, withStatusBlock } from './rpc/RpcBlockSource';
 import { S3BlockSource, createS3Fetcher } from './s3/S3BlockSource';
 import { createApp } from './server';
+import { StakingStore } from './staking/StakingStore';
+import { StakingAPY } from './staking/apy';
+import { FinalizationPeriods } from './staking/finalization';
+import { WithdrawProofCache, defaultCosmosIndexerUrl } from './staking/proof';
 import { BlockStore } from './store/BlockStore';
 
 const CHAIN_PARAMS_RETRY_MAX_DELAY_MS = 30_000;
@@ -131,6 +142,77 @@ async function main() {
   });
   const price = new PriceClient();
 
+  const cosmosIndex = new CosmosIndex(join(cfg.dataDir, 'index.db'));
+  const cosmosRestBase =
+    cfg.cosmosRestUrl ?? defaultCosmosRestUrl(cfg.fuelProvider);
+  console.log(`cosmos rest: ${cosmosRestBase}`);
+  const cosmosPoller = new CosmosPoller({
+    index: cosmosIndex,
+    restBase: cosmosRestBase,
+    startHeight: cfg.cosmosStartHeight,
+    onLog: (m) => console.log(m),
+  });
+
+  // /staking/apy only needs the sequencer's cosmos REST API, not L1
+  // ingestion, so it's constructed unconditionally instead of gated behind
+  // ETH_RPC_URL like the rest of `staking` below.
+  const apy = new StakingAPY(cosmosRestBase);
+
+  // Without ETH_RPC_URL the L1 poller is disabled; staking/bridge endpoints
+  // built on top of it are expected to 503.
+  let l1Index: L1Index | null = null;
+  let l1Poller: L1Poller | null = null;
+  let l1Health: { enabled: boolean; cursors: () => Record<string, number> } = {
+    enabled: false,
+    cursors: () => ({}),
+  };
+  // Gates /staking/events, /staking/events/:id and /staking/finalization-period/*:
+  // without ETH_RPC_URL there's no L1 index to serve staking history from,
+  // so the router returns 503 for those instead of wiring this up.
+  let staking: StakingRouteDeps | null = null;
+  // Gates /bridge/deposit/logs, /bridge/block/hashes and
+  // /bridge/message/relayed/hash: same L1 index as staking, so the same
+  // ETH_RPC_URL gate applies.
+  let bridge: BridgeRouteDeps | null = null;
+  if (cfg.ethRpcUrl) {
+    const idx = new L1Index(join(cfg.dataDir, 'index.db'));
+    idx.seed(cfg.fuelChain, cfg.l1StartBlock);
+    l1Index = idx;
+    l1Poller = new L1Poller({
+      index: idx,
+      client: createL1Client(cfg.ethRpcUrl),
+      network: cfg.fuelChain,
+      onLog: (m) => console.log(m),
+    });
+    l1Health = {
+      enabled: true,
+      cursors: () =>
+        Object.fromEntries(
+          idx.contracts(cfg.fuelChain).map((c) => [c.name, c.block_height]),
+        ),
+    };
+    console.log(`l1 poller: enabled, chain=${cfg.fuelChain}`);
+
+    const finalization = new FinalizationPeriods(
+      cfg.ethRpcUrl,
+      cfg.fuelChain,
+      cosmosRestBase,
+    );
+    const proofCache = new WithdrawProofCache(
+      cfg.cosmosIndexerUrl ?? defaultCosmosIndexerUrl(cfg.fuelChain),
+    );
+    const stakingStore = new StakingStore({
+      l1Index: idx,
+      cosmosIndex,
+      finalization,
+      proofCache,
+    });
+    staking = { enabled: true, store: stakingStore, finalization };
+
+    const bridgeStore = new BridgeStore({ l1Index: idx });
+    bridge = { enabled: true, store: bridgeStore };
+  }
+
   const { server, health } = createApp({
     store,
     index,
@@ -140,6 +222,11 @@ async function main() {
     price,
     indexer,
     blockSource: cfg.blockSource,
+    cosmos: cosmosPoller,
+    l1: l1Health,
+    staking,
+    apy,
+    bridge,
   });
   server.listen(cfg.port, () =>
     console.log(`api-lite listening on ${cfg.port}`),
@@ -147,6 +234,8 @@ async function main() {
 
   tip.start();
   indexer.start();
+  cosmosPoller.start();
+  l1Poller?.start();
   // Leading call so a disk overshoot from a previous run (or a diskBytes value
   // lowered since last boot) is corrected immediately instead of waiting for
   // the first interval tick.
@@ -175,8 +264,12 @@ async function main() {
   const shutdown = () => {
     tip.stop();
     indexer.stop();
+    cosmosPoller.stop();
+    l1Poller?.stop();
     server.close();
     index.close();
+    cosmosIndex.close();
+    l1Index?.close();
     process.exit(0);
   };
   process.on('SIGTERM', shutdown);

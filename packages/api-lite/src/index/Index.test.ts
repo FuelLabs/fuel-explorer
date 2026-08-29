@@ -1,3 +1,7 @@
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import type Database from 'better-sqlite3';
 import { Index, parseTxCursor, txCursor } from './Index';
 
 const hex = (n: number) => `0x${n.toString(16).padStart(64, '0')}`;
@@ -44,6 +48,19 @@ describe('Index', () => {
     idx = new Index(':memory:');
   });
   afterEach(() => idx.close());
+
+  it('sets a busy_timeout on a file-backed database, so a concurrent writer waits instead of throwing SQLITE_BUSY', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'index-'));
+    const dbPath = join(dir, 'index.db');
+    const fileIdx = new Index(dbPath);
+    try {
+      const db = (fileIdx as unknown as { db: Database.Database }).db;
+      expect(db.pragma('busy_timeout', { simple: true })).toBe(5000);
+    } finally {
+      fileIdx.close();
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 
   it('cursor round trip', () => {
     expect(txCursor(5, 0)).toBe(`${'0'.repeat(31)}5-${'0'.repeat(15)}1`);

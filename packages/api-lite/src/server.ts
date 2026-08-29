@@ -1,14 +1,22 @@
 import { createServer } from 'node:http';
 import { createYoga } from 'graphql-yoga';
+import type { CosmosPoller } from './cosmos/CosmosPoller';
 import type { AppContext } from './graphql/context';
 import { buildSchema } from './graphql/schema';
 import type { Indexer } from './index/Indexer';
+import { type RestRouterDeps, handleRestRequest } from './rest/router';
 
-// `indexer` and `blockSource` are optional so existing AppContext-only callers
-// (tests) keep compiling; main.ts passes both so /health can report them.
+// `indexer`, `blockSource` and `cosmos` are optional so existing
+// AppContext-only callers (tests) keep compiling; main.ts passes all three so
+// /health can report them.
 export type AppDeps = AppContext & {
   indexer?: Pick<Indexer, 'backfillPaused'>;
   blockSource?: 's3' | 'rpc';
+  cosmos?: Pick<CosmosPoller, 'cursor' | 'tip'>;
+  l1?: { enabled: boolean; cursors: () => Record<string, number> };
+  staking?: RestRouterDeps['staking'];
+  apy?: RestRouterDeps['apy'];
+  bridge?: RestRouterDeps['bridge'];
 };
 
 export function createApp(ctx: AppDeps) {
@@ -37,6 +45,12 @@ export function createApp(ctx: AppDeps) {
     index: ctx.index.range(),
     indexBytes: ctx.index.fileBytes(),
     rss: process.memoryUsage().rss,
+    cosmos: ctx.cosmos
+      ? { cursor: ctx.cosmos.cursor, tip: ctx.cosmos.tip }
+      : undefined,
+    l1: ctx.l1
+      ? { enabled: ctx.l1.enabled, cursors: ctx.l1.cursors() }
+      : undefined,
   });
   const server = createServer((req, res) => {
     if (req.url === '/health') {
@@ -45,7 +59,25 @@ export function createApp(ctx: AppDeps) {
       res.end(JSON.stringify(h));
       return;
     }
-    return yoga(req, res);
+    // router.ts catches its own synchronous/async errors and always resolves
+    // (never rejects); this .catch() is defense in depth so a future
+    // uncaught path there becomes a logged 500 instead of an unhandled
+    // rejection that could crash the process.
+    void handleRestRequest(req, res, {
+      staking: ctx.staking ?? null,
+      apy: ctx.apy ?? null,
+      bridge: ctx.bridge ?? null,
+    })
+      .then((handled) => {
+        if (!handled) return yoga(req, res);
+      })
+      .catch((err) => {
+        console.error('handleRestRequest failed', err);
+        if (!res.headersSent) {
+          res.writeHead(500, { 'content-type': 'application/json' });
+        }
+        res.end(JSON.stringify({ message: 'internal error' }));
+      });
   });
   return { yoga, server, health };
 }

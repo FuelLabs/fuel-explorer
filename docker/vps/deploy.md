@@ -63,6 +63,21 @@ railway variables --service api \
   --set "RPC_MAX_BLOCKS_PER_SECOND=5" \
   --set "PORT=3000"
 
+# api: staking/bridge history ingestion. Without ETH_RPC_URL the L1 poller
+# stays disabled and /staking/* and /bridge/* return 503; the other four vars
+# have defaults and stay optional even then.
+#   ETH_RPC_URL         - an Alchemy or Infura HTTPS URL with the key inside
+#   FUEL_CHAIN          - mainnet or testnet (default: inferred from FUEL_PROVIDER's host)
+#   COSMOS_START_HEIGHT - sequencer block to start cosmos ingestion from (default: tip minus 200,000)
+#   COSMOS_REST_URL     - sequencer cosmos REST base (default: resolved from FUEL_PROVIDER's chain)
+#   COSMOS_INDEXER_URL  - sequencer indexer base for withdrawal proofs (default: resolved from FUEL_CHAIN)
+railway variables --service api \
+  --set "ETH_RPC_URL=<alchemy-or-infura-https-url-with-key>" \
+  --set "FUEL_CHAIN=mainnet" \
+  --set "COSMOS_START_HEIGHT=<sequencer-tip-minus-200000>" \
+  --set "COSMOS_REST_URL=<sequencer-rest-url-override>" \
+  --set "COSMOS_INDEXER_URL=<sequencer-indexer-url-override>"
+
 # api: persistent volume for the block index (Hobby plan volumes cap at 5 GB,
 # hence the smaller INDEX_MAX_BYTES/DISK_CACHE_BYTES above vs. the droplet's).
 railway volume --service api add --mount-path /data

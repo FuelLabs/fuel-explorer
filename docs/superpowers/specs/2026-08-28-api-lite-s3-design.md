@@ -204,3 +204,11 @@ The `blocks` table gains `gas_used INTEGER` and `total_fee INTEGER`, filled from
 ### A4. Order
 
 Tasks 18 to 21 run after Task 16 and before the load test, so the load test measures the final build.
+
+### A5. Staking and bridge history (Tasks 31 to 34)
+
+The explorer frontend never calls the staking or bridge GraphQL fields. The live consumers are REST endpoints in `packages/graphql/src/infra/server/App.ts`, called through `VITE_FUEL_INDEXER_API` by `app-staking` (`/staking/apy`, `/staking/events`, `/staking/events/:id`, `/staking/finalization-period/{withdraw,undelegate}`) and by `app-portal` (`/bridge/deposit/logs`, `/bridge/block/hashes`, `/bridge/message/relayed/hash`). `/bridge/events`, `/bridge/:type/:id` and `/staking-transactions` have no caller and are not ported.
+
+Data sources, unchanged from production: Ethereum logs of the seven bridge and sequencer contracts per network (addresses and start blocks from migration `013_create_l1_contract_tables.sql`, ABIs under `application/uc/IndexL1/abi`), fetched with `eth_getLogs` in 1000-block windows against the `finalized` tip; sequencer transactions from `https://rest.seq.<net>.fuel.network/cosmos/tx/v1beta1/txs?query=tx.height=<h>`. Both are low volume, thousands of rows a day, and are kept without a retention window in the same sqlite file, in tables shaped like production's `contract_l1_index`, `contract_l1_logs`, `contract_l1_args`, `cosmos_responses`, `cosmos_events`, so the `StakingDAO` and `BridgeDAO` SQL ports with dialect changes only.
+
+New env: `ETH_RPC_URL` (an Alchemy or Infura HTTPS URL with the key inside), `FUEL_CHAIN=mainnet|testnet`, `COSMOS_START_HEIGHT` (default: the sequencer tip minus 200,000 blocks), `L1_START_BLOCK` (default: the migration seeds). Without `ETH_RPC_URL` the L1 poller is disabled and the staking and bridge endpoints return 503 with a JSON reason. Proofs for withdrawals come from the sequencer indexer `GET /seq/proof?nonce=` at read time, not stored.

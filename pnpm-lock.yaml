@@ -38,7 +38,7 @@ importers:
         version: 0.44.1(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.103.0(vitest@4.1.9(@types/node@22.7.5)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.7.1)(yaml@2.8.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@fuels/react-xstore':
         specifier: 0.23.0
-        version: 0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@5.20.2))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@5.20.2)
+        version: 0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       fuels:
         specifier: 0.103.0
         version: 0.103.0(vitest@4.1.9(@types/node@22.7.5)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.7.1)(yaml@2.8.1))
@@ -207,6 +207,9 @@ importers:
       '@fuel-explorer/graphql':
         specifier: workspace:*
         version: link:../graphql
+      '@fuel-infrastructure/fuelsequencerjs':
+        specifier: 0.0.14
+        version: 0.0.14(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@graphql-tools/load-files':
         specifier: 7.0.0
         version: 7.0.0(graphql@16.10.0)
@@ -216,6 +219,9 @@ importers:
       '@graphql-tools/schema':
         specifier: 10.0.4
         version: 10.0.4(graphql@16.10.0)
+      bech32:
+        specifier: 2.0.0
+        version: 2.0.0
       better-sqlite3:
         specifier: 11.3.0
         version: 11.3.0
@@ -243,6 +249,9 @@ importers:
       tai64:
         specifier: 1.0.0
         version: 1.0.0
+      viem:
+        specifier: 2.23.2
+        version: 2.23.2(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.23.8)
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -536,7 +545,7 @@ importers:
         version: 1.0.0
       '@fuels/react-xstore':
         specifier: 0.23.0
-        version: 0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@4.38.3)
+        version: 0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@hookform/resolvers':
         specifier: ^3.1.1
         version: 3.3.4(react-hook-form@7.54.0(react@18.2.0))
@@ -2913,11 +2922,6 @@ packages:
 
   '@fuels/react-xstore@0.23.0':
     resolution: {integrity: sha512-MJdHDiGL1/X9mjSUhRWpO1IvHK+0K1DATEBtmKyY0zW75zZx5v2t46uYlbG4DwqCJsFHuwMkswe2M/2NaMwrcg==}
-    peerDependencies:
-      '@xstate/react': ^3.2.2
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      xstate: ^4.38.2
 
   '@fuels/react@0.44.1':
     resolution: {integrity: sha512-cc2cYzIAB66yYGl5ENoZCWyvcrEfVAyjSqTBtX95411BNXzd2uvfAEh3Yrh/DS3G7/1hiORZeRMXSdEWDQUAaA==}
@@ -14625,7 +14629,7 @@ snapshots:
       '@cosmjs/socket': 0.32.4(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@cosmjs/stream': 0.32.4
       '@cosmjs/utils': 0.32.4
-      axios: 1.15.0(debug@4.4.1)
+      axios: 1.15.0
       readonly-date: 1.0.0
       xstream: 11.14.0
     transitivePeerDependencies:
@@ -14637,7 +14641,7 @@ snapshots:
 
   '@cosmology/lcd@0.13.4':
     dependencies:
-      axios: 1.15.0(debug@4.4.1)
+      axios: 1.15.0
     transitivePeerDependencies:
       - debug
 
@@ -16318,7 +16322,7 @@ snapshots:
       adm-zip: 0.5.16
       fuels: 0.103.0(vitest@4.1.9(@types/node@22.7.5)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.16.0)(yaml@2.8.1))
 
-  '@fuels/react-xstore@0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@4.38.3)':
+  '@fuels/react-xstore@0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@fuels/local-storage': 0.23.0
       '@xstate/inspect': 0.8.0(@types/ws@8.18.1)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@4.38.3)
@@ -16334,24 +16338,7 @@ snapshots:
       - '@babel/template'
       - '@types/react'
       - '@types/ws'
-      - ws
-
-  '@fuels/react-xstore@0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@5.20.2))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@5.20.2)':
-    dependencies:
-      '@fuels/local-storage': 0.23.0
-      '@xstate/inspect': 0.8.0(@types/ws@8.18.1)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@5.20.2)
-      '@xstate/react': 3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@5.20.2)
-      fast-equals: 5.2.2
-      jotai: 2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      uuid: 9.0.1
-      xstate: 5.20.2
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@babel/template'
-      - '@types/react'
-      - '@types/ws'
+      - '@xstate/fsm'
       - ws
 
   '@fuels/react@0.44.1(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react-dom@18.2.22)(@types/react@18.2.54)(fuels@0.103.0(vitest@4.1.9(@types/node@22.7.5)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.7.1)(yaml@2.8.1)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
@@ -20639,7 +20626,7 @@ snapshots:
 
   '@synthetixio/synpress-cache@0.0.12(@swc/core@1.13.3(@swc/helpers@0.5.17))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.4.1(@swc/helpers@0.5.17))(@types/node@22.7.5)(typescript@5.4.5))(typescript@5.9.2)':
     dependencies:
-      axios: 1.15.0(debug@4.4.1)
+      axios: 1.15.0
       chalk: 5.3.0
       commander: 12.0.0
       esbuild: 0.27.2
@@ -22681,14 +22668,6 @@ snapshots:
     optionalDependencies:
       '@types/ws': 8.18.1
 
-  '@xstate/inspect@0.8.0(@types/ws@8.18.1)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@5.20.2)':
-    dependencies:
-      fast-safe-stringify: 2.1.1
-      ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      xstate: 5.20.2
-    optionalDependencies:
-      '@types/ws': 8.18.1
-
   '@xstate/machine-extractor@0.16.0(xstate@4.38.3)':
     dependencies:
       '@babel/parser': 7.28.0
@@ -22706,16 +22685,6 @@ snapshots:
       use-sync-external-store: 1.5.0(react@18.2.0)
     optionalDependencies:
       xstate: 4.38.3
-    transitivePeerDependencies:
-      - '@types/react'
-
-  '@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@5.20.2)':
-    dependencies:
-      react: 18.2.0
-      use-isomorphic-layout-effect: 1.2.1(@types/react@18.2.54)(react@18.2.0)
-      use-sync-external-store: 1.5.0(react@18.2.0)
-    optionalDependencies:
-      xstate: 5.20.2
     transitivePeerDependencies:
       - '@types/react'
 
@@ -23051,6 +23020,14 @@ snapshots:
       possible-typed-array-names: 1.1.0
 
   axe-core@4.7.2: {}
+
+  axios@1.15.0:
+    dependencies:
+      follow-redirects: 1.15.11(debug@4.3.7)
+      form-data: 4.0.5
+      proxy-from-env: 2.1.0
+    transitivePeerDependencies:
+      - debug
 
   axios@1.15.0(debug@4.4.1):
     dependencies:
@@ -25703,7 +25680,7 @@ snapshots:
   http-proxy@1.18.1:
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.11(debug@4.4.1)
+      follow-redirects: 1.15.11(debug@4.3.7)
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug

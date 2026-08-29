@@ -1,0 +1,212 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { BridgeStore } from '../bridge/BridgeStore';
+import { PaginatedParams } from '../staking/PaginatedParams';
+import type { StakingStore } from '../staking/StakingStore';
+import type { StakingAPY } from '../staking/apy';
+import {
+  type FinalizationPeriods,
+  TIME_TO_COMMIT_SECONDS,
+  TIME_TO_SEQUENCER_INDEXER_SYNC_SECONDS,
+} from '../staking/finalization';
+
+export type StakingRouteDeps = {
+  enabled: boolean;
+  store: Pick<StakingStore, 'getEvents' | 'getEvent'>;
+  finalization: Pick<
+    FinalizationPeriods,
+    'timeToFinalizeStrict' | 'unbondingTimeSeconds'
+  >;
+};
+
+export type BridgeRouteDeps = {
+  enabled: boolean;
+  store: Pick<
+    BridgeStore,
+    'queryLogsForRecipient' | 'queryBlockHashes' | 'queryMessageRelayedTxHash'
+  >;
+};
+
+export type RestRouterDeps = {
+  // Unlike `staking` (events/event-by-id/finalization-period), APY needs no
+  // L1 ingestion — only the sequencer's cosmos REST API — so it's kept
+  // independent of ETH_RPC_URL instead of living under StakingRouteDeps.
+  apy: Pick<StakingAPY, 'amount'> | null;
+  staking: StakingRouteDeps | null;
+  bridge: BridgeRouteDeps | null;
+};
+
+function sendJson(res: ServerResponse, status: number, body: unknown): void {
+  res.writeHead(status, {
+    'content-type': 'application/json',
+    'access-control-allow-origin': '*',
+  });
+  res.end(JSON.stringify(body));
+}
+
+const EVENT_PATH_RE = /^\/staking\/events\/([^/]+)$/;
+
+// Wired into server.ts ahead of the graphql-yoga handler. Returns true when
+// it handled the request, so the caller knows whether to fall through to
+// yoga.
+export async function handleRestRequest(
+  req: IncomingMessage,
+  res: ServerResponse,
+  deps: RestRouterDeps,
+): Promise<boolean> {
+  if (req.method !== 'GET') return false;
+
+  let url: URL;
+  let path: string;
+  try {
+    // A malformed request-target (e.g. `//[`) throws synchronously from the
+    // URL constructor; without this try/catch it becomes an unhandled
+    // rejection through server.ts's `void handleRestRequest(...).then(...)`.
+    url = new URL(req.url ?? '/', 'http://internal');
+    path = url.pathname;
+  } catch {
+    sendJson(res, 400, { message: 'invalid request target' });
+    return true;
+  }
+
+  if (path.startsWith('/bridge/'))
+    return handleBridgeRequest(res, path, url, deps);
+
+  if (path === '/staking/apy') {
+    try {
+      if (!deps.apy) {
+        sendJson(res, 503, { error: 'l1 ingestion disabled' });
+        return true;
+      }
+      const amount = await deps.apy.amount();
+      sendJson(res, 200, { amount });
+    } catch (err) {
+      sendJson(res, 400, { message: (err as Error).message });
+    }
+    return true;
+  }
+
+  if (!path.startsWith('/staking/')) return false;
+
+  if (!deps.staking) {
+    sendJson(res, 503, { error: 'l1 ingestion disabled' });
+    return true;
+  }
+  const { staking } = deps;
+
+  try {
+    if (path === '/staking/events') {
+      const address = url.searchParams.get('address') ?? '';
+      const paginatedParams = new PaginatedParams({
+        after: url.searchParams.get('after') ?? undefined,
+        before: url.searchParams.get('before') ?? undefined,
+        last: url.searchParams.get('last') ?? undefined,
+      });
+      const result = await staking.store.getEvents(address, paginatedParams);
+      sendJson(res, 200, result);
+      return true;
+    }
+
+    if (path === '/staking/finalization-period/withdraw') {
+      try {
+        const minutes = await staking.finalization.timeToFinalizeStrict();
+        if (minutes == null) {
+          sendJson(res, 200, { seconds: null });
+          return true;
+        }
+        const totalSeconds =
+          minutes * 60 +
+          TIME_TO_COMMIT_SECONDS +
+          TIME_TO_SEQUENCER_INDEXER_SYNC_SECONDS;
+        sendJson(res, 200, { seconds: totalSeconds });
+      } catch {
+        sendJson(res, 500, { seconds: null });
+      }
+      return true;
+    }
+
+    if (path === '/staking/finalization-period/undelegate') {
+      try {
+        const seconds = await staking.finalization.unbondingTimeSeconds();
+        if (seconds == null) {
+          sendJson(res, 200, { seconds: null });
+          return true;
+        }
+        sendJson(res, 200, {
+          seconds: seconds + TIME_TO_SEQUENCER_INDEXER_SYNC_SECONDS,
+        });
+      } catch {
+        sendJson(res, 500, { seconds: null });
+      }
+      return true;
+    }
+
+    const eventMatch = path.match(EVENT_PATH_RE);
+    if (eventMatch) {
+      const eventId = Number(eventMatch[1]);
+      if (!Number.isInteger(eventId)) {
+        throw new Error('Invalid event id');
+      }
+      const result = await staking.store.getEvent(eventId);
+      sendJson(res, 200, result);
+      return true;
+    }
+  } catch (err) {
+    sendJson(res, 400, { message: (err as Error).message });
+    return true;
+  }
+
+  sendJson(res, 404, { message: 'not found' });
+  return true;
+}
+
+// /bridge/events and /bridge/:eventType/:eventId are not implemented; both,
+// and any other unmatched /bridge/ path, fall through to the 404 at the end.
+async function handleBridgeRequest(
+  res: ServerResponse,
+  path: string,
+  url: URL,
+  deps: RestRouterDeps,
+): Promise<boolean> {
+  if (!deps.bridge) {
+    sendJson(res, 503, { error: 'l1 ingestion disabled' });
+    return true;
+  }
+  const { bridge } = deps;
+
+  try {
+    if (path === '/bridge/deposit/logs') {
+      const address = url.searchParams.get('address') ?? '';
+      const recipient = url.searchParams.get('recipient') ?? '';
+      const predicate = url.searchParams.get('predicate') ?? '';
+      const result = bridge.store.queryLogsForRecipient(
+        address,
+        recipient,
+        predicate,
+      );
+      sendJson(res, 200, result);
+      return true;
+    }
+
+    if (path === '/bridge/block/hashes') {
+      const address = url.searchParams.get('address') ?? '';
+      const fromBlock = Number(url.searchParams.get('from_block'));
+      const result = bridge.store.queryBlockHashes(address, fromBlock);
+      sendJson(res, 200, result);
+      return true;
+    }
+
+    if (path === '/bridge/message/relayed/hash') {
+      const address = url.searchParams.get('address') ?? '';
+      const messageId = url.searchParams.get('message_id') ?? '';
+      const result = bridge.store.queryMessageRelayedTxHash(address, messageId);
+      sendJson(res, 200, result);
+      return true;
+    }
+  } catch (err) {
+    sendJson(res, 400, { message: (err as Error).message });
+    return true;
+  }
+
+  sendJson(res, 404, { error: 'not available' });
+  return true;
+}
