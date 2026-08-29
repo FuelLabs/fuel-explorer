@@ -1,6 +1,7 @@
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import DataCache from '~/infra/cache/DataCache';
 import { HotKeys } from '../hot/HotKeys';
 import { Index, txCursor } from '../index/Index';
 import { Indexer } from '../index/Indexer';
@@ -55,7 +56,10 @@ function fakeBlock(h: number) {
       __typename: 'SuccessStatus',
       time: (T0 + BigInt(h) * 60n).toString(),
       transactionId: hex(h * 10 + i),
-      totalFee: '3',
+      // Large enough (in base units, 9 decimals) that its USD conversion at
+      // the fake $2000 price clears the 1-cent threshold, so convertToUsd's
+      // significant-digit fallback for sub-cent amounts never kicks in.
+      totalFee: '1000000',
       totalGas: '4',
       receipts: [],
       programState: null,
@@ -139,7 +143,10 @@ function fcFake(owner: string) {
   };
 }
 
-async function setup(clientOverrides: Record<string, unknown> = {}) {
+async function setup(
+  clientOverrides: Record<string, unknown> = {},
+  priceUsd: number | null = 2000,
+) {
   const index = new Index(':memory:');
   const store = new BlockStore({
     source: {
@@ -186,7 +193,7 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
   });
   await tip.tick();
   while (await indexer.backfillStep()) {}
-  const price = { usd: async () => 2000 } as any;
+  const price = { usd: async () => priceUsd } as any;
   const hot = new HotKeys(':memory:');
   const { yoga } = createApp({
     store,
@@ -273,7 +280,7 @@ describe('resolvers', () => {
     );
     expect(d.transaction.blockHeight).toBe('100');
     expect(d.transaction.statusType).toBe('Success');
-    expect(d.transaction.gasCosts.fee).toBe('3');
+    expect(d.transaction.gasCosts.fee).toBe('1000000');
     const none = await gql(
       'query($id: TransactionId!) { transaction(id: $id) { id } }',
       { id: hex(5) },
@@ -480,11 +487,13 @@ describe('resolvers', () => {
 
   it('statistics and tps read hourly/10-minute series from the index, priced in USD', async () => {
     const { gql, index } = await setup();
-    const since = Math.floor(Date.now() / 1000) - 86400;
-    const truth = index.hourlySeries(since);
+    // Matches the resolver's own boundary: the first full hour at or after
+    // now - 24h, so the series never starts with a partial (and therefore
+    // artificially low) bucket.
+    const firstFullHourSecs =
+      Math.ceil((Date.now() / 1000 - 86400) / 3600) * 3600;
+    const truth = index.hourlySeries(firstFullHourSecs);
     const totalTxs = truth.reduce((s, r) => s + r.txCount, 0);
-    const totalFeeBase = truth.reduce((s, r) => s + BigInt(r.totalFee), 0n);
-    const expectedFee24hrs = ((Number(totalFeeBase) / 1e9) * 2000).toFixed(2);
 
     const d = await gql(`{
       statistics { nodes {
@@ -504,14 +513,19 @@ describe('resolvers', () => {
       0,
     );
     expect(txSum).toBe(totalTxs);
-    for (const row of nodes.totalTps)
+    // Allow a few seconds of clock skew between this computation and the
+    // resolver's own `Date.now()` call.
+    const firstFullHourMs = firstFullHourSecs * 1000 - 5000;
+    for (const row of nodes.totalTps) {
       expect(Number.isFinite(Number(row.date))).toBe(true);
+      expect(Number(row.date)).toBeGreaterThanOrEqual(firstFullHourMs);
+    }
 
-    expect(nodes.totalFee24hrs).toBe(expectedFee24hrs);
+    const usdPattern = /^\$[\d,]+\.\d{2}$/;
+    expect(nodes.totalFee24hrs).toMatch(usdPattern);
     expect(nodes.totalFee.length).toBe(truth.length);
-    expect(nodes.totalFee[0].valueInUsd).toBe(
-      ((Number(truth[0].totalFee) / 1e9) * 2000).toFixed(2),
-    );
+    for (const row of nodes.totalFee)
+      expect(row.valueInUsd).toMatch(usdPattern);
 
     expect(nodes.averageTpsPerMinute.length).toBeGreaterThan(0);
 
@@ -520,6 +534,44 @@ describe('resolvers', () => {
       expect(Number.isFinite(Number(row.start))).toBe(true);
       expect(Number.isFinite(Number(row.end))).toBe(true);
     }
+  });
+
+  it('averageTpsPerMinute equals txCount/60 for each minute bucket', async () => {
+    const { gql, index } = await setup();
+    // The 'statistics' query result is cache-shared (DataCache) across every
+    // test in this file, so evict any entry left by an earlier test.
+    DataCache.getInstance().save('statistics', 0, undefined);
+    const firstFullMinuteSecs =
+      Math.ceil((Date.now() / 1000 - 86400) / 60) * 60;
+    const truth = index.minuteSeries(firstFullMinuteSecs);
+
+    const d = await gql(`{
+      statistics { nodes { averageTpsPerMinute { date value } } }
+    }`);
+    const rows = d.statistics.nodes.averageTpsPerMinute;
+    expect(rows.length).toBe(truth.length);
+    expect(rows.length).toBeGreaterThan(0);
+    rows.forEach((row: { date: string; value: string }, i: number) => {
+      expect(row.date).toBe(String(truth[i].bucketStart * 1000));
+      expect(row.value).toBe((truth[i].txCount / 60).toFixed(2));
+    });
+  });
+
+  it('statistics returns null USD fields when the price is unavailable', async () => {
+    const { gql } = await setup({}, null);
+    // The 'statistics' query result is cache-shared (DataCache) across every
+    // test in this file, so evict any entry left by an earlier test's price.
+    DataCache.getInstance().save('statistics', 0, undefined);
+    const d = await gql(`{
+      statistics { nodes {
+        totalFee { valueInUsd }
+        totalFee24hrs
+      } }
+    }`);
+    expect(d.statistics.nodes.totalFee24hrs).toBeNull();
+    expect(d.statistics.nodes.totalFee.length).toBeGreaterThan(0);
+    for (const row of d.statistics.nodes.totalFee)
+      expect(row.valueInUsd).toBeNull();
   });
 
   it('stubs return empty', async () => {

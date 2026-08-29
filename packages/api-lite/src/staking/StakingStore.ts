@@ -688,8 +688,15 @@ export class StakingStore {
       direction: paginatedParams.direction,
       limit: paginatedParams.last,
     });
-    // node order is always newest-_id-first regardless of query direction.
-    const sorted = [...rows].sort((a, b) => b._id - a._id);
+    // node order is always newest-first regardless of query direction. Sort
+    // by (block_height, _id) -- matching L1Index.queryStakingEvents()'s own
+    // ORDER BY -- not _id alone: independently-backfilling contracts can
+    // assign a lower _id to a higher block_height, and an _id-only sort here
+    // would then hand out a startCursor/endCursor that skips or re-serves
+    // whichever row landed out of order.
+    const sorted = [...rows].sort(
+      (a, b) => b.block_height - a.block_height || b._id - a._id,
+    );
 
     if (sorted.length === 0) {
       return {

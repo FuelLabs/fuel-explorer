@@ -202,6 +202,33 @@ describe('CosmosPoller', () => {
     expect(calls.some((c) => c.includes('tx.height'))).toBe(false);
   });
 
+  it('does not advance the cursor past a height whose txs fetch returned a non-2xx response', async () => {
+    const impl = jest.fn(async (url: string) => {
+      if (url.includes('blocks/latest')) {
+        return { ok: true, json: async () => tipResponse(3) } as Response;
+      }
+      // A 5xx sequencer REST error still returns a JSON body without
+      // tx_responses -- treating it like an empty block would silently
+      // advance the cursor past this height.
+      return {
+        ok: false,
+        status: 503,
+        json: async () => ({ error: 'upstream unavailable' }),
+      } as Response;
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      startHeight: 1,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await poller.tick();
+    // Cursor stays at startHeight - 1: height 1 was never successfully
+    // processed, so it must not be marked done.
+    expect(index.cursor()).toBe(0);
+    expect(index.queryEvents({})).toHaveLength(0);
+  });
+
   it('is idempotent across ticks (no duplicate events on the same height)', async () => {
     const { impl } = fakeFetch({
       'blocks/latest': tipResponse(10),

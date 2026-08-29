@@ -21,7 +21,12 @@ function fakeRes() {
 }
 
 function disabledDeps(): RestRouterDeps {
-  return { apy: null, staking: null, bridge: null };
+  return {
+    apy: null,
+    staking: null,
+    bridge: null,
+    charts: { build: jest.fn().mockResolvedValue({ statistics: {}, tps: [] }) },
+  };
 }
 
 describe('handleRestRequest', () => {
@@ -43,6 +48,56 @@ describe('handleRestRequest', () => {
       disabledDeps(),
     );
     expect(handled).toBe(false);
+  });
+
+  // Shape contract for GET /charts, consumed by the frontend's useHomeCharts
+  // fallback: { statistics: <statistics.nodes payload>, tps: <tps.nodes payload> },
+  // i.e. exactly what deps.charts.build() (buildCharts(ctx)) returns, verbatim.
+  it("GET /charts returns buildCharts()'s body with a 60s public cache header, no L1 gating", async () => {
+    const { res, calls } = fakeRes();
+    const body = {
+      statistics: { totalTps: [{ date: '1000', value: '2' }] },
+      tps: [{ start: '1000', end: '4600', txCount: '2', totalGas: '5' }],
+    };
+    const deps: RestRouterDeps = {
+      ...disabledDeps(),
+      charts: { build: jest.fn().mockResolvedValue(body) },
+    };
+    const handled = await handleRestRequest(
+      fakeReq('GET', '/charts'),
+      res,
+      deps,
+    );
+    expect(handled).toBe(true);
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({
+      'content-type': 'application/json',
+      'cache-control': 'public, max-age=60',
+    });
+    expect(JSON.parse(calls.body as string)).toEqual(body);
+  });
+
+  it('GET /charts returns a generic 500 (never the raw error message) and logs server-side when the builder throws', async () => {
+    const { res, calls } = fakeRes();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const deps: RestRouterDeps = {
+      ...disabledDeps(),
+      charts: {
+        build: jest
+          .fn()
+          .mockRejectedValue(new Error('boom: leaks internal detail')),
+      },
+    };
+    await handleRestRequest(fakeReq('GET', '/charts'), res, deps);
+    expect(calls.status).toBe(500);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      error: 'charts unavailable',
+    });
+    expect(errSpy).toHaveBeenCalledWith(
+      'buildCharts failed',
+      expect.any(Error),
+    );
+    errSpy.mockRestore();
   });
 
   it('answers /staking/apy even when the L1 poller (staking/bridge) is disabled', async () => {

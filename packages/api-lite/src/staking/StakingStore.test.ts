@@ -171,6 +171,67 @@ describe('StakingStore delegate flow', () => {
     const single = await store.getEvent(eventRow._id);
     expect(single.status).toBe(BaseStatusType.Skipped);
   });
+
+  it('getEvents() orders nodes and derives pageInfo cursors by (block_height, _id) so a page never re-serves or drops an event when _id disagrees with height order (independent per-contract backfill)', async () => {
+    const insertDelegate = (
+      blockHeight: number,
+      txHash: string,
+      amount: string,
+    ) => {
+      l1Index.insertLogs([
+        {
+          contractHash: '0xBa0e6bF94580D49B5Aaaa54279198D424B23eCC3',
+          blockHeight,
+          txHash,
+          event: 'Delegate',
+          signature: 'Delegate(address,address,uint256)',
+          rawLog: '{}',
+          decodedArgs: JSON.stringify({
+            delegator: ADDRESS,
+            validator: VALIDATOR,
+            amount,
+          }),
+          decodedData: '{}',
+          timestamp: '2026-01-01T00:00:00.000Z',
+          logIndex: 0,
+          args: { delegator: ADDRESS, validator: VALIDATOR, amount },
+        },
+      ]);
+    };
+    // Two contracts backfill independently: height 300 is inserted (landing
+    // on a lower _id) before the lower height 200, so _id disagrees with
+    // block_height order within a single page's result set.
+    insertDelegate(100, '0x1', '100');
+    insertDelegate(300, '0x2', '300');
+    insertDelegate(200, '0x3', '200');
+
+    const store = makeStore(l1Index, cosmosIndex);
+
+    // Page 1 (limit 2) must render newest-first by height (300, then 200),
+    // not by _id (which would put 200 -- the higher _id -- first).
+    const page1 = await store.getEvents(
+      ADDRESS,
+      new PaginatedParams({ last: '2' }),
+    );
+    expect(page1.nodes.map((n) => (n as { amount: string }).amount)).toEqual([
+      '300',
+      '200',
+    ]);
+
+    // Page 2, continuing from page 1's boundary, must move on to the
+    // remaining older event (100) -- not re-serve 200 (already shown on
+    // page 1), which happens if endCursor was derived from an _id-only sort.
+    const page2 = await store.getEvents(
+      ADDRESS,
+      new PaginatedParams({
+        before: String(page1.pageInfo.endCursor),
+        last: '1',
+      }),
+    );
+    expect(page2.nodes.map((n) => (n as { amount: string }).amount)).toEqual([
+      '100',
+    ]);
+  });
 });
 
 describe('StakingStore withdraw flow', () => {

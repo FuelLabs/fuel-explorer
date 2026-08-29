@@ -1,7 +1,21 @@
-# One zone, keyed by client IP, 10 MB (~160k tracked addresses) capping each at
-# 20 requests/sec; /api/ below allows a 40-request burst before it starts rejecting
-# (nodelay: burst requests are served immediately, not queued/delayed).
-limit_req_zone $binary_remote_addr zone=api:10m rate=20r/s;
+# Railway terminates every visitor's connection at its edge and proxies to
+# this container from one address, so keying the zone on $binary_remote_addr
+# would bucket all visitors into the same budget. Key on the original client
+# IP from X-Forwarded-For (first hop = the real client) instead, falling
+# back to the TCP peer address when the header is absent -- e.g. plain
+# docker-compose with no edge proxy in front.
+map $http_x_forwarded_for $rate_limit_key {
+    default $binary_remote_addr;
+    "~^([^,]+)" $1;
+}
+
+# One zone, keyed by client IP, 10 MB capping each at 20 requests/sec; /api/
+# below allows a 40-request burst before it starts rejecting (nodelay: burst
+# requests are served immediately, not queued/delayed).
+limit_req_zone $rate_limit_key zone=api:10m rate=20r/s;
+# 1 MB keys zone (~enough for the single /api/charts key), 10 MB max cached
+# response bodies, evicted after 5 min unused; backs the 60s edge cache below.
+proxy_cache_path /var/cache/nginx/charts levels=1 keys_zone=charts:1m max_size=10m inactive=5m;
 
 server {
     listen 80;
@@ -17,6 +31,26 @@ server {
     location /assets/ {
         add_header Cache-Control "public, max-age=31536000, immutable";
         try_files $uri =404;
+    }
+
+    # Exact match takes priority over the /api/ prefix block below, so
+    # /api/charts is cached at the edge (200s only) instead of proxied on
+    # every request; a stale cached body is served while revalidating on an
+    # upstream error/timeout instead of surfacing that error to the client.
+    location = /api/charts {
+        limit_req zone=api burst=40 nodelay;
+        resolver ${NGINX_RESOLVER} valid=10s ipv6=on;
+        set $api_upstream http://${API_UPSTREAM};
+        proxy_cache charts;
+        proxy_cache_valid 200 60s;
+        proxy_ignore_headers Cache-Control Expires;
+        proxy_cache_use_stale updating error timeout;
+        add_header X-Cache $upstream_cache_status;
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass $api_upstream;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_read_timeout 30s;
     }
 
     location /api/ {

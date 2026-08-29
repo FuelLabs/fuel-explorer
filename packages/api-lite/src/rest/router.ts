@@ -26,6 +26,12 @@ export type BridgeRouteDeps = {
   >;
 };
 
+// GET /charts needs no L1 ingestion (same reasoning as `apy` below), so it's
+// always present rather than nullable.
+export type ChartsRouteDeps = {
+  build: () => Promise<{ statistics: unknown; tps: unknown }>;
+};
+
 export type RestRouterDeps = {
   // Unlike `staking` (events/event-by-id/finalization-period), APY needs no
   // L1 ingestion — only the sequencer's cosmos REST API — so it's kept
@@ -33,12 +39,19 @@ export type RestRouterDeps = {
   apy: Pick<StakingAPY, 'amount'> | null;
   staking: StakingRouteDeps | null;
   bridge: BridgeRouteDeps | null;
+  charts: ChartsRouteDeps;
 };
 
-function sendJson(res: ServerResponse, status: number, body: unknown): void {
+function sendJson(
+  res: ServerResponse,
+  status: number,
+  body: unknown,
+  extraHeaders?: Record<string, string>,
+): void {
   res.writeHead(status, {
     'content-type': 'application/json',
     'access-control-allow-origin': '*',
+    ...extraHeaders,
   });
   res.end(JSON.stringify(body));
 }
@@ -70,6 +83,19 @@ export async function handleRestRequest(
 
   if (path.startsWith('/bridge/'))
     return handleBridgeRequest(res, path, url, deps);
+
+  if (path === '/charts') {
+    try {
+      const body = await deps.charts.build();
+      // 60s matches nginx's `proxy_cache_valid 200 60s` on `/api/charts`, so
+      // the CDN/browser and origin caches expire together.
+      sendJson(res, 200, body, { 'cache-control': 'public, max-age=60' });
+    } catch (err) {
+      console.error('buildCharts failed', err);
+      sendJson(res, 500, { error: 'charts unavailable' });
+    }
+    return true;
+  }
 
   if (path === '/staking/apy') {
     try {

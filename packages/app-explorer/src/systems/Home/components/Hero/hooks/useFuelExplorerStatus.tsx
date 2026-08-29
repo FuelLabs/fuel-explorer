@@ -61,6 +61,23 @@ export const useRollingStats = () => {
   });
 };
 
+// GET /charts is served by nginx from a shared 60s cache (Cache-Control:
+// public, max-age=60), so it's cheaper than the `statistics` GraphQL query
+// under load; production deployments whose indexer API predates the route
+// (or any network failure) fall back to the original getStatistics() call.
+async function fetchStatistics() {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_FUEL_INDEXER_API}/charts`, {
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) throw new Error(`GET /charts returned ${res.status}`);
+    const body = await res.json();
+    return body.statistics;
+  } catch {
+    return getStatistics();
+  }
+}
+
 /**
  * TPS, average TPS per minute and fee series for the chart tiles
  * (DailyTransaction, TPSHourly, GasSpentChart).
@@ -69,7 +86,7 @@ export const useHomeCharts = () => {
   return useQuery({
     queryKey: ['home', 'charts'],
     queryFn: async () => {
-      const statistics = await getStatistics();
+      const statistics = await fetchStatistics();
       const tps = statistics?.totalTps?.map((t: any) => ({
         time: t.date ?? '',
         value: t.value,

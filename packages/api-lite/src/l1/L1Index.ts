@@ -266,13 +266,22 @@ export class L1Index {
   ): StakingLogEventRow[] {
     const cmp = opts.direction === 'before' ? '<' : '>';
     const order = opts.direction === 'before' ? 'DESC' : 'ASC';
+    // Same-block events, and logs from independently-backfilling contracts,
+    // can have an _id that doesn't track block_height. Paginate and order on
+    // the (block_height, _id) tuple together -- not _id alone -- so a page
+    // boundary can't fall between two rows sharing (or reordering) a height.
     const sql = `
       SELECT l._id AS _id, l.tx_hash AS tx_hash, l.signature AS signature,
         l.block_height AS block_height, l.decoded_args AS decoded_args, l.timestamp AS timestamp
       FROM contract_l1_logs l
       WHERE (${STAKING_MATCH_CONDITION})
-        AND (@cursor IS NULL OR l._id ${cmp} @cursor)
-      ORDER BY l.block_height ${order}
+        AND (
+          @cursor IS NULL
+          OR (l.block_height, l._id) ${cmp} (
+            SELECT c.block_height, c._id FROM contract_l1_logs c WHERE c._id = @cursor
+          )
+        )
+      ORDER BY l.block_height ${order}, l._id ${order}
       LIMIT @limit
     `;
     return this.db.prepare(sql).all({
@@ -282,8 +291,9 @@ export class L1Index {
     }) as StakingLogEventRow[];
   }
 
-  // comparator is a fixed `<`/`>` against one boundary _id, not tied to page
-  // direction.
+  // comparator is a fixed `<`/`>` against one boundary row's (block_height,
+  // _id), not tied to page direction. See queryStakingEvents() for why the
+  // comparison can't be on _id alone.
   hasStakingEventBeyond(
     address: string,
     id: number,
@@ -292,7 +302,9 @@ export class L1Index {
     const sql = `
       SELECT EXISTS(
         SELECT 1 FROM contract_l1_logs l
-        WHERE (${STAKING_MATCH_CONDITION}) AND l._id ${comparator} @id
+        WHERE (${STAKING_MATCH_CONDITION}) AND (l.block_height, l._id) ${comparator} (
+          SELECT c.block_height, c._id FROM contract_l1_logs c WHERE c._id = @id
+        )
       ) AS found
     `;
     const row = this.db.prepare(sql).get({ address, id }) as { found: number };

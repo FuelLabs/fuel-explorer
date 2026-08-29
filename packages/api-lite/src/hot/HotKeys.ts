@@ -137,24 +137,39 @@ export class HotKeys {
    * (main.ts) ticks it hourly. The very first call ever (no `last_decay`
    * row yet) does not halve anything -- it just plants the anchor so the
    * first real decay happens a full 24h after HotKeys started observing hits.
+   *
+   * main.ts drives this from an hourly setInterval with no try/catch of its
+   * own (unlike flush(), which is called off its own timer too), so a sqlite
+   * error here -- e.g. SQLITE_BUSY racing a concurrent write -- must never
+   * throw back into that timer: an uncaught exception there is an unhandled
+   * exception on the interval and crashes the process. On failure this skips
+   * the decay/prune for this tick and logs; the gate is left as-is so the
+   * next tick retries once `now` clears it again.
    */
   decay(): void {
-    const now = this.now();
-    const row = this.stmts.metaGet.get(LAST_DECAY_META_KEY) as
-      | { value: string }
-      | undefined;
-    if (!row) {
-      this.stmts.metaSet.run(LAST_DECAY_META_KEY, String(now));
-      return;
+    try {
+      const now = this.now();
+      const row = this.stmts.metaGet.get(LAST_DECAY_META_KEY) as
+        | { value: string }
+        | undefined;
+      if (!row) {
+        this.stmts.metaSet.run(LAST_DECAY_META_KEY, String(now));
+        return;
+      }
+      const last = Number(row.value);
+      if (now - last < DECAY_INTERVAL_MS) return;
+      const run = this.db.transaction(() => {
+        this.stmts.decayHalf.run();
+        this.stmts.decayPrune.run();
+        this.stmts.metaSet.run(LAST_DECAY_META_KEY, String(now));
+      });
+      run();
+    } catch (e) {
+      console.error(
+        'HotKeys.decay: sqlite write failed, skipping this tick',
+        e,
+      );
     }
-    const last = Number(row.value);
-    if (now - last < DECAY_INTERVAL_MS) return;
-    const run = this.db.transaction(() => {
-      this.stmts.decayHalf.run();
-      this.stmts.decayPrune.run();
-      this.stmts.metaSet.run(LAST_DECAY_META_KEY, String(now));
-    });
-    run();
   }
 
   close(): void {

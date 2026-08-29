@@ -391,6 +391,9 @@ export class Index {
   tenMinuteSeries(sinceUnix: number): SeriesRow[] {
     return this.series(600, sinceUnix);
   }
+  minuteSeries(sinceUnix: number): SeriesRow[] {
+    return this.series(60, sinceUnix);
+  }
   oldestTime(): number | null {
     const row = this.stmts.oldestTime.get() as { t: number | null };
     return row.t ?? null;

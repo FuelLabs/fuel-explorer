@@ -6,7 +6,7 @@ describe('WithdrawProofCache', () => {
       expect(url).toBe(
         'https://index-api.sequencer.mainnet.fuel.network/seq/proof?nonce=7',
       );
-      return { json: async () => ({ ok: true }) } as Response;
+      return { ok: true, json: async () => ({ ok: true }) } as Response;
     }) as unknown as typeof fetch;
     const cache = new WithdrawProofCache(
       'https://index-api.sequencer.mainnet.fuel.network',
@@ -18,7 +18,7 @@ describe('WithdrawProofCache', () => {
   it('caches per nonce for the TTL', async () => {
     const fetchImpl = jest
       .fn()
-      .mockResolvedValue({ json: async () => ({ ok: true }) });
+      .mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
     const cache = new WithdrawProofCache(
       'https://index-api.sequencer.mainnet.fuel.network',
       fetchImpl as unknown as typeof fetch,
@@ -38,6 +38,24 @@ describe('WithdrawProofCache', () => {
       fetchImpl,
     );
     expect(await cache.get('7')).toBeNull();
+  });
+
+  it('does not cache a non-ok response, so the next call retries instead of serving a broken proof for the TTL', async () => {
+    const fetchImpl = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => ({ error: 'not found' }),
+      })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ proof: 'x' }) });
+    const cache = new WithdrawProofCache(
+      'https://index-api.sequencer.mainnet.fuel.network',
+      fetchImpl as unknown as typeof fetch,
+    );
+    expect(await cache.get('7')).toBeNull();
+    expect(await cache.get('7')).toEqual({ proof: 'x' });
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 });
 

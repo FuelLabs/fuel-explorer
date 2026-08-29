@@ -218,6 +218,70 @@ describe('L1Index', () => {
       idx.close();
     });
 
+    it('queryStakingEvents()/hasStakingEventBeyond() do not skip a same/lower-height event whose _id landed out of block-height order (independent per-contract backfill)', () => {
+      const idx = new L1Index(':memory:');
+      // Two contracts backfill independently, so insertion order (_id) does
+      // not track block_height: height 300 is inserted (as _id 2) before the
+      // lower height 200 (_id 3).
+      idx.insertLogs([
+        makeLogRow({
+          blockHeight: 100,
+          logIndex: 0,
+          txHash: '0x1',
+          event: 'Delegate',
+          signature: 'Delegate(address,address,uint256)',
+          args: { delegator: ADDRESS, validator: '0xv', amount: '1' },
+        }),
+      ]);
+      idx.insertLogs([
+        makeLogRow({
+          blockHeight: 300,
+          logIndex: 0,
+          txHash: '0x2',
+          event: 'Delegate',
+          signature: 'Delegate(address,address,uint256)',
+          args: { delegator: ADDRESS, validator: '0xv', amount: '2' },
+        }),
+      ]);
+      idx.insertLogs([
+        makeLogRow({
+          blockHeight: 200,
+          logIndex: 0,
+          txHash: '0x3',
+          event: 'Delegate',
+          signature: 'Delegate(address,address,uint256)',
+          args: { delegator: ADDRESS, validator: '0xv', amount: '3' },
+        }),
+      ]);
+
+      // Newest-first, one row per page: 300, then 200, then 100. The
+      // height-200 row (lower _id than the height-300 row) must not be
+      // skipped when paginating past height 300.
+      const page1 = idx.queryStakingEvents(ADDRESS, {
+        cursor: null,
+        direction: 'before',
+        limit: 1,
+      });
+      expect(page1.map((r) => r.tx_hash)).toEqual(['0x2']);
+
+      const page2 = idx.queryStakingEvents(ADDRESS, {
+        cursor: page1[0]._id,
+        direction: 'before',
+        limit: 1,
+      });
+      expect(page2.map((r) => r.tx_hash)).toEqual(['0x3']);
+
+      const page3 = idx.queryStakingEvents(ADDRESS, {
+        cursor: page2[0]._id,
+        direction: 'before',
+        limit: 1,
+      });
+      expect(page3.map((r) => r.tx_hash)).toEqual(['0x1']);
+
+      expect(idx.hasStakingEventBeyond(ADDRESS, page1[0]._id, '<')).toBe(true);
+      idx.close();
+    });
+
     it('stakingEventById() left-joins the sender/delegator arg by signature', () => {
       const idx = new L1Index(':memory:');
       seedStakingLogs(idx);

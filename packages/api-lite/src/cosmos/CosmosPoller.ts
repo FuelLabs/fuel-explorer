@@ -163,6 +163,15 @@ async function fetchTxs(
     `${restBase}/cosmos/tx/v1beta1/txs?query=tx.height=${height}&limit=1000&offset=0`,
     { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) },
   );
+  // A non-2xx still returns a JSON body without tx_responses; treating that
+  // like an empty block would let the caller's cursor advance past a height
+  // that was never actually fetched. Throwing here routes it through tick()'s
+  // catch, which breaks the loop for this tick instead of advancing.
+  if (!res.ok) {
+    throw new Error(
+      `cosmos txs fetch failed at height ${height}: HTTP ${res.status}`,
+    );
+  }
   return (await res.json()) as {
     total?: string;
     tx_responses?: CosmosTxResponse[];

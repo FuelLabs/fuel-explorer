@@ -130,6 +130,25 @@ describe('HotKeys', () => {
     expect(hot.counts()).toEqual({ accounts: 2, txs: 1, blocks: 0 });
   });
 
+  it('decay() never throws when the underlying sqlite write fails; it logs and leaves the gate untouched', () => {
+    let now = 0;
+    const hot = new HotKeys(':memory:', { now: () => now });
+    hot.hit('account', '0x1');
+    hot.flush();
+    hot.decay(); // first call ever: plants the anchor, no write transaction yet
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    now += 24 * 60 * 60 * 1000; // a full day since the anchor: the gate clears
+    // Close the connection out from under decay() without going through
+    // HotKeys.close() (which would itself flush first, masking the failure).
+    // main.ts wires decay() straight into an hourly setInterval with no
+    // try/catch of its own -- an uncaught error here would be an unhandled
+    // exception on that timer and crash the process.
+    (hot as unknown as { db: { close(): void } }).db.close();
+    expect(() => hot.decay()).not.toThrow();
+    expect(errSpy).toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
+
   it('flush() never throws when the underlying sqlite write fails; it logs and drops the buffer', () => {
     const hot = new HotKeys(':memory:');
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});

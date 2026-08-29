@@ -172,6 +172,13 @@ describe('Index', () => {
       totalFee: '12',
     });
     expect(idx.tenMinuteSeries(T - 1)).toHaveLength(2);
+    // Blocks at T, T+100, T+3700: 100s and 3700s apart, so each lands in a
+    // distinct 60s bucket (a straight generalization of the same bucketed
+    // query hourly/tenMinute already use, just with bucketSeconds=60).
+    const minutes = idx.minuteSeries(T - 1);
+    expect(minutes).toHaveLength(3);
+    expect(minutes.map((r) => r.txCount)).toEqual([1, 1, 1]);
+    expect(minutes[0].bucketStart).toBe(Math.floor(T / 60) * 60);
     expect(idx.oldestTime()).toBe(T);
   });
 
