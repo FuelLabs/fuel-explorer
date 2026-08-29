@@ -16,16 +16,17 @@ export const analyticsResolvers = {
         .filter((b): b is GQLBlock => b != null)
         .reverse();
       const nodes = blocks.map((b) => ({
-        timestamp: String(unix(b)),
-        gasUsed: sum(b, 'totalGas').toString(),
+        // Prod serves epoch milliseconds; unix(b) is seconds.
+        timestamp: unix(b) * 1000,
+        gasUsed: Number(sum(b, 'totalGas')),
         gasUsedInUsd: null,
-        totalFee: sum(b, 'totalFee').toString(),
+        totalFee: Number(sum(b, 'totalFee')),
         totalFeeInUsd: null,
-        blockNo: b.height,
+        blockNo: Number(b.height),
         producer: null,
         blockHash: b.id,
-        transactionsCount: String(b.transactions.length),
-        blockSize: String(blockSize(ctx, b)),
+        transactionsCount: b.transactions.length,
+        blockSize: blockSize(ctx, b),
       }));
       cache.save('getBlocksDashboard', DASHBOARD_CACHE_TTL_MS, nodes);
       return { nodes };

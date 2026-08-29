@@ -1,5 +1,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import VerifiedAssets from '~/infra/cache/VerifiedAssets';
+import { seedVerifiedAssets } from './assets/seedVerifiedAssets';
 import { BridgeStore } from './bridge/BridgeStore';
 import { loadConfig } from './config';
 import { CosmosIndex } from './cosmos/CosmosIndex';
@@ -94,6 +96,12 @@ async function main() {
   const index = new Index(join(cfg.dataDir, 'index.db'));
   const repaired = index.deleteAboveRange();
   console.log(`index repair: deleted ${repaired} rows above indexed_to`);
+  // Fire-and-forget: backfills registry-known SRC20 assets for this chain so
+  // assetsByContract/asset can serve a contract deployed before this process
+  // ever started, without blocking boot on a verified-assets.fuel.network fetch.
+  void seedVerifiedAssets(index, VerifiedAssets.getInstance(), params.chainId)
+    .then((n) => console.log(`asset seed: ${n} registry assets seeded`))
+    .catch((e) => console.error('asset seed failed, boot continuing', e));
   console.log(`block source: ${cfg.blockSource}`);
   const hot = new HotKeys(join(cfg.dataDir, 'index.db'));
   const pinned = makePinnedHeights(hot, index);

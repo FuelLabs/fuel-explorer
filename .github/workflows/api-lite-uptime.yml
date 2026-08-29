@@ -1,0 +1,28 @@
+name: api-lite uptime
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      EXPLORER_URL: ${{ vars.API_LITE_EXPLORER_URL || 'https://explorer-production-f355.up.railway.app' }}
+      MAX_LAG_BLOCKS: "120"
+    steps:
+      - name: Health and index lag
+        run: |
+          body=$(curl -fsS --max-time 20 "$EXPLORER_URL/api/health")
+          echo "$body"
+          ok=$(echo "$body" | jq -r '.ok')
+          lag=$(echo "$body" | jq -r '.lag')
+          test "$ok" = "true"
+          test "$lag" -le "$MAX_LAG_BLOCKS"
+      - name: Home page
+        run: curl -fsS --max-time 20 -o /dev/null "$EXPLORER_URL/"
+      - name: Charts endpoint
+        run: |
+          curl -fsS --max-time 20 "$EXPLORER_URL/api/charts" | jq -e '.statistics and .tps' > /dev/null

@@ -40,6 +40,8 @@ export type SeriesRow = {
   blocks: number;
   gasUsed: string;
   totalFee: string;
+  maxTxCount: number;
+  maxGasUsed: number;
 };
 
 export function accountsOf(tx: GQLTransaction): string[] {
@@ -126,6 +128,9 @@ export class Index {
       acctCount: this.db.prepare(
         'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? LIMIT ?)',
       ),
+      acctNewerCount: this.db.prepare(
+        'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? AND (height > ? OR (height = ? AND tx_index > ?)) LIMIT ?)',
+      ),
       predicate: this.db.prepare(
         'SELECT bytecode FROM predicates WHERE address = ?',
       ),
@@ -136,10 +141,16 @@ export class Index {
         'SELECT contract_id, height FROM contracts WHERE height < ? ORDER BY height DESC LIMIT ?',
       ),
       assetsByContract: this.db.prepare(
-        'SELECT asset_id, sub_id, height FROM assets WHERE contract_id = ? ORDER BY height DESC LIMIT ?',
+        'SELECT asset_id, sub_id, height FROM assets WHERE contract_id = ? ORDER BY height DESC, asset_id DESC LIMIT ?',
+      ),
+      assetCountByContract: this.db.prepare(
+        'SELECT count(*) AS c FROM assets WHERE contract_id = ?',
       ),
       assetGet: this.db.prepare(
         'SELECT contract_id, sub_id FROM assets WHERE asset_id = ?',
+      ),
+      assetSeed: this.db.prepare(
+        'INSERT OR IGNORE INTO assets(asset_id, contract_id, sub_id, height) VALUES (?, ?, ?, 0)',
       ),
       metaGet: this.db.prepare('SELECT value FROM meta WHERE key = ?'),
       metaSet: this.db.prepare(
@@ -147,7 +158,7 @@ export class Index {
       ),
       metaDel: this.db.prepare('DELETE FROM meta WHERE key = ?'),
       series: this.db.prepare(
-        'SELECT CAST(time / @bucket AS INTEGER) * CAST(@bucket AS INTEGER) AS b, SUM(tx_count) AS tx, COUNT(*) AS n, SUM(gas_used) AS g, SUM(total_fee) AS f FROM blocks WHERE time >= @since GROUP BY b ORDER BY b',
+        'SELECT CAST(time / @bucket AS INTEGER) * CAST(@bucket AS INTEGER) AS b, SUM(tx_count) AS tx, COUNT(*) AS n, SUM(gas_used) AS g, SUM(total_fee) AS f, MAX(tx_count) AS mtx, MAX(gas_used) AS mg FROM blocks WHERE time >= @since GROUP BY b ORDER BY b',
       ),
       oldestTime: this.db.prepare('SELECT MIN(time) AS t FROM blocks'),
     };
@@ -301,6 +312,18 @@ export class Index {
       ? { contractId: hexOf(row.contract_id), subId: hexOf(row.sub_id) }
       : null;
   }
+  countByContract(contractId: string): number {
+    return (
+      this.stmts.assetCountByContract.get(blob(contractId)) as { c: number }
+    ).c;
+  }
+  // Backfills a known registry asset ahead of ever observing its MINT
+  // receipt live, so assetsByContract/asset can serve it from boot. Height 0
+  // means a later real mint observation for the same asset_id is ignored
+  // (INSERT OR IGNORE keeps this row), which only affects display ordering.
+  seedAsset(assetId: string, contractId: string, subId: string): void {
+    this.stmts.assetSeed.run(blob(assetId), blob(contractId), blob(subId));
+  }
 
   range() {
     const get = (k: string) => {
@@ -338,10 +361,14 @@ export class Index {
     this.setMeta('gaps', gaps.join(','));
   }
 
+  // assets, contracts and predicates are one-row-per-creation tables (tiny
+  // even after months of uptime), so they're excluded from the retention
+  // window and grow forever from first boot instead of aging out with the
+  // 48h-ish blocks/txs/tx_accounts window.
   deleteBelow(height: number): number {
     const run = this.db.transaction(() => {
       let n = 0;
-      for (const t of ['blocks', 'txs', 'tx_accounts', 'assets'])
+      for (const t of ['blocks', 'txs', 'tx_accounts'])
         n += this.db
           .prepare(`DELETE FROM ${t} WHERE height < ?`)
           .run(height).changes;
@@ -376,6 +403,8 @@ export class Index {
         n: number;
         g: number;
         f: number;
+        mtx: number;
+        mg: number;
       }[]
     ).map((r) => ({
       bucketStart: r.b,
@@ -383,6 +412,8 @@ export class Index {
       blocks: r.n,
       gasUsed: String(r.g),
       totalFee: String(r.f),
+      maxTxCount: r.mtx,
+      maxGasUsed: r.mg,
     }));
   }
   hourlySeries(sinceUnix: number): SeriesRow[] {
@@ -408,6 +439,28 @@ export class Index {
 
   vacuum(): void {
     if (this.path !== ':memory:') this.db.pragma('incremental_vacuum');
+  }
+
+  // Count of an account's transactions strictly newer than `ref`, capped at
+  // `cap` for the same reason countForAccount is capped: a busy account's
+  // true count is unbounded, and callers only need "at least cap" to know a
+  // 1-based position is off the top of a capped total. Combined with
+  // countForAccount(account, cap) as `total`, a ref's ascending (oldest = 1)
+  // position is `total - newerCountForAccount(...)`.
+  newerCountForAccount(
+    account: string,
+    ref: { height: number; txIndex: number },
+    cap: number,
+  ): number {
+    return (
+      this.stmts.acctNewerCount.get(
+        blob(account),
+        ref.height,
+        ref.height,
+        ref.txIndex,
+        cap,
+      ) as { c: number }
+    ).c;
   }
 
   close() {

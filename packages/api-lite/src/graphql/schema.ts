@@ -40,6 +40,9 @@ const typeDefs = mergeTypeDefs(loadFilesSync(schemasDir()));
 const policies = PoliciesResolver.create();
 const coinsDoc = tryReadDoc('coins');
 
+// Matches production's BalanceResolver.utxos cap (packages/graphql/src/graphql/resolvers/BalanceResolver.ts).
+const UTXOS_PAGE_SIZE = 2500;
+
 const balanceResolvers = {
   async utxos(
     parent: { owner: string; assetId: string },
@@ -51,7 +54,7 @@ const balanceResolvers = {
       coinsDoc,
       {
         filter: { owner: parent.owner, assetId: parent.assetId },
-        first: 100,
+        first: UTXOS_PAGE_SIZE,
       },
     );
     return data.coins?.nodes ?? [];

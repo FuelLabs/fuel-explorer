@@ -36,10 +36,27 @@ const BLOCKS_DOC = readFileSync(providerDocPath('blocks'), 'utf8');
 const BLOCK_ITEMS_FRAGMENT = BLOCKS_DOC.slice(0, BLOCKS_DOC.indexOf('query '));
 const BLOCK_QUERY = `${BLOCK_ITEMS_FRAGMENT}\nquery($h: U32!) { block(height: $h) { ...BlockItems } }`;
 
+export type AssetDetails = {
+  contractId: string;
+  subId: string;
+  totalSupply: string;
+};
+
+const ASSET_DETAILS_QUERY =
+  'query($id: AssetId!) { assetDetails(id: $id) { contractId subId totalSupply } }';
+
 export class FuelCoreClient {
+  private static readonly ASSET_DETAILS_CACHE_MAX = 1000;
+
+  private readonly assetDetailsCache = new Map<
+    string,
+    { at: number; value: AssetDetails | null }
+  >();
+
   constructor(
     private readonly url: string,
     private readonly fetchImpl: typeof fetch = fetch,
+    private readonly assetDetailsTtlMs = 60_000,
   ) {}
 
   async query<T>(query: string, variables: object = {}): Promise<T> {
@@ -85,6 +102,48 @@ export class FuelCoreClient {
       { id: hash },
     );
     return d.block ? Number(d.block.height) : null;
+  }
+
+  // fuel-core returns null for an asset it has no mint record for (e.g. the
+  // chain's own base asset), so a null result here isn't itself an error --
+  // callers decide what "unknown" means. Cached briefly, including misses,
+  // so a hammered unknown id can't spam fuel-core. Bounded and LRU-evicted
+  // (see setAssetDetailsCache) since assetId is caller-controlled input, and
+  // a thrown fetch/network error is never cached -- only a real answer from
+  // fuel-core (including a real `null`) counts as a cacheable miss.
+  async assetDetails(assetId: string): Promise<AssetDetails | null> {
+    const now = Date.now();
+    const cached = this.assetDetailsCache.get(assetId);
+    if (cached && now - cached.at < this.assetDetailsTtlMs) {
+      // Refresh recency so a hot id survives eviction of colder entries.
+      this.assetDetailsCache.delete(assetId);
+      this.assetDetailsCache.set(assetId, cached);
+      return cached.value;
+    }
+    let value: AssetDetails | null;
+    try {
+      const d = await this.query<{ assetDetails: AssetDetails | null }>(
+        ASSET_DETAILS_QUERY,
+        { id: assetId },
+      );
+      value = d.assetDetails ?? null;
+    } catch {
+      return null;
+    }
+    this.setAssetDetailsCache(assetId, { at: now, value });
+    return value;
+  }
+
+  private setAssetDetailsCache(
+    assetId: string,
+    entry: { at: number; value: AssetDetails | null },
+  ): void {
+    this.assetDetailsCache.delete(assetId);
+    this.assetDetailsCache.set(assetId, entry);
+    if (this.assetDetailsCache.size > FuelCoreClient.ASSET_DETAILS_CACHE_MAX) {
+      const oldest = this.assetDetailsCache.keys().next().value;
+      if (oldest !== undefined) this.assetDetailsCache.delete(oldest);
+    }
   }
 
   async txsByOwner(

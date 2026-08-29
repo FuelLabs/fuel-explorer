@@ -1,6 +1,7 @@
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { DateHelper } from '~/core/Date';
 import DataCache from '~/infra/cache/DataCache';
 import { HotKeys } from '../hot/HotKeys';
 import { Index, txCursor } from '../index/Index';
@@ -174,6 +175,7 @@ async function setup(
     latestHeight: async () => TIP,
     heightForTx: async () => null,
     heightForBlock: async () => null,
+    assetDetails: async () => null,
     query: async () => ({}),
     rawChain: async () => ({ consensusParameters: { chainId: '9889' } }),
     txsByOwner: async () => ({
@@ -293,13 +295,18 @@ describe('resolvers', () => {
     expect(byBlock.transactionsByBlockId.pageInfo.totalCount).toBe(2);
   });
 
-  it('transaction returns an empty mintAmountUsd when the source omits it', async () => {
+  it('transaction computes mintAmountUsd like production: $0 for a non-mint tx, the real conversion for a base-asset mint, and empty only when the price is unavailable', async () => {
+    const query =
+      'query($id: TransactionId!) { transaction(id: $id) { mintAmountUsd } }';
     const { gql } = await setup();
-    const d = await gql(
-      'query($id: TransactionId!) { transaction(id: $id) { mintAmountUsd } }',
-      { id: hex(1001) },
-    );
-    expect(d.transaction.mintAmountUsd).toBe('');
+    const script = await gql(query, { id: hex(1000) });
+    expect(script.transaction.mintAmountUsd).toBe('$0');
+    const mint = await gql(query, { id: hex(1001) });
+    expect(mint.transaction.mintAmountUsd).toBe('$0.00001');
+
+    const { gql: gqlNoPrice } = await setup({}, null);
+    const mintNoPrice = await gqlNoPrice(query, { id: hex(1001) });
+    expect(mintNoPrice.transaction.mintAmountUsd).toBe('');
   });
 
   it('transactions recent list walks down blocks', async () => {
@@ -355,6 +362,76 @@ describe('resolvers', () => {
       { o: hex(1) },
     );
     expect(none.transactionsByOwner.nodes).toEqual([]);
+  });
+
+  it('transactions, transactionsByBlockId, and transactionsByOwner all price gasCosts.feeInUsd from the price client', async () => {
+    const { gql } = await setup();
+    const recent = await gql(
+      '{ transactions(first: 1) { nodes { gasCosts { feeInUsd } } } }',
+    );
+    expect(recent.transactions.nodes[0].gasCosts.feeInUsd).toBe('$2.00');
+    const byBlock = await gql(
+      '{ transactionsByBlockId(blockId: "100", first: 1) { nodes { gasCosts { feeInUsd } } } }',
+    );
+    expect(byBlock.transactionsByBlockId.nodes[0].gasCosts.feeInUsd).toBe(
+      '$2.00',
+    );
+    const byOwner = await gql(
+      'query($o: Address!) { transactionsByOwner(owner: $o, first: 1) { nodes { gasCosts { feeInUsd } } } }',
+      { o: ACCOUNT },
+    );
+    expect(byOwner.transactionsByOwner.nodes[0].gasCosts.feeInUsd).toBe(
+      '$2.00',
+    );
+
+    const { gql: gqlNoPrice } = await setup({}, null);
+    const noPrice = await gqlNoPrice(
+      '{ transactions(first: 4) { nodes { gasCosts { feeInUsd } } } }',
+    );
+    expect(noPrice.transactions.nodes[0].gasCosts.feeInUsd).toBeNull();
+  });
+
+  it('transactionsByOwner reports 1-based pageInfo counts (oldest = 1, newest = totalCount), contiguous across pages and never 0 for a non-empty page', async () => {
+    const { gql } = await setup();
+    const page1 = await gql(
+      'query($o: Address!) { transactionsByOwner(owner: $o, first: 3) { pageInfo { startCount endCount totalCount endCursor } } }',
+      { o: ACCOUNT },
+    );
+    const { startCount, endCount, totalCount, endCursor } =
+      page1.transactionsByOwner.pageInfo;
+    expect(totalCount).toBeGreaterThan(6);
+    expect(endCount).toBe(totalCount);
+    expect(startCount).toBe(totalCount - 2);
+    expect(startCount).toBeGreaterThan(0);
+
+    const page2 = await gql(
+      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 3, before: $c) { pageInfo { startCount endCount } } }',
+      { o: ACCOUNT, c: endCursor },
+    );
+    expect(page2.transactionsByOwner.pageInfo.endCount).toBe(startCount - 1);
+    expect(page2.transactionsByOwner.pageInfo.startCount).toBe(startCount - 3);
+  });
+
+  it('transactionsByOwner does not fall back to fuel-core -- and returns an empty page instead of a hang -- when an after cursor is already at the newest known transaction', async () => {
+    let calls = 0;
+    const { gql } = await setup({
+      txsByOwner: async () => {
+        calls += 1;
+        return { items: [], hasNextPage: false, hasPreviousPage: false };
+      },
+    });
+    const page1 = await gql(
+      'query($o: Address!) { transactionsByOwner(owner: $o, first: 3) { pageInfo { startCursor } } }',
+      { o: ACCOUNT },
+    );
+    const after = await gql(
+      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 3, after: $c) { nodes { id } pageInfo { hasNextPage hasPreviousPage startCount endCount } } }',
+      { o: ACCOUNT, c: page1.transactionsByOwner.pageInfo.startCursor },
+    );
+    expect(after.transactionsByOwner.nodes).toEqual([]);
+    expect(after.transactionsByOwner.pageInfo.hasNextPage).toBe(false);
+    expect(after.transactionsByOwner.pageInfo.hasPreviousPage).toBe(true);
+    expect(calls).toBe(0);
   });
 
   it('transactionsByOwner falls back to fuel-core when the index has no rows, tracking per-item cursors', async () => {
@@ -475,14 +552,131 @@ describe('resolvers', () => {
     ).toBeNull();
   });
 
+  it('search resolves null instead of throwing on malformed or unknown hashes', async () => {
+    // Mirrors fuel-core rejecting a malformed BlockId/TransactionId with a
+    // GraphQL error, the way the live upstream does for row 23 of the parity
+    // report: a truncated hash must not crash the resolver.
+    const strictClient = {
+      heightForBlock: async (h: string) => {
+        if (!/^0x[0-9a-fA-F]{64}$/.test(h))
+          throw new Error('fuel-core: Invalid value for BlockId');
+        return null;
+      },
+      heightForTx: async (h: string) => {
+        if (!/^0x[0-9a-fA-F]{64}$/.test(h))
+          throw new Error('fuel-core: Invalid value for TransactionId');
+        return null;
+      },
+    };
+    const { gql } = await setup(strictClient);
+
+    const truncated = `0x${'a'.repeat(63)}`;
+    expect(
+      (await gql(`{ search(query: "${truncated}") { block { height } } }`))
+        .search,
+    ).toBeNull();
+
+    expect(
+      (await gql('{ search(query: "0x") { block { height } } }')).search,
+    ).toBeNull();
+
+    expect(
+      (await gql('{ search(query: "not a hash at all") { block { height } } }'))
+        .search,
+    ).toBeNull();
+
+    // Well-formed 64-hex id that fuel-core (and the local index) simply
+    // doesn't know about: every lookup returns null cleanly, no throw.
+    expect(
+      (await gql(`{ search(query: "${hex(999999)}") { block { height } } }`))
+        .search,
+    ).toBeNull();
+  });
+
+  it('search resolves null when fuel-core throws even for a well-formed id', async () => {
+    const throwingClient = {
+      heightForBlock: async () => {
+        throw new Error('fuel-core: upstream unavailable');
+      },
+      heightForTx: async () => {
+        throw new Error('fuel-core: upstream unavailable');
+      },
+    };
+    const { gql } = await setup(throwingClient);
+    const d = await gql(
+      `{ search(query: "${hex(999999)}") { block { height } } }`,
+    );
+    expect(d.search).toBeNull();
+  });
+
+  it('search logs each caught lookup failure once per stage instead of swallowing silently', async () => {
+    const throwingClient = {
+      heightForBlock: async () => {
+        throw new Error('fuel-core: upstream unavailable');
+      },
+      heightForTx: async () => {
+        throw new Error('fuel-core: upstream unavailable');
+      },
+    };
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const { gql } = await setup(throwingClient);
+      const d = await gql(
+        `{ search(query: "${hex(999999)}") { block { height } } }`,
+      );
+      expect(d.search).toBeNull();
+      expect(errorSpy).toHaveBeenCalledWith(
+        'search block failed',
+        expect.any(Error),
+      );
+      expect(errorSpy).toHaveBeenCalledWith(
+        'search transaction failed',
+        expect.any(Error),
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
   it('dashboard and stats do not throw', async () => {
     const { gql } = await setup();
     const d = await gql(
       '{ getBlocksDashboard { nodes { blockNo transactionsCount totalFee } } tps { nodes { txCount } } statistics { nodes { rollingStats60s { tps } totalFee24hrs } } }',
     );
     expect(d.getBlocksDashboard.nodes).toHaveLength(6);
-    expect(d.getBlocksDashboard.nodes[0].blockNo).toBe('120');
+    expect(d.getBlocksDashboard.nodes[0].blockNo).toBe(120);
     expect(typeof d.statistics.nodes.totalFee24hrs).toBe('string');
+  });
+
+  it('getBlocksDashboard serves numeric fields as JSON numbers, matching prod', async () => {
+    DataCache.getInstance().save('getBlocksDashboard', 0, undefined);
+    const { gql } = await setup();
+    const d = await gql(
+      '{ getBlocksDashboard { nodes { timestamp gasUsed totalFee blockNo transactionsCount blockSize } } }',
+    );
+    const node = d.getBlocksDashboard.nodes[0];
+    for (const field of [
+      'timestamp',
+      'gasUsed',
+      'totalFee',
+      'blockNo',
+      'transactionsCount',
+      'blockSize',
+    ] as const) {
+      expect(typeof node[field]).toBe('number');
+    }
+    expect(node.blockNo).toBe(120);
+    expect(node.transactionsCount).toBe(2);
+    expect(node.gasUsed).toBe(8);
+    expect(node.totalFee).toBe(2000000);
+    // Prod serves epoch milliseconds (parity/raw/prod_dash.json:
+    // 1788005795000); confirm the *1000 conversion against the same tai64
+    // math fakeBlock used to build height 120's header.time, rather than
+    // comparing to a live Date.now() (which drifts with suite runtime).
+    const expectedSeconds = DateHelper.tai64toDate(
+      (T0 + 120n * 60n).toString(),
+    ).unix();
+    expect(node.timestamp).toBe(expectedSeconds * 1000);
   });
 
   it('statistics and tps read hourly/10-minute series from the index, priced in USD', async () => {
@@ -551,10 +745,48 @@ describe('resolvers', () => {
     const rows = d.statistics.nodes.averageTpsPerMinute;
     expect(rows.length).toBe(truth.length);
     expect(rows.length).toBeGreaterThan(0);
-    rows.forEach((row: { date: string; value: string }, i: number) => {
+    rows.forEach((row: { date: string; value: number }, i: number) => {
       expect(row.date).toBe(String(truth[i].bucketStart * 1000));
-      expect(row.value).toBe((truth[i].txCount / 60).toFixed(2));
+      expect(row.value).toBe(Number((truth[i].txCount / 60).toFixed(2)));
     });
+  });
+
+  it('statistics and tps numeric fields are JSON numbers, not numeric strings', async () => {
+    DataCache.getInstance().save('statistics', 0, undefined);
+    DataCache.getInstance().save('tps', 0, undefined);
+    const { gql } = await setup();
+    const d = await gql(`{
+      statistics { nodes {
+        totalTps { value }
+        averageTps { value }
+        maxTps { value }
+        averageTpsPerMinute { value }
+        totalGasUsed { value }
+        averageGasUsed { value }
+        maxGasUsed { value }
+        totalFee { value }
+      } }
+      tps { nodes { txCount totalGas } }
+    }`);
+    const nodes = d.statistics.nodes;
+    for (const series of [
+      'totalTps',
+      'averageTps',
+      'maxTps',
+      'averageTpsPerMinute',
+      'totalGasUsed',
+      'averageGasUsed',
+      'maxGasUsed',
+      'totalFee',
+    ] as const) {
+      expect(nodes[series].length).toBeGreaterThan(0);
+      for (const row of nodes[series]) expect(typeof row.value).toBe('number');
+    }
+    expect(d.tps.nodes.length).toBeGreaterThan(0);
+    for (const row of d.tps.nodes) {
+      expect(typeof row.txCount).toBe('number');
+      expect(typeof row.totalGas).toBe('number');
+    }
   });
 
   it('statistics returns null USD fields when the price is unavailable', async () => {

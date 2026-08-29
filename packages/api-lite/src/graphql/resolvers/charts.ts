@@ -31,7 +31,7 @@ export function unix(block: GQLBlock) {
 // must be an epoch-millisecond string.
 const msOf = (bucketStart: number) => String(bucketStart * 1000);
 
-function detailsSeries(rows: SeriesRow[], value: (r: SeriesRow) => string) {
+function detailsSeries(rows: SeriesRow[], value: (r: SeriesRow) => number) {
   return rows.map((r) => ({ date: msOf(r.bucketStart), value: value(r) }));
 }
 
@@ -69,11 +69,17 @@ async function buildStatistics(ctx: AppContext) {
   const totalFeeBase = hourly.reduce((s, r) => s + BigInt(r.totalFee), 0n);
 
   return {
-    totalTps: detailsSeries(hourly, (r) => String(r.txCount)),
-    averageTps: detailsSeries(hourly, (r) => (r.txCount / 3600).toFixed(2)),
-    maxTps: detailsSeries(hourly, (r) => String(r.txCount)),
+    totalTps: detailsSeries(hourly, (r) => r.txCount),
+    averageTps: detailsSeries(hourly, (r) =>
+      Number((r.txCount / 3600).toFixed(2)),
+    ),
+    // Prod's maxTps (packages/graphql BlockDAO.getHourlyStatistics) is
+    // MAX(transactions_count) per hour bucket, i.e. the single busiest
+    // block, not the bucket's sum. Index.hourlySeries now carries that
+    // column directly (maxTxCount) from the same bucketed SQL query.
+    maxTps: detailsSeries(hourly, (r) => r.maxTxCount),
     averageTpsPerMinute: detailsSeries(minute, (r) =>
-      (r.txCount / MINUTE_SECONDS).toFixed(2),
+      Number((r.txCount / MINUTE_SECONDS).toFixed(2)),
     ),
     rollingStats60s: {
       tps: last60.length ? txs / 60 : 0,
@@ -89,14 +95,16 @@ async function buildStatistics(ctx: AppContext) {
         ? Math.max(...last60.map((b) => b.transactions.length))
         : 0,
     },
-    totalGasUsed: detailsSeries(hourly, (r) => r.gasUsed),
+    totalGasUsed: detailsSeries(hourly, (r) => Number(r.gasUsed)),
     averageGasUsed: detailsSeries(hourly, (r) =>
-      r.blocks ? (BigInt(r.gasUsed) / BigInt(r.blocks)).toString() : '0',
+      r.blocks ? Number(BigInt(r.gasUsed) / BigInt(r.blocks)) : 0,
     ),
-    maxGasUsed: detailsSeries(hourly, (r) => r.gasUsed),
+    // Same as maxTps above: the busiest single block's gas, from Index's
+    // maxGasUsed column, not the bucket's SUM (totalGasUsed above).
+    maxGasUsed: detailsSeries(hourly, (r) => r.maxGasUsed),
     totalFee: hourly.map((r) => ({
       date: msOf(r.bucketStart),
-      value: r.totalFee,
+      value: Number(r.totalFee),
       valueInUsd: feeInUsd(r.totalFee, usd),
     })),
     totalFee24hrs: feeInUsd(totalFeeBase, usd),
@@ -108,8 +116,8 @@ function buildTps(ctx: AppContext) {
   return hourly.map((r) => ({
     start: msOf(r.bucketStart),
     end: msOf(r.bucketStart + HOUR_SECONDS),
-    txCount: String(r.txCount),
-    totalGas: r.gasUsed,
+    txCount: r.txCount,
+    totalGas: Number(r.gasUsed),
   }));
 }
 

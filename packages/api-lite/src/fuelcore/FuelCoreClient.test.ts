@@ -40,6 +40,176 @@ describe('FuelCoreClient', () => {
     );
     expect(await c.heightForBlock('0xab')).toBe(5);
   });
+
+  describe('assetDetails', () => {
+    it('returns contractId/subId/totalSupply for a known asset', async () => {
+      const c = new FuelCoreClient(
+        'http://x',
+        fakeFetch(() => ({
+          assetDetails: {
+            contractId: '0xaa',
+            subId: '0xbb',
+            totalSupply: '100',
+          },
+        })),
+      );
+      expect(await c.assetDetails('0xasset')).toEqual({
+        contractId: '0xaa',
+        subId: '0xbb',
+        totalSupply: '100',
+      });
+    });
+
+    it('returns null for an asset fuel-core has no mint record for (e.g. the base asset)', async () => {
+      const c = new FuelCoreClient(
+        'http://x',
+        fakeFetch(() => ({ assetDetails: null })),
+      );
+      expect(await c.assetDetails('0xbase')).toBeNull();
+    });
+
+    it('returns null instead of throwing on a fuel-core error', async () => {
+      const f = (async () => {
+        throw new Error('network down');
+      }) as unknown as typeof fetch;
+      const c = new FuelCoreClient('http://x', f);
+      await expect(c.assetDetails('0xasset')).resolves.toBeNull();
+    });
+
+    it('caches both hits and misses within the ttl, without a second fetch', async () => {
+      let calls = 0;
+      const c = new FuelCoreClient(
+        'http://x',
+        fakeFetch(() => {
+          calls += 1;
+          return {
+            assetDetails: {
+              contractId: '0xaa',
+              subId: '0xbb',
+              totalSupply: '1',
+            },
+          };
+        }),
+        60_000,
+      );
+      await c.assetDetails('0xasset');
+      await c.assetDetails('0xasset');
+      expect(calls).toBe(1);
+    });
+
+    it('refetches once the ttl has elapsed', async () => {
+      let calls = 0;
+      const c = new FuelCoreClient(
+        'http://x',
+        fakeFetch(() => {
+          calls += 1;
+          return {
+            assetDetails: {
+              contractId: '0xaa',
+              subId: '0xbb',
+              totalSupply: '1',
+            },
+          };
+        }),
+        0,
+      );
+      await c.assetDetails('0xasset');
+      await c.assetDetails('0xasset');
+      expect(calls).toBe(2);
+    });
+
+    it('caches per assetId, not globally', async () => {
+      const c = new FuelCoreClient(
+        'http://x',
+        fakeFetch((body) => ({
+          assetDetails:
+            body.variables.id === '0x1'
+              ? { contractId: '0xaa', subId: '0xbb', totalSupply: '1' }
+              : null,
+        })),
+      );
+      expect(await c.assetDetails('0x1')).not.toBeNull();
+      expect(await c.assetDetails('0x2')).toBeNull();
+    });
+
+    it('does not cache a transient fetch failure: the next call retries fuel-core', async () => {
+      let fail = true;
+      let calls = 0;
+      const c = new FuelCoreClient('http://x', (async (
+        _url: string,
+        init: any,
+      ) => {
+        calls += 1;
+        if (fail) throw new Error('network down');
+        const body = JSON.parse(init.body);
+        void body;
+        return {
+          ok: true,
+          json: async () => ({
+            data: {
+              assetDetails: {
+                contractId: '0xaa',
+                subId: '0xbb',
+                totalSupply: '1',
+              },
+            },
+          }),
+        };
+      }) as unknown as typeof fetch);
+      expect(await c.assetDetails('0xasset')).toBeNull();
+      fail = false;
+      expect(await c.assetDetails('0xasset')).toEqual({
+        contractId: '0xaa',
+        subId: '0xbb',
+        totalSupply: '1',
+      });
+      expect(calls).toBe(2);
+    });
+
+    it('caches a real null answer from fuel-core (not just a thrown error)', async () => {
+      let calls = 0;
+      const c = new FuelCoreClient(
+        'http://x',
+        fakeFetch(() => {
+          calls += 1;
+          return { assetDetails: null };
+        }),
+      );
+      expect(await c.assetDetails('0xbase')).toBeNull();
+      expect(await c.assetDetails('0xbase')).toBeNull();
+      expect(calls).toBe(1);
+    });
+
+    it('bounds the cache: the oldest entry is evicted once more than 1000 distinct assetIds are seen', async () => {
+      let calls = 0;
+      const c = new FuelCoreClient(
+        'http://x',
+        fakeFetch((body) => {
+          calls += 1;
+          return {
+            assetDetails: {
+              contractId: '0xaa',
+              subId: body.variables.id,
+              totalSupply: '1',
+            },
+          };
+        }),
+      );
+      for (let i = 0; i < 1000; i++) await c.assetDetails(`0x${i}`);
+      expect(calls).toBe(1000);
+      // id 0 is the oldest entry; one more distinct id pushes the cache over
+      // its bound and evicts it.
+      await c.assetDetails('0x1000');
+      expect(calls).toBe(1001);
+      await c.assetDetails('0x0');
+      expect(calls).toBe(1002);
+      // id 999 was recently used (well within the last 1000 lookups), so it
+      // must still be cached.
+      await c.assetDetails('0x999');
+      expect(calls).toBe(1002);
+    });
+  });
+
   it('chainParams maps consensus parameters', async () => {
     const c = new FuelCoreClient(
       'http://x',

@@ -1,7 +1,35 @@
 import { readFileSync } from 'node:fs';
-import VerifiedAssets from '~/infra/cache/VerifiedAssets';
 import { providerDocPath } from '../../fuelcore/FuelCoreClient';
 import type { AppContext } from '../context';
+import {
+  amountInUsd,
+  findExactMatch,
+  isImpersonating,
+  loadVerifiedAssets,
+} from './assetEnrich';
+
+// Caps how many nodes in one balances/contractBalances response can have an
+// in-flight fuel-core assetDetails lookup at once, so a page full of unlisted
+// assets can't fan out into an unbounded burst of concurrent requests.
+const ASSET_DETAILS_CONCURRENCY = 20;
+
+async function mapWithConcurrency<T>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<void>,
+): Promise<void> {
+  let next = 0;
+  async function worker(): Promise<void> {
+    for (;;) {
+      const i = next++;
+      if (i >= items.length) return;
+      await fn(items[i]);
+    }
+  }
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, () => worker()),
+  );
+}
 
 // Read once at module load (there are only a handful of these documents, and
 // they never change at runtime), instead of a synchronous disk read per request.
@@ -47,34 +75,37 @@ async function enrichAssetNodes(container: any, ctx: AppContext) {
   ];
   if (!targets.length) return container;
 
-  let verified: any[] = [];
-  try {
-    verified = (await VerifiedAssets.getInstance().fetch()) ?? [];
-  } catch {
-    verified = [];
-  }
+  // Both fetched once per response, not per node: the registry list is the
+  // same for every node in the page, and re-awaiting ctx.price.usd() per node
+  // would serialize the whole loop behind PriceClient's own cache lookups.
+  const [verified, usd] = await Promise.all([
+    loadVerifiedAssets(),
+    ctx.price.usd(),
+  ]);
 
-  for (const node of targets) {
-    let match: { asset: any; network: any } | null = null;
-    for (const asset of verified) {
-      const network = (asset.networks ?? []).find(
-        (n: any) =>
-          n.type === 'fuel' &&
-          n.chainId === ctx.chain.chainId &&
-          n.assetId === node.assetId,
-      );
-      if (network) {
-        match = { asset, network };
-        break;
-      }
-    }
+  await mapWithConcurrency(targets, ASSET_DETAILS_CONCURRENCY, async (node) => {
+    const match = findExactMatch(verified, ctx.chain.chainId, node.assetId);
     node.name = match?.asset.name ?? null;
     node.symbol = match?.asset.symbol ?? null;
     node.icon = match?.asset.icon ?? null;
     node.decimals = match?.network.decimals ?? null;
-    node.suspicious = false;
-    node.amountInUsd = null;
-  }
+    if (match) {
+      node.suspicious = false;
+    } else {
+      // balances/contractBalances don't carry subId, so an unmatched asset
+      // needs one fuel-core round trip to check it (cached 60s in
+      // FuelCoreClient), bounded to ASSET_DETAILS_CONCURRENCY in flight.
+      const details = await ctx.client.assetDetails(node.assetId);
+      node.suspicious = isImpersonating(verified, details?.subId ?? null);
+    }
+    node.amountInUsd = amountInUsd(
+      ctx.chain.baseAssetId,
+      usd,
+      node.assetId,
+      node.amount,
+      node.decimals,
+    );
+  });
   return container;
 }
 

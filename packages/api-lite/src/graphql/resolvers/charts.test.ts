@@ -39,6 +39,44 @@ describe('buildCharts', () => {
     expect(ctx.index.hourlySeries).toHaveBeenCalledTimes(2);
   });
 
+  it("maxTps and maxGasUsed pass through Index's per-bucket MAX columns, not the bucket's sum", async () => {
+    // Index.hourlySeries now returns maxTxCount/maxGasUsed (MAX(tx_count)/
+    // MAX(gas_used) per bucket) alongside the existing SUM columns
+    // (txCount/gasUsed). buildStatistics must map maxTps/maxGasUsed from the
+    // MAX columns, leaving totalTps/totalGasUsed on the SUM columns.
+    const ctx = {
+      index: {
+        hourlySeries: jest.fn().mockReturnValue([
+          {
+            bucketStart: 0,
+            txCount: 4,
+            blocks: 2,
+            gasUsed: '530',
+            totalFee: '0',
+            maxTxCount: 3,
+            maxGasUsed: 500,
+          },
+        ]),
+        minuteSeries: jest.fn().mockReturnValue([]),
+      },
+      store: {
+        cached: jest.fn().mockReturnValue([]),
+        sizeOf: jest.fn(),
+      },
+      price: { usd: jest.fn().mockResolvedValue(2000) },
+    } as unknown as AppContext;
+
+    const { statistics } = await buildCharts(ctx);
+
+    expect(statistics.maxTps[0].value).toBe(3);
+    expect(statistics.maxTps[0].value).not.toBe(4);
+    expect(statistics.maxGasUsed[0].value).toBe(500);
+    expect(statistics.maxGasUsed[0].value).not.toBe(530);
+    // Sums must stay sums: unaffected by the max columns.
+    expect(statistics.totalTps[0].value).toBe(4);
+    expect(statistics.totalGasUsed[0].value).toBe(530);
+  });
+
   it('a call after the in-flight compute settles takes the cache-hit path (no further index reads)', async () => {
     const ctx = fakeCtx();
     await buildCharts(ctx);

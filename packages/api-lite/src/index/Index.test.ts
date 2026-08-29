@@ -103,6 +103,18 @@ describe('Index', () => {
       ],
     );
     expect(idx.countForAccount(a, 1001)).toBe(3);
+    expect(idx.newerCountForAccount(a, { height: 11, txIndex: 0 }, 1001)).toBe(
+      0,
+    );
+    expect(idx.newerCountForAccount(a, { height: 10, txIndex: 1 }, 1001)).toBe(
+      1,
+    );
+    expect(idx.newerCountForAccount(a, { height: 10, txIndex: 0 }, 1001)).toBe(
+      2,
+    );
+    expect(
+      idx.newerCountForAccount(hex(78), { height: 0, txIndex: 0 }, 1001),
+    ).toBe(0);
   });
 
   it('writes the same block twice without error', () => {
@@ -137,6 +149,24 @@ describe('Index', () => {
       contractId: hex(20),
       subId: hex(0),
     });
+    expect(idx.countByContract(hex(20))).toBe(1);
+    expect(idx.countByContract(hex(21))).toBe(0);
+  });
+
+  it('seedAsset backfills a registry asset without waiting for a live MINT receipt', () => {
+    idx.seedAsset(hex(30), hex(20), hex(0));
+    expect(idx.asset(hex(30))).toEqual({ contractId: hex(20), subId: hex(0) });
+    expect(idx.assetsByContract(hex(20))).toEqual([
+      { assetId: hex(30), subId: hex(0), height: 0 },
+    ]);
+    expect(idx.countByContract(hex(20))).toBe(1);
+  });
+
+  it('seedAsset never overwrites an asset already recorded from a real MINT receipt', () => {
+    idx.writeBlock(block(12, [{ id: hex(1), mint: [hex(20), hex(0)] }]));
+    const [before] = idx.assetsByContract(hex(20));
+    idx.seedAsset(before.assetId, hex(20), hex(0));
+    expect(idx.assetsByContract(hex(20))).toEqual([before]);
   });
 
   it('stores unix time, gas and fee, and buckets series', () => {
@@ -170,6 +200,11 @@ describe('Index', () => {
       blocks: 2,
       gasUsed: '30',
       totalFee: '12',
+      // MAX(tx_count)/MAX(gas_used) across the two blocks in this bucket
+      // (1 tx/10 gas at T, 1 tx/20 gas at T+100): the single busiest block,
+      // not the SUM columns above.
+      maxTxCount: 1,
+      maxGasUsed: 20,
     });
     expect(idx.tenMinuteSeries(T - 1)).toHaveLength(2);
     // Blocks at T, T+100, T+3700: 100s and 3700s apart, so each lands in a
@@ -193,6 +228,33 @@ describe('Index', () => {
     expect(idx.heightForTx(hex(2))).toEqual({ height: 11, txIndex: 0 });
     expect(idx.range().from).toBe(11);
     expect(idx.fileBytes()).toBeGreaterThanOrEqual(0);
+  });
+
+  it('deleteBelow prunes blocks/txs/tx_accounts but never assets, contracts or predicates', () => {
+    idx.writeBlock(
+      block(10, [
+        {
+          id: hex(1),
+          accounts: [hex(5)],
+          contractCreated: hex(20),
+          predicate: [hex(5), '0xdeadbeef'],
+          mint: [hex(20), hex(0)],
+        },
+      ]),
+    );
+    idx.writeBlock(block(11, [{ id: hex(2), accounts: [hex(5)] }]));
+    expect(idx.deleteBelow(11)).toBeGreaterThan(0);
+    expect(idx.heightForBlock(hex(1010))).toBeNull();
+    expect(idx.heightForTx(hex(1))).toBeNull();
+    expect(idx.accountExists(hex(5))).toBe(true);
+    expect(idx.predicate(hex(5))).toBe('0xdeadbeef');
+    expect(idx.contract(hex(20))).toEqual({ height: 10 });
+    const assets = idx.assetsByContract(hex(20));
+    expect(assets).toHaveLength(1);
+    expect(idx.asset(assets[0].assetId)).toEqual({
+      contractId: hex(20),
+      subId: hex(0),
+    });
   });
 
   it('deleteAboveRange keeps a stray row below from and removes a row above to', () => {

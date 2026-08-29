@@ -4,6 +4,7 @@ import type {
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
 import DataCache from '~/infra/cache/DataCache';
+import { convertToUsd } from '~/infra/dao/utils';
 import { parseTxCursor, txCursor } from '../../index/Index';
 import type { AppContext } from '../context';
 import {
@@ -17,18 +18,121 @@ import { resolveHeight } from './blocks';
 const FIRST_PAGE_CACHE_TTL_MS = 5_000;
 const FC_PAGE_TTL_BASE_MS = 30_000;
 const FC_PAGE_TTL_CAP_MS = 3_600_000;
+// Capped position/count for a single account, mirroring the cap
+// countForAccount and newerCountForAccount are already called with.
+const ACCOUNT_TX_COUNT_CAP = 1001;
+// The base asset is always 9-decimal (ETH); every USD conversion below is fee
+// or coin amounts denominated in it.
+const BASE_ASSET_DECIMALS = 9;
 
-export function toTxNode(tx: GQLTransaction, height: number, index: number) {
+export type Pricing = { usd: number | null; baseAssetId: string };
+
+function isBaseAsset(
+  assetId: string | null | undefined,
+  baseAssetId: string,
+): boolean {
+  return (
+    !!assetId &&
+    !!baseAssetId &&
+    assetId.toLowerCase() === baseAssetId.toLowerCase()
+  );
+}
+
+// Null only when the price itself is unavailable; a present price always
+// produces a formatted amount (including '$0' for a zero/missing input),
+// matching convertToUsd's own zero-amount formatting.
+function usdAmount(
+  amount: string | null | undefined,
+  usd: number | null,
+): string | null {
+  if (!usd) return null;
+  return convertToUsd(amount ?? undefined, BASE_ASSET_DECIMALS, usd).formatted;
+}
+
+const AMOUNT_ASSET_TYPES = new Set([
+  'InputCoin',
+  'CoinOutput',
+  'ChangeOutput',
+  'VariableOutput',
+]);
+
+function withAmountInUsd(
+  items: unknown[] | null | undefined,
+  pricing: Pricing,
+): unknown[] | null | undefined {
+  if (!items) return items;
+  return items.map((raw) => {
+    const item = raw as {
+      __typename?: string;
+      assetId?: string | null;
+      amount?: string | null;
+    };
+    if (!AMOUNT_ASSET_TYPES.has(item.__typename ?? '')) return raw;
+    const amountInUsd = isBaseAsset(item.assetId, pricing.baseAssetId)
+      ? usdAmount(item.amount, pricing.usd)
+      : null;
+    return { ...item, amountInUsd };
+  });
+}
+
+// Matches production's TransactionResolver.transaction(): mintAmountUsd is
+// always computed from mintAmount (undefined on a non-mint tx, so it comes
+// back as convertToUsd's '$0'), gated only on price availability -- not on
+// isMint -- except we additionally require the minted asset to be the base
+// asset, since converting a foreign asset's raw amount at the ETH rate would
+// be actively wrong rather than merely unavailable.
+function mintAmountUsdFor(
+  node: {
+    isMint?: boolean;
+    mintAssetId?: string | null;
+    mintAmount?: string | null;
+  },
+  pricing: Pricing,
+): string {
+  if (!pricing.usd) return '';
+  const amount =
+    node.isMint && isBaseAsset(node.mintAssetId, pricing.baseAssetId)
+      ? node.mintAmount
+      : undefined;
+  return convertToUsd(amount ?? undefined, BASE_ASSET_DECIMALS, pricing.usd)
+    .formatted;
+}
+
+function withGasCostsUsd<
+  T extends { gasCosts?: { fee?: string | null } | null },
+>(node: T, usd: number | null): T {
+  if (!node.gasCosts) return node;
+  return {
+    ...node,
+    gasCosts: { ...node.gasCosts, feeInUsd: usdAmount(node.gasCosts.fee, usd) },
+  };
+}
+
+export function toTxNode(
+  tx: GQLTransaction,
+  height: number,
+  index: number,
+  pricing: Pricing = { usd: null, baseAssetId: '' },
+) {
   const node = TransactionEntity.createFromGQL(tx, height, index).toGQLNode();
-  return { ...node, mintAmountUsd: node.mintAmountUsd ?? '' };
+  return {
+    ...withGasCostsUsd(node, pricing.usd),
+    inputs: withAmountInUsd(node.inputs, pricing),
+    outputs: withAmountInUsd(node.outputs, pricing),
+    mintAmountUsd: mintAmountUsdFor(node, pricing),
+  };
 }
 export function toTxListNode(
   tx: GQLTransaction,
   height: number,
   index: number,
+  pricing: Pricing = { usd: null, baseAssetId: '' },
 ) {
   return {
-    ...TransactionEntity.createFromGQL(tx, height, index).toGQLListNode(),
+    ...withGasCostsUsd(
+      TransactionEntity.createFromGQL(tx, height, index).toGQLListNode(),
+      pricing.usd,
+    ),
     cursor: txCursor(height, index),
   };
 }
@@ -55,6 +159,7 @@ async function collectDown(
   ctx: AppContext,
   start: { height: number; txIndex: number },
   size: number,
+  pricing: Pricing,
 ) {
   const out: ReturnType<typeof toTxListNode>[] = [];
   let h = start.height;
@@ -64,7 +169,7 @@ async function collectDown(
     if (!block) break;
     const from = idx == null ? block.transactions.length - 1 : idx;
     for (let i = from; i >= 0 && out.length < size; i--)
-      out.push(toTxListNode(block.transactions[i], h, i));
+      out.push(toTxListNode(block.transactions[i], h, i, pricing));
     h -= 1;
     idx = null as unknown as number;
   }
@@ -76,7 +181,7 @@ type FcDir =
   | { kind: 'older'; after?: string }
   | { kind: 'newer'; before?: string };
 
-async function renderFcItem(ctx: AppContext, it: FcItem) {
+async function renderFcItem(ctx: AppContext, it: FcItem, pricing: Pricing) {
   const block = await ctx.store.get(it.height);
   const idx =
     block?.transactions.findIndex(
@@ -84,7 +189,7 @@ async function renderFcItem(ctx: AppContext, it: FcItem) {
     ) ?? -1;
   if (!block || idx < 0) return null;
   return {
-    ...toTxListNode(block.transactions[idx], it.height, idx),
+    ...toTxListNode(block.transactions[idx], it.height, idx, pricing),
     cursor: `fc:${it.cursor}`,
   };
 }
@@ -144,22 +249,36 @@ async function pageFromFuelCore(
   size: number,
   dir: FcDir,
   existing: ReturnType<typeof toTxListNode>[] = [],
+  pricing: Pricing = { usd: null, baseAssetId: '' },
 ) {
   const fc = await fetchFcRawPage(ctx, owner, size, dir);
 
-  const items = [...existing];
-  const seen = new Set(items.map((i) => (i.id ?? '').toLowerCase()));
+  // Walk fc.items sequentially first to decide, cheaply and in memory, which
+  // ones are actually needed (deduped against `existing`, capped at `size`
+  // new items) and how many raw items that consumed (`i`, for `leftover`
+  // below). Only THOSE selected items are then rendered -- each a block
+  // lookup that can hit S3 -- and rendered concurrently instead of one at a
+  // time, so this fallback's latency is close to the slowest single lookup
+  // rather than their sum. Serial rendering here (one fuel-core round trip
+  // followed by up to `size` sequential block fetches) is what turned an
+  // unpinned transactionsByOwner page into a 504.
+  const seen = new Set(existing.map((i) => (i.id ?? '').toLowerCase()));
+  const toRender: FcItem[] = [];
   let i = 0;
-  while (items.length < size && i < fc.items.length) {
+  let needed = size - existing.length;
+  while (needed > 0 && i < fc.items.length) {
     const it = fc.items[i];
     i += 1;
     if (seen.has(it.id.toLowerCase())) continue;
-    const rendered = await renderFcItem(ctx, it);
-    if (rendered) {
-      items.push(rendered);
-      seen.add(it.id.toLowerCase());
-    }
+    seen.add(it.id.toLowerCase());
+    toRender.push(it);
+    needed -= 1;
   }
+  const rendered = await Promise.all(
+    toRender.map((it) => renderFcItem(ctx, it, pricing)),
+  );
+  const items = [...existing];
+  for (const r of rendered) if (r) items.push(r);
   const leftover = i < fc.items.length;
   return {
     items,
@@ -176,10 +295,15 @@ export const transactionResolvers = {
       const found = await locateTx(ctx, id);
       if (!found) return null;
       ctx.hot.hit('tx', id);
+      const pricing: Pricing = {
+        usd: await ctx.price.usd(),
+        baseAssetId: ctx.chain.baseAssetId,
+      };
       return toTxNode(
         found.block.transactions[found.index],
         Number(found.block.height),
         found.index,
+        pricing,
       );
     },
 
@@ -197,6 +321,10 @@ export const transactionResolvers = {
         const hit = cache.get(cacheKey);
         if (hit) return hit;
       }
+      const pricing: Pricing = {
+        usd: await ctx.price.usd(),
+        baseAssetId: ctx.chain.baseAssetId,
+      };
       let start: { height: number; txIndex: number };
       if (args.before) {
         const c = parseTxCursor(args.before);
@@ -206,14 +334,14 @@ export const transactionResolvers = {
             : { height: c.height - 1, txIndex: null as unknown as number };
       } else if (args.after) {
         const c = parseTxCursor(args.after);
-        const up = await collectUp(ctx, c, size + 1, tip);
+        const up = await collectUp(ctx, c, size + 1, tip, pricing);
         const hasNextPage = up.length > size;
         const items = up.slice(0, size).reverse();
         return connection(items, { hasNextPage, hasPreviousPage: true });
       } else {
         start = { height: tip, txIndex: null as unknown as number };
       }
-      const items = await collectDown(ctx, start, size);
+      const items = await collectDown(ctx, start, size, pricing);
       const last = items[items.length - 1];
       const result = connection(items, {
         hasNextPage: !!args.before,
@@ -239,8 +367,12 @@ export const transactionResolvers = {
       if (h == null) return emptyConnection();
       const block = await ctx.store.get(h);
       if (!block) return emptyConnection();
+      const pricing: Pricing = {
+        usd: await ctx.price.usd(),
+        baseAssetId: ctx.chain.baseAssetId,
+      };
       const all = block.transactions
-        .map((t, i) => toTxListNode(t, h, i))
+        .map((t, i) => toTxListNode(t, h, i, pricing))
         .reverse();
       let startAt = 0;
       if (args.before)
@@ -268,31 +400,45 @@ export const transactionResolvers = {
       const size = pageSize(args);
       const owner = args.owner.toLowerCase();
       ctx.hot.hit('account', owner);
+      const pricing: Pricing = {
+        usd: await ctx.price.usd(),
+        baseAssetId: ctx.chain.baseAssetId,
+      };
 
       if (args.before?.startsWith('fc:')) {
-        const page = await pageFromFuelCore(ctx, owner, size, {
-          kind: 'older',
-          after: args.before.slice(3),
-        });
+        const page = await pageFromFuelCore(
+          ctx,
+          owner,
+          size,
+          { kind: 'older', after: args.before.slice(3) },
+          [],
+          pricing,
+        );
         const total = page.hasNextPage
-          ? 1001
-          : ctx.index.countForAccount(owner, 1001);
+          ? ACCOUNT_TX_COUNT_CAP
+          : ctx.index.countForAccount(owner, ACCOUNT_TX_COUNT_CAP);
         return connection(page.items, {
           hasNextPage: page.hasNextPage,
           hasPreviousPage: page.hasPreviousPage,
           totalCount: total,
+          ...fuelCoreFallbackCounts(total, page.items.length),
         });
       }
       if (args.after?.startsWith('fc:')) {
-        const page = await pageFromFuelCore(ctx, owner, size, {
-          kind: 'newer',
-          before: args.after.slice(3),
-        });
-        const total = ctx.index.countForAccount(owner, 1001);
+        const page = await pageFromFuelCore(
+          ctx,
+          owner,
+          size,
+          { kind: 'newer', before: args.after.slice(3) },
+          [],
+          pricing,
+        );
+        const total = ctx.index.countForAccount(owner, ACCOUNT_TX_COUNT_CAP);
         return connection(page.items, {
           hasNextPage: page.hasNextPage,
           hasPreviousPage: page.hasPreviousPage,
           totalCount: total,
+          ...fuelCoreFallbackCounts(total, page.items.length),
         });
       }
 
@@ -306,15 +452,24 @@ export const transactionResolvers = {
       for (const ref of indexPage) {
         const block = await ctx.store.get(ref.height);
         const tx = block?.transactions[ref.txIndex];
-        if (tx) items.push(toTxListNode(tx, ref.height, ref.txIndex));
+        if (tx) items.push(toTxListNode(tx, ref.height, ref.txIndex, pricing));
       }
-      let total = ctx.index.countForAccount(owner, 1001);
+      let total = ctx.index.countForAccount(owner, ACCOUNT_TX_COUNT_CAP);
 
       const oldest = refs[refs.length - 1];
       const range = ctx.index.range();
-      const atBoundary =
-        refs.length === 0 ||
-        (!!oldest && range.from != null && oldest.height === range.from);
+      const atOldBoundary =
+        !!oldest && range.from != null && oldest.height === range.from;
+      // The fuel-core fallback exists to reach further back than the 48h
+      // index window goes, so it only makes sense once there's nowhere older
+      // left to look (no rows at all, or the oldest row found is the index's
+      // own oldest boundary) AND we're not already paginating toward newer
+      // transactions via `after`. Firing it for a plain `after` cursor with
+      // zero rows -- which just means "nothing newer than this yet" -- was
+      // the reproduced cause of the transactionsByOwner 504: it re-fetched
+      // fuel-core's own most-recent page for a high-volume account on every
+      // such request instead of returning the (correct) empty page.
+      const atBoundary = !args.after && (refs.length === 0 || atOldBoundary);
       if (indexPage.length < size && atBoundary) {
         const page = await pageFromFuelCore(
           ctx,
@@ -322,29 +477,71 @@ export const transactionResolvers = {
           size,
           { kind: 'older', after: undefined },
           items,
+          pricing,
         );
-        if (page.hasNextPage) total = 1001;
+        if (page.hasNextPage) total = ACCOUNT_TX_COUNT_CAP;
         return connection(page.items, {
           hasNextPage: page.hasNextPage,
           hasPreviousPage: page.hasPreviousPage,
           totalCount: total,
+          ...fuelCoreFallbackCounts(total, page.items.length),
         });
       }
+
+      // items[0] is the newest row in the page and items[last] the oldest
+      // (txsForAccount always returns newest-first); position is 1-based and
+      // ascending from the account's oldest transaction, matching
+      // production (e.g. a busy account's most recent page reporting
+      // something like 992/1001, not 1/1001). Clamped to [1, total] so a cap
+      // saturating both the total and the newer-than-ref count (an account
+      // with more than ACCOUNT_TX_COUNT_CAP transactions still in the 48h
+      // window) can't report a false zero on a non-empty page.
+      const rankAscending = (ref: { height: number; txIndex: number }) =>
+        Math.max(
+          1,
+          Math.min(
+            total,
+            total -
+              ctx.index.newerCountForAccount(owner, ref, ACCOUNT_TX_COUNT_CAP),
+          ),
+        );
+      const endCount = items.length ? rankAscending(indexPage[0]) : 0;
+      const startCount = items.length
+        ? rankAscending(indexPage[indexPage.length - 1])
+        : 0;
 
       return connection(items, {
         hasNextPage: !!args.before || (!!args.after && refs.length > size),
         hasPreviousPage: args.after ? true : refs.length > size,
         totalCount: total,
+        startCount,
+        endCount,
       });
     },
   },
 };
+
+// Fuel-core fallback pages sit at or beyond the edge of the 48h index
+// window, where tx_accounts can't give an exact 1-based position. Rather
+// than fabricate one, this pins the page to the oldest end of the known
+// total: never 0 for a non-empty page (Pagination.tsx hides the count label
+// on a falsy value), and consistent with the fallback always being reached
+// while paginating toward older transactions.
+function fuelCoreFallbackCounts(total: number, pageLength: number) {
+  if (pageLength === 0) return { startCount: 0, endCount: 0 };
+  const effectiveTotal = Math.max(total, pageLength);
+  return {
+    startCount: Math.max(1, effectiveTotal - pageLength + 1),
+    endCount: effectiveTotal,
+  };
+}
 
 async function collectUp(
   ctx: AppContext,
   c: { height: number; txIndex: number },
   limit: number,
   tip: number,
+  pricing: Pricing,
 ) {
   const out: ReturnType<typeof toTxListNode>[] = [];
   let h = c.height;
@@ -353,7 +550,7 @@ async function collectUp(
     const block = await ctx.store.get(h);
     if (!block) break;
     for (let i = idx; i < block.transactions.length && out.length < limit; i++)
-      out.push(toTxListNode(block.transactions[i], h, i));
+      out.push(toTxListNode(block.transactions[i], h, i, pricing));
     h += 1;
     idx = 0;
   }
