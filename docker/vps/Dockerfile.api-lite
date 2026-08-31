@@ -46,9 +46,24 @@ COPY --from=build /out/package.json ./package.json
 RUN npm install --omit=dev --no-audit --no-fund \
  && npm ls --omit=dev --depth=0
 
+# 384 MB was too tight: BlockStore's LRU sizeCalculation used to account
+# each cached block's raw serialized JSON size, but a decoded block's real
+# V8 heap footprint runs ~2.25x that (measured, see
+# packages/api-lite/scripts/measure-heap-multiplier.ts and BlockStore.ts's
+# HEAP_BYTES_MULTIPLIER), and a backfill batch holds several decoded blocks
+# resident at once on top of the cache. That combination repeatedly hit
+# --max-old-space-size=384 during backfill (Railway incident 2026-08-28:
+# "Ineffective mark-compacts near heap limit" ~605s after boot, heap
+# 373-390 MB). BlockStore's accounting is now heap-aware and MEMORY_CACHE_BYTES
+# / BACKFILL_BATCH defaults were lowered accordingly (see config.ts), but 768
+# keeps real headroom rather than re-relying on accounting alone.
+# NOTE: docker/vps/docker-compose.yml and docker-compose.prod.yml override
+# this back down to 384 for the 1 GB "$5/month VPS" simulation profile
+# (mem_limit 960m there leaves too little room above a 768 MB V8 heap for
+# Node's own non-heap overhead); Railway (this default) has more headroom.
 FROM node:20-alpine AS runtime
 ENV NODE_ENV=production
-ENV NODE_OPTIONS=--max-old-space-size=384
+ENV NODE_OPTIONS=--max-old-space-size=768
 WORKDIR /app
 COPY --from=deps /out/package.json ./package.json
 COPY --from=deps /out/node_modules ./node_modules

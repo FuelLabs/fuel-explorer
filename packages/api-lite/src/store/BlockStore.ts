@@ -23,6 +23,27 @@ type Opts = {
   pinned?: () => Set<number>;
 };
 
+// A decoded GQLBlock's real V8 heap footprint (nested objects/arrays/strings
+// for every tx, input, output, receipt) runs well above its
+// JSON.stringify() byte length -- measured empirically at ~2.25x via
+// scripts/measure-heap-multiplier.ts against two real mainnet block fixtures
+// (test/fixtures/blocks/62724773.bin, 62724775.bin; 200 held copies each,
+// process.memoryUsage().heapUsed delta with --expose-gc). Rounded up to 2.5x
+// for headroom. Without this, the LRU's `memoryBytes` budget bounds only the
+// serialized size, not the real heap it costs to hold those objects, so a
+// "128 MB" cache can retain several times that in actual heap -- this is
+// what pushed the container over its --max-old-space-size during backfill
+// (see docker/vps/Dockerfile.api-lite's comment for the full memory math).
+const HEAP_BYTES_MULTIPLIER = 2.5;
+
+// How often evictOverflow's "skipped N pinned height(s)" line may log. A
+// pinned-heavy cache during heavy backfill calls writeDisk (and therefore
+// evictOverflow) many times a second; without a rate limit each of those
+// calls logs, flooding stdout for no added information (the pinned set
+// barely changes between calls -- see PINNED_RECOMPUTE_INTERVAL_MS in
+// main.ts, which only recomputes it once a minute).
+const PINNED_SKIP_LOG_INTERVAL_MS = 60_000;
+
 export class BlockStore {
   private readonly memory: LRUCache<number, GQLBlock>;
   private readonly memorySizes = new Map<number, number>();
@@ -33,14 +54,20 @@ export class BlockStore {
   // never needs to re-stat the directory on the hot path.
   private readonly diskSizes = new Map<number, number>();
   private diskBytesTotal = 0;
+  private lastPinnedSkipLogAt = 0;
 
   constructor(readonly opts: Opts) {
     this.memory = new LRUCache<number, GQLBlock>({
       maxSize: opts.memoryBytes,
       sizeCalculation: (b, key) => {
-        const size = Math.max(1, Buffer.byteLength(JSON.stringify(b)));
-        this.memorySizes.set(key, size);
-        return size;
+        const raw = Math.max(1, Buffer.byteLength(JSON.stringify(b)));
+        // sizeOf() (and charts.ts's blockSize(), which falls back to it)
+        // report the block's real serialized size to users, so the raw,
+        // un-multiplied value is what's stored here -- only the value
+        // returned below (which the LRU compares against `memoryBytes`) is
+        // heap-adjusted.
+        this.memorySizes.set(key, raw);
+        return Math.max(1, Math.round(raw * HEAP_BYTES_MULTIPLIER));
       },
       dispose: (_v, key) => {
         this.memorySizes.delete(key);
@@ -239,9 +266,13 @@ export class BlockStore {
       }
     }
     if (skipped > 0) {
-      console.log(
-        `BlockStore: eviction pass skipped ${skipped} pinned height(s)`,
-      );
+      const now = Date.now();
+      if (now - this.lastPinnedSkipLogAt >= PINNED_SKIP_LOG_INTERVAL_MS) {
+        this.lastPinnedSkipLogAt = now;
+        console.log(
+          `BlockStore: eviction pass skipped ${skipped} pinned height(s)`,
+        );
+      }
     }
   }
 

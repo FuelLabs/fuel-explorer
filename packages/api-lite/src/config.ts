@@ -12,11 +12,38 @@ const schema = z
     PORT: num(3000),
     DATA_DIR: z.string().default('/data'),
     DISK_CACHE_BYTES: num(5 * 1024 ** 3),
-    MEMORY_CACHE_BYTES: num(128 * 1024 ** 2),
+    // BlockStore's LRU sizeCalculation (src/store/BlockStore.ts) multiplies
+    // every block's raw serialized size by HEAP_BYTES_MULTIPLIER (measured
+    // ~2.25x, rounded to 2.5x) before comparing it to this budget, so this
+    // number is a real-heap ceiling for the cache, not a serialized-bytes
+    // one. Sized at 256 MB (holds ~40-47 blocks at the measured worst-case
+    // ~5.9 MB/block real heap) because graphql/resolvers/charts.ts's
+    // rollingStats60s reads a trailing ~60-second/~60-block window straight
+    // off BlockStore.cached() -- the old 128 MB *serialized-bytes* default
+    // was, not coincidentally, sized to hold about that many blocks raw
+    // (~58 at ~2.2 MB/block JSON). 256 MB here, plus backfill's and
+    // TipTracker's in-flight batches (both share BACKFILL_BATCH -- see
+    // main.ts -- so up to 2 x 10 blocks x ~6 MB real heap each, measured
+    // worst case, can be resident at once: after a large tip-gap reset both
+    // run unpaused), plus base process/sqlite overhead (~80-100 MB), fits
+    // the Dockerfile's 768 MB --max-old-space-size
+    // (docker/vps/Dockerfile.api-lite) with ~35% headroom. This does NOT
+    // fit the 384 MB VPS/DO compose profile alongside those batches, so
+    // docker/vps/docker-compose.yml and docker-compose.prod.yml override it
+    // back down (to 48 MB, trading rollingStats60s accuracy for safety on
+    // that tier -- see their comments).
+    MEMORY_CACHE_BYTES: num(256 * 1024 ** 2),
     INDEX_RETENTION_DAYS: num(3),
     INDEX_MAX_BYTES: num(15_000_000_000),
     TIP_POLL_MS: num(5000),
-    BACKFILL_BATCH: num(20),
+    // Blocks fetched per Indexer.backfillStep call, and (via main.ts, which
+    // passes this same value through) per TipTracker tick. getRange holds
+    // the whole batch's decoded blocks resident until every one of them
+    // resolves; both can run unpaused at once (see MEMORY_CACHE_BYTES's
+    // comment), so this bounds their *combined* peak transient heap at
+    // ~2 x 10 x ~6 MB measured = ~120 MB, on top of the memory cache and
+    // process baseline above.
+    BACKFILL_BATCH: num(10),
     S3_CONCURRENCY: num(8),
     RPC_MAX_BLOCKS_PER_SECOND: num(5),
     // No static default: it depends on FUEL_PROVIDER's chain, resolved at

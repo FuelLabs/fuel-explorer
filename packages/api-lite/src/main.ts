@@ -139,6 +139,11 @@ async function main() {
           pinned,
         },
   );
+  // batch bounds backfillStep's peak transient heap: BlockStore.getRange
+  // holds every block in the batch decoded and resident until all of them
+  // resolve, on top of whatever's already in the memory cache -- see
+  // config.ts's comments on BACKFILL_BATCH and MEMORY_CACHE_BYTES for the
+  // measured memory math this default was sized against.
   const indexer = new Indexer({
     index,
     store,
@@ -180,6 +185,14 @@ async function main() {
     pollMs: cfg.tipPollMs,
     onBlock: (b) => indexer.indexBlock(b),
     initialServedTip: seed,
+    // Shares cfg.backfillBatch with the Indexer above (default 10, not
+    // TipTracker's own default of 20): after a large tip-gap reset
+    // (index.clearRange() above), lag is 0 and backfill is not paused, so
+    // this tracker's getRange batch and backfillStep's getRange batch can
+    // both be in flight at once. Leaving this unset let peak resident
+    // decoded blocks reach batch(backfill) + TipTracker's own hardcoded 20,
+    // silently exceeding the memory math documented in config.ts.
+    batch: cfg.backfillBatch,
     // Backfill and forward catch-up share one CPU. When the tracker falls
     // far behind, pausing backfill gives catch-up the room to beat the
     // chain; resume only once the lag has come well back down, so the two

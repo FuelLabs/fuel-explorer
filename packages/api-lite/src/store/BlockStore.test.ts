@@ -167,6 +167,44 @@ describe('BlockStore', () => {
     logSpy.mockRestore();
   });
 
+  it('rate-limits the pinned-skip log so a busy backfill does not spam it once per write', async () => {
+    jest.useFakeTimers();
+    try {
+      const dataDir = mkdtempSync(join(tmpdir(), 'bs-pinned-spam-'));
+      const blocksDir = join(dataDir, 'blocks');
+      mkdirSync(blocksDir, { recursive: true });
+      writeFileSync(
+        join(blocksDir, '1.json.gz'),
+        gzipSync(JSON.stringify(fakeBlock(1))),
+      );
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const { store } = makeStore({
+        dataDir,
+        diskBytes: 1, // height 1 is pinned and can never be evicted down to this cap
+        pinned: () => new Set([1]),
+      });
+      await store.get(100);
+      await store.get(101);
+      await store.get(102);
+      const skipLogs = logSpy.mock.calls.filter((c) =>
+        String(c[0]).includes('skipped'),
+      );
+      expect(skipLogs).toHaveLength(1);
+
+      // Once the rate-limit window has passed, the next skip logs again.
+      jest.advanceTimersByTime(61_000);
+      await store.get(103);
+      const skipLogsAfter = logSpy.mock.calls.filter((c) =>
+        String(c[0]).includes('skipped'),
+      );
+      expect(skipLogsAfter).toHaveLength(2);
+
+      logSpy.mockRestore();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it('evictDisk backstop also honors pinned heights', async () => {
     const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
     const { store } = makeStore({
@@ -410,6 +448,42 @@ describe('BlockStore', () => {
     // The 3 most recently written blocks (102, 103, 104) survive; the 2 oldest
     // (100, 101) are evicted as soon as the cap is exceeded, not after the fact.
     expect(files.sort()).toEqual(['102.json.gz', '103.json.gz', '104.json.gz']);
+  });
+
+  it('accounts memory eviction using the heap multiplier, not the raw serialized size', async () => {
+    // Two blocks whose *raw* JSON sizes both fit comfortably under
+    // memoryBytes, but whose heap-adjusted sizes (raw * HEAP_BYTES_MULTIPLIER)
+    // do not -- if the LRU only ever compared raw bytes to memoryBytes, both
+    // would still be resident in memory after fetching the second one.
+    const { store } = makeStore({
+      decode: (bytes) => fakeBlock(bytes[0], 3000),
+      // Each block's raw JSON size is ~3171B (two fit easily, ~6342B total),
+      // but its heap-adjusted size is ~3171 * 2.5 = ~7928B, so two together
+      // (~15856B) exceed this budget even though their raw sizes don't.
+      memoryBytes: 10_000,
+    });
+    await store.get(1);
+    await store.get(2);
+    // Height 1 must have been evicted from the in-memory LRU once the
+    // heap-adjusted size of both blocks exceeded memoryBytes -- even though
+    // their raw serialized sizes together stayed under it. (get(1) again
+    // would still resolve, but from the on-disk cache, which masks a memory
+    // miss -- see 'serves from disk after memory eviction' above -- so the
+    // LRU's own membership is asserted directly instead.)
+    expect((store as any).memory.has(1)).toBe(false);
+    expect((store as any).memory.has(2)).toBe(true);
+  });
+
+  it('sizeOf() still reports the raw serialized size, unaffected by the heap multiplier', async () => {
+    // charts.ts's blockSize() reports this to users as the block's on-disk
+    // size, so it must not be inflated by the internal heap-accounting
+    // multiplier applied to the LRU's own eviction bookkeeping.
+    const { store } = makeStore({
+      decode: (bytes) => fakeBlock(bytes[0], 100),
+    });
+    const block = await store.get(1);
+    const raw = Buffer.byteLength(JSON.stringify(block));
+    expect(store.sizeOf(1)).toBe(raw);
   });
 
   it('getRange stores null at a failing height and keeps the rest of the range', async () => {

@@ -12,11 +12,11 @@ describe('loadConfig', () => {
     expect(c.port).toBe(3000);
     expect(c.dataDir).toBe('/data');
     expect(c.diskCacheBytes).toBe(5 * 1024 ** 3);
-    expect(c.memoryCacheBytes).toBe(128 * 1024 ** 2);
+    expect(c.memoryCacheBytes).toBe(256 * 1024 ** 2);
     expect(c.indexRetentionDays).toBe(3);
     expect(c.indexMaxBytes).toBe(15_000_000_000);
     expect(c.tipPollMs).toBe(5000);
-    expect(c.backfillBatch).toBe(20);
+    expect(c.backfillBatch).toBe(10);
     expect(c.s3Concurrency).toBe(8);
   });
 

@@ -29,6 +29,13 @@ services:
       INDEX_MAX_BYTES: "12000000000"
       DISK_CACHE_BYTES: "5368709120"
       BLOCK_SOURCE: ${BLOCK_SOURCE:-rpc}
+      # Overrides the Dockerfile's 768 MB default: same 960m memory limit as
+      # docker-compose.yml's 1 GB VPS profile -- see that file's comment.
+      NODE_OPTIONS: "--max-old-space-size=384"
+      # Overrides config.ts's 256 MB default -- same tradeoff as
+      # docker-compose.yml's MEMORY_CACHE_BYTES override; see that file's
+      # comment.
+      MEMORY_CACHE_BYTES: "50331648"
     volumes:
       - api-data:/data
     restart: unless-stopped
