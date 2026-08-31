@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors';
 import type { PaginationDirection } from './types';
 
 export class PaginatedParams {
@@ -22,7 +23,7 @@ export class PaginatedParams {
 
     const last = params.last ? Number(params.last) : undefined;
     if (last !== undefined && last > maxPageSize) {
-      throw new Error(`Maximum page size allowed is ${maxPageSize}`);
+      throw new ValidationError(`Maximum page size allowed is ${maxPageSize}`);
     }
 
     this.last = last || 10;

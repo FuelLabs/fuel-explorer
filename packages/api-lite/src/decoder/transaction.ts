@@ -110,13 +110,16 @@ function policies(body: Record<string, unknown>) {
     maturity: null,
     maxFee: null,
   };
+  // Only the 4 fields the GraphQL `Policies` type actually exposes
+  // (fuelcore.graphql). Expiration (position 4) and Owner (position 5) are
+  // schema-inert here -- ownerInputIndex is resolved separately straight
+  // from rawPayload by PoliciesResolver -- and are handled for real by
+  // fuelsTx.ts's mapPolicies, which drives the txId-critical encode.
   const positions: [number, PolicyType][] = [
     [0, PolicyType.Tip],
     [1, PolicyType.WitnessLimit],
     [2, PolicyType.Maturity],
     [3, PolicyType.MaxFee],
-    [4, PolicyType.Expiration],
-    [5, PolicyType.Owner],
   ];
   for (const [position, type] of positions) {
     if ((bits & type) === 0) continue;

@@ -43,7 +43,7 @@ export function createApp(ctx: AppDeps) {
     lag: ctx.tip.fuelCoreTip - ctx.tip.servedTip,
     backfillPaused: ctx.indexer?.backfillPaused ?? false,
     blockSource: ctx.blockSource ?? 's3',
-    index: ctx.index.range(),
+    index: { ...ctx.index.range(), gaps: ctx.index.gaps() },
     indexBytes: ctx.index.fileBytes(),
     hot: ctx.hot.counts(),
     rss: process.memoryUsage().rss,

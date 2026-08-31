@@ -1,4 +1,12 @@
+import { http, createPublicClient } from 'viem';
 import { FinalizationPeriods } from './finalization';
+
+// A real viem client pointed at an unreachable local port: cheap to
+// construct (viem's http transport doesn't connect until a call is made),
+// and any actual readContract call against it fails the same way a bad RPC
+// URL would in production, without a network mock.
+const unreachableClient = () =>
+  createPublicClient({ transport: http('http://127.0.0.1:1') });
 
 describe('FinalizationPeriods.unbondingTimeSeconds', () => {
   it('parses the cosmos duration string ("1814400s") into seconds', async () => {
@@ -6,7 +14,7 @@ describe('FinalizationPeriods.unbondingTimeSeconds', () => {
       json: async () => ({ params: { unbonding_time: '1814400s' } }),
     })) as unknown as typeof fetch;
     const fp = new FinalizationPeriods(
-      'http://127.0.0.1:1',
+      unreachableClient(),
       'mainnet',
       'https://rest.seq.mainnet.fuel.network',
       fetchImpl,
@@ -19,7 +27,7 @@ describe('FinalizationPeriods.unbondingTimeSeconds', () => {
       json: async () => ({ params: { unbonding_time: '100s' } }),
     })) as unknown as typeof fetch;
     const fp = new FinalizationPeriods(
-      'http://127.0.0.1:1',
+      unreachableClient(),
       'mainnet',
       'https://rest.seq.mainnet.fuel.network',
       fetchImpl,
@@ -35,7 +43,7 @@ describe('FinalizationPeriods.unbondingTimeSeconds', () => {
       json: async () => ({ params: {} }),
     })) as unknown as typeof fetch;
     const fp = new FinalizationPeriods(
-      'http://127.0.0.1:1',
+      unreachableClient(),
       'mainnet',
       'https://rest.seq.mainnet.fuel.network',
       fetchImpl,
@@ -48,7 +56,7 @@ describe('FinalizationPeriods.unbondingTimeSeconds', () => {
       throw new Error('network down');
     }) as unknown as typeof fetch;
     const fp = new FinalizationPeriods(
-      'http://127.0.0.1:1',
+      unreachableClient(),
       'mainnet',
       'https://rest.seq.mainnet.fuel.network',
       fetchImpl,
@@ -60,11 +68,34 @@ describe('FinalizationPeriods.unbondingTimeSeconds', () => {
 describe('FinalizationPeriods.timeToFinalize', () => {
   it('falls back to the current mainnet value when the contract read fails', async () => {
     const fp = new FinalizationPeriods(
-      'http://127.0.0.1:1',
+      unreachableClient(),
       'mainnet',
       'https://rest.seq.mainnet.fuel.network',
     );
     expect(await fp.timeToFinalizeStrict()).toBeNull();
     expect(await fp.timeToFinalize()).toBe(2880);
+  });
+
+  // The client is constructed once by the caller (main.ts, at wiring time)
+  // and reused across calls -- this pins that FinalizationPeriods itself
+  // never constructs a new client on a cache-miss, unlike before this fix.
+  it('reuses the same injected client instance across repeated cache-miss calls', async () => {
+    const client = unreachableClient();
+    const readContractSpy = jest
+      .spyOn(client, 'readContract')
+      .mockRejectedValue(new Error('rpc down'));
+    const fp = new FinalizationPeriods(
+      client,
+      'mainnet',
+      'https://rest.seq.mainnet.fuel.network',
+      fetch,
+      0, // ttlMs=0 forces a fresh call (cache-miss) every time
+    );
+    await fp.timeToFinalizeStrict();
+    await fp.timeToFinalizeStrict();
+    expect(readContractSpy).toHaveBeenCalledTimes(2);
+    // Both calls went through the one client instance passed in, not a
+    // freshly constructed one -- there's nowhere else `readContract` could
+    // have come from since none is constructed inside the class anymore.
   });
 });

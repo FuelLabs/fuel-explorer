@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { ValidationError } from '../errors';
 import { type RestRouterDeps, handleRestRequest } from './router';
 
 function fakeReq(method: string, url: string): IncomingMessage {
@@ -127,6 +128,27 @@ describe('handleRestRequest', () => {
     expect(calls.status).toBe(503);
   });
 
+  it('returns 502 (never the raw error message) and logs server-side when /staking/apy throws a non-validation error', async () => {
+    const { res, calls } = fakeRes();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const deps: RestRouterDeps = {
+      ...disabledDeps(),
+      apy: {
+        amount: jest.fn().mockRejectedValue(new Error('cosmos rest 503')),
+      },
+    };
+    await handleRestRequest(fakeReq('GET', '/staking/apy'), res, deps);
+    expect(calls.status).toBe(502);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      error: 'upstream unavailable',
+    });
+    expect(errSpy).toHaveBeenCalledWith(
+      'staking/apy failed',
+      expect.any(Error),
+    );
+    errSpy.mockRestore();
+  });
+
   it('responds 400 (never rejects) for a malformed request target', async () => {
     const { res, calls } = fakeRes();
     await expect(
@@ -195,6 +217,31 @@ describe('handleRestRequest', () => {
     });
   });
 
+  it('GET /staking/events returns 400 with the message when the store rejects with a ValidationError (e.g. a malformed address)', async () => {
+    const { res, calls } = fakeRes();
+    const deps = enabledDeps({
+      store: {
+        getEvents: jest
+          .fn()
+          .mockRejectedValue(
+            new ValidationError(
+              'Invalid address format, expected a valid Ethereum address',
+            ),
+          ),
+        getEvent: jest.fn(),
+      },
+    } as never);
+    await handleRestRequest(
+      fakeReq('GET', '/staking/events?address=not-an-address'),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      message: 'Invalid address format, expected a valid Ethereum address',
+    });
+  });
+
   it('GET /staking/events returns 400 with the message when last exceeds the page cap', async () => {
     const { res, calls } = fakeRes();
     const deps = enabledDeps();
@@ -231,8 +278,9 @@ describe('handleRestRequest', () => {
     });
   });
 
-  it('GET /staking/events/:eventId returns 400 when the store throws "Event not found"', async () => {
+  it('GET /staking/events/:eventId returns 502 (never the raw error message) and logs server-side when the store throws a non-validation error', async () => {
     const { res, calls } = fakeRes();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const deps = enabledDeps({
       store: {
         getEvents: jest.fn(),
@@ -240,10 +288,29 @@ describe('handleRestRequest', () => {
       },
     } as never);
     await handleRestRequest(fakeReq('GET', '/staking/events/9'), res, deps);
-    expect(calls.status).toBe(400);
+    expect(calls.status).toBe(404);
     expect(JSON.parse(calls.body as string)).toEqual({
-      message: 'Event not found',
+      error: 'Event not found',
     });
+    errSpy.mockRestore();
+  });
+
+  it('GET /staking/events/:eventId returns 502 when the lookup itself fails', async () => {
+    const { res, calls } = fakeRes();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const deps = enabledDeps({
+      store: {
+        getEvents: jest.fn(),
+        getEvent: jest.fn().mockRejectedValue(new Error('SQLITE_BUSY')),
+      },
+    } as never);
+    await handleRestRequest(fakeReq('GET', '/staking/events/9'), res, deps);
+    expect(calls.status).toBe(502);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      error: 'upstream unavailable',
+    });
+    expect(errSpy).toHaveBeenCalledWith('staking failed', expect.any(Error));
+    errSpy.mockRestore();
   });
 
   it('GET /staking/finalization-period/withdraw sums minutes*60 + commit + sync constants', async () => {
@@ -276,8 +343,9 @@ describe('handleRestRequest', () => {
     expect(JSON.parse(calls.body as string)).toEqual({ seconds: null });
   });
 
-  it('GET /staking/finalization-period/withdraw returns 500 { seconds: null } on throw', async () => {
+  it('GET /staking/finalization-period/withdraw returns 502 { error } (no seconds key) on throw', async () => {
     const { res, calls } = fakeRes();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const deps = enabledDeps({
       finalization: {
         timeToFinalizeStrict: jest.fn().mockRejectedValue(new Error('boom')),
@@ -289,8 +357,11 @@ describe('handleRestRequest', () => {
       res,
       deps,
     );
-    expect(calls.status).toBe(500);
-    expect(JSON.parse(calls.body as string)).toEqual({ seconds: null });
+    expect(calls.status).toBe(502);
+    const body = JSON.parse(calls.body as string);
+    expect(body).toEqual({ error: 'upstream unavailable' });
+    expect(body).not.toHaveProperty('seconds');
+    errSpy.mockRestore();
   });
 
   it('GET /staking/finalization-period/undelegate adds the sequencer sync constant', async () => {
@@ -417,6 +488,27 @@ describe('handleRestRequest', () => {
     expect(JSON.parse(calls.body as string)).toEqual([
       { transactionHash: '0xtx' },
     ]);
+  });
+
+  it('returns 502 (never the raw error message) and logs server-side when a bridge store call throws a non-validation error', async () => {
+    const { res, calls } = fakeRes();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const deps = bridgeEnabledDeps({
+      queryLogsForRecipient: jest.fn().mockImplementation(() => {
+        throw new Error('sqlite disk I/O error');
+      }),
+    });
+    await handleRestRequest(
+      fakeReq('GET', '/bridge/deposit/logs?address=0xa'),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(502);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      error: 'upstream unavailable',
+    });
+    expect(errSpy).toHaveBeenCalledWith('bridge failed', expect.any(Error));
+    errSpy.mockRestore();
   });
 
   it('returns 404 { error: "not available" } for /bridge/events', async () => {

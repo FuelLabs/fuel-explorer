@@ -265,8 +265,16 @@ export class BlockStore {
       : await this.loadFromSource(height);
     if (!block) return null;
     this.memory.set(height, block);
-    await this.writeDisk(height, block);
+    // onDecoded (index write) runs before writeDisk (disk cache write) so a
+    // crash in between leaves the safe failure mode: no disk-cached file, so
+    // the next `get(height)` re-fetches and re-indexes -- rather than a
+    // disk-cached file with no index row, which would never be retried for a
+    // pinned height (readDisk hits on disk-cache below, which never calls
+    // onDecoded), permanently skipping that height's index. writeBlock is
+    // INSERT OR IGNORE per row (see index/Index.ts), so re-indexing the same
+    // block on a later re-fetch is a no-op, not a duplicate.
     this.opts.onDecoded?.(block);
+    await this.writeDisk(height, block);
     return block;
   }
 

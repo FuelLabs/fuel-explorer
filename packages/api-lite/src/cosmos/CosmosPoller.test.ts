@@ -229,6 +229,64 @@ describe('CosmosPoller', () => {
     expect(index.queryEvents({})).toHaveLength(0);
   });
 
+  it('does not advance the cursor past a height whose 200 response body is missing tx_responses', async () => {
+    const impl = jest.fn(async (url: string) => {
+      if (url.includes('blocks/latest')) {
+        return { ok: true, json: async () => tipResponse(3) } as Response;
+      }
+      // A 200 whose body has no tx_responses at all -- e.g. a proxy hiccup
+      // or a malformed pagination response -- is the same cursor-poisoning
+      // risk as a non-2xx, just through the other door: treating it like an
+      // empty block would silently advance the cursor past this height.
+      return { ok: true, json: async () => ({}) } as Response;
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      startHeight: 1,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await poller.tick();
+    expect(index.cursor()).toBe(0);
+    expect(index.queryEvents({})).toHaveLength(0);
+  });
+
+  it('does not advance the cursor past a height whose 200 response body has a non-array tx_responses', async () => {
+    const impl = jest.fn(async (url: string) => {
+      if (url.includes('blocks/latest')) {
+        return { ok: true, json: async () => tipResponse(3) } as Response;
+      }
+      return {
+        ok: true,
+        json: async () => ({ tx_responses: { error: 'not paginated yet' } }),
+      } as Response;
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      startHeight: 1,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await poller.tick();
+    expect(index.cursor()).toBe(0);
+    expect(index.queryEvents({})).toHaveLength(0);
+  });
+
+  it('advances the cursor past a height with a legitimately empty tx_responses: []', async () => {
+    const { impl } = fakeFetch({
+      'blocks/latest': tipResponse(3),
+      'tx.height=1': txsResponse([]),
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      startHeight: 1,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await poller.tick();
+    expect(index.cursor()).toBe(1);
+  });
+
   it('is idempotent across ticks (no duplicate events on the same height)', async () => {
     const { impl } = fakeFetch({
       'blocks/latest': tipResponse(10),

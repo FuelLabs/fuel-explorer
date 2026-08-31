@@ -1,5 +1,6 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { http, createPublicClient } from 'viem';
 import VerifiedAssets from '~/infra/cache/VerifiedAssets';
 import { seedVerifiedAssets } from './assets/seedVerifiedAssets';
 import { BridgeStore } from './bridge/BridgeStore';
@@ -89,11 +90,12 @@ async function chainParamsWithRetry(
 async function main() {
   const cfg = loadConfig(process.env);
   mkdirSync(cfg.dataDir, { recursive: true });
+  const INDEX_DB_PATH = join(cfg.dataDir, 'index.db');
   const client = new FuelCoreClient(cfg.fuelProvider);
   const params = await chainParamsWithRetry(client);
   console.log(`chainId=${params.chainId} baseAssetId=${params.baseAssetId}`);
 
-  const index = new Index(join(cfg.dataDir, 'index.db'));
+  const index = new Index(INDEX_DB_PATH);
   const repaired = index.deleteAboveRange();
   console.log(`index repair: deleted ${repaired} rows above indexed_to`);
   // Fire-and-forget: backfills registry-known SRC20 assets for this chain so
@@ -103,7 +105,7 @@ async function main() {
     .then((n) => console.log(`asset seed: ${n} registry assets seeded`))
     .catch((e) => console.error('asset seed failed, boot continuing', e));
   console.log(`block source: ${cfg.blockSource}`);
-  const hot = new HotKeys(join(cfg.dataDir, 'index.db'));
+  const hot = new HotKeys(INDEX_DB_PATH);
   const pinned = makePinnedHeights(hot, index);
   const rpcSource =
     cfg.blockSource === 'rpc'
@@ -189,7 +191,7 @@ async function main() {
   });
   const price = new PriceClient();
 
-  const cosmosIndex = new CosmosIndex(join(cfg.dataDir, 'index.db'));
+  const cosmosIndex = new CosmosIndex(INDEX_DB_PATH);
   const cosmosRestBase =
     cfg.cosmosRestUrl ?? defaultCosmosRestUrl(cfg.fuelProvider);
   console.log(`cosmos rest: ${cosmosRestBase}`);
@@ -222,12 +224,17 @@ async function main() {
   // ETH_RPC_URL gate applies.
   let bridge: BridgeRouteDeps | null = null;
   if (cfg.ethRpcUrl) {
-    const idx = new L1Index(join(cfg.dataDir, 'index.db'));
+    const idx = new L1Index(INDEX_DB_PATH);
     idx.seed(cfg.fuelChain, cfg.l1StartBlock);
     l1Index = idx;
+    // One long-lived viem client for the whole process, shared by every
+    // consumer that talks to L1 (L1Poller here, FinalizationPeriods below)
+    // instead of each constructing its own -- FinalizationPeriods used to
+    // rebuild one on every cache-miss call.
+    const l1Client = createPublicClient({ transport: http(cfg.ethRpcUrl) });
     l1Poller = new L1Poller({
       index: idx,
-      client: createL1Client(cfg.ethRpcUrl),
+      client: createL1Client(l1Client),
       network: cfg.fuelChain,
       onLog: (m) => console.log(m),
     });
@@ -241,7 +248,7 @@ async function main() {
     console.log(`l1 poller: enabled, chain=${cfg.fuelChain}`);
 
     const finalization = new FinalizationPeriods(
-      cfg.ethRpcUrl,
+      l1Client,
       cfg.fuelChain,
       cosmosRestBase,
     );

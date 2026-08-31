@@ -1,4 +1,4 @@
-import { http, createPublicClient } from 'viem';
+import type { PublicClient } from 'viem';
 import AbiFactory from '../l1/abi/AbiFactory';
 import { L1_CONTRACTS } from '../l1/contracts';
 
@@ -15,7 +15,11 @@ export class FinalizationPeriods {
   private unbondingAt = 0;
 
   constructor(
-    private readonly ethRpcUrl: string,
+    // A single long-lived viem client built once at wiring time in main.ts
+    // and shared with L1Poller (via createL1Client), rather than each
+    // constructing (and reconnecting) its own -- this used to be rebuilt on
+    // every cache-miss call to timeToFinalizeStrict below.
+    private readonly client: PublicClient,
     private readonly network: 'mainnet' | 'testnet',
     private readonly cosmosRestBase: string,
     private readonly fetchImpl: typeof fetch = fetch,
@@ -41,11 +45,10 @@ export class FinalizationPeriods {
       return this.timeToFinalizeMinutes;
     }
     try {
-      const client = createPublicClient({ transport: http(this.ethRpcUrl) });
       const abi = AbiFactory.create(this.network, 'FuelStreamX');
       // biome-ignore lint/suspicious/noExplicitAny: raw ABI literal isn't `as const`, so viem can't statically infer
       // readContract's args requirement here; same untyped-ABI tradeoff as L1Poller's decodeEventLog call.
-      const value = (await client.readContract({
+      const value = (await this.client.readContract({
         address: this.fuelStreamXAddress(),
         abi: abi as any,
         functionName: 'timeToFinalize',

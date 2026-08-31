@@ -136,6 +136,40 @@ describe('Indexer', () => {
     expect(index.range()).toEqual({ from: 99995, to: 100004 });
   });
 
+  it('backfillStep does not walk indexed_from below a retention floor that advances during the batch fetch', async () => {
+    const index = new Index(':memory:');
+    for (let h = 99990; h <= 100000; h++) index.writeBlock(blk(h));
+    index.setRange(99990, 100000);
+    const store = {
+      getRange: async (from: number, to: number) => {
+        // Simulate main.ts's hourly retention sweep firing while this
+        // backfillStep's batch fetch is in flight (its own retentionDays
+        // floor is far below 99990, so it can't trigger this on its own):
+        // deleteBelow bumps indexed_from forward to 99993, past the `from`
+        // this call already captured before the await.
+        index.deleteBelow(99993);
+        const out = [];
+        for (let h = from; h <= to; h++) out.push(blk(h));
+        return out;
+      },
+    } as any;
+    const indexer = new Indexer({
+      index,
+      store,
+      retentionDays: 1,
+      maxBytes: 1e12,
+      batch: 5,
+    });
+    expect(await indexer.backfillStep()).toBe(true);
+    const r = index.range();
+    // indexed_from must never end up below the height retention just
+    // deleted down to -- walking it back to backfillStep's stale `lowest`
+    // (99985) would claim coverage for rows that no longer exist.
+    expect(r.from).toBeGreaterThanOrEqual(99993);
+    expect(index.heightForTx(hex(99990))).toBeNull();
+    expect(index.heightForTx(hex(99993))).not.toBeNull();
+  });
+
   it('pause makes backfillStep return false immediately without touching the store; resume re-enables it', async () => {
     const index = new Index(':memory:');
     index.writeBlock(blk(100000));

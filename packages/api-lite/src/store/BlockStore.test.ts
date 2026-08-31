@@ -1,4 +1,5 @@
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -234,6 +235,43 @@ describe('BlockStore', () => {
     expect(seen.sort()).toEqual([10, 11, 12, 13]);
     await store.get(10);
     expect(seen).toHaveLength(4);
+  });
+
+  // A crash between the index write (onDecoded) and the disk-cache write
+  // (writeDisk) must leave "not yet indexed, not yet disk-cached" -- so the
+  // next get() re-fetches and re-indexes -- rather than "disk-cached but
+  // never indexed", which would be permanent for a pinned height (see the
+  // disk-cache-hit test below: a disk hit never calls onDecoded again).
+  it('onDecoded fires before the block is written to disk', async () => {
+    const dataDir = mkdtempSync(join(tmpdir(), 'bs-order-'));
+    const gzPath = join(dataDir, 'blocks', '9.json.gz');
+    let existedAtOnDecoded: boolean | undefined;
+    const { store } = makeStore({
+      dataDir,
+      onDecoded: () => {
+        existedAtOnDecoded = existsSync(gzPath);
+      },
+    });
+    await store.get(9);
+    expect(existedAtOnDecoded).toBe(false);
+    expect(existsSync(gzPath)).toBe(true);
+  });
+
+  // Documents an invariant the caller (Indexer.writeOnly, wired as
+  // BlockStore's onDecoded) relies on: a disk-cache hit in load() returns
+  // early and never calls onDecoded, since that height was already indexed
+  // the first time it was fetched and decoded.
+  it('does not fire onDecoded on a disk-cache hit, only on the fetch/decode that first wrote the file', async () => {
+    const seen: number[] = [];
+    const { store } = makeStore({
+      decode: (bytes) => fakeBlock(bytes[0], 6000),
+      onDecoded: (b) => seen.push(Number(b.height)),
+    });
+    await store.get(1);
+    await store.get(2); // evicts 1 from the small in-memory cache
+    expect(seen).toEqual([1, 2]);
+    await store.get(1); // memory miss -> disk hit, must not re-fire onDecoded
+    expect(seen).toEqual([1, 2]);
   });
 
   it('cached() is newest first', async () => {

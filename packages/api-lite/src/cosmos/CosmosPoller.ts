@@ -86,7 +86,7 @@ export class CosmosPoller {
         const height = cursor + 1;
         if (height > this.tip) break;
 
-        let body: { total?: string; tx_responses?: CosmosTxResponse[] };
+        let body: { total?: string; tx_responses: CosmosTxResponse[] };
         try {
           body = await fetchTxs(fetchImpl, this.opts.restBase, height);
         } catch (e) {
@@ -95,12 +95,8 @@ export class CosmosPoller {
           );
           break;
         }
-        const txResponses = Array.isArray(body.tx_responses)
-          ? body.tx_responses
-          : [];
-
         // An empty block still advances the cursor like a non-empty one.
-        for (const tx of txResponses) {
+        for (const tx of body.tx_responses) {
           this.opts.index.insertResponse(
             {
               blockHeight: Number(tx.height),
@@ -158,7 +154,7 @@ async function fetchTxs(
   fetchImpl: typeof fetch,
   restBase: string,
   height: number,
-): Promise<{ total?: string; tx_responses?: CosmosTxResponse[] }> {
+): Promise<{ total?: string; tx_responses: CosmosTxResponse[] }> {
   const res = await fetchImpl(
     `${restBase}/cosmos/tx/v1beta1/txs?query=tx.height=${height}&limit=1000&offset=0`,
     { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) },
@@ -172,8 +168,20 @@ async function fetchTxs(
       `cosmos txs fetch failed at height ${height}: HTTP ${res.status}`,
     );
   }
-  return (await res.json()) as {
+  const body = (await res.json()) as {
     total?: string;
-    tx_responses?: CosmosTxResponse[];
+    tx_responses?: unknown;
   };
+  // Same cursor-poisoning risk as the non-2xx case above, just through the
+  // other door: a 200 whose body is missing tx_responses (or has it as
+  // something other than an array -- a proxy hiccup, a malformed pagination
+  // response) is not a legitimately empty block and must not be treated as
+  // one. A genuinely empty block reports `tx_responses: []`, which is fine
+  // and falls through below.
+  if (!Array.isArray(body.tx_responses)) {
+    throw new Error(
+      `cosmos txs fetch at height ${height} returned a malformed body: tx_responses is ${typeof body.tx_responses}, not an array`,
+    );
+  }
+  return { total: body.total, tx_responses: body.tx_responses };
 }

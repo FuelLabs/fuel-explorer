@@ -321,4 +321,15 @@ describe('Index', () => {
     idx.setFrom(15);
     expect(idx.range()).toEqual({ from: 15, to: 20 });
   });
+
+  it('gaps() is empty when nothing has been recorded', () => {
+    expect(idx.gaps()).toEqual({ count: 0, heights: [] });
+  });
+
+  it('gaps() reads back every height recordGap wrote, in write order', () => {
+    idx.recordGap(500);
+    idx.recordGap(600);
+    idx.recordGap(700);
+    expect(idx.gaps()).toEqual({ count: 3, heights: [500, 600, 700] });
+  });
 });

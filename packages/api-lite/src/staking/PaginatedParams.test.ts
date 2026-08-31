@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors';
 import { PaginatedParams } from './PaginatedParams';
 
 describe('PaginatedParams', () => {
@@ -24,6 +25,12 @@ describe('PaginatedParams', () => {
     expect(() => new PaginatedParams({ last: '51' })).toThrow(
       'Maximum page size allowed is 50',
     );
+  });
+
+  // rest/router.ts's shared catch uses instanceof ValidationError to decide
+  // 400 vs 502, so the class matters, not just the message.
+  it('throws a ValidationError, not a plain Error', () => {
+    expect(() => new PaginatedParams({ last: '51' })).toThrow(ValidationError);
   });
 
   it('accepts a custom maxPageSize', () => {

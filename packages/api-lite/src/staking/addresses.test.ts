@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors';
 import {
   convertEthAddressToSequencerUserAddress,
   getValidAddress,
@@ -14,6 +15,12 @@ describe('getValidAddress', () => {
     expect(() => getValidAddress('not-an-address')).toThrow(
       'Invalid address format, expected a valid Ethereum address',
     );
+  });
+
+  // The REST router (rest/router.ts) uses instanceof ValidationError to
+  // decide 400 vs 502, so the class matters, not just the message.
+  it('throws a ValidationError, not a plain Error', () => {
+    expect(() => getValidAddress('not-an-address')).toThrow(ValidationError);
   });
 });
 

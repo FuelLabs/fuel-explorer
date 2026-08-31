@@ -367,6 +367,15 @@ export class Index {
     this.setMeta('gaps', gaps.join(','));
   }
 
+  // Reads back what recordGap wrote, so a permanently-missing historical
+  // block is discoverable (e.g. via /health) instead of sitting invisible in
+  // the `gaps` meta row until someone opens the sqlite file by hand.
+  gaps(): { count: number; heights: number[] } {
+    const existing = this.getMeta('gaps');
+    const heights = existing ? existing.split(',').map(Number) : [];
+    return { count: heights.length, heights };
+  }
+
   // assets, contracts and predicates are one-row-per-creation tables (tiny
   // even after months of uptime), so they're excluded from the retention
   // window and grow forever from first boot instead of aging out with the

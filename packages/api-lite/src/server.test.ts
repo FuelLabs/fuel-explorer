@@ -36,6 +36,21 @@ describe('createApp health()', () => {
     const { health } = createApp(fakeCtx({ hot }));
     expect(health().hot).toEqual({ accounts: 1, txs: 2, blocks: 0 });
   });
+
+  it('reports index.gaps (count and heights) so a permanently-skipped backfill block is discoverable without opening sqlite by hand', () => {
+    const index = new Index(':memory:');
+    index.recordGap(12345);
+    index.recordGap(23456);
+    const { health } = createApp(fakeCtx({ index }));
+    expect(health().index).toMatchObject({
+      gaps: { count: 2, heights: [12345, 23456] },
+    });
+  });
+
+  it('reports index.gaps as empty when nothing has been skipped', () => {
+    const { health } = createApp(fakeCtx());
+    expect(health().index).toMatchObject({ gaps: { count: 0, heights: [] } });
+  });
 });
 
 describe('createApp maskedErrors', () => {

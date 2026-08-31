@@ -1,11 +1,12 @@
 import { bech32 } from 'bech32';
 import { getAddress } from 'viem';
+import { ValidationError } from '../errors';
 
 export function getValidAddress(address: string): string {
   try {
     return getAddress(address);
   } catch {
-    throw new Error(
+    throw new ValidationError(
       'Invalid address format, expected a valid Ethereum address',
     );
   }

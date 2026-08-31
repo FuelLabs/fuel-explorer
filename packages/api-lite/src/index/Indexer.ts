@@ -77,10 +77,24 @@ export class Indexer {
     const to = r.from - 1;
     const from = Math.max(floor, to - this.opts.batch + 1);
     const blocks = await this.opts.store.getRange(from, to);
+    // main.ts's hourly retention sweep can run its own deleteBelow (which
+    // itself calls setFrom to bump indexed_from forward to the new floor)
+    // while the fetch above is in flight. If indexed_from has moved past
+    // the `r.from` this call started with, that rows-deleted floor must win
+    // over anything this call is about to write below -- see safeFrom below.
+    const currentFrom = this.opts.index.range().from;
+    const retentionAdvancedFrom = currentFrom != null && currentFrom > r.from;
+    const safeFrom = (target: number) =>
+      retentionAdvancedFrom ? Math.max(target, currentFrom as number) : target;
     let lowest = r.from;
     for (let i = blocks.length - 1; i >= 0; i--) {
       const b = blocks[i];
       if (!b) {
+        // Stop here rather than skipping this height and continuing with
+        // whatever lower heights getRange already fetched successfully: the
+        // no-gaps invariant requires `indexed_from..indexed_to` to cover a
+        // contiguous range, so nothing below a missing height counts as
+        // "backfilled" yet, even if it's already sitting in the index.
         this.opts.onLog?.(
           `backfill: block ${from + i} missing in S3, stopping`,
         );
@@ -95,7 +109,7 @@ export class Indexer {
     // `to` back from the stale `r.to` read at the top of this method would
     // clobber that contiguous extension.
     if (progressed) {
-      this.opts.index.setFrom(lowest);
+      this.opts.index.setFrom(safeFrom(lowest));
       this.noProgressFrom = null;
       this.noProgressCount = 0;
     } else if (this.noProgressFrom === r.from) {
@@ -114,7 +128,7 @@ export class Indexer {
       const missing = to;
       this.opts.onLog?.(`backfill: skipping missing block ${missing}`);
       this.opts.index.recordGap(missing);
-      this.opts.index.setFrom(missing - 1);
+      this.opts.index.setFrom(safeFrom(missing - 1));
       this.noProgressFrom = null;
       this.noProgressCount = 0;
       skipped = true;

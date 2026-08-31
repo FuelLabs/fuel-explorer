@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { BridgeStore } from '../bridge/BridgeStore';
+import { ValidationError } from '../errors';
 import { PaginatedParams } from '../staking/PaginatedParams';
 import type { StakingStore } from '../staking/StakingStore';
 import type { StakingAPY } from '../staking/apy';
@@ -56,6 +57,23 @@ function sendJson(
   res.end(JSON.stringify(body));
 }
 
+// Shared catch-block policy for every REST route below: a ValidationError
+// (thrown from an input-validation site -- address parsing, event-id
+// parsing, PaginatedParams' page-size cap) means the caller sent something
+// wrong, so its message is safe to return as a 400. Anything else -- a
+// cosmos/L1 RPC call throwing, a downstream store hitting a sqlite error --
+// is not the caller's fault, so it gets a generic 502 instead of a 400 that
+// would wrongly imply a bad request, plus a server-side log since the detail
+// isn't returned to the client.
+function sendError(res: ServerResponse, err: unknown, context: string): void {
+  if (err instanceof ValidationError) {
+    sendJson(res, 400, { message: err.message });
+    return;
+  }
+  console.error(`${context} failed`, err);
+  sendJson(res, 502, { error: 'upstream unavailable' });
+}
+
 const EVENT_PATH_RE = /^\/staking\/events\/([^/]+)$/;
 
 // Wired into server.ts ahead of the graphql-yoga handler. Returns true when
@@ -98,15 +116,15 @@ export async function handleRestRequest(
   }
 
   if (path === '/staking/apy') {
+    if (!deps.apy) {
+      sendJson(res, 503, { error: 'l1 ingestion disabled' });
+      return true;
+    }
     try {
-      if (!deps.apy) {
-        sendJson(res, 503, { error: 'l1 ingestion disabled' });
-        return true;
-      }
       const amount = await deps.apy.amount();
       sendJson(res, 200, { amount });
     } catch (err) {
-      sendJson(res, 400, { message: (err as Error).message });
+      sendError(res, err, 'staking/apy');
     }
     return true;
   }
@@ -132,37 +150,34 @@ export async function handleRestRequest(
       return true;
     }
 
+    // No inner try/catch here: a throw (e.g. the L1 RPC call inside
+    // timeToFinalizeStrict failing) falls through to the shared catch below,
+    // which reports a 502 { error } body -- distinct from the `seconds:
+    // null` 200 body above, which means "no data yet" rather than "the call
+    // failed".
     if (path === '/staking/finalization-period/withdraw') {
-      try {
-        const minutes = await staking.finalization.timeToFinalizeStrict();
-        if (minutes == null) {
-          sendJson(res, 200, { seconds: null });
-          return true;
-        }
-        const totalSeconds =
-          minutes * 60 +
-          TIME_TO_COMMIT_SECONDS +
-          TIME_TO_SEQUENCER_INDEXER_SYNC_SECONDS;
-        sendJson(res, 200, { seconds: totalSeconds });
-      } catch {
-        sendJson(res, 500, { seconds: null });
+      const minutes = await staking.finalization.timeToFinalizeStrict();
+      if (minutes == null) {
+        sendJson(res, 200, { seconds: null });
+        return true;
       }
+      const totalSeconds =
+        minutes * 60 +
+        TIME_TO_COMMIT_SECONDS +
+        TIME_TO_SEQUENCER_INDEXER_SYNC_SECONDS;
+      sendJson(res, 200, { seconds: totalSeconds });
       return true;
     }
 
     if (path === '/staking/finalization-period/undelegate') {
-      try {
-        const seconds = await staking.finalization.unbondingTimeSeconds();
-        if (seconds == null) {
-          sendJson(res, 200, { seconds: null });
-          return true;
-        }
-        sendJson(res, 200, {
-          seconds: seconds + TIME_TO_SEQUENCER_INDEXER_SYNC_SECONDS,
-        });
-      } catch {
-        sendJson(res, 500, { seconds: null });
+      const seconds = await staking.finalization.unbondingTimeSeconds();
+      if (seconds == null) {
+        sendJson(res, 200, { seconds: null });
+        return true;
       }
+      sendJson(res, 200, {
+        seconds: seconds + TIME_TO_SEQUENCER_INDEXER_SYNC_SECONDS,
+      });
       return true;
     }
 
@@ -170,14 +185,22 @@ export async function handleRestRequest(
     if (eventMatch) {
       const eventId = Number(eventMatch[1]);
       if (!Number.isInteger(eventId)) {
-        throw new Error('Invalid event id');
+        throw new ValidationError('Invalid event id');
       }
-      const result = await staking.store.getEvent(eventId);
-      sendJson(res, 200, result);
+      try {
+        const result = await staking.store.getEvent(eventId);
+        sendJson(res, 200, result);
+      } catch (err) {
+        if (err instanceof Error && err.message === 'Event not found') {
+          sendJson(res, 404, { error: 'Event not found' });
+        } else {
+          throw err;
+        }
+      }
       return true;
     }
   } catch (err) {
-    sendJson(res, 400, { message: (err as Error).message });
+    sendError(res, err, 'staking');
     return true;
   }
 
@@ -229,7 +252,7 @@ async function handleBridgeRequest(
       return true;
     }
   } catch (err) {
-    sendJson(res, 400, { message: (err as Error).message });
+    sendError(res, err, 'bridge');
     return true;
   }
 

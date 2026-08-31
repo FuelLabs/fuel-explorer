@@ -1,8 +1,11 @@
-import { http, createPublicClient } from 'viem';
+import type { PublicClient } from 'viem';
 import type { L1Client, L1Log } from './L1Poller';
 
-export function createL1Client(url: string): L1Client {
-  const client = createPublicClient({ transport: http(url) });
+// Takes an already-constructed viem client rather than a URL, so callers
+// (main.ts) build exactly one long-lived client at boot and share it across
+// every consumer that talks to L1 -- this poller and FinalizationPeriods --
+// instead of each constructing (and each reconnecting) its own.
+export function createL1Client(client: PublicClient): L1Client {
   return {
     async getFinalizedBlockNumber(): Promise<bigint> {
       const block = await client.getBlock({ blockTag: 'finalized' });
