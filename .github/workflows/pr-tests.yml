@@ -211,6 +211,9 @@ jobs:
     name: E2E Tests api-lite
     runs-on: warp-ubuntu-latest-x64-4x
     timeout-minutes: 14
+    permissions:
+      contents: read
+      packages: read
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
