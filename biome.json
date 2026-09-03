@@ -63,8 +63,10 @@
     "useIgnoreFile": true
   },
   "files": {
+    "maxSize": 5000000,
     "ignore": [
       "**/node_modules",
+      "**/test/fixtures",
       "**/.turbo",
       "**/.next",
       "**/.vercel",

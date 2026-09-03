@@ -47,6 +47,7 @@
     "test:all": "run-p test test:e2e",
     "test:e2e": "playwright test --config=packages/e2e-tests/playwright.config.ts",
     "test:e2e-soft": "playwright test --config=packages/e2e-tests/playwright-soft.config.ts",
+    "test:e2e-api-lite": "playwright test --config=packages/e2e-tests/playwright-api-lite.config.ts",
     "test:ci": "pnpm turbo:run test -- --ci --testLocationInResults --json --coverage",
     "test:clear": "pnpm turbo:run test -- --clearCache",
     "test:coverage": " pnpm turbo:run test -- --coverage",

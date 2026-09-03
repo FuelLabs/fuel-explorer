@@ -1,0 +1,49 @@
+# Production overlay for a DigitalOcean droplet: pulls prebuilt images from GHCR
+# instead of building locally. See deploy.md for the full runbook.
+#
+#   cp docker/vps/.env.example docker/vps/.env   # then set REGISTRY_OWNER (and AWS keys if BLOCK_SOURCE=s3)
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+
+services:
+  explorer:
+    image: ghcr.io/${REGISTRY_OWNER}/fuel-explorer-vps-explorer:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 64m
+
+  api:
+    image: ghcr.io/${REGISTRY_OWNER}/fuel-explorer-vps-api-lite:latest
+    env_file: .env
+    environment:
+      PORT: "3000"
+      DATA_DIR: /data
+      INDEX_RETENTION_DAYS: "2"
+      INDEX_MAX_BYTES: "12000000000"
+      DISK_CACHE_BYTES: "5368709120"
+      BLOCK_SOURCE: ${BLOCK_SOURCE:-rpc}
+      # Overrides the Dockerfile's 768 MB default: same 960m memory limit as
+      # docker-compose.yml's 1 GB VPS profile -- see that file's comment.
+      NODE_OPTIONS: "--max-old-space-size=384"
+      # Overrides config.ts's 256 MB default -- same tradeoff as
+      # docker-compose.yml's MEMORY_CACHE_BYTES override; see that file's
+      # comment.
+      MEMORY_CACHE_BYTES: "50331648"
+    volumes:
+      - api-data:/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 960m
+
+volumes:
+  api-data:

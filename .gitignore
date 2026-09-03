@@ -102,3 +102,6 @@ act-actions
 # AI tool memory
 CLAUDE.md
 .claude/
+
+# agent scratch
+.superpowers/

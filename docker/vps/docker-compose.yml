@@ -1,0 +1,60 @@
+# Simulates a $5/month VPS: 1 vCPU, 1 GB RAM, 25 GB disk (DigitalOcean basic droplet spec).
+# All runtime services share this budget. The blockchain node is out of scope.
+#
+#   cp docker/vps/.env.example docker/vps/.env   # then fill AWS keys
+#   docker compose -f docker/vps/docker-compose.yml up -d --build
+#   open http://localhost:8080
+
+services:
+  explorer:
+    build:
+      context: ../..
+      dockerfile: docker/vps/Dockerfile.explorer
+      args:
+        NETWORK: ${NETWORK:-mainnet}
+        VITE_FUEL_INDEXER_API: /api
+    image: fuel-explorer-vps/explorer:local
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 64m
+
+  api:
+    build:
+      context: ../..
+      dockerfile: docker/vps/Dockerfile.api-lite
+    image: fuel-explorer-vps/api-lite:local
+    env_file: .env
+    environment:
+      PORT: "3000"
+      DATA_DIR: /data
+      # Overrides the Dockerfile's 768 MB default: at this 1 GB VPS profile's
+      # 960m memory limit, a 768 MB V8 heap leaves too little room for Node's
+      # own non-heap overhead (thread stacks, code space, native buffers) --
+      # risking a cgroup OOM-kill instead of a graceful V8 heap error. 384 MB
+      # is the value this profile has always run at.
+      NODE_OPTIONS: "--max-old-space-size=384"
+      # Overrides config.ts's 256 MB default (real-heap-budget for
+      # BlockStore's LRU, post HEAP_BYTES_MULTIPLIER): 256 MB plus backfill's
+      # and TipTracker's in-flight batches (~120 MB) plus baseline overhead
+      # doesn't fit under the 384 MB heap above. 48 MB does, at the cost of
+      # graphql/resolvers/charts.ts's rollingStats60s covering fewer of its
+      # target ~60 trailing blocks on this tier -- see config.ts's comment.
+      MEMORY_CACHE_BYTES: "50331648"
+    volumes:
+      - api-data:/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 960m
+
+volumes:
+  api-data:
