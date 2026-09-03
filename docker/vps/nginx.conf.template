@@ -5,6 +5,19 @@ map $http_x_forwarded_for $xff_first {
     "~^([^,\s]+)" $1;
 }
 
+# Marks whether $xff_first is itself a Cloudflare edge address (source var first, geo var second, per nginx geo docs).
+geo $xff_first $via_cloudflare {
+    default 0;
+    include /etc/nginx/cloudflare-ips.conf;
+}
+
+# Behind Cloudflare, key on CF-Connecting-IP instead of the (Cloudflare) first XFF hop; a direct client can't
+# forge this because Railway's edge rewrites XFF, so $xff_first can only be Cloudflare's address when Cloudflare set it.
+map "$via_cloudflare:$http_cf_connecting_ip" $client_ip {
+    default $xff_first;
+    "~^1:(?<ip>.+)$" $ip;
+}
+
 # One zone, keyed by client IP, 10 MB capping each at 20 requests/sec; /api/
 # below allows a 40-request burst before it starts rejecting (nodelay: burst
 # requests are served immediately, not queued/delayed).
