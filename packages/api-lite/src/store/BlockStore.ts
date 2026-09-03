@@ -26,8 +26,8 @@ type Opts = {
 // A decoded GQLBlock's real V8 heap footprint (nested objects/arrays/strings
 // for every tx, input, output, receipt) runs well above its
 // JSON.stringify() byte length -- measured empirically at ~2.25x via
-// scripts/measure-heap-multiplier.ts against two real mainnet block fixtures
-// (test/fixtures/blocks/62724773.bin, 62724775.bin; 200 held copies each,
+// scripts/measure-heap-multiplier.ts against real mainnet blocks fetched with
+// `pnpm --filter api-lite fixture <height>` (200 held copies each,
 // process.memoryUsage().heapUsed delta with --expose-gc). Rounded up to 2.5x
 // for headroom. Without this, the LRU's `memoryBytes` budget bounds only the
 // serialized size, not the real heap it costs to hold those objects, so a

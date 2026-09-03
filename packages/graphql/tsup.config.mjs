@@ -15,13 +15,6 @@ export default defineConfig(() => [
       index: 'src/index.ts',
       sdk: 'src/graphql/generated/sdk.ts',
       'sdk-provider': 'src/graphql/generated/sdk-provider.ts',
-      app: 'src/app.ts',
-      syncer: 'src/syncer.ts',
-      assets: 'src/assets.ts',
-      balance: 'src/balance.ts',
-      l1: 'src/l1.ts',
-      cosmos: 'src/cosmos.ts',
-      jobs: 'src/jobs.ts',
     },
     async onSuccess() {
       const cwd = process.cwd();
