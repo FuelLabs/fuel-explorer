@@ -168,6 +168,7 @@ export const withdrawStatusDialogMachine = createMachine(
           FINALIZE: [
             {
               target: 'preparingFinalize',
+              actions: assign({ finalizeError: undefined }),
               cond: (ctx) =>
                 Boolean(
                   ctx.eventData &&
@@ -308,7 +309,6 @@ export const withdrawStatusDialogMachine = createMachine(
       finalized: {
         type: 'final',
       },
-      finalizingError: {},
       closed: {
         type: 'final',
       },
@@ -366,10 +366,11 @@ export type WithdrawStatusDialogMachineState =
 
 export const withdrawStatusDialogMachineSelectors = {
   getError: ({ context }: WithdrawStatusDialogMachineState) =>
-    context.eventError || context.receiptsError,
+    context.eventError || context.receiptsError || context.finalizeError,
   isError: (state: WithdrawStatusDialogMachineState) =>
-    // state.matches('eventError') ||
-    state.matches('finalizingError'),
+    !!state.context.eventError ||
+    !!state.context.receiptsError ||
+    !!state.context.finalizeError,
   isPaused: (state: WithdrawStatusDialogMachineState) => state.context.isPaused,
   isCheckingPaused: (_state: WithdrawStatusDialogMachineState) => false,
   // state.matches('checkingPaused'),
