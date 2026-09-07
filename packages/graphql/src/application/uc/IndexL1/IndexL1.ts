@@ -1,4 +1,4 @@
-import { setTimeout } from 'node:timers/promises';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { ethers } from 'ethers';
 import { type Abi, decodeEventLog } from 'viem';
 import { env } from '~/config';
@@ -7,6 +7,8 @@ import { DatabaseConnection } from '~/infra/database/DatabaseConnection';
 import { decodeMessage } from '~/infra/util/util';
 import AbiFactory from './abi/AbiFactory';
 import { createL1Provider } from './createL1Provider';
+
+const SYNC_STALL_MS = 10 * 60 * 1000;
 
 export default class IndexL1 {
   protected createProvider(): ethers.JsonRpcProvider {
@@ -36,13 +38,13 @@ export default class IndexL1 {
         'Timer',
         `Contract: ${contract.name} - Waiting for finalized block`,
       );
-      await setTimeout(10000);
+      await sleep(10000);
       return;
     }
     const lastBlockNumber = finalizedBlock.number;
     if (contract.block_height > lastBlockNumber) {
       logger.debug('Timer', `Contract: ${contract.name} -  Waiting for block`);
-      await setTimeout(10000);
+      await sleep(10000);
       return;
     }
     const abi = AbiFactory.create(network, contract.name);
@@ -73,27 +75,17 @@ export default class IndexL1 {
     );
     const blockIndex: { [blockNumber: number]: number } = {};
     for (const log of logs) {
-      const parsedLog = api.interface.parseLog({
-        topics: log.topics,
-        data: log.data,
-      });
+      const {
+        eventName,
+        eventSignature,
+        args: eventArgs,
+      } = this.decodeLog(api, abi as Abi, log);
       logger.debug(
         'Timer',
-        `Contract: ${contract.name} -  Parsed Log: ${parsedLog}`,
-      );
-      const eventName = parsedLog?.name;
-      const eventSignature = parsedLog?.signature;
-      const data: { eventName: string; args: any } = decodeEventLog({
-        abi: AbiFactory.create(network, contract.name) as Abi,
-        data: log.data as `0x${string}`,
-        topics: log.topics as [],
-      });
-      logger.debug(
-        'Timer',
-        `Contract: ${contract.name} -  Decoded event Log: ${eventName}, ${data.args.data}`,
+        `Contract: ${contract.name} -  Decoded event Log: ${eventName}, ${eventArgs.data}`,
       );
 
-      const decodedArgs = decodeMessage(data.args.data);
+      const decodedArgs = decodeMessage(eventArgs.data);
 
       logger.debug(
         'Timer',
@@ -116,7 +108,7 @@ export default class IndexL1 {
 
             if (attempt < retries) {
               const delay = 2 ** attempt * 1000; // exponential backoff: 2s, 4s, 8s
-              await new Promise((resolve) => setTimeout(resolve as any, delay));
+              await sleep(delay);
             }
           }
         }
@@ -150,7 +142,7 @@ export default class IndexL1 {
           log,
           eventName,
           eventSignature,
-          JSON.stringify(data.args, (_, v) =>
+          JSON.stringify(eventArgs, (_, v) =>
             typeof v === 'bigint' ? v.toString() : v,
           ),
           decodedArgs,
@@ -158,7 +150,7 @@ export default class IndexL1 {
           log.index,
         ],
       );
-      const args = { ...data.args, ...decodedArgs };
+      const args = { ...eventArgs, ...decodedArgs };
       for (const key in args) {
         await connection.query(
           'insert into indexer.contract_l1_args (contract_l1_log_id, key, value) values ($1, $2, $3) on conflict do nothing',
@@ -173,17 +165,77 @@ export default class IndexL1 {
     );
   }
 
-  async execute() {
+  protected decodeLog(
+    api: ethers.Contract,
+    abi: Abi,
+    log: ethers.Log,
+  ): { eventName?: string; eventSignature?: string; args: any } {
+    const parsedLog = api.interface.parseLog({
+      topics: log.topics,
+      data: log.data,
+    });
+    const decoded: { eventName: string; args: any } = decodeEventLog({
+      abi,
+      data: log.data as `0x${string}`,
+      topics: log.topics as [],
+    });
+    return {
+      eventName: parsedLog?.name,
+      eventSignature: parsedLog?.signature,
+      args: decoded.args,
+    };
+  }
+
+  // A hung sync never crashes, so pm2 never restarts it; exit so it does.
+  protected onStall(contract: { name: string }) {
+    logger.error(
+      'Timer',
+      `Contract: ${contract.name} - sync stalled for ${SYNC_STALL_MS}ms, exiting for restart`,
+    );
+    process.exit(1);
+  }
+
+  private async syncContractGuarded(contract: {
+    _id: number;
+    block_height: number;
+    contract_hash: string;
+    name: string;
+  }) {
+    let stallTimer: NodeJS.Timeout | undefined;
+    const stalled = new Promise<void>((resolve) => {
+      stallTimer = globalThis.setTimeout(() => {
+        this.onStall(contract);
+        resolve();
+      }, SYNC_STALL_MS);
+    });
+    try {
+      await Promise.race([this.syncContract(contract), stalled]);
+    } catch (error: any) {
+      logger.error(
+        'Timer',
+        `Contract: ${contract.name} - sync failed, retrying next cycle: ${error.message}`,
+        error,
+      );
+    } finally {
+      clearTimeout(stallTimer);
+    }
+  }
+
+  async tick() {
     const connection = DatabaseConnection.getInstance();
+    const contracts = await connection.query(
+      `select * from indexer.contract_l1_index where status = 'active' and network = $1`,
+      [env.get('FUEL_CHAIN')],
+    );
+    await Promise.all(
+      contracts.map((contract) => this.syncContractGuarded(contract)),
+    );
+  }
+
+  async execute() {
     while (true) {
-      const contracts = await connection.query(
-        `select * from indexer.contract_l1_index where status = 'active' and network = $1`,
-        [env.get('FUEL_CHAIN')],
-      );
-      await Promise.all(
-        contracts.map((contract) => this.syncContract(contract)),
-      );
-      await setTimeout(1000);
+      await this.tick();
+      await sleep(1000);
     }
   }
 }
