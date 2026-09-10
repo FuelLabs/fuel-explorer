@@ -35,6 +35,13 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    # nginx defaults a rate-limited request to 503, which on this box is
+    # indistinguishable from the API being down: the uptime probe hits
+    # /api/health, so a legitimate burst would read as an outage and page
+    # someone. 429 states the actual reason, and clients treat it as "slow
+    # down" rather than "retry the broken server".
+    limit_req_status 429;
+
     gzip on;
     gzip_types text/plain text/css application/json application/javascript image/svg+xml;
     gzip_min_length 1024;
