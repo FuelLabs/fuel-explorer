@@ -125,8 +125,8 @@ async function main() {
       : {
           source: new S3BlockSource(
             createS3Fetcher({
-              bucket: cfg.s3Bucket!,
-              region: cfg.awsRegion!,
+              bucket: cfg.s3Bucket,
+              region: cfg.awsRegion,
               endpoint: cfg.s3Endpoint,
             }),
           ),

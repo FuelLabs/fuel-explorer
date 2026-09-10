@@ -26,10 +26,29 @@ function isNoSuchKey(error: unknown): boolean {
 }
 
 export function createS3Fetcher(opts: {
-  bucket: string;
-  region: string;
+  bucket?: string;
+  region?: string;
   endpoint?: string;
 }): ObjectFetcher {
+  // An endpoint with no bucket means the URL already addresses one bucket and
+  // serves keys at its root, as Cloudflare R2's public r2.dev host does. The
+  // SDK cannot express that: path-style addressing inserts the bucket again
+  // (`<endpoint>/<bucket>/<key>`, a 404 here), and virtual-host style would
+  // prefix a bucket onto a host that already is the bucket. Those reads are
+  // anonymous, so a plain fetch is both correct and credential-free.
+  if (opts.endpoint && !opts.bucket) {
+    const base = opts.endpoint.replace(/\/+$/, '');
+    return async (key) => {
+      const res = await fetch(`${base}/${key}`);
+      if (res.status === 404) return null;
+      if (!res.ok) {
+        throw new Error(
+          `S3 GET ${key} failed: ${res.status} ${res.statusText}`,
+        );
+      }
+      return new Uint8Array(await res.arrayBuffer());
+    };
+  }
   const client = new S3Client({
     region: opts.region,
     ...(opts.endpoint ? { endpoint: opts.endpoint, forcePathStyle: true } : {}),
