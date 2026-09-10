@@ -520,3 +520,68 @@ describe('BlockStore normalize', () => {
     expect(hit.normalized).toBe(true);
   });
 });
+
+// A load that never settles used to keep its inflight entry forever, so every
+// later get() for that height got the same dead promise back and the indexer
+// could never advance past it -- the retry asked for the same heights and hung
+// identically.
+describe('BlockStore.get when a load never settles', () => {
+  it('abandons the slot and lets a later request start a fresh load', async () => {
+    const errors = jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      let hangingCalls = 0;
+      let hang = true;
+      const { store } = makeStore({
+        loader: async (h: number) => {
+          if (hang) {
+            hangingCalls++;
+            return new Promise<never>(() => {});
+          }
+          return fakeBlock(h);
+        },
+        loadTimeoutMs: 50,
+      });
+
+      expect(await store.get(10)).toBeNull();
+      expect(hangingCalls).toBe(1);
+      expect(errors).toHaveBeenCalledWith(
+        expect.stringContaining('abandoning it so a later request'),
+      );
+
+      // The retry must not be handed the original dead promise.
+      hang = false;
+      const block = await store.get(10);
+      expect(block?.height).toBe('10');
+      expect(hangingCalls).toBe(1);
+    } finally {
+      errors.mockRestore();
+    }
+  });
+
+  it('dedupes concurrent requests for the same height onto one load', async () => {
+    const errors = jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      let calls = 0;
+      const { store } = makeStore({
+        loader: async (h: number) => {
+          calls++;
+          return fakeBlock(h);
+        },
+        // Generous next to the work below, so this exercises dedup and not
+        // the timeout racing the second load's own disk write.
+        loadTimeoutMs: 5_000,
+      });
+
+      const a = store.get(13);
+      const b = store.get(13);
+      const c = store.get(13);
+      expect((await a)?.height).toBe('13');
+      expect((await b)?.height).toBe('13');
+      expect((await c)?.height).toBe('13');
+      // One loader call served all three callers.
+      expect(calls).toBe(1);
+    } finally {
+      errors.mockRestore();
+    }
+  });
+});
