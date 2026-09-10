@@ -105,3 +105,7 @@ CLAUDE.md
 
 # agent scratch
 .superpowers/
+
+# api-lite parity fixtures (fetch locally; do not commit)
+packages/api-lite/test/fixtures/blocks/*.bin
+packages/api-lite/test/fixtures/blocks/*.fuelcore.json

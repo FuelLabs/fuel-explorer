@@ -4,8 +4,10 @@
 // GQLBlock and update that constant if the multiplier moves. Run with
 // --expose-gc for accurate deltas.
 //
-//   npx tsx --expose-gc scripts/measure-heap-multiplier.ts
-import { readFileSync } from 'node:fs';
+// Fixtures are not committed. Fetch first, then measure:
+//   pnpm --filter api-lite fixture <height>
+//   npx tsx --expose-gc scripts/measure-heap-multiplier.ts [height...]
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { decodeBlock } from '../src/decoder/block';
 
@@ -20,11 +22,19 @@ const fee = {
   },
 };
 
+const fixturesDir = join(__dirname, '../test/fixtures/blocks');
+
 function decodeFixture(height: number) {
-  const bytes = readFileSync(
-    join(__dirname, '../test/fixtures/blocks', `${height}.bin`),
-  );
-  return decodeBlock(new Uint8Array(bytes), { chainId: 9889, fee });
+  const path = join(fixturesDir, `${height}.bin`);
+  if (!existsSync(path)) {
+    throw new Error(
+      `missing ${path}; run: pnpm --filter api-lite fixture ${height}`,
+    );
+  }
+  return decodeBlock(new Uint8Array(readFileSync(path)), {
+    chainId: 9889,
+    fee,
+  });
 }
 
 function measure(height: number) {
@@ -48,7 +58,23 @@ function measure(height: number) {
   return multiplier;
 }
 
-const heights = [62724773, 62724775];
+const fromArgs = process.argv
+  .slice(2)
+  .map(Number)
+  .filter((n) => Number.isInteger(n));
+const fromDisk = existsSync(fixturesDir)
+  ? readdirSync(fixturesDir)
+      .filter((f) => f.endsWith('.bin'))
+      .map((f) => Number(f.replace('.bin', '')))
+  : [];
+const heights = fromArgs.length ? fromArgs : fromDisk;
+if (!heights.length) {
+  console.error(
+    'no block fixtures; fetch one first:\n  pnpm --filter api-lite fixture <height>\n  npx tsx --expose-gc scripts/measure-heap-multiplier.ts [height...]',
+  );
+  process.exit(1);
+}
+
 const multipliers = heights.map(measure);
 const avg = multipliers.reduce((a, b) => a + b, 0) / multipliers.length;
 console.log(`\naverage multiplier: ${avg.toFixed(2)}x`);
