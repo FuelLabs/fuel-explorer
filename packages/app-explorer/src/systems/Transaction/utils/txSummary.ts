@@ -9,7 +9,6 @@ import {
   processGqlReceipt,
 } from 'fuels';
 import type { OperationExtended } from '~/systems/Transaction/types';
-import { convertAsset } from '../actions/convert-asset';
 import type { AssetInfo, TransactionNode } from '../types';
 
 const fuelProvider = new Provider(FUEL_CHAIN.providerUrl);
@@ -39,6 +38,10 @@ function getAssetMetadata(
     contractId: asset.contractId,
     suspicious: asset.suspicious,
     verified: asset.verified,
+    // api-lite computes this server-side for the base asset; the explorer used
+    // to overwrite it with a call to the retired explorer-indexer /convert_rate
+    // endpoint, which needed a per-asset rate table api-lite doesn't have.
+    amountInUsd: asset.amountInUsd,
   };
 }
 
@@ -81,15 +84,5 @@ export async function createTransactionSummary(
       }
     });
   });
-  for (const operation of operations) {
-    if (!operation.assetsSent) continue;
-    for (const assetSent of operation.assetsSent) {
-      if (!assetSent.asset) continue;
-      const assetId = assetSent.asset.assetId || '';
-      const amount = assetSent.amount.toString();
-      const output = await convertAsset(assetId, amount);
-      assetSent.asset.amountInUsd = output?.amount;
-    }
-  }
   return operations;
 }
