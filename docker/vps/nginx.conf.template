@@ -5,6 +5,19 @@ map $http_x_forwarded_for $xff_first {
     "~^([^,\s]+)" $1;
 }
 
+# Marks whether $xff_first is itself a Cloudflare edge address (source var first, geo var second, per nginx geo docs).
+geo $xff_first $via_cloudflare {
+    default 0;
+    include /etc/nginx/cloudflare-ips.conf;
+}
+
+# Behind Cloudflare, key on CF-Connecting-IP instead of the (Cloudflare) first XFF hop; a direct client can't
+# forge this because Railway's edge rewrites XFF, so $xff_first can only be Cloudflare's address when Cloudflare set it.
+map "$via_cloudflare:$http_cf_connecting_ip" $client_ip {
+    default $xff_first;
+    "~^1:(?<ip>.+)$" $ip;
+}
+
 # One zone, keyed by client IP, 10 MB capping each at 20 requests/sec; /api/
 # below allows a 40-request burst before it starts rejecting (nodelay: burst
 # requests are served immediately, not queued/delayed).
@@ -21,6 +34,13 @@ server {
     server_name _;
     root /usr/share/nginx/html;
     index index.html;
+
+    # nginx defaults a rate-limited request to 503, which on this box is
+    # indistinguishable from the API being down: the uptime probe hits
+    # /api/health, so a legitimate burst would read as an outage and page
+    # someone. 429 states the actual reason, and clients treat it as "slow
+    # down" rather than "retry the broken server".
+    limit_req_status 429;
 
     gzip on;
     gzip_types text/plain text/css application/json application/javascript image/svg+xml;

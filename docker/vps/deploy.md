@@ -89,8 +89,12 @@ railway variables --service explorer \
   --set "VITE_FUEL_INDEXER_API=/api" \
   --set "API_UPSTREAM=api.railway.internal:3000" \
   --set "NGINX_RESOLVER=[fd12::10]" \
-  --set 'RATE_LIMIT_KEY=$xff_first'
-# RATE_LIMIT_KEY=$xff_first only because Railway's edge rewrites X-Forwarded-For as "client, edge" (verified 2026-08-29: a client-supplied header is replaced); leave it unset when nginx is itself the public edge.
+  --set 'RATE_LIMIT_KEY=$client_ip'
+# RATE_LIMIT_KEY=$client_ip: $xff_first (first XFF hop) is spoof-resistant only because Railway's edge rewrites
+# X-Forwarded-For as "client, edge" (verified 2026-08-29: a client-supplied header is replaced); once app-testnet.fuel.network
+# is a Cloudflare-proxied CNAME, that first hop is Cloudflare's address for every visitor, so $client_ip instead keys on
+# CF-Connecting-IP whenever $xff_first is a Cloudflare address (nginx.conf.template's geo/map pair), falling back to
+# $xff_first otherwise. Leave RATE_LIMIT_KEY unset (defaults to $binary_remote_addr) when nginx is itself the public edge.
 
 # Deploy both services. `railway up` uploads the working tree directly
 # (no git push, no GitHub connection needed).
