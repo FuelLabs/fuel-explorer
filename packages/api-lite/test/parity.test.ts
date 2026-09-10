@@ -40,6 +40,16 @@ function flatten(v: unknown, path = '', out = new Map<string, unknown>()) {
 const describeIf = heights.length ? describe : describe.skip;
 
 describeIf('parity with fuel-core', () => {
+  // Jest fails any suite that registers zero tests, and `describe.skip` on its
+  // own does not satisfy that check. The committed block fixtures were removed
+  // to keep them out of the repo (regenerate locally with
+  // `pnpm --filter api-lite fixture <height>`), so on a clean checkout this
+  // file would fail the whole run while all 400+ real tests pass.
+  if (heights.length === 0) {
+    it.skip('no block fixtures present', () => {});
+    return;
+  }
+
   let ctx: { chainId: number; fee: any; baseAssetId: string };
   beforeAll(async () => {
     const p = await new FuelCoreClient(
