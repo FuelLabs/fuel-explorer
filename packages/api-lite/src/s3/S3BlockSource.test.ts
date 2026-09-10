@@ -60,4 +60,20 @@ describe('createS3Fetcher against a public bucket-root endpoint', () => {
       new Response('', { status: 500 })) as typeof fetch;
     await expect(get('00/00/00/01')).rejects.toThrow('500');
   });
+
+  // BlockStore can stop waiting on a load but cannot cancel the fetch under
+  // it, so the read carries its own deadline or an unreachable server leaves
+  // one request running per retry.
+  it('bounds every read with an abort signal', async () => {
+    let init: RequestInit | undefined;
+    global.fetch = (async (_url: string, opts?: RequestInit) => {
+      init = opts;
+      return new Response(new Uint8Array([1]), { status: 200 });
+    }) as typeof fetch;
+
+    await createS3Fetcher({ endpoint: 'https://pub-abc.r2.dev' })(
+      '00/00/00/01',
+    );
+    expect(init?.signal).toBeInstanceOf(AbortSignal);
+  });
 });

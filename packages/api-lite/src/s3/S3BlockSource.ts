@@ -4,6 +4,10 @@ import { s3KeyForBlock } from './key';
 
 export type ObjectFetcher = (key: string) => Promise<Uint8Array | null>;
 
+// Matches the RPC client's own abort, so both block sources give up on an
+// unreachable server on the same schedule.
+const S3_FETCH_TIMEOUT_MS = 15_000;
+
 export class BlockNotFound extends Error {
   constructor(public readonly height: number) {
     super(`block ${height} not in S3`);
@@ -39,7 +43,14 @@ export function createS3Fetcher(opts: {
   if (opts.endpoint && !opts.bucket) {
     const base = opts.endpoint.replace(/\/+$/, '');
     return async (key) => {
-      const res = await fetch(`${base}/${key}`);
+      const res = await fetch(`${base}/${key}`, {
+        // Bound the read. BlockStore abandons a load it has waited too long
+        // for, but it cannot cancel the fetch underneath, so an unbounded one
+        // would keep running while the retry starts another -- one per retry,
+        // until the connection pool is gone. The authenticated path gets the
+        // same protection from the RPC client's own abort.
+        signal: AbortSignal.timeout(S3_FETCH_TIMEOUT_MS),
+      });
       if (res.status === 404) return null;
       if (!res.ok) {
         throw new Error(
