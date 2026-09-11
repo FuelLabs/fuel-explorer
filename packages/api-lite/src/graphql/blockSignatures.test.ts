@@ -16,6 +16,11 @@ const hex = (n: number) => `0x${n.toString(16).padStart(64, '0')}`;
 const TIP = 10;
 const T0 = BigInt(Math.floor(Date.now() / 1000)) + (1n << 62n) + 10n;
 const SIGNATURE = `0x${'ab'.repeat(64)}`;
+// fakeBlock(h) sets id to hex(1000 + h); mock fuel-core responses reuse the
+// same formula so the id verification in withSignatures passes by default.
+const archiveId = (h: number) => hex(1000 + h);
+const matchingSigs = (heights: number[]) =>
+  new Map(heights.map((h) => [h, { id: archiveId(h), signature: SIGNATURE }]));
 
 function fakeBlock(h: number) {
   return {
@@ -125,7 +130,7 @@ describe('block signature and producer from fuel-core', () => {
     const { gql } = await setup({
       blockSignatures: async (heights: number[]) => {
         calls.push(heights);
-        return new Map(heights.map((h) => [h, SIGNATURE]));
+        return matchingSigs(heights);
       },
     });
     const d = await gql(BLOCK_QUERY);
@@ -161,7 +166,7 @@ describe('block signature and producer from fuel-core', () => {
     const { gql } = await setup({
       blockSignatures: async (heights: number[]) => {
         calls.push(heights);
-        return new Map(heights.map((h) => [h, SIGNATURE]));
+        return matchingSigs(heights);
       },
     });
     await gql(BLOCK_QUERY);
@@ -174,7 +179,7 @@ describe('block signature and producer from fuel-core', () => {
     const { gql } = await setup({
       blockSignatures: async (heights: number[]) => {
         calls.push(heights);
-        return new Map(heights.map((h) => [h, SIGNATURE]));
+        return matchingSigs(heights);
       },
     });
     const d = await gql(
@@ -187,5 +192,32 @@ describe('block signature and producer from fuel-core', () => {
     }
     expect(calls).toHaveLength(1);
     expect(calls[0].sort((a, b) => a - b)).toEqual([6, 7, 8, 9, 10]);
+  });
+
+  it('serves the block when fuel-core reports the same id as the archive', async () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const { gql } = await setup({
+      blockSignatures: async (heights: number[]) => matchingSigs(heights),
+    });
+    const d = await gql(BLOCK_QUERY);
+    expect(d.block.consensus.signature).toBe(SIGNATURE);
+    expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  it('rejects the block when fuel-core reports a different id than the archive', async () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const nodeId = hex(999999);
+    const { gql } = await setup({
+      blockSignatures: async () =>
+        new Map([[5, { id: nodeId, signature: SIGNATURE }]]),
+    });
+    await expect(gql(BLOCK_QUERY)).rejects.toThrow(
+      'Block 5 failed verification',
+    );
+    expect(errorSpy).toHaveBeenCalledWith(
+      `block 5: archive id ${archiveId(5)} != node id ${nodeId}`,
+    );
+    errorSpy.mockRestore();
   });
 });
