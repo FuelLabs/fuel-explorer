@@ -2,6 +2,7 @@ import { createServer } from 'node:http';
 import { createYoga } from 'graphql-yoga';
 import type { CosmosPoller } from './cosmos/CosmosPoller';
 import type { AppContext } from './graphql/context';
+import { useMaxDepth } from './graphql/depthLimit';
 import { buildCharts } from './graphql/resolvers/charts';
 import { buildSchema } from './graphql/schema';
 import type { Indexer } from './index/Indexer';
@@ -24,7 +25,11 @@ export function createApp(ctx: AppDeps) {
   const yoga = createYoga<AppContext>({
     schema: buildSchema(),
     graphqlEndpoint: '/graphql',
-    batching: true,
+    // an explicit limit (rather than the `true` shorthand) so one HTTP
+    // request can't carry an unbounded number of operations past nginx's
+    // per-request rate limit.
+    batching: { limit: 10 },
+    plugins: [useMaxDepth(15)],
     // yoga's default maskError only touches errors that aren't already an
     // intentional GraphQLError (pageSize's validation error, "Either id or
     // height must be provided", etc. pass through unchanged in both modes).
