@@ -38,4 +38,46 @@ describe('PaginatedParams', () => {
       'Maximum page size allowed is 4',
     );
   });
+
+  // SQLite treats a negative LIMIT as unlimited, so last=-1 must not reach
+  // L1Index's `LIMIT @limit`.
+  it('throws on a negative last', () => {
+    expect(() => new PaginatedParams({ last: '-1' })).toThrow(
+      'Page size must be an integer between 1 and 50',
+    );
+  });
+
+  it('throws on a zero last', () => {
+    expect(() => new PaginatedParams({ last: '0' })).toThrow(
+      'Page size must be an integer between 1 and 50',
+    );
+  });
+
+  it('throws on a non-integer last', () => {
+    expect(() => new PaginatedParams({ last: '1.5' })).toThrow(
+      'Page size must be an integer between 1 and 50',
+    );
+  });
+
+  it('throws on a non-numeric last', () => {
+    expect(() => new PaginatedParams({ last: 'abc' })).toThrow(
+      'Page size must be an integer between 1 and 50',
+    );
+  });
+
+  it('throws a ValidationError for an invalid last, not a plain Error', () => {
+    expect(() => new PaginatedParams({ last: '-1' })).toThrow(ValidationError);
+  });
+
+  it('throws on a non-numeric after cursor instead of silently becoming NaN', () => {
+    expect(() => new PaginatedParams({ after: 'abc' })).toThrow(
+      ValidationError,
+    );
+  });
+
+  it('throws on a non-numeric before cursor instead of silently becoming NaN', () => {
+    expect(() => new PaginatedParams({ before: 'abc' })).toThrow(
+      ValidationError,
+    );
+  });
 });
