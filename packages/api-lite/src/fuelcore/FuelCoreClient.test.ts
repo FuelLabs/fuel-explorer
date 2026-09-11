@@ -347,7 +347,7 @@ describe('FuelCoreClient', () => {
   });
 
   describe('blockSignatures', () => {
-    it('builds one aliased query per height and maps signatures, dropping non-PoA/missing entries', async () => {
+    it('builds one aliased query per height with id, mapping signature to null when consensus is non-PoA, and dropping heights fuel-core has no block for', async () => {
       let seenQuery = '';
       const c = new FuelCoreClient(
         'http://x',
@@ -355,20 +355,26 @@ describe('FuelCoreClient', () => {
           seenQuery = body.query;
           return {
             b0: {
+              id: '0xb0',
               consensus: { __typename: 'PoAConsensus', signature: '0xaa' },
             },
-            b1: { consensus: { __typename: 'Genesis' } },
+            b1: { id: '0xb1', consensus: { __typename: 'Genesis' } },
             b2: null,
           };
         }),
       );
       const result = await c.blockSignatures([10, 11, 12]);
       expect(seenQuery).toContain(
-        'b0: block(height: "10") { consensus { __typename ... on PoAConsensus { signature } } }',
+        'b0: block(height: "10") { id consensus { __typename ... on PoAConsensus { signature } } }',
       );
       expect(seenQuery).toContain('b1: block(height: "11")');
       expect(seenQuery).toContain('b2: block(height: "12")');
-      expect(result).toEqual(new Map([[10, '0xaa']]));
+      expect(result).toEqual(
+        new Map([
+          [10, { id: '0xb0', signature: '0xaa' }],
+          [11, { id: '0xb1', signature: null }],
+        ]),
+      );
     });
 
     it('chunks at 20 heights per request', async () => {
@@ -383,6 +389,7 @@ describe('FuelCoreClient', () => {
           const out: Record<string, unknown> = {};
           heights.forEach((h, i) => {
             out[`b${i}`] = {
+              id: `0xid${h}`,
               consensus: { __typename: 'PoAConsensus', signature: `0x${h}` },
             };
           });
@@ -395,7 +402,7 @@ describe('FuelCoreClient', () => {
       expect(calls[0]).toHaveLength(20);
       expect(calls[1]).toHaveLength(5);
       expect(result.size).toBe(25);
-      expect(result.get(24)).toBe('0x24');
+      expect(result.get(24)).toEqual({ id: '0xid24', signature: '0x24' });
     });
 
     it('returns an empty map and logs once on request failure, without throwing', async () => {

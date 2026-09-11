@@ -184,7 +184,12 @@ async function setup(
       hasPreviousPage: false,
     }),
     blockSignatures: async (heights: number[]) =>
-      new Map(heights.map((h) => [h, `0x${'ab'.repeat(64)}`])),
+      new Map(
+        heights.map((h) => [
+          h,
+          { id: hex(1000 + h), signature: `0x${'ab'.repeat(64)}` },
+        ]),
+      ),
     ...clientOverrides,
   } as any;
   const tip = new TipTracker({
