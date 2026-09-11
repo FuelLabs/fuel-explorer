@@ -62,9 +62,15 @@ export class TipTracker {
     }
     const id = this.nextId++;
     this.active = { id, startedAt: Date.now() };
+    // Abandoning stops the wait, not the promise underneath: it can settle
+    // later, and by then a newer tick owns servedTip. Every await below is
+    // followed by this check so a late tick reads nothing and writes nothing.
+    const abandoned = () => this.active?.id !== id;
     try {
       try {
-        this.fuelCoreTip = await this.opts.client.latestHeight();
+        const latest = await this.opts.client.latestHeight();
+        if (abandoned()) return;
+        this.fuelCoreTip = latest;
         this.fuelCoreUp = true;
       } catch {
         this.fuelCoreUp = false;
@@ -81,6 +87,7 @@ export class TipTracker {
             this.servedTip === 0 ? this.fuelCoreTip : this.servedTip + 1;
           const end = Math.min(this.fuelCoreTip, start + batchSize - 1);
           const blocks = await this.opts.store.getRange(start, end);
+          if (abandoned()) return;
           let sawMissing = false;
           for (let h = start; h <= end; h++) {
             const block = blocks[h - start];
@@ -104,8 +111,10 @@ export class TipTracker {
     } finally {
       // Only clear our own tick: an abandoned one must not free the flag of a
       // newer tick that is still running.
-      if (this.active?.id === id) this.active = null;
-      this.opts.onLag?.(this.fuelCoreTip - this.servedTip);
+      if (!abandoned()) {
+        this.active = null;
+        this.opts.onLag?.(this.fuelCoreTip - this.servedTip);
+      }
     }
   }
 }
