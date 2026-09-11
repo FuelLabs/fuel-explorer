@@ -62,6 +62,8 @@ railway variables --service api \
   --set "MEMORY_CACHE_BYTES=134217728" \
   --set "RPC_MAX_BLOCKS_PER_SECOND=5" \
   --set "PORT=3000"
+# RPC_FALLBACK_MAX_BLOCKS_PER_SECOND (default 20) rate-limits the rpc fallback
+# for heights the S3 archive lacks; it only applies with BLOCK_SOURCE=s3.
 
 # api: staking/bridge history ingestion. Without ETH_RPC_URL the L1 poller
 # stays disabled and /staking/* and /bridge/* return 503; the other four vars
