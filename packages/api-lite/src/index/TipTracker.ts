@@ -11,16 +11,25 @@ type Opts = {
   batch?: number;
   /** Fires at the end of every tick with fuelCoreTip - servedTip. */
   onLag?: (lagBlocks: number) => void;
+  /**
+   * How long a single tick may run before the next tick abandons it. Default
+   * 60s; a test can lower it.
+   */
+  stallMs?: number;
 };
 
 const MAX_BATCHES_PER_TICK = 10;
+const DEFAULT_STALL_MS = 60_000;
 
 export class TipTracker {
   fuelCoreTip = 0;
   servedTip = 0;
   fuelCoreUp = false;
   private timer: NodeJS.Timeout | null = null;
-  private running = false;
+  // The in-flight tick, if any. Held as an object rather than a boolean so an
+  // abandoned tick cannot clear the flag belonging to a newer one.
+  private active: { id: number; startedAt: number } | null = null;
+  private nextId = 1;
 
   constructor(private readonly opts: Opts) {
     this.servedTip = opts.initialServedTip ?? 0;
@@ -35,12 +44,33 @@ export class TipTracker {
     this.timer = null;
   }
 
+  private get stallMs(): number {
+    return this.opts.stallMs ?? DEFAULT_STALL_MS;
+  }
+
   async tick(): Promise<void> {
-    if (this.running) return;
-    this.running = true;
+    if (this.active) {
+      const stalledFor = Date.now() - this.active.startedAt;
+      if (stalledFor < this.stallMs) return;
+      // A tick that never settles would otherwise wedge the tracker for the
+      // life of the process: no error, no recovery, just a tip that stops
+      // advancing while health keeps reporting the last good values. Give up
+      // on it and let this tick through.
+      console.error(
+        `TipTracker: tick ${this.active.id} still running after ${stalledFor}ms, abandoning it and retrying`,
+      );
+    }
+    const id = this.nextId++;
+    this.active = { id, startedAt: Date.now() };
+    // Abandoning stops the wait, not the promise underneath: it can settle
+    // later, and by then a newer tick owns servedTip. Every await below is
+    // followed by this check so a late tick reads nothing and writes nothing.
+    const abandoned = () => this.active?.id !== id;
     try {
       try {
-        this.fuelCoreTip = await this.opts.client.latestHeight();
+        const latest = await this.opts.client.latestHeight();
+        if (abandoned()) return;
+        this.fuelCoreTip = latest;
         this.fuelCoreUp = true;
       } catch {
         this.fuelCoreUp = false;
@@ -57,6 +87,7 @@ export class TipTracker {
             this.servedTip === 0 ? this.fuelCoreTip : this.servedTip + 1;
           const end = Math.min(this.fuelCoreTip, start + batchSize - 1);
           const blocks = await this.opts.store.getRange(start, end);
+          if (abandoned()) return;
           let sawMissing = false;
           for (let h = start; h <= end; h++) {
             const block = blocks[h - start];
@@ -78,8 +109,12 @@ export class TipTracker {
         return;
       }
     } finally {
-      this.running = false;
-      this.opts.onLag?.(this.fuelCoreTip - this.servedTip);
+      // Only clear our own tick: an abandoned one must not free the flag of a
+      // newer tick that is still running.
+      if (!abandoned()) {
+        this.active = null;
+        this.opts.onLag?.(this.fuelCoreTip - this.servedTip);
+      }
     }
   }
 }

@@ -30,7 +30,19 @@ type Opts = {
   // pinned cache can therefore sit above `diskBytes` by up to the pinned
   // set's total size -- eviction skips those heights rather than deleting them.
   pinned?: () => Set<number>;
+  /**
+   * How long one load may hold its inflight slot before it is abandoned.
+   * Default 30s; a test can lower it.
+   */
+  loadTimeoutMs?: number;
 };
+
+// A load that never settles used to keep its `inflight` entry forever, so
+// every later request for that height was handed the same dead promise and
+// the indexer could never make progress past it -- a retry asked for the same
+// heights and hung identically. Bounding the slot turns "never settles" into
+// "absent", which the callers already handle.
+const DEFAULT_LOAD_TIMEOUT_MS = 30_000;
 
 // A decoded GQLBlock's real V8 heap footprint (nested objects/arrays/strings
 // for every tx, input, output, receipt) runs well above its
@@ -153,7 +165,24 @@ export class BlockStore {
     if (hit) return hit;
     const pending = this.inflight.get(height);
     if (pending) return pending;
-    const p = this.load(height).finally(() => this.inflight.delete(height));
+    const timeoutMs = this.opts.loadTimeoutMs ?? DEFAULT_LOAD_TIMEOUT_MS;
+    let timer: NodeJS.Timeout | undefined;
+    const p = Promise.race([
+      this.load(height),
+      new Promise<null>((resolve) => {
+        timer = setTimeout(() => {
+          console.error(
+            `BlockStore: load of height ${height} exceeded ${timeoutMs}ms, abandoning it so a later request starts a fresh load`,
+          );
+          resolve(null);
+        }, timeoutMs);
+      }),
+    ]).finally(() => {
+      if (timer) clearTimeout(timer);
+      // Only clear our own slot: a load that outlived its timeout and settles
+      // late must not evict the fresh load a later caller has started.
+      if (this.inflight.get(height) === p) this.inflight.delete(height);
+    });
     this.inflight.set(height, p);
     return p;
   }
