@@ -43,7 +43,14 @@ FROM node:20-alpine AS deps
 RUN apk add --no-cache python3 make g++
 WORKDIR /out
 COPY --from=build /out/package.json ./package.json
-RUN npm install --omit=dev --no-audit --no-fund \
+# api-lite-runtime.package-lock.json pins the transitive versions `npm install`
+# would otherwise float on every build. Regenerate it when api-lite's
+# dependencies change: run the node one-liner above (the one that writes
+# /out/package.json) against a temp dir, then
+# `npm install --package-lock-only --omit=dev --no-audit --no-fund` in that
+# dir, and copy the resulting package-lock.json here.
+COPY docker/vps/api-lite-runtime.package-lock.json ./package-lock.json
+RUN npm ci --omit=dev --no-audit --no-fund \
  && npm ls --omit=dev --depth=0
 
 # 384 MB was too tight: BlockStore's LRU sizeCalculation used to account
@@ -64,10 +71,19 @@ RUN npm install --omit=dev --no-audit --no-fund \
 FROM node:20-alpine AS runtime
 ENV NODE_ENV=production
 ENV NODE_OPTIONS=--max-old-space-size=768
+# su-exec drops from root to the `node` user (uid 1000, built into this base
+# image) after entrypoint.sh chowns the DATA_DIR volume mount - see that
+# script for why the chown has to happen at container start, not just here.
+RUN apk add --no-cache su-exec
 WORKDIR /app
-COPY --from=deps /out/package.json ./package.json
-COPY --from=deps /out/node_modules ./node_modules
-COPY --from=build /out/dist ./dist
+# --chown here (not a separate `RUN chown -R /app`) avoids duplicating the
+# whole node_modules tree into a new layer just to change ownership.
+COPY --from=deps --chown=node:node /out/package.json ./package.json
+COPY --from=deps --chown=node:node /out/node_modules ./node_modules
+COPY --from=build --chown=node:node /out/dist ./dist
+COPY docker/vps/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s CMD node -e "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "dist/main.js"]
