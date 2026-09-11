@@ -88,14 +88,24 @@ export class BlockStore {
   constructor(readonly opts: Opts) {
     this.memory = new LRUCache<number, GQLBlock>({
       maxSize: opts.memoryBytes,
+      // Every call site that inserts into `memory` (load()'s two paths)
+      // stringifies the block exactly once and records the byte length in
+      // `memorySizes` before calling memory.set, so this just reads it back
+      // instead of paying for a second JSON.stringify of the same block.
+      // The `?? ...` fallback only matters if that invariant is ever broken;
+      // it reproduces the old always-stringify behaviour rather than
+      // silently under-counting the entry.
       sizeCalculation: (b, key) => {
-        const raw = Math.max(1, Buffer.byteLength(JSON.stringify(b)));
+        let raw = this.memorySizes.get(key);
+        if (raw == null) {
+          raw = Math.max(1, Buffer.byteLength(JSON.stringify(b)));
+          this.memorySizes.set(key, raw);
+        }
         // sizeOf() (and charts.ts's blockSize(), which falls back to it)
         // report the block's real serialized size to users, so the raw,
-        // un-multiplied value is what's stored here -- only the value
-        // returned below (which the LRU compares against `memoryBytes`) is
-        // heap-adjusted.
-        this.memorySizes.set(key, raw);
+        // un-multiplied value is what's stored in `memorySizes` -- only the
+        // value returned below (which the LRU compares against
+        // `memoryBytes`) is heap-adjusted.
         return Math.max(1, Math.round(raw * HEAP_BYTES_MULTIPLIER));
       },
       dispose: (_v, key) => {
@@ -226,7 +236,7 @@ export class BlockStore {
       __typename: 'PoAConsensus',
       signature,
     };
-    this.writeDisk(height, block).catch((e) =>
+    this.writeDisk(height, JSON.stringify(block)).catch((e) =>
       console.error('BlockStore.patchConsensus: writeDisk failed', e),
     );
   }
@@ -331,16 +341,33 @@ export class BlockStore {
   }
 
   private async load(height: number): Promise<GQLBlock | null> {
-    const raw = await this.readDisk(height);
-    if (raw) {
-      const fromDisk = this.opts.normalize ? this.opts.normalize(raw) : raw;
-      this.memory.set(height, fromDisk);
-      return fromDisk;
+    const disk = await this.readDisk(height);
+    if (disk) {
+      if (this.opts.normalize) {
+        // normalize can grow the block (e.g. withStatusBlock adds a `block`
+        // ref to every tx status), so the pre-normalize disk string no
+        // longer describes the cached object's size -- this is the first
+        // stringify of the normalized object, not a second one.
+        const fromDisk = this.opts.normalize(disk.block);
+        const json = JSON.stringify(fromDisk);
+        this.memorySizes.set(height, Buffer.byteLength(json));
+        this.memory.set(height, fromDisk);
+        return fromDisk;
+      }
+      // Already decompressed to a string in readDisk -- reuse its byte
+      // length instead of stringifying the parsed object again.
+      this.memorySizes.set(height, Buffer.byteLength(disk.json));
+      this.memory.set(height, disk.block);
+      return disk.block;
     }
     const block = this.opts.loader
       ? await this.opts.loader(height)
       : await this.loadFromSource(height);
     if (!block) return null;
+    // Stringified once and reused for both size accounting and the disk
+    // write below, instead of once per use on the request thread.
+    const json = JSON.stringify(block);
+    this.memorySizes.set(height, Buffer.byteLength(json));
     this.memory.set(height, block);
     // onDecoded (index write) runs before writeDisk (disk cache write) so a
     // crash in between leaves the safe failure mode: no disk-cached file, so
@@ -351,7 +378,7 @@ export class BlockStore {
     // INSERT OR IGNORE per row (see index/Index.ts), so re-indexing the same
     // block on a later re-fetch is a no-op, not a duplicate.
     this.opts.onDecoded?.(block);
-    await this.writeDisk(height, block);
+    await this.writeDisk(height, json);
     return block;
   }
 
@@ -397,24 +424,32 @@ export class BlockStore {
     this.fallbacksSinceLog = 0;
   }
 
-  private async readDisk(height: number): Promise<GQLBlock | null> {
+  // Returns both the parsed block and the exact JSON string it was parsed
+  // from, so a disk-hit caller with no normalize step can reuse that string
+  // for size accounting instead of stringifying the parsed object again.
+  private async readDisk(
+    height: number,
+  ): Promise<{ block: GQLBlock; json: string } | null> {
     try {
       const gz = await fs.readFile(this.gzPath(height));
-      return JSON.parse(gunzipSync(gz).toString('utf8')) as GQLBlock;
+      const json = gunzipSync(gz).toString('utf8');
+      return { block: JSON.parse(json) as GQLBlock, json };
     } catch {
       /* fall through to the legacy uncompressed path */
     }
     try {
-      return JSON.parse(
-        await fs.readFile(this.legacyPath(height), 'utf8'),
-      ) as GQLBlock;
+      const json = await fs.readFile(this.legacyPath(height), 'utf8');
+      return { block: JSON.parse(json) as GQLBlock, json };
     } catch {
       return null;
     }
   }
 
-  private async writeDisk(height: number, block: GQLBlock) {
-    const gz = gzipSync(JSON.stringify(block));
+  private async writeDisk(height: number, json: string) {
+    // Level 1 (fastest, least compression): this runs synchronously on the
+    // request thread for every new block, and the size difference against
+    // the default level 6 does not justify the CPU it costs here.
+    const gz = gzipSync(json, { level: 1 });
     const size = gz.length;
     const tmp = `${this.gzPath(height)}.tmp`;
     await fs.writeFile(tmp, gz);
