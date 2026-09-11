@@ -126,3 +126,62 @@ describe('createApp server wired into the boot server', () => {
     }
   });
 });
+
+describe('createApp GraphQL request limits', () => {
+  it('rejects a batch of 11 operations over the limit of 10', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const batch = Array.from({ length: 11 }, () => ({
+      query: '{ predicate(address: "0x00") { address } }',
+    }));
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(batch),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json)).toContain(
+      'Batching is limited to 10 operations per request.',
+    );
+  });
+
+  const nestedQuery = (n: number) =>
+    `{ ${'a { '.repeat(n)}x${' }'.repeat(n)} }`;
+
+  it('rejects a query nested 16 levels deep with the depth error', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: nestedQuery(16) }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).toContain(
+      'Query depth limit of 15 exceeded',
+    );
+  });
+
+  it('allows a query nested exactly 15 levels deep, at the limit', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: nestedQuery(15) }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).not.toContain('Query depth limit');
+  });
+
+  it('still serves a normal explorer query under the depth and batching limits', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: '{ predicate(address: "0x00") { address } }',
+      }),
+    });
+    const json = await res.json();
+    expect(json.errors).toBeUndefined();
+    expect(json.data).toEqual({ predicate: null });
+  });
+});
