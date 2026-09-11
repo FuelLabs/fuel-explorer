@@ -3,6 +3,7 @@ import type { BridgeStore } from '../bridge/BridgeStore';
 import { ValidationError } from '../errors';
 import { PaginatedParams } from '../staking/PaginatedParams';
 import type { StakingStore } from '../staking/StakingStore';
+import { getValidAddress } from '../staking/addresses';
 import type { StakingAPY } from '../staking/apy';
 import {
   type FinalizationPeriods,
@@ -75,6 +76,19 @@ function sendError(res: ServerResponse, err: unknown, context: string): void {
 }
 
 const EVENT_PATH_RE = /^\/staking\/events\/([^/]+)$/;
+
+// Missing `from_block` (searchParams.get returns null, Number(null) === 0)
+// keeps its long-standing default of 0; anything else non-integer or
+// negative is a caller error, not a server one, so it's a ValidationError.
+function parseFromBlock(raw: string | null): number {
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 0) {
+    throw new ValidationError(
+      'Invalid from_block, expected a non-negative integer',
+    );
+  }
+  return value;
+}
 
 // Wired into server.ts ahead of the graphql-yoga handler. Returns true when
 // it handled the request, so the caller knows whether to fall through to
@@ -224,7 +238,7 @@ async function handleBridgeRequest(
 
   try {
     if (path === '/bridge/deposit/logs') {
-      const address = url.searchParams.get('address') ?? '';
+      const address = getValidAddress(url.searchParams.get('address') ?? '');
       const recipient = url.searchParams.get('recipient') ?? '';
       const predicate = url.searchParams.get('predicate') ?? '';
       const result = bridge.store.queryLogsForRecipient(
@@ -237,15 +251,15 @@ async function handleBridgeRequest(
     }
 
     if (path === '/bridge/block/hashes') {
-      const address = url.searchParams.get('address') ?? '';
-      const fromBlock = Number(url.searchParams.get('from_block'));
+      const address = getValidAddress(url.searchParams.get('address') ?? '');
+      const fromBlock = parseFromBlock(url.searchParams.get('from_block'));
       const result = bridge.store.queryBlockHashes(address, fromBlock);
       sendJson(res, 200, result);
       return true;
     }
 
     if (path === '/bridge/message/relayed/hash') {
-      const address = url.searchParams.get('address') ?? '';
+      const address = getValidAddress(url.searchParams.get('address') ?? '');
       const messageId = url.searchParams.get('message_id') ?? '';
       const result = bridge.store.queryMessageRelayedTxHash(address, messageId);
       sendJson(res, 200, result);

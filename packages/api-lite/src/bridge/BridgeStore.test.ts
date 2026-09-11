@@ -1,5 +1,5 @@
 import { L1Index } from '../l1/L1Index';
-import { BridgeStore } from './BridgeStore';
+import { BridgeStore, MAX_BRIDGE_ROWS } from './BridgeStore';
 
 const PORTAL = '0xAEB0c00D0125A8a788956ade4f4F12Ead9f65DDf';
 const CHAIN_STATE = '0xBa0e6bF94580D49B5Aaaa54279198D424B23eCC3';
@@ -171,6 +171,7 @@ describe('BridgeStore.queryLogsForRecipient', () => {
         event: 'MessageSent',
         argKey: 'recipient',
         argValue: RECIPIENT.toLowerCase(),
+        limit: MAX_BRIDGE_ROWS,
       }),
     );
     expect(queryLogs).toHaveBeenCalledWith(
@@ -179,12 +180,60 @@ describe('BridgeStore.queryLogsForRecipient', () => {
         event: 'MessageSent',
         argKey: 'recipient',
         argValue: PREDICATE.toLowerCase(),
+        limit: MAX_BRIDGE_ROWS,
       }),
     );
     // Never a bare contract+event scan without an argKey filter.
     for (const call of queryLogs.mock.calls) {
       expect(call[0].argKey).toBe('recipient');
     }
+  });
+
+  it('truncates the merged, sorted result to MAX_BRIDGE_ROWS when the direct and predicate queries are each already at the cap', () => {
+    const recipientHex = RECIPIENT.toLowerCase().replace('0x', '');
+    const makeRow = (blockHeight: number, data: string) => ({
+      _id: blockHeight,
+      contract_hash: PORTAL,
+      block_height: blockHeight,
+      tx_hash: `0xtx${blockHeight}`,
+      event: 'MessageSent',
+      signature: 'MessageSent(bytes32,bytes32,uint256,uint64,bytes)',
+      raw_log: '{}',
+      decoded_args: JSON.stringify({
+        recipient: RECIPIENT,
+        nonce: String(blockHeight),
+        data,
+      }),
+      decoded_data: '{}',
+      timestamp: new Date(blockHeight * 1000).toISOString(),
+      log_index: 0,
+    });
+    // Direct-recipient rows: block heights 0..MAX_BRIDGE_ROWS-1.
+    const directRows = Array.from({ length: MAX_BRIDGE_ROWS }, (_, i) =>
+      makeRow(i, '0x'),
+    );
+    // Predicate rows: block heights MAX_BRIDGE_ROWS..2*MAX_BRIDGE_ROWS-1,
+    // each embedding the recipient hex in `data` so they pass BridgeStore's
+    // predicate filter. Both queryLogs calls are individually capped at
+    // MAX_BRIDGE_ROWS, but merging them can still exceed it, so BridgeStore
+    // must re-cap the combined, sorted result itself.
+    const predicateRows = Array.from({ length: MAX_BRIDGE_ROWS }, (_, i) =>
+      makeRow(MAX_BRIDGE_ROWS + i, `0xdeadbeef${recipientHex}`),
+    );
+    const queryLogs = jest
+      .fn()
+      .mockReturnValueOnce(directRows)
+      .mockReturnValueOnce(predicateRows);
+    const store = new BridgeStore({ l1Index: { queryLogs } });
+    const result = store.queryLogsForRecipient(PORTAL, RECIPIENT, PREDICATE);
+    expect(result).toHaveLength(MAX_BRIDGE_ROWS);
+    // Newest-first: the higher-block_height predicate rows survive in full;
+    // every direct row (all older) is trimmed.
+    const rowCount = MAX_BRIDGE_ROWS * 2;
+    expect(result[0].transactionHash).toBe(`0xtx${rowCount - 1}`);
+    expect(result[result.length - 1].transactionHash).toBe(
+      `0xtx${rowCount - MAX_BRIDGE_ROWS}`,
+    );
   });
 
   it('returns only the log for the requested recipient among several MessageSent logs on the same contract', () => {
@@ -345,6 +394,16 @@ describe('BridgeStore.queryBlockHashes', () => {
     const store = new BridgeStore({ l1Index });
     expect(store.queryBlockHashes(CHAIN_STATE, 200)).toEqual([]);
   });
+
+  it('passes MAX_BRIDGE_ROWS as the queryLogs limit', () => {
+    l1Index = makeIndex();
+    const queryLogs = jest.fn(l1Index.queryLogs.bind(l1Index));
+    const store = new BridgeStore({ l1Index: { queryLogs } });
+    store.queryBlockHashes(CHAIN_STATE, 100);
+    expect(queryLogs).toHaveBeenCalledWith(
+      expect.objectContaining({ limit: MAX_BRIDGE_ROWS }),
+    );
+  });
 });
 
 describe('BridgeStore.queryMessageRelayedTxHash', () => {
@@ -386,5 +445,15 @@ describe('BridgeStore.queryMessageRelayedTxHash', () => {
     l1Index = makeIndex();
     const store = new BridgeStore({ l1Index });
     expect(store.queryMessageRelayedTxHash(PORTAL, '0xnope')).toEqual([]);
+  });
+
+  it('passes MAX_BRIDGE_ROWS as the queryLogs limit', () => {
+    l1Index = makeIndex();
+    const queryLogs = jest.fn(l1Index.queryLogs.bind(l1Index));
+    const store = new BridgeStore({ l1Index: { queryLogs } });
+    store.queryMessageRelayedTxHash(PORTAL, '0xmsg1');
+    expect(queryLogs).toHaveBeenCalledWith(
+      expect.objectContaining({ limit: MAX_BRIDGE_ROWS }),
+    );
   });
 });
