@@ -83,6 +83,38 @@ function singleContractStub(startBlock: number) {
   };
 }
 
+// A multi-contract index double with distinct per-contract cursors, for
+// asserting how many times a tick-level call (like getFinalizedBlockNumber)
+// runs relative to the contract count. Names come from AbiFactory's
+// registered mainnet contracts so syncContract finds a real ABI and doesn't
+// bail out early.
+const MAINNET_CONTRACT_NAMES = [
+  'FuelMessagePortal',
+  'FuelChainState',
+  'Token',
+] as const;
+
+function multiContractStub(count: number, startBlock: number) {
+  const hashes = Array.from({ length: count }, (_, i) => `0xcontract${i}`);
+  const heights = new Map(hashes.map((h) => [h, startBlock]));
+  return {
+    index: {
+      cursor: (hash: string) => heights.get(hash) ?? startBlock,
+      advance: (hash: string, h: number) => {
+        heights.set(hash, h);
+      },
+      insertLogs: (_rows: unknown[]) => {},
+      contracts: (_network?: 'mainnet' | 'testnet') =>
+        hashes.map((hash, i) => ({
+          contract_hash: hash,
+          block_height: heights.get(hash) ?? startBlock,
+          name: MAINNET_CONTRACT_NAMES[i % MAINNET_CONTRACT_NAMES.length],
+          network: 'mainnet' as const,
+        })),
+    },
+  };
+}
+
 describe('L1Poller', () => {
   it('writes one row (with args and decoded message data) for the decodable log, skips the undecodable one, and advances the cursor', async () => {
     const index = new L1Index(':memory:');
@@ -91,7 +123,7 @@ describe('L1Poller', () => {
     const onLog = jest.fn();
     const poller = new L1Poller({ index, client, network: 'mainnet', onLog });
 
-    await poller.syncContract(CONTRACT);
+    await poller.syncContract(CONTRACT, 21039450n);
 
     const rows = index.queryLogs({ contractHash: CONTRACT.contract_hash });
     expect(rows).toHaveLength(1);
@@ -126,7 +158,8 @@ describe('L1Poller', () => {
   it('never requests a window wider than 1000 blocks even when the finalized tip is far ahead', async () => {
     const index = new L1Index(':memory:');
     index.seed('mainnet', CONTRACT.block_height);
-    const client = fakeClient([], BigInt(CONTRACT.block_height) + 1_000_000n);
+    const finalized = BigInt(CONTRACT.block_height) + 1_000_000n;
+    const client = fakeClient([], finalized);
     // throttleMs: 0 - this contract now loops up to 120 windows in one call;
     // the default 1s throttle between windows would blow past Jest's timeout.
     const poller = new L1Poller({
@@ -136,7 +169,7 @@ describe('L1Poller', () => {
       throttleMs: 0,
     });
 
-    await poller.syncContract(CONTRACT);
+    await poller.syncContract(CONTRACT, finalized);
 
     expect(client.getLogs).toHaveBeenCalledWith({
       address: CONTRACT.contract_hash,
@@ -156,7 +189,7 @@ describe('L1Poller', () => {
     const client = fakeClient([], finalized);
     const poller = new L1Poller({ index, client, network: 'mainnet' });
 
-    await poller.syncContract(CONTRACT);
+    await poller.syncContract(CONTRACT, finalized);
 
     expect(client.getLogs).toHaveBeenCalledWith({
       address: CONTRACT.contract_hash,
@@ -178,7 +211,7 @@ describe('L1Poller', () => {
     const onLog = jest.fn();
     const poller = new L1Poller({ index, client, network: 'mainnet', onLog });
 
-    await poller.syncContract(CONTRACT);
+    await poller.syncContract(CONTRACT, 21039450n);
 
     expect(index.cursor(CONTRACT.contract_hash)).toBe(CONTRACT.block_height);
     expect(onLog).toHaveBeenCalled();
@@ -198,10 +231,65 @@ describe('L1Poller', () => {
 
     await poller.tick();
 
+    // tick() fetches the finalized block once and reuses it for every
+    // contract, rather than once per contract.
     expect(
       (client.getFinalizedBlockNumber as jest.Mock).mock.calls.length,
-    ).toBe(7);
+    ).toBe(1);
+    // "every seeded contract" still needs a signal independent of that
+    // shared fetch: each of the 7 contracts must have driven its own
+    // getLogs call(s), identifiable by its own address.
+    const addresses = new Set(
+      (client.getLogs as jest.Mock).mock.calls.map(
+        ([args]: [{ address: string }]) => args.address,
+      ),
+    );
+    expect(addresses.size).toBe(7);
     index.close();
+  });
+
+  it('tick() fetches the finalized block exactly once for 3 contracts, not once per contract', async () => {
+    const stub = multiContractStub(3, CONTRACT.block_height);
+    // finalized == start block: each contract runs exactly one window, so
+    // any extra getFinalizedBlockNumber call would be easy to spot.
+    const client = fakeClient([], BigInt(CONTRACT.block_height));
+    const poller = new L1Poller({
+      index: stub.index,
+      client,
+      network: 'mainnet',
+      throttleMs: 0,
+    });
+
+    await poller.tick();
+
+    expect(
+      (client.getFinalizedBlockNumber as jest.Mock).mock.calls.length,
+    ).toBe(1);
+    expect((client.getLogs as jest.Mock).mock.calls.length).toBe(3);
+  });
+
+  it('skips the whole tick and logs once when the finalized fetch fails', async () => {
+    const stub = multiContractStub(3, CONTRACT.block_height);
+    const client: L1Client = {
+      getFinalizedBlockNumber: jest
+        .fn()
+        .mockRejectedValue(new Error('rpc down')),
+      getLogs: jest.fn(),
+      getBlockTimestamp: jest.fn(),
+    };
+    const onLog = jest.fn();
+    const poller = new L1Poller({
+      index: stub.index,
+      client,
+      network: 'mainnet',
+      throttleMs: 0,
+      onLog,
+    });
+
+    await poller.tick();
+
+    expect(client.getLogs).not.toHaveBeenCalled();
+    expect(onLog).toHaveBeenCalledTimes(1);
   });
 
   it('processes consecutive windows within one tick until the cursor reaches the finalized tip', async () => {
