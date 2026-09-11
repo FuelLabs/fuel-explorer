@@ -1,3 +1,4 @@
+import { availableParallelism } from 'node:os';
 import { z } from 'zod';
 
 const num = (def: number) => z.coerce.number().int().positive().default(def);
@@ -45,6 +46,17 @@ const schema = z
     // process baseline above.
     BACKFILL_BATCH: num(10),
     S3_CONCURRENCY: num(8),
+    // Worker threads that decode archive blocks and gzip/gunzip the disk
+    // cache (see store/DecodeWorkerPool.ts); 0 keeps that work inline on the
+    // event loop. The default leaves one core to serving, and a one-core
+    // host still gets one worker so a decode never stalls a request.
+    // availableParallelism() reports host cores, not a container's CPU
+    // quota, so a CPU-limited container should set this explicitly.
+    DECODE_WORKERS: z.coerce
+      .number()
+      .int()
+      .nonnegative()
+      .default(Math.max(1, availableParallelism() - 1)),
     RPC_MAX_BLOCKS_PER_SECOND: num(5),
     // No static default: it depends on FUEL_PROVIDER's chain, resolved at
     // boot by cosmos/CosmosPoller.defaultCosmosRestUrl.
@@ -95,6 +107,7 @@ export type Config = {
   tipPollMs: number;
   backfillBatch: number;
   s3Concurrency: number;
+  decodeWorkers: number;
   rpcMaxBlocksPerSecond: number;
   cosmosRestUrl?: string;
   cosmosStartHeight?: number;
@@ -134,6 +147,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     tipPollMs: e.TIP_POLL_MS,
     backfillBatch: e.BACKFILL_BATCH,
     s3Concurrency: e.S3_CONCURRENCY,
+    decodeWorkers: e.DECODE_WORKERS,
     rpcMaxBlocksPerSecond: e.RPC_MAX_BLOCKS_PER_SECOND,
     cosmosRestUrl: e.COSMOS_REST_URL,
     cosmosStartHeight: e.COSMOS_START_HEIGHT,

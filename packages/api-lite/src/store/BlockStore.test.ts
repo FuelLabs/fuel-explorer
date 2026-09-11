@@ -10,8 +10,10 @@ import {
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { gunzipSync, gzipSync } from 'node:zlib';
+import { sampleBlockBytes, sampleFee } from '../../test/helpers/sampleBlock';
 import { BlockNotFound } from '../s3/S3BlockSource';
 import { BlockStore } from './BlockStore';
+import { DecodeWorkerPool } from './DecodeWorkerPool';
 
 function fakeBlock(height: number, pad = 0) {
   return {
@@ -589,6 +591,77 @@ describe('BlockStore', () => {
       '13',
       '14',
     ]);
+  });
+});
+
+describe('BlockStore with a decode worker pool', () => {
+  // Built in beforeAll, not the describe body, so a `-t` filter that skips
+  // this group never leaves a worker thread running.
+  let pool: DecodeWorkerPool;
+  beforeAll(() => {
+    pool = new DecodeWorkerPool({ size: 1, chainId: 9889, fee: sampleFee });
+  });
+  afterAll(() => pool.close());
+
+  it('decodes through the pool, caches the gzip it returns, and reads disk hits back through it', async () => {
+    const calls: number[] = [];
+    const seen: number[] = [];
+    const store = new BlockStore({
+      source: {
+        fetchRaw: async (h) => {
+          calls.push(h);
+          return sampleBlockBytes(h);
+        },
+      },
+      pool,
+      dataDir: mkdtempSync(join(tmpdir(), 'bs-pool-')),
+      memoryBytes: 1, // every block is evicted from memory at once, so the second read is a disk hit
+      diskBytes: 10_000_000,
+      concurrency: 4,
+      onDecoded: (b) => seen.push(Number(b.height)),
+    });
+    const block = await store.get(500);
+    expect(block?.height).toBe('500');
+    expect(block?.transactions).toHaveLength(2);
+    expect(seen).toEqual([500]);
+    const blocksDir = join(store.opts.dataDir, 'blocks');
+    expect(readdirSync(blocksDir)).toEqual(['500.json.gz']);
+    expect(
+      JSON.parse(
+        gunzipSync(readFileSync(join(blocksDir, '500.json.gz'))).toString(
+          'utf8',
+        ),
+      ),
+    ).toEqual(block);
+
+    expect((await store.get(500))?.id).toBe(block?.id);
+    expect(calls).toEqual([500]);
+    expect(seen).toEqual([500]);
+  });
+
+  it('sizes the memory entry from the JSON the pool returned', async () => {
+    const store = new BlockStore({
+      source: { fetchRaw: async (h) => sampleBlockBytes(h) },
+      pool,
+      dataDir: mkdtempSync(join(tmpdir(), 'bs-pool-size-')),
+      memoryBytes: 10_000_000,
+      diskBytes: 10_000_000,
+      concurrency: 4,
+    });
+    const block = await store.get(12);
+    expect(store.sizeOf(12)).toBe(Buffer.byteLength(JSON.stringify(block)));
+  });
+
+  it('surfaces a worker decode failure as a rejected load naming the height', async () => {
+    const store = new BlockStore({
+      source: { fetchRaw: async () => new Uint8Array([1, 2, 3]) },
+      pool,
+      dataDir: mkdtempSync(join(tmpdir(), 'bs-pool-err-')),
+      memoryBytes: 10_000,
+      diskBytes: 10_000_000,
+      concurrency: 4,
+    });
+    await expect(store.get(31)).rejects.toThrow(/block 31/);
   });
 });
 

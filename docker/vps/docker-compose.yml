@@ -47,6 +47,11 @@ services:
       # graphql/resolvers/charts.ts's rollingStats60s covering fewer of its
       # target ~60 trailing blocks on this tier -- see config.ts's comment.
       MEMORY_CACHE_BYTES: "50331648"
+      # config.ts defaults this to host cores minus one, which ignores the
+      # 0.8 CPU limit below, and each worker is a V8 isolate whose heap sits
+      # outside --max-old-space-size; one keeps decode off the event loop
+      # without multiplying that memory.
+      DECODE_WORKERS: "1"
     volumes:
       - api-data:/data
     restart: unless-stopped

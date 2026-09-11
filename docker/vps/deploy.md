@@ -61,7 +61,14 @@ railway variables --service api \
   --set "DISK_CACHE_BYTES=1000000000" \
   --set "MEMORY_CACHE_BYTES=134217728" \
   --set "RPC_MAX_BLOCKS_PER_SECOND=5" \
+  --set "DECODE_WORKERS=1" \
   --set "PORT=3000"
+
+# DECODE_WORKERS: worker threads that decode archive blocks and gzip/gunzip
+# the disk cache (0 = inline on the event loop). The config.ts default is
+# host cores minus one, which does not see a container's CPU quota, and each
+# worker is a V8 isolate with its own heap outside --max-old-space-size, so
+# set it explicitly on any CPU- or memory-limited service.
 
 # api: staking/bridge history ingestion. Without ETH_RPC_URL the L1 poller
 # stays disabled and /staking/* and /bridge/* return 503; the other four vars
