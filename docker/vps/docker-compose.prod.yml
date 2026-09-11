@@ -36,6 +36,9 @@ services:
       # docker-compose.yml's MEMORY_CACHE_BYTES override; see that file's
       # comment.
       MEMORY_CACHE_BYTES: "50331648"
+      # Same 0.8 CPU limit and 384 MB heap as docker-compose.yml; see that
+      # file's DECODE_WORKERS comment.
+      DECODE_WORKERS: "1"
     volumes:
       - api-data:/data
     restart: unless-stopped

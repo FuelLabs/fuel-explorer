@@ -1,7 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/main.ts'],
+  // Named entries keep both files flat in dist/: the Dockerfile copies
+  // dist/* without recursing, and DecodeWorkerPool resolves the worker script
+  // next to main.js.
+  entry: { main: 'src/main.ts', decodeWorker: 'src/store/decodeWorker.ts' },
   format: ['cjs'],
   target: 'node20',
   platform: 'node',

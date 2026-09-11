@@ -26,6 +26,7 @@ import { StakingAPY } from './staking/apy';
 import { FinalizationPeriods } from './staking/finalization';
 import { WithdrawProofCache, defaultCosmosIndexerUrl } from './staking/proof';
 import { BlockStore } from './store/BlockStore';
+import { DecodeWorkerPool } from './store/DecodeWorkerPool';
 
 const CHAIN_PARAMS_RETRY_MAX_DELAY_MS = 30_000;
 const PAUSE_BACKFILL_LAG_BLOCKS = 100;
@@ -111,6 +112,18 @@ async function main() {
   // archive does not have yet (see BlockStore's `fallback`), and routing that
   // through it keeps the traffic inside the same per-second budget.
   const rpcSource = new RpcBlockSource(client, cfg.rpcMaxBlocksPerSecond);
+  // Only the archive path decodes protobuf; the rpc loader already gets
+  // GQL-shaped blocks from the node. process.exit in shutdown below ends the
+  // worker threads with the process.
+  const pool =
+    cfg.blockSource === 's3' && cfg.decodeWorkers > 0
+      ? new DecodeWorkerPool({
+          size: cfg.decodeWorkers,
+          chainId: params.chainId,
+          fee: params.fee,
+        })
+      : undefined;
+  console.log(`decode workers: ${pool ? cfg.decodeWorkers : 'inline'}`);
   const store = new BlockStore(
     cfg.blockSource === 'rpc'
       ? {
@@ -132,6 +145,7 @@ async function main() {
           ),
           decode: (bytes) =>
             decodeBlock(bytes, { chainId: params.chainId, fee: params.fee }),
+          pool,
           fallback: (height) => rpcSource.load(height),
           dataDir: cfg.dataDir,
           memoryBytes: cfg.memoryCacheBytes,

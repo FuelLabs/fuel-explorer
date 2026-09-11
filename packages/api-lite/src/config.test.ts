@@ -1,3 +1,4 @@
+import { availableParallelism } from 'node:os';
 import { loadConfig } from './config';
 
 const base = {
@@ -110,6 +111,24 @@ describe('loadConfig', () => {
 
   it('throws for an unknown FUEL_CHAIN', () => {
     expect(() => loadConfig({ ...base, FUEL_CHAIN: 'other' })).toThrow();
+  });
+
+  it('defaults decodeWorkers to one less than the available cores, at least one', () => {
+    const c = loadConfig(base);
+    expect(c.decodeWorkers).toBe(Math.max(1, availableParallelism() - 1));
+  });
+
+  it('DECODE_WORKERS=0 disables the worker pool', () => {
+    expect(loadConfig({ ...base, DECODE_WORKERS: '0' }).decodeWorkers).toBe(0);
+    expect(loadConfig({ ...base, DECODE_WORKERS: '3' }).decodeWorkers).toBe(3);
+  });
+
+  it('rejects a DECODE_WORKERS that is not a non-negative integer', () => {
+    for (const v of ['-1', '1.5', 'abc']) {
+      expect(() => loadConfig({ ...base, DECODE_WORKERS: v })).toThrow(
+        /DECODE_WORKERS/,
+      );
+    }
   });
 
   it('treats empty-string optional env vars as unset', () => {

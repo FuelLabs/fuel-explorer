@@ -4,10 +4,22 @@ import { gunzipSync, gzipSync } from 'node:zlib';
 import { LRUCache } from 'lru-cache';
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 import { BlockNotFound } from '../s3/S3BlockSource';
+import type { DecodePool } from './DecodeWorkerPool';
+
+// What a load produced: `json` and `gz` are present when a worker already
+// serialised the block, so the main thread neither stringifies nor gzips it.
+type Loaded = { block: GQLBlock; json?: string; gz?: Buffer };
 
 type Opts = {
   source?: { fetchRaw(height: number): Promise<Uint8Array> };
   decode?: (bytes: Uint8Array) => GQLBlock;
+  /**
+   * Decodes archive bytes, and gunzips disk-cache hits, on worker threads so
+   * a backfill batch does not stall the requests the same event loop is
+   * serving. `decode` is the inline path used when this is absent
+   * (DECODE_WORKERS=0).
+   */
+  pool?: DecodePool;
   loader?: (height: number) => Promise<GQLBlock | null>;
   normalize?: (block: GQLBlock) => GQLBlock;
   /**
@@ -56,6 +68,8 @@ const DEFAULT_LOAD_TIMEOUT_MS = 30_000;
 // what pushed the container over its --max-old-space-size during backfill
 // (see docker/vps/Dockerfile.api-lite's comment for the full memory math).
 const HEAP_BYTES_MULTIPLIER = 2.5;
+const heapSize = (rawBytes: number) =>
+  Math.max(1, Math.round(rawBytes * HEAP_BYTES_MULTIPLIER));
 
 // How often evictOverflow's "skipped N pinned height(s)" line may log. A
 // pinned-heavy cache during heavy backfill calls writeDisk (and therefore
@@ -96,7 +110,7 @@ export class BlockStore {
         // returned below (which the LRU compares against `memoryBytes`) is
         // heap-adjusted.
         this.memorySizes.set(key, raw);
-        return Math.max(1, Math.round(raw * HEAP_BYTES_MULTIPLIER));
+        return heapSize(raw);
       },
       dispose: (_v, key) => {
         this.memorySizes.delete(key);
@@ -331,17 +345,24 @@ export class BlockStore {
   }
 
   private async load(height: number): Promise<GQLBlock | null> {
-    const raw = await this.readDisk(height);
-    if (raw) {
-      const fromDisk = this.opts.normalize ? this.opts.normalize(raw) : raw;
-      this.memory.set(height, fromDisk);
+    const hit = await this.readDisk(height);
+    if (hit) {
+      const fromDisk = this.opts.normalize
+        ? this.opts.normalize(hit.block)
+        : hit.block;
+      this.remember(height, fromDisk, hit.json);
       return fromDisk;
     }
-    const block = this.opts.loader
-      ? await this.opts.loader(height)
-      : await this.loadFromSource(height);
-    if (!block) return null;
-    this.memory.set(height, block);
+    let loaded: Loaded | null;
+    if (this.opts.loader) {
+      const block = await this.opts.loader(height);
+      loaded = block && { block };
+    } else {
+      loaded = await this.loadFromSource(height);
+    }
+    if (!loaded) return null;
+    const { block } = loaded;
+    this.remember(height, block, loaded.json);
     // onDecoded (index write) runs before writeDisk (disk cache write) so a
     // crash in between leaves the safe failure mode: no disk-cached file, so
     // the next `get(height)` re-fetches and re-indexes -- rather than a
@@ -351,13 +372,30 @@ export class BlockStore {
     // INSERT OR IGNORE per row (see index/Index.ts), so re-indexing the same
     // block on a later re-fetch is a no-op, not a duplicate.
     this.opts.onDecoded?.(block);
-    await this.writeDisk(height, block);
+    await this.writeDisk(height, block, loaded.gz);
     return block;
   }
 
-  private async loadFromSource(height: number): Promise<GQLBlock | null> {
-    const { source, decode } = this.opts;
-    if (!source || !decode) {
+  // A worker already serialised the block, so its JSON length stands in for
+  // the stringify sizeCalculation would otherwise repeat on the main thread.
+  private remember(height: number, block: GQLBlock, json?: string) {
+    if (json == null) {
+      this.memory.set(height, block);
+      return;
+    }
+    const raw = Math.max(1, Buffer.byteLength(json));
+    this.memory.set(height, block, { size: heapSize(raw) });
+    // A block larger than the whole budget is not stored, and must not be
+    // reported as cached either.
+    if (this.memory.has(height)) this.memorySizes.set(height, raw);
+  }
+
+  private async loadFromSource(height: number): Promise<Loaded | null> {
+    const { source, decode, pool } = this.opts;
+    const decodeBytes = pool
+      ? (bytes: Uint8Array) => pool.decode(height, bytes)
+      : decode && (async (bytes: Uint8Array) => ({ block: decode(bytes) }));
+    if (!source || !decodeBytes) {
       throw new Error('BlockStore needs a loader or a source and a decoder');
     }
     let bytes: Uint8Array;
@@ -370,13 +408,14 @@ export class BlockStore {
       if (e instanceof BlockNotFound) {
         if (!this.opts.fallback) return null;
         this.noteFallback(height);
-        return this.opts.fallback(height);
+        const block = await this.opts.fallback(height);
+        return block && { block };
       }
       throw e;
     }
     if (process.env.LOG_S3 === '1')
       console.log(`s3 GET ${height} ${Date.now() - s3Start}ms`);
-    return decode(bytes);
+    return decodeBytes(bytes);
   }
 
   /**
@@ -397,24 +436,32 @@ export class BlockStore {
     this.fallbacksSinceLog = 0;
   }
 
-  private async readDisk(height: number): Promise<GQLBlock | null> {
+  private async readDisk(height: number): Promise<Loaded | null> {
     try {
       const gz = await fs.readFile(this.gzPath(height));
-      return JSON.parse(gunzipSync(gz).toString('utf8')) as GQLBlock;
+      if (this.opts.pool) return await this.opts.pool.gunzip(height, gz);
+      return {
+        block: JSON.parse(gunzipSync(gz).toString('utf8')) as GQLBlock,
+      };
     } catch {
       /* fall through to the legacy uncompressed path */
     }
     try {
-      return JSON.parse(
-        await fs.readFile(this.legacyPath(height), 'utf8'),
-      ) as GQLBlock;
+      return {
+        block: JSON.parse(
+          await fs.readFile(this.legacyPath(height), 'utf8'),
+        ) as GQLBlock,
+      };
     } catch {
       return null;
     }
   }
 
-  private async writeDisk(height: number, block: GQLBlock) {
-    const gz = gzipSync(JSON.stringify(block));
+  private async writeDisk(
+    height: number,
+    block: GQLBlock,
+    gz: Buffer = gzipSync(JSON.stringify(block)),
+  ) {
     const size = gz.length;
     const tmp = `${this.gzPath(height)}.tmp`;
     await fs.writeFile(tmp, gz);
