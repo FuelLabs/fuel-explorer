@@ -1,4 +1,6 @@
+import { LoadingBox } from '@fuels/ui';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
+import { Suspense, lazy } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
@@ -6,13 +8,9 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { AccountPage } from './pages/AccountPage';
 import { BlockPage } from './pages/BlockPage';
 import { BlocksPage } from './pages/BlocksPage';
-import BridgeHistoryPage from './pages/BridgeHistoryPage';
-import BridgePage from './pages/BridgePage';
 import ContractPage from './pages/ContractPage';
 import { EcosystemPageWrapper } from './pages/EcosystemPage';
 import { HomePage } from './pages/HomePage';
-import StakingOnEthereumPage from './pages/StakingOnEthereumPage';
-import StakingOnFuelPage from './pages/StakingOnFuelPage';
 import TransactionLoadingPage from './pages/TransactionLoadingPage';
 import { TransactionPage } from './pages/TransactionPage';
 import UpgradePage from './pages/UpgradePage';
@@ -24,10 +22,21 @@ import ContractLayout from './layouts/ContractLayout';
 import StakingLayout from './layouts/StakingLayout';
 import TransactionLayout from './layouts/TransactionLayout';
 import { Layout } from './systems/Core/components/Layout/Layout';
+import { StakingScreenLoader } from './systems/Staking/screens/StakingScreenLoader';
 
-// Portal Components
-import { OverlayDialog } from 'app-portal';
 import { ErrorPageComponent } from './systems/Core/components/ErrorPage/ErrorPage';
+
+// Bridge and staking pages pull in wagmi, viem and connectkit.
+const BridgePage = lazy(() => import('./pages/BridgePage'));
+const BridgeHistoryPage = lazy(() => import('./pages/BridgeHistoryPage'));
+const StakingOnEthereumPage = lazy(
+  () => import('./pages/StakingOnEthereumPage'),
+);
+const StakingOnFuelPage = lazy(() => import('./pages/StakingOnFuelPage'));
+
+const OverlayDialog = lazy(() =>
+  import('app-portal').then((module) => ({ default: module.OverlayDialog })),
+);
 
 function App() {
   return (
@@ -81,8 +90,26 @@ function App() {
             </Route>
 
             <Route path="/bridge" element={<BridgeLayout />}>
-              <Route index element={<BridgePage />} />
-              <Route path="history" element={<BridgeHistoryPage />} />
+              <Route
+                index
+                element={
+                  <Suspense
+                    fallback={<LoadingBox className="w-full h-[400px]" />}
+                  >
+                    <BridgePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="history"
+                element={
+                  <Suspense
+                    fallback={<LoadingBox className="w-full h-[400px]" />}
+                  >
+                    <BridgeHistoryPage />
+                  </Suspense>
+                }
+              />
             </Route>
 
             <Route path="/staking" element={<StakingLayout />}>
@@ -90,20 +117,46 @@ function App() {
                 index
                 element={<Navigate to="/staking/on-fuel" replace />}
               />
-              <Route path="on-ethereum" element={<StakingOnEthereumPage />} />
+              <Route
+                path="on-ethereum"
+                element={
+                  <Suspense fallback={<StakingScreenLoader />}>
+                    <StakingOnEthereumPage />
+                  </Suspense>
+                }
+              />
               <Route
                 path="on-ethereum/positions"
-                element={<StakingOnEthereumPage />}
+                element={
+                  <Suspense fallback={<StakingScreenLoader />}>
+                    <StakingOnEthereumPage />
+                  </Suspense>
+                }
               />
               <Route
                 path="on-ethereum/validators"
-                element={<StakingOnEthereumPage />}
+                element={
+                  <Suspense fallback={<StakingScreenLoader />}>
+                    <StakingOnEthereumPage />
+                  </Suspense>
+                }
               />
               <Route
                 path="on-ethereum/transactions"
-                element={<StakingOnEthereumPage />}
+                element={
+                  <Suspense fallback={<StakingScreenLoader />}>
+                    <StakingOnEthereumPage />
+                  </Suspense>
+                }
               />
-              <Route path="on-fuel" element={<StakingOnFuelPage />} />
+              <Route
+                path="on-fuel"
+                element={
+                  <Suspense fallback={<StakingScreenLoader />}>
+                    <StakingOnFuelPage />
+                  </Suspense>
+                }
+              />
             </Route>
 
             <Route path="/ecosystem" element={<EcosystemPageWrapper />} />
@@ -116,7 +169,9 @@ function App() {
       </Layout>
 
       {/* Render overlay dialogs for transaction completion */}
-      <OverlayDialog />
+      <Suspense fallback={null}>
+        <OverlayDialog />
+      </Suspense>
     </>
   );
 }

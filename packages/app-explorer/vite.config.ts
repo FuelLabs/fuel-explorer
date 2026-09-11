@@ -27,6 +27,17 @@ export default defineConfig({
     rollupOptions: {
       output: {
         dir: 'dist',
+        // ConnectProvider in main.tsx imports the wallet stack on every route.
+        manualChunks: {
+          'vendor-wallet': [
+            'wagmi',
+            'viem',
+            'ethers',
+            'connectkit',
+            'framer-motion',
+            '@tanstack/react-query',
+          ],
+        },
       },
     },
     commonjsOptions: {
