@@ -383,6 +383,11 @@ describe('handleRestRequest', () => {
     expect(calls.status).toBe(404);
   });
 
+  // Real (checksummable) addresses, since /bridge/* now validates `address`
+  // with the same getValidAddress check the staking routes use.
+  const PORTAL_ADDRESS = '0xAEB0c00D0125A8a788956ade4f4F12Ead9f65DDf';
+  const CHAIN_STATE_ADDRESS = '0xBa0e6bF94580D49B5Aaaa54279198D424B23eCC3';
+
   function bridgeEnabledDeps(
     overrides: Partial<NonNullable<RestRouterDeps['bridge']>['store']> = {},
   ): RestRouterDeps {
@@ -424,14 +429,14 @@ describe('handleRestRequest', () => {
     await handleRestRequest(
       fakeReq(
         'GET',
-        '/bridge/deposit/logs?address=0xportal&recipient=0xr&predicate=0xp',
+        `/bridge/deposit/logs?address=${PORTAL_ADDRESS}&recipient=0xr&predicate=0xp`,
       ),
       res,
       deps,
     );
     expect(calls.status).toBe(200);
     expect(deps.bridge?.store.queryLogsForRecipient).toHaveBeenCalledWith(
-      '0xportal',
+      PORTAL_ADDRESS,
       '0xr',
       '0xp',
     );
@@ -450,14 +455,14 @@ describe('handleRestRequest', () => {
     await handleRestRequest(
       fakeReq(
         'GET',
-        '/bridge/block/hashes?address=0xchainstate&from_block=100',
+        `/bridge/block/hashes?address=${CHAIN_STATE_ADDRESS}&from_block=100`,
       ),
       res,
       deps,
     );
     expect(calls.status).toBe(200);
     expect(deps.bridge?.store.queryBlockHashes).toHaveBeenCalledWith(
-      '0xchainstate',
+      CHAIN_STATE_ADDRESS,
       100,
     );
     expect(JSON.parse(calls.body as string)).toEqual([
@@ -475,14 +480,14 @@ describe('handleRestRequest', () => {
     await handleRestRequest(
       fakeReq(
         'GET',
-        '/bridge/message/relayed/hash?address=0xportal&message_id=0xmsg',
+        `/bridge/message/relayed/hash?address=${PORTAL_ADDRESS}&message_id=0xmsg`,
       ),
       res,
       deps,
     );
     expect(calls.status).toBe(200);
     expect(deps.bridge?.store.queryMessageRelayedTxHash).toHaveBeenCalledWith(
-      '0xportal',
+      PORTAL_ADDRESS,
       '0xmsg',
     );
     expect(JSON.parse(calls.body as string)).toEqual([
@@ -499,7 +504,7 @@ describe('handleRestRequest', () => {
       }),
     });
     await handleRestRequest(
-      fakeReq('GET', '/bridge/deposit/logs?address=0xa'),
+      fakeReq('GET', `/bridge/deposit/logs?address=${PORTAL_ADDRESS}`),
       res,
       deps,
     );
@@ -509,6 +514,111 @@ describe('handleRestRequest', () => {
     });
     expect(errSpy).toHaveBeenCalledWith('bridge failed', expect.any(Error));
     errSpy.mockRestore();
+  });
+
+  it('GET /bridge/deposit/logs returns 400 for a malformed address', async () => {
+    const { res, calls } = fakeRes();
+    const deps = bridgeEnabledDeps();
+    await handleRestRequest(
+      fakeReq('GET', '/bridge/deposit/logs?address=not-an-address'),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      message: 'Invalid address format, expected a valid Ethereum address',
+    });
+    expect(deps.bridge?.store.queryLogsForRecipient).not.toHaveBeenCalled();
+  });
+
+  it('GET /bridge/block/hashes returns 400 for a malformed address', async () => {
+    const { res, calls } = fakeRes();
+    const deps = bridgeEnabledDeps();
+    await handleRestRequest(
+      fakeReq(
+        'GET',
+        '/bridge/block/hashes?address=not-an-address&from_block=100',
+      ),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      message: 'Invalid address format, expected a valid Ethereum address',
+    });
+    expect(deps.bridge?.store.queryBlockHashes).not.toHaveBeenCalled();
+  });
+
+  it('GET /bridge/block/hashes returns 400 for a non-numeric from_block', async () => {
+    const { res, calls } = fakeRes();
+    const deps = bridgeEnabledDeps();
+    await handleRestRequest(
+      fakeReq(
+        'GET',
+        `/bridge/block/hashes?address=${CHAIN_STATE_ADDRESS}&from_block=abc`,
+      ),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      message: 'Invalid from_block, expected a non-negative integer',
+    });
+    expect(deps.bridge?.store.queryBlockHashes).not.toHaveBeenCalled();
+  });
+
+  it('GET /bridge/block/hashes returns 400 for a negative from_block', async () => {
+    const { res, calls } = fakeRes();
+    const deps = bridgeEnabledDeps();
+    await handleRestRequest(
+      fakeReq(
+        'GET',
+        `/bridge/block/hashes?address=${CHAIN_STATE_ADDRESS}&from_block=-1`,
+      ),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      message: 'Invalid from_block, expected a non-negative integer',
+    });
+    expect(deps.bridge?.store.queryBlockHashes).not.toHaveBeenCalled();
+  });
+
+  it('GET /bridge/block/hashes returns 400 for a non-integer from_block', async () => {
+    const { res, calls } = fakeRes();
+    const deps = bridgeEnabledDeps();
+    await handleRestRequest(
+      fakeReq(
+        'GET',
+        `/bridge/block/hashes?address=${CHAIN_STATE_ADDRESS}&from_block=1.5`,
+      ),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      message: 'Invalid from_block, expected a non-negative integer',
+    });
+    expect(deps.bridge?.store.queryBlockHashes).not.toHaveBeenCalled();
+  });
+
+  it('GET /bridge/message/relayed/hash returns 400 for a malformed address', async () => {
+    const { res, calls } = fakeRes();
+    const deps = bridgeEnabledDeps();
+    await handleRestRequest(
+      fakeReq(
+        'GET',
+        '/bridge/message/relayed/hash?address=not-an-address&message_id=0xmsg',
+      ),
+      res,
+      deps,
+    );
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      message: 'Invalid address format, expected a valid Ethereum address',
+    });
+    expect(deps.bridge?.store.queryMessageRelayedTxHash).not.toHaveBeenCalled();
   });
 
   it('returns 404 { error: "not available" } for /bridge/events', async () => {
