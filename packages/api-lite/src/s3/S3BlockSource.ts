@@ -4,6 +4,10 @@ import { s3KeyForBlock } from './key';
 
 export type ObjectFetcher = (key: string) => Promise<Uint8Array | null>;
 
+// Matches the RPC client's own abort, so both block sources give up on an
+// unreachable server on the same schedule.
+const S3_FETCH_TIMEOUT_MS = 15_000;
+
 export class BlockNotFound extends Error {
   constructor(public readonly height: number) {
     super(`block ${height} not in S3`);
@@ -26,10 +30,36 @@ function isNoSuchKey(error: unknown): boolean {
 }
 
 export function createS3Fetcher(opts: {
-  bucket: string;
-  region: string;
+  bucket?: string;
+  region?: string;
   endpoint?: string;
 }): ObjectFetcher {
+  // An endpoint with no bucket means the URL already addresses one bucket and
+  // serves keys at its root, as Cloudflare R2's public r2.dev host does. The
+  // SDK cannot express that: path-style addressing inserts the bucket again
+  // (`<endpoint>/<bucket>/<key>`, a 404 here), and virtual-host style would
+  // prefix a bucket onto a host that already is the bucket. Those reads are
+  // anonymous, so a plain fetch is both correct and credential-free.
+  if (opts.endpoint && !opts.bucket) {
+    const base = opts.endpoint.replace(/\/+$/, '');
+    return async (key) => {
+      const res = await fetch(`${base}/${key}`, {
+        // Bound the read. BlockStore abandons a load it has waited too long
+        // for, but it cannot cancel the fetch underneath, so an unbounded one
+        // would keep running while the retry starts another -- one per retry,
+        // until the connection pool is gone. The authenticated path gets the
+        // same protection from the RPC client's own abort.
+        signal: AbortSignal.timeout(S3_FETCH_TIMEOUT_MS),
+      });
+      if (res.status === 404) return null;
+      if (!res.ok) {
+        throw new Error(
+          `S3 GET ${key} failed: ${res.status} ${res.statusText}`,
+        );
+      }
+      return new Uint8Array(await res.arrayBuffer());
+    };
+  }
   const client = new S3Client({
     region: opts.region,
     ...(opts.endpoint ? { endpoint: opts.endpoint, forcePathStyle: true } : {}),

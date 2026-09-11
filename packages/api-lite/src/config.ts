@@ -60,6 +60,10 @@ const schema = z
   })
   .superRefine((e, ctx) => {
     if (e.BLOCK_SOURCE !== 's3') return;
+    // An endpoint with no bucket is a public bucket-root URL (Cloudflare R2's
+    // r2.dev host): the URL already names the bucket and reads are anonymous,
+    // so there is nothing to sign and no region to choose.
+    if (e.S3_ENDPOINT && !e.S3_BUCKET) return;
     if (!e.S3_BUCKET) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
