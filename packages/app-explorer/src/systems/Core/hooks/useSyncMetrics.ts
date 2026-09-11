@@ -1,5 +1,4 @@
 import { useQuery } from 'wagmi/query';
-import { fuelCoreSdk, sdk } from '../utils/sdk';
 
 export interface SyncMetrics {
   fuelCoreLastBlockHeight: number;
@@ -9,47 +8,43 @@ export interface SyncMetrics {
   fuelCoreHealthy: boolean;
 }
 
-const FUEL_CORE_TIMEOUT_MS = 2000;
+// Subset of api-lite's GET /health payload (packages/api-lite/src/server.ts,
+// health()) that this hook needs; the endpoint returns more fields we don't use.
+interface ApiHealthResponse {
+  fuelCore: 'up' | 'down';
+  fuelCoreTip: number;
+  servedTip: number;
+  lag: number;
+}
+
+// Bounds the /health fetch so a stalled API host fails fast and the query
+// moves to its retry instead of hanging past the next poll.
+const HEALTH_FETCH_TIMEOUT_MS = 2000;
 
 export const useSyncMetrics = () => {
   return useQuery({
     queryKey: ['syncMetrics'],
     queryFn: async (): Promise<SyncMetrics> => {
-      const indexerResponse = await sdk.blocks({ last: 1 });
-      const blocks = indexerResponse.data?.blocks;
-      const lastBlock = blocks?.edges?.[0]?.node;
-      const lastBlockHeightSynced = lastBlock
-        ? Number(lastBlock.header?.height ?? '0')
-        : 0;
-
-      let fuelCoreLastBlockHeight = lastBlockHeightSynced;
-      let fuelCoreHealthy = true;
-
-      try {
-        const fuelCorePromise = fuelCoreSdk.blocks({ last: 1 });
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), FUEL_CORE_TIMEOUT_MS),
-        );
-
-        const fuelCoreResponse = await Promise.race([
-          fuelCorePromise,
-          timeoutPromise,
-        ]);
-
-        const fuelCoreBlocks = fuelCoreResponse.data?.blocks?.nodes;
-        if (fuelCoreBlocks && fuelCoreBlocks.length > 0) {
-          fuelCoreLastBlockHeight = Number(
-            fuelCoreBlocks[0]?.header?.height ?? '0',
-          );
-        } else {
-          fuelCoreHealthy = false;
-        }
-      } catch {
-        fuelCoreHealthy = false;
+      // Every visitor's browser used to query fuel-core directly, bypassing
+      // api-lite and nginx's rate limit. api-lite already polls fuel-core and
+      // exposes both tips on /health, so read the sync state from there instead.
+      const response = await fetch(
+        `${import.meta.env.VITE_FUEL_INDEXER_API}/health`,
+        { signal: AbortSignal.timeout(HEALTH_FETCH_TIMEOUT_MS) },
+      );
+      // api-lite answers with 503 (still a JSON body) when it considers
+      // itself unhealthy; treat that the same as any other non-2xx so a
+      // failing API surfaces as a query error instead of the fields below
+      // silently reading as zeros/"not behind".
+      if (!response.ok) {
+        throw new Error(`GET /health returned ${response.status}`);
       }
+      const health: ApiHealthResponse = await response.json();
 
-      const blockHeightSyncDelay =
-        fuelCoreLastBlockHeight - lastBlockHeightSynced;
+      const fuelCoreLastBlockHeight = health.fuelCoreTip;
+      const lastBlockHeightSynced = health.servedTip;
+      const blockHeightSyncDelay = health.lag;
+      const fuelCoreHealthy = health.fuelCore === 'up';
       const isHealthy = blockHeightSyncDelay < 100;
 
       return {
@@ -60,8 +55,8 @@ export const useSyncMetrics = () => {
         fuelCoreHealthy,
       };
     },
-    refetchInterval: 10000, // Poll every 10 seconds
+    refetchInterval: 30000, // Poll every 30 seconds
     retry: 2,
-    staleTime: 8000, // Consider data stale after 8 seconds
+    staleTime: 30000, // Consider data stale after 30 seconds, matching the poll interval
   });
 };
