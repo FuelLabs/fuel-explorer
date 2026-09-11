@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { http, createPublicClient } from 'viem';
 import VerifiedAssets from '~/infra/cache/VerifiedAssets';
 import { seedVerifiedAssets } from './assets/seedVerifiedAssets';
+import { type RequestHandler, createBootServer } from './bootServer';
 import { BridgeStore } from './bridge/BridgeStore';
 import { loadConfig } from './config';
 import { CosmosIndex } from './cosmos/CosmosIndex';
@@ -92,6 +93,12 @@ async function main() {
   mkdirSync(cfg.dataDir, { recursive: true });
   const INDEX_DB_PATH = join(cfg.dataDir, 'index.db');
   const client = new FuelCoreClient(cfg.fuelProvider);
+  // Listen before chainParamsWithRetry so the healthcheck gets a 503 while
+  // fuel-core is still unreachable.
+  const { server: bootHttpServer, swap: swapHandler } = createBootServer();
+  bootHttpServer.listen(cfg.port, () =>
+    console.log(`boot: listening on ${cfg.port}, waiting for fuel-core`),
+  );
   const params = await chainParamsWithRetry(client);
   console.log(`chainId=${params.chainId} baseAssetId=${params.baseAssetId}`);
 
@@ -285,7 +292,7 @@ async function main() {
     bridge = { enabled: true, store: bridgeStore };
   }
 
-  const { server, health } = createApp({
+  const { server: appServer, health } = createApp({
     store,
     index,
     tip,
@@ -301,9 +308,8 @@ async function main() {
     apy,
     bridge,
   });
-  server.listen(cfg.port, () =>
-    console.log(`api-lite listening on ${cfg.port}`),
-  );
+  swapHandler(appServer.listeners('request')[0] as RequestHandler);
+  console.log(`api-lite listening on ${cfg.port}`);
 
   tip.start();
   indexer.start();
@@ -340,7 +346,7 @@ async function main() {
     indexer.stop();
     cosmosPoller.stop();
     l1Poller?.stop();
-    server.close();
+    bootHttpServer.close();
     index.close();
     hot.close();
     cosmosIndex.close();
