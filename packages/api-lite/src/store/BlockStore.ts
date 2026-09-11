@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import { LRUCache } from 'lru-cache';
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
-import { BlockNotFound } from '../s3/S3BlockSource';
+import { BlockNotFound, MAX_BLOCK_BYTES } from '../s3/S3BlockSource';
 
 type Opts = {
   source?: { fetchRaw(height: number): Promise<Uint8Array> };
@@ -400,7 +400,11 @@ export class BlockStore {
   private async readDisk(height: number): Promise<GQLBlock | null> {
     try {
       const gz = await fs.readFile(this.gzPath(height));
-      return JSON.parse(gunzipSync(gz).toString('utf8')) as GQLBlock;
+      // A too-large cache file is handled the same as a corrupt one: this
+      // catch already falls through to the legacy path and then to a miss.
+      return JSON.parse(
+        gunzipSync(gz, { maxOutputLength: MAX_BLOCK_BYTES }).toString('utf8'),
+      ) as GQLBlock;
     } catch {
       /* fall through to the legacy uncompressed path */
     }

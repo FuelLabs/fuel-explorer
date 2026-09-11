@@ -10,7 +10,7 @@ import {
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { gunzipSync, gzipSync } from 'node:zlib';
-import { BlockNotFound } from '../s3/S3BlockSource';
+import { BlockNotFound, MAX_BLOCK_BYTES } from '../s3/S3BlockSource';
 import { BlockStore } from './BlockStore';
 
 function fakeBlock(height: number, pad = 0) {
@@ -169,6 +169,24 @@ describe('BlockStore', () => {
     expect(() => JSON.parse(raw.toString('utf8'))).toThrow();
     const gunzipped = JSON.parse(gunzipSync(raw).toString('utf8'));
     expect(gunzipped.height).toBe('42');
+  });
+
+  // A disk cache file that inflates past the limit is handled the same as a
+  // corrupt one: readDisk's catch already falls through to the legacy path
+  // and then to a miss, so this must not throw or wedge the cache.
+  it('treats a disk cache file that inflates past the limit like a corrupt file', async () => {
+    const dataDir = mkdtempSync(join(tmpdir(), 'bs-toolarge-'));
+    mkdirSync(join(dataDir, 'blocks'), { recursive: true });
+    // Valid JSON once inflated, so size is the only thing that can fail --
+    // an invalid payload would hit the same catch via JSON.parse and pass
+    // whether or not the output bound is applied.
+    const big = JSON.stringify(fakeBlock(77, MAX_BLOCK_BYTES));
+    writeFileSync(join(dataDir, 'blocks', '77.json.gz'), gzipSync(big));
+    const { store, calls } = makeStore({ dataDir });
+
+    const block = await store.get(77);
+    expect(block?.height).toBe('77');
+    expect(calls).toEqual([77]); // fell through to the source, same as a corrupt file
   });
 
   it('reads a legacy plain .json file from disk without refetching', async () => {

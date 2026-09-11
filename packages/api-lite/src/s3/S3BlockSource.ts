@@ -8,6 +8,11 @@ export type ObjectFetcher = (key: string) => Promise<Uint8Array | null>;
 // unreachable server on the same schedule.
 const S3_FETCH_TIMEOUT_MS = 15_000;
 
+// Caps gunzipSync's output so a crafted (or corrupt) gzip object -- small on
+// the wire, huge once inflated -- cannot exhaust the 768 MB heap. BlockStore
+// applies the same limit to its disk cache reads.
+export const MAX_BLOCK_BYTES = 64 * 1024 * 1024;
+
 export class BlockNotFound extends Error {
   constructor(public readonly height: number) {
     super(`block ${height} not in S3`);
@@ -87,7 +92,19 @@ export class S3BlockSource {
     const bytes = await this.fetcher(key);
     if (bytes === null) throw new BlockNotFound(height);
     if (bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b) {
-      return gunzipSync(bytes);
+      try {
+        return gunzipSync(bytes, { maxOutputLength: MAX_BLOCK_BYTES });
+      } catch (error) {
+        // A too-large block is a real error, not a miss -- it must not be
+        // (and must not be mistaken for) BlockNotFound, which would make the
+        // indexer silently skip the height.
+        if ((error as { code?: string })?.code === 'ERR_BUFFER_TOO_LARGE') {
+          throw new Error(
+            `block ${height} inflates past the ${MAX_BLOCK_BYTES} byte limit`,
+          );
+        }
+        throw error;
+      }
     }
     return bytes;
   }
