@@ -27,6 +27,7 @@ function disabledDeps(): RestRouterDeps {
     staking: null,
     bridge: null,
     charts: { build: jest.fn().mockResolvedValue({ statistics: {}, tps: [] }) },
+    dashboard: { build: jest.fn().mockResolvedValue({ nodes: [] }) },
   };
 }
 
@@ -76,6 +77,57 @@ describe('handleRestRequest', () => {
       'cache-control': 'public, max-age=60',
     });
     expect(JSON.parse(calls.body as string)).toEqual(body);
+  });
+
+  // Shape contract for GET /dashboard, consumed by the frontend's
+  // useDashboardBlocks fallback: { nodes: <getBlocksDashboard's nodes> },
+  // i.e. exactly what deps.dashboard.build() (the shared dashboard builder)
+  // returns, verbatim, with a 5s public cache header (matches nginx's
+  // proxy_cache_valid on /api/dashboard and the resolver's DataCache TTL).
+  it("GET /dashboard returns the shared dashboard builder's body with a 5s public cache header, no L1 gating", async () => {
+    const { res, calls } = fakeRes();
+    const body = {
+      nodes: [{ blockNo: 120, transactionsCount: 2, totalFee: 2000000 }],
+    };
+    const deps: RestRouterDeps = {
+      ...disabledDeps(),
+      dashboard: { build: jest.fn().mockResolvedValue(body) },
+    };
+    const handled = await handleRestRequest(
+      fakeReq('GET', '/dashboard'),
+      res,
+      deps,
+    );
+    expect(handled).toBe(true);
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({
+      'content-type': 'application/json',
+      'cache-control': 'public, max-age=5',
+    });
+    expect(JSON.parse(calls.body as string)).toEqual(body);
+  });
+
+  it('GET /dashboard returns a generic 500 (never the raw error message) and logs server-side when the builder throws', async () => {
+    const { res, calls } = fakeRes();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const deps: RestRouterDeps = {
+      ...disabledDeps(),
+      dashboard: {
+        build: jest
+          .fn()
+          .mockRejectedValue(new Error('boom: leaks internal detail')),
+      },
+    };
+    await handleRestRequest(fakeReq('GET', '/dashboard'), res, deps);
+    expect(calls.status).toBe(500);
+    expect(JSON.parse(calls.body as string)).toEqual({
+      error: 'dashboard unavailable',
+    });
+    expect(errSpy).toHaveBeenCalledWith(
+      'buildBlocksDashboard failed',
+      expect.any(Error),
+    );
+    errSpy.mockRestore();
   });
 
   it('GET /charts returns a generic 500 (never the raw error message) and logs server-side when the builder throws', async () => {

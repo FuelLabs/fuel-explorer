@@ -2,6 +2,7 @@ import { createServer } from 'node:http';
 import { createYoga } from 'graphql-yoga';
 import type { CosmosPoller } from './cosmos/CosmosPoller';
 import type { AppContext } from './graphql/context';
+import { buildBlocksDashboard } from './graphql/resolvers/analytics';
 import { buildCharts } from './graphql/resolvers/charts';
 import { buildSchema } from './graphql/schema';
 import type { Indexer } from './index/Indexer';
@@ -70,6 +71,7 @@ export function createApp(ctx: AppDeps) {
       apy: ctx.apy ?? null,
       bridge: ctx.bridge ?? null,
       charts: { build: () => buildCharts(ctx) },
+      dashboard: { build: () => buildBlocksDashboard(ctx) },
     })
       .then((handled) => {
         if (!handled) return yoga(req, res);

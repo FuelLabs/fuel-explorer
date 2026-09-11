@@ -72,6 +72,25 @@ server {
         proxy_read_timeout 30s;
     }
 
+    # Same reasoning as /api/charts above, but a 5s TTL: the dashboard
+    # payload (recent blocks) changes every block, so it's cached at the
+    # edge only briefly, matching the origin's own 5s DataCache TTL.
+    location = /api/dashboard {
+        limit_req zone=api burst=40 nodelay;
+        resolver ${NGINX_RESOLVER} valid=10s ipv6=on;
+        set $api_upstream http://${API_UPSTREAM};
+        proxy_cache charts;
+        proxy_cache_valid 200 5s;
+        proxy_ignore_headers Cache-Control Expires;
+        proxy_cache_use_stale updating error timeout;
+        add_header X-Cache $upstream_cache_status;
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass $api_upstream;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_read_timeout 30s;
+    }
+
     location /api/ {
         limit_req zone=api burst=40 nodelay;
         # Resolved at request time (not at nginx startup) so Railway's private
