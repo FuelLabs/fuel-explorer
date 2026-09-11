@@ -107,12 +107,12 @@ async function main() {
   console.log(`block source: ${cfg.blockSource}`);
   const hot = new HotKeys(INDEX_DB_PATH);
   const pinned = makePinnedHeights(hot, index);
-  const rpcSource =
-    cfg.blockSource === 'rpc'
-      ? new RpcBlockSource(client, cfg.rpcMaxBlocksPerSecond)
-      : null;
+  // Built for either source: under S3 it is the fallback for a height the
+  // archive does not have yet (see BlockStore's `fallback`), and routing that
+  // through it keeps the traffic inside the same per-second budget.
+  const rpcSource = new RpcBlockSource(client, cfg.rpcMaxBlocksPerSecond);
   const store = new BlockStore(
-    rpcSource
+    cfg.blockSource === 'rpc'
       ? {
           loader: (height) => rpcSource.load(height),
           normalize: withStatusBlock,
@@ -125,13 +125,14 @@ async function main() {
       : {
           source: new S3BlockSource(
             createS3Fetcher({
-              bucket: cfg.s3Bucket!,
-              region: cfg.awsRegion!,
+              bucket: cfg.s3Bucket,
+              region: cfg.awsRegion,
               endpoint: cfg.s3Endpoint,
             }),
           ),
           decode: (bytes) =>
             decodeBlock(bytes, { chainId: params.chainId, fee: params.fee }),
+          fallback: (height) => rpcSource.load(height),
           dataDir: cfg.dataDir,
           memoryBytes: cfg.memoryCacheBytes,
           diskBytes: cfg.diskCacheBytes,
