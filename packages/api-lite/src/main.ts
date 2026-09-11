@@ -107,10 +107,17 @@ async function main() {
   console.log(`block source: ${cfg.blockSource}`);
   const hot = new HotKeys(INDEX_DB_PATH);
   const pinned = makePinnedHeights(hot, index);
-  // Built for either source: under S3 it is the fallback for a height the
-  // archive does not have yet (see BlockStore's `fallback`), and routing that
-  // through it keeps the traffic inside the same per-second budget.
-  const rpcSource = new RpcBlockSource(client, cfg.rpcMaxBlocksPerSecond);
+  // Built for either source, but rate-limited differently per mode: in rpc
+  // mode this streams every block, while under s3 it only serves the (few,
+  // usually tip-only) heights the archive doesn't have yet (see BlockStore's
+  // `fallback`), so it can afford a higher per-second budget for faster
+  // catch-up after downtime without competing with a full block stream.
+  const rpcSource = new RpcBlockSource(
+    client,
+    cfg.blockSource === 'rpc'
+      ? cfg.rpcMaxBlocksPerSecond
+      : cfg.rpcFallbackMaxBlocksPerSecond,
+  );
   const store = new BlockStore(
     cfg.blockSource === 'rpc'
       ? {

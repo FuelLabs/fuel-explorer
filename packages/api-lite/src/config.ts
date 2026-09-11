@@ -46,6 +46,10 @@ const schema = z
     BACKFILL_BATCH: num(10),
     S3_CONCURRENCY: num(8),
     RPC_MAX_BLOCKS_PER_SECOND: num(5),
+    // Higher than RPC_MAX_BLOCKS_PER_SECOND because in s3 mode this only
+    // covers heights the archive doesn't have yet -- usually a handful at
+    // the tip -- rather than the full stream rpc mode fetches block-by-block.
+    RPC_FALLBACK_MAX_BLOCKS_PER_SECOND: num(20),
     // No static default: it depends on FUEL_PROVIDER's chain, resolved at
     // boot by cosmos/CosmosPoller.defaultCosmosRestUrl.
     COSMOS_REST_URL: z.string().url().optional(),
@@ -96,6 +100,7 @@ export type Config = {
   backfillBatch: number;
   s3Concurrency: number;
   rpcMaxBlocksPerSecond: number;
+  rpcFallbackMaxBlocksPerSecond: number;
   cosmosRestUrl?: string;
   cosmosStartHeight?: number;
   ethRpcUrl?: string;
@@ -135,6 +140,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     backfillBatch: e.BACKFILL_BATCH,
     s3Concurrency: e.S3_CONCURRENCY,
     rpcMaxBlocksPerSecond: e.RPC_MAX_BLOCKS_PER_SECOND,
+    rpcFallbackMaxBlocksPerSecond: e.RPC_FALLBACK_MAX_BLOCKS_PER_SECOND,
     cosmosRestUrl: e.COSMOS_REST_URL,
     cosmosStartHeight: e.COSMOS_START_HEIGHT,
     ethRpcUrl: e.ETH_RPC_URL,

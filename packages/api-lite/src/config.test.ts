@@ -38,6 +38,20 @@ describe('loadConfig', () => {
     expect(c.rpcMaxBlocksPerSecond).toBe(5);
   });
 
+  it('defaults rpcFallbackMaxBlocksPerSecond to 20', () => {
+    const c = loadConfig(base);
+    expect(c.rpcFallbackMaxBlocksPerSecond).toBe(20);
+  });
+
+  it('throws for an invalid RPC_FALLBACK_MAX_BLOCKS_PER_SECOND', () => {
+    expect(() =>
+      loadConfig({
+        ...base,
+        RPC_FALLBACK_MAX_BLOCKS_PER_SECOND: 'not-a-number',
+      }),
+    ).toThrow(/RPC_FALLBACK_MAX_BLOCKS_PER_SECOND/);
+  });
+
   it('succeeds with BLOCK_SOURCE=rpc and no S3 vars', () => {
     const c = loadConfig({
       BLOCK_SOURCE: 'rpc',
