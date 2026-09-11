@@ -11,10 +11,12 @@ import App from './App.tsx';
 
 // Import CSS - index.css has everything we need
 import './index.css';
+import { ErrorBoundary } from './systems/Core/components/ErrorBoundary/ErrorBoundary';
 import {
   ThemeProvider,
   useTheme,
 } from './systems/Core/components/Theme/ThemeProvider';
+import { ApiError } from './systems/Core/utils/api';
 
 // Wrapper component to pass theme to FuelConnectProvider
 function FuelConnectProviderWithTheme({
@@ -31,6 +33,17 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: (failureCount, error) => {
+        // Never retry a 429: nginx is already rate-limiting us, so retrying
+        // just piles more requests into the same burst. Other 4xx errors
+        // are also the caller's fault and won't succeed on retry.
+        const status = error instanceof ApiError ? error.status : undefined;
+        if (status !== undefined && status >= 400 && status < 500) {
+          return false;
+        }
+        return failureCount < 2;
+      },
+      retryDelay: (attemptIndex) => 1000 * 2 ** attemptIndex, // 1s, 2s, ...
     },
   },
 });
@@ -44,7 +57,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <ConnectProvider>
               <FuelConnectProviderWithTheme>
                 <BrowserRouter>
-                  <App />
+                  <ErrorBoundary>
+                    <App />
+                  </ErrorBoundary>
                   <Analytics />
                 </BrowserRouter>
               </FuelConnectProviderWithTheme>
