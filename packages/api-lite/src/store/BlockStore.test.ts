@@ -46,6 +46,92 @@ function makeStore(
   return { store, calls };
 }
 
+// The archive lags the chain at the tip: the recorder publishes a block a
+// little after it is produced, so asking for it can miss. Without a fallback
+// that miss becomes a gap the index can never advance past.
+describe('BlockStore fallback', () => {
+  it('asks the fallback for a height the archive does not have', async () => {
+    const asked: number[] = [];
+    const decoded: number[] = [];
+    const { store } = makeStore({
+      fallback: async (h) => {
+        asked.push(h);
+        return fakeBlock(h);
+      },
+      onDecoded: (b) => decoded.push(Number(b.height)),
+    });
+
+    const block = await store.get(404); // makeStore's source reports this as absent
+    expect(asked).toEqual([404]);
+    expect(block?.height).toBe('404');
+    // Same path as any other block: it is indexed and cached, not special-cased.
+    expect(decoded).toEqual([404]);
+    expect((await store.get(404))?.height).toBe('404');
+    expect(asked).toEqual([404]);
+  });
+
+  it('returns null for a missing height when no fallback is configured', async () => {
+    const { store } = makeStore();
+    expect(await store.get(404)).toBeNull();
+  });
+
+  // A broken archive must surface as itself. Falling back here would quietly
+  // move every read to the node and hide the outage.
+  it('does not fall back when the read fails for another reason', async () => {
+    let fallbackCalls = 0;
+    const { store } = makeStore({
+      source: {
+        fetchRaw: async () => {
+          throw new Error('archive exploded');
+        },
+      },
+      fallback: async (h) => {
+        fallbackCalls++;
+        return fakeBlock(h);
+      },
+    });
+
+    await expect(store.get(50)).rejects.toThrow('archive exploded');
+    expect(fallbackCalls).toBe(0);
+  });
+
+  it('summarises fallbacks instead of logging one line per block', async () => {
+    const logs: string[] = [];
+    const spy = jest
+      .spyOn(console, 'log')
+      .mockImplementation((m?: unknown) => void logs.push(String(m)));
+    let now = 1_000_000;
+    const clock = jest.spyOn(Date, 'now').mockImplementation(() => now);
+    const lines = () =>
+      logs.filter((l) => l.includes('falling back to the node'));
+    try {
+      const { store } = makeStore({
+        source: {
+          fetchRaw: async (h: number) => {
+            throw new BlockNotFound(h);
+          },
+        },
+        fallback: async (h) => fakeBlock(h),
+      });
+
+      for (const h of [404, 405, 406, 407]) {
+        expect((await store.get(h))?.height).toBe(String(h));
+      }
+      // Four misses, one line.
+      expect(lines()).toHaveLength(1);
+
+      // The next interval reports how many it stood in for.
+      now += 61_000;
+      await store.get(408);
+      expect(lines()).toHaveLength(2);
+      expect(lines()[1]).toContain('and 3 more');
+    } finally {
+      clock.mockRestore();
+      spy.mockRestore();
+    }
+  });
+});
+
 describe('BlockStore', () => {
   it('fetches once then serves from memory', async () => {
     const { store, calls } = makeStore();
