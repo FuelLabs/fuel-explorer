@@ -27,6 +27,19 @@ export default defineConfig({
     rollupOptions: {
       output: {
         dir: 'dist',
+        // ConnectProvider (main.tsx) loads wagmi/viem/connectkit eagerly for
+        // every route, so lazy-loading the bridge/staking pages alone does
+        // not move this weight out of the main chunk; split it explicitly.
+        manualChunks: {
+          'vendor-wallet': [
+            'wagmi',
+            'viem',
+            'ethers',
+            'connectkit',
+            'framer-motion',
+            '@tanstack/react-query',
+          ],
+        },
       },
     },
     commonjsOptions: {
