@@ -198,15 +198,21 @@ export class FuelCoreClient {
     };
   }
 
-  async blockSignatures(heights: number[]): Promise<Map<number, string>> {
-    const result = new Map<number, string>();
+  // `id` rides along with the signature query (same single call, no added
+  // cost) so callers can verify an archived block against fuel-core before
+  // serving it; `signature` stays null when consensus isn't PoA or hasn't
+  // signed yet.
+  async blockSignatures(
+    heights: number[],
+  ): Promise<Map<number, { id: string; signature: string | null }>> {
+    const result = new Map<number, { id: string; signature: string | null }>();
     try {
       for (let i = 0; i < heights.length; i += 20) {
         const chunk = heights.slice(i, i + 20);
         const query = `{ ${chunk
           .map(
             (h, j) =>
-              `b${j}: block(height: "${h}") { consensus { __typename ... on PoAConsensus { signature } } }`,
+              `b${j}: block(height: "${h}") { id consensus { __typename ... on PoAConsensus { signature } } }`,
           )
           .join(' ')} }`;
         const data =
@@ -214,15 +220,20 @@ export class FuelCoreClient {
             Record<
               string,
               {
+                id?: string;
                 consensus: { __typename: string; signature?: string } | null;
               } | null
             >
           >(query);
         chunk.forEach((h, j) => {
-          const consensus = data[`b${j}`]?.consensus;
-          if (consensus?.__typename === 'PoAConsensus' && consensus.signature) {
-            result.set(h, consensus.signature);
-          }
+          const block = data[`b${j}`];
+          if (!block?.id) return;
+          const consensus = block.consensus;
+          const signature =
+            consensus?.__typename === 'PoAConsensus' && consensus.signature
+              ? consensus.signature
+              : null;
+          result.set(h, { id: block.id, signature });
         });
       }
       return result;

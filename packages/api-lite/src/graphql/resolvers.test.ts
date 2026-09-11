@@ -183,8 +183,16 @@ async function setup(
       hasNextPage: false,
       hasPreviousPage: false,
     }),
+    // id matches fakeBlock's `hex(1000 + h)` so the archive-vs-node id check
+    // in withSignatures passes here; verification itself is covered in
+    // blockSignatures.test.ts.
     blockSignatures: async (heights: number[]) =>
-      new Map(heights.map((h) => [h, `0x${'ab'.repeat(64)}`])),
+      new Map(
+        heights.map((h) => [
+          h,
+          { id: hex(1000 + h), signature: `0x${'ab'.repeat(64)}` },
+        ]),
+      ),
     ...clientOverrides,
   } as any;
   const tip = new TipTracker({
