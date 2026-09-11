@@ -10,6 +10,15 @@ type Opts = {
   decode?: (bytes: Uint8Array) => GQLBlock;
   loader?: (height: number) => Promise<GQLBlock | null>;
   normalize?: (block: GQLBlock) => GQLBlock;
+  /**
+   * Consulted only when `source` says the height is not there (BlockNotFound),
+   * so a block the archive has not published yet -- the tip, most often, where
+   * the recorder is still uploading -- is fetched from the live node instead
+   * of becoming a gap that stops the index advancing. A read that fails for
+   * any other reason still throws: a broken archive should surface as itself,
+   * not as a silent switch to another source.
+   */
+  fallback?: (height: number) => Promise<GQLBlock | null>;
   dataDir: string;
   memoryBytes: number;
   diskBytes: number;
@@ -44,6 +53,12 @@ const HEAP_BYTES_MULTIPLIER = 2.5;
 // main.ts, which only recomputes it once a minute).
 const PINNED_SKIP_LOG_INTERVAL_MS = 60_000;
 
+// The archive can be missing a run of heights -- a bucket that lags, or one
+// misconfigured so that nothing is ever found, in which case every read falls
+// back. A line per height drowns the service log, so fallbacks are summarised
+// at most this often.
+const FALLBACK_LOG_INTERVAL_MS = 60_000;
+
 export class BlockStore {
   private readonly memory: LRUCache<number, GQLBlock>;
   private readonly memorySizes = new Map<number, number>();
@@ -55,6 +70,8 @@ export class BlockStore {
   private readonly diskSizes = new Map<number, number>();
   private diskBytesTotal = 0;
   private lastPinnedSkipLogAt = 0;
+  private lastFallbackLogAt = 0;
+  private fallbacksSinceLog = 0;
 
   constructor(readonly opts: Opts) {
     this.memory = new LRUCache<number, GQLBlock>({
@@ -321,12 +338,34 @@ export class BlockStore {
     } catch (e) {
       if (process.env.LOG_S3 === '1')
         console.log(`s3 GET ${height} ${Date.now() - s3Start}ms (error)`);
-      if (e instanceof BlockNotFound) return null;
+      if (e instanceof BlockNotFound) {
+        if (!this.opts.fallback) return null;
+        this.noteFallback(height);
+        return this.opts.fallback(height);
+      }
       throw e;
     }
     if (process.env.LOG_S3 === '1')
       console.log(`s3 GET ${height} ${Date.now() - s3Start}ms`);
     return decode(bytes);
+  }
+
+  /**
+   * Summarises fallbacks rather than logging one per block: a lagging bucket,
+   * or a misconfigured one where nothing is ever found, misses a whole run of
+   * heights, and a line each would drown the service log without adding
+   * anything the count does not already say.
+   */
+  private noteFallback(height: number) {
+    const now = Date.now();
+    this.fallbacksSinceLog++;
+    if (now - this.lastFallbackLogAt < FALLBACK_LOG_INTERVAL_MS) return;
+    const sinceLast = this.fallbacksSinceLog - 1;
+    console.log(
+      `archive missing block ${height}${sinceLast > 0 ? ` (and ${sinceLast} more)` : ''}, falling back to the node`,
+    );
+    this.lastFallbackLogAt = now;
+    this.fallbacksSinceLog = 0;
   }
 
   private async readDisk(height: number): Promise<GQLBlock | null> {
