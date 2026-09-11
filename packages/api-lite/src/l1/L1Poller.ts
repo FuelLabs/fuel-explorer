@@ -65,11 +65,24 @@ export class L1Poller {
     if (this.running) return;
     this.running = true;
     try {
+      // Fetch the finalized tip once per tick and reuse it for every
+      // contract - all contracts share the same L1 chain state, so a
+      // per-contract fetch was 7 identical RPC calls every 30s. A failure
+      // here skips the whole tick (no per-contract fallback) and is logged
+      // once, since every contract would fail the same way anyway.
+      let finalized: bigint;
+      try {
+        finalized = await this.opts.client.getFinalizedBlockNumber();
+      } catch (err) {
+        this.log(`L1Poller: failed to fetch finalized block: ${String(err)}`);
+        return;
+      }
+
       const contracts = this.opts.index.contracts(this.opts.network);
       for (let i = 0; i < contracts.length; i++) {
         if (i > 0)
           await this.sleep(this.opts.throttleMs ?? DEFAULT_THROTTLE_MS);
-        await this.syncContract(contracts[i]);
+        await this.syncContract(contracts[i], finalized);
       }
     } finally {
       this.running = false;
@@ -88,23 +101,16 @@ export class L1Poller {
   // Exposed (not private) so tests can drive one contract's window(s)
   // without seeding and throttling through all seven.
   //
-  // Fetches the finalized tip once, then processes consecutive windows for
+  // Takes the finalized tip as a parameter (tick() fetches it once and
+  // shares it across every contract) and processes consecutive windows for
   // this one contract - throttled at one window per throttleMs - until the
   // cursor reaches that tip or MAX_WINDOWS_PER_TICK windows have run, so this
   // call (and the tick that made it) always terminates; a contract still
   // behind after the cap resumes on the next tick.
   async syncContract(
     contract: Pick<ContractCursor, 'contract_hash' | 'block_height' | 'name'>,
+    finalized: bigint,
   ): Promise<void> {
-    let finalized: bigint;
-    try {
-      finalized = await this.opts.client.getFinalizedBlockNumber();
-    } catch (err) {
-      this.log(
-        `L1Poller: ${contract.name} - failed to fetch finalized block: ${String(err)}`,
-      );
-      return;
-    }
     // block_height is the next unprocessed block: seed() stores the start
     // block there, and advance() below sets it to toBlock + 1.
     let cursor = BigInt(contract.block_height);
