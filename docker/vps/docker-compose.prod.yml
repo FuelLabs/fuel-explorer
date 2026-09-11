@@ -36,6 +36,7 @@ services:
       # docker-compose.yml's MEMORY_CACHE_BYTES override; see that file's
       # comment.
       MEMORY_CACHE_BYTES: "50331648"
+      DECODE_WORKERS: "1"
     volumes:
       - api-data:/data
     restart: unless-stopped

@@ -61,9 +61,14 @@ railway variables --service api \
   --set "DISK_CACHE_BYTES=1000000000" \
   --set "MEMORY_CACHE_BYTES=134217728" \
   --set "RPC_MAX_BLOCKS_PER_SECOND=5" \
+  --set "DECODE_WORKERS=1" \
   --set "PORT=3000"
 # RPC_FALLBACK_MAX_BLOCKS_PER_SECOND (default 20) rate-limits the rpc fallback
 # for heights the S3 archive lacks; it only applies with BLOCK_SOURCE=s3.
+
+# DECODE_WORKERS: worker threads for archive decode and disk-cache gzip (0 =
+# inline). Each worker is a V8 isolate with its own heap outside
+# --max-old-space-size, so set it explicitly on a memory-limited service.
 
 # api: staking/bridge history ingestion. Without ETH_RPC_URL the L1 poller
 # stays disabled and /staking/* and /bridge/* return 503; the other four vars

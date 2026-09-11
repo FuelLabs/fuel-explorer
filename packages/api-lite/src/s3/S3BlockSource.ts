@@ -1,5 +1,6 @@
 import { gunzipSync } from 'node:zlib';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { MAX_BLOCK_BYTES } from '../blockLimits';
 import { s3KeyForBlock } from './key';
 
 export type ObjectFetcher = (key: string) => Promise<Uint8Array | null>;
@@ -8,10 +9,7 @@ export type ObjectFetcher = (key: string) => Promise<Uint8Array | null>;
 // unreachable server on the same schedule.
 const S3_FETCH_TIMEOUT_MS = 15_000;
 
-// Caps gunzipSync's output so a crafted (or corrupt) gzip object -- small on
-// the wire, huge once inflated -- cannot exhaust the 768 MB heap. BlockStore
-// applies the same limit to its disk cache reads.
-export const MAX_BLOCK_BYTES = 64 * 1024 * 1024;
+export { MAX_BLOCK_BYTES } from '../blockLimits';
 
 export class BlockNotFound extends Error {
   constructor(public readonly height: number) {
