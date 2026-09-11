@@ -1,5 +1,4 @@
 import { useQuery } from 'wagmi/query';
-import { fuelCoreSdk, sdk } from '../utils/sdk';
 
 export interface SyncMetrics {
   fuelCoreLastBlockHeight: number;
@@ -9,47 +8,34 @@ export interface SyncMetrics {
   fuelCoreHealthy: boolean;
 }
 
-const FUEL_CORE_TIMEOUT_MS = 2000;
+// Subset of api-lite's GET /health payload.
+interface ApiHealthResponse {
+  fuelCore: 'up' | 'down';
+  fuelCoreTip: number;
+  servedTip: number;
+  lag: number;
+}
+
+const HEALTH_FETCH_TIMEOUT_MS = 2000;
 
 export const useSyncMetrics = () => {
   return useQuery({
     queryKey: ['syncMetrics'],
     queryFn: async (): Promise<SyncMetrics> => {
-      const indexerResponse = await sdk.blocks({ last: 1 });
-      const blocks = indexerResponse.data?.blocks;
-      const lastBlock = blocks?.edges?.[0]?.node;
-      const lastBlockHeightSynced = lastBlock
-        ? Number(lastBlock.header?.height ?? '0')
-        : 0;
-
-      let fuelCoreLastBlockHeight = lastBlockHeightSynced;
-      let fuelCoreHealthy = true;
-
-      try {
-        const fuelCorePromise = fuelCoreSdk.blocks({ last: 1 });
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), FUEL_CORE_TIMEOUT_MS),
-        );
-
-        const fuelCoreResponse = await Promise.race([
-          fuelCorePromise,
-          timeoutPromise,
-        ]);
-
-        const fuelCoreBlocks = fuelCoreResponse.data?.blocks?.nodes;
-        if (fuelCoreBlocks && fuelCoreBlocks.length > 0) {
-          fuelCoreLastBlockHeight = Number(
-            fuelCoreBlocks[0]?.header?.height ?? '0',
-          );
-        } else {
-          fuelCoreHealthy = false;
-        }
-      } catch {
-        fuelCoreHealthy = false;
+      const response = await fetch(
+        `${import.meta.env.VITE_FUEL_INDEXER_API}/health`,
+        { signal: AbortSignal.timeout(HEALTH_FETCH_TIMEOUT_MS) },
+      );
+      // A 503 still carries a JSON body; surface it as a query error anyway.
+      if (!response.ok) {
+        throw new Error(`GET /health returned ${response.status}`);
       }
+      const health: ApiHealthResponse = await response.json();
 
-      const blockHeightSyncDelay =
-        fuelCoreLastBlockHeight - lastBlockHeightSynced;
+      const fuelCoreLastBlockHeight = health.fuelCoreTip;
+      const lastBlockHeightSynced = health.servedTip;
+      const blockHeightSyncDelay = health.lag;
+      const fuelCoreHealthy = health.fuelCore === 'up';
       const isHealthy = blockHeightSyncDelay < 100;
 
       return {
@@ -60,8 +46,8 @@ export const useSyncMetrics = () => {
         fuelCoreHealthy,
       };
     },
-    refetchInterval: 10000, // Poll every 10 seconds
+    refetchInterval: 30000,
     retry: 2,
-    staleTime: 8000, // Consider data stale after 8 seconds
+    staleTime: 30000,
   });
 };
