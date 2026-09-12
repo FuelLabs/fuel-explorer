@@ -1,14 +1,31 @@
+/* Both files are variable fonts; font-weight needs the full range they cover
+   (matching the Google stylesheet this replaces, which served wght@100..900)
+   or the browser treats each face as weight 400 only and synthesizes
+   fake bold/light for every other requested weight (app-explorer sets
+   h1-h6 to font-weight: 600, so this isn't hypothetical). */
 @font-face {
   font-family: "Inter";
   src: url("/fonts/InterVariable.woff2") format("woff2");
-  font-weight: normal;
+  font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: "GeistMono";
   src: url("/fonts/GeistMonoVariableVF.woff2") format("woff2");
-  font-weight: normal;
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+/* app-explorer's globals.css and index.html reference the Google Fonts family
+   name "Geist Mono" (with a space) rather than the "GeistMono" alias above;
+   this second @font-face keeps that name resolving to the self-hosted file
+   instead of falling back to a system font now that the Google stylesheet is
+   gone. */
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMonoVariableVF.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
 }
 

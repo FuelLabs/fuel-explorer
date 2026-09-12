@@ -1,5 +1,11 @@
 @import "@fuels/ui/styles.css";
 
+/* Self-hosted Inter/GeistMono @font-face rules. Not part of @fuels/ui/styles.css
+   (packages/ui/src/theme/index.css doesn't import it), so without this import
+   removing the Google Fonts <link> tags from index.html leaves no font-face
+   declaration at all and every font silently falls back to a system font. */
+@import "../../ui/src/theme/fonts.css";
+
 @import "../src/styles/globals.css";
 
 /* Tailwind components and utilities (base is included in UI styles) */
