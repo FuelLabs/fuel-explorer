@@ -45,10 +45,13 @@ WORKDIR /out
 COPY --from=build /out/package.json ./package.json
 # api-lite-runtime.package-lock.json pins the transitive versions `npm install`
 # would otherwise float on every build. Regenerate it when api-lite's
-# dependencies change: run the node one-liner above (the one that writes
-# /out/package.json) against a temp dir, then
-# `npm install --package-lock-only --omit=dev --no-audit --no-fund` in that
-# dir, and copy the resulting package-lock.json here.
+# dependencies change: in a temp dir, write a package.json holding only
+# packages/api-lite's `dependencies` minus @fuel-explorer/graphql (what the
+# node one-liner in the build stage does), run
+# `npm install --package-lock-only --omit=dev --no-audit --no-fund` there,
+# copy the resulting package-lock.json here, and run
+# `npx biome format --write docker/vps/api-lite-runtime.package-lock.json`
+# so `biome ci` accepts it (npm's own formatting differs from biome's).
 COPY docker/vps/api-lite-runtime.package-lock.json ./package-lock.json
 RUN npm ci --omit=dev --no-audit --no-fund \
  && npm ls --omit=dev --depth=0
