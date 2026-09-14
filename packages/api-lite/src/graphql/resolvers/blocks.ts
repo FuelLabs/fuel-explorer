@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql';
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 import Block from '~/infra/dao/Block';
 import type { AppContext } from '../context';
@@ -53,10 +54,15 @@ export async function withSignatures(
   let missing = 0;
   for (const b of pending) {
     const h = Number(b.height);
-    const sig = sigs.get(h);
-    if (sig) {
-      (b.consensus as PoAConsensus).signature = sig;
-      ctx.store.patchConsensus(h, sig);
+    const entry = sigs.get(h);
+    // entry is undefined while fuel-core lags behind this height.
+    if (entry && entry.id.toLowerCase() !== b.id.toLowerCase()) {
+      console.error(`block ${h}: archive id ${b.id} != node id ${entry.id}`);
+      throw new GraphQLError(`Block ${h} failed verification`);
+    }
+    if (entry?.signature) {
+      (b.consensus as PoAConsensus).signature = entry.signature;
+      ctx.store.patchConsensus(h, entry.signature);
     } else {
       missing += 1;
     }
