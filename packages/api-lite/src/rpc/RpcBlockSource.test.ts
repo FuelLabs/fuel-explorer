@@ -1,4 +1,8 @@
-import { RpcBlockSource, withStatusBlock } from './RpcBlockSource';
+import {
+  RpcBlockSource,
+  isTransientNetworkError,
+  withStatusBlock,
+} from './RpcBlockSource';
 
 function fakeBlock(height: number) {
   return {
@@ -6,6 +10,12 @@ function fakeBlock(height: number) {
     height: String(height),
     id: `0x${height}`,
   } as any;
+}
+
+function transientError() {
+  const err = new TypeError('fetch failed');
+  (err as { cause?: unknown }).cause = { code: 'UND_ERR_SOCKET' };
+  return err;
 }
 
 describe('RpcBlockSource', () => {
@@ -44,6 +54,123 @@ describe('RpcBlockSource', () => {
 
       await Promise.all(results);
     });
+  });
+
+  describe('retry on transient network error', () => {
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
+
+    it('retries once after a transient error and resolves with the block', async () => {
+      let calls = 0;
+      const client = {
+        blockJson: async (h: number) => {
+          calls++;
+          if (calls === 1) throw transientError();
+          return fakeBlock(h);
+        },
+      };
+      const source = new RpcBlockSource(client, 5);
+
+      const resultP = source.load(42);
+      await jest.advanceTimersByTimeAsync(250);
+      expect(await resultP).toEqual(fakeBlock(42));
+      expect(calls).toBe(2);
+    });
+
+    it('rejects unchanged when the retry also fails', async () => {
+      let calls = 0;
+      const client = {
+        blockJson: async () => {
+          calls++;
+          throw transientError();
+        },
+      };
+      const source = new RpcBlockSource(client, 5);
+
+      const resultP = source.load(42);
+      // Attach a rejection handler before advancing timers so Node doesn't
+      // flag the eventual rejection as unhandled while it is pending.
+      const assertion = expect(resultP).rejects.toThrow('fetch failed');
+      await jest.advanceTimersByTimeAsync(250);
+      await assertion;
+      expect(calls).toBe(2);
+    });
+
+    it('does not retry an HTTP-shaped error', async () => {
+      let calls = 0;
+      const client = {
+        blockJson: async () => {
+          calls++;
+          throw new Error('fuel-core: some GraphQL error');
+        },
+      };
+      const source = new RpcBlockSource(client, 5);
+
+      await expect(source.load(42)).rejects.toThrow(
+        'fuel-core: some GraphQL error',
+      );
+      expect(calls).toBe(1);
+    });
+
+    it('honours the token bucket for the retry acquire, not just the 250ms delay', async () => {
+      let calls = 0;
+      const client = {
+        blockJson: async (h: number) => {
+          calls++;
+          if (calls === 1) throw transientError();
+          return fakeBlock(h);
+        },
+      };
+      const source = new RpcBlockSource(client, 1); // 1/second, so the retry must wait out the window too
+
+      const resultP = source.load(42);
+      await jest.advanceTimersByTimeAsync(250);
+      expect(calls).toBe(1); // retry delay elapsed but the bucket still holds the first slot
+
+      await jest.advanceTimersByTimeAsync(750);
+      expect(await resultP).toEqual(fakeBlock(42));
+      expect(calls).toBe(2);
+    });
+  });
+});
+
+describe('isTransientNetworkError', () => {
+  it('matches known transient undici cause codes', () => {
+    for (const code of [
+      'UND_ERR_SOCKET',
+      'UND_ERR_CONNECT_TIMEOUT',
+      'ECONNRESET',
+      'EPIPE',
+      'ETIMEDOUT',
+    ]) {
+      const err = new TypeError('terminated');
+      (err as { cause?: unknown }).cause = { code };
+      expect(isTransientNetworkError(err)).toBe(true);
+    }
+  });
+
+  it('matches a bare "fetch failed" TypeError', () => {
+    expect(isTransientNetworkError(new TypeError('fetch failed'))).toBe(true);
+  });
+
+  it('does not match an HTTP-level error (4xx/5xx or JSON parse failure)', () => {
+    expect(isTransientNetworkError(new Error('fuel-core: bad request'))).toBe(
+      false,
+    );
+    expect(
+      isTransientNetworkError(new SyntaxError('Unexpected token < in JSON')),
+    ).toBe(false);
+  });
+
+  it('does not match a TypeError with an unrelated cause code', () => {
+    const err = new TypeError('terminated');
+    (err as { cause?: unknown }).cause = { code: 'ENOENT' };
+    expect(isTransientNetworkError(err)).toBe(false);
+  });
+
+  it('does not match non-Error values', () => {
+    expect(isTransientNetworkError('boom')).toBe(false);
+    expect(isTransientNetworkError(undefined)).toBe(false);
   });
 });
 

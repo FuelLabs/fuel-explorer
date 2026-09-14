@@ -1,5 +1,28 @@
 import type { GQLBlock } from '~/graphql/generated/sdk-provider';
 
+const RETRY_DELAY_MS = 250;
+
+const TRANSIENT_CAUSE_CODES = new Set([
+  'UND_ERR_SOCKET',
+  'UND_ERR_CONNECT_TIMEOUT',
+  'ECONNRESET',
+  'EPIPE',
+  'ETIMEDOUT',
+]);
+
+// undici reports a dropped connection as a TypeError with the socket error
+// in `cause`, or as `fetch failed`.
+export function isTransientNetworkError(err: unknown): boolean {
+  if (!(err instanceof TypeError)) return false;
+  const cause = (err as { cause?: unknown }).cause;
+  const code =
+    cause && typeof cause === 'object' && 'code' in cause
+      ? (cause as { code?: unknown }).code
+      : undefined;
+  if (typeof code === 'string' && TRANSIENT_CAUSE_CODES.has(code)) return true;
+  return err.message === 'fetch failed';
+}
+
 // Rolling 1000ms window token bucket: at most `maxPerSecond` calls may start
 // within any trailing 1000ms span. Calls beyond that wait for the oldest call
 // in the window to age out before proceeding.
@@ -15,6 +38,17 @@ export class RpcBlockSource {
 
   async load(height: number): Promise<GQLBlock | null> {
     await this.acquire();
+    try {
+      return await this.fetchOnce(height);
+    } catch (e) {
+      if (!isTransientNetworkError(e)) throw e;
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+      await this.acquire();
+      return this.fetchOnce(height);
+    }
+  }
+
+  private async fetchOnce(height: number): Promise<GQLBlock | null> {
     const block = await this.client.blockJson(height);
     return block ? withStatusBlock(block) : null;
   }
