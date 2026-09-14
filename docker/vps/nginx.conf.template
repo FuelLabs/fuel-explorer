@@ -42,6 +42,15 @@ server {
     # down" rather than "retry the broken server".
     limit_req_status 429;
 
+    # CSP is report-only until every wallet and RPC host is confirmed.
+    # A location with its own add_header loses these, so each such location
+    # repeats them.
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header X-Frame-Options DENY always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.coingecko.com https://verified-assets.fuel.network https://raw.githubusercontent.com https://*.fuel.network https://*.walletconnect.com wss://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://*.g.alchemy.com https://*.infura.io https://cloudflare-eth.com https://eth.llamarpc.com https://*.rpc.thirdweb.com https://*.coinbase.com; frame-src https://*.walletconnect.com https://*.walletconnect.org; frame-ancestors 'none'" always;
+
     gzip on;
     gzip_types text/plain text/css application/json application/javascript image/svg+xml;
     gzip_min_length 1024;
@@ -49,6 +58,11 @@ server {
     # Hashed Vite assets never change: cache for a year.
     location /assets/ {
         add_header Cache-Control "public, max-age=31536000, immutable";
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+        add_header X-Frame-Options DENY always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.coingecko.com https://verified-assets.fuel.network https://raw.githubusercontent.com https://*.fuel.network https://*.walletconnect.com wss://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://*.g.alchemy.com https://*.infura.io https://cloudflare-eth.com https://eth.llamarpc.com https://*.rpc.thirdweb.com https://*.coinbase.com; frame-src https://*.walletconnect.com https://*.walletconnect.org; frame-ancestors 'none'" always;
         try_files $uri =404;
     }
 
@@ -65,6 +79,11 @@ server {
         proxy_ignore_headers Cache-Control Expires;
         proxy_cache_use_stale updating error timeout;
         add_header X-Cache $upstream_cache_status;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+        add_header X-Frame-Options DENY always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.coingecko.com https://verified-assets.fuel.network https://raw.githubusercontent.com https://*.fuel.network https://*.walletconnect.com wss://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://*.g.alchemy.com https://*.infura.io https://cloudflare-eth.com https://eth.llamarpc.com https://*.rpc.thirdweb.com https://*.coinbase.com; frame-src https://*.walletconnect.com https://*.walletconnect.org; frame-ancestors 'none'" always;
         rewrite ^/api/(.*)$ /$1 break;
         proxy_pass $api_upstream;
         proxy_http_version 1.1;
@@ -82,6 +101,11 @@ server {
         proxy_ignore_headers Cache-Control Expires;
         proxy_cache_use_stale updating error timeout;
         add_header X-Cache $upstream_cache_status;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+        add_header X-Frame-Options DENY always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.coingecko.com https://verified-assets.fuel.network https://raw.githubusercontent.com https://*.fuel.network https://*.walletconnect.com wss://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://*.g.alchemy.com https://*.infura.io https://cloudflare-eth.com https://eth.llamarpc.com https://*.rpc.thirdweb.com https://*.coinbase.com; frame-src https://*.walletconnect.com https://*.walletconnect.org; frame-ancestors 'none'" always;
         rewrite ^/api/(.*)$ /$1 break;
         proxy_pass $api_upstream;
         proxy_http_version 1.1;
@@ -105,6 +129,11 @@ server {
     # SPA fallback, same as the Vercel rewrite in packages/app-explorer/vercel.json.
     location / {
         add_header Cache-Control "no-cache";
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+        add_header X-Frame-Options DENY always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.coingecko.com https://verified-assets.fuel.network https://raw.githubusercontent.com https://*.fuel.network https://*.walletconnect.com wss://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://*.g.alchemy.com https://*.infura.io https://cloudflare-eth.com https://eth.llamarpc.com https://*.rpc.thirdweb.com https://*.coinbase.com; frame-src https://*.walletconnect.com https://*.walletconnect.org; frame-ancestors 'none'" always;
         try_files $uri $uri/ /index.html;
     }
 }
