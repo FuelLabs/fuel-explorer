@@ -24,6 +24,8 @@ export type MessageRelayedItem = {
 
 type L1LogRow = ReturnType<L1Index['queryLogs']>[number];
 
+export const MAX_BRIDGE_ROWS = 1000;
+
 function parseJson<T>(value: string, fallback: T): T {
   try {
     return JSON.parse(value) as T;
@@ -62,6 +64,7 @@ export class BridgeStore {
       event: 'MessageSent',
       argKey: 'recipient',
       argValue: recipientLower,
+      limit: MAX_BRIDGE_ROWS,
     });
 
     const predicateRows = this.deps.l1Index
@@ -70,6 +73,7 @@ export class BridgeStore {
         event: 'MessageSent',
         argKey: 'recipient',
         argValue: predicateLower,
+        limit: MAX_BRIDGE_ROWS,
       })
       .filter((row) => {
         const decodedArgs = parseJson<{ data?: string }>(row.decoded_args, {});
@@ -88,6 +92,7 @@ export class BridgeStore {
       merged.push(row);
     }
     merged.sort((a, b) => compareAsc(b, a));
+    merged.length = Math.min(merged.length, MAX_BRIDGE_ROWS);
 
     return merged.map((row) => {
       const decodedArgs = parseJson<{ recipient?: string; nonce?: string }>(
@@ -117,6 +122,7 @@ export class BridgeStore {
       contractHash: address,
       event: 'CommitSubmitted',
       fromBlock: fromBlock + 1,
+      limit: MAX_BRIDGE_ROWS,
     });
     const sorted = [...rows].sort(compareAsc);
     return sorted.map((row) => {
@@ -141,6 +147,7 @@ export class BridgeStore {
       event: 'MessageRelayed',
       argKey: 'messageId',
       argValue: messageId,
+      limit: MAX_BRIDGE_ROWS,
     });
     const sorted = [...rows].sort(compareAsc);
     return sorted.map((row) => ({ transactionHash: row.tx_hash }));
