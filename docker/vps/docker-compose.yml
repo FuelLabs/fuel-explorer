@@ -47,6 +47,8 @@ services:
       # graphql/resolvers/charts.ts's rollingStats60s covering fewer of its
       # target ~60 trailing blocks on this tier -- see config.ts's comment.
       MEMORY_CACHE_BYTES: "50331648"
+      # Each worker is a V8 isolate outside the 384 MB heap cap.
+      DECODE_WORKERS: "1"
     volumes:
       - api-data:/data
     restart: unless-stopped

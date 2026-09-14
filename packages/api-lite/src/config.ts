@@ -1,3 +1,4 @@
+import { availableParallelism } from 'node:os';
 import { z } from 'zod';
 
 const num = (def: number) => z.coerce.number().int().positive().default(def);
@@ -45,6 +46,12 @@ const schema = z
     // process baseline above.
     BACKFILL_BATCH: num(10),
     S3_CONCURRENCY: num(8),
+    // availableParallelism() reports host cores, not a container's CPU quota.
+    DECODE_WORKERS: z.coerce
+      .number()
+      .int()
+      .nonnegative()
+      .default(Math.max(1, availableParallelism() - 1)),
     RPC_MAX_BLOCKS_PER_SECOND: num(5),
     RPC_FALLBACK_MAX_BLOCKS_PER_SECOND: num(20),
     // No static default: it depends on FUEL_PROVIDER's chain, resolved at
@@ -96,6 +103,7 @@ export type Config = {
   tipPollMs: number;
   backfillBatch: number;
   s3Concurrency: number;
+  decodeWorkers: number;
   rpcMaxBlocksPerSecond: number;
   rpcFallbackMaxBlocksPerSecond: number;
   cosmosRestUrl?: string;
@@ -136,6 +144,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     tipPollMs: e.TIP_POLL_MS,
     backfillBatch: e.BACKFILL_BATCH,
     s3Concurrency: e.S3_CONCURRENCY,
+    decodeWorkers: e.DECODE_WORKERS,
     rpcMaxBlocksPerSecond: e.RPC_MAX_BLOCKS_PER_SECOND,
     rpcFallbackMaxBlocksPerSecond: e.RPC_FALLBACK_MAX_BLOCKS_PER_SECOND,
     cosmosRestUrl: e.COSMOS_REST_URL,
