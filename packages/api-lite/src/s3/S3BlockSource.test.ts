@@ -1,5 +1,10 @@
 import { gzipSync } from 'node:zlib';
-import { BlockNotFound, S3BlockSource, createS3Fetcher } from './S3BlockSource';
+import {
+  BlockNotFound,
+  MAX_BLOCK_BYTES,
+  S3BlockSource,
+  createS3Fetcher,
+} from './S3BlockSource';
 
 describe('S3BlockSource', () => {
   it('gunzips gzip objects', async () => {
@@ -27,6 +32,18 @@ describe('S3BlockSource', () => {
   it('throws BlockNotFound on null', async () => {
     const src = new S3BlockSource(async () => null);
     await expect(src.fetchRaw(7)).rejects.toBeInstanceOf(BlockNotFound);
+  });
+
+  // A crafted gzip object (small on the wire, huge once inflated) must not be
+  // allowed to exhaust the heap. This is an error, not a miss: it must not be
+  // mistaken for BlockNotFound and silently skipped.
+  it('rejects a gzip stream that inflates past the limit, and it is not BlockNotFound', async () => {
+    const huge = Buffer.alloc(MAX_BLOCK_BYTES + 1, 'a');
+    const src = new S3BlockSource(async () => gzipSync(huge));
+    await expect(src.fetchRaw(11)).rejects.toThrow(
+      new RegExp(`11.*${MAX_BLOCK_BYTES}`),
+    );
+    await expect(src.fetchRaw(11)).rejects.not.toBeInstanceOf(BlockNotFound);
   });
 });
 
