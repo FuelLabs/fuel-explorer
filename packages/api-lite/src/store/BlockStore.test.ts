@@ -608,6 +608,71 @@ describe('BlockStore', () => {
       '14',
     ]);
   });
+
+  it('getRange logs one line for a failing height, without the stack, unless LOG_S3=1', async () => {
+    const errors = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const prevLogS3 = process.env.LOG_S3;
+    Reflect.deleteProperty(process.env, 'LOG_S3');
+    try {
+      const err = new TypeError('terminated');
+      (err as { cause?: unknown }).cause = { code: 'UND_ERR_SOCKET' };
+      const { store } = makeStore({
+        source: {
+          fetchRaw: async (h) => {
+            if (h === 12) throw err;
+            return new Uint8Array([h]);
+          },
+        },
+      });
+
+      await store.getRange(10, 14);
+
+      const call = errors.mock.calls.find((c) =>
+        String(c[0]).includes('height 12'),
+      );
+      expect(call).toBeDefined();
+      expect(call).toHaveLength(1);
+      expect(call?.[0]).toBe(
+        'BlockStore.getRange: height 12 failed, storing null: TypeError: terminated (cause.code=UND_ERR_SOCKET)',
+      );
+    } finally {
+      errors.mockRestore();
+      if (prevLogS3 === undefined)
+        Reflect.deleteProperty(process.env, 'LOG_S3');
+      else process.env.LOG_S3 = prevLogS3;
+    }
+  });
+
+  it('getRange keeps the full error object when LOG_S3=1', async () => {
+    const errors = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const prevLogS3 = process.env.LOG_S3;
+    process.env.LOG_S3 = '1';
+    try {
+      const err = new Error('boom');
+      const { store } = makeStore({
+        source: {
+          fetchRaw: async (h) => {
+            if (h === 12) throw err;
+            return new Uint8Array([h]);
+          },
+        },
+      });
+
+      await store.getRange(10, 14);
+
+      const call = errors.mock.calls.find((c) =>
+        String(c[0]).includes('height 12'),
+      );
+      expect(call).toBeDefined();
+      expect(call).toHaveLength(2);
+      expect(call?.[1]).toBe(err);
+    } finally {
+      errors.mockRestore();
+      if (prevLogS3 === undefined)
+        Reflect.deleteProperty(process.env, 'LOG_S3');
+      else process.env.LOG_S3 = prevLogS3;
+    }
+  });
 });
 
 describe('BlockStore normalize', () => {

@@ -198,10 +198,16 @@ export class BlockStore {
         try {
           out[i] = await this.get(heights[i]);
         } catch (e) {
-          console.error(
-            `BlockStore.getRange: height ${heights[i]} failed, storing null`,
-            e,
-          );
+          const err = e as Partial<Error> & { cause?: { code?: unknown } };
+          const name = err.name ?? 'Error';
+          const message = err.message ?? String(e);
+          const causeCode =
+            typeof err.cause?.code === 'string'
+              ? ` (cause.code=${err.cause.code})`
+              : '';
+          const line = `BlockStore.getRange: height ${heights[i]} failed, storing null: ${name}: ${message}${causeCode}`;
+          if (process.env.LOG_S3 === '1') console.error(line, e);
+          else console.error(line);
           out[i] = null;
         }
       }
