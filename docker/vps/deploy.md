@@ -30,6 +30,15 @@ Both files are committed so either method works. The variable is recommended
 because the command sequence below can set it in the same breath as the
 other variables, with no dashboard step.
 
+`railway.api.json` also caps the api container at 1 GiB
+(`deploy.limitOverride.containers.memoryBytes`). Railway bills memory on the
+container's cgroup usage, which includes the kernel page cache for the volume:
+uncapped, the metric reached 14 GB while the process used at most 415 MB RSS
+(Railway metrics and /health, 2026-09-11 to 09-14). The cap has no variable
+equivalent; apply it through the config file path, the Scale sliders, or the
+`serviceInstanceLimitsUpdate` GraphQL mutation. Raise it if `DECODE_WORKERS`
+is set above 1, since each worker is a separate V8 isolate.
+
 ## Prerequisites
 
 ```bash
