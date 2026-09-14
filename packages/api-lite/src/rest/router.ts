@@ -34,6 +34,10 @@ export type ChartsRouteDeps = {
   build: () => Promise<{ statistics: unknown; tps: unknown }>;
 };
 
+export type DashboardRouteDeps = {
+  build: () => Promise<{ nodes: unknown }>;
+};
+
 export type RestRouterDeps = {
   // Unlike `staking` (events/event-by-id/finalization-period), APY needs no
   // L1 ingestion — only the sequencer's cosmos REST API — so it's kept
@@ -42,6 +46,7 @@ export type RestRouterDeps = {
   staking: StakingRouteDeps | null;
   bridge: BridgeRouteDeps | null;
   charts: ChartsRouteDeps;
+  dashboard: DashboardRouteDeps;
 };
 
 function sendJson(
@@ -123,6 +128,18 @@ export async function handleRestRequest(
     } catch (err) {
       console.error('buildCharts failed', err);
       sendJson(res, 500, { error: 'charts unavailable' });
+    }
+    return true;
+  }
+
+  if (path === '/dashboard') {
+    try {
+      const body = await deps.dashboard.build();
+      // 5s matches nginx's proxy_cache_valid for /api/dashboard.
+      sendJson(res, 200, body, { 'cache-control': 'public, max-age=5' });
+    } catch (err) {
+      console.error('buildBlocksDashboard failed', err);
+      sendJson(res, 500, { error: 'dashboard unavailable' });
     }
     return true;
   }

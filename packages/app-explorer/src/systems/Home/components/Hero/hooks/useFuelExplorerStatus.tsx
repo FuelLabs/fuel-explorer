@@ -5,6 +5,22 @@ import { getBlocksDashboard } from '../actions/get-blocks-dashboard';
 import { getRollingStats } from '../actions/get-rolling-stats';
 import { getStatistics } from '../actions/get-statistics';
 
+// GET /dashboard is edge-cached; an API without the route falls back to GraphQL.
+async function fetchDashboardNodes() {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_FUEL_INDEXER_API}/dashboard`,
+      { signal: AbortSignal.timeout(8000) },
+    );
+    if (!res.ok) throw new Error(`GET /dashboard returned ${res.status}`);
+    const body = await res.json();
+    return body.nodes;
+  } catch {
+    const blocksData = await getBlocksDashboard();
+    return blocksData?.getBlocksDashboard.nodes;
+  }
+}
+
 /**
  * Recent blocks for the DataTable tile.
  */
@@ -12,9 +28,9 @@ export const useDashboardBlocks = () => {
   return useQuery({
     queryKey: ['home', 'blocks'],
     queryFn: async () => {
-      const blocksData = await getBlocksDashboard();
+      const nodes = await fetchDashboardNodes();
       const blocks: GQLBlocksDashboard[] =
-        blocksData?.getBlocksDashboard.nodes.map(
+        nodes?.map(
           (node: any) =>
             ({
               blockNo: node.blockNo ?? '',
