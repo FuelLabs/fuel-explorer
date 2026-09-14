@@ -1,3 +1,6 @@
+import { request as httpRequest } from 'node:http';
+import type { AddressInfo } from 'node:net';
+import { type RequestHandler, createBootServer } from './bootServer';
 import { HotKeys } from './hot/HotKeys';
 import { Index } from './index/Index';
 import { createApp } from './server';
@@ -86,5 +89,40 @@ describe('createApp maskedErrors', () => {
     process.env.NODE_ENV = 'test';
     const json = await queryPredicateWithThrowingIndex();
     expect(JSON.stringify(json.errors)).toContain('leaked-secret-detail');
+  });
+});
+
+describe('createApp server wired into the boot server', () => {
+  it('answers /health once the app listener is swapped in', async () => {
+    const { server: appServer } = createApp(fakeCtx());
+    const { server: bootHttpServer, swap } = createBootServer();
+    swap(appServer.listeners('request')[0] as RequestHandler);
+
+    await new Promise<void>((resolve) => bootHttpServer.listen(0, resolve));
+    const port = (bootHttpServer.address() as AddressInfo).port;
+    try {
+      const { status, body } = await new Promise<{
+        status: number;
+        body: string;
+      }>((resolve, reject) => {
+        httpRequest({ port, path: '/health', method: 'GET' }, (res) => {
+          let data = '';
+          res.on('data', (c) => {
+            data += c;
+          });
+          res.on('end', () =>
+            resolve({ status: res.statusCode ?? 0, body: data }),
+          );
+        })
+          .on('error', reject)
+          .end();
+      });
+      expect(status).toBe(200);
+      expect(JSON.parse(body).ok).toBe(true);
+    } finally {
+      await new Promise<void>((resolve) =>
+        bootHttpServer.close(() => resolve()),
+      );
+    }
   });
 });
