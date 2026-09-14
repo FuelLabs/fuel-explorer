@@ -2,6 +2,7 @@ import {
   type FieldNode,
   GraphQLError,
   Kind,
+  type OperationDefinitionNode,
   type SelectionNode,
   type ValidationContext,
 } from 'graphql';
@@ -59,7 +60,7 @@ export function useMaxDepth(maxDepth: number): Plugin {
   return {
     onValidate({ addValidationRule }) {
       addValidationRule((context: ValidationContext) => ({
-        OperationDefinition(node) {
+        OperationDefinition(node: OperationDefinitionNode) {
           const depth = selectionSetDepth(
             node.selectionSet.selections,
             context,

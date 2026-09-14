@@ -245,7 +245,9 @@ describe('TipTracker', () => {
       expect(t.servedTip).toBe(103);
       expect(served).toEqual([100, 101, 102, 103]);
 
-      release?.([{ height: '100' }]); // the abandoned tick now settles
+      // TS narrows `release` to null here; the callback above reassigns it.
+      const settle = release as ((v: { height: string }[]) => void) | null;
+      settle?.([{ height: '100' }]);
       await stalled;
       expect(t.servedTip).toBe(103);
       expect(served).toEqual([100, 101, 102, 103]);
