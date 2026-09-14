@@ -247,7 +247,8 @@ describe('BlockStore', () => {
     const dataDir = mkdtempSync(join(tmpdir(), 'bs-pinned-'));
     const blocksDir = join(dataDir, 'blocks');
     mkdirSync(blocksDir, { recursive: true });
-    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    const gzSize = (h: number) =>
+      gzipSync(JSON.stringify(fakeBlock(h)), { level: 1 }).length;
     writeFileSync(
       join(blocksDir, '1.json.gz'),
       gzipSync(JSON.stringify(fakeBlock(1))),
@@ -310,7 +311,8 @@ describe('BlockStore', () => {
   });
 
   it('evictDisk backstop also honors pinned heights', async () => {
-    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    const gzSize = (h: number) =>
+      gzipSync(JSON.stringify(fakeBlock(h)), { level: 1 }).length;
     const { store } = makeStore({
       diskBytes: gzSize(1) + gzSize(3) + 5,
       memoryBytes: 1,
@@ -501,7 +503,8 @@ describe('BlockStore', () => {
     // writeDisk evicts synchronously as it writes, so by the time an
     // interval/boot call to evictDisk() runs there is normally nothing left
     // to remove; this is exactly that steady-state case.
-    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    const gzSize = (h: number) =>
+      gzipSync(JSON.stringify(fakeBlock(h)), { level: 1 }).length;
     const { store } = makeStore({
       diskBytes: gzSize(2) + gzSize(3) + 10,
       memoryBytes: 1,
@@ -517,7 +520,8 @@ describe('BlockStore', () => {
   });
 
   it('evictDisk cleans up files that landed on disk outside the tracked store (drift backstop)', async () => {
-    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    const gzSize = (h: number) =>
+      gzipSync(JSON.stringify(fakeBlock(h)), { level: 1 }).length;
     const { store } = makeStore({
       diskBytes: gzSize(1) + gzSize(2) + 5,
       memoryBytes: 1,
@@ -543,7 +547,8 @@ describe('BlockStore', () => {
     // Gzip output length can vary by a byte or two between otherwise
     // near-identical blocks, so the cap is sized from the actual gzip
     // size of the 3 heights expected to survive rather than assumed equal.
-    const gzSize = (h: number) => gzipSync(JSON.stringify(fakeBlock(h))).length;
+    const gzSize = (h: number) =>
+      gzipSync(JSON.stringify(fakeBlock(h)), { level: 1 }).length;
     const cap = gzSize(102) + gzSize(103) + gzSize(104);
     const { store } = makeStore({ dataDir, diskBytes: cap });
     for (let h = 100; h < 105; h++) await store.get(h);
@@ -588,6 +593,48 @@ describe('BlockStore', () => {
     const block = await store.get(1);
     const raw = Buffer.byteLength(JSON.stringify(block));
     expect(store.sizeOf(1)).toBe(raw);
+  });
+
+  it('stringifies a freshly loaded block exactly once, reusing it for size accounting and the disk write', async () => {
+    // Two heap-adjusted blocks exceed memoryBytes, so get(1) after get(2) is a disk hit.
+    const { store } = makeStore({
+      decode: (bytes) => fakeBlock(bytes[0], 3000),
+    });
+    const spy = jest.spyOn(JSON, 'stringify');
+    try {
+      await store.get(1); // fresh fetch: sizeCalculation and writeDisk must share one stringify
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      spy.mockClear();
+      await store.get(2); // also a fresh fetch: one stringify, independent of height 1's
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect((store as any).memory.has(1)).toBe(false); // confirms the eviction this test relies on
+
+      spy.mockClear();
+      await store.get(1); // memory miss -> disk hit: must reuse the decompressed string, no stringify at all
+      expect(spy).not.toHaveBeenCalled();
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('writes a gzip file at level 1 that round-trips to the original block', async () => {
+    // require(), not import: swc's namespace-import interop copies exports, so a spy on it misses BlockStore's calls.
+    const zlib = require('node:zlib');
+    const gzipSpy = jest.spyOn(zlib, 'gzipSync');
+    try {
+      const { store } = makeStore();
+      const decoded = await store.get(77);
+      expect(gzipSpy).toHaveBeenCalledTimes(1);
+      expect(gzipSpy.mock.calls[0][1]).toEqual({ level: 1 });
+
+      const dataDir = (store as any).opts.dataDir;
+      const gz = readFileSync(join(dataDir, 'blocks', '77.json.gz'));
+      const roundTripped = JSON.parse(gunzipSync(gz).toString('utf8'));
+      expect(roundTripped).toEqual(decoded);
+    } finally {
+      gzipSpy.mockRestore();
+    }
   });
 
   it('getRange stores null at a failing height and keeps the rest of the range', async () => {
