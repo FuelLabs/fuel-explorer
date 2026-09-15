@@ -342,8 +342,10 @@ async function main() {
     DISK_EVICT_INTERVAL_MS,
   );
   setInterval(() => {
-    const n = indexer.retention(Math.floor(Date.now() / 1000));
-    if (n) console.log(`retention: ${n} rows`);
+    void indexer
+      .retention()
+      .then((n) => n && console.log(`retention: ${n} rows`))
+      .catch((e) => console.error('retention sweep failed', e));
   }, RETENTION_SWEEP_INTERVAL_MS);
   setInterval(() => hot.decay(), HOT_DECAY_INTERVAL_MS);
   setInterval(
