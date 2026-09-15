@@ -9,10 +9,6 @@ import { logSlowStatements } from '../sqlite/logSlowStatements';
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS blocks(height INTEGER PRIMARY KEY, block_hash BLOB NOT NULL UNIQUE, time INTEGER NOT NULL, tx_count INTEGER NOT NULL, gas_used INTEGER NOT NULL DEFAULT 0, total_fee INTEGER NOT NULL DEFAULT 0);
 CREATE INDEX IF NOT EXISTS blocks_time ON blocks(time);
-CREATE TABLE IF NOT EXISTS txs(height INTEGER NOT NULL, tx_index INTEGER NOT NULL, tx_hash BLOB NOT NULL, PRIMARY KEY(height, tx_index)) WITHOUT ROWID;
-CREATE INDEX IF NOT EXISTS txs_hash ON txs(tx_hash);
-CREATE TABLE IF NOT EXISTS tx_accounts(account BLOB NOT NULL, height INTEGER NOT NULL, tx_index INTEGER NOT NULL, PRIMARY KEY(account, height DESC, tx_index DESC)) WITHOUT ROWID;
-CREATE INDEX IF NOT EXISTS tx_accounts_height ON tx_accounts(height);
 CREATE TABLE IF NOT EXISTS predicates(address BLOB PRIMARY KEY, bytecode BLOB NOT NULL) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS assets(asset_id BLOB PRIMARY KEY, contract_id BLOB NOT NULL, sub_id BLOB NOT NULL, height INTEGER NOT NULL) WITHOUT ROWID;
 CREATE INDEX IF NOT EXISTS assets_contract ON assets(contract_id, height DESC);
@@ -20,6 +16,38 @@ CREATE TABLE IF NOT EXISTS contracts(contract_id BLOB PRIMARY KEY, height INTEGE
 CREATE INDEX IF NOT EXISTS contracts_height ON contracts(height DESC);
 CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 `;
+
+// txs and tx_accounts live in one table pair per DEFAULT_BUCKET_BLOCKS heights
+// (about a day on mainnet), so retention drops whole tables instead of
+// deleting rows out of the account-ordered tx_accounts primary key, which
+// touches random pages across the whole table.
+const DEFAULT_BUCKET_BLOCKS = 86_400;
+const LEGACY_RANGE_KEY = 'legacy_tx_range';
+
+type Partition = {
+  txs: string;
+  accounts: string;
+  start: number;
+  end: number;
+  legacy: boolean;
+};
+
+type PartitionStmts = {
+  tx: Database.Statement;
+  acct: Database.Statement;
+  heightForTx: Database.Statement;
+  acctExists: Database.Statement;
+  acctCount: Database.Statement;
+  acctNewerCount: Database.Statement;
+  acctDesc: Database.Statement;
+  acctBefore: Database.Statement;
+  acctAfter: Database.Statement;
+  txCount: Database.Statement;
+  txNewerCount: Database.Statement;
+  txAbove: Database.Statement;
+  deleteTxAbove: Database.Statement;
+  deleteAcctAbove: Database.Statement;
+};
 
 const blob = (hex: string) => Buffer.from(hex.replace(/^0x/, ''), 'hex');
 const hexOf = (b: Buffer) => `0x${b.toString('hex')}`;
@@ -68,9 +96,14 @@ export class Index {
   private readonly db: Database.Database;
   private readonly path: string;
   private readonly stmts;
+  private readonly bucketBlocks: number;
+  // Newest first (by `end`), the order account history is read in.
+  private partitions: Partition[] = [];
+  private readonly partitionStmts = new Map<string, PartitionStmts>();
 
-  constructor(path: string) {
+  constructor(path: string, opts: { bucketBlocks?: number } = {}) {
     this.path = path;
+    this.bucketBlocks = opts.bucketBlocks ?? DEFAULT_BUCKET_BLOCKS;
     this.db = new Database(path);
     logSlowStatements(this.db, 'index');
     if (path !== ':memory:') {
@@ -103,12 +136,6 @@ export class Index {
       block: this.db.prepare(
         'INSERT OR IGNORE INTO blocks(height, block_hash, time, tx_count, gas_used, total_fee) VALUES (?, ?, ?, ?, ?, ?)',
       ),
-      tx: this.db.prepare(
-        'INSERT OR IGNORE INTO txs(height, tx_index, tx_hash) VALUES (?, ?, ?)',
-      ),
-      acct: this.db.prepare(
-        'INSERT OR IGNORE INTO tx_accounts(account, height, tx_index) VALUES (?, ?, ?)',
-      ),
       pred: this.db.prepare(
         'INSERT OR IGNORE INTO predicates(address, bytecode) VALUES (?, ?)',
       ),
@@ -118,26 +145,8 @@ export class Index {
       contract: this.db.prepare(
         'INSERT OR IGNORE INTO contracts(contract_id, height) VALUES (?, ?)',
       ),
-      heightForTx: this.db.prepare(
-        'SELECT height, tx_index FROM txs WHERE tx_hash = ? LIMIT 1',
-      ),
       heightForBlock: this.db.prepare(
         'SELECT height FROM blocks WHERE block_hash = ?',
-      ),
-      acctExists: this.db.prepare(
-        'SELECT 1 FROM tx_accounts WHERE account = ? LIMIT 1',
-      ),
-      acctCount: this.db.prepare(
-        'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? LIMIT ?)',
-      ),
-      acctNewerCount: this.db.prepare(
-        'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? AND height >= ? AND (height > ? OR tx_index > ?) LIMIT ?)',
-      ),
-      txCount: this.db.prepare(
-        'SELECT count(*) AS c FROM (SELECT 1 FROM txs WHERE height >= ? AND height <= ? LIMIT ?)',
-      ),
-      txNewerCount: this.db.prepare(
-        'SELECT count(*) AS c FROM (SELECT 1 FROM txs WHERE height >= ? AND height <= ? AND (height > ? OR tx_index > ?) LIMIT ?)',
       ),
       predicate: this.db.prepare(
         'SELECT bytecode FROM predicates WHERE address = ?',
@@ -170,6 +179,159 @@ export class Index {
       ),
       oldestTime: this.db.prepare('SELECT MIN(time) AS t FROM blocks'),
     };
+    this.loadPartitions();
+  }
+
+  private tableExists(name: string): boolean {
+    return (
+      this.db
+        .prepare(
+          "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?",
+        )
+        .get(name) != null
+    );
+  }
+
+  // A database written before partitioning still has the single `txs` and
+  // `tx_accounts` tables. They are served as one partition covering the
+  // height range they held when first opened by this code, and dropped like
+  // any other partition once that range ages out. Blocks inside that range
+  // keep writing to it so a height never lands in two partitions.
+  private loadPartitions(): void {
+    const parts: Partition[] = [];
+    if (this.tableExists('txs')) {
+      let range = this.getMeta(LEGACY_RANGE_KEY);
+      if (range == null) {
+        const r = this.db
+          .prepare('SELECT MIN(height) AS lo, MAX(height) AS hi FROM txs')
+          .get() as { lo: number | null; hi: number | null };
+        if (r.lo == null || r.hi == null) {
+          this.db.exec('DROP TABLE txs; DROP TABLE tx_accounts');
+        } else {
+          range = `${r.lo},${r.hi}`;
+          this.setMeta(LEGACY_RANGE_KEY, range);
+        }
+      }
+      if (range != null) {
+        const [lo, hi] = range.split(',').map(Number);
+        parts.push({
+          txs: 'txs',
+          accounts: 'tx_accounts',
+          start: lo,
+          end: hi,
+          legacy: true,
+        });
+      }
+    }
+    const names = this.db
+      .prepare(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE 'txs_p%'",
+      )
+      .all() as { name: string }[];
+    for (const { name } of names) {
+      const bucket = Number(name.slice('txs_p'.length));
+      if (Number.isInteger(bucket)) parts.push(this.bucketPartition(bucket));
+    }
+    this.partitions = parts.sort((a, b) => b.end - a.end);
+  }
+
+  private bucketPartition(bucket: number): Partition {
+    return {
+      txs: `txs_p${bucket}`,
+      accounts: `tx_accounts_p${bucket}`,
+      start: bucket * this.bucketBlocks,
+      end: (bucket + 1) * this.bucketBlocks - 1,
+      legacy: false,
+    };
+  }
+
+  private partitionFor(height: number): Partition {
+    const legacy = this.partitions.find(
+      (p) => p.legacy && height >= p.start && height <= p.end,
+    );
+    if (legacy) return legacy;
+    const bucket = Math.floor(height / this.bucketBlocks);
+    const existing = this.partitions.find(
+      (p) => !p.legacy && p.txs === `txs_p${bucket}`,
+    );
+    if (existing) return existing;
+    const p = this.bucketPartition(bucket);
+    this.db.exec(
+      `CREATE TABLE IF NOT EXISTS ${p.txs}(height INTEGER NOT NULL, tx_index INTEGER NOT NULL, tx_hash BLOB NOT NULL, PRIMARY KEY(height, tx_index)) WITHOUT ROWID;
+       CREATE INDEX IF NOT EXISTS ${p.txs}_hash ON ${p.txs}(tx_hash);
+       CREATE TABLE IF NOT EXISTS ${p.accounts}(account BLOB NOT NULL, height INTEGER NOT NULL, tx_index INTEGER NOT NULL, PRIMARY KEY(account, height DESC, tx_index DESC)) WITHOUT ROWID;`,
+    );
+    this.partitions = [...this.partitions, p].sort((a, b) => b.end - a.end);
+    return p;
+  }
+
+  private stmtsFor(p: Partition): PartitionStmts {
+    let s = this.partitionStmts.get(p.txs);
+    if (s) return s;
+    const q = (sql: string) => this.db.prepare(sql);
+    s = {
+      tx: q(
+        `INSERT OR IGNORE INTO ${p.txs}(height, tx_index, tx_hash) VALUES (?, ?, ?)`,
+      ),
+      acct: q(
+        `INSERT OR IGNORE INTO ${p.accounts}(account, height, tx_index) VALUES (?, ?, ?)`,
+      ),
+      heightForTx: q(
+        `SELECT height, tx_index FROM ${p.txs} WHERE tx_hash = ? LIMIT 1`,
+      ),
+      acctExists: q(`SELECT 1 FROM ${p.accounts} WHERE account = ? LIMIT 1`),
+      acctCount: q(
+        `SELECT count(*) AS c FROM (SELECT 1 FROM ${p.accounts} WHERE account = ? LIMIT ?)`,
+      ),
+      acctNewerCount: q(
+        `SELECT count(*) AS c FROM (SELECT 1 FROM ${p.accounts} WHERE account = ? AND height >= ? AND (height > ? OR tx_index > ?) LIMIT ?)`,
+      ),
+      acctDesc: q(
+        `SELECT height, tx_index FROM ${p.accounts} WHERE account = ? ORDER BY height DESC, tx_index DESC LIMIT ?`,
+      ),
+      acctBefore: q(
+        `SELECT height, tx_index FROM ${p.accounts} WHERE account = ? AND height <= ? AND (height < ? OR tx_index < ?) ORDER BY height DESC, tx_index DESC LIMIT ?`,
+      ),
+      acctAfter: q(
+        `SELECT height, tx_index FROM ${p.accounts} WHERE account = ? AND height >= ? AND (height > ? OR tx_index > ?) ORDER BY height ASC, tx_index ASC LIMIT ?`,
+      ),
+      txCount: q(
+        `SELECT count(*) AS c FROM (SELECT 1 FROM ${p.txs} WHERE height >= ? AND height <= ? LIMIT ?)`,
+      ),
+      txNewerCount: q(
+        `SELECT count(*) AS c FROM (SELECT 1 FROM ${p.txs} WHERE height >= ? AND height <= ? AND (height > ? OR tx_index > ?) LIMIT ?)`,
+      ),
+      txAbove: q(`SELECT 1 FROM ${p.txs} WHERE height > ? LIMIT 1`),
+      deleteTxAbove: q(`DELETE FROM ${p.txs} WHERE height > ?`),
+      deleteAcctAbove: q(`DELETE FROM ${p.accounts} WHERE height > ?`),
+    };
+    this.partitionStmts.set(p.txs, s);
+    return s;
+  }
+
+  partitionRanges(): { start: number; end: number }[] {
+    return this.partitions.map(({ start, end }) => ({ start, end }));
+  }
+
+  oldestPartitionEnd(): number | null {
+    const oldest = this.partitions[this.partitions.length - 1];
+    return oldest ? oldest.end : null;
+  }
+
+  // Drops every partition whose heights all lie below `floor`. Freed pages
+  // stay on the freelist for the next partition's inserts, so the file does
+  // not shrink and no vacuum runs.
+  dropExpiredPartitions(floor: number): number {
+    const expired = this.partitions.filter((p) => p.end < floor);
+    for (const p of expired) {
+      this.db.transaction(() => {
+        this.db.exec(`DROP TABLE ${p.txs}; DROP TABLE ${p.accounts}`);
+        if (p.legacy) this.stmts.metaDel.run(LEGACY_RANGE_KEY);
+      })();
+      this.partitionStmts.delete(p.txs);
+    }
+    this.partitions = this.partitions.filter((p) => p.end >= floor);
+    return expired.length;
   }
 
   writeBlock(block: GQLBlock): void {
@@ -185,6 +347,7 @@ export class Index {
       if (status?.totalFee != null) totalFee += BigInt(status.totalFee);
     }
     const run = this.db.transaction(() => {
+      const part = this.stmtsFor(this.partitionFor(height));
       this.stmts.block.run(
         height,
         blob(block.id),
@@ -194,8 +357,8 @@ export class Index {
         Number(totalFee),
       );
       block.transactions.forEach((tx, i) => {
-        this.stmts.tx.run(height, i, blob(tx.id));
-        for (const a of accountsOf(tx)) this.stmts.acct.run(blob(a), height, i);
+        part.tx.run(height, i, blob(tx.id));
+        for (const a of accountsOf(tx)) part.acct.run(blob(a), height, i);
         for (const input of (tx.inputs ?? []) as any[]) {
           if (
             input.__typename === 'InputCoin' &&
@@ -226,10 +389,14 @@ export class Index {
   }
 
   heightForTx(hashHex: string) {
-    const row = this.stmts.heightForTx.get(blob(hashHex)) as
-      | { height: number; tx_index: number }
-      | undefined;
-    return row ? { height: row.height, txIndex: row.tx_index } : null;
+    const h = blob(hashHex);
+    for (const p of this.partitions) {
+      const row = this.stmtsFor(p).heightForTx.get(h) as
+        | { height: number; tx_index: number }
+        | undefined;
+      if (row) return { height: row.height, txIndex: row.tx_index };
+    }
+    return null;
   }
   heightForBlock(hashHex: string) {
     const row = this.stmts.heightForBlock.get(blob(hashHex)) as
@@ -238,45 +405,56 @@ export class Index {
     return row ? row.height : null;
   }
   accountExists(account: string) {
-    return this.stmts.acctExists.get(blob(account)) != null;
+    const a = blob(account);
+    return this.partitions.some((p) => this.stmtsFor(p).acctExists.get(a));
   }
   countForAccount(account: string, cap: number) {
-    return (this.stmts.acctCount.get(blob(account), cap) as { c: number }).c;
+    const a = blob(account);
+    let n = 0;
+    for (const p of this.partitions) {
+      n += (this.stmtsFor(p).acctCount.get(a, cap - n) as { c: number }).c;
+      if (n >= cap) break;
+    }
+    return n;
   }
 
   txsForAccount(
     account: string,
     opts: { before?: string; after?: string; limit: number },
   ) {
+    const a = blob(account);
+    const out: { height: number; tx_index: number }[] = [];
+    const remaining = () => opts.limit - out.length;
     if (opts.after) {
       const c = parseTxCursor(opts.after);
-      const rows = this.db
-        .prepare(
-          'SELECT height, tx_index FROM tx_accounts WHERE account = ? AND (height > ? OR (height = ? AND tx_index > ?)) ORDER BY height ASC, tx_index ASC LIMIT ?',
-        )
-        .all(blob(account), c.height, c.height, c.txIndex, opts.limit) as {
-        height: number;
-        tx_index: number;
-      }[];
-      return rows
-        .reverse()
-        .map((r) => ({ height: r.height, txIndex: r.tx_index }));
+      for (const p of [...this.partitions].reverse()) {
+        if (p.end < c.height) continue;
+        out.push(
+          ...(this.stmtsFor(p).acctAfter.all(
+            a,
+            c.height,
+            c.height,
+            c.txIndex,
+            remaining(),
+          ) as typeof out),
+        );
+        if (remaining() <= 0) break;
+      }
+      out.reverse();
+    } else {
+      const c = opts.before ? parseTxCursor(opts.before) : null;
+      for (const p of this.partitions) {
+        if (c && p.start > c.height) continue;
+        const s = this.stmtsFor(p);
+        out.push(
+          ...((c
+            ? s.acctBefore.all(a, c.height, c.height, c.txIndex, remaining())
+            : s.acctDesc.all(a, remaining())) as typeof out),
+        );
+        if (remaining() <= 0) break;
+      }
     }
-    let sql = 'SELECT height, tx_index FROM tx_accounts WHERE account = ?';
-    const args: unknown[] = [blob(account)];
-    if (opts.before) {
-      const c = parseTxCursor(opts.before);
-      sql += ' AND (height < ? OR (height = ? AND tx_index < ?))';
-      args.push(c.height, c.height, c.txIndex);
-    }
-    sql += ' ORDER BY height DESC, tx_index DESC LIMIT ?';
-    args.push(opts.limit);
-    return (
-      this.db.prepare(sql).all(...args) as {
-        height: number;
-        tx_index: number;
-      }[]
-    ).map((r) => ({ height: r.height, txIndex: r.tx_index }));
+    return out.map((r) => ({ height: r.height, txIndex: r.tx_index }));
   }
 
   predicate(address: string) {
@@ -380,8 +558,8 @@ export class Index {
 
   // assets, contracts and predicates are one-row-per-creation tables (tiny
   // even after months of uptime), so they're excluded from the retention
-  // window and grow forever from first boot instead of aging out with the
-  // 48h-ish blocks/txs/tx_accounts window.
+  // window and grow forever from first boot. txs and tx_accounts age out by
+  // partition (dropExpiredPartitions), not by row.
   deleteBelow(height: number): number {
     const lo = this.minHeight();
     if (lo == null || lo >= height) return 0;
@@ -395,16 +573,13 @@ export class Index {
     return row.h ?? null;
   }
 
-  // Deletes heights in [lo, hi) from the retention tables in one short
-  // transaction, so a caller can sweep a large window in slices that keep
-  // the event loop free between them.
+  // Deletes block rows in [lo, hi) in one short transaction, so a caller can
+  // sweep a large window in slices that keep the event loop free between them.
   deleteRange(lo: number, hi: number): number {
     const run = this.db.transaction(() => {
-      let n = 0;
-      for (const t of ['blocks', 'txs', 'tx_accounts'])
-        n += this.db
-          .prepare(`DELETE FROM ${t} WHERE height >= ? AND height < ?`)
-          .run(lo, hi).changes;
+      const n = this.db
+        .prepare('DELETE FROM blocks WHERE height >= ? AND height < ?')
+        .run(lo, hi).changes;
       const r = this.range();
       if (r.from != null && r.from < hi)
         this.stmts.metaSet.run('indexed_from', String(hi));
@@ -413,21 +588,23 @@ export class Index {
     return run();
   }
 
-  freelistPages(): number {
-    if (this.path === ':memory:') return 0;
-    return this.db.pragma('freelist_count', { simple: true }) as number;
-  }
-
   deleteAboveRange(): number {
     const r = this.range();
     if (r.to == null) return 0;
     const to = r.to;
     const run = this.db.transaction(() => {
       let n = 0;
-      for (const t of ['blocks', 'txs', 'tx_accounts', 'assets'])
+      for (const t of ['blocks', 'assets'])
         n += this.db
           .prepare(`DELETE FROM ${t} WHERE height > ?`)
           .run(to).changes;
+      for (const p of this.partitions) {
+        if (p.end <= to) continue;
+        const s = this.stmtsFor(p);
+        if (!s.txAbove.get(to)) continue;
+        n += s.deleteTxAbove.run(to).changes;
+        n += s.deleteAcctAbove.run(to).changes;
+      }
       return n;
     });
     return run();
@@ -468,17 +645,14 @@ export class Index {
     return row.t ?? null;
   }
 
+  // Bytes in use. Pages freed by dropExpiredPartitions stay in the file for
+  // reuse and are not counted.
   fileBytes(): number {
     if (this.path === ':memory:') return 0;
     const page = this.db.pragma('page_size', { simple: true }) as number;
     const count = this.db.pragma('page_count', { simple: true }) as number;
-    return page * count;
-  }
-
-  // Frees at most `pages` pages per call so a sweep can yield between calls.
-  vacuum(pages = 2000): void {
-    if (this.path !== ':memory:')
-      this.db.pragma(`incremental_vacuum(${pages})`);
+    const free = this.db.pragma('freelist_count', { simple: true }) as number;
+    return page * (count - free);
   }
 
   // Count of an account's transactions strictly newer than `ref`, capped at
@@ -492,53 +666,61 @@ export class Index {
     ref: { height: number; txIndex: number },
     cap: number,
   ): number {
-    return (
-      this.stmts.acctNewerCount.get(
-        blob(account),
-        ref.height,
-        ref.height,
-        ref.txIndex,
-        cap,
-      ) as { c: number }
-    ).c;
+    const a = blob(account);
+    let n = 0;
+    for (const p of this.partitions) {
+      if (p.end < ref.height) continue;
+      n += (
+        this.stmtsFor(p).acctNewerCount.get(
+          a,
+          ref.height,
+          ref.height,
+          ref.txIndex,
+          cap - n,
+        ) as { c: number }
+      ).c;
+      if (n >= cap) break;
+    }
+    return n;
   }
 
   // Total number of transactions currently in the retention window, and how
-  // many of them are strictly newer than `ref`. Mirrors
-  // newerCountForAccount's math for the global `transactions` list: a page's
-  // 1-based ascending (oldest = 1) position is `txCount(cap) -
-  // newerTxCount(ref, cap)`. Both are bounded to the contiguous
-  // indexed_from..indexed_to window (falling back to no bound on whichever
-  // side isn't set yet) so a stale row left over from a range reset or a
-  // writeOnly() extra outside the window -- gone from what collectDown/
-  // collectUp actually serve, but still in `txs` until the next retention
-  // sweep -- never counts. `cap` bounds the same way countForAccount's does
-  // (a LIMIT inside the counted subquery), so the global list's total/ranks
-  // can share its 1000+ display convention. The newer-than-ref count is a
-  // plain range scan on txs' own (height, tx_index) primary key (confirmed
-  // via EXPLAIN QUERY PLAN, windowed and capped: SQLite's OR optimization
-  // and the PK range search still apply, no extra index needed).
+  // many of them are strictly newer than `ref`. A page's 1-based ascending
+  // (oldest = 1) position is `txCount(cap) - newerTxCount(ref, cap)`. Both
+  // are bounded to the indexed_from..indexed_to window so a stale row outside
+  // it never counts, and capped like countForAccount so the list can share
+  // its 1000+ display convention.
   txCount(cap: number): number {
     const range = this.range();
-    return (
-      this.stmts.txCount.get(
-        range.from ?? Number.MIN_SAFE_INTEGER,
-        range.to ?? Number.MAX_SAFE_INTEGER,
-        cap,
-      ) as { c: number }
-    ).c;
+    const from = range.from ?? Number.MIN_SAFE_INTEGER;
+    const to = range.to ?? Number.MAX_SAFE_INTEGER;
+    let n = 0;
+    for (const p of this.partitions) {
+      if (p.end < from || p.start > to) continue;
+      n += (this.stmtsFor(p).txCount.get(from, to, cap - n) as { c: number }).c;
+      if (n >= cap) break;
+    }
+    return n;
   }
   newerTxCount(ref: { height: number; txIndex: number }, cap: number): number {
     const range = this.range();
-    return (
-      this.stmts.txNewerCount.get(
-        Math.max(range.from ?? Number.MIN_SAFE_INTEGER, ref.height),
-        range.to ?? Number.MAX_SAFE_INTEGER,
-        ref.height,
-        ref.txIndex,
-        cap,
-      ) as { c: number }
-    ).c;
+    const lo = Math.max(range.from ?? Number.MIN_SAFE_INTEGER, ref.height);
+    const to = range.to ?? Number.MAX_SAFE_INTEGER;
+    let n = 0;
+    for (const p of this.partitions) {
+      if (p.end < lo || p.start > to) continue;
+      n += (
+        this.stmtsFor(p).txNewerCount.get(
+          lo,
+          to,
+          ref.height,
+          ref.txIndex,
+          cap - n,
+        ) as { c: number }
+      ).c;
+      if (n >= cap) break;
+    }
+    return n;
   }
 
   close() {

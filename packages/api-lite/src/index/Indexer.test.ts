@@ -18,8 +18,8 @@ const blk = (h: number) =>
     ],
   }) as any;
 
-function make(retentionDays = 1) {
-  const index = new Index(':memory:');
+function make(retentionDays = 1, bucketBlocks = 86_400) {
+  const index = new Index(':memory:', { bucketBlocks });
   const store = {
     get: async (h: number) => (h >= 0 ? blk(h) : null),
     getRange: async (a: number, b: number) => {
@@ -97,16 +97,24 @@ describe('Indexer', () => {
     expect(await indexer.backfillStep()).toBe(false);
   });
 
-  it('retention deletes below the floor', async () => {
-    const { index, indexer } = make(1);
+  it('retention deletes blocks below the floor and drops expired tx partitions', async () => {
+    const { index, indexer } = make(1, 1);
     // Written directly (bypassing indexBlock's contiguity check) to set up a
     // range that spans a retention floor without indexing every block in between.
     for (let h = 0; h <= 3; h++) index.writeBlock(blk(h));
     index.writeBlock(blk(86402));
     index.setRange(0, 86402);
     expect(await indexer.retention()).toBeGreaterThan(0);
+    expect(index.heightForBlock(hex(1001))).toBeNull();
     expect(index.heightForTx(hex(1))).toBeNull();
     expect(index.heightForTx(hex(86402))).not.toBeNull();
+    expect(index.partitionRanges()).toEqual(
+      [
+        { start: 86402, end: 86402 },
+        { start: 2, end: 2 },
+        { start: 3, end: 3 },
+      ].sort((a, b) => b.end - a.end),
+    );
   });
 
   it('backfillStep does not clobber to when the tracker extends it during the batch fetch', async () => {
@@ -166,8 +174,8 @@ describe('Indexer', () => {
     // deleted down to -- walking it back to backfillStep's stale `lowest`
     // (99985) would claim coverage for rows that no longer exist.
     expect(r.from).toBeGreaterThanOrEqual(99993);
-    expect(index.heightForTx(hex(99990))).toBeNull();
-    expect(index.heightForTx(hex(99993))).not.toBeNull();
+    expect(index.heightForBlock(hex(1000 + 99990))).toBeNull();
+    expect(index.heightForBlock(hex(1000 + 99993))).toBe(99993);
   });
 
   it('pause makes backfillStep return false immediately without touching the store; resume re-enables it', async () => {
@@ -260,38 +268,44 @@ describe('Indexer', () => {
     expect(index.getMeta('gaps')).toBeNull();
   });
 
-  it('retention deletes in chunks, yields between them, and keeps deleting until under maxBytes', async () => {
+  it('retention deletes blocks in chunks and drops partitions until under maxBytes', async () => {
     const ranges: [number, number][] = [];
     let min = 0;
-    let bytes = 100;
+    let partitions = [999, 1999, 2999, 3999];
     const fakeIndex = {
       range: () => ({ from: min, to: 5000 }),
       minHeight: () => (min < 5000 ? min : null),
       deleteRange: (lo: number, hi: number) => {
         ranges.push([lo, hi]);
         min = hi;
-        if (hi >= 2000) bytes = 0;
-        return (hi - lo) * 3;
+        return hi - lo;
       },
-      fileBytes: () => bytes,
-      freelistPages: () => 0,
-      vacuum: () => {},
+      fileBytes: () => partitions.length * 30,
+      oldestPartitionEnd: () => partitions[0] ?? null,
+      dropExpiredPartitions: (floor: number) => {
+        const before = partitions.length;
+        partitions = partitions.filter((end) => end >= floor);
+        return before - partitions.length;
+      },
     } as unknown as Index;
     const indexer = new Indexer({
       index: fakeIndex,
       store: {} as any,
       retentionDays: 1,
-      maxBytes: 50,
+      maxBytes: 70,
       batch: 5,
     });
 
     const deleted = await indexer.retention();
-    expect(deleted).toBeGreaterThan(0);
+    expect(deleted).toBe(2000);
     // floorHeight() is 0 for a 5000-high index with a one-day window, so
-    // the first pass deletes nothing; the size loop then advances the floor
-    // by 1000 per pass, each pass in 100-block chunks, until bytes drop.
-    expect(ranges[0]).toEqual([0, 100]);
-    expect(ranges.every(([lo, hi]) => hi - lo <= 100)).toBe(true);
+    // the first pass deletes nothing; the size loop then drops the oldest
+    // partition per pass, deleting block rows up to its end in chunks.
+    expect(ranges).toEqual([
+      [0, 1000],
+      [1000, 2000],
+    ]);
+    expect(partitions).toEqual([2999, 3999]);
     expect(min).toBe(2000);
   });
 });
