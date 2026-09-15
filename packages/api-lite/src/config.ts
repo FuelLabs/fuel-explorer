@@ -59,6 +59,7 @@ const schema = z
     COSMOS_REST_URL: z.string().url().optional(),
     COSMOS_START_HEIGHT: z.coerce.number().int().positive().optional(),
     ETH_RPC_URL: z.string().url().optional(),
+    COINGECKO_API_KEY: z.string().min(1).optional(),
     // No static default: it depends on FUEL_PROVIDER's host, resolved below.
     FUEL_CHAIN: z.enum(['mainnet', 'testnet']).optional(),
     L1_START_BLOCK: z.coerce.number().int().nonnegative().optional(),
@@ -109,6 +110,7 @@ export type Config = {
   cosmosRestUrl?: string;
   cosmosStartHeight?: number;
   ethRpcUrl?: string;
+  coingeckoApiKey?: string;
   fuelChain: 'mainnet' | 'testnet';
   l1StartBlock?: number;
   cosmosIndexerUrl?: string;
@@ -150,6 +152,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     cosmosRestUrl: e.COSMOS_REST_URL,
     cosmosStartHeight: e.COSMOS_START_HEIGHT,
     ethRpcUrl: e.ETH_RPC_URL,
+    coingeckoApiKey: e.COINGECKO_API_KEY,
     fuelChain:
       e.FUEL_CHAIN ??
       (new URL(e.FUEL_PROVIDER).host.includes('testnet')

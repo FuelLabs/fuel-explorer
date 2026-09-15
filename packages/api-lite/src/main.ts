@@ -227,7 +227,7 @@ async function main() {
       else if (lag <= RESUME_BACKFILL_LAG_BLOCKS) indexer.resume();
     },
   });
-  const price = new PriceClient();
+  const price = new PriceClient({ apiKey: cfg.coingeckoApiKey });
 
   const cosmosIndex = new CosmosIndex(INDEX_DB_PATH);
   const cosmosRestBase =
