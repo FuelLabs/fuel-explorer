@@ -1,5 +1,6 @@
-import { mkdirSync } from 'node:fs';
+import { promises as fsp, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { monitorEventLoopDelay } from 'node:perf_hooks';
 import { http, createPublicClient } from 'viem';
 import VerifiedAssets from '~/infra/cache/VerifiedAssets';
 import { seedVerifiedAssets } from './assets/seedVerifiedAssets';
@@ -37,6 +38,8 @@ const DISK_EVICT_INTERVAL_MS = 10 * 60 * 1000;
 const RETENTION_SWEEP_INTERVAL_MS = 60 * 60 * 1000;
 const HEALTH_LOG_INTERVAL_MS = 60 * 1000;
 const HOT_DECAY_INTERVAL_MS = 60 * 60 * 1000;
+const DISK_PROBE_INTERVAL_MS = 15 * 1000;
+const SLOW_DISK_PROBE_MS = 1000;
 const PINNED_RECOMPUTE_INTERVAL_MS = 60 * 1000;
 const PINNED_TOP_ACCOUNTS = 50;
 const PINNED_TOP_TXS = 200;
@@ -348,12 +351,21 @@ async function main() {
       .catch((e) => console.error('retention sweep failed', e));
   }, RETENTION_SWEEP_INTERVAL_MS);
   setInterval(() => hot.decay(), HOT_DECAY_INTERVAL_MS);
+  const loopDelay = monitorEventLoopDelay({ resolution: 20 });
+  loopDelay.enable();
+  setInterval(() => {
+    console.log(
+      JSON.stringify({
+        ...health(),
+        backfillBps: indexer.backfillRate(),
+        loopMaxMs: Math.round(loopDelay.max / 1e6),
+      }),
+    );
+    loopDelay.reset();
+  }, HEALTH_LOG_INTERVAL_MS);
   setInterval(
-    () =>
-      console.log(
-        JSON.stringify({ ...health(), backfillBps: indexer.backfillRate() }),
-      ),
-    HEALTH_LOG_INTERVAL_MS,
+    () => void probeDisk(join(cfg.dataDir, '.probe')),
+    DISK_PROBE_INTERVAL_MS,
   );
 
   const shutdown = () => {
@@ -370,6 +382,27 @@ async function main() {
   };
   process.on('SIGTERM', shutdown);
   process.on('SIGINT', shutdown);
+}
+
+// Times a 4 KB write plus fsync on the data volume, off the event loop, so a
+// stalled volume shows up in the logs next to the loopMaxMs status field.
+async function probeDisk(path: string) {
+  const t = performance.now();
+  try {
+    const fh = await fsp.open(path, 'w');
+    try {
+      await fh.write(Buffer.alloc(4096, 1));
+      await fh.sync();
+    } finally {
+      await fh.close();
+    }
+  } catch (e) {
+    console.log(`disk probe failed: ${(e as Error).message}`);
+    return;
+  }
+  const ms = Math.round(performance.now() - t);
+  if (ms >= SLOW_DISK_PROBE_MS)
+    console.log(`disk probe: 4 KB write+fsync took ${ms}ms`);
 }
 
 main().catch((e) => {

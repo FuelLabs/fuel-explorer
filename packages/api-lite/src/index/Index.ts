@@ -4,6 +4,7 @@ import type {
   GQLBlock,
   GQLTransaction,
 } from '~/graphql/generated/sdk-provider';
+import { logSlowStatements } from '../sqlite/logSlowStatements';
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS blocks(height INTEGER PRIMARY KEY, block_hash BLOB NOT NULL UNIQUE, time INTEGER NOT NULL, tx_count INTEGER NOT NULL, gas_used INTEGER NOT NULL DEFAULT 0, total_fee INTEGER NOT NULL DEFAULT 0);
@@ -71,6 +72,7 @@ export class Index {
   constructor(path: string) {
     this.path = path;
     this.db = new Database(path);
+    logSlowStatements(this.db, 'index');
     if (path !== ':memory:') {
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = NORMAL');

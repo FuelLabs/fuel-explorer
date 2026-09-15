@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import { logSlowStatements } from '../sqlite/logSlowStatements';
 import { L1_CONTRACTS } from './contracts';
 
 const SCHEMA = `
@@ -117,6 +118,7 @@ export class L1Index {
 
   constructor(path: string) {
     this.db = new Database(path);
+    logSlowStatements(this.db, 'l1');
     if (path !== ':memory:') {
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = NORMAL');
