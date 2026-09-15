@@ -202,13 +202,22 @@ export class Index {
     if (this.tableExists('txs')) {
       let range = this.getMeta(LEGACY_RANGE_KEY);
       if (range == null) {
-        const r = this.db
-          .prepare('SELECT MIN(height) AS lo, MAX(height) AS hi FROM txs')
-          .get() as { lo: number | null; hi: number | null };
-        if (r.lo == null || r.hi == null) {
+        // One aggregate per statement: SQLite only takes the min/max
+        // shortcut on the primary key when the query has a single aggregate.
+        const lo = (
+          this.db.prepare('SELECT MIN(height) AS h FROM txs').get() as {
+            h: number | null;
+          }
+        ).h;
+        const hi = (
+          this.db.prepare('SELECT MAX(height) AS h FROM txs').get() as {
+            h: number | null;
+          }
+        ).h;
+        if (lo == null || hi == null) {
           this.db.exec('DROP TABLE txs; DROP TABLE tx_accounts');
         } else {
-          range = `${r.lo},${r.hi}`;
+          range = `${lo},${hi}`;
           this.setMeta(LEGACY_RANGE_KEY, range);
         }
       }
