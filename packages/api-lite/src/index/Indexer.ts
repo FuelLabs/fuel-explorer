@@ -12,10 +12,7 @@ type Opts = {
 };
 
 const BLOCK_SECONDS = 1;
-// Heights deleted per retention transaction. On mainnet 100 blocks hold
-// about 50k rows across the three tables.
-const RETENTION_CHUNK_BLOCKS = 100;
-const VACUUM_PAGES_PER_STEP = 2000;
+const RETENTION_CHUNK_BLOCKS = 1000;
 const yieldToEventLoop = () => new Promise<void>((r) => setImmediate(r));
 const STUCK_NO_PROGRESS_LIMIT = 3;
 
@@ -149,26 +146,26 @@ export class Indexer {
 
   private sweeping = false;
 
-  // The hourly sweep once ran as one DELETE per table: on mainnet that is
-  // about a million rows and blocked the event loop for 70 to 130 s, long
-  // enough for tip ticks and block loads to be abandoned. Deleting in
-  // chunks and yielding between them keeps requests flowing.
+  // Block rows below the floor go in short chunks; tx partitions entirely
+  // below the floor are dropped whole. Over the size cap, the floor advances
+  // one partition at a time.
   async retention(): Promise<number> {
     if (this.sweeping) return 0;
     this.sweeping = true;
     try {
       let floor = this.floorHeight();
       let deleted = await this.deleteBelowChunked(floor);
-      await this.vacuumChunked();
+      let dropped = this.opts.index.dropExpiredPartitions(floor);
       while (this.opts.index.fileBytes() > this.opts.maxBytes) {
-        floor += 1000;
-        const d = await this.deleteBelowChunked(floor);
-        if (d === 0) break;
-        deleted += d;
-        await this.vacuumChunked();
+        const oldestEnd = this.opts.index.oldestPartitionEnd();
         const r = this.opts.index.range();
-        if (r.to == null || floor >= r.to) break;
+        if (oldestEnd == null || r.to == null || oldestEnd + 1 >= r.to) break;
+        floor = Math.max(floor, oldestEnd + 1);
+        deleted += await this.deleteBelowChunked(floor);
+        dropped += this.opts.index.dropExpiredPartitions(floor);
       }
+      if (dropped > 0)
+        this.opts.onLog?.(`retention: dropped ${dropped} tx partitions`);
       return deleted;
     } finally {
       this.sweeping = false;
@@ -184,13 +181,6 @@ export class Indexer {
         lo,
         Math.min(floor, lo + RETENTION_CHUNK_BLOCKS),
       );
-      await yieldToEventLoop();
-    }
-  }
-
-  private async vacuumChunked(): Promise<void> {
-    while (this.opts.index.freelistPages() > 0) {
-      this.opts.index.vacuum(VACUUM_PAGES_PER_STEP);
       await yieldToEventLoop();
     }
   }

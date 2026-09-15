@@ -256,8 +256,8 @@ describe('Index', () => {
     idx.setRange(10, 11);
     expect(idx.range()).toEqual({ from: 10, to: 11 });
     expect(idx.deleteBelow(11)).toBeGreaterThan(0);
-    expect(idx.heightForTx(hex(1))).toBeNull();
-    expect(idx.heightForTx(hex(2))).toEqual({ height: 11, txIndex: 0 });
+    expect(idx.heightForBlock(hex(1010))).toBeNull();
+    expect(idx.heightForBlock(hex(1011))).toBe(11);
     expect(idx.range().from).toBe(11);
     expect(idx.fileBytes()).toBeGreaterThanOrEqual(0);
   });
@@ -267,15 +267,17 @@ describe('Index', () => {
       idx.writeBlock(block(h, [{ id: hex(h), accounts: [hex(5)] }]));
     idx.setRange(10, 14);
     expect(idx.minHeight()).toBe(10);
-    expect(idx.deleteRange(10, 12)).toBeGreaterThan(0);
-    expect(idx.heightForTx(hex(11))).toBeNull();
-    expect(idx.heightForTx(hex(12))).toEqual({ height: 12, txIndex: 0 });
+    expect(idx.deleteRange(10, 12)).toBe(2);
+    expect(idx.heightForBlock(hex(1011))).toBeNull();
+    expect(idx.heightForBlock(hex(1012))).toBe(12);
     expect(idx.minHeight()).toBe(12);
     expect(idx.range().from).toBe(12);
     expect(idx.deleteRange(0, 10)).toBe(0);
   });
 
-  it('deleteBelow prunes blocks/txs/tx_accounts but never assets, contracts or predicates', () => {
+  it('deleteBelow prunes blocks and dropExpiredPartitions prunes txs/tx_accounts, never assets, contracts or predicates', () => {
+    idx.close();
+    idx = new Index(':memory:', { bucketBlocks: 1 });
     idx.writeBlock(
       block(10, [
         {
@@ -290,7 +292,10 @@ describe('Index', () => {
     idx.writeBlock(block(11, [{ id: hex(2), accounts: [hex(5)] }]));
     expect(idx.deleteBelow(11)).toBeGreaterThan(0);
     expect(idx.heightForBlock(hex(1010))).toBeNull();
+    expect(idx.heightForTx(hex(1))).toEqual({ height: 10, txIndex: 0 });
+    expect(idx.dropExpiredPartitions(11)).toBe(1);
     expect(idx.heightForTx(hex(1))).toBeNull();
+    expect(idx.heightForTx(hex(2))).toEqual({ height: 11, txIndex: 0 });
     expect(idx.accountExists(hex(5))).toBe(true);
     expect(idx.predicate(hex(5))).toBe('0xdeadbeef');
     expect(idx.contract(hex(20))).toEqual({ height: 10 });
@@ -344,5 +349,132 @@ describe('Index', () => {
     idx.recordGap(600);
     idx.recordGap(700);
     expect(idx.gaps()).toEqual({ count: 3, heights: [500, 600, 700] });
+  });
+  it('spans partitions for account history, cursors and counts', () => {
+    idx.close();
+    idx = new Index(':memory:', { bucketBlocks: 10 });
+    const a = hex(77);
+    idx.writeBlock(
+      block(5, [
+        { id: hex(1), accounts: [a] },
+        { id: hex(2), accounts: [a] },
+      ]),
+    );
+    idx.writeBlock(block(15, [{ id: hex(3), accounts: [a] }]));
+    idx.writeBlock(block(25, [{ id: hex(4), accounts: [a] }]));
+    idx.setRange(5, 25);
+    expect(idx.partitionRanges()).toEqual([
+      { start: 20, end: 29 },
+      { start: 10, end: 19 },
+      { start: 0, end: 9 },
+    ]);
+    expect(idx.heightForTx(hex(1))).toEqual({ height: 5, txIndex: 0 });
+    expect(idx.heightForTx(hex(4))).toEqual({ height: 25, txIndex: 0 });
+    expect(idx.heightForTx(hex(9))).toBeNull();
+    expect(idx.txsForAccount(a, { limit: 3 })).toEqual([
+      { height: 25, txIndex: 0 },
+      { height: 15, txIndex: 0 },
+      { height: 5, txIndex: 1 },
+    ]);
+    expect(
+      idx.txsForAccount(a, { limit: 10, before: txCursor(15, 0) }),
+    ).toEqual([
+      { height: 5, txIndex: 1 },
+      { height: 5, txIndex: 0 },
+    ]);
+    expect(idx.txsForAccount(a, { limit: 2, after: txCursor(5, 0) })).toEqual([
+      { height: 15, txIndex: 0 },
+      { height: 5, txIndex: 1 },
+    ]);
+    expect(idx.countForAccount(a, 1001)).toBe(4);
+    expect(idx.countForAccount(a, 3)).toBe(3);
+    expect(idx.newerCountForAccount(a, { height: 5, txIndex: 0 }, 1001)).toBe(
+      3,
+    );
+    expect(idx.newerCountForAccount(a, { height: 15, txIndex: 0 }, 1001)).toBe(
+      1,
+    );
+    expect(idx.txCount(1001)).toBe(4);
+    expect(idx.newerTxCount({ height: 5, txIndex: 1 }, 1001)).toBe(2);
+    expect(idx.newerTxCount({ height: 5, txIndex: 1 }, 1)).toBe(1);
+  });
+
+  it('dropExpiredPartitions drops only partitions entirely below the floor', () => {
+    idx.close();
+    idx = new Index(':memory:', { bucketBlocks: 10 });
+    for (const h of [5, 15, 25]) idx.writeBlock(block(h, [{ id: hex(h) }]));
+    expect(idx.oldestPartitionEnd()).toBe(9);
+    expect(idx.dropExpiredPartitions(9)).toBe(0);
+    expect(idx.dropExpiredPartitions(19)).toBe(1);
+    expect(idx.partitionRanges()).toEqual([
+      { start: 20, end: 29 },
+      { start: 10, end: 19 },
+    ]);
+    expect(idx.heightForTx(hex(5))).toBeNull();
+    expect(idx.heightForTx(hex(15))).toEqual({ height: 15, txIndex: 0 });
+    expect(idx.dropExpiredPartitions(1000)).toBe(2);
+    expect(idx.partitionRanges()).toEqual([]);
+    expect(idx.oldestPartitionEnd()).toBeNull();
+    idx.writeBlock(block(35, [{ id: hex(35) }]));
+    expect(idx.heightForTx(hex(35))).toEqual({ height: 35, txIndex: 0 });
+  });
+
+  it('serves a pre-partition txs/tx_accounts pair as one partition and drops it once expired', () => {
+    idx.close();
+    const dir = mkdtempSync(join(tmpdir(), 'index-legacy-'));
+    const path = join(dir, 'index.db');
+    const raw = new (require('better-sqlite3') as typeof Database)(path);
+    raw.exec(
+      'CREATE TABLE txs(height INTEGER NOT NULL, tx_index INTEGER NOT NULL, tx_hash BLOB NOT NULL, PRIMARY KEY(height, tx_index)) WITHOUT ROWID; CREATE INDEX txs_hash ON txs(tx_hash); CREATE TABLE tx_accounts(account BLOB NOT NULL, height INTEGER NOT NULL, tx_index INTEGER NOT NULL, PRIMARY KEY(account, height DESC, tx_index DESC)) WITHOUT ROWID;',
+    );
+    const a = hex(77);
+    const acct = Buffer.from(a.slice(2), 'hex');
+    for (const h of [12, 14]) {
+      raw
+        .prepare('INSERT INTO txs VALUES (?, 0, ?)')
+        .run(h, Buffer.from(hex(h).slice(2), 'hex'));
+      raw.prepare('INSERT INTO tx_accounts VALUES (?, ?, 0)').run(acct, h);
+    }
+    raw.close();
+    try {
+      idx = new Index(path, { bucketBlocks: 10 });
+      expect(idx.partitionRanges()).toEqual([{ start: 12, end: 14 }]);
+      idx.writeBlock(block(13, [{ id: hex(13), accounts: [a] }]));
+      idx.writeBlock(block(8, [{ id: hex(8), accounts: [a] }]));
+      idx.writeBlock(block(21, [{ id: hex(21), accounts: [a] }]));
+      expect(idx.partitionRanges()).toEqual([
+        { start: 20, end: 29 },
+        { start: 12, end: 14 },
+        { start: 0, end: 9 },
+      ]);
+      expect(idx.txsForAccount(a, { limit: 10 })).toEqual([
+        { height: 21, txIndex: 0 },
+        { height: 14, txIndex: 0 },
+        { height: 13, txIndex: 0 },
+        { height: 12, txIndex: 0 },
+        { height: 8, txIndex: 0 },
+      ]);
+      expect(idx.countForAccount(a, 1001)).toBe(5);
+      idx.close();
+      idx = new Index(path, { bucketBlocks: 10 });
+      expect(idx.partitionRanges()).toEqual([
+        { start: 20, end: 29 },
+        { start: 12, end: 14 },
+        { start: 0, end: 9 },
+      ]);
+      expect(idx.dropExpiredPartitions(15)).toBe(2);
+      expect(idx.heightForTx(hex(13))).toBeNull();
+      expect(idx.heightForTx(hex(21))).toEqual({ height: 21, txIndex: 0 });
+      idx.close();
+      idx = new Index(path, { bucketBlocks: 10 });
+      expect(idx.partitionRanges()).toEqual([{ start: 20, end: 29 }]);
+      idx.writeBlock(block(13, [{ id: hex(13), accounts: [a] }]));
+      expect(idx.partitionRanges()).toEqual([
+        { start: 20, end: 29 },
+        { start: 10, end: 19 },
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
