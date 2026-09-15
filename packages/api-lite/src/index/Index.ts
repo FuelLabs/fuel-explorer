@@ -131,13 +131,13 @@ export class Index {
         'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? LIMIT ?)',
       ),
       acctNewerCount: this.db.prepare(
-        'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? AND (height > ? OR (height = ? AND tx_index > ?)) LIMIT ?)',
+        'SELECT count(*) AS c FROM (SELECT 1 FROM tx_accounts WHERE account = ? AND height >= ? AND (height > ? OR tx_index > ?) LIMIT ?)',
       ),
       txCount: this.db.prepare(
         'SELECT count(*) AS c FROM (SELECT 1 FROM txs WHERE height >= ? AND height <= ? LIMIT ?)',
       ),
       txNewerCount: this.db.prepare(
-        'SELECT count(*) AS c FROM (SELECT 1 FROM txs WHERE height >= ? AND height <= ? AND (height > ? OR (height = ? AND tx_index > ?)) LIMIT ?)',
+        'SELECT count(*) AS c FROM (SELECT 1 FROM txs WHERE height >= ? AND height <= ? AND (height > ? OR tx_index > ?) LIMIT ?)',
       ),
       predicate: this.db.prepare(
         'SELECT bytecode FROM predicates WHERE address = ?',
@@ -532,9 +532,8 @@ export class Index {
     const range = this.range();
     return (
       this.stmts.txNewerCount.get(
-        range.from ?? Number.MIN_SAFE_INTEGER,
+        Math.max(range.from ?? Number.MIN_SAFE_INTEGER, ref.height),
         range.to ?? Number.MAX_SAFE_INTEGER,
-        ref.height,
         ref.height,
         ref.txIndex,
         cap,
