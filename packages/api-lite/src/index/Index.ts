@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 // touches random pages across the whole table.
 const DEFAULT_BUCKET_BLOCKS = 86_400;
 const LEGACY_RANGE_KEY = 'legacy_tx_range';
+const BUCKET_BLOCKS_KEY = 'bucket_blocks';
 
 type Partition = {
   txs: string;
@@ -96,7 +97,7 @@ export class Index {
   private readonly db: Database.Database;
   private readonly path: string;
   private readonly stmts;
-  private readonly bucketBlocks: number;
+  private bucketBlocks: number;
   // Newest first (by `end`), the order account history is read in.
   private partitions: Partition[] = [];
   private readonly partitionStmts = new Map<string, PartitionStmts>();
@@ -179,6 +180,19 @@ export class Index {
       ),
       oldestTime: this.db.prepare('SELECT MIN(time) AS t FROM blocks'),
     };
+    // A partition's height range is derived from its table name, so a
+    // database opened with a different bucket size would read every existing
+    // txs_p<N> as a different range than it was written with. The size the
+    // first partition was created under wins for the life of the database.
+    const stored = this.getMeta(BUCKET_BLOCKS_KEY);
+    if (stored != null) {
+      const n = Number(stored);
+      if (n !== this.bucketBlocks)
+        console.log(
+          `index: keeping stored bucket size ${n}, not ${this.bucketBlocks}`,
+        );
+      this.bucketBlocks = n;
+    }
     this.loadPartitions();
   }
 
@@ -265,6 +279,7 @@ export class Index {
     );
     if (existing) return existing;
     const p = this.bucketPartition(bucket);
+    this.stmts.metaSet.run(BUCKET_BLOCKS_KEY, String(this.bucketBlocks));
     this.db.exec(
       `CREATE TABLE IF NOT EXISTS ${p.txs}(height INTEGER NOT NULL, tx_index INTEGER NOT NULL, tx_hash BLOB NOT NULL, PRIMARY KEY(height, tx_index)) WITHOUT ROWID;
        CREATE INDEX IF NOT EXISTS ${p.txs}_hash ON ${p.txs}(tx_hash);
