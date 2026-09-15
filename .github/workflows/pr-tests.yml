@@ -53,6 +53,10 @@ jobs:
       - name: Build production version of explorer
         env:
           NODE_ENV: test
+          # The 4x runners give node a 2 GB default heap, which the explorer
+          # bundle no longer fits in. The 8x runner's default is 4 GB; setting
+          # it here keeps every job on the same budget.
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm build:prod
 
       - name: Setup Docker
@@ -174,6 +178,10 @@ jobs:
       - name: Build production version of explorer
         env:
           NODE_ENV: test
+          # The 4x runners give node a 2 GB default heap, which the explorer
+          # bundle no longer fits in. The 8x runner's default is 4 GB; setting
+          # it here keeps every job on the same budget.
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm build:prod
 
       - name: Setup Docker
@@ -245,6 +253,10 @@ jobs:
       - name: Build production version of explorer
         env:
           NODE_ENV: test
+          # The 4x runners give node a 2 GB default heap, which the explorer
+          # bundle no longer fits in. The 8x runner's default is 4 GB; setting
+          # it here keeps every job on the same budget.
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm build:prod
 
       - name: Setup Docker
