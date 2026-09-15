@@ -477,4 +477,26 @@ describe('Index', () => {
       rmSync(dir, { recursive: true, force: true });
     }
   });
+  it('keeps the bucket size the first partition was created with when reopened', () => {
+    idx.close();
+    const dir = mkdtempSync(join(tmpdir(), 'index-bucket-'));
+    const path = join(dir, 'index.db');
+    try {
+      idx = new Index(path, { bucketBlocks: 10 });
+      idx.writeBlock(block(25, [{ id: hex(25) }]));
+      expect(idx.partitionRanges()).toEqual([{ start: 20, end: 29 }]);
+      idx.close();
+      // Reopened with a different size: the stored one still applies, so the
+      // existing table keeps the height range it was written with and a new
+      // block in it lands in the same table.
+      idx = new Index(path, { bucketBlocks: 1000 });
+      expect(idx.partitionRanges()).toEqual([{ start: 20, end: 29 }]);
+      idx.writeBlock(block(27, [{ id: hex(27) }]));
+      expect(idx.partitionRanges()).toEqual([{ start: 20, end: 29 }]);
+      expect(idx.heightForTx(hex(25))).toEqual({ height: 25, txIndex: 0 });
+      expect(idx.heightForTx(hex(27))).toEqual({ height: 27, txIndex: 0 });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
