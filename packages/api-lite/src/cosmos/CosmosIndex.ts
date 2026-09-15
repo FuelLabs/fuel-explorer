@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import { logSlowStatements } from '../sqlite/logSlowStatements';
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS cosmos_responses(
@@ -73,6 +74,7 @@ export class CosmosIndex {
 
   constructor(path: string) {
     this.db = new Database(path);
+    logSlowStatements(this.db, 'cosmos');
     if (path !== ':memory:') {
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = NORMAL');

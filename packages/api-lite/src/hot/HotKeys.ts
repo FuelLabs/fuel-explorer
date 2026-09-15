@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import { logSlowStatements } from '../sqlite/logSlowStatements';
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS hot_keys(kind TEXT NOT NULL, key TEXT NOT NULL, hits REAL NOT NULL, last_seen INTEGER NOT NULL, PRIMARY KEY(kind, key));
@@ -38,6 +39,7 @@ export class HotKeys {
   constructor(path: string, opts: HotKeysOpts = {}) {
     this.now = opts.now ?? Date.now;
     this.db = new Database(path);
+    logSlowStatements(this.db, 'hot');
     if (path !== ':memory:') {
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = NORMAL');
