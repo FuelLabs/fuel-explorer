@@ -104,7 +104,7 @@ describe('Indexer', () => {
     for (let h = 0; h <= 3; h++) index.writeBlock(blk(h));
     index.writeBlock(blk(86402));
     index.setRange(0, 86402);
-    expect(indexer.retention(0)).toBeGreaterThan(0);
+    expect(await indexer.retention()).toBeGreaterThan(0);
     expect(index.heightForTx(hex(1))).toBeNull();
     expect(index.heightForTx(hex(86402))).not.toBeNull();
   });
@@ -260,46 +260,38 @@ describe('Indexer', () => {
     expect(index.getMeta('gaps')).toBeNull();
   });
 
-  it('retention while loop thrashes until under maxBytes', () => {
-    const deleteBelow_calls: number[] = [];
-    const vacuum_calls: number[] = [];
-    let deleteBelow_max_call = 0;
-
+  it('retention deletes in chunks, yields between them, and keeps deleting until under maxBytes', async () => {
+    const ranges: [number, number][] = [];
+    let min = 0;
+    let bytes = 100;
     const fakeIndex = {
-      writeBlock: () => {},
-      range: () => ({ from: 0, to: 5000 }),
-      setRange: () => {},
-      deleteBelow: (h: number) => {
-        deleteBelow_calls.push(h);
-        deleteBelow_max_call = Math.max(deleteBelow_max_call, h);
-        return h >= 2000 ? 0 : 100;
+      range: () => ({ from: min, to: 5000 }),
+      minHeight: () => (min < 5000 ? min : null),
+      deleteRange: (lo: number, hi: number) => {
+        ranges.push([lo, hi]);
+        min = hi;
+        if (hi >= 2000) bytes = 0;
+        return (hi - lo) * 3;
       },
-      fileBytes: () => (deleteBelow_max_call >= 2000 ? 0 : 100),
-      vacuum: () => {
-        vacuum_calls.push(Date.now());
-      },
-    } as any as Pick<
-      Index,
-      | 'writeBlock'
-      | 'range'
-      | 'setRange'
-      | 'deleteBelow'
-      | 'fileBytes'
-      | 'vacuum'
-    >;
-
+      fileBytes: () => bytes,
+      freelistPages: () => 0,
+      vacuum: () => {},
+    } as unknown as Index;
     const indexer = new Indexer({
-      index: fakeIndex as unknown as Index,
+      index: fakeIndex,
       store: {} as any,
       retentionDays: 1,
       maxBytes: 50,
       batch: 5,
     });
 
-    const deleted = indexer.retention(0);
+    const deleted = await indexer.retention();
     expect(deleted).toBeGreaterThan(0);
-    expect(deleteBelow_calls).toContain(1000);
-    expect(deleteBelow_calls).toContain(2000);
-    expect(vacuum_calls.length).toBeGreaterThan(0);
+    // floorHeight() is 0 for a 5000-high index with a one-day window, so
+    // the first pass deletes nothing; the size loop then advances the floor
+    // by 1000 per pass, each pass in 100-block chunks, until bytes drop.
+    expect(ranges[0]).toEqual([0, 100]);
+    expect(ranges.every(([lo, hi]) => hi - lo <= 100)).toBe(true);
+    expect(min).toBe(2000);
   });
 });

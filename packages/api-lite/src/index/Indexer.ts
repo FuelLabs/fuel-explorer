@@ -12,6 +12,11 @@ type Opts = {
 };
 
 const BLOCK_SECONDS = 1;
+// Heights deleted per retention transaction. On mainnet 100 blocks hold
+// about 50k rows across the three tables.
+const RETENTION_CHUNK_BLOCKS = 100;
+const VACUUM_PAGES_PER_STEP = 2000;
+const yieldToEventLoop = () => new Promise<void>((r) => setImmediate(r));
 const STUCK_NO_PROGRESS_LIMIT = 3;
 
 export class Indexer {
@@ -142,21 +147,52 @@ export class Indexer {
     return progressed || skipped;
   }
 
-  retention(nowSeconds: number): number {
-    void nowSeconds;
-    let floor = this.floorHeight();
-    let deleted = this.opts.index.deleteBelow(floor);
-    this.opts.index.vacuum();
-    while (this.opts.index.fileBytes() > this.opts.maxBytes) {
-      floor += 1000;
-      const d = this.opts.index.deleteBelow(floor);
-      if (d === 0) break;
-      deleted += d;
-      this.opts.index.vacuum();
-      const r = this.opts.index.range();
-      if (r.to == null || floor >= r.to) break;
+  private sweeping = false;
+
+  // The hourly sweep once ran as one DELETE per table: on mainnet that is
+  // about a million rows and blocked the event loop for 70 to 130 s, long
+  // enough for tip ticks and block loads to be abandoned. Deleting in
+  // chunks and yielding between them keeps requests flowing.
+  async retention(): Promise<number> {
+    if (this.sweeping) return 0;
+    this.sweeping = true;
+    try {
+      let floor = this.floorHeight();
+      let deleted = await this.deleteBelowChunked(floor);
+      await this.vacuumChunked();
+      while (this.opts.index.fileBytes() > this.opts.maxBytes) {
+        floor += 1000;
+        const d = await this.deleteBelowChunked(floor);
+        if (d === 0) break;
+        deleted += d;
+        await this.vacuumChunked();
+        const r = this.opts.index.range();
+        if (r.to == null || floor >= r.to) break;
+      }
+      return deleted;
+    } finally {
+      this.sweeping = false;
     }
-    return deleted;
+  }
+
+  private async deleteBelowChunked(floor: number): Promise<number> {
+    let n = 0;
+    for (;;) {
+      const lo = this.opts.index.minHeight();
+      if (lo == null || lo >= floor) return n;
+      n += this.opts.index.deleteRange(
+        lo,
+        Math.min(floor, lo + RETENTION_CHUNK_BLOCKS),
+      );
+      await yieldToEventLoop();
+    }
+  }
+
+  private async vacuumChunked(): Promise<void> {
+    while (this.opts.index.freelistPages() > 0) {
+      this.opts.index.vacuum(VACUUM_PAGES_PER_STEP);
+      await yieldToEventLoop();
+    }
   }
 
   backfillRate(): number {
