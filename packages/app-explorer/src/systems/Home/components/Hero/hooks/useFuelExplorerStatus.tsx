@@ -14,10 +14,10 @@ async function fetchDashboardNodes() {
     );
     if (!res.ok) throw new Error(`GET /dashboard returned ${res.status}`);
     const body = await res.json();
-    return body.nodes;
+    return body?.nodes ?? [];
   } catch {
     const blocksData = await getBlocksDashboard();
-    return blocksData?.getBlocksDashboard.nodes;
+    return blocksData?.getBlocksDashboard?.nodes ?? [];
   }
 }
 
