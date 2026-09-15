@@ -62,7 +62,12 @@ railway link
 # api: build settings + runtime config
 railway variables --service api \
   --set "RAILWAY_DOCKERFILE_PATH=docker/vps/Dockerfile.api-lite" \
-  --set "BLOCK_SOURCE=rpc" \
+  --set "BLOCK_SOURCE=s3" \
+  --set "S3_ENDPOINT=https://fcdea1e5127f067c6e0dd01b46e1a144.r2.cloudflarestorage.com" \
+  --set "S3_BUCKET=fuel-blocks-mainnet" \
+  --set "AWS_REGION=auto" \
+  --set "AWS_ACCESS_KEY_ID=<r2-access-key-id>" \
+  --set "AWS_SECRET_ACCESS_KEY=<r2-secret-access-key>" \
   --set "FUEL_PROVIDER=https://mainnet.fuel.network/v1/graphql" \
   --set "DATA_DIR=/data" \
   --set "INDEX_RETENTION_DAYS=1" \
@@ -72,8 +77,14 @@ railway variables --service api \
   --set "RPC_MAX_BLOCKS_PER_SECOND=5" \
   --set "DECODE_WORKERS=1" \
   --set "PORT=3000"
-# RPC_FALLBACK_MAX_BLOCKS_PER_SECOND (default 20) rate-limits the rpc fallback
-# for heights the S3 archive lacks; it only applies with BLOCK_SOURCE=s3.
+# Blocks come from the Cloudflare R2 block cache over its S3 API: bucket
+# fuel-blocks-mainnet or fuel-blocks-testnet, region "auto", and the key pair
+# from the Bitwarden engineering collection item "cloudflare r2 blocks read s3
+# token" (read and list on both buckets). The public r2.dev hosts are previews
+# with a low rate limit; do not use them as S3_ENDPOINT. Heights the cache
+# lacks fall back to fuel-core RPC, rate-limited by
+# RPC_FALLBACK_MAX_BLOCKS_PER_SECOND (default 20). BLOCK_SOURCE=rpc with no
+# S3 variables also works and needs no keys.
 
 # DECODE_WORKERS: worker threads for archive decode and disk-cache gzip (0 =
 # inline). Each worker is a V8 isolate with its own heap outside
@@ -133,12 +144,12 @@ installed CLI accepts.
 curl https://<domain>/api/health
 ```
 
-## Switching to S3 later
+## Switching block source
 
-Same idea as the droplet (below): set `BLOCK_SOURCE=s3` and the `AWS_*` /
-`S3_BUCKET` variables on the `api` service with `railway variables --service
-api --set ...`, then `railway up --service api` to redeploy. Out of scope for
-this task.
+`railway variables --service api --set ...` with the variables above, then
+`railway up --service api`; a variable change on Railway also redeploys on
+its own. `BLOCK_SOURCE=rpc` needs none of the S3 variables and may leave them
+set.
 
 # Deploying to a DigitalOcean droplet
 
