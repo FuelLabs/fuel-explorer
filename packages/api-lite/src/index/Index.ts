@@ -381,18 +381,39 @@ export class Index {
   // window and grow forever from first boot instead of aging out with the
   // 48h-ish blocks/txs/tx_accounts window.
   deleteBelow(height: number): number {
+    const lo = this.minHeight();
+    if (lo == null || lo >= height) return 0;
+    return this.deleteRange(lo, height);
+  }
+
+  minHeight(): number | null {
+    const row = this.db
+      .prepare('SELECT MIN(height) AS h FROM blocks')
+      .get() as { h: number | null };
+    return row.h ?? null;
+  }
+
+  // Deletes heights in [lo, hi) from the retention tables in one short
+  // transaction, so a caller can sweep a large window in slices that keep
+  // the event loop free between them.
+  deleteRange(lo: number, hi: number): number {
     const run = this.db.transaction(() => {
       let n = 0;
       for (const t of ['blocks', 'txs', 'tx_accounts'])
         n += this.db
-          .prepare(`DELETE FROM ${t} WHERE height < ?`)
-          .run(height).changes;
+          .prepare(`DELETE FROM ${t} WHERE height >= ? AND height < ?`)
+          .run(lo, hi).changes;
       const r = this.range();
-      if (r.from != null && r.from < height)
-        this.stmts.metaSet.run('indexed_from', String(height));
+      if (r.from != null && r.from < hi)
+        this.stmts.metaSet.run('indexed_from', String(hi));
       return n;
     });
     return run();
+  }
+
+  freelistPages(): number {
+    if (this.path === ':memory:') return 0;
+    return this.db.pragma('freelist_count', { simple: true }) as number;
   }
 
   deleteAboveRange(): number {
@@ -452,8 +473,10 @@ export class Index {
     return page * count;
   }
 
-  vacuum(): void {
-    if (this.path !== ':memory:') this.db.pragma('incremental_vacuum');
+  // Frees at most `pages` pages per call so a sweep can yield between calls.
+  vacuum(pages = 2000): void {
+    if (this.path !== ':memory:')
+      this.db.pragma(`incremental_vacuum(${pages})`);
   }
 
   // Count of an account's transactions strictly newer than `ref`, capped at

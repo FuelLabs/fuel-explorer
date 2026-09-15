@@ -262,6 +262,19 @@ describe('Index', () => {
     expect(idx.fileBytes()).toBeGreaterThanOrEqual(0);
   });
 
+  it('deleteRange removes only [lo, hi) and moves indexed_from past it', () => {
+    for (let h = 10; h <= 14; h++)
+      idx.writeBlock(block(h, [{ id: hex(h), accounts: [hex(5)] }]));
+    idx.setRange(10, 14);
+    expect(idx.minHeight()).toBe(10);
+    expect(idx.deleteRange(10, 12)).toBeGreaterThan(0);
+    expect(idx.heightForTx(hex(11))).toBeNull();
+    expect(idx.heightForTx(hex(12))).toEqual({ height: 12, txIndex: 0 });
+    expect(idx.minHeight()).toBe(12);
+    expect(idx.range().from).toBe(12);
+    expect(idx.deleteRange(0, 10)).toBe(0);
+  });
+
   it('deleteBelow prunes blocks/txs/tx_accounts but never assets, contracts or predicates', () => {
     idx.writeBlock(
       block(10, [
