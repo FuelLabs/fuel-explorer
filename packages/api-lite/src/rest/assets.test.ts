@@ -70,8 +70,6 @@ describe('buildAssetBody', () => {
     const body = await buildAssetBody(BASE_ASSET, ctx(), noNft(), REGISTRY);
     expect(body).toEqual({
       assetId: BASE_ASSET,
-      contractId: null,
-      subId: null,
       name: 'Ethereum',
       symbol: 'ETH',
       icon: ETH.icon,
@@ -79,10 +77,7 @@ describe('buildAssetBody', () => {
       verified: true,
       suspicious: false,
       networks: ETH.networks,
-      totalSupply: null,
       isNFT: false,
-      collection: null,
-      metadata: {},
       rate: 2500,
     });
   });
@@ -98,8 +93,8 @@ describe('buildAssetBody', () => {
       decimals: 6,
       totalSupply: '5000000',
       isNFT: false,
-      rate: null,
     });
+    expect(body).not.toHaveProperty('rate');
     expect(c.price.usd).not.toHaveBeenCalled();
   });
 
@@ -109,13 +104,14 @@ describe('buildAssetBody', () => {
       totalSupply: '1',
     });
     const body = await buildAssetBody(hex(2), c, noNft(), REGISTRY);
-    expect(body).toMatchObject({
+    expect(body).toEqual({
+      assetId: hex(2),
+      contractId: hex(20),
+      subId: hex(200),
       verified: false,
-      name: null,
+      suspicious: false,
       totalSupply: '1',
       isNFT: true,
-      networks: [],
-      rate: null,
     });
   });
 
@@ -129,6 +125,7 @@ describe('buildAssetBody', () => {
     const body = await buildAssetBody(hex(3), c, nft, REGISTRY);
     expect(nft.get).toHaveBeenCalledWith(FUEL_PUMPS, hex(7));
     expect(body).toMatchObject({
+      name: 'Fuel Pumps #7',
       isNFT: true,
       collection: 'Fuel Pumps',
       metadata,
@@ -145,11 +142,10 @@ describe('buildAssetBody', () => {
       const nft = { get: jest.fn(() => new Promise<null>(() => {})) };
       const pending = buildAssetBody(hex(3), c, nft, REGISTRY);
       await jest.advanceTimersByTimeAsync(1000);
-      expect(await pending).toMatchObject({
-        isNFT: true,
-        collection: 'Fuel Pumps',
-        metadata: {},
-      });
+      const body = await pending;
+      expect(body).toMatchObject({ isNFT: true, collection: 'Fuel Pumps' });
+      expect(body).not.toHaveProperty('name');
+      expect(body).not.toHaveProperty('metadata');
     } finally {
       jest.useRealTimers();
     }
