@@ -29,6 +29,7 @@ function disabledDeps(): RestRouterDeps {
     charts: { build: jest.fn().mockResolvedValue({ statistics: {}, tps: [] }) },
     dashboard: { build: jest.fn().mockResolvedValue({ nodes: [] }) },
     assets: { get: jest.fn().mockResolvedValue(null) },
+    ipfs: { get: jest.fn().mockResolvedValue(null) },
   };
 }
 
@@ -239,6 +240,49 @@ describe('handleRestRequest', () => {
     await handleRestRequest(fakeReq('GET', '/assets/nope'), res, deps);
     expect(calls.status).toBe(400);
     expect(JSON.parse(calls.body ?? '')).toEqual({ message: 'bad id' });
+  });
+
+  it('GET /ipfs/* streams the file with immutable caching and a sandboxing CSP', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.ipfs.get = jest.fn().mockResolvedValue({
+      contentType: 'image/png',
+      body: Buffer.from('png'),
+    });
+    await handleRestRequest(
+      fakeReq('GET', '/ipfs/QmCid/Monkee%201.png'),
+      res,
+      deps,
+    );
+    expect(deps.ipfs.get).toHaveBeenCalledWith('QmCid/Monkee%201.png');
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({
+      'content-type': 'image/png',
+      'cache-control': 'public, max-age=31536000, immutable',
+      'x-content-type-options': 'nosniff',
+      'access-control-allow-origin': '*',
+    });
+    expect(
+      (calls.headers as Record<string, string>)['content-security-policy'],
+    ).toContain('sandbox');
+    expect(String(calls.body)).toBe('png');
+  });
+
+  it('GET /ipfs/* answers an uncacheable 502 when no gateway has the file', async () => {
+    const { res, calls } = fakeRes();
+    await handleRestRequest(fakeReq('GET', '/ipfs/QmCid'), res, disabledDeps());
+    expect(calls.status).toBe(502);
+    expect(calls.headers).toMatchObject({ 'cache-control': 'no-store' });
+  });
+
+  it('GET /ipfs/* returns 400 for an invalid path', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.ipfs.get = jest
+      .fn()
+      .mockRejectedValue(new ValidationError('Invalid IPFS path'));
+    await handleRestRequest(fakeReq('GET', '/ipfs/nope'), res, deps);
+    expect(calls.status).toBe(400);
   });
 
   it('responds 400 (never rejects) for a malformed request target', async () => {

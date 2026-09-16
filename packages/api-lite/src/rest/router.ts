@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { IpfsFile } from '../assets/IpfsGateway';
 import type { BridgeStore } from '../bridge/BridgeStore';
 import { ValidationError } from '../errors';
 import { PaginatedParams } from '../staking/PaginatedParams';
@@ -42,6 +43,10 @@ export type AssetsRouteDeps = {
   get: (assetId: string) => Promise<Record<string, unknown> | null>;
 };
 
+export type IpfsRouteDeps = {
+  get: (ref: string) => Promise<IpfsFile | null>;
+};
+
 export type RestRouterDeps = {
   // Unlike `staking` (events/event-by-id/finalization-period), APY needs no
   // L1 ingestion — only the sequencer's cosmos REST API — so it's kept
@@ -52,6 +57,7 @@ export type RestRouterDeps = {
   charts: ChartsRouteDeps;
   dashboard: DashboardRouteDeps;
   assets: AssetsRouteDeps;
+  ipfs: IpfsRouteDeps;
 };
 
 function sendJson(
@@ -161,6 +167,36 @@ export async function handleRestRequest(
       sendJson(res, 200, body, { 'cache-control': 'public, max-age=60' });
     } catch (err) {
       sendError(res, err, 'assets');
+    }
+    return true;
+  }
+
+  if (path.startsWith('/ipfs/')) {
+    try {
+      const file = await deps.ipfs.get(path.slice('/ipfs/'.length));
+      if (!file) {
+        sendJson(
+          res,
+          502,
+          { error: 'ipfs content unavailable' },
+          { 'cache-control': 'no-store' },
+        );
+        return true;
+      }
+      res.writeHead(200, {
+        'content-type': file.contentType,
+        'content-length': String(file.body.length),
+        'access-control-allow-origin': '*',
+        // IPFS content is immutable, so the CDN in front can keep it forever.
+        'cache-control': 'public, max-age=31536000, immutable',
+        'x-content-type-options': 'nosniff',
+        // Keeps an SVG with scripts inert when opened directly on our origin.
+        'content-security-policy':
+          "default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox",
+      });
+      res.end(file.body);
+    } catch (err) {
+      sendError(res, err, 'ipfs');
     }
     return true;
   }

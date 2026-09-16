@@ -323,6 +323,7 @@ async function main() {
     staking,
     apy,
     bridge,
+    publicUrl: cfg.publicUrl,
   });
   swapHandler(appServer.listeners('request')[0] as RequestHandler);
   console.log(`api-lite listening on ${cfg.port}`);

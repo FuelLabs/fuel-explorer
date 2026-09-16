@@ -105,6 +105,17 @@ railway variables --service api \
   --set "COSMOS_REST_URL=<sequencer-rest-url-override>" \
   --set "COSMOS_INDEXER_URL=<sequencer-indexer-url-override>"
 
+# api: NFT images. PUBLIC_URL is the api's public origin; NFT metadata from
+# GET /assets/:assetId then links images to its GET /ipfs/<cid>/<path> route
+# instead of Pinata's public gateway. The route answers with a one-year
+# immutable Cache-Control, but Cloudflare only caches paths with a static file
+# extension by default, and many IPFS image paths have none. Add a Cache Rule on
+# that zone: URI path starts with "/ipfs/" -> eligible for cache, edge TTL uses
+# the origin's Cache-Control. Without it every image request reaches the api
+# and its upstream gateways.
+railway variables --service api \
+  --set "PUBLIC_URL=https://explorer-indexer-mainnet.fuel.network"
+
 # api: persistent volume for the block index (Hobby plan volumes cap at 5 GB,
 # hence the smaller INDEX_MAX_BYTES/DISK_CACHE_BYTES above vs. the droplet's).
 railway volume --service api add --mount-path /data
