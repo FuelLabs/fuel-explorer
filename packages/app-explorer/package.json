@@ -21,7 +21,6 @@
     "@tanstack/query-sync-storage-persister": "5.56.2",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",
-    "@vercel/analytics": "^1.2.2",
     "app-commons": "workspace:*",
     "app-portal": "workspace:*",
     "app-staking": "workspace:*",
