@@ -19,6 +19,13 @@ RUN pnpm install --frozen-lockfile
 ARG NETWORK=mainnet
 ARG ENV_FILE=packages/app-explorer/.env.${NETWORK}
 RUN [ "$ENV_FILE" = packages/app-explorer/.env ] || cp "$ENV_FILE" packages/app-explorer/.env
+# Railway variables must be declared as build args to reach the Vite build.
+# Keep the selected env file's project ID unless an override is supplied.
+ARG VITE_WALLETCONNECT_ID
+RUN if [ -n "$VITE_WALLETCONNECT_ID" ]; then \
+      sed -i '/^VITE_WALLETCONNECT_ID=/d' packages/app-explorer/.env && \
+      echo "VITE_WALLETCONNECT_ID=$VITE_WALLETCONNECT_ID" >> packages/app-explorer/.env; \
+    fi
 ARG VITE_FUEL_INDEXER_API
 RUN if [ -n "$VITE_FUEL_INDEXER_API" ]; then \
       grep -v '^VITE_FUEL_INDEXER_API=' packages/app-explorer/.env > /tmp/env && mv /tmp/env packages/app-explorer/.env && \
