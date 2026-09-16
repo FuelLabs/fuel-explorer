@@ -35,6 +35,9 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    # Railway terminates TLS, so an absolute redirect would point at http://.
+    absolute_redirect off;
+
     # nginx defaults a rate-limited request to 503, which on this box is
     # indistinguishable from the API being down: the uptime probe hits
     # /api/health, so a legitimate burst would read as an outage and page
@@ -134,6 +137,9 @@ server {
         add_header X-Frame-Options DENY always;
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
         add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.coingecko.com https://verified-assets.fuel.network https://raw.githubusercontent.com https://*.fuel.network https://*.walletconnect.com wss://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://*.g.alchemy.com https://*.infura.io https://cloudflare-eth.com https://eth.llamarpc.com https://*.rpc.thirdweb.com https://*.coinbase.com; frame-src https://*.walletconnect.com https://*.walletconnect.org; frame-ancestors 'none'" always;
-        try_files $uri $uri/ /index.html;
+        # No $uri/ entry: a path that shares its name with a directory in the
+        # build output, such as /assets, must fall through to the app instead of
+        # redirecting into that directory.
+        try_files $uri /index.html;
     }
 }
