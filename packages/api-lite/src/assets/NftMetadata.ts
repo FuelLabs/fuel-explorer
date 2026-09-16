@@ -1,4 +1,9 @@
-import { type IpfsGateway, ipfsRef, publicGatewayUrl } from './IpfsGateway';
+import {
+  type IpfsFile,
+  type IpfsGateway,
+  ipfsRef,
+  publicGatewayUrl,
+} from './IpfsGateway';
 
 // A collection without `files` has no reachable metadata source left and is
 // only named.
@@ -142,7 +147,13 @@ export class NftMetadata {
   }
 
   private async fetchJson(ref: string): Promise<Metadata | null> {
-    const file = await this.gateway.fetch(ref);
+    let file: IpfsFile | null;
+    try {
+      file = await this.gateway.fetch(ref);
+    } catch (e) {
+      console.error(`NftMetadata: ${ref} failed: ${(e as Error).message}`);
+      return null;
+    }
     if (!file) return null;
     let json: unknown;
     try {

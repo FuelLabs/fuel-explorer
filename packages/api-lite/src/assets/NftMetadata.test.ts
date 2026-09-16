@@ -86,6 +86,18 @@ describe('NftMetadata', () => {
     expect(await nft.get(FUEL_PUMPS, SUB_7)).toBeNull();
   });
 
+  it('treats a gateway error as a failure and does not keep it in flight', async () => {
+    let now = 0;
+    const fetch = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('busy'))
+      .mockResolvedValueOnce(json({ name: 'x' }));
+    const nft = new NftMetadata({ gateway: { fetch }, now: () => now });
+    expect(await nft.get(FUEL_PUMPS, SUB_7)).toBeNull();
+    now = 60_000;
+    expect(await nft.get(FUEL_PUMPS, SUB_7)).toEqual({ name: 'x' });
+  });
+
   it('never fetches for an unknown contract or a collection without a source', async () => {
     const gw = gateway(null);
     const nft = new NftMetadata({ gateway: gw });

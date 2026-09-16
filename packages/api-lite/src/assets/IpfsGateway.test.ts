@@ -1,5 +1,5 @@
 import { ValidationError } from '../errors';
-import { IpfsGateway, ipfsRef } from './IpfsGateway';
+import { IpfsBusyError, IpfsGateway, ipfsRef } from './IpfsGateway';
 
 const V0 = 'QmXyd5j7dDaYDuXZZ62uqh5CsrG9nUXNy7eQmedxEEwU25';
 const V1 = 'bafkreihefr4svblaje3zohbfvrbwx3hogwyizqkryvuwjoph3f3smeb4iy';
@@ -105,5 +105,49 @@ describe('IpfsGateway', () => {
     );
     const gateway = new IpfsGateway({ fetchImpl });
     expect(await gateway.fetch(V1)).toBeNull();
+  });
+
+  it('stops reading a body without content-length once it passes the size cap', async () => {
+    let pulls = 0;
+    const endless = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulls++;
+        controller.enqueue(new Uint8Array(1024 ** 2));
+      },
+    });
+    const fetchImpl = jest.fn(
+      async () =>
+        new Response(endless, { headers: { 'content-type': 'image/png' } }),
+    );
+    const gateway = new IpfsGateway({ fetchImpl });
+    expect(await gateway.fetch(V1)).toBeNull();
+    expect(pulls).toBeLessThan(25);
+  });
+
+  it('shares one fetch between requests for the same ref', async () => {
+    const fetchImpl = jest.fn(async () => response('png-bytes'));
+    const gateway = new IpfsGateway({ fetchImpl });
+    const [a, b] = await Promise.all([gateway.fetch(V1), gateway.fetch(V1)]);
+    expect(a).toBe(b);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it('refuses a new ref while the fetch limit is reached, and frees the slot after', async () => {
+    let release: (r: Response) => void = () => {};
+    const fetchImpl = jest
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve) => {
+            release = resolve;
+          }),
+      )
+      .mockResolvedValue(response('png-bytes'));
+    const gateway = new IpfsGateway({ fetchImpl, maxActive: 1 });
+    const first = gateway.fetch(V0);
+    await expect(gateway.fetch(V1)).rejects.toThrow(IpfsBusyError);
+    release(response('png-bytes'));
+    await first;
+    expect(await gateway.fetch(V1)).not.toBeNull();
   });
 });

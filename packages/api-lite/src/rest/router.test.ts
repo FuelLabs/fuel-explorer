@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { IpfsBusyError } from '../assets/IpfsGateway';
 import { ValidationError } from '../errors';
 import { type RestRouterDeps, handleRestRequest } from './router';
 
@@ -218,6 +219,17 @@ describe('handleRestRequest', () => {
     expect(JSON.parse(calls.body ?? '')).toEqual(asset);
   });
 
+  it('GET /assets/:assetId is not cached while NFT metadata is missing', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.assets.get = jest
+      .fn()
+      .mockResolvedValue({ assetId: '0xabc', collection: 'Fuel Pumps' });
+    await handleRestRequest(fakeReq('GET', '/assets/0xabc'), res, deps);
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({ 'cache-control': 'no-store' });
+  });
+
   it('GET /assets/:assetId returns 404 json for an unknown asset', async () => {
     const { res, calls } = fakeRes();
     await handleRestRequest(
@@ -273,6 +285,18 @@ describe('handleRestRequest', () => {
     await handleRestRequest(fakeReq('GET', '/ipfs/QmCid'), res, disabledDeps());
     expect(calls.status).toBe(502);
     expect(calls.headers).toMatchObject({ 'cache-control': 'no-store' });
+  });
+
+  it('GET /ipfs/* answers 503 with retry-after when the gateway is busy', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.ipfs.get = jest.fn().mockRejectedValue(new IpfsBusyError('busy'));
+    await handleRestRequest(fakeReq('GET', '/ipfs/QmCid'), res, deps);
+    expect(calls.status).toBe(503);
+    expect(calls.headers).toMatchObject({
+      'cache-control': 'no-store',
+      'retry-after': '5',
+    });
   });
 
   it('GET /ipfs/* returns 400 for an invalid path', async () => {

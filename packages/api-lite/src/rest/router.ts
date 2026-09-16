@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { IpfsFile } from '../assets/IpfsGateway';
+import { IpfsBusyError, type IpfsFile } from '../assets/IpfsGateway';
 import type { BridgeStore } from '../bridge/BridgeStore';
 import { ValidationError } from '../errors';
 import { PaginatedParams } from '../staking/PaginatedParams';
@@ -164,7 +164,12 @@ export async function handleRestRequest(
         sendJson(res, 404, { message: 'Asset not found' });
         return true;
       }
-      sendJson(res, 200, body, { 'cache-control': 'public, max-age=60' });
+      // An NFT whose metadata fetch outlasted the wait must not be cached, or
+      // the wallet keeps the imageless answer for the whole max-age.
+      const complete = !body.collection || body.metadata;
+      sendJson(res, 200, body, {
+        'cache-control': complete ? 'public, max-age=60' : 'no-store',
+      });
     } catch (err) {
       sendError(res, err, 'assets');
     }
@@ -196,6 +201,15 @@ export async function handleRestRequest(
       });
       res.end(file.body);
     } catch (err) {
+      if (err instanceof IpfsBusyError) {
+        sendJson(
+          res,
+          503,
+          { error: 'ipfs fetches busy' },
+          { 'cache-control': 'no-store', 'retry-after': '5' },
+        );
+        return true;
+      }
       sendError(res, err, 'ipfs');
     }
     return true;
