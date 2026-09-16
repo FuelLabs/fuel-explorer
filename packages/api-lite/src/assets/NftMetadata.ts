@@ -1,4 +1,5 @@
 import {
+  IpfsBusyError,
   type IpfsFile,
   type IpfsGateway,
   ipfsRef,
@@ -72,6 +73,8 @@ const CACHE_MAX = 5000;
 
 type Metadata = Record<string, unknown>;
 
+const BUSY = Symbol('busy');
+
 type CacheEntry =
   | { value: Metadata }
   | { value: null; failures: number; retryAt: number };
@@ -122,6 +125,9 @@ export class NftMetadata {
       const ref = files.replace('{subId}', BigInt(subId).toString());
       pending = this.fetchJson(ref).then((value) => {
         this.inflight.delete(key);
+        // The gateway was full, which says nothing about the content, so the
+        // next request tries again.
+        if (value === BUSY) return null;
         this.cache.delete(key);
         this.cache.set(
           key,
@@ -146,11 +152,12 @@ export class NftMetadata {
     return pending;
   }
 
-  private async fetchJson(ref: string): Promise<Metadata | null> {
+  private async fetchJson(ref: string): Promise<Metadata | null | typeof BUSY> {
     let file: IpfsFile | null;
     try {
       file = await this.gateway.fetch(ref);
     } catch (e) {
+      if (e instanceof IpfsBusyError) return BUSY;
       console.error(`NftMetadata: ${ref} failed: ${(e as Error).message}`);
       return null;
     }

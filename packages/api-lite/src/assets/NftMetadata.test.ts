@@ -1,4 +1,5 @@
 import type { IpfsFile } from './IpfsGateway';
+import { IpfsBusyError } from './IpfsGateway';
 import { NftMetadata, collectionFor } from './NftMetadata';
 
 const FUEL_PUMPS =
@@ -96,6 +97,17 @@ describe('NftMetadata', () => {
     expect(await nft.get(FUEL_PUMPS, SUB_7)).toBeNull();
     now = 60_000;
     expect(await nft.get(FUEL_PUMPS, SUB_7)).toEqual({ name: 'x' });
+  });
+
+  it('retries on the next request when the gateway is busy', async () => {
+    const fetch = jest
+      .fn()
+      .mockRejectedValueOnce(new IpfsBusyError('busy'))
+      .mockResolvedValueOnce(json({ name: 'x' }));
+    const nft = new NftMetadata({ gateway: { fetch }, now: () => 0 });
+    expect(await nft.get(FUEL_PUMPS, SUB_7)).toBeNull();
+    expect(await nft.get(FUEL_PUMPS, SUB_7)).toEqual({ name: 'x' });
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 
   it('never fetches for an unknown contract or a collection without a source', async () => {
