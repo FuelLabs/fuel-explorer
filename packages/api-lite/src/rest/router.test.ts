@@ -28,6 +28,7 @@ function disabledDeps(): RestRouterDeps {
     bridge: null,
     charts: { build: jest.fn().mockResolvedValue({ statistics: {}, tps: [] }) },
     dashboard: { build: jest.fn().mockResolvedValue({ nodes: [] }) },
+    assets: { get: jest.fn().mockResolvedValue(null) },
   };
 }
 
@@ -194,6 +195,50 @@ describe('handleRestRequest', () => {
       expect.any(Error),
     );
     errSpy.mockRestore();
+  });
+
+  it('GET /assets/:assetId returns the asset with a 60s public cache header', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    const asset = { assetId: '0xabc', symbol: 'ETH', rate: 2000 };
+    deps.assets.get = jest.fn().mockResolvedValue(asset);
+    const handled = await handleRestRequest(
+      fakeReq('GET', '/assets/0xabc'),
+      res,
+      deps,
+    );
+    expect(handled).toBe(true);
+    expect(deps.assets.get).toHaveBeenCalledWith('0xabc');
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({
+      'cache-control': 'public, max-age=60',
+      'access-control-allow-origin': '*',
+    });
+    expect(JSON.parse(calls.body ?? '')).toEqual(asset);
+  });
+
+  it('GET /assets/:assetId returns 404 json for an unknown asset', async () => {
+    const { res, calls } = fakeRes();
+    await handleRestRequest(
+      fakeReq('GET', '/assets/0xabc'),
+      res,
+      disabledDeps(),
+    );
+    expect(calls.status).toBe(404);
+    expect(JSON.parse(calls.body ?? '')).toEqual({
+      message: 'Asset not found',
+    });
+  });
+
+  it('GET /assets/:assetId returns 400 for a ValidationError', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.assets.get = jest
+      .fn()
+      .mockRejectedValue(new ValidationError('bad id'));
+    await handleRestRequest(fakeReq('GET', '/assets/nope'), res, deps);
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body ?? '')).toEqual({ message: 'bad id' });
   });
 
   it('responds 400 (never rejects) for a malformed request target', async () => {

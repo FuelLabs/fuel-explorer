@@ -38,6 +38,10 @@ export type DashboardRouteDeps = {
   build: () => Promise<{ nodes: unknown }>;
 };
 
+export type AssetsRouteDeps = {
+  get: (assetId: string) => Promise<Record<string, unknown> | null>;
+};
+
 export type RestRouterDeps = {
   // Unlike `staking` (events/event-by-id/finalization-period), APY needs no
   // L1 ingestion — only the sequencer's cosmos REST API — so it's kept
@@ -47,6 +51,7 @@ export type RestRouterDeps = {
   bridge: BridgeRouteDeps | null;
   charts: ChartsRouteDeps;
   dashboard: DashboardRouteDeps;
+  assets: AssetsRouteDeps;
 };
 
 function sendJson(
@@ -81,6 +86,7 @@ function sendError(res: ServerResponse, err: unknown, context: string): void {
 }
 
 const EVENT_PATH_RE = /^\/staking\/events\/([^/]+)$/;
+const ASSET_PATH_RE = /^\/assets\/([^/]+)$/;
 
 // A missing from_block is 0.
 function parseFromBlock(raw: string | null): number {
@@ -140,6 +146,21 @@ export async function handleRestRequest(
     } catch (err) {
       console.error('buildBlocksDashboard failed', err);
       sendJson(res, 500, { error: 'dashboard unavailable' });
+    }
+    return true;
+  }
+
+  const assetMatch = path.match(ASSET_PATH_RE);
+  if (assetMatch) {
+    try {
+      const body = await deps.assets.get(assetMatch[1]);
+      if (!body) {
+        sendJson(res, 404, { message: 'Asset not found' });
+        return true;
+      }
+      sendJson(res, 200, body, { 'cache-control': 'public, max-age=60' });
+    } catch (err) {
+      sendError(res, err, 'assets');
     }
     return true;
   }
