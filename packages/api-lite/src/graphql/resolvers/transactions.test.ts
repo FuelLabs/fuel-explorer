@@ -502,6 +502,20 @@ describe('transactionsByOwner reaches history older than the index window', () =
     expect(calls[0]).toEqual({ last: 3, before: undefined });
   });
 
+  it('records the heights of rows served from fuel-core, not index rows', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const recorded: number[][] = [];
+    ctx.fallbackHeights = {
+      record: (_o: string, heights: number[]) => recorded.push(heights),
+    };
+    await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(606), last: 3 },
+      ctx,
+    );
+    expect(recorded).toEqual([[93, 92]]);
+  });
+
   it('never calls fuel-core for an after cursor', async () => {
     const { ctx, calls } = makeCtx([]);
     const page = await transactionResolvers.Query.transactionsByOwner(

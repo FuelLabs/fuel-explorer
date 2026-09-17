@@ -280,6 +280,7 @@ async function pageFromFuelCore(
   // the same way the original serial loop kept trying further items until
   // the page filled or fc.items ran out.
   const fresh: ReturnType<typeof toTxListNode>[] = [];
+  const servedHeights: number[] = [];
   const seen = new Set(existing.map((i) => (i.id ?? '').toLowerCase()));
   let i = 0;
   while (existing.length + fresh.length < size && i < fc.items.length) {
@@ -296,8 +297,13 @@ async function pageFromFuelCore(
     const rendered = await Promise.all(
       toRender.map((it) => renderFcItem(ctx, it, pricing)),
     );
-    for (const r of rendered) if (r) fresh.push(r);
+    rendered.forEach((r, k) => {
+      if (!r) return;
+      fresh.push(r);
+      servedHeights.push(toRender[k].height);
+    });
   }
+  ctx.fallbackHeights?.record(owner, servedHeights);
   if (dir.kind === 'newer') fresh.reverse();
   return {
     items: [...existing, ...fresh],
