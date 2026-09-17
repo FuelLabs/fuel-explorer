@@ -179,8 +179,13 @@ async function collectDown(
 
 type FcItem = { id: string; height: number; cursor: string };
 type FcDir =
-  | { kind: 'older'; after?: string }
-  | { kind: 'newer'; before?: string };
+  | { kind: 'older'; before?: string }
+  | { kind: 'newer'; after?: string };
+
+// Height as 8 hex digits, tx index as 4: fixed width, so string order is cursor order.
+export function fuelCoreCursor(height: number, txIndex: number): string {
+  return `${height.toString(16).padStart(8, '0')}${txIndex.toString(16).padStart(4, '0')}`;
+}
 
 async function renderFcItem(ctx: AppContext, it: FcItem, pricing: Pricing) {
   const block = await ctx.store.get(it.height);
@@ -201,10 +206,12 @@ async function renderFcItem(ctx: AppContext, it: FcItem, pricing: Pricing) {
 // a page fetched for a smaller page size may not carry enough items for a
 // larger one requested later.
 function fcRawPageCacheKey(owner: string, size: number, dir: FcDir): string {
-  const cursor = dir.kind === 'older' ? (dir.after ?? '') : (dir.before ?? '');
+  const cursor = dir.kind === 'older' ? (dir.before ?? '') : (dir.after ?? '');
   return `fcPage:${owner}:${dir.kind}:${size}:${cursor}`;
 }
 
+// `last`/`before` walks newest-first and `first`/`after` oldest-first; in both,
+// hasNextPage means more items in the walked direction.
 type FcRawPage = {
   items: FcItem[];
   hasNextPage: boolean;
@@ -224,12 +231,12 @@ async function fetchFcRawPage(
   const fc =
     dir.kind === 'older'
       ? await ctx.client.txsByOwner(owner, {
-          first: size + 1,
-          after: dir.after,
-        })
-      : await ctx.client.txsByOwner(owner, {
           last: size + 1,
           before: dir.before,
+        })
+      : await ctx.client.txsByOwner(owner, {
+          first: size + 1,
+          after: dir.after,
         });
   const hits = ctx.hot.hits('account', owner);
   const ttl = Math.min(
@@ -244,6 +251,7 @@ async function fetchFcRawPage(
 // against `existing` (already-rendered index rows), and consumes at most `size` NEW
 // items. Per-item cursors (prefixed `fc:`) drive `connection()`'s own startCursor/
 // endCursor derivation, so callers never touch pageInfo.endCursor directly.
+// `items` is newest-first in both directions.
 async function pageFromFuelCore(
   ctx: AppContext,
   owner: string,
@@ -253,6 +261,9 @@ async function pageFromFuelCore(
   pricing: Pricing = { usd: null, baseAssetId: '' },
 ) {
   const fc = await fetchFcRawPage(ctx, owner, size, dir);
+  const bound = dir.kind === 'older' ? dir.before : dir.after;
+  const beyondCursor = (it: FcItem) =>
+    !bound || (dir.kind === 'older' ? it.cursor < bound : it.cursor > bound);
 
   // Walk fc.items in batches: pick just enough not-yet-seen candidates to
   // fill what's still missing, render that batch concurrently (so the
@@ -264,16 +275,17 @@ async function pageFromFuelCore(
   // draws additional candidates from the remaining fc.items to compensate,
   // the same way the original serial loop kept trying further items until
   // the page filled or fc.items ran out.
-  const items = [...existing];
-  const seen = new Set(items.map((i) => (i.id ?? '').toLowerCase()));
+  const fresh: ReturnType<typeof toTxListNode>[] = [];
+  const servedHeights: number[] = [];
+  const seen = new Set(existing.map((i) => (i.id ?? '').toLowerCase()));
   let i = 0;
-  while (items.length < size && i < fc.items.length) {
+  while (existing.length + fresh.length < size && i < fc.items.length) {
     const toRender: FcItem[] = [];
-    let needed = size - items.length;
+    let needed = size - existing.length - fresh.length;
     while (needed > 0 && i < fc.items.length) {
       const it = fc.items[i];
       i += 1;
-      if (seen.has(it.id.toLowerCase())) continue;
+      if (seen.has(it.id.toLowerCase()) || !beyondCursor(it)) continue;
       seen.add(it.id.toLowerCase());
       toRender.push(it);
       needed -= 1;
@@ -281,14 +293,17 @@ async function pageFromFuelCore(
     const rendered = await Promise.all(
       toRender.map((it) => renderFcItem(ctx, it, pricing)),
     );
-    for (const r of rendered) if (r) items.push(r);
+    rendered.forEach((r, k) => {
+      if (!r) return;
+      fresh.push(r);
+      servedHeights.push(toRender[k].height);
+    });
   }
-  const leftover = i < fc.items.length;
+  ctx.fallbackHeights?.record(owner, servedHeights);
+  if (dir.kind === 'newer') fresh.reverse();
   return {
-    items,
-    hasNextPage: dir.kind === 'older' ? leftover || fc.hasNextPage : true,
-    hasPreviousPage:
-      dir.kind === 'newer' ? leftover || fc.hasPreviousPage : true,
+    items: [...existing, ...fresh],
+    moreInDirection: i < fc.items.length || fc.hasNextPage,
   };
 }
 
@@ -414,21 +429,25 @@ export const transactionResolvers = {
         baseAssetId: ctx.chain.baseAssetId,
       };
 
+      // The explorer reads hasPreviousPage as "older exists" and hasNextPage as "newer exists".
       if (args.before?.startsWith('fc:')) {
         const page = await pageFromFuelCore(
           ctx,
           owner,
           size,
-          { kind: 'older', after: args.before.slice(3) },
+          { kind: 'older', before: args.before.slice(3) },
           [],
           pricing,
         );
-        const total = page.hasNextPage
+        const total = page.moreInDirection
           ? TX_COUNT_CAP
-          : ctx.index.countForAccount(owner, TX_COUNT_CAP);
+          : Math.max(
+              ctx.index.countForAccount(owner, TX_COUNT_CAP),
+              page.items.length,
+            );
         return connection(page.items, {
-          hasNextPage: page.hasNextPage,
-          hasPreviousPage: page.hasPreviousPage,
+          hasNextPage: true,
+          hasPreviousPage: page.moreInDirection,
           totalCount: total,
           ...fuelCoreFallbackCounts(page.items.length),
         });
@@ -438,14 +457,17 @@ export const transactionResolvers = {
           ctx,
           owner,
           size,
-          { kind: 'newer', before: args.after.slice(3) },
+          { kind: 'newer', after: args.after.slice(3) },
           [],
           pricing,
         );
-        const total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
+        const total = Math.max(
+          ctx.index.countForAccount(owner, TX_COUNT_CAP),
+          page.items.length,
+        );
         return connection(page.items, {
-          hasNextPage: page.hasNextPage,
-          hasPreviousPage: page.hasPreviousPage,
+          hasNextPage: page.moreInDirection,
+          hasPreviousPage: true,
           totalCount: total,
           ...fuelCoreFallbackCounts(page.items.length),
         });
@@ -465,36 +487,42 @@ export const transactionResolvers = {
       }
       let total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
 
-      const oldest = refs[refs.length - 1];
-      const range = ctx.index.range();
-      const atOldBoundary =
-        !!oldest && range.from != null && oldest.height === range.from;
-      // The fuel-core fallback exists to reach further back than the 48h
-      // index window goes, so it only makes sense once there's nowhere older
-      // left to look (no rows at all, or the oldest row found is the index's
-      // own oldest boundary) AND we're not already paginating toward newer
-      // transactions via `after`. Firing it for a plain `after` cursor with
-      // zero rows -- which just means "nothing newer than this yet" -- was
-      // the reproduced cause of the transactionsByOwner 504: it re-fetched
-      // fuel-core's own most-recent page for a high-volume account on every
-      // such request instead of returning the (correct) empty page.
-      const atBoundary = !args.after && (refs.length === 0 || atOldBoundary);
-      if (indexPage.length < size && atBoundary) {
+      // The index holds a recent window only; older history continues from
+      // fuel-core below the oldest index row. An `after` page with no rows
+      // means nothing newer yet, so it never goes to fuel-core.
+      let olderExists = refs.length > size;
+      if (!args.after && !olderExists) {
+        const fromCursor = args.before ? parseTxCursor(args.before) : null;
+        const oldest =
+          indexPage[indexPage.length - 1] ??
+          (fromCursor && Number.isFinite(fromCursor.height)
+            ? fromCursor
+            : null);
         const page = await pageFromFuelCore(
           ctx,
           owner,
           size,
-          { kind: 'older', after: undefined },
+          {
+            kind: 'older',
+            before: oldest
+              ? fuelCoreCursor(oldest.height, oldest.txIndex)
+              : undefined,
+          },
           items,
           pricing,
         );
-        if (page.hasNextPage) total = TX_COUNT_CAP;
-        return connection(page.items, {
-          hasNextPage: page.hasNextPage,
-          hasPreviousPage: page.hasPreviousPage,
-          totalCount: total,
-          ...fuelCoreFallbackCounts(page.items.length),
-        });
+        if (page.items.length > items.length) {
+          total = page.moreInDirection
+            ? TX_COUNT_CAP
+            : Math.max(total, page.items.length);
+          return connection(page.items, {
+            hasNextPage: !!args.before,
+            hasPreviousPage: page.moreInDirection,
+            totalCount: total,
+            ...fuelCoreFallbackCounts(page.items.length),
+          });
+        }
+        olderExists = page.moreInDirection;
       }
 
       // items[0] is the newest row in the page and items[last] the oldest
@@ -520,7 +548,7 @@ export const transactionResolvers = {
 
       return connection(items, {
         hasNextPage: !!args.before || (!!args.after && refs.length > size),
-        hasPreviousPage: args.after ? true : refs.length > size,
+        hasPreviousPage: args.after ? true : olderExists,
         totalCount: total,
         startCount,
         endCount,

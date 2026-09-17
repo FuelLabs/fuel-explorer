@@ -442,6 +442,8 @@ export class Index {
     return n;
   }
 
+  // Unclamped to range(): transactionsByOwner hands off to fuel-core below the
+  // oldest row returned here, so rows below range.from must stay visible.
   txsForAccount(
     account: string,
     opts: { before?: string; after?: string; limit: number },
