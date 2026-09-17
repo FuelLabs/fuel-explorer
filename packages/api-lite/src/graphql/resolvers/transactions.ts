@@ -441,7 +441,10 @@ export const transactionResolvers = {
         );
         const total = page.moreInDirection
           ? TX_COUNT_CAP
-          : ctx.index.countForAccount(owner, TX_COUNT_CAP);
+          : Math.max(
+              ctx.index.countForAccount(owner, TX_COUNT_CAP),
+              page.items.length,
+            );
         return connection(page.items, {
           hasNextPage: true,
           hasPreviousPage: page.moreInDirection,
@@ -458,7 +461,10 @@ export const transactionResolvers = {
           [],
           pricing,
         );
-        const total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
+        const total = Math.max(
+          ctx.index.countForAccount(owner, TX_COUNT_CAP),
+          page.items.length,
+        );
         return connection(page.items, {
           hasNextPage: page.moreInDirection,
           hasPreviousPage: true,

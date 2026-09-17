@@ -491,6 +491,26 @@ describe('transactionsByOwner reaches history older than the index window', () =
     expect(page.pageInfo.totalCount).toBe(HEIGHTS.length);
   });
 
+  it('never reports a total below the rows on an fc: page', async () => {
+    const { ctx } = makeCtx([]);
+    const older = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(607), last: 10, before: `fc:${fuelCoreCursor(95, 0)}` },
+      ctx,
+    );
+    expect(older.nodes).toHaveLength(4);
+    expect(older.pageInfo.hasPreviousPage).toBe(false);
+    expect(older.pageInfo.totalCount).toBe(4);
+
+    const newer = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(607), last: 10, after: `fc:${fuelCoreCursor(90, 0)}` },
+      ctx,
+    );
+    expect(newer.nodes).toHaveLength(4);
+    expect(newer.pageInfo.totalCount).toBe(4);
+  });
+
   it('serves the newest fuel-core page for a malformed before cursor', async () => {
     const { ctx, calls } = makeCtx([]);
     const page = await transactionResolvers.Query.transactionsByOwner(
