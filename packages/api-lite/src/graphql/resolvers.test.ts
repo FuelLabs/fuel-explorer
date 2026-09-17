@@ -9,6 +9,7 @@ import { Indexer } from '../index/Indexer';
 import { TipTracker } from '../index/TipTracker';
 import { createApp } from '../server';
 import { BlockStore } from '../store/BlockStore';
+import { fuelCoreCursor } from './resolvers/transactions';
 
 const hex = (n: number) => `0x${n.toString(16).padStart(64, '0')}`;
 const TIP = 120;
@@ -105,41 +106,37 @@ function fakeBlock(h: number) {
   } as any;
 }
 
-// Ordered newest-first, matching the app's own list ordering. Heights/ids are real
-// (script tx, index 0) transactions produced by fakeBlock, so rendering via the
-// block store succeeds regardless of which account actually "owns" them.
-const FC_ITEMS = [
-  { cursor: 'c1', id: hex(900), height: 90 },
-  { cursor: 'c2', id: hex(910), height: 91 },
-  { cursor: 'c3', id: hex(920), height: 92 },
-  { cursor: 'c4', id: hex(930), height: 93 },
-];
+// Oldest-first, the order fuel-core keeps them in. Heights/ids are real (script
+// tx, index 0) transactions produced by fakeBlock, so rendering via the block
+// store succeeds regardless of which account actually "owns" them.
+const FC_ITEMS = [90, 91, 92, 93].map((h) => ({
+  cursor: fuelCoreCursor(h, 0),
+  id: hex(h * 10),
+  height: h,
+}));
 
+// Mirrors fuel-core's transactionsByOwner as measured on mainnet: `first`
+// walks oldest-first from after `after`, `last` walks newest-first from before
+// `before`, and hasNextPage means more items in the direction walked.
 function fcFake(owner: string) {
   return async (o: string, opts: any) => {
     if (o !== owner)
       return { items: [], hasNextPage: false, hasPreviousPage: false };
     if ('first' in opts) {
-      const afterIdx = opts.after
-        ? FC_ITEMS.findIndex((x) => x.cursor === opts.after)
-        : -1;
-      const start = afterIdx + 1;
-      const slice = FC_ITEMS.slice(start, start + opts.first);
+      const rest = FC_ITEMS.filter((x) => !opts.after || x.cursor > opts.after);
       return {
-        items: slice,
-        hasNextPage: start + slice.length < FC_ITEMS.length,
-        hasPreviousPage: start > 0,
+        items: rest.slice(0, opts.first),
+        hasNextPage: rest.length > opts.first,
+        hasPreviousPage: rest.length < FC_ITEMS.length,
       };
     }
-    const beforeIdx = opts.before
-      ? FC_ITEMS.findIndex((x) => x.cursor === opts.before)
-      : FC_ITEMS.length;
-    const start = Math.max(0, beforeIdx - opts.last);
-    const slice = FC_ITEMS.slice(start, beforeIdx);
+    const rest = FC_ITEMS.filter(
+      (x) => !opts.before || x.cursor < opts.before,
+    ).reverse();
     return {
-      items: slice,
-      hasNextPage: beforeIdx < FC_ITEMS.length,
-      hasPreviousPage: start > 0,
+      items: rest.slice(0, opts.last),
+      hasNextPage: rest.length > opts.last,
+      hasPreviousPage: rest.length < FC_ITEMS.length,
     };
   };
 }
@@ -442,59 +439,57 @@ describe('resolvers', () => {
   it('transactionsByOwner falls back to fuel-core when the index has no rows, tracking per-item cursors', async () => {
     const { gql } = await setup({ txsByOwner: fcFake(hex(555)) });
     // size+1=2 is fetched but only 1 is consumed; the next page must resume right
-    // after the item actually returned (c1), not after the whole fetched batch (c2).
+    // after the item actually returned, not after the whole fetched batch.
     const d = await gql(
-      'query($o: Address!) { transactionsByOwner(owner: $o, first: 1) { nodes { id } pageInfo { endCursor hasNextPage } } }',
+      'query($o: Address!) { transactionsByOwner(owner: $o, last: 1) { nodes { id } pageInfo { endCursor hasNextPage hasPreviousPage } } }',
       { o: hex(555) },
     );
     expect(d.transactionsByOwner.nodes.map((n: any) => n.id)).toEqual([
-      hex(900),
+      hex(930),
     ]);
-    expect(d.transactionsByOwner.pageInfo.endCursor).toBe('fc:c1');
-    expect(d.transactionsByOwner.pageInfo.hasNextPage).toBe(true);
+    expect(d.transactionsByOwner.pageInfo.endCursor).toBe(
+      `fc:${fuelCoreCursor(93, 0)}`,
+    );
+    expect(d.transactionsByOwner.pageInfo.hasPreviousPage).toBe(true);
+    expect(d.transactionsByOwner.pageInfo.hasNextPage).toBe(false);
     const next = await gql(
-      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 1, before: $c) { nodes { id } } }',
+      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, last: 1, before: $c) { nodes { id } } }',
       { o: hex(555), c: d.transactionsByOwner.pageInfo.endCursor },
     );
     expect(next.transactionsByOwner.nodes.map((n: any) => n.id)).toEqual([
-      hex(910),
+      hex(920),
     ]);
   });
 
-  it('transactionsByOwner pages the whole fuel-core list forward via before, then reports empty', async () => {
+  it('transactionsByOwner pages the whole fuel-core list toward older via before, then reports no older page', async () => {
     const { gql } = await setup({ txsByOwner: fcFake(hex(555)) });
-    const page1 = await gql(
-      'query($o: Address!) { transactionsByOwner(owner: $o, first: 2) { nodes { id } pageInfo { endCursor hasNextPage } } }',
-      { o: hex(555) },
-    );
-    const page2 = await gql(
-      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 2, before: $c) { nodes { id } pageInfo { endCursor hasNextPage } } }',
-      { o: hex(555), c: page1.transactionsByOwner.pageInfo.endCursor },
-    );
-    const page3 = await gql(
-      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 2, before: $c) { nodes { id } pageInfo { hasNextPage } } }',
-      { o: hex(555), c: page2.transactionsByOwner.pageInfo.endCursor },
-    );
+    const q =
+      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, last: 2, before: $c) { nodes { id } pageInfo { endCursor hasPreviousPage } } }';
+    const page1 = await gql(q, { o: hex(555) });
+    const page2 = await gql(q, {
+      o: hex(555),
+      c: page1.transactionsByOwner.pageInfo.endCursor,
+    });
     const seen = [
       ...page1.transactionsByOwner.nodes,
       ...page2.transactionsByOwner.nodes,
     ].map((n: any) => n.id);
-    expect(new Set(seen)).toEqual(new Set(FC_ITEMS.map((x) => x.id)));
-    expect(seen).toHaveLength(FC_ITEMS.length);
-    expect(page3.transactionsByOwner.nodes).toEqual([]);
-    expect(page3.transactionsByOwner.pageInfo.hasNextPage).toBe(false);
+    expect(seen).toEqual([hex(930), hex(920), hex(910), hex(900)]);
+    expect(page1.transactionsByOwner.pageInfo.hasPreviousPage).toBe(true);
+    expect(page2.transactionsByOwner.pageInfo.hasPreviousPage).toBe(false);
   });
 
-  it('transactionsByOwner pages backward (newer) through fuel-core via an fc: after cursor', async () => {
+  it('transactionsByOwner pages toward newer through fuel-core via an fc: after cursor, newest-first', async () => {
     const { gql } = await setup({ txsByOwner: fcFake(hex(555)) });
     const d = await gql(
-      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 2, after: $c) { nodes { id } } }',
-      { o: hex(555), c: 'fc:c3' },
+      'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, last: 2, after: $c) { nodes { id } pageInfo { hasNextPage } } }',
+      { o: hex(555), c: `fc:${fuelCoreCursor(90, 0)}` },
     );
     expect(d.transactionsByOwner.nodes.map((n: any) => n.id)).toEqual([
-      hex(900),
+      hex(920),
       hex(910),
     ]);
+    expect(d.transactionsByOwner.pageInfo.hasNextPage).toBe(true);
   });
 
   it('caches a transactionsByOwner fuel-core fallback page across two calls within the TTL', async () => {
@@ -507,7 +502,7 @@ describe('resolvers', () => {
       },
     });
     const query =
-      'query($o: Address!) { transactionsByOwner(owner: $o, first: 1) { nodes { id } } }';
+      'query($o: Address!) { transactionsByOwner(owner: $o, last: 1) { nodes { id } } }';
     const first = await gql(query, { o: owner });
     const second = await gql(query, { o: owner });
     expect(second).toEqual(first);

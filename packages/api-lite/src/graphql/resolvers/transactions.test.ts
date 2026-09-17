@@ -1,5 +1,10 @@
-import { txCursor } from '../../index/Index';
-import { toTxListNode, toTxNode, transactionResolvers } from './transactions';
+import { parseTxCursor, txCursor } from '../../index/Index';
+import {
+  fuelCoreCursor,
+  toTxListNode,
+  toTxNode,
+  transactionResolvers,
+} from './transactions';
 
 const hex = (n: number) => `0x${n.toString(16).padStart(64, '0')}`;
 const BASE_ASSET = hex(0);
@@ -371,5 +376,140 @@ describe('pageFromFuelCore backfills a page when a fuel-core item fails to rende
       hex(3),
       hex(4),
     ]);
+  });
+});
+
+describe('transactionsByOwner reaches history older than the index window', () => {
+  // fuel-core holds the account's whole history (heights 90-93 and 95); the
+  // index only still has height 95, the shape of the foundation wallet.
+  const HEIGHTS = [90, 91, 92, 93, 95];
+  const ITEMS = HEIGHTS.map((h) => ({
+    id: hex(h * 10),
+    height: h,
+    cursor: fuelCoreCursor(h, 0),
+  }));
+
+  function makeCtx(indexRows: { height: number; txIndex: number }[]) {
+    const calls: any[] = [];
+    const ctx: any = {
+      hot: { hit: () => {}, hits: () => 0 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        countForAccount: () => indexRows.length,
+        txsForAccount: (_o: string, opts: any) => {
+          const c = opts.before ? parseTxCursor(opts.before) : null;
+          return indexRows
+            .filter((r) => !c || r.height < c.height)
+            .slice(0, opts.limit);
+        },
+        range: () => ({ from: 94, to: 120 }),
+        newerCountForAccount: () => 0,
+      },
+      store: {
+        get: async (h: number) => ({
+          transactions: [scriptTx({ id: hex(h * 10) })],
+        }),
+      },
+      client: {
+        // fuel-core's measured order: `last` newest-first before the cursor,
+        // `first` oldest-first after it.
+        txsByOwner: async (_o: string, opts: any) => {
+          calls.push(opts);
+          if ('last' in opts) {
+            const rest = ITEMS.filter(
+              (x) => !opts.before || x.cursor < opts.before,
+            ).reverse();
+            return {
+              items: rest.slice(0, opts.last),
+              hasNextPage: rest.length > opts.last,
+              hasPreviousPage: false,
+            };
+          }
+          const rest = ITEMS.filter(
+            (x) => !opts.after || x.cursor > opts.after,
+          );
+          return {
+            items: rest.slice(0, opts.first),
+            hasNextPage: rest.length > opts.first,
+            hasPreviousPage: false,
+          };
+        },
+      },
+    };
+    return { ctx, calls };
+  }
+
+  it('fills a short index page from fuel-core, starting below the oldest index row', async () => {
+    const { ctx, calls } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(601), last: 3 },
+      ctx,
+    );
+    expect(result.nodes.map((n: any) => n.id)).toEqual([
+      hex(950),
+      hex(930),
+      hex(920),
+    ]);
+    expect(calls[0]).toEqual({ last: 4, before: fuelCoreCursor(95, 0) });
+    expect(result.pageInfo.hasPreviousPage).toBe(true);
+    expect(result.pageInfo.hasNextPage).toBe(false);
+  });
+
+  it('marks older history on a full index page and serves it from the index cursor', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const first = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(602), last: 1 },
+      ctx,
+    );
+    expect(first.nodes.map((n: any) => n.id)).toEqual([hex(950)]);
+    expect(first.pageInfo.hasPreviousPage).toBe(true);
+
+    const older = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(602), last: 2, before: first.pageInfo.endCursor },
+      ctx,
+    );
+    expect(older.nodes.map((n: any) => n.id)).toEqual([hex(930), hex(920)]);
+    expect(older.pageInfo.hasPreviousPage).toBe(true);
+    expect(older.pageInfo.hasNextPage).toBe(true);
+  });
+
+  it('reaches the oldest transaction and then reports no older page', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(603), last: 10 },
+      ctx,
+    );
+    expect(page.nodes.map((n: any) => n.id)).toEqual(
+      [...HEIGHTS].reverse().map((h) => hex(h * 10)),
+    );
+    expect(page.pageInfo.hasPreviousPage).toBe(false);
+    expect(page.pageInfo.totalCount).toBe(HEIGHTS.length);
+  });
+
+  it('serves the newest fuel-core page for a malformed before cursor', async () => {
+    const { ctx, calls } = makeCtx([]);
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(605), last: 2, before: 'garbage' },
+      ctx,
+    );
+    expect(page.nodes.map((n: any) => n.id)).toEqual([hex(950), hex(930)]);
+    expect(calls[0]).toEqual({ last: 3, before: undefined });
+  });
+
+  it('never calls fuel-core for an after cursor', async () => {
+    const { ctx, calls } = makeCtx([]);
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(604), last: 10, after: txCursor(95, 0) },
+      ctx,
+    );
+    expect(page.nodes).toEqual([]);
+    expect(calls).toEqual([]);
   });
 });
