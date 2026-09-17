@@ -402,7 +402,7 @@ describe('resolvers', () => {
     expect(noPrice.transactions.nodes[0].gasCosts.feeInUsd).toBeNull();
   });
 
-  it('transactionsByOwner reports 1-based pageInfo counts (oldest = 1, newest = totalCount), contiguous across pages and never 0 for a non-empty page', async () => {
+  it('transactionsByOwner numbers the newest page 1..pageLength and continues on the next', async () => {
     const { gql } = await setup();
     const page1 = await gql(
       'query($o: Address!) { transactionsByOwner(owner: $o, first: 3) { pageInfo { startCount endCount totalCount endCursor } } }',
@@ -411,16 +411,15 @@ describe('resolvers', () => {
     const { startCount, endCount, totalCount, endCursor } =
       page1.transactionsByOwner.pageInfo;
     expect(totalCount).toBeGreaterThan(6);
-    expect(endCount).toBe(totalCount);
-    expect(startCount).toBe(totalCount - 2);
-    expect(startCount).toBeGreaterThan(0);
+    expect(startCount).toBe(1);
+    expect(endCount).toBe(3);
 
     const page2 = await gql(
       'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 3, before: $c) { pageInfo { startCount endCount } } }',
       { o: ACCOUNT, c: endCursor },
     );
-    expect(page2.transactionsByOwner.pageInfo.endCount).toBe(startCount - 1);
-    expect(page2.transactionsByOwner.pageInfo.startCount).toBe(startCount - 3);
+    expect(page2.transactionsByOwner.pageInfo.startCount).toBe(4);
+    expect(page2.transactionsByOwner.pageInfo.endCount).toBe(6);
   });
 
   it('transactionsByOwner returns the same rows going back to newer as it showed going older', async () => {

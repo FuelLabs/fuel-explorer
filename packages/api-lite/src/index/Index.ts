@@ -691,9 +691,8 @@ export class Index {
   // Count of an account's transactions strictly newer than `ref`, capped at
   // `cap` for the same reason countForAccount is capped: a busy account's
   // true count is unbounded, and callers only need "at least cap" to know a
-  // 1-based position is off the top of a capped total. Combined with
-  // countForAccount(account, cap) as `total`, a ref's ascending (oldest = 1)
-  // position is `total - newerCountForAccount(...)`.
+  // 1-based position is off the top of a capped total. A ref's position from
+  // the account's newest transaction is `newerCountForAccount(...) + 1`.
   newerCountForAccount(
     account: string,
     ref: { height: number; txIndex: number },
@@ -718,8 +717,8 @@ export class Index {
   }
 
   // Total number of transactions currently in the retention window, and how
-  // many of them are strictly newer than `ref`. A page's 1-based ascending
-  // (oldest = 1) position is `txCount(cap) - newerTxCount(ref, cap)`. Both
+  // many of them are strictly newer than `ref`, so a row's position from the
+  // newest one is `newerTxCount(ref, cap) + 1`. Both
   // are bounded to the indexed_from..indexed_to window so a stale row outside
   // it never counts, and capped like countForAccount so the list can share
   // its 1000+ display convention.

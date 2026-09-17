@@ -229,7 +229,7 @@ describe('transactions (global list) pageInfo counts', () => {
     } as any;
   }
 
-  it('reports 1-based ascending counts (oldest = 1, newest = totalCount) on the default (no-cursor) page', async () => {
+  it('numbers the newest page 1..pageLength', async () => {
     const result = await transactionResolvers.Query.transactions(
       null,
       { first: 2 },
@@ -237,11 +237,11 @@ describe('transactions (global list) pageInfo counts', () => {
     );
     expect(result.nodes).toHaveLength(2);
     expect(result.pageInfo.totalCount).toBe(3);
-    expect(result.pageInfo.endCount).toBe(3);
-    expect(result.pageInfo.startCount).toBe(2);
+    expect(result.pageInfo.startCount).toBe(1);
+    expect(result.pageInfo.endCount).toBe(2);
   });
 
-  it('reports the same 1-based counts when paginating via an after cursor', async () => {
+  it('reports the same counts when paginating via an after cursor', async () => {
     const result = await transactionResolvers.Query.transactions(
       null,
       { first: 2, after: txCursor(1, 0) },
@@ -249,8 +249,8 @@ describe('transactions (global list) pageInfo counts', () => {
     );
     expect(result.nodes).toHaveLength(2);
     expect(result.pageInfo.totalCount).toBe(3);
-    expect(result.pageInfo.endCount).toBe(3);
-    expect(result.pageInfo.startCount).toBe(2);
+    expect(result.pageInfo.startCount).toBe(1);
+    expect(result.pageInfo.endCount).toBe(2);
   });
 
   it('never reports 0 for a non-empty page', async () => {
@@ -466,8 +466,13 @@ describe('transactionsByOwner reaches history older than the index window', () =
       hex(920),
     ]);
     expect(calls[0]).toEqual({ last: 4, before: fuelCoreCursor(95, 0) });
-    expect(result.pageInfo.hasPreviousPage).toBe(true);
-    expect(result.pageInfo.hasNextPage).toBe(false);
+    expect(result.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 1,
+      endCount: 3,
+      hasPreviousPage: true,
+      hasNextPage: false,
+    });
   });
 
   it('marks older history on a full index page and serves it from the index cursor', async () => {
@@ -515,8 +520,8 @@ describe('transactionsByOwner reaches history older than the index window', () =
     expect(older.pageInfo.hasPreviousPage).toBe(false);
     expect(older.pageInfo).toMatchObject({
       totalCount: 5,
-      startCount: 1,
-      endCount: 4,
+      startCount: 2,
+      endCount: 5,
     });
 
     const newer = await transactionResolvers.Query.transactionsByOwner(
@@ -527,8 +532,44 @@ describe('transactionsByOwner reaches history older than the index window', () =
     expect(newer.nodes).toHaveLength(4);
     expect(newer.pageInfo).toMatchObject({
       totalCount: 5,
-      startCount: 2,
-      endCount: 5,
+      startCount: 1,
+      endCount: 4,
+    });
+  });
+
+  it('clamps a page position to the capped total', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    ctx.index.countForAccount = () => 1001;
+    ctx.index.newerCountForAccount = () => 1001;
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(611), last: 1 },
+      ctx,
+    );
+    expect(page.pageInfo).toMatchObject({
+      totalCount: 1001,
+      startCount: 1001,
+      endCount: 1001,
+    });
+  });
+
+  it('leaves a page the account list cannot place without numbers', async () => {
+    const { ctx } = makeCtx([]);
+    ctx.client.txIdsByOwner = async () => ({
+      ids: [],
+      headHeight: 0,
+      hasNextPage: true,
+    });
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(612), last: 2, before: `fc:${fuelCoreCursor(95, 0)}` },
+      ctx,
+    );
+    expect(page.nodes).toHaveLength(2);
+    expect(page.pageInfo).toMatchObject({
+      totalCount: 1001,
+      startCount: 0,
+      endCount: 0,
     });
   });
 
@@ -541,8 +582,8 @@ describe('transactionsByOwner reaches history older than the index window', () =
     );
     expect(first.pageInfo).toMatchObject({
       totalCount: 5,
-      startCount: 4,
-      endCount: 5,
+      startCount: 1,
+      endCount: 2,
     });
     const second = await transactionResolvers.Query.transactionsByOwner(
       null,
@@ -551,8 +592,8 @@ describe('transactionsByOwner reaches history older than the index window', () =
     );
     expect(second.pageInfo).toMatchObject({
       totalCount: 5,
-      startCount: 2,
-      endCount: 3,
+      startCount: 3,
+      endCount: 4,
     });
   });
 
