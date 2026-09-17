@@ -50,6 +50,7 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
       hasNextPage: false,
       hasPreviousPage: false,
     }),
+    txIdsByOwner: async () => ({ ids: [], headHeight: 0, hasNextPage: false }),
     blockSignatures: async () => new Map(),
     ...clientOverrides,
   } as any;

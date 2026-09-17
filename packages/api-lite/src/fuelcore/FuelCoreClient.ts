@@ -198,6 +198,30 @@ export class FuelCoreClient {
     };
   }
 
+  // fuel-core rejects a page this size once each node also selects its status.
+  async txIdsByOwner(
+    owner: string,
+    last: number,
+  ): Promise<{ ids: string[]; headHeight: number; hasNextPage: boolean }> {
+    const d = await this.query<{
+      transactionsByOwner: {
+        pageInfo: { hasNextPage: boolean };
+        edges: { cursor: string; node: { id: string } }[];
+      };
+    }>(
+      'query($owner: Address!, $last: Int) { transactionsByOwner(owner: $owner, last: $last) { pageInfo { hasNextPage } edges { cursor node { id } } } }',
+      { owner, last },
+    );
+    const edges = d.transactionsByOwner.edges;
+    return {
+      ids: edges.map((e) => e.node.id),
+      headHeight: edges[0]
+        ? Number.parseInt(edges[0].cursor.slice(0, 8), 16)
+        : 0,
+      hasNextPage: d.transactionsByOwner.pageInfo.hasNextPage,
+    };
+  }
+
   // `signature` is null when consensus is not PoA or the block is unsigned.
   async blockSignatures(
     heights: number[],
