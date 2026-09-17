@@ -103,6 +103,19 @@ describe('Index', () => {
       ],
     );
     expect(idx.countForAccount(a, 1001)).toBe(3);
+
+    // Rows below the index window are a sparse subset, so paging skips them.
+    idx.setRange(11, 11);
+    expect(idx.txsForAccount(a, { limit: 10 })).toEqual([
+      { height: 11, txIndex: 0 },
+    ]);
+    expect(
+      idx.txsForAccount(a, { limit: 10, before: txCursor(11, 0) }),
+    ).toEqual([]);
+    expect(idx.txsForAccount(a, { limit: 10, after: txCursor(10, 0) })).toEqual(
+      [{ height: 11, txIndex: 0 }],
+    );
+    idx.setRange(10, 11);
     expect(idx.newerCountForAccount(a, { height: 11, txIndex: 0 }, 1001)).toBe(
       0,
     );

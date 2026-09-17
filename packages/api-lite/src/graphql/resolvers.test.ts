@@ -180,7 +180,15 @@ async function setup(
       hasNextPage: false,
       hasPreviousPage: false,
     }),
-    txIdsByOwner: async () => ({ ids: [], headHeight: 0, hasNextPage: false }),
+    // fuel-core agrees with the index about every account's history.
+    txIdsByOwner: async (owner: string, last: number) => {
+      const refs = index.txsForAccount(owner, { limit: last + 1 });
+      return {
+        ids: refs.slice(0, last).map((r) => hex(r.height * 10 + r.txIndex)),
+        headHeight: refs[0]?.height ?? 0,
+        hasNextPage: refs.length > last,
+      };
+    },
     blockSignatures: async (heights: number[]) =>
       new Map(
         heights.map((h) => [

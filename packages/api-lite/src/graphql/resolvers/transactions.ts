@@ -369,8 +369,8 @@ function itemHeight(cursor: string): number {
 }
 
 // Numbers a page from the account list, refetching it once when the page
-// holds a transaction newer than the cached list. Falls back to `fallback`
-// when fuel-core is unreachable or the rows sit beyond the list.
+// holds a transaction newer than the cached list. Without the list the total
+// is unknown, so the fallback reports the cap, which the explorer shows as "1000+".
 async function accountCounts(
   ctx: AppContext,
   owner: string,
@@ -378,6 +378,7 @@ async function accountCounts(
   fallback: ListCounts,
 ): Promise<ListCounts> {
   if (items.length === 0) return fallback;
+  const unknownTotal = { ...fallback, totalCount: TX_COUNT_CAP };
   try {
     let list = await accountTxList(ctx, owner, false);
     let counts = countsFromList(list, items);
@@ -389,10 +390,10 @@ async function accountCounts(
       list = await accountTxList(ctx, owner, true);
       counts = countsFromList(list, items);
     }
-    return counts ?? fallback;
+    return counts ?? unknownTotal;
   } catch (e) {
     console.error(`accountCounts: ${owner} failed`, e);
-    return fallback;
+    return unknownTotal;
   }
 }
 

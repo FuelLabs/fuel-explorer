@@ -442,25 +442,30 @@ export class Index {
     return n;
   }
 
-  // Unclamped to range(): transactionsByOwner hands off to fuel-core below the
-  // oldest row returned here, so rows below range.from must stay visible.
+  // Clamped to range().from: rows below it come from blocks decoded for other
+  // reasons (for example an older history page) and are only a sparse subset.
   txsForAccount(
     account: string,
     opts: { before?: string; after?: string; limit: number },
   ) {
     const a = blob(account);
+    const from = this.range().from ?? 0;
     const out: { height: number; tx_index: number }[] = [];
     const remaining = () => opts.limit - out.length;
     if (opts.after) {
       const c = parseTxCursor(opts.after);
+      const below = c.height < from;
+      const lo = below ? from : c.height;
+      const hi = below ? from - 1 : c.height;
+      const idx = below ? -1 : c.txIndex;
       for (const p of [...this.partitions].reverse()) {
-        if (p.end < c.height) continue;
+        if (p.end < lo) continue;
         out.push(
           ...(this.stmtsFor(p).acctAfter.all(
             a,
-            c.height,
-            c.height,
-            c.txIndex,
+            lo,
+            hi,
+            idx,
             remaining(),
           ) as typeof out),
         );
@@ -471,13 +476,15 @@ export class Index {
       const c = opts.before ? parseTxCursor(opts.before) : null;
       for (const p of this.partitions) {
         if (c && p.start > c.height) continue;
+        if (p.end < from) break;
         const s = this.stmtsFor(p);
-        out.push(
-          ...((c
+        const rows = (
+          c
             ? s.acctBefore.all(a, c.height, c.height, c.txIndex, remaining())
-            : s.acctDesc.all(a, remaining())) as typeof out),
-        );
-        if (remaining() <= 0) break;
+            : s.acctDesc.all(a, remaining())
+        ) as typeof out;
+        out.push(...rows.filter((r) => r.height >= from));
+        if (rows.some((r) => r.height < from) || remaining() <= 0) break;
       }
     }
     return out.map((r) => ({ height: r.height, txIndex: r.tx_index }));

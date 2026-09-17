@@ -572,7 +572,7 @@ describe('transactionsByOwner reaches history older than the index window', () =
     expect(listCalls).toBe(0);
   });
 
-  it('keeps the previous numbers when the account list fetch fails', async () => {
+  it('reports an unknown total as the cap when the account list fetch fails', async () => {
     const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
     ctx.client.txIdsByOwner = async () => {
       throw new Error('fuel-core down');
@@ -583,8 +583,7 @@ describe('transactionsByOwner reaches history older than the index window', () =
       ctx,
     );
     expect(result.nodes).toHaveLength(2);
-    expect(result.pageInfo.startCount).toBe(1);
-    expect(result.pageInfo.endCount).toBe(2);
+    expect(result.pageInfo.totalCount).toBe(1001);
   });
 
   it('serves the newest fuel-core page for a malformed before cursor', async () => {
