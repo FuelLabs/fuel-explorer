@@ -1,10 +1,8 @@
 const HEIGHTS_PER_ACCOUNT = 30;
 const MAX_ACCOUNTS = 1000;
 
-// Block heights of the transactions an account's history pages last served
-// from fuel-core, most recent first. These blocks sit below the index window,
-// so the index cannot name them when the disk cache decides what to keep.
-// Memory only: after a restart the next page view records them again.
+// Heights of the blocks an account's history pages last served from fuel-core,
+// most recent first. The index has no rows for them, so pinning needs this list.
 export class FallbackHeights {
   private readonly byAccount = new Map<string, number[]>();
 

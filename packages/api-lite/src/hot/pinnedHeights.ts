@@ -7,12 +7,8 @@ const PINNED_TOP_ACCOUNTS = 50;
 const PINNED_TOP_TXS = 200;
 const PINNED_ACCOUNT_TX_LIMIT = 10;
 
-// Union of block heights worth protecting from disk eviction: for each of the
-// top PINNED_TOP_ACCOUNTS hottest accounts, its newest PINNED_ACCOUNT_TX_LIMIT
-// indexed txs plus the older history pages last served from fuel-core, and the
-// heights of the top PINNED_TOP_TXS hottest txs. Recomputed at most every
-// PINNED_RECOMPUTE_INTERVAL_MS since HotKeys.top() and the index scans it
-// drives aren't cheap enough to run on every eviction.
+// Block heights the disk cache must not evict. Recomputed on an interval
+// because HotKeys.top() and the index scans are too slow to run per eviction.
 export function makePinnedHeights(
   hot: Pick<HotKeys, 'top'>,
   index: Pick<Index, 'txsForAccount' | 'heightForTx'>,

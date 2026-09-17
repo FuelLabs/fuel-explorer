@@ -182,9 +182,7 @@ type FcDir =
   | { kind: 'older'; before?: string }
   | { kind: 'newer'; after?: string };
 
-// fuel-core's transactionsByOwner cursor: block height as 8 hex digits then
-// the tx index as 4, so it can be built for a row the index already holds.
-// Fixed width, so cursors compare correctly as strings.
+// Height as 8 hex digits, tx index as 4: fixed width, so string order is cursor order.
 export function fuelCoreCursor(height: number, txIndex: number): string {
   return `${height.toString(16).padStart(8, '0')}${txIndex.toString(16).padStart(4, '0')}`;
 }
@@ -212,9 +210,8 @@ function fcRawPageCacheKey(owner: string, size: number, dir: FcDir): string {
   return `fcPage:${owner}:${dir.kind}:${size}:${cursor}`;
 }
 
-// fuel-core returns `last`/`before` newest-first and `first`/`after`
-// oldest-first. Either way `items` starts next to the cursor and
-// hasNextPage means more items further in that direction.
+// `last`/`before` walks newest-first and `first`/`after` oldest-first; in both,
+// hasNextPage means more items in the walked direction.
 type FcRawPage = {
   items: FcItem[];
   hasNextPage: boolean;
@@ -254,8 +251,7 @@ async function fetchFcRawPage(
 // against `existing` (already-rendered index rows), and consumes at most `size` NEW
 // items. Per-item cursors (prefixed `fc:`) drive `connection()`'s own startCursor/
 // endCursor derivation, so callers never touch pageInfo.endCursor directly.
-// `items` comes back newest-first in both directions; `more` means fuel-core
-// has further transactions in the requested direction.
+// `items` is newest-first in both directions.
 async function pageFromFuelCore(
   ctx: AppContext,
   owner: string,
@@ -307,7 +303,7 @@ async function pageFromFuelCore(
   if (dir.kind === 'newer') fresh.reverse();
   return {
     items: [...existing, ...fresh],
-    more: i < fc.items.length || fc.hasNextPage,
+    moreInDirection: i < fc.items.length || fc.hasNextPage,
   };
 }
 
@@ -433,8 +429,7 @@ export const transactionResolvers = {
         baseAssetId: ctx.chain.baseAssetId,
       };
 
-      // pageInfo follows the explorer's contract: hasPreviousPage means older
-      // transactions exist and hasNextPage means newer ones do.
+      // The explorer reads hasPreviousPage as "older exists" and hasNextPage as "newer exists".
       if (args.before?.startsWith('fc:')) {
         const page = await pageFromFuelCore(
           ctx,
@@ -444,12 +439,12 @@ export const transactionResolvers = {
           [],
           pricing,
         );
-        const total = page.more
+        const total = page.moreInDirection
           ? TX_COUNT_CAP
           : ctx.index.countForAccount(owner, TX_COUNT_CAP);
         return connection(page.items, {
           hasNextPage: true,
-          hasPreviousPage: page.more,
+          hasPreviousPage: page.moreInDirection,
           totalCount: total,
           ...fuelCoreFallbackCounts(page.items.length),
         });
@@ -465,7 +460,7 @@ export const transactionResolvers = {
         );
         const total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
         return connection(page.items, {
-          hasNextPage: page.more,
+          hasNextPage: page.moreInDirection,
           hasPreviousPage: true,
           totalCount: total,
           ...fuelCoreFallbackCounts(page.items.length),
@@ -486,12 +481,9 @@ export const transactionResolvers = {
       }
       let total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
 
-      // Once the index has no older rows for this account, the rest of its
-      // history comes from fuel-core, starting just below the oldest row the
-      // index returned. The index keeps only a recent window, so an account
-      // with a few recent transactions still has older ones there. Not done
-      // for `after`: zero rows there just means nothing newer yet, and
-      // refetching fuel-core for it was the transactionsByOwner 504.
+      // The index holds a recent window only; older history continues from
+      // fuel-core below the oldest index row. An `after` page with no rows
+      // means nothing newer yet, so it never goes to fuel-core.
       let olderExists = refs.length > size;
       if (!args.after && !olderExists) {
         const fromCursor = args.before ? parseTxCursor(args.before) : null;
@@ -514,15 +506,17 @@ export const transactionResolvers = {
           pricing,
         );
         if (page.items.length > items.length) {
-          total = page.more ? TX_COUNT_CAP : Math.max(total, page.items.length);
+          total = page.moreInDirection
+            ? TX_COUNT_CAP
+            : Math.max(total, page.items.length);
           return connection(page.items, {
             hasNextPage: !!args.before,
-            hasPreviousPage: page.more,
+            hasPreviousPage: page.moreInDirection,
             totalCount: total,
             ...fuelCoreFallbackCounts(page.items.length),
           });
         }
-        olderExists = page.more;
+        olderExists = page.moreInDirection;
       }
 
       // items[0] is the newest row in the page and items[last] the oldest

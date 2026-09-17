@@ -14,6 +14,5 @@ export type AppContext = {
   chain: { chainId: number; baseAssetId: string };
   price: PriceClient;
   hot: HotKeys;
-  // Optional so test contexts can omit it.
   fallbackHeights?: FallbackHeights;
 };
