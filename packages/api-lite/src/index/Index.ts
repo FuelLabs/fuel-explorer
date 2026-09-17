@@ -442,8 +442,8 @@ export class Index {
     return n;
   }
 
-  // Clamped to range().from: rows below it come from blocks decoded for other
-  // reasons (for example an older history page) and are only a sparse subset.
+  // Clamped to range().from: below it an account has only the rows that blocks
+  // decoded for other reasons happened to carry, never its full history.
   txsForAccount(
     account: string,
     opts: { before?: string; after?: string; limit: number },

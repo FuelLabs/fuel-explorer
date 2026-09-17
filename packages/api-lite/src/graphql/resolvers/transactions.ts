@@ -312,9 +312,8 @@ type AccountTxList = { ids: string[]; headHeight: number; complete: boolean };
 
 const accountListInflight = new Map<string, Promise<AccountTxList>>();
 
-// The account's newest TX_COUNT_CAP transaction ids from fuel-core, newest
-// first. Every history page reads its numbers from this one list, so index
-// and fuel-core pages share a single numbering and total.
+// The account's newest TX_COUNT_CAP transaction ids, newest first: the one
+// source every history page numbers itself against.
 async function accountTxList(
   ctx: AppContext,
   owner: string,
@@ -368,9 +367,8 @@ function itemHeight(cursor: string): number {
     : parseTxCursor(cursor).height;
 }
 
-// Numbers a page from the account list, refetching it once when the page
-// holds a transaction newer than the cached list. Without the list the total
-// is unknown, so the fallback reports the cap, which the explorer shows as "1000+".
+// Refetches the list once when the page holds a transaction newer than it.
+// Without the list the total is unknown and reports the cap, shown as "1000+".
 async function accountCounts(
   ctx: AppContext,
   owner: string,
@@ -572,8 +570,8 @@ export const transactionResolvers = {
         after: args.after ?? undefined,
         limit: size + 1,
       });
-      // refs is newest-first; the extra row past `size` is the farthest from
-      // the cursor, which is the first row for an `after` page.
+      // refs is newest-first, so an `after` page drops its first row, the one
+      // farthest from the cursor.
       const indexPage = args.after ? refs.slice(-size) : refs.slice(0, size);
       const items: ReturnType<typeof toTxListNode>[] = [];
       for (const ref of indexPage) {
@@ -647,8 +645,8 @@ export const transactionResolvers = {
       return connection(items, {
         hasNextPage: !!args.before || (!!args.after && refs.length > size),
         hasPreviousPage: args.after ? true : olderExists,
-        // An account at the cap already numbers its index pages as "1000+",
-        // so it skips the fuel-core list (2.6 s for a busy account, measured).
+        // At the cap the index numbers already read "1000+", so the list,
+        // which costs 2.6 s for a busy account, buys nothing.
         ...(total >= TX_COUNT_CAP
           ? { totalCount: total, startCount, endCount }
           : await accountCounts(ctx, owner, items, {

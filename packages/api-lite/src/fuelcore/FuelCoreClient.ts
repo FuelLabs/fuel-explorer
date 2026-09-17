@@ -198,8 +198,7 @@ export class FuelCoreClient {
     };
   }
 
-  // Ids and cursors only: fuel-core rejects a page this large as too complex
-  // once each node also selects its status.
+  // fuel-core rejects a page this size once each node also selects its status.
   async txIdsByOwner(
     owner: string,
     last: number,
