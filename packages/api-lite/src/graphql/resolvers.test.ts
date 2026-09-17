@@ -180,6 +180,7 @@ async function setup(
       hasNextPage: false,
       hasPreviousPage: false,
     }),
+    txIdsByOwner: async () => ({ ids: [], headHeight: 0, hasNextPage: false }),
     blockSignatures: async (heights: number[]) =>
       new Map(
         heights.map((h) => [
@@ -414,6 +415,31 @@ describe('resolvers', () => {
     expect(page2.transactionsByOwner.pageInfo.startCount).toBe(startCount - 3);
   });
 
+  it('transactionsByOwner returns the same rows going back to newer as it showed going older', async () => {
+    const { gql } = await setup();
+    const q =
+      'query($o: Address!, $b: String, $a: String) { transactionsByOwner(owner: $o, last: 3, before: $b, after: $a) { nodes { id } pageInfo { startCursor endCursor startCount endCount } } }';
+    const p1 = await gql(q, { o: ACCOUNT });
+    const p2 = await gql(q, {
+      o: ACCOUNT,
+      b: p1.transactionsByOwner.pageInfo.endCursor,
+    });
+    const p3 = await gql(q, {
+      o: ACCOUNT,
+      b: p2.transactionsByOwner.pageInfo.endCursor,
+    });
+    const back = await gql(q, {
+      o: ACCOUNT,
+      a: p3.transactionsByOwner.pageInfo.startCursor,
+    });
+    expect(back.transactionsByOwner.nodes).toEqual(
+      p2.transactionsByOwner.nodes,
+    );
+    expect(back.transactionsByOwner.pageInfo.startCount).toBe(
+      p2.transactionsByOwner.pageInfo.startCount,
+    );
+  });
+
   it('transactionsByOwner does not fall back to fuel-core -- and returns an empty page instead of a hang -- when an after cursor is already at the newest known transaction', async () => {
     let calls = 0;
     const { gql } = await setup({
@@ -426,6 +452,7 @@ describe('resolvers', () => {
       'query($o: Address!) { transactionsByOwner(owner: $o, first: 3) { pageInfo { startCursor } } }',
       { o: ACCOUNT },
     );
+    calls = 0;
     const after = await gql(
       'query($o: Address!, $c: String) { transactionsByOwner(owner: $o, first: 3, after: $c) { nodes { id } pageInfo { hasNextPage hasPreviousPage startCount endCount } } }',
       { o: ACCOUNT, c: page1.transactionsByOwner.pageInfo.startCursor },

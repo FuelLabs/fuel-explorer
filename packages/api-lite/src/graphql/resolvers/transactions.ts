@@ -218,6 +218,11 @@ type FcRawPage = {
   hasPreviousPage: boolean;
 };
 
+function fcPageTtl(ctx: AppContext, owner: string): number {
+  const hits = ctx.hot.hits('account', owner);
+  return Math.min(FC_PAGE_TTL_CAP_MS, FC_PAGE_TTL_BASE_MS * Math.max(1, hits));
+}
+
 async function fetchFcRawPage(
   ctx: AppContext,
   owner: string,
@@ -238,12 +243,7 @@ async function fetchFcRawPage(
           first: size + 1,
           after: dir.after,
         });
-  const hits = ctx.hot.hits('account', owner);
-  const ttl = Math.min(
-    FC_PAGE_TTL_CAP_MS,
-    FC_PAGE_TTL_BASE_MS * Math.max(1, hits),
-  );
-  cache.save(cacheKey, ttl, fc);
+  cache.save(cacheKey, fcPageTtl(ctx, owner), fc);
   return fc;
 }
 
@@ -305,6 +305,95 @@ async function pageFromFuelCore(
     items: [...existing, ...fresh],
     moreInDirection: i < fc.items.length || fc.hasNextPage,
   };
+}
+
+type ListCounts = { totalCount: number; startCount: number; endCount: number };
+type AccountTxList = { ids: string[]; headHeight: number; complete: boolean };
+
+const accountListInflight = new Map<string, Promise<AccountTxList>>();
+
+// The account's newest TX_COUNT_CAP transaction ids from fuel-core, newest
+// first. Every history page reads its numbers from this one list, so index
+// and fuel-core pages share a single numbering and total.
+async function accountTxList(
+  ctx: AppContext,
+  owner: string,
+  refresh: boolean,
+): Promise<AccountTxList> {
+  const cache = DataCache.getInstance();
+  const key = `fcList:${owner}`;
+  const hit = refresh
+    ? undefined
+    : (cache.get(key) as AccountTxList | undefined);
+  if (hit) return hit;
+  let pending = accountListInflight.get(key);
+  if (!pending) {
+    pending = ctx.client
+      .txIdsByOwner(owner, TX_COUNT_CAP)
+      .then((fc) => {
+        const list = {
+          ids: fc.ids.map((id) => id.toLowerCase()),
+          headHeight: fc.headHeight,
+          complete: !fc.hasNextPage,
+        };
+        cache.save(key, fcPageTtl(ctx, owner), list);
+        return list;
+      })
+      .finally(() => accountListInflight.delete(key));
+    accountListInflight.set(key, pending);
+  }
+  return pending;
+}
+
+function countsFromList(
+  list: AccountTxList,
+  items: { id?: string | null }[],
+): ListCounts | null {
+  const newest = list.ids.indexOf((items[0].id ?? '').toLowerCase());
+  const oldest = list.ids.indexOf(
+    (items[items.length - 1].id ?? '').toLowerCase(),
+  );
+  if (newest < 0 || oldest < 0) return null;
+  const total = list.complete ? list.ids.length : TX_COUNT_CAP;
+  return {
+    totalCount: total,
+    startCount: total - oldest,
+    endCount: total - newest,
+  };
+}
+
+function itemHeight(cursor: string): number {
+  return cursor.startsWith('fc:')
+    ? Number.parseInt(cursor.slice(3, 11), 16)
+    : parseTxCursor(cursor).height;
+}
+
+// Numbers a page from the account list, refetching it once when the page
+// holds a transaction newer than the cached list. Falls back to `fallback`
+// when fuel-core is unreachable or the rows sit beyond the list.
+async function accountCounts(
+  ctx: AppContext,
+  owner: string,
+  items: { id?: string | null; cursor: string }[],
+  fallback: ListCounts,
+): Promise<ListCounts> {
+  if (items.length === 0) return fallback;
+  try {
+    let list = await accountTxList(ctx, owner, false);
+    let counts = countsFromList(list, items);
+    if (
+      !counts &&
+      list.ids.length > 0 &&
+      itemHeight(items[0].cursor) >= list.headHeight
+    ) {
+      list = await accountTxList(ctx, owner, true);
+      counts = countsFromList(list, items);
+    }
+    return counts ?? fallback;
+  } catch (e) {
+    console.error(`accountCounts: ${owner} failed`, e);
+    return fallback;
+  }
 }
 
 export const transactionResolvers = {
@@ -448,8 +537,10 @@ export const transactionResolvers = {
         return connection(page.items, {
           hasNextPage: true,
           hasPreviousPage: page.moreInDirection,
-          totalCount: total,
-          ...fuelCoreFallbackCounts(page.items.length),
+          ...(await accountCounts(ctx, owner, page.items, {
+            totalCount: total,
+            ...fuelCoreFallbackCounts(page.items.length),
+          })),
         });
       }
       if (args.after?.startsWith('fc:')) {
@@ -468,8 +559,10 @@ export const transactionResolvers = {
         return connection(page.items, {
           hasNextPage: page.moreInDirection,
           hasPreviousPage: true,
-          totalCount: total,
-          ...fuelCoreFallbackCounts(page.items.length),
+          ...(await accountCounts(ctx, owner, page.items, {
+            totalCount: total,
+            ...fuelCoreFallbackCounts(page.items.length),
+          })),
         });
       }
 
@@ -478,7 +571,9 @@ export const transactionResolvers = {
         after: args.after ?? undefined,
         limit: size + 1,
       });
-      const indexPage = refs.slice(0, size);
+      // refs is newest-first; the extra row past `size` is the farthest from
+      // the cursor, which is the first row for an `after` page.
+      const indexPage = args.after ? refs.slice(-size) : refs.slice(0, size);
       const items: ReturnType<typeof toTxListNode>[] = [];
       for (const ref of indexPage) {
         const block = await ctx.store.get(ref.height);
@@ -518,8 +613,10 @@ export const transactionResolvers = {
           return connection(page.items, {
             hasNextPage: !!args.before,
             hasPreviousPage: page.moreInDirection,
-            totalCount: total,
-            ...fuelCoreFallbackCounts(page.items.length),
+            ...(await accountCounts(ctx, owner, page.items, {
+              totalCount: total,
+              ...fuelCoreFallbackCounts(page.items.length),
+            })),
           });
         }
         olderExists = page.moreInDirection;
@@ -549,9 +646,15 @@ export const transactionResolvers = {
       return connection(items, {
         hasNextPage: !!args.before || (!!args.after && refs.length > size),
         hasPreviousPage: args.after ? true : olderExists,
-        totalCount: total,
-        startCount,
-        endCount,
+        // An account at the cap already numbers its index pages as "1000+",
+        // so it skips the fuel-core list (2.6 s for a busy account, measured).
+        ...(total >= TX_COUNT_CAP
+          ? { totalCount: total, startCount, endCount }
+          : await accountCounts(ctx, owner, items, {
+              totalCount: total,
+              startCount,
+              endCount,
+            })),
       });
     },
   },

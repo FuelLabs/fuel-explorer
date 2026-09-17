@@ -309,12 +309,17 @@ describe("fuel-core fallback pages never reuse the index page's numbers", () => 
           hasNextPage: false,
           hasPreviousPage: false,
         }),
+        txIdsByOwner: async () => ({
+          ids: [hex(300)],
+          headHeight: 5,
+          hasNextPage: false,
+        }),
       },
       ...overrides,
     } as any;
   }
 
-  it('numbers a fuel-core-served page 1..pageLength instead of near the (unrelated) total', async () => {
+  it('numbers a fuel-core-served page from the account list fuel-core returns', async () => {
     const ctx = makeCtx({
       store: {
         get: async (h: number) =>
@@ -329,7 +334,7 @@ describe("fuel-core fallback pages never reuse the index page's numbers", () => 
     expect(result.nodes).toHaveLength(1);
     expect(result.pageInfo.startCount).toBe(1);
     expect(result.pageInfo.endCount).toBe(1);
-    expect(result.pageInfo.totalCount).not.toBe(result.pageInfo.endCount);
+    expect(result.pageInfo.totalCount).toBe(1);
   });
 });
 
@@ -435,6 +440,14 @@ describe('transactionsByOwner reaches history older than the index window', () =
             hasPreviousPage: false,
           };
         },
+        txIdsByOwner: async (_o: string, last: number) => ({
+          ids: [...ITEMS]
+            .reverse()
+            .slice(0, last)
+            .map((x) => x.id),
+          headHeight: ITEMS[ITEMS.length - 1].height,
+          hasNextPage: ITEMS.length > last,
+        }),
       },
     };
     return { ctx, calls };
@@ -491,7 +504,7 @@ describe('transactionsByOwner reaches history older than the index window', () =
     expect(page.pageInfo.totalCount).toBe(HEIGHTS.length);
   });
 
-  it('never reports a total below the rows on an fc: page', async () => {
+  it('numbers fc: pages in both directions against the full account total', async () => {
     const { ctx } = makeCtx([]);
     const older = await transactionResolvers.Query.transactionsByOwner(
       null,
@@ -500,7 +513,11 @@ describe('transactionsByOwner reaches history older than the index window', () =
     );
     expect(older.nodes).toHaveLength(4);
     expect(older.pageInfo.hasPreviousPage).toBe(false);
-    expect(older.pageInfo.totalCount).toBe(4);
+    expect(older.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 1,
+      endCount: 4,
+    });
 
     const newer = await transactionResolvers.Query.transactionsByOwner(
       null,
@@ -508,7 +525,66 @@ describe('transactionsByOwner reaches history older than the index window', () =
       ctx,
     );
     expect(newer.nodes).toHaveLength(4);
-    expect(newer.pageInfo.totalCount).toBe(4);
+    expect(newer.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 2,
+      endCount: 5,
+    });
+  });
+
+  it('numbers pages continuously across the index and fuel-core', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const first = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(608), last: 2 },
+      ctx,
+    );
+    expect(first.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 4,
+      endCount: 5,
+    });
+    const second = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(608), last: 2, before: first.pageInfo.endCursor },
+      ctx,
+    );
+    expect(second.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 2,
+      endCount: 3,
+    });
+  });
+
+  it('skips the fuel-core list for an account whose index count is at the cap', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    ctx.index.countForAccount = () => 1001;
+    let listCalls = 0;
+    ctx.client.txIdsByOwner = async () => {
+      listCalls += 1;
+      return { ids: [], headHeight: 0, hasNextPage: false };
+    };
+    await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(610), last: 1 },
+      ctx,
+    );
+    expect(listCalls).toBe(0);
+  });
+
+  it('keeps the previous numbers when the account list fetch fails', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    ctx.client.txIdsByOwner = async () => {
+      throw new Error('fuel-core down');
+    };
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(609), last: 2 },
+      ctx,
+    );
+    expect(result.nodes).toHaveLength(2);
+    expect(result.pageInfo.startCount).toBe(1);
+    expect(result.pageInfo.endCount).toBe(2);
   });
 
   it('serves the newest fuel-core page for a malformed before cursor', async () => {
