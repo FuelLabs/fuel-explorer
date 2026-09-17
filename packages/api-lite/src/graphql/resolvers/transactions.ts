@@ -307,6 +307,11 @@ async function pageFromFuelCore(
   };
 }
 
+// fuel-core's cursor carries no position, so a page it serves that the
+// account list cannot place has no numbers at all; Pagination hides the label
+// on a zero rather than showing a position the page does not have.
+const UNPLACED_COUNTS = { startCount: 0, endCount: 0 };
+
 type ListCounts = { totalCount: number; startCount: number; endCount: number };
 type AccountTxList = { ids: string[]; headHeight: number; complete: boolean };
 
@@ -353,11 +358,10 @@ function countsFromList(
     (items[items.length - 1].id ?? '').toLowerCase(),
   );
   if (newest < 0 || oldest < 0) return null;
-  const total = list.complete ? list.ids.length : TX_COUNT_CAP;
   return {
-    totalCount: total,
-    startCount: total - oldest,
-    endCount: total - newest,
+    totalCount: list.complete ? list.ids.length : TX_COUNT_CAP,
+    startCount: newest + 1,
+    endCount: oldest + 1,
   };
 }
 
@@ -538,7 +542,7 @@ export const transactionResolvers = {
           hasPreviousPage: page.moreInDirection,
           ...(await accountCounts(ctx, owner, page.items, {
             totalCount: total,
-            ...fuelCoreFallbackCounts(page.items.length),
+            ...UNPLACED_COUNTS,
           })),
         });
       }
@@ -560,7 +564,7 @@ export const transactionResolvers = {
           hasPreviousPage: true,
           ...(await accountCounts(ctx, owner, page.items, {
             totalCount: total,
-            ...fuelCoreFallbackCounts(page.items.length),
+            ...UNPLACED_COUNTS,
           })),
         });
       }
@@ -614,33 +618,31 @@ export const transactionResolvers = {
             hasPreviousPage: page.moreInDirection,
             ...(await accountCounts(ctx, owner, page.items, {
               totalCount: total,
-              ...fuelCoreFallbackCounts(page.items.length),
+              ...UNPLACED_COUNTS,
             })),
           });
         }
         olderExists = page.moreInDirection;
       }
 
-      // items[0] is the newest row in the page and items[last] the oldest
-      // (txsForAccount always returns newest-first); position is 1-based and
-      // ascending from the account's oldest transaction, matching
-      // production (e.g. a busy account's most recent page reporting
-      // something like 992/1001, not 1/1001). Clamped to [1, total] so a cap
-      // saturating both the total and the newer-than-ref count (an account
-      // with more than TX_COUNT_CAP transactions still in the 48h
-      // window) can't report a false zero on a non-empty page.
-      const rankAscending = (ref: { height: number; txIndex: number }) =>
-        Math.max(
-          1,
-          Math.min(
-            total,
-            total - ctx.index.newerCountForAccount(owner, ref, TX_COUNT_CAP),
-          ),
+      if (items.length === 0) {
+        return connection(items, {
+          hasNextPage: !!args.before || (!!args.after && refs.length > size),
+          hasPreviousPage: args.after ? true : olderExists,
+          totalCount: 0,
+          ...UNPLACED_COUNTS,
+        });
+      }
+
+      // 1-based from the account's newest transaction; indexPage is
+      // newest-first, so its first row is the page's startCount.
+      const rankFromNewest = (ref: { height: number; txIndex: number }) =>
+        Math.min(
+          total,
+          ctx.index.newerCountForAccount(owner, ref, TX_COUNT_CAP) + 1,
         );
-      const endCount = items.length ? rankAscending(indexPage[0]) : 0;
-      const startCount = items.length
-        ? rankAscending(indexPage[indexPage.length - 1])
-        : 0;
+      const startCount = rankFromNewest(indexPage[0]);
+      const endCount = rankFromNewest(indexPage[indexPage.length - 1]);
 
       return connection(items, {
         hasNextPage: !!args.before || (!!args.after && refs.length > size),
@@ -659,54 +661,21 @@ export const transactionResolvers = {
   },
 };
 
-// Fuel-core fallback pages serve an account's history *older* than the 48h
-// index window can see, so they must never reuse the index's own
-// [total-pageLength+1, total] numbering -- that range is reserved for the
-// most-recent, index-backed page, and reusing it here relabeled every page
-// of ancient history "992-1001 of 1001" again. There's no reliable way to
-// learn a fallback page's true distance from the account's very first
-// transaction: fuel-core's own cursor is opaque (not a position we can
-// decode), and nothing here tracks cumulative fallback depth across
-// separate paginated requests. Rather than fabricate a number that *looks*
-// precise but isn't, every fuel-core-served page is instead numbered
-// independently, 1..pageLength from its own start -- always below and
-// distinct from the index-backed range for the pages that matter in
-// practice (an account has to be well past a single page's worth of history
-// before fallback triggers at all), never 0 for a non-empty page, and
-// honest about not claiming a precise absolute position. Known limitation:
-// two *different* fuel-core-served pages both show 1..pageLength, so they
-// aren't distinguishable from each other by this label alone -- only from
-// the index-backed page they followed.
-function fuelCoreFallbackCounts(pageLength: number) {
-  if (pageLength === 0) return { startCount: 0, endCount: 0 };
-  return { startCount: 1, endCount: pageLength };
-}
-
-// Global list position for the `transactions` (recentTransactions) root
-// field: 1-based, ascending from the oldest transaction in the retention
-// window (index.txCount()), the same convention as
-// transactionsByOwner/rankAscending, and capped at the same TX_COUNT_CAP so
-// the UI's "1000+" display convention (and the raw start/endCount numbers
-// alongside it) stay in the same range instead of a real count running into
-// the tens of thousands. `items` is newest-first (both collectDown and
-// collectUp's after-branch return it that way), so items[0] is the page's
-// endCount and the last item is its startCount. Clamped to [1, total] so a
-// non-empty page never reports 0 (Pagination.tsx hides the count label on a
-// falsy value).
+// 1-based from the newest transaction in the retention window, capped at
+// TX_COUNT_CAP to stay in range with the UI's "1000+" total. `items` is
+// newest-first, which collectUp's reverse() is responsible for.
 function txListCounts(ctx: AppContext, items: { cursor: string }[]) {
   if (items.length === 0) return { startCount: 0, endCount: 0, totalCount: 0 };
   const total = ctx.index.txCount(TX_COUNT_CAP);
-  const rankAscending = (cursor: string) => {
-    const ref = parseTxCursor(cursor);
-    return Math.max(
-      1,
-      Math.min(total, total - ctx.index.newerTxCount(ref, TX_COUNT_CAP)),
+  const rankFromNewest = (cursor: string) =>
+    Math.min(
+      total,
+      ctx.index.newerTxCount(parseTxCursor(cursor), TX_COUNT_CAP) + 1,
     );
-  };
   return {
     totalCount: total,
-    endCount: rankAscending(items[0].cursor),
-    startCount: rankAscending(items[items.length - 1].cursor),
+    startCount: rankFromNewest(items[0].cursor),
+    endCount: rankFromNewest(items[items.length - 1].cursor),
   };
 }
 
