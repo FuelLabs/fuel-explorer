@@ -60,6 +60,7 @@ const schema = z
     COSMOS_START_HEIGHT: z.coerce.number().int().positive().optional(),
     ETH_RPC_URL: z.string().url().optional(),
     COINGECKO_API_KEY: z.string().min(1).optional(),
+    PUBLIC_URL: z.string().url().optional(),
     // No static default: it depends on FUEL_PROVIDER's host, resolved below.
     FUEL_CHAIN: z.enum(['mainnet', 'testnet']).optional(),
     L1_START_BLOCK: z.coerce.number().int().nonnegative().optional(),
@@ -111,6 +112,8 @@ export type Config = {
   cosmosStartHeight?: number;
   ethRpcUrl?: string;
   coingeckoApiKey?: string;
+  // Public base URL of this api, used to link NFT images to its /ipfs route.
+  publicUrl?: string;
   fuelChain: 'mainnet' | 'testnet';
   l1StartBlock?: number;
   cosmosIndexerUrl?: string;
@@ -153,6 +156,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     cosmosStartHeight: e.COSMOS_START_HEIGHT,
     ethRpcUrl: e.ETH_RPC_URL,
     coingeckoApiKey: e.COINGECKO_API_KEY,
+    publicUrl: e.PUBLIC_URL,
     fuelChain:
       e.FUEL_CHAIN ??
       (new URL(e.FUEL_PROVIDER).host.includes('testnet')

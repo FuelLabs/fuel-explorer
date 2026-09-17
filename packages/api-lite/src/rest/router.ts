@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { IpfsBusyError, type IpfsFile } from '../assets/IpfsGateway';
 import type { BridgeStore } from '../bridge/BridgeStore';
 import { ValidationError } from '../errors';
 import { PaginatedParams } from '../staking/PaginatedParams';
@@ -38,6 +39,14 @@ export type DashboardRouteDeps = {
   build: () => Promise<{ nodes: unknown }>;
 };
 
+export type AssetsRouteDeps = {
+  get: (assetId: string) => Promise<Record<string, unknown> | null>;
+};
+
+export type IpfsRouteDeps = {
+  get: (ref: string) => Promise<IpfsFile | null>;
+};
+
 export type RestRouterDeps = {
   // Unlike `staking` (events/event-by-id/finalization-period), APY needs no
   // L1 ingestion — only the sequencer's cosmos REST API — so it's kept
@@ -47,6 +56,8 @@ export type RestRouterDeps = {
   bridge: BridgeRouteDeps | null;
   charts: ChartsRouteDeps;
   dashboard: DashboardRouteDeps;
+  assets: AssetsRouteDeps;
+  ipfs: IpfsRouteDeps;
 };
 
 function sendJson(
@@ -81,6 +92,7 @@ function sendError(res: ServerResponse, err: unknown, context: string): void {
 }
 
 const EVENT_PATH_RE = /^\/staking\/events\/([^/]+)$/;
+const ASSET_PATH_RE = /^\/assets\/([^/]+)$/;
 
 // A missing from_block is 0.
 function parseFromBlock(raw: string | null): number {
@@ -140,6 +152,65 @@ export async function handleRestRequest(
     } catch (err) {
       console.error('buildBlocksDashboard failed', err);
       sendJson(res, 500, { error: 'dashboard unavailable' });
+    }
+    return true;
+  }
+
+  const assetMatch = path.match(ASSET_PATH_RE);
+  if (assetMatch) {
+    try {
+      const body = await deps.assets.get(assetMatch[1]);
+      if (!body) {
+        sendJson(res, 404, { message: 'Asset not found' });
+        return true;
+      }
+      // An NFT whose metadata fetch outlasted the wait must not be cached, or
+      // the wallet keeps the imageless answer for the whole max-age.
+      const complete = !body.collection || body.metadata;
+      sendJson(res, 200, body, {
+        'cache-control': complete ? 'public, max-age=60' : 'no-store',
+      });
+    } catch (err) {
+      sendError(res, err, 'assets');
+    }
+    return true;
+  }
+
+  if (path.startsWith('/ipfs/')) {
+    try {
+      const file = await deps.ipfs.get(path.slice('/ipfs/'.length));
+      if (!file) {
+        sendJson(
+          res,
+          502,
+          { error: 'ipfs content unavailable' },
+          { 'cache-control': 'no-store' },
+        );
+        return true;
+      }
+      res.writeHead(200, {
+        'content-type': file.contentType,
+        'content-length': String(file.body.length),
+        'access-control-allow-origin': '*',
+        // IPFS content is immutable, so the CDN in front can keep it forever.
+        'cache-control': 'public, max-age=31536000, immutable',
+        'x-content-type-options': 'nosniff',
+        // Keeps an SVG with scripts inert when opened directly on our origin.
+        'content-security-policy':
+          "default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox",
+      });
+      res.end(file.body);
+    } catch (err) {
+      if (err instanceof IpfsBusyError) {
+        sendJson(
+          res,
+          503,
+          { error: 'ipfs fetches busy' },
+          { 'cache-control': 'no-store', 'retry-after': '5' },
+        );
+        return true;
+      }
+      sendError(res, err, 'ipfs');
     }
     return true;
   }

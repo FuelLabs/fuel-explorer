@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { IpfsBusyError } from '../assets/IpfsGateway';
 import { ValidationError } from '../errors';
 import { type RestRouterDeps, handleRestRequest } from './router';
 
@@ -28,6 +29,8 @@ function disabledDeps(): RestRouterDeps {
     bridge: null,
     charts: { build: jest.fn().mockResolvedValue({ statistics: {}, tps: [] }) },
     dashboard: { build: jest.fn().mockResolvedValue({ nodes: [] }) },
+    assets: { get: jest.fn().mockResolvedValue(null) },
+    ipfs: { get: jest.fn().mockResolvedValue(null) },
   };
 }
 
@@ -194,6 +197,116 @@ describe('handleRestRequest', () => {
       expect.any(Error),
     );
     errSpy.mockRestore();
+  });
+
+  it('GET /assets/:assetId returns the asset with a 60s public cache header', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    const asset = { assetId: '0xabc', symbol: 'ETH', rate: 2000 };
+    deps.assets.get = jest.fn().mockResolvedValue(asset);
+    const handled = await handleRestRequest(
+      fakeReq('GET', '/assets/0xabc'),
+      res,
+      deps,
+    );
+    expect(handled).toBe(true);
+    expect(deps.assets.get).toHaveBeenCalledWith('0xabc');
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({
+      'cache-control': 'public, max-age=60',
+      'access-control-allow-origin': '*',
+    });
+    expect(JSON.parse(calls.body ?? '')).toEqual(asset);
+  });
+
+  it('GET /assets/:assetId is not cached while NFT metadata is missing', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.assets.get = jest
+      .fn()
+      .mockResolvedValue({ assetId: '0xabc', collection: 'Fuel Pumps' });
+    await handleRestRequest(fakeReq('GET', '/assets/0xabc'), res, deps);
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({ 'cache-control': 'no-store' });
+  });
+
+  it('GET /assets/:assetId returns 404 json for an unknown asset', async () => {
+    const { res, calls } = fakeRes();
+    await handleRestRequest(
+      fakeReq('GET', '/assets/0xabc'),
+      res,
+      disabledDeps(),
+    );
+    expect(calls.status).toBe(404);
+    expect(JSON.parse(calls.body ?? '')).toEqual({
+      message: 'Asset not found',
+    });
+  });
+
+  it('GET /assets/:assetId returns 400 for a ValidationError', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.assets.get = jest
+      .fn()
+      .mockRejectedValue(new ValidationError('bad id'));
+    await handleRestRequest(fakeReq('GET', '/assets/nope'), res, deps);
+    expect(calls.status).toBe(400);
+    expect(JSON.parse(calls.body ?? '')).toEqual({ message: 'bad id' });
+  });
+
+  it('GET /ipfs/* streams the file with immutable caching and a sandboxing CSP', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.ipfs.get = jest.fn().mockResolvedValue({
+      contentType: 'image/png',
+      body: Buffer.from('png'),
+    });
+    await handleRestRequest(
+      fakeReq('GET', '/ipfs/QmCid/Monkee%201.png'),
+      res,
+      deps,
+    );
+    expect(deps.ipfs.get).toHaveBeenCalledWith('QmCid/Monkee%201.png');
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({
+      'content-type': 'image/png',
+      'cache-control': 'public, max-age=31536000, immutable',
+      'x-content-type-options': 'nosniff',
+      'access-control-allow-origin': '*',
+    });
+    expect(
+      (calls.headers as Record<string, string>)['content-security-policy'],
+    ).toContain('sandbox');
+    expect(String(calls.body)).toBe('png');
+  });
+
+  it('GET /ipfs/* answers an uncacheable 502 when no gateway has the file', async () => {
+    const { res, calls } = fakeRes();
+    await handleRestRequest(fakeReq('GET', '/ipfs/QmCid'), res, disabledDeps());
+    expect(calls.status).toBe(502);
+    expect(calls.headers).toMatchObject({ 'cache-control': 'no-store' });
+  });
+
+  it('GET /ipfs/* answers 503 with retry-after when the gateway is busy', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.ipfs.get = jest.fn().mockRejectedValue(new IpfsBusyError('busy'));
+    await handleRestRequest(fakeReq('GET', '/ipfs/QmCid'), res, deps);
+    expect(calls.status).toBe(503);
+    expect(calls.headers).toMatchObject({
+      'cache-control': 'no-store',
+      'retry-after': '5',
+    });
+  });
+
+  it('GET /ipfs/* returns 400 for an invalid path', async () => {
+    const { res, calls } = fakeRes();
+    const deps = disabledDeps();
+    deps.ipfs.get = jest
+      .fn()
+      .mockRejectedValue(new ValidationError('Invalid IPFS path'));
+    await handleRestRequest(fakeReq('GET', '/ipfs/nope'), res, deps);
+    expect(calls.status).toBe(400);
   });
 
   it('responds 400 (never rejects) for a malformed request target', async () => {

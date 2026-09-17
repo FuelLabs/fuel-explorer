@@ -1,5 +1,7 @@
 import { createServer } from 'node:http';
 import { createYoga } from 'graphql-yoga';
+import { IpfsGateway } from './assets/IpfsGateway';
+import { NftMetadata } from './assets/NftMetadata';
 import type { CosmosPoller } from './cosmos/CosmosPoller';
 import type { AppContext } from './graphql/context';
 import { useMaxDepth } from './graphql/depthLimit';
@@ -7,6 +9,7 @@ import { buildBlocksDashboard } from './graphql/resolvers/analytics';
 import { buildCharts } from './graphql/resolvers/charts';
 import { buildSchema } from './graphql/schema';
 import type { Indexer } from './index/Indexer';
+import { buildAssetBody } from './rest/assets';
 import { type RestRouterDeps, handleRestRequest } from './rest/router';
 
 // `indexer`, `blockSource` and `cosmos` are optional so existing
@@ -20,6 +23,7 @@ export type AppDeps = AppContext & {
   staking?: RestRouterDeps['staking'];
   apy?: RestRouterDeps['apy'];
   bridge?: RestRouterDeps['bridge'];
+  publicUrl?: string;
 };
 
 export function createApp(ctx: AppDeps) {
@@ -38,6 +42,8 @@ export function createApp(ctx: AppDeps) {
     maskedErrors: process.env.NODE_ENV === 'production',
     context: () => ctx,
   });
+  const gateway = new IpfsGateway();
+  const nft = new NftMetadata({ gateway, publicUrl: ctx.publicUrl });
   const health = () => ({
     ok: ctx.tip.servedTip > 0,
     fuelCore: ctx.tip.fuelCoreUp ? 'up' : 'down',
@@ -74,6 +80,8 @@ export function createApp(ctx: AppDeps) {
       bridge: ctx.bridge ?? null,
       charts: { build: () => buildCharts(ctx) },
       dashboard: { build: () => buildBlocksDashboard(ctx) },
+      assets: { get: (assetId) => buildAssetBody(assetId, ctx, nft) },
+      ipfs: { get: (ref) => gateway.fetch(ref) },
     })
       .then((handled) => {
         if (!handled) return yoga(req, res);
