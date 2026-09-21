@@ -320,7 +320,6 @@ describe('CosmosPoller', () => {
       jest.useRealTimers();
     });
 
-    // A body read that ignores its abort signal: the promise stays pending.
     const never = () => new Promise<never>(() => {});
 
     it('ends the tick on a tip body that never arrives, and the next tick runs', async () => {

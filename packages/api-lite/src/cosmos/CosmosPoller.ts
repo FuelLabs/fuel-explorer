@@ -4,10 +4,7 @@ const DEFAULT_POLL_MS = 5000;
 const MAX_HEIGHTS_PER_TICK = 50;
 const START_HEIGHT_LOOKBACK = 200_000;
 const FETCH_TIMEOUT_MS = 15_000;
-// Backstop above FETCH_TIMEOUT_MS. On 2026-09-17 a read outlived its
-// AbortSignal.timeout and never settled, so tick() never released `running`
-// and every later tick returned early: the cursor sat still for 4 days with
-// nothing logged.
+// A read can outlive its AbortSignal.timeout; tick() holds `running` until it settles.
 const FETCH_DEADLINE_MS = 20_000;
 
 type CosmosAttribute = { key: string; value: string };
@@ -43,7 +40,6 @@ export function defaultCosmosRestUrl(fuelProviderUrl: string): string {
 
 export class CosmosPoller {
   tip = 0;
-  /** When `tip` was last read from the chain; a stale value means the poller has stopped. */
   tipAt: string | null = null;
   private timer: NodeJS.Timeout | null = null;
   private running = false;
@@ -73,7 +69,10 @@ export class CosmosPoller {
     try {
       const fetchImpl = this.opts.fetchImpl ?? fetch;
       try {
-        this.tip = await fetchTip(fetchImpl, this.opts.restBase);
+        this.tip = await withDeadline(
+          fetchTip(fetchImpl, this.opts.restBase),
+          FETCH_DEADLINE_MS,
+        );
         this.tipAt = new Date().toISOString();
       } catch (e) {
         this.opts.onLog?.(
@@ -96,7 +95,10 @@ export class CosmosPoller {
 
         let body: { total?: string; tx_responses: CosmosTxResponse[] };
         try {
-          body = await fetchTxs(fetchImpl, this.opts.restBase, height);
+          body = await withDeadline(
+            fetchTxs(fetchImpl, this.opts.restBase, height),
+            FETCH_DEADLINE_MS,
+          );
         } catch (e) {
           this.opts.onLog?.(
             `CosmosPoller: txs fetch failed at height ${height}: ${(e as Error).message}`,
@@ -142,7 +144,6 @@ function flattenEvents(events: CosmosEvent[]): CosmosEventInput[] {
   return rows;
 }
 
-// Settles even when `work` never does; the abandoned promise is left pending.
 function withDeadline<T>(work: Promise<T>, ms: number): Promise<T> {
   let timer: NodeJS.Timeout | undefined;
   const deadline = new Promise<never>((_, reject) => {
@@ -154,22 +155,7 @@ function withDeadline<T>(work: Promise<T>, ms: number): Promise<T> {
   return Promise.race([work, deadline]).finally(() => clearTimeout(timer));
 }
 
-function fetchTip(fetchImpl: typeof fetch, restBase: string): Promise<number> {
-  return withDeadline(requestTip(fetchImpl, restBase), FETCH_DEADLINE_MS);
-}
-
-function fetchTxs(
-  fetchImpl: typeof fetch,
-  restBase: string,
-  height: number,
-): Promise<{ total?: string; tx_responses: CosmosTxResponse[] }> {
-  return withDeadline(
-    requestTxs(fetchImpl, restBase, height),
-    FETCH_DEADLINE_MS,
-  );
-}
-
-async function requestTip(
+async function fetchTip(
   fetchImpl: typeof fetch,
   restBase: string,
 ): Promise<number> {
@@ -185,7 +171,7 @@ async function requestTip(
   return height;
 }
 
-async function requestTxs(
+async function fetchTxs(
   fetchImpl: typeof fetch,
   restBase: string,
   height: number,
