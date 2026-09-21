@@ -131,9 +131,18 @@ export const withdrawStatusDialogMachine = createMachine(
                       };
                     }),
                   },
+                  onError: {
+                    target: 'failure',
+                    actions: assign({
+                      eventError: (_, event) => event.data,
+                    }),
+                  },
                 },
               },
               success: {
+                type: 'final',
+              },
+              failure: {
                 type: 'final',
               },
             },
