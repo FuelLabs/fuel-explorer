@@ -27,6 +27,7 @@ import {
   FUEL_INDEXER_API,
   type HexAddress,
   IS_FUEL_DEV_CHAIN,
+  absoluteUrl,
   getBridgeSolidityContracts,
 } from 'app-commons';
 import { safeWriteContract } from 'app-commons/safeWriteContract';
@@ -450,7 +451,7 @@ export class TxFuelToEthService {
     const bridgeSolidityContracts = await getBridgeSolidityContracts();
 
     if (!IS_FUEL_DEV_CHAIN && FUEL_INDEXER_API) {
-      const url = new URL(`${FUEL_INDEXER_API}/bridge/message/relayed/hash`);
+      const url = absoluteUrl(FUEL_INDEXER_API, '/bridge/message/relayed/hash');
       url.searchParams.set(
         'address',
         bridgeSolidityContracts.FuelMessagePortal,

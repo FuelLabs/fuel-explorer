@@ -37,6 +37,10 @@ export function urlJoin(
   return allPaths.join(DELIMITER_PATH);
 }
 
+export function absoluteUrl(baseUrl: string | undefined, path: string): URL {
+  return new URL(urlJoin(baseUrl, path), globalThis.location?.origin);
+}
+
 function ensureLeadingSlash(path: string) {
   return path.startsWith('/') ? path : `/${path}`;
 }

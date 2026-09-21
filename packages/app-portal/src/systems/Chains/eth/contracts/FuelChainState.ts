@@ -3,6 +3,7 @@ import {
   FUEL_INDEXER_API,
   type HexAddress,
   IS_FUEL_DEV_CHAIN,
+  absoluteUrl,
   getBridgeSolidityContracts,
 } from 'app-commons';
 import type { Provider } from 'fuels';
@@ -26,7 +27,7 @@ export const FUEL_CHAIN_STATE = {
     const bridgeSolidityContracts = await getBridgeSolidityContracts();
 
     if (!IS_FUEL_DEV_CHAIN && FUEL_INDEXER_API) {
-      const url = new URL(`${FUEL_INDEXER_API}/bridge/block/hashes`);
+      const url = absoluteUrl(FUEL_INDEXER_API, '/bridge/block/hashes');
       url.searchParams.set('address', bridgeSolidityContracts.FuelChainState);
       url.searchParams.set('from_block', fromBlock.toString());
 
