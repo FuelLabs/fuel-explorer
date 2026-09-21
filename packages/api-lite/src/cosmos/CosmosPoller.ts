@@ -4,6 +4,11 @@ const DEFAULT_POLL_MS = 5000;
 const MAX_HEIGHTS_PER_TICK = 50;
 const START_HEIGHT_LOOKBACK = 200_000;
 const FETCH_TIMEOUT_MS = 15_000;
+// Backstop above FETCH_TIMEOUT_MS. On 2026-09-17 a read outlived its
+// AbortSignal.timeout and never settled, so tick() never released `running`
+// and every later tick returned early: the cursor sat still for 4 days with
+// nothing logged.
+const FETCH_DEADLINE_MS = 20_000;
 
 type CosmosAttribute = { key: string; value: string };
 type CosmosEvent = { type: string; attributes?: CosmosAttribute[] };
@@ -38,6 +43,8 @@ export function defaultCosmosRestUrl(fuelProviderUrl: string): string {
 
 export class CosmosPoller {
   tip = 0;
+  /** When `tip` was last read from the chain; a stale value means the poller has stopped. */
+  tipAt: string | null = null;
   private timer: NodeJS.Timeout | null = null;
   private running = false;
 
@@ -67,6 +74,7 @@ export class CosmosPoller {
       const fetchImpl = this.opts.fetchImpl ?? fetch;
       try {
         this.tip = await fetchTip(fetchImpl, this.opts.restBase);
+        this.tipAt = new Date().toISOString();
       } catch (e) {
         this.opts.onLog?.(
           `CosmosPoller: tip fetch failed: ${(e as Error).message}`,
@@ -134,7 +142,34 @@ function flattenEvents(events: CosmosEvent[]): CosmosEventInput[] {
   return rows;
 }
 
-async function fetchTip(
+// Settles even when `work` never does; the abandoned promise is left pending.
+function withDeadline<T>(work: Promise<T>, ms: number): Promise<T> {
+  let timer: NodeJS.Timeout | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`no response after ${ms}ms`)),
+      ms,
+    );
+  });
+  return Promise.race([work, deadline]).finally(() => clearTimeout(timer));
+}
+
+function fetchTip(fetchImpl: typeof fetch, restBase: string): Promise<number> {
+  return withDeadline(requestTip(fetchImpl, restBase), FETCH_DEADLINE_MS);
+}
+
+function fetchTxs(
+  fetchImpl: typeof fetch,
+  restBase: string,
+  height: number,
+): Promise<{ total?: string; tx_responses: CosmosTxResponse[] }> {
+  return withDeadline(
+    requestTxs(fetchImpl, restBase, height),
+    FETCH_DEADLINE_MS,
+  );
+}
+
+async function requestTip(
   fetchImpl: typeof fetch,
   restBase: string,
 ): Promise<number> {
@@ -150,7 +185,7 @@ async function fetchTip(
   return height;
 }
 
-async function fetchTxs(
+async function requestTxs(
   fetchImpl: typeof fetch,
   restBase: string,
   height: number,

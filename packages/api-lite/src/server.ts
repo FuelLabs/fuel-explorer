@@ -18,7 +18,7 @@ import { type RestRouterDeps, handleRestRequest } from './rest/router';
 export type AppDeps = AppContext & {
   indexer?: Pick<Indexer, 'backfillPaused'>;
   blockSource?: 's3' | 'rpc';
-  cosmos?: Pick<CosmosPoller, 'cursor' | 'tip'>;
+  cosmos?: Pick<CosmosPoller, 'cursor' | 'tip' | 'tipAt'>;
   l1?: { enabled: boolean; cursors: () => Record<string, number> };
   staking?: RestRouterDeps['staking'];
   apy?: RestRouterDeps['apy'];
@@ -57,7 +57,11 @@ export function createApp(ctx: AppDeps) {
     hot: ctx.hot.counts(),
     rss: process.memoryUsage().rss,
     cosmos: ctx.cosmos
-      ? { cursor: ctx.cosmos.cursor, tip: ctx.cosmos.tip }
+      ? {
+          cursor: ctx.cosmos.cursor,
+          tip: ctx.cosmos.tip,
+          tipAt: ctx.cosmos.tipAt,
+        }
       : undefined,
     l1: ctx.l1
       ? { enabled: ctx.l1.enabled, cursors: ctx.l1.cursors() }
