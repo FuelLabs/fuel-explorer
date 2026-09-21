@@ -150,6 +150,12 @@ export const withdrawStatusDialogMachine = createMachine(
                       rates: (_, event) => event.data,
                     }),
                   },
+                  // Rates only feed the USD label. Without this the parallel
+                  // state never completes, `idle` is never reached, and
+                  // FINALIZE is dropped.
+                  onError: {
+                    target: 'success',
+                  },
                 },
               },
               success: {
