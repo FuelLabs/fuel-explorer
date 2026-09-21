@@ -150,6 +150,9 @@ export const withdrawStatusDialogMachine = createMachine(
                       rates: (_, event) => event.data,
                     }),
                   },
+                  onError: {
+                    target: 'success',
+                  },
                 },
               },
               success: {

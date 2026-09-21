@@ -311,6 +311,73 @@ describe('CosmosPoller', () => {
     expect(index.cursor()).toBe(cursorAfterFirst);
     expect(index.queryEvents({ type: 'delegate' })).toHaveLength(1);
   });
+
+  describe('when a response never settles', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    const never = () => new Promise<never>(() => {});
+
+    it('ends the tick on a tip body that never arrives, and the next tick runs', async () => {
+      const logs: string[] = [];
+      let hang = true;
+      const impl = jest.fn(async (url: string) => ({
+        ok: true,
+        json: () => {
+          if (url.includes('blocks/latest')) {
+            return hang ? never() : Promise.resolve(tipResponse(1));
+          }
+          return Promise.resolve(txsResponse([]));
+        },
+      }));
+      const poller = new CosmosPoller({
+        index,
+        restBase: REST_BASE,
+        startHeight: 1,
+        fetchImpl: impl as unknown as typeof fetch,
+        onLog: (m) => logs.push(m),
+      });
+
+      const first = poller.tick();
+      await jest.advanceTimersByTimeAsync(60_000);
+      await first;
+      expect(logs.join('\n')).toContain('tip fetch failed');
+      expect(poller.tipAt).toBeNull();
+
+      hang = false;
+      await poller.tick();
+      expect(index.cursor()).toBe(1);
+      expect(poller.tipAt).not.toBeNull();
+    });
+
+    it('ends the tick on a txs body that never arrives, without advancing the cursor', async () => {
+      const logs: string[] = [];
+      const impl = jest.fn(async (url: string) => ({
+        ok: true,
+        json: () =>
+          url.includes('blocks/latest')
+            ? Promise.resolve(tipResponse(5))
+            : never(),
+      }));
+      const poller = new CosmosPoller({
+        index,
+        restBase: REST_BASE,
+        startHeight: 1,
+        fetchImpl: impl as unknown as typeof fetch,
+        onLog: (m) => logs.push(m),
+      });
+
+      const first = poller.tick();
+      await jest.advanceTimersByTimeAsync(60_000);
+      await first;
+      expect(logs.join('\n')).toContain('txs fetch failed at height 1');
+      expect(index.cursor()).toBe(0);
+    });
+  });
 });
 
 describe('defaultCosmosRestUrl', () => {

@@ -4,6 +4,8 @@ const DEFAULT_POLL_MS = 5000;
 const MAX_HEIGHTS_PER_TICK = 50;
 const START_HEIGHT_LOOKBACK = 200_000;
 const FETCH_TIMEOUT_MS = 15_000;
+// A read can outlive its AbortSignal.timeout; tick() holds `running` until it settles.
+const FETCH_DEADLINE_MS = 20_000;
 
 type CosmosAttribute = { key: string; value: string };
 type CosmosEvent = { type: string; attributes?: CosmosAttribute[] };
@@ -38,6 +40,7 @@ export function defaultCosmosRestUrl(fuelProviderUrl: string): string {
 
 export class CosmosPoller {
   tip = 0;
+  tipAt: string | null = null;
   private timer: NodeJS.Timeout | null = null;
   private running = false;
 
@@ -66,7 +69,11 @@ export class CosmosPoller {
     try {
       const fetchImpl = this.opts.fetchImpl ?? fetch;
       try {
-        this.tip = await fetchTip(fetchImpl, this.opts.restBase);
+        this.tip = await withDeadline(
+          fetchTip(fetchImpl, this.opts.restBase),
+          FETCH_DEADLINE_MS,
+        );
+        this.tipAt = new Date().toISOString();
       } catch (e) {
         this.opts.onLog?.(
           `CosmosPoller: tip fetch failed: ${(e as Error).message}`,
@@ -88,7 +95,10 @@ export class CosmosPoller {
 
         let body: { total?: string; tx_responses: CosmosTxResponse[] };
         try {
-          body = await fetchTxs(fetchImpl, this.opts.restBase, height);
+          body = await withDeadline(
+            fetchTxs(fetchImpl, this.opts.restBase, height),
+            FETCH_DEADLINE_MS,
+          );
         } catch (e) {
           this.opts.onLog?.(
             `CosmosPoller: txs fetch failed at height ${height}: ${(e as Error).message}`,
@@ -132,6 +142,17 @@ function flattenEvents(events: CosmosEvent[]): CosmosEventInput[] {
     index++;
   }
   return rows;
+}
+
+function withDeadline<T>(work: Promise<T>, ms: number): Promise<T> {
+  let timer: NodeJS.Timeout | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`no response after ${ms}ms`)),
+      ms,
+    );
+  });
+  return Promise.race([work, deadline]).finally(() => clearTimeout(timer));
 }
 
 async function fetchTip(
