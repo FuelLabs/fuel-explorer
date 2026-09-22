@@ -56,6 +56,12 @@ function loadAbi(url: string) {
   return abi;
 }
 
+// Removes a cache entry only if it still holds this call, so a stale call
+// never evicts a newer one for the same account.
+function evict(key: string, call: Promise<boolean>) {
+  if (verifyCache.get(key) === call) verifyCache.delete(key);
+}
+
 // Dry-runs a read-only verifier method. Answers from the chain never change
 // for a given account, so they are cached for the session. A timeout or an
 // RPC error is not an answer: it resolves false for this page only.
@@ -64,13 +70,14 @@ const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
   let call = verifyCache.get(key);
   if (!call) {
     provider ??= new Provider(FUEL_CHAIN.providerUrl);
-    call = new Contract(contractId, abi, provider).functions[method]({
+    const started = new Contract(contractId, abi, provider).functions[method]({
       bits: child,
     })
       .get()
       .then(({ value }) => value === true);
-    verifyCache.set(key, call);
-    call.catch(() => verifyCache.delete(key));
+    verifyCache.set(key, started);
+    started.catch(() => evict(key, started));
+    call = started;
   }
 
   // Every caller gets its own timeout, including callers that reuse a call
@@ -80,7 +87,7 @@ const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<boolean>((resolve) => {
     timer = setTimeout(() => {
-      if (verifyCache.get(key) === pending) verifyCache.delete(key);
+      evict(key, pending);
       resolve(false);
     }, VERIFY_TIMEOUT_MS);
   });
