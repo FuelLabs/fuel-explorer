@@ -102,4 +102,37 @@ describe('buildTxActivity', () => {
       activity.actions.filter((a) => a.kind === 'call').map((a) => a.parts),
     ).toContainEqual([{ code: 'swap' }]);
   });
+
+  it('names order types that carry data', () => {
+    const decoded = (orderType: unknown) => ({
+      item: { receiptType: 'LOG_DATA' },
+      decoded: {
+        kind: 'log',
+        contractId: ORDER_BOOK,
+        name: 'OrderCreatedEvent',
+        value: {
+          order_id: '0x01',
+          order_side: 'Sell',
+          order_type: orderType,
+          quantity: '1',
+          price: '2',
+        },
+      },
+    });
+    const activity = buildTxActivity(
+      [
+        {
+          receipts: [
+            decoded({ Limit: ['2', { unix: '100' }] }),
+            decoded({ BoundedMarket: ['1', '3'] }),
+          ],
+        },
+      ],
+      registry,
+    );
+    expect(activity?.actions.map((a) => render(a.parts))).toEqual([
+      `Limit sell [1 ${BASE}] at [2 ${QUOTE}]`,
+      `Market sell [1 ${BASE}] receiving at least [2 ${QUOTE}]`,
+    ]);
+  });
 });

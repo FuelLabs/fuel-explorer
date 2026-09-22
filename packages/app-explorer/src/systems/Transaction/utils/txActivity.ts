@@ -55,6 +55,13 @@ function shortId(id: string) {
   return hex.length > 12 ? `0x${hex.slice(0, 8)}…${hex.slice(-4)}` : `0x${hex}`;
 }
 
+// Unit enum variants decode as strings; variants with data decode as
+// `{ Variant: data }`.
+function variantName(value: unknown) {
+  if (value && typeof value === 'object') return Object.keys(value)[0] ?? '';
+  return String(value);
+}
+
 function isZero(value?: string) {
   return !value || /^0+$/.test(value);
 }
@@ -110,8 +117,8 @@ const DESCRIBERS: Record<
   ) => Pick<ActivityAction, 'kind' | 'label' | 'parts'> | null
 > = {
   OrderCreatedEvent: (v, ctx) => {
-    const side = String(v.order_side).toLowerCase();
-    const type = String(v.order_type);
+    const side = variantName(v.order_side).toLowerCase();
+    const type = variantName(v.order_type);
     const isMarket = type === 'Market' || type === 'BoundedMarket';
     const priceWord = isMarket
       ? side === 'buy'
@@ -183,7 +190,9 @@ const DESCRIBERS: Record<
     kind: 'trigger',
     label: 'Trigger order placed',
     parts: [
-      text(`${String(v.order_side).toLowerCase()} when the price reaches `),
+      text(
+        `${variantName(v.order_side).toLowerCase()} when the price reaches `,
+      ),
       quoteAmount(v.trigger_price, ctx),
     ],
   }),
@@ -293,7 +302,7 @@ export function buildTxActivity(
   for (const d of decoded) {
     const v = d.value as Value;
     if (d.name === 'OrderCreatedEvent') {
-      createdSides[v.order_id] = String(v.order_side);
+      createdSides[v.order_id] = variantName(v.order_side);
     }
   }
 
