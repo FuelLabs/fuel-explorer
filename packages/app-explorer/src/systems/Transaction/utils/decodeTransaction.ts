@@ -61,23 +61,30 @@ function loadAbi(url: string) {
 // RPC error is not an answer: it resolves false for this page only.
 const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
   const key = `${contractId}:${method}:${child}`;
-  const cached = verifyCache.get(key);
-  if (cached) return cached;
+  let call = verifyCache.get(key);
+  if (!call) {
+    provider ??= new Provider(FUEL_CHAIN.providerUrl);
+    call = new Contract(contractId, abi, provider).functions[method]({
+      bits: child,
+    })
+      .get()
+      .then(({ value }) => value === true);
+    verifyCache.set(key, call);
+    call.catch(() => verifyCache.delete(key));
+  }
 
-  provider ??= new Provider(FUEL_CHAIN.providerUrl);
-  const call = new Contract(contractId, abi, provider).functions[method]({
-    bits: child,
-  })
-    .get()
-    .then(({ value }) => value === true);
-  verifyCache.set(key, call);
-  call.catch(() => verifyCache.delete(key));
-
+  // Every caller gets its own timeout, including callers that reuse a call
+  // still in flight. A call that times out is dropped so the next page
+  // starts a fresh one.
+  const pending = call;
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<boolean>((resolve) => {
-    timer = setTimeout(() => resolve(false), VERIFY_TIMEOUT_MS);
+    timer = setTimeout(() => {
+      if (verifyCache.get(key) === pending) verifyCache.delete(key);
+      resolve(false);
+    }, VERIFY_TIMEOUT_MS);
   });
-  return Promise.race([call, timeout])
+  return Promise.race([pending, timeout])
     .catch(() => false)
     .finally(() => clearTimeout(timer));
 };
