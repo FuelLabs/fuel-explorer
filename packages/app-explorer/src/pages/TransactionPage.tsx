@@ -134,7 +134,8 @@ export function TransactionPage() {
 
   // Check if Simple view is available
   const isSimpleDisabled =
-    !transaction?.summary || transaction.summary.length === 0;
+    !transaction?.activity &&
+    (!transaction?.summary || transaction.summary.length === 0);
 
   // If Simple is disabled and user requested simple, redirect to standard
   // Use navigate instead of Navigate to avoid flash

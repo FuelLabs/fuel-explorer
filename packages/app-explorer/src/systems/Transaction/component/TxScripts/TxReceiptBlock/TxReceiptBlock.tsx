@@ -7,6 +7,11 @@ import { parseTXScriptJson } from '~/systems/Transaction/component/TxScripts/uti
 
 import { styles } from './styles';
 
+const DECODED_FIELDS = ['decoded', 'arguments', 'data'];
+
+const expandDecoded = (level: number, _value: unknown, field?: string) =>
+  level === 0 || (level <= 2 && DECODED_FIELDS.includes(field ?? ''));
+
 export function TxReceiptBlock() {
   const { receipt } = useContext(ReceiptContext);
   const classes = styles();
@@ -17,7 +22,26 @@ export function TxReceiptBlock() {
       className={classes.utxos()}
     >
       <ScrollArea style={{ width }}>
-        <JsonViewer data={parseTXScriptJson(receipt?.item)} />
+        <JsonViewer
+          shouldExpandNode={expandDecoded}
+          data={
+            receipt?.decoded
+              ? {
+                  decoded: {
+                    contract: receipt.decoded.contractName,
+                    [receipt.decoded.kind === 'call' ? 'method' : 'event']:
+                      receipt.decoded.name,
+                    [receipt.decoded.contractName
+                      ? receipt.decoded.kind === 'call'
+                        ? 'arguments'
+                        : 'data'
+                      : 'callData']: receipt.decoded.value,
+                  },
+                  ...parseTXScriptJson(receipt.item),
+                }
+              : parseTXScriptJson(receipt?.item)
+          }
+        />
       </ScrollArea>
     </Collapsible.Content>
   );

@@ -1,0 +1,3132 @@
+{
+  "programType": "contract",
+  "specVersion": "1.2",
+  "encodingVersion": "1",
+  "concreteTypes": [
+    {
+      "type": "()",
+      "concreteTypeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+    },
+    {
+      "type": "(b256, b256)",
+      "concreteTypeId": "bc42ec26f2a17c5b23fc007d96b96bf35f8949ee156afdd789064210d881f7e0",
+      "metadataTypeId": 2
+    },
+    {
+      "type": "(b256, b256, enum std::option::Option<b256>)",
+      "concreteTypeId": "cdeacf58742dab0aa73fcb9b540d076dab5973f18c48cdd27818f72784feb6f2",
+      "metadataTypeId": 3
+    },
+    {
+      "type": "(u64, struct std::time::Time)",
+      "concreteTypeId": "3639c0c1fb291a3e7e7ab4d9fe1d6762d6ff0fde0777d0ef8f3799d2f3d70a95",
+      "metadataTypeId": 1
+    },
+    {
+      "type": "(u64, u64)",
+      "concreteTypeId": "41bd1a98f0a59642d8f824c805b798a5f268d1f7d05808eb05c4189c493f1be0",
+      "metadataTypeId": 0
+    },
+    {
+      "type": "b256",
+      "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+    },
+    {
+      "type": "bool",
+      "concreteTypeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903"
+    },
+    {
+      "type": "enum contract_libs::access_control::AccessControlError",
+      "concreteTypeId": "2285ad920393160f43816bfa64a891b1956e2bbd066346d01638db4aaa81cfb9",
+      "metadataTypeId": 4
+    },
+    {
+      "type": "enum contract_schema::order_book::FeeError",
+      "concreteTypeId": "41ffdde08d41a5769627d4e77a60cbf9ef0a0e9194114652b57247e64a9ce7f0",
+      "metadataTypeId": 6
+    },
+    {
+      "type": "enum contract_schema::order_book::OrderBookInitializationError",
+      "concreteTypeId": "7beea8d3e75df4e367b45e1567e03c81f969faef517cea9a4ff938fed6ee9f6a",
+      "metadataTypeId": 7
+    },
+    {
+      "type": "enum contract_schema::order_book::OrderCancelError",
+      "concreteTypeId": "0e7d0742559c4d2c273298fdc0b9b7e9b07f7f944855ca3020dba8617515e2f0",
+      "metadataTypeId": 8
+    },
+    {
+      "type": "enum contract_schema::order_book::OrderCreationError",
+      "concreteTypeId": "a700a0d30e8d2803040dc79b7b7b259d0c308ca5187f6c742da1df21c27bf24a",
+      "metadataTypeId": 9
+    },
+    {
+      "type": "enum contract_schema::order_book::Side",
+      "concreteTypeId": "9a10e2c94a13825d2af23f4a4743379feba2acfcec8e2d775e945c5452e84708",
+      "metadataTypeId": 11
+    },
+    {
+      "type": "enum contract_schema::order_book::TriggerOrderCancelError",
+      "concreteTypeId": "a4c1f16008f794e4bb5f1e3dee0e961b2c480dad11ea5b89fc2eacfe38631db5",
+      "metadataTypeId": 12
+    },
+    {
+      "type": "enum contract_schema::order_book::TriggerOrderCreationError",
+      "concreteTypeId": "15a4dcc6afac3f5e9d69383292c88895475737c599b518309c34cf8c1104f8f5",
+      "metadataTypeId": 13
+    },
+    {
+      "type": "enum ownership::errors::InitializationError",
+      "concreteTypeId": "b1fddf488ccb9e63d11888b2750bbd1280a1ae1c49f2d6637fd4cf1e930d1468",
+      "metadataTypeId": 16
+    },
+    {
+      "type": "enum pausable::errors::PauseError",
+      "concreteTypeId": "455b46a49016f5c03c18ce54b969ea3d0d33c9b00263b3dcc36aa8da27558b8a",
+      "metadataTypeId": 17
+    },
+    {
+      "type": "enum src5::AccessError",
+      "concreteTypeId": "f1247475d0d1466599267010f088190f8664dd31663a40c5d5e525d8e64b995d",
+      "metadataTypeId": 18
+    },
+    {
+      "type": "enum src5::State",
+      "concreteTypeId": "287a382c1e0b1f11d12a422e77a248d27761327cd17515cc6e6369d528cf31ca",
+      "metadataTypeId": 19
+    },
+    {
+      "type": "enum std::identity::Identity",
+      "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335",
+      "metadataTypeId": 20
+    },
+    {
+      "type": "enum std::option::Option<(u64, u64)>",
+      "concreteTypeId": "19242ae35d869d7b20e980d4748dd1553fc96476a763b9169f74d949f3d3ecfb",
+      "metadataTypeId": 21,
+      "typeArguments": [
+        "41bd1a98f0a59642d8f824c805b798a5f268d1f7d05808eb05c4189c493f1be0"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<b256>",
+      "concreteTypeId": "0c2beb9013490c4f753f2757dfe2d8340b22ce3827d596d81d249b7038033cb6",
+      "metadataTypeId": 21,
+      "typeArguments": [
+        "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<struct contract_schema::order_book::Order>",
+      "concreteTypeId": "6cbb9ddffc993ba68abb27bb88aae72e4d50123c3fc8f05d663246d7c9f70724",
+      "metadataTypeId": 21,
+      "typeArguments": [
+        "8269f147d8b1fed93590ca56380b11413a1bed10c13c00627a887a6a5e042cea"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<struct contract_schema::order_book::TriggerOrder>",
+      "concreteTypeId": "aa46988b96e71d9a5994f2807f743c9a360e72be8e9865141192345e539187f5",
+      "metadataTypeId": 21,
+      "typeArguments": [
+        "4cf39a60821b204ac155fe0a818c69e2008c926cb1903b2215dc08bec937dd21"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<struct contract_schema::order_book::TriggerOrderArgs>",
+      "concreteTypeId": "020bfa2968cbf7600b3752287637e71587b0f46760ffdf0a977421343746b5c8",
+      "metadataTypeId": 21,
+      "typeArguments": [
+        "e915e400fd7cca76151cd63ea4a84d70d906ea97663b011363db9271072cad74"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<struct std::contract_id::ContractId>",
+      "concreteTypeId": "0d79387ad3bacdc3b7aad9da3a96f4ce60d9a1b6002df254069ad95a3931d5c8",
+      "metadataTypeId": 21,
+      "typeArguments": [
+        "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<u64>",
+      "concreteTypeId": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
+      "metadataTypeId": 21,
+      "typeArguments": [
+        "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+      ]
+    },
+    {
+      "type": "str[10]",
+      "concreteTypeId": "338a25cb65b9251663dcce6362b744fe10aa849758299590f4efed5dd299bf50"
+    },
+    {
+      "type": "struct contract_libs::access_control::RoleGrantedEvent",
+      "concreteTypeId": "564661938244954c8836434b2cf26c3495e0538f78f281fc531f82003ef55d42",
+      "metadataTypeId": 24
+    },
+    {
+      "type": "struct contract_libs::access_control::RoleRevokedEvent",
+      "concreteTypeId": "e3693daf8fe6223e6a97667025b9fc906b02ca79ea87b1376058b0be52c7778d",
+      "metadataTypeId": 25
+    },
+    {
+      "type": "struct contract_schema::order_book::ExpireMakerEvent",
+      "concreteTypeId": "937c43727e43c6ad683c47ad69885cf2783ecf73d59460fe1d7033a78ad5963c",
+      "metadataTypeId": 26
+    },
+    {
+      "type": "struct contract_schema::order_book::FeesClaimedEvent",
+      "concreteTypeId": "2e0368c222981c3e3cbba54d7dafbda77dd2c48809b2fd989773b4ae092d8b47",
+      "metadataTypeId": 27
+    },
+    {
+      "type": "struct contract_schema::order_book::FeesCollectedEvent",
+      "concreteTypeId": "814befd15e7d0ec83c54b78f1248f65890b6e4db618d7f067940385064ae00fa",
+      "metadataTypeId": 28
+    },
+    {
+      "type": "struct contract_schema::order_book::Order",
+      "concreteTypeId": "8269f147d8b1fed93590ca56380b11413a1bed10c13c00627a887a6a5e042cea",
+      "metadataTypeId": 30
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderArgs",
+      "concreteTypeId": "027cfee5b9839be8e12b3b56eaf1315f269a86a23ae0a392f084185f7b54a410",
+      "metadataTypeId": 31
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookBlacklistEvent",
+      "concreteTypeId": "15e58f365af5d32c8a830ec43e70fce6cfbad16f88ed89b35bb7878f15f5b75d",
+      "metadataTypeId": 32
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookConfigEvent",
+      "concreteTypeId": "0959a811c54f76a36f4b1ca7a14729eba6801a5c03356f2cfb12233f574d0ce2",
+      "metadataTypeId": 33
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookSymbolsEvent",
+      "concreteTypeId": "99b332e010c1fe173601492be1e50767afba39d95f5aebb83f07fdf4c2103104",
+      "metadataTypeId": 34
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookWhitelistEvent",
+      "concreteTypeId": "39cbf43d52ecef8290e4f6e639a22b50f2ea8ce7d673930c83622422c7653026",
+      "metadataTypeId": 35
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderCancelledEvent",
+      "concreteTypeId": "82fb068ba8a0739f1b0a907ff1fbcbc8b1e5a31d5a2f1b46742e4c5fca967c18",
+      "metadataTypeId": 36
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderCancelledInternalEvent",
+      "concreteTypeId": "6e6744800e6fc84d4680e9492774bc9e0cab52bb665d518bdfd2ba21b3a4866c",
+      "metadataTypeId": 37
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderCreatedEvent",
+      "concreteTypeId": "df21162bb6a03b08040f043d238f4b5275e591737c8b5f068f7422be87168258",
+      "metadataTypeId": 38
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderHaltedEvent",
+      "concreteTypeId": "704d11e3abffc019b7c89fea24cbc379742ed0dc7ddc01c5425a143c1f0bc2b8",
+      "metadataTypeId": 39
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderMatchedEvent",
+      "concreteTypeId": "cd2ccf60c8a1d69c9f5a8c9d17ec658f09cd58dac7f0f991a3ce3161c494ea88",
+      "metadataTypeId": 40
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderOutOfGasEvent",
+      "concreteTypeId": "d7fc4e0e366f46285d7ebf08fe5d7a450b649532159d67ce60a329a2d468c5c1",
+      "metadataTypeId": 41
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderTooSmallEvent",
+      "concreteTypeId": "2fed5c339537969e7d6569d8f1607e8476b5829cc3ef3185c9c4ae8f3a4f5edd",
+      "metadataTypeId": 42
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrder",
+      "concreteTypeId": "4cf39a60821b204ac155fe0a818c69e2008c926cb1903b2215dc08bec937dd21",
+      "metadataTypeId": 43
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrderArgs",
+      "concreteTypeId": "e915e400fd7cca76151cd63ea4a84d70d906ea97663b011363db9271072cad74",
+      "metadataTypeId": 44
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrderCreatedEvent",
+      "concreteTypeId": "e668619391f65f6ddbe3de3cfd8a1777035887bc8bbb31c7847131031159841a",
+      "metadataTypeId": 45
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrderEjectedEvent",
+      "concreteTypeId": "962f5e9ef1b8222269128afe35ff4d3241c140c267d673365de624d353b563c8",
+      "metadataTypeId": 46
+    },
+    {
+      "type": "struct contract_schema::order_book::WithdrawSettledTradeEvent",
+      "concreteTypeId": "b145f499e90557447a26156cda458d1c0284a487ef8b8a90646411a33ee5e241",
+      "metadataTypeId": 47
+    },
+    {
+      "type": "struct ownership::events::OwnershipSet",
+      "concreteTypeId": "8c0d2488561c35a28ef795bb8bcc4c43999cdd1e3ecbd10c226e0a68660c54d4",
+      "metadataTypeId": 48
+    },
+    {
+      "type": "struct ownership::events::OwnershipTransferred",
+      "concreteTypeId": "a2a2643e0252b510328c0323a0ea60724fb4cb3309a2322ab31b27566ff9a79d",
+      "metadataTypeId": 49
+    },
+    {
+      "type": "struct pausable::events::PauseEvent",
+      "concreteTypeId": "692983a9aba767e36b5014d3eb842447c736e341cc3b30fcb051b1f5a3d5f80a",
+      "metadataTypeId": 50
+    },
+    {
+      "type": "struct pausable::events::UnpauseEvent",
+      "concreteTypeId": "0026d386ad84e75b525bec3e7c8b6a63df3fcd108a8c4b26438c8a7a2e2c218b",
+      "metadataTypeId": 51
+    },
+    {
+      "type": "struct std::asset_id::AssetId",
+      "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+      "metadataTypeId": 53
+    },
+    {
+      "type": "struct std::contract_id::ContractId",
+      "concreteTypeId": "29c10735d33b5159f0c71ee1dbd17b36a3e69e41f00fab0d42e1bd9f428d8a54",
+      "metadataTypeId": 56
+    },
+    {
+      "type": "struct std::vec::Vec<b256>",
+      "concreteTypeId": "32559685d0c9845f059bf9d472a0a38cf77d36c23dfcffe5489e86a65cdd9198",
+      "metadataTypeId": 60,
+      "typeArguments": [
+        "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+      ]
+    },
+    {
+      "type": "struct std::vec::Vec<enum std::identity::Identity>",
+      "concreteTypeId": "2f79033d0d3729398611309f48578b56cf5162ba85e50f4d8fb79c9d9d1abc7b",
+      "metadataTypeId": 60,
+      "typeArguments": [
+        "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+      ]
+    },
+    {
+      "type": "struct std::vec::Vec<struct contract_schema::order_book::Order>",
+      "concreteTypeId": "d390c7062efc85cc0e3e0a9339016565cda69d055c218f82d362776998f4e505",
+      "metadataTypeId": 60,
+      "typeArguments": [
+        "8269f147d8b1fed93590ca56380b11413a1bed10c13c00627a887a6a5e042cea"
+      ]
+    },
+    {
+      "type": "struct std::vec::Vec<struct contract_schema::order_book::TriggerOrder>",
+      "concreteTypeId": "90bd4a53a7770f92afd12f9ceaea3e7f99a6c46d42d3ddedeef0874b7be6c92a",
+      "metadataTypeId": 60,
+      "typeArguments": [
+        "4cf39a60821b204ac155fe0a818c69e2008c926cb1903b2215dc08bec937dd21"
+      ]
+    },
+    {
+      "type": "u256",
+      "concreteTypeId": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e"
+    },
+    {
+      "type": "u64",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+    }
+  ],
+  "metadataTypes": [
+    {
+      "type": "(_, _)",
+      "metadataTypeId": 0,
+      "components": [
+        {
+          "name": "__tuple_element",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "__tuple_element",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "(_, _)",
+      "metadataTypeId": 1,
+      "components": [
+        {
+          "name": "__tuple_element",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "__tuple_element", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "(_, _)",
+      "metadataTypeId": 2,
+      "components": [
+        {
+          "name": "__tuple_element",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "__tuple_element",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "(_, _, _)",
+      "metadataTypeId": 3,
+      "components": [
+        {
+          "name": "__tuple_element",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "__tuple_element",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "__tuple_element",
+          "typeId": 21,
+          "typeArguments": [
+            {
+              "name": "",
+              "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "enum contract_libs::access_control::AccessControlError",
+      "metadataTypeId": 4,
+      "components": [
+        {
+          "name": "AccessControlNotAuthorized",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "AccessControlNoMsgSender",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "AccessControlRoleOutOfBounds",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::EjectionReason",
+      "metadataTypeId": 5,
+      "components": [
+        {
+          "name": "Activated",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "CanceledByTheUser",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ForceCanceled",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "SiblingOrderActivated",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "NotEnoughFunds",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "EjectedByAdmin",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ParentOrderCanceled",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::FeeError",
+      "metadataTypeId": 6,
+      "components": [
+        {
+          "name": "NoFeesAvailable",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::OrderBookInitializationError",
+      "metadataTypeId": 7,
+      "components": [
+        {
+          "name": "InvalidAsset",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidDecimals",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidPriceWindow",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidPricePrecision",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "OwnerNotSet",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidMinOrder",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidTriggerMaxSlippage",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::OrderCancelError",
+      "metadataTypeId": 8,
+      "components": [
+        {
+          "name": "NotOrderOwner",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TraderNotBlacklisted",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "NoBlacklist",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::OrderCreationError",
+      "metadataTypeId": 9,
+      "components": [
+        {
+          "name": "InvalidOrderArgs",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidInputAmount",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidAsset",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "PriceExceedsRange",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "PricePrecision",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        { "name": "InvalidHeapPrices", "typeId": 0 },
+        {
+          "name": "FractionalPrice",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "OrderNotFilled",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "OrderPartiallyFilled",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TraderNotWhiteListed",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TraderBlackListed",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidMarketOrder",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidMarketOrderArgs",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::OrderType",
+      "metadataTypeId": 10,
+      "components": [
+        { "name": "Limit", "typeId": 1 },
+        {
+          "name": "Spot",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "FillOrKill",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "PostOnly",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "Market",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        { "name": "BoundedMarket", "typeId": 0 }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::Side",
+      "metadataTypeId": 11,
+      "components": [
+        {
+          "name": "Buy",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "Sell",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::TriggerOrderCancelError",
+      "metadataTypeId": 12,
+      "components": [
+        {
+          "name": "NotOrderOwner",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TraderNotBlacklisted",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "OrderDoesNotExist",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::TriggerOrderCreationError",
+      "metadataTypeId": 13,
+      "components": [
+        {
+          "name": "InvalidArgs",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "PricePrecision",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidOrderType",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidMarketOrderArgs",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "FractionalPrice",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidAsset",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidInputAmount",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ZeroTriggerPrice",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ZeroLimitPrice",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "QuantityMustBeParentOrder",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ZeroResolvedQtyOrPrice",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "InvalidParentOrderId",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ParentOrderIsNotSpot",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ParentOrderFilled",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ParentOrderNotFound",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ParentTriggerSlotsExhausted",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ParentOrderOwnerMismatch",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TriggerPriceSameAsParent",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TriggerSideSameAsParent",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "SlippageExceedsMax",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "OcoSameTriggerPrice",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "OcoNotStopAndTakeProfit",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "LimitPriceCrossesParent",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "ParentQuantityMismatch",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TraderNotWhiteListed",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "TraderBlackListed",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::TriggerOrderType",
+      "metadataTypeId": 14,
+      "components": [
+        {
+          "name": "Market",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        { "name": "MarketBounded", "typeId": 0 },
+        {
+          "name": "Spot",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "enum contract_schema::order_book::TriggerQuantity",
+      "metadataTypeId": 15,
+      "components": [
+        {
+          "name": "Quantity",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "ParentOrder",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "enum ownership::errors::InitializationError",
+      "metadataTypeId": 16,
+      "components": [
+        {
+          "name": "CannotReinitialized",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum pausable::errors::PauseError",
+      "metadataTypeId": 17,
+      "components": [
+        {
+          "name": "Paused",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "NotPaused",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum src5::AccessError",
+      "metadataTypeId": 18,
+      "components": [
+        {
+          "name": "NotOwner",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum src5::State",
+      "metadataTypeId": 19,
+      "components": [
+        {
+          "name": "Uninitialized",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        { "name": "Initialized", "typeId": 20 },
+        {
+          "name": "Revoked",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        }
+      ]
+    },
+    {
+      "type": "enum std::identity::Identity",
+      "metadataTypeId": 20,
+      "components": [
+        { "name": "Address", "typeId": 52 },
+        { "name": "ContractId", "typeId": 56 }
+      ]
+    },
+    {
+      "type": "enum std::option::Option",
+      "metadataTypeId": 21,
+      "components": [
+        {
+          "name": "None",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        { "name": "Some", "typeId": 22 }
+      ],
+      "typeParameters": [22]
+    },
+    { "type": "generic T", "metadataTypeId": 22 },
+    { "type": "raw untyped ptr", "metadataTypeId": 23 },
+    {
+      "type": "struct contract_libs::access_control::RoleGrantedEvent",
+      "metadataTypeId": 24,
+      "components": [
+        {
+          "name": "role",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "account", "typeId": 20 }
+      ]
+    },
+    {
+      "type": "struct contract_libs::access_control::RoleRevokedEvent",
+      "metadataTypeId": 25,
+      "components": [
+        {
+          "name": "role",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "account", "typeId": 20 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::ExpireMakerEvent",
+      "metadataTypeId": 26,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::FeesClaimedEvent",
+      "metadataTypeId": 27,
+      "components": [
+        {
+          "name": "base_fees",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "quote_fees",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::FeesCollectedEvent",
+      "metadataTypeId": 28,
+      "components": [
+        {
+          "name": "base_fees",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "quote_fees",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::MatchId",
+      "metadataTypeId": 29,
+      "components": [
+        {
+          "name": "maker_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "taker_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::Order",
+      "metadataTypeId": 30,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "trader_id", "typeId": 20 },
+        { "name": "side", "typeId": 11 },
+        {
+          "name": "price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "quantity",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "order_type", "typeId": 10 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderArgs",
+      "metadataTypeId": 31,
+      "components": [
+        {
+          "name": "price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "quantity",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "order_type", "typeId": 10 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookBlacklistEvent",
+      "metadataTypeId": 32,
+      "components": [
+        {
+          "name": "blacklist",
+          "typeId": 21,
+          "typeArguments": [{ "name": "", "typeId": 56 }]
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookConfigEvent",
+      "metadataTypeId": 33,
+      "components": [
+        { "name": "base_asset", "typeId": 53 },
+        { "name": "quote_asset", "typeId": 53 },
+        {
+          "name": "base_decimals",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "quote_decimals",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "min_order",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "maker_fee",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "taker_fee",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "price_precision",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "quantity_precision",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "price_window",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "dust",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "allow_fractional_price",
+          "typeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903"
+        },
+        {
+          "name": "trigger_max_slippage",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookSymbolsEvent",
+      "metadataTypeId": 34,
+      "components": [
+        { "name": "base_symbol", "typeId": 57 },
+        { "name": "quote_symbol", "typeId": 57 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderBookWhitelistEvent",
+      "metadataTypeId": 35,
+      "components": [
+        {
+          "name": "whitelist",
+          "typeId": 21,
+          "typeArguments": [{ "name": "", "typeId": 56 }]
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderCancelledEvent",
+      "metadataTypeId": 36,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderCancelledInternalEvent",
+      "metadataTypeId": 37,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderCreatedEvent",
+      "metadataTypeId": 38,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "trader_id", "typeId": 20 },
+        { "name": "order_side", "typeId": 11 },
+        { "name": "order_type", "typeId": 10 },
+        {
+          "name": "quantity",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderHaltedEvent",
+      "metadataTypeId": 39,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        {
+          "name": "remaining_quantity",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderMatchedEvent",
+      "metadataTypeId": 40,
+      "components": [
+        { "name": "match_id", "typeId": 29 },
+        {
+          "name": "quantity",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderOutOfGasEvent",
+      "metadataTypeId": 41,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::OrderTooSmallEvent",
+      "metadataTypeId": 42,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "timestamp", "typeId": 58 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrder",
+      "metadataTypeId": 43,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "trader_id", "typeId": 20 },
+        { "name": "side", "typeId": 11 },
+        {
+          "name": "price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "quantity", "typeId": 15 },
+        { "name": "order_type", "typeId": 14 },
+        {
+          "name": "trigger_price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrderArgs",
+      "metadataTypeId": 44,
+      "components": [
+        { "name": "quantity", "typeId": 15 },
+        { "name": "order_type", "typeId": 14 },
+        {
+          "name": "trigger_price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrderCreatedEvent",
+      "metadataTypeId": 45,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "trader_id", "typeId": 20 },
+        { "name": "order_side", "typeId": 11 },
+        { "name": "order_type", "typeId": 14 },
+        { "name": "quantity", "typeId": 15 },
+        {
+          "name": "trigger_price",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        { "name": "timestamp", "typeId": 58 },
+        {
+          "name": "sibling_order",
+          "typeId": 21,
+          "typeArguments": [
+            {
+              "name": "",
+              "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::TriggerOrderEjectedEvent",
+      "metadataTypeId": 46,
+      "components": [
+        {
+          "name": "order_id",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        },
+        { "name": "reason", "typeId": 5 }
+      ]
+    },
+    {
+      "type": "struct contract_schema::order_book::WithdrawSettledTradeEvent",
+      "metadataTypeId": 47,
+      "components": [
+        { "name": "trader_id", "typeId": 20 },
+        {
+          "name": "base_amount",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "quote_amount",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct ownership::events::OwnershipSet",
+      "metadataTypeId": 48,
+      "components": [{ "name": "new_owner", "typeId": 20 }]
+    },
+    {
+      "type": "struct ownership::events::OwnershipTransferred",
+      "metadataTypeId": 49,
+      "components": [
+        { "name": "new_owner", "typeId": 20 },
+        { "name": "previous_owner", "typeId": 20 }
+      ]
+    },
+    {
+      "type": "struct pausable::events::PauseEvent",
+      "metadataTypeId": 50,
+      "components": [{ "name": "caller", "typeId": 20 }]
+    },
+    {
+      "type": "struct pausable::events::UnpauseEvent",
+      "metadataTypeId": 51,
+      "components": [{ "name": "caller", "typeId": 20 }]
+    },
+    {
+      "type": "struct std::address::Address",
+      "metadataTypeId": 52,
+      "components": [
+        {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct std::asset_id::AssetId",
+      "metadataTypeId": 53,
+      "components": [
+        {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct std::bytes::Bytes",
+      "metadataTypeId": 54,
+      "components": [
+        { "name": "buf", "typeId": 55 },
+        {
+          "name": "len",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct std::bytes::RawBytes",
+      "metadataTypeId": 55,
+      "components": [
+        { "name": "ptr", "typeId": 23 },
+        {
+          "name": "cap",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct std::contract_id::ContractId",
+      "metadataTypeId": 56,
+      "components": [
+        {
+          "name": "bits",
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ]
+    },
+    {
+      "type": "struct std::string::String",
+      "metadataTypeId": 57,
+      "components": [{ "name": "bytes", "typeId": 54 }]
+    },
+    {
+      "type": "struct std::time::Time",
+      "metadataTypeId": 58,
+      "components": [
+        {
+          "name": "unix",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ]
+    },
+    {
+      "type": "struct std::vec::RawVec",
+      "metadataTypeId": 59,
+      "components": [
+        { "name": "ptr", "typeId": 23 },
+        {
+          "name": "cap",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ],
+      "typeParameters": [22]
+    },
+    {
+      "type": "struct std::vec::Vec",
+      "metadataTypeId": 60,
+      "components": [
+        {
+          "name": "buf",
+          "typeId": 59,
+          "typeArguments": [{ "name": "", "typeId": 22 }]
+        },
+        {
+          "name": "len",
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ],
+      "typeParameters": [22]
+    }
+  ],
+  "functions": [
+    {
+      "name": "acceptable_market_sell",
+      "inputs": [
+        {
+          "name": "base_amount",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "best_bid",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ],
+      "output": "19242ae35d869d7b20e980d4748dd1553fc96476a763b9169f74d949f3d3ecfb",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "cancel_order",
+      "inputs": [
+        {
+          "name": "order_id",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "output": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903",
+      "attributes": [
+        { "name": "doc-comment", "arguments": [" Cancels an active order."] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Only the original trader who created the order can cancel it."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `order_id` - The unique identifier of the order to cancel"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Context Requirements"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `msg_sender` - Must match the trader_id of the order being cancelled"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `bool` - True if cancellation was successful, false otherwise"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Storage Access"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - Reads: Order details to verify ownership (trader_id) and status"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - Writes: Updates order status and removes from active order book"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Security"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - Verifies that msg_sender == order.trader_id before allowing cancellation"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Events"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - Emits `OrderCancelledEvent` on successful cancellation"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - If msg_sender != order.trader_id (unauthorized cancellation attempt)"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" - If the order book is paused"]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Invalid, missing, already executed, or already cancelled order IDs return `false`."
+          ]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "create_order",
+      "inputs": [
+        {
+          "name": "order_args",
+          "concreteTypeId": "027cfee5b9839be8e12b3b56eaf1315f269a86a23ae0a392f084185f7b54a410"
+        }
+      ],
+      "output": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Creates a new order in the order book."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " The order type (buy/sell) is automatically determined from the asset being sent."
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " If the order can be immediately matched with existing orders, it will be executed."
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Otherwise, it will be added to the order book as an active order."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `order` - OrderArgs pub struct containing:"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - `price`: The limit price for the order"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - `quantity`: The amount to buy or sell"]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Context Requirements"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `msg_sender` - The trader's identity (automatically captured from transaction context)"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `msg_asset_id` - Determines the order type:"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            "   - If QUOTE_ASSET is sent → Buy order (buying base with quote)"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            "   - If BASE_ASSET is sent → Sell order (selling base for quote)"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `msg_amount` - The amount of asset being sent:"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            "   - For buy orders: quote amount (should equal quantity * price)"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            "   - For sell orders: base amount (should equal quantity)"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `OrderId` - Unique identifier for the created order"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Storage Access"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - Reads: Current order book state to check for matches"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - Writes: Updates order book with new order or executes trades"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Events"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - Emits `OrderCreatedEvent` if order is added to book"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" - Emits `OrderMatchedEvent` for each match executed"]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" - If quantity is zero"] },
+        { "name": "doc-comment", "arguments": [" - If price is zero"] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " - If msg_asset_id is neither BASE_ASSET nor QUOTE_ASSET"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" - If msg_amount doesn't match expected amount:"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - Buy orders: msg_amount != quantity * price"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - Sell orders: msg_amount != quantity"]
+        },
+        { "name": "storage", "arguments": ["read", "write"] },
+        { "name": "payable", "arguments": [] }
+      ]
+    },
+    {
+      "name": "create_order_with_triggers",
+      "inputs": [
+        {
+          "name": "order_args",
+          "concreteTypeId": "027cfee5b9839be8e12b3b56eaf1315f269a86a23ae0a392f084185f7b54a410"
+        },
+        {
+          "name": "trigger_1",
+          "concreteTypeId": "e915e400fd7cca76151cd63ea4a84d70d906ea97663b011363db9271072cad74"
+        },
+        {
+          "name": "trigger_2",
+          "concreteTypeId": "020bfa2968cbf7600b3752287637e71587b0f46760ffdf0a977421343746b5c8"
+        }
+      ],
+      "output": "cdeacf58742dab0aa73fcb9b540d076dab5973f18c48cdd27818f72784feb6f2",
+      "attributes": [
+        { "name": "storage", "arguments": ["read", "write"] },
+        { "name": "payable", "arguments": [] }
+      ]
+    },
+    {
+      "name": "create_trigger_order",
+      "inputs": [
+        {
+          "name": "trigger_order",
+          "concreteTypeId": "e915e400fd7cca76151cd63ea4a84d70d906ea97663b011363db9271072cad74"
+        },
+        {
+          "name": "expected_parent_quantity",
+          "concreteTypeId": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d"
+        }
+      ],
+      "output": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b",
+      "attributes": [
+        { "name": "storage", "arguments": ["read", "write"] },
+        { "name": "payable", "arguments": [] }
+      ]
+    },
+    {
+      "name": "create_trigger_orders",
+      "inputs": [
+        {
+          "name": "trigger_order_1",
+          "concreteTypeId": "e915e400fd7cca76151cd63ea4a84d70d906ea97663b011363db9271072cad74"
+        },
+        {
+          "name": "trigger_order_2",
+          "concreteTypeId": "e915e400fd7cca76151cd63ea4a84d70d906ea97663b011363db9271072cad74"
+        },
+        {
+          "name": "expected_parent_quantity",
+          "concreteTypeId": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d"
+        }
+      ],
+      "output": "bc42ec26f2a17c5b23fc007d96b96bf35f8949ee156afdd789064210d881f7e0",
+      "attributes": [
+        { "name": "storage", "arguments": ["read", "write"] },
+        { "name": "payable", "arguments": [] }
+      ]
+    },
+    {
+      "name": "execute_trigger_order",
+      "inputs": [],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Executes the next trigger order at the head of the global queue."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " The trigger is funded by whatever has accumulated in its lock. If a parent spot"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " order is still resting, it is cancelled first (its escrow returned to the trader's"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " settled balance) so the trigger fires at the snapshot of available funds rather"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " than racing future fills against it. The new spot's quantity is scaled down to"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" match the available lock — never up."]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "get_base_asset",
+      "inputs": [],
+      "output": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Returns the base asset of this trading pair."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " This is set at contract deployment via configurables."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `AssetId` - The base asset identifier (e.g., BTC in BTC/USDC)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_base_decimals",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Returns the number of atomic base units in one whole base asset."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_best_buy",
+      "inputs": [],
+      "output": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Returns the best (highest) buy price in the order book."
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " The best buy represents the highest price a buyer is willing to pay."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `Option<Price>` - The best buy price, or None if no buy orders exist"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Storage Access"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" - Reads: Buy side order book"]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_best_sell",
+      "inputs": [],
+      "output": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Returns the best (lowest) sell price in the order book."
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " The best sell represents the lowest price a seller is willing to accept."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `Option<Price>` - The best sell price, or None if no sell orders exist"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Storage Access"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" - Reads: Sell side order book"]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_blacklist_id",
+      "inputs": [],
+      "output": "0d79387ad3bacdc3b7aad9da3a96f4ce60d9a1b6002df254069ad95a3931d5c8",
+      "attributes": null
+    },
+    {
+      "name": "get_head_trigger_order",
+      "inputs": [],
+      "output": "aa46988b96e71d9a5994f2807f743c9a360e72be8e9865141192345e539187f5",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "get_heap_price",
+      "inputs": [
+        {
+          "name": "side",
+          "concreteTypeId": "9a10e2c94a13825d2af23f4a4743379feba2acfcec8e2d775e945c5452e84708"
+        },
+        {
+          "name": "price",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ],
+      "output": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Returns true if orders exist at a specific price and side in the price heap."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `side`: [Side] - Either the buy or sell orders."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `price`: [u64] - The price level to fetch."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `bool` - `true` if orders exist at the price level, otherwise `false`."
+          ]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_last_traded_price",
+      "inputs": [],
+      "output": "3639c0c1fb291a3e7e7ab4d9fe1d6762d6ff0fde0777d0ef8f3799d2f3d70a95",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Returns the last traded price and timestamp."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Useful for tracking market activity and price discovery."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `(Price, Time)` - Tuple containing:"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - Price: The last execution price"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - Time: Unix timestamp of the last trade"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - Returns (0, 0) if no trades have occurred"]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Storage Access"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" - Reads: Last traded price from storage"]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_locked_balance_of",
+      "inputs": [
+        {
+          "name": "trader",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        },
+        {
+          "name": "order_id",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "get_maker_fee",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Returns the maker fee percentage."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Makers are orders that add liquidity to the order book."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `u64` - Fee percentage with 6 decimal precision"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - 1_000_000 represents 100%"]
+        },
+        { "name": "doc-comment", "arguments": ["   - 200 represents 0.02%"] },
+        { "name": "doc-comment", "arguments": ["   - 0 means no maker fee"] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Note"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " This is a configurable value set at contract deployment"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_minimum_trade_amount",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Returns the minimum volume amount to create an order."
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" Prevents dust orders and ensures economic viability."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `u64` - Minimum trade amount (e.g., 20 USDC)"]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Note"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " This is a configurable value set at contract deployment"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_order",
+      "inputs": [
+        {
+          "name": "order_id",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "output": "6cbb9ddffc993ba68abb27bb88aae72e4d50123c3fc8f05d663246d7c9f70724",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Retrieves the details of a specific order."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `order_id` - The unique identifier of the order"]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `Option<Order>` - Order details if found, None if order doesn't exist"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Storage Access"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" - Reads: Order information from storage"]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_orders_at_price",
+      "inputs": [
+        {
+          "name": "side",
+          "concreteTypeId": "9a10e2c94a13825d2af23f4a4743379feba2acfcec8e2d775e945c5452e84708"
+        },
+        {
+          "name": "price",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ],
+      "output": "d390c7062efc85cc0e3e0a9339016565cda69d055c218f82d362776998f4e505",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Retrieves the orders at a specific price level and side"
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `side`: [Side] - Either the buy or sell orders."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `price`: [u64] - The price level to fetch."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `Vec<Order>` - The orders at the specific price level."
+          ]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_price_precision",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": null
+    },
+    {
+      "name": "get_quantity_precision",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": null
+    },
+    {
+      "name": "get_quote_asset",
+      "inputs": [],
+      "output": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Returns the quote asset of this trading pair."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " This is set at contract deployment via configurables."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `AssetId` - The quote asset identifier (e.g., USDC in BTC/USDC)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_settled_balance_of",
+      "inputs": [
+        {
+          "name": "trader",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "41bd1a98f0a59642d8f824c805b798a5f268d1f7d05808eb05c4189c493f1be0",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Returns the settled balance of a trader."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `trader`: [Identity] - Which trader to check the settled balance of."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `(u64, u64)` - The (BASE_ASSET, QUOTE_ASSET) tuple balance."
+          ]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_taker_fee",
+      "inputs": [],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Returns the taker fee percentage."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Takers are orders that remove liquidity from the order book."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `u64` - Fee percentage with 6 decimal precision"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": ["   - 1_000_000 represents 100%"]
+        },
+        { "name": "doc-comment", "arguments": ["   - 200 represents 0.02%"] },
+        { "name": "doc-comment", "arguments": ["   - 0 means no taker fee"] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Note"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " This is a configurable value set at contract deployment"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_total_balance_of",
+      "inputs": [
+        {
+          "name": "trader",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "41bd1a98f0a59642d8f824c805b798a5f268d1f7d05808eb05c4189c493f1be0",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Returns the total balance of a trader: every asset the trader owns in the contract,"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " including the settled balance, locked balances, and balances escrowed in open orders."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `trader`: [Identity] - Which trader to check the total balance of."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `(u64, u64)` - The (BASE_ASSET, QUOTE_ASSET) tuple balance."
+          ]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "get_trigger_order",
+      "inputs": [
+        {
+          "name": "order_id",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "output": "aa46988b96e71d9a5994f2807f743c9a360e72be8e9865141192345e539187f5",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "get_trigger_order_parent",
+      "inputs": [
+        {
+          "name": "order_id",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "output": "0c2beb9013490c4f753f2757dfe2d8340b22ce3827d596d81d249b7038033cb6",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "get_trigger_order_sibling",
+      "inputs": [
+        {
+          "name": "order_id",
+          "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
+        }
+      ],
+      "output": "0c2beb9013490c4f753f2757dfe2d8340b22ce3827d596d81d249b7038033cb6",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "get_trigger_orders_at_price",
+      "inputs": [
+        {
+          "name": "trigger_price",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        }
+      ],
+      "output": "90bd4a53a7770f92afd12f9ceaea3e7f99a6c46d42d3ddedeef0874b7be6c92a",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "get_whitelist_id",
+      "inputs": [],
+      "output": "0d79387ad3bacdc3b7aad9da3a96f4ce60d9a1b6002df254069ad95a3931d5c8",
+      "attributes": null
+    },
+    {
+      "name": "settle_balance",
+      "inputs": [
+        {
+          "name": "trader",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Withdraws the settled trade balances of a single trader."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Argument"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `trader`: [Identity] - The trader to settle their balance."
+          ]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "settle_balances",
+      "inputs": [
+        {
+          "name": "traders",
+          "concreteTypeId": "2f79033d0d3729398611309f48578b56cf5162ba85e50f4d8fb79c9d9d1abc7b"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Withdraws the settled trade balances of a list of traders."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Argument"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `traders`: [Vec<Identity>] - The list of traders to settle their balances."
+          ]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "get_roles",
+      "inputs": [
+        {
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "grant_role",
+      "inputs": [
+        {
+          "name": "role",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [{ "name": "storage", "arguments": ["read", "write"] }]
+    },
+    {
+      "name": "has_role",
+      "inputs": [
+        {
+          "name": "role",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "revoke_role",
+      "inputs": [
+        {
+          "name": "role",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [{ "name": "storage", "arguments": ["read", "write"] }]
+    },
+    {
+      "name": "cancel_blacklist_orders",
+      "inputs": [
+        {
+          "name": "orders",
+          "concreteTypeId": "32559685d0c9845f059bf9d472a0a38cf77d36c23dfcffe5489e86a65cdd9198"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Force cancels the given orders only if the trader is blacklisted."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * [orders]: `Vec<OrderID>` - A vec of orders to cancel."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * When not called by an account with the orderbook maintainer role."
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When the trader is not blacklisted."]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "collect_fees",
+      "inputs": [
+        {
+          "name": "fee_recipient",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Withdraws the collected fees to a recipient."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * [fee_recipient]: `Identity` - The entity which shall receive the fees collected."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When no fees are available."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When not called by the owner."]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "current_fees",
+      "inputs": [],
+      "output": "41bd1a98f0a59642d8f824c805b798a5f268d1f7d05808eb05c4189c493f1be0",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Returns the amount of fees available to withdraw."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Additional Information"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " The first `u64` is the amount of `BASE_ASSET` and the second `u64` is the amount of `QUOTE_ASSET`."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Returns"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * `(u64, u64)` - The amount of (BASE_ASSET, QUOTE_ASSET) available to withdraw."
+          ]
+        },
+        { "name": "storage", "arguments": ["read"] }
+      ]
+    },
+    {
+      "name": "eject_trigger_order",
+      "inputs": [],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Maintainer-only escape hatch: removes the trigger at the head of the global queue,"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " refunds any held lock to the trader, clears all linked state, and unhalts the book"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " if it was halted. Used when a trigger at the head is stuck (e.g. systematically"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" running OOG and blocking subsequent triggers)."]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "emit_orderbook_config",
+      "inputs": [],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        { "name": "doc-comment", "arguments": [" Emits a log of the fees."] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Additional Information"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Used when the contract is upgraded and the fee changes."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Events"] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" * `FeeEvent`"] }
+      ]
+    },
+    {
+      "name": "force_cancel_orders",
+      "inputs": [
+        {
+          "name": "orders",
+          "concreteTypeId": "32559685d0c9845f059bf9d472a0a38cf77d36c23dfcffe5489e86a65cdd9198"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Force cancels the given orders only if the contract is paused."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * [orders]: `Vec<OrderID>` - A vec of orders to cancel."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * When not called by an account with the orderbook maintainer role."
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When the contract is not paused."]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "initialize",
+      "inputs": [],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Initializes the contract with an owner and grants that owner the default admin role."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When the contract has already been initialized."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Events"] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" * `RoleGrantedEvent`"] },
+        { "name": "doc-comment", "arguments": [" * `OrderBookConfigEvent`"] },
+        { "name": "doc-comment", "arguments": [" * `OrderBookSymbolsEvent`"] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `OrderBookWhitelistEvent`"]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" * `OrderBookBlacklistEvent`"]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "owner_grant_role",
+      "inputs": [
+        {
+          "name": "role",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Allows the contract owner to grant an access-control role."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " This keeps ownership as the recovery authority for access control, even when the"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " current owner does not already hold the default admin role."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * [role]: `Role` - The role to grant."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * [account]: `Identity` - The account receiving the role."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When not called by the owner."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * When the role is outside the supported bitmap range."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Events"] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" * `RoleGrantedEvent`"] },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "owner_revoke_role",
+      "inputs": [
+        {
+          "name": "role",
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+        },
+        {
+          "name": "account",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " Allows the contract owner to revoke an access-control role."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " This keeps ownership as the recovery authority for access control, even when the"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " current owner does not already hold the default admin role. Together with"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " `owner_grant_role` it lets the owner rotate a role by revoking the previous"
+          ]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [" holders before granting the new one."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * [role]: `Role` - The role to revoke."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * [account]: `Identity` - The account losing the role."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When not called by the owner."]
+        },
+        {
+          "name": "doc-comment",
+          "arguments": [
+            " * When the role is outside the supported bitmap range."
+          ]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Events"] },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" * `RoleRevokedEvent`"] },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "transfer_ownership",
+      "inputs": [
+        {
+          "name": "new_owner",
+          "concreteTypeId": "ab7cd04e05be58e3fc15d424c2c4a57f824a2a2d97d67252440a3925ebdc1335"
+        }
+      ],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [
+        {
+          "name": "doc-comment",
+          "arguments": [" Transfers ownership to a new owner."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Arguments"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * [new_owner]: `Identity` - The new owner to be set."]
+        },
+        { "name": "doc-comment", "arguments": [""] },
+        { "name": "doc-comment", "arguments": [" # Reverts"] },
+        { "name": "doc-comment", "arguments": [""] },
+        {
+          "name": "doc-comment",
+          "arguments": [" * When not called by the owner."]
+        },
+        { "name": "storage", "arguments": ["read", "write"] }
+      ]
+    },
+    {
+      "name": "owner",
+      "inputs": [],
+      "output": "287a382c1e0b1f11d12a422e77a248d27761327cd17515cc6e6369d528cf31ca",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "is_paused",
+      "inputs": [],
+      "output": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903",
+      "attributes": [{ "name": "storage", "arguments": ["read"] }]
+    },
+    {
+      "name": "pause",
+      "inputs": [],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [{ "name": "storage", "arguments": ["write"] }]
+    },
+    {
+      "name": "unpause",
+      "inputs": [],
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
+      "attributes": [{ "name": "storage", "arguments": ["write"] }]
+    }
+  ],
+  "loggedTypes": [
+    {
+      "logId": "17376141311665587813",
+      "concreteTypeId": "f1247475d0d1466599267010f088190f8664dd31663a40c5d5e525d8e64b995d"
+    },
+    {
+      "logId": "7577732612780156899",
+      "concreteTypeId": "692983a9aba767e36b5014d3eb842447c736e341cc3b30fcb051b1f5a3d5f80a"
+    },
+    {
+      "logId": "10928624505251675",
+      "concreteTypeId": "0026d386ad84e75b525bec3e7c8b6a63df3fcd108a8c4b26438c8a7a2e2c218b"
+    },
+    {
+      "logId": "2487585211828868623",
+      "concreteTypeId": "2285ad920393160f43816bfa64a891b1956e2bbd066346d01638db4aaa81cfb9"
+    },
+    {
+      "logId": "6216763621805167948",
+      "concreteTypeId": "564661938244954c8836434b2cf26c3495e0538f78f281fc531f82003ef55d42"
+    },
+    {
+      "logId": "12825652816513834595",
+      "concreteTypeId": "b1fddf488ccb9e63d11888b2750bbd1280a1ae1c49f2d6637fd4cf1e930d1468"
+    },
+    {
+      "logId": "10091762507985991074",
+      "concreteTypeId": "8c0d2488561c35a28ef795bb8bcc4c43999cdd1e3ecbd10c226e0a68660c54d4"
+    },
+    {
+      "logId": "8930260739195532515",
+      "concreteTypeId": "7beea8d3e75df4e367b45e1567e03c81f969faef517cea9a4ff938fed6ee9f6a"
+    },
+    {
+      "logId": "673754413546829475",
+      "concreteTypeId": "0959a811c54f76a36f4b1ca7a14729eba6801a5c03356f2cfb12233f574d0ce2"
+    },
+    {
+      "logId": "11075251846569393687",
+      "concreteTypeId": "99b332e010c1fe173601492be1e50767afba39d95f5aebb83f07fdf4c2103104"
+    },
+    {
+      "logId": "4164690824655597442",
+      "concreteTypeId": "39cbf43d52ecef8290e4f6e639a22b50f2ea8ce7d673930c83622422c7653026"
+    },
+    {
+      "logId": "1577824708080292652",
+      "concreteTypeId": "15e58f365af5d32c8a830ec43e70fce6cfbad16f88ed89b35bb7878f15f5b75d"
+    },
+    {
+      "logId": "16386696543407055422",
+      "concreteTypeId": "e3693daf8fe6223e6a97667025b9fc906b02ca79ea87b1376058b0be52c7778d"
+    },
+    {
+      "logId": "4997665884103701952",
+      "concreteTypeId": "455b46a49016f5c03c18ce54b969ea3d0d33c9b00263b3dcc36aa8da27558b8a"
+    },
+    {
+      "logId": "11872035487494935780",
+      "concreteTypeId": "a4c1f16008f794e4bb5f1e3dee0e961b2c480dad11ea5b89fc2eacfe38631db5"
+    },
+    {
+      "logId": "10821972466347811362",
+      "concreteTypeId": "962f5e9ef1b8222269128afe35ff4d3241c140c267d673365de624d353b563c8"
+    },
+    {
+      "logId": "1043998670105365804",
+      "concreteTypeId": "0e7d0742559c4d2c273298fdc0b9b7e9b07f7f944855ca3020dba8617515e2f0"
+    },
+    {
+      "logId": "9438144640984314783",
+      "concreteTypeId": "82fb068ba8a0739f1b0a907ff1fbcbc8b1e5a31d5a2f1b46742e4c5fca967c18"
+    },
+    {
+      "logId": "7955402583561979981",
+      "concreteTypeId": "6e6744800e6fc84d4680e9492774bc9e0cab52bb665d518bdfd2ba21b3a4866c"
+    },
+    {
+      "logId": "12033795032676640771",
+      "concreteTypeId": "a700a0d30e8d2803040dc79b7b7b259d0c308ca5187f6c742da1df21c27bf24a"
+    },
+    {
+      "logId": "16078156521692740360",
+      "concreteTypeId": "df21162bb6a03b08040f043d238f4b5275e591737c8b5f068f7422be87168258"
+    },
+    {
+      "logId": "10627443379711231661",
+      "concreteTypeId": "937c43727e43c6ad683c47ad69885cf2783ecf73d59460fe1d7033a78ad5963c"
+    },
+    {
+      "logId": "14784419691340355228",
+      "concreteTypeId": "cd2ccf60c8a1d69c9f5a8c9d17ec658f09cd58dac7f0f991a3ce3161c494ea88"
+    },
+    {
+      "logId": "3453517865879574174",
+      "concreteTypeId": "2fed5c339537969e7d6569d8f1607e8476b5829cc3ef3185c9c4ae8f3a4f5edd"
+    },
+    {
+      "logId": "9316803936658460360",
+      "concreteTypeId": "814befd15e7d0ec83c54b78f1248f65890b6e4db618d7f067940385064ae00fa"
+    },
+    {
+      "logId": "15563400235235362344",
+      "concreteTypeId": "d7fc4e0e366f46285d7ebf08fe5d7a450b649532159d67ce60a329a2d468c5c1"
+    },
+    {
+      "logId": "4755763688038835574",
+      "concreteTypeId": "41ffdde08d41a5769627d4e77a60cbf9ef0a0e9194114652b57247e64a9ce7f0"
+    },
+    {
+      "logId": "3315608933688155198",
+      "concreteTypeId": "2e0368c222981c3e3cbba54d7dafbda77dd2c48809b2fd989773b4ae092d8b47"
+    },
+    {
+      "logId": "12773884859982894916",
+      "concreteTypeId": "b145f499e90557447a26156cda458d1c0284a487ef8b8a90646411a33ee5e241"
+    },
+    {
+      "logId": "11719039397861176592",
+      "concreteTypeId": "a2a2643e0252b510328c0323a0ea60724fb4cb3309a2322ab31b27566ff9a79d"
+    },
+    {
+      "logId": "1559614116885970782",
+      "concreteTypeId": "15a4dcc6afac3f5e9d69383292c88895475737c599b518309c34cf8c1104f8f5"
+    },
+    {
+      "logId": "16602627312738262893",
+      "concreteTypeId": "e668619391f65f6ddbe3de3cfd8a1777035887bc8bbb31c7847131031159841a"
+    },
+    {
+      "logId": "8092143774995562521",
+      "concreteTypeId": "704d11e3abffc019b7c89fea24cbc379742ed0dc7ddc01c5425a143c1f0bc2b8"
+    }
+  ],
+  "messagesTypes": [],
+  "configurables": [
+    {
+      "name": "INITIAL_OWNER",
+      "concreteTypeId": "287a382c1e0b1f11d12a422e77a248d27761327cd17515cc6e6369d528cf31ca",
+      "offset": 160680,
+      "indirect": false
+    },
+    {
+      "name": "BASE_ASSET",
+      "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+      "offset": 160568,
+      "indirect": false
+    },
+    {
+      "name": "QUOTE_ASSET",
+      "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+      "offset": 160824,
+      "indirect": false
+    },
+    {
+      "name": "MIN_ORDER",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160792,
+      "indirect": false
+    },
+    {
+      "name": "MAKER_FEE",
+      "concreteTypeId": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e",
+      "offset": 160728,
+      "indirect": false
+    },
+    {
+      "name": "TAKER_FEE",
+      "concreteTypeId": "1b5759d94094368cfd443019e7ca5ec4074300e544e5ea993a979f5da627261e",
+      "offset": 160880,
+      "indirect": false
+    },
+    {
+      "name": "BASE_DECIMALS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160600,
+      "indirect": false
+    },
+    {
+      "name": "QUOTE_DECIMALS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160856,
+      "indirect": false
+    },
+    {
+      "name": "PRICE_WINDOW",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160808,
+      "indirect": false
+    },
+    {
+      "name": "PRICE_PRECISION",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160800,
+      "indirect": false
+    },
+    {
+      "name": "QUANTITY_PRECISION",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160816,
+      "indirect": false
+    },
+    {
+      "name": "DUST",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160672,
+      "indirect": false
+    },
+    {
+      "name": "BASE_GAS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160608,
+      "indirect": false
+    },
+    {
+      "name": "TRIGGER_QUEUE_COMMIT_GAS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160920,
+      "indirect": false
+    },
+    {
+      "name": "MATCH_EVENT_GAS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160760,
+      "indirect": false
+    },
+    {
+      "name": "MATCH_SINGLE_LEVEL_GAS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160776,
+      "indirect": false
+    },
+    {
+      "name": "MATCH_MULTI_LEVEL_GAS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160768,
+      "indirect": false
+    },
+    {
+      "name": "MIN_GAS",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160784,
+      "indirect": false
+    },
+    {
+      "name": "ALLOW_FRACTIONAL_PRICE",
+      "concreteTypeId": "b760f44fa5965c2474a3b471467a22c43185152129295af588b022ae50b50903",
+      "offset": 160560,
+      "indirect": false
+    },
+    {
+      "name": "TRIGGER_MAX_SLIPPAGE",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "offset": 160912,
+      "indirect": false
+    },
+    {
+      "name": "BASE_SYMBOL",
+      "concreteTypeId": "338a25cb65b9251663dcce6362b744fe10aa849758299590f4efed5dd299bf50",
+      "offset": 160616,
+      "indirect": false
+    },
+    {
+      "name": "QUOTE_SYMBOL",
+      "concreteTypeId": "338a25cb65b9251663dcce6362b744fe10aa849758299590f4efed5dd299bf50",
+      "offset": 160864,
+      "indirect": false
+    },
+    {
+      "name": "WHITE_LIST_CONTRACT",
+      "concreteTypeId": "0d79387ad3bacdc3b7aad9da3a96f4ce60d9a1b6002df254069ad95a3931d5c8",
+      "offset": 160928,
+      "indirect": false
+    },
+    {
+      "name": "BLACK_LIST_CONTRACT",
+      "concreteTypeId": "0d79387ad3bacdc3b7aad9da3a96f4ce60d9a1b6002df254069ad95a3931d5c8",
+      "offset": 160632,
+      "indirect": false
+    }
+  ],
+  "errorCodes": {},
+  "panickingCalls": {}
+}

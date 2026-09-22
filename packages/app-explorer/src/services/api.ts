@@ -1,5 +1,6 @@
 import { Address, OperationName, bn } from 'fuels';
 import { z } from 'zod';
+import { decodeTransaction } from '~/systems/Transaction/utils/decodeTransaction';
 import { createTransactionSummary } from '~/systems/Transaction/utils/txSummary';
 import { isValidAddress } from '../systems/Core/utils/address';
 import { sdk } from './graphqlClient';
@@ -91,6 +92,8 @@ export class ApiService {
       if (!data.transaction) {
         return null;
       }
+
+      await decodeTransaction(data.transaction);
 
       // Compute summary (transfers only) to enable Simple mode parity with Next.js
       try {

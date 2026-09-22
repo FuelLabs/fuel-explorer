@@ -13,9 +13,15 @@ import { useTheme } from '../Theme/ThemeProvider';
 
 export type JsonViewerProps = BaseProps<{
   data: object | unknown[];
+  shouldExpandNode?: (level: number, value: unknown, field?: string) => boolean;
 }>;
 
-export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
+export function JsonViewer({
+  data,
+  className,
+  shouldExpandNode = collapseAllNested,
+  ...props
+}: JsonViewerProps) {
   const classes = styles();
   const [style, setStyle] = useState(defaultStyles);
   const { resolvedTheme } = useTheme();
@@ -28,7 +34,7 @@ export function JsonViewer({ data, className, ...props }: JsonViewerProps) {
   return (
     <JsonView
       data={data}
-      shouldExpandNode={collapseAllNested}
+      shouldExpandNode={shouldExpandNode}
       style={
         {
           ...style,
