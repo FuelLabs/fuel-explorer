@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ETH_CHAIN_NAME } from 'app-commons';
-import type { Project } from '~/types/ecosystem';
+import { fetchEcosystemProjects } from '~/systems/Ecosystem/utils/ecosystemProjects';
 import { ApiService, queryKeys } from '../services';
 
 // Transaction hooks
@@ -273,18 +273,6 @@ export const useSearch = (query: string) => {
   });
 };
 
-// Every contract icon on a page asks for metadata, so share one fetch.
-let projectsPromise: Promise<Project[]> | null = null;
-function fetchEcosystemProjects(url: string) {
-  projectsPromise ??= fetch(url)
-    .then((res) => res.json() as Promise<Project[]>)
-    .catch((error) => {
-      projectsPromise = null;
-      throw error;
-    });
-  return projectsPromise;
-}
-
 export const useContractMetadata = (address: string | null = '') => {
   return useQuery({
     queryKey: ['contract', 'metadata', address],
@@ -301,7 +289,7 @@ export const useContractMetadata = (address: string | null = '') => {
       }
 
       try {
-        const projects = await fetchEcosystemProjects(ECOSYSTEM_PROJECTS_URL);
+        const projects = await fetchEcosystemProjects();
 
         for (const project of projects) {
           const contractsByNetwork = project.contracts?.[ETH_CHAIN_NAME];

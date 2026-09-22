@@ -29,7 +29,16 @@ const registry: AbiRegistry = {
       abi: orderBookAbi as JsonAbi,
       project: 'o2',
       market: { symbol: 'ETH/USDC', baseAssetId: BASE, quoteAssetId: QUOTE },
-      callers: [{ name: 'o2 Trade Account', abi: tradeAccountAbi as JsonAbi }],
+    },
+  },
+  accounts: {
+    '0x66fa6d1e596a43d5c6533986c54a853f870276133836a71463c2d76ba92182da': {
+      name: 'o2 Trade Account',
+      abi: tradeAccountAbi as JsonAbi,
+    },
+    '0xea832687c77bd953a6fb1ba8823564ef60e065272f25b5952588a54c737f3980': {
+      name: 'o2 Trade Account',
+      abi: tradeAccountAbi as JsonAbi,
     },
   },
 };
@@ -95,7 +104,7 @@ describe('buildTxActivity', () => {
         `Fill-or-kill buy [7898286 ${BASE}] at [2775500000000 ${QUOTE}]`,
       ],
       ['Filled', `Bought [7898286 ${BASE}] at [2747870000000 ${QUOTE}]`],
-      ['Fee paid', `[789 ${BASE}]`],
+      ['Fees', `[789 ${BASE}] collected by the market`],
       ['Settled', `[7897497 ${BASE}] moved to the trade account`],
     ]);
     expect(
@@ -132,7 +141,7 @@ describe('buildTxActivity', () => {
     );
     expect(activity?.actions.map((a) => render(a.parts))).toEqual([
       `Limit sell [1 ${BASE}] at [2 ${QUOTE}]`,
-      `Market sell [1 ${BASE}] receiving at least [2 ${QUOTE}]`,
+      `Market sell [1 ${BASE}] with a limit price of [2 ${QUOTE}]`,
     ]);
   });
 });

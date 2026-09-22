@@ -1,41 +1,50 @@
-import { ECOSYSTEM_PROJECTS_URL, ETH_CHAIN_NAME } from 'app-commons';
-import type { JsonAbi } from 'fuels';
-import type { Project } from '~/types/ecosystem';
+import {
+  ECOSYSTEM_PROJECTS_URL,
+  ETH_CHAIN_NAME,
+  FUEL_CHAIN,
+} from 'app-commons';
+import { Contract, type JsonAbi, Provider } from 'fuels';
+import {
+  fetchEcosystemProjects,
+  fetchJson,
+} from '~/systems/Ecosystem/utils/ecosystemProjects';
 import type { TransactionNode } from '../types';
 import {
-  type AbiRegistry,
+  collectCallerCandidates,
   collectContractIds,
   decodeOperationReceipts,
 } from './abiDecoder';
 import {
   type AbiIndex,
+  type AccountVerifier,
   buildAbiIndex,
+  isTrustedAbiUrl,
   resolveAbiRegistry,
+  resolveAccounts,
 } from './abiRegistry';
 import { buildTxActivity } from './txActivity';
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-  return res.json() as Promise<T>;
-}
+const VERIFY_TIMEOUT_MS = 10_000;
 
 let indexPromise: Promise<AbiIndex> | null = null;
 const abiCache = new Map<string, Promise<JsonAbi>>();
+const verifyCache = new Map<string, Promise<boolean>>();
+let provider: Provider | null = null;
 
 function getAbiIndex() {
-  if (!indexPromise) {
-    indexPromise = fetchJson<Project[]>(ECOSYSTEM_PROJECTS_URL as string)
-      .then((projects) => buildAbiIndex(projects, ETH_CHAIN_NAME))
-      .catch((error) => {
-        indexPromise = null;
-        throw error;
-      });
-  }
+  indexPromise ??= fetchEcosystemProjects()
+    .then((projects) => buildAbiIndex(projects, ETH_CHAIN_NAME))
+    .catch((error) => {
+      indexPromise = null;
+      throw error;
+    });
   return indexPromise;
 }
 
-function loadAbiCached(url: string) {
+function loadAbi(url: string) {
+  if (!isTrustedAbiUrl(url, ECOSYSTEM_PROJECTS_URL ?? '')) {
+    return Promise.reject(new Error(`Untrusted ABI URL: ${url}`));
+  }
   let abi = abiCache.get(url);
   if (!abi) {
     abi = fetchJson<JsonAbi>(url).catch((error) => {
@@ -47,27 +56,55 @@ function loadAbiCached(url: string) {
   return abi;
 }
 
-export async function getAbiRegistry(contractIds: string[]) {
-  if (!ECOSYSTEM_PROJECTS_URL || !contractIds.length) {
-    return { contracts: {} } as AbiRegistry;
+// Dry-runs a read-only verifier method. Answers never change for a given
+// account, so they are cached for the session.
+const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
+  const key = `${contractId}:${method}:${child}`;
+  let answer = verifyCache.get(key);
+  if (!answer) {
+    provider ??= new Provider(FUEL_CHAIN.providerUrl);
+    const call = new Contract(contractId, abi, provider).functions[method]({
+      bits: child,
+    })
+      .get()
+      .then(({ value }) => value === true);
+    const timeout = new Promise<boolean>((resolve) =>
+      setTimeout(() => resolve(false), VERIFY_TIMEOUT_MS),
+    );
+    answer = Promise.race([call, timeout]).catch(() => false);
+    verifyCache.set(key, answer);
   }
-  const index = await getAbiIndex();
-  return resolveAbiRegistry(index, contractIds, loadAbiCached);
-}
+  return answer;
+};
 
-// Adds a `decoded` field to receipts of contracts whose ABI is published in
-// the ecosystem projects list, and a plain-language `activity` summary. Leaves the transaction unchanged on failure.
+// Returns a copy of the transaction with a `decoded` field on receipts of
+// contracts whose ABI is published in the ecosystem projects list, and a
+// plain-language `activity` summary. Returns the input unchanged when there
+// is nothing to decode or decoding fails.
 export async function decodeTransaction(
   transaction: TransactionNode,
 ): Promise<TransactionNode> {
   try {
-    const operations = transaction.operations ?? [];
-    const registry = await getAbiRegistry(collectContractIds(operations));
+    const copy = JSON.parse(JSON.stringify(transaction)) as TransactionNode;
+    const operations = copy.operations ?? [];
+    const index = await getAbiIndex();
+    const registry = await resolveAbiRegistry(
+      index,
+      collectContractIds(operations),
+      loadAbi,
+    );
     if (!Object.keys(registry.contracts).length) return transaction;
-    decodeOperationReceipts(operations, transaction.rawPayload, registry);
-    transaction.activity = buildTxActivity(operations, registry);
+    registry.accounts = await resolveAccounts(
+      index,
+      collectCallerCandidates(operations, registry),
+      loadAbi,
+      verifyAccount,
+    );
+    decodeOperationReceipts(operations, copy.rawPayload, registry);
+    copy.activity = buildTxActivity(operations, registry);
+    return copy;
   } catch (error) {
     console.error('Failed to decode transaction receipts:', error);
+    return transaction;
   }
-  return transaction;
 }

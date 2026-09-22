@@ -18,13 +18,15 @@ export type DecodedReceipt = {
   contractName?: string;
   name: string;
   value: unknown;
+  // True when only the method name is known and `value` is raw call data.
+  raw?: boolean;
 };
 
 export type DecodedOperationReceipt = GQLOperationReceipt & {
   decoded?: DecodedReceipt;
 };
 
-type AbiSource = { name: string; abi: JsonAbi };
+export type AbiSource = { name: string; abi: JsonAbi };
 
 export type MarketMetadata = {
   symbol: string;
@@ -32,19 +34,15 @@ export type MarketMetadata = {
   quoteAssetId: string;
 };
 
-// `contracts` are ABIs keyed by fixed contract id. `callers` are ABIs for
-// contracts without a fixed id (e.g. per-user accounts), applied to any
-// contract that calls one of the project's fixed contracts. `names` labels
-// listed contracts that publish no ABI.
+// `contracts` are ABIs keyed by fixed contract id. `accounts` are ABIs for
+// contracts without a fixed id (per-user accounts) that were verified
+// on chain as genuine. `names` labels listed contracts that publish no ABI.
 export type AbiRegistry = {
   contracts: Record<
     string,
-    AbiSource & {
-      callers: AbiSource[];
-      market?: MarketMetadata;
-      project?: string;
-    }
+    AbiSource & { market?: MarketMetadata; project?: string }
   >;
+  accounts?: Record<string, AbiSource>;
   names?: Record<string, string>;
 };
 
@@ -134,6 +132,10 @@ function findSegment(whole: Uint8Array, segment: Uint8Array) {
   return -1;
 }
 
+function hasFunction(abi: JsonAbi, name: string) {
+  return abi.functions.some((f) => f.name === name);
+}
+
 function argsToObject(abi: JsonAbi, functionName: string, args: unknown[]) {
   const fn = abi.functions.find((f) => f.name === functionName);
   if (!fn) return toJsonSafe(args);
@@ -159,10 +161,16 @@ function decodeScriptCall(
   const index = findSegment(scriptData, segment);
   if (index === -1) return null;
 
+  const selectorOffset = index + segment.length;
   const [functionName, argsOffset] = new StdStringCoder().decode(
     scriptData,
-    index + segment.length,
+    selectorOffset,
   );
+  // The VM reads the selector at param1 and the arguments at param2, so the
+  // encoded bytes must sit the same distance apart.
+  const distance = new BN(node.param2).sub(new BN(node.param1)).toNumber();
+  if (distance !== argsOffset - selectorOffset) return null;
+  if (!hasFunction(source.abi, functionName)) return null;
   const iface = getInterface(source.abi);
   const fn = iface.getFunction(functionName);
   const args = fn.decodeArguments(scriptData.slice(argsOffset)) ?? [];
@@ -215,6 +223,21 @@ function flattenOperations(operations: Operations) {
   );
 }
 
+// Unlisted contracts that call a listed contract. They may be per-user
+// accounts, which must be verified before any ABI is applied to them.
+export function collectCallerCandidates(
+  operations: Operations,
+  registry: AbiRegistry,
+) {
+  const candidates: Record<string, string> = {};
+  for (const node of flattenOperations(operations)) {
+    if (node.receiptType !== 'CALL' || !node.id || !node.to) continue;
+    if (!registry.contracts[node.to] || registry.contracts[node.id]) continue;
+    candidates[node.id] ??= node.to;
+  }
+  return candidates;
+}
+
 export function collectContractIds(operations: Operations) {
   const ids = new Set<string>();
   for (const node of flattenOperations(operations)) {
@@ -230,23 +253,11 @@ export function decodeOperationReceipts(
   registry: AbiRegistry,
 ) {
   const nodes = flattenOperations(operations);
-  const known = registry.contracts;
 
-  // Contracts without a fixed id that call a known contract get the caller
-  // ABIs of that contract's project.
-  const callerSources: Record<string, AbiSource[]> = {};
-  for (const node of nodes) {
-    if (node.receiptType !== 'CALL' || !node.id || !node.to) continue;
-    const callee = known[node.to];
-    if (!callee || known[node.id]) continue;
-    callerSources[node.id] = callee.callers;
-  }
-
-  const sourcesFor = (contractId?: string | null): AbiSource[] => {
-    if (!contractId) return [];
-    const fixed = known[contractId];
-    return fixed ? [fixed] : (callerSources[contractId] ?? []);
-  };
+  const sourceFor = (contractId?: string | null): AbiSource | undefined =>
+    contractId
+      ? (registry.contracts[contractId] ?? registry.accounts?.[contractId])
+      : undefined;
 
   const scriptData = getScriptData(rawPayload);
   const pendingInnerCalls: Record<string, PendingInnerCall[]> = {};
@@ -254,42 +265,40 @@ export function decodeOperationReceipts(
   for (const node of nodes) {
     try {
       if (node.receiptType === 'LOG_DATA' && node.rb && node.data) {
-        for (const source of sourcesFor(node.id)) {
-          const name = logTypeName(source.abi, node.rb);
-          if (!name) continue;
-          const [value] = getInterface(source.abi).decodeLog(
-            node.data,
-            node.rb,
-          );
-          node.receipt.decoded = {
-            kind: 'log',
-            contractId: node.id as string,
-            contractName: source.name,
-            name,
-            value: toJsonSafe(value),
-          };
-          break;
-        }
+        const source = sourceFor(node.id);
+        const name = source && logTypeName(source.abi, node.rb);
+        if (!source || !name) continue;
+        const [value, end] = getInterface(source.abi).decodeLog(
+          node.data,
+          node.rb,
+        );
+        // Leftover bytes mean the data does not have this type's layout.
+        if (end !== arrayify(node.data).length) continue;
+        node.receipt.decoded = {
+          kind: 'log',
+          contractId: node.id as string,
+          contractName: source.name,
+          name,
+          value: toJsonSafe(value),
+        };
         continue;
       }
 
       if (node.receiptType !== 'CALL' || !node.to) continue;
 
       if (!node.id) {
-        if (!scriptData) continue;
-        for (const source of sourcesFor(node.to)) {
-          const call = decodeScriptCall(node, scriptData, source);
-          if (!call) continue;
-          node.receipt.decoded = {
-            kind: 'call',
-            contractId: node.to,
-            contractName: source.name,
-            name: call.functionName,
-            value: argsToObject(source.abi, call.functionName, call.args),
-          };
-          pendingInnerCalls[node.to] = collectInnerCalls(call.args);
-          break;
-        }
+        const source = sourceFor(node.to);
+        const call =
+          source && scriptData && decodeScriptCall(node, scriptData, source);
+        if (!source || !call) continue;
+        node.receipt.decoded = {
+          kind: 'call',
+          contractId: node.to,
+          contractName: source.name,
+          name: call.functionName,
+          value: argsToObject(source.abi, call.functionName, call.args),
+        };
+        pendingInnerCalls[node.to] = collectInnerCalls(call.args);
         continue;
       }
 
@@ -297,15 +306,16 @@ export function decodeOperationReceipts(
       const next = queue?.[0];
       if (!next || next.to !== node.to) continue;
       queue.shift();
-      const [source] = sourcesFor(node.to);
+      const source = sourceFor(node.to);
       // The forwarded selector names the method even without the callee ABI.
-      if (!source) {
+      if (!source || !hasFunction(source.abi, next.functionName)) {
         node.receipt.decoded = {
           kind: 'call',
           contractId: node.to,
-          contractName: registry.names?.[node.to],
+          contractName: source?.name ?? registry.names?.[node.to],
           name: next.functionName,
           value: hexlify(next.callData),
+          raw: true,
         };
         continue;
       }

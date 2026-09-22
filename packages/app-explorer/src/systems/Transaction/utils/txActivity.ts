@@ -77,6 +77,7 @@ function flatten(receipts: unknown, out: DecodedReceipt[] = []) {
 type Context = {
   market?: MarketMetadata;
   createdSides: Record<string, string>;
+  actor?: string;
 };
 
 const baseAmount = (value: string, ctx: Context): ActivityPart => ({
@@ -120,11 +121,8 @@ const DESCRIBERS: Record<
     const side = variantName(v.order_side).toLowerCase();
     const type = variantName(v.order_type);
     const isMarket = type === 'Market' || type === 'BoundedMarket';
-    const priceWord = isMarket
-      ? side === 'buy'
-        ? ' paying at most '
-        : ' receiving at least '
-      : ' at ';
+    // For market orders the price is a per-unit limit, not a total.
+    const priceWord = isMarket ? ' with a limit price of ' : ' at ';
     return {
       kind: 'place',
       label: 'Order placed',
@@ -203,16 +201,26 @@ const DESCRIBERS: Record<
   }),
   FeesCollectedEvent: (v, ctx) => {
     const parts = feeParts(v.base_fees, v.quote_fees, ctx);
-    return parts.length ? { kind: 'fee', label: 'Fee paid', parts } : null;
+    // The event covers maker and taker fees for the whole match.
+    return parts.length
+      ? {
+          kind: 'fee',
+          label: 'Fees',
+          parts: [...parts, text(' collected by the market')],
+        }
+      : null;
   },
   WithdrawSettledTradeEvent: (v, ctx) => {
     const parts = feeParts(v.base_amount, v.quote_amount, ctx);
+    const trader = identityAddress(v.trader_id)?.toLowerCase();
+    // Anyone can settle any trader's balance, so name the trader unless it
+    // is the account that sent this transaction.
+    const to: ActivityPart[] =
+      trader && trader !== ctx.actor
+        ? [text(' moved to '), { address: trader }]
+        : [text(' moved to the trade account')];
     return parts.length
-      ? {
-          kind: 'settle',
-          label: 'Settled',
-          parts: [...parts, text(' moved to the trade account')],
-        }
+      ? { kind: 'settle', label: 'Settled', parts: [...parts, ...to] }
       : null;
   },
   WithdrawEvent: (v) => {
@@ -315,8 +323,8 @@ export function buildTxActivity(
     const v = d.value as Value;
 
     if (d.kind === 'call') {
-      // The account the transaction was sent to is the actor.
-      if (!actor && !known) {
+      // The verified account the transaction was sent to is the actor.
+      if (!actor && registry.accounts?.[d.contractId]) {
         actor = { address: d.contractId, name: d.contractName };
         continue;
       }
@@ -338,7 +346,11 @@ export function buildTxActivity(
     }
 
     const describe = DESCRIBERS[d.name];
-    const line = describe?.(v, { market: known?.market, createdSides });
+    const line = describe?.(v, {
+      market: known?.market,
+      createdSides,
+      actor: actor?.address,
+    });
     if (!line) continue;
     actions.push({
       ...line,
@@ -348,7 +360,10 @@ export function buildTxActivity(
     });
   }
 
-  const project = Object.values(registry.contracts)[0]?.project;
+  const firstListed = actions.find((a) => registry.contracts[a.contractId]);
+  const project = firstListed
+    ? registry.contracts[firstListed.contractId].project
+    : undefined;
   return {
     headline: headline(actions, project),
     project,

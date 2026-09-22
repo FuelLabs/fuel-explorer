@@ -33,6 +33,8 @@ export type CallerContractMetadata = {
   name: string;
   description?: string;
   abi: string;
+  // A listed contract method that returns true for genuine accounts.
+  verify?: { contractId: string; method: string };
 };
 
 export type PredicateMetadata = {
