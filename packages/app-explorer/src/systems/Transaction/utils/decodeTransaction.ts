@@ -56,25 +56,30 @@ function loadAbi(url: string) {
   return abi;
 }
 
-// Dry-runs a read-only verifier method. Answers never change for a given
-// account, so they are cached for the session.
+// Dry-runs a read-only verifier method. Answers from the chain never change
+// for a given account, so they are cached for the session. A timeout or an
+// RPC error is not an answer: it resolves false for this page only.
 const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
   const key = `${contractId}:${method}:${child}`;
-  let answer = verifyCache.get(key);
-  if (!answer) {
-    provider ??= new Provider(FUEL_CHAIN.providerUrl);
-    const call = new Contract(contractId, abi, provider).functions[method]({
-      bits: child,
-    })
-      .get()
-      .then(({ value }) => value === true);
-    const timeout = new Promise<boolean>((resolve) =>
-      setTimeout(() => resolve(false), VERIFY_TIMEOUT_MS),
-    );
-    answer = Promise.race([call, timeout]).catch(() => false);
-    verifyCache.set(key, answer);
-  }
-  return answer;
+  const cached = verifyCache.get(key);
+  if (cached) return cached;
+
+  provider ??= new Provider(FUEL_CHAIN.providerUrl);
+  const call = new Contract(contractId, abi, provider).functions[method]({
+    bits: child,
+  })
+    .get()
+    .then(({ value }) => value === true);
+  verifyCache.set(key, call);
+  call.catch(() => verifyCache.delete(key));
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<boolean>((resolve) => {
+    timer = setTimeout(() => resolve(false), VERIFY_TIMEOUT_MS);
+  });
+  return Promise.race([call, timeout])
+    .catch(() => false)
+    .finally(() => clearTimeout(timer));
 };
 
 // Returns a copy of the transaction with a `decoded` field on receipts of
@@ -85,8 +90,12 @@ export async function decodeTransaction(
   transaction: TransactionNode,
 ): Promise<TransactionNode> {
   try {
-    const copy = JSON.parse(JSON.stringify(transaction)) as TransactionNode;
-    const operations = copy.operations ?? [];
+    // Only the GraphQL operations are cloned: `summary` holds BN amounts that
+    // do not survive a JSON round trip.
+    const operations = JSON.parse(
+      JSON.stringify(transaction.operations ?? []),
+    ) as NonNullable<TransactionNode['operations']>;
+    const copy: TransactionNode = { ...transaction, operations };
     const index = await getAbiIndex();
     const registry = await resolveAbiRegistry(
       index,
