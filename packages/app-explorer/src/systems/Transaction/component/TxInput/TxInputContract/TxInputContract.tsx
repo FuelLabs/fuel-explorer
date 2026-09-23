@@ -9,7 +9,7 @@ import {
   createComponent,
 } from '@fuels/ui';
 
-import { IconCode } from '@tabler/icons-react';
+import { IconCode } from '@fuels/ui';
 import { Routes as CommonRoutes } from 'app-commons';
 import { Routes } from '~/routes';
 import { TxContractIcon } from '../../TxContractIcon/TxContractIcon';

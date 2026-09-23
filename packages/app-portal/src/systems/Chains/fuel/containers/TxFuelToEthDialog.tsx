@@ -15,7 +15,7 @@ import {
   HStack,
   VStack,
 } from '@fuels/ui';
-import { IconX } from '@tabler/icons-react';
+import { IconX } from '@fuels/ui';
 import { WarningToast } from 'app-commons';
 import clsx from 'clsx';
 import { useMemo } from 'react';

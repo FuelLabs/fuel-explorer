@@ -1,5 +1,5 @@
 import { Tooltip } from '@radix-ui/themes';
-import { IconHelpCircle } from '@tabler/icons-react';
+import { IconHelpCircle } from '../Icons';
 
 import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';

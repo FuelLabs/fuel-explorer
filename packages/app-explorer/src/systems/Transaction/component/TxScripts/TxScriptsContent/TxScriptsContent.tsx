@@ -1,7 +1,7 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import type { GQLOperationReceipt } from '@fuel-explorer/graphql/sdk';
 import { Box, Button, HStack, HoverCard } from '@fuels/ui';
-import { IconArrowsMoveVertical } from '@tabler/icons-react';
+import { IconArrowsMoveVertical } from '@fuels/ui';
 import { memo } from 'react';
 import { useMeasure } from 'react-use';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';

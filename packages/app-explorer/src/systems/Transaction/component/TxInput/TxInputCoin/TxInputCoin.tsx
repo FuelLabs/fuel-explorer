@@ -8,7 +8,7 @@ import {
   Text,
   createComponent,
 } from '@fuels/ui';
-import { IconCoins } from '@tabler/icons-react';
+import { IconCoins } from '@fuels/ui';
 import { bn } from 'fuels';
 
 import { Routes } from '~/routes';

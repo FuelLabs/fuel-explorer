@@ -11,7 +11,6 @@
   },
   "peerDependencies": {
     "@fuels/ui": "workspace:*",
-    "@tabler/icons-react": "2.46.0",
     "@tanstack/query-sync-storage-persister": "5.56.2",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",
@@ -37,7 +36,6 @@
   },
   "devDependencies": {
     "@fuels/ui": "workspace:*",
-    "@tabler/icons-react": "2.46.0",
     "@tanstack/query-sync-storage-persister": "5.56.2",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-devtools": "5.56.2",

@@ -1,11 +1,7 @@
 import {
-  Box,
   Button,
   type Colors,
   Dropdown,
-  HStack,
-  Nav,
-  Text,
   shortAddress,
   useToast,
 } from '@fuels/ui';
@@ -16,7 +12,7 @@ import {
   IconSettingsFilled,
   IconSwitch3,
   IconUserCircle,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useAccount, useConnectUI, useDisconnect } from '@fuels/react';
@@ -24,12 +20,7 @@ import { Routes } from 'app-commons';
 import { useVerifySelectedChain } from 'app-commons';
 import { useSwitchChain } from 'wagmi';
 
-interface ConnectWalletProps {
-  theme?: string;
-  setTheme?: (theme: string) => void;
-}
-
-export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
+export const ConnectWallet = () => {
   const { toast } = useToast();
   const { connect, isConnected } = useConnectUI();
 
@@ -53,11 +44,6 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
 
   const handleNavigate = (path: string) => {
     window.location.href = path;
-  };
-
-  const _handleThemeToggle = (nextTheme: string) => {
-    // Nav.ThemeToggle passes the next theme as parameter
-    setTheme?.(nextTheme);
   };
 
   return (
@@ -135,26 +121,6 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
               >
                 <IconLogout size="1em" />
                 Disconnect
-              </Dropdown.Item>
-              <Dropdown.Item
-                className="flex flex-col hover:bg-transparent px-0 h-[50px] mt-2"
-                onSelect={(e) => e.preventDefault()}
-              >
-                <Box className="border-t w-full border-gray-3 " />
-                <HStack className="justify-center items-normal pl-[13px]">
-                  <Text
-                    size="2"
-                    className="text-[var(--accent-a11)] flex items-center"
-                  >
-                    Settings
-                  </Text>
-                  <Nav.ThemeToggle
-                    whenOpened="no-effect"
-                    theme={theme}
-                    onToggle={_handleThemeToggle}
-                    className="ml-auto border border-gray-3 scale-75 bg-gray-2 translate-x-[11px]"
-                  />
-                </HStack>
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown>

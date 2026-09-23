@@ -11,7 +11,7 @@ import {
   Tooltip,
   convertToUsd,
 } from '@fuels/ui';
-import { IconClock } from '@tabler/icons-react';
+import { IconClock } from '@fuels/ui';
 import { BN } from 'fuels';
 import { DECIMAL_WEI } from 'fuels';
 import { memo, useMemo } from 'react';

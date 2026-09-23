@@ -13,9 +13,9 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
   const txCount = Number(block.transactionsCount) || 0;
 
   return (
-    <div className="h-full py-3 px-5 hover:bg-gray-3 transition-colors duration-150 flex flex-col justify-center space-y-2">
+    <div className="h-full py-3 px-5 fuel-hover-fill flex flex-col justify-center space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] leading-[20px] font-semibold text-heading">
+        <span className="text-[13px] leading-[20px] font-medium text-heading tabular-nums">
           #{block.blockNo}
         </span>
         <span className="text-[12px] leading-[18px] text-muted">
@@ -23,7 +23,7 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
         </span>
       </div>
       <div className="flex items-center justify-between text-[12px] leading-[18px] text-muted">
-        <span className="font-medium bg-gray-4 dark:bg-gray-5 rounded px-1 py-px">
+        <span className="fuel-eyebrow bg-[var(--fuel-muted)] px-1.5 py-1">
           {txCount} TX
         </span>
         <div className="flex items-center gap-3">
@@ -41,7 +41,7 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({ block }) => {
           </span>
           <span>
             <span className="text-muted">Fee </span>
-            <span className="text-[color:#00F58C] font-medium">
+            <span className="text-[var(--fuel-brand-text)] font-medium">
               {block.totalFeeInUsd || '$0'}
             </span>
           </span>

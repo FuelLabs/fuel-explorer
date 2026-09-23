@@ -3,7 +3,6 @@ import {
   Flex,
   FuelLogo,
   HStack,
-  Icon,
   IconBrandDiscordFilled,
   IconBrandTelegramFilled,
   IconBrandXFilled,
@@ -61,7 +60,7 @@ export function Footer() {
     <Theme appearance="dark">
       <Box as="footer" className={classes.container()}>
         <Flex className={classes.root()}>
-          <FuelLogo showLettering size={32} />
+          <FuelLogo showLettering size={16} />
 
           <Box className={classes.navs()}>
             <FooterNav title="FUEL" links={data.links.FUEL} />
@@ -79,7 +78,7 @@ export function Footer() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Icon icon={IconBrandXFilled} size={24} />
+              <IconBrandXFilled size={24} />
             </Link>
             <Link
               className={classes.socialIcon()}
@@ -87,7 +86,7 @@ export function Footer() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Icon icon={IconBrandDiscordFilled} size={24} />
+              <IconBrandDiscordFilled size={24} />
             </Link>
             <Link
               className={classes.socialIcon()}
@@ -95,7 +94,7 @@ export function Footer() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Icon icon={IconBrandYoutubeFilled} size={24} />
+              <IconBrandYoutubeFilled size={24} />
             </Link>
             <Link
               className={classes.socialIcon()}
@@ -103,14 +102,14 @@ export function Footer() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Icon icon={IconBrandTelegramFilled} size={24} />
+              <IconBrandTelegramFilled size={24} />
             </Link>
           </HStack>
           <HStack justify={'between'}>
-            <Text className="text-secondary" size="2">
+            <Text className="text-[var(--fuel-stone-400)]" size="2">
               © {dayjs().year()} Fuel Labs. All rights reserved
             </Text>
-            <Text className="text-secondary opacity-50" size="2">
+            <Text className="text-[var(--fuel-stone-400)] opacity-50" size="2">
               version: {APP_COMMIT_HASH}
             </Text>
           </HStack>
@@ -123,19 +122,23 @@ export function Footer() {
 const styles = tv({
   slots: {
     container: [
-      'hero-bg border-t border-border px-10 py-10 flex flex-col gap-y-5 fuel-[Icon]:hidden',
+      'bg-black border-t border-[var(--fuel-border-footer)] px-10 py-10 flex flex-col gap-y-5 fuel-[Icon]:hidden',
     ],
     root: [
       'justify-between items-start flex-col desktop:flex-row gap-y-10 mb-12',
     ],
     social: ['mt-12'],
-    socialIcon: ['text-white hover:text-brand transition-colors duration-200 '],
+    socialIcon: [
+      'text-white opacity-50 hover:opacity-100 transition-opacity duration-300',
+    ],
     navs: ['flex flex-wrap justify-around gap-y-10 w-full max-w-screen-md'],
     nav: ['w-full tablet:w-1/2 desktop:w-auto'],
-    navHeading: ['font-mono justify-start text-white'],
+    navHeading: [
+      'font-mono font-medium text-[12px] leading-none uppercase tracking-[0.05em] justify-start text-white',
+    ],
     navList: ['flex flex-col gap-0'],
     navLink: [
-      'font-mono text-white hover:text-brand hover:no-underline transition-colors duration-200',
+      'font-mono font-medium text-[14px] leading-[18px] uppercase tracking-[0.05em] text-[var(--fuel-stone-50)] hover:text-white hover:no-underline transition-colors duration-300',
     ],
   },
 });

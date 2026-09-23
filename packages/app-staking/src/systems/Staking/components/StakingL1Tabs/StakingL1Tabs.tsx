@@ -1,8 +1,4 @@
-import {
-  IconBuildingBank,
-  IconHistory,
-  IconTableOptions,
-} from '@tabler/icons-react';
+import { IconBuildingBank, IconHistory, IconTableOptions } from '@fuels/ui';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';

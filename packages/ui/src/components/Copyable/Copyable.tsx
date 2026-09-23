@@ -1,6 +1,6 @@
 import { Tooltip } from '@radix-ui/themes';
-import { IconCopy } from '@tabler/icons-react';
 import type { SyntheticEvent } from 'react';
+import { IconCheck, IconCopy } from '../Icons';
 
 import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';
@@ -9,6 +9,7 @@ import { Box } from '../Box';
 import type { BoxProps } from '../Box';
 import type { IconContext } from '../Icon/useIconContext';
 import { IconButton } from '../IconButton/IconButton';
+import { useCopied } from '../Motion/useCopied';
 import { toast } from '../Toast/useToast';
 
 export type CopyableBaseProps = {
@@ -50,8 +51,11 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
       ...props
     },
   ) => {
+    const { copied, markCopied } = useCopied();
+
     async function handleCopy() {
       await navigator.clipboard.writeText(value);
+      markCopied();
       toast.success('Copied to clipboard');
     }
 
@@ -62,7 +66,7 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
           <IconButton
             aria-label={ariaLabel}
             color="gray"
-            icon={CopyIcon}
+            icon={copied ? IconCheck : CopyIcon}
             iconClassName={styles().icon({ className: iconClassName })}
             iconColor={iconColor}
             iconSize={iconSize}

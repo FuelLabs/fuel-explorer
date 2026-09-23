@@ -1,4 +1,4 @@
-import { HStack, RoundedContainer } from '@fuels/ui';
+import { AnimatedNumber, HStack, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import {
@@ -62,15 +62,16 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
     <RoundedContainer className="py-4 px-5 h-full flex flex-col overflow-hidden">
       <div className="flex flex-col flex-1 min-h-0 space-y-[16px]">
         <div className="flex items-center justify-between">
-          <span className="text-[15px] leading-[24px] text-heading font-semibold">
-            Hourly TPS
-          </span>
-          <span className="text-[13px] leading-[20px] text-muted">24h</span>
+          <span className="fuel-label">Hourly TPS</span>
+          <span className="fuel-label">24h</span>
         </div>
         <HStack className="items-baseline gap-3" gap={'0'}>
           <HStack className="items-baseline" gap={'0'}>
-            <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
-              {currentHourAvg.toFixed(2)}
+            <h2 className="fuel-stat">
+              <AnimatedNumber
+                value={currentHourAvg}
+                format={(v) => v.toFixed(2)}
+              />
             </h2>
             <div className="text-[12px] leading-[12px] text-heading ml-1">
               TX/s
@@ -79,7 +80,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
           {peakTps > 0 && (
             <span className="text-[12px] text-muted">
               Peak:{' '}
-              <span className="text-[#FF6B6B] font-semibold">
+              <span className="text-[var(--color-error)] font-medium">
                 {peakTps.toFixed(2)}
               </span>{' '}
               TX/s
@@ -93,7 +94,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
           >
             <CartesianGrid
               strokeDasharray="3 0"
-              stroke="#333"
+              stroke="var(--fuel-grid-line)"
               vertical={true}
               horizontal={false}
             />
@@ -120,7 +121,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                     style={{
                       backgroundColor: 'var(--gray-1)',
                       border: '1px solid var(--gray-2)',
-                      borderRadius: '8px',
+                      borderRadius: 0,
                       padding: '8px 12px',
                       fontSize: '12px',
                     }}
@@ -134,7 +135,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                     >
                       {label}
                     </div>
-                    <div style={{ color: '#00F58C' }}>
+                    <div style={{ color: 'var(--fuel-primary)' }}>
                       Peak TPS: {data.max.toFixed(2)} TX/s
                     </div>
                     <div style={{ color: 'var(--gray-12)' }}>
@@ -171,16 +172,11 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
             )}
             <Bar
               dataKey="max"
-              radius={[10, 10, 10, 10]}
+              radius={0}
               barSize={5}
-              fill="#00F58C"
+              fill="var(--fuel-primary)"
             />
-            <Bar
-              dataKey="avg"
-              radius={[10, 10, 10, 10]}
-              barSize={5}
-              xAxisId="overlay"
-            >
+            <Bar dataKey="avg" radius={0} barSize={5} xAxisId="overlay">
               {chartData.map((_, index) => (
                 <Cell
                   key={`avg-${index}`}

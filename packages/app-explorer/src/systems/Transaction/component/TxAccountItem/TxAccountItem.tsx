@@ -2,7 +2,7 @@ import { bn } from '@fuel-ts/math';
 import type { BN } from '@fuel-ts/math';
 import type { CardProps } from '@fuels/ui';
 import { Card, EntityItem, Text, VStack } from '@fuels/ui';
-import { IconCoins } from '@tabler/icons-react';
+import { IconCoins } from '@fuels/ui';
 
 import type { TxAccountType } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';

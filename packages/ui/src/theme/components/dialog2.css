@@ -67,8 +67,8 @@
 @media all {
   .fuel-AnimatedDialogContent {
     padding: var(--space-5);
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
   }
 }
 
@@ -85,8 +85,8 @@
 
   .fuel-AnimatedDialogContent {
     padding: var(--space-8);
-    border-bottom-left-radius: 28px;
-    border-bottom-right-radius: 28px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
     max-width: 544px;
   }
 }

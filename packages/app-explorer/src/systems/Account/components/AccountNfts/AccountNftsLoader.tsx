@@ -18,7 +18,7 @@ export function AccountNftsLoader() {
           {placeholders.map((placeholder) => {
             return (
               <VStack key={placeholder} gap="0" align="center">
-                <div className="w-full aspect-square rounded-[12px] overflow-hidden">
+                <div className="w-full aspect-square overflow-hidden">
                   <Skeleton width="100%" height="100%" />
                 </div>
 

@@ -18,6 +18,9 @@
 @import "./components/textfield.css";
 @import "./components/segmentedControl.css";
 
+/* Last, so it wins over the overrides above */
+@import "./fuel-ds.css";
+
 /* Tailwind */
 @tailwind components;
 @tailwind utilities;
@@ -33,7 +36,7 @@
 
   /* Default */
   --default-font-size: var(--font-size-3);
-  --default-font-family: var(--font-inter);
+  --default-font-family: var(--font-sans);
 
   /* Radix Adjustments */
   --green-contrast: #111111;

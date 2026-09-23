@@ -1,5 +1,5 @@
 import { Card, HStack, Tooltip } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle } from '@fuels/ui';
 import { AnimatePresence, type AnimationProps, motion } from 'framer-motion';
 import type React from 'react';
 import { memo } from 'react';

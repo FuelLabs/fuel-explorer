@@ -1,5 +1,5 @@
 import { Skeleton } from '@fuels/ui';
-import { IconFileOff } from '@tabler/icons-react';
+import { IconFileOff } from '@fuels/ui';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { shortAddress } from '~portal/systems/Core';
@@ -28,7 +28,7 @@ export const NFTImage = ({ assetId, image }: NFTImageProps) => {
 
   if (image && !fallback) {
     return (
-      <div className="w-full aspect-square rounded-[12px] overflow-hidden">
+      <div className="w-full aspect-square overflow-hidden">
         {isLoading && <Skeleton width="100%" height="100%" />}
         <img
           className={clsx('w-full object-cover', {
@@ -47,7 +47,7 @@ export const NFTImage = ({ assetId, image }: NFTImageProps) => {
   }
 
   return (
-    <div className="flex items-center justify-center rounded-[12px] w-[100%] aspect-square border border-[#7B7B7B]">
+    <div className="flex items-center justify-center w-[100%] aspect-square border border-[#7B7B7B]">
       <IconFileOff color="gray" size={36} />
     </div>
   );

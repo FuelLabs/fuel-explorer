@@ -6,7 +6,7 @@ import {
   IconChevronDown,
   IconExternalLink,
   IconWorld,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import { getUrlHostName } from 'app-commons';
 import type { MetadataLink, Project } from '~portal/systems/Ecosystem/types';
 
