@@ -19,8 +19,6 @@
   --fuel-stone-800: oklch(0.268 0.006 34.3);
   --fuel-stone-950: oklch(0.147 0.004 49.2);
 
-  --fuel-blue-600: oklch(0.845 0.072 255);
-
   --fuel-border-light: var(--fuel-gray-alpha-light);
   --fuel-border-dark: oklch(0.371 0 0);
   --fuel-border-footer: oklch(0.26 0 0);
@@ -56,6 +54,7 @@
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.922 0 0);
   --fuel-grid-line: oklch(0.683 0 0 / 50%);
+  --fuel-line: var(--fuel-border-light);
   --fuel-footer-bg: var(--fuel-background);
   --fuel-indicator-border: var(--fuel-border-light);
   --fuel-indicator-fill: var(--fuel-background);
@@ -73,19 +72,20 @@
   --fuel-element-mid-em: var(--fuel-stone-400);
   --fuel-element-low-em: var(--fuel-gray-alpha-light);
   --fuel-element-disabled: var(--fuel-stone-400);
-  --fuel-primary: var(--fuel-blue-600);
-  --fuel-primary-hover: oklch(0.845 0.072 255 / 80%);
-  --fuel-primary-foreground: var(--fuel-black);
-  --fuel-brand-text: var(--fuel-blue-600);
+  --fuel-primary: var(--fuel-brand-600);
+  --fuel-primary-hover: var(--fuel-brand-400);
+  --fuel-primary-foreground: var(--fuel-stone-950);
+  --fuel-brand-text: var(--fuel-brand-600);
   --fuel-secondary: oklch(0.269 0 0);
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.985 0 0);
   --fuel-grid-line: var(--fuel-border-dark);
+  --fuel-line: var(--fuel-border-dark);
   --fuel-footer-bg: var(--fuel-black);
   --fuel-indicator-border: var(--fuel-border-dark);
   --fuel-indicator-fill: var(--fuel-dark);
-  --fuel-square: var(--fuel-blue-600);
-  --fuel-square-border: var(--fuel-blue-600);
+  --fuel-square: var(--fuel-brand-600);
+  --fuel-square-border: var(--fuel-brand-500);
 }
 
 /* Only the default accent: explicit color="green" stays the success color. */
@@ -170,11 +170,115 @@
   background: var(--fuel-square);
 }
 
-.fuel-grid-column {
+.fuel-page {
   width: 100%;
   max-width: 1440px;
   margin-inline: auto;
-  border-inline: 1px solid var(--fuel-grid-line);
+}
+
+/* Cells share 1px lines: the 1px gap shows the frame's line color. */
+.fuel-grid-frame {
+  position: relative;
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--fuel-line);
+  background: var(--fuel-line);
+}
+
+.fuel-grid-frame > * {
+  background: var(--fuel-background);
+}
+
+.fuel-grid-frame .fuel-RoundedContainer {
+  border: 0;
+}
+
+.fuel-grid-frame .rt-BaseCard::after {
+  box-shadow: none;
+}
+
+/* Frame corners: an 8px indicator with 60px lines fading outward. */
+.fuel-corner {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  pointer-events: none;
+}
+
+.fuel-corner::before,
+.fuel-corner::after {
+  content: "";
+  position: absolute;
+}
+
+.fuel-corner::before {
+  top: 3px;
+  width: 60px;
+  height: 1px;
+}
+
+.fuel-corner::after {
+  left: 3px;
+  width: 1px;
+  height: 60px;
+}
+
+.fuel-corner-tl {
+  top: -5px;
+  left: -5px;
+}
+
+.fuel-corner-tr {
+  top: -5px;
+  right: -5px;
+}
+
+.fuel-corner-bl {
+  bottom: -5px;
+  left: -5px;
+}
+
+.fuel-corner-br {
+  bottom: -5px;
+  right: -5px;
+}
+
+.fuel-corner-tl::before,
+.fuel-corner-bl::before {
+  right: 100%;
+  background: linear-gradient(to left, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-tr::before,
+.fuel-corner-br::before {
+  left: 100%;
+  background: linear-gradient(to right, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-tl::after,
+.fuel-corner-tr::after {
+  bottom: 100%;
+  background: linear-gradient(to top, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-bl::after,
+.fuel-corner-br::after {
+  top: 100%;
+  background: linear-gradient(to bottom, var(--fuel-grid-line), transparent);
+}
+
+/* The lander's dotted panel: 1.5px dots on a 4.5px grid at 50%. */
+.fuel-dots {
+  background-image: radial-gradient(
+    circle,
+    oklch(0.683 0 0 / 50%) 0.75px,
+    transparent 0.75px
+  );
+  background-size: 4.5px 4.5px;
 }
 
 .fuel-footer {

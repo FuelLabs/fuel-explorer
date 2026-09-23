@@ -1,5 +1,6 @@
 import {
   Box,
+  GridFrame,
   Heading,
   LoadingBox,
   LoadingWrapper,
@@ -80,7 +81,7 @@ function Hero() {
               Fuel Explorer
             </Heading>
 
-            <Box className={classes.searchWrapper()}>
+            <GridFrame className={classes.searchWrapper()}>
               {/* Row 1-2, Col 1-4: Daily Transactions */}
               <Reveal className="row-span-2 col-span-12 laptop:col-span-4">
                 <LoadingWrapper
@@ -115,7 +116,7 @@ function Hero() {
               {/* Row 1-4, Col 8-12: Latest Block + Recent Blocks */}
               <Reveal
                 delay={0.1}
-                className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-5"
+                className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-px bg-[var(--fuel-line)]"
               >
                 <LoadingWrapper
                   isLoading={isRollingLoading}
@@ -173,7 +174,7 @@ function Hero() {
                   regularEl={<GasSpentChart blocks={totalFeeData} />}
                 />
               </Reveal>
-            </Box>
+            </GridFrame>
           </VStack>
         </Box>
       </Box>

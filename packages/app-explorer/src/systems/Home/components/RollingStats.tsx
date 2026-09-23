@@ -13,7 +13,7 @@ export const RollingStats = ({
   avgBlockSize,
 }: RollingStatsProps) => {
   return (
-    <RoundedContainer className="py-4 px-5 flex flex-col">
+    <RoundedContainer className="fuel-dots py-4 px-5 flex flex-col">
       <div className="flex items-center">
         <span className="fuel-label">Live Stats</span>
         <span className="fuel-label ml-1.5">(60s)</span>

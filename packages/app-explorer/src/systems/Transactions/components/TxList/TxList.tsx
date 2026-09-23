@@ -1,4 +1,4 @@
-import { Alert, Button, Grid, Reveal, cx } from '@fuels/ui';
+import { Alert, Button, GridFrame, Reveal, cx } from '@fuels/ui';
 import { IconInfoCircle, IconLink } from '@fuels/ui';
 import { Routes as PortalRoutes } from 'app-commons';
 import { memo } from 'react';
@@ -64,13 +64,13 @@ function _TxList({
           </Alert.Text>
         </Alert>
       )}
-      <Grid className={'flex flex-col gap-6'}>
+      <GridFrame className="grid-cols-1">
         {transactions.map((transaction, index) => (
           <Reveal key={transaction.id} delay={Math.min(index, 9) * 0.03}>
             <TxCard isLoading={isLoading} transaction={transaction} />
           </Reveal>
         ))}
-      </Grid>
+      </GridFrame>
 
       {enablePagination && (
         <Pagination

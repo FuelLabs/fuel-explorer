@@ -56,7 +56,7 @@ function App() {
         <meta property="og:image" content="/preview.png?v=ignition" />
       </Helmet>
 
-      <Layout contentClassName="[&_.rt-ContainerInner]:flex-col [&_.rt-ContainerInner]:gap-10 bg-gray-3 dark:bg-gray-1">
+      <Layout>
         <TooltipProvider>
           <Routes>
             {/* Home route */}

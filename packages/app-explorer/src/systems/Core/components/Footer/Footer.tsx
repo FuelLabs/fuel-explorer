@@ -57,61 +57,66 @@ export function Footer() {
 
   return (
     <Box as="footer" className={classes.container()}>
-      <Flex className={classes.root()}>
-        <FuelLogo showLettering size={16} />
+      <Box className={classes.inner()}>
+        <Flex className={classes.root()}>
+          <FuelLogo showLettering size={16} />
 
-        <Box className={classes.navs()}>
-          <FooterNav title="FUEL" links={data.links.FUEL} />
-          <FooterNav title="Get Started" links={data.links.GetStarted} />
-          <FooterNav title="Build" links={data.links.Build} />
-          <FooterNav title="Environment" links={data.links.Environment} />
-        </Box>
-      </Flex>
+          <Box className={classes.navs()}>
+            <FooterNav title="FUEL" links={data.links.FUEL} />
+            <FooterNav title="Get Started" links={data.links.GetStarted} />
+            <FooterNav title="Build" links={data.links.Build} />
+            <FooterNav title="Environment" links={data.links.Environment} />
+          </Box>
+        </Flex>
 
-      <VStack gap="3" className={classes.social()}>
-        <HStack gap="4">
-          <Link
-            className={classes.socialIcon()}
-            href="https://x.com/fuel_network"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <IconBrandXFilled size={24} />
-          </Link>
-          <Link
-            className={classes.socialIcon()}
-            href="https://discord.com/invite/xfpK4Pe"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <IconBrandDiscordFilled size={24} />
-          </Link>
-          <Link
-            className={classes.socialIcon()}
-            href="https://www.youtube.com/channel/UCam2Sj3SvFSAIfDbP-4jWZQ"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <IconBrandYoutubeFilled size={24} />
-          </Link>
-          <Link
-            className={classes.socialIcon()}
-            href="https://t.me/fuelcommunity"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <IconBrandTelegramFilled size={24} />
-          </Link>
-        </HStack>
-        <HStack justify={'between'}>
-          <Text className={classes.meta()} size="2">
-            © {dayjs().year()} Fuel Labs. All rights reserved
-          </Text>
-          <Text className={classes.meta({ className: 'opacity-50' })} size="2">
-            version: {APP_COMMIT_HASH}
-          </Text>
-        </HStack>
-      </VStack>
+        <VStack gap="3" className={classes.social()}>
+          <HStack gap="4">
+            <Link
+              className={classes.socialIcon()}
+              href="https://x.com/fuel_network"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <IconBrandXFilled size={24} />
+            </Link>
+            <Link
+              className={classes.socialIcon()}
+              href="https://discord.com/invite/xfpK4Pe"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <IconBrandDiscordFilled size={24} />
+            </Link>
+            <Link
+              className={classes.socialIcon()}
+              href="https://www.youtube.com/channel/UCam2Sj3SvFSAIfDbP-4jWZQ"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <IconBrandYoutubeFilled size={24} />
+            </Link>
+            <Link
+              className={classes.socialIcon()}
+              href="https://t.me/fuelcommunity"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <IconBrandTelegramFilled size={24} />
+            </Link>
+          </HStack>
+          <HStack justify={'between'}>
+            <Text className={classes.meta()} size="2">
+              © {dayjs().year()} Fuel Labs. All rights reserved
+            </Text>
+            <Text
+              className={classes.meta({ className: 'opacity-50' })}
+              size="2"
+            >
+              version: {APP_COMMIT_HASH}
+            </Text>
+          </HStack>
+        </VStack>
+      </Box>
     </Box>
   );
 }
@@ -119,8 +124,9 @@ export function Footer() {
 const styles = tv({
   slots: {
     container: [
-      'fuel-footer fuel-grid-column border-t border-t-[var(--fuel-grid-line)] px-10 py-10 flex flex-col gap-y-5 fuel-[Icon]:hidden',
+      'fuel-footer border-t border-t-[var(--fuel-grid-line)] py-10 fuel-[Icon]:hidden',
     ],
+    inner: ['fuel-page px-6 tablet:px-10 flex flex-col gap-y-5'],
     root: [
       'justify-between items-start flex-col desktop:flex-row gap-y-10 mb-12',
     ],
