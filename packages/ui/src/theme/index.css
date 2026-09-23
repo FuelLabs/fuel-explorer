@@ -17,8 +17,6 @@
 @import "./components/tabs.css";
 @import "./components/textfield.css";
 @import "./components/segmentedControl.css";
-
-/* Last, so it wins over the overrides above */
 @import "./fuel-ds.css";
 
 /* Tailwind */
@@ -37,6 +35,33 @@
   /* Default */
   --default-font-size: var(--font-size-3);
   --default-font-family: var(--font-sans);
+  --heading-font-family: var(--font-sans);
+  --code-font-family: var(--font-mono);
+  --strong-font-family: var(--font-sans);
+  --em-font-family: var(--font-sans);
+  --quote-font-family: var(--font-sans);
+  --font-weight-bold: 500;
+  --heading-font-weight: 500;
+  --default-letter-spacing: -0.02em;
+  --heading-letter-spacing: -0.04em;
+
+  /* radius-full stays round for avatars, token logos and switch thumbs. */
+  --radius-factor: 0;
+  --radius-1: 0px;
+  --radius-2: 0px;
+  --radius-3: 0px;
+  --radius-4: 0px;
+  --radius-5: 0px;
+  --radius-6: 0px;
+  --radius-full: 9999px;
+  --radius-thumb: 9999px;
+
+  --shadow-1: none;
+  --shadow-2: none;
+  --shadow-3: none;
+  --shadow-4: none;
+  --shadow-5: none;
+  --shadow-6: none;
 
   /* Radix Adjustments */
   --green-contrast: #111111;
@@ -74,29 +99,39 @@
   --space-96: calc(384px * var(--scaling));
 }
 
-:root {
+/* Every theme scope, so a nested <Theme appearance> keeps the page colors. */
+:root,
+.light,
+.light-theme,
+.dark,
+.dark-theme {
+  --color-background: var(--fuel-background);
+  --color-panel-solid: var(--fuel-card);
+  --color-panel-translucent: var(--fuel-card);
+  --color-surface: var(--fuel-card);
+
   /* general colors */
-  --color-border: var(--gray-6);
+  --color-border: var(--fuel-border);
   --color-border-hover: var(--gray-8);
   --color-transparent: transparent;
-  --color-accent: var(--color-brand);
+  --color-accent: var(--fuel-brand-text);
 
   /* card colors */
-  --color-card-border: var(--color-border);
+  --color-card-border: var(--fuel-border);
   --color-card-border-hover: var(--gray-8);
   --color-card-title: var(--gray-1);
-  --color-card-bg: var(--color-panel-solid);
+  --color-card-bg: var(--fuel-card);
 
   /* text colors */
-  --text-primary: var(--gray-12);
-  --text-secondary: var(--gray-10);
-  --color-brand: var(--green-11);
-  --color-heading: var(--gray-12);
-  --color-color: var(--gray-11);
-  --color-secondary: var(--gray-10);
-  --color-muted: var(--gray-10);
+  --text-primary: var(--fuel-element-high-em);
+  --text-secondary: var(--fuel-element-mid-em);
+  --color-brand: var(--fuel-brand-text);
+  --color-heading: var(--fuel-element-high-em);
+  --color-color: var(--fuel-element-mid-em);
+  --color-secondary: var(--fuel-element-mid-em);
+  --color-muted: var(--fuel-element-low-em);
   --color-icon: var(--gray-9);
-  --color-link: var(--color-brand);
+  --color-link: var(--fuel-brand-text);
 
   /* semantic colors */
   --color-success: var(--grass-9);

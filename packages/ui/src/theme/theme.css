@@ -1,42 +1,9 @@
 :root {
-  /* Brand (just a link for the green vars) */
-  --brand-1: var(--green-1);
-  --brand-2: var(--green-2);
-  --brand-3: var(--green-3);
-  --brand-4: var(--green-4);
-  --brand-5: var(--green-5);
-  --brand-6: var(--green-6);
-  --brand-7: var(--green-7);
-  --brand-8: var(--green-8);
-  --brand-9: var(--green-9);
-  --brand-10: var(--green-10);
-  --brand-11: var(--green-11);
-  --brand-12: var(--green-12);
+  --brand-9: var(--fuel-primary);
+  --brand-10: var(--fuel-primary-hover);
+  --brand-11: var(--fuel-brand-text);
 
   --scaling: 1; /* Fallback if not set by Radix */
-  --radius-factor: 1;
-  --radius-1: calc(3px * var(--scaling, 1) * var(--radius-factor, 1));
-  --radius-2: calc(4px * var(--scaling, 1) * var(--radius-factor, 1));
-  --radius-3: calc(6px * var(--scaling, 1) * var(--radius-factor, 1));
-  --radius-4: calc(8px * var(--scaling, 1) * var(--radius-factor, 1));
-  --radius-5: calc(12px * var(--scaling, 1) * var(--radius-factor, 1));
-  --radius-6: calc(16px * var(--scaling, 1) * var(--radius-factor, 1));
-  --radius-full: 9999px;
-  --radius-thumb: 9999px;
-}
-
-:root:is(.light) {
-  --color-panel-solid: #fff;
-  --color-surface: #fff;
-}
-
-:root:is(.dark) {
-  --color-panel-solid: #191919;
-  --color-surface: #222;
-}
-
-[data-accent-color="brand"] {
-  --accent-contrast: #111111;
 }
 
 :root .dark,
