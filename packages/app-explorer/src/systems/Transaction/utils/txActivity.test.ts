@@ -82,7 +82,7 @@ describe('buildTxActivity', () => {
       '0x6becccf6187fc3ebc6050593ff3cb27a3e86ec354413e2a123b5d959614eb850',
     );
     expect(activity.actions.map((a) => [a.label, render(a.parts)])).toEqual([
-      ['Order cancelled', 'Order 0x61000002…0003'],
+      ['Order cancelled', 'Order 0x6100...0003'],
       [
         'Order placed',
         `Post-only buy [334000000 ${BASE}] at [2753320000000 ${QUOTE}]`,

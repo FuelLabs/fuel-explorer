@@ -8,9 +8,22 @@ import {
   HStack,
   Heading,
   Link,
+  LoadingBox,
   Text,
   VStack,
 } from '@fuels/ui';
+import {
+  IconAlertTriangle,
+  IconArrowBarToDown,
+  IconArrowDownRight,
+  IconArrowsExchange,
+  IconCode,
+  IconKey,
+  IconPlus,
+  IconReceipt,
+  IconTargetArrow,
+  IconX,
+} from '@tabler/icons-react';
 import { bn } from 'fuels';
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
@@ -24,17 +37,20 @@ import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 
 type BadgeColor = 'blue' | 'green' | 'orange' | 'gray' | 'yellow' | 'red';
 
-const KIND_COLOR: Record<ActivityKind, BadgeColor> = {
-  place: 'blue',
-  fill: 'green',
-  cancel: 'orange',
-  trigger: 'yellow',
-  stop: 'red',
-  withdraw: 'blue',
-  fee: 'gray',
-  settle: 'gray',
-  session: 'gray',
-  call: 'gray',
+const KIND_BADGE: Record<
+  ActivityKind,
+  { color: BadgeColor; icon: typeof IconPlus }
+> = {
+  place: { color: 'blue', icon: IconPlus },
+  fill: { color: 'green', icon: IconArrowsExchange },
+  cancel: { color: 'orange', icon: IconX },
+  trigger: { color: 'yellow', icon: IconTargetArrow },
+  stop: { color: 'red', icon: IconAlertTriangle },
+  withdraw: { color: 'blue', icon: IconArrowDownRight },
+  fee: { color: 'gray', icon: IconReceipt },
+  settle: { color: 'gray', icon: IconArrowBarToDown },
+  session: { color: 'gray', icon: IconKey },
+  call: { color: 'gray', icon: IconCode },
 };
 
 function Part({ part }: { part: ActivityPart }) {
@@ -54,14 +70,17 @@ function Part({ part }: { part: ActivityPart }) {
     return (
       <Address
         value={part.address}
-        className="text-sm"
+        className="text-xs tablet:text-sm font-mono"
         linkProps={{ href: Routes.accountAssets(part.address) }}
       />
     );
   }
   if ('code' in part) {
     return (
-      <Code className="text-sm" color="gray">
+      <Code
+        className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+        color="gray"
+      >
         {part.code}
       </Code>
     );
@@ -70,14 +89,22 @@ function Part({ part }: { part: ActivityPart }) {
 }
 
 function ContractLink({ action }: { action: ActivityAction }) {
+  const name = action.market ?? action.contractName;
+  if (!name) {
+    return (
+      <Address
+        value={action.contractId}
+        className="text-xs tablet:text-sm font-mono"
+        linkProps={{ href: Routes.contractMintedAssets(action.contractId) }}
+      />
+    );
+  }
   return (
     <Link
       href={Routes.contractMintedAssets(action.contractId)}
-      className="text-sm text-muted whitespace-nowrap"
+      className="text-sm text-link underline truncate min-w-0"
     >
-      {action.market ??
-        action.contractName ??
-        `${action.contractId.slice(0, 8)}…`}
+      {name}
     </Link>
   );
 }
@@ -89,17 +116,14 @@ function ActionRow({
   action: ActivityAction;
   showContract: boolean;
 }) {
+  const badge = KIND_BADGE[action.kind];
   return (
     <Box className="border-l-2 border-l-gray-8 ml-4 py-3">
-      <HStack className="ml-8 gap-3 items-center mobile:max-tablet:flex-col mobile:max-tablet:items-start">
-        <Badge
-          color={KIND_COLOR[action.kind]}
-          variant="ghost"
-          className="min-w-[120px] justify-center"
-        >
+      <HStack className="ml-8 items-center mobile:max-tablet:flex-col mobile:max-tablet:items-start">
+        <Badge color={badge.color} leftIcon={badge.icon}>
           {action.label}
         </Badge>
-        <HStack gap="1" className="flex-1 flex-wrap items-center">
+        <HStack gap="1" className="flex-1 flex-wrap items-center min-w-0">
           {action.parts.map((part, i) => (
             <Part key={i} part={part} />
           ))}
@@ -114,14 +138,14 @@ function ActionRow({
 // sit in a compact list below the protocol actions.
 function OtherCalls({ calls }: { calls: ActivityAction[] }) {
   return (
-    <VStack gap="2" className="mt-4 ml-12">
+    <VStack gap="2" className="mt-2 ml-12 mobile:max-tablet:ml-4">
       <Text className="text-sm text-muted">Also called</Text>
       <HStack gap="2" className="flex-wrap">
         {calls.map((call, i) => (
           <HStack
             key={`${call.contractId}-${i}`}
             gap="1"
-            className="items-center rounded-md border border-gray-6 px-2 py-1"
+            className="items-center flex-wrap max-w-full min-w-0 rounded-md border border-gray-6 px-2 py-1"
           >
             {call.parts.map((part, j) => (
               <Part key={j} part={part} />
@@ -144,46 +168,51 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
     protocolActions.map((a) => a.market ?? a.contractName ?? a.contractId),
   );
   const showContract = locations.size > 1;
+
   return (
-    <Card className="px-4 py-4">
-      <VStack gap="2">
-        <HStack className="items-center gap-3">
+    <Card className="px-4">
+      <HStack className="items-start gap-3">
+        <Box className="shrink-0">
           <TxContractIcon contractId={iconContract ?? ''} size="32px">
             <BlockieAvatar address={activity.actor?.address ?? ''} size={32} />
           </TxContractIcon>
+        </Box>
+        <VStack gap="1" className="min-w-0">
           <Heading as="h2" size="5" className="leading-tight">
             {activity.headline}
           </Heading>
-        </HStack>
-        {activity.actor && (
-          <HStack gap="1" className="ml-11 flex-wrap items-center text-sm">
-            <Text className="text-muted">
-              {activity.actor.name ?? 'Account'}
-            </Text>
-            <Address
-              value={activity.actor.address}
-              className="text-sm"
-              linkProps={{
-                href: Routes.contractMintedAssets(activity.actor.address),
-              }}
-            />
-            {activity.sessionKey && (
-              <>
-                <Text className="text-muted ml-1">signed with session key</Text>
-                <Address
-                  value={activity.sessionKey}
-                  className="text-sm"
-                  linkProps={{
-                    href: Routes.accountAssets(activity.sessionKey),
-                  }}
-                />
-              </>
-            )}
-          </HStack>
-        )}
-      </VStack>
+          {activity.actor && (
+            <HStack gap="1" className="flex-wrap items-center text-sm">
+              <Text className="text-muted">
+                {activity.actor.name ?? 'Account'}
+              </Text>
+              <Address
+                value={activity.actor.address}
+                className="text-xs tablet:text-sm font-mono"
+                linkProps={{
+                  href: Routes.contractMintedAssets(activity.actor.address),
+                }}
+              />
+              {activity.sessionKey && (
+                <>
+                  <Text className="text-muted ml-1">
+                    signed with session key
+                  </Text>
+                  <Address
+                    value={activity.sessionKey}
+                    className="text-xs tablet:text-sm font-mono"
+                    linkProps={{
+                      href: Routes.accountAssets(activity.sessionKey),
+                    }}
+                  />
+                </>
+              )}
+            </HStack>
+          )}
+        </VStack>
+      </HStack>
       {protocolActions.length > 0 && (
-        <VStack gap="0" className="mt-4">
+        <VStack gap="0" className="py-3">
           {protocolActions.map((action, i) => (
             <ActionRow
               key={`${action.contractId}-${i}`}
@@ -194,6 +223,29 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
         </VStack>
       )}
       {otherCalls.length > 0 && <OtherCalls calls={otherCalls} />}
+    </Card>
+  );
+}
+
+// Placeholder with the card's shape, shown while a transaction decodes so
+// the content below does not move when the card arrives.
+export function TxActivityLoader() {
+  return (
+    <Card className="px-4">
+      <HStack className="items-center gap-3">
+        <LoadingBox className="w-8 h-8 rounded-full shrink-0" />
+        <LoadingBox className="w-72 h-6" />
+      </HStack>
+      <VStack gap="0" className="py-3">
+        {[0, 1].map((i) => (
+          <Box key={i} className="border-l-2 border-l-gray-8 ml-4 py-3">
+            <HStack className="ml-8">
+              <LoadingBox className="w-24 h-6 rounded" />
+              <LoadingBox className="w-64 h-6" />
+            </HStack>
+          </Box>
+        ))}
+      </VStack>
     </Card>
   );
 }

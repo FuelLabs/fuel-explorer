@@ -227,12 +227,12 @@ function flattenOperations(operations: Operations) {
 // accounts, which must be verified before any ABI is applied to them.
 export function collectCallerCandidates(
   operations: Operations,
-  registry: AbiRegistry,
+  isListed: (contractId: string) => boolean,
 ) {
   const candidates: Record<string, string> = {};
   for (const node of flattenOperations(operations)) {
     if (node.receiptType !== 'CALL' || !node.id || !node.to) continue;
-    if (!registry.contracts[node.to] || registry.contracts[node.id]) continue;
+    if (!isListed(node.to) || isListed(node.id)) continue;
     candidates[node.id] ??= node.to;
   }
   return candidates;

@@ -172,7 +172,10 @@ describe('collectContractIds and collectCallerCandidates', () => {
   });
 
   it('returns unlisted callers of listed contracts', () => {
-    expect(collectCallerCandidates(cancelTx.operations, registry())).toEqual({
+    const listed = registry().contracts;
+    expect(
+      collectCallerCandidates(cancelTx.operations, (id) => !!listed[id]),
+    ).toEqual({
       [TRADE_ACCOUNT]: ORDER_BOOK,
     });
   });

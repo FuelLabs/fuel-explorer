@@ -80,17 +80,12 @@ export function TxReceiptHeader() {
           <VStack className="flex-1 gap-[2px]">
             {decoded && (
               <Code
-                className="text-xs tablet:text-sm font-mono bg-transparent p-0"
+                className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
                 color="gray"
               >
-                {[
-                  `${decoded.kind === 'call' ? 'Method' : 'Event'} ${
-                    decoded.name
-                  }`,
-                  decoded.contractName,
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
+                {`${decoded.kind === 'call' ? 'Method:' : 'Event:'} ${
+                  decoded.name
+                }${decoded.contractName ? ` (${decoded.contractName})` : ''}`}
               </Code>
             )}
             {filteredFields?.rest?.map((field, index) => (
