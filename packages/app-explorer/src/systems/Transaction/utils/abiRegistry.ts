@@ -18,7 +18,6 @@ export type AbiIndex = Record<string, ContractRef>;
 
 type AbiLoader = (url: string) => Promise<JsonAbi>;
 
-// Calls `method(child)` on a listed contract and returns its boolean answer.
 export type AccountVerifier = (
   contractId: string,
   abi: JsonAbi,
@@ -48,7 +47,6 @@ async function load(loadAbi: AbiLoader, { name, abi }: AccountRef) {
   return json ? { name, abi: json } : null;
 }
 
-// Loads only the ABIs of the given contracts.
 export async function resolveAbiRegistry(
   index: AbiIndex,
   contractIds: string[],
@@ -74,9 +72,7 @@ export async function resolveAbiRegistry(
   return registry;
 }
 
-// An unlisted contract gets an account ABI only when the project's verifier
-// contract confirms it on chain. Anyone can deploy a contract that calls a
-// listed contract and emits look-alike logs, so the call alone proves nothing.
+// Calling a listed contract proves nothing: anyone can emit look-alike logs.
 export async function resolveAccounts(
   index: AbiIndex,
   candidates: Record<string, string>,
@@ -87,8 +83,7 @@ export async function resolveAccounts(
 
   await Promise.all(
     Object.entries(candidates).map(async ([candidate, callee]) => {
-      // All checks and account ABIs load at once; the first confirmed
-      // account type in list order wins.
+      // The first confirmed account type in list order wins.
       const checks = (index[callee]?.accounts ?? []).flatMap((ref) => {
         const check = ref.verify;
         const verifierAbi = check && index[check.contractId.toLowerCase()]?.abi;
@@ -109,8 +104,6 @@ export async function resolveAccounts(
   return accounts;
 }
 
-// ABIs are only loaded from where the projects list itself is published,
-// so an entry in the list cannot point the browser at an arbitrary host.
 export function isTrustedAbiUrl(abiUrl: string, projectsUrl: string) {
   try {
     const abi = new URL(abiUrl);

@@ -19,18 +19,21 @@ import {
 interface TransactionDetailsProps {
   transaction: TransactionNode;
   mode: string;
-  isDecoding?: boolean;
+  isActivityLoading?: boolean;
 }
 
 function TransactionContent({
   transaction,
   mode,
-  isDecoding,
+  isActivityLoading,
 }: TransactionDetailsProps) {
   switch (mode) {
     case 'simple':
       return (
-        <TxScreenSimple transaction={transaction} isDecoding={isDecoding} />
+        <TxScreenSimple
+          transaction={transaction}
+          isActivityLoading={isActivityLoading}
+        />
       );
     case 'standard':
       return <TxScreenStandard transaction={transaction} />;
@@ -38,7 +41,10 @@ function TransactionContent({
       return <TxScreenAdvanced transaction={transaction} />;
     default:
       return (
-        <TxScreenSimple transaction={transaction} isDecoding={isDecoding} />
+        <TxScreenSimple
+          transaction={transaction}
+          isActivityLoading={isActivityLoading}
+        />
       );
   }
 }
@@ -56,14 +62,10 @@ function TransactionLoadingContent({ mode }: { mode: string }) {
   }
 }
 
-// With decoding inputs cached, decoding takes a few milliseconds. Waiting
-// this long for it lets the page render once, without the activity card
-// arriving later and moving the content.
 const INLINE_DECODE_BUDGET_MS = 250;
-// Longest the Simple view waits for decoding before falling back to Standard.
 const SIMPLE_VIEW_WAIT_MS = 5000;
 
-// Never rejects: a failed import or decode leaves the transaction as it is.
+// Never rejects: a failed import or decode returns the transaction as is.
 async function decodeLazily(
   transaction: TransactionNode,
 ): Promise<TransactionNode> {
@@ -135,17 +137,13 @@ export function TransactionPage() {
     },
   });
 
-  // Only transactions that call or log from a contract can be decoded.
   const contractIds = useMemo(
     () => touchedContracts(rawTransaction?.operations),
     [rawTransaction],
   );
   const canDecode = contractIds.size > 0 && !rawTransaction?.activity;
 
-  // Decoding fetches ABIs, so it runs after the transaction has loaded and
-  // never holds the page back. The raw transaction shows in the meantime.
-  // Keyed on the raw data's timestamp so a refetch (e.g. a pending tx that
-  // later succeeds) is decoded again.
+  // Keyed on dataUpdatedAt so refetched data is decoded again.
   const { data: decodedTransaction, isPending } = useQuery({
     queryKey: ['transaction', id, 'decoded', dataUpdatedAt],
     queryFn: () => decodeLazily(rawTransaction as TransactionNode),
@@ -153,9 +151,7 @@ export function TransactionPage() {
     staleTime: Number.POSITIVE_INFINITY,
   });
 
-  // Decoded receipts and activity depend only on the transaction's receipts,
-  // which never change, so the last result is kept across refetches instead
-  // of dropping the card while a refetch is decoded again.
+  // Receipts never change, so the last decoded result survives refetches.
   const lastDecoded = useRef<{
     id: string;
     operations: TransactionNode['operations'];
@@ -188,8 +184,6 @@ export function TransactionPage() {
     [freshDecoded, kept, rawTransaction],
   );
 
-  // Simple view waits for decoding before falling back to Standard, up to a
-  // limit so a slow ABI host cannot hold the page.
   const [decodeWaitOver, setDecodeWaitOver] = useState(false);
   useEffect(() => {
     setDecodeWaitOver(false);
@@ -201,8 +195,6 @@ export function TransactionPage() {
     return () => clearTimeout(timer);
   }, [rawTransaction]);
 
-  // Reserve space for the activity card when this transaction touches a
-  // contract with a published ABI, so the page does not jump when it lands.
   const expectsActivity =
     isDecoding &&
     touchesDecodableContract(
@@ -268,8 +260,7 @@ export function TransactionPage() {
     (!transaction?.summary || transaction.summary.length === 0);
 
   // If Simple is disabled and user requested simple, redirect to standard
-  // Use navigate instead of Navigate to avoid flash. Wait for decoding, which
-  // can enable Simple for transactions without transfers.
+  // Use navigate instead of Navigate to avoid flash
   if (mode === 'simple' && isSimpleDisabled && isDecoding && !decodeWaitOver) {
     return (
       <div className="transaction-page">
@@ -325,7 +316,7 @@ export function TransactionPage() {
         <TransactionContent
           transaction={transaction}
           mode={mode || 'standard'}
-          isDecoding={expectsActivity}
+          isActivityLoading={expectsActivity}
         />
       </div>
     </>

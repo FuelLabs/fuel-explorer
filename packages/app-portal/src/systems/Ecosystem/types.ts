@@ -20,21 +20,6 @@ export type ContractMetadata = {
   repo: string;
   links: MetadataLink[];
   audits: MetadataAudit[];
-  abi?: string;
-  market?: {
-    symbol: string;
-    baseAssetId: string;
-    quoteAssetId: string;
-  };
-};
-
-// ABI for contracts without a fixed id that call the project's contracts.
-export type CallerContractMetadata = {
-  name: string;
-  description?: string;
-  abi: string;
-  // A listed contract method that returns true for genuine accounts.
-  verify?: { contractId: string; method: string };
 };
 
 export type PredicateMetadata = {
@@ -58,7 +43,6 @@ export type Project = {
   name: string;
   description: string;
   contracts?: MetadataByNetwork<ContractMetadata[]>;
-  callerContracts?: MetadataByNetwork<CallerContractMetadata[]>;
   predicates?: MetadataByNetwork<PredicateMetadata[]>;
   tags: string[];
   image?: string;

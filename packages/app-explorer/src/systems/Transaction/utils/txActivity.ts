@@ -49,8 +49,7 @@ function identityAddress(identity: Value | undefined) {
   return identity?.ContractId?.bits ?? identity?.Address?.bits;
 }
 
-// Order ids start with long runs of zeros, so drop them before shortening
-// the same way the Address component does.
+// Order ids are zero-padded.
 function shortId(id: string) {
   const hex = id.replace(/^0x0*/, '');
   return hex.length > 8
@@ -58,8 +57,7 @@ function shortId(id: string) {
     : `0x${hex}`;
 }
 
-// Unit enum variants decode as strings; variants with data decode as
-// `{ Variant: data }`.
+// Unit variants decode as strings, variants with data as `{ Variant: data }`.
 function variantName(value: unknown) {
   if (value && typeof value === 'object') return Object.keys(value)[0] ?? '';
   return String(value);
@@ -111,8 +109,7 @@ const ORDER_TYPE_LABEL: Record<string, string> = {
   BoundedMarket: 'Market',
 };
 
-// Event name -> plain-language line. Events not listed here are internal
-// bookkeeping (nonces, session call markers) and are not shown.
+// Events without a describer are internal bookkeeping and stay hidden.
 const DESCRIBERS: Record<
   string,
   (
@@ -216,8 +213,7 @@ const DESCRIBERS: Record<
   WithdrawSettledTradeEvent: (v, ctx) => {
     const parts = feeParts(v.base_amount, v.quote_amount, ctx);
     const trader = identityAddress(v.trader_id)?.toLowerCase();
-    // Anyone can settle any trader's balance, so name the trader unless it
-    // is the account that sent this transaction.
+    // Anyone can settle any trader, so name the trader unless it is the actor.
     const to: ActivityPart[] =
       trader && trader !== ctx.actor
         ? [text(' moved to '), { address: trader }]
@@ -326,7 +322,6 @@ export function buildTxActivity(
     const v = d.value as Value;
 
     if (d.kind === 'call') {
-      // The verified account the transaction was sent to is the actor.
       if (!actor && registry.accounts?.[d.contractId]) {
         actor = { address: d.contractId, name: d.contractName };
         continue;

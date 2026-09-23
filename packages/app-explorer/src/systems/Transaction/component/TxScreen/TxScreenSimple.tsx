@@ -39,8 +39,7 @@ type TxScreenProps = (
       isLoading: true;
     }
 ) & {
-  // True while a transaction that should have an activity card is decoding.
-  isDecoding?: boolean;
+  isActivityLoading?: boolean;
 };
 
 const detailsLink: Record<AddressType, typeof Routes.accountAssets> = {
@@ -51,7 +50,7 @@ const detailsLink: Record<AddressType, typeof Routes.accountAssets> = {
 export function TxScreenSimple({
   transaction,
   isLoading,
-  isDecoding,
+  isActivityLoading,
 }: TxScreenProps) {
   if (!transaction && !isLoading) return null;
 
@@ -134,7 +133,7 @@ export function TxScreenSimple({
         </HStack>
       </HStack>
 
-      {!isLoading && isDecoding && !transaction?.activity && (
+      {!isLoading && isActivityLoading && !transaction?.activity && (
         <Box className="mt-8">
           <TxActivityLoader />
         </Box>
@@ -147,7 +146,7 @@ export function TxScreenSimple({
       )}
 
       {!isLoading &&
-        (transaction?.activity || isDecoding) &&
+        (transaction?.activity || isActivityLoading) &&
         !!transaction?.summary?.length && (
           <Heading as="h2" size="5" className="leading-none mt-6">
             Token transfers
@@ -157,7 +156,7 @@ export function TxScreenSimple({
       <Card
         className={clsx(
           'px-4 relative',
-          transaction?.activity || isDecoding ? 'mt-4' : 'mt-8',
+          transaction?.activity || isActivityLoading ? 'mt-4' : 'mt-8',
         )}
       >
         <LoadingWrapper

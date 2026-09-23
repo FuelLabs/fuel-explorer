@@ -9,7 +9,7 @@ import {
   fetchJson,
 } from '~/systems/Ecosystem/utils/ecosystemProjects';
 import {
-  isImmutableUrl,
+  isCommitPinnedUrl,
   readCache,
   writeCache,
 } from '~/systems/Ecosystem/utils/persistentCache';
@@ -30,8 +30,6 @@ import {
 import { buildTxActivity } from './txActivity';
 
 const VERIFY_TIMEOUT_MS = 10_000;
-// ABIs live on a branch, so a stored copy is used right away and refreshed
-// in the background once it is older than this.
 const ABI_REVALIDATE_MS = 24 * 60 * 60 * 1000;
 
 let indexPromise: Promise<AbiIndex> | null = null;
@@ -65,13 +63,12 @@ function loadAbi(url: string) {
   if (stored) {
     abi = Promise.resolve(stored.value);
     if (
-      isImmutableUrl(url) ||
+      isCommitPinnedUrl(url) ||
       Date.now() - stored.savedAt < ABI_REVALIDATE_MS
     ) {
       abiCache.set(url, abi);
       return abi;
     }
-    // Stale: serve the stored copy now, refresh for next time.
     fetchAndStore()
       .then((fresh) => abiCache.set(url, Promise.resolve(fresh)))
       .catch(() => {});
@@ -83,19 +80,15 @@ function loadAbi(url: string) {
   return abi;
 }
 
-// Removes a cache entry only if it still holds this call, so a stale call
-// never evicts a newer one for the same account.
+// A stale call must never evict a newer one for the same account.
 function evict(key: string, call: Promise<boolean>) {
   if (verifyCache.get(key) === call) verifyCache.delete(key);
 }
 
-// Dry-runs a read-only verifier method. Answers from the chain never change
-// for a given account, so they are cached for the session. A timeout or an
-// RPC error is not an answer: it resolves false for this page only.
+// Only chain answers are cached; timeouts and RPC errors resolve false.
 const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
   const key = `${contractId}:${method}:${child}`;
-  // Only confirmed accounts are stored: an account never stops being valid,
-  // while a negative answer could come from a registry not yet updated.
+  // A negative answer can change when the registry updates, so only true is stored.
   if (readCache<boolean>(`verify:${key}`)?.value === true) {
     return Promise.resolve(true);
   }
@@ -113,9 +106,6 @@ const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
     call = started;
   }
 
-  // Every caller gets its own timeout, including callers that reuse a call
-  // still in flight. A call that times out is dropped so the next page
-  // starts a fresh one.
   const pending = call;
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<boolean>((resolve) => {
@@ -129,16 +119,11 @@ const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
     .finally(() => clearTimeout(timer));
 };
 
-// Returns a copy of the transaction with a `decoded` field on receipts of
-// contracts whose ABI is published in the ecosystem projects list, and a
-// plain-language `activity` summary. Returns the input unchanged when there
-// is nothing to decode or decoding fails.
 export async function decodeTransaction(
   transaction: TransactionNode,
 ): Promise<TransactionNode> {
   try {
-    // Only the GraphQL operations are cloned: `summary` holds BN amounts that
-    // do not survive a JSON round trip.
+    // `summary` holds BN amounts that do not survive a JSON round trip.
     const operations = JSON.parse(
       JSON.stringify(transaction.operations ?? []),
     ) as NonNullable<TransactionNode['operations']>;
@@ -147,7 +132,6 @@ export async function decodeTransaction(
     const isListed = (id: string) => !!index[id]?.abi;
     const contractIds = collectContractIds(operations);
     if (!contractIds.some(isListed)) return transaction;
-    // Contract ABIs and account checks do not depend on each other.
     const [registry, accounts] = await Promise.all([
       resolveAbiRegistry(index, contractIds, loadAbi),
       resolveAccounts(

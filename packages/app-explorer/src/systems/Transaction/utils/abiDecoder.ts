@@ -34,9 +34,7 @@ export type MarketMetadata = {
   quoteAssetId: string;
 };
 
-// `contracts` are ABIs keyed by fixed contract id. `accounts` are ABIs for
-// contracts without a fixed id (per-user accounts) that were verified
-// on chain as genuine. `names` labels listed contracts that publish no ABI.
+// `accounts` holds only unlisted contracts verified on chain.
 export type AbiRegistry = {
   contracts: Record<
     string,
@@ -144,9 +142,7 @@ function argsToObject(abi: JsonAbi, functionName: string, args: unknown[]) {
   );
 }
 
-// Top-level calls from the script: the script data holds the contract id,
-// the function selector and argument offsets, followed by the encoded
-// selector and arguments. Same layout fuels uses in `getContractCalls`.
+// Same script data layout fuels reads in `getContractCalls`.
 function decodeScriptCall(
   node: ReceiptNode,
   scriptData: Uint8Array,
@@ -166,8 +162,7 @@ function decodeScriptCall(
     scriptData,
     selectorOffset,
   );
-  // The VM reads the selector at param1 and the arguments at param2, so the
-  // encoded bytes must sit the same distance apart.
+  // The VM reads the selector at param1 and the arguments at param2.
   const distance = new BN(node.param2).sub(new BN(node.param1)).toNumber();
   if (distance !== argsOffset - selectorOffset) return null;
   if (!hasFunction(source.abi, functionName)) return null;
@@ -177,9 +172,7 @@ function decodeScriptCall(
   return { functionName, args };
 }
 
-// Some accounts forward a batch of calls. Each forwarded call carries the
-// target contract, an encoded function selector and encoded call data, so
-// the inner Call receipts can be named and decoded in order.
+// Forwarded calls are matched in order to the Call receipts that follow.
 function collectInnerCalls(args: unknown[]): PendingInnerCall[] {
   const calls: PendingInnerCall[] = [];
   const visit = (value: unknown) => {
@@ -223,8 +216,6 @@ function flattenOperations(operations: Operations) {
   );
 }
 
-// Unlisted contracts that call a listed contract. They may be per-user
-// accounts, which must be verified before any ABI is applied to them.
 export function collectCallerCandidates(
   operations: Operations,
   isListed: (contractId: string) => boolean,
@@ -328,9 +319,7 @@ export function decodeOperationReceipts(
         name: next.functionName,
         value: argsToObject(source.abi, next.functionName, args),
       };
-    } catch {
-      // A receipt that does not match its ABI stays raw.
-    }
+    } catch {}
   }
 
   return operations;

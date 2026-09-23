@@ -134,8 +134,6 @@ function ActionRow({
   );
 }
 
-// Calls into contracts that publish no ABI only have a method name, so they
-// sit in a compact list below the protocol actions.
 function OtherCalls({ calls }: { calls: ActivityAction[] }) {
   return (
     <VStack gap="2" className="mt-2 ml-12 mobile:max-tablet:ml-4">
@@ -163,7 +161,6 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
   const iconContract = activity.actions.find((a) => a.market)?.contractId;
   const protocolActions = activity.actions.filter((a) => a.kind !== 'call');
   const otherCalls = activity.actions.filter((a) => a.kind === 'call');
-  // The headline already names a single market, so rows skip it.
   const locations = new Set(
     protocolActions.map((a) => a.market ?? a.contractName ?? a.contractId),
   );
@@ -227,8 +224,6 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
   );
 }
 
-// Placeholder with the card's shape, shown while a transaction decodes so
-// the content below does not move when the card arrives.
 export function TxActivityLoader() {
   return (
     <Card className="px-4">
