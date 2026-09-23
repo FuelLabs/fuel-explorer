@@ -49,10 +49,13 @@ function identityAddress(identity: Value | undefined) {
   return identity?.ContractId?.bits ?? identity?.Address?.bits;
 }
 
-// Order ids start with long runs of zeros, so drop them before shortening.
+// Order ids start with long runs of zeros, so drop them before shortening
+// the same way the Address component does.
 function shortId(id: string) {
   const hex = id.replace(/^0x0*/, '');
-  return hex.length > 12 ? `0x${hex.slice(0, 8)}…${hex.slice(-4)}` : `0x${hex}`;
+  return hex.length > 8
+    ? `0x${hex.slice(0, 4)}...${hex.slice(-4)}`
+    : `0x${hex}`;
 }
 
 // Unit enum variants decode as strings; variants with data decode as

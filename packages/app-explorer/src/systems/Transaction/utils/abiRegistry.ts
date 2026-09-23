@@ -87,16 +87,21 @@ export async function resolveAccounts(
 
   await Promise.all(
     Object.entries(candidates).map(async ([candidate, callee]) => {
-      for (const ref of index[callee]?.accounts ?? []) {
+      // All checks and account ABIs load at once; the first confirmed
+      // account type in list order wins.
+      const checks = (index[callee]?.accounts ?? []).flatMap((ref) => {
         const check = ref.verify;
         const verifierAbi = check && index[check.contractId.toLowerCase()]?.abi;
-        if (!check || !verifierAbi) continue;
-        const ok = await loadAbi(verifierAbi)
+        if (!check || !verifierAbi) return [];
+        const ok = loadAbi(verifierAbi)
           .then((abi) => verify(check.contractId, abi, check.method, candidate))
           .catch(() => false);
-        if (!ok) continue;
-        const source = await load(loadAbi, ref);
-        if (source) accounts[candidate] = source;
+        return [{ ok, source: load(loadAbi, ref) }];
+      });
+      for (const { ok, source } of checks) {
+        if (!(await ok)) continue;
+        const loaded = await source;
+        if (loaded) accounts[candidate] = loaded;
         return;
       }
     }),

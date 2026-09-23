@@ -24,12 +24,12 @@ import { AddressType } from 'fuels';
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { TransactionNode } from '../../types';
-import { TxActivity } from '../TxActivity/TxActivity';
+import { TxActivity, TxActivityLoader } from '../TxActivity/TxActivity';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 import { TxFullDateTimestamp } from '../TxFullDateTimestamp/TxFullDateTimestamp';
 import { TxTimeAgoTimestamp } from '../TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 
-type TxScreenProps =
+type TxScreenProps = (
   | {
       transaction: TransactionNode;
       isLoading?: false;
@@ -37,14 +37,22 @@ type TxScreenProps =
   | {
       transaction?: TransactionNode;
       isLoading: true;
-    };
+    }
+) & {
+  // True while a transaction that should have an activity card is decoding.
+  isDecoding?: boolean;
+};
 
 const detailsLink: Record<AddressType, typeof Routes.accountAssets> = {
   [AddressType.contract]: Routes.contractMintedAssets,
   [AddressType.account]: Routes.accountAssets,
 };
 
-export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
+export function TxScreenSimple({
+  transaction,
+  isLoading,
+  isDecoding,
+}: TxScreenProps) {
   if (!transaction && !isLoading) return null;
 
   return (
@@ -126,23 +134,30 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
         </HStack>
       </HStack>
 
-      {!isLoading && transaction?.activity && (
-        <>
-          <Box className="mt-8">
-            <TxActivity activity={transaction.activity} />
-          </Box>
-          {!!transaction.summary?.length && (
-            <Heading as="h3" size="4" className="mt-6">
-              Token transfers
-            </Heading>
-          )}
-        </>
+      {!isLoading && isDecoding && !transaction?.activity && (
+        <Box className="mt-8">
+          <TxActivityLoader />
+        </Box>
       )}
+
+      {!isLoading && transaction?.activity && (
+        <Box className="mt-8">
+          <TxActivity activity={transaction.activity} />
+        </Box>
+      )}
+
+      {!isLoading &&
+        (transaction?.activity || isDecoding) &&
+        !!transaction?.summary?.length && (
+          <Heading as="h2" size="5" className="leading-none mt-6">
+            Token transfers
+          </Heading>
+        )}
 
       <Card
         className={clsx(
           'px-4 relative',
-          transaction?.activity ? 'mt-4' : 'mt-8',
+          transaction?.activity || isDecoding ? 'mt-4' : 'mt-8',
         )}
       >
         <LoadingWrapper

@@ -8,6 +8,11 @@ import {
   fetchEcosystemProjects,
   fetchJson,
 } from '~/systems/Ecosystem/utils/ecosystemProjects';
+import {
+  isImmutableUrl,
+  readCache,
+  writeCache,
+} from '~/systems/Ecosystem/utils/persistentCache';
 import type { TransactionNode } from '../types';
 import {
   collectCallerCandidates,
@@ -25,6 +30,9 @@ import {
 import { buildTxActivity } from './txActivity';
 
 const VERIFY_TIMEOUT_MS = 10_000;
+// ABIs live on a branch, so a stored copy is used right away and refreshed
+// in the background once it is older than this.
+const ABI_REVALIDATE_MS = 24 * 60 * 60 * 1000;
 
 let indexPromise: Promise<AbiIndex> | null = null;
 const abiCache = new Map<string, Promise<JsonAbi>>();
@@ -46,13 +54,32 @@ function loadAbi(url: string) {
     return Promise.reject(new Error(`Untrusted ABI URL: ${url}`));
   }
   let abi = abiCache.get(url);
-  if (!abi) {
-    abi = fetchJson<JsonAbi>(url).catch((error) => {
-      abiCache.delete(url);
-      throw error;
+  if (abi) return abi;
+
+  const fetchAndStore = () =>
+    fetchJson<JsonAbi>(url).then((json) => {
+      writeCache(url, json);
+      return json;
     });
-    abiCache.set(url, abi);
+  const stored = readCache<JsonAbi>(url);
+  if (stored) {
+    abi = Promise.resolve(stored.value);
+    if (
+      isImmutableUrl(url) ||
+      Date.now() - stored.savedAt < ABI_REVALIDATE_MS
+    ) {
+      abiCache.set(url, abi);
+      return abi;
+    }
+    // Stale: serve the stored copy now, refresh for next time.
+    fetchAndStore()
+      .then((fresh) => abiCache.set(url, Promise.resolve(fresh)))
+      .catch(() => {});
+  } else {
+    abi = fetchAndStore();
+    abi.catch(() => abiCache.delete(url));
   }
+  abiCache.set(url, abi);
   return abi;
 }
 
@@ -67,6 +94,11 @@ function evict(key: string, call: Promise<boolean>) {
 // RPC error is not an answer: it resolves false for this page only.
 const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
   const key = `${contractId}:${method}:${child}`;
+  // Only confirmed accounts are stored: an account never stops being valid,
+  // while a negative answer could come from a registry not yet updated.
+  if (readCache<boolean>(`verify:${key}`)?.value === true) {
+    return Promise.resolve(true);
+  }
   let call = verifyCache.get(key);
   if (!call) {
     provider ??= new Provider(FUEL_CHAIN.providerUrl);
@@ -76,6 +108,7 @@ const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
       .get()
       .then(({ value }) => value === true);
     verifyCache.set(key, started);
+    started.then((ok) => ok && writeCache(`verify:${key}`, true));
     started.catch(() => evict(key, started));
     call = started;
   }
@@ -111,18 +144,21 @@ export async function decodeTransaction(
     ) as NonNullable<TransactionNode['operations']>;
     const copy: TransactionNode = { ...transaction, operations };
     const index = await getAbiIndex();
-    const registry = await resolveAbiRegistry(
-      index,
-      collectContractIds(operations),
-      loadAbi,
-    );
+    const isListed = (id: string) => !!index[id]?.abi;
+    const contractIds = collectContractIds(operations);
+    if (!contractIds.some(isListed)) return transaction;
+    // Contract ABIs and account checks do not depend on each other.
+    const [registry, accounts] = await Promise.all([
+      resolveAbiRegistry(index, contractIds, loadAbi),
+      resolveAccounts(
+        index,
+        collectCallerCandidates(operations, isListed),
+        loadAbi,
+        verifyAccount,
+      ),
+    ]);
     if (!Object.keys(registry.contracts).length) return transaction;
-    registry.accounts = await resolveAccounts(
-      index,
-      collectCallerCandidates(operations, registry),
-      loadAbi,
-      verifyAccount,
-    );
+    registry.accounts = accounts;
     decodeOperationReceipts(operations, copy.rawPayload, registry);
     copy.activity = buildTxActivity(operations, registry);
     return copy;

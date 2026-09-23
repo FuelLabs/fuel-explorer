@@ -307,8 +307,9 @@ export const useContractMetadata = (address: string | null = '') => {
 
         return { project: null, metadata: null };
       } catch (error) {
+        // Rethrow so react-query retries instead of caching a missing icon.
         console.error('useContractMetadata: Error fetching projects:', error);
-        return { project: null, metadata: null };
+        throw error;
       }
     },
     enabled: !!address,
