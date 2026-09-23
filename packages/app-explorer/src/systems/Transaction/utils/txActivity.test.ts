@@ -4,6 +4,8 @@ import type { JsonAbi } from 'fuels';
 import cancelTx from './__fixtures__/o2-cancel-tx.json';
 import fillTx from './__fixtures__/o2-fill-tx.json';
 import orderBookAbi from './__fixtures__/o2-order-book-abi.json';
+import tpslCreateTx from './__fixtures__/o2-tpsl-create-tx.json';
+import tpslTriggerTx from './__fixtures__/o2-tpsl-trigger-tx.json';
 import tradeAccountAbi from './__fixtures__/o2-trade-account-abi.json';
 import type * as Decoder from './abiDecoder';
 import type { AbiRegistry } from './abiDecoder';
@@ -143,5 +145,76 @@ describe('buildTxActivity', () => {
       `Limit sell [1 ${BASE}] at [2 ${QUOTE}]`,
       `Market sell [1 ${BASE}] with a limit price of [2 ${QUOTE}]`,
     ]);
+  });
+
+  describe('take profit and stop loss (testnet fETH/fUSDC)', () => {
+    const TESTNET_BOOK =
+      '0x2a78ab167c28f474d2ad62daabe7a42ce03f066dd8aa7cf57b984d14e4bd907b';
+    const testnetRegistry: AbiRegistry = {
+      contracts: {
+        [TESTNET_BOOK]: {
+          name: 'o2 Order Book fETH/fUSDC',
+          abi: orderBookAbi as JsonAbi,
+          project: 'o2',
+          market: {
+            symbol: 'fETH/fUSDC',
+            baseAssetId: BASE,
+            quoteAssetId: QUOTE,
+          },
+        },
+      },
+      accounts: {
+        '0x2397ed7a5bb6d8748beb7336e21327892ba13a2a06a5e3988fe1a94249435328': {
+          name: 'o2 Trade Account',
+          abi: tradeAccountAbi as JsonAbi,
+        },
+      },
+    };
+    const activityFor = (tx: { operations: unknown; rawPayload: string }) => {
+      const operations = JSON.parse(JSON.stringify(tx.operations));
+      decodeOperationReceipts(operations, tx.rawPayload, testnetRegistry);
+      const activity = buildTxActivity(operations, testnetRegistry);
+      if (!activity) throw new Error('no activity');
+      return activity;
+    };
+
+    it('labels the trigger above a buy as take profit and below as stop loss', () => {
+      const activity = activityFor(tpslCreateTx);
+      expect(activity.headline).toBe(
+        'Placed 1 order with take profit and stop loss on fETH/fUSDC',
+      );
+      expect(activity.actions.map((a) => [a.label, render(a.parts)])).toEqual([
+        [
+          'Order placed',
+          `Limit buy [1522400000 ${BASE}] at [2714850000000 ${QUOTE}]`,
+        ],
+        [
+          'Take profit',
+          `Sell the filled amount when the price rises to [2769150000000 ${QUOTE}]`,
+        ],
+        [
+          'Stop loss',
+          `Sell the filled amount when the price falls to [2660550000000 ${QUOTE}]`,
+        ],
+      ]);
+    });
+
+    it('describes a triggered order and its cancelled pair', () => {
+      const activity = activityFor(tpslTriggerTx);
+      expect(activity.headline).toMatch(
+        /^Triggered 1 order, cancelled 1 order and filled 2 trades on fETH\/fUSDC$/,
+      );
+      expect(activity.actions.map((a) => a.label)).toEqual([
+        'Triggered',
+        'Trigger cancelled',
+        'Order placed',
+        'Filled',
+        'Filled',
+        'Fees',
+      ]);
+      expect(render(activity.actions[1].parts)).toMatch(
+        /was cancelled because its paired order triggered$/,
+      );
+    });
   });
 });

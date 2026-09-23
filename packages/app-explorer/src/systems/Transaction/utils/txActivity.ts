@@ -7,7 +7,7 @@ import type {
 
 export type ActivityPart =
   | { text: string }
-  | { amount: string; assetId?: string }
+  | { amount: string; assetId?: string; symbol?: string; decimals?: number }
   | { address: string }
   | { code: string };
 
@@ -20,6 +20,9 @@ export type ActivityKind =
   | 'withdraw'
   | 'session'
   | 'trigger'
+  | 'takeProfit'
+  | 'stopLoss'
+  | 'triggered'
   | 'stop'
   | 'call';
 
@@ -77,17 +80,21 @@ function flatten(receipts: unknown, out: DecodedReceipt[] = []) {
 
 type Context = {
   market?: MarketMetadata;
-  createdSides: Record<string, string>;
+  createdOrders: Record<string, { side: string; price: string }>;
   actor?: string;
 };
 
 const baseAmount = (value: string, ctx: Context): ActivityPart => ({
   amount: value,
   assetId: ctx.market?.baseAssetId,
+  symbol: ctx.market?.baseSymbol,
+  decimals: ctx.market?.baseDecimals,
 });
 const quoteAmount = (value: string, ctx: Context): ActivityPart => ({
   amount: value,
   assetId: ctx.market?.quoteAssetId,
+  symbol: ctx.market?.quoteSymbol,
+  decimals: ctx.market?.quoteDecimals,
 });
 
 function feeParts(base: string, quote: string, ctx: Context) {
@@ -107,6 +114,32 @@ const ORDER_TYPE_LABEL: Record<string, string> = {
   FillOrKill: 'Fill-or-kill',
   Market: 'Market',
   BoundedMarket: 'Market',
+};
+
+// A trigger closing a buy takes profit above the entry price; one closing
+// a sell takes profit below it.
+function triggerKind(
+  side: string,
+  triggerPrice: string,
+  entryPrice: string,
+): ActivityKind {
+  const above = BigInt(triggerPrice) > BigInt(entryPrice);
+  return above === (side === 'Sell') ? 'takeProfit' : 'stopLoss';
+}
+
+const TRIGGER_LABEL: Partial<Record<ActivityKind, string>> = {
+  takeProfit: 'Take profit',
+  stopLoss: 'Stop loss',
+  trigger: 'Trigger order',
+};
+
+const EJECTION_TEXT: Record<string, string> = {
+  CanceledByTheUser: 'was cancelled by the trader',
+  ForceCanceled: 'was force cancelled',
+  SiblingOrderActivated: 'was cancelled because its paired order triggered',
+  NotEnoughFunds: 'was removed for lack of funds',
+  EjectedByAdmin: 'was removed by an admin',
+  ParentOrderCanceled: 'was cancelled with its parent order',
 };
 
 // Events without a describer are internal bookkeeping and stay hidden.
@@ -135,7 +168,7 @@ const DESCRIBERS: Record<
     };
   },
   OrderMatchedEvent: (v, ctx) => {
-    const takerSide = ctx.createdSides[v.match_id?.taker_id];
+    const takerSide = ctx.createdOrders[v.match_id?.taker_id]?.side;
     const verb =
       takerSide === 'Buy' ? 'Bought ' : takerSide === 'Sell' ? 'Sold ' : '';
     return {
@@ -184,21 +217,50 @@ const DESCRIBERS: Record<
       text(' unfilled'),
     ],
   }),
-  TriggerOrderCreatedEvent: (v, ctx) => ({
-    kind: 'trigger',
-    label: 'Trigger order placed',
-    parts: [
-      text(
-        `${variantName(v.order_side).toLowerCase()} when the price reaches `,
-      ),
-      quoteAmount(v.trigger_price, ctx),
-    ],
-  }),
-  TriggerOrderEjectedEvent: (v) => ({
-    kind: 'stop',
-    label: 'Trigger order removed',
-    parts: [code(shortId(v.order_id))],
-  }),
+  TriggerOrderCreatedEvent: (v, ctx) => {
+    const side = variantName(v.order_side);
+    const parentId = v.quantity?.ParentOrder;
+    const parent = parentId ? ctx.createdOrders[parentId] : undefined;
+    const kind = parent
+      ? triggerKind(side, v.trigger_price, parent.price)
+      : 'trigger';
+    const rises =
+      kind === 'trigger'
+        ? undefined
+        : (kind === 'takeProfit') === (side === 'Sell');
+    return {
+      kind,
+      label: TRIGGER_LABEL[kind],
+      parts: [
+        text(`${side} `),
+        ...(parentId
+          ? [text('the filled amount')]
+          : [baseAmount(v.quantity?.Quantity, ctx)]),
+        text(
+          rises === undefined
+            ? ' when the price reaches '
+            : ` when the price ${rises ? 'rises' : 'falls'} to `,
+        ),
+        quoteAmount(v.trigger_price, ctx),
+      ],
+    };
+  },
+  TriggerOrderEjectedEvent: (v) => {
+    const reason = variantName(v.reason);
+    const id = code(shortId(v.order_id));
+    if (reason === 'Activated') {
+      return {
+        kind: 'triggered',
+        label: 'Triggered',
+        parts: [text('Trigger order '), id, text(' reached its price')],
+      };
+    }
+    return {
+      kind: 'cancel',
+      label: 'Trigger cancelled',
+      parts: [id, text(` ${EJECTION_TEXT[reason] ?? 'was removed'}`)],
+    };
+  },
   FeesCollectedEvent: (v, ctx) => {
     const parts = feeParts(v.base_fees, v.quote_fees, ctx);
     // The event covers maker and taker fees for the whole match.
@@ -266,8 +328,19 @@ function headline(actions: ActivityAction[], project?: string) {
     actions.filter((a) => a.kind === kind).length;
   const plural = (n: number, word: string) =>
     `${n} ${word}${n === 1 ? '' : 's'}`;
+  const protection = [
+    count('takeProfit') && 'take profit',
+    count('stopLoss') && 'stop loss',
+  ].filter(Boolean) as string[];
+  // An order created by a trigger is part of the trigger, not a new order.
+  const placed = Math.max(count('place') - count('triggered'), 0);
   const phrases = [
-    count('place') && `placed ${plural(count('place'), 'order')}`,
+    count('triggered') && `triggered ${plural(count('triggered'), 'order')}`,
+    placed &&
+      `placed ${plural(placed, 'order')}${
+        protection.length ? ` with ${protection.join(' and ')}` : ''
+      }`,
+    !placed && protection.length && `set ${protection.join(' and ')}`,
     count('trigger') && `placed ${plural(count('trigger'), 'trigger order')}`,
     count('cancel') && `cancelled ${plural(count('cancel'), 'order')}`,
     count('fill') && `filled ${plural(count('fill'), 'trade')}`,
@@ -305,11 +378,14 @@ export function buildTxActivity(
   const decoded = operations.flatMap((op) => flatten(op?.receipts));
   if (!decoded.length) return undefined;
 
-  const createdSides: Record<string, string> = {};
+  const createdOrders: Context['createdOrders'] = {};
   for (const d of decoded) {
     const v = d.value as Value;
     if (d.name === 'OrderCreatedEvent') {
-      createdSides[v.order_id] = variantName(v.order_side);
+      createdOrders[v.order_id] = {
+        side: variantName(v.order_side),
+        price: v.price,
+      };
     }
   }
 
@@ -346,7 +422,7 @@ export function buildTxActivity(
     const describe = DESCRIBERS[d.name];
     const line = describe?.(v, {
       market: known?.market,
-      createdSides,
+      createdOrders,
       actor: actor?.address,
     });
     if (!line) continue;

@@ -23,6 +23,10 @@ export type ContractMetadata = {
     symbol: string;
     baseAssetId: string;
     quoteAssetId: string;
+    baseSymbol?: string;
+    quoteSymbol?: string;
+    baseDecimals?: number;
+    quoteDecimals?: number;
   };
 };
 
