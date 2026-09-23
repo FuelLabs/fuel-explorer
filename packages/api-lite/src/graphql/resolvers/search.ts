@@ -86,8 +86,7 @@ export const searchResolvers = {
       } catch (err) {
         console.error('search predicate failed', err);
       }
-      // The index keeps a rolling window, so an account whose last activity
-      // is older than it only shows up in fuel-core's owner history.
+      // The index is a rolling window; older accounts exist only in fuel-core.
       try {
         const { ids } = await ctx.client.txIdsByOwner(hash, 1);
         if (ids.length > 0) {

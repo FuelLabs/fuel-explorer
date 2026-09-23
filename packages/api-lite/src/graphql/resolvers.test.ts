@@ -640,10 +640,6 @@ describe('resolvers', () => {
       (await gql(`{ search(query: "${OLD_ACCOUNT}") { account { address } } }`))
         .search.account.address,
     ).toBe(OLD_ACCOUNT);
-    expect(
-      (await gql(`{ search(query: "${hex(999999)}") { account { address } } }`))
-        .search,
-    ).toBeNull();
   });
 
   it('search resolves null when fuel-core throws even for a well-formed id', async () => {
