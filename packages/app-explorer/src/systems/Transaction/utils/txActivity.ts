@@ -37,6 +37,8 @@ export type ActivityAction = {
 
 export type TxActivity = {
   headline: string;
+  // The transaction reverted: the actions were attempted, none took effect.
+  failed: boolean;
   project?: string;
   actor?: { address: string; name?: string };
   sessionKey?: string;
@@ -323,30 +325,49 @@ const SESSION_CALL_EVENTS = [
   'ExtendedNonceSessionContractCallEvent',
 ];
 
-function headline(actions: ActivityAction[], project?: string) {
+// Each phrase is [past tense, base form], so a reverted transaction can say
+// what it tried to do instead of what it did.
+type Phrase = [string, string];
+
+function headline(
+  actions: ActivityAction[],
+  project: string | undefined,
+  failed: boolean,
+) {
   const count = (kind: ActivityKind) =>
     actions.filter((a) => a.kind === kind).length;
   const plural = (n: number, word: string) =>
     `${n} ${word}${n === 1 ? '' : 's'}`;
+  const phrase = (past: string, base: string, rest: string): Phrase => [
+    `${past} ${rest}`,
+    `${base} ${rest}`,
+  ];
   const protection = [
     count('takeProfit') && 'take profit',
     count('stopLoss') && 'stop loss',
   ].filter(Boolean) as string[];
+  const withProtection = protection.length
+    ? ` with ${protection.join(' and ')}`
+    : '';
   // An order created by a trigger is part of the trigger, not a new order.
   const placed = Math.max(count('place') - count('triggered'), 0);
   const phrases = [
-    count('triggered') && `triggered ${plural(count('triggered'), 'order')}`,
+    count('triggered') &&
+      phrase('triggered', 'trigger', plural(count('triggered'), 'order')),
     placed &&
-      `placed ${plural(placed, 'order')}${
-        protection.length ? ` with ${protection.join(' and ')}` : ''
-      }`,
-    !placed && protection.length && `set ${protection.join(' and ')}`,
-    count('trigger') && `placed ${plural(count('trigger'), 'trigger order')}`,
-    count('cancel') && `cancelled ${plural(count('cancel'), 'order')}`,
-    count('fill') && `filled ${plural(count('fill'), 'trade')}`,
-    count('withdraw') && `withdrew ${plural(count('withdraw'), 'asset')}`,
-    count('session') && 'changed a session key',
-  ].filter(Boolean) as string[];
+      phrase('placed', 'place', `${plural(placed, 'order')}${withProtection}`),
+    !placed &&
+      protection.length &&
+      phrase('set', 'set', protection.join(' and ')),
+    count('trigger') &&
+      phrase('placed', 'place', plural(count('trigger'), 'trigger order')),
+    count('cancel') &&
+      phrase('cancelled', 'cancel', plural(count('cancel'), 'order')),
+    count('fill') && phrase('filled', 'fill', plural(count('fill'), 'trade')),
+    count('withdraw') &&
+      phrase('withdrew', 'withdraw', plural(count('withdraw'), 'asset')),
+    count('session') && phrase('changed', 'change', 'a session key'),
+  ].filter(Boolean) as Phrase[];
 
   const markets = [
     ...new Set(actions.filter((a) => a.market).map((a) => a.market as string)),
@@ -357,13 +378,17 @@ function headline(actions: ActivityAction[], project?: string) {
   ).size;
 
   if (!phrases.length) {
-    return project ? `Interacted with ${project}` : 'Contract interaction';
+    const target = project ?? 'a contract';
+    return failed
+      ? `Failed to interact with ${target}`
+      : `Interacted with ${target}`;
   }
   const list = (items: string[]) =>
     items.length === 1
       ? items[0]
       : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
-  const sentence = `${list(phrases)}${where}${
+  const words = phrases.map(([past, base]) => (failed ? base : past));
+  const sentence = `${failed ? 'failed to ' : ''}${list(words)}${where}${
     otherContracts
       ? `, plus calls to ${plural(otherContracts, 'other contract')}`
       : ''
@@ -374,6 +399,7 @@ function headline(actions: ActivityAction[], project?: string) {
 export function buildTxActivity(
   operations: Array<{ receipts?: unknown } | null | undefined>,
   registry: AbiRegistry,
+  failed = false,
 ): TxActivity | undefined {
   const decoded = operations.flatMap((op) => flatten(op?.receipts));
   if (!decoded.length) return undefined;
@@ -439,7 +465,8 @@ export function buildTxActivity(
     ? registry.contracts[firstListed.contractId].project
     : undefined;
   return {
-    headline: headline(actions, project),
+    headline: headline(actions, project, failed),
+    failed,
     project,
     actor,
     sessionKey,

@@ -217,4 +217,14 @@ describe('buildTxActivity', () => {
       );
     });
   });
+
+  it('describes a reverted transaction as an attempt', () => {
+    const operations = JSON.parse(JSON.stringify(cancelTx.operations));
+    decodeOperationReceipts(operations, cancelTx.rawPayload, registry);
+    const activity = buildTxActivity(operations, registry, true);
+    expect(activity?.failed).toBe(true);
+    expect(activity?.headline).toBe(
+      'Failed to place 1 order and cancel 1 order on ETH/USDC',
+    );
+  });
 });

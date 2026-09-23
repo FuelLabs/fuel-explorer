@@ -215,10 +215,21 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
               )}
             </HStack>
           )}
+          {activity.failed && (
+            <HStack gap="1" className="items-center text-sm text-error">
+              <IconAlertTriangle size={16} />
+              <Text className="text-error">
+                This transaction reverted. None of these actions took effect.
+              </Text>
+            </HStack>
+          )}
         </VStack>
       </HStack>
       {protocolActions.length > 0 && (
-        <VStack gap="0" className="py-3">
+        <VStack
+          gap="0"
+          className={activity.failed ? 'py-3 opacity-60' : 'py-3'}
+        >
           {protocolActions.map((action, i) => (
             <ActionRow
               key={`${action.contractId}-${i}`}

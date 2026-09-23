@@ -13,7 +13,10 @@ function collect(receipts: unknown, ids: Set<string>) {
   for (const r of (receipts as Receipt[] | null) ?? []) {
     const item = r?.item;
     if (item?.receiptType === 'CALL' && item.to) ids.add(item.to.toLowerCase());
-    if (item?.receiptType === 'LOG_DATA' && item.id) {
+    if (
+      (item?.receiptType === 'LOG' || item?.receiptType === 'LOG_DATA') &&
+      item.id
+    ) {
       ids.add(item.id.toLowerCase());
     }
     collect(r?.receipts, ids);
