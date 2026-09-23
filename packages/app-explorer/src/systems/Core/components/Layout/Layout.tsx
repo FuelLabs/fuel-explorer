@@ -9,7 +9,7 @@ export type LayoutProps = {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <VStack className="min-w-screen" gap="0">
+    <VStack className="min-w-screen overflow-x-clip" gap="0">
       <VStack className="min-h-screen" gap="0">
         <TopNav />
         <HeroSection />
