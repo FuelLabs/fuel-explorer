@@ -26,12 +26,10 @@ export type ContractMetadata = {
   };
 };
 
-// ABI for contracts without a fixed id that call the project's contracts.
 export type CallerContractMetadata = {
   name: string;
   description?: string;
   abi: string;
-  // A listed contract method that returns true for genuine accounts.
   verify?: { contractId: string; method: string };
 };
 

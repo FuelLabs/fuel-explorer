@@ -20,8 +20,6 @@ function collect(receipts: unknown, ids: Set<string>) {
   }
 }
 
-// Contracts a transaction called or logged from. Cheap and synchronous, so
-// the page can decide how to render before any decoding runs.
 export function touchedContracts(
   operations: Array<{ receipts?: unknown } | null> | null | undefined,
 ) {

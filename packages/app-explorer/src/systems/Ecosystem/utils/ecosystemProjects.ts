@@ -1,6 +1,6 @@
 import { ECOSYSTEM_PROJECTS_URL } from 'app-commons';
 import type { Project } from '~/types/ecosystem';
-import { isImmutableUrl, readCache, writeCache } from './persistentCache';
+import { isCommitPinnedUrl, readCache, writeCache } from './persistentCache';
 
 const FETCH_TIMEOUT_MS = 10_000;
 
@@ -12,11 +12,9 @@ export async function fetchJson<T>(url: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-// Many components ask for project metadata on one page, so share one fetch.
 let projectsPromise: Promise<Project[]> | null = null;
 let loadedProjects: Project[] | null = null;
 
-// The projects list if it has already loaded, without fetching it.
 export function peekEcosystemProjects() {
   return loadedProjects;
 }
@@ -24,8 +22,7 @@ export function peekEcosystemProjects() {
 export function fetchEcosystemProjects(): Promise<Project[]> {
   const url = ECOSYSTEM_PROJECTS_URL;
   if (!url) return Promise.resolve([]);
-  // The deployed list is pinned to a commit, so a stored copy is final.
-  if (!projectsPromise && isImmutableUrl(url)) {
+  if (!projectsPromise && isCommitPinnedUrl(url)) {
     const cached = readCache<Project[]>(url)?.value;
     if (cached) {
       loadedProjects = cached;
@@ -35,7 +32,7 @@ export function fetchEcosystemProjects(): Promise<Project[]> {
   projectsPromise ??= fetchJson<Project[]>(url)
     .then((projects) => {
       loadedProjects = projects;
-      if (isImmutableUrl(url)) writeCache(url, projects);
+      if (isCommitPinnedUrl(url)) writeCache(url, projects);
       return projects;
     })
     .catch((error) => {
