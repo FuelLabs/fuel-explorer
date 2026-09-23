@@ -1,5 +1,5 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
-import { Collapsible, Flex, HStack, VStack } from '@fuels/ui';
+import { Code, Collapsible, Flex, HStack, VStack } from '@fuels/ui';
 import { useContext, useMemo } from 'react';
 import { TxOperationHeader } from '~/systems/Transaction/component/TxScripts/TxOperationHeader';
 import { TxReceiptAmount } from '~/systems/Transaction/component/TxScripts/TxReceiptAmount';
@@ -38,7 +38,10 @@ export function TxReceiptHeader() {
   const classes = styles();
   const type = (receipt?.receiptType ?? 'UNKNOWN') as GQLReceiptType;
   const txIcon: TxIconType = TX_ICON_MAP?.[type] ?? 'Message';
-  const fields = RECEIPT_FIELDS_MAP[type] || [];
+  const decoded = item?.decoded;
+  const fields = (RECEIPT_FIELDS_MAP[type] || []).filter(
+    (field) => !(decoded?.kind === 'call' && field?.field === 'param1'),
+  );
   const filteredFields = useMemo(
     () =>
       fields.reduce(
@@ -75,6 +78,16 @@ export function TxReceiptHeader() {
             />
           </TxContractIcon>
           <VStack className="flex-1 gap-[2px]">
+            {decoded && (
+              <Code
+                className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+                color="gray"
+              >
+                {`${decoded.kind === 'call' ? 'Method:' : 'Event:'} ${
+                  decoded.name
+                }${decoded.contractName ? ` (${decoded.contractName})` : ''}`}
+              </Code>
+            )}
             {filteredFields?.rest?.map((field, index) => (
               <TxOperationHeader
                 key={`operation-header-${field.type}-${

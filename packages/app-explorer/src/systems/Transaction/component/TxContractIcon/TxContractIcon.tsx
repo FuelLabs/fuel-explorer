@@ -2,7 +2,7 @@ import { Skeleton, Tooltip } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { useContractMetadata } from '~/systems/Transaction/hooks/useContractMetadata';
+import { useContractMetadata } from '~/hooks/useApi';
 
 type TxContractIconProps = {
   contractId: string | null | undefined;

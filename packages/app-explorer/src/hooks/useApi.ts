@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ETH_CHAIN_NAME } from 'app-commons';
-import type { Project } from '~/types/ecosystem';
+import { fetchEcosystemProjects } from '~/systems/Ecosystem/utils/ecosystemProjects';
 import { ApiService, queryKeys } from '../services';
 
 // Transaction hooks
@@ -289,9 +289,7 @@ export const useContractMetadata = (address: string | null = '') => {
       }
 
       try {
-        const projects = (await (
-          await fetch(ECOSYSTEM_PROJECTS_URL, {})
-        ).json()) as Array<Project>;
+        const projects = await fetchEcosystemProjects();
 
         for (const project of projects) {
           const contractsByNetwork = project.contracts?.[ETH_CHAIN_NAME];
@@ -309,8 +307,9 @@ export const useContractMetadata = (address: string | null = '') => {
 
         return { project: null, metadata: null };
       } catch (error) {
+        // Rethrow so react-query retries instead of caching a missing icon.
         console.error('useContractMetadata: Error fetching projects:', error);
-        return { project: null, metadata: null };
+        throw error;
       }
     },
     enabled: !!address,

@@ -5,6 +5,7 @@ import {
   Box,
   Card,
   HStack,
+  Heading,
   LoadingBox,
   LoadingWrapper,
   Text,
@@ -23,11 +24,12 @@ import { AddressType } from 'fuels';
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { TransactionNode } from '../../types';
+import { TxActivity, TxActivityLoader } from '../TxActivity/TxActivity';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 import { TxFullDateTimestamp } from '../TxFullDateTimestamp/TxFullDateTimestamp';
 import { TxTimeAgoTimestamp } from '../TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 
-type TxScreenProps =
+type TxScreenProps = (
   | {
       transaction: TransactionNode;
       isLoading?: false;
@@ -35,14 +37,21 @@ type TxScreenProps =
   | {
       transaction?: TransactionNode;
       isLoading: true;
-    };
+    }
+) & {
+  isActivityLoading?: boolean;
+};
 
 const detailsLink: Record<AddressType, typeof Routes.accountAssets> = {
   [AddressType.contract]: Routes.contractMintedAssets,
   [AddressType.account]: Routes.accountAssets,
 };
 
-export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
+export function TxScreenSimple({
+  transaction,
+  isLoading,
+  isActivityLoading,
+}: TxScreenProps) {
   if (!transaction && !isLoading) return null;
 
   return (
@@ -54,9 +63,13 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-20 h-6 rounded" />}
             regularEl={
-              <Badge color="blue" leftIcon={IconArrowRight}>
-                Transfer
-              </Badge>
+              transaction?.activity?.project ? (
+                <Badge color="blue">{transaction.activity.project}</Badge>
+              ) : (
+                <Badge color="blue" leftIcon={IconArrowRight}>
+                  Transfer
+                </Badge>
+              )
             }
           />
 
@@ -120,7 +133,32 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
         </HStack>
       </HStack>
 
-      <Card className="px-4 mt-8 relative">
+      {!isLoading && isActivityLoading && !transaction?.activity && (
+        <Box className="mt-8">
+          <TxActivityLoader />
+        </Box>
+      )}
+
+      {!isLoading && transaction?.activity && (
+        <Box className="mt-8">
+          <TxActivity activity={transaction.activity} />
+        </Box>
+      )}
+
+      {!isLoading &&
+        (transaction?.activity || isActivityLoading) &&
+        !!transaction?.summary?.length && (
+          <Heading as="h2" size="5" className="leading-none mt-6">
+            Token transfers
+          </Heading>
+        )}
+
+      <Card
+        className={clsx(
+          'px-4 relative',
+          transaction?.activity || isActivityLoading ? 'mt-4' : 'mt-8',
+        )}
+      >
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={

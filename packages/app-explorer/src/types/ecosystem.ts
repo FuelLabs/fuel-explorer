@@ -18,6 +18,23 @@ export type ContractMetadata = {
   repo: string;
   links: MetadataLink[];
   audits: MetadataAudit[];
+  abi?: string;
+  market?: {
+    symbol: string;
+    baseAssetId: string;
+    quoteAssetId: string;
+    baseSymbol?: string;
+    quoteSymbol?: string;
+    baseDecimals?: number;
+    quoteDecimals?: number;
+  };
+};
+
+export type CallerContractMetadata = {
+  name: string;
+  description?: string;
+  abi: string;
+  verify?: { contractId: string; method: string };
 };
 
 export type PredicateMetadata = {
@@ -39,6 +56,7 @@ export type Project = {
   name: string;
   description: string;
   contracts?: Record<string, ContractMetadata[]>;
+  callerContracts?: Record<string, CallerContractMetadata[]>;
   predicates?: Record<string, PredicateMetadata[]>;
   tags: string[];
   image?: string;
