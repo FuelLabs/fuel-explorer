@@ -59,8 +59,8 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
   }, [tpsPerMinute]);
 
   return (
-    <RoundedContainer className="py-4 px-5 h-full flex flex-col overflow-hidden">
-      <div className="flex flex-col flex-1 min-h-0 space-y-[16px]">
+    <RoundedContainer className="py-4 px-5 h-full flex flex-col">
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden space-y-[16px]">
         <div className="flex items-center justify-between">
           <span className="fuel-label">Hourly TPS</span>
           <span className="fuel-label">24h</span>
