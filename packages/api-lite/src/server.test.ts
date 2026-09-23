@@ -1,0 +1,187 @@
+import { request as httpRequest } from 'node:http';
+import type { AddressInfo } from 'node:net';
+import { type RequestHandler, createBootServer } from './bootServer';
+import { HotKeys } from './hot/HotKeys';
+import { Index } from './index/Index';
+import { createApp } from './server';
+
+function fakeCtx(overrides: Partial<Parameters<typeof createApp>[0]> = {}) {
+  const index = new Index(':memory:');
+  return {
+    store: {} as any,
+    index,
+    tip: { servedTip: 5, fuelCoreTip: 5, fuelCoreUp: true } as any,
+    client: {} as any,
+    chain: { chainId: 0, baseAssetId: '0x00' },
+    price: {} as any,
+    hot: new HotKeys(':memory:'),
+    ...overrides,
+  };
+}
+
+describe('createApp health()', () => {
+  it('reports the configured block source', () => {
+    const { health } = createApp(fakeCtx({ blockSource: 'rpc' }));
+    expect(health().blockSource).toBe('rpc');
+  });
+
+  it('defaults blockSource to s3 when not provided', () => {
+    const { health } = createApp(fakeCtx());
+    expect(health().blockSource).toBe('s3');
+  });
+
+  it('reports hot key counts per kind', () => {
+    const hot = new HotKeys(':memory:');
+    hot.hit('account', '0x1');
+    hot.hit('tx', '0x1');
+    hot.hit('tx', '0x2');
+    hot.flush();
+    const { health } = createApp(fakeCtx({ hot }));
+    expect(health().hot).toEqual({ accounts: 1, txs: 2, blocks: 0 });
+  });
+
+  it('reports index.gaps (count and heights) so a permanently-skipped backfill block is discoverable without opening sqlite by hand', () => {
+    const index = new Index(':memory:');
+    index.recordGap(12345);
+    index.recordGap(23456);
+    const { health } = createApp(fakeCtx({ index }));
+    expect(health().index).toMatchObject({
+      gaps: { count: 2, heights: [12345, 23456] },
+    });
+  });
+
+  it('reports index.gaps as empty when nothing has been skipped', () => {
+    const { health } = createApp(fakeCtx());
+    expect(health().index).toMatchObject({ gaps: { count: 0, heights: [] } });
+  });
+});
+
+describe('createApp maskedErrors', () => {
+  const originalNodeEnv = process.env.NODE_ENV;
+  afterEach(() => {
+    process.env.NODE_ENV = originalNodeEnv;
+  });
+
+  async function queryPredicateWithThrowingIndex() {
+    const throwingIndex = {
+      predicate: () => {
+        throw new Error('leaked-secret-detail');
+      },
+    } as any;
+    const { yoga } = createApp(fakeCtx({ index: throwingIndex }));
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: '{ predicate(address: "0x00") { address } }',
+      }),
+    });
+    return res.json();
+  }
+
+  it('does not leak the original resolver error message in production', async () => {
+    process.env.NODE_ENV = 'production';
+    const json = await queryPredicateWithThrowingIndex();
+    expect(JSON.stringify(json.errors)).not.toContain('leaked-secret-detail');
+  });
+
+  it('surfaces the original resolver error message outside production', async () => {
+    process.env.NODE_ENV = 'test';
+    const json = await queryPredicateWithThrowingIndex();
+    expect(JSON.stringify(json.errors)).toContain('leaked-secret-detail');
+  });
+});
+
+describe('createApp server wired into the boot server', () => {
+  it('answers /health once the app listener is swapped in', async () => {
+    const { server: appServer } = createApp(fakeCtx());
+    const { server: bootHttpServer, swap } = createBootServer();
+    swap(appServer.listeners('request')[0] as RequestHandler);
+
+    await new Promise<void>((resolve) => bootHttpServer.listen(0, resolve));
+    const port = (bootHttpServer.address() as AddressInfo).port;
+    try {
+      const { status, body } = await new Promise<{
+        status: number;
+        body: string;
+      }>((resolve, reject) => {
+        httpRequest({ port, path: '/health', method: 'GET' }, (res) => {
+          let data = '';
+          res.on('data', (c) => {
+            data += c;
+          });
+          res.on('end', () =>
+            resolve({ status: res.statusCode ?? 0, body: data }),
+          );
+        })
+          .on('error', reject)
+          .end();
+      });
+      expect(status).toBe(200);
+      expect(JSON.parse(body).ok).toBe(true);
+    } finally {
+      await new Promise<void>((resolve) =>
+        bootHttpServer.close(() => resolve()),
+      );
+    }
+  });
+});
+
+describe('createApp GraphQL request limits', () => {
+  it('rejects a batch of 11 operations over the limit of 10', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const batch = Array.from({ length: 11 }, () => ({
+      query: '{ predicate(address: "0x00") { address } }',
+    }));
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(batch),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json)).toContain(
+      'Batching is limited to 10 operations per request.',
+    );
+  });
+
+  const nestedQuery = (n: number) =>
+    `{ ${'a { '.repeat(n)}x${' }'.repeat(n)} }`;
+
+  it('rejects a query nested 16 levels deep with the depth error', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: nestedQuery(16) }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).toContain(
+      'Query depth limit of 15 exceeded',
+    );
+  });
+
+  it('allows a query nested exactly 15 levels deep, at the limit', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: nestedQuery(15) }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).not.toContain('Query depth limit');
+  });
+
+  it('still serves a normal explorer query under the depth and batching limits', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: '{ predicate(address: "0x00") { address } }',
+      }),
+    });
+    const json = await res.json();
+    expect(json.errors).toBeUndefined();
+    expect(json.data).toEqual({ predicate: null });
+  });
+});

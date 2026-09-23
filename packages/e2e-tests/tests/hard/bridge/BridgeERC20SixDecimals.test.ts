@@ -30,7 +30,7 @@ test.describe('Bridge USDC Token', () => {
     });
 
     await test.step('Deposit ETH', async () => {
-      await setupBridge({
+      const bridgeSetup = await setupBridge({
         test,
         page,
         fuelWallet,
@@ -38,6 +38,7 @@ test.describe('Bridge USDC Token', () => {
         client,
         fuelWalletTestHelper,
       });
+      fuelWallet = bridgeSetup.fuelWallet;
     });
     const bridgeTokenContracts = await getBridgeTokenContracts();
     const { USDC_ERC20, USDC_FUEL_Asset } = bridgeTokenContracts;

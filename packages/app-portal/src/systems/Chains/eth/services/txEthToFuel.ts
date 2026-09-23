@@ -29,6 +29,7 @@ import {
   FUEL_INDEXER_API,
   type HexAddress,
   IS_FUEL_DEV_CHAIN,
+  absoluteUrl,
   getBridgeSolidityContracts,
   getBridgeTokenContracts,
 } from 'app-commons';
@@ -566,7 +567,7 @@ export class TxEthToFuelService {
     if (!IS_FUEL_DEV_CHAIN && FUEL_INDEXER_API) {
       const bridgeSolidityContracts = await getBridgeSolidityContracts();
 
-      const url = new URL(`${FUEL_INDEXER_API}/bridge/deposit/logs`);
+      const url = absoluteUrl(FUEL_INDEXER_API, '/bridge/deposit/logs');
       url.searchParams.set(
         'address',
         bridgeSolidityContracts.FuelMessagePortal,

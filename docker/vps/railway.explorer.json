@@ -1,0 +1,12 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "docker/vps/Dockerfile.explorer"
+  },
+  "deploy": {
+    "healthcheckPath": "/",
+    "restartPolicyType": "ON_FAILURE",
+    "numReplicas": 1
+  }
+}

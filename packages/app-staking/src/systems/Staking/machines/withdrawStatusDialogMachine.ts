@@ -131,9 +131,18 @@ export const withdrawStatusDialogMachine = createMachine(
                       };
                     }),
                   },
+                  onError: {
+                    target: 'failure',
+                    actions: assign({
+                      eventError: (_, event) => event.data,
+                    }),
+                  },
                 },
               },
               success: {
+                type: 'final',
+              },
+              failure: {
                 type: 'final',
               },
             },
@@ -149,6 +158,9 @@ export const withdrawStatusDialogMachine = createMachine(
                     actions: assign({
                       rates: (_, event) => event.data,
                     }),
+                  },
+                  onError: {
+                    target: 'success',
                   },
                 },
               },
@@ -168,6 +180,7 @@ export const withdrawStatusDialogMachine = createMachine(
           FINALIZE: [
             {
               target: 'preparingFinalize',
+              actions: assign({ finalizeError: undefined }),
               cond: (ctx) =>
                 Boolean(
                   ctx.eventData &&
@@ -308,7 +321,6 @@ export const withdrawStatusDialogMachine = createMachine(
       finalized: {
         type: 'final',
       },
-      finalizingError: {},
       closed: {
         type: 'final',
       },
@@ -366,10 +378,11 @@ export type WithdrawStatusDialogMachineState =
 
 export const withdrawStatusDialogMachineSelectors = {
   getError: ({ context }: WithdrawStatusDialogMachineState) =>
-    context.eventError || context.receiptsError,
+    context.eventError || context.receiptsError || context.finalizeError,
   isError: (state: WithdrawStatusDialogMachineState) =>
-    // state.matches('eventError') ||
-    state.matches('finalizingError'),
+    !!state.context.eventError ||
+    !!state.context.receiptsError ||
+    !!state.context.finalizeError,
   isPaused: (state: WithdrawStatusDialogMachineState) => state.context.isPaused,
   isCheckingPaused: (_state: WithdrawStatusDialogMachineState) => false,
   // state.matches('checkingPaused'),

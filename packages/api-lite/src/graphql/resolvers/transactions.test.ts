@@ -1,0 +1,665 @@
+import { parseTxCursor, txCursor } from '../../index/Index';
+import {
+  fuelCoreCursor,
+  toTxListNode,
+  toTxNode,
+  transactionResolvers,
+} from './transactions';
+
+const hex = (n: number) => `0x${n.toString(16).padStart(64, '0')}`;
+const BASE_ASSET = hex(0);
+const OTHER_ASSET = hex(9);
+const T0 = ((1n << 62n) + 10n + 1_700_000_000n).toString();
+
+function scriptTx(overrides: Record<string, unknown> = {}) {
+  return {
+    __typename: 'Transaction',
+    id: hex(1),
+    rawPayload: '0x00',
+    isScript: true,
+    isCreate: false,
+    isMint: false,
+    isUpgrade: false,
+    isUpload: false,
+    inputs: [
+      {
+        __typename: 'InputCoin',
+        owner: hex(2),
+        amount: '5',
+        assetId: BASE_ASSET,
+        utxoId: `${hex(3)}0000`,
+        txPointer: '000000000000',
+        witnessIndex: '0',
+        predicateGasUsed: '0',
+        predicate: '0x',
+        predicateData: '0x',
+      },
+      {
+        __typename: 'InputCoin',
+        owner: hex(2),
+        amount: '1000',
+        assetId: OTHER_ASSET,
+        utxoId: `${hex(4)}0000`,
+        txPointer: '000000000000',
+        witnessIndex: '0',
+        predicateGasUsed: '0',
+        predicate: '0x',
+        predicateData: '0x',
+      },
+    ],
+    outputs: [
+      {
+        __typename: 'ChangeOutput',
+        to: hex(2),
+        amount: '4',
+        assetId: BASE_ASSET,
+      },
+      {
+        __typename: 'ChangeOutput',
+        to: hex(2),
+        amount: '900',
+        assetId: OTHER_ASSET,
+      },
+    ],
+    witnesses: [],
+    policies: null,
+    inputAssetIds: [],
+    inputContracts: [],
+    mintAmount: null,
+    mintAssetId: null,
+    mintGasPrice: null,
+    status: {
+      __typename: 'SuccessStatus',
+      time: T0,
+      transactionId: hex(1),
+      totalFee: '1000000',
+      totalGas: '4',
+      receipts: [],
+      programState: null,
+      block: {
+        id: hex(101),
+        height: '1',
+        header: {
+          id: hex(101),
+          height: '1',
+          time: T0,
+          daHeight: '1',
+          applicationHash: hex(0),
+          messageReceiptCount: '0',
+        },
+      },
+    },
+    ...overrides,
+  } as any;
+}
+
+function mintTx(overrides: Record<string, unknown> = {}) {
+  const base = scriptTx();
+  return {
+    ...base,
+    id: hex(5),
+    isScript: false,
+    isMint: true,
+    inputs: [],
+    outputs: [],
+    mintAmount: '9',
+    mintAssetId: BASE_ASSET,
+    mintGasPrice: '1',
+    status: { ...base.status, totalFee: '0', totalGas: '0' },
+    ...overrides,
+  } as any;
+}
+
+describe('toTxNode', () => {
+  const pricing = { usd: 2000, baseAssetId: BASE_ASSET };
+  const noPricing = { usd: null, baseAssetId: BASE_ASSET };
+
+  it('computes gasCosts.feeInUsd from the given price, null when the price is unavailable', () => {
+    const node = toTxNode(scriptTx(), 1, 0, pricing);
+    expect(node.gasCosts?.feeInUsd).toBe('$2.00');
+    const noPrice = toTxNode(scriptTx(), 1, 0, noPricing);
+    expect(noPrice.gasCosts?.feeInUsd).toBeNull();
+  });
+
+  it('computes amountInUsd on inputs and outputs for the base asset only, null for other assets', () => {
+    const node = toTxNode(scriptTx(), 1, 0, pricing);
+    expect((node.inputs as any)[0].amountInUsd).toBe('$0.00001');
+    expect((node.inputs as any)[1].amountInUsd).toBeNull();
+    expect((node.outputs as any)[0].amountInUsd).toBe('$0.000008');
+    expect((node.outputs as any)[1].amountInUsd).toBeNull();
+  });
+
+  it('leaves amountInUsd null on every input/output when the price is unavailable', () => {
+    const node = toTxNode(scriptTx(), 1, 0, noPricing);
+    expect((node.inputs as any)[0].amountInUsd).toBeNull();
+    expect((node.outputs as any)[0].amountInUsd).toBeNull();
+  });
+
+  it('computes mintAmountUsd like production: $0 for a non-mint tx, the real conversion for a base-asset mint', () => {
+    expect(toTxNode(scriptTx(), 1, 0, pricing).mintAmountUsd).toBe('$0');
+    expect(toTxNode(mintTx(), 1, 0, pricing).mintAmountUsd).toBe('$0.00001');
+  });
+
+  it('list nodes carry mintAmountUsd too, since the schema field is non-nullable', () => {
+    expect(toTxListNode(mintTx(), 1, 0, pricing).mintAmountUsd).toBe(
+      '$0.00001',
+    );
+    expect(toTxListNode(scriptTx(), 1, 0, pricing).mintAmountUsd).toBe('$0');
+    expect(toTxListNode(scriptTx(), 1, 0, noPricing).mintAmountUsd).toBe('');
+  });
+
+  it('mintAmountUsd is empty only when the price is unavailable', () => {
+    expect(toTxNode(mintTx(), 1, 0, noPricing).mintAmountUsd).toBe('');
+    expect(toTxNode(scriptTx(), 1, 0, noPricing).mintAmountUsd).toBe('');
+  });
+
+  it('mintAmountUsd is $0 when a mint targets a non-base asset instead of pricing it at the ETH rate', () => {
+    const node = toTxNode(mintTx({ mintAssetId: OTHER_ASSET }), 1, 0, pricing);
+    expect(node.mintAmountUsd).toBe('$0');
+  });
+
+  it('defaults to the unpriced shape when pricing is omitted, matching search.ts callers', () => {
+    const node = toTxNode(scriptTx(), 1, 0);
+    expect(node.gasCosts?.feeInUsd).toBeNull();
+    expect(node.mintAmountUsd).toBe('');
+    expect((node.inputs as any)[0].amountInUsd).toBeNull();
+  });
+});
+
+describe('toTxListNode', () => {
+  it('computes gasCosts.feeInUsd from the given price', () => {
+    const priced = toTxListNode(scriptTx(), 1, 0, {
+      usd: 2000,
+      baseAssetId: BASE_ASSET,
+    });
+    expect(priced.gasCosts?.feeInUsd).toBe('$2.00');
+    const unpriced = toTxListNode(scriptTx(), 1, 0, {
+      usd: null,
+      baseAssetId: BASE_ASSET,
+    });
+    expect(unpriced.gasCosts?.feeInUsd).toBeNull();
+    const defaulted = toTxListNode(scriptTx(), 1, 0);
+    expect(defaulted.gasCosts?.feeInUsd).toBeNull();
+  });
+});
+
+describe('mutation safety', () => {
+  const pricing = { usd: 2000, baseAssetId: BASE_ASSET };
+
+  it('toTxNode does not mutate the raw cached transaction object', () => {
+    const tx = scriptTx();
+    const before = structuredClone(tx);
+    toTxNode(tx, 1, 0, pricing);
+    expect(tx).toEqual(before);
+    expect((tx.inputs as any)[0].amountInUsd).toBeUndefined();
+    expect((tx.outputs as any)[0].amountInUsd).toBeUndefined();
+    expect((tx as any).gasCosts?.feeInUsd).toBeUndefined();
+  });
+
+  it('toTxListNode does not mutate the raw cached transaction object', () => {
+    const tx = scriptTx();
+    const before = structuredClone(tx);
+    toTxListNode(tx, 1, 0, pricing);
+    expect(tx).toEqual(before);
+    expect((tx as any).gasCosts?.feeInUsd).toBeUndefined();
+  });
+});
+
+describe('transactions (global list) pageInfo counts', () => {
+  // Three blocks, one tx each, tip at height 3: a small, fully-known
+  // "retention window" so txCount()/newerTxCount() can be asserted against
+  // real numbers instead of mocked ones -- this is the same bug shape as
+  // transactionsByOwner's 0/0, just for the global recentTransactions list.
+  const heights = [1, 2, 3];
+  const blocksByHeight: Record<number, { transactions: unknown[] }> = {};
+  for (const h of heights) {
+    blocksByHeight[h] = { transactions: [scriptTx({ id: hex(100 + h) })] };
+  }
+  function makeCtx() {
+    return {
+      store: { get: async (h: number) => blocksByHeight[h] ?? null },
+      tip: { servedTip: 3 },
+      price: { usd: async () => 2000 },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        txCount: () => heights.length,
+        newerTxCount: (ref: { height: number; txIndex: number }) =>
+          heights.filter((h) => h > ref.height).length,
+      },
+    } as any;
+  }
+
+  it('numbers the newest page 1..pageLength', async () => {
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 2 },
+      makeCtx(),
+    );
+    expect(result.nodes).toHaveLength(2);
+    expect(result.pageInfo.totalCount).toBe(3);
+    expect(result.pageInfo.startCount).toBe(1);
+    expect(result.pageInfo.endCount).toBe(2);
+  });
+
+  it('reports the same counts when paginating via an after cursor', async () => {
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 2, after: txCursor(1, 0) },
+      makeCtx(),
+    );
+    expect(result.nodes).toHaveLength(2);
+    expect(result.pageInfo.totalCount).toBe(3);
+    expect(result.pageInfo.startCount).toBe(1);
+    expect(result.pageInfo.endCount).toBe(2);
+  });
+
+  it('never reports 0 for a non-empty page', async () => {
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 1 },
+      makeCtx(),
+    );
+    expect(result.nodes).toHaveLength(1);
+    expect(result.pageInfo.startCount).toBeGreaterThan(0);
+    expect(result.pageInfo.endCount).toBeGreaterThan(0);
+  });
+});
+describe('global list totalCount/ranks are capped like the account list', () => {
+  it('passes TX_COUNT_CAP (1001) through to index.txCount/newerTxCount', async () => {
+    const txCount = jest.fn(() => 1001);
+    const newerTxCount = jest.fn(() => 0);
+    const ctx: any = {
+      store: {
+        get: async (h: number) => ({
+          transactions: [scriptTx({ id: hex(200 + h) })],
+        }),
+      },
+      tip: { servedTip: 1 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: { txCount, newerTxCount },
+    };
+    const result = await transactionResolvers.Query.transactions(
+      null,
+      { first: 4 },
+      ctx,
+    );
+    expect(result.pageInfo.totalCount).toBe(1001);
+    expect(txCount).toHaveBeenCalledWith(1001);
+    expect(newerTxCount).toHaveBeenCalledWith(expect.anything(), 1001);
+  });
+});
+
+describe("fuel-core fallback pages never reuse the index page's numbers", () => {
+  function makeCtx(overrides: Record<string, unknown> = {}) {
+    return {
+      hot: { hit: () => {}, hits: () => 0 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        countForAccount: () => 3,
+        txsForAccount: () => [],
+        range: () => ({ from: null, to: null }),
+        newerCountForAccount: () => 0,
+      },
+      store: { get: async () => null },
+      client: {
+        txsByOwner: async () => ({
+          items: [{ id: hex(300), height: 5, cursor: 'c1' }],
+          hasNextPage: false,
+          hasPreviousPage: false,
+        }),
+        txIdsByOwner: async () => ({
+          ids: [hex(300)],
+          headHeight: 5,
+          hasNextPage: false,
+        }),
+      },
+      ...overrides,
+    } as any;
+  }
+
+  it('numbers a fuel-core-served page from the account list fuel-core returns', async () => {
+    const ctx = makeCtx({
+      store: {
+        get: async (h: number) =>
+          h === 5 ? { transactions: [scriptTx({ id: hex(300) })] } : null,
+      },
+    });
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(1), first: 1 },
+      ctx,
+    );
+    expect(result.nodes).toHaveLength(1);
+    expect(result.pageInfo.startCount).toBe(1);
+    expect(result.pageInfo.endCount).toBe(1);
+    expect(result.pageInfo.totalCount).toBe(1);
+  });
+});
+
+describe('pageFromFuelCore backfills a page when a fuel-core item fails to render', () => {
+  it('fills the page from remaining items instead of shrinking it when one block fetch fails', async () => {
+    const items = [
+      { id: hex(1), height: 10, cursor: 'c1' },
+      { id: hex(2), height: 11, cursor: 'c2' },
+      { id: hex(3), height: 12, cursor: 'c3' },
+      { id: hex(4), height: 13, cursor: 'c4' },
+    ];
+    const ctx: any = {
+      hot: { hit: () => {}, hits: () => 0 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        countForAccount: () => 3,
+        txsForAccount: () => [],
+        range: () => ({ from: null, to: null }),
+        newerCountForAccount: () => 0,
+      },
+      store: {
+        get: async (h: number) =>
+          h === 11
+            ? null // simulates a failed/missing block fetch for this one item
+            : { transactions: [scriptTx({ id: hex(h - 9) })] },
+      },
+      client: {
+        txsByOwner: async (_owner: string, opts: any) => ({
+          items: items.slice(0, opts.first ?? items.length),
+          hasNextPage: false,
+          hasPreviousPage: false,
+        }),
+      },
+    };
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(1), first: 3 },
+      ctx,
+    );
+    expect(result.nodes).toHaveLength(3);
+    expect(result.nodes.map((n: any) => n.id)).toEqual([
+      hex(1),
+      hex(3),
+      hex(4),
+    ]);
+  });
+});
+
+describe('transactionsByOwner reaches history older than the index window', () => {
+  // fuel-core holds the account's whole history (heights 90-93 and 95); the
+  // index only still has height 95, the shape of the foundation wallet.
+  const HEIGHTS = [90, 91, 92, 93, 95];
+  const ITEMS = HEIGHTS.map((h) => ({
+    id: hex(h * 10),
+    height: h,
+    cursor: fuelCoreCursor(h, 0),
+  }));
+
+  function makeCtx(indexRows: { height: number; txIndex: number }[]) {
+    const calls: any[] = [];
+    const ctx: any = {
+      hot: { hit: () => {}, hits: () => 0 },
+      price: { usd: async () => null },
+      chain: { chainId: 1, baseAssetId: BASE_ASSET },
+      index: {
+        countForAccount: () => indexRows.length,
+        txsForAccount: (_o: string, opts: any) => {
+          const c = opts.before ? parseTxCursor(opts.before) : null;
+          return indexRows
+            .filter((r) => !c || r.height < c.height)
+            .slice(0, opts.limit);
+        },
+        range: () => ({ from: 94, to: 120 }),
+        newerCountForAccount: () => 0,
+      },
+      store: {
+        get: async (h: number) => ({
+          transactions: [scriptTx({ id: hex(h * 10) })],
+        }),
+      },
+      client: {
+        // fuel-core's measured order: `last` newest-first before the cursor,
+        // `first` oldest-first after it.
+        txsByOwner: async (_o: string, opts: any) => {
+          calls.push(opts);
+          if ('last' in opts) {
+            const rest = ITEMS.filter(
+              (x) => !opts.before || x.cursor < opts.before,
+            ).reverse();
+            return {
+              items: rest.slice(0, opts.last),
+              hasNextPage: rest.length > opts.last,
+              hasPreviousPage: false,
+            };
+          }
+          const rest = ITEMS.filter(
+            (x) => !opts.after || x.cursor > opts.after,
+          );
+          return {
+            items: rest.slice(0, opts.first),
+            hasNextPage: rest.length > opts.first,
+            hasPreviousPage: false,
+          };
+        },
+        txIdsByOwner: async (_o: string, last: number) => ({
+          ids: [...ITEMS]
+            .reverse()
+            .slice(0, last)
+            .map((x) => x.id),
+          headHeight: ITEMS[ITEMS.length - 1].height,
+          hasNextPage: ITEMS.length > last,
+        }),
+      },
+    };
+    return { ctx, calls };
+  }
+
+  it('fills a short index page from fuel-core, starting below the oldest index row', async () => {
+    const { ctx, calls } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(601), last: 3 },
+      ctx,
+    );
+    expect(result.nodes.map((n: any) => n.id)).toEqual([
+      hex(950),
+      hex(930),
+      hex(920),
+    ]);
+    expect(calls[0]).toEqual({ last: 4, before: fuelCoreCursor(95, 0) });
+    expect(result.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 1,
+      endCount: 3,
+      hasPreviousPage: true,
+      hasNextPage: false,
+    });
+  });
+
+  it('marks older history on a full index page and serves it from the index cursor', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const first = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(602), last: 1 },
+      ctx,
+    );
+    expect(first.nodes.map((n: any) => n.id)).toEqual([hex(950)]);
+    expect(first.pageInfo.hasPreviousPage).toBe(true);
+
+    const older = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(602), last: 2, before: first.pageInfo.endCursor },
+      ctx,
+    );
+    expect(older.nodes.map((n: any) => n.id)).toEqual([hex(930), hex(920)]);
+    expect(older.pageInfo.hasPreviousPage).toBe(true);
+    expect(older.pageInfo.hasNextPage).toBe(true);
+  });
+
+  it('reaches the oldest transaction and then reports no older page', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(603), last: 10 },
+      ctx,
+    );
+    expect(page.nodes.map((n: any) => n.id)).toEqual(
+      [...HEIGHTS].reverse().map((h) => hex(h * 10)),
+    );
+    expect(page.pageInfo.hasPreviousPage).toBe(false);
+    expect(page.pageInfo.totalCount).toBe(HEIGHTS.length);
+  });
+
+  it('numbers fc: pages in both directions against the full account total', async () => {
+    const { ctx } = makeCtx([]);
+    const older = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(607), last: 10, before: `fc:${fuelCoreCursor(95, 0)}` },
+      ctx,
+    );
+    expect(older.nodes).toHaveLength(4);
+    expect(older.pageInfo.hasPreviousPage).toBe(false);
+    expect(older.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 2,
+      endCount: 5,
+    });
+
+    const newer = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(607), last: 10, after: `fc:${fuelCoreCursor(90, 0)}` },
+      ctx,
+    );
+    expect(newer.nodes).toHaveLength(4);
+    expect(newer.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 1,
+      endCount: 4,
+    });
+  });
+
+  it('clamps a page position to the capped total', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    ctx.index.countForAccount = () => 1001;
+    ctx.index.newerCountForAccount = () => 1001;
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(611), last: 1 },
+      ctx,
+    );
+    expect(page.pageInfo).toMatchObject({
+      totalCount: 1001,
+      startCount: 1001,
+      endCount: 1001,
+    });
+  });
+
+  it('leaves a page the account list cannot place without numbers', async () => {
+    const { ctx } = makeCtx([]);
+    ctx.client.txIdsByOwner = async () => ({
+      ids: [],
+      headHeight: 0,
+      hasNextPage: true,
+    });
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(612), last: 2, before: `fc:${fuelCoreCursor(95, 0)}` },
+      ctx,
+    );
+    expect(page.nodes).toHaveLength(2);
+    expect(page.pageInfo).toMatchObject({
+      totalCount: 1001,
+      startCount: 0,
+      endCount: 0,
+    });
+  });
+
+  it('numbers pages continuously across the index and fuel-core', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const first = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(608), last: 2 },
+      ctx,
+    );
+    expect(first.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 1,
+      endCount: 2,
+    });
+    const second = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(608), last: 2, before: first.pageInfo.endCursor },
+      ctx,
+    );
+    expect(second.pageInfo).toMatchObject({
+      totalCount: 5,
+      startCount: 3,
+      endCount: 4,
+    });
+  });
+
+  it('skips the fuel-core list for an account whose index count is at the cap', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    ctx.index.countForAccount = () => 1001;
+    let listCalls = 0;
+    ctx.client.txIdsByOwner = async () => {
+      listCalls += 1;
+      return { ids: [], headHeight: 0, hasNextPage: false };
+    };
+    await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(610), last: 1 },
+      ctx,
+    );
+    expect(listCalls).toBe(0);
+  });
+
+  it('reports an unknown total as the cap when the account list fetch fails', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    ctx.client.txIdsByOwner = async () => {
+      throw new Error('fuel-core down');
+    };
+    const result = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(609), last: 2 },
+      ctx,
+    );
+    expect(result.nodes).toHaveLength(2);
+    expect(result.pageInfo.totalCount).toBe(1001);
+  });
+
+  it('serves the newest fuel-core page for a malformed before cursor', async () => {
+    const { ctx, calls } = makeCtx([]);
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(605), last: 2, before: 'garbage' },
+      ctx,
+    );
+    expect(page.nodes.map((n: any) => n.id)).toEqual([hex(950), hex(930)]);
+    expect(calls[0]).toEqual({ last: 3, before: undefined });
+  });
+
+  it('records the heights of rows served from fuel-core, not index rows', async () => {
+    const { ctx } = makeCtx([{ height: 95, txIndex: 0 }]);
+    const recorded: number[][] = [];
+    ctx.fallbackHeights = {
+      record: (_o: string, heights: number[]) => recorded.push(heights),
+    };
+    await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(606), last: 3 },
+      ctx,
+    );
+    expect(recorded).toEqual([[93, 92]]);
+  });
+
+  it('never calls fuel-core for an after cursor', async () => {
+    const { ctx, calls } = makeCtx([]);
+    const page = await transactionResolvers.Query.transactionsByOwner(
+      null,
+      { owner: hex(604), last: 10, after: txCursor(95, 0) },
+      ctx,
+    );
+    expect(page.nodes).toEqual([]);
+    expect(calls).toEqual([]);
+  });
+});

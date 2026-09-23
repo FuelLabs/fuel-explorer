@@ -29,8 +29,6 @@
     "dev:explorer:prod": "pnpm --filter=app-explorer start",
     "dev:explorer": "pnpm --filter=app-explorer run dev",
     "dev:portal": "pnpm --filter=app-portal dev",
-    "dev:graphql": "pnpm --filter=graphql dev:graphql",
-    "dev:graphql:all": "pnpm --filter=graphql run-dev:all",
     "lint": "biome check --apply-unsafe .",
     "format": "biome format --write .",
     "node:clean": "make -C ./docker clean",
@@ -40,13 +38,12 @@
     "node:stop": "make -C ./docker stop",
     "node:restart": "make -C ./docker restart",
     "prepare": "husky install",
-    "run:backend": "./scripts/run-backend.sh",
     "start": "pnpm turbo:run start",
-    "setup:backend": "./scripts/setup-backend.sh",
     "test": "pnpm turbo:run test",
     "test:all": "run-p test test:e2e",
     "test:e2e": "playwright test --config=packages/e2e-tests/playwright.config.ts",
     "test:e2e-soft": "playwright test --config=packages/e2e-tests/playwright-soft.config.ts",
+    "test:e2e-api-lite": "playwright test --config=packages/e2e-tests/playwright-api-lite.config.ts",
     "test:ci": "pnpm turbo:run test -- --ci --testLocationInResults --json --coverage",
     "test:clear": "pnpm turbo:run test -- --clearCache",
     "test:coverage": " pnpm turbo:run test -- --coverage",
@@ -109,7 +106,9 @@
       "protobufjs@<7.5.5": ">=7.5.5",
       "basic-ftp@<5.2.0": ">=5.2.0",
       "handlebars@>=4.0.0 <=4.7.8": ">=4.7.9",
-      "viem": "2.23.2"
+      "viem": "2.23.2",
+      "shell-quote@>=1.1.0 <=1.8.3": ">=1.8.4",
+      "vitest@<3.2.6": ">=3.2.6"
     }
   },
   "dependencies": {

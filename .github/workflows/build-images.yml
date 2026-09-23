@@ -1,0 +1,51 @@
+name: "Build deploy images"
+
+# Railway deploys with `railway up`, which builds docker/vps/Dockerfile.api-lite
+# and docker/vps/Dockerfile.explorer at deploy time. Nothing else builds them:
+# pr-tests.yml only uses Docker to run the local fuel-core test chain, and the
+# image-publishing workflow that was removed built deployment/Dockerfile, a
+# different artifact that no longer exists. Without this job the first time
+# either Dockerfile is built is during a deploy, so a broken build arg, a
+# missing file or a lockfile change surfaces at the worst possible moment.
+# Build both here, publish nothing.
+
+on:
+  pull_request:
+    branches: [main, master, release]
+    types: [opened, synchronize, reopened]
+    paths:
+      # The Dockerfiles themselves.
+      - "docker/vps/**"
+      # Both images COPY the whole repo, so anything under packages/ can change
+      # what they build.
+      - "packages/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/build-images.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build images
+    runs-on: warp-ubuntu-latest-x64-4x
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build api-lite image
+        run: docker build -f docker/vps/Dockerfile.api-lite -t fuel-explorer-vps/api-lite:ci .
+
+      # Same build args the explorer service is deployed with: the default
+      # NETWORK (mainnet) plus the /api base that nginx proxies. Testnet builds
+      # differ only in which committed env file is copied in, so this one build
+      # covers the Dockerfile itself for both.
+      - name: Build explorer image
+        run: docker build -f docker/vps/Dockerfile.explorer --build-arg VITE_FUEL_INDEXER_API=/api -t fuel-explorer-vps/explorer:ci .

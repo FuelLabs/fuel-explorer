@@ -12,7 +12,7 @@ WORKDIR /erc20-deployer/deployer
 # Install Git
 RUN apk update && apk add --no-cache git
 
-RUN npm i -g pnpm
+RUN npm i -g pnpm@9.10.0
 
 # build the ethereum contracts and environment
 RUN pnpm install

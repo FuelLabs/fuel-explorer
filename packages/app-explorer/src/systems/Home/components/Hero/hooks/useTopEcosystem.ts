@@ -20,7 +20,7 @@ const sortProject = (a: Project, b: Project) => {
 };
 
 export function useTopEcosystem() {
-  const { data: ecosystemProjects } = useEcosystemProjects();
+  const { data: ecosystemProjects, isPending } = useEcosystemProjects();
   return useMemo(() => {
     const totalProjects = ecosystemProjects?.length ?? 0;
     const activeProjects =
@@ -36,6 +36,7 @@ export function useTopEcosystem() {
       totalProjects,
       activeProjects,
       top3Projects,
+      isPending,
     };
-  }, [ecosystemProjects]);
+  }, [ecosystemProjects, isPending]);
 }

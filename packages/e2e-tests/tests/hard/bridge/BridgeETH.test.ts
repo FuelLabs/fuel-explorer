@@ -25,6 +25,7 @@ import {
 import {
   connectToFuel,
   connectToMetamask,
+  getConnectedFuelWallet,
   setupFuelWallet,
 } from './utils/wallets';
 
@@ -72,6 +73,7 @@ test.describe('Bridge ETH Operations', () => {
         'Account 2',
         'Account 4',
       ]);
+      fuelWallet = await getConnectedFuelWallet(page, fuelWallet.provider);
       console.log('Fuel wallet connected');
     });
 

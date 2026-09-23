@@ -1,5 +1,4 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Analytics } from '@vercel/analytics/react';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
@@ -11,10 +10,12 @@ import App from './App.tsx';
 
 // Import CSS - index.css has everything we need
 import './index.css';
+import { ErrorBoundary } from './systems/Core/components/ErrorBoundary/ErrorBoundary';
 import {
   ThemeProvider,
   useTheme,
 } from './systems/Core/components/Theme/ThemeProvider';
+import { ApiError } from './systems/Core/utils/api';
 
 // Wrapper component to pass theme to FuelConnectProvider
 function FuelConnectProviderWithTheme({
@@ -31,6 +32,15 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: (failureCount, error) => {
+        // A 4xx, 429 included, does not succeed on retry.
+        const status = error instanceof ApiError ? error.status : undefined;
+        if (status !== undefined && status >= 400 && status < 500) {
+          return false;
+        }
+        return failureCount < 2;
+      },
+      retryDelay: (attemptIndex) => 1000 * 2 ** attemptIndex,
     },
   },
 });
@@ -44,8 +54,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <ConnectProvider>
               <FuelConnectProviderWithTheme>
                 <BrowserRouter>
-                  <App />
-                  <Analytics />
+                  <ErrorBoundary>
+                    <App />
+                  </ErrorBoundary>
                 </BrowserRouter>
               </FuelConnectProviderWithTheme>
             </ConnectProvider>

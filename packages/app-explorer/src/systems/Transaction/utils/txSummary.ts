@@ -9,7 +9,6 @@ import {
   processGqlReceipt,
 } from 'fuels';
 import type { OperationExtended } from '~/systems/Transaction/types';
-import { convertAsset } from '../actions/convert-asset';
 import type { AssetInfo, TransactionNode } from '../types';
 
 const fuelProvider = new Provider(FUEL_CHAIN.providerUrl);
@@ -17,6 +16,7 @@ const fuelProvider = new Provider(FUEL_CHAIN.providerUrl);
 function getAssetMetadata(
   transaction: TransactionNode,
   assetId: string,
+  amount?: string,
 ): AssetInfo | null {
   const assetInput = (transaction.inputs || []).find(
     (input) => (input as any).assetId === assetId,
@@ -29,6 +29,19 @@ function getAssetMetadata(
     return null;
   }
 
+  // api-lite prices amountInUsd per coin, for that coin's own amount. It
+  // replaced the /convert_rate call that priced the amount actually being
+  // displayed, so reusing a coin's value for a different amount is wrong: a
+  // transfer's amount rarely equals the input coin it spent. Carry it over
+  // only when a coin for this asset holds exactly `amount`; otherwise leave
+  // the field off and the UI shows no USD rather than the wrong one.
+  const priced = amount
+    ? [...(transaction.inputs || []), ...(transaction.outputs || [])].find(
+        (coin: any) =>
+          coin.assetId === assetId && String(coin.amount) === amount,
+      )
+    : undefined;
+
   const asset: AssetInfo = (assetInput || assetOutput) as any;
   return {
     assetId,
@@ -39,6 +52,7 @@ function getAssetMetadata(
     contractId: asset.contractId,
     suspicious: asset.suspicious,
     verified: asset.verified,
+    amountInUsd: (priced as any)?.amountInUsd,
   };
 }
 
@@ -75,21 +89,15 @@ export async function createTransactionSummary(
     });
     op.assetsSent?.map((assetSent) => {
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      const asset = getAssetMetadata(transaction, assetSent.assetId!);
+      const asset = getAssetMetadata(
+        transaction,
+        assetSent.assetId!,
+        assetSent.amount?.toString(),
+      );
       if (asset) {
         assetSent.asset = asset;
       }
     });
   });
-  for (const operation of operations) {
-    if (!operation.assetsSent) continue;
-    for (const assetSent of operation.assetsSent) {
-      if (!assetSent.asset) continue;
-      const assetId = assetSent.asset.assetId || '';
-      const amount = assetSent.amount.toString();
-      const output = await convertAsset(assetId, amount);
-      assetSent.asset.amountInUsd = output?.amount;
-    }
-  }
   return operations;
 }

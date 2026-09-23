@@ -12,7 +12,11 @@ import {
   goToTransactionsPage,
   hasDropdownSymbol,
 } from './bridge';
-import { connectToFuel, connectToMetamask } from './wallets';
+import {
+  connectToFuel,
+  connectToMetamask,
+  getConnectedFuelWallet,
+} from './wallets';
 
 type FuelWalletTestHelper = any;
 
@@ -41,6 +45,7 @@ export async function setupBridge({
   await test.step('Connect to Fuel', async () => {
     console.log('asd step Connect to Fuel');
     await connectToFuel(page, fuelWalletTestHelper, ['Account 2', 'Account 4']);
+    fuelWallet = await getConnectedFuelWallet(page, fuelWallet.provider);
   });
 
   const ETH_FUND_AMOUNT = '1.12345';
@@ -181,5 +186,5 @@ export async function setupBridge({
       await statusLocator.innerText();
     });
   });
-  return { depositEthTxId: depositEthTxId! };
+  return { depositEthTxId: depositEthTxId!, fuelWallet };
 }

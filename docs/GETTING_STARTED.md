@@ -35,13 +35,14 @@ This command will start essential development services;
 
 - `L1` local node (to handle ethereum blockchain);
 - `Fuel` local node (to handle L2 chain);
-- `Postgres` database (that we use to index data); 
 
 ```
 pnpm node:start
 ```
 
 > You can check more details in [docker-compose.yml](https://github.com/FuelLabs/fuel-explorer/blob/main/docker/docker-compose.yml) file.
+
+The explorer no longer runs on a Postgres-backed API and syncer. It is served by `packages/api-lite`, which reads blocks from the S3 block recorder and fuel-core, with a sqlite index and no database to operate. See [`docker/vps/deploy.md`](https://github.com/FuelLabs/fuel-explorer/blob/main/docker/vps/deploy.md) for how it is deployed.
 
 ### 💻 4. Run Web App
 

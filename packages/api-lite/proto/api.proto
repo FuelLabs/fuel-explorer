@@ -1,0 +1,662 @@
+syntax = "proto3";
+
+package blockaggregator;
+
+message BlockHeightRequest {}
+
+message BlockHeightResponse {
+  optional uint32 height = 1;
+}
+
+message BlockRangeRequest {
+  uint32 start = 1;
+  uint32 end = 2;
+}
+
+message RemoteBlockResponse {
+  oneof location {
+    RemoteHTTPEndpoint http = 1;
+    RemoteS3Bucket s3 = 2;
+  }
+}
+
+message RemoteS3Bucket {
+  string bucket = 1;
+  string key = 2;
+  bool requester_pays = 3;
+  optional string endpoint = 4;
+}
+
+message RemoteHTTPEndpoint {
+  string endpoint = 1;
+  map<string, string> headers = 2;
+}
+
+message Block {
+  oneof versioned_block {
+    V1Block v1 = 1;
+  }
+}
+
+message Receipts {
+  repeated Receipt receipts = 1;
+}
+
+message V1Block {
+  Header header = 1;
+  repeated Transaction transactions = 2;
+  repeated Receipts receipts = 3;
+}
+
+message Header {
+  oneof versioned_header {
+    V1Header v1 = 1;
+    V2Header v2 = 2;
+  }
+}
+
+message V1Header {
+  uint64 da_height = 1;
+  uint32 consensus_parameters_version = 2;
+  uint32 state_transition_bytecode_version = 3;
+  uint32 transactions_count = 4;
+  uint32 message_receipt_count = 5;
+  bytes transactions_root = 6;
+  bytes message_outbox_root = 7;
+  bytes event_inbox_root = 8;
+  bytes prev_root = 9;
+  uint32 height = 10;
+  uint64 time = 11;
+  bytes application_hash = 12;
+  optional bytes block_id = 13;
+}
+
+message V2Header {
+  uint64 da_height = 1;
+  uint32 consensus_parameters_version = 2;
+  uint32 state_transition_bytecode_version = 3;
+  uint32 transactions_count = 4;
+  uint32 message_receipt_count = 5;
+  bytes transactions_root = 6;
+  bytes message_outbox_root = 7;
+  bytes event_inbox_root = 8;
+  bytes tx_id_commitment = 9;
+  bytes prev_root = 10;
+  uint32 height = 11;
+  uint64 time = 12;
+  bytes application_hash = 13;
+  optional bytes block_id = 14;
+}
+
+message Transaction {
+  oneof variant {
+    ScriptTransaction script = 1;
+    CreateTransaction create = 2;
+    MintTransaction mint = 3;
+    UpgradeTransaction upgrade = 4;
+    UploadTransaction upload = 5;
+    BlobTransaction blob = 6;
+  }
+}
+
+message ScriptTransaction {
+  uint64 script_gas_limit = 1;
+  bytes receipts_root = 2;
+  bytes script = 3;
+  bytes script_data = 4;
+  Policies policies = 5;
+  repeated Input inputs = 6;
+  repeated Output outputs = 7;
+  repeated bytes witnesses = 8;
+  ScriptMetadata metadata = 9;
+}
+
+message CreateTransaction {
+  uint32 bytecode_witness_index = 1;
+  bytes salt = 2;
+  repeated StorageSlot storage_slots = 3;
+  Policies policies = 4;
+  repeated Input inputs = 5;
+  repeated Output outputs = 6;
+  repeated bytes witnesses = 7;
+  CreateMetadata metadata = 8;
+}
+
+message MintTransaction {
+  TxPointer tx_pointer = 1;
+  ContractInput input_contract = 2;
+  ContractOutput output_contract = 3;
+  uint64 mint_amount = 4;
+  bytes mint_asset_id = 5;
+  uint64 gas_price = 6;
+  MintMetadata metadata = 7;
+}
+
+message UpgradeTransaction {
+  UpgradePurpose purpose = 1;
+  Policies policies = 2;
+  repeated Input inputs = 3;
+  repeated Output outputs = 4;
+  repeated bytes witnesses = 5;
+  UpgradeMetadata metadata = 6;
+}
+
+message UploadTransaction {
+  bytes root = 1;
+  uint32 witness_index = 2;
+  uint32 subsection_index = 3;
+  uint32 subsections_number = 4;
+  repeated bytes proof_set = 5;
+  Policies policies = 6;
+  repeated Input inputs = 7;
+  repeated Output outputs = 8;
+  repeated bytes witnesses = 9;
+  UploadMetadata metadata = 10;
+}
+
+message BlobTransaction {
+  bytes blob_id = 1;
+  uint32 witness_index = 2;
+  Policies policies = 3;
+  repeated Input inputs = 4;
+  repeated Output outputs = 5;
+  repeated bytes witnesses = 6;
+  BlobMetadata metadata = 7;
+}
+
+message Policies {
+  uint32 bits = 1;
+  repeated uint64 values = 2;
+}
+
+message Input {
+  oneof variant {
+    CoinSignedInput coin_signed = 1;
+    CoinPredicateInput coin_predicate = 2;
+    ContractInput contract = 3;
+    MessageCoinSignedInput message_coin_signed = 4;
+    MessageCoinPredicateInput message_coin_predicate = 5;
+    MessageDataSignedInput message_data_signed = 6;
+    MessageDataPredicateInput message_data_predicate = 7;
+  }
+}
+
+message CoinSignedInput {
+  UtxoId utxo_id = 1;
+  bytes owner = 2;
+  uint64 amount = 3;
+  bytes asset_id = 4;
+  TxPointer tx_pointer = 5;
+  uint32 witness_index = 6;
+  uint64 predicate_gas_used = 7;
+  bytes predicate = 8;
+  bytes predicate_data = 9;
+}
+
+message CoinPredicateInput {
+  UtxoId utxo_id = 1;
+  bytes owner = 2;
+  uint64 amount = 3;
+  bytes asset_id = 4;
+  TxPointer tx_pointer = 5;
+  uint32 witness_index = 6;
+  uint64 predicate_gas_used = 7;
+  bytes predicate = 8;
+  bytes predicate_data = 9;
+}
+
+message ContractInput {
+  UtxoId utxo_id = 1;
+  bytes balance_root = 2;
+  bytes state_root = 3;
+  TxPointer tx_pointer = 4;
+  bytes contract_id = 5;
+}
+
+message MessageCoinSignedInput {
+  bytes sender = 1;
+  bytes recipient = 2;
+  uint64 amount = 3;
+  bytes nonce = 4;
+  uint32 witness_index = 5;
+  uint64 predicate_gas_used = 6;
+  bytes data = 7;
+  bytes predicate = 8;
+  bytes predicate_data = 9;
+}
+
+message MessageCoinPredicateInput {
+  bytes sender = 1;
+  bytes recipient = 2;
+  uint64 amount = 3;
+  bytes nonce = 4;
+  uint32 witness_index = 5;
+  uint64 predicate_gas_used = 6;
+  bytes data = 7;
+  bytes predicate = 8;
+  bytes predicate_data = 9;
+}
+
+message MessageDataSignedInput {
+  bytes sender = 1;
+  bytes recipient = 2;
+  uint64 amount = 3;
+  bytes nonce = 4;
+  uint32 witness_index = 5;
+  uint64 predicate_gas_used = 6;
+  bytes data = 7;
+  bytes predicate = 8;
+  bytes predicate_data = 9;
+}
+
+message MessageDataPredicateInput {
+  bytes sender = 1;
+  bytes recipient = 2;
+  uint64 amount = 3;
+  bytes nonce = 4;
+  uint32 witness_index = 5;
+  uint64 predicate_gas_used = 6;
+  bytes data = 7;
+  bytes predicate = 8;
+  bytes predicate_data = 9;
+}
+
+message Output {
+  oneof variant {
+    CoinOutput coin = 1;
+    ContractOutput contract = 2;
+    ChangeOutput change = 3;
+    VariableOutput variable = 4;
+    ContractCreatedOutput contract_created = 5;
+  }
+}
+message CoinOutput {
+  bytes to = 1;
+  uint64 amount = 2;
+  bytes asset_id = 3;
+}
+message ContractOutput {
+  uint32 input_index = 1;
+  bytes balance_root = 2;
+  bytes state_root = 3;
+}
+message ChangeOutput {
+  bytes to = 1;
+  uint64 amount = 2;
+  bytes asset_id = 3;
+}
+message VariableOutput {
+  bytes to = 1;
+  uint64 amount = 2;
+  bytes asset_id = 3;
+}
+message ContractCreatedOutput {
+  bytes contract_id = 1;
+  bytes state_root = 2;
+}
+
+message UtxoId {
+  bytes tx_id = 1;
+  uint32 output_index = 2;
+}
+
+message TxPointer {
+  uint32 block_height = 1;
+  uint32 tx_index = 2;
+}
+
+message StorageSlot {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+message ScriptMetadata {
+  bytes id = 1;
+  uint32 inputs_offset = 2;
+  repeated uint32 inputs_offset_at = 3;
+  repeated PredicateOffset inputs_predicate_offset_at = 4;
+  uint32 outputs_offset = 5;
+  repeated uint32 outputs_offset_at = 6;
+  uint32 witnesses_offset = 7;
+  repeated uint32 witnesses_offset_at = 8;
+  uint64 script_gas_limit = 9;
+  bytes receipts_root = 10;
+  bytes script = 11;
+  bytes script_data = 12;
+}
+
+message CreateMetadata {
+  bytes id = 1;
+  uint32 inputs_offset = 2;
+  repeated uint32 inputs_offset_at = 3;
+  repeated PredicateOffset inputs_predicate_offset_at = 4;
+  uint32 outputs_offset = 5;
+  repeated uint32 outputs_offset_at = 6;
+  uint32 witnesses_offset = 7;
+  repeated uint32 witnesses_offset_at = 8;
+  bytes contract_id = 9;
+  bytes contract_root = 10;
+  bytes state_root = 11;
+}
+
+message MintMetadata {
+  bytes id = 1;
+}
+
+message UpgradePurpose {
+  oneof variant {
+    UpgradeConsensusParameters consensus_parameters = 1;
+    UpgradeStateTransition state_transition = 2;
+  }
+}
+
+message UpgradeConsensusParameters {
+  uint32 witness_index = 1;
+  bytes checksum = 2;
+}
+
+message UpgradeStateTransition {
+  bytes root = 1;
+}
+
+message UpgradeMetadata {
+  bytes id = 1;
+  uint32 inputs_offset = 2;
+  repeated uint32 inputs_offset_at = 3;
+  repeated PredicateOffset inputs_predicate_offset_at = 4;
+  uint32 outputs_offset = 5;
+  repeated uint32 outputs_offset_at = 6;
+  uint32 witnesses_offset = 7;
+  repeated uint32 witnesses_offset_at = 8;
+  oneof variant {
+    UpgradeConsensusParametersMetadata consensus_parameters = 9;
+    UpgradeStateTransitionMetadata state_transition = 10;
+  }
+}
+
+message UpgradeConsensusParametersMetadata {
+  bytes consensus_parameters = 1;
+  bytes calculated_checksum = 2;
+}
+
+message UpgradeStateTransitionMetadata {}
+
+message UploadMetadata {
+  bytes id = 1;
+  uint32 inputs_offset = 2;
+  repeated uint32 inputs_offset_at = 3;
+  repeated PredicateOffset inputs_predicate_offset_at = 4;
+  uint32 outputs_offset = 5;
+  repeated uint32 outputs_offset_at = 6;
+  uint32 witnesses_offset = 7;
+  repeated uint32 witnesses_offset_at = 8;
+}
+
+message BlobMetadata {
+  bytes id = 1;
+  uint32 inputs_offset = 2;
+  repeated uint32 inputs_offset_at = 3;
+  repeated PredicateOffset inputs_predicate_offset_at = 4;
+  uint32 outputs_offset = 5;
+  repeated uint32 outputs_offset_at = 6;
+  uint32 witnesses_offset = 7;
+  repeated uint32 witnesses_offset_at = 8;
+}
+
+message PredicateOffset {
+  optional InnerPredicateOffset offset = 1;
+}
+
+message InnerPredicateOffset {
+  uint32 offset = 1;
+  uint32 length = 2;
+}
+
+message Receipt {
+  oneof variant {
+    CallReceipt call = 1;
+    ReturnReceipt return_receipt = 2;
+    ReturnDataReceipt return_data = 3;
+    PanicReceipt panic = 4;
+    RevertReceipt revert = 5;
+    LogReceipt log = 6;
+    LogDataReceipt log_data = 7;
+    TransferReceipt transfer = 8;
+    TransferOutReceipt transfer_out = 9;
+    ScriptResultReceipt script_result = 10;
+    MessageOutReceipt message_out = 11;
+    MintReceipt mint = 12;
+    BurnReceipt burn = 13;
+  }
+}
+
+message CallReceipt {
+  bytes id = 1;
+  bytes to = 2;
+  uint64 amount = 3;
+  bytes asset_id = 4;
+  uint64 gas = 5;
+  uint64 param1 = 6;
+  uint64 param2 = 7;
+  uint64 pc = 8;
+  uint64 is = 9;
+}
+
+message ReturnReceipt {
+  bytes id = 1;
+  uint64 val = 2;
+  uint64 pc = 3;
+  uint64 is = 4;
+}
+
+message ReturnDataReceipt {
+  bytes id = 1;
+  uint64 ptr = 2;
+  uint64 len = 3;
+  bytes digest = 4;
+  uint64 pc = 5;
+  uint64 is = 6;
+  optional bytes data = 7;
+}
+
+message PanicReceipt {
+  bytes id = 1;
+  PanicInstruction reason = 2;
+  uint64 pc = 3;
+  uint64 is = 4;
+  optional bytes contract_id = 5;
+}
+
+message RevertReceipt {
+  bytes id = 1;
+  uint64 ra = 2;
+  uint64 pc = 3;
+  uint64 is = 4;
+}
+
+message LogReceipt {
+  bytes id = 1;
+  uint64 ra = 2;
+  uint64 rb = 3;
+  uint64 rc = 4;
+  uint64 rd = 5;
+  uint64 pc = 6;
+  uint64 is = 7;
+}
+
+message LogDataReceipt {
+  bytes id = 1;
+  uint64 ra = 2;
+  uint64 rb = 3;
+  uint64 ptr = 4;
+  uint64 len = 5;
+  bytes digest = 6;
+  uint64 pc = 7;
+  uint64 is = 8;
+  optional bytes data = 9;
+}
+
+message TransferReceipt {
+  bytes id = 1;
+  bytes to = 2;
+  uint64 amount = 3;
+  bytes asset_id = 4;
+  uint64 pc = 5;
+  uint64 is = 6;
+}
+
+message TransferOutReceipt {
+  bytes id = 1;
+  bytes to = 2;
+  uint64 amount = 3;
+  bytes asset_id = 4;
+  uint64 pc = 5;
+  uint64 is = 6;
+}
+
+message ScriptResultReceipt {
+  ScriptExecutionResult result = 1;
+  uint64 gas_used = 2;
+}
+
+message MessageOutReceipt {
+  bytes sender = 1;
+  bytes recipient = 2;
+  uint64 amount = 3;
+  bytes nonce = 4;
+  uint64 len = 5;
+  bytes digest = 6;
+  optional bytes data = 7;
+}
+
+message MintReceipt {
+  bytes sub_id = 1;
+  bytes contract_id = 2;
+  uint64 val = 3;
+  uint64 pc = 4;
+  uint64 is = 5;
+}
+
+message BurnReceipt {
+  bytes sub_id = 1;
+  bytes contract_id = 2;
+  uint64 val = 3;
+  uint64 pc = 4;
+  uint64 is = 5;
+}
+
+message PanicInstruction {
+  PanicReason reason = 1;
+  uint32 instruction = 2;
+}
+
+enum PanicReason {
+  PANIC_REASON_UNKNOWN = 0;
+  PANIC_REASON_REVERT = 1;
+  PANIC_REASON_OUT_OF_GAS = 2;
+  PANIC_REASON_TRANSACTION_VALIDITY = 3;
+  PANIC_REASON_MEMORY_OVERFLOW = 4;
+  PANIC_REASON_ARITHMETIC_OVERFLOW = 5;
+  PANIC_REASON_CONTRACT_NOT_FOUND = 6;
+  PANIC_REASON_MEMORY_OWNERSHIP = 7;
+  PANIC_REASON_NOT_ENOUGH_BALANCE = 8;
+  PANIC_REASON_EXPECTED_INTERNAL_CONTEXT = 9;
+  PANIC_REASON_ASSET_ID_NOT_FOUND = 10;
+  PANIC_REASON_INPUT_NOT_FOUND = 11;
+  PANIC_REASON_OUTPUT_NOT_FOUND = 12;
+  PANIC_REASON_WITNESS_NOT_FOUND = 13;
+  PANIC_REASON_TRANSACTION_MATURITY = 14;
+  PANIC_REASON_INVALID_METADATA_IDENTIFIER = 15;
+  PANIC_REASON_MALFORMED_CALL_STRUCTURE = 16;
+  PANIC_REASON_RESERVED_REGISTER_NOT_WRITABLE = 17;
+  PANIC_REASON_INVALID_FLAGS = 18;
+  PANIC_REASON_INVALID_IMMEDIATE_VALUE = 19;
+  PANIC_REASON_EXPECTED_COIN_INPUT = 20;
+  PANIC_REASON_ECAL_ERROR = 21;
+  PANIC_REASON_MEMORY_WRITE_OVERLAP = 22;
+  PANIC_REASON_CONTRACT_NOT_IN_INPUTS = 23;
+  PANIC_REASON_INTERNAL_BALANCE_OVERFLOW = 24;
+  PANIC_REASON_CONTRACT_MAX_SIZE = 25;
+  PANIC_REASON_EXPECTED_UNALLOCATED_STACK = 26;
+  PANIC_REASON_MAX_STATIC_CONTRACTS_REACHED = 27;
+  PANIC_REASON_TRANSFER_AMOUNT_CANNOT_BE_ZERO = 28;
+  PANIC_REASON_EXPECTED_OUTPUT_VARIABLE = 29;
+  PANIC_REASON_EXPECTED_PARENT_INTERNAL_CONTEXT = 30;
+  PANIC_REASON_PREDICATE_RETURNED_NON_ONE = 31;
+  PANIC_REASON_CONTRACT_ID_ALREADY_DEPLOYED = 32;
+  PANIC_REASON_CONTRACT_MISMATCH = 33;
+  PANIC_REASON_MESSAGE_DATA_TOO_LONG = 34;
+  PANIC_REASON_ARITHMETIC_ERROR = 35;
+  PANIC_REASON_CONTRACT_INSTRUCTION_NOT_ALLOWED = 36;
+  PANIC_REASON_TRANSFER_ZERO_COINS = 37;
+  PANIC_REASON_INVALID_INSTRUCTION = 38;
+  PANIC_REASON_MEMORY_NOT_EXECUTABLE = 39;
+  PANIC_REASON_POLICY_IS_NOT_SET = 40;
+  PANIC_REASON_POLICY_NOT_FOUND = 41;
+  PANIC_REASON_TOO_MANY_RECEIPTS = 42;
+  PANIC_REASON_BALANCE_OVERFLOW = 43;
+  PANIC_REASON_INVALID_BLOCK_HEIGHT = 44;
+  PANIC_REASON_TOO_MANY_SLOTS = 45;
+  PANIC_REASON_EXPECTED_NESTED_CALLER = 46;
+  PANIC_REASON_MEMORY_GROWTH_OVERLAP = 47;
+  PANIC_REASON_UNINITALIZED_MEMORY_ACCESS = 48;
+  PANIC_REASON_OVERRIDING_CONSENSUS_PARAMETERS = 49;
+  PANIC_REASON_UNKNOWN_STATE_TRANSACTION_BYTECODE_ROOT = 50;
+  PANIC_REASON_OVERRIDING_STATE_TRANSACTION_BYTECODE = 51;
+  PANIC_REASON_BYTECODE_ALREADY_UPLOADED = 52;
+  PANIC_REASON_THE_PART_IS_NOT_SEQUENTIALLY_CONNECTED = 53;
+  PANIC_REASON_BLOB_NOT_FOUND = 54;
+  PANIC_REASON_BLOB_ID_ALREADY_UPLOADED = 55;
+  PANIC_REASON_GAS_COST_NOT_DEFINED = 56;
+  PANIC_REASON_UNSUPPORTED_CURVE_ID = 57;
+  PANIC_REASON_UNSUPPORTED_OPERATION_TYPE = 58;
+  PANIC_REASON_INVALID_ELLIPTIC_CURVE_POINT = 59;
+  PANIC_REASON_INPUT_CONTRACT_DOES_NOT_EXIST = 60;
+  PANIC_REASON_STORAGE_SLOTS_NOT_FOUND = 61;
+  PANIC_REASON_PROOF_IN_UPLOAD_NOT_FOUND = 62;
+  PANIC_REASON_INVALID_UPGRADE_PURPOSE_TYPE = 63;
+  PANIC_REASON_CAN_NOT_GET_GAS_PRICE_IN_PREDICATE = 64;
+}
+
+// pub enum ScriptExecutionResult {
+//     Success,
+//     Revert,
+//     Panic,
+//     GenericFailure(u64),
+// }
+message ScriptExecutionResult {
+  oneof variant {
+    ScriptExecutionResultSuccess success = 1;
+    ScriptExecutionResultRevert revert = 2;
+    ScriptExecutionResultPanic panic = 3;
+    ScriptExecutionResultGenericFailure generic_failure = 4;
+  }
+}
+
+message ScriptExecutionResultSuccess {}
+
+message ScriptExecutionResultRevert {}
+
+message ScriptExecutionResultPanic {}
+
+// ScriptExecutionResult::GenericFailure(u64)
+message ScriptExecutionResultGenericFailure {
+  uint64 code = 1;
+}
+
+message BlockResponse {
+  uint32 height = 1;
+  oneof payload {
+    Block literal = 2;
+    bytes bytes = 3;
+    RemoteBlockResponse remote = 4;
+  }
+}
+
+message NewBlockSubscriptionRequest {}
+
+service BlockAggregator {
+  rpc GetSyncedBlockHeight (BlockHeightRequest) returns (BlockHeightResponse);
+  rpc GetBlockRange (BlockRangeRequest) returns (stream BlockResponse);
+  rpc NewBlockSubscription (NewBlockSubscriptionRequest) returns (stream BlockResponse);
+}
