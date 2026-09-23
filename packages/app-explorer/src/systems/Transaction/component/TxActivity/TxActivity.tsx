@@ -17,10 +17,12 @@ import {
   IconArrowBarToDown,
   IconArrowDownRight,
   IconArrowsExchange,
+  IconBolt,
   IconCode,
   IconKey,
   IconPlus,
   IconReceipt,
+  IconShieldDown,
   IconTargetArrow,
   IconX,
 } from '@tabler/icons-react';
@@ -45,6 +47,9 @@ const KIND_BADGE: Record<
   fill: { color: 'green', icon: IconArrowsExchange },
   cancel: { color: 'orange', icon: IconX },
   trigger: { color: 'yellow', icon: IconTargetArrow },
+  takeProfit: { color: 'green', icon: IconTargetArrow },
+  stopLoss: { color: 'red', icon: IconShieldDown },
+  triggered: { color: 'yellow', icon: IconBolt },
   stop: { color: 'red', icon: IconAlertTriangle },
   withdraw: { color: 'blue', icon: IconArrowDownRight },
   fee: { color: 'gray', icon: IconReceipt },
@@ -61,6 +66,10 @@ function Part({ part }: { part: ActivityPart }) {
         iconSize={16}
         assetId={part.assetId}
         value={bn(part.amount)}
+        decimals={part.decimals?.toString()}
+        asset={
+          part.symbol ? { assetId: part.assetId, symbol: part.symbol } : null
+        }
       />
     ) : (
       <Text className="font-semibold">{part.amount}</Text>

@@ -32,6 +32,10 @@ export type MarketMetadata = {
   symbol: string;
   baseAssetId: string;
   quoteAssetId: string;
+  baseSymbol?: string;
+  quoteSymbol?: string;
+  baseDecimals?: number;
+  quoteDecimals?: number;
 };
 
 // `accounts` holds only unlisted contracts verified on chain.
