@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ETH_CHAIN_NAME } from 'app-commons';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Routes } from '~/routes';
@@ -63,11 +63,19 @@ const INLINE_DECODE_BUDGET_MS = 250;
 // Longest the Simple view waits for decoding before falling back to Standard.
 const SIMPLE_VIEW_WAIT_MS = 5000;
 
-async function decodeLazily(transaction: TransactionNode) {
-  const { decodeTransaction } = await import(
-    '../systems/Transaction/utils/decodeTransaction'
-  );
-  return decodeTransaction(transaction);
+// Never rejects: a failed import or decode leaves the transaction as it is.
+async function decodeLazily(
+  transaction: TransactionNode,
+): Promise<TransactionNode> {
+  try {
+    const { decodeTransaction } = await import(
+      '../systems/Transaction/utils/decodeTransaction'
+    );
+    return await decodeTransaction(transaction);
+  } catch (error) {
+    console.error('Failed to decode transaction:', error);
+    return transaction;
+  }
 }
 
 async function fetchTransactionWithActivity(id: string) {
@@ -144,12 +152,41 @@ export function TransactionPage() {
     enabled: !!rawTransaction && canDecode,
     staleTime: Number.POSITIVE_INFINITY,
   });
-  const isDecoding = canDecode && isPending;
-  const transaction = rawTransaction?.activity
+
+  // Decoded receipts and activity depend only on the transaction's receipts,
+  // which never change, so the last result is kept across refetches instead
+  // of dropping the card while a refetch is decoded again.
+  const lastDecoded = useRef<{
+    id: string;
+    operations: TransactionNode['operations'];
+    activity: NonNullable<TransactionNode['activity']>;
+  } | null>(null);
+  const freshDecoded = rawTransaction?.activity
     ? rawTransaction
     : decodedTransaction?.activity
       ? decodedTransaction
-      : rawTransaction;
+      : null;
+  if (freshDecoded?.activity) {
+    lastDecoded.current = {
+      id,
+      operations: freshDecoded.operations,
+      activity: freshDecoded.activity,
+    };
+  }
+  const kept = lastDecoded.current?.id === id ? lastDecoded.current : null;
+  const isDecoding = canDecode && isPending && !kept;
+  const transaction = useMemo(
+    () =>
+      freshDecoded ??
+      (kept && rawTransaction
+        ? {
+            ...rawTransaction,
+            operations: kept.operations,
+            activity: kept.activity,
+          }
+        : rawTransaction),
+    [freshDecoded, kept, rawTransaction],
+  );
 
   // Simple view waits for decoding before falling back to Standard, up to a
   // limit so a slow ABI host cannot hold the page.
