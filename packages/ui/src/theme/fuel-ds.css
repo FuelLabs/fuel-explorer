@@ -56,6 +56,7 @@
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.922 0 0);
   --fuel-grid-line: oklch(0.683 0 0 / 50%);
+  --fuel-footer-bg: var(--fuel-background);
   --fuel-indicator-border: var(--fuel-border-light);
   --fuel-indicator-fill: var(--fuel-background);
   --fuel-square: var(--fuel-brand-600);
@@ -80,6 +81,7 @@
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.985 0 0);
   --fuel-grid-line: var(--fuel-border-dark);
+  --fuel-footer-bg: var(--fuel-black);
   --fuel-indicator-border: var(--fuel-border-dark);
   --fuel-indicator-fill: var(--fuel-dark);
   --fuel-square: var(--fuel-blue-600);
@@ -315,6 +317,10 @@
   max-width: 1440px;
   margin-inline: auto;
   border-inline: 1px solid var(--fuel-grid-line);
+}
+
+.fuel-footer {
+  background: var(--fuel-footer-bg);
 }
 
 .fuel-grid-divider {
