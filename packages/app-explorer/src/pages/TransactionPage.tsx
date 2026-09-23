@@ -8,6 +8,7 @@ import { ApiService } from '../services/api';
 import { TxScreenAdvanced } from '../systems/Transaction/component/TxScreen/TxScreenAdvanced';
 import { TxScreenStandard } from '../systems/Transaction/component/TxScreen/TxScreenStandard';
 import type { TransactionNode } from '../systems/Transaction/types';
+import { decodeTransaction } from '../systems/Transaction/utils/decodeTransaction';
 
 interface TransactionDetailsProps {
   transaction: TransactionNode;
@@ -64,7 +65,7 @@ export function TransactionPage() {
   }
 
   const {
-    data: transaction,
+    data: rawTransaction,
     isLoading,
     error,
   } = useQuery({
@@ -80,6 +81,16 @@ export function TransactionPage() {
       return failureCount < 3;
     },
   });
+
+  // Decoding fetches ABIs, so it runs after the transaction has loaded and
+  // never holds the page back. The raw transaction shows in the meantime.
+  const { data: decodedTransaction, isPending: isDecoding } = useQuery({
+    queryKey: ['transaction', id, 'decoded'],
+    queryFn: () => decodeTransaction(rawTransaction as TransactionNode),
+    enabled: !!rawTransaction,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+  const transaction = decodedTransaction ?? rawTransaction;
 
   if (isLoading) {
     return (
@@ -134,10 +145,20 @@ export function TransactionPage() {
 
   // Check if Simple view is available
   const isSimpleDisabled =
-    !transaction?.summary || transaction.summary.length === 0;
+    !transaction?.activity &&
+    (!transaction?.summary || transaction.summary.length === 0);
 
   // If Simple is disabled and user requested simple, redirect to standard
-  // Use navigate instead of Navigate to avoid flash
+  // Use navigate instead of Navigate to avoid flash. Wait for decoding, which
+  // can enable Simple for transactions without transfers.
+  if (mode === 'simple' && isSimpleDisabled && isDecoding) {
+    return (
+      <div className="transaction-page">
+        <TxHeader id={id} isSimple />
+        <TransactionLoadingContent mode={mode} />
+      </div>
+    );
+  }
   if (mode === 'simple' && isSimpleDisabled) {
     navigate(Routes.txStandard(id), { replace: true });
     // Show standard view while redirecting

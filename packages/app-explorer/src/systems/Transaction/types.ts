@@ -6,6 +6,7 @@ import type {
   OperationTransactionAddress,
 } from 'fuels';
 import type { ViewModes } from '../Core/components/ViewMode/constants';
+import type { TxActivity } from './utils/txActivity';
 
 export type TxRouteRouterParams = {
   params: {
@@ -49,6 +50,7 @@ export const TX_ICON_TYPES = TX_TYPES.concat(['Message']);
 
 export type TransactionNode = GQLTransactionItemFragment & {
   summary?: Array<OperationExtended>;
+  activity?: TxActivity;
 };
 export type PendingTransaction = { id: string; status: 'indexing' };
 export type IndexedTransaction = { id: string; status: 'synced' };

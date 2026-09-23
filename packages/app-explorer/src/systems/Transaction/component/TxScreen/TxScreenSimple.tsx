@@ -5,6 +5,7 @@ import {
   Box,
   Card,
   HStack,
+  Heading,
   LoadingBox,
   LoadingWrapper,
   Text,
@@ -23,6 +24,7 @@ import { AddressType } from 'fuels';
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type { TransactionNode } from '../../types';
+import { TxActivity } from '../TxActivity/TxActivity';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 import { TxFullDateTimestamp } from '../TxFullDateTimestamp/TxFullDateTimestamp';
 import { TxTimeAgoTimestamp } from '../TxTimeAgoTimestamp/TxTimeAgoTimestamp';
@@ -54,9 +56,13 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-20 h-6 rounded" />}
             regularEl={
-              <Badge color="blue" leftIcon={IconArrowRight}>
-                Transfer
-              </Badge>
+              transaction?.activity?.project ? (
+                <Badge color="blue">{transaction.activity.project}</Badge>
+              ) : (
+                <Badge color="blue" leftIcon={IconArrowRight}>
+                  Transfer
+                </Badge>
+              )
             }
           />
 
@@ -120,7 +126,25 @@ export function TxScreenSimple({ transaction, isLoading }: TxScreenProps) {
         </HStack>
       </HStack>
 
-      <Card className="px-4 mt-8 relative">
+      {!isLoading && transaction?.activity && (
+        <>
+          <Box className="mt-8">
+            <TxActivity activity={transaction.activity} />
+          </Box>
+          {!!transaction.summary?.length && (
+            <Heading as="h3" size="4" className="mt-6">
+              Token transfers
+            </Heading>
+          )}
+        </>
+      )}
+
+      <Card
+        className={clsx(
+          'px-4 relative',
+          transaction?.activity ? 'mt-4' : 'mt-8',
+        )}
+      >
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={
