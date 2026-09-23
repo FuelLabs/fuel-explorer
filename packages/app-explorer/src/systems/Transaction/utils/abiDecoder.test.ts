@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { TextDecoder, TextEncoder } from 'node:util';
 import { deserialize, serialize } from 'node:v8';
 import type { JsonAbi } from 'fuels';
@@ -10,6 +11,7 @@ import type { AbiRegistry, DecodedOperationReceipt } from './abiDecoder';
 import {
   buildAbiIndex,
   isTrustedAbiUrl,
+  pinAbiUrl,
   resolveAbiRegistry,
   resolveAccounts,
 } from './abiRegistry';
@@ -308,5 +310,66 @@ describe('isTrustedAbiUrl', () => {
     expect(isTrustedAbiUrl('https://example.com/abi.json', projects)).toBe(
       false,
     );
+  });
+});
+
+describe('pinAbiUrl', () => {
+  const projects =
+    'https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/c6d645d8c36744988f3fef67883bee7c19a32bce/projects.json';
+
+  it('reads branch ABI URLs from the pinned projects commit', () => {
+    expect(
+      pinAbiUrl(
+        'https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/main/artifacts/o2/order-book-abi.json',
+        projects,
+      ),
+    ).toBe(
+      'https://raw.githubusercontent.com/FuelLabs/fuel-ecosystem/c6d645d8c36744988f3fef67883bee7c19a32bce/artifacts/o2/order-book-abi.json',
+    );
+  });
+
+  it('leaves URLs alone when the projects list is not pinned', () => {
+    const abi = 'http://localhost:4401/artifacts/o2/order-book-abi.json';
+    expect(pinAbiUrl(abi, 'http://localhost:4401/projects.json')).toBe(abi);
+  });
+});
+
+describe('primitive LOG receipts', () => {
+  // A u64 logged by value: the concrete type id is the sha256 of the type
+  // name and the log id is its first 8 bytes as a u64.
+  const typeId = createHash('sha256').update('u64').digest('hex');
+  const logId = BigInt(`0x${typeId.slice(0, 16)}`).toString();
+  const abi = {
+    programType: 'contract',
+    specVersion: '1',
+    encodingVersion: '1',
+    concreteTypes: [{ type: 'u64', concreteTypeId: typeId }],
+    metadataTypes: [],
+    functions: [],
+    loggedTypes: [{ logId, concreteTypeId: typeId }],
+    messagesTypes: [],
+    configurables: [],
+  } as unknown as JsonAbi;
+  const CONTRACT =
+    '0x1111111111111111111111111111111111111111111111111111111111111111';
+
+  it('decodes the value carried in ra', () => {
+    const operations = [
+      {
+        receipts: [
+          {
+            item: { receiptType: 'LOG', id: CONTRACT, ra: '42', rb: logId },
+          },
+        ],
+      },
+    ];
+    expect(collectContractIds(operations)).toEqual([CONTRACT]);
+    decodeOperationReceipts(operations, null, {
+      contracts: { [CONTRACT]: { name: 'Counter', abi } },
+    });
+    const decoded = (
+      operations[0].receipts[0] as unknown as DecodedOperationReceipt
+    ).decoded;
+    expect(decoded).toMatchObject({ kind: 'log', name: 'u64', value: '42' });
   });
 });

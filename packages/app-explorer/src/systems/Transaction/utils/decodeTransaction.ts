@@ -24,6 +24,7 @@ import {
   type AccountVerifier,
   buildAbiIndex,
   isTrustedAbiUrl,
+  pinAbiUrl,
   resolveAbiRegistry,
   resolveAccounts,
 } from './abiRegistry';
@@ -47,7 +48,8 @@ function getAbiIndex() {
   return indexPromise;
 }
 
-function loadAbi(url: string) {
+function loadAbi(listedUrl: string) {
+  const url = pinAbiUrl(listedUrl, ECOSYSTEM_PROJECTS_URL ?? '');
   if (!isTrustedAbiUrl(url, ECOSYSTEM_PROJECTS_URL ?? '')) {
     return Promise.reject(new Error(`Untrusted ABI URL: ${url}`));
   }
@@ -101,8 +103,10 @@ const verifyAccount: AccountVerifier = (contractId, abi, method, child) => {
       .get()
       .then(({ value }) => value === true);
     verifyCache.set(key, started);
-    started.then((ok) => ok && writeCache(`verify:${key}`, true));
-    started.catch(() => evict(key, started));
+    started.then(
+      (ok) => ok && writeCache(`verify:${key}`, true),
+      () => evict(key, started),
+    );
     call = started;
   }
 
@@ -144,7 +148,11 @@ export async function decodeTransaction(
     if (!Object.keys(registry.contracts).length) return transaction;
     registry.accounts = accounts;
     decodeOperationReceipts(operations, copy.rawPayload, registry);
-    copy.activity = buildTxActivity(operations, registry);
+    copy.activity = buildTxActivity(
+      operations,
+      registry,
+      transaction.status?.__typename === 'FailureStatus',
+    );
     return copy;
   } catch (error) {
     console.error('Failed to decode transaction receipts:', error);

@@ -53,6 +53,7 @@ type ReceiptNode = {
   receiptType?: string | null;
   id?: string | null;
   to?: string | null;
+  ra?: string | null;
   rb?: string | null;
   data?: string | null;
   param1?: string | null;
@@ -114,6 +115,7 @@ function flattenReceipts(
       receiptType: item?.receiptType,
       id: item?.id?.toLowerCase(),
       to: item?.to?.toLowerCase(),
+      ra: item?.ra,
       rb: item?.rb,
       data: item?.data,
       param1: item?.param1,
@@ -132,6 +134,20 @@ function findSegment(whole: Uint8Array, segment: Uint8Array) {
     return i;
   }
   return -1;
+}
+
+export function isLog(receiptType?: string | null) {
+  return receiptType === 'LOG' || receiptType === 'LOG_DATA';
+}
+
+// A LOG receipt carries a primitive value in `ra`, encoded as a u64 the same
+// way the SDK does before decoding it.
+function logDataOf(node: ReceiptNode) {
+  if (node.receiptType === 'LOG_DATA' && node.data) return arrayify(node.data);
+  if (node.receiptType === 'LOG' && node.ra != null) {
+    return toBytes(new BN(node.ra).toHex(), 8);
+  }
+  return null;
 }
 
 function hasFunction(abi: JsonAbi, name: string) {
@@ -237,7 +253,7 @@ export function collectContractIds(operations: Operations) {
   const ids = new Set<string>();
   for (const node of flattenOperations(operations)) {
     if (node.receiptType === 'CALL' && node.to) ids.add(node.to);
-    if (node.receiptType === 'LOG_DATA' && node.id) ids.add(node.id);
+    if (isLog(node.receiptType) && node.id) ids.add(node.id);
   }
   return [...ids];
 }
@@ -259,16 +275,17 @@ export function decodeOperationReceipts(
 
   for (const node of nodes) {
     try {
-      if (node.receiptType === 'LOG_DATA' && node.rb && node.data) {
+      const logData = logDataOf(node);
+      if (logData && node.rb) {
         const source = sourceFor(node.id);
         const name = source && logTypeName(source.abi, node.rb);
         if (!source || !name) continue;
         const [value, end] = getInterface(source.abi).decodeLog(
-          node.data,
+          logData,
           node.rb,
         );
         // Leftover bytes mean the data does not have this type's layout.
-        if (end !== arrayify(node.data).length) continue;
+        if (end !== logData.length) continue;
         node.receipt.decoded = {
           kind: 'log',
           contractId: node.id as string,

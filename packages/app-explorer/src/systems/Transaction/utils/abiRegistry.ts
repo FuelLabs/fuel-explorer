@@ -104,6 +104,25 @@ export async function resolveAccounts(
   return accounts;
 }
 
+// ABI files published next to a commit-pinned projects list are read from
+// that same commit, so a pinned deploy always decodes with the same ABIs.
+export function pinAbiUrl(abiUrl: string, projectsUrl: string) {
+  try {
+    const abi = new URL(abiUrl);
+    const projects = new URL(projectsUrl);
+    if (abi.origin !== projects.origin) return abiUrl;
+    const [, owner, repo, commit] = projects.pathname.split('/');
+    const parts = abi.pathname.split('/');
+    if (!/^[0-9a-f]{40}$/.test(commit ?? '')) return abiUrl;
+    if (parts[1] !== owner || parts[2] !== repo) return abiUrl;
+    parts[3] = commit;
+    abi.pathname = parts.join('/');
+    return abi.toString();
+  } catch {
+    return abiUrl;
+  }
+}
+
 export function isTrustedAbiUrl(abiUrl: string, projectsUrl: string) {
   try {
     const abi = new URL(abiUrl);
