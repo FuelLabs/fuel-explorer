@@ -140,14 +140,20 @@ export function isLog(receiptType?: string | null) {
   return receiptType === 'LOG' || receiptType === 'LOG_DATA';
 }
 
-// A LOG receipt carries a primitive value in `ra`, encoded as a u64 the same
-// way the SDK does before decoding it.
-function logDataOf(node: ReceiptNode) {
-  if (node.receiptType === 'LOG_DATA' && node.data) return arrayify(node.data);
-  if (node.receiptType === 'LOG' && node.ra != null) {
-    return toBytes(new BN(node.ra).toHex(), 8);
+// A LOG receipt carries a primitive value in the low bytes of the `ra` word.
+// Types narrower than a word (bool, u8, u16, u32) take only those low bytes,
+// so each width is a candidate encoding.
+const LOG_WORD_WIDTHS = [8, 4, 2, 1];
+
+function logDataCandidates(node: ReceiptNode): Uint8Array[] {
+  if (node.receiptType === 'LOG_DATA' && node.data) {
+    return [arrayify(node.data)];
   }
-  return null;
+  if (node.receiptType === 'LOG' && node.ra != null) {
+    const word = toBytes(new BN(node.ra).toHex(), 8);
+    return LOG_WORD_WIDTHS.map((width) => word.slice(8 - width));
+  }
+  return [];
 }
 
 function hasFunction(abi: JsonAbi, name: string) {
@@ -275,23 +281,31 @@ export function decodeOperationReceipts(
 
   for (const node of nodes) {
     try {
-      const logData = logDataOf(node);
-      if (logData && node.rb) {
+      const candidates = logDataCandidates(node);
+      if (candidates.length && node.rb) {
         const source = sourceFor(node.id);
         const name = source && logTypeName(source.abi, node.rb);
         if (!source || !name) continue;
-        const [value, end] = getInterface(source.abi).decodeLog(
-          logData,
-          node.rb,
-        );
+        const iface = getInterface(source.abi);
+        const rb = node.rb;
         // Leftover bytes mean the data does not have this type's layout.
-        if (end !== logData.length) continue;
+        const value = candidates
+          .map((data) => {
+            try {
+              const [decoded, end] = iface.decodeLog(data, rb);
+              return end === data.length ? { decoded } : null;
+            } catch {
+              return null;
+            }
+          })
+          .find(Boolean);
+        if (!value) continue;
         node.receipt.decoded = {
           kind: 'log',
           contractId: node.id as string,
           contractName: source.name,
           name,
-          value: toJsonSafe(value),
+          value: toJsonSafe(value.decoded),
         };
         continue;
       }

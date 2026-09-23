@@ -373,3 +373,47 @@ describe('primitive LOG receipts', () => {
     expect(decoded).toMatchObject({ kind: 'log', name: 'u64', value: '42' });
   });
 });
+
+describe('narrow primitive LOG receipts', () => {
+  const CONTRACT =
+    '0x2222222222222222222222222222222222222222222222222222222222222222';
+  const abiFor = (type: string) => {
+    const typeId = createHash('sha256').update(type).digest('hex');
+    const logId = BigInt(`0x${typeId.slice(0, 16)}`).toString();
+    const abi = {
+      programType: 'contract',
+      specVersion: '1',
+      encodingVersion: '1',
+      concreteTypes: [{ type, concreteTypeId: typeId }],
+      metadataTypes: [],
+      functions: [],
+      loggedTypes: [{ logId, concreteTypeId: typeId }],
+      messagesTypes: [],
+      configurables: [],
+    } as unknown as JsonAbi;
+    return { abi, logId };
+  };
+
+  it.each([
+    ['u32', '70000', 70000],
+    ['u16', '513', 513],
+    ['u8', '7', 7],
+    ['bool', '1', true],
+  ])('decodes a %s from the low bytes of ra', (type, ra, expected) => {
+    const { abi, logId } = abiFor(type);
+    const operations = [
+      {
+        receipts: [
+          { item: { receiptType: 'LOG', id: CONTRACT, ra, rb: logId } },
+        ],
+      },
+    ];
+    decodeOperationReceipts(operations, null, {
+      contracts: { [CONTRACT]: { name: 'Narrow', abi } },
+    });
+    const decoded = (
+      operations[0].receipts[0] as unknown as DecodedOperationReceipt
+    ).decoded;
+    expect(decoded?.value).toEqual(expected);
+  });
+});
