@@ -627,6 +627,25 @@ describe('resolvers', () => {
     ).toBeNull();
   });
 
+  it('search finds an account whose history is older than the index window', async () => {
+    const OLD_ACCOUNT = `0x${'c4'.repeat(32)}`;
+    const { gql } = await setup({
+      txIdsByOwner: async (owner: string) => ({
+        ids: owner === OLD_ACCOUNT ? [hex(1)] : [],
+        headHeight: 0,
+        hasNextPage: false,
+      }),
+    });
+    expect(
+      (await gql(`{ search(query: "${OLD_ACCOUNT}") { account { address } } }`))
+        .search.account.address,
+    ).toBe(OLD_ACCOUNT);
+    expect(
+      (await gql(`{ search(query: "${hex(999999)}") { account { address } } }`))
+        .search,
+    ).toBeNull();
+  });
+
   it('search resolves null when fuel-core throws even for a well-formed id', async () => {
     const throwingClient = {
       heightForBlock: async () => {

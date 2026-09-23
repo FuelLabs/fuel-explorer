@@ -86,6 +86,17 @@ export const searchResolvers = {
       } catch (err) {
         console.error('search predicate failed', err);
       }
+      // The index keeps a rolling window, so an account whose last activity
+      // is older than it only shows up in fuel-core's owner history.
+      try {
+        const { ids } = await ctx.client.txIdsByOwner(hash, 1);
+        if (ids.length > 0) {
+          ctx.hot.hit('account', hash);
+          return { account: { address: hash } };
+        }
+      } catch (err) {
+        console.error('search account history failed', err);
+      }
       return null;
     },
   },
