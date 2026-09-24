@@ -6,6 +6,11 @@ const START_HEIGHT_LOOKBACK = 200_000;
 const FETCH_TIMEOUT_MS = 15_000;
 // A read can outlive its AbortSignal.timeout; tick() holds `running` until it settles.
 const FETCH_DEADLINE_MS = 20_000;
+const REPAIR_CONCURRENCY = 2;
+const REPAIR_MISS_TTL_MS = 10 * 60_000;
+const REPAIR_ERROR_TTL_MS = 60_000;
+// One L1 block can take more than one sequencer block to sync.
+const MAX_SYNC_BLOCKS_PER_L1_BLOCK = 10;
 
 type CosmosAttribute = { key: string; value: string };
 type CosmosEvent = { type: string; attributes?: CosmosAttribute[] };
@@ -43,6 +48,10 @@ export class CosmosPoller {
   tipAt: string | null = null;
   private timer: NodeJS.Timeout | null = null;
   private running = false;
+  private repairsInFlight = new Map<number, Promise<void>>();
+  private repairMissUntil = new Map<number, number>();
+  private repairSlots = REPAIR_CONCURRENCY;
+  private repairQueue: Array<() => void> = [];
 
   constructor(private readonly opts: Opts) {}
 
@@ -106,21 +115,88 @@ export class CosmosPoller {
           break;
         }
         // An empty block still advances the cursor like a non-empty one.
-        for (const tx of body.tx_responses) {
-          this.opts.index.insertResponse(
-            {
-              blockHeight: Number(tx.height),
-              txHash: tx.txhash,
-              data: tx.data ?? null,
-              timestamp: tx.timestamp ?? null,
-            },
-            flattenEvents(tx.events ?? []),
-          );
-        }
+        this.insertTxs(body.tx_responses);
         this.opts.index.setCursor(height);
       }
     } finally {
       this.running = false;
+    }
+  }
+
+  repairEthBlockSync(ethBlockHeight: number): Promise<void> {
+    const inFlight = this.repairsInFlight.get(ethBlockHeight);
+    if (inFlight) return inFlight;
+    const missUntil = this.repairMissUntil.get(ethBlockHeight);
+    if (missUntil !== undefined) {
+      if (missUntil > Date.now()) return Promise.resolve();
+      this.repairMissUntil.delete(ethBlockHeight);
+    }
+    const work = this.withRepairSlot(() => this.repair(ethBlockHeight))
+      .catch((err) => {
+        this.repairMissUntil.set(
+          ethBlockHeight,
+          Date.now() + REPAIR_ERROR_TTL_MS,
+        );
+        throw err;
+      })
+      .finally(() => this.repairsInFlight.delete(ethBlockHeight));
+    this.repairsInFlight.set(ethBlockHeight, work);
+    return work;
+  }
+
+  private async repair(ethBlockHeight: number): Promise<void> {
+    const fetchImpl = this.opts.fetchImpl ?? fetch;
+    const heights = await withDeadline(
+      fetchEthSyncHeights(fetchImpl, this.opts.restBase, ethBlockHeight),
+      FETCH_DEADLINE_MS,
+    );
+    if (heights.length === 0) {
+      this.repairMissUntil.set(ethBlockHeight, Date.now() + REPAIR_MISS_TTL_MS);
+      return;
+    }
+    // Fetch every block before inserting any: a partly stored sync would
+    // count as proof the L1 block was processed.
+    const bodies = [];
+    for (const height of heights) {
+      bodies.push(
+        await withDeadline(
+          fetchTxs(fetchImpl, this.opts.restBase, height),
+          FETCH_DEADLINE_MS,
+        ),
+      );
+    }
+    for (const body of bodies) this.insertTxs(body.tx_responses);
+    this.opts.onLog?.(
+      `CosmosPoller: repaired sequencer blocks ${heights.join(', ')} for L1 block ${ethBlockHeight}`,
+    );
+  }
+
+  private async withRepairSlot<T>(work: () => Promise<T>): Promise<T> {
+    if (this.repairSlots === 0) {
+      await new Promise<void>((resolve) => this.repairQueue.push(resolve));
+    } else {
+      this.repairSlots--;
+    }
+    try {
+      return await work();
+    } finally {
+      const next = this.repairQueue.shift();
+      if (next) next();
+      else this.repairSlots++;
+    }
+  }
+
+  private insertTxs(txs: CosmosTxResponse[]): void {
+    for (const tx of txs) {
+      this.opts.index.insertResponse(
+        {
+          blockHeight: Number(tx.height),
+          txHash: tx.txhash,
+          data: tx.data ?? null,
+          timestamp: tx.timestamp ?? null,
+        },
+        flattenEvents(tx.events ?? []),
+      );
     }
   }
 }
@@ -204,5 +280,63 @@ async function fetchTxs(
       `cosmos txs fetch at height ${height} returned a malformed body: tx_responses is ${typeof body.tx_responses}, not an array`,
     );
   }
-  return { total: body.total, tx_responses: body.tx_responses };
+  // An empty tx search for a block that holds txs must not advance the cursor.
+  if (body.tx_responses.length === 0) {
+    const blockTxs = await fetchBlockTxCount(fetchImpl, restBase, height);
+    if (blockTxs > 0) {
+      throw new Error(
+        `cosmos txs at height ${height} not indexed yet: block has ${blockTxs} txs`,
+      );
+    }
+  }
+  return {
+    total: body.total,
+    tx_responses: body.tx_responses as CosmosTxResponse[],
+  };
+}
+
+async function fetchBlockTxCount(
+  fetchImpl: typeof fetch,
+  restBase: string,
+  height: number,
+): Promise<number> {
+  const res = await fetchImpl(
+    `${restBase}/cosmos/base/tendermint/v1beta1/blocks/${height}`,
+    { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) },
+  );
+  if (!res.ok) {
+    throw new Error(
+      `cosmos block fetch failed at height ${height}: HTTP ${res.status}`,
+    );
+  }
+  const body = (await res.json()) as {
+    block?: { data?: { txs?: unknown[] | null } };
+  };
+  return body.block?.data?.txs?.length ?? 0;
+}
+
+async function fetchEthSyncHeights(
+  fetchImpl: typeof fetch,
+  restBase: string,
+  ethBlockHeight: number,
+): Promise<number[]> {
+  const query = encodeURIComponent(
+    `fuelsequencer.bridge.EventEthereumBlockSynced.block_number='"${ethBlockHeight}"'`,
+  );
+  const res = await fetchImpl(
+    `${restBase}/cosmos/tx/v1beta1/txs?query=${query}&limit=${MAX_SYNC_BLOCKS_PER_L1_BLOCK}`,
+    { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) },
+  );
+  if (!res.ok) {
+    throw new Error(
+      `cosmos sync lookup failed for L1 block ${ethBlockHeight}: HTTP ${res.status}`,
+    );
+  }
+  const body = (await res.json()) as {
+    tx_responses?: Array<{ height?: string }>;
+  };
+  const heights = (body.tx_responses ?? [])
+    .map((tx) => Number(tx.height))
+    .filter((h) => Number.isFinite(h) && h > 0);
+  return [...new Set(heights)];
 }
