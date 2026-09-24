@@ -7,6 +7,12 @@ function tipResponse(height: number) {
   return { block: { header: { height: String(height) } } };
 }
 
+function blockResponse(txCount: number) {
+  return {
+    block: { data: { txs: Array.from({ length: txCount }, () => 'tx') } },
+  };
+}
+
 function txsResponse(txResponses: unknown[]) {
   return { total: String(txResponses.length), tx_responses: txResponses };
 }
@@ -26,6 +32,9 @@ function fakeFetch(routes: Record<string, unknown>) {
   const impl = jest.fn(async (url: string) => {
     calls.push(url);
     const key = Object.keys(routes).find((k) => url.includes(k));
+    if (!key && /\/blocks\/\d+$/.test(url)) {
+      return { ok: true, json: async () => blockResponse(0) } as Response;
+    }
     if (!key) throw new Error(`unexpected fetch: ${url}`);
     return {
       ok: true,
@@ -377,6 +386,101 @@ describe('CosmosPoller', () => {
       expect(logs.join('\n')).toContain('txs fetch failed at height 1');
       expect(index.cursor()).toBe(0);
     });
+  });
+  it('holds the cursor when the tx search returns nothing for a block that has txs', async () => {
+    const { impl } = fakeFetch({
+      'blocks/latest': tipResponse(10),
+      'tx.height=5': txsResponse([]),
+      'blocks/5': blockResponse(2),
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      startHeight: 5,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await poller.tick();
+    expect(index.cursor()).toBe(4);
+  });
+
+  it('repairs the sequencer block that synced an L1 block, once per height', async () => {
+    const { impl, calls } = fakeFetch({
+      'EventEthereumBlockSynced.block_number': txsResponse([{ height: '777' }]),
+      'tx.height=777': txsResponse([
+        tx(777, 'SYNC', [
+          {
+            type: 'fuelsequencer.bridge.EventEthereumBlockSynced',
+            attributes: [{ key: 'block_number', value: '"123"' }],
+          },
+        ]),
+      ]),
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await Promise.all([
+      poller.repairEthBlockSync(123),
+      poller.repairEthBlockSync(123),
+    ]);
+    expect(index.ethBlockSyncRecorded(123)).toBe(true);
+    expect(
+      calls.filter((c) => c.includes('EventEthereumBlockSynced')),
+    ).toHaveLength(1);
+    expect(index.cursor()).toBeNull();
+  });
+
+  it('indexes every sequencer block that synced the L1 block', async () => {
+    const syncTx = (height: number, hash: string) =>
+      tx(height, hash, [
+        {
+          type: 'fuelsequencer.bridge.EventEthereumBlockSynced',
+          attributes: [{ key: 'block_number', value: '"123"' }],
+        },
+      ]);
+    const { impl, calls } = fakeFetch({
+      'EventEthereumBlockSynced.block_number': txsResponse([
+        { height: '777' },
+        { height: '778' },
+      ]),
+      'tx.height=777': txsResponse([syncTx(777, 'SYNC1')]),
+      'tx.height=778': txsResponse([syncTx(778, 'SYNC2')]),
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await poller.repairEthBlockSync(123);
+    expect(calls.some((c) => c.includes('tx.height=777'))).toBe(true);
+    expect(calls.some((c) => c.includes('tx.height=778'))).toBe(true);
+  });
+
+  it('waits before retrying a repair that failed', async () => {
+    const impl = jest.fn(async () => ({ ok: false, status: 429 }) as Response);
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await expect(poller.repairEthBlockSync(789)).rejects.toThrow('HTTP 429');
+    await poller.repairEthBlockSync(789);
+    expect(impl).toHaveBeenCalledTimes(1);
+  });
+
+  it('remembers an L1 block the sequencer never synced instead of asking again', async () => {
+    const { impl, calls } = fakeFetch({
+      'EventEthereumBlockSynced.block_number': txsResponse([]),
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await poller.repairEthBlockSync(456);
+    await poller.repairEthBlockSync(456);
+    expect(calls).toHaveLength(1);
   });
 });
 

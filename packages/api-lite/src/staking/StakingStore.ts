@@ -31,6 +31,8 @@ import {
 
 const TIME_TO_SYNCHRONIZE_IN_SEQUENCER = 30;
 const TIME_TO_COMMIT_SEQUENCER_BLOCK_TO_L1 = 8;
+// A repair that outlasts this keeps running; the next read sees its result.
+const REPAIR_WAIT_MS = 1500;
 
 export type StakingStoreDeps = {
   l1Index: Pick<
@@ -44,8 +46,10 @@ export type StakingStoreDeps = {
   >;
   cosmosIndex: Pick<
     CosmosIndex,
-    'blockSyncedAfter' | 'queryEventsSyncedToEthBlock'
+    'blockSyncedAfter' | 'ethBlockSyncRecorded' | 'queryEventsSyncedToEthBlock'
   >;
+  // Fetches the sequencer block that synced an L1 block into cosmosIndex.
+  repairEthBlockSync?: (ethBlockHeight: number) => Promise<void>;
   finalization: Pick<FinalizationPeriods, 'timeToFinalize'>;
   proofCache: Pick<WithdrawProofCache, 'get'>;
 };
@@ -98,6 +102,45 @@ export class StakingStore {
 
   private blockIsSynced(ethBlockHeight: number): boolean {
     return this.deps.cosmosIndex.blockSyncedAfter(ethBlockHeight);
+  }
+
+  // Skipped needs proof that the sequencer processed this L1 block: its own
+  // sync event in the index. A later sync alone can mean an index gap.
+  private isSkipped(ethBlockHeight: number): boolean {
+    return this.deps.cosmosIndex.ethBlockSyncRecorded(ethBlockHeight);
+  }
+
+  private async syncedEvents<T = Record<string, unknown>>(
+    ethBlockHeight: number,
+    eventsQuery: Array<{ type: string; key: string; value: string }>,
+  ): Promise<Array<ComosTx<T>>> {
+    const found = this.cosmosQueryEvents<T>(ethBlockHeight, eventsQuery);
+    const repair = this.deps.repairEthBlockSync;
+    if (
+      found.length > 0 ||
+      !repair ||
+      this.deps.cosmosIndex.ethBlockSyncRecorded(ethBlockHeight) ||
+      !this.blockIsSynced(ethBlockHeight)
+    ) {
+      return found;
+    }
+    const repaired = repair(ethBlockHeight).then(
+      () => true,
+      (err) => {
+        console.error('staking sync repair failed', ethBlockHeight, err);
+        return false;
+      },
+    );
+    let timer: NodeJS.Timeout | undefined;
+    const timedOut = new Promise<false>((resolve) => {
+      timer = setTimeout(() => resolve(false), REPAIR_WAIT_MS);
+    });
+    const done = await Promise.race([repaired, timedOut]).finally(() =>
+      clearTimeout(timer),
+    );
+    return done
+      ? this.cosmosQueryEvents<T>(ethBlockHeight, eventsQuery)
+      : found;
   }
 
   private cosmosQueryEvents<T = Record<string, unknown>>(
@@ -160,7 +203,7 @@ export class StakingStore {
       },
     };
 
-    const withdrawEvents = this.cosmosQueryEvents<WithdrawEvent>(
+    const withdrawEvents = await this.syncedEvents<WithdrawEvent>(
       event.block_height,
       [
         {
@@ -172,7 +215,7 @@ export class StakingStore {
     );
 
     if (withdrawEvents.length === 0) {
-      if (this.blockIsSynced(event.block_height)) {
+      if (this.isSkipped(event.block_height)) {
         data.status = BaseStatusType.Skipped;
         data.statusInfo[BaseStatusType.Skipped] = {
           message:
@@ -319,12 +362,12 @@ export class StakingStore {
       },
     };
 
-    const [delegateTX] = this.cosmosQueryEvents(event.block_height, [
+    const [delegateTX] = await this.syncedEvents(event.block_height, [
       { key: 'delegator', type: 'delegate', value: address.toLowerCase() },
     ]);
 
     if (!delegateTX) {
-      if (this.blockIsSynced(event.block_height)) {
+      if (this.isSkipped(event.block_height)) {
         data.status = BaseStatusType.Skipped;
         data.statusInfo[BaseStatusType.Skipped] = {
           message:
@@ -387,7 +430,7 @@ export class StakingStore {
 
     const sequencerAddress = convertEthAddressToSequencerUserAddress(address);
 
-    const [redelegateTX] = this.cosmosQueryEvents(event.block_height, [
+    const [redelegateTX] = await this.syncedEvents(event.block_height, [
       {
         type: 'redelegate',
         key: 'destination_validator',
@@ -401,7 +444,7 @@ export class StakingStore {
     ]);
 
     if (!redelegateTX) {
-      if (this.blockIsSynced(event.block_height)) {
+      if (this.isSkipped(event.block_height)) {
         data.status = BaseStatusType.Skipped;
         data.statusInfo[BaseStatusType.Skipped] = {
           message:
@@ -457,7 +500,7 @@ export class StakingStore {
 
     const sequencerAddress = convertEthAddressToSequencerUserAddress(address);
 
-    const [claimRewardsTX] = this.cosmosQueryEvents(event.block_height, [
+    const [claimRewardsTX] = await this.syncedEvents(event.block_height, [
       {
         type: 'withdraw_rewards',
         key: 'delegator',
@@ -466,7 +509,7 @@ export class StakingStore {
     ]);
 
     if (!claimRewardsTX) {
-      if (this.blockIsSynced(event.block_height)) {
+      if (this.isSkipped(event.block_height)) {
         data.status = BaseStatusType.Skipped;
         data.statusInfo[BaseStatusType.Skipped] = {
           message:
@@ -525,13 +568,13 @@ export class StakingStore {
       },
     };
 
-    const [undelegateTX] = this.cosmosQueryEvents<UndelegateEvent>(
+    const [undelegateTX] = await this.syncedEvents<UndelegateEvent>(
       event.block_height,
       [{ type: 'unbond', key: 'delegator', value: address.toLowerCase() }],
     );
 
     if (!undelegateTX) {
-      if (this.blockIsSynced(event.block_height)) {
+      if (this.isSkipped(event.block_height)) {
         data.status = BaseStatusType.Skipped;
         data.statusInfo[BaseStatusType.Skipped] = {
           message:
