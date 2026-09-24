@@ -183,6 +183,20 @@ export class CosmosIndex {
     return rows;
   }
 
+  ethBlockSyncRecorded(ethBlockHeight: number): boolean {
+    const row = this.db
+      .prepare(
+        `SELECT EXISTS(
+          SELECT 1 FROM cosmos_events
+          WHERE type = 'fuelsequencer.bridge.EventEthereumBlockSynced'
+            AND key = 'block_number'
+            AND value = @height
+        ) AS found`,
+      )
+      .get({ height: `"${ethBlockHeight}"` }) as { found: number };
+    return row.found === 1;
+  }
+
   // sqlite's two-arg TRIM(X,Y) strips the chars in Y from both ends, same as
   // Postgres's TRIM(BOTH '"' FROM X).
   blockSyncedAfter(ethBlockHeight: number): boolean {

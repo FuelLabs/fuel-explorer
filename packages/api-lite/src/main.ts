@@ -270,6 +270,8 @@ async function main() {
       cosmosIndex,
       finalization,
       proofCache,
+      repairEthBlockSync: (ethBlockHeight) =>
+        cosmosPoller.repairEthBlockSync(ethBlockHeight),
     });
     staking = { enabled: true, store: stakingStore, finalization };
 

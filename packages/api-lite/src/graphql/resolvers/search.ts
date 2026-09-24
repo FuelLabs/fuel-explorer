@@ -86,6 +86,16 @@ export const searchResolvers = {
       } catch (err) {
         console.error('search predicate failed', err);
       }
+      // The index is a rolling window; older accounts exist only in fuel-core.
+      try {
+        const { ids } = await ctx.client.txIdsByOwner(hash, 1);
+        if (ids.length > 0) {
+          ctx.hot.hit('account', hash);
+          return { account: { address: hash } };
+        }
+      } catch (err) {
+        console.error('search account history failed', err);
+      }
       return null;
     },
   },
