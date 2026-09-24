@@ -11,7 +11,7 @@ import {
   VStack,
   shortAddress,
 } from '@fuels/ui';
-import { IconArrowRight } from '@tabler/icons-react';
+import { IconArrowRight } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import type { BigNumberish } from 'ethers';
 import type { ChecksumAddress, Asset as FuelsAsset } from 'fuels';

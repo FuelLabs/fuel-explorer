@@ -9,7 +9,7 @@ import {
   VStack,
   useBreakpoints,
 } from '@fuels/ui';
-import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import { IconCheck, IconSearch, IconX } from '@fuels/ui';
 import type { KeyboardEvent } from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 

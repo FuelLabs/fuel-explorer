@@ -1,5 +1,5 @@
 import { Box, Button } from '@fuels/ui';
-import { IconArrowBack, IconHistory } from '@tabler/icons-react';
+import { IconArrowBack, IconHistory } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
 import { Routes } from 'app-commons';
 

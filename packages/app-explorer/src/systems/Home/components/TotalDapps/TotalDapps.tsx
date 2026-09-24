@@ -1,4 +1,4 @@
-import { RoundedContainer } from '@fuels/ui';
+import { AnimatedNumber, RoundedContainer } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
 
 import type React from 'react';
@@ -19,13 +19,13 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
   const activeBarStyle = {
     width: `${activePercentage}%`,
     height: '5px',
-    borderRadius: '4px',
+    borderRadius: 0,
     transition: 'width 0.4s ease-in-out',
   };
   const buildingBarStyle = {
     width: `${buildingPercentage}%`,
     height: '5px',
-    borderRadius: '4px',
+    borderRadius: 0,
     transition: 'width 0.4s ease-in-out',
   };
 
@@ -33,32 +33,24 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
     <RoundedContainer className="validators-chart h-full px-5">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
-          <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
-            Fuel Dapps
-          </h3>
+          <h3 className="fuel-label">Fuel Dapps</h3>
           <a
-            className="text-[13px] leading-[20px] text-muted block"
+            className="fuel-label block"
             href="https://app.fuel.network/ecosystem"
           >
             View All
           </a>
         </div>
-        <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
-          {total}
+        <h2 className="fuel-stat">
+          <AnimatedNumber value={total} />
         </h2>
       </div>
 
       <div className="py-4">
         <div className="progress-bar-background">
           <div className="w-full flex">
-            <div
-              style={activeBarStyle}
-              className="dark:bg-[rgb(73,211,112)] bg-[rgb(82,238,135)]"
-            />
-            <div
-              style={buildingBarStyle}
-              className="dark:bg-[rgb(87, 87, 87)] bg-[rgb(234,234,234)]"
-            />
+            <div style={activeBarStyle} className="bg-[var(--fuel-primary)]" />
+            <div style={buildingBarStyle} className="bg-[var(--fuel-muted)]" />
           </div>
         </div>
         <div className="flex items-center justify-between mt-1">

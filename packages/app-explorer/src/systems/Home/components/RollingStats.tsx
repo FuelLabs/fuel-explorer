@@ -1,4 +1,4 @@
-import { RoundedContainer } from '@fuels/ui';
+import { AnimatedNumber, RoundedContainer } from '@fuels/ui';
 import { formatBytes } from './format';
 
 interface RollingStatsProps {
@@ -13,38 +13,36 @@ export const RollingStats = ({
   avgBlockSize,
 }: RollingStatsProps) => {
   return (
-    <RoundedContainer className="py-4 px-5 flex flex-col bg-light-gradient dark:bg-dark-gradient">
+    <RoundedContainer className="fuel-dots py-4 px-5 flex flex-col">
       <div className="flex items-center">
-        <span className="text-[15px] leading-[24px] text-heading font-semibold">
-          Live Stats
-        </span>
-        <span className="text-[13px] leading-[20px] text-muted ml-1.5">
-          (60s)
-        </span>
+        <span className="fuel-label">Live Stats</span>
+        <span className="fuel-label ml-1.5">(60s)</span>
       </div>
 
       <div className="flex justify-between mt-3">
         <div>
-          <span className="text-[17px] leading-[24px] text-heading font-bold block">
-            {tps.toFixed(2)}
-          </span>
-          <span className="text-[11px] leading-[16px] text-muted">TPS</span>
+          <AnimatedNumber
+            value={tps}
+            format={(v) => v.toFixed(2)}
+            className="fuel-stat-sm block"
+          />
+          <span className="fuel-label">TPS</span>
         </div>
         <div>
-          <span className="text-[17px] leading-[24px] text-heading font-bold block">
-            {avgTxPerBlock.toFixed(1)}
-          </span>
-          <span className="text-[11px] leading-[16px] text-muted">
-            TX / Block
-          </span>
+          <AnimatedNumber
+            value={avgTxPerBlock}
+            format={(v) => v.toFixed(1)}
+            className="fuel-stat-sm block"
+          />
+          <span className="fuel-label">TX / Block</span>
         </div>
         <div>
-          <span className="text-[17px] leading-[24px] text-heading font-bold block">
-            {formatBytes(avgBlockSize)}
-          </span>
-          <span className="text-[11px] leading-[16px] text-muted">
-            Block Size
-          </span>
+          <AnimatedNumber
+            value={avgBlockSize}
+            format={formatBytes}
+            className="fuel-stat-sm block"
+          />
+          <span className="fuel-label">Block Size</span>
         </div>
       </div>
     </RoundedContainer>

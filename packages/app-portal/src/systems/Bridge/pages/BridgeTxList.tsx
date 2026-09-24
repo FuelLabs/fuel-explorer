@@ -7,7 +7,7 @@ import {
 } from '~portal/systems/Chains';
 
 import { Alert, Button, CardList } from '@fuels/ui';
-import { IconChevronDown, IconInfoCircle } from '@tabler/icons-react';
+import { IconChevronDown, IconInfoCircle } from '@fuels/ui';
 import { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import {

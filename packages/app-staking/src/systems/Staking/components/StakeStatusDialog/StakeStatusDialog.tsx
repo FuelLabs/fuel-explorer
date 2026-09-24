@@ -12,7 +12,7 @@ import {
   Tooltip,
   VStack,
 } from '@fuels/ui';
-import { IconCircleMinus } from '@tabler/icons-react';
+import { IconCircleMinus } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import clsx from 'clsx';
 import dayjs from 'dayjs';

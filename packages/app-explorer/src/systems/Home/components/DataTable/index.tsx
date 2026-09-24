@@ -1,4 +1,4 @@
-import { Link, RoundedContainer } from '@fuels/ui';
+import { Link, RoundedContainer, cx, useNewKeys } from '@fuels/ui';
 
 import type { GQLBlocksDashboard } from '@fuel-explorer/graphql';
 
@@ -8,20 +8,22 @@ interface DataTableProps {
 }
 
 export const DataTable = (props: DataTableProps) => {
+  const newBlocks = useNewKeys(props.blocks.map((b) => String(b.blockNo)));
   return (
-    <RoundedContainer className="flex flex-col h-full p-0 overflow-hidden">
+    <RoundedContainer className="flex flex-col h-full p-0">
       <div className="flex items-center justify-between px-5 py-3">
-        <span className="text-[15px] leading-[24px] text-heading font-semibold">
-          Recent Blocks
-        </span>
+        <span className="fuel-label">Recent Blocks</span>
       </div>
-      <div className="flex-1 flex flex-col divide-y divide-gray-4 dark:divide-gray-3">
-        {props.blocks.map((block, index) => (
+      <div className="flex-1 flex flex-col divide-y divide-border">
+        {props.blocks.map((block) => (
           <Link
-            key={index}
+            key={block.blockNo}
             isExternal={false}
             href={`/block/${block.blockNo}/simple`}
-            className="flex-1"
+            className={cx(
+              'flex-1 hover:no-underline',
+              newBlocks.has(String(block.blockNo)) && 'fuel-row-new',
+            )}
           >
             <BlockTableTile block={block} />
           </Link>

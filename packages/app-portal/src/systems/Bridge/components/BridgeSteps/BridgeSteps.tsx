@@ -1,5 +1,5 @@
 import { Box, Flex, HStack, Spinner, Text, VStack } from '@fuels/ui';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck } from '@fuels/ui';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 

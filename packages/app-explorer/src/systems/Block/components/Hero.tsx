@@ -1,5 +1,5 @@
 import { HStack, Heading, Theme, VStack } from '@fuels/ui';
-import { IconChevronRight } from '@tabler/icons-react';
+import { IconChevronRight } from '@fuels/ui';
 
 export function Hero() {
   return (

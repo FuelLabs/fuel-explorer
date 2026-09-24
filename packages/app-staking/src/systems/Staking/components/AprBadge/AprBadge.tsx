@@ -1,6 +1,6 @@
 import { Tooltip } from '@fuels/ui';
 import { Badge } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { FUEL_INDEXER_API } from 'app-commons';
 import { urlJoin } from 'fuels';

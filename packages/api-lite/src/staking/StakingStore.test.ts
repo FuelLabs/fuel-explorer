@@ -122,7 +122,7 @@ describe('StakingStore delegate flow', () => {
     });
   });
 
-  it('reports Skipped when the L1 event never synced to the sequencer', async () => {
+  it('reports Skipped when the sequencer synced the L1 block without applying the delegate', async () => {
     l1Index.insertLogs([
       {
         contractHash: '0xBa0e6bF94580D49B5Aaaa54279198D424B23eCC3',
@@ -142,9 +142,6 @@ describe('StakingStore delegate flow', () => {
         args: { delegator: ADDRESS, validator: VALIDATOR, amount: '1000000' },
       },
     ]);
-    // The sequencer has synced well past block 100 (blockIsSynced needs a
-    // strictly greater height), but no cosmos "delegate" event for this
-    // delegator ever showed up.
     cosmosIndex.insertResponse(
       {
         blockHeight: 50,
@@ -156,7 +153,7 @@ describe('StakingStore delegate flow', () => {
         {
           type: 'fuelsequencer.bridge.EventEthereumBlockSynced',
           key: 'block_number',
-          value: '"150"',
+          value: '"100"',
           index: 0,
         },
       ],
@@ -231,6 +228,157 @@ describe('StakingStore delegate flow', () => {
     expect(page2.nodes.map((n) => (n as { amount: string }).amount)).toEqual([
       '100',
     ]);
+  });
+});
+
+describe('StakingStore undelegate with an index gap', () => {
+  // Mainnet: the unbond for this delegator ran in sequencer block 10271706,
+  // which also synced L1 block 26039271, but the index never stored it.
+  const DELEGATOR = '0xd4369a8cCeAe684ED786DA0e949a2c21c0C49f32';
+  const UNBOND_VALIDATOR = '0x80938C37Ab1DA6bB83d3480D6288Cece9BCaa20A';
+  const L1_BLOCK = 26039271;
+
+  let l1Index: L1Index;
+  let cosmosIndex: CosmosIndex;
+
+  beforeEach(() => {
+    ({ l1Index, cosmosIndex } = makeStores());
+    l1Index.insertLogs([
+      {
+        contractHash: '0xBa0e6bF94580D49B5Aaaa54279198D424B23eCC3',
+        blockHeight: L1_BLOCK,
+        txHash: '0xunbond',
+        event: 'Unbond',
+        signature: 'Unbond(address,address,uint256)',
+        rawLog: '{}',
+        decodedArgs: JSON.stringify({
+          delegator: DELEGATOR,
+          validator: UNBOND_VALIDATOR,
+          amount: '650000000000000',
+        }),
+        decodedData: '{}',
+        timestamp: '2026-09-23T09:25:11.000Z',
+        logIndex: 0,
+        args: {
+          delegator: DELEGATOR,
+          validator: UNBOND_VALIDATOR,
+          amount: '650000000000000',
+        },
+      },
+    ]);
+    // A later L1 block synced, so the gap sits behind the cursor.
+    cosmosIndex.insertResponse(
+      {
+        blockHeight: 10271800,
+        txHash: 'LATERSYNC',
+        data: '{}',
+        timestamp: '2026-09-23T09:50:00Z',
+      },
+      [
+        {
+          type: 'fuelsequencer.bridge.EventEthereumBlockSynced',
+          key: 'block_number',
+          value: `"${L1_BLOCK + 10}"`,
+          index: 0,
+        },
+      ],
+    );
+  });
+  afterEach(() => {
+    l1Index.close();
+    cosmosIndex.close();
+  });
+
+  function unbondEventId() {
+    return l1Index.queryStakingEvents(DELEGATOR, {
+      cursor: null,
+      direction: 'before',
+      limit: 10,
+    })[0]._id;
+  }
+
+  it('does not report Skipped when the index lacks the sync for that L1 block', async () => {
+    const store = makeStore(l1Index, cosmosIndex);
+    const event = await store.getEvent(unbondEventId());
+    expect(event.status).toBe(BaseStatusType.WaitingSync);
+  });
+
+  it('answers without waiting on a repair that hangs', async () => {
+    const store = new StakingStore({
+      l1Index,
+      cosmosIndex,
+      finalization: { timeToFinalize: async () => 2880 },
+      proofCache: { get: async () => null },
+      repairEthBlockSync: () => new Promise<void>(() => {}),
+    });
+    const started = Date.now();
+    const event = await store.getEvent(unbondEventId());
+    expect(event.status).toBe(BaseStatusType.WaitingSync);
+    expect(Date.now() - started).toBeLessThan(3000);
+  });
+
+  it('repairs the missing sequencer block and reports the unbonding', async () => {
+    const repairEthBlockSync = jest.fn(async (height: number) => {
+      expect(height).toBe(L1_BLOCK);
+      cosmosIndex.insertResponse(
+        {
+          blockHeight: 10271706,
+          txHash: '052035F9A4DC',
+          data: '{}',
+          timestamp: '2026-09-23T09:41:43Z',
+        },
+        [
+          {
+            type: 'fuelsequencer.bridge.EventEthereumBlockSynced',
+            key: 'block_number',
+            value: `"${L1_BLOCK}"`,
+            index: 0,
+          },
+        ],
+      );
+      cosmosIndex.insertResponse(
+        {
+          blockHeight: 10271706,
+          txHash: '69F7F20FD40C',
+          data: '{}',
+          timestamp: '2026-09-23T09:41:43Z',
+        },
+        [
+          {
+            type: 'unbond',
+            key: 'validator',
+            value: UNBOND_VALIDATOR,
+            index: 0,
+          },
+          { type: 'unbond', key: 'delegator', value: DELEGATOR, index: 0 },
+          {
+            type: 'unbond',
+            key: 'amount',
+            value: '650000000000000fuel',
+            index: 0,
+          },
+          {
+            type: 'unbond',
+            key: 'completion_time',
+            value: '2026-10-07T09:41:43Z',
+            index: 0,
+          },
+        ],
+      );
+    });
+    const store = new StakingStore({
+      l1Index,
+      cosmosIndex,
+      finalization: { timeToFinalize: async () => 2880 },
+      proofCache: { get: async () => null },
+      repairEthBlockSync,
+    });
+
+    const event = await store.getEvent(unbondEventId());
+
+    expect(repairEthBlockSync).toHaveBeenCalledTimes(1);
+    expect(event.status).toBe('WaitingUnbonding');
+    expect(event.timestampToFinish).toBe('2026-10-07T09:41:43.000Z');
   });
 });
 

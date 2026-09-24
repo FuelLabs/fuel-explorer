@@ -1,4 +1,4 @@
-import { Box, Flex, Nav, useBreakpoints } from '@fuels/ui';
+import { Box, Flex, HStack, Nav, useBreakpoints } from '@fuels/ui';
 import { isRoute } from 'app-commons';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -46,6 +46,14 @@ export function TopNav() {
     }
   }, [isLaptop, isDesktopSearchOpen, isMobileSearchOpen]);
 
+  const themeToggle = (
+    <Nav.ThemeToggle
+      whenOpened="no-effect"
+      theme={resolvedTheme}
+      onToggle={setTheme}
+    />
+  );
+
   const logo = (
     <Link to="/" className="flex items-center">
       <Nav.Logo />
@@ -78,28 +86,31 @@ export function TopNav() {
 
   return (
     <Nav>
-      <Nav.Desktop className={'px-10 justify-between items-center'}>
-        <Nav.Menu className={'items-center'}>
+      <Nav.Desktop className={'md:px-6 lg:px-10 justify-between items-center'}>
+        <Nav.Menu className={'items-center md:max-lg:gap-3'}>
           {logo}
           {tooling}
         </Nav.Menu>
         <Nav.Menu>{!isEcosystemBridge && <SearchWidget />}</Nav.Menu>
         <Nav.Menu className={'items-center laptop:gap-2'}>
           <NetworkSelector />
-          <Box className="border-r mr-[-12px] h-[40px] border-gray-3" />
-          <ConnectWallet theme={resolvedTheme} setTheme={setTheme} />
+          {themeToggle}
+          <ConnectWallet />
         </Nav.Menu>
       </Nav.Desktop>
       <Nav.Mobile>
         <Nav.MobileContent>
           {logo}
           {!isEcosystemBridge && <SearchWidget />}
-          <NetworkSelector />
+          <HStack gap="2" align="center">
+            <NetworkSelector />
+            {themeToggle}
+          </HStack>
         </Nav.MobileContent>
         <Nav.Menu>
           <Flex className="w-full">
             <Box className="flex-1">{tooling}</Box>
-            <ConnectWallet theme={resolvedTheme} setTheme={setTheme} />
+            <ConnectWallet />
           </Flex>
         </Nav.Menu>
       </Nav.Mobile>

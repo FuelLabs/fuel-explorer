@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import type { BN, FormatConfig } from '@fuel-ts/math';
 import { DECIMAL_FUEL, DEFAULT_MIN_PRECISION } from '@fuel-ts/math/configs';
 
-import { IconAlertOctagon, IconChevronDown } from '@tabler/icons-react';
+import { IconAlertOctagon, IconChevronDown } from '../Icons';
 
 import { formatAmount } from '../../utils/format';
 import { Button, type ButtonProps } from '../Button';

@@ -9,7 +9,7 @@ import {
   IconSwitch3,
   IconTransfer,
   IconWallet,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 

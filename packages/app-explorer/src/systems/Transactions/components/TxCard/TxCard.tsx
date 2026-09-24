@@ -11,7 +11,7 @@ import {
   cx,
   shortAddress,
 } from '@fuels/ui';
-import { IconGasStation } from '@tabler/icons-react';
+import { IconGasStation } from '@fuels/ui';
 import { Routes as CommonRoutes } from 'app-commons';
 import { Link } from 'react-router-dom';
 
@@ -41,6 +41,7 @@ function _TxCard({
   return (
     <Link
       to={CommonRoutes.txSimple(tx.id)}
+      className="fuel-card-link block"
       onClickCapture={(e) => {
         // Avoid navigation to invalid address
         if (!isValid) e.preventDefault();

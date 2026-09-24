@@ -16,7 +16,7 @@ import { txIconTypeMap, typeNameMap } from './constants';
 import { styles } from './styles';
 import type { TxOutputProps } from './types';
 
-import { IconInputSearch } from '@tabler/icons-react';
+import { IconInputSearch } from '@fuels/ui';
 import { Routes } from '~/routes';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 

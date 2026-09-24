@@ -17,7 +17,6 @@
     "@fuel-explorer/graphql": "workspace:*",
     "@fuels/ui": "workspace:*",
     "@radix-ui/react-tooltip": "1.1.4",
-    "@tabler/icons-react": "2.46.0",
     "@tanstack/query-sync-storage-persister": "5.56.2",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",

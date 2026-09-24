@@ -1,5 +1,5 @@
 import { Box, Card, Flex, HStack, Tooltip, VStack } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle } from '@fuels/ui';
 import type { BN } from 'fuels';
 import type React from 'react';
 import { tv } from 'tailwind-variants';

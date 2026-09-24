@@ -302,9 +302,6 @@ importers:
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
-      '@tabler/icons-react':
-        specifier: 2.46.0
-        version: 2.46.0(react@18.2.0)
       '@tanstack/react-query':
         specifier: 5.56.2
         version: 5.56.2(react@18.2.0)
@@ -368,9 +365,6 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.1.4
         version: 1.1.4(@types/react-dom@18.2.22)(@types/react@18.2.54)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@tabler/icons-react':
-        specifier: 2.46.0
-        version: 2.46.0(react@18.2.0)
       '@tanstack/query-sync-storage-persister':
         specifier: 5.56.2
         version: 5.56.2
@@ -568,9 +562,6 @@ importers:
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
-      '@tabler/icons-react':
-        specifier: 2.46.0
-        version: 2.46.0(react@18.2.0)
       '@tanstack/query-sync-storage-persister':
         specifier: 5.56.2
         version: 5.56.2
@@ -704,9 +695,6 @@ importers:
       '@fuels/ui':
         specifier: workspace:*
         version: link:../ui
-      '@tabler/icons-react':
-        specifier: 2.46.0
-        version: 2.46.0(react@18.2.0)
       '@tanstack/query-sync-storage-persister':
         specifier: 5.56.2
         version: 5.56.2
@@ -915,9 +903,6 @@ importers:
       '@react-aria/focus':
         specifier: 3.16.2
         version: 3.16.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@tabler/icons-react':
-        specifier: 2.46.0
-        version: 2.46.0(react@18.2.0)
       '@tailwindcss/typography':
         specifier: 0.5.10
         version: 0.5.10(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.13.3(@swc/helpers@0.5.17))(@types/node@20.19.10)(typescript@5.4.5)))
@@ -936,6 +921,9 @@ importers:
       geist:
         specifier: 1.2.2
         version: 1.2.2
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@18.2.0)
       modern-normalize:
         specifier: 2.0.0
         version: 2.0.0
@@ -5750,14 +5738,6 @@ packages:
     peerDependencies:
       '@playwright/test': '*'
 
-  '@tabler/icons-react@2.46.0':
-    resolution: {integrity: sha512-X8MRxuslIOFqMjAo+GvUZDpjlOwNYNJTuOsHXf/NBvVI6ygqUf0FUNsDLLA5fQ6k6KtRwxMlgGB+eR8ZG1UP0g==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0
-
-  '@tabler/icons@2.46.0':
-    resolution: {integrity: sha512-Q5G8Pj5IO+Uhc6pszpu5/hGYY018JwEzzvmuqr+gKJtfIvAHA3umpwUilMRLEy89p+WCP+YsDhicMhfBCCv1qA==}
-
   '@tailwindcss/node@4.1.11':
     resolution: {integrity: sha512-yzhzuGRmv5QyU9qLNg4GTlYI6STedBWRE7NjxP45CsFYYq9taI0zJXZBMqIC/c8fViNLhmrbpSFS57EoxUmD6Q==}
 
@@ -9461,6 +9441,11 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
+
+  lucide-react@1.47.0:
+    resolution: {integrity: sha512-o8C23aXpNQypRY73W7fW02EyvWJinEMXgKeGjFoKym0zj3Q73hD97A1IQps1g8C14HTGsOpZL0Am+xjfgFZAbg==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -19436,14 +19421,6 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@tabler/icons-react@2.46.0(react@18.2.0)':
-    dependencies:
-      '@tabler/icons': 2.46.0
-      prop-types: 15.8.1
-      react: 18.2.0
-
-  '@tabler/icons@2.46.0': {}
-
   '@tailwindcss/node@4.1.11':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -25093,6 +25070,10 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  lucide-react@1.47.0(react@18.2.0):
+    dependencies:
+      react: 18.2.0
 
   lz-string@1.5.0: {}
 

@@ -17,15 +17,15 @@
  */
 @media all {
   .rt-TextFieldRoot:where(.rt-r-size-1) {
-    --text-field-border-radius: 8px;
+    --text-field-border-radius: 0px;
     --text-field-height: 28px;
   }
   .rt-TextFieldRoot:where(.rt-r-size-2) {
-    --text-field-border-radius: 8px;
+    --text-field-border-radius: 0px;
     --text-field-height: 32px;
   }
   .rt-TextFieldRoot:where(.rt-r-size-3) {
-    --text-field-border-radius: 8px;
+    --text-field-border-radius: 0px;
     --text-field-height: 40px;
   }
 }

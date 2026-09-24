@@ -1,8 +1,8 @@
 import type { TextProps } from '@radix-ui/themes';
-import { IconChevronDown } from '@tabler/icons-react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
+import { IconChevronDown } from '../Icons';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';

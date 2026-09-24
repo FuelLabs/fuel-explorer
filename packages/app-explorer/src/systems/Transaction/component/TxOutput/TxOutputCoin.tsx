@@ -14,7 +14,7 @@ import {
   createComponent,
   cx,
 } from '@fuels/ui';
-import { IconArrowUp, IconX } from '@tabler/icons-react';
+import { IconArrowUp, IconX } from '@fuels/ui';
 import { bn } from 'fuels';
 
 import { Routes } from '~/routes';
