@@ -21,7 +21,7 @@ export const DataTable = (props: DataTableProps) => {
             isExternal={false}
             href={`/block/${block.blockNo}/simple`}
             className={cx(
-              'flex-1 hover:no-underline',
+              'flex-1 border-0 border-solid hover:no-underline',
               newBlocks.has(String(block.blockNo)) && 'fuel-row-new',
             )}
           >

@@ -5,6 +5,8 @@ export const heroStyles = tv({
     root: 'overflow-clip relative w-full fuel-grid-divider bg-[var(--fuel-background)]',
     container:
       'fuel-page z-20 relative px-6 pt-6 pb-10 tablet:px-10 tablet:pt-10',
+    // 1px frame border + the cells' px-5, so the text lines up with the cell text.
+    titleBlock: 'pl-[21px]',
     input: 'w-full tablet:w-[400px]',
     title: [
       'uppercase text-[28px] leading-[32px] tracking-[-1.12px] text-heading',

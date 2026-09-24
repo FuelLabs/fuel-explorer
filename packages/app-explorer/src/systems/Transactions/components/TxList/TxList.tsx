@@ -76,7 +76,7 @@ function _TxList({
         <Pagination
           prevCursor={pageInfo?.startCursor}
           nextCursor={pageInfo?.endCursor}
-          className="mt-6 flex justify-end"
+          className="mt-6 flex justify-end pr-[17px]"
           onChange={(cursor: string, dir: 'after' | 'before') =>
             setQueryParams(cursor, dir)
           }
@@ -87,7 +87,7 @@ function _TxList({
         <Pagination
           prevCursor={'0x0'}
           nextCursor={'0x0'}
-          className="mt-6 flex justify-end"
+          className="mt-6 flex justify-end pr-[17px]"
           pageInfo={{
             hasNextPage: true,
             hasPreviousPage: true,

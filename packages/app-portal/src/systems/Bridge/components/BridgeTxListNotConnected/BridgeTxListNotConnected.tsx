@@ -41,7 +41,7 @@ export const BridgeTxListNotConnected = ({
 
 const styles = tv({
   slots: {
-    connectButton: 'w-[180px]',
+    connectButton: 'whitespace-nowrap',
     cardBody: 'p-3',
     title: 'text-md text-heading',
     subtitle: 'text-xs text-muted',
