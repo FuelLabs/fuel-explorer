@@ -170,6 +170,33 @@
   background: var(--fuel-square);
 }
 
+.fuel-dither-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Light themes show the image's shadows as dark ink, dark themes its highlights as light ink. */
+.fuel-dither {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  image-rendering: pixelated;
+  opacity: 0.12;
+}
+
+.fuel-dither[data-ink="highlights"],
+:root:is(.dark, .dark-theme) .fuel-dither[data-ink="shadows"] {
+  display: none;
+}
+
+:root:is(.dark, .dark-theme) .fuel-dither[data-ink="highlights"] {
+  display: block;
+  opacity: 0.16;
+}
+
 .fuel-page {
   width: 100%;
   max-width: 1440px;
@@ -271,16 +298,6 @@
   background: linear-gradient(to bottom, var(--fuel-grid-line), transparent);
 }
 
-/* The lander's dotted panel: 1.5px dots on a 4.5px grid at 50%. */
-.fuel-dots {
-  background-image: radial-gradient(
-    circle,
-    oklch(0.683 0 0 / 50%) 0.75px,
-    transparent 0.75px
-  );
-  background-size: 4.5px 4.5px;
-}
-
 .fuel-footer {
   background: var(--fuel-footer-bg);
 }
@@ -305,8 +322,6 @@
   background: var(--fuel-indicator-fill);
   transform: translate(-50%, -50%);
   pointer-events: none;
-  transition-property: background-color, border-color;
-  transition-duration: 300ms;
 }
 
 .fuel-edge::before {
@@ -317,12 +332,6 @@
 .fuel-edge::after {
   top: 100%;
   left: 100%;
-}
-
-.fuel-edge:hover::before,
-.fuel-edge:hover::after {
-  border-color: var(--fuel-square-border);
-  background: var(--fuel-square);
 }
 
 @keyframes fuel-row-arrive {
@@ -360,8 +369,6 @@
     animation: none;
   }
 
-  .fuel-edge::before,
-  .fuel-edge::after,
   .fuel-hover-fill,
   .rt-BaseButton {
     transition: none;
