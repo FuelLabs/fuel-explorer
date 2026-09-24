@@ -36,9 +36,9 @@
 /* Scoped to <html> so a nested <Theme appearance> keeps the page colors. */
 :root,
 :root:is(.light, .light-theme) {
-  --fuel-background: oklch(0.976 0 0);
-  --fuel-card: oklch(1 0 0);
-  --fuel-muted: oklch(0.97 0 0);
+  --fuel-background: oklch(1 0 0);
+  --fuel-card: oklch(0.976 0 0);
+  --fuel-muted: oklch(0.945 0 0);
   --fuel-border: oklch(0.922 0 0);
   --fuel-ring: oklch(0.708 0 0);
   --fuel-element-high-em: var(--fuel-stone-950);
@@ -53,10 +53,10 @@
   --fuel-secondary: var(--fuel-stone-950);
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.922 0 0);
-  --fuel-grid-line: oklch(0.683 0 0 / 50%);
-  --fuel-line: var(--fuel-border-light);
+  --fuel-grid-line: oklch(0.9 0 0);
+  --fuel-line: oklch(0.9 0 0);
   --fuel-footer-bg: var(--fuel-background);
-  --fuel-indicator-border: var(--fuel-border-light);
+  --fuel-indicator-border: oklch(0.8 0 0);
   --fuel-indicator-fill: var(--fuel-background);
   --fuel-square: var(--fuel-brand-600);
   --fuel-square-border: var(--fuel-brand-500);
@@ -218,6 +218,23 @@
 
 .fuel-grid-frame .fuel-RoundedContainer {
   border: 0;
+}
+
+.fuel-grid-frame .fuel-edge::before,
+.fuel-grid-frame .fuel-edge::after {
+  display: none;
+}
+
+.fuel-grid-joint {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .fuel-grid-frame .rt-BaseCard::after {
