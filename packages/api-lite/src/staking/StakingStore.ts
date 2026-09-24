@@ -48,7 +48,6 @@ export type StakingStoreDeps = {
     CosmosIndex,
     'blockSyncedAfter' | 'ethBlockSyncRecorded' | 'queryEventsSyncedToEthBlock'
   >;
-  // Fetches the sequencer block that synced an L1 block into cosmosIndex.
   repairEthBlockSync?: (ethBlockHeight: number) => Promise<void>;
   finalization: Pick<FinalizationPeriods, 'timeToFinalize'>;
   proofCache: Pick<WithdrawProofCache, 'get'>;

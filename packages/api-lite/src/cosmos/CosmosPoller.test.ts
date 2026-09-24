@@ -457,6 +457,26 @@ describe('CosmosPoller', () => {
     expect(calls.some((c) => c.includes('tx.height=778'))).toBe(true);
   });
 
+  it('runs at most two repairs at a time', async () => {
+    let active = 0;
+    let peak = 0;
+    const impl = jest.fn(async () => {
+      active++;
+      peak = Math.max(peak, active);
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      active--;
+      return { ok: true, json: async () => txsResponse([]) } as Response;
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await Promise.all([1, 2, 3, 4].map((h) => poller.repairEthBlockSync(h)));
+    expect(impl).toHaveBeenCalledTimes(4);
+    expect(peak).toBe(2);
+  });
+
   it('waits before retrying a repair that failed', async () => {
     const impl = jest.fn(async () => ({ ok: false, status: 429 }) as Response);
     const poller = new CosmosPoller({

@@ -123,8 +123,6 @@ export class CosmosPoller {
     }
   }
 
-  // Indexes the sequencer block that synced `ethBlockHeight`, for heights the
-  // cursor already passed without storing them.
   repairEthBlockSync(ethBlockHeight: number): Promise<void> {
     const inFlight = this.repairsInFlight.get(ethBlockHeight);
     if (inFlight) return inFlight;
@@ -277,8 +275,7 @@ async function fetchTxs(
       `cosmos txs fetch at height ${height} returned a malformed body: tx_responses is ${typeof body.tx_responses}, not an array`,
     );
   }
-  // The node can report a block before its tx search index has it; an empty
-  // answer for a block that holds txs must not advance the cursor.
+  // An empty tx search for a block that holds txs must not advance the cursor.
   if (body.tx_responses.length === 0) {
     const blockTxs = await fetchBlockTxCount(fetchImpl, restBase, height);
     if (blockTxs > 0) {
