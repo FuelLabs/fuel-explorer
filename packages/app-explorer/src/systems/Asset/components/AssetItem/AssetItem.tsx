@@ -13,7 +13,7 @@ import {
   Text,
   Tooltip,
 } from '@fuels/ui';
-import { IconAlertOctagon } from '@tabler/icons-react';
+import { IconAlertOctagon } from '@fuels/ui';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';

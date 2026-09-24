@@ -1,5 +1,5 @@
 import { IconButton, VStack } from '@fuels/ui';
-import { IconRefresh } from '@tabler/icons-react';
+import { IconRefresh } from '@fuels/ui';
 import { useModal } from 'connectkit';
 import { type Variants, motion } from 'framer-motion';
 import { useState } from 'react';

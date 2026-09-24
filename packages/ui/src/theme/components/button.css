@@ -1,51 +1,79 @@
 .rt-BaseButton {
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color
-    250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 250ms
-    cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 0;
+  box-shadow: none;
+  transition: background-color 300ms, color 300ms, opacity 300ms;
 }
 
 .rt-BaseButton:where(.rt-variant-solid) {
-  background-color: var(--brand-9);
-  color: #000000;
-  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 0.5px 1px 0px
-    rgba(0, 0, 0, 0.1);
+  background-color: var(--fuel-primary);
+  color: var(--fuel-primary-foreground);
+}
+
+.rt-Button:where(.rt-variant-solid) {
+  position: relative;
+  clip-path: var(--fuel-chamfer-polygon);
+}
+
+/* Corner mark: the design system's button-diagonal-line glyph, parallel to the chamfer cut. Secondary (gray) has none. */
+.rt-Button:where(.rt-variant-solid):where(
+    :not([data-accent-color="gray"])
+  )::after {
+  --fuel-button-diagonal-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 13 13' fill='none'%3E%3Cpath d='M11.1383 3.95947V2.45947L2.37036 11.4593H3.87036L11.1383 3.95947Z' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 13px;
+  height: 13px;
+  background-color: currentColor;
+  -webkit-mask-image: var(--fuel-button-diagonal-line);
+  mask-image: var(--fuel-button-diagonal-line);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  pointer-events: none;
+}
+
+/* clip-path hides an outside outline, so the focus ring sits inside. */
+.rt-Button:where(.rt-variant-solid):where(:focus-visible) {
+  outline: 2px solid var(--fuel-primary-foreground);
+  outline-offset: -4px;
 }
 
 [data-accent-color="gray"].rt-BaseButton:where(.rt-variant-solid) {
-  background-color: var(--gray-contrast);
-  color: #202020;
-  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 0.5px 1px 0px
-    rgba(0, 0, 0, 0.1);
+  background-color: var(--fuel-secondary);
+  color: var(--fuel-secondary-foreground);
 }
 
 [data-accent-color="gray"].rt-BaseButton:where(.rt-variant-outline) {
-  background-color: var(--color-surface);
-  color: var(--gray-12);
-  box-shadow: inset 0 0 0 1px var(--gray-5);
+  background-color: transparent;
+  color: var(--fuel-element-high-em);
+  box-shadow: inset 0 0 0 1px var(--fuel-border-light);
 }
 
 .rt-BaseButton:where([data-disabled]),
 [data-accent-color="gray"].rt-BaseButton:where([data-disabled]) {
   cursor: var(--cursor-disabled);
-  color: var(--gray-a8);
-  background-color: var(--gray-a3);
+  color: var(--fuel-element-disabled);
+  background-color: var(--fuel-muted);
 }
 
 @media (hover: hover) {
   .rt-BaseButton:where(.rt-variant-solid):where(:hover):where(
       :not([data-disabled])
     ) {
-    background-color: var(--brand-10);
+    background-color: var(--fuel-primary-hover);
   }
   [data-accent-color="gray"].rt-BaseButton:where(.rt-variant-solid):where(
       :hover
     ):where(:not([data-disabled])) {
-    background-color: #e8e8e8;
+    background-color: var(--fuel-secondary-hover);
   }
   [data-accent-color="gray"].rt-BaseButton:where(.rt-variant-outline):where(
       :hover
     ):where(:not([data-disabled])) {
-    background-color: var(--gray-2);
+    background-color: var(--fuel-muted);
   }
 }
 
@@ -59,19 +87,15 @@
 @media all {
   .rt-BaseButton:where(.rt-r-size-1) {
     --base-button-height: 28px;
-    border-radius: max(var(--radius-3), var(--radius-full));
   }
   .rt-BaseButton:where(.rt-r-size-2) {
     --base-button-height: 36px;
-    border-radius: max(var(--radius-4), var(--radius-full));
   }
   .rt-BaseButton:where(.rt-r-size-3) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
   .rt-BaseButton:where(.rt-r-size-4) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
 
   .rt-Button:where(.rt-r-size-1) {
@@ -116,19 +140,15 @@
 @media (min-width: 520px) {
   .rt-BaseButton:where(.xs\:rt-r-size-1) {
     --base-button-height: 28px;
-    border-radius: max(var(--radius-3), var(--radius-full));
   }
   .rt-BaseButton:where(.xs\:rt-r-size-2) {
     --base-button-height: 36px;
-    border-radius: max(var(--radius-4), var(--radius-full));
   }
   .rt-BaseButton:where(.xs\:rt-r-size-3) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
   .rt-BaseButton:where(.xs\:rt-r-size-4) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
 
   .rt-Button:where(.xs\:rt-r-size-1) {
@@ -173,19 +193,15 @@
 @media (min-width: 768px) {
   .rt-BaseButton:where(.sm\:rt-r-size-1) {
     --base-button-height: 28px;
-    border-radius: max(var(--radius-3), var(--radius-full));
   }
   .rt-BaseButton:where(.sm\:rt-r-size-2) {
     --base-button-height: 36px;
-    border-radius: max(var(--radius-4), var(--radius-full));
   }
   .rt-BaseButton:where(.sm\:rt-r-size-3) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
   .rt-BaseButton:where(.sm\:rt-r-size-4) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
 
   .rt-Button:where(.sm\:rt-r-size-1) {
@@ -230,19 +246,15 @@
 @media (min-width: 1024px) {
   .rt-BaseButton:where(.md\:rt-r-size-1) {
     --base-button-height: 28px;
-    border-radius: max(var(--radius-3), var(--radius-full));
   }
   .rt-BaseButton:where(.md\:rt-r-size-2) {
     --base-button-height: 36px;
-    border-radius: max(var(--radius-4), var(--radius-full));
   }
   .rt-BaseButton:where(.md\:rt-r-size-3) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
   .rt-BaseButton:where(.md\:rt-r-size-4) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
 
   .rt-Button:where(.md\:rt-r-size-1) {
@@ -287,19 +299,15 @@
 @media (min-width: 1280px) {
   .rt-BaseButton:where(.lg\:rt-r-size-1) {
     --base-button-height: 28px;
-    border-radius: max(var(--radius-3), var(--radius-full));
   }
   .rt-BaseButton:where(.lg\:rt-r-size-2) {
     --base-button-height: 36px;
-    border-radius: max(var(--radius-4), var(--radius-full));
   }
   .rt-BaseButton:where(.lg\:rt-r-size-3) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
   .rt-BaseButton:where(.lg\:rt-r-size-4) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
 
   .rt-Button:where(.lg\:rt-r-size-1) {
@@ -344,19 +352,15 @@
 @media (min-width: 1640px) {
   .rt-BaseButton:where(.xl\:rt-r-size-1) {
     --base-button-height: 28px;
-    border-radius: max(var(--radius-3), var(--radius-full));
   }
   .rt-BaseButton:where(.xl\:rt-r-size-2) {
     --base-button-height: 36px;
-    border-radius: max(var(--radius-4), var(--radius-full));
   }
   .rt-BaseButton:where(.xl\:rt-r-size-3) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
   .rt-BaseButton:where(.xl\:rt-r-size-4) {
     --base-button-height: 44px;
-    border-radius: max(var(--radius-5), var(--radius-full));
   }
 
   .rt-Button:where(.xl\:rt-r-size-1) {

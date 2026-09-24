@@ -1,5 +1,5 @@
 import { Button, Card, Flex, LoadingBox, Text, VStack } from '@fuels/ui';
-import { IconX } from '@tabler/icons-react';
+import { IconX } from '@fuels/ui';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 import { shortAddress } from '~portal/systems/Core';

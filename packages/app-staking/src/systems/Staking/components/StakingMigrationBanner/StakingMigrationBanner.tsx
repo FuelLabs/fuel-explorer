@@ -10,7 +10,7 @@ import {
   Text,
   VStack,
 } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import * as AppCommons from 'app-commons';
 import { DECIMAL_FUEL } from 'fuels';

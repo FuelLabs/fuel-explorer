@@ -1,10 +1,6 @@
 import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
 import { HStack, Progress, Text, VStack } from '@fuels/ui';
-import {
-  IconCircleCheck,
-  IconHourglassEmpty,
-  IconX,
-} from '@tabler/icons-react';
+import { IconCircleCheck, IconHourglassEmpty, IconX } from '@fuels/ui';
 import { useMemo } from 'react';
 import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import type { StakingEvent } from '../../types/l1/events';

@@ -1,5 +1,5 @@
-import { Alert, Button, Grid, cx } from '@fuels/ui';
-import { IconInfoCircle, IconLink } from '@tabler/icons-react';
+import { Alert, Button, GridFrame, Reveal, cx } from '@fuels/ui';
+import { IconInfoCircle, IconLink } from '@fuels/ui';
 import { Routes as PortalRoutes } from 'app-commons';
 import { memo } from 'react';
 import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
@@ -64,21 +64,19 @@ function _TxList({
           </Alert.Text>
         </Alert>
       )}
-      <Grid className={'flex flex-col gap-6'}>
-        {transactions.map((transaction) => (
-          <TxCard
-            key={transaction.id}
-            isLoading={isLoading}
-            transaction={transaction}
-          />
+      <GridFrame className="grid-cols-1">
+        {transactions.map((transaction, index) => (
+          <Reveal key={transaction.id} delay={Math.min(index, 9) * 0.03}>
+            <TxCard isLoading={isLoading} transaction={transaction} />
+          </Reveal>
         ))}
-      </Grid>
+      </GridFrame>
 
       {enablePagination && (
         <Pagination
           prevCursor={pageInfo?.startCursor}
           nextCursor={pageInfo?.endCursor}
-          className="mt-6 flex justify-end"
+          className="mt-6 flex justify-end pr-[17px]"
           onChange={(cursor: string, dir: 'after' | 'before') =>
             setQueryParams(cursor, dir)
           }
@@ -89,7 +87,7 @@ function _TxList({
         <Pagination
           prevCursor={'0x0'}
           nextCursor={'0x0'}
-          className="mt-6 flex justify-end"
+          className="mt-6 flex justify-end pr-[17px]"
           pageInfo={{
             hasNextPage: true,
             hasPreviousPage: true,

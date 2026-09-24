@@ -1,6 +1,6 @@
 @import "@fuels/ui/styles.css";
 
-/* Self-hosted Inter/GeistMono @font-face rules. Not part of @fuels/ui/styles.css
+/* Self-hosted Monument Grotesk/IBM Plex Mono @font-face rules. Not part of @fuels/ui/styles.css
    (packages/ui/src/theme/index.css doesn't import it), so without this import
    removing the Google Fonts <link> tags from index.html leaves no font-face
    declaration at all and every font silently falls back to a system font. */
@@ -12,18 +12,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --hero-bg: #000;
-}
-
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-weight: 600;
-  letter-spacing: -0.025em;
+  font-weight: 500;
+  letter-spacing: -0.04em;
 }
 
 kbd {
@@ -63,10 +59,9 @@ kbd {
 /* Base styles */
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
-  background-color: var(--color-panel-solid);
-  color: var(--gray-12);
+  font-family: var(--font-sans);
+  background-color: var(--fuel-background);
+  color: var(--fuel-element-high-em);
 }
 
 #root {
@@ -83,6 +78,6 @@ body {
 /* Override default focus styles for better accessibility */
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--brand-9);
+  outline: 2px solid var(--fuel-ring);
   outline-offset: 2px;
 }

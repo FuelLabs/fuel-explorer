@@ -1,6 +1,6 @@
-import { IconBrandDiscord, IconBrandX } from '@tabler/icons-react';
-import { IconBrandGithub } from '@tabler/icons-react';
-import { IconArrowUpRight } from '@tabler/icons-react';
+import { IconBrandDiscord, IconBrandX } from '@fuels/ui';
+import { IconBrandGithub } from '@fuels/ui';
+import { IconArrowUpRight } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 
 import {

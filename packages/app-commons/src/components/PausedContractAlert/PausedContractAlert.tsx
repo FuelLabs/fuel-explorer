@@ -1,5 +1,5 @@
 import { Alert, HStack, Text } from '@fuels/ui';
-import { IconInfoCircleFilled } from '@tabler/icons-react';
+import { IconInfoCircleFilled } from '@fuels/ui';
 
 interface PausedContractAlertProps {
   name: string;

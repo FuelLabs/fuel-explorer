@@ -1,5 +1,5 @@
 import { Text } from '@fuels/ui';
-import { IconArrowRight } from '@tabler/icons-react';
+import { IconArrowRight } from '@fuels/ui';
 
 export function CountReceipt({ num, op }: { num: number; op: string }) {
   const length = new Intl.NumberFormat('en-IN', {

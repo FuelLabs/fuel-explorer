@@ -14,7 +14,7 @@ import { AnimatedError } from '~staking/systems/Core/components/AnimatedError/An
 
 import { formatAmount } from '~staking/systems/Core/utils/bn';
 
-import { IconSquareLetterX } from '@tabler/icons-react';
+import { IconSquareLetterX } from '@fuels/ui';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { ButtonConfirm } from './ButtonConfirm';

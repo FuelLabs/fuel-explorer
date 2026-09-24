@@ -1,5 +1,15 @@
-import { Box, Container, Heading, Theme, VStack } from '@fuels/ui';
-import { LoadingBox, LoadingWrapper } from '@fuels/ui';
+import {
+  Box,
+  GridFrame,
+  Heading,
+  LoadingBox,
+  LoadingWrapper,
+  Reveal,
+  SectionTitle,
+  Theme,
+  VStack,
+} from '@fuels/ui';
+import { FUEL_CHAIN } from 'app-commons';
 import { useMemo } from 'react';
 import {
   useDashboardBlocks,
@@ -64,15 +74,18 @@ function Hero() {
   return (
     <Theme appearance="light">
       <Box className={classes.root()}>
-        <Container className={classes.container()}>
-          <VStack>
-            <Heading as="h1" className={classes.title()}>
-              Fuel Explorer
-            </Heading>
+        <Box className={classes.container()}>
+          <VStack gap="3">
+            <VStack gap="3" className={classes.titleBlock()}>
+              <SectionTitle as="p">{FUEL_CHAIN.name}</SectionTitle>
+              <Heading as="h1" className={classes.title()}>
+                Fuel Explorer
+              </Heading>
+            </VStack>
 
-            <Box className={classes.searchWrapper()}>
+            <GridFrame className={classes.searchWrapper()}>
               {/* Row 1-2, Col 1-4: Daily Transactions */}
-              <div className="row-span-2 col-span-12 laptop:col-span-4">
+              <Reveal className="row-span-2 col-span-12 laptop:col-span-4">
                 <LoadingWrapper
                   isLoading={isChartsLoading}
                   loadingEl={
@@ -80,10 +93,13 @@ function Hero() {
                   }
                   regularEl={<DailyTransaction blocks={totalTpsData} />}
                 />
-              </div>
+              </Reveal>
 
               {/* Row 1-2, Col 5-7: Fuel Dapps */}
-              <div className="row-span-2 col-span-12 laptop:col-span-3">
+              <Reveal
+                delay={0.05}
+                className="row-span-2 col-span-12 laptop:col-span-3"
+              >
                 <LoadingWrapper
                   isLoading={isEcosystemLoading}
                   loadingEl={
@@ -97,10 +113,13 @@ function Hero() {
                     />
                   }
                 />
-              </div>
+              </Reveal>
 
               {/* Row 1-4, Col 8-12: Latest Block + Recent Blocks */}
-              <div className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-5">
+              <Reveal
+                delay={0.1}
+                className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-px bg-[var(--fuel-line)]"
+              >
                 <LoadingWrapper
                   isLoading={isRollingLoading}
                   loadingEl={<LoadingBox className="w-full h-[120px]" />}
@@ -125,10 +144,13 @@ function Hero() {
                     regularEl={<DataTable blocks={blocks.slice(0, 5)} />}
                   />
                 </div>
-              </div>
+              </Reveal>
 
               {/* Row 3-4, Col 1-4: Hourly TPS */}
-              <div className="row-span-2 col-span-12 laptop:col-span-4">
+              <Reveal
+                delay={0.15}
+                className="row-span-2 col-span-12 laptop:col-span-4"
+              >
                 <LoadingWrapper
                   isLoading={isChartsLoading}
                   loadingEl={
@@ -141,19 +163,22 @@ function Hero() {
                     />
                   }
                 />
-              </div>
+              </Reveal>
 
               {/* Row 3-4, Col 5-7: Fee Spent */}
-              <div className="row-span-2 col-span-12 laptop:col-span-3">
+              <Reveal
+                delay={0.2}
+                className="row-span-2 col-span-12 laptop:col-span-3"
+              >
                 <LoadingWrapper
                   isLoading={isChartsLoading}
                   loadingEl={<LoadingBox className="w-full h-[309px]" />}
                   regularEl={<GasSpentChart blocks={totalFeeData} />}
                 />
-              </div>
-            </Box>
+              </Reveal>
+            </GridFrame>
           </VStack>
-        </Container>
+        </Box>
       </Box>
     </Theme>
   );

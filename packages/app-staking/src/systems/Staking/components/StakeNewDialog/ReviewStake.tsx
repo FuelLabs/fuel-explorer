@@ -22,7 +22,7 @@ import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormatte
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
 
-import { IconCheck, IconClock, IconInfoCircle } from '@tabler/icons-react';
+import { IconCheck, IconClock, IconInfoCircle } from '@fuels/ui';
 import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
 import { LogoEth } from '~staking/systems/Core/components/LogoEth/LogoEth';
 import type { Validator } from '~staking/systems/Staking/types/validators';

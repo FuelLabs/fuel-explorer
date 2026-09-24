@@ -1,5 +1,5 @@
 import { HStack, IconButton } from '@fuels/ui';
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight } from '@fuels/ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Pagination } from '~staking/systems/Core/types/pagination';
 import { styles } from './styles';

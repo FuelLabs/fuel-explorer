@@ -1,5 +1,5 @@
 import { Box, Button, Dropdown, Flex, Link } from '@fuels/ui';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconChevronDown } from '@fuels/ui';
 import { FUEL_CHAIN, FUEL_CHAINS, type FuelChain } from 'app-commons';
 import clsx from 'clsx';
 
@@ -44,12 +44,11 @@ export function NetworkSelector() {
     <Dropdown>
       <Dropdown.Trigger>
         <Button
-          radius="full"
           variant="ghost"
           color="gray"
           size="1"
           rightIcon={IconChevronDown}
-          className="pl-5 text-color-gray-3"
+          className="m-0 h-10 px-4 text-color-gray-3"
         >
           {FUEL_CHAIN.name.replace(/fuel/i, '').trim()}
         </Button>

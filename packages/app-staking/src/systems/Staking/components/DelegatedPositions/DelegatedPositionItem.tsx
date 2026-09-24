@@ -7,7 +7,7 @@ import {
   LoadingWrapper,
   Tooltip,
 } from '@fuels/ui';
-import { IconMenu } from '@tabler/icons-react';
+import { IconMenu } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { motion } from 'framer-motion';
 import { BN } from 'fuels';

@@ -1,0 +1,393 @@
+:root {
+  --font-sans: "ABC Monument Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --fuel-black: #000000;
+  --fuel-white: #ffffff;
+  --fuel-dark: oklch(0.218 0 0);
+  --fuel-gray-alpha-light: oklch(0.683 0 0);
+
+  --fuel-brand-400: oklch(0.867 0.156 153.8);
+  --fuel-brand-500: oklch(0.83 0.204 150.8);
+  --fuel-brand-600: oklch(0.803 0.239 146.9);
+  --fuel-brand-900: oklch(0.47 0.136 148);
+
+  --fuel-stone-50: oklch(0.968 0.005 78.3);
+  --fuel-stone-400: oklch(0.709 0.01 62.5);
+  --fuel-stone-600: oklch(0.444 0.011 78.2);
+  --fuel-stone-700: oklch(0.374 0.01 73.6);
+  --fuel-stone-800: oklch(0.268 0.006 34.3);
+  --fuel-stone-950: oklch(0.147 0.004 49.2);
+
+  --fuel-border-light: var(--fuel-gray-alpha-light);
+  --fuel-border-dark: oklch(0.371 0 0);
+  --fuel-border-footer: oklch(0.26 0 0);
+
+  --fuel-chamfer: 10px;
+  --fuel-chamfer-polygon: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--fuel-chamfer)),
+    calc(100% - var(--fuel-chamfer)) 100%,
+    0 100%
+  );
+}
+
+/* Scoped to <html> so a nested <Theme appearance> keeps the page colors. */
+:root,
+:root:is(.light, .light-theme) {
+  --fuel-background: oklch(1 0 0);
+  --fuel-card: oklch(0.976 0 0);
+  --fuel-muted: oklch(0.945 0 0);
+  --fuel-border: oklch(0.922 0 0);
+  --fuel-ring: oklch(0.708 0 0);
+  --fuel-element-high-em: var(--fuel-stone-950);
+  --fuel-element-mid-em: var(--fuel-stone-700);
+  --fuel-element-low-em: var(--fuel-stone-600);
+  --fuel-element-disabled: var(--fuel-stone-400);
+  --fuel-primary: var(--fuel-brand-600);
+  --fuel-primary-hover: var(--fuel-brand-400);
+  --fuel-primary-foreground: var(--fuel-stone-950);
+  /* brand-600 is 1.6:1 on the canvas, so green text uses brand-900. */
+  --fuel-brand-text: var(--fuel-brand-900);
+  --fuel-secondary: var(--fuel-stone-950);
+  --fuel-secondary-hover: var(--fuel-stone-800);
+  --fuel-secondary-foreground: oklch(0.922 0 0);
+  --fuel-grid-line: oklch(0.9 0 0);
+  --fuel-line: oklch(0.9 0 0);
+  --fuel-footer-bg: var(--fuel-background);
+  --fuel-indicator-border: oklch(0.8 0 0);
+  --fuel-indicator-fill: var(--fuel-background);
+  --fuel-square: var(--fuel-brand-600);
+  --fuel-square-border: var(--fuel-brand-500);
+}
+
+:root:is(.dark, .dark-theme) {
+  --fuel-background: oklch(0.145 0 0);
+  --fuel-card: oklch(0.205 0 0);
+  --fuel-muted: oklch(0.269 0 0);
+  --fuel-border: oklch(1 0 0 / 10%);
+  --fuel-ring: oklch(0.556 0 0);
+  --fuel-element-high-em: var(--fuel-white);
+  --fuel-element-mid-em: var(--fuel-stone-400);
+  --fuel-element-low-em: var(--fuel-gray-alpha-light);
+  --fuel-element-disabled: var(--fuel-stone-400);
+  --fuel-primary: var(--fuel-brand-600);
+  --fuel-primary-hover: var(--fuel-brand-400);
+  --fuel-primary-foreground: var(--fuel-stone-950);
+  --fuel-brand-text: var(--fuel-brand-600);
+  --fuel-secondary: oklch(0.269 0 0);
+  --fuel-secondary-hover: var(--fuel-stone-800);
+  --fuel-secondary-foreground: oklch(0.985 0 0);
+  --fuel-grid-line: var(--fuel-border-dark);
+  --fuel-line: var(--fuel-border-dark);
+  --fuel-footer-bg: var(--fuel-black);
+  --fuel-indicator-border: var(--fuel-border-dark);
+  --fuel-indicator-fill: var(--fuel-dark);
+  --fuel-square: var(--fuel-brand-600);
+  --fuel-square-border: var(--fuel-brand-500);
+}
+
+/* Only the default accent: explicit color="green" stays the success color. */
+:root [data-accent-color="grass"],
+:root [data-accent-color="brand"] {
+  --accent-9: var(--fuel-primary);
+  --accent-10: var(--fuel-primary-hover);
+  --accent-11: var(--fuel-brand-text);
+  --accent-contrast: var(--fuel-primary-foreground);
+  --accent-indicator: var(--fuel-primary);
+  --focus-8: var(--fuel-ring);
+}
+
+.rt-Heading {
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.rt-Button,
+.rt-Badge,
+.rt-TabsTrigger,
+.rt-TabNavLink,
+.rt-SegmentedControlItem,
+.rt-TableColumnHeaderCell {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fuel-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.fuel-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--fuel-element-low-em);
+}
+
+.fuel-stat {
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 34px;
+  letter-spacing: -1.28px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fuel-element-high-em);
+}
+
+@media (min-width: 1440px) {
+  .fuel-stat {
+    font-size: 40px;
+    line-height: 44px;
+    letter-spacing: -1.6px;
+  }
+}
+
+.fuel-stat-sm {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fuel-element-high-em);
+}
+
+.fuel-square {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-square-border);
+  background: var(--fuel-square);
+}
+
+.fuel-dither-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Light themes show the image's shadows as dark ink, dark themes its highlights as light ink. */
+.fuel-dither {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  image-rendering: pixelated;
+  opacity: 0.12;
+}
+
+.fuel-dither[data-ink="highlights"],
+:root:is(.dark, .dark-theme) .fuel-dither[data-ink="shadows"] {
+  display: none;
+}
+
+:root:is(.dark, .dark-theme) .fuel-dither[data-ink="highlights"] {
+  display: block;
+  opacity: 0.16;
+}
+
+.fuel-page {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+/* Cells share 1px lines: the 1px gap shows the frame's line color. */
+.fuel-grid-frame {
+  position: relative;
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--fuel-line);
+  background: var(--fuel-line);
+}
+
+.fuel-grid-frame > * {
+  background: var(--fuel-background);
+}
+
+.fuel-grid-frame .fuel-RoundedContainer {
+  border: 0;
+}
+
+.fuel-grid-frame .fuel-edge::before,
+.fuel-grid-frame .fuel-edge::after {
+  display: none;
+}
+
+.fuel-grid-joint {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.fuel-grid-frame .rt-BaseCard::after {
+  box-shadow: none;
+}
+
+/* Frame corners: an 8px indicator with 60px lines fading outward. */
+.fuel-corner {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  pointer-events: none;
+}
+
+.fuel-corner::before,
+.fuel-corner::after {
+  content: "";
+  position: absolute;
+}
+
+.fuel-corner::before {
+  top: 3px;
+  width: 60px;
+  height: 1px;
+}
+
+.fuel-corner::after {
+  left: 3px;
+  width: 1px;
+  height: 60px;
+}
+
+.fuel-corner-tl {
+  top: -5px;
+  left: -5px;
+}
+
+.fuel-corner-tr {
+  top: -5px;
+  right: -5px;
+}
+
+.fuel-corner-bl {
+  bottom: -5px;
+  left: -5px;
+}
+
+.fuel-corner-br {
+  bottom: -5px;
+  right: -5px;
+}
+
+.fuel-corner-tl::before,
+.fuel-corner-bl::before {
+  right: 100%;
+  background: linear-gradient(to left, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-tr::before,
+.fuel-corner-br::before {
+  left: 100%;
+  background: linear-gradient(to right, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-tl::after,
+.fuel-corner-tr::after {
+  bottom: 100%;
+  background: linear-gradient(to top, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-bl::after,
+.fuel-corner-br::after {
+  top: 100%;
+  background: linear-gradient(to bottom, var(--fuel-grid-line), transparent);
+}
+
+.fuel-footer {
+  background: var(--fuel-footer-bg);
+}
+
+.fuel-grid-divider {
+  border-bottom: 1px solid var(--fuel-grid-line);
+}
+
+.fuel-edge {
+  position: relative;
+}
+
+.fuel-edge::before,
+.fuel-edge::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.fuel-edge::before {
+  top: 0;
+  left: 0;
+}
+
+.fuel-edge::after {
+  top: 100%;
+  left: 100%;
+}
+
+@keyframes fuel-row-arrive {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fuel-row-new {
+  animation: fuel-row-arrive 300ms ease-out;
+}
+
+.fuel-hover-fill {
+  transition: background-color 300ms;
+}
+
+.fuel-hover-fill:hover {
+  background-color: var(--fuel-muted);
+}
+
+/* A card inside a link fills on hover. Radix paints the card on ::before. */
+.fuel-card-link .rt-BaseCard::before {
+  transition: background-color 300ms;
+}
+
+.fuel-card-link:hover .rt-BaseCard::before {
+  background-color: var(--fuel-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fuel-row-new {
+    animation: none;
+  }
+
+  .fuel-hover-fill,
+  .rt-BaseButton {
+    transition: none;
+  }
+}

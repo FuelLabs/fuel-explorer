@@ -23,8 +23,8 @@ import {
   VStack,
   shortAddress,
 } from '@fuels/ui';
-import { IconAlertCircle, IconInfoCircleFilled } from '@tabler/icons-react';
-import { IconUserCircle } from '@tabler/icons-react';
+import { IconAlertCircle, IconInfoCircleFilled } from '@fuels/ui';
+import { IconUserCircle } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { Address } from 'fuels';
 import { useEffect } from 'react';

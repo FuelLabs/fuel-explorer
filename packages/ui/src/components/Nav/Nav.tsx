@@ -1,13 +1,12 @@
+import { AnimatePresence, motion } from 'framer-motion';
+import { Children, cloneElement, useEffect, useState } from 'react';
 import {
   IconMenu2,
   IconMoonFilled,
   IconSunFilled,
   IconWallet,
   IconX,
-} from '@tabler/icons-react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Children, cloneElement, useEffect, useState } from 'react';
-import { useWindowSize } from 'react-use';
+} from '../Icons';
 
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
@@ -190,13 +189,13 @@ export const NavSpacer = createComponent<BaseProps<{}>, 'hr'>({
  * NavLogo
  */
 
+const NAV_LOGO_SIZE = 16;
+
 export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
   id: 'NavLogo',
   className: ({ className }) => styles().logo({ className }),
   render: (_, { size, ...props }) => {
-    const { width } = useWindowSize();
-    const defaultSize = width < 960 ? 28 : 32;
-    return <FuelLogo {...props} size={size || defaultSize} />;
+    return <FuelLogo showLettering {...props} size={size || NAV_LOGO_SIZE} />;
   },
 });
 
@@ -369,6 +368,12 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
         role="button"
         tabIndex={0}
         onClick={handleToggle}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggle();
+          }
+        }}
       >
         <Icon
           aria-label="Sun"

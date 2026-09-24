@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   Text,
 } from '@fuels/ui';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight } from '@fuels/ui';
 
 interface ListPaginationProps {
   currentPage?: number;

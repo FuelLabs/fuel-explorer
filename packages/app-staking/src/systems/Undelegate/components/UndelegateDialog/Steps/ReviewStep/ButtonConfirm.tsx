@@ -17,7 +17,7 @@ export function ButtonConfirm({
     <Button
       disabled={submitData.disabled || disabled}
       onClick={onClick}
-      className="text-[13px] w-full h-[44px] rounded-[10px]"
+      className="text-[13px] w-full h-[44px]"
     >
       {submitData.label}
     </Button>
