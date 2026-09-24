@@ -154,13 +154,18 @@ export class CosmosPoller {
       this.repairMissUntil.set(ethBlockHeight, Date.now() + REPAIR_MISS_TTL_MS);
       return;
     }
+    // Fetch every block before inserting any: a partly stored sync would
+    // count as proof the L1 block was processed.
+    const bodies = [];
     for (const height of heights) {
-      const body = await withDeadline(
-        fetchTxs(fetchImpl, this.opts.restBase, height),
-        FETCH_DEADLINE_MS,
+      bodies.push(
+        await withDeadline(
+          fetchTxs(fetchImpl, this.opts.restBase, height),
+          FETCH_DEADLINE_MS,
+        ),
       );
-      this.insertTxs(body.tx_responses);
     }
+    for (const body of bodies) this.insertTxs(body.tx_responses);
     this.opts.onLog?.(
       `CosmosPoller: repaired sequencer blocks ${heights.join(', ')} for L1 block ${ethBlockHeight}`,
     );

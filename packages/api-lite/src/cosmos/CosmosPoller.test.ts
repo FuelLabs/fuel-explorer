@@ -457,6 +457,31 @@ describe('CosmosPoller', () => {
     expect(calls.some((c) => c.includes('tx.height=778'))).toBe(true);
   });
 
+  it('stores nothing when one of the sync blocks fails to fetch', async () => {
+    const { impl } = fakeFetch({
+      'EventEthereumBlockSynced.block_number': txsResponse([
+        { height: '777' },
+        { height: '778' },
+      ]),
+      'tx.height=777': txsResponse([
+        tx(777, 'SYNC1', [
+          {
+            type: 'fuelsequencer.bridge.EventEthereumBlockSynced',
+            attributes: [{ key: 'block_number', value: '"123"' }],
+          },
+        ]),
+      ]),
+      'tx.height=778': { message: 'rate limited' },
+    });
+    const poller = new CosmosPoller({
+      index,
+      restBase: REST_BASE,
+      fetchImpl: impl as unknown as typeof fetch,
+    });
+    await expect(poller.repairEthBlockSync(123)).rejects.toThrow();
+    expect(index.ethBlockSyncRecorded(123)).toBe(false);
+  });
+
   it('runs at most two repairs at a time', async () => {
     let active = 0;
     let peak = 0;
