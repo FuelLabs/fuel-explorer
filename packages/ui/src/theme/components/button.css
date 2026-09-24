@@ -10,7 +10,29 @@
 }
 
 .rt-Button:where(.rt-variant-solid) {
+  position: relative;
   clip-path: var(--fuel-chamfer-polygon);
+}
+
+/* Corner mark: the design system's button-diagonal-line glyph, parallel to the chamfer cut. Secondary (gray) has none. */
+.rt-Button:where(.rt-variant-solid):where(
+    :not([data-accent-color="gray"])
+  )::after {
+  --fuel-button-diagonal-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 13 13' fill='none'%3E%3Cpath d='M11.1383 3.95947V2.45947L2.37036 11.4593H3.87036L11.1383 3.95947Z' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 13px;
+  height: 13px;
+  background-color: currentColor;
+  -webkit-mask-image: var(--fuel-button-diagonal-line);
+  mask-image: var(--fuel-button-diagonal-line);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  pointer-events: none;
 }
 
 /* clip-path hides an outside outline, so the focus ring sits inside. */

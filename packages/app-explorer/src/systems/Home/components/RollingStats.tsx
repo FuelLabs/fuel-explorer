@@ -1,4 +1,4 @@
-import { AnimatedNumber, RoundedContainer } from '@fuels/ui';
+import { AnimatedNumber, DitherImage, RoundedContainer } from '@fuels/ui';
 import { formatBytes } from './format';
 
 interface RollingStatsProps {
@@ -13,13 +13,20 @@ export const RollingStats = ({
   avgBlockSize,
 }: RollingStatsProps) => {
   return (
-    <RoundedContainer className="fuel-dots py-4 px-5 flex flex-col">
-      <div className="flex items-center">
+    <RoundedContainer className="relative overflow-hidden py-4 px-5 flex flex-col">
+      <div className="fuel-dither-art">
+        <DitherImage
+          src="/illustrations/live-stats-race.jpg"
+          cell={1}
+          brightness={0.09}
+        />
+      </div>
+      <div className="relative flex items-center">
         <span className="fuel-label">Live Stats</span>
         <span className="fuel-label ml-1.5">(60s)</span>
       </div>
 
-      <div className="flex justify-between mt-3">
+      <div className="relative flex justify-between mt-3">
         <div>
           <AnimatedNumber
             value={tps}
@@ -36,7 +43,7 @@ export const RollingStats = ({
           />
           <span className="fuel-label">TX / Block</span>
         </div>
-        <div>
+        <div className="text-right">
           <AnimatedNumber
             value={avgBlockSize}
             format={formatBytes}

@@ -76,10 +76,12 @@ function Hero() {
       <Box className={classes.root()}>
         <Box className={classes.container()}>
           <VStack gap="3">
-            <SectionTitle as="p">{FUEL_CHAIN.name}</SectionTitle>
-            <Heading as="h1" className={classes.title()}>
-              Fuel Explorer
-            </Heading>
+            <VStack gap="3" className={classes.titleBlock()}>
+              <SectionTitle as="p">{FUEL_CHAIN.name}</SectionTitle>
+              <Heading as="h1" className={classes.title()}>
+                Fuel Explorer
+              </Heading>
+            </VStack>
 
             <GridFrame className={classes.searchWrapper()}>
               {/* Row 1-2, Col 1-4: Daily Transactions */}

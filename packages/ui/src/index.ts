@@ -29,6 +29,7 @@ export * from './components/Carousel';
 export * from './components/Collapsible';
 export * from './components/Copyable';
 export * from './components/Dialog';
+export * from './components/DitherImage';
 export * from './components/Drawer';
 export * from './components/Dropdown';
 export * from './components/EntityItem';
