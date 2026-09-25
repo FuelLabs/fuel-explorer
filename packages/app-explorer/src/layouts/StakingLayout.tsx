@@ -1,5 +1,5 @@
 import { HStack } from '@fuels/ui';
-import { PageTitle } from 'app-commons';
+import { BridgePausedBanner, PageTitle } from 'app-commons';
 import { Outlet, useLocation } from 'react-router-dom';
 import { VerifySelectedChainDialog } from '~/systems/Core/components/VerifySelectedChainDialog';
 import { AprBadge } from '~staking/systems/Staking/components/AprBadge/AprBadge';
@@ -14,6 +14,7 @@ export default function StakingLayout() {
   return (
     <div>
       <VerifySelectedChainDialog />
+      <BridgePausedBanner />
       <HStack justify="between">
         <PageTitle
           title={
