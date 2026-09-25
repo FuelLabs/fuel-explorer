@@ -1,6 +1,6 @@
 import { Box, Button } from '@fuels/ui';
 import { IconArrowBack, IconHistory } from '@tabler/icons-react';
-import { PageTitle } from 'app-commons';
+import { BridgePausedBanner, PageTitle } from 'app-commons';
 import { Routes } from 'app-commons';
 
 import type { ReactNode } from 'react';
@@ -21,6 +21,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
   return (
     <Box className={classes.content()}>
+      <BridgePausedBanner />
       <LayerSwapBanner />
       <PageTitle title="Fuel Bridge">
         {isBridgeHistory ? (
