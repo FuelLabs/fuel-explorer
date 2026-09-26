@@ -149,6 +149,14 @@ volume` command, not the `add` subcommand — `railway volume add --mount-path
 4.8.0; `railway volume --service api add --mount-path /data` is the form the
 installed CLI accepts.
 
+The explorer build uses `VITE_WALLETCONNECT_ID` from the selected
+`packages/app-explorer/.env.${NETWORK}` file by default. Mainnet uses the
+shared-account project. To override it, set `VITE_WALLETCONNECT_ID` on the
+Railway explorer service and rebuild; changing only the runtime environment
+does not update the ID baked into the browser bundle. Allowlist both the
+Railway preview origin and the public production origin in that project's
+WalletConnect dashboard, then verify a fresh WalletConnect QR pairing.
+
 ## Verify
 
 ```bash
