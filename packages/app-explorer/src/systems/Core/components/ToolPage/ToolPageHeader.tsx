@@ -23,7 +23,8 @@ export function ToolPageHeader({
   return (
     <header className={classes.root()}>
       <div>
-        <HStack align="center" gap="4">
+        {/* min-h holds the row for a badge that loads later. */}
+        <HStack align="center" gap="4" className="min-h-6">
           <SectionTitle as="p">{eyebrow}</SectionTitle>
           {badge}
         </HStack>

@@ -220,8 +220,8 @@ export const Bridge = () => {
         </>
       ) : (
         <>
-          <LoadingBox className="w-full h-[216px]" />
-          <LoadingBox className="w-full h-[151px]" />
+          <LoadingBox className="w-full h-[236px]" />
+          <LoadingBox className="w-full h-[152px]" />
         </>
       )}
       <BridgeButton />

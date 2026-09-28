@@ -1,10 +1,11 @@
-import { LoadingBox, VStack } from '@fuels/ui';
+import { VStack } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EcosystemFilterBar } from '~/systems/Ecosystem/components/EcosystemFilterBar';
 import { EcosystemHero } from '~/systems/Ecosystem/components/EcosystemHero';
 import { EcosystemSection } from '~/systems/Ecosystem/components/EcosystemSection';
+import { EcosystemSectionSkeleton } from '~/systems/Ecosystem/components/EcosystemSectionSkeleton';
 import { ECOSYSTEM_SECTIONS } from '~/systems/Ecosystem/constants';
 import { groupProjects } from '~/systems/Ecosystem/utils/groupProjects';
 import { fetchProjects } from '../services/ecosystemService';
@@ -55,7 +56,7 @@ export function EcosystemPageWrapper() {
         onSearchChange={handleSearchChange}
         onSectionChange={(section) => updateParam('section', section)}
       />
-      {isLoading && <LoadingBox className="h-[480px] w-full" />}
+      {isLoading && <EcosystemSectionSkeleton />}
       {error && (
         <p className="m-0 text-[var(--red-11)]">
           Error loading projects: {error.message}
