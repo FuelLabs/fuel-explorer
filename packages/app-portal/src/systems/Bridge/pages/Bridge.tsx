@@ -75,10 +75,10 @@ export const Bridge = () => {
   }, [handlers]);
 
   const items = [
-    <motion.div key="eth" className="mt-2" layout>
+    <motion.div key="eth" layout>
       <EthAccountConnection label={isEthFrom ? 'From' : 'To'} />
     </motion.div>,
-    <motion.div key="fuel" className="mt-2" layout>
+    <motion.div key="fuel" layout>
       <FuelAccountConnection label={isFuelTo ? 'To' : 'From'} />
     </motion.div>,
   ];
@@ -95,7 +95,7 @@ export const Bridge = () => {
           <Card>
             <Card.Body>
               <Text className={classes.textNetwork()}>Network</Text>
-              <VStack gap="4">
+              <VStack gap="2" className="mt-4">
                 <LayoutGroup>{getItemsOrder()}</LayoutGroup>
                 {isEthFrom && toCustomAddress && (
                   <Alert
@@ -175,6 +175,7 @@ export const Bridge = () => {
                       <InputAmount.ButtonMaxBalance className="mobile:!text-xs mobile:px-1" />
                     )}
                     <InputAmount.CoinSelector
+                      variant="ghost"
                       className="mobile:!text-xs mobile:!px-2 mobile:!min-w-0"
                       asset={{
                         name: asset?.symbol,
