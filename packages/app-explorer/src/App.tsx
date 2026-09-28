@@ -1,7 +1,6 @@
 import { LoadingBox } from '@fuels/ui';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { Suspense, lazy } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 // Page Components
@@ -44,21 +43,6 @@ const OverlayDialog = lazy(() =>
 function App() {
   return (
     <>
-      <Helmet>
-        <title>Fuel Explorer</title>
-        <meta
-          name="description"
-          content="Fuel Ignition is a high-performance Ethereum layer-2 rollup powered by the FuelVM; built for home verification and scalable for all."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Fuel Explorer" />
-        <meta
-          property="og:description"
-          content="Fuel Ignition is a high-performance Ethereum layer-2 rollup powered by the FuelVM; built for home verification and scalable for all."
-        />
-        <meta property="og:image" content="/preview.png?v=ignition" />
-      </Helmet>
-
       <Layout>
         <TooltipProvider>
           <Routes>
