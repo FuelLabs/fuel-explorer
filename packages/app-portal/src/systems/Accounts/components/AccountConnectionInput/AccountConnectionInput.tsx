@@ -105,14 +105,16 @@ export const AccountConnectionInput = ({
 
 export const styles = tv({
   slots: {
-    root: ['overflow-x-hidden p-0 bg-gray-1 h-[64px]'],
-    cardBody: 'px-3 py-2',
+    root: ['overflow-x-hidden p-0 bg-[var(--fuel-card)] min-h-[64px]'],
+    cardBody: 'px-5 py-3',
     connectButton: 'w-[50px]',
-    disconnectButton: 'text-[12px] mr-[-2px] my-[2px] text-gray-10',
-    textLabel: 'text-xs',
-    textNetwork: 'text-heading',
+    disconnectButton:
+      'text-[12px] mr-[-2px] my-[2px] text-[var(--fuel-element-low-em)] hover:text-heading',
+    textLabel: 'text-[13px] leading-4 text-[var(--fuel-element-mid-em)]',
+    textNetwork: 'text-heading tracking-[-0.32px]',
     textConnect: 'text-xs text-inherit',
     textDisconnect: 'text-[11px]',
-    textAccountConnected: 'text-sm text-gray-11',
+    textAccountConnected:
+      'text-sm tabular-nums whitespace-nowrap text-[var(--fuel-element-mid-em)]',
   },
 });

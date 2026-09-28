@@ -1,18 +1,25 @@
 import { LoadingBox } from '@fuels/ui';
 
+// Heights match each loaded tab so the page below does not jump.
 export function StakingScreenLoader({
-  hideAccBadge,
-}: { hideAccBadge?: boolean }) {
+  tab = 'ethereum',
+}: { tab?: 'fuel' | 'ethereum' }) {
+  if (tab === 'fuel') {
+    // The Rig notices wrap, so their height follows the width.
+    return (
+      <LoadingBox
+        aria-hidden
+        className="h-[380px] w-full tablet:h-[284px] laptop:h-[260px] desktop:h-[236px]"
+      />
+    );
+  }
+
+  // Wallet card, then the positions / validators / transactions tabs and panel.
   return (
-    <div>
-      <div className="mb-6 flex flex-col">
-        {!hideAccBadge && (
-          <LoadingBox className="w-40 h-[36px] self-end mb-4" />
-        )}
-        <article
-          className={`${hideAccBadge ? 'mt-2' : ''} rt-Box rt-reset rt-BaseCard rt-Card rt-r-size-1 rt-variant-surface flex flex-col gap-4 bg-panel-solid overflow-clip p-6 fuel-Card fuel-Box h-[86px] fuel-Skeleton rt-Skeleton" />`}
-        />
-      </div>
+    <div aria-hidden className="flex flex-col pt-4">
+      <LoadingBox className="h-[68px] w-full" />
+      <LoadingBox className="mt-16 h-[41px] w-full" />
+      <LoadingBox className="mt-8 h-[236px] w-full" />
     </div>
   );
 }

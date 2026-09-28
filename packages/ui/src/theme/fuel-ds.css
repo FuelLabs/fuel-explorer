@@ -241,6 +241,11 @@
   box-shadow: none;
 }
 
+/* A tool cell holds a form whose cards keep their own border. */
+.fuel-grid-frame .fuel-tool-cell .rt-BaseCard::after {
+  box-shadow: inset 0 0 0 1px var(--fuel-border);
+}
+
 /* Frame corners: an 8px indicator with 60px lines fading outward. */
 .fuel-corner {
   position: absolute;

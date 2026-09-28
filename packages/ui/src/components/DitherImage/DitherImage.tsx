@@ -91,7 +91,10 @@ export function DitherImage({
     image.src = src;
     const observer = new ResizeObserver(redraw);
     observer.observe(parent);
-    return () => observer.disconnect();
+    return () => {
+      image.onload = null;
+      observer.disconnect();
+    };
   }, [src, cell, brightness, contrast]);
 
   return (

@@ -1,14 +1,15 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { BridgePageShell } from '~/systems/Bridge/components/BridgePageShell';
+import { DEFAULT_WITHDRAW_DELAY } from '~/systems/Bridge/constants';
+import { useWithdrawDelay } from '~portal/systems/Bridge/hooks/useWithdrawDelay';
 import { BridgePage as PortalBridgePage } from '~portal/systems/Bridge/page-root';
 
 export default function BridgePage() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const { timeToWithdrawFormatted } = useWithdrawDelay();
+  const withdrawDelay = timeToWithdrawFormatted ?? DEFAULT_WITHDRAW_DELAY;
 
-  const navigationProps = {
-    navigate,
-    searchParams,
-  };
-
-  return <PortalBridgePage navigationProps={navigationProps} />;
+  return (
+    <BridgePageShell withdrawDelay={withdrawDelay}>
+      <PortalBridgePage />
+    </BridgePageShell>
+  );
 }
