@@ -47,7 +47,7 @@ export function EcosystemPageWrapper() {
   }
 
   return (
-    <VStack gap="9" className="pb-10">
+    <VStack gap="9" className="pt-10 pb-10">
       <EcosystemHero />
       <EcosystemFilterBar
         sections={ECOSYSTEM_SECTIONS}

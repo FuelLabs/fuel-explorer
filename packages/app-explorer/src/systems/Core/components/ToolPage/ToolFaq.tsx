@@ -50,7 +50,7 @@ export function ToolFaq({ items, docsLabel, docsUrl }: ToolFaqProps) {
 
 const styles = tv({
   slots: {
-    root: 'fuel-edge p-6 tablet:p-10',
+    root: 'fuel-edge col-span-full p-6 tablet:p-10',
     title:
       'm-0 mb-6 font-medium text-heading text-[28px] leading-[32px] tracking-[-1.12px]',
     list: 'border-t border-[var(--fuel-border)]',

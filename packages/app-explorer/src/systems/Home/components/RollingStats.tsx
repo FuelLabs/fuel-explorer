@@ -13,7 +13,7 @@ export const RollingStats = ({
   avgBlockSize,
 }: RollingStatsProps) => {
   return (
-    <RoundedContainer className="relative overflow-hidden py-4 px-5 flex flex-col">
+    <RoundedContainer className="fuel-illustrated relative overflow-hidden py-4 px-5 flex flex-col">
       <div className="fuel-dither-art">
         <DitherImage
           src="/illustrations/live-stats-race.jpg"

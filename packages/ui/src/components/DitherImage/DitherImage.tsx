@@ -53,6 +53,12 @@ function draw(
       const i = (y * cols + x) * 4;
       const luma =
         (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+      // Near-black is the photo's empty field. Inking it lays a Bayer dot
+      // grid under the subject.
+      if (luma <= 0.06) {
+        d[i + 3] = 0;
+        continue;
+      }
       const v = (luma - 0.5) * contrast + 0.5 + brightness;
       const shadow = v < BAYER4[(y & 3) * 4 + (x & 3)];
       const tone = ink === 'shadows' ? 0 : 255;

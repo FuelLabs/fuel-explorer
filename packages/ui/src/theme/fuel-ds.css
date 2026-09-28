@@ -11,6 +11,14 @@
   --fuel-brand-500: oklch(0.83 0.204 150.8);
   --fuel-brand-600: oklch(0.803 0.239 146.9);
   --fuel-brand-900: oklch(0.47 0.136 148);
+  /* Figma brand gradient. brand-600 is #02E555. Mint holds through 75%. */
+  --fuel-gradient-mint: #88ecd1;
+  --fuel-dither-gradient: linear-gradient(
+    to bottom,
+    var(--fuel-gradient-mint) 0%,
+    var(--fuel-gradient-mint) 75%,
+    var(--fuel-brand-600) 100%
+  );
 
   --fuel-stone-50: oklch(0.968 0.005 78.3);
   --fuel-stone-400: oklch(0.709 0.01 62.5);
@@ -177,6 +185,21 @@
   pointer-events: none;
 }
 
+/* A hem of the brand gradient. The cell itself stays the page color. */
+.fuel-dither-accent::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 160px;
+  background: var(--fuel-dither-gradient);
+  opacity: 0.45;
+  -webkit-mask-image: linear-gradient(to top, black, transparent);
+  mask-image: linear-gradient(to top, black, transparent);
+  pointer-events: none;
+}
+
 /* Light themes show the image's shadows as dark ink, dark themes its highlights as light ink. */
 .fuel-dither {
   position: absolute;
@@ -195,6 +218,20 @@
 :root:is(.dark, .dark-theme) .fuel-dither[data-ink="highlights"] {
   display: block;
   opacity: 0.16;
+}
+
+/* Controls on a dither sit on a busy field, so their fills stay opaque. */
+.fuel-illustrated
+  :is(.rt-variant-soft, .rt-variant-ghost, .rt-variant-outline).rt-BaseButton {
+  background-color: var(--fuel-card);
+}
+
+.fuel-illustrated .rt-SegmentedControlRoot {
+  background-color: var(--fuel-muted);
+}
+
+.fuel-illustrated .rt-CalloutRoot:where(.rt-variant-soft) {
+  background-color: color-mix(in srgb, var(--accent-9) 18%, var(--fuel-card));
 }
 
 .fuel-page {

@@ -14,6 +14,6 @@ export const heroStyles = tv({
       'desktop:text-[40px] desktop:leading-[44px] desktop:tracking-[-1.6px]',
     ],
     subtitle: ['text-base mb-8 justify-center'],
-    searchWrapper: ['grid-cols-12 mt-6 laptop:h-[624px]'],
+    searchWrapper: ['grid-cols-12 mt-[72px] laptop:h-[624px]'],
   },
 });
