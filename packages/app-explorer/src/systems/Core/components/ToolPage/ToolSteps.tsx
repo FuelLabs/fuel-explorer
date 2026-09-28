@@ -1,14 +1,25 @@
 import { tv } from 'tailwind-variants';
-import { BRIDGE_STEPS } from '../constants';
 
-export function BridgeHowItWorks({ withdrawDelay }: { withdrawDelay: string }) {
+export type ToolStep = {
+  title: string;
+  description: string;
+};
+
+type ToolStepsProps = {
+  title: string;
+  steps: ToolStep[];
+  /** A warning line under the steps. */
+  note?: string;
+};
+
+export function ToolSteps({ title, steps, note }: ToolStepsProps) {
   const classes = styles();
 
   return (
     <section className={classes.root()}>
-      <h2 className={classes.title()}>How bridging works</h2>
+      <h2 className={classes.title()}>{title}</h2>
       <ol className={classes.steps()}>
-        {BRIDGE_STEPS.map((step, index) => (
+        {steps.map((step, index) => (
           <li key={step.title} className={classes.step()}>
             <span className={classes.number()}>
               {String(index + 1).padStart(2, '0')}
@@ -20,10 +31,12 @@ export function BridgeHowItWorks({ withdrawDelay }: { withdrawDelay: string }) {
           </li>
         ))}
       </ol>
-      <p className={classes.note()}>
-        <span aria-hidden className={classes.noteSquare()} />
-        Withdrawals to Ethereum take up to {withdrawDelay}
-      </p>
+      {note && (
+        <p className={classes.note()}>
+          <span aria-hidden className={classes.noteSquare()} />
+          {note}
+        </p>
+      )}
     </section>
   );
 }

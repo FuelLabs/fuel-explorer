@@ -1,15 +1,25 @@
 import { IconArrowUpRight } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
-import { BRIDGE_DOCS_URL, getBridgeFaq } from '../constants';
 
-export function BridgeFaq({ withdrawDelay }: { withdrawDelay: string }) {
+export type ToolFaqItem = {
+  question: string;
+  answer: string;
+};
+
+type ToolFaqProps = {
+  items: ToolFaqItem[];
+  docsLabel: string;
+  docsUrl: string;
+};
+
+export function ToolFaq({ items, docsLabel, docsUrl }: ToolFaqProps) {
   const classes = styles();
 
   return (
     <section className={classes.root()}>
       <h2 className={classes.title()}>Questions</h2>
       <div className={classes.list()}>
-        {getBridgeFaq(withdrawDelay).map((item, index) => (
+        {items.map((item, index) => (
           <details
             key={item.question}
             open={index === 0}
@@ -26,12 +36,12 @@ export function BridgeFaq({ withdrawDelay }: { withdrawDelay: string }) {
         ))}
       </div>
       <a
-        href={BRIDGE_DOCS_URL}
+        href={docsUrl}
         target="_blank"
         rel="noreferrer"
         className={classes.docsLink()}
       >
-        Bridge docs
+        {docsLabel}
         <IconArrowUpRight size={14} stroke={1.5} />
       </a>
     </section>
