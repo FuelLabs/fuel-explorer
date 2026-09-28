@@ -1,4 +1,5 @@
 import { Button, GridFrame } from '@fuels/ui';
+import { BridgePausedBanner } from 'app-commons';
 import { Outlet, useLocation } from 'react-router-dom';
 import { ToolDitherCell } from '~/systems/Core/components/ToolPage/ToolDitherCell';
 import { ToolFaq } from '~/systems/Core/components/ToolPage/ToolFaq';
@@ -60,6 +61,7 @@ export default function StakingLayout() {
           src="/illustrations/bridge-background.jpg"
           className="col-span-full p-6 tablet:p-10"
         >
+          <BridgePausedBanner />
           <StakingTabs />
           <Outlet />
         </ToolDitherCell>

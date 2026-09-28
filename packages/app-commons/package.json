@@ -50,6 +50,7 @@
     }
   },
   "scripts": {
+    "test": "jest --verbose --passWithNoTests",
     "ts:check": "tsc --noEmit",
     "build:lib": "run-s build:sdk",
     "build:sdk": "tsup"
