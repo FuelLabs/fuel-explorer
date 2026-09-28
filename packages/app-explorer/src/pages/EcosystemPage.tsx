@@ -1,63 +1,74 @@
-import { VStack } from '@fuels/ui';
+import { LoadingBox, VStack } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { EcosystemPage } from '~portal/systems/Ecosystem/pages/Ecosystem';
+import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { EcosystemFilterBar } from '~/systems/Ecosystem/components/EcosystemFilterBar';
+import { EcosystemHero } from '~/systems/Ecosystem/components/EcosystemHero';
+import { EcosystemSection } from '~/systems/Ecosystem/components/EcosystemSection';
+import { ECOSYSTEM_SECTIONS } from '~/systems/Ecosystem/constants';
+import { groupProjects } from '~/systems/Ecosystem/utils/groupProjects';
 import { fetchProjects } from '../services/ecosystemService';
 
 export function EcosystemPageWrapper() {
-  const [searchParams] = useSearchParams();
-  const _navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('search') ?? '');
+  const activeSection = searchParams.get('section') ?? undefined;
+  const liveOnly = searchParams.get('liveOnly') !== 'off';
 
-  const search = searchParams.get('search');
-  const tag = searchParams.get('tag');
-  const liveOnlyParam = searchParams.get('liveOnly');
-  const liveOnly = liveOnlyParam === null ? true : liveOnlyParam === 'on';
-
+  // Search and section filter on the client, so typing never refetches.
   const { data, isLoading, error } = useQuery({
-    queryKey: ['ecosystem-projects', search, tag, liveOnly],
-    queryFn: () => fetchProjects({ search, tag, liveOnly }),
-    staleTime: 10 * 1000, // 10 seconds
+    queryKey: ['ecosystem-projects', liveOnly],
+    queryFn: () => fetchProjects({ liveOnly }),
+    staleTime: 10 * 1000,
   });
 
-  if (isLoading) {
-    return (
-      <VStack gap="6" flexGrow="1" className="pb-20">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/4" />
-          <div className="h-8 bg-gray-200 rounded w-1/2" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-48 bg-gray-200 rounded" />
-            ))}
-          </div>
-        </div>
-      </VStack>
+  const groups = useMemo(() => {
+    const all = groupProjects(data?.initialProjects ?? [], search.trim());
+    return activeSection
+      ? all.filter((group) => group.section.id === activeSection)
+      : all;
+  }, [data, search, activeSection]);
+
+  function updateParam(key: string, value?: string) {
+    setSearchParams(
+      (params) => {
+        if (value) params.set(key, value);
+        else params.delete(key);
+        return params;
+      },
+      { replace: true },
     );
   }
 
-  if (error) {
-    return (
-      <VStack gap="6" flexGrow="1" className="pb-20">
-        <div className="text-center py-12">
-          <div className="text-red-500">
-            Error loading projects: {error.message}
-          </div>
-        </div>
-      </VStack>
-    );
-  }
-
-  if (!data) {
-    return null;
+  function handleSearchChange(value: string) {
+    setSearch(value);
+    updateParam('search', value || undefined);
   }
 
   return (
-    <EcosystemPage
-      initialProjects={data.initialProjects}
-      initialTags={data.initialTags}
-      search={search || undefined}
-      tag={tag || undefined}
-      liveOnly={liveOnly}
-    />
+    <VStack gap="9" className="pb-10">
+      <EcosystemHero />
+      <EcosystemFilterBar
+        sections={ECOSYSTEM_SECTIONS}
+        activeSection={activeSection}
+        search={search}
+        onSearchChange={handleSearchChange}
+        onSectionChange={(section) => updateParam('section', section)}
+      />
+      {isLoading && <LoadingBox className="h-[480px] w-full" />}
+      {error && (
+        <p className="m-0 text-[var(--red-11)]">
+          Error loading projects: {error.message}
+        </p>
+      )}
+      {data && groups.length === 0 && (
+        <p className="m-0 text-[var(--fuel-element-low-em)]">
+          No projects match your search.
+        </p>
+      )}
+      {groups.map((group) => (
+        <EcosystemSection key={group.section.id} {...group} />
+      ))}
+    </VStack>
   );
 }
