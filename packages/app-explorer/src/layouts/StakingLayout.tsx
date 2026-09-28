@@ -22,10 +22,9 @@ export default function StakingLayout() {
   const isEthereumStaking = location.pathname.includes('/on-ethereum');
 
   return (
-    // Breaks out of the Layout column so the grid can span the page.
-    <div className="relative left-1/2 w-screen -translate-x-1/2 mt-8 -mb-10 laptop:-mb-[72px]">
+    <div className="mt-12 -mb-10 laptop:-mb-[72px]">
       <VerifySelectedChainDialog />
-      <GridFrame className="fuel-page border-t-0 grid-cols-[minmax(0,1fr)] min-[720px]:grid-cols-[repeat(2,minmax(0,1fr))]">
+      <GridFrame className="fuel-page border-t-0 grid-cols-1">
         <ToolPageHeader
           eyebrow="Stake"
           badge={isEthereumStaking && <AprBadge />}

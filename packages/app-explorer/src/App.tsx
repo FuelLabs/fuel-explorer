@@ -1,7 +1,5 @@
-import { LoadingBox } from '@fuels/ui';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { Suspense, lazy } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 // Page Components
@@ -21,17 +19,12 @@ import BridgeLayout from './layouts/BridgeLayout';
 import ContractLayout from './layouts/ContractLayout';
 import StakingLayout from './layouts/StakingLayout';
 import TransactionLayout from './layouts/TransactionLayout';
-import { BridgeFormSkeleton } from './systems/Bridge/components/BridgeFormSkeleton';
-import { BridgePageShell } from './systems/Bridge/components/BridgePageShell';
-import { DEFAULT_WITHDRAW_DELAY } from './systems/Bridge/constants';
 import { Layout } from './systems/Core/components/Layout/Layout';
 import { StakingScreenLoader } from './systems/Staking/screens/StakingScreenLoader';
 
 import { ErrorPageComponent } from './systems/Core/components/ErrorPage/ErrorPage';
 
-// Bridge and staking pages pull in wagmi, viem and connectkit.
-const BridgePage = lazy(() => import('./pages/BridgePage'));
-const BridgeHistoryPage = lazy(() => import('./pages/BridgeHistoryPage'));
+// Staking pages pull in wagmi, viem and connectkit.
 const StakingOnEthereumPage = lazy(
   () => import('./pages/StakingOnEthereumPage'),
 );
@@ -44,21 +37,6 @@ const OverlayDialog = lazy(() =>
 function App() {
   return (
     <>
-      <Helmet>
-        <title>Fuel Explorer</title>
-        <meta
-          name="description"
-          content="Fuel Ignition is a high-performance Ethereum layer-2 rollup powered by the FuelVM; built for home verification and scalable for all."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Fuel Explorer" />
-        <meta
-          property="og:description"
-          content="Fuel Ignition is a high-performance Ethereum layer-2 rollup powered by the FuelVM; built for home verification and scalable for all."
-        />
-        <meta property="og:image" content="/preview.png?v=ignition" />
-      </Helmet>
-
       <Layout>
         <TooltipProvider>
           <Routes>
@@ -93,30 +71,8 @@ function App() {
             </Route>
 
             <Route path="/bridge" element={<BridgeLayout />}>
-              <Route
-                index
-                element={
-                  <Suspense
-                    fallback={
-                      <BridgePageShell withdrawDelay={DEFAULT_WITHDRAW_DELAY}>
-                        <BridgeFormSkeleton />
-                      </BridgePageShell>
-                    }
-                  >
-                    <BridgePage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="history"
-                element={
-                  <Suspense
-                    fallback={<LoadingBox className="w-full h-[400px]" />}
-                  >
-                    <BridgeHistoryPage />
-                  </Suspense>
-                }
-              />
+              <Route index />
+              <Route path="history" />
             </Route>
 
             <Route path="/staking" element={<StakingLayout />}>

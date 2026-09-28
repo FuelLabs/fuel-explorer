@@ -40,7 +40,7 @@ export const BridgeTxItem = ({
     >
       <Flex className={classes.networks()}>
         {fromLogo}
-        <IconArrowRight size={16} />
+        <IconArrowRight size={16} className={classes.arrow()} />
         {toLogo}
       </Flex>
       <Flex className={classes.assetAmountWrapper()}>
@@ -74,7 +74,9 @@ export const BridgeTxItem = ({
 const styles = tv({
   slots: {
     networks: 'shrink-0 gap-1 items-center',
-    cardItem: 'flex flex-row px-4 py-0 min-h-[56px] gap-1 items-center',
+    arrow:
+      'transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none',
+    cardItem: 'group flex flex-row px-4 py-0 min-h-[56px] gap-1 items-center',
     statusTime: 'flex-col gap-y-1 items-end',
     line: 'flex-1',
     timeLoader: 'flex items-center h-[16.8px]',

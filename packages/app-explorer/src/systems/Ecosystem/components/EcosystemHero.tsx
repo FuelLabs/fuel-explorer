@@ -8,8 +8,7 @@ export function EcosystemHero() {
   return (
     <GridFrame className="grid-cols-1">
       <section className={classes.cell()}>
-        <div aria-hidden className={classes.glow()} />
-        <div className="fuel-dither-art">
+        <div className="fuel-dither-art fuel-dither-accent">
           <DitherImage
             src="/illustrations/bridge-background.jpg"
             cell={1}
@@ -43,9 +42,7 @@ export function EcosystemHero() {
 
 const styles = tv({
   slots: {
-    cell: 'fuel-edge relative overflow-hidden px-6 py-16 tablet:py-24',
-    // Green rises from the bottom edge, as on the marketing site.
-    glow: 'absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--fuel-primary)] opacity-60',
+    cell: 'fuel-edge fuel-illustrated relative overflow-hidden px-6 py-16 tablet:py-24',
     content: 'relative flex flex-col items-center gap-4 text-center',
     title: [
       'm-0 font-medium uppercase text-heading',

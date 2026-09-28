@@ -23,9 +23,14 @@ export function ViewMode({
     }
   };
 
+  // Simple is removed from the group when it is unavailable, so a /simple
+  // route that falls through to standard must select standard itself.
+  const selected =
+    isSimpleDisabled && mode === ViewModes.Simple ? ViewModes.Standard : mode;
+
   return (
     <ToggleGroup
-      defaultValue={mode}
+      value={selected}
       aria-label="View mode"
       onValueChange={handleModeChange}
       className="flex-shrink-0"

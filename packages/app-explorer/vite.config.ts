@@ -8,9 +8,29 @@ import tailwindcssNesting from 'tailwindcss/nesting';
 import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import svgr from 'vite-plugin-svgr';
+import { applyPageMeta } from './src/systems/Core/pageMeta';
 
 export default defineConfig({
   plugins: [
+    {
+      name: 'page-meta',
+      apply: 'serve',
+      transformIndexHtml(html, ctx) {
+        const requestUrl = ctx.originalUrl ?? '/';
+        const pathname = requestUrl.split('?')[0] || '/';
+        const host = ctx.server?.config.server.host;
+        const port = ctx.server?.config.server.port;
+        const origin =
+          host && port
+            ? `http://${host === true ? 'localhost' : host}:${port}`
+            : '';
+        return applyPageMeta(
+          html,
+          pathname,
+          origin ? `${origin}${requestUrl}` : '',
+        );
+      },
+    },
     nodePolyfills({
       globals: {
         Buffer: true,

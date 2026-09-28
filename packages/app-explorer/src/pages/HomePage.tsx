@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 import { SyncStatusMonitor } from '~/systems/Core/components/SyncStatusMonitor/SyncStatusMonitor';
 import { fetchTxsData } from '~/systems/Transactions/actions/fetchTxsData';
@@ -29,13 +28,6 @@ export function HomePage({
 
   return (
     <>
-      <Helmet>
-        <title>Fuel Explorer - Home</title>
-        <meta
-          name="description"
-          content="Explore the Fuel blockchain - blocks, transactions, and network statistics"
-        />
-      </Helmet>
       <SyncStatusMonitor />
       <TxsTitle />
       {isLoading || isFetching || txs.nodes.length === 0 ? (

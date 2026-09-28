@@ -17,8 +17,13 @@ export function ToolDitherCell({
   children,
 }: ToolDitherCellProps) {
   return (
-    <div className={cx('fuel-edge fuel-tool-cell relative min-w-0', className)}>
-      <div className="fuel-dither-art">
+    <div
+      className={cx(
+        'fuel-edge fuel-tool-cell fuel-illustrated relative min-w-0',
+        className,
+      )}
+    >
+      <div className="fuel-dither-art fuel-dither-accent">
         <DitherImage src={src} cell={1} brightness={brightness} />
       </div>
       <div className="relative">{children}</div>

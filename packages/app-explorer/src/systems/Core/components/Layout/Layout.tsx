@@ -1,4 +1,5 @@
 import { Box, VStack } from '@fuels/ui';
+import { PageMeta } from '~/systems/Core/components/PageMeta/PageMeta';
 import { TopNav } from '~/systems/Core/components/TopNav/TopNav';
 import HeroSection from '~/systems/Home/components/Hero/HeroSection';
 import { Footer } from '../Footer/Footer';
@@ -10,6 +11,7 @@ export type LayoutProps = {
 export function Layout({ children }: LayoutProps) {
   return (
     <VStack className="min-w-screen overflow-x-clip" gap="0">
+      <PageMeta />
       <VStack className="min-h-screen" gap="0">
         <TopNav />
         <HeroSection />
