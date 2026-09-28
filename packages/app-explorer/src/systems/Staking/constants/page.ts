@@ -26,7 +26,7 @@ export const STAKING_FAQ: ToolFaqItem[] = [
   {
     question: 'What is The Rig?',
     answer:
-      'The Rig is a liquid staking protocol on Ignition. Staking on Fuel has migrated to it, and it compounds rewards automatically.',
+      'The Rig is the liquid staking protocol on Ignition. Stake there and rewards compound automatically.',
   },
   {
     question: 'How long does unstaking take?',
