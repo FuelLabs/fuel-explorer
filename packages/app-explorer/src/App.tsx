@@ -1,4 +1,3 @@
-import { LoadingBox } from '@fuels/ui';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -20,17 +19,12 @@ import BridgeLayout from './layouts/BridgeLayout';
 import ContractLayout from './layouts/ContractLayout';
 import StakingLayout from './layouts/StakingLayout';
 import TransactionLayout from './layouts/TransactionLayout';
-import { BridgeFormSkeleton } from './systems/Bridge/components/BridgeFormSkeleton';
-import { BridgePageShell } from './systems/Bridge/components/BridgePageShell';
-import { DEFAULT_WITHDRAW_DELAY } from './systems/Bridge/constants';
 import { Layout } from './systems/Core/components/Layout/Layout';
 import { StakingScreenLoader } from './systems/Staking/screens/StakingScreenLoader';
 
 import { ErrorPageComponent } from './systems/Core/components/ErrorPage/ErrorPage';
 
-// Bridge and staking pages pull in wagmi, viem and connectkit.
-const BridgePage = lazy(() => import('./pages/BridgePage'));
-const BridgeHistoryPage = lazy(() => import('./pages/BridgeHistoryPage'));
+// Staking pages pull in wagmi, viem and connectkit.
 const StakingOnEthereumPage = lazy(
   () => import('./pages/StakingOnEthereumPage'),
 );
@@ -77,30 +71,8 @@ function App() {
             </Route>
 
             <Route path="/bridge" element={<BridgeLayout />}>
-              <Route
-                index
-                element={
-                  <Suspense
-                    fallback={
-                      <BridgePageShell withdrawDelay={DEFAULT_WITHDRAW_DELAY}>
-                        <BridgeFormSkeleton />
-                      </BridgePageShell>
-                    }
-                  >
-                    <BridgePage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="history"
-                element={
-                  <Suspense
-                    fallback={<LoadingBox className="w-full h-[400px]" />}
-                  >
-                    <BridgeHistoryPage />
-                  </Suspense>
-                }
-              />
+              <Route index />
+              <Route path="history" />
             </Route>
 
             <Route path="/staking" element={<StakingLayout />}>

@@ -220,6 +220,57 @@
   opacity: 0.16;
 }
 
+/* A scroll area with no scrollbar. data-fade-top / data-fade-bottom fade the
+   edge that has more content past it. */
+@property --fuel-fade-top {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --fuel-fade-bottom {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.fuel-scroll-fade {
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--fuel-fade-top),
+    #000 calc(100% - var(--fuel-fade-bottom)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--fuel-fade-top),
+    #000 calc(100% - var(--fuel-fade-bottom)),
+    transparent
+  );
+  transition: --fuel-fade-top 200ms ease-out, --fuel-fade-bottom 200ms ease-out;
+}
+
+.fuel-scroll-fade::-webkit-scrollbar {
+  display: none;
+}
+
+.fuel-scroll-fade[data-fade-top] {
+  --fuel-fade-top: 32px;
+}
+
+.fuel-scroll-fade[data-fade-bottom] {
+  --fuel-fade-bottom: 56px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fuel-scroll-fade {
+    transition: none;
+  }
+}
+
 /* Controls on a dither sit on a busy field, so their fills stay opaque. */
 .fuel-illustrated
   :is(.rt-variant-soft, .rt-variant-ghost, .rt-variant-outline).rt-BaseButton {
