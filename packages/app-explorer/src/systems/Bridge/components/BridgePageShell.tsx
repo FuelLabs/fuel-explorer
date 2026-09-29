@@ -17,7 +17,7 @@ export function BridgePageShell({
   children,
 }: BridgePageShellProps) {
   return (
-    <div className="mt-12 -mb-10 laptop:-mb-[72px]">
+    <div className="mt-12">
       <GridFrame className="fuel-page border-t-0 grid-cols-1 min-[720px]:grid-cols-2">
         <ToolPageHeader
           eyebrow="Bridge"
