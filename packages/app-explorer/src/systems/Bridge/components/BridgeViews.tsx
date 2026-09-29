@@ -13,6 +13,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
   forwardRef,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -107,7 +108,42 @@ function settle(el: HTMLElement) {
     el.style.removeProperty('transform');
     el.style.removeProperty('transform-origin');
     el.style.removeProperty('opacity');
+    el.style.removeProperty('height');
+    el.style.removeProperty('margin-bottom');
+    el.style.removeProperty('padding-top');
+    el.style.removeProperty('padding-bottom');
+    el.style.removeProperty('min-height');
+    el.style.removeProperty('overflow');
   });
+}
+
+// A row that joins a list already on screen opens its own space first, so
+// the rows below slide down instead of jumping. The negative margin absorbs
+// the list gap until the row has height. The collapsed size is written
+// synchronously: framer applies the first keyframe a frame late, and that
+// frame would paint the row at full height.
+function grow(el: HTMLElement) {
+  const style = getComputedStyle(el);
+  const height = el.offsetHeight;
+  const paddingTop = Number.parseFloat(style.paddingTop) || 0;
+  const paddingBottom = Number.parseFloat(style.paddingBottom) || 0;
+  const gap =
+    Number.parseFloat(getComputedStyle(el.parentElement ?? el).rowGap) || 0;
+  el.style.overflow = 'hidden';
+  el.style.minHeight = '0px';
+  el.style.height = '0px';
+  el.style.paddingTop = '0px';
+  el.style.paddingBottom = '0px';
+  el.style.marginBottom = `${-gap}px`;
+  return {
+    keyframes: {
+      height: [0, height],
+      paddingTop: [0, paddingTop],
+      paddingBottom: [0, paddingBottom],
+      marginBottom: [-gap, 0],
+    } as DOMKeyframesDefinition,
+    options: { duration: 0.32, ease: EASE_OUT },
+  };
 }
 
 type PanelViewProps = HTMLAttributes<HTMLDivElement> & {
@@ -125,6 +161,17 @@ const PanelView = forwardRef<HTMLDivElement, PanelViewProps>(function PanelView(
   const [scope, animate] = useAnimate<HTMLDivElement>();
   const [isPresent, safeToRemove] = usePresence();
   const reduce = useReducedMotion();
+  // Must stay stable. A new callback each render makes React null the ref
+  // before AnimatePresence reads it, and the outgoing view never pops out
+  // of the flow, so it pushes the incoming view down.
+  const setRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      (scope as { current: HTMLDivElement | null }).current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    },
+    [scope, ref],
+  );
 
   useLayoutEffect(() => {
     if (!animateIn) return;
@@ -171,7 +218,8 @@ const PanelView = forwardRef<HTMLDivElement, PanelViewProps>(function PanelView(
     };
   }, []);
 
-  // Rows that arrive later, from a slow fetch or Show more, print in too.
+  // Rows that arrive later, from a background refresh, a slow fetch or
+  // Show more, print in too.
   useEffect(() => {
     if (view !== 'history' || reduce) return;
     const root = scope.current;
@@ -179,15 +227,23 @@ const PanelView = forwardRef<HTMLDivElement, PanelViewProps>(function PanelView(
       root.querySelectorAll<HTMLElement>('.fuel-CardListItem'),
     );
     const observer = new MutationObserver(() => {
-      const fresh = [
+      const rows = [
         ...root.querySelectorAll<HTMLElement>('.fuel-CardListItem'),
-      ].filter((el) => !seen.has(el));
+      ];
+      const joinsList = rows.some((el) => seen.has(el));
+      const fresh = rows.filter((el) => !seen.has(el));
       fresh.forEach((el, index) => {
         seen.add(el);
         prepare(el);
-        animate(el, PRINT_IN, { ...enterTransition(index * 0.045) }).then(() =>
-          settle(el),
-        );
+        const delay = index * 0.045;
+        const opening = joinsList ? grow(el) : null;
+        Promise.all([
+          opening &&
+            animate(el, opening.keyframes, { ...opening.options, delay }),
+          animate(el, PRINT_IN, {
+            ...enterTransition(delay + (opening ? 0.12 : 0)),
+          }),
+        ]).then(() => settle(el));
       });
     });
     observer.observe(root, { childList: true, subtree: true });
@@ -224,11 +280,7 @@ const PanelView = forwardRef<HTMLDivElement, PanelViewProps>(function PanelView(
           ? 'fuel-scroll-fade min-h-0 flex-1 overflow-y-auto'
           : undefined
       }
-      ref={(node) => {
-        (scope as { current: HTMLDivElement | null }).current = node;
-        if (typeof ref === 'function') ref(node);
-        else if (ref) ref.current = node;
-      }}
+      ref={setRef}
     >
       {children}
     </div>

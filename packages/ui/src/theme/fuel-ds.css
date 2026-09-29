@@ -192,7 +192,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  height: 160px;
+  height: 30%;
   background: var(--fuel-dither-gradient);
   opacity: 0.45;
   -webkit-mask-image: linear-gradient(to top, black, transparent);

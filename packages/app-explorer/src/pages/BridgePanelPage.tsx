@@ -2,7 +2,6 @@ import { Flex } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { useLocation } from 'react-router-dom';
 import { BridgeViews } from '~/systems/Bridge/components/BridgeViews';
-import { PreviewBridgeTxList } from '~/systems/Bridge/components/PreviewBridgeTxList';
 import { DEFAULT_WITHDRAW_DELAY } from '~/systems/Bridge/constants';
 import { useReportWithdrawDelay } from '~/systems/Bridge/withdrawDelay';
 import { useWithdrawDelay } from '~portal/systems/Bridge/hooks/useWithdrawDelay';
@@ -19,13 +18,7 @@ export default function BridgePanelPage() {
   return (
     <Flex align="center" direction="column" className="min-h-0 flex-1">
       <BridgeHome>
-        <BridgeViews
-          view={view}
-          form={<Bridge />}
-          history={
-            import.meta.env.DEV ? <PreviewBridgeTxList /> : <BridgeTxList />
-          }
-        />
+        <BridgeViews view={view} form={<Bridge />} history={<BridgeTxList />} />
       </BridgeHome>
     </Flex>
   );

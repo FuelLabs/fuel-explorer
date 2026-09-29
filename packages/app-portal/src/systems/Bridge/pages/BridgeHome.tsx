@@ -99,10 +99,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
 const styles = tv({
   slots: {
-    // Fills a fixed-height parent so the history list can scroll under a
-    // header that stays put. Without one it sizes to content.
     content: 'flex w-full max-w-[455px] min-h-0 flex-1 flex-col',
-    // Wide enough for either label, so the button never resizes mid-roll.
     toggle: 'rounded-md min-w-[96px] justify-center gap-1.5',
     icon: 'relative inline-flex size-[14px] items-center justify-center',
     tabs: 'ml-0 color-inherit decoration-none :active:text-success',
