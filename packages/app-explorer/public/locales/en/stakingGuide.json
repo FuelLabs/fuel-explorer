@@ -1,0 +1,35 @@
+{
+  "title": "How staking works",
+  "steps": {
+    "connect": {
+      "title": "Connect your wallet",
+      "description": "Connect the Ethereum wallet that holds your FUEL. The page lists the tokens you can stake."
+    },
+    "validator": {
+      "title": "Choose a validator",
+      "description": "Open Validators and pick who receives your delegation. Validators secure Fuel sequencing."
+    },
+    "stake": {
+      "title": "Stake and track",
+      "description": "Confirm in your wallet. Current positions and Your transactions list every stake and unstake."
+    }
+  },
+  "faq": {
+    "rig": {
+      "question": "What is The Rig?",
+      "answer": "The Rig is the liquid staking protocol on Ignition. Stake there and rewards compound automatically."
+    },
+    "unstake": {
+      "question": "How long does unstaking take?",
+      "answer": "An unstake waits for synchronization and then an unbonding period before the tokens are released. The status dialog shows each stage."
+    },
+    "position": {
+      "question": "Where do I see my stake?",
+      "answer": "Current positions lists every validator you delegate to. Your transactions lists each stake and unstake."
+    },
+    "apr": {
+      "question": "What does the APR badge show?",
+      "answer": "An estimate of the yearly reward rate for staking on Ethereum. It is read from the Fuel indexer and changes over time."
+    }
+  }
+}

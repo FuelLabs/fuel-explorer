@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { FUEL_CHAIN } from 'app-commons';
 import { fetchEcosystemProjects } from '~/systems/Ecosystem/utils/ecosystemProjects';
-import { collectApps, indexByContract } from '../utils/matchApps';
+import { appsInBlock, indexByContract, rankApps } from '../utils/matchApps';
 import {
   type TxApp,
+  listBlockApps,
   readBlockApps,
   writeBlockApps,
 } from '../utils/txAppsCache';
@@ -51,11 +52,7 @@ async function fetchBlockApps(heights: string[]): Promise<BlockApps> {
   const found: BlockApps = {};
   for (const block of blocks) {
     if (!block) continue;
-    const ids: string[] = [];
-    for (const tx of block.transactions) {
-      if (tx.inputContracts) ids.push(...tx.inputContracts);
-    }
-    found[block.height] = collectApps(ids, index);
+    found[block.height] = appsInBlock(block.transactions, index);
   }
   writeBlockApps(found);
   return { ...hits, ...found };
@@ -76,8 +73,10 @@ export function useBlockApps(heights: string[]) {
     retry: false,
   });
 
+  const apps = data ?? cached.hits;
   return {
-    apps: data ?? cached.hits,
+    apps,
+    top: rankApps(listBlockApps()),
     isResolving: cached.misses.length > 0 && (isPending || isFetching),
   };
 }

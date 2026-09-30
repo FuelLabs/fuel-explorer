@@ -1,8 +1,10 @@
 import { Button, DitherImage, GridFrame } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { START_BUILDING_URL } from '../constants';
 
 export function EcosystemHero() {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
@@ -16,11 +18,8 @@ export function EcosystemHero() {
           />
         </div>
         <div className={classes.content()}>
-          <h1 className={classes.title()}>Built on Fuel</h1>
-          <p className={classes.lead()}>
-            Apps, wallets and infrastructure live on the fastest execution
-            layer.
-          </p>
+          <h1 className={classes.title()}>{t('ecosystem.built_on_fuel')}</h1>
+          <p className={classes.lead()}>{t('ecosystem.lead')}</p>
           <Button
             as="a"
             href={START_BUILDING_URL}
@@ -29,7 +28,7 @@ export function EcosystemHero() {
             size="3"
             color="gray"
           >
-            Start building
+            {t('common.start_building')}
           </Button>
         </div>
       </section>

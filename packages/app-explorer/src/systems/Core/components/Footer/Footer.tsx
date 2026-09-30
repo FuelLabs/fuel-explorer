@@ -16,7 +16,35 @@ import dayjs from 'dayjs';
 import { tv } from 'tailwind-variants';
 
 import { APP_COMMIT_HASH } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import data from './data.json';
+
+const SECTION_KEYS = {
+  FUEL: 'footer.fuel',
+  GetStarted: 'footer.get_started',
+  Build: 'footer.build',
+  Environment: 'footer.environment',
+} as const;
+
+const LINK_KEYS: Record<string, string> = {
+  'About Fuel': 'footer.about_fuel',
+  Jobs: 'footer.jobs',
+  Blog: 'footer.blog',
+  'Media Kit': 'footer.media_kit',
+  'Build an app': 'footer.build_an_app',
+  'Create a Smart Contract': 'footer.create_contract',
+  Docs: 'footer.docs',
+  FuelVM: 'footer.fuelvm',
+  'Grant Program': 'footer.grant_program',
+  Github: 'footer.github',
+  Forum: 'footer.forum',
+  Discord: 'footer.discord',
+  Changelog: 'footer.changelog',
+  'Block Explorer': 'footer.block_explorer',
+  Ecosystem: 'footer.ecosystem',
+  Wallet: 'footer.wallet',
+  Bridge: 'footer.bridge',
+};
 
 type FooterNavProps = {
   title: string;
@@ -53,7 +81,17 @@ function FooterNav({ title, links }: FooterNavProps) {
 }
 
 export function Footer() {
+  const { t } = useTranslation();
   const classes = styles();
+  const sections = (
+    Object.keys(SECTION_KEYS) as (keyof typeof SECTION_KEYS)[]
+  ).map((key) => ({
+    title: t(SECTION_KEYS[key]),
+    links: data.links[key].map((link) => ({
+      ...link,
+      label: t(LINK_KEYS[link.label] ?? link.label),
+    })),
+  }));
 
   return (
     <Box as="footer" className={classes.container()}>
@@ -62,10 +100,13 @@ export function Footer() {
           <FuelLogo showLettering size={16} />
 
           <Box className={classes.navs()}>
-            <FooterNav title="FUEL" links={data.links.FUEL} />
-            <FooterNav title="Get Started" links={data.links.GetStarted} />
-            <FooterNav title="Build" links={data.links.Build} />
-            <FooterNav title="Environment" links={data.links.Environment} />
+            {sections.map((section) => (
+              <FooterNav
+                key={section.title}
+                title={section.title}
+                links={section.links}
+              />
+            ))}
           </Box>
         </Flex>
 
@@ -106,13 +147,13 @@ export function Footer() {
           </HStack>
           <HStack justify={'between'}>
             <Text className={classes.meta()} size="2">
-              © {dayjs().year()} Fuel Labs. All rights reserved
+              {t('footer.rights', { year: dayjs().year() })}
             </Text>
             <Text
               className={classes.meta({ className: 'opacity-50' })}
               size="2"
             >
-              version: {APP_COMMIT_HASH}
+              {t('footer.version', { hash: APP_COMMIT_HASH })}
             </Text>
           </HStack>
         </VStack>

@@ -1,0 +1,35 @@
+{
+  "title": "质押如何运作",
+  "steps": {
+    "connect": {
+      "title": "连接钱包",
+      "description": "连接持有 FUEL 的 Ethereum 钱包。页面会列出可以质押的代币。"
+    },
+    "validator": {
+      "title": "选择验证者",
+      "description": "打开验证者并选择委托对象。验证者保障 Fuel 的排序安全。"
+    },
+    "stake": {
+      "title": "质押并跟踪",
+      "description": "在钱包中确认。当前持仓和你的交易会列出每一次质押和解除质押。"
+    }
+  },
+  "faq": {
+    "rig": {
+      "question": "什么是 The Rig？",
+      "answer": "The Rig 是 Ignition 上的流动性质押协议。在那里质押，奖励会自动复利。"
+    },
+    "unstake": {
+      "question": "解除质押需要多久？",
+      "answer": "解除质押要先完成同步，再经过解绑期，代币才会释放。状态对话框会显示每个阶段。"
+    },
+    "position": {
+      "question": "在哪里查看我的质押？",
+      "answer": "当前持仓列出你委托的每个验证者。你的交易列出每一次质押和解除质押。"
+    },
+    "apr": {
+      "question": "APR 徽章显示什么？",
+      "answer": "在 Ethereum 上质押的年化奖励率估计。数据来自 Fuel 索引器，并会随时间变化。"
+    }
+  }
+}

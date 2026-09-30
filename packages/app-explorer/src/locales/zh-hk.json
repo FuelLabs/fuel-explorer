@@ -1,0 +1,149 @@
+{
+  "common": {
+    "view_all": "查看全部",
+    "top_apps": "熱門應用",
+    "language": "語言",
+    "search": "按區塊、交易、合約、地址搜尋...",
+    "search_short": "搜尋",
+    "search_projects": "搜尋",
+    "search_projects_label": "搜尋項目",
+    "all": "全部",
+    "today": "今天",
+    "yesterday": "昨天",
+    "active": "已上線: {{count}}",
+    "building": "開發中: {{count}}",
+    "window_24h": "24小時",
+    "read_docs": "查看文件",
+    "start_building": "開始構建",
+    "one_day": "一天",
+    "questions": "問題"
+  },
+  "nav": {
+    "explorer": "瀏覽器",
+    "bridge": "跨鏈橋",
+    "stake": "質押",
+    "ecosystem": "生態"
+  },
+  "home": {
+    "daily_transactions": "每日交易",
+    "daily_transactions_hint": "過去 24 小時內 Fuel Network 完成的交易總數",
+    "hourly_tps": "每小時 TPS",
+    "tx_per_second": "TX/秒",
+    "peak": "峰值:",
+    "fee_spent": "手續費",
+    "fee_spent_hint": "Fuel Network 上支付的手續費",
+    "usd": "USD",
+    "live_stats": "即時數據",
+    "live_stats_window": "(60秒)",
+    "tps": "TPS",
+    "tx_per_block": "TX / 區塊",
+    "block_size": "區塊大小",
+    "recent_blocks": "最近區塊",
+    "recent_transactions": "最近交易",
+    "fuel_dapps": "Fuel 應用",
+    "tx_count": "{{count}} TX",
+    "size": "大小",
+    "gas": "Gas",
+    "fee": "手續費",
+    "block_link": "區塊 {{number}}"
+  },
+  "ecosystem": {
+    "built_on_fuel": "構建於 Fuel",
+    "lead": "應用、錢包和基礎設施運行在最快的執行層上。",
+    "sections": {
+      "fuel": {
+        "eyebrow": "官方應用",
+        "title": "Fuel Suite",
+        "lead": "由 Fuel Labs 開發並維護的官方產品。"
+      },
+      "defi": {
+        "eyebrow": "DeFi",
+        "title": "DeFi",
+        "lead": "在 Fuel 上交易、借貸、發行並賺取收益。"
+      },
+      "wallets": {
+        "eyebrow": "錢包",
+        "title": "錢包",
+        "lead": "保管、發送、簽名。在 Fuel 上自我託管。"
+      },
+      "infrastructure": {
+        "eyebrow": "基礎設施",
+        "title": "基礎設施",
+        "lead": "連接 Fuel 的跨鏈橋、預言機、索引器和入金通道。"
+      },
+      "nft": {
+        "eyebrow": "NFT 與遊戲",
+        "title": "NFT 與遊戲",
+        "lead": "Fuel 上的藏品、市場、身份和遊戲。"
+      },
+      "tooling": {
+        "eyebrow": "工具",
+        "title": "工具",
+        "lead": "在 Fuel 上構建所需的開發工具和學習資料。"
+      },
+      "security": {
+        "eyebrow": "安全",
+        "title": "安全",
+        "lead": "審計並保護 Fuel 項目的安全機構。"
+      },
+      "more": {
+        "eyebrow": "更多",
+        "title": "更多 Fuel 項目",
+        "lead": "Fuel 上的其他項目。"
+      }
+    }
+  },
+  "footer": {
+    "fuel": "FUEL",
+    "get_started": "開始使用",
+    "build": "構建",
+    "environment": "環境",
+    "about_fuel": "關於 Fuel",
+    "jobs": "招聘",
+    "blog": "網誌",
+    "media_kit": "媒體資料",
+    "build_an_app": "構建應用",
+    "create_contract": "建立智能合約",
+    "docs": "文件",
+    "fuelvm": "FuelVM",
+    "grant_program": "資助計劃",
+    "github": "Github",
+    "forum": "論壇",
+    "discord": "Discord",
+    "changelog": "更新日誌",
+    "block_explorer": "區塊瀏覽器",
+    "ecosystem": "生態",
+    "wallet": "錢包",
+    "bridge": "跨鏈橋",
+    "rights": "© {{year}} Fuel Labs. All rights reserved",
+    "version": "version: {{hash}}"
+  },
+  "staking": {
+    "title": "幫助保障 Fuel 網絡安全",
+    "lead": "將代幣委託給 Fuel 驗證者，或通過 Ignition 上的 The Rig 進行流動性質押。",
+    "read_docs": "查看文件",
+    "open_rig": "打開 The Rig",
+    "docs": "Fuel 文件",
+    "tab_rig": "通過 The Rig 流動性質押",
+    "tab_ethereum": "在 Ethereum 上質押",
+    "rig_card_title": "在 The Rig 上流動性質押",
+    "rig_card_lead": "在 Ignition 上質押並收到流動性質押代幣。獎勵會自動複利。",
+    "claimable": "你有 {{amount}} stFUEL 可在 <rig>The Rig</rig> 領取。",
+    "connect_tokens": "連接錢包以查看可質押的代幣。",
+    "connect_ethereum": "連接 Ethereum 錢包",
+    "positions": "當前持倉",
+    "validators": "驗證者",
+    "transactions": "你的交易",
+    "wallet_disconnected": "錢包未連接",
+    "connect_positions": "請連接錢包以查看你的質押持倉。"
+  },
+  "errors": {
+    "not_found": "頁面未找到",
+    "not_found_body": "你查找的頁面不存在，或發生了其他錯誤。",
+    "not_found_short": "你查找的頁面不存在。",
+    "go_home": "返回首頁",
+    "unexpected": "出現問題",
+    "unexpected_body": "發生了意外錯誤。請重新載入頁面。",
+    "reload": "重新載入"
+  }
+}

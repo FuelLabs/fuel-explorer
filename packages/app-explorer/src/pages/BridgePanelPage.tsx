@@ -2,7 +2,6 @@ import { Flex } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { useLocation } from 'react-router-dom';
 import { BridgeViews } from '~/systems/Bridge/components/BridgeViews';
-import { DEFAULT_WITHDRAW_DELAY } from '~/systems/Bridge/constants';
 import { useReportWithdrawDelay } from '~/systems/Bridge/withdrawDelay';
 import { useWithdrawDelay } from '~portal/systems/Bridge/hooks/useWithdrawDelay';
 import { Bridge, BridgeHome, BridgeTxList } from '~portal/systems/Bridge/pages';
@@ -11,7 +10,7 @@ import { Bridge, BridgeHome, BridgeTxList } from '~portal/systems/Bridge/pages';
 // animate into each other instead of remounting.
 export default function BridgePanelPage() {
   const { timeToWithdrawFormatted } = useWithdrawDelay();
-  useReportWithdrawDelay(timeToWithdrawFormatted ?? DEFAULT_WITHDRAW_DELAY);
+  useReportWithdrawDelay(timeToWithdrawFormatted ?? '');
   const { pathname } = useLocation();
   const view = pathname.startsWith(Routes.bridgeHistory()) ? 'history' : 'form';
 

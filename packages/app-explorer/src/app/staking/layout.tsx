@@ -42,7 +42,10 @@ export default async function Layout({
               subtitle="Help secure the FUEL network by delegating your tokens to Fuel validators."
             />
           </HStack>
-          <StakingTabs />
+          <StakingTabs
+            rigLabel="Liquid Stake via The Rig"
+            ethereumLabel="Stake on Ethereum Network"
+          />
           {children}
         </>
       ) : (

@@ -1,5 +1,6 @@
 import { Button, Text, VStack } from '@fuels/ui';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { LogoEth } from '~staking/systems/Core/components/LogoEth/LogoEth';
 
 const animations = {
@@ -24,6 +25,7 @@ type DelegatedPositionsConnectProps = {
 export const DelegatedPositionsConnect = ({
   onConnect,
 }: DelegatedPositionsConnectProps) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       variants={animations}
@@ -34,14 +36,14 @@ export const DelegatedPositionsConnect = ({
     >
       <VStack gap="4" align="center">
         <Text className="text-heading text-xl font-semibold">
-          Wallet not connected
+          {t('staking.wallet_disconnected')}
         </Text>
         <Text className="text-gray-11 max-w-[360px]">
-          Please connect your wallet to view your staking positions.
+          {t('staking.connect_positions')}
         </Text>
         <Button onClick={onConnect} size="3" className="mt-1">
           <LogoEth size="medium" />
-          Connect Ethereum Wallet
+          {t('staking.connect_ethereum')}
         </Button>
       </VStack>
     </motion.div>

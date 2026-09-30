@@ -1,4 +1,5 @@
 import { IconSearch } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import type { EcosystemSection } from '../constants';
 
@@ -17,9 +18,13 @@ export function EcosystemFilterBar({
   onSearchChange,
   onSectionChange,
 }: EcosystemFilterBarProps) {
+  const { t } = useTranslation();
   const classes = styles();
-  const filters = [{ id: undefined, label: 'All' }].concat(
-    sections.map((section) => ({ id: section.id, label: section.eyebrow })),
+  const filters = [{ id: undefined, label: t('common.all') }].concat(
+    sections.map((section) => ({
+      id: section.id,
+      label: t(`ecosystem.sections.${section.id}.eyebrow`),
+    })),
   ) as { id?: string; label: string }[];
 
   return (
@@ -29,8 +34,8 @@ export function EcosystemFilterBar({
         <input
           type="search"
           value={search}
-          placeholder="Search"
-          aria-label="Search projects"
+          placeholder={t('common.search_projects')}
+          aria-label={t('common.search_projects_label')}
           onChange={(e) => onSearchChange(e.target.value)}
           className={classes.input()}
         />

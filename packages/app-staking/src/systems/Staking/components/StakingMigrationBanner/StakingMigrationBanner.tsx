@@ -4,6 +4,7 @@ import { IconInfoCircle } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import * as AppCommons from 'app-commons';
 import { DECIMAL_FUEL } from 'fuels';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { StakingMigration } from '~staking/contracts/rig/StakingMigration';
 import { IconRig } from './IconRig';
@@ -11,6 +12,7 @@ import { IconRig } from './IconRig';
 const RIG_URL = 'https://rig.st';
 
 export const StakingMigrationBanner = () => {
+  const { t } = useTranslation();
   const { account } = useAccount();
   const { wallet } = useWallet();
   const accountAddress = account ?? undefined;
@@ -59,11 +61,10 @@ export const StakingMigrationBanner = () => {
         <Card.Body>
           <VStack gap="3">
             <Text className="m-0 font-medium text-heading text-[20px] leading-[24px] tracking-[-0.4px]">
-              Liquid stake on The Rig
+              {t('staking.rig_card_title')}
             </Text>
             <Text className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]">
-              Stake on Ignition and receive a liquid token. Rewards compound
-              automatically.
+              {t('staking.rig_card_lead')}
             </Text>
             <Button
               color="gray"
@@ -75,7 +76,7 @@ export const StakingMigrationBanner = () => {
               leftIconClassName="relative -top-[1px]"
               className="self-start"
             >
-              Open The Rig
+              {t('staking.open_rig')}
             </Button>
           </VStack>
         </Card.Body>
@@ -86,16 +87,20 @@ export const StakingMigrationBanner = () => {
             <IconInfoCircle className="text-blue-12" />
           </Alert.Icon>
           <Text className="text-gray-11">
-            You have{' '}
-            {pendingDeposit.format({
-              units: DECIMAL_FUEL,
-              precision: 2,
-            })}{' '}
-            stFUEL to claim on{' '}
-            <Link to={RIG_URL} target="_blank" className="underline">
-              The Rig
-            </Link>
-            .
+            <Trans
+              i18nKey="staking.claimable"
+              values={{
+                amount: pendingDeposit.format({
+                  units: DECIMAL_FUEL,
+                  precision: 2,
+                }),
+              }}
+              components={{
+                rig: (
+                  <Link to={RIG_URL} target="_blank" className="underline" />
+                ),
+              }}
+            />
           </Text>
         </Alert>
       )}

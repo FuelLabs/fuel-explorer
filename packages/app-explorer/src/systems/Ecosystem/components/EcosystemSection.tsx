@@ -1,21 +1,24 @@
 import { SectionTitle } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import type { EcosystemGroup } from '../utils/groupProjects';
 import { EcosystemProjectCard } from './EcosystemProjectCard';
 
 export function EcosystemSection({ section, projects }: EcosystemGroup) {
+  const { t } = useTranslation();
   const classes = styles();
+  const copy = `ecosystem.sections.${section.id}`;
 
   return (
     <section aria-labelledby={`ecosystem-${section.id}`}>
-      <SectionTitle as="p">{section.eyebrow}</SectionTitle>
+      <SectionTitle as="p">{t(`${copy}.eyebrow`)}</SectionTitle>
       <h2 id={`ecosystem-${section.id}`} className={classes.title()}>
-        {section.title}
+        {t(`${copy}.title`)}
         <span className={classes.count()}>
           /{String(projects.length).padStart(2, '0')}
         </span>
       </h2>
-      <p className={classes.lead()}>{section.lead}</p>
+      <p className={classes.lead()}>{t(`${copy}.lead`)}</p>
       <div className={classes.grid()}>
         {projects.map((project) => (
           <EcosystemProjectCard key={project.name} project={project} />

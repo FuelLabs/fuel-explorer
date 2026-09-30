@@ -6,6 +6,7 @@ import {
 } from '@fuels/ui';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   CartesianGrid,
   Line,
@@ -40,6 +41,7 @@ interface GasSpentProps {
   blocks: any;
 }
 const GasSpentChart = ({ blocks }: GasSpentProps) => {
+  const { t } = useTranslation();
   const { totalGasSpent, chartData, index } = useMemo(() => {
     if (!blocks || typeof blocks !== 'object') {
       return {
@@ -88,7 +90,7 @@ const GasSpentChart = ({ blocks }: GasSpentProps) => {
           <div className="fuel-label group">
             <div className="relative group">
               <div className="flex items-center group">
-                <span className="">Fee Spent</span>
+                <span className="">{t('home.fee_spent')}</span>
                 <span className="ml-2 group cursor-pointer">
                   <svg
                     width="14"
@@ -105,19 +107,19 @@ const GasSpentChart = ({ blocks }: GasSpentProps) => {
                 </span>
               </div>
               <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white  bg-gray-3 rounded-lg shadow-sm">
-                Fee Spent on Fuel Network
+                {t('home.fee_spent_hint')}
                 <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
               </div>
             </div>
           </div>
-          <span className="fuel-label block">24h</span>
+          <span className="fuel-label block">{t('common.window_24h')}</span>
         </div>
         <HStack align={'baseline'}>
           <h2 className="fuel-stat whitespace-nowrap">
             <UsdAmount value={totalGasSpent} />
           </h2>
           <p className="text-[11px] text-heading font-regular text-muted">
-            USD
+            {t('home.usd')}
           </p>
         </HStack>
         <ResponsiveContainer width="100%" height={170}>

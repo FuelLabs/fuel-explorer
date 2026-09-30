@@ -1,14 +1,68 @@
 import { GridFrame } from '@fuels/ui';
-import type { ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ToolDitherCell } from '~/systems/Core/components/ToolPage/ToolDitherCell';
 import { ToolFaq } from '~/systems/Core/components/ToolPage/ToolFaq';
 import { ToolSteps } from '~/systems/Core/components/ToolPage/ToolSteps';
-import { BRIDGE_DOCS_URL, BRIDGE_STEPS, getBridgeFaq } from '../constants';
+import { BRIDGE_DOCS_URL } from '../constants';
 
 type BridgePageShellProps = {
   withdrawDelay: string;
   children: ReactNode;
 };
+
+function BridgeGuide({ withdrawDelay }: { withdrawDelay: string }) {
+  const { t } = useTranslation('bridgeGuide');
+  const steps = [
+    {
+      title: t('steps.connect.title'),
+      description: t('steps.connect.description'),
+    },
+    {
+      title: t('steps.amount.title'),
+      description: t('steps.amount.description'),
+    },
+    {
+      title: t('steps.confirm.title'),
+      description: t('steps.confirm.description'),
+    },
+  ];
+
+  const faq = [
+    {
+      question: t('faq.duration.question'),
+      answer: t('faq.duration.answer', { delay: withdrawDelay }),
+    },
+    {
+      question: t('faq.assets.question'),
+      answer: t('faq.assets.answer'),
+    },
+    {
+      question: t('faq.faster.question'),
+      answer: t('faq.faster.answer'),
+    },
+    {
+      question: t('faq.history.question'),
+      answer: t('faq.history.answer'),
+    },
+    {
+      question: t('faq.cancel.question'),
+      answer: t('faq.cancel.answer'),
+    },
+  ];
+
+  return (
+    <>
+      <ToolSteps
+        title={t('title')}
+        lead={t('lead')}
+        steps={steps}
+        note={t('withdraw_note', { delay: withdrawDelay })}
+      />
+      <ToolFaq items={faq} docsLabel={t('docs')} docsUrl={BRIDGE_DOCS_URL} />
+    </>
+  );
+}
 
 // The form is the page. The explanation sits under it, the same way staking
 // puts "How staking works" under the stake panel.
@@ -24,17 +78,9 @@ export function BridgePageShell({
       >
         {children}
       </ToolDitherCell>
-      <ToolSteps
-        title="How bridging works"
-        lead="Deposit to Fuel Ignition or withdraw back to Ethereum. Connect both wallets, choose an asset and confirm."
-        steps={BRIDGE_STEPS}
-        note={`Withdrawals to Ethereum take up to ${withdrawDelay}`}
-      />
-      <ToolFaq
-        items={getBridgeFaq(withdrawDelay)}
-        docsLabel="Bridge docs"
-        docsUrl={BRIDGE_DOCS_URL}
-      />
+      <Suspense fallback={null}>
+        <BridgeGuide withdrawDelay={withdrawDelay} />
+      </Suspense>
     </GridFrame>
   );
 }

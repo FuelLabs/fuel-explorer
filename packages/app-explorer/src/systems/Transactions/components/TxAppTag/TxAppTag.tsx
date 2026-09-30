@@ -1,7 +1,11 @@
 import { getProjectImage } from 'app-commons';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { forwardRef, useState } from 'react';
+import { type MouseEvent, forwardRef, useState } from 'react';
 import type { TxApp } from '../../utils/txAppsCache';
+
+function stopRowNavigation(event: MouseEvent) {
+  event.stopPropagation();
+}
 
 const MAX_SHOWN = 2;
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -25,14 +29,15 @@ function AppLogo({
 }: { app: TxApp; delay: number; box: string }) {
   const [broken, setBroken] = useState(false);
   if (!app.image || broken) return null;
-  return (
-    <motion.span
-      title={app.name}
-      className={`relative shrink-0 ${box}`}
-      initial={{ opacity: 0, scale: 0.6 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, ease: EASE_OUT, delay }}
-    >
+  const shell = {
+    title: app.name,
+    className: `pointer-events-auto relative z-10 shrink-0 ${box}`,
+    initial: { opacity: 0, scale: 0.6 },
+    animate: { opacity: 1, scale: 1 },
+    transition: { duration: 0.3, ease: EASE_OUT, delay },
+  };
+  const face = (
+    <>
       <motion.img
         src={getProjectImage(app.image)}
         alt={app.name}
@@ -63,7 +68,19 @@ function AppLogo({
           transition={{ duration: 0.7, ease: 'easeInOut', delay: delay + 0.15 }}
         />
       </span>
-    </motion.span>
+    </>
+  );
+  if (!app.url) return <motion.span {...shell}>{face}</motion.span>;
+  return (
+    <motion.a
+      href={app.url}
+      target="_blank"
+      rel="noreferrer"
+      onClick={stopRowNavigation}
+      {...shell}
+    >
+      {face}
+    </motion.a>
   );
 }
 
@@ -100,17 +117,37 @@ function StaticTag({ apps, dense }: { apps: TxApp[]; dense?: boolean }) {
     <span className="flex min-w-0 items-center gap-1">
       {shown
         .filter((app): app is TxApp & { image: string } => Boolean(app.image))
-        .map((app) => (
-          <img
-            key={app.name}
-            src={getProjectImage(app.image)}
-            alt={app.name}
-            title={app.name}
-            width={24}
-            height={24}
-            className={`${box} shrink-0 object-cover`}
-          />
-        ))}
+        .map((app) =>
+          app.url ? (
+            <a
+              key={app.name}
+              href={app.url}
+              target="_blank"
+              rel="noreferrer"
+              title={app.name}
+              onClick={stopRowNavigation}
+              className="pointer-events-auto relative z-10 shrink-0"
+            >
+              <img
+                src={getProjectImage(app.image)}
+                alt={app.name}
+                width={24}
+                height={24}
+                className={`${box} object-cover`}
+              />
+            </a>
+          ) : (
+            <img
+              key={app.name}
+              src={getProjectImage(app.image)}
+              alt={app.name}
+              title={app.name}
+              width={24}
+              height={24}
+              className={`${box} shrink-0 object-cover`}
+            />
+          ),
+        )}
       {hidden > 0 && (
         <span
           className={`shrink-0 text-secondary ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}

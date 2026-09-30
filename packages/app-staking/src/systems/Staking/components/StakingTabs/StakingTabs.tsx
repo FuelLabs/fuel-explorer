@@ -3,7 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { Routes as StakingRoutes } from '../../../../routes';
 
-export const StakingTabs = () => {
+type StakingTabsProps = {
+  rigLabel: string;
+  ethereumLabel: string;
+};
+
+export const StakingTabs = ({ rigLabel, ethereumLabel }: StakingTabsProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const classes = styles();
@@ -28,11 +33,12 @@ export const StakingTabs = () => {
     >
       <ToggleGroup.Item
         value={StakingRoutes.stakingRig()}
-        aria-label="Liquid Staking Tab"
+        aria-label={rigLabel}
+        className={classes.item()}
         onClick={() => navigate(StakingRoutes.stakingRig())}
       >
-        <HStack className="text-lg">
-          <Box className="mt-1">
+        <HStack className={classes.label()}>
+          <Box className="mt-1 shrink-0 max-[719px]:mt-0 max-[719px]:self-center">
             <svg
               width="28"
               height="15"
@@ -63,21 +69,22 @@ export const StakingTabs = () => {
               </defs>
             </svg>
           </Box>
-          Liquid Stake via The Rig
+          <span className={classes.text()}>{rigLabel}</span>
         </HStack>
       </ToggleGroup.Item>
       <ToggleGroup.Item
         value={StakingRoutes.stakingL1()}
-        aria-label="Ethereum Staking Tab"
+        aria-label={ethereumLabel}
+        className={classes.item()}
         onClick={() => navigate(StakingRoutes.stakingL1())}
       >
-        <HStack className="text-lg">
+        <HStack className={classes.label()}>
           <img
             src="/assets/eth.svg"
             alt="ETH Logo"
-            className="w-[28px] h-[28px] shrink-0 rounded-full"
+            className="w-[28px] h-[28px] shrink-0 rounded-full max-[719px]:mx-auto"
           />
-          Stake on Ethereum Network
+          <span className={classes.text()}>{ethereumLabel}</span>
         </HStack>
       </ToggleGroup.Item>
     </ToggleGroup>
@@ -88,9 +95,24 @@ const styles = tv({
   slots: {
     tabTrigger: ['flex-1', '[&_.rt-TabsTriggerInner]:w-full'],
     toggle: [
-      'w-full rounded-lg h-16',
-      'fuel-[ToggleGroupItem]:text-xlg',
-      'mb-8',
+      'box-border w-full min-w-0 max-w-full mb-8 h-16',
+      'max-[719px]:h-auto max-[719px]:min-h-16',
+      'max-[719px]:![grid-auto-columns:minmax(0,1fr)]',
+      'max-[719px]:[&_.rt-SegmentedControlItem]:h-auto',
+      'max-[719px]:[&_.rt-SegmentedControlItem]:min-w-0',
+      'max-[719px]:[&_.rt-SegmentedControlItem]:whitespace-normal',
+      'max-[719px]:[&_.rt-SegmentedControlItemLabel]:whitespace-normal',
+    ],
+    item: [
+      'max-[719px]:h-auto max-[719px]:min-h-14 max-[719px]:min-w-0 max-[719px]:px-2',
+    ],
+    label: [
+      'min-w-0 items-center text-lg',
+      'max-[719px]:!flex-col max-[719px]:!items-stretch max-[719px]:gap-1 max-[719px]:py-1.5',
+    ],
+    text: [
+      'min-[720px]:whitespace-nowrap',
+      'max-[719px]:w-full max-[719px]:whitespace-normal max-[719px]:text-center max-[719px]:text-[12px] max-[719px]:![line-height:16px]',
     ],
     nextLink: 'w-full text-center',
   },
