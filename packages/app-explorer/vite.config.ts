@@ -74,6 +74,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': path.resolve(__dirname, './src'),
+      '@i18n': path.resolve(__dirname, './src/i18n.ts'),
       '~staking': path.resolve(__dirname, '../app-staking/src'),
       '@fuel-explorer/graphql/sdk': path.resolve(
         __dirname,

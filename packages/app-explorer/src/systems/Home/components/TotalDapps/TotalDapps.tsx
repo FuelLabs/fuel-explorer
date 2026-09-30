@@ -1,5 +1,6 @@
 import { AnimatedNumber, RoundedContainer } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 
 import type React from 'react';
 
@@ -14,6 +15,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
   total,
   featured,
 }) => {
+  const { t } = useTranslation();
   const activePercentage = (active / total) * 100;
   const buildingPercentage = ((total - active) / total) * 100;
   const activeBarStyle = {
@@ -33,12 +35,12 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
     <RoundedContainer className="validators-chart h-full px-5">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
-          <h3 className="fuel-label">Fuel Dapps</h3>
+          <h3 className="fuel-label">{t('home.fuel_dapps')}</h3>
           <a
             className="fuel-label block"
             href="https://app.fuel.network/ecosystem"
           >
-            View All
+            {t('common.view_all')}
           </a>
         </div>
         <h2 className="fuel-stat">
@@ -55,17 +57,17 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
         </div>
         <div className="flex items-center justify-between mt-1">
           <span className="text-[12px] leading-[20px] text-muted block font-bold">
-            Active: {active}
+            {t('common.active', { count: active })}
           </span>
           <span className="text-[12px] leading-[20px] text-muted block font-bold">
-            Building: {total - active}
+            {t('common.building', { count: total - active })}
           </span>
         </div>
 
         <div className="my-2 h-[1px] bg-[rgba(255,255,255,0.04)]" />
 
         <span className="text-[12px] leading-[20px] text-muted block font-bold">
-          Top Apps
+          {t('common.top_apps')}
         </span>
 
         {featured.map(

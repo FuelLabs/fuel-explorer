@@ -1,6 +1,7 @@
 import { AnimatedNumber, type ChartConfig, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   CartesianGrid,
   Line,
@@ -24,6 +25,7 @@ interface DailyTransactionProps {
 const formatInteger = (v: number) => Math.round(v).toLocaleString();
 
 const DailyTransaction = (blocks: DailyTransactionProps) => {
+  const { t } = useTranslation();
   const { chartDataArray, cumilativeTsx } = useMemo(() => {
     const chartData = blocks.blocks?.reduce(
       (acc: { [key: string]: number }, block: any) => {
@@ -61,7 +63,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
           <div className="fuel-label group relative">
             <div className=" relative group">
               <div className="flex items-center group">
-                <span className="">Daily Transactions</span>
+                <span className="">{t('home.daily_transactions')}</span>
                 <span className="ml-2 group cursor-pointer">
                   <svg
                     width="14"
@@ -78,13 +80,12 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
                 </span>
               </div>
               <div className="absolute left-[20px] top-[30px] w-[20rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 px-3 py-2 text-xs font-light text-black dark:text-white  bg-gray-3 rounded-lg shadow-sm">
-                The total number of transactions completed on the Fuel Network
-                in the last 24 hours
+                {t('home.daily_transactions_hint')}
                 <div className="absolute left-[10px] top-[-6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-gray-3" />
               </div>
             </div>
           </div>
-          <span className="fuel-label block">24h</span>
+          <span className="fuel-label block">{t('common.window_24h')}</span>
         </div>
         <h2 className="fuel-stat">
           <AnimatedNumber value={cumilativeTsx} format={formatInteger} />

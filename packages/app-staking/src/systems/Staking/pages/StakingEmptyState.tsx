@@ -1,8 +1,10 @@
 import { Button, Card, Flex, Text } from '@fuels/ui';
 import { useModal } from 'connectkit';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 
 export const StakingEmptyState = () => {
+  const { t } = useTranslation();
   const classes = styles();
   const { setOpen } = useModal();
 
@@ -11,7 +13,7 @@ export const StakingEmptyState = () => {
       <Card.Body className={classes.cardBody()}>
         <Flex gap="2" className={classes.content()}>
           <Text as="div" size="2" className={classes.text()}>
-            Connect your wallet to view available tokens for staking.
+            {t('staking.connect_tokens')}
           </Text>
           <Button
             onClick={() => setOpen(true)}
@@ -20,7 +22,7 @@ export const StakingEmptyState = () => {
             variant="outline"
             className={classes.button()}
           >
-            Connect Ethereum Wallet
+            {t('staking.connect_ethereum')}
           </Button>
         </Flex>
       </Card.Body>

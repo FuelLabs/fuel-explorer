@@ -1,0 +1,149 @@
+{
+  "common": {
+    "view_all": "모두 보기",
+    "top_apps": "인기 앱",
+    "language": "언어",
+    "search": "블록, 트랜잭션, 컨트랙트, 주소로 검색...",
+    "search_short": "검색",
+    "search_projects": "검색",
+    "search_projects_label": "프로젝트 검색",
+    "all": "전체",
+    "today": "오늘",
+    "yesterday": "어제",
+    "active": "운영 중: {{count}}",
+    "building": "개발 중: {{count}}",
+    "window_24h": "24시간",
+    "read_docs": "문서",
+    "start_building": "개발 시작",
+    "one_day": "하루",
+    "questions": "질문"
+  },
+  "nav": {
+    "explorer": "탐색기",
+    "bridge": "브리지",
+    "stake": "스테이킹",
+    "ecosystem": "생태계"
+  },
+  "home": {
+    "daily_transactions": "일일 트랜잭션",
+    "daily_transactions_hint": "지난 24시간 동안 Fuel Network에서 완료된 트랜잭션 합계",
+    "hourly_tps": "시간별 TPS",
+    "tx_per_second": "TX/초",
+    "peak": "최고:",
+    "fee_spent": "지불 수수료",
+    "fee_spent_hint": "Fuel Network에서 지불된 수수료",
+    "usd": "USD",
+    "live_stats": "실시간 통계",
+    "live_stats_window": "(60초)",
+    "tps": "TPS",
+    "tx_per_block": "TX / 블록",
+    "block_size": "블록 크기",
+    "recent_blocks": "최근 블록",
+    "recent_transactions": "최근 트랜잭션",
+    "fuel_dapps": "Fuel 앱",
+    "tx_count": "{{count}} TX",
+    "size": "크기",
+    "gas": "가스",
+    "fee": "수수료",
+    "block_link": "블록 {{number}}"
+  },
+  "ecosystem": {
+    "built_on_fuel": "Fuel 위에서",
+    "lead": "앱, 지갑, 인프라가 가장 빠른 실행 레이어에서 동작합니다.",
+    "sections": {
+      "fuel": {
+        "eyebrow": "공식 앱",
+        "title": "Fuel Suite",
+        "lead": "Fuel Labs가 만들고 운영하는 공식 제품."
+      },
+      "defi": {
+        "eyebrow": "DeFi",
+        "title": "DeFi",
+        "lead": "Fuel의 자산을 거래, 대출, 발행하고 수익을 얻습니다."
+      },
+      "wallets": {
+        "eyebrow": "지갑",
+        "title": "지갑",
+        "lead": "보관, 전송, 서명. Fuel에서의 셀프 커스터디."
+      },
+      "infrastructure": {
+        "eyebrow": "인프라",
+        "title": "인프라",
+        "lead": "Fuel을 연결하는 브리지, 오라클, 인덱서, 온램프."
+      },
+      "nft": {
+        "eyebrow": "NFT와 게임",
+        "title": "NFT와 게임",
+        "lead": "Fuel의 컬렉션, 마켓, 신원, 게임."
+      },
+      "tooling": {
+        "eyebrow": "도구",
+        "title": "도구",
+        "lead": "Fuel에서 개발하기 위한 도구와 학습 자료."
+      },
+      "security": {
+        "eyebrow": "보안",
+        "title": "보안",
+        "lead": "Fuel 프로젝트를 감사하고 보호하는 보안 회사."
+      },
+      "more": {
+        "eyebrow": "더 보기",
+        "title": "그 외 Fuel",
+        "lead": "Fuel의 다른 프로젝트."
+      }
+    }
+  },
+  "footer": {
+    "fuel": "FUEL",
+    "get_started": "시작하기",
+    "build": "개발",
+    "environment": "환경",
+    "about_fuel": "Fuel 소개",
+    "jobs": "채용",
+    "blog": "블로그",
+    "media_kit": "미디어 키트",
+    "build_an_app": "앱 만들기",
+    "create_contract": "스마트 컨트랙트 만들기",
+    "docs": "문서",
+    "fuelvm": "FuelVM",
+    "grant_program": "그랜트",
+    "github": "Github",
+    "forum": "포럼",
+    "discord": "Discord",
+    "changelog": "변경 기록",
+    "block_explorer": "블록 탐색기",
+    "ecosystem": "생태계",
+    "wallet": "지갑",
+    "bridge": "브리지",
+    "rights": "© {{year}} Fuel Labs. All rights reserved",
+    "version": "version: {{hash}}"
+  },
+  "staking": {
+    "title": "Fuel 네트워크 보안에 참여",
+    "lead": "FUEL을 밸리데이터에 위임하거나, Ignition의 The Rig에서 리퀴드 스테이킹하세요.",
+    "read_docs": "문서",
+    "open_rig": "The Rig 열기",
+    "docs": "Fuel 문서",
+    "tab_rig": "The Rig 리퀴드 스테이킹",
+    "tab_ethereum": "Ethereum 스테이킹",
+    "rig_card_title": "The Rig 리퀴드 스테이킹",
+    "rig_card_lead": "Ignition에서 스테이킹하고 리퀴드 토큰을 받습니다. 보상은 자동으로 복리됩니다.",
+    "claimable": "{{amount}} stFUEL을 <rig>The Rig</rig>에서 받을 수 있습니다.",
+    "connect_tokens": "스테이킹할 수 있는 토큰을 보려면 지갑을 연결하세요.",
+    "connect_ethereum": "Ethereum 지갑 연결",
+    "positions": "현재 포지션",
+    "validators": "밸리데이터",
+    "transactions": "내 트랜잭션",
+    "wallet_disconnected": "지갑이 연결되지 않음",
+    "connect_positions": "스테이킹 포지션을 보려면 지갑을 연결하세요."
+  },
+  "errors": {
+    "not_found": "페이지를 찾을 수 없습니다",
+    "not_found_body": "찾으시는 페이지가 없거나 다른 오류가 발생했습니다.",
+    "not_found_short": "찾으시는 페이지가 없습니다.",
+    "go_home": "홈으로 돌아가기",
+    "unexpected": "문제가 발생했습니다",
+    "unexpected_body": "예기치 않은 오류가 발생했습니다. 페이지를 새로고침하세요.",
+    "reload": "새로고침"
+  }
+}

@@ -1,6 +1,7 @@
 import { AnimatedNumber, HStack, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Bar,
   CartesianGrid,
@@ -19,6 +20,7 @@ export interface TPSHourlyProps {
 }
 
 export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
+  const { t } = useTranslation();
   const { chartData, currentHourAvg } = useMemo(() => {
     if (!Array.isArray(tpsPerMinute) || tpsPerMinute.length === 0) {
       return { chartData: [], currentHourAvg: 0 };
@@ -62,8 +64,8 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
     <RoundedContainer className="py-4 px-5 h-full flex flex-col">
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden space-y-[16px]">
         <div className="flex items-center justify-between">
-          <span className="fuel-label">Hourly TPS</span>
-          <span className="fuel-label">24h</span>
+          <span className="fuel-label">{t('home.hourly_tps')}</span>
+          <span className="fuel-label">{t('common.window_24h')}</span>
         </div>
         <HStack className="items-baseline gap-3" gap={'0'}>
           <HStack className="items-baseline" gap={'0'}>
@@ -74,16 +76,16 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
               />
             </h2>
             <div className="text-[12px] leading-[12px] text-heading ml-1">
-              TX/s
+              {t('home.tx_per_second')}
             </div>
           </HStack>
           {peakTps > 0 && (
             <span className="text-[12px] text-muted">
-              Peak:{' '}
+              {t('home.peak')}{' '}
               <span className="text-[var(--color-error)] font-medium">
                 {peakTps.toFixed(2)}
               </span>{' '}
-              TX/s
+              {t('home.tx_per_second')}
             </span>
           )}
         </HStack>

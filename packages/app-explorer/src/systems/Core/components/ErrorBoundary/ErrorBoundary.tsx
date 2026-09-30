@@ -1,4 +1,5 @@
 import { Button } from '@fuels/ui';
+import i18n from '@i18n';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 type Props = {
@@ -25,11 +26,13 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center gap-4 pt-16 pb-16 text-center">
-          <h1 className="text-2xl font-medium">Something went wrong</h1>
-          <p className="text-base">
-            An unexpected error occurred. Please reload the page.
-          </p>
-          <Button onClick={() => window.location.reload()}>Reload</Button>
+          <h1 className="text-2xl font-medium">
+            {i18n.t('errors.unexpected')}
+          </h1>
+          <p className="text-base">{i18n.t('errors.unexpected_body')}</p>
+          <Button onClick={() => window.location.reload()}>
+            {i18n.t('errors.reload')}
+          </Button>
         </div>
       );
     }

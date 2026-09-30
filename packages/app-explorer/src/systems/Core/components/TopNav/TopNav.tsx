@@ -6,6 +6,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Routes as PortalRoutes } from 'app-commons';
 import { ConnectWallet } from 'app-portal';
 import { Routes as StakingRoutes } from 'app-staking';
+import { useTranslation } from 'react-i18next';
+import { LanguageSelect } from '../LanguageSelect/LanguageSelect';
 import { NetworkSelector } from '../NetworkSelector/NetworkSelector';
 import { SearchWidget } from '../Search/SearchWidget';
 import { useTheme } from '../Theme/ThemeProvider';
@@ -16,6 +18,7 @@ export function TopNav() {
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const { isLaptop } = useBreakpoints();
+  const { t } = useTranslation();
   const location = useLocation();
   const { setTheme, resolvedTheme } = useTheme();
 
@@ -67,19 +70,19 @@ export function TopNav() {
         href="/"
         className="flex items-center"
       >
-        Explorer
+        {t('nav.explorer')}
       </Nav.MenuItem>
       <Nav.MenuItem isActive={isBridge} href={PortalRoutes.bridge()}>
-        Bridge
+        {t('nav.bridge')}
       </Nav.MenuItem>
       <Nav.MenuItem isActive={isStake} href={StakingRoutes.stakingL1()}>
-        Stake
+        {t('nav.stake')}
       </Nav.MenuItem>
       <Nav.MenuItem
         isActive={isEcosystemBridge}
         href={PortalRoutes.ecosystem()}
       >
-        Ecosystem
+        {t('nav.ecosystem')}
       </Nav.MenuItem>
     </>
   );
@@ -93,6 +96,7 @@ export function TopNav() {
         </Nav.Menu>
         <Nav.Menu>{!isEcosystemBridge && <SearchWidget />}</Nav.Menu>
         <Nav.Menu className={'items-center laptop:gap-2'}>
+          <LanguageSelect />
           <NetworkSelector />
           {themeToggle}
           <ConnectWallet />
@@ -103,6 +107,7 @@ export function TopNav() {
           {logo}
           {!isEcosystemBridge && <SearchWidget />}
           <HStack gap="2" align="center">
+            <LanguageSelect />
             <NetworkSelector />
             {themeToggle}
           </HStack>

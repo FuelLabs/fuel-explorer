@@ -12,6 +12,7 @@ import {
 import { IconCheck, IconSearch, IconX } from '@fuels/ui';
 import type { KeyboardEvent } from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { cx } from '../../../utils/cx';
 
@@ -34,8 +35,7 @@ export function SearchInput({
   value: initialValue = '',
   className,
   autoFocus,
-  placeholder:
-    _placeholder = 'Search by block, transaction, contract, address...',
+  placeholder: _placeholder,
   searchResult,
   loading,
   error,
@@ -54,7 +54,9 @@ export function SearchInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const { dropdownRef } = useContext(SearchContext);
   const { isMobile } = useBreakpoints();
-  const placeholder = !isMobile ? _placeholder : 'Search here...';
+  const { t } = useTranslation();
+  const placeholder =
+    _placeholder ?? (isMobile ? t('common.search_short') : t('common.search'));
   const shouldOpen = !!error || !!value || searchResult !== null;
   const openDropdown = isOpen;
   const isPressingFloatingIcon = useRef<boolean>(false);

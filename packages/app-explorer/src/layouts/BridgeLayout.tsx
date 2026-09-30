@@ -1,10 +1,10 @@
 import { Routes } from 'app-commons';
 import type React from 'react';
 import { Suspense, lazy, useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { BridgeFormSkeleton } from '~/systems/Bridge/components/BridgeFormSkeleton';
 import { BridgePageShell } from '~/systems/Bridge/components/BridgePageShell';
-import { DEFAULT_WITHDRAW_DELAY } from '~/systems/Bridge/constants';
 import { WithdrawDelayProvider } from '~/systems/Bridge/withdrawDelay';
 
 // Pulls in wagmi, viem and connectkit.
@@ -26,10 +26,12 @@ function readPanelHeight() {
 // The child routes only match the URL; the panel renders here for both, so
 // it stays mounted and the form and history animate into each other.
 const BridgeLayout: React.FC = () => {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const isHistory = pathname.startsWith(Routes.bridgeHistory());
   const panel = useRef<HTMLDivElement>(null);
-  const [withdrawDelay, setWithdrawDelay] = useState(DEFAULT_WITHDRAW_DELAY);
+  const [reportedDelay, setWithdrawDelay] = useState<string>();
+  const withdrawDelay = reportedDelay || t('common.one_day');
   const [panelHeight, setPanelHeight] = useState(readPanelHeight);
 
   // The form sets the panel height. History takes the same box and scrolls

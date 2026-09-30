@@ -1,4 +1,5 @@
 import { IconArrowUpRight } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 
 export type ToolFaqItem = {
@@ -13,11 +14,12 @@ type ToolFaqProps = {
 };
 
 export function ToolFaq({ items, docsLabel, docsUrl }: ToolFaqProps) {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
     <section className={classes.root()}>
-      <h2 className={classes.title()}>Questions</h2>
+      <h2 className={classes.title()}>{t('common.questions')}</h2>
       <div className={classes.list()}>
         {items.map((item, index) => (
           <details

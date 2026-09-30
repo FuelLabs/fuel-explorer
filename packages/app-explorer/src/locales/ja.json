@@ -1,0 +1,149 @@
+{
+  "common": {
+    "view_all": "すべて見る",
+    "top_apps": "トップアプリ",
+    "language": "言語",
+    "search": "ブロック、トランザクション、コントラクト、アドレスで検索...",
+    "search_short": "検索",
+    "search_projects": "検索",
+    "search_projects_label": "プロジェクトを検索",
+    "all": "すべて",
+    "today": "今日",
+    "yesterday": "昨日",
+    "active": "稼働中: {{count}}",
+    "building": "開発中: {{count}}",
+    "window_24h": "24時間",
+    "read_docs": "ドキュメント",
+    "start_building": "開発を始める",
+    "one_day": "1日",
+    "questions": "質問"
+  },
+  "nav": {
+    "explorer": "エクスプローラー",
+    "bridge": "ブリッジ",
+    "stake": "ステーク",
+    "ecosystem": "エコシステム"
+  },
+  "home": {
+    "daily_transactions": "日間トランザクション",
+    "daily_transactions_hint": "過去24時間に Fuel Network で完了したトランザクションの合計",
+    "hourly_tps": "時間あたり TPS",
+    "tx_per_second": "TX/秒",
+    "peak": "ピーク:",
+    "fee_spent": "支払手数料",
+    "fee_spent_hint": "Fuel Network で支払われた手数料",
+    "usd": "USD",
+    "live_stats": "ライブ統計",
+    "live_stats_window": "(60秒)",
+    "tps": "TPS",
+    "tx_per_block": "TX / ブロック",
+    "block_size": "ブロックサイズ",
+    "recent_blocks": "最新ブロック",
+    "recent_transactions": "最新トランザクション",
+    "fuel_dapps": "Fuel のアプリ",
+    "tx_count": "{{count}} TX",
+    "size": "サイズ",
+    "gas": "ガス",
+    "fee": "手数料",
+    "block_link": "ブロック {{number}}"
+  },
+  "ecosystem": {
+    "built_on_fuel": "Fuel 上で動く",
+    "lead": "アプリ、ウォレット、インフラが最速の実行レイヤーで稼働しています。",
+    "sections": {
+      "fuel": {
+        "eyebrow": "公式アプリ",
+        "title": "Fuel Suite",
+        "lead": "Fuel Labs が開発・運用する公式プロダクト。"
+      },
+      "defi": {
+        "eyebrow": "DeFi",
+        "title": "DeFi",
+        "lead": "Fuel 上の資産を取引、貸借、発行し、利回りを得る。"
+      },
+      "wallets": {
+        "eyebrow": "ウォレット",
+        "title": "ウォレット",
+        "lead": "保管、送金、署名。Fuel での自己管理。"
+      },
+      "infrastructure": {
+        "eyebrow": "インフラ",
+        "title": "インフラ",
+        "lead": "Fuel をつなぐブリッジ、オラクル、インデクサ、オンランプ。"
+      },
+      "nft": {
+        "eyebrow": "NFT とゲーム",
+        "title": "NFT とゲーム",
+        "lead": "Fuel 上のコレクション、マーケット、アイデンティティ、ゲーム。"
+      },
+      "tooling": {
+        "eyebrow": "ツール",
+        "title": "ツール",
+        "lead": "Fuel で開発するためのツールと学習資料。"
+      },
+      "security": {
+        "eyebrow": "セキュリティ",
+        "title": "セキュリティ",
+        "lead": "Fuel 上のプロジェクトを監査し守るセキュリティ企業。"
+      },
+      "more": {
+        "eyebrow": "その他",
+        "title": "その他の Fuel",
+        "lead": "Fuel 上のその他のプロジェクト。"
+      }
+    }
+  },
+  "footer": {
+    "fuel": "FUEL",
+    "get_started": "はじめに",
+    "build": "開発",
+    "environment": "環境",
+    "about_fuel": "Fuel について",
+    "jobs": "採用",
+    "blog": "ブログ",
+    "media_kit": "メディアキット",
+    "build_an_app": "アプリを作る",
+    "create_contract": "スマートコントラクトを作る",
+    "docs": "ドキュメント",
+    "fuelvm": "FuelVM",
+    "grant_program": "グラント",
+    "github": "Github",
+    "forum": "フォーラム",
+    "discord": "Discord",
+    "changelog": "変更履歴",
+    "block_explorer": "ブロックエクスプローラー",
+    "ecosystem": "エコシステム",
+    "wallet": "ウォレット",
+    "bridge": "ブリッジ",
+    "rights": "© {{year}} Fuel Labs. All rights reserved",
+    "version": "version: {{hash}}"
+  },
+  "staking": {
+    "title": "Fuel ネットワークの安全を支える",
+    "lead": "FUEL をバリデータに委任するか、Ignition の The Rig でリキッドステークします。",
+    "read_docs": "ドキュメント",
+    "open_rig": "The Rig を開く",
+    "docs": "Fuel ドキュメント",
+    "tab_rig": "The Rig でリキッドステーク",
+    "tab_ethereum": "Ethereum でステーク",
+    "rig_card_title": "The Rig でリキッドステーク",
+    "rig_card_lead": "Ignition でステークし、リキッドトークンを受け取ります。報酬は自動で複利になります。",
+    "claimable": "{{amount}} stFUEL を <rig>The Rig</rig> で受け取れます。",
+    "connect_tokens": "ステークできるトークンを見るにはウォレットを接続してください。",
+    "connect_ethereum": "Ethereum ウォレットを接続",
+    "positions": "現在のポジション",
+    "validators": "バリデータ",
+    "transactions": "トランザクション",
+    "wallet_disconnected": "ウォレット未接続",
+    "connect_positions": "ステーキングのポジションを見るにはウォレットを接続してください。"
+  },
+  "errors": {
+    "not_found": "ページが見つかりません",
+    "not_found_body": "お探しのページは存在しないか、別のエラーが発生しました。",
+    "not_found_short": "お探しのページは存在しません。",
+    "go_home": "ホームに戻る",
+    "unexpected": "問題が発生しました",
+    "unexpected_body": "予期しないエラーが発生しました。ページを再読み込みしてください。",
+    "reload": "再読み込み"
+  }
+}
