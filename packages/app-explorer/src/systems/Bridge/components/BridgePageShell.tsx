@@ -17,7 +17,7 @@ export function BridgePageShell({
   children,
 }: BridgePageShellProps) {
   return (
-    <GridFrame className="fuel-page border-t-0 grid-cols-1">
+    <GridFrame className="grid-cols-1">
       <ToolDitherCell
         src="/illustrations/bridge-background.jpg"
         className="col-span-full px-4 py-6 min-[720px]:px-8 min-[720px]:py-8"

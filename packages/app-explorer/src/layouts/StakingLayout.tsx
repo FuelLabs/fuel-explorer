@@ -21,12 +21,10 @@ export default function StakingLayout() {
   // Check if we're on the Ethereum staking tab (L1)
   const isEthereumStaking = location.pathname.includes('/on-ethereum');
 
-  // Same frame as the bridge page: breaks out of the Layout column so the
-  // grid can span the page.
   return (
-    <div className="relative -mt-8 pt-8 left-1/2 w-screen -translate-x-1/2">
+    <>
       <VerifySelectedChainDialog />
-      <GridFrame className="fuel-page border-t-0 grid-cols-1">
+      <GridFrame className="grid-cols-1">
         <ToolPageHeader
           badge={isEthereumStaking && <AprBadge />}
           title="Help secure the Fuel network"
@@ -72,6 +70,6 @@ export default function StakingLayout() {
           docsUrl={STAKING_DOCS_URL}
         />
       </GridFrame>
-    </div>
+    </>
   );
 }
