@@ -23,7 +23,6 @@ function readPanelHeight() {
   }
 }
 
-// Breaks out of the Layout column so the bridge grid can span the page.
 // The child routes only match the URL; the panel renders here for both, so
 // it stays mounted and the form and history animate into each other.
 const BridgeLayout: React.FC = () => {
@@ -51,21 +50,19 @@ const BridgeLayout: React.FC = () => {
   }, [isHistory]);
 
   return (
-    <div className="relative -mt-8 pt-8 left-1/2 w-screen -translate-x-1/2 min-h-[calc(100dvh-70px)]">
-      <WithdrawDelayProvider value={setWithdrawDelay}>
-        <BridgePageShell withdrawDelay={withdrawDelay}>
-          <div
-            ref={panel}
-            className="flex flex-col"
-            style={isHistory ? { height: panelHeight } : undefined}
-          >
-            <Suspense fallback={<BridgeFormSkeleton />}>
-              <BridgePanelPage />
-            </Suspense>
-          </div>
-        </BridgePageShell>
-      </WithdrawDelayProvider>
-    </div>
+    <WithdrawDelayProvider value={setWithdrawDelay}>
+      <BridgePageShell withdrawDelay={withdrawDelay}>
+        <div
+          ref={panel}
+          className="flex flex-col"
+          style={isHistory ? { height: panelHeight } : undefined}
+        >
+          <Suspense fallback={<BridgeFormSkeleton />}>
+            <BridgePanelPage />
+          </Suspense>
+        </div>
+      </BridgePageShell>
+    </WithdrawDelayProvider>
   );
 };
 

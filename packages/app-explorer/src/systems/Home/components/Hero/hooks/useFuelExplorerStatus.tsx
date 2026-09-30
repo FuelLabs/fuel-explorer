@@ -5,6 +5,9 @@ import { getBlocksDashboard } from '../actions/get-blocks-dashboard';
 import { getRollingStats } from '../actions/get-rolling-stats';
 import { getStatistics } from '../actions/get-statistics';
 
+// Blocks and the 60s rolling tile. Charts stay on the indexer's 60s cache.
+const HOME_POLL_MS = 30_000;
+
 // GET /dashboard is edge-cached; an API without the route falls back to GraphQL.
 async function fetchDashboardNodes() {
   try {
@@ -50,7 +53,7 @@ export const useDashboardBlocks = () => {
       return { blocks } as any;
     },
     placeholderData: keepPreviousData,
-    refetchInterval: 5_000,
+    refetchInterval: HOME_POLL_MS,
   });
 };
 
@@ -73,7 +76,7 @@ export const useRollingStats = () => {
       return { rollingStats60s } as any;
     },
     placeholderData: keepPreviousData,
-    refetchInterval: 10_000,
+    refetchInterval: HOME_POLL_MS,
   });
 };
 

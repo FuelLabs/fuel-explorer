@@ -16,9 +16,6 @@ export function EcosystemHero() {
           />
         </div>
         <div className={classes.content()}>
-          <p className="fuel-eyebrow m-0 text-[var(--fuel-element-mid-em)]">
-            Ecosystem
-          </p>
           <h1 className={classes.title()}>Built on Fuel</h1>
           <p className={classes.lead()}>
             Apps, wallets and infrastructure live on the fastest execution

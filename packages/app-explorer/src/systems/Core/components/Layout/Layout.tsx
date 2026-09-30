@@ -14,8 +14,8 @@ export function Layout({ children }: LayoutProps) {
       <PageMeta />
       <VStack className="min-h-screen" gap="0">
         <TopNav />
-        <HeroSection />
-        <Box className="fuel-page flex-1 px-6 py-8 pb-10 tablet:px-10 laptop:pb-18">
+        <Box className="fuel-page flex-1 px-6 pt-[72px] pb-10 tablet:px-10 laptop:pb-18">
+          <HeroSection />
           {children}
         </Box>
       </VStack>

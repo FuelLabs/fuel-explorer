@@ -39,6 +39,7 @@ export function HomePage({
           transactions={txs?.nodes}
           pageInfo={txs?.pageInfo}
           route="home"
+          showApps
         />
       )}
     </>
