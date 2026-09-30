@@ -24,11 +24,10 @@ export default function StakingLayout() {
   // Same frame as the bridge page: breaks out of the Layout column so the
   // grid can span the page.
   return (
-    <div className="relative -mt-8 pt-8 left-1/2 w-screen -translate-x-1/2 min-h-[calc(100dvh-70px)]">
+    <div className="relative -mt-8 pt-8 left-1/2 w-screen -translate-x-1/2">
       <VerifySelectedChainDialog />
-      <GridFrame className="fuel-page mt-12 border-t-0 grid-cols-1">
+      <GridFrame className="fuel-page border-t-0 grid-cols-1">
         <ToolPageHeader
-          eyebrow="Stake"
           badge={isEthereumStaking && <AprBadge />}
           title="Help secure the Fuel network"
           lead="Delegate your tokens to Fuel validators, or liquid stake through The Rig on Ignition."
@@ -60,7 +59,7 @@ export default function StakingLayout() {
         />
         <ToolDitherCell
           src="/illustrations/bridge-background.jpg"
-          className="col-span-full px-4 py-6 min-[720px]:p-12"
+          className="col-span-full px-4 py-6 min-[720px]:px-8 min-[720px]:py-8"
         >
           <BridgePausedBanner />
           <StakingTabs />

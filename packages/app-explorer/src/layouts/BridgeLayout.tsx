@@ -51,7 +51,7 @@ const BridgeLayout: React.FC = () => {
   }, [isHistory]);
 
   return (
-    <div className="relative -mt-8 pt-8 left-1/2 w-screen -translate-x-1/2 min-h-[calc(100dvh-70px)]">
+    <div className="relative -mt-8 pt-8 left-1/2 w-screen -translate-x-1/2">
       <WithdrawDelayProvider value={setWithdrawDelay}>
         <BridgePageShell withdrawDelay={withdrawDelay}>
           <div

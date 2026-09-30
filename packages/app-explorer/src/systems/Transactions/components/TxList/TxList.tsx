@@ -3,6 +3,7 @@ import { IconInfoCircle, IconLink } from '@fuels/ui';
 import { Routes as PortalRoutes } from 'app-commons';
 import { memo } from 'react';
 import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
+import { useTxApps } from '../../hooks/useTxApps';
 import { TxCard } from '../TxCard/TxCard';
 
 import type { GQLPageInfo } from '@fuel-explorer/graphql';
@@ -17,6 +18,7 @@ export type TxListProps = {
   owner?: string;
   route: 'home' | 'accountTxs' | 'blockSimple' | 'contractTxs';
   showBridgeWarning?: boolean;
+  showApps?: boolean;
   className?: string;
 };
 
@@ -28,7 +30,12 @@ function _TxList({
   isLoading,
   pageInfo,
   showBridgeWarning = false,
+  showApps = false,
 }: TxListProps) {
+  const { apps, isPending: appsPending } = useTxApps(
+    transactions,
+    showApps && !isLoading,
+  );
   const navigate = useNavigate();
   const [_, setSearchParams] = useSearchParams();
   function setQueryParams(cursor: string, dir: 'after' | 'before') {
@@ -67,7 +74,13 @@ function _TxList({
       <GridFrame className="grid-cols-1">
         {transactions.map((transaction, index) => (
           <Reveal key={transaction.id} delay={Math.min(index, 9) * 0.03}>
-            <TxCard isLoading={isLoading} transaction={transaction} />
+            <TxCard
+              isLoading={isLoading}
+              transaction={transaction}
+              apps={apps?.[transaction.id]}
+              appsPending={appsPending && transaction.title === 'Script'}
+              appsDelay={Math.min(index, 9) * 0.04}
+            />
           </Reveal>
         ))}
       </GridFrame>

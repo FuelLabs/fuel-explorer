@@ -7,17 +7,20 @@ export type ToolStep = {
 
 type ToolStepsProps = {
   title: string;
+  /** One sentence under the title, before the numbered steps. */
+  lead?: string;
   steps: ToolStep[];
   /** A warning line under the steps. */
   note?: string;
 };
 
-export function ToolSteps({ title, steps, note }: ToolStepsProps) {
+export function ToolSteps({ title, lead, steps, note }: ToolStepsProps) {
   const classes = styles();
 
   return (
     <section className={classes.root()}>
       <h2 className={classes.title()}>{title}</h2>
+      {lead && <p className={classes.lead()}>{lead}</p>}
       <ol className={classes.steps()}>
         {steps.map((step, index) => (
           <li key={step.title} className={classes.step()}>
@@ -46,6 +49,7 @@ const styles = tv({
     root: 'fuel-edge p-6 tablet:p-10',
     title:
       'm-0 mb-6 font-medium text-heading text-[28px] leading-[32px] tracking-[-1.12px]',
+    lead: 'm-0 -mt-2 mb-6 max-w-[560px] text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]',
     steps: 'm-0 p-0 list-none',
     step: [
       'grid grid-cols-[40px_1fr] gap-2 py-5',
