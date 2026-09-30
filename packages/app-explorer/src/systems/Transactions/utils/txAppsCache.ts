@@ -2,10 +2,16 @@ import { ECOSYSTEM_PROJECTS_URL } from 'app-commons';
 
 // Only what the chip draws. A transaction's contracts never change, so an
 // entry stays valid until the pinned projects list changes.
-export type TxApp = { name: string; image?: string };
+export type TxApp = {
+  name: string;
+  image?: string;
+  url?: string;
+  /** Transactions in this block that called the app. */
+  count?: number;
+};
 
-function createAppsCache(prefix: string, maxEntries: number) {
-  const key = prefix + (ECOSYSTEM_PROJECTS_URL ?? '');
+function createAppsCache(family: string, maxEntries: number) {
+  const key = `${family}v3:${ECOSYSTEM_PROJECTS_URL ?? ''}`;
   let entries: Map<string, TxApp[]> | null = null;
 
   function load() {
@@ -14,7 +20,7 @@ function createAppsCache(prefix: string, maxEntries: number) {
     try {
       for (let i = localStorage.length - 1; i >= 0; i--) {
         const stored = localStorage.key(i);
-        if (stored?.startsWith(prefix) && stored !== key) {
+        if (stored?.startsWith(family) && stored !== key) {
           localStorage.removeItem(stored);
         }
       }
@@ -52,15 +58,20 @@ function createAppsCache(prefix: string, maxEntries: number) {
     } catch {}
   }
 
-  return { read, write };
+  function list() {
+    return [...load().values()];
+  }
+
+  return { read, write, list };
 }
 
-const txApps = createAppsCache('fuel-explorer:tx-apps:v1:', 2000);
+const txApps = createAppsCache('fuel-explorer:tx-apps:', 2000);
 export const readTxApps = txApps.read;
 export const writeTxApps = txApps.write;
 
-// A block's contracts never change either. The panel only keeps the newest
-// few, so the cap is the recent window plus a short overlap across refreshes.
-const blockApps = createAppsCache('fuel-explorer:block-apps:v1:', 200);
+// Each block is stored once. Top Apps sums every block saved while the
+// homepage has been open, up to this cap (about 20 minutes at a 30s refresh).
+const blockApps = createAppsCache('fuel-explorer:block-apps:', 200);
 export const readBlockApps = blockApps.read;
 export const writeBlockApps = blockApps.write;
+export const listBlockApps = blockApps.list;

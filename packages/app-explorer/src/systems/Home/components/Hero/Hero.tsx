@@ -16,6 +16,7 @@ import {
 import { useTopEcosystem } from './hooks/useTopEcosystem';
 import { heroStyles } from './styles';
 
+import { useBlockApps } from '~/systems/Transactions/hooks/useBlockApps';
 import DataTable from '../../components/DataTable';
 import DailyTransaction from '../DailyTransaction';
 import GasSpentChart from '../GasSpentChart/index';
@@ -68,6 +69,12 @@ function Hero() {
     };
   }, [ecosystemProjects, chartsData, rollingData, blocksData]);
 
+  const { top: mostUsed } = useBlockApps(
+    blocks
+      .slice(0, 5)
+      .map((block: { blockNo: string | number }) => String(block.blockNo)),
+  );
+
   return (
     <Theme appearance="light">
       <Box className={classes.root()}>
@@ -101,7 +108,7 @@ function Hero() {
                   <TotalDapps
                     active={activeProjects}
                     total={totalProjects}
-                    featured={top3Projects}
+                    featured={mostUsed.length ? mostUsed : top3Projects}
                   />
                 }
               />

@@ -48,15 +48,20 @@ function _TxCard({
   const fee = bn(tx.gasCosts?.fee ?? 0);
 
   return (
-    <Link
-      to={CommonRoutes.txSimple(tx.id)}
-      className="fuel-card-link block"
-      onClickCapture={(e) => {
-        // Avoid navigation to invalid address
-        if (!isValid) e.preventDefault();
-      }}
-    >
-      <Card {...props} className={cx(className)}>
+    <div className="fuel-card-link relative">
+      <Link
+        to={CommonRoutes.txSimple(tx.id)}
+        aria-label={`${tx.title ?? 'Transaction'} ${shortAddress(tx.id)}`}
+        className="absolute inset-0 z-0"
+        onClickCapture={(e) => {
+          // Avoid navigation to invalid address
+          if (!isValid) e.preventDefault();
+        }}
+      />
+      <Card
+        {...props}
+        className={cx(className, 'relative z-10 pointer-events-none')}
+      >
         <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
           <Box className="flex gap-3 h-[26px] min-w-0 items-center">
             <LoadingWrapper
@@ -89,7 +94,7 @@ function _TxCard({
                   loadingEl={<LoadingBox className="w-16 h-5" />}
                   regularEl={
                     <Tooltip content={`${fee.format()} ETH`} delayDuration={0}>
-                      <span>
+                      <span className="pointer-events-auto">
                         <Text
                           className="text-primary text-sm"
                           leftIcon={IconGasStation}
@@ -125,7 +130,7 @@ function _TxCard({
           </Box>
         </Card.Body>
       </Card>
-    </Link>
+    </div>
   );
 }
 

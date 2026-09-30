@@ -23,7 +23,7 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({
   const txCount = Number(block.transactionsCount) || 0;
 
   return (
-    <div className="h-full py-3 px-5 fuel-hover-fill flex flex-col justify-center space-y-2">
+    <div className="h-full py-3 px-5 flex flex-col justify-center space-y-2">
       <div className="flex items-center gap-2">
         <span className="shrink-0 text-[13px] leading-[20px] font-medium text-heading tabular-nums">
           #{block.blockNo}

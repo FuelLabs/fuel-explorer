@@ -65,28 +65,49 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
         <div className="my-2 h-[1px] bg-[rgba(255,255,255,0.04)]" />
 
         <span className="text-[12px] leading-[20px] text-muted block font-bold">
-          Featured Dapps
+          Top Apps
         </span>
 
-        {featured.map((feature: any) => {
-          return (
-            <a
-              className="flex items-center gap-3 mt-3"
-              href={feature.url}
-              key={feature.name}
-            >
-              <img
-                src={getProjectImage(feature.image)}
-                alt={feature.name}
-                className="w-5 h-5 shrink-0 rounded"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-              <p className="text-[13px] leading-[20px] block">{feature.name}</p>
-            </a>
-          );
-        })}
+        {featured.map(
+          (feature: { name: string; image?: string; url?: string }) => {
+            const row = (
+              <>
+                <img
+                  src={getProjectImage(feature.image ?? '')}
+                  alt={feature.name}
+                  className="w-5 h-5 shrink-0 rounded"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+                <p className="text-[13px] leading-[20px] block">
+                  {feature.name}
+                </p>
+              </>
+            );
+            if (!feature.url) {
+              return (
+                <div
+                  className="flex items-center gap-3 mt-3"
+                  key={feature.name}
+                >
+                  {row}
+                </div>
+              );
+            }
+            return (
+              <a
+                className="flex items-center gap-3 mt-3"
+                href={feature.url}
+                target="_blank"
+                rel="noreferrer"
+                key={feature.name}
+              >
+                {row}
+              </a>
+            );
+          },
+        )}
       </div>
     </RoundedContainer>
   );

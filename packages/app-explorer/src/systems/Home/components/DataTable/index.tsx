@@ -21,22 +21,28 @@ export const DataTable = (props: DataTableProps) => {
         {props.blocks.map((block, index) => {
           const height = String(block.blockNo);
           return (
-            <Link
+            <div
               key={block.blockNo}
-              isExternal={false}
-              href={`/block/${block.blockNo}/simple`}
               className={cx(
-                'flex-1 border-0 border-solid hover:no-underline',
+                'fuel-hover-fill relative flex-1',
                 newBlocks.has(height) && 'fuel-row-new',
               )}
             >
-              <BlockTableTile
-                block={block}
-                apps={apps?.[height]}
-                appsPending={isResolving && apps?.[height] === undefined}
-                appsDelay={Math.min(index, 4) * 0.04}
+              <Link
+                isExternal={false}
+                href={`/block/${block.blockNo}/simple`}
+                aria-label={`Block ${block.blockNo}`}
+                className="absolute inset-0 z-0 border-0"
               />
-            </Link>
+              <div className="relative z-10 h-full pointer-events-none">
+                <BlockTableTile
+                  block={block}
+                  apps={apps?.[height]}
+                  appsPending={isResolving && apps?.[height] === undefined}
+                  appsDelay={Math.min(index, 4) * 0.04}
+                />
+              </div>
+            </div>
           );
         })}
       </div>
