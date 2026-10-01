@@ -28,7 +28,7 @@ const buildStakingEventsUrl = (params: GetStakingEventsParams) => {
   return `${FUEL_INDEXER_API}/staking/events?${queryParams.toString()}`;
 };
 
-const getStakingEvents = async (
+export const getStakingEvents = async (
   params: GetStakingEventsParams,
 ): Promise<StakingEventsData> => {
   const url = buildStakingEventsUrl(params);

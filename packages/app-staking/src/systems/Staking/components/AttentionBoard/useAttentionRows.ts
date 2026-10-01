@@ -1,21 +1,42 @@
 import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
+import { useQuery } from '@tanstack/react-query';
 import { FuelToken, TOKENS } from 'app-commons';
 import { DECIMAL_FUEL, bn } from 'fuels';
 import { useMemo } from 'react';
+import type { Address } from 'viem';
 import { useAccount } from 'wagmi';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
+import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
 import { useRigClaimable } from '../../hooks/useRigClaimable';
-import { useStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
+import { getStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
 import { useAccountValidators } from '../../services/useAccountValidators';
 import { useRewards } from '../../services/useRewards';
 import type { StakingEvent } from '../../types/l1/events';
 
 const { decimals } = TOKENS[FuelToken.V2];
-const BOARD_EVENTS = {
-  cursor: undefined,
-  direction: undefined,
-  itemsPerPage: 20,
-} as const;
+// The API rejects a page size above 50.
+const EVENTS_PAGE_SIZE = 50;
+// Safety stop at 1000 events. Most accounts finish in the first request.
+const EVENTS_MAX_PAGES = 20;
+
+// An unfinished undelegate or withdraw can sit behind many newer events, so the
+// board reads the whole history, newest first, instead of one page.
+async function getAllStakingEvents(address: Address) {
+  const nodes: StakingEvent[] = [];
+  let before: number | undefined;
+  for (let page = 0; page < EVENTS_MAX_PAGES; page++) {
+    const data = await getStakingEvents({
+      address,
+      before,
+      after: undefined,
+      itemsPerPage: EVENTS_PAGE_SIZE,
+    });
+    nodes.push(...data.nodes);
+    if (!data.pageInfo.hasNextPage) break;
+    before = data.pageInfo.endCursor;
+  }
+  return nodes;
+}
 
 export type AttentionRow =
   | { kind: 'rig-claim'; key: string; amount: string }
@@ -58,7 +79,16 @@ export function useAttentionRows(lane: Lane) {
   const positions = useAccountValidators(address, {
     select: (data) => data.validators,
   });
-  const events = useStakingEvents({ address, pagination: BOARD_EVENTS });
+  const events = useQuery({
+    // Starts with the shared events key, so the existing invalidations refresh it.
+    queryKey: [
+      ...QUERY_KEYS.stakingEvents(undefined, undefined, undefined, undefined),
+      'attention',
+      address,
+    ],
+    queryFn: () => getAllStakingEvents(address as Address),
+    enabled: !!address,
+  });
 
   const rows = useMemo(() => {
     const list: AttentionRow[] = [];
@@ -90,7 +120,7 @@ export function useAttentionRows(lane: Lane) {
       });
     }
 
-    for (const event of onEthereum ? (events.data?.nodes ?? []) : []) {
+    for (const event of onEthereum ? (events.data ?? []) : []) {
       const kind = eventKind(event);
       if (!kind) continue;
       const finishes = Date.parse(event.timestampToFinish ?? '');
