@@ -134,7 +134,6 @@
     "tab_ethereum": "Stake on Ethereum Network",
     "rig_card_title": "Liquid stake on The Rig",
     "rig_card_lead": "Stake on Ignition and receive a liquid token. Rewards compound automatically.",
-    "claimable": "You have {{amount}} stFUEL to claim on <rig>The Rig</rig>.",
     "connect_tokens": "Connect your wallet to view available tokens for staking.",
     "connect_ethereum": "Connect Ethereum Wallet",
     "positions": "Current Positions",

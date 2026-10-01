@@ -133,7 +133,6 @@
     "tab_ethereum": "Ethereum でステーク",
     "rig_card_title": "The Rig でリキッドステーク",
     "rig_card_lead": "Ignition でステークし、リキッドトークンを受け取ります。報酬は自動で複利になります。",
-    "claimable": "{{amount}} stFUEL を <rig>The Rig</rig> で受け取れます。",
     "connect_tokens": "ステークできるトークンを見るにはウォレットを接続してください。",
     "connect_ethereum": "Ethereum ウォレットを接続",
     "positions": "現在のポジション",

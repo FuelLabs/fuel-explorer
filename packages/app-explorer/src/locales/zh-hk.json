@@ -133,7 +133,6 @@
     "tab_ethereum": "在 Ethereum 上質押",
     "rig_card_title": "在 The Rig 上流動性質押",
     "rig_card_lead": "在 Ignition 上質押並收到流動性質押代幣。獎勵會自動複利。",
-    "claimable": "你有 {{amount}} stFUEL 可在 <rig>The Rig</rig> 領取。",
     "connect_tokens": "連接錢包以查看可質押的代幣。",
     "connect_ethereum": "連接 Ethereum 錢包",
     "positions": "當前持倉",

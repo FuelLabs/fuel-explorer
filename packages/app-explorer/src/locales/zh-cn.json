@@ -133,7 +133,6 @@
     "tab_ethereum": "在 Ethereum 上质押",
     "rig_card_title": "在 The Rig 上流动性质押",
     "rig_card_lead": "在 Ignition 上质押并收到流动性质押代币。奖励会自动复利。",
-    "claimable": "你有 {{amount}} stFUEL 可在 <rig>The Rig</rig> 领取。",
     "connect_tokens": "连接钱包以查看可质押的代币。",
     "connect_ethereum": "连接 Ethereum 钱包",
     "positions": "当前持仓",

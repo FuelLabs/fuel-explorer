@@ -133,7 +133,6 @@
     "tab_ethereum": "Ethereum 스테이킹",
     "rig_card_title": "The Rig 리퀴드 스테이킹",
     "rig_card_lead": "Ignition에서 스테이킹하고 리퀴드 토큰을 받습니다. 보상은 자동으로 복리됩니다.",
-    "claimable": "{{amount}} stFUEL을 <rig>The Rig</rig>에서 받을 수 있습니다.",
     "connect_tokens": "스테이킹할 수 있는 토큰을 보려면 지갑을 연결하세요.",
     "connect_ethereum": "Ethereum 지갑 연결",
     "positions": "현재 포지션",
