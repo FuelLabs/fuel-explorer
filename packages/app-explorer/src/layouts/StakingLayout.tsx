@@ -1,18 +1,19 @@
 import { Button, GridFrame } from '@fuels/ui';
 import { BridgePausedBanner } from 'app-commons';
+import { AttentionBoard, StakingLanes } from 'app-staking';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
-import { ToolDitherCell } from '~/systems/Core/components/ToolPage/ToolDitherCell';
 import { ToolFaq } from '~/systems/Core/components/ToolPage/ToolFaq';
 import { ToolPageHeader } from '~/systems/Core/components/ToolPage/ToolPageHeader';
 import { ToolSteps } from '~/systems/Core/components/ToolPage/ToolSteps';
 import { VerifySelectedChainDialog } from '~/systems/Core/components/VerifySelectedChainDialog';
 import { RIG_URL, STAKING_DOCS_URL } from '~/systems/Staking/constants/page';
 import { AprBadge } from '~staking/systems/Staking/components/AprBadge/AprBadge';
-import { StakingTabs } from '~staking/systems/Staking/components/StakingTabs/StakingTabs';
 
-function StakingGuide() {
+// The steps and three of the answers describe Ethereum delegation, so the Rig path
+// keeps only its own question.
+function StakingGuide({ ethereum }: { ethereum: boolean }) {
   const { t } = useTranslation('stakingGuide');
   const { t: tApp } = useTranslation();
   const steps = [
@@ -29,16 +30,28 @@ function StakingGuide() {
       description: t('steps.stake.description'),
     },
   ];
-  const faq = [
-    { question: t('faq.rig.question'), answer: t('faq.rig.answer') },
-    { question: t('faq.unstake.question'), answer: t('faq.unstake.answer') },
-    { question: t('faq.position.question'), answer: t('faq.position.answer') },
-    { question: t('faq.apr.question'), answer: t('faq.apr.answer') },
-  ];
+  const rigFaq = {
+    question: t('faq.rig.question'),
+    answer: t('faq.rig.answer'),
+  };
+  const faq = ethereum
+    ? [
+        rigFaq,
+        {
+          question: t('faq.unstake.question'),
+          answer: t('faq.unstake.answer'),
+        },
+        {
+          question: t('faq.position.question'),
+          answer: t('faq.position.answer'),
+        },
+        { question: t('faq.apr.question'), answer: t('faq.apr.answer') },
+      ]
+    : [rigFaq];
 
   return (
     <>
-      <ToolSteps title={t('title')} steps={steps} />
+      {ethereum && <ToolSteps title={t('title')} steps={steps} />}
       <ToolFaq
         items={faq}
         docsLabel={tApp('staking.docs')}
@@ -76,32 +89,32 @@ export default function StakingLayout() {
               >
                 {t('staking.read_docs')}
               </Button>
-              <Button
-                as="a"
-                href={RIG_URL}
-                target="_blank"
-                rel="noreferrer"
-                size="3"
-                color="gray"
-              >
-                {t('staking.open_rig')}
-              </Button>
+              {/* The Rig page carries its own Open The Rig button. */}
+              {isEthereumStaking && (
+                <Button
+                  as="a"
+                  href={RIG_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  size="3"
+                  color="gray"
+                >
+                  {t('staking.open_rig')}
+                </Button>
+              )}
             </>
           }
         />
-        <ToolDitherCell
-          src="/illustrations/bridge-background.jpg"
-          className="col-span-full px-4 py-6 min-[720px]:px-8 min-[720px]:py-8"
-        >
-          <BridgePausedBanner />
-          <StakingTabs
-            rigLabel={t('staking.tab_rig')}
-            ethereumLabel={t('staking.tab_ethereum')}
-          />
+        <StakingLanes />
+        <AttentionBoard />
+        <div className="fuel-edge min-w-0">
+          <div className="px-6 pt-6 tablet:px-10 empty:hidden">
+            <BridgePausedBanner />
+          </div>
           <Outlet />
-        </ToolDitherCell>
+        </div>
         <Suspense fallback={null}>
-          <StakingGuide />
+          <StakingGuide ethereum={isEthereumStaking} />
         </Suspense>
       </GridFrame>
     </>

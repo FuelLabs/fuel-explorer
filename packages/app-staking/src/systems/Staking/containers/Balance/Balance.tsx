@@ -8,12 +8,9 @@ import { useVesting } from '~staking/systems/Staking/hooks/useVesting';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 import { useFormatBalance } from '../../../Core/hooks/useFormatBalance';
 import { AmountCard } from '../../components/AmountCard/AmountCard';
-import { StakingEmptyState } from '../../pages/StakingEmptyState';
 import { useRewards } from '../../services/useRewards';
 import { useSharedSequencerBalance } from '../../services/useSharedSequencerBalance';
 import { useTokenBalance } from '../../services/useTokenBalance';
-import { useStakedBalanceL1 } from '../../services/useTotalStake';
-
 const v2 = TOKENS[FuelToken.V2];
 const { symbol, token, decimals } = v2;
 
@@ -24,8 +21,6 @@ export const Balance = () => {
   const { data: reward } = useRewards(address, {
     select: (rewards) => rewards.total[0],
   });
-  const { total: stakedBalance } = useStakedBalanceL1();
-
   const {
     vesting_start: vestingStart,
     vesting_end: vestingEnd,
@@ -65,12 +60,12 @@ export const Balance = () => {
     [reward],
   );
 
-  if (!isConnected) {
-    return <StakingEmptyState />;
-  }
+  // The board above already asks a disconnected visitor to connect.
+  // Staked FUEL lives in the Ethereum lane cell, so it is not repeated here.
+  if (!isConnected) return null;
 
   return (
-    <div className="grid grid-cols-2 gap-3 laptop:flex laptop:gap-3 laptop:items-start">
+    <div className="grid grid-cols-1 gap-px border border-[var(--fuel-line)] bg-[var(--fuel-line)] min-[560px]:grid-cols-2 laptop:grid-cols-3 min-[560px]:[&>:last-child]:col-span-2 laptop:[&>:last-child]:col-span-1">
       <AmountCard
         title="Balance on Ethereum"
         symbol={symbol}
@@ -115,14 +110,6 @@ During the vesting period, these tokens will be gradually released to your 'Bala
             </Button>
           )
         }
-      />
-      <AmountCard
-        title="FUEL in Staking"
-        symbol={symbol}
-        infoTooltip={
-          'This represents the total amount of FUEL staked across all validators.'
-        }
-        amount={bn(stakedBalance)}
       />
       <AmountCard
         title="Rewards earned"

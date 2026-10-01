@@ -51,7 +51,7 @@ export const StakingPage = () => {
   }, [pathname]);
 
   return (
-    <Box>
+    <Box className="px-6 py-8 tablet:px-10">
       <div className="flex flex-col gap-2 mb-4 tablet:flex-row tablet:justify-end tablet:items-center">
         <ClaimV2Button />
         {hasV1Involvement && SHOW_CONVERT_BUTTON === 'true' && (
@@ -68,7 +68,7 @@ export const StakingPage = () => {
         <AccountButton />
       </div>
       <Balance />
-      <VStack className="gap-0 mt-16">
+      <VStack className="gap-0 mt-10">
         <StakingL1Tabs />
         {activeTab === 'positions' && <DelegatedPositions />}
         {activeTab === 'validators' && <ValidatorsList />}
