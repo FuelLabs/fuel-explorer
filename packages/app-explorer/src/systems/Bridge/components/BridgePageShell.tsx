@@ -1,7 +1,6 @@
 import { GridFrame } from '@fuels/ui';
 import { type ReactNode, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ToolDitherCell } from '~/systems/Core/components/ToolPage/ToolDitherCell';
 import { ToolFaq } from '~/systems/Core/components/ToolPage/ToolFaq';
 import { ToolSteps } from '~/systems/Core/components/ToolPage/ToolSteps';
 import { BRIDGE_DOCS_URL } from '../constants';
@@ -72,12 +71,7 @@ export function BridgePageShell({
 }: BridgePageShellProps) {
   return (
     <GridFrame className="grid-cols-1">
-      <ToolDitherCell
-        src="/illustrations/bridge-background.jpg"
-        className="col-span-full px-4 py-6 min-[720px]:px-8 min-[720px]:py-8"
-      >
-        {children}
-      </ToolDitherCell>
+      {children}
       <Suspense fallback={null}>
         <BridgeGuide withdrawDelay={withdrawDelay} />
       </Suspense>

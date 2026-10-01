@@ -1,0 +1,38 @@
+{
+  "breadcrumb": "생태계",
+  "suite_badge": "Fuel Suite",
+  "about": "{{name}} 소개",
+  "facts": {
+    "category": "카테고리",
+    "collection": "컬렉션",
+    "network": "네트워크",
+    "links": "링크"
+  },
+  "collection": {
+    "suite": "Fuel Suite",
+    "community": "커뮤니티",
+    "official": "공식"
+  },
+  "network_fuel": "Fuel",
+  "not_listed": "등록되지 않음",
+  "on_x": "X의 {{name}}",
+  "on_github": "GitHub의 {{name}}",
+  "on_discord": "Discord의 {{name}}",
+  "ways_to_use": "사용 방법",
+  "open_on": "{{host}}에서 열기",
+  "more_in": "{{category}}의 다른 프로젝트",
+  "see_all": "모두 보기",
+  "not_found": {
+    "title": "프로젝트를 찾을 수 없습니다",
+    "back": "생태계로 돌아가기"
+  },
+  "context": {
+    "defi": "{{name}}은(는) 성장하는 Fuel 온체인 금융 생태계의 일부로, 앱은 Fuel 실행 레이어를 활용해 빠른 시장과 효율적인 정산을 제공합니다.",
+    "ai": "{{name}}은(는) 지능형 온체인 앱이 Fuel의 병렬 실행과 전용 가상 머신을 어떻게 활용할 수 있는지 탐구합니다.",
+    "wallets": "{{name}}은(는) Fuel 생태계와 연결된 상태로 앱을 이용하고 자산을 관리할 수 있도록 돕습니다.",
+    "infrastructure": "{{name}}은(는) Fuel 전반의 앱, 개발자, 네트워크 참여자를 지원하는 인프라를 제공합니다.",
+    "tooling": "{{name}}은(는) Fuel에서 앱을 개발, 분석, 운영하기 위한 실용적인 도구를 빌더에게 제공합니다.",
+    "security": "{{name}}은(는) Fuel에서 앱을 구축하고 운영하는 팀에 전문 보안 역량을 제공합니다.",
+    "more": "{{name}}은(는) Fuel에서 운영 중인 프로젝트 중 하나입니다."
+  }
+}

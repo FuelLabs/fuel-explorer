@@ -8,6 +8,7 @@ import { BlockPage } from './pages/BlockPage';
 import { BlocksPage } from './pages/BlocksPage';
 import ContractPage from './pages/ContractPage';
 import { EcosystemPageWrapper } from './pages/EcosystemPage';
+import { EcosystemProjectPage } from './pages/EcosystemProjectPage';
 import { HomePage } from './pages/HomePage';
 import TransactionLoadingPage from './pages/TransactionLoadingPage';
 import { TransactionPage } from './pages/TransactionPage';
@@ -123,6 +124,7 @@ function App() {
             </Route>
 
             <Route path="/ecosystem" element={<EcosystemPageWrapper />} />
+            <Route path="/ecosystem/:slug" element={<EcosystemProjectPage />} />
 
             <Route path="/upgrade" element={<UpgradePage />} />
 

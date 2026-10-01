@@ -37,7 +37,9 @@ export function TopNav() {
     PortalRoutes.bridge,
     PortalRoutes.bridgeHistory,
   ]);
-  const isEcosystemBridge = isRoute(pathname, [PortalRoutes.ecosystem]);
+  const isEcosystemBridge =
+    isRoute(pathname, [PortalRoutes.ecosystem]) ||
+    pathname.startsWith(`${PortalRoutes.ecosystem.pathname}/`);
 
   const isExplorer = !isBridge && !isEcosystemBridge && !isStake;
 

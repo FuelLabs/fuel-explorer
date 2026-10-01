@@ -1,5 +1,9 @@
 import type { Project } from '~/types/ecosystem';
-import { ECOSYSTEM_SECTIONS, type EcosystemSection } from '../constants';
+import {
+  ECOSYSTEM_SECTIONS,
+  type EcosystemSection,
+  UNCATEGORIZED_SECTION,
+} from '../constants';
 
 export type EcosystemGroup = {
   section: EcosystemSection;
@@ -10,12 +14,28 @@ function matchesSearch(project: Project, search: string) {
   const term = search.toLowerCase();
   return (
     project.name.toLowerCase().includes(term) ||
+    project.tagline?.toLowerCase().includes(term) ||
     project.description?.toLowerCase().includes(term) ||
     project.tags?.some((tag) => tag.toLowerCase().includes(term))
   );
 }
 
-// Each project lands in the first section whose tags it carries, so it shows once.
+export function sectionForProject(project: Project): EcosystemSection {
+  return (
+    ECOSYSTEM_SECTIONS.find(
+      (section) => section.category && section.category === project.category,
+    ) ?? UNCATEGORIZED_SECTION
+  );
+}
+
+export function isSuiteProject(project: Project) {
+  return project.collection === 'suite';
+}
+
+export function isFlagshipProject(project: Project) {
+  return !!project.isFlagship;
+}
+
 export function groupProjects(
   projects: Project[],
   search: string,
@@ -24,15 +44,11 @@ export function groupProjects(
     section,
     projects: [] as Project[],
   }));
-  const fallback = groups[groups.length - 1];
 
   for (const project of projects) {
     if (search && !matchesSearch(project, search)) continue;
-    const group =
-      groups.find(({ section }) =>
-        section.tags.some((tag) => project.tags?.includes(tag)),
-      ) ?? fallback;
-    group.projects.push(project);
+    const section = sectionForProject(project);
+    groups.find((group) => group.section === section)?.projects.push(project);
   }
 
   return groups.filter((group) => group.projects.length > 0);

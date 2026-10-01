@@ -1,0 +1,38 @@
+{
+  "breadcrumb": "生態",
+  "suite_badge": "Fuel Suite",
+  "about": "關於 {{name}}",
+  "facts": {
+    "category": "分類",
+    "collection": "合集",
+    "network": "網絡",
+    "links": "連結"
+  },
+  "collection": {
+    "suite": "Fuel Suite",
+    "community": "社區",
+    "official": "官方"
+  },
+  "network_fuel": "Fuel",
+  "not_listed": "未列出",
+  "on_x": "{{name}} 的 X",
+  "on_github": "{{name}} 的 GitHub",
+  "on_discord": "{{name}} 的 Discord",
+  "ways_to_use": "使用方式",
+  "open_on": "在 {{host}} 開啟",
+  "more_in": "更多{{category}}項目",
+  "see_all": "查看全部",
+  "not_found": {
+    "title": "找不到項目",
+    "back": "返回生態"
+  },
+  "context": {
+    "defi": "{{name}} 是 Fuel 不斷壯大的鏈上金融生態的一部分，應用借助 Fuel 執行層實現快速響應的市場和高效結算。",
+    "ai": "{{name}} 探索智能鏈上應用如何利用 Fuel 的並行執行和專用虛擬機。",
+    "wallets": "{{name}} 幫助用戶使用應用和管理資產，同時與更廣泛的 Fuel 生態保持連接。",
+    "infrastructure": "{{name}} 為 Fuel 上的應用、開發者和網絡參與者提供基礎設施支援。",
+    "tooling": "{{name}} 為開發者提供在 Fuel 上開發、理解和營運應用的實用工具。",
+    "security": "{{name}} 為在 Fuel 上構建和營運應用的團隊提供專業保安支援。",
+    "more": "{{name}} 是 Fuel 上線的項目之一。"
+  }
+}

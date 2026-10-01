@@ -5,7 +5,6 @@
     "language": "語言",
     "search": "按區塊、交易、合約、地址搜尋...",
     "search_short": "搜尋",
-    "search_projects": "搜尋",
     "search_projects_label": "搜尋項目",
     "all": "全部",
     "today": "今天",
@@ -14,7 +13,6 @@
     "building": "開發中: {{count}}",
     "window_24h": "24小時",
     "read_docs": "查看文件",
-    "start_building": "開始構建",
     "one_day": "一天",
     "questions": "問題"
   },
@@ -48,49 +46,56 @@
     "block_link": "區塊 {{number}}"
   },
   "ecosystem": {
+    "eyebrow": "Fuel 生態",
     "built_on_fuel": "構建於 Fuel",
     "lead": "應用、錢包和基礎設施運行在最快的執行層上。",
     "sections": {
       "fuel": {
-        "eyebrow": "官方應用",
-        "title": "Fuel Suite",
-        "lead": "由 Fuel Labs 開發並維護的官方產品。"
+        "title": "Fuel Suite"
       },
       "defi": {
         "eyebrow": "DeFi",
-        "title": "DeFi",
-        "lead": "在 Fuel 上交易、借貸、發行並賺取收益。"
+        "title": "DeFi"
+      },
+      "ai": {
+        "eyebrow": "AI",
+        "title": "AI"
       },
       "wallets": {
         "eyebrow": "錢包",
-        "title": "錢包",
-        "lead": "保管、發送、簽名。在 Fuel 上自我託管。"
+        "title": "錢包"
       },
       "infrastructure": {
-        "eyebrow": "基礎設施",
-        "title": "基礎設施",
-        "lead": "連接 Fuel 的跨鏈橋、預言機、索引器和入金通道。"
-      },
-      "nft": {
-        "eyebrow": "NFT 與遊戲",
-        "title": "NFT 與遊戲",
-        "lead": "Fuel 上的藏品、市場、身份和遊戲。"
+        "eyebrow": "數據與基礎設施",
+        "title": "數據與基礎設施"
       },
       "tooling": {
         "eyebrow": "工具",
-        "title": "工具",
-        "lead": "在 Fuel 上構建所需的開發工具和學習資料。"
+        "title": "工具"
       },
       "security": {
         "eyebrow": "安全",
-        "title": "安全",
-        "lead": "審計並保護 Fuel 項目的安全機構。"
+        "title": "安全"
       },
       "more": {
         "eyebrow": "更多",
-        "title": "更多 Fuel 項目",
-        "lead": "Fuel 上的其他項目。"
+        "title": "更多 Fuel 項目"
       }
+    },
+    "quick_access": "快速存取",
+    "search_placeholder": "搜尋應用、錢包和基礎設施",
+    "clear_search": "清除搜尋",
+    "categories_label": "生態分類",
+    "app_count_other": "{{count}} 個應用",
+    "show_all": "顯示全部",
+    "no_results": "找不到應用。",
+    "load_error": "載入項目出錯：{{message}}",
+    "spotlight": {
+      "title": "由 Fuel 驅動的完全鏈上現貨 DEX",
+      "lead": "o2 Turbo 的主場：獲得最高 $10k 的自營交易資金。無需考核，利潤 100% 歸你。",
+      "cta": "立即交易",
+      "view_project": "查看項目",
+      "image_alt": "{{name}} 產品截圖"
     }
   },
   "footer": {
