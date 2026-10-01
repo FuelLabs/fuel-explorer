@@ -274,6 +274,26 @@ export function EcosystemProjectNotFound() {
   );
 }
 
+export function EcosystemProjectLoadError() {
+  const { t } = useTranslation('ecosystemProject');
+  const classes = styles();
+
+  return (
+    <div className={cx(classes.page(), 'flex flex-col gap-6 py-24')}>
+      <h1 className="m-0 font-medium text-heading text-[30px] leading-[36px] tracking-[-0.6px]">
+        {t('load_error.title')}
+      </h1>
+      <p className="m-0 text-[var(--red-11)]">{t('load_error.body')}</p>
+      <Link
+        to="/ecosystem"
+        className={cx(classes.crumb(), classes.label(), 'w-fit')}
+      >
+        <IconArrowLeft size={16} aria-hidden /> {t('not_found.back')}
+      </Link>
+    </div>
+  );
+}
+
 export function EcosystemProjectSkeleton() {
   const classes = styles();
 

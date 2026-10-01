@@ -10,8 +10,14 @@ export type TxApp = {
   count?: number;
 };
 
-function createAppsCache(family: string, maxEntries: number) {
+function createAppsCache(
+  family: string,
+  maxEntries: number,
+  /** Drop everything when the last write is older than this. */
+  maxAgeMs?: number,
+) {
   const key = `${family}v3:${ECOSYSTEM_PROJECTS_URL ?? ''}`;
+  const savedAtKey = `${key}:saved-at`;
   let entries: Map<string, TxApp[]> | null = null;
 
   function load() {
@@ -20,12 +26,20 @@ function createAppsCache(family: string, maxEntries: number) {
     try {
       for (let i = localStorage.length - 1; i >= 0; i--) {
         const stored = localStorage.key(i);
-        if (stored?.startsWith(family) && stored !== key) {
+        if (
+          stored?.startsWith(family) &&
+          stored !== key &&
+          stored !== savedAtKey
+        ) {
           localStorage.removeItem(stored);
         }
       }
       const raw = localStorage.getItem(key);
-      if (raw) entries = new Map(JSON.parse(raw) as [string, TxApp[]][]);
+      const savedAt = Number(localStorage.getItem(savedAtKey));
+      const expired = maxAgeMs !== undefined && Date.now() - savedAt > maxAgeMs;
+      if (raw && !expired) {
+        entries = new Map(JSON.parse(raw) as [string, TxApp[]][]);
+      }
     } catch {}
     return entries;
   }
@@ -55,6 +69,7 @@ function createAppsCache(family: string, maxEntries: number) {
     }
     try {
       localStorage.setItem(key, JSON.stringify([...cache]));
+      localStorage.setItem(savedAtKey, String(Date.now()));
     } catch {}
   }
 
@@ -71,7 +86,14 @@ export const writeTxApps = txApps.write;
 
 // Each block is stored once. Top Apps sums every block saved while the
 // homepage has been open, up to this cap (about 20 minutes at a 30s refresh).
-const blockApps = createAppsCache('fuel-explorer:block-apps:', 200);
+// A cache left idle longer than that is discarded, so a return visit does not
+// rank blocks from an earlier session.
+const BLOCK_APPS_MAX_AGE_MS = 20 * 60 * 1000;
+const blockApps = createAppsCache(
+  'fuel-explorer:block-apps:',
+  200,
+  BLOCK_APPS_MAX_AGE_MS,
+);
 export const readBlockApps = blockApps.read;
 export const writeBlockApps = blockApps.write;
 export const listBlockApps = blockApps.list;

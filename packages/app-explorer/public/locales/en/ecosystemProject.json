@@ -26,6 +26,10 @@
     "title": "Project not found",
     "back": "Back to ecosystem"
   },
+  "load_error": {
+    "title": "Could not load projects",
+    "body": "The project list is unavailable right now. Try again in a moment."
+  },
   "context": {
     "defi": "{{name}} is part of Fuel's growing onchain finance ecosystem, where applications can use Fuel's execution layer for responsive markets and efficient settlement.",
     "ai": "{{name}} explores how intelligent, onchain applications can use Fuel's parallel execution and purpose-built virtual machine.",

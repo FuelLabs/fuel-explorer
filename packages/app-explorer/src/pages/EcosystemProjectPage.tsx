@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   EcosystemProjectDetail,
+  EcosystemProjectLoadError,
   EcosystemProjectNotFound,
   EcosystemProjectSkeleton,
 } from '~/systems/Ecosystem/components/EcosystemProjectDetail';
@@ -17,19 +18,26 @@ const RELATED_LIMIT = 8;
 function EcosystemProjectScreen() {
   const { slug } = useParams();
   // Every listed project, live or not, so links from ?liveOnly=off resolve.
-  const { data, isLoading } = useEcosystemProjects(false);
+  const { data, isLoading, isError } = useEcosystemProjects(false);
   const projects = data?.initialProjects ?? [];
   const project = projects.find((item) => projectSlug(item) === slug);
 
   if (isLoading) return <EcosystemProjectSkeleton />;
-  if (!project) return <EcosystemProjectNotFound />;
+  // A failed request leaves no data, which is not the same as an unknown slug.
+  if (!project) {
+    return isError ? (
+      <EcosystemProjectLoadError />
+    ) : (
+      <EcosystemProjectNotFound />
+    );
+  }
 
   const section = sectionForProject(project);
   const related = projects
     .filter(
       (item) => item !== project && sectionForProject(item).id === section.id,
     )
-    .sort((a, b) => Number(isSuiteProject(a)) - Number(isSuiteProject(b)))
+    .sort((a, b) => Number(isSuiteProject(b)) - Number(isSuiteProject(a)))
     .slice(0, RELATED_LIMIT);
 
   return (
