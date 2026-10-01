@@ -1,16 +1,18 @@
-import { GridFrame } from '@fuels/ui';
+import { Button, GridFrame } from '@fuels/ui';
 import { type ReactNode, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ToolFaq } from '~/systems/Core/components/ToolPage/ToolFaq';
+import { ToolPageHeader } from '~/systems/Core/components/ToolPage/ToolPageHeader';
 import { ToolSteps } from '~/systems/Core/components/ToolPage/ToolSteps';
 import { BRIDGE_DOCS_URL } from '../constants';
 
 type BridgePageShellProps = {
   withdrawDelay: string;
+  board: ReactNode;
   children: ReactNode;
 };
 
-function BridgeGuide({ withdrawDelay }: { withdrawDelay: string }) {
+function BridgeSteps({ withdrawDelay }: { withdrawDelay: string }) {
   const { t } = useTranslation('bridgeGuide');
   const steps = [
     {
@@ -27,6 +29,18 @@ function BridgeGuide({ withdrawDelay }: { withdrawDelay: string }) {
     },
   ];
 
+  return (
+    <ToolSteps
+      title={t('title')}
+      lead={t('lead')}
+      steps={steps}
+      note={t('withdraw_note', { delay: withdrawDelay })}
+    />
+  );
+}
+
+function BridgeFaq({ withdrawDelay }: { withdrawDelay: string }) {
+  const { t } = useTranslation('bridgeGuide');
   const faq = [
     {
       question: t('faq.duration.question'),
@@ -51,29 +65,54 @@ function BridgeGuide({ withdrawDelay }: { withdrawDelay: string }) {
   ];
 
   return (
-    <>
-      <ToolSteps
-        title={t('title')}
-        lead={t('lead')}
-        steps={steps}
-        note={t('withdraw_note', { delay: withdrawDelay })}
-      />
-      <ToolFaq items={faq} docsLabel={t('docs')} docsUrl={BRIDGE_DOCS_URL} />
-    </>
+    <ToolFaq items={faq} docsLabel={t('docs')} docsUrl={BRIDGE_DOCS_URL} />
   );
 }
 
-// The form is the page. The explanation sits under it, the same way staking
-// puts "How staking works" under the stake panel.
+// The form, the transfers board and the steps share one block, so a pending
+// transfer and the next step are visible while the next transfer is set up.
+// Below desktop width everything stacks in that order; the FAQ stays last.
 export function BridgePageShell({
   withdrawDelay,
+  board,
   children,
 }: BridgePageShellProps) {
+  const { t } = useTranslation();
+
   return (
     <GridFrame className="grid-cols-1">
-      {children}
+      <ToolPageHeader
+        title={t('bridge.title')}
+        lead={t('bridge.lead')}
+        actions={
+          <Button
+            as="a"
+            href={BRIDGE_DOCS_URL}
+            target="_blank"
+            rel="noreferrer"
+            size="3"
+            color="gray"
+            variant="soft"
+          >
+            {t('bridge.read_docs')}
+          </Button>
+        }
+      />
+      <div className="grid min-w-0 gap-px bg-[var(--fuel-line)] desktop:grid-cols-[minmax(0,560px)_minmax(0,1fr)]">
+        <div className="fuel-edge fuel-tool-cell flex min-w-0 flex-col bg-[var(--fuel-background)] px-6 py-8 tablet:px-10">
+          {children}
+        </div>
+        <div className="flex min-w-0 flex-col gap-px bg-[var(--fuel-line)]">
+          <div className="bg-[var(--fuel-background)]">{board}</div>
+          <div className="flex-1 bg-[var(--fuel-background)]">
+            <Suspense fallback={null}>
+              <BridgeSteps withdrawDelay={withdrawDelay} />
+            </Suspense>
+          </div>
+        </div>
+      </div>
       <Suspense fallback={null}>
-        <BridgeGuide withdrawDelay={withdrawDelay} />
+        <BridgeFaq withdrawDelay={withdrawDelay} />
       </Suspense>
     </GridFrame>
   );
