@@ -1,4 +1,5 @@
 import { Button } from '@fuels/ui';
+import type { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
@@ -15,7 +16,10 @@ export function EcosystemSpotlight({ project }: { project: Project }) {
   const classes = styles();
 
   return (
-    <section className={classes.root()}>
+    <section
+      className={classes.root()}
+      style={{ '--fuel-enter-delay': '160ms' } as CSSProperties}
+    >
       <div className={classes.copy()}>
         <div>
           <div className="flex items-center gap-3">
@@ -73,7 +77,7 @@ export function EcosystemSpotlight({ project }: { project: Project }) {
 
 const styles = tv({
   slots: {
-    root: 'grid border border-[var(--fuel-line)] bg-[var(--fuel-stone-950)] md:grid-cols-2',
+    root: 'fuel-rise grid border border-[var(--fuel-line)] bg-[var(--fuel-stone-950)] md:grid-cols-2',
     copy: [
       'flex flex-col p-6 tablet:p-8 md:justify-between md:p-10',
       'border-b border-white/10 md:border-r md:border-b-0',

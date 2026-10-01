@@ -87,7 +87,9 @@ export function EcosystemPageWrapper() {
           </p>
         )}
         {data && filtered && (
-          <section className="flex flex-col gap-6">
+          // Keyed by section so choosing another one re-enters the list. Typing
+          // keeps the same section, so results never replay on a keystroke.
+          <section key={activeSection} className="flex flex-col gap-6">
             <div className="flex items-center gap-3 px-7 text-[14px] text-[var(--fuel-element-low-em)]">
               <span>{t('ecosystem.app_count', { count: matches.length })}</span>
               <span aria-hidden>·</span>
@@ -100,9 +102,9 @@ export function EcosystemPageWrapper() {
               </button>
             </div>
             {matches.length > 0 ? (
-              <EcosystemList projects={matches} />
+              <EcosystemList projects={matches} stagger={!search.trim()} />
             ) : (
-              <p className="m-0 border-y border-[var(--fuel-line)] py-16 text-center text-[14px] text-[var(--fuel-element-low-em)]">
+              <p className="m-0 fuel-appear border-y border-[var(--fuel-line)] py-16 text-center text-[14px] text-[var(--fuel-element-low-em)]">
                 {t('ecosystem.no_results')}
               </p>
             )}
