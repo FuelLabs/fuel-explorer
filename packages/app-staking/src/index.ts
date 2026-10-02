@@ -3,6 +3,8 @@ export { ConnectWallet } from './systems/Core/components/ConnectWallet/ConnectWa
 export { ConversionTool } from './systems/Staking/pages/ConversionTool';
 export { StakingPage } from './systems/Staking/pages/Staking';
 export { RigStakingPage } from './systems/Staking/pages/RigStaking';
+export { AttentionBoard } from './systems/Staking/components/AttentionBoard/AttentionBoard';
+export { StakingLanes } from './systems/Staking/components/StakingLanes/StakingLanes';
 
 export {
   ReactQueryProvider,

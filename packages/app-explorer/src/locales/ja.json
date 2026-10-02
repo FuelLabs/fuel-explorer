@@ -5,7 +5,6 @@
     "language": "言語",
     "search": "ブロック、トランザクション、コントラクト、アドレスで検索...",
     "search_short": "検索",
-    "search_projects": "検索",
     "search_projects_label": "プロジェクトを検索",
     "all": "すべて",
     "today": "今日",
@@ -14,7 +13,6 @@
     "building": "開発中: {{count}}",
     "window_24h": "24時間",
     "read_docs": "ドキュメント",
-    "start_building": "開発を始める",
     "one_day": "1日",
     "questions": "質問"
   },
@@ -48,49 +46,56 @@
     "block_link": "ブロック {{number}}"
   },
   "ecosystem": {
+    "eyebrow": "Fuel エコシステム",
     "built_on_fuel": "Fuel 上で動く",
     "lead": "アプリ、ウォレット、インフラが最速の実行レイヤーで稼働しています。",
     "sections": {
       "fuel": {
-        "eyebrow": "公式アプリ",
-        "title": "Fuel Suite",
-        "lead": "Fuel Labs が開発・運用する公式プロダクト。"
+        "title": "Fuel Suite"
       },
       "defi": {
         "eyebrow": "DeFi",
-        "title": "DeFi",
-        "lead": "Fuel 上の資産を取引、貸借、発行し、利回りを得る。"
+        "title": "DeFi"
+      },
+      "ai": {
+        "eyebrow": "AI",
+        "title": "AI"
       },
       "wallets": {
         "eyebrow": "ウォレット",
-        "title": "ウォレット",
-        "lead": "保管、送金、署名。Fuel での自己管理。"
+        "title": "ウォレット"
       },
       "infrastructure": {
-        "eyebrow": "インフラ",
-        "title": "インフラ",
-        "lead": "Fuel をつなぐブリッジ、オラクル、インデクサ、オンランプ。"
-      },
-      "nft": {
-        "eyebrow": "NFT とゲーム",
-        "title": "NFT とゲーム",
-        "lead": "Fuel 上のコレクション、マーケット、アイデンティティ、ゲーム。"
+        "eyebrow": "データとインフラ",
+        "title": "データとインフラ"
       },
       "tooling": {
         "eyebrow": "ツール",
-        "title": "ツール",
-        "lead": "Fuel で開発するためのツールと学習資料。"
+        "title": "ツール"
       },
       "security": {
         "eyebrow": "セキュリティ",
-        "title": "セキュリティ",
-        "lead": "Fuel 上のプロジェクトを監査し守るセキュリティ企業。"
+        "title": "セキュリティ"
       },
       "more": {
         "eyebrow": "その他",
-        "title": "その他の Fuel",
-        "lead": "Fuel 上のその他のプロジェクト。"
+        "title": "その他の Fuel"
       }
+    },
+    "quick_access": "クイックアクセス",
+    "search_placeholder": "アプリ、ウォレット、インフラを検索",
+    "clear_search": "検索をクリア",
+    "categories_label": "エコシステムのカテゴリ",
+    "app_count_other": "{{count}} 件のアプリ",
+    "show_all": "すべて表示",
+    "no_results": "アプリが見つかりません。",
+    "load_error": "プロジェクトの読み込みエラー: {{message}}",
+    "spotlight": {
+      "title": "Fuel で動く完全オンチェーンの現物 DEX",
+      "lead": "o2 Turbo の拠点：最大 $10k のプロップトレード資金を獲得。審査なし、利益は 100% あなたのもの。",
+      "cta": "取引する",
+      "view_project": "プロジェクトを見る",
+      "image_alt": "{{name}} の製品スクリーンショット"
     }
   },
   "footer": {
@@ -128,7 +133,6 @@
     "tab_ethereum": "Ethereum でステーク",
     "rig_card_title": "The Rig でリキッドステーク",
     "rig_card_lead": "Ignition でステークし、リキッドトークンを受け取ります。報酬は自動で複利になります。",
-    "claimable": "{{amount}} stFUEL を <rig>The Rig</rig> で受け取れます。",
     "connect_tokens": "ステークできるトークンを見るにはウォレットを接続してください。",
     "connect_ethereum": "Ethereum ウォレットを接続",
     "positions": "現在のポジション",

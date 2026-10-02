@@ -7,6 +7,8 @@ export type PageTitleProps = {
   inverse?: boolean;
   mb?: HStackProps['mb'];
   className?: string;
+  /** Use h2 when the page already has its own h1. */
+  as?: 'h1' | 'h2';
 };
 
 export const DEFAULT_PAGETITLE_MB: HStackProps['mb'] = '7';
@@ -18,11 +20,12 @@ export function PageTitle({
   className,
   inverse = false,
   mb = DEFAULT_PAGETITLE_MB,
+  as = 'h1',
 }: PageTitleProps) {
   return (
     <HStack justify="between" mb={mb} className={className}>
       <Flex gap="2" direction={inverse ? 'column-reverse' : 'column'}>
-        <SectionTitle as="h1" className="min-h-[34px]">
+        <SectionTitle as={as} className="min-h-[34px]">
           {title}
         </SectionTitle>
         {subtitle && (

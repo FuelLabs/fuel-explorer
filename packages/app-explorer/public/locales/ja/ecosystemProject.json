@@ -1,0 +1,38 @@
+{
+  "breadcrumb": "エコシステム",
+  "suite_badge": "Fuel Suite",
+  "about": "{{name}} について",
+  "facts": {
+    "category": "カテゴリ",
+    "collection": "コレクション",
+    "network": "ネットワーク",
+    "links": "リンク"
+  },
+  "collection": {
+    "suite": "Fuel Suite",
+    "community": "コミュニティ",
+    "official": "公式"
+  },
+  "network_fuel": "Fuel",
+  "not_listed": "未掲載",
+  "on_x": "X の {{name}}",
+  "on_github": "GitHub の {{name}}",
+  "on_discord": "Discord の {{name}}",
+  "ways_to_use": "使い方",
+  "open_on": "{{host}} で開く",
+  "more_in": "{{category}} の他のプロジェクト",
+  "see_all": "すべて表示",
+  "not_found": {
+    "title": "プロジェクトが見つかりません",
+    "back": "エコシステムに戻る"
+  },
+  "context": {
+    "defi": "{{name}} は拡大する Fuel のオンチェーン金融エコシステムの一部です。アプリは Fuel の実行レイヤーで、応答性の高い市場と効率的な決済を実現します。",
+    "ai": "{{name}} は、インテリジェントなオンチェーンアプリが Fuel の並列実行と専用仮想マシンをどう活用できるかを探求しています。",
+    "wallets": "{{name}} は、Fuel エコシステム全体とつながったまま、アプリの利用や資産管理を可能にします。",
+    "infrastructure": "{{name}} は、Fuel 上のアプリ、開発者、ネットワーク参加者を支えるインフラを提供します。",
+    "tooling": "{{name}} は、Fuel 上のアプリの開発、理解、運用のための実用的なツールをビルダーに提供します。",
+    "security": "{{name}} は、Fuel 上でアプリを開発・運用するチームに専門的なセキュリティの知見を提供します。",
+    "more": "{{name}} は Fuel で稼働中のプロジェクトの一つです。"
+  }
+}

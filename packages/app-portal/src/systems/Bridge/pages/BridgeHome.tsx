@@ -50,9 +50,10 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
       <BridgePausedBanner />
       <LayerSwapBanner />
       <PageTitle
+        as="h2"
         title={
           <RollingLabel
-            text={isBridgeHistory ? 'History' : 'Fuel Bridge'}
+            text={isBridgeHistory ? 'History' : 'Transfer'}
             direction={direction}
           />
         }
@@ -99,7 +100,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
 const styles = tv({
   slots: {
-    content: 'flex w-full max-w-[455px] min-h-0 flex-1 flex-col',
+    content: 'flex w-full max-w-[520px] min-h-0 flex-1 flex-col',
     toggle: 'rounded-md min-w-[96px] justify-center gap-1.5',
     icon: 'relative inline-flex size-[14px] items-center justify-center',
     tabs: 'ml-0 color-inherit decoration-none :active:text-success',

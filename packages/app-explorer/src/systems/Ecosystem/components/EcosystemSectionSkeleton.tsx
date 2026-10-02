@@ -1,16 +1,23 @@
 import { LoadingBox } from '@fuels/ui';
 
-// Same box sizes as EcosystemSection, so cards replace it in place.
+// LoadingBox sweeps a shimmer across itself; under reduced motion it stays a still fill.
+const STILL = 'motion-reduce:before:hidden';
+
+// Same box sizes as EcosystemSection, so cards replace it in place. Six boxes
+// fill the same rows as the six suite apps at every column count.
 export function EcosystemSectionSkeleton() {
   return (
-    <div aria-hidden>
-      <LoadingBox className="h-3 w-32" />
-      <LoadingBox className="mt-3 mb-2 h-8 w-56" />
-      <LoadingBox className="mb-6 h-5 w-80 max-w-full" />
-      <div className="grid grid-cols-1 gap-px min-[720px]:grid-cols-2 desktop:grid-cols-3">
+    <div aria-hidden className="flex flex-col gap-5">
+      {/* The pt matches the "Quick access" eyebrow the first section carries. */}
+      <div className="px-7 pt-[15px]">
+        <LoadingBox className={`h-8 w-48 ${STILL}`} />
+      </div>
+      <div className="grid grid-cols-1 gap-px tablet:grid-cols-2 md:grid-cols-3 desktop:grid-cols-4">
         {Array.from({ length: 6 }, (_, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static placeholders
-          <LoadingBox key={i} className="h-[113px] tablet:h-[145px] w-full" />
+          <LoadingBox
+            key={i}
+            className={`h-[84px] w-full tablet:h-[112px] ${STILL}`}
+          />
         ))}
       </div>
     </div>

@@ -1,10 +1,4 @@
-import {
-  Button,
-  type Colors,
-  Dropdown,
-  shortAddress,
-  useToast,
-} from '@fuels/ui';
+import { Button, Dropdown, shortAddress, useToast } from '@fuels/ui';
 import {
   IconCopy,
   IconHistory,
@@ -56,18 +50,15 @@ export const ConnectWallet = () => {
           exit={{ opacity: 0 }}
         >
           <Dropdown>
-            <Dropdown.Trigger className="bg-transparent hover:bg-[var(--accent-a4)]">
+            <Dropdown.Trigger>
+              {/* Same surface, height and text size as the language and network controls beside it. */}
               <Button
                 color="gray"
                 variant="soft"
-                size={{
-                  initial: '1',
-                  lg: '2',
-                }}
-                className="text-[var(--accent-a11)] h-[40px] max-w-[165px] w-full pl-[20px]"
-                iconColor={'text-[var(--accent-a11)]' as Colors}
+                size="1"
+                className="m-0 h-10 min-w-[165px] px-4"
                 rightIcon={IconSettingsFilled}
-                rightIconClassName="ml-[8px] w-[26px] h-[26px] opacity-50"
+                rightIconClassName="ml-2 shrink-0 opacity-50"
               >
                 {shortAddress(account)}
               </Button>

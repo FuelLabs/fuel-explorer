@@ -5,10 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { BridgeFormSkeleton } from '~/systems/Bridge/components/BridgeFormSkeleton';
 import { BridgePageShell } from '~/systems/Bridge/components/BridgePageShell';
+import { TransfersBoardSkeleton } from '~/systems/Bridge/components/TransfersBoardSkeleton';
 import { WithdrawDelayProvider } from '~/systems/Bridge/withdrawDelay';
 
 // Pulls in wagmi, viem and connectkit.
 const BridgePanelPage = lazy(() => import('~/pages/BridgePanelPage'));
+// Reads the same bridge store, so it loads with the same chunk of dependencies.
+const TransfersBoard = lazy(() =>
+  import('~/systems/Bridge/components/TransfersBoard').then((m) => ({
+    default: m.TransfersBoard,
+  })),
+);
 
 const PANEL_HEIGHT_KEY = 'fuel:bridge-panel-height';
 // BridgeFormSkeleton's height, which is the form before a wallet connects.
@@ -53,7 +60,14 @@ const BridgeLayout: React.FC = () => {
 
   return (
     <WithdrawDelayProvider value={setWithdrawDelay}>
-      <BridgePageShell withdrawDelay={withdrawDelay}>
+      <BridgePageShell
+        withdrawDelay={withdrawDelay}
+        board={
+          <Suspense fallback={<TransfersBoardSkeleton />}>
+            <TransfersBoard />
+          </Suspense>
+        }
+      >
         <div
           ref={panel}
           className="flex flex-col"

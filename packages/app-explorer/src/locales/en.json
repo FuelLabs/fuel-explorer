@@ -5,7 +5,6 @@
     "language": "Language",
     "search": "Search by block, transaction, contract, address...",
     "search_short": "Search here...",
-    "search_projects": "Search",
     "search_projects_label": "Search projects",
     "all": "All",
     "today": "Today",
@@ -14,7 +13,6 @@
     "building": "Building: {{count}}",
     "window_24h": "24h",
     "read_docs": "Read docs",
-    "start_building": "Start building",
     "one_day": "a day",
     "questions": "Questions"
   },
@@ -48,49 +46,57 @@
     "block_link": "Block {{number}}"
   },
   "ecosystem": {
+    "eyebrow": "Fuel Ecosystem",
     "built_on_fuel": "Built on Fuel",
     "lead": "Apps, wallets and infrastructure live on the fastest execution layer.",
     "sections": {
       "fuel": {
-        "eyebrow": "Official apps",
-        "title": "The Fuel Suite",
-        "lead": "First-party products built and maintained by Fuel Labs."
+        "title": "Fuel Suite"
       },
       "defi": {
         "eyebrow": "DeFi",
-        "title": "DeFi",
-        "lead": "Trade, lend, launch and earn yield with assets on Fuel."
+        "title": "DeFi"
+      },
+      "ai": {
+        "eyebrow": "AI",
+        "title": "AI"
       },
       "wallets": {
         "eyebrow": "Wallets",
-        "title": "Wallets",
-        "lead": "Hold, send and sign. Self-custody on Fuel."
+        "title": "Wallets"
       },
       "infrastructure": {
-        "eyebrow": "Infrastructure",
-        "title": "Infrastructure",
-        "lead": "Bridges, oracles, indexers and on-ramps that keep Fuel connected."
-      },
-      "nft": {
-        "eyebrow": "NFT and gaming",
-        "title": "NFTs and games",
-        "lead": "Collections, marketplaces, identity and games on Fuel."
+        "eyebrow": "Data & Infrastructure",
+        "title": "Data & Infrastructure"
       },
       "tooling": {
         "eyebrow": "Tooling",
-        "title": "Tooling",
-        "lead": "Developer tools and learning resources for building on Fuel."
+        "title": "Tooling"
       },
       "security": {
         "eyebrow": "Security",
-        "title": "Security",
-        "lead": "Auditors and security firms that review and protect projects on Fuel."
+        "title": "Security"
       },
       "more": {
         "eyebrow": "More",
-        "title": "More on Fuel",
-        "lead": "Other projects live on Fuel."
+        "title": "More on Fuel"
       }
+    },
+    "quick_access": "Quick access",
+    "search_placeholder": "Search apps, wallets and infrastructure",
+    "clear_search": "Clear search",
+    "categories_label": "Ecosystem categories",
+    "app_count_one": "{{count}} app",
+    "app_count_other": "{{count}} apps",
+    "show_all": "Show all",
+    "no_results": "No apps found.",
+    "load_error": "Error loading projects: {{message}}",
+    "spotlight": {
+      "title": "Fully onchain spot DEX, powered by Fuel",
+      "lead": "Home of o2 Turbo: get funded up to $10k in prop-trading capital. No evaluation, keep 100% of the profit.",
+      "cta": "Trade now",
+      "view_project": "View project",
+      "image_alt": "{{name}} product screenshot"
     }
   },
   "footer": {
@@ -128,14 +134,71 @@
     "tab_ethereum": "Stake on Ethereum Network",
     "rig_card_title": "Liquid stake on The Rig",
     "rig_card_lead": "Stake on Ignition and receive a liquid token. Rewards compound automatically.",
-    "claimable": "You have {{amount}} stFUEL to claim on <rig>The Rig</rig>.",
     "connect_tokens": "Connect your wallet to view available tokens for staking.",
     "connect_ethereum": "Connect Ethereum Wallet",
     "positions": "Current Positions",
     "validators": "Validators",
     "transactions": "Your Transactions",
     "wallet_disconnected": "Wallet not connected",
-    "connect_positions": "Please connect your wallet to view your staking positions."
+    "connect_positions": "Please connect your wallet to view your staking positions.",
+    "lanes_label": "Staking paths",
+    "lane_rig": "The Rig",
+    "lane_ethereum": "Ethereum",
+    "lane_ethereum_lead": "Delegate FUEL to validators from your Ethereum wallet.",
+    "lane_rig_lead": "Liquid staking on Ignition. You hold stFUEL.",
+    "lane_rig_figure": "To claim",
+    "lane_ethereum_figure": "Staked",
+    "board": {
+      "title": "Waiting on you",
+      "count_one": "{{count}} item",
+      "count_other": "{{count}} items",
+      "col_lane": "Path",
+      "col_what": "What",
+      "col_amount": "Amount",
+      "col_status": "Status",
+      "rig_claim": "Claim stFUEL",
+      "claim_rewards": "Claim rewards",
+      "ready": "Ready now",
+      "action_needed": "Action needed",
+      "time_left": "~{{eta}} left",
+      "in_progress": "In progress",
+      "failed": "Failed",
+      "claim": "Claim",
+      "continue": "Continue",
+      "details": "Details",
+      "empty": "Nothing is waiting on you.",
+      "empty_start": "Pick a validator to start staking.",
+      "start": "Stake",
+      "loading": "Loading your staking activity"
+    }
+  },
+  "bridge": {
+    "title": "Bridge",
+    "lead": "Move assets between Ethereum and Fuel Ignition.",
+    "read_docs": "Read docs",
+    "panel_transfer": "Transfer",
+    "panel_history": "History",
+    "board": {
+      "title": "Transfers in progress",
+      "count_one": "{{count}} open",
+      "count_other": "{{count}} open",
+      "col_what": "What",
+      "col_amount": "Amount",
+      "col_status": "Status",
+      "deposit": "Deposit",
+      "withdraw": "Withdraw",
+      "route_deposit": "Ethereum to Fuel",
+      "route_withdraw": "Fuel to Ethereum",
+      "action_needed": "Action needed",
+      "continue": "Continue",
+      "details": "Details",
+      "connect": "Connect your Fuel wallet to see your transfers.",
+      "connect_button": "Connect wallet",
+      "none": "No transfers yet. Your deposits and withdrawals appear here.",
+      "empty": "Nothing is in progress. Finished transfers are in History.",
+      "open_history": "Open History",
+      "loading": "Loading your transfers"
+    }
   },
   "errors": {
     "not_found": "Page Not Found",

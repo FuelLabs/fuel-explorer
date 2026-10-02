@@ -78,7 +78,7 @@ export const BridgeTxList = () => {
 
   return (
     <>
-      <CardList isClickable className={classes.cardList()}>
+      <CardList isClickable gap="0" className={classes.cardList()}>
         {bridgeTxs?.map((txDatum) => {
           if (
             isEthChain(txDatum.fromNetwork) &&
@@ -129,7 +129,8 @@ export const BridgeTxList = () => {
 
 const styles = tv({
   slots: {
-    cardList: 'cursor-pointer select-none :hover:bg-muted', // was intentsBase3
-    buttonShowMore: 'mt-2 w-full',
+    cardList:
+      'cursor-pointer select-none border border-[var(--fuel-border)] overflow-hidden',
+    buttonShowMore: 'mt-4 w-full',
   },
 });

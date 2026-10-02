@@ -5,7 +5,6 @@
     "language": "언어",
     "search": "블록, 트랜잭션, 컨트랙트, 주소로 검색...",
     "search_short": "검색",
-    "search_projects": "검색",
     "search_projects_label": "프로젝트 검색",
     "all": "전체",
     "today": "오늘",
@@ -14,7 +13,6 @@
     "building": "개발 중: {{count}}",
     "window_24h": "24시간",
     "read_docs": "문서",
-    "start_building": "개발 시작",
     "one_day": "하루",
     "questions": "질문"
   },
@@ -48,49 +46,56 @@
     "block_link": "블록 {{number}}"
   },
   "ecosystem": {
+    "eyebrow": "Fuel 생태계",
     "built_on_fuel": "Fuel 위에서",
     "lead": "앱, 지갑, 인프라가 가장 빠른 실행 레이어에서 동작합니다.",
     "sections": {
       "fuel": {
-        "eyebrow": "공식 앱",
-        "title": "Fuel Suite",
-        "lead": "Fuel Labs가 만들고 운영하는 공식 제품."
+        "title": "Fuel Suite"
       },
       "defi": {
         "eyebrow": "DeFi",
-        "title": "DeFi",
-        "lead": "Fuel의 자산을 거래, 대출, 발행하고 수익을 얻습니다."
+        "title": "DeFi"
+      },
+      "ai": {
+        "eyebrow": "AI",
+        "title": "AI"
       },
       "wallets": {
         "eyebrow": "지갑",
-        "title": "지갑",
-        "lead": "보관, 전송, 서명. Fuel에서의 셀프 커스터디."
+        "title": "지갑"
       },
       "infrastructure": {
-        "eyebrow": "인프라",
-        "title": "인프라",
-        "lead": "Fuel을 연결하는 브리지, 오라클, 인덱서, 온램프."
-      },
-      "nft": {
-        "eyebrow": "NFT와 게임",
-        "title": "NFT와 게임",
-        "lead": "Fuel의 컬렉션, 마켓, 신원, 게임."
+        "eyebrow": "데이터 및 인프라",
+        "title": "데이터 및 인프라"
       },
       "tooling": {
         "eyebrow": "도구",
-        "title": "도구",
-        "lead": "Fuel에서 개발하기 위한 도구와 학습 자료."
+        "title": "도구"
       },
       "security": {
         "eyebrow": "보안",
-        "title": "보안",
-        "lead": "Fuel 프로젝트를 감사하고 보호하는 보안 회사."
+        "title": "보안"
       },
       "more": {
         "eyebrow": "더 보기",
-        "title": "그 외 Fuel",
-        "lead": "Fuel의 다른 프로젝트."
+        "title": "그 외 Fuel"
       }
+    },
+    "quick_access": "빠른 접근",
+    "search_placeholder": "앱, 지갑, 인프라 검색",
+    "clear_search": "검색 지우기",
+    "categories_label": "생태계 카테고리",
+    "app_count_other": "앱 {{count}}개",
+    "show_all": "모두 보기",
+    "no_results": "앱을 찾을 수 없습니다.",
+    "load_error": "프로젝트 로드 오류: {{message}}",
+    "spotlight": {
+      "title": "Fuel 기반의 완전 온체인 현물 DEX",
+      "lead": "o2 Turbo의 본거지: 최대 $10k의 프롭 트레이딩 자금을 받으세요. 평가 없음, 수익은 100% 본인 몫.",
+      "cta": "지금 거래",
+      "view_project": "프로젝트 보기",
+      "image_alt": "{{name}} 제품 스크린샷"
     }
   },
   "footer": {
@@ -128,7 +133,6 @@
     "tab_ethereum": "Ethereum 스테이킹",
     "rig_card_title": "The Rig 리퀴드 스테이킹",
     "rig_card_lead": "Ignition에서 스테이킹하고 리퀴드 토큰을 받습니다. 보상은 자동으로 복리됩니다.",
-    "claimable": "{{amount}} stFUEL을 <rig>The Rig</rig>에서 받을 수 있습니다.",
     "connect_tokens": "스테이킹할 수 있는 토큰을 보려면 지갑을 연결하세요.",
     "connect_ethereum": "Ethereum 지갑 연결",
     "positions": "현재 포지션",
