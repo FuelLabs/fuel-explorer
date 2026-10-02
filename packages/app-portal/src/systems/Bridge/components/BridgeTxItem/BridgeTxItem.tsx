@@ -52,8 +52,9 @@ export const BridgeTxItem = ({
           <ItemLoader />
         ) : (
           <Text className={classes.assetAmountText()}>
-            <span className="fuel-stat-sm">{amount}</span>
-            <span className="fuel-label ml-2">{asset?.symbol}</span>
+            <span className="fuel-stat-sm">{amount}</span>{' '}
+            {/* A real space keeps the row text "1.5 ETH" for readers and tests. */}
+            <span className="fuel-label ml-1">{asset?.symbol}</span>
           </Text>
         )}
       </Flex>
