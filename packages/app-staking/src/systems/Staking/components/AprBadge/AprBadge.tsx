@@ -3,6 +3,7 @@ import { Badge } from '@fuels/ui';
 import { IconInfoCircle } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { FUEL_INDEXER_API } from 'app-commons';
+import clsx from 'clsx';
 import { urlJoin } from 'fuels';
 
 export function AprBadge({ className }: { className?: string }) {
@@ -20,7 +21,7 @@ export function AprBadge({ className }: { className?: string }) {
   });
 
   return apy ? (
-    <Badge color="blue" className={className}>
+    <Badge color="blue" className={clsx('fuel-appear', className)}>
       ~{apy}% APR
       <Tooltip content="Help secure Fuel sequencing by delegating your tokens to Fuel validators.">
         <IconInfoCircle size={14} className="ml-1" />

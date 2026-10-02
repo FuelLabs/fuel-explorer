@@ -1,4 +1,5 @@
 import { FuelToken, TOKENS } from 'app-commons';
+import { motion, useReducedMotion } from 'framer-motion';
 import { DECIMAL_FUEL } from 'fuels';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +24,15 @@ type LaneProps = {
   unit: string;
 };
 
+// One highlight and one marker are shared by both lanes, so they glide to the
+// lane you pick instead of switching on and off.
+const GLIDE = {
+  type: 'spring',
+  stiffness: 520,
+  damping: 42,
+  mass: 0.9,
+} as const;
+
 function Lane({
   to,
   active,
@@ -33,27 +43,40 @@ function Lane({
   figure,
   unit,
 }: LaneProps) {
+  const reduced = useReducedMotion();
+  const transition = reduced ? { duration: 0 } : GLIDE;
   return (
     <Link
       to={to}
       aria-current={active ? 'page' : undefined}
       className={[
-        'group relative grid min-w-0 gap-6 px-6 py-6 text-inherit no-underline tablet:px-10 tablet:py-8',
+        'group relative isolate grid min-w-0 gap-6 px-6 py-6 text-inherit no-underline tablet:px-10 tablet:py-8',
         'min-[720px]:grid-cols-[1fr_auto] min-[720px]:items-end',
         'fuel-hover-fill focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-ring)]',
-        active ? 'bg-[var(--fuel-card)]' : '',
       ].join(' ')}
     >
+      {active && (
+        <motion.span
+          aria-hidden
+          layoutId="staking-lane-highlight"
+          transition={transition}
+          className="absolute inset-0 -z-10 bg-[var(--fuel-card)]"
+        />
+      )}
       <span className="flex min-w-0 flex-col gap-3">
         <span className="flex items-center gap-3">
           <span
             aria-hidden
-            className={`size-2 shrink-0 border ${
-              active
-                ? 'fuel-square'
-                : 'border-[var(--fuel-indicator-border)] bg-transparent'
-            }`}
-          />
+            className="relative size-2 shrink-0 border border-[var(--fuel-indicator-border)]"
+          >
+            {active && (
+              <motion.span
+                layoutId="staking-lane-marker"
+                transition={transition}
+                className="fuel-square absolute -inset-px"
+              />
+            )}
+          </span>
           <span className="flex h-7 items-center">{logo}</span>
         </span>
         <span className="font-medium text-heading text-[24px] leading-[28px] tracking-[-0.96px]">

@@ -12,3 +12,5 @@ export {
 } from './systems/Settings/providers';
 
 export { Routes } from './routes';
+
+export { TabTransition } from './systems/Core/components/TabTransition/TabTransition';

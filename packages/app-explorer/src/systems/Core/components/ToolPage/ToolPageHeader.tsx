@@ -7,6 +7,8 @@ type ToolPageHeaderProps = {
   eyebrow?: string;
   /** Sits next to the eyebrow, e.g. a live APR badge. */
   badge?: ReactNode;
+  /** Keeps the eyebrow row when the badge comes and goes, so the title does not move. */
+  reserveBadge?: boolean;
   title: string;
   lead: string;
   actions?: ReactNode;
@@ -15,23 +17,25 @@ type ToolPageHeaderProps = {
 export function ToolPageHeader({
   eyebrow,
   badge,
+  reserveBadge,
   title,
   lead,
   actions,
 }: ToolPageHeaderProps) {
   const classes = styles();
+  const hasRow = Boolean(eyebrow || badge || reserveBadge);
 
   return (
     <header className={classes.root()}>
       <div>
         {/* min-h holds the row for a badge that loads later. */}
-        {(eyebrow || badge) && (
+        {hasRow && (
           <HStack align="center" gap="4" className="min-h-6">
             {eyebrow && <SectionTitle as="p">{eyebrow}</SectionTitle>}
             {badge}
           </HStack>
         )}
-        <h1 className={`${classes.title()} ${eyebrow || badge ? 'mt-3' : ''}`}>
+        <h1 className={`${classes.title()} ${hasRow ? 'mt-3' : ''}`}>
           {title}
         </h1>
         <p className={classes.lead()}>{lead}</p>
