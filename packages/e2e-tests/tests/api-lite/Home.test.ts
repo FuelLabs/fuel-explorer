@@ -21,7 +21,7 @@ test.describe('Home page (api-lite)', () => {
     expect(height).toBeGreaterThan(0);
 
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Recent Transactions' }),
+      page.getByRole('heading', { level: 2, name: 'Recent transactions' }),
     ).toBeVisible();
     await expect(page.locator('a[href^="/tx/"]').first()).toBeVisible();
   });
