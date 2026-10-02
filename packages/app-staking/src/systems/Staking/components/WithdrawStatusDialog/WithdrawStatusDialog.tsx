@@ -16,7 +16,6 @@ import {
 } from '@fuels/ui';
 import { IconCircleMinus } from '@fuels/ui';
 import { FuelToken, L1_DISABLE_WITHDRAW, TOKENS } from 'app-commons';
-import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
@@ -95,10 +94,12 @@ export const WithdrawStatusDialog = ({
     <AnimatedDialog.Content
       open
       aria-describedby="Withdraw"
-      className={clsx(
-        responsiveDialogStyle.content({ sizing: 'auto' }),
-        'h-[520px] min-h-[520px]',
-      )}
+      className={responsiveDialogStyle.content({
+        sizing: 'auto',
+        // Grows with its content (a failed step adds a long message) and
+        // scrolls only when taller than the screen, so nothing is cropped.
+        className: 'min-h-[520px] max-h-[calc(100dvh-2rem)] overflow-y-auto',
+      })}
     >
       <VStack className="h-full" gap="7">
         <AnimatedDialog.Title>Withdrawal</AnimatedDialog.Title>
@@ -156,7 +157,7 @@ export const WithdrawStatusDialog = ({
               }
             />
           </HStack>
-          <VStack gap="0" className="overflow-y-auto max-h-[200px]">
+          <VStack gap="0">
             {WITHDRAW_STEPS.filter((step) => {
               if (step.status === GQLWithdrawStatusType.Skipped) {
                 return stakingEvent?.status === GQLWithdrawStatusType.Skipped;

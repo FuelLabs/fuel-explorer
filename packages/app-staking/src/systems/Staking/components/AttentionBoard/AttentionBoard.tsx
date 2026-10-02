@@ -1,6 +1,7 @@
 import { Button, LoadingBox, Tooltip } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { useModal } from 'connectkit';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import {
@@ -12,6 +13,8 @@ import { typeLabel, withdrawType } from '../TransactionHistoryItem/constants';
 import { type AttentionRow, useAttentionRows } from './useAttentionRows';
 
 const RIG_URL = 'https://rig.st';
+// How many failed transactions the group reveals at a time.
+const FAILED_PAGE = 5;
 const { symbol } = TOKENS[FuelToken.V2];
 
 const COLUMNS =
@@ -206,6 +209,67 @@ function BoardRow({ row }: { row: AttentionRow }) {
   );
 }
 
+// Failed transactions are history, not work. They sit in one collapsed row so a
+// long run of them never pushes the items that need the user off the screen.
+function FailedGroup({ rows }: { rows: AttentionRow[] }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [shown, setShown] = useState(FAILED_PAGE);
+  const listId = useId();
+  const remaining = rows.length - shown;
+
+  return (
+    <div className="border-t border-[var(--fuel-border)]">
+      <div className="flex items-center justify-between gap-4 px-6 py-4 tablet:px-10">
+        <span className="flex min-w-0 items-center gap-3">
+          <span aria-hidden className="size-2 shrink-0 bg-[var(--red-10)]" />
+          <span className="flex min-w-0 flex-col">
+            <span className="font-medium text-heading">
+              {t('staking.board.failed_group', { count: rows.length })}
+            </span>
+            <span className="text-[14px] leading-[18px] text-[var(--fuel-element-low-em)]">
+              {t('staking.board.failed_hint')}
+            </span>
+          </span>
+        </span>
+        <Button
+          size="2"
+          variant="ghost"
+          color="gray"
+          aria-expanded={open}
+          aria-controls={listId}
+          onClick={() => setOpen((value) => !value)}
+        >
+          {open ? t('staking.board.hide') : t('staking.board.show')}
+        </Button>
+      </div>
+      {open && (
+        <>
+          <ol id={listId} className="m-0 list-none p-0">
+            {rows.slice(0, shown).map((row) => (
+              <BoardRow key={row.key} row={row} />
+            ))}
+          </ol>
+          {remaining > 0 && (
+            <div className="flex justify-end border-t border-[var(--fuel-border)] px-6 py-3 tablet:px-10">
+              <Button
+                size="2"
+                variant="ghost"
+                color="gray"
+                onClick={() => setShown((value) => value + FAILED_PAGE)}
+              >
+                {t('staking.board.show_more', {
+                  count: Math.min(FAILED_PAGE, remaining),
+                })}
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 export function AttentionBoard() {
   const { t } = useTranslation();
   const { setOpen } = useModal();
@@ -213,6 +277,8 @@ export function AttentionBoard() {
   const lane = pathname.includes('/on-ethereum') ? 'ethereum' : 'rig';
   const { rows, needsConnect, isLoading, hasPositions } =
     useAttentionRows(lane);
+  const openRows = rows.filter((row) => row.kind !== 'failed');
+  const failedRows = rows.filter((row) => row.kind === 'failed');
 
   // The Rig path has one possible item, so an empty board there is only noise.
   if (lane === 'rig' && rows.length === 0) return null;
@@ -228,7 +294,7 @@ export function AttentionBoard() {
         </h2>
         {!needsConnect && !isLoading && (
           <span className="fuel-label" aria-live="polite">
-            {t('staking.board.count', { count: rows.length })}
+            {t('staking.board.count', { count: openRows.length })}
           </span>
         )}
       </div>
@@ -245,7 +311,7 @@ export function AttentionBoard() {
       </div>
 
       <ol className="m-0 list-none p-0">
-        {rows.map((row) => (
+        {openRows.map((row) => (
           <BoardRow key={row.key} row={row} />
         ))}
       </ol>
@@ -260,7 +326,7 @@ export function AttentionBoard() {
         </div>
       )}
 
-      {!needsConnect && !isLoading && rows.length === 0 && (
+      {!needsConnect && !isLoading && openRows.length === 0 && (
         <div className="flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">
           <p className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]">
             {t('staking.board.empty')}
@@ -282,6 +348,8 @@ export function AttentionBoard() {
           )}
         </div>
       )}
+
+      {failedRows.length > 0 && <FailedGroup rows={failedRows} />}
 
       {needsConnect && (
         <div className="flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">
