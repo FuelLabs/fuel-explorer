@@ -1,7 +1,7 @@
-import { getProjectImage } from 'app-commons';
 import { useEffect, useRef } from 'react';
 import { cx } from '~/systems/Core/utils/cx';
 import type { Project } from '~/types/ecosystem';
+import { localProjectLogo, logoUrl } from '../utils/projectLogo';
 import { projectSlug } from '../utils/projectSlug';
 
 type RGB = [number, number, number];
@@ -145,7 +145,14 @@ export function LogoDither({
         // A tainted canvas keeps the neutral palette.
       }
     };
-    img.src = getProjectImage(project.image);
+    // Local first; the feed's own image if this project has no local file.
+    let fellBack = false;
+    img.onerror = () => {
+      if (cancelled || fellBack) return;
+      fellBack = true;
+      img.src = logoUrl(project.image, 'remote');
+    };
+    img.src = localProjectLogo(project.image);
     return () => {
       cancelled = true;
     };
