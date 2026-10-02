@@ -1,9 +1,9 @@
 import { IconArrowUpRight } from '@fuels/ui';
+import { getProjectImage } from 'app-commons';
 import { type CSSProperties, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import type { Project } from '~/types/ecosystem';
-import { type LogoSource, logoUrl, nextLogoSource } from '../utils/projectLogo';
 import { projectSlug } from '../utils/projectSlug';
 
 // "Fuel Wallet" -> "WA", "Spectrum Nodes" -> "SN", "Moor" -> "MO".
@@ -25,25 +25,23 @@ export function EcosystemLogo({
   className?: string;
 }) {
   const classes = styles();
-  const [source, setSource] = useState<LogoSource>(
-    project.image ? 'local' : 'none',
-  );
+  const [failed, setFailed] = useState(!project.image);
 
   return (
     <div className={classes.logo({ className })}>
-      {source === 'none' ? (
+      {failed ? (
         <span aria-hidden className={classes.monogram()}>
           {monogram(project.name)}
         </span>
       ) : (
         <img
-          src={logoUrl(project.image ?? '', source)}
+          src={getProjectImage(project.image ?? '')}
           alt=""
           width={64}
           height={64}
           loading="lazy"
           className={classes.image()}
-          onError={() => setSource(nextLogoSource)}
+          onError={() => setFailed(true)}
         />
       )}
     </div>
