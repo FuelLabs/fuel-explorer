@@ -7,11 +7,9 @@ import clsx from 'clsx';
 import { urlJoin } from 'fuels';
 
 export function AprBadge({ className }: { className?: string }) {
-  console.log('asd 111');
   const { data: apy } = useQuery({
     queryKey: ['fuel', 'staking', 'apy'],
     queryFn: async () => {
-      console.log('asd 222');
       const { amount } = await fetch(
         urlJoin(FUEL_INDEXER_API, '/staking/apy'),
       ).then((resp) => resp.json());
