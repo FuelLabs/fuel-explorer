@@ -93,6 +93,17 @@ export const bridgeTxsMachine = createMachine(
       },
       fetching: {
         tags: ['isLoading'],
+        on: {
+          // A refresh keeps the cached list on screen, so Show more still works.
+          FETCH_NEXT_PAGE: {
+            actions: [
+              'assignFetchNextPage',
+              'assignPaginatedTxs',
+              'assignTxMachines',
+            ],
+            cond: 'hasNextPage',
+          },
+        },
         invoke: {
           src: 'fetchTxs',
           data: {
@@ -131,13 +142,27 @@ export const bridgeTxsMachine = createMachine(
       hasNextPage: (context) => context.hasNextPage,
     },
     actions: {
-      assignFetchInputs: assign((ctx, ev) => ({
-        fuelProvider: ev.input?.fuelProvider || ctx.fuelProvider,
-        ethPublicClient: ev.input?.ethPublicClient || ctx.ethPublicClient,
-        fuelAddress: ev.input?.fuelAddress,
-        hasNextPage: false,
-        amountTxsToShow: TXS_PER_PAGE,
-      })),
+      // The same account keeps its cached list while it refreshes. Another
+      // account starts empty.
+      assignFetchInputs: assign((ctx, ev) => {
+        const fuelAddress = ev.input?.fuelAddress;
+        const inputs = {
+          fuelProvider: ev.input?.fuelProvider || ctx.fuelProvider,
+          ethPublicClient: ev.input?.ethPublicClient || ctx.ethPublicClient,
+          fuelAddress,
+        };
+        const isSameAccount =
+          !!fuelAddress &&
+          ctx.fuelAddress?.toString() === fuelAddress.toString();
+        if (isSameAccount) return inputs;
+        return {
+          ...inputs,
+          allTxs: undefined,
+          paginatedTxs: undefined,
+          hasNextPage: false,
+          amountTxsToShow: TXS_PER_PAGE,
+        };
+      }),
       assignFetchNextPage: assign((ctx) => ({
         amountTxsToShow: ctx.amountTxsToShow + TXS_PER_PAGE,
       })),
@@ -148,10 +173,9 @@ export const bridgeTxsMachine = createMachine(
           );
 
           const newRefs = ethToFuelBridgeTxs?.reduce((prev, tx) => {
-            // safely avoid overriding instance
-            if (ctx.ethToFuelTxRefs?.[tx.txHash]) return prev;
-
             const key = `${tx.txHash}-${tx.nonce}`;
+            // safely avoid overriding instance
+            if (ctx.ethToFuelTxRefs?.[key]) return prev;
 
             return {
               ...prev,

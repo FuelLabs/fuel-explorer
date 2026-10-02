@@ -3,6 +3,7 @@ import type {
   GQLTransactionsByBlockIdQuery,
   Maybe,
 } from '@fuel-explorer/graphql';
+import { Button } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { Navigate, useParams, useSearchParams } from 'react-router-dom';
@@ -135,13 +136,9 @@ export function BlockPage() {
         <div className="text-center py-12">
           <h2 className="text-2xl font-semibold text-red-600 mb-2">Error</h2>
           <p className="text-gray-600">Failed to load block details</p>
-          <button
-            onClick={() => window.location.reload()}
-            type="button"
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
+          <Button className="mt-4" onClick={() => window.location.reload()}>
             Retry
-          </button>
+          </Button>
         </div>
       </>
     );

@@ -9,7 +9,7 @@ import {
   VStack,
 } from '@fuels/ui';
 import { TokenBadge } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle } from '@fuels/ui';
 import { type BN, DECIMAL_FUEL } from 'fuels';
 import { ErrorInline } from '~staking/systems/Core/components/ErrorInline/ErrorInline';
 import { FormattedAmount } from '~staking/systems/Core/components/FormattedAmount/FormattedAmount';

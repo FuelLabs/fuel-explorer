@@ -1,0 +1,42 @@
+{
+  "title": "브리지 이용 방법",
+  "lead": "Fuel Ignition에 입금하거나 Ethereum으로 출금합니다. 두 지갑을 연결하고 자산과 수량을 확인하세요.",
+  "withdraw_note": "Ethereum 출금은 최대 {{delay}} 걸립니다",
+  "steps": {
+    "connect": {
+      "title": "두 지갑 연결",
+      "description": "Fuel 지갑과 Ethereum 지갑을 연결합니다. 전송 전에 두 주소가 표시됩니다."
+    },
+    "amount": {
+      "title": "자산과 수량 선택",
+      "description": "자산을 고르고 수량을 입력합니다. MAX는 잔고를 모두 채웁니다."
+    },
+    "confirm": {
+      "title": "확인 후 추적",
+      "description": "지갑에서 트랜잭션에 서명합니다. 정산될 때까지 모든 전송이 내역에 표시됩니다."
+    }
+  },
+  "docs": "브리지 문서",
+  "faq": {
+    "duration": {
+      "question": "출금은 얼마나 걸리나요?",
+      "answer": "Fuel에 입금한 자산을 Ethereum으로 출금하려면 최대 {{delay}} 걸립니다. 이 대기 시간의 구조와 보안은 문서에 설명되어 있습니다."
+    },
+    "assets": {
+      "question": "어떤 자산을 브리지할 수 있나요?",
+      "answer": "자산 선택기에 지원되는 자산이 모두 표시됩니다. 기본값은 ETH입니다."
+    },
+    "faster": {
+      "question": "더 빠른 경로가 있나요?",
+      "answer": "양식 위 배너의 파트너 브리지는 Fuel Ignition으로의 빠른 브리지를 제공합니다."
+    },
+    "history": {
+      "question": "지난 전송은 어디서 보나요?",
+      "answer": "브리지 패널 상단의 내역을 여세요. 대기 중과 완료된 전송이 표시됩니다."
+    },
+    "cancel": {
+      "question": "전송을 취소할 수 있나요?",
+      "answer": "없습니다. 서명한 전송은 되돌릴 수 없으니 먼저 두 주소를 확인하세요."
+    }
+  }
+}

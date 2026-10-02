@@ -1,9 +1,9 @@
-import type { TablerIconsProps } from '@tabler/icons-react';
+import type { FuelIconProps } from '../Icons/fromLucide';
 
 export const IconBrandWarpCastFilled = ({
   fill = 'currentColor',
   size,
-}: TablerIconsProps): JSX.Element => {
+}: FuelIconProps): JSX.Element => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

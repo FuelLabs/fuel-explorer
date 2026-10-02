@@ -1,5 +1,4 @@
-import { Alert } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { Alert, IconInfoCircle } from '@fuels/ui';
 import { useFuelStreamXPaused } from '../../hooks/useFuelStreamXPaused/useFuelStreamXPaused';
 
 export const BRIDGE_PAUSED_MESSAGE =

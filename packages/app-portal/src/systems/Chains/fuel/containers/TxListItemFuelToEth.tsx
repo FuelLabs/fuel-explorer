@@ -62,7 +62,7 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
 
 const styles = tv({
   slots: {
-    settledText: 'text-xs text-muted text-right',
-    loadingText: 'text-xs',
+    settledText: 'fuel-label text-right',
+    loadingText: 'fuel-label',
   },
 });

@@ -7,6 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { AccountButton } from '~staking/systems/Core/components/AccountButton/AccountButton';
 import { PendingTransactionsWatcher } from '~staking/systems/Core/components/PendingTransactionsWatcher/PendingTransactionsWatcher';
+import { TabTransition } from '~staking/systems/Core/components/TabTransition/TabTransition';
 import { useFormatBalance } from '~staking/systems/Core/hooks/useFormatBalance';
 import { ClaimV2Button } from '~staking/systems/Faucet/ClaimV2';
 import { StakingDialogs } from '../components/StakingDialogs';
@@ -20,6 +21,7 @@ import { useTokenBalance } from '../services/useTokenBalance';
 import { useVestingReleases } from '../services/useVestingReleases';
 
 const v1 = TOKENS[FuelToken.V1];
+const TAB_ORDER = ['positions', 'validators', 'transactions'];
 
 export const StakingPage = () => {
   const { address } = useAccount();
@@ -51,7 +53,7 @@ export const StakingPage = () => {
   }, [pathname]);
 
   return (
-    <Box>
+    <Box className="px-6 py-8 tablet:px-10">
       <div className="flex flex-col gap-2 mb-4 tablet:flex-row tablet:justify-end tablet:items-center">
         <ClaimV2Button />
         {hasV1Involvement && SHOW_CONVERT_BUTTON === 'true' && (
@@ -68,11 +70,17 @@ export const StakingPage = () => {
         <AccountButton />
       </div>
       <Balance />
-      <VStack className="gap-0 mt-16">
+      <VStack className="gap-0 mt-10">
         <StakingL1Tabs />
-        {activeTab === 'positions' && <DelegatedPositions />}
-        {activeTab === 'validators' && <ValidatorsList />}
-        {activeTab === 'transactions' && <TransactionHistory />}
+        <TabTransition
+          panel={activeTab}
+          order={TAB_ORDER.indexOf(activeTab)}
+          travel={24}
+        >
+          {activeTab === 'positions' && <DelegatedPositions />}
+          {activeTab === 'validators' && <ValidatorsList />}
+          {activeTab === 'transactions' && <TransactionHistory />}
+        </TabTransition>
       </VStack>
       <StakingDialogs />
       <PendingTransactionsWatcher />

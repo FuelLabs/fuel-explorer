@@ -1,7 +1,7 @@
 import type { GQLPageInfo } from '@fuel-explorer/graphql/sdkProvider';
 import type { BaseProps } from '@fuels/ui';
 import { Button, ButtonGroup, HStack, cx } from '@fuels/ui';
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight } from '@fuels/ui';
 
 type PaginationProps = BaseProps<{
   nextCursor?: string | null;

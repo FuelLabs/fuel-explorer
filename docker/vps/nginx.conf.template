@@ -27,6 +27,43 @@ limit_req_zone ${RATE_LIMIT_KEY} zone=api:10m rate=20r/s;
 log_format proxied '$remote_addr xff="$http_x_forwarded_for" [$time_local] "$request" $status $body_bytes_sent $request_time';
 proxy_cache_path /var/cache/nginx/charts levels=1 keys_zone=charts:1m max_size=10m inactive=5m;
 
+# Per-route unfurl tags. Keep in sync with packages/app-explorer/src/systems/Core/pageMeta.ts.
+# First match wins. /blocks precedes /block; bridge history precedes /bridge.
+map $request_uri $page_title {
+    default "Fuel Explorer";
+    ~*^/bridge/history "Bridge history · Fuel Explorer";
+    ~*^/bridge "Bridge · Fuel Explorer";
+    ~*^/staking/on-ethereum "Stake on Ethereum · Fuel Explorer";
+    ~*^/staking "Stake · Fuel Explorer";
+    ~*^/ecosystem "Ecosystem · Fuel Explorer";
+    ~*^/blocks "Blocks · Fuel Explorer";
+    ~*^/block/([0-9A-Za-z]+) "Block $1 · Fuel Explorer";
+    ~*^/tx/ "Transaction · Fuel Explorer";
+    ~*^/account/ "Account · Fuel Explorer";
+    ~*^/contract/ "Contract · Fuel Explorer";
+    ~*^/upgrade "Token manager · Fuel Explorer";
+}
+
+map $request_uri $page_description {
+    default "Blocks, transactions and live network stats for Fuel Ignition.";
+    ~*^/bridge/history "Pending and completed transfers between Ethereum and Fuel.";
+    ~*^/bridge "Move assets between Ethereum and Fuel Ignition.";
+    ~*^/staking/on-ethereum "Stake FUEL on Ethereum and track positions, validators and transactions.";
+    ~*^/staking "Delegate FUEL to validators, or liquid stake through The Rig.";
+    ~*^/ecosystem "Apps, wallets and infrastructure built on Fuel.";
+    ~*^/blocks "Recent blocks on Fuel Ignition.";
+    ~*^/block/([0-9A-Za-z]+) "Block $1 on Fuel Ignition.";
+    ~*^/tx/ "A transaction on Fuel Ignition.";
+    ~*^/account/ "Assets, transactions and NFTs for a Fuel account.";
+    ~*^/contract/ "Assets, code and transactions for a Fuel contract.";
+    ~*^/upgrade "Contributor grants and Fuel token release schedules.";
+}
+
+map $http_x_forwarded_proto $forwarded_proto {
+    default $scheme;
+    ~.+ $http_x_forwarded_proto;
+}
+
 server {
     listen 80;
     listen [::]:80;
@@ -140,6 +177,12 @@ server {
         # No $uri/ entry: a path that shares its name with a directory in the
         # build output, such as /assets, must fall through to the app instead of
         # redirecting into that directory.
+        set $page_url "$forwarded_proto://$host$request_uri";
+        sub_filter_once off;
+        sub_filter_types text/html;
+        sub_filter '__PAGE_TITLE__' $page_title;
+        sub_filter '__PAGE_DESCRIPTION__' $page_description;
+        sub_filter '__PAGE_URL__' $page_url;
         try_files $uri /index.html;
     }
 }

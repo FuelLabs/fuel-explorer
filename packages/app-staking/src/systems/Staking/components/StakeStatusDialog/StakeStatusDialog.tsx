@@ -12,9 +12,8 @@ import {
   Tooltip,
   VStack,
 } from '@fuels/ui';
-import { IconCircleMinus } from '@tabler/icons-react';
+import { IconCircleMinus } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
-import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { bn } from 'fuels';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
@@ -84,10 +83,12 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
     <AnimatedDialog.Content
       open
       aria-describedby="Stake"
-      className={clsx(
-        responsiveDialogStyle.content({ sizing: 'auto' }),
-        'h-[450px] min-h-[450px]',
-      )}
+      className={responsiveDialogStyle.content({
+        sizing: 'auto',
+        // Grows with its content (a failed step adds a long message) and
+        // scrolls only when taller than the screen, so nothing is cropped.
+        className: 'min-h-[450px] max-h-[calc(100dvh-2rem)] overflow-y-auto',
+      })}
     >
       <VStack className="h-full" gap="7">
         <AnimatedDialog.Title>Stake</AnimatedDialog.Title>
@@ -145,7 +146,7 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
               }
             />
           </HStack>
-          <VStack gap="0" className="overflow-y-auto max-h-[200px]">
+          <VStack gap="0">
             {STAKE_STEPS.filter((step) => {
               if (step.status === 'Skipped') {
                 return stakeEvent?.status === 'Skipped';

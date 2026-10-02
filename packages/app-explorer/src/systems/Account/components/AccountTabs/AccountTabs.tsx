@@ -4,7 +4,7 @@ import {
   IconCodeAsterix,
   IconCoins,
   IconPhoto,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';

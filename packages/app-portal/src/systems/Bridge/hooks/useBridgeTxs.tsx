@@ -42,7 +42,9 @@ export const useBridgeTxs = () => {
     selectors.isLoading,
   );
 
-  const isLoading = isLoadingState || isLoadingConnection;
+  // A cached list stays on screen while it refreshes in the background.
+  const hasCache = !!paginatedTxs;
+  const isLoading = (isLoadingState || isLoadingConnection) && !hasCache;
   const length = paginatedTxs?.length ?? 0;
 
   useEffect(() => {

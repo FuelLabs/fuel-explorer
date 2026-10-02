@@ -1,5 +1,5 @@
 import { Collapsible, useBreakpoints } from '@fuels/ui';
-import { IconCoins } from '@tabler/icons-react';
+import { IconCoins } from '@fuels/ui';
 import { FixedSizeList as List } from 'react-window';
 
 import { UtxoItem } from '~/systems/Core/components/UtxoItem/UtxoItem';

@@ -1,6 +1,6 @@
-import { IconCircleCheckFilled } from '@tabler/icons-react';
 import React, { createContext, useContext, useMemo } from 'react';
 import { createComponent, withNamespace } from '../../utils/component';
+import { IconCircleCheckFilled } from '../Icons';
 import { icon, item, root } from './Stepper.styles';
 
 type StepperBaseProps = {

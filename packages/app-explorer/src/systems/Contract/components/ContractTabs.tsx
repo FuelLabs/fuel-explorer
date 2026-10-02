@@ -4,7 +4,7 @@ import {
   IconCodeAsterix,
   IconCoins,
   IconDatabase,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Routes } from '~/routes';

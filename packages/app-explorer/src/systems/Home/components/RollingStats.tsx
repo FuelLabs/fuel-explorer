@@ -1,4 +1,5 @@
-import { RoundedContainer } from '@fuels/ui';
+import { AnimatedNumber, DitherImage, RoundedContainer } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { formatBytes } from './format';
 
 interface RollingStatsProps {
@@ -12,39 +13,45 @@ export const RollingStats = ({
   avgTxPerBlock,
   avgBlockSize,
 }: RollingStatsProps) => {
+  const { t } = useTranslation();
   return (
-    <RoundedContainer className="py-4 px-5 flex flex-col bg-light-gradient dark:bg-dark-gradient">
-      <div className="flex items-center">
-        <span className="text-[15px] leading-[24px] text-heading font-semibold">
-          Live Stats
-        </span>
-        <span className="text-[13px] leading-[20px] text-muted ml-1.5">
-          (60s)
-        </span>
+    <RoundedContainer className="fuel-illustrated relative overflow-hidden py-4 px-5 flex flex-col">
+      <div className="fuel-dither-art">
+        <DitherImage
+          src="/illustrations/live-stats-race.jpg"
+          cell={1}
+          brightness={0.09}
+        />
+      </div>
+      <div className="relative flex items-center">
+        <span className="fuel-label">{t('home.live_stats')}</span>
+        <span className="fuel-label ml-1.5">{t('home.live_stats_window')}</span>
       </div>
 
-      <div className="flex justify-between mt-3">
+      <div className="relative flex justify-between mt-3">
         <div>
-          <span className="text-[17px] leading-[24px] text-heading font-bold block">
-            {tps.toFixed(2)}
-          </span>
-          <span className="text-[11px] leading-[16px] text-muted">TPS</span>
+          <AnimatedNumber
+            value={tps}
+            format={(v) => v.toFixed(2)}
+            className="fuel-stat-sm block"
+          />
+          <span className="fuel-label">{t('home.tps')}</span>
         </div>
         <div>
-          <span className="text-[17px] leading-[24px] text-heading font-bold block">
-            {avgTxPerBlock.toFixed(1)}
-          </span>
-          <span className="text-[11px] leading-[16px] text-muted">
-            TX / Block
-          </span>
+          <AnimatedNumber
+            value={avgTxPerBlock}
+            format={(v) => v.toFixed(1)}
+            className="fuel-stat-sm block"
+          />
+          <span className="fuel-label">{t('home.tx_per_block')}</span>
         </div>
-        <div>
-          <span className="text-[17px] leading-[24px] text-heading font-bold block">
-            {formatBytes(avgBlockSize)}
-          </span>
-          <span className="text-[11px] leading-[16px] text-muted">
-            Block Size
-          </span>
+        <div className="text-right">
+          <AnimatedNumber
+            value={avgBlockSize}
+            format={formatBytes}
+            className="fuel-stat-sm block"
+          />
+          <span className="fuel-label">{t('home.block_size')}</span>
         </div>
       </div>
     </RoundedContainer>

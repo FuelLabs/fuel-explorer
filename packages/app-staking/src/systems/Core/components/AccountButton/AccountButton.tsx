@@ -7,12 +7,7 @@ import {
   shortAddress,
   useToast,
 } from '@fuels/ui';
-import {
-  IconChevronDown,
-  IconCopy,
-  IconLogout,
-  IconSwitch3,
-} from '@tabler/icons-react';
+import { IconChevronDown, IconCopy, IconLogout, IconSwitch3 } from '@fuels/ui';
 import { useVerifySelectedChain } from 'app-commons';
 import { useModal } from 'connectkit';
 import { AnimatePresence, type Variants, motion } from 'framer-motion';

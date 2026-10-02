@@ -73,14 +73,8 @@ const preset: Config = {
     spacing: tailwindDefaultTheme.spacing,
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)'],
-        mono: ['var(--font-geist-mono)'],
-      },
-      backgroundImage: {
-        'dark-gradient':
-          'linear-gradient(243.06deg, #00F58C -52.89%, #0F4B32 10.83%, #141414 65.48%)',
-        'light-gradient':
-          'linear-gradient(243.06deg, #00F58C -52.89%, #A7FFD4 10.83%, #FFFFFF 65.48%)',
+        sans: ['var(--font-sans)'],
+        mono: ['var(--font-mono)'],
       },
       boxShadow: {
         'ecosystem-card':

@@ -1,0 +1,219 @@
+{
+  "common": {
+    "view_all": "View All",
+    "top_apps": "Top Apps",
+    "language": "Language",
+    "search": "Search by block, transaction, contract, address...",
+    "search_short": "Search here...",
+    "search_projects_label": "Search projects",
+    "all": "All",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "active": "Active: {{count}}",
+    "building": "Building: {{count}}",
+    "window_24h": "24h",
+    "read_docs": "Read docs",
+    "one_day": "a day",
+    "questions": "Questions"
+  },
+  "nav": {
+    "explorer": "Explorer",
+    "bridge": "Bridge",
+    "stake": "Stake",
+    "ecosystem": "Ecosystem"
+  },
+  "home": {
+    "daily_transactions": "Daily Transactions",
+    "daily_transactions_hint": "The total number of transactions completed on the Fuel Network in the last 24 hours",
+    "hourly_tps": "Hourly TPS",
+    "tx_per_second": "TX/s",
+    "peak": "Peak:",
+    "fee_spent": "Fee Spent",
+    "fee_spent_hint": "Fee Spent on Fuel Network",
+    "usd": "USD",
+    "live_stats": "Live Stats",
+    "live_stats_window": "(60s)",
+    "tps": "TPS",
+    "tx_per_block": "TX / Block",
+    "block_size": "Block Size",
+    "recent_blocks": "Recent Blocks",
+    "recent_transactions": "Recent transactions",
+    "fuel_dapps": "Fuel Dapps",
+    "tx_count": "{{count}} TX",
+    "size": "Size",
+    "gas": "Gas",
+    "fee": "Fee",
+    "block_link": "Block {{number}}"
+  },
+  "ecosystem": {
+    "eyebrow": "Fuel Ecosystem",
+    "built_on_fuel": "Built on Fuel",
+    "lead": "Apps, wallets and infrastructure live on the fastest execution layer.",
+    "sections": {
+      "fuel": {
+        "title": "Fuel Suite"
+      },
+      "defi": {
+        "eyebrow": "DeFi",
+        "title": "DeFi"
+      },
+      "ai": {
+        "eyebrow": "AI",
+        "title": "AI"
+      },
+      "wallets": {
+        "eyebrow": "Wallets",
+        "title": "Wallets"
+      },
+      "infrastructure": {
+        "eyebrow": "Data & Infrastructure",
+        "title": "Data & Infrastructure"
+      },
+      "tooling": {
+        "eyebrow": "Tooling",
+        "title": "Tooling"
+      },
+      "security": {
+        "eyebrow": "Security",
+        "title": "Security"
+      },
+      "more": {
+        "eyebrow": "More",
+        "title": "More on Fuel"
+      }
+    },
+    "quick_access": "Quick access",
+    "search_placeholder": "Search apps, wallets and infrastructure",
+    "clear_search": "Clear search",
+    "categories_label": "Ecosystem categories",
+    "app_count_one": "{{count}} app",
+    "app_count_other": "{{count}} apps",
+    "show_all": "Show all",
+    "no_results": "No apps found.",
+    "load_error": "Error loading projects: {{message}}",
+    "spotlight": {
+      "title": "Fully onchain spot DEX, powered by Fuel",
+      "lead": "Home of o2 Turbo: get funded up to $10k in prop-trading capital. No evaluation, keep 100% of the profit.",
+      "cta": "Trade now",
+      "view_project": "View project",
+      "image_alt": "{{name}} product screenshot"
+    }
+  },
+  "footer": {
+    "fuel": "FUEL",
+    "get_started": "Get Started",
+    "build": "Build",
+    "environment": "Environment",
+    "about_fuel": "About Fuel",
+    "jobs": "Jobs",
+    "blog": "Blog",
+    "media_kit": "Media Kit",
+    "build_an_app": "Build an app",
+    "create_contract": "Create a Smart Contract",
+    "docs": "Docs",
+    "fuelvm": "FuelVM",
+    "grant_program": "Grant Program",
+    "github": "Github",
+    "forum": "Forum",
+    "discord": "Discord",
+    "changelog": "Changelog",
+    "block_explorer": "Block Explorer",
+    "ecosystem": "Ecosystem",
+    "wallet": "Wallet",
+    "bridge": "Bridge",
+    "rights": "© {{year}} Fuel Labs. All rights reserved",
+    "version": "version: {{hash}}"
+  },
+  "staking": {
+    "title": "Help secure the Fuel network",
+    "lead": "Delegate your tokens to Fuel validators, or liquid stake through The Rig on Ignition.",
+    "read_docs": "Read docs",
+    "open_rig": "Open The Rig",
+    "docs": "Fuel docs",
+    "tab_rig": "Liquid Stake via The Rig",
+    "tab_ethereum": "Stake on Ethereum Network",
+    "rig_card_title": "Liquid stake on The Rig",
+    "rig_card_lead": "Stake on Ignition and receive a liquid token. Rewards compound automatically.",
+    "connect_tokens": "Connect your wallet to view available tokens for staking.",
+    "connect_ethereum": "Connect Ethereum Wallet",
+    "positions": "Current Positions",
+    "validators": "Validators",
+    "transactions": "Your Transactions",
+    "wallet_disconnected": "Wallet not connected",
+    "connect_positions": "Please connect your wallet to view your staking positions.",
+    "lanes_label": "Staking paths",
+    "lane_rig": "The Rig",
+    "lane_ethereum": "Ethereum",
+    "lane_ethereum_lead": "Delegate FUEL to validators from your Ethereum wallet.",
+    "lane_rig_lead": "Liquid staking on Ignition. You hold stFUEL.",
+    "lane_rig_figure": "To claim",
+    "lane_ethereum_figure": "Staked",
+    "board": {
+      "title": "Waiting on you",
+      "count_one": "{{count}} item",
+      "count_other": "{{count}} items",
+      "col_lane": "Path",
+      "col_what": "What",
+      "col_amount": "Amount",
+      "col_status": "Status",
+      "rig_claim": "Claim stFUEL",
+      "claim_rewards": "Claim rewards",
+      "ready": "Ready now",
+      "action_needed": "Action needed",
+      "time_left": "~{{eta}} left",
+      "in_progress": "In progress",
+      "failed": "Failed",
+      "failed_group_one": "{{count}} failed transaction",
+      "failed_group_other": "{{count}} failed transactions",
+      "failed_hint": "These did not complete. Open one for details.",
+      "show": "Show",
+      "hide": "Hide",
+      "show_more_one": "Show {{count}} more",
+      "show_more_other": "Show {{count}} more",
+      "claim": "Claim",
+      "continue": "Continue",
+      "details": "Details",
+      "empty": "Nothing is waiting on you.",
+      "empty_start": "Pick a validator to start staking.",
+      "start": "Stake",
+      "loading": "Loading your staking activity"
+    }
+  },
+  "bridge": {
+    "title": "Bridge",
+    "lead": "Move assets between Ethereum and Fuel Ignition.",
+    "read_docs": "Read docs",
+    "panel_transfer": "Transfer",
+    "panel_history": "History",
+    "board": {
+      "title": "Transfers in progress",
+      "count_one": "{{count}} open",
+      "count_other": "{{count}} open",
+      "col_what": "What",
+      "col_amount": "Amount",
+      "col_status": "Status",
+      "deposit": "Deposit",
+      "withdraw": "Withdraw",
+      "route_deposit": "Ethereum to Fuel",
+      "route_withdraw": "Fuel to Ethereum",
+      "action_needed": "Action needed",
+      "continue": "Continue",
+      "details": "Details",
+      "connect": "Connect your Fuel wallet to see your transfers.",
+      "connect_button": "Connect wallet",
+      "none": "No transfers yet. Your deposits and withdrawals appear here.",
+      "empty": "Nothing is in progress. Finished transfers are in History.",
+      "open_history": "Open History",
+      "loading": "Loading your transfers"
+    }
+  },
+  "errors": {
+    "not_found": "Page Not Found",
+    "not_found_body": "The page you are looking for doesn't exist or an other error occurred.",
+    "not_found_short": "The page you're looking for doesn't exist.",
+    "go_home": "Go back to home",
+    "unexpected": "Something went wrong",
+    "unexpected_body": "An unexpected error occurred. Please reload the page.",
+    "reload": "Reload"
+  }
+}

@@ -1,5 +1,5 @@
 import { HStack, Skeleton } from '@fuels/ui';
-import { IconCopy } from '@tabler/icons-react';
+import { IconCopy } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
 
 export function TxHeaderLoader({ isSimple }: { isSimple?: boolean }) {

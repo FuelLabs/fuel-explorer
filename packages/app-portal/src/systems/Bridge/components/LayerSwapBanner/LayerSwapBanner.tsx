@@ -1,5 +1,5 @@
 import { Card, Flex, Text, VStack } from '@fuels/ui';
-import { IconArrowUpRight } from '@tabler/icons-react';
+import { IconArrowUpRight } from '@fuels/ui';
 
 export const LayerSwapBanner = () => {
   return (

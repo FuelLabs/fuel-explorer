@@ -25,7 +25,7 @@ import {
   IconShieldDown,
   IconTargetArrow,
   IconX,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import { bn } from 'fuels';
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';

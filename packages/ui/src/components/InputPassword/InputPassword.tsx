@@ -1,5 +1,5 @@
-import { IconEye, IconEyeOff, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
+import { IconEye, IconEyeOff, IconLock } from '../Icons';
 
 import { createComponent } from '../../utils/component';
 import { Icon } from '../Icon/Icon';

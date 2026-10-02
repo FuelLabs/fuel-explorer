@@ -1,12 +1,12 @@
 import * as RD from '@radix-ui/react-dialog';
 
 import { Portal } from '@radix-ui/react-portal';
-import { IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 import { IconButton } from '../IconButton';
+import { IconX } from '../Icons';
 
 export type AnimatedDialogProps = PropsOf<typeof RD.Root>;
 export type AnimatedDialogTriggerProps = PropsOf<typeof RD.Trigger>;

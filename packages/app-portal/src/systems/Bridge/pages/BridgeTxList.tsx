@@ -7,7 +7,7 @@ import {
 } from '~portal/systems/Chains';
 
 import { Alert, Button, CardList } from '@fuels/ui';
-import { IconChevronDown, IconInfoCircle } from '@tabler/icons-react';
+import { IconChevronDown, IconInfoCircle } from '@fuels/ui';
 import { useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';
 import {
@@ -78,8 +78,8 @@ export const BridgeTxList = () => {
 
   return (
     <>
-      <CardList isClickable className={classes.cardList()}>
-        {bridgeTxs?.map((txDatum, index) => {
+      <CardList isClickable gap="0" className={classes.cardList()}>
+        {bridgeTxs?.map((txDatum) => {
           if (
             isEthChain(txDatum.fromNetwork) &&
             isFuelChain(txDatum.toNetwork) &&
@@ -88,7 +88,7 @@ export const BridgeTxList = () => {
           ) {
             return (
               <TxListItemEthToFuel
-                key={`${index}-${txDatum.txHash}`}
+                key={`${txDatum.txHash}-${txDatum.nonce}`}
                 txHash={txDatum.txHash}
                 messageSentEventNonce={txDatum.nonce}
               />
@@ -101,7 +101,7 @@ export const BridgeTxList = () => {
           ) {
             return (
               <TxListItemFuelToEth
-                key={`${index}-${txDatum.txHash}`}
+                key={txDatum.txHash}
                 txHash={txDatum.txHash}
               />
             );
@@ -129,7 +129,8 @@ export const BridgeTxList = () => {
 
 const styles = tv({
   slots: {
-    cardList: 'cursor-pointer select-none :hover:bg-muted', // was intentsBase3
-    buttonShowMore: 'mt-2 w-full',
+    cardList:
+      'cursor-pointer select-none border border-[var(--fuel-border)] overflow-hidden',
+    buttonShowMore: 'mt-4 w-full',
   },
 });

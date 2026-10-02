@@ -6,7 +6,7 @@ import {
   Text,
   useBreakpoints,
 } from '@fuels/ui';
-import { IconCoin } from '@tabler/icons-react';
+import { IconCoin } from '@fuels/ui';
 import { tv } from 'tailwind-variants';
 import type { FilteredAsset } from '~portal/systems/Assets/types';
 

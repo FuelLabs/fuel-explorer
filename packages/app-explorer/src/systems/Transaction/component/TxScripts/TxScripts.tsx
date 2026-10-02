@@ -1,5 +1,5 @@
 import { Button, Heading, LoadingWrapper, VStack } from '@fuels/ui';
-import { IconFold } from '@tabler/icons-react';
+import { IconFold } from '@fuels/ui';
 import { useState } from 'react';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { TxScriptsContent } from '~/systems/Transaction/component/TxScripts/TxScriptsContent/TxScriptsContent';

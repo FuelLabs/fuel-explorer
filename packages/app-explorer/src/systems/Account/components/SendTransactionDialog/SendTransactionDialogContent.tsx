@@ -17,7 +17,7 @@ import {
   VStack,
   shortAddress,
 } from '@fuels/ui';
-import { IconAlertCircle, IconAlertOctagon } from '@tabler/icons-react';
+import { IconAlertCircle, IconAlertOctagon } from '@fuels/ui';
 import { Address, isB256 } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 import { tv } from 'tailwind-variants';
@@ -273,13 +273,13 @@ const styles = tv({
   slots: {
     trigger: [
       'cursor-pointer gap-2.5 shadow-none pr-0 text-base',
-      '[&_.tabler-icon]:ml-[-6px] [&_.tabler-icon]:w-3.5 [&_.tabler-icon]:h-3.5',
+      '[&_.lucide]:ml-[-6px] [&_.lucide]:w-3.5 [&_.lucide]:h-3.5',
     ],
   },
   variants: {
     assetsType: {
       single: {
-        trigger: '!cursor-auto [&_.tabler-icon]:hidden',
+        trigger: '!cursor-auto [&_.lucide]:hidden',
       },
     },
   },

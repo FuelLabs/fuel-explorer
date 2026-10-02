@@ -1,5 +1,5 @@
 import { Alert } from '@fuels/ui';
-import { IconInfoCircleFilled } from '@tabler/icons-react';
+import { IconInfoCircleFilled } from '@fuels/ui';
 import type { PredicateMetadata } from '~portal/systems/Ecosystem/types';
 
 export type AccountPredicateInfoProps = {

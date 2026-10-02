@@ -9,7 +9,7 @@ import {
   Spinner,
   Text,
 } from '@fuels/ui';
-import { IconArrowLeft, IconCoins } from '@tabler/icons-react';
+import { IconArrowLeft, IconCoins } from '@fuels/ui';
 import { IS_ETH_DEV_CHAIN, IS_ETH_SEPOLIA_CHAIN } from 'app-commons';
 import { useMemo, useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';

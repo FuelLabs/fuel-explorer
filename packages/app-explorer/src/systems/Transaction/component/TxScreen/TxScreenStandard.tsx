@@ -18,7 +18,7 @@ import {
   Tooltip,
   VStack,
 } from '@fuels/ui';
-import { IconArrowDown, IconArrowUp, IconCoins } from '@tabler/icons-react';
+import { IconArrowDown, IconArrowUp, IconCoins } from '@fuels/ui';
 import { DECIMAL_FUEL, bn } from 'fuels';
 
 import { tv } from 'tailwind-variants';

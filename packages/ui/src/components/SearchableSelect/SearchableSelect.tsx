@@ -1,4 +1,3 @@
-import { IconChevronDown } from '@tabler/icons-react';
 import {
   type ReactNode,
   useCallback,
@@ -9,6 +8,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { tv } from 'tailwind-variants';
+import { IconChevronDown } from '../Icons';
 
 const containerVariants = tv({
   base: [

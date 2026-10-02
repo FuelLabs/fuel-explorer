@@ -1,7 +1,7 @@
 import { AccountConnectionInput } from '~portal/systems/Accounts';
 
 import { FuelLogo } from '@fuels/ui';
-import { IconSwitchHorizontal } from '@tabler/icons-react';
+import { IconSwitchHorizontal } from '@fuels/ui';
 import { FUEL_CHAIN } from 'app-commons';
 import { useFuelAccountConnection } from '../hooks';
 

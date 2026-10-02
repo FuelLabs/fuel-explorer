@@ -7,7 +7,7 @@ import {
   Spinner,
   Text,
 } from '@fuels/ui';
-import { IconCheck, IconCircleMinus, IconX } from '@tabler/icons-react';
+import { IconCheck, IconCircleMinus, IconX } from '@fuels/ui';
 
 import { memo } from 'react';
 import { tv } from 'tailwind-variants';

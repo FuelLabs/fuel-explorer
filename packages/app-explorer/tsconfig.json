@@ -24,6 +24,7 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
+      "@i18n": ["./src/i18n.ts"],
       "~portal/*": ["../app-portal/src/*"],
       "@fuel-explorer/graphql": ["../graphql/src"],
       "@fuel-explorer/graphql/*": ["../graphql/src/*"],

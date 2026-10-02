@@ -1,5 +1,5 @@
 import { HStack } from '@fuels/ui';
-import { IconSquareLetterX } from '@tabler/icons-react';
+import { IconSquareLetterX } from '@fuels/ui';
 import { AnimatedError } from '~staking/systems/Core/components/AnimatedError/AnimatedError';
 
 interface ErrorInlineProps {

@@ -4,7 +4,7 @@ export const item = tv({
   base: [
     'flex items-center w-full',
     'p-4 text-base bg-panel-solid',
-    'transition-shadow rounded-xl',
+    'transition-shadow',
     'cursor-pointer',
   ],
   variants: {

@@ -12,12 +12,7 @@ import {
   VStack,
 } from '@fuels/ui';
 import { BlockieAvatar } from '@fuels/ui';
-import {
-  IconArrowRight,
-  IconCheck,
-  IconClock,
-  IconX,
-} from '@tabler/icons-react';
+import { IconArrowRight, IconCheck, IconClock, IconX } from '@fuels/ui';
 import clsx from 'clsx';
 import { AddressType } from 'fuels';
 

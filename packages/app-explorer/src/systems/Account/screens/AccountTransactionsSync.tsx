@@ -1,5 +1,5 @@
 import { Alert, Button } from '@fuels/ui';
-import { IconInfoCircle, IconLink } from '@tabler/icons-react';
+import { IconInfoCircle, IconLink } from '@fuels/ui';
 import { Routes as PortalRoutes } from 'app-commons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccountTransactions } from '~/hooks/useApi';

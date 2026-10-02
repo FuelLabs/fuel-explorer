@@ -3,7 +3,7 @@ import { shortAddress } from '~portal/systems/Core';
 import { useOverlay } from '~portal/systems/Overlay';
 
 import { Button, Dialog, HStack, VStack } from '@fuels/ui';
-import { IconX } from '@tabler/icons-react';
+import { IconX } from '@fuels/ui';
 import { useFuelAsset } from 'app-commons';
 import { tv } from 'tailwind-variants';
 import { useAssets } from '~portal/systems/Assets/hooks';

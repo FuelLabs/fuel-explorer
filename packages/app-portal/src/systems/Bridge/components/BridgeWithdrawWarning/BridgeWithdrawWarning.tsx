@@ -1,8 +1,5 @@
 import { Alert, AnimatedHeight } from '@fuels/ui';
-import {
-  IconAlertCircleFilled,
-  IconInfoCircleFilled,
-} from '@tabler/icons-react';
+import { IconAlertCircleFilled, IconInfoCircleFilled } from '@fuels/ui';
 import {
   WITHDRAW_WARNING_PERCENTAGE,
   WithdrawWarning,

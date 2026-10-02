@@ -9,7 +9,7 @@ import {
   Text,
   Tooltip,
 } from '@fuels/ui';
-import { IconAlertOctagon } from '@tabler/icons-react';
+import { IconAlertOctagon } from '@fuels/ui';
 import { useMemo } from 'react';
 import { Routes } from '~/routes';
 import { useNFT } from '~/systems/Asset/hooks/useNFT';

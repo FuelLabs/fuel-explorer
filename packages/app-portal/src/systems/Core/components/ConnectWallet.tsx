@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  type Colors,
-  Dropdown,
-  HStack,
-  Nav,
-  Text,
-  shortAddress,
-  useToast,
-} from '@fuels/ui';
+import { Button, Dropdown, shortAddress, useToast } from '@fuels/ui';
 import {
   IconCopy,
   IconHistory,
@@ -16,7 +6,7 @@ import {
   IconSettingsFilled,
   IconSwitch3,
   IconUserCircle,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useAccount, useConnectUI, useDisconnect } from '@fuels/react';
@@ -24,12 +14,7 @@ import { Routes } from 'app-commons';
 import { useVerifySelectedChain } from 'app-commons';
 import { useSwitchChain } from 'wagmi';
 
-interface ConnectWalletProps {
-  theme?: string;
-  setTheme?: (theme: string) => void;
-}
-
-export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
+export const ConnectWallet = () => {
   const { toast } = useToast();
   const { connect, isConnected } = useConnectUI();
 
@@ -55,11 +40,6 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
     window.location.href = path;
   };
 
-  const _handleThemeToggle = (nextTheme: string) => {
-    // Nav.ThemeToggle passes the next theme as parameter
-    setTheme?.(nextTheme);
-  };
-
   return (
     <AnimatePresence initial={false} mode="wait">
       {isConnected && account ? (
@@ -70,18 +50,15 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
           exit={{ opacity: 0 }}
         >
           <Dropdown>
-            <Dropdown.Trigger className="bg-transparent hover:bg-[var(--accent-a4)]">
+            <Dropdown.Trigger>
+              {/* Same surface, height and text size as the language and network controls beside it. */}
               <Button
                 color="gray"
                 variant="soft"
-                size={{
-                  initial: '1',
-                  lg: '2',
-                }}
-                className="text-[var(--accent-a11)] h-[40px] max-w-[165px] w-full pl-[20px]"
-                iconColor={'text-[var(--accent-a11)]' as Colors}
+                size="1"
+                className="m-0 h-10 min-w-[165px] px-4"
                 rightIcon={IconSettingsFilled}
-                rightIconClassName="ml-[8px] w-[26px] h-[26px] opacity-50"
+                rightIconClassName="ml-2 shrink-0 opacity-50"
               >
                 {shortAddress(account)}
               </Button>
@@ -135,26 +112,6 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
               >
                 <IconLogout size="1em" />
                 Disconnect
-              </Dropdown.Item>
-              <Dropdown.Item
-                className="flex flex-col hover:bg-transparent px-0 h-[50px] mt-2"
-                onSelect={(e) => e.preventDefault()}
-              >
-                <Box className="border-t w-full border-gray-3 " />
-                <HStack className="justify-center items-normal pl-[13px]">
-                  <Text
-                    size="2"
-                    className="text-[var(--accent-a11)] flex items-center"
-                  >
-                    Settings
-                  </Text>
-                  <Nav.ThemeToggle
-                    whenOpened="no-effect"
-                    theme={theme}
-                    onToggle={_handleThemeToggle}
-                    className="ml-auto border border-gray-3 scale-75 bg-gray-2 translate-x-[11px]"
-                  />
-                </HStack>
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown>

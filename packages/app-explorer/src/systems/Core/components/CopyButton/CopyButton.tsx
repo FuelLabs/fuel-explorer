@@ -1,6 +1,6 @@
 import type { ButtonProps } from '@fuels/ui';
-import { Button } from '@fuels/ui';
-import { IconCopy } from '@tabler/icons-react';
+import { Button, useCopied } from '@fuels/ui';
+import { IconCheck, IconCopy } from '@fuels/ui';
 
 type CopyButtonProps = ButtonProps & {
   value: string;
@@ -17,6 +17,7 @@ const COPY_ICON_SIZES: Record<string, number> = {
 const CopyButton = ({ value, text = 'Copy', ...props }: CopyButtonProps) => {
   const size = props.size || '1';
   const variant = props.variant || 'soft';
+  const { copied, markCopied } = useCopied();
 
   return (
     <Button
@@ -26,10 +27,11 @@ const CopyButton = ({ value, text = 'Copy', ...props }: CopyButtonProps) => {
       size={size}
       color="gray"
       iconSize={COPY_ICON_SIZES[size as string]}
-      rightIcon={IconCopy}
+      rightIcon={copied ? IconCheck : IconCopy}
       iconColor="text-muted"
       onClick={async () => {
         await navigator.clipboard.writeText(value);
+        markCopied();
       }}
     >
       {text}

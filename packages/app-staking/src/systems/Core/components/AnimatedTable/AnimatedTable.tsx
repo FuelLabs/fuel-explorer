@@ -1,5 +1,5 @@
-import { Card, HStack, Tooltip } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { HStack, Tooltip } from '@fuels/ui';
+import { IconInfoCircle } from '@fuels/ui';
 import { AnimatePresence, type AnimationProps, motion } from 'framer-motion';
 import type React from 'react';
 import { memo } from 'react';
@@ -37,7 +37,7 @@ function _AnimatedTable({ children, headerCells }: AnimatedTableProps) {
                   animate={animate}
                   exit={CELL_EXIT}
                   transition={CELL_TRANSITION}
-                  className={`${className} text-gray-11`}
+                  className={`${className} fuel-label`}
                 >
                   {title}
 
@@ -59,9 +59,7 @@ function _AnimatedTable({ children, headerCells }: AnimatedTableProps) {
           </AnimatePresence>
         </HStack>
       </div>
-      <Card className="border-none p-0 [&:before]:inset-0 [&:before]:bg-transparent [&:after]:inset-0 [&:after]:shadow-none gap-0 bg-gray-3 rounded-b-none">
-        {children}
-      </Card>
+      <div className="border-t border-[var(--fuel-line)]">{children}</div>
     </div>
   );
 }

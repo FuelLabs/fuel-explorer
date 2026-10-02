@@ -1,6 +1,6 @@
 import { Button, Flex, Text, VStack } from '@fuels/ui';
 import { type Option, SearchableSelect } from '@fuels/ui';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconChevronDown } from '@fuels/ui';
 import type { BN } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import type { UseControllerReturn } from 'react-hook-form';

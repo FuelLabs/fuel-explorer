@@ -1,10 +1,10 @@
 import { Dialog as RD } from '@radix-ui/themes';
 
-import { IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 import { IconButton } from '../IconButton';
+import { IconX } from '../Icons';
 
 export type DialogProps = PropsOf<typeof RD.Root>;
 export type DialogTriggerProps = PropsOf<typeof RD.Trigger>;

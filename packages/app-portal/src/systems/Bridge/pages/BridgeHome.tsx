@@ -1,56 +1,97 @@
 import { Box, Button } from '@fuels/ui';
-import { IconArrowBack, IconHistory } from '@tabler/icons-react';
+import { IconArrowBack, IconHistory } from '@fuels/ui';
 import { BridgePausedBanner, PageTitle } from 'app-commons';
 import { Routes } from 'app-commons';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 import type { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { LayerSwapBanner } from '../components/LayerSwapBanner/LayerSwapBanner';
+import { RollingLabel } from '../components/RollingLabel/RollingLabel';
 
 type BridgeHomeProps = {
   children: ReactNode;
 };
 
+const ICON_SPRING = {
+  type: 'spring',
+  stiffness: 420,
+  damping: 26,
+  mass: 0.6,
+} as const;
+
+// Entering history turns the clock back; leaving turns it forward.
+const iconVariants = {
+  enter: (direction: number) => ({
+    rotate: direction * 120,
+    scale: 0.4,
+    opacity: 0,
+  }),
+  center: { rotate: 0, scale: 1, opacity: 1 },
+  exit: (direction: number) => ({
+    rotate: direction * -120,
+    scale: 0.4,
+    opacity: 0,
+  }),
+};
+
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const classes = styles();
   const location = useLocation();
+  const reduce = useReducedMotion();
 
-  // Determine if we're on the bridge history page
   const isBridgeHistory = location.pathname === Routes.bridgeHistory();
+  const direction = isBridgeHistory ? 1 : -1;
+  const Icon = isBridgeHistory ? IconArrowBack : IconHistory;
 
   return (
     <Box className={classes.content()}>
       <BridgePausedBanner />
       <LayerSwapBanner />
-      <PageTitle title="Fuel Bridge">
-        {isBridgeHistory ? (
-          <Button
-            as="a"
-            href={Routes.bridge()}
-            size="1"
-            color="gray"
-            variant="ghost"
-            leftIcon={IconArrowBack}
-            className="rounded-md"
-            aria-label="Back to home"
-          >
-            Back
-          </Button>
-        ) : (
-          <Button
-            as="a"
-            href={Routes.bridgeHistory()}
-            size="1"
-            color="gray"
-            variant="ghost"
-            leftIcon={IconHistory}
-            className="rounded-md"
-            aria-label="Transaction History"
-          >
-            History
-          </Button>
-        )}
+      <PageTitle
+        as="h2"
+        title={
+          <RollingLabel
+            text={isBridgeHistory ? 'History' : 'Transfer'}
+            direction={direction}
+          />
+        }
+      >
+        <Button
+          as={Link}
+          to={isBridgeHistory ? Routes.bridge() : Routes.bridgeHistory()}
+          size="1"
+          color="gray"
+          variant="ghost"
+          className={classes.toggle()}
+          aria-label={isBridgeHistory ? 'Back to home' : 'Transaction History'}
+        >
+          <span className={classes.icon()}>
+            <AnimatePresence
+              mode="popLayout"
+              initial={false}
+              custom={direction}
+            >
+              <motion.span
+                key={isBridgeHistory ? 'back' : 'history'}
+                custom={direction}
+                variants={iconVariants}
+                initial={reduce ? false : 'enter'}
+                animate="center"
+                exit={reduce ? undefined : 'exit'}
+                transition={ICON_SPRING}
+                className="flex"
+              >
+                <Icon size={14} />
+              </motion.span>
+            </AnimatePresence>
+          </span>
+          <RollingLabel
+            text={isBridgeHistory ? 'Back' : 'History'}
+            direction={direction}
+          />
+        </Button>
       </PageTitle>
       {children}
     </Box>
@@ -59,11 +100,9 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
 const styles = tv({
   slots: {
-    content: 'w-full max-w-[455px]',
+    content: 'flex w-full max-w-[520px] min-h-0 flex-1 flex-col',
+    toggle: 'rounded-md min-w-[96px] justify-center gap-1.5',
+    icon: 'relative inline-flex size-[14px] items-center justify-center',
     tabs: 'ml-0 color-inherit decoration-none :active:text-success',
-    toggle: [
-      'w-full mb-4 rounded-md fuel-[ToggleGroupItem]:h-9',
-      'fuel-[ToggleGroupItem]:text-md',
-    ],
   },
 });
