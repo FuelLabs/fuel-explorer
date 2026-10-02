@@ -138,12 +138,15 @@ export function useAttentionRows(lane: Lane) {
     const endsAt = (row: AttentionRow) =>
       'endsAt' in row ? row.endsAt : Number.NEGATIVE_INFINITY;
 
-    return list.sort(
-      (a, b) =>
-        group(a) - group(b) ||
-        // Infinity - Infinity is NaN, so equal ends are compared directly.
-        (endsAt(a) === endsAt(b) ? 0 : endsAt(a) < endsAt(b) ? -1 : 1),
-    );
+    return list.sort((a, b) => {
+      const byGroup = group(a) - group(b);
+      if (byGroup) return byGroup;
+      // Infinity - Infinity is NaN, so equal ends are compared directly.
+      if (endsAt(a) === endsAt(b)) return 0;
+      const order = endsAt(a) < endsAt(b) ? -1 : 1;
+      // Open items run by nearest finish. Failed ones read newest first.
+      return a.kind === 'failed' ? -order : order;
+    });
   }, [onEthereum, pendingDeposit, rewards.data, positions.data, events.data]);
 
   const isLoading =
