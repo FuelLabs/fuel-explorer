@@ -5,8 +5,8 @@ export const styles = tv({
     dropdownItem:
       'text-base hover:bg-border focus:bg-border cursor-pointer py-6 my-1',
     dropdownContent: [
-      '[&[data-active=true]]:mobile:max-tablet:border-l-0 mobile:max-tablet:border-r-0',
-      'ml-[-10px] tablet:ml-0',
+      '[&[data-active=true]]:max-md:border-l-0 max-md:border-r-0',
+      'ml-[-10px] md:ml-0',
       'mt-[-10px] rounded-t-none shadow-none border border-t-0 border-border',
       '[&[data-active=true]]:border-t-0',
     ],
