@@ -82,6 +82,35 @@ describe('passthrough: balances/contractBalances enrichment', () => {
     expect(result.edges[0].node.verified).toBeUndefined();
   });
 
+  it('contractBalances asks fuel-core for the first 100 when the caller sends no page size', async () => {
+    withRegistry([]);
+    let sent: Record<string, unknown> = {};
+    const ctx = fakeCtx({
+      client: {
+        query: async (_doc: string, vars: Record<string, unknown>) => {
+          sent = vars;
+          return { contractBalances: { edges: [] } };
+        },
+        assetDetails: async () => null,
+      },
+    });
+    await passthroughResolvers.Query.contractBalances(
+      null,
+      { filter: { contract: hex(99) } },
+      ctx,
+    );
+    expect(sent.first).toBe(100);
+    expect(sent.last).toBeUndefined();
+
+    await passthroughResolvers.Query.contractBalances(
+      null,
+      { filter: { contract: hex(99) }, last: 5 },
+      ctx,
+    );
+    expect(sent.first).toBeUndefined();
+    expect(sent.last).toBe(5);
+  });
+
   it('contractBalances does not flag an asset with no registry relationship', async () => {
     withRegistry([UW_XAUT]);
     const ctx = fakeCtx({

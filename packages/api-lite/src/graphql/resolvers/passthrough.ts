@@ -109,12 +109,21 @@ async function enrichAssetNodes(container: any, ctx: AppContext) {
   return container;
 }
 
+// fuel-core rejects a connection query with neither `first` nor `last` ("The
+// queries for the whole range is not supported"); the old indexer accepted it.
+function withDefaultPage(
+  args: Record<string, unknown>,
+): Record<string, unknown> {
+  if (args.first != null || args.last != null) return args;
+  return { ...args, first: MAX_PAGE_SIZE };
+}
+
 function forwardEnriched(field: string, file: string) {
   const document = doc(file);
   return async (_: unknown, args: Record<string, unknown>, ctx: AppContext) => {
     const data = await ctx.client.query<Record<string, unknown>>(
       document,
-      clampPageArgs(args),
+      clampPageArgs(withDefaultPage(args)),
     );
     return enrichAssetNodes(data[field], ctx);
   };
