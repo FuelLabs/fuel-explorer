@@ -109,7 +109,7 @@ export function TopNav() {
           {logo}
           {!isEcosystemBridge && <SearchWidget />}
         </Nav.MobileContent>
-        <Nav.Menu>
+        <Nav.Menu className="bg-[var(--fuel-background)]">
           <div className="flex w-full flex-col gap-4">
             <Flex className="w-full">
               <Box className="flex-1">{tooling}</Box>

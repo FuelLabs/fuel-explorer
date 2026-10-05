@@ -1,21 +1,4 @@
 {
-  "title": "跨链桥如何运作",
-  "lead": "向 Fuel Ignition 充值，或提现回 Ethereum。连接两个钱包，选择资产并确认。",
-  "withdraw_note": "提现回 Ethereum 最多需要 {{delay}}",
-  "steps": {
-    "connect": {
-      "title": "连接两个钱包",
-      "description": "连接 Fuel 钱包和 Ethereum 钱包。发送前，桥会显示两个地址。"
-    },
-    "amount": {
-      "title": "选择资产和数量",
-      "description": "选择资产并输入数量。MAX 会填入全部余额。"
-    },
-    "confirm": {
-      "title": "确认并跟踪",
-      "description": "在钱包中签署交易。每笔转账在到账前都会出现在历史记录中。"
-    }
-  },
   "docs": "跨链桥文档",
   "faq": {
     "duration": {

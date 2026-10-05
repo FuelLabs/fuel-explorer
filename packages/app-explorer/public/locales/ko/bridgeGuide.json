@@ -1,21 +1,4 @@
 {
-  "title": "브리지 이용 방법",
-  "lead": "Fuel Ignition에 입금하거나 Ethereum으로 출금합니다. 두 지갑을 연결하고 자산과 수량을 확인하세요.",
-  "withdraw_note": "Ethereum 출금은 최대 {{delay}} 걸립니다",
-  "steps": {
-    "connect": {
-      "title": "두 지갑 연결",
-      "description": "Fuel 지갑과 Ethereum 지갑을 연결합니다. 전송 전에 두 주소가 표시됩니다."
-    },
-    "amount": {
-      "title": "자산과 수량 선택",
-      "description": "자산을 고르고 수량을 입력합니다. MAX는 잔고를 모두 채웁니다."
-    },
-    "confirm": {
-      "title": "확인 후 추적",
-      "description": "지갑에서 트랜잭션에 서명합니다. 정산될 때까지 모든 전송이 내역에 표시됩니다."
-    }
-  },
   "docs": "브리지 문서",
   "faq": {
     "duration": {

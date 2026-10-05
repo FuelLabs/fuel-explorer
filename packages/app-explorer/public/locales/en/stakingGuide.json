@@ -1,19 +1,4 @@
 {
-  "title": "How staking works",
-  "steps": {
-    "connect": {
-      "title": "Connect your wallet",
-      "description": "Connect the Ethereum wallet that holds your FUEL. The page lists the tokens you can stake."
-    },
-    "validator": {
-      "title": "Choose a validator",
-      "description": "Open Validators and pick who receives your delegation. Validators secure Fuel sequencing."
-    },
-    "stake": {
-      "title": "Stake and track",
-      "description": "Confirm in your wallet. Current positions and Your transactions list every stake and unstake."
-    }
-  },
   "faq": {
     "rig": {
       "question": "What is The Rig?",

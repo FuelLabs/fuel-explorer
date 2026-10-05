@@ -48,7 +48,7 @@ export function ToolPageHeader({
 const styles = tv({
   slots: {
     root: [
-      'fuel-edge col-span-full order-[-2] grid items-end gap-6',
+      'grid items-end gap-6',
       'px-6 py-8 tablet:px-10',
       'min-[720px]:grid-cols-[1fr_auto] min-[720px]:gap-10',
     ],

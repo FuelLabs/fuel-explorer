@@ -1,21 +1,4 @@
 {
-  "title": "How bridging works",
-  "lead": "Deposit to Fuel Ignition or withdraw back to Ethereum. Connect both wallets, choose an asset and confirm.",
-  "withdraw_note": "Withdrawals to Ethereum take up to {{delay}}",
-  "steps": {
-    "connect": {
-      "title": "Connect both wallets",
-      "description": "Connect a Fuel wallet and an Ethereum wallet. The bridge shows both addresses before you send."
-    },
-    "amount": {
-      "title": "Choose an asset and amount",
-      "description": "Pick the asset and enter an amount. MAX fills your full balance."
-    },
-    "confirm": {
-      "title": "Confirm and track",
-      "description": "Sign the transaction in your wallet. Every transfer appears in History until it settles."
-    }
-  },
   "docs": "Bridge docs",
   "faq": {
     "duration": {
@@ -36,7 +19,7 @@
     },
     "cancel": {
       "question": "Can I cancel a transfer?",
-      "answer": "No. A transfer cannot be reversed once you sign it, so check both addresses first."
+      "answer": "No. A transfer cannot be reversed once you sign it, so check both addresses and the amount first."
     }
   }
 }

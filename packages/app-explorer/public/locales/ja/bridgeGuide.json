@@ -1,21 +1,4 @@
 {
-  "title": "ブリッジの仕組み",
-  "lead": "Fuel Ignition へ入金するか、Ethereum へ出金します。両方のウォレットを接続し、アセットと数量を確認してください。",
-  "withdraw_note": "Ethereum への出金には最大 {{delay}} かかります",
-  "steps": {
-    "connect": {
-      "title": "両方のウォレットを接続",
-      "description": "Fuel ウォレットと Ethereum ウォレットを接続します。送信前に両方のアドレスが表示されます。"
-    },
-    "amount": {
-      "title": "アセットと数量を選ぶ",
-      "description": "アセットを選び、数量を入力します。MAX で残高をすべて入力できます。"
-    },
-    "confirm": {
-      "title": "確認して追跡",
-      "description": "ウォレットでトランザクションに署名します。完了するまで、すべての送金が履歴に表示されます。"
-    }
-  },
   "docs": "ブリッジのドキュメント",
   "faq": {
     "duration": {

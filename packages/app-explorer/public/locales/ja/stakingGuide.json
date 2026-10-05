@@ -1,19 +1,4 @@
 {
-  "title": "ステーキングの仕組み",
-  "steps": {
-    "connect": {
-      "title": "ウォレットを接続",
-      "description": "FUEL を保有する Ethereum ウォレットを接続します。ステークできるトークンが一覧されます。"
-    },
-    "validator": {
-      "title": "バリデータを選ぶ",
-      "description": "バリデータ一覧から委任先を選びます。バリデータは Fuel のシーケンスを守ります。"
-    },
-    "stake": {
-      "title": "ステークして追跡",
-      "description": "ウォレットで確認します。現在のポジションとトランザクションに、すべてのステークと解除が表示されます。"
-    }
-  },
   "faq": {
     "rig": {
       "question": "The Rig とは？",
