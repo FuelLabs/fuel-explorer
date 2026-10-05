@@ -30,8 +30,16 @@ export const styles = tv({
       'hidden md:flex justify-between flex-row items-center',
       'md:px-8 min-h-[var(--nav-height)]',
     ],
-    desktopWrapper: ['fuel-grid-divider min-h-[var(--nav-height)]'],
-    mobileWrapper: ['pl-3 pr-2 fuel-grid-divider min-h-[var(--nav-height)]'],
+    desktopWrapper: [
+      'sticky top-0 z-30 backdrop-blur-lg',
+      'bg-[color-mix(in_oklch,var(--fuel-background)_72%,transparent)]',
+      'fuel-grid-divider min-h-[var(--nav-height)]',
+    ],
+    mobileWrapper: [
+      'sticky top-0 z-30 backdrop-blur-lg',
+      'bg-[color-mix(in_oklch,var(--fuel-background)_72%,transparent)]',
+      'pl-3 pr-2 fuel-grid-divider min-h-[var(--nav-height)]',
+    ],
     mobile: ['md:hidden flex-col fuel-[NavLogo]:flex-1'],
     mobileContent: [
       'max-w-screen flex items-center py-2 px-4 justify-between tablet:justify-start',

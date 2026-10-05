@@ -1,19 +1,4 @@
 {
-  "title": "스테이킹 이용 방법",
-  "steps": {
-    "connect": {
-      "title": "지갑 연결",
-      "description": "FUEL을 보유한 Ethereum 지갑을 연결합니다. 스테이킹할 수 있는 토큰이 표시됩니다."
-    },
-    "validator": {
-      "title": "밸리데이터 선택",
-      "description": "밸리데이터에서 위임받을 대상을 고릅니다. 밸리데이터는 Fuel 시퀀싱을 보호합니다."
-    },
-    "stake": {
-      "title": "스테이킹 후 추적",
-      "description": "지갑에서 확인합니다. 현재 포지션과 내 트랜잭션에 모든 스테이킹과 해제가 표시됩니다."
-    }
-  },
   "faq": {
     "rig": {
       "question": "The Rig란?",

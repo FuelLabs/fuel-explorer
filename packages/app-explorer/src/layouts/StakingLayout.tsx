@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useOutlet } from 'react-router-dom';
 import { ToolFaq } from '~/systems/Core/components/ToolPage/ToolFaq';
 import { ToolPageHeader } from '~/systems/Core/components/ToolPage/ToolPageHeader';
-import { ToolSteps } from '~/systems/Core/components/ToolPage/ToolSteps';
 import { VerifySelectedChainDialog } from '~/systems/Core/components/VerifySelectedChainDialog';
 import { RIG_URL, STAKING_DOCS_URL } from '~/systems/Staking/constants/page';
 import { AprBadge } from '~staking/systems/Staking/components/AprBadge/AprBadge';
@@ -22,25 +21,11 @@ const LANE_HIDDEN = 'invisible opacity-0';
 const LANE_PANEL =
   'grid gap-px bg-[var(--fuel-line)] [&>*]:bg-[var(--fuel-background)]';
 
-// The steps and three of the answers describe Ethereum delegation, so the Rig path
-// keeps only its own question.
+// Three of the answers describe Ethereum delegation, so the Rig path keeps only
+// its own question.
 function StakingGuide({ ethereum }: { ethereum: boolean }) {
   const { t } = useTranslation('stakingGuide');
   const { t: tApp } = useTranslation();
-  const steps = [
-    {
-      title: t('steps.connect.title'),
-      description: t('steps.connect.description'),
-    },
-    {
-      title: t('steps.validator.title'),
-      description: t('steps.validator.description'),
-    },
-    {
-      title: t('steps.stake.title'),
-      description: t('steps.stake.description'),
-    },
-  ];
   const rigFaq = {
     question: t('faq.rig.question'),
     answer: t('faq.rig.answer'),
@@ -62,7 +47,6 @@ function StakingGuide({ ethereum }: { ethereum: boolean }) {
 
   return (
     <>
-      {ethereum && <ToolSteps title={t('title')} steps={steps} />}
       <ToolFaq
         items={faq}
         docsLabel={tApp('staking.docs')}
@@ -84,49 +68,49 @@ export default function StakingLayout() {
   return (
     <>
       <VerifySelectedChainDialog />
-      <GridFrame className="grid-cols-1">
-        <ToolPageHeader
-          reserveBadge
-          badge={
-            <span
+      <ToolPageHeader
+        reserveBadge
+        badge={
+          <span
+            aria-hidden={!isEthereumStaking}
+            className={clsx(LANE_ONLY, !isEthereumStaking && LANE_HIDDEN)}
+          >
+            <AprBadge />
+          </span>
+        }
+        title={t('staking.title')}
+        lead={t('staking.lead')}
+        actions={
+          <>
+            <Button
+              as="a"
+              href={STAKING_DOCS_URL}
+              target="_blank"
+              rel="noreferrer"
+              size="3"
+              color="gray"
+              variant="soft"
+            >
+              {t('staking.read_docs')}
+            </Button>
+            {/* The Rig page carries its own Open The Rig button. The slot stays
+                  so the header keeps its width and the text does not reflow. */}
+            <Button
+              as="a"
+              href={RIG_URL}
+              target="_blank"
+              rel="noreferrer"
+              size="3"
+              color="gray"
               aria-hidden={!isEthereumStaking}
               className={clsx(LANE_ONLY, !isEthereumStaking && LANE_HIDDEN)}
             >
-              <AprBadge />
-            </span>
-          }
-          title={t('staking.title')}
-          lead={t('staking.lead')}
-          actions={
-            <>
-              <Button
-                as="a"
-                href={STAKING_DOCS_URL}
-                target="_blank"
-                rel="noreferrer"
-                size="3"
-                color="gray"
-                variant="soft"
-              >
-                {t('staking.read_docs')}
-              </Button>
-              {/* The Rig page carries its own Open The Rig button. The slot stays
-                  so the header keeps its width and the text does not reflow. */}
-              <Button
-                as="a"
-                href={RIG_URL}
-                target="_blank"
-                rel="noreferrer"
-                size="3"
-                color="gray"
-                aria-hidden={!isEthereumStaking}
-                className={clsx(LANE_ONLY, !isEthereumStaking && LANE_HIDDEN)}
-              >
-                {t('staking.open_rig')}
-              </Button>
-            </>
-          }
-        />
+              {t('staking.open_rig')}
+            </Button>
+          </>
+        }
+      />
+      <GridFrame className="grid-cols-1">
         <StakingLanes />
         <TabTransition
           panel={isEthereumStaking ? 'ethereum' : 'rig'}

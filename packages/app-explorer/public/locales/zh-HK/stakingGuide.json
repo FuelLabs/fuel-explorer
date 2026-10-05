@@ -1,19 +1,4 @@
 {
-  "title": "質押如何運作",
-  "steps": {
-    "connect": {
-      "title": "連接錢包",
-      "description": "連接持有 FUEL 的 Ethereum 錢包。頁面會列出可以質押的代幣。"
-    },
-    "validator": {
-      "title": "選擇驗證者",
-      "description": "打開驗證者並選擇委託對象。驗證者保障 Fuel 的排序安全。"
-    },
-    "stake": {
-      "title": "質押並追蹤",
-      "description": "在錢包中確認。當前持倉和你的交易會列出每一次質押和解除質押。"
-    }
-  },
   "faq": {
     "rig": {
       "question": "什麼是 The Rig？",
