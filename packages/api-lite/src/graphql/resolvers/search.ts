@@ -71,6 +71,14 @@ export const searchResolvers = {
       } catch (err) {
         console.error('search transaction failed', err);
       }
+      // Contracts created before the index window exist only in fuel-core, and
+      // they have owner history, so this must run before the account checks.
+      try {
+        if (await ctx.client.contractExists(hash))
+          return { contract: { _id: 0, id: hash } };
+      } catch (err) {
+        console.error('search contract history failed', err);
+      }
       try {
         if (ctx.index.accountExists(hash)) {
           ctx.hot.hit('account', hash);

@@ -172,6 +172,7 @@ async function setup(
     latestHeight: async () => TIP,
     heightForTx: async () => null,
     heightForBlock: async () => null,
+    contractExists: async () => false,
     assetDetails: async () => null,
     query: async () => ({}),
     rawChain: async () => ({ consensusParameters: { chainId: '9889' } }),
@@ -640,6 +641,23 @@ describe('resolvers', () => {
       (await gql(`{ search(query: "${OLD_ACCOUNT}") { account { address } } }`))
         .search.account.address,
     ).toBe(OLD_ACCOUNT);
+  });
+
+  it('search finds a contract created before the index window as a contract, not an account', async () => {
+    const OLD_CONTRACT = `0x${'f3'.repeat(32)}`;
+    const { gql } = await setup({
+      contractExists: async (id: string) => id === OLD_CONTRACT,
+      txIdsByOwner: async () => ({
+        ids: [hex(1)],
+        headHeight: 0,
+        hasNextPage: false,
+      }),
+    });
+    const d = await gql(
+      `{ search(query: "${OLD_CONTRACT}") { contract { id } account { address } } }`,
+    );
+    expect(d.search.contract.id).toBe(OLD_CONTRACT);
+    expect(d.search.account).toBeNull();
   });
 
   it('search resolves null when fuel-core throws even for a well-formed id', async () => {

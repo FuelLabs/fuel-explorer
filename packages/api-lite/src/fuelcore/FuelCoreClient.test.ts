@@ -40,6 +40,18 @@ describe('FuelCoreClient', () => {
     );
     expect(await c.heightForBlock('0xab')).toBe(5);
   });
+  it('contractExists', async () => {
+    const known = new FuelCoreClient(
+      'http://x',
+      fakeFetch(() => ({ contract: { id: '0xab' } })),
+    );
+    expect(await known.contractExists('0xab')).toBe(true);
+    const unknown = new FuelCoreClient(
+      'http://x',
+      fakeFetch(() => ({ contract: null })),
+    );
+    expect(await unknown.contractExists('0xab')).toBe(false);
+  });
 
   describe('assetDetails', () => {
     it('returns contractId/subId/totalSupply for a known asset', async () => {
