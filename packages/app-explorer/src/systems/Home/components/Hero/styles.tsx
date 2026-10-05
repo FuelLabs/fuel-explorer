@@ -6,6 +6,12 @@ export const heroStyles = tv({
     container: 'relative pb-10',
     input: 'w-full tablet:w-[400px]',
     subtitle: ['text-base mb-8 justify-center'],
-    searchWrapper: ['grid-cols-12 laptop:h-[624px]'],
+    // The rows are fixed (not content-sized) so a taller tile or app list can
+    // never push the cells past the frame. 147:147:163:163 is the split the
+    // content used to settle on.
+    searchWrapper: [
+      'grid-cols-12 laptop:h-[624px]',
+      'laptop:grid-rows-[minmax(0,147fr)_minmax(0,147fr)_minmax(0,163fr)_minmax(0,163fr)]',
+    ],
   },
 });

@@ -90,7 +90,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
             if (!feature.url) {
               return (
                 <div
-                  className="flex items-center gap-3 mt-3"
+                  className="flex items-center gap-3 mt-2"
                   key={feature.name}
                 >
                   {row}
@@ -99,7 +99,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
             }
             return (
               <a
-                className="flex items-center gap-3 mt-3"
+                className="flex items-center gap-3 mt-2"
                 href={feature.url}
                 target="_blank"
                 rel="noreferrer"

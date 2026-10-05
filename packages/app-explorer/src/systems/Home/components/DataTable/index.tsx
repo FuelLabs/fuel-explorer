@@ -19,14 +19,14 @@ export const DataTable = (props: DataTableProps) => {
       <div className="flex items-center justify-between px-5 py-3">
         <span className="fuel-label">{t('home.recent_blocks')}</span>
       </div>
-      <div className="flex-1 flex flex-col divide-y divide-border">
+      <div className="flex-1 min-h-0 flex flex-col divide-y divide-border">
         {props.blocks.map((block, index) => {
           const height = String(block.blockNo);
           return (
             <div
               key={block.blockNo}
               className={cx(
-                'fuel-hover-fill relative flex-1',
+                'fuel-hover-fill relative min-h-0 flex-1 overflow-hidden',
                 newBlocks.has(height) && 'fuel-row-new',
               )}
             >
