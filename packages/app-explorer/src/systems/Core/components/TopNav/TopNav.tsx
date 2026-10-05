@@ -108,17 +108,23 @@ export function TopNav() {
         <Nav.MobileContent>
           {logo}
           {!isEcosystemBridge && <SearchWidget />}
-          <HStack gap="2" align="center">
-            <LanguageSelect />
-            <NetworkSelector />
-            {themeToggle}
-          </HStack>
         </Nav.MobileContent>
         <Nav.Menu>
-          <Flex className="w-full">
-            <Box className="flex-1">{tooling}</Box>
-            <ConnectWallet />
-          </Flex>
+          <div className="flex w-full flex-col gap-4">
+            <Flex className="w-full">
+              <Box className="flex-1">{tooling}</Box>
+              <ConnectWallet />
+            </Flex>
+            <HStack
+              gap="2"
+              align="center"
+              className="border-t border-border pt-4"
+            >
+              <LanguageSelect />
+              <NetworkSelector />
+              {themeToggle}
+            </HStack>
+          </div>
         </Nav.Menu>
       </Nav.Mobile>
     </Nav>
