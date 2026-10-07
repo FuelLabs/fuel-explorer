@@ -82,7 +82,7 @@ function Hero() {
           <Heading as="h1" className="sr-only">
             Fuel Explorer
           </Heading>
-          <GridFrame className={classes.searchWrapper()}>
+          <GridFrame className={classes.searchWrapper()} corners={false}>
             {/* Row 1-2, Col 1-4: Daily Transactions */}
             <Reveal className="row-span-2 col-span-12 laptop:col-span-4">
               <LoadingWrapper

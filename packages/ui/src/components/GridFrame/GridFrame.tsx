@@ -4,6 +4,7 @@ import { cx } from '../../utils/css';
 export interface GridFrameProps {
   children: React.ReactNode;
   className?: string;
+  corners?: boolean;
 }
 
 interface Joint {
@@ -48,7 +49,11 @@ function sameJoints(a: Joint[], b: Joint[]) {
   );
 }
 
-export function GridFrame({ children, className }: GridFrameProps) {
+export function GridFrame({
+  children,
+  className,
+  corners = true,
+}: GridFrameProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [joints, setJoints] = useState<Joint[]>([]);
 
@@ -76,13 +81,14 @@ export function GridFrame({ children, className }: GridFrameProps) {
 
   return (
     <div ref={ref} className={cx('fuel-grid-frame', className)}>
-      {CORNERS.map((corner) => (
-        <span
-          key={corner}
-          aria-hidden
-          className={`fuel-corner fuel-corner-${corner}`}
-        />
-      ))}
+      {corners &&
+        CORNERS.map((corner) => (
+          <span
+            key={corner}
+            aria-hidden
+            className={`fuel-corner fuel-corner-${corner}`}
+          />
+        ))}
       {joints.map(({ x, y }) => (
         <span
           key={`${Math.round(x)}:${Math.round(y)}`}
