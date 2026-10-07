@@ -66,6 +66,7 @@
     "graphql-yoga": "5.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-i18next": "17.0.15",
     "tailwind-variants": "0.1.20",
     "viem": "2.20.1",
     "wagmi": "2.12.7"
@@ -83,6 +84,7 @@
     "graphql-yoga": "5.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-i18next": "17.0.15",
     "tailwind-variants": "0.1.20",
     "tsup": "^8.0.2",
     "typescript": "5.4.5",

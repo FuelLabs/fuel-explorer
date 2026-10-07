@@ -42,7 +42,12 @@
     "size": "Size",
     "gas": "Gas",
     "fee": "Fee",
-    "block_link": "Block {{number}}"
+    "block_link": "Block {{number}}",
+    "peak_tps": "Peak TPS",
+    "avg_tps": "Avg TPS",
+    "day_peak": "Day Peak",
+    "error_title": "Could not load transactions",
+    "error_description": "The latest transactions failed to load. Try again."
   },
   "ecosystem": {
     "eyebrow": "Fuel Ecosystem",
@@ -172,6 +177,214 @@
       "refresh": "Refresh list",
       "no_match": "No transactions match these filters.",
       "clear": "Clear filters"
+    },
+    "account": {
+      "connect_wallet": "Connect Wallet",
+      "copied": "Copied",
+      "copied_toast": "Address has been copied to clipboard",
+      "copy": "Copy address",
+      "disconnect": "Disconnect",
+      "switch": "Switch network",
+      "unsupported": "Unsupported network"
+    },
+    "balance": {
+      "ethereum": "Balance on Ethereum",
+      "ethereum_tip": "Balance available on the Ethereum network that can be used to stake with validators.",
+      "rewards": "Rewards earned",
+      "rewards_tip": "These are your current rewards earned from staked positions. To claim them, visit the \"Current Positions\" tab.",
+      "sequencer": "Balance in Sequencer",
+      "sequencer_tip": "Balance available in Fuel Sequencer Chain that can be used to stake to validators or be withdrawn to the Ethereum network.",
+      "vesting": "Tokens in Vesting",
+      "vesting_tip": "Your locked FUEL tokens from V1 to FUEL conversion.\n\nDuring the vesting period, these tokens will be gradually released to your 'Balance on Sequencer'. You don't need to do any claiming.",
+      "withdraw": "Withdraw"
+    },
+    "dialog": {
+      "amount_to_claim": "Amount to claim",
+      "approval": "Approval",
+      "approve_body": "To continue with the staking process, you need to grant permission for this contract to spend tokens from your Ethereum balance.",
+      "approve_title": "Approve spending of FUEL",
+      "approved": "FUEL token spending is approved.",
+      "approving": "Approving...",
+      "claim_pending": "Claim rewards pending",
+      "claim_rewards": "Claim Rewards",
+      "claiming_now": "You're claiming",
+      "from_account": "From Account",
+      "have_claimed": "You have claimed",
+      "have_redelegated": "You have redelegated",
+      "have_staked": "You have staked",
+      "have_undelegated": "You have undelegated",
+      "have_withdrawn": "You have withdrawn",
+      "how_much_redelegate": "How much would you like to redelegate?",
+      "how_much_stake": "How much would you like to stake?",
+      "how_much_undelegate": "How much would you like to undelegate?",
+      "how_much_withdraw": "How much would you like to withdraw?",
+      "please_wait": "Please wait",
+      "redelegate": "Redelegate",
+      "redelegating_now": "You're redelegating",
+      "review": "Review",
+      "review_claim": "Review: Claim Rewards",
+      "review_redelegate": "Review: Redelegate",
+      "review_stake": "Review: Stake",
+      "review_undelegate": "Review: Undelegate",
+      "review_withdraw": "Review: Withdraw",
+      "search_validator": "Search or select validator",
+      "selected_validator": "Selected Validator",
+      "sourced_from": "Sourced from",
+      "stake": "Stake",
+      "stake_unavailable": "Stake Currently Unavailable",
+      "staking_now": "You're staking",
+      "step_of": "Step {{current}} of {{total}}",
+      "submit_redelegate": "Submit Redelegate",
+      "submit_stake": "Submit Stake",
+      "submit_undelegate": "Submit Undelegate",
+      "submit_withdraw": "Submit Withdraw",
+      "to_which_validator": "To which validator?",
+      "two_tx_body": "This transaction will be funded by both your 'Balance on Ethereum' and your 'Balance in Sequencer'. Therefore, this operation will require two separate transactions to be executed.",
+      "two_tx_title": "This Staking operation will require two transactions.",
+      "undelegate": "Undelegate",
+      "undelegate_unavailable": "Undelegate Currently Unavailable",
+      "undelegating_now": "You're undelegating",
+      "withdraw": "Withdraw",
+      "withdraw_unavailable": "Withdrawal Currently Unavailable",
+      "withdrawal": "Withdrawal",
+      "withdrawing_now": "You're withdrawing"
+    },
+    "empty": {
+      "positions": "You have no active staking positions right now.",
+      "start": "Start staking",
+      "transactions": "You don't have any transactions yet."
+    },
+    "faucet": {
+      "button": "Faucet Fuel Token",
+      "error": "Error claiming Fuel token"
+    },
+    "pagination": {
+      "next": "Next page",
+      "page": "Page {{page}}",
+      "previous": "Previous page",
+      "records": "records",
+      "show": "Show"
+    },
+    "position": {
+      "claim": "Claim",
+      "menu": "Delegated item",
+      "redelegate": "Redelegate",
+      "undelegate": "Undelegate"
+    },
+    "review": {
+      "approve": "Approve",
+      "back": "Back",
+      "balance_ethereum": "(Balance in Ethereum)",
+      "balance_sequencer": "(Balance in Sequencer)",
+      "checking": "Checking...",
+      "fee": "Network Fee",
+      "from": "From",
+      "my_account": "My Account",
+      "retry": "Retry",
+      "submitting": "Submitting...",
+      "time_to_complete": "Time to complete",
+      "to": "To"
+    },
+    "status": {
+      "at": "{{date}} at {{time}}",
+      "error": "Error",
+      "eta": "Estimated completion time",
+      "finalize_withdraw": "Finalize Withdraw",
+      "funds_staked_on": "Funds staked on",
+      "label": "Status",
+      "loading": "Loading...",
+      "redelegated_on": "Redelegated on",
+      "rewards_claimed_on": "Rewards claimed on",
+      "step_sent": "Transaction Sent",
+      "step_sync_failed": "Synchronization Failed",
+      "step_unbonding": "Waiting for Unbonding",
+      "step_waiting_sync": "Waiting for Synchronization",
+      "step_withdraw_commit": "Sequencer committing to L1...",
+      "step_withdraw_finalization": "Waiting for finalization...",
+      "step_withdraw_ready": "Ready for withdrawal...",
+      "step_withdraw_sent": "Withdraw transaction sent...",
+      "step_withdraw_sync": "Synchronizing with Sequencer...",
+      "sync_failed_body": "Likely due to the balance not being available at the moment of synchronization. If you believe the sync should have been successful, please contact Fuel support on <discord>Discord</discord>.",
+      "undelegation_completed_on": "Undelegation completed on",
+      "waiting_confirmation": "Waiting for transaction confirmation",
+      "waiting_user": "Waiting user action",
+      "withdrawal_finalized_on": "Withdrawal finalized on"
+    },
+    "table": {
+      "commission": "Commission",
+      "delegated": "Tokens Delegated",
+      "name": "Name",
+      "power": "Voting Power",
+      "rewards": "Rewards Earned",
+      "date": "Date",
+      "type": "Type",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "upgrade": {
+      "allowance": "Token Allowance",
+      "available": "Available",
+      "claim": "Claim tokens",
+      "claim_submitted": "Vesting Claim has been submitted",
+      "cliff_end": "Cliff end",
+      "close_hint": "You can close this dialog and come back later.",
+      "convert": "Upgrade to FUEL",
+      "cta": "Upgrade your Fuel V1 Tokens",
+      "dialog_title": "Upgrade V1 to FUEL token",
+      "go_staking": "Go to Staking",
+      "grant_title": "V1 Token Grant",
+      "liquid": "Liquid {{version}} tokens",
+      "migration_submitted": "Migration has been submitted",
+      "next": "Next",
+      "receive": "You'll receive",
+      "release_end": "Release end",
+      "start_date": "Start date",
+      "step_allowance": "Allowance",
+      "step_upgrade": "Upgrade",
+      "submit": "Upgrade",
+      "total_claimed": "Total claimed",
+      "total_grant": "Total grant",
+      "total_vesting": "Total vesting",
+      "unclaimed": "Unclaimed tokens",
+      "v1_amount": "V1 Amount",
+      "vesting_fuel": "FUEL Tokens Vesting",
+      "waiting_allowance": "Waiting for token allowance confirmation."
+    },
+    "validator": {
+      "load_error": "Error on fetching validators. Something went wrong, try again later.",
+      "stake": "Stake",
+      "stake_disabled": "Stake is disabled while other staking operations are pending."
+    },
+    "event_type": {
+      "stake": "Stake",
+      "redelegate": "Redelegation",
+      "undelegate": "Undelegation",
+      "claim_rewards": "Reward Claim",
+      "withdraw": "Withdraw"
+    },
+    "toast": {
+      "stake_submitted": "Stake request has been submitted",
+      "undelegate_submitted": "Undelegate transaction has been submitted",
+      "redelegate_submitted": "Redelegate request has been submitted",
+      "claim_reward_submitted": "Claim Reward transaction has been submitted",
+      "withdraw_submitted": "Withdrawal request has been submitted",
+      "finalize_submitted": "Transaction to finalize withdrawal has been submitted",
+      "fuel_claimed": "Fuel tokens have been claimed and will be reflected in your wallet shortly.",
+      "view_explorer": "View in explorer"
+    },
+    "eta": {
+      "less_than_minute": "less than 1 minute",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "hours_one": "{{count}} hour",
+      "hours_other": "{{count}} hours",
+      "minutes_one": "{{count}} minute",
+      "minutes_other": "{{count}} minutes",
+      "join": "{{first}} and {{second}}"
+    },
+    "apr": {
+      "value": "~{{apy}}% APR",
+      "tip": "Help secure Fuel sequencing by delegating your tokens to Fuel validators."
     }
   },
   "bridge": {
@@ -211,5 +424,583 @@
     "unexpected": "Something went wrong",
     "unexpected_body": "An unexpected error occurred. Please reload the page.",
     "reload": "Reload"
+  },
+  "core": {
+    "retry": "Retry",
+    "view_mode": {
+      "label": "View mode",
+      "standard": "Standard",
+      "simple": "Simple",
+      "advanced": "Advanced",
+      "simple_disabled": "Simple mode is not available for this transaction"
+    },
+    "pagination": {
+      "previous": "Previous page",
+      "next": "Next page",
+      "range": "{{start}} - {{end}} of {{total}}"
+    },
+    "empty": {
+      "assets_title": "No assets",
+      "assets_description": "This {{entity}} does not have any asset.",
+      "nfts_title": "No NFTs",
+      "nfts_description": "This {{entity}} does not have any NFT.",
+      "transactions_title": "No transactions",
+      "transactions_description": "This {{entity}} does not have any transaction."
+    },
+    "entity": {
+      "account": "account",
+      "contract": "contract",
+      "assets": "assets",
+      "block": "block"
+    },
+    "sync_status": {
+      "message": "Indexer is experiencing issues. Fuel team is currently working on a fix. Some data may be outdated or unavailable."
+    },
+    "code_block": {
+      "code": "Code"
+    },
+    "copy": {
+      "copy": "Copy"
+    },
+    "info_hint": {
+      "label": "More information"
+    },
+    "upgrade": {
+      "title": "Token Manager",
+      "subtitle": "Manage your contributor grant and Fuel token release schedules.",
+      "stake_tokens": "Stake your Fuel Tokens"
+    }
+  },
+  "block": {
+    "title": "Block",
+    "blocks_title": "Blocks",
+    "breadcrumb_label": "Breadcrumb",
+    "breadcrumb_home": "Home",
+    "breadcrumb_all_blocks": "View All Blocks",
+    "height": "Height",
+    "producer": "Producer",
+    "created": "Created",
+    "tx_count": "# of transactions",
+    "transactions": "Transactions",
+    "total_fee": "Total fee",
+    "col_block": "Block",
+    "col_blockhash": "Blockhash",
+    "col_transactions": "Transactions",
+    "col_rewards": "Rewards",
+    "col_producer": "Producer",
+    "col_efficiency": "Efficiency",
+    "col_time": "Time",
+    "col_blockhash_hint": "A unique identifier for this block, generated by hashing its data.",
+    "col_rewards_hint": "The total reward distributed to the validator for producing this block.",
+    "col_efficiency_hint": "The percentage of block resources utilized by transactions.",
+    "no_mint_amount": "No mint amount",
+    "view": "View",
+    "not_found_title": "Block not found",
+    "not_found_description": "The requested block could not be found.",
+    "not_found_meta_title": "Block Not Found - Fuel Explorer",
+    "error_title": "Could not load the block",
+    "error_description": "Failed to load block details.",
+    "error_meta_title": "Error - Fuel Explorer",
+    "loading_meta_title": "Loading Block - Fuel Explorer",
+    "meta_title": "Block {{height}} - Fuel Explorer",
+    "meta_description": "View details for block {{height}} on the Fuel blockchain",
+    "list_error_title": "Could not load blocks",
+    "list_error_description": "The block list failed to load. Try again.",
+    "pager_previous": "Previous",
+    "pager_next": "Next"
+  },
+  "portal": {
+    "wallet": {
+      "connect": "Connect Wallet",
+      "address_copied": "Address has been copied to clipboard",
+      "switch_network": "Switch Network",
+      "my_account": "My Account",
+      "copy_address": "Copy address",
+      "bridge_history": "Bridge History",
+      "disconnect": "Disconnect"
+    },
+    "account": {
+      "disconnect": "Disconnect",
+      "connected_wallet": "{{network}}: Connected Wallet",
+      "change_wallet": "Change wallet"
+    },
+    "bridge": {
+      "from": "From",
+      "to": "To",
+      "deposit": "Deposit",
+      "withdraw": "Withdraw",
+      "deposit_tab": "Deposit Tab",
+      "withdraw_tab": "Withdraw Tab",
+      "history": "History",
+      "back": "Back",
+      "back_to_home": "Back to home",
+      "transaction_history": "Transaction History",
+      "layerswap": "Fast bridging with LayerSwap",
+      "custom_address_notice": "Sending to a custom Fuel account:",
+      "non_native_notice": "Please note: EVM/SVM addresses will differ from your <strong>Fuel predicate address</strong>. This is expected behavior.",
+      "manage_assets_in": "You can manage your assets in",
+      "my_account": "My Account",
+      "max_tooltip": "Max = balance - fee",
+      "allowance": "Allowance",
+      "no_gas_warning": "You don't have any ETH on Fuel to pay for gas. We recommend you bridge some ETH before you bridge any other assets.",
+      "withdraw_delay": "Withdrawals back to Ethereum take up to {{time}}.",
+      "withdraw_threshold": "This withdrawal is over {{percentage}}% of the weekly limit for this asset. While large withdrawals may be blocked during relay, splitting into smaller transactions could allow you to withdraw a larger total amount before reaching the weekly limit.",
+      "withdraw_limit": "This withdrawal exceeds the weekly limit for this asset and would be blocked during relay. Splitting into smaller transactions could allow you to withdraw a larger total amount before reaching the weekly limit.",
+      "withdraw_warning_label": "Withdraw warning",
+      "withdraw_warning_accept": "I understand this withdrawal exceeds the weekly limit and will be blocked during relay. I still want to proceed.",
+      "terms_label": "Terms of Service",
+      "terms_accept": "I have read and agree to the updated",
+      "terms_link": "Terms of Service"
+    },
+    "overview": {
+      "transaction_id": "Transaction ID",
+      "transaction_id_label": "Transaction ID: {{id}}",
+      "from": "From",
+      "to": "To",
+      "age": "Age",
+      "direction": "Direction",
+      "direction_deposit": "(Deposit)",
+      "direction_withdraw": "(Withdraw)",
+      "alt_deposit": "Deposit",
+      "alt_withdrawal": "withdrawal",
+      "asset": "Asset",
+      "add_to_wallet": "Add to wallet",
+      "alt_asset": "Asset {{symbol}}",
+      "asset_amount": "Asset amount"
+    },
+    "steps": {
+      "step_status": "Step {{name}}: {{status}}"
+    },
+    "dialog": {
+      "close": "Close",
+      "confirm_transaction": "Confirm Transaction",
+      "connect_eth_wallet": "Connect Ethereum Wallet",
+      "progress": "Transaction progress"
+    },
+    "assets": {
+      "back": "Back",
+      "select_token": "Select token",
+      "manage_token_list": "Manage token list",
+      "search_placeholder": "Type here to search",
+      "no_asset_found": "No asset found for your search \"{{query}}\"",
+      "unnamed": "Unnamed",
+      "name_label": "{{symbol}} name",
+      "symbol_label": "{{symbol}} symbol",
+      "balance_label": "{{symbol}} balance",
+      "faucet_label": "Faucet {{symbol}}"
+    },
+    "history": {
+      "empty": "No activity yet. When you make a transaction you'll see it here.",
+      "not_connected": "No wallet detected. Connect a wallet to see your transactions.",
+      "connect_fuel_wallet": "Connect Fuel Wallet",
+      "action_required": "Action Required",
+      "settled": "Settled",
+      "processing": "Processing",
+      "show_more": "Show more",
+      "slow_loading": "This process is taking longer than expected and may take a few minutes, especially if your account has many transactions.",
+      "slow_loading_detail": "We are actively working on improving this experience by implementing a dedicated indexer for the Fuel Bridge transactions."
+    },
+    "paused": {
+      "tag": "Paused",
+      "title": "Operations are temporarily paused.",
+      "dialog_title": "Operations are temporarily paused",
+      "module_updating": "The {{name}} module is currently being updated.",
+      "no_action": "No action is needed from your side.",
+      "close": "Close",
+      "bridge_message": "Withdrawals are on a short pause while we do some maintenance. Your funds are safe, and you can finalize as soon as we're back."
+    },
+    "bridge_button": {
+      "connect_wallet": "Connect {{chain}} Wallet",
+      "bridge_anyway": "Bridge asset anyway",
+      "approve": "Approve",
+      "loading_allowance": "Getting token allowance...",
+      "loading_submit": "Submitting Transaction...",
+      "select_network_from": "Select a network to bridge from",
+      "select_network_to": "Select a network to bridge to",
+      "pick_asset": "Pick asset",
+      "enter_amount": "Enter amount",
+      "insufficient_funds": "Insufficient funds"
+    },
+    "bridge_steps": {
+      "submit_to_bridge": "Submit to bridge",
+      "settlement": "Settlement",
+      "confirm_transaction": "Confirm transaction",
+      "receive_on_ethereum": "Receive on Ethereum",
+      "receive_on_fuel": "Receive on Fuel",
+      "done": "Done!",
+      "waiting": "Waiting",
+      "automatic": "Automatic",
+      "action": "Action",
+      "action_required": "Action required",
+      "time_left": "~{{time}} left"
+    },
+    "bridge_toast": {
+      "deposit_started": "Deposit successfully initiated. You may now close the popup.",
+      "withdraw_started": "Withdraw successfully initiated. You may now close the popup.",
+      "user_rejected": "User rejected the transaction"
+    }
+  },
+  "tx": {
+    "details_title": "Transaction Details",
+    "not_found_title": "Transaction Not Found",
+    "not_found_body": "The transaction you're looking for doesn't exist or hasn't been indexed yet.",
+    "error_title": "Error",
+    "error_body": "Failed to load transaction details",
+    "retry": "Retry",
+    "bridge_notice": "Bridge transactions will not appear here. Connect your wallet and go to <history/> to view your bridge transactions.",
+    "bridge_history_link": "Bridge > History",
+    "status": {
+      "success": "Success",
+      "failed": "Failed",
+      "pending": "Pending",
+      "squeezed_out": "Squeezed Out",
+      "info": "Info",
+      "waiting": "Waiting"
+    },
+    "transfer": "Transfer",
+    "predicate": "Predicate",
+    "timestamp": "Timestamp",
+    "block": "Block",
+    "network_fee": "Network Fee",
+    "gas_used": "Gas used: {{gas}}",
+    "fee": "Fee",
+    "to": "to",
+    "token_transfers": "Token transfers",
+    "also_called": "Also called",
+    "on": "on",
+    "account": "Account",
+    "signed_with_session_key": "signed with session key",
+    "reverted_notice": "This transaction reverted. None of these actions took effect.",
+    "inputs": "Inputs",
+    "outputs": "Outputs",
+    "operations": "Operations",
+    "minted_assets": "Minted Assets",
+    "minted": "Minted",
+    "minted_help": "This is the amount minted in the transaction",
+    "input_contract": "Input Contract",
+    "tx_pointer_label": "Tx Pointer",
+    "no_inputs": "No Inputs",
+    "no_inputs_body": "This transaction does not have any inputs.",
+    "no_outputs": "No Outputs",
+    "no_outputs_body": "This transaction does not have any outputs.",
+    "no_operations": "No Operations",
+    "no_operations_body": "This transaction does not have any operations.",
+    "no_scripts": "No Scripts",
+    "no_scripts_body": "This transaction does not have any scripts.",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "show_details": "Show details",
+    "hide_details": "Hide details",
+    "input_type": {
+      "coin": "Coin",
+      "message": "Message",
+      "contract": "Contract"
+    },
+    "output_type": {
+      "contract": "Contract",
+      "created": "Created",
+      "variable": "Variable",
+      "change": "Change",
+      "coin": "Coin",
+      "unknown": "Unknown"
+    },
+    "account_type": {
+      "wallet": "Wallet",
+      "contract": "Contract",
+      "predicate": "Predicate"
+    },
+    "contract_created": "Contract Created",
+    "asset": "Asset",
+    "spent": "Spent: {{amount}}",
+    "utxo": "UTXO",
+    "input": "Input",
+    "index": "Index:",
+    "id_prefix": "Id:",
+    "asset_prefix": "Asset:",
+    "from_prefix": "From:",
+    "to_prefix": "To:",
+    "sender_prefix": "Sender:",
+    "recipient_prefix": "Recipient:",
+    "nonce_prefix": "Nonce:",
+    "data_prefix": "Data:",
+    "address_prefix": "Address:",
+    "utxo_id_prefix": "Utxo Id:",
+    "balance_root_prefix": "Balance Root:",
+    "tx_pointer": "Tx Pointer:",
+    "method_prefix": "Method:",
+    "event_prefix": "Event:",
+    "policies": "Policies",
+    "policy": {
+      "tip": {
+        "name": "Tip",
+        "description": "Optional tip to the block producer"
+      },
+      "witness_limit": {
+        "name": "Witness Limit",
+        "description": "The maximum amount of witness data allowed for the transaction"
+      },
+      "maturity": {
+        "name": "Maturity",
+        "description": "Block height until which the transaction cannot be included"
+      },
+      "max_fee": {
+        "name": "Max Fee",
+        "description": "Maximum fee the sender is willing to pay"
+      },
+      "owner": {
+        "name": "Owner",
+        "description": "Input index designated as the transaction owner"
+      },
+      "bytes": "{{bytes}} bytes",
+      "none": "None",
+      "block": "Block #{{height}}",
+      "input": "Input #{{index}}",
+      "input_typed": "Input #{{index}} ({{type}})",
+      "unknown": "Unknown"
+    },
+    "expand_more_one": "(+{{count}} operation)",
+    "expand_more_other": "(+{{count}} operations)",
+    "op": {
+      "call_one": "Call",
+      "call_other": "Calls",
+      "log_one": "Log",
+      "log_other": "Logs",
+      "transfer_one": "Transfer",
+      "transfer_other": "Transfers",
+      "message_one": "Message",
+      "message_other": "Messages",
+      "mint_one": "Mint",
+      "mint_other": "Mints",
+      "burn_one": "Burn",
+      "burn_other": "Burns",
+      "return_one": "Return",
+      "return_other": "Returns",
+      "result_one": "Result",
+      "result_other": "Results",
+      "error_one": "Error",
+      "error_other": "Errors"
+    },
+    "transaction_label": "Transaction",
+    "activity": {
+      "label": {
+        "order_placed": "Order placed",
+        "filled": "Filled",
+        "order_cancelled": "Order cancelled",
+        "order_expired": "Order expired",
+        "order_removed": "Order removed",
+        "order_stopped": "Order stopped",
+        "take_profit": "Take profit",
+        "stop_loss": "Stop loss",
+        "trigger_order": "Trigger order",
+        "triggered": "Triggered",
+        "trigger_cancelled": "Trigger cancelled",
+        "fees": "Fees",
+        "settled": "Settled",
+        "withdrawn": "Withdrawn",
+        "session_added": "Session key added",
+        "session_revoked": "Session key revoked",
+        "rejected": "Rejected",
+        "called": "Called"
+      },
+      "part": {
+        "and": " and ",
+        "place_head": "{{type}} {{side}} ",
+        "with_limit_price": " with a limit price of ",
+        "at": " at ",
+        "bought": "Bought ",
+        "sold": "Sold ",
+        "order": "Order ",
+        "by_market": " by the market",
+        "resting_order": "Resting order ",
+        "below_minimum": " is below the minimum size",
+        "out_of_gas": " ran out of gas while matching",
+        "stopped_with": " stopped with ",
+        "unfilled": " unfilled",
+        "side_prefix": "{{side}} ",
+        "filled_amount": "the filled amount",
+        "when_reaches": " when the price reaches ",
+        "when_rises": " when the price rises to ",
+        "when_falls": " when the price falls to ",
+        "trigger_order": "Trigger order ",
+        "reached_price": " reached its price",
+        "fees_collected": " collected by the market",
+        "moved_to": " moved to ",
+        "moved_to_trade_account": " moved to the trade account",
+        "to": " to ",
+        "key": "Key ",
+        "validation_failed": "Validation failed"
+      },
+      "order_type": {
+        "limit": "Limit",
+        "post_only": "Post-only",
+        "fill_or_kill": "Fill-or-kill",
+        "market": "Market"
+      },
+      "side": {
+        "buy": "buy",
+        "sell": "sell"
+      },
+      "side_cap": {
+        "buy": "Buy",
+        "sell": "Sell"
+      },
+      "ejection": {
+        "cancelled_by_user": "was cancelled by the trader",
+        "force_canceled": "was force cancelled",
+        "sibling_activated": "was cancelled because its paired order triggered",
+        "not_enough_funds": "was removed for lack of funds",
+        "ejected_by_admin": "was removed by an admin",
+        "parent_canceled": "was cancelled with its parent order",
+        "removed": "was removed"
+      },
+      "phrase": {
+        "triggered_past": "t {{rest}}",
+        "triggered_base": "r {{rest}}",
+        "placed_past": "p {{rest}}",
+        "placed_base": "l {{rest}}",
+        "set_past": "s {{rest}}",
+        "set_base": "e {{rest}}",
+        "cancelled_past": "c {{rest}}",
+        "cancelled_base": "a {{rest}}",
+        "filled_past": "f {{rest}}",
+        "filled_base": "i {{rest}}",
+        "withdrew_past": "w {{rest}}",
+        "withdrew_base": "i {{rest}}",
+        "changed_past": "c {{rest}}",
+        "changed_base": "h {{rest}}"
+      },
+      "noun": {
+        "order_one": "{{count}} order",
+        "order_other": "{{count}} orders",
+        "trigger_order_one": "{{count}} trigger order",
+        "trigger_order_other": "{{count}} trigger orders",
+        "trade_one": "{{count}} trade",
+        "trade_other": "{{count}} trades",
+        "asset_one": "{{count}} asset",
+        "asset_other": "{{count}} assets",
+        "take_profit": "take profit",
+        "stop_loss": "stop loss",
+        "order_with_protection": "{{orders}} with {{protection}}",
+        "session_key": "a session key"
+      },
+      "headline": {
+        "on_market": " on {{market}}",
+        "a_contract": "a contract",
+        "failed_interact": "Failed to interact with {{target}}",
+        "interacted": "Interacted with {{target}}",
+        "sentence": "{{list}}{{where}}{{plus}}",
+        "failed_sentence": "failed to {{list}}{{where}}{{plus}}",
+        "plus_calls_one": ", plus calls to {{count}} other contract",
+        "plus_calls_other": ", plus calls to {{count}} other contracts"
+      },
+      "list_comma": "{{a}}, {{b}}",
+      "list_and": "{{head}} and {{last}}"
+    }
+  },
+  "account": {
+    "title": "Account",
+    "my_account": "My Account",
+    "exchange": "Exchange",
+    "tabs": {
+      "assets": "Assets",
+      "nfts": "NFTs",
+      "transactions": "Transactions",
+      "predicate": "Predicate"
+    },
+    "error_balances": "Error loading account balances",
+    "error_nfts": "Error loading account NFTs",
+    "error_predicate": "Error loading account predicate",
+    "error_transactions": "Error loading account transactions"
+  },
+  "contract": {
+    "title": "Contract",
+    "title_named": "Contract: {{name}}",
+    "tabs": {
+      "minted_assets": "Minted Assets",
+      "assets": "Assets",
+      "transactions": "Transactions",
+      "source_code": "Source Code"
+    },
+    "bytecode": "Bytecode",
+    "no_assets_title": "No Assets",
+    "no_assets_body": "This contract does not have any assets.",
+    "no_minted_title": "No Minted Assets",
+    "no_minted_body": "This contract does not have any minted assets.",
+    "error_assets": "Failed to load contract assets",
+    "error_minted": "Failed to load minted assets",
+    "error_transactions": "Failed to load contract transactions",
+    "error_code": "Failed to load contract data"
+  },
+  "asset": {
+    "verified": "Verified Asset",
+    "suspicious": "This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.",
+    "unknown": "Unknown Asset",
+    "nft_tag": "NFT",
+    "utxos": "UTXOs ({{count}})",
+    "show_utxos": "Show UTXOs",
+    "hide_utxos": "Hide UTXOs"
+  },
+  "meta": {
+    "home": {
+      "title": "Fuel Explorer",
+      "description": "Blocks, transactions and live network stats for Fuel Ignition."
+    },
+    "bridge_history": {
+      "title": "Bridge history · Fuel Explorer",
+      "description": "Pending and completed transfers between Ethereum and Fuel."
+    },
+    "bridge": {
+      "title": "Bridge · Fuel Explorer",
+      "description": "Move assets between Ethereum and Fuel Ignition."
+    },
+    "staking_on_ethereum": {
+      "title": "Stake on Ethereum · Fuel Explorer",
+      "description": "Stake FUEL on Ethereum and track positions, validators and transactions."
+    },
+    "staking": {
+      "title": "Stake · Fuel Explorer",
+      "description": "Delegate FUEL to validators, or liquid stake through The Rig."
+    },
+    "ecosystem": {
+      "title": "Ecosystem · Fuel Explorer",
+      "description": "Apps, wallets and infrastructure built on Fuel."
+    },
+    "blocks": {
+      "title": "Blocks · Fuel Explorer",
+      "description": "Recent blocks on Fuel Ignition."
+    },
+    "block": {
+      "title": "Block {{height}} · Fuel Explorer",
+      "description": "Block {{height}} on Fuel Ignition."
+    },
+    "tx": {
+      "title": "Transaction · Fuel Explorer",
+      "description": "A transaction on Fuel Ignition."
+    },
+    "account": {
+      "title": "Account · Fuel Explorer",
+      "description": "Assets, transactions and NFTs for a Fuel account."
+    },
+    "contract": {
+      "title": "Contract · Fuel Explorer",
+      "description": "Assets, code and transactions for a Fuel contract."
+    },
+    "upgrade": {
+      "title": "Token manager · Fuel Explorer",
+      "description": "Contributor grants and Fuel token release schedules."
+    },
+    "account_assets": "Account Assets {{id}} - Fuel Explorer",
+    "account_transactions": "Account Transactions {{id}} - Fuel Explorer",
+    "account_nfts": "Account NFTs {{id}} - Fuel Explorer",
+    "account_predicate": "Account Predicate {{id}} - Fuel Explorer",
+    "contract_assets": "Contract Assets {{id}} - Fuel Explorer",
+    "contract_minted_assets": "Contract Minted Assets {{id}} - Fuel Explorer",
+    "contract_transactions": "Contract Transactions {{id}} - Fuel Explorer",
+    "contract_code": "Contract Code {{id}} - Fuel Explorer",
+    "tx_loading": "Loading Transaction - Fuel Explorer",
+    "tx_not_found": "Transaction Not Found - Fuel Explorer",
+    "error": "Error - Fuel Explorer",
+    "tx_title": "Transaction {{id}}... - Fuel Explorer",
+    "tx_description": "View details for transaction {{id}} on the Fuel blockchain"
   }
 }

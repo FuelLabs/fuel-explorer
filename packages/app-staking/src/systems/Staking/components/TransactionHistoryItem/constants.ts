@@ -2,12 +2,12 @@ import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
 import type { TxDialogNames } from '~staking/systems/Staking/store/stakingTxDialogStore';
 import { type StakingEvent, StakingEventType } from '../../types/l1/events';
 
-export const typeLabel: Record<StakingEventType, string> = {
-  [StakingEventType.Stake]: 'Stake',
-  [StakingEventType.ReDelegate]: 'Redelegation',
-  [StakingEventType.Undelegate]: 'Undelegation',
-  [StakingEventType.ClaimRewards]: 'Reward Claim',
-  [StakingEventType.Withdraw]: 'Withdraw',
+export const typeLabelKey: Record<StakingEventType, string> = {
+  [StakingEventType.Stake]: 'staking.event_type.stake',
+  [StakingEventType.ReDelegate]: 'staking.event_type.redelegate',
+  [StakingEventType.Undelegate]: 'staking.event_type.undelegate',
+  [StakingEventType.ClaimRewards]: 'staking.event_type.claim_rewards',
+  [StakingEventType.Withdraw]: 'staking.event_type.withdraw',
 };
 
 export const withdrawType: Record<StakingEventType, TxDialogNames> = {

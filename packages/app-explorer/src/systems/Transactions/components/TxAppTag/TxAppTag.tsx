@@ -48,7 +48,7 @@ function AppLogo({
         onError={() => setBroken(true)}
         initial={{ scale: 0.3, rotate: -90 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', stiffness: 520, damping: 24, delay }}
+        transition={{ duration: 0.3, ease: EASE_OUT, delay }}
       />
       <motion.span
         aria-hidden
@@ -150,7 +150,7 @@ function StaticTag({ apps, dense }: { apps: TxApp[]; dense?: boolean }) {
         )}
       {hidden > 0 && (
         <span
-          className={`shrink-0 text-secondary ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}
+          className={`shrink-0 text-[var(--fuel-element-low-em)] ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}
         >
           +{hidden}
         </span>
@@ -184,7 +184,7 @@ export function TxAppTag({ apps, pending, delay = 0, dense }: TxAppTagProps) {
         ))}
       {!pending && hidden > 0 && (
         <motion.span
-          className={`shrink-0 text-secondary ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}
+          className={`shrink-0 text-[var(--fuel-element-low-em)] ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + shown.length * 0.08 + 0.2 }}

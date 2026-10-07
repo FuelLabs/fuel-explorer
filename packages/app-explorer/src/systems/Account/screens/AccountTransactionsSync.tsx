@@ -1,9 +1,10 @@
-import { Alert, Button } from '@fuels/ui';
-import { IconInfoCircle, IconLink } from '@fuels/ui';
-import { Routes as PortalRoutes } from 'app-commons';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { useAccountTransactions } from '~/hooks/useApi';
 import { EmptyTransactions } from '~/systems/Core/components/EmptyBlocks/EmptyTransactions';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { TxDim } from '~/systems/Transaction/component/TxNotice/TxNotice';
+import { BridgeNotice } from '~/systems/Transactions/components/BridgeNotice/BridgeNotice';
 import { TxList } from '~/systems/Transactions/components/TxList/TxList';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 
@@ -18,8 +19,8 @@ export function AccountTransactionsSync({
   cursor,
   dir = 'after',
 }: AccountTransactionsProps) {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const _cursor = searchParams.get('cursor') ?? cursor;
   const _dir = (searchParams.get('dir') ?? dir) as 'after' | 'before';
 
@@ -33,34 +34,14 @@ export function AccountTransactionsSync({
     direction: _dir,
   });
 
-  // Bridge warning component - always visible
-  const BridgeWarning = (
-    <Alert color="blue" className="mt-1 mb-6">
-      <Alert.Icon>
-        <IconInfoCircle size="md" />
-      </Alert.Icon>
-      <Alert.Text>
-        Bridge transactions will not appear here. You must connect your wallet
-        and go to{' '}
-        <Button
-          onClick={() => {
-            navigate(PortalRoutes.bridgeHistory());
-          }}
-          variant="link"
-          className="mx-0.5 mb-0 mt-[-1px] text-blue-12"
-        >
-          Bridge {'>'} History
-          <IconLink className="text-inherit" size={18} />
-        </Button>
-        to view your bridge transactions.
-      </Alert.Text>
-    </Alert>
-  );
+  // Bridge notice - always visible
+  const notice = <BridgeNotice className="mt-1 mb-6" />;
 
-  if (isLoading || isFetching) {
+  // The loader shows on the first load only. A refetch keeps the list and dims it.
+  if (isLoading) {
     return (
       <>
-        {BridgeWarning}
+        {notice}
         <TxListLoader numberOfTxs={10} />
       </>
     );
@@ -69,12 +50,12 @@ export function AccountTransactionsSync({
   if (error) {
     return (
       <>
-        {BridgeWarning}
-        <div className="text-center py-12">
-          <div className="text-red-500">
-            Error loading account transactions: {error.message}
-          </div>
-        </div>
+        {notice}
+        <PageState
+          tone="error"
+          title={t('account.error_transactions')}
+          description={error.message}
+        />
       </>
     );
   }
@@ -82,7 +63,7 @@ export function AccountTransactionsSync({
   if (!txs?.nodes?.length) {
     return (
       <>
-        {BridgeWarning}
+        {notice}
         <EmptyTransactions entity="account" />
       </>
     );
@@ -90,13 +71,15 @@ export function AccountTransactionsSync({
 
   return (
     <>
-      {BridgeWarning}
-      <TxList
-        transactions={txs.nodes}
-        pageInfo={txs.pageInfo}
-        owner={id}
-        route="accountTxs"
-      />
+      {notice}
+      <TxDim busy={isFetching}>
+        <TxList
+          transactions={txs.nodes}
+          pageInfo={txs.pageInfo}
+          owner={id}
+          route="accountTxs"
+        />
+      </TxDim>
     </>
   );
 }

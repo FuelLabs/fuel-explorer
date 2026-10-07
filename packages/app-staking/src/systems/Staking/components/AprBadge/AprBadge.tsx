@@ -1,12 +1,13 @@
 import { Tooltip } from '@fuels/ui';
-import { Badge } from '@fuels/ui';
 import { IconInfoCircle } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { FUEL_INDEXER_API } from 'app-commons';
 import clsx from 'clsx';
 import { urlJoin } from 'fuels';
+import { useTranslation } from 'react-i18next';
 
 export function AprBadge({ className }: { className?: string }) {
+  const { t } = useTranslation();
   const { data: apy } = useQuery({
     queryKey: ['fuel', 'staking', 'apy'],
     queryFn: async () => {
@@ -19,11 +20,16 @@ export function AprBadge({ className }: { className?: string }) {
   });
 
   return apy ? (
-    <Badge color="blue" className={clsx('fuel-appear', className)}>
-      ~{apy}% APR
-      <Tooltip content="Help secure Fuel sequencing by delegating your tokens to Fuel validators.">
-        <IconInfoCircle size={14} className="ml-1" />
+    <span
+      className={clsx(
+        'fuel-label fuel-appear inline-flex items-center gap-2 border border-[var(--fuel-line)] px-2 py-1 text-[var(--fuel-brand-text)]',
+        className,
+      )}
+    >
+      {t('staking.apr.value', { apy })}
+      <Tooltip content={t('staking.apr.tip')}>
+        <IconInfoCircle size={14} />
       </Tooltip>
-    </Badge>
+    </span>
   ) : null;
 }

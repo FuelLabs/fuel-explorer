@@ -4,19 +4,18 @@ import { useAsset } from '~portal/systems/Assets';
 import { WalletConnectConnector } from '@fuels/connectors';
 import { useCurrentConnector } from '@fuels/react';
 import { ETH_CHAIN } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import { useEthAccountConnection } from '../hooks';
 
-export const EthAccountConnection = ({ label }: { label?: 'From' | 'To' }) => {
+export const EthAccountConnection = ({ side }: { side?: 'from' | 'to' }) => {
+  const { t } = useTranslation();
   const { asset: ethAsset } = useAsset();
   const { currentConnector } = useCurrentConnector();
   const { address, ens, handlers, isConnecting, isConnected } =
     useEthAccountConnection();
 
   const handleDisconnect = () => {
-    if (
-      label === 'From' &&
-      currentConnector instanceof WalletConnectConnector
-    ) {
+    if (side === 'from' && currentConnector instanceof WalletConnectConnector) {
       // Connector doesn't see that EVMs disconnected and will auto-reconnect if not for this.
       currentConnector.disconnect();
     }
@@ -27,7 +26,7 @@ export const EthAccountConnection = ({ label }: { label?: 'From' | 'To' }) => {
     <AccountConnectionInput
       networkName={ETH_CHAIN.name}
       networkImage={ethAsset?.icon}
-      label={label}
+      label={side ? t(`portal.bridge.${side}`) : undefined}
       isConnecting={isConnecting}
       account={{
         address,

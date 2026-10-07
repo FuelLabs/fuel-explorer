@@ -64,7 +64,7 @@ export function InputAmountSimpleField() {
   return (
     <NumericFormat
       getInputRef={inputRef}
-      className="flex-1 p-2 font-mono text-2xl text-[--gray-12] font-semibold tracking-wide bg-transparent border-0 outline-none w-full placeholder:text-[--gray-10] disabled:text-[--gray-10] read-only:text-[--gray-12] read-only:cursor-default"
+      className="flex-1 p-2 font-mono text-2xl text-[var(--fuel-element-high-em)] font-semibold tracking-wide bg-transparent border-0 outline-none w-full placeholder:text-[var(--fuel-element-low-em)] disabled:text-[var(--fuel-element-disabled)] read-only:text-[var(--fuel-element-high-em)] read-only:cursor-default"
       valueIsNumericString
       placeholder="0.00"
       thousandSeparator=","

@@ -55,9 +55,9 @@ export const DialogCloseButton = createComponent<
         color="gray"
         iconSize={20}
         icon={IconX}
-        iconColor="text-gray-12"
+        iconColor="text-heading"
         className={clsx(
-          'rounded-full absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
+          'fuel-hover-fill absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
           props.className,
         )}
       />
@@ -68,7 +68,7 @@ export const DialogCloseButton = createComponent<
 export const DialogTitle = createComponent<DialogTitleProps, typeof RD.Title>({
   id: 'DialogTitle',
   baseElement: RD.Title,
-  className: () => 'font-mono text-2xl',
+  className: ({ className }) => clsx('fuel-stat-sm', className),
 });
 
 export const DialogDescription = createComponent<

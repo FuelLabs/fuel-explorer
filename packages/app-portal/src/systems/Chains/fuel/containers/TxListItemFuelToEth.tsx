@@ -2,15 +2,24 @@ import { useAsset } from '~portal/systems/Assets';
 import { BridgeTxItem } from '~portal/systems/Bridge/components';
 
 import { Asset, Flex, FuelLogo, Spinner, Text } from '@fuels/ui';
+import type { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { ActionRequiredBadge } from '../components';
 import { useTxFuelToEth } from '../hooks';
 
 type TxListItemFuelToEthProps = {
   txHash: string;
+  className?: string;
+  style?: CSSProperties;
 };
 
-export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
+export const TxListItemFuelToEth = ({
+  txHash,
+  className,
+  style,
+}: TxListItemFuelToEthProps) => {
+  const { t } = useTranslation();
   const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { steps, handlers, asset, date, status, amount, isLoadingTxResult } =
@@ -22,14 +31,20 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
 
   function getStatusComponent() {
     if (status?.isReceiveDone) {
-      return <Text className={classes.settledText()}>Settled</Text>;
+      return (
+        <Text className={classes.settledText()}>
+          {t('portal.history.settled')}
+        </Text>
+      );
     }
 
     if (bridgeTxStatus?.isLoading) {
       return (
         <Flex align="center" gap="1">
           <Spinner size={14} />
-          <Text className={classes.loadingText()}>Processing</Text>
+          <Text className={classes.loadingText()}>
+            {t('portal.history.processing')}
+          </Text>
         </Flex>
       );
     }
@@ -50,6 +65,8 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
       txId={txHash}
       amount={amount}
       isLoading={isLoadingTxResult}
+      className={className}
+      style={style}
       toLogo={
         <Asset asset={ethAsset} iconSize={18}>
           <Asset.Icon />

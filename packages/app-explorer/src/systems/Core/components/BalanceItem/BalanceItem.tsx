@@ -1,16 +1,15 @@
 import type { BaseProps } from '@fuels/ui';
 import {
   Address,
-  Box,
-  Collapsible,
-  Flex,
-  HStack,
+  IconChevronDown,
   LoadingBox,
   LoadingWrapper,
-  Text,
 } from '@fuels/ui';
 import { bn } from 'fuels';
+import { type ReactNode, useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
+import { TxExpand } from '~/systems/Transaction/component/TxItem/TxExpand';
 
 import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
 import { Amount } from '../Amount/Amount';
@@ -23,33 +22,42 @@ type BalanceItemProps = BaseProps<{
   isLoading?: boolean;
 }>;
 
-export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
+export function BalanceItem({ item, isLoading, className }: BalanceItemProps) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
   const assetId = item.assetId;
   const amount = item.amount;
   const hasUTXOs = !!item.utxos?.length;
   const asset = item;
 
   return (
-    <Collapsible {...props} hideIcon={!hasUTXOs} className={'min-h-16'}>
-      <Collapsible.Header>
-        <Flex className="flex-1 flex-col tablet:flex-row tablet:justify-between tablet:items-center">
+    <div
+      className={`border-t border-[var(--fuel-border)] first:border-t-0 ${className ?? ''}`}
+    >
+      <div className="fuel-hover-fill flex min-h-16 items-center gap-3 px-4 py-3">
+        <div className="flex min-w-0 flex-1 flex-col tablet:flex-row tablet:items-center tablet:justify-between">
           <AssetItem assetId={assetId} isLoading={isLoading} asset={asset}>
-            <Address value={item.assetId} prefix="Id:" isLoading={isLoading} />
+            <Address
+              value={item.assetId}
+              prefix={t('tx.id_prefix')}
+              isLoading={isLoading}
+            />
           </AssetItem>
-          <Box className="ml-14 mt-2 tablet:ml-0 tablet:mt-0">
+          <div className="ml-14 mt-2 tablet:ml-0 tablet:mt-0">
             <LoadingWrapper
               isLoading={isLoading}
               loadingEl={
-                <HStack align="center" gap="2">
-                  <LoadingBox className="w-20 h-5" />
-                  <LoadingBox className="w-16 h-4" />
-                </HStack>
+                <div className="flex items-center gap-2">
+                  <LoadingBox className="h-5 w-20" />
+                  <LoadingBox className="h-4 w-16" />
+                </div>
               }
               regularEl={
-                <HStack align="center">
+                <div className="flex items-baseline gap-2">
                   {amount && (
                     <Amount
-                      className="text-primary text-base"
+                      className="text-[16px] text-heading"
                       hideIcon
                       hideSymbol
                       assetId={assetId}
@@ -58,23 +66,63 @@ export function BalanceItem({ item, isLoading, ...props }: BalanceItemProps) {
                     />
                   )}
                   {asset.amountInUsd && (
-                    <Text className="text-secondary" as="div" size="2">
+                    <span className="text-[13px] text-[var(--fuel-element-low-em)]">
                       ({asset.amountInUsd})
-                    </Text>
+                    </span>
                   )}
-                </HStack>
+                </div>
               }
             />
-          </Box>
-        </Flex>
-      </Collapsible.Header>
+          </div>
+        </div>
+        {hasUTXOs && (
+          <ToggleButton
+            open={open}
+            panelId={panelId}
+            label={t(open ? 'asset.hide_utxos' : 'asset.show_utxos')}
+            onToggle={() => setOpen((value) => !value)}
+          />
+        )}
+      </div>
       {hasUTXOs && (
-        <Utxos
-          items={item.utxos as Array<UtxoItemType>}
-          assetId={assetId}
-          decimals={asset.decimals}
-        />
+        <TxExpand id={panelId} open={open}>
+          <Utxos
+            items={item.utxos as Array<UtxoItemType>}
+            assetId={assetId}
+            decimals={asset.decimals}
+          />
+        </TxExpand>
       )}
-    </Collapsible>
+    </div>
+  );
+}
+
+function ToggleButton({
+  open,
+  panelId,
+  label,
+  onToggle,
+}: {
+  open: boolean;
+  panelId: string;
+  label: ReactNode;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-expanded={open}
+      aria-controls={panelId}
+      aria-label={typeof label === 'string' ? label : undefined}
+      onClick={onToggle}
+      className="grid size-8 shrink-0 cursor-pointer place-items-center border-0 bg-transparent p-0 text-[var(--fuel-element-low-em)] transition-colors hover:text-heading focus-visible:outline-2 focus-visible:outline-[var(--fuel-primary)] motion-reduce:transition-none"
+    >
+      <IconChevronDown
+        aria-hidden
+        size={16}
+        stroke={1.75}
+        className={`transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${open ? 'rotate-180' : ''}`}
+      />
+    </button>
   );
 }

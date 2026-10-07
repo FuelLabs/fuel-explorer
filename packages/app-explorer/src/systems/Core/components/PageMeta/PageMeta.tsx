@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { matchPageMeta } from '~/systems/Core/pageMeta';
 
@@ -6,7 +7,20 @@ const PREVIEW_IMAGE = '/preview.png?v=ignition';
 
 export function PageMeta() {
   const { pathname, search } = useLocation();
-  const meta = matchPageMeta(pathname);
+  const { t } = useTranslation();
+  const found = matchPageMeta(pathname);
+  const meta = found.key
+    ? {
+        title: t(`meta.${found.key}.title`, {
+          ...found.params,
+          defaultValue: found.title,
+        }),
+        description: t(`meta.${found.key}.description`, {
+          ...found.params,
+          defaultValue: found.description,
+        }),
+      }
+    : found;
   const url =
     typeof window === 'undefined'
       ? ''

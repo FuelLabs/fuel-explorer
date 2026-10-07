@@ -3,7 +3,6 @@ import { useProvider } from '@fuels/react';
 import {
   Alert,
   Avatar,
-  Badge,
   Button,
   Dialog,
   Dropdown,
@@ -21,6 +20,7 @@ import { IconAlertCircle, IconAlertOctagon } from '@fuels/ui';
 import { Address, isB256 } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 import { tv } from 'tailwind-variants';
+import { TxChip } from '~/systems/Transaction/component/TxItem/TxChip';
 import { getAsset } from '../../actions/get-asset';
 import { useSendTransactionDialog } from '../../hooks/useSendTransactionDialog';
 
@@ -154,7 +154,6 @@ export function SendTransactionDialogContent({
             <InputAmount.Field
               id="evm-dialog-amount"
               value={amount}
-              color="green"
               onChange={(val) => setAmount(val || undefined)}
               placeholder="0.00"
               className="py-2.5"
@@ -194,11 +193,7 @@ export function SendTransactionDialogContent({
                             balance?.name ||
                             shortAddress(balance?.assetId)}
                           {Number.parseInt(balance?.decimals as string) ===
-                            0 && (
-                            <Badge variant="ghost" color="green" size="1">
-                              NFT
-                            </Badge>
-                          )}
+                            0 && <TxChip kind="success">NFT</TxChip>}
                           {balance.suspicious && (
                             <Tooltip content="This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.">
                               <div className="mx-1">
@@ -219,7 +214,7 @@ export function SendTransactionDialogContent({
                     regularEl={
                       <InputAmount.Balance
                         color="gray"
-                        className="bg-transparent text-xs p-0 self-center text-muted"
+                        className="bg-transparent text-xs p-0 self-center text-[var(--fuel-element-low-em)]"
                       />
                     }
                   />

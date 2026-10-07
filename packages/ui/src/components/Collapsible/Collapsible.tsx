@@ -105,6 +105,8 @@ export const CollapsibleHeader = createComponent<
             iconSize={20}
             iconColor="text-muted"
             variant="link"
+            aria-label={opened ? 'Collapse' : 'Expand'}
+            aria-expanded={opened}
             className={classes.icon()}
             icon={IconChevronDown}
           />
@@ -123,11 +125,18 @@ export const CollapsibleContent = createComponent<
   render: (Root, { children, className, ...props }) => {
     const { opened, variant } = useContext(ctx);
     const classes = styles({ variant });
-    return opened ? (
-      <Root {...props} className={classes.content({ variant, className })}>
-        {children}
-      </Root>
-    ) : null;
+    return (
+      <div
+        className="fuel-collapsible-panel"
+        data-state={opened ? 'opened' : 'closed'}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <Root {...props} className={classes.content({ variant, className })}>
+            {children}
+          </Root>
+        </div>
+      </div>
+    );
   },
 });
 
@@ -164,23 +173,23 @@ export const Collapsible = withNamespace(CollapsibleRoot, {
 
 const styles = tv({
   slots: {
-    root: 'py-[10px]',
+    root: 'bg-transparent rounded-none py-[10px]',
     header:
       'group relative gap-4 cursor-pointer pr-9 flex flex-col justify-center tablet:items-center tablet:flex-row tablet:justify-start',
-    icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
-    content: 'mx-4 mb-2 border border-gray-7',
+    icon: 'transition-transform duration-200 motion-reduce:transition-none group-data-[state=opened]:rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
+    content: 'mx-4 mb-2 border border-[var(--fuel-line)]',
     body: '',
-    title: 'flex items-center gap-2 text-sm font-medium',
+    title: 'fuel-label flex items-center gap-2',
   },
   variants: {
     variant: {
       surface: {
-        content: 'p-0 bg-gray-2 dark:bg-gray-1 rounded-sm',
+        content: 'p-0 bg-transparent rounded-none',
         body: 'px-3 py-3',
-        title: 'py-3 px-3 border-b border-gray-7',
+        title: 'py-3 px-3 border-b border-[var(--fuel-line)]',
       },
       ghost: {
-        content: 'p-3 rounded-sm',
+        content: 'p-3 rounded-none',
         body: 'pt-2',
       },
       classic: {},

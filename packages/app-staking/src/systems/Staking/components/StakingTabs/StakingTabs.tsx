@@ -81,7 +81,7 @@ export const StakingTabs = ({ rigLabel, ethereumLabel }: StakingTabsProps) => {
         <HStack className={classes.label()}>
           <img
             src="/assets/eth.svg"
-            alt="ETH Logo"
+            alt=""
             className="w-[28px] h-[28px] shrink-0 rounded-full max-[719px]:mx-auto"
           />
           <span className={classes.text()}>{ethereumLabel}</span>

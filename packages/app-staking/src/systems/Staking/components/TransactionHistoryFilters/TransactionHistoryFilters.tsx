@@ -12,7 +12,7 @@ import { tv } from 'tailwind-variants';
 import type { StakingEventType } from '../../types/l1/events';
 import {
   type EventStatus,
-  typeLabel,
+  typeLabelKey,
 } from '../TransactionHistoryItem/constants';
 
 export type StatusFilter = 'all' | EventStatus;
@@ -144,7 +144,7 @@ export function TransactionHistoryFilters({
             <SelectItem value="all">{t('staking.history.type_all')}</SelectItem>
             {types.map((value) => (
               <SelectItem key={value} value={value}>
-                {typeLabel[value]}
+                {t(typeLabelKey[value])}
               </SelectItem>
             ))}
           </SelectContent>

@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { useContractBalances } from '~/hooks/useApi';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { TxDim } from '~/systems/Transaction/component/TxNotice/TxNotice';
 import { ContractAssetList } from '../components/ContractAssetList';
 import { ContractAssetsLoader } from '../components/ContractAssetsLoader';
 
@@ -7,6 +10,7 @@ type ContractAssetProps = {
 };
 
 export function ContractAsset({ id }: ContractAssetProps) {
+  const { t } = useTranslation();
   const {
     data: balances,
     isLoading,
@@ -14,17 +18,17 @@ export function ContractAsset({ id }: ContractAssetProps) {
     error,
   } = useContractBalances(id);
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <ContractAssetsLoader />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-red-600">Failed to load contract assets</p>
-      </div>
-    );
+    return <PageState tone="error" title={t('contract.error_assets')} />;
   }
 
-  return <ContractAssetList balances={balances || []} />;
+  return (
+    <TxDim busy={isFetching}>
+      <ContractAssetList balances={balances || []} />
+    </TxDim>
+  );
 }

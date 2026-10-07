@@ -1,25 +1,20 @@
-import { Text, VStack } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 
 export const BridgeListEmpty = () => {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
     <div className={classes.root()}>
-      <VStack justify="center" align="center" gap="1">
-        <Text className={classes.title()}>No activity yet</Text>
-        <Text className={classes.subtitle()}>
-          When you make a transaction you&apos;ll see it here
-        </Text>
-      </VStack>
+      <p className={classes.text()}>{t('portal.history.empty')}</p>
     </div>
   );
 };
 
 const styles = tv({
   slots: {
-    root: 'border border-[var(--fuel-border)] px-4 py-8 text-center',
-    title: 'text-md font-medium text-heading',
-    subtitle: 'text-sm text-[var(--fuel-element-low-em)]',
+    root: 'fuel-appear border-t border-[var(--fuel-border)] py-8',
+    text: 'm-0 text-base text-[var(--fuel-element-low-em)]',
   },
 });

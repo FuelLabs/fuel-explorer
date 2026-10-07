@@ -1,5 +1,6 @@
-import { Button, HStack, VStack } from '@fuels/ui';
+import { Button, GridFrame } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, FuelToken, TOKENS } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { Routes } from '~staking/routes';
@@ -24,6 +25,7 @@ const {
 } = TOKENS[FuelToken.V2];
 
 export const ConversionTool = () => {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const navigate = useNavigate();
 
@@ -39,14 +41,7 @@ export const ConversionTool = () => {
 
   return (
     <div>
-      <HStack
-        direction={{
-          initial: 'column',
-          md: 'row',
-        }}
-        justify="between"
-        className="mt-5"
-      >
+      <GridFrame className="mt-5 grid-cols-1 md:grid-cols-2">
         <LiquidCard
           version={'V1'}
           token={v1Token}
@@ -55,9 +50,7 @@ export const ConversionTool = () => {
           account={address}
           actionEl={
             <Button
-              variant="solid"
-              color="green"
-              size="1"
+              size="2"
               onClick={() =>
                 stakingTxDialogStore.send({
                   type: 'open',
@@ -67,7 +60,7 @@ export const ConversionTool = () => {
               }
               disabled={!isConvertible}
             >
-              Upgrade to FUEL
+              {t('staking.upgrade.convert')}
             </Button>
           }
         />
@@ -79,23 +72,23 @@ export const ConversionTool = () => {
           account={address}
           actionEl={
             <Button
-              variant="outline"
+              variant="ghost"
               color="gray"
               size="2"
               className="mobile:max-tablet:hidden"
               // @TODO: Update after mergin with routing changes
               onClick={() => navigate(Routes.stakingL1())}
             >
-              Go to Staking
+              {t('staking.upgrade.go_staking')}
             </Button>
           }
         />
-      </HStack>
+      </GridFrame>
 
-      <VStack className="mt-16 gap-16">
+      <div className="mt-16 flex flex-col gap-16">
         <TokenGrant account={address} />
         <TokenRelease account={address} />
-      </VStack>
+      </div>
       <PendingTransactionsWatcher />
       <StakingDialogs />
     </div>

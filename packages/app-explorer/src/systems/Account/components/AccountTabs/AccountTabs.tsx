@@ -1,11 +1,6 @@
 import type { BaseProps } from '@fuels/ui';
-import {
-  IconChecklist,
-  IconCodeAsterix,
-  IconCoins,
-  IconPhoto,
-} from '@fuels/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
 
@@ -19,6 +14,7 @@ export function AccountTabs({
   isPredicate,
   ...props
 }: AccountTabsProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const defaultValue = useMemo(() => {
     if (location.pathname.includes('transactions')) return 'transactions';
@@ -37,24 +33,20 @@ export function AccountTabs({
       )}
       items={[
         {
-          icon: IconCoins,
           value: 'assets',
-          label: 'Assets',
+          label: t('account.tabs.assets'),
         },
         {
-          icon: IconPhoto,
           value: 'nfts',
-          label: 'NFTs',
+          label: t('account.tabs.nfts'),
         },
         {
-          icon: IconChecklist,
           value: 'transactions',
-          label: 'Transactions',
+          label: t('account.tabs.transactions'),
         },
         {
-          icon: IconCodeAsterix,
           value: 'predicate',
-          label: 'Predicate',
+          label: t('account.tabs.predicate'),
           disabled: !isPredicate,
         },
       ]}

@@ -3,19 +3,19 @@ import { tv } from 'tailwind-variants';
 export const styles = tv({
   slots: {
     overlay: [
-      'fixed inset-0 z-50 backdrop-blur-sm',
+      'fixed inset-0 z-50 bg-black/50',
       'data-[state=open]:animate-in data-[state=closed]:animate-out',
       'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
     ],
     closeIcon: [
-      'absolute right-4 top-4 rounded-sm opacity-70',
-      'transition-opacity hover:opacity-100 focus:outline-none',
-      'focus:ring-2 focus:ring-gray-4 focus:ring-offset-2',
-      'disabled:pointer-events-none data-[state=open]:bg-secondary',
+      'fuel-hover-fill absolute right-4 top-4 h-8 w-8 flex items-center justify-center',
+      'focus:outline-none focus-visible:outline focus-visible:outline-1',
+      'focus-visible:outline-[var(--fuel-primary)]',
+      'disabled:pointer-events-none',
     ],
     content: [
-      'flex flex-col fixed z-50 gap-4 bg-card-bg p-6',
-      'border-border shadow-lg transition ease-in-out',
+      'flex flex-col fixed z-50 gap-4 bg-[var(--fuel-background)] p-6',
+      'border-[var(--fuel-line)] transition ease-in-out',
       'data-[state=open]:animate-in data-[state=closed]:animate-out',
       'data-[state=closed]:duration-500 data-[state=open]:duration-700',
     ],
@@ -25,7 +25,7 @@ export const styles = tv({
       'flex flex-col-reverse',
       'tablet:flex-row tablet:justify-end tablet:space-x-2',
     ],
-    title: ['text-lg font-semibold text-heading'],
+    title: ['fuel-stat-sm'],
     body: ['py-4 flex-1'],
   },
   variants: {

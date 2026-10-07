@@ -8,7 +8,10 @@ import {
   stakingTxDialogStore,
 } from '~staking/systems/Staking/store/stakingTxDialogStore';
 import { useETA } from '../../hooks/useETA';
-import { typeLabel, withdrawType } from '../TransactionHistoryItem/constants';
+import {
+  typeLabelKey,
+  withdrawType,
+} from '../TransactionHistoryItem/constants';
 import { type AttentionRow, useAttentionRows } from './useAttentionRows';
 
 const RIG_URL = 'https://rig.st';
@@ -169,7 +172,9 @@ function BoardRow({ row }: { row: AttentionRow }) {
   return (
     <li className={ROW_GRID}>
       <Lane rig={false} />
-      <span className="font-medium text-heading">{typeLabel[event.type]}</span>
+      <span className="font-medium text-heading">
+        {t(typeLabelKey[event.type])}
+      </span>
       <Amount
         display={row.amount.formatted.display}
         full={row.amount.original.display}

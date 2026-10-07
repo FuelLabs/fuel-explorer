@@ -1,7 +1,6 @@
 import { bn } from '@fuel-ts/math';
 import type { BaseProps } from '@fuels/ui';
 import {
-  Badge,
   Box,
   Card,
   HStack,
@@ -18,12 +17,23 @@ import { Link } from 'react-router-dom';
 
 import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { isValidAddress } from '~/systems/Core/utils/address';
-import type { TxStatus } from '~/systems/Transaction/types';
-import { TX_INTENT_MAP } from '../../../Transaction/component/TxIcon/TxIcon';
+import {
+  TxChip,
+  type TxChipKind,
+} from '~/systems/Transaction/component/TxItem/TxChip';
 import type { TxApp } from '../../utils/txAppsCache';
 import { TxAppTag } from '../TxAppTag/TxAppTag';
 import { TxDayTime } from './TxDayTime';
+
+const STATUS_CHIP: Record<string, { kind: TxChipKind; label: string }> = {
+  Success: { kind: 'success', label: 'tx.status.success' },
+  Failure: { kind: 'failed', label: 'tx.status.failed' },
+  Submitted: { kind: 'pending', label: 'tx.status.pending' },
+  Info: { kind: 'neutral', label: 'tx.status.info' },
+  Warning: { kind: 'pending', label: 'tx.status.waiting' },
+};
 
 type TxCardProps = BaseProps<{
   transaction: GQLRecentTransactionsQuery['transactions']['nodes'][number];
@@ -44,6 +54,8 @@ function _TxCard({
   onPrefetch,
   ...props
 }: TxCardProps) {
+  const { t } = useTranslation();
+  const statusChip = STATUS_CHIP[tx.statusType as string];
   const isValid = useMemo(() => isValidAddress(tx.id), [tx.id]);
   const fee = bn(tx.gasCosts?.fee ?? 0);
 
@@ -51,7 +63,7 @@ function _TxCard({
     <div className="fuel-card-link relative">
       <Link
         to={CommonRoutes.txSimple(tx.id)}
-        aria-label={`${tx.title ?? 'Transaction'} ${shortAddress(tx.id)}`}
+        aria-label={`${tx.title ?? t('tx.transaction_label')} ${shortAddress(tx.id)}`}
         className="absolute inset-0 z-0"
         onClickCapture={(e) => {
           // Avoid navigation to invalid address
@@ -67,13 +79,9 @@ function _TxCard({
             <LoadingWrapper
               isLoading={isLoading}
               loadingEl={<LoadingBox className="w-[50px] h-6" />}
-              regularEl={
-                <Badge color="gray" variant="ghost">
-                  {tx.title}
-                </Badge>
-              }
+              regularEl={<TxChip>{tx.title}</TxChip>}
             />
-            <Text className="text-gray-11 text-md font-medium">
+            <Text className="text-md font-medium text-[var(--fuel-element-mid-em)]">
               <LoadingWrapper
                 isLoading={isLoading}
                 loadingEl={<LoadingBox className="w-32 h-6" />}
@@ -96,7 +104,7 @@ function _TxCard({
                     <Tooltip content={`${fee.format()} ETH`} delayDuration={0}>
                       <span className="pointer-events-auto">
                         <Text
-                          className="text-primary text-sm"
+                          className="text-sm text-[var(--fuel-element-mid-em)]"
                           leftIcon={IconGasStation}
                           iconColor="text-heading"
                         >
@@ -112,12 +120,9 @@ function _TxCard({
               isLoading={isLoading}
               loadingEl={<LoadingBox className="w-16 h-6" />}
               regularEl={
-                <Badge
-                  color={TX_INTENT_MAP[tx.statusType as TxStatus]}
-                  variant="ghost"
-                >
-                  {tx.statusType}
-                </Badge>
+                <TxChip kind={statusChip?.kind ?? 'plain'}>
+                  {statusChip ? t(statusChip.label) : tx.statusType}
+                </TxChip>
               }
             />
             <Text className="text-sm tabular-nums">

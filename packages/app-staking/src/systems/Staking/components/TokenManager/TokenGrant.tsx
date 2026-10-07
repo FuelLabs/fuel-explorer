@@ -1,16 +1,7 @@
-import {
-  BadgeAsset,
-  Button,
-  Card,
-  Flex,
-  HStack,
-  Text,
-  Tooltip,
-  VStack,
-  useToast,
-} from '@fuels/ui';
+import { Button, GridFrame, Tooltip, useToast } from '@fuels/ui';
 import { FuelToken, SHOW_CLAIM_BUTTON, TOKENS } from 'app-commons';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Address } from 'viem';
 import { getShortError } from '~staking/systems/Core';
 import { AnimatedError } from '~staking/systems/Core/components/AnimatedError/AnimatedError';
@@ -24,6 +15,7 @@ import { useVesting } from '../../hooks/useVesting';
 import { useVestingReleases } from '../../services/useVestingReleases';
 import { useVestingUnpaid } from '../../services/useVestingUnpaid';
 import { formatTimestamp } from '../../utils/formatTimestamp';
+import { StatCell, StatRow } from './StatCell';
 
 type TokenGrantProps = {
   account: Address | undefined;
@@ -31,6 +23,7 @@ type TokenGrantProps = {
 const { token, symbol, decimals } = TOKENS[FuelToken.V1];
 
 export const TokenGrant = ({ account }: TokenGrantProps) => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { getPendingTransaction, addPendingTransaction } =
     usePendingTransactionsCache();
@@ -92,7 +85,7 @@ export const TokenGrant = ({ account }: TokenGrantProps) => {
             layer: 'l1',
           });
           toast({
-            title: 'Vesting Claim has been submitted',
+            title: t('staking.upgrade.claim_submitted'),
             description: `${formatted} ${symbol}`,
             action: <ViewInExplorer hash={hash} />,
             variant: 'info',
@@ -105,143 +98,79 @@ export const TokenGrant = ({ account }: TokenGrantProps) => {
   if (!hasUnpaidTokens || SHOW_CLAIM_BUTTON !== 'true') return null;
 
   return (
-    <VStack gap="2">
-      <Text className="font-mono" size="4" weight="bold" mb="2">
-        V1 Token Grant
-      </Text>
-      <div className="filter-single-clip-polygon">
-        <Card className="p-6 border-single-clip-polygon">
-          <Card.Header className="p-0">
-            <Card.Title size="2">Unclaimed tokens</Card.Title>
-          </Card.Header>
-          <Card.Body className="p-0 flex flex-col md:flex-row gap-4">
-            <HStack
-              gap="4"
-              mt={{
-                initial: '2',
-                md: '0',
-              }}
-            >
+    <section className="flex flex-col gap-4">
+      <h2 className="fuel-label m-0 text-heading">
+        {t('staking.upgrade.grant_title')}
+      </h2>
+      <GridFrame className="grid-cols-1">
+        <div className="fuel-edge flex min-w-0 flex-col gap-6 px-6 py-5 tablet:px-10">
+          <span className="fuel-label">{t('staking.upgrade.unclaimed')}</span>
+          <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-center">
+            <div className="flex min-w-0 items-baseline gap-2">
               <Tooltip
                 content={`${unpaid.formatted.display} ${symbol}`}
                 delayDuration={0}
               >
-                <Text
+                <span
                   ref={unpaidRef}
-                  size="8"
-                  weight="bold"
-                  className="self-center font-mono"
-                  as="span"
+                  className="fuel-stat overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   1
-                </Text>
+                </span>
               </Tooltip>
-              <BadgeAsset icon="/assets/fuel.png" variant="solid">
-                {symbol}
-              </BadgeAsset>
-            </HStack>
+              <span className="fuel-label">{symbol}</span>
+            </div>
             {!unpaid.amount.isZero() && (
-              <VStack align="start" gap="0">
+              <div className="flex flex-col items-start">
                 <Button
-                  variant="solid"
-                  color="green"
                   size="2"
                   isLoading={isClaiming || isWaitingVestingClaim}
                   disabled={isConfirmedVestingClaim}
                   onClick={handleClaim}
                 >
-                  Claim tokens
+                  {t('staking.upgrade.claim')}
                 </Button>
                 <AnimatedError
                   error={error ? getShortError(error) : undefined}
                 />
-              </VStack>
+              </div>
             )}
-          </Card.Body>
-        </Card>
-      </div>
-
-      <Flex
-        justify="between"
-        direction={{
-          initial: 'column',
-          md: 'row',
-        }}
-        gap="1"
-        className="bg-gray-3 rounded-md px-2 py-1.5 mr-[40px]"
-      >
-        <HStack gap="2">
-          <VStack gap="0">
-            <div>
-              <Text size="2" weight="medium" className="text-gray-11">
-                Total grant:{' '}
-              </Text>
+          </div>
+        </div>
+        <div>
+          <StatRow className="border-0 laptop:grid-cols-5">
+            <StatCell label={t('staking.upgrade.total_grant')}>
               <Tooltip
                 content={`${totalGrant.original.display} ${symbol}`}
                 delayDuration={0}
               >
-                <Text size="2" weight="medium" className="text-gray-12">
+                <span>
                   <span ref={grantRef}>0</span> {symbol}
-                </Text>
+                </span>
               </Tooltip>
-            </div>
-          </VStack>
-          <VStack gap="0">
-            <div>
-              <Text size="2" weight="medium" className="text-gray-11">
-                Total claimed:{' '}
-              </Text>
+            </StatCell>
+            <StatCell label={t('staking.upgrade.total_claimed')}>
               <Tooltip
                 content={`${claimed.original.display} ${symbol}`}
                 delayDuration={0}
               >
-                <Text size="2" weight="medium" className="text-gray-12">
+                <span>
                   <span ref={totalClaimedRef}>0</span> {symbol}
-                </Text>
+                </span>
               </Tooltip>
-            </div>
-          </VStack>
-        </HStack>
-
-        <Flex
-          direction={{
-            initial: 'column',
-            md: 'row',
-          }}
-          gap={{
-            initial: '1',
-            md: '2',
-          }}
-        >
-          <span className="hidden md:inline-block text-gray-11">•</span>
-          <HStack gap="1" align="center">
-            <Text size="2" weight="medium" className="text-gray-11">
-              Start date:{' '}
-            </Text>
-            <Text size="2" weight="medium" className="text-gray-12">
+            </StatCell>
+            <StatCell label={t('staking.upgrade.start_date')}>
               {formatTimestamp(start)}
-            </Text>
-          </HStack>
-          <span className="hidden md:inline-block text-gray-11">•</span>
-          <HStack gap="1" align="center">
-            <Text size="2" weight="medium" className="text-gray-11">
-              Cliff end:{' '}
-            </Text>
-            <Text size="2" weight="medium" className="text-gray-12">
+            </StatCell>
+            <StatCell label={t('staking.upgrade.cliff_end')}>
               {formatTimestamp(cliff)}
-            </Text>
-          </HStack>
-          <span className="hidden md:inline-block text-gray-11">•</span>
-          <HStack gap="1" align="center">
-            <Text size="2" weight="medium" className="text-gray-11">
-              Release end:{' '}
-            </Text>
-            <Text size="2" weight="medium" className="text-gray-12">
+            </StatCell>
+            <StatCell label={t('staking.upgrade.release_end')}>
               {formatTimestamp(end)}
-            </Text>
-          </HStack>
-        </Flex>
-      </Flex>
-    </VStack>
+            </StatCell>
+          </StatRow>
+        </div>
+      </GridFrame>
+    </section>
   );
 };

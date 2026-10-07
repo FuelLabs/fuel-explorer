@@ -9,9 +9,9 @@ import {
 } from '@fuels/ui';
 import { IconMenu } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
-import { motion } from 'framer-motion';
 import { BN } from 'fuels';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import { LIST_SEPARATOR_BORDER } from '~staking/systems/Core/components/AnimatedTable/styles';
@@ -44,6 +44,7 @@ const _DelegatedPositionItem = ({
   isLast,
   isLoading,
 }: DelegatedPositionItemProps) => {
+  const { t } = useTranslation();
   const openModal = () => {
     stakingTxDialogStore.send(
       stakingTxDialogEvents.open('TxClaimRewardNew', validator),
@@ -90,34 +91,35 @@ const _DelegatedPositionItem = ({
   }, [totalDelegated]);
 
   return (
-    <motion.div
+    <div
       key={name}
-      className={`w-full flex align-center ${LIST_SEPARATOR_BORDER} ${isLast ? '' : 'border-b'}`}
+      className={`fuel-hover-fill w-full flex align-center ${LIST_SEPARATOR_BORDER} ${isLast ? '' : 'border-b'}`}
       role="row"
+      tabIndex={0}
     >
       <div
-        className={`${DELEGATED_POSITIONS_CELLS_OBJ.name} font-semibold min-h-[52px]`}
+        className={`${DELEGATED_POSITIONS_CELLS_OBJ.name} font-medium text-heading min-h-[52px]`}
         role="cell"
       >
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-32 h-6" />}
-          regularEl={name}
+          loadingEl={<LoadingBox className="w-32 h-6 !rounded-none" />}
+          regularEl={<span className="fuel-appear">{name}</span>}
         />
       </div>
       <div
-        className={`${DELEGATED_POSITIONS_CELLS_OBJ.delegated} font-semibold`}
+        className={`${DELEGATED_POSITIONS_CELLS_OBJ.delegated} font-medium text-heading`}
         role="cell"
       >
         <LoadingWrapper
           isLoading={isLoading || isLoadingDelegations}
-          loadingEl={<LoadingBox className="w-20 h-6" />}
+          loadingEl={<LoadingBox className="w-20 h-6 !rounded-none" />}
           regularEl={
             <Tooltip
               content={`${delegatedFormatted.original.display} ${symbol}`}
               delayDuration={0}
             >
-              <div className="flex items-center">
+              <div className="fuel-appear flex items-center">
                 <span className="block whitespace-nowrap overflow-hidden text-ellipsis">
                   {delegatedFormatted.formatted.display}
                 </span>
@@ -128,14 +130,14 @@ const _DelegatedPositionItem = ({
         />
       </div>
       <div
-        className={`${DELEGATED_POSITIONS_CELLS_OBJ.rewards} font-semibold`}
+        className={`${DELEGATED_POSITIONS_CELLS_OBJ.rewards} font-medium text-heading`}
         role="cell"
       >
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-32 h-6" />}
+          loadingEl={<LoadingBox className="w-32 h-6 !rounded-none" />}
           regularEl={
-            <>
+            <div className="fuel-appear flex items-center">
               <Tooltip
                 content={`${rewardFormatted.original.display} ${symbol}`}
                 delayDuration={0}
@@ -145,25 +147,30 @@ const _DelegatedPositionItem = ({
                 </span>
               </Tooltip>
               <span className="block whitespace-nowrap ml-2">{symbol}</span>
-            </>
+            </div>
           }
         />
       </div>
       <div className={DELEGATED_POSITIONS_CELLS_OBJ.actions} role="cell">
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={null}
-          regularEl={
+          loadingEl={
             <HStack gap="2" align="center">
+              <LoadingBox className="h-8 w-16 !rounded-none" />
+              <LoadingBox className="size-8 !rounded-none" />
+            </HStack>
+          }
+          regularEl={
+            <HStack gap="2" align="center" className="fuel-appear">
               <Button size="2" onClick={openModal}>
-                Claim
+                {t('staking.position.claim')}
               </Button>
               <Dropdown>
                 <Dropdown.Trigger>
                   <IconButton
-                    aria-label="Delegated item"
+                    aria-label={t('staking.position.menu')}
                     icon={IconMenu}
-                    variant="outline"
+                    variant="ghost"
                     color="gray"
                   />
                 </Dropdown.Trigger>
@@ -179,7 +186,7 @@ const _DelegatedPositionItem = ({
                     }
                     disabled={isRedelegateDisabled}
                   >
-                    Redelegate
+                    {t('staking.position.redelegate')}
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() =>
@@ -191,9 +198,8 @@ const _DelegatedPositionItem = ({
                       })
                     }
                     disabled={isUndelegateDisabled}
-                    color="orange"
                   >
-                    Undelegate
+                    {t('staking.position.undelegate')}
                   </Dropdown.Item>
                 </Dropdown.Content>
               </Dropdown>
@@ -201,7 +207,7 @@ const _DelegatedPositionItem = ({
           }
         />
       </div>
-    </motion.div>
+    </div>
   );
 };
 

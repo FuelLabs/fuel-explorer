@@ -24,11 +24,11 @@ export interface InputAmountSimpleProps {
 }
 
 const container = tv({
-  base: 'transition-colors w-full',
+  base: 'transition-colors duration-200 w-full',
   variants: {
     error: {
-      true: 'border-b border-[--red-8]',
-      false: 'border-b border-[--gray-8]',
+      true: 'border-b border-[var(--red-10)]',
+      false: 'border-b border-[var(--fuel-line)]',
     },
     readOnly: {
       true: 'border-none',

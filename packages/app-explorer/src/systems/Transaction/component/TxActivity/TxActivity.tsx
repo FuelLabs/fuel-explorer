@@ -1,32 +1,7 @@
-import {
-  Address,
-  Badge,
-  BlockieAvatar,
-  Box,
-  Card,
-  Code,
-  HStack,
-  Heading,
-  Link,
-  LoadingBox,
-  Text,
-  VStack,
-} from '@fuels/ui';
-import {
-  IconAlertTriangle,
-  IconArrowBarToDown,
-  IconArrowDownRight,
-  IconArrowsExchange,
-  IconBolt,
-  IconCode,
-  IconKey,
-  IconPlus,
-  IconReceipt,
-  IconShieldDown,
-  IconTargetArrow,
-  IconX,
-} from '@fuels/ui';
+import { Address, BlockieAvatar, Code, Link, LoadingBox } from '@fuels/ui';
+import { IconAlertTriangle } from '@fuels/ui';
 import { bn } from 'fuels';
+import { useTranslation } from 'react-i18next';
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
 import type {
@@ -35,34 +10,32 @@ import type {
   ActivityPart,
   TxActivity as TxActivityData,
 } from '../../utils/txActivity';
+import { resolveMsg } from '../../utils/txActivity';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
+import { TxChip, type TxChipKind, TxSquare } from '../TxItem/TxChip';
 
-type BadgeColor = 'blue' | 'green' | 'orange' | 'gray' | 'yellow' | 'red';
-
-const KIND_BADGE: Record<
-  ActivityKind,
-  { color: BadgeColor; icon: typeof IconPlus }
-> = {
-  place: { color: 'blue', icon: IconPlus },
-  fill: { color: 'green', icon: IconArrowsExchange },
-  cancel: { color: 'orange', icon: IconX },
-  trigger: { color: 'yellow', icon: IconTargetArrow },
-  takeProfit: { color: 'green', icon: IconTargetArrow },
-  stopLoss: { color: 'red', icon: IconShieldDown },
-  triggered: { color: 'yellow', icon: IconBolt },
-  stop: { color: 'red', icon: IconAlertTriangle },
-  withdraw: { color: 'blue', icon: IconArrowDownRight },
-  fee: { color: 'gray', icon: IconReceipt },
-  settle: { color: 'gray', icon: IconArrowBarToDown },
-  session: { color: 'gray', icon: IconKey },
-  call: { color: 'gray', icon: IconCode },
+const KIND_CHIP: Record<ActivityKind, TxChipKind> = {
+  place: 'neutral',
+  fill: 'success',
+  cancel: 'failed',
+  trigger: 'pending',
+  takeProfit: 'success',
+  stopLoss: 'failed',
+  triggered: 'pending',
+  stop: 'failed',
+  withdraw: 'neutral',
+  fee: 'pending',
+  settle: 'pending',
+  session: 'pending',
+  call: 'pending',
 };
 
 function Part({ part }: { part: ActivityPart }) {
+  const { t } = useTranslation();
   if ('amount' in part) {
     return part.assetId ? (
       <Amount
-        className="inline-flex text-heading font-semibold"
+        className="inline-flex font-medium text-heading"
         iconSize={16}
         assetId={part.assetId}
         value={bn(part.amount)}
@@ -72,7 +45,7 @@ function Part({ part }: { part: ActivityPart }) {
         }
       />
     ) : (
-      <Text className="font-semibold">{part.amount}</Text>
+      <span className="font-medium text-heading">{part.amount}</span>
     );
   }
   if ('address' in part) {
@@ -87,14 +60,18 @@ function Part({ part }: { part: ActivityPart }) {
   if ('code' in part) {
     return (
       <Code
-        className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+        className="text-xs tablet:text-sm font-mono bg-transparent text-[var(--fuel-element-low-em)] p-0"
         color="gray"
       >
         {part.code}
       </Code>
     );
   }
-  return <Text className="whitespace-pre">{part.text}</Text>;
+  return (
+    <span className="whitespace-pre text-heading">
+      {'msg' in part ? resolveMsg(part.msg, t) : part.text}
+    </span>
+  );
 }
 
 function ContractLink({ action }: { action: ActivityAction }) {
@@ -125,48 +102,54 @@ function ActionRow({
   action: ActivityAction;
   showContract: boolean;
 }) {
-  const badge = KIND_BADGE[action.kind];
+  const { t } = useTranslation();
+  const kind = KIND_CHIP[action.kind];
   return (
-    <Box className="border-l-2 border-l-gray-8 ml-4 py-3">
-      <HStack className="ml-8 items-center mobile:max-tablet:flex-col mobile:max-tablet:items-start">
-        <Badge color={badge.color} leftIcon={badge.icon}>
-          {action.label}
-        </Badge>
-        <HStack gap="1" className="flex-1 flex-wrap items-center min-w-0">
+    <div className="relative ml-4 border-l border-[var(--fuel-line)] py-3">
+      <TxSquare
+        kind={kind === 'neutral' ? 'success' : kind}
+        className="absolute top-[25px] -left-[4.5px]"
+      />
+      <div className="ml-8 flex items-center gap-2 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
+        <TxChip>{resolveMsg(action.label, t)}</TxChip>
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">
           {action.parts.map((part, i) => (
             <Part key={i} part={part} />
           ))}
-        </HStack>
+        </div>
         {showContract && <ContractLink action={action} />}
-      </HStack>
-    </Box>
+      </div>
+    </div>
   );
 }
 
 function OtherCalls({ calls }: { calls: ActivityAction[] }) {
+  const { t } = useTranslation();
   return (
-    <VStack gap="2" className="mt-2 ml-12 mobile:max-tablet:ml-4">
-      <Text className="text-sm text-muted">Also called</Text>
-      <HStack gap="2" className="flex-wrap">
+    <div className="mt-2 ml-12 flex flex-col gap-2 mobile:max-tablet:ml-4">
+      <span className="fuel-label">{t('tx.also_called')}</span>
+      <div className="flex flex-wrap gap-2">
         {calls.map((call, i) => (
-          <HStack
+          <div
             key={`${call.contractId}-${i}`}
-            gap="1"
-            className="items-center flex-wrap max-w-full min-w-0 rounded-md border border-gray-6 px-2 py-1"
+            className="flex min-w-0 max-w-full flex-wrap items-center gap-1 border border-[var(--fuel-border)] px-2 py-1"
           >
             {call.parts.map((part, j) => (
               <Part key={j} part={part} />
             ))}
-            <Text className="text-sm text-muted">on</Text>
+            <span className="text-sm text-[var(--fuel-element-low-em)]">
+              {t('tx.on')}
+            </span>
             <ContractLink action={call} />
-          </HStack>
+          </div>
         ))}
-      </HStack>
-    </VStack>
+      </div>
+    </div>
   );
 }
 
 export function TxActivity({ activity }: { activity: TxActivityData }) {
+  const { t } = useTranslation();
   const iconContract = activity.actions.find((a) => a.market)?.contractId;
   const protocolActions = activity.actions.filter((a) => a.kind !== 'call');
   const otherCalls = activity.actions.filter((a) => a.kind === 'call');
@@ -176,22 +159,22 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
   const showContract = locations.size > 1;
 
   return (
-    <Card className="px-4">
-      <HStack className="items-start gap-3">
-        <Box className="shrink-0">
+    <div className="fuel-edge border border-[var(--fuel-line)] px-4 py-4">
+      <div className="flex items-start gap-3">
+        <div className="shrink-0">
           <TxContractIcon contractId={iconContract ?? ''} size="32px">
             <BlockieAvatar address={activity.actor?.address ?? ''} size={32} />
           </TxContractIcon>
-        </Box>
-        <VStack gap="1" className="min-w-0">
-          <Heading as="h2" size="5" className="leading-tight">
-            {activity.headline}
-          </Heading>
+        </div>
+        <div className="flex min-w-0 flex-col gap-1">
+          <h2 className="fuel-stat-sm m-0">
+            {resolveMsg(activity.headline, t)}
+          </h2>
           {activity.actor && (
-            <HStack gap="1" className="flex-wrap items-center text-sm">
-              <Text className="text-muted">
-                {activity.actor.name ?? 'Account'}
-              </Text>
+            <div className="flex flex-wrap items-center gap-1 text-sm">
+              <span className="text-[var(--fuel-element-low-em)]">
+                {activity.actor.name ?? t('tx.account')}
+              </span>
               <Address
                 value={activity.actor.address}
                 className="text-xs tablet:text-sm font-mono"
@@ -201,9 +184,9 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
               />
               {activity.sessionKey && (
                 <>
-                  <Text className="text-muted ml-1">
-                    signed with session key
-                  </Text>
+                  <span className="ml-1 text-[var(--fuel-element-low-em)]">
+                    {t('tx.signed_with_session_key')}
+                  </span>
                   <Address
                     value={activity.sessionKey}
                     className="text-xs tablet:text-sm font-mono"
@@ -213,22 +196,19 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
                   />
                 </>
               )}
-            </HStack>
+            </div>
           )}
           {activity.failed && (
-            <HStack gap="1" className="items-center text-sm text-error">
-              <IconAlertTriangle size={16} />
-              <Text className="text-error">
-                This transaction reverted. None of these actions took effect.
-              </Text>
-            </HStack>
+            <div className="flex items-center gap-1 text-sm text-[var(--red-11)]">
+              <IconAlertTriangle aria-hidden size={16} />
+              <span>{t('tx.reverted_notice')}</span>
+            </div>
           )}
-        </VStack>
-      </HStack>
+        </div>
+      </div>
       {protocolActions.length > 0 && (
-        <VStack
-          gap="0"
-          className={activity.failed ? 'py-3 opacity-60' : 'py-3'}
+        <div
+          className={`flex flex-col py-3 ${activity.failed ? 'opacity-60' : ''}`}
         >
           {protocolActions.map((action, i) => (
             <ActionRow
@@ -237,30 +217,33 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
               showContract={showContract}
             />
           ))}
-        </VStack>
+        </div>
       )}
       {otherCalls.length > 0 && <OtherCalls calls={otherCalls} />}
-    </Card>
+    </div>
   );
 }
 
 export function TxActivityLoader() {
   return (
-    <Card className="px-4">
-      <HStack className="items-center gap-3">
-        <LoadingBox className="w-8 h-8 rounded-full shrink-0" />
-        <LoadingBox className="w-72 h-6" />
-      </HStack>
-      <VStack gap="0" className="py-3">
+    <div className="fuel-edge border border-[var(--fuel-line)] px-4 py-4">
+      <div className="flex items-center gap-3">
+        <LoadingBox className="size-8 shrink-0 rounded-full" />
+        <LoadingBox className="h-6 w-72" />
+      </div>
+      <div className="flex flex-col py-3">
         {[0, 1].map((i) => (
-          <Box key={i} className="border-l-2 border-l-gray-8 ml-4 py-3">
-            <HStack className="ml-8">
-              <LoadingBox className="w-24 h-6 rounded" />
-              <LoadingBox className="w-64 h-6" />
-            </HStack>
-          </Box>
+          <div
+            key={i}
+            className="relative ml-4 border-l border-[var(--fuel-line)] py-3"
+          >
+            <div className="ml-8 flex items-center gap-2">
+              <LoadingBox className="h-6 w-24" />
+              <LoadingBox className="h-6 w-64" />
+            </div>
+          </div>
         ))}
-      </VStack>
-    </Card>
+      </div>
+    </div>
   );
 }

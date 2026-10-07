@@ -1,12 +1,5 @@
-import {
-  Alert,
-  BadgeAsset,
-  Card,
-  HStack,
-  Text,
-  Tooltip,
-  VStack,
-} from '@fuels/ui';
+import { Tooltip } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import type { Address } from 'viem';
 
 import { useAnimatedCounter } from '~staking/systems/Core/hooks/useAnimatedCounter';
@@ -22,6 +15,7 @@ type LiquidCardProps = {
   actionEl?: React.ReactNode;
 };
 
+// One figure cell, like AmountCard. The parent frame draws the 1px lines.
 export const LiquidCard = ({
   version,
   symbol,
@@ -30,6 +24,7 @@ export const LiquidCard = ({
   account,
   actionEl,
 }: LiquidCardProps) => {
+  const { t } = useTranslation();
   const { data: tokens, error } = useTokenBalance(token, account);
   const { formatted, original } = useFormatBalance(tokens, decimals);
 
@@ -45,41 +40,40 @@ export const LiquidCard = ({
 
   if (error) {
     return (
-      <Alert variant="outline" color="red" className="text-sm">
-        {error.message}
-      </Alert>
+      <div className="fuel-edge flex min-w-0 items-center gap-3 px-6 py-5 tablet:px-10">
+        <span
+          aria-hidden
+          className="size-2 shrink-0 border border-[var(--red-10)] bg-[var(--red-10)]"
+        />
+        <p
+          role="alert"
+          className="m-0 text-[14px] leading-[18px] text-[var(--red-11)]"
+        >
+          {error.message}
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card className="grow p-6">
-      <Card.Body className="p-0">
-        <VStack gap="4">
-          <Text color="gray" size="2" weight="medium">
-            Liquid {version} tokens
-          </Text>
-
-          <HStack gap="4" align="center" minWidth="0px">
-            <Tooltip
-              content={`${original.display} ${symbol}`}
-              delayDuration={0}
+    <div className="fuel-edge flex min-w-0 flex-col justify-between gap-6 px-6 py-5 tablet:px-10">
+      <span className="fuel-label">
+        {t('staking.upgrade.liquid', { version })}
+      </span>
+      <div className="flex min-w-0 items-end justify-between gap-3">
+        <div className="flex min-w-0 items-baseline gap-2">
+          <Tooltip content={`${original.display} ${symbol}`} delayDuration={0}>
+            <span
+              ref={tokensRef}
+              className="fuel-stat-sm overflow-hidden text-ellipsis whitespace-nowrap"
             >
-              <Text
-                ref={tokensRef}
-                className="font-mono whitespace-nowrap overflow-hidden text-ellipsis"
-                size="6"
-                weight="bold"
-              >
-                0
-              </Text>
-            </Tooltip>
-            <BadgeAsset icon="/assets/fuel.png" variant="transparent">
-              {symbol}
-            </BadgeAsset>
-            {actionEl || null}
-          </HStack>
-        </VStack>
-      </Card.Body>
-    </Card>
+              0
+            </span>
+          </Tooltip>
+          <span className="fuel-label">{symbol}</span>
+        </div>
+        {actionEl || null}
+      </div>
+    </div>
   );
 };

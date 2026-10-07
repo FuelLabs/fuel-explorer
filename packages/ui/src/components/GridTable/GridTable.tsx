@@ -4,6 +4,7 @@ import DataTable, {
   type TableColumn,
 } from 'react-data-table-component';
 import ReactPaginate from 'react-paginate';
+import { IconChevronLeft, IconChevronRight } from '../Icons';
 
 export interface GridTableProps<T> extends TableProps<T> {
   columns: TableColumn<T>[];
@@ -12,6 +13,8 @@ export interface GridTableProps<T> extends TableProps<T> {
   onPageChanged: (selectedItem: number) => void;
   currentPage: number;
   setCurrentPage: (currentPage: number) => void;
+  previousLabel?: string;
+  nextLabel?: string;
 }
 export type GridTableColumn<T> = TableColumn<T>;
 
@@ -22,6 +25,8 @@ export const GridTable = <T,>({
   onPageChanged,
   setCurrentPage,
   currentPage,
+  previousLabel = 'Previous',
+  nextLabel = 'Next',
   ...props
 }: GridTableProps<T>): React.JSX.Element => {
   const customStyles = {
@@ -38,7 +43,7 @@ export const GridTable = <T,>({
     headRow: {
       style: {
         backgroundColor: 'transparent',
-        color: '#9f9f9f',
+        color: 'var(--fuel-element-low-em)',
         fontWeight: '600',
         textAlign: 'left',
       },
@@ -46,7 +51,7 @@ export const GridTable = <T,>({
     headCells: {
       style: {
         backgroundColor: 'transparent',
-        color: '#9f9f9f',
+        color: 'var(--fuel-element-low-em)',
         fontWeight: '600',
         fontSize: '16px',
         textAlign: 'left',
@@ -55,12 +60,12 @@ export const GridTable = <T,>({
     rows: {
       style: {
         cursor: 'pointer',
-        backgroundColor: 'var(--gray-2)',
+        backgroundColor: 'var(--fuel-card)',
         fontWeight: '400',
-        borderRadius: '12px',
+        borderRadius: '0',
         marginBottom: '8px',
         '&:hover': {
-          backgroundColor: 'var(--gray-a1)',
+          backgroundColor: 'var(--fuel-muted)',
         },
       },
     },
@@ -70,7 +75,7 @@ export const GridTable = <T,>({
         justifyContent: 'center',
         paddingLeft: '0.5rem',
         paddingRight: '0.5rem',
-        color: 'var(--gray-table-text)',
+        color: 'var(--fuel-element-mid-em)',
         paddingTop: '0.4rem',
         paddingBottom: '0.4rem',
         backgroundColor: 'transparent',
@@ -79,21 +84,21 @@ export const GridTable = <T,>({
     },
     pagination: {
       style: {
-        backgroundColor: 'var(--gray-2)',
-        color: '#f0f0f0',
+        backgroundColor: 'var(--fuel-card)',
+        color: 'var(--fuel-element-high-em)',
       },
       pageButtonsStyle: {
         padding: '8px 16px',
         margin: '0 4px',
-        color: '#f0f0f0',
-        borderRadius: '4px',
-        backgroundColor: 'var(--gray-2)',
+        color: 'var(--fuel-element-high-em)',
+        borderRadius: '0',
+        backgroundColor: 'var(--fuel-card)',
         '&.selected': {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backgroundColor: 'var(--fuel-muted)',
           fontWeight: 'bold',
         },
         '&:hover': {
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          backgroundColor: 'var(--fuel-muted)',
         },
       },
     },
@@ -102,8 +107,18 @@ export const GridTable = <T,>({
   const Pagination: React.FC = () => {
     return (
       <ReactPaginate
-        previousLabel={<span>&#x2190; Previous</span>} // Left Arrow
-        nextLabel={<span>Next &#x2192;</span>} // Right Arrow
+        previousLabel={
+          <span className="inline-flex items-center gap-1">
+            <IconChevronLeft size={14} />
+            {previousLabel}
+          </span>
+        }
+        nextLabel={
+          <span className="inline-flex items-center gap-1">
+            {nextLabel}
+            <IconChevronRight size={14} />
+          </span>
+        }
         breakLabel={'...'}
         pageCount={pageCount}
         marginPagesDisplayed={2}
@@ -139,18 +154,18 @@ export const GridTable = <T,>({
         }
         .pagination li a {
           padding: 8px 16px;
-          color: var(--white-2);
-          background-color: var(--gray-2);
-          border-radius: 7px;
+          color: var(--fuel-element-high-em);
+          background-color: var(--fuel-card);
+          border-radius: 0;
           cursor: pointer;
           text-decoration: none;
         }
         .pagination li.selected a {
-          background-color: var(--gray-7);
+          background-color: var(--fuel-muted);
           font-weight: bold;
         }
         .pagination li a:hover {
-          background-color: var(--gray-5);
+          background-color: var(--fuel-muted);
         }
         .pagination li.previous a,
         .pagination li.next a {
@@ -158,7 +173,7 @@ export const GridTable = <T,>({
           padding: 0;
         }
         .pagination li.disabled a {
-          color: #888;
+          color: var(--fuel-element-low-em);
           cursor: not-allowed;
         }
         .pagination li.disabled a:hover {

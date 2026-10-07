@@ -1,11 +1,13 @@
 import { HStack, Skeleton } from '@fuels/ui';
 import { IconCopy } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 
 export function TxHeaderLoader({ isSimple }: { isSimple?: boolean }) {
+  const { t } = useTranslation();
   return (
     <PageTitle
-      title="Transaction Details"
+      title={t('tx.details_title')}
       className="mobile:max-tablet:mb-[24px]"
       subtitle={
         isSimple ? null : (

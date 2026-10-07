@@ -15,6 +15,7 @@ import { IconArrowRight } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import type { BigNumberish } from 'ethers';
 import type { ChecksumAddress, Asset as FuelsAsset } from 'fuels';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { createETHExplorerLink } from '../../hooks/useExplorerLink';
 import { InfoTextLoader } from './InfoTextLoader';
@@ -48,6 +49,7 @@ export const BridgeTxOverview = ({
   onAddAssetToWallet,
 }: BridgeTxOverviewProps) => {
   const hasAddresses = from && to;
+  const { t } = useTranslation();
   const classes = styles();
 
   function handleAddAssetToWallet(e: React.MouseEvent<HTMLButtonElement>) {
@@ -60,42 +62,47 @@ export const BridgeTxOverview = ({
   }
 
   return (
-    <VStack className={classes.stack()} gap="2">
+    <VStack className={classes.stack()} gap="0">
       <Flex className={classes.txItem()}>
-        <Text className={classes.labelText()}>Transaction ID</Text>
+        <Text className={classes.labelText()}>
+          {t('portal.overview.transaction_id')}
+        </Text>
         <Link
           isExternal
           href={explorerLink}
           className={classes.linkText()}
-          color="green"
           iconSize={16}
           target="_blank"
         >
-          <Box aria-label="Transaction ID">{transactionId.toString()}</Box>
+          <Box aria-label={t('portal.overview.transaction_id')}>
+            {transactionId.toString()}
+          </Box>
         </Link>
       </Flex>
       {hasAddresses &&
         (isDeposit ? (
           <>
             <Flex className={classes.txItem()}>
-              <Text className={classes.labelText()}>From</Text>
+              <Text className={classes.labelText()}>
+                {t('portal.overview.from')}
+              </Text>
               <Link
                 isExternal
                 href={createETHExplorerLink('address', from)}
                 className={classes.linkText()}
-                color="green"
                 target="_blank"
               >
                 <Box>{shortAddress(from)}</Box>
               </Link>
             </Flex>
             <Flex className={classes.txItem()}>
-              <Text className={classes.labelText()}>To</Text>
+              <Text className={classes.labelText()}>
+                {t('portal.overview.to')}
+              </Text>
               <Link
                 isExternal
                 href={Routes.account(to, 'assets')}
                 className={classes.infoText()}
-                color="green"
                 externalIcon={null}
                 target="_blank"
               >
@@ -106,12 +113,13 @@ export const BridgeTxOverview = ({
         ) : (
           <>
             <Flex className={classes.txItem()}>
-              <Text className={classes.labelText()}>From</Text>
+              <Text className={classes.labelText()}>
+                {t('portal.overview.from')}
+              </Text>
               <Link
                 isExternal
                 href={Routes.account(from, 'assets')}
                 className={classes.infoText()}
-                color="green"
                 externalIcon={null}
                 target="_blank"
               >
@@ -119,12 +127,13 @@ export const BridgeTxOverview = ({
               </Link>
             </Flex>
             <Flex className={classes.txItem()}>
-              <Text className={classes.labelText()}>To</Text>
+              <Text className={classes.labelText()}>
+                {t('portal.overview.to')}
+              </Text>
               <Link
                 isExternal
                 href={createETHExplorerLink('address', to)}
                 className={classes.linkText()}
-                color="green"
                 target="_blank"
               >
                 <Box>{shortAddress(to)}</Box>
@@ -133,7 +142,7 @@ export const BridgeTxOverview = ({
           </>
         ))}
       <Flex className={classes.txItem()}>
-        <Text className={classes.labelText()}>Age</Text>
+        <Text className={classes.labelText()}>{t('portal.overview.age')}</Text>
 
         {isLoading ? (
           <InfoTextLoader />
@@ -143,16 +152,18 @@ export const BridgeTxOverview = ({
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>
-          Direction{' '}
+          {t('portal.overview.direction')}{' '}
           <Text as="span" className={classes.subtleText()}>
-            {isDeposit ? '(Deposit)' : '(Withdraw)'}
+            {isDeposit
+              ? t('portal.overview.direction_deposit')
+              : t('portal.overview.direction_withdraw')}
           </Text>
         </Text>
         {isDeposit ? (
           <Flex className={classes.directionInfo()}>
             {ethAsset && (
               <Asset asset={ethAsset} iconSize={16}>
-                <Asset.Icon alt="Deposit" />
+                <Asset.Icon alt={t('portal.overview.alt_deposit')} />
               </Asset>
             )}
             <IconArrowRight size={16} />
@@ -163,14 +174,14 @@ export const BridgeTxOverview = ({
             <FuelLogo size={16} />
             <IconArrowRight size={16} />
             <Asset asset={ethAsset} iconSize={16}>
-              <Asset.Icon alt="withdrawal" />
+              <Asset.Icon alt={t('portal.overview.alt_withdrawal')} />
             </Asset>
           </Flex>
         )}
       </Flex>
       <Flex className={classes.txItem()}>
         <Text className={classes.labelText()}>
-          Asset
+          {t('portal.overview.asset')}
           {onAddAssetToWallet ? (
             <Text className={classes.subtleText()}>
               {' '}
@@ -178,10 +189,9 @@ export const BridgeTxOverview = ({
               <Button
                 onClick={handleAddAssetToWallet}
                 className={`${classes.linkText()} ${classes.addToWalletBtn()}`}
-                color="green"
                 variant="link"
               >
-                Add to wallet
+                {t('portal.overview.add_to_wallet')}
               </Button>
               )
             </Text>
@@ -192,9 +202,14 @@ export const BridgeTxOverview = ({
         ) : (
           <Flex className={classes.directionInfo()}>
             <Asset asset={asset} iconSize={17}>
-              <Asset.Icon alt={`Asset ${asset?.symbol}`} />
+              <Asset.Icon
+                alt={t('portal.overview.alt_asset', { symbol: asset?.symbol })}
+              />
             </Asset>
-            <Text aria-label="Asset amount" className={classes.infoText()}>
+            <Text
+              aria-label={t('portal.overview.asset_amount')}
+              className={classes.infoText()}
+            >
               {amount}
             </Text>
             <Text className={classes.infoText()}>{asset?.symbol}</Text>
@@ -207,13 +222,14 @@ export const BridgeTxOverview = ({
 
 const styles = tv({
   slots: {
-    stack: 'w-full mt-2',
-    txItem: 'flex-wrap justify-between',
-    labelText: 'text-xs text-intentsBase11',
-    subtleText: 'text-xs leading-tight text-muted',
-    infoText: 'text-xs text-heading',
-    linkText: 'text-xs',
-    directionInfo: 'gap-1 items-center',
-    addToWalletBtn: 'pt-0 pb-0 m-0',
+    stack: 'mt-2 w-full border border-[var(--fuel-line)]',
+    txItem:
+      'flex-wrap items-center justify-between gap-2 px-3 py-2.5 [&_~_&]:border-t [&_~_&]:border-[var(--fuel-line)]',
+    labelText: 'fuel-label',
+    subtleText: 'fuel-label',
+    infoText: 'font-mono text-xs text-heading',
+    linkText: 'font-mono text-xs',
+    directionInfo: 'items-center gap-1',
+    addToWalletBtn: 'm-0 pt-0 pb-0',
   },
 });

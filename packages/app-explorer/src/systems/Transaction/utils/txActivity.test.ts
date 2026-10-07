@@ -60,18 +60,20 @@ const render = (parts: ActivityPart[]) =>
     .map((p) =>
       'text' in p
         ? p.text
-        : 'code' in p
-          ? p.code
-          : 'amount' in p
-            ? `[${p.amount} ${p.assetId}]`
-            : p.address,
+        : 'msg' in p
+          ? p.msg.en
+          : 'code' in p
+            ? p.code
+            : 'amount' in p
+              ? `[${p.amount} ${p.assetId}]`
+              : p.address,
     )
     .join('');
 
 describe('buildTxActivity', () => {
   it('summarizes a cancel and replace', () => {
     const activity = activityOf(cancelTx);
-    expect(activity.headline).toBe(
+    expect(activity.headline.en).toBe(
       'Placed 1 order and cancelled 1 order on ETH/USDC',
     );
     expect(activity.project).toBe('o2');
@@ -83,7 +85,7 @@ describe('buildTxActivity', () => {
     expect(activity.sessionKey).toBe(
       '0x6becccf6187fc3ebc6050593ff3cb27a3e86ec354413e2a123b5d959614eb850',
     );
-    expect(activity.actions.map((a) => [a.label, render(a.parts)])).toEqual([
+    expect(activity.actions.map((a) => [a.label.en, render(a.parts)])).toEqual([
       ['Order cancelled', 'Order 0x6100...0003'],
       [
         'Order placed',
@@ -94,12 +96,12 @@ describe('buildTxActivity', () => {
 
   it('describes a fill from the taker side and hides zero settlements', () => {
     const activity = activityOf(fillTx);
-    expect(activity.headline).toMatch(
+    expect(activity.headline.en).toMatch(
       /^Placed 1 order and filled 1 trade on ETH\/USDC, plus calls to \d+ other contracts$/,
     );
     const lines = activity.actions
       .filter((a) => a.kind !== 'call')
-      .map((a) => [a.label, render(a.parts)]);
+      .map((a) => [a.label.en, render(a.parts)]);
     expect(lines).toEqual([
       [
         'Order placed',
@@ -180,10 +182,12 @@ describe('buildTxActivity', () => {
 
     it('labels the trigger above a buy as take profit and below as stop loss', () => {
       const activity = activityFor(tpslCreateTx);
-      expect(activity.headline).toBe(
+      expect(activity.headline.en).toBe(
         'Placed 1 order with take profit and stop loss on fETH/fUSDC',
       );
-      expect(activity.actions.map((a) => [a.label, render(a.parts)])).toEqual([
+      expect(
+        activity.actions.map((a) => [a.label.en, render(a.parts)]),
+      ).toEqual([
         [
           'Order placed',
           `Limit buy [1522400000 ${BASE}] at [2714850000000 ${QUOTE}]`,
@@ -201,10 +205,10 @@ describe('buildTxActivity', () => {
 
     it('describes a triggered order and its cancelled pair', () => {
       const activity = activityFor(tpslTriggerTx);
-      expect(activity.headline).toMatch(
+      expect(activity.headline.en).toMatch(
         /^Triggered 1 order, cancelled 1 order and filled 2 trades on fETH\/fUSDC$/,
       );
-      expect(activity.actions.map((a) => a.label)).toEqual([
+      expect(activity.actions.map((a) => a.label.en)).toEqual([
         'Triggered',
         'Trigger cancelled',
         'Order placed',
@@ -223,7 +227,7 @@ describe('buildTxActivity', () => {
     decodeOperationReceipts(operations, cancelTx.rawPayload, registry);
     const activity = buildTxActivity(operations, registry, true);
     expect(activity?.failed).toBe(true);
-    expect(activity?.headline).toBe(
+    expect(activity?.headline.en).toBe(
       'Failed to place 1 order and cancel 1 order on ETH/USDC',
     );
   });

@@ -1,46 +1,43 @@
 import { bn } from '@fuel-ts/math';
 import type { BN } from '@fuel-ts/math';
-import type { CardProps } from '@fuels/ui';
-import { Card, EntityItem, Text, VStack } from '@fuels/ui';
-import { IconCoins } from '@fuels/ui';
+import { Address, IconCoins } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 
 import type { TxAccountType } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
+import { TxItem } from '../TxItem/TxItem';
 
-export type TxAccountItemProps = CardProps & {
+export type TxAccountItemProps = {
   type: TxAccountType;
   id: string;
   spent?: BN;
+  className?: string;
 };
-
-const COLOR_MAP = {
-  Contract: 'gray',
-  Wallet: 'gray',
-  Predicate: 'blue',
-} as const;
 
 export function TxAccountItem({
   type,
   id,
   spent,
-  ...props
+  className,
 }: TxAccountItemProps) {
+  const { t } = useTranslation();
   return (
-    <Card {...props}>
-      <Card.Body as={VStack}>
-        <EntityItem className="items-start">
-          <EntityItem.Slot>
-            <TxIcon color={COLOR_MAP[type]} type={type} />
-          </EntityItem.Slot>
-          <EntityItem.Info id={id} title={type}>
-            {spent && (
-              <Text as="div" className="text-sm" leftIcon={IconCoins}>
-                Spent: {bn(spent).format()}
-              </Text>
-            )}
-          </EntityItem.Info>
-        </EntityItem>
-      </Card.Body>
-    </Card>
+    <TxItem
+      label={t(`tx.account_type.${type.toLowerCase()}`)}
+      className={className}
+      trailing={
+        spent ? (
+          <span className="inline-flex items-center gap-1 text-[14px]">
+            <IconCoins aria-hidden size={16} />
+            {t('tx.spent', { amount: bn(spent).format() })}
+          </span>
+        ) : null
+      }
+    >
+      <div className="flex items-center gap-4">
+        <TxIcon type={type} />
+        <Address value={id} />
+      </div>
+    </TxItem>
   );
 }

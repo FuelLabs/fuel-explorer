@@ -33,10 +33,10 @@ export function InputAmountRelativeValue({
     <Text
       size="2"
       weight="medium"
-      className="w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-10 font-semibold"
+      className="w-full whitespace-nowrap overflow-hidden text-ellipsis text-[var(--fuel-element-low-em)] font-semibold"
     >
       Relative value in USD:{' '}
-      <span className="text-[--gray-12]">{formatted}</span>
+      <span className="text-[var(--fuel-element-high-em)]">{formatted}</span>
     </Text>
   );
 }

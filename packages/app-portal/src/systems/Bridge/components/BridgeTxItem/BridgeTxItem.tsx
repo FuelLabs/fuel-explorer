@@ -1,7 +1,8 @@
 import { Asset, Box, CardList, Flex, Text } from '@fuels/ui';
 import { IconArrowRight } from '@fuels/ui';
 import type { Asset as FuelsAsset } from 'fuels';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { calculateDateDiff, shortAddress } from '~portal/systems/Core';
 
 import { tv } from 'tailwind-variants';
@@ -17,6 +18,8 @@ type BridgeTxItemProps = {
   txId?: string;
   amount?: string;
   isLoading?: boolean;
+  className?: string;
+  style?: CSSProperties;
 };
 
 export const BridgeTxItem = ({
@@ -29,14 +32,20 @@ export const BridgeTxItem = ({
   txId,
   amount,
   isLoading,
+  className,
+  style,
 }: BridgeTxItemProps) => {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
     <CardList.Item
-      aria-label={`Transaction ID: ${shortAddress(txId)}`}
+      aria-label={t('portal.overview.transaction_id_label', {
+        id: shortAddress(txId),
+      })}
       onClick={onClick}
-      className={classes.cardItem()}
+      className={classes.cardItem({ className })}
+      style={style}
     >
       <Flex className={classes.networks()}>
         {fromLogo}

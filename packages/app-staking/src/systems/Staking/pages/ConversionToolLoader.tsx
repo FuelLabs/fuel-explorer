@@ -1,34 +1,26 @@
-import { Card, HStack, Skeleton, Text, VStack } from '@fuels/ui';
+import { GridFrame, LoadingBox } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 
 export const ConversionToolLoader = () => {
+  const { t } = useTranslation();
   return (
     <div>
-      <HStack
-        direction={{
-          initial: 'column',
-          md: 'row',
-        }}
-        justify="between"
-        className="mt-5"
-      >
-        <Skeleton>
-          <Card className="grow h-[120px]" />
-        </Skeleton>
-        <Skeleton>
-          <Card className="grow h-[120px]" />
-        </Skeleton>
-      </HStack>
-
-      <VStack className="mt-16 gap-16">
-        <VStack gap="2">
-          <Text className="font-mono" size="4" weight="bold">
-            Fuel Token Vesting
-          </Text>
-          <div className="filter-single-clip-polygon">
-            <Card className="p-6 border-single-clip-polygon h-[124px]" />
+      <GridFrame className="mt-5 grid-cols-1 md:grid-cols-2">
+        {[1, 2].map((cell) => (
+          <div
+            key={cell}
+            className="fuel-edge flex flex-col justify-between gap-6 px-6 py-5 tablet:px-10"
+          >
+            <LoadingBox className="h-4 w-32 !rounded-none" />
+            <LoadingBox className="h-6 w-40 !rounded-none" />
           </div>
-        </VStack>
-      </VStack>
+        ))}
+      </GridFrame>
+
+      <div className="mt-16 flex flex-col gap-4">
+        <span className="fuel-label">{t('staking.upgrade.vesting_fuel')}</span>
+        <LoadingBox className="h-[72px] w-full !rounded-none" />
+      </div>
     </div>
   );
 };

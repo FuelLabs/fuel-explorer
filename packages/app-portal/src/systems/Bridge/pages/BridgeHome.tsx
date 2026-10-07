@@ -3,6 +3,7 @@ import { BridgePausedBanner, PageTitle } from 'app-commons';
 import { Routes } from 'app-commons';
 
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { BridgeHistoryToggle } from '../components/BridgeHistoryToggle/BridgeHistoryToggle';
@@ -16,6 +17,7 @@ type BridgeHomeProps = {
 // The form needs no title: Deposit and Withdraw already name it, and History
 // sits beside them. History keeps a title so the list is labelled.
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
+  const { t } = useTranslation();
   const classes = styles();
   const location = useLocation();
   const isBridgeHistory = location.pathname === Routes.bridgeHistory();
@@ -25,7 +27,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
       <BridgePausedBanner />
       <LayerSwapBanner />
       {isBridgeHistory ? (
-        <PageTitle as="h2" title="History" mb="4">
+        <PageTitle as="h2" title={t('portal.bridge.history')} mb="4">
           <BridgeHistoryToggle />
         </PageTitle>
       ) : (

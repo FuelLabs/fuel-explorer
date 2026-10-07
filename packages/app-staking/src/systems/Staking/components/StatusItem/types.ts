@@ -6,6 +6,7 @@ import type {
 import type { StakingEvent } from '~staking/systems/Staking/types/l1/events';
 
 export type StakingStep = {
+  /** i18n key of the step name. */
   label: string;
   status:
     | keyof typeof GQLWithdrawStatusType

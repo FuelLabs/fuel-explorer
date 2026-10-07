@@ -30,22 +30,22 @@ import type { StakingEventType } from '../../types/l1/events';
 const PENDING_TRANSACTIONS_CELLS: Cell[] = [
   {
     id: 'date',
-    title: 'Date',
+    title: 'staking.table.date',
     className: transactionHistoryItemClassNames.dateCol,
   },
   {
     id: 'type',
-    title: 'Type',
+    title: 'staking.table.type',
     className: transactionHistoryItemClassNames.typeCol,
   },
   {
     id: 'amount',
-    title: 'Amount',
+    title: 'staking.table.amount',
     className: transactionHistoryItemClassNames.amountCol,
   },
   {
     id: 'eta',
-    title: 'Status',
+    title: 'staking.table.status',
     className: transactionHistoryItemClassNames.etaCol,
   },
   {
@@ -90,6 +90,14 @@ export const TransactionHistory = () => {
     isFetching,
     refetch,
   } = useAllStakingEvents(address);
+  const cells = useMemo(
+    () =>
+      PENDING_TRANSACTIONS_CELLS.map((cell) => ({
+        ...cell,
+        title: cell.title ? t(cell.title) : '',
+      })),
+    [t],
+  );
 
   const [status, setStatus] = useState<StatusFilter>('all');
   const [type, setType] = useState<TypeFilter>('all');
@@ -172,7 +180,7 @@ export const TransactionHistory = () => {
                 onTypeChange={handleTypeChange}
                 onRefresh={() => refetch()}
               />
-              <AnimatedTable headerCells={PENDING_TRANSACTIONS_CELLS}>
+              <AnimatedTable headerCells={cells}>
                 {isPending &&
                   Array(itemsPerPage)
                     .fill(0)

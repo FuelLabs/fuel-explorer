@@ -121,8 +121,8 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                 return (
                   <div
                     style={{
-                      backgroundColor: 'var(--gray-1)',
-                      border: '1px solid var(--gray-2)',
+                      backgroundColor: 'var(--fuel-background)',
+                      border: '1px solid var(--fuel-line)',
                       borderRadius: 0,
                       padding: '8px 12px',
                       fontSize: '12px',
@@ -130,7 +130,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                   >
                     <div
                       style={{
-                        color: 'var(--gray-12)',
+                        color: 'var(--fuel-element-high-em)',
                         fontWeight: 'bold',
                         marginBottom: 4,
                       }}
@@ -138,20 +138,23 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                       {label}
                     </div>
                     <div style={{ color: 'var(--fuel-primary)' }}>
-                      Peak TPS: {data.max.toFixed(2)} TX/s
+                      {t('home.peak_tps')}: {data.max.toFixed(2)}{' '}
+                      {t('home.tx_per_second')}
                     </div>
-                    <div style={{ color: 'var(--gray-12)' }}>
-                      Avg TPS: {data.avg.toFixed(2)} TX/s
+                    <div style={{ color: 'var(--fuel-element-high-em)' }}>
+                      {t('home.avg_tps')}: {data.avg.toFixed(2)}{' '}
+                      {t('home.tx_per_second')}
                     </div>
                     {peakTps > 0 && (
                       <div
                         style={{
-                          color: '#FF6B6B',
+                          color: 'var(--red-10)',
                           marginTop: 2,
                           fontSize: '11px',
                         }}
                       >
-                        Day Peak: {peakTps.toFixed(2)} TX/s
+                        {t('home.day_peak')}: {peakTps.toFixed(2)}{' '}
+                        {t('home.tx_per_second')}
                       </div>
                     )}
                   </div>
@@ -162,12 +165,12 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
             {peakTps > 0 && (
               <ReferenceLine
                 y={peakTps}
-                stroke="#FF6B6B"
+                stroke="var(--red-10)"
                 strokeDasharray="5 3"
                 label={{
-                  value: `Peak: ${peakTps.toFixed(2)}`,
+                  value: `${t('home.peak')} ${peakTps.toFixed(2)}`,
                   position: 'right',
-                  fill: '#FF6B6B',
+                  fill: 'var(--red-10)',
                   fontSize: 10,
                 }}
               />

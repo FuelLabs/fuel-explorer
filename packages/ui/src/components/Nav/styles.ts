@@ -19,7 +19,7 @@ export const styles = tv({
     spacer: 'flex-1 opacity-0',
     themeToggle: [
       'relative cursor-pointer flex items-center justify-center w-10 h-10 border border-border',
-      'bg-gray-3 select-none',
+      'fuel-hover-fill bg-transparent select-none',
     ],
     themeToggleIcon: [
       'absolute transition-opacity duration-300 text-icon',

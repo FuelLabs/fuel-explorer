@@ -3,8 +3,16 @@ import type {
   GQLTransactionsByBlockIdQuery,
   Maybe,
 } from '@fuel-explorer/graphql';
-import { Address, Grid, LoadingBox, LoadingWrapper, VStack } from '@fuels/ui';
+import {
+  Address,
+  GridFrame,
+  LoadingBox,
+  LoadingWrapper,
+  VStack,
+} from '@fuels/ui';
 import { PageTitle } from 'app-commons';
+import type { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Routes } from '~/routes';
 import { CardInfo } from '~/systems/Core/components/CardInfo/CardInfo';
@@ -21,6 +29,17 @@ type BlockScreenSimpleProps = {
   isLoading?: boolean;
 };
 
+// Stats rise in one after the other once the block has loaded.
+function cell(index: number, isLoading?: boolean) {
+  if (isLoading) return { className: 'flex-1' };
+  return {
+    className: 'fuel-rise flex-1',
+    style: {
+      '--fuel-enter-delay': `${Math.min(index, 6) * 40}ms`,
+    } as CSSProperties,
+  };
+}
+
 export function BlockScreenSimple({
   id,
   block,
@@ -28,17 +47,18 @@ export function BlockScreenSimple({
   producer,
   isLoading,
 }: BlockScreenSimpleProps) {
+  const { t } = useTranslation();
   return (
     <VStack gap="2" className="relative">
-      <Grid className="grid-rows-3 tablet:grid-rows-2 tablet:grid-cols-2 desktop:grid-cols-4 desktop:grid-rows-1 gap-6">
-        <CardInfo name="Height" className="flex-1">
+      <GridFrame className="grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
+        <CardInfo name={t('block.height')} {...cell(0, isLoading)}>
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-[68px] h-[20px] mb-[1px]" />}
             regularEl={block?.height}
           />
         </CardInfo>
-        <CardInfo name="Producer" className="flex-1">
+        <CardInfo name={t('block.producer')} {...cell(1, isLoading)}>
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-[101px] h-[20px]" />}
@@ -53,8 +73,8 @@ export function BlockScreenSimple({
           />
         </CardInfo>
         <CardInfo
-          name="Created"
-          className="flex-1"
+          name={t('block.created')}
+          {...cell(2, isLoading)}
           description={
             <LoadingWrapper
               isLoading={isLoading}
@@ -76,18 +96,19 @@ export function BlockScreenSimple({
             }
           />
         </CardInfo>
-        <CardInfo name="# of transactions" className="flex-1">
+        <CardInfo name={t('block.tx_count')} {...cell(3, isLoading)}>
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={<LoadingBox className="w-12 h-6" />}
             regularEl={block?.header.transactionsCount}
           />
         </CardInfo>
-      </Grid>
+      </GridFrame>
 
       {/* Transactions section - title always visible */}
       <PageTitle
-        title="Transactions"
+        as="h2"
+        title={t('block.transactions')}
         mb={{ sm: '4', lg: '4' }}
         className="mt-8"
       />

@@ -1,4 +1,5 @@
 import { Tooltip } from '@radix-ui/themes';
+import { useMemo } from 'react';
 import type { SyntheticEvent } from 'react';
 import { IconCheck, IconCopy } from '../Icons';
 
@@ -7,10 +8,9 @@ import { createComponent } from '../../utils/component';
 import type { Colors } from '../../utils/types';
 import { Box } from '../Box';
 import type { BoxProps } from '../Box';
-import type { IconContext } from '../Icon/useIconContext';
+import type { IconComponent, IconContext } from '../Icon/useIconContext';
 import { IconButton } from '../IconButton/IconButton';
 import { useCopied } from '../Motion/useCopied';
-import { toast } from '../Toast/useToast';
 
 export type CopyableBaseProps = {
   value: string;
@@ -21,6 +21,7 @@ export type CopyableBaseProps = {
   iconClassName?: string;
   iconColor?: Colors;
   iconAriaLabel?: string;
+  copiedMessage?: string;
 };
 
 export type CopyableProps = Omit<BoxProps, 'asChild'> & CopyableBaseProps;
@@ -31,6 +32,20 @@ const styles = tv({
     icon: 'ml-1',
   },
 });
+
+type CopyIconType = IconComponent;
+
+// Both icons stay mounted so the swap is a crossfade driven by data-copied.
+function makeSwapIcon(CopyIcon: CopyIconType): CopyIconType {
+  return function SwapIcon({ className, ...rest }) {
+    return (
+      <span className="fuel-copy-swap">
+        <CopyIcon {...rest} className={className} />
+        <IconCheck {...rest} className={className} />
+      </span>
+    );
+  };
+}
 
 export const Copyable = createComponent<CopyableProps, 'span'>({
   id: 'Copyable',
@@ -48,30 +63,32 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
       iconClassName,
       iconColor = 'text-icon',
       iconAriaLabel: ariaLabel = 'Copy to clipboard',
+      copiedMessage = 'Copied to clipboard',
       ...props
     },
   ) => {
     const { copied, markCopied } = useCopied();
+    const SwapIcon = useMemo(() => makeSwapIcon(CopyIcon), [CopyIcon]);
 
     async function handleCopy() {
       await navigator.clipboard.writeText(value);
       markCopied();
-      toast.success('Copied to clipboard');
     }
 
     return (
       <Box {...props} as={Root}>
         {children}
-        <Tooltip content={tooltipMessage}>
+        <Tooltip content={copied ? copiedMessage : tooltipMessage}>
           <IconButton
-            aria-label={ariaLabel}
+            aria-label={copied ? copiedMessage : ariaLabel}
             color="gray"
-            icon={copied ? IconCheck : CopyIcon}
+            icon={SwapIcon}
             iconClassName={styles().icon({ className: iconClassName })}
             iconColor={iconColor}
             iconSize={iconSize}
             iconStroke={iconStroke}
             variant="link"
+            data-copied={copied ? '' : undefined}
             onClick={(e: SyntheticEvent) => {
               e.stopPropagation();
               handleCopy();
