@@ -25,7 +25,6 @@ const LANE_PANEL =
 // its own question.
 function StakingGuide({ ethereum }: { ethereum: boolean }) {
   const { t } = useTranslation('stakingGuide');
-  const { t: tApp } = useTranslation();
   const rigFaq = {
     question: t('faq.rig.question'),
     answer: t('faq.rig.answer'),
@@ -45,15 +44,7 @@ function StakingGuide({ ethereum }: { ethereum: boolean }) {
       ]
     : [rigFaq];
 
-  return (
-    <>
-      <ToolFaq
-        items={faq}
-        docsLabel={tApp('staking.docs')}
-        docsUrl={STAKING_DOCS_URL}
-      />
-    </>
-  );
+  return <ToolFaq items={faq} />;
 }
 
 export default function StakingLayout() {

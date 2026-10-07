@@ -497,6 +497,116 @@
   background-color: var(--fuel-muted);
 }
 
+/* Questions list. Opening folds the answer down out of a soft blur, draws the
+   brand square in and moves the question over to make room for it; closing
+   runs faster than opening. Hover draws a hairline along the row's bottom edge
+   from the left, and it leaves to the right. */
+.fuel-faq {
+  --fuel-faq-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --fuel-faq-exit: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fuel-faq-item::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--fuel-element-high-em);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 450ms var(--fuel-faq-enter);
+  pointer-events: none;
+}
+
+.fuel-faq-label {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16px;
+  color: var(--fuel-element-low-em);
+  transition: color 200ms, transform 300ms var(--fuel-faq-exit);
+}
+
+/* 18px: the 12px row padding plus half of the 20px line, less half the square. */
+.fuel-faq-marker {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  opacity: 0;
+  transform: scale(0) rotate(-90deg);
+  transition: opacity 150ms, transform 250ms var(--fuel-faq-exit);
+}
+
+.fuel-faq-toggle {
+  flex: none;
+  color: var(--fuel-element-low-em);
+  transition: rotate 450ms var(--fuel-faq-enter), scale 150ms
+    var(--fuel-faq-enter), color 200ms;
+}
+
+.fuel-faq-item button:active .fuel-faq-toggle {
+  scale: 0.8;
+}
+
+.fuel-faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 280ms var(--fuel-faq-exit), visibility 0s 280ms;
+}
+
+.fuel-faq-answer {
+  opacity: 0;
+  transform: translateY(-6px);
+  filter: blur(4px);
+  transition: opacity 150ms, transform 200ms var(--fuel-faq-exit), filter 150ms;
+}
+
+.fuel-faq-item[data-open] .fuel-faq-label {
+  color: var(--fuel-element-high-em);
+  transform: translateX(16px);
+  transition: color 200ms, transform 500ms var(--fuel-faq-enter);
+}
+
+.fuel-faq-item[data-open] .fuel-faq-marker {
+  opacity: 1;
+  transform: none;
+  transition: opacity 200ms 80ms, transform 500ms var(--fuel-faq-enter) 80ms;
+}
+
+.fuel-faq-item[data-open] .fuel-faq-toggle {
+  rotate: 45deg;
+  color: var(--fuel-element-high-em);
+}
+
+.fuel-faq-item[data-open] > .fuel-faq-panel {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 500ms var(--fuel-faq-enter), visibility 0s;
+}
+
+.fuel-faq-item[data-open] .fuel-faq-answer {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: opacity 350ms 100ms, transform 500ms var(--fuel-faq-enter) 100ms,
+    filter 400ms 100ms;
+}
+
+/* Touch screens skip hover, so a tap does not leave the hairline drawn. */
+@media (hover: hover) {
+  .fuel-faq-item:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .fuel-faq-item:hover .fuel-faq-label,
+  .fuel-faq-item:hover .fuel-faq-toggle {
+    color: var(--fuel-element-high-em);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fuel-row-new {
     animation: none;
@@ -509,5 +619,31 @@
   .fuel-hover-fill,
   .rt-BaseButton {
     transition: none;
+  }
+
+  /* Questions keep the fades and colour changes and drop all movement. */
+  .fuel-faq-item::after,
+  .fuel-faq-panel,
+  .fuel-faq-item[data-open] > .fuel-faq-panel {
+    transition: none;
+  }
+
+  /* The question still moves over for the square, in one step. */
+  .fuel-faq-label,
+  .fuel-faq-item[data-open] .fuel-faq-label {
+    transition: color 200ms;
+  }
+
+  .fuel-faq-marker,
+  .fuel-faq-item[data-open] .fuel-faq-marker,
+  .fuel-faq-answer,
+  .fuel-faq-item[data-open] .fuel-faq-answer {
+    transform: none;
+    filter: none;
+    transition: opacity 200ms;
+  }
+
+  .fuel-faq-toggle {
+    transition: color 200ms;
   }
 }
