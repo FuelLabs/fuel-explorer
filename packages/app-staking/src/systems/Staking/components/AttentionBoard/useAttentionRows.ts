@@ -1,42 +1,16 @@
-import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
-import { useQuery } from '@tanstack/react-query';
 import { FuelToken, TOKENS } from 'app-commons';
 import { DECIMAL_FUEL, bn } from 'fuels';
 import { useMemo } from 'react';
-import type { Address } from 'viem';
 import { useAccount } from 'wagmi';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
-import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
 import { useRigClaimable } from '../../hooks/useRigClaimable';
-import { getStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
+import { useAllStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
 import { useAccountValidators } from '../../services/useAccountValidators';
 import { useRewards } from '../../services/useRewards';
 import type { StakingEvent } from '../../types/l1/events';
+import { eventStatus } from '../TransactionHistoryItem/constants';
 
 const { decimals } = TOKENS[FuelToken.V2];
-// The API rejects a page size above 50.
-const EVENTS_PAGE_SIZE = 50;
-// Safety stop at 1000 events. Most accounts finish in the first request.
-const EVENTS_MAX_PAGES = 20;
-
-// An unfinished undelegate or withdraw can sit behind many newer events, so the
-// board reads the whole history, newest first, instead of one page.
-async function getAllStakingEvents(address: Address) {
-  const nodes: StakingEvent[] = [];
-  let before: number | undefined;
-  for (let page = 0; page < EVENTS_MAX_PAGES; page++) {
-    const data = await getStakingEvents({
-      address,
-      before,
-      after: undefined,
-      itemsPerPage: EVENTS_PAGE_SIZE,
-    });
-    nodes.push(...data.nodes);
-    if (!data.pageInfo.hasNextPage) break;
-    before = data.pageInfo.endCursor;
-  }
-  return nodes;
-}
 
 export type AttentionRow =
   | { kind: 'rig-claim'; key: string; amount: string }
@@ -48,24 +22,21 @@ export type AttentionRow =
       amount: ReturnType<typeof formatAmount>;
     }
   | {
-      kind: 'action' | 'progress' | 'failed';
+      kind: 'action' | 'progress';
       key: string;
       event: StakingEvent;
       endsAt: number;
       amount: ReturnType<typeof formatAmount>;
     };
 
-// Same status reading as the transaction history rows.
+// A failed transaction is history, not work: it stays in Your transactions
+// and off the board.
 function eventKind(event: StakingEvent) {
-  if (event.status === GQLWithdrawStatusType.Finalized) return null;
-  if (event.status === GQLWithdrawStatusType.ReadyToProcessWithdraw) {
-    return 'action';
-  }
-  if (event.status === GQLWithdrawStatusType.Skipped) return 'failed';
-  return 'progress';
+  const status = eventStatus(event);
+  return status === 'action' || status === 'progress' ? status : null;
 }
 
-const GROUP = { rig: 0, claim: 0, action: 0, progress: 1, failed: 2 } as const;
+const GROUP = { rig: 0, claim: 0, action: 0, progress: 1 } as const;
 
 export type Lane = 'rig' | 'ethereum';
 
@@ -79,16 +50,7 @@ export function useAttentionRows(lane: Lane) {
   const positions = useAccountValidators(address, {
     select: (data) => data.validators,
   });
-  const events = useQuery({
-    // Starts with the shared events key, so the existing invalidations refresh it.
-    queryKey: [
-      ...QUERY_KEYS.stakingEvents(undefined, undefined, undefined, undefined),
-      'attention',
-      address,
-    ],
-    queryFn: () => getAllStakingEvents(address as Address),
-    enabled: !!address,
-  });
+  const events = useAllStakingEvents(address);
 
   const rows = useMemo(() => {
     const list: AttentionRow[] = [];
@@ -143,9 +105,8 @@ export function useAttentionRows(lane: Lane) {
       if (byGroup) return byGroup;
       // Infinity - Infinity is NaN, so equal ends are compared directly.
       if (endsAt(a) === endsAt(b)) return 0;
-      const order = endsAt(a) < endsAt(b) ? -1 : 1;
-      // Open items run by nearest finish. Failed ones read newest first.
-      return a.kind === 'failed' ? -order : order;
+      // Items run by nearest finish.
+      return endsAt(a) < endsAt(b) ? -1 : 1;
     });
   }, [onEthereum, pendingDeposit, rewards.data, positions.data, events.data]);
 
@@ -158,6 +119,5 @@ export function useAttentionRows(lane: Lane) {
     rows,
     needsConnect: onEthereum && !isConnected,
     isLoading,
-    hasPositions: (positions.data?.length ?? 0) > 0,
   };
 }

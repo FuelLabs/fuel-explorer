@@ -157,20 +157,21 @@
       "action_needed": "Action needed",
       "time_left": "~{{eta}} left",
       "in_progress": "In progress",
-      "failed": "Failed",
-      "failed_group_one": "{{count}} failed transaction",
-      "failed_group_other": "{{count}} failed transactions",
-      "show": "Show",
-      "hide": "Hide",
-      "show_more_one": "Show {{count}} more",
-      "show_more_other": "Show {{count}} more",
       "claim": "Claim",
       "continue": "Continue",
-      "details": "Details",
-      "empty": "Nothing is waiting on you.",
-      "empty_start": "Pick a validator to start staking.",
-      "start": "Stake",
-      "loading": "Loading your staking activity"
+      "details": "Details"
+    },
+    "history": {
+      "status_label": "Filter by status",
+      "status_action": "Action needed",
+      "status_progress": "In progress",
+      "status_completed": "Completed",
+      "status_failed": "Failed",
+      "type_label": "Filter by type",
+      "type_all": "All types",
+      "refresh": "Refresh list",
+      "no_match": "No transactions match these filters.",
+      "clear": "Clear filters"
     }
   },
   "bridge": {

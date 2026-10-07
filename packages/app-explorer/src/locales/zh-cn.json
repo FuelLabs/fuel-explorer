@@ -136,7 +136,19 @@
     "validators": "验证者",
     "transactions": "你的交易",
     "wallet_disconnected": "钱包未连接",
-    "connect_positions": "请连接钱包以查看你的质押持仓。"
+    "connect_positions": "请连接钱包以查看你的质押持仓。",
+    "history": {
+      "status_label": "按状态筛选",
+      "status_action": "需要操作",
+      "status_progress": "进行中",
+      "status_completed": "已完成",
+      "status_failed": "失败",
+      "type_label": "按类型筛选",
+      "type_all": "所有类型",
+      "refresh": "刷新列表",
+      "no_match": "没有符合筛选条件的交易。",
+      "clear": "清除筛选"
+    }
   },
   "errors": {
     "not_found": "页面未找到",

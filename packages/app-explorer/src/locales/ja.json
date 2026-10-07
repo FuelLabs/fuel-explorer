@@ -136,7 +136,19 @@
     "validators": "バリデータ",
     "transactions": "トランザクション",
     "wallet_disconnected": "ウォレット未接続",
-    "connect_positions": "ステーキングのポジションを見るにはウォレットを接続してください。"
+    "connect_positions": "ステーキングのポジションを見るにはウォレットを接続してください。",
+    "history": {
+      "status_label": "ステータスで絞り込み",
+      "status_action": "対応が必要",
+      "status_progress": "処理中",
+      "status_completed": "完了",
+      "status_failed": "失敗",
+      "type_label": "種類で絞り込み",
+      "type_all": "すべての種類",
+      "refresh": "リストを更新",
+      "no_match": "条件に一致するトランザクションはありません。",
+      "clear": "絞り込みを解除"
+    }
   },
   "errors": {
     "not_found": "ページが見つかりません",

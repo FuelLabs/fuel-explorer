@@ -136,7 +136,19 @@
     "validators": "驗證者",
     "transactions": "你的交易",
     "wallet_disconnected": "錢包未連接",
-    "connect_positions": "請連接錢包以查看你的質押持倉。"
+    "connect_positions": "請連接錢包以查看你的質押持倉。",
+    "history": {
+      "status_label": "按狀態篩選",
+      "status_action": "需要操作",
+      "status_progress": "進行中",
+      "status_completed": "已完成",
+      "status_failed": "失敗",
+      "type_label": "按類型篩選",
+      "type_all": "所有類型",
+      "refresh": "重新整理列表",
+      "no_match": "沒有符合篩選條件的交易。",
+      "clear": "清除篩選"
+    }
   },
   "errors": {
     "not_found": "頁面未找到",

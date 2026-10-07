@@ -136,7 +136,19 @@
     "validators": "밸리데이터",
     "transactions": "내 트랜잭션",
     "wallet_disconnected": "지갑이 연결되지 않음",
-    "connect_positions": "스테이킹 포지션을 보려면 지갑을 연결하세요."
+    "connect_positions": "스테이킹 포지션을 보려면 지갑을 연결하세요.",
+    "history": {
+      "status_label": "상태별 필터",
+      "status_action": "조치 필요",
+      "status_progress": "진행 중",
+      "status_completed": "완료",
+      "status_failed": "실패",
+      "type_label": "유형별 필터",
+      "type_all": "모든 유형",
+      "refresh": "목록 새로고침",
+      "no_match": "필터와 일치하는 트랜잭션이 없습니다.",
+      "clear": "필터 지우기"
+    }
   },
   "errors": {
     "not_found": "페이지를 찾을 수 없습니다",
