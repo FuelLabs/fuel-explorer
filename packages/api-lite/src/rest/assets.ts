@@ -49,8 +49,11 @@ export async function buildAssetBody(
 
   const collection = collectionFor(contractId);
   const metadata =
-    collection && contractId && subId
-      ? await withinWait(nft.get(contractId, subId), NFT_METADATA_WAIT_MS)
+    isNFT && contractId && subId
+      ? await withinWait(
+          nft.get(contractId, subId, assetId),
+          NFT_METADATA_WAIT_MS,
+        )
       : null;
 
   const { __typename: _, ...fields } = asset;

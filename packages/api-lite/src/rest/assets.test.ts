@@ -123,7 +123,7 @@ describe('buildAssetBody', () => {
     const metadata = { name: 'Fuel Pumps #7', image: 'https://x/7.png' };
     const nft = { get: jest.fn(async () => metadata) };
     const body = await buildAssetBody(hex(3), c, nft, REGISTRY);
-    expect(nft.get).toHaveBeenCalledWith(FUEL_PUMPS, hex(7));
+    expect(nft.get).toHaveBeenCalledWith(FUEL_PUMPS, hex(7), hex(3));
     expect(body).toMatchObject({
       name: 'Fuel Pumps #7',
       isNFT: true,

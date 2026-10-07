@@ -2,6 +2,7 @@ import { createServer } from 'node:http';
 import { createYoga } from 'graphql-yoga';
 import { IpfsGateway } from './assets/IpfsGateway';
 import { NftMetadata } from './assets/NftMetadata';
+import type { Src7Reader } from './assets/Src7Reader';
 import type { CosmosPoller } from './cosmos/CosmosPoller';
 import type { AppContext } from './graphql/context';
 import { useMaxDepth } from './graphql/depthLimit';
@@ -24,11 +25,16 @@ export type AppDeps = AppContext & {
   apy?: RestRouterDeps['apy'];
   bridge?: RestRouterDeps['bridge'];
   publicUrl?: string;
+  src7?: Pick<Src7Reader, 'read'>;
 };
 
 export function createApp(ctx: AppDeps) {
   const gateway = new IpfsGateway();
-  const nft = new NftMetadata({ gateway, publicUrl: ctx.publicUrl });
+  const nft = new NftMetadata({
+    gateway,
+    publicUrl: ctx.publicUrl,
+    src7: ctx.src7,
+  });
   const gqlCtx: AppContext = { ...ctx, nft };
   const yoga = createYoga<AppContext>({
     schema: buildSchema(),

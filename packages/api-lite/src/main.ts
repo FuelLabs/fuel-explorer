@@ -1,8 +1,10 @@
 import { promises as fsp, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
+import { Provider } from 'fuels';
 import { http, createPublicClient } from 'viem';
 import VerifiedAssets from '~/infra/cache/VerifiedAssets';
+import { Src7Reader } from './assets/Src7Reader';
 import { seedVerifiedAssets } from './assets/seedVerifiedAssets';
 import { type RequestHandler, createBootServer } from './bootServer';
 import { BridgeStore } from './bridge/BridgeStore';
@@ -296,6 +298,7 @@ async function main() {
     apy,
     bridge,
     publicUrl: cfg.publicUrl,
+    src7: new Src7Reader(new Provider(cfg.fuelProvider)),
   });
   swapHandler(appServer.listeners('request')[0] as RequestHandler);
   console.log(`api-lite listening on ${cfg.port}`);

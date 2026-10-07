@@ -108,9 +108,9 @@ async function enrichAssetNodes(container: any, ctx: AppContext) {
       node.totalSupply = details?.totalSupply ?? null;
       node.collection = collection;
       const metadata =
-        contractId && subId && collection && ctx.nft && node.totalSupply === '1'
+        contractId && subId && ctx.nft && node.totalSupply === '1'
           ? await withinWait(
-              ctx.nft.get(contractId, subId),
+              ctx.nft.get(contractId, subId, node.assetId),
               NFT_METADATA_WAIT_MS,
             )
           : null;
