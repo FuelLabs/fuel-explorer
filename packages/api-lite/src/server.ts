@@ -27,6 +27,9 @@ export type AppDeps = AppContext & {
 };
 
 export function createApp(ctx: AppDeps) {
+  const gateway = new IpfsGateway();
+  const nft = new NftMetadata({ gateway, publicUrl: ctx.publicUrl });
+  const gqlCtx: AppContext = { ...ctx, nft };
   const yoga = createYoga<AppContext>({
     schema: buildSchema(),
     graphqlEndpoint: '/graphql',
@@ -40,10 +43,8 @@ export function createApp(ctx: AppDeps) {
     // with a generic message and logs the original server-side; outside
     // production it's off entirely so the real error is visible while developing.
     maskedErrors: process.env.NODE_ENV === 'production',
-    context: () => ctx,
+    context: () => gqlCtx,
   });
-  const gateway = new IpfsGateway();
-  const nft = new NftMetadata({ gateway, publicUrl: ctx.publicUrl });
   const health = () => ({
     ok: ctx.tip.servedTip > 0,
     fuelCore: ctx.tip.fuelCoreUp ? 'up' : 'down',

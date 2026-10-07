@@ -43,6 +43,68 @@ function fakeCtx(overrides: Record<string, unknown> = {}) {
   } as any;
 }
 
+describe('passthrough: balances NFT fields', () => {
+  const original = (VerifiedAssets as any).instance;
+  afterEach(() => {
+    (VerifiedAssets as any).instance = original;
+  });
+  const BEARBROS =
+    '0xf0b6e2320caccb9071e45b1150b4da6f5edf74e7375ac6c87084822a87832de2';
+  const PENGUS =
+    '0xaa919d413a57cb6c577b2e172480cbe2f88df0e28203fed52249cabca6cee74a';
+
+  function nftCtx(contractId: string, nft?: unknown) {
+    return fakeCtx({
+      client: {
+        query: async () => ({
+          balances: { nodes: [{ amount: '1', assetId: hex(7) }] },
+        }),
+        assetDetails: async () => ({
+          contractId,
+          subId: hex(881),
+          totalSupply: '1',
+        }),
+      },
+      nft,
+    });
+  }
+
+  it('fills contractId, totalSupply and collection for an unlisted asset', async () => {
+    (VerifiedAssets as any).instance = { fetch: async () => [] };
+    const result = await passthroughResolvers.Query.balances(
+      null,
+      {},
+      nftCtx(BEARBROS),
+    );
+    const node = result.nodes[0];
+    expect(node.contractId).toBe(BEARBROS);
+    expect(node.totalSupply).toBe('1');
+    expect(node.collection).toBe('BearBros');
+    expect(node.metadata).toBeNull();
+  });
+
+  it('adds the token metadata as a JSON string when the collection has it', async () => {
+    (VerifiedAssets as any).instance = { fetch: async () => [] };
+    const calls: string[][] = [];
+    const nft = {
+      get: async (contractId: string, subId: string) => {
+        calls.push([contractId, subId]);
+        return { name: 'Pengu #881', image: 'https://x/881.png' };
+      },
+    };
+    const result = await passthroughResolvers.Query.balances(
+      null,
+      {},
+      nftCtx(PENGUS, nft),
+    );
+    expect(calls).toEqual([[PENGUS, hex(881)]]);
+    expect(JSON.parse(result.nodes[0].metadata)).toEqual({
+      name: 'Pengu #881',
+      image: 'https://x/881.png',
+    });
+  });
+});
+
 describe('passthrough: balances/contractBalances enrichment', () => {
   const original = (VerifiedAssets as any).instance;
   afterEach(() => {
